@@ -12,6 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -23,7 +24,7 @@ import (
 
 type FlightStripPane struct {
 	FontSize int
-	font     *renderer.Font
+	font     *gui.Font
 
 	DarkMode         bool
 	HideOffFrequency bool
@@ -53,8 +54,8 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, l
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
-	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.FlightStripPrinter, Size: fsp.FontSize}); fsp.font == nil {
-		fsp.font = renderer.GetDefaultFont()
+	if fsp.font = gui.GetFont(gui.Fonts.FlightStripPrinter, fsp.FontSize); fsp.font == nil {
+		fsp.font = gui.GetDefaultFont()
 	}
 }
 
@@ -107,9 +108,9 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 	imgui.Checkbox("Night mode", &fsp.DarkMode)
 	imgui.Checkbox("Hide aircraft not on my frequency", &fsp.HideOffFrequency)
 
-	id := renderer.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
-	if newFont, changed := renderer.DrawFontSizeSelector(&id); changed {
-		fsp.FontSize = newFont.Size
+	id := gui.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
+	if newFont, changed := gui.DrawFontSizeSelector(&id); changed {
+		fsp.FontSize = id.Size
 		fsp.font = newFont
 	}
 }
@@ -179,7 +180,7 @@ func (fsp *FlightStripPane) DrawWindow(show *bool, c *client.ControlClient,
 	imgui.BeginV("Flight Strips", show, 0)
 	DrawPinButton("Flight Strips", unpinnedWindows, p)
 	if fsp.font != nil {
-		fsp.font.ImguiPush()
+		gui.PushFont(fsp.font)
 	}
 
 	// Commit annotations if the window lost focus while editing.
@@ -277,7 +278,7 @@ func (fsp *FlightStripPane) DrawWindow(show *bool, c *client.ControlClient,
 	imgui.PopStyleColorV(7)
 
 	if fsp.font != nil {
-		imgui.PopFont()
+		gui.PopFont()
 	}
 	imgui.End()
 }

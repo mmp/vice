@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
@@ -38,11 +39,11 @@ const (
 func (t tool) icon() string {
 	switch t {
 	case toolDrawRoute:
-		return renderer.FontAwesomeIconDrawPolygon
+		return gui.Icons.DrawPolygon
 	case toolMeasure:
-		return renderer.FontAwesomeIconRuler
+		return gui.Icons.Ruler
 	default:
-		return renderer.FontAwesomeIconArrowsAlt
+		return gui.Icons.ArrowsAlt
 	}
 }
 
@@ -139,15 +140,10 @@ func (s *scope) haveToolPoints() bool {
 	return len(s.routePoints) > 0 || len(s.measure) > 0
 }
 
-// scopeFontSize is the size of the text backshop draws on the scope: route
-// annotations, datablocks, and its own labels. Small, since a busy departure
-// procedure puts a lot of it on the map at once.
-const scopeFontSize = 12
-
 // initFonts bakes the bitmap fonts video maps are drawn with. It needs a
 // live renderer, so it happens separately from init.
 func (s *scope) initFonts(r renderer.Renderer, p platform.Platform) {
-	fonts := radar.CreateERAMFonts(r, p)
+	fonts := radar.CreateERAMFonts(r, p.DPIScale())
 	s.symbolFont = [3]*renderer.Font{
 		radar.FindERAMFont(fonts, "EramGeomap-16.pcf", 15),
 		radar.FindERAMFont(fonts, "EramGeomap-18.pcf", 17),
@@ -159,7 +155,11 @@ func (s *scope) initFonts(r renderer.Renderer, p platform.Platform) {
 		radar.FindERAMFont(fonts, "EramText-14.pcf", 17),
 		radar.FindERAMFont(fonts, "EramText-16.pcf", 18),
 	}
-	s.textFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: scopeFontSize})
+	// Route annotations, datablocks and backshop's own labels are drawn
+	// into the same command buffer as the maps, so they use the same
+	// bitmap fonts. Small, since a busy departure procedure puts a lot of
+	// text on the map at once.
+	s.textFont = s.mapFont[0]
 }
 
 // MapSymbolFont and MapLabelFont implement radar.MapFonts.
@@ -438,7 +438,7 @@ func (s *scope) draw(a *app, menuBarHeight float32) {
 	displaySize := a.plat.DisplaySize()
 	extent := math.Extent2D{P1: [2]float32{displaySize[0], displaySize[1] - menuBarHeight}}
 
-	cb := renderer.GetCommandBuffer()
+	cb := renderer.GetCommandBuffer(a.lg)
 	defer renderer.ReturnCommandBuffer(cb)
 	cb.ClearRGB(renderer.RGB{})
 

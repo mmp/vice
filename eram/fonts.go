@@ -35,7 +35,7 @@ func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
 }
 
 func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
-	fonts := radar.CreateERAMFonts(r, p)
+	fonts := radar.CreateERAMFonts(r, p.DPIScale())
 	get := func(name string, size int) *renderer.Font {
 		return radar.FindERAMFont(fonts, name, size)
 	}

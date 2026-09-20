@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -21,7 +20,7 @@ var _ util.SyncUI = (*SyncUI)(nil)
 // sync that vice's GUI applications run before they read any resources.
 type SyncUI struct {
 	plat     platform.Platform
-	font     *renderer.Font
+	font     *Font
 	progress *ModalDialog
 	client   *syncProgressClient
 }
@@ -29,7 +28,7 @@ type SyncUI struct {
 // NewSyncUI returns a SyncUI that draws into the given platform's window.
 // The font is what its dialogs draw their text with; the sync runs before
 // the application's main loop, so it renders its own frames.
-func NewSyncUI(p platform.Platform, font *renderer.Font) *SyncUI {
+func NewSyncUI(p platform.Platform, font *Font) *SyncUI {
 	return &SyncUI{plat: p, font: font}
 }
 

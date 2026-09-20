@@ -32,6 +32,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/renderer/ogl21"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stars"
@@ -397,11 +398,11 @@ func initPlatformAndRenderer(config *Config, lg *log.Logger) (platform.Platform,
 
 	imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
 
-	render, err := renderer.NewOpenGL2Renderer(lg)
+	render, err := ogl21.NewRenderer(lg)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 	}
-	renderer.FontsInit(render, plat)
+	gui.InitFonts(plat.DPIScale(), lg)
 
 	// Initialize viewport backends now that OpenGL is ready.
 	plat.InitViewportBackends()

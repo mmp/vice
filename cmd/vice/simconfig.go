@@ -18,12 +18,12 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/rand"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -340,7 +340,7 @@ func (c *NewSimConfiguration) drawTrafficPlot(spec *server.ScenarioSpec, p platf
 
 	if c.trafficPreviewError != nil {
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
-		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " " + c.trafficPreviewError.Error())
+		imgui.Text(gui.Icons.ExclamationTriangle + " " + c.trafficPreviewError.Error())
 		imgui.PopStyleColor()
 		return
 	}
@@ -1437,7 +1437,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 				// Indicate if a password is required
 				if rs.RequirePassword {
-					imgui.Text(renderer.FontAwesomeIconLock)
+					imgui.Text(gui.Icons.Lock)
 				}
 				imgui.TableNextColumn()
 
@@ -1690,7 +1690,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			if len(config.ControllerInitials) < 2 {
 				imgui.SameLine()
 				imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
-				imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " Must enter initials")
+				imgui.Text(gui.Icons.ExclamationTriangle + " Must enter initials")
 				imgui.PopStyleColor()
 			}
 
@@ -1757,7 +1757,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	if len(config.ControllerInitials) < 2 {
 		imgui.SameLine()
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
-		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " Must enter initials")
+		imgui.Text(gui.Icons.ExclamationTriangle + " Must enter initials")
 		imgui.PopStyleColor()
 	}
 
@@ -1780,7 +1780,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 			if c.Password == "" {
 				imgui.SameLine()
 				imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
-				imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
+				imgui.Text(gui.Icons.ExclamationTriangle)
 				imgui.PopStyleColor()
 			}
 		}
@@ -1843,7 +1843,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	if !c.ScenarioSpec.LaunchConfig.CheckRateLimits(rateLimit) {
 		c.ScenarioSpec.LaunchConfig.ClampRates(rateLimit)
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
-		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " Rates reduced to stay within limits")
+		imgui.Text(gui.Icons.ExclamationTriangle + " Rates reduced to stay within limits")
 		imgui.PopStyleColor()
 	}
 
@@ -2438,7 +2438,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 				imgui.Text(c.State.Controllers[av.ControlPosition(tcw)].Callsign)
 
 				imgui.TableNextColumn()
-				sq := renderer.FontAwesomeIconCheckSquare
+				sq := gui.Icons.CheckSquare
 				// Center the square in the column: https://stackoverflow.com/a/66109051
 				pos := imgui.CursorPosX() + float32(imgui.ColumnWidth()) - imgui.CalcTextSize(sq).X - imgui.ScrollX() -
 					2*imgui.CurrentStyle().ItemSpacing().X
@@ -2542,7 +2542,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 					if _, ok := acknowledgedATIS[ap]; !ok {
 						acknowledgedATIS[ap] = letter
 					}
-					ui.fixedFont.ImguiPush()
+					gui.PushFont(ui.fixedFont)
 					flashing := acknowledgedATIS[ap] != letter
 					if flashing && int64(imgui.Time()*2)%2 == 0 {
 						imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .2, .2, 1})
@@ -2565,7 +2565,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 					raw := strings.TrimPrefix(metar.Observation(), "METAR ")
 					raw = strings.TrimPrefix(raw, "SPECI ")
 					imgui.Text(raw)
-					imgui.PopFont()
+					gui.PopFont()
 				}
 
 				imgui.EndTable()
@@ -2586,7 +2586,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 				imgui.TableSetupColumn("Expires")
 				imgui.TableHeadersRow()
 
-				ui.fixedFont.ImguiPush()
+				gui.PushFont(ui.fixedFont)
 				for _, tfr := range c.State.TFRs {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
@@ -2633,7 +2633,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 						}
 					}
 				}
-				imgui.PopFont()
+				gui.PopFont()
 
 				imgui.EndTable()
 			}
@@ -2834,7 +2834,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	// Filter error (if any)
 	if c.weatherFilterError != "" {
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
-		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " " + c.weatherFilterError)
+		imgui.Text(gui.Icons.ExclamationTriangle + " " + c.weatherFilterError)
 		imgui.PopStyleColor()
 	}
 
@@ -2856,7 +2856,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		clock := makeScenarioClock(c.ScenarioSpec)
 		TimePicker(&c.NewSimRequest.StartTime, clock, c.validStartDays(c.ScenarioSpec), metar, ui.fixedFont)
 		imgui.SameLine()
-		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
+		if imgui.Button(gui.Icons.Redo + "##refreshTime") {
 			c.updateStartTimeForRunways(c.ScenarioSpec)
 		}
 		imgui.SameLine()
@@ -2869,9 +2869,9 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 			imgui.Text("METAR:")
 			imgui.TableNextColumn()
 			currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
-			ui.fixedFont.ImguiPush()
+			gui.PushFont(ui.fixedFont)
 			imgui.Text(c.metarText(currentMetar))
-			imgui.PopFont()
+			gui.PopFont()
 
 			if c.showAllMETAR && len(metarAirports) > 1 {
 				for i := 1; i < len(metarAirports); i++ {
@@ -2879,10 +2879,10 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
 					imgui.TableNextColumn()
-					ui.fixedFont.ImguiPush()
+					gui.PushFont(ui.fixedFont)
 					m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
 					imgui.Text(c.metarText(m))
-					imgui.PopFont()
+					gui.PopFont()
 				}
 			}
 		}

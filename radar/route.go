@@ -139,10 +139,20 @@ func (d *DrawnRoutes) ClaimFix(fix string) bool {
 	return true
 }
 
+// annotationText returns text as it must be drawn on a scope. Both STARS
+// and ERAM are upper-case displays, and the ERAM fonts go further: their
+// lower-case slots hold display symbols rather than letters, so 't' draws
+// an up arrow and 'u' a down arrow. Route syntax like "delete" is stored
+// lower-case, so it has to be folded before it reaches a scope font.
+func annotationText(text string) string {
+	return strings.ToUpper(text)
+}
+
 // Label draws text for the point at, in window coordinates, pushed off it
 // in the direction dir. Text near a block placed earlier this frame joins
 // it as a new line, unless the block already has that line.
 func (d *DrawnRoutes) Label(td *renderer.TextDrawBuilder, style renderer.TextStyle, at, dir [2]float32, text string) {
+	text = annotationText(text)
 	crowding := 3 * float32(style.Font.Size)
 	for i := range d.blocks {
 		if b := &d.blocks[i]; math.Distance2f(b.at, at) < crowding {
@@ -1087,6 +1097,7 @@ func (w *routeWalker) drawFix(wp *av.Waypoint, fa fixAnchor, transforms ScopeTra
 	p := math.Add2f(pw, offset)
 	var lines []string
 	addLine := func(text string) {
+		text = annotationText(text)
 		p = td.AddText(text+"\n", p, style)
 		lines = append(lines, text)
 	}

@@ -17,7 +17,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -203,11 +202,11 @@ func (b *Brief) render(source string, p platform.Platform, baseFontSize int, sta
 	// variant matches what imgui.Text would use; the others let *italic*, **bold**, ***bold
 	// italic***, and `code` render with actual style switching instead of literal markup.
 	inlineFonts := briefInlineFonts{
-		regular:    renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: baseFontSize}),
-		italic:     renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoItalic, Size: baseFontSize}),
-		bold:       renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoBold, Size: baseFontSize}),
-		boldItalic: renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoBoldItalic, Size: baseFontSize}),
-		mono:       renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: baseFontSize}),
+		regular:    GetFont(Fonts.RobotoRegular, baseFontSize),
+		italic:     GetFont(Fonts.RobotoItalic, baseFontSize),
+		bold:       GetFont(Fonts.RobotoBold, baseFontSize),
+		boldItalic: GetFont(Fonts.RobotoBoldItalic, baseFontSize),
+		mono:       GetFont(Fonts.RobotoMono, baseFontSize),
 	}
 
 	// Track which heading levels are currently collapsed
@@ -434,9 +433,9 @@ func (b *Brief) render(source string, p platform.Platform, baseFontSize int, sta
 			if entering {
 				// Render code block using monospace font
 				text := extractText(n, preprocessedSource)
-				imgui.PushFont(&inlineFonts.mono.Ifont, float32(inlineFonts.mono.Size))
+				PushFont(inlineFonts.mono)
 				imgui.TextUnformatted(text)
-				imgui.PopFont()
+				PopFont()
 				imgui.Spacing()
 				return ast.WalkSkipChildren, nil
 			}
@@ -696,7 +695,7 @@ func (b *Brief) render(source string, p platform.Platform, baseFontSize int, sta
 		case *brief.TableCaption:
 			if entering {
 				// Render caption centered in gray italic below the table
-				inlineFonts.italic.ImguiPush()
+				PushFont(inlineFonts.italic)
 				captionWidth := imgui.CalcTextSize(n.Caption).X
 
 				// Center the caption relative to the table width (or available width if table is wider)
@@ -723,7 +722,7 @@ func (b *Brief) render(source string, p platform.Platform, baseFontSize int, sta
 				imgui.PushStyleColorU32(imgui.ColText, 0xff999999)
 				imgui.TextUnformatted(n.Caption)
 				imgui.PopStyleColor()
-				imgui.PopFont()
+				PopFont()
 				imgui.Spacing()
 			}
 			return ast.WalkSkipChildren, nil
@@ -747,13 +746,13 @@ func (b *Brief) render(source string, p platform.Platform, baseFontSize int, sta
 
 // drawCenteredLabel draws a text label centered horizontally within the given width.
 // If font is non-nil it is pushed for both width measurement and drawing.
-func drawCenteredLabel(label string, width, initialCursorX float32, font *renderer.Font) {
+func drawCenteredLabel(label string, width, initialCursorX float32, font *Font) {
 	if label == "" {
 		return
 	}
 	if font != nil {
-		font.ImguiPush()
-		defer imgui.PopFont()
+		PushFont(font)
+		defer PopFont()
 	}
 	textSize := imgui.CalcTextSize(label)
 	imgui.SetCursorPosX(initialCursorX + (width-textSize.X)/2)
@@ -824,13 +823,13 @@ func loadVideoMapLibrary(briefMap *brief.VideoMapBlock, cache *videoMapCache,
 // briefInlineFonts groups the proportional + monospace fonts used by renderInline to style inline
 // markdown emphasis and code spans.
 type briefInlineFonts struct {
-	regular, italic, bold, boldItalic, mono *renderer.Font
+	regular, italic, bold, boldItalic, mono *Font
 }
 
 // pickFont selects the appropriate font for the current emphasis state.  Mono takes priority (code
 // spans aren't styled bold/italic). Otherwise the bold and italic flags combine into one of the
 // four proportional variants.
-func (f briefInlineFonts) pickFont(bold, italic, mono bool) *renderer.Font {
+func (f briefInlineFonts) pickFont(bold, italic, mono bool) *Font {
 	switch {
 	case mono:
 		return f.mono
@@ -849,7 +848,7 @@ func (f briefInlineFonts) pickFont(bold, italic, mono bool) *renderer.Font {
 // in a particular font. forceBreak is set for hard line breaks.
 type inlineToken struct {
 	text       string
-	font       *renderer.Font
+	font       *Font
 	forceBreak bool
 }
 
@@ -942,7 +941,7 @@ type inlineRender struct {
 	// forceBreak tokens.  Rendering it goes through imgui.TextUnformatted under a PushTextWrapPos —
 	// one cgo call per paragraph instead of ~5 per visible word.
 	fastText string
-	fastFont *renderer.Font
+	fastFont *Font
 }
 
 // buildInlineRender runs collectInlineTokens and decides whether the paragraph qualifies for the
@@ -991,11 +990,11 @@ func (b *Brief) renderInline(n ast.Node, source []byte, fonts briefInlineFonts, 
 	if r.fastText != "" {
 		// Fast path: single font, no hard breaks. Let imgui handle wrapping.
 		startX := imgui.CursorPosX()
-		imgui.PushFont(&r.fastFont.Ifont, float32(r.fastFont.Size))
+		PushFont(r.fastFont)
 		imgui.PushTextWrapPosV(startX + wrapWidth)
 		imgui.TextUnformatted(r.fastText)
 		imgui.PopTextWrapPos()
-		imgui.PopFont()
+		PopFont()
 		return
 	}
 
@@ -1042,9 +1041,9 @@ func (b *Brief) renderInline(n ast.Node, source []byte, fonts briefInlineFonts, 
 			continue
 		}
 
-		imgui.PushFont(&tok.font.Ifont, float32(tok.font.Size))
+		PushFont(tok.font)
 		visibleW := imgui.CalcTextSize(visible).X
-		imgui.PopFont()
+		PopFont()
 
 		// Wrap before this word if it won't fit and we're not at column 0.
 		if !lineEmpty && imgui.CursorPosX()+visibleW > maxX {
@@ -1056,7 +1055,7 @@ func (b *Brief) renderInline(n ast.Node, source []byte, fonts briefInlineFonts, 
 		// Draw the word, then the trailing whitespace (if any) on the
 		// same line. Use SameLineV(0,0) so imgui doesn't insert its own
 		// item spacing between adjacent runs.
-		imgui.PushFont(&tok.font.Ifont, float32(tok.font.Size))
+		PushFont(tok.font)
 		if visible != "" {
 			imgui.TextUnformatted(visible)
 			imgui.SameLineV(0, 0)
@@ -1065,7 +1064,7 @@ func (b *Brief) renderInline(n ast.Node, source []byte, fonts briefInlineFonts, 
 			imgui.TextUnformatted(trailing)
 			imgui.SameLineV(0, 0)
 		}
-		imgui.PopFont()
+		PopFont()
 
 		lineEmpty = false
 	}
@@ -1330,10 +1329,10 @@ func vertexAnnotationText(ann *brief.WaypointAnnotation) string {
 		return ""
 	}
 	if ann.ClimbAltitude > 0 {
-		return fmt.Sprintf("%s %d", renderer.FontAwesomeIconArrowUp, ann.ClimbAltitude)
+		return fmt.Sprintf("%s %d", Icons.ArrowUp, ann.ClimbAltitude)
 	}
 	if ann.DescentAltitude > 0 {
-		return fmt.Sprintf("%s %d", renderer.FontAwesomeIconArrowDown, ann.DescentAltitude)
+		return fmt.Sprintf("%s %d", Icons.ArrowDown, ann.DescentAltitude)
 	}
 	return ""
 }
@@ -1678,7 +1677,7 @@ func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, video
 // position so it aligns with the brief's main column rather than with the
 // centered map label.
 func drawAnnotatedMap(briefMap *brief.VideoMapBlock, label string, width float32, cache *videoMapCache, state *client.SimState,
-	controlClient *client.ControlClient, labelFont *renderer.Font, disabledTCPs map[string]bool, p platform.Platform, lg *log.Logger) []error {
+	controlClient *client.ControlClient, labelFont *Font, disabledTCPs map[string]bool, p platform.Platform, lg *log.Logger) []error {
 	initialCursorX := imgui.CursorPosX()
 	drawCenteredLabel(label, width, initialCursorX, labelFont)
 

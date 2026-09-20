@@ -9,11 +9,9 @@ import (
 	"runtime"
 
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 )
 
 // ModalDialog is a modal dialog box: while one is up, it is the only thing the
@@ -156,29 +154,22 @@ func (m *ModalDialog) Draw() {
 // each frame until done() returns true. All pre-main-loop modal dialogs
 // (fatal errors, resource warnings, whisper benchmark, etc.) use this to
 // avoid duplicating the imgui frame/render boilerplate.
-func RunDialogEventLoop(p platform.Platform, font *renderer.Font, d *ModalDialog, done func() bool) {
+func RunDialogEventLoop(p platform.Platform, font *Font, d *ModalDialog, done func() bool) {
 	for !done() {
 		DrawDialogFrame(p, font, d)
 	}
 }
 
 // DrawDialogFrame renders a single frame with the given dialog box drawn in it.
-func DrawDialogFrame(p platform.Platform, font *renderer.Font, d *ModalDialog) {
+func DrawDialogFrame(p platform.Platform, font *Font, d *ModalDialog) {
 	p.ProcessEvents()
 	p.NewFrame()
 	imgui.NewFrame()
-	font.ImguiPush()
+	PushFont(font)
 	d.Draw()
-	imgui.PopFont()
+	PopFont()
 
-	imgui.Render()
-	implogl3.RenderDrawData(imgui.CurrentDrawData())
-
-	if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
-		imgui.UpdatePlatformWindows()
-		imgui.RenderPlatformWindowsDefault()
-		p.MakeContextCurrent()
-	}
+	p.RenderImgui()
 
 	p.PostRender()
 }

@@ -11,8 +11,8 @@ import (
 	"sync"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
@@ -159,7 +159,7 @@ func (t *ttsTab) drawControls(a *app) {
 	itemTooltip("Speak through the VHF radio effect, as it is heard in a sim")
 	imgui.SameLine()
 	imgui.BeginDisabledV(!t.speech.playing())
-	if imgui.Button(renderer.FontAwesomeIconStopCircle) {
+	if imgui.Button(gui.Icons.StopCircle) {
 		t.speech.stop(a.plat)
 	}
 	imgui.EndDisabled()
@@ -193,7 +193,7 @@ func (t *ttsTab) drawEntries(a *app) {
 			return
 		}
 		word := spokenWord{id: label, written: name, spoken: telephony(name)}
-		if imgui.SmallButton(renderer.FontAwesomeIconPlayCircle) || entered {
+		if imgui.SmallButton(gui.Icons.PlayCircle) || entered {
 			t.play(a, []spokenWord{word})
 		}
 		imgui.SameLine()
@@ -237,7 +237,7 @@ func (t *ttsTab) drawProcedure(a *app, p procedure) {
 	imgui.PushIDStr(p.name.id)
 	defer imgui.PopID()
 
-	if imgui.SmallButton(renderer.FontAwesomeIconPlayCircle) {
+	if imgui.SmallButton(gui.Icons.PlayCircle) {
 		t.play(a, p.script())
 	}
 	itemTooltip("Read the procedure's name and then its fixes")

@@ -54,9 +54,9 @@ func (f *KeyboardFocus) Current() any {
 // DrawPanes renders a single radar pane that fills the entire display area
 // below the menu bar.
 func DrawPanes(pane Pane, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, menuBarHeight float32, events []sim.Event, lg *log.Logger) renderer.RendererStats {
+	controlClient *client.ControlClient, menuBarHeight float32, events []sim.Event, lg *log.Logger) renderer.Stats {
 	if controlClient == nil {
-		commandBuffer := renderer.GetCommandBuffer()
+		commandBuffer := renderer.GetCommandBuffer(lg)
 		defer renderer.ReturnCommandBuffer(commandBuffer)
 		commandBuffer.ClearRGB(renderer.RGB{})
 		return r.RenderCommandBuffer(commandBuffer)
@@ -105,7 +105,7 @@ func DrawPanes(pane Pane, p platform.Platform, r renderer.Renderer,
 
 	p.ClearCursorOverride()
 
-	commandBuffer := renderer.GetCommandBuffer()
+	commandBuffer := renderer.GetCommandBuffer(lg)
 	defer renderer.ReturnCommandBuffer(commandBuffer)
 	commandBuffer.ClearRGB(renderer.RGB{})
 
@@ -157,5 +157,5 @@ func DrawPanes(pane Pane, p platform.Platform, r renderer.Renderer,
 	if fbSize[0] > 0 && fbSize[1] > 0 {
 		return r.RenderCommandBuffer(commandBuffer)
 	}
-	return renderer.RendererStats{}
+	return renderer.Stats{}
 }

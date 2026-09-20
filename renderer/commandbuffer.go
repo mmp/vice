@@ -1,5 +1,5 @@
-// pkg/renderer/commandbuffer.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// renderer/commandbuffer.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package renderer
@@ -9,6 +9,7 @@ import (
 	"sync"
 	"unsafe"
 
+	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 )
 
@@ -18,46 +19,49 @@ import (
 // after each command briefly describe its arguments.
 //
 // Buffers (vertex, index, color, texcoord), are all stored directly in the
-// CommandBuffer, following RendererFloatBuffer and RendererIntBuffer
-// commands; the first argument after those commands is the length of the
-// buffer and then its values follow directly. Rendering commands that use
-// buffers (e.g., buffer binding commands like RendererVertexArray or draw
-// commands like RendererDrawLines) are then directed to those buffers via
-// integer parameters that encode the offset from the start of the command
-// buffer where a buffer begins. (Note that this implies that one
-// CommandBuffer cannot refer to a vertex/index buffer in another
-// CommandBuffer.
+// CommandBuffer, following CmdFloatBuffer and CmdIntBuffer commands; the
+// first argument after those commands is the length of the buffer and then
+// its values follow directly. Rendering commands that use buffers (e.g.,
+// buffer binding commands like CmdVertexArray or draw commands like
+// CmdDrawLines) are then directed to those buffers via integer parameters
+// that encode the offset from the start of the command buffer where a
+// buffer begins. (Note that this implies that one CommandBuffer cannot
+// refer to a vertex/index buffer in another CommandBuffer.)
+
+// Command identifies an operation in a CommandBuffer. Each is followed in
+// the buffer by its arguments, as documented below.
+type Command uint32
 
 const (
-	RendererLoadProjectionMatrix  = iota // 16 float32: matrix
-	RendererLoadModelViewMatrix          // 16 float32: matrix
-	RendererClearRGBA                    // 4 float32: RGBA
-	RendererScissor                      // 4 int32: x, y, width, height
-	RendererViewport                     // 4 int32: x, y, width, height
-	RendererBlend                        // no args: for now always src alpha, 1-src alpha
-	RendererSetRGBA                      // 4 float32: RGBA
-	RendererDisableBlend                 // no args
-	RendererFloatBuffer                  // int32 size, then size*float32 values
-	RendererIntBuffer                    // int32: size, then size*int32 values
-	RendererRawBuffer                    // int32: size *in bytes*, then (3+size)/4 int32 values
-	RendererEnableTexture                // int32 handle
-	RendererDisableTexture               // no args
-	RendererVertexArray                  // byte offset to array values, n components, stride (bytes)
-	RendererDisableVertexArray           // no args
-	RendererRGB8Array                    // byte offset to array values, n components, stride (bytes)
-	RendererRGB32Array                   // byte offset to array values, n components, stride (bytes)
-	RendererDisableColorArray            // no args
-	RendererTexCoordArray                // byte offset to array values, n components, stride (bytes)
-	RendererDisableTexCoordArray         // no args
-	RendererLineWidth                    // float32
-	RendererDrawLines                    // 2 int32: offset to the index buffer, count
-	RendererDrawTriangles                // 2 int32: offset to the index buffer, count
-	RendererDrawQuads                    // 2 int32: offset to the index buffer, count
-	RendererCallBuffer                   // 1 int32: buffer index
-	RendererResetState                   // no args
-	RendererEnablePolygonStipple         // no args
-	RendererDisablePolygonStipple        // no args
-	RendererPolygonStipple               // 32 uint32: stipple pattern
+	CmdLoadProjectionMatrix  Command = iota // 16 float32: matrix
+	CmdLoadModelViewMatrix                  // 16 float32: matrix
+	CmdClearRGBA                            // 4 float32: RGBA
+	CmdScissor                              // 4 int32: x, y, width, height
+	CmdViewport                             // 4 int32: x, y, width, height
+	CmdBlend                                // no args: for now always src alpha, 1-src alpha
+	CmdSetRGBA                              // 4 float32: RGBA
+	CmdDisableBlend                         // no args
+	CmdFloatBuffer                          // int32 size, then size*float32 values
+	CmdIntBuffer                            // int32: size, then size*int32 values
+	CmdRawBuffer                            // int32: size *in bytes*, then (3+size)/4 int32 values
+	CmdEnableTexture                        // int32 handle
+	CmdDisableTexture                       // no args
+	CmdVertexArray                          // byte offset to array values, n components, stride (bytes)
+	CmdDisableVertexArray                   // no args
+	CmdRGB8Array                            // byte offset to array values, n components, stride (bytes)
+	CmdRGB32Array                           // byte offset to array values, n components, stride (bytes)
+	CmdDisableColorArray                    // no args
+	CmdTexCoordArray                        // byte offset to array values, n components, stride (bytes)
+	CmdDisableTexCoordArray                 // no args
+	CmdLineWidth                            // float32
+	CmdDrawLines                            // 2 int32: offset to the index buffer, count
+	CmdDrawTriangles                        // 2 int32: offset to the index buffer, count
+	CmdDrawQuads                            // 2 int32: offset to the index buffer, count
+	CmdCallBuffer                           // 1 int32: buffer index
+	CmdResetState                           // no args
+	CmdEnablePolygonStipple                 // no args
+	CmdDisablePolygonStipple                // no args
+	CmdPolygonStipple                       // 32 uint32: stipple pattern
 )
 
 // CommandBuffer encodes a sequence of rendering commands in an
@@ -66,15 +70,18 @@ const (
 // by a Renderer and possibly reused over multiple frames.
 type CommandBuffer struct {
 	Buf    []uint32
-	called []CommandBuffer
+	Called []CommandBuffer
+	lg     *log.Logger
 }
 
 // CommandBuffers are managed using a sync.Pool so that their buf slice
 // allocations persist across multiple uses.
 var commandBufferPool = sync.Pool{New: func() any { return &CommandBuffer{} }}
 
-func GetCommandBuffer() *CommandBuffer {
-	return commandBufferPool.Get().(*CommandBuffer)
+func GetCommandBuffer(lg *log.Logger) *CommandBuffer {
+	cb := commandBufferPool.Get().(*CommandBuffer)
+	cb.lg = lg
+	return cb
 }
 
 func ReturnCommandBuffer(cb *CommandBuffer) {
@@ -86,7 +93,8 @@ func ReturnCommandBuffer(cb *CommandBuffer) {
 // reused.
 func (cb *CommandBuffer) Reset() {
 	cb.Buf = cb.Buf[:0]
-	cb.called = cb.called[:0]
+	cb.Called = cb.Called[:0]
+	cb.lg = nil
 }
 
 // growFor ensures that at least n more values can be added to the end of
@@ -111,17 +119,21 @@ func (cb *CommandBuffer) appendFloats(floats ...float32) {
 	}
 }
 
+func (cb *CommandBuffer) appendCommand(c Command) {
+	cb.Buf = append(cb.Buf, uint32(c))
+}
+
 func (cb *CommandBuffer) appendInts(ints ...int) {
 	for _, i := range ints {
 		if i != int(uint32(i)) {
-			lg.Errorf("%d: attempting to add non-32-bit value to CommandBuffer", i)
+			cb.lg.Errorf("%d: attempting to add non-32-bit value to CommandBuffer", i)
 		}
 		cb.Buf = append(cb.Buf, uint32(i))
 	}
 }
 
 func (cb *CommandBuffer) LoadProjectionMatrix(m math.Matrix3) {
-	cb.appendInts(RendererLoadProjectionMatrix)
+	cb.appendCommand(CmdLoadProjectionMatrix)
 	cb.appendFloats(
 		m[0][0], m[1][0], 0, m[2][0],
 		m[0][1], m[1][1], 0, m[2][1],
@@ -130,7 +142,7 @@ func (cb *CommandBuffer) LoadProjectionMatrix(m math.Matrix3) {
 }
 
 func (cb *CommandBuffer) LoadModelViewMatrix(m math.Matrix3) {
-	cb.appendInts(RendererLoadModelViewMatrix)
+	cb.appendCommand(CmdLoadModelViewMatrix)
 	cb.appendFloats(
 		m[0][0], m[1][0], 0, m[2][0],
 		m[0][1], m[1][1], 0, m[2][1],
@@ -141,20 +153,22 @@ func (cb *CommandBuffer) LoadModelViewMatrix(m math.Matrix3) {
 // ClearRGB adds a command to the command buffer to clear the framebuffer
 // to the specified RGB color.
 func (cb *CommandBuffer) ClearRGB(color RGB) {
-	cb.appendInts(RendererClearRGBA)
+	cb.appendCommand(CmdClearRGBA)
 	cb.appendFloats(color.R, color.G, color.B, 1)
 }
 
 // Scissor adds a command to the command buffer to set the scissor
 // rectangle as specified.
 func (cb *CommandBuffer) Scissor(x, y, w, h int) {
-	cb.appendInts(RendererScissor, x, y, w, h)
+	cb.appendCommand(CmdScissor)
+	cb.appendInts(x, y, w, h)
 }
 
 // Viewport adds a command to the command buffer to set the viewport to the
 // specified rectangle.
 func (cb *CommandBuffer) Viewport(x, y, w, h int) {
-	cb.appendInts(RendererViewport, x, y, w, h)
+	cb.appendCommand(CmdViewport)
+	cb.appendInts(x, y, w, h)
 }
 
 // SetDrawBounds sets the scissor rectangle and viewport according to the
@@ -198,7 +212,7 @@ func (cb *CommandBuffer) SetScissorBounds(b math.Extent2D, scale float32) {
 // color. Subsequent draw commands will inherit this color unless they
 // specify e.g., per-vertex colors themselves.
 func (cb *CommandBuffer) SetRGBA(rgba RGBA) {
-	cb.appendInts(RendererSetRGBA)
+	cb.appendCommand(CmdSetRGBA)
 	cb.appendFloats(rgba.R, rgba.G, rgba.B, rgba.A)
 }
 
@@ -206,7 +220,7 @@ func (cb *CommandBuffer) SetRGBA(rgba RGBA) {
 // color (alpha is set to 1). Subsequent draw commands will inherit this
 // color unless they specify e.g., per-vertex colors themselves.
 func (cb *CommandBuffer) SetRGB(rgb RGB) {
-	cb.appendInts(RendererSetRGBA)
+	cb.appendCommand(CmdSetRGBA)
 	cb.appendFloats(rgb.R, rgb.G, rgb.B, 1)
 }
 
@@ -214,13 +228,13 @@ func (cb *CommandBuffer) SetRGB(rgb RGB) {
 // mode cannot be specified currently, since only one mode (alpha over
 // blending) is used.
 func (cb *CommandBuffer) Blend() {
-	cb.appendInts(RendererBlend)
+	cb.appendCommand(CmdBlend)
 }
 
 // DisableBlend adds a command to the command buffer that disables
 // blending.
 func (cb *CommandBuffer) DisableBlend() {
-	cb.appendInts(RendererDisableBlend)
+	cb.appendCommand(CmdDisableBlend)
 }
 
 // Float2Buffer stores the provided slice of [2]float32 values in the
@@ -228,7 +242,8 @@ func (cb *CommandBuffer) DisableBlend() {
 // slice is stored; this offset can then be passed to commands like
 // VertexArray to specify this array.
 func (cb *CommandBuffer) Float2Buffer(buf [][2]float32) int {
-	cb.appendInts(RendererFloatBuffer, 2*len(buf))
+	cb.appendCommand(CmdFloatBuffer)
+	cb.appendInts(2 * len(buf))
 	offset := 4 * len(cb.Buf)
 
 	n := 2 * len(buf)
@@ -244,7 +259,8 @@ func (cb *CommandBuffer) Float2Buffer(buf [][2]float32) int {
 // and returns the byte offset where the first value of the slice is
 // stored.
 func (cb *CommandBuffer) RGBBuffer(buf []RGB) int {
-	cb.appendInts(RendererFloatBuffer, 3*len(buf))
+	cb.appendCommand(CmdFloatBuffer)
+	cb.appendInts(3 * len(buf))
 	offset := 4 * len(cb.Buf)
 
 	n := 3 * len(buf)
@@ -259,7 +275,8 @@ func (cb *CommandBuffer) RGBBuffer(buf []RGB) int {
 // IntBuffer stores the provided slice of int32 values in the command buffer
 // and returns the byte offset where the first value of the slice is stored.
 func (cb *CommandBuffer) IntBuffer(buf []int32) int {
-	cb.appendInts(RendererIntBuffer, len(buf))
+	cb.appendCommand(CmdIntBuffer)
+	cb.appendInts(len(buf))
 	offset := 4 * len(cb.Buf)
 
 	n := len(buf)
@@ -276,7 +293,8 @@ func (cb *CommandBuffer) IntBuffer(buf []int32) int {
 // buffer where they begin.
 func (cb *CommandBuffer) RawBuffer(buf []byte) int {
 	nints := (len(buf) + 3) / 4
-	cb.appendInts(RendererRawBuffer, nints)
+	cb.appendCommand(CmdRawBuffer)
+	cb.appendInts(nints)
 	offset := 4 * len(cb.Buf)
 
 	cb.growFor(nints)
@@ -292,13 +310,14 @@ func (cb *CommandBuffer) RawBuffer(buf []byte) int {
 // EnableTexture enables texturing from the specified texture id (as
 // returned by the Renderer CreateTextureFromImage method implementation).
 func (cb *CommandBuffer) EnableTexture(id uint32) {
-	cb.appendInts(RendererEnableTexture, int(id))
+	cb.appendCommand(CmdEnableTexture)
+	cb.appendInts(int(id))
 }
 
 // DisableTexture adds a command to the command buffer to disable
 // texturing.
 func (cb *CommandBuffer) DisableTexture() {
-	cb.appendInts(RendererDisableTexture)
+	cb.appendCommand(CmdDisableTexture)
 }
 
 // VertexArray adds a command to the command buffer that specifies an array
@@ -308,52 +327,56 @@ func (cb *CommandBuffer) DisableTexture() {
 // vertex (generally 2 for vice), and stride gives the stride in bytes
 // between vertices (e.g., 8 for densely packed 2D vertex coordinates.)
 func (cb *CommandBuffer) VertexArray(offset, nComps, stride int) {
-	cb.appendInts(RendererVertexArray, offset, nComps, stride)
+	cb.appendCommand(CmdVertexArray)
+	cb.appendInts(offset, nComps, stride)
 }
 
 // DisableVertexArray adds a command to the command buffer to disable the
 // current vertex array.
 func (cb *CommandBuffer) DisableVertexArray() {
-	cb.appendInts(RendererDisableVertexArray)
+	cb.appendCommand(CmdDisableVertexArray)
 }
 
 // ColorArray adds a command to the command buffer that specifies an array
 // of float32 RGB colors to use for a subsequent draw command. Its
 // arguments are analogous to the ones passed to VertexArray.
 func (cb *CommandBuffer) RGB32Array(offset, nComps, stride int) {
-	cb.appendInts(RendererRGB32Array, offset, nComps, stride)
+	cb.appendCommand(CmdRGB32Array)
+	cb.appendInts(offset, nComps, stride)
 }
 
 // ColorArray adds a command to the command buffer that specifies an array
 // of 8-bit RGBA colors to use for a subsequent draw command. Its arguments
 // are analogous to the ones passed to VertexArray.
 func (cb *CommandBuffer) RGB8Array(offset, nComps, stride int) {
-	cb.appendInts(RendererRGB8Array, offset, nComps, stride)
+	cb.appendCommand(CmdRGB8Array)
+	cb.appendInts(offset, nComps, stride)
 }
 
 // DisableColorArray adds a command to the command buffer that disables
 // the current array of RGB per-vertex colors.
 func (cb *CommandBuffer) DisableColorArray() {
-	cb.appendInts(RendererDisableColorArray)
+	cb.appendCommand(CmdDisableColorArray)
 }
 
 // TexCoordArray adds a command to the command buffer that specifies an
 // array of per-vertex texture coordinates. Its arguments are analogous
 // to the ones passed to VertexArray.
 func (cb *CommandBuffer) TexCoordArray(offset, nComps, stride int) {
-	cb.appendInts(RendererTexCoordArray, offset, nComps, stride)
+	cb.appendCommand(CmdTexCoordArray)
+	cb.appendInts(offset, nComps, stride)
 }
 
 // DisableTexCoordArray adds a command to the command buffer that disables
 // the currently-active array of texture coordinates.
 func (cb *CommandBuffer) DisableTexCoordArray() {
-	cb.appendInts(RendererDisableTexCoordArray)
+	cb.appendCommand(CmdDisableTexCoordArray)
 }
 
 // LineWidth adds a command to the command buffer that sets the width in
 // pixels of subsequent lines that are drawn.
 func (cb *CommandBuffer) LineWidth(w float32, scale float32) {
-	cb.appendInts(RendererLineWidth)
+	cb.appendCommand(CmdLineWidth)
 	// Scale so that lines are the same width on retina-style displays.
 	cb.appendFloats(w * scale)
 }
@@ -364,7 +387,8 @@ func (cb *CommandBuffer) LineWidth(w float32, scale float32) {
 // buffer is (e.g., as returned by IntBuffer), and count gives the total
 // number of vertices in the vertex buffer.
 func (cb *CommandBuffer) DrawLines(offset, count int) {
-	cb.appendInts(RendererDrawLines, offset, count)
+	cb.appendCommand(CmdDrawLines)
+	cb.appendInts(offset, count)
 }
 
 // DrawTriangles adds a command to the command buffer to draw a number of
@@ -372,7 +396,8 @@ func (cb *CommandBuffer) DrawLines(offset, count int) {
 // buffer. offset gives the offset to the start of the index buffer in the
 // current command buffer and count gives the total number of indices.
 func (cb *CommandBuffer) DrawTriangles(offset, count int) {
-	cb.appendInts(RendererDrawTriangles, offset, count)
+	cb.appendCommand(CmdDrawTriangles)
+	cb.appendInts(offset, count)
 }
 
 // DrawTriangles adds a command to the command buffer to draw a number of
@@ -380,7 +405,8 @@ func (cb *CommandBuffer) DrawTriangles(offset, count int) {
 // gives the offset to the start of the index buffer in the current command
 // buffer and count gives the total number of indices.
 func (cb *CommandBuffer) DrawQuads(offset, count int) {
-	cb.appendInts(RendererDrawQuads, offset, count)
+	cb.appendCommand(CmdDrawQuads)
+	cb.appendInts(offset, count)
 }
 
 // Call adds a command to the command buffer that causes the commands in
@@ -393,33 +419,34 @@ func (cb *CommandBuffer) Call(sub CommandBuffer) {
 		return
 	}
 
-	cb.appendInts(RendererCallBuffer, len(cb.called))
+	cb.appendCommand(CmdCallBuffer)
+	cb.appendInts(len(cb.Called))
 	// Make our own copy of the slice to ensure it isn't garbage collected.
-	cb.called = append(cb.called, sub)
+	cb.Called = append(cb.Called, sub)
 }
 
 // ResetState adds a command to the comment buffer that resets all of the
 // assorted graphics state (scissor rectangle, blending, texturing, vertex
 // arrays, etc.) to default values.
 func (cb *CommandBuffer) ResetState() {
-	cb.appendInts(RendererResetState)
+	cb.appendCommand(CmdResetState)
 }
 
 // EnablePolygonStipple adds a command to the command buffer that enables
 // stipple when drawing polygons.
 func (cb *CommandBuffer) EnablePolygonStipple() {
-	cb.appendInts(RendererEnablePolygonStipple)
+	cb.appendCommand(CmdEnablePolygonStipple)
 }
 
 // DisablePolygonStipple adds a command to the command buffer that disables
 // stipple when drawing polygons.
 func (cb *CommandBuffer) DisablePolygonStipple() {
-	cb.appendInts(RendererDisablePolygonStipple)
+	cb.appendCommand(CmdDisablePolygonStipple)
 }
 
 // PolygonStipple adds a command to the command buffer that specifies the
 // polygon stipple pattern.
 func (cb *CommandBuffer) PolygonStipple(pattern [32]uint32) {
-	cb.appendInts(RendererPolygonStipple)
+	cb.appendCommand(CmdPolygonStipple)
 	cb.Buf = append(cb.Buf, pattern[:]...)
 }

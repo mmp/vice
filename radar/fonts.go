@@ -9,7 +9,6 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 )
 
@@ -17,8 +16,8 @@ import (
 // returns them. The ERAM scope draws everything with them; video maps carry
 // their symbol and label sizes in terms of them, so anything else drawing a
 // video map faithfully needs them too.
-func CreateERAMFonts(r renderer.Renderer, p platform.Platform) []*renderer.Font {
-	return renderer.CreateBitmapFontAtlas(r, p, maps.All(eramBitmapFonts))
+func CreateERAMFonts(r renderer.Renderer, dpiScale float32) []*renderer.Font {
+	return renderer.CreateBitmapFontAtlas(r, dpiScale, maps.All(eramBitmapFonts))
 }
 
 // FindERAMFont returns the named font at the given size from the result of

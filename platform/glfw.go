@@ -521,6 +521,20 @@ func (g *glfwPlatform) PostRender() {
 	g.window.SwapBuffers()
 }
 
+// RenderImgui draws imgui's contents with the OpenGL 3 backend. Both the
+// main window and the secondary viewports go through it, which avoids the
+// DPI discrepancies that came from drawing imgui with our own renderer.
+func (g *glfwPlatform) RenderImgui() {
+	imgui.Render()
+	implogl3.RenderDrawData(imgui.CurrentDrawData())
+
+	if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+		imgui.UpdatePlatformWindows()
+		imgui.RenderPlatformWindowsDefault()
+		g.MakeContextCurrent()
+	}
+}
+
 func (g *glfwPlatform) MakeContextCurrent() {
 	defer func() {
 		if r := recover(); r != nil {

@@ -1,5 +1,5 @@
-// pkg/renderer/renderer.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// renderer/renderer.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package renderer
@@ -37,7 +37,7 @@ type Renderer interface {
 	// RenderCommandBuffer executes all of the commands encoded in the
 	// provided command buffer, returning statistics about what was
 	// rendered.
-	RenderCommandBuffer(*CommandBuffer) RendererStats
+	RenderCommandBuffer(*CommandBuffer) Stats
 
 	// ReadPixelRGBAs returns the RGBA colors of a rectangular region the
 	// framebuffer starting at the given (x,y) coordinate with the given
@@ -48,36 +48,36 @@ type Renderer interface {
 	Dispose()
 }
 
-// RendererStats encapsulates assorted statistics from rendering.
-type RendererStats struct {
-	nBuffers, bufferBytes               int
-	nDrawCalls                          int
-	nPoints, nLines, nTriangles, nQuads int
+// Stats encapsulates assorted statistics from rendering.
+type Stats struct {
+	NBuffers, BufferBytes               int
+	NDrawCalls                          int
+	NPoints, NLines, NTriangles, NQuads int
 }
 
-func (rs *RendererStats) String() string {
+func (rs *Stats) String() string {
 	return fmt.Sprintf("%d buffers (%.2f MB), %d draw calls: %d points, %d lines, %d tris, %d quads",
-		rs.nBuffers, float32(rs.bufferBytes)/(1024*1024), rs.nDrawCalls, rs.nPoints, rs.nLines, rs.nTriangles, rs.nQuads)
+		rs.NBuffers, float32(rs.BufferBytes)/(1024*1024), rs.NDrawCalls, rs.NPoints, rs.NLines, rs.NTriangles, rs.NQuads)
 }
 
-func (rs *RendererStats) Merge(s RendererStats) {
-	rs.nBuffers += s.nBuffers
-	rs.bufferBytes += s.bufferBytes
-	rs.nDrawCalls += s.nDrawCalls
-	rs.nPoints += s.nPoints
-	rs.nLines += s.nLines
-	rs.nTriangles += s.nTriangles
-	rs.nQuads += s.nQuads
+func (rs *Stats) Merge(s Stats) {
+	rs.NBuffers += s.NBuffers
+	rs.BufferBytes += s.BufferBytes
+	rs.NDrawCalls += s.NDrawCalls
+	rs.NPoints += s.NPoints
+	rs.NLines += s.NLines
+	rs.NTriangles += s.NTriangles
+	rs.NQuads += s.NQuads
 }
 
-func (rs RendererStats) LogValue() slog.Value {
+func (rs Stats) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.Int("buffers", rs.nBuffers),
-		slog.Int("buffer_memory", rs.bufferBytes),
-		slog.Int("draw_calls", rs.nDrawCalls),
-		slog.Int("points_drawn", rs.nPoints),
-		slog.Int("lines", rs.nLines),
-		slog.Int("tris", rs.nTriangles),
-		slog.Int("quads", rs.nQuads),
+		slog.Int("buffers", rs.NBuffers),
+		slog.Int("buffer_memory", rs.BufferBytes),
+		slog.Int("draw_calls", rs.NDrawCalls),
+		slog.Int("points_drawn", rs.NPoints),
+		slog.Int("lines", rs.NLines),
+		slog.Int("tris", rs.NTriangles),
+		slog.Int("quads", rs.NQuads),
 	)
 }

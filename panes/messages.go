@@ -12,6 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -34,12 +35,12 @@ var audioAlerts map[string]string = map[string]string{
 }
 
 type MessagesPane struct {
-	FontIdentifier             renderer.FontIdentifier
+	FontIdentifier             gui.FontIdentifier
 	AudioAlertSelection        string
 	ContactTransmissionsAlert  bool
 	ReadbackTransmissionsAlert bool
 
-	font             *renderer.Font
+	font             *gui.Font
 	messages         []Message
 	alertAudioIndex  map[string]int
 	shouldAutoScroll bool
@@ -47,13 +48,13 @@ type MessagesPane struct {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 16},
+		FontIdentifier: gui.FontIdentifier{Name: gui.Fonts.RobotoRegular, Size: 16},
 	}
 }
 
 func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
-	if mp.font = renderer.GetFont(mp.FontIdentifier); mp.font == nil {
-		mp.font = renderer.GetDefaultFont()
+	if mp.font = gui.GetFont(mp.FontIdentifier.Name, mp.FontIdentifier.Size); mp.font == nil {
+		mp.font = gui.GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id
 	}
 
@@ -81,7 +82,7 @@ var _ UIDrawer = (*MessagesPane)(nil)
 func (mp *MessagesPane) DisplayName() string { return "Messages" }
 
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
-	if newFont, changed := renderer.DrawFontSizeSelector(&mp.FontIdentifier); changed {
+	if newFont, changed := gui.DrawFontSizeSelector(&mp.FontIdentifier); changed {
 		mp.font = newFont
 	}
 
@@ -122,7 +123,7 @@ func (mp *MessagesPane) DrawWindow(show *bool, p platform.Platform, unpinnedWind
 
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{4096, 4096})
 	if mp.font != nil {
-		mp.font.ImguiPush()
+		gui.PushFont(mp.font)
 	}
 	imgui.BeginV("Messages", show, 0)
 	DrawPinButton("Messages", unpinnedWindows, p)
@@ -144,7 +145,7 @@ func (mp *MessagesPane) DrawWindow(show *bool, p platform.Platform, unpinnedWind
 	imgui.EndChild()
 	imgui.End()
 	if mp.font != nil {
-		imgui.PopFont()
+		gui.PopFont()
 	}
 
 }

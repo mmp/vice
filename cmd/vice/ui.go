@@ -27,16 +27,15 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/pkg/browser"
 )
 
 var (
 	ui struct {
-		font           *renderer.Font
-		fixedFont      *renderer.Font
-		aboutFont      *renderer.Font
-		aboutFontSmall *renderer.Font
+		font           *gui.Font
+		fixedFont      *gui.Font
+		aboutFont      *gui.Font
+		aboutFontSmall *gui.Font
 
 		menuBarHeight float32
 
@@ -118,10 +117,10 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Lo
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
 
-	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
-	ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: renderer.FixedFontSize(config.UIFontSize)})
-	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 18})
-	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 14})
+	ui.font = gui.GetFont(gui.Fonts.RobotoRegular, config.UIFontSize)
+	ui.fixedFont = gui.GetFont(gui.Fonts.RobotoMono, gui.FixedFontSize(config.UIFontSize))
+	ui.aboutFont = gui.GetFont(gui.Fonts.RobotoRegular, 18)
+	ui.aboutFontSmall = gui.GetFont(gui.Fonts.RobotoRegular, 14)
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
@@ -157,7 +156,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Lo
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, activeRadarPane panes.Pane, events []sim.Event, lg *log.Logger) renderer.RendererStats {
+	controlClient *client.ControlClient, activeRadarPane panes.Pane, events []sim.Event, lg *log.Logger) renderer.Stats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case release, ok := <-ui.newReleaseDialogChan:
@@ -172,21 +171,21 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 	}
 
-	ui.font.ImguiPush()
+	gui.PushFont(ui.font)
 	if imgui.BeginMainMenuBar() {
 		menuBarCursorY := imgui.CursorPosY()
 		imgui.PushStyleColorVec4(imgui.ColButton, imgui.Vec4{})
 
 		if controlClient != nil && controlClient.Connected() {
 			if controlClient.State.Paused {
-				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
+				if imgui.Button(gui.Icons.PlayCircle) {
 					controlClient.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Resume simulation")
 				}
 			} else {
-				if imgui.Button(renderer.FontAwesomeIconPauseCircle) {
+				if imgui.Button(gui.Icons.PauseCircle) {
 					controlClient.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
@@ -197,7 +196,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			if controlClient.State.Paused {
 				imgui.BeginDisabled()
 			}
-			if imgui.Button(renderer.FontAwesomeIconFastForward) {
+			if imgui.Button(gui.Icons.FastForward) {
 				controlClient.FastForward()
 			}
 			if imgui.IsItemHovered() {
@@ -208,7 +207,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			}
 		}
 
-		if imgui.Button(renderer.FontAwesomeIconRedo) {
+		if imgui.Button(gui.Icons.Redo) {
 			uiShowConnectOrBenchmarkDialog(mgr, true, config, p, lg)
 		}
 		if imgui.IsItemHovered() {
@@ -216,14 +215,14 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 
 		if controlClient != nil && controlClient.Connected() {
-			if imgui.Button(renderer.FontAwesomeIconCog) {
+			if imgui.Button(gui.Icons.Cog) {
 				ui.showSettings = !ui.showSettings
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Open settings window")
 			}
 
-			if imgui.Button(renderer.FontAwesomeIconQuestionCircle) {
+			if imgui.Button(gui.Icons.QuestionCircle) {
 				ui.showScenarioInfo = !ui.showScenarioInfo
 			}
 			if imgui.IsItemHovered() {
@@ -231,7 +230,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			}
 		}
 
-		if imgui.Button(renderer.FontAwesomeIconKeyboard) {
+		if imgui.Button(gui.Icons.Keyboard) {
 			uiToggleShowKeyboardWindow()
 		}
 		if imgui.IsItemHovered() {
@@ -243,7 +242,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if flashDep {
 			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{0, .8, 0, 1})
 		}
-		if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
+		if imgui.Button(gui.Icons.PlaneDeparture) {
 			ui.showLaunchControl = !ui.showLaunchControl
 		}
 		if flashDep {
@@ -254,14 +253,14 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 
 		if controlClient != nil && controlClient.Connected() {
-			if imgui.Button(renderer.FontAwesomeIconComment) {
+			if imgui.Button(gui.Icons.Comment) {
 				ui.showMessages = !ui.showMessages
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Toggle messages window")
 			}
 
-			if imgui.Button(renderer.FontAwesomeIconClipboardList) {
+			if imgui.Button(gui.Icons.ClipboardList) {
 				ui.showFlightStrips = !ui.showFlightStrips
 			}
 			if imgui.IsItemHovered() {
@@ -269,7 +268,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			}
 		}
 
-		if imgui.Button(renderer.FontAwesomeIconBook) {
+		if imgui.Button(gui.Icons.Book) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
 		if imgui.IsItemHovered() {
@@ -283,7 +282,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		// and optionally a microphone icon during PTT recording/garbling.
 		// The 3 buttons are always at the same fixed position so they don't
 		// shift when the microphone icon appears/disappears.
-		iconWidth := ui.font.LayoutBounds(renderer.FontAwesomeIconInfoCircle, 0).Width()
+		iconWidth := imgui.CalcTextSize(gui.Icons.InfoCircle).X
 		style := imgui.CurrentStyle()
 		framePaddingX := style.FramePadding().X
 		itemSpacingX := style.ItemSpacing().X
@@ -298,19 +297,19 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			micColor := util.Select(ui.pttGarbling, imgui.Vec4{1, 1, 0, 1}, imgui.Vec4{1, 0, 0, 1})
 			imgui.SetCursorPos(imgui.Vec2{X: buttonsX - float32(iconWidth) - itemSpacingX, Y: menuBarCursorY})
 			imgui.PushStyleColorVec4(imgui.ColText, micColor)
-			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
+			imgui.TextUnformatted(gui.Icons.Microphone)
 			imgui.PopStyleColor()
 		}
 
 		imgui.SetCursorPos(imgui.Vec2{X: buttonsX, Y: menuBarCursorY})
 
-		if imgui.Button(renderer.FontAwesomeIconInfoCircle) {
+		if imgui.Button(gui.Icons.InfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Display information about vice")
 		}
-		if imgui.BeginMenu(renderer.FontAwesomeIconDiscord) {
+		if imgui.BeginMenu(gui.Icons.Discord) {
 			if imgui.MenuItemBool("vice development server") {
 				browser.OpenURL("https://discord.gg/y993vgQxhY")
 			}
@@ -320,7 +319,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.EndMenu()
 		}
 
-		if imgui.Button(util.Select(p.IsFullScreen(), renderer.FontAwesomeIconCompressAlt, renderer.FontAwesomeIconExpandAlt)) {
+		if imgui.Button(util.Select(p.IsFullScreen(), gui.Icons.CompressAlt, gui.Icons.ExpandAlt)) {
 			p.EnableFullScreen(!p.IsFullScreen())
 		}
 		if imgui.IsItemHovered() {
@@ -375,26 +374,11 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 	uiDrawKeyboardWindow(controlClient, config, p)
 
-	imgui.PopFont()
+	gui.PopFont()
 
-	// Finalize and submit the imgui draw lists
-	imgui.Render()
+	p.RenderImgui()
 
-	// Use the OpenGL 3 backend for all imgui rendering. Both main and
-	// secondary viewports use the same code path, eliminating DPI
-	// discrepancies between our custom OGL2 renderer and imgui's OGL3 backend.
-	implogl3.RenderDrawData(imgui.CurrentDrawData())
-	renderer.SyncFontAtlasTexID()
-
-	// Update and render secondary viewport windows (floating OS windows).
-	io := imgui.CurrentIO()
-	if io.ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
-		imgui.UpdatePlatformWindows()
-		imgui.RenderPlatformWindowsDefault()
-		p.MakeContextCurrent()
-	}
-
-	return renderer.RendererStats{}
+	return renderer.Stats{}
 }
 
 func uiResetControlClient(c *client.ControlClient, config *Config, p platform.Platform, lg *log.Logger) {
@@ -420,22 +404,22 @@ func showAboutDialog() {
 		imgui.Text(s)
 	}
 
-	ui.aboutFont.ImguiPush()
+	gui.PushFont(ui.aboutFont)
 	center("vice")
-	center(renderer.FontAwesomeIconCopyright + "2023-2026 Matt Pharr")
+	center(gui.Icons.Copyright + "2023-2026 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")
 	}
-	center("Source code: " + renderer.FontAwesomeIconGithub)
+	center("Source code: " + gui.Icons.Github)
 	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://github.com/mmp/vice")
 	}
-	imgui.PopFont()
+	gui.PopFont()
 
 	imgui.Separator()
 
-	ui.aboutFontSmall.ImguiPush()
+	gui.PushFont(ui.aboutFontSmall)
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Michael Knight, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Shane, Rick R, Logan S, Samuel Valencia, Jordan Williams, and Yi Zhang.
 - Timely feedback: radarcontacto.
@@ -448,7 +432,7 @@ func showAboutDialog() {
 	imgui.Text(credits)
 	imgui.PopTextWrapPos()
 
-	imgui.PopFont()
+	gui.PopFont()
 
 	imgui.End()
 }
@@ -594,8 +578,8 @@ func uiDrawKeyboardWindow(c *client.ControlClient, config *Config, platform plat
 
 	imgui.Separator()
 
-	fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: config.UIFontSize})
-	italicFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMonoItalic, Size: config.UIFontSize})
+	fixedFont := gui.GetFont(gui.Fonts.RobotoMono, config.UIFontSize)
+	italicFont := gui.GetFont(gui.Fonts.RobotoMonoItalic, config.UIFontSize)
 
 	// Tighten up the line spacing
 	spc := style.ItemSpacing()
@@ -719,18 +703,18 @@ control positions in the controller list on the upper right side of the scope (u
 // necessary to denote the end of the old formatting. Thus, one may write
 // "*D_alt" to have "D" fixed-width and "alt" in italics; it is not
 // necessary to write "*D*_alt_".
-func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, italicFont *renderer.Font, str string) {
+func uiDrawMarkedupText(regularFont *gui.Font, fixedFont *gui.Font, italicFont *gui.Font, str string) {
 	// regularFont is the default and starting point
-	regularFont.ImguiPush()
+	gui.PushFont(regularFont)
 
 	// textWidth approximates the width of the given string in pixels; it
 	// may slightly over-estimate the width, but that's fine since we use
 	// it to decide when to wrap lines of text.
 	textWidth := func(s string) float32 {
 		s = strings.Trim(s, `_*\`) // remove markup characters
-		fixedFont.ImguiPush()
+		gui.PushFont(fixedFont)
 		sz := imgui.CalcTextSize(s)
-		imgui.PopFont()
+		gui.PopFont()
 		return sz.X
 	}
 
@@ -763,7 +747,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 
 			switch ch {
 			case '@':
-				s += renderer.FontAwesomeIconMouse
+				s += gui.Icons.Mouse
 
 			case '\\':
 				nextLiteral = true
@@ -773,14 +757,14 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 				if fixed {
 					// end of fixed-width
 					fixed = false
-					imgui.PopFont()
+					gui.PopFont()
 				} else {
 					if italic {
 						// end italic
-						imgui.PopFont()
+						gui.PopFont()
 					}
 					fixed, italic = true, false
-					fixedFont.ImguiPush()
+					gui.PushFont(fixedFont)
 				}
 
 			case '_':
@@ -788,14 +772,14 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 				if italic {
 					// end of italics
 					italic = false
-					imgui.PopFont()
+					gui.PopFont()
 				} else {
 					if fixed {
 						// end of fixed-width
-						imgui.PopFont()
+						gui.PopFont()
 					}
 					fixed, italic = false, true
-					italicFont.ImguiPush()
+					gui.PushFont(italicFont)
 				}
 
 			default:
@@ -807,10 +791,10 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	}
 
 	if fixed || italic {
-		imgui.PopFont()
+		gui.PopFont()
 	}
 
-	imgui.PopFont() // regular font
+	gui.PopFont() // regular font
 }
 
 // applyPinWindowClass sets the imgui WindowClass for the next window so
@@ -880,12 +864,12 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 	imgui.Separator()
 
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := renderer.AvailableFontSizes(renderer.RobotoRegular)
+		sizes := gui.AvailableFontSizes(gui.Fonts.RobotoRegular)
 		for _, size := range sizes {
 			if imgui.SelectableBoolV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
 				config.UIFontSize = size
-				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
-				ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: renderer.FixedFontSize(config.UIFontSize)})
+				ui.font = gui.GetFont(gui.Fonts.RobotoRegular, config.UIFontSize)
+				ui.fixedFont = gui.GetFont(gui.Fonts.RobotoMono, gui.FixedFontSize(config.UIFontSize))
 			}
 		}
 		imgui.EndCombo()

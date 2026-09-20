@@ -1,5 +1,5 @@
-// stats.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// cmd/vice/stats.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package main
@@ -15,8 +15,8 @@ import (
 // Stats collects a few statistics related to rendering and time spent in
 // various phases of the system.
 type Stats struct {
-	drawPanes renderer.RendererStats
-	drawUI    renderer.RendererStats
+	drawPanes renderer.Stats
+	drawUI    renderer.Stats
 	startTime time.Time
 	redraws   int
 }

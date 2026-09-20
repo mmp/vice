@@ -1,4 +1,4 @@
-// pkg/renderer/builders.go
+// renderer/builders.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 

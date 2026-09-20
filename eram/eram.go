@@ -539,7 +539,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw weather
 	ep.drawWeatherRadar(ctx, transforms, cb)
 	ep.drawVideoMaps(ctx, transforms, cb)
-	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
+	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
 	// Handle button tearoff placement BEFORE drawing toolbar (so placement click isn't consumed)
 	ep.handleTearoffPlacement(ctx)

@@ -5,7 +5,7 @@
 package stars
 
 import (
-	"C"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -14,10 +14,9 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 )
-import "maps"
 
 func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
-	fonts := createFontAtlas(r, p)
+	fonts := createFontAtlas(r, p.DPIScale())
 	get := func(name string, size int) *renderer.Font {
 		idx := slices.IndexFunc(fonts, func(f *renderer.Font) bool { return f.Id.Name == name && f.Id.Size == size })
 		if idx == -1 {
@@ -102,6 +101,6 @@ func rewriteDelta(s string) string {
 	return strings.ReplaceAll(s, "∆", STARSTriangleCharacter)
 }
 
-func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font {
-	return renderer.CreateBitmapFontAtlas(r, p, maps.All(starsFonts))
+func createFontAtlas(r renderer.Renderer, dpiScale float32) []*renderer.Font {
+	return renderer.CreateBitmapFontAtlas(r, dpiScale, maps.All(starsFonts))
 }

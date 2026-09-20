@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -163,7 +163,7 @@ func (r *routesTab) drawRoutes(a *app) {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 		if problem != "" {
-			imgui.TextColored(warningColor, renderer.FontAwesomeIconExclamationTriangle)
+			imgui.TextColored(warningColor, gui.Icons.ExclamationTriangle)
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip(problem)
 			}
@@ -333,7 +333,7 @@ func (in *inspector) drawTrafficPairs(a *app) {
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 		if c.dropped > 0 {
-			imgui.TextColored(warningColor, renderer.FontAwesomeIconExclamationTriangle)
+			imgui.TextColored(warningColor, gui.Icons.ExclamationTriangle)
 		}
 		imgui.TableNextColumn()
 		if imgui.SelectableBool(pair) {

@@ -32,6 +32,11 @@ type Platform interface {
 	// PostRender performs the buffer swap.
 	PostRender()
 
+	// RenderImgui finalizes imgui's draw lists for the frame, draws them,
+	// and then updates and draws any secondary viewport windows, leaving
+	// the main window's context current.
+	RenderImgui()
+
 	// MakeContextCurrent makes the main window's OpenGL context current.
 	// Used to restore state after rendering secondary viewport windows.
 	MakeContextCurrent()

@@ -18,7 +18,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -81,18 +80,18 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 	// Simulation controls row
 	if lc.client != nil && lc.client.Connected() {
 		if lc.client.State.Paused {
-			if imgui.Button(renderer.FontAwesomeIconPlayCircle + " Resume") {
+			if imgui.Button(gui.Icons.PlayCircle + " Resume") {
 				lc.client.ToggleSimPause()
 			}
 		} else {
-			if imgui.Button(renderer.FontAwesomeIconPauseCircle + " Pause") {
+			if imgui.Button(gui.Icons.PauseCircle + " Pause") {
 				lc.client.ToggleSimPause()
 			}
 		}
 	}
 
 	imgui.SameLine()
-	if imgui.Button(renderer.FontAwesomeIconTrash + " Delete All") {
+	if imgui.Button(gui.Icons.Trash + " Delete All") {
 		uiShowModalDialog(gui.NewModalDialog(&YesOrNoModalClient{
 			title: "Are you sure?",
 			query: "All aircraft will be deleted. Go ahead?",
@@ -152,14 +151,14 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 
 	launchButton := func(slot sim.DepartureLaunchSlot, slotKey string) {
 		imgui.TableNextColumn()
-		if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
+		if imgui.Button(gui.Icons.PlaneDeparture) {
 			lc.client.LaunchAircraft(slot.LaunchFlight, lc.logLaunchError(slot.Callsign))
 			lc.launchCounts[slotKey]++
 			lc.lastRunwayDeparture[string(slot.Airport)+"/"+string(slot.Runway)] =
 				launchRecord{Callsign: slot.Callsign, Time: lc.client.InterpolatedSimTime()}
 		}
 		imgui.TableNextColumn()
-		if imgui.Button(renderer.FontAwesomeIconRedo) {
+		if imgui.Button(gui.Icons.Redo) {
 			lc.client.RecycleLaunchAircraft(slot.LaunchFlight, lc.logLaunchError(slot.Callsign))
 		}
 	}
@@ -372,14 +371,14 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 
 	inboundLaunch := func(slot sim.InboundLaunchSlot) {
 		imgui.TableNextColumn()
-		if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
+		if imgui.Button(gui.Icons.PlaneDeparture) {
 			lc.client.LaunchAircraft(slot.LaunchFlight, lc.logLaunchError(slot.Callsign))
 			lc.launchCounts[inboundSlotKey(slot)]++
 			lc.lastInbound[inboundSlotKey(slot)] =
 				launchRecord{Callsign: slot.Callsign, Time: lc.client.InterpolatedSimTime()}
 		}
 		imgui.TableNextColumn()
-		if imgui.Button(renderer.FontAwesomeIconRedo) {
+		if imgui.Button(gui.Icons.Redo) {
 			lc.client.RecycleLaunchAircraft(slot.LaunchFlight, lc.logLaunchError(slot.Callsign))
 		}
 	}
@@ -585,7 +584,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 					// Only allow releasing the first-up unreleased one.
 					lastAp = ac.DepartureAirport
 					imgui.TableNextColumn()
-					if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
+					if imgui.Button(gui.Icons.PlaneDeparture) {
 						lc.client.ReleaseDeparture(ac.ADSBCallsign,
 							func(err error) {
 								if err != nil {

@@ -9,7 +9,6 @@ import (
 
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -122,7 +121,7 @@ func (wn *whatsNewDialog) Buttons() []gui.DialogButton {
 
 func (wn *whatsNewDialog) Draw() int {
 	for i := wn.config.WhatsNewIndex; i < len(whatsNew); i++ {
-		imgui.Text(renderer.FontAwesomeIconSquare + " " + whatsNew[i])
+		imgui.Text(gui.Icons.Square + " " + whatsNew[i])
 	}
 	return -1
 }

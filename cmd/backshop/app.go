@@ -393,7 +393,7 @@ func (a *app) drawToolButtons() {
 
 	imgui.SameLine()
 	imgui.BeginDisabledV(!a.scope.haveToolPoints())
-	if imgui.Button(renderer.FontAwesomeIconTrash) {
+	if imgui.Button(gui.Icons.Trash) {
 		a.scope.clearTool()
 	}
 	imgui.EndDisabled()

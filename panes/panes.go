@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
@@ -64,7 +65,7 @@ func DrawPinButton(windowTitle string, unpinnedWindows map[string]struct{}, p pl
 	_, unpinned := unpinnedWindows[windowTitle]
 	pinned := !unpinned
 
-	icon := renderer.FontAwesomeIconThumbtack
+	icon := gui.Icons.Thumbtack
 	iconSize := imgui.CalcTextSize(icon)
 
 	style := imgui.CurrentStyle()

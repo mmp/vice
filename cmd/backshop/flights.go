@@ -11,7 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -408,7 +408,7 @@ func (t *trafficTab) drawFlightRow(a *app, f sim.PublishedFlight) {
 	imgui.TableNextRow()
 	imgui.TableNextColumn()
 	if f.Outcome != sim.FlightFlown {
-		imgui.TextColored(outcomeColor(f.Outcome), renderer.FontAwesomeIconExclamationTriangle)
+		imgui.TextColored(outcomeColor(f.Outcome), gui.Icons.ExclamationTriangle)
 		tooltip(f.Problem)
 	}
 	imgui.TableNextColumn()

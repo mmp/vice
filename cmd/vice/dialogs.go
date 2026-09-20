@@ -306,7 +306,7 @@ func (wn *WhatsNewModalClient) Buttons() []gui.DialogButton {
 
 func (wn *WhatsNewModalClient) Draw() int {
 	for i := wn.config.WhatsNewIndex; i < len(whatsNew); i++ {
-		imgui.Text(renderer.FontAwesomeIconSquare + " " + whatsNew[i])
+		imgui.Text(gui.Icons.Square + " " + whatsNew[i])
 	}
 	return -1
 }
@@ -369,7 +369,7 @@ func (d *DiscordOptInModalClient) Draw() int {
 	imgui.Text("that you are running vice, using information about your current session.")
 	imgui.Text("If you do not want it to do this, you can disable this feature using the")
 	imgui.Text("checkbox below. You can also change this setting any time in the future")
-	imgui.Text("in the settings window " + renderer.FontAwesomeIconCog + " via the menu bar.")
+	imgui.Text("in the settings window " + gui.Icons.Cog + " via the menu bar.")
 
 	imgui.PopStyleVar()
 

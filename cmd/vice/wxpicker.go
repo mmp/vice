@@ -13,8 +13,8 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -188,35 +188,35 @@ type weatherCondition struct {
 var weatherTable = []weatherCondition{
 	// Thunderstorm
 	{
-		icon:        renderer.FontAwesomeIconBolt,
+		icon:        gui.Icons.Bolt,
 		description: "Thunderstorm",
 		color:       imgui.Vec4{1.0, 0.8, 0.0, 1.0},      // Yellow
 		pattern:     regexp.MustCompile(`^[-+]?(VC)?TS`), // Matches TS with optional intensity/vicinity
 	},
 	// Heavy Rain (must come before regular rain)
 	{
-		icon:        renderer.FontAwesomeIconCloudShowersHeavy,
+		icon:        gui.Icons.CloudShowersHeavy,
 		description: "Heavy Rain",
 		color:       imgui.Vec4{0.2, 0.4, 0.8, 1.0},         // Dark blue
 		pattern:     regexp.MustCompile(`^(\+|SH)(RA|DZ)$`), // Matches +RA, +DZ, SHRA, SHDZ
 	},
 	// Rain (light or moderate, without heavy indicator)
 	{
-		icon:        renderer.FontAwesomeIconCloudRain,
+		icon:        gui.Icons.CloudRain,
 		description: "Rain",
 		color:       imgui.Vec4{0.4, 0.6, 0.9, 1.0},                       // Light blue
 		pattern:     regexp.MustCompile(`^[-]?(DR|FZ|MI|PR|VC)?(RA|DZ)$`), // Matches rain/drizzle without + or SH
 	},
 	// Snow/Ice
 	{
-		icon:        renderer.FontAwesomeIconSnowflake,
+		icon:        gui.Icons.Snowflake,
 		description: "Snow/Ice",
 		color:       imgui.Vec4{0.8, 0.9, 1.0, 1.0}, // Light cyan
 		pattern:     regexp.MustCompile(`^[-+]?(DR|FZ|MI|PR|SH|VC)?(SN|SG|PL|GR|GS|IC)$`),
 	},
 	// Fog/Mist
 	{
-		icon:        renderer.FontAwesomeIconSmog,
+		icon:        gui.Icons.Smog,
 		description: "Fog/Mist",
 		color:       imgui.Vec4{0.7, 0.7, 0.7, 1.0}, // Gray
 		pattern:     regexp.MustCompile(`^[-+]?(DR|FZ|MI|PR|SH|VC)?(FG|BR|HZ|FU|VA|DU|SA)$`),
@@ -227,21 +227,21 @@ var weatherTable = []weatherCondition{
 var cloudTable = []weatherCondition{
 	// Cloudy (broken/overcast)
 	{
-		icon:        renderer.FontAwesomeIconCloud,
+		icon:        gui.Icons.Cloud,
 		description: "Cloudy",
 		color:       imgui.Vec4{0.6, 0.6, 0.6, 1.0},       // Medium gray
 		pattern:     regexp.MustCompile(`^(BKN|OVC)\d*$`), // Matches BKN or OVC with optional altitude
 	},
 	// Partly Cloudy (few/scattered)
 	{
-		icon:        renderer.FontAwesomeIconCloudSun,
+		icon:        gui.Icons.CloudSun,
 		description: "Partly Cloudy",
 		color:       imgui.Vec4{0.8, 0.8, 0.8, 1.0},       // Light gray
 		pattern:     regexp.MustCompile(`^(FEW|SCT)\d*$`), // Matches FEW or SCT with optional altitude
 	},
 	// Clear
 	{
-		icon:        renderer.FontAwesomeIconSun,
+		icon:        gui.Icons.Sun,
 		description: "Clear",
 		color:       imgui.Vec4{1.0, 0.9, 0.0, 1.0},          // Yellow
 		pattern:     regexp.MustCompile(`^(SKC|CLR|CAVOK)$`), // Matches clear sky indicators
@@ -283,11 +283,11 @@ loop:
 
 	// Remove regular rain icon if heavy rain is present
 	hasHeavyRain := slices.ContainsFunc(conditions, func(c weatherCondition) bool {
-		return c.icon == renderer.FontAwesomeIconCloudShowersHeavy
+		return c.icon == gui.Icons.CloudShowersHeavy
 	})
 	if hasHeavyRain {
 		conditions = util.FilterSlice(conditions, func(c weatherCondition) bool {
-			return c.icon != renderer.FontAwesomeIconCloudRain
+			return c.icon != gui.Icons.CloudRain
 		})
 	}
 
@@ -423,7 +423,7 @@ func drawVisibilityAndCeiling(metar wx.METAR) {
 }
 
 // drawWindAndWeatherIcons renders wind information and weather condition icons
-func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
+func drawWindAndWeatherIcons(metar wx.METAR, largeFont *gui.Font) {
 	// Wind text display
 	if metar.WindDir == nil {
 		if metar.WindSpeed > 0 {
@@ -456,7 +456,7 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 	iconY := startY + 28
 	startX := imgui.CursorPosX()
 
-	largeFont.ImguiPush()
+	gui.PushFont(largeFont)
 	for _, cond := range parseWeatherConditions(metar.Observation()) {
 		imgui.SetCursorPos(imgui.Vec2{X: startX, Y: iconY})
 
@@ -465,24 +465,24 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 		imgui.PopStyleColor()
 
 		if imgui.IsItemHovered() {
-			imgui.PopFont()
+			gui.PopFont()
 			imgui.SetTooltip(cond.description)
-			largeFont.ImguiPush()
+			gui.PushFont(largeFont)
 		}
 
-		iconWidth := largeFont.LayoutBounds(cond.icon, 0).Width()
+		iconWidth := imgui.CalcTextSize(cond.icon).X
 		startX += iconWidth + iconSpacing
 	}
-	imgui.PopFont()
+	gui.PopFont()
 
 	imgui.EndGroup()
 }
 
 // drawMETARDisplay renders the METAR information panel
-func drawMETARDisplay(metar wx.METAR, monospaceFont *renderer.Font, largeFont *renderer.Font) {
-	monospaceFont.ImguiPush()
+func drawMETARDisplay(metar wx.METAR, monospaceFont *gui.Font, largeFont *gui.Font) {
+	gui.PushFont(monospaceFont)
 	imgui.TextWrapped(formatRawMETAR(metar.Observation()))
-	imgui.PopFont()
+	gui.PopFont()
 
 	imgui.Spacing()
 	drawVMCIMCStatus(metar)
@@ -783,7 +783,7 @@ func validateAndAdjustDate(date *time.Time, clock airportClock, validDays []time
 // drawTimePickerPopup renders the popup with date picker and METAR display
 // Returns true if the time was changed
 func drawTimePickerPopup(date *time.Time, clock airportClock, validDays []time.Time, metars []wx.METAR,
-	metarIdx int, monospaceFont *renderer.Font) bool {
+	metarIdx int, monospaceFont *gui.Font) bool {
 	changed := false
 
 	if imgui.BeginTableV("picker_layout", 2, imgui.TableFlagsBorders|imgui.TableFlagsSizingFixedFit, imgui.Vec2{pickerTableWidth, 0}, 0) {
@@ -803,7 +803,7 @@ func drawTimePickerPopup(date *time.Time, clock airportClock, validDays []time.T
 
 		// Right side: METAR display
 		imgui.TableNextColumn()
-		largeFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.LargeFontAwesomeOnly, Size: 64})
+		largeFont := gui.GetFont(gui.Fonts.LargeFontAwesomeOnly, 64)
 		drawMETARDisplay(metars[metarIdx], monospaceFont, largeFont)
 
 		// "Ok" button--push it down to the bottom of the calendar column. The
@@ -830,7 +830,7 @@ func drawTimePickerPopup(date *time.Time, clock airportClock, validDays []time.T
 // TimePicker displays a calendar widget for time selection and displays
 // the METAR for the selected time.  Returns true if the time was changed.
 func TimePicker(date *time.Time, clock airportClock, validDays []time.Time, metars []wx.METAR,
-	monospaceFont *renderer.Font) bool {
+	monospaceFont *gui.Font) bool {
 	if len(validDays) == 0 {
 		return false
 	}

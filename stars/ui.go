@@ -10,12 +10,12 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -96,7 +96,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				return strings.Compare(a.Input, b.Input)
 			})
 
-			fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: renderer.FixedFontSize(int(imgui.FontSize()))})
+			fixedFont := gui.GetFont(gui.Fonts.RobotoMono, gui.FixedFontSize(int(imgui.FontSize())))
 			if imgui.BeginTableV("macros", 5, radar.TableFlags, imgui.Vec2{}, 0) {
 				imgui.TableSetupColumn("Mode")
 				imgui.TableSetupColumn("Input")
@@ -108,21 +108,21 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				for _, m := range sorted {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
-					fixedFont.ImguiPush()
+					gui.PushFont(fixedFont)
 					if mode := m.Mode(); mode == "" {
 						imgui.Text("--")
 					} else {
 						imgui.Text(mode)
 					}
-					imgui.PopFont()
+					gui.PopFont()
 					imgui.TableNextColumn()
-					fixedFont.ImguiPush()
+					gui.PushFont(fixedFont)
 					if input := m.Name(); input == "" {
 						imgui.Text("--")
 					} else {
 						imgui.Text(input)
 					}
-					imgui.PopFont()
+					gui.PopFont()
 					imgui.TableNextColumn()
 					if m.IsSlew() {
 						imgui.Text("Slew")
@@ -130,9 +130,9 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 						imgui.Text("Enter")
 					}
 					imgui.TableNextColumn()
-					fixedFont.ImguiPush()
+					gui.PushFont(fixedFont)
 					imgui.Text(strings.Join(m.Commands, "\n"))
-					imgui.PopFont()
+					gui.PopFont()
 					imgui.TableNextColumn()
 					imgui.Text(m.Description)
 				}

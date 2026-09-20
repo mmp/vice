@@ -1,5 +1,5 @@
 // cmd/backshop/main.go
-// Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // backshop is a tool for facility engineering: developing vice scenarios,
@@ -18,12 +18,11 @@ import (
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/renderer/ogl21"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/apenwarr/fixconsole"
 )
 
@@ -99,18 +98,18 @@ func run(config *Config, lg *log.Logger) error {
 
 	imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
 
-	render, err := renderer.NewOpenGL2Renderer(lg)
+	render, err := ogl21.NewRenderer(lg)
 	if err != nil {
 		return fmt.Errorf("unable to initialize OpenGL: %w", err)
 	}
-	renderer.FontsInit(render, plat)
+	gui.InitFonts(plat.DPIScale(), lg)
 	plat.InitViewportBackends()
 
 	if runtime.GOOS == "windows" {
 		imgui.CurrentStyle().ScaleAllSizes(plat.DPIScale())
 	}
 
-	uiFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
+	uiFont := gui.GetFont(gui.Fonts.RobotoRegular, config.UIFontSize)
 
 	if err := initResources(gui.NewSyncUI(plat, uiFont)); err != nil {
 		if errors.Is(err, util.ErrSyncCanceled) {
@@ -133,20 +132,11 @@ func run(config *Config, lg *log.Logger) error {
 		plat.NewFrame()
 		imgui.NewFrame()
 
-		uiFont.ImguiPush()
+		gui.PushFont(uiFont)
 		app.draw()
-		imgui.PopFont()
+		gui.PopFont()
 
-		imgui.Render()
-		implogl3.RenderDrawData(imgui.CurrentDrawData())
-		renderer.SyncFontAtlasTexID()
-
-		io := imgui.CurrentIO()
-		if io.ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
-			imgui.UpdatePlatformWindows()
-			imgui.RenderPlatformWindowsDefault()
-			plat.MakeContextCurrent()
-		}
+		plat.RenderImgui()
 
 		plat.PostRender()
 

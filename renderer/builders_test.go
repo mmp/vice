@@ -11,7 +11,7 @@ import "testing"
 // in size, so a half-pixel origin would put their edges exactly on pixel
 // centers, where the rasterizer's tie-break drops a row of the glyph.
 func TestAddTextWholePixels(t *testing.T) {
-	f := MakeFont(11, FontIdentifier{Name: "test", Size: 11}, nil)
+	f := MakeFont(11, FontIdentifier{Name: "test", Size: 11})
 	f.AddGlyph('A', &Glyph{X0: 0, Y0: 2, X1: 8, Y1: 11, AdvanceX: 10, Visible: true})
 
 	var td TextDrawBuilder
