@@ -5,7 +5,6 @@
 package nav
 
 import (
-	"encoding/json"
 	gomath "math"
 	"os"
 	"slices"
@@ -19,6 +18,8 @@ import (
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+
+	"encoding/json"
 )
 
 func TestMain(m *testing.M) {

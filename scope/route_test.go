@@ -5,11 +5,15 @@
 package scope
 
 import (
+	gomath "math"
+	"strings"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 )
 
 // The tests use 60 nm per degree of longitude and no magnetic variation,
@@ -510,3 +514,109 @@ func TestCourseTriggerFromDivergingHeading(t *testing.T) {
 	expectNear(t, "inbound to B", w.fixes[1].inbound, [2]float32{1, 0}, 0.02)
 	expectNear(t, "pen", w.pen.p, [2]float32{10, 0}, 0.05)
 }
+
+// TestWalkCIFPRoutes walks every SID and approach the CIFP gives for a few
+// airports, checking that the walker survives real data, and logs where
+// the triggers of a few notable routes land.
+func TestWalkCIFPRoutes(t *testing.T) {
+	if testing.Short() {
+		t.Skip("loads the aviation database")
+	}
+	av.InitDB()
+
+	notable := map[string]bool{
+		"KPHX BALDY3 RWY25L": true, "KPHX BROAK1 RWY25L": true, "KSAN PEBLE6 RWY27": true,
+		"KSFO GAPP7 RWY1L": true, "KLAX GMN7 RWY24L": true, "KBUR ELMOO9 RWY33": true,
+		"KBUR ELMOO9 RWY26": true, "KSEA SUMMA2 RWY16L": true, "KSEA SUMMA2 RWY34L": true,
+	}
+	// Approximate magnetic variation, west positive as vice takes it.
+	magneticVariation := map[string]float32{"KPHX": -10, "KSAN": -11, "KSFO": -13, "KLAX": -12, "KBUR": -12,
+		"KSEA": -15, "KEWR": 13, "KJFK": 13, "KPBF": 1, "KJAX": 6}
+
+	var routes, triggers, indeterminate int
+	walk := func(name string, wps av.WaypointArray, rc RouteDrawContext) {
+		icao := av.ICAOAirportCode(name[:4])
+		ap := av.DB.Airports[icao]
+		nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
+		wps = wps.Clone().InitializeLocations(dmeLocator{}, nmPerLongitude, magneticVariation[string(icao)], true, &util.ErrorLogger{})
+		w := newRouteWalker(nmPerLongitude, magneticVariation[string(icao)], rc, renderer.GetColoredLinesDrawBuilder(), renderer.RGB{}, NewDrawnRoutes())
+		w.walk(wps)
+		routes++
+
+		start := w.nm(wps[0].Location)
+		for _, l := range w.labels {
+			if gomath.IsNaN(float64(l.p[0])) || gomath.IsNaN(float64(l.p[1])) {
+				t.Errorf("%s: label %q at NaN", name, l.text)
+			}
+			if strings.HasPrefix(l.text, "@") {
+				triggers++
+				if strings.HasSuffix(l.text, "?") {
+					indeterminate++
+					t.Logf("indeterminate: %s: %s", name, l.text)
+					if notable[name] {
+						t.Errorf("%s: indeterminate trigger %s", name, l.text)
+					}
+				}
+				if notable[name] {
+					t.Logf("%s: %s at %.1fnm from the start", name, l.text, math.Distance2f(start, l.p))
+				}
+			}
+		}
+	}
+
+	for _, icao := range []av.ICAOAirportCode{"KPHX", "KSAN", "KSFO", "KLAX", "KBUR", "KSEA", "KEWR", "KJFK", "KPBF", "KJAX"} {
+		ap := av.DB.Airports[icao]
+		for sidName, sid := range util.SortedMap(ap.SIDs) {
+			for rwy, wps := range util.SortedMap(sid.RunwayTransitions) {
+				r, ok := av.LookupRunway(icao, rwy)
+				opp, ok2 := av.LookupOppositeRunway(icao, rwy)
+				if !ok || !ok2 {
+					continue
+				}
+				wps = withRunwayInFront(icao, rwy, r, opp, ap.Elevation,
+					math.NMPerLongitudeAt(ap.Location), magneticVariation[string(icao)], wps)
+				walk(string(icao)+" "+sidName+" RWY"+rwy, wps,
+					RouteDrawContext{Departure: true, FieldElevation: ap.Elevation, ClearedAltitude: 5000})
+			}
+			for tr, wps := range util.SortedMap(sid.EnrouteTransitions) {
+				walk(string(icao)+" "+sidName+" "+tr, wps, RouteDrawContext{})
+			}
+		}
+		for apprName, appr := range util.SortedMap(ap.Approaches) {
+			for i, wps := range appr.Waypoints {
+				walk(string(icao)+" "+apprName+" "+string(rune('A'+i)), wps, RouteDrawContext{ApproachType: appr.Type})
+			}
+		}
+	}
+	t.Logf("%d routes, %d triggers, %d indeterminate", routes, triggers, indeterminate)
+}
+
+// withRunwayInFront puts the runway in front of a SID's runway transition as
+// ExitRoute.initialize does: the threshold, then the midpoint, from which the
+// aircraft tracks the centerline until 400' above the field and only then
+// flies the transition's legs from the departure end.
+func withRunwayInFront(icao av.ICAOAirportCode, rwy string, r, opp av.Runway, elevation int, nmPerLongitude,
+	magneticVariation float32, wps av.WaypointArray) av.WaypointArray {
+	course := math.TrueToMagnetic(math.Heading2LL(r.Threshold, opp.Threshold, nmPerLongitude), magneticVariation)
+	groups := []av.WaypointActionGroup{
+		{
+			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{
+				Heading: int16(math.Round(float32(math.NormalizeHeading(course)))), Track: true}},
+			Until: av.WaypointActionTermination{Type: av.WaypointActionAltitude,
+				Altitude: elevation + 400, AtOrAbove: true},
+		},
+	}
+	if departureEnd := string(icao) + "-" + av.OppositeRunwayId(rwy); len(wps) > 0 && wps[0].Fix == departureEnd {
+		groups = append(groups, wps[0].ActionGroups()...)
+		wps = wps[1:]
+	}
+
+	mid := av.Waypoint{Fix: rwy + "-mid", Location: math.Lerp2f(0.5, r.Threshold, opp.Threshold)}
+	mid.InitExtra().ActionGroups = groups
+	return append(av.WaypointArray{{Fix: rwy, Location: r.Threshold}, mid}, wps...)
+}
+
+// dmeLocator locates fixes from the database, DME stations included.
+type dmeLocator struct{ enroute.DBLocator }
+
+func (dmeLocator) LocateDME(fix string) (math.Point2LL, int, bool) { return av.DB.LookupDME(fix) }
