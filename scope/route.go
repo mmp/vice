@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
@@ -31,7 +32,7 @@ type RouteDrawContext struct {
 func DepartureRouteContext(icao av.ICAOAirportCode, er *av.ExitRoute) RouteDrawContext {
 	rc := RouteDrawContext{
 		Departure:       true,
-		FieldElevation:  av.DB.Airports[icao].Elevation,
+		FieldElevation:  db.DB.Airports[icao].Elevation,
 		ClearedAltitude: er.ClearedAltitude,
 	}
 	if rc.ClearedAltitude == 0 {

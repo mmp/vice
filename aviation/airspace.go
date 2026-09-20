@@ -68,9 +68,9 @@ func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
 	}
 }
 
-// covers reports whether the volume lies over the given point, whatever the
+// Covers reports whether the volume lies over the given point, whatever the
 // altitude: inside its lateral bounds and outside any of its holes.
-func (a *AirspaceVolume) covers(p math.Point2LL) bool {
+func (a *AirspaceVolume) Covers(p math.Point2LL) bool {
 	switch a.Type {
 	case AirspaceVolumePolygon:
 		if a.PolygonBounds != nil && !a.PolygonBounds.Inside(p) {
@@ -93,11 +93,11 @@ func (a *AirspaceVolume) covers(p math.Point2LL) bool {
 // The floor is inclusive, so an aircraft on the ground at a field is inside a
 // volume that starts at the field elevation; Below covers everything under it.
 func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
-	return alt >= a.Floor && alt <= a.Ceiling && a.covers(p)
+	return alt >= a.Floor && alt <= a.Ceiling && a.Covers(p)
 }
 
 func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
-	return alt < a.Floor && a.covers(p)
+	return alt < a.Floor && a.Covers(p)
 }
 
 func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/sim"
@@ -32,12 +33,12 @@ func TestE2E_STTToSim(t *testing.T) {
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
 	transcriber := stt.NewTranscriber(lg)
 
-	// Subtests below clobber av.DB.Airports["KJFK"] with synthetic runway
+	// Subtests below clobber db.DB.Airports["KJFK"] with synthetic runway
 	// fixtures (threshold at the origin) so the test aircraft's (0,0)
 	// position lines up with the CVA/EVA geometry checks. Save and restore
 	// the real entry so other tests in the binary aren't poisoned.
-	origKJFK := av.DB.Airports["KJFK"]
-	t.Cleanup(func() { av.DB.Airports["KJFK"] = origKJFK })
+	origKJFK := db.DB.Airports["KJFK"]
+	t.Cleanup(func() { db.DB.Airports["KJFK"] = origKJFK })
 
 	tests := []e2eCase{
 		{
@@ -257,14 +258,14 @@ func TestE2E_STTToSim(t *testing.T) {
 			runway := guessRunway(commands)
 			lahsoRunway := guessLAHSORunway(commands)
 
-			// CVA/EVA runway validation and visual-path setup use av.DB runway data.
+			// CVA/EVA runway validation and visual-path setup use db.DB runway data.
 			runways := []av.Runway{
 				{Id: runway, Heading: 180, Threshold: [2]float32{0, 0}, Elevation: 13},
 			}
 			if lahsoRunway != "" {
 				runways = append(runways, av.Runway{Id: lahsoRunway, Heading: 260, Threshold: [2]float32{0, 0}, Elevation: 13})
 			}
-			av.DB.Airports["KJFK"] = av.FAAAirport{
+			db.DB.Airports["KJFK"] = db.Airport{
 				Id:        "KJFK",
 				Elevation: 13,
 				Runways:   runways,
@@ -386,7 +387,7 @@ func TestCorrectionEndToEnd(t *testing.T) {
 	s := sim.NewTestSim(lg)
 	for _, cs := range []av.ADSBCallsign{"UAL1482", "DAL456", "N123AB"} {
 		ac := sim.MakeTestAircraft(cs, "22L")
-		ac.Nav.Perf = av.DB.AircraftPerformance["A320"]
+		ac.Nav.Perf = db.DB.AircraftPerformance["A320"]
 		s.Aircraft[cs] = ac
 	}
 	run := correctionRunner(t, s, map[string]stt.Aircraft{

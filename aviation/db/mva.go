@@ -1,8 +1,8 @@
-// aviation/mva.go
+// aviation/db/mva.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package db
 
 import (
 	"bufio"

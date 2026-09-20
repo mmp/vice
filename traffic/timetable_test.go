@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 
 	"testing/fstest"
 )
@@ -264,7 +265,7 @@ func TestValidateTimetableRejectsUnknownDestinationAirport(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
-	av.InitDB()
+	db.InitDB()
 	os.Exit(m.Run())
 }
 

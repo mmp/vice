@@ -7,7 +7,7 @@ package main
 import (
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/sim"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -40,7 +40,7 @@ func (in *inspector) drawLaunchTab(a *app) {
 	tooltip("ICAO type to launch instead of the one the slot sampled,\n" +
 		"e.g. B738. Leave empty to fly whatever the scenario picked.")
 	if ty := strings.ToUpper(strings.TrimSpace(in.launchType)); ty != "" {
-		if _, ok := av.DB.AircraftPerformance[ty]; !ok {
+		if _, ok := db.DB.AircraftPerformance[ty]; !ok {
 			imgui.TextColored(warningColor, ty+" is not in the performance database")
 		}
 	}

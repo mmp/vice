@@ -15,13 +15,12 @@ package enroute
 
 import (
 	"fmt"
-	"iter"
-	"maps"
 	"slices"
 	"strconv"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -109,96 +108,12 @@ type Coordination struct {
 // which scenario group (with its own fixes) is loading it, and to re-derive
 // ArtsCoordEntry/Restriction geometry (see ParseGeometry) after a saved sim is
 // restored, since that geometry is excluded from JSON.
-type DBLocator struct{}
-
-func (DBLocator) Similar(fix string) []string {
-	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), nil, nil)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
-	return util.Select(len(d1) > 0, d1, d2)
-}
-
-func (DBLocator) Declination(s string) (float32, bool) {
-	return av.DB.Declination(s)
-}
-
-func (DBLocator) Locate(s string) (math.Point2LL, bool) {
-	s = strings.ToUpper(s)
-	if n, ok := av.DB.Navaids[s]; ok {
-		return n.Location, ok
-	} else if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(s)); ok {
-		return ap.Location, ok
-	} else if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(s)); ok {
-		return ap.Location, ok
-	} else if f, ok := av.DB.Fixes[s]; ok {
-		return f.Location, ok
-	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
-		return p, true
-	} else if ident, rwy, found := strings.Cut(s, "-"); found && len(ident) >= 3 {
-		if r, ok := av.LookupRunway(av.ICAOAirportCode(ident), rwy); ok {
-			return r.Threshold, true
-		}
-	}
-
-	return math.Point2LL{}, false
-}
+type DBLocator struct{ db.Lookups }
 
 // Airways returns the airways published under the given name.
 func (DBLocator) Airways(name string) ([]av.Airway, bool) {
-	aw, ok := av.DB.Airways[name]
+	aw, ok := db.DB.Airways[name]
 	return aw, ok
-}
-
-func (DBLocator) AirportLocation(icao av.ICAOAirportCode) (math.Point2LL, bool) {
-	ap, ok := av.DB.Airports[icao]
-	return ap.Location, ok
-}
-
-func (DBLocator) IsPublishedAirport(icao av.ICAOAirportCode) bool {
-	_, ok := av.DB.Airports[icao]
-	return ok
-}
-
-func (DBLocator) AirportElevation(icao av.ICAOAirportCode) int {
-	return av.DB.Airports[icao].Elevation
-}
-
-func (DBLocator) AirportRunways(icao av.ICAOAirportCode) []av.Runway {
-	return av.DB.Airports[icao].Runways
-}
-
-func (DBLocator) AirportApproaches(icao av.ICAOAirportCode) map[string]av.Approach {
-	return av.DB.Airports[icao].Approaches
-}
-
-func (DBLocator) AirportSIDs(icao av.ICAOAirportCode) map[string]av.SID {
-	return av.DB.Airports[icao].SIDs
-}
-
-func (DBLocator) AirportSTARs(icao av.ICAOAirportCode) map[string]av.STAR {
-	return av.DB.Airports[icao].STARs
-}
-
-func (DBLocator) ValidRunways(icao av.ICAOAirportCode) string {
-	return av.DB.Airports[icao].ValidRunways()
-}
-
-func (DBLocator) IsGAFleet(name string) bool {
-	_, ok := av.DB.Airlines["N"].Fleets[name]
-	return ok
-}
-
-func (DBLocator) GAFleetNames() []string {
-	return slices.Collect(maps.Keys(av.DB.Airlines["N"].Fleets))
-}
-
-func (DBLocator) InClassBOrC(p math.Point2LL, alt int) bool {
-	inside := func(vols iter.Seq[[]av.AirspaceVolume]) bool {
-		return util.SeqContainsFunc(vols, func(vs []av.AirspaceVolume) bool {
-			return slices.ContainsFunc(vs, func(v av.AirspaceVolume) bool { return v.Inside(p, alt) })
-		})
-	}
-	return inside(maps.Values(av.DB.BravoAirspace)) || inside(maps.Values(av.DB.CharlieAirspace))
 }
 
 // parseBoundary parses a space-separated list of "lat,long" vertices.
@@ -601,7 +516,7 @@ func flightAirwayDirection(wps []av.Waypoint, airwayID string) string {
 		}
 		last = wps[i+1].Fix
 	}
-	for _, awy := range av.DB.Airways[airwayID] {
+	for _, awy := range db.DB.Airways[airwayID] {
 		i0, i1 := -1, -1
 		for idx, af := range awy.Fixes {
 			if af.Fix == first {
@@ -785,7 +700,7 @@ func MakeTrajectory(wps []av.Waypoint, ft av.TypeOfFlight, acType string, cruise
 	if len(wps) > 0 {
 		t.totalDist = t.cumDist[len(wps)-1]
 	}
-	perf := av.DB.AircraftPerformance[acType]
+	perf := db.DB.AircraftPerformance[acType]
 	speed := perf.Speed.CruiseTAS
 	if speed < 1 {
 		speed = 250 // avoid divide-by-zero for missing perf data

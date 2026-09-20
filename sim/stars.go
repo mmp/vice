@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -105,7 +106,7 @@ type FacilityAdaptation struct {
 	} `json:"untracked_position_symbol_overrides"`
 
 	VideoMapFile       string                        `json:"video_map_file"`
-	CoordinationFixes  map[string]av.AdaptationFixes `json:"coordination_fixes"`
+	CoordinationFixes  map[string]db.AdaptationFixes `json:"coordination_fixes"`
 	SingleCharAIDs     map[string]string             `json:"single_char_aids"`
 	Monitor            string                        `json:"monitor"`
 	Thick20NmRangeRing bool                          `json:"thick_20nm_range_ring"`
@@ -346,7 +347,7 @@ func (fa *FacilityAdaptation) AirspaceAwarenessController(area string, fp *NASFl
 
 			// Finally make sure any aircraft type specified in the rules
 			// matches.
-			if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
+			if perf, ok := db.DB.AircraftPerformance[fp.AircraftType]; ok {
 				engineType := perf.Engine.AircraftType
 				if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, engineType) {
 					return rules.ReceivingController, true
@@ -489,9 +490,9 @@ func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 		}
 		// Fix-pair airport entries carry the airport's FAA id, matching the
 		// flight plan fixes they pair with, but accept a database id too.
-		faa, inDB := av.DB.LookupFAAAirport(av.FAAAirportCode(id))
+		faa, inDB := db.DB.LookupFAAAirport(av.FAAAirportCode(id))
 		if !inDB {
-			faa, inDB = av.DB.LookupICAOAirport(av.ICAOAirportCode(id))
+			faa, inDB = db.DB.LookupICAOAirport(av.ICAOAirportCode(id))
 		}
 		if ap.Name == "" && inDB {
 			ap.Name = faa.Name

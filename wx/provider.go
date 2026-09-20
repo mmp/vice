@@ -16,6 +16,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/util"
 
@@ -518,7 +519,7 @@ func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, station
 
 	// Convert a single sample stack to an AtmosByPointSOA.
 	atmosByPoint := MakeAtmosByPoint()
-	fac, ok := av.DB.LookupFacility(facility)
+	fac, ok := db.DB.LookupFacility(facility)
 	if !ok {
 		return nil, time.Time{}, time.Time{}, fmt.Errorf("%s: unknown facility", facility)
 	}
@@ -537,7 +538,7 @@ func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, station
 // facility's center rather than at the station, since it stands in for the
 // weather over the whole facility.
 func createFallbackAtmos(station, facility string, t time.Time) (*AtmosByPointSOA, error) {
-	fac, ok := av.DB.LookupFacility(facility)
+	fac, ok := db.DB.LookupFacility(facility)
 	if !ok {
 		return nil, fmt.Errorf("%s: unknown facility", facility)
 	}

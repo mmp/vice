@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
@@ -76,7 +77,7 @@ func (ep *Pane) drawAltimSetView(ctx *scope.Context, transforms scope.Transforma
 func altimRow(ctx *scope.Context, icao av.ICAOAirportCode, color renderer.RGB,
 	font *renderer.Font, textWidth func(string) float32) Row {
 
-	displayID := av.AirportDisplayId(icao)
+	displayID := db.AirportDisplayId(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
 		return Row{ID: string(icao), Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
@@ -529,7 +530,7 @@ func (ep *Pane) drawWXView(ctx *scope.Context, transforms scope.Transformations,
 
 	var rows []Row
 	for _, icao := range ep.WXReportStations {
-		rows = append(rows, Row{ID: string(icao), Label: av.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)})
+		rows = append(rows, Row{ID: string(icao), Label: db.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)})
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{

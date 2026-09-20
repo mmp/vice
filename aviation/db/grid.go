@@ -1,10 +1,11 @@
-// aviation/grid.go
+// aviation/db/grid.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package db
 
 import (
+	av "github.com/mmp/vice/aviation"
 	"slices"
 
 	"github.com/mmp/vice/math"
@@ -23,22 +24,22 @@ func UnderBravoShelf(grid *AirspaceGrid, p math.Point2LL, alt int) bool {
 ///////////////////////////////////////////////////////////////////////////
 // AirspaceGrid
 
-// AirspaceGrid organizes AirspaceVolume definitions and provides efficient in volume tests via
+// AirspaceGrid organizes av.AirspaceVolume definitions and provides efficient in volume tests via
 // a grid in lat-long space that records which of a potentially large set of volumes overlap
 // grid cells. Grid cells are initialized on demand rather than upfront, which saves storage
 type AirspaceGrid struct {
-	volumes []*AirspaceVolume
-	entries map[[2]int][]*AirspaceVolume
+	volumes []*av.AirspaceVolume
+	entries map[[2]int][]*av.AirspaceVolume
 }
 
-func MakeAirspaceGrid(v []*AirspaceVolume) *AirspaceGrid {
+func MakeAirspaceGrid(v []*av.AirspaceVolume) *AirspaceGrid {
 	return &AirspaceGrid{
 		volumes: slices.Clone(v),
-		entries: make(map[[2]int][]*AirspaceVolume),
+		entries: make(map[[2]int][]*av.AirspaceVolume),
 	}
 }
 
-func (g *AirspaceGrid) getEntries(p math.Point2LL) []*AirspaceVolume {
+func (g *AirspaceGrid) getEntries(p math.Point2LL) []*av.AirspaceVolume {
 	// Quantize coordinates to grid; roughly 6nm resolution (at least in
 	// latitude...)
 	pq := [2]int{int(10 * p[0]), int(10 * p[1])}
@@ -49,7 +50,7 @@ func (g *AirspaceGrid) getEntries(p math.Point2LL) []*AirspaceVolume {
 		// Center of the grid cell
 		pc := math.Point2LL{(float32(pq[0]) + 0.5) / 10, (float32(pq[1]) + 0.5) / 10}
 
-		vols := util.FilterSlice(g.volumes, func(v *AirspaceVolume) bool {
+		vols := util.FilterSlice(g.volumes, func(v *av.AirspaceVolume) bool {
 			// Assumes both polygonal and an initialized PolygonBounds...
 			// The distance check has some slop in it just so we can be
 			// lazy about thinking about rounding in the grid quantization.
@@ -84,7 +85,7 @@ func (g *AirspaceGrid) Below(p math.Point2LL, alt int) bool {
 func (g *AirspaceGrid) ShelfFloor(p math.Point2LL) (int, bool) {
 	floor, covered := 0, false
 	for _, vol := range g.getEntries(p) {
-		if vol.covers(p) && (!covered || vol.Floor < floor) {
+		if vol.Covers(p) && (!covered || vol.Floor < floor) {
 			floor, covered = vol.Floor, true
 		}
 	}

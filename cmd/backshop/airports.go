@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
@@ -89,7 +90,7 @@ func (in *inspector) drawAirportsTab(a *app) {
 			imgui.TableNextColumn()
 			imgui.Text(util.Select(arr, "yes", ""))
 			imgui.TableNextColumn()
-			if ap, ok := av.DB.Airports[name]; ok {
+			if ap, ok := db.DB.Airports[name]; ok {
 				imgui.Text(fmt.Sprint(ap.Elevation))
 				imgui.TableNextColumn()
 				imgui.Text(ap.ValidRunways())
@@ -116,7 +117,7 @@ func (in *inspector) drawAirportDetail(a *app, icao av.ICAOAirportCode) {
 	defer imgui.PopID()
 
 	title := string(icao)
-	if dbap, ok := av.DB.Airports[icao]; ok && dbap.Name != "" {
+	if dbap, ok := db.DB.Airports[icao]; ok && dbap.Name != "" {
 		title += " - " + dbap.Name
 	}
 	imgui.SeparatorText(title)
@@ -171,7 +172,7 @@ func (in *inspector) drawAirportConfiguration(a *app, icao av.ICAOAirportCode, a
 	label("Location")
 	in.locationCell(a, "apt", ap.Location)
 
-	if dbap, ok := av.DB.Airports[icao]; ok {
+	if dbap, ok := db.DB.Airports[icao]; ok {
 		row("FAA id", string(dbap.LocalCode))
 		row("Elevation", fmt.Sprintf("%d ft", dbap.Elevation))
 		row("ARTCC", dbap.ARTCC)
@@ -279,7 +280,7 @@ func (in *inspector) drawAirportRunways(a *app, icao av.ICAOAirportCode) {
 		imgui.TableNextColumn()
 		imgui.Text(util.Select(u.arrival, "yes", ""))
 		imgui.TableNextColumn()
-		rwy, ok := av.LookupRunway(icao, id.Base())
+		rwy, ok := av.LookupRunway(db.Lookups{}, icao, id.Base())
 		if ok {
 			imgui.Text(fmt.Sprintf("%03.0f", float32(rwy.Heading)))
 		}
@@ -506,7 +507,7 @@ func (in *inspector) drawAirportArrivals(a *app, icao av.ICAOAirportCode) {
 // airport, one row per transition, so that what the scenario flies can be
 // compared against what is published.
 func (in *inspector) drawAirportProcedures(a *app, icao av.ICAOAirportCode, ap *av.Airport) {
-	dbap, ok := av.DB.Airports[icao]
+	dbap, ok := db.DB.Airports[icao]
 	if !ok {
 		imgui.Text(string(icao) + " is not in the CIFP.")
 		return

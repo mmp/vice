@@ -8,6 +8,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/speech"
@@ -700,7 +701,7 @@ func (p *Transcriber) BuildAircraftContext(
 					// Build LAHSORunways for this arrival runway (avoid duplicates)
 					if !seenRunways[ar.Runway.Base()] {
 						seenRunways[ar.Runway.Base()] = true
-						intersecting := av.IntersectingRunways(ar.Airport, ar.Runway, state.NmPerLongitude, 0.5)
+						intersecting := av.IntersectingRunways(db.Lookups{}, ar.Airport, ar.Runway, state.NmPerLongitude, 0.5)
 						sttAc.LAHSORunways = append(sttAc.LAHSORunways, intersecting...)
 					}
 				}

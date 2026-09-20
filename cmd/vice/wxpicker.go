@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scenario"
@@ -62,7 +62,7 @@ func makeScenarioClock(spec *scenario.Spec) airportClock {
 		return airportClock{loc: loc, local: true}
 	}
 	for _, airport := range spec.AllAirports() {
-		if loc, ok := av.DB.AirportTimeZone(airport); ok {
+		if loc, ok := db.DB.AirportTimeZone(airport); ok {
 			return airportClock{loc: loc, local: true}
 		}
 	}

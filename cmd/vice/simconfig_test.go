@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
@@ -21,7 +22,7 @@ import (
 
 func TestMain(m *testing.M) {
 	// TimetableStartMinute needs the airport database to find time zones.
-	av.InitDB()
+	db.InitDB()
 	os.Exit(m.Run())
 }
 

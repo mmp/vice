@@ -14,6 +14,7 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -48,7 +49,7 @@ func (sp *Pane) drawTRACONBoundary(ctx *scope.Context, transforms scope.Transfor
 		return
 	}
 
-	facility, ok := av.DB.LookupFacility(ctx.Client.State.Facility)
+	facility, ok := db.DB.LookupFacility(ctx.Client.State.Facility)
 	if !ok {
 		return
 	}

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -275,11 +276,11 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 
 	if runway, visual := strings.CutPrefix(id, "_VIS"); visual {
 		arrICAO := av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix)
-		rwy, ok := av.LookupRunway(arrICAO, runway)
+		rwy, ok := av.LookupRunway(db.Lookups{}, arrICAO, runway)
 		if !ok {
 			return nil, nil, ErrInvalidApproach
 		}
-		opp, ok := av.LookupOppositeRunway(arrICAO, runway)
+		opp, ok := av.LookupOppositeRunway(db.Lookups{}, arrICAO, runway)
 		if !ok {
 			opp.Threshold = rwy.Threshold
 		}
@@ -326,7 +327,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 	id, lahsoRunway, _ := strings.Cut(approach, "/LAHSO")
 
 	if lahsoRunway != "" {
-		if _, ok := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), lahsoRunway); !ok {
+		if _, ok := av.LookupRunway(db.Lookups{}, av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), lahsoRunway); !ok {
 			return speech.MakeUnableIntent("unable, we don't know that hold-short runway")
 		}
 	}
@@ -873,7 +874,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	// finishes cleaning up the descent assignment after that.
 	nav.Heading = Heading{}
 	nav.DeferredNavHeading = nil
-	rwy, _ := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
+	rwy, _ := av.LookupRunway(db.Lookups{}, av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	profileFloor := float32(rwy.Elevation) + 900
 	preserved := Altitude{}
 	if a := nav.Altitude.Assigned; a != nil && *a < nav.FlightState.Altitude && *a >= profileFloor {
@@ -1232,7 +1233,7 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 		return nil
 	}
 
-	rwy, _ := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
+	rwy, _ := av.LookupRunway(db.Lookups{}, av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	finalPoint, hasFinalPoint := visualRoutePointAtDistance(joinPoint.route, 3, nmPerLong)
 	thresholdAlt := rwy.Elevation + rwy.ThresholdCrossingHeight
 	final3nmAlt := float32(rwy.Elevation) + 900

@@ -9,7 +9,7 @@ import (
 	"slices"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/math"
@@ -430,7 +430,7 @@ func (s *scopeView) updateZoom(extent math.Extent2D, ss *client.SimState) {
 // scopeRotation returns the scope's up direction, following the radar system
 // the facility runs: ERAM is true north up, STARS is magnetic north up.
 func scopeRotation(ss *client.SimState) float32 {
-	if av.DB.IsARTCC(ss.Facility) {
+	if db.DB.IsARTCC(ss.Facility) {
 		return 0
 	}
 	return ss.MagneticVariation

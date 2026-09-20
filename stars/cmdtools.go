@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
@@ -99,7 +100,7 @@ func registerToolsCommands() {
 			if da == "" {
 				return ErrIllegalFunction
 			}
-			ap, ok := av.ICAOAirportToFAA(da)
+			ap, ok := db.ICAOAirportToFAA(da)
 			if !ok {
 				panic(da)
 			}
@@ -469,7 +470,7 @@ func registerToolsCommands() {
 			"*T[FIELD]", func(sp *Pane, ctx *scope.Context, fixBeaconOrACID string) error {
 				if func() bool {
 					// Fix takes priority over ACID in the unlikely chance that there are both of the same name.
-					if p, ok := av.DB.LookupWaypoint(fixBeaconOrACID); ok {
+					if p, ok := db.DB.LookupWaypoint(fixBeaconOrACID); ok {
 						rbl.P[1].Loc = p
 						return true
 					}

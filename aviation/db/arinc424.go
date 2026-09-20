@@ -2,11 +2,12 @@
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package db
 
 import (
 	"bufio"
 	"fmt"
+	av "github.com/mmp/vice/aviation"
 	"io"
 	"slices"
 	"strconv"
@@ -57,7 +58,7 @@ func parseStationDeclination(s []byte) (float32, bool) {
 }
 
 // parseMagneticCourse converts a course given in tenths of a degree to whole
-// degrees. Waypoint.Heading uses 0 to mean "unset", so a course that rounds
+// degrees. av.Waypoint.Heading uses 0 to mean "unset", so a course that rounds
 // down to zero is recorded as 360.
 func parseMagneticCourse(s []byte) int16 {
 	if hdg := int16((parseInt(s) + 5) / 10); hdg != 0 {
@@ -74,26 +75,26 @@ func printColumnHeader() {
 }
 
 type ARINC424Result struct {
-	Airports      map[ICAOAirportCode]FAAAirport
+	Airports      map[av.ICAOAirportCode]Airport
 	Navaids       map[string]Navaid
 	Fixes         map[string]Fix
-	Airways       map[string][]Airway
-	EnrouteHolds  map[string][]Hold
-	TerminalHolds map[ICAOAirportCode]map[string][]Hold
+	Airways       map[string][]av.Airway
+	EnrouteHolds  map[string][]av.Hold
+	TerminalHolds map[av.ICAOAirportCode]map[string][]av.Hold
 }
 
 func ParseARINC424(r io.Reader) ARINC424Result {
 	start := time.Now()
 
 	result := ARINC424Result{
-		Airports:      make(map[ICAOAirportCode]FAAAirport),
+		Airports:      make(map[av.ICAOAirportCode]Airport),
 		Navaids:       make(map[string]Navaid),
 		Fixes:         make(map[string]Fix),
-		Airways:       make(map[string][]Airway),
-		EnrouteHolds:  make(map[string][]Hold),
-		TerminalHolds: make(map[ICAOAirportCode]map[string][]Hold),
+		Airways:       make(map[string][]av.Airway),
+		EnrouteHolds:  make(map[string][]av.Hold),
+		TerminalHolds: make(map[av.ICAOAirportCode]map[string][]av.Hold),
 	}
-	airwayWIP := make(map[string]AirwayFix)
+	airwayWIP := make(map[string]av.AirwayFix)
 
 	parseLLDigits := func(d, m, s []byte) float32 {
 		deg, err := strconv.Atoi(string(d))
@@ -190,11 +191,11 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 	// runway transition's first waypoint is named for the runway's departure
 	// end and the CIFP lists an airport's SIDs before its runways.
 	var sidRecs [][]ssaRecord
-	sidAirport := ICAOAirportCode("")
+	sidAirport := av.ICAOAirportCode("")
 	flushSIDs := func() {
 		ap, ok := result.Airports[sidAirport]
 		if ok && len(sidRecs) > 0 {
-			ap.SIDs = make(map[string]SID)
+			ap.SIDs = make(map[string]av.SID)
 			for _, recs := range sidRecs {
 				id := recs[0].id
 				if _, ok := ap.SIDs[id]; ok {
@@ -305,14 +306,14 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 			case 'P': // holding patterns
 				hold, ok := parseHoldingPattern(line)
 				if ok {
-					regionCode := ICAOAirportCode(strings.TrimSpace(string(line[6:10])))
-					if regionCode == ICAOAirportCode("ENRT") {
+					regionCode := av.ICAOAirportCode(strings.TrimSpace(string(line[6:10])))
+					if regionCode == av.ICAOAirportCode("ENRT") {
 						// Enroute hold
 						result.EnrouteHolds[hold.Fix] = append(result.EnrouteHolds[hold.Fix], hold)
 					} else {
 						// Terminal hold - regionCode is airport ICAO
 						if result.TerminalHolds[regionCode] == nil {
-							result.TerminalHolds[regionCode] = make(map[string][]Hold)
+							result.TerminalHolds[regionCode] = make(map[string][]av.Hold)
 						}
 						result.TerminalHolds[regionCode][hold.Fix] = append(result.TerminalHolds[regionCode][hold.Fix], hold)
 					}
@@ -322,32 +323,32 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				route := strings.TrimSpace(string(line[13:18]))
 				seq := string(line[25:29])
 
-				level := func() AirwayLevel {
+				level := func() av.AirwayLevel {
 					switch line[45] {
 					case 'B', ' ':
-						return AirwayLevelAll
+						return av.AirwayLevelAll
 					case 'H':
-						return AirwayLevelHigh
+						return av.AirwayLevelHigh
 					case 'L':
-						return AirwayLevelLow
+						return av.AirwayLevelLow
 					default:
 						panic("unexpected airway level: " + string(line[45]))
 					}
 				}()
-				direction := func() AirwayDirection {
+				direction := func() av.AirwayDirection {
 					switch line[46] {
 					case 'F':
-						return AirwayDirectionForward
+						return av.AirwayDirectionForward
 					case 'B':
-						return AirwayDirectionBackward
+						return av.AirwayDirectionBackward
 					case ' ':
-						return AirwayDirectionAny
+						return av.AirwayDirectionAny
 					default:
 						panic("unexpected airway direction")
 					}
 				}()
 
-				fix := AirwayFix{
+				fix := av.AirwayFix{
 					Fix:       strings.TrimSpace(string(line[29:34])),
 					Level:     level,
 					Direction: direction,
@@ -355,7 +356,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				airwayWIP[seq] = fix
 
 				if line[40] == 'E' { // description code "end of airway"
-					a := Airway{Name: route}
+					a := av.Airway{Name: route}
 					for _, airway := range util.SortedMap(airwayWIP) { // order by sequence number, just in case
 						a.Fixes = append(a.Fixes, airway)
 					}
@@ -377,7 +378,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 			}
 
 		case 'P': // Airports
-			icao := ICAOAirportCode(strings.TrimSpace(string(line[6:10])))
+			icao := av.ICAOAirportCode(strings.TrimSpace(string(line[6:10])))
 			if icao != sidAirport {
 				flushSIDs()
 				sidAirport = icao
@@ -388,13 +389,13 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				location := parseLatLong(line[32:41], line[41:51])
 				elevation := parseInt(line[56:61])
 
-				result.Airports[icao] = FAAAirport{
+				result.Airports[icao] = Airport{
 					Id:        icao,
 					Elevation: elevation,
 					Location:  location,
 					// The ATA/IATA designator, which matches the FAA local
 					// code for every airport where both are known.
-					LocalCode: FAAAirportCode(strings.TrimSpace(string(line[13:16]))),
+					LocalCode: av.FAAAirportCode(strings.TrimSpace(string(line[13:16]))),
 				}
 
 			case 'C': // waypoint record 4.1.4
@@ -423,15 +424,15 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					}
 				}
 
-			case 'D': // SID 4.1.9
+			case 'D': // av.SID 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 
-				// Extract holds from SID procedure records (HF/HA/HM)
+				// Extract holds from av.SID procedure records (HF/HA/HM)
 				for _, rec := range recs {
 					if hold, ok := extractHoldsFromSSA(rec, id, "SID"); ok {
 						if result.TerminalHolds[icao] == nil {
-							result.TerminalHolds[icao] = make(map[string][]Hold)
+							result.TerminalHolds[icao] = make(map[string][]av.Hold)
 						}
 						result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
 					}
@@ -439,15 +440,15 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 
 				sidRecs = append(sidRecs, slices.Clone(recs))
 
-			case 'E': // STAR 4.1.9
+			case 'E': // av.STAR 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 
-				// Extract holds from STAR procedure records (HF/HA/HM)
+				// Extract holds from av.STAR procedure records (HF/HA/HM)
 				for _, rec := range recs {
 					if hold, ok := extractHoldsFromSSA(rec, id, "STAR"); ok {
 						if result.TerminalHolds[icao] == nil {
-							result.TerminalHolds[icao] = make(map[string][]Hold)
+							result.TerminalHolds[icao] = make(map[string][]av.Hold)
 						}
 						result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
 					}
@@ -456,7 +457,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				if star := parseSTAR(recs, result.Navaids); star != nil {
 					if result.Airports[icao].STARs == nil {
 						ap := result.Airports[icao]
-						ap.STARs = make(map[string]STAR)
+						ap.STARs = make(map[string]av.STAR)
 						result.Airports[icao] = ap
 					}
 					if _, ok := result.Airports[icao].STARs[id]; ok {
@@ -466,7 +467,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					result.Airports[icao].STARs[id] = *star
 				}
 
-			case 'F': // Approach 4.1.9
+			case 'F': // av.Approach 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 
@@ -474,7 +475,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				for _, rec := range recs {
 					if hold, ok := extractHoldsFromSSA(rec, id, "IAP"); ok {
 						if result.TerminalHolds[icao] == nil {
-							result.TerminalHolds[icao] = make(map[string][]Hold)
+							result.TerminalHolds[icao] = make(map[string][]av.Hold)
 						}
 						result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
 					}
@@ -486,7 +487,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					// before the approaches..
 					if result.Airports[icao].Approaches == nil {
 						ap := result.Airports[icao]
-						ap.Approaches = make(map[string]Approach)
+						ap.Approaches = make(map[string]av.Approach)
 						result.Airports[icao] = ap
 					}
 
@@ -515,7 +516,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				displacedDistance := parseInt(line[71:75])
 
 				ap := result.Airports[icao]
-				ap.Runways = append(ap.Runways, Runway{
+				ap.Runways = append(ap.Runways, av.Runway{
 					Id:                         rwy,
 					Heading:                    math.MagneticHeading(float32(parseInt(line[27:31])) / 10),
 					Threshold:                  parseLatLong(line[32:41], line[41:51]),
@@ -529,7 +530,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				if hold, ok := parseHoldingPattern(line); ok {
 					// Terminal hold at airport
 					if result.TerminalHolds[icao] == nil {
-						result.TerminalHolds[icao] = make(map[string][]Hold)
+						result.TerminalHolds[icao] = make(map[string][]av.Hold)
 					}
 					result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
 				}
@@ -633,18 +634,18 @@ func parseSSA(line []byte) ssaRecord {
 }
 
 // speedRestriction returns the record's speed limit, if it has one. 5.72, 5.261
-func (r ssaRecord) speedRestriction() (SpeedRestriction, bool) {
+func (r ssaRecord) speedRestriction() (av.SpeedRestriction, bool) {
 	if empty(r.speed) {
-		return SpeedRestriction{}, false
+		return av.SpeedRestriction{}, false
 	}
 	speed := float32(parseInt(r.speed))
 	switch r.speedLimitType {
 	case '+':
-		return MakeAtOrAboveSpeedRestriction(speed), true
+		return av.MakeAtOrAboveSpeedRestriction(speed), true
 	case '-':
-		return MakeAtOrBelowSpeedRestriction(speed), true
+		return av.MakeAtOrBelowSpeedRestriction(speed), true
 	default:
-		return MakeAtSpeedRestriction(speed), true
+		return av.MakeAtSpeedRestriction(speed), true
 	}
 }
 
@@ -654,7 +655,7 @@ func (r ssaRecord) speedRestriction() (SpeedRestriction, bool) {
 // lies along that navaid's radial: the radial names the line, which is
 // referenced to the station's declination rather than the local variation,
 // and the fix the leg leads to gives the direction along it.
-func (r ssaRecord) courseTermination(navaids map[string]Navaid) WaypointActionTermination {
+func (r ssaRecord) courseTermination(navaids map[string]Navaid) av.WaypointActionTermination {
 	crs := parseMagneticCourse(r.outboundMagneticCourse)
 	navaid := strings.TrimSpace(string(r.recommendedNavaid))
 	if n, ok := navaids[navaid]; ok && n.HasDeclination && !empty(r.theta) {
@@ -663,35 +664,35 @@ func (r ssaRecord) courseTermination(navaids map[string]Navaid) WaypointActionTe
 			opposite -= 360
 		}
 		if theta := parseMagneticCourse(r.theta); theta == crs || theta == opposite {
-			return WaypointActionTermination{Type: WaypointActionCourse, Course: theta, CourseFix: navaid}
+			return av.WaypointActionTermination{Type: av.WaypointActionCourse, Course: theta, CourseFix: navaid}
 		}
 	}
-	return WaypointActionTermination{Type: WaypointActionCourse, Course: crs}
+	return av.WaypointActionTermination{Type: av.WaypointActionCourse, Course: crs}
 }
 
-func turnDirection(td byte) TurnDirection {
+func turnDirection(td byte) av.TurnDirection {
 	switch td {
 	case 'L':
-		return TurnLeft
+		return av.TurnLeft
 	case 'R':
-		return TurnRight
+		return av.TurnRight
 	default:
-		return TurnClosest
+		return av.TurnClosest
 	}
 }
 
-func turnDirectionToArcDirection(td byte) DMEArcDirection {
+func turnDirectionToArcDirection(td byte) av.DMEArcDirection {
 	switch td {
 	case 'R':
-		return DMEArcDirectionClockwise
+		return av.DMEArcDirectionClockwise
 	case 'L':
-		return DMEArcDirectionCounterClockwise
+		return av.DMEArcDirectionCounterClockwise
 	default:
-		return DMEArcDirectionUnset
+		return av.DMEArcDirectionUnset
 	}
 }
 
-func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
+func (r *ssaRecord) GetWaypoint() (wp av.Waypoint, arc *av.DMEArc, ok bool) {
 	switch string(r.pathAndTermination) {
 	case "FM", "VM":
 		// these are headings off of the previous waypoint
@@ -735,7 +736,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	}
 
 	ok = true
-	wp = Waypoint{Fix: r.fix}
+	wp = av.Waypoint{Fix: r.fix}
 	if sr, ok := r.speedRestriction(); ok {
 		wp.SetSpeedRestriction(sr)
 	}
@@ -754,25 +755,25 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	if alt0 != 0 || alt1 != 0 {
 		switch r.altDescrip { // 5.29
 		case ' ':
-			wp.SetAltitudeRestriction(MakeAtAltitudeRestriction(float32(alt0)))
+			wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt0)))
 		case '+':
-			wp.SetAltitudeRestriction(MakeAtOrAboveAltitudeRestriction(float32(alt0)))
+			wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(float32(alt0)))
 		case '-':
-			wp.SetAltitudeRestriction(MakeAtOrBelowAltitudeRestriction(float32(alt0)))
+			wp.SetAltitudeRestriction(av.MakeAtOrBelowAltitudeRestriction(float32(alt0)))
 		case 'B': // "At or above to at or below"; The higher value will always appear first.
-			wp.SetAltitudeRestriction(MakeRangeAltitudeRestriction(float32(alt1) /* low */, float32(alt0) /* high */))
+			wp.SetAltitudeRestriction(av.MakeRangeAltitudeRestriction(float32(alt1) /* low */, float32(alt0) /* high */))
 		case 'G', 'I':
 			// glideslope alt in second, 'at' in first
-			wp.SetAltitudeRestriction(MakeAtAltitudeRestriction(float32(alt0)))
+			wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt0)))
 		case 'H', 'J':
 			// glideslope alt in second, 'at or above' in first
-			wp.SetAltitudeRestriction(MakeAtOrAboveAltitudeRestriction(float32(alt0)))
+			wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(float32(alt0)))
 		case 'V':
 			// coded vertical angle alt in second, 'at or above' in first
-			wp.SetAltitudeRestriction(MakeAtOrAboveAltitudeRestriction(float32(alt0)))
+			wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(float32(alt0)))
 		case 'X':
 			// coded vertical angle alt in second, 'at' in first
-			wp.SetAltitudeRestriction(MakeAtAltitudeRestriction(float32(alt0)))
+			wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt0)))
 		default:
 			panic("TODO alt descrip: " + string(r.altDescrip))
 		}
@@ -780,7 +781,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 
 	switch r.pathAndTermination {
 	case "AF": // arc to fix. w.r.t. a NAVAID
-		arc = &DMEArc{
+		arc = &av.DMEArc{
 			Fix:       strings.TrimSpace(string(r.recommendedNavaid)),
 			Radius:    float32(parseInt(r.rho)) / 10,
 			Direction: turnDirectionToArcDirection(r.turnDirection),
@@ -789,7 +790,7 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 	case "RF": // constant radius arc
 		// The CIFP gives the arc's center fix and radius directly; radius is
 		// in nautical miles with three decimal places, decimal point removed.
-		arc = &DMEArc{
+		arc = &av.DMEArc{
 			Fix:       strings.TrimSpace(string(r.centerFix)),
 			Radius:    float32(parseInt(r.arcRadius)) / 1000,
 			Direction: turnDirectionToArcDirection(r.turnDirection),
@@ -799,8 +800,8 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 		if alt0 == 0 {
 			fmt.Printf("%s/%s/%s: HF no alt0?\n", r.icao, r.id, r.fix)
 		}
-		pt := &ProcedureTurn{
-			Type:         PTType(util.Select(r.pathAndTermination == "HF", PTRacetrack, PTStandard45)),
+		pt := &av.ProcedureTurn{
+			Type:         av.PTType(util.Select(r.pathAndTermination == "HF", av.PTRacetrack, av.PTStandard45)),
 			RightTurns:   r.turnDirection != 'L',
 			ExitAltitude: alt0,
 		}
@@ -824,8 +825,8 @@ func (r *ssaRecord) GetWaypoint() (wp Waypoint, arc *DMEArc, ok bool) {
 
 func parseTransitions(recs []ssaRecord, navaids map[string]Navaid, log func(r ssaRecord) bool,
 	skip func(r ssaRecord) bool,
-	terminate func(r ssaRecord, transitions map[string]WaypointArray) bool) map[string]WaypointArray {
-	transitions := make(map[string]WaypointArray)
+	terminate func(r ssaRecord, transitions map[string]av.WaypointArray) bool) map[string]av.WaypointArray {
+	transitions := make(map[string]av.WaypointArray)
 
 	// nextLeg returns the record following recs[i] in the same transition.
 	nextLeg := func(i int) (ssaRecord, bool) {
@@ -861,8 +862,8 @@ func parseTransitions(recs []ssaRecord, navaids map[string]Navaid, log func(r ss
 				// track, correcting for wind. VM is a magnetic heading, which
 				// the wind is free to blow off course.
 				wp := &transitions[rec.transition][n-1]
-				wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
-					Actions: WaypointActions{Heading: WaypointHeadingAction{
+				wp.InitExtra().ActionGroups = append(wp.ActionGroups(), av.WaypointActionGroup{
+					Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{
 						Heading: hdg,
 						Turn:    turnDirection(rec.turnDirection),
 						Track:   rec.pathAndTermination == "FM",
@@ -886,8 +887,8 @@ func parseTransitions(recs []ssaRecord, navaids map[string]Navaid, log func(r ss
 			}
 
 			wp := &transitions[rec.transition][n-1]
-			wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
-				Actions: WaypointActions{Heading: WaypointHeadingAction{Heading: hdg}},
+			wp.InitExtra().ActionGroups = append(wp.ActionGroups(), av.WaypointActionGroup{
+				Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: hdg}},
 				Until:   next.courseTermination(navaids),
 			})
 		} else if rec.pathAndTermination == "FC" {
@@ -907,13 +908,13 @@ func parseTransitions(recs []ssaRecord, navaids map[string]Navaid, log func(r ss
 			}
 			n := len(transitions[rec.transition])
 			last := &transitions[rec.transition][n-1]
-			last.InitExtra().ActionGroups = append(last.ActionGroups(), WaypointActionGroup{
-				Actions: WaypointActions{Heading: WaypointHeadingAction{
+			last.InitExtra().ActionGroups = append(last.ActionGroups(), av.WaypointActionGroup{
+				Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{
 					Heading: parseMagneticCourse(rec.outboundMagneticCourse),
 					Track:   true,
 				}},
-				Until: WaypointActionTermination{
-					Type:     WaypointActionDistance,
+				Until: av.WaypointActionTermination{
+					Type:     av.WaypointActionDistance,
 					Distance: float32(parseInt(rec.routeDistance)) / 10,
 				},
 			})
@@ -947,8 +948,8 @@ func parseTransitions(recs []ssaRecord, navaids map[string]Navaid, log func(r ss
 				// Parallel to the course, it would never be intercepted;
 				// direct to the fix is the same thing.
 				wp := &transitions[rec.transition][n-1]
-				wp.InitExtra().ActionGroups = append(wp.ActionGroups(), WaypointActionGroup{
-					Actions: WaypointActions{Heading: WaypointHeadingAction{
+				wp.InitExtra().ActionGroups = append(wp.ActionGroups(), av.WaypointActionGroup{
+					Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{
 						Heading: hdg,
 						Track:   true,
 						Turn:    turnDirection(rec.turnDirection),
@@ -1006,13 +1007,13 @@ func parseTransitions(recs []ssaRecord, navaids map[string]Navaid, log func(r ss
 	return transitions
 }
 
-func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *STAR {
+func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *av.STAR {
 	transitions := parseTransitions(recs, navaids,
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
-		func(r ssaRecord, transitions map[string]WaypointArray) bool { return false })    // terminate
+		func(r ssaRecord, transitions map[string]av.WaypointArray) bool { return false }) // terminate
 
-	star := MakeSTAR()
+	star := av.MakeSTAR()
 	for t, wps := range transitions {
 		if len(t) > 3 && t[:2] == "RW" && t[2] >= '0' && t[2] <= '9' {
 			// it's a runway
@@ -1038,7 +1039,7 @@ func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *STAR {
 				sp := spliceTransition(wps, base)
 				if sp == nil {
 					//fmt.Printf("%s/%s [%s] [%s]: mismatching fixes for %s transition\n",
-					//recs[0].icao, recs[0].id, WaypointArray(wps).Encode(), WaypointArray(base).Encode(), t)
+					//recs[0].icao, recs[0].id, av.WaypointArray(wps).Encode(), av.WaypointArray(base).Encode(), t)
 				} else {
 					star.Transitions[t] = sp
 				}
@@ -1049,11 +1050,11 @@ func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *STAR {
 	return star
 }
 
-// parseSID assembles a SID from its records. Runway transitions are keyed by
+// parseSID assembles a av.SID from its records. av.Runway transitions are keyed by
 // the airport's runways; a transition coded for both parallels (RW04B)
 // applies to each that has none of its own.
-func parseSID(recs []ssaRecord, icao ICAOAirportCode, runways []Runway, navaids map[string]Navaid) *SID {
-	sid := MakeSID()
+func parseSID(recs []ssaRecord, icao av.ICAOAirportCode, runways []av.Runway, navaids map[string]Navaid) *av.SID {
+	sid := av.MakeSID()
 
 	// Group the records by transition, in file order. The key includes the
 	// route type since the common route and an enroute transition may both
@@ -1064,7 +1065,7 @@ func parseSID(recs []ssaRecord, icao ICAOAirportCode, runways []Runway, navaids 
 		if rec.continuation != '0' && rec.continuation != '1' {
 			continue
 		}
-		if rec.routeType == '0' { // engine-out SID
+		if rec.routeType == '0' { // engine-out av.SID
 			continue
 		}
 		key := string(rec.routeType) + rec.transition
@@ -1074,7 +1075,7 @@ func parseSID(recs []ssaRecord, icao ICAOAirportCode, runways []Runway, navaids 
 		byTransition[key] = append(byTransition[key], rec)
 	}
 
-	bothParallels := make(map[string]WaypointArray)
+	bothParallels := make(map[string]av.WaypointArray)
 	for _, key := range keys {
 		routeType, transition := key[0], key[1:]
 		runwayTransition := strings.HasPrefix(transition, "RW")
@@ -1088,7 +1089,7 @@ func parseSID(recs []ssaRecord, icao ICAOAirportCode, runways []Runway, navaids 
 			for _, rwy := range sidTransitionRunways(transition, runways) {
 				r := wps.Clone()
 				if r[0].Fix == "" {
-					r[0].Fix = string(icao) + "-" + OppositeRunwayId(rwy)
+					r[0].Fix = string(icao) + "-" + av.OppositeRunwayId(rwy)
 				}
 				if strings.HasSuffix(transition, "B") {
 					bothParallels[rwy] = r
@@ -1109,20 +1110,20 @@ func parseSID(recs []ssaRecord, icao ICAOAirportCode, runways []Runway, navaids 
 	}
 
 	for name, wps := range sid.EnrouteTransitions {
-		sid.EnrouteTransitions[name] = spliceSIDTransition(sid.Common, wps)
+		sid.EnrouteTransitions[name] = av.SpliceSIDTransition(sid.Common, wps)
 	}
 
 	return sid
 }
 
-// sidTransitionRunways returns the airport's runways a SID runway transition
+// sidTransitionRunways returns the airport's runways a av.SID runway transition
 // applies to: RW04L is 4L, RW04 is 4, and RW04B is each of the parallels
 // 4L, 4R, and 4C.
-func sidTransitionRunways(transition string, runways []Runway) []string {
+func sidTransitionRunways(transition string, runways []av.Runway) []string {
 	id := strings.TrimPrefix(transition, "RW")
 	id = strings.TrimPrefix(id, "0")
 
-	ids := util.MapSlice(runways, func(r Runway) string { return r.Id })
+	ids := util.MapSlice(runways, func(r av.Runway) string { return r.Id })
 	if num, both := strings.CutSuffix(id, "B"); both {
 		return util.FilterSlice(ids, func(id string) bool {
 			return id != num && strings.TrimRight(id, "LRC") == num
@@ -1131,7 +1132,7 @@ func sidTransitionRunways(transition string, runways []Runway) []string {
 	return util.FilterSlice(ids, func(rwy string) bool { return rwy == id })
 }
 
-// parseSIDLegs converts the legs of one SID transition to waypoints. Legs
+// parseSIDLegs converts the legs of one av.SID transition to waypoints. Legs
 // that end somewhere other than a fix--a heading to an altitude, a course
 // to a DME distance, a track from a fix for a distance, a heading to
 // intercept a course or cross a radial, vectors--become action groups on
@@ -1140,16 +1141,16 @@ func sidTransitionRunways(transition string, runways []Runway) []string {
 // runway's departure end, returned as a waypoint with an empty Fix for the
 // caller to name.
 // Transitions with legs vice can't fly are reported as not ok.
-func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition bool) (wps WaypointArray, ok bool) {
+func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition bool) (wps av.WaypointArray, ok bool) {
 	// from returns the waypoint the next leg is flown from.
-	from := func() *Waypoint {
+	from := func() *av.Waypoint {
 		if len(wps) == 0 {
-			wps = append(wps, Waypoint{})
+			wps = append(wps, av.Waypoint{})
 		}
 		return &wps[len(wps)-1]
 	}
-	heading := func(rec ssaRecord, track bool) WaypointHeadingAction {
-		return WaypointHeadingAction{
+	heading := func(rec ssaRecord, track bool) av.WaypointHeadingAction {
+		return av.WaypointHeadingAction{
 			Heading: parseMagneticCourse(rec.outboundMagneticCourse),
 			Track:   track,
 			Turn:    turnDirection(rec.turnDirection),
@@ -1161,12 +1162,12 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 	// Otherwise--on the runway, or wherever a heading to an altitude
 	// ended--the leg's course is the fix's radial, which it joins from
 	// where it is.
-	fromFix := func(rec ssaRecord) (*Waypoint, WaypointHeadingAction) {
+	fromFix := func(rec ssaRecord) (*av.Waypoint, av.WaypointHeadingAction) {
 		h := heading(rec, true)
 		if n := len(wps); n > 0 && wps[n-1].Fix == rec.fix {
 			return &wps[n-1], h
 		} else if n == 0 && !runwayTransition {
-			wps = append(wps, Waypoint{Fix: rec.fix})
+			wps = append(wps, av.Waypoint{Fix: rec.fix})
 			return &wps[0], h
 		}
 		h.Fix = rec.fix
@@ -1212,7 +1213,7 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 	// legStart returns the waypoint the i'th record's leg is flown from and
 	// the heading action that flies it, for legs that are a heading (V),
 	// a course (C), or a track from a fix (F).
-	legStart := func(i int) (*Waypoint, WaypointHeadingAction) {
+	legStart := func(i int) (*av.Waypoint, av.WaypointHeadingAction) {
 		rec := recs[i]
 		switch rec.pathAndTermination[0] {
 		case 'F':
@@ -1225,14 +1226,14 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 			return from(), heading(rec, false)
 		}
 	}
-	addGroup := func(wp *Waypoint, group WaypointActionGroup) {
+	addGroup := func(wp *av.Waypoint, group av.WaypointActionGroup) {
 		wp.InitExtra().ActionGroups = append(wp.ActionGroups(), group)
 	}
 
 	// A speed limit on a leg that doesn't end at a fix applies until the
 	// next fix, so it is carried to that fix's waypoint.
-	var legSpeed *SpeedRestriction
-	addFix := func(wp Waypoint) {
+	var legSpeed *av.SpeedRestriction
+	addFix := func(wp av.Waypoint) {
 		if legSpeed != nil {
 			if wp.SpeedRestriction() == nil {
 				wp.SetSpeedRestriction(*legSpeed)
@@ -1254,7 +1255,7 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 			switch rec.waypointDescription[0] { // 5.17
 			case 'G': // the runway
 				from()
-			case 'A': // the airport: where a vector SID's enroute transitions begin
+			case 'A': // the airport: where a vector av.SID's enroute transitions begin
 			default:
 				wp, _, _ := rec.GetWaypoint()
 				addFix(wp)
@@ -1271,8 +1272,8 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 			wp, _, _ := rec.GetWaypoint()
 			if joinsCourse(i) {
 				start, h := legStart(i)
-				addGroup(start, WaypointActionGroup{
-					Actions: WaypointActions{Heading: h},
+				addGroup(start, av.WaypointActionGroup{
+					Actions: av.WaypointActions{Heading: h},
 					Until:   rec.courseTermination(navaids),
 				})
 			} else {
@@ -1292,9 +1293,9 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 				return nil, false
 			}
 			wp, h := legStart(i)
-			addGroup(wp, WaypointActionGroup{
-				Actions: WaypointActions{Heading: h},
-				Until:   WaypointActionTermination{Type: WaypointActionAltitude, Altitude: parseAltitude(rec.alt0), AtOrAbove: true},
+			addGroup(wp, av.WaypointActionGroup{
+				Actions: av.WaypointActions{Heading: h},
+				Until:   av.WaypointActionTermination{Type: av.WaypointActionAltitude, Altitude: parseAltitude(rec.alt0), AtOrAbove: true},
 			})
 			noteLegSpeed(rec)
 
@@ -1304,10 +1305,10 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 				return nil, false
 			}
 			wp, h := legStart(i)
-			addGroup(wp, WaypointActionGroup{
-				Actions: WaypointActions{Heading: h},
-				Until: WaypointActionTermination{
-					Type:        WaypointActionDME,
+			addGroup(wp, av.WaypointActionGroup{
+				Actions: av.WaypointActions{Heading: h},
+				Until: av.WaypointActionTermination{
+					Type:        av.WaypointActionDME,
 					DMEFix:      dmeFix,
 					DMEDistance: float32(parseInt(rec.routeDistance)) / 10,
 					AtOrAbove:   true,
@@ -1320,10 +1321,10 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 				return nil, false
 			}
 			wp, h := legStart(i)
-			addGroup(wp, WaypointActionGroup{
-				Actions: WaypointActions{Heading: h},
-				Until: WaypointActionTermination{
-					Type:     WaypointActionDistance,
+			addGroup(wp, av.WaypointActionGroup{
+				Actions: av.WaypointActions{Heading: h},
+				Until: av.WaypointActionTermination{
+					Type:     av.WaypointActionDistance,
 					Distance: float32(parseInt(rec.routeDistance)) / 10,
 				},
 			})
@@ -1341,8 +1342,8 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 				if hdg.Heading != crs {
 					// If it's parallel to the course, it's the course; direct to
 					// the fix is the same thing.
-					addGroup(from(), WaypointActionGroup{
-						Actions: WaypointActions{Heading: hdg},
+					addGroup(from(), av.WaypointActionGroup{
+						Actions: av.WaypointActions{Heading: hdg},
 						Until:   next.courseTermination(navaids),
 					})
 				}
@@ -1351,9 +1352,9 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 				// far away or not at all; the following leg joins the radial
 				// from wherever the aircraft is anyway.
 				if math.HeadingDifference(float32(hdg.Heading), float32(crs)) > 5 {
-					addGroup(from(), WaypointActionGroup{
-						Actions: WaypointActions{Heading: hdg},
-						Until:   WaypointActionTermination{Type: WaypointActionRadial, Radial: crs, RadialFix: next.fix},
+					addGroup(from(), av.WaypointActionGroup{
+						Actions: av.WaypointActions{Heading: hdg},
+						Until:   av.WaypointActionTermination{Type: av.WaypointActionRadial, Radial: crs, RadialFix: next.fix},
 					})
 				}
 			default:
@@ -1366,10 +1367,10 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 			if navaid == "" || empty(rec.theta) || empty(rec.outboundMagneticCourse) {
 				return nil, false
 			}
-			addGroup(from(), WaypointActionGroup{
-				Actions: WaypointActions{Heading: heading(rec, pt == "CR")},
-				Until: WaypointActionTermination{
-					Type:      WaypointActionRadial,
+			addGroup(from(), av.WaypointActionGroup{
+				Actions: av.WaypointActions{Heading: heading(rec, pt == "CR")},
+				Until: av.WaypointActionTermination{
+					Type:      av.WaypointActionRadial,
 					Radial:    parseMagneticCourse(rec.theta),
 					RadialFix: navaid,
 				},
@@ -1381,7 +1382,7 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 				return nil, false
 			}
 			wp, h := legStart(i)
-			addGroup(wp, WaypointActionGroup{Actions: WaypointActions{Heading: h}})
+			addGroup(wp, av.WaypointActionGroup{Actions: av.WaypointActions{Heading: h}})
 
 		default:
 			return nil, false
@@ -1396,8 +1397,8 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 	return wps, true
 }
 
-func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
-	idx := slices.IndexFunc(base, func(wp Waypoint) bool { return wp.Fix == tr[len(tr)-1].Fix })
+func spliceTransition(tr av.WaypointArray, base av.WaypointArray) av.WaypointArray {
+	idx := slices.IndexFunc(base, func(wp av.Waypoint) bool { return wp.Fix == tr[len(tr)-1].Fix })
 	if idx == -1 {
 		return nil
 	}
@@ -1416,7 +1417,7 @@ func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
 		tr[len(tr)-1].SetFAF(true)
 	}
 
-	return append(WaypointArray(tr), base[idx+1:]...)
+	return append(av.WaypointArray(tr), base[idx+1:]...)
 }
 
 // fixLocation looks up a fix's location in the fixes map, falling back to navaids.
@@ -1434,7 +1435,7 @@ func fixLocation(name string, fixes map[string]Fix, navaids map[string]Navaid) (
 // the procedure turn of the central fix in the base transition. A T-bar
 // approach has a central IF/IAF fix with an HF racetrack, flanked by two
 // IAF transitions at roughly ±90° from the final approach course.
-func markTBarNoPT(transitions map[string]WaypointArray, recs []ssaRecord, fixes map[string]Fix, navaids map[string]Navaid) {
+func markTBarNoPT(transitions map[string]av.WaypointArray, recs []ssaRecord, fixes map[string]Fix, navaids map[string]Navaid) {
 	base := transitions[""]
 	if len(base) == 0 {
 		return
@@ -1514,11 +1515,11 @@ func markTBarNoPT(transitions map[string]WaypointArray, recs []ssaRecord, fixes 
 	selfTransition[ptIdx].InitExtra().ProcedureTurn.Entry180NoPT = true
 }
 
-func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Navaid) *Approach {
+func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Navaid) *av.Approach {
 	transitions := parseTransitions(recs, navaids,
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
-		func(r ssaRecord, transitions map[string]WaypointArray) bool {
+		func(r ssaRecord, transitions map[string]av.WaypointArray) bool {
 			if (r.fix == "" && len(transitions[""]) > 0) ||
 				r.waypointDescription[0] == 'G' /* field 40: runway as waypoint */ {
 				return true
@@ -1530,18 +1531,18 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 			return false
 		})
 
-	appr := Approach{Id: tidyFAAApproachId(recs[0].id)}
+	appr := av.Approach{Id: tidyFAAApproachId(recs[0].id)}
 
 	switch recs[0].id[0] {
 	case 'H', 'R':
-		appr.Type = RNAVApproach
+		appr.Type = av.RNAVApproach
 	case 'L':
-		appr.Type = LocalizerApproach
+		appr.Type = av.LocalizerApproach
 	case 'V', 'S':
-		appr.Type = VORApproach
+		appr.Type = av.VORApproach
 	default:
 		// TODO? 'B': Localizer Back Course, 'X': LDA
-		appr.Type = ILSApproach
+		appr.Type = av.ILSApproach
 	}
 
 	// RZ22L -> 22L, IC32 -> 32C
@@ -1573,7 +1574,7 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 	markTBarNoPT(transitions, recs, fixes, navaids)
 
 	if len(transitions) == 1 {
-		appr.Waypoints = []WaypointArray{transitions[""]}
+		appr.Waypoints = []av.WaypointArray{transitions[""]}
 	} else {
 		base := transitions[""]
 
@@ -1582,7 +1583,7 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 				sp := spliceTransition(w, base)
 				if sp == nil {
 					//fmt.Printf("%s [%s] [%s]: mismatching fixes for %s transition\n",
-					//recs[0].icao, WaypointArray(w).Encode(), WaypointArray(base).Encode(), t)
+					//recs[0].icao, av.WaypointArray(w).Encode(), av.WaypointArray(base).Encode(), t)
 				} else {
 					appr.Waypoints = append(appr.Waypoints, sp)
 				}
@@ -1594,16 +1595,16 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 }
 
 // parseHoldingPattern extracts a holding pattern from an ARINC-424 record
-func parseHoldingPattern(line []byte) (Hold, bool) {
+func parseHoldingPattern(line []byte) (av.Hold, bool) {
 	// Validate record type - must be 'S' (Standard)
 	if line[0] != 'S' {
-		return Hold{}, false
+		return av.Hold{}, false
 	}
 
-	// Check section code: 'E' (Enroute) or 'P' (Airport)
+	// Check section code: 'E' (Enroute) or 'P' (av.Airport)
 	sectionCode := line[4]
 	if sectionCode != 'E' && sectionCode != 'P' {
-		return Hold{}, false
+		return av.Hold{}, false
 	}
 
 	// Check subsection code: must be 'P' (Holding Pattern)
@@ -1615,21 +1616,21 @@ func parseHoldingPattern(line []byte) (Hold, bool) {
 		subsectionCode = line[12]
 	}
 	if subsectionCode != 'P' {
-		return Hold{}, false
+		return av.Hold{}, false
 	}
 
 	// Ignore continuation records
 	continuation := line[38]
 	if continuation != '0' && continuation != '1' {
-		return Hold{}, false
+		return av.Hold{}, false
 	}
 
-	var h Hold
+	var h av.Hold
 
 	// Fix identifier (columns 30-34)
 	h.Fix = strings.TrimSpace(string(line[29:34]))
 	if h.Fix == "" {
-		return Hold{}, false
+		return av.Hold{}, false
 	}
 
 	// Inbound holding course (columns 40-43)
@@ -1647,11 +1648,11 @@ func parseHoldingPattern(line []byte) (Hold, bool) {
 	// Turn direction (column 44)
 	switch line[43] {
 	case 'L':
-		h.TurnDirection = TurnLeft
+		h.TurnDirection = av.TurnLeft
 	case 'R':
-		h.TurnDirection = TurnRight
+		h.TurnDirection = av.TurnRight
 	default:
-		return Hold{}, false // Turn direction is required
+		return av.Hold{}, false // Turn direction is required
 	}
 
 	// Leg length (columns 45-47) - distance based
@@ -1680,28 +1681,28 @@ func parseHoldingPattern(line []byte) (Hold, bool) {
 	return h, true
 }
 
-// extractHoldsFromSSA extracts Hold records from procedure waypoints (HF, HA, HM path terminators)
+// extractHoldsFromSSA extracts av.Hold records from procedure waypoints (HF, HA, HM path terminators)
 // procName is the procedure identifier (e.g., "ILS06", "CAMRN5")
 // procType is the procedure type (e.g., "IAP", "STAR", "SID")
-func extractHoldsFromSSA(rec ssaRecord, procName, procType string) (Hold, bool) {
+func extractHoldsFromSSA(rec ssaRecord, procName, procType string) (av.Hold, bool) {
 	// Only extract from HF, HA, HM path terminators
 	if rec.pathAndTermination != "HF" && rec.pathAndTermination != "HA" && rec.pathAndTermination != "HM" {
-		return Hold{}, false
+		return av.Hold{}, false
 	}
 
-	var h Hold
+	var h av.Hold
 	h.Fix = rec.fix
 	if h.Fix == "" {
-		return Hold{}, false
+		return av.Hold{}, false
 	}
 
 	// Turn direction
 	if rec.turnDirection == 'R' {
-		h.TurnDirection = TurnRight
+		h.TurnDirection = av.TurnRight
 	} else if rec.turnDirection == 'L' {
-		h.TurnDirection = TurnLeft
+		h.TurnDirection = av.TurnLeft
 	} else {
-		return Hold{}, false // Turn direction is required
+		return av.Hold{}, false // Turn direction is required
 	}
 
 	// Inbound magnetic course (from outboundMagneticCourse field per ARINC-424)

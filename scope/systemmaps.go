@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
@@ -54,8 +55,8 @@ func SystemMaps(spec SystemMapSpec) []Map {
 		util.MapSlice(fa.Filters.Handoff, func(r sim.HandoffFilterRegion) av.AirspaceVolume { return r.AirspaceVolume }))
 
 	g.addMVAs()
-	g.addClassAirspace(av.DB.BravoAirspace, "B")
-	g.addClassAirspace(av.DB.CharlieAirspace, "C")
+	g.addClassAirspace(db.DB.BravoAirspace, "B")
+	g.addClassAirspace(db.DB.CharlieAirspace, "C")
 
 	g.id = 801
 	g.addRadarCoverage()
@@ -147,7 +148,7 @@ func (g *systemMapGen) addMVAs() {
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
 
-		for _, mva := range av.DB.MVAs[g.spec.Facility] {
+		for _, mva := range db.DB.MVAs[g.spec.Facility] {
 			ld.AddLineLoop(mva.ExteriorRing)
 			p := math.Extent2DFromPoints(mva.ExteriorRing).Center()
 			ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
@@ -189,7 +190,7 @@ func (g *systemMapGen) addATPAVolumes() {
 	for _, name := range util.SortedMapKeys(g.spec.ArrivalAirports) {
 		ap := g.spec.Airports[name]
 		for rwy, vol := range util.SortedMap(ap.ATPAVolumes) {
-			label := "A" + av.AirportDisplayId(name) + rwy
+			label := "A" + db.AirportDisplayId(name) + rwy
 			if len(label) > 7 {
 				label = label[:7]
 			}

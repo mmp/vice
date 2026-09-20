@@ -14,6 +14,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
@@ -208,7 +209,7 @@ func (sp *Pane) drawVFRAirports(ctx *scope.Context, transforms scope.Transformat
 
 	for name := range ctx.Client.State.DepartureAirports {
 		if ap := ctx.Client.State.Airports[name]; ap.VFRRateSum() > 0 {
-			pll := av.DB.Airports[name].Location
+			pll := db.DB.Airports[name].Location
 			pw := transforms.WindowFromLatLongP(pll)
 			ld.AddCircle(pw, 10, 32)
 
@@ -485,7 +486,7 @@ func (sp *Pane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.T
 				if arr.STAR != "" {
 					// Check all airports this arrival goes to
 					for airport := range arr.RunwayWaypoints {
-						for _, holds := range av.DB.TerminalHolds[airport] {
+						for _, holds := range db.DB.TerminalHolds[airport] {
 							for _, h := range holds {
 								if h.Procedure == arr.STAR {
 									scope.DrawHoldPattern(ctx.NmPerLongitude, ctx.MagneticVariation, transforms, h, color, td, ld, style, drawn, drawnHolds)
@@ -550,15 +551,15 @@ func (sp *Pane) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.
 					}
 
 					// Draw holds associated with this approach
-					for _, holds := range av.DB.TerminalHolds[rwy.Airport] {
+					for _, holds := range db.DB.TerminalHolds[rwy.Airport] {
 						for _, h := range holds {
 							if h.Procedure == name {
 								// Missed approach point
 								scope.DrawHoldPattern(ctx.NmPerLongitude, ctx.MagneticVariation, transforms, h, color, td, ld, style, drawn, drawnHolds)
 
 								// Dashed line from airport to the missed approach point
-								pMissed, _ := av.DB.LookupWaypoint(h.Fix)
-								pAp := av.DB.Airports[rwy.Airport].Location
+								pMissed, _ := db.DB.LookupWaypoint(h.Fix)
+								pAp := db.DB.Airports[rwy.Airport].Location
 								ld.AddDashedLine(pAp, pMissed, .005, .0075, color)
 							}
 						}

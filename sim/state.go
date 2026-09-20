@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -214,7 +215,7 @@ func makeDerivedState(s *Sim) DerivedState {
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
 			ClearedForApproach:        ac.Nav.Approach.Cleared,
 			Approach:                  approach,
-			Fixes:                     ac.GetSTTFixes(av.DB.IsARTCC(s.State.Facility)),
+			Fixes:                     ac.GetSTTFixes(db.DB.IsARTCC(s.State.Facility)),
 			RouteFixes:                ac.GetRouteFixes(),
 			ExpectedDirectFix:         ac.Nav.ExpectedDirectFix,
 			SID:                       ac.SID,
@@ -229,7 +230,7 @@ func makeDerivedState(s *Sim) DerivedState {
 				s.isVirtualController(ac.NASFlightPlan.TrackingController),
 		}
 
-		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+		if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
 			rt.CWTCategory = perf.Category.CWT
 		}
 
@@ -389,7 +390,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		if ap.VFRRateSum() > 0 {
 			ss.DepartureAirports[name] = nil
 
-			ap := av.DB.Airports[name]
+			ap := db.DB.Airports[name]
 			windDir := model.Lookup(ap.Location, float32(ap.Elevation), startTime).WindDirection()
 			if rwy, _ := ap.SelectBestRunway(windDir, ss.MagneticVariation); rwy != nil {
 				ss.VFRRunways[name] = *rwy
@@ -431,16 +432,16 @@ func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 		return ap.Location, true
 	} else if p, ok := ss.Fixes[s]; ok {
 		return p, true
-	} else if n, ok := av.DB.Navaids[s]; ok {
+	} else if n, ok := db.DB.Navaids[s]; ok {
 		return n.Location, ok
-	} else if ap, ok := av.DB.Airports[av.ICAOAirportCode(s)]; ok {
+	} else if ap, ok := db.DB.Airports[av.ICAOAirportCode(s)]; ok {
 		return ap.Location, ok
-	} else if f, ok := av.DB.Fixes[s]; ok {
+	} else if f, ok := db.DB.Fixes[s]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	} else if ap, rwy, ok := strings.Cut(s, "/"); ok {
-		if ap, ok := av.DB.Airports[av.ICAOAirportCode(ap)]; ok {
+		if ap, ok := db.DB.Airports[av.ICAOAirportCode(ap)]; ok {
 			if idx := slices.IndexFunc(ap.Runways, func(r av.Runway) bool { return r.Id == rwy }); idx != -1 {
 				return ap.Runways[idx].Threshold, true
 			}
@@ -451,24 +452,24 @@ func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 
 // Airways returns the airways published under the given name.
 func (ss *CommonState) Airways(name string) ([]av.Airway, bool) {
-	aw, ok := av.DB.Airways[name]
+	aw, ok := db.DB.Airways[name]
 	return aw, ok
 }
 
 func (ss *CommonState) Similar(fix string) []string {
 	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(ss.Fixes), nil, nil)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Navaids), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Airports), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Fixes), d1, d2)
 	return util.Select(len(d1) > 0, d1, d2)
 }
 
 func (ss *CommonState) LocateDME(s string) (math.Point2LL, int, bool) {
-	return av.DB.LookupDME(s)
+	return db.DB.LookupDME(s)
 }
 
 func (ss *CommonState) Declination(s string) (float32, bool) {
-	return av.DB.Declination(s)
+	return db.DB.Declination(s)
 }
 
 ///////////////////////////////////////////////////////////////////////////

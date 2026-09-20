@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
 )
@@ -28,20 +29,20 @@ import (
 // data says. Listing the flow at all is what makes it a way into KMSP, so it is
 // enabled here exactly as MakeLaunchConfig would leave it.
 func publishedProviderTestSim(t *testing.T, start Time) *Sim {
-	oldDB := av.DB
-	av.DB = &av.StaticDatabase{
-		Airports: map[av.ICAOAirportCode]av.FAAAirport{
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Airports: map[av.ICAOAirportCode]db.Airport{
 			"KMSP": {Id: "KMSP", Location: math.Point2LL{-93.2, 44.9}},
 			"KATL": {Id: "KATL", Location: math.Point2LL{-84.4, 33.6}},
 			"KORD": {Id: "KORD", Location: math.Point2LL{-87.9, 42.0}},
 			"KDEN": {Id: "KDEN", Location: math.Point2LL{-104.7, 39.9}},
 		},
-		Fixes: map[string]av.Fix{
+		Fixes: map[string]db.Fix{
 			"DEPSE": {Id: "DEPSE", Location: math.Point2LL{-92.0, 44.0}},
 			"DEPSW": {Id: "DEPSW", Location: math.Point2LL{-94.5, 44.0}},
 		},
 	}
-	t.Cleanup(func() { av.DB = oldDB })
+	t.Cleanup(func() { db.DB = oldDB })
 
 	s := NewTestSim(testLogger())
 	s.StartTime = start

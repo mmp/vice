@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/util"
@@ -31,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	av.InitDB()
+	db.InitDB()
 
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")

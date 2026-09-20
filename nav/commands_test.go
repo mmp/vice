@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 )
@@ -610,7 +611,7 @@ func setupClearedVisual(t *testing.T, runway string) *FlightTest {
 		InitialSpeed:     200,
 	})
 
-	rwy, ok := av.LookupRunway("KJFK", runway)
+	rwy, ok := av.LookupRunway(db.Lookups{}, "KJFK", runway)
 	if !ok {
 		t.Fatalf("unknown runway KJFK/%s", runway)
 	}

@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 	"golang.org/x/sync/errgroup"
@@ -320,7 +320,7 @@ func mergeMETAR(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) (map[strin
 // scraped records so that the merge below sorts, dedups, and re-compresses them
 // along with everything else.
 func foldRenamedStations(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) error {
-	for previous, current := range av.RenamedAirports {
+	for previous, current := range db.RenamedAirports {
 		if !cm.HasAirport(string(previous)) {
 			continue
 		}

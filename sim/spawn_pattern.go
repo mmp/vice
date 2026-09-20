@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/util"
@@ -65,7 +66,7 @@ func (s *Sim) bestRunwayForWind(airport av.ICAOAirportCode) string {
 // airport based on current wind conditions. This ensures pattern aircraft
 // and VFR arrivals always agree on runway selection.
 func (s *Sim) currentVFRRunway(airport av.ICAOAirportCode) (rwy, opp av.Runway, ok bool) {
-	faaAP, found := av.DB.Airports[airport]
+	faaAP, found := db.DB.Airports[airport]
 	if !found {
 		return av.Runway{}, av.Runway{}, false
 	}
@@ -193,7 +194,7 @@ func (s *Sim) spawnPatternAircraft() {
 			}
 		}
 
-		faaAP, ok := av.DB.Airports[name]
+		faaAP, ok := db.DB.Airports[name]
 		if !ok {
 			continue
 		}
@@ -224,7 +225,7 @@ func (s *Sim) spawnPatternAircraft() {
 			if ac == nil {
 				continue
 			}
-			perf, ok := av.DB.AircraftPerformance[acType]
+			perf, ok := db.DB.AircraftPerformance[acType]
 			if !ok {
 				ac = nil
 				continue
@@ -416,7 +417,7 @@ func (s *Sim) patternConflictsWithLaunch(airport av.ICAOAirportCode) bool {
 func (s *Sim) resetPatternLap(ac *Aircraft) {
 	airport := ac.FlightPlan.DepartureAirport
 
-	faaAP, ok := av.DB.Airports[airport]
+	faaAP, ok := db.DB.Airports[airport]
 	if !ok {
 		s.lg.Warn("no FAA airport for pattern reset", slog.String("airport", string(airport)))
 		return
@@ -518,7 +519,7 @@ func (s *Sim) enterPattern(ac *Aircraft, airport av.ICAOAirportCode) {
 		s.lg.Warn("enterPattern: no runway", slog.String("airport", string(airport)))
 		return
 	}
-	faaAP, ok := av.DB.Airports[airport]
+	faaAP, ok := db.DB.Airports[airport]
 	if !ok {
 		return
 	}
@@ -699,7 +700,7 @@ func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
 	if !ok {
 		return nil
 	}
-	faaAP, ok := av.DB.Airports[airport]
+	faaAP, ok := db.DB.Airports[airport]
 	if !ok {
 		return nil
 	}

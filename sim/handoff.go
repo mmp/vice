@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -714,7 +715,7 @@ func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID, minutes int) (err error) 
 	waypoints := []av.Waypoint(ac.Nav.Waypoints)
 	waypointPairs := []math.Point2LL{}
 	for _, wyp := range waypoints {
-		if _, ok := av.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
+		if _, ok := db.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
 			waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
 		}
 	}
@@ -1058,7 +1059,7 @@ func (r *HandoffFilterRegion) Finalize(loc av.Locator, e *util.ErrorLogger) {
 
 // engineClass returns the adaptation engine vocabulary for an aircraft type.
 func engineClass(acType string) string {
-	switch av.DB.AircraftPerformance[acType].Engine.AircraftType {
+	switch db.DB.AircraftPerformance[acType].Engine.AircraftType {
 	case "J":
 		return "jet"
 	case "T":

@@ -19,6 +19,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/traffic"
 	"github.com/parquet-go/parquet-go"
 )
@@ -173,7 +174,7 @@ type substitute struct {
 
 // importer accumulates the flights read from the source files.
 type importer struct {
-	airports    map[av.ICAOAirportCode]av.FAAAirport
+	airports    map[av.ICAOAirportCode]db.Airport
 	performance map[string]av.AircraftPerformance
 	airlines    map[string]av.Airline
 
@@ -224,7 +225,7 @@ type importer struct {
 	repairedTypes map[string]int64
 }
 
-func makeImporter(airports map[av.ICAOAirportCode]av.FAAAirport, performance map[string]av.AircraftPerformance,
+func makeImporter(airports map[av.ICAOAirportCode]db.Airport, performance map[string]av.AircraftPerformance,
 	airlines map[string]av.Airline) (*importer, error) {
 	donors := make(map[av.ICAOAirportCode]substitute, len(traffic.FlightDataSubstitutes))
 	for fictional, donor := range traffic.FlightDataSubstitutes {

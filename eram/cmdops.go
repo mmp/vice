@@ -15,6 +15,7 @@ import (
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
@@ -1120,10 +1121,10 @@ func lookupCommandAirport(airport string) (av.ICAOAirportCode, bool) {
 		return "", false
 	}
 	// Users type an airport's FAA id or, less often, its full ICAO id.
-	if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(airport)); ok {
+	if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(airport)); ok {
 		return ap.Id, true
 	}
-	if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(airport)); ok {
+	if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(airport)); ok {
 		return ap.Id, true
 	}
 	return "", false

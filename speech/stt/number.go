@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 )
 
 // This file holds the package's single numeric decoder: DecodeNumber reads
@@ -636,10 +636,10 @@ func removeDuplicateDigit(text string, valid func(int) bool) (int, bool) {
 // or lost in transcription (e.g., "one one zero" when the controller said
 // "two one zero").
 func adjustSpeedForPerformance(speed int, ac Aircraft) int {
-	if ac.AircraftType == "" || av.DB == nil {
+	if ac.AircraftType == "" || db.DB == nil {
 		return speed
 	}
-	perf, ok := av.DB.AircraftPerformance[ac.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
 		return speed
 	}

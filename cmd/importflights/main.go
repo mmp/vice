@@ -40,7 +40,7 @@ import (
 	"os"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/util"
 )
 
@@ -66,9 +66,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	av.InitDB()
+	db.InitDB()
 
-	imp, err := makeImporter(av.DB.Airports, av.DB.AircraftPerformance, av.DB.Airlines)
+	imp, err := makeImporter(db.DB.Airports, db.DB.AircraftPerformance, db.DB.Airlines)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)

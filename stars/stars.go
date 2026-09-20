@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -57,7 +58,7 @@ type Pane struct {
 
 	visibleTracks []sim.Track
 
-	mvaGrid *av.MVAGrid
+	mvaGrid *db.MVAGrid
 
 	Monitor string
 	Colors  MonitorColors
@@ -482,7 +483,7 @@ func (sp *Pane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg
 	sp.makeMaps(client, lg)
 	sp.makeSignificantPoints(client.State)
 
-	sp.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[client.State.Facility])
+	sp.mvaGrid = db.MakeMVAGrid(db.DB.MVAs[client.State.Facility])
 
 	var ok bool
 	if sp.Colors, ok = monitorColorSets[client.State.FacilityAdaptation.Monitor]; !ok {
@@ -500,7 +501,7 @@ func (sp *Pane) ResetSim(client *client.ControlClient, pl platform.Platform, lg 
 				CRDAPair: pair,
 				Source:   ap.CRDARegions[pair.SourceRegion],
 				Ghost:    ap.CRDARegions[pair.GhostRegion],
-				Airport:  av.FAAAirportCode(av.AirportDisplayId(name)),
+				Airport:  av.FAAAirportCode(db.AirportDisplayId(name)),
 				Index:    idx + 1, // 1-based
 			})
 		}
@@ -551,7 +552,7 @@ func (sp *Pane) ResetSim(client *client.ControlClient, pl platform.Platform, lg 
 	sp.lastHistoryTrackUpdate = sim.Time{}
 
 	sp.atmosGrid = nil
-	sp.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[client.State.Facility])
+	sp.mvaGrid = db.MakeMVAGrid(db.DB.MVAs[client.State.Facility])
 
 	sp.weatherRadar.Reset(lg)
 

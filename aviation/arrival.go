@@ -321,7 +321,7 @@ func (ar *Arrival) takeSTARWaypoints(db Database, spawnPoint string, e *util.Err
 			continue
 		}
 
-		star.Check(e)
+		star.Check(db, e)
 
 		if len(ar.Waypoints) == 0 {
 			ar.Waypoints = starWaypointsFrom(star, spawnPoint, e)
@@ -734,7 +734,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 		for ap, rwywp := range ar.RunwayWaypoints {
 			e.Push("Airport " + string(ap))
 
-			if err := CheckAirport("runway waypoints", ap); err != nil {
+			if err := db.CheckAirport("runway waypoints", ap); err != nil {
 				e.Error(err)
 				e.Pop()
 				continue
@@ -743,7 +743,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 			for rwy, wp := range rwywp {
 				e.Push("Runway " + rwy)
 
-				if _, ok := LookupRunway(ap, rwy); !ok {
+				if _, ok := LookupRunway(db, ap, rwy); !ok {
 					e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(ap))
 				}
 
@@ -813,8 +813,8 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 	for _, arrivalAirport := range ar.Airports {
 		e.Push("Arrival airport " + string(arrivalAirport))
 		for i := range ar.Airlines[arrivalAirport] {
-			ar.Airlines[arrivalAirport][i].Check(e)
-			if err := CheckAirport("departure", ar.Airlines[arrivalAirport][i].Airport); err != nil {
+			ar.Airlines[arrivalAirport][i].Check(db, e)
+			if err := db.CheckAirport("departure", ar.Airlines[arrivalAirport][i].Airport); err != nil {
 				e.Error(err)
 			}
 		}

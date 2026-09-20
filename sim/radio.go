@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
@@ -644,7 +645,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	}
 
 	var heavySuper string
-	if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
+	if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
 		if perf.WeightClass == "H" {
 			heavySuper = " heavy"
 		} else if perf.WeightClass == "J" {

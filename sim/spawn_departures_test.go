@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -20,7 +21,7 @@ import (
 const testNmPerLongitude = 60
 
 // installIntersectingRunwayFixture installs a synthetic airport "XTST" into
-// av.DB with (in nm coordinates): runway 9/27 running east from (0,0) to
+// db.DB with (in nm coordinates): runway 9/27 running east from (0,0) to
 // (2,0); runway 36/18 running north from (1,-1) to (1,1), crossing 9 at
 // (1,0); runway 8/26 parallel to 9, 5nm north; and runway 1/19 running
 // north from (2.8,0.3) to (2.8,2), crossing 9's extended centerline 0.8nm
@@ -29,17 +30,17 @@ func installIntersectingRunwayFixture(t *testing.T) {
 	t.Helper()
 
 	const airport = "XTST"
-	orig, ok := av.DB.Airports[airport]
+	orig, ok := db.DB.Airports[airport]
 	t.Cleanup(func() {
 		if ok {
-			av.DB.Airports[airport] = orig
+			db.DB.Airports[airport] = orig
 		} else {
-			delete(av.DB.Airports, airport)
+			delete(db.DB.Airports, airport)
 		}
 	})
 
 	nm := func(x, y float32) math.Point2LL { return math.NM2LL([2]float32{x, y}, testNmPerLongitude) }
-	av.DB.Airports[airport] = av.FAAAirport{
+	db.DB.Airports[airport] = db.Airport{
 		Id: airport,
 		Runways: []av.Runway{
 			{Id: "9", Threshold: nm(0, 0), Heading: 90},
@@ -57,7 +58,7 @@ func installIntersectingRunwayFixture(t *testing.T) {
 func TestRunwayIntersectionPoint(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
-	pt, ok := av.RunwayIntersectionPoint("XTST", "9", "36", testNmPerLongitude, 0)
+	pt, ok := av.RunwayIntersectionPoint(db.Lookups{}, "XTST", "9", "36", testNmPerLongitude, 0)
 	if !ok {
 		t.Fatal("no intersection found for crossing runways 9/36")
 	}
@@ -66,23 +67,23 @@ func TestRunwayIntersectionPoint(t *testing.T) {
 	}
 
 	// Dotted suffixes resolve to the physical runways.
-	if _, ok := av.RunwayIntersectionPoint("XTST", "9.All", "36.West", testNmPerLongitude, 0); !ok {
+	if _, ok := av.RunwayIntersectionPoint(db.Lookups{}, "XTST", "9.All", "36.West", testNmPerLongitude, 0); !ok {
 		t.Error("no intersection found with dotted-suffix runway IDs")
 	}
 
 	// Same runway, opposite direction, and parallel runways don't intersect.
 	for _, pair := range [][2]av.RunwayID{{"9", "9"}, {"9", "27"}, {"9", "8"}} {
-		if _, ok := av.RunwayIntersectionPoint("XTST", pair[0], pair[1], testNmPerLongitude, 1); ok {
+		if _, ok := av.RunwayIntersectionPoint(db.Lookups{}, "XTST", pair[0], pair[1], testNmPerLongitude, 1); ok {
 			t.Errorf("unexpected intersection for %s/%s", pair[0], pair[1])
 		}
 	}
 
 	// Runway 1 crosses 9's extended centerline 0.8nm past its end, so it
 	// only counts as intersecting with enough slop.
-	if _, ok := av.RunwayIntersectionPoint("XTST", "9", "1", testNmPerLongitude, 0.5); ok {
+	if _, ok := av.RunwayIntersectionPoint(db.Lookups{}, "XTST", "9", "1", testNmPerLongitude, 0.5); ok {
 		t.Error("unexpected intersection for 9/1 with 0.5nm slop")
 	}
-	if _, ok := av.RunwayIntersectionPoint("XTST", "9", "1", testNmPerLongitude, 1); !ok {
+	if _, ok := av.RunwayIntersectionPoint(db.Lookups{}, "XTST", "9", "1", testNmPerLongitude, 1); !ok {
 		t.Error("no intersection found for 9/1 with 1nm slop")
 	}
 }
@@ -90,7 +91,7 @@ func TestRunwayIntersectionPoint(t *testing.T) {
 func TestIntersectingRunways(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
-	rwys := av.IntersectingRunways("XTST", "9", testNmPerLongitude, 0)
+	rwys := av.IntersectingRunways(db.Lookups{}, "XTST", "9", testNmPerLongitude, 0)
 	for _, want := range []string{"36", "18"} {
 		if !slices.Contains(rwys, want) {
 			t.Errorf("IntersectingRunways = %v, missing %q", rwys, want)
@@ -109,7 +110,7 @@ func TestDepartureIntersectionHelpers(t *testing.T) {
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = testNmPerLongitude
 
-	pt, ok := av.RunwayIntersectionPoint("XTST", "9", "36", testNmPerLongitude, 0)
+	pt, ok := av.RunwayIntersectionPoint(db.Lookups{}, "XTST", "9", "36", testNmPerLongitude, 0)
 	if !ok {
 		t.Fatal("no intersection found for crossing runways 9/36")
 	}
@@ -746,23 +747,23 @@ func publishedDepartureSim() *Sim {
 	return s
 }
 
-// seedTestAirports adds airports to av.DB for the duration of the test: the
+// seedTestAirports adds airports to db.DB for the duration of the test: the
 // origin at the origin, KTGT due east, KEAS nearly so, KFAR due east but far
 // past KTGT, KNOR due north, KSOU due south, and KSOS a near neighbor of KSOU.
 func seedTestAirports(t *testing.T) {
 	codes := []av.ICAOAirportCode{"KORG", "KTGT", "KEAS", "KFAR", "KNOR", "KSOU", "KSOS"}
-	original := make(map[av.ICAOAirportCode]av.FAAAirport)
+	original := make(map[av.ICAOAirportCode]db.Airport)
 	for _, code := range codes {
-		if airport, ok := av.DB.Airports[code]; ok {
+		if airport, ok := db.DB.Airports[code]; ok {
 			original[code] = airport
 		}
 	}
 	t.Cleanup(func() {
 		for _, code := range codes {
 			if airport, ok := original[code]; ok {
-				av.DB.Airports[code] = airport
+				db.DB.Airports[code] = airport
 			} else {
-				delete(av.DB.Airports, code)
+				delete(db.DB.Airports, code)
 			}
 		}
 	})
@@ -770,43 +771,43 @@ func seedTestAirports(t *testing.T) {
 	nm := func(x, y float32) math.Point2LL {
 		return math.NM2LL([2]float32{x, y}, testNmPerLongitude)
 	}
-	av.DB.Airports["KORG"] = av.FAAAirport{Id: "KORG", Location: nm(0, 0)}
-	av.DB.Airports["KTGT"] = av.FAAAirport{Id: "KTGT", Location: nm(100, 0)}
-	av.DB.Airports["KEAS"] = av.FAAAirport{Id: "KEAS", Location: nm(80, 10)}
-	av.DB.Airports["KFAR"] = av.FAAAirport{Id: "KFAR", Location: nm(300, 0)}
-	av.DB.Airports["KNOR"] = av.FAAAirport{Id: "KNOR", Location: nm(0, 80)}
-	av.DB.Airports["KSOU"] = av.FAAAirport{Id: "KSOU", Location: nm(0, -80)}
-	av.DB.Airports["KSOS"] = av.FAAAirport{Id: "KSOS", Location: nm(10, -75)}
+	db.DB.Airports["KORG"] = db.Airport{Id: "KORG", Location: nm(0, 0)}
+	db.DB.Airports["KTGT"] = db.Airport{Id: "KTGT", Location: nm(100, 0)}
+	db.DB.Airports["KEAS"] = db.Airport{Id: "KEAS", Location: nm(80, 10)}
+	db.DB.Airports["KFAR"] = db.Airport{Id: "KFAR", Location: nm(300, 0)}
+	db.DB.Airports["KNOR"] = db.Airport{Id: "KNOR", Location: nm(0, 80)}
+	db.DB.Airports["KSOU"] = db.Airport{Id: "KSOU", Location: nm(0, -80)}
+	db.DB.Airports["KSOS"] = db.Airport{Id: "KSOS", Location: nm(10, -75)}
 }
 
 // seedTestRoutes replaces the route database entries from KORG to the given
 // airport for the duration of the test.
-func seedTestRoutes(t *testing.T, to av.ICAOAirportCode, routes []av.AirportPairRoute) {
-	pair := av.AirportPair{From: "KORG", To: to}
-	original, hadOriginal := av.DB.AirportPairRoutes[pair]
+func seedTestRoutes(t *testing.T, to av.ICAOAirportCode, routes []db.AirportPairRoute) {
+	pair := db.AirportPair{From: "KORG", To: to}
+	original, hadOriginal := db.DB.AirportPairRoutes[pair]
 	t.Cleanup(func() {
 		if hadOriginal {
-			av.DB.AirportPairRoutes[pair] = original
+			db.DB.AirportPairRoutes[pair] = original
 		} else {
-			delete(av.DB.AirportPairRoutes, pair)
+			delete(db.DB.AirportPairRoutes, pair)
 		}
 	})
-	av.DB.AirportPairRoutes[pair] = routes
+	db.DB.AirportPairRoutes[pair] = routes
 }
 
 // seedTestScrapedRoutes replaces the scraped route database entries for the
 // city pair for the duration of the test.
 func seedTestScrapedRoutes(t *testing.T, from, to av.ICAOAirportCode, routes []av.ScrapedRoute) {
-	pair := av.AirportPair{From: from, To: to}
-	original, hadOriginal := av.DB.ScrapedRoutes[pair]
+	pair := db.AirportPair{From: from, To: to}
+	original, hadOriginal := db.DB.ScrapedRoutes[pair]
 	t.Cleanup(func() {
 		if hadOriginal {
-			av.DB.ScrapedRoutes[pair] = original
+			db.DB.ScrapedRoutes[pair] = original
 		} else {
-			delete(av.DB.ScrapedRoutes, pair)
+			delete(db.DB.ScrapedRoutes, pair)
 		}
 	})
-	av.DB.ScrapedRoutes[pair] = routes
+	db.DB.ScrapedRoutes[pair] = routes
 }
 
 // A route the scenario gives for the city pair beats the route database and
@@ -845,7 +846,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	seedTestExits(t)
 	s := publishedDepartureSim()
 
-	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{
 		{Route: "KORG NORTH J111 KTGT", Type: "H"},
 	})
 	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
@@ -863,7 +864,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 
 	// A CDR names its departure fix explicitly even when the route string
 	// doesn't include the exit.
-	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{
 		{Route: "KORG ZZZZZ J111 KTGT", DepartureFix: "NORTH", Type: "CDR"},
 	})
 	placement, err = s.State.resolvePublishedDeparture("KORG", "30L",
@@ -880,7 +881,7 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	// fall back to the exit lying closest to the flight's direction rather
 	// than dropping it: a scenario that works one corner of an airport has no
 	// reason to model the gate a filed route happens to use.
-	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{
 		{Route: "KORG WSSST J22 KTGT", Type: "H"},
 	})
 	placement, err = s.State.resolvePublishedDeparture("KORG", "30L",
@@ -903,7 +904,7 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 	seedTestExits(t)
 	s := publishedDepartureSim()
 
-	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{
 		{Route: "KORG NORTH J111 KTGT", Type: "H", RNAVRequired: true},
 	})
 
@@ -934,7 +935,7 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 // 22R, so picking a category by rate sent most Atlanta flights out over the
 // water instead.
 func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = testNmPerLongitude
@@ -963,22 +964,22 @@ func TestResolvePublishedDepartureIgnoresRates(t *testing.T) {
 	}
 }
 
-// seedTestExits adds the NORTH, EAST, and EASTN fixes to av.DB for the
+// seedTestExits adds the NORTH, EAST, and EASTN fixes to db.DB for the
 // duration of the test: north and east of KORG, and one between the two.
 func seedTestExits(t *testing.T) {
 	fixes := []string{"NORTH", "EAST", "EASTN"}
-	original := make(map[string]av.Fix)
+	original := make(map[string]db.Fix)
 	for _, fix := range fixes {
-		if f, ok := av.DB.Fixes[fix]; ok {
+		if f, ok := db.DB.Fixes[fix]; ok {
 			original[fix] = f
 		}
 	}
 	t.Cleanup(func() {
 		for _, fix := range fixes {
 			if f, ok := original[fix]; ok {
-				av.DB.Fixes[fix] = f
+				db.DB.Fixes[fix] = f
 			} else {
-				delete(av.DB.Fixes, fix)
+				delete(db.DB.Fixes, fix)
 			}
 		}
 	})
@@ -986,9 +987,9 @@ func seedTestExits(t *testing.T) {
 	nm := func(x, y float32) math.Point2LL {
 		return math.NM2LL([2]float32{x, y}, testNmPerLongitude)
 	}
-	av.DB.Fixes["NORTH"] = av.Fix{Id: "NORTH", Location: nm(0, 20)}
-	av.DB.Fixes["EAST"] = av.Fix{Id: "EAST", Location: nm(20, 0)}
-	av.DB.Fixes["EASTN"] = av.Fix{Id: "EASTN", Location: nm(20, 10)}
+	db.DB.Fixes["NORTH"] = db.Fix{Id: "NORTH", Location: nm(0, 20)}
+	db.DB.Fixes["EAST"] = db.Fix{Id: "EAST", Location: nm(20, 0)}
+	db.DB.Fixes["EASTN"] = db.Fix{Id: "EASTN", Location: nm(20, 10)}
 }
 
 func TestCompatibleDeparturesSynthesizesPerExit(t *testing.T) {
@@ -1014,7 +1015,7 @@ func TestCompatibleDeparturesSynthesizesPerExit(t *testing.T) {
 // An exit whose routes are all for other aircraft is no way for this one to
 // leave, so it isn't offered as a candidate.
 func TestCompatibleDeparturesMindsAircraftClasses(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	s := publishedDepartureSim()
 	s.State.Airports["KORG"].DepartureRoutes["30L"] = map[av.ExitID]av.ExitRoutes{
@@ -1095,7 +1096,7 @@ func TestDepartureExitTakesTheFirstAlongTheRoute(t *testing.T) {
 // SID token, which may not be the SID the scenario flies for the gate--so a
 // stale revision on either side matches all the same.
 func TestDepartureExitJoinsTheSIDPath(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	for _, sid := range []string{"DEEZZ6", "DEEZZ5" /* stale in the scenario */} {
 		departures := []av.Departure{{Exit: "DEEZZ"}}
@@ -1141,7 +1142,7 @@ func TestDepartureExitJoinsTheSIDPath(t *testing.T) {
 // "MAUI5 OGG LNY ..." filings--unless it leads onto an airway: then it is the
 // airport's VOR, the airway's entry, and the flight goes out over it.
 func TestDepartureExitIgnoresTheAirportIdentifiers(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	departures := []av.Departure{{Exit: "BOS"}, {Exit: "JFK"}}
 	candidates := []candidateDeparture{{dep: &departures[0]}, {dep: &departures[1]}}
@@ -1171,7 +1172,7 @@ func TestDepartureExitIgnoresTheAirportIdentifiers(t *testing.T) {
 // flies the neighbor's route only as far as it is its own: the trailing
 // airport and STAR belong to the neighbor.
 func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = 45
@@ -1215,7 +1216,7 @@ func TestResolvePublishedDepartureRefusesABorrowedWrongWayGate(t *testing.T) {
 	seedTestExits(t)
 	// KSOS is a near neighbor of KSOU, but the only way it is left for goes
 	// the other way entirely.
-	seedTestRoutes(t, "KSOS", []av.AirportPairRoute{{Route: "KORG NORTH J1 KSOS", Type: "H"}})
+	seedTestRoutes(t, "KSOS", []db.AirportPairRoute{{Route: "KORG NORTH J1 KSOS", Type: "H"}})
 	s := publishedDepartureSim()
 
 	_, err := s.State.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KSOU", "B738",
@@ -1230,7 +1231,7 @@ func TestResolvePublishedDepartureRefusesABorrowedWrongWayGate(t *testing.T) {
 func TestResolvePublishedDepartureLocatesRouteWaypoints(t *testing.T) {
 	seedTestAirports(t)
 	seedTestExits(t)
-	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{{Route: "KORG NORTH J1 KTGT", Type: "H"}})
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{{Route: "KORG NORTH J1 KTGT", Type: "H"}})
 	s := publishedDepartureSim()
 
 	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
@@ -1259,7 +1260,7 @@ func TestResolvePublishedDepartureLocatesRouteWaypoints(t *testing.T) {
 }
 
 func TestDepartureRoute(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	vectors := av.WaypointArray{{Fix: "KATL-26L"}}
 	for _, tc := range []struct {
@@ -1468,9 +1469,9 @@ func TestDepartureRouteWaypointsStopAtTheCullDistance(t *testing.T) {
 		t.Errorf("route waypoints = %v, want %v", got, want)
 	}
 
-	av.DB.Airports["KOUT"] = av.FAAAirport{Id: "KOUT",
+	db.DB.Airports["KOUT"] = db.Airport{Id: "KOUT",
 		Location: math.NM2LL([2]float32{500, 0}, testNmPerLongitude)}
-	t.Cleanup(func() { delete(av.DB.Airports, "KOUT") })
+	t.Cleanup(func() { delete(db.DB.Airports, "KOUT") })
 
 	wps = s.State.departureRouteWaypoints("NORTH KFAR KOUT")
 	got = nil
@@ -1486,7 +1487,7 @@ func TestDepartureRouteWaypointsStopAtTheCullDistance(t *testing.T) {
 // night and loses by day; observed aircraft classes steer prop traffic onto
 // the routes props really file.
 func TestOrderScrapedRoutes(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	var night av.HourRanges
 	for _, hour := range []int{22, 23, 0, 1, 2, 3, 4, 5} {
@@ -1566,13 +1567,13 @@ func TestResolvePublishedDepartureCruiseLimits(t *testing.T) {
 		{Route: "EAST MISN TGTR4", Count: 100, MinAltitude: 6000, MaxAltitude: 37000},
 	})
 
-	target := av.DB.Airports["KTGT"]
+	target := db.DB.Airports["KTGT"]
 	crossing := av.Waypoint{Fix: "MISN"}
 	crossing.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(24000))
 	target.STARs = map[string]av.STAR{
 		"TGTR4": {Transitions: map[string]av.WaypointArray{"MISN": {crossing}}},
 	}
-	av.DB.Airports["KTGT"] = target
+	db.DB.Airports["KTGT"] = target
 
 	s := publishedDepartureSim()
 	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",

@@ -13,6 +13,7 @@ import (
 	"slices"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 )
 
 // calibration scores picking the nearest candidate against the ends the
@@ -59,13 +60,13 @@ func makeCalibration() *calibration {
 // observe scores both ends of one flight. The itinerary is consulted exactly as
 // resolveEndpoints consults it, so that what is measured is what would be used.
 func (c *calibration) observe(origin, destination trackEnd, route []av.ICAOAirportCode,
-	airports map[av.ICAOAirportCode]av.FAAAirport) {
+	airports map[av.ICAOAirportCode]db.Airport) {
 	from, to := routeEndpoints(route, origin, destination, airports)
 	c.observeEnd(origin, from, airports)
 	c.observeEnd(destination, to, airports)
 }
 
-func (c *calibration) observeEnd(e trackEnd, itinerary endpoint, airports map[av.ICAOAirportCode]av.FAAAirport) {
+func (c *calibration) observeEnd(e trackEnd, itinerary endpoint, airports map[av.ICAOAirportCode]db.Airport) {
 	icao, ap, distance, ok := e.nearest(airports)
 	if !ok {
 		return
@@ -88,7 +89,7 @@ func (c *calibration) observeEnd(e trackEnd, itinerary endpoint, airports map[av
 }
 
 // heightIndex buckets how far above the field the aircraft was.
-func heightIndex(e trackEnd, ap av.FAAAirport) int {
+func heightIndex(e trackEnd, ap db.Airport) int {
 	if e.onGround {
 		return 0
 	}

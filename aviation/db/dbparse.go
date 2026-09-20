@@ -1,8 +1,8 @@
-// aviation/dbparse.go
+// aviation/db/dbparse.go
 // Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package db
 
 import (
 	"archive/zip"
@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	av "github.com/mmp/vice/aviation"
 	"io"
 	"os"
 	"slices"
@@ -70,7 +71,7 @@ func mungeCSV(filename string, r io.Reader, fields []string, callback func([]str
 
 // airportLocalCodeOverrides patches FAA local identifiers the source data
 // has wrong; an empty value takes an airport's claim to a code away.
-var airportLocalCodeOverrides = map[ICAOAirportCode]FAAAirportCode{
+var airportLocalCodeOverrides = map[av.ICAOAirportCode]av.FAAAirportCode{
 	// The upstream row for LS45 (Entergy Waterford 3 Heliport) carries LS82's
 	// local code, which belongs to a different Louisiana heliport; FAA NASR
 	// lists both as distinct identifiers.
@@ -87,18 +88,18 @@ var airportLocalCodeOverrides = map[ICAOAirportCode]FAAAirportCode{
 // airportsWithoutLocalCode lists the FAA-region airports that have no FAA
 // location identifier at all: none of them appear in the FAA NASR APT data.
 // The fatal missing-local-code check in initLocalCodes skips them.
-var airportsWithoutLocalCode = map[ICAOAirportCode]bool{
+var airportsWithoutLocalCode = map[av.ICAOAirportCode]bool{
 	"KGWN": true, // Winn Army Community Hospital Helipad
 	"KMWN": true, // Mount Washington Observatory
 	"KNLW": true, // Naval Station Newport Helipad
 	"KNPI": true, // Site 8 NOLF
-	"KXTA": true, // Homey (Area 51) Airport
+	"KXTA": true, // Homey (Area 51) av.Airport
 	"KZ26": true, // Camp Roberts Army Heliport
-	"PAHE": true, // Healy Airport (not the NASR-listed Healy River/HRR, which is PAHV)
+	"PAHE": true, // Healy av.Airport (not the NASR-listed Healy River/HRR, which is PAHV)
 }
 
-func parseAirports() (map[ICAOAirportCode]FAAAirport, map[ICAOAirportCode]FAAAirport) {
-	airports := make(map[ICAOAirportCode]FAAAirport)
+func parseAirports() (map[av.ICAOAirportCode]Airport, map[av.ICAOAirportCode]Airport) {
+	airports := make(map[av.ICAOAirportCode]Airport)
 
 	// https://ourairports.com/data/
 	// Only load airports that have ICAO gps_codes so that we don't
@@ -109,7 +110,7 @@ func parseAirports() (map[ICAOAirportCode]FAAAirport, map[ICAOAirportCode]FAAAir
 	mungeCSV("airports", r,
 		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name", "iso_country", "type", "local_code"},
 		func(s []string) {
-			id := ICAOAirportCode(s[3]) // gps_code
+			id := av.ICAOAirportCode(s[3]) // gps_code
 			if id == "" || s[6] == "closed" {
 				return
 			}
@@ -128,11 +129,11 @@ func parseAirports() (map[ICAOAirportCode]FAAAirport, map[ICAOAirportCode]FAAAir
 			}
 
 			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
-			ap := FAAAirport{Id: id, Name: s[4], Country: s[5], Location: loc, Elevation: int(elevation)}
+			ap := Airport{Id: id, Name: s[4], Country: s[5], Location: loc, Elevation: int(elevation)}
 			// Local codes are only unique within the FAA's regions; elsewhere
 			// in the world they freely collide with FAA identifiers.
 			if ap.FAAControlled() {
-				ap.LocalCode = FAAAirportCode(s[7])
+				ap.LocalCode = av.FAAAirportCode(s[7])
 			}
 			airports[id] = ap
 		})
@@ -140,7 +141,7 @@ func parseAirports() (map[ICAOAirportCode]FAAAirport, map[ICAOAirportCode]FAAAir
 	// Custom airports/runways
 	custom := util.LoadResource("custom_airports.json")
 	defer custom.Close()
-	customAirports := make(map[ICAOAirportCode]FAAAirport)
+	customAirports := make(map[av.ICAOAirportCode]Airport)
 	if err := util.UnmarshalJSON(custom, &customAirports); err != nil {
 		fmt.Fprintf(os.Stderr, "custom_airports.json: %v\n", err)
 		os.Exit(1)
@@ -153,7 +154,7 @@ func parseAirports() (map[ICAOAirportCode]FAAAirport, map[ICAOAirportCode]FAAAir
 	// ARTCCs
 	ar := util.LoadResource("airport_artccs.json")
 	defer ar.Close()
-	data := make(map[ICAOAirportCode]string) // Airport -> ARTCC
+	data := make(map[av.ICAOAirportCode]string) // av.Airport -> ARTCC
 	if err := util.UnmarshalJSON(ar, &data); err != nil {
 		fmt.Fprintf(os.Stderr, "airport_artccs.json: %v\n", err)
 		os.Exit(1)
@@ -169,12 +170,12 @@ func parseAirports() (map[ICAOAirportCode]FAAAirport, map[ICAOAirportCode]FAAAir
 	return airports, customAirports
 }
 
-func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
+func parseAircraft() (map[string]string, map[string]av.AircraftPerformance) {
 	r := util.LoadResource("openscope-aircraft.json")
 	defer r.Close()
 
 	var acStruct struct {
-		Aircraft []AircraftPerformance `json:"aircraft"`
+		Aircraft []av.AircraftPerformance `json:"aircraft"`
 	}
 	if err := util.UnmarshalJSON(r, &acStruct); err != nil {
 		fmt.Fprintf(os.Stderr, "openscope-aircraft.json: %v\n", err)
@@ -182,7 +183,7 @@ func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 	}
 
 	aliases := make(map[string]string)
-	ap := make(map[string]AircraftPerformance)
+	ap := make(map[string]av.AircraftPerformance)
 	for _, ac := range acStruct.Aircraft {
 		aliases[ac.ICAO] = ac.Name
 
@@ -244,14 +245,14 @@ func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 // borderAirportTimeZones covers the airports that sit closer to a time zone
 // boundary than the roughly 3km the boundaries are resolved to, so that looking
 // the zone up from the airport's position puts it on the wrong side.
-var borderAirportTimeZones = map[ICAOAirportCode]string{
+var borderAirportTimeZones = map[av.ICAOAirportCode]string{
 	"KLSF": "America/New_York", // Fort Benning, a mile east of the Chattahoochee
 }
 
 // AirportTimeZone returns the local time zone at an airport, from where it is.
 // It fails for an airport that isn't in the database or that isn't in any time
 // zone.
-func (d *StaticDatabase) AirportTimeZone(id ICAOAirportCode) (*time.Location, bool) {
+func (d *StaticDatabase) AirportTimeZone(id av.ICAOAirportCode) (*time.Location, bool) {
 	ap, ok := d.Airports[id]
 	if !ok {
 		return nil, false
@@ -263,26 +264,26 @@ func (d *StaticDatabase) AirportTimeZone(id ICAOAirportCode) (*time.Location, bo
 	return util.TimeZoneAt(ap.Location.Latitude(), ap.Location.Longitude())
 }
 
-func parseAirlines() (map[string]Airline, map[string]string) {
+func parseAirlines() (map[string]av.Airline, map[string]string) {
 	r := util.LoadResource("openscope-airlines.json")
 	defer r.Close()
 
 	var alStruct struct {
-		Airlines []Airline `json:"airlines"`
+		Airlines []av.Airline `json:"airlines"`
 	}
 	if err := util.UnmarshalJSON(r, &alStruct); err != nil {
 		fmt.Fprintf(os.Stderr, "openscope-airlines.json: %v\n", err)
 		os.Exit(1)
 	}
 
-	airlines := make(map[string]Airline)
+	airlines := make(map[string]av.Airline)
 	callsigns := make(map[string]string)
 	for _, al := range alStruct.Airlines {
 		fixedAirline := al
-		fixedAirline.Fleets = make(map[string][]FleetAircraft)
+		fixedAirline.Fleets = make(map[string][]av.FleetAircraft)
 		for name, aircraft := range fixedAirline.JSONFleets {
 			for _, ac := range aircraft {
-				fleetAC := FleetAircraft{
+				fleetAC := av.FleetAircraft{
 					ICAO:  strings.ToUpper(ac[0].(string)),
 					Count: int(ac[1].(float64)),
 				}
@@ -308,7 +309,7 @@ func parseCIFP() ARINC424Result {
 // parseHPF parses the FAA Holding Pattern File (HPF) CSV files and returns holds.
 // HPF provides additional holds not found in CIFP, particularly for STARs and enroute holds.
 // https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription/
-func parseHPF() map[string][]Hold {
+func parseHPF() map[string][]av.Hold {
 	type hpfBase struct {
 		fixID         string
 		courseInbound string
@@ -363,24 +364,24 @@ func parseHPF() map[string][]Hold {
 			}
 		})
 
-	// Convert to Hold objects
-	enrouteHolds := make(map[string][]Hold)
+	// Convert to av.Hold objects
+	enrouteHolds := make(map[string][]av.Hold)
 
 	for _, h := range holds {
 		if h.fixID == "" || h.courseInbound == "" || h.turnDirection == "" {
 			continue
 		}
 
-		hold := Hold{
+		hold := av.Hold{
 			Fix:           h.fixID,
-			TurnDirection: TurnLeft,
+			TurnDirection: av.TurnLeft,
 		}
 
 		if course, err := strconv.Atoi(h.courseInbound); err == nil {
 			hold.InboundCourse = math.MagneticHeading(course)
 		}
 		if h.turnDirection == "R" {
-			hold.TurnDirection = TurnRight
+			hold.TurnDirection = av.TurnRight
 		}
 		// Parse leg length (nautical miles) or default to time-based
 		if h.legLengthDist != "" {
@@ -540,7 +541,7 @@ func parseAirportPairRoutes() map[AirportPair][]AirportPairRoute {
 	defer r.Close()
 	mungeCSV("routes", r, []string{"orig", "dest", "type", "dep_fix", "acft", "rnav", "route"},
 		func(s []string) {
-			pair := AirportPair{From: ICAOAirportCode(strings.TrimSpace(s[0])), To: ICAOAirportCode(strings.TrimSpace(s[1]))}
+			pair := AirportPair{From: av.ICAOAirportCode(strings.TrimSpace(s[0])), To: av.ICAOAirportCode(strings.TrimSpace(s[1]))}
 			routes[pair] = append(routes[pair], AirportPairRoute{
 				Route:        strings.TrimSpace(s[6]),
 				DepartureFix: strings.TrimSpace(s[3]),
@@ -612,30 +613,30 @@ func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 	return artccs, tracons, atcts
 }
 
-func parseAirspace(filename string) map[string][]AirspaceVolume {
+func parseAirspace(filename string) map[string][]av.AirspaceVolume {
 	aj := util.LoadResource(filename)
 	defer aj.Close()
 
 	// These should match the definition in util/airspace.go
 	type AirspaceLoop [][2]float32
-	type Airspace struct {
+	type airspaceEntry struct {
 		Bottom, Top int
 		// First one is exterior; any additional ones are holes.
 		Loops []AirspaceLoop
 	}
 
-	var airspace map[string][]Airspace
+	var airspace map[string][]airspaceEntry
 	if err := util.UnmarshalJSON(aj, &airspace); err != nil {
 		panic(err)
 	}
 
-	// Uplift to vice's internal AirspaceVolume representation.
+	// Uplift to vice's internal av.AirspaceVolume representation.
 	convert := func(v [][2]float32) []math.Point2LL {
 		return util.MapSlice(v, func(p [2]float32) math.Point2LL { return math.Point2LL(p) })
 	}
-	av := make(map[string][]AirspaceVolume)
+	vols := make(map[string][]av.AirspaceVolume)
 	for name, as := range airspace {
-		var vols []AirspaceVolume
+		var v []av.AirspaceVolume
 		for _, a := range as {
 			bounds := math.Extent2DFromPoints(a.Loops[0])
 
@@ -643,10 +644,10 @@ func parseAirspace(filename string) map[string][]AirspaceVolume {
 			if len(id) > 7 {
 				id = id[:7]
 			}
-			vol := AirspaceVolume{
+			vol := av.AirspaceVolume{
 				Id:            id,
 				Description:   name,
-				Type:          AirspaceVolumePolygon,
+				Type:          av.AirspaceVolumePolygon,
 				Floor:         a.Bottom,
 				Ceiling:       a.Top,
 				Vertices:      convert(a.Loops[0]),
@@ -655,12 +656,12 @@ func parseAirspace(filename string) map[string][]AirspaceVolume {
 			for _, l := range a.Loops[1:] {
 				vol.Holes = append(vol.Holes, convert(l))
 			}
-			vols = append(vols, vol)
+			v = append(v, vol)
 		}
-		av[name] = vols
+		vols[name] = v
 	}
 
-	return av
+	return vols
 }
 
 type Pronunciations struct {
@@ -691,4 +692,28 @@ func parsePronunciations() Pronunciations {
 	load("saystar.json", &say.STARs)
 
 	return say
+}
+
+// parseScrapedRoutes loads the scraped route database for route selection,
+// most-filed routes first.
+func parseScrapedRoutes() map[AirportPair][]av.ScrapedRoute {
+	sets, err := av.ReadScrapedRoutes(util.GetResourcesFS())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+
+	routes := make(map[AirportPair][]av.ScrapedRoute)
+	for key, set := range sets {
+		if len(set.Routes) == 0 {
+			continue
+		}
+		from, to, ok := strings.Cut(key, "-")
+		if !ok {
+			fmt.Fprintf(os.Stderr, "%s: %q isn't a FROM-TO city pair\n", av.ScrapedRoutesPath, key)
+			os.Exit(1)
+		}
+		routes[AirportPair{From: av.ICAOAirportCode(from), To: av.ICAOAirportCode(to)}] = set.Routes
+	}
+	return routes
 }

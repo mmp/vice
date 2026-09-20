@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/renderer"
@@ -114,7 +115,7 @@ func (in *inspector) drawCIFPTab(a *app) {
 	imgui.InputTextWithHint("##cifpfilter", "filter", &c.filter, 0, nil)
 
 	icao := c.airport
-	ap, ok := av.DB.Airports[av.ICAOAirportCode(icao)]
+	ap, ok := db.DB.Airports[av.ICAOAirportCode(icao)]
 	if !ok {
 		if icao != "" {
 			imgui.Text(icao + ": not in the CIFP")

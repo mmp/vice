@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
@@ -495,14 +496,14 @@ func flownVia(f sim.PublishedFlight) string {
 // and arrivals are chosen for it, and aircraftClassLetter is the same thing in
 // the one character a table column can spare.
 func aircraftClassName(aircraftType string) string {
-	if class := av.AircraftClassOf(aircraftType); class != 0 {
+	if class := av.AircraftClassOf(db.Lookups{}, aircraftType); class != 0 {
 		return class.String()
 	}
 	return "unknown"
 }
 
 func aircraftClassLetter(aircraftType string) string {
-	switch av.AircraftClassOf(aircraftType) {
+	switch av.AircraftClassOf(db.Lookups{}, aircraftType) {
 	case av.AircraftClassProp:
 		return "P"
 	case av.AircraftClassTurboprop:

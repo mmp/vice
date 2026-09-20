@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/util"
 )
 
@@ -258,8 +258,8 @@ func validateSpeed(spdStr string, ac Aircraft) string {
 	}
 
 	// Look up aircraft performance to get minimum speed
-	if ac.AircraftType != "" && av.DB != nil {
-		if perf, ok := av.DB.AircraftPerformance[ac.AircraftType]; ok {
+	if ac.AircraftType != "" && db.DB != nil {
+		if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok {
 			if minSpeed := perf.Speed.Min; minSpeed > 0 {
 				// If speed is less than 75% of aircraft minimum, it's likely garbled.  Allow
 				// issuing speeds slightly below what's possible--in that case, pilots will read

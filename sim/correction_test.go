@@ -8,6 +8,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 )
 
@@ -19,7 +20,7 @@ func makeCorrectionSim() *Sim {
 	s.State.CurrentConsolidation["OTHER"] = &TCPConsolidation{PrimaryTCP: "126.0"}
 	for _, cs := range []av.ADSBCallsign{"UAL123", "DAL456", "N123AB"} {
 		ac := MakeTestAircraft(cs, "22L")
-		ac.Nav.Perf = av.DB.AircraftPerformance["A320"]
+		ac.Nav.Perf = db.DB.AircraftPerformance["A320"]
 		s.Aircraft[cs] = ac
 	}
 	s.Aircraft["DAL456"].ControllerFrequency = "126.0"

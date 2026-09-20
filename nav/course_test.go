@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -22,18 +23,18 @@ import (
 func skorrWaveyCourse(t *testing.T) math.MagneticHeading {
 	t.Helper()
 
-	skorr, ok := av.DB.LookupWaypoint("SKORR")
+	skorr, ok := db.DB.LookupWaypoint("SKORR")
 	if !ok {
 		t.Fatal("SKORR not found")
 	}
-	wavey, ok := av.DB.LookupWaypoint("WAVEY")
+	wavey, ok := db.DB.LookupWaypoint("WAVEY")
 	if !ok {
 		t.Fatal("WAVEY not found")
 	}
 
-	kjfk := av.DB.Airports["KJFK"]
+	kjfk := db.DB.Airports["KJFK"]
 	nmPerLongitude := math.NMPerLongitudeAt(kjfk.Location)
-	magneticVariation, err := av.DB.MagneticGrid.Lookup(kjfk.Location)
+	magneticVariation, err := db.DB.MagneticGrid.Lookup(kjfk.Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
@@ -71,7 +72,7 @@ func courseInterceptFlight(t *testing.T) (f *FlightTest, heading, course math.Ma
 // courseOffset returns the aircraft's perpendicular distance in nm from the
 // line through fix along the given magnetic course.
 func courseOffset(f *FlightTest, fix string, course math.MagneticHeading) float32 {
-	p, _ := av.DB.LookupWaypoint(fix)
+	p, _ := db.DB.LookupWaypoint(fix)
 	nmPerLongitude := f.nav.FlightState.NmPerLongitude
 	p0 := math.LL2NM(p, nmPerLongitude)
 	trueCourse := math.MagneticToTrue(course, f.nav.FlightState.MagneticVariation)
@@ -305,14 +306,14 @@ func TestCourseInterceptElmooRunway26(t *testing.T) {
 func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 	// A heavy on a long runway is still rolling at the runway's midpoint.
 	const icao, runway, acType = "KBOS", "33L", "B744"
-	r, ok := av.LookupRunway(icao, runway)
-	rend, ok2 := av.LookupOppositeRunway(icao, runway)
+	r, ok := av.LookupRunway(db.Lookups{}, icao, runway)
+	rend, ok2 := av.LookupOppositeRunway(db.Lookups{}, icao, runway)
 	if !ok || !ok2 {
 		t.Fatalf("no runway %s %s", icao, runway)
 	}
-	ap := av.DB.Airports[icao]
+	ap := db.DB.Airports[icao]
 	nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
-	magneticVariation, err := av.DB.MagneticGrid.Lookup(ap.Location)
+	magneticVariation, err := db.DB.MagneticGrid.Lookup(ap.Location)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -336,7 +337,7 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 
 	fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: acType, DepartureAirport: icao,
 		ArrivalAirport: icao, Altitude: 8000}
-	perf, ok := av.DB.AircraftPerformance[fp.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[fp.AircraftType]
 	if !ok {
 		t.Fatalf("no performance for %s", fp.AircraftType)
 	}
@@ -415,14 +416,14 @@ type centerlineDeparture struct {
 func makeCenterlineDeparture(t *testing.T, groups []av.WaypointActionGroup) centerlineDeparture {
 	t.Helper()
 	const icao, runway, acType = "KBOS", "33L", "B744"
-	r, ok := av.LookupRunway(icao, runway)
-	rend, ok2 := av.LookupOppositeRunway(icao, runway)
+	r, ok := av.LookupRunway(db.Lookups{}, icao, runway)
+	rend, ok2 := av.LookupOppositeRunway(db.Lookups{}, icao, runway)
 	if !ok || !ok2 {
 		t.Fatalf("no runway %s %s", icao, runway)
 	}
-	ap := av.DB.Airports[icao]
+	ap := db.DB.Airports[icao]
 	nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
-	magneticVariation, err := av.DB.MagneticGrid.Lookup(ap.Location)
+	magneticVariation, err := db.DB.MagneticGrid.Lookup(ap.Location)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -443,7 +444,7 @@ func makeCenterlineDeparture(t *testing.T, groups []av.WaypointActionGroup) cent
 
 	fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: acType, DepartureAirport: icao,
 		ArrivalAirport: icao, Altitude: 8000}
-	perf, ok := av.DB.AircraftPerformance[fp.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[fp.AircraftType]
 	if !ok {
 		t.Fatalf("no performance for %s", fp.AircraftType)
 	}
@@ -500,7 +501,7 @@ func TestDepartureEventActionsFireAtFourHundred(t *testing.T) {
 // FIX/h270/@a2000+/ho, fire when the trigger is met and the aircraft then
 // continues on its route.
 func TestDepartureDelayedEventActionResumesRoute(t *testing.T) {
-	elevation := av.DB.Airports["KBOS"].Elevation
+	elevation := db.DB.Airports["KBOS"].Elevation
 	d := makeCenterlineDeparture(t, []av.WaypointActionGroup{
 		{
 			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 270}},
@@ -543,7 +544,7 @@ func TestDepartureDelayedEventActionResumesRoute(t *testing.T) {
 // off the way it does any other action: FIX/h270/@a2000+/delete removes the
 // aircraft on climbing through 2,000', not on passing the fix.
 func TestDelayedDeleteActionFiresAtItsTrigger(t *testing.T) {
-	elevation := av.DB.Airports["KBOS"].Elevation
+	elevation := db.DB.Airports["KBOS"].Elevation
 	d := makeCenterlineDeparture(t, []av.WaypointActionGroup{
 		{
 			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 270}},
@@ -575,7 +576,7 @@ func TestDelayedDeleteActionFiresAtItsTrigger(t *testing.T) {
 // until controller intervention; the aircraft does not resume its route on
 // its own.
 func TestDepartureTrailingHeadingHeldUntilIntervention(t *testing.T) {
-	elevation := av.DB.Airports["KBOS"].Elevation
+	elevation := db.DB.Airports["KBOS"].Elevation
 	d := makeCenterlineDeparture(t, []av.WaypointActionGroup{
 		{
 			Actions: av.WaypointActions{Heading: av.WaypointHeadingAction{Heading: 270}},
@@ -616,7 +617,7 @@ func inboundRadialCourse(f *FlightTest, fix string, radial math.MagneticHeading)
 }
 
 func distanceToFix(f *FlightTest, fix string) float32 {
-	p, _ := av.DB.LookupWaypoint(fix)
+	p, _ := db.DB.LookupWaypoint(fix)
 	return math.NMDistance2LL(f.nav.FlightState.Position, p)
 }
 
@@ -896,11 +897,11 @@ func TestInterceptRadialSteepAngle(t *testing.T) {
 func TestInterceptRadialDuringTurn(t *testing.T) {
 	f, _ := radialFlight(t)
 
-	kjfk := av.DB.Airports["KJFK"]
+	kjfk := db.DB.Airports["KJFK"]
 	f.nav.FlightState.Position = kjfk.Location
 	f.nav.FlightState.Heading = 310 // just off runway 31L
 	f.nav.Heading = Heading{}
-	rbv, ok := av.DB.LookupWaypoint("RBV")
+	rbv, ok := db.DB.LookupWaypoint("RBV")
 	if !ok {
 		t.Fatal("RBV not found")
 	}
@@ -961,7 +962,7 @@ func TestInterceptRadialDuringTurn(t *testing.T) {
 func TestInterceptRadialUnreachable(t *testing.T) {
 	f, _ := radialFlight(t)
 
-	kjfk := av.DB.Airports["KJFK"]
+	kjfk := db.DB.Airports["KJFK"]
 	f.nav.FlightState.Position = kjfk.Location
 	f.nav.FlightState.Heading = 310 // just off runway 31L
 	f.nav.Heading = Heading{}
@@ -1091,17 +1092,17 @@ func TestRadialTermination(t *testing.T) {
 func declinatedVOR(t *testing.T, degrees float32) string {
 	t.Helper()
 	const id = "QQQ"
-	if _, ok := av.DB.Navaids[id]; ok {
+	if _, ok := db.DB.Navaids[id]; ok {
 		t.Fatalf("%s is already in the database", id)
 	}
-	wavey, _ := av.DB.LookupWaypoint("WAVEY")
-	variation, err := av.DB.MagneticGrid.Lookup(av.DB.Airports["KJFK"].Location)
+	wavey, _ := db.DB.LookupWaypoint("WAVEY")
+	variation, err := db.DB.MagneticGrid.Lookup(db.DB.Airports["KJFK"].Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
-	av.DB.Navaids[id] = av.Navaid{Id: id, Type: "VOR", Location: wavey,
+	db.DB.Navaids[id] = db.Navaid{Id: id, Type: "VOR", Location: wavey,
 		Declination: variation + degrees, HasDeclination: true}
-	t.Cleanup(func() { delete(av.DB.Navaids, id) })
+	t.Cleanup(func() { delete(db.DB.Navaids, id) })
 	return id
 }
 

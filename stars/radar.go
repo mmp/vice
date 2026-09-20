@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
@@ -57,9 +58,9 @@ func (sp *Pane) makeSignificantPoints(ss client.SimState) {
 
 	// All airports within 250nm
 	center := ss.GetInitialCenter()
-	for name, ap := range av.DB.Airports {
+	for name, ap := range db.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			id := av.AirportDisplayId(name)
+			id := db.AirportDisplayId(name)
 			tryAdd(id, id+" AIRPORT", ap.Location)
 
 			for _, rwy := range ap.Runways {
@@ -69,13 +70,13 @@ func (sp *Pane) makeSignificantPoints(ss client.SimState) {
 		}
 	}
 
-	for name, nav := range av.DB.Navaids {
+	for name, nav := range db.DB.Navaids {
 		if math.NMDistance2LL(nav.Location, center) < 250 {
 			tryAdd(name, name+" "+nav.Type, nav.Location)
 		}
 	}
 
-	for name, fix := range av.DB.Fixes {
+	for name, fix := range db.DB.Fixes {
 		if math.NMDistance2LL(fix.Location, center) < 250 {
 			// FIXME: should be INTERSECTION not WAYPOINT potentially
 			tryAdd(name, name+" WAYPOINT", fix.Location)

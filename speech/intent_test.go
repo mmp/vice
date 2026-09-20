@@ -9,16 +9,17 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/rand"
 )
 
 func renderIntentForTest(t *testing.T, intent CommandIntent, seed uint64) string {
 	t.Helper()
 
-	if av.DB == nil {
-		av.DB = &av.StaticDatabase{
-			Navaids:  map[string]av.Navaid{},
-			Airports: map[av.ICAOAirportCode]av.FAAAirport{},
+	if db.DB == nil {
+		db.DB = &db.StaticDatabase{
+			Navaids:  map[string]db.Navaid{},
+			Airports: map[av.ICAOAirportCode]db.Airport{},
 		}
 	}
 

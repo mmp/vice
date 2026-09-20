@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/wx"
@@ -899,7 +900,7 @@ func TestClearedVisualBeginsDescentImmediately(t *testing.T) {
 
 	target, rate, geometric := f.nav.TargetAltitude()
 
-	rwy, _ := av.LookupRunway("KJFK", "22L")
+	rwy, _ := av.LookupRunway(db.Lookups{}, "KJFK", "22L")
 	wantAlt := float32(rwy.Elevation) + 900
 	if target != wantAlt {
 		t.Errorf("target altitude = %.0f, want %.0f (3-nm-final restriction)", target, wantAlt)
@@ -966,7 +967,7 @@ type chartedVisual struct {
 func setupChartedVisual(f *FlightTest) chartedVisual {
 	f.t.Helper()
 
-	rwy, ok := av.LookupRunway("KJFK", "22L")
+	rwy, ok := av.LookupRunway(db.Lookups{}, "KJFK", "22L")
 	if !ok {
 		f.t.Fatal("unknown runway KJFK/22L")
 	}

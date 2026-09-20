@@ -13,6 +13,7 @@ import (
 
 	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/speech"
@@ -40,7 +41,7 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 		}
 
 		var heavySuper string
-		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
+		if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
 			if perf.WeightClass == "H" {
 				heavySuper = " heavy"
 			} else if perf.WeightClass == "J" {
@@ -533,7 +534,7 @@ func (ss *CommonState) cullDistance() float32 {
 	if ss.FacilityAdaptation.MaxDistance > 0 {
 		return ss.FacilityAdaptation.MaxDistance
 	}
-	return util.Select(av.DB.IsARTCC(ss.Facility), float32(400), float32(200))
+	return util.Select(db.DB.IsARTCC(ss.Facility), float32(400), float32(200))
 }
 
 // Distance from the runway threshold at which a pilot who still hasn't been

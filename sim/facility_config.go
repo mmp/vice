@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -52,7 +53,7 @@ func (fc *FacilityConfig) Finalize(configPath string, e *util.ErrorLogger) {
 	facility := strings.TrimSuffix(filepath.Base(configPath), ".json")
 
 	// Determine whether this facility is an ARTCC.
-	_, isARTCC := av.DB.ARTCCs[facility]
+	_, isARTCC := db.DB.ARTCCs[facility]
 
 	// Set ERAMFacility on all controllers if this is an ARTCC config.
 	if isARTCC {
@@ -149,7 +150,7 @@ func (fc *FacilityConfig) Finalize(configPath string, e *util.ErrorLogger) {
 			e.ErrorString(`must specify either "prefix" or "stars_id"`)
 		}
 
-		_, neighborIsARTCC := av.DB.ARTCCs[hid.ID]
+		_, neighborIsARTCC := db.DB.ARTCCs[hid.ID]
 
 		if neighborIsARTCC {
 			// ARTCC neighbors always use a letter prefix.

@@ -15,6 +15,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
 )
@@ -343,7 +344,7 @@ func TestParseTime(t *testing.T) {
 // testAirports is an airport database with just enough in it to import: a
 // couple of US airports, one abroad, and the made-up ones the Academy flies,
 // which carry no country of their own just as custom_airports.json leaves them.
-var testAirports = map[av.ICAOAirportCode]av.FAAAirport{
+var testAirports = map[av.ICAOAirportCode]db.Airport{
 	"KMSP": {Country: "US", Elevation: 841, Location: math.Point2LL{-93.22, 44.88}},
 	"KORD": {Country: "US", Elevation: 672, Location: math.Point2LL{-87.90, 41.98}},
 	"KEWR": {Country: "US", Elevation: 18, Location: math.Point2LL{-74.17, 40.69}},

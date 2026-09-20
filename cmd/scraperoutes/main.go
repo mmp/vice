@@ -36,6 +36,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
@@ -52,7 +53,7 @@ func main() {
 	dbPath := flag.String("db", "resources/"+av.ScrapedRoutesPath, "scraped route database `file` to update")
 	flag.Parse()
 
-	av.InitDB()
+	db.InitDB()
 
 	if *lookup != "" {
 		lookupPair(*lookup)
@@ -152,7 +153,7 @@ func lookupPair(spec string) {
 	}
 	from, to := av.ICAOAirportCode(fromStr), av.ICAOAirportCode(toStr)
 	for _, icao := range []av.ICAOAirportCode{from, to} {
-		if _, ok := av.DB.Airports[icao]; !ok {
+		if _, ok := db.DB.Airports[icao]; !ok {
 			fmt.Printf("%s: airport not in the FAA database\n", icao)
 			os.Exit(1)
 		}
@@ -217,7 +218,7 @@ type filings struct{ jets, props int }
 // would file. A pair is recorded in the cell of the airport it departs and
 // again in the cell of the one it lands at, so its counts are the larger of
 // what the two give.
-func gatherFilings(onlyCell string) map[av.AirportPair]filings {
+func gatherFilings(onlyCell string) map[db.AirportPair]filings {
 	resources := util.GetResourcesFS()
 	files, err := fs.Glob(resources, traffic.FlightDataDirectory+"/*"+traffic.FlightDataExtension)
 	if err != nil {
@@ -225,7 +226,7 @@ func gatherFilings(onlyCell string) map[av.AirportPair]filings {
 		os.Exit(1)
 	}
 
-	counts := make(map[av.AirportPair]filings)
+	counts := make(map[db.AirportPair]filings)
 	for _, file := range files {
 		cell := strings.TrimSuffix(path.Base(file), traffic.FlightDataExtension)
 		if onlyCell != "" && !strings.EqualFold(cell, onlyCell) {
@@ -242,7 +243,7 @@ func gatherFilings(onlyCell string) map[av.AirportPair]filings {
 			continue
 		}
 
-		local := make(map[av.AirportPair]filings)
+		local := make(map[db.AirportPair]filings)
 		for _, f := range flights {
 			if !filesIFR(f.Callsign, f.AircraftType) {
 				continue
@@ -251,9 +252,9 @@ func gatherFilings(onlyCell string) map[av.AirportPair]filings {
 			if f.Departure {
 				from, to = f.Airport, f.Other
 			}
-			key := av.AirportPair{From: from, To: to}
+			key := db.AirportPair{From: from, To: to}
 			n := local[key]
-			if av.AircraftClassOf(f.AircraftType)&jetClasses != 0 {
+			if av.AircraftClassOf(db.Lookups{}, f.AircraftType)&jetClasses != 0 {
 				n.jets++
 			} else {
 				n.props++
@@ -271,20 +272,20 @@ func gatherFilings(onlyCell string) map[av.AirportPair]filings {
 
 // gatherPairs returns the directed city pairs with traffic the FAA databases
 // hold no route for, worst-served first.
-func gatherPairs(flown map[av.AirportPair]filings) []pair {
+func gatherPairs(flown map[db.AirportPair]filings) []pair {
 	var pairs []pair
 	for key, n := range flown {
 		from, to := key.From, key.To
 		if madeUpAirport(from) || madeUpAirport(to) {
 			continue
 		}
-		if _, ok := av.DB.Airports[from]; !ok {
+		if _, ok := db.DB.Airports[from]; !ok {
 			continue
 		}
-		if _, ok := av.DB.Airports[to]; !ok {
+		if _, ok := db.DB.Airports[to]; !ok {
 			continue
 		}
-		if unrouted := faaCoverage(av.DB.RoutesBetween(from, to)).unrouted(n); unrouted > 0 {
+		if unrouted := faaCoverage(db.DB.RoutesBetween(from, to)).unrouted(n); unrouted > 0 {
 			pairs = append(pairs, pair{from: from, to: to, unrouted: unrouted})
 		}
 	}
@@ -320,7 +321,7 @@ func filesIFR(callsign, aircraftType string) bool {
 	if number == "" || (len(prefix) != 1 && len(prefix) != 3) {
 		return false
 	}
-	perf, ok := av.DB.AircraftPerformance[aircraftType]
+	perf, ok := db.DB.AircraftPerformance[aircraftType]
 	if !ok || perf.Engine.AircraftType == "H" {
 		return false // a helicopter goes where the route structure doesn't
 	}
@@ -334,7 +335,7 @@ func filesIFR(callsign, aircraftType string) bool {
 // separately.
 type coverage struct{ jets, props bool }
 
-func faaCoverage(routes []av.AirportPairRoute) coverage {
+func faaCoverage(routes []db.AirportPairRoute) coverage {
 	var c coverage
 	for _, r := range routes {
 		if r.LowAltitude() {
@@ -373,7 +374,7 @@ func madeUpAirport(icao av.ICAOAirportCode) bool {
 
 // domestic reports whether an airport is one the FAA controls, which is what
 // decides the end of an oceanic route worth keeping.
-func domestic(icao av.ICAOAirportCode) bool { return av.DB.Airports[icao].FAAControlled() }
+func domestic(icao av.ICAOAirportCode) bool { return db.DB.Airports[icao].FAAControlled() }
 
 ///////////////////////////////////////////////////////////////////////////
 // FlightAware's IFR route analyzer
@@ -466,7 +467,7 @@ func parseAnalyzerRoutes(body string, from, to av.ICAOAirportCode, fromScenario,
 			}
 			r.Hours.Add(hour)
 			if acType := aircraftTypeRE.FindStringSubmatch(row); acType != nil {
-				r.Aircraft |= av.AircraftClassOf(acType[1])
+				r.Aircraft |= av.AircraftClassOf(db.Lookups{}, acType[1])
 			}
 			if alts := altitudeRE.FindStringSubmatch(row); alts != nil {
 				widen(r, parseAltitude(alts[1]))
@@ -528,14 +529,14 @@ func cullRareRoutes(routes []av.ScrapedRoute) []av.ScrapedRoute {
 // Nothing flying a pair that would file is a statement about the pair, not
 // about this run, which is why the -mincount bar has no say here: keying
 // deletion to a flag would let one run with a high one empty the database.
-func prunePairs(sets map[string]av.ScrapedRouteSet, flown map[av.AirportPair]filings) int {
+func prunePairs(sets map[string]av.ScrapedRouteSet, flown map[db.AirportPair]filings) int {
 	pruned := 0
 	for key := range sets {
 		fromStr, toStr, ok := strings.Cut(key, "-")
 		if !ok {
 			continue
 		}
-		f := flown[av.AirportPair{From: av.ICAOAirportCode(fromStr), To: av.ICAOAirportCode(toStr)}]
+		f := flown[db.AirportPair{From: av.ICAOAirportCode(fromStr), To: av.ICAOAirportCode(toStr)}]
 		if f.jets+f.props > 0 {
 			continue
 		}
@@ -629,8 +630,8 @@ func cleanRoute(route string, from, to av.ICAOAirportCode) string {
 	fields := strings.Fields(html.UnescapeString(route))
 	fields = util.MapSlice(fields, func(f string) string { return strings.TrimLeft(f, "+") })
 	fields = util.FilterSlice(fields, func(f string) bool { return f != "" && f != "TBD" })
-	fields = av.TrimDepartureAirportTokens(fields, from)
-	fields = av.TrimDestinationAirportTokens(fields, to)
+	fields = av.TrimDepartureAirportTokens(db.Lookups{}, fields, from)
+	fields = av.TrimDestinationAirportTokens(db.Lookups{}, fields, to)
 	return strings.Join(fields, " ")
 }
 

@@ -21,6 +21,7 @@ import (
 
 	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -60,7 +61,7 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	// get a default one.
 	uncovered := func(regions sim.FilterRegions, airports []av.ICAOAirportCode) []av.ICAOAirportCode {
 		return util.FilterSlice(airports, func(name av.ICAOAirportCode) bool {
-			ap, ok := av.DB.Airports[name]
+			ap, ok := db.DB.Airports[name]
 			return !ok || !regions.Inside(ap.Location, ap.Elevation)
 		})
 	}
@@ -101,11 +102,11 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 		// Note: this also rejects known ATCT-only identifiers; the TRACON
 		// database provides the center/radius that e.g. weather handling
 		// requires.
-		if !av.DB.IsTRACON(sg.TRACON) {
+		if !db.DB.IsTRACON(sg.TRACON) {
 			e.ErrorString("TRACON %q is unknown; it must have an entry in resources/tracons.json", sg.TRACON)
 		}
 	} else {
-		if _, ok := av.DB.ARTCCs[sg.ARTCC]; !ok {
+		if _, ok := db.DB.ARTCCs[sg.ARTCC]; !ok {
 			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
 				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc", sg.ARTCC)
 		}
@@ -153,11 +154,11 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 		// runway thresholds already in the aviation DB, since Locate will
 		// find them anyway.
 		if p, ok := sg.Fixes[fix]; ok && !sg.AllowFixRedefinitions {
-			if _, ok := av.DB.LookupWaypoint(fix); ok {
+			if _, ok := db.DB.LookupWaypoint(fix); ok {
 				e.ErrorString("fix shadows a navaid/fix in the aviation DB; remove it from \"fixes\"")
-			} else if _, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(fix)); ok {
+			} else if _, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(fix)); ok {
 				e.ErrorString("fix shadows an airport in the aviation DB; remove it from \"fixes\"")
-			} else if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(fix)); ok {
+			} else if _, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(fix)); ok {
 				e.ErrorString("fix shadows an airport in the aviation DB; remove it from \"fixes\"")
 			} else if rwy, ok := duplicateRunwayThreshold(fix, p); ok {
 				e.ErrorString("fix duplicates the built-in runway threshold waypoint %s; "+
@@ -223,13 +224,13 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	// published center.
 	center := sg.FacilityConfig.FacilityAdaptation.Center
 	if sg.ARTCC == "" {
-		if fac, ok := av.DB.LookupFacility(sg.facility()); !ok {
+		if fac, ok := db.DB.LookupFacility(sg.facility()); !ok {
 			e.ErrorString("%s: facility unknown", sg.facility())
 		} else {
 			center = fac.Center()
 		}
 	}
-	if mvar, err := av.DB.MagneticGrid.Lookup(center); err != nil {
+	if mvar, err := db.DB.MagneticGrid.Lookup(center); err != nil {
 		e.ErrorString("%s: unable to find magnetic declination: %v", sg.facility(), err)
 	} else {
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
@@ -407,7 +408,7 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 			airport, runway, hasRunway := strings.Cut(spec, "/")
 			if _, ok := sg.Airports[av.ICAOAirportCode(airport)]; !ok {
 				e.ErrorString("go_around_assignments: airport %q not in scenario", airport)
-			} else if hasRunway && !av.AirportHasRunway(av.ICAOAirportCode(airport), av.RunwayID(runway)) {
+			} else if hasRunway && !av.AirportHasRunway(sg, av.ICAOAirportCode(airport), av.RunwayID(runway)) {
 				e.ErrorString("go_around_assignments: runway %q not a valid runway at %q", runway, airport)
 			}
 		}
@@ -562,7 +563,7 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 
 				// Validate hold_departures: each must be a valid runway at the airport
 				for _, holdRwy := range rwy.GoAround.HoldDepartures {
-					if !av.AirportHasRunway(rwy.Airport, av.RunwayID(holdRwy)) {
+					if !av.AirportHasRunway(sg, rwy.Airport, av.RunwayID(holdRwy)) {
 						e.ErrorString("hold_departures: runway %q not a valid runway at %q", holdRwy, rwy.Airport)
 					}
 				}

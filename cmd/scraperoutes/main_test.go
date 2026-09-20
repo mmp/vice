@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 )
 
 // The rows are verbatim from the route analyzer: two summary rows counting
@@ -39,7 +40,7 @@ const analyzerBody = `
 </table>`
 
 func TestParseAnalyzerRoutes(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	routes := parseAnalyzerRoutes(analyzerBody, "KSFO", "KPDX", true, true)
 	if len(routes) != 1 {
@@ -60,7 +61,7 @@ func TestParseAnalyzerRoutes(t *testing.T) {
 		t.Errorf("altitudes = %d-%d, want 29000-43000", r.MinAltitude, r.MaxAltitude)
 	}
 	// Both itemized flights are jets.
-	if !r.Aircraft.Matches("B738") || r.Aircraft.Matches("C172") {
+	if !r.Aircraft.Matches(db.Lookups{}, "B738") || r.Aircraft.Matches(db.Lookups{}, "C172") {
 		t.Errorf("aircraft = %v, want jets only", r.Aircraft)
 	}
 	// Seen at 14:58 and 00:32 local.
@@ -144,7 +145,7 @@ func TestCullRareRoutesCap(t *testing.T) {
 // FlightAware marks inferred segments with "+" and fills gaps with "TBD";
 // both are its annotations, not parts of the route.
 func TestCleanRouteAnnotations(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	for _, tc := range []struct{ route, want string }{
 		{"+JFK SHIPP Y488 STERN", "SHIPP Y488 STERN"},
@@ -163,7 +164,7 @@ func TestCleanRouteAnnotations(t *testing.T) {
 // that isn't an id of the airport (TED at PANC) is real routing and is never
 // touched.
 func TestCleanRouteAirportTokens(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	for _, tc := range []struct{ route, from, to, want string }{
 		{"MAUI5 OGG LNY JULLE5", "PHOG", "PHNL", "MAUI5 LNY JULLE5"},
@@ -184,7 +185,7 @@ func TestCleanRouteAirportTokens(t *testing.T) {
 }
 
 func TestFilesIFR(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	for _, tc := range []struct {
 		callsign, aircraftType string
@@ -214,31 +215,31 @@ func TestFilesIFR(t *testing.T) {
 func TestFAACoverage(t *testing.T) {
 	for _, tc := range []struct {
 		name   string
-		routes []av.AirportPairRoute
+		routes []db.AirportPairRoute
 		want   coverage
 	}{
 		{"none at all", nil, coverage{}},
 		{
 			// KSFO-KLAX: one low-altitude route down the Victor airways, which
 			// is the whole of what its jets have to file.
-			"low altitude only", []av.AirportPairRoute{{Type: "L"}}, coverage{props: true},
+			"low altitude only", []db.AirportPairRoute{{Type: "L"}}, coverage{props: true},
 		},
 		{
-			"tower en route only", []av.AirportPairRoute{{Type: "TEC"}, {Type: "TEC"}},
+			"tower en route only", []db.AirportPairRoute{{Type: "TEC"}, {Type: "TEC"}},
 			coverage{props: true},
 		},
 		{
 			// The mirror of it: a pair with nothing for the props that fly it.
-			"high altitude only", []av.AirportPairRoute{{Type: "H"}, {Type: "CDR"}},
+			"high altitude only", []db.AirportPairRoute{{Type: "H"}, {Type: "CDR"}},
 			coverage{jets: true},
 		},
 		{
-			"one of each", []av.AirportPairRoute{{Type: "L"}, {Type: "H"}},
+			"one of each", []db.AirportPairRoute{{Type: "L"}, {Type: "H"}},
 			coverage{jets: true, props: true},
 		},
 		{
 			"each class restricted away from its own structure",
-			[]av.AirportPairRoute{{Type: "L", Aircraft: "jet"}, {Type: "H", Aircraft: "prop"}},
+			[]db.AirportPairRoute{{Type: "L", Aircraft: "jet"}, {Type: "H", Aircraft: "prop"}},
 			coverage{},
 		},
 	} {

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
@@ -1377,7 +1378,7 @@ func MakeModeledAircraft(ctx *scope.Context, trk sim.Track, state *TrackState, t
 		threshold: math.LL2NM(threshold, nmPerLongitude),
 	}
 	// Note: assuming it's associated...
-	if perf, ok := av.DB.AircraftPerformance[trk.FlightPlan.AircraftType]; ok {
+	if perf, ok := db.DB.AircraftPerformance[trk.FlightPlan.AircraftType]; ok {
 		ma.landingSpeed = perf.Speed.Landing
 	} else {
 		ma.landingSpeed = 120 // ....

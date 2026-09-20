@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
@@ -36,7 +37,7 @@ func (c *NewSimConfiguration) initDefaultWindDirection() {
 	// points into it.
 	var sumRunwayVecs [2]float32
 	addRunway := func(airport av.ICAOAirportCode, id av.RunwayID) {
-		dbap, ok := av.DB.Airports[airport]
+		dbap, ok := db.DB.Airports[airport]
 		if !ok {
 			return
 		}
@@ -101,7 +102,7 @@ func (c *NewSimConfiguration) fetchMETAR(seq uint64, facility string, airports [
 	}
 	// TRACON: single altitude at 5,000' (representative of terminal area
 	// traffic). Center/ARTCC: FL240 and FL380 (lower and upper flight levels).
-	isTRACON := av.DB.IsTRACON(facility)
+	isTRACON := db.DB.IsTRACON(facility)
 	windsAloftAltitudes := [2]float32{24000, 38000}
 	if isTRACON {
 		windsAloftAltitudes = [2]float32{5000, 0}

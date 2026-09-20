@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
@@ -23,7 +24,7 @@ func TestSystemMaps(t *testing.T) {
 	if testing.Short() {
 		t.Skip("loads the aviation database")
 	}
-	av.InitDB()
+	db.InitDB()
 
 	region := func(id, description string, center math.Point2LL) sim.FilterRegion {
 		return sim.FilterRegion{
@@ -85,7 +86,7 @@ func TestSystemMaps(t *testing.T) {
 
 	if m, ok := byLabel["N90 MVA"]; !ok {
 		t.Error("no MVA map generated")
-	} else if len(av.DB.MVAs["N90"]) > 0 && len(m.CommandBuffer.Buf) == 0 {
+	} else if len(db.DB.MVAs["N90"]) > 0 && len(m.CommandBuffer.Buf) == 0 {
 		t.Error("MVA map has no geometry though N90 has MVAs")
 	}
 

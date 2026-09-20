@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
@@ -320,7 +321,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		fp.AircraftCount = spec.AircraftCount.GetOr(1)
 		fp.EquipmentSuffix = spec.EquipmentSuffix.GetOr("")
 
-		if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
+		if perf, ok := db.DB.AircraftPerformance[fp.AircraftType]; ok {
 			fp.CWTCategory = perf.Category.CWT
 		} else {
 			fp.CWTCategory = ""
@@ -522,7 +523,7 @@ func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 		ManuallyCreated: true, // Always for ones created via a fp specifier
 	}
 
-	if perf, ok := av.DB.AircraftPerformance[sfp.AircraftType]; ok {
+	if perf, ok := db.DB.AircraftPerformance[sfp.AircraftType]; ok {
 		sfp.CWTCategory = perf.Category.CWT
 	}
 
@@ -722,7 +723,7 @@ func (s *Sim) preCheckFlightPlanSpecifier(spec *FlightPlanSpecifier) error {
 // messages that don't prevent the fp from being created.
 func (s FlightPlanSpecifier) postCheck() error {
 	if s.AircraftType.IsSet {
-		if _, ok := av.DB.AircraftPerformance[s.AircraftType.Get()]; !ok {
+		if _, ok := db.DB.AircraftPerformance[s.AircraftType.Get()]; !ok {
 			return ErrIllegalACType
 		}
 	}

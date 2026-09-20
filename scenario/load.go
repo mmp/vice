@@ -19,6 +19,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/brief"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
@@ -94,7 +95,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Grou
 func facilityConfigPath(sg *Group) string {
 	artcc := sg.ARTCC
 	if artcc == "" {
-		artcc = av.DB.ARTCCForFacility(sg.TRACON)
+		artcc = db.DB.ARTCCForFacility(sg.TRACON)
 	}
 	return configurationsPath(artcc, sg.facility())
 }
@@ -109,7 +110,7 @@ func configurationsPath(artcc, facility string) string {
 // the given facility (TRACON or ARTCC name). The convention parallels
 // facility configurations: briefs/<ARTCC>/<facility>.md.
 func scenarioBriefPath(facility string) string {
-	artcc := av.DB.ARTCCForFacility(facility)
+	artcc := db.DB.ARTCCForFacility(facility)
 	if artcc == "" {
 		artcc = facility
 	}
@@ -166,7 +167,7 @@ func loadNeighborControllers(filesystem fs.FS, sg *Group, neighbor string,
 	}
 
 	// Determine the ARTCC for this neighbor.
-	artcc := av.DB.ARTCCForFacility(neighbor)
+	artcc := db.DB.ARTCCForFacility(neighbor)
 	if artcc == "" {
 		e.Push("Scenario group: " + sg.Name)
 		e.ErrorString("unknown facility %s", neighbor)
@@ -762,7 +763,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 			for _, ap := range sg.Airports {
 				for _, dep := range ap.Departures {
 					for _, al := range dep.Airlines {
-						for _, ac := range al.Aircraft() {
+						for _, ac := range al.Aircraft(db.Lookups{}) {
 							acTypes[ac.ICAO] = struct{}{}
 						}
 					}
@@ -772,7 +773,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	}
 	var missing []string
 	for t := range util.SortedMap(acTypes) {
-		if av.DB.AircraftPerformance[t].Speed.V2 == 0 {
+		if db.DB.AircraftPerformance[t].Speed.V2 == 0 {
 			missing = append(missing, t)
 		}
 	}

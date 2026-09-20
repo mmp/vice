@@ -972,3 +972,17 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 // can call back into the ScenarioGroup to resolve locations accounting for
 // fixes defined in a scenario, without exposing Scenario-related types to
 // the aviation package.
+
+// RouteWaypoints turns the fixes of a plain route string into waypoints,
+// folding an entry that names an airway into the fix it leaves.
+func RouteWaypoints(db Database, route string) WaypointArray {
+	var waypoints WaypointArray
+	for field := range strings.FieldsSeq(route) {
+		if _, ok := db.Airways(field); ok && len(waypoints) > 0 {
+			waypoints[len(waypoints)-1].InitExtra().Airway = field
+		} else {
+			waypoints = append(waypoints, Waypoint{Fix: field})
+		}
+	}
+	return waypoints
+}

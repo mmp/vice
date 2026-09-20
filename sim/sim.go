@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -160,9 +161,9 @@ type Sim struct {
 	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
 
 	// No need to serialize these; they're caches anyway.
-	bravoAirspace   *av.AirspaceGrid
-	charlieAirspace *av.AirspaceGrid
-	mvaGrid         *av.MVAGrid
+	bravoAirspace   *db.AirspaceGrid
+	charlieAirspace *db.AirspaceGrid
+	mvaGrid         *db.MVAGrid
 	vfrTerminalAlts map[av.ICAOAirportCode]int
 
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
@@ -327,7 +328,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 	}
 
 	// Automatically add nearby airports and VORs as candidate reporting points
-	for _, ap := range av.DB.Airports {
+	for _, ap := range db.DB.Airports {
 		if ap.Name == "" {
 			continue
 		}
@@ -352,7 +353,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 				})
 		}
 	}
-	for _, na := range av.DB.Navaids {
+	for _, na := range db.DB.Navaids {
 		if math.NMDistance2LL(na.Location, config.Center) < 75 {
 			s.VFRReportingPoints = append(s.VFRReportingPoints,
 				av.VFRReportingPoint{
@@ -362,7 +363,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		}
 	}
 
-	s.ERAMComputer = makeERAMComputer(av.DB.ARTCCForFacility(config.Facility), s.LocalCodePool)
+	s.ERAMComputer = makeERAMComputer(db.DB.ARTCCForFacility(config.Facility), s.LocalCodePool)
 
 	s.State = newCommonState(config, config.StartTime.UTC(), s.wxModel, s.METAR, s.Rand, lg)
 	s.ScenarioDefaultConsolidation = config.ControllerConfiguration.DefaultConsolidation
@@ -390,7 +391,7 @@ func (s *Sim) SetWaypointCommands(tcw TCW, commands string) error {
 		if !ok {
 			return fmt.Errorf("missing ':' in waypoint command specifier %q", cmd)
 		}
-		if _, ok := av.DB.LookupWaypoint(fix); !ok {
+		if _, ok := db.DB.LookupWaypoint(fix); !ok {
 			return fmt.Errorf("%s: unknown fix", fix)
 		}
 		s.waypointCommands[tcp][fix] = cmds // TODO: validate the commands here (somehow)
@@ -462,7 +463,7 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 // silently no-ops when the airport is known but has no bundled METAR
 // data or when METAR has already been loaded for it.
 func (s *Sim) AddMETARAirport(icao av.ICAOAirportCode) error {
-	if _, ok := av.DB.LookupICAOAirport(icao); !ok {
+	if _, ok := db.DB.LookupICAOAirport(icao); !ok {
 		return av.ErrUnknownAirport
 	}
 

@@ -24,6 +24,7 @@ import (
 	"github.com/goforj/godump"
 	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
@@ -185,7 +186,7 @@ func cliInit() error {
 	if err := syncResources(&util.TextSyncUI{}); err != nil {
 		return fmt.Errorf("SyncResources: %w", err)
 	}
-	av.InitDB()
+	db.InitDB()
 	wx.Init()
 	return nil
 }
@@ -370,7 +371,7 @@ func runShowRoutes() error {
 	if err := cliInit(); err != nil {
 		return err
 	}
-	return av.PrintCIFPRoutes(av.ICAOAirportCode(*showRoutes))
+	return db.PrintCIFPRoutes(av.ICAOAirportCode(*showRoutes))
 }
 
 func runListMaps(lg *log.Logger) error {
@@ -512,7 +513,7 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 	}
 
 	// Notify the active radar pane about the loaded sim
-	isSTARSSim := av.DB.IsTRACON(c.State.Facility) || av.DB.IsATCT(c.State.Facility)
+	isSTARSSim := db.DB.IsTRACON(c.State.Facility) || db.DB.IsATCT(c.State.Facility)
 	activeRadarPane := config.ActiveRadarPane(isSTARSSim)
 	activeRadarPane.LoadedSim(c, plat, lg)
 	uiResetControlClient(c, config, plat, lg)
@@ -597,7 +598,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// Kick off the heavy non-OpenGL initialization (aviation database,
 	// weather, scenario loading, local server) in a goroutine so it runs
 	// in parallel with the main-thread OpenGL/font/imgui setup. wx.Init
-	// is fire-and-forget; av.InitDB and MakeServerManager run inline.
+	// is fire-and-forget; db.InitDB and MakeServerManager run inline.
 	// MakeServerManager's callbacks reference plat/render/config, but
 	// those are only invoked later when a sim actually connects, so it
 	// is safe to construct mgr before plat is ready. The goroutine
@@ -616,14 +617,14 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		defer close(bgDone)
 		<-syncDone
 		wx.Init()
-		av.InitDB()
+		db.InitDB()
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 		mgr, errorLogger, overrideErrors = client.MakeServerManager(*serverAddress, overrideFiles(),
 			func() bool { return !config.DisableTextToSpeech && plat.AudioPlaybackError() == nil }, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
-					isSTARSSim := av.DB.IsTRACON(c.State.Facility) || av.DB.IsATCT(c.State.Facility)
+					isSTARSSim := db.DB.IsTRACON(c.State.Facility) || db.DB.IsATCT(c.State.Facility)
 					activeRadarPane = config.ActiveRadarPane(isSTARSSim)
 
 					// Reset each pane for the new sim

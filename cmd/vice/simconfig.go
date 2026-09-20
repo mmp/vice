@@ -15,6 +15,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
@@ -216,7 +217,7 @@ func selectedTimetableSummary(spec *scenario.Spec) (traffic.TimetableSummary, bo
 func timetableLabel(spec *scenario.Spec, timetable traffic.TimetableSummary) string {
 	for _, other := range spec.Timetables {
 		if other.Airport != timetable.Airport {
-			return av.AirportDisplayId(timetable.Airport) + " " + timetable.Name
+			return db.AirportDisplayId(timetable.Airport) + " " + timetable.Name
 		}
 	}
 	return timetable.Name
@@ -338,7 +339,7 @@ func getARTCCForFacility(facility string, catalog *scenario.Catalog) string {
 	if catalog != nil && catalog.ARTCC != "" {
 		return catalog.ARTCC
 	}
-	if artcc := av.DB.ARTCCForFacility(facility); artcc != "" {
+	if artcc := db.DB.ARTCCForFacility(facility); artcc != "" {
 		return artcc
 	}
 	return facility
@@ -361,15 +362,15 @@ func trimFacilityName(name, facilityType string) string {
 
 // formatFacilityLabel returns a display label for a facility, including its full name if available.
 func formatFacilityLabel(facility string) string {
-	if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+	if traconInfo, ok := db.DB.TRACONs[facility]; ok {
 		name := trimFacilityName(traconInfo.Name, "TRACON")
 		return util.Select(name == "", facility, fmt.Sprintf("%s (%s)", facility, name))
 	}
-	if atctInfo, ok := av.DB.ATCTs[facility]; ok {
+	if atctInfo, ok := db.DB.ATCTs[facility]; ok {
 		name := trimFacilityName(atctInfo.Name, "ATCT")
 		return util.Select(name == "", facility, fmt.Sprintf("%s (%s)", facility, name))
 	}
-	if artccInfo, ok := av.DB.ARTCCs[facility]; ok {
+	if artccInfo, ok := db.DB.ARTCCs[facility]; ok {
 		name := trimFacilityName(artccInfo.Name, "ARTCC")
 		return util.Select(name == "", facility, fmt.Sprintf("%s (%s)", facility, name))
 	}
@@ -379,7 +380,7 @@ func formatFacilityLabel(facility string) string {
 // getAreaKey returns the area identifier for grouping scenarios.
 // For TRACONs, returns the groupName; for ARTCCs, returns the trimmed Area field.
 func getAreaKey(facility, groupName string, catalog *scenario.Catalog) string {
-	if av.DB.IsTRACON(facility) {
+	if db.DB.IsTRACON(facility) {
 		return groupName
 	}
 	return trimFacilityName(catalog.Area, "Area")
@@ -585,7 +586,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					return true
 				}
 				// Also check the ARTCC's full name
-				if artccInfo, ok := av.DB.ARTCCs[artcc]; ok {
+				if artccInfo, ok := db.DB.ARTCCs[artcc]; ok {
 					if matchesFilter(artccInfo.Name) {
 						return true
 					}
@@ -679,7 +680,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("artccs", imgui.Vec2{artccWidth, columnHeight}, 0, 0) {
 				for artcc := range util.SortedMap(artccs) {
-					name := trimFacilityName(av.DB.ARTCCs[artcc].Name, "ARTCC")
+					name := trimFacilityName(db.DB.ARTCCs[artcc].Name, "ARTCC")
 					if name == "" {
 						name = artcc
 					}
@@ -731,7 +732,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 					// Build area/group structure for this facility, only including matching catalogs
 					catalogs := catalogsByFacility[facility]
-					isTRACON := av.DB.IsTRACON(facility)
+					isTRACON := db.DB.IsTRACON(facility)
 					areaToGroups := make(map[string]*areaInfo)
 
 					for groupName, gcfg := range catalogs {

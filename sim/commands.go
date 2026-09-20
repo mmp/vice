@@ -9,6 +9,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -620,7 +621,7 @@ func (s *Sim) nearestMETAR(pos math.Point2LL) (wx.METAR, float32) {
 		}
 		closestDist = dist
 		nearest = metar
-		elev = float32(av.DB.Airports[av.ICAOAirportCode(metar.ICAO)].Elevation)
+		elev = float32(db.DB.Airports[av.ICAOAirportCode(metar.ICAO)].Elevation)
 	}
 	return nearest, elev
 }

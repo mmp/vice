@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
@@ -47,7 +48,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = ""
-	nasFp.ExitFix = av.AirportDisplayId(ac.FlightPlan.ArrivalAirport)
+	nasFp.ExitFix = db.AirportDisplayId(ac.FlightPlan.ArrivalAirport)
 	nasFp.TrackingController = arr.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
 	ac.ControllerFrequency = arr.InitialController
@@ -58,7 +59,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 
 	// For ERAM, set AssignedAltitude and derive PerceivedAssigned from waypoint restrictions.
-	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM {
+	if _, isERAM := db.DB.ARTCCs[s.State.Facility]; isERAM {
 		spawnAlt := ac.Nav.FlightState.Altitude
 		if arr.AssignedAltitude > 0 {
 			nasFp.AssignedAltitude = int(arr.AssignedAltitude)
@@ -110,9 +111,9 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 // suitableArrivals filters the candidates to those the aircraft can fly: the
 // arrival's aircraft classes and its altitudes both have to admit it.
 func suitableArrivals(candidates []candidateArrival, aircraftType string) []candidateArrival {
-	perf, ok := av.DB.AircraftPerformance[aircraftType]
+	perf, ok := db.DB.AircraftPerformance[aircraftType]
 	return util.FilterSlice(candidates, func(c candidateArrival) bool {
-		if !c.arr.Aircraft.Matches(aircraftType) {
+		if !c.arr.Aircraft.Matches(db.Lookups{}, aircraftType) {
 			return false
 		}
 		return !ok || arrivalWithinCeiling(c.arr, perf)
@@ -167,7 +168,7 @@ func matchArrivalRoutes(candidates []candidateArrival, aircraftType string, rout
 // an inactive STAR apart from active arrivals that don't admit the aircraft.
 func matchArrivalRoute(candidates []candidateArrival, aircraftType, route string, arrivalAirport,
 	origin av.ICAOAirportCode) (candidateArrival, error) {
-	star, entry := av.RouteSTAR(route, traffic.NormalizeAirportCode(arrivalAirport))
+	star, entry := av.RouteSTAR(db.Lookups{}, route, traffic.NormalizeAirportCode(arrivalAirport))
 	if star == "" {
 		suitable := suitableArrivals(candidates, aircraftType)
 		if len(suitable) == 0 {
@@ -201,7 +202,7 @@ func matchArrivalRoute(candidates []candidateArrival, aircraftType, route string
 	// enters through says which of them the flight reaches, the one joined
 	// soonest after the entry fix winning: that is the gate, while a later
 	// join is a feeder it would only pass on the way in.
-	cifp := av.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)].STARs[star]
+	cifp := db.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)].STARs[star]
 	if entry != "" {
 		best, bestJoin := -1, 0
 		for _, name := range util.SortedMapKeys(cifp.Transitions) {
@@ -267,8 +268,8 @@ func arrivalWaypointFixes(arr *av.Arrival) map[string]bool {
 // pointing somewhere else entirely.
 func nearestSpawnToOrigin(candidates []candidateArrival, arrivalAirport,
 	origin av.ICAOAirportCode) (candidateArrival, bool) {
-	ap, apOK := av.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)]
-	from, fromOK := av.DB.Airports[traffic.NormalizeAirportCode(origin)]
+	ap, apOK := db.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)]
+	from, fromOK := db.DB.Airports[traffic.NormalizeAirportCode(origin)]
 	if !apOK || !fromOK {
 		return candidateArrival{}, false
 	}
@@ -300,8 +301,8 @@ func nearestSpawnToOrigin(candidates []candidateArrival, arrivalAirport,
 // active a bare minimum-distance pick would take any flight from anywhere.
 func arrivalNearestArc(candidates []candidateArrival, arrivalAirport,
 	origin av.ICAOAirportCode) (candidateArrival, bool) {
-	ap, apOK := av.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)]
-	from, fromOK := av.DB.Airports[traffic.NormalizeAirportCode(origin)]
+	ap, apOK := db.DB.Airports[traffic.NormalizeAirportCode(arrivalAirport)]
+	from, fromOK := db.DB.Airports[traffic.NormalizeAirportCode(origin)]
 	if !apOK || !fromOK {
 		return candidateArrival{}, false
 	}
@@ -349,7 +350,7 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 		return nil, err
 	}
 
-	if _, ok := av.DB.AircraftPerformance[e.AircraftType]; !ok {
+	if _, ok := db.DB.AircraftPerformance[e.AircraftType]; !ok {
 		return nil, fmt.Errorf(
 			"aircraft type %s is not present in the performance database",
 			e.AircraftType,
@@ -406,7 +407,7 @@ func (s *Sim) resolveScheduledCallsign(f *ScheduledFlight, kind string) (string,
 	if f.Source != TrafficSourceScenario || f.Airline.Callsign != "" {
 		return "", fmt.Errorf("%s %s: %w", kind, callsign, errCallsignInUse)
 	}
-	_, callsign = f.Airline.SampleAcTypeAndCallsign(s.Rand, s.currentCallsigns(),
+	_, callsign = f.Airline.SampleAcTypeAndCallsign(db.Lookups{}, s.Rand, s.currentCallsigns(),
 		s.EnforceUniqueCallsignSuffix, f.DepartureAirport, f.ArrivalAirport, s.lg)
 	if callsign == "" {
 		return "", fmt.Errorf("%s %s: %w", kind, f.Callsign, errCallsignInUse)
@@ -441,7 +442,7 @@ func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 // it once rather than walking the sim for each draw.
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport av.ICAOAirportCode,
 	callsigns []av.ADSBCallsign, lg *log.Logger) (*Aircraft, string) {
-	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, departureAirport, arrivalAirport, lg)
+	actype, callsign := al.SampleAcTypeAndCallsign(db.Lookups{}, s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, departureAirport, arrivalAirport, lg)
 
 	if actype == "" {
 		return nil, ""
@@ -466,7 +467,7 @@ func (s *Sim) initNASFlightPlan(ac *Aircraft, flightType av.TypeOfFlight) NASFli
 		TypeOfFlight:     flightType,
 		AircraftCount:    1,
 		AircraftType:     ac.FlightPlan.AircraftType,
-		CWTCategory:      av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		CWTCategory:      db.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 	}
 }
 
@@ -523,7 +524,7 @@ func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error
 // finalizeOverflightNoLock builds the overflight's NAS flight plan with
 // controller assignments and registers it with STARS.
 func (s *Sim) finalizeOverflightNoLock(ac *Aircraft, of *av.Overflight, group string) error {
-	isTRACON := av.DB.IsTRACON(s.State.Facility)
+	isTRACON := db.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeOverflight)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO

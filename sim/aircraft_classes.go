@@ -7,7 +7,7 @@ import (
 	"slices"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/util"
 )
 
@@ -37,7 +37,7 @@ func validateAircraftClasses(member string, classes map[string][]string, e *util
 			}
 		}
 		for _, t := range types {
-			if _, ok := av.DB.AircraftPerformance[t]; !ok {
+			if _, ok := db.DB.AircraftPerformance[t]; !ok {
 				e.ErrorString("class %q: unknown aircraft type %q", name, t)
 			}
 		}

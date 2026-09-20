@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
@@ -332,7 +333,7 @@ func TestParseInterceptRadial(t *testing.T) {
 func TestRunOneControlCommandInterceptRadial(t *testing.T) {
 	lg := log.New(true, "error", t.TempDir())
 
-	wavey, ok := av.DB.LookupWaypoint("WAVEY")
+	wavey, ok := db.DB.LookupWaypoint("WAVEY")
 	if !ok {
 		t.Fatal("WAVEY not found")
 	}

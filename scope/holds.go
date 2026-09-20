@@ -6,6 +6,7 @@ package scope
 
 import (
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 )
@@ -25,7 +26,7 @@ func DrawEnrouteHolds(nmPerLongitude, magneticVariation float32, transforms Tran
 	color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, style renderer.TextStyle,
 	drawn *DrawnRoutes, drawnHolds map[string]any) {
 	for _, wp := range wps {
-		if holds, ok := av.DB.EnrouteHolds[wp.Fix]; ok {
+		if holds, ok := db.DB.EnrouteHolds[wp.Fix]; ok {
 			for _, h := range holds {
 				// Draw if: procedure matches OR procedure is empty (HPF hold at this waypoint)
 				if h.Procedure == procedure || h.Procedure == "" {
@@ -47,7 +48,7 @@ func DrawHoldPattern(nmPerLongitude, magneticVariation float32, transforms Trans
 	}
 	drawnHolds[hold.Fix] = nil
 
-	fixLoc, _ := av.DB.LookupWaypoint(hold.Fix)
+	fixLoc, _ := db.DB.LookupWaypoint(hold.Fix)
 
 	// Default leg length/time if not specified
 	legLength := hold.LegLengthNM

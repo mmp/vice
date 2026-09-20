@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
@@ -288,7 +289,7 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 		if id == "" {
 			continue
 		}
-		if ap, ok := av.DB.LookupICAOAirport(id); !ok || math.NMDistance2LL(p, ap.Location) <= 100 {
+		if ap, ok := db.DB.LookupICAOAirport(id); !ok || math.NMDistance2LL(p, ap.Location) <= 100 {
 			fixes = append(fixes, string(id))
 		}
 	}
@@ -403,7 +404,7 @@ func (ac *Aircraft) TAS(temp av.Temperature) float32 {
 ///////////////////////////////////////////////////////////////////////////
 // Navigation and simulation
 
-func (ac *Aircraft) Update(model *wx.Model, simTime Time, arrivalMETAR *wx.METAR, bravo *av.AirspaceGrid, lg *log.Logger) nav.UpdateResult {
+func (ac *Aircraft) Update(model *wx.Model, simTime Time, arrivalMETAR *wx.METAR, bravo *db.AirspaceGrid, lg *log.Logger) nav.UpdateResult {
 	if lg != nil {
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
@@ -677,7 +678,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
 
-	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
 		return ErrUnknownAircraftType
@@ -728,7 +729,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 		ac.FlightPlan.Route = dep.Route
 	}
 
-	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
 		return ErrUnknownAircraftType
@@ -764,7 +765,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
 	simTime Time, lg *log.Logger) error {
-	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
 		return ErrUnknownAircraftType
@@ -786,7 +787,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 
 func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float32,
 	magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) error {
-	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
 		return ErrUnknownAircraftType
@@ -921,7 +922,7 @@ func (ac *Aircraft) DistanceAlongRoute(fix string) (float32, error) {
 }
 
 func (ac *Aircraft) CWT() string {
-	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		return "NOWGT"
 	}
@@ -1027,8 +1028,8 @@ func plausibleCruiseBand(fp av.FlightPlan, perf av.AircraftPerformance) altitude
 	// Without both airports there is no distance to go on, so take the flight
 	// to be a long one.
 	d := float32(maxCruiseDistance)
-	if dep, ok := av.DB.Airports[fp.DepartureAirport]; ok {
-		if arr, ok := av.DB.Airports[fp.ArrivalAirport]; ok {
+	if dep, ok := db.DB.Airports[fp.DepartureAirport]; ok {
+		if arr, ok := db.DB.Airports[fp.ArrivalAirport]; ok {
 			d = math.NMDistance2LL(dep.Location, arr.Location)
 		}
 	}
@@ -1051,10 +1052,10 @@ func plausibleCruiseBand(fp av.FlightPlan, perf av.AircraftPerformance) altitude
 // 4,957 jet routes in the scraped database were ever filed below it.
 func terrainFloor(fp av.FlightPlan) int {
 	elevation := 0
-	if ap, ok := av.DB.Airports[fp.DepartureAirport]; ok {
+	if ap, ok := db.DB.Airports[fp.DepartureAirport]; ok {
 		elevation = max(elevation, ap.Elevation)
 	}
-	if ap, ok := av.DB.Airports[fp.ArrivalAirport]; ok {
+	if ap, ok := db.DB.Airports[fp.ArrivalAirport]; ok {
 		elevation = max(elevation, ap.Elevation)
 	}
 	return elevation + 2000
@@ -1063,8 +1064,8 @@ func terrainFloor(fp av.FlightPlan) int {
 // cruiseCourse is the magnetic course the flight makes good, which decides
 // which side of the hemispheric rule its altitude falls on.
 func cruiseCourse(fp av.FlightPlan, nmPerLongitude float32, magneticVariation float32) math.MagneticHeading {
-	dep, dok := av.DB.Airports[fp.DepartureAirport]
-	arr, aok := av.DB.Airports[fp.ArrivalAirport]
+	dep, dok := db.DB.Airports[fp.DepartureAirport]
+	arr, aok := db.DB.Airports[fp.ArrivalAirport]
 	if !dok || !aok {
 		return 0
 	}

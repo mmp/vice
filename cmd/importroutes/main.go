@@ -39,6 +39,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 
 	"github.com/klauspost/compress/zstd"
@@ -56,7 +57,7 @@ func main() {
 	dryRun := flag.Bool("dryrun", false, "report what would be written without writing it")
 	flag.Parse()
 
-	av.InitDB()
+	db.InitDB()
 
 	prefroutesData, err := readSource(*prefroutesPath, prefroutesURL)
 	if err != nil {
@@ -81,17 +82,17 @@ func main() {
 	}
 
 	airportLocation := func(icao string) (math.Point2LL, bool) {
-		ap, ok := av.DB.Airports[av.ICAOAirportCode(icao)]
+		ap, ok := db.DB.Airports[av.ICAOAirportCode(icao)]
 		return ap.Location, ok
 	}
-	routes = append(routes, cullCDRs(cdrs, airportLocation, av.DB.LookupWaypoint)...)
+	routes = append(routes, cullCDRs(cdrs, airportLocation, db.DB.LookupWaypoint)...)
 	routes = dedupe(routes)
 
 	slices.SortFunc(routes, compareRoutes)
 
-	pairs := make(map[av.AirportPair]bool)
+	pairs := make(map[db.AirportPair]bool)
 	for _, r := range routes {
-		pairs[av.AirportPair{From: r.orig, To: r.dest}] = true
+		pairs[db.AirportPair{From: r.orig, To: r.dest}] = true
 	}
 	fmt.Printf("Keeping %d routes between %d city pairs\n", len(routes), len(pairs))
 
@@ -108,11 +109,11 @@ func main() {
 // route is one row of the output database.
 // lookupRouteAirport resolves an airport id from the FAA route data, which
 // writes some airports by their ICAO id and others by their FAA one.
-func lookupRouteAirport(id string) (av.FAAAirport, bool) {
-	if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(id)); ok {
+func lookupRouteAirport(id string) (db.Airport, bool) {
+	if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(id)); ok {
 		return ap, true
 	}
-	return av.DB.LookupFAAAirport(av.FAAAirportCode(id))
+	return db.DB.LookupFAAAirport(av.FAAAirportCode(id))
 }
 
 type route struct {
@@ -277,10 +278,10 @@ func classifyAircraft(s string) (aircraft string, rnav bool) {
 // have the sim flying esoteric routings on a clear day. When the most direct
 // route needs RNAV, the most direct conventional one is kept as well.
 func cullCDRs(cdrs []route, airportLocation, fixLocation func(string) (math.Point2LL, bool)) []route {
-	best := make(map[av.AirportPair]route)
-	bestConventional := make(map[av.AirportPair]route)
-	ratios := make(map[av.AirportPair]float32)
-	conventionalRatios := make(map[av.AirportPair]float32)
+	best := make(map[db.AirportPair]route)
+	bestConventional := make(map[db.AirportPair]route)
+	ratios := make(map[db.AirportPair]float32)
+	conventionalRatios := make(map[db.AirportPair]float32)
 
 	for _, r := range cdrs {
 		orig, origOK := airportLocation(string(r.orig))
@@ -290,7 +291,7 @@ func cullCDRs(cdrs []route, airportLocation, fixLocation func(string) (math.Poin
 		}
 		ratio := routeLengthRatio(orig, dest, r.route, fixLocation)
 
-		pair := av.AirportPair{From: r.orig, To: r.dest}
+		pair := db.AirportPair{From: r.orig, To: r.dest}
 		if prev, ok := ratios[pair]; !ok || ratio < prev {
 			best[pair], ratios[pair] = r, ratio
 		}

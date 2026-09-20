@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"io"
 	"io/fs"
 	"path"
@@ -637,7 +638,7 @@ func FlightDataCells(airports ...map[av.ICAOAirportCode]bool) []string {
 	var cells []string
 	for _, set := range airports {
 		for icao := range set {
-			ap, ok := av.DB.Airports[icao]
+			ap, ok := db.DB.Airports[icao]
 			if !ok {
 				continue
 			}

@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
@@ -76,7 +77,7 @@ func (ss *CommonState) compatibleDepartures(departureAirport av.ICAOAirportCode,
 		if err != nil {
 			continue
 		}
-		exitRoutes := av.ExitRoutesForAircraft(allRoutes, aircraftType)
+		exitRoutes := av.ExitRoutesForAircraft(db.Lookups{}, allRoutes, aircraftType)
 
 		inCategory := func(exit av.ExitID) bool {
 			return rwy.Category == "" || rwy.Category == ap.ExitCategory(exit)
@@ -142,7 +143,7 @@ func (ss *CommonState) placement(choice departureChoice, departureAirport, desti
 	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep,
 		cruise: choice.cruise, how: choice.how}
 	if choice.route != "" {
-		p.cruise.Floor = av.RouteAltitudeFloor(choice.route, departureAirport, destination)
+		p.cruise.Floor = av.RouteAltitudeFloor(db.Lookups{}, choice.route, departureAirport, destination)
 	}
 
 	exitRoute := c.exitRoutes[c.dep.Exit]
@@ -168,8 +169,8 @@ func (ss *CommonState) placement(choice departureChoice, departureAirport, desti
 // DEEZZ6 exit route authored as plain vectors, DEEZZ has to lead the route
 // itself.
 func departureRoute(route string, departureAirport av.ICAOAirportCode, exit av.ExitID, exitRoute *av.ExitRoute) string {
-	fields := av.TrimDepartureAirportTokens(strings.Fields(route), departureAirport)
-	if len(fields) > 0 && av.TokenNamesProcedure(fields[0]) {
+	fields := av.TrimDepartureAirportTokens(db.Lookups{}, strings.Fields(route), departureAirport)
+	if len(fields) > 0 && av.TokenNamesProcedure(db.Lookups{}, fields[0]) {
 		fields = fields[1:]
 	}
 
@@ -204,7 +205,7 @@ func dropFlownPrefix(routeWps, exitWps av.WaypointArray) av.WaypointArray {
 // there are never flown and every one of them is sent to the clients on every
 // update. Fixes it can't place--SID and STAR names, radial/DME fixes--drop out.
 func (ss *CommonState) departureRouteWaypoints(route string) av.WaypointArray {
-	wps := av.RouteWaypoints(route).InitializeLocations(ss, ss.NmPerLongitude,
+	wps := av.RouteWaypoints(db.Lookups{}, route).InitializeLocations(ss, ss.NmPerLongitude,
 		ss.MagneticVariation, true /* allowSlop */, nil)
 
 	cull := ss.cullDistance()
@@ -255,7 +256,7 @@ func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCod
 
 	scenarioRoutes := func(to av.ICAOAirportCode) []string {
 		if ap, ok := ss.Airports[departureAirport]; ok {
-			return ap.TrafficRoutes.Departures[to].Routes(aircraftType)
+			return ap.TrafficRoutes.Departures[to].Routes(db.Lookups{}, aircraftType)
 		}
 		return nil
 	}
@@ -307,8 +308,8 @@ func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCod
 		}
 	}
 
-	origin, originOK := av.DB.Airports[departureAirport]
-	trueAirport, trueOK := av.DB.Airports[destination]
+	origin, originOK := db.DB.Airports[departureAirport]
+	trueAirport, trueOK := db.DB.Airports[destination]
 	if !originOK || !trueOK {
 		return departureChoice{route: filed}, fmt.Errorf(
 			"no route to %s and airport coordinates are unavailable", destination)
@@ -355,11 +356,11 @@ func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCod
 // own destination rather than the flight's: the trailing airport token and the
 // STAR ahead of it.
 func stripSubstituteTail(route string, substitute av.ICAOAirportCode) string {
-	fields := av.TrimDestinationAirportTokens(strings.Fields(route), substitute)
+	fields := av.TrimDestinationAirportTokens(db.Lookups{}, strings.Fields(route), substitute)
 	if n := len(fields); n > 0 {
 		last := fields[n-1]
 		if c := last[len(last)-1]; c >= '0' && c <= '9' {
-			if _, ok := av.DB.Airways[last]; !ok {
+			if _, ok := db.DB.Airways[last]; !ok {
 				fields = fields[:n-1]
 			}
 		}
@@ -382,12 +383,12 @@ type realRoute struct {
 // followed by the FAA databases' routes.
 func realDepartureRoutes(from, to av.ICAOAirportCode, aircraftType string, hour int, hourKnown bool) []realRoute {
 	var routes []realRoute
-	for _, r := range orderScrapedRoutes(av.DB.ScrapedRoutesBetween(from, to),
+	for _, r := range orderScrapedRoutes(db.DB.ScrapedRoutesBetween(from, to),
 		aircraftType, hour, hourKnown) {
 		routes = append(routes, realRoute{route: r.Route, how: "scraped route",
 			minAltitude: r.MinAltitude, maxAltitude: r.MaxAltitude})
 	}
-	for _, r := range eligibleAirportPairRoutes(av.DB.RoutesBetween(from, to),
+	for _, r := range eligibleAirportPairRoutes(db.DB.RoutesBetween(from, to),
 		engineTypeFor(aircraftType)) {
 		routes = append(routes, realRoute{route: r.Route, departureFix: r.DepartureFix,
 			how: "faa route"})
@@ -400,7 +401,7 @@ func realDepartureRoutes(from, to av.ICAOAirportCode, aircraftType string, hour 
 // say either way.
 func exitHeadingDifference(c candidateDeparture, airport math.Point2LL,
 	trueHeading math.TrueHeading, nmPerLongitude float32) (float32, bool) {
-	exit, ok := av.DB.LookupWaypoint(c.dep.Exit.Base())
+	exit, ok := db.DB.LookupWaypoint(c.dep.Exit.Base())
 	if !ok {
 		return 0, false
 	}
@@ -428,8 +429,8 @@ func exitTowardDestination(candidates []candidateDeparture, airport math.Point2L
 // eligibleAirportPairRoutes filters the FAA preferred routes for a city pair to
 // the ones the aircraft can fly and orders them by preference: jets take
 // high-altitude routes first, everything else low-altitude ones.
-func eligibleAirportPairRoutes(routes []av.AirportPairRoute, engineType string) []av.AirportPairRoute {
-	eligible := func(r av.AirportPairRoute) bool {
+func eligibleAirportPairRoutes(routes []db.AirportPairRoute, engineType string) []db.AirportPairRoute {
+	eligible := func(r db.AirportPairRoute) bool {
 		switch engineType {
 		case "P": // pistons fly conventional, non-jet routes
 			return !r.RNAVRequired && r.Aircraft != "jet"
@@ -440,7 +441,7 @@ func eligibleAirportPairRoutes(routes []av.AirportPairRoute, engineType string) 
 		}
 	}
 
-	var ordered []av.AirportPairRoute
+	var ordered []db.AirportPairRoute
 	lowFirst := engineType != "J"
 	for _, low := range []bool{lowFirst, !lowFirst} {
 		for _, r := range routes {
@@ -464,8 +465,8 @@ func eligibleAirportPairRoutes(routes []av.AirportPairRoute, engineType string) 
 // is never consulted: it may not be the SID the scenario flies for the gate.
 func departureExit(route string, departureAirport, destination av.ICAOAirportCode, departureFix string,
 	candidates []candidateDeparture) (candidateDeparture, bool) {
-	wps := av.TrimDepartureAirportWaypoints(av.RouteWaypoints(route), departureAirport)
-	wps = av.TrimDestinationAirportWaypoints(wps, destination)
+	wps := av.TrimDepartureAirportWaypoints(db.Lookups{}, av.RouteWaypoints(db.Lookups{}, route), departureAirport)
+	wps = av.TrimDestinationAirportWaypoints(db.Lookups{}, wps, destination)
 	if departureFix != "" {
 		wps = append(wps, av.Waypoint{Fix: departureFix})
 	}
@@ -509,13 +510,13 @@ func departureExit(route string, departureAirport, destination av.ICAOAirportCod
 	// Several paths' exits could stand in; the one nearest the route's
 	// first locatable fix is the one the flight leaves through.
 	for _, wp := range wps {
-		routeFix, ok := av.DB.LookupWaypoint(wp.Fix)
+		routeFix, ok := db.DB.LookupWaypoint(wp.Fix)
 		if !ok {
 			continue
 		}
 		best, bestDistance := "", float32(0)
 		for _, m := range matches {
-			exit, ok := av.DB.LookupWaypoint(m)
+			exit, ok := db.DB.LookupWaypoint(m)
 			if !ok {
 				continue
 			}

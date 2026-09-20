@@ -70,6 +70,21 @@ type Database interface {
 	// InClassBOrC reports whether the point lies inside class B or C
 	// airspace at the given altitude.
 	InClassBOrC(p math.Point2LL, alt int) bool
+
+	// IsNavaidOrFix reports whether the name is a published navaid or fix.
+	IsNavaidOrFix(fix string) bool
+
+	// CheckAirport reports whether the airport is one the database knows,
+	// with an error that says so in terms of the role it was given in.
+	CheckAirport(role string, id ICAOAirportCode) error
+
+	// AirportFAACode gives the airport's FAA local identifier, if it has one.
+	AirportFAACode(icao ICAOAirportCode) (FAAAirportCode, bool)
+
+	// Airline gives the airline published under the given ICAO telephony
+	// prefix; AircraftPerformance gives how an aircraft type flies.
+	Airline(icao string) (Airline, bool)
+	AircraftPerformance(acType string) (AircraftPerformance, bool)
 }
 
 type DMELocator interface {

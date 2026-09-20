@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
@@ -149,8 +150,8 @@ func (sp *Pane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.L
 		candidateHolds := make(map[string]av.Hold)
 		ps := sp.currentPrefs()
 		ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
-		for fix, holds := range util.SortedMap(av.DB.EnrouteHolds) {
-			loc, _ := av.DB.LookupWaypoint(fix)
+		for fix, holds := range util.SortedMap(db.DB.EnrouteHolds) {
+			loc, _ := db.DB.LookupWaypoint(fix)
 			if dist := math.NMDistance2LL(ctr, loc); dist <= ps.Range {
 				for _, h := range holds {
 					// Only show holds that aren't part of procedures

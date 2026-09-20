@@ -14,6 +14,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/traffic"
@@ -263,7 +264,7 @@ func (s *Sim) sampleScenarioDeparture(airport av.ICAOAirportCode, runway av.Runw
 
 	// The airline decides the aircraft type, so only now can the routes it
 	// flies be worked out; the exit may have none for it.
-	routes := av.ExitRoutesForAircraft(ap.DepartureRoutes[runway], flight.AircraftType)
+	routes := av.ExitRoutesForAircraft(db.Lookups{}, ap.DepartureRoutes[runway], flight.AircraftType)
 	if _, ok := routes[dep.Exit]; !ok {
 		return ScheduledDeparture{}, false
 	}
@@ -471,9 +472,9 @@ func sampleScheduledAircraft[T any](s *Sim, airlines []T, specifier func(T) av.A
 	var actype, callsign string
 	if spec.Callsign != "" {
 		callsign = strings.ToUpper(strings.TrimSpace(spec.Callsign))
-		actype = spec.SampleAcType(s.Rand, dep, arr, s.lg)
+		actype = spec.SampleAcType(db.Lookups{}, s.Rand, dep, arr, s.lg)
 	} else {
-		actype, callsign = spec.SampleAcTypeAndCallsign(s.Rand, clash, s.EnforceUniqueCallsignSuffix, dep, arr, s.lg)
+		actype, callsign = spec.SampleAcTypeAndCallsign(db.Lookups{}, s.Rand, clash, s.EnforceUniqueCallsignSuffix, dep, arr, s.lg)
 	}
 	if actype == "" || callsign == "" {
 		return ScheduledFlight{}, false
@@ -1269,7 +1270,7 @@ func (ss *CommonState) historicalFlights(start time.Time, scale int) ([]traffic.
 	if err != nil {
 		return nil, fmt.Errorf("%s historical flight data: %w", ss.Facility, err)
 	}
-	return traffic.SelectFlights(flights, departureAirports, arrivalAirports, av.DB.Airlines,
+	return traffic.SelectFlights(flights, departureAirports, arrivalAirports, db.DB.Airlines,
 		start.Add(-time.Duration(scale)*PrespawnDuration),
 		start.Add(time.Duration(scale)*HistoricalFlightWindow)), nil
 }

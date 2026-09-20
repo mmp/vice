@@ -5,10 +5,10 @@
 package wx
 
 import (
+	"github.com/mmp/vice/aviation/db"
 	"sync"
 	"time"
 
-	"github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 )
@@ -47,7 +47,7 @@ func MakeModel(provider *Provider, facility string, station string, startTime ti
 		station:  station,
 		lg:       lg,
 	}
-	if !aviation.DB.IsFacility(facility) {
+	if !db.DB.IsFacility(facility) {
 		return m
 	}
 
@@ -107,7 +107,7 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 }
 
 func (m *Model) checkFetches(t time.Time) {
-	if !aviation.DB.IsFacility(m.facility) {
+	if !db.DB.IsFacility(m.facility) {
 		return
 	}
 
@@ -128,7 +128,7 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 		m.lg.Errorf("%v", ar.Err)
 		return
 	} else if ar.Grid != nil {
-		if !aviation.DB.IsFacility(m.facility) {
+		if !db.DB.IsFacility(m.facility) {
 			return
 		}
 

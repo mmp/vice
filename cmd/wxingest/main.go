@@ -17,7 +17,7 @@ import (
 	"syscall"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 	"golang.org/x/sync/errgroup"
@@ -118,7 +118,7 @@ func run() error {
 		os.Exit(1)
 	}
 
-	av.InitDB()
+	db.InitDB()
 
 	setupSignalHandler()
 

@@ -6,11 +6,12 @@ package nav
 
 import (
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/wx"
 )
 
-func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bool, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, simTime Time, bravo *av.AirspaceGrid) (float32, bool) {
+func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bool, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, simTime Time, bravo *db.AirspaceGrid) (float32, bool) {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
@@ -103,7 +104,7 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bo
 
 // TargetSpeed returns the IAS the aircraft is currently trying to fly and
 // the rate at which it should get there.
-func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *av.AirspaceGrid) (float32, float32) {
+func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *db.AirspaceGrid) (float32, float32) {
 	spd, rate := nav.selectTargetSpeed(targetAltitude, fp, wxs, arrivalMETAR, bravo)
 
 	// A speed assignment deferred until an altitude is reached ("descend
@@ -117,7 +118,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	return spd, rate
 }
 
-func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *av.AirspaceGrid) (float32, float32) {
+func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *db.AirspaceGrid) (float32, float32) {
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
 			return spd, rate
@@ -303,7 +304,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 	// based on the aircraft's altitude.
 	ias, rate := nav.targetAltitudeIAS()
 	if fp != nil && fp.Rules == av.FlightRulesVFR &&
-		av.UnderBravoShelf(bravo, nav.FlightState.Position, int(nav.FlightState.Altitude)) {
+		db.UnderBravoShelf(bravo, nav.FlightState.Position, int(nav.FlightState.Altitude)) {
 		ias = min(ias, 200)
 	}
 	if pendingDecel {

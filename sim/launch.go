@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -306,7 +307,7 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 }
 
 func runwayThresholdPosition(airport av.ICAOAirportCode, runway av.RunwayID) math.Point2LL {
-	if rwy, ok := av.LookupRunway(airport, runway.Base()); ok {
+	if rwy, ok := av.LookupRunway(db.Lookups{}, airport, runway.Base()); ok {
 		return rwy.Threshold
 	}
 	return math.Point2LL{}

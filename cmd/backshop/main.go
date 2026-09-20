@@ -14,7 +14,7 @@ import (
 	"os"
 	"runtime"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
@@ -164,7 +164,7 @@ func initResources(ui util.SyncUI) error {
 	if err := util.SyncResources(ui); err != nil {
 		return err
 	}
-	av.InitDB()
+	db.InitDB()
 	wx.Init()
 	return nil
 }

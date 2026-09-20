@@ -15,6 +15,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -294,7 +295,7 @@ func generateAtmosManifest(sb StorageBackend) error {
 // thousand ~850 byte objects from outside GCP costs about 120ms of latency
 // each, while in here it is a short in-region pass.
 func rollupAtmosSeries(sb StorageBackend) error {
-	facilities := slices.Concat(slices.Sorted(maps.Keys(av.DB.TRACONs)), slices.Sorted(maps.Keys(av.DB.ARTCCs)))
+	facilities := slices.Concat(slices.Sorted(maps.Keys(db.DB.TRACONs)), slices.Sorted(maps.Keys(db.DB.ARTCCs)))
 
 	var eg errgroup.Group
 	eg.SetLimit(4) // each facility fans out to *nWorkers reads of its own
@@ -644,13 +645,13 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 }
 
 func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string) (*wx.AtmosByPoint, error) {
-	fac, ok := av.DB.LookupFacility(facilityID)
+	fac, ok := db.DB.LookupFacility(facilityID)
 	if !ok {
 		return nil, fmt.Errorf("%s: unable to find bounds for facility", facilityID)
 	}
 	center, radius := fac.Center(), fac.Radius
 
-	_, isARTCC := av.DB.ARTCCs[facilityID]
+	_, isARTCC := db.DB.ARTCCs[facilityID]
 
 	// Collect matching points (now unique — one entry per grid location).
 	matchingRefs := slices.Collect(grid.QueryCircle(center, radius))

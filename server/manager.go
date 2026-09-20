@@ -18,6 +18,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/scenario"
@@ -208,7 +209,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 	// Look up historical TFRs for this facility and time.
 	artcc := sg.ARTCC
 	if artcc == "" {
-		artcc = av.DB.ARTCCForFacility(req.Facility)
+		artcc = db.DB.ARTCCForFacility(req.Facility)
 	}
 	if artcc != "" {
 		var err error
@@ -981,7 +982,7 @@ const ReloadScenariosRPC = "SimManager.ReloadScenarios"
 // from disk and, if they all validate, swaps them in for subsequent sims.
 // Sims that are already running keep the scenario they were created with.
 func (sm *SimManager) ReloadScenarios(args *ReloadScenariosArgs, result *ReloadScenariosResult) error {
-	av.ReloadDB()
+	db.ReloadDB()
 
 	var e util.ErrorLogger
 	tables, overrideErrors := scenario.Load(args.Overrides, &e, sm.lg)

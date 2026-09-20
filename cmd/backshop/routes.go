@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
@@ -152,7 +153,7 @@ func (in *inspector) drawRoutes(a *app, transforms scope.Transformations, cb *re
 
 			if arr.STAR != "" {
 				for airport := range arr.RunwayWaypoints {
-					for _, holds := range av.DB.TerminalHolds[airport] {
+					for _, holds := range db.DB.TerminalHolds[airport] {
 						for _, h := range holds {
 							if h.Procedure == arr.STAR {
 								scope.DrawHoldPattern(nm, magvar, transforms, h, arrColor, td, ld, arrStyle, drawn, drawnHolds)
@@ -196,14 +197,14 @@ func (in *inspector) drawRoutes(a *app, transforms scope.Transformations, cb *re
 					td, apprStyle, ld, pd, ldr, apprColor)
 				scope.SkipProcedureTurnHolds(wp, drawnHolds)
 			}
-			for _, holds := range av.DB.TerminalHolds[rwy.Airport] {
+			for _, holds := range db.DB.TerminalHolds[rwy.Airport] {
 				for _, h := range holds {
 					if h.Procedure != name {
 						continue
 					}
 					scope.DrawHoldPattern(nm, magvar, transforms, h, apprColor, td, ld, apprStyle, drawn, drawnHolds)
-					pMissed, _ := av.DB.LookupWaypoint(h.Fix)
-					ld.AddDashedLine(av.DB.Airports[rwy.Airport].Location, pMissed, .005, .0075, apprColor)
+					pMissed, _ := db.DB.LookupWaypoint(h.Fix)
+					ld.AddDashedLine(db.DB.Airports[rwy.Airport].Location, pMissed, .005, .0075, apprColor)
 				}
 			}
 			for _, wp := range appr.Waypoints {
@@ -491,8 +492,8 @@ func (in *inspector) drawHoldsUI(a *app) {
 		dist float32
 	}
 	var entries []entry
-	for fix, holds := range util.SortedMap(av.DB.EnrouteHolds) {
-		p, ok := av.DB.LookupWaypoint(fix)
+	for fix, holds := range util.SortedMap(db.DB.EnrouteHolds) {
+		p, ok := db.DB.LookupWaypoint(fix)
 		if !ok {
 			continue
 		}

@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 )
 
 const (
@@ -67,7 +68,7 @@ func validateTimetable(timetable Timetable) error {
 			)
 		}
 
-		if _, ok := av.DB.AircraftPerformance[flight.AircraftType]; !ok {
+		if _, ok := db.DB.AircraftPerformance[flight.AircraftType]; !ok {
 			return fmt.Errorf(
 				"row %d callsign %s uses unknown aircraft type %s",
 				row,
@@ -75,11 +76,11 @@ func validateTimetable(timetable Timetable) error {
 				flight.AircraftType,
 			)
 		}
-		if err := av.CheckAirport("origin", flight.Origin); err != nil {
+		if err := db.CheckAirport("origin", flight.Origin); err != nil {
 			return fmt.Errorf("row %d callsign %s: %w", row, flight.Callsign, err)
 		}
 
-		if err := av.CheckAirport("destination", flight.Destination); err != nil {
+		if err := db.CheckAirport("destination", flight.Destination); err != nil {
 			return fmt.Errorf("row %d callsign %s: %w", row, flight.Callsign, err)
 		}
 

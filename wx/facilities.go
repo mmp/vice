@@ -12,7 +12,7 @@ import (
 	"os"
 	"slices"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/util"
 )
 
@@ -55,7 +55,7 @@ func MakeFacilities(airports, tracons []string) Facilities {
 	return Facilities{
 		Airports: sortedUnique(airports),
 		TRACONs:  sortedUnique(tracons),
-		ARTCCs: util.FilterSlice(util.SortedMapKeys(av.DB.ARTCCs), func(id string) bool {
+		ARTCCs: util.FilterSlice(util.SortedMapKeys(db.DB.ARTCCs), func(id string) bool {
 			return !slices.Contains(atmosExcludedARTCCs, id)
 		}),
 	}

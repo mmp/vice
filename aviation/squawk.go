@@ -632,8 +632,8 @@ var aircraftClassNames = map[string]AircraftClass{
 
 // AircraftClassOf returns the class an aircraft type falls in, or zero if the
 // type is unknown.
-func AircraftClassOf(acType string) AircraftClass {
-	perf, ok := DB.AircraftPerformance[acType]
+func AircraftClassOf(db Database, acType string) AircraftClass {
+	perf, ok := db.AircraftPerformance(acType)
 	if !ok {
 		return 0
 	}
@@ -654,8 +654,8 @@ func AircraftClassOf(acType string) AircraftClass {
 // Matches reports whether the aircraft type falls in the class; an
 // unrestricted class matches every type and an unknown type matches no
 // restricted class.
-func (c AircraftClass) Matches(acType string) bool {
-	return c == 0 || c&AircraftClassOf(acType) != 0
+func (c AircraftClass) Matches(db Database, acType string) bool {
+	return c == 0 || c&AircraftClassOf(db, acType) != 0
 }
 
 // expand returns the classes the value admits, spelling out the every-aircraft

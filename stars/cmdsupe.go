@@ -7,6 +7,7 @@ package stars
 
 import (
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
@@ -114,7 +115,7 @@ func registerSupeCommands() {
 			if da == "" {
 				return CommandStatus{}, ErrIllegalFunction
 			}
-			ap, ok := av.ICAOAirportToFAA(da)
+			ap, ok := db.ICAOAirportToFAA(da)
 			if !ok {
 				return CommandStatus{}, ErrIllegalFunction
 			}
@@ -131,7 +132,7 @@ func registerSupeCommands() {
 			if da == "" {
 				return CommandStatus{}, ErrIllegalFunction
 			}
-			ap, ok := av.ICAOAirportToFAA(da)
+			ap, ok := db.ICAOAirportToFAA(da)
 			if !ok {
 				return CommandStatus{}, ErrIllegalFunction
 			}
@@ -148,7 +149,7 @@ func registerSupeCommands() {
 			if da == "" {
 				return CommandStatus{}, ErrIllegalFunction
 			}
-			ap, ok := av.ICAOAirportToFAA(da)
+			ap, ok := db.ICAOAirportToFAA(da)
 			if !ok {
 				return CommandStatus{}, ErrIllegalFunction
 			}

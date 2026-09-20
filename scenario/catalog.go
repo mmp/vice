@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -142,7 +143,7 @@ func initializeSimConfigurations(sg *Group, catalogs map[string]map[string]*Cata
 	facility := sg.facility()
 	artcc := sg.ARTCC
 	if artcc == "" {
-		artcc = av.DB.ARTCCForFacility(facility)
+		artcc = db.DB.ARTCCForFacility(facility)
 	}
 
 	catalog := &Catalog{

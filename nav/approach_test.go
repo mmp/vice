@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -202,19 +203,19 @@ func TestSelectVisualApproachRouteJoinsAtRouteFix(t *testing.T) {
 // looked like joining the southern reference. The fix is selecting the
 // northern intercept.
 func TestSelectVisualApproachRouteJFK13L(t *testing.T) {
-	faa, ok := av.DB.Airports["KJFK"]
+	faa, ok := db.DB.Airports["KJFK"]
 	if !ok {
 		t.Fatal("KJFK not in aviation DB")
 	}
 	nmPerLong := math.NMPerLongitudeAt(faa.Location)
-	magVar, err := av.DB.MagneticGrid.Lookup(faa.Location)
+	magVar, err := db.DB.MagneticGrid.Lookup(faa.Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup: %v", err)
 	}
 
 	northern := parseRoute(t, "BUZON/a2900/iaf TELEX/a2100+/if CAXUN/a1500+/faf", magVar)
 	southern := parseRoute(t, "ASALT/if/a3000/s210 CNRSE/a2000+/faf LEISA/a1246+ SILJY/a835+ ROBJE/a450+", magVar)
-	rwy, ok := av.LookupRunway("KJFK", "13L")
+	rwy, ok := av.LookupRunway(db.Lookups{}, "KJFK", "13L")
 	if !ok {
 		t.Fatal("KJFK 13L not found")
 	}
@@ -1622,7 +1623,7 @@ func TestClearedVisualWithPendingDirect(t *testing.T) {
 	if len(f.nav.Waypoints) < 3 {
 		t.Fatalf("waypoints = %v", f.nav.Waypoints)
 	}
-	capit, ok := av.DB.LookupWaypoint("CAPIT")
+	capit, ok := db.DB.LookupWaypoint("CAPIT")
 	if !ok {
 		t.Fatal("CAPIT not in the waypoint database")
 	}

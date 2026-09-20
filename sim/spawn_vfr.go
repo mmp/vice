@@ -13,6 +13,7 @@ import (
 
 	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
@@ -35,10 +36,10 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	ac.ReportDepartureSID = exitRoutesHaveVariedSIDs(exitRoutes)
 
 	shortExit := dep.Exit.Base()
-	isTRACON := av.DB.IsTRACON(s.State.Facility)
+	isTRACON := db.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
 	nasFp.Route = ac.FlightPlan.Route
-	nasFp.EntryFix = av.AirportDisplayId(ac.FlightPlan.DepartureAirport)
+	nasFp.EntryFix = db.AirportDisplayId(ac.FlightPlan.DepartureAirport)
 	// The flight plan carries the exit's 3-character fix id when one is
 	// adapted; fix-pair endpoints and adapted fix criteria match against it.
 	nasFp.ExitFix = s.State.FacilityAdaptation.FixPairFixID(shortExit)
@@ -169,7 +170,7 @@ func makeDepartureAircraft(ac *Aircraft, simTime Time, gateDelay time.Duration) 
 
 func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, fleet string, routeWps []av.Waypoint,
 	callsigns []av.ADSBCallsign, simTime Time) (*Aircraft, string, error) {
-	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
+	depap, arrap := db.DB.Airports[depart], db.DB.Airports[arrive]
 	rwy, _, ok := s.currentVFRRunway(depart)
 	if !ok {
 		return nil, "", fmt.Errorf("%s: unable to find current VFR runway", depart)
@@ -196,7 +197,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	}
 	ac.InitializeFlightPlan(rules, acType, depart, arrive)
 
-	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		return nil, "", fmt.Errorf("invalid aircraft type: no performance data %q", ac.FlightPlan.AircraftType)
 	}
@@ -357,7 +358,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				// Generate descent waypoints so prespawn validates the
 				// descent from cruise altitude through any bravo/charlie
 				// airspace down to pattern altitude.
-				arrAP, ok := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
+				arrAP, ok := db.DB.Airports[ac.FlightPlan.ArrivalAirport]
 				if !ok {
 					return ac, rwy.Id, nil
 				}
@@ -449,10 +450,10 @@ func vfrRoutePath(departure []av.Waypoint, mid math.Point2LL, routeWps []av.Wayp
 // is too close or the MVA is above it, so the flight has to go somewhere else.
 // The MVA is left out near either field, as it is during the route's
 // validation flight, since an aircraft is below it on departure and arrival.
-func (s *Sim) vfrCruiseCeiling(path []math.Point2LL, depap, arrap av.FAAAirport) (int, bool) {
+func (s *Sim) vfrCruiseCeiling(path []math.Point2LL, depap, arrap db.Airport) (int, bool) {
 	ceiling := maxVFRAltitude
 	roomAt := func(p math.Point2LL) bool {
-		for _, grid := range []*av.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
+		for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
 			if floor, covered := grid.ShelfFloor(p); covered {
 				under := (floor - vfrShelfBuffer) / vfrShelfIncrement * vfrShelfIncrement
 				ceiling = min(ceiling, under)
@@ -506,7 +507,7 @@ const vfrPatternMinRoom = 500
 // field means entering the airspace, which is not something we fly, so no VFR
 // is sent there. The answer depends only on the airspace and the field, so it
 // is worked out once per airport.
-func (s *Sim) vfrTerminalCeiling(ap av.FAAAirport) (int, bool) {
+func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
 	s.ensureAirspaceGrids()
 	if alt, ok := s.vfrTerminalAlts[ap.Id]; ok {
 		return alt, alt > 0
@@ -514,7 +515,7 @@ func (s *Sim) vfrTerminalCeiling(ap av.FAAAirport) (int, bool) {
 
 	ceiling := maxVFRAltitude
 	sample := func(p math.Point2LL) {
-		for _, grid := range []*av.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
+		for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
 			if floor, covered := grid.ShelfFloor(p); covered {
 				ceiling = min(ceiling, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
 			}
@@ -544,18 +545,18 @@ func (s *Sim) ensureAirspaceGrids() {
 
 func (s *Sim) initializeAirspaceGrids() {
 	s.vfrTerminalAlts = make(map[av.ICAOAirportCode]int)
-	initAirspace := func(a map[string][]av.AirspaceVolume) *av.AirspaceGrid {
+	initAirspace := func(a map[string][]av.AirspaceVolume) *db.AirspaceGrid {
 		var vols []*av.AirspaceVolume
 		for volslice := range maps.Values(a) {
 			for _, v := range volslice {
 				vols = append(vols, &v)
 			}
 		}
-		return av.MakeAirspaceGrid(vols)
+		return db.MakeAirspaceGrid(vols)
 	}
-	s.bravoAirspace = initAirspace(av.DB.BravoAirspace)
-	s.charlieAirspace = initAirspace(av.DB.CharlieAirspace)
-	s.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[s.State.Facility])
+	s.bravoAirspace = initAirspace(db.DB.BravoAirspace)
+	s.charlieAirspace = initAirspace(db.DB.CharlieAirspace)
+	s.mvaGrid = db.MakeMVAGrid(db.DB.MVAs[s.State.Facility])
 }
 
 // adjustRouteForMVA modifies the waypoint altitude restrictions to ensure

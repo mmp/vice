@@ -6,6 +6,7 @@ package aviation
 
 import (
 	"encoding/json"
+	"fmt"
 	"maps"
 	"slices"
 	"strings"
@@ -30,93 +31,7 @@ func (tl testLocator) Declination(fix string) (float32, bool) {
 	return 0, false
 }
 
-// The test locator knows no airways; tests that need one set DB.Airways.
-func (tl testLocator) Airways(name string) ([]Airway, bool) {
-	if DB == nil {
-		return nil, false
-	}
-	aw, ok := DB.Airways[name]
-	return aw, ok
-}
-
-// The published-data lookups come from the database when a test has loaded
-// it; tests that haven't get empty results.
-func (tl testLocator) AirportLocation(icao ICAOAirportCode) (math.Point2LL, bool) {
-	if DB == nil {
-		return math.Point2LL{}, false
-	}
-	ap, ok := DB.Airports[icao]
-	return ap.Location, ok
-}
-
-func (tl testLocator) IsPublishedAirport(icao ICAOAirportCode) bool {
-	if DB == nil {
-		return false
-	}
-	_, ok := DB.Airports[icao]
-	return ok
-}
-
-func (tl testLocator) AirportElevation(icao ICAOAirportCode) int {
-	if DB == nil {
-		return 0
-	}
-	return DB.Airports[icao].Elevation
-}
-
-func (tl testLocator) AirportRunways(icao ICAOAirportCode) []Runway {
-	if DB == nil {
-		return nil
-	}
-	return DB.Airports[icao].Runways
-}
-
-func (tl testLocator) AirportApproaches(icao ICAOAirportCode) map[string]Approach {
-	if DB == nil {
-		return nil
-	}
-	return DB.Airports[icao].Approaches
-}
-
-func (tl testLocator) AirportSIDs(icao ICAOAirportCode) map[string]SID {
-	if DB == nil {
-		return nil
-	}
-	return DB.Airports[icao].SIDs
-}
-
-func (tl testLocator) AirportSTARs(icao ICAOAirportCode) map[string]STAR {
-	if DB == nil {
-		return nil
-	}
-	return DB.Airports[icao].STARs
-}
-
-func (tl testLocator) ValidRunways(icao ICAOAirportCode) string {
-	if DB == nil {
-		return ""
-	}
-	return DB.Airports[icao].ValidRunways()
-}
-
-func (tl testLocator) IsGAFleet(name string) bool {
-	if DB == nil {
-		return false
-	}
-	_, ok := DB.Airlines["N"].Fleets[name]
-	return ok
-}
-
-func (tl testLocator) GAFleetNames() []string {
-	if DB == nil {
-		return nil
-	}
-	return slices.Collect(maps.Keys(DB.Airlines["N"].Fleets))
-}
-
-func (tl testLocator) InClassBOrC(p math.Point2LL, alt int) bool {
-	return false
-}
+// The test locator knows no airways; tests that need one set testDB.Airways.
 
 // declinationLocator is a testLocator whose navaids have station declinations.
 type declinationLocator struct {
@@ -197,9 +112,9 @@ func TestHoldEntry(t *testing.T) {
 }
 
 func TestParseWaypointActionGroups(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("_EWR4_4La/h039/@a500+/r055/@IEZA-D4.0+/l290/ho5W")
 	if err != nil {
@@ -241,9 +156,9 @@ func TestParseWaypointActionGroups(t *testing.T) {
 }
 
 func TestParseCourseTermination(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("RNGRR/h200/@crs220 WAVEY")
 	if err != nil {
@@ -268,9 +183,9 @@ func TestParseCourseTermination(t *testing.T) {
 }
 
 func TestParseRadialCourseTermination(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("KSEA-34R/h164/@crsSEA-R161 NEVJO")
 	if err != nil {
@@ -316,9 +231,9 @@ func TestParseRadialCourseTermination(t *testing.T) {
 }
 
 func TestParseCourseTerminationErrors(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct{ route, want string }{
 		{"RNGRR/h200/@crs220/l290 WAVEY", "/@crs must be the last trigger"},
@@ -339,9 +254,9 @@ func TestParseCourseTerminationErrors(t *testing.T) {
 }
 
 func TestInitializeActionGroupDMEFix(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("_EWR4_4La/r055/@IEZA-D4.0+/l290")
 	if err != nil {
@@ -367,9 +282,9 @@ func TestInitializeActionGroupDMEFix(t *testing.T) {
 }
 
 func TestParseLegacyModifierAfterActionGroup(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("_EWR4_4La/h039/@a500+/r055/radius2.0/land")
 	if err != nil {
@@ -387,9 +302,9 @@ func TestParseLegacyModifierAfterActionGroup(t *testing.T) {
 }
 
 func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("_EWR4_4La/h039/@a500+/r055/clearapp")
 	if err != nil {
@@ -412,9 +327,9 @@ func TestParseActionGroupClearApproachAndDuplicateAltitudes(t *testing.T) {
 }
 
 func TestParseInterceptApproachFlag(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("AROSLY/intercept FORDS")
 	if err != nil {
@@ -437,9 +352,9 @@ func TestParseInterceptApproachFlag(t *testing.T) {
 // the action group they are written in rather than applying to the whole fix,
 // so that a trigger can hold them off.
 func TestSequencedRemovalActions(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, route := range []string{"AROSLY/delete FORDS", "AROSLY/land FORDS", "AROSLY/intercept FORDS"} {
 		wps, err := parseWaypoints(route)
@@ -472,9 +387,9 @@ func TestSequencedRemovalActions(t *testing.T) {
 }
 
 func TestCheckArrivalInterceptRequiresApproach(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("AROSLY/intercept FORDS")
 	if err != nil {
@@ -495,9 +410,9 @@ func TestCheckArrivalInterceptRequiresApproach(t *testing.T) {
 }
 
 func TestCheckArrivalCatchesHundredsOfFeetAltitudes(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	check := func(route string) bool {
 		wps, err := parseWaypoints(route)
@@ -524,9 +439,9 @@ func TestCheckArrivalCatchesHundredsOfFeetAltitudes(t *testing.T) {
 }
 
 func TestParseActionGroupErrorIncludesWaypointContext(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	_, err := parseWaypoints("KJFK-13R/h314/@4 SKORR")
 	if err == nil {
@@ -542,9 +457,9 @@ func TestParseActionGroupErrorIncludesWaypointContext(t *testing.T) {
 // A /@d trigger is a distance flown in nautical miles; it round-trips and
 // takes no + or - since distance flown only increases.
 func TestParseDistanceTrigger(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	route := "NETAA/t338/@d7.9/lt208/@crs178 REYLO"
 	wps, err := parseWaypoints(route)
@@ -578,9 +493,9 @@ func TestParseDistanceTrigger(t *testing.T) {
 }
 
 func TestParseMultipleRestrictionsIsError(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	_, err := parseWaypoints("BACAS/a10000-/a8000+/s210 FRING")
 	if err == nil {
@@ -609,11 +524,11 @@ func TestParseMultipleRestrictionsIsError(t *testing.T) {
 // airway identifiers, with none of the "/" modifiers the scenario route parser
 // understands. Every waypoint that survives has a location to fly to.
 func TestRouteWaypoints(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: map[string][]Airway{
+	oldDB := testDB
+	testDB = testDatabase{Airways: map[string][]Airway{
 		"Q75": {{Name: "Q75", Fixes: []AirwayFix{{Fix: "BIGGY"}, {Fix: "MIDDL"}, {Fix: "TEUFL"}}}},
 	}}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	loc := testLocator{
 		"BIGGY": math.Point2LL{-74.5, 40.4},
@@ -624,7 +539,7 @@ func TestRouteWaypoints(t *testing.T) {
 
 	// SLI341/019 is a radial/DME fix: the database has a handful and none of
 	// them can be placed, so they drop out rather than derailing the route.
-	wps := RouteWaypoints("BIGGY Q75 TEUFL DADES2 SLI341/019 TPA").
+	wps := RouteWaypoints(testLocator{}, "BIGGY Q75 TEUFL DADES2 SLI341/019 TPA").
 		InitializeLocations(loc, 45, 12, true /* allowSlop */, nil)
 
 	var got []string
@@ -641,16 +556,16 @@ func TestRouteWaypoints(t *testing.T) {
 }
 
 func TestRouteSTAR(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{
-		Airports: map[ICAOAirportCode]FAAAirport{
+	oldDB := testDB
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{
 			"KSAN": {Id: "KSAN", LocalCode: "SAN", STARs: map[string]STAR{"LUCKI1": {}}},
 			"KJFK": {Id: "KJFK", LocalCode: "JFK", STARs: map[string]STAR{"LENDY6": {}, "PARCH4": {}}},
 			"KFLL": {Id: "KFLL", LocalCode: "FLL", STARs: map[string]STAR{"CUUDA4": {}}},
 		},
 		Airways: map[string][]Airway{"Q86": nil, "J121": nil},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct {
 		route       string
@@ -671,18 +586,18 @@ func TestRouteSTAR(t *testing.T) {
 		// A procedure the airport doesn't chart names no STAR.
 		{"KORD TTRUE LUCKI1 KJFK", "KJFK", "", ""},
 	} {
-		star, entry := RouteSTAR(tc.route, tc.icao)
+		star, entry := RouteSTAR(testLocator{}, tc.route, tc.icao)
 		if star != tc.star || entry != tc.entry {
-			t.Errorf("RouteSTAR(%q, %s) = %q, %q; want %q, %q",
+			t.Errorf("RouteSTAR(testLocator{}, %q, %s) = %q, %q; want %q, %q",
 				tc.route, tc.icao, star, entry, tc.star, tc.entry)
 		}
 	}
 }
 
 func TestTrimDepartureAirportTokens(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{
-		Airports: map[ICAOAirportCode]FAAAirport{
+	oldDB := testDB
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{
 			"5A8":  {Id: "5A8", LocalCode: "5A8"},
 			"KDRA": {Id: "KDRA", LocalCode: "NV65"},
 			"KJFK": {Id: "KJFK", LocalCode: "JFK"},
@@ -696,7 +611,7 @@ func TestTrimDepartureAirportTokens(t *testing.T) {
 		},
 		Airways: map[string][]Airway{"J133": nil, "J501": nil, "V5": nil, "V23": nil, "V361": nil},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct {
 		route string
@@ -728,17 +643,17 @@ func TestTrimDepartureAirportTokens(t *testing.T) {
 		{"5A8 AKN", "5A8", "AKN"},
 		{"", "PHOG", ""},
 	} {
-		got := strings.Join(TrimDepartureAirportTokens(strings.Fields(tc.route), tc.icao), " ")
+		got := strings.Join(TrimDepartureAirportTokens(testLocator{}, strings.Fields(tc.route), tc.icao), " ")
 		if got != tc.want {
-			t.Errorf("TrimDepartureAirportTokens(%q, %s) = %q, want %q", tc.route, tc.icao, got, tc.want)
+			t.Errorf("TrimDepartureAirportTokens(testLocator{}, %q, %s) = %q, want %q", tc.route, tc.icao, got, tc.want)
 		}
 	}
 }
 
 func TestTrimDestinationAirportTokens(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{
-		Airports: map[ICAOAirportCode]FAAAirport{
+	oldDB := testDB
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{
 			"KDRA": {Id: "KDRA", LocalCode: "NV65"},
 			"KPDX": {Id: "KPDX", LocalCode: "PDX"},
 			"PABE": {Id: "PABE", LocalCode: "BET"},
@@ -747,7 +662,7 @@ func TestTrimDestinationAirportTokens(t *testing.T) {
 		},
 		Airways: map[string][]Airway{"J501": nil, "V2": nil, "V16": nil, "V319": nil},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct{ route, icao, want string }{
 		{"TRUKN2 GRTFL MACHU TMBRS4 PDX", "KPDX", "TRUKN2 GRTFL MACHU TMBRS4"},
@@ -765,9 +680,9 @@ func TestTrimDestinationAirportTokens(t *testing.T) {
 		{"BTY MISEN NV65", "KDRA", "BTY MISEN"},
 		{"", "PHTO", ""},
 	} {
-		got := strings.Join(TrimDestinationAirportTokens(strings.Fields(tc.route), ICAOAirportCode(tc.icao)), " ")
+		got := strings.Join(TrimDestinationAirportTokens(testLocator{}, strings.Fields(tc.route), ICAOAirportCode(tc.icao)), " ")
 		if got != tc.want {
-			t.Errorf("TrimDestinationAirportTokens(%q, %s) = %q, want %q", tc.route, tc.icao, got, tc.want)
+			t.Errorf("TrimDestinationAirportTokens(testLocator{}, %q, %s) = %q, want %q", tc.route, tc.icao, got, tc.want)
 		}
 	}
 }
@@ -816,9 +731,9 @@ func TestHourRanges(t *testing.T) {
 }
 
 func TestParseRadialTermination(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	const route = "KDLS-25/t069/@a647+/h120/@LTJ-R165/tLTJ-R165/@a4000+ LTJ"
 	wps, err := parseWaypoints(route)
@@ -885,9 +800,9 @@ func TestParseRadialTermination(t *testing.T) {
 }
 
 func TestParseRadialTrack(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	// A radial to track is a heading action with the navaid as its fix.
 	for _, tc := range []struct {
@@ -919,9 +834,9 @@ func TestParseRadialTrack(t *testing.T) {
 }
 
 func TestParseRadialErrors(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct{ route, want string }{
 		{"KSNS-8/hSNS-R255", "can only be tracked"},
@@ -941,9 +856,9 @@ func TestParseRadialErrors(t *testing.T) {
 }
 
 func TestEncodeTurnDirection(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct {
 		route             string
@@ -972,9 +887,9 @@ func TestEncodeTurnDirection(t *testing.T) {
 }
 
 func TestParseArcDirection(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct {
 		route     string
@@ -1004,9 +919,9 @@ func TestParseArcDirection(t *testing.T) {
 }
 
 func TestParseActionsIntoGroups(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	// Actions at a fix form a single open action group and round-trip.
 	for _, route := range []string{"RNGRR/h223", "RNGRR/h223/ho5W/c5000", "KJFK-4L/ho5S/@a2500+"} {
@@ -1051,9 +966,9 @@ func TestParseActionsIntoGroups(t *testing.T) {
 }
 
 func TestParseTriggerErrors(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct{ route, want string }{
 		{"KJFK-4L/@a2000+/l110", "trigger /@a2000+ must follow an action; use /ph"},
@@ -1076,9 +991,9 @@ func TestParseTriggerErrors(t *testing.T) {
 }
 
 func TestParseTriggerFixWithHyphen(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	const route = "KJFK-4L/h044/@6A1-1-D2.0+/l110/@6A1-1-R090/ph"
 	wps, err := parseWaypoints(route)
@@ -1101,9 +1016,9 @@ func TestParseTriggerFixWithHyphen(t *testing.T) {
 }
 
 func TestEncodeTriggerRoundTrip(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, route := range []string{
 		"KHLN-23/h054/@a4277+/l274/@HLN-R322/tHLN-R322/@a8100+/rd PXR",
@@ -1123,9 +1038,9 @@ func TestEncodeTriggerRoundTrip(t *testing.T) {
 }
 
 func TestParseClimbDescendAltitudes(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, route := range []string{"MERIT/c50", "MERIT/c0", "MERIT/d45", "MERIT/c60100", "MERIT/d1250"} {
 		if _, err := parseWaypoints(route); err == nil {
@@ -1153,9 +1068,9 @@ func TestParseClimbDescendAltitudes(t *testing.T) {
 }
 
 func TestCheckBasicsCatchesHundredsOfFeetAltitudes(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	errors := func(route string) string {
 		wps, err := parseWaypoints(route)
@@ -1188,9 +1103,9 @@ func TestCheckBasicsCatchesHundredsOfFeetAltitudes(t *testing.T) {
 }
 
 func TestCheckDepartureAltitudesBelowFieldElevation(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	errors := func(route string, elevation int) string {
 		wps, err := parseWaypoints(route)
@@ -1214,9 +1129,9 @@ func TestCheckDepartureAltitudesBelowFieldElevation(t *testing.T) {
 }
 
 func TestWaypointActionTerminationEncoded(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, s := range []string{"/@a500+", "/@a3000-", "/@IEZA-D4.0+", "/@ILSQ-D2.3-", "/@crs220", "/@HLN-R322", "/@d7.9"} {
 		wps, err := parseWaypoints("FIX/h039" + s + " NEXT/h100")
@@ -1269,9 +1184,9 @@ func TestRouteAltitudeFloor(t *testing.T) {
 		return wp
 	}
 
-	oldDB := DB
-	DB = &StaticDatabase{
-		Airports: map[ICAOAirportCode]FAAAirport{
+	oldDB := testDB
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{
 			"KSNA": {Id: "KSNA", SIDs: map[string]SID{
 				"FINZZ3": {EnrouteTransitions: map[string]WaypointArray{
 					"MISEN": {atOrBelow("STREL", 5000), atOrAbove("FINZZ", 10000),
@@ -1304,7 +1219,7 @@ func TestRouteAltitudeFloor(t *testing.T) {
 		},
 		Airways: map[string][]Airway{"J146": nil},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct {
 		route    string
@@ -1329,16 +1244,16 @@ func TestRouteAltitudeFloor(t *testing.T) {
 		// A route naming no procedure at all.
 		{"BIGGY MIDDL TEUFL", "KJFK", "KLAS", 0},
 	} {
-		if floor := RouteAltitudeFloor(tc.route, tc.from, tc.to); floor != tc.floor {
+		if floor := RouteAltitudeFloor(testLocator{}, tc.route, tc.from, tc.to); floor != tc.floor {
 			t.Errorf("%q %s->%s: floor = %d, want %d", tc.route, tc.from, tc.to, floor, tc.floor)
 		}
 	}
 }
 
 func TestApplyActions(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	const route = "KSFO-10L/h284/@a513+ GNNRR/a2500+ FIXXX/h123/@a500+/h234/@a1000+/h012 BEBOP"
 	for _, tc := range []struct {
@@ -1435,9 +1350,9 @@ func TestApplyActions(t *testing.T) {
 // TestInsertOffsetActions covers "waypoint_actions" keys that place their
 // actions at a point along the leg after their fix.
 func TestInsertOffsetActions(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	// The fixes run east along a line so that the interpolated points fall
 	// where arithmetic says they do.
@@ -1612,9 +1527,9 @@ func TestResolveActionControllers(t *testing.T) {
 // /intercept can reach the approach: something from the action's fix onward
 // has to be on it, unless a heading has the aircraft vectored to it instead.
 func TestCheckApproachJoins(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	ils := &Approach{
 		FullName:  "ILS Runway 15R",
@@ -1659,9 +1574,9 @@ func TestCheckApproachJoins(t *testing.T) {
 // steer the aircraft. nav flies them and scenario validation reads them, so
 // the two agree only as long as both go through here.
 func TestActionGroupHeading(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	for _, tc := range []struct {
 		name string
@@ -1712,9 +1627,9 @@ func TestCheckApproachBelowSeaLevelThreshold(t *testing.T) {
 }
 
 func TestCheckSpeedRange(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	errors := func(route string) string {
 		wps, err := parseWaypoints(route)
@@ -1745,9 +1660,9 @@ func TestCheckSpeedRange(t *testing.T) {
 }
 
 func TestSpliceRoutes(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: map[string][]Airway{"Q167": nil}}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: map[string][]Airway{"Q167": nil}}
+	t.Cleanup(func() { testDB = oldDB })
 
 	parse := func(route string) WaypointArray {
 		wps, err := parseWaypoints(route)
@@ -1820,3 +1735,112 @@ func TestSpliceRoutes(t *testing.T) {
 		t.Errorf("unexpected spliced route %q", got)
 	}
 }
+
+// testDatabase stands in for the published data in this package's tests,
+// which can't reach for the real one: it lives in a package that imports
+// this one.
+type testDatabase struct {
+	Airports            map[ICAOAirportCode]testAirport
+	Airways             map[string][]Airway
+	Fixes               map[string]bool
+	Navaids             map[string]bool
+	AircraftPerformance map[string]AircraftPerformance
+	Airlines            map[string]Airline
+}
+
+type testAirport struct {
+	Id         ICAOAirportCode
+	Name       string
+	Country    string
+	ARTCC      string
+	Location   math.Point2LL
+	Elevation  int
+	LocalCode  FAAAirportCode
+	Runways    []Runway
+	Approaches map[string]Approach
+	SIDs       map[string]SID
+	STARs      map[string]STAR
+}
+
+// testDB is what testLocator answers from; tests set it and restore it.
+var testDB testDatabase
+
+func (tl testLocator) AirportLocation(icao ICAOAirportCode) (math.Point2LL, bool) {
+	ap, ok := testDB.Airports[icao]
+	return ap.Location, ok
+}
+
+func (tl testLocator) IsPublishedAirport(icao ICAOAirportCode) bool {
+	_, ok := testDB.Airports[icao]
+	return ok
+}
+
+func (tl testLocator) AirportElevation(icao ICAOAirportCode) int {
+	return testDB.Airports[icao].Elevation
+}
+
+func (tl testLocator) AirportRunways(icao ICAOAirportCode) []Runway {
+	return testDB.Airports[icao].Runways
+}
+
+func (tl testLocator) AirportApproaches(icao ICAOAirportCode) map[string]Approach {
+	return testDB.Airports[icao].Approaches
+}
+
+func (tl testLocator) AirportSIDs(icao ICAOAirportCode) map[string]SID {
+	return testDB.Airports[icao].SIDs
+}
+
+func (tl testLocator) AirportSTARs(icao ICAOAirportCode) map[string]STAR {
+	return testDB.Airports[icao].STARs
+}
+
+func (tl testLocator) ValidRunways(icao ICAOAirportCode) string {
+	var ids []string
+	for _, r := range testDB.Airports[icao].Runways {
+		ids = append(ids, r.Id)
+	}
+	return strings.Join(ids, ", ")
+}
+
+func (tl testLocator) AirportFAACode(icao ICAOAirportCode) (FAAAirportCode, bool) {
+	ap, ok := testDB.Airports[icao]
+	return ap.LocalCode, ok && ap.LocalCode != ""
+}
+
+func (tl testLocator) IsNavaidOrFix(fix string) bool {
+	return testDB.Navaids[fix] || testDB.Fixes[fix]
+}
+
+func (tl testLocator) CheckAirport(role string, id ICAOAirportCode) error {
+	if _, ok := testDB.Airports[id]; ok {
+		return nil
+	}
+	return fmt.Errorf("%s airport %q unknown", role, id)
+}
+
+func (tl testLocator) Airways(name string) ([]Airway, bool) {
+	aw, ok := testDB.Airways[name]
+	return aw, ok
+}
+
+func (tl testLocator) Airline(icao string) (Airline, bool) {
+	al, ok := testDB.Airlines[icao]
+	return al, ok
+}
+
+func (tl testLocator) AircraftPerformance(acType string) (AircraftPerformance, bool) {
+	p, ok := testDB.AircraftPerformance[acType]
+	return p, ok
+}
+
+func (tl testLocator) IsGAFleet(name string) bool {
+	_, ok := testDB.Airlines["N"].Fleets[name]
+	return ok
+}
+
+func (tl testLocator) GAFleetNames() []string {
+	return slices.Collect(maps.Keys(testDB.Airlines["N"].Fleets))
+}
+
+func (tl testLocator) InClassBOrC(p math.Point2LL, alt int) bool { return false }

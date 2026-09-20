@@ -69,8 +69,8 @@ func (er *ExitRoutes) CheckJSONErrors(json any, e *util.ErrorLogger) {
 
 // ForAircraft returns the route the given aircraft type flies, or nil if none
 // of the routes takes it.
-func (er ExitRoutes) ForAircraft(acType string) *ExitRoute {
-	if i := slices.IndexFunc(er, func(r *ExitRoute) bool { return r.Aircraft.Matches(acType) }); i != -1 {
+func (er ExitRoutes) ForAircraft(db Database, acType string) *ExitRoute {
+	if i := slices.IndexFunc(er, func(r *ExitRoute) bool { return r.Aircraft.Matches(db, acType) }); i != -1 {
 		return er[i]
 	}
 	return nil
@@ -78,10 +78,10 @@ func (er ExitRoutes) ForAircraft(acType string) *ExitRoute {
 
 // ExitRoutesForAircraft returns the route to each exit that the given aircraft
 // type flies, leaving out the exits it has no route to.
-func ExitRoutesForAircraft(routes map[ExitID]ExitRoutes, acType string) map[ExitID]*ExitRoute {
+func ExitRoutesForAircraft(db Database, routes map[ExitID]ExitRoutes, acType string) map[ExitID]*ExitRoute {
 	m := make(map[ExitID]*ExitRoute, len(routes))
 	for exit, er := range routes {
-		if r := er.ForAircraft(acType); r != nil {
+		if r := er.ForAircraft(db, acType); r != nil {
 			m[exit] = r
 		}
 	}
@@ -134,7 +134,7 @@ func ChartedSIDPaths(s SID) [][]string {
 	for _, body := range bodies {
 		add(body)
 		for rt := range util.SortedMapValues(s.RunwayTransitions) {
-			add(spliceSIDTransition(rt, body))
+			add(SpliceSIDTransition(rt, body))
 		}
 	}
 	return paths
@@ -679,10 +679,10 @@ func (ts *TrafficRouteSet) UnmarshalJSON(b []byte) error {
 }
 
 // Routes returns the routes the given aircraft type may fly, in listed order.
-func (ts TrafficRouteSet) Routes(acType string) []string {
+func (ts TrafficRouteSet) Routes(db Database, acType string) []string {
 	var routes []string
 	for _, r := range ts {
-		if r.Aircraft.Matches(acType) {
+		if r.Aircraft.Matches(db, acType) {
 			routes = append(routes, r.Route)
 		}
 	}
@@ -758,7 +758,7 @@ func (ap *Airport) checkExits(db Database, e *util.ErrorLogger) {
 // route that merely names a SID without touching one of its charted fixes
 // reaches nothing.
 func (ap *Airport) routeReachesExit(db Database, route string, icao ICAOAirportCode) bool {
-	wps := TrimDepartureAirportWaypoints(RouteWaypoints(route), icao)
+	wps := TrimDepartureAirportWaypoints(db, RouteWaypoints(db, route), icao)
 
 	exits := make(map[string]bool)
 	var sids []string

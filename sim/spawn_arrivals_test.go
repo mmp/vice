@@ -8,6 +8,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/traffic"
@@ -40,7 +41,7 @@ func placeArrivalTestSim(airport av.ICAOAirportCode, arrivals []av.Arrival, ap *
 // arrives on the CAMRN--which is enough to place a published arrival on the
 // STAR the scenario works even though nothing names the origin.
 func TestPlaceArrivalFilesTheRealRoute(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	arrivals := []av.Arrival{
 		{STAR: "LENDY8", Airports: []av.ICAOAirportCode{"KJFK"}},
@@ -64,7 +65,7 @@ func TestPlaceArrivalFilesTheRealRoute(t *testing.T) {
 // shoehorning it onto another flow: a scenario working one gate of an airport
 // must not be handed every flight bound for the others.
 func TestPlaceArrivalDropsInactiveSTAR(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	arrivals := []av.Arrival{
 		{STAR: "PARCH4", Airports: []av.ICAOAirportCode{"KJFK"}},
@@ -83,7 +84,7 @@ func TestPlaceArrivalDropsInactiveSTAR(t *testing.T) {
 // on the final, which STAR it flew is no part of the work left. An arrival
 // naming its feeds takes them all, without flying any of them itself.
 func TestPlaceArrivalTakesSTARFeeds(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	arrivals := []av.Arrival{
 		{STARFeeds: []string{"PARCH4"}, Airports: []av.ICAOAirportCode{"KJFK"}},
@@ -104,7 +105,7 @@ func TestPlaceArrivalTakesSTARFeeds(t *testing.T) {
 // The feeds say which STARs an arrival takes and no more; a flight off one it
 // doesn't name is still dropped.
 func TestPlaceArrivalDropsUnfedSTAR(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	arrivals := []av.Arrival{
 		{STARFeeds: []string{"PARCH4", "LENDY8"}, Airports: []av.ICAOAirportCode{"KJFK"}},
@@ -121,7 +122,7 @@ func TestPlaceArrivalDropsUnfedSTAR(t *testing.T) {
 // database says: KORF to KJFK really arrives on the CAMRN, but the scenario
 // says in so many words to fly it in on the PARCH.
 func TestPlaceArrivalPrefersScenarioRoute(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	arrivals := []av.Arrival{
 		{STAR: "PARCH4", Airports: []av.ICAOAirportCode{"KJFK"}},
@@ -154,7 +155,7 @@ func TestPlaceArrivalPrefersScenarioRoute(t *testing.T) {
 // arrives on the CAMRN5, and that is the gate a flight from the Outer Banks
 // should come in through.
 func TestPlaceArrivalSubstitutesANearbyRoutedOrigin(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	arrivals := []av.Arrival{
 		{STAR: "CAMRN5", Airports: []av.ICAOAirportCode{"KJFK"}},
@@ -191,13 +192,13 @@ func TestPlaceArrivalSubstitutesANearbyRoutedOrigin(t *testing.T) {
 // nearest the great circle it actually flies--but only a gate pointing
 // plausibly toward the origin; anything else drops the flight.
 func TestPlaceArrivalUsesTheGreatCircleGate(t *testing.T) {
-	oldDB := av.DB
-	av.DB = &av.StaticDatabase{Airports: map[av.ICAOAirportCode]av.FAAAirport{
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{Airports: map[av.ICAOAirportCode]db.Airport{
 		"KTST": {Id: "KTST", Location: math.Point2LL{-93.2, 44.9}},
 		"KFAR": {Id: "KFAR", Location: math.Point2LL{-103.0, 44.0}}, // west of KTST
 		"KSTH": {Id: "KSTH", Location: math.Point2LL{-93.2, 38.0}},  // south of KTST
 	}}
-	t.Cleanup(func() { av.DB = oldDB })
+	t.Cleanup(func() { db.DB = oldDB })
 
 	arrivals := []av.Arrival{
 		{Airports: []av.ICAOAirportCode{"KTST"}, Description: "north gate",
@@ -236,8 +237,8 @@ func TestMatchArrivalRouteWalksTheTransition(t *testing.T) {
 		}
 		return wps
 	}
-	oldDB := av.DB
-	av.DB = &av.StaticDatabase{Airports: map[av.ICAOAirportCode]av.FAAAirport{
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{Airports: map[av.ICAOAirportCode]db.Airport{
 		"KTST": {Id: "KTST", STARs: map[string]av.STAR{
 			"LUCKI1": {Transitions: map[string]av.WaypointArray{
 				"TTRUE": star("TTRUE", "WESTF", "MOMAR", "LUCKI"),
@@ -245,7 +246,7 @@ func TestMatchArrivalRouteWalksTheTransition(t *testing.T) {
 			}},
 		}},
 	}}
-	t.Cleanup(func() { av.DB = oldDB })
+	t.Cleanup(func() { db.DB = oldDB })
 
 	arrivals := []av.Arrival{
 		{STAR: "LUCKI1", Airports: []av.ICAOAirportCode{"KTST"},
@@ -284,7 +285,7 @@ func TestMatchArrivalRouteWalksTheTransition(t *testing.T) {
 // the arrival's own aircraft classes or by its altitudes against the
 // aircraft's ceiling.
 func TestSuitableArrivals(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 
 	jets := av.AircraftClassHeavyJet | av.AircraftClassNonheavyJet
 	arrivals := []av.Arrival{
@@ -369,20 +370,20 @@ func TestPlaceArrivalCarriesCruiseLimits(t *testing.T) {
 	crossing := av.Waypoint{Fix: "MISN"}
 	crossing.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(21000))
 
-	oldDB := av.DB
-	av.DB = &av.StaticDatabase{
-		Airports: map[av.ICAOAirportCode]av.FAAAirport{
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Airports: map[av.ICAOAirportCode]db.Airport{
 			"KTST": {Id: "KTST", Location: math.Point2LL{-93.2, 44.9}, STARs: map[string]av.STAR{
 				"TSTR4": {Transitions: map[string]av.WaypointArray{"MISN": {crossing}}},
 			}},
 			"KFAR": {Id: "KFAR", Location: math.Point2LL{-103.0, 44.0}},
 		},
-		ScrapedRoutes: map[av.AirportPair][]av.ScrapedRoute{
+		ScrapedRoutes: map[db.AirportPair][]av.ScrapedRoute{
 			{From: "KFAR", To: "KTST"}: {{Route: "MISN TSTR4", Count: 100,
 				MinAltitude: 8000, MaxAltitude: 34000}},
 		},
 	}
-	t.Cleanup(func() { av.DB = oldDB })
+	t.Cleanup(func() { db.DB = oldDB })
 
 	s := placeArrivalTestSim("KTST", []av.Arrival{{STAR: "TSTR4", Airports: []av.ICAOAirportCode{"KTST"}}}, nil)
 	placement, err := s.State.placeArrival("KTST", "KFAR", "B738", routedPairs{})

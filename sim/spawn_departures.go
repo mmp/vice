@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
@@ -385,7 +386,7 @@ func (s *Sim) departureSpaced(depState *RunwayLaunchState, dep DepartureAircraft
 			continue
 		}
 		prev := *otherState.LastDeparture
-		if pt, ok := av.RunwayIntersectionPoint(airport, runway, otherRwy, s.State.NmPerLongitude, 1); ok {
+		if pt, ok := av.RunwayIntersectionPoint(db.Lookups{}, airport, runway, otherRwy, s.State.NmPerLongitude, 1); ok {
 			if s.holdForRunwayIntersection(prev, dep, pt, airport, runway, otherRwy) {
 				return false
 			}
@@ -442,11 +443,11 @@ func (s *Sim) holdForCrossingDeparture(prev, dep DepartureAircraft) bool {
 // runwayThresholdAndDirection returns the runway's threshold and its unit
 // departure direction in nm coordinates.
 func runwayThresholdAndDirection(airport av.ICAOAirportCode, rwy av.RunwayID, nmPerLongitude float32) ([2]float32, [2]float32, bool) {
-	runway, ok := av.LookupRunway(airport, rwy.Base())
+	runway, ok := av.LookupRunway(db.Lookups{}, airport, rwy.Base())
 	if !ok {
 		return [2]float32{}, [2]float32{}, false
 	}
-	opp, ok := av.LookupOppositeRunway(airport, rwy.Base())
+	opp, ok := av.LookupOppositeRunway(db.Lookups{}, airport, rwy.Base())
 	if !ok {
 		return [2]float32{}, [2]float32{}, false
 	}
@@ -877,7 +878,7 @@ func (s *Sim) createScenarioIFRDeparture(e ScheduledDeparture) (*Aircraft, error
 	}
 	ac.InitializeFlightPlan(av.FlightRulesIFR, e.AircraftType, e.DepartureAirport, dep.Destination)
 
-	routes := av.ExitRoutesForAircraft(exitRoutes, e.AircraftType)
+	routes := av.ExitRoutesForAircraft(db.Lookups{}, exitRoutes, e.AircraftType)
 	if _, ok := routes[dep.Exit]; !ok {
 		return nil, fmt.Errorf("%s/%s: no route to %s for a %s", e.DepartureAirport, rwy.Runway,
 			dep.Exit, e.AircraftType)
@@ -906,7 +907,7 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 		return nil, fmt.Errorf("published departure %s: %w", callsign, errCallsignInUse)
 	}
 
-	if _, ok := av.DB.AircraftPerformance[e.AircraftType]; !ok {
+	if _, ok := db.DB.AircraftPerformance[e.AircraftType]; !ok {
 		return nil, fmt.Errorf(
 			"aircraft type %s is not present in the performance database",
 			e.AircraftType,

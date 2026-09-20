@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
@@ -498,7 +499,7 @@ func (h *airportIdParser) Parse(sp *Pane, ctx *scope.Context, input *CommandInpu
 	if len(text) < 3 {
 		return nil, text, false, nil
 	}
-	if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(text[:3])); ok {
+	if _, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(text[:3])); ok {
 		return av.FAAAirportCode(text[:3]), text[3:], true, nil
 	}
 	return nil, text, false, nil
@@ -520,7 +521,7 @@ func (h *crdaRegionIdParser) Parse(sp *Pane, ctx *scope.Context, input *CommandI
 	if isAlpha(text[0]) {
 		// Could be "APT REGION_NAME" — try to match airport prefix first
 		if len(text) >= 5 && text[3] == ' ' {
-			if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(text[:3])); ok {
+			if _, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(text[:3])); ok {
 				ap := av.FAAAirportCode(text[:3])
 				rest := text[4:]
 
@@ -1029,7 +1030,7 @@ func parseRALocation(sp *Pane, ctx *scope.Context, text string) (math.Point2LL, 
 			return p, true
 		} else if p, ok := sp.significantPoints[pos]; ok {
 			return p.Location, true
-		} else if p, ok := av.DB.LookupWaypoint(pos); ok {
+		} else if p, ok := db.DB.LookupWaypoint(pos); ok {
 			return p, true
 		} else {
 			return math.Point2LL{}, false
@@ -1846,7 +1847,7 @@ func (h *fpVFRFixesParser) Parse(sp *Pane, ctx *scope.Context, input *CommandInp
 
 	// Validate exit fix is an airport (unless intermediate)
 	if !isIntermediate {
-		if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(exit)); !ok {
+		if _, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(exit)); !ok {
 			return nil, text, false, nil
 		}
 	}

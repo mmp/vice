@@ -16,7 +16,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -168,7 +168,7 @@ func processPrecip(sb StorageBackend, path string) (int64, error) {
 func generatePrecipManifest(sb StorageBackend) error {
 	LogInfo("Generating precip manifest")
 
-	facilities := slices.Concat(slices.Sorted(maps.Keys(av.DB.TRACONs)), slices.Sorted(maps.Keys(av.DB.ARTCCs)))
+	facilities := slices.Concat(slices.Sorted(maps.Keys(db.DB.TRACONs)), slices.Sorted(maps.Keys(db.DB.ARTCCs)))
 
 	timestamps := make(map[string][]time.Time)
 	var mu sync.Mutex

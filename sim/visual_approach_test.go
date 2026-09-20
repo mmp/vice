@@ -9,6 +9,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
@@ -33,7 +34,7 @@ type VisualScenario struct {
 // reciprocal, then the threshold. The runway must already be registered via
 // setupTestRunway.
 func testApproachWaypoints(airport av.ICAOAirportCode, runway string, airportLoc math.Point2LL, nmPerLong float32) []av.WaypointArray {
-	rwy, ok := av.LookupRunway(airport, runway)
+	rwy, ok := av.LookupRunway(db.Lookups{}, airport, runway)
 	if !ok {
 		return []av.WaypointArray{{{Fix: "RW" + runway, Location: airportLoc}}}
 	}
@@ -277,7 +278,7 @@ func makeVisualTestSim(airportLoc math.Point2LL, runway string) *Sim {
 func TestCheckVisualEligibility(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
 
-	// Set up av.DB so ceiling checks can look up airport elevation.
+	// Set up db.DB so ceiling checks can look up airport elevation.
 	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc, Elevation: 13})
 
 	tests := []struct {
@@ -556,14 +557,14 @@ func setupTestRunway(t *testing.T, icao av.ICAOAirportCode, rwy av.Runway) {
 
 func setupTestRunways(t *testing.T, icao av.ICAOAirportCode, runways []av.Runway) {
 	t.Helper()
-	old, hadAirport := av.DB.Airports[icao]
-	ap := av.FAAAirport{Id: icao, Runways: runways}
-	av.DB.Airports[icao] = ap
+	old, hadAirport := db.DB.Airports[icao]
+	ap := db.Airport{Id: icao, Runways: runways}
+	db.DB.Airports[icao] = ap
 	t.Cleanup(func() {
 		if hadAirport {
-			av.DB.Airports[icao] = old
+			db.DB.Airports[icao] = old
 		} else {
-			delete(av.DB.Airports, icao)
+			delete(db.DB.Airports, icao)
 		}
 	})
 }

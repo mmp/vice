@@ -8,6 +8,7 @@ import (
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 )
 
@@ -115,21 +116,21 @@ func AddFixesFromMap(fixMap map[string]math.Point2LL, fixes map[string]struct{})
 // STARs are stored with their associated airport ICAO codes and full names.
 func ExtractFromDB(fixes map[string]struct{}, stars map[string]*ProcedureInfo) {
 	// Add all 5-letter fixes from the database
-	for name := range av.DB.Fixes {
+	for name := range db.DB.Fixes {
 		if isValidFix(name) {
 			fixes[name] = struct{}{}
 		}
 	}
 
 	// Add all 3-letter navaids (VORs)
-	for name := range av.DB.Navaids {
+	for name := range db.DB.Navaids {
 		if isValidFix(name) {
 			fixes[name] = struct{}{}
 		}
 	}
 
 	// Add STARs from all airports in the database
-	for icao, airport := range av.DB.Airports {
+	for icao, airport := range db.DB.Airports {
 		for starName := range airport.STARs {
 			if base := extractBaseName(starName); base != "" {
 				if stars[base] == nil {
@@ -151,7 +152,7 @@ func GetVORPronunciations(fixes map[string]struct{}, existing map[string]string)
 			if _, exists := existing[name]; exists {
 				continue // Already have pronunciation
 			}
-			if navaid, ok := av.DB.Navaids[name]; ok {
+			if navaid, ok := db.DB.Navaids[name]; ok {
 				result[name] = navaid.Name
 			}
 		}

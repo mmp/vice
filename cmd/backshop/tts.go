@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/platform/audio"
@@ -295,7 +296,7 @@ func (t *ttsTab) build(airports []av.ICAOAirportCode) {
 	t.procedures = make(map[av.ICAOAirportCode][]procedure)
 
 	for _, icao := range airports {
-		ap, ok := av.DB.Airports[icao]
+		ap, ok := db.DB.Airports[icao]
 		if !ok {
 			continue
 		}

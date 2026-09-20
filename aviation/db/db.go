@@ -1,18 +1,19 @@
-// aviation/db.go
+// aviation/db/db.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package db
 
 import (
 	"fmt"
+	av "github.com/mmp/vice/aviation"
 	"os"
 	"slices"
 	"strings"
 	"sync"
 
 	// Embed the time zone database: Windows has no system copy, and the zone
-	// names in TFR NOTAMs have to resolve everywhere Vice runs.
+	// names in av.TFR NOTAMs have to resolve everywhere Vice runs.
 	_ "time/tzdata"
 
 	"github.com/mmp/vice/math"
@@ -26,40 +27,40 @@ var DB *StaticDatabase
 
 type StaticDatabase struct {
 	Navaids             map[string]Navaid
-	Airports            map[ICAOAirportCode]FAAAirport
-	faaToICAO           map[FAAAirportCode]ICAOAirportCode
+	Airports            map[av.ICAOAirportCode]Airport
+	faaToICAO           map[av.FAAAirportCode]av.ICAOAirportCode
 	Fixes               map[string]Fix
-	Airways             map[string][]Airway
-	EnrouteHolds        map[string][]Hold                     // Fix -> Holds
-	TerminalHolds       map[ICAOAirportCode]map[string][]Hold // Airport -> Fix -> Holds
-	Callsigns           map[string]string                     // 3 letter -> callsign
+	Airways             map[string][]av.Airway
+	EnrouteHolds        map[string][]av.Hold                        // Fix -> Holds
+	TerminalHolds       map[av.ICAOAirportCode]map[string][]av.Hold // av.Airport -> Fix -> Holds
+	Callsigns           map[string]string                           // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
-	AircraftPerformance map[string]AircraftPerformance
-	Airlines            map[string]Airline
+	AircraftPerformance map[string]av.AircraftPerformance
+	Airlines            map[string]av.Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
 	TRACONs             map[string]TRACON
 	ATCTs               map[string]ATCT
 	MVAs                map[string][]MVA // TRACON -> MVAs
 	AirportPairRoutes   map[AirportPair][]AirportPairRoute
-	ScrapedRoutes       map[AirportPair][]ScrapedRoute
-	BravoAirspace       map[string][]AirspaceVolume
-	CharlieAirspace     map[string][]AirspaceVolume
-	DeltaAirspace       map[string][]AirspaceVolume
+	ScrapedRoutes       map[AirportPair][]av.ScrapedRoute
+	BravoAirspace       map[string][]av.AirspaceVolume
+	CharlieAirspace     map[string][]av.AirspaceVolume
+	DeltaAirspace       map[string][]av.AirspaceVolume
 	Say                 Pronunciations
 }
 
-type FAAAirport struct {
-	Id         ICAOAirportCode
+type Airport struct {
+	Id         av.ICAOAirportCode
 	Name       string
 	Country    string
-	LocalCode  FAAAirportCode `json:"local_code"`
+	LocalCode  av.FAAAirportCode `json:"local_code"`
 	Elevation  int
 	Location   math.Point2LL
-	Runways    []Runway
-	Approaches map[string]Approach
-	SIDs       map[string]SID
-	STARs      map[string]STAR
+	Runways    []av.Runway
+	Approaches map[string]av.Approach
+	SIDs       map[string]av.SID
+	STARs      map[string]av.STAR
 	ARTCC      string
 }
 
@@ -79,19 +80,19 @@ var faaCountries = map[string]bool{
 // airport. The airport database is worldwide, so this is what tells the
 // airports Vice might one day simulate from the ones that are only ever the far
 // end of somebody else's flight.
-func (ap FAAAirport) FAAControlled() bool { return faaCountries[ap.Country] }
+func (ap Airport) FAAControlled() bool { return faaCountries[ap.Country] }
 
 // RenamedAirports maps airport identifiers the FAA has retired to the ones that
 // replaced them. The historical data vice imports goes on using the old
 // identifier long after the change, so the import tools canonicalize through
 // this; scenarios and timetables must use the current one.
-var RenamedAirports = map[ICAOAirportCode]ICAOAirportCode{
+var RenamedAirports = map[av.ICAOAirportCode]av.ICAOAirportCode{
 	"KPBI": "KDJT", // renamed 2026-08-18
 }
 
 // CurrentAirportId returns the identifier now in use for an airport that has
 // been re-identified; any other id is returned unchanged.
-func CurrentAirportId(id ICAOAirportCode) ICAOAirportCode {
+func CurrentAirportId(id av.ICAOAirportCode) av.ICAOAirportCode {
 	if current, ok := RenamedAirports[id]; ok {
 		return current
 	}
@@ -103,7 +104,7 @@ func CurrentAirportId(id ICAOAirportCode) ICAOAirportCode {
 // "destination" or "arrival". A retired identifier names its replacement:
 // historical data keeps using the old one, so it turns up in scenario edits
 // made from a stale copy.
-func CheckAirport(role string, id ICAOAirportCode) error {
+func CheckAirport(role string, id av.ICAOAirportCode) error {
 	if _, ok := DB.Airports[id]; ok {
 		return nil
 	}
@@ -129,7 +130,7 @@ func (f Facility) Center() math.Point2LL {
 // ARTCC is a type alias for Facility representing an Air Route Traffic Control Center.
 type ARTCC = Facility
 
-// TRACON represents a Terminal Radar Approach Control facility.
+// TRACON represents a Terminal Radar av.Approach Control facility.
 type TRACON struct {
 	Facility
 	ARTCC string
@@ -179,14 +180,14 @@ type AdaptationFixes []AdaptationFix
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ap FAAAirport) SelectBestRunway(windDir math.TrueHeading, magneticVariation float32) (*Runway, *Runway) {
+func (ap Airport) SelectBestRunway(windDir math.TrueHeading, magneticVariation float32) (*av.Runway, *av.Runway) {
 	whdg := math.TrueToMagnetic(windDir, magneticVariation)
 
 	// Find best aligned runway
 	minDelta := float32(1000)
 	bestRwy := -1
 	for i, rwy := range ap.Runways {
-		if _, ok := LookupOppositeRunway(ap.Id, rwy.Id); ok {
+		if _, ok := av.LookupOppositeRunway(Lookups{}, ap.Id, rwy.Id); ok {
 			d := math.HeadingDifference(whdg, rwy.Heading)
 			if d < minDelta {
 				minDelta = d
@@ -199,7 +200,7 @@ func (ap FAAAirport) SelectBestRunway(windDir math.TrueHeading, magneticVariatio
 	}
 
 	rwy := ap.Runways[bestRwy]
-	opp, _ := LookupOppositeRunway(ap.Id, rwy.Id)
+	opp, _ := av.LookupOppositeRunway(Lookups{}, ap.Id, rwy.Id)
 
 	return &rwy, &opp
 }
@@ -232,17 +233,17 @@ func (d StaticDatabase) Declination(id string) (float32, bool) {
 
 // LookupICAOAirport returns the airport the aviation database keys by the
 // given id.
-func (d StaticDatabase) LookupICAOAirport(icao ICAOAirportCode) (FAAAirport, bool) {
+func (d StaticDatabase) LookupICAOAirport(icao av.ICAOAirportCode) (Airport, bool) {
 	ap, ok := d.Airports[icao]
 	return ap, ok
 }
 
 // LookupFAAAirport returns the airport with the given FAA local identifier.
-func (d StaticDatabase) LookupFAAAirport(faa FAAAirportCode) (FAAAirport, bool) {
+func (d StaticDatabase) LookupFAAAirport(faa av.FAAAirportCode) (Airport, bool) {
 	if icao, ok := d.faaToICAO[faa]; ok {
 		return d.Airports[icao], true
 	}
-	return FAAAirport{}, false
+	return Airport{}, false
 }
 
 // initLocalCodes fills in the FAA local identifiers that the airports
@@ -275,14 +276,14 @@ func (d *StaticDatabase) initLocalCodes() {
 		fourLetters := len(icao) == 4 && !strings.ContainsFunc(string(icao),
 			func(r rune) bool { return r < 'A' || r > 'Z' })
 		if inFAARegion && !fourLetters {
-			ap.LocalCode = FAAAirportCode(icao)
+			ap.LocalCode = av.FAAAirportCode(icao)
 			d.Airports[icao] = ap
 		} else if faaCountries[ap.Country] && !airportsWithoutLocalCode[icao] {
 			fatal = append(fatal, fmt.Sprintf("%s: FAA airport has no local code in airports.csv.zst", icao))
 		}
 	}
 
-	d.faaToICAO = make(map[FAAAirportCode]ICAOAirportCode)
+	d.faaToICAO = make(map[av.FAAAirportCode]av.ICAOAirportCode)
 	for icao, ap := range d.Airports {
 		lc := ap.LocalCode
 		if lc == "" {
@@ -372,79 +373,9 @@ func (d StaticDatabase) IsATCT(id string) bool {
 	return ok
 }
 
-type AircraftPerformance struct {
-	Name string `json:"name"`
-	ICAO string `json:"icao"`
-	// engines, weight class, category
-	WeightClass string  `json:"weightClass"`
-	Ceiling     float32 `json:"ceiling"`
-	Engine      struct {
-		// AircraftType is "P" for piston, "T" for turboprop, "J" for jet, and
-		// "H" for rotorcraft.
-		AircraftType string `json:"type"`
-	} `json:"engines"`
-	Rate struct {
-		Climb      float32 `json:"climb"` // ft / minute; reduce by 500 after alt 5000 if this is >=2500
-		Descent    float32 `json:"descent"`
-		Accelerate float32 `json:"accelerate"` // kts / 2 seconds
-		Decelerate float32 `json:"decelerate"`
-	} `json:"rate"`
-	Category struct {
-		SRS   int    `json:"srs"`
-		LAHSO int    `json:"lahso"`
-		CWT   string `json:"cwt"`
-	}
-	Runway struct {
-		Takeoff float32 `json:"takeoff"` // nm
-		Landing float32 `json:"landing"` // nm
-	} `json:"runway"`
-	Speed struct {
-		Min        float32 `json:"min"`
-		V2         float32 `json:"v2"`
-		Landing    float32 `json:"landing"`
-		CruiseTAS  float32 `json:"cruise"`
-		CruiseMach float32 `json:"cruiseM"`
-		MaxTAS     float32 `json:"max"`
-		MaxMach    float32 `json:"maxM"`
-	} `json:"speed"`
-	Turn struct {
-		MaxBankAngle float32 `json:"maxBankAngle"`
-		MaxBankRate  float32 `json:"maxBankRate"`
-	}
-	Capacity struct {
-		Passengers int `json:"passengers"`
-		FuelPounds int `json:"fuel_pounds"`
-	} `json:"capacity"`
-}
-
-type Airline struct {
-	ICAO     string `json:"icao"`
-	Name     string `json:"name"`
-	Callsign struct {
-		Name            string   `json:"name"`
-		CallsignFormats []string `json:"callsignFormats"`
-	} `json:"callsign"`
-	JSONFleets map[string][][2]any `json:"fleets"`
-	Fleets     map[string][]FleetAircraft
-}
-
-type FleetAircraft struct {
-	ICAO  string
-	Count int
-}
-
 // baseApproachSpeed returns a reasonable final approach speed for this
 // aircraft type. If landing speed is available, a small buffer above that
 // speed is used. Otherwise V2 or a default is returned.
-func (ap AircraftPerformance) baseApproachSpeed() float32 {
-	if ap.Speed.Landing > 0 {
-		return ap.Speed.Landing + 5
-	} else if ap.Speed.V2 > 0 {
-		return 1.25 * ap.Speed.V2
-	} else {
-		return 120
-	}
-}
 
 // ApproachSpeed returns the final approach speed including wind
 // additives. The runway heading is used to compute the headwind component
@@ -452,21 +383,6 @@ func (ap AircraftPerformance) baseApproachSpeed() float32 {
 // full gust factor (not to exceed 20 knots). Pistons add half the gust
 // factor... I suppose we should also add a max additive but most pistons
 // won't be landing in very windy conditions
-func (ap AircraftPerformance) ApproachSpeed(windDirection, windSpeed, windGust float32, runwayHeading float32) float32 {
-	gustFactor := max(0, windGust-windSpeed)
-
-	additive := float32(0)
-	switch ap.Engine.AircraftType {
-	case "J", "T":
-		diff := math.HeadingDifference(windDirection, runwayHeading)
-		headwind := max(0, float32(windSpeed)*math.Cos(math.Radians(diff)))
-		additive = min(headwind/2+gustFactor, 20)
-	case "P":
-		additive = gustFactor / 2
-	}
-
-	return ap.baseApproachSpeed() + additive
-}
 
 var (
 	initDBOnce   sync.Once
@@ -505,11 +421,11 @@ func doInitDB() {
 	db := &StaticDatabase{}
 
 	var wg sync.WaitGroup
-	var customAirports map[ICAOAirportCode]FAAAirport
+	var customAirports map[av.ICAOAirportCode]Airport
 	wg.Go(func() { db.Airports, customAirports = parseAirports() })
 	wg.Go(func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft() })
 	wg.Go(func() { db.Airlines, db.Callsigns = parseAirlines() })
-	var airports map[ICAOAirportCode]FAAAirport
+	var airports map[av.ICAOAirportCode]Airport
 	wg.Go(func() {
 		r := parseCIFP()
 		airports = r.Airports
@@ -519,7 +435,7 @@ func doInitDB() {
 		db.EnrouteHolds = r.EnrouteHolds
 		db.TerminalHolds = r.TerminalHolds
 	})
-	var hpfEnroute map[string][]Hold
+	var hpfEnroute map[string][]av.Hold
 	wg.Go(func() { hpfEnroute = parseHPF() })
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
@@ -561,11 +477,11 @@ func doInitDB() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Airport-pair Routes
+// av.Airport-pair Routes
 
 // AirportPair keys the city-pair route database by ICAO airport codes.
 type AirportPair struct {
-	From, To ICAOAirportCode
+	From, To av.ICAOAirportCode
 }
 
 // AirportPairRoute is one real-world route between two airports, taken from the
@@ -586,45 +502,31 @@ func (r AirportPairRoute) LowAltitude() bool {
 
 // RoutesBetween returns the real-world routes from one airport to another,
 // ordered preferred-routes first, or nil if the pair isn't in the database.
-func (d StaticDatabase) RoutesBetween(from, to ICAOAirportCode) []AirportPairRoute {
+func (d StaticDatabase) RoutesBetween(from, to av.ICAOAirportCode) []AirportPairRoute {
 	return d.AirportPairRoutes[AirportPair{From: from, To: to}]
 }
 
-// RouteWaypoints converts a real-world route from the city-pair database into
+// av.RouteWaypoints converts a real-world route from the city-pair database into
 // waypoints. An airway name attaches to the fix before it, so
 // InitializeLocations fills in the fixes it passes through. The returned
 // waypoints have no Location: the caller must run InitializeLocations on them,
-// which is also what discards the tokens that aren't fixes at all--SID and STAR
+// which is also what discards the tokens that aren't fixes at all--av.SID and av.STAR
 // names, radial/DME fixes like SLI341/019.
 //
-// This deliberately doesn't go through the scenario route parser, which
-// understands vice's "/" waypoint modifiers and so can't read the routes that
-// name such fixes.
-func RouteWaypoints(route string) WaypointArray {
-	var waypoints WaypointArray
-	for field := range strings.FieldsSeq(route) {
-		if _, ok := DB.Airways[field]; ok && len(waypoints) > 0 {
-			waypoints[len(waypoints)-1].InitExtra().Airway = field
-		} else {
-			waypoints = append(waypoints, Waypoint{Fix: field})
-		}
-	}
-	return waypoints
-}
 
 // ScrapedRoutesBetween returns the recently filed routes from one airport to
 // another, or nil if the pair hasn't been scraped.
-func (d StaticDatabase) ScrapedRoutesBetween(from, to ICAOAirportCode) []ScrapedRoute {
+func (d StaticDatabase) ScrapedRoutesBetween(from, to av.ICAOAirportCode) []av.ScrapedRoute {
 	return d.ScrapedRoutes[AirportPair{From: from, To: to}]
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ap FAAAirport) ValidRunways() string {
-	return strings.Join(util.MapSlice(ap.Runways, func(r Runway) string { return r.Id }), ", ")
+func (ap Airport) ValidRunways() string {
+	return strings.Join(util.MapSlice(ap.Runways, func(r av.Runway) string { return r.Id }), ", ")
 }
 
-func PrintCIFPRoutes(airport ICAOAirportCode) error {
+func PrintCIFPRoutes(airport av.ICAOAirportCode) error {
 	ap, ok := DB.Airports[airport]
 	if !ok {
 		return fmt.Errorf("%s: airport not present in database\n", airport)
@@ -649,4 +551,37 @@ func PrintCIFPRoutes(airport ICAOAirportCode) error {
 		}
 	}
 	return nil
+}
+
+// ICAOAirportToFAA returns the FAA local identifier of the given airport, or
+// "", false if the airport is unknown or has no FAA local identifier.
+func ICAOAirportToFAA(icao av.ICAOAirportCode) (av.FAAAirportCode, bool) {
+	if DB == nil { // tests that run without the database
+		return "", false
+	}
+	ap, ok := DB.Airports[icao]
+	if !ok || ap.LocalCode == "" {
+		return "", false
+	}
+	return ap.LocalCode, true
+}
+
+// FAAAirportToICAO returns the id the aviation database keys the given
+// airport by, or "", false if no airport has the given FAA local identifier.
+func FAAAirportToICAO(faa av.FAAAirportCode) (av.ICAOAirportCode, bool) {
+	if DB == nil { // tests that run without the database
+		return "", false
+	}
+	icao, ok := DB.faaToICAO[faa]
+	return icao, ok
+}
+
+// AirportDisplayId returns the name the FAA's systems know the airport by:
+// its FAA local identifier when it has one and otherwise its id unchanged,
+// as for an airport outside the FAA's regions.
+func AirportDisplayId(icao av.ICAOAirportCode) string {
+	if faa, ok := ICAOAirportToFAA(icao); ok {
+		return string(faa)
+	}
+	return string(icao)
 }

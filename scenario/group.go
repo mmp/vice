@@ -12,6 +12,7 @@ import (
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -76,16 +77,16 @@ func (sg *Group) Locate(s string) (math.Point2LL, bool) {
 
 // Airways returns the airways published under the given name.
 func (sg *Group) Airways(name string) ([]av.Airway, bool) {
-	aw, ok := av.DB.Airways[name]
+	aw, ok := db.DB.Airways[name]
 	return aw, ok
 }
 
 func (sg *Group) LocateDME(s string) (math.Point2LL, int, bool) {
-	return av.DB.LookupDME(s)
+	return db.DB.LookupDME(s)
 }
 
 func (sg *Group) Declination(s string) (float32, bool) {
-	return av.DB.Declination(s)
+	return db.DB.Declination(s)
 }
 
 // resolveController normalizes a TCP that may use a short prefix (e.g.
@@ -197,9 +198,9 @@ func (sg *Group) resolveControllerRefs() {
 
 func (sg *Group) Similar(fix string) []string {
 	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(sg.Fixes), nil, nil)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Navaids), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Airports), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Fixes), d1, d2)
 	return util.Select(len(d1) > 0, d1, d2)
 }
 
@@ -218,7 +219,7 @@ var (
 // airport's thresholds that the author clearly meant it.
 func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 	if ident, rwy, found := strings.Cut(fix, "-"); found && len(ident) >= 3 {
-		if _, ok := av.LookupRunway(av.ICAOAirportCode(ident), rwy); ok {
+		if _, ok := av.LookupRunway(db.Lookups{}, av.ICAOAirportCode(ident), rwy); ok {
 			return fix, true
 		}
 	}
@@ -232,9 +233,9 @@ func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 		return "", false
 	}
 	// The airport part of the fix may be written with either of its ids.
-	ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(groups[0]))
+	ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(groups[0]))
 	if !ok {
-		ap, ok = av.DB.LookupFAAAirport(av.FAAAirportCode(groups[0]))
+		ap, ok = db.DB.LookupFAAAirport(av.FAAAirportCode(groups[0]))
 	}
 	if !ok {
 		return "", false
@@ -557,7 +558,7 @@ func checkFlowNameRevisions(name string, airports map[av.ICAOAirportCode]*av.Air
 
 		charted := make(map[string]struct{})
 		for icao := range airports {
-			for star := range av.DB.Airports[icao].STARs {
+			for star := range db.DB.Airports[icao].STARs {
 				if av.ProcedureBase(star) == av.ProcedureBase(proc) {
 					charted[star] = struct{}{}
 				}

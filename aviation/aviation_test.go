@@ -350,15 +350,15 @@ func TestFollowedSTAR(t *testing.T) {
 		"13": star("PROUD", "KRANN", "CRADL", "ETHYN").Transitions["ALL"],
 	}
 
-	oldDB := DB
-	DB = &StaticDatabase{Airports: map[ICAOAirportCode]FAAAirport{
+	oldDB := testDB
+	testDB = testDatabase{Airports: map[ICAOAirportCode]testAirport{
 		"KTST": {Id: "KTST", STARs: map[string]STAR{
 			"MIPP4":  mipp4,
 			"PROUD2": star("HOLEY", "BRAND", "KORRY", "APPLE", "PROUD"),
 		}},
 		"KNOS": {Id: "KNOS"},
 	}}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	arrival := func(airport ICAOAirportCode, fixes ...string) *Arrival {
 		ar := &Arrival{Airports: []ICAOAirportCode{airport}}
@@ -477,27 +477,27 @@ func TestArrivalAirports(t *testing.T) {
 	fixes := []string{"MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD"}
 	var wps WaypointArray
 	loc := testLocator{}
-	dbFixes := make(map[string]Fix)
+	dbFixes := make(map[string]bool)
 	for i, f := range fixes {
 		p := math.Point2LL{float32(-73 - i), float32(40 + i)}
 		wps = append(wps, Waypoint{Fix: f})
 		loc[f] = p
-		dbFixes[f] = Fix{Id: f, Location: p}
+		dbFixes[f] = true
 	}
 	mipp4 := STAR{Transitions: map[string]WaypointArray{"ALL": wps}}
 
-	oldDB := DB
+	oldDB := testDB
 	// MIPP4 serves two of the three airports; the CIFP records it once under
 	// each of them.
-	DB = &StaticDatabase{
-		Airports: map[ICAOAirportCode]FAAAirport{
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{
 			"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": mipp4}},
 			"KNOS": {Id: "KNOS", STARs: map[string]STAR{"MIPP4": mipp4}},
 			"KOTH": {Id: "KOTH"},
 		},
 		Fixes: dbFixes,
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	scenarioAirports := map[ICAOAirportCode]*Airport{"KTST": {}, "KNOS": {}, "KOTH": {}}
 	controlPositions := map[ControlPosition]*Controller{"1T": {}}
@@ -656,9 +656,9 @@ func TestArrivalApproachRoutes(t *testing.T) {
 // copy of it carries none of the arrival's instructions, so the splice has to
 // bring them across the way ExpectApproach does at runtime.
 func TestArrivalApproachRouteCarriesSharedFixActions(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	wps, err := parseWaypoints("RAVNN CAPKO/clearapp/intercept/nopt")
 	if err != nil {
@@ -694,15 +694,15 @@ func TestChartedSTARRoute(t *testing.T) {
 	fixes := []string{"MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD", "KRANN", "ETHYN", "SNEDE",
 		"WEMAR", "TOOLE", "GARDY"}
 	loc := testLocator{}
-	dbFixes := make(map[string]Fix)
+	dbFixes := make(map[string]bool)
 	for i, f := range fixes {
 		p := math.Point2LL{float32(-73 - i), float32(40 + i)}
 		loc[f] = p
-		dbFixes[f] = Fix{Id: f, Location: p}
+		dbFixes[f] = true
 	}
-	oldDB := DB
-	DB = &StaticDatabase{Fixes: dbFixes, Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Fixes: dbFixes, Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	route := func(s string) WaypointArray {
 		wps, err := parseWaypoints(s)
@@ -718,7 +718,7 @@ func TestChartedSTARRoute(t *testing.T) {
 		RunwayWaypoints: map[string]WaypointArray{"13": route("PROUD KRANN ETHYN"), "31": route("PROUD SNEDE")},
 	}
 	wemar1 := STAR{Transitions: map[string]WaypointArray{"ALL": route("WEMAR TOOLE GARDY")}}
-	DB.Airports = map[ICAOAirportCode]FAAAirport{
+	testDB.Airports = map[ICAOAirportCode]testAirport{
 		"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": mipp4, "WEMAR1": wemar1},
 			Runways: []Runway{{Id: "13"}, {Id: "31"}}},
 	}
@@ -875,15 +875,15 @@ func TestChartedSTARRoute(t *testing.T) {
 func TestArrivalWaypointActions(t *testing.T) {
 	fixes := []string{"MIPP", "LIZZI", "BEUTY", "APPLE", "PROUD", "KRANN", "ETHYN", "SNEDE", "XYZ"}
 	loc := declinationLocator{testLocator{}, map[string]float32{"XYZ": 11}}
-	dbFixes := make(map[string]Fix)
+	dbFixes := make(map[string]bool)
 	for i, f := range fixes {
 		p := math.Point2LL{float32(-73 - i), float32(40 + i)}
 		loc.testLocator[f] = p
-		dbFixes[f] = Fix{Id: f, Location: p}
+		dbFixes[f] = true
 	}
-	oldDB := DB
-	DB = &StaticDatabase{Fixes: dbFixes, Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Fixes: dbFixes, Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	route := func(s string) WaypointArray {
 		wps, err := parseWaypoints(s)
@@ -897,7 +897,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 		Transitions:     map[string]WaypointArray{"ALL": route("MIPP LIZZI BEUTY APPLE PROUD")},
 		RunwayWaypoints: map[string]WaypointArray{"13": route("PROUD KRANN ETHYN"), "31": route("PROUD SNEDE")},
 	}
-	DB.Airports = map[ICAOAirportCode]FAAAirport{
+	testDB.Airports = map[ICAOAirportCode]testAirport{
 		"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": mipp4}, Runways: []Runway{{Id: "13"}, {Id: "31"}}},
 	}
 
@@ -1229,12 +1229,12 @@ func TestArrivalWaypointActions(t *testing.T) {
 	// along the first leg to put the handoff; it is made where the arrival
 	// spawns instead.
 	t.Run("the arrival joins the STAR on a DME arc", func(t *testing.T) {
-		old := DB.Airports["KTST"].STARs["MIPP4"]
-		DB.Airports["KTST"].STARs["MIPP4"] = STAR{
+		old := testDB.Airports["KTST"].STARs["MIPP4"]
+		testDB.Airports["KTST"].STARs["MIPP4"] = STAR{
 			Transitions:     map[string]WaypointArray{"ALL": route("MIPP/larc80XYZ LIZZI BEUTY APPLE PROUD")},
 			RunwayWaypoints: mipp4.RunwayWaypoints,
 		}
-		t.Cleanup(func() { DB.Airports["KTST"].STARs["MIPP4"] = old })
+		t.Cleanup(func() { testDB.Airports["KTST"].STARs["MIPP4"] = old })
 
 		var e util.ErrorLogger
 		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP",
@@ -1254,12 +1254,12 @@ func TestArrivalWaypointActions(t *testing.T) {
 	// The spawn point keeps the fix's altitude and speed restrictions: the
 	// aircraft is put on the leg past the fix, not given a clean slate.
 	t.Run("a spawn offset keeps the fix's restrictions", func(t *testing.T) {
-		old := DB.Airports["KTST"].STARs["MIPP4"]
-		DB.Airports["KTST"].STARs["MIPP4"] = STAR{
+		old := testDB.Airports["KTST"].STARs["MIPP4"]
+		testDB.Airports["KTST"].STARs["MIPP4"] = STAR{
 			Transitions:     map[string]WaypointArray{"ALL": route("MIPP/a11000+/s250 LIZZI BEUTY APPLE PROUD")},
 			RunwayWaypoints: mipp4.RunwayWaypoints,
 		}
-		t.Cleanup(func() { DB.Airports["KTST"].STARs["MIPP4"] = old })
+		t.Cleanup(func() { testDB.Airports["KTST"].STARs["MIPP4"] = old })
 
 		var e util.ErrorLogger
 		arr := Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP@0.4",
@@ -1289,7 +1289,7 @@ func TestArrivalWaypointActions(t *testing.T) {
 	// Actions are added to a copy of the CIFP's route: writing through to the
 	// database would give every other arrival on the STAR the same ones.
 	t.Run("the STAR in the database is untouched", func(t *testing.T) {
-		star := DB.Airports["KTST"].STARs["MIPP4"]
+		star := testDB.Airports["KTST"].STARs["MIPP4"]
 		for _, wps := range []WaypointArray{star.Transitions["ALL"], star.RunwayWaypoints["13"],
 			star.RunwayWaypoints["31"]} {
 			for _, wp := range wps {
@@ -1403,5 +1403,100 @@ func TestCheckSpeed(t *testing.T) {
 		if errs := errors(spd); errs != "" {
 			t.Errorf("%s: unexpected error %q", spd, errs)
 		}
+	}
+}
+
+func TestAircraftClassMatches(t *testing.T) {
+	seedTestPerformance(t)
+
+	jet := AircraftClassHeavyJet | AircraftClassNonheavyJet
+	for _, tc := range []struct {
+		class  AircraftClass
+		acType string
+		want   bool
+	}{
+		{0, "B738", true},
+		{0, "ZZZZ", true},
+		{jet, "B738", true},
+		{jet, "B77W", true},
+		{jet, "C172", false},
+		{AircraftClassHeavyJet, "B77W", true},
+		{AircraftClassHeavyJet, "A388", true},
+		{AircraftClassHeavyJet, "B738", false},
+		{AircraftClassNonheavyJet, "B738", true},
+		{AircraftClassNonheavyJet, "B77W", false},
+		{AircraftClassProp, "C172", true},
+		{AircraftClassProp, "DH8D", false},
+		{AircraftClassTurboprop, "DH8D", true},
+		{AircraftClassProp | AircraftClassTurboprop, "DH8D", true},
+		{AircraftClassProp, "ZZZZ", false},
+	} {
+		if got := tc.class.Matches(testLocator{}, tc.acType); got != tc.want {
+			t.Errorf("class %b Matches(%s) = %v, want %v", tc.class, tc.acType, got, tc.want)
+		}
+	}
+}
+
+func TestAircraftClassCoveredBy(t *testing.T) {
+	jet := AircraftClassHeavyJet | AircraftClassNonheavyJet
+	all := jet | AircraftClassProp | AircraftClassTurboprop
+	for _, tc := range []struct {
+		class, classes AircraftClass
+		want           bool
+	}{
+		{jet, jet, true},
+		{AircraftClassHeavyJet, jet, true},
+		{jet, AircraftClassHeavyJet, false},
+		{jet, 0, false},                 // nothing has been taken yet
+		{0, all, true},                  // the zero value admits everything...
+		{0, jet, false},                 // ...so only everything covers it
+		{AircraftClassProp, jet, false}, // disjoint classes
+		{jet | AircraftClassProp, jet, false},
+	} {
+		if got := tc.class.coveredBy(tc.classes); got != tc.want {
+			t.Errorf("%b coveredBy %b = %v, want %v", tc.class, tc.classes, got, tc.want)
+		}
+	}
+}
+
+func TestAircraftClassJSON(t *testing.T) {
+	for _, tc := range []struct {
+		json string
+		want AircraftClass
+	}{
+		{`"prop"`, AircraftClassProp},
+		{`"jet"`, AircraftClassHeavyJet | AircraftClassNonheavyJet},
+		{`"heavy"`, AircraftClassHeavyJet},
+		{`"nonheavy"`, AircraftClassNonheavyJet},
+		{`["prop", "turboprop"]`, AircraftClassProp | AircraftClassTurboprop},
+		{`["heavy", "nonheavy"]`, AircraftClassHeavyJet | AircraftClassNonheavyJet},
+	} {
+		var c AircraftClass
+		if err := json.Unmarshal([]byte(tc.json), &c); err != nil {
+			t.Errorf("%s: %v", tc.json, err)
+		} else if c != tc.want {
+			t.Errorf("%s: got %b, want %b", tc.json, c, tc.want)
+		}
+
+		// The minimal marshaled form must unmarshal back to the same bits.
+		b, err := json.Marshal(c)
+		if err != nil {
+			t.Errorf("%s: marshal: %v", tc.json, err)
+			continue
+		}
+		var rt AircraftClass
+		if err := json.Unmarshal(b, &rt); err != nil {
+			t.Errorf("%s: round trip: %v", string(b), err)
+		} else if rt != c {
+			t.Errorf("%s: round trip via %s gave %b, want %b", tc.json, string(b), rt, c)
+		}
+	}
+
+	var c AircraftClass
+	if err := json.Unmarshal([]byte(`"floatplane"`), &c); err == nil {
+		t.Errorf("unknown class did not error")
+	}
+	if err := json.Unmarshal([]byte(`["jet", "wrong"]`), &c); err == nil {
+		t.Errorf("unknown class in list did not error")
 	}
 }

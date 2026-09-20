@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"os"
 	"strconv"
 	"strings"
 
@@ -43,7 +42,7 @@ type OverflightAirline struct {
 	ArrivalAirport   ICAOAirportCode `json:"arrival_airport"`
 }
 
-func (of *Overflight) Finalize(loc Locator, nmPerLongitude float32, magneticVariation float32,
+func (of *Overflight) Finalize(db Database, nmPerLongitude float32, magneticVariation float32,
 	airports map[ICAOAirportCode]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
@@ -51,7 +50,7 @@ func (of *Overflight) Finalize(loc Locator, nmPerLongitude float32, magneticVari
 		e.ErrorString(`must provide at least two "waypoints" for overflight`)
 	}
 
-	of.Waypoints = of.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+	of.Waypoints = of.Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 
 	of.Waypoints[len(of.Waypoints)-1].MergeActions(WaypointActions{Delete: true})
 	of.Waypoints[len(of.Waypoints)-1].SetFlyOver(true)
@@ -62,12 +61,12 @@ func (of *Overflight) Finalize(loc Locator, nmPerLongitude float32, magneticVari
 		e.ErrorString(`must specify at least one airline in "airlines"`)
 	}
 	for i := range of.Airlines {
-		of.Airlines[i].Check(e)
+		of.Airlines[i].Check(db, e)
 
 		if of.Airlines[i].DepartureAirport == "" {
 			e.ErrorString(`must specify "departure_airport"`)
 		} else if _, ok := airports[of.Airlines[i].DepartureAirport]; !ok {
-			if err := CheckAirport("departure", of.Airlines[i].DepartureAirport); err != nil {
+			if err := db.CheckAirport("departure", of.Airlines[i].DepartureAirport); err != nil {
 				e.Error(err)
 			}
 		}
@@ -75,7 +74,7 @@ func (of *Overflight) Finalize(loc Locator, nmPerLongitude float32, magneticVari
 		if of.Airlines[i].ArrivalAirport == "" {
 			e.ErrorString(`must specify "arrival_airport"`)
 		} else if _, ok := airports[of.Airlines[i].ArrivalAirport]; !ok {
-			if err := CheckAirport("arrival", of.Airlines[i].ArrivalAirport); err != nil {
+			if err := db.CheckAirport("arrival", of.Airlines[i].ArrivalAirport); err != nil {
 				e.Error(err)
 			}
 		}
@@ -251,30 +250,6 @@ func ReadScrapedRoutes(resources fs.StatFS) (map[string]ScrapedRouteSet, error) 
 		return nil, fmt.Errorf("%s: %w", ScrapedRoutesPath, err)
 	}
 	return sets, nil
-}
-
-// parseScrapedRoutes loads the scraped route database for route selection,
-// most-filed routes first.
-func parseScrapedRoutes() map[AirportPair][]ScrapedRoute {
-	sets, err := ReadScrapedRoutes(util.GetResourcesFS())
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
-	}
-
-	routes := make(map[AirportPair][]ScrapedRoute)
-	for key, set := range sets {
-		if len(set.Routes) == 0 {
-			continue
-		}
-		from, to, ok := strings.Cut(key, "-")
-		if !ok {
-			fmt.Fprintf(os.Stderr, "%s: %q isn't a FROM-TO city pair\n", ScrapedRoutesPath, key)
-			os.Exit(1)
-		}
-		routes[AirportPair{From: ICAOAirportCode(from), To: ICAOAirportCode(to)}] = set.Routes
-	}
-	return routes
 }
 
 // HourRanges is a set of hours of the day, held as a bit per hour and encoded

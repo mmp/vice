@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -602,11 +603,11 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 	// See if it's a random fix not in the flight plan. It may name an
 	// airport by either of its ids.
 	p, ok := func() (math.Point2LL, bool) {
-		if p, ok := av.DB.LookupWaypoint(fix); ok {
+		if p, ok := db.DB.LookupWaypoint(fix); ok {
 			return p, true
-		} else if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(fix)); ok {
+		} else if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(fix)); ok {
 			return ap.Location, true
-		} else if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(fix)); ok {
+		} else if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(fix)); ok {
 			return ap.Location, true
 		}
 		return math.Point2LL{}, false
@@ -631,7 +632,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 }
 
 func (nav *Nav) ExpectDirect(fix string) speech.CommandIntent {
-	if _, ok := av.DB.LookupWaypoint(fix); !ok && !nav.fixInRoute(fix) {
+	if _, ok := db.DB.LookupWaypoint(fix); !ok && !nav.fixInRoute(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	}
 	nav.ExpectedDirectFix = fix
@@ -692,7 +693,7 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 // referenced to: a VHF navaid's station declination, or the area's
 // variation for a fix without one.
 func (nav *Nav) radialVariation(fix string) float32 {
-	if d, ok := av.DB.Declination(fix); ok {
+	if d, ok := db.DB.Declination(fix); ok {
 		return d
 	}
 	return nav.FlightState.MagneticVariation
@@ -793,7 +794,7 @@ func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outboun
 }
 
 func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.CommandIntent {
-	if _, ok := av.DB.LookupWaypoint(fix); !ok {
+	if _, ok := db.DB.LookupWaypoint(fix); !ok {
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	} else if !nav.fixInRoute(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
@@ -806,7 +807,7 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.Com
 		h = *hold
 	} else {
 		// Published hold
-		holds, ok := av.DB.EnrouteHolds[fix]
+		holds, ok := db.DB.EnrouteHolds[fix]
 		if !ok || len(holds) == 0 {
 			return speech.MakeUnableIntent("unable. no published hold at {fix}", fix)
 		}
@@ -846,7 +847,7 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.Com
 
 func (nav *Nav) makeFlyHold(callsign string, hold av.Hold) *FlyHold {
 	// Calculate heading from aircraft's current position to fix
-	pHold, _ := av.DB.LookupWaypoint(hold.Fix)
+	pHold, _ := db.DB.LookupWaypoint(hold.Fix)
 	hdg := math.TrueToMagnetic(math.Heading2LL(nav.FlightState.Position, pHold, nav.FlightState.NmPerLongitude),
 		nav.FlightState.MagneticVariation)
 

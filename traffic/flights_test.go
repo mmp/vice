@@ -29,7 +29,7 @@ func TestSplitCallsign(t *testing.T) {
 	} {
 		base, number := av.SplitCallsign(tc.callsign)
 		if base != tc.base || number != tc.number {
-			t.Errorf("av.SplitCallsign(%q) = %q, %q; expected %q, %q",
+			t.Errorf("SplitCallsign(%q) = %q, %q; expected %q, %q",
 				tc.callsign, base, number, tc.base, tc.number)
 		}
 	}

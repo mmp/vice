@@ -83,7 +83,7 @@ func TestFrequencyValueParser(t *testing.T) {
 				}
 				got, ok := value.(av.Frequency)
 				if !ok {
-					t.Fatalf("value type = %T, want av.Frequency", value)
+					t.Fatalf("value type = %T, want Frequency", value)
 				}
 				if got != tt.expected {
 					t.Fatalf("got %d (%s), want %d (%s)", got, got, tt.expected, tt.expected)

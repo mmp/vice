@@ -8,6 +8,7 @@ import (
 	"maps"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -28,12 +29,12 @@ func makeCircleAirportFilters(id string, description string, radius float32,
 	ceiling int, airports []av.ICAOAirportCode, e *util.ErrorLogger) sim.FilterRegions {
 	var regions sim.FilterRegions
 	for _, apname := range airports {
-		ap, ok := av.DB.Airports[apname]
+		ap, ok := db.DB.Airports[apname]
 		if !ok {
 			e.ErrorString("Airport %q not found", apname)
 			continue
 		}
-		name := av.AirportDisplayId(apname)
+		name := db.AirportDisplayId(apname)
 		regions = append(regions, sim.FilterRegion{
 			AirspaceVolume: av.AirspaceVolume{
 				Id:          airportVolumeId(name, id),
@@ -53,12 +54,12 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 	ceiling int, airports []av.ICAOAirportCode, nmPerLongitude float32, e *util.ErrorLogger) sim.FilterRegions {
 	var regions sim.FilterRegions
 	for _, apname := range airports {
-		ap, ok := av.DB.Airports[apname]
+		ap, ok := db.DB.Airports[apname]
 		if !ok {
 			e.ErrorString("Airport %q not found", apname)
 			continue
 		}
-		name := av.AirportDisplayId(apname)
+		name := db.AirportDisplayId(apname)
 
 		p := util.MapSlice(ap.Runways, func(r av.Runway) [2]float32 { return math.LL2NM(r.Threshold, nmPerLongitude) })
 		var hull [][2]float32
@@ -145,7 +146,7 @@ func PruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCo
 		*regions = util.FilterSlice(*regions, func(r sim.FilterRegion) bool {
 			covered := false
 			for _, name := range airports {
-				ap, ok := av.DB.Airports[name]
+				ap, ok := db.DB.Airports[name]
 				if !ok || !r.Inside(ap.Location, ap.Elevation) {
 					continue
 				}

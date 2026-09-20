@@ -11,13 +11,13 @@ import (
 	"fmt"
 	"os"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/speech/stt"
 )
 
 func main() {
 	// Initialize the aviation database for aircraft performance lookups
-	av.InitDB()
+	db.InitDB()
 
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <test.json>\n", os.Args[0])

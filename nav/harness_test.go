@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
@@ -23,7 +24,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	av.InitDB()
+	db.InitDB()
 	os.Exit(m.Run())
 }
 
@@ -89,17 +90,17 @@ type ArrivalConfig struct {
 func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 	t.Helper()
 
-	arrAirport, ok := av.DB.Airports[cfg.ArrivalAirport]
+	arrAirport, ok := db.DB.Airports[cfg.ArrivalAirport]
 	if !ok {
 		t.Fatalf("unknown arrival airport %q", cfg.ArrivalAirport)
 	}
-	depAirport, ok := av.DB.Airports[cfg.DepartureAirport]
+	depAirport, ok := db.DB.Airports[cfg.DepartureAirport]
 	if !ok {
 		t.Fatalf("unknown departure airport %q", cfg.DepartureAirport)
 	}
 
 	nmPerLongitude := math.NMPerLongitudeAt(arrAirport.Location)
-	magneticVariation, err := av.DB.MagneticGrid.Lookup(arrAirport.Location)
+	magneticVariation, err := db.DB.MagneticGrid.Lookup(arrAirport.Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
@@ -111,10 +112,10 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 		}
 	}
 
-	perf, ok := av.DB.AircraftPerformance[cfg.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[cfg.AircraftType]
 	if !ok {
-		if alias, aok := av.DB.AircraftTypeAliases[cfg.AircraftType]; aok {
-			perf, ok = av.DB.AircraftPerformance[alias]
+		if alias, aok := db.DB.AircraftTypeAliases[cfg.AircraftType]; aok {
+			perf, ok = db.DB.AircraftPerformance[alias]
 		}
 		if !ok {
 			t.Fatalf("unknown aircraft type %q", cfg.AircraftType)
@@ -593,12 +594,12 @@ func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {
 	return f.nav.ClearedApproach("_VIS"+runway, nil, f.simTime, false, "")
 }
 
-// makeAirport constructs an *av.Airport from the FAAAirport in av.DB,
+// makeAirport constructs an *av.Airport from the FAAAirport in db.DB,
 // resolving approach waypoint locations and adding runway threshold
 // waypoints — mirroring the essential parts of Airport.Finalize.
 func (f *FlightTest) makeAirport() *av.Airport {
 	icao := f.fp.ArrivalAirport
-	faa, ok := av.DB.Airports[icao]
+	faa, ok := db.DB.Airports[icao]
 	if !ok {
 		f.t.Fatalf("unknown airport %q", icao)
 	}
@@ -625,7 +626,7 @@ func (f *FlightTest) makeAirport() *av.Airport {
 		}
 
 		// Add runway threshold waypoint to each route.
-		if rwy, ok := av.LookupRunway(icao, a.Runway); ok {
+		if rwy, ok := av.LookupRunway(db.Lookups{}, icao, a.Runway); ok {
 			a.Threshold = rwy.Threshold
 			for i := range a.Waypoints {
 				alt := rwy.Elevation + rwy.ThresholdCrossingHeight
@@ -643,7 +644,7 @@ func (f *FlightTest) makeAirport() *av.Airport {
 			}
 		}
 
-		if opp, ok := av.LookupOppositeRunway(icao, a.Runway); ok {
+		if opp, ok := av.LookupOppositeRunway(db.Lookups{}, icao, a.Runway); ok {
 			a.OppositeThreshold = opp.Threshold
 		}
 
@@ -767,7 +768,7 @@ func (f *FlightTest) SetWind(fromDir, speedKts float32) *FlightTest {
 type dbLocator struct{}
 
 func (dbLocator) Locate(fix string) (math.Point2LL, bool) {
-	if p, ok := av.DB.LookupWaypoint(fix); ok {
+	if p, ok := db.DB.LookupWaypoint(fix); ok {
 		return p, true
 	}
 	if p, err := math.ParseLatLong([]byte(fix)); err == nil {
@@ -777,17 +778,17 @@ func (dbLocator) Locate(fix string) (math.Point2LL, bool) {
 }
 
 func (dbLocator) Airways(name string) ([]av.Airway, bool) {
-	aw, ok := av.DB.Airways[name]
+	aw, ok := db.DB.Airways[name]
 	return aw, ok
 }
 
 func (dbLocator) Similar(fix string) []string { return nil }
 
-func (dbLocator) Declination(fix string) (float32, bool) { return av.DB.Declination(fix) }
+func (dbLocator) Declination(fix string) (float32, bool) { return db.DB.Declination(fix) }
 
 // parseRoute parses a waypoint string using the scenario JSON format and
-// resolves fix locations from av.DB; radials of fixes without a station are
-// referenced to magneticVariation. Requires av.DB to be initialized.
+// resolves fix locations from db.DB; radials of fixes without a station are
+// referenced to magneticVariation. Requires db.DB to be initialized.
 func parseRoute(t testing.TB, s string, magneticVariation float32) av.WaypointArray {
 	t.Helper()
 	var wps av.WaypointArray
@@ -826,7 +827,7 @@ type ApproachGeometry struct {
 func LookupApproachGeometry(t testing.TB, airport av.ICAOAirportCode, approachID string) ApproachGeometry {
 	t.Helper()
 
-	faa, ok := av.DB.Airports[airport]
+	faa, ok := db.DB.Airports[airport]
 	if !ok {
 		t.Fatalf("unknown airport %q", airport)
 	}
@@ -837,7 +838,7 @@ func LookupApproachGeometry(t testing.TB, airport av.ICAOAirportCode, approachID
 	}
 
 	nmPerLong := math.NMPerLongitudeAt(faa.Location)
-	magVar, err := av.DB.MagneticGrid.Lookup(faa.Location)
+	magVar, err := db.DB.MagneticGrid.Lookup(faa.Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
@@ -855,12 +856,12 @@ func LookupApproachGeometry(t testing.TB, airport av.ICAOAirportCode, approachID
 	}
 
 	// Set threshold from runway data.
-	rwy, ok := av.LookupRunway(airport, a.Runway)
+	rwy, ok := av.LookupRunway(db.Lookups{}, airport, a.Runway)
 	if !ok {
 		t.Fatalf("unknown runway %q at %s", a.Runway, airport)
 	}
 	a.Threshold = rwy.Threshold
-	if opp, ok := av.LookupOppositeRunway(airport, a.Runway); ok {
+	if opp, ok := av.LookupOppositeRunway(db.Lookups{}, airport, a.Runway); ok {
 		a.OppositeThreshold = opp.Threshold
 	}
 

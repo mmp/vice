@@ -244,7 +244,7 @@ func TestResolveFixes(t *testing.T) {
 	}
 	center, _ := math.ParseLatLong([]byte("N040.00.00.000,W074.00.00.000"))
 	// ARD is already adapted; AR1 comes from the dump; AR2's dump point is out
-	// of range; ZZZ resolves nowhere (av.DB is uninitialized in tests).
+	// of range; ZZZ resolves nowhere (db.DB is uninitialized in tests).
 	sigs, airports, warnings := resolveFixes([]string{"AR1", "AR2", "ARD", "ZZZ"}, fa, dump, center, true, 200)
 	if len(sigs) != 1 || !strings.Contains(sigs[0], `"ARONE"`) || !strings.Contains(sigs[0], `"short_name": "AR1"`) {
 		t.Errorf("significant point entries = %v", sigs)

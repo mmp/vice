@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
@@ -107,12 +108,12 @@ func (ss *CommonState) RoutesForPair(from, to av.ICAOAirportCode) PairRoutes {
 	if ap, ok := ss.Airports[to]; ok {
 		scenarioRoutes(ap.TrafficRoutes.Arrivals[from])
 	}
-	for _, r := range av.DB.ScrapedRoutesBetween(from, to) {
+	for _, r := range db.DB.ScrapedRoutesBetween(from, to) {
 		pr.Routes = append(pr.Routes, PairRoute{Route: r.Route, Source: "scraped",
 			Aircraft: r.Aircraft.String(), Filings: r.Count, MinAltitude: r.MinAltitude,
 			MaxAltitude: r.MaxAltitude, Hours: r.Hours.String()})
 	}
-	for _, r := range av.DB.RoutesBetween(from, to) {
+	for _, r := range db.DB.RoutesBetween(from, to) {
 		pr.Routes = append(pr.Routes, PairRoute{Route: r.Route, Source: r.Type, Aircraft: r.Aircraft,
 			RNAVRequired: r.RNAVRequired, DepartureFix: r.DepartureFix})
 	}
@@ -180,7 +181,7 @@ func (ss *CommonState) modeledExits(airport av.ICAOAirportCode) []candidateDepar
 // carrying a particular aircraft is settled at spawn, when there is an aircraft
 // to settle it for; what matters here is that some flow flies the route at all.
 func arrivalRouteUse(to, from av.ICAOAirportCode, route string, candidates []candidateArrival) RouteUse {
-	star, _ := av.RouteSTAR(route, to)
+	star, _ := av.RouteSTAR(db.Lookups{}, route, to)
 	if star == "" {
 		if c, ok := nearestSpawnToOrigin(candidates, to, from); ok {
 			return RouteUse{Flows: []string{c.group}}

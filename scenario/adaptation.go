@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -159,10 +160,10 @@ func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, 
 			if fix.Altitude[0] > fix.Altitude[1] {
 				e.ErrorString(`bottom altitude "%v" is higher than the top altitude "%v"`, fix.Altitude[0], fix.Altitude[1])
 			}
-			if !av.DB.IsFacility(fix.ToFacility) {
+			if !db.DB.IsFacility(fix.ToFacility) {
 				e.ErrorString(`to facility "%v" is invalid`, fix.ToFacility)
 			}
-			if !av.DB.IsFacility(fix.FromFacility) {
+			if !db.DB.IsFacility(fix.FromFacility) {
 				e.ErrorString(`from facility "%v" is invalid`, fix.FromFacility)
 			}
 			e.Pop()
@@ -232,7 +233,7 @@ func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, 
 		s.WeatherStation = s.Lists.SSA.SystemAltimeter
 	}
 	if s.WeatherStation != "" {
-		if err := av.CheckAirport("weather station", s.WeatherStation); err != nil {
+		if err := db.CheckAirport("weather station", s.WeatherStation); err != nil {
 			e.Error(err)
 		}
 	} else if sg.ARTCC == "" {
@@ -434,7 +435,7 @@ func resolveERAMCoordination(sg *Group, configs map[string]*sim.FacilityConfig) 
 	// TRACON scenarios frequently omit "artcc"; derive the host ARTCC.
 	artcc := sg.ARTCC
 	if artcc == "" {
-		artcc = av.DB.ARTCCForFacility(sg.TRACON)
+		artcc = db.DB.ARTCCForFacility(sg.TRACON)
 	}
 	if artcc == "" {
 		return nil

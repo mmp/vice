@@ -21,6 +21,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
@@ -58,7 +59,7 @@ func SelectRandomScenario(srv *client.Server) (server.NewSimRequest, error) {
 
 	var choices []scenarioChoice
 	for tracon, facilityCatalogs := range catalogs {
-		if !av.DB.IsTRACON(tracon) && !av.DB.IsATCT(tracon) {
+		if !db.DB.IsTRACON(tracon) && !db.DB.IsATCT(tracon) {
 			continue
 		}
 		for groupName, catalog := range facilityCatalogs {
@@ -1252,7 +1253,7 @@ func getValidApproach(r *rand.Rand, ctx *GeneratorContext) string {
 	}
 
 	// Look up airport in database
-	ap, ok := av.DB.Airports[arrivalAirport]
+	ap, ok := db.DB.Airports[arrivalAirport]
 	if !ok || len(ap.Approaches) == 0 {
 		return ""
 	}

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 )
 
@@ -178,7 +179,7 @@ func runOutboundCase(t *testing.T, c outboundCase) outboundMetrics {
 	// course. The legs must be long enough for the turn radius: a fast
 	// jet's 90-degree fly-by consumes several miles on each side of the
 	// fix.
-	base := av.DB.Airports["KJFK"].Location
+	base := db.DB.Airports["KJFK"].Location
 	nmPerLong := math.NMPerLongitudeAt(base)
 	const inTrue = 20
 	outTrue := math.NormalizeHeading(float32(inTrue) + c.turnDeg)
@@ -322,7 +323,7 @@ func TestOutboundTurnSweep(t *testing.T) {
 			// be sequenced no farther out than the capped tangency distance,
 			// recomputed here from the state when the turn started.
 			if math.Abs(c.turnDeg) > maxFlyByAngle {
-				perf := av.DB.AircraftPerformance[c.acType]
+				perf := db.DB.AircraftPerformance[c.acType]
 				omega := min(StandardTurnRate, math.Degrees(9.81*math.Tan(math.Radians(perf.Turn.MaxBankAngle))/(m.tasAtFire*0.514444)))
 				radius := m.tasAtFire / 3600 / math.Radians(omega)
 				bound := radius*math.Tan(math.Radians(float32(maxFlyByAngle)/2)) + 10*m.gsAtFire/3600
@@ -639,11 +640,11 @@ func TestInterceptPTACSweep(t *testing.T) {
 func runCourseInterceptCase(t *testing.T, hOff, cOff, windRel float32, windKts float32) (joinTick int, maxOff float32) {
 	t.Helper()
 
-	skorr, _ := av.DB.LookupWaypoint("SKORR")
-	wavey, _ := av.DB.LookupWaypoint("WAVEY")
-	kjfk := av.DB.Airports["KJFK"]
+	skorr, _ := db.DB.LookupWaypoint("SKORR")
+	wavey, _ := db.DB.LookupWaypoint("WAVEY")
+	kjfk := db.DB.Airports["KJFK"]
 	nmPerLong := math.NMPerLongitudeAt(kjfk.Location)
-	magVar, err := av.DB.MagneticGrid.Lookup(kjfk.Location)
+	magVar, err := db.DB.MagneticGrid.Lookup(kjfk.Location)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -731,7 +732,7 @@ func TestCourseInterceptSweep(t *testing.T) {
 // aircraft is inside the decision window for a 90 degree turn, where the
 // predicate runs its full evaluation every tick.
 func benchOutboundState(b *testing.B) (*FlightTest, math.Point2LL, math.MagneticHeading) {
-	base := av.DB.Airports["KJFK"].Location
+	base := db.DB.Airports["KJFK"].Location
 	nmPerLong := math.NMPerLongitudeAt(base)
 	pB := math.Offset2LL(base, math.TrueHeading(350), 40, nmPerLong)
 	pA := math.Offset2LL(pB, math.TrueHeading(200), 16, nmPerLong)

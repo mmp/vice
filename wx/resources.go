@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
@@ -204,7 +205,7 @@ func GetTRACONTimeIntervals() map[string][]util.TimeInterval {
 
 	result := make(map[string][]util.TimeInterval)
 	for facility, intervals := range atmosCache.timeInt {
-		if _, ok := av.DB.TRACONs[facility]; ok {
+		if _, ok := db.DB.TRACONs[facility]; ok {
 			result[facility] = intervals
 		}
 	}
@@ -220,7 +221,7 @@ func GetARTCCTimeIntervals() map[string][]util.TimeInterval {
 
 	result := make(map[string][]util.TimeInterval)
 	for facility, intervals := range atmosCache.timeInt {
-		if _, ok := av.DB.ARTCCs[facility]; ok {
+		if _, ok := db.DB.ARTCCs[facility]; ok {
 			result[facility] = intervals
 		}
 	}

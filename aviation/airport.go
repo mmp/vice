@@ -63,39 +63,6 @@ type ICAOAirportCode string
 // running sims. Airports outside the FAA's regions have no FAAAirportCode.
 type FAAAirportCode string
 
-// ICAOAirportToFAA returns the FAA local identifier of the given airport, or
-// "", false if the airport is unknown or has no FAA local identifier.
-func ICAOAirportToFAA(icao ICAOAirportCode) (FAAAirportCode, bool) {
-	if DB == nil { // tests that run without the database
-		return "", false
-	}
-	ap, ok := DB.Airports[icao]
-	if !ok || ap.LocalCode == "" {
-		return "", false
-	}
-	return ap.LocalCode, true
-}
-
-// FAAAirportToICAO returns the id the aviation database keys the given
-// airport by, or "", false if no airport has the given FAA local identifier.
-func FAAAirportToICAO(faa FAAAirportCode) (ICAOAirportCode, bool) {
-	if DB == nil { // tests that run without the database
-		return "", false
-	}
-	icao, ok := DB.faaToICAO[faa]
-	return icao, ok
-}
-
-// AirportDisplayId returns the name the FAA's systems know the airport by:
-// its FAA local identifier when it has one and otherwise its id unchanged,
-// as for an airport outside the FAA's regions.
-func AirportDisplayId(icao ICAOAirportCode) string {
-	if faa, ok := ICAOAirportToFAA(icao); ok {
-		return string(faa)
-	}
-	return string(icao)
-}
-
 type VFRRandomsSpec struct {
 	Rate  float32 `json:"rate"`
 	Fleet string  `json:"fleet"`
@@ -247,11 +214,11 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		seenExits := make(map[string]any)
 		splitDepartureRoutes[rwy] = make(map[ExitID]ExitRoutes)
 
-		r, ok := LookupRunway(icao, rwy.Base())
+		r, ok := LookupRunway(db, icao, rwy.Base())
 		if !ok {
 			e.ErrorString("unknown runway for airport. Options: %s", db.ValidRunways(icao))
 		}
-		rend, ok := LookupOppositeRunway(icao, rwy.Base())
+		rend, ok := LookupOppositeRunway(db, icao, rwy.Base())
 		if !ok {
 			e.ErrorString("missing opposite runway")
 		}
@@ -373,7 +340,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			norm := ICAOAirportCode(strings.ToUpper(strings.TrimSpace(string(other))))
 			if norm == icao {
 				e.ErrorString("%s: routes to or from the airport itself", other)
-			} else if err := CheckAirport("traffic route", norm); err != nil {
+			} else if err := db.CheckAirport("traffic route", norm); err != nil {
 				e.Error(err)
 			} else if _, ok := checked[norm]; ok {
 				e.ErrorString("%s: airport repeatedly specified", other)
@@ -391,7 +358,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			e.ErrorString("route may not be empty")
 			return false
 		}
-		wps := RouteWaypoints(r.Route).InitializeLocations(db, nmPerLongitude, magneticVariation,
+		wps := RouteWaypoints(db, r.Route).InitializeLocations(db, nmPerLongitude, magneticVariation,
 			true /* allowSlop */, e)
 		if !slices.ContainsFunc(wps, func(wp Waypoint) bool { return !wp.Location.IsZero() }) {
 			e.ErrorString("%s: no locatable fixes in route", r.Route)
@@ -416,8 +383,8 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			}
 			// A final token that looks like a procedure name must be one of
 			// the airport's STARs; anything else is likely a typo.
-			if token := routeProcedureToken(r.Route, icao); token != "" {
-				if star, _ := RouteSTAR(r.Route, icao); star == "" {
+			if token := routeProcedureToken(db, r.Route, icao); token != "" {
+				if star, _ := RouteSTAR(db, r.Route, icao); star == "" {
 					e.ErrorString("%s: %q matches no STAR at %s", r.Route, token, icao)
 				}
 			}
@@ -436,7 +403,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			}
 		}
 
-		if err := CheckAirport("destination", dep.Destination); err != nil {
+		if err := db.CheckAirport("destination", dep.Destination); err != nil {
 			e.Error(err)
 		}
 
@@ -480,7 +447,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		}
 
 		for _, al := range dep.Airlines {
-			al.Check(e)
+			al.Check(db, e)
 		}
 
 		e.Pop()
@@ -532,7 +499,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			// wasn't specified in the route.
 			spec.Waypoints[len(spec.Waypoints)-1].SetSequenceVFRLanding(true)
 		}
-		if err := CheckAirport("destination", spec.Destination); err != nil {
+		if err := db.CheckAirport("destination", spec.Destination); err != nil {
 			e.Error(err)
 		}
 		e.Pop()
@@ -560,7 +527,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		}
 		for _, rwy := range runways {
 			rwy = strings.TrimSpace(rwy)
-			if _, ok := LookupRunway(icao, rwy); !ok {
+			if _, ok := LookupRunway(db, icao, rwy); !ok {
 				e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(icao))
 			}
 			if seenRunways[rwy] {
@@ -685,7 +652,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			vol.Id = rwy
 		}
 
-		if r, ok := LookupRunway(icao, rwy); !ok {
+		if r, ok := LookupRunway(db, icao, rwy); !ok {
 			e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(icao))
 		} else {
 			if vol.Threshold.IsZero() {

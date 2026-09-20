@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -549,9 +550,9 @@ func (c *FixPairConfiguration) validate(fa *FacilityAdaptation, controlPositions
 			airport, runway, ok := strings.Cut(spec, "/")
 			if !ok {
 				e.ErrorString(`"active_runway" %q must be given as "AIRPORT/RUNWAY"`, spec)
-			} else if err := av.CheckAirport(`"active_runway"`, av.ICAOAirportCode(airport)); err != nil {
+			} else if err := db.CheckAirport(`"active_runway"`, av.ICAOAirportCode(airport)); err != nil {
 				e.Error(err)
-			} else if !av.AirportHasRunway(av.ICAOAirportCode(airport), av.RunwayID(runway)) {
+			} else if !av.AirportHasRunway(db.Lookups{}, av.ICAOAirportCode(airport), av.RunwayID(runway)) {
 				e.ErrorString(`"active_runway": runway %q is not a valid runway at %q`, runway, airport)
 			}
 		}

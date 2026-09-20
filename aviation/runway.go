@@ -45,13 +45,12 @@ func (e ExitID) Base() string {
 }
 
 // AirportHasRunway returns true if the given runway exists at the airport (from DB).
-func AirportHasRunway(airport ICAOAirportCode, runway RunwayID) bool {
-	ap, ok := DB.Airports[airport]
-	if !ok {
+func AirportHasRunway(db Database, airport ICAOAirportCode, runway RunwayID) bool {
+	if !db.IsPublishedAirport(airport) {
 		return false
 	}
 	base := runway.Base()
-	for _, rwy := range ap.Runways {
+	for _, rwy := range db.AirportRunways(airport) {
 		if RunwayID(rwy.Id).Base() == base {
 			return true
 		}
@@ -136,16 +135,16 @@ func cleanRunway(rwy string) string {
 	return rwy[:n]
 }
 
-func LookupRunway(icao ICAOAirportCode, rwy string) (Runway, bool) {
-	if ap, ok := DB.Airports[icao]; !ok {
+func LookupRunway(db Database, icao ICAOAirportCode, rwy string) (Runway, bool) {
+	if !db.IsPublishedAirport(icao) {
 		return Runway{}, false
 	} else {
 		rwy = cleanRunway(rwy)
-		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
+		idx := slices.IndexFunc(db.AirportRunways(icao), func(r Runway) bool { return r.Id == rwy })
 		if idx == -1 {
 			return Runway{}, false
 		}
-		return ap.Runways[idx], true
+		return db.AirportRunways(icao)[idx], true
 	}
 }
 
@@ -188,9 +187,8 @@ func OppositeRunwayId(rwy string) string {
 	return fmt.Sprintf("%d", (v+18)%36) + ext
 }
 
-func LookupOppositeRunway(icao ICAOAirportCode, rwy string) (Runway, bool) {
-	ap, ok := DB.Airports[icao]
-	if !ok {
+func LookupOppositeRunway(db Database, icao ICAOAirportCode, rwy string) (Runway, bool) {
+	if !db.IsPublishedAirport(icao) {
 		return Runway{}, false
 	}
 
@@ -199,20 +197,20 @@ func LookupOppositeRunway(icao ICAOAirportCode, rwy string) (Runway, bool) {
 		return Runway{}, false
 	}
 
-	idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == oppRwy })
+	idx := slices.IndexFunc(db.AirportRunways(icao), func(r Runway) bool { return r.Id == oppRwy })
 	if idx == -1 {
 		return Runway{}, false
 	}
-	return ap.Runways[idx], true
+	return db.AirportRunways(icao)[idx], true
 }
 
 // runwayEndpoints returns the runway's two thresholds in nm coordinates.
-func runwayEndpoints(airport ICAOAirportCode, rwy string, nmPerLongitude float32) (p1, p2 [2]float32, ok bool) {
+func runwayEndpoints(db Database, airport ICAOAirportCode, rwy string, nmPerLongitude float32) (p1, p2 [2]float32, ok bool) {
 	var runway, opp Runway
-	if runway, ok = LookupRunway(airport, rwy); !ok {
+	if runway, ok = LookupRunway(db, airport, rwy); !ok {
 		return
 	}
-	if opp, ok = LookupOppositeRunway(airport, rwy); !ok {
+	if opp, ok = LookupOppositeRunway(db, airport, rwy); !ok {
 		return
 	}
 	p1 = math.LL2NM(runway.Threshold, nmPerLongitude)
@@ -224,17 +222,17 @@ func runwayEndpoints(airport ICAOAirportCode, rwy string, nmPerLongitude float32
 // two given runways cross, if that point is within maxDistNM of both runway
 // segments (threshold to threshold). It returns false for same or
 // opposite-direction runway pairs and for parallel runways.
-func RunwayIntersectionPoint(airport ICAOAirportCode, a, b RunwayID, nmPerLongitude, maxDistNM float32) (math.Point2LL, bool) {
+func RunwayIntersectionPoint(db Database, airport ICAOAirportCode, a, b RunwayID, nmPerLongitude, maxDistNM float32) (math.Point2LL, bool) {
 	aBase, bBase := a.Base(), b.Base()
 	if aBase == bBase || aBase == OppositeRunwayId(bBase) {
 		return math.Point2LL{}, false
 	}
 
-	a1, a2, ok := runwayEndpoints(airport, aBase, nmPerLongitude)
+	a1, a2, ok := runwayEndpoints(db, airport, aBase, nmPerLongitude)
 	if !ok {
 		return math.Point2LL{}, false
 	}
-	b1, b2, ok := runwayEndpoints(airport, bBase, nmPerLongitude)
+	b1, b2, ok := runwayEndpoints(db, airport, bBase, nmPerLongitude)
 	if !ok {
 		return math.Point2LL{}, false
 	}
@@ -259,21 +257,20 @@ func RunwayIntersectionPoint(airport ICAOAirportCode, a, b RunwayID, nmPerLongit
 // Use maxDistNM=0 for strict threshold-to-threshold intersection, or a small
 // value (e.g., 0.5) to account for pavement extending past thresholds.
 // Returns both directions for each intersecting runway (e.g., both "13L" and "31R").
-func IntersectingRunways(airport ICAOAirportCode, rwy RunwayID, nmPerLongitude, maxDistNM float32) []string {
-	ap, ok := DB.Airports[airport]
-	if !ok {
+func IntersectingRunways(db Database, airport ICAOAirportCode, rwy RunwayID, nmPerLongitude, maxDistNM float32) []string {
+	if !db.IsPublishedAirport(airport) {
 		return nil
 	}
 
 	var intersecting []string
 	seen := make(map[string]bool)
-	for _, otherRwy := range ap.Runways {
+	for _, otherRwy := range db.AirportRunways(airport) {
 		id := RunwayID(otherRwy.Id).Base()
 		if seen[id] {
 			continue
 		}
 
-		if _, ok := RunwayIntersectionPoint(airport, rwy, RunwayID(otherRwy.Id), nmPerLongitude, maxDistNM); ok {
+		if _, ok := RunwayIntersectionPoint(db, airport, rwy, RunwayID(otherRwy.Id), nmPerLongitude, maxDistNM); ok {
 			// Add both this runway and its opposite direction
 			seen[id] = true
 			intersecting = append(intersecting, id)

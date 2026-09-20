@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
@@ -277,7 +278,7 @@ func getSoulsOnBoard(ac *Aircraft, rng *rand.Rand) int {
 
 	// Check if we have specific data for this aircraft type from the database
 	acType := ac.FlightPlan.AircraftType
-	if perf, ok := av.DB.AircraftPerformance[acType]; ok && perf.Capacity.Passengers > 0 {
+	if perf, ok := db.DB.AircraftPerformance[acType]; ok && perf.Capacity.Passengers > 0 {
 		maxPax := perf.Capacity.Passengers
 		// Use 70-95% of capacity for a typical load; ignore crew (relatively negligible)
 		load := rng.Float32Range(0.7, 0.95)
@@ -285,7 +286,7 @@ func getSoulsOnBoard(ac *Aircraft, rng *rand.Rand) int {
 	}
 
 	// Fall back to CWT category average
-	if perf, ok := av.DB.AircraftPerformance[acType]; ok {
+	if perf, ok := db.DB.AircraftPerformance[acType]; ok {
 		if avgPax, ok := cwtAveragePassengers[perf.Category.CWT]; ok {
 			load := rng.Float32Range(0.7, 0.95)
 			return int(float32(avgPax) * load)
@@ -301,7 +302,7 @@ func getFuelRemaining(ac *Aircraft, rng *rand.Rand) int {
 	maxFuel := 10000 // fallback if we somehow don't find something better
 
 	// Check if we have specific data for this aircraft type from the database
-	perf := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if perf.Capacity.FuelPounds > 0 {
 		maxFuel = perf.Capacity.FuelPounds
 	} else if avg, ok := cwtFuelPounds[perf.Category.CWT]; ok {

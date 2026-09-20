@@ -114,14 +114,14 @@ func (ap Approach) DefaultFullName() string {
 // Threshold, and OppositeThreshold fields.
 func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, db Database, nmPerLongitude float32,
 	magneticVariation float32, e *util.ErrorLogger) {
-	rwy, ok := LookupRunway(icao, ap.Runway)
+	rwy, ok := LookupRunway(db, icao, ap.Runway)
 	if !ok {
 		e.ErrorString(`"runway" %q is unknown. Options: %s`, ap.Runway,
 			db.ValidRunways(icao))
 	}
 	ap.Threshold = rwy.Threshold
 
-	if opp, ok := LookupOppositeRunway(icao, ap.Runway); ok {
+	if opp, ok := LookupOppositeRunway(db, icao, ap.Runway); ok {
 		ap.OppositeThreshold = opp.Threshold
 	} else {
 		e.ErrorString("no opposite runway found for %q\n", ap.Runway)

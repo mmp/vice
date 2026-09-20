@@ -24,7 +24,7 @@ import (
 	"sync"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -279,22 +279,22 @@ const (
 )
 
 func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle, h *health) {
-	av.InitDB()
+	db.InitDB()
 
 	// A facility that doesn't resolve is left out entirely rather than
 	// registered and never fetched, which would pin the category to STALE.
-	facs := make(map[string]av.Facility)
+	facs := make(map[string]db.Facility)
 	addFacility := func(id string) {
-		if fac, ok := av.DB.LookupFacility(id); !ok {
+		if fac, ok := db.DB.LookupFacility(id); !ok {
 			LogError("%s: unable to find facility info", id)
 		} else {
 			facs[id] = fac
 		}
 	}
-	for tracon := range av.DB.TRACONs {
+	for tracon := range db.DB.TRACONs {
 		addFacility(tracon)
 	}
-	for artcc := range av.DB.ARTCCs {
+	for artcc := range db.DB.ARTCCs {
 		addFacility(artcc)
 	}
 
@@ -310,7 +310,7 @@ func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle, h *health) {
 // (~1nm/pixel). Only used for facilities without an entry in
 // nexradCoverage.
 func calcResolution(facilityID string, radius float32) int {
-	if _, isARTCC := av.DB.ARTCCs[facilityID]; isARTCC {
+	if _, isARTCC := db.DB.ARTCCs[facilityID]; isARTCC {
 		return min(int(2*radius), 2048)
 	}
 	return int(4 * radius)
@@ -347,7 +347,7 @@ var nexradCoverage = map[string]struct {
 // for a facility: the nexradCoverage rectangle at ERAM's 1 NM/pixel for
 // ARTCCs, else a square around the facility center (0.5 NM/pixel for
 // TRACONs).
-func fetchGeometry(facilityID string, fac av.Facility) (wpx, hpx int, bbox math.Extent2D) {
+func fetchGeometry(facilityID string, fac db.Facility) (wpx, hpx int, bbox math.Extent2D) {
 	if cov, ok := nexradCoverage[facilityID]; ok {
 		bottomLat := cov.TopLat - float32(cov.Height)/60
 		eastLon := cov.TopLon + float32(cov.Width)/(60*math.Cos(math.Radians(bottomLat)))
@@ -365,7 +365,7 @@ func fetchGeometry(facilityID string, fac av.Facility) (wpx, hpx int, bbox math.
 // fetchFacilityPrecip runs asynchronously in a goroutine and fetches radar
 // images for a single facility (TRACON or ARTCC) and writes them to disk.
 func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, facilityID string,
-	fac av.Facility, c *category) {
+	fac db.Facility, c *category) {
 	// Spread out the requests temporally
 	time.Sleep(time.Duration(rand.IntN(200)) * time.Second)
 

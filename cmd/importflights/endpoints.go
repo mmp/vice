@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 )
 
@@ -104,7 +105,7 @@ const (
 // be rather than one that merely flew over it. An aircraft whose height the
 // source data doesn't give is taken not to have been there: airports come in
 // clusters, and height is what separates a departure from an overflight.
-func (e trackEnd) at(ap av.FAAAirport, distance float32) bool {
+func (e trackEnd) at(ap db.Airport, distance float32) bool {
 	if e.onGround {
 		return distance <= maxGroundDistance
 	}
@@ -115,13 +116,13 @@ func (e trackEnd) at(ap av.FAAAirport, distance float32) bool {
 // nearest returns the candidate airport closest to the point the track was seen
 // at and how far away it was. Candidates the airport database doesn't know are
 // passed over, since there is no telling how far away they are.
-func (e trackEnd) nearest(airports map[av.ICAOAirportCode]av.FAAAirport) (av.ICAOAirportCode, av.FAAAirport, float32, bool) {
+func (e trackEnd) nearest(airports map[av.ICAOAirportCode]db.Airport) (av.ICAOAirportCode, db.Airport, float32, bool) {
 	if !e.hasPosition {
-		return "", av.FAAAirport{}, 0, false
+		return "", db.Airport{}, 0, false
 	}
 
 	var icao av.ICAOAirportCode
-	var nearest av.FAAAirport
+	var nearest db.Airport
 	distance, found := math.Infinity, false
 	for _, id := range e.candidates {
 		ap, ok := airports[id]
@@ -145,7 +146,7 @@ const maxOverflightHeight = 18000 // feet
 
 // overflying reports whether the aircraft was too high above the field for the
 // track to be recording anything that happened at it.
-func (e trackEnd) overflying(ap av.FAAAirport) bool {
+func (e trackEnd) overflying(ap db.Airport) bool {
 	return e.hasHeight && e.height > float32(ap.Elevation)+maxOverflightHeight
 }
 
@@ -156,7 +157,7 @@ func (e trackEnd) overflying(ap av.FAAAirport) bool {
 // a track that simply stopped has to be told from one that arrived, and how far
 // off the airport was is what tells them apart--without it, Los Angeles to
 // Mexico City fades over Sonora and lands at Guaymas.
-func (e trackEnd) endedAt(ap av.FAAAirport) bool {
+func (e trackEnd) endedAt(ap db.Airport) bool {
 	if e.overflying(ap) {
 		return false
 	}
@@ -169,7 +170,7 @@ func (e trackEnd) endedAt(ap av.FAAAirport) bool {
 // resolveEndpoint places one end of a track from the track alone: the candidate
 // airport nearest the point the aircraft was seen at, and whether it was
 // plausibly there.
-func resolveEndpoint(e trackEnd, airports map[av.ICAOAirportCode]av.FAAAirport) endpoint {
+func resolveEndpoint(e trackEnd, airports map[av.ICAOAirportCode]db.Airport) endpoint {
 	// A lone candidate is taken at its word about which airport it is, since
 	// the source data offers nowhere else the aircraft could have been. Whether
 	// the aircraft was there at all is still worth asking: an airport with no
@@ -198,7 +199,7 @@ func resolveEndpoint(e trackEnd, airports map[av.ICAOAirportCode]av.FAAAirport) 
 // anything to say about the itinerary: one that faded at altitude names
 // whatever happened to be underneath, which is no reason to disbelieve where
 // the flight was going.
-func (e trackEnd) settles(airports map[av.ICAOAirportCode]av.FAAAirport) (av.ICAOAirportCode, bool) {
+func (e trackEnd) settles(airports map[av.ICAOAirportCode]db.Airport) (av.ICAOAirportCode, bool) {
 	placed := resolveEndpoint(e, airports)
 	return placed.airport, placed.known() && placed.atAirport
 }
@@ -207,7 +208,7 @@ func (e trackEnd) settles(airports map[av.ICAOAirportCode]av.FAAAirport) (av.ICA
 // legs that fit the airports the track itself settles. A round trip leaves the
 // end it returns to undecided while still deciding the other one.
 func routeEndpoints(route []av.ICAOAirportCode, origin, destination trackEnd,
-	airports map[av.ICAOAirportCode]av.FAAAirport) (from, to endpoint) {
+	airports map[av.ICAOAirportCode]db.Airport) (from, to endpoint) {
 	settledFrom, fromSettled := origin.settles(airports)
 	settledTo, toSettled := destination.settles(airports)
 
@@ -244,7 +245,7 @@ func routeEndpoints(route []av.ICAOAirportCode, origin, destination trackEnd,
 // of airports no longer costs us the arrival at the destination it names
 // outright.
 func resolveEndpoints(origin, destination trackEnd, route []av.ICAOAirportCode,
-	airports map[av.ICAOAirportCode]av.FAAAirport) (from, to endpoint) {
+	airports map[av.ICAOAirportCode]db.Airport) (from, to endpoint) {
 	from, to = routeEndpoints(route, origin, destination, airports)
 	if !from.known() {
 		from = resolveEndpoint(origin, airports)
@@ -266,7 +267,7 @@ func parseAirportList(value string) []av.ICAOAirportCode {
 
 	flush := func() {
 		if current.Len() == 4 {
-			airports = append(airports, av.CurrentAirportId(av.ICAOAirportCode(current.String())))
+			airports = append(airports, db.CurrentAirportId(av.ICAOAirportCode(current.String())))
 		}
 		current.Reset()
 	}
@@ -291,7 +292,7 @@ func parseRoute(value string) []av.ICAOAirportCode {
 	var route []av.ICAOAirportCode
 	for airport := range strings.SplitSeq(value, "-") {
 		if len(airport) == 4 {
-			route = append(route, av.CurrentAirportId(av.ICAOAirportCode(airport)))
+			route = append(route, db.CurrentAirportId(av.ICAOAirportCode(airport)))
 		}
 	}
 	return route

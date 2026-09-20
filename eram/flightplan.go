@@ -11,6 +11,7 @@ import (
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -502,7 +503,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	if spec.ExitFixIsIntermediate.IsSet && spec.ExitFixIsIntermediate.Get() {
 		// TODO: validate?
 		return true, nil
-	} else if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(spec.ExitFix.Get())); ok {
+	} else if _, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(spec.ExitFix.Get())); ok {
 		return true, nil
 	} else {
 		return false, ErrIllegalAirport

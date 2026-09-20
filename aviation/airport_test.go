@@ -51,8 +51,8 @@ func TestTrafficRouteSetRoutes(t *testing.T) {
 		{"C172", []string{"SLOWRT", "ANYRT"}},
 		{"ZZZZ", []string{"ANYRT"}},
 	} {
-		if got := ts.Routes(tc.acType); !slices.Equal(got, tc.want) {
-			t.Errorf("Routes(%s) = %v, want %v", tc.acType, got, tc.want)
+		if got := ts.Routes(testLocator{}, tc.acType); !slices.Equal(got, tc.want) {
+			t.Errorf("Routes(testLocator{}, %s) = %v, want %v", tc.acType, got, tc.want)
 		}
 	}
 }
@@ -95,18 +95,18 @@ func TestExitRoutesForAircraft(t *testing.T) {
 		{"B738", nil}, // nonheavy jets have nowhere to go
 		{"ZZZZ", nil},
 	} {
-		if got := er.ForAircraft(tc.acType); got != tc.want {
-			t.Errorf("ForAircraft(%s) = %+v, want %+v", tc.acType, got, tc.want)
+		if got := er.ForAircraft(testLocator{}, tc.acType); got != tc.want {
+			t.Errorf("ForAircraft(testLocator{}, %s) = %+v, want %+v", tc.acType, got, tc.want)
 		}
 	}
 
 	// A route with no "aircraft" takes everything that is left.
 	any := &ExitRoute{ClearedAltitude: 5000}
-	if got := append(er, any).ForAircraft("B738"); got != any {
+	if got := append(er, any).ForAircraft(testLocator{}, "B738"); got != any {
 		t.Errorf("catch-all route: got %+v, want %+v", got, any)
 	}
 
-	routes := ExitRoutesForAircraft(map[ExitID]ExitRoutes{"NORTH": er, "SOUTH": {any}}, "B738")
+	routes := ExitRoutesForAircraft(testLocator{}, map[ExitID]ExitRoutes{"NORTH": er, "SOUTH": {any}}, "B738")
 	if len(routes) != 1 || routes["SOUTH"] != any {
 		t.Errorf("exits with no route for the aircraft should drop out; got %+v", routes)
 	}
@@ -137,10 +137,10 @@ func TestRouteReachesExit(t *testing.T) {
 		return util.MapSlice(fixes, func(f string) Waypoint { return Waypoint{Fix: f} })
 	}
 
-	oldDB := DB
-	DB = &StaticDatabase{
+	oldDB := testDB
+	testDB = testDatabase{
 		Airways: make(map[string][]Airway),
-		Airports: map[ICAOAirportCode]FAAAirport{
+		Airports: map[ICAOAirportCode]testAirport{
 			"KEWR": {SIDs: map[string]SID{
 				"CUTTN3": { // the scenario declares the stale CUTTN2
 					Common:             wps("ZORRO", "HANKO"),
@@ -149,7 +149,7 @@ func TestRouteReachesExit(t *testing.T) {
 			}},
 		},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	ap := &Airport{
 		DepartureRoutes: map[RunwayID]map[ExitID]ExitRoutes{
@@ -252,7 +252,7 @@ func TestExitCategory(t *testing.T) {
 // east-facing KXXX runway 9. route, if non-empty, gives the route's
 // waypoints, located out ahead of the runway (except the departure end,
 // KXXX-27); the route's ClimboutActions, if any, is parsed and applied.
-// DB must already map KXXX.
+// testDB must already map KXXX.
 func initializeTestExitRoute(t *testing.T, er ExitRoute, route string) ExitRoute {
 	t.Helper()
 	er, e := tryInitializeTestExitRoute(t, er, route)
@@ -301,12 +301,12 @@ func tryInitializeTestExitRoute(t *testing.T, er ExitRoute, route string) (ExitR
 }
 
 func TestInitialHeading(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{
+	oldDB := testDB
+	testDB = testDatabase{
 		Airways:  make(map[string][]Airway),
-		Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}},
+		Airports: map[ICAOAirportCode]testAirport{"KXXX": {Elevation: 313}},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	initialized := func(t *testing.T, er ExitRoute, route string) string {
 		t.Helper()
@@ -366,12 +366,12 @@ func TestInitialHeading(t *testing.T) {
 }
 
 func TestClimboutActions(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{
+	oldDB := testDB
+	testDB = testDatabase{
 		Airways:  make(map[string][]Airway),
-		Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}},
+		Airports: map[ICAOAirportCode]testAirport{"KXXX": {Elevation: 313}},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	initialized := func(t *testing.T, er ExitRoute, route string) string {
 		t.Helper()
@@ -484,9 +484,9 @@ func TestDepartureRouteAlongSID(t *testing.T) {
 		return util.MapSlice(fixes, func(f string) Waypoint { return Waypoint{Fix: f} })
 	}
 
-	oldDB := DB
-	DB = &StaticDatabase{
-		Airports: map[ICAOAirportCode]FAAAirport{
+	oldDB := testDB
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{
 			"KXXX": {SIDs: map[string]SID{
 				// An MSP SCHEP1-style SID: vectors to the first fix, so no
 				// runway transitions.
@@ -509,7 +509,7 @@ func TestDepartureRouteAlongSID(t *testing.T) {
 			}},
 		},
 	}
-	t.Cleanup(func() { DB = oldDB })
+	t.Cleanup(func() { testDB = oldDB })
 
 	ap := &Airport{
 		DepartureRoutes: map[RunwayID]map[ExitID]ExitRoutes{
@@ -573,9 +573,9 @@ func TestDepartureRouteAlongSID(t *testing.T) {
 // the SID it names as the CIFP charts it should name the SID and give only
 // what it adds to it.
 func TestChartedSIDRoute(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	const nmPerLongitude = 60
 	at := func(p [2]float32) math.Point2LL {
@@ -603,7 +603,7 @@ func TestChartedSIDRoute(t *testing.T) {
 		Common:             route("GNNRR/a2500+"),
 		EnrouteTransitions: map[string]WaypointArray{"CLTCH": route("GNNRR/a2500+ CLTCH")},
 	}
-	DB.Airports = map[ICAOAirportCode]FAAAirport{
+	testDB.Airports = map[ICAOAirportCode]testAirport{
 		"KXXX": {Elevation: 313, SIDs: map[string]SID{"BUTRZ4": butrz4, "GNNRR2": gnnrr2}},
 	}
 
@@ -738,9 +738,9 @@ func TestChartedSIDRoute(t *testing.T) {
 // TestSIDOffsetActions covers "waypoint_actions" that place their actions at
 // a point along one of the SID's legs.
 func TestSIDOffsetActions(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airways: make(map[string][]Airway)}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
 
 	const nmPerLongitude = 60
 	at := func(p [2]float32) math.Point2LL {
@@ -760,7 +760,7 @@ func TestSIDOffsetActions(t *testing.T) {
 		Common:             route("BUTRZ/a3000+"),
 		EnrouteTransitions: map[string]WaypointArray{"CLTCH": route("BUTRZ/a3000+ CLTCH")},
 	}
-	DB.Airports = map[ICAOAirportCode]FAAAirport{
+	testDB.Airports = map[ICAOAirportCode]testAirport{
 		"KXXX": {Elevation: 313, SIDs: map[string]SID{"BUTRZ4": butrz4}},
 	}
 	loc := testLocator{"KXXX-27": rend.Threshold, "BUTRZ": at([2]float32{6, 0}),
@@ -849,9 +849,9 @@ func TestSIDOffsetActions(t *testing.T) {
 }
 
 func TestExitRouteFirstFixBehindRunway(t *testing.T) {
-	oldDB := DB
-	DB = &StaticDatabase{Airports: map[ICAOAirportCode]FAAAirport{"KXXX": {Elevation: 313}}}
-	t.Cleanup(func() { DB = oldDB })
+	oldDB := testDB
+	testDB = testDatabase{Airports: map[ICAOAirportCode]testAirport{"KXXX": {Elevation: 313}}}
+	t.Cleanup(func() { testDB = oldDB })
 
 	const nmPerLongitude = 60
 	// A 2 nm runway running east, away from the origin so that no location
@@ -881,4 +881,23 @@ func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 			t.Errorf("%s: errors %v, want error %v", tc.name, e.String(), tc.bad)
 		}
 	}
+}
+
+func seedTestPerformance(t *testing.T) {
+	perf := func(engine, weight string) AircraftPerformance {
+		var p AircraftPerformance
+		p.Engine.AircraftType = engine
+		p.WeightClass = weight
+		return p
+	}
+
+	oldDB := testDB
+	testDB = testDatabase{AircraftPerformance: map[string]AircraftPerformance{
+		"B738": perf("J", "L"),
+		"B77W": perf("J", "H"),
+		"A388": perf("J", "J"),
+		"C172": perf("P", "L"),
+		"DH8D": perf("T", "L"),
+	}}
+	t.Cleanup(func() { testDB = oldDB })
 }

@@ -28,24 +28,24 @@ func ProcedureBase(name string) string {
 
 // TokenNamesAirport reports whether a route token names the airport, as
 // either its ICAO id or its FAA local identifier.
-func TokenNamesAirport(token string, icao ICAOAirportCode) bool {
+func TokenNamesAirport(db Database, token string, icao ICAOAirportCode) bool {
 	if token == string(icao) {
 		return true
 	}
-	faa, ok := ICAOAirportToFAA(icao)
+	faa, ok := db.AirportFAACode(icao)
 	return ok && token == string(faa)
 }
 
 // TokenNamesProcedure reports whether a route token names a SID or a STAR:
 // it ends with a revision digit and isn't an airway.
-func TokenNamesProcedure(token string) bool {
+func TokenNamesProcedure(db Database, token string) bool {
 	if token == "" {
 		return false
 	}
 	if c := token[len(token)-1]; c < '0' || c > '9' {
 		return false
 	}
-	_, airway := DB.Airways[token]
+	_, airway := db.Airways(token)
 	return !airway
 }
 
@@ -62,21 +62,21 @@ func TokenNamesProcedure(token string) bool {
 // stay in step: waypoints parsed by RouteWaypoints can't be rendered back to
 // a route string (see RouteString), so neither pair can be written in terms
 // of the other.
-func TrimDepartureAirportTokens(fields []string, icao ICAOAirportCode) []string {
+func TrimDepartureAirportTokens(db Database, fields []string, icao ICAOAirportCode) []string {
 	i, skippedProcedure := 0, false
 	for i < len(fields) {
 		// The airport comes first: plenty of ids end in a digit, and one of
 		// those names the airport rather than a procedure.
-		if TokenNamesAirport(fields[i], icao) {
+		if TokenNamesAirport(db, fields[i], icao) {
 			if i+2 < len(fields) {
-				if _, ok := DB.Airways[fields[i+1]]; ok {
+				if _, ok := db.Airways(fields[i+1]); ok {
 					break
 				}
 			}
 			fields = slices.Delete(fields, i, i+1)
 			continue
 		}
-		if skippedProcedure || !TokenNamesProcedure(fields[i]) {
+		if skippedProcedure || !TokenNamesProcedure(db, fields[i]) {
 			break
 		}
 		skippedProcedure = true
@@ -90,12 +90,12 @@ func TrimDepartureAirportTokens(fields []string, icao ICAOAirportCode) []string 
 // destination airport, skipping over a trailing procedure token. A token
 // ending an airway that reaches back to an entry fix stays: it is the
 // airway's exit, as the ITO in "... V16 UPP V2 ITO" into PHTO.
-func TrimDestinationAirportTokens(fields []string, icao ICAOAirportCode) []string {
+func TrimDestinationAirportTokens(db Database, fields []string, icao ICAOAirportCode) []string {
 	last, skippedProcedure := len(fields)-1, false
 	for last >= 0 {
-		if TokenNamesAirport(fields[last], icao) {
+		if TokenNamesAirport(db, fields[last], icao) {
 			if last >= 2 {
-				if _, ok := DB.Airways[fields[last-1]]; ok {
+				if _, ok := db.Airways(fields[last-1]); ok {
 					break
 				}
 			}
@@ -103,7 +103,7 @@ func TrimDestinationAirportTokens(fields []string, icao ICAOAirportCode) []strin
 			last--
 			continue
 		}
-		if skippedProcedure || !TokenNamesProcedure(fields[last]) {
+		if skippedProcedure || !TokenNamesProcedure(db, fields[last]) {
 			break
 		}
 		skippedProcedure = true
@@ -115,17 +115,17 @@ func TrimDestinationAirportTokens(fields []string, icao ICAOAirportCode) []strin
 // TrimDepartureAirportWaypoints removes the leading waypoints that name the
 // departure airport, as TrimDepartureAirportTokens does for a route that is
 // still text; this is the form for code that matches the route's fixes.
-func TrimDepartureAirportWaypoints(wps WaypointArray, icao ICAOAirportCode) WaypointArray {
+func TrimDepartureAirportWaypoints(db Database, wps WaypointArray, icao ICAOAirportCode) WaypointArray {
 	i, skippedProcedure := 0, false
 	for i < len(wps) {
-		if TokenNamesAirport(wps[i].Fix, icao) {
+		if TokenNamesAirport(db, wps[i].Fix, icao) {
 			if wps[i].Airway() != "" && i+1 < len(wps) {
 				break
 			}
 			wps = slices.Delete(wps, i, i+1)
 			continue
 		}
-		if skippedProcedure || !TokenNamesProcedure(wps[i].Fix) {
+		if skippedProcedure || !TokenNamesProcedure(db, wps[i].Fix) {
 			break
 		}
 		skippedProcedure = true
@@ -137,10 +137,10 @@ func TrimDepartureAirportWaypoints(wps WaypointArray, icao ICAOAirportCode) Wayp
 // TrimDestinationAirportWaypoints removes the trailing waypoints that name
 // the destination airport: TrimDepartureAirportWaypoints's mirror, and the
 // WaypointArray form of TrimDestinationAirportTokens.
-func TrimDestinationAirportWaypoints(wps WaypointArray, icao ICAOAirportCode) WaypointArray {
+func TrimDestinationAirportWaypoints(db Database, wps WaypointArray, icao ICAOAirportCode) WaypointArray {
 	last, skippedProcedure := len(wps)-1, false
 	for last >= 0 {
-		if TokenNamesAirport(wps[last].Fix, icao) {
+		if TokenNamesAirport(db, wps[last].Fix, icao) {
 			if last >= 1 && wps[last-1].Airway() != "" {
 				break
 			}
@@ -148,7 +148,7 @@ func TrimDestinationAirportWaypoints(wps WaypointArray, icao ICAOAirportCode) Wa
 			last--
 			continue
 		}
-		if skippedProcedure || !TokenNamesProcedure(wps[last].Fix) {
+		if skippedProcedure || !TokenNamesProcedure(db, wps[last].Fix) {
 			break
 		}
 		skippedProcedure = true
@@ -159,12 +159,12 @@ func TrimDestinationAirportWaypoints(wps WaypointArray, icao ICAOAirportCode) Wa
 
 // routeProcedureToken returns the last token of a route into or out of the
 // airport if it names a procedure, or "" otherwise.
-func routeProcedureToken(route string, icao ICAOAirportCode) string {
+func routeProcedureToken(db Database, route string, icao ICAOAirportCode) string {
 	fields := strings.Fields(route)
-	if n := len(fields); n > 0 && TokenNamesAirport(fields[n-1], icao) {
+	if n := len(fields); n > 0 && TokenNamesAirport(db, fields[n-1], icao) {
 		fields = fields[:n-1]
 	}
-	if len(fields) == 0 || !TokenNamesProcedure(fields[len(fields)-1]) {
+	if len(fields) == 0 || !TokenNamesProcedure(db, fields[len(fields)-1]) {
 		return ""
 	}
 	return fields[len(fields)-1]
@@ -175,13 +175,13 @@ func routeProcedureToken(route string, icao ICAOAirportCode) string {
 // on the route, or empty strings if it names none. A route may carry a stale
 // revision--CUUDA3 where the cycle has CUUDA4--so procedures match on their
 // base names.
-func RouteSTAR(route string, icao ICAOAirportCode) (star, entry string) {
-	token := routeProcedureToken(route, icao)
+func RouteSTAR(db Database, route string, icao ICAOAirportCode) (star, entry string) {
+	token := routeProcedureToken(db, route, icao)
 	if token == "" {
 		return "", ""
 	}
 
-	names := util.SortedMapKeys(DB.Airports[icao].STARs)
+	names := util.SortedMapKeys(db.AirportSTARs(icao))
 	i := slices.IndexFunc(names, func(name string) bool { return ProcedureBase(name) == ProcedureBase(token) })
 	if i == -1 {
 		return "", ""
@@ -190,7 +190,7 @@ func RouteSTAR(route string, icao ICAOAirportCode) (star, entry string) {
 
 	fields := strings.Fields(route)
 	if i := slices.Index(fields, token); i > 0 {
-		if _, ok := DB.Airways[fields[i-1]]; !ok {
+		if _, ok := db.Airways(fields[i-1]); !ok {
 			entry = fields[i-1]
 		}
 	}
@@ -234,15 +234,15 @@ func transitionFloor(transitions map[string]WaypointArray, fields []string) int 
 // name the current CIFP charts it, along with the index of the field naming
 // it. A route may carry a stale revision--DOTSS2 where the cycle has
 // DOTSS3--so procedures match on their base names.
-func routeSID(fields []string, icao ICAOAirportCode) (SID, int, bool) {
+func routeSID(db Database, fields []string, icao ICAOAirportCode) (SID, int, bool) {
 	i := 0
-	if len(fields) > 0 && TokenNamesAirport(fields[0], icao) {
+	if len(fields) > 0 && TokenNamesAirport(db, fields[0], icao) {
 		i = 1
 	}
-	if i >= len(fields) || !TokenNamesProcedure(fields[i]) {
+	if i >= len(fields) || !TokenNamesProcedure(db, fields[i]) {
 		return SID{}, 0, false
 	}
-	for name, sid := range util.SortedMap(DB.Airports[icao].SIDs) {
+	for name, sid := range util.SortedMap(db.AirportSIDs(icao)) {
 		if ProcedureBase(name) == ProcedureBase(fields[i]) {
 			return sid, i, true
 		}
@@ -255,35 +255,33 @@ func routeSID(fields []string, icao ICAOAirportCode) (SID, int, bool) {
 // publish. It is 0 when the route names neither, as one out of an airport the
 // CIFP doesn't cover can't, and when the procedures it does name publish no
 // such restriction, as the open-route STARs into JFK don't.
-func RouteAltitudeFloor(route string, departureAirport, arrivalAirport ICAOAirportCode) int {
+func RouteAltitudeFloor(db Database, route string, departureAirport, arrivalAirport ICAOAirportCode) int {
 	fields := strings.Fields(route)
 	floor := 0
 
-	if sid, i, ok := routeSID(fields, departureAirport); ok {
+	if sid, i, ok := routeSID(db, fields, departureAirport); ok {
 		floor = max(floor, transitionFloor(sid.EnrouteTransitions, fields[i+1:]))
 	}
 
 	end := len(fields)
-	if end > 0 && TokenNamesAirport(fields[end-1], arrivalAirport) {
+	if end > 0 && TokenNamesAirport(db, fields[end-1], arrivalAirport) {
 		end--
 	}
-	if star, _ := RouteSTAR(route, arrivalAirport); star != "" && end > 0 {
+	if star, _ := RouteSTAR(db, route, arrivalAirport); star != "" && end > 0 {
 		before := slices.Clone(fields[:end-1])
 		slices.Reverse(before)
-		floor = max(floor, transitionFloor(DB.Airports[arrivalAirport].STARs[star].Transitions, before))
+		floor = max(floor, transitionFloor(db.AirportSTARs(arrivalAirport)[star].Transitions, before))
 	}
 
 	return floor
 }
 
-func (s STAR) Check(e *util.ErrorLogger) {
+func (s STAR) Check(db Database, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	check := func(wps WaypointArray) {
 		for _, wp := range wps {
-			_, okn := DB.Navaids[wp.Fix]
-			_, okf := DB.Fixes[wp.Fix]
-			if !okn && !okf {
+			if !db.IsNavaidOrFix(wp.Fix) {
 				e.ErrorString("fix %s not found in navaid database", wp.Fix)
 			}
 		}
@@ -400,18 +398,18 @@ func (s SID) Waypoints(runway, transition, exit string) (WaypointArray, error) {
 		}
 	}
 
-	route := spliceSIDTransition(wps, body)
+	route := SpliceSIDTransition(wps, body)
 	if i := slices.IndexFunc(route, func(wp Waypoint) bool { return wp.Fix == exit }); i != -1 {
 		route = route[:i+1]
 	}
 	return route, nil
 }
 
-// spliceSIDTransition appends tr to a copy of base. A transition starts at
+// SpliceSIDTransition appends tr to a copy of base. A transition starts at
 // the last fix of what precedes it (ARINC 424 attachment 5, 4.10), so if its
 // first fix is found in base the route continues from there, keeping the
 // transition's restrictions at the junction where base has none.
-func spliceSIDTransition(base, tr WaypointArray) WaypointArray {
+func SpliceSIDTransition(base, tr WaypointArray) WaypointArray {
 	route := base.Clone()
 	if len(tr) == 0 {
 		return route

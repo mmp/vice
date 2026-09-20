@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
@@ -522,7 +523,7 @@ func TestWalkCIFPRoutes(t *testing.T) {
 	if testing.Short() {
 		t.Skip("loads the aviation database")
 	}
-	av.InitDB()
+	db.InitDB()
 
 	notable := map[string]bool{
 		"KPHX BALDY3 RWY25L": true, "KPHX BROAK1 RWY25L": true, "KSAN PEBLE6 RWY27": true,
@@ -536,7 +537,7 @@ func TestWalkCIFPRoutes(t *testing.T) {
 	var routes, triggers, indeterminate int
 	walk := func(name string, wps av.WaypointArray, rc RouteDrawContext) {
 		icao := av.ICAOAirportCode(name[:4])
-		ap := av.DB.Airports[icao]
+		ap := db.DB.Airports[icao]
 		nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
 		wps = wps.Clone().InitializeLocations(dmeLocator{}, nmPerLongitude, magneticVariation[string(icao)], true, &util.ErrorLogger{})
 		w := newRouteWalker(nmPerLongitude, magneticVariation[string(icao)], rc, renderer.GetColoredLinesDrawBuilder(), renderer.RGB{}, NewDrawnRoutes())
@@ -565,11 +566,11 @@ func TestWalkCIFPRoutes(t *testing.T) {
 	}
 
 	for _, icao := range []av.ICAOAirportCode{"KPHX", "KSAN", "KSFO", "KLAX", "KBUR", "KSEA", "KEWR", "KJFK", "KPBF", "KJAX"} {
-		ap := av.DB.Airports[icao]
+		ap := db.DB.Airports[icao]
 		for sidName, sid := range util.SortedMap(ap.SIDs) {
 			for rwy, wps := range util.SortedMap(sid.RunwayTransitions) {
-				r, ok := av.LookupRunway(icao, rwy)
-				opp, ok2 := av.LookupOppositeRunway(icao, rwy)
+				r, ok := av.LookupRunway(db.Lookups{}, icao, rwy)
+				opp, ok2 := av.LookupOppositeRunway(db.Lookups{}, icao, rwy)
 				if !ok || !ok2 {
 					continue
 				}
@@ -619,4 +620,4 @@ func withRunwayInFront(icao av.ICAOAirportCode, rwy string, r, opp av.Runway, el
 // dmeLocator locates fixes from the database, DME stations included.
 type dmeLocator struct{ enroute.DBLocator }
 
-func (dmeLocator) LocateDME(fix string) (math.Point2LL, int, bool) { return av.DB.LookupDME(fix) }
+func (dmeLocator) LocateDME(fix string) (math.Point2LL, int, bool) { return db.DB.LookupDME(fix) }

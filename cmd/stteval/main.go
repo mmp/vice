@@ -33,7 +33,7 @@ import (
 	"strconv"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/speech/stt"
 )
 
@@ -78,7 +78,7 @@ func main() {
 	diagnosesPath := flag.String("diagnoses", "", "JSON object {transcript: {suggestion, reason}} to annotate suspect reviews (apply phase)")
 	flag.Parse()
 
-	av.InitDB()
+	db.InitDB()
 
 	sp, ed := expandPath(*statePath), expandPath(*evalDir)
 	if err := os.MkdirAll(ed, 0755); err != nil {

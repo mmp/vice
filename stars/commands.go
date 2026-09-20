@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
@@ -450,7 +451,7 @@ func (sp *Pane) minWindDrawAltitudeIndex(ctx *scope.Context) int {
 	}
 	var elevations []int
 	for icao := range ctx.Client.State.Airports {
-		if ap, ok := av.DB.Airports[icao]; ok {
+		if ap, ok := db.DB.Airports[icao]; ok {
 			elevations = append(elevations, ap.Elevation)
 		}
 	}

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
 	vrand "github.com/mmp/vice/rand"
@@ -15,7 +16,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	av.InitDB()
+	db.InitDB()
 	os.Exit(m.Run())
 }
 

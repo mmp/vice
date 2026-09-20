@@ -56,6 +56,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -72,7 +73,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	av.InitDB()
+	db.InitDB()
 
 	var sections []section
 	for _, path := range flag.Args() {
@@ -642,16 +643,16 @@ func locate(s string) (math.Point2LL, bool) {
 	if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
 	}
-	if n, ok := av.DB.Navaids[s]; ok {
+	if n, ok := db.DB.Navaids[s]; ok {
 		return n.Location, true
 	}
-	if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(s)); ok {
+	if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(s)); ok {
 		return ap.Location, true
 	}
-	if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(s)); ok {
+	if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(s)); ok {
 		return ap.Location, true
 	}
-	if f, ok := av.DB.Fixes[s]; ok {
+	if f, ok := db.DB.Fixes[s]; ok {
 		return f.Location, true
 	}
 	return math.Point2LL{}, false
@@ -659,7 +660,7 @@ func locate(s string) (math.Point2LL, bool) {
 
 // lookupEitherAirportId resolves an airport id that a facility config or the
 // significant points dump may write in either form.
-func lookupEitherAirportId(db *av.StaticDatabase, id string) (av.FAAAirport, bool) {
+func lookupEitherAirportId(db *db.StaticDatabase, id string) (db.Airport, bool) {
 	if ap, ok := db.LookupICAOAirport(av.ICAOAirportCode(id)); ok {
 		return ap, true
 	}
@@ -703,7 +704,7 @@ func resolveFixes(refs []string, fa *sim.FacilityAdaptation, dump []dumpPoint,
 				continue
 			}
 			sigEntries = append(sigEntries, formatSigPoint(pt))
-		} else if db := av.DB; db == nil { // uninitialized in tests
+		} else if db := db.DB; db == nil { // uninitialized in tests
 			underivable = append(underivable, id)
 		} else if n, ok := db.Navaids[id]; ok && inRange(n.Location) {
 			sigEntries = append(sigEntries, jsonStr(id)+": {}")
@@ -755,7 +756,7 @@ func formatSigPoint(pt dumpPoint) string {
 	return sb.String()
 }
 
-func formatAirport(id string, ap av.FAAAirport) string {
+func formatAirport(id string, ap db.Airport) string {
 	var sb strings.Builder
 	fmt.Fprintf(&sb, "%s: {", jsonStr(id))
 	if ap.Name != "" {

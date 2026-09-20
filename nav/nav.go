@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
@@ -468,14 +469,14 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	nav.Waypoints = util.FilterSliceInPlace(nav.Waypoints,
 		func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
-	if ap, ok := av.DB.Airports[fp.DepartureAirport]; !ok {
+	if ap, ok := db.DB.Airports[fp.DepartureAirport]; !ok {
 		lg.Errorf("%s: departure airport unknown", fp.DepartureAirport)
 		return nil
 	} else {
 		nav.FlightState.DepartureAirportLocation = ap.Location
 		nav.FlightState.DepartureAirportElevation = float32(ap.Elevation)
 	}
-	if ap, ok := av.DB.Airports[fp.ArrivalAirport]; !ok {
+	if ap, ok := db.DB.Airports[fp.ArrivalAirport]; !ok {
 		lg.Errorf("%s: arrival airport unknown", fp.ArrivalAirport)
 		return nil
 	} else {
@@ -1258,7 +1259,7 @@ func (nav *Nav) rateSummary() string {
 }
 
 func (nav *Nav) DivertToAirport(airport av.ICAOAirportCode) {
-	ap := av.DB.Airports[airport]
+	ap := db.DB.Airports[airport]
 
 	wp := av.Waypoint{
 		Fix:      string(airport),

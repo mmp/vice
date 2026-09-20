@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/wx"
@@ -217,17 +218,17 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 
 	// Use KISP (Islip) for airport metadata; the RNAV 15R has a real
 	// procedure turn at FORMU.
-	arrAirport, ok := av.DB.Airports["KISP"]
+	arrAirport, ok := db.DB.Airports["KISP"]
 	if !ok {
 		t.Fatal("KISP not in database")
 	}
-	depAirport, ok := av.DB.Airports["KMCO"]
+	depAirport, ok := db.DB.Airports["KMCO"]
 	if !ok {
 		t.Fatal("KMCO not in database")
 	}
 
 	nmPerLong := math.NMPerLongitudeAt(arrAirport.Location)
-	magVar, err := av.DB.MagneticGrid.Lookup(arrAirport.Location)
+	magVar, err := db.DB.MagneticGrid.Lookup(arrAirport.Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
@@ -248,10 +249,10 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 		},
 	}
 
-	if rwy, ok := av.LookupRunway("KISP", "15R"); ok {
+	if rwy, ok := av.LookupRunway(db.Lookups{}, "KISP", "15R"); ok {
 		ap.Threshold = rwy.Threshold
 	}
-	if opp, ok := av.LookupOppositeRunway("KISP", "15R"); ok {
+	if opp, ok := av.LookupOppositeRunway(db.Lookups{}, "KISP", "15R"); ok {
 		ap.OppositeThreshold = opp.Threshold
 	}
 
@@ -278,7 +279,7 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 	}
 
 	n := &Nav{
-		Perf:           av.DB.AircraftPerformance["A320"],
+		Perf:           db.DB.AircraftPerformance["A320"],
 		FinalAltitude:  alt,
 		FixAssignments: make(map[string]FixAssignment),
 		Rand:           rng,
@@ -397,7 +398,7 @@ func TestRacetrackPTCreatesManeuvers(t *testing.T) {
 // treated as flyover points — the PT only triggers when ETA < 2s, not
 // before (regression test for cf822df4).
 func TestPTWaypointFlyover(t *testing.T) {
-	magVar, err := av.DB.MagneticGrid.Lookup(av.DB.Airports["KISP"].Location)
+	magVar, err := db.DB.MagneticGrid.Lookup(db.DB.Airports["KISP"].Location)
 	if err != nil {
 		t.Fatalf("magnetic grid lookup failed: %v", err)
 	}
@@ -511,7 +512,7 @@ func TestCourseReversalLegs(t *testing.T) {
 		InitialSpeed:     200,
 	})
 
-	netaa, ok := av.DB.LookupWaypoint("NETAA")
+	netaa, ok := db.DB.LookupWaypoint("NETAA")
 	if !ok {
 		t.Fatal("NETAA not found")
 	}

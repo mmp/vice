@@ -6,12 +6,12 @@ import (
 	"strings"
 	"testing"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 )
 
 // TestMain initializes the aviation database and STT registries for all tests.
 func TestMain(m *testing.M) {
-	av.InitDB()
+	db.InitDB()
 	Init()
 	os.Exit(m.Run())
 }

@@ -2,16 +2,20 @@
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package db
 
 import (
+	"encoding/json"
 	"fmt"
 	"maps"
 	gomath "math"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"testing"
+
+	av "github.com/mmp/vice/aviation"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -24,17 +28,17 @@ func TestParseHoldingPattern(t *testing.T) {
 		name     string
 		line     string
 		procName string // procedure name to pass to extractHoldsFromSSA
-		wantHold Hold
+		wantHold av.Hold
 		wantOk   bool
 	}{
 		{
 			name:     "KJFK ILS 04R missed approach hold at DPK (HM, time-based)",
 			line:     "SUSAP KJFKK6FI04R  I      070DPK  K6D 0VE  L   HM                     2581T010    + 04000                           0 NS   300201709",
 			procName: "I04R",
-			wantHold: Hold{
+			wantHold: av.Hold{
 				Fix:             "DPK",
 				InboundCourse:   258.1,
-				TurnDirection:   TurnLeft,
+				TurnDirection:   av.TurnLeft,
 				LegLengthNM:     0,
 				LegMinutes:      1.0,
 				MinimumAltitude: 4000,
@@ -48,10 +52,10 @@ func TestParseHoldingPattern(t *testing.T) {
 			name:     "KJFK ILS 04L missed approach hold at DUFFY (HM, time-based, right turn)",
 			line:     "SUSAP KJFKK6FI04L  I      060DUFFYK6PC0EE  L   HM                     2420T010    + 03000                           0 NS   300131310",
 			procName: "I04L",
-			wantHold: Hold{
+			wantHold: av.Hold{
 				Fix:             "DUFFY",
 				InboundCourse:   242.0,
-				TurnDirection:   TurnLeft,
+				TurnDirection:   av.TurnLeft,
 				LegLengthNM:     0,
 				LegMinutes:      1.0,
 				MinimumAltitude: 3000,
@@ -65,7 +69,7 @@ func TestParseHoldingPattern(t *testing.T) {
 			name:     "invalid record - not HF/HA/HM terminator",
 			line:     "SUSAP KJFKK6FI04R  I      060DPK  K6D 0VY      CF DPK K6      0000000004100080D   + 04000                           0 NS   300191212",
 			procName: "I04R",
-			wantHold: Hold{},
+			wantHold: av.Hold{},
 			wantOk:   false,
 		},
 	}
@@ -97,7 +101,7 @@ func TestParseHoldingPattern(t *testing.T) {
 	}
 }
 
-func holdsEqual(a, b Hold) bool {
+func holdsEqual(a, b av.Hold) bool {
 	const epsilon = 0.01
 	return a.Fix == b.Fix &&
 		gomath.Abs(float64(a.InboundCourse-b.InboundCourse)) < epsilon &&
@@ -314,7 +318,7 @@ func TestParseARINC424CourseIntercept(t *testing.T) {
 	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
 
 	wps := result.Airports["KSAN"].STARs["SHAMU1"].RunwayWaypoints["9"]
-	if got, want := WaypointArray(wps).Encode(), "SHAMU/h135/@crsMZB-R255 SARGS"; got != want {
+	if got, want := av.WaypointArray(wps).Encode(), "SHAMU/h135/@crsMZB-R255 SARGS"; got != want {
 		t.Fatalf("expected %q, got %q", want, got)
 	}
 
@@ -325,7 +329,7 @@ func TestParseARINC424CourseIntercept(t *testing.T) {
 	if hdg := groups[0].Actions.Heading; hdg.Heading != 135 || hdg.Track {
 		t.Errorf("expected heading 135, got %+v", hdg)
 	}
-	if until := groups[0].Until; until.Type != WaypointActionCourse || until.Course != 255 ||
+	if until := groups[0].Until; until.Type != av.WaypointActionCourse || until.Course != 255 ||
 		until.CourseFix != "MZB" {
 		t.Errorf("expected a course termination on the MZB 255 radial, got %+v", until)
 	}
@@ -356,8 +360,8 @@ func TestParseARINC424ApproachCourseIntercept(t *testing.T) {
 		t.Fatalf("expected KLNK IY18 approach, got %v", result.Airports["KLNK"].Approaches)
 	}
 
-	transition := func(fix string) WaypointArray {
-		idx := slices.IndexFunc(appr.Waypoints, func(wps WaypointArray) bool { return wps[0].Fix == fix })
+	transition := func(fix string) av.WaypointArray {
+		idx := slices.IndexFunc(appr.Waypoints, func(wps av.WaypointArray) bool { return wps[0].Fix == fix })
 		if idx == -1 {
 			t.Fatalf("no %s transition in %v", fix, appr.Waypoints)
 		}
@@ -409,7 +413,7 @@ func TestParseARINC424CourseReversal(t *testing.T) {
 	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
 
 	for _, tc := range []struct {
-		airport        ICAOAirportCode
+		airport        av.ICAOAirportCode
 		approach, want string
 	}{
 		{"KDDC", "I14", "FLACK DDC/a4400+/iaf OWENJ/a4400+/t306/@d6.3/lt176/@crs146 RAVEN/a4400+/faf"},
@@ -422,7 +426,7 @@ func TestParseARINC424CourseReversal(t *testing.T) {
 		}
 		first, _, _ := strings.Cut(tc.want, " ")
 		first, _, _ = strings.Cut(first, "/")
-		idx := slices.IndexFunc(appr.Waypoints, func(wps WaypointArray) bool { return wps[0].Fix == first })
+		idx := slices.IndexFunc(appr.Waypoints, func(wps av.WaypointArray) bool { return wps[0].Fix == first })
 		if idx == -1 {
 			t.Errorf("%s %s: no transition starting at %s in %v", tc.airport, tc.approach, first, appr.Waypoints)
 		} else if got := appr.Waypoints[idx].Encode(); got != tc.want {
@@ -449,9 +453,9 @@ func TestParseARINC424ConstantRadiusArc(t *testing.T) {
 	if !ok {
 		t.Fatalf("expected KIAH RY9 approach, got %v", result.Airports["KIAH"].Approaches)
 	}
-	var arc *DMEArc
+	var arc *av.DMEArc
 	for _, wps := range appr.Waypoints {
-		if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.Fix == "TEXXN" }); idx != -1 {
+		if idx := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == "TEXXN" }); idx != -1 {
 			arc = wps[idx].Arc()
 		}
 	}
@@ -464,7 +468,7 @@ func TestParseARINC424ConstantRadiusArc(t *testing.T) {
 	if arc.Radius != 2.54 {
 		t.Errorf("expected arc radius 2.54, got %f", arc.Radius)
 	}
-	if arc.Direction != DMEArcDirectionClockwise {
+	if arc.Direction != av.DMEArcDirectionClockwise {
 		t.Errorf("expected clockwise arc, got %v", arc.Direction)
 	}
 }
@@ -525,7 +529,7 @@ func TestParseARINC424SID(t *testing.T) {
 			t.Errorf("runway %s: expected %q, got %q", rwy, want, got)
 		}
 	}
-	if skorr := sid.RunwayTransitions["31L"][1]; skorr.Turn() != TurnLeft {
+	if skorr := sid.RunwayTransitions["31L"][1]; skorr.Turn() != av.TurnLeft {
 		t.Errorf("expected a left turn to SKORR, got %v", skorr.Turn())
 	}
 
@@ -564,10 +568,10 @@ func TestParseARINC424SID(t *testing.T) {
 	}
 }
 
-// runwayTransition is a SID runway transition and the waypoints it is
+// runwayTransition is a av.SID runway transition and the waypoints it is
 // expected to encode to.
 type runwayTransition struct {
-	airport           ICAOAirportCode
+	airport           av.ICAOAirportCode
 	sid, runway, want string
 }
 
@@ -588,7 +592,7 @@ func checkRunwayTransitions(t *testing.T, result ARINC424Result, tests []runwayT
 	}
 }
 
-// SID legs to and along radials: DALLS1's headings to the LTJ 165 radial
+// av.SID legs to and along radials: DALLS1's headings to the LTJ 165 radial
 // (VR) then a course to an altitude along it, DVT3's climb on the PXR 336
 // radial from wherever the runway heading ends (FA after VA) and after a
 // heading to intercept it (VI/FA), SUMMA2's headings to intercept courses
@@ -707,7 +711,7 @@ func TestCIFPRoutesRoundTrip(t *testing.T) {
 
 	// Emptied of everything it held, a waypoint's Extra is no different
 	// from no Extra at all.
-	normalize := func(wps WaypointArray) WaypointArray {
+	normalize := func(wps av.WaypointArray) av.WaypointArray {
 		wps = wps.Clone()
 		for i := range wps {
 			wps[i].Location = math.Point2LL{}
@@ -715,7 +719,7 @@ func TestCIFPRoutesRoundTrip(t *testing.T) {
 				if len(e.ActionGroups) == 0 {
 					e.ActionGroups = nil
 				}
-				if reflect.DeepEqual(*e, WaypointExtra{}) {
+				if reflect.DeepEqual(*e, av.WaypointExtra{}) {
 					wps[i].Extra = nil
 				}
 			}
@@ -724,12 +728,14 @@ func TestCIFPRoutesRoundTrip(t *testing.T) {
 	}
 
 	failures := 0
-	check := func(label string, wps WaypointArray) {
+	check := func(label string, wps av.WaypointArray) {
 		if len(wps) == 0 || failures >= 20 {
 			return
 		}
 		encoded := wps.Encode()
-		parsed, err := parseWaypoints(encoded)
+		// The route string is parsed the way scenario JSON is.
+		var parsed av.WaypointArray
+		err := json.Unmarshal([]byte(strconv.Quote(encoded)), &parsed)
 		if err != nil {
 			t.Errorf("%s: %q: %v", label, encoded, err)
 			failures++

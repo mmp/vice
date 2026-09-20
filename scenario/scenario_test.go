@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -81,15 +82,15 @@ func TestValidateCoordinationFixes(t *testing.T) {
 // regions include an aircraft on the ground at the airport, including at
 // fields at or below sea level.
 func TestAirportFiltersCoverTheField(t *testing.T) {
-	oldDB := av.DB
-	av.DB = &av.StaticDatabase{
-		Airports: map[av.ICAOAirportCode]av.FAAAirport{
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Airports: map[av.ICAOAirportCode]db.Airport{
 			"KTRM": {Id: "KTRM", Elevation: -114, Location: math.Point2LL{-116.16, 33.63}},
 			"KMSY": {Id: "KMSY", Elevation: 0, Location: math.Point2LL{-90.26, 29.99}},
 			"KDEN": {Id: "KDEN", Elevation: 5434, Location: math.Point2LL{-104.67, 39.86}},
 		},
 	}
-	t.Cleanup(func() { av.DB = oldDB })
+	t.Cleanup(func() { db.DB = oldDB })
 
 	airports := []av.ICAOAirportCode{"KTRM", "KMSY", "KDEN"}
 	var e util.ErrorLogger
@@ -99,7 +100,7 @@ func TestAirportFiltersCoverTheField(t *testing.T) {
 	}
 
 	for _, icao := range airports {
-		ap := av.DB.Airports[icao]
+		ap := db.DB.Airports[icao]
 		if !regions.Inside(ap.Location, ap.Elevation) {
 			t.Errorf("%s: aircraft on the ground at %d' is not inside the airport's filter region",
 				icao, ap.Elevation)

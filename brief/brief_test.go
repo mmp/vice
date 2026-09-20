@@ -10,13 +10,13 @@ import (
 	"strings"
 	"testing"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 
 	"github.com/yuin/goldmark/ast"
 )
 
 func TestMain(m *testing.M) {
-	av.InitDB()
+	db.InitDB()
 	os.Exit(m.Run())
 }
 

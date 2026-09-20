@@ -9,14 +9,14 @@ import (
 	"slices"
 	"strings"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-// dbCategory is which part of av.DB the Database tab is showing.
+// dbCategory is which part of db.DB the Database tab is showing.
 type dbCategory int32
 
 const (
@@ -165,7 +165,7 @@ func (in *inspector) drawAirports(a *app) {
 	imgui.TableHeadersRow()
 
 	n := 0
-	for icao, ap := range util.SortedMap(av.DB.Airports) {
+	for icao, ap := range util.SortedMap(db.DB.Airports) {
 		if n >= maxDatabaseRows {
 			break
 		}
@@ -203,7 +203,7 @@ func (in *inspector) drawNavaids(a *app) {
 	imgui.TableHeadersRow()
 
 	n := 0
-	for id, nav := range util.SortedMap(av.DB.Navaids) {
+	for id, nav := range util.SortedMap(db.DB.Navaids) {
 		if n >= maxDatabaseRows {
 			break
 		}
@@ -235,7 +235,7 @@ func (in *inspector) drawFixes(a *app) {
 	imgui.TableHeadersRow()
 
 	n := 0
-	for id, fix := range util.SortedMap(av.DB.Fixes) {
+	for id, fix := range util.SortedMap(db.DB.Fixes) {
 		if n >= maxDatabaseRows {
 			break
 		}
@@ -262,7 +262,7 @@ func (in *inspector) drawAirways(a *app) {
 	imgui.TableHeadersRow()
 
 	n := 0
-	for name, airways := range util.SortedMap(av.DB.Airways) {
+	for name, airways := range util.SortedMap(db.DB.Airways) {
 		if n >= maxDatabaseRows {
 			break
 		}
@@ -275,7 +275,7 @@ func (in *inspector) drawAirways(a *app) {
 			for _, f := range aw.Fixes {
 				fixes = append(fixes, f.Fix)
 				if !near {
-					if p, ok := av.DB.LookupWaypoint(f.Fix); ok && in.inRange(a, p) {
+					if p, ok := db.DB.LookupWaypoint(f.Fix); ok && in.inRange(a, p) {
 						near = true
 					}
 				}
@@ -311,7 +311,7 @@ func (in *inspector) drawAircraftTypes(a *app) {
 	imgui.TableHeadersRow()
 
 	n := 0
-	for id, perf := range util.SortedMap(av.DB.AircraftPerformance) {
+	for id, perf := range util.SortedMap(db.DB.AircraftPerformance) {
 		if n >= maxDatabaseRows {
 			break
 		}
@@ -345,7 +345,7 @@ func (in *inspector) drawAirlines(a *app) {
 	imgui.TableHeadersRow()
 
 	n := 0
-	for id, al := range util.SortedMap(av.DB.Airlines) {
+	for id, al := range util.SortedMap(db.DB.Airlines) {
 		if n >= maxDatabaseRows {
 			break
 		}
@@ -391,13 +391,13 @@ func (in *inspector) drawFacilities(a *app) {
 		imgui.TextWrapped(name)
 	}
 
-	for id, f := range util.SortedMap(av.DB.ARTCCs) {
+	for id, f := range util.SortedMap(db.DB.ARTCCs) {
 		row(id, "ARTCC", f.Name, math.Point2LL{f.Longitude, f.Latitude})
 	}
-	for id, f := range util.SortedMap(av.DB.TRACONs) {
+	for id, f := range util.SortedMap(db.DB.TRACONs) {
 		row(id, "TRACON", f.Name, math.Point2LL{f.Longitude, f.Latitude})
 	}
-	for id, f := range util.SortedMap(av.DB.ATCTs) {
+	for id, f := range util.SortedMap(db.DB.ATCTs) {
 		row(id, "ATCT", f.Name, math.Point2LL{f.Longitude, f.Latitude})
 	}
 	imgui.EndTable()

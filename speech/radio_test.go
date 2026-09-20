@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 )
@@ -20,9 +21,9 @@ import (
 // argument type must survive JSON with its type intact; Args is []any, which
 // would otherwise return numbers as float64 and named string types as strings.
 func TestTransmissionArgsRoundTrip(t *testing.T) {
-	av.DB = &av.StaticDatabase{
-		Airports:  map[av.ICAOAirportCode]av.FAAAirport{"KJFK": {Name: "John F Kennedy International"}},
-		Navaids:   map[string]av.Navaid{"MERIT": {Name: "MERIT"}},
+	db.DB = &db.StaticDatabase{
+		Airports:  map[av.ICAOAirportCode]db.Airport{"KJFK": {Name: "John F Kennedy International"}},
+		Navaids:   map[string]db.Navaid{"MERIT": {Name: "MERIT"}},
 		Callsigns: map[string]string{"AAL": "American"},
 	}
 
@@ -175,7 +176,7 @@ func TestFrequencySpoken(t *testing.T) {
 		slices.Sort(got)
 		want := slices.Sorted(slices.Values(fs.spokens))
 		if !slices.Equal(got, want) {
-			t.Errorf("av.Frequency %s spoken forms %q; expected %q", fs.f, got, want)
+			t.Errorf("Frequency %s spoken forms %q; expected %q", fs.f, got, want)
 		}
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
@@ -220,7 +221,7 @@ func TestGetSTTFixes_SkipsInternalAndShortFixes(t *testing.T) {
 // the fix vocabulary and in the whisper prompt. The same rule applies to both
 // airports whatever the type of flight.
 func TestGetSTTFixes_AirportsOnlyWhenNear(t *testing.T) {
-	jfk, ok := av.DB.LookupICAOAirport("KJFK")
+	jfk, ok := db.DB.LookupICAOAirport("KJFK")
 	if !ok {
 		t.Fatal("KJFK not in the database")
 	}
@@ -348,7 +349,7 @@ func TestAltitudeRangeSample(t *testing.T) {
 }
 
 func TestPlausibleCruiseBand(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 	for _, tc := range []struct {
 		from, to av.ICAOAirportCode
 		acType   string
@@ -365,7 +366,7 @@ func TestPlausibleCruiseBand(t *testing.T) {
 	} {
 		fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: tc.acType,
 			DepartureAirport: tc.from, ArrivalAirport: tc.to}
-		got := plausibleCruiseBand(fp, av.DB.AircraftPerformance[tc.acType])
+		got := plausibleCruiseBand(fp, db.DB.AircraftPerformance[tc.acType])
 		if got != tc.want {
 			t.Errorf("%s-%s %s: band = %v, want %v", tc.from, tc.to, tc.acType, got, tc.want)
 		}
@@ -373,7 +374,7 @@ func TestPlausibleCruiseBand(t *testing.T) {
 }
 
 func TestFiledCruiseAltitude(t *testing.T) {
-	av.InitDB()
+	db.InitDB()
 	r := rand.Make()
 	for _, tc := range []struct {
 		from, to av.ICAOAirportCode
@@ -397,7 +398,7 @@ func TestFiledCruiseAltitude(t *testing.T) {
 		// goes, so the trip alone decides.
 		{"KSNA", "KLAS", "C172", CruiseLimits{Low: 33000, High: 37000}, []int{7000, 9000}},
 	} {
-		perf := av.DB.AircraftPerformance[tc.acType]
+		perf := db.DB.AircraftPerformance[tc.acType]
 		fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: tc.acType,
 			DepartureAirport: tc.from, ArrivalAirport: tc.to}
 		seen := make(map[int]bool)

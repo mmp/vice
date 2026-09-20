@@ -13,6 +13,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
@@ -108,7 +109,7 @@ func enrouteFixes(route string) []string {
 // engineTypeFor is how an aircraft is classified when choosing among a city
 // pair's real routes: jets fly the high-altitude ones, everything else the low.
 func engineTypeFor(aircraftType string) string {
-	if perf, ok := av.DB.AircraftPerformance[aircraftType]; ok {
+	if perf, ok := db.DB.AircraftPerformance[aircraftType]; ok {
 		return perf.Engine.AircraftType
 	}
 	return ""
@@ -162,7 +163,7 @@ func (ss *CommonState) candidateArrivals(arrivalAirport av.ICAOAirportCode) []ca
 // is chosen in UTC, as times are everywhere else; a timetable just needs it in
 // local terms.
 func TimetableStartMinute(start time.Time, airport av.ICAOAirportCode) (int, error) {
-	location, ok := av.DB.AirportTimeZone(airport)
+	location, ok := db.DB.AirportTimeZone(airport)
 	if !ok {
 		return 0, fmt.Errorf("no time zone is known for %s", airport)
 	}
@@ -286,7 +287,7 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 		// cleanup filters that follow all work from the times in the data.
 		scale := max(departureScale, arrivalScale)
 		departureAirports, arrivalAirports := lc.IFRAirports()
-		flights = traffic.SelectFlights(historical, departureAirports, arrivalAirports, av.DB.Airlines,
+		flights = traffic.SelectFlights(historical, departureAirports, arrivalAirports, db.DB.Airlines,
 			start.Add(time.Duration(float64(first.Sub(start))*float64(scale))),
 			start.Add(time.Duration(float64(last.Sub(start))*float64(scale))))
 
@@ -622,21 +623,21 @@ func (ss *CommonState) placeArrival(arrivalAirport, origin av.ICAOAirportCode, a
 	hour, hourKnown := ss.localHour(arrivalAirport)
 	scenarioRoutes := func(from av.ICAOAirportCode) []string {
 		if ap, ok := ss.Airports[arrivalAirport]; ok {
-			return ap.TrafficRoutes.Arrivals[from].Routes(aircraftType)
+			return ap.TrafficRoutes.Arrivals[from].Routes(db.Lookups{}, aircraftType)
 		}
 		return nil
 	}
 	scrapedRoutes := func(from av.ICAOAirportCode) []av.ScrapedRoute {
-		return orderScrapedRoutes(av.DB.ScrapedRoutesBetween(from, arrivalAirport),
+		return orderScrapedRoutes(db.DB.ScrapedRoutesBetween(from, arrivalAirport),
 			aircraftType, hour, hourKnown)
 	}
 	scrapedNames := func(routes []av.ScrapedRoute) []string {
 		return util.MapSlice(routes, func(r av.ScrapedRoute) string { return r.Route })
 	}
 	faaRoutes := func(from av.ICAOAirportCode) []string {
-		eligible := eligibleAirportPairRoutes(av.DB.RoutesBetween(from, arrivalAirport),
+		eligible := eligibleAirportPairRoutes(db.DB.RoutesBetween(from, arrivalAirport),
 			engineTypeFor(aircraftType))
-		return util.MapSlice(eligible, func(r av.AirportPairRoute) string { return r.Route })
+		return util.MapSlice(eligible, func(r db.AirportPairRoute) string { return r.Route })
 	}
 
 	// The scenario says in so many words how traffic from this origin comes in,
@@ -710,7 +711,7 @@ func (c candidateArrival) placement(filedRoute string, substitute av.ICAOAirport
 // the altitude it cruises at: what its procedures require, and what the pair's
 // recent filings of that route were seen at, when it is one of them.
 func arrivalCruiseLimits(route string, origin, arrivalAirport av.ICAOAirportCode, scraped []av.ScrapedRoute) CruiseLimits {
-	limits := CruiseLimits{Floor: av.RouteAltitudeFloor(route, origin, arrivalAirport)}
+	limits := CruiseLimits{Floor: av.RouteAltitudeFloor(db.Lookups{}, route, origin, arrivalAirport)}
 	if i := slices.IndexFunc(scraped, func(r av.ScrapedRoute) bool { return r.Route == route }); i != -1 {
 		limits.Low, limits.High = scraped[i].MinAltitude, scraped[i].MaxAltitude
 	}
@@ -728,8 +729,8 @@ const publishedSubstituteFraction = 0.5
 // the way: Bangor is the closest airport with a JFK route to Zurich, but
 // traffic from Zurich doesn't arrive the way Bangor's does.
 func substituteAirports(base, real av.ICAOAirportCode, pool []av.ICAOAirportCode, maxHeadingDifference float32) []av.ICAOAirportCode {
-	baseAirport, baseOK := av.DB.Airports[base]
-	realAirport, realOK := av.DB.Airports[real]
+	baseAirport, baseOK := db.DB.Airports[base]
+	realAirport, realOK := db.DB.Airports[real]
 	if !baseOK || !realOK {
 		return nil
 	}
@@ -747,7 +748,7 @@ func substituteAirports(base, real av.ICAOAirportCode, pool []av.ICAOAirportCode
 			continue
 		}
 		seen[id] = true
-		ap, ok := av.DB.Airports[id]
+		ap, ok := db.DB.Airports[id]
 		if !ok {
 			continue
 		}
@@ -783,15 +784,15 @@ func makeRoutedPairs() routedPairs {
 		originsByDestination: make(map[av.ICAOAirportCode][]av.ICAOAirportCode),
 		destinationsByOrigin: make(map[av.ICAOAirportCode][]av.ICAOAirportCode),
 	}
-	add := func(pair av.AirportPair) {
+	add := func(pair db.AirportPair) {
 		from, to := traffic.NormalizeAirportCode(pair.From), traffic.NormalizeAirportCode(pair.To)
 		routed.originsByDestination[to] = append(routed.originsByDestination[to], from)
 		routed.destinationsByOrigin[from] = append(routed.destinationsByOrigin[from], to)
 	}
-	for pair := range av.DB.AirportPairRoutes {
+	for pair := range db.DB.AirportPairRoutes {
 		add(pair)
 	}
-	for pair := range av.DB.ScrapedRoutes {
+	for pair := range db.DB.ScrapedRoutes {
 		add(pair)
 	}
 	return routed
@@ -800,7 +801,7 @@ func makeRoutedPairs() routedPairs {
 // localHour returns the hour of day at the airport at the sim's current time,
 // if the airport's time zone is known.
 func (ss *CommonState) localHour(airport av.ICAOAirportCode) (int, bool) {
-	loc, ok := av.DB.AirportTimeZone(airport)
+	loc, ok := db.DB.AirportTimeZone(airport)
 	if !ok {
 		return 0, false
 	}
@@ -826,7 +827,7 @@ func (ss *CommonState) localHour(airport av.ICAOAirportCode) (int, bool) {
 // have to do.
 func orderScrapedRoutes(routes []av.ScrapedRoute, aircraftType string, hour int,
 	hourKnown bool) []av.ScrapedRoute {
-	class := av.AircraftClassOf(aircraftType)
+	class := av.AircraftClassOf(db.Lookups{}, aircraftType)
 	family := av.AircraftClassProp | av.AircraftClassTurboprop
 	if class&(av.AircraftClassHeavyJet|av.AircraftClassNonheavyJet) != 0 {
 		family = av.AircraftClassHeavyJet | av.AircraftClassNonheavyJet
@@ -838,7 +839,7 @@ func orderScrapedRoutes(routes []av.ScrapedRoute, aircraftType string, hour int,
 		class = util.Select(observed(family), family, 0)
 	}
 
-	perf, perfOK := av.DB.AircraftPerformance[aircraftType]
+	perf, perfOK := db.DB.AircraftPerformance[aircraftType]
 	rank := func(r av.ScrapedRoute) [3]int {
 		var n [3]int
 		if class != 0 && r.Aircraft != 0 && r.Aircraft&class == 0 {

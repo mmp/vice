@@ -5,6 +5,7 @@ package sim
 
 import (
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
 )
 
@@ -95,7 +96,7 @@ func (s *Sim) deriveERAMFixPair(nasFp *NASFlightPlan, ac *Aircraft) enroute.Resu
 	// boundary-crossing route/zone partition. Skip route/zone selection
 	// entirely; there is no interfacility handoff.
 	if nasFp.TypeOfFlight == av.FlightTypeDeparture && s.State.Airports[destAirport] != nil {
-		exit := av.AirportDisplayId(destAirport) // KCPP -> CPP, matching how EntryFix strips it
+		exit := db.AirportDisplayId(destAirport) // KCPP -> CPP, matching how EntryFix strips it
 		nasFp.ExitFix = exit
 		nasFp.CoordinationFix = exit
 		// The exit fix is a local-arrival airport; the caller reclassifies the

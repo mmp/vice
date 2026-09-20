@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/scenario"
@@ -108,7 +108,7 @@ func run(lg *log.Logger) error {
 		return fmt.Errorf("Unable to sync resources: %v", err)
 	}
 
-	av.InitDB()
+	db.InitDB()
 	wx.Init()
 
 	if *wxFacilities != "" {

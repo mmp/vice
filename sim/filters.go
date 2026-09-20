@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -270,7 +271,7 @@ func (r FilterQualifiers) Match(fp *NASFlightPlan, userPositions []ControlPositi
 	}
 
 	if r.CWTCategory != "" {
-		if perf, ok := av.DB.AircraftPerformance[aircraftType]; !ok || perf.Category.CWT != r.CWTCategory {
+		if perf, ok := db.DB.AircraftPerformance[aircraftType]; !ok || perf.Category.CWT != r.CWTCategory {
 			return false
 		}
 	}

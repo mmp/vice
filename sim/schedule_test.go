@@ -10,6 +10,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
 )
@@ -251,7 +252,7 @@ func TestScenarioScheduleGeneration(t *testing.T) {
 		if dep.Callsign == "" || dep.AircraftType == "" {
 			t.Fatalf("departure %d has empty identity: %+v", i, dep)
 		}
-		if _, ok := av.DB.AircraftPerformance[dep.AircraftType]; !ok {
+		if _, ok := db.DB.AircraftPerformance[dep.AircraftType]; !ok {
 			t.Errorf("departure %d type %s not in performance database", i, dep.AircraftType)
 		}
 		if dep.Runway != "12L" || dep.DepartureIndex != 0 || dep.DepartureAirport != "KMSP" {
@@ -442,8 +443,8 @@ func TestScheduledDeparturesResolveTheirRunway(t *testing.T) {
 func TestScheduledDeparturesPreferTheRunwayThatFliesTheirRoute(t *testing.T) {
 	seedTestAirports(t)
 	seedTestExits(t)
-	seedTestRoutes(t, "KTGT", []av.AirportPairRoute{{Route: "KORG EAST J1 KTGT", Type: "H"}})
-	seedTestRoutes(t, "KEAS", []av.AirportPairRoute{{Route: "KORG EASTN J2 KEAS", Type: "H"}})
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{{Route: "KORG EAST J1 KTGT", Type: "H"}})
+	seedTestRoutes(t, "KEAS", []db.AirportPairRoute{{Route: "KORG EASTN J2 KEAS", Type: "H"}})
 
 	s := NewTestSim(testLogger())
 	s.State.NmPerLongitude = testNmPerLongitude
@@ -488,7 +489,7 @@ func TestScheduleDropsDeparturesNoRunwayFlies(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
 	s := publishedProviderTestSim(t, start)
 	// Due north of KMSP: neither gate heads anywhere near it.
-	av.DB.Airports["KGFK"] = av.FAAAirport{Id: "KGFK", Location: math.Point2LL{-93.2, 48.0}}
+	db.DB.Airports["KGFK"] = db.Airport{Id: "KGFK", Location: math.Point2LL{-93.2, 48.0}}
 
 	s.Schedule.Departures = []ScheduledDeparture{
 		testScheduledDeparture("DAL1", "KMSP", "KGFK", start),

@@ -8,11 +8,12 @@ import (
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 )
 
 func TestMain(m *testing.M) {
-	av.InitDB()
+	db.InitDB()
 	os.Exit(m.Run())
 }
 
@@ -69,9 +70,9 @@ func TestParseBoundary(t *testing.T) {
 // traverses the airway that way, while "both"/"" matches either direction.
 func TestAirwayDirection(t *testing.T) {
 	// Canonical airway ZZ99: A -> B -> C (defined order == "down").
-	av.DB.Airways["ZZ99"] = []av.Airway{{Name: "ZZ99",
+	db.DB.Airways["ZZ99"] = []av.Airway{{Name: "ZZ99",
 		Fixes: []av.AirwayFix{{Fix: "A"}, {Fix: "B"}, {Fix: "C"}}}}
-	defer delete(av.DB.Airways, "ZZ99")
+	defer delete(db.DB.Airways, "ZZ99")
 	wp := func(fix string) av.Waypoint {
 		return av.Waypoint{Fix: fix, Extra: &av.WaypointExtra{Airway: "ZZ99"}}
 	}
@@ -107,9 +108,9 @@ func TestAirwayDirection(t *testing.T) {
 // rule must not match when it can't be (the flight ends right at the tagged
 // fix, with no neighbor to derive direction from).
 func TestAirwayDirectionAdjacentFixes(t *testing.T) {
-	av.DB.Airways["ZZ99"] = []av.Airway{{Name: "ZZ99",
+	db.DB.Airways["ZZ99"] = []av.Airway{{Name: "ZZ99",
 		Fixes: []av.AirwayFix{{Fix: "A"}, {Fix: "B"}, {Fix: "C"}}}}
-	defer delete(av.DB.Airways, "ZZ99")
+	defer delete(db.DB.Airways, "ZZ99")
 	tagged := func(fix string) av.Waypoint {
 		return av.Waypoint{Fix: fix, Extra: &av.WaypointExtra{Airway: "ZZ99"}}
 	}

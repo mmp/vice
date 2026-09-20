@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
@@ -239,15 +240,15 @@ func parseVideoMapContent(content string) (*VideoMapBlock, error) {
 		}
 
 		// Try as waypoint/fix
-		if p, ok := av.DB.LookupWaypoint(locStr); ok {
+		if p, ok := db.DB.LookupWaypoint(locStr); ok {
 			return p, nil
 		}
 
 		// Try as an airport, by either of its ids.
-		if ap, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(locStr)); ok {
+		if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(locStr)); ok {
 			return ap.Location, nil
 		}
-		if ap, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(locStr)); ok {
+		if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(locStr)); ok {
 			return ap.Location, nil
 		}
 
@@ -714,10 +715,10 @@ func isValidConfigConditionName(name string, definedConfigs map[string]bool) boo
 
 	// Airport codes, by either id. These are evaluated dynamically against
 	// the scenario.
-	if _, ok := av.DB.LookupICAOAirport(av.ICAOAirportCode(name)); ok {
+	if _, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(name)); ok {
 		return true
 	}
-	if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(name)); ok {
+	if _, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(name)); ok {
 		return true
 	}
 

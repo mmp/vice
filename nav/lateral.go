@@ -9,6 +9,7 @@ import (
 	"slices"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -149,14 +150,14 @@ func (nav *Nav) Check(lg *log.Logger) {
 }
 
 func (nav *Nav) Update(callsign string, model *wx.Model, fp *av.FlightPlan, arrivalMETAR *wx.METAR, simTime Time,
-	bravo *av.AirspaceGrid) UpdateResult {
+	bravo *db.AirspaceGrid) UpdateResult {
 	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime.Time())
 	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, fp, simTime, bravo)
 }
 
 // UpdateWithWeather is a helper for simulations that use pre-fetched weather.
 // arrivalMETAR, if non-nil, is used for the approach speed wind additive.
-func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, fp *av.FlightPlan, simTime Time, bravo *av.AirspaceGrid) UpdateResult {
+func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, fp *av.FlightPlan, simTime Time, bravo *db.AirspaceGrid) UpdateResult {
 	nav.PendingWaypointActionEvents = nil
 	nav.activatePendingAltitude(simTime)
 

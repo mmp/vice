@@ -15,6 +15,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -667,7 +668,7 @@ func (sp *Pane) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle rendere
 		var altimeters []string
 		for _, ap := range airports {
 			if metar, ok := ctx.Client.State.METAR[ap]; ok {
-				altimeters = append(altimeters, av.AirportDisplayId(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
+				altimeters = append(altimeters, db.AirportDisplayId(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
 			}
 		}
 		for len(altimeters) >= 3 {
@@ -1287,8 +1288,8 @@ func (sp *Pane) drawTowerList(ctx *scope.Context, paneExtent math.Extent2D, airp
 	k := util.SortedMapKeys(m)
 
 	return sp.drawSystemList(ctx, paneExtent, &ps.TowerLists[towerIndex].Position, style, td, ld, ListFormatter{
-		Title:      av.AirportDisplayId(airport) + " TOWER",
-		FrameTitle: av.AirportDisplayId(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
+		Title:      db.AirportDisplayId(airport) + " TOWER",
+		FrameTitle: db.AirportDisplayId(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
 		Lines:      ps.TowerLists[towerIndex].Lines,
 		Entries:    len(k),
 		FormatLine: func(idx int, sb *strings.Builder) {

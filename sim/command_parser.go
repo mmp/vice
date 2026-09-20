@@ -11,6 +11,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -273,7 +274,7 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *speech.
 
 	var heavySuper string
 	if ctrl != nil && !ctrl.ERAMFacility {
-		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+		if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
 			if perf.WeightClass == "H" {
 				heavySuper = " heavy"
 			} else if perf.WeightClass == "J" {
