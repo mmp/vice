@@ -34,7 +34,7 @@ for tool in crc2vice dat2vice viceserver; do
 done
 
 # make_app <bundle> <executable> <Info.plist> <iconset>. Each bundle gets its
-# own copy of fonts/, since renderer/font.go looks for them next to the
+# own copy of fonts/, since util/fonts.go looks for them next to the
 # executable (Contents/Resources on macOS), and its own icon.icns, the name
 # both Info.plist files give for CFBundleIconFile.
 make_app() {

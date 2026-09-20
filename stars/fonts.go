@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/util"
 )
 
 func (sp *Pane) initializeFonts(r renderer.Renderer, p platform.Platform) {
@@ -102,5 +103,9 @@ func rewriteDelta(s string) string {
 }
 
 func createFontAtlas(r renderer.Renderer, dpiScale float32) []*renderer.Font {
-	return renderer.CreateBitmapFontAtlas(r, dpiScale, maps.All(starsFonts))
+	fonts, err := renderer.LoadBitmapFonts(util.LoadFontBytes("stars-bitmaps.msgpack.zst"))
+	if err != nil {
+		panic(err)
+	}
+	return renderer.CreateBitmapFontAtlas(r, dpiScale, maps.All(fonts))
 }

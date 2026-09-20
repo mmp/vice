@@ -5,22 +5,18 @@
 package gui
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"io/fs"
-	"os"
-	"path/filepath"
 	"runtime"
 	"slices"
 	"strconv"
 	"unicode/utf8"
 	"unsafe"
 
+	"github.com/mmp/vice/util"
+
 	"github.com/mmp/vice/log"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/IconFontCppHeaders"
 )
 
@@ -267,7 +263,6 @@ var (
 // InitFonts loads the TTF fonts and registers them with imgui, which
 // rasterizes their glyphs on demand into an atlas that it owns.
 func InitFonts(dpiScale float32, lg *log.Logger) {
-	initFontsFS()
 	lg.Info("Starting to initialize fonts")
 	fontDPIScale = dpiScale
 	imguiFonts = make(map[string]imgui.Font)
@@ -291,8 +286,8 @@ func InitFonts(dpiScale float32, lg *log.Logger) {
 	}
 
 	// Decompress and get the glyph ranges for the Font Awesome fonts just once.
-	faTTF := loadFont("Font Awesome 5 Free-Solid-900.otf.zst")
-	fabrTTF := loadFont("Font Awesome 5 Brands-Regular-400.otf.zst")
+	faTTF := util.LoadFontBytes("Font Awesome 5 Free-Solid-900.otf.zst")
+	fabrTTF := util.LoadFontBytes("Font Awesome 5 Brands-Regular-400.otf.zst")
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
@@ -342,7 +337,7 @@ func InitFonts(dpiScale float32, lg *log.Logger) {
 		"RobotoMono-Medium.ttf.zst":       Fonts.RobotoMono,
 		"RobotoMono-MediumItalic.ttf.zst": Fonts.RobotoMonoItalic,
 		"Flight-Strip-Printer.ttf.zst":    Fonts.FlightStripPrinter} {
-		addFamily(loadFont(fn), name)
+		addFamily(util.LoadFontBytes(fn), name)
 	}
 	// A font of FontAwesome icons alone, for the weather icons.
 	addFamily(nil, Fonts.LargeFontAwesomeOnly)
@@ -442,73 +437,4 @@ func AvailableFontSizes(name string) []int {
 		return nil
 	}
 	return offeredFontSizes
-}
-
-var fontsFS fs.StatFS
-
-func initFontsFS() {
-	path, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-
-	dir := filepath.Dir(path)
-	if runtime.GOOS == "darwin" {
-		dir = filepath.Clean(filepath.Join(dir, "..", "Resources"))
-	}
-
-	// Is there a "fonts" directory in the FS?
-	check := func(fs fs.StatFS) bool {
-		info, err := fs.Stat("fonts")
-		return err == nil && info.IsDir()
-	}
-
-	fsys := os.DirFS(dir).(fs.StatFS)
-	if check(fsys) {
-		fontsFS = fsys
-		return
-	}
-
-	dir, err = os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	// Try CWD as well the two directories above it.
-	for range 3 {
-		fsys, ok := os.DirFS(dir).(fs.StatFS)
-		if !ok {
-			panic("FS from DirFS is not a StatFS?")
-		}
-
-		if _, err := fsys.Stat("fonts"); err == nil { // got it
-			fontsFS = fsys
-			return
-		}
-
-		dir = filepath.Join(dir, "..")
-	}
-
-	panic("unable to find fonts")
-}
-
-func loadFont(name string) []byte {
-	b, err := fs.ReadFile(fontsFS, "fonts/"+name)
-	if err != nil {
-		panic(err)
-	}
-
-	zr, err := zstd.NewReader(bytes.NewReader(b), zstd.WithDecoderConcurrency(0))
-	if err != nil {
-		panic(err)
-	}
-
-	b, err = io.ReadAll(zr)
-	if err != nil {
-		panic(err)
-	}
-
-	zr.Close()
-
-	return b
 }

@@ -5,10 +5,13 @@
 package renderer
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"iter"
 	"runtime"
+
+	"github.com/vmihailenco/msgpack/v5"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -247,4 +250,22 @@ func (glyph BitmapGlyph) addToFont(ch, x, y, xres, yres int, bf BitmapFont, f *F
 		Visible:  true,
 	}
 	f.AddGlyph(ch, g)
+}
+
+// LoadBitmapFonts reads a set of bitmap fonts from the form
+// EncodeBitmapFonts writes. The STARS and ERAM scope fonts are shipped as
+// data files in fonts/ rather than as generated Go source; they were
+// originally converted from the scopes' PCF font files.
+func LoadBitmapFonts(b []byte) (map[string]BitmapFont, error) {
+	var fonts map[string]BitmapFont
+	if err := msgpack.Unmarshal(b, &fonts); err != nil {
+		return nil, fmt.Errorf("decoding bitmap fonts: %w", err)
+	}
+	return fonts, nil
+}
+
+// EncodeBitmapFonts writes fonts in the form LoadBitmapFonts reads; it is
+// what a tool that converts PCF fonts for vice emits.
+func EncodeBitmapFonts(fonts map[string]BitmapFont) ([]byte, error) {
+	return msgpack.Marshal(fonts)
 }

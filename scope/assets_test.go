@@ -10,7 +10,9 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // TestSystemMaps checks that each adapted filter kind contributes an "all"
@@ -106,7 +108,11 @@ func TestSystemMaps(t *testing.T) {
 // pixels too narrow, which made data block lines ending in 8 look truncated.
 // 1 is excluded since it is legitimately narrow in every size.
 func TestBitmapFontDigitWidths(t *testing.T) {
-	for name, bf := range eramBitmapFonts {
+	fonts, err := renderer.LoadBitmapFonts(util.LoadFontBytes("eram-bitmaps.msgpack.zst"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, bf := range fonts {
 		widths := make(map[int][]string)
 		for ch := '0'; ch <= '9'; ch++ {
 			if ch != '1' && int(ch) < len(bf.Glyphs) && bf.Glyphs[ch].StepX != 0 {

@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 )
 
 // CreateERAMFonts bakes the ERAM PCF bitmap fonts into a texture atlas and
@@ -17,7 +18,11 @@ import (
 // their symbol and label sizes in terms of them, so anything else drawing a
 // video map faithfully needs them too.
 func CreateERAMFonts(r renderer.Renderer, dpiScale float32) []*renderer.Font {
-	return renderer.CreateBitmapFontAtlas(r, dpiScale, maps.All(eramBitmapFonts))
+	fonts, err := renderer.LoadBitmapFonts(util.LoadFontBytes("eram-bitmaps.msgpack.zst"))
+	if err != nil {
+		panic(err)
+	}
+	return renderer.CreateBitmapFontAtlas(r, dpiScale, maps.All(fonts))
 }
 
 // FindERAMFont returns the named font at the given size from the result of
