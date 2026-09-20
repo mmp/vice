@@ -1057,7 +1057,7 @@ func TestChartedVisualDescendsFromAssignedAltitude(t *testing.T) {
 	f.nav.FlightState.Position = math.Offset2LL(cv.at(18), math.NormalizeHeading(cv.inbound+90), 10, nmPerLong)
 	intercept := math.TrueToMagnetic(math.NormalizeHeading(cv.inbound-45), f.nav.FlightState.MagneticVariation)
 	f.nav.FlightState.Heading = intercept
-	f.nav.Heading = NavHeading{Assigned: &intercept}
+	f.nav.Heading = Heading{Assigned: &intercept}
 	f.nav.Waypoints = []av.Waypoint{f.nav.FlightState.ArrivalAirport}
 
 	f.clearChartedVisual(cv)

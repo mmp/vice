@@ -314,7 +314,7 @@ func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
 // Draw draws the current weather radar data, if available.
 func (w *WeatherRadar) Draw(ctx *Context, hist int, intensity float32,
 	wxColors [NumWxLevels]renderer.RGB, wxStippleColor renderer.RGB, wxLevelStipple [NumWxLevels]int,
-	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	active [NumWxLevels]bool, transforms Transformations, cb *renderer.CommandBuffer) {
 	w.mu.Lock(ctx.Lg)
 	defer w.mu.Unlock(ctx.Lg)
 

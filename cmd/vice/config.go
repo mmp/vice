@@ -50,8 +50,8 @@ type ConfigNoSim struct {
 	UIFontSize    int
 
 	// Store individual pane instances
-	STARSPane         *stars.STARSPane
-	ERAMPane          *eram.ERAMPane
+	STARSPane         *stars.Pane
+	ERAMPane          *eram.Pane
 	MessagesWindow    *MessagesWindow
 	FlightStripWindow *FlightStripWindow
 
@@ -240,8 +240,8 @@ func getDefaultConfig() *Config {
 			WhatsNewIndex:         len(whatsNew),
 			NotifiedTargetGenMode: true, // don't warn for new installs
 			UserPTTKey:            imgui.KeySemicolon,
-			STARSPane:             stars.NewSTARSPane(),
-			ERAMPane:              eram.NewERAMPane(),
+			STARSPane:             stars.NewPane(),
+			ERAMPane:              eram.NewPane(),
 			MessagesWindow:        NewMessagesWindow(),
 			FlightStripWindow:     NewFlightStripWindow(),
 			ShowMessages:          true,
@@ -282,10 +282,10 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 
 		// Ensure all pane instances are initialized
 		if config.STARSPane == nil {
-			config.STARSPane = stars.NewSTARSPane()
+			config.STARSPane = stars.NewPane()
 		}
 		if config.ERAMPane == nil {
-			config.ERAMPane = eram.NewERAMPane()
+			config.ERAMPane = eram.NewPane()
 		}
 		if config.MessagesWindow == nil {
 			config.MessagesWindow = NewMessagesWindow()

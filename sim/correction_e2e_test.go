@@ -115,7 +115,7 @@ func TestATISCorrectionPreservesApproach(t *testing.T) {
 	s.Aircraft[ac.ADSBCallsign] = ac
 	ac.FlightPlan.ArrivalAirport = "KOAK"
 	ac.Nav.FlightState.ArrivalAirport = av.Waypoint{Fix: "KOAK"}
-	ac.Nav.Approach = nav.NavApproach{}
+	ac.Nav.Approach = nav.Approach{}
 	ac.Nav.Waypoints = av.WaypointArray{{Fix: "BOYYS"}, {Fix: "HOPTA"}, {Fix: "KOAK"}}
 	ac.STARRunwayWaypoints = map[string]av.WaypointArray{
 		"30": {{Fix: "HOPTA"}, {Fix: "ALLXX"}, {Fix: "CRSEN"}},

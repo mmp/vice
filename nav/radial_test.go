@@ -269,7 +269,7 @@ func TestInterceptRadialSteepAngle(t *testing.T) {
 	f.nav.FlightState.Position = math.Point2LL{-73.866806, 40.516140}
 	f.nav.FlightState.Heading = 180
 	hdg := math.MagneticHeading(180)
-	f.nav.Heading = NavHeading{Assigned: &hdg}
+	f.nav.Heading = Heading{Assigned: &hdg}
 
 	const radial = 100
 	course := inboundRadialCourse(f, "RBV", radial)
@@ -313,7 +313,7 @@ func TestInterceptRadialDuringTurn(t *testing.T) {
 	kjfk := av.DB.Airports["KJFK"]
 	f.nav.FlightState.Position = kjfk.Location
 	f.nav.FlightState.Heading = 310 // just off runway 31L
-	f.nav.Heading = NavHeading{}
+	f.nav.Heading = Heading{}
 	rbv, ok := av.DB.LookupWaypoint("RBV")
 	if !ok {
 		t.Fatal("RBV not found")
@@ -378,7 +378,7 @@ func TestInterceptRadialUnreachable(t *testing.T) {
 	kjfk := av.DB.Airports["KJFK"]
 	f.nav.FlightState.Position = kjfk.Location
 	f.nav.FlightState.Heading = 310 // just off runway 31L
-	f.nav.Heading = NavHeading{}
+	f.nav.Heading = Heading{}
 
 	heading := f.nav.AssignHeading(180, av.TurnLeft, f.simTime, 0)
 	intent := f.InterceptRadial("RBV", 45, false)

@@ -65,9 +65,9 @@ func registerSupeCommands() {
 	// registerCommand(CommandModeMultiFunc, "NI", ...)
 
 	// 8.7 Enable / inhibit runway pair configuration system-wide
-	enableInhibitRunwayPair := func(sp *STARSPane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int, mode string) (CommandStatus, error) {
+	enableInhibitRunwayPair := func(sp *Pane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int, mode string) (CommandStatus, error) {
 		if len(sp.CRDAPairs) == 0 {
-			return CommandStatus{}, ErrSTARSIllegalFunction
+			return CommandStatus{}, ErrIllegalFunction
 		}
 		for i, pair := range sp.CRDAPairs {
 			if pair.Airport == ap && pair.Index == idx {
@@ -87,7 +87,7 @@ func registerSupeCommands() {
 							other.SourceRegion == pair.GhostRegion ||
 							other.GhostRegion == pair.SourceRegion ||
 							other.GhostRegion == pair.GhostRegion {
-							return CommandStatus{}, ErrSTARSIllegalRunway
+							return CommandStatus{}, ErrIllegalRunway
 						}
 					}
 
@@ -101,65 +101,65 @@ func registerSupeCommands() {
 				}
 			}
 		}
-		return CommandStatus{}, ErrSTARSCommandFormat
+		return CommandStatus{}, ErrCommandFormat
 	}
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]T",
-		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
+		func(sp *Pane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "T")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]T",
-		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, idx int) (CommandStatus, error) {
+		func(sp *Pane, ctx *scope.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
 			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
 			if da == "" {
-				return CommandStatus{}, ErrSTARSIllegalFunction
+				return CommandStatus{}, ErrIllegalFunction
 			}
 			ap, ok := av.ICAOAirportToFAA(da)
 			if !ok {
-				return CommandStatus{}, ErrSTARSIllegalFunction
+				return CommandStatus{}, ErrIllegalFunction
 			}
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "T")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]S",
-		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
+		func(sp *Pane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "S")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]S",
-		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, idx int) (CommandStatus, error) {
+		func(sp *Pane, ctx *scope.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
 			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
 			if da == "" {
-				return CommandStatus{}, ErrSTARSIllegalFunction
+				return CommandStatus{}, ErrIllegalFunction
 			}
 			ap, ok := av.ICAOAirportToFAA(da)
 			if !ok {
-				return CommandStatus{}, ErrSTARSIllegalFunction
+				return CommandStatus{}, ErrIllegalFunction
 			}
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "S")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]D",
-		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
+		func(sp *Pane, ctx *scope.Context, ps *Preferences, ap av.FAAAirportCode, idx int) (CommandStatus, error) {
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]D",
-		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, idx int) (CommandStatus, error) {
+		func(sp *Pane, ctx *scope.Context, ps *Preferences, idx int) (CommandStatus, error) {
 			ctrl := ctx.UserController()
 			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
 			if da == "" {
-				return CommandStatus{}, ErrSTARSIllegalFunction
+				return CommandStatus{}, ErrIllegalFunction
 			}
 			ap, ok := av.ICAOAirportToFAA(da)
 			if !ok {
-				return CommandStatus{}, ErrSTARSIllegalFunction
+				return CommandStatus{}, ErrIllegalFunction
 			}
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})
 
 	// 8.8 Enable / inhibit automatic handoffs for this site (p. 8-13)
-	registerCommand(CommandModeHandOff, "E", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "E", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffSite, true)
 	})
-	registerCommand(CommandModeHandOff, "I", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "I", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffSite, false)
 	})
 
@@ -208,7 +208,7 @@ func registerSupeCommands() {
 	// registerCommand(CommandModeMultiFunc, "2T[TEXT] D", ...)
 
 	// 8.37 Enable / inhibit flight data auto-modify (FDAM) system-wide
-	configureFDAM := func(sp *STARSPane, ctx *scope.Context, op sim.FDAMConfigOp, regionId string) error {
+	configureFDAM := func(sp *Pane, ctx *scope.Context, op sim.FDAMConfigOp, regionId string) error {
 		ctx.Client.ConfigureFDAM(op, regionId,
 			func(output string, err error) {
 				if err != nil {
@@ -220,15 +220,15 @@ func registerSupeCommands() {
 		return nil
 	}
 	registerCommand(CommandModeMultiFunc, "2X",
-		func(sp *STARSPane, ctx *scope.Context) error {
+		func(sp *Pane, ctx *scope.Context) error {
 			return configureFDAM(sp, ctx, sim.FDAMToggleSystem, "")
 		})
 	registerCommand(CommandModeMultiFunc, "2XE",
-		func(sp *STARSPane, ctx *scope.Context) error {
+		func(sp *Pane, ctx *scope.Context) error {
 			return configureFDAM(sp, ctx, sim.FDAMEnableSystem, "")
 		})
 	registerCommand(CommandModeMultiFunc, "2XI",
-		func(sp *STARSPane, ctx *scope.Context) error {
+		func(sp *Pane, ctx *scope.Context) error {
 			return configureFDAM(sp, ctx, sim.FDAMInhibitSystem, "")
 		})
 
@@ -241,7 +241,7 @@ func registerSupeCommands() {
 		}
 		return false
 	}
-	configureATPA := func(sp *STARSPane, ctx *scope.Context, op sim.ATPAConfigOp, volumeId string) error {
+	configureATPA := func(sp *Pane, ctx *scope.Context, op sim.ATPAConfigOp, volumeId string) error {
 		ctx.Client.ConfigureATPA(op, volumeId,
 			func(output string, err error) {
 				if err != nil {
@@ -255,25 +255,25 @@ func registerSupeCommands() {
 		return nil
 	}
 	registerCommand(CommandModeMultiFunc, "2ATPAE",
-		func(sp *STARSPane, ctx *scope.Context) error {
+		func(sp *Pane, ctx *scope.Context) error {
 			if !hasATPAVolumes(ctx) {
-				return ErrSTARSIllegalFunction
+				return ErrIllegalFunction
 			}
 			return configureATPA(sp, ctx, sim.ATPAEnable, "")
 		})
 	registerCommand(CommandModeMultiFunc, "2ATPAI",
-		func(sp *STARSPane, ctx *scope.Context) error {
+		func(sp *Pane, ctx *scope.Context) error {
 			if !hasATPAVolumes(ctx) {
-				return ErrSTARSIllegalFunction
+				return ErrIllegalFunction
 			}
 			return configureATPA(sp, ctx, sim.ATPADisable, "")
 		})
 
 	// 8.39 Enable / disable ATPA approach volume
 	registerCommand(CommandModeMultiFunc, "2ATPA[FIELD]",
-		func(sp *STARSPane, ctx *scope.Context, text string) error {
+		func(sp *Pane, ctx *scope.Context, text string) error {
 			if n := len(text); n < 2 || n > 6 {
-				return ErrSTARSCommandFormat
+				return ErrCommandFormat
 			} else {
 				vol := text[:n-1]
 				switch text[n-1] {
@@ -285,16 +285,16 @@ func registerSupeCommands() {
 					}
 					return configureATPA(sp, ctx, sim.ATPADisableVolume, vol)
 				default:
-					return ErrSTARSCommandFormat
+					return ErrCommandFormat
 				}
 			}
 		})
 
 	// 8.40 Enable / disable ATPA 2.5nm reduced separation
 	registerCommand(CommandModeMultiFunc, "2.5[FIELD]",
-		func(sp *STARSPane, ctx *scope.Context, text string) error {
+		func(sp *Pane, ctx *scope.Context, text string) error {
 			if n := len(text); n < 2 || n > 6 {
-				return ErrSTARSCommandFormat
+				return ErrCommandFormat
 			} else {
 				vol := text[:n-1]
 				switch text[n-1] {
@@ -303,7 +303,7 @@ func registerSupeCommands() {
 				case 'I':
 					return configureATPA(sp, ctx, sim.ATPADisableReduced25, vol)
 				default:
-					return ErrSTARSCommandFormat
+					return ErrCommandFormat
 				}
 			}
 		})

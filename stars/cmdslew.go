@@ -18,7 +18,7 @@ import (
 
 func registerSlewCommands() {
 	registerCommand(CommandModeNone, "[SLEW]",
-		func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) CommandStatus {
+		func(sp *Pane, ctx *scope.Context, trk *sim.Track) CommandStatus {
 			state := sp.TrackState[trk.ADSBCallsign]
 
 			// This is all (hopefully) following the command precedence list in 2.10

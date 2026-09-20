@@ -20,14 +20,14 @@ import (
 
 func registerSetupCommands() {
 	// 4.1.3 Apply preference set
-	registerCommand(CommandModePref, "[NUM]", func(sp *STARSPane, ctx *scope.Context, idx int) error {
+	registerCommand(CommandModePref, "[NUM]", func(sp *Pane, ctx *scope.Context, idx int) error {
 		if idx <= 0 || idx > numSavedPreferenceSets {
-			return ErrSTARSCommandFormat
+			return ErrCommandFormat
 		}
 
 		idx-- // Convert to 0-based
 		if sp.prefSet.Saved[idx] == nil {
-			return ErrSTARSCommandFormat
+			return ErrCommandFormat
 		}
 
 		sp.prefSet.Selected = &idx
@@ -35,10 +35,10 @@ func registerSetupCommands() {
 		sp.setCommandMode(ctx, CommandModeNone)
 		return nil
 	})
-	registerCommand(CommandModePref, "[ALL_TEXT]", func(sp *STARSPane, ctx *scope.Context, name string) (CommandStatus, error) {
+	registerCommand(CommandModePref, "[ALL_TEXT]", func(sp *Pane, ctx *scope.Context, name string) (CommandStatus, error) {
 		idx := slices.IndexFunc(sp.prefSet.Saved[:], func(p *Preferences) bool { return p != nil && p.Name == name })
 		if idx == -1 {
-			return CommandStatus{}, ErrSTARSIllegalPrefset
+			return CommandStatus{}, ErrIllegalPrefset
 		}
 
 		sp.prefSet.Selected = &idx
@@ -48,25 +48,25 @@ func registerSetupCommands() {
 	})
 
 	// 4.1.4 Create new preference set [sic]
-	registerCommand(CommandModeSavePrefAs, "", func(sp *STARSPane, ctx *scope.Context) CommandStatus {
+	registerCommand(CommandModeSavePrefAs, "", func(sp *Pane, ctx *scope.Context) CommandStatus {
 		return CommandStatus{Clear: ClearNone}
 	})
 	registerCommand(CommandModeSavePrefAs, "[ALL_TEXT]", savePreferences)
 
 	// 4.1.10 Reconfigure TCW/TDW to default display characteristics (p. 4-21)
-	registerCommand(CommandModeMultiFunc, "K", func(sp *STARSPane, ctx *scope.Context) {
+	registerCommand(CommandModeMultiFunc, "K", func(sp *Pane, ctx *scope.Context) {
 		sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 	})
 
 	// 4.2.1 Enable Single sensor or Multi-sensor or Fused mode
-	registerCommand(CommandModeSite, "+", func(sp *STARSPane) {
+	registerCommand(CommandModeSite, "+", func(sp *Pane) {
 		sp.setRadarModeFused()
 	})
 	registerCommand(CommandModeSite, "[NUM]", func(ctx *scope.Context, ps *Preferences, idx int) error {
 		radarSites := ctx.FacilityAdaptation.RadarSites
 		idx-- // Convert to 0-based
 		if idx < 0 || idx >= len(radarSites) {
-			return ErrSTARSRangeLimit
+			return ErrRangeLimit
 		}
 
 		ps.RadarSiteSelected = util.SortedMapKeys(radarSites)[idx]
@@ -79,9 +79,9 @@ func registerSetupCommands() {
 			return nil
 		}
 
-		return ErrSTARSIllegalParam
+		return ErrIllegalParam
 	})
-	registerCommand(CommandModeSite, STARSTriangleCharacter, func(sp *STARSPane) {
+	registerCommand(CommandModeSite, STARSTriangleCharacter, func(sp *Pane) {
 		sp.setRadarModeMulti()
 	})
 
@@ -97,33 +97,33 @@ func registerSetupCommands() {
 	})
 
 	// 4.3 Enable / inhibit automatic handoff processing for entering TCP (p. 4-30)
-	registerCommand(CommandModeHandOff, "CE", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CE", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, true)
 	})
-	registerCommand(CommandModeHandOff, "CI", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CI", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, false)
 	})
-	registerCommand(CommandModeHandOff, "CTE", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CTE", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CTI", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CTI", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, false)
 	})
-	registerCommand(CommandModeHandOff, "CXE", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CXE", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CXI", func(sp *STARSPane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CXI", func(sp *Pane, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, false)
 	})
 
 	// 4.5.1 Display / remove maps
 	registerCommand(CommandModeMaps, "A", func(ps *Preferences) { clear(ps.VideoMapVisible) })
-	registerCommand(CommandModeMaps, "[NUM]", func(sp *STARSPane, ps *Preferences, idx int) error {
+	registerCommand(CommandModeMaps, "[NUM]", func(sp *Pane, ps *Preferences, idx int) error {
 		if idx <= 0 {
-			return ErrSTARSIllegalMap
+			return ErrIllegalMap
 		}
 		if !slices.ContainsFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Id == idx }) {
-			return ErrSTARSIllegalMap
+			return ErrIllegalMap
 		}
 
 		_, visible := ps.VideoMapVisible[idx]
@@ -134,22 +134,22 @@ func registerSetupCommands() {
 		}
 		return nil
 	})
-	registerCommand(CommandModeMaps, "[NUM]E", func(sp *STARSPane, ps *Preferences, idx int) error {
+	registerCommand(CommandModeMaps, "[NUM]E", func(sp *Pane, ps *Preferences, idx int) error {
 		if idx <= 0 {
-			return ErrSTARSIllegalMap
+			return ErrIllegalMap
 		}
 		if !slices.ContainsFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Id == idx }) {
-			return ErrSTARSIllegalMap
+			return ErrIllegalMap
 		}
 		ps.VideoMapVisible[idx] = nil
 		return nil
 	})
-	registerCommand(CommandModeMaps, "[NUM]I", func(sp *STARSPane, ps *Preferences, idx int) error {
+	registerCommand(CommandModeMaps, "[NUM]I", func(sp *Pane, ps *Preferences, idx int) error {
 		if idx <= 0 {
-			return ErrSTARSIllegalMap
+			return ErrIllegalMap
 		}
 		if !slices.ContainsFunc(sp.allVideoMaps, func(v scope.Map) bool { return v.Id == idx }) {
-			return ErrSTARSIllegalMap
+			return ErrIllegalMap
 		}
 		delete(ps.VideoMapVisible, idx)
 		return nil
@@ -169,7 +169,7 @@ func registerSetupCommands() {
 	// 4.6 Display / remove weather
 	registerCommand(CommandModeWX, "[#]", func(ps *Preferences, level int) error {
 		if level < 1 || level > 6 {
-			return ErrSTARSRangeLimit
+			return ErrRangeLimit
 		}
 		ps.LastDisplayWeatherLevel = ps.DisplayWeatherLevel
 		ps.DisplayWeatherLevel[level-1] = !ps.DisplayWeatherLevel[level-1]
@@ -177,7 +177,7 @@ func registerSetupCommands() {
 	})
 	registerCommand(CommandModeWX, "[#]E", func(ps *Preferences, level int) error {
 		if level < 1 || level > 6 {
-			return ErrSTARSRangeLimit
+			return ErrRangeLimit
 		}
 		ps.LastDisplayWeatherLevel = ps.DisplayWeatherLevel
 		ps.DisplayWeatherLevel[level-1] = true
@@ -185,7 +185,7 @@ func registerSetupCommands() {
 	})
 	registerCommand(CommandModeWX, "[#]I", func(ps *Preferences, level int) error {
 		if level < 1 || level > 6 {
-			return ErrSTARSRangeLimit
+			return ErrRangeLimit
 		}
 		ps.LastDisplayWeatherLevel = ps.DisplayWeatherLevel
 		ps.DisplayWeatherLevel[level-1] = false
@@ -237,7 +237,7 @@ func registerSetupCommands() {
 	// 4.9.7 Move Tower list (p. 4-55)
 	registerCommand(CommandModeMultiFunc, "P[#][POS_NORM]", func(ps *Preferences, idx int, pos [2]float32) error {
 		if idx < 1 || idx > 3 {
-			return ErrSTARSIllegalValue
+			return ErrIllegalValue
 		}
 		ps.TowerLists[idx-1].Position = pos
 		ps.TowerLists[idx-1].Visible = true
@@ -248,7 +248,7 @@ func registerSetupCommands() {
 	registerCommand(CommandModeMultiFunc, "P[FIELD][POS_NORM]", func(ps *Preferences, listID string, pos [2]float32) error {
 		list, ok := ps.CoordinationLists[listID]
 		if !ok {
-			return ErrSTARSIllegalFunction
+			return ErrIllegalFunction
 		}
 		list.Position = pos
 		return nil
@@ -277,7 +277,7 @@ func registerSetupCommands() {
 	// 4.9.12 Hide / show Tower list (p. 4-60)
 	registerCommand(CommandModeMultiFunc, "P[#]", func(ps *Preferences, idx int) error {
 		if idx < 1 || idx > 3 {
-			return ErrSTARSIllegalValue
+			return ErrIllegalValue
 		}
 		ps.TowerLists[idx-1].Visible = !ps.TowerLists[idx-1].Visible
 		return nil
@@ -296,7 +296,7 @@ func registerSetupCommands() {
 	// Note that 5.4.9 Delete a TCP's passive and pending flight plans has "T[TIME]", so limit to 1-2 digits in parse
 	registerCommand(CommandModeMultiFunc, "T[#]|T[##]", func(ps *Preferences, n int) error {
 		if n < 1 || n > 100 {
-			return ErrSTARSIllegalParam
+			return ErrIllegalParam
 		}
 		ps.TABList.Lines = n
 		ps.TABList.Visible = true
@@ -304,7 +304,7 @@ func registerSetupCommands() {
 	})
 	registerCommand(CommandModeMultiFunc, "TC[NUM]", func(ps *Preferences, n int) error {
 		if n < 1 || n > 100 {
-			return ErrSTARSIllegalParam
+			return ErrIllegalParam
 		}
 		ps.CoastList.Lines = n
 		ps.CoastList.Visible = true
@@ -312,7 +312,7 @@ func registerSetupCommands() {
 	})
 	registerCommand(CommandModeMultiFunc, "TV[NUM]", func(ps *Preferences, n int) error {
 		if n < 1 || n > 100 {
-			return ErrSTARSIllegalParam
+			return ErrIllegalParam
 		}
 		ps.VFRList.Lines = n
 		ps.VFRList.Visible = true
@@ -322,10 +322,10 @@ func registerSetupCommands() {
 	// 4.9.16 Change size of Tower list (p. 4-65)
 	registerCommand(CommandModeMultiFunc, "P[#] [NUM]", func(ps *Preferences, idx int, n int) error {
 		if idx < 1 || idx > 3 {
-			return ErrSTARSIllegalValue
+			return ErrIllegalValue
 		}
 		if n < 1 || n > 100 {
-			return ErrSTARSIllegalParam
+			return ErrIllegalParam
 		}
 		ps.TowerLists[idx-1].Lines = n
 		ps.TowerLists[idx-1].Visible = true
@@ -336,7 +336,7 @@ func registerSetupCommands() {
 	registerCommand(CommandModeMultiFunc, "P[FIELD] [NUM]", func(ps *Preferences, listID string, n int) error {
 		list, ok := ps.CoordinationLists[listID]
 		if !ok {
-			return ErrSTARSIllegalFunction
+			return ErrIllegalFunction
 		}
 		list.Lines = n
 		return nil
@@ -418,7 +418,7 @@ func registerSetupCommands() {
 	//(CommandModeMultiFunc, "ZDI", unimplementedCommand),
 
 	// 4.13.1 Test audio alarm (p. 4-96)
-	registerCommand(CommandModeMultiFunc, "ZA", func(sp *STARSPane, ctx *scope.Context) {
+	registerCommand(CommandModeMultiFunc, "ZA", func(sp *Pane, ctx *scope.Context) {
 		sp.testAudioEndTime = time.Now().Add(5 * time.Second)
 		ctx.Platform.StartPlayAudioContinuous(sp.audioEffects[AudioTest])
 	})
@@ -451,10 +451,10 @@ func registerSetupCommands() {
 	})
 
 	// 4.14.5 Specify data block position for tracks owned at this TCW/TDW (p. 4-105)
-	registerCommand(CommandModeMultiFunc, "L[#]", func(sp *STARSPane, ps *Preferences, direction int) error {
+	registerCommand(CommandModeMultiFunc, "L[#]", func(sp *Pane, ps *Preferences, direction int) error {
 		dir, ok := sp.numpadToDirection(direction)
 		if !ok || dir == nil {
-			return ErrSTARSIllegalParam
+			return ErrIllegalParam
 		}
 		ps.LeaderLineDirection = *dir
 		return nil
@@ -462,10 +462,10 @@ func registerSetupCommands() {
 	// CommandModeLDR version handled in DCB code.
 
 	// 4.14.6 Specify data block position for tracks owned by others (p. 4-106)
-	registerCommand(CommandModeMultiFunc, "L[#]*", func(sp *STARSPane, ps *Preferences, direction int) error {
+	registerCommand(CommandModeMultiFunc, "L[#]*", func(sp *Pane, ps *Preferences, direction int) error {
 		dir, ok := sp.numpadToDirection(direction)
 		if !ok {
-			return ErrSTARSIllegalParam
+			return ErrIllegalParam
 		}
 		ps.OtherControllerLeaderLineDirection = dir
 		clear(ps.ControllerLeaderLineDirections)
@@ -474,15 +474,15 @@ func registerSetupCommands() {
 
 	// 4.14.7 Specify data block position for a specified owner (p. 4-107)
 	registerCommand(CommandModeMultiFunc, "L[TCP2][#]|L[TCP1] [#]",
-		func(sp *STARSPane, ctx *scope.Context, ps *Preferences, tcp string, direction int) error {
+		func(sp *Pane, ctx *scope.Context, ps *Preferences, tcp string, direction int) error {
 			ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().Position)
 			if ctrl == nil {
-				return ErrSTARSIllegalPosition
+				return ErrIllegalPosition
 			}
 
 			dir, ok := sp.numpadToDirection(direction)
 			if !ok {
-				return ErrSTARSCommandFormat
+				return ErrCommandFormat
 			}
 
 			if ps.ControllerLeaderLineDirections == nil {
@@ -498,10 +498,10 @@ func registerSetupCommands() {
 		})
 
 	// 4.14.8 Specify data block position for all unassociated tracks (p. 4-109)
-	registerCommand(CommandModeMultiFunc, "L[#]U", func(sp *STARSPane, ps *Preferences, direction int) error {
+	registerCommand(CommandModeMultiFunc, "L[#]U", func(sp *Pane, ps *Preferences, direction int) error {
 		dir, ok := sp.numpadToDirection(direction)
 		if !ok || dir == nil /* 5 is invalid for this */ {
-			return ErrSTARSCommandFormat
+			return ErrCommandFormat
 		}
 		ps.UnassociatedLeaderLineDirection = dir
 		return nil
@@ -558,7 +558,7 @@ func registerSetupCommands() {
 	// registerCommand(CommandModeRestrictionArea, "[FIELD:1]I", unimplemented)
 
 	// 4.19 Enable / inhibit Flight data auto-modify (FDAM) region (p. 4-123)
-	configureFDAM := func(sp *STARSPane, ctx *scope.Context, op sim.FDAMConfigOp, regionId string) error {
+	configureFDAM := func(sp *Pane, ctx *scope.Context, op sim.FDAMConfigOp, regionId string) error {
 		ctx.Client.ConfigureFDAM(op, regionId,
 			func(output string, err error) {
 				if err != nil {
@@ -570,40 +570,40 @@ func registerSetupCommands() {
 		return nil
 	}
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION]",
-		func(sp *STARSPane, ctx *scope.Context, regionID string) error {
+		func(sp *Pane, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMToggleRegion, regionID)
 		})
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] I",
-		func(sp *STARSPane, ctx *scope.Context, regionID string) error {
+		func(sp *Pane, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMInhibitRegion, regionID)
 		})
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] E",
-		func(sp *STARSPane, ctx *scope.Context, regionID string) error {
+		func(sp *Pane, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMEnableRegion, regionID)
 		})
 
 	// 4.20 Display status of all Flight data auto-modify (FDAM) regions (p. 4-125)
 	registerCommand(CommandModeMultiFunc, "2XS",
-		func(sp *STARSPane, ctx *scope.Context) error {
+		func(sp *Pane, ctx *scope.Context) error {
 			return configureFDAM(sp, ctx, sim.FDAMQueryStatus, "")
 		})
 }
 
 // savePreferences saves current preferences with the given name.
-func savePreferences(sp *STARSPane, ctx *scope.Context, name string) error {
+func savePreferences(sp *Pane, ctx *scope.Context, name string) error {
 	if len(name) > 7 {
-		return ErrSTARSCommandFormat
+		return ErrCommandFormat
 	}
 
 	if slices.ContainsFunc(sp.prefSet.Saved[:],
 		func(p *Preferences) bool { return p != nil && p.Name == name }) {
 		// Can't repeat pref set names
-		return ErrSTARSIllegalPrefset
+		return ErrIllegalPrefset
 	}
 
 	if v, err := strconv.Atoi(name); err == nil && v >= 1 && v <= numSavedPreferenceSets {
 		// Can't give it a numeric name that conflicts with pref set #s
-		return ErrSTARSIllegalPrefset
+		return ErrIllegalPrefset
 	}
 
 	// Find the first empty slot

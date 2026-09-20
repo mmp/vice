@@ -19,7 +19,7 @@ type outboundPointOut struct {
 
 // pointOutIndicatorActive reports whether a P/A indicator should be drawn on
 // datablock line 0 for the track.
-func (ep *ERAMPane) pointOutIndicatorActive(trk *sim.Track) bool {
+func (ep *Pane) pointOutIndicatorActive(trk *sim.Track) bool {
 	if trk.FlightPlan == nil {
 		return false
 	}
@@ -31,7 +31,7 @@ func (ep *ERAMPane) pointOutIndicatorActive(trk *sim.Track) bool {
 // indicator, or zero rune if nothing should be drawn. Yellow "P" is shown if any inbound or any
 // unacked outbound entry exists; white "A" if outbound is non-empty and every entry is already
 // acked.
-func (ep *ERAMPane) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness scope.Brightness) (rune, renderer.RGB, bool) {
+func (ep *Pane) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness scope.Brightness) (rune, renderer.RGB, bool) {
 	if trk.FlightPlan == nil {
 		return 0, renderer.RGB{}, false
 	}
@@ -58,7 +58,7 @@ func (ep *ERAMPane) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness scope.B
 // pending and direct-dismiss if every outbound entry is already acked (the "A" case). dbMain is
 // the main datablock extent; the menu is anchored at its top-right corner so it sits immediately
 // to the right of the datablock.
-func (ep *ERAMPane) handlePointOutIndicatorClick(ctx *scope.Context, trk sim.Track, dbMain math.Extent2D) {
+func (ep *Pane) handlePointOutIndicatorClick(ctx *scope.Context, trk sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -96,7 +96,7 @@ type pointOutPopup struct {
 // and a click acknowledges every inbound p/o at once. The originator view
 // lists each receiver, yellow-boxed for not-yet-acked and white-plain for
 // already-acked; click on an acked row dismisses it locally.
-func (po *pointOutPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (po *pointOutPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	acid := po.acid
 
 	label := func(p sim.ControlPosition) string {
@@ -106,7 +106,7 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		return string(p)
 	}
 
-	var rows []ERAMMenuItem
+	var rows []MenuItem
 	if po.outbound {
 		entries := ep.OutboundPointOuts[acid]
 		if len(entries) == 0 {
@@ -115,23 +115,23 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		}
 		for i, entry := range entries {
 			if entry.Acked {
-				rows = append(rows, ERAMMenuItem{
+				rows = append(rows, MenuItem{
 					Label:       "A",
 					BoxedSuffix: label(entry.Receiver),
 					Color:       colors.pointOut.white, // TODO brightness???
-					OnClick: func(_ ERAMMenuClickType) bool {
+					OnClick: func(_ MenuClickType) bool {
 						ep.removeOutboundPointOut(acid, i)
 						return len(ep.OutboundPointOuts[acid]) == 0
 					},
 				})
 			} else {
-				rows = append(rows, ERAMMenuItem{
+				rows = append(rows, MenuItem{
 					Label:       "P",
 					BoxedSuffix: label(entry.Receiver),
 					Color:       colors.yellow, // todo: scale by some brightness?
 					// Originator can't ack their own p/o; the click is a no-op but still closes the
 					// menu.
-					OnClick: func(_ ERAMMenuClickType) bool { return false },
+					OnClick: func(_ MenuClickType) bool { return false },
 				})
 			}
 		}
@@ -143,11 +143,11 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		}
 
 		for _, sender := range senders {
-			rows = append(rows, ERAMMenuItem{
+			rows = append(rows, MenuItem{
 				Label:       "P",
 				BoxedSuffix: label(sender),
 				Color:       colors.pointOut.cyan,
-				OnClick: func(_ ERAMMenuClickType) bool {
+				OnClick: func(_ MenuClickType) bool {
 					if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok {
 						ep.acknowledgePointOut(ctx, trk)
 					}
@@ -166,7 +166,7 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 	// Left pad (4) + title + gap (xW) + X button (xW + 2*xPad) + right pad (2).
 	width := titleW + 2*xW + 12
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title:              string(acid),
 		TitleLeftJustified: true,
 		Width:              width,
@@ -180,7 +180,7 @@ func (po *pointOutPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 
 // removeOutboundPointOut deletes a single outbound entry by index, cleaning
 // up the map slot if empty.
-func (ep *ERAMPane) removeOutboundPointOut(acid sim.ACID, idx int) {
+func (ep *Pane) removeOutboundPointOut(acid sim.ACID, idx int) {
 	entries := ep.OutboundPointOuts[acid]
 	if idx < 0 || idx >= len(entries) {
 		return
@@ -193,7 +193,7 @@ func (ep *ERAMPane) removeOutboundPointOut(acid sim.ACID, idx int) {
 
 // removeOutboundPointOutByReceiver removes the first outbound entry whose
 // Receiver matches.
-func (ep *ERAMPane) removeOutboundPointOutByReceiver(acid sim.ACID, receiver sim.ControlPosition) {
+func (ep *Pane) removeOutboundPointOutByReceiver(acid sim.ACID, receiver sim.ControlPosition) {
 	if i := slices.IndexFunc(ep.OutboundPointOuts[acid], func(e outboundPointOut) bool {
 		return e.Receiver == receiver
 	}); i >= 0 {
@@ -202,7 +202,7 @@ func (ep *ERAMPane) removeOutboundPointOutByReceiver(acid sim.ACID, receiver sim
 }
 
 // removeInboundPointOut removes the first inbound entry from the given sender.
-func (ep *ERAMPane) removeInboundPointOut(acid sim.ACID, sender sim.ControlPosition) {
+func (ep *Pane) removeInboundPointOut(acid sim.ACID, sender sim.ControlPosition) {
 	senders := ep.InboundPointOuts[acid]
 	if i := slices.Index(senders, sender); i >= 0 {
 		ep.InboundPointOuts[acid] = slices.Delete(senders, i, i+1)
@@ -214,7 +214,7 @@ func (ep *ERAMPane) removeInboundPointOut(acid sim.ACID, sender sim.ControlPosit
 
 // markOutboundPointOutAcked finds the outbound entry for receiver and flips
 // its Acked flag.
-func (ep *ERAMPane) markOutboundPointOutAcked(acid sim.ACID, receiver sim.ControlPosition) {
+func (ep *Pane) markOutboundPointOutAcked(acid sim.ACID, receiver sim.ControlPosition) {
 	entries := ep.OutboundPointOuts[acid]
 	for i := range entries {
 		if entries[i].Receiver == receiver && !entries[i].Acked {

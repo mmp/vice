@@ -78,7 +78,7 @@ func MakeLocalServerManager(overrides scenario.OverrideFiles, ttsEnabled func() 
 
 func (cm *ConnectionManager) launchLocalServer(serverAddress string, overrides scenario.OverrideFiles,
 	lg *log.Logger) (util.ErrorLogger, string) {
-	rpcPort, errorLogger, overrideErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
+	rpcPort, errorLogger, overrideErrors := server.LaunchServerAsync(server.LaunchConfig{
 		Overrides:     overrides,
 		ServerAddress: serverAddress,
 		IsLocal:       true,

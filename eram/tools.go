@@ -13,7 +13,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.ScopeTransformations, font *renderer.Font,
+func (ep *Pane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -65,7 +65,7 @@ func (ep *ERAMPane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms sco
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.ScopeTransformations, font *renderer.Font,
+func (ep *Pane) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -95,7 +95,7 @@ func (ep *ERAMPane) drawScenarioApproachRoutes(ctx *scope.Context, transforms sc
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope.ScopeTransformations, font *renderer.Font,
+func (ep *Pane) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -121,7 +121,7 @@ func (ep *ERAMPane) drawScenarioDepartureRoutes(ctx *scope.Context, transforms s
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scope.ScopeTransformations, font *renderer.Font,
+func (ep *Pane) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -150,7 +150,7 @@ func (ep *ERAMPane) drawScenarioOverflightRoutes(ctx *scope.Context, transforms 
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.ScopeTransformations, font *renderer.Font,
+func (ep *Pane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -186,7 +186,7 @@ func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms sc
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *ERAMPane) drawScenarioRoutes(ctx *scope.Context, transforms scope.ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawScenarioRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if ep.scopeDraw.Empty() {
 		return
 	}
@@ -212,7 +212,7 @@ func (ep *ERAMPane) drawScenarioRoutes(ctx *scope.Context, transforms scope.Scop
 	ep.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawn, td, ld, pd, ldr)
 }
 
-func (ep *ERAMPane) drawPlotPoints(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawPlotPoints(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if len(ep.drawRoutePoints) == 0 {
 		return
 	}

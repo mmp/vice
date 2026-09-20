@@ -150,7 +150,7 @@ func mergeCAPairs(prev []CAPair, detected [][2]av.ADSBCallsign, now sim.Time) []
 
 // inConflictAlert reports whether the callsign is a member of any active
 // conflict alert pair.
-func (ep *ERAMPane) inConflictAlert(callsign av.ADSBCallsign) bool {
+func (ep *Pane) inConflictAlert(callsign av.ADSBCallsign) bool {
 	return slices.ContainsFunc(ep.CAPairs, func(p CAPair) bool {
 		return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
 	})
@@ -165,7 +165,7 @@ func (ep *ERAMPane) inConflictAlert(callsign av.ADSBCallsign) bool {
 // Note: the caller passes ep.visibleTracks; today that is effectively all
 // tracks, but if display filtering (e.g. radar holes) is ever added there,
 // conflict detection coverage would narrow with it.
-func (ep *ERAMPane) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
+func (ep *Pane) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 	now := ctx.Client.State.SimTime
 	if now.Time().Sub(ep.lastConflictUpdate) < caUpdateInterval {
 		return

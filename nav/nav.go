@@ -41,14 +41,14 @@ var (
 type Nav struct {
 	FlightState FlightState
 	Perf        av.AircraftPerformance
-	Altitude    NavAltitude
-	Speed       NavSpeed
-	Heading     NavHeading
-	Approach    NavApproach
-	Airwork     *NavAirwork
+	Altitude    Altitude
+	Speed       Speed
+	Heading     Heading
+	Approach    Approach
+	Airwork     *Airwork
 	Prespawn    bool
 
-	FixAssignments map[string]NavFixAssignment
+	FixAssignments map[string]FixAssignment
 
 	// DeferredNavHeading stores a heading/direct fix assignment from the
 	// controller that the pilot has not yet started to follow.  Note that
@@ -110,22 +110,22 @@ type DeferredNavHeading struct {
 	SnapshotAltitudeOnEffect bool
 }
 
-// NavSnapshot captures all controller-modifiable state in Nav for rollback purposes.
+// Snapshot captures all controller-modifiable state in Nav for rollback purposes.
 // It does NOT include FlightState (aircraft physical position/heading/altitude) -
 // only control assignments that can be rolled back.
-type NavSnapshot struct {
-	Altitude           NavAltitude
-	Speed              NavSpeed
-	Heading            NavHeading
-	Approach           NavApproach
+type Snapshot struct {
+	Altitude           Altitude
+	Speed              Speed
+	Heading            Heading
+	Approach           Approach
 	Waypoints          av.WaypointArray
 	DeferredNavHeading *DeferredNavHeading
-	FixAssignments     map[string]NavFixAssignment
+	FixAssignments     map[string]FixAssignment
 }
 
 // TakeSnapshot captures the current controller-modifiable nav state for later rollback.
-func (nav *Nav) TakeSnapshot() NavSnapshot {
-	return deep.MustCopy(NavSnapshot{
+func (nav *Nav) TakeSnapshot() Snapshot {
+	return deep.MustCopy(Snapshot{
 		Altitude:           nav.Altitude,
 		Speed:              nav.Speed,
 		Heading:            nav.Heading,
@@ -138,7 +138,7 @@ func (nav *Nav) TakeSnapshot() NavSnapshot {
 
 // RestoreSnapshot restores nav state from a previously captured snapshot.
 // The aircraft's physical state (FlightState) is NOT restored - only control assignments.
-func (nav *Nav) RestoreSnapshot(snap NavSnapshot) {
+func (nav *Nav) RestoreSnapshot(snap Snapshot) {
 	nav.Altitude = snap.Altitude
 	nav.Speed = snap.Speed
 	nav.Heading = snap.Heading
@@ -192,7 +192,7 @@ const (
 	RateExpedite               // maximum rate
 )
 
-type NavAltitude struct {
+type Altitude struct {
 	Assigned        *float32 // controller-assigned altitude (not yet in autopilot)
 	ActiveAssigned  *float32 // assigned altitude currently used for vertical guidance
 	ActivateAt      Time     // non-zero while Assigned is pending activation
@@ -209,7 +209,7 @@ type NavAltitude struct {
 	Restriction *av.AltitudeRestriction
 }
 
-type NavSpeed struct {
+type Speed struct {
 	Assigned                 *av.SpeedRestriction // controller-assigned (exact or range)
 	AfterAltitude            *av.SpeedRestriction // speed to apply after reaching assigned altitude
 	AfterAltitudeAltitude    *float32
@@ -221,7 +221,7 @@ type NavSpeed struct {
 
 const MaxIAS = 290
 
-type NavHeading struct {
+type Heading struct {
 	Assigned   *math.MagneticHeading
 	Turn       *av.TurnDirection
 	Arc        *av.DMEArc
@@ -230,7 +230,7 @@ type NavHeading struct {
 	Hold       *FlyHold
 }
 
-type NavApproach struct {
+type Approach struct {
 	Assigned                    *av.Approach
 	AssignedId                  string
 	ATPAVolume                  *av.ATPAVolume
@@ -258,13 +258,13 @@ type NavApproach struct {
 // EffectivelyCleared reports whether the aircraft has been cleared for the
 // approach, either immediately or via an "at fix" clearance that hasn't yet
 // triggered at the fix.
-func (na *NavApproach) EffectivelyCleared() bool {
+func (na *Approach) EffectivelyCleared() bool {
 	return na.Cleared || na.AtFixClearedRoute != nil
 }
 
 // HasLocalizer reports whether the aircraft is currently flying localizer-style
 // course geometry.
-func (na *NavApproach) HasLocalizer() bool {
+func (na *Approach) HasLocalizer() bool {
 	if na.Assigned != nil &&
 		(na.Assigned.Type == av.ILSApproach || na.Assigned.Type == av.LocalizerApproach) {
 		return true
@@ -293,7 +293,7 @@ func (nav *Nav) hasDeferredRoute() bool {
 	return nav.DeferredNavHeading != nil && len(nav.DeferredNavHeading.Waypoints) > 0
 }
 
-type NavFixAssignment struct {
+type FixAssignment struct {
 	Arrive struct {
 		Altitude *av.AltitudeRestriction
 		Speed    *av.SpeedRestriction
@@ -309,7 +309,7 @@ type NavFixAssignment struct {
 	Hold *av.Hold
 }
 
-type NavAirwork struct {
+type Airwork struct {
 	Radius   float32
 	Center   math.Point2LL
 	AltRange [2]float32
@@ -423,7 +423,7 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
-		FixAssignments: make(map[string]NavFixAssignment),
+		FixAssignments: make(map[string]FixAssignment),
 		Rand:           rand.Make(),
 	}
 

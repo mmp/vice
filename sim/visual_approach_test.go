@@ -74,7 +74,7 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 				ArrivalAirportLocation:  airportLoc,
 				ArrivalAirportElevation: 13,
 			},
-			Approach: nav.NavApproach{
+			Approach: nav.Approach{
 				AssignedId: "I" + runway,
 				Assigned: &av.Approach{
 					Type:   av.ILSApproach,
@@ -249,7 +249,7 @@ func makeVisualTestAircraftAlt(pos math.Point2LL, heading math.MagneticHeading, 
 				NmPerLongitude:    52, // ~40°N
 				MagneticVariation: 0,
 			},
-			Approach: nav.NavApproach{
+			Approach: nav.Approach{
 				AssignedId: "I13L",
 				Assigned: &av.Approach{
 					Type:   av.ILSApproach,
@@ -666,7 +666,7 @@ func TestVisualApproachWaypoints(t *testing.T) {
 					MagneticVariation: 0,
 					ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 				},
-				Approach: nav.NavApproach{
+				Approach: nav.Approach{
 					AssignedId: "_VIS36",
 					Assigned: &av.Approach{
 						Type:     av.VisualApproach,
@@ -928,7 +928,7 @@ func TestVisualApproachPreservesAssignedDescent(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Altitude: nav.NavAltitude{Assigned: &assigned},
+		Altitude: nav.Altitude{Assigned: &assigned},
 	}
 
 	n.Approach.AssignedId = "_VIS36"
@@ -1052,7 +1052,7 @@ func TestVisualApproachDropsNonDescentAssignment(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Altitude: nav.NavAltitude{Assigned: &maintain, ActiveAssigned: &maintain},
+		Altitude: nav.Altitude{Assigned: &maintain, ActiveAssigned: &maintain},
 	}
 
 	n.Approach.AssignedId = "_VIS36"
@@ -1107,7 +1107,7 @@ func TestVisualApproachPreservesPendingDescent(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Altitude: nav.NavAltitude{
+		Altitude: nav.Altitude{
 			Assigned:       &pendingDescent,
 			ActiveAssigned: &currentLevel,
 			ActivateAt:     nav.NewTime(time.Now().Add(5 * time.Second)),
@@ -1167,7 +1167,7 @@ func TestVisualApproachDropsAssignedDescentBelowProfile(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Altitude: nav.NavAltitude{Assigned: &belowProfile, ActiveAssigned: &belowProfile},
+		Altitude: nav.Altitude{Assigned: &belowProfile, ActiveAssigned: &belowProfile},
 	}
 
 	n.Approach.AssignedId = "_VIS36"
@@ -1288,7 +1288,7 @@ func TestVisualApproachFollowingTrafficTurnsBase(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Approach: nav.NavApproach{
+		Approach: nav.Approach{
 			AssignedId: "V36",
 			Assigned:   &av.Approach{Type: av.ChartedVisualApproach, Runway: "36"},
 		},
@@ -2312,7 +2312,7 @@ func TestScenarioCVAWithoutEVASynthesizesAssignment(t *testing.T) {
 
 	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
 	vs.AC.FieldInSight = true
-	vs.AC.Nav.Approach = nav.NavApproach{}
+	vs.AC.Nav.Approach = nav.Approach{}
 
 	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0)
 	if strings.Contains(strings.ToLower(res.ReadbackSpokenText), "unable") {
@@ -2334,7 +2334,7 @@ func TestScenarioCVAWithoutEVANoFieldInSight(t *testing.T) {
 	setupTestRunway(t, "KJFK", av.Runway{Id: "22L", Heading: 220, Threshold: airportLoc, Elevation: 13})
 
 	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
-	vs.AC.Nav.Approach = nav.NavApproach{}
+	vs.AC.Nav.Approach = nav.Approach{}
 
 	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0)
 	if !strings.Contains(strings.ToLower(res.ReadbackSpokenText), "field in sight") {

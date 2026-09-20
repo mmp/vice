@@ -33,7 +33,7 @@ func TestHoldTurningInboundDoesNotFlyAwayAfterOvershoot(t *testing.T) {
 	fixLocation := math.Point2LL{-75.109550, 40.880634}
 	initialDistance := math.NMDistance2LL(f.nav.FlightState.Position, fixLocation)
 
-	f.nav.Heading = NavHeading{Hold: &FlyHold{
+	f.nav.Heading = Heading{Hold: &FlyHold{
 		Hold: av.Hold{
 			Fix:             "PENNS",
 			InboundCourse:   122,
@@ -114,7 +114,7 @@ func TestHoldInboundTurnDistanceMatchesOutboundTurn(t *testing.T) {
 	}
 	wxs := f.weather(f.nav.FlightState.Altitude)
 	hold.Maneuvers = hold.circuitManeuvers(f.nav, wxs)
-	f.nav.Heading = NavHeading{Hold: hold}
+	f.nav.Heading = Heading{Hold: hold}
 
 	var outboundTurnStart math.Point2LL
 	var inboundTurnStart math.Point2LL
@@ -301,7 +301,7 @@ func TestHoldInboundTurnCompletesAfterHalfCircuitWithStrongWind(t *testing.T) {
 	}
 	wxs := f.weather(f.nav.FlightState.Altitude)
 	hold.Maneuvers = hold.circuitManeuvers(f.nav, wxs)
-	f.nav.Heading = NavHeading{Hold: hold}
+	f.nav.Heading = Heading{Hold: hold}
 
 	outboundTurnStep, outboundLegStep, inboundTurnStep := holdCircuitStepStrings(t, hold)
 	previousStep := hold.currentStep()

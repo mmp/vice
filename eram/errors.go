@@ -14,93 +14,93 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-type ERAMError struct {
+type Error struct {
 	error
 }
 
-func NewERAMError(msg string, args ...any) *ERAMError {
-	return &ERAMError{errors.New(fmt.Sprintf(msg, args...))}
+func NewError(msg string, args ...any) *Error {
+	return &Error{errors.New(fmt.Sprintf(msg, args...))}
 }
 
 var ( // TODO: Get actual error messages for this
-	ErrCommandFormat       = NewERAMError("FORMAT")
-	ErrERAMAmbiguousACID   = NewERAMError("AMB ACID")
-	ErrERAMIllegalACID     = NewERAMError("ILL CID")
-	ErrERAMIllegalPosition = NewERAMError("ILLEGAL POSITION")
-	ErrERAMIllegalValue    = NewERAMError("ILLEGAL VALUE")
-	ErrERAMIllegalAirport  = NewERAMError("ILLEGAL AIRPORT")
-	ErrIllegalUserAction   = NewERAMError("ILLEGAL USER ACTION")
-	ErrERAMMapUnavailable  = NewERAMError("MAP UNAVAILABLE")
-	ErrERAMMessageTooLong  = NewERAMError("MESSAGE TOO LONG")
-	ErrERAMSectorNotActive = NewERAMError("SECTOR NOT ACTIVE")
+	ErrCommandFormat     = NewError("FORMAT")
+	ErrAmbiguousACID     = NewError("AMB ACID")
+	ErrIllegalACID       = NewError("ILL CID")
+	ErrIllegalPosition   = NewError("ILLEGAL POSITION")
+	ErrIllegalValue      = NewError("ILLEGAL VALUE")
+	ErrIllegalAirport    = NewError("ILLEGAL AIRPORT")
+	ErrIllegalUserAction = NewError("ILLEGAL USER ACTION")
+	ErrMapUnavailable    = NewError("MAP UNAVAILABLE")
+	ErrMessageTooLong    = NewError("MESSAGE TOO LONG")
+	ErrSectorNotActive   = NewError("SECTOR NOT ACTIVE")
 )
 
-var eramErrorRemap = map[error]*ERAMError{
-	av.ErrBadPoolSpecifier:           ErrERAMIllegalValue,
-	av.ErrInvalidAltitude:            ErrERAMIllegalValue,
-	av.ErrInvalidController:          ErrERAMIllegalPosition,
-	av.ErrInvalidFacility:            ErrERAMIllegalACID,
-	av.ErrInvalidHeading:             ErrERAMIllegalValue,
-	av.ErrNoAircraftForCallsign:      ErrERAMIllegalACID,
-	av.ErrNoController:               ErrERAMSectorNotActive,
-	av.ErrNoFlightPlan:               ErrERAMIllegalACID,
-	av.ErrNoMatchingFix:              ErrERAMIllegalValue,
-	av.ErrNoMoreAvailableSquawkCodes: ErrERAMIllegalValue,
+var eramErrorRemap = map[error]*Error{
+	av.ErrBadPoolSpecifier:           ErrIllegalValue,
+	av.ErrInvalidAltitude:            ErrIllegalValue,
+	av.ErrInvalidController:          ErrIllegalPosition,
+	av.ErrInvalidFacility:            ErrIllegalACID,
+	av.ErrInvalidHeading:             ErrIllegalValue,
+	av.ErrNoAircraftForCallsign:      ErrIllegalACID,
+	av.ErrNoController:               ErrSectorNotActive,
+	av.ErrNoFlightPlan:               ErrIllegalACID,
+	av.ErrNoMatchingFix:              ErrIllegalValue,
+	av.ErrNoMoreAvailableSquawkCodes: ErrIllegalValue,
 	av.ErrNoValidDepartureFound:      ErrIllegalUserAction,
 	av.ErrNotBeingHandedOffToMe:      ErrIllegalUserAction,
 	av.ErrNotPointedOutByMe:          ErrIllegalUserAction,
-	av.ErrNotPointedOutToMe:          ErrERAMIllegalACID,
+	av.ErrNotPointedOutToMe:          ErrIllegalACID,
 	av.ErrOtherControllerHasTrack:    ErrIllegalUserAction,
-	av.ErrUnknownAirport:             ErrERAMIllegalAirport,
-	av.ErrUnknownRunway:              ErrERAMIllegalValue,
+	av.ErrUnknownAirport:             ErrIllegalAirport,
+	av.ErrUnknownRunway:              ErrIllegalValue,
 
-	nav.ErrClearedForUnexpectedApproach: ErrERAMIllegalValue,
-	nav.ErrFixIsTooFarAway:              ErrERAMIllegalValue,
-	nav.ErrFixNotInRoute:                ErrERAMIllegalValue,
-	nav.ErrInvalidApproach:              ErrERAMIllegalValue,
-	nav.ErrInvalidFix:                   ErrERAMIllegalValue,
-	nav.ErrNotClearedForApproach:        ErrERAMIllegalValue,
-	nav.ErrNotFlyingRoute:               ErrERAMIllegalValue,
-	nav.ErrUnableCommand:                ErrERAMIllegalValue,
-	nav.ErrUnknownApproach:              ErrERAMIllegalValue,
+	nav.ErrClearedForUnexpectedApproach: ErrIllegalValue,
+	nav.ErrFixIsTooFarAway:              ErrIllegalValue,
+	nav.ErrFixNotInRoute:                ErrIllegalValue,
+	nav.ErrInvalidApproach:              ErrIllegalValue,
+	nav.ErrInvalidFix:                   ErrIllegalValue,
+	nav.ErrNotClearedForApproach:        ErrIllegalValue,
+	nav.ErrNotFlyingRoute:               ErrIllegalValue,
+	nav.ErrUnableCommand:                ErrIllegalValue,
+	nav.ErrUnknownApproach:              ErrIllegalValue,
 
 	sim.ErrATPADisabled:                    ErrIllegalUserAction,
 	sim.ErrAircraftAlreadyReleased:         ErrIllegalUserAction,
-	sim.ErrBeaconMismatch:                  ErrERAMIllegalValue,
-	sim.ErrDuplicateACID:                   ErrERAMIllegalACID,
-	sim.ErrDuplicateBeacon:                 ErrERAMIllegalValue,
-	sim.ErrIllegalACID:                     ErrERAMIllegalACID,
-	sim.ErrIllegalACType:                   ErrERAMIllegalValue,
-	sim.ErrIllegalATIS:                     ErrERAMIllegalValue,
-	sim.ErrIllegalBeaconCode:               ErrERAMIllegalValue,
+	sim.ErrBeaconMismatch:                  ErrIllegalValue,
+	sim.ErrDuplicateACID:                   ErrIllegalACID,
+	sim.ErrDuplicateBeacon:                 ErrIllegalValue,
+	sim.ErrIllegalACID:                     ErrIllegalACID,
+	sim.ErrIllegalACType:                   ErrIllegalValue,
+	sim.ErrIllegalATIS:                     ErrIllegalValue,
+	sim.ErrIllegalBeaconCode:               ErrIllegalValue,
 	sim.ErrIllegalFunction:                 ErrIllegalUserAction,
-	sim.ErrIllegalLine:                     ErrERAMIllegalValue,
-	sim.ErrIllegalPosition:                 ErrERAMIllegalPosition,
-	sim.ErrIllegalScratchpad:               ErrERAMIllegalValue,
+	sim.ErrIllegalLine:                     ErrIllegalValue,
+	sim.ErrIllegalPosition:                 ErrIllegalPosition,
+	sim.ErrIllegalScratchpad:               ErrIllegalValue,
 	sim.ErrInvalidAbbreviatedFP:            ErrCommandFormat,
 	sim.ErrInvalidCommandSyntax:            ErrCommandFormat,
 	sim.ErrInvalidDepartureController:      ErrIllegalUserAction,
-	sim.ErrInvalidRestrictionAreaIndex:     ErrERAMIllegalValue,
+	sim.ErrInvalidRestrictionAreaIndex:     ErrIllegalValue,
 	sim.ErrInvalidVolumeId:                 ErrIllegalUserAction,
-	sim.ErrNoACType:                        ErrERAMIllegalValue,
-	sim.ErrNoMatchingFlight:                ErrERAMIllegalACID,
-	sim.ErrNoMatchingFlightPlan:            ErrERAMIllegalACID,
+	sim.ErrNoACType:                        ErrIllegalValue,
+	sim.ErrNoMatchingFlight:                ErrIllegalACID,
+	sim.ErrNoMatchingFlightPlan:            ErrIllegalACID,
 	sim.ErrNoRecentCommand:                 ErrIllegalUserAction,
-	sim.ErrNoScratchpad:                    ErrERAMIllegalValue,
-	sim.ErrNoVFRAircraftForFlightFollowing: ErrERAMIllegalACID,
+	sim.ErrNoScratchpad:                    ErrIllegalValue,
+	sim.ErrNoVFRAircraftForFlightFollowing: ErrIllegalACID,
 	sim.ErrTCPAlreadyConsolidated:          ErrIllegalUserAction,
 	sim.ErrTCPNotConsolidated:              ErrIllegalUserAction,
-	sim.ErrTCWIsConsolidated:               ErrERAMIllegalPosition,
-	sim.ErrTCWNotFound:                     ErrERAMIllegalPosition,
-	sim.ErrTCWNotVacant:                    ErrERAMIllegalPosition,
+	sim.ErrTCWIsConsolidated:               ErrIllegalPosition,
+	sim.ErrTCWNotFound:                     ErrIllegalPosition,
+	sim.ErrTCWNotVacant:                    ErrIllegalPosition,
 	sim.ErrTooManyRestrictionAreas:         ErrIllegalUserAction,
 	sim.ErrTrackIsActive:                   ErrIllegalUserAction,
 	sim.ErrIllegalTrackLocalFP:             ErrIllegalUserAction,
 	sim.ErrTrackIsBeingHandedOff:           ErrIllegalUserAction,
-	sim.ErrTrackIsNotActive:                ErrERAMIllegalACID,
-	sim.ErrUnknownAircraftType:             ErrERAMIllegalValue,
-	sim.ErrUnknownController:               ErrERAMIllegalPosition,
-	sim.ErrUnknownControllerFacility:       ErrERAMIllegalPosition,
+	sim.ErrTrackIsNotActive:                ErrIllegalACID,
+	sim.ErrUnknownAircraftType:             ErrIllegalValue,
+	sim.ErrUnknownController:               ErrIllegalPosition,
+	sim.ErrUnknownControllerFacility:       ErrIllegalPosition,
 	sim.ErrFDAMIllegalArea:                 ErrIllegalUserAction,
 	sim.ErrFDAMNoRegions:                   ErrIllegalUserAction,
 	sim.ErrFDAMProcessingOff:               ErrIllegalUserAction,
@@ -108,8 +108,8 @@ var eramErrorRemap = map[error]*ERAMError{
 	sim.ErrVolumeNot25nm:                   ErrIllegalUserAction,
 }
 
-func GetERAMError(e error, lg *log.Logger) *ERAMError {
-	if se, ok := e.(*ERAMError); ok {
+func GetError(e error, lg *log.Logger) *Error {
+	if se, ok := e.(*Error); ok {
 		return se
 	}
 
@@ -125,16 +125,16 @@ func GetERAMError(e error, lg *log.Logger) *ERAMError {
 	return ErrCommandFormat
 }
 
-func (ep *ERAMPane) displayError(err error, ctx *scope.Context) {
+func (ep *Pane) displayError(err error, ctx *scope.Context) {
 	if err != nil {
-		ep.feedbackArea.Error(GetERAMError(err, ctx.Lg))
+		ep.feedbackArea.Error(GetError(err, ctx.Lg))
 	}
 }
 
 // applyCommandStatus routes a CommandStatus to the feedback/response areas:
 // an error overrides everything; otherwise non-empty feedback and response
 // lines are joined with newlines and shown.
-func (ep *ERAMPane) applyCommandStatus(ctx *scope.Context, status CommandStatus, err error) {
+func (ep *Pane) applyCommandStatus(ctx *scope.Context, status CommandStatus, err error) {
 	if err != nil {
 		ep.displayError(err, ctx)
 		return

@@ -90,7 +90,7 @@ func TestTurnPathMatchesFlightModel(t *testing.T) {
 
 					// Start the turn the same way the predicates model it:
 					// effective immediately, no pilot delay.
-					f.nav.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
+					f.nav.Heading = Heading{Assigned: &hdg, Turn: &turn}
 					f.nav.DeferredNavHeading = nil
 
 					nmPerLong := f.nav.FlightState.NmPerLongitude

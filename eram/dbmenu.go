@@ -27,7 +27,7 @@ type dbMenuBase struct {
 
 // resolveTrack looks the menu's flight up fresh each frame; if it is gone
 // (or has no flight plan) the menu closes and nil is returned.
-func (m *dbMenuBase) resolveTrack(ep *ERAMPane, ctx *scope.Context) *sim.Track {
+func (m *dbMenuBase) resolveTrack(ep *Pane, ctx *scope.Context) *sim.Track {
 	trk, ok := ctx.GetTrackByACID(m.acid)
 	if !ok || trk.FlightPlan == nil {
 		ep.popup = nil
@@ -38,7 +38,7 @@ func (m *dbMenuBase) resolveTrack(ep *ERAMPane, ctx *scope.Context) *sim.Track {
 
 // openDatablockMenu clamps a new menu's placement (flipping to the left of
 // the datablock if it would run off the pane edge) and returns its origin.
-func (ep *ERAMPane) openDatablockMenu(ctx *scope.Context, dbMain math.Extent2D, width, height float32) [2]float32 {
+func (ep *Pane) openDatablockMenu(ctx *scope.Context, dbMain math.Extent2D, width, height float32) [2]float32 {
 	pl := ep.OpenPopupAt(ctx, [2]float32{dbMain.P1[0], dbMain.P1[1]}, width, height, ep.ERAMFont(2), dbMain)
 	return pl.Origin
 }
@@ -80,7 +80,7 @@ var altitudeMenuAlts = func() []int {
 	return alts
 }()
 
-func (ep *ERAMPane) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Pane) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -104,7 +104,7 @@ func (ep *ERAMPane) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain 
 	}
 }
 
-func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *altitudeMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -134,14 +134,14 @@ func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sc
 	grey := colors.popup.backgroundGrey
 	textC := colors.popup.text
 
-	clearInterim := func(_ ERAMMenuClickType) bool {
+	clearInterim := func(_ MenuClickType) bool {
 		status, err := handleClearInterimAltitude(ep, ctx, trk)
 		ep.applyCommandStatus(ctx, status, err)
 		ep.popup = nil
 		return true
 	}
 
-	var rows []ERAMMenuItem
+	var rows []MenuItem
 	if fp.InterimAlt > 0 {
 		// Flight Plan Assigned pick area: clears the interim / local
 		// interim / procedure altitude, reverting to the FP altitude.
@@ -149,22 +149,22 @@ func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sc
 		if fpAlt == 0 {
 			fpAlt = fp.PerceivedAssigned
 		}
-		rows = append(rows, ERAMMenuItem{
+		rows = append(rows, MenuItem{
 			Label: fmt.Sprintf("FP %03d", fpAlt/100), BgColor: grey, Color: textC, Centered: true,
 			OnClick: clearInterim,
 		})
 		// Interim Altitude pick area.
-		rows = append(rows, ERAMMenuItem{
+		rows = append(rows, MenuItem{
 			Label: fmt.Sprintf("%03d %s", fp.InterimAlt/100, interimLetter), BgColor: grey, Color: textC, Centered: true,
 			OnClick: clearInterim,
 		})
 	}
 
-	toggleRow := func(label string, v, other *bool) ERAMMenuItem {
-		return ERAMMenuItem{
+	toggleRow := func(label string, v, other *bool) MenuItem {
+		return MenuItem{
 			Label: label, Centered: true, Color: textC,
 			BgColor: util.Select(*v, colors.menu.selectedItem, grey),
-			OnClick: func(_ ERAMMenuClickType) bool {
+			OnClick: func(_ MenuClickType) bool {
 				*v = !*v
 				if *v {
 					*other = false
@@ -179,10 +179,10 @@ func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sc
 	// Assigned Altitude pick areas, with the interim (T) pick areas to the
 	// right when neither LOCAL TALT nor PROCEDURE is active.
 	showInterim := !p.local && !p.procedure
-	gridRows := make([][]ERAMMenuGridCell, 0, len(altitudeMenuAlts))
+	gridRows := make([][]MenuGridCell, 0, len(altitudeMenuAlts))
 	for _, alt := range altitudeMenuAlts {
 		isCurrent := alt == current
-		assignAlt := func(_ ERAMMenuClickType) bool {
+		assignAlt := func(_ MenuClickType) bool {
 			var status CommandStatus
 			var err error
 			if p.local {
@@ -196,24 +196,24 @@ func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sc
 			return true
 		}
 
-		altCell := ERAMMenuGridCell{
+		altCell := MenuGridCell{
 			Label: fmt.Sprintf("%03d", alt), Color: textC, Weight: 3, OnClick: assignAlt,
 		}
 		if isCurrent {
 			altCell.BgColor = colors.menu.currentValue
 		}
 
-		row := []ERAMMenuGridCell{altCell}
+		row := []MenuGridCell{altCell}
 		if showInterim {
 			letter := "T"
 			if isCurrent && fp.InterimAlt > 0 {
 				letter = interimLetter
 			}
-			letterCell := ERAMMenuGridCell{
+			letterCell := MenuGridCell{
 				// Assigning an interim altitude acts on the altitude to the
 				// left, so hovering the T outlines both as one pick.
 				Label: letter, Color: textC, Weight: 2, HoverSpansRow: true,
-				OnClick: func(_ ERAMMenuClickType) bool {
+				OnClick: func(_ MenuClickType) bool {
 					status, err := handleInterimAltitude(ep, ctx, InterimAltitude{Altitude: alt * 100}, trk)
 					ep.applyCommandStatus(ctx, status, err)
 					return true
@@ -224,14 +224,14 @@ func (p *altitudeMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sc
 			}
 			row = append(row, letterCell)
 		} else {
-			row = append(row, ERAMMenuGridCell{Weight: 2})
+			row = append(row, MenuGridCell{Weight: 2})
 		}
 		gridRows = append(gridRows, row)
 	}
-	rows = append(rows, ERAMMenuItem{Grid: &ERAMMenuGrid{Rows: gridRows, VisibleRows: 7, Offset: &p.offset}})
+	rows = append(rows, MenuItem{Grid: &MenuGrid{Rows: gridRows, VisibleRows: 7, Offset: &p.offset}})
 
 	title := string(p.acid)
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, ERAMMenuConfig{
+	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
 		Title: title, TitleLeftJustified: true,
 		Width: dbMenuWidth(font, titleFont, title, "LOCAL TALT", "PROCEDURE", "FP 000", "000 T"),
 		Font:  font, TitleFont: titleFont, ItemHeight: dbMenuItemH,
@@ -251,7 +251,7 @@ type headingMenuPopup struct {
 	initialized bool
 }
 
-func (ep *ERAMPane) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Pane) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -300,7 +300,7 @@ func headingMenuRows(lt, rt bool) [][2]string {
 	return rows
 }
 
-func (p *headingMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *headingMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -329,8 +329,8 @@ func (p *headingMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sco
 		}
 	}
 
-	toggleTurn := func(v, other *bool) func(ERAMMenuClickType) bool {
-		return func(_ ERAMMenuClickType) bool {
+	toggleTurn := func(v, other *bool) func(MenuClickType) bool {
+		return func(_ MenuClickType) bool {
 			*v = !*v
 			if *v {
 				*other = false
@@ -340,25 +340,25 @@ func (p *headingMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sco
 		}
 	}
 
-	assignHeading := func(hdg string) func(ERAMMenuClickType) bool {
-		return func(_ ERAMMenuClickType) bool {
+	assignHeading := func(hdg string) func(MenuClickType) bool {
+		return func(_ MenuClickType) bool {
 			status, err := handleQSHeading(ep, ctx, hdg, trk)
 			ep.applyCommandStatus(ctx, status, err)
 			return true
 		}
 	}
 
-	rows := []ERAMMenuItem{{Cells: []ERAMMenuCell{
+	rows := []MenuItem{{Cells: []MenuCell{
 		{Label: "LT", Color: textC, BgColor: util.Select(p.lt, colors.menu.selectedItem, grey), OnClick: toggleTurn(&p.lt, &p.rt)},
 		{Label: "PH", Color: textC, BgColor: grey, OnClick: assignHeading("PH")},
 		{Label: "RT", Color: textC, BgColor: util.Select(p.rt, colors.menu.selectedItem, grey), OnClick: toggleTurn(&p.rt, &p.lt)},
 	}}}
 
-	gridRows := make([][]ERAMMenuGridCell, 0, len(valueRows))
+	gridRows := make([][]MenuGridCell, 0, len(valueRows))
 	for _, vr := range valueRows {
-		row := make([]ERAMMenuGridCell, 0, 2)
+		row := make([]MenuGridCell, 0, 2)
 		for _, v := range vr {
-			cell := ERAMMenuGridCell{Label: v, Color: textC}
+			cell := MenuGridCell{Label: v, Color: textC}
 			if v != "" {
 				if v == fp.Scratchpad {
 					cell.BgColor = colors.menu.currentValue
@@ -369,11 +369,11 @@ func (p *headingMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sco
 		}
 		gridRows = append(gridRows, row)
 	}
-	rows = append(rows, ERAMMenuItem{Grid: &ERAMMenuGrid{Rows: gridRows, VisibleRows: 7, Offset: &p.offset}})
+	rows = append(rows, MenuItem{Grid: &MenuGrid{Rows: gridRows, VisibleRows: 7, Offset: &p.offset}})
 
-	rows = append(rows, ERAMMenuItem{
+	rows = append(rows, MenuItem{
 		Label: "DELETE", Centered: true, BgColor: grey, Color: textC,
-		OnClick: func(_ ERAMMenuClickType) bool {
+		OnClick: func(_ MenuClickType) bool {
 			status, err := handleQSDeleteHeading(ep, ctx, trk)
 			ep.applyCommandStatus(ctx, status, err)
 			ep.popup = nil
@@ -382,7 +382,7 @@ func (p *headingMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sco
 	})
 
 	title := string(p.acid)
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, ERAMMenuConfig{
+	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
 		Title: title, TitleLeftJustified: true,
 		Width: dbMenuWidth(font, titleFont, title, "000 000", "LT PH RT"),
 		Font:  font, TitleFont: titleFont, ItemHeight: dbMenuItemH,
@@ -403,7 +403,7 @@ type speedMenuPopup struct {
 	initialized bool
 }
 
-func (ep *ERAMPane) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Pane) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -427,7 +427,7 @@ func (ep *ERAMPane) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain mat
 	ep.popup = p
 }
 
-func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *speedMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -484,8 +484,8 @@ func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		mod = "-"
 	}
 
-	toggleMod := func(v, other *bool) func(ERAMMenuClickType) bool {
-		return func(_ ERAMMenuClickType) bool {
+	toggleMod := func(v, other *bool) func(MenuClickType) bool {
+		return func(_ MenuClickType) bool {
 			*v = !*v
 			if *v {
 				*other = false
@@ -494,9 +494,9 @@ func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		}
 	}
 
-	rows := []ERAMMenuItem{{Cells: []ERAMMenuCell{
+	rows := []MenuItem{{Cells: []MenuCell{
 		{Label: util.Select(p.mach, "M", "KT"), Color: textC, BgColor: grey, Weight: 2,
-			OnClick: func(_ ERAMMenuClickType) bool {
+			OnClick: func(_ MenuClickType) bool {
 				p.mach = !p.mach
 				p.initialized = false // reposition the list for the new mode
 				return false
@@ -505,7 +505,7 @@ func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		{Label: "-", Color: textC, BgColor: util.Select(p.minus, colors.menu.selectedItem, grey), OnClick: toggleMod(&p.minus, &p.plus)},
 	}}}
 
-	gridRows := make([][]ERAMMenuGridCell, 0, len(values))
+	gridRows := make([][]MenuGridCell, 0, len(values))
 	for _, v := range values {
 		isCurrent := v.store == currentValue
 		label, store := v.label, v.store
@@ -513,9 +513,9 @@ func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 			label += mod
 			store += mod
 		}
-		cell := ERAMMenuGridCell{
+		cell := MenuGridCell{
 			Label: label, Color: textC,
-			OnClick: func(_ ERAMMenuClickType) bool {
+			OnClick: func(_ MenuClickType) bool {
 				status, err := handleQSSpeed(ep, ctx, store, trk)
 				ep.applyCommandStatus(ctx, status, err)
 				return true
@@ -524,14 +524,14 @@ func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		if isCurrent {
 			cell.BgColor = colors.menu.currentValue
 		}
-		gridRows = append(gridRows, []ERAMMenuGridCell{cell})
+		gridRows = append(gridRows, []MenuGridCell{cell})
 	}
-	rows = append(rows, ERAMMenuItem{Grid: &ERAMMenuGrid{Rows: gridRows, VisibleRows: 7, Offset: &p.offset}})
+	rows = append(rows, MenuItem{Grid: &MenuGrid{Rows: gridRows, VisibleRows: 7, Offset: &p.offset}})
 
-	rows = append(rows, ERAMMenuItem{
+	rows = append(rows, MenuItem{
 		Label:    util.Select(fp.SecondaryScratchpad != "", "DEL "+fp.SecondaryScratchpad, "DELETE"),
 		Centered: true, BgColor: grey, Color: textC,
-		OnClick: func(_ ERAMMenuClickType) bool {
+		OnClick: func(_ MenuClickType) bool {
 			status, err := handleQSDeleteSpeed(ep, ctx, trk)
 			ep.applyCommandStatus(ctx, status, err)
 			ep.popup = nil
@@ -540,7 +540,7 @@ func (p *speedMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 	})
 
 	title := string(p.acid)
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, ERAMMenuConfig{
+	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
 		Title: title, TitleLeftJustified: true,
 		Width: dbMenuWidth(font, titleFont, title, "DEL M000", ".00+"),
 		Font:  font, TitleFont: titleFont, ItemHeight: dbMenuItemH,
@@ -559,7 +559,7 @@ type freeTextMenuPopup struct {
 	buf string
 }
 
-func (ep *ERAMPane) openFreeTextMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Pane) openFreeTextMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	fp := trk.FlightPlan
 	if fp == nil {
 		return
@@ -582,7 +582,7 @@ func (ep *ERAMPane) openFreeTextMenu(ctx *scope.Context, trk *sim.Track, dbMain 
 
 // handleKeyboard consumes all keyboard input while the menu is open: typed
 // characters edit the buffer, Enter saves it, Escape closes the menu.
-func (p *freeTextMenuPopup) handleKeyboard(ep *ERAMPane, ctx *scope.Context) bool {
+func (p *freeTextMenuPopup) handleKeyboard(ep *Pane, ctx *scope.Context) bool {
 	for _, r := range strings.ToUpper(ctx.Keyboard.Input) {
 		if r <= ' ' || r > '~' || r == '`' {
 			continue
@@ -613,7 +613,7 @@ func (p *freeTextMenuPopup) handleKeyboard(ep *ERAMPane, ctx *scope.Context) boo
 	return true
 }
 
-func (p *freeTextMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (p *freeTextMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -622,11 +622,11 @@ func (p *freeTextMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sc
 	font := ep.ERAMFont(ps.FDBSize)
 	titleFont := ep.ERAMFont(2)
 
-	rows := []ERAMMenuItem{
-		{Input: &ERAMMenuInput{Buf: &p.buf}},
+	rows := []MenuItem{
+		{Input: &MenuInput{Buf: &p.buf}},
 		{
 			Label: "DELETE", Centered: true, BgColor: colors.popup.backgroundGrey, Color: colors.popup.text,
-			OnClick: func(_ ERAMMenuClickType) bool {
+			OnClick: func(_ MenuClickType) bool {
 				status, err := handleQSDeleteAll(ep, ctx, trk)
 				ep.applyCommandStatus(ctx, status, err)
 				ep.popup = nil
@@ -636,7 +636,7 @@ func (p *freeTextMenuPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms sc
 	}
 
 	title := string(p.acid)
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, ERAMMenuConfig{
+	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
 		Title: title, TitleLeftJustified: true,
 		Width: dbMenuWidth(font, titleFont, title, "WWWWWWWW_"),
 		Font:  font, TitleFont: titleFont, ItemHeight: dbMenuItemH,

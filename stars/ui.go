@@ -21,11 +21,11 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-var _ scope.UIDrawer = (*STARSPane)(nil)
+var _ scope.UIDrawer = (*Pane)(nil)
 
-func (sp *STARSPane) DisplayName() string { return "STARS" }
+func (sp *Pane) DisplayName() string { return "STARS" }
 
-func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
+func (sp *Pane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Text("Font: ")
 	imgui.SameLine()
 	imgui.RadioButtonIntPtr("Default", &sp.FontSelection, fontDefault)
@@ -77,7 +77,7 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 }
 
-func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+func (sp *Pane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	sp.scopeDraw.DrawArrivalsUI(c, sp.IFPHelpers.ArrivalsColor)
 	sp.scopeDraw.DrawApproachesUI(c, sp.IFPHelpers.ApproachesColor, lg)
 	sp.scopeDraw.DrawDeparturesUI(c, sp.IFPHelpers.DeparturesColor)

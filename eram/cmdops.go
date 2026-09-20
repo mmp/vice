@@ -59,15 +59,15 @@ func registerOpsCommands() {
 	// QP A [TRACK]: Acknowledge point out
 	// QP [TRACK]: Clear the post-point-out FDB lock (FDB -> LDB)
 	registerCommand(CommandModeNone, "QP A [TRACK]",
-		func(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) error {
+		func(ep *Pane, ctx *scope.Context, trk *sim.Track) error {
 			return ep.acknowledgePointOut(ctx, trk)
 		})
 	registerCommand(CommandModeNone, "QP [SECTOR_ID] [TRACK]",
-		func(ep *ERAMPane, ctx *scope.Context, sector string, trk *sim.Track) error {
+		func(ep *Pane, ctx *scope.Context, sector string, trk *sim.Track) error {
 			return ep.pointOutTrack(ctx, trk, sector)
 		})
 	registerCommand(CommandModeNone, "QP [TRACK]",
-		func(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
+		func(ep *Pane, trk *sim.Track) (CommandStatus, error) {
 			return ep.clearPointOutLock(trk)
 		})
 
@@ -105,21 +105,21 @@ func registerOpsCommands() {
 
 	// LA - track range - distance between points
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM]",
-		func(ep *ERAMPane, ctx *scope.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
+		func(ep *Pane, ctx *scope.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
 			return handleLALocLoc(ep, ctx, from, to, laOptions{})
 		})
 	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM]",
-		func(ep *ERAMPane, ctx *scope.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
+		func(ep *Pane, ctx *scope.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
 			return handleLATrkLoc(ep, ctx, trk, to, laOptions{})
 		})
 	registerCommand(CommandModeNone, "LA [TRACK] [TRACK]",
-		func(ep *ERAMPane, ctx *scope.Context, trk1, trk2 *sim.Track) CommandStatus {
+		func(ep *Pane, ctx *scope.Context, trk1, trk2 *sim.Track) CommandStatus {
 			return handleLATrkLoc(ep, ctx, trk1, trk2.Location, laOptions{})
 		})
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] [LA_OPTS]", handleLALocLoc)
 	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] [LA_OPTS]", handleLATrkLoc)
 	registerCommand(CommandModeNone, "LA [TRACK] [TRACK] [LA_OPTS]",
-		func(ep *ERAMPane, ctx *scope.Context, trk1, trk2 *sim.Track, opts laOptions) CommandStatus {
+		func(ep *Pane, ctx *scope.Context, trk1, trk2 *sim.Track, opts laOptions) CommandStatus {
 			return handleLATrkLoc(ep, ctx, trk1, trk2.Location, opts)
 		})
 
@@ -198,9 +198,9 @@ func registerOpsCommands() {
 ///////////////////////////////////////////////////////////////////////////
 // QQ - Interim Altitude Handlers
 
-func handleInterimAltitude(ep *ERAMPane, ctx *scope.Context, alt InterimAltitude, trk *sim.Track) (CommandStatus, error) {
+func handleInterimAltitude(ep *Pane, ctx *scope.Context, alt InterimAltitude, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	fp := sim.FlightPlanSpecifier{}
@@ -218,9 +218,9 @@ func handleInterimAltitude(ep *ERAMPane, ctx *scope.Context, alt InterimAltitude
 	}, nil
 }
 
-func handleClearInterimAltitude(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleClearInterimAltitude(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	fp := sim.FlightPlanSpecifier{}
@@ -241,9 +241,9 @@ func handleClearInterimAltitude(ep *ERAMPane, ctx *scope.Context, trk *sim.Track
 ///////////////////////////////////////////////////////////////////////////
 // QZ - Assigned Altitude Handler
 
-func handleAssignedAltitude(ep *ERAMPane, ctx *scope.Context, alt int, trk *sim.Track) (CommandStatus, error) {
+func handleAssignedAltitude(ep *Pane, ctx *scope.Context, alt int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	fp := sim.FlightPlanSpecifier{}
@@ -263,13 +263,13 @@ func handleAssignedAltitude(ep *ERAMPane, ctx *scope.Context, alt int, trk *sim.
 ///////////////////////////////////////////////////////////////////////////
 // QX - Drop Track Handler
 
-func handleDropTrack(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleDropTrack(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	if !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
-		return CommandStatus{}, ErrERAMIllegalACID // TODO: proper "NO CONTROL" error
+		return CommandStatus{}, ErrIllegalACID // TODO: proper "NO CONTROL" error
 	}
 
 	ep.deleteFLightplan(ctx, *trk)
@@ -282,14 +282,14 @@ func handleDropTrack(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandS
 ///////////////////////////////////////////////////////////////////////////
 // QU - Direct / Route Display Handlers
 
-func handleClearRouteDisplay(ep *ERAMPane) {
+func handleClearRouteDisplay(ep *Pane) {
 	clear(ep.aircraftFixCoordinates)
 }
 
 // Either displays the route for 20 minutes ahead or clears the route display
-func handleDefaultRouteDisplay(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleDefaultRouteDisplay(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	// Check if the route is currently displayed
@@ -306,9 +306,9 @@ func handleDefaultRouteDisplay(ep *ERAMPane, ctx *scope.Context, trk *sim.Track)
 	}, nil
 }
 
-func handleMaxRouteDisplay(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleMaxRouteDisplay(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), -1)
@@ -318,9 +318,9 @@ func handleMaxRouteDisplay(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (Co
 	}, nil
 }
 
-func handleRouteDisplayMinutes(ep *ERAMPane, ctx *scope.Context, minutes int, trk *sim.Track) (CommandStatus, error) {
+func handleRouteDisplayMinutes(ep *Pane, ctx *scope.Context, minutes int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), minutes)
@@ -330,9 +330,9 @@ func handleRouteDisplayMinutes(ep *ERAMPane, ctx *scope.Context, minutes int, tr
 	}, nil
 }
 
-func handleDirectToFix(ep *ERAMPane, ctx *scope.Context, fix string, trk *sim.Track) (CommandStatus, error) {
+func handleDirectToFix(ep *Pane, ctx *scope.Context, fix string, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
@@ -345,9 +345,9 @@ func handleDirectToFix(ep *ERAMPane, ctx *scope.Context, fix string, trk *sim.Tr
 ///////////////////////////////////////////////////////////////////////////
 // QP - J Ring Handlers
 
-func handleJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
+func handleJRing(ep *Pane, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
@@ -359,15 +359,15 @@ func handleJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	}, nil
 }
 
-func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
+func handleReducedJRing(ep *Pane, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
 
 	if state.Track.TransponderAltitude > 23000 {
-		return CommandStatus{}, NewERAMError("REJECT - %s NOT ELIGIBLE\nFOR REDUCED SEPARATION\nREQ/DELETE DRI %s", trk.FlightPlan.CID, trk.ADSBCallsign)
+		return CommandStatus{}, NewError("REJECT - %s NOT ELIGIBLE\nFOR REDUCED SEPARATION\nREQ/DELETE DRI %s", trk.FlightPlan.CID, trk.ADSBCallsign)
 	}
 
 	state.DisplayJRing = false // clear J ring
@@ -381,7 +381,7 @@ func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 ///////////////////////////////////////////////////////////////////////////
 // QL - Quicklook
 
-func handleToggleQuicklook(ep *ERAMPane, sectors []string) {
+func handleToggleQuicklook(ep *Pane, sectors []string) {
 	for _, s := range sectors {
 		if _, ok := ep.QuickLookSectors[s]; ok {
 			delete(ep.QuickLookSectors, s)
@@ -391,14 +391,14 @@ func handleToggleQuicklook(ep *ERAMPane, sectors []string) {
 	}
 }
 
-func handleDisableAllQuicklook(ep *ERAMPane) {
+func handleDisableAllQuicklook(ep *Pane) {
 	clear(ep.QuickLookSectors)
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // QB - beacon code view lists
 
-func handleBeaconCodeViewList(ep *ERAMPane, codes []av.Squawk) error {
+func handleBeaconCodeViewList(ep *Pane, codes []av.Squawk) error {
 	for _, c := range codes {
 		if idx := slices.Index(ep.AddedBeaconCodes, c); idx != -1 {
 			ep.AddedBeaconCodes = slices.Delete(ep.AddedBeaconCodes, idx, idx+1)
@@ -415,7 +415,7 @@ func handleBeaconCodeViewList(ep *ERAMPane, codes []av.Squawk) error {
 ///////////////////////////////////////////////////////////////////////////
 // QF - Flight Plan Readout Handlers
 
-func handleFlightPlanReadout(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleFlightPlanReadout(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	fp := trk.FlightPlan
 	if fp == nil {
 		// TODO: find the correct error message
@@ -452,7 +452,7 @@ func handleFlightPlanReadout(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (
 ///////////////////////////////////////////////////////////////////////////
 // MR - Map Request Handlers
 
-func handleMapRequestList(ep *ERAMPane, ctx *scope.Context) (CommandStatus, error) {
+func handleMapRequestList(ep *Pane, ctx *scope.Context) (CommandStatus, error) {
 	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
 	if err != nil {
 		return CommandStatus{}, err
@@ -464,14 +464,14 @@ func handleMapRequestList(ep *ERAMPane, ctx *scope.Context) (CommandStatus, erro
 	}, nil
 }
 
-func handleMapRequestLoad(ep *ERAMPane, ctx *scope.Context, groupName string) (CommandStatus, error) {
+func handleMapRequestLoad(ep *Pane, ctx *scope.Context, groupName string) (CommandStatus, error) {
 	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
 	if err != nil {
 		return CommandStatus{}, err
 	}
 
 	if _, ok := vmf.ERAMMapGroups[groupName]; !ok {
-		return CommandStatus{}, ErrERAMMapUnavailable
+		return CommandStatus{}, ErrMapUnavailable
 	}
 
 	ps := ep.currentPrefs()
@@ -511,7 +511,7 @@ func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBr
 	return lines
 }
 
-func handleLALocLoc(ep *ERAMPane, ctx *scope.Context, from math.Point2LL, to math.Point2LL, opts laOptions) CommandStatus {
+func handleLALocLoc(ep *Pane, ctx *scope.Context, from math.Point2LL, to math.Point2LL, opts laOptions) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -519,7 +519,7 @@ func handleLALocLoc(ep *ERAMPane, ctx *scope.Context, from math.Point2LL, to mat
 	}
 }
 
-func handleLATrkLoc(ep *ERAMPane, ctx *scope.Context, trk *sim.Track, to math.Point2LL, opts laOptions) CommandStatus {
+func handleLATrkLoc(ep *Pane, ctx *scope.Context, trk *sim.Track, to math.Point2LL, opts laOptions) CommandStatus {
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
@@ -530,10 +530,10 @@ func handleLATrkLoc(ep *ERAMPane, ctx *scope.Context, trk *sim.Track, to math.Po
 ///////////////////////////////////////////////////////////////////////////
 // LB - Range/Bearing From Fix
 
-func handleLBFixLoc(ep *ERAMPane, ctx *scope.Context, fix string, from math.Point2LL) (CommandStatus, error) {
+func handleLBFixLoc(ep *Pane, ctx *scope.Context, fix string, from math.Point2LL) (CommandStatus, error) {
 	fixPos, ok := ctx.Client.State.Locate(fix)
 	if !ok {
-		return CommandStatus{}, ErrERAMIllegalValue
+		return CommandStatus{}, ErrIllegalValue
 	}
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
@@ -543,10 +543,10 @@ func handleLBFixLoc(ep *ERAMPane, ctx *scope.Context, fix string, from math.Poin
 
 }
 
-func handleLBFixTrk(ep *ERAMPane, ctx *scope.Context, fix string, trk *sim.Track) (CommandStatus, error) {
+func handleLBFixTrk(ep *Pane, ctx *scope.Context, fix string, trk *sim.Track) (CommandStatus, error) {
 	fixPos, ok := ctx.Client.State.Locate(fix)
 	if !ok {
-		return CommandStatus{}, ErrERAMIllegalValue
+		return CommandStatus{}, ErrIllegalValue
 	}
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
@@ -555,10 +555,10 @@ func handleLBFixTrk(ep *ERAMPane, ctx *scope.Context, fix string, trk *sim.Track
 	}, nil
 }
 
-func handleLBFixSpeedTrk(ep *ERAMPane, ctx *scope.Context, fix string, speed int, trk *sim.Track) (CommandStatus, error) {
+func handleLBFixSpeedTrk(ep *Pane, ctx *scope.Context, fix string, speed int, trk *sim.Track) (CommandStatus, error) {
 	fixPos, ok := ctx.Client.State.Locate(fix)
 	if !ok {
-		return CommandStatus{}, ErrERAMIllegalValue
+		return CommandStatus{}, ErrIllegalValue
 	}
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
@@ -570,15 +570,15 @@ func handleLBFixSpeedTrk(ep *ERAMPane, ctx *scope.Context, fix string, speed int
 ///////////////////////////////////////////////////////////////////////////
 // LC - Speed adjustment to arrive over a fix at a specified UTC time (HHMM)
 
-func handleLCFixTimeTrk(ep *ERAMPane, ctx *scope.Context, fix string, hhmm int, trk *sim.Track) (CommandStatus, error) {
+func handleLCFixTimeTrk(ep *Pane, ctx *scope.Context, fix string, hhmm int, trk *sim.Track) (CommandStatus, error) {
 	fixPos, ok := ctx.Client.State.Locate(fix)
 	if !ok {
-		return CommandStatus{}, ErrERAMIllegalValue
+		return CommandStatus{}, ErrIllegalValue
 	}
 
 	hh, mm := hhmm/100, hhmm%100
 	if hh < 0 || hh > 23 || mm < 0 || mm > 59 {
-		return CommandStatus{}, ErrERAMIllegalValue
+		return CommandStatus{}, ErrIllegalValue
 	}
 
 	now := ctx.Client.State.SimTime.UTC()
@@ -588,7 +588,7 @@ func handleLCFixTimeTrk(ep *ERAMPane, ctx *scope.Context, fix string, hhmm int, 
 	}
 	dtHours := target.Sub(now.Time()).Hours()
 	if dtHours <= 0 {
-		return CommandStatus{}, ErrERAMIllegalValue
+		return CommandStatus{}, ErrIllegalValue
 	}
 
 	dist := math.NMDistance2LL(trk.Location, fixPos)
@@ -604,9 +604,9 @@ func handleLCFixTimeTrk(ep *ERAMPane, ctx *scope.Context, fix string, hhmm int, 
 ///////////////////////////////////////////////////////////////////////////
 // LF - CRR (Continuous Range Readout) Handlers
 
-func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *scope.Context, loc CRRLocation, label string, tracks []*sim.Track) (CommandStatus, error) {
+func handleCRRCreateWithAircraft(ep *Pane, ctx *scope.Context, loc CRRLocation, label string, tracks []*sim.Track) (CommandStatus, error) {
 	if !validCRRLabel(label) {
-		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", loc.Token, label)
+		return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", loc.Token, label)
 	}
 
 	// Check if group already exists
@@ -614,13 +614,13 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *scope.Context, loc CRRLocati
 		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 	if _, ok := ep.CRRGroups[label]; ok {
-		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\nLF %s %s", loc.Token, label)
+		return CommandStatus{}, NewError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\nLF %s %s", loc.Token, label)
 	}
 
 	// All tracks must be associated
 	for _, trk := range tracks {
 		if !trk.IsAssociated() {
-			return CommandStatus{}, ErrERAMIllegalACID
+			return CommandStatus{}, ErrIllegalACID
 		}
 	}
 
@@ -642,25 +642,25 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *scope.Context, loc CRRLocati
 	}, nil
 }
 
-func handleCRRCreate(ep *ERAMPane, ctx *scope.Context, loc CRRLocation, label string) (CommandStatus, error) {
+func handleCRRCreate(ep *Pane, ctx *scope.Context, loc CRRLocation, label string) (CommandStatus, error) {
 	return handleCRRCreateWithAircraft(ep, ctx, loc, label, nil)
 }
 
-func handleCRRCreateAutoLabel(ep *ERAMPane, ctx *scope.Context, loc CRRLocation) (CommandStatus, error) {
+func handleCRRCreateAutoLabel(ep *Pane, ctx *scope.Context, loc CRRLocation) (CommandStatus, error) {
 	// Auto-derive label from fix name if it's a valid fix
 	label := loc.Token
 	// Check if it's a valid fix name that can be used as a label
 	if _, ok := ctx.Client.State.Locate(label); ok && validCRRLabel(label) {
 		return handleCRRCreate(ep, ctx, loc, label)
 	}
-	return CommandStatus{}, NewERAMError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF //%s", loc.Token)
+	return CommandStatus{}, NewError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF //%s", loc.Token)
 }
 
 // handleCRRAddClicked handles LF {pos} LABEL - position comes first, then label
-func handleCRRAddClicked(ep *ERAMPane, ctx *scope.Context, loc math.Point2LL, label string) (CommandStatus, error) {
+func handleCRRAddClicked(ep *Pane, ctx *scope.Context, loc math.Point2LL, label string) (CommandStatus, error) {
 	// Validate label
 	if !validCRRLabel(label) {
-		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
+		return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
 	}
 
 	// Check if group exists
@@ -686,7 +686,7 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *scope.Context, loc math.Point2LL, la
 	// Group exists - find nearest track and add to group
 	nearest := ep.closestTrackToLL(ctx, loc, 5)
 	if nearest == nil {
-		return CommandStatus{}, NewERAMError("REJECT - NO TB FLIGHT ID\nCAPTURE\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
+		return CommandStatus{}, NewError("REJECT - NO TB FLIGHT ID\nCAPTURE\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
 	}
 
 	g.Aircraft[nearest.ADSBCallsign] = struct{}{}
@@ -698,10 +698,10 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *scope.Context, loc math.Point2LL, la
 
 // handleCRRWrongOrder handles LF LABEL {pos} - wrong order error
 func handleCRRWrongOrder(label string, pos math.Point2LL) (CommandStatus, error) {
-	return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", strings.ToUpper(label), locationSymbol)
+	return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", strings.ToUpper(label), locationSymbol)
 }
 
-func handleCRRToggleMembership(ep *ERAMPane, label string, tracks []*sim.Track) (CommandStatus, error) {
+func handleCRRToggleMembership(ep *Pane, label string, tracks []*sim.Track) (CommandStatus, error) {
 	if !validCRRLabel(label) {
 		return CommandStatus{}, ErrCommandFormat
 	}
@@ -715,7 +715,7 @@ func handleCRRToggleMembership(ep *ERAMPane, label string, tracks []*sim.Track) 
 	// Toggle membership for each aircraft
 	for _, trk := range tracks {
 		if !trk.IsAssociated() {
-			return CommandStatus{}, ErrERAMIllegalACID
+			return CommandStatus{}, ErrIllegalACID
 		}
 
 		cs := trk.ADSBCallsign
@@ -733,20 +733,20 @@ func handleCRRToggleMembership(ep *ERAMPane, label string, tracks []*sim.Track) 
 
 func handleCRRLabelOnly(label string) (CommandStatus, error) {
 	// LF LABEL without click or aircraft - group not found
-	return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s", strings.ToUpper(label))
+	return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s", strings.ToUpper(label))
 }
 
 func handleCRREmpty() (CommandStatus, error) {
 	// LF alone - message too short
-	return CommandStatus{}, NewERAMError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF")
+	return CommandStatus{}, NewError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF")
 }
 
 ///////////////////////////////////////////////////////////////////////////
 // // - Toggle VCI Handler
 
-func handleToggleVCI(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
+func handleToggleVCI(ep *Pane, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
@@ -764,7 +764,7 @@ func handleTogglePause(ctx *scope.Context) {
 	ctx.Client.ToggleSimPause()
 }
 
-func handleTargetGen(ep *ERAMPane, ctx *scope.Context, cmd string) (CommandStatus, error) {
+func handleTargetGen(ep *Pane, ctx *scope.Context, cmd string) (CommandStatus, error) {
 	if cmd == "" {
 		return CommandStatus{}, nil
 	}
@@ -778,7 +778,7 @@ func handleTargetGen(ep *ERAMPane, ctx *scope.Context, cmd string) (CommandStatu
 
 	matching := ctx.TracksFromACIDSuffix(suffix)
 	if len(matching) > 1 {
-		return CommandStatus{}, ErrERAMAmbiguousACID
+		return CommandStatus{}, ErrAmbiguousACID
 	}
 
 	var trk *sim.Track
@@ -796,17 +796,17 @@ func handleTargetGen(ep *ERAMPane, ctx *scope.Context, cmd string) (CommandStatu
 		return CommandStatus{clear: true}, nil
 	}
 
-	return CommandStatus{}, ErrERAMIllegalACID
+	return CommandStatus{}, ErrIllegalACID
 }
 
-func handleTargetGenClicked(ep *ERAMPane, ctx *scope.Context, cmd string, trk *sim.Track) CommandStatus {
+func handleTargetGenClicked(ep *Pane, ctx *scope.Context, cmd string, trk *sim.Track) CommandStatus {
 	if cmd != "" {
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 	}
 	return CommandStatus{clear: true}
 }
 
-func handleTargetGenEmptyClicked(ep *ERAMPane, trk *sim.Track) CommandStatus {
+func handleTargetGenEmptyClicked(ep *Pane, trk *sim.Track) CommandStatus {
 	// Just clicking on a track in TG mode - do nothing special
 	return CommandStatus{}
 }
@@ -814,9 +814,9 @@ func handleTargetGenEmptyClicked(ep *ERAMPane, trk *sim.Track) CommandStatus {
 ///////////////////////////////////////////////////////////////////////////
 // Default Command Handlers (keyboard and clicked)
 
-func handleDefaultTrack(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleDefaultTrack(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.IsUnassociated() {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	if ctx.IsHandoffToUser(trk) {
@@ -839,7 +839,7 @@ func handleDefaultTrack(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (Comma
 
 	// Toggle FDB display
 	if ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
-		return CommandStatus{}, NewERAMError("USER ACTION NOT ALLOWED ON A\nCONTROLLER FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
+		return CommandStatus{}, NewError("USER ACTION NOT ALLOWED ON A\nCONTROLLER FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
@@ -852,9 +852,9 @@ func handleDefaultTrack(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (Comma
 	}, nil
 }
 
-func handleInitiateHandoff(ep *ERAMPane, ctx *scope.Context, sector string, trk *sim.Track) (CommandStatus, error) {
+func handleInitiateHandoff(ep *Pane, ctx *scope.Context, sector string, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	acid := sim.ACID(trk.ADSBCallsign)
@@ -868,18 +868,18 @@ func handleInitiateHandoff(ep *ERAMPane, ctx *scope.Context, sector string, trk 
 	}, nil
 }
 
-func handleLeaderLinePosition(ep *ERAMPane, ctx *scope.Context, dir int, trk *sim.Track) (CommandStatus, error) {
+func handleLeaderLinePosition(ep *Pane, ctx *scope.Context, dir int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	direction, ok := ep.numberToLLDirection(dir)
 	if !ok {
-		return CommandStatus{}, ErrERAMIllegalValue
+		return CommandStatus{}, ErrIllegalValue
 	}
 	if ep.datablockType(ctx, *trk) != FullDatablock {
 		if direction != math.East && direction != math.West {
-			return CommandStatus{}, ErrERAMIllegalValue
+			return CommandStatus{}, ErrIllegalValue
 		}
 	}
 
@@ -890,7 +890,7 @@ func handleLeaderLinePosition(ep *ERAMPane, ctx *scope.Context, dir int, trk *si
 	}, nil
 }
 
-func (ep *ERAMPane) numberToLLDirection(cmd int) (math.CardinalOrdinalDirection, bool) {
+func (ep *Pane) numberToLLDirection(cmd int) (math.CardinalOrdinalDirection, bool) {
 	if ep.FlipNumericKeypad {
 		// Inverted layout: 1=NW (top-left on physical numpad)
 		switch cmd {
@@ -945,9 +945,9 @@ func (ep *ERAMPane) numberToLLDirection(cmd int) (math.CardinalOrdinalDirection,
 ///////////////////////////////////////////////////////////////////////////
 // Leader Line Length Handlers
 
-func handleLeaderLineLength(ep *ERAMPane, ctx *scope.Context, length int, trk *sim.Track) (CommandStatus, error) {
+func handleLeaderLineLength(ep *Pane, ctx *scope.Context, length int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	} else if length < 0 || length > 3 {
 		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	} else {
@@ -959,20 +959,20 @@ func handleLeaderLineLength(ep *ERAMPane, ctx *scope.Context, length int, trk *s
 	}
 }
 
-func handleLeaderLinePositionAndLength(ep *ERAMPane, ctx *scope.Context, dir, length int, trk *sim.Track) (CommandStatus, error) {
+func handleLeaderLinePositionAndLength(ep *Pane, ctx *scope.Context, dir, length int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	} else if length < 0 || length > 3 {
 		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	} else {
 		direction, ok := ep.numberToLLDirection(dir)
 		if !ok {
-			return CommandStatus{}, ErrERAMIllegalValue
+			return CommandStatus{}, ErrIllegalValue
 		}
 
 		if ep.datablockType(ctx, *trk) != FullDatablock {
 			if direction != math.East && direction != math.West {
-				return CommandStatus{}, ErrERAMIllegalValue
+				return CommandStatus{}, ErrIllegalValue
 			}
 		}
 
@@ -988,14 +988,14 @@ func handleLeaderLinePositionAndLength(ep *ERAMPane, ctx *scope.Context, dir, le
 ///////////////////////////////////////////////////////////////////////////
 // .DRAWROUTE - Custom command
 
-func handleDrawRouteMode(ep *ERAMPane, ctx *scope.Context) CommandStatus {
+func handleDrawRouteMode(ep *Pane, ctx *scope.Context) CommandStatus {
 	ep.commandMode = CommandModeDrawRoute
 	ep.drawRoutePoints = nil
 	ep.responseArea = "DRAWROUTE"
 	return CommandStatus{clear: true}
 }
 
-func handleDrawRoutePoint(ep *ERAMPane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
+func handleDrawRoutePoint(ep *Pane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
 	ep.drawRoutePoints = append(ep.drawRoutePoints, pos)
 
 	var cb []string
@@ -1026,9 +1026,9 @@ func qsFDBDataAcceptMsg(trk *sim.Track) []string {
 	return []string{"ACCEPT", "FDB DATA", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID}
 }
 
-func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
+func handleQSToggleHSF(ep *Pane, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
@@ -1036,9 +1036,9 @@ func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSDeleteHeading(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleQSDeleteHeading(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1047,9 +1047,9 @@ func handleQSDeleteHeading(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (Co
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSDeleteSpeed(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleQSDeleteSpeed(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1058,9 +1058,9 @@ func handleQSDeleteSpeed(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (Comm
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSDeleteAll(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+func handleQSDeleteAll(ep *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1070,9 +1070,9 @@ func handleQSDeleteAll(ep *ERAMPane, ctx *scope.Context, trk *sim.Track) (Comman
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSHeading(ep *ERAMPane, ctx *scope.Context, heading string, trk *sim.Track) (CommandStatus, error) {
+func handleQSHeading(ep *Pane, ctx *scope.Context, heading string, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1082,9 +1082,9 @@ func handleQSHeading(ep *ERAMPane, ctx *scope.Context, heading string, trk *sim.
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSSpeed(ep *ERAMPane, ctx *scope.Context, speed string, trk *sim.Track) (CommandStatus, error) {
+func handleQSSpeed(ep *Pane, ctx *scope.Context, speed string, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1097,9 +1097,9 @@ func handleQSSpeed(ep *ERAMPane, ctx *scope.Context, speed string, trk *sim.Trac
 	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
-func handleQSFreeText(ep *ERAMPane, ctx *scope.Context, freeText string, trk *sim.Track) (CommandStatus, error) {
+func handleQSFreeText(ep *Pane, ctx *scope.Context, freeText string, trk *sim.Track) (CommandStatus, error) {
 	if trk == nil || trk.FlightPlan == nil {
-		return CommandStatus{}, ErrERAMIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 
 	var fp sim.FlightPlanSpecifier
@@ -1132,19 +1132,19 @@ func lookupCommandAirport(airport string) (av.ICAOAirportCode, bool) {
 ///////////////////////////////////////////////////////////////////////////
 // AR - ALTIM SET Add Airport Handler
 
-func handleAltimAdd(ep *ERAMPane, ctx *scope.Context, airport string) (CommandStatus, error) {
+func handleAltimAdd(ep *Pane, ctx *scope.Context, airport string) (CommandStatus, error) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
 	if len(airport) == 0 {
-		return CommandStatus{}, NewERAMError("REJECT - AR - MISSING AIRPORT")
+		return CommandStatus{}, NewError("REJECT - AR - MISSING AIRPORT")
 	}
 	if len(airport) != 3 && len(airport) != 4 {
-		return CommandStatus{}, NewERAMError("REJECT - AR - INVALID AIRPORT CODE")
+		return CommandStatus{}, NewError("REJECT - AR - INVALID AIRPORT CODE")
 	}
 
 	// Confirm airport exists in the database
 	icao, ok := lookupCommandAirport(airport)
 	if !ok {
-		return CommandStatus{}, NewERAMError("REJECT - AR - UNKNOWN AIRPORT")
+		return CommandStatus{}, NewError("REJECT - AR - UNKNOWN AIRPORT")
 	}
 
 	// Toggle: if already in the list, remove it.
@@ -1172,19 +1172,19 @@ func handleAltimAdd(ep *ERAMPane, ctx *scope.Context, airport string) (CommandSt
 
 // WR - WX REPORT Add Airport Handler
 
-func handleWXReportAdd(ep *ERAMPane, ctx *scope.Context, airport string) (CommandStatus, error) {
+func handleWXReportAdd(ep *Pane, ctx *scope.Context, airport string) (CommandStatus, error) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
 	if len(airport) == 0 {
-		return CommandStatus{}, NewERAMError("REJECT - WR - MISSING AIRPORT")
+		return CommandStatus{}, NewError("REJECT - WR - MISSING AIRPORT")
 	}
 	if len(airport) != 3 && len(airport) != 4 {
-		return CommandStatus{}, NewERAMError("REJECT - WR - INVALID AIRPORT CODE")
+		return CommandStatus{}, NewError("REJECT - WR - INVALID AIRPORT CODE")
 	}
 
 	// Confirm airport exists in the database
 	icao, ok := lookupCommandAirport(airport)
 	if !ok {
-		return CommandStatus{}, NewERAMError("REJECT - WR - UNKNOWN AIRPORT")
+		return CommandStatus{}, NewError("REJECT - WR - UNKNOWN AIRPORT")
 	}
 	if i := slices.Index(ep.WXReportStations, icao); i >= 0 {
 		ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
@@ -1221,19 +1221,19 @@ func requestMETARIfMissing(ctx *scope.Context, icao av.ICAOAirportCode) {
 
 // WR R - WX REPORT Display (show METAR in Response Area)
 
-func handleWXReportDisplay(ep *ERAMPane, ctx *scope.Context, airport string) (CommandStatus, error) {
+func handleWXReportDisplay(ep *Pane, ctx *scope.Context, airport string) (CommandStatus, error) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
 	if len(airport) == 0 {
-		return CommandStatus{}, NewERAMError("REJECT - WR R - MISSING AIRPORT")
+		return CommandStatus{}, NewError("REJECT - WR R - MISSING AIRPORT")
 	}
 	if len(airport) != 3 && len(airport) != 4 {
-		return CommandStatus{}, NewERAMError("REJECT - WR R - INVALID AIRPORT CODE")
+		return CommandStatus{}, NewError("REJECT - WR R - INVALID AIRPORT CODE")
 	}
 
 	// Confirm airport exists in the database
 	icao, ok := lookupCommandAirport(airport)
 	if !ok {
-		return CommandStatus{}, NewERAMError("REJECT - WR R - UNKNOWN AIRPORT")
+		return CommandStatus{}, NewError("REJECT - WR R - UNKNOWN AIRPORT")
 	}
 
 	// Get METAR from the pre-populated wx system

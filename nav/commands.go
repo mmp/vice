@@ -22,8 +22,8 @@ import (
 // and the GoAroundContactController.
 func (nav *Nav) GoAroundWithProcedure(altitude float32, runwayEndWP av.Waypoint) {
 	nav.DeferredNavHeading = nil
-	nav.Speed = NavSpeed{}
-	nav.Approach = NavApproach{}
+	nav.Speed = Speed{}
+	nav.Approach = Approach{}
 	nav.setAssignedAltitude(altitude)
 	nav.Waypoints = av.WaypointArray{runwayEndWP, nav.FlightState.ArrivalAirport}
 }
@@ -59,7 +59,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 
 	if sr := nav.Speed.Assigned; afterSpeed && sr != nil {
 		if spd, exact := sr.ExactValue(); exact && spd != nav.FlightState.IAS {
-			nav.Altitude = NavAltitude{
+			nav.Altitude = Altitude{
 				AfterSpeed:      &alt,
 				AfterSpeedSpeed: &spd,
 			}
@@ -74,7 +74,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 		if spd, exact := sr.ExactValue(); exact &&
 			(sr.IsMach || math.Abs(spd-nav.FlightState.IAS) >= 20) {
 			srCopy := *sr
-			nav.Speed = NavSpeed{
+			nav.Speed = Speed{
 				AfterAltitude:         &srCopy,
 				AfterAltitudeAltitude: &alt,
 			}
@@ -95,7 +95,7 @@ func (nav *Nav) AssignAltitudeNow(alt float32, afterSpeed bool) speech.CommandIn
 }
 
 func (nav *Nav) setAssignedAltitude(alt float32) {
-	nav.Altitude = NavAltitude{
+	nav.Altitude = Altitude{
 		Assigned:       &alt,
 		ActiveAssigned: &alt,
 	}
@@ -109,7 +109,7 @@ func (nav *Nav) enqueueAssignedAltitude(alt float32, simTime Time, delayReductio
 	} else {
 		d = 0
 	}
-	nav.Altitude = NavAltitude{
+	nav.Altitude = Altitude{
 		Assigned:       &alt,
 		ActiveAssigned: active,
 		ActivateAt:     simTime.Add(d),
@@ -120,7 +120,7 @@ func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
 	alt := *nav.Altitude.AfterSpeed
 	rate := nav.Altitude.RateAfterSpeed
 	active := nav.activeAssignedAltitude()
-	nav.Altitude = NavAltitude{
+	nav.Altitude = Altitude{
 		Assigned:       &alt,
 		ActiveAssigned: active,
 		ActivateAt:     simTime.Add(nav.Rand.DurationRange(2*time.Second, 4*time.Second)),
@@ -130,7 +130,7 @@ func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
 
 func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
 	if mach == 0 {
-		nav.Speed = NavSpeed{}
+		nav.Speed = Speed{}
 		return speech.SpeedIntent{Type: speech.SpeedCancel}
 	} else if mach < .65 {
 		return speech.MakeUnableIntent("unable. Our minimum mach is 0.65")
@@ -142,14 +142,14 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		alt := *nav.Altitude.Assigned
 		sr := av.MakeMachRestriction(mach)
-		nav.Speed = NavSpeed{
+		nav.Speed = Speed{
 			AfterAltitude:         &sr,
 			AfterAltitudeAltitude: &alt,
 		}
 		return speech.SpeedIntent{Speed: mach, AfterAltitude: &alt, Type: speech.SpeedAssign, Mach: true}
 	} else {
 		sr := av.MakeMachRestriction(mach)
-		nav.Speed = NavSpeed{Assigned: &sr}
+		nav.Speed = Speed{Assigned: &sr}
 		// If there's an active altitude change and this is a significant speed change, defer the
 		// altitude until after the Mach speed change completes.
 		tas := av.MachToTAS(mach, temp)
@@ -157,7 +157,7 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature
 		if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
 			math.Abs(targetIAS-nav.FlightState.IAS) >= 20 {
 			alt := *nav.Altitude.Assigned
-			nav.Altitude = NavAltitude{
+			nav.Altitude = Altitude{
 				AfterSpeed:      &alt,
 				AfterSpeedSpeed: &targetIAS,
 				RateAfterSpeed:  nav.Altitude.Rate,
@@ -177,7 +177,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.
 	nav.clearAfterFixSpeeds()
 
 	if sr == nil {
-		nav.Speed = NavSpeed{}
+		nav.Speed = Speed{}
 		return speech.SpeedIntent{Type: speech.SpeedCancel}
 	}
 
@@ -201,7 +201,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.
 
 	if !exact {
 		// Range restriction: no afterAltitude deferral
-		nav.Speed = NavSpeed{Assigned: sr}
+		nav.Speed = Speed{Assigned: sr}
 		if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			return speech.SpeedIntent{Speed: sr.Range[0], Type: speech.SpeedAtOrAbove}
 		}
@@ -209,7 +209,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.
 	}
 
 	if nav.Approach.Cleared {
-		nav.Speed = NavSpeed{Assigned: sr}
+		nav.Speed = Speed{Assigned: sr}
 		dir := speech.SpeedAssign
 		if speed < nav.FlightState.IAS {
 			dir = speech.SpeedReduce
@@ -220,7 +220,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		alt := *nav.Altitude.Assigned
-		nav.Speed = NavSpeed{
+		nav.Speed = Speed{
 			AfterAltitude:         sr,
 			AfterAltitudeAltitude: &alt,
 		}
@@ -232,13 +232,13 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.
 		if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
 			speedDelta > 20 {
 			alt := *nav.Altitude.Assigned
-			nav.Altitude = NavAltitude{
+			nav.Altitude = Altitude{
 				AfterSpeed:      &alt,
 				AfterSpeedSpeed: &speed,
 				RateAfterSpeed:  nav.Altitude.Rate,
 			}
 		}
-		nav.Speed = NavSpeed{Assigned: sr}
+		nav.Speed = Speed{Assigned: sr}
 		if speed < nav.FlightState.IAS {
 			return speech.SpeedIntent{Speed: speed, Type: speech.SpeedReduce}
 		} else if speed > nav.FlightState.IAS {
@@ -269,7 +269,7 @@ func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUnt
 		return speech.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 	}
 
-	nav.Speed = NavSpeed{Assigned: sr}
+	nav.Speed = Speed{Assigned: sr}
 	if !exact {
 		if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
 			return speech.SpeedIntent{Speed: sr.Range[0], Type: speech.SpeedAtOrAbove, Until: until}
@@ -281,13 +281,13 @@ func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUnt
 
 func (nav *Nav) MaintainSlowestPractical() speech.CommandIntent {
 	nav.clearAfterFixSpeeds()
-	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
+	nav.Speed = Speed{MaintainSlowestPractical: true}
 	return speech.SpeedIntent{Type: speech.SpeedSlowestPractical}
 }
 
 func (nav *Nav) MaintainMaximumForward() speech.CommandIntent {
 	nav.clearAfterFixSpeeds()
-	nav.Speed = NavSpeed{MaintainMaximumForward: true}
+	nav.Speed = Speed{MaintainMaximumForward: true}
 	return speech.SpeedIntent{Type: speech.SpeedMaximumForward}
 }
 
@@ -297,7 +297,7 @@ func (nav *Nav) MaintainPresentSpeed() speech.CommandIntent {
 	currentSpeed := nav.FlightState.IAS
 	speed := float32(int((currentSpeed+5)/10) * 10)
 	sr := av.MakeAtSpeedRestriction(speed)
-	nav.Speed = NavSpeed{Assigned: &sr}
+	nav.Speed = Speed{Assigned: &sr}
 	return speech.SpeedIntent{Speed: speed, Type: speech.SpeedPresentSpeed}
 }
 
@@ -643,7 +643,7 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 		if hold := nav.Heading.Hold; hold != nil {
 			// We'll finish our lap and then depart the holding fix direct to the fix
 			hold.Cancel = true
-			nfa := NavFixAssignment{}
+			nfa := FixAssignment{}
 			nfa.Depart.Fix = &wps[0]
 			if turn != av.TurnClosest {
 				nfa.Depart.Turn = &turn
@@ -815,13 +815,13 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.Com
 
 	if len(nav.Waypoints) > 0 && nav.Waypoints[0].Fix == h.Fix && nav.Heading.Assigned == nil {
 		// We're already direct to it for the next fix; get started.
-		nav.Heading = NavHeading{Hold: nav.makeFlyHold(callsign, h)}
+		nav.Heading = Heading{Hold: nav.makeFlyHold(callsign, h)}
 	} else if nav.hasDeferredRoute() && nav.DeferredNavHeading.Waypoints[0].Fix == h.Fix {
 		nav.DeferredNavHeading.Hold = nav.makeFlyHold(callsign, h)
 	} else {
 		// It's a later fix. Queue it up; we'll return to it when it's the next waypoint upcoming.
 		// Clobber any altitude or heading assignments associated with the fix.
-		nav.FixAssignments[h.Fix] = NavFixAssignment{Hold: &h}
+		nav.FixAssignments[h.Fix] = FixAssignment{Hold: &h}
 	}
 
 	// These seem prudent to clear at this point.
@@ -917,7 +917,7 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedR
 		nfa.Arrive.Altitude = ar
 		intent.AltRestriction = ar
 		// Delete other altitude restrictions
-		nav.Altitude = NavAltitude{}
+		nav.Altitude = Altitude{}
 	}
 	if sr != nil {
 		nfa.Arrive.Speed = sr
@@ -930,7 +930,7 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedR
 			intent.SpeedRestriction = &intentSpeed
 		}
 		// Delete other speed restrictions
-		nav.Speed = NavSpeed{}
+		nav.Speed = Speed{}
 	}
 	nav.FixAssignments[fix] = nfa
 
@@ -987,7 +987,7 @@ func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
 	if ar != nil {
 		wp.SetAltitudeRestriction(*ar)
 		intent.AltRestriction = ar
-		nav.Altitude = NavAltitude{}
+		nav.Altitude = Altitude{}
 	}
 
 	if sr != nil {
@@ -1000,7 +1000,7 @@ func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
 			intentSpeed := av.MakeAtSpeedRestriction(s)
 			intent.SpeedRestriction = &intentSpeed
 		}
-		nav.Speed = NavSpeed{}
+		nav.Speed = Speed{}
 	}
 }
 
@@ -1282,7 +1282,7 @@ func (nav *Nav) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment) spee
 	// Apply: first segment sets the current speed, subsequent segments
 	// set after-fix speed assignments.
 	nav.clearAfterFixSpeeds()
-	nav.Speed = NavSpeed{Assigned: segments[0].Speed}
+	nav.Speed = Speed{Assigned: segments[0].Speed}
 
 	for i := 1; i < len(segments); i++ {
 		fix := segments[i-1].UntilFix
@@ -1367,8 +1367,8 @@ func (nav *Nav) ClimbViaSID(simTime Time) speech.CommandIntent {
 		return speech.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
-	nav.Altitude = NavAltitude{}
-	nav.Speed = NavSpeed{}
+	nav.Altitude = Altitude{}
+	nav.Speed = Speed{}
 	nav.EnqueueOnCourse(simTime)
 	return speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID}
 }
@@ -1378,8 +1378,8 @@ func (nav *Nav) DescendViaSTAR(simTime Time) speech.CommandIntent {
 		return speech.MakeUnableIntent("unable. We're not on a STAR")
 	}
 
-	nav.Altitude = NavAltitude{}
-	nav.Speed = NavSpeed{}
+	nav.Altitude = Altitude{}
+	nav.Speed = Speed{}
 	nav.EnqueueOnCourse(simTime)
 	return speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR}
 }
@@ -1409,7 +1409,7 @@ func (nav *Nav) ResumeOwnNavigation() speech.CommandIntent {
 		return speech.MakeUnableIntent("unable. I don't think you ever put us on a heading...")
 	}
 
-	nav.Heading = NavHeading{}
+	nav.Heading = Heading{}
 	nav.Waypoints = nav.AssignedWaypoints() // just take any deferred ones immediately.
 	nav.DeferredNavHeading = nil
 
@@ -1440,7 +1440,7 @@ func (nav *Nav) AltitudeOurDiscretion() speech.CommandIntent {
 		return speech.MakeUnableIntent("unable. You never assigned us an altitude...")
 	}
 
-	nav.Altitude = NavAltitude{}
+	nav.Altitude = Altitude{}
 	alt := nav.FinalAltitude
 	nav.Altitude.Cleared = &alt
 

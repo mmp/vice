@@ -17,7 +17,7 @@ import (
 // holds at most one (in ep.popup); opening a new pop-up replaces whatever was
 // there.
 type popup interface {
-	draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer)
+	draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer)
 }
 
 // popupAnchorSide identifies which edge of the host view is pinned by an
@@ -67,7 +67,7 @@ const (
 // using OpenPopupAt and wrap its placement into a typed popup. rowCount is
 // the number of content rows below the title bar — the helper adds 1 for
 // the title bar and multiplies by viewPopupItemH to get the popup height.
-func (ep *ERAMPane) makeViewMenu(ctx *scope.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
+func (ep *Pane) makeViewMenu(ctx *scope.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
 	return func(host math.Extent2D) popup {
 		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
 			if id, _, _ := vap.viewAnchor(); id == viewID {
@@ -109,58 +109,58 @@ type viewAnchoredPopup interface {
 // if it consumed the input.
 type keyboardPopup interface {
 	popup
-	handleKeyboard(ep *ERAMPane, ctx *scope.Context) bool
+	handleKeyboard(ep *Pane, ctx *scope.Context) bool
 }
 
-// ERAMMenuClickType distinguishes primary from tertiary clicks.
-type ERAMMenuClickType int
+// MenuClickType distinguishes primary from tertiary clicks.
+type MenuClickType int
 
 const (
-	MenuClickPrimary ERAMMenuClickType = iota
+	MenuClickPrimary MenuClickType = iota
 	MenuClickTertiary
 )
 
-// ERAMMenuItem describes a single row in the menu, or a scrollable list section if SubRows is set.
-type ERAMMenuItem struct {
+// MenuItem describes a single row in the menu, or a scrollable list section if SubRows is set.
+type MenuItem struct {
 	Label    string
 	BgColor  renderer.RGB
 	Color    renderer.RGB
 	Centered bool
-	OnClick  func(clickType ERAMMenuClickType) bool // return true = close menu
+	OnClick  func(clickType MenuClickType) bool // return true = close menu
 
 	// If non-empty, drawn after Label inside an outlined box (Color is used for both the text and the box).
 	BoxedSuffix string
 
 	// If SubRows is non-nil, this row renders as a scrollable list instead of a single text row.
-	SubRows     []ERAMScrollItem
-	VisibleRows int                                          // Number of visible sub-rows; 0 = show all
-	ScrollState *ERAMScrollState                             // Required if SubRows is non-nil
-	OnSelect    func(index int, clickType ERAMMenuClickType) // Called when a sub-row is clicked
+	SubRows     []ScrollItem
+	VisibleRows int                                      // Number of visible sub-rows; 0 = show all
+	ScrollState *ScrollState                             // Required if SubRows is non-nil
+	OnSelect    func(index int, clickType MenuClickType) // Called when a sub-row is clicked
 
 	// If Cells is non-nil, this row renders as side-by-side pick areas
 	// (e.g. the heading menu's LT | PH | RT row).
-	Cells []ERAMMenuCell
+	Cells []MenuCell
 
 	// If Grid is non-nil, this row renders as a scrollable multi-column
 	// value grid (e.g. the altitude/heading/speed pick lists).
-	Grid *ERAMMenuGrid
+	Grid *MenuGrid
 
 	// If Input is non-nil, this row renders as a text input area. Keyboard
 	// handling is the popup's responsibility (see keyboardPopup).
-	Input *ERAMMenuInput
+	Input *MenuInput
 }
 
-// ERAMMenuCell is one pick area of a multi-cell row.
-type ERAMMenuCell struct {
+// MenuCell is one pick area of a multi-cell row.
+type MenuCell struct {
 	Label   string
 	BgColor renderer.RGB
 	Color   renderer.RGB
-	Weight  float32                                // relative width; 0 = 1
-	OnClick func(clickType ERAMMenuClickType) bool // return true = close menu
+	Weight  float32                            // relative width; 0 = 1
+	OnClick func(clickType MenuClickType) bool // return true = close menu
 }
 
-// ERAMMenuGridCell is one pick area in a value grid row.
-type ERAMMenuGridCell struct {
+// MenuGridCell is one pick area in a value grid row.
+type MenuGridCell struct {
 	Label   string
 	BgColor renderer.RGB // zero value = section background
 	Color   renderer.RGB
@@ -169,32 +169,32 @@ type ERAMMenuGridCell struct {
 	// width (e.g. the altitude menu's interim T pick area, whose action
 	// includes the altitude to its left).
 	HoverSpansRow bool
-	OnClick       func(clickType ERAMMenuClickType) bool // return true = close menu
+	OnClick       func(clickType MenuClickType) bool // return true = close menu
 }
 
-// ERAMMenuGrid is a scrollable grid of value pick areas. A reserved arrow
+// MenuGrid is a scrollable grid of value pick areas. A reserved arrow
 // column on the right scrolls by pages the way the ERAM altitude/heading/
 // speed menus do; the mouse wheel scrolls by rows.
-type ERAMMenuGrid struct {
-	Rows        [][]ERAMMenuGridCell
+type MenuGrid struct {
+	Rows        [][]MenuGridCell
 	VisibleRows int  // rows shown per page
 	Offset      *int // caller-owned first visible row index
 }
 
-// ERAMMenuInput is a text input row; the caller owns the buffer and updates
+// MenuInput is a text input row; the caller owns the buffer and updates
 // it from keyboard input.
-type ERAMMenuInput struct {
+type MenuInput struct {
 	Buf *string
 }
 
-// ERAMScrollState is caller-owned persistent state for a scrollable list.
-type ERAMScrollState struct {
+// ScrollState is caller-owned persistent state for a scrollable list.
+type ScrollState struct {
 	Offset      int // first visible item index
 	SelectedIdx int // -1 = none
 }
 
-// ERAMScrollItem describes one item in a scrollable list.
-type ERAMScrollItem struct {
+// ScrollItem describes one item in a scrollable list.
+type ScrollItem struct {
 	Label string
 	Color renderer.RGB
 }
@@ -202,13 +202,13 @@ type ERAMScrollItem struct {
 // makeBooleanMenuItem builds a centered toggle row whose label flips between
 // trueLabel and falseLabel based on *v. Background is grey when *v is true,
 // black otherwise. Click toggles *v.
-func (ep *ERAMPane) makeBooleanMenuItem(v *bool, trueLabel, falseLabel string) ERAMMenuItem {
-	return ERAMMenuItem{
+func (ep *Pane) makeBooleanMenuItem(v *bool, trueLabel, falseLabel string) MenuItem {
+	return MenuItem{
 		Label:    util.Select(*v, trueLabel, falseLabel),
 		BgColor:  util.Select(*v, colors.popup.backgroundGrey, colors.popup.backgroundBlack),
 		Color:    colors.popup.text,
 		Centered: true,
-		OnClick: func(_ ERAMMenuClickType) bool {
+		OnClick: func(_ MenuClickType) bool {
 			*v = !*v
 			return false
 		},
@@ -217,12 +217,12 @@ func (ep *ERAMPane) makeBooleanMenuItem(v *bool, trueLabel, falseLabel string) E
 
 // makeToggleMenuItem builds a left-justified toggle row with a fixed label.
 // Background is grey when *v is true, black otherwise. Click toggles *v.
-func (ep *ERAMPane) makeToggleMenuItem(v *bool, label string) ERAMMenuItem {
-	return ERAMMenuItem{
+func (ep *Pane) makeToggleMenuItem(v *bool, label string) MenuItem {
+	return MenuItem{
 		Label:   label,
 		BgColor: util.Select(*v, colors.popup.backgroundGrey, colors.popup.backgroundBlack),
 		Color:   colors.popup.text,
-		OnClick: func(_ ERAMMenuClickType) bool {
+		OnClick: func(_ MenuClickType) bool {
 			*v = !*v
 			return false
 		},
@@ -234,29 +234,29 @@ func (ep *ERAMPane) makeToggleMenuItem(v *bool, label string) ERAMMenuItem {
 // clamped to [min, max]. Generic over any int-kinded type so callers can pass
 // e.g. *scope.Brightness directly. Free-standing because Go methods cannot have
 // their own type parameters.
-func makeIntMenuItem[T ~int](ep *ERAMPane, v *T, label string, min, max, step int) ERAMMenuItem {
-	return ERAMMenuItem{
+func makeIntMenuItem[T ~int](ep *Pane, v *T, label string, min, max, step int) MenuItem {
+	return MenuItem{
 		Label:   fmt.Sprintf("%s %d", label, *v),
 		BgColor: colors.popup.backgroundGreen,
 		Color:   colors.popup.text,
-		OnClick: func(_ ERAMMenuClickType) bool {
+		OnClick: func(_ MenuClickType) bool {
 			handleClick(ep, v, min, max, step)
 			return false
 		},
 	}
 }
 
-// ERAMMenuConfig holds the full configuration for a menu drawn by DrawERAMMenu.
-type ERAMMenuConfig struct {
+// MenuConfig holds the full configuration for a menu drawn by DrawERAMMenu.
+type MenuConfig struct {
 	Title              string
 	TitleLeftJustified bool // false = centered (default)
 	ShowMButton        bool
-	OnMClick           func(ERAMMenuClickType)
+	OnMClick           func(MenuClickType)
 	Width              float32
 	Font               *renderer.Font // row font; nil = ep.ERAMToolbarFont()
 	TitleFont          *renderer.Font // title bar font; nil = same as Font
 	ItemHeight         float32        // 0 = default 18px
-	Rows               []ERAMMenuItem
+	Rows               []MenuItem
 
 	// Escape hatch for custom drawn content (e.g. CRR color swatches).
 	// Returns the new cursor position after drawing.
@@ -274,7 +274,7 @@ type ERAMMenuConfig struct {
 // clamped origin plus the anchor side and pinned X that DrawView uses to
 // keep the host view's pinned edge flush with the pop-up as the view
 // resizes.
-func (ep *ERAMPane) OpenPopupAt(ctx *scope.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) viewPopupPlacement {
+func (ep *Pane) OpenPopupAt(ctx *scope.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) viewPopupPlacement {
 	pe := ctx.PaneExtent
 	origin := originGuess
 	anchor := popupAnchorRight
@@ -315,18 +315,18 @@ func (ep *ERAMPane) OpenPopupAt(ctx *scope.Context, originGuess [2]float32, widt
 	return viewPopupPlacement{Origin: origin, Anchor: anchor, PinX: pinX}
 }
 
-// ERAMMenuResult is returned by DrawERAMMenu.
-type ERAMMenuResult struct {
+// MenuResult is returned by DrawERAMMenu.
+type MenuResult struct {
 	Extent     math.Extent2D
 	Dismissed  bool
 	RowExtents []math.Extent2D
 }
 
 // DrawERAMMenu renders a floating popup menu and handles clicks.
-func (ep *ERAMPane) DrawERAMMenu(ctx *scope.Context, transforms scope.ScopeTransformations,
-	cb *renderer.CommandBuffer, origin [2]float32, cfg ERAMMenuConfig) ERAMMenuResult {
+func (ep *Pane) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformations,
+	cb *renderer.CommandBuffer, origin [2]float32, cfg MenuConfig) MenuResult {
 
-	var result ERAMMenuResult
+	var result MenuResult
 
 	// Defaults
 	font := cfg.Font
@@ -634,8 +634,8 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *scope.Context, transforms scope.ScopeTrans
 // drawScrollSection renders a scrollable list section for a row with SubRows.
 // It handles drawing, scroll arrows, mouse wheel, and click selection.
 // Returns the updated cursor position.
-func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, font *renderer.Font,
-	item *ERAMMenuItem, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+func (ep *Pane) drawScrollSection(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	item *MenuItem, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
 
 	ps := ep.currentPrefs()
@@ -752,8 +752,8 @@ func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, f
 
 // drawMenuCellsRow renders a row of side-by-side pick areas, splitting the
 // row width by each cell's Weight. Cells handle their own clicks.
-func (ep *ERAMPane) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
-	cells []ERAMMenuCell, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+func (ep *Pane) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	cells []MenuCell, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
 
 	ps := ep.currentPrefs()
@@ -818,8 +818,8 @@ func (ep *ERAMPane) drawMenuCellsRow(cursor [2]float32, width, itemH float32, fo
 
 // drawMenuGrid renders a scrollable grid of value pick areas with a reserved
 // scroll-arrow column on the right. Cells handle their own clicks.
-func (ep *ERAMPane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *renderer.Font,
-	grid *ERAMMenuGrid, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+func (ep *Pane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	grid *MenuGrid, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
 
 	ps := ep.currentPrefs()
@@ -950,8 +950,8 @@ func (ep *ERAMPane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *
 
 // drawMenuInputRow renders a text input row: a black box showing the buffer
 // contents with a trailing cursor. Keyboard input is the popup's concern.
-func (ep *ERAMPane) drawMenuInputRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
-	input *ERAMMenuInput, trid *renderer.ColoredTrianglesDrawBuilder,
+func (ep *Pane) drawMenuInputRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	input *MenuInput, trid *renderer.ColoredTrianglesDrawBuilder,
 	td *renderer.TextDrawBuilder, extent *math.Extent2D) [2]float32 {
 
 	ps := ep.currentPrefs()

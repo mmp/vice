@@ -21,7 +21,7 @@ func SkipProcedureTurnHolds(wps av.WaypointArray, drawnHolds map[string]any) {
 	}
 }
 
-func DrawEnrouteHolds(nmPerLongitude, magneticVariation float32, transforms ScopeTransformations, wps av.WaypointArray, procedure string,
+func DrawEnrouteHolds(nmPerLongitude, magneticVariation float32, transforms Transformations, wps av.WaypointArray, procedure string,
 	color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, style renderer.TextStyle,
 	drawn *DrawnRoutes, drawnHolds map[string]any) {
 	for _, wp := range wps {
@@ -39,7 +39,7 @@ func DrawEnrouteHolds(nmPerLongitude, magneticVariation float32, transforms Scop
 // drawHoldPattern draws a charted hold, unless one at its fix has been
 // drawn already: the database often has several records for one fix that
 // differ only in their altitudes.
-func DrawHoldPattern(nmPerLongitude, magneticVariation float32, transforms ScopeTransformations,
+func DrawHoldPattern(nmPerLongitude, magneticVariation float32, transforms Transformations,
 	hold av.Hold, color renderer.RGB, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	style renderer.TextStyle, drawn *DrawnRoutes, drawnHolds map[string]any) {
 	if _, ok := drawnHolds[hold.Fix]; ok {
@@ -151,7 +151,7 @@ func DrawHoldPattern(nmPerLongitude, magneticVariation float32, transforms Scope
 	}
 }
 
-func drawHoldTurn(nmPerLongitude float32, transforms ScopeTransformations, centerNM [2]float32, radius float32,
+func drawHoldTurn(nmPerLongitude float32, transforms Transformations, centerNM [2]float32, radius float32,
 	startAngle float32, turnDirection av.TurnDirection, color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder) {
 	// Draw 180° turn arc with segments
 	clockwise := turnDirection == av.TurnRight

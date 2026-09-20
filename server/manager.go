@@ -54,7 +54,7 @@ type SimManager struct {
 ///////////////////////////////////////////////////////////////////////////
 // Constructor and Initialization
 
-func NewSimManager(config ServerLaunchConfig, tables *scenario.Tables, lg *log.Logger) *SimManager {
+func NewSimManager(config LaunchConfig, tables *scenario.Tables, lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		sessionsByName:  make(map[string]*simSession),
 		sessionsByToken: make(map[string]*simSession),

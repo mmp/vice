@@ -66,7 +66,7 @@ type nexradCBs struct {
 	generation               int
 }
 
-func (ep *ERAMPane) drawWeatherRadar(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawWeatherRadar(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	precip, gen := ep.weatherRadar.LatestPrecip(ctx)
 	if precip == nil {
 		return
@@ -116,7 +116,7 @@ func nexradLevelLabel(level int) string {
 	return fmt.Sprintf("%d", level)
 }
 
-func handleNexradLevelClick(ep *ERAMPane, pref *int) {
+func handleNexradLevelClick(ep *Pane, pref *int) {
 	mouse := toolbarDrawState.mouse
 	if mouse == nil {
 		return

@@ -40,7 +40,7 @@ func (c *cifpTab) init() {
 // drawCIFPProcedures draws the procedures checked in the CIFP tab. They are
 // drawn separately from the scenario's own routes: the point of showing them
 // is to compare the two.
-func (in *inspector) drawCIFPProcedures(a *app, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (in *inspector) drawCIFPProcedures(a *app, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	c := &in.cifp
 	if len(c.draw) == 0 {
 		return

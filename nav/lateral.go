@@ -98,7 +98,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 		if !nav.RouteAltitudeActions {
 			nav.climbToCruise(alt)
 		}
-		nav.Speed = NavSpeed{}
+		nav.Speed = Speed{}
 		return
 	}
 
@@ -113,7 +113,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 	if !nav.RouteAltitudeActions {
 		nav.climbToCruise(alt)
 	}
-	nav.Speed = NavSpeed{}
+	nav.Speed = Speed{}
 	nav.EnqueueOnCourse(simTime)
 }
 
@@ -127,7 +127,7 @@ func (nav *Nav) climbToCruise(alt float32) {
 	if nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil {
 		nav.setAssignedAltitude(alt)
 	} else {
-		nav.Altitude = NavAltitude{Cleared: &alt}
+		nav.Altitude = Altitude{Cleared: &alt}
 	}
 }
 
@@ -195,7 +195,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 	// Is it time to start following a heading or direct to a fix recently issued by the controller?
 	if dh := nav.DeferredNavHeading; dh != nil && simTime.After(dh.Time) {
 		// These may all be nil; whichever the instruction set takes effect now.
-		nav.Heading = NavHeading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers}
+		nav.Heading = Heading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers}
 		if len(dh.Waypoints) > 0 {
 			nav.Waypoints = dh.Waypoints
 		}
@@ -228,7 +228,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		if result.completed {
 			// A heading assigned along with the maneuvers was for their
 			// first leg; the aircraft now resumes its route.
-			nav.Heading = NavHeading{}
+			nav.Heading = Heading{}
 		}
 		return result.heading, result.turn, result.rate
 	} else if nav.Heading.Hold != nil {
@@ -446,7 +446,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		clearedAtFix := nav.Approach.AtFixClearedRoute != nil && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix
 		if clearedAtFix {
 			nav.Approach.Cleared = true
-			nav.Speed = NavSpeed{}
+			nav.Speed = Speed{}
 			if wp.NoPT() || nav.Approach.AtFixClearedRoute[0].NoPT() {
 				nav.Approach.NoPT = true
 			}
@@ -472,7 +472,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Approach.AtFixInterceptFix = "" // Clear so we don't trigger again
 		}
 		if nav.Heading.Arc != nil {
-			nav.Heading = NavHeading{}
+			nav.Heading = Heading{}
 		}
 
 		if nav.Approach.Cleared {
@@ -524,9 +524,9 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok {
 			if nfa.Depart.Speed != nil {
 				sr := *nfa.Depart.Speed
-				nav.Speed = NavSpeed{Assigned: &sr}
+				nav.Speed = Speed{Assigned: &sr}
 			} else if nfa.Depart.CancelSpeed {
-				nav.Speed = NavSpeed{}
+				nav.Speed = Speed{}
 			}
 		}
 
@@ -542,7 +542,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 			// Controller-assigned heading
 			hdg := *nfa.Depart.Heading
-			nav.Heading = NavHeading{Assigned: &hdg}
+			nav.Heading = Heading{Assigned: &hdg}
 		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
 			if wps, _, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
 				// Hacky: below we peel off the current waypoint, so re-add
@@ -554,7 +554,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Heading = *h
 		} else if wp.Arc() != nil && !interceptedAtFix {
 			// Fly the DME arc
-			nav.Heading = NavHeading{Arc: wp.Arc(), JoiningArc: true}
+			nav.Heading = Heading{Arc: wp.Arc(), JoiningArc: true}
 		}
 
 		if wp.NoPT() {
@@ -571,7 +571,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			// Passing the airport; leave it in the route but make sure
 			// we're on a heading.
 			hdg := nav.FlightState.Heading
-			nav.Heading = NavHeading{Assigned: &hdg}
+			nav.Heading = Heading{Assigned: &hdg}
 		} else {
 			nav.Waypoints = nav.Waypoints[1:]
 		}
@@ -583,7 +583,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		if len(nav.Waypoints) > 0 {
 			// Is there a hold coming up at the next waypoint?
 			if nfa, ok := nav.FixAssignments[nav.Waypoints[0].Fix]; ok && nfa.Hold != nil {
-				nav.Heading = NavHeading{Hold: nav.makeFlyHold(callsign, *nfa.Hold)}
+				nav.Heading = Heading{Hold: nav.makeFlyHold(callsign, *nfa.Hold)}
 			}
 		}
 
@@ -604,7 +604,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 // decides which of the three it is, so that scenario validation can tell an
 // assigned heading from a maneuver sequence the same way; an assigned heading
 // is flown as a controller's would be, so the rest of nav treats it as one.
-func (nav *Nav) actionGroupHeading(wp av.Waypoint, next *av.Waypoint) *NavHeading {
+func (nav *Nav) actionGroupHeading(wp av.Waypoint, next *av.Waypoint) *Heading {
 	h, kind := av.ActionGroupHeading(wp.ActionGroups())
 	switch kind {
 	case av.ActionGroupHeadingNone:
@@ -614,12 +614,12 @@ func (nav *Nav) actionGroupHeading(wp av.Waypoint, next *av.Waypoint) *NavHeadin
 			// Round to nearest 5 degrees
 			hdg := math.MagneticHeading(5 * int((float32(nav.FlightState.Heading)+2.5)/5))
 			hdg = math.NormalizeHeading(hdg)
-			return &NavHeading{Assigned: &hdg}
+			return &Heading{Assigned: &hdg}
 		}
 		hdg, turn := math.MagneticHeading(h.Heading), h.Turn
-		return &NavHeading{Assigned: &hdg, Turn: &turn}
+		return &Heading{Assigned: &hdg, Turn: &turn}
 	}
-	return &NavHeading{Maneuvers: nav.makeActionGroupManeuvers(wp, next)}
+	return &Heading{Maneuvers: nav.makeActionGroupManeuvers(wp, next)}
 }
 
 // courseTowardFix returns the course along the line through the aircraft in

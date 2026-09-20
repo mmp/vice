@@ -98,7 +98,7 @@ type FuzzConfig struct {
 
 // FuzzController orchestrates fuzz testing of STARS commands.
 type FuzzController struct {
-	sp            *STARSPane
+	sp            *Pane
 	specs         []CommandSpec
 	targetGenSpec *CommandSpec // The [ALL_TEXT] target-gen spec for pilot commands
 	r             *rand.Rand
@@ -129,7 +129,7 @@ type ModeStats struct {
 }
 
 // NewFuzzController creates a new FuzzController for testing STARS commands.
-func NewFuzzController(sp *STARSPane, cfg FuzzConfig, lg *log.Logger) *FuzzController {
+func NewFuzzController(sp *Pane, cfg FuzzConfig, lg *log.Logger) *FuzzController {
 	seed := cfg.Seed
 	if seed == 0 {
 		seed = uint64(time.Now().UnixNano())
@@ -272,7 +272,7 @@ func (fc *FuzzController) ExecuteRandomCommand(ctx *scope.Context) {
 	if ps.UseUserCenter {
 		ctr = ps.UserCenter
 	}
-	transforms := scope.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
+	transforms := scope.GetTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
 		ctr, float32(ps.Range), ctx.MagneticVariation)
 
 	// Execute command
@@ -407,7 +407,7 @@ type GeneratorResult struct {
 
 // GeneratorContext provides access to simulation state for generators.
 type GeneratorContext struct {
-	SP          *STARSPane  // Access to visible tracks, prefs, etc.
+	SP          *Pane       // Access to visible tracks, prefs, etc.
 	TargetTrack *sim.Track  // Currently selected track for aircraft commands
 	CommandMode CommandMode // Current command mode (affects ALL_TEXT generation)
 }

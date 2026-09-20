@@ -453,7 +453,7 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 }
 
-func (ep *ERAMPane) initPrefsForLoadedSim(ss client.SimState) *Preferences {
+func (ep *Pane) initPrefsForLoadedSim(ss client.SimState) *Preferences {
 	// TODO: Add saving prefs with different ARTCCS/ sectors
 
 	p := makeDefaultPreferences()
@@ -467,6 +467,6 @@ func (ep *ERAMPane) initPrefsForLoadedSim(ss client.SimState) *Preferences {
 	return p
 }
 
-func (ep *ERAMPane) currentPrefs() *Preferences {
+func (ep *Pane) currentPrefs() *Preferences {
 	return &ep.prefSet.Current
 }

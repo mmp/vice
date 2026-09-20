@@ -20,26 +20,26 @@ import (
 )
 
 func registerCustomCommands() {
-	registerCommand(CommandModeNone, ".BOUNDS", func(sp *STARSPane) { sp.showTRACONBoundary = !sp.showTRACONBoundary })
+	registerCommand(CommandModeNone, ".BOUNDS", func(sp *Pane) { sp.showTRACONBoundary = !sp.showTRACONBoundary })
 
 	// Mode-switching commands
-	registerCommand(CommandModeNone, ".DRAWROUTE", func(sp *STARSPane, ctx *scope.Context) CommandStatus {
+	registerCommand(CommandModeNone, ".DRAWROUTE", func(sp *Pane, ctx *scope.Context) CommandStatus {
 		sp.setCommandMode(ctx, CommandModeDrawRoute)
 		return CommandStatus{Clear: ClearInput}
 	})
 
 	// Display toggles
-	registerCommand(CommandModeNone, ".ROUTE", func(sp *STARSPane) { sp.drawRouteAircraft = "" })
+	registerCommand(CommandModeNone, ".ROUTE", func(sp *Pane) { sp.drawRouteAircraft = "" })
 
 	// .ROUTE[SLEW]: Draw route for clicked aircraft
-	registerCommand(CommandModeNone, ".ROUTE[SLEW]", func(sp *STARSPane, trk *sim.Track) {
+	registerCommand(CommandModeNone, ".ROUTE[SLEW]", func(sp *Pane, trk *sim.Track) {
 		sp.drawRouteAircraft = trk.ADSBCallsign
 	})
 
-	registerCommand(CommandModeNone, ".VFR", func(sp *STARSPane) { sp.showVFRAirports = !sp.showVFRAirports })
+	registerCommand(CommandModeNone, ".VFR", func(sp *Pane) { sp.showVFRAirports = !sp.showVFRAirports })
 
 	// .WIND: Enter wind drawing mode
-	registerCommand(CommandModeNone, ".WIND", func(sp *STARSPane, ctx *scope.Context) CommandStatus {
+	registerCommand(CommandModeNone, ".WIND", func(sp *Pane, ctx *scope.Context) CommandStatus {
 		sp.setCommandMode(ctx, CommandModeDrawWind)
 		if sp.atmosGrid == nil {
 			ctx.Client.GetAtmosGrid(ctx.InterpolatedSimTime.Time(),
@@ -57,7 +57,7 @@ func registerCustomCommands() {
 	})
 
 	// ?: print aircraft state
-	registerCommand(CommandModeNone, "?[SLEW]", func(sp *STARSPane, ctx *scope.Context, trk *sim.Track) {
+	registerCommand(CommandModeNone, "?[SLEW]", func(sp *Pane, ctx *scope.Context, trk *sim.Track) {
 		ads, err := ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign)
 		if err != nil {
 			ctx.Lg.Error("print aircraft", slog.String("callsign", string(trk.ADSBCallsign)),
@@ -69,9 +69,9 @@ func registerCustomCommands() {
 	})
 
 	// Capture commands (require capture.enabled)
-	registerCommand(CommandModeNone, "CR", func(sp *STARSPane) error {
+	registerCommand(CommandModeNone, "CR", func(sp *Pane) error {
 		if !sp.capture.enabled {
-			return ErrSTARSCommandFormat
+			return ErrCommandFormat
 		}
 		sp.capture.specifyingRegion = false
 		sp.capture.haveRegion = false
@@ -79,16 +79,16 @@ func registerCustomCommands() {
 	})
 
 	// CR[POS_RAW]: Set first capture region point
-	registerCommand(CommandModeNone, "CR[POS_RAW]", func(sp *STARSPane, pos [2]float32) (CommandStatus, error) {
+	registerCommand(CommandModeNone, "CR[POS_RAW]", func(sp *Pane, pos [2]float32) (CommandStatus, error) {
 		if !sp.capture.enabled {
-			return CommandStatus{}, ErrSTARSCommandFormat
+			return CommandStatus{}, ErrCommandFormat
 		}
 		sp.capture.specifyingRegion = true
 		sp.capture.region[0] = pos
 		return CommandStatus{
 			Clear: ClearNone,
 			CommandHandlers: makeCommandHandlers(
-				"CR[POS_RAW]", func(sp *STARSPane, pos [2]float32) {
+				"CR[POS_RAW]", func(sp *Pane, pos [2]float32) {
 					sp.capture.region[1] = pos
 					sp.capture.specifyingRegion = false
 					sp.capture.haveRegion = true
@@ -96,17 +96,17 @@ func registerCustomCommands() {
 		}, nil
 	})
 
-	registerCommand(CommandModeNone, "CS", func(sp *STARSPane) error {
+	registerCommand(CommandModeNone, "CS", func(sp *Pane) error {
 		if !sp.capture.enabled {
-			return ErrSTARSCommandFormat
+			return ErrCommandFormat
 		}
 		sp.capture.doStill = true
 		return nil
 	})
 
-	registerCommand(CommandModeNone, "CV", func(sp *STARSPane) error {
+	registerCommand(CommandModeNone, "CV", func(sp *Pane) error {
 		if !sp.capture.enabled {
-			return ErrSTARSCommandFormat
+			return ErrCommandFormat
 		}
 		sp.capture.doVideo = !sp.capture.doVideo
 		return nil
@@ -139,7 +139,7 @@ func registerCustomCommands() {
 	registerCommand(CommandModeTargetGenLock, "/[ALL_TEXT]", targetGenSendMessage)
 
 	// .DRAWROUTE
-	registerCommand(CommandModeDrawRoute, "[POS]", func(sp *STARSPane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
+	registerCommand(CommandModeDrawRoute, "[POS]", func(sp *Pane, ctx *scope.Context, pos math.Point2LL) CommandStatus {
 		sp.drawRoutePoints = append(sp.drawRoutePoints, pos)
 		var cb []string
 		for _, p := range sp.drawRoutePoints {
@@ -152,9 +152,9 @@ func registerCustomCommands() {
 
 // targetGenAircraftCommand handles aircraft commands in target gen mode.
 // Parses the input to extract callsign suffix and commands, then runs them.
-func targetGenAircraftCommand(sp *STARSPane, ctx *scope.Context, input string) (CommandStatus, error) {
+func targetGenAircraftCommand(sp *Pane, ctx *scope.Context, input string) (CommandStatus, error) {
 	if input == "" {
-		return CommandStatus{}, ErrSTARSCommandFormat
+		return CommandStatus{}, ErrCommandFormat
 	}
 
 	// Parse callsign suffix and commands
@@ -186,13 +186,13 @@ func targetGenAircraftCommand(sp *STARSPane, ctx *scope.Context, input string) (
 	if trk != nil {
 		sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmds, multiple, false)
 	} else {
-		return CommandStatus{}, ErrSTARSIllegalACID
+		return CommandStatus{}, ErrIllegalACID
 	}
 	return CommandStatus{}, nil
 }
 
 // targetGenClickCommand runs commands on clicked aircraft in target gen mode.
-func targetGenClickCommand(sp *STARSPane, ctx *scope.Context, cmd string, trk *sim.Track) (CommandStatus, error) {
+func targetGenClickCommand(sp *Pane, ctx *scope.Context, cmd string, trk *sim.Track) (CommandStatus, error) {
 	if ctx.Client.RadioIsActive() && !ctx.TCWIsPrivileged(ctx.UserTCW) && cmd != "X" {
 		// Don't allow issuing commands during pilot transmissions unless
 		// it's an instructor/RPO or the command is "X" to delete an aircraft.

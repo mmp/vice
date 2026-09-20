@@ -442,7 +442,7 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 		*maneuvers = (*maneuvers)[1:]
 		if len(*maneuvers) == 0 {
 			if m.ClearAltitudeOnFinal {
-				nav.Altitude = NavAltitude{}
+				nav.Altitude = Altitude{}
 			}
 			return maneuverResult{heading: heading, turn: m.Turn, rate: StandardTurnRate, completed: true}
 		}
@@ -500,7 +500,7 @@ func (nav *Nav) flyProcedureTurnIfNecessary() {
 		panic("Unhandled procedure turn type")
 	}
 
-	nav.Heading = NavHeading{Maneuvers: maneuvers}
+	nav.Heading = Heading{Maneuvers: maneuvers}
 	if len(nav.Heading.Maneuvers) > 0 {
 		nav.Heading.Maneuvers[len(nav.Heading.Maneuvers)-1].ClearAltitudeOnFinal = true
 	}
@@ -625,7 +625,7 @@ func (fh *FlyHold) activateManeuvers(nav *Nav, wxs wx.Sample) bool {
 		return true
 	}
 	if fh.Cancel {
-		nav.Heading = NavHeading{}
+		nav.Heading = Heading{}
 		return false
 	}
 	fh.Maneuvers = fh.circuitManeuvers(nav, wxs)
@@ -701,8 +701,8 @@ func (fh *FlyHold) turnDirection() av.TurnDirection {
 ///////////////////////////////////////////////////////////////////////////
 // Airwork
 
-func StartAirwork(wp av.Waypoint, nav Nav) *NavAirwork {
-	a := &NavAirwork{
+func StartAirwork(wp av.Waypoint, nav Nav) *Airwork {
+	a := &Airwork{
 		Radius:         float32(wp.AirworkRadius()),
 		Center:         wp.Location,
 		AltRange:       wp.AltitudeRestriction().Range,
@@ -715,12 +715,12 @@ func StartAirwork(wp av.Waypoint, nav Nav) *NavAirwork {
 	return a
 }
 
-func (aw *NavAirwork) Update(nav *Nav) bool {
+func (aw *Airwork) Update(nav *Nav) bool {
 	// Tick down the number of seconds we're doing this.
 	aw.RemainingSteps--
 	if aw.RemainingSteps == 0 {
 		// Direct to the next waypoint in the route
-		nav.Heading = NavHeading{}
+		nav.Heading = Heading{}
 		return false
 	}
 
@@ -787,7 +787,7 @@ func (aw *NavAirwork) Update(nav *Nav) bool {
 	return true
 }
 
-func (aw *NavAirwork) Start360(nav Nav) {
+func (aw *Airwork) Start360(nav Nav) {
 	if nav.Rand.Intn(2) == 0 {
 		aw.TurnDirection = av.TurnLeft
 		aw.Heading = math.OffsetHeading(nav.FlightState.Heading, 1)
@@ -798,15 +798,15 @@ func (aw *NavAirwork) Start360(nav Nav) {
 	aw.TurnRate = StandardTurnRate
 }
 
-func (aw *NavAirwork) TargetHeading() (math.MagneticHeading, av.TurnDirection, float32) {
+func (aw *Airwork) TargetHeading() (math.MagneticHeading, av.TurnDirection, float32) {
 	return aw.Heading, aw.TurnDirection, aw.TurnRate
 }
 
-func (aw *NavAirwork) TargetAltitude() (float32, float32, bool) {
+func (aw *Airwork) TargetAltitude() (float32, float32, bool) {
 	return aw.Altitude, float32(util.Select(aw.Dive, 3000, 500)), false
 }
 
-func (aw *NavAirwork) TargetSpeed() (float32, float32, bool) {
+func (aw *Airwork) TargetSpeed() (float32, float32, bool) {
 	if aw.IAS == 0 {
 		return 0, 0, false
 	}

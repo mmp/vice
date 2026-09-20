@@ -9,7 +9,7 @@ import (
 	"github.com/mmp/vice/scope"
 )
 
-func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
+func (ep *Pane) ERAMFont(size int) *renderer.Font {
 	// Clamp before indexing: a view whose Font preference was never
 	// initialized passes 0, which would otherwise index off the front of
 	// systemFont.
@@ -26,15 +26,15 @@ func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
 	return ep.systemFont[size-1]
 }
 
-func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
+func (ep *Pane) ERAMToolbarFont() *renderer.Font {
 	return ep.systemFont[0]
 }
 
-func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
+func (ep *Pane) ERAMInputFont() *renderer.Font {
 	return ep.systemFont[1]
 }
 
-func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
+func (ep *Pane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	fonts := scope.CreateERAMFonts(r, p.DPIScale())
 	get := func(name string, size int) *renderer.Font {
 		return scope.FindERAMFont(fonts, name, size)
@@ -60,7 +60,7 @@ func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 // navigational symbol glyphs (VOR / TACAN / airport / etc.) at one of three
 // pixel sizes, selected by the MapSymbol.Size byte typically stored in
 // video maps (1, 2, 3).
-func (ep *ERAMPane) ERAMGeomapFont(size int) *renderer.Font {
+func (ep *Pane) ERAMGeomapFont(size int) *renderer.Font {
 	switch {
 	case size <= 1:
 		return ep.systemFont[6]
@@ -73,6 +73,6 @@ func (ep *ERAMPane) ERAMGeomapFont(size int) *renderer.Font {
 
 // MapSymbolFont and MapLabelFont implement scope.MapFonts so that video map
 // features are drawn with the ERAM scope's own fonts.
-func (ep *ERAMPane) MapSymbolFont(size int) *renderer.Font { return ep.ERAMGeomapFont(size) }
+func (ep *Pane) MapSymbolFont(size int) *renderer.Font { return ep.ERAMGeomapFont(size) }
 
-func (ep *ERAMPane) MapLabelFont(size int) *renderer.Font { return ep.ERAMFont(size) }
+func (ep *Pane) MapLabelFont(size int) *renderer.Font { return ep.ERAMFont(size) }

@@ -79,7 +79,7 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 				ArrivalAirportLocation:  [2]float32{0, 0},
 				ArrivalAirportElevation: 13,
 			},
-			Approach: nav.NavApproach{
+			Approach: nav.Approach{
 				AssignedId: "I" + runway,
 				Assigned: &av.Approach{
 					Type:   av.ILSApproach,

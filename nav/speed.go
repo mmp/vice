@@ -129,7 +129,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 	fd, err := nav.DistanceToEndOfApproach()
 	if err == nil && fd < 5 {
 		// Cancel speed restrictions inside 5 mile final
-		nav.Speed = NavSpeed{}
+		nav.Speed = Speed{}
 	}
 
 	// Controller assignments: these override anything else.

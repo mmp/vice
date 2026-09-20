@@ -87,7 +87,7 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 	n := &Nav{
 		Perf:           av.DB.AircraftPerformance["A320"],
 		FinalAltitude:  alt,
-		FixAssignments: make(map[string]NavFixAssignment),
+		FixAssignments: make(map[string]FixAssignment),
 		Rand:           rng,
 		Waypoints:      navWps,
 		FlightState: FlightState{
@@ -110,7 +110,7 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 	}
 
 	// Set up approach state: assigned and cleared.
-	n.Approach = NavApproach{
+	n.Approach = Approach{
 		Assigned:   ap,
 		AssignedId: "TEST",
 		Cleared:    true,

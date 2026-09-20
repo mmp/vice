@@ -91,7 +91,7 @@ type dcbSpinner interface {
 // main axis exactly — the scale uses the maximum slot count so the bar's
 // cross-axis thickness doesn't change when switching between menus of
 // different widths.
-func (sp *STARSPane) dcbButtonScale(ctx *scope.Context) float32 {
+func (sp *Pane) dcbButtonScale(ctx *scope.Context) float32 {
 	if !sp.DCBScaleToFit {
 		return ctx.DrawPixelScale
 	}
@@ -115,15 +115,15 @@ func (sp *STARSPane) dcbButtonScale(ctx *scope.Context) float32 {
 // dcbSlots returns the maximum number of main-axis slots needed across
 // every menu the user can switch to. Used for scale-to-fit sizing so a
 // narrower submenu doesn't change the bar's cross-axis thickness.
-func (sp *STARSPane) dcbSlots() int {
+func (sp *Pane) dcbSlots() int {
 	return max(regularDCBSlots, mapsMainDCBColumns+sp.mapsSubmenuColumns())
 }
 
-func (sp *STARSPane) mapsSubmenuColumns() int {
+func (sp *Pane) mapsSubmenuColumns() int {
 	return mapsSubmenuControlCols + mapsSubmenuMapColumns + sp.mapsSubmenuCategoryColumns()
 }
 
-func (sp *STARSPane) mapsSubmenuCategoryColumns() int {
+func (sp *Pane) mapsSubmenuCategoryColumns() int {
 	_, ncat := sp.videoMapCategories()
 	return 1 + ncat/2
 }
@@ -132,7 +132,7 @@ func (sp *STARSPane) mapsSubmenuCategoryColumns() int {
 // DCB bar occupies for the current preference's DCB position. The scroll
 // offset does not shift the bar itself — only the buttons inside it — so
 // this always returns the full, non-scrolled rectangle.
-func (sp *STARSPane) dcbBarExtent(ctx *scope.Context) math.Extent2D {
+func (sp *Pane) dcbBarExtent(ctx *scope.Context) math.Extent2D {
 	ps := sp.currentPrefs()
 	bs := float32(int(sp.dcbButtonScale(ctx)*dcbButtonSize + 0.5))
 	w, h := ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
@@ -154,7 +154,7 @@ func (sp *STARSPane) dcbBarExtent(ctx *scope.Context) math.Extent2D {
 // content size measured by the previous frame's draw so submenus with
 // fewer slots don't allow scrolling past their last button into empty
 // bar area.
-func (sp *STARSPane) dcbMaxScroll(ctx *scope.Context) float32 {
+func (sp *Pane) dcbMaxScroll(ctx *scope.Context) float32 {
 	ps := sp.currentPrefs()
 	var visible float32
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
@@ -177,7 +177,7 @@ type dcbMenuID struct {
 // layout. It changes when the user enters or exits a submenu, or toggles
 // between main and aux. drawDCB resets sp.dcbScroll on transitions so a
 // scroll offset from a wider menu doesn't leak into a narrower one.
-func (sp *STARSPane) dcbCurrentMenu() dcbMenuID {
+func (sp *Pane) dcbCurrentMenu() dcbMenuID {
 	var sub CommandMode
 	switch sp.commandMode {
 	case CommandModeMaps:
@@ -200,7 +200,7 @@ func (sp *STARSPane) dcbCurrentMenu() dcbMenuID {
 	return dcbMenuID{aux: sp.dcbShowAux, submenu: sub}
 }
 
-func (sp *STARSPane) videoMapCategories() ([scope.VideoMapNumCategories]bool, int) {
+func (sp *Pane) videoMapCategories() ([scope.VideoMapNumCategories]bool, int) {
 	var haveCategory [scope.VideoMapNumCategories]bool
 	for _, vm := range sp.allVideoMaps {
 		if vm.Category != scope.VideoMapNoCategory {
@@ -221,7 +221,7 @@ func videoMapButtonIndex(base, columns, i int) int {
 	return base + util.Select(i&1 == 0, i/2, columns+i/2)
 }
 
-func (sp *STARSPane) drawDCB(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
+func (sp *Pane) drawDCB(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	ps := sp.currentPrefs()
 
 	buttonScale := sp.dcbButtonScale(ctx)
@@ -380,7 +380,7 @@ func (sp *STARSPane) drawDCB(ctx *scope.Context, transforms scope.ScopeTransform
 			} else {
 				sp.commandMode = CommandModePlaceRangeRings
 				sp.installCommandHandlers(makeCommandHandlers(
-					"[POS]", func(sp *STARSPane, pos math.Point2LL) {
+					"[POS]", func(sp *Pane, pos math.Point2LL) {
 						ps := sp.currentPrefs()
 						ps.RangeRingsUserCenter = pos
 						ps.UseUserRangeRingsCenter = true
@@ -916,7 +916,7 @@ var dcbDrawState struct {
 	contentMain float32
 }
 
-func (sp *STARSPane) startDrawDCB(ctx *scope.Context, transforms scope.ScopeTransformations,
+func (sp *Pane) startDrawDCB(ctx *scope.Context, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.Mouse
@@ -984,7 +984,7 @@ func (sp *STARSPane) startDrawDCB(ctx *scope.Context, transforms scope.ScopeTran
 // drawDCBScrollIndicators draws small triangles near the bar edges when
 // there is content scrolled past either edge, pointing toward the
 // off-screen direction. Skipped under scale-to-fit (no overflow).
-func (sp *STARSPane) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if sp.DCBScaleToFit {
 		return
 	}
@@ -1056,7 +1056,7 @@ func (sp *STARSPane) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.Co
 	trid.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) endDrawDCB() {
+func (sp *Pane) endDrawDCB() {
 	// Clear out the scissor et al...
 	dcbDrawState.cb.ResetState()
 
@@ -1095,7 +1095,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 	}
 }
 
-func (sp *STARSPane) drawDCBButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
+func (sp *Pane) drawDCBButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -1318,7 +1318,7 @@ func moveDCBCursor(flags dcbFlags, sz [2]float32, ctx *scope.Context) {
 	}
 }
 
-func (sp *STARSPane) toggleButton(ctx *scope.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
+func (sp *Pane) toggleButton(ctx *scope.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
 	if sp.drawDCBButton(ctx, text, flags, buttonScale, *state) {
 		*state = !*state
 		return true
@@ -1362,7 +1362,7 @@ func dcbCaptureMouse(ctx *scope.Context, bounds math.Extent2D) {
 	ctx.Platform.StartCaptureMouse(bounds)
 }
 
-func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, commandMode CommandMode, flags dcbFlags,
+func (sp *Pane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, commandMode CommandMode, flags dcbFlags,
 	buttonScale float32, start func(), update func([2]float32)) {
 	active := sp.commandMode == commandMode
 	if sp.drawDCBButton(ctx, text, flags, buttonScale, active) && !active {
@@ -1371,7 +1371,7 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, co
 		ctx.Platform.StartMouseDeltaMode()
 
 		sp.installCommandHandlers(makeCommandHandlers(
-			"[POS]", func(sp *STARSPane, ctx *scope.Context, _ math.Point2LL) {
+			"[POS]", func(sp *Pane, ctx *scope.Context, _ math.Point2LL) {
 				sp.resetInputState(ctx.Platform)
 				ctx.Platform.StopMouseDeltaMode()
 				ctx.SetMousePosition(savedMousePosition)
@@ -1390,7 +1390,7 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, co
 // drawDCBSpinner draws the provided spinner at the current location in the
 // DCB. It handles mouse capture (and release) and passing mouse wheel
 // events to the spinner.
-func (sp *STARSPane) drawDCBSpinner(ctx *scope.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
+func (sp *Pane) drawDCBSpinner(ctx *scope.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
 	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
 	// Slightly tricky: if the user has selected a command mode via the
 	// keyboard and that command mode has a single associated spinner, then
@@ -1425,7 +1425,7 @@ func (sp *STARSPane) drawDCBSpinner(ctx *scope.Context, spinner dcbSpinner, comm
 
 		modeAfter := spinner.ModeAfter()
 		sp.installCommandHandlers(makeCommandHandlers(
-			"[POS]", func(sp *STARSPane, ctx *scope.Context, _ math.Point2LL) CommandStatus {
+			"[POS]", func(sp *Pane, ctx *scope.Context, _ math.Point2LL) CommandStatus {
 				if modeAfter == CommandModeNone {
 					sp.resetInputState(ctx.Platform)
 					return CommandStatus{}
@@ -1481,9 +1481,9 @@ func (s *dcbRadarRangeSpinner) MouseDelta() float32 {
 func (s *dcbRadarRangeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	// 4-33
 	if r, err := strconv.Atoi(text); err != nil {
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else if r < 6 || r > 256 {
-		return CommandModeNone, ErrSTARSRangeLimit
+		return CommandModeNone, ErrRangeLimit
 	} else {
 		// Input numbers are ints but we store a float (for smoother
 		// stepping when the mouse wheel is used to zoom the scope).
@@ -1531,9 +1531,9 @@ func (s *dcbIntegerRangeSpinner) MouseDelta() float32 {
 
 func (s *dcbIntegerRangeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if v, err := strconv.Atoi(text); err != nil {
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else if v < s.min || v > s.max {
-		return CommandModeNone, ErrSTARSRangeLimit
+		return CommandModeNone, ErrRangeLimit
 	} else {
 		*s.value = v
 		return CommandModeNone, nil
@@ -1547,7 +1547,7 @@ func (s *dcbIntegerRangeSpinner) ModeAfter() CommandMode {
 type dcbAudioVolumeSpinner struct {
 	*dcbIntegerRangeSpinner
 	p  platform.Platform
-	sp *STARSPane
+	sp *Pane
 }
 
 func (s *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
@@ -1580,7 +1580,7 @@ func (s *dcbAudioVolumeSpinner) KeyboardInput(text string) (CommandMode, error) 
 	return mode, err
 }
 
-func makeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *dcbAudioVolumeSpinner {
+func makeAudioVolumeSpinner(p platform.Platform, sp *Pane, vol *int) *dcbAudioVolumeSpinner {
 	return &dcbAudioVolumeSpinner{
 		dcbIntegerRangeSpinner: makeNegatedIntegerRangeSpinner("VOL\n", vol, 1, 10),
 		p:                      p,
@@ -1595,11 +1595,11 @@ func makeLeaderLineLengthSpinner(l *int) dcbSpinner {
 }
 
 type dcbLeaderLineDirectionSpinner struct {
-	sp *STARSPane
+	sp *Pane
 	d  *math.CardinalOrdinalDirection
 }
 
-func makeLeaderLineDirectionSpinner(sp *STARSPane, dir *math.CardinalOrdinalDirection) dcbSpinner {
+func makeLeaderLineDirectionSpinner(sp *Pane, dir *math.CardinalOrdinalDirection) dcbSpinner {
 	return &dcbLeaderLineDirectionSpinner{sp: sp, d: dir}
 }
 
@@ -1628,9 +1628,9 @@ func (s *dcbLeaderLineDirectionSpinner) MouseDelta() float32 {
 
 func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if len(text) > 1 {
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else if dir, ok := s.sp.numpadToDirection(int(text[0] - '0')); !ok || dir == nil /* entered 5 */ {
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else {
 		*s.d = *dir
 		return CommandModeNone, nil
@@ -1686,15 +1686,15 @@ func (s *dcbHistoryRateSpinner) KeyboardInput(text string) (CommandMode, error) 
 	// Make sure we have a single digit for the whole part and the
 	// fractional part.
 	if len(whole) != 1 || whole[0] < '0' || whole[0] > '9' {
-		return CommandModeNone, ErrSTARSIllegalValue
+		return CommandModeNone, ErrIllegalValue
 	}
 	if len(frac) != 1 || frac[0] < '0' || frac[0] > '9' {
-		return CommandModeNone, ErrSTARSIllegalValue
+		return CommandModeNone, ErrIllegalValue
 	}
 
 	// Convert it to a float
 	if value := float32(whole[0]-'0') + float32(frac[0]-'0')/10; value > 4.5 {
-		return CommandModeNone, ErrSTARSIllegalValue
+		return CommandModeNone, ErrIllegalValue
 	} else {
 		*s.r = value
 		return CommandModeNone, nil
@@ -1739,13 +1739,13 @@ func (s *dcbPTLLengthSpinner) MouseDelta() float32 {
 func (s *dcbPTLLengthSpinner) KeyboardInput(text string) (CommandMode, error) {
 	// Here we'll just parse it as a float and then validate it.
 	if v, err := strconv.ParseFloat(text, 32); err != nil {
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else if v < 0 || v > 5 {
 		// out of range
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else if float64(int(v)) != v && float64(int(v))+0.5 != v {
 		// Not a whole number or a decimal x.5
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else {
 		*s.l = float32(v)
 		return CommandModeNone, nil
@@ -1804,7 +1804,7 @@ func (s *dcbDwellModeSpinner) KeyboardInput(text string) (CommandMode, error) {
 		*s.m = DwellModeLock
 		return CommandModeNone, nil
 	default:
-		return CommandModeNone, ErrSTARSIllegalValue
+		return CommandModeNone, ErrIllegalValue
 	}
 }
 
@@ -1858,9 +1858,9 @@ func (s *dcbRangeRingRadiusSpinner) MouseDelta() float32 {
 
 func (s *dcbRangeRingRadiusSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if v, err := strconv.Atoi(text); err != nil {
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else if v != 2 && v != 5 && v != 10 && v != 20 {
-		return CommandModeNone, ErrSTARSIllegalValue
+		return CommandModeNone, ErrIllegalValue
 	} else {
 		*s.r = v
 		return CommandModeNone, nil
@@ -1907,9 +1907,9 @@ func (s *dcbBrightnessSpinner) MouseDelta() float32 {
 
 func (s *dcbBrightnessSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if v, err := strconv.Atoi(text); err != nil {
-		return CommandModeNone, ErrSTARSCommandFormat
+		return CommandModeNone, ErrCommandFormat
 	} else if v > 100 || (v < int(s.min) && !(v == 0 && s.allowOff)) {
-		return CommandModeNone, ErrSTARSIllegalValue
+		return CommandModeNone, ErrIllegalValue
 	} else {
 		*s.b = scope.Brightness(v)
 		return CommandModeBrite, nil
@@ -1944,14 +1944,14 @@ func (s *dcbCharSizeSpinner) ModeAfter() CommandMode {
 	return CommandModeCharSize
 }
 
-func (sp *STARSPane) selectButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) bool {
+func (sp *Pane) selectButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) bool {
 	return sp.drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0)
 }
 
-func (sp *STARSPane) disabledButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
+func (sp *Pane) disabledButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
 	sp.drawDCBButton(ctx, text, flags|buttonDisabled, buttonScale, false)
 }
 
-func (sp *STARSPane) unsupportedButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
+func (sp *Pane) unsupportedButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
 	sp.drawDCBButton(ctx, text, flags|buttonUnsupported, buttonScale, false)
 }

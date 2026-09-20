@@ -316,7 +316,7 @@ func (db *limitedDatablock) dim(factor float32) {
 	dimChars(db.line2[:], factor)
 }
 
-func (ep *ERAMPane) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
+func (ep *Pane) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()
 
@@ -344,7 +344,7 @@ func (ep *ERAMPane) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map
 	return dbs
 }
 
-func (ep *ERAMPane) getDatablock(ctx *scope.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
+func (ep *Pane) getDatablock(ctx *scope.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
 	state := ep.TrackState[trk.ADSBCallsign]
 	ps := ep.currentPrefs()
 	switch dbType {
@@ -538,7 +538,7 @@ func speedStartFromGroundspeedLine4(gsText string) int {
 	return line3Index - line3ToLine4Shift
 }
 
-func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
+func (ep *Pane) getAltitudeFormat(track sim.Track) string {
 	state := ep.TrackState[track.ADSBCallsign]
 	currentAltitude := state.Track.TransponderAltitude
 	displayAlt := track.FlightPlan.DataBlockAltitude()
@@ -576,8 +576,8 @@ func getInterimAltitudeType(track sim.Track) string {
 	return track.FlightPlan.InterimType.String()
 }
 
-func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
+	ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
@@ -638,8 +638,8 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 // datablockAnchor returns the window-space anchor point used by both the
 // datablock renderer and the hover-outline computation. It also returns the
 // (possibly adjusted) direction the datablock was placed in.
-func (ep *ERAMPane) datablockAnchor(ctx *scope.Context, trk sim.Track, db datablock, dbType DatablockType,
-	transforms scope.ScopeTransformations) ([2]float32, math.CardinalOrdinalDirection) {
+func (ep *Pane) datablockAnchor(ctx *scope.Context, trk sim.Track, db datablock, dbType DatablockType,
+	transforms scope.Transformations) ([2]float32, math.CardinalOrdinalDirection) {
 	state := ep.TrackState[trk.ADSBCallsign]
 	start := transforms.WindowFromLatLongP(state.Track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)

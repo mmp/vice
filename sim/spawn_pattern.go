@@ -438,7 +438,7 @@ func (s *Sim) resetPatternLap(ac *Aircraft) {
 	// than flying a previously-assigned heading. The nav sets
 	// Heading.Assigned when passing the last waypoint, which happens when
 	// _pat_threshold is the only waypoint remaining (after touch-and-gos).
-	ac.Nav.Heading = nav.NavHeading{}
+	ac.Nav.Heading = nav.Heading{}
 
 	// Re-enter initial departure climb so speed/altitude management
 	// handles the takeoff roll correctly.
@@ -489,7 +489,7 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 		if len(ac.Nav.Waypoints) <= 1 {
 			if wps := s.generateOrbitWaypoints(airport); len(wps) > 0 {
 				ac.Nav.Waypoints = wps
-				ac.Nav.Heading = nav.NavHeading{}
+				ac.Nav.Heading = nav.Heading{}
 			}
 		}
 		return
@@ -500,7 +500,7 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 		return
 	}
 	ac.Nav.Waypoints = wps
-	ac.Nav.Heading = nav.NavHeading{}
+	ac.Nav.Heading = nav.Heading{}
 	if ac.HoldingSince.IsZero() {
 		ac.HoldingSince = s.State.SimTime
 	}
@@ -538,7 +538,7 @@ func (s *Sim) enterPattern(ac *Aircraft, airport av.ICAOAirportCode) {
 			slog.String("callsign", string(ac.ADSBCallsign)),
 			slog.String("airport", string(airport)))
 	}
-	ac.Nav.Heading = nav.NavHeading{}
+	ac.Nav.Heading = nav.Heading{}
 	ac.HoldingSince = Time{}
 }
 

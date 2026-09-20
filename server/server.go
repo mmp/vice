@@ -118,14 +118,14 @@ const rpcConnIdleTimeout = 10 * time.Minute
 // never closes a codec whose handlers haven't returned.
 const rpcConnWriteTimeout = time.Minute
 
-type ServerLaunchConfig struct {
+type LaunchConfig struct {
 	Port          int // if 0, finds an open one
 	Overrides     scenario.OverrideFiles
 	ServerAddress string // address to use for remote TTS provider
 	IsLocal       bool
 }
 
-func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
+func LaunchServer(config LaunchConfig, lg *log.Logger) {
 	util.InitFlightRecorder(lg)
 	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
 	util.MonitorMemoryUsage(512 /* trigger MB */, 64 /* delta MB */, lg)
@@ -141,7 +141,7 @@ func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
 	server()
 }
 
-func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, util.ErrorLogger, string) {
+func LaunchServerAsync(config LaunchConfig, lg *log.Logger) (int, util.ErrorLogger, string) {
 	rpcPort, server, e, overrideErrors := makeServer(config, lg)
 	if e.HaveErrors() {
 		return 0, e, ""
@@ -152,7 +152,7 @@ func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, util.Err
 	return rpcPort, e, overrideErrors
 }
 
-func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger, string) {
+func makeServer(config LaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger, string) {
 	var listener net.Listener
 	var err error
 	var errorLogger util.ErrorLogger

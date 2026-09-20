@@ -201,7 +201,7 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) math.TrueHeading {
 	return math.Heading2LL(ts.previousTrack.Location, ts.track.Location, nmPerLongitude)
 }
 
-func (sp *STARSPane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
+func (sp *Pane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
 	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
@@ -212,7 +212,7 @@ func (sp *STARSPane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*Trac
 	return nil, false
 }
 
-func (sp *STARSPane) processEvents(ctx *scope.Context) {
+func (sp *Pane) processEvents(ctx *scope.Context) {
 	for i := range ctx.Client.State.ATIS {
 		if sp.LastATIS[i] != ctx.Client.State.ATIS[i] || sp.LastGIText[i] != ctx.Client.State.GIText[i] {
 			// Don't flash the controller's own edit when its RPC response or the
@@ -425,7 +425,7 @@ func (sp *STARSPane) processEvents(ctx *scope.Context) {
 	}
 }
 
-func (sp *STARSPane) isQuicklooked(ctx *scope.Context, trk sim.Track) bool {
+func (sp *Pane) isQuicklooked(ctx *scope.Context, trk sim.Track) bool {
 	if trk.IsUnassociated() {
 		return false
 	}
@@ -442,7 +442,7 @@ func (sp *STARSPane) isQuicklooked(ctx *scope.Context, trk sim.Track) bool {
 	return ok
 }
 
-func (sp *STARSPane) updateMSAWs(ctx *scope.Context) {
+func (sp *Pane) updateMSAWs(ctx *scope.Context) {
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !trk.MVAsApply {
@@ -496,7 +496,7 @@ func (sp *STARSPane) updateMSAWs(ctx *scope.Context) {
 	}
 }
 
-func (sp *STARSPane) updateRadarTracks(ctx *scope.Context) {
+func (sp *Pane) updateRadarTracks(ctx *scope.Context) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	fa := ctx.Client.State.FacilityAdaptation
 	appliedSimTime := ctx.Client.State.SimTime
@@ -562,7 +562,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *scope.Context) {
 	sp.updateInTrailDistance(ctx)
 }
 
-func (sp *STARSPane) updateQuicklookRegionTracks(ctx *scope.Context) {
+func (sp *Pane) updateQuicklookRegionTracks(ctx *scope.Context) {
 	ps := sp.currentPrefs()
 	fa := ctx.Client.State.FacilityAdaptation
 
@@ -606,7 +606,7 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *scope.Context) {
 	}
 }
 
-func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
+func (sp *Pane) checkUnreasonableModeC(state *TrackState) {
 	if state.track.Mode != av.TransponderModeAltitude || state.track.TransponderAltitude == 0 ||
 		state.previousTrack.TransponderAltitude == 0 {
 		state.UnreasonableModeC = false
@@ -634,7 +634,7 @@ func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
 	}
 }
 
-func (sp *STARSPane) drawTracks(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawTracks(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	trackBuilder := renderer.GetColoredTrianglesDrawBuilder()
@@ -734,7 +734,7 @@ func (sp *STARSPane) drawTracks(ctx *scope.Context, transforms scope.ScopeTransf
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) beaconCodeSelected(code av.Squawk) bool {
+func (sp *Pane) beaconCodeSelected(code av.Squawk) bool {
 	ps := sp.currentPrefs()
 	for _, c := range ps.SelectedBeacons {
 		if c <= 0o77 && c == code/0o100 {
@@ -747,7 +747,7 @@ func (sp *STARSPane) beaconCodeSelected(code av.Squawk) bool {
 	return false
 }
 
-func (sp *STARSPane) getTrackSize(ctx *scope.Context, transforms scope.ScopeTransformations) float32 {
+func (sp *Pane) getTrackSize(ctx *scope.Context, transforms scope.Transformations) float32 {
 	var size float32 = 13 // base track size
 	e := transforms.PixelDistanceNM(ctx.NmPerLongitude)
 	var distance float32 = 0.3623 // Around 2200 feet in nm
@@ -757,12 +757,12 @@ func (sp *STARSPane) getTrackSize(ctx *scope.Context, transforms scope.ScopeTran
 	return size
 }
 
-func (sp *STARSPane) getGhostTracks(ctx *scope.Context) []*av.GhostTrack {
+func (sp *Pane) getGhostTracks(ctx *scope.Context) []*av.GhostTrack {
 	var ghosts []*av.GhostTrack
 	ps := sp.currentPrefs()
 	nmPerLongitude := ctx.NmPerLongitude
 
-	tryGhost := func(pair STARSCRDAPair, src, ghost *av.CRDARegion,
+	tryGhost := func(pair CRDAPair, src, ghost *av.CRDARegion,
 		rwyState CRDARunwayState, defaultLeader math.CardinalOrdinalDirection,
 		mode CRDAMode) {
 		if !rwyState.Enabled {
@@ -815,7 +815,7 @@ func (sp *STARSPane) getGhostTracks(ctx *scope.Context) []*av.GhostTrack {
 	return ghosts
 }
 
-func (sp *STARSPane) drawGhosts(ctx *scope.Context, ghosts []*av.GhostTrack, transforms scope.ScopeTransformations,
+func (sp *Pane) drawGhosts(ctx *scope.Context, ghosts []*av.GhostTrack, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -860,8 +860,8 @@ func (sp *STARSPane) drawGhosts(ctx *scope.Context, ghosts []*av.GhostTrack, tra
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
-	transforms scope.ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+func (sp *Pane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
+	transforms scope.Transformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 
@@ -1015,7 +1015,7 @@ func getTrackVertices(ctx *scope.Context, diameter float32) [][2]float32 {
 	return pts
 }
 
-func (sp *STARSPane) drawHistoryTrails(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawHistoryTrails(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.History == 0 {
 		// Don't draw if brightness == 0.
@@ -1061,7 +1061,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *scope.Context, transforms scope.Scop
 	historyBuilder.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) updateOutsideAirspace(ctx *scope.Context) {
+func (sp *Pane) updateOutsideAirspace(ctx *scope.Context) {
 	vols := ctx.Client.AirspaceForTCW(ctx.UserTCW)
 
 	for _, trk := range sp.visibleTracks {
@@ -1090,7 +1090,7 @@ func (sp *STARSPane) updateOutsideAirspace(ctx *scope.Context) {
 // WarnOutsideAirspace reports whether the datablock should show an alert for
 // the track having left the user's airspace, along with the altitude ranges
 // of the airspace at its position.
-func (sp *STARSPane) WarnOutsideAirspace(trk sim.Track) ([][2]int, bool) {
+func (sp *Pane) WarnOutsideAirspace(trk sim.Track) ([][2]int, bool) {
 	if !sp.DisplayOutsideAirspaceWarning {
 		return nil, false
 	}
@@ -1099,7 +1099,7 @@ func (sp *STARSPane) WarnOutsideAirspace(trk sim.Track) ([][2]int, bool) {
 	return state.OutsideAirspaceAlts, state.OutsideAirspace
 }
 
-func (sp *STARSPane) updateCAAircraft(ctx *scope.Context) {
+func (sp *Pane) updateCAAircraft(ctx *scope.Context) {
 	tracked, untracked := make(map[av.ADSBCallsign]sim.Track), make(map[av.ADSBCallsign]sim.Track)
 	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() {
@@ -1265,7 +1265,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *scope.Context) {
 	}
 }
 
-func (sp *STARSPane) updateInTrailDistance(ctx *scope.Context) {
+func (sp *Pane) updateInTrailDistance(ctx *scope.Context) {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 
@@ -1410,7 +1410,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return math.Add2f(p, math.Scale2f(ma.v, gs))
 }
 
-func (sp *STARSPane) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.Track) {
+func (sp *Pane) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.Track) {
 	if front.IsUnassociated() || back.IsUnassociated() {
 		return
 	}
@@ -1461,7 +1461,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *scope.Context, back, front s
 	}
 }
 
-func (sp *STARSPane) diverging(ctx *scope.Context, a, b *sim.Track) bool {
+func (sp *Pane) diverging(ctx *scope.Context, a, b *sim.Track) bool {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 
@@ -1488,7 +1488,7 @@ func (sp *STARSPane) diverging(ctx *scope.Context, a, b *sim.Track) bool {
 	return math.HeadingDifference(sa.TrackHeading(nmPerLongitude), sb.TrackHeading(nmPerLongitude)) >= 15
 }
 
-func (sp *STARSPane) drawLeaderLines(ctx *scope.Context, dbs map[av.ADSBCallsign]datablock, transforms scope.ScopeTransformations,
+func (sp *Pane) drawLeaderLines(ctx *scope.Context, dbs map[av.ADSBCallsign]datablock, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1525,7 +1525,7 @@ func (sp *STARSPane) drawLeaderLines(ctx *scope.Context, dbs map[av.ADSBCallsign
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) getLeaderLineDirection(ctx *scope.Context, trk sim.Track) math.CardinalOrdinalDirection {
+func (sp *Pane) getLeaderLineDirection(ctx *scope.Context, trk sim.Track) math.CardinalOrdinalDirection {
 	ps := sp.currentPrefs()
 	state := sp.TrackState[trk.ADSBCallsign]
 
@@ -1582,14 +1582,14 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *scope.Context, trk sim.Track) m
 	return math.North
 }
 
-func (sp *STARSPane) getLeaderLineVector(ctx *scope.Context, dir math.CardinalOrdinalDirection) [2]float32 {
+func (sp *Pane) getLeaderLineVector(ctx *scope.Context, dir math.CardinalOrdinalDirection) [2]float32 {
 	ps := sp.currentPrefs()
 	pxLengths := []float32{0, 17, 32, 47, 62, 77, 114, 152}
 	idx := min(ps.LeaderLineLength, len(pxLengths)-1)
 	return math.Scale2f(dir.UnitVector(), pxLengths[idx])
 }
 
-func (sp *STARSPane) radarVisibility(radarSites map[string]*av.RadarSite, pos math.Point2LL, alt int) (primary, secondary bool, distance float32) {
+func (sp *Pane) radarVisibility(radarSites map[string]*av.RadarSite, pos math.Point2LL, alt int) (primary, secondary bool, distance float32) {
 	prefs := sp.currentPrefs()
 	distance = 1e30
 	single := sp.radarMode(radarSites) == RadarModeSingle

@@ -102,7 +102,7 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) math.TrueHeading {
 	return math.Heading2LL(ts.PreviousTrack.Location, ts.Track.Location, nmPerLongitude)
 }
 
-func (ep *ERAMPane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
+func (ep *Pane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
 	for _, trk := range ctx.Client.State.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
@@ -113,7 +113,7 @@ func (ep *ERAMPane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*Track
 	return nil, false
 }
 
-func (ep *ERAMPane) processEvents(ctx *scope.Context) {
+func (ep *Pane) processEvents(ctx *scope.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
 			sa := &TrackState{
@@ -210,7 +210,7 @@ func (ep *ERAMPane) processEvents(ctx *scope.Context) {
 	}
 }
 
-func (ep *ERAMPane) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
+func (ep *Pane) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 	// Update the track states based on the current radar tracks.
 	nowInterp := ctx.InterpolatedSimTime.Time()
 	nowApplied := ctx.Client.State.SimTime.Time()
@@ -273,7 +273,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 	}
 }
 
-func (ep *ERAMPane) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations,
+func (ep *Pane) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -299,8 +299,8 @@ func (ep *ERAMPane) drawTargets(ctx *scope.Context, tracks []sim.Track, transfor
 	td.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *scope.Context,
-	transforms scope.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+func (ep *Pane) drawTarget(track sim.Track, state *TrackState, ctx *scope.Context,
+	transforms scope.Transformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
 	cb *renderer.CommandBuffer) {
 	pos := state.Track.Location
@@ -314,7 +314,7 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *scope.Co
 	ld.GenerateCommands(cb) // why does this need to be here?
 }
 
-func (ep *ERAMPane) drawTracks(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations,
+func (ep *Pane) drawTracks(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -329,8 +329,8 @@ func (ep *ERAMPane) drawTracks(ctx *scope.Context, tracks []sim.Track, transform
 }
 
 // TODO: Store tracks in ERAMComputer and have them associate to targets
-func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
-	td *renderer.TextDrawBuilder, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
+	td *renderer.TextDrawBuilder, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	pos := state.Track.Location
 	// TODO: free tracks, frozen tracks, and coast tracks
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
@@ -339,7 +339,7 @@ func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Conte
 		renderer.TextStyle{Font: font, Color: ep.trackColor()})
 }
 
-func (ep *ERAMPane) getTarget(trk sim.Track, state *TrackState) string {
+func (ep *Pane) getTarget(trk sim.Track, state *TrackState) string {
 	symbol := "\u0001"
 	if trk.IsUnassociated() {
 		switch trk.Mode {
@@ -369,7 +369,7 @@ func (ep *ERAMPane) getTarget(trk sim.Track, state *TrackState) string {
 	return symbol
 }
 
-func drawDiamond(ctx *scope.Context, transforms scope.ScopeTransformations, color renderer.RGB,
+func drawDiamond(ctx *scope.Context, transforms scope.Transformations, color renderer.RGB,
 	pos [2]float32, ld *renderer.ColoredLinesDrawBuilder, cb *renderer.CommandBuffer) {
 	cb.LineWidth(2, ctx.DPIScale)
 	pt := transforms.WindowFromLatLongP(pos)
@@ -384,13 +384,13 @@ func drawDiamond(ctx *scope.Context, transforms scope.ScopeTransformations, colo
 	ld.AddLine(p3, p0, color)
 }
 
-func (ep *ERAMPane) trackColor() renderer.RGB {
+func (ep *Pane) trackColor() renderer.RGB {
 	ps := ep.currentPrefs()
 	bright := ps.Brightness.PRTGT
 	return bright.ScaleRGB(colors.yellow)
 }
 
-func (ep *ERAMPane) updateVisibleTracks(ctx *scope.Context) { // When radar holes are added
+func (ep *Pane) updateVisibleTracks(ctx *scope.Context) { // When radar holes are added
 	// Get the visible tracks based on the current range and center.
 	ep.visibleTracks = ep.visibleTracks[:0]
 	for _, trk := range ctx.Client.State.Tracks {
@@ -404,7 +404,7 @@ func (ep *ERAMPane) updateVisibleTracks(ctx *scope.Context) { // When radar hole
 
 // datablockBrightness returns the configured brightness for the given track's
 // datablock type.
-func (ep *ERAMPane) datablockBrightness(state *TrackState) scope.Brightness {
+func (ep *Pane) datablockBrightness(state *TrackState) scope.Brightness {
 	ps := ep.currentPrefs()
 	if state.DatablockType == FullDatablock {
 		return ps.Brightness.FDB
@@ -414,7 +414,7 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) scope.Brightness {
 
 // leaderLineDirection returns the direction in which a datablock's leader line
 // should be drawn. The initial implementation always points northeast.
-func (ep *ERAMPane) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math.CardinalOrdinalDirection {
+func (ep *Pane) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math.CardinalOrdinalDirection {
 	state := ep.TrackState[trk.ADSBCallsign]
 	dir := state.LeaderLineDirection
 	if dir == nil {
@@ -427,14 +427,14 @@ func (ep *ERAMPane) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math
 
 // leaderLineVector returns a vector in window coordinates representing a leader
 // line of a fixed length in the given direction.
-func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
+func (ep *Pane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
 	return math.Scale2f(dir.UnitVector(), 60)
 }
 
 // leaderLineVectorWithLength returns a vector in window coordinates representing a leader
 // line with the length determined by the lengthMode parameter.
 // lengthMode: 0 = no line, 1 = normal (60), 2 = 2x (120), 3 = 3x (180)
-func (ep *ERAMPane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, lengthMode int) [2]float32 {
+func (ep *Pane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, lengthMode int) [2]float32 {
 	scale := float32(60)
 	switch lengthMode {
 	case 0:
@@ -453,18 +453,18 @@ func (ep *ERAMPane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection
 }
 
 // For LDBs
-func (ep *ERAMPane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
+func (ep *Pane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
 	return math.Scale2f(dir.UnitVector(), 8)
 }
 
 // datablockVisible reports whether a datablock should be drawn. Design.
-func (ep *ERAMPane) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
+func (ep *Pane) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 	// design
 	return true
 }
 
 // datablockType chooses which datablock format to display. Design.
-func (ep *ERAMPane) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
+func (ep *Pane) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
 	if trk.IsUnassociated() {
 		return LimitedDatablock
 	} else {
@@ -500,7 +500,7 @@ func (ep *ERAMPane) datablockType(ctx *scope.Context, trk sim.Track) DatablockTy
 }
 
 // trackDatablockColorBrightness returns the track color and datablock brightness. Design.
-func (ep *ERAMPane) trackDatablockColor(ctx *scope.Context, trk sim.Track) renderer.RGB {
+func (ep *Pane) trackDatablockColor(ctx *scope.Context, trk sim.Track) renderer.RGB {
 	dType := ep.datablockType(ctx, trk)
 	ps := ep.currentPrefs()
 	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
@@ -508,8 +508,8 @@ func (ep *ERAMPane) trackDatablockColor(ctx *scope.Context, trk sim.Track) rende
 }
 
 // drawLeaderLines draws leader lines for visible datablocks.
-func (ep *ERAMPane) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
+	transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	cb.LineWidth(2, ctx.DPIScale)
@@ -570,7 +570,7 @@ func (ep *ERAMPane) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs 
 	cb.LineWidth(1, ctx.DPIScale)
 }
 
-func (ep *ERAMPane) drawPTLs(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations,
+func (ep *Pane) drawPTLs(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	cb.LineWidth(2, ctx.DPIScale) // tweak this
@@ -607,8 +607,8 @@ type historyTrack struct {
 
 // drawHistoryTracks draws small position symbols representing the last few
 // positions of each track.
-func (ep *ERAMPane) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
-	transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
+	transforms scope.Transformations, cb *renderer.CommandBuffer) {
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -664,8 +664,8 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
 	ctd.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawJRings(ctx *scope.Context, tracks []sim.Track,
-	transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawJRings(ctx *scope.Context, tracks []sim.Track,
+	transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	// Draw J-Rings for tracks that have them enabled.
 	jr := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(jr)
@@ -697,7 +697,7 @@ func (ep *ERAMPane) drawJRings(ctx *scope.Context, tracks []sim.Track,
 	jr.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawQULines(ctx *scope.Context, transforms scope.ScopeTransformations,
+func (ep *Pane) drawQULines(ctx *scope.Context, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)

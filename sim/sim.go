@@ -195,7 +195,7 @@ type Sim struct {
 // transmission was executed, so that a following "correction" can undo it.
 type lastSTTCommand struct {
 	Callsign     av.ADSBCallsign
-	NavSnapshot  nav.NavSnapshot
+	NavSnapshot  nav.Snapshot
 	ReportedATIS string
 }
 

@@ -112,7 +112,7 @@ func rgb(c [3]float32) renderer.RGB { return renderer.RGB{R: c[0], G: c[1], B: c
 // drawRoutes draws every procedure the Routes tab has enabled. Waypoints
 // shared by several routes are drawn once and their labels stacked, which
 // is what DrawnRoutes tracks.
-func (in *inspector) drawRoutes(a *app, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (in *inspector) drawRoutes(a *app, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	r := &in.routes
 	if a.cc == nil || !r.anyEnabled() {
 		return

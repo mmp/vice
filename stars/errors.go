@@ -18,139 +18,139 @@ import (
 ///////////////////////////////////////////////////////////////////////////
 // STARS
 
-type STARSError struct {
+type Error struct {
 	error
 }
 
-func NewSTARSError(msg string) *STARSError {
-	return &STARSError{errors.New(msg)}
+func NewError(msg string) *Error {
+	return &Error{errors.New(msg)}
 }
 
 var (
-	ErrSTARSAmbiguousACID              = NewSTARSError("AMB ACID")
-	ErrSTARSBeaconMismatch             = NewSTARSError("BCN MISMATCH")
-	ErrSTARSCapacity                   = NewSTARSError("CAPACITY")
-	ErrSTARSCapacityBeacon             = NewSTARSError("CAPACITY - BCN")
-	ErrSTARSCommandFormat              = NewSTARSError("FORMAT")
-	ErrSTARSDuplicateACID              = NewSTARSError("DUP NEW ID")
-	ErrSTARSDuplicateBeacon            = NewSTARSError("DUP BCN")
-	ErrSTARSDuplicateCommand           = NewSTARSError("DUP CMD")
-	ErrSTARSIllegalACID                = NewSTARSError("ILL ACID")
-	ErrSTARSIllegalACType              = NewSTARSError("ACTYPE NOT ADAPTED")
-	ErrSTARSIllegalATIS                = NewSTARSError("ILL ATIS")
-	ErrSTARSIllegalAirport             = NewSTARSError("ILL AIRPORT")
-	ErrSTARSIllegalCode                = NewSTARSError("ILL CODE")
-	ErrSTARSIllegalColor               = NewSTARSError("ILL COLOR")
-	ErrSTARSIllegalFix                 = NewSTARSError("ILL FIX")
-	ErrSTARSIllegalFlight              = NewSTARSError("ILL FLIGHT")
-	ErrSTARSIllegalArea                = NewSTARSError("ILL AREA")
-	ErrSTARSIllegalFunction            = NewSTARSError("ILL FUNC")
-	ErrSTARSIllegalFunctionAlertActive = NewSTARSError("ILL FUNC - ALERT ACTIVE")
-	ErrSTARSIllegalFunctionNoRegions   = NewSTARSError("ILL FNCT -\nNO REGIONS")
-	ErrSTARSIllegalFunctionProcOff     = NewSTARSError("ILL FNCT -\nPROCESSING OFF")
-	ErrSTARSIllegalGeoId               = NewSTARSError("ILL GEO ID")
-	ErrSTARSIllegalGeoLoc              = NewSTARSError("ILL GEO LOC")
-	ErrSTARSIllegalLine                = NewSTARSError("ILL LINE")
-	ErrSTARSIllegalMap                 = NewSTARSError("ILL MAP")
-	ErrSTARSIllegalParam               = NewSTARSError("ILL PARAM")
-	ErrSTARSIllegalPosition            = NewSTARSError("ILL POS")
-	ErrSTARSIllegalPrefset             = NewSTARSError("ILL PREFSET")
-	ErrSTARSIllegalRPC                 = NewSTARSError("ILL RPC") // CRDA runway pair config
-	ErrSTARSIllegalRange               = NewSTARSError("ILL RANGE")
-	ErrSTARSIllegalRegion              = NewSTARSError("ILL REGION")
-	ErrSTARSIllegalRunway              = NewSTARSError("ILL RWY")
-	ErrSTARSIllegalScratchpad          = NewSTARSError("ILL SCR")
-	ErrSTARSIllegalSector              = NewSTARSError("ILL SECTOR")
-	ErrSTARSIllegalTCPDeconsolFirst    = NewSTARSError("ILL TCP - DECONSOL FIRST")
-	ErrSTARSIllegalTCPNotConsolidated  = NewSTARSError("ILL TCP - NOT CONSOLIDATED")
-	ErrSTARSIllegalTCW                 = NewSTARSError("ILL TCW")
-	ErrSTARSIllegalText                = NewSTARSError("ILL TEXT")
-	ErrSTARSIllegalTrack               = NewSTARSError("ILL TRK")
-	ErrSTARSIllegalTrackLocalFP        = NewSTARSError("ILL TRK - LCL FP")
-	ErrSTARSIllegalValue               = NewSTARSError("ILL VALUE")
-	ErrSTARSMultipleFlights            = NewSTARSError("MULTIPLE FLIGHT")
-	ErrSTARSNoACType                   = NewSTARSError("NO ACTYP")
-	ErrSTARSNoFlight                   = NewSTARSError("NO FLIGHT")
-	ErrSTARSNoScratchpad               = NewSTARSError("NO SCR")
-	ErrSTARSNoTrack                    = NewSTARSError("NO TRK")
-	ErrSTARSRangeLimit                 = NewSTARSError("RANGE LIMIT")
+	ErrAmbiguousACID              = NewError("AMB ACID")
+	ErrBeaconMismatch             = NewError("BCN MISMATCH")
+	ErrCapacity                   = NewError("CAPACITY")
+	ErrCapacityBeacon             = NewError("CAPACITY - BCN")
+	ErrCommandFormat              = NewError("FORMAT")
+	ErrDuplicateACID              = NewError("DUP NEW ID")
+	ErrDuplicateBeacon            = NewError("DUP BCN")
+	ErrDuplicateCommand           = NewError("DUP CMD")
+	ErrIllegalACID                = NewError("ILL ACID")
+	ErrIllegalACType              = NewError("ACTYPE NOT ADAPTED")
+	ErrIllegalATIS                = NewError("ILL ATIS")
+	ErrIllegalAirport             = NewError("ILL AIRPORT")
+	ErrIllegalCode                = NewError("ILL CODE")
+	ErrIllegalColor               = NewError("ILL COLOR")
+	ErrIllegalFix                 = NewError("ILL FIX")
+	ErrIllegalFlight              = NewError("ILL FLIGHT")
+	ErrIllegalArea                = NewError("ILL AREA")
+	ErrIllegalFunction            = NewError("ILL FUNC")
+	ErrIllegalFunctionAlertActive = NewError("ILL FUNC - ALERT ACTIVE")
+	ErrIllegalFunctionNoRegions   = NewError("ILL FNCT -\nNO REGIONS")
+	ErrIllegalFunctionProcOff     = NewError("ILL FNCT -\nPROCESSING OFF")
+	ErrIllegalGeoId               = NewError("ILL GEO ID")
+	ErrIllegalGeoLoc              = NewError("ILL GEO LOC")
+	ErrIllegalLine                = NewError("ILL LINE")
+	ErrIllegalMap                 = NewError("ILL MAP")
+	ErrIllegalParam               = NewError("ILL PARAM")
+	ErrIllegalPosition            = NewError("ILL POS")
+	ErrIllegalPrefset             = NewError("ILL PREFSET")
+	ErrIllegalRPC                 = NewError("ILL RPC") // CRDA runway pair config
+	ErrIllegalRange               = NewError("ILL RANGE")
+	ErrIllegalRegion              = NewError("ILL REGION")
+	ErrIllegalRunway              = NewError("ILL RWY")
+	ErrIllegalScratchpad          = NewError("ILL SCR")
+	ErrIllegalSector              = NewError("ILL SECTOR")
+	ErrIllegalTCPDeconsolFirst    = NewError("ILL TCP - DECONSOL FIRST")
+	ErrIllegalTCPNotConsolidated  = NewError("ILL TCP - NOT CONSOLIDATED")
+	ErrIllegalTCW                 = NewError("ILL TCW")
+	ErrIllegalText                = NewError("ILL TEXT")
+	ErrIllegalTrack               = NewError("ILL TRK")
+	ErrIllegalTrackLocalFP        = NewError("ILL TRK - LCL FP")
+	ErrIllegalValue               = NewError("ILL VALUE")
+	ErrMultipleFlights            = NewError("MULTIPLE FLIGHT")
+	ErrNoACType                   = NewError("NO ACTYP")
+	ErrNoFlight                   = NewError("NO FLIGHT")
+	ErrNoScratchpad               = NewError("NO SCR")
+	ErrNoTrack                    = NewError("NO TRK")
+	ErrRangeLimit                 = NewError("RANGE LIMIT")
 )
 
-var starsErrorRemap = map[error]*STARSError{
-	av.ErrBadPoolSpecifier:           ErrSTARSIllegalCode,
-	av.ErrInvalidAltitude:            ErrSTARSIllegalValue,
-	av.ErrInvalidController:          ErrSTARSIllegalPosition,
-	av.ErrInvalidFacility:            ErrSTARSIllegalTrack,
-	av.ErrInvalidHeading:             ErrSTARSIllegalValue,
-	av.ErrNoAircraftForCallsign:      ErrSTARSNoFlight,
-	av.ErrNoController:               ErrSTARSIllegalSector,
-	av.ErrNoFlightPlan:               ErrSTARSIllegalFlight,
-	av.ErrNoMoreAvailableSquawkCodes: ErrSTARSCapacityBeacon,
-	av.ErrNoValidDepartureFound:      ErrSTARSIllegalFunction,
-	av.ErrNotBeingHandedOffToMe:      ErrSTARSIllegalTrack,
-	av.ErrNotPointedOutByMe:          ErrSTARSIllegalTrack,
-	av.ErrNotPointedOutToMe:          ErrSTARSIllegalTrack,
-	av.ErrOtherControllerHasTrack:    ErrSTARSIllegalTrack,
-	av.ErrUnknownAirport:             ErrSTARSIllegalAirport,
-	av.ErrUnknownRunway:              ErrSTARSIllegalValue,
+var starsErrorRemap = map[error]*Error{
+	av.ErrBadPoolSpecifier:           ErrIllegalCode,
+	av.ErrInvalidAltitude:            ErrIllegalValue,
+	av.ErrInvalidController:          ErrIllegalPosition,
+	av.ErrInvalidFacility:            ErrIllegalTrack,
+	av.ErrInvalidHeading:             ErrIllegalValue,
+	av.ErrNoAircraftForCallsign:      ErrNoFlight,
+	av.ErrNoController:               ErrIllegalSector,
+	av.ErrNoFlightPlan:               ErrIllegalFlight,
+	av.ErrNoMoreAvailableSquawkCodes: ErrCapacityBeacon,
+	av.ErrNoValidDepartureFound:      ErrIllegalFunction,
+	av.ErrNotBeingHandedOffToMe:      ErrIllegalTrack,
+	av.ErrNotPointedOutByMe:          ErrIllegalTrack,
+	av.ErrNotPointedOutToMe:          ErrIllegalTrack,
+	av.ErrOtherControllerHasTrack:    ErrIllegalTrack,
+	av.ErrUnknownAirport:             ErrIllegalAirport,
+	av.ErrUnknownRunway:              ErrIllegalValue,
 
-	nav.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
-	nav.ErrFixIsTooFarAway:              ErrSTARSIllegalFix,
-	nav.ErrFixNotInRoute:                ErrSTARSIllegalFix,
-	nav.ErrInvalidApproach:              ErrSTARSIllegalValue,
-	nav.ErrInvalidFix:                   ErrSTARSIllegalFix,
-	nav.ErrNotClearedForApproach:        ErrSTARSIllegalValue,
-	nav.ErrNotFlyingRoute:               ErrSTARSIllegalValue,
-	nav.ErrUnableCommand:                ErrSTARSIllegalValue,
-	nav.ErrUnknownApproach:              ErrSTARSIllegalValue,
+	nav.ErrClearedForUnexpectedApproach: ErrIllegalValue,
+	nav.ErrFixIsTooFarAway:              ErrIllegalFix,
+	nav.ErrFixNotInRoute:                ErrIllegalFix,
+	nav.ErrInvalidApproach:              ErrIllegalValue,
+	nav.ErrInvalidFix:                   ErrIllegalFix,
+	nav.ErrNotClearedForApproach:        ErrIllegalValue,
+	nav.ErrNotFlyingRoute:               ErrIllegalValue,
+	nav.ErrUnableCommand:                ErrIllegalValue,
+	nav.ErrUnknownApproach:              ErrIllegalValue,
 
-	sim.ErrATPADisabled:                    ErrSTARSIllegalFunction,
-	sim.ErrAircraftAlreadyReleased:         ErrSTARSDuplicateCommand,
-	sim.ErrBeaconMismatch:                  ErrSTARSBeaconMismatch,
-	sim.ErrDuplicateACID:                   ErrSTARSDuplicateACID,
-	sim.ErrDuplicateBeacon:                 ErrSTARSDuplicateBeacon,
-	sim.ErrIllegalACID:                     ErrSTARSIllegalACID,
-	sim.ErrIllegalACType:                   ErrSTARSIllegalACType,
-	sim.ErrIllegalATIS:                     ErrSTARSIllegalATIS,
-	sim.ErrIllegalBeaconCode:               ErrSTARSIllegalCode,
-	sim.ErrIllegalFunction:                 ErrSTARSIllegalFunction,
-	sim.ErrIllegalLine:                     ErrSTARSIllegalLine,
-	sim.ErrIllegalPosition:                 ErrSTARSIllegalPosition,
-	sim.ErrIllegalScratchpad:               ErrSTARSIllegalScratchpad,
-	sim.ErrInvalidAbbreviatedFP:            ErrSTARSCommandFormat,
-	sim.ErrInvalidCommandSyntax:            ErrSTARSCommandFormat,
-	sim.ErrInvalidDepartureController:      ErrSTARSIllegalFunction,
-	sim.ErrInvalidRestrictionAreaIndex:     ErrSTARSIllegalGeoId,
-	sim.ErrInvalidVolumeId:                 ErrSTARSIllegalFunction,
-	sim.ErrNoACType:                        ErrSTARSNoACType,
-	sim.ErrNoMatchingFlight:                ErrSTARSNoFlight,
-	sim.ErrNoMatchingFlightPlan:            ErrSTARSNoFlight,
-	sim.ErrNoRecentCommand:                 ErrSTARSIllegalFunction,
-	sim.ErrNoScratchpad:                    ErrSTARSNoScratchpad,
-	sim.ErrNoVFRAircraftForFlightFollowing: ErrSTARSNoFlight,
-	sim.ErrTCPAlreadyConsolidated:          ErrSTARSIllegalTCPDeconsolFirst,
-	sim.ErrTCPNotConsolidated:              ErrSTARSIllegalTCPNotConsolidated,
-	sim.ErrTCWIsConsolidated:               ErrSTARSIllegalPosition,
-	sim.ErrTCWNotFound:                     ErrSTARSIllegalTCW,
-	sim.ErrTCWNotVacant:                    ErrSTARSIllegalPosition,
-	sim.ErrTooManyRestrictionAreas:         ErrSTARSCapacity,
-	sim.ErrTrackHasActivePointOut:          ErrSTARSIllegalTrack,
-	sim.ErrTrackIsActive:                   ErrSTARSIllegalTrack,
-	sim.ErrIllegalTrackLocalFP:             ErrSTARSIllegalTrackLocalFP,
-	sim.ErrTrackIsBeingHandedOff:           ErrSTARSIllegalTrack,
-	sim.ErrTrackIsNotActive:                ErrSTARSIllegalTrack,
-	sim.ErrUnknownAircraftType:             ErrSTARSIllegalParam,
-	sim.ErrUnknownController:               ErrSTARSIllegalPosition,
-	sim.ErrUnknownControllerFacility:       ErrSTARSIllegalPosition,
-	sim.ErrFDAMIllegalArea:                 ErrSTARSIllegalArea,
-	sim.ErrFDAMNoRegions:                   ErrSTARSIllegalFunctionNoRegions,
-	sim.ErrFDAMProcessingOff:               ErrSTARSIllegalFunctionProcOff,
-	sim.ErrVolumeDisabled:                  ErrSTARSIllegalFunction,
-	sim.ErrVolumeNot25nm:                   ErrSTARSIllegalFunction,
+	sim.ErrATPADisabled:                    ErrIllegalFunction,
+	sim.ErrAircraftAlreadyReleased:         ErrDuplicateCommand,
+	sim.ErrBeaconMismatch:                  ErrBeaconMismatch,
+	sim.ErrDuplicateACID:                   ErrDuplicateACID,
+	sim.ErrDuplicateBeacon:                 ErrDuplicateBeacon,
+	sim.ErrIllegalACID:                     ErrIllegalACID,
+	sim.ErrIllegalACType:                   ErrIllegalACType,
+	sim.ErrIllegalATIS:                     ErrIllegalATIS,
+	sim.ErrIllegalBeaconCode:               ErrIllegalCode,
+	sim.ErrIllegalFunction:                 ErrIllegalFunction,
+	sim.ErrIllegalLine:                     ErrIllegalLine,
+	sim.ErrIllegalPosition:                 ErrIllegalPosition,
+	sim.ErrIllegalScratchpad:               ErrIllegalScratchpad,
+	sim.ErrInvalidAbbreviatedFP:            ErrCommandFormat,
+	sim.ErrInvalidCommandSyntax:            ErrCommandFormat,
+	sim.ErrInvalidDepartureController:      ErrIllegalFunction,
+	sim.ErrInvalidRestrictionAreaIndex:     ErrIllegalGeoId,
+	sim.ErrInvalidVolumeId:                 ErrIllegalFunction,
+	sim.ErrNoACType:                        ErrNoACType,
+	sim.ErrNoMatchingFlight:                ErrNoFlight,
+	sim.ErrNoMatchingFlightPlan:            ErrNoFlight,
+	sim.ErrNoRecentCommand:                 ErrIllegalFunction,
+	sim.ErrNoScratchpad:                    ErrNoScratchpad,
+	sim.ErrNoVFRAircraftForFlightFollowing: ErrNoFlight,
+	sim.ErrTCPAlreadyConsolidated:          ErrIllegalTCPDeconsolFirst,
+	sim.ErrTCPNotConsolidated:              ErrIllegalTCPNotConsolidated,
+	sim.ErrTCWIsConsolidated:               ErrIllegalPosition,
+	sim.ErrTCWNotFound:                     ErrIllegalTCW,
+	sim.ErrTCWNotVacant:                    ErrIllegalPosition,
+	sim.ErrTooManyRestrictionAreas:         ErrCapacity,
+	sim.ErrTrackHasActivePointOut:          ErrIllegalTrack,
+	sim.ErrTrackIsActive:                   ErrIllegalTrack,
+	sim.ErrIllegalTrackLocalFP:             ErrIllegalTrackLocalFP,
+	sim.ErrTrackIsBeingHandedOff:           ErrIllegalTrack,
+	sim.ErrTrackIsNotActive:                ErrIllegalTrack,
+	sim.ErrUnknownAircraftType:             ErrIllegalParam,
+	sim.ErrUnknownController:               ErrIllegalPosition,
+	sim.ErrUnknownControllerFacility:       ErrIllegalPosition,
+	sim.ErrFDAMIllegalArea:                 ErrIllegalArea,
+	sim.ErrFDAMNoRegions:                   ErrIllegalFunctionNoRegions,
+	sim.ErrFDAMProcessingOff:               ErrIllegalFunctionProcOff,
+	sim.ErrVolumeDisabled:                  ErrIllegalFunction,
+	sim.ErrVolumeNot25nm:                   ErrIllegalFunction,
 }
 
-func GetSTARSError(e error, lg *log.Logger) *STARSError {
-	if se, ok := e.(*STARSError); ok {
+func GetError(e error, lg *log.Logger) *Error {
+	if se, ok := e.(*Error); ok {
 		return se
 	}
 
@@ -162,6 +162,6 @@ func GetSTARSError(e error, lg *log.Logger) *STARSError {
 		return se
 	}
 
-	lg.Errorf("%v: unexpected error passed to GetSTARSError", e)
-	return ErrSTARSCommandFormat
+	lg.Errorf("%v: unexpected error passed to GetError", e)
+	return ErrCommandFormat
 }

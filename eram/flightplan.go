@@ -197,11 +197,11 @@ func parseFlightPlan(format string, text string, checkSp func(s string, primary 
 func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if s[0] < 'A' || s[0] > 'Z' {
 		// ACID must start with a letter
-		return false, ErrERAMIllegalACID
+		return false, ErrIllegalACID
 	}
 	if len(s) > 7 {
 		// No more than 7 characters
-		return false, ErrERAMIllegalACID
+		return false, ErrIllegalACID
 	}
 
 	spec.ACID.Set(sim.ACID(s))
@@ -381,7 +381,7 @@ func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spe
 			return true, nil
 
 		default:
-			return true, ErrERAMIllegalValue
+			return true, ErrIllegalValue
 		}
 	}
 	return false, ErrCommandFormat
@@ -426,7 +426,7 @@ func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) boo
 
 func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if len(s) != 2 || s[0] < '1' || s[0] > '9' || s[1] < 'A' || s[1] > 'Z' { // must be two char TCP
-		return false, ErrERAMIllegalPosition
+		return false, ErrIllegalPosition
 	}
 
 	spec.TrackingController.Set(sim.ControlPosition(s))
@@ -458,7 +458,7 @@ func parseFpTCPOrFixPair(s string, checkSp func(s string, primary bool) bool, sp
 		spec.TrackingController.Set(sim.ControlPosition(s))
 		return true, nil
 	}
-	return false, ErrERAMIllegalPosition
+	return false, ErrIllegalPosition
 }
 
 func parseFpTypeOfFlight(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
@@ -485,7 +485,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	// coordination fixes.
 	if dep, arr, ok := strings.Cut(s, "*"); ok {
 		if len(dep) != 3 || len(arr) != 3 {
-			return false, ErrERAMIllegalAirport
+			return false, ErrIllegalAirport
 		}
 		// TODO: ILL FIX if entry fix is invalid
 		spec.EntryFix.Set(dep)
@@ -494,7 +494,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	} else {
 		// TODO: entry should be our default airport
 		if len(s) != 3 {
-			return false, ErrERAMIllegalAirport
+			return false, ErrIllegalAirport
 		}
 		spec.ExitFix.Set(s)
 	}
@@ -505,7 +505,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	} else if _, ok := av.DB.LookupFAAAirport(av.FAAAirportCode(spec.ExitFix.Get())); ok {
 		return true, nil
 	} else {
-		return false, ErrERAMIllegalAirport
+		return false, ErrIllegalAirport
 	}
 }
 

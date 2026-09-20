@@ -43,7 +43,7 @@ func (p *PreferenceSet) Upgrade(from, to int) {
 	}
 }
 
-func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *STARSPane) {
+func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *Pane) {
 	// Make sure we don't alias slices, maps, etc.
 	p.Current = deep.MustCopy(cur)
 	if p.Current.Range == 0 {
@@ -67,13 +67,13 @@ func (p *PreferenceSet) selectedPrefs() *Preferences {
 // Reset ends up being called when a new Sim is started. It is responsible
 // for resetting all of the preference values in the PreferenceSet that we
 // don't expect to persist on a restart (e.g. quick look positions.)
-func (p *PreferenceSet) Reset(ss client.SimState, sp *STARSPane) {
+func (p *PreferenceSet) Reset(ss client.SimState, sp *Pane) {
 	// Only reset Current; leave everything as is in the saved prefs.
 	p.Current.Reset(ss, sp)
 }
 
 // ResetDefault resets the current preferences to the system defaults.
-func (p *PreferenceSet) ResetDefault(ss client.SimState, pl platform.Platform, sp *STARSPane) {
+func (p *PreferenceSet) ResetDefault(ss client.SimState, pl platform.Platform, sp *Pane) {
 	// Start with the full-on STARS defaults and then update for the current Sim.
 	p.Current = *makeDefaultPreferences()
 	p.Reset(ss, sp)
@@ -289,7 +289,7 @@ type RestrictionAreaSettings struct {
 	ForceBlinkingText bool
 }
 
-func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
+func (p *Preferences) Reset(ss client.SimState, sp *Pane) {
 	// Get the scope centered and set the range according to the Sim's initial values.
 	p.DefaultCenter = ss.GetInitialCenter()
 	p.UserCenter = p.DefaultCenter
@@ -454,7 +454,7 @@ func (p *Preferences) Duplicate() *Preferences {
 	return &c
 }
 
-func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
+func (p *Preferences) Activate(pl platform.Platform, sp *Pane) {
 	if p.Range == 0 {
 		p.Range = defaultSTARSRange
 	}
@@ -606,7 +606,7 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 }
 
-func (sp *STARSPane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platform) {
+func (sp *Pane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platform) {
 	prefSet, ok := sp.TRACONPreferenceSets[ss.Facility]
 	if !ok {
 		// First time we've seen this TRACON. Start out with system defaults.
@@ -652,7 +652,7 @@ func (sp *STARSPane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platf
 }
 
 // This is called when a new Sim is started from scratch.
-func (sp *STARSPane) resetPrefsForNewSim(ss client.SimState, pl platform.Platform) {
+func (sp *Pane) resetPrefsForNewSim(ss client.SimState, pl platform.Platform) {
 	sp.initPrefsForLoadedSim(ss, pl)
 
 	// Clear out the preference-related state (e.g. quicklooks) that we
@@ -660,7 +660,7 @@ func (sp *STARSPane) resetPrefsForNewSim(ss client.SimState, pl platform.Platfor
 	sp.prefSet.Reset(ss, sp)
 }
 
-func (sp *STARSPane) currentPrefs() *Preferences {
+func (sp *Pane) currentPrefs() *Preferences {
 	// sp.prefSet is initialized when either LoadSim() or ResetSim() ends
 	// up calling initPrefsForLoadedSim().
 	return &sp.prefSet.Current

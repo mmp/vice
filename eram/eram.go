@@ -214,7 +214,7 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 	},
 }
 
-type ERAMPane struct {
+type Pane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet        `json:"PreferenceSets,omitempty"`
 	prefSet            *PrefrenceSet                   `json:"-"`
 	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
@@ -342,12 +342,12 @@ type ERAMPane struct {
 	fdbIdx, ldbIdx, eldbIdx []int       `json:"-"`
 }
 
-func NewERAMPane() *ERAMPane {
+func NewPane() *Pane {
 	InitCommands()
-	return &ERAMPane{}
+	return &Pane{}
 }
 
-func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, log *log.Logger) {
+func (ep *Pane) Activate(r renderer.Renderer, pl platform.Platform, log *log.Logger) {
 	// Activate maps
 	if ep.InboundPointOuts == nil {
 		ep.InboundPointOuts = make(map[sim.ACID][]sim.ControlPosition)
@@ -421,13 +421,13 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, log *log
 	}
 }
 
-func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
+func (ep *Pane) CanTakeKeyboardFocus() bool { return true }
 
 // loadCursors loads all .cur files from the eram-cursors resource directory
 // into ep.eramCursors, keyed by base name (e.g. "Eram1", "EramDeletion").
 // Panics on any failure -- a missing or malformed cursor is a build/install
 // problem, not something the user can recover from.
-func (ep *ERAMPane) loadCursors(pl platform.Platform) {
+func (ep *Pane) loadCursors(pl platform.Platform) {
 	ep.eramCursors = make(map[string]platform.Cursor)
 	cursorSize := int(32*pl.DPIScale() + 0.5)
 	if cursorSize <= 0 {
@@ -460,7 +460,7 @@ func (ep *ERAMPane) loadCursors(pl platform.Platform) {
 // The cursor is the temporary override (if any), else the base cursor chosen
 // in the CURSOR menu. When a timed override expires, the rollback cursor (if
 // set) becomes the new override; otherwise we fall back to the base cursor.
-func (ep *ERAMPane) updateCursorOverride(ctx *scope.Context) {
+func (ep *Pane) updateCursorOverride(ctx *scope.Context) {
 	if ep.prefSet == nil || ctx.Mouse == nil {
 		return
 	}
@@ -487,7 +487,7 @@ func (ep *ERAMPane) updateCursorOverride(ctx *scope.Context) {
 }
 
 // SetTemporaryCursor displays a cursor type for the given number of seconds.
-func (ep *ERAMPane) SetTemporaryCursor(cursorType string, seconds float64, rollbackCursor string) {
+func (ep *Pane) SetTemporaryCursor(cursorType string, seconds float64, rollbackCursor string) {
 	cursorType = strings.TrimSpace(cursorType)
 	if cursorType == "" || seconds == 0 || seconds < -1 {
 		ep.ClearTemporaryCursor()
@@ -516,13 +516,13 @@ func (ep *ERAMPane) SetTemporaryCursor(cursorType string, seconds float64, rollb
 }
 
 // ClearTemporaryCursor removes any temporary cursor override and rollback cursor.
-func (ep *ERAMPane) ClearTemporaryCursor() {
+func (ep *Pane) ClearTemporaryCursor() {
 	ep.cursorOverrideSelection = ""
 	ep.cursorOverrideUntil = time.Time{}
 	ep.cursorRollbackSelection = ""
 }
 
-func (ep *ERAMPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (ep *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
 	ep.updateCursorOverride(ctx)
 
@@ -540,7 +540,7 @@ func (ep *ERAMPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	// ps.Range is the vertical extent of the scope in NM (matching the
 	// real-ERAM RANGE label); GetScopeTransformations wants the half-height.
 	// ERAM scopes are always true north up, hence no rotation.
-	transforms := scope.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
+	transforms := scope.GetTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range)/2, 0)
 
 	// Following are the draw functions. They are listed in the best of my ability
@@ -612,7 +612,7 @@ func (ep *ERAMPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawPauseOverlay(ctx, cb)
 }
 
-func (ep *ERAMPane) Upgrade(from, to int) {
+func (ep *Pane) Upgrade(from, to int) {
 	for _, ps := range ep.ERAMPreferenceSets {
 		if ps != nil {
 			ps.Upgrade(from, to)
@@ -620,7 +620,7 @@ func (ep *ERAMPane) Upgrade(from, to int) {
 	}
 }
 
-func (ep *ERAMPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (ep *Pane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
 	ep.lastTrackUpdate = time.Time{}
@@ -628,7 +628,7 @@ func (ep *ERAMPane) LoadedSim(client *client.ControlClient, pl platform.Platform
 	ep.lastConflictUpdate = time.Time{}
 }
 
-func (ep *ERAMPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (ep *Pane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
 	ep.lastTrackUpdate = time.Time{}
@@ -647,7 +647,7 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, pl platform.Platform,
 // ensurePrefSetForSim initializes the ERAM preference set if needed and
 // resets transient fields for a newly-loaded or reset Sim. Called from
 // both LoadedSim and ResetSim so that preferences are ready before use.
-func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
+func (ep *Pane) ensurePrefSetForSim(ss client.SimState) {
 	// Ensure map of saved preference sets exists
 	if ep.ERAMPreferenceSets == nil {
 		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
@@ -858,7 +858,7 @@ func (m *feedbackMessage) Clear() {
 }
 
 // AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
-func (ep *ERAMPane) processKeyboardInput(ctx *scope.Context) {
+func (ep *Pane) processKeyboardInput(ctx *scope.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
 	}
@@ -994,7 +994,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *scope.Context) {
 	}
 }
 
-func (ep *ERAMPane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if !ctx.Client.State.Paused {
 		return
 	}
@@ -1031,13 +1031,13 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuf
 	})
 
 	// Apply transformations and draw
-	transforms := scope.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
+	transforms := scope.GetTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawVideoMaps(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawVideoMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	// Precompute a BCGIndex → RGB lookup table once per frame so the hot
@@ -1078,7 +1078,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *scope.Context, transforms scope.ScopeTran
 	td.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
+func (ep *Pane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	ss := client.State
 	ps := ep.currentPrefs()
 	vmf, err := client.LoadVideoMapLibrary(ss.ControllerVideoMapFile)
@@ -1099,7 +1099,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 // setVideoMapGroup makes the named geomap group the current one: it fills in
 // the filter menu and gives any BCG that doesn't have a brightness yet the
 // default one.
-func (ep *ERAMPane) setVideoMapGroup(vmf *videomaps.Library, group string) {
+func (ep *Pane) setVideoMapGroup(vmf *videomaps.Library, group string) {
 	ps := ep.currentPrefs()
 	maps := vmf.ERAMMapGroups[group]
 
@@ -1138,7 +1138,7 @@ func combine(x, y, sep string) string {
 
 // Mouse button helpers:
 // When UseRightClick is set, logical primary = physical right button click, logical tertiary = physical left button click.
-func (ep *ERAMPane) mousePrimaryClicked(m *platform.MouseState) bool {
+func (ep *Pane) mousePrimaryClicked(m *platform.MouseState) bool {
 	if m == nil {
 		return false
 	}
@@ -1148,7 +1148,7 @@ func (ep *ERAMPane) mousePrimaryClicked(m *platform.MouseState) bool {
 	return m.Clicked[platform.MouseButtonPrimary]
 }
 
-func (ep *ERAMPane) mousePrimaryDown(m *platform.MouseState) bool {
+func (ep *Pane) mousePrimaryDown(m *platform.MouseState) bool {
 	if m == nil {
 		return false
 	}
@@ -1158,7 +1158,7 @@ func (ep *ERAMPane) mousePrimaryDown(m *platform.MouseState) bool {
 	return m.Down[platform.MouseButtonPrimary]
 }
 
-func (ep *ERAMPane) mousePrimaryReleased(m *platform.MouseState) bool {
+func (ep *Pane) mousePrimaryReleased(m *platform.MouseState) bool {
 	if m == nil {
 		return false
 	}
@@ -1168,7 +1168,7 @@ func (ep *ERAMPane) mousePrimaryReleased(m *platform.MouseState) bool {
 	return m.Released[platform.MouseButtonPrimary]
 }
 
-func (ep *ERAMPane) mouseTertiaryClicked(m *platform.MouseState) bool {
+func (ep *Pane) mouseTertiaryClicked(m *platform.MouseState) bool {
 	if m == nil {
 		return false
 	}
@@ -1178,7 +1178,7 @@ func (ep *ERAMPane) mouseTertiaryClicked(m *platform.MouseState) bool {
 	return m.Clicked[platform.MouseButtonTertiary]
 }
 
-func (ep *ERAMPane) mouseTertiaryDown(m *platform.MouseState) bool {
+func (ep *Pane) mouseTertiaryDown(m *platform.MouseState) bool {
 	if m == nil {
 		return false
 	}
@@ -1188,7 +1188,7 @@ func (ep *ERAMPane) mouseTertiaryDown(m *platform.MouseState) bool {
 	return m.Down[platform.MouseButtonTertiary]
 }
 
-func (ep *ERAMPane) mouseTertiaryReleased(m *platform.MouseState) bool {
+func (ep *Pane) mouseTertiaryReleased(m *platform.MouseState) bool {
 	if m == nil {
 		return false
 	}
@@ -1199,7 +1199,7 @@ func (ep *ERAMPane) mouseTertiaryReleased(m *platform.MouseState) bool {
 }
 
 // clearMousePrimaryConsumed clears the physical button used for logical primary so the click is not processed again.
-func (ep *ERAMPane) clearMousePrimaryConsumed(m *platform.MouseState) {
+func (ep *Pane) clearMousePrimaryConsumed(m *platform.MouseState) {
 	if m == nil {
 		return
 	}
@@ -1211,7 +1211,7 @@ func (ep *ERAMPane) clearMousePrimaryConsumed(m *platform.MouseState) {
 }
 
 // clearMouseTertiaryConsumed clears the physical button used for logical tertiary.
-func (ep *ERAMPane) clearMouseTertiaryConsumed(m *platform.MouseState) {
+func (ep *Pane) clearMouseTertiaryConsumed(m *platform.MouseState) {
 	if m == nil {
 		return
 	}
@@ -1225,7 +1225,7 @@ func (ep *ERAMPane) clearMouseTertiaryConsumed(m *platform.MouseState) {
 // consumeMouseClick clears BOTH primary and tertiary consumed flags. Most
 // View click handlers want this: the click should not fall through to any
 // later handler whether it was logically primary or tertiary.
-func (ep *ERAMPane) consumeMouseClick(m *platform.MouseState) {
+func (ep *Pane) consumeMouseClick(m *platform.MouseState) {
 	ep.clearMousePrimaryConsumed(m)
 	ep.clearMouseTertiaryConsumed(m)
 }

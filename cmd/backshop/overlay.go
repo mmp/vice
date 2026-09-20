@@ -57,7 +57,7 @@ func drawToggle[T any](set map[string]T, id string, value func() T) {
 	}
 }
 
-func (in *inspector) drawOverlays(a *app, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (in *inspector) drawOverlays(a *app, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	o := &in.overlays
 	if len(o.volumes) == 0 && len(o.points) == 0 {
 		return

@@ -1819,7 +1819,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				descentWps = append(descentWps, endWp)
 
 				simNav.Waypoints = descentWps
-				simNav.Heading = nav.NavHeading{}
+				simNav.Heading = nav.Heading{}
 				continue
 			}
 		}

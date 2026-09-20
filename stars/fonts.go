@@ -15,7 +15,7 @@ import (
 	"github.com/mmp/vice/scope"
 )
 
-func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
+func (sp *Pane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	fonts := createFontAtlas(r, p.DPIScale())
 	get := func(name string, size int) *renderer.Font {
 		idx := slices.IndexFunc(fonts, func(f *renderer.Font) bool { return f.Id.Name == name && f.Id.Size == size })
@@ -58,7 +58,7 @@ func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	sp.dcbFontB[2] = get("sddCharFontSetBSize2", 15)
 }
 
-func (sp *STARSPane) systemFont(ctx *scope.Context, idx int) *renderer.Font {
+func (sp *Pane) systemFont(ctx *scope.Context, idx int) *renderer.Font {
 	if sp.FontSelection == fontLegacy {
 		return sp.systemFontA[idx]
 	} else if sp.FontSelection == fontARTS {
@@ -70,7 +70,7 @@ func (sp *STARSPane) systemFont(ctx *scope.Context, idx int) *renderer.Font {
 	}
 }
 
-func (sp *STARSPane) systemOutlineFont(ctx *scope.Context, idx int) *renderer.Font {
+func (sp *Pane) systemOutlineFont(ctx *scope.Context, idx int) *renderer.Font {
 	if sp.FontSelection == fontLegacy {
 		return sp.systemOutlineFontA[idx]
 	} else if sp.FontSelection == fontARTS {
@@ -82,7 +82,7 @@ func (sp *STARSPane) systemOutlineFont(ctx *scope.Context, idx int) *renderer.Fo
 	}
 }
 
-func (sp *STARSPane) dcbFont(ctx *scope.Context, idx int) *renderer.Font {
+func (sp *Pane) dcbFont(ctx *scope.Context, idx int) *renderer.Font {
 	if sp.FontSelection == fontLegacy {
 		return sp.dcbFontA[idx]
 	} else if sp.FontSelection == fontARTS {

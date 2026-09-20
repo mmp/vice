@@ -117,7 +117,7 @@ func run(lg *log.Logger) error {
 
 	nav.InitNavLog(*navLogEnabled, *navLogCategories, *navLogCallsign)
 
-	config := server.ServerLaunchConfig{
+	config := server.LaunchConfig{
 		Port: *serverPort,
 		Overrides: scenario.OverrideFiles{
 			Scenario:        *scenarioFilename,
@@ -142,7 +142,7 @@ func run(lg *log.Logger) error {
 // scenario loading, the sim update loop, and the RPC replies net/rpc encodes
 // after the sim lock has been released -- the last of which a load-only run
 // never reaches.
-func runSmoketest(config server.ServerLaunchConfig, d time.Duration, lg *log.Logger) error {
+func runSmoketest(config server.LaunchConfig, d time.Duration, lg *log.Logger) error {
 	rpcPort, e, overrideErrors := server.LaunchServerAsync(config, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)

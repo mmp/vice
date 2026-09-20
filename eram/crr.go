@@ -114,7 +114,7 @@ func parseLocation(ctx *scope.Context, token string) (math.Point2LL, bool) {
 }
 
 // drawCRRView renders the Continuous Range Readout view.
-func (ep *ERAMPane) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.CRR.Visible {
 		return
@@ -194,7 +194,7 @@ func (ep *ERAMPane) drawCRRView(ctx *scope.Context, tracks []sim.Track, transfor
 
 // buildCRRPanel constructs the panel-mode body: horizontal row of buttons,
 // one per group. Body height = button height + small top margin.
-func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32, func(math.Extent2D, *ViewBuilders)) {
+func (ep *Pane) buildCRRPanel(labels []string, font *renderer.Font) (float32, func(math.Extent2D, *ViewBuilders)) {
 	ps := ep.currentPrefs()
 	bodyHeight := font.LayoutBounds("X", 0).Height() + 8 + 4
 
@@ -238,7 +238,7 @@ func (ep *ERAMPane) buildCRRPanel(labels []string, font *renderer.Font) (float32
 // lets the OnRowExtents callback populate crrLabelRects / crrAircraftRects
 // after the rows are drawn. Group-header rows set Color explicitly; aircraft
 // rows leave Color zero and let the View fill it.
-func (ep *ERAMPane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL) *ViewRowSource {
+func (ep *Pane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL) *ViewRowSource {
 	ps := ep.currentPrefs()
 
 	type rowMeta struct {
@@ -328,19 +328,19 @@ type crrPopup struct {
 	popupBase
 }
 
-func (c *crrPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (c *crrPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	origin := c.origin
 	const width = viewPopupWidth
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.CRR.Opaque, "O", "T"),
-		{Label: "BORDER", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
+		{Label: "BORDER", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(_ MenuClickType) bool {
 			ps.CRR.ShowBorder = !ps.CRR.ShowBorder
 			return false
 		}},
 		makeIntMenuItem(ep, &ps.CRR.Lines, "LINES", 1, 100, 1),
-		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct ERAMMenuClickType) bool {
+		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct MenuClickType) bool {
 			if ct == MenuClickPrimary {
 				ps.CRR.Font = 1 + (ps.CRR.Font+2)%4
 			} else {
@@ -351,7 +351,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.Scope
 		makeIntMenuItem(ep, &ps.CRR.Bright, "BRIGHT", 0, 100, 1),
 		ep.makeToggleMenuItem(&ps.CRR.ListMode, "LIST"),
 		{Label: fmt.Sprintf("COLOR %d", ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
-			Color: CRRGreen.BrightRGB(90), OnClick: func(_ ERAMMenuClickType) bool {
+			Color: CRRGreen.BrightRGB(90), OnClick: func(_ MenuClickType) bool {
 				v := ps.CRR.ColorBright[ps.CRR.SelectedColor]
 				handleClick(ep, &v, 0, 100, 1)
 				ps.CRR.ColorBright[ps.CRR.SelectedColor] = v
@@ -362,7 +362,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.Scope
 	// Sort group labels for the custom content closure below.
 	groupLabels := util.SortedMapKeys(ep.CRRGroups)
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: "CRR",
 		Width: width,
 		Font:  ep.ERAMFont(2),
@@ -486,7 +486,7 @@ func (c *crrPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.Scope
 }
 
 // drawCRRFixes draws clickable CRR fix labels when enabled under ATC TOOLS.
-func (ep *ERAMPane) drawCRRFixes(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawCRRFixes(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.CRR.DisplayFixes {
 		return
@@ -543,7 +543,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *scope.Context, transforms scope.ScopeTrans
 // drawCRRDistances draws CRR distance values next to aircraft tags for aircraft
 // that are members of CRR groups. The distance is displayed in the color of the
 // CRR group the aircraft belongs to.
-func (ep *ERAMPane) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if ep.CRRGroups == nil || len(ep.CRRGroups) == 0 {
 		return

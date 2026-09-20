@@ -102,7 +102,7 @@ type MapFonts interface {
 // is scratch space the caller keeps across maps to avoid reallocating it
 // for every line.
 func DrawMapFeatures(lines []videomaps.Line, symbols []videomaps.Symbol, labels []videomaps.Label,
-	bcgRGB *[256]renderer.RGB, fonts MapFonts, transforms ScopeTransformations,
+	bcgRGB *[256]renderer.RGB, fonts MapFonts, transforms Transformations,
 	ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, solidLineBuf *[][2]float32) {
 	for _, line := range lines {
 		color := bcgRGB[line.BCGIndex]

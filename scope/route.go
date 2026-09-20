@@ -180,7 +180,7 @@ func (d *DrawnRoutes) Label(td *renderer.TextDrawBuilder, style renderer.TextSty
 // coordinates; text and the fix markers go to td, pd, and ldr in window
 // coordinates.
 func DrawWaypoints(nmPerLongitude, magneticVariation float32, waypoints []av.Waypoint, rc RouteDrawContext, drawn *DrawnRoutes,
-	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
+	transforms Transformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder, color renderer.RGB) {
 	w := newRouteWalker(nmPerLongitude, magneticVariation, rc, ld, color, drawn)
 	w.walk(waypoints)
@@ -1019,7 +1019,7 @@ func (w *routeWalker) drawMark(m triggerMark, p [2]float32) {
 
 // drawLabels draws the fixes' markers, names, and restrictions and the
 // route's labels, in window coordinates.
-func (w *routeWalker) drawLabels(wps []av.Waypoint, transforms ScopeTransformations, td *renderer.TextDrawBuilder,
+func (w *routeWalker) drawLabels(wps []av.Waypoint, transforms Transformations, td *renderer.TextDrawBuilder,
 	style renderer.TextStyle, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	for _, fa := range w.fixes {
 		wp := &wps[fa.index]
@@ -1042,7 +1042,7 @@ func (w *routeWalker) drawLabels(wps []av.Waypoint, transforms ScopeTransformati
 	}
 }
 
-func (w *routeWalker) drawFix(wp *av.Waypoint, fa fixAnchor, transforms ScopeTransformations, td *renderer.TextDrawBuilder,
+func (w *routeWalker) drawFix(wp *av.Waypoint, fa fixAnchor, transforms Transformations, td *renderer.TextDrawBuilder,
 	style renderer.TextStyle, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	color := w.color
 

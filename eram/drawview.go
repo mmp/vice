@@ -301,7 +301,7 @@ func addQuad(trid *renderer.ColoredTrianglesDrawBuilder, ex math.Extent2D, color
 // clampViewPos clamps a view top-left so the whole window stays inside the
 // pane, leaving the top-toolbar buffer free when the toolbar is visible.
 // pos is the view's top-left in pane-local coords (y up).
-func (ep *ERAMPane) clampViewPos(ctx *scope.Context, pos [2]float32, width, totalH float32) [2]float32 {
+func (ep *Pane) clampViewPos(ctx *scope.Context, pos [2]float32, width, totalH float32) [2]float32 {
 	paneW := ctx.PaneExtent.Width()
 	paneH := ctx.PaneExtent.Height()
 	toolbarH := float32(0)
@@ -378,7 +378,7 @@ func scrollReserveWidth(v View, titleFont *renderer.Font) float32 {
 
 // viewTextColor returns the standard list-view text color scaled by the
 // given Brightness.
-func (ep *ERAMPane) viewTextColor(b scope.Brightness) renderer.RGB {
+func (ep *Pane) viewTextColor(b scope.Brightness) renderer.RGB {
 	return b.ScaleRGB(colors.view.text)
 }
 
@@ -472,7 +472,7 @@ func drawScrollArrow(ld *renderer.ColoredLinesDrawBuilder, centerX, tipY float32
 // scroll bar → title-bar buttons → title-bar drag → body-tertiary menu →
 // body-primary drag → finalize in-progress drag. Each handler consumes its
 // click so Body sees only fall-through events.
-func (ep *ERAMPane) DrawView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer, v View) {
+func (ep *Pane) DrawView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer, v View) {
 	mouse := ctx.Mouse
 
 	titleFont := ep.ERAMFont(2)
@@ -775,7 +775,7 @@ func (ep *ERAMPane) DrawView(ctx *scope.Context, transforms scope.ScopeTransform
 // applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, scroll, and
 // selectable on v from v.RowSource so the rest of DrawView can treat the
 // view as if the caller had wired those fields up directly.
-func (ep *ERAMPane) applyRowSource(v *View, titleFont *renderer.Font) {
+func (ep *Pane) applyRowSource(v *View, titleFont *renderer.Font) {
 	rs := v.RowSource
 
 	if rs.SelectableState != nil && rs.OnRowToggle != nil {
@@ -1330,7 +1330,7 @@ type deleteEntryPopup struct {
 // openDeleteEntryPopup positions a deleteEntryPopup adjacent to the clicked
 // row, flipping left if it would otherwise overflow the pane, and warps the
 // cursor to its center so the user can confirm without moving the mouse.
-func (ep *ERAMPane) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem,
+func (ep *Pane) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem,
 	sel *ViewSelectable, font *renderer.Font) *deleteEntryPopup {
 
 	label := ""
@@ -1369,7 +1369,7 @@ func (ep *ERAMPane) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectable
 	}
 }
 
-func (d *deleteEntryPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (d *deleteEntryPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	mouse := ctx.Mouse
 	ps := ep.currentPrefs()
 

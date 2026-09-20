@@ -88,7 +88,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 				nav.Approach.InterceptCourseLine = courseLine
 				nav.Approach.InterceptWaypoints = interceptWaypoints
 			}
-			nav.Heading = NavHeading{Assigned: &hdgMag}
+			nav.Heading = Heading{Assigned: &hdgMag}
 			nav.DeferredNavHeading = nil
 			nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
 
@@ -110,7 +110,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 				nav.Approach.InterceptCourseLine = courseLine
 				nav.Approach.InterceptWaypoints = interceptWaypoints
 			}
-			nav.Heading = NavHeading{Assigned: &recoveryHdg}
+			nav.Heading = Heading{Assigned: &recoveryHdg}
 			nav.DeferredNavHeading = nil
 			nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
 
@@ -191,7 +191,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 		}
 		// As with the heading assignment above under the InitialHeading
 		// case, do this immediately.
-		nav.Heading = NavHeading{}
+		nav.Heading = Heading{}
 		nav.Approach.InterceptState = OnApproachCourse
 
 		// If we have intercepted the approach course, we don't do procedure turns.
@@ -349,7 +349,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 	}
 
 	requestAltitude := nav.Approach.RequestAltitude
-	nav.Approach = NavApproach{
+	nav.Approach = Approach{
 		Assigned:         ap,
 		AssignedId:       id,
 		ATPAVolume:       airport.ATPAVolumes[ap.Runway],
@@ -394,7 +394,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 
 				if _, ok := nav.AssignedHeading(); !ok {
 					hdg := nav.FlightState.Heading
-					nav.Heading = NavHeading{Assigned: &hdg}
+					nav.Heading = Heading{Assigned: &hdg}
 					nav.DeferredNavHeading = nil
 				}
 			}
@@ -699,7 +699,7 @@ func (nav *Nav) prepareForChartedVisual() speech.CommandIntent {
 	}
 
 	nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
-	nav.Heading = NavHeading{}
+	nav.Heading = Heading{}
 	nav.DeferredNavHeading = nil
 	nav.Approach.PassedApproachFix = true // allow descent
 	return nil
@@ -871,11 +871,11 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	// still completes before the aircraft holds for the TOD; lateral.go's
 	// clearAltitudeForApproach at each cleared-approach waypoint crossing
 	// finishes cleaning up the descent assignment after that.
-	nav.Heading = NavHeading{}
+	nav.Heading = Heading{}
 	nav.DeferredNavHeading = nil
 	rwy, _ := av.LookupRunway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	profileFloor := float32(rwy.Elevation) + 900
-	preserved := NavAltitude{}
+	preserved := Altitude{}
 	if a := nav.Altitude.Assigned; a != nil && *a < nav.FlightState.Altitude && *a >= profileFloor {
 		preserved.Assigned = nav.Altitude.Assigned
 		preserved.ActiveAssigned = nav.Altitude.ActiveAssigned
@@ -988,7 +988,7 @@ func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 	nav.Approach.StandbyApproach = false
 	nav.Approach.MissedApproachIntercept = false
 	nav.Approach.ApproachClearanceCancelled = false
-	nav.Speed = NavSpeed{}
+	nav.Speed = Speed{}
 	return
 }
 

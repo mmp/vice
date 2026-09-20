@@ -636,5 +636,5 @@ func (nav *Nav) clearAltitudeForApproach() {
 	} else if nav.Altitude.Cleared != nil && *nav.Altitude.Cleared < nav.FlightState.Altitude {
 		cleared = nav.Altitude.Cleared
 	}
-	nav.Altitude = NavAltitude{Cleared: cleared}
+	nav.Altitude = Altitude{Cleared: cleared}
 }

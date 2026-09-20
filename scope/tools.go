@@ -13,20 +13,20 @@ func (b Brightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 
 // ScopeTransformations
 
-type ScopeTransformations struct {
+type Transformations struct {
 	ndcFromLatLong                       math.Matrix3
 	ndcFromWindow                        math.Matrix3
 	latLongFromWindow, windowFromLatLong math.Matrix3
 }
 
-// GetScopeTransformations returns a ScopeTransformations object
+// GetTransformations returns a ScopeTransformations object
 // corresponding to the specified radar scope center, range, and rotation.
 // rotationAngle is the angle from true north to the direction that points up
 // on the scope: STARS scopes are magnetic north up, so the STARS pane passes
 // the facility's magnetic variation, while ERAM scopes are always true north
 // up.
-func GetScopeTransformations(paneExtent math.Extent2D, nmPerLongitude float32,
-	center math.Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
+func GetTransformations(paneExtent math.Extent2D, nmPerLongitude float32,
+	center math.Point2LL, rangenm float32, rotationAngle float32) Transformations {
 	width, height := paneExtent.Width(), paneExtent.Height()
 	aspect := width / height
 	ndcFromLatLong := math.Identity3x3().
@@ -48,7 +48,7 @@ func GetScopeTransformations(paneExtent math.Extent2D, nmPerLongitude float32,
 	latLongFromWindow := latLongFromNDC.PostMultiply(ndcFromWindow)
 	windowFromLatLong := latLongFromWindow.Inverse()
 
-	return ScopeTransformations{
+	return Transformations{
 		ndcFromLatLong:    ndcFromLatLong,
 		ndcFromWindow:     ndcFromWindow,
 		latLongFromWindow: latLongFromWindow,
@@ -59,7 +59,7 @@ func GetScopeTransformations(paneExtent math.Extent2D, nmPerLongitude float32,
 // LoadLatLongViewingMatrices adds commands to the provided command buffer
 // to load viewing matrices so that latitude-longiture positions can be
 // provided for subsequent vertices.
-func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *renderer.CommandBuffer) {
+func (st *Transformations) LoadLatLongViewingMatrices(cb *renderer.CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromLatLong)
 	cb.LoadModelViewMatrix(math.Identity3x3())
 }
@@ -67,14 +67,14 @@ func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *renderer.CommandB
 // LoadWindowViewingMatrices adds commands to the provided command buffer
 // to load viewing matrices so that window-coordinate positions can be
 // provided for subsequent vertices.
-func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *renderer.CommandBuffer) {
+func (st *Transformations) LoadWindowViewingMatrices(cb *renderer.CommandBuffer) {
 	cb.LoadProjectionMatrix(st.ndcFromWindow)
 	cb.LoadModelViewMatrix(math.Identity3x3())
 }
 
 // WindowFromLatLongP transforms a point given in latitude-longitude
 // coordinates to window coordinates, snapped to a pixel center.
-func (st *ScopeTransformations) WindowFromLatLongP(p math.Point2LL) [2]float32 {
+func (st *Transformations) WindowFromLatLongP(p math.Point2LL) [2]float32 {
 	pw := st.windowFromLatLong.TransformPoint(p)
 	pw[0], pw[1] = float32(int(pw[0]+0.5))+0.5, float32(int(pw[1]+0.5))+0.5
 	return pw
@@ -82,26 +82,26 @@ func (st *ScopeTransformations) WindowFromLatLongP(p math.Point2LL) [2]float32 {
 
 // LatLongFromWindowP transforms a point p in window coordinates to
 // latitude-longitude.
-func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) math.Point2LL {
+func (st *Transformations) LatLongFromWindowP(p [2]float32) math.Point2LL {
 	return st.latLongFromWindow.TransformPoint(p)
 }
 
 // NormalizedFromWindowP transforms a point p in window coordinates to
 // normalized [0,1]^2 coordinates.
-func (st *ScopeTransformations) NormalizedFromWindowP(p [2]float32) [2]float32 {
+func (st *Transformations) NormalizedFromWindowP(p [2]float32) [2]float32 {
 	pn := st.ndcFromWindow.TransformPoint(p) // [-1,1]
 	return [2]float32{(pn[0] + 1) / 2, (pn[1] + 1) / 2}
 }
 
 // LatLongFromWindowV transforms a vector in window coordinates to a vector
 // in latitude-longitude coordinates.
-func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) math.Point2LL {
+func (st *Transformations) LatLongFromWindowV(v [2]float32) math.Point2LL {
 	return st.latLongFromWindow.TransformVector(v)
 }
 
 // PixelDistanceNM returns the space between adjacent pixels expressed in
 // nautical miles.
-func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 {
+func (st *Transformations) PixelDistanceNM(nmPerLongitude float32) float32 {
 	ll := st.LatLongFromWindowV([2]float32{1, 0})
 	return math.NMLength2LL(ll, nmPerLongitude)
 }
@@ -151,7 +151,7 @@ func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]fl
 	return offset
 }
 
-func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTransformations, dpiScale float32,
+func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms Transformations, dpiScale float32,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, dpiScale)

@@ -24,7 +24,7 @@ import (
 // ALTIM SET
 
 // drawAltimSetView renders the ALTIM SET floating window.
-func (ep *ERAMPane) drawAltimSetView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawAltimSetView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.AltimSet.Visible {
 		return
@@ -128,15 +128,15 @@ type altimSetPopup struct {
 	popupBase
 }
 
-func (a *altimSetPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (a *altimSetPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.AltimSet.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.AltimSet.ShowBorder, "BORDER"),
 		ep.makeToggleMenuItem(&ps.AltimSet.ShowIndicators, "TEAROFF"),
 		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
-			OnClick: func(_ ERAMMenuClickType) bool {
+			OnClick: func(_ MenuClickType) bool {
 				handleClick(ep, &ps.AltimSet.Lines, 3, 24, 1)
 				maxOffset := max(0, len(ep.AltimSetAirports)-ps.AltimSet.Lines)
 				ep.altimSetScroll.Offset = math.Clamp(ep.altimSetScroll.Offset, 0, maxOffset)
@@ -148,7 +148,7 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.
 		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text},
 	}
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: "AS",
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2), // Menu always uses FONT 2, not affected by FONT setting
@@ -161,7 +161,7 @@ func (a *altimSetPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.
 ///////////////////////////////////////////////////////////////////////////
 // CODE
 
-func (ep *ERAMPane) drawBeaconCodeView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.BeaconCodeView.Visible {
 		return
@@ -197,7 +197,7 @@ func (ep *ERAMPane) drawBeaconCodeView(ctx *scope.Context, transforms scope.Scop
 // manually-added codes (with trailing ".") plus the codes of aircraft whose
 // tracks we own, in the order dictated by SortManual. Row.Color is left zero
 // — the View fills in the default text color.
-func beaconCodeRows(ctx *scope.Context, ep *ERAMPane, ps *Preferences) []Row {
+func beaconCodeRows(ctx *scope.Context, ep *Pane, ps *Preferences) []Row {
 	// Codes of aircraft whose tracks we own.
 	var owned []av.Squawk
 	for _, trk := range ctx.Client.State.Tracks {
@@ -247,10 +247,10 @@ type beaconCodeViewPopup struct {
 	popupBase
 }
 
-func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (b *beaconCodeViewPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.BeaconCodeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.ShowBorder, "BORDER"),
 		makeIntMenuItem(ep, &ps.BeaconCodeView.Lines, "LINES", 3, 24, 1),
@@ -260,7 +260,7 @@ func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms 
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.SortManual, "SORT MAN"),
 	}
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: "CODE",
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
@@ -273,10 +273,10 @@ func (b *beaconCodeViewPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms 
 ///////////////////////////////////////////////////////////////////////////
 // MCA - Message Composition Area
 
-func (ep *ERAMPane) drawCommandInput(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 }
 
-func (ep *ERAMPane) startDrawCommandInput(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) startDrawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMInputFont(),
 		Color:       colors.toolbar.text,
@@ -293,7 +293,7 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *scope.Context, transforms scope.S
 // boxes share black bg and a white border; the seam between them is drawn by
 // View as part of the outer border (and a separator line in the body). Width
 // fits ps.MCA.Width characters of the selected font plus 2px side padding.
-func (ep *ERAMPane) drawMessageCompositionArea(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawMessageCompositionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	font := ep.ERAMFont(ps.MCA.Font)
@@ -373,17 +373,17 @@ type mcaPopup struct {
 	popupBase
 }
 
-func (m *mcaPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (m *mcaPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 1, 50, 1),
 		makeIntMenuItem(ep, &ps.MCA.Width, "WIDTH", 30, 50, 20),
 		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 1),
 	}
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: "MCA",
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
@@ -398,7 +398,7 @@ func (m *mcaPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.Scope
 // drawResponseArea renders the RA: a single box with the wrapped
 // response-area text. Width fits ps.RA.Width characters of the selected font
 // plus 2px side padding.
-func (ep *ERAMPane) drawResponseArea(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawResponseArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	const height = 77
@@ -433,20 +433,20 @@ type raPopup struct {
 	popupBase
 }
 
-func (r *raPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (r *raPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		makeIntMenuItem(ep, &ps.RA.Width, "WIDTH", 25, 50, 25),
 		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 1),
-		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ ERAMMenuClickType) bool {
+		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ MenuClickType) bool {
 			ep.responseArea = ""
 			return false
 		}},
 	}
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: "RA",
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
@@ -458,7 +458,7 @@ func (r *raPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeT
 ///////////////////////////////////////////////////////////////////////////
 // Time
 
-func (ep *ERAMPane) drawTimeView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawTimeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	if ps.TimeView.Position == [2]float32{} {
@@ -498,17 +498,17 @@ type timeViewPopup struct {
 	popupBase
 }
 
-func (t *timeViewPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (t *timeViewPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.TimeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.TimeView.ShowBorder, "BORDER"),
 		makeIntMenuItem(ep, &ps.TimeView.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.TimeView.Bright, "BRIGHT", 0, 100, 1),
 	}
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: "TIME",
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
@@ -521,7 +521,7 @@ func (t *timeViewPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.
 // WX View
 
 // drawWXView renders the WX floating window.
-func (ep *ERAMPane) drawWXView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawWXView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.WX.Visible {
 		return
@@ -607,15 +607,15 @@ type wxPopup struct {
 	popupBase
 }
 
-func (w *wxPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (w *wxPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.WX.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.WX.ShowBorder, "BORDER"),
 		ep.makeToggleMenuItem(&ps.WX.ShowIndicators, "TEAROFF"),
 		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
-			OnClick: func(_ ERAMMenuClickType) bool {
+			OnClick: func(_ MenuClickType) bool {
 				handleClick(ep, &ps.WX.Lines, 3, 24, 1)
 				maxOffset := max(0, len(ep.WXReportStations)-ps.WX.Lines)
 				ep.wxScroll.Offset = math.Clamp(ep.wxScroll.Offset, 0, maxOffset)
@@ -625,7 +625,7 @@ func (w *wxPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeT
 		makeIntMenuItem(ep, &ps.WX.Bright, "BRIGHT", 0, 100, 1),
 	}
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: "WX",
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
@@ -674,7 +674,7 @@ var checkListItems = map[int][]string{
 // drawCheckListView renders the active check list (POS CHECK or EMERG CHECK).
 // Rows are click-toggleable; the toggled state lives on ERAMPane and persists
 // across switches between the two lists.
-func (ep *ERAMPane) drawCheckListView(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *Pane) drawCheckListView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if ps.CheckList.Visible == checkListHidden {
 		return
@@ -729,10 +729,10 @@ type checkListPopup struct {
 	popupBase
 }
 
-func (c *checkListPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (c *checkListPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	rows := []ERAMMenuItem{
+	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.CheckList.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.CheckList.ShowBorder, "BORDER"),
 		makeIntMenuItem(ep, &ps.CheckList.Lines, "LINES", 3, 24, 1),
@@ -741,7 +741,7 @@ func (c *checkListPopup) draw(ep *ERAMPane, ctx *scope.Context, transforms scope
 		makeIntMenuItem(ep, &ps.CheckList.Text, "TEXT", 0, 100, 1),
 	}
 
-	cfg := ERAMMenuConfig{
+	cfg := MenuConfig{
 		Title: util.Select(ps.CheckList.Visible == checkListEmerg, "EMRG CHK", "POS CHK"),
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),

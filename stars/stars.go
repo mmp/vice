@@ -45,7 +45,7 @@ const STARSFilledUpTriangle = string(rune(0x1e))
 const TabListEntries = 100
 const TabListUnassignedIndex = -1
 
-type STARSPane struct {
+type Pane struct {
 	TRACONPreferenceSets map[string]*PreferenceSet
 	prefSet              *PreferenceSet
 
@@ -124,14 +124,14 @@ type STARSPane struct {
 
 	queryUnassociated *util.TransientMap[av.ADSBCallsign, any]
 
-	RangeBearingLines []STARSRangeBearingLine
+	RangeBearingLines []RangeBearingLine
 	MinSepAircraft    [2]av.ADSBCallsign
 
 	CAAircraft  []CAAircraft
 	MCIAircraft []CAAircraft
 
 	// For CRDA
-	CRDAPairs []STARSCRDAPair
+	CRDAPairs []CRDAPair
 
 	// Various UI state
 	FlipNumericKeypad             bool
@@ -203,7 +203,7 @@ type STARSPane struct {
 	}
 
 	// The start of a RBL--one click received, waiting for the second.
-	wipRBL *STARSRangeBearingLine
+	wipRBL *RangeBearingLine
 
 	audioEffects     map[AudioType]int // to handle from Platform.AddPCM()
 	testAudioEndTime time.Time
@@ -269,7 +269,7 @@ type STARSPane struct {
 	datablocks map[av.ADSBCallsign]datablock
 }
 
-func (sp *STARSPane) notePendingATISGITextUpdate(ctx *scope.Context, line int, atis, text *string) {
+func (sp *Pane) notePendingATISGITextUpdate(ctx *scope.Context, line int, atis, text *string) {
 	update := &sp.pendingATISGITextUpdate[line]
 	update.ExpectedATIS = ctx.Client.State.ATIS[line]
 	update.ExpectedGIText = ctx.Client.State.GIText[line]
@@ -284,7 +284,7 @@ func (sp *STARSPane) notePendingATISGITextUpdate(ctx *scope.Context, line int, a
 	update.Valid = true
 }
 
-func (sp *STARSPane) clearPendingATISGITextUpdate(line int) {
+func (sp *Pane) clearPendingATISGITextUpdate(line int) {
 	sp.pendingATISGITextUpdate[line] = struct {
 		ExpectedATIS   string
 		ExpectedGIText string
@@ -346,7 +346,7 @@ const (
 )
 
 // this is read-only, stored in STARSPane for convenience
-type STARSCRDAPair struct {
+type CRDAPair struct {
 	av.CRDAPair
 	Source  *av.CRDARegion
 	Ghost   *av.CRDARegion
@@ -371,7 +371,7 @@ type CRDARunwayPairState struct {
 	GhostState  CRDARunwayState
 }
 
-func (c *STARSCRDAPair) getRegionsString() string {
+func (c *CRDAPair) getRegionsString() string {
 	return c.SourceRegion + "/" + c.GhostRegion
 }
 
@@ -737,12 +737,12 @@ var monitorColorSets = map[string]MonitorColors{
 ///////////////////////////////////////////////////////////////////////////
 // STARSPane proper
 
-func NewSTARSPane() *STARSPane {
+func NewPane() *Pane {
 	InitCommands()
-	return &STARSPane{}
+	return &Pane{}
 }
 
-func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
+func (sp *Pane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	if sp.PointOuts == nil {
 		sp.PointOuts = make(map[sim.ACID]PointOutControllers)
 	}
@@ -806,14 +806,14 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, lg *log.
 // displayRequestedAltitude returns whether requested altitude should be
 // displayed in full data blocks, honoring the controller's override of the
 // adapted setting if they have made one.
-func (sp *STARSPane) displayRequestedAltitude(ctx *scope.Context) bool {
+func (sp *Pane) displayRequestedAltitude(ctx *scope.Context) bool {
 	if sp.OverrideDisplayRequestedAltitude != nil {
 		return *sp.OverrideDisplayRequestedAltitude
 	}
 	return ctx.FacilityAdaptation.Datablocks.FDB.DisplayRequestedAltitude
 }
 
-func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (sp *Pane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	sp.OverrideDisplayRequestedAltitude = nil
 
 	sp.initPrefsForLoadedSim(client.State, pl)
@@ -831,11 +831,11 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platfor
 	}
 }
 
-func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (sp *Pane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	sp.CRDAPairs = nil
 	for name, ap := range util.SortedMap(client.State.Airports) {
 		for idx, pair := range ap.CRDAPairs {
-			sp.CRDAPairs = append(sp.CRDAPairs, STARSCRDAPair{
+			sp.CRDAPairs = append(sp.CRDAPairs, CRDAPair{
 				CRDAPair: pair,
 				Source:   ap.CRDARegions[pair.SourceRegion],
 				Ghost:    ap.CRDARegions[pair.GhostRegion],
@@ -900,7 +900,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 	sp.scopeDraw.holds = nil
 }
 
-func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
+func (sp *Pane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	sp.allVideoMaps = nil
 	usedIds := make(map[int]any)
 
@@ -987,9 +987,9 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 }
 
-func (sp *STARSPane) CanTakeKeyboardFocus() bool { return true }
+func (sp *Pane) CanTakeKeyboardFocus() bool { return true }
 
-func (sp *STARSPane) Upgrade(from, to int) {
+func (sp *Pane) Upgrade(from, to int) {
 	for _, prefs := range sp.TRACONPreferenceSets {
 		prefs.Upgrade(from, to)
 	}
@@ -1004,7 +1004,7 @@ func (sp *STARSPane) Upgrade(from, to int) {
 	}
 }
 
-func (sp *STARSPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (sp *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
 	sp.updateVisibleTracks(ctx)
 
@@ -1019,7 +1019,7 @@ func (sp *STARSPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	sp.processKeyboardInput(ctx)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
-	transforms := scope.GetScopeTransformations(ctx.PaneExtent, ctx.NmPerLongitude, ctr, float32(ps.Range),
+	transforms := scope.GetTransformations(ctx.PaneExtent, ctx.NmPerLongitude, ctr, float32(ps.Range),
 		ctx.MagneticVariation)
 
 	scopeExtent := ctx.PaneExtent
@@ -1100,7 +1100,7 @@ func (sp *STARSPane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	sp.drawPauseOverlay(ctx, cb)
 }
 
-func (sp *STARSPane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if !ctx.Client.State.Paused {
 		return
 	}
@@ -1137,13 +1137,13 @@ func (sp *STARSPane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBu
 	})
 
 	// Apply transformations and draw
-	transforms := scope.GetScopeTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
+	transforms := scope.GetTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawWX(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawWX(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	if !sp.wxNextHistoryStepTime.IsZero() && ctx.InterpolatedSimTime.After(sp.wxNextHistoryStepTime) {
@@ -1164,7 +1164,7 @@ func (sp *STARSPane) drawWX(ctx *scope.Context, transforms scope.ScopeTransforma
 		sp.Colors.WXLevelStipple, ps.DisplayWeatherLevel, transforms, cb)
 }
 
-func (sp *STARSPane) drawTRACONBoundary(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawTRACONBoundary(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if !sp.showTRACONBoundary {
 		return
 	}
@@ -1186,7 +1186,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *scope.Context, transforms scope.Sco
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawVideoMaps(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawVideoMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -1284,7 +1284,7 @@ var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
 	0,
 }
 
-func (sp *STARSPane) drawWIPRestrictionArea(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawWIPRestrictionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ra := sp.wipRestrictionArea
 	if ra == nil {
 		return
@@ -1331,7 +1331,7 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *scope.Context, transforms scope
 	}
 }
 
-func (sp *STARSPane) getRestrictionArea(ctx *scope.Context, idx int, userOnly bool) (av.RestrictionArea, bool) {
+func (sp *Pane) getRestrictionArea(ctx *scope.Context, idx int, userOnly bool) (av.RestrictionArea, bool) {
 	if userOnly && idx > av.MaxRestrictionAreas {
 		return av.RestrictionArea{}, false
 	}
@@ -1339,7 +1339,7 @@ func (sp *STARSPane) getRestrictionArea(ctx *scope.Context, idx int, userOnly bo
 	return ra, ok
 }
 
-func (sp *STARSPane) drawRestrictionAreas(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawRestrictionAreas(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	sp.drawWIPRestrictionArea(ctx, transforms, cb)
 
 	ps := sp.currentPrefs()
@@ -1449,7 +1449,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *scope.Context, transforms scope.S
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawCRDARegions(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) drawCRDARegions(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	ps := sp.currentPrefs()
@@ -1487,7 +1487,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *scope.Context, transforms scope.ScopeT
 	}
 }
 
-func (sp *STARSPane) drawMouseCursor(ctx *scope.Context, mouseOverDCB bool) {
+func (sp *Pane) drawMouseCursor(ctx *scope.Context, mouseOverDCB bool) {
 	if mouseOverDCB {
 		// scope/pane.go already called ClearCursorOverride this frame, so
 		// the OS will draw imgui's standard arrow.
@@ -1520,7 +1520,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *scope.Context, mouseOverDCB bool) {
 
 // crossCursor returns the OS cursor for the "+" at the given size, building
 // it on first use. The cache is invalidated when fg or bg change.
-func (sp *STARSPane) crossCursor(p platform.Platform, sizeIdx int, fg, bg renderer.RGB) platform.Cursor {
+func (sp *Pane) crossCursor(p platform.Platform, sizeIdx int, fg, bg renderer.RGB) platform.Cursor {
 	if fg != sp.crossFg || bg != sp.crossBg {
 		for i, c := range sp.crossCursors {
 			if c != nil {
@@ -1565,7 +1565,7 @@ func rgbToRGBA(c renderer.RGB) color.RGBA {
 	return color.RGBA{R: clamp(c.R), G: clamp(c.G), B: clamp(c.B), A: 255}
 }
 
-func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
+func (sp *Pane) makeSignificantPoints(ss client.SimState) {
 	sp.significantPoints = maps.Clone(ss.FacilityAdaptation.SignificantPoints)
 	sp.significantPointsSlice = nil
 	for _, pt := range sp.significantPoints {
@@ -1655,7 +1655,7 @@ const (
 	RadarModeFused
 )
 
-func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
+func (sp *Pane) radarMode(radarSites map[string]*av.RadarSite) int {
 	if len(radarSites) == 0 {
 		// Straight-up fused mode if none are specified.
 		return RadarModeFused
@@ -1671,7 +1671,7 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 	}
 }
 
-func (sp *STARSPane) updateVisibleTracks(ctx *scope.Context) {
+func (sp *Pane) updateVisibleTracks(ctx *scope.Context) {
 	sp.visibleTracks = sp.visibleTracks[:0]
 
 	ps := sp.currentPrefs()
@@ -1721,7 +1721,7 @@ func (sp *STARSPane) updateVisibleTracks(ctx *scope.Context) {
 	})
 }
 
-func (sp *STARSPane) radarSiteId(radarSites map[string]*av.RadarSite) string {
+func (sp *Pane) radarSiteId(radarSites map[string]*av.RadarSite) string {
 	switch sp.radarMode(radarSites) {
 	case RadarModeSingle:
 		return sp.currentPrefs().RadarSiteSelected
@@ -1734,7 +1734,7 @@ func (sp *STARSPane) radarSiteId(radarSites map[string]*av.RadarSite) string {
 	}
 }
 
-func (sp *STARSPane) setRadarModeMulti() {
+func (sp *Pane) setRadarModeMulti() {
 	ps := sp.currentPrefs()
 
 	ps.RadarSiteSelected = ""
@@ -1744,7 +1744,7 @@ func (sp *STARSPane) setRadarModeMulti() {
 	}
 }
 
-func (sp *STARSPane) setRadarModeFused() {
+func (sp *Pane) setRadarModeFused() {
 	ps := sp.currentPrefs()
 
 	ps.RadarSiteSelected = ""
@@ -1757,7 +1757,7 @@ func (sp *STARSPane) setRadarModeFused() {
 // Returns the cardinal-ordinal direction associated with the numbpad keys,
 // interpreting 5 as the center; (nil, true) is returned for '5' and
 // (nil, false) is returned for an invalid key.
-func (sp *STARSPane) numpadToDirection(key int) (*math.CardinalOrdinalDirection, bool) {
+func (sp *Pane) numpadToDirection(key int) (*math.CardinalOrdinalDirection, bool) {
 	if key < 1 || key > 9 {
 		return nil, false
 	}
@@ -1780,7 +1780,7 @@ func (sp *STARSPane) numpadToDirection(key int) (*math.CardinalOrdinalDirection,
 		return &dirs[key-1], true
 	}
 }
-func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
+func (sp *Pane) initializeAudio(p platform.Platform, lg *log.Logger) {
 	if sp.audioEffects == nil {
 		sp.audioEffects = make(map[AudioType]int)
 
@@ -1803,7 +1803,7 @@ func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 	}
 }
 
-func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
+func (sp *Pane) playOnce(p platform.Platform, a AudioType) {
 	if sp.currentPrefs().AudioEffectEnabled[a] {
 		p.PlayAudioOnce(sp.audioEffects[a])
 	}
@@ -1811,7 +1811,7 @@ func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
 
 const AlertAudioDuration = 5 * time.Second
 
-func (sp *STARSPane) updateAudio(ctx *scope.Context) {
+func (sp *Pane) updateAudio(ctx *scope.Context) {
 	ps := sp.currentPrefs()
 
 	if !sp.testAudioEndTime.IsZero() && time.Now().After(sp.testAudioEndTime) {
@@ -1888,7 +1888,7 @@ func (sp *STARSPane) updateAudio(ctx *scope.Context) {
 	updateContinuous(playSPCSound, AudioSquawkSPC)
 }
 
-func (sp *STARSPane) handleCapture(ctx *scope.Context, transforms scope.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *Pane) handleCapture(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if !sp.capture.enabled {
 		return
 	}
@@ -2091,7 +2091,7 @@ func captureEncodeFrames(ch chan *image.RGBA) {
 	}
 }
 
-func (sp *STARSPane) qlPositionsString() string {
+func (sp *Pane) qlPositionsString() string {
 	ps := sp.currentPrefs()
 	tcps := slices.Collect(maps.Keys(ps.QuickLookTCPs))
 	sort.Slice(tcps, func(a, b int) bool {

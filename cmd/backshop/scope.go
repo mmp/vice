@@ -112,7 +112,7 @@ type scopeView struct {
 	cursorLatLong     math.Point2LL
 	haveCursorLatLong bool
 
-	transforms scope.ScopeTransformations
+	transforms scope.Transformations
 }
 
 func (s *scopeView) init() {
@@ -421,7 +421,7 @@ func (s *scopeView) updateZoom(extent math.Extent2D, ss *client.SimState) {
 
 	// Put the anchor back under the pixel it was grabbed at.
 	if s.zoomAnchorWindow != [2]float32{} {
-		tr := scope.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
+		tr := scope.GetTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
 			scopeRotation(ss))
 		s.center = math.Add2LL(s.center, math.Sub2LL(s.zoomAnchor, tr.LatLongFromWindowP(s.zoomAnchorWindow)))
 	}
@@ -458,7 +458,7 @@ func (s *scopeView) draw(a *app, menuBarHeight float32) {
 
 	ss := &a.cc.State
 	s.updateZoom(extent, ss)
-	s.transforms = scope.GetScopeTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
+	s.transforms = scope.GetTransformations(extent, ss.NmPerLongitude, s.center, s.rangeNM,
 		scopeRotation(ss))
 
 	s.handleMouse(a, extent, displaySize)

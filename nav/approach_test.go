@@ -278,7 +278,7 @@ func TestPrepareForChartedVisualSkipsBehindSegmentIntercept(t *testing.T) {
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
 		},
-		Approach: NavApproach{
+		Approach: Approach{
 			Assigned: &av.Approach{
 				Type:   av.ChartedVisualApproach,
 				Runway: "09",
@@ -322,8 +322,8 @@ func TestPrepareForChartedVisualUsesAssignedHeading(t *testing.T) {
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
 		},
-		Heading: NavHeading{Assigned: &hdg},
-		Approach: NavApproach{
+		Heading: Heading{Assigned: &hdg},
+		Approach: Approach{
 			Assigned: &av.Approach{
 				Type:   av.ChartedVisualApproach,
 				Runway: "09",
@@ -1045,7 +1045,7 @@ func TestLocalizerNotClosingRequestsVectors(t *testing.T) {
 	// the localizer so that it tracks parallel to it.
 	hdg := courseMag
 	f.nav.Approach.InterceptState = TurningToJoin
-	f.nav.Heading = NavHeading{Assigned: &hdg}
+	f.nav.Heading = Heading{Assigned: &hdg}
 	f.nav.DeferredNavHeading = nil
 
 	for f.tick < 60 && !f.nav.Approach.RequestVectors {
@@ -1691,7 +1691,7 @@ func TestClearedVisualApproachDoesNotMutateApproach(t *testing.T) {
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
 		},
-		Approach: NavApproach{
+		Approach: Approach{
 			Assigned:         ap,
 			AssignedId:       "RIV",
 			VisualReferences: []*av.Approach{ap},

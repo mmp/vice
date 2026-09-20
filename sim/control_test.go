@@ -412,7 +412,7 @@ func TestRunOneControlCommandAtFixClearedStraightInApproach(t *testing.T) {
 			Waypoints: []av.Waypoint{
 				{Fix: "MATTY"},
 			},
-			Approach: nav.NavApproach{
+			Approach: nav.Approach{
 				Assigned:   appr,
 				AssignedId: "RG24",
 			},
