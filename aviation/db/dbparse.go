@@ -93,9 +93,9 @@ var airportsWithoutLocalCode = map[av.ICAOAirportCode]bool{
 	"KMWN": true, // Mount Washington Observatory
 	"KNLW": true, // Naval Station Newport Helipad
 	"KNPI": true, // Site 8 NOLF
-	"KXTA": true, // Homey (Area 51) av.Airport
+	"KXTA": true, // Homey (Area 51) Airport
 	"KZ26": true, // Camp Roberts Army Heliport
-	"PAHE": true, // Healy av.Airport (not the NASR-listed Healy River/HRR, which is PAHV)
+	"PAHE": true, // Healy Airport (not the NASR-listed Healy River/HRR, which is PAHV)
 }
 
 func parseAirports() (map[av.ICAOAirportCode]Airport, map[av.ICAOAirportCode]Airport) {
@@ -154,7 +154,7 @@ func parseAirports() (map[av.ICAOAirportCode]Airport, map[av.ICAOAirportCode]Air
 	// ARTCCs
 	ar := util.LoadResource("airport_artccs.json")
 	defer ar.Close()
-	data := make(map[av.ICAOAirportCode]string) // av.Airport -> ARTCC
+	data := make(map[av.ICAOAirportCode]string) // Airport -> ARTCC
 	if err := util.UnmarshalJSON(ar, &data); err != nil {
 		fmt.Fprintf(os.Stderr, "airport_artccs.json: %v\n", err)
 		os.Exit(1)
@@ -364,7 +364,7 @@ func parseHPF() map[string][]av.Hold {
 			}
 		})
 
-	// Convert to av.Hold objects
+	// Convert to Hold objects
 	enrouteHolds := make(map[string][]av.Hold)
 
 	for _, h := range holds {
@@ -630,7 +630,7 @@ func parseAirspace(filename string) map[string][]av.AirspaceVolume {
 		panic(err)
 	}
 
-	// Uplift to vice's internal av.AirspaceVolume representation.
+	// Uplift to vice's internal AirspaceVolume representation.
 	convert := func(v [][2]float32) []math.Point2LL {
 		return util.MapSlice(v, func(p [2]float32) math.Point2LL { return math.Point2LL(p) })
 	}

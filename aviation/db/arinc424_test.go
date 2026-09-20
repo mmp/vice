@@ -568,7 +568,7 @@ func TestParseARINC424SID(t *testing.T) {
 	}
 }
 
-// runwayTransition is a av.SID runway transition and the waypoints it is
+// runwayTransition is a SID runway transition and the waypoints it is
 // expected to encode to.
 type runwayTransition struct {
 	airport           av.ICAOAirportCode
@@ -592,7 +592,7 @@ func checkRunwayTransitions(t *testing.T, result ARINC424Result, tests []runwayT
 	}
 }
 
-// av.SID legs to and along radials: DALLS1's headings to the LTJ 165 radial
+// SID legs to and along radials: DALLS1's headings to the LTJ 165 radial
 // (VR) then a course to an altitude along it, DVT3's climb on the PXR 336
 // radial from wherever the runway heading ends (FA after VA) and after a
 // heading to intercept it (VI/FA), SUMMA2's headings to intercept courses

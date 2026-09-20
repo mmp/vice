@@ -24,7 +24,7 @@ func UnderBravoShelf(grid *AirspaceGrid, p math.Point2LL, alt int) bool {
 ///////////////////////////////////////////////////////////////////////////
 // AirspaceGrid
 
-// AirspaceGrid organizes av.AirspaceVolume definitions and provides efficient in volume tests via
+// AirspaceGrid organizes AirspaceVolume definitions and provides efficient in volume tests via
 // a grid in lat-long space that records which of a potentially large set of volumes overlap
 // grid cells. Grid cells are initialized on demand rather than upfront, which saves storage
 type AirspaceGrid struct {

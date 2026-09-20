@@ -13,7 +13,7 @@ import (
 	"sync"
 
 	// Embed the time zone database: Windows has no system copy, and the zone
-	// names in av.TFR NOTAMs have to resolve everywhere Vice runs.
+	// names in TFR NOTAMs have to resolve everywhere Vice runs.
 	_ "time/tzdata"
 
 	"github.com/mmp/vice/math"
@@ -32,7 +32,7 @@ type StaticDatabase struct {
 	Fixes               map[string]Fix
 	Airways             map[string][]av.Airway
 	EnrouteHolds        map[string][]av.Hold                        // Fix -> Holds
-	TerminalHolds       map[av.ICAOAirportCode]map[string][]av.Hold // av.Airport -> Fix -> Holds
+	TerminalHolds       map[av.ICAOAirportCode]map[string][]av.Hold // Airport -> Fix -> Holds
 	Callsigns           map[string]string                           // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]av.AircraftPerformance
@@ -130,7 +130,7 @@ func (f Facility) Center() math.Point2LL {
 // ARTCC is a type alias for Facility representing an Air Route Traffic Control Center.
 type ARTCC = Facility
 
-// TRACON represents a Terminal Radar av.Approach Control facility.
+// TRACON represents a Terminal Radar Approach Control facility.
 type TRACON struct {
 	Facility
 	ARTCC string
@@ -477,7 +477,7 @@ func doInitDB() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// av.Airport-pair Routes
+// Airport-pair Routes
 
 // AirportPair keys the city-pair route database by ICAO airport codes.
 type AirportPair struct {
@@ -506,11 +506,11 @@ func (d StaticDatabase) RoutesBetween(from, to av.ICAOAirportCode) []AirportPair
 	return d.AirportPairRoutes[AirportPair{From: from, To: to}]
 }
 
-// av.RouteWaypoints converts a real-world route from the city-pair database into
+// RouteWaypoints converts a real-world route from the city-pair database into
 // waypoints. An airway name attaches to the fix before it, so
 // InitializeLocations fills in the fixes it passes through. The returned
 // waypoints have no Location: the caller must run InitializeLocations on them,
-// which is also what discards the tokens that aren't fixes at all--av.SID and av.STAR
+// which is also what discards the tokens that aren't fixes at all--SID and STAR
 // names, radial/DME fixes like SLI341/019.
 //
 

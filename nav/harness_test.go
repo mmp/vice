@@ -594,7 +594,7 @@ func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {
 	return f.nav.ClearedApproach("_VIS"+runway, nil, f.simTime, false, "")
 }
 
-// makeAirport constructs an *av.Airport from the FAAAirport in db.DB,
+// makeAirport constructs an *av.Airport from the db.Airport in db.DB,
 // resolving approach waypoint locations and adding runway threshold
 // waypoints — mirroring the essential parts of Airport.Finalize.
 func (f *FlightTest) makeAirport() *av.Airport {

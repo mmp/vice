@@ -88,8 +88,8 @@ func TestCIFPAirportsAreInAirportsDatabase(t *testing.T) {
 
 // TestRunwayThresholdsMatchHeadings catches a runway whose Threshold is the end
 // the aircraft rolls toward rather than the end it lands on. Nothing else does:
-// av.LookupOppositeRunway pairs runways by name, so a reversed pair still resolves,
-// and av.ExitRoute.initialize's "first fix is behind the aircraft" check turns
+// LookupOppositeRunway pairs runways by name, so a reversed pair still resolves,
+// and ExitRoute.initialize's "first fix is behind the aircraft" check turns
 // itself off when the heading and the geometry disagree by more than 45
 // degrees--which is exactly what a reversed pair looks like. Downstream, the
 // takeoff roll direction, the approach's runway heading, and the landing

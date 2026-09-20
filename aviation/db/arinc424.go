@@ -58,7 +58,7 @@ func parseStationDeclination(s []byte) (float32, bool) {
 }
 
 // parseMagneticCourse converts a course given in tenths of a degree to whole
-// degrees. av.Waypoint.Heading uses 0 to mean "unset", so a course that rounds
+// degrees. Waypoint.Heading uses 0 to mean "unset", so a course that rounds
 // down to zero is recorded as 360.
 func parseMagneticCourse(s []byte) int16 {
 	if hdg := int16((parseInt(s) + 5) / 10); hdg != 0 {
@@ -424,11 +424,11 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					}
 				}
 
-			case 'D': // av.SID 4.1.9
+			case 'D': // SID 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 
-				// Extract holds from av.SID procedure records (HF/HA/HM)
+				// Extract holds from SID procedure records (HF/HA/HM)
 				for _, rec := range recs {
 					if hold, ok := extractHoldsFromSSA(rec, id, "SID"); ok {
 						if result.TerminalHolds[icao] == nil {
@@ -440,11 +440,11 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 
 				sidRecs = append(sidRecs, slices.Clone(recs))
 
-			case 'E': // av.STAR 4.1.9
+			case 'E': // STAR 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 
-				// Extract holds from av.STAR procedure records (HF/HA/HM)
+				// Extract holds from STAR procedure records (HF/HA/HM)
 				for _, rec := range recs {
 					if hold, ok := extractHoldsFromSSA(rec, id, "STAR"); ok {
 						if result.TerminalHolds[icao] == nil {
@@ -467,7 +467,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					result.Airports[icao].STARs[id] = *star
 				}
 
-			case 'F': // av.Approach 4.1.9
+			case 'F': // Approach 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 
@@ -1039,7 +1039,7 @@ func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *av.STAR {
 				sp := spliceTransition(wps, base)
 				if sp == nil {
 					//fmt.Printf("%s/%s [%s] [%s]: mismatching fixes for %s transition\n",
-					//recs[0].icao, recs[0].id, av.WaypointArray(wps).Encode(), av.WaypointArray(base).Encode(), t)
+					//recs[0].icao, recs[0].id, WaypointArray(wps).Encode(), WaypointArray(base).Encode(), t)
 				} else {
 					star.Transitions[t] = sp
 				}
@@ -1050,7 +1050,7 @@ func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *av.STAR {
 	return star
 }
 
-// parseSID assembles a av.SID from its records. av.Runway transitions are keyed by
+// parseSID assembles a SID from its records. Runway transitions are keyed by
 // the airport's runways; a transition coded for both parallels (RW04B)
 // applies to each that has none of its own.
 func parseSID(recs []ssaRecord, icao av.ICAOAirportCode, runways []av.Runway, navaids map[string]Navaid) *av.SID {
@@ -1065,7 +1065,7 @@ func parseSID(recs []ssaRecord, icao av.ICAOAirportCode, runways []av.Runway, na
 		if rec.continuation != '0' && rec.continuation != '1' {
 			continue
 		}
-		if rec.routeType == '0' { // engine-out av.SID
+		if rec.routeType == '0' { // engine-out SID
 			continue
 		}
 		key := string(rec.routeType) + rec.transition
@@ -1116,7 +1116,7 @@ func parseSID(recs []ssaRecord, icao av.ICAOAirportCode, runways []av.Runway, na
 	return sid
 }
 
-// sidTransitionRunways returns the airport's runways a av.SID runway transition
+// sidTransitionRunways returns the airport's runways a SID runway transition
 // applies to: RW04L is 4L, RW04 is 4, and RW04B is each of the parallels
 // 4L, 4R, and 4C.
 func sidTransitionRunways(transition string, runways []av.Runway) []string {
@@ -1132,7 +1132,7 @@ func sidTransitionRunways(transition string, runways []av.Runway) []string {
 	return util.FilterSlice(ids, func(rwy string) bool { return rwy == id })
 }
 
-// parseSIDLegs converts the legs of one av.SID transition to waypoints. Legs
+// parseSIDLegs converts the legs of one SID transition to waypoints. Legs
 // that end somewhere other than a fix--a heading to an altitude, a course
 // to a DME distance, a track from a fix for a distance, a heading to
 // intercept a course or cross a radial, vectors--become action groups on
@@ -1255,7 +1255,7 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 			switch rec.waypointDescription[0] { // 5.17
 			case 'G': // the runway
 				from()
-			case 'A': // the airport: where a vector av.SID's enroute transitions begin
+			case 'A': // the airport: where a vector SID's enroute transitions begin
 			default:
 				wp, _, _ := rec.GetWaypoint()
 				addFix(wp)
@@ -1583,7 +1583,7 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 				sp := spliceTransition(w, base)
 				if sp == nil {
 					//fmt.Printf("%s [%s] [%s]: mismatching fixes for %s transition\n",
-					//recs[0].icao, av.WaypointArray(w).Encode(), av.WaypointArray(base).Encode(), t)
+					//recs[0].icao, WaypointArray(w).Encode(), WaypointArray(base).Encode(), t)
 				} else {
 					appr.Waypoints = append(appr.Waypoints, sp)
 				}
@@ -1601,7 +1601,7 @@ func parseHoldingPattern(line []byte) (av.Hold, bool) {
 		return av.Hold{}, false
 	}
 
-	// Check section code: 'E' (Enroute) or 'P' (av.Airport)
+	// Check section code: 'E' (Enroute) or 'P' (Airport)
 	sectionCode := line[4]
 	if sectionCode != 'E' && sectionCode != 'P' {
 		return av.Hold{}, false
@@ -1681,7 +1681,7 @@ func parseHoldingPattern(line []byte) (av.Hold, bool) {
 	return h, true
 }
 
-// extractHoldsFromSSA extracts av.Hold records from procedure waypoints (HF, HA, HM path terminators)
+// extractHoldsFromSSA extracts Hold records from procedure waypoints (HF, HA, HM path terminators)
 // procName is the procedure identifier (e.g., "ILS06", "CAMRN5")
 // procType is the procedure type (e.g., "IAP", "STAR", "SID")
 func extractHoldsFromSSA(rec ssaRecord, procName, procType string) (av.Hold, bool) {
