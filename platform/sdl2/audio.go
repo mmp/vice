@@ -1,8 +1,8 @@
-// pkg/platform/audio.go
+// platform/sdl2/audio.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package platform
+package sdl2
 
 // typedef unsigned char uint8;
 // void audioCallback(void *userdata, uint8 *stream, int len);
@@ -19,16 +19,14 @@ import (
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/rand"
 
 	"github.com/tosone/minimp3"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const AudioSampleRate = 44100
-const AudioInputSampleRate = 16000 // Whisper's native sample rate
-
-type audioEngine struct {
+type engine struct {
 	pinner        runtime.Pinner
 	effects       []audioEffect
 	speechq       []int16
@@ -37,6 +35,9 @@ type audioEngine struct {
 	deviceOpen    bool
 	mu            sync.Mutex
 	volume        int
+
+	rec         *recorder
+	playbackErr error
 }
 
 type audioEffect struct {
@@ -46,9 +47,40 @@ type audioEffect struct {
 	playOffset     int
 }
 
-// Initialize opens the audio output device. An error is returned if it
+// New initializes SDL audio and returns an Engine for audio playback and
+// microphone capture. If the output device can't be opened, the returned
+// Engine still supports capture and reports the failure from
+// AudioPlaybackError. requestMicrophone should be false for tools that play
+// audio but never record any, which would otherwise put a microphone
+// permission prompt in front of the user for nothing.
+func New(lg *log.Logger, requestMicrophone bool) audio.Engine {
+	if requestMicrophone {
+		// Request microphone permission before SDL audio is initialized;
+		// this avoids potential conflicts between AVFoundation and CoreAudio.
+		status := microphoneAuthorizationStatus()
+		lg.Infof("Microphone authorization status: %s", status)
+		switch status {
+		case micAuthNotDetermined:
+			lg.Info("Requesting microphone permission (dialog will appear)...")
+			requestMicrophoneAccess()
+		case micAuthDenied:
+			lg.Warn("Microphone access denied - enable in System Settings > Privacy & Security > Microphone")
+		case micAuthRestricted:
+			lg.Warn("Microphone access restricted by system policy")
+		}
+	}
+
+	a := &engine{rec: newRecorder(lg)}
+	if err := a.initialize(lg); err != nil {
+		a.playbackErr = err
+		lg.Errorf("Audio playback unavailable: %v", err)
+	}
+	return a
+}
+
+// initialize opens the audio output device. An error is returned if it
 // can't be opened; audio playback is then unavailable for the session.
-func (a *audioEngine) Initialize(lg *log.Logger) error {
+func (a *engine) initialize(lg *log.Logger) error {
 	lg.Info("Starting to initialize audio")
 
 	a.volume = 10
@@ -57,7 +89,7 @@ func (a *audioEngine) Initialize(lg *log.Logger) error {
 	a.pinner.Pin(user)
 
 	spec := sdl.AudioSpec{
-		Freq:     AudioSampleRate,
+		Freq:     audio.SampleRate,
 		Format:   sdl.AUDIO_S16SYS,
 		Channels: 1,
 		Samples:  2048,
@@ -77,7 +109,9 @@ func (a *audioEngine) Initialize(lg *log.Logger) error {
 	return nil
 }
 
-func (a *audioEngine) Close() {
+func (a *engine) Dispose() {
+	a.rec.close()
+
 	if !a.deviceOpen {
 		return
 	}
@@ -87,13 +121,13 @@ func (a *audioEngine) Close() {
 	a.deviceOpen = false
 }
 
-func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
+func (a *engine) AddPCM(pcm []byte, rate int) (int, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	if rate != AudioSampleRate {
+	if rate != audio.SampleRate {
 		return 0, fmt.Errorf("%d: sample rate doesn't match audio engine's %d",
-			rate, AudioSampleRate)
+			rate, audio.SampleRate)
 	}
 
 	a.effects = append(a.effects, audioEffect{pcm: pcm16FromBytes(pcm)})
@@ -108,7 +142,7 @@ func pcm16FromBytes(pcm []byte) []int16 {
 	return pcm16
 }
 
-func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
+func (a *engine) AddMP3(mp3 []byte) (int, error) {
 	if dec, pcm, err := minimp3.DecodeFull(mp3); err != nil {
 		return -1, err
 	} else if dec.Channels != 1 {
@@ -118,15 +152,15 @@ func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
 	}
 }
 
-func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
+func (a *engine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
 	if len(a.speechq) > 0 {
-		return ErrCurrentlyPlayingSpeech
+		return audio.ErrCurrentlyPlayingSpeech
 	}
 	if !a.deviceOpen {
-		return ErrAudioPlaybackUnavailable
+		return audio.ErrPlaybackUnavailable
 	}
 	if len(pcm) == 0 {
 		return errors.New("no speech samples to play")
@@ -137,7 +171,7 @@ func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	return nil
 }
 
-func (a *audioEngine) AppendSpeechPCM(pcm []int16) {
+func (a *engine) AppendSpeechPCM(pcm []int16) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	if !a.deviceOpen {
@@ -147,20 +181,20 @@ func (a *audioEngine) AppendSpeechPCM(pcm []int16) {
 	a.speechq = append(a.speechq, pcm...)
 }
 
-func (a *audioEngine) StopSpeech() {
+func (a *engine) StopSpeech() {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	a.speechq, a.speechcb = nil, nil
 }
 
-func (a *audioEngine) SetAudioVolume(vol int) {
+func (a *engine) SetAudioVolume(vol int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
 	a.volume = math.Clamp(vol, 0, 10)
 }
 
-func (a *audioEngine) PlayAudioOnce(index int) {
+func (a *engine) PlayAudioOnce(index int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -171,7 +205,7 @@ func (a *audioEngine) PlayAudioOnce(index int) {
 	a.effects[index-1].playOnceCount++
 }
 
-func (a *audioEngine) StartPlayAudioContinuous(index int) {
+func (a *engine) StartPlayAudioContinuous(index int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -182,7 +216,7 @@ func (a *audioEngine) StartPlayAudioContinuous(index int) {
 	a.effects[index-1].playContinuous = true
 }
 
-func (a *audioEngine) StopPlayAudio(index int) {
+func (a *engine) StopPlayAudio(index int) {
 	if index == 0 {
 		return
 	}
@@ -196,29 +230,77 @@ func (a *audioEngine) StopPlayAudio(index int) {
 	a.mu.Unlock()
 }
 
-func (a *audioEngine) SetSpeechGarbled(garbled bool) {
+func (a *engine) SetSpeechGarbled(garbled bool) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	a.speechGarbled = garbled
 }
 
-func (a *audioEngine) IsPlayingSpeech() bool {
+func (a *engine) IsPlayingSpeech() bool {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	return len(a.speechq) > 0
 }
 
-func (a *audioEngine) RemainingSpeechDuration() time.Duration {
+func (a *engine) RemainingSpeechDuration() time.Duration {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	return time.Duration(len(a.speechq)) * time.Second / time.Duration(AudioSampleRate)
+	return time.Duration(len(a.speechq)) * time.Second / time.Duration(audio.SampleRate)
+}
+
+func (a *engine) StartAudioCapture() error {
+	return a.rec.startCapture()
+}
+
+func (a *engine) StartAudioCaptureWithDevice(deviceName string) error {
+	return a.rec.startCaptureWithDevice(deviceName)
+}
+
+func (a *engine) StopAudioCapture() {
+	a.rec.stopCapture()
+}
+
+func (a *engine) IsAudioCapturing() bool {
+	return a.rec.isCapturing()
+}
+
+func (a *engine) GetAudioPreroll() []int16 {
+	return a.rec.preroll()
+}
+
+func (a *engine) StartAudioRecording() error {
+	return a.rec.startRecording()
+}
+
+func (a *engine) StartAudioRecordingWithDevice(deviceName string) error {
+	return a.rec.startRecordingWithDevice(deviceName)
+}
+
+func (a *engine) StopAudioRecording() ([]int16, error) {
+	return a.rec.stopRecording()
+}
+
+func (a *engine) IsAudioRecording() bool {
+	return a.rec.isRecording()
+}
+
+func (a *engine) GetAudioInputDevices() []string {
+	return inputDevices()
+}
+
+func (a *engine) SetAudioStreamCallback(cb func([]int16)) {
+	a.rec.setStreamCallback(cb)
+}
+
+func (a *engine) AudioPlaybackError() error {
+	return a.playbackErr
 }
 
 //export audioCallback
 func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	n := int(size)
 	out := unsafe.Slice(ptr, n)
-	a := (*audioEngine)(user)
+	a := (*engine)(user)
 
 	accum := make([]int, n/2)
 	var cbToCall func() // Save callback to call after releasing the lock
@@ -287,7 +369,7 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 func audioInputCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	n := int(size)
 	in := unsafe.Slice(ptr, n)
-	ar := (*AudioRecorder)(user)
+	ar := (*recorder)(user)
 
 	// Convert bytes to int16 samples
 	samples := make([]int16, n/2)

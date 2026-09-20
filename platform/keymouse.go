@@ -1,4 +1,4 @@
-// pkg/platform/keymouse.go
+// platform/keymouse.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/AllenDang/cimgui-go/imgui"
-	"github.com/mmp/vice/util"
 )
 
 type MouseState struct {
@@ -30,11 +29,10 @@ const (
 	MouseButtonCount
 )
 
-func (ms *MouseState) SetCursor(id imgui.MouseCursor) {
-	imgui.SetMouseCursor(id)
-}
-
-func (g *glfwPlatform) GetMouse() *MouseState {
+// NewMouseState returns the current state of the mouse as imgui reports it.
+// deltaPos is the frame's mouse motion when the windowing backend is in
+// mouse delta mode and the zero vector otherwise.
+func NewMouseState(deltaPos [2]float32) *MouseState {
 	io := imgui.CurrentIO()
 	pos := imgui.MousePos()
 	wx, wy := io.MouseWheelH(), io.MouseWheel()
@@ -44,7 +42,7 @@ func (g *glfwPlatform) GetMouse() *MouseState {
 	mainViewportPos := imgui.MainViewport().Pos()
 	m := &MouseState{
 		Pos:      [2]float32{pos.X - mainViewportPos.X, pos.Y - mainViewportPos.Y},
-		DeltaPos: util.Select(g.mouseDeltaMode, g.mouseDelta, [2]float32{}),
+		DeltaPos: deltaPos,
 		Wheel:    [2]float32{wx, wy},
 	}
 
@@ -72,13 +70,15 @@ type KeyboardState struct {
 	HeldFKeys map[imgui.Key]any
 }
 
-func (g *glfwPlatform) GetKeyboard() *KeyboardState {
+// NewKeyboardState returns the keys that imgui reports as pressed this
+// frame, along with the characters entered and the function keys that the
+// windowing backend has seen held down.
+func NewKeyboardState(input string, heldFKeys map[imgui.Key]any) *KeyboardState {
 	keyboard := &KeyboardState{
+		Input:     input,
 		Pressed:   make(map[imgui.Key]any),
-		HeldFKeys: g.heldFKeys,
+		HeldFKeys: heldFKeys,
 	}
-
-	keyboard.Input = g.InputCharacters()
 
 	// Map \ to END for laptops (hacky...)
 	if strings.Contains(keyboard.Input, `\`) {

@@ -18,7 +18,7 @@ import (
 	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
@@ -116,7 +116,7 @@ func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, 
 
 // Update manages playback state, called each frame.
 // It handles hold timeouts and initiates playback when appropriate.
-func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive bool) {
+func (tm *TransmissionManager) Update(p audio.Engine, paused, sttActive bool) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
@@ -148,7 +148,7 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 	isContact := qt.Type == av.RadioTransmissionContact
 
 	// Compute audio duration: PCM is 44.1kHz mono int16.
-	durationMs := int64(len(qt.PCM)) * 1000 / platform.AudioSampleRate
+	durationMs := int64(len(qt.PCM)) * 1000 / audio.SampleRate
 	startTime := time.Now()
 
 	finishedCallback := func() {
@@ -177,7 +177,7 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 		tm.playing = true
 		tm.lg.Infof("SPEECH playback started: %s (%s, %dms audio, %d queued behind)",
 			qt.Callsign, qt.Type, durationMs, len(tm.queue))
-	} else if errors.Is(err, platform.ErrCurrentlyPlayingSpeech) {
+	} else if errors.Is(err, audio.ErrCurrentlyPlayingSpeech) {
 		// Audio engine is busy. Put it back at the front so we'll retry on
 		// the next Update.
 		tm.queue = append([]queuedTransmission{qt}, tm.queue...)
@@ -540,7 +540,7 @@ func benchmarkModel(lg *log.Logger, modelName string) (int64, error) {
 	defer model.Close()
 
 	var benchMu sync.Mutex
-	samples := make([]int16, platform.AudioInputSampleRate) // 1 second of silence
+	samples := make([]int16, audio.InputSampleRate) // 1 second of silence
 
 	// runPass runs a single transcription pass and returns its latency.
 	// A non-nil error means whisper.cpp threw inside the cgo call (typically
@@ -738,7 +738,7 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 	// return an error so the caller can decide whether to retry or fail.
 	setWhisperBenchmarkStatus(lg, fmt.Sprintf("Warming up %s...", modelName))
 	warmupT := whisper.NewTranscriber(whisperModel, &whisperModelMu, whisper.Options{Language: "en"})
-	warmupT.AddSamples(make([]int16, platform.AudioInputSampleRate)) // 1 second
+	warmupT.AddSamples(make([]int16, audio.InputSampleRate)) // 1 second
 	if _, _, err := warmupT.Stop(); err != nil {
 		lg.Warnf("Whisper warmup failed for %s: %v - disabling GPU", modelName, err)
 		whisperModelMu.Lock()

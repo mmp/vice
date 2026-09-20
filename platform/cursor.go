@@ -11,71 +11,18 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/go-gl/glfw/v3.4/glfw"
 	"github.com/mmp/vice/math"
 )
 
-// Cursor is a platform cursor handle created from a .cur file.
-type Cursor struct {
-	cursor *glfw.Cursor
-}
+// Cursor is a mouse cursor image created by the windowing backend.
+type Cursor interface {
+	// SetOverride makes this the OS cursor, replacing the one imgui would
+	// otherwise show, until Window.ClearCursorOverride is called.
+	SetOverride()
 
-func (g *glfwPlatform) SetCursorOverride(cursor *Cursor) {
-	if cursor == nil {
-		g.cursorOverride = nil
-		return
-	}
-	g.cursorOverride = cursor.cursor
-}
-
-func (g *glfwPlatform) ClearCursorOverride() {
-	g.cursorOverride = nil
-}
-
-func (g *glfwPlatform) CreateCursorFromCUR(data []byte) (*Cursor, error) {
-	targetSize := int(32*g.DPIScale() + 0.5)
-	if targetSize <= 0 {
-		targetSize = 32
-	}
-
-	rgba, hotspot, err := makeImageFromCUR(data, targetSize)
-	if err != nil {
-		return nil, err
-	}
-
-	return g.CreateCursorFromImage(rgba, hotspot[0], hotspot[1])
-}
-
-func (g *glfwPlatform) CreateCursorFromImage(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error) {
-	if img == nil {
-		return nil, fmt.Errorf("cursor image is nil")
-	}
-	w := img.Rect.Dx()
-	h := img.Rect.Dy()
-	if w <= 0 || h <= 0 {
-		return nil, fmt.Errorf("cursor image has invalid size")
-	}
-	hotspotX = math.Clamp(hotspotX, 0, w-1)
-	hotspotY = math.Clamp(hotspotY, 0, h-1)
-	cursor := glfw.CreateCursor(img, hotspotX, hotspotY)
-	if cursor == nil {
-		return nil, fmt.Errorf("failed to create cursor")
-	}
-	return &Cursor{cursor: cursor}, nil
-}
-
-func (g *glfwPlatform) DestroyCursor(c *Cursor) {
-	if c == nil || c.cursor == nil {
-		return
-	}
-	if g.cursorOverride == c.cursor {
-		g.cursorOverride = nil
-	}
-	if g.currentCursor == c.cursor {
-		g.currentCursor = nil
-	}
-	c.cursor.Destroy()
-	c.cursor = nil
+	// Destroy frees the resources associated with the cursor. It is safe to
+	// call more than once.
+	Destroy()
 }
 
 type curEntry struct {
@@ -85,6 +32,8 @@ type curEntry struct {
 	offset        int
 }
 
+// DecodeCUR decodes a .cur file's bytes, returning the image whose size is
+// closest to targetSize along with its hotspot.
 /*
 .cur uses Little Endian encoding:
 
@@ -99,7 +48,7 @@ Each image is 16 bytes, so offset for the 6 bytes up there and the previous imag
 8-11: size.
 12-15: offset.
 */
-func makeImageFromCUR(data []byte, targetSize int) (*image.RGBA, [2]int, error) {
+func DecodeCUR(data []byte, targetSize int) (*image.RGBA, [2]int, error) {
 	if len(data) < 6 {
 		return nil, [2]int{}, errors.New("cursor file truncated")
 	}

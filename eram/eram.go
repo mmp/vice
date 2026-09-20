@@ -232,7 +232,7 @@ type ERAMPane struct {
 	baseVideoMap    av.ERAMMap `json:"-"`
 	currentFacility string     `json:"-"`
 
-	eramCursors map[string]*platform.Cursor `json:"-"` // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
+	eramCursors map[string]platform.Cursor `json:"-"` // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
 
 	cursorOverrideSelection string    `json:"-"`
 	cursorOverrideUntil     time.Time `json:"-"`
@@ -428,7 +428,11 @@ func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 // Panics on any failure -- a missing or malformed cursor is a build/install
 // problem, not something the user can recover from.
 func (ep *ERAMPane) loadCursors(pl platform.Platform) {
-	ep.eramCursors = make(map[string]*platform.Cursor)
+	ep.eramCursors = make(map[string]platform.Cursor)
+	cursorSize := int(32*pl.DPIScale() + 0.5)
+	if cursorSize <= 0 {
+		cursorSize = 32
+	}
 	err := util.WalkResources("eram-cursors", func(path string, d fs.DirEntry, _ fs.FS, err error) error {
 		if err != nil {
 			panic(err)
@@ -436,7 +440,11 @@ func (ep *ERAMPane) loadCursors(pl platform.Platform) {
 		if d.IsDir() || filepath.Ext(path) != ".cur" {
 			return nil
 		}
-		cursor, err := pl.CreateCursorFromCUR(util.LoadResourceBytes(path))
+		img, hotspot, err := platform.DecodeCUR(util.LoadResourceBytes(path), cursorSize)
+		if err != nil {
+			panic(fmt.Sprintf("%s: %v", path, err))
+		}
+		cursor, err := pl.CreateCursorFromImage(img, hotspot[0], hotspot[1])
 		if err != nil {
 			panic(fmt.Sprintf("%s: %v", path, err))
 		}
@@ -471,10 +479,10 @@ func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
 		}
 	}
 
-	if name == "" {
-		ctx.Platform.ClearCursorOverride()
+	if c := ep.eramCursors[name]; c != nil {
+		c.SetOverride()
 	} else {
-		ctx.Platform.SetCursorOverride(ep.eramCursors[name])
+		ctx.Platform.ClearCursorOverride()
 	}
 }
 

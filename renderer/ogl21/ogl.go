@@ -22,6 +22,7 @@ import (
 type ogl struct {
 	lg              *log.Logger
 	createdTextures map[uint32]int
+	vendor, device  string
 }
 
 // NewRenderer initializes OpenGL in the current context and returns a
@@ -31,15 +32,21 @@ func NewRenderer(lg *log.Logger) (renderer.Renderer, error) {
 	if err := gl.Init(); err != nil {
 		return nil, fmt.Errorf("failed to initialize OpenGL: %w", err)
 	}
-	vendor, device := gl.GetString(gl.VENDOR), gl.GetString(gl.RENDERER)
-	lg.Infof("OpenGL vendor %s renderer %s", C.GoString((*C.char)(unsafe.Pointer(vendor))),
-		C.GoString((*C.char)(unsafe.Pointer(device))))
+	vendor := C.GoString((*C.char)(unsafe.Pointer(gl.GetString(gl.VENDOR))))
+	device := C.GoString((*C.char)(unsafe.Pointer(gl.GetString(gl.RENDERER))))
+	lg.Infof("OpenGL vendor %s renderer %s", vendor, device)
 
 	lg.Info("Finished OpenGL 2.1 renderer initialization")
 	return &ogl{
 		lg:              lg,
 		createdTextures: make(map[uint32]int),
+		vendor:          vendor,
+		device:          device,
 	}, nil
+}
+
+func (o *ogl) GetGPUInfo() (vendor, device string) {
+	return o.vendor, o.device
 }
 
 func (o *ogl) Dispose() {

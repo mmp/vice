@@ -21,6 +21,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/tts"
@@ -1344,7 +1345,7 @@ func rmsToNormalized(rms float32) float32 {
 // resample16kTo44k resamples int16 PCM audio from 16kHz to 44.1kHz using
 // linear interpolation.
 func resample16kTo44k(input []int16) []int16 {
-	ratio := float64(platform.AudioSampleRate) / float64(platform.AudioInputSampleRate)
+	ratio := float64(audio.SampleRate) / float64(audio.InputSampleRate)
 	outputLen := int(float64(len(input)) * ratio)
 	output := make([]int16, outputLen)
 	for i := range output {

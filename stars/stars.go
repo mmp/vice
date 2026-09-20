@@ -84,7 +84,7 @@ type STARSPane struct {
 	// crossCursors are OS-managed "+" cursors, one per CharSize.Datablocks
 	// value (clamped to [0,4]); built on demand by crossCursor and rebuilt
 	// when fg/bg change.
-	crossCursors     [5]*platform.Cursor
+	crossCursors     [5]platform.Cursor
 	crossFg, crossBg renderer.RGB
 
 	hideMouseCursor bool // set after auto-home and the cursor is repositioned
@@ -1499,7 +1499,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool) {
 			sp.hideMouseCursor = false // it moved
 		}
 		if sp.hideMouseCursor {
-			ctx.Mouse.SetCursor(imgui.MouseCursorNone)
+			imgui.SetMouseCursor(imgui.MouseCursorNone)
 			return
 		}
 	}
@@ -1514,16 +1514,18 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool) {
 	fg := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.Cursor)
 	bg := ps.Brightness.BackgroundContrast.ScaleRGB(sp.Colors.Background)
 	if c := sp.crossCursor(ctx.Platform, ps.CharSize.Datablocks, fg, bg); c != nil {
-		ctx.Platform.SetCursorOverride(c)
+		c.SetOverride()
 	}
 }
 
 // crossCursor returns the OS cursor for the "+" at the given size, building
 // it on first use. The cache is invalidated when fg or bg change.
-func (sp *STARSPane) crossCursor(p platform.Platform, sizeIdx int, fg, bg renderer.RGB) *platform.Cursor {
+func (sp *STARSPane) crossCursor(p platform.Platform, sizeIdx int, fg, bg renderer.RGB) platform.Cursor {
 	if fg != sp.crossFg || bg != sp.crossBg {
 		for i, c := range sp.crossCursors {
-			p.DestroyCursor(c)
+			if c != nil {
+				c.Destroy()
+			}
 			sp.crossCursors[i] = nil
 		}
 		sp.crossFg, sp.crossBg = fg, bg

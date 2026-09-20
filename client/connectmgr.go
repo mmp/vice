@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -254,7 +254,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials
 	}
 }
 
-func (cm *ConnectionManager) Update(p platform.Platform, lg *log.Logger) {
+func (cm *ConnectionManager) Update(p audio.Engine, lg *log.Logger) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
 	}

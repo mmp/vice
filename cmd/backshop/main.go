@@ -18,6 +18,8 @@ import (
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/platform/glfw"
+	"github.com/mmp/vice/platform/sdl2"
 	"github.com/mmp/vice/renderer/ogl21"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -64,7 +66,7 @@ func main() {
 	}
 }
 
-// imguiInit sets up the imgui context. It must run before platform.New,
+// imguiInit sets up the imgui context. It must run before glfw.New,
 // which expects the context to exist.
 func imguiInit(config *Config) {
 	imgui.CreateContext()
@@ -89,10 +91,15 @@ func imguiInit(config *Config) {
 func run(config *Config, lg *log.Logger) error {
 	imguiInit(config)
 
-	plat, err := platform.New(&config.Config, lg)
+	// backshop speaks but never listens, so it has no business asking for
+	// a microphone.
+	snd := sdl2.New(lg, false /* request microphone */)
+
+	win, err := glfw.New(&config.Config, lg)
 	if err != nil {
 		return fmt.Errorf("unable to create application window: %w", err)
 	}
+	plat := platform.Join(win, snd)
 	defer plat.Dispose()
 	plat.SetWindowTitle("backshop")
 

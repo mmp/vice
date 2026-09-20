@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
@@ -118,7 +119,7 @@ func (in *inspector) drawTTSTab(a *app) {
 	t := &in.tts
 	if !t.preloaded {
 		t.preloaded = true
-		tts.PreloadTTSModel(a.lg, nil, platform.AudioSampleRate)
+		tts.PreloadTTSModel(a.lg, nil, audio.SampleRate)
 	}
 
 	t.drawStatus(a)

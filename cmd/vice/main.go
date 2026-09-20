@@ -30,6 +30,9 @@ import (
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/platform/audio"
+	"github.com/mmp/vice/platform/glfw"
+	"github.com/mmp/vice/platform/sdl2"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/renderer/ogl21"
@@ -391,28 +394,39 @@ func runListMaps(lg *log.Logger) error {
 // initPlatformAndRenderer creates the application window, initializes
 // OpenGL, loads fonts, and logs GPU information.
 func initPlatformAndRenderer(config *Config, lg *log.Logger) (platform.Platform, renderer.Renderer) {
-	plat, err := platform.New(&config.Config, lg)
+	// Audio initialization is independent of GLFW and OpenGL, so it can run
+	// on a background goroutine while the main thread sets up the window.
+	var snd audio.Engine
+	audioDone := make(chan struct{})
+	go func() {
+		defer close(audioDone)
+		snd = sdl2.New(lg, true /* request microphone */)
+	}()
+
+	win, err := glfw.New(&config.Config, lg)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to create application window: %v", err))
 	}
 
-	imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
+	imgui.CurrentPlatformIO().SetClipboardHandler(win.GetClipboard())
 
 	render, err := ogl21.NewRenderer(lg)
 	if err != nil {
 		panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 	}
-	gui.InitFonts(plat.DPIScale(), lg)
+	gui.InitFonts(win.DPIScale(), lg)
 
 	// Initialize viewport backends now that OpenGL is ready.
-	plat.InitViewportBackends()
+	win.InitViewportBackends()
 
 	// Capture GPU info for crash reports now that OpenGL is initialized
-	gpuVendor, gpuRenderer := plat.GetGPUInfo()
-	lg.SetGPUInfo(gpuVendor, gpuRenderer)
-	lg.Infof("GPU: %s (%s)", gpuRenderer, gpuVendor)
+	gpuVendor, gpuDevice := render.GetGPUInfo()
+	lg.SetGPUInfo(gpuVendor, gpuDevice)
+	lg.Infof("GPU: %s (%s)", gpuDevice, gpuVendor)
 
-	return plat, render
+	<-audioDone
+
+	return platform.Join(win, snd), render
 }
 
 // startBackgroundModelLoading kicks off background loading of whisper
@@ -452,7 +466,7 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 			"You will not hear pilot transmissions or alerts; they are still "+
 			"shown as text.", err)
 	} else {
-		tts.PreloadTTSModel(lg, uploadDone, platform.AudioSampleRate)
+		tts.PreloadTTSModel(lg, uploadDone, audio.SampleRate)
 	}
 
 	// Check for whisper model errors asynchronously and show dialog if CPU not supported.

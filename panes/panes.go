@@ -111,7 +111,7 @@ func DrawPinButton(windowTitle string, unpinnedWindows map[string]struct{}, p pl
 	mainVP := imgui.MainViewport()
 	if vp != nil && vp.ID() != mainVP.ID() {
 		appFocused := p.IsAppFocused()
-		platform.SetViewportFloating(vp.PlatformHandle(), pinned && appFocused)
+		p.SetViewportFloating(vp.PlatformHandle(), pinned && appFocused)
 	}
 }
 

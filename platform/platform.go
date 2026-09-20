@@ -2,26 +2,37 @@
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
+// Package platform abstracts the operating system services vice needs:
+// creating windows, mouse and keyboard handling, and audio. The
+// implementations live in subpackages so that code that only uses the
+// interfaces doesn't pull in GLFW or SDL2.
 package platform
 
 import (
-	"errors"
 	"image"
-	"time"
 
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform/audio"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-var (
-	ErrCurrentlyPlayingSpeech   = errors.New("Speech is currently playing")
-	ErrAudioPlaybackUnavailable = errors.New("Audio playback is unavailable")
-)
+// Config holds the window settings that are remembered between runs.
+type Config struct {
+	InitialWindowSize     [2]int
+	InitialWindowPosition [2]int
 
-// Platform is the interface that abstracts platform-specific features like
-// creating windows, mouse and keyboard handling, etc.
-type Platform interface {
+	MainWindowSquare bool
+
+	EnableMSAA bool
+
+	StartInFullScreen bool
+	FullScreenMonitor int
+}
+
+// Window is the interface to the application window and to the mouse and
+// keyboard input that arrives through it.
+type Window interface {
 	// NewFrame marks the begin of a render pass; it forwards all current state to imgui IO.
 	NewFrame()
 
@@ -44,6 +55,11 @@ type Platform interface {
 	// InitViewportBackends initializes the imgui GLFW and OpenGL3 backends
 	// for multi-viewport support. Must be called after OpenGL is initialized.
 	InitViewportBackends()
+
+	// SetViewportFloating sets the OS-level always-on-top attribute for the
+	// secondary viewport window with the given imgui platform handle. Only
+	// windows dragged outside the main window have one.
+	SetViewportFloating(handle uintptr, floating bool)
 
 	// Dispose is called when the application is shutting down and is when
 	// resources are be freed.
@@ -124,107 +140,35 @@ type Platform interface {
 	// and which keys are currently down.
 	GetKeyboard() *KeyboardState
 
-	// Cursor overrides. CreateCursorFromCUR parses a .cur file's bytes and
-	// creates a cursor handle that can be set as the active cursor via
-	// SetCursorOverride.
-	CreateCursorFromCUR(data []byte) (*Cursor, error)
 	// CreateCursorFromImage builds a Cursor from an in-memory RGBA image with
 	// the given hotspot. The caller retains ownership of img.
-	CreateCursorFromImage(img *image.RGBA, hotspotX, hotspotY int) (*Cursor, error)
-	// DestroyCursor frees a cursor previously returned by
-	// CreateCursorFromImage or CreateCursorFromCUR. Safe to call with nil.
-	DestroyCursor(c *Cursor)
-	// SetCursorOverride replaces the OS cursor until cleared.
-	SetCursorOverride(cursor *Cursor)
-	// ClearCursorOverride removes any cursor override.
+	CreateCursorFromImage(img *image.RGBA, hotspotX, hotspotY int) (Cursor, error)
+
+	// ClearCursorOverride removes any cursor override set with
+	// Cursor.SetOverride.
 	ClearCursorOverride()
+}
 
-	// AddPCM registers an audio effect encoded via pulse code modulation.
-	// It is assumed to be one channel audio sampled at AudioSampleRate.
-	// The integer return value identifies the effect and can be passed to
-	// the audio playing entrypoints.
-	AddPCM(pcm []byte, rate int) (int, error)
+// Platform is everything the application needs from the operating system:
+// a window to draw in, the input that arrives through it, and audio.
+type Platform interface {
+	Window
+	audio.Engine
+}
 
-	// Registers an MP3-based audio effect. As with AddPCM, assumes one
-	// channel sampled at AudioSampleRate. The integer return value
-	// identifies the effect and can be passed to the audio playing
-	// entrypoints.
-	AddMP3(mp3 []byte) (int, error)
+// Join returns a Platform that dispatches windowing calls to w and audio
+// calls to a.
+func Join(w Window, a audio.Engine) Platform {
+	return joined{Window: w, Engine: a}
+}
 
-	// TryEnqueueSpeechPCM queues pre-decoded PCM speech audio for playback.
-	// If speech is currently being played, ErrCurrentlyPlayingSpeech is
-	// returned and the caller should try again later; any other error means
-	// the audio can't be played at all and should be discarded. If non-nil,
-	// the provided callback function is called after the speech has
-	// finished; it is not called if an error is returned.
-	TryEnqueueSpeechPCM(pcm []int16, finished func()) error
+type joined struct {
+	Window
+	audio.Engine
+}
 
-	// AppendSpeechPCM appends PCM samples to the speech playback queue.
-	// Unlike TryEnqueueSpeechPCM, this does not fail if speech is already
-	// playing; it simply appends to the existing queue.
-	AppendSpeechPCM(pcm []int16)
-
-	// StopSpeech discards any speech audio that is queued or playing, so
-	// that the next thing enqueued is heard immediately. The callback given
-	// to TryEnqueueSpeechPCM is not called for the canceled audio.
-	StopSpeech()
-
-	// SetSpeechGarbled enables or disables garbling of speech audio.
-	// When enabled, speech is ducked and static noise is added.
-	SetSpeechGarbled(garbled bool)
-
-	// IsPlayingSpeech returns true if speech audio is currently playing.
-	IsPlayingSpeech() bool
-
-	// RemainingSpeechDuration returns how much speech audio is still
-	// queued for playback. Returns 0 when no speech is playing.
-	RemainingSpeechDuration() time.Duration
-
-	// SetAudioVolume sets the volume for audio playback; the value passed
-	// should be between 0 and 10.
-	SetAudioVolume(vol int)
-
-	// PlayAudioOnce plays the audio effect identified by the given identifier
-	// once. Multiple audio effects may be played simultaneously.
-	PlayAudioOnce(id int)
-
-	// StartPlayAudioContinuous	starts playing the specified audio effect
-	// continuously, until StopPlayAudioContinuous is called.
-	StartPlayAudioContinuous(id int)
-
-	// StopPlayAudio stops playback of the audio effect specified
-	// by the given identifier.
-	StopPlayAudio(id int)
-
-	// Audio capture methods for continuous background capture with preroll buffer.
-	// StartAudioCapture begins capturing to the preroll buffer (200ms ring buffer).
-	// This allows recording to include audio from before PTT was pressed.
-	StartAudioCapture() error
-	StartAudioCaptureWithDevice(deviceName string) error
-	StopAudioCapture()
-	IsAudioCapturing() bool
-	// GetAudioPreroll returns the current preroll buffer (200ms of audio before now).
-	// Returns nil if not capturing.
-	GetAudioPreroll() []int16
-
-	// Audio recording methods. If capture is active, recording includes preroll.
-	StartAudioRecording() error
-	StartAudioRecordingWithDevice(deviceName string) error
-	StopAudioRecording() ([]int16, error)
-	IsAudioRecording() bool
-	GetAudioInputDevices() []string
-
-	// AudioPlaybackError returns a non-nil error if the audio output device
-	// couldn't be opened at startup; no audio will be heard in that case.
-	// It doesn't imply that audio capture is unavailable.
-	AudioPlaybackError() error
-
-	// SetAudioStreamCallback sets a callback that receives audio samples
-	// as they are recorded. This enables streaming audio to a transcriber.
-	// Pass nil to disable the callback.
-	SetAudioStreamCallback(cb func([]int16))
-
-	// GetGPUInfo returns the GPU vendor and renderer strings from OpenGL.
-	// Should be called after OpenGL is initialized.
-	GetGPUInfo() (vendor, renderer string)
+// Dispose is given explicitly since both halves of the Platform declare it.
+func (j joined) Dispose() {
+	j.Engine.Dispose()
+	j.Window.Dispose()
 }

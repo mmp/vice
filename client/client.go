@@ -15,7 +15,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
@@ -303,7 +303,7 @@ func (c *ControlClient) AirspaceForTCW(tcw sim.TCW) []av.ControllerAirspaceVolum
 	return vols
 }
 
-func (c *ControlClient) GetUpdates(p platform.Platform, onErr func(error)) {
+func (c *ControlClient) GetUpdates(p audio.Engine, onErr func(error)) {
 	if c.client == nil {
 		return
 	}
@@ -379,7 +379,7 @@ func (c *ControlClient) GetUpdates(p platform.Platform, onErr func(error)) {
 	}
 }
 
-func (c *ControlClient) updateSpeech(p platform.Platform) {
+func (c *ControlClient) updateSpeech(p audio.Engine) {
 	// Delegate to TransmissionManager
 	c.transmissions.Update(p, c.State.Paused, c.sttActive)
 }
@@ -697,7 +697,7 @@ func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, t
 		// TTS not available, silently unhold
 		c.transmissions.Unhold()
 	} else {
-		durationMs := int64(len(pcm)) * 1000 / platform.AudioSampleRate
+		durationMs := int64(len(pcm)) * 1000 / audio.SampleRate
 		c.lg.Infof("SPEECH queued readback: %s (%dms audio) %q", callsign, durationMs, text)
 		c.transmissions.EnqueueReadbackPCM(callsign, av.RadioTransmissionReadback, pcm)
 	}
@@ -711,7 +711,7 @@ func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty
 	if pcm, err := tts.SynthesizeContactTTS(text, voice, radioSeed); err != nil {
 		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
 	} else if pcm != nil {
-		durationMs := int64(len(pcm)) * 1000 / platform.AudioSampleRate
+		durationMs := int64(len(pcm)) * 1000 / audio.SampleRate
 		c.lg.Infof("SPEECH queued contact: %s (%dms audio) %q", callsign, durationMs, text)
 		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm)
 	}

@@ -1,8 +1,8 @@
-// pkg/platform/fullscreen_darwin.go
+// platform/glfw/fullscreen_darwin.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package platform
+package glfw
 
 /*
 #cgo darwin CFLAGS: -x objective-c

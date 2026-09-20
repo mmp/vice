@@ -1,11 +1,11 @@
-// pkg/platform/fullscreen_linux.go
+// platform/glfw/fullscreen_linux.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package platform
+package glfw
 
 import (
-	"github.com/go-gl/glfw/v3.4/glfw"
+	glfw3 "github.com/go-gl/glfw/v3.4/glfw"
 )
 
 func (g *glfwPlatform) IsFullScreen() bool {
@@ -13,7 +13,7 @@ func (g *glfwPlatform) IsFullScreen() bool {
 }
 
 func (g *glfwPlatform) EnableFullScreen(fullscreen bool) {
-	monitors := glfw.GetMonitors()
+	monitors := glfw3.GetMonitors()
 	if g.config.FullScreenMonitor >= len(monitors) {
 		// Shouldn't happen, but just to be sure
 		g.config.FullScreenMonitor = 0
@@ -36,6 +36,6 @@ func (g *glfwPlatform) EnableFullScreen(fullscreen bool) {
 		}
 
 		g.window.SetMonitor(nil, g.config.InitialWindowPosition[0], g.config.InitialWindowPosition[1],
-			windowSize[0], windowSize[1], glfw.DontCare)
+			windowSize[0], windowSize[1], glfw3.DontCare)
 	}
 }

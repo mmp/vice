@@ -77,9 +77,6 @@ func defaultConfig() *Config {
 		Config: platform.Config{
 			InitialWindowSize:     [2]int{1400, 900},
 			InitialWindowPosition: [2]int{100, 100},
-			// backshop speaks but never listens, so it has no business
-			// asking for a microphone.
-			NoMicrophone: true,
 		},
 		UIFontSize: 14,
 		// Someone running backshop for the first time doesn't need to be
@@ -105,7 +102,6 @@ func loadConfig(lg *log.Logger) *Config {
 	if c.UIFontSize == 0 {
 		c.UIFontSize = defaultConfig().UIFontSize
 	}
-	c.NoMicrophone = true
 	return c
 }
 

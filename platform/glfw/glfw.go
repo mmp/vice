@@ -1,45 +1,44 @@
-// platform/glfw.go
+// platform/glfw/glfw.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-// This a slightly modified version of the GLFW/SDL2 infrastructure from
+// This a slightly modified version of the GLFW infrastructure from
 // imgui-go-examples, where the main addition is cursor handling
 // (backported from imgui's backends/imgui_impl_glfw.cpp), and some
 // additional handling of text input outside of the imgui path.
 
-package platform
+// Package glfw implements platform.Window using GLFW.
+package glfw
 
 import (
 	"fmt"
 	"runtime"
-	"slices"
 	"strconv"
 	"unsafe"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	implglfw "github.com/AllenDang/cimgui-go/impl/glfw"
 	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/go-gl/glfw/v3.4/glfw"
+	glfw3 "github.com/go-gl/glfw/v3.4/glfw"
 )
 
-// glfwPlatform implements the Platform interface using GLFW.
+// glfwPlatform implements platform.Window using GLFW.
 type glfwPlatform struct {
-	audioEngine
-
 	imguiIO *imgui.IO
 
-	window *glfw.Window
-	config *Config
+	window *glfw3.Window
+	config *platform.Config
 
 	mouseJustPressed       [3]bool
-	mouseCursors           [imgui.MouseCursorCOUNT]*glfw.Cursor
-	currentCursor          *glfw.Cursor
-	cursorOverride         *glfw.Cursor
+	mouseCursors           [imgui.MouseCursorCOUNT]*glfw3.Cursor
+	currentCursor          *glfw3.Cursor
+	cursorOverride         *glfw3.Cursor
 	inputCharacters        string
 	anyEvents              bool
 	lastMouseX, lastMouseY float64
@@ -55,73 +54,26 @@ type glfwPlatform struct {
 	mouseDeltaWindowCenter [2]float32
 	mouseDelta             [2]float32
 
-	audioRecorder *AudioRecorder
-	audioErr      error
-	appFocused    bool
+	appFocused bool
 }
 
-type Config struct {
-	InitialWindowSize     [2]int
-	InitialWindowPosition [2]int
-
-	MainWindowSquare bool
-
-	EnableMSAA bool
-
-	StartInFullScreen bool
-	FullScreenMonitor int
-
-	// NoMicrophone skips asking for microphone permission. It is for tools
-	// that play audio but never record any, which would otherwise put a
-	// microphone prompt in front of the user for nothing.
-	NoMicrophone bool
-}
-
-// New returns a new instance of a Platform implemented with a window
-// of the specified size open at the specified position on the screen.
-func New(config *Config, lg *log.Logger) (Platform, error) {
-	if !config.NoMicrophone {
-		// Request microphone permission early, before SDL audio is initialized.
-		// This avoids potential conflicts between AVFoundation and CoreAudio.
-		micStatus := GetMicrophoneAuthorizationStatus()
-		lg.Infof("Microphone authorization status: %s", micStatus)
-		if micStatus == MicAuthNotDetermined {
-			lg.Info("Requesting microphone permission (dialog will appear)...")
-			RequestMicrophoneAccess()
-		} else if micStatus == MicAuthDenied {
-			lg.Warn("Microphone access denied - enable in System Settings > Privacy & Security > Microphone")
-		} else if micStatus == MicAuthRestricted {
-			lg.Warn("Microphone access restricted by system policy")
-		}
-	}
-
-	// Audio (SDL) init is independent of GLFW/OpenGL and can run on a
-	// background goroutine while the main thread does the window setup.
-	// Microphone authorization above must complete first.
-	platformDraft := &glfwPlatform{audioRecorder: NewAudioRecorder(lg)}
-	audioDone := make(chan struct{})
-	go func() {
-		defer close(audioDone)
-		if err := platformDraft.audioEngine.Initialize(lg); err != nil {
-			platformDraft.audioErr = err
-			lg.Errorf("Audio playback unavailable: %v", err)
-		}
-	}()
-
+// New opens the application window at the size and position given by config
+// and returns the platform.Window that manages it.
+func New(config *platform.Config, lg *log.Logger) (platform.Window, error) {
 	lg.Info("Starting GLFW initialization")
-	err := glfw.Init()
+	err := glfw3.Init()
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize glfw: %w", err)
 	}
-	lg.Infof("GLFW: %s", glfw.GetVersionString())
+	lg.Infof("GLFW: %s", glfw3.GetVersionString())
 
 	io := imgui.CurrentIO()
 	io.SetBackendFlags(io.BackendFlags() | imgui.BackendFlagsHasMouseCursors)
 
-	glfw.WindowHint(glfw.ContextVersionMajor, 2)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw3.WindowHint(glfw3.ContextVersionMajor, 2)
+	glfw3.WindowHint(glfw3.ContextVersionMinor, 1)
 
-	vm := glfw.GetPrimaryMonitor().GetVideoMode()
+	vm := glfw3.GetPrimaryMonitor().GetVideoMode()
 	if config.InitialWindowSize[0] == 0 || config.InitialWindowSize[1] == 0 {
 		if runtime.GOOS == "windows" {
 			config.InitialWindowSize[0] = vm.Width - 200
@@ -141,27 +93,27 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 		config.InitialWindowPosition = [2]int{100, 100}
 	}
 	// Start with an invisible window so that we can position it first
-	glfw.WindowHint(glfw.Visible, 0)
+	glfw3.WindowHint(glfw3.Visible, 0)
 	// Disable GLFW_AUTO_ICONIFY to stop the window from automatically minimizing in fullscreen
-	glfw.WindowHint(glfw.AutoIconify, 0)
+	glfw3.WindowHint(glfw3.AutoIconify, 0)
 	// Maybe enable multisampling
 	if config.EnableMSAA {
-		glfw.WindowHint(glfw.Samples, 4)
+		glfw3.WindowHint(glfw3.Samples, 4)
 	}
-	var window *glfw.Window
-	monitors := glfw.GetMonitors()
+	var window *glfw3.Window
+	monitors := glfw3.GetMonitors()
 	if config.FullScreenMonitor >= len(monitors) {
 		// Monitor saved in config not found, fallback to default
 		config.FullScreenMonitor = 0
 	}
 	if config.StartInFullScreen {
 		vm := monitors[config.FullScreenMonitor].GetVideoMode()
-		window, err = glfw.CreateWindow(vm.Width, vm.Height, "vice", monitors[config.FullScreenMonitor], nil)
+		window, err = glfw3.CreateWindow(vm.Width, vm.Height, "vice", monitors[config.FullScreenMonitor], nil)
 	} else {
-		window, err = glfw.CreateWindow(config.InitialWindowSize[0], config.InitialWindowSize[1], "vice", nil, nil)
+		window, err = glfw3.CreateWindow(config.InitialWindowSize[0], config.InitialWindowSize[1], "vice", nil, nil)
 	}
 	if err != nil {
-		glfw.Terminate()
+		glfw3.Terminate()
 		return nil, fmt.Errorf("failed to create window: %w", err)
 	}
 	if config.MainWindowSquare {
@@ -171,24 +123,23 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	window.Show()
 	window.MakeContextCurrent()
 
-	platform := platformDraft
-	platform.config = config
-	platform.imguiIO = io
-	platform.window = window
-	platform.multisample = config.EnableMSAA
-	platform.heldFKeys = make(map[imgui.Key]any)
-	platform.appFocused = true
-	platform.installCallbacks()
-	platform.createMouseCursors()
-	platform.EnableVSync(true)
+	g := &glfwPlatform{
+		config:      config,
+		imguiIO:     io,
+		window:      window,
+		multisample: config.EnableMSAA,
+		heldFKeys:   make(map[imgui.Key]any),
+		appFocused:  true,
+	}
+	g.installCallbacks()
+	g.createMouseCursors()
+	g.EnableVSync(true)
 
-	glfw.SetMonitorCallback(platform.MonitorCallback)
+	glfw3.SetMonitorCallback(g.MonitorCallback)
 
 	lg.Info("Finished GLFW initialization")
 
-	<-audioDone
-
-	return platform, nil
+	return g, nil
 }
 
 func squareWindowSize(size [2]int) [2]int {
@@ -208,7 +159,7 @@ func (g *glfwPlatform) SetMainWindowSquare(square bool) {
 			g.window.SetSize(size[0], size[1])
 		}
 	} else {
-		g.window.SetAspectRatio(glfw.DontCare, glfw.DontCare)
+		g.window.SetAspectRatio(glfw3.DontCare, glfw3.DontCare)
 	}
 }
 
@@ -223,58 +174,43 @@ func (g *glfwPlatform) DPIScale() float32 {
 
 func (g *glfwPlatform) EnableVSync(sync bool) {
 	if sync {
-		glfw.SwapInterval(1)
+		glfw3.SwapInterval(1)
 	} else {
-		glfw.SwapInterval(0)
+		glfw3.SwapInterval(0)
 	}
 }
-
-// Detecting whether the window is already in native (MacOS) fullscreen is a bit tricky, since GLFW doesn't have
-// a function for this. To prevent unexpected behavior, it needs to only allow to either fullscreen natively or through SetWindowMonitor.
-// The function assumes the window is in native fullscreen if it's maximized and the window size matches one of the monitor's size.
-func (g *glfwPlatform) IsMacOSNativeFullScreen() bool {
-	if runtime.GOOS == "darwin" && g.window.GetAttrib(glfw.Maximized) == glfw.True {
-		monitors := glfw.GetMonitors()
-		windowSize := g.WindowSize()
-
-		return util.SeqContainsFunc(slices.Values(monitors), func(monitor *glfw.Monitor) bool {
-			vm := monitor.GetVideoMode()
-			return windowSize[0] == vm.Width && windowSize[1] == vm.Height
-		})
-	}
-	return false
-}
-
 func (g *glfwPlatform) GetAllMonitorNames() []string {
 	var monitorNames []string
-	monitors := glfw.GetMonitors()
+	monitors := glfw3.GetMonitors()
 	for index, monitor := range monitors {
 		monitorNames = append(monitorNames, "("+strconv.Itoa(index)+") "+monitor.GetName())
 	}
 	return monitorNames
 }
 
-func (g *glfwPlatform) MonitorCallback(monitor *glfw.Monitor, event glfw.PeripheralEvent) {
-	if event == glfw.Disconnected {
+func (g *glfwPlatform) MonitorCallback(monitor *glfw3.Monitor, event glfw3.PeripheralEvent) {
+	if event == glfw3.Disconnected {
 		g.config.FullScreenMonitor = 0
 		g.config.StartInFullScreen = false
 	}
 }
 
 func (g *glfwPlatform) Dispose() {
-	// Close audio devices before terminating
-	if g.audioRecorder != nil {
-		g.audioRecorder.Close()
-	}
-	g.audioEngine.Close()
-
 	// Shut down viewport backends before destroying the window.
 	imgui.DestroyPlatformWindows()
 	implogl3.Shutdown()
 	implglfw.Shutdown()
 
 	g.window.Destroy()
-	glfw.Terminate()
+	glfw3.Terminate()
+}
+
+func (g *glfwPlatform) GetMouse() *platform.MouseState {
+	return platform.NewMouseState(util.Select(g.mouseDeltaMode, g.mouseDelta, [2]float32{}))
+}
+
+func (g *glfwPlatform) GetKeyboard() *platform.KeyboardState {
+	return platform.NewKeyboardState(g.InputCharacters(), g.heldFKeys)
 }
 
 func (g *glfwPlatform) InputCharacters() string {
@@ -293,14 +229,14 @@ func (g *glfwPlatform) ProcessEvents() bool {
 	g.inputCharacters = ""
 	g.anyEvents = false
 
-	glfw.PollEvents()
+	glfw3.PollEvents()
 
 	if g.anyEvents {
 		return true
 	}
 
 	for i := range len(g.mouseJustPressed) {
-		if g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press {
+		if g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw3.Press {
 			return true
 		}
 	}
@@ -373,10 +309,10 @@ func (g *glfwPlatform) NewFrame() {
 		// regardless of the imgui cursor state.
 		g.currentCursor = g.cursorOverride
 		g.window.SetCursor(g.cursorOverride)
-		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
+		g.window.SetInputMode(glfw3.CursorMode, glfw3.CursorNormal)
 	} else if g.mouseDeltaMode || imgui_cursor == imgui.MouseCursorNone {
 		// Hide OS mouse cursor (the pane draws its own)
-		g.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
+		g.window.SetInputMode(glfw3.CursorMode, glfw3.CursorHidden)
 	} else {
 		// Show standard OS mouse cursor
 		cursor := g.mouseCursors[imgui_cursor]
@@ -387,7 +323,7 @@ func (g *glfwPlatform) NewFrame() {
 			g.currentCursor = cursor
 			g.window.SetCursor(cursor)
 		}
-		g.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
+		g.window.SetInputMode(glfw3.CursorMode, glfw3.CursorNormal)
 	}
 
 	// If mouse capture is enabled, check the mouse position and clamp it
@@ -550,7 +486,7 @@ func (g *glfwPlatform) MakeContextCurrent() {
 
 // InitViewportBackends initializes the imgui GLFW and OpenGL3 backends
 // for multi-viewport support. Must be called after OpenGL is initialized
-// (i.e., after gl.Init() in NewOpenGL2Renderer).
+// (i.e., after gl.Init() in ogl21.NewRenderer).
 func (g *glfwPlatform) InitViewportBackends() {
 	// Extract the raw *C.GLFWwindow pointer from go-gl/glfw's Window.
 	// Window.data (*C.GLFWwindow) is the first field of the struct.
@@ -573,22 +509,22 @@ func (g *glfwPlatform) InitViewportBackends() {
 
 // SetViewportFloating sets the GLFW_FLOATING attribute on a secondary
 // viewport window identified by its raw GLFWwindow* handle. The GLFW
-// backend only sets this at window creation; this function allows dynamic
-// toggling for pin/unpin behavior.
-func SetViewportFloating(handle uintptr, floating bool) {
+// backend only sets this at window creation; this allows dynamic toggling
+// for pin/unpin behavior.
+func (g *glfwPlatform) SetViewportFloating(handle uintptr, floating bool) {
 	if handle == 0 {
 		return
 	}
 	// Wrap the raw GLFWwindow* as a go-gl/glfw Window.
-	// glfw.Window's first field is data *C.GLFWwindow.
-	var win glfw.Window
+	// glfw3.Window's first field is data *C.GLFWwindow.
+	var win glfw3.Window
 	*(*unsafe.Pointer)(unsafe.Pointer(&win)) = unsafe.Add(nil, handle)
 
 	val := 0
 	if floating {
 		val = 1
 	}
-	win.SetAttrib(glfw.Floating, val)
+	win.SetAttrib(glfw3.Floating, val)
 }
 
 func (g *glfwPlatform) IsAppFocused() bool {
@@ -603,24 +539,24 @@ func (g *glfwPlatform) installCallbacks() {
 	g.window.SetFocusCallback(g.focusChange)
 }
 
-func (g *glfwPlatform) focusChange(window *glfw.Window, focused bool) {
+func (g *glfwPlatform) focusChange(window *glfw3.Window, focused bool) {
 	g.appFocused = focused
 	g.anyEvents = true
 }
 
-var glfwButtonIndexByID = map[glfw.MouseButton]imgui.MouseButton{
-	glfw.MouseButton1: MouseButtonPrimary,
-	glfw.MouseButton2: MouseButtonSecondary,
-	glfw.MouseButton3: MouseButtonTertiary,
+var glfwButtonIndexByID = map[glfw3.MouseButton]imgui.MouseButton{
+	glfw3.MouseButton1: platform.MouseButtonPrimary,
+	glfw3.MouseButton2: platform.MouseButtonSecondary,
+	glfw3.MouseButton3: platform.MouseButtonTertiary,
 }
 
-var glfwButtonIDByIndex = map[imgui.MouseButton]glfw.MouseButton{
-	MouseButtonPrimary:   glfw.MouseButton1,
-	MouseButtonSecondary: glfw.MouseButton2,
-	MouseButtonTertiary:  glfw.MouseButton3,
+var glfwButtonIDByIndex = map[imgui.MouseButton]glfw3.MouseButton{
+	platform.MouseButtonPrimary:   glfw3.MouseButton1,
+	platform.MouseButtonSecondary: glfw3.MouseButton2,
+	platform.MouseButtonTertiary:  glfw3.MouseButton3,
 }
 
-func (g *glfwPlatform) mouseButtonChange(window *glfw.Window, rawButton glfw.MouseButton, action glfw.Action, mods glfw.ModifierKey) {
+func (g *glfwPlatform) mouseButtonChange(window *glfw3.Window, rawButton glfw3.MouseButton, action glfw3.Action, mods glfw3.ModifierKey) {
 	buttonIndex, known := glfwButtonIndexByID[rawButton]
 
 	if !known {
@@ -628,63 +564,63 @@ func (g *glfwPlatform) mouseButtonChange(window *glfw.Window, rawButton glfw.Mou
 	}
 
 	g.anyEvents = true
-	if action == glfw.Press {
+	if action == glfw3.Press {
 		g.mouseJustPressed[buttonIndex] = true
 	}
 	g.updateKeyModifiers()
 }
 
-func (g *glfwPlatform) mouseScrollChange(window *glfw.Window, x, y float64) {
+func (g *glfwPlatform) mouseScrollChange(window *glfw3.Window, x, y float64) {
 	g.anyEvents = true
 	g.imguiIO.AddMouseWheelDelta(float32(x), float32(y))
 }
 
-func (g *glfwPlatform) keyChange(window *glfw.Window, keycode glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func (g *glfwPlatform) keyChange(window *glfw3.Window, keycode glfw3.Key, scancode int, action glfw3.Action, mods glfw3.ModifierKey) {
 	g.anyEvents = true
 	g.updateKeyModifiers()
 
 	// TODO: this can probably be done more cleanly/consistently through imgui
-	for i, k := range []glfw.Key{glfw.KeyF1, glfw.KeyF2, glfw.KeyF3, glfw.KeyF4, glfw.KeyF5, glfw.KeyF6, glfw.KeyF7, glfw.KeyF8,
-		glfw.KeyF9, glfw.KeyF10, glfw.KeyF11, glfw.KeyF12, glfw.KeyF13, glfw.KeyF14, glfw.KeyF15, glfw.KeyF16} {
-		if g.window.GetKey(k) == glfw.Press {
+	for i, k := range []glfw3.Key{glfw3.KeyF1, glfw3.KeyF2, glfw3.KeyF3, glfw3.KeyF4, glfw3.KeyF5, glfw3.KeyF6, glfw3.KeyF7, glfw3.KeyF8,
+		glfw3.KeyF9, glfw3.KeyF10, glfw3.KeyF11, glfw3.KeyF12, glfw3.KeyF13, glfw3.KeyF14, glfw3.KeyF15, glfw3.KeyF16} {
+		if g.window.GetKey(k) == glfw3.Press {
 			g.heldFKeys[imgui.KeyF1+imgui.Key(i)] = nil
 		}
-		if g.window.GetKey(k) == glfw.Release {
+		if g.window.GetKey(k) == glfw3.Release {
 			delete(g.heldFKeys, imgui.KeyF1+imgui.Key(i))
 		}
 	}
 
-	if action != glfw.Press && action != glfw.Release {
+	if action != glfw3.Press && action != glfw3.Release {
 		return
 	}
 
 	kc := translateUntranslatedKey(keycode, scancode)
 	imguikey := glfwKeyToImguiKey(kc)
-	g.imguiIO.AddKeyEvent(imguikey, action == glfw.Press)
+	g.imguiIO.AddKeyEvent(imguikey, action == glfw3.Press)
 }
 
 func (g *glfwPlatform) updateKeyModifiers() {
-	g.imguiIO.AddKeyEvent(imgui.ModShift, g.window.GetKey(glfw.KeyLeftShift) == glfw.Press || g.window.GetKey(glfw.KeyRightShift) == glfw.Press)
-	g.imguiIO.AddKeyEvent(imgui.ModAlt, g.window.GetKey(glfw.KeyLeftAlt) == glfw.Press || g.window.GetKey(glfw.KeyRightAlt) == glfw.Press)
-	g.imguiIO.AddKeyEvent(imgui.ModCtrl, g.window.GetKey(glfw.KeyLeftControl) == glfw.Press || g.window.GetKey(glfw.KeyRightControl) == glfw.Press)
-	g.imguiIO.AddKeyEvent(imgui.ModSuper, g.window.GetKey(glfw.KeyLeftSuper) == glfw.Press || g.window.GetKey(glfw.KeyRightSuper) == glfw.Press)
+	g.imguiIO.AddKeyEvent(imgui.ModShift, g.window.GetKey(glfw3.KeyLeftShift) == glfw3.Press || g.window.GetKey(glfw3.KeyRightShift) == glfw3.Press)
+	g.imguiIO.AddKeyEvent(imgui.ModAlt, g.window.GetKey(glfw3.KeyLeftAlt) == glfw3.Press || g.window.GetKey(glfw3.KeyRightAlt) == glfw3.Press)
+	g.imguiIO.AddKeyEvent(imgui.ModCtrl, g.window.GetKey(glfw3.KeyLeftControl) == glfw3.Press || g.window.GetKey(glfw3.KeyRightControl) == glfw3.Press)
+	g.imguiIO.AddKeyEvent(imgui.ModSuper, g.window.GetKey(glfw3.KeyLeftSuper) == glfw3.Press || g.window.GetKey(glfw3.KeyRightSuper) == glfw3.Press)
 }
 
-func (g *glfwPlatform) charChange(window *glfw.Window, char rune) {
+func (g *glfwPlatform) charChange(window *glfw3.Window, char rune) {
 	g.anyEvents = true
 	// imgui character input is handled by implglfw.InstallCallbacks.
 	g.inputCharacters = g.inputCharacters + string(char)
 }
 
 func (g *glfwPlatform) createMouseCursors() {
-	g.mouseCursors[imgui.MouseCursorArrow] = glfw.CreateStandardCursor(glfw.ArrowCursor)
-	g.mouseCursors[imgui.MouseCursorTextInput] = glfw.CreateStandardCursor(glfw.IBeamCursor)
-	g.mouseCursors[imgui.MouseCursorResizeAll] = glfw.CreateStandardCursor(glfw.ArrowCursor) // FIXME: GLFW doesn't have this.
-	g.mouseCursors[imgui.MouseCursorResizeNS] = glfw.CreateStandardCursor(glfw.VResizeCursor)
-	g.mouseCursors[imgui.MouseCursorResizeEW] = glfw.CreateStandardCursor(glfw.HResizeCursor)
-	g.mouseCursors[imgui.MouseCursorResizeNESW] = glfw.CreateStandardCursor(glfw.ArrowCursor) // FIXME: GLFW doesn't have this.
-	g.mouseCursors[imgui.MouseCursorResizeNWSE] = glfw.CreateStandardCursor(glfw.ArrowCursor) // FIXME: GLFW doesn't have this.
-	g.mouseCursors[imgui.MouseCursorHand] = glfw.CreateStandardCursor(glfw.HandCursor)
+	g.mouseCursors[imgui.MouseCursorArrow] = glfw3.CreateStandardCursor(glfw3.ArrowCursor)
+	g.mouseCursors[imgui.MouseCursorTextInput] = glfw3.CreateStandardCursor(glfw3.IBeamCursor)
+	g.mouseCursors[imgui.MouseCursorResizeAll] = glfw3.CreateStandardCursor(glfw3.ArrowCursor) // FIXME: GLFW doesn't have this.
+	g.mouseCursors[imgui.MouseCursorResizeNS] = glfw3.CreateStandardCursor(glfw3.VResizeCursor)
+	g.mouseCursors[imgui.MouseCursorResizeEW] = glfw3.CreateStandardCursor(glfw3.HResizeCursor)
+	g.mouseCursors[imgui.MouseCursorResizeNESW] = glfw3.CreateStandardCursor(glfw3.ArrowCursor) // FIXME: GLFW doesn't have this.
+	g.mouseCursors[imgui.MouseCursorResizeNWSE] = glfw3.CreateStandardCursor(glfw3.ArrowCursor) // FIXME: GLFW doesn't have this.
+	g.mouseCursors[imgui.MouseCursorHand] = glfw3.CreateStandardCursor(glfw3.HandCursor)
 
 }
 
@@ -700,7 +636,7 @@ func (g *glfwPlatform) GetClipboard() imgui.ClipboardHandler {
 }
 
 type glfwClipboard struct {
-	window *glfw.Window
+	window *glfw3.Window
 }
 
 func (cb glfwClipboard) GetClipboard() (result string) {
@@ -759,32 +695,32 @@ func (g *glfwPlatform) SetMousePosition(p [2]float32) {
 }
 
 // Translation of ImGui_ImplGlfw_TranslateUntranslatedKey from imgui/backends/imgui_impl_glfw.cpp
-func translateUntranslatedKey(key glfw.Key, scancode int) glfw.Key {
-	if key >= glfw.KeyKP0 && key <= glfw.KeyKPEqual {
+func translateUntranslatedKey(key glfw3.Key, scancode int) glfw3.Key {
+	if key >= glfw3.KeyKP0 && key <= glfw3.KeyKPEqual {
 		return key
 	}
-	name := glfw.GetKeyName(key, scancode)
-	// glfw.GetError(nil)
+	name := glfw3.GetKeyName(key, scancode)
+	// glfw3.GetError(nil)
 	if len(name) == 1 {
 		if name[0] >= '0' && name[0] <= '9' {
-			return glfw.Key0 + glfw.Key(name[0]-'0')
+			return glfw3.Key0 + glfw3.Key(name[0]-'0')
 		} else if name[0] >= 'A' && name[0] <= 'Z' {
-			return glfw.KeyA + glfw.Key(name[0]-'A')
+			return glfw3.KeyA + glfw3.Key(name[0]-'A')
 		} else if name[0] >= 'a' && name[0] <= 'z' {
-			return glfw.KeyA + glfw.Key(name[0]-'a')
+			return glfw3.KeyA + glfw3.Key(name[0]-'a')
 		} else {
-			chars := map[byte]glfw.Key{
-				'`':  glfw.KeyGraveAccent,
-				'-':  glfw.KeyMinus,
-				'=':  glfw.KeyEqual,
-				'[':  glfw.KeyLeftBracket,
-				']':  glfw.KeyRightBracket,
-				'\\': glfw.KeyBackslash,
-				',':  glfw.KeyComma,
-				';':  glfw.KeySemicolon,
-				'\'': glfw.KeyApostrophe,
-				'.':  glfw.KeyPeriod,
-				'/':  glfw.KeySlash,
+			chars := map[byte]glfw3.Key{
+				'`':  glfw3.KeyGraveAccent,
+				'-':  glfw3.KeyMinus,
+				'=':  glfw3.KeyEqual,
+				'[':  glfw3.KeyLeftBracket,
+				']':  glfw3.KeyRightBracket,
+				'\\': glfw3.KeyBackslash,
+				',':  glfw3.KeyComma,
+				';':  glfw3.KeySemicolon,
+				'\'': glfw3.KeyApostrophe,
+				'.':  glfw3.KeyPeriod,
+				'/':  glfw3.KeySlash,
 			}
 			if k, ok := chars[name[0]]; ok {
 				return k
@@ -794,305 +730,247 @@ func translateUntranslatedKey(key glfw.Key, scancode int) glfw.Key {
 	return key
 }
 
-func glfwKeyToImguiKey(keycode glfw.Key) imgui.Key {
+func glfwKeyToImguiKey(keycode glfw3.Key) imgui.Key {
 	switch keycode {
-	case glfw.KeyTab:
+	case glfw3.KeyTab:
 		return imgui.KeyTab
-	case glfw.KeyLeft:
+	case glfw3.KeyLeft:
 		return imgui.KeyLeftArrow
-	case glfw.KeyRight:
+	case glfw3.KeyRight:
 		return imgui.KeyRightArrow
-	case glfw.KeyUp:
+	case glfw3.KeyUp:
 		return imgui.KeyUpArrow
-	case glfw.KeyDown:
+	case glfw3.KeyDown:
 		return imgui.KeyDownArrow
-	case glfw.KeyPageUp:
+	case glfw3.KeyPageUp:
 		return imgui.KeyPageUp
-	case glfw.KeyPageDown:
+	case glfw3.KeyPageDown:
 		return imgui.KeyPageDown
-	case glfw.KeyHome:
+	case glfw3.KeyHome:
 		return imgui.KeyHome
-	case glfw.KeyEnd:
+	case glfw3.KeyEnd:
 		return imgui.KeyEnd
-	case glfw.KeyInsert:
+	case glfw3.KeyInsert:
 		return imgui.KeyInsert
-	case glfw.KeyDelete:
+	case glfw3.KeyDelete:
 		return imgui.KeyDelete
-	case glfw.KeyBackspace:
+	case glfw3.KeyBackspace:
 		return imgui.KeyBackspace
-	case glfw.KeySpace:
+	case glfw3.KeySpace:
 		return imgui.KeySpace
-	case glfw.KeyEnter:
+	case glfw3.KeyEnter:
 		return imgui.KeyEnter
-	case glfw.KeyEscape:
+	case glfw3.KeyEscape:
 		return imgui.KeyEscape
-	case glfw.KeyApostrophe:
+	case glfw3.KeyApostrophe:
 		return imgui.KeyApostrophe
-	case glfw.KeyComma:
+	case glfw3.KeyComma:
 		return imgui.KeyComma
-	case glfw.KeyMinus:
+	case glfw3.KeyMinus:
 		return imgui.KeyMinus
-	case glfw.KeyPeriod:
+	case glfw3.KeyPeriod:
 		return imgui.KeyPeriod
-	case glfw.KeySlash:
+	case glfw3.KeySlash:
 		return imgui.KeySlash
-	case glfw.KeySemicolon:
+	case glfw3.KeySemicolon:
 		return imgui.KeySemicolon
-	case glfw.KeyEqual:
+	case glfw3.KeyEqual:
 		return imgui.KeyEqual
-	case glfw.KeyLeftBracket:
+	case glfw3.KeyLeftBracket:
 		return imgui.KeyLeftBracket
-	case glfw.KeyBackslash:
+	case glfw3.KeyBackslash:
 		return imgui.KeyBackslash
-	case glfw.KeyWorld1:
+	case glfw3.KeyWorld1:
 		return imgui.KeyOem102
-	case glfw.KeyWorld2:
+	case glfw3.KeyWorld2:
 		return imgui.KeyOem102
-	case glfw.KeyRightBracket:
+	case glfw3.KeyRightBracket:
 		return imgui.KeyRightBracket
-	case glfw.KeyGraveAccent:
+	case glfw3.KeyGraveAccent:
 		return imgui.KeyGraveAccent
-	case glfw.KeyCapsLock:
+	case glfw3.KeyCapsLock:
 		return imgui.KeyCapsLock
-	case glfw.KeyScrollLock:
+	case glfw3.KeyScrollLock:
 		return imgui.KeyScrollLock
-	case glfw.KeyNumLock:
+	case glfw3.KeyNumLock:
 		return imgui.KeyNumLock
-	case glfw.KeyPrintScreen:
+	case glfw3.KeyPrintScreen:
 		return imgui.KeyPrintScreen
-	case glfw.KeyPause:
+	case glfw3.KeyPause:
 		return imgui.KeyPause
-	case glfw.KeyKP0:
+	case glfw3.KeyKP0:
 		return imgui.KeyKeypad0
-	case glfw.KeyKP1:
+	case glfw3.KeyKP1:
 		return imgui.KeyKeypad1
-	case glfw.KeyKP2:
+	case glfw3.KeyKP2:
 		return imgui.KeyKeypad2
-	case glfw.KeyKP3:
+	case glfw3.KeyKP3:
 		return imgui.KeyKeypad3
-	case glfw.KeyKP4:
+	case glfw3.KeyKP4:
 		return imgui.KeyKeypad4
-	case glfw.KeyKP5:
+	case glfw3.KeyKP5:
 		return imgui.KeyKeypad5
-	case glfw.KeyKP6:
+	case glfw3.KeyKP6:
 		return imgui.KeyKeypad6
-	case glfw.KeyKP7:
+	case glfw3.KeyKP7:
 		return imgui.KeyKeypad7
-	case glfw.KeyKP8:
+	case glfw3.KeyKP8:
 		return imgui.KeyKeypad8
-	case glfw.KeyKP9:
+	case glfw3.KeyKP9:
 		return imgui.KeyKeypad9
-	case glfw.KeyKPDecimal:
+	case glfw3.KeyKPDecimal:
 		return imgui.KeyKeypadDecimal
-	case glfw.KeyKPDivide:
+	case glfw3.KeyKPDivide:
 		return imgui.KeyKeypadDivide
-	case glfw.KeyKPMultiply:
+	case glfw3.KeyKPMultiply:
 		return imgui.KeyKeypadMultiply
-	case glfw.KeyKPSubtract:
+	case glfw3.KeyKPSubtract:
 		return imgui.KeyKeypadSubtract
-	case glfw.KeyKPAdd:
+	case glfw3.KeyKPAdd:
 		return imgui.KeyKeypadAdd
-	case glfw.KeyKPEnter:
+	case glfw3.KeyKPEnter:
 		return imgui.KeyKeypadEnter
-	case glfw.KeyKPEqual:
+	case glfw3.KeyKPEqual:
 		return imgui.KeyKeypadEqual
-	case glfw.KeyLeftShift:
+	case glfw3.KeyLeftShift:
 		return imgui.KeyLeftShift
-	case glfw.KeyLeftControl:
+	case glfw3.KeyLeftControl:
 		return imgui.KeyLeftCtrl
-	case glfw.KeyLeftAlt:
+	case glfw3.KeyLeftAlt:
 		return imgui.KeyLeftAlt
-	case glfw.KeyLeftSuper:
+	case glfw3.KeyLeftSuper:
 		return imgui.KeyLeftSuper
-	case glfw.KeyRightShift:
+	case glfw3.KeyRightShift:
 		return imgui.KeyRightShift
-	case glfw.KeyRightControl:
+	case glfw3.KeyRightControl:
 		return imgui.KeyRightCtrl
-	case glfw.KeyRightAlt:
+	case glfw3.KeyRightAlt:
 		return imgui.KeyRightAlt
-	case glfw.KeyRightSuper:
+	case glfw3.KeyRightSuper:
 		return imgui.KeyRightSuper
-	case glfw.KeyMenu:
+	case glfw3.KeyMenu:
 		return imgui.KeyMenu
-	case glfw.Key0:
+	case glfw3.Key0:
 		return imgui.Key0
-	case glfw.Key1:
+	case glfw3.Key1:
 		return imgui.Key1
-	case glfw.Key2:
+	case glfw3.Key2:
 		return imgui.Key2
-	case glfw.Key3:
+	case glfw3.Key3:
 		return imgui.Key3
-	case glfw.Key4:
+	case glfw3.Key4:
 		return imgui.Key4
-	case glfw.Key5:
+	case glfw3.Key5:
 		return imgui.Key5
-	case glfw.Key6:
+	case glfw3.Key6:
 		return imgui.Key6
-	case glfw.Key7:
+	case glfw3.Key7:
 		return imgui.Key7
-	case glfw.Key8:
+	case glfw3.Key8:
 		return imgui.Key8
-	case glfw.Key9:
+	case glfw3.Key9:
 		return imgui.Key9
-	case glfw.KeyA:
+	case glfw3.KeyA:
 		return imgui.KeyA
-	case glfw.KeyB:
+	case glfw3.KeyB:
 		return imgui.KeyB
-	case glfw.KeyC:
+	case glfw3.KeyC:
 		return imgui.KeyC
-	case glfw.KeyD:
+	case glfw3.KeyD:
 		return imgui.KeyD
-	case glfw.KeyE:
+	case glfw3.KeyE:
 		return imgui.KeyE
-	case glfw.KeyF:
+	case glfw3.KeyF:
 		return imgui.KeyF
-	case glfw.KeyG:
+	case glfw3.KeyG:
 		return imgui.KeyG
-	case glfw.KeyH:
+	case glfw3.KeyH:
 		return imgui.KeyH
-	case glfw.KeyI:
+	case glfw3.KeyI:
 		return imgui.KeyI
-	case glfw.KeyJ:
+	case glfw3.KeyJ:
 		return imgui.KeyJ
-	case glfw.KeyK:
+	case glfw3.KeyK:
 		return imgui.KeyK
-	case glfw.KeyL:
+	case glfw3.KeyL:
 		return imgui.KeyL
-	case glfw.KeyM:
+	case glfw3.KeyM:
 		return imgui.KeyM
-	case glfw.KeyN:
+	case glfw3.KeyN:
 		return imgui.KeyN
-	case glfw.KeyO:
+	case glfw3.KeyO:
 		return imgui.KeyO
-	case glfw.KeyP:
+	case glfw3.KeyP:
 		return imgui.KeyP
-	case glfw.KeyQ:
+	case glfw3.KeyQ:
 		return imgui.KeyQ
-	case glfw.KeyR:
+	case glfw3.KeyR:
 		return imgui.KeyR
-	case glfw.KeyS:
+	case glfw3.KeyS:
 		return imgui.KeyS
-	case glfw.KeyT:
+	case glfw3.KeyT:
 		return imgui.KeyT
-	case glfw.KeyU:
+	case glfw3.KeyU:
 		return imgui.KeyU
-	case glfw.KeyV:
+	case glfw3.KeyV:
 		return imgui.KeyV
-	case glfw.KeyW:
+	case glfw3.KeyW:
 		return imgui.KeyW
-	case glfw.KeyX:
+	case glfw3.KeyX:
 		return imgui.KeyX
-	case glfw.KeyY:
+	case glfw3.KeyY:
 		return imgui.KeyY
-	case glfw.KeyZ:
+	case glfw3.KeyZ:
 		return imgui.KeyZ
-	case glfw.KeyF1:
+	case glfw3.KeyF1:
 		return imgui.KeyF1
-	case glfw.KeyF2:
+	case glfw3.KeyF2:
 		return imgui.KeyF2
-	case glfw.KeyF3:
+	case glfw3.KeyF3:
 		return imgui.KeyF3
-	case glfw.KeyF4:
+	case glfw3.KeyF4:
 		return imgui.KeyF4
-	case glfw.KeyF5:
+	case glfw3.KeyF5:
 		return imgui.KeyF5
-	case glfw.KeyF6:
+	case glfw3.KeyF6:
 		return imgui.KeyF6
-	case glfw.KeyF7:
+	case glfw3.KeyF7:
 		return imgui.KeyF7
-	case glfw.KeyF8:
+	case glfw3.KeyF8:
 		return imgui.KeyF8
-	case glfw.KeyF9:
+	case glfw3.KeyF9:
 		return imgui.KeyF9
-	case glfw.KeyF10:
+	case glfw3.KeyF10:
 		return imgui.KeyF10
-	case glfw.KeyF11:
+	case glfw3.KeyF11:
 		return imgui.KeyF11
-	case glfw.KeyF12:
+	case glfw3.KeyF12:
 		return imgui.KeyF12
-	case glfw.KeyF13:
+	case glfw3.KeyF13:
 		return imgui.KeyF13
-	case glfw.KeyF14:
+	case glfw3.KeyF14:
 		return imgui.KeyF14
-	case glfw.KeyF15:
+	case glfw3.KeyF15:
 		return imgui.KeyF15
-	case glfw.KeyF16:
+	case glfw3.KeyF16:
 		return imgui.KeyF16
-	case glfw.KeyF17:
+	case glfw3.KeyF17:
 		return imgui.KeyF17
-	case glfw.KeyF18:
+	case glfw3.KeyF18:
 		return imgui.KeyF18
-	case glfw.KeyF19:
+	case glfw3.KeyF19:
 		return imgui.KeyF19
-	case glfw.KeyF20:
+	case glfw3.KeyF20:
 		return imgui.KeyF20
-	case glfw.KeyF21:
+	case glfw3.KeyF21:
 		return imgui.KeyF21
-	case glfw.KeyF22:
+	case glfw3.KeyF22:
 		return imgui.KeyF22
-	case glfw.KeyF23:
+	case glfw3.KeyF23:
 		return imgui.KeyF23
-	case glfw.KeyF24:
+	case glfw3.KeyF24:
 		return imgui.KeyF24
 	default:
 		return imgui.KeyNone
 	}
-}
-
-// Audio capture methods for continuous background capture with preroll buffer
-func (g *glfwPlatform) StartAudioCapture() error {
-	return g.audioRecorder.StartCapture()
-}
-
-func (g *glfwPlatform) StartAudioCaptureWithDevice(deviceName string) error {
-	return g.audioRecorder.StartCaptureWithDevice(deviceName)
-}
-
-func (g *glfwPlatform) StopAudioCapture() {
-	g.audioRecorder.StopCapture()
-}
-
-func (g *glfwPlatform) IsAudioCapturing() bool {
-	return g.audioRecorder.IsCapturing()
-}
-
-func (g *glfwPlatform) GetAudioPreroll() []int16 {
-	return g.audioRecorder.GetPreroll()
-}
-
-// Audio recording methods
-func (g *glfwPlatform) StartAudioRecording() error {
-	return g.audioRecorder.StartRecording()
-}
-
-func (g *glfwPlatform) StartAudioRecordingWithDevice(deviceName string) error {
-	return g.audioRecorder.StartRecordingWithDevice(deviceName)
-}
-
-func (g *glfwPlatform) StopAudioRecording() ([]int16, error) {
-	return g.audioRecorder.StopRecording()
-}
-
-func (g *glfwPlatform) IsAudioRecording() bool {
-	return g.audioRecorder.IsRecording()
-}
-
-func (g *glfwPlatform) GetAudioInputDevices() []string {
-	return GetAudioInputDevices()
-}
-
-func (g *glfwPlatform) AudioPlaybackError() error {
-	return g.audioErr
-}
-
-func (g *glfwPlatform) AppendSpeechPCM(pcm []int16) {
-	g.audioEngine.AppendSpeechPCM(pcm)
-}
-
-func (g *glfwPlatform) SetAudioStreamCallback(cb func([]int16)) {
-	g.audioRecorder.SetStreamCallback(cb)
-}
-
-func (g *glfwPlatform) GetGPUInfo() (vendor, renderer string) {
-	return gl.GoStr(gl.GetString(gl.VENDOR)), gl.GoStr(gl.GetString(gl.RENDERER))
 }

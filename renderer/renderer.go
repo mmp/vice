@@ -39,6 +39,10 @@ type Renderer interface {
 	// rendered.
 	RenderCommandBuffer(*CommandBuffer) Stats
 
+	// GetGPUInfo returns the vendor and device strings that the graphics
+	// API reports for the hardware it is running on.
+	GetGPUInfo() (vendor, device string)
+
 	// ReadPixelRGBAs returns the RGBA colors of a rectangular region the
 	// framebuffer starting at the given (x,y) coordinate with the given
 	// width and height.

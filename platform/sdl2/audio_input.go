@@ -1,8 +1,8 @@
-// platform/audio_input.go
+// platform/sdl2/audio_input.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package platform
+package sdl2
 
 // typedef unsigned char uint8;
 // void audioInputCallback(void *userdata, uint8 *stream, int len);
@@ -15,17 +15,19 @@ import (
 	"unsafe"
 
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/platform/audio"
+
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-// PrerollDuration is how much audio to buffer before PTT for capturing transmission starts.
-const PrerollDuration = 200 // milliseconds
+// prerollDuration is how much audio to buffer before PTT for capturing transmission starts.
+const prerollDuration = 200 // milliseconds
 
 // prerollSamples is the number of samples to buffer (200ms at 16kHz = 3200 samples)
-const prerollSamples = AudioInputSampleRate * PrerollDuration / 1000
+const prerollSamples = audio.InputSampleRate * prerollDuration / 1000
 
-// AudioRecorder handles microphone recording
-type AudioRecorder struct {
+// recorder handles microphone recording
+type recorder struct {
 	deviceID       sdl.AudioDeviceID
 	deviceOpen     bool   // Whether the device is currently open
 	currentDevice  string // Name of the currently open device
@@ -40,22 +42,22 @@ type AudioRecorder struct {
 	pinner         runtime.Pinner
 }
 
-// NewAudioRecorder creates a new audio recorder
-func NewAudioRecorder(lg *log.Logger) *AudioRecorder {
-	return &AudioRecorder{
+// newRecorder creates a new audio recorder
+func newRecorder(lg *log.Logger) *recorder {
+	return &recorder{
 		lg:            lg,
 		prerollBuffer: make([]int16, prerollSamples),
 	}
 }
 
-// StartCapture starts continuous background audio capture to the preroll buffer.
+// startCapture starts continuous background audio capture to the preroll buffer.
 // This should be called when the app is ready to accept PTT input.
-func (ar *AudioRecorder) StartCapture() error {
-	return ar.StartCaptureWithDevice("")
+func (ar *recorder) startCapture() error {
+	return ar.startCaptureWithDevice("")
 }
 
-// StartCaptureWithDevice starts continuous background audio capture from the specified device.
-func (ar *AudioRecorder) StartCaptureWithDevice(deviceName string) error {
+// startCaptureWithDevice starts continuous background audio capture from the specified device.
+func (ar *recorder) startCaptureWithDevice(deviceName string) error {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 
@@ -78,7 +80,7 @@ func (ar *AudioRecorder) StartCaptureWithDevice(deviceName string) error {
 		user := unsafe.Pointer(ar)
 		ar.pinner.Pin(user)
 		spec := sdl.AudioSpec{
-			Freq:     AudioInputSampleRate,
+			Freq:     audio.InputSampleRate,
 			Format:   sdl.AUDIO_S16SYS,
 			Channels: 1,
 			Samples:  2048,
@@ -110,8 +112,8 @@ func (ar *AudioRecorder) StartCaptureWithDevice(deviceName string) error {
 	return nil
 }
 
-// StopCapture stops background audio capture.
-func (ar *AudioRecorder) StopCapture() {
+// stopCapture stops background audio capture.
+func (ar *recorder) stopCapture() {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 
@@ -125,23 +127,23 @@ func (ar *AudioRecorder) StopCapture() {
 	ar.lg.Info("Stopped background audio capture")
 }
 
-// IsCapturing returns true if background capture is active.
-func (ar *AudioRecorder) IsCapturing() bool {
+// isCapturing returns true if background capture is active.
+func (ar *recorder) isCapturing() bool {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 	return ar.capturing
 }
 
-// StartRecording starts recording audio from the default microphone.
+// startRecording starts recording audio from the default microphone.
 // If capture is already active, includes the preroll buffer.
-func (ar *AudioRecorder) StartRecording() error {
-	return ar.StartRecordingWithDevice("")
+func (ar *recorder) startRecording() error {
+	return ar.startRecordingWithDevice("")
 }
 
-// StartRecordingWithDevice starts recording audio from the specified microphone.
+// startRecordingWithDevice starts recording audio from the specified microphone.
 // If capture is already active on this device, includes the preroll buffer.
 // Otherwise, opens the device and starts fresh (no preroll).
-func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
+func (ar *recorder) startRecordingWithDevice(deviceName string) error {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 
@@ -152,7 +154,7 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 	// If capture is already running on the same device, use preroll
 	if ar.capturing && ar.currentDevice == deviceName {
 		// Extract preroll buffer in order (it's a ring buffer)
-		ar.audioData = ar.getPrerollLocked()
+		ar.audioData = ar.prerollLocked()
 		ar.recording = true
 		ar.lg.Infof("Started recording with %d preroll samples", len(ar.audioData))
 		return nil
@@ -172,7 +174,7 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 		user := unsafe.Pointer(ar)
 		ar.pinner.Pin(user)
 		spec := sdl.AudioSpec{
-			Freq:     AudioInputSampleRate,
+			Freq:     audio.InputSampleRate,
 			Format:   sdl.AUDIO_S16SYS,
 			Channels: 1,
 			Samples:  2048,
@@ -200,9 +202,9 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 	return nil
 }
 
-// getPrerollLocked extracts the preroll buffer contents in chronological order.
+// prerollLocked extracts the preroll buffer contents in chronological order.
 // Must be called with ar.mu held.
-func (ar *AudioRecorder) getPrerollLocked() []int16 {
+func (ar *recorder) prerollLocked() []int16 {
 	result := make([]int16, prerollSamples)
 	// Copy from prerollPos to end, then from start to prerollPos
 	copy(result, ar.prerollBuffer[ar.prerollPos:])
@@ -210,20 +212,20 @@ func (ar *AudioRecorder) getPrerollLocked() []int16 {
 	return result
 }
 
-// GetPreroll returns a copy of the current preroll buffer contents.
+// preroll returns a copy of the current preroll buffer contents.
 // This is useful for feeding preroll samples to a transcriber when starting recording.
-func (ar *AudioRecorder) GetPreroll() []int16 {
+func (ar *recorder) preroll() []int16 {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 	if !ar.capturing {
 		return nil
 	}
-	return ar.getPrerollLocked()
+	return ar.prerollLocked()
 }
 
-// StopRecording stops recording and returns the recorded audio data.
+// stopRecording stops recording and returns the recorded audio data.
 // If capture was active, it continues running for future preroll.
-func (ar *AudioRecorder) StopRecording() ([]int16, error) {
+func (ar *recorder) stopRecording() ([]int16, error) {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 
@@ -244,8 +246,8 @@ func (ar *AudioRecorder) StopRecording() ([]int16, error) {
 	return audioData, nil
 }
 
-// Close closes the audio recording device. Should be called when the application exits.
-func (ar *AudioRecorder) Close() {
+// close closes the audio recording device. Should be called when the application exits.
+func (ar *recorder) close() {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 
@@ -260,8 +262,8 @@ func (ar *AudioRecorder) Close() {
 	}
 }
 
-// IsRecording returns true if currently recording
-func (ar *AudioRecorder) IsRecording() bool {
+// isRecording returns true if currently recording
+func (ar *recorder) isRecording() bool {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 	return ar.recording
@@ -269,7 +271,7 @@ func (ar *AudioRecorder) IsRecording() bool {
 
 // addAudioData adds audio data to the preroll and recording buffers.
 // Called from the SDL audio callback.
-func (ar *AudioRecorder) addAudioData(data []int16) {
+func (ar *recorder) addAudioData(data []int16) {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 
@@ -292,17 +294,17 @@ func (ar *AudioRecorder) addAudioData(data []int16) {
 	}
 }
 
-// SetStreamCallback sets a callback function that receives audio samples
+// setStreamCallback sets a callback function that receives audio samples
 // as they are recorded. This enables streaming audio to a transcriber.
 // Pass nil to disable the callback.
-func (ar *AudioRecorder) SetStreamCallback(cb func([]int16)) {
+func (ar *recorder) setStreamCallback(cb func([]int16)) {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 	ar.streamCallback = cb
 }
 
-// GetAudioInputDevices returns a list of available audio input devices
-func GetAudioInputDevices() []string {
+// inputDevices returns a list of available audio input devices
+func inputDevices() []string {
 	count := sdl.GetNumAudioDevices(true) // true for capture devices
 	if count < 0 {
 		// SDL returns -1 when it can't enumerate capture devices, which
