@@ -449,6 +449,12 @@ func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
+// Airways returns the airways published under the given name.
+func (ss *CommonState) Airways(name string) ([]av.Airway, bool) {
+	aw, ok := av.DB.Airways[name]
+	return aw, ok
+}
+
 func (ss *CommonState) Similar(fix string) []string {
 	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(ss.Fixes), nil, nil)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)

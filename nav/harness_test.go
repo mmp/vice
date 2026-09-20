@@ -776,6 +776,11 @@ func (dbLocator) Locate(fix string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
+func (dbLocator) Airways(name string) ([]av.Airway, bool) {
+	aw, ok := av.DB.Airways[name]
+	return aw, ok
+}
+
 func (dbLocator) Similar(fix string) []string { return nil }
 
 func (dbLocator) Declination(fix string) (float32, bool) { return av.DB.Declination(fix) }

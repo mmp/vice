@@ -29,6 +29,15 @@ func (tl testLocator) Declination(fix string) (float32, bool) {
 	return 0, false
 }
 
+// The test locator knows no airways; tests that need one set DB.Airways.
+func (tl testLocator) Airways(name string) ([]Airway, bool) {
+	if DB == nil {
+		return nil, false
+	}
+	aw, ok := DB.Airways[name]
+	return aw, ok
+}
+
 // declinationLocator is a testLocator whose navaids have station declinations.
 type declinationLocator struct {
 	testLocator
@@ -1664,6 +1673,13 @@ func TestSpliceRoutes(t *testing.T) {
 		wps, err := parseWaypoints(route)
 		if err != nil {
 			t.Fatalf("%s: %v", route, err)
+		}
+		// Routes are spliced once they are finalized, which is where an
+		// airway entry is folded into the fix it leaves.
+		var e util.ErrorLogger
+		wps = wps.takeAirways(testLocator{}, &e)
+		if e.HaveErrors() {
+			t.Fatalf("%s: unexpected errors", route)
 		}
 		return wps
 	}

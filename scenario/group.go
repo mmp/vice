@@ -73,6 +73,12 @@ func (sg *Group) Locate(s string) (math.Point2LL, bool) {
 	return enroute.DBLocator{}.Locate(s)
 }
 
+// Airways returns the airways published under the given name.
+func (sg *Group) Airways(name string) ([]av.Airway, bool) {
+	aw, ok := av.DB.Airways[name]
+	return aw, ok
+}
+
 func (sg *Group) LocateDME(s string) (math.Point2LL, int, bool) {
 	return av.DB.LookupDME(s)
 }

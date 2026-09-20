@@ -30,6 +30,11 @@ type Locator interface {
 	// If Locate fails, Similar can be called to get alternatives that are
 	// similarly-spelled to be offered in error messages.
 	Similar(fix string) []string
+
+	// Airways returns the airways published under the given name, if any.
+	// A route string names an airway between two fixes; which fixes lie on
+	// it isn't known until the route is finalized.
+	Airways(name string) ([]Airway, bool)
 }
 
 type DMELocator interface {
@@ -106,6 +111,8 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 	}
 
 	defer e.CheckDepth(e.CurrentDepth())
+
+	wa = wa.takeAirways(loc, e)
 
 	// Get the locations of all waypoints and cull the route after 250nm if cullFar is true.
 	// prev is the last waypoint located, which points along a leg are not, so
@@ -197,7 +204,8 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 			if wp.Airway() != "" && i+1 < len(wa) {
 				found := false
 				wp0, wp1 := wp.Fix, wa[i+1].Fix
-				for _, airway := range DB.Airways[wp.Airway()] {
+				airways, _ := loc.Airways(wp.Airway())
+				for _, airway := range airways {
 					if awps, ok := airway.WaypointsBetween(wp0, wp1); ok {
 						for _, awp := range awps {
 							if awp.Location, ok = loc.Locate(awp.Fix); ok {
@@ -276,4 +284,32 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 	}
 
 	return wa
+}
+
+// takeAirways folds the entries of a route that name an airway into the
+// waypoint they follow. Whether a token names an airway or a fix isn't known
+// when the route string is parsed, since that takes the published airways, so
+// the parser leaves them as ordinary waypoints for this to pick out.
+func (wa WaypointArray) takeAirways(loc Locator, e *util.ErrorLogger) WaypointArray {
+	if !slices.ContainsFunc(wa, func(wp Waypoint) bool { _, ok := loc.Airways(wp.Fix); return ok }) {
+		return wa
+	}
+
+	var out WaypointArray
+	for i, wp := range wa {
+		if _, ok := loc.Airways(wp.Fix); !ok {
+			out = append(out, wp)
+			continue
+		}
+		if i == 0 {
+			e.ErrorString("%s: can't begin a route with an airway", wp.Fix)
+		} else if i == len(wa)-1 {
+			e.ErrorString("%s: can't end a route with an airway", wp.Fix)
+		} else if wp.Extra != nil {
+			e.ErrorString("%s: can't have fix modifiers with an airway", wp.Fix)
+		} else {
+			out[len(out)-1].InitExtra().Airway = wp.Fix
+		}
+	}
+	return out
 }

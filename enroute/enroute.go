@@ -142,6 +142,12 @@ func (DBLocator) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
+// Airways returns the airways published under the given name.
+func (DBLocator) Airways(name string) ([]av.Airway, bool) {
+	aw, ok := av.DB.Airways[name]
+	return aw, ok
+}
+
 // parseBoundary parses a space-separated list of "lat,long" vertices.
 func parseBoundary(s string) ([]math.Point2LL, error) {
 	var pts []math.Point2LL

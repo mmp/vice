@@ -862,30 +862,12 @@ func parseWaypoints(str string) (WaypointArray, error) {
 	var waypoints WaypointArray
 	var nextWaypointTurn TurnDirection
 	entries := strings.Fields(str)
-	for ei, field := range entries {
+	for _, field := range entries {
 		if len(field) == 0 {
 			return nil, fmt.Errorf("Empty waypoint in string: %q", str)
 		}
 
 		components := strings.Split(field, "/")
-
-		// Is it an airway?
-		if _, ok := DB.Airways[components[0]]; ok {
-			if ei == 0 {
-				return nil, fmt.Errorf("%s: can't begin a route with an airway", components[0])
-			} else if ei == len(entries)-1 {
-				return nil, fmt.Errorf("%s: can't end a route with an airway", components[0])
-			} else if len(components) > 1 {
-				return nil, fmt.Errorf("%s: can't have fix modifiers with an airway", field)
-			} else {
-				// Just set the Airway field for now; we'll patch up the
-				// waypoints to include the airway waypoints at the end of
-				// this function.
-				nwp := len(waypoints)
-				waypoints[nwp-1].InitExtra().Airway = components[0]
-				continue
-			}
-		}
 
 		// Is it a lat-long specifier like 4900N/05000W? We need to patch
 		// things up if so since we use '/' to delimit our own specifiers
