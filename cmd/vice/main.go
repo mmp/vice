@@ -278,15 +278,15 @@ func runSimulation(lg *log.Logger) error {
 		return fmt.Errorf("scenario loading failed")
 	}
 
+	newSimConfig, err := tables.NewSimConfigurationForScenario(tracon, scenarioName)
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("Running scenario: %s\n", *runSim)
 
 	// Initialize navigation logging if requested
 	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
-
-	newSimConfig, err := tables.NewSimConfigurationForScenario(tracon, scenarioName)
-	if err != nil {
-		return fmt.Errorf("failed to create simulation configuration: %w", err)
-	}
 
 	// Pick a random time in November 2025
 	r := rand.Make()
