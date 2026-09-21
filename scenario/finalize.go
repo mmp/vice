@@ -14,6 +14,7 @@ package scenario
 import (
 	"fmt"
 	"maps"
+	"reflect"
 	"slices"
 	"sort"
 	"strconv"
@@ -43,7 +44,7 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	e.Pop()
 
 	sg.NmPerLatitude = 60
-	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.FacilityConfig.FacilityAdaptation.Center)
+	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.FacilityConfig.FacilityAdaptation.Center.Point2LL)
 
 	// Create default airport filters for the airports the facility config
 	// doesn't cover itself. This is a scenario-group concern because it uses
@@ -55,7 +56,7 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	ifrAirports := util.FilterSlice(allAirports, func(name av.ICAOAirportCode) bool {
 		return sg.Airports[name].HasIFROperations()
 	})
-	nmPerLongitude := math.NMPerLongitudeAt(fa.Center)
+	nmPerLongitude := math.NMPerLongitudeAt(fa.Center.Point2LL)
 
 	// An airport that one of the config's own regions already covers doesn't
 	// get a default one.
@@ -170,8 +171,18 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	}
 
 	e.Push("Facility config " + facilityConfigPath(sg))
-	FinalizeFacilityAdaptation(&sg.FacilityConfig.FacilityAdaptation, e, sg, mapSpec, mapSpecs)
+	finalizeAdaptation(&sg.FacilityConfig.FacilityAdaptation, e, sg, mapSpec, mapSpecs)
 	e.Pop()
+
+	// A boundary is a polygon written as a list of points; resolve each one
+	// before handing it to the volumes that name it.
+	for name, pts := range sg.Airspace.Boundaries {
+		e.Push("Airspace boundary " + name)
+		for i := range pts {
+			pts[i].Resolve(sg, "boundaries", e)
+		}
+		e.Pop()
+	}
 
 	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
@@ -193,15 +204,17 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 					sg.Airspace.Volumes[name][i].Label = fmt.Sprintf("%d-%d", vol.LowerLimit/100, vol.UpperLimit/100)
 				}
 			}
-			if vol.LabelPosition.IsZero() {
-				// Label at the center if no center specified
-				e := math.EmptyExtent2D()
+			label := &sg.Airspace.Volumes[name][i].LabelPosition
+			label.Resolve(sg, "label_position", e)
+			if label.IsZero() {
+				// Label at the center if no position specified
+				ext := math.EmptyExtent2D()
 				for _, pts := range sg.Airspace.Volumes[name][i].Boundaries {
 					for _, p := range pts {
-						e = math.Union(e, p)
+						ext = math.Union(ext, p.Point2LL)
 					}
 				}
-				sg.Airspace.Volumes[name][i].LabelPosition = e.Center()
+				label.Point2LL = ext.Center()
 			}
 
 			e.Pop()
@@ -222,7 +235,7 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	// facility agree on it. ERAM samples at the ARTCC's adaptation center,
 	// the same point NmPerLongitude comes from; STARS at the TRACON's
 	// published center.
-	center := sg.FacilityConfig.FacilityAdaptation.Center
+	center := sg.FacilityConfig.FacilityAdaptation.Center.Point2LL
 	if sg.ARTCC == "" {
 		if fac, ok := db.DB.LookupFacility(sg.facility()); !ok {
 			e.ErrorString("%s: facility unknown", sg.facility())
@@ -840,13 +853,7 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 		}
 	}
 
-	if s.CenterString != "" {
-		if pos, ok := sg.Locate(s.CenterString); !ok {
-			e.ErrorString(`unknown location %q specified for "center"`, s.CenterString)
-		} else {
-			s.Center = pos
-		}
-	}
+	s.Center.Resolve(sg, "center", e)
 
 	for _, dm := range s.DefaultMaps {
 		if !mapSpec.HasMap(dm) {
@@ -869,4 +876,65 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 		ten := int32(10)
 		s.VFFRequestRate = &ten
 	}
+}
+
+// CheckLocationsResolved reports any location in the group that was written as
+// a name and never resolved. Finalizing resolves them by hand, a pass per kind
+// of thing, so a newly added field--or a new list of an existing one--can be
+// missed, and the location then silently reads as (0, 0). Walking the finalized
+// group catches that against the scenarios as they are really written. It uses
+// reflection and so is run by -lint rather than on every load.
+func CheckLocationsResolved(sg *Group, e *util.ErrorLogger) {
+	pointType := reflect.TypeFor[av.ScenarioPoint2LL]()
+
+	// join builds the path to a field, which names the location in the error.
+	join := func(path, name string) string {
+		if path == "" {
+			return name
+		}
+		return path + "." + name
+	}
+
+	var walk func(v reflect.Value, path string)
+	walk = func(v reflect.Value, path string) {
+		switch v.Kind() {
+		case reflect.Pointer, reflect.Interface:
+			if !v.IsNil() {
+				walk(v.Elem(), path)
+			}
+			return
+		case reflect.Slice, reflect.Array:
+			for i := range v.Len() {
+				walk(v.Index(i), fmt.Sprintf("%s[%d]", path, i))
+			}
+			return
+		case reflect.Map:
+			for _, k := range v.MapKeys() {
+				walk(v.MapIndex(k), fmt.Sprintf("%s[%v]", path, k.Interface()))
+			}
+			return
+		case reflect.Struct:
+		default:
+			return
+		}
+
+		t := v.Type()
+		if t == pointType {
+			if str := v.FieldByName("String").String(); str != "" && v.FieldByName("Point2LL").IsZero() {
+				e.ErrorString("%s: location %q was never resolved during finalizing", path, str)
+			}
+			return
+		}
+
+		for i := range t.NumField() {
+			if f := t.Field(i); f.PkgPath == "" {
+				walk(v.Field(i), join(path, f.Name))
+			}
+		}
+	}
+
+	e.Push(sg.Name)
+	defer e.Pop()
+
+	walk(reflect.ValueOf(sg).Elem(), "")
 }

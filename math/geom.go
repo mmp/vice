@@ -434,10 +434,19 @@ func PointInPolygon(p [2]float32, pts [][2]float32) bool {
 	return inside
 }
 
-func PointInPolygon2LL(p Point2LL, pts []Point2LL) bool {
+// LatLonger is a value that denotes a point on the Earth. A Point2LL is one
+// itself; so is a type that embeds one to carry something alongside it, such
+// as the text the point was written as in a scenario.
+type LatLonger interface {
+	LatLong() Point2LL
+}
+
+func (p Point2LL) LatLong() Point2LL { return p }
+
+func PointInPolygon2LL[T LatLonger](p Point2LL, pts []T) bool {
 	inside := false
 	for i := range pts {
-		p0, p1 := pts[i], pts[(i+1)%len(pts)]
+		p0, p1 := pts[i].LatLong(), pts[(i+1)%len(pts)].LatLong()
 		if (p0[1] <= p[1] && p[1] < p1[1]) || (p1[1] <= p[1] && p[1] < p0[1]) {
 			x := p0[0] + (p[1]-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1])
 			if x > p[0] {

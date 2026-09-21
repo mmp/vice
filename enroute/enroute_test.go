@@ -278,8 +278,8 @@ func bosCoordination() *ArtsCoordEntry {
 			{
 				AreaID: "PRIMARY",
 				// Boston Logan, roughly.
-				CenterStr: "N042.21.35.960,W071.00.19.061",
-				Center:    math.Point2LL{-71.0053, 42.3600},
+				Center: av.ScenarioPoint2LL{String: "N042.21.35.960,W071.00.19.061",
+					Point2LL: math.Point2LL{-71.0053, 42.3600}},
 				Arrival: []ZoneEntry{
 					{Bearings: "340,050", DefaultFix: "NNN"},
 					{Bearings: "160,250", DefaultFix: "SSS"},

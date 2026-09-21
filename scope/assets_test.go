@@ -32,7 +32,7 @@ func TestSystemMaps(t *testing.T) {
 				Id:          id,
 				Description: description,
 				Type:        av.AirspaceVolumeCircle,
-				Center:      center,
+				Center:      av.ScenarioPoint2LL{Point2LL: center},
 				Radius:      5,
 			},
 		}
@@ -47,7 +47,7 @@ func TestSystemMaps(t *testing.T) {
 	}
 	fa.Filters.VFRInhibit = sim.FilterRegions{region("vfri", "vfr inhibit", center)}
 	fa.RadarSites = map[string]*av.RadarSite{
-		"JFK": {Position: center, PrimaryRange: 60, SecondaryRange: 120},
+		"JFK": {Position: av.ScenarioPoint2LL{Point2LL: center}, PrimaryRange: 60, SecondaryRange: 120},
 	}
 
 	maps := SystemMaps(SystemMapSpec{

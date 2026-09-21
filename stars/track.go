@@ -879,7 +879,7 @@ func (sp *Pane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 			primary, secondary, dist := site.CheckVisibility(pos, int(trk.TrueAltitude))
 
 			// Orient the box toward the radar
-			h := float32(math.TrueToMagnetic(math.Heading2LL(site.Position, pos, ctx.NmPerLongitude), ctx.MagneticVariation))
+			h := float32(math.TrueToMagnetic(math.Heading2LL(site.Position.Point2LL, pos, ctx.NmPerLongitude), ctx.MagneticVariation))
 			rot := math.Rotator2f(h)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels
@@ -1329,7 +1329,7 @@ func (sp *Pane) updateInTrailDistance(ctx *scope.Context) {
 			sort.Slice(runwayAircraft, func(i, j int) bool {
 				pi := sp.TrackState[runwayAircraft[i].ADSBCallsign].track.Location
 				pj := sp.TrackState[runwayAircraft[j].ADSBCallsign].track.Location
-				return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
+				return math.NMDistance2LL(pi, vol.Threshold.Point2LL) < math.NMDistance2LL(pj, vol.Threshold.Point2LL)
 			})
 
 			for i := range runwayAircraft {
@@ -1421,7 +1421,7 @@ func (sp *Pane) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.Tr
 
 	eligible25nm := vol.Enable25nmApproach &&
 		ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) &&
-		math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
+		math.NMDistance2LL(vol.Threshold.Point2LL, back.Location) < vol.Dist25nmApproach &&
 		back.OnExtendedCenterline && front.OnExtendedCenterline
 	cwtSeparation := av.CWTApproachSeparation(
 		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
@@ -1438,8 +1438,8 @@ func (sp *Pane) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.Tr
 	}
 
 	// front, back aircraft
-	frontModel := MakeModeledAircraft(ctx, front, sp.TrackState[front.ADSBCallsign], vol.Threshold)
-	backModel := MakeModeledAircraft(ctx, back, state, vol.Threshold)
+	frontModel := MakeModeledAircraft(ctx, front, sp.TrackState[front.ADSBCallsign], vol.Threshold.Point2LL)
+	backModel := MakeModeledAircraft(ctx, back, state, vol.Threshold.Point2LL)
 
 	// Will there be a MIT violation s seconds in the future?  (Note that
 	// we don't include altitude separation here since what we need is

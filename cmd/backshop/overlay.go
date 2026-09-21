@@ -104,7 +104,7 @@ func (in *inspector) drawOverlays(a *app, transforms scope.Transformations, cb *
 func drawVolume(v av.AirspaceVolume, nmPerLongitude float32, color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder) {
 	switch v.Type {
 	case av.AirspaceVolumeCircle:
-		ld.AddLatLongCircle(v.Center, nmPerLongitude, v.Radius, 90, color)
+		ld.AddLatLongCircle(v.Center.Point2LL, nmPerLongitude, v.Radius, 90, color)
 	case av.AirspaceVolumePolygon:
 		addLoop(ld, v.Vertices, color)
 		for _, h := range v.Holes {
@@ -113,9 +113,9 @@ func drawVolume(v av.AirspaceVolume, nmPerLongitude float32, color renderer.RGB,
 	}
 }
 
-func addLoop(ld *renderer.ColoredLinesDrawBuilder, pts []math.Point2LL, color renderer.RGB) {
+func addLoop[T math.LatLonger](ld *renderer.ColoredLinesDrawBuilder, pts []T, color renderer.RGB) {
 	for i := range pts {
-		ld.AddLine(pts[i], pts[(i+1)%len(pts)], color)
+		ld.AddLine(pts[i].LatLong(), pts[(i+1)%len(pts)].LatLong(), color)
 	}
 }
 
@@ -123,5 +123,5 @@ func volumeCenter(v av.AirspaceVolume) math.Point2LL {
 	if v.Type == av.AirspaceVolumePolygon && v.PolygonBounds != nil {
 		return v.PolygonBounds.Center()
 	}
-	return v.Center
+	return v.Center.Point2LL
 }

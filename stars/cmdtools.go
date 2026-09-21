@@ -219,7 +219,7 @@ func registerToolsCommands() {
 		func(sp *Pane, ctx *scope.Context, parsed RAText) {
 			ra := av.RestrictionArea{
 				Text:         parsed.text,
-				TextPosition: parsed.pos,
+				TextPosition: av.ScenarioPoint2LL{Point2LL: parsed.pos},
 				BlinkingText: parsed.blink,
 			}
 			createRestrictionArea(sp, ctx, ra)
@@ -228,7 +228,7 @@ func registerToolsCommands() {
 		func(sp *Pane, ctx *scope.Context, parsed RAText, pos math.Point2LL) {
 			ra := av.RestrictionArea{
 				Text:         parsed.text,
-				TextPosition: pos,
+				TextPosition: av.ScenarioPoint2LL{Point2LL: pos},
 				BlinkingText: parsed.blink,
 			}
 			createRestrictionArea(sp, ctx, ra)
@@ -242,7 +242,7 @@ func registerToolsCommands() {
 
 		sp.wipRestrictionArea = &av.RestrictionArea{
 			Text:         parsed.text,
-			CircleCenter: pos,
+			CircleCenter: av.ScenarioPoint2LL{Point2LL: pos},
 			CircleRadius: radius,
 			BlinkingText: parsed.blink,
 			Shaded:       parsed.shaded,
@@ -259,7 +259,7 @@ func registerToolsCommands() {
 				},
 				"[POS]", func(sp *Pane, ctx *scope.Context, p math.Point2LL) {
 					ra := sp.wipRestrictionArea
-					ra.TextPosition = p
+					ra.TextPosition = av.ScenarioPoint2LL{Point2LL: p}
 					createRestrictionArea(sp, ctx, *ra)
 					sp.wipRestrictionArea = nil
 				},
@@ -298,7 +298,7 @@ func registerToolsCommands() {
 				"[RA_CLOSED_TEXT][POS]", func(sp *Pane, ctx *scope.Context, parsed RAText, p math.Point2LL) CommandStatus {
 					ra := sp.wipRestrictionArea
 					ra.Text = parsed.text
-					ra.TextPosition = p
+					ra.TextPosition = av.ScenarioPoint2LL{Point2LL: p}
 					ra.BlinkingText = parsed.blink
 					ra.Shaded = parsed.shaded
 					ra.Color = parsed.color
@@ -1076,7 +1076,7 @@ func registerToolsCommands() {
 					if sig, ok := sp.significantPoints[sigpt]; !ok {
 						return CommandStatus{}, ErrCommandFormat
 					} else {
-						return sp.displaySignificantPointInfo(pos, sig.Location, ctx.NmPerLongitude, ctx.MagneticVariation, ctx.InterpolatedSimTime), nil
+						return sp.displaySignificantPointInfo(pos, sig.Location.Point2LL, ctx.NmPerLongitude, ctx.MagneticVariation, ctx.InterpolatedSimTime), nil
 					}
 				},
 				"*F [POS]", func(sp *Pane, pos2 math.Point2LL) CommandStatus {

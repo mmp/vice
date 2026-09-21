@@ -349,7 +349,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 			s.VFRReportingPoints = append(s.VFRReportingPoints,
 				av.VFRReportingPoint{
 					Description: ap.Name,
-					Location:    ap.Location,
+					Location:    av.ScenarioPoint2LL{Point2LL: ap.Location},
 				})
 		}
 	}
@@ -358,7 +358,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 			s.VFRReportingPoints = append(s.VFRReportingPoints,
 				av.VFRReportingPoint{
 					Description: util.StopShouting(na.Name) + " VOR",
-					Location:    na.Location,
+					Location:    av.ScenarioPoint2LL{Point2LL: na.Location},
 				})
 		}
 	}

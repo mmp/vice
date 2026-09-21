@@ -257,10 +257,10 @@ func (in *inspector) drawRoutes(a *app, transforms scope.Transformations, cb *re
 			for _, vol := range ss.Airspace[tcp][volname] {
 				for _, pts := range vol.Boundaries {
 					for i := range max(len(pts)-1, 0) {
-						ld.AddLine(pts[i], pts[i+1], asColor)
+						ld.AddLine(pts[i].Point2LL, pts[i+1].Point2LL, asColor)
 					}
 				}
-				td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition), asStyle)
+				td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition.Point2LL), asStyle)
 			}
 		}
 	}

@@ -658,11 +658,11 @@ func (sp *Pane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.
 							continue
 						}
 						for i := range pts[:len(pts)-1] {
-							ld.AddLine(pts[i], pts[i+1], color)
+							ld.AddLine(pts[i].Point2LL, pts[i+1].Point2LL, color)
 						}
 					}
 
-					td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition), style)
+					td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition.Point2LL), style)
 				}
 			}
 		}
@@ -991,7 +991,7 @@ func (sp *Pane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude
 	minDist := float32(1000000)
 	var closest *sim.SignificantPoint
 	for _, sigpt := range sp.significantPointsSlice {
-		d := math.NMDistance2LL(sigpt.Location, p1)
+		d := math.NMDistance2LL(sigpt.Location.Point2LL, p1)
 		if d < minDist {
 			minDist = d
 			closest = &sigpt
@@ -1004,15 +1004,15 @@ func (sp *Pane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude
 	}
 
 	// Display a blinking square at the point
-	sp.highlightedLocation = closest.Location
+	sp.highlightedLocation = closest.Location.Point2LL
 	sp.highlightedLocationEndTime = now.Add(5 * time.Second)
 
 	// 6-148
 	format := func(sig sim.SignificantPoint) string {
-		d := math.NMDistance2LL(p0, sig.Location)
+		d := math.NMDistance2LL(p0, sig.Location.Point2LL)
 		str := ""
 		if d > 1 { // no bearing range if within 1nm
-			hdg := float32(math.TrueToMagnetic(math.Heading2LL(p0, sig.Location, nmPerLongitude), magneticVariation))
+			hdg := float32(math.TrueToMagnetic(math.Heading2LL(p0, sig.Location.Point2LL, nmPerLongitude), magneticVariation))
 			str = fmt.Sprintf("%03d/%.2f ", int(hdg), d)
 			for len(str) < 9 {
 				str += " "
@@ -1031,7 +1031,7 @@ func (sp *Pane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude
 	// Up to 5 additional, if they are within 1nm of the selected point
 	n := 0
 	for _, sig := range sp.significantPointsSlice {
-		if sig.Name != closest.Name && math.NMDistance2LL(sig.Location, closest.Location) < 1 {
+		if sig.Name != closest.Name && math.NMDistance2LL(sig.Location.Point2LL, closest.Location.Point2LL) < 1 {
 			str.WriteString("\n" + format(sig))
 			n++
 			if n == 5 {

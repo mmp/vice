@@ -130,12 +130,12 @@ func (g *systemMapGen) drawAirspace(a av.AirspaceVolume, cb *renderer.CommandBuf
 		for _, h := range a.Holes {
 			var v [][2]float32
 			for _, vtx := range h {
-				v = append(v, [2]float32(vtx))
+				v = append(v, [2]float32(vtx.Point2LL))
 			}
 			ld.AddLineLoop(v)
 		}
 	case av.AirspaceVolumeCircle:
-		ld.AddLatLongCircle(a.Center, g.spec.NmPerLongitude, a.Radius, 360)
+		ld.AddLatLongCircle(a.Center.Point2LL, g.spec.NmPerLongitude, a.Radius, 360)
 	default:
 		panic("unhandled AirspaceVolume type")
 	}
@@ -179,8 +179,8 @@ func (g *systemMapGen) addRadarCoverage() {
 			ld := renderer.GetLinesDrawBuilder()
 			defer renderer.ReturnLinesDrawBuilder(ld)
 
-			ld.AddLatLongCircle(site.Position, g.spec.NmPerLongitude, float32(site.PrimaryRange), 360)
-			ld.AddLatLongCircle(site.Position, g.spec.NmPerLongitude, float32(site.SecondaryRange), 360)
+			ld.AddLatLongCircle(site.Position.Point2LL, g.spec.NmPerLongitude, float32(site.PrimaryRange), 360)
+			ld.AddLatLongCircle(site.Position.Point2LL, g.spec.NmPerLongitude, float32(site.SecondaryRange), 360)
 			ld.GenerateCommands(cb)
 		})
 	}

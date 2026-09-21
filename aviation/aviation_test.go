@@ -1500,3 +1500,55 @@ func TestAircraftClassJSON(t *testing.T) {
 		t.Errorf("unknown class in list did not error")
 	}
 }
+
+// latLongLocator resolves fix names from its map and literal
+// latitude-longitudes the way the static database does.
+type latLongLocator struct{ testLocator }
+
+func (l latLongLocator) Locate(s string) (math.Point2LL, bool) {
+	if p, ok := l.testLocator.Locate(s); ok {
+		return p, true
+	}
+	p, err := math.ParseLatLong([]byte(s))
+	return p, err == nil
+}
+
+// A location in a scenario or facility configuration may be written in any of
+// the encodings the facility engineering documentation lists, and the older
+// two-float array is still accepted. All of them are held as text until the
+// scenario is finalized, so each has to come back out as something a Locator
+// can resolve.
+func TestAirspaceVolumeCenterEncodings(t *testing.T) {
+	jfk := math.Point2LL{-73.771385, 40.6328888}
+	loc := latLongLocator{testLocator{"JFK": jfk}}
+
+	for _, tc := range []struct {
+		center string
+		want   math.Point2LL
+	}{
+		{`"JFK"`, jfk},                   // name of an airport, VOR, NDB or fix
+		{`"40.6328888,-73.771385"`, jfk}, // decimal pair
+		{`"4037N/07346W"`, math.Point2LL{-73.7666667, 40.6166667}}, // degrees minutes
+		{`"N40.37.58.400,W073.46.17.000"`, jfk},                    // degrees, minutes, seconds
+		{`"+403758.400-0734617.000"`, jfk},                         // ISO6709 Annex H
+		{`[-73.771385,40.6328888]`, jfk},                           // two floats, the older form
+	} {
+		js := `{"id":"x","description":"d","type":"circle","radius":5,"center":` + tc.center + `}`
+
+		var vol AirspaceVolume
+		if err := json.Unmarshal([]byte(js), &vol); err != nil {
+			t.Errorf("%s: %v", tc.center, err)
+			continue
+		}
+
+		var e util.ErrorLogger
+		vol.Finalize(loc, &e)
+		if e.HaveErrors() {
+			t.Errorf("%s: %v", tc.center, slices.Collect(e.Errors()))
+			continue
+		}
+		if !samePosition(vol.Center.Point2LL, tc.want) {
+			t.Errorf("%s: center is %v, want %v", tc.center, vol.Center.Point2LL, tc.want)
+		}
+	}
+}

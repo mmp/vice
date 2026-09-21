@@ -61,9 +61,8 @@ func AirportHasRunway(db Database, airport ICAOAirportCode, runway RunwayID) boo
 ///////////////////////////////////////////////////////////////////////////
 
 type RadarSite struct {
-	Char           string        `json:"char"`
-	PositionString string        `json:"position"`
-	Position       math.Point2LL // not in JSON, set during deserialize
+	Char     string           `json:"char"`
+	Position ScenarioPoint2LL `json:"position"`
 
 	Elevation      int32   `json:"elevation"`
 	PrimaryRange   int32   `json:"primary_range"`
@@ -84,7 +83,7 @@ func (rs *RadarSite) CheckVisibility(p math.Point2LL, altitude int) (primary, se
 	ralt := float32(rs.Elevation) * math.FeetToNauticalMiles
 	dalt := palt - ralt
 	// not quite true distance, but close enough
-	distance = math.NMDistance2LL(rs.Position, p) + math.Abs(palt-ralt)
+	distance = math.NMDistance2LL(rs.Position.Point2LL, p) + math.Abs(palt-ralt)
 
 	// If we normalize the vector from the radar site to the aircraft, then
 	// the z (altitude) component gives the cosine of the angle with the

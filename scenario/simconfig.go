@@ -59,7 +59,7 @@ func (sg *Group) NewSimConfiguration(scenarioName string, lc sim.LaunchConfig) (
 		Fixes:                      sg.Fixes,
 		Center:                     sc.center(sg),
 		Range:                      util.Select(sc.Range == 0, fa.Range, sc.Range),
-		ScenarioCenter:             sc.Center,
+		ScenarioCenter:             sc.Center.Point2LL,
 		ScenarioRange:              sc.Range,
 		DefaultMaps:                sc.DefaultMaps,
 		DefaultMapGroup:            sc.DefaultMapGroup,

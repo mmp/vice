@@ -107,7 +107,7 @@ func (in *inspector) drawFiltersTab(a *app) {
 				imgui.TableNextColumn()
 				imgui.Text(fmt.Sprintf("%d nm", site.SecondaryRange))
 				imgui.TableNextColumn()
-				in.locationCell(a, "rcm"+name, site.Position)
+				in.locationCell(a, "rcm"+name, site.Position.Point2LL)
 			}
 			imgui.EndTable()
 		}

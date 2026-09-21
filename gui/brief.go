@@ -1251,7 +1251,7 @@ func calculateMapProjection(briefMap *brief.VideoMapBlock, videoMaps []videomaps
 						for _, vol := range vols {
 							for _, pts := range vol.Boundaries {
 								for _, p := range pts {
-									extend(p)
+									extend(p.Point2LL)
 									sawAnnotation = true
 								}
 							}
@@ -1637,7 +1637,7 @@ func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, video
 								}
 								polyBuf = polyBuf[:0]
 								for _, p := range pts {
-									polyBuf = append(polyBuf, latLonToScreen(p))
+									polyBuf = append(polyBuf, latLonToScreen(p.Point2LL))
 								}
 								// PointInPolygon2LL (the hover hit test above) treats
 								// boundaries as closed, so close the ring here unless

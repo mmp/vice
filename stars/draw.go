@@ -177,9 +177,9 @@ func (sp *Pane) drawWIPRestrictionArea(ctx *scope.Context, transforms scope.Tran
 		if ra.Shaded {
 			trid = renderer.GetTrianglesDrawBuilder()
 			defer renderer.ReturnTrianglesDrawBuilder(trid)
-			trid.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
+			trid.AddLatLongCircle(ra.CircleCenter.Point2LL, ctx.NmPerLongitude, ra.CircleRadius, 90)
 		}
-		ld.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
+		ld.AddLatLongCircle(ra.CircleCenter.Point2LL, ctx.NmPerLongitude, ra.CircleRadius, 90)
 	} else if len(ra.Vertices) > 0 && len(ra.Vertices[0]) > 0 {
 		verts := sp.wipRestrictionArea.Vertices[0]
 		for i := range len(verts) - 1 {
@@ -262,9 +262,9 @@ func (sp *Pane) drawRestrictionAreas(ctx *scope.Context, transforms scope.Transf
 
 		if ra.CircleRadius > 0 {
 			if ra.Shaded {
-				trid.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
+				trid.AddLatLongCircle(ra.CircleCenter.Point2LL, ctx.NmPerLongitude, ra.CircleRadius, 90)
 			}
-			ld.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
+			ld.AddLatLongCircle(ra.CircleCenter.Point2LL, ctx.NmPerLongitude, ra.CircleRadius, 90)
 		} else {
 			for _, loop := range ra.Vertices {
 				if nv := len(loop); nv > 0 {
@@ -317,7 +317,7 @@ func (sp *Pane) drawRestrictionAreas(ctx *scope.Context, transforms scope.Transf
 			}
 		}
 
-		p := transforms.WindowFromLatLongP(ra.TextPosition)
+		p := transforms.WindowFromLatLongP(ra.TextPosition.Point2LL)
 		blinking := settings.ForceBlinkingText || (ra.BlinkingText && !settings.StopBlinkingText)
 		if blinking && blinkDim {
 			td.AddTextCentered(text, p, renderer.TextStyle{Font: font, Color: color.Scale(0.5)})

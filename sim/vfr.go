@@ -177,10 +177,10 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *speech.RadioTransmis
 		dist = float32(1000000)
 		var center math.Point2LL
 		for _, rp := range s.VFRReportingPoints {
-			d := math.NMDistance2LL(ac.Position(), rp.Location)
+			d := math.NMDistance2LL(ac.Position(), rp.Location.Point2LL)
 			if d != 0 && d < dist {
 				dist = d
-				center = rp.Location
+				center = rp.Location.Point2LL
 				closest = &rp
 			}
 		}

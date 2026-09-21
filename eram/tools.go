@@ -174,11 +174,11 @@ func (ep *Pane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.
 							continue
 						}
 						for i := range pts[:len(pts)-1] {
-							ld.AddLine(pts[i], pts[i+1], color)
+							ld.AddLine(pts[i].Point2LL, pts[i+1].Point2LL, color)
 						}
 					}
 					label := strings.ToUpper(vol.Label)
-					td.AddTextCentered(label, transforms.WindowFromLatLongP(vol.LabelPosition), style)
+					td.AddTextCentered(label, transforms.WindowFromLatLongP(vol.LabelPosition.Point2LL), style)
 				}
 			}
 		}

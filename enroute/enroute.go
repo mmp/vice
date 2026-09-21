@@ -61,13 +61,12 @@ type CoordFix struct {
 // one whose center is nearest the flight's boundary point applies, and then
 // the fix pick is a bearing sector from Center.
 type ZoneArea struct {
-	AreaID       string        `json:"area_id"`
-	CenterStr    string        `json:"center"`
-	Center       math.Point2LL `json:"-"`
-	AltitudeKind string        `json:"altitude_kind"`
-	Arrival      []ZoneEntry   `json:"arrival"`
-	Departure    []ZoneEntry   `json:"departure"`
-	Overflight   []ZoneEntry   `json:"overflight"`
+	AreaID       string              `json:"area_id"`
+	Center       av.ScenarioPoint2LL `json:"center"`
+	AltitudeKind string              `json:"altitude_kind"`
+	Arrival      []ZoneEntry         `json:"arrival"`
+	Departure    []ZoneEntry         `json:"departure"`
+	Overflight   []ZoneEntry         `json:"overflight"`
 }
 
 // ZoneEntry selects a coordination fix by bearing sector (+ optional criteria).
@@ -137,15 +136,13 @@ func ParseGeometry(coord map[string]*ArtsCoordEntry, restrictions []Restriction,
 	for id, entry := range coord {
 		for i := range entry.ZoneBased {
 			za := &entry.ZoneBased[i]
-			if za.CenterStr == "" {
+			if za.Center.String == "" {
 				e.ErrorString("arts_coordination[%s] zone_based %s: no center", id, za.AreaID)
 				continue
 			}
-			if pos, ok := loc.Locate(za.CenterStr); ok {
-				za.Center = pos
-			} else {
-				e.ErrorString("arts_coordination[%s] zone_based %s: unknown center %q", id, za.AreaID, za.CenterStr)
-			}
+			e.Push(fmt.Sprintf("arts_coordination[%s] zone_based %s", id, za.AreaID))
+			za.Center.Resolve(loc, "center", e)
+			e.Pop()
 		}
 	}
 	for i := range restrictions {
@@ -365,7 +362,7 @@ func DeriveCoordinationFix(entry *ArtsCoordEntry, traj *Trajectory,
 		return Result{}
 	}
 	entries := zoneBucket(area, ft)
-	bearing := zoneBearing(area.Center, traj, ft)
+	bearing := zoneBearing(area.Center.Point2LL, traj, ft)
 	for _, ze := range entries {
 		if !bearingEntryMatches(ze, bearing) {
 			continue
@@ -580,7 +577,7 @@ func selectZoneArea(areas []ZoneArea, traj *Trajectory, ft av.TypeOfFlight) *Zon
 	if pt, ok := boundaryPoint(traj, ft); ok && len(areas) > 1 {
 		best, bestDist := 0, float32(1e30)
 		for i := range areas {
-			if d := math.NMDistance2LL(areas[i].Center, pt); d < bestDist {
+			if d := math.NMDistance2LL(areas[i].Center.Point2LL, pt); d < bestDist {
 				best, bestDist = i, d
 			}
 		}

@@ -142,7 +142,7 @@ func (ss *SimState) GetInitialCenter() math.Point2LL {
 
 	// Controller-specific config takes priority.
 	if config, ok := fa.Controllers[tcp]; ok && !config.Center.IsZero() {
-		return config.Center
+		return config.Center.Point2LL
 	}
 	// Then scenario, then area, then facility.
 	if !ss.ScenarioCenter.IsZero() {
@@ -150,7 +150,7 @@ func (ss *SimState) GetInitialCenter() math.Point2LL {
 	}
 	if ctrl, ok := ss.Controllers[tcp]; ok && ctrl.Area != "" {
 		if ac, ok := fa.Areas[ctrl.Area]; ok && !ac.Center.IsZero() {
-			return ac.Center
+			return ac.Center.Point2LL
 		}
 	}
 	return ss.Center

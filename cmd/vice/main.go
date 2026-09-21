@@ -217,6 +217,16 @@ func runLint(lg *log.Logger) error {
 		e.PrintErrors(nil)
 		return fmt.Errorf("scenario validation failed")
 	}
+
+	for _, groups := range tables.Groups {
+		for _, sg := range groups {
+			scenario.CheckLocationsResolved(sg, &e)
+		}
+	}
+	if e.HaveErrors() {
+		e.PrintErrors(nil)
+		return fmt.Errorf("scenario validation failed")
+	}
 	if overrideErrors != "" {
 		fmt.Fprint(os.Stderr, overrideErrors)
 		return fmt.Errorf("override file validation failed")

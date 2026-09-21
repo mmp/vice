@@ -5,6 +5,7 @@
 package scenario
 
 import (
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -45,17 +46,16 @@ type Scenario struct {
 	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
 
-	Center          math.Point2LL `json:"-"`
-	CenterString    string        `json:"center"`
-	Range           float32       `json:"range"`
-	DefaultMaps     []string      `json:"default_maps"`
-	DefaultMapGroup string        `json:"default_map_group"`
-	VFRRateScale    *float32      `json:"vfr_rate_scale"`
-	VFFRequestRate  *int32        `json:"flight_following_request_rate,omitempty"`
+	Center          av.ScenarioPoint2LL `json:"center"`
+	Range           float32             `json:"range"`
+	DefaultMaps     []string            `json:"default_maps"`
+	DefaultMapGroup string              `json:"default_map_group"`
+	VFRRateScale    *float32            `json:"vfr_rate_scale"`
+	VFFRequestRate  *int32              `json:"flight_following_request_rate,omitempty"`
 }
 
 // center is where the scenario's radar display is centered: the scenario's own
 // center if it gives one, otherwise the facility's.
 func (s *Scenario) center(sg *Group) math.Point2LL {
-	return util.Select(s.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center, s.Center)
+	return util.Select(s.Center.IsZero(), sg.FacilityConfig.FacilityAdaptation.Center.Point2LL, s.Center.Point2LL)
 }

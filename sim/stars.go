@@ -47,8 +47,7 @@ type FacilityAdaptation struct {
 	Controllers       map[ControlPosition]*STARSController `json:"controllers"`
 	Areas             map[string]*STARSArea                `json:"areas,omitempty"`
 	RadarSites        map[string]*av.RadarSite             `json:"radar_sites"`
-	Center            math.Point2LL                        `json:"-"`
-	CenterString      string                               `json:"center"`
+	Center            av.ScenarioPoint2LL                  `json:"center"`
 	MaxDistance       float32                              `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
 	Range             float32                              `json:"range"`
 	Scratchpads       map[string]string                    `json:"scratchpads"`
@@ -233,13 +232,12 @@ func (m STARSMacro) HasParameters() bool {
 var ValidateMacroCommandMode func(string) bool
 
 type STARSController struct {
-	VideoMapFile                    string        `json:"video_map_file,omitempty"`
-	VideoMapNames                   []string      `json:"video_maps"`
-	DefaultMaps                     []string      `json:"default_maps"`
-	Center                          math.Point2LL `json:"-"`
-	CenterString                    string        `json:"center"`
-	Range                           float32       `json:"range"`
-	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
+	VideoMapFile                    string              `json:"video_map_file,omitempty"`
+	VideoMapNames                   []string            `json:"video_maps"`
+	DefaultMaps                     []string            `json:"default_maps"`
+	Center                          av.ScenarioPoint2LL `json:"center"`
+	Range                           float32             `json:"range"`
+	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
 	FlightFollowingAirspace         []av.AirspaceVolume  `json:"flight_following_airspace"`
 	Altimeters                      []av.ICAOAirportCode `json:"altimeters"`
@@ -253,8 +251,7 @@ type STARSArea struct {
 	VideoMapFile                    string               `json:"video_map_file,omitempty"`
 	VideoMapNames                   []string             `json:"video_maps,omitempty"`
 	DefaultMaps                     []string             `json:"default_maps,omitempty"`
-	Center                          math.Point2LL        `json:"-"`
-	CenterString                    string               `json:"center,omitempty"`
+	Center                          av.ScenarioPoint2LL  `json:"center"`
 	Range                           float32              `json:"range,omitempty"`
 	MonitoredBeaconCodeBlocksString *string              `json:"beacon_code_blocks,omitempty"`
 	MonitoredBeaconCodeBlocks       []av.Squawk          `json:"-"`
@@ -455,12 +452,11 @@ func validateListFormat(format string, extra ...string) error {
 }
 
 type SignificantPoint struct {
-	Name         string // JSON comes in as a map from name to SignificantPoint; we set this.
-	ShortName    string `json:"short_name"`
-	Abbreviation string `json:"abbreviation"`
-	Description  string `json:"description"`
-	LocationStr  string `json:"location"`
-	Location     math.Point2LL
+	Name         string              // JSON comes in as a map from name to SignificantPoint; we set this.
+	ShortName    string              `json:"short_name"`
+	Abbreviation string              `json:"abbreviation"`
+	Description  string              `json:"description"`
+	Location     av.ScenarioPoint2LL `json:"location"`
 }
 
 type AirspaceAwareness struct {
@@ -470,15 +466,20 @@ type AirspaceAwareness struct {
 	AircraftType        []string `json:"aircraft_type"`
 }
 
+// Finalize resolves and checks what the adaptation settles on its own. It has
+// to run before the scenario group reads its "fixes": the center resolved here
+// gives the nm per longitude and magnetic variation that locating those
+// depends on, and the filter regions are needed to decide which airports get
+// default ones. So a location given here can only name something in the
+// published data, not a fix the scenario defines. What is checked against the
+// group around it is finalizeAdaptation, over in the scenario package.
 func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	if ctr := fa.CenterString; ctr == "" {
+	if fa.Center.String == "" {
 		e.ErrorString(`No "center" specified`)
-	} else if pos, ok := loc.Locate(ctr); !ok {
-		e.ErrorString(`unknown location %q specified for "center"`, ctr)
 	} else {
-		fa.Center = pos
+		fa.Center.Resolve(loc, "center", e)
 	}
 
 	// Resolve fix-pair airport locations and check their abbreviations (the
@@ -497,16 +498,16 @@ func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 		if ap.Name == "" && inDB {
 			ap.Name = faa.Name
 		}
-		if ap.LocationStr == "" {
+		if ap.Location.String == "" {
 			if inDB {
-				ap.Location = faa.Location
+				ap.Location.Point2LL = faa.Location
 			} else {
 				e.ErrorString(`airports[%s]: no "location" given and airport not in database`, id)
 			}
-		} else if pos, ok := loc.Locate(ap.LocationStr); ok {
-			ap.Location = pos
 		} else {
-			e.ErrorString("airports[%s]: unknown location %q", id, ap.LocationStr)
+			e.Push(fmt.Sprintf("airports[%s]", id))
+			ap.Location.Resolve(loc, "location", e)
+			e.Pop()
 		}
 	}
 
@@ -514,13 +515,7 @@ func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 	for tcp, config := range fa.Controllers {
 		e.Push(fmt.Sprintf("controllers[%s]", tcp))
 
-		if config.CenterString != "" {
-			if pos, ok := loc.Locate(config.CenterString); ok {
-				config.Center = pos
-			} else {
-				e.ErrorString("unknown location %q specified for controller center", config.CenterString)
-			}
-		}
+		config.Center.Resolve(loc, "center", e)
 
 		for i := range config.FlightFollowingAirspace {
 			config.FlightFollowingAirspace[i].Finalize(loc, e)
@@ -533,13 +528,7 @@ func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 	for areaNum, ac := range fa.Areas {
 		e.Push(fmt.Sprintf("areas[%s]", areaNum))
 
-		if ac.CenterString != "" {
-			if pos, ok := loc.Locate(ac.CenterString); ok {
-				ac.Center = pos
-			} else {
-				e.ErrorString("unknown location %q specified for area center", ac.CenterString)
-			}
-		}
+		ac.Center.Resolve(loc, "center", e)
 
 		e.Pop()
 	}
@@ -565,6 +554,7 @@ func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 	checkFilter(fa.Filters.InhibitMSAW, "inhibit_msaw")
 	checkFilter(fa.Filters.SecondaryDrop, "secondary_drop")
 	checkFilter(fa.Filters.SurfaceTracking, "surface_tracking")
+	checkFilter(fa.Filters.VFRInhibit, "vfr_inhibit")
 
 	{
 		ids := make(map[string]any)

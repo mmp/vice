@@ -5,6 +5,7 @@
 package aviation
 
 import (
+	"encoding/json"
 	"fmt"
 	"slices"
 	"strings"
@@ -35,6 +36,59 @@ type Locator interface {
 	// A route string names an airway between two fixes; which fixes lie on
 	// it isn't known until the route is finalized.
 	Airways(name string) ([]Airway, bool)
+}
+
+// ScenarioPoint2LL is a location in a scenario or facility configuration,
+// carrying both the text it was written as and the point it means. A name is
+// only resolvable once the scenario is being finalized and the fixes it
+// defines are known, so the text is kept until Resolve is called; a literal
+// latitude-longitude is understood as soon as it is read, as is the two-float
+// array Point2LL has long accepted. Point2LL is embedded so that the location
+// reads as one, and marshalling writes just that: the text has no further use
+// once the location is known.
+type ScenarioPoint2LL struct {
+	math.Point2LL
+	String string
+}
+
+func (sp *ScenarioPoint2LL) UnmarshalJSON(b []byte) error {
+	if len(b) > 0 && b[0] == '[' {
+		var p math.Point2LL
+		if err := p.UnmarshalJSON(b); err != nil {
+			return err
+		}
+		sp.Point2LL, sp.String = p, p.DMSString()
+		return nil
+	}
+
+	if err := json.Unmarshal(b, &sp.String); err != nil {
+		return err
+	}
+	if p, err := math.ParseLatLong([]byte(sp.String)); err == nil {
+		sp.Point2LL = p
+	}
+	return nil
+}
+
+// CheckJSON reports whether the JSON is a form a location can be read from.
+// The point is a struct, so without this the shape check would reject the
+// string it is really written as.
+func (ScenarioPoint2LL) CheckJSON(json any) bool {
+	return util.TypeCheckJSON[math.Point2LL](json)
+}
+
+// Resolve looks up the location the text names, reporting an error against the
+// given JSON key if it names nothing known. A location already understood--a
+// latitude-longitude, or one read back from a serialized sim--is left alone.
+func (sp *ScenarioPoint2LL) Resolve(loc Locator, key string, e *util.ErrorLogger) {
+	if !sp.IsZero() || sp.String == "" {
+		return
+	}
+	if p, ok := loc.Locate(sp.String); !ok {
+		e.ErrorString("unknown point %q in %q", sp.String, key)
+	} else {
+		sp.Point2LL = p
+	}
 }
 
 // Database is what finalizing a scenario needs to read from the published

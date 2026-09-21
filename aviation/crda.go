@@ -138,7 +138,7 @@ func (a *ATPAVolume) Inside(p math.Point2LL, alt float32, hdg math.MagneticHeadi
 
 func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.Point2LL {
 	// Segment along the approach course
-	p0 := math.LL2NM(a.Threshold, nmPerLongitude)
+	p0 := math.LL2NM(a.Threshold.Point2LL, nmPerLongitude)
 	hdg := float32(math.MagneticToTrue(math.OppositeHeading(a.Heading), magneticVariation))
 	v := math.SinCos(math.Radians(hdg))
 	p1 := math.Add2f(p0, math.Scale2f(v, a.Length))

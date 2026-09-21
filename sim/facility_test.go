@@ -5,12 +5,14 @@ package sim
 
 import (
 	"io"
+	"reflect"
 	"strings"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/util"
 
@@ -319,11 +321,68 @@ func TestRestoreERAMCoordinationGeometry(t *testing.T) {
 	ec := &enroute.Coordination{
 		ComputerID: "BOA",
 		Coord: &enroute.ArtsCoordEntry{
-			ZoneBased: []enroute.ZoneArea{{AreaID: "Z1", CenterStr: "N043.33.30.000,W069.30.00.000"}},
+			ZoneBased: []enroute.ZoneArea{{AreaID: "Z1",
+				Center: av.ScenarioPoint2LL{String: "N043.33.30.000,W069.30.00.000"}}},
 		},
 	}
 	restoreERAMCoordinationGeometry(ec, lg)
 	if ec.Coord.ZoneBased[0].Center.IsZero() {
 		t.Error("zone area Center should be parsed from CenterStr, not left at its post-JSON-restore zero value")
+	}
+}
+
+// fixLocator knows one fix and nothing else.
+type fixLocator struct {
+	enroute.DBLocator
+	fix string
+	pos math.Point2LL
+}
+
+func (fl fixLocator) Locate(s string) (math.Point2LL, bool) {
+	if s == fl.fix {
+		return fl.pos, true
+	}
+	return math.Point2LL{}, false
+}
+
+// A filter region is a piece of airspace whose center is usually given by the
+// name of a fix, which is only resolved when the adaptation is finalized. A
+// list that finalizing overlooks leaves its regions centered at (0,0), where
+// they quietly cover nothing. The lists are found by reflection so that one
+// added later is covered here without being remembered.
+func TestFacilityAdaptationFinalizesEveryFilterList(t *testing.T) {
+	var fa FacilityAdaptation
+	filters := reflect.ValueOf(&fa.Filters).Elem()
+
+	var lists []string
+	for i := range filters.NumField() {
+		field := filters.Field(i)
+		if field.Type() != reflect.TypeFor[FilterRegions]() {
+			continue
+		}
+		name := filters.Type().Field(i).Name
+		lists = append(lists, name)
+		field.Set(reflect.ValueOf(FilterRegions{{
+			AirspaceVolume: av.AirspaceVolume{
+				Id:     name,
+				Type:   av.AirspaceVolumeCircle,
+				Radius: 5,
+				Center: av.ScenarioPoint2LL{String: "FIXAA"},
+			},
+		}}))
+	}
+	if len(lists) == 0 {
+		t.Fatal("no lists of filter regions found in the adaptation")
+	}
+
+	loc := fixLocator{fix: "FIXAA", pos: math.Point2LL{-73.78, 40.64}}
+	var e util.ErrorLogger
+	fa.Finalize(loc, &e)
+
+	for _, name := range lists {
+		center := filters.FieldByName(name).Index(0).FieldByName("Center").FieldByName("Point2LL").Interface()
+		if center != loc.pos {
+			t.Errorf("filters %q: center is %v, want %v", name, center, loc.pos)
+		}
 	}
 }

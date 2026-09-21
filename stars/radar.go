@@ -33,7 +33,7 @@ func (sp *Pane) makeSignificantPoints(ss client.SimState) {
 		pt := sim.SignificantPoint{
 			Name:        name,
 			Description: desc,
-			Location:    loc,
+			Location:    av.ScenarioPoint2LL{Point2LL: loc},
 		}
 		sp.significantPoints[name] = pt
 		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)

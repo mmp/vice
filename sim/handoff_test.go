@@ -21,7 +21,7 @@ func bigCircle() av.AirspaceVolume {
 		Type:    av.AirspaceVolumeCircle,
 		Floor:   0,
 		Ceiling: 100000,
-		Center:  math.Point2LL{0, 0},
+		Center:  av.ScenarioPoint2LL{Point2LL: math.Point2LL{0, 0}},
 		Radius:  50,
 	}
 }

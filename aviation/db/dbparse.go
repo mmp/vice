@@ -654,7 +654,9 @@ func parseAirspace(filename string) map[string][]av.AirspaceVolume {
 				PolygonBounds: &bounds,
 			}
 			for _, l := range a.Loops[1:] {
-				vol.Holes = append(vol.Holes, convert(l))
+				vol.Holes = append(vol.Holes, util.MapSlice(l, func(p [2]float32) av.ScenarioPoint2LL {
+					return av.ScenarioPoint2LL{Point2LL: math.Point2LL(p)}
+				}))
 			}
 			v = append(v, vol)
 		}

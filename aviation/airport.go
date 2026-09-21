@@ -542,13 +542,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		e.Push(name + " CRDA region")
 		def.Name = name
 
-		if def.ReferencePoint.IsZero() && def.ReferencePointStr != "" {
-			if p, ok := db.Locate(def.ReferencePointStr); !ok {
-				e.ErrorString(`unknown point %q in "reference_point"`, def.ReferencePointStr)
-			} else {
-				def.ReferencePoint = p
-			}
-		}
+		def.ReferencePoint.Resolve(db, "reference_point", e)
 
 		hasRefLine := !def.ReferencePoint.IsZero() || def.ReferenceLineHeading != 0 || def.ReferenceLineLength != 0
 		hasRefRoute := def.ReferenceRoute != ""
@@ -565,7 +559,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			def.Path = PathFromRoutePoints(routePoints, nmPerLongitude)
 			def.RegionLength = def.Path.Length - def.NearDistance
 		} else {
-			def.Path = PathFromReferenceLine(def.ReferencePoint, def.ReferenceLineHeading,
+			def.Path = PathFromReferenceLine(def.ReferencePoint.Point2LL, def.ReferenceLineHeading,
 				def.ReferenceLineLength, nmPerLongitude, magneticVariation)
 		}
 		if !slices.ContainsFunc(ap.CRDAPairs,
@@ -639,7 +633,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			// Make a default volume
 			ap.ATPAVolumes[rwy.Id] = &ATPAVolume{
 				Id:        rwy.Id,
-				Threshold: rwy.Threshold,
+				Threshold: ScenarioPoint2LL{Point2LL: rwy.Threshold},
 				Heading:   rwy.Heading,
 			}
 		}
@@ -655,15 +649,9 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		if r, ok := LookupRunway(db, icao, rwy); !ok {
 			e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(icao))
 		} else {
+			vol.Threshold.Resolve(db, "runway_threshold", e)
 			if vol.Threshold.IsZero() {
-				if vol.ThresholdString != "" {
-					var ok bool
-					if vol.Threshold, ok = db.Locate(vol.ThresholdString); !ok {
-						e.ErrorString(`%q unknown for "runway_threshold".`, vol.ThresholdString)
-					}
-				} else {
-					vol.Threshold = r.Threshold
-				}
+				vol.Threshold.Point2LL = r.Threshold
 			}
 			if vol.Heading == 0 {
 				vol.Heading = r.Heading

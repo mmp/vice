@@ -12,7 +12,6 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -171,10 +170,9 @@ func (lb *LevelBand) UnmarshalJSON(b []byte) error {
 // may be significant points or airports. The name, location, and single-char
 // abbreviation feed the STARS client's significant-point display.
 type FixPairAirport struct {
-	Name         string        `json:"name"`
-	LocationStr  string        `json:"location"`
-	Abbreviation string        `json:"abbreviation"`
-	Location     math.Point2LL `json:"-"`
+	Name         string              `json:"name"`
+	Abbreviation string              `json:"abbreviation"`
+	Location     av.ScenarioPoint2LL `json:"location"`
 }
 
 // FixPair is an (entry, exit) pair.

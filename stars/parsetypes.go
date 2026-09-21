@@ -1029,7 +1029,7 @@ func parseRALocation(sp *Pane, ctx *scope.Context, text string) (math.Point2LL, 
 			}
 			return p, true
 		} else if p, ok := sp.significantPoints[pos]; ok {
-			return p.Location, true
+			return p.Location.Point2LL, true
 		} else if p, ok := db.DB.LookupWaypoint(pos); ok {
 			return p, true
 		} else {

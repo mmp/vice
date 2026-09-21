@@ -29,11 +29,10 @@ type AirspaceVolume struct {
 	PolygonBounds *math.Extent2D               // not always set
 	VerticesStr   util.OneOf[string, []string] `json:"vertices"`
 	Vertices      []math.Point2LL
-	Holes         [][]math.Point2LL `json:"holes"`
+	Holes         [][]ScenarioPoint2LL `json:"holes"`
 	// Circle
-	CenterStr string `json:"center"`
-	Center    math.Point2LL
-	Radius    float32 `json:"radius"`
+	Center ScenarioPoint2LL `json:"center"`
+	Radius float32          `json:"radius"`
 }
 
 type AirspaceVolumeType int
@@ -79,11 +78,11 @@ func (a *AirspaceVolume) Covers(p math.Point2LL) bool {
 		if !math.PointInPolygon2LL(p, a.Vertices) {
 			return false
 		}
-		return !util.SeqContainsFunc(slices.Values(a.Holes), func(hole []math.Point2LL) bool {
+		return !util.SeqContainsFunc(slices.Values(a.Holes), func(hole []ScenarioPoint2LL) bool {
 			return math.PointInPolygon2LL(p, hole)
 		})
 	case AirspaceVolumeCircle:
-		return math.NMDistance2LL(p, a.Center) < a.Radius
+		return math.NMDistance2LL(p, a.Center.Point2LL) < a.Radius
 	default:
 		panic("unhandled AirspaceVolume type")
 	}
@@ -140,6 +139,12 @@ func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {
 			}
 		}
 
+		for _, hole := range a.Holes {
+			for i := range hole {
+				hole[i].Resolve(loc, "holes", e)
+			}
+		}
+
 		b := math.Extent2DFromPoints(util.MapSlice(a.Vertices, func(p math.Point2LL) [2]float32 { return p }))
 		a.PolygonBounds = &b
 
@@ -147,14 +152,10 @@ func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {
 		if a.Radius == 0 {
 			e.ErrorString(`must provide "radius" with "circle" airspace volume`)
 		}
-		if a.Center.IsZero() {
-			if a.CenterStr == "" {
-				e.ErrorString(`must provide "center" with "circle" airspace volume`)
-			} else if p, ok := loc.Locate(a.CenterStr); !ok {
-				e.ErrorString(`unknown point %q in "center"`, a.CenterStr)
-			} else {
-				a.Center = p
-			}
+		if a.Center.String == "" && a.Center.IsZero() {
+			e.ErrorString(`must provide "center" with "circle" airspace volume`)
+		} else {
+			a.Center.Resolve(loc, "center", e)
 		}
 	}
 }
@@ -167,8 +168,7 @@ type CRDARegion struct {
 	ReferenceLineHeading   math.MagneticHeading `json:"reference_heading"`
 	ReferenceLineLength    float32              `json:"reference_length"`
 	ReferencePointAltitude float32              `json:"reference_altitude"`
-	ReferencePointStr      string               `json:"reference_point"`
-	ReferencePoint         math.Point2LL
+	ReferencePoint         ScenarioPoint2LL     `json:"reference_point"`
 
 	// Route-based reference (mutually exclusive with straight-line fields)
 	ReferenceRoute string `json:"reference_route"`
@@ -323,9 +323,8 @@ func parseCRDARoute(s string, loc Locator, nmPerLongitude, magneticVariation flo
 }
 
 type ATPAVolume struct {
-	Id                  string `json:"id"`
-	ThresholdString     string `json:"runway_threshold"`
-	Threshold           math.Point2LL
+	Id                  string               `json:"id"`
+	Threshold           ScenarioPoint2LL     `json:"runway_threshold"`
 	Heading             math.MagneticHeading `json:"heading"`
 	MaxHeadingDeviation float32              `json:"max_heading_deviation"`
 	Floor               float32              `json:"floor"`
@@ -384,12 +383,12 @@ func (ar *CRDARegion) QualificationPolygon(nmPerLongitude float32) []math.Point2
 }
 
 type ControllerAirspaceVolume struct {
-	LowerLimit    int               `json:"lower"`
-	UpperLimit    int               `json:"upper"`
-	Boundaries    [][]math.Point2LL `json:"boundary_polylines"` // not in JSON
-	BoundaryNames []string          `json:"boundaries"`
-	Label         string            `json:"label"`
-	LabelPosition math.Point2LL     `json:"label_position"`
+	LowerLimit    int      `json:"lower"`
+	UpperLimit    int      `json:"upper"`
+	BoundaryNames []string `json:"boundaries"`
+	Boundaries    [][]ScenarioPoint2LL
+	Label         string           `json:"label"`
+	LabelPosition ScenarioPoint2LL `json:"label_position"`
 }
 
 // ContainsPoint reports whether p is laterally inside the volume, applying
@@ -448,14 +447,14 @@ func InAirspace(p math.Point2LL, alt float32, volumes []ControllerAirspaceVolume
 const MaxRestrictionAreas = 100
 
 type RestrictionArea struct {
-	Title        string        `json:"title"`
-	Text         [2]string     `json:"text"`
-	BlinkingText bool          `json:"blinking_text"`
-	HideId       bool          `json:"hide_id"`
-	TextPosition math.Point2LL `json:"text_position"`
-	CircleCenter math.Point2LL `json:"circle_center"`
-	CircleRadius float32       `json:"circle_radius"`
-	VerticesUser WaypointArray `json:"vertices"`
+	Title        string           `json:"title"`
+	Text         [2]string        `json:"text"`
+	BlinkingText bool             `json:"blinking_text"`
+	HideId       bool             `json:"hide_id"`
+	TextPosition ScenarioPoint2LL `json:"text_position"`
+	CircleCenter ScenarioPoint2LL `json:"circle_center"`
+	CircleRadius float32          `json:"circle_radius"`
+	VerticesUser WaypointArray    `json:"vertices"`
 	Vertices     [][]math.Point2LL
 	Closed       bool `json:"closed"`
 	Shaded       bool `json:"shade_region"`
@@ -465,7 +464,7 @@ type RestrictionArea struct {
 }
 
 type Airspace struct {
-	Boundaries map[string][]math.Point2LL            `json:"boundaries"`
+	Boundaries map[string][]ScenarioPoint2LL         `json:"boundaries"`
 	Volumes    map[string][]ControllerAirspaceVolume `json:"volumes"`
 }
 
@@ -482,7 +481,7 @@ func RestrictionAreaFromTFR(tfr TFR) RestrictionArea {
 	ra.HideId = true
 	ra.Closed = true
 	ra.Shaded = true // ??
-	ra.TextPosition = ra.AverageVertexPosition()
+	ra.TextPosition.Point2LL = ra.AverageVertexPosition()
 
 	ra.UpdateTriangles()
 
@@ -535,16 +534,16 @@ func (ra *RestrictionArea) UpdateTriangles() {
 func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
 	if ra.CircleRadius > 0 {
 		// Circle
-		delta := math.Sub2f(p, ra.CircleCenter)
-		ra.CircleCenter = p
-		ra.TextPosition = math.Add2f(ra.TextPosition, delta)
+		delta := math.Sub2f(p, ra.CircleCenter.Point2LL)
+		ra.CircleCenter.Point2LL = p
+		ra.TextPosition.Point2LL = math.Add2f(ra.TextPosition.Point2LL, delta)
 	} else {
-		pc := ra.TextPosition
+		pc := ra.TextPosition.Point2LL
 		if pc.IsZero() {
 			pc = ra.AverageVertexPosition()
 		}
 		delta := math.Sub2f(p, pc)
-		ra.TextPosition = p
+		ra.TextPosition.Point2LL = p
 
 		for _, loop := range ra.Vertices {
 			for i := range loop {
@@ -558,23 +557,18 @@ func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
 // VFRReportingPoint
 
 type VFRReportingPoint struct {
-	Description string `json:"description"`
-	LocationStr string `json:"location"`
-	Location    math.Point2LL
+	Description string           `json:"description"`
+	Location    ScenarioPoint2LL `json:"location"`
 }
 
 func (rp *VFRReportingPoint) Finalize(loc Locator, controllers map[ControlPosition]*Controller, e *util.ErrorLogger) {
 	if rp.Description == "" {
 		e.ErrorString(`must specify "description" with reporting point`)
 	}
-	if rp.Location.IsZero() {
-		if rp.LocationStr == "" {
-			e.ErrorString(`must specify "location" with reporting point`)
-		} else if p, ok := loc.Locate(rp.LocationStr); !ok {
-			e.ErrorString(`unknown point %q in "location"`, rp.LocationStr)
-		} else {
-			rp.Location = p
-		}
+	if rp.Location.String == "" && rp.Location.IsZero() {
+		e.ErrorString(`must specify "location" with reporting point`)
+	} else {
+		rp.Location.Resolve(loc, "location", e)
 	}
 }
 

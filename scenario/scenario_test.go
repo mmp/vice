@@ -5,6 +5,7 @@
 package scenario
 
 import (
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -104,6 +105,80 @@ func TestAirportFiltersCoverTheField(t *testing.T) {
 		if !regions.Inside(ap.Location, ap.Elevation) {
 			t.Errorf("%s: aircraft on the ground at %d' is not inside the airport's filter region",
 				icao, ap.Elevation)
+		}
+	}
+}
+
+// A location written in a scenario or facility configuration may name a fix as
+// well as give a latitude-longitude, and which fixes exist isn't known until
+// the scenario is finalized. So the JSON-facing field holds text until then: a
+// math.Point2LL that JSON writes into directly can only take the lat-long
+// spellings, which silently drops the names the documentation offers.
+func TestLocationFieldsAreTextUntilFinalized(t *testing.T) {
+	// Fields that hold an already-resolved location. They have a JSON name
+	// because the sim is serialized to clients and into the config file, not
+	// because anyone writes them by hand.
+	resolved := map[string]bool{
+		"aviation.Waypoint.Location": true,
+	}
+
+	pointType := reflect.TypeFor[math.Point2LL]()
+
+	// bottom gives the type a field holds once slices, arrays, maps and
+	// pointers are peeled away, stopping at Point2LL since it is itself an
+	// array.
+	var bottom func(t reflect.Type) reflect.Type
+	bottom = func(t reflect.Type) reflect.Type {
+		if t == pointType {
+			return t
+		}
+		switch t.Kind() {
+		case reflect.Pointer, reflect.Slice, reflect.Array, reflect.Map:
+			return bottom(t.Elem())
+		}
+		return t
+	}
+
+	var found []string
+	seen := make(map[reflect.Type]bool)
+
+	var walk func(t reflect.Type)
+	walk = func(t reflect.Type) {
+		if t = bottom(t); t.Kind() != reflect.Struct || t == pointType || seen[t] {
+			return
+		}
+		seen[t] = true
+
+		for i := range t.NumField() {
+			f := t.Field(i)
+			name, _, _ := strings.Cut(f.Tag.Get("json"), ",")
+			if f.PkgPath != "" || name == "-" { // JSON can't write it
+				continue
+			}
+			if bottom(f.Type) == pointType {
+				// An untagged field is written only under its Go name, which
+				// is the serialized form rather than anything hand-written.
+				if name == "" {
+					continue
+				}
+				pkg := t.PkgPath()
+				if i := strings.LastIndex(pkg, "/"); i != -1 {
+					pkg = pkg[i+1:]
+				}
+				found = append(found, pkg+"."+t.Name()+"."+f.Name)
+				continue
+			}
+			walk(f.Type)
+		}
+	}
+
+	walk(reflect.TypeFor[Group]())
+	walk(reflect.TypeFor[sim.FacilityConfig]())
+
+	for _, f := range found {
+		if !resolved[f] {
+			t.Errorf("%s is a math.Point2LL that JSON writes into; it should be an "+
+				"av.ScenarioPoint2LL resolved when the scenario is finalized", f)
 		}
 	}
 }

@@ -42,7 +42,7 @@ func makeCircleAirportFilters(id string, description string, radius float32,
 				Type:        av.AirspaceVolumeCircle,
 				Floor:       ap.Elevation,
 				Ceiling:     ap.Elevation + ceiling,
-				Center:      ap.Location,
+				Center:      av.ScenarioPoint2LL{Point2LL: ap.Location},
 				Radius:      radius,
 			},
 		})

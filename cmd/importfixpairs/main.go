@@ -104,10 +104,10 @@ func main() {
 
 	warnings = append(warnings, filterTCPs(adaptation, fc.ControlPositions)...)
 
-	center, haveCenter := locate(fc.FacilityAdaptation.CenterString)
+	center, haveCenter := locate(fc.FacilityAdaptation.Center.String)
 	if !haveCenter {
 		warnings = append(warnings, fmt.Sprintf("config center %q not resolvable; derived fix locations are not range-checked",
-			fc.FacilityAdaptation.CenterString))
+			fc.FacilityAdaptation.Center.String))
 	}
 	sigEntries, airportEntries, resolveWarnings := resolveFixes(referencedFixes(adaptation),
 		&fc.FacilityAdaptation, dumpPoints, center, haveCenter, float32(*rangeNM))

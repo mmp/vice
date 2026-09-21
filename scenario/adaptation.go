@@ -21,10 +21,14 @@ import (
 	"github.com/mmp/vice/videomaps"
 )
 
-// FinalizeFacilityAdaptation validates FacilityAdaptation fields that
-// require the scenario group's Locator, mapSpec, or airport data. Self-contained
-// validation is done earlier in FacilityAdaptation.ValidateConfig.
-func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
+// finalizeAdaptation validates the parts of a FacilityAdaptation that can only
+// be checked against what surrounds it: the scenario group”'s airports, control
+// positions and own fixes, and the video map libraries. Those live here, and
+// sim, where the adaptation is defined, is below this package, so they cannot
+// be methods on it. It runs late, once the group”'s fixes are read, so a
+// location checked here may name one of them--unlike the earlier pass in
+// FacilityAdaptation.Finalize.
+func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
 	mapSpec *videomaps.LibrarySpec, mapSpecs map[string]*videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -79,19 +83,9 @@ func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, 
 		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
 	}
 
-	// Controller config centers and video maps (require Locator + mapSpec).
+	// Controller video maps (require mapSpec); the centers are resolved when
+	// the adaptation itself is finalized.
 	if len(s.Controllers) > 0 {
-		for ctrl, config := range s.Controllers {
-			if config.CenterString != "" {
-				if pos, ok := sg.Locate(config.CenterString); !ok {
-					e.ErrorString(`unknown location %q specified for "center"`, s.CenterString)
-				} else {
-					config.Center = pos
-					s.Controllers[ctrl] = config
-				}
-			}
-		}
-
 		for tcp, config := range s.Controllers {
 			// Resolve mapSpec: controller video_map_file > area > facility.
 			ctrlSpec := mapSpec
@@ -125,11 +119,12 @@ func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, 
 	// Radar sites (require Locator).
 	for name, rs := range s.RadarSites {
 		e.Push("Radar site " + name)
-		if p, ok := sg.Locate(rs.PositionString); rs.PositionString == "" || !ok {
-			e.ErrorString("radar site position %q not found", rs.PositionString)
+		if rs.Position.String == "" {
+			e.ErrorString(`radar site is missing "position"`)
 		} else {
-			rs.Position = p
+			rs.Position.Resolve(sg, "position", e)
 		}
+
 		if rs.Char == "" {
 			e.ErrorString(`radar site is missing "char"`)
 		}
@@ -202,11 +197,11 @@ func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, 
 			if sp.Location.IsZero() {
 				// An explicit "location" wins; otherwise the point is
 				// located by its own name.
-				where := util.Select(sp.LocationStr != "", sp.LocationStr, name)
+				where := util.Select(sp.Location.String != "", sp.Location.String, name)
 				if p, ok := sg.Locate(where); !ok {
 					e.ErrorString("unable to find location of %q", where)
 				} else {
-					sp.Location = p
+					sp.Location.Point2LL = p
 				}
 			}
 		}
@@ -378,22 +373,26 @@ func FinalizeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, 
 			ra.Vertices[0] = verts
 			ra.UpdateTriangles()
 
+			ra.TextPosition.Resolve(sg, "text_position", e)
 			if ra.TextPosition.IsZero() {
-				ra.TextPosition = ra.AverageVertexPosition()
+				ra.TextPosition.Point2LL = ra.AverageVertexPosition()
 			}
 		} else if ra.CircleRadius > 0 {
 			// Circle-related checks
 			if ra.CircleRadius > 125 {
 				e.ErrorString(`"radius" cannot be larger than 125.`)
 			}
+			ra.CircleCenter.Resolve(sg, "circle_center", e)
 			if ra.CircleCenter.IsZero() {
 				e.ErrorString(`Must specify "circle_center" if "circle_radius" is given.`)
 			}
+			ra.TextPosition.Resolve(sg, "text_position", e)
 			if ra.TextPosition.IsZero() {
-				ra.TextPosition = ra.CircleCenter
+				ra.TextPosition.Point2LL = ra.CircleCenter.Point2LL
 			}
 		} else {
 			// Must be text-only
+			ra.TextPosition.Resolve(sg, "text_position", e)
 			if (ra.Text[0] != "" || ra.Text[1] != "") && ra.TextPosition.IsZero() {
 				e.ErrorString(`Must specify "text_position" with restriction area`)
 			}
