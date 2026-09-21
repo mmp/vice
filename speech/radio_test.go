@@ -90,7 +90,7 @@ func TestTransmissionUnsaveableArg(t *testing.T) {
 // the formatter's type assertion. The error names the phrase that failed, which
 // is what the sim shows the controller in place of the lost transmission.
 func TestMistypedArgReported(t *testing.T) {
-	rt := MakeContactTransmission("departing {airport}", "KFRG") // want an av.ICAOAirportCode
+	rt := MakeContactTransmission("departing {airport}", "KFRG") // want an ICAOAirportCode
 	r := rand.Make()
 
 	s, err := rt.Spoken(r)

@@ -126,7 +126,7 @@ func TestScheduleOrdersPublishedDeparturesFromSelectedStartTime(t *testing.T) {
 				got.SpawnTime.Time(), expected.callsign, expected.spawn.Time())
 		}
 		if got.Source != TrafficSourceTimetable {
-			t.Errorf("departure %d source = %s, want traffic.Timetable", i, got.Source)
+			t.Errorf("departure %d source = %s, want Timetable", i, got.Source)
 		}
 	}
 }

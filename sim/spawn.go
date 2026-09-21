@@ -124,7 +124,7 @@ func (ts TrafficSource) String() string {
 	case TrafficSourceScenario:
 		return "Scenario"
 	case TrafficSourceTimetable:
-		return "traffic.Timetable"
+		return "Timetable"
 	case TrafficSourceHistorical:
 		return "Historical"
 	default:

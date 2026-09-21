@@ -183,7 +183,7 @@ func drawSymbolGlyphDebugUI(tableFlags imgui.TableFlags) {
 		var b strings.Builder
 		b.WriteString("var SymbolGlyphIndex = map[videomaps.SymbolStyle]rune{\n")
 		for _, style := range symbolStyleOrder {
-			fmt.Fprintf(&b, "\tav.SymbolStyle%-20s 0x%02X,\n",
+			fmt.Fprintf(&b, "\tvideomaps.SymbolStyle%-20s 0x%02X,\n",
 				style.String()+":", int(scope.SymbolGlyphIndex[style]))
 		}
 		b.WriteString("}\n")

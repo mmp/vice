@@ -540,12 +540,12 @@ func (s *Sim) generatePublishedFlights() {
 	case TrafficSourceTimetable:
 		catalog, err := traffic.LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
-			s.log("traffic.Timetable traffic: %v", err)
+			s.log("Timetable traffic: %v", err)
 			return
 		}
 		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
-			s.log("traffic.Timetable traffic: timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
+			s.log("Timetable traffic: timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
 			return
 		}
 		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)
