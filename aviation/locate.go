@@ -351,11 +351,16 @@ func (wa WaypointArray) takeAirways(loc Locator, e *util.ErrorLogger) WaypointAr
 			out = append(out, wp)
 			continue
 		}
-		if i == 0 {
+		if len(out) == 0 {
 			e.ErrorString("%s: can't begin a route with an airway", wp.Fix)
 		} else if i == len(wa)-1 {
 			e.ErrorString("%s: can't end a route with an airway", wp.Fix)
-		} else if wp.Extra != nil {
+		} else if wp.Turn() != TurnClosest {
+			// A turn is carried on the fix that is turned to, so a /ld or /rd
+			// written before an airway has no fix to apply to.
+			e.ErrorString("%s: can't give /ld or /rd for the fix before the airway %s",
+				out[len(out)-1].Fix, wp.Fix)
+		} else if wp.Extra != nil || wp.Flags != 0 {
 			e.ErrorString("%s: can't have fix modifiers with an airway", wp.Fix)
 		} else {
 			out[len(out)-1].InitExtra().Airway = wp.Fix

@@ -555,6 +555,40 @@ func TestRouteWaypoints(t *testing.T) {
 	}
 }
 
+// An airway names the fixes between the waypoints on either side of it, so a
+// route can neither begin nor end with one and a fix modifier has nothing to
+// attach to. None of that is known when the route string is parsed, since it
+// takes the published airways, so takeAirways is what reports it.
+func TestTakeAirwayErrors(t *testing.T) {
+	oldDB := testDB
+	testDB = testDatabase{Airways: map[string][]Airway{"V16": nil, "V17": nil}}
+	t.Cleanup(func() { testDB = oldDB })
+
+	for _, tc := range []struct{ route, want string }{
+		{"V16 ALPHA", "can't begin"},
+		{"V16 V17 ALPHA", "can't begin"},
+		{"ALPHA V16", "can't end"},
+		{"ALPHA V16/a100 BRAVO", "fix modifiers"},
+		// A turn is carried on the fix turned to, so one written before an
+		// airway has no fix left to apply to.
+		{"ALPHA/ld V16 BRAVO", "/ld or /rd"},
+	} {
+		wps, err := parseWaypoints(tc.route)
+		if err != nil {
+			t.Errorf("%s: %v", tc.route, err)
+			continue
+		}
+
+		var e util.ErrorLogger
+		wps.takeAirways(testLocator{}, &e)
+
+		errs := slices.Collect(e.Errors())
+		if !slices.ContainsFunc(errs, func(s string) bool { return strings.Contains(s, tc.want) }) {
+			t.Errorf("%s: expected an error mentioning %q, got %v", tc.route, tc.want, errs)
+		}
+	}
+}
+
 func TestRouteSTAR(t *testing.T) {
 	oldDB := testDB
 	testDB = testDatabase{
