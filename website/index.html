@@ -1593,7 +1593,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.15.0/Vice-v0.15.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.0 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.1/Vice-v0.15.1-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.1 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1602,7 +1602,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Ventura or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.15.0/Vice-v0.15.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.0 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.1/Vice-v0.15.1-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.1 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1630,6 +1630,71 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.15.1" data-nav-title="0.15.1">0.15.1 (21 Sep 2026)</h3>
+            <ul>
+              <li>New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn), ZME (Noah Hunt)</li>
+              <li>Scenario updates: PCT SHD, HCF, SCT, L30, NCT (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), M98 (Logan S, Shane), ANC, P80, S46 (Mike Fries), N90 (FlyingHigh), TPA (Nelson Tieku), D10 (Seth), A80 (McNugget)</li>
+              <li>Flight model improvements
+                <ul>
+                  <li>&quot;At FIX intercept the localizer&quot; is now refused when the fix isn't on the approach, rather than being acknowledged and then quietly doing nothing</li>
+                  <li>Added: <code>IFIX/RADIAL</code>: intercept a fix's radial; also available by voice (&quot;intercept the WAVEY 050 radial inbound&quot;, etc.)</li>
+                  <li>Departures are now held when a recent departure from another runway is flying a route that crosses their departure path</li>
+                  <li>Two departures to the same fix are now spaced from each other regardless of the runways they leave from</li>
+                  <li>More accurately model departures' 400' AGL rollout</li>
+                </ul>
+              </li>
+              <li>Bug fixes
+                <ul>
+                  <li>Fixed bugs in checks for whether called traffic is in sight</li>
+                  <li>Fixed bug with aircraft turning away from the localizer</li>
+                  <li>Fixed multiple data bugs in historical flight data</li>
+                  <li>Fixed bug with real-world traffic routes including the departure airport</li>
+                  <li>Fixed a few bugs with joining visual approaches</li>
+                  <li>Fixed published traffic launching all of an airport's departures from a single runway when several could fly them</li>
+                  <li>Fixed bugs with aircraft cleared for charted visual approaches not descending</li>
+                </ul>
+              </li>
+              <li>ERAM
+                <ul>
+                  <li>Fixed bug with cutoff &quot;8&quot; characters in datablocks</li>
+                </ul>
+              </li>
+              <li>STARS
+                <ul>
+                  <li>Fixed bug where saving prefs handled the pref set name incorrectly </li>
+                </ul>
+              </li>
+              <li>Facility engineering
+                <ul>
+                  <li>Added backshop, a new standalone tool for facility engineering: </li>
+                  <li>Fixed bug where aircraft were not automatically cleared for the approach at a /clearapp fix</li>
+                  <li>Updated route trigger syntax to be more readable: <code>FIX/h050@a4000/l270</code> -&gt; <code>FIX/h050/a4000/l270</code></li>
+                  <li>Added <code>@t</code> to route specifiers to allow specifying a track to fly inbound to the next fix</li>
+                  <li>Added <code>@crs</code> to route specifiers to join a course inbound a fix; @crsNAVAID-Rradial gives a leg that runs along a navaid's radial</li>
+                  <li>Added <code>@d</code> to route specifiers to fly a given distance from a point</li>
+                  <li>Route specifier altitudes <code>@a</code> require &quot;-&quot;/&quot;+&quot; for below/above the altitude (similarly for distances <code>@d</code>)</li>
+                  <li>Added support for extracting SIDs from the CIFP: if available, &quot;sid&quot; is sufficient in &quot;departure_routes&quot; without any &quot;waypoints&quot;</li>
+                  <li>All altitudes in scenarios are now specified in feet. (Before, some like <code>/c</code> were 100s of feet and others like <code>/a</code> were just feet. This was confusing.)</li>
+                  <li>Added &quot;print_departure_strips&quot; and &quot;print_arrival_strips&quot; to airports; set either to false and no flight strips are generated for that airport's departures or arrivals</li>
+                  <li>Removed the unused &quot;reporting_points&quot; scenario field. (&quot;vfr_reporting_points&quot; is unaffected.)</li>
+                  <li>Added a number of checks that departures' exits are valid/have at least one route to them</li>
+                  <li>Fixed bugs with <code>/clearapp</code> and <code>/intercept</code> in routes</li>
+                  <li>Added &quot;initial_heading&quot; for tower-assigned headings for SIDs that aren't charted to start with headings</li>
+                  <li>Added &quot;waypoint_actions&quot; for SIDs so that actions can be added at waypoints without needing to respecify them</li>
+                  <li>Added &quot;climbout_actions&quot; for SIDs taken from the CIFP: actions and triggers (e.g. &quot;h280/tc&quot;) that apply where departures turn on course 400' above the field, generalizing &quot;initial_heading&quot;</li>
+                  <li>Fixed bug where vice would ask to revert local edits to scenarios, configs, etc.</li>
+                  <li>Require &quot;star&quot; to be specified if &quot;waypoints&quot; match a published STAR</li>
+                  <li>Fixed bug that prohibited runway thresholds below sea level</li>
+                  <li>Route triggers now sequence <code>/delete</code>, <code>/land</code> and <code>/intercept</code> like any other action</li>
+                  <li>Added &quot;waypoint_actions&quot; to arrivals</li>
+                  <li>An arrival's &quot;spawn&quot; may now name a fix on one of the STAR's runway transitions</li>
+                  <li>An arrival whose &quot;waypoints&quot; fly a different STAR than it names in &quot;star&quot; is now an error</li>
+                  <li>A &quot;waypoint_actions&quot; fix may be given an offset, e.g. &quot;CKING@.75&quot;, to take the actions partway to the next fix (as &quot;spawn&quot; allows)</li>
+                </ul>
+              </li>
+            </ul>
+
 
             <h3 id="release-0.15.0" data-nav-title="0.15.0">0.15.0 (26 Aug 2026)</h3>
             <ul>
