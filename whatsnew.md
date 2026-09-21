@@ -1,0 +1,2 @@
+- ERAM
+  - Add datablock portal fence option

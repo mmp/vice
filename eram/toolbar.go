@@ -777,7 +777,6 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		toolbarDrawState.customButton["FDB LDR"] = colors.toolbar.vectorGreen
 		toolbarDrawState.customButton["NONADSB"] = colors.toolbar.vectorGreen
 		toolbarDrawState.customButton["BCAST\nFLID"] = colors.toolbar.grayButton
-		toolbarDrawState.customButton["PORTAL\nFENCE"] = colors.toolbar.grayButton
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
@@ -824,8 +823,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "BCAST\nFLID", 0, scale, false, false) {
 			// handle BCAST FLD
 		}
-		if ep.drawToolbarFullButton(ctx, "PORTAL\nFENCE", 0, scale, false, false) {
-			// handle PORTAL FENCE
+		if ep.drawToolbarFullButton(ctx, "PORTAL\nFENCE", 0, scale, ps.PortalFence, false) {
+			ps.PortalFence = !ps.PortalFence
 		}
 		toolbarDrawState.offsetBottom = true
 		if ep.drawToolbarFullButton(ctx, "NON-\nADS-B", 0, scale, false, true) {

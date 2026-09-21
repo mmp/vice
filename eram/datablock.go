@@ -41,6 +41,9 @@ type datablock interface {
 	// dim scales every populated character's color; used for the conflict
 	// alert brightness-cycle flash.
 	dim(factor float32)
+	// portalFenceVisible reports whether the datablock has data in line 0 or
+	// column 0, the fields that sit outside of the portal fence.
+	portalFenceVisible() bool
 }
 
 // dbChar represents a single character in a datablock along with its colour and
@@ -317,6 +320,23 @@ func (db *limitedDatablock) dim(factor float32) {
 	dimChars(db.line2[:], factor)
 }
 
+func (db *fullDatablock) portalFenceVisible() bool {
+	return !fieldEmpty(db.line0[:]) || !fieldEmpty(db.vci[:]) || !fieldEmpty(db.col1[:])
+}
+
+func (db *limitedDatablock) portalFenceVisible() bool { return false }
+
+// drawPortalFence draws the datablock's portal fence: a horizontal segment
+// in the gap between lines 0 and 1 and a vertical segment down the left side
+// of lines 1 through 3, separating line 0 and column 0 from the rest of the
+// datablock.
+func drawPortalFence(ld *renderer.ColoredLinesDrawBuilder, l DatablockLayout, color renderer.RGB) {
+	x := l.Anchor[0] - l.CharWidth*dbFenceInset
+	top, bottom := l.gapCenter(1), l.gapCenter(4)
+	ld.AddLine([2]float32{x, top}, [2]float32{x + l.CharWidth*dbFenceCols, top}, color)
+	ld.AddLine([2]float32{x, top}, [2]float32{x, bottom}, color)
+}
+
 func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()
@@ -581,6 +601,8 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 	ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	ep.ldbIdx = ep.ldbIdx[:0]
 	ep.eldbIdx = ep.eldbIdx[:0]
@@ -602,6 +624,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 	var sb strings.Builder
 	halfSeconds := time.Now().UnixMilli() / 500
 	ps := ep.currentPrefs()
+	fenceColor := ps.Brightness.Fence.ScaleRGB(colors.yellow)
 
 	draw := func(indices []int) {
 		for _, i := range indices {
@@ -625,6 +648,9 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			end, dir := ep.datablockAnchor(ctx, *trk, db, dbType, transforms)
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
+			if ps.PortalFence && db.portalFenceVisible() {
+				drawPortalFence(ld, makeDatablockLayout(end, font), fenceColor)
+			}
 		}
 	}
 
@@ -633,6 +659,8 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 	draw(ep.fdbIdx)
 
 	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 

@@ -152,6 +152,12 @@ func (l DatablockLayout) lineTop(line int) float32 {
 	return l.Anchor[1] + l.LineHeight - float32(line)*l.LineHeight*l.LineSpacing
 }
 
+// gapCenter returns the y coordinate midway between the given line's
+// character cells and those of the line above it.
+func (l DatablockLayout) gapCenter(line int) float32 {
+	return l.lineTop(line) + l.LineHeight*(l.LineSpacing-1)/2
+}
+
 func (l DatablockLayout) lineShift(line, col int) float32 {
 	if line != dbVCILine && line != dbCIDLine {
 		return 0
@@ -160,6 +166,17 @@ func (l DatablockLayout) lineShift(line, col int) float32 {
 		return -l.CharWidth * (dbLineOffsetScale + dbLeadFieldGap)
 	}
 	return -l.CharWidth * dbLeadFieldChars
+}
+
+// makeDatablockLayout returns the layout metrics of a datablock drawn with
+// the given font at the given anchor.
+func makeDatablockLayout(anchor [2]float32, font *renderer.Font) DatablockLayout {
+	return DatablockLayout{
+		Anchor:      [2]float32{anchor[0], anchor[1] + dbOutlineYOffset},
+		CharWidth:   dbCharWidth(font),
+		LineHeight:  float32(font.Size),
+		LineSpacing: dbLineSpacing,
+	}
 }
 
 // DatablockOutlines provides field and line outlines for a datablock.
@@ -184,6 +201,12 @@ const (
 	dbLeaderClearance = 0.5
 	dbInkHeight       = 0.85
 	dbLeaderInkInset  = 0.2
+
+	// Portal fence geometry: the fence runs along the right edge of the
+	// column 0 character cells and its horizontal segment is five character
+	// widths long.
+	dbFenceInset = dbLeadFieldGap
+	dbFenceCols  = 5
 )
 
 // dbFieldSpan returns the column span [start, start+n) of the visible
@@ -249,12 +272,7 @@ func (ep *ERAMPane) FullDatablockOutlines(ctx *panes.Context, trk sim.Track,
 		return DatablockOutlines{}, false
 	}
 
-	layout := DatablockLayout{
-		Anchor:      [2]float32{anchor[0], anchor[1] + dbOutlineYOffset},
-		CharWidth:   dbCharWidth(font),
-		LineHeight:  float32(font.Size),
-		LineSpacing: dbLineSpacing,
-	}
+	layout := makeDatablockLayout(anchor, font)
 
 	outlines := DatablockOutlines{
 		Layout: layout,
