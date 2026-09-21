@@ -453,5 +453,3 @@ func controlPositionsForGroup(server *client.Server, groupName string) map[sim.T
 	}
 	return nil
 }
-
-///////////////////////////////////////////////////////////////////////////

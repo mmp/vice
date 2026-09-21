@@ -77,11 +77,6 @@ type VFRRouteSpec struct {
 	Description string          `json:"description"`
 }
 
-// CRDAPair describes a one-directional ghosting relationship between two
-// CRDA regions. Aircraft flying through SourceRegion's qualification volume
-// have ghost data blocks plotted on GhostRegion's centerline; to ghost in
-// both directions, define two pairs with the roles swapped.
-
 func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, scratchpads map[string]string,
 	facilityAirports map[ICAOAirportCode]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {

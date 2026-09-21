@@ -30,7 +30,7 @@ type BriefRegistry struct {
 	pathOverrides  map[string]string            // non-canonical brief paths (set only by --scenario-brief)
 }
 
-func NewBriefRegistry() *BriefRegistry {
+func newBriefRegistry() *BriefRegistry {
 	return &BriefRegistry{
 		facilities:     make(map[string]struct{}),
 		videoMapHashes: make(map[string]map[string][]byte),
@@ -84,7 +84,7 @@ type Tables struct {
 	Emergencies []sim.Emergency
 }
 
-func MakeTables(groups map[string]map[string]*Group, catalogs map[string]map[string]*Catalog,
+func makeTables(groups map[string]map[string]*Group, catalogs map[string]map[string]*Catalog,
 	mapSpecs map[string]*videomaps.LibrarySpec, briefs *BriefRegistry) *Tables {
 	return &Tables{
 		Groups:   groups,

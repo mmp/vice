@@ -126,9 +126,10 @@ var (
 	facilityConfigCacheMu sync.Mutex
 )
 
-// loadFacilityConfig loads and unmarshals a facility configuration file.
-// Results are cached so that a facility several scenario groups share is only
-
+// IsARTCC reports whether a facility code looks like an ARTCC: three
+// characters starting with "Z", e.g. "ZDC", "ZNY". This is a test of the
+// spelling, not a lookup; db.StaticDatabase.IsARTCC answers from the
+// published table.
 func IsARTCC(facility string) bool {
 	return len(facility) == 3 && strings.HasPrefix(facility, "Z")
 }
@@ -230,7 +231,7 @@ type OverrideFiles struct {
 // scenario definitions to be fixed...
 //
 // If an override file has errors, they are returned in overrideErrors and it
-
+// is not loaded, but execution continues.
 func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables, string) {
 	start := time.Now()
 
@@ -255,7 +256,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*Group)
-	briefs := NewBriefRegistry()
+	briefs := newBriefRegistry()
 	catalogs := make(map[string]map[string]*Catalog)
 
 	type scenarioWalkItem struct {
@@ -792,7 +793,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	checkInboundAssignments(scenarioGroups, e)
 
 	lg.Infof("scenario.Load total: %s", time.Since(start))
-	return MakeTables(scenarioGroups, catalogs, mapSpecs, briefs), overrideErrors
+	return makeTables(scenarioGroups, catalogs, mapSpecs, briefs), overrideErrors
 }
 
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
@@ -842,7 +843,3 @@ func WXFacilities(lg *log.Logger) (wx.Facilities, error) {
 
 	return wx.MakeFacilities(airports, tracons), nil
 }
-
-// checkArrivalSpawnAltitude flags an arrival whose initial altitude is
-// too high to meet its first "at or below" restriction given the distance
-// to that waypoint. Assumes 2500 fpm descent at 250 kts ground speed. If

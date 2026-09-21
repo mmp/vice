@@ -127,7 +127,7 @@ type Preferences struct {
 	CRDA struct {
 		Disabled bool
 		// RunwayPairState has the same size and indexing as corresponding
-		// the STARSPane STARSCRDAPair member.
+		// the Pane CRDAPair member.
 		RunwayPairState []CRDARunwayPairState
 		ForceAllGhosts  bool
 	}

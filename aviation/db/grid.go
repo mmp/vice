@@ -136,7 +136,3 @@ func (g *MVAGrid) GetMVA(p [2]float32) int {
 	}
 	return 0
 }
-
-// Pronunciations maps written text to the phonetic spellings that work
-// better with voice synthesis. Where a slice is stored, one of its items is
-// chosen at random when one is needed.

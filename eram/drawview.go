@@ -33,7 +33,7 @@ type ViewBuilders struct {
 }
 
 // ViewRepoState is the pane-wide drag-to-reposition state. Only one view can
-// be repositioned at a time, so a single instance lives on ERAMPane and
+// be repositioned at a time, so a single instance lives on Pane and
 // activeID identifies which view (by View.ID) currently owns the drag.
 type ViewRepoState struct {
 	activeID   string

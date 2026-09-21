@@ -85,7 +85,7 @@ func (ep *Pane) handlePointOutIndicatorClick(ctx *scope.Context, trk sim.Track, 
 // pointOutPopup is the popup-interface impl for the click-through pop-up
 // triggered from the line-0 point-out indicator. Per-instance state (which
 // ACID, originator vs receiver view, anchor origin) lives inline rather than
-// on ERAMPane.
+// on Pane.
 type pointOutPopup struct {
 	acid     sim.ACID
 	outbound bool

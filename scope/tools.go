@@ -11,7 +11,7 @@ func (b Brightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 	return r.Scale(float32(b) / 100)
 }
 
-// ScopeTransformations
+// Transformations
 
 type Transformations struct {
 	ndcFromLatLong                       math.Matrix3
@@ -19,7 +19,7 @@ type Transformations struct {
 	latLongFromWindow, windowFromLatLong math.Matrix3
 }
 
-// GetTransformations returns a ScopeTransformations object
+// GetTransformations returns a Transformations object
 // corresponding to the specified radar scope center, range, and rotation.
 // rotationAngle is the angle from true north to the direction that points up
 // on the scope: STARS scopes are magnetic north up, so the STARS pane passes

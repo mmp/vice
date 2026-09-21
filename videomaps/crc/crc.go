@@ -28,7 +28,7 @@ const (
 	videoMapSubdir = "VideoMaps"
 )
 
-// Report receives a conversion's progress and warning lines. ConvertCRC runs
+// Report receives a conversion's progress and warning lines. Convert runs
 // the STARS and ERAM halves of a conversion concurrently, so a Report may be
 // called from several goroutines at once and must be safe for concurrent use.
 type Report func(line string)
@@ -222,7 +222,7 @@ func (c *converter) appendFeatures(src *loadedSource, sink featureSink) {
 			}
 			if f.Properties != nil && len(f.Properties.Text) > 0 {
 				eff := mergeDefaults(f.Properties, &src.textDefaults)
-				// Join multi-line labels into a single MapLabel.
+				// Join multi-line labels into a single videomaps.Label.
 				*sink.Labels = append(*sink.Labels, videomaps.Label{
 					P:         p,
 					Text:      strings.Join(f.Properties.Text, "\n"),

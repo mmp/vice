@@ -1643,7 +1643,7 @@ func drawBriefMap(drawList *imgui.DrawList, briefMap *brief.VideoMapBlock, video
 								// boundaries as closed, so close the ring here unless
 								// it self-closes.
 								flags := imgui.DrawFlagsClosed
-								if pts[0] == pts[len(pts)-1] {
+								if pts[0].Point2LL == pts[len(pts)-1].Point2LL {
 									flags = imgui.DrawFlagsNone
 								}
 								drawList.AddPolyline(&polyBuf[0], int32(len(polyBuf)), color, flags, thickness)
@@ -1690,7 +1690,7 @@ func drawAnnotatedMap(briefMap *brief.VideoMapBlock, label string, width float32
 	videoMaps, errs := findVideoMapsFromLibrary(videoMapLibrary, briefMap.Maps)
 
 	// Build the lat/lon → canvas projection (rotated by -magVar so magnetic
-	// north points up, matching STARSPane).
+	// north points up, matching the STARS pane).
 	proj, err := calculateMapProjection(briefMap, videoMaps, state)
 	if err != nil {
 		return append(errs, err)

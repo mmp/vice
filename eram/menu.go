@@ -11,9 +11,9 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// ERAMMenu - reusable floating popup menu component: streamlines making the many slightly different menus in ERAM.
+// Menu - reusable floating popup menu component: streamlines making the many slightly different menus in ERAM.
 
-// popup is the interface implemented by every floating pop-up menu. ERAMPane
+// popup is the interface implemented by every floating pop-up menu. Pane
 // holds at most one (in ep.popup); opening a new pop-up replaces whatever was
 // there.
 type popup interface {

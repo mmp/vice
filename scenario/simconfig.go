@@ -74,7 +74,7 @@ func (sg *Group) NewSimConfiguration(scenarioName string, lc sim.LaunchConfig) (
 		ERAMCoordination:           sg.ERAMCoordination,
 	}
 
-	PruneAirportFilters(&nsc.FacilityAdaptation, util.SortedMapKeys(sg.Airports),
+	pruneAirportFilters(&nsc.FacilityAdaptation, util.SortedMapKeys(sg.Airports),
 		sc.DepartureRunways, sc.ArrivalRunways, lc.VFRAirportRates)
 
 	return nsc, nil

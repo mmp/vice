@@ -40,7 +40,7 @@ import (
 // Handler functions may declare parameters in two groups:
 //
 // 1. Initial Arguments (optional, any order):
-//   - *ERAMPane: The ERAM pane instance
+//   - *Pane: The ERAM pane instance
 //   - *scope.Context: The rendering/input context
 //   - *PrefrenceSet: Current ERAM user preferences (via ep.currentPrefs())
 //
@@ -51,7 +51,7 @@ import (
 // Best practices:
 //   - Only include initial arguments that are actually used in the function
 //   - If a function only needs *PrefrenceSet, pass it directly rather than taking
-//     *ERAMPane and calling currentPrefs(). (Saves a line of code)
+//     *Pane and calling currentPrefs(). (Saves a line of code)
 //
 // The following return value types are allowed:
 //   - () - no return value
@@ -62,7 +62,7 @@ type userCommand struct {
 	cmd          string    // Command specifier (e.g., "QQ [ERAM_ALT_I] [FLID]")
 	handlerFunc  any       // Handler function with flexible signature (see documentation above)
 	matchers     []matcher // Sequence of matchers for this command
-	numInitial   int       // Cached count of initial args (ERAMPane, Context, Preferences)
+	numInitial   int       // Cached count of initial args (Pane, Context, Preferences)
 	acceptsClick bool      // True if the command is initiated from a mouse click
 }
 

@@ -355,7 +355,7 @@ type CRDARunwayState struct {
 	DrawQualificationRegion bool
 }
 
-// stores the per-preference set state for each STARSCRDAPair
+// stores the per-preference set state for each CRDAPair
 type CRDARunwayPairState struct {
 	Enabled     bool
 	Mode        CRDAMode

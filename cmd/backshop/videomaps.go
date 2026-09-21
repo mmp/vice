@@ -250,7 +250,7 @@ func startCRCConversion(crcDir, outDir string, artccs []string) *crcRun {
 }
 
 // addLine is the crc.Report the conversion is given, so it is called from
-// the goroutines crc.ConvertCRC runs its work in as well as from the one above.
+// the goroutines crc.Convert runs its work in as well as from the one above.
 func (r *crcRun) addLine(line string) {
 	r.mu.Lock()
 	defer r.mu.Unlock()

@@ -231,7 +231,7 @@ func (c *converter) dispatchERAMFeatures(src *loadedSource, filterMaps []*videom
 				xoff := int8(eff.XOffset)
 				yoff := int8(eff.YOffset)
 				bcg := uint8(eff.BCG)
-				// Join multi-line labels into a single MapLabel.
+				// Join multi-line labels into a single videomaps.Label.
 				text := strings.Join(f.Properties.Text, "\n")
 				for _, filterIdx := range eff.Filters {
 					dst := target(filterIdx)

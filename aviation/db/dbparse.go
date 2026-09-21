@@ -554,8 +554,6 @@ func parseAirportPairRoutes() map[AirportPair][]AirportPairRoute {
 	return routes
 }
 
-// AirportPair keys the city-pair route database by ICAO airport codes.
-
 func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 	ar := util.LoadResource("artccs.json")
 	defer ar.Close()
@@ -666,6 +664,9 @@ func parseAirspace(filename string) map[string][]av.AirspaceVolume {
 	return vols
 }
 
+// Pronunciations maps written text to the phonetic spellings that work
+// better with voice synthesis. Where a slice is stored, one of its items is
+// chosen at random when one is needed.
 type Pronunciations struct {
 	Airports map[string][]string
 	ACTypes  map[string][]string

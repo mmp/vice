@@ -267,9 +267,6 @@ func duplicateRunwayThreshold(fix string, p math.Point2LL) (string, bool) {
 	return string(ap.Id) + "-" + best, true
 }
 
-// airportVolumeId names a default airport filter region within the
-// 7-character limit on airspace volume ids; a 4-character airport identifier
-
 func (sg *Group) rewriteControllers(e *util.ErrorLogger) {
 	// Set Position from map key and derive area for controllers that
 	// don't already have them set (neighbor controllers have Position
@@ -591,5 +588,3 @@ func leadingProcedureName(token string) (string, bool) {
 	}
 	return token[:n+1], true
 }
-
-// loadEmergencies loads and validates the emergencies.json resource file.

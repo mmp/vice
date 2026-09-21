@@ -112,7 +112,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 	return regions
 }
 
-// PruneAirportFilters removes the filter regions for airports the scenario
+// pruneAirportFilters removes the filter regions for airports the scenario
 // doesn't use. A facility's adaptation covers all of its airports but a
 // scenario generally uses only a few of them; the rest are just clutter in
 // the processing areas list. A region that doesn't cover any of the
@@ -126,7 +126,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 // taxiing aircraft on the scope. Filters that aren't tied to an airport at
 // all--secondary drop and VFR inhibit, which restrict airspace--are left
 // alone.
-func PruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCode, dep []sim.DepartureRunway,
+func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCode, dep []sim.DepartureRunway,
 	arr []sim.ArrivalRunway, vfrRates map[av.ICAOAirportCode]float32) {
 	ifr := make(map[av.ICAOAirportCode]bool)
 	for _, rwy := range dep {
@@ -167,12 +167,3 @@ func PruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCo
 	prune(&f.ArrivalDrop, any)
 	prune(&f.SurfaceTracking, any)
 }
-
-// resolveERAMCoordination returns this TRACON's pseudo-ERAM coordination
-// adaptation from its parent ARTCC host config, keyed by the TRACON's STARS
-// computer id (its stars_id in the ARTCC's handoff_ids). configs holds all
-// the facility configs, loaded — with any coordination geometry parsed and
-// validated — before scenario groups are processed; the result is shared
-// read-only. An ARTCC-primary scenario self-hosts: its own config's
-// arts_coordination entry keyed by the ARTCC's id covers flights inbound
-// from adjacent centers. Returns nil for facilities whose host adapts no

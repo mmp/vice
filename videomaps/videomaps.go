@@ -278,7 +278,7 @@ type wireERAMEntry struct {
 	GeomLen    uint32 `msgpack:"sz"`
 }
 
-// ---------- MapLibrarySpec: metadata-only loader --------------------------
+// ---------- LibrarySpec: metadata-only loader -----------------------------
 
 // LibrarySpec carries everything server startup needs to validate
 // scenario references without touching the geometry region. It also
@@ -343,7 +343,7 @@ func (s *LibrarySpec) HasMapGroup(name string) bool {
 // Hash returns a hash of the underlying video map file.
 func (s *LibrarySpec) Hash() ([]byte, error) {
 	if s == nil {
-		return nil, errors.New("nil MapLibrarySpec")
+		return nil, errors.New("nil LibrarySpec")
 	}
 	f, err := s.filesystem.Open(s.filename)
 	if err != nil {
@@ -377,7 +377,7 @@ func LoadLibrarySpec(path string) (*LibrarySpec, error) {
 
 // readMapLibraryHeaderOnly reads just the magic + headerLen + header msgpack
 // from f and stops without slurping the geometry region. Used by
-// LoadMapLibrarySpec so server startup / lint cost is proportional to the
+// LoadLibrarySpec so server startup / lint cost is proportional to the
 // header size rather than the (multi-MB) compressed geometry that follows.
 func readMapLibraryHeaderOnly(f fs.File) (*wireFileHeader, error) {
 	var prefix [8]byte
@@ -401,7 +401,7 @@ func readMapLibraryHeaderOnly(f fs.File) (*wireFileHeader, error) {
 	return hdr, nil
 }
 
-// ---------- LoadMapLibrary: full load ------------------------------
+// ---------- LoadLibrary: full load ---------------------------------
 
 func LoadLibrary(path string) (*Library, error) {
 	filesystem := mapLibraryFS(path)
@@ -418,8 +418,8 @@ func LoadLibrary(path string) (*Library, error) {
 	return decodeMapLibrary(contents, path)
 }
 
-// decodeMapLibrary turns a complete video map file into a MapLibrary. Split out
-// of LoadMapLibrary so tests can decode from memory through exactly the same
+// decodeMapLibrary turns a complete video map file into a Library. Split out
+// of LoadLibrary so tests can decode from memory through exactly the same
 // code the loader uses rather than a parallel copy of it. path is only used in
 // error messages.
 func decodeMapLibrary(contents []byte, path string) (*Library, error) {
@@ -536,7 +536,7 @@ func parseMapLibraryHeader(contents []byte) (*wireFileHeader, []byte, error) {
 	return hdr, body, nil
 }
 
-// ---------- SaveMapLibrary: write path -----------------------------
+// ---------- SaveLibrary: write path --------------------------------
 
 // SaveLibrary encodes a library to the wire format and writes it
 // to w. Iteration order over the input maps is deterministic (sorted by

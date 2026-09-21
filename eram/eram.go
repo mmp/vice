@@ -533,12 +533,12 @@ func (ep *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.updateRadarTracks(ctx, tracks)
 	ep.updateConflictAlerts(ctx, tracks)
 
-	// draw the ERAMPane
+	// draw the ERAM pane
 	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(colors.scopeBackground)) // Scale this eventually
 	ep.processKeyboardInput(ctx)
 	// ctr := UserCenter
 	// ps.Range is the vertical extent of the scope in NM (matching the
-	// real-ERAM RANGE label); GetScopeTransformations wants the half-height.
+	// real-ERAM RANGE label); GetTransformations wants the half-height.
 	// ERAM scopes are always true north up, hence no rotation.
 	transforms := scope.GetTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range)/2, 0)

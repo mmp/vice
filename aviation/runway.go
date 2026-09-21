@@ -283,6 +283,3 @@ func IntersectingRunways(db Database, airport ICAOAirportCode, rwy RunwayID, nmP
 
 	return intersecting
 }
-
-// returns the ratio of air density at the given altitude (in feet) to the
-// air density at sea level, subject to assuming the standard atmosphere.

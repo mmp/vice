@@ -706,7 +706,7 @@ func (fa FacilityAdaptation) CheckScratchpad(sp string) bool {
 	}
 
 	// Make sure it's only allowed characters; handling of Δ is a little wonky
-	// since STARSPane rewrites it to 0x80 but there are a few options for delta
+	// since the STARS pane rewrites it to 0x80 but there are a few options for delta
 	// that can show up in scenario files.
 	const STARSTriangleCharacter = string(rune(0x80))
 	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*Δ∆" + STARSTriangleCharacter

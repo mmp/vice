@@ -572,6 +572,9 @@ func TestTakeAirwayErrors(t *testing.T) {
 		// A turn is carried on the fix turned to, so one written before an
 		// airway has no fix left to apply to.
 		{"ALPHA/ld V16 BRAVO", "/ld or /rd"},
+		// An airway is carried on the fix it leaves, so a second in a row
+		// would overwrite the first.
+		{"ALPHA V16 V17 BRAVO", "another airway"},
 	} {
 		wps, err := parseWaypoints(tc.route)
 		if err != nil {
@@ -585,6 +588,31 @@ func TestTakeAirwayErrors(t *testing.T) {
 		errs := slices.Collect(e.Errors())
 		if !slices.ContainsFunc(errs, func(s string) bool { return strings.Contains(s, tc.want) }) {
 			t.Errorf("%s: expected an error mentioning %q, got %v", tc.route, tc.want, errs)
+		}
+	}
+}
+
+// A route made only of airway names leaves takeAirways with nothing to fold
+// them onto, so finalizing has to report that and stop rather than index into
+// the empty result.
+func TestOverflightAllAirwayRouteReportsRatherThanPanics(t *testing.T) {
+	oldDB := testDB
+	testDB = testDatabase{Airways: map[string][]Airway{"J80": nil, "J81": nil}}
+	t.Cleanup(func() { testDB = oldDB })
+
+	for _, route := range []string{"J80", "J80 J81"} {
+		wps, err := parseWaypoints(route)
+		if err != nil {
+			t.Errorf("%s: %v", route, err)
+			continue
+		}
+
+		of := Overflight{Waypoints: wps}
+		var e util.ErrorLogger
+		of.Finalize(testLocator{}, 60, 0, nil, nil, func(string) bool { return true }, &e)
+
+		if !e.HaveErrors() {
+			t.Errorf("%s: expected an error, got none", route)
 		}
 	}
 }

@@ -11,6 +11,10 @@ import (
 	"github.com/mmp/vice/math"
 )
 
+// CRDAPair describes a one-directional ghosting relationship between two
+// CRDA regions. Aircraft flying through SourceRegion's qualification volume
+// have ghost data blocks plotted on GhostRegion's centerline; to ghost in
+// both directions, define two pairs with the roles swapped.
 type CRDAPair struct {
 	SourceRegion             string  `json:"source_region"`
 	GhostRegion              string  `json:"ghost_region"`

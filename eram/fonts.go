@@ -58,7 +58,7 @@ func (ep *Pane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 
 // ERAMGeomapFont returns the EramGeomap bitmap font that holds the
 // navigational symbol glyphs (VOR / TACAN / airport / etc.) at one of three
-// pixel sizes, selected by the MapSymbol.Size byte typically stored in
+// pixel sizes, selected by the videomaps.Symbol Size byte typically stored in
 // video maps (1, 2, 3).
 func (ep *Pane) ERAMGeomapFont(size int) *renderer.Font {
 	switch {

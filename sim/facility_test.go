@@ -309,9 +309,9 @@ func TestAssignedLevelForCoord(t *testing.T) {
 }
 
 // TestRestoreERAMCoordinationGeometry verifies that Activate's restore step
-// re-derives ZoneArea.Center from CenterStr, which JSON save/load loses since
-// it's tagged json:"-" (ParseGeometry only runs at scenario-group load time,
-// not when a saved sim is restored).
+// re-derives ZoneArea.Center from the text it was written as, for a value
+// that reaches the sim carrying only that text: ParseGeometry runs at
+// scenario-group load time, not when a saved sim is restored.
 func TestRestoreERAMCoordinationGeometry(t *testing.T) {
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
 	// Nil coordination, and a coordination with no resolved entry, are no-ops.
@@ -327,7 +327,7 @@ func TestRestoreERAMCoordinationGeometry(t *testing.T) {
 	}
 	restoreERAMCoordinationGeometry(ec, lg)
 	if ec.Coord.ZoneBased[0].Center.IsZero() {
-		t.Error("zone area Center should be parsed from CenterStr, not left at its post-JSON-restore zero value")
+		t.Error("zone area Center should be parsed from the text it was written as, not left at zero")
 	}
 }
 

@@ -824,7 +824,6 @@ func applyPinWindowClass(windowTitle string, config *Config, p platform.Platform
 // window. Uses the draw list so it doesn't affect auto-resize layout.
 // Call immediately after imgui.BeginV().
 func drawPinButton(windowTitle string, unpinnedWindows map[string]struct{}, p platform.Platform) {
-
 	_, unpinned := unpinnedWindows[windowTitle]
 	pinned := !unpinned
 

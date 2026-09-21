@@ -673,7 +673,7 @@ var checkListItems = map[int][]string{
 }
 
 // drawCheckListView renders the active check list (POS CHECK or EMERG CHECK).
-// Rows are click-toggleable; the toggled state lives on ERAMPane and persists
+// Rows are click-toggleable; the toggled state lives on Pane and persists
 // across switches between the two lists.
 func (ep *Pane) drawCheckListView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()

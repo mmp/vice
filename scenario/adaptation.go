@@ -22,10 +22,10 @@ import (
 )
 
 // finalizeAdaptation validates the parts of a FacilityAdaptation that can only
-// be checked against what surrounds it: the scenario group”'s airports, control
+// be checked against what surrounds it: the scenario group's airports, control
 // positions and own fixes, and the video map libraries. Those live here, and
 // sim, where the adaptation is defined, is below this package, so they cannot
-// be methods on it. It runs late, once the group”'s fixes are read, so a
+// be methods on it. It runs late, once the group's fixes are read, so a
 // location checked here may name one of them--unlike the earlier pass in
 // FacilityAdaptation.Finalize.
 func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Group,
@@ -632,5 +632,3 @@ func facilityConfigOverridePath(filename string) (string, error) {
 	}
 	return match, nil
 }
-
-// IsARTCC returns true if the facility code looks like an ARTCC

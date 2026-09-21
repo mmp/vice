@@ -335,6 +335,3 @@ var monitorColorSets = map[string]MonitorColors{
 		DCBActiveWXButton:    renderer.RGBFromUInt8(1, 26, 33),
 	},
 }
-
-///////////////////////////////////////////////////////////////////////////
-// STARSPane proper

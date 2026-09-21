@@ -121,7 +121,7 @@ func GetError(e error, lg *log.Logger) *Error {
 		return se
 	}
 
-	lg.Errorf("%v: unexpected error passed to GetERAMError", e)
+	lg.Errorf("%v: unexpected error passed to GetError", e)
 	return ErrCommandFormat
 }
 

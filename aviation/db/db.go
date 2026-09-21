@@ -373,17 +373,6 @@ func (d StaticDatabase) IsATCT(id string) bool {
 	return ok
 }
 
-// baseApproachSpeed returns a reasonable final approach speed for this
-// aircraft type. If landing speed is available, a small buffer above that
-// speed is used. Otherwise V2 or a default is returned.
-
-// ApproachSpeed returns the final approach speed including wind
-// additives. The runway heading is used to compute the headwind component
-// of the provided wind. Jets and turboprops add half the headwind plus the
-// full gust factor (not to exceed 20 knots). Pistons add half the gust
-// factor... I suppose we should also add a max additive but most pistons
-// won't be landing in very windy conditions
-
 var (
 	initDBOnce   sync.Once
 	initDBDoneCh = make(chan struct{})
@@ -505,14 +494,6 @@ func (r AirportPairRoute) LowAltitude() bool {
 func (d StaticDatabase) RoutesBetween(from, to av.ICAOAirportCode) []AirportPairRoute {
 	return d.AirportPairRoutes[AirportPair{From: from, To: to}]
 }
-
-// RouteWaypoints converts a real-world route from the city-pair database into
-// waypoints. An airway name attaches to the fix before it, so
-// InitializeLocations fills in the fixes it passes through. The returned
-// waypoints have no Location: the caller must run InitializeLocations on them,
-// which is also what discards the tokens that aren't fixes at all--SID and STAR
-// names, radial/DME fixes like SLI341/019.
-//
 
 // ScrapedRoutesBetween returns the recently filed routes from one airport to
 // another, or nil if the pair hasn't been scraped.

@@ -48,9 +48,14 @@ func (of *Overflight) Finalize(db Database, nmPerLongitude float32, magneticVari
 	defer e.CheckDepth(e.CurrentDepth())
 	if len(of.Waypoints) < 2 {
 		e.ErrorString(`must provide at least two "waypoints" for overflight`)
+		return
 	}
 
 	of.Waypoints = of.Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
+	if len(of.Waypoints) == 0 {
+		// Every waypoint named an airway; takeAirways has said why.
+		return
+	}
 
 	of.Waypoints[len(of.Waypoints)-1].MergeActions(WaypointActions{Delete: true})
 	of.Waypoints[len(of.Waypoints)-1].SetFlyOver(true)

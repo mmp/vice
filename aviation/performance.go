@@ -50,6 +50,7 @@ type AircraftPerformance struct {
 		FuelPounds int `json:"fuel_pounds"`
 	} `json:"capacity"`
 }
+
 type Airline struct {
 	ICAO     string `json:"icao"`
 	Name     string `json:"name"`
@@ -60,11 +61,15 @@ type Airline struct {
 	JSONFleets map[string][][2]any `json:"fleets"`
 	Fleets     map[string][]FleetAircraft
 }
+
 type FleetAircraft struct {
 	ICAO  string
 	Count int
 }
 
+// baseApproachSpeed returns a reasonable final approach speed for this
+// aircraft type. If landing speed is available, a small buffer above that
+// speed is used. Otherwise V2 or a default is returned.
 func (ap AircraftPerformance) baseApproachSpeed() float32 {
 	if ap.Speed.Landing > 0 {
 		return ap.Speed.Landing + 5
@@ -74,6 +79,13 @@ func (ap AircraftPerformance) baseApproachSpeed() float32 {
 		return 120
 	}
 }
+
+// ApproachSpeed returns the final approach speed including wind
+// additives. The runway heading is used to compute the headwind component
+// of the provided wind. Jets and turboprops add half the headwind plus the
+// full gust factor (not to exceed 20 knots). Pistons add half the gust
+// factor... I suppose we should also add a max additive but most pistons
+// won't be landing in very windy conditions
 func (ap AircraftPerformance) ApproachSpeed(windDirection, windSpeed, windGust float32, runwayHeading float32) float32 {
 	gustFactor := max(0, windGust-windSpeed)
 

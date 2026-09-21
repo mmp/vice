@@ -416,6 +416,10 @@ func (wa WaypointArray) takeAirways(loc Locator, e *util.ErrorLogger) WaypointAr
 				out[len(out)-1].Fix, wp.Fix)
 		} else if wp.Extra != nil || wp.Flags != 0 {
 			e.ErrorString("%s: can't have fix modifiers with an airway", wp.Fix)
+		} else if prev := out[len(out)-1]; prev.Extra != nil && prev.Extra.Airway != "" {
+			// An airway is carried on the fix it leaves, so a second one in a
+			// row would overwrite the first and silently drop it.
+			e.ErrorString("%s: can't follow the airway %s with another airway", wp.Fix, prev.Extra.Airway)
 		} else {
 			out[len(out)-1].InitExtra().Airway = wp.Fix
 		}
