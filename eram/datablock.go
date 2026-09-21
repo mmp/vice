@@ -623,7 +623,7 @@ func (ep *Pane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datab
 	var sb strings.Builder
 	halfSeconds := time.Now().UnixMilli() / 500
 	ps := ep.currentPrefs()
-	fenceColor := ps.Brightness.Fence.ScaleRGB(colors.yellow)
+	fenceColor := ps.Brightness.Fence.ScaleRGB(renderer.RGB{R: 1, G: 1, B: 1})
 
 	draw := func(indices []int) {
 		for _, i := range indices {
