@@ -258,7 +258,9 @@ type Airway struct {
 func (a Airway) WaypointsBetween(wp0, wp1 string) ([]Waypoint, bool) {
 	start := slices.IndexFunc(a.Fixes, func(f AirwayFix) bool { return f.Fix == wp0 })
 	end := slices.IndexFunc(a.Fixes, func(f AirwayFix) bool { return f.Fix == wp1 })
-	if start == -1 || end == -1 {
+	// A route that joins and leaves the airway at the same fix names no
+	// stretch of it, and walking from one to the other would run off the end.
+	if start == -1 || end == -1 || start == end {
 		return nil, false
 	}
 

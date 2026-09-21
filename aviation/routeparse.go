@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/util"
 )
 
 func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, perf AircraftPerformance, nmPerLongitude float32,
@@ -977,11 +978,20 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 // This deliberately doesn't go through the scenario route parser, which
 // understands vice's "/" waypoint modifiers and so can't read the routes that
 // name such fixes.
-func RouteWaypoints(db Database, route string) WaypointArray {
+func RouteWaypoints(db Database, route string, e *util.ErrorLogger) WaypointArray {
 	var waypoints WaypointArray
 	for field := range strings.FieldsSeq(route) {
 		if _, ok := db.Airways(field); ok && len(waypoints) > 0 {
-			waypoints[len(waypoints)-1].InitExtra().Airway = field
+			// An airway is carried on the fix it leaves, so a route naming
+			// two in a row has lost the fix where they meet and only the
+			// first can be flown. cmd/importroutes mends the published
+			// routes; one written by hand is a mistake to report.
+			if wp := &waypoints[len(waypoints)-1]; wp.Airway() == "" {
+				wp.InitExtra().Airway = field
+			} else {
+				e.ErrorString("%s: can't follow the airway %s with another airway",
+					field, wp.Airway())
+			}
 		} else {
 			waypoints = append(waypoints, Waypoint{Fix: field})
 		}

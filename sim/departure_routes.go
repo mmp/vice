@@ -205,7 +205,7 @@ func dropFlownPrefix(routeWps, exitWps av.WaypointArray) av.WaypointArray {
 // there are never flown and every one of them is sent to the clients on every
 // update. Fixes it can't place--SID and STAR names, radial/DME fixes--drop out.
 func (ss *CommonState) departureRouteWaypoints(route string) av.WaypointArray {
-	wps := av.RouteWaypoints(db.Lookups{}, route).InitializeLocations(ss, ss.NmPerLongitude,
+	wps := av.RouteWaypoints(db.Lookups{}, route, nil).InitializeLocations(ss, ss.NmPerLongitude,
 		ss.MagneticVariation, true /* allowSlop */, nil)
 
 	cull := ss.cullDistance()
@@ -465,7 +465,7 @@ func eligibleAirportPairRoutes(routes []db.AirportPairRoute, engineType string) 
 // is never consulted: it may not be the SID the scenario flies for the gate.
 func departureExit(route string, departureAirport, destination av.ICAOAirportCode, departureFix string,
 	candidates []candidateDeparture) (candidateDeparture, bool) {
-	wps := av.TrimDepartureAirportWaypoints(db.Lookups{}, av.RouteWaypoints(db.Lookups{}, route), departureAirport)
+	wps := av.TrimDepartureAirportWaypoints(db.Lookups{}, av.RouteWaypoints(db.Lookups{}, route, nil), departureAirport)
 	wps = av.TrimDestinationAirportWaypoints(db.Lookups{}, wps, destination)
 	if departureFix != "" {
 		wps = append(wps, av.Waypoint{Fix: departureFix})

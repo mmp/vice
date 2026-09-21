@@ -8,6 +8,7 @@ import (
 	"slices"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 )
 
@@ -133,5 +134,55 @@ func TestCompareRoutes(t *testing.T) {
 	want := []string{"r4", "r3", "r2", "r1"} // KACK sorts before KBBB
 	if !slices.Equal(got, want) {
 		t.Errorf("sorted order %v, want %v", got, want)
+	}
+}
+
+// Two airways in a row, with a fix that both pass through where the route
+// should have named one.
+func TestMendRoute(t *testing.T) {
+	// PINNS and WOKRO are both on V64 and V363, and PINNS comes first along
+	// V64, so only the midpoint tells them apart.
+	airways := map[string][]av.Airway{
+		"V64":  {{Name: "V64", Fixes: []av.AirwayFix{{Fix: "SLI"}, {Fix: "PINNS"}, {Fix: "WOKRO"}, {Fix: "KELPS"}}}},
+		"V363": {{Name: "V363", Fixes: []av.AirwayFix{{Fix: "PINNS"}, {Fix: "WOKRO"}, {Fix: "DANAH"}}}},
+		"V23":  {{Name: "V23", Fixes: []av.AirwayFix{{Fix: "DANAH"}, {Fix: "OCN"}}}},
+		"V91":  {{Name: "V91", Fixes: []av.AirwayFix{{Fix: "BDR"}, {Fix: "MAD"}}}},
+	}
+	// The SLI-DANAH midpoint is (0, 2): WOKRO sits all but on it, PINNS well
+	// short of it.
+	locations := map[string]math.Point2LL{
+		"SLI": {0, 0}, "DANAH": {0, 4}, "PINNS": {0, 0.5}, "WOKRO": {0, 2.1},
+		"KELPS": {1, 1}, "OCN": {0, 5}, "FUL": {-1, 0},
+	}
+	airwaysOf := func(name string) ([]av.Airway, bool) { a, ok := airways[name]; return a, ok }
+	locate := func(fix string) (math.Point2LL, bool) { p, ok := locations[fix]; return p, ok }
+
+	for _, tc := range []struct {
+		route, want string
+		notes       int
+	}{
+		// A single airway is how a route is written and is left alone.
+		{"FUL SLI V64 KELPS", "FUL SLI V64 KELPS", 0},
+		// Both PINNS and WOKRO can be flown from SLI on V64 and on to DANAH
+		// on V363; WOKRO is the nearer the midpoint. The single V23 after
+		// the pair is untouched.
+		{"FUL SLI V64 V363 DANAH V23 OCN", "FUL SLI V64 WOKRO V363 DANAH V23 OCN", 1},
+		// V91 and V363 pass through no common fix, so the leg goes direct.
+		{"FUL SLI V91 V363 DANAH", "FUL SLI DANAH", 1},
+		// A pair with no fix ahead of it has nothing to be mended against.
+		{"FUL SLI V64 V363", "FUL SLI", 1},
+		// The route joins and leaves V64 at SLI, which names no stretch of
+		// it; the airway and the repeat of SLI go.
+		{"FUL SLI V64 SLI KELPS", "FUL SLI KELPS", 1},
+		// The same, with the airway at the end of the route.
+		{"FUL KELPS V64 KELPS", "FUL KELPS", 1},
+	} {
+		got, notes := mendRoute(tc.route, airwaysOf, locate)
+		if got != tc.want {
+			t.Errorf("mendRoute(%q) = %q, want %q", tc.route, got, tc.want)
+		}
+		if len(notes) != tc.notes {
+			t.Errorf("mendRoute(%q) reported %v, want %d notes", tc.route, notes, tc.notes)
+		}
 	}
 }

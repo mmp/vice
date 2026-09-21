@@ -353,7 +353,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			e.ErrorString("route may not be empty")
 			return false
 		}
-		wps := RouteWaypoints(db, r.Route).InitializeLocations(db, nmPerLongitude, magneticVariation,
+		wps := RouteWaypoints(db, r.Route, e).InitializeLocations(db, nmPerLongitude, magneticVariation,
 			true /* allowSlop */, e)
 		if !slices.ContainsFunc(wps, func(wp Waypoint) bool { return !wp.Location.IsZero() }) {
 			e.ErrorString("%s: no locatable fixes in route", r.Route)

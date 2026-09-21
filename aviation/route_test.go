@@ -539,7 +539,7 @@ func TestRouteWaypoints(t *testing.T) {
 
 	// SLI341/019 is a radial/DME fix: the database has a handful and none of
 	// them can be placed, so they drop out rather than derailing the route.
-	wps := RouteWaypoints(testLocator{}, "BIGGY Q75 TEUFL DADES2 SLI341/019 TPA").
+	wps := RouteWaypoints(testLocator{}, "BIGGY Q75 TEUFL DADES2 SLI341/019 TPA", nil).
 		InitializeLocations(loc, 45, 12, true /* allowSlop */, nil)
 
 	var got []string
@@ -614,6 +614,114 @@ func TestOverflightAllAirwayRouteReportsRatherThanPanics(t *testing.T) {
 		if !e.HaveErrors() {
 			t.Errorf("%s: expected an error, got none", route)
 		}
+	}
+}
+
+// An arrival's "waypoints" and its "runway_waypoints" are both routes a
+// scenario writes by hand, so either can name only airways and be left empty
+// once takeAirways has had them.
+func TestArrivalAllAirwayRouteReportsRatherThanPanics(t *testing.T) {
+	oldDB := testDB
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{"KJFK": {Id: "KJFK", LocalCode: "JFK"}},
+		Airways:  map[string][]Airway{"J80": nil, "J81": nil},
+	}
+	t.Cleanup(func() { testDB = oldDB })
+
+	for _, tc := range []struct{ waypoints, runwayWaypoints string }{
+		{"J80", "ROBER CAMRN"},
+		{"J80 J81", "ROBER CAMRN"},
+		{"CAMRN ROBER", "J80 J81"},
+	} {
+		wps, err := parseWaypoints(tc.waypoints)
+		if err != nil {
+			t.Errorf("%s: %v", tc.waypoints, err)
+			continue
+		}
+		rwps, err := parseWaypoints(tc.runwayWaypoints)
+		if err != nil {
+			t.Errorf("%s: %v", tc.runwayWaypoints, err)
+			continue
+		}
+
+		ar := Arrival{
+			Airports:  []ICAOAirportCode{"KJFK"},
+			Waypoints: wps,
+			RunwayWaypoints: map[ICAOAirportCode]map[string]WaypointArray{
+				"KJFK": {"31L": rwps},
+			},
+		}
+		var e util.ErrorLogger
+		ar.Finalize(testLocator{}, 60, 0, nil, nil, func(string) bool { return true }, &e)
+
+		if !e.HaveErrors() {
+			t.Errorf("%q / %q: expected an error, got none", tc.waypoints, tc.runwayWaypoints)
+		}
+	}
+}
+
+// A filed route can name the same fix on both sides of an airway, which names
+// no stretch of it. Walking from one to the other would run off the front of
+// the airway looking for a fix it started on.
+func TestAirwayBetweenSameFix(t *testing.T) {
+	airway := Airway{
+		Name:  "T314",
+		Fixes: []AirwayFix{{Fix: "BAF"}, {Fix: "GDM"}, {Fix: "MANCH"}},
+	}
+	if wps, ok := airway.WaypointsBetween("GDM", "GDM"); ok {
+		t.Errorf("WaypointsBetween(GDM, GDM) = %v, true; want nil, false", wps)
+	}
+
+	oldDB := testDB
+	testDB = testDatabase{Airways: map[string][]Airway{"T314": {airway}}}
+	t.Cleanup(func() { testDB = oldDB })
+
+	loc := testLocator{
+		"ORH":   math.Point2LL{-71.87, 42.27},
+		"GDM":   math.Point2LL{-72.54, 42.58},
+		"MANCH": math.Point2LL{-71.51, 42.87},
+		"MHT":   math.Point2LL{-71.44, 42.93},
+	}
+	wps := RouteWaypoints(loc, "ORH GDM T314 GDM MANCH MHT", nil).
+		InitializeLocations(loc, 45, 0, true /* allowSlop */, nil)
+
+	var got []string
+	for _, wp := range wps {
+		got = append(got, wp.Fix)
+	}
+	want := []string{"ORH", "GDM", "GDM", "MANCH", "MHT"}
+	if !slices.Equal(got, want) {
+		t.Errorf("route waypoints = %v, want %v", got, want)
+	}
+}
+
+// A route written by hand that names two airways in a row has lost the fix
+// where they meet, and only the first of them can be flown. The published
+// routes are mended by cmd/importroutes, so one that reaches here is a
+// mistake to report.
+func TestRouteWaypointsDoubledAirway(t *testing.T) {
+	oldDB := testDB
+	testDB = testDatabase{Airways: map[string][]Airway{"V16": nil, "V17": nil, "V23": nil}}
+	t.Cleanup(func() { testDB = oldDB })
+
+	var e util.ErrorLogger
+	var got []string
+	for _, wp := range RouteWaypoints(testLocator{}, "ALPHA V16 V17 BRAVO V23 CHRLI", &e) {
+		if name := wp.Airway(); name != "" {
+			got = append(got, wp.Fix+" "+name)
+		} else {
+			got = append(got, wp.Fix)
+		}
+	}
+	// The doubled V17 is dropped; the single V23 after it still attaches.
+	want := []string{"ALPHA V16", "BRAVO V23", "CHRLI"}
+	if !slices.Equal(got, want) {
+		t.Errorf("route waypoints = %v, want %v", got, want)
+	}
+
+	errs := slices.Collect(e.Errors())
+	if !slices.ContainsFunc(errs, func(s string) bool { return strings.Contains(s, "another airway") }) {
+		t.Errorf("expected an error mentioning a doubled airway, got %v", errs)
 	}
 }
 

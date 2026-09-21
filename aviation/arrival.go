@@ -723,6 +723,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 				`must provide at least two "waypoints" for arrival ` +
 					`(even if "runway_waypoints" are provided)`,
 			)
+			return
 		}
 		if ar.SpawnWaypoint != "" {
 			e.ErrorString(`"spawn" cannot be specified if "waypoints" are provided`)
@@ -730,6 +731,10 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 		}
 
 		ar.Waypoints = ar.Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
+		if len(ar.Waypoints) == 0 {
+			// Every waypoint named an airway; takeAirways has said why.
+			return
+		}
 
 		for ap, rwywp := range ar.RunwayWaypoints {
 			e.Push("Airport " + string(ap))
@@ -748,6 +753,11 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 				}
 
 				wp = wp.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
+				if len(wp) == 0 {
+					// Every waypoint named an airway; takeAirways has said why.
+					e.Pop()
+					continue
+				}
 
 				for i := range wp {
 					wp[i].SetOnSTAR(true)

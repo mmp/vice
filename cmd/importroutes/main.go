@@ -32,6 +32,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"os"
 	"slices"
@@ -41,6 +42,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 
 	"github.com/klauspost/compress/zstd"
 )
@@ -86,6 +88,7 @@ func main() {
 		return ap.Location, ok
 	}
 	routes = append(routes, cullCDRs(cdrs, airportLocation, db.DB.LookupWaypoint)...)
+	routes = mendAirways(routes, db.Lookups{}.Airways, db.DB.LookupWaypoint)
 	routes = dedupe(routes)
 
 	slices.SortFunc(routes, compareRoutes)
@@ -339,6 +342,147 @@ func routeLengthRatio(orig, dest math.Point2LL, routeStr string,
 		length += math.NMDistance2LL(points[i], points[i+1])
 	}
 	return length / max(1, math.NMDistance2LL(orig, dest))
+}
+
+// mendAirways repairs the routes that name an airway in a way it can't be
+// flown. A route names one airway between the fix that joins it and the fix
+// that leaves it, so two in a row have lost the fix where they meet, and the
+// same fix on both sides names no stretch of the airway at all. Each is
+// written back as the route its fixes describe, so that nothing downstream
+// has to reckon with them.
+func mendAirways(routes []route, airways func(string) ([]av.Airway, bool),
+	fixLocation func(string) (math.Point2LL, bool)) []route {
+	repairs := make(map[string]int)
+	repaired := 0
+	for i := range routes {
+		mended, notes := mendRoute(routes[i].route, airways, fixLocation)
+		routes[i].route = mended
+		if len(notes) > 0 {
+			repaired++
+		}
+		for _, n := range notes {
+			repairs[n]++
+		}
+	}
+
+	if repaired == 0 {
+		return routes
+	}
+	fmt.Printf("Mended %d routes whose airways can't be flown as written (%d distinct)\n",
+		repaired, len(repairs))
+	for _, note := range slices.Sorted(maps.Keys(repairs)) {
+		n := repairs[note]
+		fmt.Printf("  %s (%d %s)\n", note, n, util.Select(n == 1, "route", "routes"))
+	}
+	return routes
+}
+
+// mendRoute rewrites the doubled airways in one route, returning the route and
+// a line describing each repair.
+func mendRoute(r string, airways func(string) ([]av.Airway, bool),
+	fixLocation func(string) (math.Point2LL, bool)) (string, []string) {
+	isAirway := func(s string) bool { _, ok := airways(s); return ok }
+
+	fields := strings.Fields(r)
+	var out, notes []string
+	for i := 0; i < len(fields); {
+		if !isAirway(fields[i]) {
+			out = append(out, fields[i])
+			i++
+			continue
+		}
+
+		// The run of airway names starting here.
+		j := i
+		for j < len(fields) && isAirway(fields[j]) {
+			j++
+		}
+
+		var from, to string
+		if i > 0 {
+			from = fields[i-1]
+		}
+		if j < len(fields) {
+			to = fields[j]
+		}
+		run := strings.Join(fields[i:j], " ")
+
+		if from != "" && from == to {
+			// The route joins and leaves at the same fix, so it names no
+			// stretch of the airway at all. The fix is already written.
+			notes = append(notes, fmt.Sprintf("%s %s %s: the same fix on both sides names no stretch of it; dropping the airway",
+				from, run, to))
+			i = j + 1
+			continue
+		}
+		if j-i == 1 {
+			// One airway is how a route is written and is left alone.
+			out = append(out, fields[i])
+			i = j
+			continue
+		}
+
+		if fix := junctionFix(fields[i:j], from, to, airways, fixLocation); fix != "" {
+			out = append(out, fields[i], fix, fields[i+1])
+			notes = append(notes, fmt.Sprintf("%s %s %s: flying %s where they meet", from, run, to, fix))
+		} else {
+			notes = append(notes, fmt.Sprintf("%s %s %s: they meet at no fix it can be flown through; flying direct",
+				from, run, to))
+		}
+		i = j
+	}
+	return strings.Join(out, " "), notes
+}
+
+// junctionFix gives the fix a route should have named between two airways: one
+// both of them pass through that the route can be flown from and to. When
+// several qualify it takes the one nearest the midpoint of the fixes on either
+// side, which is about where a route bending from one airway to the other
+// turns. It gives "" when the pair meets at no such fix, and for a run of more
+// than two, which needs a fix between each of them and says nothing about
+// where the route went in between.
+func junctionFix(names []string, from, to string, airways func(string) ([]av.Airway, bool),
+	fixLocation func(string) (math.Point2LL, bool)) string {
+	if len(names) != 2 || from == "" || to == "" {
+		return ""
+	}
+
+	reaches := func(name, a, b string) bool {
+		aws, _ := airways(name)
+		return slices.ContainsFunc(aws, func(aw av.Airway) bool {
+			_, ok := aw.WaypointsBetween(a, b)
+			return ok
+		})
+	}
+
+	var mid math.Point2LL
+	pf, okFrom := fixLocation(from)
+	pt, okTo := fixLocation(to)
+	haveMid := okFrom && okTo
+	if haveMid {
+		mid = math.Mid2LL(pf, pt)
+	}
+
+	best, bestDist := "", float32(0)
+	first, _ := airways(names[0])
+	for _, aw := range first {
+		for _, f := range aw.Fixes {
+			if !reaches(names[0], from, f.Fix) || !reaches(names[1], f.Fix, to) {
+				continue
+			}
+			if !haveMid {
+				return f.Fix
+			}
+			p, ok := fixLocation(f.Fix)
+			if !ok {
+				continue
+			}
+			if d := math.NMDistance2LL(p, mid); best == "" || d < bestDist {
+				best, bestDist = f.Fix, d
+			}
+		}
+	}
+	return best
 }
 
 // dedupe drops routes whose route string duplicates an earlier entry for the

@@ -758,7 +758,7 @@ func (ap *Airport) checkExits(db Database, e *util.ErrorLogger) {
 // route that merely names a SID without touching one of its charted fixes
 // reaches nothing.
 func (ap *Airport) routeReachesExit(db Database, route string, icao ICAOAirportCode) bool {
-	wps := TrimDepartureAirportWaypoints(db, RouteWaypoints(db, route), icao)
+	wps := TrimDepartureAirportWaypoints(db, RouteWaypoints(db, route, nil), icao)
 
 	exits := make(map[string]bool)
 	var sids []string
