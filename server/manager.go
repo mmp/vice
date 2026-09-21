@@ -177,14 +177,11 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 		return nil, ErrInvalidSimConfiguration
 	}
 
-	// The traffic sources a scenario can be flown with are the server's to
-	// decide: it is the one that knows which airline lists, timetables, and
-	// flight data are there. Don't take the client's word for it.
-	spec := tables.Catalogs[req.Facility][req.GroupName].Scenarios[req.ScenarioName]
-	if !slices.Contains(spec.TrafficSources, req.ScenarioSpec.LaunchConfig.TrafficSource) {
-		lg.Errorf("%s/%s: requested %s traffic, which this scenario doesn't offer",
-			req.Facility, req.ScenarioName, req.ScenarioSpec.LaunchConfig.TrafficSource)
-		return nil, ErrInvalidTrafficSource
+	if err := sm.checkScenarioTrafficSource(req.Facility, req.GroupName, req.ScenarioName,
+		req.ScenarioSpec.LaunchConfig.TrafficSource); err != nil {
+		lg.Errorf("%s/%s: %s traffic: %v", req.Facility, req.ScenarioName,
+			req.ScenarioSpec.LaunchConfig.TrafficSource, err)
+		return nil, err
 	}
 
 	nsc, err := sg.NewSimConfiguration(req.ScenarioName, req.ScenarioSpec.LaunchConfig)
@@ -757,7 +754,8 @@ type TrafficCountsResult struct {
 func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficCountsResult) error {
 	defer sm.lg.CatchAndReportCrash()
 
-	if err := sm.checkPreviewScenario(args); err != nil {
+	if err := sm.checkScenarioTrafficSource(args.Facility, args.GroupName, args.ScenarioName,
+		args.LaunchConfig.TrafficSource); err != nil {
 		return err
 	}
 
@@ -776,20 +774,21 @@ func (sm *SimManager) GetTrafficCounts(args *TrafficCountsArgs, result *TrafficC
 	return err
 }
 
-// checkPreviewScenario reports whether the scenario a preview asks about exists and can be flown
-// the way the request says. Which traffic sources a scenario offers is the server's to decide, so
-// don't take the client's word for it here any more than makeSimConfiguration does. The catalogs
-// are init-immutable, so no mutex.
-func (sm *SimManager) checkPreviewScenario(args *TrafficCountsArgs) error {
-	catalog, ok := sm.scenarios.Load().Catalogs[args.Facility][args.GroupName]
+// checkScenarioTrafficSource reports whether the named scenario exists and can be flown with the
+// given traffic source. Which sources a scenario offers is the server's to decide: it is the one
+// that knows which airline lists, timetables, and flight data are there. Don't take the client's
+// word for any of it. The catalogs are init-immutable, so no mutex.
+func (sm *SimManager) checkScenarioTrafficSource(facility, groupName, scenarioName string,
+	src sim.TrafficSource) error {
+	catalog, ok := sm.scenarios.Load().Catalogs[facility][groupName]
 	if !ok {
 		return ErrInvalidSimConfiguration
 	}
-	spec, ok := catalog.Scenarios[args.ScenarioName]
+	spec, ok := catalog.Scenarios[scenarioName]
 	if !ok {
 		return ErrInvalidSimConfiguration
 	}
-	if !slices.Contains(spec.TrafficSources, args.LaunchConfig.TrafficSource) {
+	if !slices.Contains(spec.TrafficSources, src) {
 		return ErrInvalidTrafficSource
 	}
 	return nil
