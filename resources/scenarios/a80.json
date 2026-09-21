@@ -3263,8 +3263,7 @@
           "length": 20,
           "left_width": 20000,
           "right_width": 20000,
-          "excluded_scratchpads": ["I6L", "I7R", "I7L", "I28"],
-          "filtered_scratchpads": ["V6R"],
+          "excluded_scratchpads": ["26L", "27R", "27L", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3272,8 +3271,7 @@
           "length": 15,
           "left_width": 20000,
           "right_width": 20000,
-          "excluded_scratchpads": ["I6R", "I7R", "I7L", "I28"],
-          "filtered_scratchpads": ["V6L"],
+          "excluded_scratchpads": ["26R", "27R", "27L", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3281,8 +3279,7 @@
           "length": 26,
           "left_width": 20000,
           "right_width": 20000,
-          "excluded_scratchpads": ["I6R", "I6L", "I7L", "I28"],
-          "filtered_scratchpads": ["V7R"],
+          "excluded_scratchpads": ["26R", "26L", "27L", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3290,8 +3287,7 @@
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
-          "excluded_scratchpads": ["I6R", "I6L", "I7R", "I28"],
-          "filtered_scratchpads": ["V7L"],
+          "excluded_scratchpads": ["26R", "26L", "27R", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3299,8 +3295,7 @@
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
-          "excluded_scratchpads": ["I6R", "I6L", "I7R", "I7L"],
-          "filtered_scratchpads": ["V7L"],
+          "excluded_scratchpads": ["26R", "26L", "27R", "27L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3308,8 +3303,7 @@
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
-          "excluded_scratchpads": ["I8R", "I9L", "I9R", "I10"],
-          "filtered_scratchpads": ["V8L"],
+          "excluded_scratchpads": ["8R", "9L", "9R", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3317,8 +3311,7 @@
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
-          "excluded_scratchpads": ["I8L", "I9L", "I9R", "I10"],
-          "filtered_scratchpads": ["V8R"],
+          "excluded_scratchpads": ["8L", "9L", "9R", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3326,8 +3319,7 @@
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
-          "excluded_scratchpads": ["I8R", "I8L", "I9R", "I10"],
-          "filtered_scratchpads": ["V9L"],
+          "excluded_scratchpads": ["8R", "8L", "9R", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3335,16 +3327,14 @@
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
-          "excluded_scratchpads": ["I8R", "I9L", "I8L", "I10"],
-          "filtered_scratchpads": ["V9R"],
+          "excluded_scratchpads": ["8R", "8L", "9L", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "10": {
           "left_width": 20000,
           "right_width": 15000,
-          "excluded_scratchpads": ["I8R", "I9L", "I9R", "I8L"],
-          "filtered_scratchpads": ["V10"],
+          "excluded_scratchpads": ["8R", "8L", "9L", "9R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         }
@@ -3369,13 +3359,13 @@
       "departure_routes": {
         "8": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KFTY-26/h080"
           }
         },
         "26": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KFTY-8/h260"
           }
         }
@@ -3692,13 +3682,13 @@
       "departure_routes": {
         "3R": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KPDK-21L/h030"
           }
         },
         "21L": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KPDK-3R/h210"
           }
         }
@@ -4036,13 +4026,13 @@
       "departure_routes": {
         "11": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KMGE-29/h110"
           }
         },
         "29": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRW,VFRS,VFRE": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KMGE-11/h110"
           }
         }
@@ -4384,13 +4374,13 @@
       "departure_routes": {
         "27": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRS,VFRE,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KRYY-9/h270"
           }
         },
         "9": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRS,VFRE,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KRYY-27/h090"
           }
         }
@@ -4729,13 +4719,13 @@
       "departure_routes": {
         "7": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRE,VFRW,VFRS,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KLZU-25/h070"
           }
         },
         "25": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRN,VFRS,VFRE,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KLZU-7/h250"
           }
         }
@@ -5102,13 +5092,13 @@
       "departure_routes": {
         "13": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KPUJ-31/h130"
           }
         },
         "31": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KPUJ-13/h310"
           }
         }
@@ -5475,13 +5465,13 @@
       "departure_routes": {
         "1": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KVPC-19/h010"
           }
         },
         "19": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KVPC-1/h190"
           }
         }
@@ -5844,13 +5834,13 @@
       "departure_routes": {
         "10": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KCVC-28/h100"
           }
         },
         "28": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KCVC-10/h280"
           }
         }
@@ -6087,13 +6077,13 @@
       "departure_routes": {
         "13": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KFFC-31/h130"
           }
         },
         "31": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KFFC-13/h310"
           }
         }
@@ -6460,13 +6450,13 @@
       "departure_routes": {
         "6": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KHMP-24/h060"
           }
         },
         "24": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KHMP-6/h240"
           }
         }
@@ -6833,13 +6823,13 @@
       "departure_routes": {
         "17": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,BBAIT,HESPI,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KCTJ-35/h170"
           }
         },
         "35": {
           "NOONE,NOTWO,SOONE,SOTWO,WEONE,WETWO,EAONE,EATWO,VFRE,VFRN,VFRS,VFRW,BBAIT,HESPI,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KCTJ-17/h350"
           }
         }
@@ -13761,7 +13751,7 @@
             "waypoints": "KCCO-33/h150"
           },
           "HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KCCO-33/h150"
           }
         },
@@ -13771,7 +13761,7 @@
             "waypoints": "KCCO-15/h330"
           },
           "HESPI,BBAIT,MCKLS": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "waypoints": "KCCO-15/h330"
           }
         }
@@ -14714,7 +14704,7 @@
       "departure_routes": {
         "35": {
           "PGAAA": {
-            "cleared_altitude": 10000,
+            "cleared_altitude": 3000,
             "handoff_controller": "1W",
             "waypoints": "N033.24.31.536,W082.42.35.529/ho PGAAA"
           }
@@ -15320,6 +15310,7 @@
           "initial_altitude": 22000,
           "initial_speed": 290,
           "speed_restriction": 290,
+          "assigned_altitude": 13000,
           "scratchpad": "CHP",
           "expect_approach": null,
           "airports": ["KATL"],
@@ -15413,88 +15404,9 @@
           "initial_controller": "C43",
           "initial_altitude": 15000,
           "initial_speed": 290,
+          "assigned_altitude": 13000,
           "speed_restriction": 250,
           "expect_approach": null,
-          "airports": ["KATL"],
-          "airlines": {
-            "KATL": [
-              {
-                "icao": "SWA",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KSLC"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KPDX"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KPDX"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KSJC"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "CHPPR1_EFINALD": {
-      "arrivals": [
-        {
-          "waypoints": "MRCHH/ho JAGRR/a9000/h180",
-          "star": "CHPPR1",
-          "initial_controller": "C43",
-          "initial_altitude": 10000,
-          "initial_speed": 210,
-          "speed_restriction": 210,
-          "scratchpad": "NR8",
-          "expect_approach": "I8L",
           "airports": ["KATL"],
           "airlines": {
             "KATL": [
@@ -15569,11 +15481,12 @@
         {
           "waypoints": "MRCHH/ho BSHOP/a9000 NAVVY/a8000 RYENN/a7000 AAKAY/a6000/h95",
           "star": "CHPPR1",
-          "initial_controller": "C43",
+          "initial_controller": "1D",
           "initial_altitude": 10000,
+          "assigned_altitude": 9000,
           "initial_speed": 210,
           "speed_restriction": 210,
-          "scratchpad": "NR9",
+          "secondary_scratchpad": "9R",
           "expect_approach": "I9R",
           "airports": ["KATL"],
           "airlines": {
@@ -15665,6 +15578,7 @@
           "star": "GLAVN2",
           "initial_controller": "C43",
           "initial_altitude": 22000,
+          "assigned_altitude": 14000,
           "initial_speed": 290,
           "speed_restriction": 290,
           "scratchpad": "GLA",
@@ -15758,6 +15672,7 @@
           "star": "GLAVN2",
           "initial_controller": "C43",
           "initial_altitude": 15000,
+          "assigned_altitude": 12000,
           "initial_speed": 290,
           "speed_restriction": 250,
           "expect_approach": null,
@@ -15834,11 +15749,92 @@
         {
           "waypoints": "STHRN/ho YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
           "star": "GLAVN2",
-          "initial_controller": "C43",
+          "initial_controller": "1D",
           "initial_altitude": 10000,
+          "cleared_altitude": 8000,
           "initial_speed": 210,
           "speed_restriction": 210,
-          "scratchpad": "NR9",
+          "secondary_scratchpad": "8L",
+          "expect_approach": "I8L",
+          "airports": ["KATL"],
+          "airlines": {
+            "KATL": [
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KOMA"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KLNK"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KCOS"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KRNO"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KORD"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMDW"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KCVG"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KBOI"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "GLAVN2_EFINALT": {
+      "arrivals": [
+        {
+          "waypoints": "STHRN/ho YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
+          "star": "GLAVN2",
+          "initial_controller": "1D",
+          "initial_altitude": 10000,
+          "cleared_altitude": 9000,
+          "initial_speed": 210,
+          "speed_restriction": 210,
+          "secondary_scratchpad": "9R",
           "expect_approach": "I9R",
           "airports": ["KATL"],
           "airlines": {
@@ -15981,8 +15977,8 @@
           "spawn": "SHULR",
           "waypoint_actions": { "SHULR": "ho" },
           "star": "GNDLF3",
-          "initial_controller": "C43",
-          "scratchpad": "NR9",
+          "initial_controller": "1H",
+          "secondary_scratchpad": "9R",
           "initial_altitude": 8000,
           "assigned_altitude": 5000,
           "initial_speed": 210,
@@ -16050,8 +16046,8 @@
           "spawn": "SHULR",
           "waypoint_actions": { "SHULR": "ho" },
           "star": "GNDLF3",
-          "initial_controller": "C43",
-          "scratchpad": "NR0",
+          "initial_controller": "1H",
+          "secondary_scratchpad": "R10",
           "initial_altitude": 8000,
           "assigned_altitude": 5000,
           "initial_speed": 210,
@@ -16248,12 +16244,12 @@
           "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
           "star": "HOBTT3",
-          "initial_controller": "1Y",
-          "initial_altitude": 8000,
-          "assigned_altitude": 6000,
-          "initial_speed": 250,
-          "speed_restriction": 220,
-          "scratchpad": "I7L",
+          "initial_controller": "1H",
+          "initial_altitude": 8500,
+          "assigned_altitude": 7000,
+          "initial_speed": 210,
+          "speed_restriction": 210,
+          "secondary_scratchpad": "27L",
           "expect_approach": "I7L",
           "airports": ["KATL"],
           "airlines": {
@@ -16371,12 +16367,12 @@
           "star_feeds": ["CHPPR1", "HOBTT3", "SITTH3"],
           "cruise_altitude": 34000,
           "star": "HOBTT3",
-          "initial_controller": "1Y",
-          "initial_altitude": 8000,
-          "assigned_altitude": 6000,
-          "initial_speed": 250,
-          "speed_restriction": 220,
-          "scratchpad": "I28",
+          "initial_controller": "1H",
+          "initial_altitude": 8500,
+          "assigned_altitude": 7000,
+          "initial_speed": 210,
+          "speed_restriction": 210,
+          "secondary_scratchpad": "R28",
           "expect_approach": "I28",
           "airports": ["KATL"],
           "airlines": {
@@ -16622,11 +16618,11 @@
           "cruise_altitude": 35000,
           "star": "JJEDI4",
           "initial_controller": "1H",
-          "initial_altitude": 8000,
-          "assigned_altitude": 6000,
+          "initial_altitude": 7500,
+          "assigned_altitude": 5000,
           "initial_speed": 250,
-          "speed_restriction": 220,
-          "scratchpad": "I7L",
+          "speed_restriction": 210,
+          "secondary_scratchpad": "27L",
           "expect_approach": "I7L",
           "airports": ["KATL"],
           "airlines": {
@@ -16755,11 +16751,11 @@
           "cruise_altitude": 35000,
           "star": "JJEDI4",
           "initial_controller": "1H",
-          "initial_altitude": 8000,
-          "assigned_altitude": 6000,
+          "initial_altitude": 7500,
+          "assigned_altitude": 5000,
           "initial_speed": 250,
-          "speed_restriction": 220,
-          "scratchpad": "I28",
+          "speed_restriction": 210,
+          "secondary_scratchpad": "R28",
           "expect_approach": "I28",
           "airports": ["KATL"],
           "airlines": {
@@ -16886,13 +16882,14 @@
           "spawn": "KLOWD",
           "waypoint_actions": { "KLOWD": "ho" },
           "cruise_altitude": 35000,
+          "star_feeds": ["CHPPR1", "GLAVN2"],
           "star": "GLAVN2",
           "initial_controller": "1D",
-          "initial_altitude": 8000,
-          "assigned_altitude": 6000,
-          "initial_speed": 250,
-          "speed_restriction": 220,
-          "scratchpad": "I6R",
+          "initial_altitude": 8500,
+          "assigned_altitude": 7000,
+          "initial_speed": 210,
+          "speed_restriction": 210,
+          "secondary_scratchpad": "26R",
           "expect_approach": "I6R",
           "airports": ["KATL"],
           "airlines": {
@@ -17063,12 +17060,12 @@
           "waypoint_actions": { "KLOWD": "ho" },
           "star_feeds": ["ONDRE1", "OZZZI2"],
           "star": "OZZZI2",
-          "initial_controller": "C43",
-          "initial_altitude": 10000,
+          "initial_controller": "1L",
+          "initial_altitude": 8500,
           "initial_speed": 210,
           "speed_restriction": 210,
-          "assigned_altitude": 6000,
-          "scratchpad": "NR8",
+          "assigned_altitude": 7000,
+          "secondary_scratchpad": "8L",
           "expect_approach": "I8L",
           "airports": ["KATL"],
           "airlines": {
@@ -17311,6 +17308,7 @@
           "initial_altitude": 19000,
           "initial_speed": 290,
           "scratchpad": "OND",
+          "assigned_altitude": 13000,
           "expect_approach": null,
           "airports": ["KATL"],
           "airlines": {
@@ -17367,7 +17365,7 @@
           "initial_controller": "C43",
           "initial_altitude": 15000,
           "initial_speed": 290,
-          "speed_restriction": 250,
+          "assigned_altitude": 13000,
           "expect_approach": null,
           "airports": ["KATL"],
           "airlines": {
@@ -17412,8 +17410,8 @@
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
           "initial_speed": 250,
-          "speed_restriction": 220,
-          "scratchpad": "I6R",
+          "speed_restriction": 210,
+          "secondary_scratchpad": "26R",
           "expect_approach": "I6R",
           "airports": ["KATL"],
           "airlines": {
@@ -17448,6 +17446,7 @@
         }
       ]
     },
+
     "OZZZI2": {
       "arrivals": [
         {
@@ -17470,6 +17469,7 @@
           "initial_controller": "C43",
           "initial_altitude": 19000,
           "initial_speed": 290,
+          "assigned_altitude": 12000,
           "scratchpad": "OZZ",
           "expect_approach": null,
           "airports": ["KATL"],
@@ -17690,6 +17690,7 @@
         }
       ]
     },
+
     "OZZZI2 EAST": {
       "arrivals": [
         {
@@ -17712,8 +17713,239 @@
           "initial_controller": "C43",
           "initial_altitude": 15000,
           "initial_speed": 290,
-          "speed_restriction": 250,
+          "assigned_altitude": 14000,
           "expect_approach": null,
+          "airports": ["KATL"],
+          "airlines": {
+            "KATL": [
+              {
+                "icao": "BAW",
+                "types": ["B772"],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B764", "A339", "B764"],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "VIR",
+                "types": ["A35K"],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A333"],
+                "airport": "EIDW"
+              },
+              {
+                "icao": "KLM",
+                "types": ["B77W"],
+                "airport": "EHAM"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A333", "A359", "A359"],
+                "airport": "EHAM"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A339"],
+                "airport": "LGAV"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A21N", "A21N", "A321", "A321", "A321", "A333", "A321", "A321", "A21N", "A321"],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "JBU",
+                "types": ["BCS3", "BCS3", "BCS3"],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B752", "B739", "B763", "A321", "B739", "A21N", "B739"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "JBU",
+                "types": ["BCS3", "A320", "A320", "A320"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B738", "B738", "B738"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N", "A20N"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B712", "B712", "B712", "B712", "B712", "B712", "B712", "B712", "B712"],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "EDV",
+                "types": ["CRJ9", "CRJ9"],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319"],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ7", "CRJ9", "CRJ9", "CRJ7"],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "SCX",
+                "types": ["B738"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B39M", "B739"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A321"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N", "A20N"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A321", "B739", "A321", "B739", "A321", "A321"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A321", "B752", "B739", "B739", "A321", "B752"],
+                "airport": "KRIC"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KIAD"
+              },
+              {
+                "icao": "UAL",
+                "types": ["B737", "B738"],
+                "airport": "KIAD"
+              },
+              {
+                "icao": "RPA",
+                "types": ["E75L", "E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B712", "A321", "A321", "BCS1", "A319"],
+                "airport": "KIAD"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "RPA",
+                "types": ["E75L", "E75L"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A320", "A320", "A321", "A321", "A321", "A320", "A321", "A321", "A21N"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M", "B738", "B38M"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B739", "B739", "B752", "B739", "B739", "B739", "B739", "B739", "B739"],
+                "airport": "KRDU"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KRDU"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B737"],
+                "airport": "KRDU"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B764"],
+                "airport": "EDDM"
+              },
+              {
+                "icao": "DAL",
+                "types": ["A332"],
+                "airport": "EDDF"
+              },
+              {
+                "icao": "DLH",
+                "types": ["A333"],
+                "airport": "EDDF"
+              },
+              {
+                "icao": "BOX",
+                "types": ["B772"],
+                "airport": "EDDF"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B764", "B764", "A333"],
+                "airport": "LFPG"
+              },
+              {
+                "icao": "AFR",
+                "types": ["B772"],
+                "airport": "LFPG"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "OZZZI2_FINALWD": {
+      "arrivals": [
+        {
+          "waypoints": "CALLA/ho POSEY SLVAA ROMMM/h275",
+          "cruise_altitude": 34000,
+          "star": "OZZZI2",
+          "initial_controller": "1L",
+          "initial_altitude": 10000,
+          "assigned_altitude": 9000,
+          "initial_speed": 250,
+          "speed_restriction": 210,
+          "secondary_scratchpad": "27L",
+          "expect_approach": "I7L",
           "airports": ["KATL"],
           "airlines": {
             "KATL": [
@@ -17938,12 +18170,12 @@
           "waypoints": "CALLA/ho POSEY SLVAA ROMMM/h275",
           "cruise_altitude": 34000,
           "star": "OZZZI2",
-          "initial_controller": "1Y",
+          "initial_controller": "1L",
           "initial_altitude": 10000,
-          "assigned_altitude": 8000,
+          "assigned_altitude": 9000,
           "initial_speed": 250,
-          "speed_restriction": 220,
-          "scratchpad": "I7L",
+          "speed_restriction": 210,
+          "secondary_scratchpad": "27L",
           "expect_approach": "I7L",
           "airports": ["KATL"],
           "airlines": {
@@ -18163,6 +18395,7 @@
         }
       ]
     },
+
     "SITTH3": {
       "arrivals": [
         {
@@ -18293,6 +18526,7 @@
         }
       ]
     },
+
     "SITTH3_EFINALD": {
       "arrivals": [
         {
@@ -18300,12 +18534,12 @@
           "waypoint_actions": { "SHURT": "ho" },
           "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
           "star": "SITTH3",
-          "initial_controller": "C43",
+          "initial_controller": "1H",
           "initial_altitude": 12000,
           "initial_speed": 210,
           "speed_restriction": 210,
           "assigned_altitude": 5000,
-          "scratchpad": "NR9",
+          "secondary_scratchpad": "9R",
           "expect_approach": "I9R",
           "airports": ["KATL"],
           "airlines": {
@@ -18433,12 +18667,12 @@
           "waypoint_actions": { "SHURT": "ho" },
           "star_feeds": ["HOBTT3", "JJEDI4", "SITTH3"],
           "star": "SITTH3",
-          "initial_controller": "C43",
+          "initial_controller": "1H",
           "initial_altitude": 12000,
           "initial_speed": 210,
           "speed_restriction": 210,
           "assigned_altitude": 5000,
-          "scratchpad": "NR0",
+          "secondary_scratchpad": "R10",
           "expect_approach": "I10",
           "airports": ["KATL"],
           "airlines": {
@@ -26115,11 +26349,11 @@
     "DEHAN3": {
       "arrivals": [
         {
-          "waypoints": "AWSON/ho TFALS",
+          "waypoints": "AWSON/ho DEHAN/a8000 TFALS",
           "star": "DEHAN3",
           "initial_controller": "C43",
-          "initial_altitude": 12000,
-          "initial_speed": 290,
+          "initial_altitude": 10500,
+          "initial_speed": 250,
           "expect_approach": null,
           "airports": [
             "6A2",
@@ -43680,16 +43914,13 @@
           "KATL": 20
         },
         "SITTH3_EFINALD": {
-          "KATL": 11
+          "KATL": 13
         },
         "GNDLF3_EFINALD": {
-          "KATL": 9
+          "KATL": 11
         },
         "GLAVN2_EFINALD": {
-          "KATL": 8
-        },
-        "CHPPR1_EFINALD": {
-          "KATL": 6
+          "KATL": 12
         }
       },
       "configuration": "KA1",
@@ -43723,7 +43954,7 @@
           "KATL": 18
         },
         "GLAVN2_EFINALD": {
-          "KATL": 9
+          "KATL": 6
         },
         "CHPPR1_EFINALT": {
           "KATL": 20
@@ -43754,7 +43985,7 @@
       ],
       "inbound_rates": {
         "NW_FINALTRIPS": {
-          "KATL": 30
+          "KATL": 35
         },
         "HOBTT3_AFINALT": {
           "KATL": 15
@@ -43763,7 +43994,7 @@
           "KATL": 25
         },
         "ONDRE1_FINALWT": {
-          "KATL": 10
+          "KATL": 6
         },
         "OZZZI2_FINALWT": {
           "KATL": 25
@@ -43800,9 +44031,6 @@
         },
         "ONDRE1_FINALWT": {
           "KATL": 8
-        },
-        "OZZZI2_FINALWT": {
-          "KATL": 13
         }
       },
       "configuration": "KA4",

@@ -120,9 +120,11 @@
           "BLFRG3.NO.Finals": "1F",
           "DADES2.NO.Finals": "1F",
           "MAATY6.NO.Finals": "1F",
+          "RAYZZ3.NO.Finals": "1F",
           "BLFRG3.SO.Finals": "1F",
           "DADES2.SO.Finals": "1F",
-          "MAATY6.SO.Finals": "1F"
+          "MAATY6.SO.Finals": "1F",
+          "RAYZZ3.SO.Finals": "1F"
         },
         "default_consolidation": {
           "1F": []

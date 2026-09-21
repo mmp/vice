@@ -190,6 +190,10 @@ type CommonPreferences struct {
 	Line4Type    int
 	FDBLdrLength int // Datablock leader line length: 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
 
+	// PortalFence controls display of the FDB portal fence, which separates
+	// line 0 and column 0 from the rest of the datablock.
+	PortalFence bool
+
 	// NexradLevel encodes which NEXRAD precipitation levels are displayed,
 	// using the digits the NX LVL toolbar button shows: 0=OFF, 3=Extreme,
 	// 23=Heavy+Extreme, 123=Moderate+Heavy+Extreme.
@@ -274,6 +278,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.CursorSize = 1
 
 	prefs.FDBLdrLength = 1 // Default to normal mode
+	prefs.PortalFence = true
 
 	prefs.VideoMapVisible = make(map[string]any)
 	prefs.VideoMapBrightness = make(map[string]scope.Brightness)

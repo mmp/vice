@@ -471,14 +471,15 @@
       },
       "C1D": {
         "inbound_assignments": {
-          "LOUPE1.AD": "4Q",
           "VNYRD1.RGOOD": "4Q",
-          "VNYRD1.SNORA": "4Q",
-          "WNDSR2.AD": "4R"
+          "VNYRD1.YOSEM/RUSME": "4Q",
+          "WNDSR2": "4R",
+          "PYE3": "4U"
         },
         "departure_assignments": {
           "KOAK/CNDEL5": "4U",
           "KOAK/OAK6": "4R",
+          "KOAK/NIMI6": "4D",
           "KOAK/NUEVO8": "4U",
           "KOAK/SLNT3": "4R",
           "KOAK/COAST9": "4U",
@@ -490,15 +491,15 @@
           "KSFO/GAPP7": "4U"
         },
         "default_consolidation": {
-          "4R": ["4D", "4F"],
-          "4U": ["4Q", "4R"]
+          "4U": ["4Q", "4R"],
+          "4R": ["4D", "4F"]
         }
       },
       "C2D": {
         "inbound_assignments": {
-          "ALMDN4/OCEANIC.AD": "4R",
           "REBAS1.RGOOD": "4R",
-          "REBAS1.SNORA": "4R"
+          "REBAS1.YOSEM/RUSME": "4R",
+          "PYE3.SFOE": "4U"
         },
         "departure_assignments": {
           "KOAK/KATFH3": "4U",
@@ -515,14 +516,15 @@
       },
       "CRT": {
         "inbound_assignments": {
-          "LOUPE1.AD": "4Q",
           "VNYRD1.RGOOD": "4Q",
-          "VNYRD1.SNORA": "4Q",
-          "WNDSR2.AD": "4R"
+          "VNYRD1.YOSEM/RUSME": "4Q",
+          "WNDSR2": "4R",
+          "PYE3": "4U"
         },
         "departure_assignments": {
           "KOAK/CNDEL5": "4U",
           "KOAK/OAK6": "4R",
+          "KOAK/NIMI6": "4D",
           "KOAK/NUEVO8": "4U",
           "KOAK/SLNT3": "4R",
           "KOAK/COAST9": "4U",
@@ -539,9 +541,9 @@
       },
       "CSO": {
         "inbound_assignments": {
-          "BMRNG4.AD": "4Q",
           "VNYRD1.RGOOD": "4Q",
-          "VNYRD1.SNORA": "4Q"
+          "VNYRD1.YOSEM/RUSME": "4Q",
+          "PYE3": "4U"
         },
         "departure_assignments": {
           "KOAK/QUAKE2": "4R",
@@ -1535,6 +1537,7 @@
       "SUSEY": "SSY",
       "SUSEY.28": "SSY",
       "TARVR": "TAR",
+      "TECKY": "NTE",
       "TIPRE": "TPR",
       "TIPRE.28": "TPR",
       "TIPRE.28RT": "TPR",
@@ -1669,7 +1672,7 @@
         "short_name": "VLR"
       }
     },
-    "video_map_file": "videomaps/ZOA-stars.mappack",
+    "video_map_file": "videomaps/ZOA-NCT.mappack",
     "airspace_awareness": [
       {
         "fixes": ["NTELL", "KAYEX", "SUSEY", "KTINA", "JFREE", "VLREE", "TECKY"],

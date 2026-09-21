@@ -48,6 +48,28 @@
   </branding>
 
   <releases>
+    <release version="0.15.1" date="2026-09-21">
+      <url type="details">https://pharr.org/vice/#release-0.15.1</url>
+      <description>
+        <ul>
+          <li>New scenarios: ILM, HSV (Jake), ZFW (rome, Asian Evxn), ZME (Noah Hunt)</li>
+          <li>Scenario updates: PCT SHD, HCF, SCT, L30, NCT (Ketan K), MYR (Jake), I90 (Ethan Hawes), ZME (Noah Hunt), CLT (Gus Agostinho), STL (Ryan H), M98 (Logan S, Shane), ANC, P80, S46 (Mike Fries), N90 (FlyingHigh), TPA (Nelson Tieku), D10 (Seth), A80 (McNugget)</li>
+          <li>Flight model improvements: Added: IFIX/RADIAL: intercept a fix's radial; also available by voice (&quot;intercept the WAVEY 050 radial inbound&quot;, etc.)</li>
+          <li>Flight model improvements: Departures are held when a recent departure from another runway is flying an initial route that crosses their departure path</li>
+          <li>Flight model improvements: Two departures to the same fix are now spaced from each other whichever runways they leave from</li>
+          <li>Flight model improvements: Published traffic is split across the runways that can fly it in proportion to the scenario's departure rates</li>
+          <li>Flight model improvements: More accurately model departures' 400' AGL rollout</li>
+          <li>Bug fixes: Fixed bugs in checks for whether called traffic is in sight</li>
+          <li>Bug fixes: Fixed bug with aircraft turning away from the localizer</li>
+          <li>Bug fixes: Fixed a few bugs with joining visual approaches</li>
+          <li>Bug fixes: Fixed published traffic launching all of an airport's departures from a single runway when several could fly them</li>
+          <li>Bug fixes: Fixed bugs with aircraft cleared for charted visual approaches not descending</li>
+          <li>ERAM: Fixed bug with cutoff &quot;8&quot; characters in datablocks</li>
+          <li>STARS: Fixed bug where saving prefs handled the pref set name incorrectly </li>
+          <li>Facility engineering: Added backshop, a new standalone tool for facility engineering: </li>
+        </ul>
+      </description>
+    </release>
     <release version="0.15.0" date="2026-08-26">
       <url type="details">https://pharr.org/vice/#release-0.15.0</url>
       <description>

@@ -3677,11 +3677,42 @@
             ]
           },
           "initial_altitude": 11000,
-          "initial_speed": 290,
-          "speed_restriction": 250,
+          "initial_speed": 250,
+          "speed_restriction": 240,
           "star": "BLFRG3",
           "initial_controller": "1G",
-          "waypoints": "DSIDE JSTRM N027.50.20.107,W082.25.06.802/ho GUZDA LISAF/a4000/s210/h005"
+          "waypoints": "DSIDE JSTRM N027.50.20.107,W082.25.06.802/ho GUZDA/a5000/s230 LISAF/a4000/s210/h005"
+        }
+      ]
+    },
+    "RAYZZ3.SO.Finals": {
+      "arrivals": [
+        {
+          "airports": ["KTPA"],
+          "airlines": {
+            "KTPA": [
+              {
+                "icao": "NKS",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KDAL",
+                "fleet": "short"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KHOU",
+                "fleet": "short"
+              }
+            ]
+          },
+          "initial_altitude": 10000,
+          "initial_speed": 250,
+          "speed_restriction": 235,
+          "star": "RAYZZ3",
+          "initial_controller": "1W",
+          "waypoints": "RAYZZ/a10000 HIDOS/ho ENTAH/a6000 VENNU/a5000/s210/h006"
         }
       ]
     },
@@ -3834,7 +3865,38 @@
           "speed_restriction": 250,
           "star": "BLFRG3",
           "initial_controller": "1G",
-          "waypoints": "DSIDE N027.33.30.642,W082.16.37.970/ho N027.39.18.407,W082.22.58.152/a4000 JSTRM CRUUZ/h276"
+          "waypoints": "DSIDE N027.33.30.642,W082.16.37.970/ho N027.39.18.407,W082.22.58.152/a6000 JSTRM CRUUZ/a4000+/h276"
+        }
+      ]
+    },
+    "RAYZZ3.NO.Finals": {
+      "arrivals": [
+        {
+          "airports": ["KTPA"],
+          "airlines": {
+            "KTPA": [
+              {
+                "icao": "NKS",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KDAL",
+                "fleet": "short"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KHOU",
+                "fleet": "short"
+              }
+            ]
+          },
+          "initial_altitude": 10000,
+          "initial_speed": 280,
+          "speed_restriction": 250,
+          "star": "RAYZZ3",
+          "initial_controller": "1W",
+          "waypoints": "RAYZZ/a10000 HIDOS/ho CBASS TOOTH/a5000/s210 BUGGO FELOM/a5000/s210/h187"
         }
       ]
     },
@@ -4537,6 +4599,9 @@
         },
         "MAATY6.NO.Finals": {
           "KTPA": 12
+        },
+        "RAYZZ3.NO.Finals": {
+          "KTPA": 6
         }
       },
       "configuration": "FIN",
@@ -4834,7 +4899,10 @@
           "KTPA": 12
         },
         "MAATY6.SO.Finals": {
-          "KTPA": 12
+          "KTPA": 10
+        },
+        "RAYZZ3.SO.Finals": {
+          "KTPA": 4
         }
       },
       "configuration": "FIN",

@@ -773,6 +773,45 @@
         "slope_angle": 0.3
       }
     },
+    "scratchpads": {
+      "ACT": "NEL",
+      "ADM": "LOW",
+      "ALIAN": "RBT",
+      "ARDIA": "RDA",
+      "BDDAY": "THO",
+      "BILEE": "DAR",
+      "BRDEN": "DAR",
+      "BRHMA": "ROO",
+      "BSKAT": "ZER",
+      "CIKAN": "RBT",
+      "CLL": "RDA",
+      "DARTZ": "DAR",
+      "DOSXX": "RBT",
+      "EAKER": "GRA",
+      "ELLVR": "RDA",
+      "HANUH": "HAN",
+      "GRABE": "GRA",
+      "HOARY": "NEL",
+      "HUDAD": "PGL",
+      "HULZE": "TGR",
+      "IRW": "BLE",
+      "JASPA": "JAS",
+      "LOOSE": "TCH",
+      "MLC": "AKU",
+      "MRSSH": "THO",
+      "NELYN": "NEL",
+      "OKM": "GRA",
+      "ROLLS": "LOW",
+      "SAT": "NEL",
+      "TIKYS": "AKU",
+      "TNV": "DAR",
+      "TORNN": "DAR",
+      "TUL": "BLE",
+      "WINDU": "JAS",
+      "ZALEA": "THO",
+      "FORCK": "HAN"
+    },
+
     "significant_points": {
       "ACT": {},
       "ADM": {},
@@ -789,6 +828,7 @@
       "DOSXX": {},
       "EAKER": {},
       "ELLVR": {},
+      "FORCK": {},
       "HANUH": {},
       "GRABE": {},
       "HOARY": {},
@@ -862,7 +902,7 @@
         "show_scratchpad2": false
       },
       "scratchpad1": {
-        "display_alternate_exit_gate": true
+        "display_exit_fix": false
       },
       "force_ql_self": true
     }
