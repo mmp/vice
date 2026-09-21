@@ -2816,11 +2816,13 @@
       "arrivals": [
         {
           "waypoints": "DYAMD/a27000+/s270 N037.40.42.398,W120.34.50.313/ho LAANE/a22000-26000/s260 ALWYS HEFLY/a14000-19000/s250 ARRTU/a10000/s240 ADDMM/a9000/s240 COGGR/a7000-9000/s210 BERKS/a5000+/s210/h269",
+          "route": "/. ALWYS3",
           "star": "ALWYS3",
           "initial_controller": "C34",
           "initial_altitude": 27000,
           "initial_speed": 270,
           "expect_approach": null,
+          "aircraft": "jet",
           "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
@@ -3044,6 +3046,7 @@
           "initial_speed": 280,
           "scratchpad": "SF1",
           "expect_approach": null,
+
           "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
@@ -3192,6 +3195,7 @@
           "initial_speed": 300,
           "scratchpad": "SF1",
           "expect_approach": null,
+          "aircraft": "jet",
           "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
@@ -3599,13 +3603,15 @@
         {
           "waypoints": "PASIF/a14000-/s260 N037.14.14.818,W122.56.53.012/ho PIRAT/a10000 BRINY ARGGG/a8000/s230/h060",
           "cruise_altitude": 32000,
-          "route": "/. PIRAT BRINY ARGGG",
+          "route": "/. PIRAT3",
           "star": "PIRAT3",
           "initial_controller": "C35",
           "initial_altitude": 12000,
+          "cleared_altitude": 10000,
           "initial_speed": 300,
           "scratchpad": "SF1",
           "expect_approach": null,
+          "aircraft": "jet",
           "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
@@ -4040,6 +4046,7 @@
           "initial_speed": 280,
           "scratchpad": "SF1",
           "expect_approach": null,
+          "aircraft": "jet",
           "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
@@ -4124,12 +4131,13 @@
             }
           },
           "cruise_altitude": 32000,
-          "route": "/. LOZIT STLER WESLA MVRKK",
+          "route": "/. STLER4",
           "star": "STLER4",
           "initial_controller": "C41",
           "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": null,
+          "aircraft": "jet",
           "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
@@ -4273,12 +4281,13 @@
             }
           },
           "cruise_altitude": 32000,
-          "route": "/. WWAVS WPOUT",
-          "star": "SERFR4",
+          "route": "/. SERFR WWAVS2",
+          "star": "WWAVS2",
           "initial_controller": "C14",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "expect_approach": null,
+          "aircraft": "jet",
           "airports": ["KSFO"],
           "airlines": {
             "KSFO": [
