@@ -289,6 +289,9 @@ func (ep *Pane) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms s
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 
 	for _, trk := range tracks {
+		if !ep.targetVisible(ctx, trk) {
+			continue
+		}
 		state := ep.TrackState[trk.ADSBCallsign]
 		targetSymbol := ep.getTarget(trk, state)
 		ep.drawTarget(trk, state, ctx, transforms, targetSymbol, trackBuilder, ld, trid, td, cb)
@@ -461,10 +464,42 @@ func (ep *Pane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]f
 	return math.Scale2f(dir.UnitVector(), 8)
 }
 
-// datablockVisible reports whether a datablock should be drawn. Design.
+// altitudeInLimits reports whether a reported altitude in feet falls within
+// an altitude limits filter, which is expressed in hundreds of feet. The
+// altitude is rounded the way the datablock's altitude field rounds it, so
+// that a track reading 234 there is inside 234B400.
+func altitudeInLimits(alt float32, limits [2]int) bool {
+	hundreds := int(alt+50) / 100
+	return hundreds >= limits[0] && hundreds <= limits[1]
+}
+
+// passesAltitudeLimits reports whether a track is displayed under the given
+// altitude limits filter. Full datablocks and their targets are always
+// displayed, as are tracks that aren't reporting an altitude to filter on.
+func (ep *Pane) passesAltitudeLimits(ctx *scope.Context, trk sim.Track, limits [2]int) bool {
+	state := ep.TrackState[trk.ADSBCallsign]
+	if state == nil || trk.Mode != av.TransponderModeAltitude ||
+		ep.datablockType(ctx, trk) == FullDatablock {
+		return true
+	}
+	// Filter on the radar sample the scope is displaying rather than the
+	// newer altitude the simulation has: the sample only refreshes every few
+	// seconds, and a climbing track crossing a filter boundary would
+	// otherwise come and go out of step with the altitude in its datablock.
+	return altitudeInLimits(state.Track.TransponderAltitude, limits)
+}
+
+// targetVisible reports whether a track's target symbol, and with it its
+// history trail, is drawn.
+func (ep *Pane) targetVisible(ctx *scope.Context, trk sim.Track) bool {
+	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.Targets)
+}
+
+// datablockVisible reports whether a datablock should be drawn. The LDB
+// altitude limits filter is independent of the target one, so a datablock may
+// be drawn for a track whose target is filtered out.
 func (ep *Pane) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
-	// design
-	return true
+	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.LDBs)
 }
 
 // datablockType chooses which datablock format to display. Design.
@@ -524,7 +559,7 @@ func (ep *Pane) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map[
 	font := ep.ERAMFont(ep.currentPrefs().FDBSize)
 	for _, trk := range tracks {
 		db := dbs[trk.ADSBCallsign]
-		if db == nil {
+		if db == nil || !ep.datablockVisible(ctx, trk) {
 			continue
 		}
 		dbType := ep.datablockType(ctx, trk)
@@ -628,7 +663,7 @@ func (ep *Pane) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
 
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		if state == nil {
+		if state == nil || !ep.targetVisible(ctx, trk) {
 			continue
 		}
 

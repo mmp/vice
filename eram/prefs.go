@@ -5,6 +5,9 @@
 package eram
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
@@ -25,15 +28,21 @@ type Preferences struct {
 
 	VideoMapGroup string // ZNYMAP, AREAA, AREAB, etc
 
-	AltitudeFilters []float32 // find out the different targets
-
 	// QuickLookPositions []QuickLookPositiosn // find out more about this
 
 	VideoMapVisible map[string]any
 
 	DisplayToolbar bool
 
-	altitudeFilter [2]int
+	// Altitude limits filters, low and high, in hundreds of feet. When
+	// Split is false the two ranges are held equal and the toolbar shows a
+	// single combined filter; splitting them carries the combined value
+	// into both.
+	AltitudeLimits struct {
+		Split   bool
+		Targets [2]int
+		LDBs    [2]int
+	}
 
 	Line4Size   int
 	FDBSize     int
@@ -225,6 +234,40 @@ const (
 	NexradToolbarAll     = 123
 )
 
+// defaultAltitudeLimits is the altitude limits filter range, in hundreds of
+// feet, that lets everything through.
+var defaultAltitudeLimits = [2]int{0, 999}
+
+// altitudeLimitsLength is the number of characters in an altitude limits
+// filter entry such as "100B230".
+const altitudeLimitsLength = 7
+
+// formatAltitudeLimits renders limits the way the ALT LIM button and the
+// altitude limits entry boxes display them.
+func formatAltitudeLimits(limits [2]int) string {
+	return fmt.Sprintf("%03dB%03d", limits[0], limits[1])
+}
+
+// parseAltitudeLimits parses an altitude limits filter entry such as
+// "100B230". ok is false if s is malformed or gives an inverted range.
+func parseAltitudeLimits(s string) (limits [2]int, ok bool) {
+	if len(s) != altitudeLimitsLength || s[3] != 'B' {
+		return [2]int{}, false
+	}
+	for i := range altitudeLimitsLength {
+		if i != 3 && !isNum(s[i]) {
+			return [2]int{}, false
+		}
+	}
+
+	low, _ := strconv.Atoi(s[:3])
+	high, _ := strconv.Atoi(s[4:])
+	if low > high {
+		return [2]int{}, false
+	}
+	return [2]int{low, high}, true
+}
+
 func makeDefaultPreferences() *Preferences {
 	var prefs Preferences
 
@@ -267,7 +310,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.Brightness.DBFEL = 80
 	prefs.Brightness.Outage = 80
 
-	prefs.altitudeFilter = [2]int{0, 999}
+	prefs.AltitudeLimits.Targets = defaultAltitudeLimits
+	prefs.AltitudeLimits.LDBs = defaultAltitudeLimits
 	prefs.TornOffButtons = make(map[string][2]float32)
 
 	prefs.NexradLevel = NexradToolbarAll
@@ -459,6 +503,13 @@ func (p *Preferences) Upgrade(from, to int) {
 		if p.BeaconCodeView.Position == [2]float32{} {
 			p.BeaconCodeView.Position = [2]float32{100, 900}
 		}
+	}
+	if from < 93 {
+		// The altitude limits filters moved from an unexported field that
+		// never serialized to AltitudeLimits, so every older save has them
+		// zero-valued, which would filter out all but the ground.
+		p.AltitudeLimits.Targets = defaultAltitudeLimits
+		p.AltitudeLimits.LDBs = defaultAltitudeLimits
 	}
 }
 

@@ -79,6 +79,10 @@ func registerOpsCommands() {
 	// QB - beacon code view codes
 	registerCommand(CommandModeNone, "QB [BCN_LIST]", handleBeaconCodeViewList)
 
+	// QD - Altitude limits filters
+	// QD [LOW]B[HIGH]: set both the target and the LDB filter
+	registerCommand(CommandModeNone, "QD [ALT_LIMITS]", handleAltitudeLimitsFilter)
+
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)
 
@@ -411,6 +415,18 @@ func handleBeaconCodeViewList(ep *Pane, codes []av.Squawk) error {
 	// TODO: should there be an error if any of the codes are not owned by us?
 
 	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// QD - Altitude Limits Filter Handlers
+
+// handleAltitudeLimitsFilter sets both the target and the LDB altitude limits
+// filter; there is no command that sets only one of them. Whether the toolbar
+// displays them as one filter or two is left as it was.
+func handleAltitudeLimitsFilter(ep *Pane, limits [2]int) {
+	ps := ep.currentPrefs()
+	ps.AltitudeLimits.Targets = limits
+	ps.AltitudeLimits.LDBs = limits
 }
 
 ///////////////////////////////////////////////////////////////////////////

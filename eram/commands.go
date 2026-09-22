@@ -382,6 +382,9 @@ func (ep *Pane) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32,
 	distance := float32(20)
 
 	for _, t := range ctx.Client.State.Tracks {
+		if !ep.targetVisible(ctx, *t) {
+			continue // a target the altitude limits filter hides can't be slewed
+		}
 		pw := transforms.WindowFromLatLongP(t.Location)
 		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {

@@ -258,6 +258,8 @@ type Pane struct {
 	activeToolbarMenu int  `json:"-"`
 	toolbarVisible    bool `json:"-"`
 
+	altLimits altitudeLimitsEntry
+
 	lastTrackUpdate time.Time `json:"-"`
 
 	// Short-term conflict alert state; recomputed every caUpdateInterval.
@@ -555,6 +557,10 @@ func (ep *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawPlotPoints(ctx, transforms, cb)
 	// Handle button tearoff placement BEFORE drawing toolbar (so placement click isn't consumed)
 	ep.handleTearoffPlacement(ctx)
+	// The altitude limits sub-entry box is drawn over the scope and the
+	// toolbar both, so it claims its clicks before anything underneath it
+	// gets a chance at them. A tearoff being dragged outranks it.
+	ep.handleAltitudeLimitsInput(ctx)
 	ep.handleTornOffButtonsInput(ctx)
 	scopeExtent := ctx.PaneExtent
 	if ps.DisplayToolbar {
@@ -871,6 +877,11 @@ func (ep *Pane) processKeyboardInput(ctx *scope.Context) {
 		if kp.handleKeyboard(ep, ctx) {
 			return
 		}
+	}
+	// Likewise a clicked altitude limits text box takes them; the sub-entry
+	// box merely being displayed does not.
+	if ep.handleAltitudeLimitsKeyboard(ctx) {
+		return
 	}
 	ps := ep.currentPrefs()
 	keyboardInput := strings.ToUpper(ctx.Keyboard.Input)

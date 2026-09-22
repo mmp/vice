@@ -2,3 +2,4 @@
 - Added delay before launching subsequent same-exit departures
 - ERAM
   - Add datablock portal fence option
+  - Add support for altitude limits, including the `QD` command

@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -143,7 +144,19 @@ func (ep *Pane) drawToolbarMenu(ctx *scope.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, ep.videoMapLabel, 0, scale, false, false) { // Change to ERAM adapted name MANDATORY (This will probably be the hardest)
 			ep.activeToolbarMenu = toolbarVideomap
 		}
-		ep.drawToolbarFullButton(ctx, fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1]), 0, scale, false, false)
+		altLimitsHere := ep.altLimits.open && !ep.altLimits.tornOff
+		if ep.drawToolbarFullButton(ctx, altitudeLimitsButtonLabel(ps), 0, scale, altLimitsHere, false) {
+			ep.altLimits.open, ep.altLimits.tornOff = !altLimitsHere, false
+			altLimitsHere = !altLimitsHere
+		}
+		// The sub-entry box overlays the buttons that follow it, so it is
+		// laid out here but drawn once they are all done.
+		var altLimitsLayout altitudeLimitsLayout
+		if altLimitsHere {
+			altLimitsLayout = ep.altitudeLimitsLayoutAt(toolbarDrawState.buttonCursor, scale)
+			toolbarDrawState.occlusionActive = true
+			toolbarDrawState.occlusionExtent = altLimitsLayout.extent
+		}
 		if ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false) {
 			ep.activeToolbarMenu = toolbarRadarFilter
 		}
@@ -157,6 +170,9 @@ func (ep *Pane) drawToolbarMenu(ctx *scope.Context, scale float32) {
 					ep.SetTemporaryCursor("EramInvalidSelection", .5, "EramDeletion")
 				}
 			}
+		}
+		if altLimitsHere {
+			ep.drawAltitudeLimitsEntry(ctx, altLimitsLayout)
 		}
 	case toolbarATCTools:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
@@ -1807,6 +1823,11 @@ func (ep *Pane) drawTornOffButtons(ctx *scope.Context, transforms scope.Transfor
 			}
 		}
 	}
+
+	// After the buttons, so that it overlays any that it reaches over.
+	if layout, ok := ep.tornOffAltitudeLimitsLayout(ctx); ok {
+		ep.drawAltitudeLimitsEntry(ctx, layout)
+	}
 }
 
 // handleTornOffButtonsInput processes torn-off button clicks before other UI.
@@ -2173,6 +2194,9 @@ func (ep *Pane) isTornOffButtonActive(name string) bool {
 			return true
 		}
 	}
+	if cleanButtonName(ep.getTornOffButtonText(name)) == "ALT LIM" {
+		return ep.altLimits.open && ep.altLimits.tornOff
+	}
 	ps := ep.currentPrefs()
 	if ps != nil {
 		if ep.getTornOffButtonText(name) == "CRR\nFIX" {
@@ -2297,8 +2321,7 @@ func (ep *Pane) getTornOffButtonText(name string) string {
 	case "NX LVL":
 		return "NX LVL\n" + nexradLevelLabel(ep.currentPrefs().NexradLevel)
 	case "ALT LIM":
-		ps := ep.currentPrefs()
-		return fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1])
+		return altitudeLimitsButtonLabel(ep.currentPrefs())
 	default:
 		return name
 	}
@@ -2440,6 +2463,9 @@ func (ep *Pane) handleTornOffButtonClick(ctx *scope.Context, buttonName string, 
 	case "DB\nFIELDS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarDBFields)
+	case "ALT LIM":
+		openHere := ep.altLimits.open && ep.altLimits.tornOff
+		ep.altLimits.open, ep.altLimits.tornOff = !openHere, true
 	case "VECTOR":
 		handleMultiplicativeClick(ep, &ep.VelocityTime, 0, 8, 2)
 	case "FDB LDR":
@@ -2479,4 +2505,311 @@ func (ep *Pane) handleTornOffButtonClick(ctx *scope.Context, buttonName string, 
 			ep.deleteTearoffMode = !ep.deleteTearoffMode
 		}
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Altitude limits filters
+
+// altitudeLimitsField identifies which of the sub-entry box's text boxes has
+// been clicked and so is taking keyboard input.
+type altitudeLimitsField int
+
+const (
+	altitudeLimitsNone altitudeLimitsField = iota
+	altitudeLimitsCombined
+	altitudeLimitsTargets
+	altitudeLimitsLDBs
+)
+
+// altitudeLimitsEntry is the state of the sub-entry box that the ALT LIM
+// button opens: where it is displayed, which of its text boxes is taking
+// keyboard input, and the text entered there so far. Only one box is
+// displayed at a time, so clicking one ALT LIM button while the other's box
+// is open moves it rather than opening a second one.
+type altitudeLimitsEntry struct {
+	open    bool // displayed beside an ALT LIM button
+	tornOff bool // beside the torn-off ALT LIM button rather than the toolbar's
+	field   altitudeLimitsField
+	buf     string
+	invalid bool // the entry was rejected by [Enter]; INVALID is displayed
+	// Where the box was drawn last frame. The toolbar's position isn't known
+	// until it draws, which is after the frame's clicks have to be claimed.
+	layout altitudeLimitsLayout
+}
+
+const altitudeLimitsInvalid = "INVALID"
+
+// altitudeLimitsPad separates the edges of the sub-entry box, its labels, and
+// its text boxes.
+const altitudeLimitsPad = float32(4)
+
+// altitudeLimitsRow is one label and text box pair in the sub-entry box.
+type altitudeLimitsRow struct {
+	field       altitudeLimitsField
+	label       string
+	limits      [2]int
+	labelExtent math.Extent2D
+	valueExtent math.Extent2D
+	textY       float32 // shared by the label and the text box so they share a baseline
+}
+
+// altitudeLimitsLayout is the geometry of the sub-entry box: its outer extent
+// and the pick areas of each of its rows.
+type altitudeLimitsLayout struct {
+	extent math.Extent2D
+	rows   []altitudeLimitsRow
+}
+
+// altitudeLimitsButtonLabel returns the text of the ALT LIM toolbar button,
+// which shows the filter when both halves agree and a row of Xs when they
+// have been split to different ranges.
+func altitudeLimitsButtonLabel(ps *Preferences) string {
+	if ps.AltitudeLimits.Targets != ps.AltitudeLimits.LDBs {
+		return "ALT LIM\n" + strings.Repeat("X", altitudeLimitsLength)
+	}
+	return "ALT LIM\n" + formatAltitudeLimits(ps.AltitudeLimits.Targets)
+}
+
+// altitudeLimitsInkBounds returns the ink bounds of a full filter entry. The
+// labels and the entries are all capitals and digits, which share this band,
+// so it serves as a fixed reference that doesn't shift as a filter is typed.
+func (ep *Pane) altitudeLimitsInkBounds() math.Extent2D {
+	return ep.ERAMToolbarFont().InkBounds(formatAltitudeLimits(defaultAltitudeLimits), 0)
+}
+
+// altitudeLimitsLayoutAt lays out the sub-entry box with its top-left corner
+// at anchor.
+func (ep *Pane) altitudeLimitsLayoutAt(anchor [2]float32, scale float32) altitudeLimitsLayout {
+	ps := ep.currentPrefs()
+	font := ep.ERAMToolbarFont()
+
+	rows := []altitudeLimitsRow{{field: altitudeLimitsCombined, label: "ALTITUDE LIMITS",
+		limits: ps.AltitudeLimits.Targets}}
+	if ps.AltitudeLimits.Split {
+		rows = []altitudeLimitsRow{
+			{field: altitudeLimitsTargets, label: "TARGETS", limits: ps.AltitudeLimits.Targets},
+			{field: altitudeLimitsLDBs, label: "LDBS", limits: ps.AltitudeLimits.LDBs},
+		}
+	}
+
+	var labelWidth float32
+	for _, row := range rows {
+		labelWidth = max(labelWidth, font.LayoutBounds(row.label, 0).Width())
+	}
+	valueWidth := font.LayoutBounds(formatAltitudeLimits(defaultAltitudeLimits), 0).Width() + 2*altitudeLimitsPad
+
+	width := 3*altitudeLimitsPad + labelWidth + valueWidth
+	if ep.altLimits.invalid {
+		width += altitudeLimitsPad + font.LayoutBounds(altitudeLimitsInvalid, 0).Width()
+	}
+
+	rowHeight := font.LayoutBounds(altitudeLimitsInvalid, 0).Height() + 2*altitudeLimitsPad
+	rowsHeight := float32(len(rows)) * rowHeight
+	// The box is at least as tall as the button it hangs off of; any extra
+	// rows grow it downwards past the bottom of the toolbar.
+	height := max(buttonSize(buttonFull, scale)[1], rowsHeight+2*altitudeLimitsPad)
+
+	// Text is placed by its ink rather than its layout box: the latter has
+	// empty descender space below the capitals and digits these rows are made
+	// of, which would sit the text low in the row and in its text box.
+	inkCenter := ep.altitudeLimitsInkBounds().Center()[1]
+
+	labelX := anchor[0] + altitudeLimitsPad
+	valueX := labelX + labelWidth + altitudeLimitsPad
+	top := anchor[1] - (height-rowsHeight)/2
+	for i := range rows {
+		rowTop := top - float32(i)*rowHeight
+		rows[i].textY = rowTop - rowHeight/2 - inkCenter
+		rows[i].labelExtent = math.Extent2D{P0: [2]float32{labelX, rowTop - rowHeight},
+			P1: [2]float32{labelX + labelWidth, rowTop}}
+		rows[i].valueExtent = math.Extent2D{P0: [2]float32{valueX, rowTop - rowHeight + altitudeLimitsPad/2},
+			P1: [2]float32{valueX + valueWidth, rowTop - altitudeLimitsPad/2}}
+	}
+
+	return altitudeLimitsLayout{
+		extent: math.Extent2D{P0: [2]float32{anchor[0], anchor[1] - height},
+			P1: [2]float32{anchor[0] + width, anchor[1]}},
+		rows: rows,
+	}
+}
+
+// drawAltitudeLimitsEntry draws the sub-entry box. It overlays the buttons
+// beside it, so it is drawn after them and its caller is responsible for
+// making sure they ignore the mouse inside it; the clicks themselves were
+// claimed at the top of the frame by handleAltitudeLimitsInput.
+func (ep *Pane) drawAltitudeLimitsEntry(ctx *scope.Context, layout altitudeLimitsLayout) {
+	ps := ep.currentPrefs()
+	font := ep.ERAMToolbarFont()
+
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+
+	e := layout.extent
+	p0, p1 := [2]float32{e.P0[0], e.P1[1]}, e.P1
+	p2, p3 := [2]float32{e.P1[0], e.P0[1]}, e.P0
+	trid.AddQuad(p0, p1, p2, p3, ps.Brightness.Toolbar.ScaleRGB(colors.toolbar.submenuBackground))
+
+	mouse := ctx.Mouse
+	style := renderer.TextStyle{Font: font, Color: ps.Brightness.Text.ScaleRGB(colors.toolbar.text)}
+
+	for _, row := range layout.rows {
+		label, value := row.labelExtent, row.valueExtent
+		td.AddText(row.label, [2]float32{label.P0[0], row.textY}, style)
+
+		hovered := mouse != nil && value.Inside(mouse.Pos)
+		outline := util.Select(hovered, colors.toolbar.hoveredOutline, colors.menu.outerBorder)
+		ld.AddLineLoop(ps.Brightness.Border.ScaleRGB(outline), [][2]float32{
+			value.P0, {value.P1[0], value.P0[1]}, value.P1, {value.P0[0], value.P1[1]}})
+
+		text := formatAltitudeLimits(row.limits)
+		if row.field == ep.altLimits.field {
+			text = ep.altLimits.buf
+		}
+		td.AddText(text, [2]float32{value.P0[0] + altitudeLimitsPad, row.textY}, style)
+
+		if row.field == ep.altLimits.field && ep.altLimits.invalid {
+			td.AddText(altitudeLimitsInvalid, [2]float32{value.P1[0] + altitudeLimitsPad, row.textY},
+				renderer.TextStyle{Font: font, Color: ps.Brightness.Text.ScaleRGB(colors.yellow)})
+		}
+	}
+
+	trid.GenerateCommands(toolbarDrawState.cb)
+	ld.GenerateCommands(toolbarDrawState.cb)
+	td.GenerateCommands(toolbarDrawState.cb)
+	ep.drawMenuOutline(ctx, p0, p1, p2, p3)
+
+	ep.altLimits.layout = layout
+}
+
+// tornOffAltitudeLimitsLayout lays out the sub-entry box beside the torn-off
+// ALT LIM button, reporting false if it isn't displayed there.
+func (ep *Pane) tornOffAltitudeLimitsLayout(ctx *scope.Context) (altitudeLimitsLayout, bool) {
+	pos, tornOff := ep.currentPrefs().TornOffButtons["ALT LIM"]
+	if !ep.altLimits.open || !ep.altLimits.tornOff || !tornOff {
+		return altitudeLimitsLayout{}, false
+	}
+
+	scale := ep.toolbarButtonScale(ctx)
+	// One pixel between the tearoff handle and the button it belongs to, two
+	// more past the button, as in the toolbar.
+	anchor := math.Add2f(pos, [2]float32{buttonSize(buttonTearoff, scale)[0] + 1 + buttonSize(buttonFull, scale)[0] + 2, 0})
+	return ep.altitudeLimitsLayoutAt(anchor, scale), true
+}
+
+// handleAltitudeLimitsInput processes a click on the sub-entry box: on a text
+// box to start entering a new filter, or on a label to split the combined
+// filter into separate ones or to rejoin them. It runs at the top of the
+// frame because datablock interactions and torn-off buttons both take clicks
+// well before the toolbar draws. A click anywhere else finishes an entry
+// under way but is left alone, so that it still does what it otherwise would.
+func (ep *Pane) handleAltitudeLimitsInput(ctx *scope.Context) {
+	if !ep.altLimits.open {
+		return
+	}
+	mouse := ctx.Mouse
+	if mouse == nil || (!ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse)) {
+		return
+	}
+
+	// A torn-off box hangs off a button whose position is known up front, so
+	// it doesn't have to go by where it was last frame.
+	layout := ep.altLimits.layout
+	if tornOff, ok := ep.tornOffAltitudeLimitsLayout(ctx); ok {
+		layout = tornOff
+	}
+	if !layout.extent.Inside(mouse.Pos) {
+		ep.finishAltitudeLimitsEntry()
+		return
+	}
+	defer ep.consumeMouseClick(mouse)
+
+	ps := ep.currentPrefs()
+	for _, row := range layout.rows {
+		if row.valueExtent.Inside(mouse.Pos) {
+			// Any entry under way is finished first, so that moving from a
+			// completed one to the other text box keeps it.
+			ep.finishAltitudeLimitsEntry()
+			ep.altLimits.field = row.field
+			return
+		}
+		if row.labelExtent.Inside(mouse.Pos) {
+			ep.finishAltitudeLimitsEntry()
+			// Rejoining the two filters is only possible when they agree.
+			if !ps.AltitudeLimits.Split {
+				ps.AltitudeLimits.Split = true
+			} else if ps.AltitudeLimits.Targets == ps.AltitudeLimits.LDBs {
+				ps.AltitudeLimits.Split = false
+			}
+			return
+		}
+	}
+	ep.finishAltitudeLimitsEntry()
+}
+
+// finishAltitudeLimitsEntry ends keyboard entry into the sub-entry box,
+// keeping a complete and valid entry and silently discarding anything else.
+func (ep *Pane) finishAltitudeLimitsEntry() {
+	if limits, ok := parseAltitudeLimits(ep.altLimits.buf); ok {
+		ep.setAltitudeLimits(limits)
+	}
+	ep.altLimits.field = altitudeLimitsNone
+	ep.altLimits.buf = ""
+	ep.altLimits.invalid = false
+}
+
+// setAltitudeLimits stores limits in the filter currently being entered; the
+// combined filter sets both halves.
+func (ep *Pane) setAltitudeLimits(limits [2]int) {
+	ps := ep.currentPrefs()
+	switch ep.altLimits.field {
+	case altitudeLimitsTargets:
+		ps.AltitudeLimits.Targets = limits
+	case altitudeLimitsLDBs:
+		ps.AltitudeLimits.LDBs = limits
+	default:
+		ps.AltitudeLimits.Targets = limits
+		ps.AltitudeLimits.LDBs = limits
+	}
+}
+
+// handleAltitudeLimitsKeyboard routes keystrokes to the sub-entry box while
+// one of its text boxes has been clicked, returning true if it took them.
+// Characters past a full entry are ignored rather than rejected.
+func (ep *Pane) handleAltitudeLimitsKeyboard(ctx *scope.Context) bool {
+	if ep.altLimits.field == altitudeLimitsNone {
+		return false
+	}
+
+	for _, r := range strings.ToUpper(ctx.Keyboard.Input) {
+		if r <= ' ' || r > '~' || len(ep.altLimits.buf) >= altitudeLimitsLength {
+			continue
+		}
+		ep.altLimits.buf += string(r)
+		ep.altLimits.invalid = false
+	}
+
+	for key := range ctx.Keyboard.Pressed {
+		switch key {
+		case imgui.KeyBackspace:
+			if n := len(ep.altLimits.buf); n > 0 {
+				ep.altLimits.buf = ep.altLimits.buf[:n-1]
+				ep.altLimits.invalid = false
+			}
+		case imgui.KeyEnter:
+			limits, ok := parseAltitudeLimits(ep.altLimits.buf)
+			if ok {
+				ep.setAltitudeLimits(limits)
+			}
+			ep.altLimits.invalid = !ok
+		case imgui.KeyEscape:
+			ep.altLimits.field = altitudeLimitsNone
+			ep.altLimits.buf = ""
+			ep.altLimits.invalid = false
+		}
+	}
+	return true
 }

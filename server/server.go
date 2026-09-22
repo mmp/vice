@@ -104,7 +104,9 @@ import (
 // 92: airspace volume centers, CRDA reference points, VFR reporting points and significant points keep the
 //
 //	text they were written as and resolve it when finalized, so the resolved point serializes under its own name
-const ViceSerializeVersion = 92
+//
+// 93: the ERAM altitude limits filters are saved with the preference set
+const ViceSerializeVersion = 93
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion
