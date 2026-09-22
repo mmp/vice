@@ -272,8 +272,7 @@ type Pane struct {
 	viewRepo ViewRepoState `json:"-"`
 
 	tearoffInProgress        string                   `json:"-"` // Button name being torn off
-	tearoffIsReposition      bool                     `json:"-"` // Repositioning existing vs new tearoff
-	tearoffStart             time.Time                `json:"-"` // Debounce timer
+	tearoffOrigin            [2]float32               // Where the button sat when the drag started
 	tearoffDragOffset        [2]float32               `json:"-"` // Mouse offset from button corner
 	deleteTearoffMode        bool                     `json:"-"` // Delete mode active
 	tearoffMenus             map[string]int           `json:"-"` // torn-off menu button name -> menu state
@@ -921,7 +920,6 @@ func (ep *Pane) processKeyboardInput(ctx *scope.Context) {
 			if ep.tearoffInProgress != "" || ep.deleteTearoffMode {
 				if ep.tearoffInProgress != "" {
 					ep.tearoffInProgress = ""
-					ep.tearoffIsReposition = false
 					ctx.Platform.EndCaptureMouse()
 				}
 				if ep.deleteTearoffMode {

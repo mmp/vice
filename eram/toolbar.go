@@ -958,13 +958,13 @@ func (ep *Pane) drawToolbarFullButton(ctx *scope.Context, text string, flag tool
 			{tearoffPos[0] + tearoffSz[0], tearoffPos[1] - tearoffSz[1]},
 		})
 
-		if mouse != nil && tearoffExt.Inside(mouse.Pos) && ep.mousePrimaryClicked(mouse) {
+		if mouse != nil && tearoffExt.Inside(mouse.Pos) && ep.mousePrimaryClicked(mouse) &&
+			!toolbarInputOccluded(mouse.Pos) {
 			_, alreadyTorn := ps.TornOffButtons[buttonName]
 			if !alreadyTorn {
 				// Start new tearoff drag
 				ep.tearoffInProgress = buttonName
-				ep.tearoffIsReposition = false
-				ep.tearoffStart = time.Now()
+				ep.tearoffOrigin = tearoffPos
 				ep.tearoffDragOffset = math.Sub2f(mouse.Pos, tearoffPos)
 				ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 			}
@@ -1020,13 +1020,13 @@ func (ep *Pane) drawToolbarHoldButton(ctx *scope.Context, text string, flag tool
 			{tearoffPos[0] + tearoffSz[0], tearoffPos[1] - tearoffSz[1]},
 		})
 
-		if mouse != nil && tearoffExt.Inside(mouse.Pos) && ep.mousePrimaryClicked(mouse) {
+		if mouse != nil && tearoffExt.Inside(mouse.Pos) && ep.mousePrimaryClicked(mouse) &&
+			!toolbarInputOccluded(mouse.Pos) {
 			_, alreadyTorn := ps.TornOffButtons[buttonName]
 			if !alreadyTorn {
 				// Start new tearoff drag
 				ep.tearoffInProgress = buttonName
-				ep.tearoffIsReposition = false
-				ep.tearoffStart = time.Now()
+				ep.tearoffOrigin = tearoffPos
 				ep.tearoffDragOffset = math.Sub2f(mouse.Pos, tearoffPos)
 				ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 			}
@@ -1079,13 +1079,11 @@ func (ep *Pane) drawToolbarButton(ctx *scope.Context, text string, flags []toolb
 		ext.Inside([2]float32{toolbarDrawState.mouseDownPos[0], toolbarDrawState.mouseDownPos[1]}) &&
 		!hasFlag(flags, buttonDisabled)
 
-	if toolbarDrawState.occlusionActive && !toolbarDrawState.processingOcclusion {
-		if mouse != nil && toolbarDrawState.occlusionExtent.Inside(mouse.Pos) {
-			mouseInside = false
-		}
-		if toolbarDrawState.mouseDownPos != nil && toolbarDrawState.occlusionExtent.Inside([2]float32{toolbarDrawState.mouseDownPos[0], toolbarDrawState.mouseDownPos[1]}) {
-			mouseDownInside = false
-		}
+	if mouse != nil && toolbarInputOccluded(mouse.Pos) {
+		mouseInside = false
+	}
+	if down := toolbarDrawState.mouseDownPos; down != nil && toolbarInputOccluded([2]float32{down[0], down[1]}) {
+		mouseDownInside = false
 	}
 
 	var buttonColor, textColor renderer.RGB
@@ -1266,6 +1264,15 @@ var toolbarDrawState struct {
 	processingOcclusion bool
 
 	disableHoldRepeat bool
+}
+
+// toolbarInputOccluded reports whether an overlay drawn on top of the toolbar
+// covers p. Buttons underneath must ignore the mouse there, tearoff tabs
+// included: a click that reaches a tab through an overlay tears the button
+// off and drops it on top of whatever the user was actually aiming at.
+func toolbarInputOccluded(p [2]float32) bool {
+	return toolbarDrawState.occlusionActive && !toolbarDrawState.processingOcclusion &&
+		toolbarDrawState.occlusionExtent.Inside(p)
 }
 
 func (ep *Pane) startDrawtoolbar(ctx *scope.Context, buttonScale float32, transforms scope.Transformations,
@@ -1585,8 +1592,7 @@ func (ep *Pane) drawFullMasterButton(ctx *scope.Context, text string, pushedIn b
 	pressedTearoff := ep.drawMasterButton(ctx, "", pushedIn, scale, []toolbarFlags{buttonTearoff, flag}, nextRow)
 	if pressedTearoff && text == "TOOLBAR" && ctx.Mouse != nil && ep.tearoffInProgress == "" {
 		ep.tearoffInProgress = masterToolbarTearoffName
-		ep.tearoffIsReposition = true
-		ep.tearoffStart = time.Now()
+		ep.tearoffOrigin = tearoffPos
 		ep.tearoffDragOffset = math.Sub2f(ctx.Mouse.Pos, tearoffPos)
 		ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 	}
@@ -1729,6 +1735,10 @@ func (ep *Pane) drawTearoffPreview(ctx *scope.Context, transforms scope.Transfor
 	ld.GenerateCommands(cb)
 }
 
+// tearoffMoveThreshold is how far a button being torn off or moved must
+// travel before releasing the mouse places it.
+const tearoffMoveThreshold = 2
+
 // handleTearoffPlacement handles mouse click to place a torn-off button
 func (ep *Pane) handleTearoffPlacement(ctx *scope.Context) {
 	if ep.tearoffInProgress == "" {
@@ -1740,31 +1750,34 @@ func (ep *Pane) handleTearoffPlacement(ctx *scope.Context) {
 		return
 	}
 
-	// Check for placement - use Released so user can drag and release to place
-	shouldPlace := false
-	if time.Since(ep.tearoffStart) > 100*time.Millisecond {
-		if ep.mousePrimaryReleased(mouse) || ep.mouseTertiaryReleased(mouse) {
-			shouldPlace = true
-		}
+	// A drag under way owns the mouse: the click that places the button must
+	// not also press whatever the button lands on.
+	ep.consumeMouseClick(mouse)
+
+	// The drag stays armed until the button has been moved off where it
+	// started, so tearing one off and moving one already torn off are the same
+	// gesture: click, move, click to place. Releasing without having gone
+	// anywhere would otherwise drop the button exactly where it already sits.
+	position := math.Sub2f(mouse.Pos, ep.tearoffDragOffset)
+	if math.Distance2f(position, ep.tearoffOrigin) < tearoffMoveThreshold {
+		return
+	}
+	if !ep.mousePrimaryReleased(mouse) && !ep.mouseTertiaryReleased(mouse) {
+		return
 	}
 
-	if shouldPlace {
-		ps := ep.currentPrefs()
-		// Calculate position from mouse and drag offset
-		position := math.Sub2f(mouse.Pos, ep.tearoffDragOffset)
-		if ep.tearoffInProgress == masterToolbarTearoffName {
-			ps.MasterToolbarPosition = position
-		} else {
-			if ps.TornOffButtons == nil {
-				ps.TornOffButtons = make(map[string][2]float32)
-			}
-			ps.TornOffButtons[ep.tearoffInProgress] = position
+	ps := ep.currentPrefs()
+	if ep.tearoffInProgress == masterToolbarTearoffName {
+		ps.MasterToolbarPosition = position
+	} else {
+		if ps.TornOffButtons == nil {
+			ps.TornOffButtons = make(map[string][2]float32)
 		}
-
-		ep.tearoffInProgress = ""
-		ep.tearoffIsReposition = false
-		ctx.Platform.EndCaptureMouse()
+		ps.TornOffButtons[ep.tearoffInProgress] = position
 	}
+
+	ep.tearoffInProgress = ""
+	ctx.Platform.EndCaptureMouse()
 }
 
 // drawTornOffButtons draws all torn-off buttons at their stored positions
@@ -1853,8 +1866,7 @@ func (ep *Pane) handleTornOffButtonsInput(ctx *scope.Context) {
 		// Click on handle - start reposition.
 		if handleHovered && ep.mousePrimaryClicked(mouse) && ep.tearoffInProgress == "" {
 			ep.tearoffInProgress = name
-			ep.tearoffIsReposition = true
-			ep.tearoffStart = time.Now()
+			ep.tearoffOrigin = pos
 			ep.tearoffDragOffset = math.Sub2f(mouse.Pos, pos)
 			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 
@@ -2137,8 +2149,7 @@ func (ep *Pane) drawSingleTornOffButton(ctx *scope.Context, name string, pos [2]
 		// Click on handle - start reposition
 		if handleHovered && ep.mousePrimaryClicked(mouse) && ep.tearoffInProgress == "" {
 			ep.tearoffInProgress = name
-			ep.tearoffIsReposition = true
-			ep.tearoffStart = time.Now()
+			ep.tearoffOrigin = pos
 			ep.tearoffDragOffset = math.Sub2f(mouse.Pos, pos)
 			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 		}
