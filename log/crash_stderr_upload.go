@@ -84,6 +84,13 @@ func (l *Logger) uploadAndDeleteCrashStderrFiles() {
 		return
 	}
 
+	// Non-release (developer) builds don't upload crash reports to the
+	// shared server; leave the files in place for local inspection.
+	if !ReleaseBuild {
+		l.Infof("Not uploading %d crash-stderr file(s) (non-release build)", len(toUpload))
+		return
+	}
+
 	// Wait for the crash RPC client to become available. Bounded tight
 	// because callers gate risky init on this returning — if the
 	// server isn't reachable we'd rather get on with startup than

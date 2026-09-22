@@ -327,8 +327,9 @@ func (l *Logger) ReportCrash(err any) {
 	l.mu.Unlock()
 
 	// If we don't have an RPC client yet, wait a few seconds for the
-	// remote server connection to be established.
-	if rpcClient == nil {
+	// remote server connection to be established. Only release builds
+	// report crashes over RPC, so don't bother waiting otherwise.
+	if ReleaseBuild && rpcClient == nil {
 		select {
 		case <-l.crashClientReady:
 			l.mu.Lock()
@@ -372,8 +373,9 @@ func (l *Logger) ReportCrash(err any) {
 	fn := filepath.Join(l.LogDir, "crash-"+now.Format(time.RFC3339)+".txt")
 	_ = os.WriteFile(fn, []byte(report.String()), 0o600)
 
-	// Send via RPC if we have a client
-	if rpcClient != nil {
+	// Send via RPC if we have a client. Non-release (developer) builds
+	// don't upload crash reports to the shared server.
+	if ReleaseBuild && rpcClient != nil {
 		crashReport := &CrashReport{
 			Report:    report.String(),
 			System:    sysInfo,
