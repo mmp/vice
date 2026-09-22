@@ -1627,7 +1627,7 @@ func (s *dcbLeaderLineDirectionSpinner) MouseDelta() float32 {
 }
 
 func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) (CommandMode, error) {
-	if len(text) > 1 {
+	if len(text) != 1 {
 		return CommandModeNone, ErrCommandFormat
 	} else if dir, ok := s.sp.numpadToDirection(int(text[0] - '0')); !ok || dir == nil /* entered 5 */ {
 		return CommandModeNone, ErrCommandFormat
