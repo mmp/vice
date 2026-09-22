@@ -1009,12 +1009,12 @@ func (nav *Nav) addAltitudePhrasing(rt *speech.RadioTransmission, targetAlt floa
 	} else if diff < -200 {
 		// Descending, not near target
 		rt.Add("[leaving|out of] {alt} [descending to|for] {alt}", cur, targetAlt)
-	} else if math.Abs(diff) > 10 {
+	} else if math.Abs(diff) > 50 {
 		// Leveling near target
 		rt.Add("[leveling|at] {alt}", targetAlt)
 	} else {
 		// At altitude
-		rt.Add("[at|] {alt}", cur)
+		rt.Add("[at|] {alt}", targetAlt)
 	}
 }
 
