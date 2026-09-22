@@ -1,8 +1,8 @@
-// util/gcs.go
+// util/gcs/client.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package util
+package gcs
 
 import (
 	"context"
@@ -25,7 +25,8 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-type GCSClient struct {
+// Client is a read-only client for a Google Cloud Storage bucket.
+type Client struct {
 	httpClient          *http.Client
 	bucket              string
 	serviceAccountEmail string
@@ -33,18 +34,18 @@ type GCSClient struct {
 	ctx                 context.Context
 }
 
-// GCSClientConfig holds configuration options for creating a GCS client
-type GCSClientConfig struct {
+// Config holds configuration options for creating a GCS client
+type Config struct {
 	Context     context.Context // Optional: defaults to context.Background()
 	Credentials []byte          // Optional: service account JSON; if nil, creates unauthenticated client
 	Timeout     time.Duration   // Optional: HTTP client timeout; defaults to 30 seconds
 }
 
-// MakeGCSClient creates a GCS client with the given bucket and configuration.
+// MakeClient creates a GCS client with the given bucket and configuration.
 // If Credentials is nil, creates an unauthenticated client.
 // If Context is nil, uses context.Background().
 // If Timeout is zero, uses 30 seconds default.
-func MakeGCSClient(bucket string, config GCSClientConfig) (*GCSClient, error) {
+func MakeClient(bucket string, config Config) (*Client, error) {
 	if bucket == "" {
 		return nil, fmt.Errorf("bucket name cannot be empty")
 	}
@@ -67,7 +68,7 @@ func MakeGCSClient(bucket string, config GCSClientConfig) (*GCSClient, error) {
 
 	// Create unauthenticated client if no credentials provided
 	if config.Credentials == nil {
-		return &GCSClient{
+		return &Client{
 			httpClient: &http.Client{Transport: baseTransport},
 			bucket:     bucket,
 			ctx:        ctx,
@@ -119,7 +120,7 @@ func MakeGCSClient(bucket string, config GCSClientConfig) (*GCSClient, error) {
 		},
 	}
 
-	return &GCSClient{
+	return &Client{
 		httpClient:          httpClient,
 		bucket:              bucket,
 		serviceAccountEmail: serviceAccountEmail,
@@ -128,21 +129,21 @@ func MakeGCSClient(bucket string, config GCSClientConfig) (*GCSClient, error) {
 	}, nil
 }
 
-// GCSObject represents the minimal object metadata we need from the GCS API response
-type GCSObject struct {
+// Object represents the minimal object metadata we need from the GCS API response
+type Object struct {
 	Name string `json:"name"`
 	Size string `json:"size"`
 }
 
-// GCSListResponse represents the JSON response from the GCS objects list API
-type GCSListResponse struct {
-	Items         []GCSObject `json:"items"`
-	NextPageToken string      `json:"nextPageToken"`
+// ListResponse represents the JSON response from the GCS objects list API
+type ListResponse struct {
+	Items         []Object `json:"items"`
+	NextPageToken string   `json:"nextPageToken"`
 }
 
 // List returns a map of object names to their sizes from the Google Cloud Storage bucket.
 // It uses the GCS JSON API v1. If prefix is non-empty, only objects with that prefix are returned.
-func (g *GCSClient) List(prefix string) (map[string]int64, error) {
+func (g *Client) List(prefix string) (map[string]int64, error) {
 	allObjects := make(map[string]int64)
 	nextPageToken := ""
 
@@ -170,7 +171,7 @@ func (g *GCSClient) List(prefix string) (map[string]int64, error) {
 			return nil, fmt.Errorf("GCS API returned status %d for bucket %s", resp.StatusCode, g.bucket)
 		}
 
-		var listResp GCSListResponse
+		var listResp ListResponse
 		if err := json.NewDecoder(resp.Body).Decode(&listResp); err != nil {
 			resp.Body.Close()
 			return nil, fmt.Errorf("failed to decode response: %w", err)
@@ -197,7 +198,7 @@ func (g *GCSClient) List(prefix string) (map[string]int64, error) {
 
 // GetReader returns a ReadCloser for downloading an object from the Google Cloud Storage bucket.
 // The caller is responsible for closing the returned ReadCloser.
-func (g *GCSClient) GetReader(objectName string) (io.ReadCloser, error) {
+func (g *Client) GetReader(objectName string) (io.ReadCloser, error) {
 	if objectName == "" {
 		return nil, fmt.Errorf("object name cannot be empty")
 	}
@@ -227,7 +228,7 @@ func (g *GCSClient) GetReader(objectName string) (io.ReadCloser, error) {
 // The lifetime parameter specifies how long the URL should remain valid.
 // For unauthenticated clients, it returns a public URL (lifetime is ignored).
 // For authenticated clients, it returns a V4 signed URL that expires after the specified duration.
-func (g *GCSClient) GetURL(objectName string, lifetime time.Duration) (string, error) {
+func (g *Client) GetURL(objectName string, lifetime time.Duration) (string, error) {
 	if objectName == "" {
 		return "", fmt.Errorf("object name cannot be empty")
 	}

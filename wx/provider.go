@@ -11,7 +11,6 @@ import (
 	"io"
 	"net"
 	"net/rpc"
-	"os"
 	"sync"
 	"time"
 
@@ -39,6 +38,14 @@ type Provider struct {
 type weatherBackend interface {
 	getPrecipURL(facility string, t time.Time) (string, time.Time, error)
 	getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error)
+}
+
+// ObjectStore is the remote object storage that the GCS weather backend reads.
+// It is satisfied by *gcs.Client; keeping it behind an interface lets release
+// builds omit the GCS client, and with it the oauth2 dependency.
+type ObjectStore interface {
+	GetReader(path string) (io.ReadCloser, error)
+	GetURL(path string, lifetime time.Duration) (string, error)
 }
 
 type atmosGridResult struct {
@@ -79,9 +86,9 @@ func newProvider(lg *log.Logger, backend weatherBackend) *Provider {
 
 // MakeProvider constructs the concrete WX provider.
 func MakeProvider(serverAddress string, lg *log.Logger) *Provider {
-	if creds := os.Getenv("VICE_GCS_CREDENTIALS"); creds != "" {
+	if store := gcsStore(lg); store != nil {
 		// We have credentials, assume they are valid (and any failure will be network-related).
-		if backend, err := makeGCSBackend(creds, lg); err == nil {
+		if backend, err := makeGCSBackend(store, lg); err == nil {
 			lg.Infof("Using GCS weather provider")
 			return newProvider(lg, backend)
 		} else {
@@ -205,30 +212,22 @@ func (p *Provider) getAtmosGridFromBackend(facility string, t time.Time, station
 type gcsBackend struct {
 	lg *log.Logger
 
-	gcsClient      *util.GCSClient
+	gcsClient      ObjectStore
 	precipManifest *Manifest
 	atmosManifest  *Manifest
 }
 
-func makeGCSBackend(creds string, lg *log.Logger) (*gcsBackend, error) {
-	gcsClient, err := util.MakeGCSClient("vice-wx", util.GCSClientConfig{
-		Context:     context.Background(),
-		Timeout:     4 * time.Second,
-		Credentials: []byte(creds),
-	})
-	if err != nil {
-		return nil, err
-	}
-
+func makeGCSBackend(store ObjectStore, lg *log.Logger) (*gcsBackend, error) {
 	g := &gcsBackend{
 		lg:        lg,
-		gcsClient: gcsClient,
+		gcsClient: store,
 	}
 
 	// Load the manifests synchronously before selecting GCS as the active
 	// provider. These may come from the local cache, so this validates that
 	// the provider has usable manifest data, not necessarily that the network
 	// is currently reachable.
+	var err error
 	if g.precipManifest, err = g.loadManifest("precip"); err != nil {
 		return nil, err
 	}
