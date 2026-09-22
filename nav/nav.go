@@ -220,8 +220,6 @@ type Speed struct {
 	Restriction *av.SpeedRestriction
 }
 
-const MaxIAS = 290
-
 type Heading struct {
 	Assigned   *math.MagneticHeading
 	Turn       *av.TurnDirection
@@ -358,7 +356,7 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 		nav.FinalAltitude = max(nav.FinalAltitude, alt)
 		nav.FlightState.Altitude = alt
 		wxs := model.Lookup(nav.FlightState.Position, alt, simTime.Time())
-		nav.FlightState.IAS = arr.InitialSpeed.IAS(alt, wxs.Temperature())
+		nav.FlightState.IAS = min(arr.InitialSpeed.IAS(alt), nav.maxIAS(wxs.Temperature()))
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
 		// NaN cases...
@@ -407,7 +405,7 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 		alt := float32(rand.SampleSlice(nav.Rand, of.InitialAltitudes))
 		nav.FlightState.Altitude = alt
 		wxs := model.Lookup(nav.FlightState.Position, alt, simTime.Time())
-		nav.FlightState.IAS = of.InitialSpeed.IAS(alt, wxs.Temperature())
+		nav.FlightState.IAS = min(of.InitialSpeed.IAS(alt), nav.maxIAS(wxs.Temperature()))
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
 		// NaN cases...
@@ -499,18 +497,38 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 }
 
 func (nav *Nav) TAS(temp av.Temperature) float32 {
-	tas := av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
-	if nav.machTransition() {
-		tas = min(tas, av.MachToTAS(nav.Perf.Speed.MaxMach, temp))
-	} else {
-		tas = min(tas, nav.Perf.Speed.CruiseTAS)
-	}
-	return tas
+	return av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude, temp)
 }
 
-func (nav *Nav) Mach(temp av.Temperature) float32 {
-	tas := nav.TAS(temp)
-	return av.TASToMach(tas, temp)
+func (nav *Nav) Mach() float32 {
+	return av.IASToMach(nav.FlightState.IAS, nav.FlightState.Altitude)
+}
+
+// vmoCrossoverAltitude is a typical altitude at which a jet's maximum
+// operating speed (V_MO) and its maximum Mach number give the same
+// indicated airspeed. The performance database doesn't provide V_MO, so it
+// is approximated as the maximum Mach number's IAS there.
+const vmoCrossoverAltitude = 28000
+
+// maxIAS returns the fastest indicated airspeed the aircraft can fly at
+// its current altitude.
+func (nav *Nav) maxIAS(temp av.Temperature) float32 {
+	alt := nav.FlightState.Altitude
+	ias := av.TASToIAS(nav.Perf.Speed.MaxTAS, alt, temp)
+	if mach := nav.Perf.Speed.MaxMach; mach != 0 {
+		if nav.Perf.Engine.AircraftType == "J" {
+			alt = max(alt, vmoCrossoverAltitude)
+		}
+		ias = min(ias, av.MachToIAS(mach, alt))
+	}
+	return ias
+}
+
+// minIAS returns the slowest indicated airspeed the aircraft will fly.
+// The performance database sometimes has a minimum speed above the landing
+// speed; the landing speed wins so the aircraft can slow to it on final.
+func (nav *Nav) minIAS() float32 {
+	return min(nav.Perf.Speed.Min, nav.Perf.Speed.Landing)
 }
 
 func (nav *Nav) v2() float32 {

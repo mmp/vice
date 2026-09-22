@@ -173,7 +173,7 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 	nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
 	nav.updateHeading(callsign, wxs, simTime)
 	nav.updatePositionAndGS(wxs)
-	if nav.Airwork != nil && !nav.Airwork.Update(nav) {
+	if nav.Airwork != nil && !nav.Airwork.Update(nav, wxs.Temperature()) {
 		nav.Airwork = nil // Done.
 	}
 

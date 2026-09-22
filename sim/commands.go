@@ -55,14 +55,18 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) (speech.CommandIntent, error) {
 		})
 }
 
+// temperatureAt returns the temperature at the aircraft's current position.
+func (s *Sim) temperatureAt(ac *Aircraft) av.Temperature {
+	return s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime.Time()).Temperature()
+}
+
 func (s *Sim) AssignMach(tcw TCW, callsign av.ADSBCallsign, mach float32, afterAltitude bool) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			temp := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime.Time()).Temperature()
-			return ac.AssignMach(mach, afterAltitude, temp)
+			return ac.AssignMach(mach, afterAltitude, s.temperatureAt(ac))
 		})
 }
 
@@ -72,7 +76,7 @@ func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, sr *av.SpeedRestric
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.AssignSpeed(sr, afterAltitude)
+			return ac.AssignSpeed(sr, afterAltitude, s.temperatureAt(ac))
 		})
 }
 
@@ -82,7 +86,7 @@ func (s *Sim) AssignSpeedUntil(tcw TCW, callsign av.ADSBCallsign, sr *av.SpeedRe
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.AssignSpeedUntil(sr, until)
+			return ac.AssignSpeedUntil(sr, until, s.temperatureAt(ac))
 		})
 }
 
@@ -92,7 +96,7 @@ func (s *Sim) AssignCompoundSpeed(tcw TCW, callsign av.ADSBCallsign, segments []
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.AssignCompoundSpeed(segments)
+			return ac.AssignCompoundSpeed(segments, s.temperatureAt(ac))
 		})
 }
 
@@ -132,8 +136,7 @@ func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent,
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			temp := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime.Time()).Temperature()
-			return ac.SaySpeed(temp)
+			return ac.SaySpeed(s.temperatureAt(ac))
 		})
 }
 
@@ -143,7 +146,7 @@ func (s *Sim) SayIndicatedSpeed(tcw TCW, callsign av.ADSBCallsign) (speech.Comma
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.SayIndicatedSpeed()
+			return ac.SayIndicatedSpeed(s.temperatureAt(ac))
 		})
 }
 
@@ -153,8 +156,7 @@ func (s *Sim) SayMach(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, 
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			temp := s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime.Time()).Temperature()
-			return ac.SayMach(temp)
+			return ac.SayMach()
 		})
 }
 
@@ -315,7 +317,7 @@ func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.A
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.CrossFixAt(fix, ar, sr)
+			return ac.CrossFixAt(fix, ar, sr, s.temperatureAt(ac))
 		})
 }
 
@@ -327,7 +329,7 @@ func (s *Sim) CrossDistanceFromFixAt(tcw TCW, callsign av.ADSBCallsign, fix stri
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.CrossDistanceFromFixAt(fix, dist, dir, ar, sr)
+			return ac.CrossDistanceFromFixAt(fix, dist, dir, ar, sr, s.temperatureAt(ac))
 		})
 }
 
@@ -338,7 +340,7 @@ func (s *Sim) CrossDMEAt(tcw TCW, callsign av.ADSBCallsign, dist float32, ar *av
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.CrossDMEAt(dist, ar, sr)
+			return ac.CrossDMEAt(dist, ar, sr, s.temperatureAt(ac))
 		})
 }
 

@@ -1660,7 +1660,7 @@ func TestCrossFixAtVisualReferenceAfterClearance(t *testing.T) {
 	}
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	if intent, unable := f.nav.CrossFixAt("ZOSDO", &ar, nil).(speech.UnableIntent); unable {
+	if intent, unable := f.nav.CrossFixAt("ZOSDO", &ar, nil, f.temp()).(speech.UnableIntent); unable {
 		t.Fatalf("CrossFixAt(ZOSDO) returned unable: %v", intent)
 	}
 }

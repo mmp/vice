@@ -37,7 +37,7 @@ func TestCommandValidation(t *testing.T) {
 	t.Run("SpeedBelowLanding", func(t *testing.T) {
 		f := makeNav(t)
 		sr := av.MakeAtSpeedRestriction(80)
-		intent := f.nav.AssignSpeed(&sr, false)
+		intent := f.nav.AssignSpeed(&sr, false, f.temp())
 		AssertUnable(t, intent)
 	})
 
@@ -50,7 +50,7 @@ func TestCommandValidation(t *testing.T) {
 	t.Run("CrossFixNotInRoute", func(t *testing.T) {
 		f := makeNav(t)
 		ar := av.MakeAtAltitudeRestriction(5000)
-		intent := f.nav.CrossFixAt("NOTINROUTE", &ar, nil)
+		intent := f.nav.CrossFixAt("NOTINROUTE", &ar, nil, f.temp())
 		AssertUnable(t, intent)
 	})
 
@@ -232,7 +232,7 @@ func TestCrossDistanceFromFixAtDirectionUnable(t *testing.T) {
 	}
 
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil, f.temp())
 	AssertUnable(t, intent)
 }
 
@@ -263,7 +263,7 @@ func TestCrossDistanceFromFixAtDistanceUnable(t *testing.T) {
 
 	// Distance of 9999 miles should exceed any segment.
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 9999, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 9999, dir, &ar, nil, f.temp())
 	AssertUnable(t, intent)
 }
 
@@ -279,7 +279,7 @@ func TestCrossDistanceFromFixAtNotInRoute(t *testing.T) {
 	})
 
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("BOGUS", 5, math.West, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("BOGUS", 5, math.West, &ar, nil, f.temp())
 	AssertUnable(t, intent)
 }
 
@@ -310,7 +310,7 @@ func TestCrossDistanceFromFixAtInsertsWaypoint(t *testing.T) {
 
 	wpsBefore := len(f.nav.Waypoints)
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -362,7 +362,7 @@ func TestCrossDistanceFromFixAtUsesDeferredWaypoints(t *testing.T) {
 	}
 
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -412,7 +412,7 @@ func TestCrossDistanceFromFixAtIgnoresEmptyDeferredRoute(t *testing.T) {
 	}
 
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -449,7 +449,7 @@ func TestCrossDistanceFromFixAtReplacement(t *testing.T) {
 	// 1. Initial command: both altitude and speed.
 	ar1 := av.MakeAtAltitudeRestriction(8000)
 	sr1 := av.MakeAtSpeedRestriction(230)
-	f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar1, &sr1)
+	f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar1, &sr1, f.temp())
 
 	// Original waypoints: SAJUL, DETGY, HAUPT, KJFK (4)
 	// After adding one combined synthetic waypoint: SAJUL, _DETGY/5W, DETGY, HAUPT, KJFK (5)
@@ -466,7 +466,7 @@ func TestCrossDistanceFromFixAtReplacement(t *testing.T) {
 
 	// 2. Update only altitude.
 	ar2 := av.MakeAtAltitudeRestriction(9000)
-	f.nav.CrossDistanceFromFixAt("DETGY", 7, dir, &ar2, nil)
+	f.nav.CrossDistanceFromFixAt("DETGY", 7, dir, &ar2, nil, f.temp())
 
 	// The 5-mile waypoint should retain only speed; altitude moves to the 7-mile waypoint.
 	if len(f.nav.Waypoints) != 6 {
@@ -488,7 +488,7 @@ func TestCrossDistanceFromFixAtReplacement(t *testing.T) {
 
 	// 3. Update only speed.
 	sr2 := av.MakeAtSpeedRestriction(210)
-	f.nav.CrossDistanceFromFixAt("DETGY", 6, dir, nil, &sr2)
+	f.nav.CrossDistanceFromFixAt("DETGY", 6, dir, nil, &sr2, f.temp())
 
 	// The old 5-mile speed waypoint should be gone, replaced by a 6-mile speed waypoint.
 	if len(f.nav.Waypoints) != 6 {
@@ -534,7 +534,7 @@ func TestCrossDistanceFromFixAtRejectsOrthogonalDirection(t *testing.T) {
 	}
 
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil, f.temp())
 	AssertUnable(t, intent)
 }
 
@@ -564,7 +564,7 @@ func TestCrossDistanceFromFixAtUsesUnderscoreNamedPriorWaypoint(t *testing.T) {
 	}
 
 	ar := av.MakeAtAltitudeRestriction(5000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -669,11 +669,11 @@ func TestCrossDMEAtRequiresVisualApproach(t *testing.T) {
 	})
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	AssertUnable(t, f.nav.CrossDMEAt(10, &ar, nil))
+	AssertUnable(t, f.nav.CrossDMEAt(10, &ar, nil, f.temp()))
 
 	// Also unable when an ILS approach is expected but no visual clearance.
 	f.ExpectApproach("I22L")
-	AssertUnable(t, f.nav.CrossDMEAt(10, &ar, nil))
+	AssertUnable(t, f.nav.CrossDMEAt(10, &ar, nil, f.temp()))
 
 	// And unable when cleared for a non-visual approach whose ID happens to
 	// start with "V" (e.g., a VOR approach) — the check must be type-based,
@@ -685,16 +685,16 @@ func TestCrossDMEAtRequiresVisualApproach(t *testing.T) {
 	}
 	f.nav.Approach.AssignedId = "V22L"
 	f.nav.Approach.Cleared = true
-	AssertUnable(t, f.nav.CrossDMEAt(10, &ar, nil))
+	AssertUnable(t, f.nav.CrossDMEAt(10, &ar, nil, f.temp()))
 }
 
 // TestCrossDMEAtOutOfRange verifies that distances outside [1, 30] are rejected.
 func TestCrossDMEAtOutOfRange(t *testing.T) {
 	f := setupClearedVisual(t, "22L")
 	ar := av.MakeAtAltitudeRestriction(3000)
-	AssertUnable(t, f.nav.CrossDMEAt(0, &ar, nil))
-	AssertUnable(t, f.nav.CrossDMEAt(-5, &ar, nil))
-	AssertUnable(t, f.nav.CrossDMEAt(31, &ar, nil))
+	AssertUnable(t, f.nav.CrossDMEAt(0, &ar, nil, f.temp()))
+	AssertUnable(t, f.nav.CrossDMEAt(-5, &ar, nil, f.temp()))
+	AssertUnable(t, f.nav.CrossDMEAt(31, &ar, nil, f.temp()))
 }
 
 // TestCrossDMEAtInsertsWaypoint verifies that a synthetic DME waypoint is
@@ -703,7 +703,7 @@ func TestCrossDMEAtInsertsWaypoint(t *testing.T) {
 	f := setupClearedVisual(t, "22L")
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	intent := f.nav.CrossDMEAt(5, &ar, nil)
+	intent := f.nav.CrossDMEAt(5, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -740,7 +740,7 @@ func TestCrossDMEAtExtrapolates(t *testing.T) {
 	f := setupClearedVisual(t, "22L")
 
 	ar := av.MakeAtAltitudeRestriction(4000)
-	intent := f.nav.CrossDMEAt(15, &ar, nil)
+	intent := f.nav.CrossDMEAt(15, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -761,7 +761,7 @@ func TestCrossDMEAtReplacement(t *testing.T) {
 
 	ar1 := av.MakeAtAltitudeRestriction(3000)
 	sr1 := av.MakeAtSpeedRestriction(210)
-	f.nav.CrossDMEAt(5, &ar1, &sr1)
+	f.nav.CrossDMEAt(5, &ar1, &sr1, f.temp())
 
 	// One combined synthetic for 5 DME with both restrictions.
 	found := slicesIndex(f.nav.Waypoints, "_22L_5DME")
@@ -775,7 +775,7 @@ func TestCrossDMEAtReplacement(t *testing.T) {
 	// Update only altitude at a different distance → new 7 DME waypoint
 	// carries altitude; 5 DME waypoint retains only speed.
 	ar2 := av.MakeAtAltitudeRestriction(4000)
-	f.nav.CrossDMEAt(7, &ar2, nil)
+	f.nav.CrossDMEAt(7, &ar2, nil, f.temp())
 
 	five := slicesIndex(f.nav.Waypoints, "_22L_5DME")
 	seven := slicesIndex(f.nav.Waypoints, "_22L_7DME")
@@ -794,7 +794,7 @@ func TestCrossDMEAtReplacement(t *testing.T) {
 
 	// Replace the speed at a new 6 DME; the 5 DME speed-only waypoint should disappear.
 	sr2 := av.MakeAtSpeedRestriction(190)
-	f.nav.CrossDMEAt(6, nil, &sr2)
+	f.nav.CrossDMEAt(6, nil, &sr2, f.temp())
 
 	if idx := slicesIndex(f.nav.Waypoints, "_22L_5DME"); idx >= 0 {
 		t.Errorf("expected _22L_5DME to be removed, got %v", waypointFixes(f.nav.Waypoints))
@@ -812,7 +812,7 @@ func TestCrossDMEAtShortRouteAfterDeletion(t *testing.T) {
 	f := setupClearedVisual(t, "22L")
 
 	ar1 := av.MakeAtAltitudeRestriction(3000)
-	if _, ok := f.nav.CrossDMEAt(5, &ar1, nil).(speech.UnableIntent); ok {
+	if _, ok := f.nav.CrossDMEAt(5, &ar1, nil, f.temp()).(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable on first CDME")
 	}
 
@@ -831,7 +831,7 @@ func TestCrossDMEAtShortRouteAfterDeletion(t *testing.T) {
 	// synthetic (alt was its only restriction), leaving just the threshold.
 	// Must return Unable, not panic.
 	ar2 := av.MakeAtAltitudeRestriction(2500)
-	AssertUnable(t, f.nav.CrossDMEAt(7, &ar2, nil))
+	AssertUnable(t, f.nav.CrossDMEAt(7, &ar2, nil, f.temp()))
 }
 
 // TestCrossDMEAtUsesDeferredWaypoints verifies the synthetic waypoint is
@@ -844,7 +844,7 @@ func TestCrossDMEAtUsesDeferredWaypoints(t *testing.T) {
 	f.nav.DeferredNavHeading = &DeferredNavHeading{Waypoints: deferred}
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	if _, ok := f.nav.CrossDMEAt(5, &ar, nil).(speech.UnableIntent); ok {
+	if _, ok := f.nav.CrossDMEAt(5, &ar, nil, f.temp()).(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable")
 	}
 

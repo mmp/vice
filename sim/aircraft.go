@@ -438,12 +438,12 @@ func (ac *Aircraft) AssignMach(mach float32, afterAltitude bool, temp av.Tempera
 	return ac.Nav.AssignMach(mach, afterAltitude, temp)
 }
 
-func (ac *Aircraft) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.CommandIntent {
-	return ac.Nav.AssignSpeed(sr, afterAltitude)
+func (ac *Aircraft) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
+	return ac.Nav.AssignSpeed(sr, afterAltitude, temp)
 }
 
-func (ac *Aircraft) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil) speech.CommandIntent {
-	return ac.Nav.AssignSpeedUntil(sr, until)
+func (ac *Aircraft) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil, temp av.Temperature) speech.CommandIntent {
+	return ac.Nav.AssignSpeedUntil(sr, until, temp)
 }
 
 func (ac *Aircraft) MaintainSlowestPractical() speech.CommandIntent {
@@ -462,12 +462,12 @@ func (ac *Aircraft) SaySpeed(temp av.Temperature) speech.CommandIntent {
 	return ac.Nav.SaySpeed(temp)
 }
 
-func (ac *Aircraft) SayIndicatedSpeed() speech.CommandIntent {
-	return ac.Nav.SayIndicatedSpeed()
+func (ac *Aircraft) SayIndicatedSpeed(temp av.Temperature) speech.CommandIntent {
+	return ac.Nav.SayIndicatedSpeed(temp)
 }
 
-func (ac *Aircraft) SayMach(temp av.Temperature) speech.CommandIntent {
-	return ac.Nav.SayMach(temp)
+func (ac *Aircraft) SayMach() speech.CommandIntent {
+	return ac.Nav.SayMach()
 }
 
 func (ac *Aircraft) SayHeading() speech.CommandIntent {
@@ -560,28 +560,28 @@ func (ac *Aircraft) DepartFixDirect(fixa, fixb string) speech.CommandIntent {
 	return ac.Nav.DepartFixDirect(strings.ToUpper(fixa), strings.ToUpper(fixb))
 }
 
-func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
-	return ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, sr)
+func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
+	return ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, sr, temp)
 }
 
 func (ac *Aircraft) CrossDistanceFromFixAt(fix string, dist float32, dir math.CardinalOrdinalDirection,
-	ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
-	return ac.Nav.CrossDistanceFromFixAt(strings.ToUpper(fix), dist, dir, ar, sr)
+	ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
+	return ac.Nav.CrossDistanceFromFixAt(strings.ToUpper(fix), dist, dir, ar, sr, temp)
 }
 
-func (ac *Aircraft) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
-	return ac.Nav.CrossDMEAt(dist, ar, sr)
+func (ac *Aircraft) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
+	return ac.Nav.CrossDMEAt(dist, ar, sr, temp)
 }
 
 func (ac *Aircraft) AfterFixSpeed(fix string, sr *av.SpeedRestriction) speech.CommandIntent {
 	return ac.Nav.AfterFixSpeed(strings.ToUpper(fix), sr)
 }
 
-func (ac *Aircraft) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment) speech.CommandIntent {
+func (ac *Aircraft) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment, temp av.Temperature) speech.CommandIntent {
 	for i := range segments {
 		segments[i].UntilFix = strings.ToUpper(segments[i].UntilFix)
 	}
-	return ac.Nav.AssignCompoundSpeed(segments)
+	return ac.Nav.AssignCompoundSpeed(segments, temp)
 }
 
 func (ac *Aircraft) AfterFixAltitude(fix string, alt float32) speech.CommandIntent {

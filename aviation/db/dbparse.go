@@ -187,13 +187,11 @@ func parseAircraft() (map[string]string, map[string]av.AircraftPerformance) {
 	for _, ac := range acStruct.Aircraft {
 		aliases[ac.ICAO] = ac.Name
 
-		// If we have mach but not TAS, do the conversion; the nav code
-		// works with TAS..
-		if ac.Speed.CruiseMach != 0 && ac.Speed.CruiseTAS == 0 {
-			ac.Speed.CruiseTAS = 666.739 * ac.Speed.CruiseMach
-		}
-		if ac.Speed.MaxMach != 0 && ac.Speed.MaxTAS == 0 {
-			ac.Speed.MaxTAS = 666.739 * ac.Speed.MaxMach
+		// The nav code limits jets by their maximum Mach number; for the
+		// ones without one, take the maximum TAS to be flown at the
+		// tropopause.
+		if ac.Engine.AircraftType == "J" && ac.Speed.MaxMach == 0 {
+			ac.Speed.MaxMach = av.TASToMach(ac.Speed.MaxTAS, av.MakeTemperatureFromCelsius(-56.5))
 		}
 
 		ap[ac.ICAO] = ac

@@ -18,7 +18,7 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bo
 	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, wxs, arrivalMETAR, bravo)
 
 	// Stay within the aircraft's capabilities
-	targetSpeed = math.Clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
+	targetSpeed = math.Clamp(targetSpeed, nav.minIAS(), nav.maxIAS(wxs.Temperature()))
 
 	NavLog(callsign, simTime, NavLogSpeed, "target=%.0f current=%.0f rate=%.1f", targetSpeed, nav.FlightState.IAS, targetRate)
 
@@ -43,7 +43,7 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bo
 	if !nav.FlightState.InitialDepartureClimb && alt > nav.FlightState.Altitude &&
 		nav.Perf.Engine.AircraftType == "P" {
 		// Climbing prop; bleed off speed.
-		cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+		cruiseIAS := nav.cruiseIAS(wxs.Temperature())
 		limit := (nav.v2() + cruiseIAS) * 0.5
 		if nav.FlightState.IAS > limit {
 			spd := max(nav.FlightState.IAS*.99, limit)
@@ -119,6 +119,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 }
 
 func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *db.AirspaceGrid) (float32, float32) {
+	temp := wxs.Temperature()
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
 			return spd, rate
@@ -142,25 +143,25 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 			// (We expect this to usually be the case.) Ad-hoc speed based
 			// on V2, also assuming some flaps are out, so we don't just
 			// want to return 250 knots here...
-			cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
-			return min(nav.v2()*1.6, min(250, cruiseIAS)), MaximumRate
+			return min(nav.v2()*1.6, min(250, nav.cruiseIAS(temp))), MaximumRate
 		}
-		return nav.targetAltitudeIAS()
+		return nav.targetAltitudeIAS(temp)
 	}
 	if sr := nav.Speed.Assigned; sr != nil {
 		if sr.IsMach {
-			tas := av.MachToTAS(sr.Range[0], wxs.Temperature())
-			return av.TASToIAS(tas, nav.FlightState.Altitude), MaximumRate
+			return av.MachToIAS(sr.Range[0], nav.FlightState.Altitude), MaximumRate
 		}
 		if _, exact := sr.ExactValue(); !exact {
 			return math.Clamp(nav.FlightState.IAS, sr.Range[0], sr.Range[1]), MaximumRate
 		}
-		naturalIAS, _ := nav.targetAltitudeIAS()
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
 		return nav.restrictedSpeed(sr, naturalIAS), MaximumRate
 	}
 
 	if hold := nav.Heading.Hold; hold != nil && nav.ETA(hold.FixLocation) < 180 /* slow 3 minutes out */ {
-		return hold.Hold.Speed(nav.FlightState.Altitude), MaximumRate
+		// The holding speed is a maximum; slower aircraft hold at their usual speed.
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
+		return min(hold.Hold.Speed(nav.FlightState.Altitude), naturalIAS), MaximumRate
 	}
 
 	// Manage the speed profile in the initial climb
@@ -190,8 +191,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 		}
 
 		// Make sure we're not trying to go faster than we're able to
-		cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
-		targetSpeed = min(targetSpeed, cruiseIAS)
+		targetSpeed = min(targetSpeed, nav.cruiseIAS(temp))
 
 		// And don't accelerate past any upcoming speed restrictions
 		if nav.Speed.Restriction != nil {
@@ -209,7 +209,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 
 	pendingDecel := false
 	if onSID, sr, fix, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
-		naturalIAS, _ := nav.targetAltitudeIAS()
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
 		speed := nav.restrictedSpeed(sr, naturalIAS)
 		if speed > nav.FlightState.IAS {
 			// Accelerate immediately
@@ -240,7 +240,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 
 	// Something from a previous waypoint; ignore it if we're cleared for the approach.
 	if nav.Speed.Restriction != nil && !nav.Approach.Cleared {
-		naturalIAS, _ := nav.targetAltitudeIAS()
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
 		return nav.restrictedSpeed(nav.Speed.Restriction, naturalIAS), MaximumRate
 	}
 
@@ -260,7 +260,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 		} else {
 			// Otherwise reduce in general but in any case don't speed up
 			// again.
-			ias, rate := nav.targetAltitudeIAS()
+			ias, rate := nav.targetAltitudeIAS(temp)
 			return min(ias, nav.FlightState.IAS), rate
 		}
 	}
@@ -302,7 +302,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 
 	// Nothing assigned by the controller or the route, so set a target
 	// based on the aircraft's altitude.
-	ias, rate := nav.targetAltitudeIAS()
+	ias, rate := nav.targetAltitudeIAS(temp)
 	if fp != nil && fp.Rules == av.FlightRulesVFR &&
 		db.UnderBravoShelf(bravo, nav.FlightState.Position, int(nav.FlightState.Altitude)) {
 		ias = min(ias, 200)
@@ -314,19 +314,16 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs
 	return ias, rate
 }
 
-// If the aircraft has reached an altitude where they transition to mach
-func (nav *Nav) machTransition() bool {
+// cruiseIAS returns the indicated airspeed that gives the aircraft's cruise
+// TAS at its current altitude.
+func (nav *Nav) cruiseIAS(temp av.Temperature) float32 {
+	return av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude, temp)
+}
 
-	switch nav.Perf.Engine.AircraftType {
-	case "J":
-		return nav.FlightState.Altitude >= 27000
-	// case "P":
-	// 	return nav.FlightState.Altitude >= 5000
-	// case "T":
-	// 	return nav.FlightState.Altitude >= 3000
-	default:
-		return false // TODO: check if turboprops ever transition to mach
-	}
+// machTransition returns whether the aircraft's speed may be assigned as
+// a Mach number: 7110.65 5-7-2 allows it for turbojets at or above FL240.
+func (nav *Nav) machTransition() bool {
+	return nav.Perf.Engine.AircraftType == "J" && nav.FlightState.Altitude >= 24000
 }
 
 // ETA returns the estimated time in seconds until the aircraft will arrive at `p`, assuming it is flying direct.
@@ -373,9 +370,9 @@ func (nav *Nav) restrictedSpeed(sr *av.SpeedRestriction, natural float32) float3
 
 // Compute target airspeed for higher altitudes speed by lerping from 250
 // to cruise speed based on altitude.
-func (nav *Nav) targetAltitudeIAS() (float32, float32) {
+func (nav *Nav) targetAltitudeIAS(temp av.Temperature) (float32, float32) {
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
-	cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
+	cruiseIAS := nav.cruiseIAS(temp)
 
 	if nav.FlightState.Altitude <= 10000 {
 		// 250kts under 10k.  We can assume a high acceleration rate for

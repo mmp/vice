@@ -295,7 +295,7 @@ func TestApproachHonorsCrossingRestrictionBeforeSteepLeg(t *testing.T) {
 
 	f.ExpectApproach("R28L")
 	ar := av.MakeAtAltitudeRestriction(5700)
-	f.nav.CrossFixAt("JOBUS", &ar, nil)
+	f.nav.CrossFixAt("JOBUS", &ar, nil, f.temp())
 	f.ClearedStraightInApproach("R28L")
 
 	f.BeforeFix("JOBUS", func(f *FlightTest) {
@@ -465,7 +465,7 @@ func TestCrossFixAtAltitude(t *testing.T) {
 	// restriction to 8000. The aircraft must level at 8000, not
 	// descend through to the charted 7000.
 	ar := av.MakeAtAltitudeRestriction(8000)
-	f.nav.CrossFixAt("DETGY", &ar, nil)
+	f.nav.CrossFixAt("DETGY", &ar, nil, f.temp())
 
 	f.AtFix("DETGY", func(f *FlightTest) {
 		f.AssertAltitudeNear(8000, 100)
@@ -499,7 +499,7 @@ func TestCrossDistanceFromFixAtAltitude(t *testing.T) {
 
 	// "Cross 5 miles [dir] of DETGY at 8000"
 	ar := av.MakeAtAltitudeRestriction(8000)
-	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -543,7 +543,7 @@ func TestCrossDistanceFromApproachFixAtAltitudeBeforeClearance(t *testing.T) {
 	}
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	intent := f.nav.CrossDistanceFromFixAt("ROSLY", 5, dir, &ar, nil)
+	intent := f.nav.CrossDistanceFromFixAt("ROSLY", 5, dir, &ar, nil, f.temp())
 	if _, ok := intent.(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable: %v", intent)
 	}
@@ -879,7 +879,7 @@ func TestCrossDMEAtAltitude(t *testing.T) {
 	f.nav.FlightState.Altitude = 4000
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	if _, ok := f.nav.CrossDMEAt(5, &ar, nil).(speech.UnableIntent); ok {
+	if _, ok := f.nav.CrossDMEAt(5, &ar, nil, f.temp()).(speech.UnableIntent); ok {
 		t.Fatalf("unexpected unable")
 	}
 

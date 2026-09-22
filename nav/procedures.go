@@ -715,7 +715,7 @@ func StartAirwork(wp av.Waypoint, nav Nav) *Airwork {
 	return a
 }
 
-func (aw *Airwork) Update(nav *Nav) bool {
+func (aw *Airwork) Update(nav *Nav, temp av.Temperature) bool {
 	// Tick down the number of seconds we're doing this.
 	aw.RemainingSteps--
 	if aw.RemainingSteps == 0 {
@@ -769,11 +769,11 @@ func (aw *Airwork) Update(nav *Nav) bool {
 			} else if nav.Rand.Float32() < .2 {
 				// Slow turn
 				aw.Heading = math.MagneticHeading(nav.Rand.Float32Range(0, 360))
-				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
+				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, nav.cruiseIAS(temp))
 				aw.TurnDirection = util.Select(nav.Rand.Float32() < .5, av.TurnLeft, av.TurnRight)
 			} else if nav.Rand.Float32() < .2 {
 				// Slow, straight and level
-				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude))
+				aw.IAS = math.Lerp(.1, nav.Perf.Speed.Min, nav.cruiseIAS(temp))
 				aw.NextMoveCounter = 20
 			} else {
 				// Straight and level and then we'll reconsider.

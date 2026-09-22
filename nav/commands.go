@@ -130,13 +130,19 @@ func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
 }
 
 func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
+	// Round the limits to hundredths, with slack for the round trip
+	// through IAS when the maximum Mach number is what limits maxIAS.
+	alt := nav.FlightState.Altitude
+	minMach := math.Ceil(100*av.IASToMach(nav.Perf.Speed.Landing, alt)-0.01) / 100
+	maxMach := math.Floor(100*av.IASToMach(nav.maxIAS(temp), alt)+0.01) / 100
+
 	if mach == 0 {
 		nav.Speed = Speed{}
 		return speech.SpeedIntent{Type: speech.SpeedCancel}
-	} else if mach < .65 {
-		return speech.MakeUnableIntent("unable. Our minimum mach is 0.65")
-	} else if mach > nav.Perf.Speed.MaxMach {
-		return speech.MakeUnableIntent("unable. Our maximum mach is {mach}", nav.Perf.Speed.MaxMach)
+	} else if mach < minMach {
+		return speech.MakeUnableIntent("unable. Our minimum mach is {mach}", minMach)
+	} else if mach > maxMach {
+		return speech.MakeUnableIntent("unable. Our maximum mach is {mach}", maxMach)
 	} else if !nav.machTransition() {
 		return speech.MakeUnableIntent("unable. we haven't reached mach transition altitude")
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
@@ -153,8 +159,7 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature
 		nav.Speed = Speed{Assigned: &sr}
 		// If there's an active altitude change and this is a significant speed change, defer the
 		// altitude until after the Mach speed change completes.
-		tas := av.MachToTAS(mach, temp)
-		targetIAS := av.TASToIAS(tas, nav.FlightState.Altitude)
+		targetIAS := av.MachToIAS(mach, nav.FlightState.Altitude)
 		if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
 			math.Abs(targetIAS-nav.FlightState.IAS) >= 20 {
 			alt := *nav.Altitude.Assigned
@@ -164,9 +169,9 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature
 				RateAfterSpeed:  nav.Altitude.Rate,
 			}
 		}
-		if mach < nav.Mach(temp) {
+		if mach < nav.Mach() {
 			return speech.SpeedIntent{Speed: mach, Type: speech.SpeedReduce, Mach: true}
-		} else if mach > nav.Mach(temp) {
+		} else if mach > nav.Mach() {
 			return speech.SpeedIntent{Speed: mach, Type: speech.SpeedIncrease, Mach: true}
 		} else {
 			return speech.SpeedIntent{Speed: mach, Type: speech.SpeedAssign, Mach: true}
@@ -174,7 +179,19 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature
 	}
 }
 
-func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.CommandIntent {
+// checkAssignedSpeed returns an unable intent and false if the aircraft
+// can't fly the given speed.
+func (nav *Nav) checkAssignedSpeed(speed float32, temp av.Temperature) (speech.CommandIntent, bool) {
+	maxIAS := 10 * math.Floor(nav.maxIAS(temp)/10)
+	if speed < nav.Perf.Speed.Landing {
+		return speech.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing), false
+	} else if speed > maxIAS {
+		return speech.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS), false
+	}
+	return nil, true
+}
+
+func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
 	nav.clearAfterFixSpeeds()
 
 	if sr == nil {
@@ -191,13 +208,8 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.
 		}
 	}
 
-	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
-	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
-
-	if speed < nav.Perf.Speed.Landing {
-		return speech.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-	} else if speed > maxIAS {
-		return speech.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
+	if intent, ok := nav.checkAssignedSpeed(speed, temp); !ok {
+		return intent
 	}
 
 	if !exact {
@@ -250,7 +262,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool) speech.
 	}
 }
 
-func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil) speech.CommandIntent {
+func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil, temp av.Temperature) speech.CommandIntent {
 	nav.clearAfterFixSpeeds()
 
 	speed, exact := sr.ExactValue()
@@ -261,13 +273,8 @@ func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUnt
 		}
 	}
 
-	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
-	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
-
-	if speed < nav.Perf.Speed.Landing {
-		return speech.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-	} else if speed > maxIAS {
-		return speech.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
+	if intent, ok := nav.checkAssignedSpeed(speed, temp); !ok {
+		return intent
 	}
 
 	nav.Speed = Speed{Assigned: sr}
@@ -304,12 +311,12 @@ func (nav *Nav) MaintainPresentSpeed() speech.CommandIntent {
 
 func (nav *Nav) SaySpeed(temp av.Temperature) speech.CommandIntent {
 	if nav.machTransition() {
-		return nav.SayMach(temp)
+		return nav.SayMach()
 	}
-	return nav.SayIndicatedSpeed()
+	return nav.SayIndicatedSpeed(temp)
 }
 
-func (nav *Nav) SayIndicatedSpeed() speech.CommandIntent {
+func (nav *Nav) SayIndicatedSpeed(temp av.Temperature) speech.CommandIntent {
 	currentSpeed := nav.FlightState.IAS
 	intent := speech.ReportSpeedIntent{Current: currentSpeed}
 	if sr := nav.Speed.Assigned; sr != nil && !sr.IsMach {
@@ -317,22 +324,22 @@ func (nav *Nav) SayIndicatedSpeed() speech.CommandIntent {
 			intent.Assigned = &spd
 		}
 	} else if _, sr, _, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
-		naturalIAS, _ := nav.targetAltitudeIAS()
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
 		spd := nav.restrictedSpeed(sr, naturalIAS)
 		intent.Assigned = &spd
 	} else if nav.Speed.Restriction != nil {
-		naturalIAS, _ := nav.targetAltitudeIAS()
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
 		spd := nav.restrictedSpeed(nav.Speed.Restriction, naturalIAS)
 		intent.Assigned = &spd
 	}
 	return intent
 }
 
-func (nav *Nav) SayMach(temp av.Temperature) speech.CommandIntent {
+func (nav *Nav) SayMach() speech.CommandIntent {
 	if !nav.machTransition() {
 		return speech.MakeUnableIntent("unable. we haven't reached mach transition altitude")
 	}
-	currentMach := nav.Mach(temp)
+	currentMach := nav.Mach()
 	intent := speech.ReportMachIntent{Current: currentMach}
 	if sr := nav.Speed.Assigned; sr != nil && sr.IsMach {
 		if mach, exact := sr.ExactValue(); exact {
@@ -903,7 +910,7 @@ func (nav *Nav) DepartFixHeading(fix string, hdg math.MagneticHeading) speech.Co
 	}
 }
 
-func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
+func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
 	if !nav.fixInRoute(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
@@ -925,7 +932,7 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedR
 		if sr.IsMach {
 			intent.SpeedRestriction = sr
 		} else {
-			naturalIAS, _ := nav.targetAltitudeIAS()
+			naturalIAS, _ := nav.targetAltitudeIAS(temp)
 			s := nav.restrictedSpeed(sr, naturalIAS)
 			intentSpeed := av.MakeAtSpeedRestriction(s)
 			intent.SpeedRestriction = &intentSpeed
@@ -984,7 +991,7 @@ func newSyntheticWaypoint(name string, loc math.Point2LL, inheritFrom *av.Waypoi
 // corresponding nav.Altitude / nav.Speed assignments so the synthetic
 // crossing supersedes any prior controller instruction of the same type.
 func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
-	ar *av.AltitudeRestriction, sr *av.SpeedRestriction, intent *speech.NavigationIntent) {
+	ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature, intent *speech.NavigationIntent) {
 	if ar != nil {
 		wp.SetAltitudeRestriction(*ar)
 		intent.AltRestriction = ar
@@ -996,7 +1003,7 @@ func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
 		if sr.IsMach {
 			intent.SpeedRestriction = sr
 		} else {
-			naturalIAS, _ := nav.targetAltitudeIAS()
+			naturalIAS, _ := nav.targetAltitudeIAS(temp)
 			s := nav.restrictedSpeed(sr, naturalIAS)
 			intentSpeed := av.MakeAtSpeedRestriction(s)
 			intent.SpeedRestriction = &intentSpeed
@@ -1006,7 +1013,7 @@ func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
 }
 
 func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.CardinalOrdinalDirection,
-	ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
+	ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
 	routeWps, commitRoute := nav.editAssignedWaypoints()
 
 	wps := routeWps
@@ -1114,7 +1121,7 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 	wp.Location = syntheticLoc
 
 	// 3. Apply new inline restrictions to the synthetic waypoint.
-	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, &intent)
+	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, temp, &intent)
 	commitRoute(routeWps)
 
 	return intent
@@ -1125,7 +1132,7 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 // synthetic waypoint is placed along the approach route by walking backwards
 // from the threshold accumulating track miles; if dist exceeds the total
 // route length, the point is extrapolated backwards along the first leg.
-func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) speech.CommandIntent {
+func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
 	if dist <= 0 || dist > 30 {
 		return speech.MakeUnableIntent("unable, that distance is out of range")
 	}
@@ -1215,7 +1222,7 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 		Distance: dist,
 	}
 
-	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, &intent)
+	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, temp, &intent)
 	commitRoute(routeWps)
 
 	return intent
@@ -1256,10 +1263,7 @@ func (nav *Nav) AfterFixSpeed(fix string, sr *av.SpeedRestriction) speech.Comman
 	return speech.SpeedIntent{Speed: speed, Type: stype, AfterFix: fix}
 }
 
-func (nav *Nav) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment) speech.CommandIntent {
-	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
-	maxIAS = 10 * float32(int((maxIAS+5)/10))
-
+func (nav *Nav) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment, temp av.Temperature) speech.CommandIntent {
 	// Validate all segments before applying any state changes.
 	for _, seg := range segments {
 		speed, exact := seg.Speed.ExactValue()
@@ -1269,10 +1273,8 @@ func (nav *Nav) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment) spee
 				speed = seg.Speed.Range[1]
 			}
 		}
-		if speed < nav.Perf.Speed.Landing {
-			return speech.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
-		} else if speed > maxIAS {
-			return speech.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
+		if intent, ok := nav.checkAssignedSpeed(speed, temp); !ok {
+			return intent
 		}
 
 		if seg.UntilFix != "" && !nav.fixInRoute(seg.UntilFix) {

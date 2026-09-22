@@ -210,7 +210,7 @@ func TestContactMessageIncludesCrossFixAltitude(t *testing.T) {
 	})
 
 	ar := av.MakeAtAltitudeRestriction(8000)
-	f.nav.CrossFixAt("DETGY", &ar, nil)
+	f.nav.CrossFixAt("DETGY", &ar, nil, f.temp())
 
 	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "detgy") || !strings.Contains(written, "8,000") {
@@ -229,7 +229,7 @@ func TestContactMessageIncludesCrossFixSpeed(t *testing.T) {
 	})
 
 	sr := av.MakeAtSpeedRestriction(230)
-	f.nav.CrossFixAt("DETGY", nil, &sr)
+	f.nav.CrossFixAt("DETGY", nil, &sr, f.temp())
 
 	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "detgy") || !strings.Contains(written, "230 knots") {
@@ -241,7 +241,7 @@ func TestContactMessageIncludesCrossDMEAltitude(t *testing.T) {
 	f := setupClearedVisual(t, "22L")
 
 	ar := av.MakeAtAltitudeRestriction(3000)
-	f.nav.CrossDMEAt(5, &ar, nil)
+	f.nav.CrossDMEAt(5, &ar, nil, f.temp())
 
 	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "5 d m e") ||
@@ -270,7 +270,7 @@ func TestContactMessageIncludesCrossDistanceAltitudeAndSpeed(t *testing.T) {
 
 	ar := av.MakeAtAltitudeRestriction(8000)
 	sr := av.MakeAtSpeedRestriction(230)
-	f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, &sr)
+	f.nav.CrossDistanceFromFixAt("DETGY", 5, dir, &ar, &sr, f.temp())
 
 	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
 	if !strings.Contains(written, "cross") || !strings.Contains(written, "detgy") ||
@@ -563,10 +563,15 @@ func (f *FlightTest) AssignAltitude(alt float32) {
 	f.nav.AssignAltitude(alt, false, f.simTime, 0)
 }
 
+// temp returns the temperature at the aircraft's current altitude.
+func (f *FlightTest) temp() av.Temperature {
+	return f.weather(f.nav.FlightState.Altitude).Temperature()
+}
+
 func (f *FlightTest) AssignSpeed(spd float32) {
 	f.t.Helper()
 	sr := av.MakeAtSpeedRestriction(spd)
-	f.nav.AssignSpeed(&sr, false)
+	f.nav.AssignSpeed(&sr, false, f.temp())
 }
 
 // AssignSpeedAfterAltitude issues "then reduce speed to spd", to be complied
@@ -574,7 +579,7 @@ func (f *FlightTest) AssignSpeed(spd float32) {
 func (f *FlightTest) AssignSpeedAfterAltitude(spd float32) {
 	f.t.Helper()
 	sr := av.MakeAtSpeedRestriction(spd)
-	f.nav.AssignSpeed(&sr, true)
+	f.nav.AssignSpeed(&sr, true, f.temp())
 }
 
 func (f *FlightTest) ExpectApproach(id string) {
@@ -721,7 +726,7 @@ func (f *FlightTest) AfterFixAltitude(fix string, alt float32) {
 
 func (f *FlightTest) CompoundSpeed(segments []speech.CompoundSpeedSegment) {
 	f.t.Helper()
-	f.nav.AssignCompoundSpeed(segments)
+	f.nav.AssignCompoundSpeed(segments, f.temp())
 }
 
 func (f *FlightTest) AtFixCleared(fix, approach string, straightIn bool) {

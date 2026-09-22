@@ -12,38 +12,69 @@ import (
 	"github.com/mmp/vice/math"
 )
 
-// returns the ratio of air density at the given altitude (in feet) to the
-// air density at sea level, subject to assuming the standard atmosphere.
-func DensityRatioAtAltitude(alt float32) float32 {
-	altm := alt * 0.3048 // altitude in meters
+// The airspeed conversions follow the International Standard Atmosphere
+// (ISA) and treat indicated airspeed as calibrated airspeed. Converting
+// between IAS and Mach depends only on the static pressure, which is
+// given by the aircraft's pressure altitude; converting between Mach and
+// TAS depends only on the temperature, which sets the speed of sound. All
+// of them assume subsonic flight.
 
-	// https://en.wikipedia.org/wiki/Barometric_formula#Density_equations
-	const g0 = 9.80665    // gravitational constant, m/s^2
-	const M_air = 0.02897 // molar mass of earth's air, kg/mol
-	const R = 8.314463    // universal gas constant J/(mol K)
-	const T_b = 288.15    // reference temperature at sea level, degrees K
+const seaLevelSpeedOfSound = 661.4788 // knots, ISA
 
-	return math.FastExp(-g0 * M_air * altm / (R * T_b))
+// pressureRatio returns the ratio of the ISA static pressure at the given
+// altitude (in feet) to the sea level pressure.
+func pressureRatio(alt float32) float32 {
+	const tropopause = 36089.24 // feet
+	if alt <= tropopause {
+		return math.Pow(1-6.8755856e-6*alt, 5.2558797)
+	}
+	return 0.2233609 * math.FastExp(-4.806346e-5*(alt-tropopause))
 }
 
-func IASToTAS(ias, altitude float32) float32 {
-	return ias / math.Sqrt(DensityRatioAtAltitude(altitude))
+// IASToMach returns the Mach number corresponding to the given indicated
+// airspeed at the given altitude.
+func IASToMach(ias, altitude float32) float32 {
+	// Impact pressure relative to sea level static pressure, then relative
+	// to the static pressure at altitude.
+	qc := math.Pow(1+0.2*math.Sqr(ias/seaLevelSpeedOfSound), 3.5) - 1
+	qc /= pressureRatio(altitude)
+	return math.Sqrt(5 * (math.Pow(qc+1, 2./7) - 1))
 }
 
-func TASToIAS(tas, altitude float32) float32 {
-	return tas * math.Sqrt(DensityRatioAtAltitude(altitude))
+// MachToIAS returns the indicated airspeed corresponding to the given Mach
+// number at the given altitude.
+func MachToIAS(mach, altitude float32) float32 {
+	qc := math.Pow(1+0.2*mach*mach, 3.5) - 1
+	qc *= pressureRatio(altitude)
+	return seaLevelSpeedOfSound * math.Sqrt(5*(math.Pow(qc+1, 2./7)-1))
+}
+
+// speedOfSound returns the speed of sound in knots at the given
+// temperature.
+func speedOfSound(temp Temperature) float32 {
+	// sqrt(ratio of specific heats (1.4) * gas constant for dry air (287 J/(kg*K)) * temperature in kelvin)
+	// converted to knots (* 1.94384)
+	return math.Sqrt(1.4*287*temp.Kelvin()) * 1.94384
 }
 
 func TASToMach(tas float32, temp Temperature) float32 {
-	// speed of sound = sqrt(ratio of specific heats (1.4) * gas constant for dry air (287 J/(kg*K)) * temperature in kelvin)
-	// convert to knots (* 1.94384)
-	sound := math.Sqrt(1.4*287*temp.Kelvin()) * 1.94384
-	return tas / sound
+	return tas / speedOfSound(temp)
 }
 
 func MachToTAS(mach float32, temp Temperature) float32 {
-	sound := math.Sqrt(1.4*287*temp.Kelvin()) * 1.94384
-	return mach * sound
+	return mach * speedOfSound(temp)
+}
+
+// IASToTAS returns the true airspeed corresponding to the given indicated
+// airspeed at the given altitude and temperature.
+func IASToTAS(ias, altitude float32, temp Temperature) float32 {
+	return MachToTAS(IASToMach(ias, altitude), temp)
+}
+
+// TASToIAS returns the indicated airspeed corresponding to the given true
+// airspeed at the given altitude and temperature.
+func TASToIAS(tas, altitude float32, temp Temperature) float32 {
+	return MachToIAS(TASToMach(tas, temp), altitude)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -65,11 +96,11 @@ func MakeMach(mach float32) Airspeed { return Airspeed{Value: mach, IsMach: true
 func (a Airspeed) IsZero() bool { return a.Value == 0 }
 
 // IAS returns the indicated airspeed to fly at the given altitude.
-func (a Airspeed) IAS(altitude float32, temp Temperature) float32 {
+func (a Airspeed) IAS(altitude float32) float32 {
 	if !a.IsMach {
 		return a.Value
 	}
-	return TASToIAS(MachToTAS(a.Value, temp), altitude)
+	return MachToIAS(a.Value, altitude)
 }
 
 func (a Airspeed) String() string {

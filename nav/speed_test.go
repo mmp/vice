@@ -103,7 +103,7 @@ func TestAssignSpeedUntilPreservesRangeRestriction(t *testing.T) {
 	until := &speech.SpeedUntil{Fix: "DETGY"}
 
 	above := av.MakeAtOrAboveSpeedRestriction(250)
-	aboveIntent, ok := f.nav.AssignSpeedUntil(&above, until).(speech.SpeedIntent)
+	aboveIntent, ok := f.nav.AssignSpeedUntil(&above, until, f.temp()).(speech.SpeedIntent)
 	if !ok {
 		t.Fatalf("expected SpeedIntent for at-or-above speed until, got %T", aboveIntent)
 	}
@@ -112,7 +112,7 @@ func TestAssignSpeedUntilPreservesRangeRestriction(t *testing.T) {
 	}
 
 	below := av.MakeAtOrBelowSpeedRestriction(210)
-	belowIntent, ok := f.nav.AssignSpeedUntil(&below, until).(speech.SpeedIntent)
+	belowIntent, ok := f.nav.AssignSpeedUntil(&below, until, f.temp()).(speech.SpeedIntent)
 	if !ok {
 		t.Fatalf("expected SpeedIntent for at-or-below speed until, got %T", belowIntent)
 	}
@@ -133,7 +133,7 @@ func TestAssignedAtOrAboveSpeedDoesNotAccelerateWhenAlreadyCompliant(t *testing.
 	})
 
 	sr := av.MakeAtOrAboveSpeedRestriction(190)
-	f.nav.AssignSpeed(&sr, false)
+	f.nav.AssignSpeed(&sr, false, f.temp())
 
 	targetAltitude, _, _ := f.nav.TargetAltitude()
 	targetSpeed, _ := f.nav.TargetSpeed(targetAltitude, &f.fp, f.weather(f.nav.FlightState.Altitude), nil, nil)
@@ -154,7 +154,7 @@ func TestAssignedAtOrBelowSpeedDoesNotAccelerateWhenAlreadyCompliant(t *testing.
 	})
 
 	sr := av.MakeAtOrBelowSpeedRestriction(210)
-	f.nav.AssignSpeed(&sr, false)
+	f.nav.AssignSpeed(&sr, false, f.temp())
 
 	targetAltitude, _, _ := f.nav.TargetAltitude()
 	targetSpeed, _ := f.nav.TargetSpeed(targetAltitude, &f.fp, f.weather(f.nav.FlightState.Altitude), nil, nil)
@@ -192,7 +192,7 @@ func TestVisualApproachSpeedUntilFiveMileFinal(t *testing.T) {
 	}
 
 	sr := av.MakeAtSpeedRestriction(210)
-	f.nav.AssignSpeedUntil(&sr, &speech.SpeedUntil{MileFinal: 5})
+	f.nav.AssignSpeedUntil(&sr, &speech.SpeedUntil{MileFinal: 5}, f.temp())
 	if f.nav.Speed.Assigned == nil {
 		t.Fatal("AssignSpeedUntil should store the speed restriction")
 	}
@@ -439,5 +439,163 @@ func TestSpeedNotDeferredWhenLevel(t *testing.T) {
 		f.AssertSpeedNear(180, 5)
 	})
 
+	f.Run()
+}
+
+// TestAssignedSpeedIsFlown verifies that the fastest speed an aircraft
+// accepts is the speed it actually flies: its groundspeed matches the TAS
+// for its IAS rather than being held to its cruise speed.
+func TestAssignedSpeedIsFlown(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "C172",
+		InitialAltitude:  5000,
+		InitialSpeed:     100,
+		AssignedAltitude: 5000,
+	})
+
+	maxIAS := 10 * math.Floor(f.nav.maxIAS(f.temp())/10)
+	over := av.MakeAtSpeedRestriction(maxIAS + 10)
+	AssertUnable(t, f.nav.AssignSpeed(&over, false, f.temp()))
+
+	sr := av.MakeAtSpeedRestriction(maxIAS)
+	if intent, ok := f.nav.AssignSpeed(&sr, false, f.temp()).(speech.UnableIntent); ok {
+		t.Fatalf("%.0f knots: unexpected unable: %v", maxIAS, intent)
+	}
+
+	f.AfterTicks(120, func(f *FlightTest) {
+		f.AssertSpeedNear(maxIAS, 1)
+		tas := av.IASToTAS(f.nav.FlightState.IAS, f.nav.FlightState.Altitude, f.temp())
+		if tas <= f.nav.Perf.Speed.CruiseTAS {
+			t.Errorf("TAS %.1f for %.0f KIAS should exceed the %.0f knot cruise TAS", tas, maxIAS, f.nav.Perf.Speed.CruiseTAS)
+		}
+		if math.Abs(f.nav.FlightState.GS-tas) > 1 {
+			t.Errorf("groundspeed %.1f doesn't match TAS %.1f in calm wind", f.nav.FlightState.GS, tas)
+		}
+	})
+	f.Run()
+}
+
+// TestJetMaxSpeedBelowCrossover verifies that jets are limited by the
+// estimated V_MO at low altitude rather than their maximum TAS converted to
+// IAS.
+func TestJetMaxSpeedBelowCrossover(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  10000,
+		InitialSpeed:     250,
+		AssignedAltitude: 10000,
+	})
+
+	if m := f.nav.maxIAS(f.temp()); m < 300 || m > 360 {
+		t.Errorf("A320 maximum IAS at 10,000': got %.1f, want 300-360", m)
+	}
+	fast := av.MakeAtSpeedRestriction(400)
+	AssertUnable(t, f.nav.AssignSpeed(&fast, false, f.temp()))
+	ok := av.MakeAtSpeedRestriction(300)
+	if intent, unable := f.nav.AssignSpeed(&ok, false, f.temp()).(speech.UnableIntent); unable {
+		t.Errorf("300 knots: unexpected unable: %v", intent)
+	}
+}
+
+// TestSlowestPracticalBelowMinSpeed verifies that an aircraft whose
+// performance data has a minimum speed above its landing speed can still
+// slow to the speed it was cleared for.
+func TestSlowestPracticalBelowMinSpeed(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "B732",
+		InitialAltitude:  5000,
+		InitialSpeed:     180,
+		AssignedAltitude: 5000,
+	})
+	if f.nav.Perf.Speed.Min <= f.nav.Perf.Speed.Landing+5 {
+		t.Fatalf("B732 performance data no longer has min %.0f above landing+5 %.0f",
+			f.nav.Perf.Speed.Min, f.nav.Perf.Speed.Landing+5)
+	}
+
+	f.nav.MaintainSlowestPractical()
+	f.AfterTicks(120, func(f *FlightTest) {
+		f.AssertSpeedNear(f.nav.Perf.Speed.Landing+5, 1)
+	})
+	f.Run()
+}
+
+// TestMachAssignmentLimits verifies that Mach assignments are limited by
+// what the aircraft can actually fly and that an accepted Mach number is
+// reached.
+func TestMachAssignmentLimits(t *testing.T) {
+	flight := func(acType string, alt, mach float32) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL DETGY HAUPT",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     acType,
+			InitialAltitude:  alt,
+			InitialSpeed:     av.MachToIAS(mach, alt),
+			AssignedAltitude: alt,
+		})
+	}
+	assign := func(f *FlightTest, mach float32) speech.CommandIntent {
+		return f.nav.AssignMach(mach, false, f.temp())
+	}
+	accepted := func(f *FlightTest, mach float32) {
+		t.Helper()
+		if intent, ok := assign(f, mach).(speech.UnableIntent); ok {
+			t.Errorf("M%.2f: unexpected unable: %v", mach, intent)
+		}
+	}
+
+	// The C56X's maximum TAS is reached at about M0.64 at FL350, well
+	// below its maximum Mach number.
+	f := flight("C56X", 35000, .60)
+	AssertUnable(t, assign(f, .70))
+	AssertUnable(t, assign(f, .65))
+	accepted(f, .64)
+	f.AfterTicks(120, func(f *FlightTest) {
+		if m := f.nav.Mach(); math.Abs(m-.64) > .005 {
+			t.Errorf("C56X at FL350: got M%.3f, want M0.64", m)
+		}
+	})
+	f.Run()
+
+	// When the maximum Mach number is the limit, it is accepted exactly.
+	f = flight("A320", 35000, .78)
+	accepted(f, .83)
+	AssertUnable(t, assign(f, .84))
+
+	// Mach may be assigned at FL240 and above.
+	accepted(flight("A320", 24000, .60), .65)
+	AssertUnable(t, assign(flight("A320", 23000, .60), .65))
+}
+
+// TestMachAssignmentDefersClimb verifies that a climb deferred until an
+// assigned Mach number is reached isn't left pending indefinitely.
+func TestMachAssignmentDefersClimb(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "C56X",
+		InitialAltitude:  35000,
+		InitialSpeed:     av.MachToIAS(.55, 35000),
+		AssignedAltitude: 35000,
+	})
+	f.AssignAltitude(39000)
+	f.nav.AssignMach(.64, false, f.temp())
+	if f.nav.Altitude.AfterSpeed == nil {
+		t.Fatal("expected the climb to be deferred until the speed change completes")
+	}
+
+	f.AfterTicks(600, func(f *FlightTest) {
+		f.AssertAltitudeAbove(36000)
+	})
 	f.Run()
 }

@@ -1374,16 +1374,48 @@ func TestAirspeedJSON(t *testing.T) {
 }
 
 func TestAirspeedIAS(t *testing.T) {
-	temp := MakeTemperatureFromCelsius(-56.5) // ISA in the flight levels
-	if ias := MakeIAS(250).IAS(35000, temp); ias != 250 {
+	if ias := MakeIAS(250).IAS(35000); ias != 250 {
 		t.Errorf("knots don't vary with altitude: got %f", ias)
 	}
-	// Mach 0.85 is around 260 knots indicated at FL350 and slower higher up.
-	if ias := MakeMach(.85).IAS(35000, temp); ias < 250 || ias > 270 {
-		t.Errorf("M85 at FL350: got %f, want ~260", ias)
+	// Mach 0.85 is around 291 knots indicated at FL350 and slower higher up.
+	if ias := MakeMach(.85).IAS(35000); ias < 286 || ias > 296 {
+		t.Errorf("M85 at FL350: got %f, want ~291", ias)
 	}
-	if MakeMach(.85).IAS(45000, temp) >= MakeMach(.85).IAS(35000, temp) {
+	if MakeMach(.85).IAS(45000) >= MakeMach(.85).IAS(35000) {
 		t.Error("indicated airspeed for a Mach number should fall with altitude")
+	}
+}
+
+func TestAirspeedConversions(t *testing.T) {
+	isa := func(alt float32) Temperature {
+		return MakeTemperatureFromCelsius(max(15-0.0019812*alt, -56.5))
+	}
+	// Reference values from ISA tables with compressibility.
+	for _, c := range []struct{ ias, alt, tas, mach float32 }{
+		{250, 0, 250, 0.378},
+		{250, 10000, 289, 0.452},
+		{280, 24000, 398, 0.659},
+		{280, 35000, 473, 0.821},
+		{250, 41000, 482, 0.840},
+	} {
+		temp := isa(c.alt)
+		if tas := IASToTAS(c.ias, c.alt, temp); math.Abs(tas-c.tas) > 2 {
+			t.Errorf("IASToTAS(%.0f, %.0f): got %.1f, want %.0f", c.ias, c.alt, tas, c.tas)
+		}
+		if m := IASToMach(c.ias, c.alt); math.Abs(m-c.mach) > 0.005 {
+			t.Errorf("IASToMach(%.0f, %.0f): got %.3f, want %.3f", c.ias, c.alt, m, c.mach)
+		}
+		if ias := TASToIAS(IASToTAS(c.ias, c.alt, temp), c.alt, temp); math.Abs(ias-c.ias) > 0.1 {
+			t.Errorf("TASToIAS round trip at %.0f: got %.2f, want %.0f", c.alt, ias, c.ias)
+		}
+		if ias := MachToIAS(IASToMach(c.ias, c.alt), c.alt); math.Abs(ias-c.ias) > 0.1 {
+			t.Errorf("MachToIAS round trip at %.0f: got %.2f, want %.0f", c.alt, ias, c.ias)
+		}
+	}
+
+	// A warmer day gives a higher TAS for the same IAS.
+	if IASToTAS(250, 10000, MakeTemperatureFromCelsius(20)) <= IASToTAS(250, 10000, isa(10000)) {
+		t.Error("TAS should increase with temperature")
 	}
 }
 
