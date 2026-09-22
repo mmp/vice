@@ -7,6 +7,7 @@ package main
 
 import (
 	"os/exec"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -34,31 +35,27 @@ func TestNoUIDeps(t *testing.T) {
 		"github.com/veandco/go-sdl2",
 	}
 
-	pkgsOut, err := exec.Command("go", "list", "github.com/mmp/vice/cmd/...").Output()
+	// One go list gives every cmd's full transitive dependency set; a
+	// separate invocation per package dominated this package's test time.
+	out, err := exec.Command("go", "list", "-f",
+		"{{.ImportPath}}{{range .Deps}} {{.}}{{end}}",
+		"github.com/mmp/vice/cmd/...").Output()
 	if err != nil {
 		t.Fatalf("go list ./cmd/...: %v", err)
 	}
-	cmds := strings.FieldsSeq(string(pkgsOut))
 
-	for cmd := range cmds {
-		if uiCmds[cmd] {
+	for line := range strings.Lines(string(out)) {
+		fields := strings.Fields(line)
+		if len(fields) == 0 || uiCmds[fields[0]] {
 			continue
 		}
-		out, err := exec.Command("go", "list", "-deps", cmd).Output()
-		if err != nil {
-			t.Errorf("go list -deps %s: %v", cmd, err)
-			continue
-		}
-		deps := make(map[string]struct{})
-		for d := range strings.FieldsSeq(string(out)) {
-			deps[d] = struct{}{}
-		}
+		cmd, deps := fields[0], fields[1:]
+
 		for _, f := range forbidden {
-			for d := range deps {
-				if d == f || strings.HasPrefix(d, f+"/") {
-					t.Errorf("%s pulls in forbidden UI dependency %q (via %q)", cmd, f, d)
-					break
-				}
+			if i := slices.IndexFunc(deps, func(d string) bool {
+				return d == f || strings.HasPrefix(d, f+"/")
+			}); i != -1 {
+				t.Errorf("%s pulls in forbidden UI dependency %q (via %q)", cmd, f, deps[i])
 			}
 		}
 	}

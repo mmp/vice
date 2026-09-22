@@ -4337,6 +4337,8 @@ func TestSTTFromJSONFiles(t *testing.T) {
 	for _, file := range files {
 		testName := strings.TrimSuffix(filepath.Base(file), ".json")
 		t.Run(testName, func(t *testing.T) {
+			t.Parallel()
+
 			testFile, err := LoadTestFile(file)
 			if err != nil {
 				t.Fatalf("failed to load %s: %v", file, err)
