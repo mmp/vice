@@ -210,7 +210,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 	}
 	if artcc != "" {
 		var err error
-		if scenario.IsARTCC(req.Facility) {
+		if db.DB.IsARTCC(req.Facility) {
 			nsc.TFRs, err = wx.GetCachedTFRsForARTCC(artcc, req.StartTime)
 		} else {
 			nsc.TFRs, err = wx.GetCachedTFRsForTRACON(artcc, nsc.Center, nsc.Range, req.StartTime)

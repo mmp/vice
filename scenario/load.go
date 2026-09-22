@@ -126,14 +126,6 @@ var (
 	facilityConfigCacheMu sync.Mutex
 )
 
-// IsARTCC reports whether a facility code looks like an ARTCC: three
-// characters starting with "Z", e.g. "ZDC", "ZNY". This is a test of the
-// spelling, not a lookup; db.StaticDatabase.IsARTCC answers from the
-// published table.
-func IsARTCC(facility string) bool {
-	return len(facility) == 3 && strings.HasPrefix(facility, "Z")
-}
-
 // loadNeighborControllers loads controllers from a neighboring facility's
 // config file and adds them to the scenario group's ControlPositions.
 // The neighbor is identified by facility code (e.g., "ABE", "PHL", "ZDC").
@@ -191,7 +183,7 @@ func loadNeighborControllers(filesystem fs.FS, sg *Group, neighbor string,
 	// Add neighbor controllers under the full prefix only.
 	// Shorter references are resolved at lookup time via resolveController.
 	// Don't overwrite existing positions (the primary facility takes precedence).
-	neighborIsARTCC := IsARTCC(neighbor)
+	neighborIsARTCC := db.DB.IsARTCC(neighbor)
 	for position, ctrl := range fc.ControlPositions {
 		ctrlCopy := deep.MustCopy(ctrl)
 		ctrlCopy.FacilityIdentifier = prefix
