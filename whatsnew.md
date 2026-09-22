@@ -1,3 +1,4 @@
+- Scenario updates: IND (Ethan Hawes)
 - Added delay before launching subsequent same-exit departures
 - ERAM
   - Add datablock portal fence option

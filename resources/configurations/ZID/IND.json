@@ -54,16 +54,31 @@
   "facility_adaptations": {
     "lists": { "ssa": { "system_altimeter": "KIND" } },
     "configurations": {
-      "KIN": {
+      "I05": {
         "inbound_assignments": {
           "GIIBS4": "1D",
           "JAKKS2": "1B",
           "KOLTS2": "1B",
+          "RACYR6": "1B",
           "SMUKE3": "1B",
-          "SNKPT2": "1D"
+          "SNKPT2": "1D",
+          "GIIBS4.5.FINAL": "1D",
+          "GIIBS4.5.AUTO": "1D",
+          "JAKKS2.5.FINAL": "1B",
+          "JAKKS2.5.AUTO": "1B",
+          "KOLTS2.5.FINAL": "1B",
+          "KOLTS2.5.AUTO": "1B",
+          "SMUKE3.5.FINAL": "1B",
+          "SMUKE3.5.AUTO": "1B",
+          "SNKPT2.5.FINAL": "1D",
+          "SNKPT2.5.AUTO": "1D"
         },
         "departure_assignments": {
-          "KIND": "1W"
+          "KIND/DAWNN1": "1E",
+          "KIND/OOM5": "1E",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1W",
+          "KIND/ROCKY1": "1W"
         },
         "default_consolidation": {
           "1B": ["1D"],
@@ -72,7 +87,94 @@
           "1S": ["1N"]
         }
       },
-      "KI1": {
+      "I23": {
+        "inbound_assignments": {
+          "GIIBS4": "1D",
+          "JAKKS2": "1B",
+          "KOLTS2": "1B",
+          "RACYR6": "1B",
+          "SMUKE3": "1B",
+          "SNKPT2": "1D",
+          "GIIBS4.23.FINAL": "1D",
+          "GIIBS4.23.AUTO": "1D",
+          "JAKKS2.23.FINAL": "1B",
+          "JAKKS2.23.AUTO": "1B",
+          "KOLTS2.23.FINAL": "1B",
+          "KOLTS2.23.AUTO": "1B",
+          "SMUKE3.23.FINAL": "1B",
+          "SMUKE3.23.AUTO": "1B",
+          "SNKPT2.23.FINAL": "1D",
+          "SNKPT2.23.AUTO": "1D"
+        },
+        "departure_assignments": {
+          "KIND/DAWNN1": "1E",
+          "KIND/OOM5": "1E",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1W",
+          "KIND/ROCKY1": "1W"
+        },
+        "default_consolidation": {
+          "1B": ["1D"],
+          "1E": ["1B", "1F", "1S", "1W"],
+          "1F": ["1I"],
+          "1S": ["1N"]
+        }
+      },
+      "I14": {
+        "inbound_assignments": {
+          "GIIBS4": "1D",
+          "JAKKS2": "1B",
+          "KOLTS2": "1B",
+          "SMUKE3": "1B",
+          "SNKPT2": "1D",
+          "GIIBS4.14.FINAL": "1D",
+          "JAKKS2.14.FINAL": "1B",
+          "KOLTS2.14.FINAL": "1B",
+          "SMUKE3.14.FINAL": "1B",
+          "SNKPT2.14.FINAL": "1D"
+        },
+        "departure_assignments": {
+          "KIND/DAWNN1": "1W",
+          "KIND/OOM5": "1W",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1E",
+          "KIND/ROCKY1": "1W"
+        },
+        "default_consolidation": {
+          "1B": ["1D"],
+          "1E": ["1B", "1F", "1S", "1W"],
+          "1F": ["1I"],
+          "1S": ["1N"]
+        }
+      },
+      "I32": {
+        "inbound_assignments": {
+          "GIIBS4": "1D",
+          "JAKKS2": "1B",
+          "KOLTS2": "1B",
+          "SMUKE3": "1B",
+          "SNKPT2": "1D",
+          "GIIBS4.32.FINAL": "1D",
+          "JAKKS2.32.FINAL": "1B",
+          "KOLTS2.32.FINAL": "1B",
+          "SMUKE3.32.FINAL": "1B",
+          "SNKPT2.32.FINAL": "1D"
+        },
+        "departure_assignments": {
+          "KIND/DAWNN1": "1W",
+          "KIND/OOM5": "1W",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1E",
+          "KIND/ROCKY1": "1W"
+        },
+        "default_consolidation": {
+          "1B": ["1D"],
+          "1E": ["1B", "1F", "1S", "1W"],
+          "1F": ["1I"],
+          "1S": ["1N"]
+        }
+      },
+      "INF": {
         "inbound_assignments": {
           "GIIBS4": "1D",
           "JAKKS2": "1B",
@@ -81,13 +183,124 @@
           "SNKPT2": "1D"
         },
         "departure_assignments": {
-          "KIND": "1E"
+          "KIND/DAWNN1": "1W",
+          "KIND/OOM5": "1W",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1E",
+          "KIND/ROCKY1": "1W"
         },
         "default_consolidation": {
-          "1B": ["1D"],
-          "1E": ["1B", "1F", "1S", "1W"],
-          "1F": ["1I"],
-          "1S": ["1N"]
+          "1F": []
+        }
+      },
+      "D05": {
+        "inbound_assignments": {
+          "GIIBS4": "1D",
+          "JAKKS2": "1B",
+          "KOLTS2": "1B",
+          "RACYR6": "1B",
+          "SMUKE3": "1B",
+          "SNKPT2": "1D",
+          "GIIBS4.5.FINAL": "1D",
+          "GIIBS4.5.AUTO": "1D",
+          "JAKKS2.5.FINAL": "1B",
+          "JAKKS2.5.AUTO": "1B",
+          "KOLTS2.5.FINAL": "1B",
+          "KOLTS2.5.AUTO": "1B",
+          "SMUKE3.5.FINAL": "1B",
+          "SMUKE3.5.AUTO": "1B",
+          "SNKPT2.5.FINAL": "1D",
+          "SNKPT2.5.AUTO": "1D"
+        },
+        "departure_assignments": {
+          "KIND/DAWNN1": "1E",
+          "KIND/OOM5": "1E",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1W",
+          "KIND/ROCKY1": "1W"
+        },
+        "default_consolidation": {
+          "1E": ["1W"]
+        }
+      },
+      "D23": {
+        "inbound_assignments": {
+          "GIIBS4": "1D",
+          "JAKKS2": "1B",
+          "KOLTS2": "1B",
+          "RACYR6": "1B",
+          "SMUKE3": "1B",
+          "SNKPT2": "1D",
+          "GIIBS4.23.FINAL": "1D",
+          "GIIBS4.23.AUTO": "1D",
+          "JAKKS2.23.FINAL": "1B",
+          "JAKKS2.23.AUTO": "1B",
+          "KOLTS2.23.FINAL": "1B",
+          "KOLTS2.23.AUTO": "1B",
+          "SMUKE3.23.FINAL": "1B",
+          "SMUKE3.23.AUTO": "1B",
+          "SNKPT2.23.FINAL": "1D",
+          "SNKPT2.23.AUTO": "1D"
+        },
+        "departure_assignments": {
+          "KIND/DAWNN1": "1E",
+          "KIND/OOM5": "1E",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1W",
+          "KIND/ROCKY1": "1W"
+        },
+        "default_consolidation": {
+          "1E": ["1W"]
+        }
+      },
+      "D14": {
+        "inbound_assignments": {
+          "GIIBS4": "1D",
+          "JAKKS2": "1B",
+          "KOLTS2": "1B",
+          "RACYR6": "1B",
+          "SMUKE3": "1B",
+          "SNKPT2": "1D",
+          "GIIBS4.14.FINAL": "1D",
+          "JAKKS2.14.FINAL": "1B",
+          "KOLTS2.14.FINAL": "1B",
+          "SMUKE3.14.FINAL": "1B",
+          "SNKPT2.14.FINAL": "1D"
+        },
+        "departure_assignments": {
+          "KIND/DAWNN1": "1W",
+          "KIND/OOM5": "1W",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1E",
+          "KIND/ROCKY1": "1W"
+        },
+        "default_consolidation": {
+          "1E": ["1W"]
+        }
+      },
+      "D32": {
+        "inbound_assignments": {
+          "GIIBS4": "1D",
+          "JAKKS2": "1B",
+          "KOLTS2": "1B",
+          "RACYR6": "1B",
+          "SMUKE3": "1B",
+          "SNKPT2": "1D",
+          "GIIBS4.32.FINAL": "1D",
+          "JAKKS2.32.FINAL": "1B",
+          "KOLTS2.32.FINAL": "1B",
+          "SMUKE3.32.FINAL": "1B",
+          "SNKPT2.32.FINAL": "1D"
+        },
+        "departure_assignments": {
+          "KIND/DAWNN1": "1W",
+          "KIND/OOM5": "1W",
+          "KIND/MAREO1": "1E",
+          "KIND/MEARZ7": "1E",
+          "KIND/ROCKY1": "1W"
+        },
+        "default_consolidation": {
+          "1E": ["1W"]
         }
       }
     },
@@ -178,12 +391,40 @@
       ]
     },
     "radar_sites": {
-      "INDA": {
+      "QWO": {
+        "char": "W",
+        "position": "39.702434,-86.288816",
+        "elevation": 871,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "IND": {
         "char": "I",
-        "position": "39.70244,-86.2883",
-        "elevation": 795,
-        "primary_range": 70,
-        "secondary_range": 70,
+        "position": "39.746021,-86.284641",
+        "elevation": 865,
+        "primary_range": 250,
+        "secondary_range": 250,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "GUS": {
+        "char": "G",
+        "position": "39.455238,-87.313843",
+        "elevation": 659,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "HUF": {
+        "char": "H",
+        "position": "40.657448,-86.159818",
+        "elevation": 880,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
         "slope_angle": 0.175
       }
     },
@@ -196,7 +437,7 @@
       "PXV": "OOM",
       "MAREO": "MREO",
       "BDOCK": "MREO",
-      "MEARZ": "MEAR",
+      "CLLRK": "CLRK",
       "BRATN": "BRTN",
       "MZZ": "BRTN",
       "BVT": "SACH",
@@ -208,6 +449,7 @@
       "BDOCK": {},
       "BRATN": {},
       "BVT": {},
+      "CLLRK": {},
       "DAWNN": {},
       "IIU": {},
       "MAREO": {},
@@ -222,8 +464,70 @@
       "WEGEE": {}
     },
     "video_map_file": "videomaps/ZID-stars.mappack",
+    "airspace_awareness": [
+      {
+        "fixes": ["BVT"],
+        "altitude_range": [10001, 23000],
+        "receiving_controller": "G46"
+      },
+      {
+        "fixes": ["CVG"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "21W"
+      },
+      {
+        "fixes": ["DAY"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "11U"
+      },
+      {
+        "fixes": ["FWA"],
+        "altitude_range": [0, 10000],
+        "receiving_controller": "51F"
+      },
+      {
+        "fixes": ["GUS"],
+        "altitude_range": [0, 10000],
+        "receiving_controller": "41W"
+      },
+      {
+        "fixes": ["HUF"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "31G"
+      },
+      {
+        "fixes": ["SDF"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "64D"
+      },
+      {
+        "fixes": ["CLLRK", "BRATN", "MZZ"],
+        "altitude_range": [10001, 23000],
+        "receiving_controller": "G35"
+      },
+      {
+        "fixes": ["OOM"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C35"
+      },
+      {
+        "fixes": ["TTH"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C35"
+      },
+      {
+        "fixes": ["MAREO"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C33"
+      },
+      {
+        "fixes": ["FOYTT"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C34"
+      }
+    ],
     "coordination_fixes": {
-      "BABNE": [
+      "SNKPT": [
         {
           "type": "route",
           "to": "IND",
@@ -237,7 +541,7 @@
           "from": "ZID"
         }
       ],
-      "OPPIE": [
+      "JAKKS": [
         {
           "type": "route",
           "to": "IND",
@@ -251,7 +555,7 @@
           "from": "ZID"
         }
       ],
-      "SMUKE": [
+      "RACYR": [
         {
           "type": "route",
           "to": "IND",
@@ -292,6 +596,7 @@
       }
     },
     "datablocks": {
+      "display_rnav_symbol": true,
       "allow_long_scratchpad": true
     }
   },
