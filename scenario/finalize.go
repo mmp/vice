@@ -866,6 +866,9 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 			e.ErrorString(`video map group %q in "default_map_group" not found. Use -listmaps `+
 				"<path to *.mappack> to show available video map groups for a facility.", s.DefaultMapGroup)
 		}
+		s.AltitudeLimits.Validate(e)
+	} else if s.AltitudeLimits.Adapted() {
+		e.ErrorString("the altitude limits filters are ERAM-only")
 	}
 
 	if s.VFRRateScale == nil { // unspecified -> default to 1

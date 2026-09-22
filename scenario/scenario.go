@@ -46,12 +46,13 @@ type Scenario struct {
 	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
 
-	Center          av.ScenarioPoint2LL `json:"center"`
-	Range           float32             `json:"range"`
-	DefaultMaps     []string            `json:"default_maps"`
-	DefaultMapGroup string              `json:"default_map_group"`
-	VFRRateScale    *float32            `json:"vfr_rate_scale"`
-	VFFRequestRate  *int32              `json:"flight_following_request_rate,omitempty"`
+	Center av.ScenarioPoint2LL `json:"center"`
+	Range  float32             `json:"range"`
+	sim.AltitudeLimits
+	DefaultMaps     []string `json:"default_maps"`
+	DefaultMapGroup string   `json:"default_map_group"`
+	VFRRateScale    *float32 `json:"vfr_rate_scale"`
+	VFFRequestRate  *int32   `json:"flight_following_request_rate,omitempty"`
 }
 
 // center is where the scenario's radar display is centered: the scenario's own

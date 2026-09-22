@@ -91,6 +91,7 @@ type CommonState struct {
 	Range                     float32
 	ScenarioCenter            math.Point2LL
 	ScenarioRange             float32
+	ScenarioAltitudeLimits    AltitudeLimits
 	ScenarioDefaultVideoMaps  []string
 	ScenarioDefaultVideoGroup string
 
@@ -308,6 +309,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		Range:                     config.Range,
 		ScenarioCenter:            config.ScenarioCenter,
 		ScenarioRange:             config.ScenarioRange,
+		ScenarioAltitudeLimits:    config.ScenarioAltitudeLimits,
 		ScenarioDefaultVideoMaps:  config.DefaultMaps,
 		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
 

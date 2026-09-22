@@ -638,7 +638,7 @@ func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, l
 }
 
 func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	ep.ensurePrefSetForSim(client.State)
+	ep.resetPrefsForNewSim(client.State)
 	ep.makeMaps(client, lg)
 	ep.lastTrackUpdate = time.Time{}
 	ep.CAPairs = nil
@@ -653,9 +653,11 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.weatherRadar.Reset(lg)
 }
 
-// ensurePrefSetForSim initializes the ERAM preference set if needed and
-// resets transient fields for a newly-loaded or reset Sim. Called from
-// both LoadedSim and ResetSim so that preferences are ready before use.
+// ensurePrefSetForSim initializes the ERAM preference set if needed and fills
+// in whatever sim-dependent fields a saved one is still missing, so that
+// preferences are ready before use. A new sim goes on through
+// resetPrefsForNewSim, which applies the scenario's settings over the top;
+// resuming a saved sim stops here so that the scope comes back as it was left.
 func (ep *Scope) ensurePrefSetForSim(ss client.SimState) {
 	// Ensure map of saved preference sets exists
 	if ep.ERAMPreferenceSets == nil {
@@ -693,11 +695,7 @@ func (ep *Scope) ensurePrefSetForSim(ss client.SimState) {
 		ep.prefSet.Current.ARTCC = ss.Facility
 	}
 	if ep.prefSet.Current.Range == 0 {
-		if r := ss.GetInitialRange(); r != 0 {
-			ep.prefSet.Current.Range = r
-		} else {
-			ep.prefSet.Current.Range = makeDefaultPreferences().Range
-		}
+		ep.prefSet.Current.Range = initialERAMRange(ss)
 	}
 
 	def := makeDefaultPreferences()

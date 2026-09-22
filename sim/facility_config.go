@@ -308,6 +308,12 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
+	for tcp, config := range fa.Controllers {
+		if config.AltitudeLimits.Adapted() {
+			e.ErrorString("controllers[%s]: the altitude limits filters are ERAM-only", tcp)
+		}
+	}
+
 	// Aircraft type classes, then the fix-pair configuration that references
 	// them.
 	validateAircraftClasses("tcp_assignment_classes", fa.TCPAssignmentClasses, e)
@@ -686,6 +692,12 @@ func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 
 	// Pseudo-ERAM coordination adaptation.
 	enroute.Validate(fa.ArtsCoordination, fa.Restrictions, e)
+
+	for tcp, config := range fa.Controllers {
+		e.Push(fmt.Sprintf("controllers[%s]", tcp))
+		config.AltitudeLimits.Validate(e)
+		e.Pop()
+	}
 
 	// ERAM facilities may also adapt fix pairs: an ARTCC-primary scenario
 	// self-hosts its coordination (keyed by the ARTCC's own id) and assigns

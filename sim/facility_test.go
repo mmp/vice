@@ -387,3 +387,68 @@ func TestFacilityAdaptationFinalizesEveryFilterList(t *testing.T) {
 		}
 	}
 }
+
+func TestAltitudeLimitsFilters(t *testing.T) {
+	unrestricted := UnrestrictedAltitudeLimits
+	for _, c := range []struct {
+		limits        AltitudeLimits
+		targets, ldbs [2]int
+	}{
+		// Nothing adapted: everything gets through both filters.
+		{AltitudeLimits{}, unrestricted, unrestricted},
+		// The combined form sets the two of them.
+		{AltitudeLimits{Combined: [2]int{0, 230}}, [2]int{0, 230}, [2]int{0, 230}},
+		// One of the individual ones leaves the other unrestricted.
+		{AltitudeLimits{Targets: [2]int{240, 999}}, [2]int{240, 999}, unrestricted},
+		{AltitudeLimits{LDBs: [2]int{50, 180}}, unrestricted, [2]int{50, 180}},
+		{AltitudeLimits{Targets: [2]int{240, 999}, LDBs: [2]int{50, 180}}, [2]int{240, 999}, [2]int{50, 180}},
+	} {
+		targets, ldbs := c.limits.Filters()
+		if targets != c.targets || ldbs != c.ldbs {
+			t.Errorf("%+v: got targets %v, LDBs %v; expected %v and %v", c.limits, targets, ldbs,
+				c.targets, c.ldbs)
+		}
+		if adapted := c.limits.Adapted(); adapted != (c.limits != AltitudeLimits{}) {
+			t.Errorf("%+v: Adapted() returned %v", c.limits, adapted)
+		}
+	}
+}
+
+func TestAltitudeLimitsValidate(t *testing.T) {
+	countErrors := func(limits AltitudeLimits) int {
+		var e util.ErrorLogger
+		limits.Validate(&e)
+		n := 0
+		for range e.Errors() {
+			n++
+		}
+		return n
+	}
+
+	for _, limits := range []AltitudeLimits{
+		{},
+		{Combined: [2]int{0, 999}},
+		{Targets: [2]int{240, 999}, LDBs: [2]int{50, 180}},
+		{Targets: [2]int{100, 100}},
+	} {
+		if n := countErrors(limits); n != 0 {
+			t.Errorf("%+v: reported %d errors", limits, n)
+		}
+	}
+
+	for _, limits := range []AltitudeLimits{
+		// The combined form is exclusive with the individual ones.
+		{Combined: [2]int{0, 230}, Targets: [2]int{0, 100}},
+		{Combined: [2]int{0, 230}, LDBs: [2]int{0, 100}},
+		// Inverted ranges.
+		{Combined: [2]int{230, 100}},
+		{LDBs: [2]int{230, 100}},
+		// Written in feet rather than hundreds of feet.
+		{Combined: [2]int{0, 23000}},
+		{Targets: [2]int{-100, 230}},
+	} {
+		if countErrors(limits) == 0 {
+			t.Errorf("%+v: accepted", limits)
+		}
+	}
+}

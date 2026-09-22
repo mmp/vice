@@ -20,6 +20,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/videomaps"
 )
@@ -2574,7 +2575,7 @@ func altitudeLimitsButtonLabel(ps *Preferences) string {
 // labels and the entries are all capitals and digits, which share this band,
 // so it serves as a fixed reference that doesn't shift as a filter is typed.
 func (ep *Scope) altitudeLimitsInkBounds() math.Extent2D {
-	return ep.ERAMToolbarFont().InkBounds(formatAltitudeLimits(defaultAltitudeLimits), 0)
+	return ep.ERAMToolbarFont().InkBounds(formatAltitudeLimits(sim.UnrestrictedAltitudeLimits), 0)
 }
 
 // altitudeLimitsLayoutAt lays out the sub-entry box with its top-left corner
@@ -2596,7 +2597,7 @@ func (ep *Scope) altitudeLimitsLayoutAt(anchor [2]float32, scale float32) altitu
 	for _, row := range rows {
 		labelWidth = max(labelWidth, font.LayoutBounds(row.label, 0).Width())
 	}
-	valueWidth := font.LayoutBounds(formatAltitudeLimits(defaultAltitudeLimits), 0).Width() + 2*altitudeLimitsPad
+	valueWidth := font.LayoutBounds(formatAltitudeLimits(sim.UnrestrictedAltitudeLimits), 0).Width() + 2*altitudeLimitsPad
 
 	width := 3*altitudeLimitsPad + labelWidth + valueWidth
 	if ep.altLimits.invalid {

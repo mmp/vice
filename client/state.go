@@ -156,6 +156,19 @@ func (ss *SimState) GetInitialCenter() math.Point2LL {
 	return ss.Center
 }
 
+// GetInitialAltitudeLimits returns the adapted ERAM target and LDB altitude
+// limits filters for the user's position, in hundreds of feet. A position that
+// adapts any of its limits takes both of them from its own adaptation rather
+// than mixing in the scenario's.
+func (ss *SimState) GetInitialAltitudeLimits() (targets, ldbs [2]int) {
+	tcp := ss.PrimaryPositionForTCW(ss.UserTCW)
+
+	if config, ok := ss.FacilityAdaptation.Controllers[tcp]; ok && config.AltitudeLimits.Adapted() {
+		return config.AltitudeLimits.Filters()
+	}
+	return ss.ScenarioAltitudeLimits.Filters()
+}
+
 // GetUserConsolidation returns the consolidation state for the current user's TCW.
 // Returns nil if no consolidation state exists.
 func (ss *SimState) GetUserConsolidation() *sim.TCPConsolidation {

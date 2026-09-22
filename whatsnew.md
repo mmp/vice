@@ -3,3 +3,5 @@
 - ERAM
   - Add datablock portal fence option
   - Add support for altitude limits, including the `QD` command
+- Facility engineering
+  - ERAM altitude limits can be specified per-controller and/or per-scenario

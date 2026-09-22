@@ -106,7 +106,9 @@ import (
 //	text they were written as and resolve it when finalized, so the resolved point serializes under its own name
 //
 // 93: the ERAM altitude limits filters are saved with the preference set
-const ViceSerializeVersion = 93
+//
+// 94: the ERAM altitude limits filters can be adapted per control position and per scenario
+const ViceSerializeVersion = 94
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

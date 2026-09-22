@@ -232,12 +232,13 @@ func (m STARSMacro) HasParameters() bool {
 var ValidateMacroCommandMode func(string) bool
 
 type STARSController struct {
-	VideoMapFile                    string              `json:"video_map_file,omitempty"`
-	VideoMapNames                   []string            `json:"video_maps"`
-	DefaultMaps                     []string            `json:"default_maps"`
-	Center                          av.ScenarioPoint2LL `json:"center"`
-	Range                           float32             `json:"range"`
-	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks"`
+	VideoMapFile  string              `json:"video_map_file,omitempty"`
+	VideoMapNames []string            `json:"video_maps"`
+	DefaultMaps   []string            `json:"default_maps"`
+	Center        av.ScenarioPoint2LL `json:"center"`
+	Range         float32             `json:"range"`
+	AltitudeLimits
+	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
 	FlightFollowingAirspace         []av.AirspaceVolume  `json:"flight_following_airspace"`
 	Altimeters                      []av.ICAOAirportCode `json:"altimeters"`
@@ -261,6 +262,73 @@ type STARSArea struct {
 	SystemAltimeter   av.ICAOAirportCode  `json:"system_altimeter,omitempty"`
 	Scratchpads       map[string]string   `json:"scratchpads,omitempty"`
 	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness,omitempty"`
+}
+
+// UnrestrictedAltitudeLimits is the ERAM altitude limits filter range, in
+// hundreds of feet, that lets everything through.
+var UnrestrictedAltitudeLimits = [2]int{0, 999}
+
+// maxAltitudeLimit is the largest value an adapted altitude limit may take;
+// the limits are in hundreds of feet, so 999 is the top of the scale.
+const maxAltitudeLimit = 999
+
+// AltitudeLimits adapts the initial ERAM altitude limits filters for a control
+// position or a scenario. "altitude_limits" sets the target and LDB filters
+// both; the other two set them individually and may not be given alongside it.
+// Each is a [low, high] range in hundreds of feet, and a filter that isn't
+// adapted lets everything through.
+type AltitudeLimits struct {
+	Combined [2]int `json:"altitude_limits"`
+	Targets  [2]int `json:"target_altitude_limits"`
+	LDBs     [2]int `json:"ldb_altitude_limits"`
+}
+
+// Adapted reports whether any of the filters were given.
+func (a AltitudeLimits) Adapted() bool {
+	return a != AltitudeLimits{}
+}
+
+// Filters returns the target and LDB altitude limits filters in hundreds of
+// feet, with one that wasn't adapted letting everything through.
+func (a AltitudeLimits) Filters() (targets, ldbs [2]int) {
+	if a.Combined != [2]int{} {
+		return a.Combined, a.Combined
+	}
+
+	targets, ldbs = UnrestrictedAltitudeLimits, UnrestrictedAltitudeLimits
+	if a.Targets != [2]int{} {
+		targets = a.Targets
+	}
+	if a.LDBs != [2]int{} {
+		ldbs = a.LDBs
+	}
+	return
+}
+
+// Validate reports mutually exclusive and malformed adapted limits.
+func (a AltitudeLimits) Validate(e *util.ErrorLogger) {
+	if a.Combined != [2]int{} && (a.Targets != [2]int{} || a.LDBs != [2]int{}) {
+		e.ErrorString(`"altitude_limits" may not be given along with ` +
+			`"target_altitude_limits" or "ldb_altitude_limits"`)
+	}
+
+	check := func(limits [2]int, what string) {
+		if limits == [2]int{} {
+			return
+		}
+		if limits[0] > limits[1] {
+			e.ErrorString("%s: low limit %d is above high limit %d", what, limits[0], limits[1])
+		}
+		for _, alt := range limits {
+			if alt < 0 || alt > maxAltitudeLimit {
+				e.ErrorString("%s: %d is out of range; the limits are in hundreds of feet, so %d is the highest",
+					what, alt, maxAltitudeLimit)
+			}
+		}
+	}
+	check(a.Combined, `"altitude_limits"`)
+	check(a.Targets, `"target_altitude_limits"`)
+	check(a.LDBs, `"ldb_altitude_limits"`)
 }
 
 // CurrentDatablockClockPhase returns the current clock phase (1-4)

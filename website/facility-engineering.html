@@ -1539,9 +1539,9 @@
                               <tr>
                                 <td>"center"</td>
                                 <td><a href="#fe-locations">Location</a></td>
-                                <td>The initial center of the STARS scope for controllers in this area.
-                                  This is overridden by any center specified in "controllers" and overrides
-                                  the top-level "center" in the facility configuration.</td>
+                                <td>The initial center of the scope for controllers in this area.
+                                  The order of precedence is "controllers", then the scenario's "center",
+                                  then this, then the top-level "center" in the facility configuration.</td>
                               </tr>
                               <tr>
                                 <td>"default_airport"</td>
@@ -1561,8 +1561,8 @@
                                   center to scope edge); for ERAM facilities this is the vertical
                                   extent of the scope (top edge to bottom edge), matching the
                                   value shown on the ERAM RANGE toolbar button.
-                                  This is overridden by any range specified in "controllers" and overrides
-                                  the top-level "range" in the facility configuration.</td>
+                                  The order of precedence is "controllers", then the scenario's "range",
+                                  then this, then the top-level "range" in the facility configuration.</td>
                               </tr>
                               <tr>
                                 <td>"scratchpads"</td>
@@ -1707,6 +1707,18 @@
                                   and the automatic default.</td>
                               </tr>
                               <tr>
+                                <td>"altitude_limits"</td>
+                                <td>Array of two numbers</td>
+                                <td><i>(ERAM only)</i> (<i>Optional</i>) The initial altitude limits filters for this
+                                  controller, given as [low, high] in hundreds of feet&mdash;the same range the ALT LIM
+                                  toolbar button shows and the <code>QD</code> command sets. This sets the target filter
+                                  and the limited datablock filter both, and may not be given along with
+                                  <code>"target_altitude_limits"</code> or <code>"ldb_altitude_limits"</code>.
+                                  A controller that specifies any of the three takes both of its filters from its own
+                                  settings, ignoring the ones in <a href="#fe-scenarios">"scenarios"</a>; a filter that
+                                  is not specified lets everything through.</td>
+                              </tr>
+                              <tr>
                                 <td>"beacon_code_blocks"</td>
                                 <td>String</td>
                                 <td>A comma-separated list of beacon code banks
@@ -1715,8 +1727,9 @@
                               <tr>
                                 <td>"center"</td>
                                 <td><a href="#fe-locations">Location</a></td>
-                                <td>The initial center of the controller's STARS scope.
-                                  This takes highest priority, overriding "areas" center and the top-level center.</td>
+                                <td>The initial center of the controller's scope.
+                                  This takes highest priority, overriding the scenario's "center",
+                                  the "areas" center, and the top-level center.</td>
                               </tr>
                               <tr>
                                 <td>"default_maps"</td>
@@ -1732,6 +1745,12 @@
                                   region will call the controller for flight following.</td>
                               </tr>
                               <tr>
+                                <td>"ldb_altitude_limits"</td>
+                                <td>Array of two numbers</td>
+                                <td><i>(ERAM only)</i> (<i>Optional</i>) As <code>"altitude_limits"</code>, but sets only
+                                  the filter applied to limited datablocks.</td>
+                              </tr>
+                              <tr>
                                 <td>"range"</td>
                                 <td>Number</td>
                                 <td>The initial range for the controller's scope in nautical miles.
@@ -1739,7 +1758,14 @@
                                   center to scope edge); for ERAM facilities this is the vertical
                                   extent of the scope (top edge to bottom edge), matching the
                                   value shown on the ERAM RANGE toolbar button.
-                                  This takes highest priority, overriding "areas" range and the top-level range.</td>
+                                  This takes highest priority, overriding the scenario's "range",
+                                  the "areas" range, and the top-level range.</td>
+                              </tr>
+                              <tr>
+                                <td>"target_altitude_limits"</td>
+                                <td>Array of two numbers</td>
+                                <td><i>(ERAM only)</i> (<i>Optional</i>) As <code>"altitude_limits"</code>, but sets only
+                                  the filter applied to target symbols and their history trails.</td>
                               </tr>
                               <tr>
                                 <td>"video_map_file"</td>
@@ -1786,7 +1812,10 @@
               </section><!--//section-->
               <section class="docs-section" id="fe-config-eram">
                 <h2 class="section-heading">ERAM</h2>
-                <p>The following settings in the "facility_adaptations" object are specific to the ERAM radar scope:</p><div class="json-controls"><button class="expand-all">Expand All</button> <button class="collapse-all">Collapse All</button></div>
+                <p>The following settings in the "facility_adaptations" object are specific to the ERAM radar scope.
+                  The initial altitude limits filters are also ERAM-only, but are adapted per control position in
+                  <a href="#fe-config-common">"controllers"</a> and per scenario in
+                  <a href="#fe-scenarios">"scenarios"</a>.</p><div class="json-controls"><button class="expand-all">Expand All</button> <button class="collapse-all">Collapse All</button></div>
                 <table class="table">
                   <thead>
                     <tr>
@@ -5891,6 +5920,17 @@
                     </td>
                   </tr>
                   <tr>
+                    <td>"altitude_limits"</td>
+                    <td>Array of two numbers</td>
+                    <td><i>(ERAM only)</i> (<i>Optional</i>) The initial altitude limits filters for this scenario,
+                      given as [low, high] in hundreds of feet&mdash;the same range the ALT LIM toolbar button shows and
+                      the <code>QD</code> command sets. This sets the target filter and the limited datablock filter
+                      both, and may not be given along with <code>"target_altitude_limits"</code> or
+                      <code>"ldb_altitude_limits"</code>. A filter that is not specified lets everything through.
+                      These are overridden entirely by any of the three specified for the controller in
+                      <a href="#fe-config-common">"controllers"</a>.</td>
+                  </tr>
+                  <tr>
                     <td>"arrival_runways"</td>
                     <td>Array of objects</td>
                     <td><p>Each object specifies an airport, one of its runways, and an optional go-around procedure.
@@ -5961,6 +6001,8 @@
                     <td>"center"</td>
                     <td><a href="#fe-locations">Location</a></td>
                     <td>(<i>Optional</i>) If specified, this gives the initial radar scope center (as a <a href="#fe-locations">latitude-longitude position</a>.)
+                      This overrides the "areas" center and the top-level center in the facility configuration, but is
+                      itself overridden by any center specified in <a href="#fe-config-common">"controllers"</a>.
                     </td>
                   </tr>
                   <tr>
@@ -6058,6 +6100,11 @@
                     </td>
                   </tr>
                   <tr>
+                    <td>"flight_following_request_rate"</td>
+                    <td>Number</td>
+                    <td>(<i>Optional</i>) Default rate at which VFR aircraft in a controller's flight-following airspace request flight following, in requests per hour. Applied when the scenario is loaded; the value can be adjusted at any time via the launch-config UI. If unspecified, defaults to 10.</td>
+                  </tr>
+                  <tr>
                     <td>"inbound_rates"</td>
                     <td>Object</td>
                     <td>Each member specifies an inbound flow group and is an object that is a map
@@ -6070,19 +6117,31 @@
                     </td>
                   </tr>
                   <tr>
+                    <td>"ldb_altitude_limits"</td>
+                    <td>Array of two numbers</td>
+                    <td><i>(ERAM only)</i> (<i>Optional</i>) As <code>"altitude_limits"</code>, but sets only the filter
+                      applied to limited datablocks.</td>
+                  </tr>
+                  <tr>
                     <td>"range"</td>
                     <td>Number</td>
-                    <td>(<i>Optional</i>) If specified, gives the initial radar scope center range in nautical miles. This overrides the range given in the scenario group.</td>
+                    <td>(<i>Optional</i>) If specified, gives the initial radar scope range in nautical miles.
+                      For STARS facilities this is the scope radius (distance from center to scope edge); for ERAM
+                      facilities this is the vertical extent of the scope (top edge to bottom edge), matching the value
+                      shown on the ERAM RANGE toolbar button.
+                      This overrides the "areas" range and the top-level range in the facility configuration, but is
+                      itself overridden by any range specified in <a href="#fe-config-common">"controllers"</a>.</td>
+                  </tr>
+                  <tr>
+                    <td>"target_altitude_limits"</td>
+                    <td>Array of two numbers</td>
+                    <td><i>(ERAM only)</i> (<i>Optional</i>) As <code>"altitude_limits"</code>, but sets only the filter
+                      applied to target symbols and their history trails.</td>
                   </tr>
                   <tr>
                     <td>"vfr_rate_scale"</td>
                     <td>Number</td>
                     <td>Scale factor to adjust the rate of distractor VFR launches in the scenario. Set to 0 for none.</td>
-                  </tr>
-                  <tr>
-                    <td>"flight_following_request_rate"</td>
-                    <td>Number</td>
-                    <td>(<i>Optional</i>) Default rate at which VFR aircraft in a controller's flight-following airspace request flight following, in requests per hour. Applied when the scenario is loaded; the value can be adjusted at any time via the launch-config UI. If unspecified, defaults to 10.</td>
                   </tr>
                   <tr>
                     <td>"wind"</td>

@@ -11,6 +11,7 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/sim"
 )
 
 type Preferences struct {
@@ -234,10 +235,6 @@ const (
 	NexradToolbarAll     = 123
 )
 
-// defaultAltitudeLimits is the altitude limits filter range, in hundreds of
-// feet, that lets everything through.
-var defaultAltitudeLimits = [2]int{0, 999}
-
 // altitudeLimitsLength is the number of characters in an altitude limits
 // filter entry such as "100B230".
 const altitudeLimitsLength = 7
@@ -268,11 +265,15 @@ func parseAltitudeLimits(s string) (limits [2]int, ok bool) {
 	return [2]int{low, high}, true
 }
 
+// defaultERAMRange is the initial scope range, in nautical miles of vertical
+// extent, when no facility or scenario adapts one.
+const defaultERAMRange = 300
+
 func makeDefaultPreferences() *Preferences {
 	var prefs Preferences
 
 	prefs.DisplayToolbar = true
-	prefs.Range = 300
+	prefs.Range = defaultERAMRange
 	prefs.VideoMapVisible = make(map[string]any)
 
 	prefs.CharSize.Line4 = 0
@@ -310,8 +311,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.Brightness.DBFEL = 80
 	prefs.Brightness.Outage = 80
 
-	prefs.AltitudeLimits.Targets = defaultAltitudeLimits
-	prefs.AltitudeLimits.LDBs = defaultAltitudeLimits
+	prefs.AltitudeLimits.Targets = sim.UnrestrictedAltitudeLimits
+	prefs.AltitudeLimits.LDBs = sim.UnrestrictedAltitudeLimits
 	prefs.TornOffButtons = make(map[string][2]float32)
 
 	prefs.NexradLevel = NexradToolbarAll
@@ -508,23 +509,48 @@ func (p *Preferences) Upgrade(from, to int) {
 		// The altitude limits filters moved from an unexported field that
 		// never serialized to AltitudeLimits, so every older save has them
 		// zero-valued, which would filter out all but the ground.
-		p.AltitudeLimits.Targets = defaultAltitudeLimits
-		p.AltitudeLimits.LDBs = defaultAltitudeLimits
+		p.AltitudeLimits.Targets = sim.UnrestrictedAltitudeLimits
+		p.AltitudeLimits.LDBs = sim.UnrestrictedAltitudeLimits
 	}
+}
+
+// initialERAMRange is the scope range a sim starts at: the adapted one if
+// there is any, otherwise the system default.
+func initialERAMRange(ss client.SimState) float32 {
+	if r := ss.GetInitialRange(); r != 0 {
+		return r
+	}
+	return defaultERAMRange
+}
+
+// Reset applies the sim's initial settings to the preferences; it is called
+// when a new sim is started so that they follow the scenario rather than
+// carrying over from the last one flown at the same ARTCC.
+func (p *Preferences) Reset(ss client.SimState) {
+	p.Center = ss.GetInitialCenter()
+	p.CurrentCenter = p.Center
+	p.Range = initialERAMRange(ss)
+	p.VideoMapGroup = ss.ScenarioDefaultVideoGroup
+
+	p.AltitudeLimits.Targets, p.AltitudeLimits.LDBs = ss.GetInitialAltitudeLimits()
+	// Adapting the target and LDB filters separately brings the sub-entry box
+	// up split, showing the two of them.
+	p.AltitudeLimits.Split = p.AltitudeLimits.Targets != p.AltitudeLimits.LDBs
 }
 
 func (ep *Scope) initPrefsForLoadedSim(ss client.SimState) *Preferences {
 	// TODO: Add saving prefs with different ARTCCS/ sectors
 
 	p := makeDefaultPreferences()
-	p.Center = ss.GetInitialCenter()
-	p.CurrentCenter = p.Center
-	p.VideoMapGroup = ss.ScenarioDefaultVideoGroup
 	p.ARTCC = ss.Facility
-	if r := ss.GetInitialRange(); r != 0 {
-		p.Range = r
-	}
+	p.Reset(ss)
 	return p
+}
+
+// resetPrefsForNewSim is called when a new Sim is started from scratch.
+func (ep *Scope) resetPrefsForNewSim(ss client.SimState) {
+	ep.ensurePrefSetForSim(ss)
+	ep.prefSet.Current.Reset(ss)
 }
 
 func (ep *Scope) currentPrefs() *Preferences {

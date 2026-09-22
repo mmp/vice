@@ -221,17 +221,18 @@ type NewSimConfiguration struct {
 
 	EnforceUniqueCallsignSuffix bool
 
-	MagneticVariation float32
-	NmPerLongitude    float32
-	StartTime         time.Time
-	WindSpecifier     *wx.WindSpecifier
-	Center            math.Point2LL
-	Range             float32
-	ScenarioCenter    math.Point2LL
-	ScenarioRange     float32
-	DefaultMaps       []string
-	DefaultMapGroup   string
-	Airspace          av.Airspace
+	MagneticVariation      float32
+	NmPerLongitude         float32
+	StartTime              time.Time
+	WindSpecifier          *wx.WindSpecifier
+	Center                 math.Point2LL
+	Range                  float32
+	ScenarioCenter         math.Point2LL
+	ScenarioRange          float32
+	ScenarioAltitudeLimits AltitudeLimits
+	DefaultMaps            []string
+	DefaultMapGroup        string
+	Airspace               av.Airspace
 
 	PilotErrorInterval float32
 
