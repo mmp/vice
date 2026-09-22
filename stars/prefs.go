@@ -305,19 +305,7 @@ func (p *Preferences) Reset(ss client.SimState, sp *Pane) {
 	p.SelectedBeacons = util.DuplicateSlice(ss.ControllerMonitoredBeaconCodeBlocks)
 
 	// Reset CRDA state
-	p.CRDA.RunwayPairState = nil
-	for _, pair := range sp.CRDAPairs {
-		state := CRDARunwayPairState{}
-		// Source-side ghosting is enabled by default; the ghost-side direction
-		// (which would reverse source/ghost roles) starts disabled and the
-		// controller can enable it with N[runway]E if they want.
-		state.SourceState.Enabled = true
-		state.SourceState.Airport = pair.Airport
-		state.SourceState.Region = pair.SourceRegion
-		state.GhostState.Airport = pair.Airport
-		state.GhostState.Region = pair.GhostRegion
-		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
-	}
+	p.CRDA.RunwayPairState = makeCRDARunwayPairState(sp.CRDAPairs)
 
 	clear(p.RestrictionAreaSettings)
 
@@ -332,6 +320,25 @@ func (p *Preferences) Reset(ss client.SimState, sp *Pane) {
 			// lg.Errorf("%s: \"default_map\" not found in \"stars_maps\"", dm)
 		}
 	}
+}
+
+// makeCRDARunwayPairState builds default CRDA runway-pair state matching
+// pairs in size and indexing, as required by CRDA.RunwayPairState.
+func makeCRDARunwayPairState(pairs []CRDAPair) []CRDARunwayPairState {
+	var state []CRDARunwayPairState
+	for _, pair := range pairs {
+		s := CRDARunwayPairState{}
+		// Source-side ghosting is enabled by default; the ghost-side direction
+		// (which would reverse source/ghost roles) starts disabled and the
+		// controller can enable it with N[runway]E if they want.
+		s.SourceState.Enabled = true
+		s.SourceState.Airport = pair.Airport
+		s.SourceState.Region = pair.SourceRegion
+		s.GhostState.Airport = pair.Airport
+		s.GhostState.Region = pair.GhostRegion
+		state = append(state, s)
+	}
+	return state
 }
 
 func makeDefaultPreferences() *Preferences {
@@ -468,6 +475,13 @@ func (p *Preferences) Activate(pl platform.Platform, sp *Pane) {
 	}
 	for len(p.AudioEffectEnabled) < AudioNumTypes {
 		p.AudioEffectEnabled = append(p.AudioEffectEnabled, false)
+	}
+
+	// Guard against CRDA.RunwayPairState having gotten out of sync with
+	// sp.CRDAPairs (e.g., prefs restored from a saved config or a
+	// different TRACON's adaptation).
+	if len(p.CRDA.RunwayPairState) != len(sp.CRDAPairs) {
+		p.CRDA.RunwayPairState = makeCRDARunwayPairState(sp.CRDAPairs)
 	}
 }
 
