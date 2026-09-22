@@ -1,5 +1,5 @@
-// pkg/log/logdir_configdir.go
-// Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
+// log/logdir_configdir.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 //go:build release

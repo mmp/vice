@@ -1,3 +1,7 @@
+// cmd/stteval/main.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 // cmd/stteval evaluates the unreviewed transmissions in cmd/sttreview's
 // queue against the current STT decoder. It partitions them into trusted
 // entries (current output agrees with the stored output and passes

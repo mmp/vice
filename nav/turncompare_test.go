@@ -1,5 +1,5 @@
 // nav/turncompare_test.go
-// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // Quality tests for the turn-anticipation predicates: a conformance test

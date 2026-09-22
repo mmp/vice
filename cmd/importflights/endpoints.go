@@ -1,7 +1,7 @@
 // cmd/importflights/endpoints.go
-// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Placing the two ends of a track at airports. The source data gives the
 // airports near where a track began and ended, the points themselves, and the
 // itinerary it looked up from the flight's callsign; between them they say

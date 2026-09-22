@@ -1,5 +1,5 @@
-// pkg/util/resources_sync_download.go
-// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
+// util/resources_sync_download.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // Downloading of the resource files into the local cache, for builds that

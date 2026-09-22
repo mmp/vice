@@ -1,3 +1,7 @@
+// autowhisper/internal/whisperlow/whisper_vulkan.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 //go:build vulkan
 
 package whisperlow

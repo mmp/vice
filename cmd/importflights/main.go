@@ -1,7 +1,7 @@
 // cmd/importflights/main.go
-// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Imports historical flight data into the flight data files under
 // resources/traffic/flights. Input is one or more parquet files from the
 // MrAirspace/aircraft-flight-schedules dataset, which is derived from ADS-B

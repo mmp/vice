@@ -1,3 +1,7 @@
+// speech/stt/score.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 // Package stt provides a local algorithmic speech-to-command parser
 // for ATC transcripts, replacing the LLM-based approach with fast fuzzy matching.
 package stt

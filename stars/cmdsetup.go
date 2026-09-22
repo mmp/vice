@@ -1,5 +1,5 @@
-// sim/cmdsetup.go
-// Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
+// stars/cmdsetup.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // Commands defined in chapter 4 of the TCW Operator Manual

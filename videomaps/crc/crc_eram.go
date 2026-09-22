@@ -1,7 +1,7 @@
 // videomaps/crc/crc_eram.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // ERAM-mode import: walks facility.eramConfiguration.geoMaps and emits
 // <ARTCC>.mappack.
 

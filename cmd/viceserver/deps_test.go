@@ -1,3 +1,7 @@
+// cmd/viceserver/deps_test.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 // Verify that every non-UI command binary stays free of UI / renderer /
 // platform dependencies. This both prevents accidental imports that would
 // break the -race build of viceserver (cimgui-go inlined generics crash

@@ -1,7 +1,7 @@
 // cmd/importflights/calibrate.go
-// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Measuring how well the point a track was seen at picks an airport out of a
 // list of candidates, so that the thresholds resolveEndpoint guards itself with
 // are chosen from the data rather than guessed at.

@@ -1,3 +1,7 @@
+// eram/dbmenu.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 // dbmenu.go -- the FDB field-click menus: altitude, heading, speed, and
 // free-form text. Each is a popup (see menu.go) opened from a click on the
 // corresponding datablock field in datablockInteractions.

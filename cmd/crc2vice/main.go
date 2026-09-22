@@ -1,7 +1,7 @@
 // cmd/crc2vice/main.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Reads a CRC ARTCC JSON and emits:
 //   - one STARS video map library per STARS-equipped child facility
 //     (<ARTCC>-<facility>.mappack), and

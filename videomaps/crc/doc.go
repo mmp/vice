@@ -1,5 +1,5 @@
 // videomaps/crc/doc.go
-// Copyright(c) 2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // Package crc builds vice video map libraries from the formats other

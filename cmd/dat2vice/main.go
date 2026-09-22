@@ -1,7 +1,7 @@
 // cmd/dat2vice/main.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Reads a JSON manifest of DAT-format STARS video maps + the DAT files
 // themselves, and emits a vice video map library in the new format
 // (<basename>.mappack).

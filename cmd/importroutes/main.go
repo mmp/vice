@@ -1,7 +1,7 @@
 // cmd/importroutes/main.go
-// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Imports the FAA's city-pair route databases into resources/routes.csv.zst,
 // which published traffic uses to file realistic routes. Input is
 // the preferred routes and coded departure route (CDR) files published by the

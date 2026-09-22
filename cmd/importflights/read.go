@@ -1,7 +1,7 @@
 // cmd/importflights/read.go
-// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Reading the source parquet files: decoding the columns we need, working out
 // where each flight actually flew between, and accumulating the ones our
 // scenarios can use.

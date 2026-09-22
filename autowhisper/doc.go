@@ -1,3 +1,7 @@
+// autowhisper/doc.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 // Package autowhisper provides a simple cross-OS API over whisper.cpp Go bindings.
 //
 // It automatically converts WAV input to 16 kHz mono and runs transcription

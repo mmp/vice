@@ -1,3 +1,7 @@
+// cmd/sttsim/main.go
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 // cmd/sttsim provides STT debugging utilities.
 //
 // Usage:

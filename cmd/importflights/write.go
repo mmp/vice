@@ -1,7 +1,7 @@
 // cmd/importflights/write.go
-// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Turning what was imported into the flight data files: gathering each cell's
 // flights, leaving out the months the source data barely covers, and encoding
 // the rest.

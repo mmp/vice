@@ -1,7 +1,7 @@
 // cmd/importfixpairs/main.go
-// Copyright(c) 2022-2026 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
-//
+
 // Imports STARS DMS fix-pair adaptation dumps into a facility configuration.
 // Input is the text dumps of the three DMS fix-pair windows, given in any
 // order and identified by the table sections they contain:
