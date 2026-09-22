@@ -484,13 +484,17 @@ func (ep *Pane) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
 		if ctx.IsHandoffToUser(&trk) {
 			return FullDatablock
 		}
-		if state.PointOutFDBLocked {
-			return FullDatablock
-		}
 		if len(ep.InboundPointOuts[fp.ACID]) > 0 {
 			return FullDatablock
 		}
 		if _, ok := ep.QuickLookSectors[string(ctx.PrimaryTCPForTCW(fp.OwningTCW))]; ok {
+			return FullDatablock
+		}
+		if state == nil {
+			// No radar track has been taken of it yet.
+			return LimitedDatablock
+		}
+		if state.PointOutFDBLocked {
 			return FullDatablock
 		}
 		if state.EFDB {
