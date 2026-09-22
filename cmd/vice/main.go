@@ -536,6 +536,49 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 	return c, activeRadarPane
 }
 
+// selectRandomScenario picks a random scenario from the server's catalog
+// and returns a NewSimRequest ready for use with ConnectionManager.CreateNewSim.
+func selectRandomScenario(srv *client.Server) (server.NewSimRequest, error) {
+	catalogs := srv.GetScenarioCatalogs()
+
+	type scenarioChoice struct {
+		tracon       string
+		groupName    string
+		scenarioName string
+		spec         *scenario.Spec
+	}
+
+	var choices []scenarioChoice
+	for tracon, facilityCatalogs := range catalogs {
+		if !db.DB.IsTRACON(tracon) && !db.DB.IsATCT(tracon) {
+			continue
+		}
+		for groupName, catalog := range facilityCatalogs {
+			for scenarioName, spec := range catalog.Scenarios {
+				choices = append(choices, scenarioChoice{
+					tracon:       tracon,
+					groupName:    groupName,
+					scenarioName: scenarioName,
+					spec:         spec,
+				})
+			}
+		}
+	}
+
+	if len(choices) == 0 {
+		return server.NewSimRequest{}, errors.New("no scenarios available")
+	}
+
+	choice := rand.SampleSlice(rand.Make(), choices)
+
+	return server.NewSimRequest{
+		Facility:     choice.tracon,
+		GroupName:    choice.groupName,
+		ScenarioName: choice.scenarioName,
+		ScenarioSpec: choice.spec,
+	}, nil
+}
+
 // setupFuzzTesting connects to a server, picks a random scenario, and
 // creates a fuzz controller for STARS command testing.
 func setupFuzzTesting(mgr *client.ConnectionManager, config *Config,
@@ -562,7 +605,7 @@ func setupFuzzTesting(mgr *client.ConnectionManager, config *Config,
 		srv = mgr.LocalServer
 	}
 
-	req, err := stars.SelectRandomScenario(srv)
+	req, err := selectRandomScenario(srv)
 	if err != nil {
 		return nil, err
 	}

@@ -14,7 +14,6 @@
 package stars
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -25,9 +24,7 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
-	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/scope"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -43,50 +40,6 @@ const (
 
 func fuzzLog(format string, args ...any) {
 	// fmt.Printf(format, args...)
-}
-
-// SelectRandomScenario picks a random scenario from the server's catalog
-// and returns a NewSimRequest ready for use with ConnectionManager.CreateNewSim.
-func SelectRandomScenario(srv *client.Server) (server.NewSimRequest, error) {
-	catalogs := srv.GetScenarioCatalogs()
-
-	type scenarioChoice struct {
-		tracon       string
-		groupName    string
-		scenarioName string
-		spec         *scenario.Spec
-	}
-
-	var choices []scenarioChoice
-	for tracon, facilityCatalogs := range catalogs {
-		if !db.DB.IsTRACON(tracon) && !db.DB.IsATCT(tracon) {
-			continue
-		}
-		for groupName, catalog := range facilityCatalogs {
-			for scenarioName, spec := range catalog.Scenarios {
-				choices = append(choices, scenarioChoice{
-					tracon:       tracon,
-					groupName:    groupName,
-					scenarioName: scenarioName,
-					spec:         spec,
-				})
-			}
-		}
-	}
-
-	if len(choices) == 0 {
-		return server.NewSimRequest{}, errors.New("no scenarios available")
-	}
-
-	choice := rand.SampleSlice(rand.Make(), choices)
-	fuzzLog("Starting STARS fuzz testing: %s/%s\n", choice.tracon, choice.scenarioName)
-
-	return server.NewSimRequest{
-		Facility:     choice.tracon,
-		GroupName:    choice.groupName,
-		ScenarioName: choice.scenarioName,
-		ScenarioSpec: choice.spec,
-	}, nil
 }
 
 // FuzzConfig controls fuzz test behavior.
