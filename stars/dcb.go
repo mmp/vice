@@ -91,16 +91,16 @@ type dcbSpinner interface {
 // main axis exactly — the scale uses the maximum slot count so the bar's
 // cross-axis thickness doesn't change when switching between menus of
 // different widths.
-func (sp *Pane) dcbButtonScale(ctx *scope.Context) float32 {
+func (sp *Scope) dcbButtonScale(ctx *scope.Context) float32 {
 	if !sp.DCBScaleToFit {
 		return ctx.DrawPixelScale
 	}
 	ps := sp.currentPrefs()
 	var mainAvail, crossAvail float32
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
-		mainAvail, crossAvail = ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
+		mainAvail, crossAvail = ctx.DrawExtent.Width(), ctx.DrawExtent.Height()
 	} else {
-		mainAvail, crossAvail = ctx.PaneExtent.Height(), ctx.PaneExtent.Width()
+		mainAvail, crossAvail = ctx.DrawExtent.Height(), ctx.DrawExtent.Width()
 	}
 	// buttonSize() rounds scale*dcbButtonSize to the nearest int, so
 	// mainAvail/(n*dcbButtonSize) can round each button up by half a
@@ -115,15 +115,15 @@ func (sp *Pane) dcbButtonScale(ctx *scope.Context) float32 {
 // dcbSlots returns the maximum number of main-axis slots needed across
 // every menu the user can switch to. Used for scale-to-fit sizing so a
 // narrower submenu doesn't change the bar's cross-axis thickness.
-func (sp *Pane) dcbSlots() int {
+func (sp *Scope) dcbSlots() int {
 	return max(regularDCBSlots, mapsMainDCBColumns+sp.mapsSubmenuColumns())
 }
 
-func (sp *Pane) mapsSubmenuColumns() int {
+func (sp *Scope) mapsSubmenuColumns() int {
 	return mapsSubmenuControlCols + mapsSubmenuMapColumns + sp.mapsSubmenuCategoryColumns()
 }
 
-func (sp *Pane) mapsSubmenuCategoryColumns() int {
+func (sp *Scope) mapsSubmenuCategoryColumns() int {
 	_, ncat := sp.videoMapCategories()
 	return 1 + ncat/2
 }
@@ -132,10 +132,10 @@ func (sp *Pane) mapsSubmenuCategoryColumns() int {
 // DCB bar occupies for the current preference's DCB position. The scroll
 // offset does not shift the bar itself — only the buttons inside it — so
 // this always returns the full, non-scrolled rectangle.
-func (sp *Pane) dcbBarExtent(ctx *scope.Context) math.Extent2D {
+func (sp *Scope) dcbBarExtent(ctx *scope.Context) math.Extent2D {
 	ps := sp.currentPrefs()
 	bs := float32(int(sp.dcbButtonScale(ctx)*dcbButtonSize + 0.5))
-	w, h := ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
+	w, h := ctx.DrawExtent.Width(), ctx.DrawExtent.Height()
 	switch ps.DCBPosition {
 	case dcbPositionTop:
 		return math.Extent2D{P0: [2]float32{0, h - bs}, P1: [2]float32{w, h}}
@@ -154,13 +154,13 @@ func (sp *Pane) dcbBarExtent(ctx *scope.Context) math.Extent2D {
 // content size measured by the previous frame's draw so submenus with
 // fewer slots don't allow scrolling past their last button into empty
 // bar area.
-func (sp *Pane) dcbMaxScroll(ctx *scope.Context) float32 {
+func (sp *Scope) dcbMaxScroll(ctx *scope.Context) float32 {
 	ps := sp.currentPrefs()
 	var visible float32
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
-		visible = ctx.PaneExtent.Width()
+		visible = ctx.DrawExtent.Width()
 	} else {
-		visible = ctx.PaneExtent.Height()
+		visible = ctx.DrawExtent.Height()
 	}
 	return max(0, sp.dcbContentSize-visible)
 }
@@ -177,7 +177,7 @@ type dcbMenuID struct {
 // layout. It changes when the user enters or exits a submenu, or toggles
 // between main and aux. drawDCB resets sp.dcbScroll on transitions so a
 // scroll offset from a wider menu doesn't leak into a narrower one.
-func (sp *Pane) dcbCurrentMenu() dcbMenuID {
+func (sp *Scope) dcbCurrentMenu() dcbMenuID {
 	var sub CommandMode
 	switch sp.commandMode {
 	case CommandModeMaps:
@@ -200,7 +200,7 @@ func (sp *Pane) dcbCurrentMenu() dcbMenuID {
 	return dcbMenuID{aux: sp.dcbShowAux, submenu: sub}
 }
 
-func (sp *Pane) videoMapCategories() ([scope.VideoMapNumCategories]bool, int) {
+func (sp *Scope) videoMapCategories() ([scope.VideoMapNumCategories]bool, int) {
 	var haveCategory [scope.VideoMapNumCategories]bool
 	for _, vm := range sp.allVideoMaps {
 		if vm.Category != scope.VideoMapNoCategory {
@@ -221,7 +221,7 @@ func videoMapButtonIndex(base, columns, i int) int {
 	return base + util.Select(i&1 == 0, i/2, columns+i/2)
 }
 
-func (sp *Pane) drawDCB(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
+func (sp *Scope) drawDCB(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) (drawExtent math.Extent2D) {
 	ps := sp.currentPrefs()
 
 	buttonScale := sp.dcbButtonScale(ctx)
@@ -264,19 +264,19 @@ func (sp *Pane) drawDCB(ctx *scope.Context, transforms scope.Transformations, cb
 		sp.endDrawDCB()
 
 		sz := buttonSize(buttonFull, buttonScale)
-		paneExtent = ctx.PaneExtent
+		drawExtent = ctx.DrawExtent
 		switch ps.DCBPosition {
 		case dcbPositionTop:
-			paneExtent.P1[1] -= sz[1]
+			drawExtent.P1[1] -= sz[1]
 
 		case dcbPositionLeft:
-			paneExtent.P0[0] += sz[0]
+			drawExtent.P0[0] += sz[0]
 
 		case dcbPositionRight:
-			paneExtent.P1[0] -= sz[0]
+			drawExtent.P1[0] -= sz[0]
 
 		case dcbPositionBottom:
-			paneExtent.P0[1] += sz[1]
+			drawExtent.P0[1] += sz[1]
 		}
 	}()
 
@@ -380,7 +380,7 @@ func (sp *Pane) drawDCB(ctx *scope.Context, transforms scope.Transformations, cb
 			} else {
 				sp.commandMode = CommandModePlaceRangeRings
 				sp.installCommandHandlers(makeCommandHandlers(
-					"[POS]", func(sp *Pane, pos math.Point2LL) {
+					"[POS]", func(sp *Scope, pos math.Point2LL) {
 						ps := sp.currentPrefs()
 						ps.RangeRingsUserCenter = pos
 						ps.UseUserRangeRingsCenter = true
@@ -916,7 +916,7 @@ var dcbDrawState struct {
 	contentMain float32
 }
 
-func (sp *Pane) startDrawDCB(ctx *scope.Context, transforms scope.Transformations,
+func (sp *Scope) startDrawDCB(ctx *scope.Context, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.Mouse
@@ -930,20 +930,20 @@ func (sp *Pane) startDrawDCB(ctx *scope.Context, transforms scope.Transformation
 	var drawEndPos [2]float32
 	switch dcbDrawState.position {
 	case dcbPositionTop:
-		dcbDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height() - 1}
-		drawEndPos = [2]float32{ctx.PaneExtent.Width(), dcbDrawState.drawStartPos[1] - buttonSize}
+		dcbDrawState.drawStartPos = [2]float32{0, ctx.DrawExtent.Height() - 1}
+		drawEndPos = [2]float32{ctx.DrawExtent.Width(), dcbDrawState.drawStartPos[1] - buttonSize}
 
 	case dcbPositionLeft:
-		dcbDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height() - 1}
+		dcbDrawState.drawStartPos = [2]float32{0, ctx.DrawExtent.Height() - 1}
 		drawEndPos = [2]float32{buttonSize, 0}
 
 	case dcbPositionRight:
-		dcbDrawState.drawStartPos = [2]float32{ctx.PaneExtent.Width() - buttonSize, ctx.PaneExtent.Height()}
+		dcbDrawState.drawStartPos = [2]float32{ctx.DrawExtent.Width() - buttonSize, ctx.DrawExtent.Height()}
 		drawEndPos = [2]float32{dcbDrawState.drawStartPos[0] - buttonSize, 0}
 
 	case dcbPositionBottom:
 		dcbDrawState.drawStartPos = [2]float32{0, buttonSize}
-		drawEndPos = [2]float32{ctx.PaneExtent.Width(), 0}
+		drawEndPos = [2]float32{ctx.DrawExtent.Width(), 0}
 	}
 
 	dcbDrawState.style = renderer.TextStyle{
@@ -984,7 +984,7 @@ func (sp *Pane) startDrawDCB(ctx *scope.Context, transforms scope.Transformation
 // drawDCBScrollIndicators draws small triangles near the bar edges when
 // there is content scrolled past either edge, pointing toward the
 // off-screen direction. Skipped under scale-to-fit (no overflow).
-func (sp *Pane) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if sp.DCBScaleToFit {
 		return
 	}
@@ -1000,8 +1000,8 @@ func (sp *Pane) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.Command
 	// matrices loaded by startDrawDCB are still in effect.
 	bar := dcbDrawState.barExtent
 	barWin := math.Extent2D{
-		P0: math.Add2f(bar.P0, ctx.PaneExtent.P0),
-		P1: math.Add2f(bar.P1, ctx.PaneExtent.P0),
+		P0: math.Add2f(bar.P0, ctx.DrawExtent.P0),
+		P1: math.Add2f(bar.P1, ctx.DrawExtent.P0),
 	}
 	cb.SetScissorBounds(barWin, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
@@ -1056,7 +1056,7 @@ func (sp *Pane) drawDCBScrollIndicators(ctx *scope.Context, cb *renderer.Command
 	trid.GenerateCommands(cb)
 }
 
-func (sp *Pane) endDrawDCB() {
+func (sp *Scope) endDrawDCB() {
 	// Clear out the scissor et al...
 	dcbDrawState.cb.ResetState()
 
@@ -1095,7 +1095,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 	}
 }
 
-func (sp *Pane) drawDCBButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
+func (sp *Scope) drawDCBButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -1179,15 +1179,15 @@ func (sp *Pane) drawDCBButton(ctx *scope.Context, text string, flags dcbFlags, b
 	// Scissor to just the extent of the button — clipped to the DCB bar so
 	// buttons scrolled past the edge don't bleed into the radar area. Note
 	// that we need to give this in window coordinates, not our local pane
-	// coordinates, so translating by ctx.PaneExtent.p0 is needed...
+	// coordinates, so translating by ctx.DrawExtent.p0 is needed...
 	btnLocal := math.Extent2D{
 		P0: [2]float32{dcbDrawState.cursor[0], dcbDrawState.cursor[1] - sz[1]},
 		P1: [2]float32{dcbDrawState.cursor[0] + sz[0], dcbDrawState.cursor[1]},
 	}
 	clipped := math.Intersect(btnLocal, dcbDrawState.barExtent)
 	winScissor := math.Extent2D{
-		P0: math.Add2f(clipped.P0, ctx.PaneExtent.P0),
-		P1: math.Add2f(clipped.P1, ctx.PaneExtent.P0),
+		P0: math.Add2f(clipped.P0, ctx.DrawExtent.P0),
+		P1: math.Add2f(clipped.P1, ctx.DrawExtent.P0),
 	}
 	dcbDrawState.cb.SetScissorBounds(winScissor,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
@@ -1318,7 +1318,7 @@ func moveDCBCursor(flags dcbFlags, sz [2]float32, ctx *scope.Context) {
 	}
 }
 
-func (sp *Pane) toggleButton(ctx *scope.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
+func (sp *Scope) toggleButton(ctx *scope.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
 	if sp.drawDCBButton(ctx, text, flags, buttonScale, *state) {
 		*state = !*state
 		return true
@@ -1352,17 +1352,17 @@ func dcbCaptureMouseFromRegion(ctx *scope.Context, buttonScale float32) {
 
 func dcbCaptureMouse(ctx *scope.Context, bounds math.Extent2D) {
 	// This is horrific and one of many ugly things about capturing the
-	// mouse, but most of Panes' work is in the simplified space of a
-	// pane coordinate system; here we need something in terms of
+	// mouse, but most of the Scope's work is in the simplified space of a
+	// draw coordinate system; here we need something in terms of
 	// window coordinates, so need to both account for the viewport
 	// call that lets us draw things oblivious to the menubar as well
 	// as flip things in y.
-	h := ctx.PaneExtent.Height() + ctx.MenuBarHeight
+	h := ctx.DrawExtent.Height() + ctx.MenuBarHeight
 	bounds.P0[1], bounds.P1[1] = h-bounds.P1[1], h-bounds.P0[1]
 	ctx.Platform.StartCaptureMouse(bounds)
 }
 
-func (sp *Pane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, commandMode CommandMode, flags dcbFlags,
+func (sp *Scope) drawDCBMouseDeltaButton(ctx *scope.Context, text string, commandMode CommandMode, flags dcbFlags,
 	buttonScale float32, start func(), update func([2]float32)) {
 	active := sp.commandMode == commandMode
 	if sp.drawDCBButton(ctx, text, flags, buttonScale, active) && !active {
@@ -1371,7 +1371,7 @@ func (sp *Pane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, command
 		ctx.Platform.StartMouseDeltaMode()
 
 		sp.installCommandHandlers(makeCommandHandlers(
-			"[POS]", func(sp *Pane, ctx *scope.Context, _ math.Point2LL) {
+			"[POS]", func(sp *Scope, ctx *scope.Context, _ math.Point2LL) {
 				sp.resetInputState(ctx.Platform)
 				ctx.Platform.StopMouseDeltaMode()
 				ctx.SetMousePosition(savedMousePosition)
@@ -1390,7 +1390,7 @@ func (sp *Pane) drawDCBMouseDeltaButton(ctx *scope.Context, text string, command
 // drawDCBSpinner draws the provided spinner at the current location in the
 // DCB. It handles mouse capture (and release) and passing mouse wheel
 // events to the spinner.
-func (sp *Pane) drawDCBSpinner(ctx *scope.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
+func (sp *Scope) drawDCBSpinner(ctx *scope.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
 	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
 	// Slightly tricky: if the user has selected a command mode via the
 	// keyboard and that command mode has a single associated spinner, then
@@ -1425,7 +1425,7 @@ func (sp *Pane) drawDCBSpinner(ctx *scope.Context, spinner dcbSpinner, commandMo
 
 		modeAfter := spinner.ModeAfter()
 		sp.installCommandHandlers(makeCommandHandlers(
-			"[POS]", func(sp *Pane, ctx *scope.Context, _ math.Point2LL) CommandStatus {
+			"[POS]", func(sp *Scope, ctx *scope.Context, _ math.Point2LL) CommandStatus {
 				if modeAfter == CommandModeNone {
 					sp.resetInputState(ctx.Platform)
 					return CommandStatus{}
@@ -1547,7 +1547,7 @@ func (s *dcbIntegerRangeSpinner) ModeAfter() CommandMode {
 type dcbAudioVolumeSpinner struct {
 	*dcbIntegerRangeSpinner
 	p  platform.Platform
-	sp *Pane
+	sp *Scope
 }
 
 func (s *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
@@ -1580,7 +1580,7 @@ func (s *dcbAudioVolumeSpinner) KeyboardInput(text string) (CommandMode, error) 
 	return mode, err
 }
 
-func makeAudioVolumeSpinner(p platform.Platform, sp *Pane, vol *int) *dcbAudioVolumeSpinner {
+func makeAudioVolumeSpinner(p platform.Platform, sp *Scope, vol *int) *dcbAudioVolumeSpinner {
 	return &dcbAudioVolumeSpinner{
 		dcbIntegerRangeSpinner: makeNegatedIntegerRangeSpinner("VOL\n", vol, 1, 10),
 		p:                      p,
@@ -1595,11 +1595,11 @@ func makeLeaderLineLengthSpinner(l *int) dcbSpinner {
 }
 
 type dcbLeaderLineDirectionSpinner struct {
-	sp *Pane
+	sp *Scope
 	d  *math.CardinalOrdinalDirection
 }
 
-func makeLeaderLineDirectionSpinner(sp *Pane, dir *math.CardinalOrdinalDirection) dcbSpinner {
+func makeLeaderLineDirectionSpinner(sp *Scope, dir *math.CardinalOrdinalDirection) dcbSpinner {
 	return &dcbLeaderLineDirectionSpinner{sp: sp, d: dir}
 }
 
@@ -1944,14 +1944,14 @@ func (s *dcbCharSizeSpinner) ModeAfter() CommandMode {
 	return CommandModeCharSize
 }
 
-func (sp *Pane) selectButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) bool {
+func (sp *Scope) selectButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) bool {
 	return sp.drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0)
 }
 
-func (sp *Pane) disabledButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
+func (sp *Scope) disabledButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
 	sp.drawDCBButton(ctx, text, flags|buttonDisabled, buttonScale, false)
 }
 
-func (sp *Pane) unsupportedButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
+func (sp *Scope) unsupportedButton(ctx *scope.Context, text string, flags dcbFlags, buttonScale float32) {
 	sp.drawDCBButton(ctx, text, flags|buttonUnsupported, buttonScale, false)
 }

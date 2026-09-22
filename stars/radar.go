@@ -18,7 +18,7 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-func (sp *Pane) makeSignificantPoints(ss client.SimState) {
+func (sp *Scope) makeSignificantPoints(ss client.SimState) {
 	sp.significantPoints = maps.Clone(ss.FacilityAdaptation.SignificantPoints)
 	sp.significantPointsSlice = nil
 	for _, pt := range sp.significantPoints {
@@ -108,7 +108,7 @@ const (
 	RadarModeFused
 )
 
-func (sp *Pane) radarMode(radarSites map[string]*av.RadarSite) int {
+func (sp *Scope) radarMode(radarSites map[string]*av.RadarSite) int {
 	if len(radarSites) == 0 {
 		// Straight-up fused mode if none are specified.
 		return RadarModeFused
@@ -124,7 +124,7 @@ func (sp *Pane) radarMode(radarSites map[string]*av.RadarSite) int {
 	}
 }
 
-func (sp *Pane) updateVisibleTracks(ctx *scope.Context) {
+func (sp *Scope) updateVisibleTracks(ctx *scope.Context) {
 	sp.visibleTracks = sp.visibleTracks[:0]
 
 	ps := sp.currentPrefs()
@@ -174,7 +174,7 @@ func (sp *Pane) updateVisibleTracks(ctx *scope.Context) {
 	})
 }
 
-func (sp *Pane) radarSiteId(radarSites map[string]*av.RadarSite) string {
+func (sp *Scope) radarSiteId(radarSites map[string]*av.RadarSite) string {
 	switch sp.radarMode(radarSites) {
 	case RadarModeSingle:
 		return sp.currentPrefs().RadarSiteSelected
@@ -187,7 +187,7 @@ func (sp *Pane) radarSiteId(radarSites map[string]*av.RadarSite) string {
 	}
 }
 
-func (sp *Pane) setRadarModeMulti() {
+func (sp *Scope) setRadarModeMulti() {
 	ps := sp.currentPrefs()
 
 	ps.RadarSiteSelected = ""
@@ -197,7 +197,7 @@ func (sp *Pane) setRadarModeMulti() {
 	}
 }
 
-func (sp *Pane) setRadarModeFused() {
+func (sp *Scope) setRadarModeFused() {
 	ps := sp.currentPrefs()
 
 	ps.RadarSiteSelected = ""
@@ -210,7 +210,7 @@ func (sp *Pane) setRadarModeFused() {
 // Returns the cardinal-ordinal direction associated with the numbpad keys,
 // interpreting 5 as the center; (nil, true) is returned for '5' and
 // (nil, false) is returned for an invalid key.
-func (sp *Pane) numpadToDirection(key int) (*math.CardinalOrdinalDirection, bool) {
+func (sp *Scope) numpadToDirection(key int) (*math.CardinalOrdinalDirection, bool) {
 	if key < 1 || key > 9 {
 		return nil, false
 	}

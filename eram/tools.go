@@ -17,7 +17,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (ep *Pane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (ep *Scope) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -69,7 +69,7 @@ func (ep *Pane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.T
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *Pane) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (ep *Scope) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -99,7 +99,7 @@ func (ep *Pane) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *Pane) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (ep *Scope) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -125,7 +125,7 @@ func (ep *Pane) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *Pane) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (ep *Scope) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -154,7 +154,7 @@ func (ep *Pane) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scop
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *Pane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (ep *Scope) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -190,7 +190,7 @@ func (ep *Pane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (ep *Pane) drawScenarioRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawScenarioRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if ep.scopeDraw.Empty() {
 		return
 	}
@@ -216,7 +216,7 @@ func (ep *Pane) drawScenarioRoutes(ctx *scope.Context, transforms scope.Transfor
 	ep.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawn, td, ld, pd, ldr)
 }
 
-func (ep *Pane) drawPlotPoints(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawPlotPoints(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if len(ep.drawRoutePoints) == 0 {
 		return
 	}

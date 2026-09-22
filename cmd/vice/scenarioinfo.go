@@ -24,7 +24,7 @@ import (
 
 var acknowledgedATIS = make(map[av.ICAOAirportCode]string)
 
-func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *client.ControlClient, activeRadarPane scope.Pane, p platform.Platform, lg *log.Logger) bool {
+func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *client.ControlClient, activeRadarScope scope.Scope, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
@@ -259,7 +259,7 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 		}
 	}
 
-	if draw, ok := activeRadarPane.(scope.InfoWindowDrawer); ok {
+	if draw, ok := activeRadarScope.(scope.InfoWindowDrawer); ok {
 		draw.DrawInfo(c, p, lg)
 	}
 	imgui.End()

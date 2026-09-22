@@ -1,4 +1,4 @@
-// scope/pane.go
+// scope/scope.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -18,10 +18,10 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-// Pane is a radar scope display--STARS or ERAM. It operates in window
-// coordinates: (0,0) is lower left, just in its own pane, oblivious to the
-// full window size.
-type Pane interface {
+// Scope is a radar scope display--STARS or ERAM. It operates in window
+// coordinates: (0,0) is lower left, just in its own drawing area, oblivious
+// to the full window size.
+type Scope interface {
 	// Activate is called once at startup time; it should do general,
 	// Sim-independent initialization.
 	Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger)
@@ -49,19 +49,19 @@ type InfoWindowDrawer interface {
 	DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger)
 }
 
-// PaneUpgrader is implemented by displays that must migrate saved
+// Upgrader is implemented by displays that must migrate saved
 // preferences when the config version changes.
-type PaneUpgrader interface {
+type Upgrader interface {
 	Upgrade(prev, current int)
 }
 
 var (
 	wm struct {
-		// Normally the Pane that the mouse is over gets mouse events,
-		// though if the user has started a click-drag, then the Pane that
+		// Normally the window that the mouse is over gets mouse events,
+		// though if the user has started a click-drag, then the one that
 		// received the click keeps getting events until the mouse button
-		// is released.  mouseConsumerOverride records such a pane.
-		mouseConsumerOverride Pane
+		// is released.  mouseConsumerOverride records such a scope.
+		mouseConsumerOverride Scope
 
 		focus KeyboardFocus
 	}
@@ -83,10 +83,10 @@ func (f *KeyboardFocus) Current() any {
 	return f.current
 }
 
-// DrawPane renders the radar scope, which fills the entire display area
+// DrawScope renders the radar scope, which fills the entire display area
 // below the menu bar. Messages and flight strips are drawn separately, in
 // their own floating imgui windows.
-func DrawPane(pane Pane, p platform.Platform, r renderer.Renderer,
+func DrawScope(sc Scope, p platform.Platform, r renderer.Renderer,
 	controlClient *client.ControlClient, menuBarHeight float32, events []sim.Event, lg *log.Logger) renderer.Stats {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer(lg)
@@ -95,17 +95,17 @@ func DrawPane(pane Pane, p platform.Platform, r renderer.Renderer,
 		return r.RenderCommandBuffer(commandBuffer)
 	}
 
-	if wm.focus.Current() == nil || wm.focus.Current() != pane {
-		if pane.CanTakeKeyboardFocus() {
-			wm.focus.Take(pane)
+	if wm.focus.Current() == nil || wm.focus.Current() != sc {
+		if sc.CanTakeKeyboardFocus() {
+			wm.focus.Take(sc)
 		}
 	}
 
 	fbSize := p.FramebufferSize()
 	displaySize := p.DisplaySize()
 
-	// Area left for actually drawing the pane
-	paneDisplayExtent := math.Extent2D{
+	// Area left for actually drawing the scope
+	scopeDisplayExtent := math.Extent2D{
 		P0: [2]float32{0, 0},
 		P1: [2]float32{displaySize[0], displaySize[1] - menuBarHeight},
 	}
@@ -121,7 +121,7 @@ func DrawPane(pane Pane, p platform.Platform, r renderer.Renderer,
 
 	io := imgui.CurrentIO()
 
-	// If the user has clicked or is dragging in the pane, record it in
+	// If the user has clicked or is dragging in the scope, record it in
 	// mouseConsumerOverride so that we continue to dispatch mouse
 	// events until the mouse button is released.
 	isDragging := imgui.IsMouseDraggingV(platform.MouseButtonPrimary, 0.) ||
@@ -131,7 +131,7 @@ func DrawPane(pane Pane, p platform.Platform, r renderer.Renderer,
 		imgui.IsMouseClickedBool(platform.MouseButtonSecondary) ||
 		imgui.IsMouseClickedBool(platform.MouseButtonTertiary)
 	if !io.WantCaptureMouse() && (isDragging || isClicked) && wm.mouseConsumerOverride == nil {
-		wm.mouseConsumerOverride = pane
+		wm.mouseConsumerOverride = sc
 	} else if io.WantCaptureMouse() {
 		wm.mouseConsumerOverride = nil
 	}
@@ -147,10 +147,10 @@ func DrawPane(pane Pane, p platform.Platform, r renderer.Renderer,
 		keyboard = p.GetKeyboard()
 	}
 
-	haveFocus := pane == wm.focus.Current() && !imgui.CurrentIO().WantCaptureKeyboard()
+	haveFocus := sc == wm.focus.Current() && !imgui.CurrentIO().WantCaptureKeyboard()
 	ctx := Context{
-		PaneExtent:          paneDisplayExtent,
-		ParentPaneExtent:    paneDisplayExtent,
+		DrawExtent:          scopeDisplayExtent,
+		ParentDrawExtent:    scopeDisplayExtent,
 		Platform:            p,
 		DrawPixelScale:      util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1)),
 		PixelsPerInch:       util.Select(runtime.GOOS == "windows", 96*p.DPIScale(), float32(72)),
@@ -171,16 +171,16 @@ func DrawPane(pane Pane, p platform.Platform, r renderer.Renderer,
 		displaySize:         p.DisplaySize(),
 	}
 
-	ownsMouse := wm.mouseConsumerOverride == pane ||
+	ownsMouse := wm.mouseConsumerOverride == sc ||
 		(wm.mouseConsumerOverride == nil &&
 			!io.WantCaptureMouse() &&
-			paneDisplayExtent.Inside(mousePos))
+			scopeDisplayExtent.Inside(mousePos))
 	if ownsMouse {
 		ctx.InitializeMouse(p)
 	}
 
-	commandBuffer.SetDrawBounds(paneDisplayExtent, p.FramebufferSize()[1]/p.DisplaySize()[1])
-	pane.Draw(&ctx, commandBuffer)
+	commandBuffer.SetDrawBounds(scopeDisplayExtent, p.FramebufferSize()[1]/p.DisplaySize()[1])
+	sc.Draw(&ctx, commandBuffer)
 	commandBuffer.ResetState()
 
 	if !isDragging && !isClicked {

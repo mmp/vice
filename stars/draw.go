@@ -23,7 +23,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (sp *Pane) drawWX(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawWX(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	if !sp.wxNextHistoryStepTime.IsZero() && ctx.InterpolatedSimTime.After(sp.wxNextHistoryStepTime) {
@@ -44,7 +44,7 @@ func (sp *Pane) drawWX(ctx *scope.Context, transforms scope.Transformations, cb 
 		sp.Colors.WXLevelStipple, ps.DisplayWeatherLevel, transforms, cb)
 }
 
-func (sp *Pane) drawTRACONBoundary(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawTRACONBoundary(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if !sp.showTRACONBoundary {
 		return
 	}
@@ -66,7 +66,7 @@ func (sp *Pane) drawTRACONBoundary(ctx *scope.Context, transforms scope.Transfor
 	ld.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawVideoMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawVideoMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -164,7 +164,7 @@ var restrictionAreaHighDPIStipple [32]uint32 = [32]uint32{
 	0,
 }
 
-func (sp *Pane) drawWIPRestrictionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawWIPRestrictionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ra := sp.wipRestrictionArea
 	if ra == nil {
 		return
@@ -211,7 +211,7 @@ func (sp *Pane) drawWIPRestrictionArea(ctx *scope.Context, transforms scope.Tran
 	}
 }
 
-func (sp *Pane) getRestrictionArea(ctx *scope.Context, idx int, userOnly bool) (av.RestrictionArea, bool) {
+func (sp *Scope) getRestrictionArea(ctx *scope.Context, idx int, userOnly bool) (av.RestrictionArea, bool) {
 	if userOnly && idx > av.MaxRestrictionAreas {
 		return av.RestrictionArea{}, false
 	}
@@ -219,7 +219,7 @@ func (sp *Pane) getRestrictionArea(ctx *scope.Context, idx int, userOnly bool) (
 	return ra, ok
 }
 
-func (sp *Pane) drawRestrictionAreas(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawRestrictionAreas(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	sp.drawWIPRestrictionArea(ctx, transforms, cb)
 
 	ps := sp.currentPrefs()
@@ -329,7 +329,7 @@ func (sp *Pane) drawRestrictionAreas(ctx *scope.Context, transforms scope.Transf
 	td.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawCRDARegions(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawCRDARegions(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	ps := sp.currentPrefs()
@@ -367,9 +367,9 @@ func (sp *Pane) drawCRDARegions(ctx *scope.Context, transforms scope.Transformat
 	}
 }
 
-func (sp *Pane) drawMouseCursor(ctx *scope.Context, mouseOverDCB bool) {
+func (sp *Scope) drawMouseCursor(ctx *scope.Context, mouseOverDCB bool) {
 	if mouseOverDCB {
-		// scope/pane.go already called ClearCursorOverride this frame, so
+		// scope/scope.go already called ClearCursorOverride this frame, so
 		// the OS will draw imgui's standard arrow.
 		return
 	}
@@ -400,7 +400,7 @@ func (sp *Pane) drawMouseCursor(ctx *scope.Context, mouseOverDCB bool) {
 
 // crossCursor returns the OS cursor for the "+" at the given size, building
 // it on first use. The cache is invalidated when fg or bg change.
-func (sp *Pane) crossCursor(p platform.Platform, sizeIdx int, fg, bg renderer.RGB) platform.Cursor {
+func (sp *Scope) crossCursor(p platform.Platform, sizeIdx int, fg, bg renderer.RGB) platform.Cursor {
 	if fg != sp.crossFg || bg != sp.crossBg {
 		for i, c := range sp.crossCursors {
 			if c != nil {

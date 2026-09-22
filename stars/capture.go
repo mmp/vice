@@ -22,15 +22,15 @@ import (
 	"github.com/mmp/vice/scope"
 )
 
-func (sp *Pane) handleCapture(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) handleCapture(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if !sp.capture.enabled {
 		return
 	}
 
 	readPixels := func() *image.RGBA {
 		// Window coords -> fb coords, also accounting for retina 2x
-		p0 := math.Add2f(sp.capture.region[0], ctx.PaneExtent.P0)
-		p1 := math.Add2f(sp.capture.region[1], ctx.PaneExtent.P0)
+		p0 := math.Add2f(sp.capture.region[0], ctx.DrawExtent.P0)
+		p1 := math.Add2f(sp.capture.region[1], ctx.DrawExtent.P0)
 		p0, p1 = math.Scale2f(p0, 2), math.Scale2f(p1, 2)
 
 		x := int(min(p0[0], p1[0]))
@@ -225,7 +225,7 @@ func captureEncodeFrames(ch chan *image.RGBA) {
 	}
 }
 
-func (sp *Pane) qlPositionsString() string {
+func (sp *Scope) qlPositionsString() string {
 	ps := sp.currentPrefs()
 	tcps := slices.Collect(maps.Keys(ps.QuickLookTCPs))
 	sort.Slice(tcps, func(a, b int) bool {

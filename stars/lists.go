@@ -38,7 +38,7 @@ type ListFormatter struct {
 
 // drawSystemList draws a list with title, optional "MORE" indicator, and formatted lines.
 // Returns the bounds of the drawn list.
-func (sp *Pane) drawSystemList(ctx *scope.Context, paneExtent math.Extent2D, pos *[2]float32,
+func (sp *Scope) drawSystemList(ctx *scope.Context, drawExtent math.Extent2D, pos *[2]float32,
 	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder, formatter ListFormatter) math.Extent2D {
 	var allText strings.Builder
 	if formatter.Title != "" {
@@ -55,7 +55,7 @@ func (sp *Pane) drawSystemList(ctx *scope.Context, paneExtent math.Extent2D, pos
 		}
 	}
 
-	return sp.drawListText(ctx, paneExtent, pos, rewriteDelta(allText.String()), style, td, formatter.FrameTitle, ld)
+	return sp.drawListText(ctx, drawExtent, pos, rewriteDelta(allText.String()), style, td, formatter.FrameTitle, ld)
 }
 
 // formatListEntry formats a single entry of a STARS system list based on
@@ -65,7 +65,7 @@ func (sp *Pane) drawSystemList(ctx *scope.Context, paneExtent math.Extent2D, pos
 // values from the NASFlightPlan; additional custom specifiers can be
 // provided in custom for items that are not in the flight plan and are
 // limited to specific list types.
-func (sp *Pane) formatListEntry(ctx *scope.Context, format string, fp *sim.NASFlightPlan,
+func (sp *Scope) formatListEntry(ctx *scope.Context, format string, fp *sim.NASFlightPlan,
 	custom map[string]func() string) string {
 	var result strings.Builder
 	i := 0
@@ -99,7 +99,7 @@ func (sp *Pane) formatListEntry(ctx *scope.Context, format string, fp *sim.NASFl
 	return result.String()
 }
 
-func (sp *Pane) rewriteFixForList(fix string) string {
+func (sp *Scope) rewriteFixForList(fix string) string {
 	if spt, ok := sp.significantPoints[fix]; ok && spt.ShortName != "" {
 		fix = spt.ShortName
 	}
@@ -109,7 +109,7 @@ func (sp *Pane) rewriteFixForList(fix string) string {
 	return fmt.Sprintf("%3s", fix)
 }
 
-func (sp *Pane) formatBuiltinSpecifier(ctx *scope.Context, name string, fp *sim.NASFlightPlan) (string, bool) {
+func (sp *Scope) formatBuiltinSpecifier(ctx *scope.Context, name string, fp *sim.NASFlightPlan) (string, bool) {
 	switch name {
 	case "ACID":
 		return fmt.Sprintf("%-7s", string(fp.ACID)), true
@@ -168,7 +168,7 @@ func (sp *Pane) formatBuiltinSpecifier(ctx *scope.Context, name string, fp *sim.
 	return "", false
 }
 
-func (sp *Pane) drawSystemLists(ctx *scope.Context, paneExtent math.Extent2D, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawSystemLists(ctx *scope.Context, drawExtent math.Extent2D, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -184,7 +184,7 @@ func (sp *Pane) drawSystemLists(ctx *scope.Context, paneExtent math.Extent2D, tr
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	normalizedToWindow := func(p [2]float32) [2]float32 {
-		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
+		return [2]float32{p[0] * drawExtent.Width(), p[1] * drawExtent.Height()}
 	}
 
 	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.List)
@@ -195,27 +195,27 @@ func (sp *Pane) drawSystemLists(ctx *scope.Context, paneExtent math.Extent2D, tr
 
 	// Collect bounds from all lists for overlap detection
 	allBounds := []math.Extent2D{
-		sp.drawPreviewArea(ctx, paneExtent, previewAreaColor, td, ld),
-		sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), listStyle, td, transforms, ld, paneExtent, cb),
-		sp.drawVFRList(ctx, paneExtent, listStyle, td, ld),
-		sp.drawTABList(ctx, paneExtent, listStyle, td, ld),
-		sp.drawAlertList(ctx, paneExtent, listStyle, td, ld),
-		sp.drawCoastList(ctx, paneExtent, listStyle, td, ld),
-		sp.drawMapsList(ctx, paneExtent, listStyle, td, ld),
-		sp.drawRestrictionAreasList(ctx, paneExtent, listStyle, td, ld),
-		sp.drawCRDAStatusList(ctx, paneExtent, listStyle, td, ld),
-		sp.drawMCISuppressionList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawPreviewArea(ctx, drawExtent, previewAreaColor, td, ld),
+		sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), listStyle, td, transforms, ld, drawExtent, cb),
+		sp.drawVFRList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawTABList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawAlertList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawCoastList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawMapsList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawRestrictionAreasList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawCRDAStatusList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawMCISuppressionList(ctx, drawExtent, listStyle, td, ld),
 	}
 
 	towerListAirports := ctx.Client.TowerListAirports()
 	for i := range ps.TowerLists {
 		if ps.TowerLists[i].Visible && i < len(towerListAirports) {
-			allBounds = append(allBounds, sp.drawTowerList(ctx, paneExtent, towerListAirports[i], i, listStyle, td, ld))
+			allBounds = append(allBounds, sp.drawTowerList(ctx, drawExtent, towerListAirports[i], i, listStyle, td, ld))
 		}
 	}
 
-	allBounds = append(allBounds, sp.drawSignOnList(ctx, paneExtent, listStyle, td, ld))
-	allBounds = append(allBounds, sp.drawCoordinationLists(ctx, paneExtent, transforms, td, ld)...)
+	allBounds = append(allBounds, sp.drawSignOnList(ctx, drawExtent, listStyle, td, ld))
+	allBounds = append(allBounds, sp.drawCoordinationLists(ctx, drawExtent, transforms, td, ld)...)
 
 	td.GenerateCommands(cb)
 
@@ -240,7 +240,7 @@ func (sp *Pane) drawSystemLists(ctx *scope.Context, paneExtent math.Extent2D, tr
 	ld.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawListFrame(ctx *scope.Context, bounds math.Extent2D, title string,
+func (sp *Scope) drawListFrame(ctx *scope.Context, bounds math.Extent2D, title string,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) {
 	if bounds.Width() <= 0 {
 		return
@@ -255,14 +255,14 @@ func (sp *Pane) drawListFrame(ctx *scope.Context, bounds math.Extent2D, title st
 	td.AddText(title, [2]float32{bounds.P0[0], bounds.P1[1] + float32(font.Size)}, style)
 }
 
-func (sp *Pane) drawListFrameColor(ctx *scope.Context, bounds math.Extent2D, color renderer.RGB,
+func (sp *Scope) drawListFrameColor(ctx *scope.Context, bounds math.Extent2D, color renderer.RGB,
 	ld *renderer.ColoredLinesDrawBuilder) {
 	ps := sp.currentPrefs()
 	c := ps.Brightness.Lists.ScaleRGB(color)
 	ld.AddLineLoop(c, [][2]float32{bounds.P0, {bounds.P1[0], bounds.P0[1]}, bounds.P1, {bounds.P0[0], bounds.P1[1]}})
 }
 
-func (sp *Pane) handleListDrag(ctx *scope.Context, bounds math.Extent2D, pos *[2]float32, listId string, paneExtent math.Extent2D,
+func (sp *Scope) handleListDrag(ctx *scope.Context, bounds math.Extent2D, pos *[2]float32, listId string, drawExtent math.Extent2D,
 	ld *renderer.ColoredLinesDrawBuilder) {
 	if ctx.Mouse == nil {
 		return
@@ -292,21 +292,21 @@ func (sp *Pane) handleListDrag(ctx *scope.Context, bounds math.Extent2D, pos *[2
 		// Second middle click outside original bounds finishes the move
 		if ctx.Mouse.Clicked[platform.MouseButtonTertiary] && !sp.movingListBounds.Inside(ctx.Mouse.Pos) {
 			delta := math.Sub2f(movedBounds.P0, sp.movingListBounds.P0)
-			pos[0] += delta[0] / paneExtent.Width()
-			pos[1] += delta[1] / paneExtent.Height()
+			pos[0] += delta[0] / drawExtent.Width()
+			pos[1] += delta[1] / drawExtent.Height()
 			sp.movingList = ""
 		}
 	}
 }
 
-func (sp *Pane) drawListText(ctx *scope.Context, paneExtent math.Extent2D, pos *[2]float32,
+func (sp *Scope) drawListText(ctx *scope.Context, drawExtent math.Extent2D, pos *[2]float32,
 	text string, style renderer.TextStyle, td *renderer.TextDrawBuilder,
 	frameTitle string, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	if text == "" {
 		return math.Extent2D{}
 	}
 
-	pw := [2]float32{pos[0] * paneExtent.Width(), pos[1] * paneExtent.Height()}
+	pw := [2]float32{pos[0] * drawExtent.Width(), pos[1] * drawExtent.Height()}
 	ext := style.Font.LayoutBounds(text, 0)
 	td.AddText(text, pw, style)
 
@@ -314,14 +314,14 @@ func (sp *Pane) drawListText(ctx *scope.Context, paneExtent math.Extent2D, pos *
 		P0: [2]float32{pw[0], pw[1] - ext.Height()},
 		P1: [2]float32{pw[0] + ext.Width(), pw[1]},
 	}
-	sp.handleListDrag(ctx, bounds, pos, frameTitle, paneExtent, ld)
+	sp.handleListDrag(ctx, bounds, pos, frameTitle, drawExtent, ld)
 	if sp.showListFrames {
 		sp.drawListFrame(ctx, bounds, frameTitle, td, ld)
 	}
 	return bounds
 }
 
-func (sp *Pane) drawPreviewArea(ctx *scope.Context, paneExtent math.Extent2D, color renderer.RGB,
+func (sp *Scope) drawPreviewArea(ctx *scope.Context, drawExtent math.Extent2D, color renderer.RGB,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
@@ -348,7 +348,7 @@ func (sp *Pane) drawPreviewArea(ctx *scope.Context, paneExtent math.Extent2D, co
 		Font:  sp.systemFont(ctx, ps.CharSize.Lists),
 		Color: color,
 	}
-	return sp.drawListText(ctx, paneExtent, &ps.PreviewAreaPosition, rewriteDelta(text.String()),
+	return sp.drawListText(ctx, drawExtent, &ps.PreviewAreaPosition, rewriteDelta(text.String()),
 		style, td, "PREVIEW AREA (P)", ld)
 }
 
@@ -367,7 +367,7 @@ func systemAltimeter(ctx *scope.Context) av.ICAOAirportCode {
 // altimeterAirports returns the airports the SSA altimeter list covers: the
 // controller's adapted list first, then the area's, then the facility's, and
 // failing all of those the scenario's own IFR airports.
-func (sp *Pane) altimeterAirports(ctx *scope.Context) []av.ICAOAirportCode {
+func (sp *Scope) altimeterAirports(ctx *scope.Context) []av.ICAOAirportCode {
 	if cc, ok := ctx.FacilityAdaptation.Controllers[ctx.UserPrimaryPosition()]; ok && len(cc.Altimeters) > 0 {
 		return cc.Altimeters
 	}
@@ -406,8 +406,8 @@ func (sp *Pane) altimeterAirports(ctx *scope.Context) []av.ICAOAirportCode {
 	return airports[:min(len(airports), 6)]
 }
 
-func (sp *Pane) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle renderer.TextStyle, td *renderer.TextDrawBuilder,
-	transforms scope.Transformations, ld *renderer.ColoredLinesDrawBuilder, paneExtent math.Extent2D, cb *renderer.CommandBuffer) math.Extent2D {
+func (sp *Scope) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle renderer.TextStyle, td *renderer.TextDrawBuilder,
+	transforms scope.Transformations, ld *renderer.ColoredLinesDrawBuilder, drawExtent math.Extent2D, cb *renderer.CommandBuffer) math.Extent2D {
 	ps := sp.currentPrefs()
 	startY := pw[1]
 	startX := pw[0]
@@ -802,7 +802,7 @@ func (sp *Pane) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle rendere
 		P0: [2]float32{startX, pw[1]},
 		P1: [2]float32{maxX, startY},
 	}
-	sp.handleListDrag(ctx, bounds, &ps.SSAList.Position, "ssa", paneExtent, ld)
+	sp.handleListDrag(ctx, bounds, &ps.SSAList.Position, "ssa", drawExtent, ld)
 	if sp.showListFrames {
 		sp.drawListFrame(ctx, bounds, "SSA (S)", td, ld)
 	}
@@ -832,7 +832,7 @@ func getDuplicateBeaconCodes(ctx *scope.Context) map[av.Squawk]any {
 	return dupes
 }
 
-func (sp *Pane) drawVFRList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+func (sp *Scope) drawVFRList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.VFRList.Visible {
@@ -860,7 +860,7 @@ func (sp *Pane) drawVFRList(ctx *scope.Context, paneExtent math.Extent2D, style 
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
-	return sp.drawSystemList(ctx, paneExtent, &ps.VFRList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.VFRList.Position, style, td, ld, ListFormatter{
 		Title:      "VFR LIST",
 		FrameTitle: "VFR LIST (TV)",
 		Lines:      ps.VFRList.Lines,
@@ -881,7 +881,7 @@ func (sp *Pane) drawVFRList(ctx *scope.Context, paneExtent math.Extent2D, style 
 	})
 }
 
-func (sp *Pane) drawTABList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+func (sp *Scope) drawTABList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.TABList.Visible {
@@ -930,7 +930,7 @@ func (sp *Pane) drawTABList(ctx *scope.Context, paneExtent math.Extent2D, style 
 
 	dupes := getDuplicateBeaconCodes(ctx)
 
-	return sp.drawSystemList(ctx, paneExtent, &ps.TABList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.TABList.Position, style, td, ld, ListFormatter{
 		Title:      "FLIGHT PLAN",
 		FrameTitle: "FLIGHT PLAN (T)",
 		Lines:      ps.TABList.Lines,
@@ -951,7 +951,7 @@ func (sp *Pane) drawTABList(ctx *scope.Context, paneExtent math.Extent2D, style 
 	})
 }
 
-func (sp *Pane) drawAlertList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+func (sp *Scope) drawAlertList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	// The alert list can't be hidden.
 	var text strings.Builder
@@ -1057,14 +1057,14 @@ func (sp *Pane) drawAlertList(ctx *scope.Context, paneExtent math.Extent2D, styl
 		}
 
 		if text.Len() > 0 {
-			return sp.drawListText(ctx, paneExtent, &ps.AlertList.Position, text.String(),
+			return sp.drawListText(ctx, drawExtent, &ps.AlertList.Position, text.String(),
 				style, td, "ALERT LIST (TM)", ld)
 		}
 	}
 	return math.Extent2D{}
 }
 
-func (sp *Pane) drawCoastList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+func (sp *Scope) drawCoastList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	// Get suspended tracks (coast not yet supported)
 	tracks := slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks),
@@ -1074,7 +1074,7 @@ func (sp *Pane) drawCoastList(ctx *scope.Context, paneExtent math.Extent2D, styl
 		func(a, b *sim.Track) int { return a.FlightPlan.CoastSuspendIndex - b.FlightPlan.CoastSuspendIndex })
 
 	ps := sp.currentPrefs()
-	return sp.drawSystemList(ctx, paneExtent, &ps.CoastList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.CoastList.Position, style, td, ld, ListFormatter{
 		Title:      "COAST/SUSPEND",
 		FrameTitle: "COAST/SUSPEND (TC)",
 		Lines:      len(tracks), // Show all suspended tracks
@@ -1102,7 +1102,7 @@ func (sp *Pane) drawCoastList(ctx *scope.Context, paneExtent math.Extent2D, styl
 	})
 }
 
-func (sp *Pane) drawMapsList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+func (sp *Scope) drawMapsList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.VideoMapsList.Visible {
@@ -1158,11 +1158,11 @@ func (sp *Pane) drawMapsList(ctx *scope.Context, paneExtent math.Extent2D, style
 		format(vm)
 	}
 
-	return sp.drawListText(ctx, paneExtent, &ps.VideoMapsList.Position, text.String(),
+	return sp.drawListText(ctx, drawExtent, &ps.VideoMapsList.Position, text.String(),
 		style, td, "MAPS", ld)
 }
 
-func (sp *Pane) drawRestrictionAreasList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+func (sp *Scope) drawRestrictionAreasList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.RestrictionAreaList.Visible {
@@ -1179,7 +1179,7 @@ func (sp *Pane) drawRestrictionAreasList(ctx *scope.Context, paneExtent math.Ext
 		areas = append(areas, indexedRA{ra, idx})
 	}
 
-	return sp.drawSystemList(ctx, paneExtent, &ps.RestrictionAreaList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.RestrictionAreaList.Position, style, td, ld, ListFormatter{
 		Title:      "GEO RESTRICTIONS",
 		FrameTitle: "GEO RESTRICTIONS (TRA)",
 		Lines:      len(areas), // Show all restriction areas
@@ -1201,7 +1201,7 @@ func (sp *Pane) drawRestrictionAreasList(ctx *scope.Context, paneExtent math.Ext
 	})
 }
 
-func (sp *Pane) drawCRDAStatusList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+func (sp *Scope) drawCRDAStatusList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.CRDAStatusList.Visible {
@@ -1232,7 +1232,7 @@ func (sp *Pane) drawCRDAStatusList(ctx *scope.Context, paneExtent math.Extent2D,
 		lines = append(lines, line.String())
 	}
 
-	return sp.drawSystemList(ctx, paneExtent, &ps.CRDAStatusList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.CRDAStatusList.Position, style, td, ld, ListFormatter{
 		Title:      "CRDA STATUS",
 		FrameTitle: "CRDA STATUS (TN)",
 		Lines:      len(lines), // Show all CRDA pairs
@@ -1243,7 +1243,7 @@ func (sp *Pane) drawCRDAStatusList(ctx *scope.Context, paneExtent math.Extent2D,
 	})
 }
 
-func (sp *Pane) drawMCISuppressionList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+func (sp *Scope) drawMCISuppressionList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.MCISuppressionList.Visible {
@@ -1255,7 +1255,7 @@ func (sp *Pane) drawMCISuppressionList(ctx *scope.Context, paneExtent math.Exten
 		return trk.IsAssociated() && trk.FlightPlan.MCISuppressedCode != av.Squawk(0)
 	})
 
-	return sp.drawSystemList(ctx, paneExtent, &ps.MCISuppressionList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.MCISuppressionList.Position, style, td, ld, ListFormatter{
 		Title:      "MCI SUPPRESSION",
 		FrameTitle: "MCI SUPPRESSION (TQ)",
 		Lines:      len(mciTracks), // Show all MCI tracks
@@ -1271,7 +1271,7 @@ func (sp *Pane) drawMCISuppressionList(ctx *scope.Context, paneExtent math.Exten
 	})
 }
 
-func (sp *Pane) drawTowerList(ctx *scope.Context, paneExtent math.Extent2D, airport av.ICAOAirportCode, towerIndex int,
+func (sp *Scope) drawTowerList(ctx *scope.Context, drawExtent math.Extent2D, airport av.ICAOAirportCode, towerIndex int,
 	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	loc := ctx.Client.State.Airports[airport].Location
@@ -1287,7 +1287,7 @@ func (sp *Pane) drawTowerList(ctx *scope.Context, paneExtent math.Extent2D, airp
 
 	k := util.SortedMapKeys(m)
 
-	return sp.drawSystemList(ctx, paneExtent, &ps.TowerLists[towerIndex].Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.TowerLists[towerIndex].Position, style, td, ld, ListFormatter{
 		Title:      db.AirportDisplayId(airport) + " TOWER",
 		FrameTitle: db.AirportDisplayId(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
 		Lines:      ps.TowerLists[towerIndex].Lines,
@@ -1298,7 +1298,7 @@ func (sp *Pane) drawTowerList(ctx *scope.Context, paneExtent math.Extent2D, airp
 	})
 }
 
-func (sp *Pane) drawSignOnList(ctx *scope.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+func (sp *Scope) drawSignOnList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.SignOnList.Visible {
@@ -1312,13 +1312,13 @@ func (sp *Pane) drawSignOnList(ctx *scope.Context, paneExtent math.Extent2D, sty
 			initials = " " + initials
 		}
 		s := string(ctx.UserTCW) + initials + " " + signOnTime.UTC().Format("1504")
-		return sp.drawListText(ctx, paneExtent, &ps.SignOnList.Position, s,
+		return sp.drawListText(ctx, drawExtent, &ps.SignOnList.Position, s,
 			style, td, "SIGN ON (TS)", ld)
 	}
 	return math.Extent2D{}
 }
 
-func (sp *Pane) drawCoordinationLists(ctx *scope.Context, paneExtent math.Extent2D, transforms scope.Transformations,
+func (sp *Scope) drawCoordinationLists(ctx *scope.Context, drawExtent math.Extent2D, transforms scope.Transformations,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) []math.Extent2D {
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
@@ -1328,7 +1328,7 @@ func (sp *Pane) drawCoordinationLists(ctx *scope.Context, paneExtent math.Extent
 	}
 
 	normalizedToWindow := func(p [2]float32) [2]float32 {
-		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
+		return [2]float32{p[0] * drawExtent.Width(), p[1] * drawExtent.Height()}
 	}
 
 	releaseDepartures := ctx.Client.State.GetSTARSReleaseDepartures()
@@ -1453,7 +1453,7 @@ func (sp *Pane) drawCoordinationLists(ctx *scope.Context, paneExtent math.Extent
 			P0: [2]float32{startPos[0], pw[1]},
 			P1: [2]float32{maxX, startPos[1]},
 		}
-		sp.handleListDrag(ctx, bounds, &list.Position, "coord:"+cl.Name, paneExtent, ld)
+		sp.handleListDrag(ctx, bounds, &list.Position, "coord:"+cl.Name, drawExtent, ld)
 		if sp.showListFrames {
 			sp.drawListFrame(ctx, bounds, strings.ToUpper(cl.Name), td, ld)
 		}

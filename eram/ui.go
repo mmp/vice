@@ -17,11 +17,11 @@ import (
 	"github.com/mmp/vice/videomaps"
 )
 
-var _ scope.UIDrawer = (*Pane)(nil)
+var _ scope.UIDrawer = (*Scope)(nil)
 
-func (ep *Pane) DisplayName() string { return "ERAM" }
+func (ep *Scope) DisplayName() string { return "ERAM" }
 
-func (ep *Pane) DrawUI(p platform.Platform, config *platform.Config) {
+func (ep *Scope) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Disable ERAM to Radio Commands", &ep.DisableERAMtoRadio)
 	imgui.Checkbox("Invert numeric keypad", &ep.FlipNumericKeypad)
 	if ep.prefSet == nil {
@@ -104,7 +104,7 @@ func (ep *Pane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 }
 
-func (ep *Pane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+func (ep *Scope) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	ep.scopeDraw.DrawArrivalsUI(c, ep.IFPHelpers.ArrivalsColor)
 	ep.scopeDraw.DrawApproachesUI(c, ep.IFPHelpers.ApproachesColor, lg)
 	ep.scopeDraw.DrawDeparturesUI(c, ep.IFPHelpers.DeparturesColor)

@@ -29,9 +29,9 @@ type Transformations struct {
 // on the scope: STARS scopes are magnetic north up, so the STARS pane passes
 // the facility's magnetic variation, while ERAM scopes are always true north
 // up.
-func GetTransformations(paneExtent math.Extent2D, nmPerLongitude float32,
+func GetTransformations(drawExtent math.Extent2D, nmPerLongitude float32,
 	center math.Point2LL, rangenm float32, rotationAngle float32) Transformations {
-	width, height := paneExtent.Width(), paneExtent.Height()
+	width, height := drawExtent.Width(), drawExtent.Height()
 	aspect := width / height
 	ndcFromLatLong := math.Identity3x3().
 		// Final orthographic projection including the effect of the

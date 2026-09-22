@@ -340,7 +340,7 @@ func drawPortalFence(ld *renderer.ColoredLinesDrawBuilder, l DatablockLayout, co
 	ld.AddLine([2]float32{x, top}, [2]float32{x, bottom}, color)
 }
 
-func (ep *Pane) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
+func (ep *Scope) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()
 
@@ -368,7 +368,7 @@ func (ep *Pane) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av.
 	return dbs
 }
 
-func (ep *Pane) getDatablock(ctx *scope.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
+func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
 	state := ep.TrackState[trk.ADSBCallsign]
 	ps := ep.currentPrefs()
 	switch dbType {
@@ -562,7 +562,7 @@ func speedStartFromGroundspeedLine4(gsText string) int {
 	return line3Index - line3ToLine4Shift
 }
 
-func (ep *Pane) getAltitudeFormat(track sim.Track) string {
+func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 	state := ep.TrackState[track.ADSBCallsign]
 	currentAltitude := state.Track.TransponderAltitude
 	displayAlt := track.FlightPlan.DataBlockAltitude()
@@ -600,7 +600,7 @@ func getInterimAltitudeType(track sim.Track) string {
 	return track.FlightPlan.InterimType.String()
 }
 
-func (ep *Pane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
+func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
 	ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -670,7 +670,7 @@ func (ep *Pane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datab
 // datablockAnchor returns the window-space anchor point used by both the
 // datablock renderer and the hover-outline computation. It also returns the
 // (possibly adjusted) direction the datablock was placed in.
-func (ep *Pane) datablockAnchor(ctx *scope.Context, trk sim.Track, db datablock, dbType DatablockType,
+func (ep *Scope) datablockAnchor(ctx *scope.Context, trk sim.Track, db datablock, dbType DatablockType,
 	transforms scope.Transformations) ([2]float32, math.CardinalOrdinalDirection) {
 	state := ep.TrackState[trk.ADSBCallsign]
 	start := transforms.WindowFromLatLongP(state.Track.Location)

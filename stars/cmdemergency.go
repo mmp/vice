@@ -22,7 +22,7 @@ func registerEmergencyCommands() {
 
 	// 7.4 Force a track into or out of Special Condition (implied)
 	registerCommand(CommandModeNone, "[SPC][SLEW]",
-		func(sp *Pane, ctx *scope.Context, spc string, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, spc string, trk *sim.Track) error {
 			if !trk.IsAssociated() || !ctx.Client.StringIsSPC(spc) {
 				return ErrCommandFormat
 			}
@@ -53,7 +53,7 @@ func registerEmergencyCommands() {
 	//(CommandModeMultiFunc, "TH[SLEW]", unimplementedCommand),
 
 	// 7.9 Enable / inhibit CA for an owned track system-wide
-	registerCommand(CommandModeCollisionAlert, "K [TRK_ACID]|K [TRK_BCN]|K[SLEW]", func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	registerCommand(CommandModeCollisionAlert, "K [TRK_ACID]|K [TRK_BCN]|K[SLEW]", func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		if !trk.IsAssociated() {
 			return ErrIllegalTrack
 		}
@@ -80,7 +80,7 @@ func registerEmergencyCommands() {
 	// registerCommand(UserCommand{M: CommandModeCollisionAlert, C: "CI"}) // inhibit
 
 	// 7.14 Inhibit an MSAW alert for a single track in MSAW system-wide (p. 7-26)
-	registerCommand(CommandModeMultiFunc, "Q[SLEW]", func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	registerCommand(CommandModeMultiFunc, "Q[SLEW]", func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsUnassociated() || (!ctx.UserOwnsFlightPlan(trk.FlightPlan) && !ctx.TCWIsPrivileged(ctx.UserTCW)) {
 			return ErrIllegalTrack
 		}
@@ -91,7 +91,7 @@ func registerEmergencyCommands() {
 	})
 
 	// 7.15 Enable / inhibit MSAW for a single track system-wide (p. 7-27)
-	registerCommand(CommandModeMultiFunc, "V[SLEW]", func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	registerCommand(CommandModeMultiFunc, "V[SLEW]", func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsUnassociated() {
 			return ErrIllegalTrack
 		}
@@ -107,7 +107,7 @@ func registerEmergencyCommands() {
 
 	// 7.17 Toggle MCI suppression for individual track and specified beacon (p. 7-29)
 	registerCommand(CommandModeCollisionAlert, "M [TRK_ACID] [BCN]|M [TRK_BCN] [BCN]|M[BCN][SLEW]",
-		func(sp *Pane, ctx *scope.Context, ps *Preferences, trk *sim.Track, beacon av.Squawk) (CommandStatus, error) {
+		func(sp *Scope, ctx *scope.Context, ps *Preferences, trk *sim.Track, beacon av.Squawk) (CommandStatus, error) {
 			if ps.DisableMCIWarnings {
 				return CommandStatus{}, ErrIllegalFunction
 			}
@@ -128,7 +128,7 @@ func registerEmergencyCommands() {
 			return CommandStatus{}, nil
 		})
 	registerCommand(CommandModeCollisionAlert, "M [TRK_ACID]|M [TRK_BCN]|M[SLEW]",
-		func(sp *Pane, ctx *scope.Context, ps *Preferences, trk *sim.Track) (CommandStatus, error) {
+		func(sp *Scope, ctx *scope.Context, ps *Preferences, trk *sim.Track) (CommandStatus, error) {
 			if ps.DisableMCIWarnings {
 				return CommandStatus{}, ErrIllegalFunction
 			}

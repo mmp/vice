@@ -118,7 +118,7 @@ func parseLocation(ctx *scope.Context, token string) (math.Point2LL, bool) {
 }
 
 // drawCRRView renders the Continuous Range Readout view.
-func (ep *Pane) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.CRR.Visible {
 		return
@@ -198,7 +198,7 @@ func (ep *Pane) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms s
 
 // buildCRRPanel constructs the panel-mode body: horizontal row of buttons,
 // one per group. Body height = button height + small top margin.
-func (ep *Pane) buildCRRPanel(labels []string, font *renderer.Font) (float32, func(math.Extent2D, *ViewBuilders)) {
+func (ep *Scope) buildCRRPanel(labels []string, font *renderer.Font) (float32, func(math.Extent2D, *ViewBuilders)) {
 	ps := ep.currentPrefs()
 	bodyHeight := font.LayoutBounds("X", 0).Height() + 8 + 4
 
@@ -242,7 +242,7 @@ func (ep *Pane) buildCRRPanel(labels []string, font *renderer.Font) (float32, fu
 // lets the OnRowExtents callback populate crrLabelRects / crrAircraftRects
 // after the rows are drawn. Group-header rows set Color explicitly; aircraft
 // rows leave Color zero and let the View fill it.
-func (ep *Pane) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL) *ViewRowSource {
+func (ep *Scope) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL) *ViewRowSource {
 	ps := ep.currentPrefs()
 
 	type rowMeta struct {
@@ -332,7 +332,7 @@ type crrPopup struct {
 	popupBase
 }
 
-func (c *crrPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (c *crrPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	origin := c.origin
 	const width = viewPopupWidth
@@ -490,7 +490,7 @@ func (c *crrPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transform
 }
 
 // drawCRRFixes draws clickable CRR fix labels when enabled under ATC TOOLS.
-func (ep *Pane) drawCRRFixes(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawCRRFixes(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.CRR.DisplayFixes {
 		return
@@ -547,7 +547,7 @@ func (ep *Pane) drawCRRFixes(ctx *scope.Context, transforms scope.Transformation
 // drawCRRDistances draws CRR distance values next to aircraft tags for aircraft
 // that are members of CRR groups. The distance is displayed in the color of the
 // CRR group the aircraft belongs to.
-func (ep *Pane) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if ep.CRRGroups == nil || len(ep.CRRGroups) == 0 {
 		return

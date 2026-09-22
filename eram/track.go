@@ -106,7 +106,7 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) math.TrueHeading {
 	return math.Heading2LL(ts.PreviousTrack.Location, ts.Track.Location, nmPerLongitude)
 }
 
-func (ep *Pane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
+func (ep *Scope) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
 	for _, trk := range ctx.Client.State.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
@@ -117,7 +117,7 @@ func (ep *Pane) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackStat
 	return nil, false
 }
 
-func (ep *Pane) processEvents(ctx *scope.Context) {
+func (ep *Scope) processEvents(ctx *scope.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
 			sa := &TrackState{
@@ -214,7 +214,7 @@ func (ep *Pane) processEvents(ctx *scope.Context) {
 	}
 }
 
-func (ep *Pane) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
+func (ep *Scope) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 	// Update the track states based on the current radar tracks.
 	nowInterp := ctx.InterpolatedSimTime.Time()
 	nowApplied := ctx.Client.State.SimTime.Time()
@@ -277,7 +277,7 @@ func (ep *Pane) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 	}
 }
 
-func (ep *Pane) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
+func (ep *Scope) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -306,7 +306,7 @@ func (ep *Pane) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms s
 	td.GenerateCommands(cb)
 }
 
-func (ep *Pane) drawTarget(track sim.Track, state *TrackState, ctx *scope.Context,
+func (ep *Scope) drawTarget(track sim.Track, state *TrackState, ctx *scope.Context,
 	transforms scope.Transformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
 	cb *renderer.CommandBuffer) {
@@ -321,7 +321,7 @@ func (ep *Pane) drawTarget(track sim.Track, state *TrackState, ctx *scope.Contex
 	ld.GenerateCommands(cb) // why does this need to be here?
 }
 
-func (ep *Pane) drawTracks(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
+func (ep *Scope) drawTracks(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -336,7 +336,7 @@ func (ep *Pane) drawTracks(ctx *scope.Context, tracks []sim.Track, transforms sc
 }
 
 // TODO: Store tracks in ERAMComputer and have them associate to targets
-func (ep *Pane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
+func (ep *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 	td *renderer.TextDrawBuilder, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	pos := state.Track.Location
 	// TODO: free tracks, frozen tracks, and coast tracks
@@ -346,7 +346,7 @@ func (ep *Pane) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 		renderer.TextStyle{Font: font, Color: ep.trackColor()})
 }
 
-func (ep *Pane) getTarget(trk sim.Track, state *TrackState) string {
+func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
 	symbol := "\u0001"
 	if trk.IsUnassociated() {
 		switch trk.Mode {
@@ -391,13 +391,13 @@ func drawDiamond(ctx *scope.Context, transforms scope.Transformations, color ren
 	ld.AddLine(p3, p0, color)
 }
 
-func (ep *Pane) trackColor() renderer.RGB {
+func (ep *Scope) trackColor() renderer.RGB {
 	ps := ep.currentPrefs()
 	bright := ps.Brightness.PRTGT
 	return bright.ScaleRGB(colors.yellow)
 }
 
-func (ep *Pane) updateVisibleTracks(ctx *scope.Context) { // When radar holes are added
+func (ep *Scope) updateVisibleTracks(ctx *scope.Context) { // When radar holes are added
 	// Get the visible tracks based on the current range and center.
 	ep.visibleTracks = ep.visibleTracks[:0]
 	for _, trk := range ctx.Client.State.Tracks {
@@ -411,7 +411,7 @@ func (ep *Pane) updateVisibleTracks(ctx *scope.Context) { // When radar holes ar
 
 // datablockBrightness returns the configured brightness for the given track's
 // datablock type.
-func (ep *Pane) datablockBrightness(state *TrackState) scope.Brightness {
+func (ep *Scope) datablockBrightness(state *TrackState) scope.Brightness {
 	ps := ep.currentPrefs()
 	if state.DatablockType == FullDatablock {
 		return ps.Brightness.FDB
@@ -421,7 +421,7 @@ func (ep *Pane) datablockBrightness(state *TrackState) scope.Brightness {
 
 // leaderLineDirection returns the direction in which a datablock's leader line
 // should be drawn. The initial implementation always points northeast.
-func (ep *Pane) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math.CardinalOrdinalDirection {
+func (ep *Scope) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math.CardinalOrdinalDirection {
 	state := ep.TrackState[trk.ADSBCallsign]
 	dir := state.LeaderLineDirection
 	if dir == nil {
@@ -434,14 +434,14 @@ func (ep *Pane) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math.Car
 
 // leaderLineVector returns a vector in window coordinates representing a leader
 // line of a fixed length in the given direction.
-func (ep *Pane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
+func (ep *Scope) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
 	return math.Scale2f(dir.UnitVector(), 60)
 }
 
 // leaderLineVectorWithLength returns a vector in window coordinates representing a leader
 // line with the length determined by the lengthMode parameter.
 // lengthMode: 0 = no line, 1 = normal (60), 2 = 2x (120), 3 = 3x (180)
-func (ep *Pane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, lengthMode int) [2]float32 {
+func (ep *Scope) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, lengthMode int) [2]float32 {
 	scale := float32(60)
 	switch lengthMode {
 	case 0:
@@ -460,7 +460,7 @@ func (ep *Pane) leaderLineVectorWithLength(dir math.CardinalOrdinalDirection, le
 }
 
 // For LDBs
-func (ep *Pane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
+func (ep *Scope) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
 	return math.Scale2f(dir.UnitVector(), 8)
 }
 
@@ -476,7 +476,7 @@ func altitudeInLimits(alt float32, limits [2]int) bool {
 // passesAltitudeLimits reports whether a track is displayed under the given
 // altitude limits filter. Full datablocks and their targets are always
 // displayed, as are tracks that aren't reporting an altitude to filter on.
-func (ep *Pane) passesAltitudeLimits(ctx *scope.Context, trk sim.Track, limits [2]int) bool {
+func (ep *Scope) passesAltitudeLimits(ctx *scope.Context, trk sim.Track, limits [2]int) bool {
 	state := ep.TrackState[trk.ADSBCallsign]
 	if state == nil || trk.Mode != av.TransponderModeAltitude ||
 		ep.datablockType(ctx, trk) == FullDatablock {
@@ -491,19 +491,19 @@ func (ep *Pane) passesAltitudeLimits(ctx *scope.Context, trk sim.Track, limits [
 
 // targetVisible reports whether a track's target symbol, and with it its
 // history trail, is drawn.
-func (ep *Pane) targetVisible(ctx *scope.Context, trk sim.Track) bool {
+func (ep *Scope) targetVisible(ctx *scope.Context, trk sim.Track) bool {
 	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.Targets)
 }
 
 // datablockVisible reports whether a datablock should be drawn. The LDB
 // altitude limits filter is independent of the target one, so a datablock may
 // be drawn for a track whose target is filtered out.
-func (ep *Pane) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
+func (ep *Scope) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.LDBs)
 }
 
 // datablockType chooses which datablock format to display. Design.
-func (ep *Pane) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
+func (ep *Scope) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
 	if trk.IsUnassociated() {
 		return LimitedDatablock
 	} else {
@@ -543,7 +543,7 @@ func (ep *Pane) datablockType(ctx *scope.Context, trk sim.Track) DatablockType {
 }
 
 // trackDatablockColorBrightness returns the track color and datablock brightness. Design.
-func (ep *Pane) trackDatablockColor(ctx *scope.Context, trk sim.Track) renderer.RGB {
+func (ep *Scope) trackDatablockColor(ctx *scope.Context, trk sim.Track) renderer.RGB {
 	dType := ep.datablockType(ctx, trk)
 	ps := ep.currentPrefs()
 	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
@@ -551,7 +551,7 @@ func (ep *Pane) trackDatablockColor(ctx *scope.Context, trk sim.Track) renderer.
 }
 
 // drawLeaderLines draws leader lines for visible datablocks.
-func (ep *Pane) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
+func (ep *Scope) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
 	transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -613,7 +613,7 @@ func (ep *Pane) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map[
 	cb.LineWidth(1, ctx.DPIScale)
 }
 
-func (ep *Pane) drawPTLs(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
+func (ep *Scope) drawPTLs(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	cb.LineWidth(2, ctx.DPIScale) // tweak this
@@ -650,7 +650,7 @@ type historyTrack struct {
 
 // drawHistoryTracks draws small position symbols representing the last few
 // positions of each track.
-func (ep *Pane) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
+func (ep *Scope) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
 	transforms scope.Transformations, cb *renderer.CommandBuffer) {
 
 	td := renderer.GetTextDrawBuilder()
@@ -707,7 +707,7 @@ func (ep *Pane) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
 	ctd.GenerateCommands(cb)
 }
 
-func (ep *Pane) drawJRings(ctx *scope.Context, tracks []sim.Track,
+func (ep *Scope) drawJRings(ctx *scope.Context, tracks []sim.Track,
 	transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	// Draw J-Rings for tracks that have them enabled.
 	jr := renderer.GetColoredLinesDrawBuilder()
@@ -740,7 +740,7 @@ func (ep *Pane) drawJRings(ctx *scope.Context, tracks []sim.Track,
 	jr.GenerateCommands(cb)
 }
 
-func (ep *Pane) drawQULines(ctx *scope.Context, transforms scope.Transformations,
+func (ep *Scope) drawQULines(ctx *scope.Context, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)

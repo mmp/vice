@@ -25,7 +25,7 @@ import (
 // ALTIM SET
 
 // drawAltimSetView renders the ALTIM SET floating window.
-func (ep *Pane) drawAltimSetView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.AltimSet.Visible {
 		return
@@ -129,7 +129,7 @@ type altimSetPopup struct {
 	popupBase
 }
 
-func (a *altimSetPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
@@ -162,7 +162,7 @@ func (a *altimSetPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Tran
 ///////////////////////////////////////////////////////////////////////////
 // CODE
 
-func (ep *Pane) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.BeaconCodeView.Visible {
 		return
@@ -198,7 +198,7 @@ func (ep *Pane) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transfor
 // manually-added codes (with trailing ".") plus the codes of aircraft whose
 // tracks we own, in the order dictated by SortManual. Row.Color is left zero
 // — the View fills in the default text color.
-func beaconCodeRows(ctx *scope.Context, ep *Pane, ps *Preferences) []Row {
+func beaconCodeRows(ctx *scope.Context, ep *Scope, ps *Preferences) []Row {
 	// Codes of aircraft whose tracks we own.
 	var owned []av.Squawk
 	for _, trk := range ctx.Client.State.Tracks {
@@ -248,7 +248,7 @@ type beaconCodeViewPopup struct {
 	popupBase
 }
 
-func (b *beaconCodeViewPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
@@ -274,10 +274,10 @@ func (b *beaconCodeViewPopup) draw(ep *Pane, ctx *scope.Context, transforms scop
 ///////////////////////////////////////////////////////////////////////////
 // MCA - Message Composition Area
 
-func (ep *Pane) drawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 }
 
-func (ep *Pane) startDrawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) startDrawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        ep.ERAMInputFont(),
 		Color:       colors.toolbar.text,
@@ -294,7 +294,7 @@ func (ep *Pane) startDrawCommandInput(ctx *scope.Context, transforms scope.Trans
 // boxes share black bg and a white border; the seam between them is drawn by
 // View as part of the outer border (and a separator line in the body). Width
 // fits ps.MCA.Width characters of the selected font plus 2px side padding.
-func (ep *Pane) drawMessageCompositionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	font := ep.ERAMFont(ps.MCA.Font)
@@ -374,7 +374,7 @@ type mcaPopup struct {
 	popupBase
 }
 
-func (m *mcaPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
@@ -399,7 +399,7 @@ func (m *mcaPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transform
 // drawResponseArea renders the RA: a single box with the wrapped
 // response-area text. Width fits ps.RA.Width characters of the selected font
 // plus 2px side padding.
-func (ep *Pane) drawResponseArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	const height = 77
@@ -434,7 +434,7 @@ type raPopup struct {
 	popupBase
 }
 
-func (r *raPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (r *raPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
@@ -459,11 +459,11 @@ func (r *raPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transforma
 ///////////////////////////////////////////////////////////////////////////
 // Time
 
-func (ep *Pane) drawTimeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawTimeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	if ps.TimeView.Position == [2]float32{} {
-		ps.TimeView.Position = [2]float32{10, ctx.PaneExtent.Height() - 300}
+		ps.TimeView.Position = [2]float32{10, ctx.DrawExtent.Height() - 300}
 	}
 
 	font := ep.ERAMFont(ps.TimeView.Font)
@@ -499,7 +499,7 @@ type timeViewPopup struct {
 	popupBase
 }
 
-func (t *timeViewPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (t *timeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
@@ -522,7 +522,7 @@ func (t *timeViewPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Tran
 // WX View
 
 // drawWXView renders the WX floating window.
-func (ep *Pane) drawWXView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.WX.Visible {
 		return
@@ -608,7 +608,7 @@ type wxPopup struct {
 	popupBase
 }
 
-func (w *wxPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
@@ -673,9 +673,9 @@ var checkListItems = map[int][]string{
 }
 
 // drawCheckListView renders the active check list (POS CHECK or EMERG CHECK).
-// Rows are click-toggleable; the toggled state lives on Pane and persists
+// Rows are click-toggleable; the toggled state lives on Scope and persists
 // across switches between the two lists.
-func (ep *Pane) drawCheckListView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if ps.CheckList.Visible == checkListHidden {
 		return
@@ -730,7 +730,7 @@ type checkListPopup struct {
 	popupBase
 }
 
-func (c *checkListPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (c *checkListPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{

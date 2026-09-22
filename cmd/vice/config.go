@@ -49,11 +49,11 @@ type ConfigNoSim struct {
 	LastTRACON    string
 	UIFontSize    int
 
-	// Store individual pane instances. The messages and flight strip windows
-	// give their JSON names explicitly so that settings saved when they were
-	// called panes are still read.
-	STARSPane         *stars.Pane
-	ERAMPane          *eram.Pane
+	// Store individual scope and window instances. They give their JSON names
+	// explicitly so that settings saved when they were called panes are still
+	// read.
+	STARSScope        *stars.Scope       `json:"STARSPane"`
+	ERAMScope         *eram.Scope        `json:"ERAMPane"`
 	MessagesWindow    *MessagesWindow    `json:"MessagesPane"`
 	FlightStripWindow *FlightStripWindow `json:"FlightStripPane"`
 
@@ -224,12 +224,12 @@ func (c *Config) clearFacilityEngineeringFiles() {
 	c.FacilityConfigFiles = nil
 }
 
-// ActiveRadarPane returns the STARS or ERAM pane based on the sim type.
-func (c *Config) ActiveRadarPane(isSTARSSim bool) scope.Pane {
+// ActiveRadarScope returns the STARS or ERAM scope based on the sim type.
+func (c *Config) ActiveRadarScope(isSTARSSim bool) scope.Scope {
 	if isSTARSSim {
-		return c.STARSPane
+		return c.STARSScope
 	}
-	return c.ERAMPane
+	return c.ERAMScope
 }
 
 func getDefaultConfig() *Config {
@@ -242,8 +242,8 @@ func getDefaultConfig() *Config {
 			WhatsNewIndex:         len(whatsNew),
 			NotifiedTargetGenMode: true, // don't warn for new installs
 			UserPTTKey:            imgui.KeySemicolon,
-			STARSPane:             stars.NewPane(),
-			ERAMPane:              eram.NewPane(),
+			STARSScope:            stars.NewScope(),
+			ERAMScope:             eram.NewScope(),
 			MessagesWindow:        NewMessagesWindow(),
 			FlightStripWindow:     NewFlightStripWindow(),
 			ShowMessages:          true,
@@ -282,12 +282,12 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 			config.UserWorkstation = ""
 		}
 
-		// Ensure all pane instances are initialized
-		if config.STARSPane == nil {
-			config.STARSPane = stars.NewPane()
+		// Ensure all scope and window instances are initialized
+		if config.STARSScope == nil {
+			config.STARSScope = stars.NewScope()
 		}
-		if config.ERAMPane == nil {
-			config.ERAMPane = eram.NewPane()
+		if config.ERAMScope == nil {
+			config.ERAMScope = eram.NewScope()
 		}
 		if config.MessagesWindow == nil {
 			config.MessagesWindow = NewMessagesWindow()
@@ -297,9 +297,9 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 		}
 
 		if config.Version < server.ViceSerializeVersion {
-			// Upgrade panes
-			for _, pane := range []any{config.STARSPane, config.ERAMPane} {
-				if up, ok := pane.(scope.PaneUpgrader); ok && pane != nil {
+			// Upgrade scopes
+			for _, sc := range []any{config.STARSScope, config.ERAMScope} {
+				if up, ok := sc.(scope.Upgrader); ok && sc != nil {
 					up.Upgrade(config.Version, server.ViceSerializeVersion)
 				}
 			}
@@ -332,9 +332,9 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 }
 
 func (c *Config) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
-	// Activate all panes
-	c.STARSPane.Activate(r, p, lg)
-	c.ERAMPane.Activate(r, p, lg)
+	// Activate all scopes and windows
+	c.STARSScope.Activate(r, p, lg)
+	c.ERAMScope.Activate(r, p, lg)
 	c.MessagesWindow.Activate(r, p, lg)
 	c.FlightStripWindow.Activate(r, p, lg)
 }

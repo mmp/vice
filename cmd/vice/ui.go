@@ -157,7 +157,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Lo
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, activeRadarPane scope.Pane, events []sim.Event, lg *log.Logger) renderer.Stats {
+	controlClient *client.ControlClient, activeRadarScope scope.Scope, events []sim.Event, lg *log.Logger) renderer.Stats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case release, ok := <-ui.newReleaseDialogChan:
@@ -341,10 +341,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	}
 
 	if controlClient != nil && !activeModal {
-		uiDrawSettingsWindow(controlClient, config, activeRadarPane, p, lg)
+		uiDrawSettingsWindow(controlClient, config, activeRadarScope, p, lg)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = drawScenarioInfoWindow(mgr, config, controlClient, activeRadarPane, p, lg)
+			ui.showScenarioInfo = drawScenarioInfoWindow(mgr, config, controlClient, activeRadarScope, p, lg)
 		}
 
 		if ui.showLaunchControl {
@@ -889,7 +889,7 @@ func uiAudioInputDevices(p platform.Platform) []string {
 	return ui.micDevices
 }
 
-func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane scope.Pane, p platform.Platform, lg *log.Logger) {
+func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarScope scope.Scope, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
 	}
@@ -967,9 +967,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPa
 		}
 	}
 
-	// Draw settings only for the panes that are actually displayed.
-	for _, pane := range []any{config.MessagesWindow, config.FlightStripWindow, activeRadarPane} {
-		if draw, ok := pane.(scope.UIDrawer); ok {
+	// Show settings only for the windows that are actually displayed.
+	for _, sc := range []any{config.MessagesWindow, config.FlightStripWindow, activeRadarScope} {
+		if draw, ok := sc.(scope.UIDrawer); ok {
 			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 				draw.DrawUI(p, &config.Config)
 			}

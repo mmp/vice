@@ -20,7 +20,7 @@ import (
 
 func registerSetupCommands() {
 	// 4.1.3 Apply preference set
-	registerCommand(CommandModePref, "[NUM]", func(sp *Pane, ctx *scope.Context, idx int) error {
+	registerCommand(CommandModePref, "[NUM]", func(sp *Scope, ctx *scope.Context, idx int) error {
 		if idx <= 0 || idx > numSavedPreferenceSets {
 			return ErrCommandFormat
 		}
@@ -35,7 +35,7 @@ func registerSetupCommands() {
 		sp.setCommandMode(ctx, CommandModeNone)
 		return nil
 	})
-	registerCommand(CommandModePref, "[ALL_TEXT]", func(sp *Pane, ctx *scope.Context, name string) (CommandStatus, error) {
+	registerCommand(CommandModePref, "[ALL_TEXT]", func(sp *Scope, ctx *scope.Context, name string) (CommandStatus, error) {
 		idx := slices.IndexFunc(sp.prefSet.Saved[:], func(p *Preferences) bool { return p != nil && p.Name == name })
 		if idx == -1 {
 			return CommandStatus{}, ErrIllegalPrefset
@@ -48,18 +48,18 @@ func registerSetupCommands() {
 	})
 
 	// 4.1.4 Create new preference set [sic]
-	registerCommand(CommandModeSavePrefAs, "", func(sp *Pane, ctx *scope.Context) CommandStatus {
+	registerCommand(CommandModeSavePrefAs, "", func(sp *Scope, ctx *scope.Context) CommandStatus {
 		return CommandStatus{Clear: ClearNone}
 	})
 	registerCommand(CommandModeSavePrefAs, "[ALL_TEXT]", savePreferences)
 
 	// 4.1.10 Reconfigure TCW/TDW to default display characteristics (p. 4-21)
-	registerCommand(CommandModeMultiFunc, "K", func(sp *Pane, ctx *scope.Context) {
+	registerCommand(CommandModeMultiFunc, "K", func(sp *Scope, ctx *scope.Context) {
 		sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 	})
 
 	// 4.2.1 Enable Single sensor or Multi-sensor or Fused mode
-	registerCommand(CommandModeSite, "+", func(sp *Pane) {
+	registerCommand(CommandModeSite, "+", func(sp *Scope) {
 		sp.setRadarModeFused()
 	})
 	registerCommand(CommandModeSite, "[NUM]", func(ctx *scope.Context, ps *Preferences, idx int) error {
@@ -81,7 +81,7 @@ func registerSetupCommands() {
 
 		return ErrIllegalParam
 	})
-	registerCommand(CommandModeSite, STARSTriangleCharacter, func(sp *Pane) {
+	registerCommand(CommandModeSite, STARSTriangleCharacter, func(sp *Scope) {
 		sp.setRadarModeMulti()
 	})
 
@@ -97,28 +97,28 @@ func registerSetupCommands() {
 	})
 
 	// 4.3 Enable / inhibit automatic handoff processing for entering TCP (p. 4-30)
-	registerCommand(CommandModeHandOff, "CE", func(sp *Pane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CE", func(sp *Scope, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, true)
 	})
-	registerCommand(CommandModeHandOff, "CI", func(sp *Pane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CI", func(sp *Scope, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPBoth, false)
 	})
-	registerCommand(CommandModeHandOff, "CTE", func(sp *Pane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CTE", func(sp *Scope, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CTI", func(sp *Pane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CTI", func(sp *Scope, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPIntrafacility, false)
 	})
-	registerCommand(CommandModeHandOff, "CXE", func(sp *Pane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CXE", func(sp *Scope, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, true)
 	})
-	registerCommand(CommandModeHandOff, "CXI", func(sp *Pane, ctx *scope.Context) error {
+	registerCommand(CommandModeHandOff, "CXI", func(sp *Scope, ctx *scope.Context) error {
 		return configureAutoHandoff(sp, ctx, sim.AutoHandoffTCPInterfacility, false)
 	})
 
 	// 4.5.1 Display / remove maps
 	registerCommand(CommandModeMaps, "A", func(ps *Preferences) { clear(ps.VideoMapVisible) })
-	registerCommand(CommandModeMaps, "[NUM]", func(sp *Pane, ps *Preferences, idx int) error {
+	registerCommand(CommandModeMaps, "[NUM]", func(sp *Scope, ps *Preferences, idx int) error {
 		if idx <= 0 {
 			return ErrIllegalMap
 		}
@@ -134,7 +134,7 @@ func registerSetupCommands() {
 		}
 		return nil
 	})
-	registerCommand(CommandModeMaps, "[NUM]E", func(sp *Pane, ps *Preferences, idx int) error {
+	registerCommand(CommandModeMaps, "[NUM]E", func(sp *Scope, ps *Preferences, idx int) error {
 		if idx <= 0 {
 			return ErrIllegalMap
 		}
@@ -144,7 +144,7 @@ func registerSetupCommands() {
 		ps.VideoMapVisible[idx] = nil
 		return nil
 	})
-	registerCommand(CommandModeMaps, "[NUM]I", func(sp *Pane, ps *Preferences, idx int) error {
+	registerCommand(CommandModeMaps, "[NUM]I", func(sp *Scope, ps *Preferences, idx int) error {
 		if idx <= 0 {
 			return ErrIllegalMap
 		}
@@ -418,7 +418,7 @@ func registerSetupCommands() {
 	//(CommandModeMultiFunc, "ZDI", unimplementedCommand),
 
 	// 4.13.1 Test audio alarm (p. 4-96)
-	registerCommand(CommandModeMultiFunc, "ZA", func(sp *Pane, ctx *scope.Context) {
+	registerCommand(CommandModeMultiFunc, "ZA", func(sp *Scope, ctx *scope.Context) {
 		sp.testAudioEndTime = time.Now().Add(5 * time.Second)
 		ctx.Platform.StartPlayAudioContinuous(sp.audioEffects[AudioTest])
 	})
@@ -451,7 +451,7 @@ func registerSetupCommands() {
 	})
 
 	// 4.14.5 Specify data block position for tracks owned at this TCW/TDW (p. 4-105)
-	registerCommand(CommandModeMultiFunc, "L[#]", func(sp *Pane, ps *Preferences, direction int) error {
+	registerCommand(CommandModeMultiFunc, "L[#]", func(sp *Scope, ps *Preferences, direction int) error {
 		dir, ok := sp.numpadToDirection(direction)
 		if !ok || dir == nil {
 			return ErrIllegalParam
@@ -462,7 +462,7 @@ func registerSetupCommands() {
 	// CommandModeLDR version handled in DCB code.
 
 	// 4.14.6 Specify data block position for tracks owned by others (p. 4-106)
-	registerCommand(CommandModeMultiFunc, "L[#]*", func(sp *Pane, ps *Preferences, direction int) error {
+	registerCommand(CommandModeMultiFunc, "L[#]*", func(sp *Scope, ps *Preferences, direction int) error {
 		dir, ok := sp.numpadToDirection(direction)
 		if !ok {
 			return ErrIllegalParam
@@ -474,7 +474,7 @@ func registerSetupCommands() {
 
 	// 4.14.7 Specify data block position for a specified owner (p. 4-107)
 	registerCommand(CommandModeMultiFunc, "L[TCP2][#]|L[TCP1] [#]",
-		func(sp *Pane, ctx *scope.Context, ps *Preferences, tcp string, direction int) error {
+		func(sp *Scope, ctx *scope.Context, ps *Preferences, tcp string, direction int) error {
 			ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().Position)
 			if ctrl == nil {
 				return ErrIllegalPosition
@@ -498,7 +498,7 @@ func registerSetupCommands() {
 		})
 
 	// 4.14.8 Specify data block position for all unassociated tracks (p. 4-109)
-	registerCommand(CommandModeMultiFunc, "L[#]U", func(sp *Pane, ps *Preferences, direction int) error {
+	registerCommand(CommandModeMultiFunc, "L[#]U", func(sp *Scope, ps *Preferences, direction int) error {
 		dir, ok := sp.numpadToDirection(direction)
 		if !ok || dir == nil /* 5 is invalid for this */ {
 			return ErrCommandFormat
@@ -558,7 +558,7 @@ func registerSetupCommands() {
 	// registerCommand(CommandModeRestrictionArea, "[FIELD:1]I", unimplemented)
 
 	// 4.19 Enable / inhibit Flight data auto-modify (FDAM) region (p. 4-123)
-	configureFDAM := func(sp *Pane, ctx *scope.Context, op sim.FDAMConfigOp, regionId string) error {
+	configureFDAM := func(sp *Scope, ctx *scope.Context, op sim.FDAMConfigOp, regionId string) error {
 		ctx.Client.ConfigureFDAM(op, regionId,
 			func(output string, err error) {
 				if err != nil {
@@ -570,27 +570,27 @@ func registerSetupCommands() {
 		return nil
 	}
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION]",
-		func(sp *Pane, ctx *scope.Context, regionID string) error {
+		func(sp *Scope, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMToggleRegion, regionID)
 		})
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] I",
-		func(sp *Pane, ctx *scope.Context, regionID string) error {
+		func(sp *Scope, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMInhibitRegion, regionID)
 		})
 	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] E",
-		func(sp *Pane, ctx *scope.Context, regionID string) error {
+		func(sp *Scope, ctx *scope.Context, regionID string) error {
 			return configureFDAM(sp, ctx, sim.FDAMEnableRegion, regionID)
 		})
 
 	// 4.20 Display status of all Flight data auto-modify (FDAM) regions (p. 4-125)
 	registerCommand(CommandModeMultiFunc, "2XS",
-		func(sp *Pane, ctx *scope.Context) error {
+		func(sp *Scope, ctx *scope.Context) error {
 			return configureFDAM(sp, ctx, sim.FDAMQueryStatus, "")
 		})
 }
 
 // savePreferences saves current preferences with the given name.
-func savePreferences(sp *Pane, ctx *scope.Context, name string) error {
+func savePreferences(sp *Scope, ctx *scope.Context, name string) error {
 	if len(name) > 7 {
 		return ErrCommandFormat
 	}

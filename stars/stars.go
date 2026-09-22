@@ -37,7 +37,7 @@ const STARSFilledUpTriangle = string(rune(0x1e))
 const TabListEntries = 100
 const TabListUnassignedIndex = -1
 
-type Pane struct {
+type Scope struct {
 	TRACONPreferenceSets map[string]*PreferenceSet
 	prefSet              *PreferenceSet
 
@@ -261,7 +261,7 @@ type Pane struct {
 	datablocks map[av.ADSBCallsign]datablock
 }
 
-func (sp *Pane) notePendingATISGITextUpdate(ctx *scope.Context, line int, atis, text *string) {
+func (sp *Scope) notePendingATISGITextUpdate(ctx *scope.Context, line int, atis, text *string) {
 	update := &sp.pendingATISGITextUpdate[line]
 	update.ExpectedATIS = ctx.Client.State.ATIS[line]
 	update.ExpectedGIText = ctx.Client.State.GIText[line]
@@ -276,7 +276,7 @@ func (sp *Pane) notePendingATISGITextUpdate(ctx *scope.Context, line int, atis, 
 	update.Valid = true
 }
 
-func (sp *Pane) clearPendingATISGITextUpdate(line int) {
+func (sp *Scope) clearPendingATISGITextUpdate(line int) {
 	sp.pendingATISGITextUpdate[line] = struct {
 		ExpectedATIS   string
 		ExpectedGIText string
@@ -337,7 +337,7 @@ const (
 	CRDAModeTie
 )
 
-// this is read-only, stored in STARSPane for convenience
+// this is read-only, stored in Scope for convenience
 type CRDAPair struct {
 	av.CRDAPair
 	Source  *av.CRDARegion
@@ -399,12 +399,12 @@ func (d DwellMode) String() string {
 ///////////////////////////////////////////////////////////////////////////
 // Monitor colors
 
-func NewPane() *Pane {
+func NewScope() *Scope {
 	InitCommands()
-	return &Pane{}
+	return &Scope{}
 }
 
-func (sp *Pane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
+func (sp *Scope) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
 	if sp.PointOuts == nil {
 		sp.PointOuts = make(map[sim.ACID]PointOutControllers)
 	}
@@ -468,14 +468,14 @@ func (sp *Pane) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logge
 // displayRequestedAltitude returns whether requested altitude should be
 // displayed in full data blocks, honoring the controller's override of the
 // adapted setting if they have made one.
-func (sp *Pane) displayRequestedAltitude(ctx *scope.Context) bool {
+func (sp *Scope) displayRequestedAltitude(ctx *scope.Context) bool {
 	if sp.OverrideDisplayRequestedAltitude != nil {
 		return *sp.OverrideDisplayRequestedAltitude
 	}
 	return ctx.FacilityAdaptation.Datablocks.FDB.DisplayRequestedAltitude
 }
 
-func (sp *Pane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (sp *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	sp.OverrideDisplayRequestedAltitude = nil
 
 	sp.initPrefsForLoadedSim(client.State, pl)
@@ -493,7 +493,7 @@ func (sp *Pane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg
 	}
 }
 
-func (sp *Pane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+func (sp *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	sp.CRDAPairs = nil
 	for name, ap := range util.SortedMap(client.State.Airports) {
 		for idx, pair := range ap.CRDAPairs {
@@ -562,7 +562,7 @@ func (sp *Pane) ResetSim(client *client.ControlClient, pl platform.Platform, lg 
 	sp.scopeDraw.holds = nil
 }
 
-func (sp *Pane) makeMaps(client *client.ControlClient, lg *log.Logger) {
+func (sp *Scope) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	sp.allVideoMaps = nil
 	usedIds := make(map[int]any)
 
@@ -649,9 +649,9 @@ func (sp *Pane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 }
 
-func (sp *Pane) CanTakeKeyboardFocus() bool { return true }
+func (sp *Scope) CanTakeKeyboardFocus() bool { return true }
 
-func (sp *Pane) Upgrade(from, to int) {
+func (sp *Scope) Upgrade(from, to int) {
 	for _, prefs := range sp.TRACONPreferenceSets {
 		prefs.Upgrade(from, to)
 	}
@@ -666,7 +666,7 @@ func (sp *Pane) Upgrade(from, to int) {
 	}
 }
 
-func (sp *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (sp *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
 	sp.updateVisibleTracks(ctx)
 
@@ -681,10 +681,10 @@ func (sp *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	sp.processKeyboardInput(ctx)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
-	transforms := scope.GetTransformations(ctx.PaneExtent, ctx.NmPerLongitude, ctr, float32(ps.Range),
+	transforms := scope.GetTransformations(ctx.DrawExtent, ctx.NmPerLongitude, ctr, float32(ps.Range),
 		ctx.MagneticVariation)
 
-	scopeExtent := ctx.PaneExtent
+	scopeExtent := ctx.DrawExtent
 	if ps.DisplayDCB {
 		scopeExtent = sp.drawDCB(ctx, transforms, cb)
 
@@ -713,7 +713,7 @@ func (sp *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawRestrictionAreas(ctx, transforms, cb)
 
-	sp.drawSystemLists(ctx, ctx.PaneExtent, transforms, cb)
+	sp.drawSystemLists(ctx, ctx.DrawExtent, transforms, cb)
 
 	sp.drawHistoryTrails(ctx, transforms, cb)
 
@@ -737,7 +737,7 @@ func (sp *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 		// Is the mouse over the DCB or over the regular STARS scope? Note that
 		// we need to offset the mouse position to be w.r.t. window coordinates
 		// to match scopeExtent.
-		mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
+		mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.DrawExtent.P0))
 		if !mouseOverDCB {
 			// DCB buttons handle their own click checks, etc.
 			sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
@@ -762,7 +762,7 @@ func (sp *Pane) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	sp.drawPauseOverlay(ctx, cb)
 }
 
-func (sp *Pane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	if !ctx.Client.State.Paused {
 		return
 	}
@@ -771,8 +771,8 @@ func (sp *Pane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer)
 	font := sp.systemFontA[3] // Largest font
 
 	// Get pane width
-	width := ctx.PaneExtent.Width()
-	height := ctx.PaneExtent.Height()
+	width := ctx.DrawExtent.Width()
+	height := ctx.DrawExtent.Height()
 
 	// Fixed position from top
 	topOffset := height - 140
@@ -799,7 +799,7 @@ func (sp *Pane) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer)
 	})
 
 	// Apply transformations and draw
-	transforms := scope.GetTransformations(ctx.PaneExtent, 0, [2]float32{}, 0, 0)
+	transforms := scope.GetTransformations(ctx.DrawExtent, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)

@@ -23,7 +23,7 @@ const (
 )
 
 // PreferenceSet stores the currently active preferences and up to
-// numSavedPreferenceSets saved preferences; STARSPane keeps a separate
+// numSavedPreferenceSets saved preferences; Scope keeps a separate
 // PreferenceSet for each TRACON that the user signs in to.
 type PreferenceSet struct {
 	Current  Preferences
@@ -43,7 +43,7 @@ func (p *PreferenceSet) Upgrade(from, to int) {
 	}
 }
 
-func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *Pane) {
+func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *Scope) {
 	// Make sure we don't alias slices, maps, etc.
 	p.Current = deep.MustCopy(cur)
 	if p.Current.Range == 0 {
@@ -67,13 +67,13 @@ func (p *PreferenceSet) selectedPrefs() *Preferences {
 // Reset ends up being called when a new Sim is started. It is responsible
 // for resetting all of the preference values in the PreferenceSet that we
 // don't expect to persist on a restart (e.g. quick look positions.)
-func (p *PreferenceSet) Reset(ss client.SimState, sp *Pane) {
+func (p *PreferenceSet) Reset(ss client.SimState, sp *Scope) {
 	// Only reset Current; leave everything as is in the saved prefs.
 	p.Current.Reset(ss, sp)
 }
 
 // ResetDefault resets the current preferences to the system defaults.
-func (p *PreferenceSet) ResetDefault(ss client.SimState, pl platform.Platform, sp *Pane) {
+func (p *PreferenceSet) ResetDefault(ss client.SimState, pl platform.Platform, sp *Scope) {
 	// Start with the full-on STARS defaults and then update for the current Sim.
 	p.Current = *makeDefaultPreferences()
 	p.Reset(ss, sp)
@@ -127,7 +127,7 @@ type Preferences struct {
 	CRDA struct {
 		Disabled bool
 		// RunwayPairState has the same size and indexing as corresponding
-		// the Pane CRDAPair member.
+		// the Scope CRDAPair member.
 		RunwayPairState []CRDARunwayPairState
 		ForceAllGhosts  bool
 	}
@@ -289,7 +289,7 @@ type RestrictionAreaSettings struct {
 	ForceBlinkingText bool
 }
 
-func (p *Preferences) Reset(ss client.SimState, sp *Pane) {
+func (p *Preferences) Reset(ss client.SimState, sp *Scope) {
 	// Get the scope centered and set the range according to the Sim's initial values.
 	p.DefaultCenter = ss.GetInitialCenter()
 	p.UserCenter = p.DefaultCenter
@@ -461,7 +461,7 @@ func (p *Preferences) Duplicate() *Preferences {
 	return &c
 }
 
-func (p *Preferences) Activate(pl platform.Platform, sp *Pane) {
+func (p *Preferences) Activate(pl platform.Platform, sp *Scope) {
 	if p.Range == 0 {
 		p.Range = defaultSTARSRange
 	}
@@ -620,7 +620,7 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 }
 
-func (sp *Pane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platform) {
+func (sp *Scope) initPrefsForLoadedSim(ss client.SimState, pl platform.Platform) {
 	prefSet, ok := sp.TRACONPreferenceSets[ss.Facility]
 	if !ok {
 		// First time we've seen this TRACON. Start out with system defaults.
@@ -656,7 +656,7 @@ func (sp *Pane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platform) 
 		sp.TRACONPreferenceSets[ss.Facility] = prefSet
 	}
 
-	// Cache the PreferenceSet for use throughout the rest of the STARSPane
+	// Cache the PreferenceSet for use throughout the rest of the Scope
 	// methods.
 	sp.prefSet = prefSet
 	if sp.prefSet.Current.Range == 0 {
@@ -666,7 +666,7 @@ func (sp *Pane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platform) 
 }
 
 // This is called when a new Sim is started from scratch.
-func (sp *Pane) resetPrefsForNewSim(ss client.SimState, pl platform.Platform) {
+func (sp *Scope) resetPrefsForNewSim(ss client.SimState, pl platform.Platform) {
 	sp.initPrefsForLoadedSim(ss, pl)
 
 	// Clear out the preference-related state (e.g. quicklooks) that we
@@ -674,7 +674,7 @@ func (sp *Pane) resetPrefsForNewSim(ss client.SimState, pl platform.Platform) {
 	sp.prefSet.Reset(ss, sp)
 }
 
-func (sp *Pane) currentPrefs() *Preferences {
+func (sp *Scope) currentPrefs() *Preferences {
 	// sp.prefSet is initialized when either LoadSim() or ResetSim() ends
 	// up calling initPrefsForLoadedSim().
 	return &sp.prefSet.Current

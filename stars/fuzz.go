@@ -52,7 +52,7 @@ type FuzzConfig struct {
 
 // FuzzController orchestrates fuzz testing of STARS commands.
 type FuzzController struct {
-	sp            *Pane
+	sp            *Scope
 	specs         []CommandSpec
 	targetGenSpec *CommandSpec // The [ALL_TEXT] target-gen spec for pilot commands
 	r             *rand.Rand
@@ -83,7 +83,7 @@ type ModeStats struct {
 }
 
 // NewFuzzController creates a new FuzzController for testing STARS commands.
-func NewFuzzController(sp *Pane, cfg FuzzConfig, lg *log.Logger) *FuzzController {
+func NewFuzzController(sp *Scope, cfg FuzzConfig, lg *log.Logger) *FuzzController {
 	seed := cfg.Seed
 	if seed == 0 {
 		seed = uint64(time.Now().UnixNano())
@@ -226,13 +226,13 @@ func (fc *FuzzController) ExecuteRandomCommand(ctx *scope.Context) {
 	if ps.UseUserCenter {
 		ctr = ps.UserCenter
 	}
-	transforms := scope.GetTransformations(ctx.PaneExtent, ctx.NmPerLongitude,
+	transforms := scope.GetTransformations(ctx.DrawExtent, ctx.NmPerLongitude,
 		ctr, float32(ps.Range), ctx.MagneticVariation)
 
 	// Execute command
 	_, err, handled := fc.sp.tryExecuteUserCommand(
 		ctx, result.Text, result.Track, result.NeedsClick,
-		[2]float32{float32(fc.r.Intn(int(ctx.PaneExtent.Width()))), float32(fc.r.Intn(int(ctx.PaneExtent.Height())))}, // random mouse pos
+		[2]float32{float32(fc.r.Intn(int(ctx.DrawExtent.Width()))), float32(fc.r.Intn(int(ctx.DrawExtent.Height())))}, // random mouse pos
 		transforms, nil, nil,
 	)
 
@@ -361,7 +361,7 @@ type GeneratorResult struct {
 
 // GeneratorContext provides access to simulation state for generators.
 type GeneratorContext struct {
-	SP          *Pane       // Access to visible tracks, prefs, etc.
+	SP          *Scope      // Access to visible tracks, prefs, etc.
 	TargetTrack *sim.Track  // Currently selected track for aircraft commands
 	CommandMode CommandMode // Current command mode (affects ALL_TEXT generation)
 }

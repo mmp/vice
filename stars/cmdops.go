@@ -21,7 +21,7 @@ import (
 func registerOpsCommands() {
 	// 5.1.1 Initiate handoff (implied)
 	// 5.1.5 Redirect handoff (implied)
-	handoffOrRedirectTrack := func(sp *Pane, ctx *scope.Context, tcp string, trk *sim.Track) error {
+	handoffOrRedirectTrack := func(sp *Scope, ctx *scope.Context, tcp string, trk *sim.Track) error {
 		if trk.IsUnassociated() {
 			return ErrIllegalTrack
 		}
@@ -47,7 +47,7 @@ func registerOpsCommands() {
 	// 5.1.7 Enable / inhibit automatic handoff for a flight (Implied command)
 	// (p. 5-15): delta + slew toggles AHOP for a track owned by the entering
 	// position; the delta indicator shows in field 4 while it is inhibited.
-	toggleAutoHandoff := func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	toggleAutoHandoff := func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsUnassociated() {
 			return ErrIllegalTrack
 		}
@@ -71,7 +71,7 @@ func registerOpsCommands() {
 	// 5.1.17 Recall handoff (p. 5-33)
 	// 5.1.19 Recall redirected handoff
 	registerCommand(CommandModeHandOff, "[TRK_ACID]|[TRK_BCN]|[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrIllegalTrack
 			}
@@ -90,7 +90,7 @@ func registerOpsCommands() {
 	// ** Handled with **[SLEW] for QL to self under 6.12.6 in cmdtools.go **
 
 	// 5.1.12 Accept handoff of track closest to range ring default center (p. 5-23)
-	registerCommand(CommandModeHandOff, "", func(sp *Pane, ctx *scope.Context, ps *Preferences) CommandStatus {
+	registerCommand(CommandModeHandOff, "", func(sp *Scope, ctx *scope.Context, ps *Preferences) CommandStatus {
 		var closest *sim.Track
 		var closestDistance float32
 		for _, trk := range sp.visibleTracks {
@@ -139,7 +139,7 @@ func registerOpsCommands() {
 
 	// 5.2.5 Acknowledge coordination message (p. 5-46)
 	registerCommand(CommandModeReleaseDeparture, "", // release single departure
-		func(sp *Pane, ctx *scope.Context) error {
+		func(sp *Scope, ctx *scope.Context) error {
 			rel := ctx.Client.State.GetSTARSReleaseDepartures()
 
 			// Filter out the ones that have been released and then deleted
@@ -164,7 +164,7 @@ func registerOpsCommands() {
 			}
 		})
 	// release specific departure
-	lookupDeparture := func(sp *Pane, ctx *scope.Context, pred func(dep sim.ReleaseDeparture) bool) *sim.ReleaseDeparture {
+	lookupDeparture := func(sp *Scope, ctx *scope.Context, pred func(dep sim.ReleaseDeparture) bool) *sim.ReleaseDeparture {
 		rel := ctx.Client.State.GetSTARSReleaseDepartures()
 
 		// Filter out the ones that have been released and then deleted
@@ -182,7 +182,7 @@ func registerOpsCommands() {
 		}
 		return nil
 	}
-	doRelease := func(sp *Pane, ctx *scope.Context, dep *sim.ReleaseDeparture) error {
+	doRelease := func(sp *Scope, ctx *scope.Context, dep *sim.ReleaseDeparture) error {
 		if !dep.Released {
 			dep.Released = true // hack for instant update pending the next server update
 			ctx.Client.ReleaseDeparture(dep.ADSBCallsign,
@@ -193,7 +193,7 @@ func registerOpsCommands() {
 		return nil
 	}
 	registerCommand(CommandModeReleaseDeparture, "[ACID]",
-		func(sp *Pane, ctx *scope.Context, acid sim.ACID) error {
+		func(sp *Scope, ctx *scope.Context, acid sim.ACID) error {
 			dep := lookupDeparture(sp, ctx,
 				func(dep sim.ReleaseDeparture) bool { return dep.ADSBCallsign == av.ADSBCallsign(acid) })
 
@@ -214,7 +214,7 @@ func registerOpsCommands() {
 			return doRelease(sp, ctx, dep)
 		})
 	registerCommand(CommandModeReleaseDeparture, "[BCN]",
-		func(sp *Pane, ctx *scope.Context, sq av.Squawk) error {
+		func(sp *Scope, ctx *scope.Context, sq av.Squawk) error {
 			dep := lookupDeparture(sp, ctx, func(dep sim.ReleaseDeparture) bool { return dep.Squawk == sq })
 
 			if dep == nil {
@@ -234,7 +234,7 @@ func registerOpsCommands() {
 			return doRelease(sp, ctx, dep)
 		})
 	registerCommand(CommandModeReleaseDeparture, "[NUM]",
-		func(sp *Pane, ctx *scope.Context, idx int) error {
+		func(sp *Scope, ctx *scope.Context, idx int) error {
 			dep := lookupDeparture(sp, ctx,
 				func(dep sim.ReleaseDeparture) bool {
 					return dep.ListIndex != sim.UnsetSTARSListIndex && dep.ListIndex == idx
@@ -284,7 +284,7 @@ func registerOpsCommands() {
 	// 5.3.2 Modify regional or airport altimeter setting
 	// {(CommandModeMultiFunc,  "A[FIELD] [NUM]|A[FIELD] A|A[FIELD] [NUM]E")
 
-	updateATISGIText := func(sp *Pane, ctx *scope.Context, line int, auxiliary bool, atis *string, text *string) {
+	updateATISGIText := func(sp *Scope, ctx *scope.Context, line int, auxiliary bool, atis *string, text *string) {
 		// Remember the expected shared-state result so the originating pane can
 		// suppress flashing for its own update once it comes back from the server.
 		sp.notePendingATISGITextUpdate(ctx, line, atis, text)
@@ -297,73 +297,73 @@ func registerOpsCommands() {
 	}
 
 	// 5.3.3 Create or modify ATIS code and main Gen. info text (p. 5-58)
-	registerCommand(CommandModeMultiFunc, "S[FIELD:1]", func(sp *Pane, ctx *scope.Context, alpha string) {
+	registerCommand(CommandModeMultiFunc, "S[FIELD:1]", func(sp *Scope, ctx *scope.Context, alpha string) {
 		updateATISGIText(sp, ctx, 0, false, &alpha, nil)
 	})
-	registerCommand(CommandModeMultiFunc, "S[FIELD:1][ALL_TEXT]", func(sp *Pane, ctx *scope.Context, alpha string, text string) {
+	registerCommand(CommandModeMultiFunc, "S[FIELD:1][ALL_TEXT]", func(sp *Scope, ctx *scope.Context, alpha string, text string) {
 		updateATISGIText(sp, ctx, 0, false, &alpha, &text)
 	})
 
 	// 5.3.4 Delete system ATIS code and enter new main gen. info text
-	registerCommand(CommandModeMultiFunc, "S*", func(sp *Pane, ctx *scope.Context) {
+	registerCommand(CommandModeMultiFunc, "S*", func(sp *Scope, ctx *scope.Context) {
 		empty := ""
 		updateATISGIText(sp, ctx, 0, false, &empty, nil)
 	})
-	registerCommand(CommandModeMultiFunc, "S* [ALL_TEXT]", func(sp *Pane, ctx *scope.Context, text string) {
+	registerCommand(CommandModeMultiFunc, "S* [ALL_TEXT]", func(sp *Scope, ctx *scope.Context, text string) {
 		empty := ""
 		updateATISGIText(sp, ctx, 0, false, &empty, &text)
 	})
 
 	// 5.3.5 Delete main gen. info text and enter new ATIS code
-	registerCommand(CommandModeMultiFunc, "S[FIELD:1]*", func(sp *Pane, ctx *scope.Context, alpha string) {
+	registerCommand(CommandModeMultiFunc, "S[FIELD:1]*", func(sp *Scope, ctx *scope.Context, alpha string) {
 		empty := ""
 		updateATISGIText(sp, ctx, 0, false, &alpha, &empty)
 	})
 
 	// 5.3.6 Delete main Gen. info text and ATIS code (p. 5-62)
-	registerCommand(CommandModeMultiFunc, "S", func(sp *Pane, ctx *scope.Context) {
+	registerCommand(CommandModeMultiFunc, "S", func(sp *Scope, ctx *scope.Context) {
 		empty := ""
 		updateATISGIText(sp, ctx, 0, false, &empty, &empty)
 	})
 
 	// 5.3.7 Create or modify auxiliary gen. info text and ATIS code
 	registerCommand(CommandModeMultiFunc, "S[#] [FIELD:1] [ALL_TEXT]",
-		func(sp *Pane, ctx *scope.Context, line int, alpha, text string) {
+		func(sp *Scope, ctx *scope.Context, line int, alpha, text string) {
 			updateATISGIText(sp, ctx, line, true, &alpha, &text)
 		})
-	registerCommand(CommandModeMultiFunc, "S[#] [ALL_TEXT]", func(sp *Pane, ctx *scope.Context, line int, text string) {
+	registerCommand(CommandModeMultiFunc, "S[#] [ALL_TEXT]", func(sp *Scope, ctx *scope.Context, line int, text string) {
 		updateATISGIText(sp, ctx, line, true, nil, &text)
 	})
 
 	// 5.3.8 Create or modify auxiliary ATIS code
-	registerCommand(CommandModeMultiFunc, "S[#] [FIELD:1]", func(sp *Pane, ctx *scope.Context, line int, alpha string) {
+	registerCommand(CommandModeMultiFunc, "S[#] [FIELD:1]", func(sp *Scope, ctx *scope.Context, line int, alpha string) {
 		updateATISGIText(sp, ctx, line, true, &alpha, nil)
 	})
 
 	// 5.3.9 Delete auxiliary ATIS code and enter new auxiliary gen. info text
-	registerCommand(CommandModeMultiFunc, "S[#] *", func(sp *Pane, ctx *scope.Context, line int) {
+	registerCommand(CommandModeMultiFunc, "S[#] *", func(sp *Scope, ctx *scope.Context, line int) {
 		empty := ""
 		updateATISGIText(sp, ctx, line, true, &empty, nil)
 	})
-	registerCommand(CommandModeMultiFunc, "S[#] * [ALL_TEXT]", func(sp *Pane, ctx *scope.Context, line int, text string) {
+	registerCommand(CommandModeMultiFunc, "S[#] * [ALL_TEXT]", func(sp *Scope, ctx *scope.Context, line int, text string) {
 		empty := ""
 		updateATISGIText(sp, ctx, line, true, &empty, &text)
 	})
 
 	// 5.3.10 Delete auxiliary gen. info text and enter new auxiliary ATIS code
-	registerCommand(CommandModeMultiFunc, "S[#] [FIELD:1]*", func(sp *Pane, ctx *scope.Context, line int, alpha string) {
+	registerCommand(CommandModeMultiFunc, "S[#] [FIELD:1]*", func(sp *Scope, ctx *scope.Context, line int, alpha string) {
 		empty := ""
 		updateATISGIText(sp, ctx, line, true, &alpha, &empty)
 	})
 
 	// 5.3.11 Delete auxiliary Gen. info text and ATIS code
-	registerCommand(CommandModeMultiFunc, "S[#]", func(sp *Pane, ctx *scope.Context, line int) {
+	registerCommand(CommandModeMultiFunc, "S[#]", func(sp *Scope, ctx *scope.Context, line int) {
 		empty := ""
 		updateATISGIText(sp, ctx, line, true, &empty, &empty)
 	})
 
 	// 5.3.13 Stop blinking ATIS and gen. info text
-	registerCommand(CommandModeNone, STARSTriangleCharacter, func(sp *Pane) {
+	registerCommand(CommandModeNone, STARSTriangleCharacter, func(sp *Scope) {
 		for i := range sp.FlashATIS {
 			sp.FlashATIS[i] = false
 		}
@@ -371,7 +371,7 @@ func registerOpsCommands() {
 
 	// 5.4.1 Activate FP and associate or create Unsupported data block (Implied command)
 	registerCommand(CommandModeNone, "[UNASSOC_FP][SLEW]",
-		func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) error {
 			if trk.IsAssociated() {
 				return ErrIllegalTrack
 			}
@@ -382,7 +382,7 @@ func registerOpsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeNone, "[UNASSOC_FP][POS]",
-		func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan, pos math.Point2LL) {
+		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, pos math.Point2LL) {
 			var spec sim.FlightPlanSpecifier
 			spec.Location.Set(pos)
 			modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
@@ -390,13 +390,13 @@ func registerOpsCommands() {
 
 	// 5.4.2 Activate existing flight plan or create Unsupported data block
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A][POS]",
-		func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan, spec sim.FlightPlanSpecifier, pos math.Point2LL) {
+		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, spec sim.FlightPlanSpecifier, pos math.Point2LL) {
 			spec.Location.Set(pos)
 			spec.TrackingController.Set(ctx.UserPrimaryPosition())
 			modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
 		})
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A][SLEW]",
-		func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
 			if trk.IsAssociated() {
 				return ErrIllegalTrack
 			}
@@ -406,7 +406,7 @@ func registerOpsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP][SLEW]",
-		func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) error {
 			if trk.IsAssociated() {
 				return ErrIllegalTrack
 			}
@@ -419,7 +419,7 @@ func registerOpsCommands() {
 
 	// 5.4.3 Suspend flight plan (p. 5-75)
 	registerCommand(CommandModeTrackSuspend, "[TRK_ACID]|[TRK_BCN]|[TRK_INDEX]|[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrIllegalTrack
 			} else if state := sp.TrackState[trk.ADSBCallsign]; state.MSAW || state.SPCAlert {
@@ -448,7 +448,7 @@ func registerOpsCommands() {
 		})
 
 	// 5.4.4 Unsuspend flight plan (p. 5-77)
-	unsuspendFP := func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	unsuspendFP := func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsUnassociated() || !trk.FlightPlan.Suspended {
 			return ErrIllegalTrack
 		}
@@ -459,7 +459,7 @@ func registerOpsCommands() {
 	}
 	registerCommand(CommandModeInitiateControl, "[TRK_ACID]|[TRK_BCN]|[TRK_INDEX_SUSPENDED]", unsuspendFP)
 
-	unsuspendAndUpdateFP := func(sp *Pane, ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) error {
+	unsuspendAndUpdateFP := func(sp *Scope, ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) error {
 		if trk.IsUnassociated() || !trk.FlightPlan.Suspended {
 			return ErrIllegalTrack
 		}
@@ -473,42 +473,42 @@ func registerOpsCommands() {
 	registerCommand(CommandModeInitiateControl, "[*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2][SLEW]", unsuspendAndUpdateFP)
 
 	registerCommand(CommandModeInitiateControl, "[TRK_ACID][SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track) error {
 			if trk1.IsUnassociated() || trk2.IsUnassociated() || trk1.FlightPlan.ACID != trk2.FlightPlan.ACID {
 				return ErrIllegalTrack
 			}
 			return unsuspendFP(sp, ctx, trk1)
 		})
 	registerCommand(CommandModeInitiateControl, "[TRK_BCN][SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track) error {
 			if trk1.IsUnassociated() || trk2.IsUnassociated() || trk1.FlightPlan.AssignedSquawk != trk2.FlightPlan.AssignedSquawk {
 				return ErrIllegalTrack
 			}
 			return unsuspendFP(sp, ctx, trk1)
 		})
 	registerCommand(CommandModeInitiateControl, "[TRK_INDEX_SUSPENDED][SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track) error {
 			if trk1.IsUnassociated() || trk2.IsUnassociated() || trk1.FlightPlan.ACID != trk2.FlightPlan.ACID {
 				return ErrIllegalTrack
 			}
 			return unsuspendFP(sp, ctx, trk1)
 		})
 	registerCommand(CommandModeInitiateControl, "[TRK_ACID] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2][SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track, spec sim.FlightPlanSpecifier) error {
+		func(sp *Scope, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track, spec sim.FlightPlanSpecifier) error {
 			if trk1.IsUnassociated() || trk2.IsUnassociated() || trk1.FlightPlan.CoastSuspendIndex != trk2.FlightPlan.CoastSuspendIndex {
 				return ErrIllegalTrack
 			}
 			return unsuspendAndUpdateFP(sp, ctx, trk1, spec)
 		})
 	registerCommand(CommandModeInitiateControl, "[TRK_BCN] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2][SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track, spec sim.FlightPlanSpecifier) error {
+		func(sp *Scope, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track, spec sim.FlightPlanSpecifier) error {
 			if trk1.IsUnassociated() || trk2.IsUnassociated() || trk1.FlightPlan.ACID != trk2.FlightPlan.ACID {
 				return ErrIllegalTrack
 			}
 			return unsuspendAndUpdateFP(sp, ctx, trk1, spec)
 		})
 	registerCommand(CommandModeInitiateControl, "[TRK_INDEX_SUSPENDED] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2][SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track, spec sim.FlightPlanSpecifier) error {
+		func(sp *Scope, ctx *scope.Context, trk1 *sim.Track, trk2 *sim.Track, spec sim.FlightPlanSpecifier) error {
 			if trk1.IsUnassociated() || trk2.IsUnassociated() || trk1.FlightPlan.CoastSuspendIndex != trk2.FlightPlan.CoastSuspendIndex {
 				return ErrIllegalTrack
 			}
@@ -517,7 +517,7 @@ func registerOpsCommands() {
 
 	// 5.4.5 Toggle hold state for flight plan
 	registerCommand(CommandModeMultiFunc, "ZZ [TRK_ACID]|ZZ [TRK_BCN]|ZZ [TRK_INDEX]|ZZ[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrNoFlight
 			}
@@ -533,7 +533,7 @@ func registerOpsCommands() {
 
 	// 5.4.6 Delete single flight plan (p. 5-83)
 	registerCommand(CommandModeTerminateControl, "[TRK_ACID]|[TRK_BCN]|[TRK_INDEX]|[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if !trk.IsAssociated() && !trk.IsUnsupportedDB() {
 				return ErrIllegalTrack
 			}
@@ -541,7 +541,7 @@ func registerOpsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeTerminateControl, "[TRK_ACID] [TIME]|[TRK_BCN] [TIME]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track, _ string) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track, _ string) error {
 			// TODO? Use specified coordination time
 			if !trk.IsAssociated() && !trk.IsUnsupportedDB() {
 				return ErrIllegalTrack
@@ -549,7 +549,7 @@ func registerOpsCommands() {
 			ctx.Client.DeleteFlightPlan(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
-	registerCommand(CommandModeTerminateControl, "[UNASSOC_FP]", func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan) {
+	registerCommand(CommandModeTerminateControl, "[UNASSOC_FP]", func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan) {
 		ctx.Client.DeleteFlightPlan(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 	})
 	// This runs if the above one can't find a flight plan...
@@ -559,7 +559,7 @@ func registerOpsCommands() {
 
 	// 5.4.7 Delete VFR flight plan from VFR FP list (p. 5-85)
 	registerCommand(CommandModeVFRPlan, "[FIELD]",
-		func(sp *Pane, ctx *scope.Context, acid string) error {
+		func(sp *Scope, ctx *scope.Context, acid string) error {
 			fps := ctx.Client.State.UnassociatedFlightPlans
 			if idx := slices.IndexFunc(fps, func(fp *sim.NASFlightPlan) bool {
 				return fp.ACID == sim.ACID(acid) && fp.Rules == av.FlightRulesVFR
@@ -570,7 +570,7 @@ func registerOpsCommands() {
 			return ErrIllegalTrack
 		})
 	registerCommand(CommandModeVFRPlan, "[NUM]",
-		func(sp *Pane, ctx *scope.Context, index int) error {
+		func(sp *Scope, ctx *scope.Context, index int) error {
 			fps := ctx.Client.State.UnassociatedFlightPlans
 			if idx := slices.IndexFunc(fps, func(fp *sim.NASFlightPlan) bool {
 				return fp.ListIndex == index && fp.ListIndex != sim.UnsetSTARSListIndex && fp.Rules == av.FlightRulesVFR
@@ -582,7 +582,7 @@ func registerOpsCommands() {
 		})
 
 	// 5.4.8 Delete a TCP's flight plans (p. 5-86)
-	registerCommand(CommandModeTerminateControl, "ALL", func(sp *Pane, ctx *scope.Context) {
+	registerCommand(CommandModeTerminateControl, "ALL", func(sp *Scope, ctx *scope.Context) {
 		for _, trk := range sp.visibleTracks {
 			if (trk.IsAssociated() || trk.IsUnsupportedDB()) && ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 				ctx.Client.DeleteFlightPlan(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
@@ -594,7 +594,7 @@ func registerOpsCommands() {
 	// registerCommand(CommandModeMultiFunc, "T[TIME]", ...)
 
 	// 5.5.1 Create abbreviated flight plan (Implied command)
-	createAbbrevFP := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
+	createAbbrevFP := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		spec.PlanType.Set(sim.LocalNonEnroute)
 		createFlightPlan(sp, ctx, spec)
@@ -603,7 +603,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "[FP_ACID] [*FP_BEACON|FP_TCP|FP_FLT_TYPE|FP_TRI_SP1|FP_PLUS_SP2|FP_NUM_ACTYPE_EQ|FP_ALT_R|FP_RULES]", createAbbrevFP)
 
 	// 5.5.2 Create / modify interfacility VFR FP and send FP message to ARTCC (Implied command)
-	createImpliedVFRFP := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
+	createImpliedVFRFP := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
 		spec.Rules.Set(av.FlightRulesVFR)
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		spec.PlanType.Set(sim.LocalEnroute)
@@ -613,7 +613,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "[FP_ACID] [FP_VFR_FIXES] [FP_ACTYPE_EQ] [*FP_ALT_R|FP_TCP]", createImpliedVFRFP)
 
 	// 5.5.3 Create FP and associate or create Unsupported data block (Implied command) (p. 5-99)
-	createFPAndAssociate := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
+	createFPAndAssociate := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
 		if trk.IsAssociated() {
 			return ErrIllegalTrack
 		}
@@ -627,7 +627,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "[FP_ACID][SLEW]", createFPAndAssociate)
 	registerCommand(CommandModeNone, "[FP_ACID] [*FP_BEACON|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A|FP_NUM_ACTYPE_EQ][SLEW]", createFPAndAssociate)
 
-	createUnsupportedDB := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier, p math.Point2LL) {
+	createUnsupportedDB := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier, p math.Point2LL) {
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		spec.Location.Set(p)
 		createFlightPlan(sp, ctx, spec)
@@ -640,13 +640,13 @@ func registerOpsCommands() {
 
 	// 5.5.5 Create flight plan (p. 5-109)
 	registerCommand(CommandModeFlightData, "[FP_ACID]",
-		func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
+		func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.PlanType.Set(sim.LocalNonEnroute)
 			createFlightPlan(sp, ctx, spec)
 		})
 	registerCommand(CommandModeFlightData, "[FP_ACID] [*FP_BEACON|FP_TCP|FP_FIX_PAIR|FP_COORD_TIME|FP_TRI_SP1|FP_PLUS_SP2|FP_NUM_ACTYPE_EQ|FP_ALT_R|FP_RULES]",
-		func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
+		func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.PlanType.Set(sim.LocalNonEnroute)
 			createFlightPlan(sp, ctx, spec)
@@ -657,7 +657,7 @@ func registerOpsCommands() {
 	// registerCommand(CommandModeFlightData, "* [FP_ACID] [*FP_BEACON|FP_EXIT_FIX|FP_COORD_TIME|FP_TRI_SP1|FP_PLUS_SP2|FP_NUM_ACTYPE_EQ|FP_ALT_R]"", ...)
 
 	// 5.5.7 Create pending FP with discrete beacon code (p. 5-120)
-	createPendingFPWithBeacon := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
+	createPendingFPWithBeacon := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		spec.PlanType.Set(sim.LocalNonEnroute)
 		createFlightPlan(sp, ctx, spec)
@@ -666,7 +666,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeInitiateControl, "[FP_ACID] [FP_BEACON] [*FP_TRI_SP1|FP_PLUS_SP2|FP_NUM_ACTYPE_EQ]", createPendingFPWithBeacon)
 
 	// 5.5.8 Create active FP with discrete beacon code (p. 5-124)
-	createActiveFPWithBeacon := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
+	createActiveFPWithBeacon := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
 		if trk.IsAssociated() {
 			return ErrIllegalTrack
 		}
@@ -682,7 +682,7 @@ func registerOpsCommands() {
 		createActiveFPWithBeacon)
 
 	// 5.5.9 Create active FP and Unsupported data block (p. 5-129)
-	createActiveFPAndUnsupportedDB := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier, pos math.Point2LL) {
+	createActiveFPAndUnsupportedDB := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier, pos math.Point2LL) {
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		spec.Location.Set(pos)
 		spec.PlanType.Set(sim.LocalNonEnroute)
@@ -693,7 +693,7 @@ func registerOpsCommands() {
 		createActiveFPAndUnsupportedDB)
 
 	// 5.5.10 Create / modify VFR FP and send FP message to ARTCC (p. 5-133)
-	createModifyVFRFP := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
+	createModifyVFRFP := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
 		spec.Rules.Set(av.FlightRulesVFR)
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		spec.PlanType.Set(sim.LocalEnroute)
@@ -706,7 +706,7 @@ func registerOpsCommands() {
 	// registerCommand(CommandModeInitiateControl, "STARSTriangleCharacter+" [TRK_ACID] ..." also TRK_INDEX, TRK_BCN)
 
 	// 5.5.12 Create quick flight plan (Implied command) (p. 5-141)
-	quickFPFromSquawk := func(sp *Pane, ctx *scope.Context, sq av.Squawk, rules av.FlightRules) error {
+	quickFPFromSquawk := func(sp *Scope, ctx *scope.Context, sq av.Squawk, rules av.FlightRules) error {
 		base := ctx.FacilityAdaptation.FlightPlan.QuickACID
 		acid := sim.ACID(base + sq.String())
 
@@ -725,15 +725,15 @@ func registerOpsCommands() {
 		createFlightPlan(sp, ctx, spec)
 		return nil
 	}
-	registerCommand(CommandModeNone, "*[BCN]|*[BCN]E", func(sp *Pane, ctx *scope.Context, sq av.Squawk) error {
+	registerCommand(CommandModeNone, "*[BCN]|*[BCN]E", func(sp *Scope, ctx *scope.Context, sq av.Squawk) error {
 		return quickFPFromSquawk(sp, ctx, sq, av.FlightRulesIFR)
 	})
-	registerCommand(CommandModeNone, "*[BCN]P|*[BCN]V", func(sp *Pane, ctx *scope.Context, sq av.Squawk) error {
+	registerCommand(CommandModeNone, "*[BCN]P|*[BCN]V", func(sp *Scope, ctx *scope.Context, sq av.Squawk) error {
 		return quickFPFromSquawk(sp, ctx, sq, av.FlightRulesVFR)
 	})
 
 	// 5.5.13 Create interfacility VFR flight plan from active local track (p. 5-143)
-	createInterfacilityVFR := func(sp *Pane, ctx *scope.Context, trk *sim.Track, isIntermediate bool, requestedAlt int) error {
+	createInterfacilityVFR := func(sp *Scope, ctx *scope.Context, trk *sim.Track, isIntermediate bool, requestedAlt int) error {
 		if !trk.IsAssociated() {
 			return ErrIllegalTrack
 		}
@@ -750,21 +750,21 @@ func registerOpsCommands() {
 			})
 		return nil
 	}
-	registerCommand(CommandModeVFRPlan, "[SLEW]", func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	registerCommand(CommandModeVFRPlan, "[SLEW]", func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		return createInterfacilityVFR(sp, ctx, trk, false, 0)
 	})
-	registerCommand(CommandModeVFRPlan, "*[SLEW]", func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	registerCommand(CommandModeVFRPlan, "*[SLEW]", func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		return createInterfacilityVFR(sp, ctx, trk, true, 0)
 	})
-	registerCommand(CommandModeVFRPlan, "[FP_ALT_R][SLEW]", func(sp *Pane, ctx *scope.Context, altSpec sim.FlightPlanSpecifier, trk *sim.Track) error {
+	registerCommand(CommandModeVFRPlan, "[FP_ALT_R][SLEW]", func(sp *Scope, ctx *scope.Context, altSpec sim.FlightPlanSpecifier, trk *sim.Track) error {
 		return createInterfacilityVFR(sp, ctx, trk, false, altSpec.RequestedAltitude.GetOr(0))
 	})
-	registerCommand(CommandModeVFRPlan, "*[FP_ALT_R][SLEW]", func(sp *Pane, ctx *scope.Context, altSpec sim.FlightPlanSpecifier, trk *sim.Track) error {
+	registerCommand(CommandModeVFRPlan, "*[FP_ALT_R][SLEW]", func(sp *Scope, ctx *scope.Context, altSpec sim.FlightPlanSpecifier, trk *sim.Track) error {
 		return createInterfacilityVFR(sp, ctx, trk, true, altSpec.RequestedAltitude.GetOr(0))
 	})
 
 	// 5.5.14 Create quick ACID flight plan (Implied command) (p. 5-145)
-	registerCommand(CommandModeNone, "Y[SLEW]", func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+	registerCommand(CommandModeNone, "Y[SLEW]", func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 		if trk.IsAssociated() {
 			return ErrIllegalTrack
 		}
@@ -782,7 +782,7 @@ func registerOpsCommands() {
 
 	// 5.6.2 Add or modify aircraft type (Implied command) (p. 5-148)
 	registerCommand(CommandModeNone, "[FP_NUM_ACTYPE4_EQ][SLEW]",
-		func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
 			if !trk.IsAssociated() {
 				return ErrCommandFormat
 			}
@@ -791,7 +791,7 @@ func registerOpsCommands() {
 		})
 
 	// 5.6.3 Add or modify scratchpad or altitude, and aircraft type (Implied command) (p. 5-150)
-	modifyFPSlew := func(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
+	modifyFPSlew := func(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
 		if !trk.IsAssociated() {
 			return ErrIllegalTrack
 		}
@@ -815,7 +815,7 @@ func registerOpsCommands() {
 
 	// 5.6.8 Delete scratchpad #1 (Implied command)
 	registerCommand(CommandModeNone, ".[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrIllegalTrack
 			}
@@ -828,7 +828,7 @@ func registerOpsCommands() {
 
 	// 5.6.9 Delete runway text (scratchpad #2) (Implied command)
 	registerCommand(CommandModeNone, "+[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrIllegalTrack
 			}
@@ -840,7 +840,7 @@ func registerOpsCommands() {
 		})
 
 	// 5.6.10 Add or modify scratchpad #1 (p. 5-159), 5.6.11 scratchpad 2 (p. 5-161), 5.6.13 pilot reported altitude (p. 5-165)
-	addModSP12PilotAlt := func(sp *Pane, ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) error {
+	addModSP12PilotAlt := func(sp *Scope, ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) error {
 		if trk.IsUnassociated() {
 			return ErrIllegalTrack
 		}
@@ -863,7 +863,7 @@ func registerOpsCommands() {
 
 	// 5.6.12 Delete scratchpad #1 or #2 (p. 5-163)
 	registerCommand(CommandModeMultiFunc, "Y[TRK_ACID]|Y[TRK_BCN]|Y[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrIllegalTrack
 			}
@@ -875,7 +875,7 @@ func registerOpsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeMultiFunc, "Y+[TRK_ACID]|Y+[TRK_BCN]|Y+[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrIllegalTrack
 			}
@@ -888,7 +888,7 @@ func registerOpsCommands() {
 
 	// 5.6.14 Toggle display of Mode-C altitude
 	registerCommand(CommandModeMultiFunc, "M[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) error {
 			if trk.IsUnassociated() {
 				return ErrIllegalTrack
 			}
@@ -912,7 +912,7 @@ func registerOpsCommands() {
 
 	// 5.6.17 Modify flight plan (p. 5-171)
 	const modFPEntries = "[FP_ACID|FP_BEACON|FP_TCP|FP_COORD_TIME|FP_FIX_PAIR|FP_TRI_SP1|FP_PLUS_SP2|FP_TRI_ALT_A|FP_ALT_R]"
-	modifyFP := func(sp *Pane, ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) error {
+	modifyFP := func(sp *Scope, ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) error {
 		if trk.IsUnassociated() {
 			return ErrIllegalTrack
 		}
@@ -937,7 +937,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "*[FP_ACID][SLEW]", modifyFP)
 
 	// 5.7.1 Display flight plan in Preview area (p. 5-186)
-	displayFlightPlan := func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) (CommandStatus, error) {
+	displayFlightPlan := func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) (CommandStatus, error) {
 		output := formatFlightPlan(sp, ctx, fp, trk)
 
 		// Handle ModifyAfterDisplay mode transition (STARS Manual 5-186)
@@ -952,20 +952,20 @@ func registerOpsCommands() {
 		return CommandStatus{Output: output}, nil
 	}
 	registerCommand(CommandModeMultiFunc, "D[TRK_ACID]|D[TRK_BCN]|D[TRK_INDEX]|D[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 			if trk.IsUnassociated() {
 				return CommandStatus{}, ErrNoFlight
 			}
 			return displayFlightPlan(sp, ctx, trk.FlightPlan, trk)
 		})
 	registerCommand(CommandModeMultiFunc, "D[UNASSOC_FP]",
-		func(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan) (CommandStatus, error) {
+		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan) (CommandStatus, error) {
 			return displayFlightPlan(sp, ctx, fp, nil)
 		})
 
 	// 5.7.3 Reposition active track's (or unsupported) Full data block (p. 5-191)
 	registerCommand(CommandModeTrackReposition, "[SLEW]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 			if trk.IsUnassociated() || trk.FlightPlan.HandoffController != "" {
 				return CommandStatus{}, ErrIllegalTrack
 			}
@@ -974,7 +974,7 @@ func registerOpsCommands() {
 			return CommandStatus{
 				Clear: ClearNone,
 				CommandHandlers: makeCommandHandlers(
-					"[SLEW]", func(sp *Pane, ctx *scope.Context, dstTrk *sim.Track) error {
+					"[SLEW]", func(sp *Scope, ctx *scope.Context, dstTrk *sim.Track) error {
 						// Associate fp with the second track
 						if dstTrk.IsAssociated() {
 							return ErrIllegalTrack
@@ -983,7 +983,7 @@ func registerOpsCommands() {
 							func(err error) { sp.displayError(err, ctx, "") })
 						return nil
 					},
-					"[POS]", func(sp *Pane, ctx *scope.Context, pos math.Point2LL) {
+					"[POS]", func(sp *Scope, ctx *scope.Context, pos math.Point2LL) {
 						// Make an unsupported datablock
 						ctx.Client.RepositionTrack(acid, "", pos,
 							func(err error) { sp.displayError(err, ctx, "") })
@@ -992,7 +992,7 @@ func registerOpsCommands() {
 			}, nil
 		})
 	registerCommand(CommandModeTrackReposition, "[TRK_ACID][POS]|[TRK_BCN][POS]|[TRK_INDEX][POS]",
-		func(sp *Pane, ctx *scope.Context, trk *sim.Track, pos math.Point2LL) error {
+		func(sp *Scope, ctx *scope.Context, trk *sim.Track, pos math.Point2LL) error {
 			if trk.IsUnassociated() || trk.FlightPlan.HandoffController != "" {
 				return ErrIllegalTrack
 			}
@@ -1000,7 +1000,7 @@ func registerOpsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeTrackReposition, "[TRK_ACID][SLEW]|[TRK_BCN][SLEW]|[TRK_INDEX][SLEW]",
-		func(sp *Pane, ctx *scope.Context, src, dst *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, src, dst *sim.Track) error {
 			if src.IsUnassociated() || src.FlightPlan.HandoffController != "" || dst.IsAssociated() {
 				return ErrIllegalTrack
 			}
@@ -1034,7 +1034,7 @@ func registerOpsCommands() {
 	})
 }
 
-func associateFlightPlan(sp *Pane, ctx *scope.Context, callsign av.ADSBCallsign, spec sim.FlightPlanSpecifier) {
+func associateFlightPlan(sp *Scope, ctx *scope.Context, callsign av.ADSBCallsign, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
 		spec.TrackingController.Set(ctx.UserPrimaryPosition())
 	}
@@ -1054,7 +1054,7 @@ func associateFlightPlan(sp *Pane, ctx *scope.Context, callsign av.ADSBCallsign,
 		})
 }
 
-func createFlightPlan(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
+func createFlightPlan(sp *Scope, ctx *scope.Context, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
 		spec.TrackingController.Set(ctx.UserPrimaryPosition())
 	}
@@ -1077,7 +1077,7 @@ func createFlightPlan(sp *Pane, ctx *scope.Context, spec sim.FlightPlanSpecifier
 // configureAutoHandoff enables or inhibits automatic handoff processing; it
 // backs both the per-TCP command (4.3, p. 4-30) and the site-wide supervisor
 // command (8.8, p. 8-13).
-func configureAutoHandoff(sp *Pane, ctx *scope.Context, op sim.AutoHandoffOp, enable bool) error {
+func configureAutoHandoff(sp *Scope, ctx *scope.Context, op sim.AutoHandoffOp, enable bool) error {
 	ctx.Client.ConfigureAutoHandoff(op, enable,
 		func(output string, err error) {
 			if err != nil {
@@ -1089,7 +1089,7 @@ func configureAutoHandoff(sp *Pane, ctx *scope.Context, op sim.AutoHandoffOp, en
 	return nil
 }
 
-func modifyFlightPlan(sp *Pane, ctx *scope.Context, acid sim.ACID, spec sim.FlightPlanSpecifier, display bool) {
+func modifyFlightPlan(sp *Scope, ctx *scope.Context, acid sim.ACID, spec sim.FlightPlanSpecifier, display bool) {
 	if !spec.ACID.IsSet {
 		spec.ACID.Set(acid)
 	}
@@ -1120,7 +1120,7 @@ func modifyFlightPlan(sp *Pane, ctx *scope.Context, acid sim.ACID, spec sim.Flig
 
 // See STARS Operators Manual 5-184...
 // trk may be nil
-func formatFlightPlan(sp *Pane, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
+func formatFlightPlan(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
 	if fp == nil { // shouldn't happen...
 		return "NO PLAN"
 	}

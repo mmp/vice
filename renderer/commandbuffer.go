@@ -172,7 +172,7 @@ func (cb *CommandBuffer) Viewport(x, y, w, h int) {
 }
 
 // SetDrawBounds sets the scissor rectangle and viewport according to the
-// specified bounds so that subsequent code can assume window (or Pane)
+// specified bounds so that subsequent code can assume window (or scope)
 // coordinates from (0,0)-(width,height) when drawing things.
 //
 // One messy detail here is that these windows are specified in framebuffer
@@ -191,7 +191,7 @@ func (cb *CommandBuffer) SetDrawBounds(b math.Extent2D, scale float32) {
 }
 
 // SetScissorBounds sets the scissor rectangle according to the
-// specified bounds so that subsequent code can assume window (or Pane)
+// specified bounds so that subsequent code can assume window (or scope)
 // coordinates from (0,0)-(width,height) when drawing things.
 //
 // One messy detail here is that these windows are specified in framebuffer

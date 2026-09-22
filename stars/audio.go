@@ -14,7 +14,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (sp *Pane) initializeAudio(p platform.Platform, lg *log.Logger) {
+func (sp *Scope) initializeAudio(p platform.Platform, lg *log.Logger) {
 	if sp.audioEffects == nil {
 		sp.audioEffects = make(map[AudioType]int)
 
@@ -37,7 +37,7 @@ func (sp *Pane) initializeAudio(p platform.Platform, lg *log.Logger) {
 	}
 }
 
-func (sp *Pane) playOnce(p platform.Platform, a AudioType) {
+func (sp *Scope) playOnce(p platform.Platform, a AudioType) {
 	if sp.currentPrefs().AudioEffectEnabled[a] {
 		p.PlayAudioOnce(sp.audioEffects[a])
 	}
@@ -45,7 +45,7 @@ func (sp *Pane) playOnce(p platform.Platform, a AudioType) {
 
 const AlertAudioDuration = 5 * time.Second
 
-func (sp *Pane) updateAudio(ctx *scope.Context) {
+func (sp *Scope) updateAudio(ctx *scope.Context) {
 	ps := sp.currentPrefs()
 
 	if !sp.testAudioEndTime.IsZero() && time.Now().After(sp.testAudioEndTime) {

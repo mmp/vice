@@ -22,11 +22,11 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-var _ scope.UIDrawer = (*Pane)(nil)
+var _ scope.UIDrawer = (*Scope)(nil)
 
-func (sp *Pane) DisplayName() string { return "STARS" }
+func (sp *Scope) DisplayName() string { return "STARS" }
 
-func (sp *Pane) DrawUI(p platform.Platform, config *platform.Config) {
+func (sp *Scope) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Text("Font: ")
 	imgui.SameLine()
 	imgui.RadioButtonIntPtr("Default", &sp.FontSelection, fontDefault)
@@ -62,7 +62,7 @@ func (sp *Pane) DrawUI(p platform.Platform, config *platform.Config) {
 		imgui.EndCombo()
 	}
 
-	if sp.prefSet != nil { // Hacky workaround to crash if DrawUI runs with no active STARS Pane.
+	if sp.prefSet != nil { // Hacky workaround to crash if DrawUI runs with no active STARS Scope.
 		imgui.Separator()
 		imgui.Text("Non-standard Audio Effects")
 
@@ -78,7 +78,7 @@ func (sp *Pane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 }
 
-func (sp *Pane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+func (sp *Scope) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	sp.scopeDraw.DrawArrivalsUI(c, sp.IFPHelpers.ArrivalsColor)
 	sp.scopeDraw.DrawApproachesUI(c, sp.IFPHelpers.ApproachesColor, lg)
 	sp.scopeDraw.DrawDeparturesUI(c, sp.IFPHelpers.DeparturesColor)

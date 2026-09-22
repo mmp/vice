@@ -15,7 +15,7 @@ import (
 )
 
 // ERAM Short-Term Conflict Alert (STCA). Every caUpdateInterval of sim time
-// the pane predicts each eligible track pair's 3D trajectories
+// the scope predicts each eligible track pair's 3D trajectories
 // caLookaheadSeconds into the future and alerts if the pair is ever
 // simultaneously within both the lateral and vertical separation minima.
 // Targets in conflict render with "flashing" (brightness-cycling) full
@@ -154,7 +154,7 @@ func mergeCAPairs(prev []CAPair, detected [][2]av.ADSBCallsign, now sim.Time) []
 
 // inConflictAlert reports whether the callsign is a member of any active
 // conflict alert pair.
-func (ep *Pane) inConflictAlert(callsign av.ADSBCallsign) bool {
+func (ep *Scope) inConflictAlert(callsign av.ADSBCallsign) bool {
 	return slices.ContainsFunc(ep.CAPairs, func(p CAPair) bool {
 		return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
 	})
@@ -169,7 +169,7 @@ func (ep *Pane) inConflictAlert(callsign av.ADSBCallsign) bool {
 // Note: the caller passes ep.visibleTracks; today that is effectively all
 // tracks, but if display filtering (e.g. radar holes) is ever added there,
 // conflict detection coverage would narrow with it.
-func (ep *Pane) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
+func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 	now := ctx.Client.State.SimTime
 	if now.Time().Sub(ep.lastConflictUpdate) < caUpdateInterval {
 		return

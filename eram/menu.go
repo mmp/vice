@@ -17,11 +17,11 @@ import (
 
 // Menu - reusable floating popup menu component: streamlines making the many slightly different menus in ERAM.
 
-// popup is the interface implemented by every floating pop-up menu. Pane
+// popup is the interface implemented by every floating pop-up menu. Scope
 // holds at most one (in ep.popup); opening a new pop-up replaces whatever was
 // there.
 type popup interface {
-	draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer)
+	draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer)
 }
 
 // popupAnchorSide identifies which edge of the host view is pinned by an
@@ -71,7 +71,7 @@ const (
 // using OpenPopupAt and wrap its placement into a typed popup. rowCount is
 // the number of content rows below the title bar — the helper adds 1 for
 // the title bar and multiplies by viewPopupItemH to get the popup height.
-func (ep *Pane) makeViewMenu(ctx *scope.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
+func (ep *Scope) makeViewMenu(ctx *scope.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
 	return func(host math.Extent2D) popup {
 		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
 			if id, _, _ := vap.viewAnchor(); id == viewID {
@@ -113,7 +113,7 @@ type viewAnchoredPopup interface {
 // if it consumed the input.
 type keyboardPopup interface {
 	popup
-	handleKeyboard(ep *Pane, ctx *scope.Context) bool
+	handleKeyboard(ep *Scope, ctx *scope.Context) bool
 }
 
 // MenuClickType distinguishes primary from tertiary clicks.
@@ -206,7 +206,7 @@ type ScrollItem struct {
 // makeBooleanMenuItem builds a centered toggle row whose label flips between
 // trueLabel and falseLabel based on *v. Background is grey when *v is true,
 // black otherwise. Click toggles *v.
-func (ep *Pane) makeBooleanMenuItem(v *bool, trueLabel, falseLabel string) MenuItem {
+func (ep *Scope) makeBooleanMenuItem(v *bool, trueLabel, falseLabel string) MenuItem {
 	return MenuItem{
 		Label:    util.Select(*v, trueLabel, falseLabel),
 		BgColor:  util.Select(*v, colors.popup.backgroundGrey, colors.popup.backgroundBlack),
@@ -221,7 +221,7 @@ func (ep *Pane) makeBooleanMenuItem(v *bool, trueLabel, falseLabel string) MenuI
 
 // makeToggleMenuItem builds a left-justified toggle row with a fixed label.
 // Background is grey when *v is true, black otherwise. Click toggles *v.
-func (ep *Pane) makeToggleMenuItem(v *bool, label string) MenuItem {
+func (ep *Scope) makeToggleMenuItem(v *bool, label string) MenuItem {
 	return MenuItem{
 		Label:   label,
 		BgColor: util.Select(*v, colors.popup.backgroundGrey, colors.popup.backgroundBlack),
@@ -238,7 +238,7 @@ func (ep *Pane) makeToggleMenuItem(v *bool, label string) MenuItem {
 // clamped to [min, max]. Generic over any int-kinded type so callers can pass
 // e.g. *scope.Brightness directly. Free-standing because Go methods cannot have
 // their own type parameters.
-func makeIntMenuItem[T ~int](ep *Pane, v *T, label string, min, max, step int) MenuItem {
+func makeIntMenuItem[T ~int](ep *Scope, v *T, label string, min, max, step int) MenuItem {
 	return MenuItem{
 		Label:   fmt.Sprintf("%s %d", label, *v),
 		BgColor: colors.popup.backgroundGreen,
@@ -278,8 +278,8 @@ type MenuConfig struct {
 // clamped origin plus the anchor side and pinned X that DrawView uses to
 // keep the host view's pinned edge flush with the pop-up as the view
 // resizes.
-func (ep *Pane) OpenPopupAt(ctx *scope.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) viewPopupPlacement {
-	pe := ctx.PaneExtent
+func (ep *Scope) OpenPopupAt(ctx *scope.Context, originGuess [2]float32, width, height float32, titleFont *renderer.Font, hostExtent math.Extent2D) viewPopupPlacement {
+	pe := ctx.DrawExtent
 	origin := originGuess
 	anchor := popupAnchorRight
 	pinX := hostExtent.P1[0]
@@ -327,7 +327,7 @@ type MenuResult struct {
 }
 
 // DrawERAMMenu renders a floating popup menu and handles clicks.
-func (ep *Pane) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformations,
+func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformations,
 	cb *renderer.CommandBuffer, origin [2]float32, cfg MenuConfig) MenuResult {
 
 	var result MenuResult
@@ -638,7 +638,7 @@ func (ep *Pane) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformation
 // drawScrollSection renders a scrollable list section for a row with SubRows.
 // It handles drawing, scroll arrows, mouse wheel, and click selection.
 // Returns the updated cursor position.
-func (ep *Pane) drawScrollSection(cursor [2]float32, width, itemH float32, font *renderer.Font,
+func (ep *Scope) drawScrollSection(cursor [2]float32, width, itemH float32, font *renderer.Font,
 	item *MenuItem, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
 
@@ -756,7 +756,7 @@ func (ep *Pane) drawScrollSection(cursor [2]float32, width, itemH float32, font 
 
 // drawMenuCellsRow renders a row of side-by-side pick areas, splitting the
 // row width by each cell's Weight. Cells handle their own clicks.
-func (ep *Pane) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
+func (ep *Scope) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
 	cells []MenuCell, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
 
@@ -822,7 +822,7 @@ func (ep *Pane) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font *
 
 // drawMenuGrid renders a scrollable grid of value pick areas with a reserved
 // scroll-arrow column on the right. Cells handle their own clicks.
-func (ep *Pane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *renderer.Font,
+func (ep *Scope) drawMenuGrid(cursor [2]float32, width, itemH float32, font *renderer.Font,
 	grid *MenuGrid, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
 
@@ -954,7 +954,7 @@ func (ep *Pane) drawMenuGrid(cursor [2]float32, width, itemH float32, font *rend
 
 // drawMenuInputRow renders a text input row: a black box showing the buffer
 // contents with a trailing cursor. Keyboard input is the popup's concern.
-func (ep *Pane) drawMenuInputRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
+func (ep *Scope) drawMenuInputRow(cursor [2]float32, width, itemH float32, font *renderer.Font,
 	input *MenuInput, trid *renderer.ColoredTrianglesDrawBuilder,
 	td *renderer.TextDrawBuilder, extent *math.Extent2D) [2]float32 {
 

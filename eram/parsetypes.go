@@ -29,7 +29,7 @@ type typeParser interface {
 	//   remaining: the unconsumed portion of text
 	//   matched: true if this looks like this type
 	//   err: non-nil if matched but invalid
-	Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (value any, remaining string, matched bool, err error)
+	Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (value any, remaining string, matched bool, err error)
 
 	// GoType returns the Go type this handler produces
 	GoType() reflect.Type
@@ -141,7 +141,7 @@ type trackParser struct{}
 
 func (h *trackParser) Identifier() string { return "TRACK" }
 
-func (h *trackParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *trackParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	if field, remaining := util.CutAtSpace(text); field != "" {
 		if trk := trackFromFLID(ctx, field); trk != nil {
 			return trk, remaining, true, nil
@@ -190,7 +190,7 @@ const maxTrackList = 4
 
 func (h *trackListParser) Identifier() string { return "TRACK_LIST" }
 
-func (h *trackListParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *trackListParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	isSep := func(ch byte) bool { return ch == ' ' || ch == '/' }
 	// Index of the next click in input.mousePositions that has not yet been
 	// consumed (by earlier matchers or earlier 'w's in our own loop).
@@ -252,7 +252,7 @@ type eramAltAParser struct{}
 
 func (h *eramAltAParser) Identifier() string { return "ERAM_ALT_A" }
 
-func (h *eramAltAParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *eramAltAParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if len(field) != 3 {
 		return nil, text, false, nil
@@ -282,7 +282,7 @@ type eramAltIParser struct{}
 
 func (h *eramAltIParser) Identifier() string { return "ERAM_ALT_I" }
 
-func (h *eramAltIParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *eramAltIParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -326,7 +326,7 @@ type altLimitsParser struct{}
 
 func (h *altLimitsParser) Identifier() string { return "ALT_LIMITS" }
 
-func (h *altLimitsParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *altLimitsParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	limits, ok := parseAltitudeLimits(field)
 	if !ok {
@@ -349,7 +349,7 @@ type sectorIDParser struct{}
 
 func (h *sectorIDParser) Identifier() string { return "SECTOR_ID" }
 
-func (h *sectorIDParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *sectorIDParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -405,7 +405,7 @@ type sectorIDListParser struct{}
 
 func (l *sectorIDListParser) Identifier() string { return "SECTOR_ID_LIST" }
 
-func (l *sectorIDListParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (l *sectorIDListParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	tokens := strings.Fields(text)
 	var sectors []string
 	for i, tok := range tokens {
@@ -426,7 +426,7 @@ type fixParser struct{}
 
 func (h *fixParser) Identifier() string { return "FIX" }
 
-func (h *fixParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *fixParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	if text == "" || !isAlpha(text[0]) {
 		return nil, text, false, nil
 	}
@@ -458,7 +458,7 @@ type numberParser struct {
 
 func (h *numberParser) Identifier() string { return h.id }
 
-func (h *numberParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *numberParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	var num, remainder string
 	if h.digits != 0 {
 		if len(text) < h.digits {
@@ -494,7 +494,7 @@ type fieldParser struct{}
 
 func (h *fieldParser) Identifier() string { return "FIELD" }
 
-func (h *fieldParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *fieldParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -514,7 +514,7 @@ type allTextParser struct{}
 
 func (h *allTextParser) Identifier() string { return "ALL_TEXT" }
 
-func (h *allTextParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *allTextParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	prefix, _, _ := strings.Cut(text, locationSymbol)
 	prefix = strings.TrimRight(prefix, " ")
 	if prefix == "" {
@@ -531,7 +531,7 @@ type posParser struct{}
 
 func (h *posParser) Identifier() string { return "POS" }
 
-func (h *posParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *posParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	// Only match clicks on empty space, not on tracks. Use TRACK for track clicks.
 	if len(input.mousePositions) == 0 || input.trackCallsigns[0] != "" {
 		return nil, text, false, nil
@@ -551,7 +551,7 @@ type acidParser struct{}
 
 func (h *acidParser) Identifier() string { return "ACID" }
 
-func (h *acidParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *acidParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	if text == "" || !isAlpha(text[0]) {
 		return nil, text, false, nil
 	}
@@ -575,7 +575,7 @@ type laOptions struct {
 
 func (h *laOptionParser) Identifier() string { return "LA_OPTS" }
 
-func (h *laOptionParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *laOptionParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	var o laOptions
 
 	optText, remainder, _ := strings.Cut(text, " ")
@@ -600,7 +600,7 @@ type beaconParser struct{}
 
 func (h *beaconParser) Identifier() string { return "BCN" }
 
-func (h *beaconParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *beaconParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	if len(text) < 4 {
 		return nil, text, false, nil
 	}
@@ -620,7 +620,7 @@ type beaconListParser struct{}
 
 func (h *beaconListParser) Identifier() string { return "BCN_LIST" }
 
-func (h *beaconListParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *beaconListParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	tokens := strings.Fields(text)
 	var codes []av.Squawk
 	for i, tok := range tokens {
@@ -644,7 +644,7 @@ type mapGroupParser struct{}
 
 func (h *mapGroupParser) Identifier() string { return "MAP_GROUP" }
 
-func (h *mapGroupParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *mapGroupParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -662,7 +662,7 @@ type crrLabelParser struct{}
 
 func (h *crrLabelParser) Identifier() string { return "CRR_LABEL" }
 
-func (h *crrLabelParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *crrLabelParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -698,7 +698,7 @@ type CRRLocation struct {
 
 func (h *crrLocParser) Identifier() string { return "CRR_LOC" }
 
-func (h *crrLocParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *crrLocParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" || !strings.HasPrefix(field, "//") {
 		return nil, text, false, nil
@@ -723,7 +723,7 @@ type locSymParser struct{}
 
 func (h *locSymParser) Identifier() string { return "LOC_SYM" }
 
-func (h *locSymParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *locSymParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	// Must have a click with positions available and the text must start with the location symbol
 	if len(input.mousePositions) == 0 {
 		return nil, text, false, nil
@@ -756,7 +756,7 @@ type minutesParser struct{}
 
 func (h *minutesParser) Identifier() string { return "MINUTES" }
 
-func (h *minutesParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *minutesParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -779,7 +779,7 @@ type hsfTextParser struct{}
 
 func (h *hsfTextParser) Identifier() string { return "HSF_TEXT" }
 
-func (h *hsfTextParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *hsfTextParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -806,7 +806,7 @@ type hsfHeadingParser struct{}
 
 func (h *hsfHeadingParser) Identifier() string { return "HSF_HDG" }
 
-func (h *hsfHeadingParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *hsfHeadingParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" {
 		return nil, text, false, nil
@@ -843,7 +843,7 @@ type hsfSpeedParser struct{}
 
 func (h *hsfSpeedParser) Identifier() string { return "HSF_SPEED" }
 
-func (h *hsfSpeedParser) Parse(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *hsfSpeedParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
 	if field == "" || field[0] != '/' {
 		return nil, text, false, nil

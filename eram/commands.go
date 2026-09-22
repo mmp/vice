@@ -40,7 +40,7 @@ const (
 	CommandModeDrawRoute
 )
 
-func (ep *Pane) consumeMouseEvents(ctx *scope.Context, transforms scope.Transformations) {
+func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transformations) {
 	mouse := ctx.Mouse
 	if mouse == nil {
 		return
@@ -152,7 +152,7 @@ type CommandStatus struct {
 	feedbackArea []string
 }
 
-func (ep *Pane) executeERAMCommand(ctx *scope.Context, cmdLine inputText) (CommandStatus, error) {
+func (ep *Scope) executeERAMCommand(ctx *scope.Context, cmdLine inputText) (CommandStatus, error) {
 	original := strings.TrimSpace(cmdLine.String())
 
 	// Extract all embedded locations from clicking while typing, along with
@@ -178,7 +178,7 @@ func (ep *Pane) executeERAMCommand(ctx *scope.Context, cmdLine inputText) (Comma
 	return CommandStatus{}, nil
 }
 
-func (ep *Pane) deleteFLightplan(ctx *scope.Context, trk sim.Track) {
+func (ep *Scope) deleteFLightplan(ctx *scope.Context, trk sim.Track) {
 	ctx.Client.DeleteFlightPlan(sim.ACID(trk.ADSBCallsign.String()), func(err error) {
 		if err != nil {
 			ep.displayError(err, ctx)
@@ -187,7 +187,7 @@ func (ep *Pane) deleteFLightplan(ctx *scope.Context, trk sim.Track) {
 	})
 }
 
-func (ep *Pane) runAircraftCommands(ctx *scope.Context, callsign av.ADSBCallsign, cmds string) {
+func (ep *Scope) runAircraftCommands(ctx *scope.Context, callsign av.ADSBCallsign, cmds string) {
 	ep.targetGenLastCallsign = callsign
 
 	ctx.Client.RunAircraftCommands(client.AircraftCommandRequest{
@@ -201,7 +201,7 @@ func (ep *Pane) runAircraftCommands(ctx *scope.Context, callsign av.ADSBCallsign
 }
 
 // Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes.
-func (ep *Pane) modifyFlightPlan(ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) {
+func (ep *Scope) modifyFlightPlan(ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) {
 	if trk.FlightPlan != nil {
 		if spec.Scratchpad.IsSet {
 			trk.FlightPlan.Scratchpad = spec.Scratchpad.Value
@@ -245,17 +245,17 @@ func (ep *Pane) modifyFlightPlan(ctx *scope.Context, trk *sim.Track, spec sim.Fl
 	}
 }
 
-func (ep *Pane) acceptHandoff(ctx *scope.Context, acid sim.ACID) {
+func (ep *Scope) acceptHandoff(ctx *scope.Context, acid sim.ACID) {
 	ctx.Client.AcceptHandoff(acid,
 		func(err error) { ep.displayError(err, ctx) })
 }
 
-func (ep *Pane) recallHandoff(ctx *scope.Context, acid sim.ACID) {
+func (ep *Scope) recallHandoff(ctx *scope.Context, acid sim.ACID) {
 	ctx.Client.CancelHandoff(acid,
 		func(err error) { ep.displayError(err, ctx) })
 }
 
-func (ep *Pane) getQULines(ctx *scope.Context, acid sim.ACID, minutes int) {
+func (ep *Scope) getQULines(ctx *scope.Context, acid sim.ACID, minutes int) {
 	ctx.Client.SendRouteCoordinates(acid, minutes, func(err error) {
 		if err != nil {
 			ep.displayError(err, ctx)
@@ -263,7 +263,7 @@ func (ep *Pane) getQULines(ctx *scope.Context, acid sim.ACID, minutes int) {
 	})
 }
 
-func (ep *Pane) tgtGenDefaultCallsign(ctx *scope.Context) av.ADSBCallsign {
+func (ep *Scope) tgtGenDefaultCallsign(ctx *scope.Context) av.ADSBCallsign {
 	if cs := ctx.Client.LastTTSCallsign(); cs != "" {
 		// If TTS is active, return the last TTS transmitter.
 		return cs
@@ -272,7 +272,7 @@ func (ep *Pane) tgtGenDefaultCallsign(ctx *scope.Context) av.ADSBCallsign {
 	return ep.targetGenLastCallsign
 }
 
-func (ep *Pane) flightPlanDirect(ctx *scope.Context, acid sim.ACID, fix string) error {
+func (ep *Scope) flightPlanDirect(ctx *scope.Context, acid sim.ACID, fix string) error {
 	ctx.Client.FlightPlanDirect(acid, fix, func(err error) {
 		if err != nil {
 			ep.displayError(err, ctx)
@@ -288,7 +288,7 @@ func (ep *Pane) flightPlanDirect(ctx *scope.Context, acid sim.ACID, fix string) 
 
 // closestTrackToLL returns the closest track to the given lat/long within maxNm.
 // Returns nil if no track is within that distance.
-func (ep *Pane) closestTrackToLL(ctx *scope.Context, loc math.Point2LL, maxNm float32) *sim.Track {
+func (ep *Scope) closestTrackToLL(ctx *scope.Context, loc math.Point2LL, maxNm float32) *sim.Track {
 	var best *sim.Track
 	bestDist := maxNm
 	for _, t := range ctx.Client.State.Tracks {
@@ -301,7 +301,7 @@ func (ep *Pane) closestTrackToLL(ctx *scope.Context, loc math.Point2LL, maxNm fl
 	return best
 }
 
-func (ep *Pane) handoffTrack(ctx *scope.Context, acid sim.ACID, controller string) error {
+func (ep *Scope) handoffTrack(ctx *scope.Context, acid sim.ACID, controller string) error {
 	control, err := ep.lookupControllerForID(ctx, controller)
 	if err != nil {
 		ep.displayError(err, ctx)
@@ -317,7 +317,7 @@ func (ep *Pane) handoffTrack(ctx *scope.Context, acid sim.ACID, controller strin
 	return nil
 }
 
-func (ep *Pane) pointOutTrack(ctx *scope.Context, trk *sim.Track, sector string) error {
+func (ep *Scope) pointOutTrack(ctx *scope.Context, trk *sim.Track, sector string) error {
 	if trk.IsUnassociated() {
 		return ErrIllegalACID
 	} else if control, err := ep.lookupControllerForID(ctx, sector); err != nil {
@@ -342,7 +342,7 @@ func (ep *Pane) pointOutTrack(ctx *scope.Context, trk *sim.Track, sector string)
 	}
 }
 
-func (ep *Pane) acknowledgePointOut(ctx *scope.Context, trk *sim.Track) error {
+func (ep *Scope) acknowledgePointOut(ctx *scope.Context, trk *sim.Track) error {
 	if trk.IsUnassociated() {
 		return ErrIllegalACID
 	}
@@ -362,7 +362,7 @@ func (ep *Pane) acknowledgePointOut(ctx *scope.Context, trk *sim.Track) error {
 	return nil
 }
 
-func (ep *Pane) clearPointOutLock(trk *sim.Track) (CommandStatus, error) {
+func (ep *Scope) clearPointOutLock(trk *sim.Track) (CommandStatus, error) {
 	state := ep.TrackState[trk.ADSBCallsign]
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
@@ -377,7 +377,7 @@ func (ep *Pane) clearPointOutLock(trk *sim.Track) (CommandStatus, error) {
 	}
 }
 
-func (ep *Pane) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32, transforms scope.Transformations) (*sim.Track, float32) {
+func (ep *Scope) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32, transforms scope.Transformations) (*sim.Track, float32) {
 	var trk *sim.Track
 	distance := float32(20)
 
@@ -396,7 +396,7 @@ func (ep *Pane) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32,
 	return trk, distance
 }
 
-func (ep *Pane) lookupControllerForID(ctx *scope.Context, controller string) (*av.Controller, error) {
+func (ep *Scope) lookupControllerForID(ctx *scope.Context, controller string) (*av.Controller, error) {
 	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to.
 	// That is not here yet, so return an error.
 	for _, control := range ctx.Client.State.Controllers {

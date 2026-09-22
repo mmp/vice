@@ -40,7 +40,7 @@ import (
 // Handler functions may declare parameters in two groups:
 //
 // 1. Initial Arguments (optional, any order):
-//   - *Pane: The ERAM pane instance
+//   - *Scope: The ERAM scope instance
 //   - *scope.Context: The rendering/input context
 //   - *PrefrenceSet: Current ERAM user preferences (via ep.currentPrefs())
 //
@@ -51,7 +51,7 @@ import (
 // Best practices:
 //   - Only include initial arguments that are actually used in the function
 //   - If a function only needs *PrefrenceSet, pass it directly rather than taking
-//     *Pane and calling currentPrefs(). (Saves a line of code)
+//     *Scope and calling currentPrefs(). (Saves a line of code)
 //
 // The following return value types are allowed:
 //   - () - no return value
@@ -62,7 +62,7 @@ type userCommand struct {
 	cmd          string    // Command specifier (e.g., "QQ [ERAM_ALT_I] [FLID]")
 	handlerFunc  any       // Handler function with flexible signature (see documentation above)
 	matchers     []matcher // Sequence of matchers for this command
-	numInitial   int       // Cached count of initial args (Pane, Context, Preferences)
+	numInitial   int       // Cached count of initial args (Scope, Context, Preferences)
 	acceptsClick bool      // True if the command is initiated from a mouse click
 }
 
@@ -237,7 +237,7 @@ func (c matchCandidate) advance(m matcher, r matchResult) matchCandidate {
 
 // tryExecuteUserCommand attempts to execute a command using the registered commands
 // for the current command mode.
-func (ep *Pane) tryExecuteUserCommand(ctx *scope.Context, cmd string, mousePositions []math.Point2LL,
+func (ep *Scope) tryExecuteUserCommand(ctx *scope.Context, cmd string, mousePositions []math.Point2LL,
 	trackCallsigns []av.ADSBCallsign) (CommandStatus, error, bool) {
 	// Get commands for current mode
 	cmds, ok := userCommands[ep.commandMode]
@@ -257,7 +257,7 @@ func (ep *Pane) tryExecuteUserCommand(ctx *scope.Context, cmd string, mousePosit
 // dispatchCommand is the main command dispatch function using greedy matching.
 // It matches commands step-by-step, committing to the highest priority match at each step.
 // Returns (status, error, handled) where handled indicates if any command matched.
-func (ep *Pane) dispatchCommand(ctx *scope.Context, cmds []userCommand, input *CommandInput) (CommandStatus, error, bool) {
+func (ep *Scope) dispatchCommand(ctx *scope.Context, cmds []userCommand, input *CommandInput) (CommandStatus, error, bool) {
 	candidates := util.MapSlice(cmds, func(cmd userCommand) matchCandidate {
 		return matchCandidate{
 			cmd:       &cmd,
@@ -280,7 +280,7 @@ func (ep *Pane) dispatchCommand(ctx *scope.Context, cmds []userCommand, input *C
 
 // greedyMatchCommands recursively matches commands using greedy priority-based selection.
 // Returns (status, error, handled) where handled indicates if any command matched and executed.
-func (ep *Pane) greedyMatchCommands(ctx *scope.Context, input *CommandInput, candidates []matchCandidate,
+func (ep *Scope) greedyMatchCommands(ctx *scope.Context, input *CommandInput, candidates []matchCandidate,
 	firstErr *error) (CommandStatus, error, bool) {
 	// Try complete candidates
 	for _, c := range util.FilterSlice(candidates, func(mc matchCandidate) bool {
@@ -360,7 +360,7 @@ type matchResult struct {
 type matcher interface {
 	// match attempts to match at the current position.
 	// Returns nil if no match, or a matchResult with the match details.
-	match(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error)
+	match(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error)
 
 	// validate checks that type handlers exist and constraints are met.
 	validate() error
@@ -518,7 +518,7 @@ type literalMatcher struct {
 	text string
 }
 
-func (lm literalMatcher) match(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
+func (lm literalMatcher) match(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	if !strings.HasPrefix(text, lm.text) {
 		return nil, nil
 	}
@@ -542,7 +542,7 @@ type singleTypedMatcher struct {
 	charCount int // For [:N] - exact character count (0 means no limit)
 }
 
-func (sm singleTypedMatcher) match(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
+func (sm singleTypedMatcher) match(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	handler := getTypeParser(sm.typeName)
 
 	var value any
@@ -639,7 +639,7 @@ type alternativeMatcher struct {
 	inner    []matcher
 }
 
-func (am alternativeMatcher) match(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
+func (am alternativeMatcher) match(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	// Try alternatives, return best match by priority.
 	// All alternatives return the same Go type (enforced by validate()).
 	var bestResult *matchResult
@@ -712,7 +712,7 @@ type greedyMatcher struct {
 	inner matcher
 }
 
-func (gm greedyMatcher) match(ep *Pane, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
+func (gm greedyMatcher) match(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (*matchResult, error) {
 	var values []any
 	var priority int
 	firstMatch := true
@@ -867,7 +867,7 @@ func validateReturnTypes(funcType reflect.Type) error {
 
 // initialArgTypes lists the allowed initial argument types for command handlers.
 var initialArgTypes = []reflect.Type{
-	reflect.TypeFor[*Pane](),
+	reflect.TypeFor[*Scope](),
 	reflect.TypeFor[*scope.Context](),
 	reflect.TypeFor[*PrefrenceSet](),
 }
@@ -904,7 +904,7 @@ func countInitialArgs(funcType reflect.Type) (int, error) {
 
 // bindArgs binds extracted arguments to match the function signature order.
 // If the function expects *TrackState but the extracted arg is *sim.Track, converts it.
-func (cmd userCommand) bindArgs(ep *Pane, extractedArgs []any) []any {
+func (cmd userCommand) bindArgs(ep *Scope, extractedArgs []any) []any {
 	funcType := reflect.TypeOf(cmd.handlerFunc)
 
 	// Build map of type -> extracted values
@@ -942,15 +942,15 @@ func (cmd userCommand) bindArgs(ep *Pane, extractedArgs []any) []any {
 }
 
 // initialArgProviders maps initial arg types to functions that provide their values.
-var initialArgProviders = map[reflect.Type]func(ep *Pane, ctx *scope.Context) reflect.Value{
-	reflect.TypeFor[*Pane]():          func(ep *Pane, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep) },
-	reflect.TypeFor[*scope.Context](): func(ep *Pane, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ctx) },
-	reflect.TypeFor[*PrefrenceSet]():  func(ep *Pane, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
+var initialArgProviders = map[reflect.Type]func(ep *Scope, ctx *scope.Context) reflect.Value{
+	reflect.TypeFor[*Scope]():         func(ep *Scope, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep) },
+	reflect.TypeFor[*scope.Context](): func(ep *Scope, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ctx) },
+	reflect.TypeFor[*PrefrenceSet]():  func(ep *Scope, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
 }
 
 // call invokes the command handler function with the provided arguments.
 // Handlers may return: (), error, CommandStatus, or (CommandStatus, error).
-func (cmd userCommand) call(ep *Pane, ctx *scope.Context, args []any) (CommandStatus, error) {
+func (cmd userCommand) call(ep *Scope, ctx *scope.Context, args []any) (CommandStatus, error) {
 	funcValue := reflect.ValueOf(cmd.handlerFunc)
 	funcType := funcValue.Type()
 

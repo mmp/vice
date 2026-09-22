@@ -44,7 +44,7 @@ type DatablockLayout struct {
 	LinePitch  float32
 }
 
-func (ep *Pane) datablockInteractions(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	mouse := ctx.Mouse
@@ -122,7 +122,7 @@ func (ep *Pane) datablockInteractions(ctx *scope.Context, tracks []sim.Track, tr
 }
 
 // p0 -> top left, p2 -> bottom right
-func (ep *Pane) drawOutlineRectangle(ld *renderer.ColoredLinesDrawBuilder, extent math.Extent2D, color renderer.RGB) {
+func (ep *Scope) drawOutlineRectangle(ld *renderer.ColoredLinesDrawBuilder, extent math.Extent2D, color renderer.RGB) {
 	p0 := extent.P0
 	p2 := extent.P1
 	p1 := math.Add2f(p0, [2]float32{extent.Width(), 0})
@@ -262,7 +262,7 @@ func dbFieldRuns(f []dbChar) [][2]int {
 // FullDatablockOutlines returns outlines for the ERAM full datablock fields.
 // Field extents are derived from the datablock's actual contents so they
 // track what is drawn rather than each field's maximum width.
-func (ep *Pane) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
+func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 	transforms scope.Transformations) (DatablockOutlines, bool) {
 	if ep.datablockType(ctx, trk) != FullDatablock {
 		return DatablockOutlines{}, false
@@ -372,7 +372,7 @@ func (ep *Pane) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 	return outlines, true
 }
 
-func (ep *Pane) fullDatablockAnchor(ctx *scope.Context, trk sim.Track, db *fullDatablock,
+func (ep *Scope) fullDatablockAnchor(ctx *scope.Context, trk sim.Track, db *fullDatablock,
 	transforms scope.Transformations) ([2]float32, bool) {
 	if ep.TrackState[trk.ADSBCallsign] == nil {
 		return [2]float32{}, false
@@ -383,7 +383,7 @@ func (ep *Pane) fullDatablockAnchor(ctx *scope.Context, trk sim.Track, db *fullD
 
 // buildFullDatablock formats the track's full datablock so extents can be
 // derived from its actual contents.
-func (ep *Pane) buildFullDatablock(ctx *scope.Context, trk sim.Track) *fullDatablock {
+func (ep *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track) *fullDatablock {
 	ps := ep.currentPrefs()
 	color := ps.Brightness.FDB.ScaleRGB(colors.yellow)
 	db := ep.getDatablock(ctx, trk, FullDatablock, color)

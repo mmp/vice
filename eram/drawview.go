@@ -32,8 +32,8 @@ type ViewBuilders struct {
 	Td   *renderer.TextDrawBuilder
 }
 
-// ViewRepoState is the pane-wide drag-to-reposition state. Only one view can
-// be repositioned at a time, so a single instance lives on Pane and
+// ViewRepoState is the scope-wide drag-to-reposition state. Only one view can
+// be repositioned at a time, so a single instance lives on Scope and
 // activeID identifies which view (by View.ID) currently owns the drag.
 type ViewRepoState struct {
 	activeID   string
@@ -301,9 +301,9 @@ func addQuad(trid *renderer.ColoredTrianglesDrawBuilder, ex math.Extent2D, color
 // clampViewPos clamps a view top-left so the whole window stays inside the
 // pane, leaving the top-toolbar buffer free when the toolbar is visible.
 // pos is the view's top-left in pane-local coords (y up).
-func (ep *Pane) clampViewPos(ctx *scope.Context, pos [2]float32, width, totalH float32) [2]float32 {
-	paneW := ctx.PaneExtent.Width()
-	paneH := ctx.PaneExtent.Height()
+func (ep *Scope) clampViewPos(ctx *scope.Context, pos [2]float32, width, totalH float32) [2]float32 {
+	paneW := ctx.DrawExtent.Width()
+	paneH := ctx.DrawExtent.Height()
 	toolbarH := float32(0)
 	if ep.currentPrefs().DisplayToolbar {
 		toolbarH = buttonSize(buttonFull, ep.toolbarButtonScale(ctx))[1]
@@ -378,7 +378,7 @@ func scrollReserveWidth(v View, titleFont *renderer.Font) float32 {
 
 // viewTextColor returns the standard list-view text color scaled by the
 // given Brightness.
-func (ep *Pane) viewTextColor(b scope.Brightness) renderer.RGB {
+func (ep *Scope) viewTextColor(b scope.Brightness) renderer.RGB {
 	return b.ScaleRGB(colors.view.text)
 }
 
@@ -472,7 +472,7 @@ func drawScrollArrow(ld *renderer.ColoredLinesDrawBuilder, centerX, tipY float32
 // scroll bar → title-bar buttons → title-bar drag → body-tertiary menu →
 // body-primary drag → finalize in-progress drag. Each handler consumes its
 // click so Body sees only fall-through events.
-func (ep *Pane) DrawView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer, v View) {
+func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer, v View) {
 	mouse := ctx.Mouse
 
 	titleFont := ep.ERAMFont(2)
@@ -725,7 +725,7 @@ func (ep *Pane) DrawView(ctx *scope.Context, transforms scope.Transformations, c
 		if mouse != nil {
 			mousePos = mouse.Pos
 		} else {
-			mousePos = ctx.WindowToPane(ctx.Platform.GetMouse().Pos)
+			mousePos = ctx.WindowToDraw(ctx.Platform.GetMouse().Pos)
 		}
 		previewTL := ep.clampViewPos(ctx, math.Sub2f(mousePos, ep.viewRepo.dragOffset), width, totalH)
 		preview := math.Extent2D{
@@ -775,7 +775,7 @@ func (ep *Pane) DrawView(ctx *scope.Context, transforms scope.Transformations, c
 // applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, scroll, and
 // selectable on v from v.RowSource so the rest of DrawView can treat the
 // view as if the caller had wired those fields up directly.
-func (ep *Pane) applyRowSource(v *View, titleFont *renderer.Font) {
+func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 	rs := v.RowSource
 
 	if rs.SelectableState != nil && rs.OnRowToggle != nil {
@@ -1330,7 +1330,7 @@ type deleteEntryPopup struct {
 // openDeleteEntryPopup positions a deleteEntryPopup adjacent to the clicked
 // row, flipping left if it would otherwise overflow the pane, and warps the
 // cursor to its center so the user can confirm without moving the mouse.
-func (ep *Pane) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem,
+func (ep *Scope) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem,
 	sel *ViewSelectable, font *renderer.Font) *deleteEntryPopup {
 
 	label := ""
@@ -1342,7 +1342,7 @@ func (ep *Pane) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem
 	width := float32(len(text))*charWidth(font) + 2*pad
 	height := cellHeight(font) + pad
 
-	pe := ctx.PaneExtent
+	pe := ctx.DrawExtent
 	gap := float32(4)
 	rowCenterY := (item.Extent.P0[1] + item.Extent.P1[1]) / 2
 	origin := [2]float32{item.Extent.P1[0] + gap, rowCenterY + height/2}
@@ -1369,7 +1369,7 @@ func (ep *Pane) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem
 	}
 }
 
-func (d *deleteEntryPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (d *deleteEntryPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	mouse := ctx.Mouse
 	ps := ep.currentPrefs()
 

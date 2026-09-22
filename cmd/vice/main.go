@@ -498,10 +498,10 @@ func startBackgroundModelLoading(config *Config, plat platform.Platform, lg *log
 }
 
 // loadSavedSim attempts to restore the previously-saved simulation from
-// config. Returns the control client and active radar pane if
+// config. Returns the control client and active radar scope if
 // successful, or nil for both if loading fails or there is no saved sim.
 func loadSavedSim(mgr *client.ConnectionManager, config *Config,
-	plat platform.Platform, lg *log.Logger) (*client.ControlClient, scope.Pane) {
+	plat platform.Platform, lg *log.Logger) (*client.ControlClient, scope.Scope) {
 
 	if *resetSim || *starsRandoms {
 		return nil, nil
@@ -522,10 +522,10 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 		return nil, nil
 	}
 
-	// Notify the active radar pane about the loaded sim
+	// Notify the active radar scope about the loaded sim
 	isSTARSSim := db.DB.IsTRACON(c.State.Facility) || db.DB.IsATCT(c.State.Facility)
-	activeRadarPane := config.ActiveRadarPane(isSTARSSim)
-	activeRadarPane.LoadedSim(c, plat, lg)
+	activeRadarScope := config.ActiveRadarScope(isSTARSSim)
+	activeRadarScope.LoadedSim(c, plat, lg)
 	uiResetControlClient(c, config, plat, lg)
 
 	// Apply waypoint commands if specified via command line
@@ -533,7 +533,7 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 		c.SetWaypointCommands(*waypointCommands)
 	}
 
-	return c, activeRadarPane
+	return c, activeRadarScope
 }
 
 // selectRandomScenario picks a random scenario from the server's catalog
@@ -615,7 +615,7 @@ func setupFuzzTesting(mgr *client.ConnectionManager, config *Config,
 	}
 	// controlClient is now set via the onNewClient callback
 
-	return stars.NewFuzzController(config.STARSPane, stars.FuzzConfig{}, lg), nil
+	return stars.NewFuzzController(config.STARSScope, stars.FuzzConfig{}, lg), nil
 }
 
 func runGUI(config *Config, configErr error, lg *log.Logger) error {
@@ -646,7 +646,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// inter-dependencies in the following; the order is carefully crafted.
 
 	var controlClient *client.ControlClient
-	var activeRadarPane scope.Pane
+	var activeRadarScope scope.Scope
 
 	// Kick off the heavy non-OpenGL initialization (aviation database,
 	// weather, scenario loading, local server) in a goroutine so it runs
@@ -678,10 +678,10 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
 					isSTARSSim := db.DB.IsTRACON(c.State.Facility) || db.DB.IsATCT(c.State.Facility)
-					activeRadarPane = config.ActiveRadarPane(isSTARSSim)
+					activeRadarScope = config.ActiveRadarScope(isSTARSSim)
 
-					// Reset each pane for the new sim
-					activeRadarPane.ResetSim(c, plat, lg)
+					// Reset each window for the new sim
+					activeRadarScope.ResetSim(c, plat, lg)
 					config.MessagesWindow.ResetSim(c, plat, lg)
 					config.FlightStripWindow.ResetSim(c, plat, lg)
 
@@ -766,7 +766,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// Restore previously-saved simulation if available.
 	if c, arp := loadSavedSim(mgr, config, plat, lg); c != nil {
 		controlClient = c
-		activeRadarPane = arp
+		activeRadarScope = arp
 	}
 
 	if *starsRandoms {
@@ -825,7 +825,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 			if err, done := tts.CheckTTSLoadError(); done && err != nil {
 				ttsErrorShown = true
 				ShowErrorDialog(plat, lg, "Text-to-speech is unavailable: %v\n\n"+
-					"Pilot transmissions will still appear as text in the messages pane.", err)
+					"Pilot transmissions will still appear as text in the messages window.", err)
 			} else if done {
 				ttsErrorShown = true // Loading succeeded, don't check again
 			}
@@ -850,7 +850,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		imgui.NewFrame()
 
 		// Generate and render vice draw lists
-		stats.drawPanes = scope.DrawPane(activeRadarPane, plat, render, controlClient,
+		stats.drawWindows = scope.DrawScope(activeRadarScope, plat, render, controlClient,
 			ui.menuBarHeight, frameEvents, lg)
 
 		// Execute fuzz commands if in fuzz testing mode
@@ -860,7 +860,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		}
 
 		// Draw the user interface
-		stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, activeRadarPane, frameEvents, lg)
+		stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, activeRadarScope, frameEvents, lg)
 
 		// Wait for vsync
 		plat.PostRender()

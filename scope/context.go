@@ -23,8 +23,8 @@ import (
 // itself and to handle input: where it is on screen, the renderer and
 // input devices, and the client connection it is displaying.
 type Context struct {
-	PaneExtent       math.Extent2D
-	ParentPaneExtent math.Extent2D
+	DrawExtent       math.Extent2D
+	ParentDrawExtent math.Extent2D
 
 	Platform platform.Platform
 	// If we want something to be n pixels big, scale factor to apply to n.
@@ -65,8 +65,8 @@ type Context struct {
 func (ctx *Context) InitializeMouse(p platform.Platform) {
 	ctx.Mouse = p.GetMouse()
 
-	ctx.Mouse.Pos = ctx.WindowToPane(ctx.Mouse.Pos)
-	// Negate y to go to pane coordinates
+	ctx.Mouse.Pos = ctx.WindowToDraw(ctx.Mouse.Pos)
+	// Negate y to go to draw coordinates
 	ctx.Mouse.DeltaPos[1] *= -1
 	ctx.Mouse.Wheel[1] *= -1
 	ctx.Mouse.DragDelta[1] *= -1
@@ -77,8 +77,8 @@ func (ctx *Context) InitializeMouse(p platform.Platform) {
 func NewFuzzContext(p platform.Platform, r renderer.Renderer, c *client.ControlClient, lg *log.Logger) *Context {
 	displaySize := p.DisplaySize()
 	return &Context{
-		PaneExtent:          math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
-		ParentPaneExtent:    math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		DrawExtent:          math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		ParentDrawExtent:    math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
 		Platform:            p,
 		DrawPixelScale:      1,
 		PixelsPerInch:       72,
@@ -100,31 +100,31 @@ func (ctx *Context) SetMousePosition(p [2]float32) {
 	if ctx.Mouse != nil {
 		ctx.Mouse.Pos = p
 	}
-	ctx.Platform.SetMousePosition(ctx.PaneToWindow(p))
+	ctx.Platform.SetMousePosition(ctx.DrawToWindow(p))
 }
 
-// Convert to pane coordinates:
-// platform gives us the mouse position w.r.t. the full window, so we need
-// to subtract out displayExtent.p0 to get coordinates w.r.t. the
-// current pane.  Further, it has (0,0) in the upper left corner of the
-// window, so we need to flip y w.r.t. the full window resolution.
-func (ctx *Context) WindowToPane(p [2]float32) [2]float32 {
+// WindowToDraw converts to draw coordinates: platform gives us the mouse
+// position w.r.t. the full window, so we need to subtract out DrawExtent.P0
+// to get coordinates w.r.t. the current drawing area.  Further, it has
+// (0,0) in the upper left corner of the window, so we need to flip y
+// w.r.t. the full window resolution.
+func (ctx *Context) WindowToDraw(p [2]float32) [2]float32 {
 	return [2]float32{
-		p[0] - ctx.PaneExtent.P0[0],
-		ctx.displaySize[1] - 1 - ctx.PaneExtent.P0[1] - p[1],
+		p[0] - ctx.DrawExtent.P0[0],
+		ctx.displaySize[1] - 1 - ctx.DrawExtent.P0[1] - p[1],
 	}
 }
 
-func (ctx *Context) PaneToWindow(p [2]float32) [2]float32 {
+func (ctx *Context) DrawToWindow(p [2]float32) [2]float32 {
 	return [2]float32{
-		p[0] + ctx.PaneExtent.P0[0],
-		-(p[1] - ctx.displaySize[1] + 1 + ctx.PaneExtent.P0[1]),
+		p[0] + ctx.DrawExtent.P0[0],
+		-(p[1] - ctx.displaySize[1] + 1 + ctx.DrawExtent.P0[1]),
 	}
 }
 
 func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
-	w := float32(int(ctx.PaneExtent.Width() + 0.5))
-	h := float32(int(ctx.PaneExtent.Height() + 0.5))
+	w := float32(int(ctx.DrawExtent.Width() + 0.5))
+	h := float32(int(ctx.DrawExtent.Height() + 0.5))
 	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, w, 0, h))
 	cb.LoadModelViewMatrix(math.Identity3x3())
 }

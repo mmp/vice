@@ -31,7 +31,7 @@ type dbMenuBase struct {
 
 // resolveTrack looks the menu's flight up fresh each frame; if it is gone
 // (or has no flight plan) the menu closes and nil is returned.
-func (m *dbMenuBase) resolveTrack(ep *Pane, ctx *scope.Context) *sim.Track {
+func (m *dbMenuBase) resolveTrack(ep *Scope, ctx *scope.Context) *sim.Track {
 	trk, ok := ctx.GetTrackByACID(m.acid)
 	if !ok || trk.FlightPlan == nil {
 		ep.popup = nil
@@ -42,7 +42,7 @@ func (m *dbMenuBase) resolveTrack(ep *Pane, ctx *scope.Context) *sim.Track {
 
 // openDatablockMenu clamps a new menu's placement (flipping to the left of
 // the datablock if it would run off the pane edge) and returns its origin.
-func (ep *Pane) openDatablockMenu(ctx *scope.Context, dbMain math.Extent2D, width, height float32) [2]float32 {
+func (ep *Scope) openDatablockMenu(ctx *scope.Context, dbMain math.Extent2D, width, height float32) [2]float32 {
 	pl := ep.OpenPopupAt(ctx, [2]float32{dbMain.P1[0], dbMain.P1[1]}, width, height, ep.ERAMFont(2), dbMain)
 	return pl.Origin
 }
@@ -84,7 +84,7 @@ var altitudeMenuAlts = func() []int {
 	return alts
 }()
 
-func (ep *Pane) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Scope) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -108,7 +108,7 @@ func (ep *Pane) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain math
 	}
 }
 
-func (p *altitudeMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -255,7 +255,7 @@ type headingMenuPopup struct {
 	initialized bool
 }
 
-func (ep *Pane) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Scope) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -304,7 +304,7 @@ func headingMenuRows(lt, rt bool) [][2]string {
 	return rows
 }
 
-func (p *headingMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (p *headingMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -407,7 +407,7 @@ type speedMenuPopup struct {
 	initialized bool
 }
 
-func (ep *Pane) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Scope) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
@@ -431,7 +431,7 @@ func (ep *Pane) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Ex
 	ep.popup = p
 }
 
-func (p *speedMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (p *speedMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return
@@ -563,7 +563,7 @@ type freeTextMenuPopup struct {
 	buf string
 }
 
-func (ep *Pane) openFreeTextMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
+func (ep *Scope) openFreeTextMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	fp := trk.FlightPlan
 	if fp == nil {
 		return
@@ -586,7 +586,7 @@ func (ep *Pane) openFreeTextMenu(ctx *scope.Context, trk *sim.Track, dbMain math
 
 // handleKeyboard consumes all keyboard input while the menu is open: typed
 // characters edit the buffer, Enter saves it, Escape closes the menu.
-func (p *freeTextMenuPopup) handleKeyboard(ep *Pane, ctx *scope.Context) bool {
+func (p *freeTextMenuPopup) handleKeyboard(ep *Scope, ctx *scope.Context) bool {
 	for _, r := range strings.ToUpper(ctx.Keyboard.Input) {
 		if r <= ' ' || r > '~' || r == '`' {
 			continue
@@ -617,7 +617,7 @@ func (p *freeTextMenuPopup) handleKeyboard(ep *Pane, ctx *scope.Context) bool {
 	return true
 }
 
-func (p *freeTextMenuPopup) draw(ep *Pane, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (p *freeTextMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	trk := p.resolveTrack(ep, ctx)
 	if trk == nil {
 		return

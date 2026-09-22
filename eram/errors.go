@@ -129,7 +129,7 @@ func GetError(e error, lg *log.Logger) *Error {
 	return ErrCommandFormat
 }
 
-func (ep *Pane) displayError(err error, ctx *scope.Context) {
+func (ep *Scope) displayError(err error, ctx *scope.Context) {
 	if err != nil {
 		ep.feedbackArea.Error(GetError(err, ctx.Lg))
 	}
@@ -138,7 +138,7 @@ func (ep *Pane) displayError(err error, ctx *scope.Context) {
 // applyCommandStatus routes a CommandStatus to the feedback/response areas:
 // an error overrides everything; otherwise non-empty feedback and response
 // lines are joined with newlines and shown.
-func (ep *Pane) applyCommandStatus(ctx *scope.Context, status CommandStatus, err error) {
+func (ep *Scope) applyCommandStatus(ctx *scope.Context, status CommandStatus, err error) {
 	if err != nil {
 		ep.displayError(err, ctx)
 		return

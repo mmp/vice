@@ -31,7 +31,7 @@ import (
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func (sp *Pane) drawCompass(ctx *scope.Context, scopeExtent math.Extent2D, transforms scope.Transformations,
+func (sp *Scope) drawCompass(ctx *scope.Context, scopeExtent math.Extent2D, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.Compass == 0 {
@@ -59,7 +59,7 @@ func (sp *Pane) drawCompass(ctx *scope.Context, scopeExtent math.Extent2D, trans
 		isect, _, t := bounds.IntersectRay(pw, dir)
 		if !isect {
 			// Happens on initial launch w/o a sector file...
-			//lg.Infof("no isect?! p %+v dir %+v bounds %+v", pw, dir, ctx.paneExtent)
+			//lg.Infof("no isect?! p %+v dir %+v bounds %+v", pw, dir, ctx.DrawExtent)
 			continue
 		}
 
@@ -121,7 +121,7 @@ func (sp *Pane) drawCompass(ctx *scope.Context, scopeExtent math.Extent2D, trans
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func (sp *Pane) drawRangeRings(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawRangeRings(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.RangeRings == 0 {
 		return
@@ -162,7 +162,7 @@ func (sp *Pane) drawRangeRings(ctx *scope.Context, transforms scope.Transformati
 // If distance to a significant point is being displayed or if the user has
 // run the "find" command to highlight a point in the world, draw a blinking
 // square at that point for a few seconds.
-func (sp *Pane) drawHighlighted(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawHighlighted(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	remaining := sp.highlightedLocationEndTime.Sub(ctx.InterpolatedSimTime)
 	if remaining < 0 {
 		return
@@ -190,7 +190,7 @@ func (sp *Pane) drawHighlighted(ctx *scope.Context, transforms scope.Transformat
 	td.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawVFRAirports(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawVFRAirports(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if !sp.showVFRAirports {
 		return
 	}
@@ -224,7 +224,7 @@ func (sp *Pane) drawVFRAirports(ctx *scope.Context, transforms scope.Transformat
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *Pane) drawRBLs(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawRBLs(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -236,7 +236,7 @@ func (sp *Pane) drawRBLs(ctx *scope.Context, transforms scope.Transformations, c
 		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
 		Color: color,
 	}
-	paneBounds := math.Extent2D{P1: [2]float32{ctx.PaneExtent.Width(), ctx.PaneExtent.Height()}}
+	paneBounds := math.Extent2D{P1: [2]float32{ctx.DrawExtent.Width(), ctx.DrawExtent.Height()}}
 
 	drawRBL := func(p0 math.Point2LL, p1 math.Point2LL, idx int, gs float32) {
 		// Format the range-bearing line text for the two positions.
@@ -324,7 +324,7 @@ func (sp *Pane) drawRBLs(ctx *scope.Context, transforms scope.Transformations, c
 }
 
 // Draw the minimum separation line between two aircraft, if selected.
-func (sp *Pane) drawMinSep(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawMinSep(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	cs0, cs1 := sp.MinSepAircraft[0], sp.MinSepAircraft[1]
 	if cs0 == "" || cs1 == "" {
 		// Two aircraft haven't been specified.
@@ -427,7 +427,7 @@ func (sp *Pane) drawMinSep(ctx *scope.Context, transforms scope.Transformations,
 	td.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawScenarioRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawScenarioRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if sp.scopeDraw.Empty() && len(sp.scopeDraw.holds) == 0 {
 		return
 	}
@@ -456,7 +456,7 @@ func (sp *Pane) drawScenarioRoutes(ctx *scope.Context, transforms scope.Transfor
 	sp.drawScenarioHolds(ctx, transforms, font, cb, drawn, drawnHolds, td, ld, pd, ldr)
 }
 
-func (sp *Pane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (sp *Scope) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -527,7 +527,7 @@ func (sp *Pane) drawScenarioArrivalRoutes(ctx *scope.Context, transforms scope.T
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (sp *Pane) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (sp *Scope) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	color := renderer.RGBFromArray(*sp.IFPHelpers.ApproachesColor)
@@ -577,7 +577,7 @@ func (sp *Pane) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope.
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (sp *Pane) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (sp *Scope) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -603,7 +603,7 @@ func (sp *Pane) drawScenarioDepartureRoutes(ctx *scope.Context, transforms scope
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (sp *Pane) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (sp *Scope) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -633,7 +633,7 @@ func (sp *Pane) drawScenarioOverflightRoutes(ctx *scope.Context, transforms scop
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (sp *Pane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (sp *Scope) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -670,7 +670,7 @@ func (sp *Pane) drawScenarioAirspaceRoutes(ctx *scope.Context, transforms scope.
 	scope.GenerateRouteDrawingCommands(cb, transforms, ctx.DPIScale, ld, pd, td, ldr)
 }
 
-func (sp *Pane) drawPTLs(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawPTLs(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -715,7 +715,7 @@ func (sp *Pane) drawPTLs(ctx *scope.Context, transforms scope.Transformations, c
 	ld.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawRingsAndCones(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawRingsAndCones(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
@@ -855,7 +855,7 @@ func (sp *Pane) drawRingsAndCones(ctx *scope.Context, transforms scope.Transform
 	td.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawSelectedRoute(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawSelectedRoute(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if sp.drawRouteAircraft == "" {
 		return
 	}
@@ -881,7 +881,7 @@ func (sp *Pane) drawSelectedRoute(ctx *scope.Context, transforms scope.Transform
 	ld.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawPlotPoints(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawPlotPoints(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if len(sp.drawRoutePoints) == 0 {
 		return
 	}
@@ -902,7 +902,7 @@ func (sp *Pane) drawPlotPoints(ctx *scope.Context, transforms scope.Transformati
 	ld.GenerateCommands(cb)
 }
 
-func (sp *Pane) drawWind(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (sp *Scope) drawWind(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	if sp.commandMode != CommandModeDrawWind || sp.atmosGrid == nil {
 		return
 	}
@@ -974,7 +974,7 @@ type RangeBearingLine struct {
 	}
 }
 
-func (rbl RangeBearingLine) GetPoints(ctx *scope.Context, sp *Pane) (math.Point2LL, math.Point2LL) {
+func (rbl RangeBearingLine) GetPoints(ctx *scope.Context, sp *Scope) (math.Point2LL, math.Point2LL) {
 	// Each line endpoint may be specified either by a track's
 	// position or by a fixed position.
 	getLoc := func(i int) math.Point2LL {
@@ -986,7 +986,7 @@ func (rbl RangeBearingLine) GetPoints(ctx *scope.Context, sp *Pane) (math.Point2
 	return getLoc(0), getLoc(1)
 }
 
-func (sp *Pane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32, now sim.Time) CommandStatus {
+func (sp *Scope) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32, now sim.Time) CommandStatus {
 	// Find the closest significant point to p1.
 	minDist := float32(1000000)
 	var closest *sim.SignificantPoint
@@ -1043,7 +1043,7 @@ func (sp *Pane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude
 	return CommandStatus{Output: str.String()}
 }
 
-func (sp *Pane) drawScenarioHolds(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
+func (sp *Scope) drawScenarioHolds(ctx *scope.Context, transforms scope.Transformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawn *scope.DrawnRoutes, drawnHolds map[string]any, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	if len(sp.scopeDraw.holds) == 0 {
