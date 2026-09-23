@@ -664,8 +664,34 @@
                     <td>The aircraft is issued an instruction to climb to the specified altitude, given in feet (a multiple of 100, between 100 and 60,000).</td>
                   </tr>
                   <tr>
+                    <td><code>/clearapp</code></td>
+                    <td>Clears the aircraft for the approach that has been assigned to it (e.g. via "expect_approach" in a STAR.)
+                      Aircraft must either be on a heading that intersects the approach or direct to a fix on the approach.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>/cpsp</code></td>
+                    <td>Clears the aircraft's primary scratchpad.</td>
+                  </tr>
+                  <tr>
+                    <td><code>/cssp</code></td>
+                    <td>Clears the aircraft's secondary scratchpad.</td>
+                  </tr>
+                  <tr>
+                    <td><code>/cvs</code></td>
+                    <td>The aircraft is told to climb via the SID, which cancels any assigned altitude and speed so that
+                      the SID's restrictions govern its climb. The fix after this one must be on the SID: <code>/cvs</code>
+                      may be given at any fix of a SID but the last, or at the fix just before the SID begins.</td>
+                  </tr>
+                  <tr>
                     <td><code>/d<var>altitude</var></code></td>
                     <td>The aircraft is issued an instruction to descend to the specified altitude, given in feet (a multiple of 100, between 100 and 60,000).</td>
+                  </tr>
+                  <tr>
+                    <td><code>/dvs</code></td>
+                    <td>The aircraft is told to descend via the STAR, which cancels any assigned altitude and speed so that
+                      the STAR's restrictions govern its descent. The fix after this one must be on the STAR: <code>/dvs</code>
+                      may be given at any fix of a STAR but the last, or at the fix just before the STAR begins.</td>
                   </tr>
                   <tr>
                     <td><code>/ho</code></td>
@@ -677,13 +703,8 @@
                       controller. The handoff will be automatically accepted a little while after it has been initiated.</td>
                   </tr>
                   <tr>
-                    <td><code>/tc</code></td>
-                    <td>"Transfer comms": the aircraft is told to switch to the frequency of the controller that accepted
-                      its handoff. This can be used to flash a handoff early from a virtual controller, but for them
-                      to continue to control the aircraft for a while before sending it to a human. If not specified in a route,
-                      a handed-off aircraft will change frequency a little while after its handoff was accepted.
-                      For departures, this determines when the aircraft contacts the departure controller.
-                    </td>
+                    <td><code>/intercept</code></td>
+                    <td>Instructs the aircraft to intercept the assigned approach.</td>
                   </tr>
                   <tr>
                     <td><code>/po<var>position</var></code></td>
@@ -698,22 +719,13 @@
                     <td>Sets the aircraft's secondary scratchpad to the given value.</td>
                   </tr>
                   <tr>
-                    <td><code>/cpsp</code></td>
-                    <td>Clears the aircraft's primary scratchpad.</td>
-                  </tr>
-                  <tr>
-                    <td><code>/cssp</code></td>
-                    <td>Clears the aircraft's secondary scratchpad.</td>
-                  </tr>
-                  <tr>
-                    <td><code>/clearapp</code></td>
-                    <td>Clears the aircraft for the approach that has been assigned to it (e.g. via "expect_approach" in a STAR.)
-                      Aircraft must either be on a heading that intersects the approach or direct to a fix on the approach.
+                    <td><code>/tc</code></td>
+                    <td>"Transfer comms": the aircraft is told to switch to the frequency of the controller that accepted
+                      its handoff. This can be used to flash a handoff early from a virtual controller, but for them
+                      to continue to control the aircraft for a while before sending it to a human. If not specified in a route,
+                      a handed-off aircraft will change frequency a little while after its handoff was accepted.
+                      For departures, this determines when the aircraft contacts the departure controller.
                     </td>
-                  </tr>
-                  <tr>
-                    <td><code>/intercept</code></td>
-                    <td>Instructs the aircraft to intercept the assigned approach.</td>
                   </tr>
                 </tbody>
               </table>

@@ -584,6 +584,45 @@ func TestDescendViaSTAR(t *testing.T) {
 	f.Run()
 }
 
+// TestDescendViaSTARAtPassedFix verifies that a /dvs route action at the
+// fix before the STAR starts the descent right away, with no deferred
+// return to the route.
+func TestDescendViaSTARAtPassedFix(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/a10000 DETGY/a7000/star HAUPT/a6000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  11000,
+		InitialSpeed:     250,
+		AssignedAltitude: 11000,
+	})
+
+	f.AtFix("SAJUL", func(f *FlightTest) {
+		if !f.nav.DescendViaSTARAtPassedFix() {
+			t.Fatal("expected /dvs to apply at the fix before the STAR")
+		}
+		if f.nav.Altitude.Assigned != nil {
+			t.Error("expected the assigned altitude to be cancelled")
+		}
+		if f.nav.DeferredNavHeading != nil {
+			t.Error("expected no deferred heading change")
+		}
+	})
+
+	f.AtFix("DETGY", func(f *FlightTest) {
+		f.AssertAltitudeNear(7000, 100)
+	})
+
+	f.AtFix("HAUPT", func(f *FlightTest) {
+		if f.nav.DescendViaSTARAtPassedFix() {
+			t.Error("expected /dvs to be refused with no STAR fixes ahead")
+		}
+	})
+
+	f.Run()
+}
+
 // TestDescentContinuesAfterMissedRestriction verifies that an aircraft
 // continues descending after missing an altitude restriction at a fix,
 // rather than leveling off (regression test for 3c74afba).

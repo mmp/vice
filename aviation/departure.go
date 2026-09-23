@@ -593,6 +593,7 @@ func (er *ExitRoute) initialize(db Database, icao ICAOAirportCode, rwy RunwayID,
 			er.WaitToContactDeparture = true
 		}
 	}
+	er.Waypoints.checkProcedureActions(e)
 
 	if er.Waypoints.HasHumanHandoff() {
 		if er.HandoffController == "" {

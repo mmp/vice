@@ -413,6 +413,12 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 	} else if actions.DescendAltitude != 0 {
 		ac.Nav.AssignAltitudeNow(float32(actions.DescendAltitude), false)
 	}
+	if actions.ClimbViaSID && !ac.Nav.ClimbViaSIDAtPassedFix() {
+		s.lg.Warnf("%s: /cvs at %s: the route ahead is not on a SID", ac.ADSBCallsign, fix)
+	}
+	if actions.DescendViaSTAR && !ac.Nav.DescendViaSTARAtPassedFix() {
+		s.lg.Warnf("%s: /dvs at %s: the route ahead is not on a STAR", ac.ADSBCallsign, fix)
+	}
 
 	if actions.ClearApproach {
 		ac.ClearedApproachAtPassedFix(fix, s.State.SimTime)

@@ -68,9 +68,9 @@ type Nav struct {
 	Waypoints     av.WaypointArray
 
 	// RouteAltitudeActions is set at creation time if the route includes
-	// /c or /d altitude actions at any of its waypoints. If it does, those
-	// actions govern the aircraft's altitude and DepartOnCourse never
-	// climbs it to its cruise altitude. (Waypoints are dropped from the
+	// /c, /d, /cvs, or /dvs altitude actions at any of its waypoints. If it
+	// does, those actions govern the aircraft's altitude and DepartOnCourse
+	// never climbs it to its cruise altitude. (Waypoints are dropped from the
 	// route as they are passed, so this must be recorded up front.)
 	RouteAltitudeActions bool
 

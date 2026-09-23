@@ -5,3 +5,4 @@
   - Add support for altitude limits, including the `QD` command
 - Facility engineering
   - ERAM altitude limits can be specified per-controller and/or per-scenario
+  - Added `/cvs` and `/dvs` waypoint actions for virtual controllers to issue "climb via SID"/"descend via STAR"

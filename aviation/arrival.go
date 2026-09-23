@@ -709,6 +709,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 				wps[i].SetOnSTAR(true)
 			}
 			wps.checkBasics(e, controlPositions, checkScratchpad)
+			wps.checkProcedureActions(e)
 			return wps
 		})
 
@@ -762,6 +763,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 				for i := range wp {
 					wp[i].SetOnSTAR(true)
 				}
+				wp.checkProcedureActions(e)
 
 				if wp[0].Fix != ar.Waypoints[len(ar.Waypoints)-1].Fix {
 					e.ErrorString(
@@ -789,6 +791,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 	for i := range ar.Waypoints {
 		ar.Waypoints[i].SetOnSTAR(true)
 	}
+	ar.Waypoints.checkProcedureActions(e)
 
 	// Which STAR the waypoints fly: one the arrival doesn't name it should,
 	// and one it does name should be the one they fly.

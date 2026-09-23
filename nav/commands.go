@@ -1366,25 +1366,47 @@ func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
 }
 
 func (nav *Nav) ClimbViaSID(simTime Time) speech.CommandIntent {
-	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSID() {
+	if !nav.flyProcedureRestrictions(av.Waypoint.OnSID) {
 		return speech.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
-	nav.Altitude = Altitude{}
-	nav.Speed = Speed{}
 	nav.EnqueueOnCourse(simTime)
 	return speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID}
 }
 
 func (nav *Nav) DescendViaSTAR(simTime Time) speech.CommandIntent {
-	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSTAR() {
+	if !nav.flyProcedureRestrictions(av.Waypoint.OnSTAR) {
 		return speech.MakeUnableIntent("unable. We're not on a STAR")
+	}
+
+	nav.EnqueueOnCourse(simTime)
+	return speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR}
+}
+
+// ClimbViaSIDAtPassedFix carries out a /cvs route action at the fix the
+// aircraft just passed. The aircraft is already flying its route, so unlike
+// ClimbViaSID it takes effect immediately. It returns false if the route
+// ahead isn't on a SID.
+func (nav *Nav) ClimbViaSIDAtPassedFix() bool {
+	return nav.flyProcedureRestrictions(av.Waypoint.OnSID)
+}
+
+// DescendViaSTARAtPassedFix is the /dvs counterpart of ClimbViaSIDAtPassedFix.
+func (nav *Nav) DescendViaSTARAtPassedFix() bool {
+	return nav.flyProcedureRestrictions(av.Waypoint.OnSTAR)
+}
+
+// flyProcedureRestrictions cancels assigned altitudes and speeds so that the
+// restrictions of the procedure the next fix is on govern. It returns false,
+// changing nothing, if onProcedure says the next fix isn't on it.
+func (nav *Nav) flyProcedureRestrictions(onProcedure func(av.Waypoint) bool) bool {
+	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !onProcedure(wps[0]) {
+		return false
 	}
 
 	nav.Altitude = Altitude{}
 	nav.Speed = Speed{}
-	nav.EnqueueOnCourse(simTime)
-	return speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR}
+	return true
 }
 
 func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {

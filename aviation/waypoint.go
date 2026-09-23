@@ -120,6 +120,8 @@ type WaypointActions struct {
 
 	ClimbAltitude   int // feet; 0 = unset
 	DescendAltitude int // feet; 0 = unset
+	ClimbViaSID     bool
+	DescendViaSTAR  bool
 }
 
 // HasSimActions reports whether the actions include any the sim carries
@@ -129,7 +131,14 @@ func (wa WaypointActions) HasSimActions() bool {
 		wa.ClearApproach || wa.InterceptApproach || wa.GoAroundContactController != "" ||
 		wa.PrimaryScratchpad != "" || wa.ClearPrimaryScratchpad ||
 		wa.SecondaryScratchpad != "" || wa.ClearSecondaryScratchpad || wa.TransferComms ||
-		wa.Delete || wa.Land || wa.ClimbAltitude != 0 || wa.DescendAltitude != 0
+		wa.Delete || wa.Land || wa.ClimbAltitude != 0 || wa.DescendAltitude != 0 ||
+		wa.ClimbViaSID || wa.DescendViaSTAR
+}
+
+// hasAltitudeAction reports whether the actions include a /c, /d, /cvs, or
+// /dvs; the four supersede one another.
+func (wa WaypointActions) hasAltitudeAction() bool {
+	return wa.ClimbAltitude != 0 || wa.DescendAltitude != 0 || wa.ClimbViaSID || wa.DescendViaSTAR
 }
 
 func (wa WaypointActions) Encoded() string {
@@ -172,6 +181,12 @@ func (wa WaypointActions) Encoded() string {
 	}
 	if da := wa.DescendAltitude; da != 0 {
 		s += fmt.Sprintf("/d%d", da)
+	}
+	if wa.ClimbViaSID {
+		s += "/cvs"
+	}
+	if wa.DescendViaSTAR {
+		s += "/dvs"
 	}
 	if wa.Delete {
 		s += "/delete"
@@ -684,10 +699,10 @@ func (wp Waypoint) AirworkMinutes() int {
 }
 
 // HasAltitudeActions reports whether any of the waypoint's action groups
-// has a /c or /d altitude action.
+// has a /c, /d, /cvs, or /dvs altitude action.
 func (wp Waypoint) HasAltitudeActions() bool {
 	return slices.ContainsFunc(wp.ActionGroups(), func(group WaypointActionGroup) bool {
-		return group.Actions.ClimbAltitude != 0 || group.Actions.DescendAltitude != 0
+		return group.Actions.hasAltitudeAction()
 	})
 }
 

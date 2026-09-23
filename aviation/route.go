@@ -516,6 +516,31 @@ func (wa WaypointArray) checkApproachJoins(appr *Approach, e *util.ErrorLogger) 
 
 func (wa WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[ControlPosition]*Controller, checkScratchpads func(string) bool) {
 	wa.checkBasics(e, ctrl, checkScratchpads)
+	wa.checkProcedureActions(e)
+}
+
+// checkProcedureActions reports /cvs and /dvs actions the aircraft won't be
+// able to act on. The fix is behind the aircraft by the time its actions
+// run, so the procedure to climb or descend via has to continue with the
+// next fix. It must be called after the waypoints' OnSID and OnSTAR flags
+// have been set.
+func (wa WaypointArray) checkProcedureActions(e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
+	for i, wp := range wa {
+		nextOn := func(on func(Waypoint) bool) bool { return i+1 < len(wa) && on(wa[i+1]) }
+
+		e.Push(wp.Fix)
+		for _, group := range wp.ActionGroups() {
+			if group.Actions.ClimbViaSID && !nextOn(Waypoint.OnSID) {
+				e.ErrorString("/cvs: the next fix is not on a SID, so there is no SID to climb via")
+			}
+			if group.Actions.DescendViaSTAR && !nextOn(Waypoint.OnSTAR) {
+				e.ErrorString("/dvs: the next fix is not on a STAR, so there is no STAR to descend via")
+			}
+		}
+		e.Pop()
+	}
 }
 
 func (wa WaypointArray) checkDescending(e *util.ErrorLogger) {
