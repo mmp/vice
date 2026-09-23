@@ -744,6 +744,13 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 		}
 	}
 
+	// InterceptState == OnApproachCourse also marks an aircraft sent direct
+	// to an approach fix while uncleared (DirectFix), where NoPT is left
+	// false so the fix's procedure turn still flies by default. Only the
+	// pairing with NoPT already true distinguishes a genuine localizer
+	// capture, which prepareForApproach is about to overwrite below.
+	establishedNoPT := nav.Approach.InterceptState == OnApproachCourse && nav.Approach.NoPT
+
 	if intent := nav.prepareForApproach(straightIn, joinFix); intent != nil {
 		return intent
 	}
@@ -752,7 +759,7 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 	if nav.Approach.PassedApproachFix {
 		// We've already passed an approach fix, so allow it to start descending.
 		nav.clearAltitudeForApproach()
-	} else if nav.Approach.InterceptState == OnApproachCourse {
+	} else if establishedNoPT {
 		// First intercepted then cleared or otherwise passed an
 		// approach fix, so allow it to start descending.
 		nav.clearAltitudeForApproach()

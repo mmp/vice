@@ -796,6 +796,117 @@ func TestLocalizerFlythroughLateTurn(t *testing.T) {
 	f.Run()
 }
 
+// TestClearedApproachAfterVectorEstablishmentSkipsProcedureTurn is a
+// regression test for a bug where an aircraft vectored to intercept an ILS,
+// allowed to establish on the localizer, and only then cleared for the
+// approach (without "straight in") would fly the procedure turn at the next
+// fix ahead on the route even though it was already established via
+// vectors. The clearance's own setup logic couldn't tell that apart from a
+// cold "cleared direct to an approach fix," which should fly the PT.
+func TestClearedApproachAfterVectorEstablishmentSkipsProcedureTurn(t *testing.T) {
+	// KFLL's ILS 28R has FUZYY 12.4nm from the threshold, with a procedure
+	// turn defined on one of the transitions through it. Positioning well
+	// outside that and vectoring to intercept leaves FUZYY ahead of the
+	// aircraft once it establishes on the localizer.
+	apg := LookupApproachGeometry(t, "KFLL", "I28R")
+	pos := apg.ThresholdOffset(20, -5)
+
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString(),
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KFLL",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+		InitialHeading:   250,
+	})
+	f.ExpectApproach("I28R")
+	f.InterceptApproach()
+
+	cleared := false
+	for tick := 30; tick <= 1200; tick += 10 {
+		tick := tick
+		f.AfterTicks(tick, func(f *FlightTest) {
+			if cleared || f.nav.Approach.InterceptState != OnApproachCourse {
+				return
+			}
+			cleared = true
+			if !f.nav.Approach.NoPT {
+				t.Errorf("expected NoPT once established on the localizer via vectors, before clearance")
+			}
+			if intent := f.nav.ClearedApproach("I28R", nil, f.simTime, false, ""); intent == nil {
+				t.Fatal("no intent from the approach clearance")
+			}
+			if !f.nav.Approach.Cleared {
+				t.Error("not cleared for the approach")
+			}
+			if !f.nav.Approach.NoPT {
+				t.Error("NoPT should still be set: the aircraft was already established via vectors, " +
+					"so no procedure turn should be flown despite the clearance omitting straight-in")
+			}
+			if len(f.nav.Heading.Maneuvers) != 0 {
+				t.Errorf("expected no procedure turn maneuvers to be synthesized, got %+v", f.nav.Heading.Maneuvers)
+			}
+		})
+	}
+
+	f.AfterTicks(1200, func(f *FlightTest) {
+		if !cleared {
+			t.Fatal("aircraft never established on the localizer (InterceptState never reached OnApproachCourse)")
+		}
+	})
+
+	f.Run()
+
+	if !cleared {
+		t.Fatal("aircraft never established on the localizer (InterceptState never reached OnApproachCourse)")
+	}
+}
+
+// TestClearedApproachDirectToFixStillFliesProcedureTurn checks the case
+// adjacent to TestClearedApproachAfterVectorEstablishmentSkipsProcedureTurn:
+// an aircraft sent direct to an approach fix that has a procedure turn,
+// then cleared for the approach without "straight in", should still fly
+// the procedure turn, exactly as a cold "cleared direct to an approach fix"
+// would. InterceptState reads OnApproachCourse here too (DirectFix uses it
+// to gate altitude before clearance), but NoPT must not be forced true.
+func TestClearedApproachDirectToFixStillFliesProcedureTurn(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KFLL", "I28R")
+	pos := apg.ThresholdOffset(40, 0)
+
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString(),
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KFLL",
+		AircraftType:     "A320",
+		InitialAltitude:  5000,
+		InitialSpeed:     210,
+	})
+	f.ExpectApproach("I28R")
+	f.DirectFix("FUZYY")
+
+	if f.nav.Approach.InterceptState != OnApproachCourse {
+		t.Fatalf("expected InterceptState OnApproachCourse after DirectFix to an approach fix, got %d",
+			f.nav.Approach.InterceptState)
+	}
+	if f.nav.Approach.NoPT {
+		t.Error("NoPT should not be set yet: not cleared, and FUZYY has a procedure turn")
+	}
+
+	if intent := f.nav.ClearedApproach("I28R", nil, f.simTime, false, ""); intent == nil {
+		t.Fatal("no intent from the approach clearance")
+	}
+	if !f.nav.Approach.Cleared {
+		t.Error("not cleared for the approach")
+	}
+	if f.nav.Approach.NoPT {
+		t.Error("expected the procedure turn to fly: direct to an approach fix, cleared without straight-in")
+	}
+	if len(f.nav.Heading.Maneuvers) == 0 {
+		t.Error("expected a procedure turn maneuver to be synthesized")
+	}
+}
+
 // TestLocalizerOvershootRecovery verifies that after an overshoot, the
 // recovery does not oscillate back and forth across the localizer. The
 // aircraft is placed 0.5nm NW of the localizer with a ~24° intercept;
