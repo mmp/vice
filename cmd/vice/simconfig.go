@@ -261,6 +261,10 @@ func (c *NewSimConfiguration) drawTrafficSourceUI(spec *scenario.Spec, p platfor
 	if lc.TrafficSource != prevSource {
 		// Counts from one source must never rank another's airports.
 		c.clearTrafficPreviewLocked()
+		// Which days/hours are valid, and what they're valid for, depends on
+		// the traffic source (e.g. historical flight coverage only matters
+		// for TrafficSourceHistorical), so the start time needs a fresh look.
+		c.updateStartTimeForRunways(spec)
 	}
 
 	normalizeTrafficSourceConfig(spec)
@@ -1278,6 +1282,16 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 		imgui.PopStyleColor()
 	} else if len(c.airportMETAR) > 0 {
 		c.drawWeatherFilterUI()
+	} else if c.weatherFilterError != "" {
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text(gui.Icons.ExclamationTriangle + " " + c.weatherFilterError)
+		imgui.PopStyleColor()
+		if !c.NewSimRequest.StartTime.IsZero() {
+			clock := makeScenarioClock(c.ScenarioSpec)
+			imgui.Text("Start time: " + clock.format(c.NewSimRequest.StartTime, "2006-01-02 15:04"))
+			imgui.SameLine()
+			TimeSlider(&c.NewSimRequest.StartTime, clock, timeSliderWidth)
+		}
 	}
 	imgui.Spacing()
 
@@ -1426,13 +1440,7 @@ func (c *NewSimConfiguration) validStartDays(spec *scenario.Spec) []time.Time {
 
 	intervals := c.availableWXIntervals
 	if spec.LaunchConfig.TrafficSource == sim.TrafficSourceHistorical {
-		flights := util.MapSlice(spec.HistoricalFlightIntervals, func(iv util.TimeInterval) util.TimeInterval {
-			return util.TimeInterval{iv[0], iv[1].Add(-24 * time.Hour)}
-		})
-		flights = util.FilterSliceInPlace(flights, func(iv util.TimeInterval) bool {
-			return iv[0].Before(iv[1])
-		})
-		intervals = util.IntersectIntervals(intervals, flights)
+		intervals = util.IntersectIntervals(intervals, trimHistoricalFlightIntervals(spec))
 	}
 
 	return getValidFullDays(intervals, makeScenarioClock(spec))

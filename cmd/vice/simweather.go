@@ -504,26 +504,63 @@ const (
 	defaultStartLocalHourMax = 19 // 7pm
 )
 
+// updateStartTimeForRunways picks a start time for the scenario, sampling
+// weather to match the filter when METAR is available and falling back to a
+// time drawn purely from historical traffic coverage when it isn't (e.g. a
+// facility whose weather hasn't been ingested yet).
 func (c *NewSimConfiguration) updateStartTimeForRunways(spec *scenario.Spec) {
 	c.weatherFilterError = ""
-
-	if spec == nil || c.airportMETAR == nil {
+	if spec == nil {
 		return
+	}
+	clock := makeScenarioClock(spec)
+
+	if start, ok := c.weatherStartTime(spec, clock); ok {
+		c.StartTime = start
+		return
+	}
+	if c.weatherFilterError != "" {
+		// The filter matched nothing; leave the previous start time in place
+		// rather than jumping to an arbitrary one.
+		return
+	}
+	if spec.LaunchConfig.TrafficSource != sim.TrafficSourceHistorical {
+		c.weatherFilterError = "No weather data available for this facility"
+		return
+	}
+
+	start, ok := historicalTrafficStartTime(spec, clock)
+	if !ok {
+		c.weatherFilterError = "No weather or historical traffic data available for this facility"
+		return
+	}
+	c.weatherFilterError = "No weather data available for this facility; " +
+		"start time chosen from historical traffic coverage only"
+	c.StartTime = start
+}
+
+// weatherStartTime samples a start time whose METAR matches the current
+// weather filter, preferring the scenario's local daytime hours before
+// falling back to any hour. It returns false with no error set when there's
+// simply no METAR to sample from; it sets weatherFilterError and returns
+// false when METAR exists but none of it matches the filter.
+func (c *NewSimConfiguration) weatherStartTime(spec *scenario.Spec, clock airportClock) (time.Time, bool) {
+	if c.airportMETAR == nil {
+		return time.Time{}, false
 	}
 
 	airports, _ := c.metarAirportsByTraffic(spec)
 	if len(airports) == 0 {
-		return
+		return time.Time{}, false
 	}
 	apMETAR := c.airportMETAR[airports[0]]
 	if len(apMETAR) == 0 {
-		return
+		return time.Time{}, false
 	}
 	days := c.validStartDays(spec)
 	if len(days) == 0 {
-		return
+		return time.Time{}, false
 	}
-	clock := makeScenarioClock(spec)
 
 	// Sample a METAR matching the combined weather filter (ground winds +
 	// winds aloft), preferring the daytime hours of the valid days: a sim
@@ -547,7 +584,7 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *scenario.Spec) {
 	}
 	if m == nil {
 		c.weatherFilterError = "No weather matching filters found"
-		return
+		return time.Time{}, false
 	}
 
 	// Start at a random time between the sampled METAR and the next one,
@@ -565,8 +602,6 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *scenario.Spec) {
 	}
 	startTime = startTime.Add(rand.Make().DurationRange(0, end.Sub(m.Time)))
 
-	c.StartTime = startTime
-
 	// Set VFR launch rate to zero if selected weather is IMC;
 	// restore the original value if VMC.
 	if !m.IsVMC() {
@@ -574,4 +609,43 @@ func (c *NewSimConfiguration) updateStartTimeForRunways(spec *scenario.Spec) {
 	} else {
 		spec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
 	}
+
+	return startTime, true
+}
+
+// trimHistoricalFlightIntervals holds back the last 24h of each of the
+// scenario's flight-data stretches, so a sim started within what's left still
+// has a day of traffic to fly.
+func trimHistoricalFlightIntervals(spec *scenario.Spec) []util.TimeInterval {
+	flights := util.MapSlice(spec.HistoricalFlightIntervals, func(iv util.TimeInterval) util.TimeInterval {
+		return util.TimeInterval{iv[0], iv[1].Add(-24 * time.Hour)}
+	})
+	return util.FilterSliceInPlace(flights, func(iv util.TimeInterval) bool {
+		return iv[0].Before(iv[1])
+	})
+}
+
+// historicalTrafficStartTime picks a start time purely from when historical
+// flight data is available, ignoring weather entirely. It's the fallback for
+// a facility whose traffic is historical but whose weather hasn't been
+// ingested, so a sim still starts somewhere traffic actually flies rather
+// than at the zero time. Like the weather path, it keeps to local daytime
+// hours where the scenario's time zone is known.
+func historicalTrafficStartTime(spec *scenario.Spec, clock airportClock) (time.Time, bool) {
+	days := getValidFullDays(trimHistoricalFlightIntervals(spec), clock)
+	if len(days) == 0 {
+		return time.Time{}, false
+	}
+
+	fromHour, toHour := defaultStartLocalHourMin, defaultStartLocalHourMax
+	if !clock.local {
+		fromHour, toHour = 0, 24
+	}
+	windows := dayWindows(days, clock, fromHour, toHour)
+
+	iv, ok := rand.SampleWeighted(rand.Make(), windows, util.TimeInterval.Duration)
+	if !ok {
+		return time.Time{}, false
+	}
+	return iv.Start().Add(rand.Make().DurationRange(0, iv.Duration())), true
 }

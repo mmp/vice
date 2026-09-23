@@ -324,6 +324,82 @@ func TestValidStartDays(t *testing.T) {
 	}
 }
 
+// TestHistoricalTrafficStartTime is the fallback for the gap
+// TestValidStartDays' "no weather leaves nothing to offer" case documents:
+// with no weather data at all, a start time can still be drawn from where the
+// historical flight data itself covers.
+func TestHistoricalTrafficStartTime(t *testing.T) {
+	loc := newYork(t)
+	clock := airportClock{loc: loc, local: true}
+
+	for _, tc := range []struct {
+		name    string
+		flights []util.TimeInterval
+		wantOK  bool
+	}{
+		{
+			name:    "picks from flight data coverage alone",
+			flights: []util.TimeInterval{{day(time.May, 1, 0), day(time.May, 10, 0)}},
+			wantOK:  true,
+		},
+		{
+			name:    "a stretch shorter than a day drops out",
+			flights: []util.TimeInterval{{day(time.May, 4, 0), day(time.May, 4, 18)}},
+			wantOK:  false,
+		},
+		{
+			name:    "no flight data at all",
+			flights: nil,
+			wantOK:  false,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			spec := &scenario.Spec{Center: jfk, HistoricalFlightIntervals: tc.flights}
+
+			start, ok := historicalTrafficStartTime(spec, clock)
+			if ok != tc.wantOK {
+				t.Fatalf("ok = %v, want %v", ok, tc.wantOK)
+			}
+			if !ok {
+				return
+			}
+
+			validDays := getValidFullDays(trimHistoricalFlightIntervals(spec), clock)
+			dayStart := clock.startOfDay(start)
+			if !slices.ContainsFunc(validDays, func(d time.Time) bool { return d.Equal(dayStart) }) {
+				t.Errorf("start = %v is not on a valid day (valid: %v)", start, validDays)
+			}
+			if h := start.In(loc).Hour(); h < defaultStartLocalHourMin || h >= defaultStartLocalHourMax {
+				t.Errorf("start = %v, expected local hour in [%d,%d)", start.In(loc),
+					defaultStartLocalHourMin, defaultStartLocalHourMax)
+			}
+		})
+	}
+}
+
+// Without a resolvable local clock there's no daytime hour range to keep to,
+// so the whole day is fair game.
+func TestHistoricalTrafficStartTimeNonLocal(t *testing.T) {
+	clock := airportClock{loc: time.UTC, local: false}
+	spec := &scenario.Spec{
+		HistoricalFlightIntervals: []util.TimeInterval{{day(time.May, 1, 0), day(time.May, 10, 0)}},
+	}
+
+	seenOutsideDaytime := false
+	for range 50 {
+		start, ok := historicalTrafficStartTime(spec, clock)
+		if !ok {
+			t.Fatal("expected a start time")
+		}
+		if h := start.Hour(); h < defaultStartLocalHourMin || h >= defaultStartLocalHourMax {
+			seenOutsideDaytime = true
+		}
+	}
+	if !seenOutsideDaytime {
+		t.Error("50 samples never fell outside 7am-7pm; expected the whole day to be sampled")
+	}
+}
+
 func TestDayWindows(t *testing.T) {
 	loc := newYork(t)
 	clock := airportClock{loc: loc, local: true}
