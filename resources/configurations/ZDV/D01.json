@@ -343,7 +343,8 @@
         }
       }
     },
-    "center": "KCYS",
+    "center": "KDEN",
+    "max_distance": 250,
     "filters": {
       "inhibit_ca": [
         {
@@ -393,6 +394,42 @@
       ]
     },
     "radar_sites": {
+      "QPK": {
+        "char": "Q",
+        "position": "+393538.960-1044135.500",
+        "elevation": 6242,
+        "primary_range": 250,
+        "secondary_range": 250,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      },
+      "TAD": {
+        "char": "T",
+        "position": "37.547107,-104.014039",
+        "elevation": 5520,
+        "primary_range": 250,
+        "secondary_range": 250,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      },
+      "GJT": {
+        "char": "G",
+        "position": "+390226.280-1082440.120",
+        "elevation": 5100,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      },
+      "DEN": {
+        "char": "D",
+        "position": "N039.51.16.597,W104.43.06.373",
+        "elevation": 6155,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.3
+      },
       "CYS": {
         "char": "A",
         "position": "KCYS",
@@ -403,7 +440,7 @@
         "slope_angle": 0.3
       }
     },
-    "range": 30,
+    "range": 70,
     "scratchpads": {
       "DEN": "DEN",
       "CYS": "DEN",
@@ -1019,50 +1056,6 @@
         "default_maps": ["DR BASE", "DEN PUB MVA FUS3 B - ALT"],
         "center": "KDEN"
       },
-      "5J": {
-        "video_maps": [
-          "ARRIVAL BASE",
-          "DEN PUB MVA FUS3 B - ALT",
-          "D01 CLASS B/E Airspace",
-          "DR BASE",
-          "EOVM",
-          "D01 LANDMARK VFR",
-          "SR LN",
-          "SR LS",
-          "SR LNE",
-          "SR LSW",
-          "SR LNS",
-          "D01 DVX LANDMARK",
-          "SAT STARS",
-          "SAT STARS NAMES",
-          "JET ROUTES",
-          "STADIUMS",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "SR LE",
-          "SR LW",
-          "SR LSE",
-          "SR LNW",
-          "SR LEW",
-          "SAT SIDS",
-          "SAT STAR COMBO",
-          "AIRWAYS",
-          "COUNTY MAP",
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          ""
-        ],
-        "default_maps": ["ARRIVAL BASE", "DEN PUB MVA FUS3 B - ALT"],
-        "center": "KDEN"
-      },
       "1D": {
         "video_maps": [
           "ARRIVAL BASE",
@@ -1211,7 +1204,8 @@
           "GJT SATS",
           "GJT VFR"
         ],
-        "center": "KGJT",
+        "center": "+390226.280-1082440.120",
+        "range": 50,
         "system_altimeter": "KGJT"
       },
       "6": {
@@ -1229,7 +1223,7 @@
           "RNAV9__CYS RNAV RWY 09"
         ],
         "center": "KCYS",
-        "range": 30,
+        "range": 40,
         "system_altimeter": "KCYS"
       },
       "2": {
