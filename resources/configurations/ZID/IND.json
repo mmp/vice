@@ -49,10 +49,87 @@
       "callsign": "IND_W_TWR",
       "frequency": 127825,
       "radio_name": "Indianapolis Tower"
+    },
+    "AI": {
+      "callsign": "AID_TWR",
+      "frequency": 126000,
+      "radio_name": "Anderson Tower"
+    },
+    "BA": {
+      "callsign": "BAK_TWR",
+      "frequency": 118600,
+      "radio_name": "Columbus Tower"
+    },
+    "MI": {
+      "callsign": "MIE_TWR",
+      "frequency": 120100,
+      "radio_name": "Muncie Tower"
     }
   },
   "facility_adaptations": {
     "lists": { "ssa": { "system_altimeter": "KIND" } },
+    "airspace_awareness": [
+      {
+        "fixes": ["BVT"],
+        "altitude_range": [10001, 23000],
+        "receiving_controller": "G46"
+      },
+      {
+        "fixes": ["CVG"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "21W"
+      },
+      {
+        "fixes": ["DAY"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "11U"
+      },
+      {
+        "fixes": ["FWA"],
+        "altitude_range": [0, 10000],
+        "receiving_controller": "51F"
+      },
+      {
+        "fixes": ["GUS"],
+        "altitude_range": [0, 10000],
+        "receiving_controller": "41W"
+      },
+      {
+        "fixes": ["HUF"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "31G"
+      },
+      {
+        "fixes": ["SDF"],
+        "altitude_range": [0, 13000],
+        "receiving_controller": "64D"
+      },
+      {
+        "fixes": ["CLLRK", "BRATN", "MZZ"],
+        "altitude_range": [10001, 23000],
+        "receiving_controller": "G35"
+      },
+      {
+        "fixes": ["OOM"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C35"
+      },
+      {
+        "fixes": ["TTH"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C35"
+      },
+      {
+        "fixes": ["MAREO"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C33"
+      },
+      {
+        "fixes": ["FOYTT"],
+        "altitude_range": [13001, 23000],
+        "receiving_controller": "C34"
+      }
+    ],
     "configurations": {
       "I05": {
         "inbound_assignments": {
@@ -261,11 +338,11 @@
           "RACYR6": "1B",
           "SMUKE3": "1B",
           "SNKPT2": "1D",
-          "GIIBS4.14.FINAL": "1D",
-          "JAKKS2.14.FINAL": "1B",
-          "KOLTS2.14.FINAL": "1B",
-          "SMUKE3.14.FINAL": "1B",
-          "SNKPT2.14.FINAL": "1D"
+          "GIIBS4.14.AUTO": "1D",
+          "JAKKS2.14.AUTO": "1B",
+          "KOLTS2.14.AUTO": "1B",
+          "SMUKE3.14.AUTO": "1B",
+          "SNKPT2.14.AUTO": "1D"
         },
         "departure_assignments": {
           "KIND/DAWNN1": "1W",
@@ -286,11 +363,11 @@
           "RACYR6": "1B",
           "SMUKE3": "1B",
           "SNKPT2": "1D",
-          "GIIBS4.32.FINAL": "1D",
-          "JAKKS2.32.FINAL": "1B",
-          "KOLTS2.32.FINAL": "1B",
-          "SMUKE3.32.FINAL": "1B",
-          "SNKPT2.32.FINAL": "1D"
+          "GIIBS4.32.AUTO": "1D",
+          "JAKKS2.32.AUTO": "1B",
+          "KOLTS2.32.AUTO": "1B",
+          "SMUKE3.32.AUTO": "1B",
+          "SNKPT2.32.AUTO": "1D"
         },
         "departure_assignments": {
           "KIND/DAWNN1": "1W",
@@ -391,8 +468,8 @@
       ]
     },
     "radar_sites": {
-      "QWO": {
-        "char": "W",
+      "INA": {
+        "char": "A",
         "position": "39.702434,-86.288816",
         "elevation": 871,
         "primary_range": 60,
@@ -418,114 +495,64 @@
         "silence_angle": 30,
         "slope_angle": 0.175
       },
-      "HUF": {
-        "char": "H",
-        "position": "40.657448,-86.159818",
-        "elevation": 880,
+      "CVG": {
+        "char": "C",
+        "position": "39.04121431605107,-84.6523833694079",
+        "elevation": 960,
         "primary_range": 60,
         "secondary_range": 120,
         "silence_angle": 30,
         "slope_angle": 0.175
+      },
+      "SDF": {
+        "char": "C",
+        "position": "38.18613362893697,-85.72685329763041",
+        "elevation": 563,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "QWO": {
+        "char": "W",
+        "position": "39.84611856145096,-83.48173590406073",
+        "elevation": 1100,
+        "primary_range": 250,
+        "secondary_range": 250,
+        "silence_angle": 30,
+        "slope_angle": 0.175
       }
-    },
-    "scratchpads": {
-      "DAWNN": "FOY",
-      "MYS": "FOY",
-      "IIU": "FOY",
-      "WEGEE": "OOM",
-      "OOM": "OOM",
-      "PXV": "OOM",
-      "MAREO": "MREO",
-      "BDOCK": "MREO",
-      "CLLRK": "CLRK",
-      "BRATN": "BRTN",
-      "MZZ": "BRTN",
-      "BVT": "SACH",
-      "ROCKY": "TTH",
-      "SPI": "TTH",
-      "STL": "TTH"
     },
     "significant_points": {
-      "BDOCK": {},
-      "BRATN": {},
-      "BVT": {},
-      "CLLRK": {},
-      "DAWNN": {},
-      "IIU": {},
-      "MAREO": {},
-      "MEARZ": {},
-      "MYS": {},
-      "MZZ": {},
-      "OOM": {},
-      "PXV": {},
-      "ROCKY": {},
-      "SPI": {},
-      "STL": {},
-      "WEGEE": {}
+      "BDOCK": { "abbreviation": "E" },
+      "BOLRR": { "abbreviation": "B" },
+      "BRATN": { "abbreviation": "N" },
+      "BVT": { "abbreviation": "B" },
+      "CVG": { "abbreviation": "H" },
+      "CLLRK": { "abbreviation": "K" },
+      "DAWNN": { "abbreviation": "D" },
+      "IIU": { "abbreviation": "D" },
+      "KLYNE": { "abbreviation": "E" },
+      "MAREO": { "abbreviation": "E" },
+      "MEARZ": { "abbreviation": "K" },
+      "MYS": { "abbreviation": "D" },
+      "MZZ": { "abbreviation": "N" },
+      "OOM": { "abbreviation": "P" },
+      "PXV": { "abbreviation": "P" },
+      "ROCKY": { "abbreviation": "W" },
+      "SHB": { "abbreviation": "H" },
+      "SDF": { "abbreviation": "S" },
+      "SPI": { "abbreviation": "W" },
+      "STL": { "abbreviation": "W" },
+      "TTH": { "abbreviation": "W" },
+      "UKATS": { "abbreviation": "E" },
+      "WEGEE": { "abbreviation": "P" }
+    },
+    "untracked_position_symbol_overrides": {
+      "beacon_codes": "1200",
+      "symbol": "V"
     },
     "video_map_file": "videomaps/ZID-stars.mappack",
-    "airspace_awareness": [
-      {
-        "fixes": ["BVT"],
-        "altitude_range": [10001, 23000],
-        "receiving_controller": "G46"
-      },
-      {
-        "fixes": ["CVG"],
-        "altitude_range": [0, 13000],
-        "receiving_controller": "21W"
-      },
-      {
-        "fixes": ["DAY"],
-        "altitude_range": [0, 13000],
-        "receiving_controller": "11U"
-      },
-      {
-        "fixes": ["FWA"],
-        "altitude_range": [0, 10000],
-        "receiving_controller": "51F"
-      },
-      {
-        "fixes": ["GUS"],
-        "altitude_range": [0, 10000],
-        "receiving_controller": "41W"
-      },
-      {
-        "fixes": ["HUF"],
-        "altitude_range": [0, 13000],
-        "receiving_controller": "31G"
-      },
-      {
-        "fixes": ["SDF"],
-        "altitude_range": [0, 13000],
-        "receiving_controller": "64D"
-      },
-      {
-        "fixes": ["CLLRK", "BRATN", "MZZ"],
-        "altitude_range": [10001, 23000],
-        "receiving_controller": "G35"
-      },
-      {
-        "fixes": ["OOM"],
-        "altitude_range": [13001, 23000],
-        "receiving_controller": "C35"
-      },
-      {
-        "fixes": ["TTH"],
-        "altitude_range": [13001, 23000],
-        "receiving_controller": "C35"
-      },
-      {
-        "fixes": ["MAREO"],
-        "altitude_range": [13001, 23000],
-        "receiving_controller": "C33"
-      },
-      {
-        "fixes": ["FOYTT"],
-        "altitude_range": [13001, 23000],
-        "receiving_controller": "C34"
-      }
-    ],
     "coordination_fixes": {
       "SNKPT": [
         {
@@ -597,7 +624,10 @@
     },
     "datablocks": {
       "display_rnav_symbol": true,
-      "allow_long_scratchpad": true
+      "allow_long_scratchpad": true,
+      "scratchpad1": {
+        "display_exit_gate": true
+      }
     }
   },
   "handoff_ids": [

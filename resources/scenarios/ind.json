@@ -3293,6 +3293,33 @@
         "CVG.CEGRM.STAR": {
           "overflights": 4
         },
+        "CVG.VHP": {
+          "KIND": 0.1
+        },
+        "CVG.T315.VHP": {
+          "KIND": 0.1
+        },
+        "DQN.V50.VHP": {
+          "KIND": 0.1
+        },
+        "FWA.V11.WELDO": {
+          "KIND": 0.1
+        },
+        "BVT.V399.VHP": {
+          "KIND": 0.1
+        },
+        "SDF.NOSTAR": {
+          "KIND": 0.1
+        },
+        "HUF.NOSTAR": {
+          "KIND": 0.1
+        },
+        "DQN.NOSTAR": {
+          "KIND": 0.1
+        },
+        "RACYR6": {
+          "KIND": 0.1
+        },
         "SNKPT2": {
           "KIND": 6
         },
@@ -3434,20 +3461,47 @@
         "CVG.CEGRM.STAR": {
           "overflights": 4
         },
+        "CVG.VHP": {
+          "KIND": 0.1
+        },
+        "CVG.T315.VHP": {
+          "KIND": 0.1
+        },
+        "DQN.V50.VHP": {
+          "KIND": 0.1
+        },
+        "FWA.V11.WELDO": {
+          "KIND": 0.1
+        },
+        "BVT.V399.VHP": {
+          "KIND": 0.1
+        },
+        "SDF.NOSTAR": {
+          "KIND": 0.1
+        },
+        "HUF.NOSTAR": {
+          "KIND": 0.1
+        },
+        "DQN.NOSTAR": {
+          "KIND": 0.1
+        },
+        "RACYR6": {
+          "KIND": 0.1
+        },
         "SNKPT2": {
-          "KIND": 3
+          "KIND": 6
         },
         "GIIBS4": {
-          "KIND": 3
+          "KIND": 6
         },
         "JAKKS2": {
-          "KIND": 3
+          "KIND": 6
         },
         "KOLTS2": {
-          "KIND": 3
+          "KIND": 6
         },
         "SMUKE3": {
-          "KIND": 3
+          "KIND": 6
         }
       },
       "configuration": "I32",
@@ -3464,7 +3518,7 @@
         "speed": "20+"
       }
     },
-    "IND Northwest (Final)": {
+    "IND Northwest *WIP* (Final)": {
       "center": "OZMOE",
       "range": 30,
       "arrival_runways": [
@@ -3504,6 +3558,45 @@
         "speed": "20+"
       }
     },
+    "IND Northwest *WIP* (Departure)": {
+      "range": 55,
+      "arrival_runways": [
+        {
+          "airport": "KIND",
+          "runway": "32"
+        }
+      ],
+      "inbound_rates": {
+        "SNKPT2.32.AUTO": {
+          "KIND": 3
+        },
+        "GIIBS4.32.AUTO": {
+          "KIND": 3
+        },
+        "JAKKS2.32.AUTO": {
+          "KIND": 3
+        },
+        "KOLTS2.32.AUTO": {
+          "KIND": 3
+        },
+        "SMUKE3.32.AUTO": {
+          "KIND": 3
+        }
+      },
+      "configuration": "D32",
+      "default_maps": ["RWY 32"],
+      "departure_runways": [
+        {
+          "airport": "KIND",
+          "rate": 15,
+          "runway": "32"
+        }
+      ],
+      "wind": {
+        "direction": "275-015",
+        "speed": "20+"
+      }
+    },
     "IND Southeast (Combined)": {
       "range": 55,
       "arrival_runways": [
@@ -3516,20 +3609,47 @@
         "CVG.CEGRM.STAR": {
           "overflights": 4
         },
+        "CVG.VHP": {
+          "KIND": 0.1
+        },
+        "CVG.T315.VHP": {
+          "KIND": 0.1
+        },
+        "DQN.V50.VHP": {
+          "KIND": 0.1
+        },
+        "FWA.V11.WELDO": {
+          "KIND": 0.1
+        },
+        "BVT.V399.VHP": {
+          "KIND": 0.1
+        },
+        "SDF.NOSTAR": {
+          "KIND": 0.1
+        },
+        "HUF.NOSTAR": {
+          "KIND": 0.1
+        },
+        "DQN.NOSTAR": {
+          "KIND": 0.1
+        },
+        "RACYR6": {
+          "KIND": 0.1
+        },
         "SNKPT2": {
-          "KIND": 3
+          "KIND": 6
         },
         "GIIBS4": {
-          "KIND": 3
+          "KIND": 6
         },
         "JAKKS2": {
-          "KIND": 3
+          "KIND": 6
         },
         "KOLTS2": {
-          "KIND": 3
+          "KIND": 6
         },
         "SMUKE3": {
-          "KIND": 3
+          "KIND": 6
         }
       },
       "configuration": "I14",
@@ -3546,7 +3666,7 @@
         "speed": "20+"
       }
     },
-    "IND Southeast (Final)": {
+    "IND Southeast *WIP* (Final)": {
       "center": "KEADY",
       "range": 30,
       "arrival_runways": [
@@ -3573,6 +3693,45 @@
         }
       },
       "configuration": "INF",
+      "default_maps": ["RWY 14"],
+      "departure_runways": [
+        {
+          "airport": "KIND",
+          "rate": 15,
+          "runway": "14"
+        }
+      ],
+      "wind": {
+        "direction": "095-185",
+        "speed": "20+"
+      }
+    },
+    "IND Southeast *WIP* (Departure)": {
+      "range": 55,
+      "arrival_runways": [
+        {
+          "airport": "KIND",
+          "runway": "14"
+        }
+      ],
+      "inbound_rates": {
+        "SNKPT2.14.AUTO": {
+          "KIND": 3
+        },
+        "GIIBS4.14.AUTO": {
+          "KIND": 3
+        },
+        "JAKKS2.14.AUTO": {
+          "KIND": 3
+        },
+        "KOLTS2.14.AUTO": {
+          "KIND": 3
+        },
+        "SMUKE3.14.AUTO": {
+          "KIND": 3
+        }
+      },
+      "configuration": "D14",
       "default_maps": ["RWY 14"],
       "departure_runways": [
         {
