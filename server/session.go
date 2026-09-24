@@ -29,6 +29,11 @@ type simSession struct {
 	password           string
 	connectionsByToken map[string]*connectionState
 
+	// stepMu is held while the sim ticks and while a request changes it,
+	// so that each request happens between two ticks. It is never held
+	// with mu.
+	stepMu util.LoggingMutex
+
 	lg *log.Logger
 	mu util.LoggingMutex
 }
@@ -65,6 +70,28 @@ type connectionState struct {
 	// delivered to this client via GetStateUpdate. The long-poll waits for
 	// the sim's pubGen to advance past this value.
 	lastSentGen uint64
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Changing the sim
+
+// apply runs f, which makes a controller's request of the sim, between two
+// of the sim's ticks, returning the sim's reason for refusing the request.
+// Without it, a tick could land partway through a request, such as between
+// two of the commands in one transmission.
+func (ss *simSession) apply(f func() error) error {
+	ss.stepMu.Lock(ss.lg)
+	defer ss.stepMu.Unlock(ss.lg)
+
+	return f()
+}
+
+// advance runs f, which runs the sim forward, between requests.
+func (ss *simSession) advance(f func()) {
+	ss.stepMu.Lock(ss.lg)
+	defer ss.stepMu.Unlock(ss.lg)
+
+	f()
 }
 
 ///////////////////////////////////////////////////////////////////////////

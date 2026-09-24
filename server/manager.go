@@ -420,7 +420,7 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 			session.CullIdleControllers(sm)
 		}
 
-		session.sim.Update()
+		session.advance(session.sim.Update)
 
 		time.Sleep(100 * time.Millisecond)
 	}
@@ -465,12 +465,14 @@ func (sm *SimManager) signOff(token string) error {
 
 	// If this was the last user at the TCW, post messages and clear privileges
 	if result.UsersAtTCW == 0 {
-		session.sim.ClearSTTCommands(result.TCW)
+		_ = session.apply(func() error {
+			session.sim.ClearSTTCommands(result.TCW)
+			session.sim.SetPrivilegedTCW(result.TCW, false)
+			return nil
+		})
+
 		// Get positions for the uncovered message
 		uncoveredPositions := session.sim.GetPositionsForTCW(result.TCW)
-
-		// Clear privileged status
-		session.sim.SetPrivilegedTCW(result.TCW, false)
 
 		msg := string(result.TCW)
 		if result.Initials != "" {
@@ -501,15 +503,19 @@ func (sm *SimManager) signOff(token string) error {
 
 // assume SimManager lock is held
 func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.EventsSubscription, error) {
-	if err := ss.sim.SignOn(req.TCW, req.SelectedTCPs); err != nil {
+	err := ss.apply(func() error {
+		if err := ss.sim.SignOn(req.TCW, req.SelectedTCPs); err != nil {
+			return err
+		}
+		if req.Privileged {
+			ss.sim.SetPrivilegedTCW(req.TCW, true)
+		}
+		return nil
+	})
+	if err != nil {
 		return "", nil, err
 	}
 	eventSub := ss.sim.Subscribe()
-
-	// Set privileged status if instructor
-	if req.Privileged {
-		ss.sim.SetPrivilegedTCW(req.TCW, true)
-	}
 
 	// Post sign-on message
 	msg := string(req.TCW) + " (" + req.Initials + ") has signed on for "

@@ -33,7 +33,7 @@ func (sd *dispatcher) runSimCommand(token string, update *SimStateUpdate, f func
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	if err := f(c); err != nil {
+	if err := c.session.apply(func() error { return f(c) }); err != nil {
 		update.SimErrorMessage = err.Error()
 	} else {
 		*update = c.GetStateUpdate()
@@ -100,7 +100,7 @@ func (sd *dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) erro
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.SetLaunchConfig(c.tcw, lc.Config)
+	return c.session.apply(func() error { return c.sim.SetLaunchConfig(c.tcw, lc.Config) })
 }
 
 const TogglePauseRPC = "Sim.TogglePause"
@@ -128,7 +128,7 @@ func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.RequestFlightFollowing()
+	return c.session.apply(c.sim.RequestFlightFollowing)
 }
 
 type AddMETARAirportArgs struct {
@@ -149,7 +149,7 @@ func (sd *dispatcher) AddMETARAirport(args *AddMETARAirportArgs, _ *struct{}) er
 	if err != nil {
 		return err
 	}
-	return c.sim.AddMETAR(args.Airport, metar)
+	return c.session.apply(func() error { return c.sim.AddMETAR(args.Airport, metar) })
 }
 
 type TriggerEmergencyArgs struct {
@@ -166,8 +166,10 @@ func (sd *dispatcher) TriggerEmergency(args *TriggerEmergencyArgs, _ *struct{}) 
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	c.sim.TriggerEmergency(args.EmergencyName)
-	return nil
+	return c.session.apply(func() error {
+		c.sim.TriggerEmergency(args.EmergencyName)
+		return nil
+	})
 }
 
 const FastForwardRPC = "Sim.FastForward"
@@ -553,52 +555,55 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		return ErrNoSimForControllerToken
 	}
 
-	callsign := cmds.Callsign
+	_ = c.session.apply(func() error {
+		callsign := cmds.Callsign
 
-	rewriteError := func(err error) {
-		result.RemainingInput = cmds.Commands
-		if err != nil {
-			result.ErrorMessage = err.Error()
+		rewriteError := func(err error) {
+			result.RemainingInput = cmds.Commands
+			if err != nil {
+				result.ErrorMessage = err.Error()
+			}
 		}
-	}
 
-	// Helper to populate readback fields for client-side TTS synthesis.
-	setReadback := func(spokenText string) {
-		if cmds.EnableTTS && spokenText != "" {
-			result.ReadbackText = spokenText
-			result.ReadbackVoiceName = c.sim.GetReadbackVoice(callsign)
-			result.ReadbackCallsign = callsign
+		// Helper to populate readback fields for client-side TTS synthesis.
+		setReadback := func(spokenText string) {
+			if cmds.EnableTTS && spokenText != "" {
+				result.ReadbackText = spokenText
+				result.ReadbackVoiceName = c.sim.GetReadbackVoice(callsign)
+				result.ReadbackCallsign = callsign
+			}
 		}
-	}
 
-	if cmds.Multiple {
-		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
-		if err != nil {
-			rewriteError(err)
+		if cmds.Multiple {
+			spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+			if err != nil {
+				rewriteError(err)
+			}
+			setReadback(spokenText)
+			return nil // don't continue with the commands
+		} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
+			spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+			if err != nil {
+				rewriteError(err)
+			}
+			setReadback(spokenText)
+			return nil // don't continue with the commands
 		}
-		setReadback(spokenText)
-		return nil // don't continue with the commands
-	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
-		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
-		if err != nil {
-			rewriteError(err)
-		}
-		setReadback(spokenText)
-		return nil // don't continue with the commands
-	}
 
-	execResult := c.sim.RunAircraftControlCommands(c.tcw, cmds.Callsign, cmds.Commands, cmds.AudioDuration)
-	result.RemainingInput = execResult.RemainingInput
-	if execResult.Error != nil {
-		result.ErrorMessage = execResult.Error.Error()
-	}
-	// Use execResult's callsign for voice lookup (not the local callsign, which may be "ROLLBACK")
-	if cmds.EnableTTS && execResult.ReadbackSpokenText != "" {
-		cs := execResult.ReadbackCallsign
-		result.ReadbackText = execResult.ReadbackSpokenText
-		result.ReadbackVoiceName = c.sim.GetReadbackVoice(cs)
-		result.ReadbackCallsign = cs
-	}
+		execResult := c.sim.RunAircraftControlCommands(c.tcw, cmds.Callsign, cmds.Commands, cmds.AudioDuration)
+		result.RemainingInput = execResult.RemainingInput
+		if execResult.Error != nil {
+			result.ErrorMessage = execResult.Error.Error()
+		}
+		// Use execResult's callsign for voice lookup (not the local callsign, which may be "ROLLBACK")
+		if cmds.EnableTTS && execResult.ReadbackSpokenText != "" {
+			cs := execResult.ReadbackCallsign
+			result.ReadbackText = execResult.ReadbackSpokenText
+			result.ReadbackVoiceName = c.sim.GetReadbackVoice(cs)
+			result.ReadbackCallsign = cs
+		}
+		return nil
+	})
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
 	if cmds.WhisperDuration > 0 {
@@ -632,7 +637,7 @@ func (sd *dispatcher) SetWaypointCommands(args *SetWaypointCommandsArgs, _ *stru
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.SetWaypointCommands(c.tcw, args.Commands)
+	return c.session.apply(func() error { return c.sim.SetWaypointCommands(c.tcw, args.Commands) })
 }
 
 type LaunchAircraftArgs struct {
@@ -859,7 +864,11 @@ func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, resul
 	}
 
 	// Request a contact from the session - returns text and voice name for client-side synthesis
-	result.ContactText, result.ContactVoiceName, result.ContactCallsign, result.ContactType = c.session.RequestContact(c.tcw)
+	_ = c.session.apply(func() error {
+		result.ContactText, result.ContactVoiceName, result.ContactCallsign, result.ContactType =
+			c.session.RequestContact(c.tcw)
+		return nil
+	})
 	return nil
 }
 
@@ -878,7 +887,7 @@ func (sd *dispatcher) PushFlightStrip(args *PushFlightStripArgs, _ *struct{}) er
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.PushFlightStrip(c.tcw, args.ACID, args.ToTCP)
+	return c.session.apply(func() error { return c.sim.PushFlightStrip(c.tcw, args.ACID, args.ToTCP) })
 }
 
 type AnnotateFlightStripArgs struct {
@@ -908,6 +917,6 @@ func (sd *dispatcher) RecordFlights(token string, recordings *sim.FlightRecordin
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	*recordings = c.sim.RecordFlights()
+	c.session.advance(func() { *recordings = c.sim.RecordFlights() })
 	return nil
 }
