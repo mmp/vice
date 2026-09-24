@@ -252,6 +252,22 @@ func (d StaticDatabase) LookupFAAAirport(faa av.FAAAirportCode) (Airport, bool) 
 // local code or two airports claim the same one: both must be resolved
 // before a release.
 func (d *StaticDatabase) initLocalCodes() {
+	fatal := d.fillLocalCodes()
+	fatal = append(fatal, d.buildFAAIndex()...)
+
+	if len(fatal) > 0 {
+		slices.Sort(fatal)
+		for _, f := range fatal {
+			fmt.Fprintln(os.Stderr, f)
+		}
+		os.Exit(1)
+	}
+}
+
+// fillLocalCodes applies the local code overrides and gives the airports
+// already keyed by their FAA identifier that identifier as their local code.
+// It returns the FAA airports left without one.
+func (d *StaticDatabase) fillLocalCodes() []string {
 	var fatal []string
 
 	for icao, lc := range airportLocalCodeOverrides {
@@ -282,7 +298,14 @@ func (d *StaticDatabase) initLocalCodes() {
 			fatal = append(fatal, fmt.Sprintf("%s: FAA airport has no local code in airports.csv.zst", icao))
 		}
 	}
+	return fatal
+}
 
+// buildFAAIndex builds the reverse FAA local identifier -> database id map
+// from the airports' local codes, returning the codes that two separate
+// airports claim.
+func (d *StaticDatabase) buildFAAIndex() []string {
+	var fatal []string
 	d.faaToICAO = make(map[av.FAAAirportCode]av.ICAOAirportCode)
 	for icao, ap := range d.Airports {
 		lc := ap.LocalCode
@@ -312,14 +335,7 @@ func (d *StaticDatabase) initLocalCodes() {
 		}
 		d.faaToICAO[lc] = self
 	}
-
-	if len(fatal) > 0 {
-		slices.Sort(fatal)
-		for _, f := range fatal {
-			fmt.Fprintln(os.Stderr, f)
-		}
-		os.Exit(1)
-	}
+	return fatal
 }
 
 // LookupFacility returns a Facility for the given id, checking
