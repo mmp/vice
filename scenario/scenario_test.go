@@ -149,8 +149,8 @@ func TestLocationFieldsAreTextUntilFinalized(t *testing.T) {
 		}
 		seen[t] = true
 
-		for i := range t.NumField() {
-			f := t.Field(i)
+		for f := range t.Fields() {
+			f := f
 			name, _, _ := strings.Cut(f.Tag.Get("json"), ",")
 			if f.PkgPath != "" || name == "-" { // JSON can't write it
 				continue

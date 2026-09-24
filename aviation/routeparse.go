@@ -869,8 +869,8 @@ func parseWaypointModifiers(wp *Waypoint, field string, mods []string) (TurnDire
 func parseWaypoints(str string) (WaypointArray, error) {
 	var waypoints WaypointArray
 	var nextWaypointTurn TurnDirection
-	entries := strings.Fields(str)
-	for _, field := range entries {
+	entries := strings.FieldsSeq(str)
+	for field := range entries {
 		if len(field) == 0 {
 			return nil, fmt.Errorf("Empty waypoint in string: %q", str)
 		}
