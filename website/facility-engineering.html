@@ -760,6 +760,15 @@
                 </tbody>
               </table>
 
+              <p>
+                At an ERAM facility, the altitudes these actions assign are entered in the data
+                block as well, as the virtual controller issuing them would have entered them:
+                <code>/d</code> and <code>/dv</code> amend the assigned altitude, as do
+                <code>/c</code> and <code>/cv</code> to an altitude at or above it, while a climb
+                that stops short of the assigned altitude becomes an interim altitude. See
+                <a href="#fe-eram-entries">ERAM Data Block Entries</a>.
+              </p>
+
               <h3 class="section-heading" id="fe-route-properties">Properties</h3>
 
               <p>Fix properties can be used both to affect how an aircraft is flying when it reaches
@@ -4854,6 +4863,12 @@
                         on the radar scope</a>.</td>
                   </tr>
                   <tr>
+                    <td>"eram"</td>
+                    <td>Object</td>
+                    <td>(<i>Optional</i>) <a href="#fe-eram-entries">ERAM data block entries</a> the
+                      aircraft spawns with; ERAM facilities only.</td>
+                  </tr>
+                  <tr>
                     <td>"handoff_controller"</td>
                     <td>String</td>
                     <td>(<i>Optional</i>) A string indicating which controller should receive the handoff if one of the fixes
@@ -5234,6 +5249,12 @@
                       the route is used for.</td>
                   </tr>
                   <tr>
+                    <td>"eram"</td>
+                    <td>Object</td>
+                    <td>(<i>Optional</i>) <a href="#fe-eram-entries">ERAM data block entries</a> the
+                      aircraft spawns with; ERAM facilities only.</td>
+                  </tr>
+                  <tr>
                     <td>"expect_approach"</td>
                     <td>String or Object</td>
                     <td>(<i>Optional</i>) This makes it possible to specify an approach that the aircraft has already been
@@ -5503,6 +5524,12 @@
                     <td>(<i>Optional</i>) A description of the overflight for use in <i>vice</i>'s user interface.</td>
                   </tr>
                   <tr>
+                    <td>"eram"</td>
+                    <td>Object</td>
+                    <td>(<i>Optional</i>) <a href="#fe-eram-entries">ERAM data block entries</a> the
+                      aircraft spawns with; ERAM facilities only.</td>
+                  </tr>
+                  <tr>
                     <td>"flight_type"</td>
                     <td>String</td>
                     <td>(<i>Optional</i>) How STARS should classify aircraft spawned from this overflight. Valid values are
@@ -5590,6 +5617,89 @@
                   </tr>
                 </tbody>
               </table>
+            </section>
+
+            <section class="docs-section" id="fe-eram-entries">
+              <h2 class="section-heading" data-nav-title="ERAM Data Block Entries">ERAM Data Block Entries</h2>
+
+              <p>
+                For aircraft that have been already worked by a controller before it is
+                handed off to a human controller, it is possible to specify ERAM data
+                block entries for values that would have been entered by a human controller:
+                assigned altitude, interim altitude, assigned heading, etc. The "eram"
+                object allows specifying these for arrivals, overflights, and
+                departures.
+                The entries are only used at ERAM facilities, and
+                it is an error to give them in a TRACON scenario group.
+              </p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Element</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>"assigned_altitude"</td>
+                    <td>Number</td>
+                    <td>(<i>Optional</i>) The assigned altitude, in feet, as entered with QZ. For
+                      arrivals and overflights, this can only be used if no value for the
+                      aircraft's "assigned_altitude" has been given.</td>
+                  </tr>
+                  <tr>
+                    <td>"free_text"</td>
+                    <td>String</td>
+                    <td>(<i>Optional</i>) Up to 8 characters of free text for data block line 4, as
+                      entered with QS. It takes the place of "heading", as it does in ERAM.</td>
+                  </tr>
+                  <tr>
+                    <td>"heading"</td>
+                    <td>Number</td>
+                    <td>(<i>Optional</i>) The assigned heading shown on data block line 4, as
+                      entered with QS.</td>
+                  </tr>
+                  <tr>
+                    <td>"interim_altitude"</td>
+                    <td>Number</td>
+                    <td>(<i>Optional</i>) The interim altitude, in feet, as entered with QQ. It is
+                      shown in place of the assigned altitude, followed by the character for its
+                      "interim_type".</td>
+                  </tr>
+                  <tr>
+                    <td>"interim_type"</td>
+                    <td>String</td>
+                    <td>(<i>Optional</i>) Which sort of interim altitude "interim_altitude" is:
+                      "temp" (the default, shown as T), "procedure" (P), or "local" (L).</td>
+                  </tr>
+                  <tr>
+                    <td>"mach"</td>
+                    <td>Number</td>
+                    <td>(<i>Optional</i>) The assigned mach shown on data block line 4, in
+                      hundredths: 78 is M.78. It cannot be given with "speed".</td>
+                  </tr>
+                  <tr>
+                    <td>"speed"</td>
+                    <td>Number</td>
+                    <td>(<i>Optional</i>) The assigned speed in knots shown on data block line 4,
+                      as entered with QS.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>
+                Line 4 holds one heading or free text and one speed, which is where the flight
+                plan's scratchpads are shown; "heading" and "free_text" therefore cannot be given
+                along with an arrival's or overflight's "scratchpad", nor "speed" and "mach" with
+                its "secondary_scratchpad". A departure route's entries take precedence over the
+                scratchpads of the departures that fly it.
+              </p>
+              <p>
+                Altitudes a virtual controller assigns along a route update the data block the same
+                way, as if that controller had made the entry: a
+                <a href="#fe-route-actions">/d or /dv action</a> amends the assigned altitude and a
+                /c or /cv action that stops short of it is an interim altitude.
+              </p>
             </section>
 
             <section class="docs-section" id="fe-timetables">

@@ -75,6 +75,8 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 				nasFp.AssignedAltitude = int(spawnAlt)
 			}
 		}
+
+		nasFp.applyERAMEntries(arr.ERAM)
 	}
 
 	// Pseudo-ERAM coordination derives the entry fix; the STARS fix-pair
@@ -472,8 +474,9 @@ func (s *Sim) initNASFlightPlan(ac *Aircraft, flightType av.TypeOfFlight) NASFli
 }
 
 // findLowestWaypointAltitude finds the lowest altitude restriction target from
-// the waypoints, used to set PerceivedAssigned altitude for ERAM facilities.
-// Returns the altitude and true if found, or 0 and false if no restrictions exist.
+// the waypoints: the bottom of the procedure they make up, which is the
+// altitude an ERAM data block shows for a flight descending it. Returns the
+// altitude and true if found, or 0 and false if no restrictions exist.
 func findLowestWaypointAltitude(wps av.WaypointArray, initialAlt float32) (int, bool) {
 	lowestAlt := gomath.MaxInt
 	for _, wp := range wps {
@@ -539,6 +542,9 @@ func (s *Sim) finalizeOverflightNoLock(ac *Aircraft, of *av.Overflight, group st
 	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && of.IsRNAV
 	nasFp.TypeOfFlight = of.TypeOfFlight
+	if db.DB.IsARTCC(s.State.Facility) {
+		nasFp.applyERAMEntries(of.ERAM)
+	}
 
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
 	// inbound-flow default above when adapted.

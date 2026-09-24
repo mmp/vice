@@ -225,6 +225,41 @@ func (fp *NASFlightPlan) applyAutoScratchpad(rows []AutoScratchpadRow, plan stri
 	}
 }
 
+// QSFreeTextIndicator introduces the free text of an ERAM QS entry in the
+// scratchpad that holds it; it is what tells the free text apart from an
+// assigned heading.
+const QSFreeTextIndicator = "`"
+
+// applyERAMEntries fills in the data block fields for the entries a scenario
+// gives an aircraft, as if the controller who had it before the simulation
+// started had made them. The entries only change what is displayed, so the
+// aircraft flies no differently for them.
+func (fp *NASFlightPlan) applyERAMEntries(ee *av.ERAMEntries) {
+	if ee == nil {
+		return
+	}
+
+	if ee.AssignedAltitude != 0 {
+		fp.AssignedAltitude = ee.AssignedAltitude
+	}
+	if ee.InterimAltitude != 0 {
+		fp.InterimAlt = ee.InterimAltitude
+		// ParseInterimAltType reports the default type, InterimNormal, for "T".
+		fp.InterimType, _ = ParseInterimAltType(ee.InterimTypeIndicator())
+	}
+
+	if ee.Heading != 0 {
+		fp.Scratchpad = fmt.Sprintf("%03d", ee.Heading)
+	} else if ee.FreeText != "" {
+		fp.Scratchpad = QSFreeTextIndicator + ee.FreeText
+	}
+	if ee.Speed != 0 {
+		fp.SecondaryScratchpad = fmt.Sprintf("S%03d", ee.Speed)
+	} else if ee.Mach != 0 {
+		fp.SecondaryScratchpad = fmt.Sprintf("M%02d", ee.Mach)
+	}
+}
+
 type NASFlightPlanType int
 
 // Flight plan types (STARS)
