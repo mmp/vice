@@ -184,8 +184,8 @@ var keywordChecks = []struct {
 	ok   func(cmds []string) bool
 }{
 	{"heading", catIn("heading", "depart_heading")},
-	{"descend", anyOf(catIn("altitude", "crossing"), literal("DVS"))},
-	{"climb", anyOf(catIn("altitude", "crossing"), literal("CVS"))},
+	{"descend", catIn("altitude", "crossing")},
+	{"climb", catIn("altitude", "crossing")},
 	{"speed", catIn("speed", "crossing")},
 	{"knots", catIn("speed", "crossing")},
 	{"maintain", anyOf(catIn("altitude", "speed", "crossing", "heading"), literal("VISSEP"))},

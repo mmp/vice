@@ -619,12 +619,12 @@ func (ac *Aircraft) CancelApproachClearance() speech.CommandIntent {
 	return ac.Nav.CancelApproachClearance()
 }
 
-func (ac *Aircraft) ClimbViaSID(simTime Time) speech.CommandIntent {
-	return ac.Nav.ClimbViaSID(simTime.NavTime())
+func (ac *Aircraft) ClimbViaSID(exceptAlt *float32, simTime Time) speech.CommandIntent {
+	return ac.Nav.ClimbViaSID(exceptAlt, simTime.NavTime())
 }
 
-func (ac *Aircraft) DescendViaSTAR(simTime Time) speech.CommandIntent {
-	return ac.Nav.DescendViaSTAR(simTime.NavTime())
+func (ac *Aircraft) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandIntent {
+	return ac.Nav.DescendViaSTAR(exceptAlt, simTime.NavTime())
 }
 
 func (ac *Aircraft) ResumeOwnNavigation() speech.CommandIntent {

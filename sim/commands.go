@@ -384,23 +384,27 @@ func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string, dela
 		})
 }
 
-func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
+// ClimbViaSID is "climb via SID", with "except maintain exceptAlt" if it is
+// non-nil.
+func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.ClimbViaSID(s.State.SimTime)
+			return ac.ClimbViaSID(exceptAlt, s.State.SimTime)
 		})
 }
 
-func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
+// DescendViaSTAR is "descend via STAR", with "except maintain exceptAlt" if
+// it is non-nil.
+func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32) (speech.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.DescendViaSTAR(s.State.SimTime)
+			return ac.DescendViaSTAR(exceptAlt, s.State.SimTime)
 		})
 }
 

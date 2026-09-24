@@ -5,6 +5,7 @@
 package scenario
 
 import (
+	"fmt"
 	"maps"
 	"regexp"
 	"slices"
@@ -536,6 +537,39 @@ func checkArrivalSpawnAltitude(arr av.Arrival, e *util.ErrorLogger) {
 
 			// Only check the first altitude restriction that requires descent.
 			break
+		}
+	}
+}
+
+// checkERAMEntriesUnused reports "eram" data block entries in a TRACON
+// scenario group, where the flight plan fields they set are never displayed.
+func checkERAMEntriesUnused(sg *Group, e *util.ErrorLogger) {
+	if sg.ARTCC != "" {
+		return
+	}
+
+	const unused = `"eram" data block entries are only used at ARTCC facilities`
+
+	for _, name := range util.SortedMapKeys(sg.InboundFlows) {
+		flow := sg.InboundFlows[name]
+		if slices.ContainsFunc(flow.Arrivals, func(ar av.Arrival) bool { return ar.ERAM != nil }) ||
+			slices.ContainsFunc(flow.Overflights, func(of av.Overflight) bool { return of.ERAM != nil }) {
+			e.Push("Inbound flow " + name)
+			e.ErrorString(unused)
+			e.Pop()
+		}
+	}
+
+	for _, icao := range util.SortedMapKeys(sg.Airports) {
+		for _, rwy := range util.SortedMapKeys(sg.Airports[icao].DepartureRoutes) {
+			exits := sg.Airports[icao].DepartureRoutes[rwy]
+			for _, exit := range util.SortedMapKeys(exits) {
+				if slices.ContainsFunc(exits[exit], func(er *av.ExitRoute) bool { return er.ERAM != nil }) {
+					e.Push(fmt.Sprintf("Airport %s runway %s exit %s", icao, rwy, exit))
+					e.ErrorString(unused)
+					e.Pop()
+				}
+			}
 		}
 	}
 }

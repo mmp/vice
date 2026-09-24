@@ -313,22 +313,23 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 	}
 
 	if target, ok := nav.findAltitudeTarget(); ok {
-		if nav.FlightState.Altitude < target.altitude {
-			// Climbing: start immediately
-			alt := target.altitude
-			if nav.Altitude.Cleared != nil {
-				alt = min(alt, *nav.Altitude.Cleared)
-			}
+		alt := nav.limitAltitude(target.altitude)
+		if nav.FlightState.Altitude < target.altitude ||
+			(alt > target.altitude && alt >= nav.FlightState.Altitude) {
+			// Climbing, which starts immediately, or held at or climbing
+			// back to a floor above the restriction.
 			return alt, rate, false
 		} else {
-			// Descending: compute geometric descent rate
+			// Descending: compute geometric descent rate. The profile is
+			// flown to the restriction; a cleared altitude above it only
+			// stops the descent early.
 			dist, ok := nav.routeDistanceToFix(target.fix)
 			eta := dist / nav.FlightState.GS * 3600
 			if ok && eta > 0 {
 				geometricRate := (nav.FlightState.Altitude - target.altitude) / eta * 60
 
 				if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
-					return target.altitude, geometricRate, true // exact glideslope
+					return alt, geometricRate, true // exact glideslope
 				}
 
 				descent := nav.Perf.Rate.Descent
@@ -346,7 +347,7 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 				// descent" / "no not yet" and end up descending too late to meet the restriction.
 				if geometricRate > descent/2 || nav.FlightState.AltitudeRate < -50 {
 					// Start continuous descent with safety margin
-					return target.altitude, min(geometricRate*safetyFactor, descent), true
+					return alt, min(geometricRate*safetyFactor, descent), true
 				}
 			}
 			// Not time yet
@@ -354,17 +355,18 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 				// The restriction carried forward from the fix behind us may
 				// be lower than what the route ahead requires (SID
 				// restrictions step up); it doesn't supersede the target.
-				return max(ar.TargetAltitude(nav.FlightState.Altitude), target.altitude), MaximumRate, false
+				held := max(ar.TargetAltitude(nav.FlightState.Altitude), target.altitude)
+				return nav.limitAltitude(held), MaximumRate, false
 			}
-			if nav.Altitude.Cleared != nil && *nav.Altitude.Cleared < nav.FlightState.Altitude {
-				return *nav.Altitude.Cleared, MaximumRate, false
+			if c := nav.Altitude.Cleared; c != nil && c.Altitude < nav.FlightState.Altitude {
+				return c.Altitude, MaximumRate, false
 			}
 			return nav.FlightState.Altitude, 0, false
 		}
 	}
 
-	if nav.Altitude.Cleared != nil {
-		return min(*nav.Altitude.Cleared, nav.FinalAltitude), rate, false
+	if c := nav.Altitude.Cleared; c != nil {
+		return min(c.Altitude, nav.FinalAltitude), rate, false
 	}
 
 	if ar := nav.Altitude.Restriction; ar != nil {
@@ -373,6 +375,24 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 
 	// Baseline: stay where we are
 	return nav.FlightState.Altitude, 0, false
+}
+
+// limitAltitude bounds a restriction's target altitude by the cleared
+// altitude: the aircraft never climbs above it, and if it is a floor, never
+// descends below it. This is how "except maintain" stops a climb via or
+// descend via short of the procedure's restrictions.
+func (nav *Nav) limitAltitude(alt float32) float32 {
+	c := nav.Altitude.Cleared
+	switch {
+	case c == nil:
+		return alt
+	case alt > nav.FlightState.Altitude:
+		return min(alt, c.Altitude)
+	case c.IsFloor:
+		return max(alt, c.Altitude)
+	default:
+		return alt
+	}
 }
 
 // routeDistanceToFix computes the distance in nm along the waypoint route
@@ -618,14 +638,14 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 // clearAltitudeForApproach resets altitude state when an approach-cleared
 // aircraft transitions to following approach restrictions. If the controller
 // assigned a descent altitude that the aircraft hasn't yet reached, it is
-// preserved as a Cleared altitude so the descent continues.
+// preserved as a Cleared altitude so the descent continues; the approach's
+// restrictions may take the aircraft below it.
 func (nav *Nav) clearAltitudeForApproach() {
-	var cleared *float32
+	var cleared *ClearedAltitude
 	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned < nav.FlightState.Altitude {
-		alt := *nav.Altitude.Assigned
-		cleared = &alt
-	} else if nav.Altitude.Cleared != nil && *nav.Altitude.Cleared < nav.FlightState.Altitude {
-		cleared = nav.Altitude.Cleared
+		cleared = &ClearedAltitude{Altitude: *nav.Altitude.Assigned}
+	} else if c := nav.Altitude.Cleared; c != nil && c.Altitude < nav.FlightState.Altitude {
+		cleared = &ClearedAltitude{Altitude: c.Altitude}
 	}
 	nav.Altitude = Altitude{Cleared: cleared}
 }

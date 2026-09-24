@@ -15747,7 +15747,7 @@
     "GLAVN2_EFINALD": {
       "arrivals": [
         {
-          "waypoints": "STHRN/ho YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
+          "waypoints": "STHRN/ho/dvs YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
           "star": "GLAVN2",
           "initial_controller": "1D",
           "initial_altitude": 10000,
@@ -15827,7 +15827,7 @@
     "GLAVN2_EFINALT": {
       "arrivals": [
         {
-          "waypoints": "STHRN/ho YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
+          "waypoints": "STHRN/ho/dvs YABBA/a9000 NAVVY/a8000 ANDIY/a7000 DFINS/a6000/h95",
           "star": "GLAVN2",
           "initial_controller": "1D",
           "initial_altitude": 10000,

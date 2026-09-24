@@ -879,7 +879,7 @@
     "DUCXS5.KELCE": {
       "arrivals": [
         {
-          "waypoints": "JAXSN N037.01.00.301,W078.13.40.816/ho KELCE/a11000/s250 THINA DUCXS/a4000/flyover/h041",
+          "waypoints": "JAXSN N037.01.00.301,W078.13.40.816/ho/dvs KELCE/a11000/s250 THINA DUCXS/a4000/flyover/h041",
           "star": "DUCXS5",
           "initial_controller": "W21",
           "initial_altitude": 27000,
@@ -930,7 +930,7 @@
     "DUCXS5.NEAVL": {
       "arrivals": [
         {
-          "waypoints": "N036.23.53.317,W078.17.45.838 N036.44.46.280,W077.58.31.285/ho NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
+          "waypoints": "N036.23.53.317,W078.17.45.838 N036.44.46.280,W077.58.31.285/ho/dvs NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
           "star": "DUCXS5",
           "initial_controller": "W21",
           "initial_altitude": 27000,
@@ -959,7 +959,7 @@
           }
         },
         {
-          "waypoints": "N036.27.40.693,W077.46.28.192 N036.42.57.186,W077.45.56.744/ho NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
+          "waypoints": "N036.27.40.693,W077.46.28.192 N036.42.57.186,W077.45.56.744/ho/dvs NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
           "star": "DUCXS5",
           "initial_controller": "W21",
           "initial_altitude": 27000,
@@ -1009,7 +1009,7 @@
           }
         },
         {
-          "waypoints": "RUKRR N036.45.48.944,W077.37.22.309/ho NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
+          "waypoints": "RUKRR N036.45.48.944,W077.37.22.309/ho/dvs NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
           "star": "DUCXS5",
           "initial_controller": "W21",
           "initial_altitude": 21000,

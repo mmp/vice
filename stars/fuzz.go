@@ -1157,7 +1157,9 @@ func generateOneAircraftCommand(r *rand.Rand, ctx *GeneratorContext) string {
 
 		// Climb/descend via
 		{2, func(r *rand.Rand, ctx *GeneratorContext) string { return "CVS" }},
+		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return fmt.Sprintf("CVS/A%d", r.IntRange(30, 230)) }},
 		{3, func(r *rand.Rand, ctx *GeneratorContext) string { return "DVS" }},
+		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return fmt.Sprintf("DVS/A%d", r.IntRange(30, 200)) }},
 
 		// Expedite
 		{2, func(r *rand.Rand, ctx *GeneratorContext) string { return "EC" }},

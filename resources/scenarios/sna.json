@@ -6205,7 +6205,7 @@
           }
         },
         {
-          "waypoints": "TANDY/a13000-14000 OHSEA STYFF/a9000- N033.27.03.284,W118.20.01.629/ho4T JJAWS/a6000 PUZZL/a5000/s220 MINOE/a3000/s210",
+          "waypoints": "TANDY/a13000-14000 OHSEA STYFF/a9000- N033.27.03.284,W118.20.01.629/ho4T/dvs JJAWS/a6000 PUZZL/a5000/s220 MINOE/a3000/s210",
           "star": "OHSEA3",
           "is_rnav": true,
           "initial_controller": "6K",
@@ -6277,7 +6277,7 @@
           }
         },
         {
-          "waypoints": "SCANN BAUBB/a11000-13000 N033.26.16.153,W118.21.27.350/ho4T JJAWS/a6000 PUZZL/a5000/s220 MINOE/a3000/s210",
+          "waypoints": "SCANN BAUBB/a11000-13000 N033.26.16.153,W118.21.27.350/ho4T/dvs JJAWS/a6000 PUZZL/a5000/s220 MINOE/a3000/s210",
           "star": "RUKKI1",
           "is_rnav": true,
           "initial_controller": "6K",

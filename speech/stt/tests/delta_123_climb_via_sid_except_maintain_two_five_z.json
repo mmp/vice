@@ -1,0 +1,15 @@
+{
+  "msg": "STT command",
+  "transcript": "Delta 123 climb via SID except maintain two five zero knots or greater",
+  "callsign": "DAL123",
+  "command": "CVS S250+",
+  "stt_aircraft": {
+    "Delta 123": {
+      "Callsign": "DAL123",
+      "AircraftType": "A321",
+      "Altitude": 3000,
+      "State": "departure",
+      "SID": "SKORR5"
+    }
+  }
+}

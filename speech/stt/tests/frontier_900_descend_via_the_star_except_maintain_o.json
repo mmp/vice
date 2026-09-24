@@ -1,0 +1,15 @@
+{
+  "msg": "STT command",
+  "transcript": "Frontier 900 descend via the star except maintain one two thousand and two five zero knots or greater",
+  "callsign": "FFT900",
+  "command": "DVS/A120 S250+",
+  "stt_aircraft": {
+    "Frontier 900": {
+      "Callsign": "FFT900",
+      "AircraftType": "A320",
+      "Altitude": 25000,
+      "State": "arrival",
+      "STAR": "EAGUL5"
+    }
+  }
+}

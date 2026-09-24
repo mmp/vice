@@ -519,24 +519,25 @@ func (wa WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[ControlPos
 	wa.checkProcedureActions(e)
 }
 
-// checkProcedureActions reports /cvs and /dvs actions the aircraft won't be
-// able to act on. The fix is behind the aircraft by the time its actions
-// run, so the procedure to climb or descend via has to continue with the
-// next fix. It must be called after the waypoints' OnSID and OnSTAR flags
-// have been set.
+// checkProcedureActions reports /cvs, /dvs, /cv, and /dv actions the
+// aircraft won't be able to act on. The fix is behind the aircraft by the
+// time its actions run, so the procedure to climb or descend via must have
+// a fix still ahead. It must be called after the waypoints' OnSID and
+// OnSTAR flags have been set.
 func (wa WaypointArray) checkProcedureActions(e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	for i, wp := range wa {
-		nextOn := func(on func(Waypoint) bool) bool { return i+1 < len(wa) && on(wa[i+1]) }
+		sidAhead := slices.ContainsFunc(wa[i+1:], Waypoint.OnSID)
+		starAhead := slices.ContainsFunc(wa[i+1:], Waypoint.OnSTAR)
 
 		e.Push(wp.Fix)
 		for _, group := range wp.ActionGroups() {
-			if group.Actions.ClimbViaSID && !nextOn(Waypoint.OnSID) {
-				e.ErrorString("/cvs: the next fix is not on a SID, so there is no SID to climb via")
+			if group.Actions.ClimbViaSID && !sidAhead {
+				e.ErrorString("climb via SID: no fix ahead is on a SID")
 			}
-			if group.Actions.DescendViaSTAR && !nextOn(Waypoint.OnSTAR) {
-				e.ErrorString("/dvs: the next fix is not on a STAR, so there is no STAR to descend via")
+			if group.Actions.DescendViaSTAR && !starAhead {
+				e.ErrorString("descend via STAR: no fix ahead is on a STAR")
 			}
 		}
 		e.Pop()

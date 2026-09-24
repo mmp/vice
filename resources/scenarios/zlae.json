@@ -5347,7 +5347,7 @@
     "LEGOZ4.BURGL/REBRG": {
       "arrivals": [
         {
-          "waypoints": "BLOXX/a24000+/ho14 BLDIT N033.50.23.670,W118.41.03.052/po21 TANDY/a17000/hoT6K NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "BLOXX/a24000+/ho14/dvs BLDIT N033.50.23.670,W118.41.03.052/po21 TANDY/a17000/hoT6K NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",

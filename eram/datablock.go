@@ -519,7 +519,7 @@ func hsfDataExists(fp *sim.NASFlightPlan) bool {
 }
 
 func isQSFreeTextScratchpad(s string) bool {
-	return strings.HasPrefix(s, "`") || strings.HasPrefix(s, circleClear)
+	return strings.HasPrefix(s, sim.QSFreeTextIndicator) || strings.HasPrefix(s, circleClear)
 }
 
 func stripQSFreeTextIndicator(s string) string {

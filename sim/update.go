@@ -410,14 +410,30 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 
 	if actions.ClimbAltitude != 0 {
 		ac.Nav.AssignAltitudeNow(float32(actions.ClimbAltitude), false)
+		s.recordVirtualAltitudeEntry(sfp, actions.ClimbAltitude, true)
 	} else if actions.DescendAltitude != 0 {
 		ac.Nav.AssignAltitudeNow(float32(actions.DescendAltitude), false)
+		s.recordVirtualAltitudeEntry(sfp, actions.DescendAltitude, false)
 	}
-	if actions.ClimbViaSID && !ac.Nav.ClimbViaSIDAtPassedFix() {
-		s.lg.Warnf("%s: /cvs at %s: the route ahead is not on a SID", ac.ADSBCallsign, fix)
+	var exceptAlt *float32
+	if actions.ExceptAltitude != 0 {
+		alt := float32(actions.ExceptAltitude)
+		exceptAlt = &alt
 	}
-	if actions.DescendViaSTAR && !ac.Nav.DescendViaSTARAtPassedFix() {
-		s.lg.Warnf("%s: /dvs at %s: the route ahead is not on a STAR", ac.ADSBCallsign, fix)
+	if actions.ClimbViaSID && ac.Nav.ClimbViaSIDAtPassedFix(exceptAlt) {
+		// Without an exception, the aircraft climbs to its filed altitude.
+		alt := util.Select(actions.ExceptAltitude != 0, actions.ExceptAltitude, ac.FlightPlan.Altitude)
+		s.recordVirtualAltitudeEntry(sfp, alt, true)
+	}
+	if actions.DescendViaSTAR && ac.Nav.DescendViaSTARAtPassedFix(exceptAlt) {
+		if actions.ExceptAltitude != 0 {
+			s.recordVirtualAltitudeEntry(sfp, actions.ExceptAltitude, false)
+		} else if alt, ok := findLowestWaypointAltitude(ac.Nav.AssignedWaypoints(),
+			ac.Nav.FlightState.Altitude); ok {
+			// Without an exception, the aircraft descends to the bottom of
+			// the procedure ahead.
+			s.recordVirtualAltitudeEntry(sfp, alt, false)
+		}
 	}
 
 	if actions.ClearApproach {
@@ -490,6 +506,26 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 	}
 
 	return false
+}
+
+// recordVirtualAltitudeEntry updates the flight plan's ERAM altitude fields
+// to reflect an altitude a virtual controller has just assigned, as if they
+// had made the corresponding keyboard entry: a climb that stops short of the
+// hard altitude is an interim altitude and anything else amends the hard
+// altitude. STARS leaves both to the controller, so this is only done at
+// ERAM facilities.
+func (s *Sim) recordVirtualAltitudeEntry(sfp *NASFlightPlan, alt int, climb bool) {
+	if sfp == nil || !db.DB.IsARTCC(s.State.Facility) {
+		return
+	}
+
+	if climb && sfp.AssignedAltitude != 0 && alt < sfp.AssignedAltitude {
+		sfp.InterimAlt, sfp.InterimType = alt, InterimNormal
+		return
+	}
+
+	sfp.AssignedAltitude = alt
+	sfp.InterimAlt, sfp.InterimType = 0, InterimNormal
 }
 
 // Step advances the simulation by the given elapsed time duration.

@@ -64,6 +64,9 @@ var categoryRules = []categoryRule{
 	{match: func(cmd string) bool {
 		return len(cmd) > 1 && cmd[0] == 'T' && cmd[1] == 'S'
 	}, category: "speed"},
+	// Climb via SID / descend via STAR, with or without an except-maintain
+	// altitude (CVS, DVS/A120) → altitude
+	{match: isViaProcedure, category: "altitude"},
 	// T-prefix: then-heading (TH) → heading
 	{match: func(cmd string) bool {
 		return len(cmd) > 1 && cmd[0] == 'T' && cmd[1] == 'H'
@@ -101,6 +104,18 @@ var categoryRules = []categoryRule{
 	{match: func(cmd string) bool { return cmd[0] == 'H' }, category: "heading"},
 	// E → expect_approach
 	{match: func(cmd string) bool { return cmd[0] == 'E' }, category: "expect_approach"},
+}
+
+// isViaProcedure reports whether cmd is climb via SID or descend via STAR,
+// with or without an except-maintain altitude.
+func isViaProcedure(cmd string) bool {
+	return isViaCommand(cmd, "CVS") || isViaCommand(cmd, "DVS")
+}
+
+// isViaCommand reports whether cmd is the given via command, plain or with
+// an argument; a direct-to command for a fix that starts with "VS" is not.
+func isViaCommand(cmd, via string) bool {
+	return cmd == via || strings.HasPrefix(cmd, via+"/")
 }
 
 // CommandCategory returns the category of an output command ("heading",
@@ -166,7 +181,7 @@ func extractSID(tokens []Token, sid string) int {
 	logLocalStt("  extractSID: looking for SID=%q telephony=%q", sid, sidTelephony)
 
 	// Build candidate phrases (1-4 words for SID names)
-	for length := min(4, len(tokens)); length >= 1; length-- {
+	for length := procedureNameLimit(tokens); length >= 1; length-- {
 		var parts []string
 		for i := range length {
 			// Expand numeric tokens to spoken form
@@ -210,10 +225,11 @@ func extractSTAR(tokens []Token, star string) int {
 		return 0
 	}
 
-	// Check for generic "star" word first (handles "descend via the star")
-	// Also handle common STT errors: "stars" (plural), "start" (mishearing)
+	// Check for the generic words "star" and "arrival" first (handles
+	// "descend via the star"/"descend via the arrival"). Also handle common
+	// STT errors: "stars" (plural), "start" (mishearing)
 	text := strings.ToLower(tokens[0].Text)
-	if text == "star" || text == "stars" || text == "start" {
+	if text == "star" || text == "stars" || text == "start" || text == "arrival" {
 		logLocalStt("  extractSTAR: matched generic %q as 'star'", text)
 		return 1
 	}
@@ -228,19 +244,8 @@ func extractSTAR(tokens []Token, star string) int {
 	starTelephony := speech.GetSTARTelephony(star)
 	logLocalStt("  extractSTAR: looking for STAR=%q telephony=%q", star, starTelephony)
 
-	// Words that should not be consumed as part of a STAR name - these are
-	// command keywords that likely follow the STAR reference
-	excludeTrailing := map[string]bool{
-		"arrival": true, "approach": true, "departure": true,
-	}
-
 	// Build candidate phrases (1-4 words for STAR names)
-	for length := min(4, len(tokens)); length >= 1; length-- {
-		// Don't consume trailing command keywords as part of the STAR name
-		lastToken := strings.ToLower(tokens[length-1].Text)
-		if length > 1 && excludeTrailing[lastToken] {
-			continue
-		}
+	for length := procedureNameLimit(tokens); length >= 1; length-- {
 		var parts []string
 		for i := range length {
 			// Expand numeric tokens to spoken form
@@ -274,6 +279,20 @@ func extractSTAR(tokens []Token, star string) int {
 
 	logLocalStt("  extractSTAR: no match found")
 	return 0
+}
+
+// procedureNameLimit returns how many of tokens may make up a spoken SID or
+// STAR name: up to four, stopping before a word that follows the name
+// rather than being part of it, so that a fuzzy match can't swallow it.
+func procedureNameLimit(tokens []Token) int {
+	n := min(4, len(tokens))
+	for i := range n {
+		switch strings.ToLower(tokens[i].Text) {
+		case "arrival", "approach", "departure", "except", "then":
+			return i
+		}
+	}
+	return n
 }
 
 // spokenDigits converts a number to its spoken digit form.

@@ -133,6 +133,102 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			expected: "FFT900 DVS",
 		},
 		{
+			name:       "climb via sid except maintain altitude",
+			transcript: "Delta 123 climb via the SID except maintain one zero thousand",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", Altitude: 3000, State: "departure", SID: "SKORR5"},
+			},
+			expected: "DAL123 CVS/A100",
+		},
+		{
+			name:       "climb via named sid departure except maintain flight level",
+			transcript: "Delta 123 climb via the Skorr five departure except maintain flight level two three zero",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", Altitude: 3000, State: "departure", SID: "SKORR5"},
+			},
+			expected: "DAL123 CVS/A230",
+		},
+		{
+			name:       "climb via sid except maintain speed",
+			transcript: "Delta 123 climb via SID except maintain two five zero knots",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", Altitude: 3000, State: "departure", SID: "SKORR5"},
+			},
+			expected: "DAL123 CVS S250",
+		},
+		{
+			name:       "climb via sid except maintain mach",
+			transcript: "Delta 123 climb via the SID except maintain mach point seven eight",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", Altitude: 20000, State: "departure", SID: "SKORR5"},
+			},
+			expected: "DAL123 CVS M78",
+		},
+		{
+			name:       "descend via star except maintain altitude and speed",
+			transcript: "Frontier 900 descend via the Eagul five arrival except maintain one two thousand and two five zero knots",
+			aircraft: map[string]Aircraft{
+				"Frontier 900": {Callsign: "FFT900", Altitude: 25000, State: "arrival", STAR: "EAGUL5"},
+			},
+			expected: "FFT900 DVS/A120 S250",
+		},
+		{
+			name:       "descend via star except maintain speed and altitude",
+			transcript: "Frontier 900 descend via the star except maintain two five zero knots and one two thousand",
+			aircraft: map[string]Aircraft{
+				"Frontier 900": {Callsign: "FFT900", Altitude: 25000, State: "arrival", STAR: "EAGUL5"},
+			},
+			expected: "FFT900 DVS/A120 S250",
+		},
+		{
+			name:       "descend via star except maintain speed or greater",
+			transcript: "Frontier 900 descend via the star except maintain two eight zero knots or greater",
+			aircraft: map[string]Aircraft{
+				"Frontier 900": {Callsign: "FFT900", Altitude: 25000, State: "arrival", STAR: "EAGUL5"},
+			},
+			expected: "FFT900 DVS S280+",
+		},
+		{
+			name:       "descend via star except maintain altitude and speed or greater",
+			transcript: "Frontier 900 descend via the star except maintain one two thousand and two five zero knots or greater",
+			aircraft: map[string]Aircraft{
+				"Frontier 900": {Callsign: "FFT900", Altitude: 25000, State: "arrival", STAR: "EAGUL5"},
+			},
+			expected: "FFT900 DVS/A120 S250+",
+		},
+		{
+			name:       "climb via sid except maintain speed or less and altitude",
+			transcript: "Delta 123 climb via the SID except maintain two five zero knots or less and one zero thousand",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", Altitude: 3000, State: "departure", SID: "SKORR5"},
+			},
+			expected: "DAL123 CVS/A100 S250-",
+		},
+		{
+			name:       "climb via sid except maintain altitude and do not exceed speed",
+			transcript: "Delta 123 climb via SID except maintain one zero thousand and do not exceed two five zero knots",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", Altitude: 3000, State: "departure", SID: "SKORR5"},
+			},
+			expected: "DAL123 CVS/A100 S250-",
+		},
+		{
+			name:       "descend via star except maintain flight level and mach",
+			transcript: "Frontier 900 descend via the star except maintain flight level two four zero and mach point seven eight",
+			aircraft: map[string]Aircraft{
+				"Frontier 900": {Callsign: "FFT900", Altitude: 33000, State: "arrival", STAR: "EAGUL5"},
+			},
+			expected: "FFT900 DVS/A240 M78",
+		},
+		{
+			name:       "descend via arrival except do not exceed speed",
+			transcript: "Frontier 900 descend via the arrival except do not exceed two five zero knots",
+			aircraft: map[string]Aircraft{
+				"Frontier 900": {Callsign: "FFT900", Altitude: 25000, State: "arrival", STAR: "EAGUL5"},
+			},
+			expected: "FFT900 DVS S250-",
+		},
+		{
 			name:       "alphanumeric callsign with heavy suffix and single digit altitude",
 			transcript: "Lufthansa 4WJ heavy descend and maintain niner",
 			aircraft: map[string]Aircraft{
@@ -3832,6 +3928,38 @@ func TestValidateCommands(t *testing.T) {
 			expectedLen:  1,
 			minConf:      0.9,
 			expectErrors: false,
+		},
+		{
+			name:         "CVS except altitude above current valid",
+			commands:     []string{"CVS/A100"},
+			ac:           Aircraft{State: "departure", Altitude: 3000},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "CVS except altitude below current rejected",
+			commands:     []string{"CVS/A020"},
+			ac:           Aircraft{State: "departure", Altitude: 5000},
+			expectedLen:  1, // becomes SAYAGAIN/ALTITUDE
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "DVS except altitude below current valid",
+			commands:     []string{"DVS/A120"},
+			ac:           Aircraft{State: "arrival", Altitude: 25000},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "DVS except altitude above current rejected",
+			commands:     []string{"DVS/A150"},
+			ac:           Aircraft{State: "arrival", Altitude: 12000},
+			expectedLen:  1, // becomes SAYAGAIN/ALTITUDE
+			minConf:      0.0,
+			expectErrors: true,
 		},
 		{
 			name:         "expect approach valid for local departure with approaches",

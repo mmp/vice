@@ -224,7 +224,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"climb via [the] {sid}",
+		"climb via [the] {sid} [departure]",
 		func(sid string) string { return "CVS" },
 		WithName("climb_via_sid"),
 		WithPriority(15),
@@ -238,7 +238,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"descend via [the] {star}",
+		"descend via [the] {star} [arrival]",
 		func(star string) string { return "DVS" },
 		WithName("descend_via_star"),
 		WithPriority(15),
@@ -267,6 +267,54 @@ func registerAllCommands() {
 		WithName("descend_via_star_implicit"),
 		WithPriority(14),
 	)
+
+	// "Except maintain" qualifiers on climb via SID and descend via STAR
+	// (7110.65 4-5-7 and 5-7-2). An altitude is the via command's argument;
+	// a speed is the same instruction as a separate speed assignment, so it
+	// is emitted as one. These outrank the plain via templates so that the
+	// altitude isn't taken as a separate "maintain", which would cancel the
+	// procedure's restrictions.
+	for _, via := range []struct{ template, name, cmd string }{
+		{"climb via [the] {sid} [departure]", "climb_via_sid", "CVS"},
+		{"descend via [the] {star} [arrival]", "descend_via_star", "DVS"},
+	} {
+		cmd := via.cmd
+		register := func(exception, name string, handler any) {
+			registerSTTCommand(via.template+" except "+exception, handler,
+				WithName(via.name+"_except_"+name), WithPriority(17))
+		}
+
+		// {standalone_altitude} takes exactly the altitude token, so a speed
+		// that follows it is left for the speed slot.
+		register("maintain {standalone_altitude}", "altitude",
+			func(proc string, alt int) string { return fmt.Sprintf("%s/A%d", cmd, alt) })
+		register("[maintain] mach [point] {mach}", "mach",
+			func(proc string, mach int) string { return fmt.Sprintf("%s M%d", cmd, mach) })
+		register("maintain {standalone_altitude} [and] [maintain] mach [point] {mach}", "altitude_mach",
+			func(proc string, alt, mach int) string { return fmt.Sprintf("%s/A%d M%d", cmd, alt, mach) })
+		register("[maintain] mach [point] {mach} [and] [maintain] {standalone_altitude}", "mach_altitude",
+			func(proc string, mach, alt int) string { return fmt.Sprintf("%s/A%d M%d", cmd, alt, mach) })
+
+		// Each form of a speed on its own, after an altitude, and before one.
+		// The plain form goes last: its speed slot scans over "do not
+		// exceed" as noise and then ties with the form that explains it,
+		// and a tie goes to the earlier registration.
+		for _, spd := range []struct{ alone, afterAltitude, name, suffix string }{
+			{"do not exceed {speed} [knots]", "[and] do not exceed {speed} [knots]", "do_not_exceed", "-"},
+			{"maintain {speed} [knots] or greater|better", "[and] [maintain] {speed} [knots] or greater|better",
+				"speed_or_greater", "+"},
+			{"maintain {speed} [knots] or less", "[and] [maintain] {speed} [knots] or less", "speed_or_less", "-"},
+			{"maintain {speed} [knots]", "[and] [maintain] {speed} [knots]", "speed", ""},
+		} {
+			suffix := spd.suffix
+			register(spd.alone, spd.name,
+				func(proc string, s int) string { return fmt.Sprintf("%s S%d%s", cmd, s, suffix) })
+			register("maintain {standalone_altitude} "+spd.afterAltitude, "altitude_"+spd.name,
+				func(proc string, alt, s int) string { return fmt.Sprintf("%s/A%d S%d%s", cmd, alt, s, suffix) })
+			register(spd.alone+" [and] [maintain] {standalone_altitude}", spd.name+"_altitude",
+				func(proc string, s, alt int) string { return fmt.Sprintf("%s/A%d S%d%s", cmd, alt, s, suffix) })
+		}
+	}
 
 	registerSTTCommand(
 		"say altitude",

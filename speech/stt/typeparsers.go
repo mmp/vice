@@ -151,13 +151,16 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 		return nil, 0, "SPEED"
 	}
 
-	hitCmdBoundary := false
+	hitBoundary := false
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		// Stop at command boundary keywords - these indicate a new command context.
 		// For example, in "cross IZEKO at 30 cleared ILS 22 left", when looking for
 		// a speed after "at", we should stop at "cleared" rather than finding "22".
-		if tokens[i].Type == TokenWord && IsCommandKeyword(tokens[i].Text) {
-			hitCmdBoundary = true
+		// An altitude token is likewise another value rather than noise to
+		// scan past: the speed in "except maintain one two thousand and two
+		// five zero knots" belongs to a template that also takes the altitude.
+		if (tokens[i].Type == TokenWord && IsCommandKeyword(tokens[i].Text)) || tokens[i].Type == TokenAltitude {
+			hitBoundary = true
 			break
 		}
 
@@ -166,11 +169,11 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 		}
 	}
 
-	// If the scan hit a command-keyword boundary without finding any number,
-	// silently fail rather than emit SAYAGAIN/SPEED. This avoids spurious
-	// clarification requests for "maintain heading" / "maintain best forward
-	// speed" patterns where "maintain" is followed by a non-speed command.
-	if hitCmdBoundary {
+	// If the scan hit a boundary without finding any number, silently fail
+	// rather than emit SAYAGAIN/SPEED. This avoids spurious clarification
+	// requests for "maintain heading" / "maintain best forward speed"
+	// patterns where "maintain" is followed by a non-speed command.
+	if hitBoundary {
 		return nil, 0, ""
 	}
 	return nil, 0, "SPEED"

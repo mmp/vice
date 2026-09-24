@@ -118,10 +118,11 @@ type WaypointActions struct {
 	Delete                    bool
 	Land                      bool
 
-	ClimbAltitude   int // feet; 0 = unset
-	DescendAltitude int // feet; 0 = unset
+	ClimbAltitude   int
+	DescendAltitude int
 	ClimbViaSID     bool
 	DescendViaSTAR  bool
+	ExceptAltitude  int // "except maintain" in CVS/DVS
 }
 
 // HasSimActions reports whether the actions include any the sim carries
@@ -131,12 +132,11 @@ func (wa WaypointActions) HasSimActions() bool {
 		wa.ClearApproach || wa.InterceptApproach || wa.GoAroundContactController != "" ||
 		wa.PrimaryScratchpad != "" || wa.ClearPrimaryScratchpad ||
 		wa.SecondaryScratchpad != "" || wa.ClearSecondaryScratchpad || wa.TransferComms ||
-		wa.Delete || wa.Land || wa.ClimbAltitude != 0 || wa.DescendAltitude != 0 ||
-		wa.ClimbViaSID || wa.DescendViaSTAR
+		wa.Delete || wa.Land || wa.hasAltitudeAction()
 }
 
-// hasAltitudeAction reports whether the actions include a /c, /d, /cvs, or
-// /dvs; the four supersede one another.
+// hasAltitudeAction reports whether the actions include a /c, /d, /cvs,
+// /dvs, /cv, or /dv; they supersede one another.
 func (wa WaypointActions) hasAltitudeAction() bool {
 	return wa.ClimbAltitude != 0 || wa.DescendAltitude != 0 || wa.ClimbViaSID || wa.DescendViaSTAR
 }
@@ -183,10 +183,18 @@ func (wa WaypointActions) Encoded() string {
 		s += fmt.Sprintf("/d%d", da)
 	}
 	if wa.ClimbViaSID {
-		s += "/cvs"
+		if wa.ExceptAltitude != 0 {
+			s += fmt.Sprintf("/cv%d", wa.ExceptAltitude)
+		} else {
+			s += "/cvs"
+		}
 	}
 	if wa.DescendViaSTAR {
-		s += "/dvs"
+		if wa.ExceptAltitude != 0 {
+			s += fmt.Sprintf("/dv%d", wa.ExceptAltitude)
+		} else {
+			s += "/dvs"
+		}
 	}
 	if wa.Delete {
 		s += "/delete"

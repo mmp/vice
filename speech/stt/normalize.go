@@ -249,7 +249,7 @@ var commandVocabulary = map[string]bool{
 	// Navigation
 	"direct": true, "directed": true, "proceed": true, "cross": true,
 	"across": true, "depart": true, "hold": true, "land": true,
-	"short": true, "via": true, "sid": true,
+	"short": true, "via": true, "sid": true, "except": true,
 	// Holds
 	"radial": true, "bearing": true, "inbound": true, "legs": true,
 	"minute": true, "turns": true, "published": true,

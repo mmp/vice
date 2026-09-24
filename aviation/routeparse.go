@@ -229,10 +229,19 @@ func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
 		return WaypointActions{ClimbViaSID: true}, true, nil
 	case f == "dvs":
 		return WaypointActions{DescendViaSTAR: true}, true, nil
+	case len(f) > 2 && (f[:2] == "cv" || f[:2] == "dv") && allDigits(f[2:]):
+		alt, err := parseActionAltitude(f, f[2:])
+		if err != nil {
+			return WaypointActions{}, true, err
+		}
+		if f[0] == 'c' {
+			return WaypointActions{ClimbViaSID: true, ExceptAltitude: alt}, true, nil
+		}
+		return WaypointActions{DescendViaSTAR: true, ExceptAltitude: alt}, true, nil
 	case len(f) > 1 && (f[0] == 'c' || f[0] == 'd') && allDigits(f[1:]):
-		alt, err := strconv.Atoi(f[1:])
-		if err != nil || alt < 100 || alt > 60000 || alt%100 != 0 {
-			return WaypointActions{}, true, fmt.Errorf("%s: altitude must be a multiple of 100 between 100 and 60000 feet", f)
+		alt, err := parseActionAltitude(f, f[1:])
+		if err != nil {
+			return WaypointActions{}, true, err
 		}
 		if f[0] == 'c' {
 			return WaypointActions{ClimbAltitude: alt}, true, nil
@@ -247,6 +256,15 @@ func parseWaypointActionModifier(f string) (WaypointActions, bool, error) {
 	return WaypointActions{}, false, nil
 }
 
+// parseActionAltitude parses the altitude of a /c, /d, /cv, or /dv action.
+func parseActionAltitude(f, digits string) (int, error) {
+	alt, err := strconv.Atoi(digits)
+	if err != nil || alt < 100 || alt > 60000 || alt%100 != 0 {
+		return 0, fmt.Errorf("%s: altitude must be a multiple of 100 between 100 and 60000 feet", f)
+	}
+	return alt, nil
+}
+
 // merge combines src into wa
 func (wa *WaypointActions) merge(src WaypointActions) {
 	if src.Heading.IsSet() {
@@ -256,6 +274,7 @@ func (wa *WaypointActions) merge(src WaypointActions) {
 	if src.hasAltitudeAction() {
 		wa.ClimbAltitude, wa.DescendAltitude = src.ClimbAltitude, src.DescendAltitude
 		wa.ClimbViaSID, wa.DescendViaSTAR = src.ClimbViaSID, src.DescendViaSTAR
+		wa.ExceptAltitude = src.ExceptAltitude
 	}
 	wa.HumanHandoff = wa.HumanHandoff || src.HumanHandoff
 	if src.HandoffController != "" {
@@ -300,7 +319,7 @@ func mergeWaypointActions(dst *WaypointActions, src WaypointActions) error {
 	}
 	viaAction := func(wa WaypointActions) bool { return wa.ClimbViaSID || wa.DescendViaSTAR }
 	if (viaAction(src) && dst.hasAltitudeAction()) || (viaAction(*dst) && src.hasAltitudeAction()) {
-		return fmt.Errorf("/cvs and /dvs cannot be combined with /c, /d, or each other in the same waypoint action group")
+		return fmt.Errorf("/cvs, /dvs, /cv, and /dv cannot be combined with /c, /d, or each other in the same waypoint action group")
 	}
 	dst.merge(src)
 	return nil

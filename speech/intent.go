@@ -784,9 +784,12 @@ const (
 	ProcedureDescendViaSTAR
 )
 
-// ProcedureIntent represents climb via SID / descend via STAR
+// ProcedureIntent represents climb via SID / descend via STAR, with the
+// altitude and speed the instruction excepted from the procedure, if any.
 type ProcedureIntent struct {
-	Type ProcedureType
+	Type           ProcedureType
+	ExceptAltitude *float32
+	ExceptSpeed    *SpeedIntent
 }
 
 func (p ProcedureIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -795,6 +798,30 @@ func (p ProcedureIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		rt.Add("climb via the SID")
 	case ProcedureDescendViaSTAR:
 		rt.Add("descend via the STAR")
+	}
+
+	switch {
+	case p.ExceptAltitude != nil && p.ExceptSpeed != nil:
+		rt.Add("except maintain {alt} and "+p.ExceptSpeed.exceptPhrase(), *p.ExceptAltitude, p.ExceptSpeed.Speed)
+	case p.ExceptAltitude != nil:
+		rt.Add("except maintain {alt}", *p.ExceptAltitude)
+	case p.ExceptSpeed != nil:
+		rt.Add("except maintain "+p.ExceptSpeed.exceptPhrase(), p.ExceptSpeed.Speed)
+	}
+}
+
+// exceptPhrase returns the speed as it is read back after "except maintain"
+// in a climb via SID or descend via STAR instruction.
+func (s SpeedIntent) exceptPhrase() string {
+	switch {
+	case s.Mach:
+		return "{mach}"
+	case s.Type == SpeedAtOrAbove:
+		return "{spd} or greater"
+	case s.Type == SpeedAtOrBelow:
+		return "{spd} or less"
+	default:
+		return "{spd}"
 	}
 }
 
@@ -1107,6 +1134,7 @@ func findOrderedMatches(intentTypes []reflect.Type, paramTypes []reflect.Type) [
 // The algorithm restarts from the top after each successful merge and continues until
 // no further progress is made.
 func mergeIntents(intents []CommandIntent) []CommandIntent {
+	intents = slices.Clone(intents) // merging edits the slice in place
 restart:
 	for range 20 { // protect against infinite loop
 		intentTypes := util.MapSlice(intents, func(ci CommandIntent) reflect.Type {
@@ -1166,6 +1194,21 @@ func mergeAltitudeSpeed(alt AltitudeIntent, spd SpeedIntent) ([]CommandIntent, b
 
 }
 
+// mergeProcedureSpeed folds a speed given with a climb via SID or descend
+// via STAR into the procedure's readback, since together they are the
+// "except maintain (speed)" form of the instruction.
+func mergeProcedureSpeed(p ProcedureIntent, spd SpeedIntent) ([]CommandIntent, bool) {
+	if p.ExceptSpeed != nil || spd.AfterFix != "" || spd.AfterAltitude != nil || spd.Until != nil {
+		return nil, false
+	}
+	switch spd.Type {
+	case SpeedAssign, SpeedReduce, SpeedIncrease, SpeedAtOrAbove, SpeedAtOrBelow:
+		p.ExceptSpeed = &spd
+		return []CommandIntent{p}, true
+	}
+	return nil, false
+}
+
 func mergeTransponder(ta, tb TransponderIntent) ([]CommandIntent, bool) {
 	if tb.Code != nil {
 		ta.Code = tb.Code
@@ -1182,5 +1225,6 @@ func mergeTransponder(ta, tb TransponderIntent) ([]CommandIntent, bool) {
 func init() {
 	RegisterIntentMerger(mergeAltitudeExpedite)
 	RegisterIntentMerger(mergeAltitudeSpeed)
+	RegisterIntentMerger(mergeProcedureSpeed)
 	RegisterIntentMerger(mergeTransponder)
 }

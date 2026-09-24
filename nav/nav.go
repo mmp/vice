@@ -103,11 +103,11 @@ type DeferredNavHeading struct {
 	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
 	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be
-	// captured into Altitude.Cleared at the moment this deferred heading
-	// takes effect. Used when vectoring an arrival off a STAR/approach with
-	// no issued altitude so the aircraft holds whatever altitude the pilot
-	// was at when they actually turned, rather than the higher altitude they
-	// were at when the controller first spoke.
+	// captured into Altitude.Cleared, as a floor, at the moment this deferred
+	// heading takes effect. Used when vectoring an arrival off a STAR/approach
+	// with no issued altitude so the aircraft holds whatever altitude the
+	// pilot was at when they actually turned, rather than the higher altitude
+	// they were at when the controller first spoke.
 	SnapshotAltitudeOnEffect bool
 }
 
@@ -197,7 +197,7 @@ type Altitude struct {
 	Assigned        *float32 // controller-assigned altitude (not yet in autopilot)
 	ActiveAssigned  *float32 // assigned altitude currently used for vertical guidance
 	ActivateAt      Time     // non-zero while Assigned is pending activation
-	Cleared         *float32 // from initial clearance
+	Cleared         *ClearedAltitude
 	AfterSpeed      *float32
 	AfterSpeedSpeed *float32
 	Rate            RateQualifier
@@ -208,6 +208,16 @@ type Altitude struct {
 	// restriction at the way point; we keep trying until we get there (or
 	// are given another instruction..)
 	Restriction *av.AltitudeRestriction
+}
+
+// ClearedAltitude is the altitude an aircraft flying its route's altitude
+// restrictions is cleared to: the restrictions never take it above that
+// altitude, and if IsFloor, never below it either. Descend via clearances and
+// an arrival's initial clearance are floors; an approach clearance ends a
+// floor.
+type ClearedAltitude struct {
+	Altitude float32
+	IsFloor  bool
 }
 
 type Speed struct {
@@ -348,8 +358,7 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 			nav.setAssignedAltitude(arr.AssignedAltitude)
 		}
 		if arr.ClearedAltitude > 0 {
-			alt := arr.ClearedAltitude
-			nav.Altitude.Cleared = &alt
+			nav.Altitude.Cleared = &ClearedAltitude{Altitude: arr.ClearedAltitude, IsFloor: true}
 		}
 
 		alt := float32(rand.SampleSlice(nav.Rand, arr.InitialAltitudes))
@@ -375,8 +384,7 @@ func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.Aircra
 		if assignedAlt != 0 {
 			nav.setAssignedAltitude(float32(min(assignedAlt, fp.Altitude)))
 		} else {
-			alt := float32(min(clearedAlt, fp.Altitude))
-			nav.Altitude.Cleared = &alt
+			nav.Altitude.Cleared = &ClearedAltitude{Altitude: float32(min(clearedAlt, fp.Altitude))}
 		}
 		nav.FlightState.InitialDepartureClimb = true
 		nav.FlightState.Altitude = nav.FlightState.DepartureAirportElevation
@@ -831,19 +839,24 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s"+rateSuffix,
 			*nav.Altitude.AfterSpeedSpeed, dir, av.FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if target, ok := nav.findAltitudeTarget(); ok {
-		dir := util.Select(target.altitude > nav.FlightState.Altitude, "Climbing", "Descending")
-		alt := target.altitude
-		if nav.Altitude.Cleared != nil {
-			alt = min(alt, *nav.Altitude.Cleared)
+		alt := nav.limitAltitude(target.altitude)
+		switch {
+		case alt > nav.FlightState.Altitude:
+			lines = append(lines, "Climbing to "+av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
+		case alt < nav.FlightState.Altitude:
+			lines = append(lines, "Descending to "+av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
+		case nav.Altitude.Cleared != nil && alt == nav.Altitude.Cleared.Altitude:
+			lines = append(lines, "Holding cleared altitude "+av.FormatAltitude(alt)+"; alt. restriction at "+target.fix)
+		default:
+			lines = append(lines, "At "+av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
 		}
-		lines = append(lines, dir+" to "+av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
-	} else if nav.Altitude.Cleared != nil {
-		if math.Abs(nav.FlightState.Altitude-*nav.Altitude.Cleared) < 100 {
+	} else if c := nav.Altitude.Cleared; c != nil {
+		if math.Abs(nav.FlightState.Altitude-c.Altitude) < 100 {
 			lines = append(lines, "At cleared altitude "+
-				av.FormatAltitude(*nav.Altitude.Cleared))
+				av.FormatAltitude(c.Altitude))
 		} else {
 			line := "At " + av.FormatAltitude(nav.FlightState.Altitude) + " for " +
-				av.FormatAltitude(*nav.Altitude.Cleared)
+				av.FormatAltitude(c.Altitude)
 			line += nav.rateSummary()
 			lines = append(lines, line)
 		}
@@ -1039,20 +1052,26 @@ func (nav *Nav) addAltitudePhrasing(rt *speech.RadioTransmission, targetAlt floa
 func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *speech.RadioTransmission {
 	rt := &speech.RadioTransmission{Type: speech.RadioTransmissionContact}
 
-	target := util.Select(nav.Altitude.Assigned != nil, nav.Altitude.Assigned, nav.Altitude.Cleared)
+	target := nav.Altitude.Assigned
+	if target == nil && nav.Altitude.Cleared != nil {
+		target = &nav.Altitude.Cleared.Altitude
+	}
 	climbing := target != nil && *target-nav.FlightState.Altitude > 200
 
 	if sid != "" && climbing {
-		if nav.Altitude.Assigned != nil && nav.procedureHasAltRestrictions(true) {
-			// SID with climbing via + controller override: "except maintaining {alt}"
-			rt.Add("[leaving|out of] {alt} climbing via the {sid} [departure|] except maintaining {alt}",
-				nav.FlightState.Altitude, sid, *nav.Altitude.Assigned)
-		} else if nav.procedureHasAltRestrictions(true) {
-			// SID with altitude restrictions, climbing via
-			rt.Add("[leaving|out of] {alt} climbing via the {sid} [departure|]",
-				nav.FlightState.Altitude, sid)
+		if nav.Altitude.Assigned == nil && nav.procedureHasAltRestrictions(true) {
+			// SID with altitude restrictions, climbing via; an altitude
+			// short of cruise is an "except maintain" and is reported.
+			if *target < nav.FinalAltitude {
+				rt.Add("[leaving|out of] {alt} for {alt} climbing via the {sid} [departure|]",
+					nav.FlightState.Altitude, *target, sid)
+			} else {
+				rt.Add("[leaving|out of] {alt} climbing via the {sid} [departure|]",
+					nav.FlightState.Altitude, sid)
+			}
 		} else {
-			// SID without altitude restrictions
+			// An assigned altitude cancels the SID's altitude restrictions,
+			// so the climb is reported as any other altitude assignment.
 			rt.Add("[leaving|out of] {alt} [for|climbing] {alt} [on the {sid} departure|]",
 				nav.FlightState.Altitude, *target, sid)
 		}
@@ -1164,13 +1183,20 @@ func (nav *Nav) firstCrossingRestriction() *contactCrossingRestriction {
 func (nav *Nav) addStarAltitude(rt *speech.RadioTransmission, star string, crossing *contactCrossingRestriction) {
 	hasAltRestrictions := nav.procedureHasAltRestrictions(false)
 	cur := nav.FlightState.Altitude
-	descending := nav.Altitude.Assigned == nil && hasAltRestrictions
+	cleared := nav.Altitude.Cleared
+	// An aircraft held at, or climbing back to, its "except maintain"
+	// altitude isn't descending.
+	descending := nav.Altitude.Assigned == nil && hasAltRestrictions && (cleared == nil || cleared.Altitude < cur-100)
 
 	if descending && crossing != nil && crossing.AltRestriction != nil {
 		// Descending via STAR with a controller fix assignment exception
 		format, args := crossingInstructionFormat(crossing, crossingAltitude(crossing), true)
 		rt.Add("[leaving|out of] {alt} descending via [the|] {star} [arrival|] except "+format,
 			append([]any{cur, star}, args...)...)
+	} else if descending && cleared != nil {
+		// Descending via STAR, stopping at a cleared altitude
+		rt.Add("[leaving|out of] {alt} for {alt} descending via the {star} [arrival|]",
+			cur, cleared.Altitude, star)
 	} else if descending {
 		// Descending via STAR, no override
 		rt.Add("[leaving|out of] {alt} descending via the {star} [arrival|]", cur, star)
@@ -1199,10 +1225,7 @@ func (nav *Nav) addContactAltitude(rt *speech.RadioTransmission, star string, cr
 	} else if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != cur {
 		nav.addAltitudePhrasing(rt, *nav.Altitude.Assigned)
 	} else if target, ok := nav.findAltitudeTarget(); ok {
-		alt := target.altitude
-		if nav.Altitude.Cleared != nil {
-			alt = min(alt, *nav.Altitude.Cleared)
-		}
+		alt := nav.limitAltitude(target.altitude)
 		if cur != alt {
 			nav.addAltitudePhrasing(rt, alt)
 		} else {

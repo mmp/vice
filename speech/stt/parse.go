@@ -142,7 +142,7 @@ func mergeUntilFixMarkers(commands []string) []string {
 // routing, so asking for the fix again is unhelpful.
 func dropFixSayAgainBeforeClearance(commands []string) []string {
 	hasClearance := slices.ContainsFunc(commands, func(cmd string) bool {
-		return len(cmd) > 1 && cmd[0] == 'C' && cmd != "CVS" && cmd != "CAC" &&
+		return len(cmd) > 1 && cmd[0] == 'C' && !isViaProcedure(cmd) && cmd != "CAC" &&
 			!IsNumber(cmd[1:]) && !strings.Contains(cmd, "/")
 	})
 	if !hasClearance {
@@ -162,7 +162,7 @@ func resolveGarbledClearanceVerb(tokens []Token, commands []string, ac Aircraft)
 		return commands
 	}
 	for i, cmd := range commands {
-		if getCommandCategory(cmd) != "cleared_approach" || cmd == "CVS" || cmd == "CAC" ||
+		if getCommandCategory(cmd) != "cleared_approach" || cmd == "CAC" ||
 			strings.Contains(cmd, "/") || strings.HasPrefix(cmd, "CSI") {
 			continue
 		}

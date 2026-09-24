@@ -70,7 +70,7 @@ func TestCommandValidation(t *testing.T) {
 			InitialAltitude:  11000,
 			InitialSpeed:     250,
 		})
-		intent := f.nav.DescendViaSTAR(f.simTime)
+		intent := f.nav.DescendViaSTAR(nil, f.simTime)
 		AssertUnable(t, intent)
 	})
 

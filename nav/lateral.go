@@ -128,7 +128,7 @@ func (nav *Nav) climbToCruise(alt float32) {
 	if nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil {
 		nav.setAssignedAltitude(alt)
 	} else {
-		nav.Altitude = Altitude{Cleared: &alt}
+		nav.Altitude = Altitude{Cleared: &ClearedAltitude{Altitude: alt}}
 	}
 }
 
@@ -207,8 +207,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		// condition in case an altitude was issued during the deferred
 		// window.
 		if dh.SnapshotAltitudeOnEffect && !nav.hasIssuedAltitude() {
-			alt := nav.FlightState.Altitude
-			nav.Altitude.Cleared = &alt
+			nav.Altitude.Cleared = &ClearedAltitude{Altitude: nav.FlightState.Altitude, IsFloor: true}
 		}
 		nav.DeferredNavHeading = nil
 	}

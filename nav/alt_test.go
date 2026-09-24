@@ -224,7 +224,7 @@ func TestDescentPreservedOnApproachTransition(t *testing.T) {
 	// must preserve the assigned 3000 as a Cleared altitude so descent
 	// continues through the approach transition.
 	f.AtFix("LEFER", func(f *FlightTest) {
-		if f.nav.Altitude.Cleared == nil || *f.nav.Altitude.Cleared != 3000 {
+		if c := f.nav.Altitude.Cleared; c == nil || *c != (ClearedAltitude{Altitude: 3000}) {
 			t.Errorf("tick %d: expected Cleared=3000 preserved after approach transition, got %v",
 				f.tick, f.nav.Altitude.Cleared)
 		}
@@ -573,7 +573,7 @@ func TestDescendViaSTAR(t *testing.T) {
 	// Verify the aircraft is held at 11000 before DVS.
 	f.AfterTicks(30, func(f *FlightTest) {
 		f.AssertAltitudeNear(11000, 50)
-		f.nav.DescendViaSTAR(f.simTime)
+		f.DescendViaSTAR()
 	})
 
 	// After DVS, aircraft should descend to meet DETGY's 7000 restriction.
@@ -599,7 +599,7 @@ func TestDescendViaSTARAtPassedFix(t *testing.T) {
 	})
 
 	f.AtFix("SAJUL", func(f *FlightTest) {
-		if !f.nav.DescendViaSTARAtPassedFix() {
+		if !f.nav.DescendViaSTARAtPassedFix(nil) {
 			t.Fatal("expected /dvs to apply at the fix before the STAR")
 		}
 		if f.nav.Altitude.Assigned != nil {
@@ -615,12 +615,292 @@ func TestDescendViaSTARAtPassedFix(t *testing.T) {
 	})
 
 	f.AtFix("HAUPT", func(f *FlightTest) {
-		if f.nav.DescendViaSTARAtPassedFix() {
+		if f.nav.DescendViaSTARAtPassedFix(nil) {
 			t.Error("expected /dvs to be refused with no STAR fixes ahead")
 		}
 	})
 
 	f.Run()
+}
+
+// TestDescendViaSTARExceptMaintain verifies that "descend via STAR except
+// maintain" stops the descent at the exception altitude, above the STAR's
+// lower restrictions, until a plain "descend via STAR" lifts it, that an
+// exception below the last restriction continues the descent past it, and
+// that an aircraft already below the exception climbs back to it.
+func TestDescendViaSTARExceptMaintain(t *testing.T) {
+	newFlight := func(t *testing.T) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  11000,
+			InitialSpeed:     250,
+			AssignedAltitude: 11000,
+		})
+	}
+
+	t.Run("LevelsAtException", func(t *testing.T) {
+		f := newFlight(t)
+		f.AfterTicks(10, func(f *FlightTest) {
+			f.DescendViaSTARExcept(8000)
+			if c := f.nav.Altitude.Cleared; f.nav.Altitude.Assigned != nil || c == nil ||
+				*c != (ClearedAltitude{Altitude: 8000, IsFloor: true}) {
+				t.Fatalf("expected cleared altitude 8000 and no assigned altitude, got %+v", f.nav.Altitude)
+			}
+		})
+		f.BetweenFixes("SAJUL", "HAUPT", func(f *FlightTest) { f.AssertAltitudeAbove(7900) })
+		f.AtFix("HAUPT", func(f *FlightTest) { f.AssertAltitudeNear(8000, 100) })
+		f.Run()
+	})
+
+	// DETGY and HAUPT are too close together for the aircraft to reach
+	// HAUPT's altitude by HAUPT; it holds the last restriction, or descends
+	// on to a lower cleared altitude, by the airport.
+	t.Run("PlainDescendViaLiftsException", func(t *testing.T) {
+		f := newFlight(t)
+		f.AfterTicks(10, func(f *FlightTest) { f.DescendViaSTARExcept(8000) })
+		f.AtFix("DETGY", func(f *FlightTest) {
+			f.AssertAltitudeNear(8000, 100)
+			f.DescendViaSTAR()
+			if f.nav.Altitude.Cleared != nil {
+				t.Errorf("expected a plain descend via to clear the cleared altitude, got %.0f", f.nav.Altitude.Cleared.Altitude)
+			}
+		})
+		f.AtFix("KJFK", func(f *FlightTest) { f.AssertAltitudeNear(6000, 100) })
+		f.Run()
+	})
+
+	t.Run("ContinuesBelowLastRestriction", func(t *testing.T) {
+		f := newFlight(t)
+		f.AfterTicks(10, func(f *FlightTest) { f.DescendViaSTARExcept(4000) })
+		f.AtFix("DETGY", func(f *FlightTest) { f.AssertAltitudeNear(7000, 100) })
+		f.AtFix("KJFK", func(f *FlightTest) { f.AssertAltitudeNear(4000, 100) })
+		f.Run()
+	})
+
+	t.Run("ClimbsBackToException", func(t *testing.T) {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL/a7000/star DETGY/a6000/star HAUPT/a5000/star",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  7900,
+			InitialSpeed:     250,
+		})
+		alt := float32(8000)
+		if _, unable := f.nav.DescendViaSTAR(&alt, f.simTime).(speech.UnableIntent); unable {
+			t.Fatal("expected descend via except maintain above the aircraft to be accepted")
+		}
+		f.AtFix("DETGY", func(f *FlightTest) { f.AssertAltitudeNear(8000, 50) })
+		f.AtFix("HAUPT", func(f *FlightTest) { f.AssertAltitudeNear(8000, 50) })
+		f.Run()
+	})
+
+	t.Run("KeepsPublishedSpeedRestriction", func(t *testing.T) {
+		f := newFlight(t)
+		sr := av.MakeAtSpeedRestriction(210)
+		f.nav.Speed.Restriction = &sr
+		f.DescendViaSTAR()
+		if f.nav.Speed.Restriction == nil || *f.nav.Speed.Restriction != sr {
+			t.Errorf("expected descend via to keep the published speed restriction, got %+v", f.nav.Speed)
+		}
+	})
+}
+
+// TestClimbViaSIDExceptMaintain verifies that "climb via SID except
+// maintain" climbs through the SID's restrictions to the exception altitude,
+// whether it is below or above them, that an aircraft already above the
+// exception descends to it, and that a plain "climb via SID" after an
+// interim altitude reinstates the restrictions and climbs to cruise.
+func TestClimbViaSIDExceptMaintain(t *testing.T) {
+	t.Run("LevelsAtException", func(t *testing.T) {
+		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500, ClearedAltitude: 5000})
+		f.ClimbViaSIDExcept(8000)
+		if c := f.nav.Altitude.Cleared; f.nav.Altitude.Assigned != nil || c == nil || *c != (ClearedAltitude{Altitude: 8000}) {
+			t.Fatalf("expected cleared altitude 8000 and no assigned altitude, got %+v", f.nav.Altitude)
+		}
+
+		f.BeforeFix("TTAPS", func(f *FlightTest) { f.AssertAltitudeBelow(4000) })
+		f.BeforeFix("BOTLL", func(f *FlightTest) { f.AssertAltitudeBelow(5000) })
+		// GRAYN's at-or-above 11,000 is above the exception; the climb stops short of it.
+		f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeNear(8000, 100) })
+		f.Run()
+	})
+
+	t.Run("ClimbsAboveRestrictions", func(t *testing.T) {
+		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500, ClearedAltitude: 5000})
+		f.ClimbViaSIDExcept(14000)
+
+		f.BeforeFix("BOTLL", func(f *FlightTest) { f.AssertAltitudeBelow(5000) })
+		f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeAbove(11000) })
+		f.AtFix("SBI", func(f *FlightTest) { f.AssertAltitudeNear(14000, 100) })
+		f.Run()
+	})
+
+	// The scenario's cleared altitude is an earlier controller's "climb via
+	// SID except maintain"; a plain climb via SID lifts it, and the climb
+	// continues past the last restriction to cruise.
+	t.Run("PlainClimbViaCancelsClearedAltitude", func(t *testing.T) {
+		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500, ClearedAltitude: 5000})
+		f.ClimbViaSID()
+		if c := f.nav.Altitude.Cleared; f.nav.Altitude.Assigned != nil || c == nil || *c != (ClearedAltitude{Altitude: 35000}) {
+			t.Fatalf("expected the cruise altitude as the cleared altitude, got %+v", f.nav.Altitude)
+		}
+
+		f.BeforeFix("TTAPS", func(f *FlightTest) { f.AssertAltitudeBelow(4000) })
+		f.BeforeFix("BOTLL", func(f *FlightTest) { f.AssertAltitudeBelow(5000) })
+		f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeAbove(11000) })
+		f.AtFix("SBI", func(f *FlightTest) { f.AssertAltitudeAbove(14000) })
+		f.Run()
+	})
+
+	t.Run("PlainClimbViaCancelsAssignedAltitude", func(t *testing.T) {
+		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500, AssignedAltitude: 10000})
+		f.AfterTicks(5, func(f *FlightTest) {
+			f.ClimbViaSID()
+			if c := f.nav.Altitude.Cleared; f.nav.Altitude.Assigned != nil || c == nil || *c != (ClearedAltitude{Altitude: 35000}) {
+				t.Fatalf("expected the cruise altitude as the cleared altitude, got %+v", f.nav.Altitude)
+			}
+		})
+
+		f.BeforeFix("TTAPS", func(f *FlightTest) { f.AssertAltitudeBelow(4000) })
+		f.BeforeFix("BOTLL", func(f *FlightTest) { f.AssertAltitudeBelow(5000) })
+		f.AtFix("SBI", func(f *FlightTest) { f.AssertAltitudeAbove(14000) })
+		f.Run()
+	})
+
+	t.Run("DescendsToException", func(t *testing.T) {
+		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 7000, AssignedAltitude: 7000})
+		alt := float32(4000)
+		if _, unable := f.nav.ClimbViaSID(&alt, f.simTime).(speech.UnableIntent); unable {
+			t.Fatal("expected climb via except maintain below the aircraft to be accepted")
+		}
+		f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeNear(4000, 50) })
+		f.AtFix("SBI", func(f *FlightTest) { f.AssertAltitudeNear(4000, 50) })
+		f.Run()
+	})
+
+	t.Run("ViaAheadOfProcedure", func(t *testing.T) {
+		// Only the fixes from BOTLL on are on the SID.
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "IAH TTAPS/a4000- BOTLL/a5000-/sid MMUGS/sid GRAYN/a11000+/sid YOKEM SBI LLA",
+			DepartureAirport: "KIAH",
+			ArrivalAirport:   "KMCO",
+			AircraftType:     "B739",
+			InitialAltitude:  2500,
+			InitialSpeed:     210,
+			ClearedAltitude:  5000,
+		})
+		f.nav.FinalAltitude = 35000
+		f.nav.FlightState.InitialDepartureClimb = true
+
+		if intent := f.nav.ClimbViaSID(nil, f.simTime); intent == nil {
+			t.Fatal("expected climb via SID to be accepted with the SID's fixes ahead")
+		} else if _, unable := intent.(speech.UnableIntent); unable {
+			t.Fatalf("expected climb via SID to be accepted with the SID's fixes ahead, got %v", intent)
+		}
+		f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeAbove(11000) })
+		f.Run()
+	})
+}
+
+// TestClearedApproachLiftsExceptFloor verifies that an approach clearance
+// lets an aircraft descend below its "descend via STAR except maintain"
+// altitude to the approach's altitudes.
+func TestClearedApproachLiftsExceptFloor(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a6000/star LEFER/a4000/star ROSLY/a3000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     210,
+	})
+	f.DescendViaSTARExcept(5000)
+
+	f.AtFix("HAUPT", func(f *FlightTest) {
+		f.ExpectApproach("I22L")
+		f.ClearedApproach("I22L")
+	})
+	f.AtFix("LEFER", func(f *FlightTest) { f.AssertAltitudeBelow(4300) })
+	f.AtFix("ROSLY", func(f *FlightTest) { f.AssertAltitudeNear(3000, 200) })
+	f.Run()
+}
+
+// TestClearedAltitudeFloorsDescent verifies that an arrival cleared to an
+// altitude above some of its STAR's restrictions levels off there rather
+// than descending through it, and that a /dvs action at the fix where it is
+// handed off lets it continue via the STAR.
+func TestClearedAltitudeFloorsDescent(t *testing.T) {
+	newFlight := func(t *testing.T, route string) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        route,
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  11000,
+			InitialSpeed:     250,
+			ClearedAltitude:  8000,
+			ClearedFloor:     true,
+		})
+	}
+
+	t.Run("LevelsAtClearedAltitude", func(t *testing.T) {
+		f := newFlight(t, "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star")
+		f.AtFix("DETGY", func(f *FlightTest) { f.AssertAltitudeNear(8000, 100) })
+		f.AtFix("HAUPT", func(f *FlightTest) { f.AssertAltitudeNear(8000, 100) })
+		f.Run()
+	})
+
+	t.Run("DescendViaAtHandoffFixContinues", func(t *testing.T) {
+		f := newFlight(t, "SAJUL/a10000/ho/dvs/star DETGY/a7000/star HAUPT/a6000/star")
+		f.AtFix("SAJUL", func(f *FlightTest) {
+			if !f.nav.DescendViaSTARAtPassedFix(nil) {
+				t.Fatal("expected /dvs to apply with the STAR ahead")
+			}
+		})
+		f.AtFix("DETGY", func(f *FlightTest) { f.AssertAltitudeNear(7000, 100) })
+		f.AtFix("KJFK", func(f *FlightTest) { f.AssertAltitudeNear(6000, 100) })
+		f.Run()
+	})
+}
+
+// TestRejoinSTARAfterVectorHoldsAltitude verifies that an arrival vectored
+// off a STAR and cleared direct to a fix on it holds the altitude it was
+// vectored at, its clearance limit off the procedure, until it is cleared
+// to descend via again.
+func TestRejoinSTARAfterVectorHoldsAltitude(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/a10000-15000/star DETGY/a8000+/star HAUPT/a6000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  15000,
+		InitialSpeed:     280,
+	})
+	// Descend on the STAR, then vector off it.
+	f.StepUntil("started the STAR descent", func() bool { return f.nav.FlightState.AltitudeRate < -50 })
+	f.AssignHeading(360, av.TurnClosest)
+	f.Step(30)
+	if c := f.nav.Altitude.Cleared; c == nil || !c.IsFloor {
+		t.Fatalf("expected the altitude to be held as a floor once the heading took effect, got %+v", c)
+	}
+	held := f.nav.Altitude.Cleared.Altitude
+
+	// Back on the STAR, the aircraft holds that altitude.
+	f.DirectFixWithTurn("DETGY", av.TurnClosest)
+	f.Step(120)
+	if next := f.nav.Waypoints[0].Fix; next != "DETGY" {
+		t.Fatalf("expected to be direct DETGY, next fix is %s", next)
+	}
+	f.AssertAltitudeNear(held, 100)
+	f.AssertNotDescending()
+
+	// Until it is cleared to descend via again.
+	f.DescendViaSTAR()
+	f.StepUntil("resumed the descent after descend via", func() bool { return f.nav.FlightState.AltitudeRate < -50 })
 }
 
 // TestVectorKeepsIssuedAltitude verifies that an aircraft vectored off its
@@ -683,35 +963,47 @@ func TestVectorKeepsIssuedAltitude(t *testing.T) {
 		if f.nav.Approach.Cleared {
 			t.Error("expected the heading to cancel the approach clearance")
 		}
-		if c := f.nav.Altitude.Cleared; c == nil || *c != 3000 {
+		if c := f.nav.Altitude.Cleared; c == nil || *c != (ClearedAltitude{Altitude: 3000}) {
 			t.Fatalf("expected the cleared altitude 3000 to be kept, got %+v", c)
 		}
 		f.Step(180)
 		f.AssertAltitudeNear(3000, 50)
 	})
 
-	t.Run("ScenarioClearedAltitude", func(t *testing.T) {
-		f := NewArrivalFlight(t, ArrivalConfig{
-			Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star",
-			DepartureAirport: "KMCO",
-			ArrivalAirport:   "KJFK",
-			AircraftType:     "A320",
-			InitialAltitude:  11000,
-			InitialSpeed:     250,
-			ClearedAltitude:  8000,
-		})
-		f.StepUntil("started the STAR descent", func() bool { return f.nav.FlightState.AltitudeRate < -50 })
+	for _, tc := range []struct {
+		name    string
+		cleared float32 // scenario cleared_altitude; 0 = issue "descend via except maintain 8000"
+	}{
+		{name: "DescendViaExcept"},
+		{name: "ScenarioClearedAltitude", cleared: 8000},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star",
+				DepartureAirport: "KMCO",
+				ArrivalAirport:   "KJFK",
+				AircraftType:     "A320",
+				InitialAltitude:  11000,
+				InitialSpeed:     250,
+				ClearedAltitude:  tc.cleared,
+				ClearedFloor:     true,
+			})
+			if tc.cleared == 0 {
+				f.DescendViaSTARExcept(8000)
+			}
+			f.StepUntil("started the STAR descent", func() bool { return f.nav.FlightState.AltitudeRate < -50 })
 
-		turnLeft(f, 10)
-		if c := f.nav.Altitude.Cleared; c == nil || *c != 8000 {
-			t.Fatalf("expected the cleared altitude 8000 to be kept, got %v", c)
-		}
-		if f.nav.Approach.RequestAltitude {
-			t.Error("expected no altitude request with an altitude issued")
-		}
-		f.Step(120)
-		f.AssertAltitudeNear(8000, 50)
-	})
+			turnLeft(f, 10)
+			if c := f.nav.Altitude.Cleared; c == nil || *c != (ClearedAltitude{Altitude: 8000, IsFloor: true}) {
+				t.Fatalf("expected the cleared altitude 8000 to be kept, got %+v", c)
+			}
+			if f.nav.Approach.RequestAltitude {
+				t.Error("expected no altitude request with an altitude issued")
+			}
+			f.Step(120)
+			f.AssertAltitudeNear(8000, 50)
+		})
+	}
 }
 
 // TestVectorOffLocalizerHoldsAltitude verifies that an aircraft established
@@ -745,11 +1037,11 @@ func TestVectorOffLocalizerHoldsAltitude(t *testing.T) {
 		t.Error("expected the pilot to ask for an altitude")
 	}
 	c := f.nav.Altitude.Cleared
-	if c == nil {
-		t.Fatal("expected the altitude to be held once the heading took effect")
+	if c == nil || !c.IsFloor {
+		t.Fatalf("expected the altitude to be held once the heading took effect, got %+v", c)
 	}
 	f.Step(60)
-	f.AssertAltitudeNear(*c, 50)
+	f.AssertAltitudeNear(c.Altitude, 50)
 	f.AssertNotDescending()
 }
 
@@ -1344,7 +1636,7 @@ func TestVectorOffSTARHoldsAltitude(t *testing.T) {
 	// hasn't taken effect.
 	if f.nav.Altitude.Cleared != nil {
 		t.Fatalf("expected Altitude.Cleared to remain unset at heading-command time, got %.0f",
-			*f.nav.Altitude.Cleared)
+			f.nav.Altitude.Cleared.Altitude)
 	}
 	if f.nav.DeferredNavHeading == nil || !f.nav.DeferredNavHeading.SnapshotAltitudeOnEffect {
 		t.Fatal("expected SnapshotAltitudeOnEffect to be set on deferred heading")
@@ -1370,7 +1662,7 @@ func TestVectorOffSTARHoldsAltitude(t *testing.T) {
 	if f.nav.Altitude.Cleared == nil {
 		t.Fatal("expected Altitude.Cleared to be set after heading took effect")
 	}
-	snapshotAlt := *f.nav.Altitude.Cleared
+	snapshotAlt := f.nav.Altitude.Cleared.Altitude
 	if snapshotAlt > altAtCommand+50 || snapshotAlt < altAtCommand-500 {
 		t.Errorf("snapshot %.0f should be near (slightly below) command-time altitude %.0f",
 			snapshotAlt, altAtCommand)
@@ -1408,6 +1700,7 @@ func newDepartureOnSID(t *testing.T, cfg ArrivalConfig) *FlightTest {
 	cfg.ArrivalAirport = "KMCO"
 	cfg.AircraftType = "B739"
 	cfg.InitialSpeed = 210
+	cfg.OnSID = true
 
 	f := NewArrivalFlight(t, cfg)
 	f.nav.FinalAltitude = 35000

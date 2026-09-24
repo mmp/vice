@@ -5001,7 +5001,7 @@
     "FRLON2": {
       "arrivals": [
         {
-          "waypoints": "GGULF/a28000+ FRLON/a13000+/s280/ho2B STLER/a12000/s250/ho4U MNTNA MISSS/a7000 PPEGS/a5500/s210/h140/d5000/@d13.0/h080/@d6.0/h360/@d5.0/d4000/ld HITIR/clearapp",
+          "waypoints": "GGULF/a28000+ FRLON/a13000+/s280/ho2B/dvs STLER/a12000/s250/ho4U MNTNA MISSS/a7000 PPEGS/a5500/s210/h140/d5000/@d13.0/h080/@d6.0/h360/@d5.0/d4000/ld HITIR/clearapp",
           "star": "FRLON2",
           "scratchpad": "SJ1",
           "initial_controller": "C41",

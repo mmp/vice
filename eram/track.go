@@ -45,6 +45,9 @@ type TrackState struct {
 	OSectorEndTime sim.Time
 
 	ReachedAltitude bool
+	// LastDataBlockAltitude is the altitude the data block showed when it was
+	// last checked, so that an amended altitude clears ReachedAltitude.
+	LastDataBlockAltitude int
 
 	HoverVCI bool // if the user is hovering over the VCI field
 
@@ -222,6 +225,20 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 		ep.dbAlternate = !ep.dbAlternate
 		ep.dbLastAlternateTime = nowInterp
 	}
+	// The data block shows an amended altitude as soon as it is entered,
+	// whether by a controller here or by the virtual controller working the
+	// aircraft, so the climb/descent arrow must follow it just as promptly.
+	for _, trk := range tracks {
+		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil || !trk.IsAssociated() {
+			continue
+		}
+		if alt := trk.FlightPlan.DataBlockAltitude(); alt != state.LastDataBlockAltitude {
+			state.LastDataBlockAltitude = alt
+			state.ReachedAltitude = false
+		}
+	}
+
 	if nowApplied.Sub(ep.lastTrackUpdate) < 12*time.Second {
 		return
 	}

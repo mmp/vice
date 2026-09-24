@@ -784,7 +784,7 @@ func (h *hsfTextParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput
 	if field == "" {
 		return nil, text, false, nil
 	}
-	if field[0] != '`' && !strings.HasPrefix(field, circleClear) {
+	if !strings.HasPrefix(field, sim.QSFreeTextIndicator) && !strings.HasPrefix(field, circleClear) {
 		return nil, text, false, nil
 	}
 	// Require at least one character after the indicator.

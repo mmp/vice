@@ -1760,7 +1760,24 @@ func TestParseProcedureActions(t *testing.T) {
 		t.Errorf("expected encoded route to round-trip /cvs and /dvs, got %q", encoded)
 	}
 
-	for _, route := range []string{"HUNNN/c5000/cvs", "HUNNN/dvs/d5000", "HUNNN/cvs/dvs"} {
+	wps, err = parseWaypoints("HUNNN/cv13000 ZARTZ/h330/@a5000+/dv11000")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if a := wps[0].ActionGroups()[0].Actions; !a.ClimbViaSID || a.ExceptAltitude != 13000 {
+		t.Errorf("expected /cv13000 to climb via the SID except 13,000, got %+v", a)
+	}
+	if groups := wps[1].ActionGroups(); len(groups) != 2 ||
+		groups[1].Actions != (WaypointActions{DescendViaSTAR: true, ExceptAltitude: 11000}) {
+		t.Errorf("expected /dv11000 in the second action group, got %+v", groups)
+	}
+	if encoded := wps.Encode(); !strings.Contains(encoded, "HUNNN/cv13000") ||
+		!strings.Contains(encoded, "/@a5000+/dv11000") {
+		t.Errorf("expected encoded route to round-trip /cv and /dv, got %q", encoded)
+	}
+
+	for _, route := range []string{"HUNNN/c5000/cvs", "HUNNN/dvs/d5000", "HUNNN/cvs/dvs", "HUNNN/cv5000/dvs",
+		"HUNNN/cvs/cv5000"} {
 		if _, err := parseWaypoints(route); err == nil {
 			t.Errorf("%s: expected conflicting altitude actions to fail", route)
 		}
@@ -1782,6 +1799,9 @@ func TestCarryOverProcedureActions(t *testing.T) {
 		{route: "HUNNN/d4000/@a5000-/dvs", want: WaypointActions{DescendViaSTAR: true}},
 		{route: "HUNNN/cvs/@a5000+/c8000", want: WaypointActions{ClimbAltitude: 8000}},
 		{route: "HUNNN/c8000/@a5000+/cvs", want: WaypointActions{ClimbViaSID: true}},
+		{route: "HUNNN/cv13000/@a5000+/c8000", want: WaypointActions{ClimbAltitude: 8000}},
+		{route: "HUNNN/cv13000/@a5000+/dvs", want: WaypointActions{DescendViaSTAR: true}},
+		{route: "HUNNN/cvs/@a5000+/dv4000", want: WaypointActions{DescendViaSTAR: true, ExceptAltitude: 4000}},
 	} {
 		t.Run(tc.route, func(t *testing.T) {
 			prev, err := parseWaypoints(tc.route)
@@ -1815,12 +1835,15 @@ func TestCheckProcedureActions(t *testing.T) {
 		{name: "a fix on the STAR", route: "HUNNN ZARTZ/star/dvs WEXUM/star"},
 		{name: "a later action group", route: "HUNNN/h330/@a5000-/dvs ZARTZ/star"},
 		{name: "the last fix of the STAR", route: "HUNNN ZARTZ/star WEXUM/star/dvs", err: true},
-		{name: "the next fix is not on a STAR", route: "HUNNN/dvs ZARTZ WEXUM/star", err: true},
+		{name: "two fixes before the STAR", route: "HUNNN/dvs ZARTZ WEXUM/star"},
+		{name: "no STAR ahead", route: "HUNNN/dvs ZARTZ WEXUM", err: true},
 		{name: "descending via a SID", route: "HUNNN/dvs ZARTZ/sid", err: true},
 		{name: "the fix before the SID", route: "HUNNN/cvs ZARTZ/sid WEXUM/sid"},
 		{name: "a fix on the SID", route: "HUNNN/sid/cvs ZARTZ/sid"},
 		{name: "the last fix of the SID", route: "HUNNN/sid ZARTZ/sid/cvs WEXUM", err: true},
 		{name: "climbing via a STAR", route: "HUNNN/cvs ZARTZ/star", err: true},
+		{name: "/cv with the SID ahead", route: "HUNNN/cv5000 ZARTZ/sid"},
+		{name: "/dv on a SID", route: "HUNNN/dv5000 ZARTZ/sid", err: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			wps, err := parseWaypoints(tc.route)

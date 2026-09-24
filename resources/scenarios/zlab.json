@@ -6621,7 +6621,7 @@
     "JANNY5/GUERA2/BOGET2.EED": {
       "arrivals": [
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 ELMRR/a7000+ WABBT/a6000/clearapp",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 ELMRR/a7000+ WABBT/a6000/clearapp",
           "star": "JANNY5",
           "is_rnav": true,
           "initial_controller": "37",
@@ -6658,7 +6658,7 @@
           }
         },
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 EIFEL/a7000+ UMBER/a6000/clearapp",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 EIFEL/a7000+ UMBER/a6000/clearapp",
           "star": "JANNY5",
           "is_rnav": true,
           "initial_controller": "37",
@@ -6702,7 +6702,7 @@
           }
         },
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 ROPEZ/a11000-13000 BOGET/a8000/hoT1F MEETT/a7500+ WATSS/a6900+ UPDOC/a6000/delete",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 ROPEZ/a11000-13000 BOGET/a8000/hoT1F MEETT/a7500+ WATSS/a6900+ UPDOC/a6000/delete",
           "star": "BOGET2",
           "is_rnav": true,
           "initial_controller": "37",
@@ -6763,7 +6763,7 @@
           }
         },
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F ALYSN/a7100+ GUERA/delete",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F ALYSN/a7100+ GUERA/delete",
           "star": "GUERA2",
           "is_rnav": true,
           "initial_controller": "37",
@@ -7382,12 +7382,12 @@
           }
         },
         {
-          "waypoints": "N034.46.53.832,W115.31.57.141 HEC N034.42.06.731,W117.22.31.016/d24000/ho PMD WIJYI KELEN JAPAR/d4000 MINGI FASTO/clearapp",
+          "waypoints": "N034.46.53.832,W115.31.57.141 HEC N034.42.06.731,W117.22.31.016/ho PMD WIJYI KELEN JAPAR/d4000 MINGI FASTO/clearapp",
           "star": "FASTO2",
           "route": "/. FASTO2",
           "initial_controller": "38",
           "initial_altitude": [16000, 18000, 20000, 22000],
-          "cleared_altitude": 24000,
+          "cleared_altitude": 16000,
           "initial_speed": 300,
           "expect_approach": "I3R",
           "aircraft": ["turboprop"],
@@ -7736,7 +7736,7 @@
           }
         },
         {
-          "waypoints": "BURGL DOUIT BLOXX/a24000+/ho14 BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "BURGL DOUIT BLOXX/a24000+/ho14/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
@@ -7774,7 +7774,7 @@
           }
         },
         {
-          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho14 BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho14/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",

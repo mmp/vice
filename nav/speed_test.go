@@ -12,6 +12,67 @@ import (
 	"github.com/mmp/vice/speech"
 )
 
+// TestViaProcedureSpeedOverridesPublished verifies that a speed assigned
+// with climb via SID or descend via STAR, the "except maintain (speed)"
+// form, replaces the procedure's published speeds, and that a plain via
+// instruction cancels an assigned speed.
+func TestViaProcedureSpeedOverridesPublished(t *testing.T) {
+	newArrival := func(t *testing.T) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL/a10000/s250/star DETGY/a7000/s210/star HAUPT/a6000/star",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  11000,
+			InitialSpeed:     250,
+			AssignedAltitude: 11000,
+		})
+	}
+
+	t.Run("STAR", func(t *testing.T) {
+		f := newArrival(t)
+		f.AfterTicks(10, func(f *FlightTest) {
+			f.DescendViaSTAR()
+			f.AssignSpeed(240)
+		})
+		f.AtFix("DETGY", func(f *FlightTest) { f.AssertSpeedNear(240, 10) })
+		f.Run()
+	})
+
+	t.Run("PlainViaCancelsAssignedSpeed", func(t *testing.T) {
+		f := newArrival(t)
+		f.AfterTicks(10, func(f *FlightTest) {
+			f.AssignSpeed(240)
+			f.DescendViaSTAR()
+			if f.nav.Speed.Assigned != nil {
+				t.Errorf("expected descend via STAR to cancel the assigned speed, got %v", f.nav.Speed.Assigned)
+			}
+		})
+		f.AtFix("DETGY", func(f *FlightTest) { f.AssertSpeedNear(210, 15) })
+		f.Run()
+	})
+
+	t.Run("SID", func(t *testing.T) {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "IAH TTAPS/a4000-/s210 BOTLL/a5000- MMUGS GRAYN/a11000+ YOKEM SBI LLA",
+			DepartureAirport: "KIAH",
+			ArrivalAirport:   "KMCO",
+			AircraftType:     "B739",
+			InitialAltitude:  2500,
+			InitialSpeed:     210,
+			ClearedAltitude:  5000,
+			OnSID:            true,
+		})
+		f.nav.FinalAltitude = 35000
+		f.nav.FlightState.InitialDepartureClimb = true
+		f.ClimbViaSID()
+		f.AssignSpeed(250)
+
+		f.AtFix("BOTLL", func(f *FlightTest) { f.AssertSpeedNear(250, 10) })
+		f.Run()
+	})
+}
+
 // TestSTARSpeedRestrictions verifies that STAR speed restrictions are
 // respected at each fix (regression test for 9ae3110c).
 func TestSTARSpeedRestrictions(t *testing.T) {

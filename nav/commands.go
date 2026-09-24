@@ -1365,48 +1365,74 @@ func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
 	return speech.ApproachIntent{Type: speech.ApproachCancel}
 }
 
-func (nav *Nav) ClimbViaSID(simTime Time) speech.CommandIntent {
-	if !nav.flyProcedureRestrictions(av.Waypoint.OnSID) {
+// ClimbViaSID is "climb via SID", with "except maintain exceptAlt" if it is
+// non-nil. Otherwise the aircraft climbs to its cruise altitude: the
+// scenario's cleared altitude for a departure is an earlier controller's
+// "except maintain", and cruise is the only top altitude it gives a SID.
+func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time) speech.CommandIntent {
+	if !nav.ClimbViaSIDAtPassedFix(exceptAlt) {
 		return speech.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
 	nav.EnqueueOnCourse(simTime)
-	return speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID}
+	return speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID, ExceptAltitude: exceptAlt}
 }
 
-func (nav *Nav) DescendViaSTAR(simTime Time) speech.CommandIntent {
-	if !nav.flyProcedureRestrictions(av.Waypoint.OnSTAR) {
+// DescendViaSTAR is "descend via STAR", with "except maintain exceptAlt" if
+// it is non-nil; otherwise the aircraft descends to the STAR's last
+// restriction.
+func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandIntent {
+	if !nav.DescendViaSTARAtPassedFix(exceptAlt) {
 		return speech.MakeUnableIntent("unable. We're not on a STAR")
 	}
 
 	nav.EnqueueOnCourse(simTime)
-	return speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR}
+	return speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR, ExceptAltitude: exceptAlt}
 }
 
-// ClimbViaSIDAtPassedFix carries out a /cvs route action at the fix the
-// aircraft just passed. The aircraft is already flying its route, so unlike
-// ClimbViaSID it takes effect immediately. It returns false if the route
-// ahead isn't on a SID.
-func (nav *Nav) ClimbViaSIDAtPassedFix() bool {
-	return nav.flyProcedureRestrictions(av.Waypoint.OnSID)
-}
-
-// DescendViaSTARAtPassedFix is the /dvs counterpart of ClimbViaSIDAtPassedFix.
-func (nav *Nav) DescendViaSTARAtPassedFix() bool {
-	return nav.flyProcedureRestrictions(av.Waypoint.OnSTAR)
-}
-
-// flyProcedureRestrictions cancels assigned altitudes and speeds so that the
-// restrictions of the procedure the next fix is on govern. It returns false,
-// changing nothing, if onProcedure says the next fix isn't on it.
-func (nav *Nav) flyProcedureRestrictions(onProcedure func(av.Waypoint) bool) bool {
-	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !onProcedure(wps[0]) {
+// ClimbViaSIDAtPassedFix carries out a /cvs or /cv route action at the fix
+// the aircraft just passed. The aircraft is already flying its route, so
+// unlike ClimbViaSID it isn't put back on course. It returns false,
+// changing nothing, if no fix ahead is on a SID. An excepted altitude below
+// the aircraft is descended to, as instructed.
+func (nav *Nav) ClimbViaSIDAtPassedFix(exceptAlt *float32) bool {
+	if !slices.ContainsFunc(nav.AssignedWaypoints(), av.Waypoint.OnSID) {
 		return false
 	}
 
-	nav.Altitude = Altitude{}
-	nav.Speed = Speed{}
+	ceiling := nav.FinalAltitude
+	if exceptAlt != nil {
+		ceiling = *exceptAlt
+	}
+	nav.flyProcedureRestrictions(&ClearedAltitude{Altitude: ceiling})
 	return true
+}
+
+// DescendViaSTARAtPassedFix is the /dvs and /dv counterpart of
+// ClimbViaSIDAtPassedFix; an excepted altitude above the aircraft is climbed
+// back to.
+func (nav *Nav) DescendViaSTARAtPassedFix(exceptAlt *float32) bool {
+	if !slices.ContainsFunc(nav.AssignedWaypoints(), av.Waypoint.OnSTAR) {
+		return false
+	}
+
+	var floor *ClearedAltitude
+	if exceptAlt != nil {
+		floor = &ClearedAltitude{Altitude: *exceptAlt, IsFloor: true}
+	}
+	nav.flyProcedureRestrictions(floor)
+	return true
+}
+
+// flyProcedureRestrictions cancels the assigned altitude and speed so that
+// the restrictions of the procedure ahead govern, limited by cleared if it
+// is non-nil. A published speed restriction the aircraft is already holding
+// stays in effect: a via clearance cancels only assigned speeds (7110.65
+// 5-7-1).
+func (nav *Nav) flyProcedureRestrictions(cleared *ClearedAltitude) {
+	nav.Altitude = Altitude{Cleared: cleared}
+	nav.Speed = Speed{Restriction: nav.Speed.Restriction}
+	nav.clearAfterFixSpeeds()
 }
 
 func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
@@ -1466,8 +1492,9 @@ func (nav *Nav) AltitudeOurDiscretion() speech.CommandIntent {
 	}
 
 	nav.Altitude = Altitude{}
-	alt := nav.FinalAltitude
-	nav.Altitude.Cleared = &alt
+	if alt := nav.FinalAltitude; alt > nav.FlightState.Altitude {
+		nav.Altitude.Cleared = &ClearedAltitude{Altitude: alt}
+	}
 
 	return speech.NavigationIntent{Type: speech.NavAltitudeDiscretion}
 }

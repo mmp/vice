@@ -3613,7 +3613,7 @@
       ],
       "arrivals": [
         {
-          "waypoints": "N033.07.45.023,W118.44.33.962 GOATZ/a16000/s280/ho DIRBY PHUNN/a14000 SHHOW/a12000- ZAPPP/a9000+ BUFIE/a8000- SLI/a7000/s210 TRNDO/a5000/s210",
+          "waypoints": "N033.07.45.023,W118.44.33.962 GOATZ/a16000/s280/ho/dvs DIRBY PHUNN/a14000 SHHOW/a12000- ZAPPP/a9000+ BUFIE/a8000- SLI/a7000/s210 TRNDO/a5000/s210",
           "star": "GOATZ2",
           "is_rnav": true,
           "initial_altitude": 16000,

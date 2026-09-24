@@ -95,6 +95,70 @@ func TestSpeedRestrictionReadbackIncludesQualifier(t *testing.T) {
 	}
 }
 
+// TestProcedureExceptReadback verifies that the altitude and speed excepted
+// from a climb via SID or descend via STAR are read back with it, including
+// a speed given as a separate command.
+func TestProcedureExceptReadback(t *testing.T) {
+	alt := float32(10000)
+	for _, test := range []struct {
+		name     string
+		intents  []CommandIntent
+		want     []string
+		unwanted string
+	}{
+		{
+			name:    "altitude",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureClimbViaSID, ExceptAltitude: &alt}},
+			want:    []string{"climb via the sid, except maintain 10,000"},
+		},
+		{
+			name: "speed",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
+				SpeedIntent{Speed: 250, Type: SpeedReduce}},
+			want: []string{"descend via the star, except maintain 250 knots"},
+		},
+		{
+			name: "altitude and speed or greater",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureClimbViaSID, ExceptAltitude: &alt},
+				SpeedIntent{Speed: 250, Type: SpeedAtOrAbove}},
+			want: []string{"climb via the sid, except maintain 10,000 and 250 knots or greater"},
+		},
+		{
+			name: "mach",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
+				SpeedIntent{Speed: 0.78, Type: SpeedAssign, Mach: true}},
+			want: []string{"descend via the star, except maintain mach .78"},
+		},
+		{
+			name: "speed after a fix stays separate",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
+				SpeedIntent{Speed: 250, Type: SpeedAssign, AfterFix: "ROSLY"}},
+			want:     []string{"descend via the star"},
+			unwanted: "except",
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			for seed := uint64(1); seed <= 5; seed++ {
+				r := rand.Make()
+				r.Seed(seed)
+				written, err := RenderIntents(test.intents, r).Written(r)
+				if err != nil {
+					t.Fatalf("seed %d: %v", seed, err)
+				}
+				readback := strings.ToLower(written)
+				for _, w := range test.want {
+					if !strings.Contains(readback, w) {
+						t.Fatalf("readback %q does not contain %q", readback, w)
+					}
+				}
+				if test.unwanted != "" && strings.Contains(readback, test.unwanted) {
+					t.Fatalf("readback %q contains %q", readback, test.unwanted)
+				}
+			}
+		})
+	}
+}
+
 func TestSpeedUntilFinalDirection(t *testing.T) {
 	for _, test := range []struct {
 		name        string

@@ -3028,7 +3028,7 @@
       "arrivals": [
         {
           "spawn": "GAMBT",
-          "waypoint_actions": { "LEJEN": "ho" },
+          "waypoint_actions": { "LEJEN": "ho/dvs" },
           "star": "COMIX2",
           "is_rnav": true,
           "initial_controller": "C22",
@@ -3166,7 +3166,7 @@
           }
         },
         {
-          "waypoints": "N033.17.52.004,W117.53.56.325 LEJEN/a15000-19000/ho COMIX/a12000-15000 FLSHH LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
+          "waypoints": "N033.17.52.004,W117.53.56.325 LEJEN/a15000-19000/ho/dvs COMIX/a12000-15000 FLSHH LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
           "star": "COMIX2",
           "is_rnav": true,
           "initial_controller": "C22",
@@ -3214,7 +3214,7 @@
     "COMIX2.D": {
       "arrivals": [
         {
-          "waypoints": "GAMBT LEJEN/a15000-19000/ho5N COMIX/a12000-15000 FLSHH/ho5E LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210/delete",
+          "waypoints": "GAMBT LEJEN/a15000-19000/ho5N/dvs COMIX/a12000-15000 FLSHH/ho5E LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210/delete",
           "star": "COMIX2",
           "is_rnav": true,
           "initial_controller": "C22",
@@ -3352,7 +3352,7 @@
           }
         },
         {
-          "waypoints": "N033.17.52.004,W117.53.56.325 LEJEN/a15000-19000/ho5N COMIX/a12000-15000 FLSHH/ho5E LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210/delete",
+          "waypoints": "N033.17.52.004,W117.53.56.325 LEJEN/a15000-19000/ho5N/dvs COMIX/a12000-15000 FLSHH/ho5E LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210/delete",
           "star": "COMIX2",
           "is_rnav": true,
           "initial_controller": "C22",
@@ -4755,7 +4755,7 @@
     "CHASR2.IPL": {
       "arrivals": [
         {
-          "waypoints": "BLUZE/a17000-19000 N032.40.50.335,W116.15.27.795/ho GUUSE/a10000-12000 TOPGN/a7300+ CHASR/a6400/h250",
+          "waypoints": "BLUZE/a17000-19000 N032.40.50.335,W116.15.27.795/ho/dvs GUUSE/a10000-12000 TOPGN/a7300+ CHASR/a6400/h250",
           "star": "CHASR2",
           "is_rnav": true,
           "initial_controller": "C09",

@@ -4197,7 +4197,7 @@
       "arrivals": [
         {
           "spawn": "PRUET",
-          "waypoint_actions": { "AARCH": "ho" },
+          "waypoint_actions": { "AARCH": "ho/dvs" },
           "star": "AARCH2",
           "initial_controller": "C58",
           "initial_altitude": 29000,
@@ -4228,7 +4228,7 @@
       "arrivals": [
         {
           "spawn": "RBS",
-          "waypoint_actions": { "AARCH": "ho" },
+          "waypoint_actions": { "AARCH": "ho/dvs" },
           "star": "AARCH2",
           "initial_controller": "C58",
           "initial_altitude": 29000,
@@ -4271,7 +4271,7 @@
       "arrivals": [
         {
           "spawn": "PXV",
-          "waypoint_actions": { "BOOSH": "ho" },
+          "waypoint_actions": { "BOOSH": "ho/dvs" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,
@@ -4306,7 +4306,7 @@
       "arrivals": [
         {
           "spawn": "BNA",
-          "waypoint_actions": { "BOOSH": "ho" },
+          "waypoint_actions": { "BOOSH": "ho/dvs" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,
@@ -4344,7 +4344,7 @@
     "BOOSH3.VISQA": {
       "arrivals": [
         {
-          "waypoints": "VISQA CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho QBALL",
+          "waypoints": "VISQA CGI DLITE/a31000-/s280 FATSS BOOSH/a14000+/s280/ho/dvs QBALL",
           "runway_waypoints": {
             "KSTL": {
               "29": "QBALL DENAA/a10000-11000 HRTSO/a9000-10000/s250 TEEBE/a8000-9000/flyover/t356",
@@ -4385,7 +4385,7 @@
       "arrivals": [
         {
           "spawn": "MEM",
-          "waypoint_actions": { "BOOSH": "ho" },
+          "waypoint_actions": { "BOOSH": "ho/dvs" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,
@@ -4420,7 +4420,7 @@
       "arrivals": [
         {
           "spawn": "ARG",
-          "waypoint_actions": { "BOOSH": "ho" },
+          "waypoint_actions": { "BOOSH": "ho/dvs" },
           "star": "BOOSH3",
           "initial_controller": "C54",
           "initial_altitude": 31000,
@@ -4557,7 +4557,7 @@
       "arrivals": [
         {
           "spawn": "GUZIK",
-          "waypoint_actions": { "RIVRS": "ho" },
+          "waypoint_actions": { "RIVRS": "ho/dvs" },
           "star": "LORLE3",
           "initial_controller": "C50",
           "initial_altitude": 31000,
@@ -4592,7 +4592,7 @@
       "arrivals": [
         {
           "spawn": "IRK",
-          "waypoint_actions": { "RIVRS": "ho" },
+          "waypoint_actions": { "RIVRS": "ho/dvs" },
           "star": "LORLE3",
           "initial_controller": "C50",
           "initial_altitude": 31000,

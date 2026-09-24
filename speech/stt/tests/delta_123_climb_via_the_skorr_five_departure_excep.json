@@ -1,0 +1,15 @@
+{
+  "msg": "STT command",
+  "transcript": "Delta 123 climb via the Skorr five departure except maintain flight level two three zero",
+  "callsign": "DAL123",
+  "command": "CVS/A230",
+  "stt_aircraft": {
+    "Delta 123": {
+      "Callsign": "DAL123",
+      "AircraftType": "A321",
+      "Altitude": 3000,
+      "State": "departure",
+      "SID": "SKORR5"
+    }
+  }
+}

@@ -1524,7 +1524,7 @@
     "JESTR2": {
       "arrivals": [
         {
-          "waypoints": "JESTR/a19000- POLOO N027.12.53.478,W080.13.22.304/ho RASAE/a7000 LINKE JESNA/a5000/flyover/h185",
+          "waypoints": "JESTR/a19000- POLOO N027.12.53.478,W080.13.22.304/ho/dvs RASAE/a7000 LINKE JESNA/a5000/flyover/h185",
           "star": "JESTR2",
           "initial_controller": "C20",
           "initial_altitude": 19000,

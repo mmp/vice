@@ -82,8 +82,10 @@ type ArrivalConfig struct {
 	InitialSpeed     float32 // starting IAS in knots
 	AssignedAltitude float32 // 0 = none
 	ClearedAltitude  float32 // 0 = none
+	ClearedFloor     bool    // ClearedAltitude is also a descend via floor
 	InitialHeading   float32 // 0 = compute from route, non-zero = start in heading mode
 	OnSTAR           bool    // set OnSTAR flag on all waypoints
+	OnSID            bool    // set OnSID flag on all waypoints
 }
 
 // NewArrivalFlight creates a FlightTest from an ArrivalConfig.
@@ -106,9 +108,12 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 	}
 
 	wps := parseRoute(t, cfg.Waypoints, magneticVariation)
-	if cfg.OnSTAR {
-		for i := range wps {
+	for i := range wps {
+		if cfg.OnSTAR {
 			wps[i].SetOnSTAR(true)
+		}
+		if cfg.OnSID {
+			wps[i].SetOnSID(true)
 		}
 	}
 
@@ -180,8 +185,7 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 		n.setAssignedAltitude(cfg.AssignedAltitude)
 	}
 	if cfg.ClearedAltitude > 0 {
-		alt := cfg.ClearedAltitude
-		n.Altitude.Cleared = &alt
+		n.Altitude.Cleared = &ClearedAltitude{Altitude: cfg.ClearedAltitude, IsFloor: cfg.ClearedFloor}
 	}
 	if cfg.InitialHeading != 0 {
 		hdg := math.MagneticHeading(cfg.InitialHeading)
@@ -277,6 +281,54 @@ func TestContactMessageIncludesCrossDistanceAltitudeAndSpeed(t *testing.T) {
 		!strings.Contains(written, "8,000") || !strings.Contains(written, "230 knots") {
 		t.Fatalf("contact message missing cross-distance restriction: %q", written)
 	}
+}
+
+// TestContactMessageReportsViaExceptAltitude verifies that the altitude
+// excepted from a climb via SID or descend via STAR is reported on initial
+// contact (AIM 5-2-9, 5-4-1), and that an arrival held at it reports its
+// altitude rather than descending.
+func TestContactMessageReportsViaExceptAltitude(t *testing.T) {
+	newArrival := func(t *testing.T, initialAltitude float32) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  initialAltitude,
+			InitialSpeed:     250,
+		})
+	}
+	check := func(t *testing.T, rt *speech.RadioTransmission, r *rand.Rand, want, unwanted string) {
+		t.Helper()
+		written := strings.ToLower(writtenForTest(t, rt, r))
+		if !strings.Contains(written, want) || (unwanted != "" && strings.Contains(written, unwanted)) {
+			t.Errorf("contact message %q: want %q without %q", written, want, unwanted)
+		}
+	}
+
+	t.Run("ArrivalDescending", func(t *testing.T) {
+		f := newArrival(t, 11000)
+		f.DescendViaSTARExcept(8000)
+		check(t, f.nav.ContactMessage("DETGY1", "", false, false), f.nav.Rand, "11,000 for 8,000 descending via", "")
+	})
+
+	t.Run("ArrivalHeld", func(t *testing.T) {
+		f := newArrival(t, 8000)
+		f.DescendViaSTARExcept(8000)
+		check(t, f.nav.ContactMessage("DETGY1", "", false, false), f.nav.Rand, "8,000", "descending")
+	})
+
+	t.Run("Departure", func(t *testing.T) {
+		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500})
+		f.ClimbViaSIDExcept(10000)
+		check(t, f.nav.DepartureMessage("SKORR5", false), f.nav.Rand, "2,500 for 10,000 climbing via", "")
+	})
+
+	t.Run("DepartureToCruise", func(t *testing.T) {
+		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500})
+		f.ClimbViaSID()
+		check(t, f.nav.DepartureMessage("SKORR5", false), f.nav.Rand, "climbing via", " for ")
+	})
 }
 
 // AtFix fires action when the named fix is passed.
@@ -735,7 +787,22 @@ func (f *FlightTest) GoodRateDescent() {
 
 func (f *FlightTest) DescendViaSTAR() {
 	f.t.Helper()
-	f.nav.DescendViaSTAR(f.simTime)
+	f.nav.DescendViaSTAR(nil, f.simTime)
+}
+
+func (f *FlightTest) DescendViaSTARExcept(alt float32) {
+	f.t.Helper()
+	f.nav.DescendViaSTAR(&alt, f.simTime)
+}
+
+func (f *FlightTest) ClimbViaSID() {
+	f.t.Helper()
+	f.nav.ClimbViaSID(nil, f.simTime)
+}
+
+func (f *FlightTest) ClimbViaSIDExcept(alt float32) {
+	f.t.Helper()
+	f.nav.ClimbViaSID(&alt, f.simTime)
 }
 
 func (f *FlightTest) AfterFixSpeed(fix string, spd float32) {

@@ -3601,7 +3601,7 @@
     "PIRAT3": {
       "arrivals": [
         {
-          "waypoints": "PASIF/a14000-/s260 N037.14.14.818,W122.56.53.012/ho PIRAT/a10000 BRINY ARGGG/a8000/s230/h060",
+          "waypoints": "PASIF/a14000-/s260 N037.14.14.818,W122.56.53.012/ho/dvs PIRAT/a10000 BRINY ARGGG/a8000/s230/h060",
           "cruise_altitude": 32000,
           "route": "/. PIRAT3",
           "star": "PIRAT3",

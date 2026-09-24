@@ -984,9 +984,9 @@ func (nav *Nav) visualApproachRouteFollowingTraffic(runway string, trafficPositi
 }
 
 // applyClearedApproachState performs the nav-state reset common to every
-// approach clearance: cancel any hold, clear speed restrictions, mark the
-// approach as cleared and no longer standby. Returns true iff the aircraft
-// was in a hold that is now being cancelled.
+// approach clearance: cancel any hold, clear speed restrictions, end a descend
+// via floor, mark the approach as cleared and no longer standby. Returns true
+// iff the aircraft was in a hold that is now being cancelled.
 func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 	cancelHold = nav.Heading.Hold != nil
 	if nav.Heading.Hold != nil {
@@ -997,6 +997,11 @@ func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 	nav.Approach.MissedApproachIntercept = false
 	nav.Approach.ApproachClearanceCancelled = false
 	nav.Speed = Speed{}
+	// The approach's altitudes may take the aircraft below a descend via
+	// floor.
+	if c := nav.Altitude.Cleared; c != nil {
+		nav.Altitude.Cleared = &ClearedAltitude{Altitude: c.Altitude}
+	}
 	return
 }
 

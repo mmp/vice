@@ -2479,7 +2479,7 @@
           }
         },
         {
-          "waypoints": "BURGL DOUIT BLOXX/a24000+/ho BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "BURGL DOUIT BLOXX/a24000+/ho/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
@@ -2517,7 +2517,7 @@
           }
         },
         {
-          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
@@ -2787,7 +2787,7 @@
     "PITBL2": {
       "arrivals": [
         {
-          "waypoints": "HEC/ho38 N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR N034.26.39.732,W118.34.41.250/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "HEC/ho38/dvs N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR N034.26.39.732,W118.34.41.250/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "39",
@@ -2847,7 +2847,7 @@
           }
         },
         {
-          "waypoints": "PSP/ho37 N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "PSP/ho37/dvs N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "40",
@@ -2902,7 +2902,7 @@
     "RUKKI1/BAUBB3/LEGOZ4.ZIPRR (14)": {
       "arrivals": [
         {
-          "waypoints": "YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
+          "waypoints": "YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho/dvs RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
           "star": "RUKKI1",
           "route": "/. RUKKI1",
           "initial_controller": "25",
@@ -2937,7 +2937,7 @@
           }
         },
         {
-          "waypoints": "TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
+          "waypoints": "TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho/dvs TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
           "star": "BAUBB3",
           "route": "/. BAUBB3",
           "initial_controller": "25",
@@ -2957,7 +2957,7 @@
           }
         },
         {
-          "waypoints": "YYUNG ZIPRR WURLL TCUPS/ho RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "YYUNG ZIPRR WURLL TCUPS/ho/dvs RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
@@ -2990,7 +2990,7 @@
     "RUKKI1/BAUBB3/LEGOZ4.ZIPRR (13/15)": {
       "arrivals": [
         {
-          "waypoints": "LIBBO/ho25 YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho14 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
+          "waypoints": "LIBBO/ho25/dvs YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho14 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
           "star": "RUKKI1",
           "route": "/. RUKKI1",
           "initial_controller": "O14",
@@ -3025,7 +3025,7 @@
           }
         },
         {
-          "waypoints": "LIBBO/ho25 YYUNG TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho14 TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
+          "waypoints": "LIBBO/ho25/dvs YYUNG TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho14 TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
           "star": "BAUBB3",
           "route": "/. BAUBB3",
           "initial_controller": "O14",
@@ -3045,7 +3045,7 @@
           }
         },
         {
-          "waypoints": "LIBBO/ho25 YYUNG ZIPRR WURLL TCUPS/ho14 RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "LIBBO/ho25/dvs YYUNG ZIPRR WURLL TCUPS/ho14 RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "O14",
@@ -3330,7 +3330,7 @@
           }
         },
         {
-          "waypoints": "EBAYE BURGL DOUIT BLOXX/a24000+/ho14 BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000/hoT6K BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "EBAYE BURGL DOUIT BLOXX/a24000+/ho14/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000/hoT6K BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
@@ -3368,7 +3368,7 @@
           }
         },
         {
-          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho14 BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000/hoT6K BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho14/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000/hoT6K BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
@@ -4345,7 +4345,7 @@
     "HUULL2 (14)": {
       "arrivals": [
         {
-          "waypoints": "TOKIO MANZZ RBOTO LLEVI/ho BRUKY HUULL/a23000-/s280 GNZZO/a13000-14000 RYDRR/a11000/s250 KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/delete",
+          "waypoints": "TOKIO MANZZ RBOTO LLEVI/ho/dvs BRUKY HUULL/a23000-/s280 GNZZO/a13000-14000 RYDRR/a11000/s250 KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/delete",
           "star": "HUULL2",
           "route": "/. HUULL2",
           "initial_controller": "15",
@@ -4449,7 +4449,7 @@
     "PITBL2 (13/15)": {
       "arrivals": [
         {
-          "waypoints": "HEC/ho38 N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR/po13 N034.26.39.732,W118.34.41.250/ho14 HMBOY/a24000 PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "HEC/ho38/dvs N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR/po13 N034.26.39.732,W118.34.41.250/ho14 HMBOY/a24000 PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "39",
@@ -4509,7 +4509,7 @@
           }
         },
         {
-          "waypoints": "PSP/ho37 N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho14 HMBOY/a24000 PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "PSP/ho37/dvs N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho14 HMBOY/a24000 PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "40",

@@ -93,12 +93,15 @@ var validationRules = []validationRule{
 	// D + digits → descend altitude
 	{match: func(cmd string) bool { return cmd[0] == 'D' && len(cmd) > 1 && IsNumber(cmd[1:]) },
 		validate: func(cmd string, ac Aircraft) string { return validateDescend(cmd[1:], ac) }},
+	// DVS → descend via STAR, with an except-maintain altitude if given
+	{match: func(cmd string) bool { return isViaCommand(cmd, "DVS") },
+		validate: validateDescendViaSTAR},
 	// D + letters → direct to fix, no validation
 	{match: func(cmd string) bool { return cmd[0] == 'D' },
 		validate: func(string, Aircraft) string { return "" }},
-	// CVS → climb via SID
-	{match: func(cmd string) bool { return strings.HasPrefix(cmd, "CVS") },
-		validate: func(_ string, ac Aircraft) string { return validateClimbViaSID(ac) }},
+	// CVS → climb via SID, with an except-maintain altitude if given
+	{match: func(cmd string) bool { return isViaCommand(cmd, "CVS") },
+		validate: validateClimbViaSID},
 	// CAC → cancel approach clearance
 	{match: func(cmd string) bool { return strings.HasPrefix(cmd, "CAC") },
 		validate: func(_ string, ac Aircraft) string { return validateCancelApproach(ac) }},
@@ -297,10 +300,20 @@ func validateContactTower(_ Aircraft) string {
 	return ""
 }
 
-func validateClimbViaSID(ac Aircraft) string {
+func validateClimbViaSID(cmd string, ac Aircraft) string {
 	// Climb via SID only for departures
 	if ac.State != "departure" {
 		return "climb via SID only valid for departures"
+	}
+	if alt, ok := strings.CutPrefix(cmd, "CVS/A"); ok {
+		return validateClimb(alt, ac)
+	}
+	return ""
+}
+
+func validateDescendViaSTAR(cmd string, ac Aircraft) string {
+	if alt, ok := strings.CutPrefix(cmd, "DVS/A"); ok {
+		return validateDescend(alt, ac)
 	}
 	return ""
 }
@@ -350,7 +363,7 @@ func filterIncompatibleCommands(commands []string) ([]string, []string) {
 	// Check if there's a cleared approach command (C{approach} but not CVS or CAC)
 	hasApproachClearance := false
 	for _, cmd := range commands {
-		if len(cmd) > 1 && cmd[0] == 'C' && cmd != "CVS" && cmd != "CAC" && !IsNumber(cmd[1:]) {
+		if len(cmd) > 1 && cmd[0] == 'C' && !isViaProcedure(cmd) && cmd != "CAC" && !IsNumber(cmd[1:]) {
 			// Check it's not a cross-fix command (contains /)
 			if !strings.Contains(cmd, "/") {
 				hasApproachClearance = true
