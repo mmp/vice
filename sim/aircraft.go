@@ -7,7 +7,6 @@ package sim
 import (
 	"fmt"
 	"log/slog"
-	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -1205,14 +1204,18 @@ type VoiceAssigner struct {
 }
 
 // NewVoiceAssigner creates a new VoiceAssigner with airline-based voice pools.
+// Each pool is a shuffled copy of AirlineVoices' list: every sim on a server
+// makes one, so shuffling the shared lists in place would race.
 func NewVoiceAssigner(r *rand.Rand) *VoiceAssigner {
 	va := &VoiceAssigner{
-		VoicePools:     maps.Clone(AirlineVoices),
+		VoicePools:     make(map[string][]string, len(AirlineVoices)),
 		AircraftVoices: make(map[av.ADSBCallsign]string),
 	}
 
-	for voices := range maps.Values(va.VoicePools) {
+	for callsigns, voices := range util.SortedMap(AirlineVoices) {
+		voices = slices.Clone(voices)
 		rand.ShuffleSlice(voices, r)
+		va.VoicePools[callsigns] = voices
 	}
 
 	return va
