@@ -284,15 +284,15 @@ func registerAllCommands() {
 				WithName(via.name+"_except_"+name), WithPriority(17))
 		}
 
-		// {standalone_altitude} takes exactly the altitude token, so a speed
+		// {except_altitude} takes exactly the altitude token, so a speed
 		// that follows it is left for the speed slot.
-		register("maintain {standalone_altitude}", "altitude",
+		register("maintain {except_altitude}", "altitude",
 			func(proc string, alt int) string { return fmt.Sprintf("%s/A%d", cmd, alt) })
 		register("[maintain] mach [point] {mach}", "mach",
 			func(proc string, mach int) string { return fmt.Sprintf("%s M%d", cmd, mach) })
-		register("maintain {standalone_altitude} [and] [maintain] mach [point] {mach}", "altitude_mach",
+		register("maintain {except_altitude} [and] [maintain] mach [point] {mach}", "altitude_mach",
 			func(proc string, alt, mach int) string { return fmt.Sprintf("%s/A%d M%d", cmd, alt, mach) })
-		register("[maintain] mach [point] {mach} [and] [maintain] {standalone_altitude}", "mach_altitude",
+		register("[maintain] mach [point] {mach} [and] [maintain] {except_altitude}", "mach_altitude",
 			func(proc string, mach, alt int) string { return fmt.Sprintf("%s/A%d M%d", cmd, alt, mach) })
 
 		// Each form of a speed on its own, after an altitude, and before one.
@@ -309,9 +309,9 @@ func registerAllCommands() {
 			suffix := spd.suffix
 			register(spd.alone, spd.name,
 				func(proc string, s int) string { return fmt.Sprintf("%s S%d%s", cmd, s, suffix) })
-			register("maintain {standalone_altitude} "+spd.afterAltitude, "altitude_"+spd.name,
+			register("maintain {except_altitude} "+spd.afterAltitude, "altitude_"+spd.name,
 				func(proc string, alt, s int) string { return fmt.Sprintf("%s/A%d S%d%s", cmd, alt, s, suffix) })
-			register(spd.alone+" [and] [maintain] {standalone_altitude}", spd.name+"_altitude",
+			register(spd.alone+" [and] [maintain] {except_altitude}", spd.name+"_altitude",
 				func(proc string, s, alt int) string { return fmt.Sprintf("%s/A%d S%d%s", cmd, alt, s, suffix) })
 		}
 	}

@@ -100,12 +100,27 @@ func TestSpeedRestrictionReadbackIncludesQualifier(t *testing.T) {
 // a speed given as a separate command.
 func TestProcedureExceptReadback(t *testing.T) {
 	alt := float32(10000)
+	current := float32(8000)
 	for _, test := range []struct {
 		name     string
 		intents  []CommandIntent
 		want     []string
 		unwanted string
 	}{
+		{
+			name: "climbing back with speed",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR, ExceptAltitude: &alt, CurrentAltitude: &current},
+				SpeedIntent{Speed: 250, Type: SpeedAssign}},
+			want:     []string{"descend via the star, except maintain 10,000 and 250 knots", "okay, but we're", "at 8,000 currently"},
+			unwanted: "up at",
+		},
+		{
+			name: "descending back with speed",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureClimbViaSID, ExceptAltitude: &current, CurrentAltitude: &alt},
+				SpeedIntent{Speed: 250, Type: SpeedAssign}},
+			want:     []string{"climb via the sid, except maintain 8,000 and 250 knots", "okay, but we're", "at 10,000 currently"},
+			unwanted: "down at",
+		},
 		{
 			name:    "altitude",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureClimbViaSID, ExceptAltitude: &alt}},

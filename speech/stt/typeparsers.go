@@ -817,9 +817,10 @@ func (p *dmeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, strin
 	return nil, 0, ""
 }
 
-// standaloneAltitudeParser only matches TokenAltitude tokens (created by "thousand").
-// This is stricter than altitudeParser - it won't match plain numbers.
-type standaloneAltitudeParser struct{}
+// standaloneAltitudeParser matches a single altitude token without scanning ahead.
+type standaloneAltitudeParser struct {
+	allowNumericFeet bool
+}
 
 func (p *standaloneAltitudeParser) goType() reflect.Type {
 	return reflect.TypeFor[int]()
@@ -830,9 +831,12 @@ func (p *standaloneAltitudeParser) parse(tokens []Token, pos int, ac Aircraft) (
 		return nil, 0, ""
 	}
 
-	// Only match TokenAltitude (created by "thousand" etc.), not plain numbers
 	if tokens[pos].Type == TokenAltitude {
 		return tokens[pos].Value, 1, ""
+	}
+	if t := tokens[pos]; p.allowNumericFeet && t.Type == TokenNumber &&
+		t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
+		return t.Value / 100, 1, ""
 	}
 
 	return nil, 0, ""
@@ -1022,6 +1026,8 @@ func getTypeParser(typeID string) typeParser {
 		return &frequencyValueParser{}
 	case "standalone_altitude":
 		return &standaloneAltitudeParser{}
+	case "except_altitude":
+		return &standaloneAltitudeParser{allowNumericFeet: true}
 	case "compass_dir":
 		return &compassDirParser{}
 	default:

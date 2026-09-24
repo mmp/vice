@@ -787,9 +787,10 @@ const (
 // ProcedureIntent represents climb via SID / descend via STAR, with the
 // altitude and speed the instruction excepted from the procedure, if any.
 type ProcedureIntent struct {
-	Type           ProcedureType
-	ExceptAltitude *float32
-	ExceptSpeed    *SpeedIntent
+	Type            ProcedureType
+	ExceptAltitude  *float32
+	ExceptSpeed     *SpeedIntent
+	CurrentAltitude *float32 // Flags an accepted exception that reverses the procedure's altitude direction.
 }
 
 func (p ProcedureIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -807,6 +808,13 @@ func (p ProcedureIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		rt.Add("except maintain {alt}", *p.ExceptAltitude)
 	case p.ExceptSpeed != nil:
 		rt.Add("except maintain "+p.ExceptSpeed.exceptPhrase(), p.ExceptSpeed.Speed)
+	}
+	if p.CurrentAltitude != nil {
+		if p.Type == ProcedureClimbViaSID {
+			rt.Add("okay, but we're [up at|at] {alt} currently", *p.CurrentAltitude)
+		} else {
+			rt.Add("okay, but we're [down at|at] {alt} currently", *p.CurrentAltitude)
+		}
 	}
 }
 

@@ -1373,24 +1373,49 @@ func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
 // scenario's cleared altitude for a departure is an earlier controller's
 // "except maintain", and cruise is the only top altitude it gives a SID.
 func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time) speech.CommandIntent {
+	intent := speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID, ExceptAltitude: exceptAlt}
+	if exceptAlt != nil {
+		if *exceptAlt > nav.Perf.Ceiling {
+			return speech.MakeUnableIntent("unable. That altitude is above our ceiling.")
+		}
+		if *exceptAlt > nav.FinalAltitude {
+			return speech.MakeUnableIntent("unable. We're only filed up to {alt}", nav.FinalAltitude)
+		}
+		if alt := nav.FlightState.Altitude; alt-*exceptAlt >= 1000 {
+			intent.CurrentAltitude = &alt
+		}
+	}
 	if !nav.ClimbViaSIDAtPassedFix(exceptAlt) {
 		return speech.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
 	nav.EnqueueOnCourse(simTime)
-	return speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID, ExceptAltitude: exceptAlt}
+	return intent
 }
 
 // DescendViaSTAR is "descend via STAR", with "except maintain exceptAlt" if
 // it is non-nil; otherwise the aircraft descends to the STAR's last
 // restriction.
 func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandIntent {
+	intent := speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR, ExceptAltitude: exceptAlt}
+	if exceptAlt != nil {
+		if *exceptAlt > nav.Perf.Ceiling {
+			return speech.MakeUnableIntent("unable. That altitude is above our ceiling.")
+		}
+		alt := nav.FlightState.Altitude
+		if *exceptAlt-alt >= 5000 {
+			return speech.MakeUnableIntent("unable. We're already at {alt}", alt)
+		}
+		if *exceptAlt-alt >= 1000 {
+			intent.CurrentAltitude = &alt
+		}
+	}
 	if !nav.DescendViaSTARAtPassedFix(exceptAlt) {
 		return speech.MakeUnableIntent("unable. We're not on a STAR")
 	}
 
 	nav.EnqueueOnCourse(simTime)
-	return speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR, ExceptAltitude: exceptAlt}
+	return intent
 }
 
 // ClimbViaSIDAtPassedFix carries out a /cvs or /cv route action at the fix

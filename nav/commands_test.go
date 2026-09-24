@@ -6,6 +6,8 @@ package nav
 
 import (
 	"fmt"
+	"reflect"
+	"strings"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
@@ -931,4 +933,82 @@ func waypointFixes(wps []av.Waypoint) []string {
 		fixes[i] = wp.Fix
 	}
 	return fixes
+}
+
+func TestViaExceptionValidation(t *testing.T) {
+	for _, test := range []struct {
+		name                               string
+		climb                              bool
+		current, filed, ceiling, exception float32
+		refusal                            string
+		warn                               bool
+	}{
+		{name: "climb above filed", climb: true, current: 5000, filed: 8000, ceiling: 39000, exception: 10000,
+			refusal: "we're only filed up to 8,000"},
+		{name: "climb at filed", climb: true, current: 5000, filed: 8000, ceiling: 39000, exception: 8000},
+		{name: "climb above ceiling", climb: true, current: 25000, filed: 35000, ceiling: 39000, exception: 60000,
+			refusal: "above our ceiling"},
+		{name: "climb at ceiling", climb: true, current: 25000, filed: 39000, ceiling: 39000, exception: 39000},
+		{name: "climb at current", climb: true, current: 8000, filed: 35000, ceiling: 39000, exception: 8000},
+		{name: "climb 999 below", climb: true, current: 8999, filed: 35000, ceiling: 39000, exception: 8000},
+		{name: "climb 1000 below", climb: true, current: 9000, filed: 35000, ceiling: 39000, exception: 8000, warn: true},
+		{name: "climb 5000 below", climb: true, current: 13000, filed: 35000, ceiling: 39000, exception: 8000, warn: true},
+		{name: "descend above ceiling", current: 25000, filed: 35000, ceiling: 39000, exception: 60000,
+			refusal: "above our ceiling"},
+		{name: "descend just above ceiling", current: 38000, filed: 39000, ceiling: 39000, exception: 39001,
+			refusal: "above our ceiling"},
+		{name: "descend at ceiling", current: 39000, filed: 39000, ceiling: 39000, exception: 39000},
+		{name: "descend below current", current: 25000, filed: 35000, ceiling: 39000, exception: 24000},
+		{name: "descend at current", current: 25000, filed: 35000, ceiling: 39000, exception: 25000},
+		{name: "descend 999 above", current: 25001, filed: 35000, ceiling: 39000, exception: 26000},
+		{name: "descend 1000 above", current: 25000, filed: 35000, ceiling: 39000, exception: 26000, warn: true},
+		{name: "descend 4999 above", current: 25001, filed: 35000, ceiling: 39000, exception: 30000, warn: true},
+		{name: "descend 5000 above", current: 25000, filed: 35000, ceiling: 39000, exception: 30000,
+			refusal: "we're already at FL250"},
+		{name: "descend more than 5000 above", current: 25000, filed: 35000, ceiling: 39000, exception: 31000,
+			refusal: "we're already at FL250"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star",
+				DepartureAirport: "KMCO", ArrivalAirport: "KJFK", AircraftType: "A320",
+				InitialAltitude: test.current, InitialSpeed: 250, AssignedAltitude: test.current,
+			})
+			if test.climb {
+				f = newDepartureOnSID(t, ArrivalConfig{InitialAltitude: test.current, AssignedAltitude: test.current})
+			}
+			f.nav.FinalAltitude = test.filed
+			f.nav.Perf.Ceiling = test.ceiling
+			f.AssignHeading(90, av.TurnClosest)
+			sr := av.MakeAtSpeedRestriction(250)
+			f.nav.Speed.Assigned = &sr
+			before := *f.nav
+			var intent speech.CommandIntent
+			if test.climb {
+				intent = f.nav.ClimbViaSID(&test.exception, f.simTime)
+			} else {
+				intent = f.nav.DescendViaSTAR(&test.exception, f.simTime)
+			}
+			if test.refusal != "" {
+				AssertUnable(t, intent)
+				if !reflect.DeepEqual(before, *f.nav) {
+					t.Fatal("refused command changed navigation state")
+				}
+			} else if c := f.nav.Altitude.Cleared; c == nil || c.Altitude != test.exception || c.IsFloor == test.climb {
+				t.Fatalf("accepted exception not applied: %+v", f.nav.Altitude)
+			}
+			rt := speech.RenderIntents([]speech.CommandIntent{intent}, f.nav.Rand)
+			written, err := rt.Written(f.nav.Rand)
+			if err != nil {
+				t.Fatal(err)
+			}
+			readback := strings.ToLower(written)
+			if test.refusal != "" && !strings.Contains(readback, strings.ToLower(test.refusal)) {
+				t.Errorf("readback %q missing %q", written, test.refusal)
+			}
+			if strings.Contains(readback, "currently") != test.warn {
+				t.Errorf("unexpected altitude caution in readback %q, want caution: %v", written, test.warn)
+			}
+		})
+	}
 }
