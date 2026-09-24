@@ -92,10 +92,6 @@ type Arrival struct {
 	CoordinationFix     string                  `json:"coordination_fix"`
 	IsRNAV              bool                    `json:"is_rnav"`
 
-	// ERAM gives the data block entries the flight arrives with; ERAM
-	// facilities only.
-	ERAM *ERAMEntries `json:"eram"`
-
 	// Aircraft restricts which types of flights the arrival carries; it's
 	// used when selecting arrivals with real-world traffic.
 	Aircraft AircraftClass `json:"aircraft,omitempty"`
@@ -915,10 +911,6 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 	}
 	if !checkScratchpad(ar.SecondaryScratchpad) {
 		e.ErrorString("%s: invalid secondary scratchpad", ar.SecondaryScratchpad)
-	}
-
-	if ar.ERAM != nil {
-		ar.ERAM.CheckInbound(ar.AssignedAltitude, ar.Scratchpad, ar.SecondaryScratchpad, e)
 	}
 }
 

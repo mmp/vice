@@ -34,10 +34,6 @@ type Overflight struct {
 	Airlines            []OverflightAirline     `json:"airlines"`
 	TypeOfFlightString  string                  `json:"flight_type"`
 	TypeOfFlight        TypeOfFlight            // set via TypeOfFlightString
-
-	// ERAM gives the data block entries the flight arrives with; ERAM
-	// facilities only.
-	ERAM *ERAMEntries `json:"eram"`
 }
 
 type OverflightAirline struct {
@@ -118,10 +114,6 @@ func (of *Overflight) Finalize(db Database, nmPerLongitude float32, magneticVari
 	}
 	if !checkScratchpad(of.SecondaryScratchpad) {
 		e.ErrorString("%s: invalid secondary scratchpad", of.SecondaryScratchpad)
-	}
-
-	if of.ERAM != nil {
-		of.ERAM.CheckInbound(of.AssignedAltitude, of.Scratchpad, of.SecondaryScratchpad, e)
 	}
 
 	switch of.TypeOfFlightString {

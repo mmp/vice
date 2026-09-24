@@ -317,8 +317,6 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 		e.Pop()
 	}
 
-	checkERAMEntriesUnused(sg, e)
-
 	for i := range sg.VFRReportingPoints {
 		sg.VFRReportingPoints[i].Finalize(sg, sg.FacilityConfig.ControlPositions, e)
 	}

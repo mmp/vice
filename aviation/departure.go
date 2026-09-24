@@ -34,10 +34,6 @@ type ExitRoute struct {
 	// when an exit routes them differently.
 	Aircraft AircraftClass `json:"aircraft,omitempty"`
 
-	// ERAM gives the data block entries departures on the route take off
-	// with; ERAM facilities only.
-	ERAM *ERAMEntries `json:"eram"`
-
 	WaitToContactDeparture bool // whether the aircraft waits until a /TC point to contact departure
 }
 
@@ -613,10 +609,6 @@ func (er *ExitRoute) initialize(db Database, icao ICAOAirportCode, rwy RunwayID,
 		e.ErrorString(`must specify either "assigned_altitude" or "cleared_altitude"`)
 	} else if er.AssignedAltitude != 0 && er.ClearedAltitude != 0 {
 		e.ErrorString(`cannot specify both "assigned_altitude" and "cleared_altitude"`)
-	}
-
-	if er.ERAM != nil {
-		er.ERAM.Check(e)
 	}
 }
 

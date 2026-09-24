@@ -62,10 +62,6 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 			s.areaForTCP(nasFp.TrackingController))
 	}
 
-	if db.DB.IsARTCC(s.State.Facility) {
-		nasFp.applyERAMEntries(exitRoute.ERAM)
-	}
-
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
 	// departure assignment above when adapted.
 	s.deriveERAMFixPair(&nasFp, ac)
