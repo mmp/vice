@@ -313,10 +313,10 @@ func runSimulation(lg *log.Logger) error {
 	// Sign on as instructor if waypoint commands are specified
 	instructor := *waypointCommands != ""
 	rootController, _ := newSimConfig.ControllerConfiguration.RootPosition()
-	state, _, err := s.SignOn(sim.TCW(rootController), s.AllScenarioPositions())
-	if err != nil {
+	if err := s.SignOn(sim.TCW(rootController), s.AllScenarioPositions()); err != nil {
 		return fmt.Errorf("failed to sign in root controller %s: %w", rootController, err)
 	}
+	state := s.GetUserState()
 	if instructor {
 		s.SetPrivilegedTCW(sim.TCW(rootController), true)
 	}

@@ -501,10 +501,10 @@ func (sm *SimManager) signOff(token string) error {
 
 // assume SimManager lock is held
 func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.EventsSubscription, error) {
-	_, eventSub, err := ss.sim.SignOn(req.TCW, req.SelectedTCPs)
-	if err != nil {
+	if err := ss.sim.SignOn(req.TCW, req.SelectedTCPs); err != nil {
 		return "", nil, err
 	}
+	eventSub := ss.sim.Subscribe()
 
 	// Set privileged status if instructor
 	if req.Privileged {

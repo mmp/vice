@@ -429,8 +429,7 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 
 	// Sign on as root controller + instructor with all positions
 	tcw := TCW(s.ScenarioRootPosition())
-	_, _, err := s.SignOn(tcw, s.AllScenarioPositions())
-	if err != nil {
+	if err := s.SignOn(tcw, s.AllScenarioPositions()); err != nil {
 		return fmt.Errorf("failed to sign on as controller %s: %w", tcw, err)
 	}
 	s.SetPrivilegedTCW(tcw, true) // Replay runs as instructor
