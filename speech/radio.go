@@ -18,6 +18,8 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
+
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 type RadioTransmissionType int
@@ -148,6 +150,25 @@ func (rt *RadioTransmission) UnmarshalJSON(b []byte) error {
 		}
 	}
 	return nil
+}
+
+// A queued RadioTransmission also travels as msgpack, when a sim is sent to
+// a server or saved as the snapshot a session log starts with. msgpack loses
+// the argument types just as plain JSON does, so its form is the JSON one.
+func (rt RadioTransmission) MarshalMsgpack() ([]byte, error) {
+	b, err := rt.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return msgpack.Marshal(b)
+}
+
+func (rt *RadioTransmission) UnmarshalMsgpack(b []byte) error {
+	var j []byte
+	if err := msgpack.Unmarshal(b, &j); err != nil {
+		return err
+	}
+	return rt.UnmarshalJSON(j)
 }
 
 // MakeContactTransmission is a helper function to make a pilot

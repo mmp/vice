@@ -15,11 +15,15 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
+
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 // A queued transmission is saved to the user's config and read back, so every
 // argument type must survive JSON with its type intact; Args is []any, which
 // would otherwise return numbers as float64 and named string types as strings.
+// It also travels as msgpack, in a sim sent to a server or saved in a session
+// log, and has to come back from that intact too.
 func TestTransmissionArgsRoundTrip(t *testing.T) {
 	db.DB = &db.StaticDatabase{
 		Airports:  map[av.ICAOAirportCode]db.Airport{"KJFK": {Name: "John F Kennedy International"}},
@@ -51,6 +55,18 @@ func TestTransmissionArgsRoundTrip(t *testing.T) {
 
 	if !reflect.DeepEqual(rt, got) {
 		t.Errorf("round trip changed the transmission:\n got %#v\nwant %#v", got, rt)
+	}
+
+	mb, err := msgpack.Marshal(rt)
+	if err != nil {
+		t.Fatalf("msgpack marshal: %v", err)
+	}
+	var mgot RadioTransmission
+	if err := msgpack.Unmarshal(mb, &mgot); err != nil {
+		t.Fatalf("msgpack unmarshal: %v", err)
+	}
+	if !reflect.DeepEqual(rt, mgot) {
+		t.Errorf("msgpack round trip changed the transmission:\n got %#v\nwant %#v", mgot, rt)
 	}
 
 	// Rendering the recovered transmission must give the same text; a lost type
