@@ -680,6 +680,38 @@ func TestUnclearedApproachRestrictionsIgnored(t *testing.T) {
 		f.Run()
 	})
 
+	t.Run("SyntheticSpeedCrossing", func(t *testing.T) {
+		f := newFlight(t, "appr")
+		fix := f.nav.Waypoints[1]
+		hdg := math.TrueToMagnetic(
+			math.Heading2LL(fix.Location, f.nav.FlightState.Position, f.nav.FlightState.NmPerLongitude),
+			f.nav.FlightState.MagneticVariation)
+		dir, err := math.ParseCardinalOrdinalDirection(math.ShortCompass(hdg))
+		if err != nil {
+			t.Fatal(err)
+		}
+		sr := av.MakeAtSpeedRestriction(210)
+		intent := f.nav.CrossDistanceFromFixAt("LEFER", 2, dir, nil, &sr, f.temp())
+		if _, ok := intent.(speech.UnableIntent); ok {
+			t.Fatalf("unexpected unable: %v", intent)
+		}
+		wp := f.nav.Waypoints[1]
+		if !wp.SyntheticCrossing() || !wp.OnApproach() {
+			t.Fatalf("expected a synthetic approach crossing, got %v", wp)
+		}
+		f.AtFix(wp.Fix, func(f *FlightTest) {
+			f.AssertSpeedNear(210, 5)
+			if r := f.nav.Speed.Restriction; r == nil || *r != sr {
+				t.Errorf("expected crossing speed to remain in effect, got %v", r)
+			}
+		})
+		f.AtFix("LEFER", func(f *FlightTest) {
+			f.AssertSpeedNear(210, 5)
+			f.AssertAltitudeNear(7000, 50)
+		})
+		f.Run()
+	})
+
 	// Cancelling the clearance leaves the aircraft on the approach's
 	// waypoints, no longer intercepting.
 	t.Run("CancelledClearance", func(t *testing.T) {

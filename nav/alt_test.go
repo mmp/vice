@@ -1006,6 +1006,43 @@ func TestVectorKeepsIssuedAltitude(t *testing.T) {
 	}
 }
 
+// TestVectorOffApproachAfterCompletedDescent verifies that a completed descent
+// clearance does not cause a climb when the aircraft is vectored off an approach.
+func TestVectorOffApproachAfterCompletedDescent(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT LEFER ROSLY",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     210,
+	})
+	f.ExpectApproach("I22L")
+	f.AssignAltitude(3000)
+	f.ClearedApproach("I22L")
+	f.StepUntil("descended below the preserved clearance", func() bool {
+		return f.nav.FlightState.Altitude <= 2900
+	})
+	if c := f.nav.Altitude.Cleared; c == nil || c.Altitude != 3000 {
+		t.Fatalf("expected the completed descent clearance to remain until the next fix, got %+v", c)
+	}
+
+	f.AssignHeading(int(math.OffsetHeading(f.nav.FlightState.Heading, -30)), av.TurnLeft)
+	f.Step(15)
+	if f.nav.Approach.Cleared {
+		t.Error("expected the heading to cancel the approach clearance")
+	}
+	if !f.nav.Approach.RequestAltitude {
+		t.Error("expected the pilot to ask for an altitude")
+	}
+	c := f.nav.Altitude.Cleared
+	if c == nil || !c.IsFloor || c.Altitude > 2900 {
+		t.Fatalf("expected the altitude at the turn to be held, got %+v", c)
+	}
+	f.Step(60)
+	f.AssertAltitudeNear(c.Altitude, 50)
+}
+
 // TestVectorOffLocalizerHoldsAltitude verifies that an aircraft established
 // on the localizer of a cleared approach, with no altitude issued, holds its
 // altitude and asks for one when it is vectored off, as it does off a STAR.

@@ -498,6 +498,9 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 			if _, ok := nav.findAltitudeTarget(); ok {
 				nav.Approach.RequestAltitude = true
 				snapshotAltitude = true
+				// Discard a completed approach descent so it cannot govern
+				// altitude after the approach clearance is cancelled.
+				nav.Altitude.Cleared = nil
 			}
 		}
 
@@ -1506,7 +1509,16 @@ func (nav *Nav) AltitudeOurDiscretion() speech.CommandIntent {
 // AfterSpeed counts: the altitude is assigned, just deferred until the speed
 // change completes.
 func (nav *Nav) hasIssuedAltitude() bool {
-	return nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil || nav.Altitude.Cleared != nil
+	if nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil {
+		return true
+	}
+	c := nav.Altitude.Cleared
+	if c == nil {
+		return false
+	}
+	// An approach may descend below a preserved clearance before the next
+	// waypoint clears it. Only an unfinished descent still governs a vector.
+	return !nav.Approach.Cleared || c.IsFloor || c.Altitude < nav.FlightState.Altitude
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {

@@ -386,11 +386,11 @@ func (nav *Nav) targetAltitudeIAS(temp av.Temperature) (float32, float32) {
 	return math.Lerp(x, min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
-// chartedSpeedRestriction returns wp's published speed restriction, or nil
-// if wp is on an approach the aircraft hasn't been cleared for: an
-// approach's restrictions apply only once the aircraft is cleared for it.
+// chartedSpeedRestriction returns wp's inline speed restriction. Published
+// approach restrictions require approach clearance; synthetic controller
+// crossings apply regardless of clearance.
 func (nav *Nav) chartedSpeedRestriction(wp *av.Waypoint) *av.SpeedRestriction {
-	if wp.OnApproach() && !nav.Approach.Cleared {
+	if wp.OnApproach() && !nav.Approach.Cleared && !wp.SyntheticCrossing() {
 		return nil
 	}
 	return wp.SpeedRestriction()
