@@ -25,23 +25,31 @@ type Model struct {
 	station  string
 
 	grids     [2]*AtmosGrid
-	times     [2]time.Time
+	updates   [2]AtmosUpdate // what each grid was built from
 	nextFetch time.Time
-	ch        <-chan AtmosResult
+	ch        <-chan atmosFetch
 
 	mu sync.Mutex
 	lg *log.Logger
 }
 
-type AtmosResult struct {
-	Grid     *AtmosGrid
+// AtmosUpdate is an atmospheric grid for a Model to install, in the form it
+// was fetched in: Time is the time it is valid for, and NextTime is when the
+// next grid in the series is.
+type AtmosUpdate struct {
+	Atmos    *AtmosByPointSOA
 	Time     time.Time
 	NextTime time.Time
-	Err      error
+}
+
+type atmosFetch struct {
+	update AtmosUpdate
+	grid   *AtmosGrid
+	err    error
 }
 
 // MakeCalmModel returns a Model with no weather data, so all lookups return
-// the standard atmosphere with no wind.
+// the standard atmosphere with no wind until updates are installed in it.
 func MakeCalmModel() *Model {
 	return &Model{}
 }
@@ -69,27 +77,26 @@ func MakeModel(provider *Provider, facility string, station string, startTime ti
 }
 
 // fetch gets the grid for time t from the provider and builds it.
-func (m *Model) fetch(t time.Time) AtmosResult {
+func (m *Model) fetch(t time.Time) atmosFetch {
 	atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.facility, t, m.station)
-	ar := AtmosResult{
-		Time:     atmosTime,
-		NextTime: nextTime,
-		Err:      err,
+	f := atmosFetch{
+		update: AtmosUpdate{Atmos: atmos, Time: atmosTime, NextTime: nextTime},
+		err:    err,
 	}
 	if err == nil && atmos != nil {
-		ar.Grid = atmos.ToAOS().GetGrid()
+		f.grid = atmos.ToAOS().GetGrid()
 	}
-	return ar
+	return f
 }
 
 // fetchAtmos fetches the grid for time t in the background, so that the
 // sim's update doesn't stall on the fetch or on building the grid.
-func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
+func (m *Model) fetchAtmos(t time.Time) <-chan atmosFetch {
 	if m.provider == nil {
 		return nil
 	}
 
-	ch := make(chan AtmosResult, 1)
+	ch := make(chan atmosFetch, 1)
 	go func() {
 		defer close(ch)
 		ch <- m.fetch(t)
@@ -108,12 +115,12 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 
 	s0, ok0 := m.grids[0].Lookup(p, alt)
 	s1, ok1 := m.grids[1].Lookup(p, alt)
-	if !ok0 || m.times[0].Equal(m.times[1]) {
+	if !ok0 || m.updates[0].Time.Equal(m.updates[1].Time) {
 		return s1
 	} else if !ok1 {
 		return s0
 	} else {
-		delta := t.Sub(m.times[0]).Seconds() / m.times[1].Sub(m.times[0]).Seconds()
+		delta := t.Sub(m.updates[0].Time).Seconds() / m.updates[1].Time.Sub(m.updates[0].Time).Seconds()
 		delta = math.Clamp(delta, 0, 1)
 		return LerpSample(float32(delta), s0, s1)
 	}
@@ -121,48 +128,74 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 
 // Advance is called by the sim once each tick, t being the sim's time. It
 // starts fetching the next grid once t passes the later of the two current
-// ones, and it installs a grid whose fetch has finished.
-func (m *Model) Advance(t time.Time) {
+// ones, and it installs a grid whose fetch has finished, returning it; it
+// returns nil if it installed none.
+func (m *Model) Advance(t time.Time) *AtmosUpdate {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	if !m.times[1].IsZero() && t.After(m.times[1]) && !m.nextFetch.IsZero() && m.ch == nil {
+	if !m.updates[1].Time.IsZero() && t.After(m.updates[1].Time) && !m.nextFetch.IsZero() && m.ch == nil {
 		m.ch = m.fetchAtmos(m.nextFetch)
 	}
 
 	select {
-	case ar := <-m.ch:
+	case f := <-m.ch:
 		m.ch = nil
-		m.installFetched(ar)
+		return m.installFetched(f)
 	default:
+		return nil
 	}
 }
 
-// installFetched installs the grid a fetch got, if it got one.
-func (m *Model) installFetched(ar AtmosResult) {
-	if ar.Err != nil || ar.Grid == nil {
-		if ar.Err != nil {
-			m.lg.Errorf("%v", ar.Err)
+// installFetched installs the grid a fetch got, if it got one, returning
+// the update it was built from.
+func (m *Model) installFetched(f atmosFetch) *AtmosUpdate {
+	if f.err != nil || f.grid == nil {
+		if f.err != nil {
+			m.lg.Errorf("%v", f.err)
 		}
 		// Carry on with the grids we have rather than asking again
 		// every tick.
 		m.nextFetch = time.Time{}
-		return
+		return nil
 	}
-	m.install(ar)
+	m.install(f.update, f.grid)
+	return &f.update
 }
 
-func (m *Model) install(ar AtmosResult) {
+// Install installs a grid a replayed session's model installed.
+func (m *Model) Install(u AtmosUpdate) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	m.install(u, u.Atmos.ToAOS().GetGrid())
+}
+
+// Installed returns the updates that, installed in order in a new model,
+// give it the grids this one has.
+func (m *Model) Installed() []AtmosUpdate {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if m.grids[0] == nil {
+		return nil
+	} else if m.grids[0] == m.grids[1] {
+		return []AtmosUpdate{m.updates[1]}
+	}
+	return []AtmosUpdate{m.updates[0], m.updates[1]}
+}
+
+func (m *Model) install(u AtmosUpdate, grid *AtmosGrid) {
 	// Shift down to make room for the new one in [1].
-	m.grids[0], m.times[0] = m.grids[1], m.times[1]
-	m.grids[1], m.times[1] = ar.Grid, ar.Time
-	m.nextFetch = ar.NextTime
+	m.grids[0], m.updates[0] = m.grids[1], m.updates[1]
+	m.grids[1], m.updates[1] = grid, u
+	m.nextFetch = u.NextTime
 
 	if m.grids[0] == nil {
 		// We just got the very first one; copy it into [0] for now so
 		// code elsewhere can assume that either none or both are
 		// present.
-		m.grids[0], m.times[0] = m.grids[1], m.times[1]
+		m.grids[0], m.updates[0] = m.grids[1], m.updates[1]
 
 		// And get started on fetching the next one, when the series has
 		// one: a time past the end of it comes back with no next time,
