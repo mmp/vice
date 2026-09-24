@@ -145,7 +145,11 @@ func (sd *dispatcher) AddMETARAirport(args *AddMETARAirportArgs, _ *struct{}) er
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.AddMETARAirport(args.Airport)
+	metar, err := c.sim.METARWindow(args.Airport)
+	if err != nil {
+		return err
+	}
+	return c.sim.AddMETAR(args.Airport, metar)
 }
 
 type TriggerEmergencyArgs struct {

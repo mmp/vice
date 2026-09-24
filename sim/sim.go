@@ -330,7 +330,9 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		lg.Errorf("%v", err)
 	} else {
 		for ap, msoa := range apmetar {
-			s.loadMETARWindow(ap, msoa, config.StartTime)
+			if metar := msoa.DecodeWindow(string(ap), config.StartTime, 24*time.Hour); len(metar) > 0 {
+				s.addMETARWindow(ap, metar)
+			}
 		}
 	}
 
@@ -463,12 +465,26 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 	return nil
 }
 
-// AddMETARAirport loads METAR data for icao from bundled resources so
-// that future state updates carry it in DynamicState.METAR. Returns
-// av.ErrUnknownAirport if the ICAO is not in the aviation database;
-// silently no-ops when the airport is known but has no bundled METAR
-// data or when METAR has already been loaded for it.
-func (s *Sim) AddMETARAirport(icao av.ICAOAirportCode) error {
+// METARWindow reads the day of the airport's METAR reports that starts at the
+// sim's current time from the bundled resources: what AddMETAR adds for it.
+// It returns no reports for an airport the resources have none for.
+func (s *Sim) METARWindow(icao av.ICAOAirportCode) ([]wx.METAR, error) {
+	apmetar, err := wx.GetMETAR([]av.ICAOAirportCode{icao})
+	if err != nil {
+		return nil, err
+	}
+	msoa, ok := apmetar[icao]
+	if !ok {
+		return nil, nil
+	}
+	return msoa.DecodeWindow(string(icao), s.SimTime().Time(), 24*time.Hour), nil
+}
+
+// AddMETAR adds METAR reports for icao so that future state updates carry
+// it in DynamicState.METAR. Returns av.ErrUnknownAirport if the ICAO is not
+// in the aviation database; silently no-ops when there are no reports or
+// when METAR has already been loaded for the airport.
+func (s *Sim) AddMETAR(icao av.ICAOAirportCode, metar []wx.METAR) error {
 	if _, ok := db.DB.LookupICAOAirport(icao); !ok {
 		return av.ErrUnknownAirport
 	}
@@ -476,43 +492,23 @@ func (s *Sim) AddMETARAirport(icao av.ICAOAirportCode) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if _, ok := s.METAR[icao]; ok {
+	if _, ok := s.METAR[icao]; ok || len(metar) == 0 {
 		return nil
 	}
 
-	apmetar, err := wx.GetMETAR([]av.ICAOAirportCode{icao})
-	if err != nil {
-		return err
-	}
-	msoa, ok := apmetar[icao]
-	if !ok {
-		return nil
-	}
-
-	first, ok := s.loadMETARWindow(icao, msoa, s.State.SimTime.Time())
-	if !ok {
-		return nil
-	}
-
-	s.State.METAR[icao] = first
+	s.addMETARWindow(icao, metar)
+	s.State.METAR[icao] = metar[0]
 
 	s.publish()
 	return nil
 }
 
-// loadMETARWindow decodes msoa for icao, appends the 24-hour window of
-// entries starting at-or-before startTime into s.METAR[icao], and sets
-// s.ATISChangedTime[icao] to the first entry's observation time. Returns
-// the first entry of the window (used to seed s.State.METAR) and whether
-// any entries were loaded. Caller is responsible for synchronization.
-func (s *Sim) loadMETARWindow(icao av.ICAOAirportCode, msoa wx.METARSOA, startTime time.Time) (wx.METAR, bool) {
-	metar := msoa.DecodeWindow(string(icao), startTime, 24*time.Hour)
-	if len(metar) == 0 {
-		return wx.METAR{}, false
-	}
+// addMETARWindow appends a window of METAR entries for icao to s.METAR and
+// sets s.ATISChangedTime[icao] to the first entry's observation time. Caller
+// is responsible for synchronization.
+func (s *Sim) addMETARWindow(icao av.ICAOAirportCode, metar []wx.METAR) {
 	s.ATISChangedTime[icao] = NewSimTime(metar[0].Time)
 	s.METAR[icao] = append(s.METAR[icao], metar...)
-	return metar[0], true
 }
 
 func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
