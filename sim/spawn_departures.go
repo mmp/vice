@@ -203,7 +203,7 @@ func (s *Sim) cullHeldDepartures(depState *RunwayLaunchState, now Time) {
 		if now.Before(dep.RequestReleaseTime) {
 			break // FIFO
 		}
-		s.deleteAircraft(s.Aircraft[dep.ADSBCallsign])
+		s.deleteAircraft(s.Aircraft[dep.ADSBCallsign], DeletePrespawn)
 		depState.Held = depState.Held[1:]
 	}
 }
@@ -741,7 +741,7 @@ func (s *Sim) cullDepartures(keep int, d []DepartureAircraft) []DepartureAircraf
 
 	for _, dep := range d[keep:] {
 		if ac, ok := s.Aircraft[dep.ADSBCallsign]; ok {
-			s.deleteAircraft(ac)
+			s.deleteAircraft(ac, DeleteRateChange)
 		}
 	}
 	return d[:keep]

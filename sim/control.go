@@ -161,14 +161,45 @@ func (s *Sim) DeleteAircraft(tcw TCW, callsign av.ADSBCallsign) error {
 				WrittenText: fmt.Sprintf("%s deleted %s", tcw, ac.ADSBCallsign),
 			})
 
-			s.deleteAircraft(ac)
+			s.deleteAircraft(ac, DeleteByController)
 
 			return nil
 		})
 	return err
 }
 
-func (s *Sim) deleteAircraft(ac *Aircraft) {
+// DeleteReason is why an aircraft left the sim.
+type DeleteReason int
+
+const (
+	DeleteLanded DeleteReason = iota
+	DeleteAtWaypoint
+	DeleteCulled // flew beyond the distance the sim follows aircraft to
+	DeleteByController
+	DeletePrespawn   // culled while the sim prespawned its traffic
+	DeleteRateChange // a queued departure dropped when its runway's rate was lowered
+)
+
+func (r DeleteReason) String() string {
+	switch r {
+	case DeleteLanded:
+		return "landed"
+	case DeleteAtWaypoint:
+		return "deleted at waypoint"
+	case DeleteCulled:
+		return "culled"
+	case DeleteByController:
+		return "deleted by controller"
+	case DeletePrespawn:
+		return "culled in prespawn"
+	case DeleteRateChange:
+		return "dropped by rate change"
+	default:
+		return "(unhandled delete reason)"
+	}
+}
+
+func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
 	if s.CIDAllocator != nil {
 		if fp := ac.NASFlightPlan; fp != nil && fp.CID != "" {
 			s.CIDAllocator.Release(fp.CID)
@@ -234,7 +265,7 @@ func (s *Sim) DeleteAllAircraft(tcw TCW) error {
 		// gate, etc., so we don't have a bubble of no departures for a
 		// long time while the departure queues refill.
 		if ac.IsAirborne() {
-			s.deleteAircraft(ac)
+			s.deleteAircraft(ac, DeleteByController)
 		}
 	}
 
@@ -252,7 +283,7 @@ func (s *Sim) clearDepartureQueues() {
 			// Delete aircraft from the Held queue (HFR)
 			for _, dep := range depState.Held {
 				if ac, ok := s.Aircraft[dep.ADSBCallsign]; ok {
-					s.deleteAircraft(ac)
+					s.deleteAircraft(ac, DeleteByController)
 				}
 			}
 

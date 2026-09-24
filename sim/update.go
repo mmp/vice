@@ -329,11 +329,13 @@ func (s *Sim) deleteAtWaypoint(ac *Aircraft, wp av.Waypoint) {
 		return
 	}
 
+	reason := DeleteAtWaypoint
 	if wp.VFRPhase != av.VFRPhaseNone {
 		s.recordArrivalLanding(ac, s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport))
+		reason = DeleteLanded
 	}
 	s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", wp))
-	s.deleteAircraft(ac)
+	s.deleteAircraft(ac, reason)
 }
 
 // landAtWaypoint carries out a /land at wp, going around if the aircraft is
@@ -356,7 +358,7 @@ func (s *Sim) landAtWaypoint(ac *Aircraft, wp av.Waypoint) bool {
 	}
 	s.lg.Debug("landing at waypoint", slog.Any("waypoint", wp))
 	s.recordArrivalLanding(ac, runway)
-	s.deleteAircraft(ac)
+	s.deleteAircraft(ac, DeleteLanded)
 	return true
 }
 
@@ -384,7 +386,7 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 		// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
 		// rather than initiating the handoff.
 		if s.prespawnUncontrolledOnly {
-			s.deleteAircraft(ac)
+			s.deleteAircraft(ac, DeletePrespawn)
 			return true
 		}
 		if sfp == nil {
@@ -395,7 +397,7 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 	} else if actions.HandoffController != "" {
 		// During prespawn uncontrolled-only phase, cull if handoff target is a human controller
 		if s.prespawnUncontrolledOnly && !s.isVirtualController(TCP(actions.HandoffController)) {
-			s.deleteAircraft(ac)
+			s.deleteAircraft(ac, DeletePrespawn)
 			return true
 		}
 		// Only initiate the handoff if a virtual controller has the track; if
@@ -492,7 +494,7 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 		// During prespawn uncontrolled-only phase, cull if point-out target is a human controller
 		// rather than initiating the point out.
 		if s.prespawnUncontrolledOnly && !s.isVirtualController(actions.PointOut) {
-			s.deleteAircraft(ac)
+			s.deleteAircraft(ac, DeletePrespawn)
 			return true
 		}
 
@@ -818,7 +820,7 @@ func (s *Sim) updateState() {
 				for _, wp := range ac.Nav.Waypoints {
 					if wp.HasTransferCommsAction() {
 						if math.NMDistance2LLFast(ac.Position(), wp.Location, ac.NmPerLongitude()) < 5 {
-							s.deleteAircraft(ac)
+							s.deleteAircraft(ac, DeletePrespawn)
 							culled = true
 						}
 						break
@@ -839,7 +841,7 @@ func (s *Sim) updateState() {
 					// During prespawn uncontrolled-only phase, cull departures that would
 					// contact a human controller rather than initiating the contact.
 					if s.prespawnUncontrolledOnly && !s.isVirtualController(fp.InboundHandoffController) {
-						s.deleteAircraft(ac)
+						s.deleteAircraft(ac, DeletePrespawn)
 						continue
 					}
 
@@ -856,7 +858,7 @@ func (s *Sim) updateState() {
 			// Cull far-away aircraft
 			if math.NMDistance2LL(ac.Position(), s.State.Center) > s.State.cullDistance() {
 				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
-				s.deleteAircraft(ac)
+				s.deleteAircraft(ac, DeleteCulled)
 			}
 
 			// Enqueue a spontaneous "field in sight" transmission if the pilot
