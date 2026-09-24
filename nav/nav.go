@@ -105,7 +105,7 @@ type DeferredNavHeading struct {
 	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be
 	// captured into Altitude.Cleared at the moment this deferred heading
 	// takes effect. Used when vectoring an arrival off a STAR/approach with
-	// no assigned altitude so the aircraft holds whatever altitude the pilot
+	// no issued altitude so the aircraft holds whatever altitude the pilot
 	// was at when they actually turned, rather than the higher altitude they
 	// were at when the controller first spoke.
 	SnapshotAltitudeOnEffect bool

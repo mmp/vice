@@ -201,13 +201,12 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 			nav.Waypoints = dh.Waypoints
 		}
 		// If the heading was assigned while the aircraft was descending on
-		// a STAR/approach with no assigned altitude, snapshot the current
+		// a STAR/approach with no issued altitude, snapshot the current
 		// altitude now (rather than at command-issue time) so the aircraft
 		// holds where the pilot actually was when they turned. Re-check the
-		// conditions in case an altitude was assigned during the deferred
+		// condition in case an altitude was issued during the deferred
 		// window.
-		if dh.SnapshotAltitudeOnEffect &&
-			nav.Altitude.Assigned == nil && nav.Altitude.AfterSpeed == nil {
+		if dh.SnapshotAltitudeOnEffect && !nav.hasIssuedAltitude() {
 			alt := nav.FlightState.Altitude
 			nav.Altitude.Cleared = &alt
 		}
@@ -503,15 +502,15 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			}
 		}
 
-		if wp.AltitudeRestriction() != nil && !nav.InterceptedButNotCleared() &&
-			(!nav.Approach.Cleared || wp.AltitudeRestriction().Range[0] < nav.FlightState.Altitude) {
+		if ar := nav.chartedAltitudeRestriction(wp); ar != nil &&
+			(!nav.Approach.Cleared || ar.Range[0] < nav.FlightState.Altitude) {
 			// Don't climb if we're cleared approach and below the next
 			// fix's altitude. Copy the value since the pointer into the
 			// slice element could become stale if the slice is reallocated.
-			ar := *wp.AltitudeRestriction()
-			nav.Altitude.Restriction = &ar
+			arCopy := *ar
+			nav.Altitude.Restriction = &arCopy
 		}
-		if sr := wp.SpeedRestriction(); sr != nil && !wp.OnSID() {
+		if sr := nav.chartedSpeedRestriction(wp); sr != nil && !wp.OnSID() {
 			// Carry on the speed restriction unless it's a SID
 			srCopy := *sr
 			nav.Speed.Restriction = &srCopy

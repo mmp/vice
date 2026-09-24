@@ -412,13 +412,14 @@ func (nav *Nav) controllerAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestr
 	return nil
 }
 
-func (nav *Nav) hasControllerAltitudeRestriction(wps []av.Waypoint) bool {
-	for i := range wps {
-		if nav.controllerAltitudeRestriction(&wps[i]) != nil {
-			return true
-		}
+// chartedAltitudeRestriction returns wp's published altitude restriction,
+// or nil if wp is on an approach the aircraft hasn't been cleared for: an
+// approach's restrictions apply only once the aircraft is cleared for it.
+func (nav *Nav) chartedAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestriction {
+	if wp.OnApproach() && !nav.Approach.Cleared {
+		return nil
 	}
-	return false
+	return wp.AltitudeRestriction()
 }
 
 // findAltitudeTarget scans waypoints to determine the target altitude and
@@ -448,20 +449,13 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		// with an actionable restriction. Skips FixAssignment lookups
 		// and the reverse walk with ClampRange for intermediate waypoints.
 		for i := range wps {
-			ar := wps[i].AltitudeRestriction()
+			ar := nav.chartedAltitudeRestriction(&wps[i])
 			if ar == nil || ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 				continue
 			}
 			alt := util.Select(ar.Range[1] != av.MaxAltitude, ar.Range[1], nav.FinalAltitude)
 			return altitudeTarget{altitude: alt, fix: wps[i].Fix}, true
 		}
-		return altitudeTarget{}, false
-	}
-
-	interceptedButNotCleared := nav.InterceptedButNotCleared()
-	if interceptedButNotCleared && !nav.hasControllerAltitudeRestriction(wps) {
-		// Track the uncleared approach laterally, but don't descend to charted
-		// approach restrictions until the aircraft is actually cleared.
 		return altitudeTarget{}, false
 	}
 
@@ -472,12 +466,9 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		if ar := nav.controllerAltitudeRestriction(wp); ar != nil {
 			return ar
 		}
-		if interceptedButNotCleared && wp.OnApproach() {
-			return nil
-		}
 
 		if haveFixAssignments {
-			if ar := wp.AltitudeRestriction(); ar != nil {
+			if ar := nav.chartedAltitudeRestriction(wp); ar != nil {
 				// If the controller has given 'cross [wp] at [alt]' for a
 				// future waypoint, ignore the charted altitude restriction.
 				// Explicit loop avoids slices.ContainsFunc which copies the
@@ -492,7 +483,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 			return nil
 		}
 		// Fast path: no fix assignments, just return the charted restriction.
-		return wp.AltitudeRestriction()
+		return nav.chartedAltitudeRestriction(wp)
 	}
 
 	// On a cleared approach, "at or above X" means the aircraft should

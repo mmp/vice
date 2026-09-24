@@ -386,6 +386,16 @@ func (nav *Nav) targetAltitudeIAS(temp av.Temperature) (float32, float32) {
 	return math.Lerp(x, min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
+// chartedSpeedRestriction returns wp's published speed restriction, or nil
+// if wp is on an approach the aircraft hasn't been cleared for: an
+// approach's restrictions apply only once the aircraft is cleared for it.
+func (nav *Nav) chartedSpeedRestriction(wp *av.Waypoint) *av.SpeedRestriction {
+	if wp.OnApproach() && !nav.Approach.Cleared {
+		return nil
+	}
+	return wp.SpeedRestriction()
+}
+
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, sr *av.SpeedRestriction, fix string, ok bool) {
 	if nav.Prespawn {
 		return false, nil, "", false
@@ -395,7 +405,7 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, sr *av.SpeedR
 	// Waypoint struct by value for each element via the closure.
 	haveWaypointSpeedRestriction := false
 	for i := range nav.Waypoints {
-		if nav.Waypoints[i].SpeedRestriction() != nil {
+		if nav.chartedSpeedRestriction(&nav.Waypoints[i]) != nil {
 			haveWaypointSpeedRestriction = true
 			break
 		}
@@ -410,7 +420,7 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, sr *av.SpeedR
 				return wp.OnSID(), nfa.Arrive.Speed, wp.Fix, true
 			}
 
-			if wsr := wp.SpeedRestriction(); wsr != nil {
+			if wsr := nav.chartedSpeedRestriction(wp); wsr != nil {
 				return wp.OnSID(), wsr, wp.Fix, true
 			}
 		}

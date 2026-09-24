@@ -638,6 +638,67 @@ func TestDirectFixRevokesApproachClearance(t *testing.T) {
 	f.Run()
 }
 
+// TestUnclearedApproachRestrictionsIgnored verifies that an approach's
+// altitude and speed restrictions apply only once the aircraft is cleared
+// for the approach, where a STAR's apply as the aircraft flies it.
+func TestUnclearedApproachRestrictionsIgnored(t *testing.T) {
+	newFlight := func(t *testing.T, procedure string) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "HAUPT LEFER/a4000/s200/" + procedure + " ROSLY/a3000/" + procedure,
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  7000,
+			InitialSpeed:     250,
+		})
+	}
+
+	t.Run("STAR", func(t *testing.T) {
+		f := newFlight(t, "star")
+		f.AtFix("LEFER", func(f *FlightTest) {
+			f.AssertAltitudeBelow(5000)
+			f.AssertSpeedBelow(215)
+		})
+		f.AtFix("ROSLY", func(f *FlightTest) {
+			f.AssertAltitudeNear(3000, 100)
+			f.AssertSpeedBelow(205)
+		})
+		f.Run()
+	})
+
+	t.Run("UnclearedApproach", func(t *testing.T) {
+		f := newFlight(t, "appr")
+		f.AtFix("LEFER", func(f *FlightTest) {
+			f.AssertAltitudeNear(7000, 50)
+			f.AssertSpeedAbove(240)
+			if f.nav.Altitude.Restriction != nil || f.nav.Speed.Restriction != nil {
+				t.Errorf("expected no restrictions carried from LEFER, got altitude %v speed %v",
+					f.nav.Altitude.Restriction, f.nav.Speed.Restriction)
+			}
+		})
+		f.AtFix("ROSLY", func(f *FlightTest) { f.AssertAltitudeNear(7000, 50) })
+		f.Run()
+	})
+
+	// Cancelling the clearance leaves the aircraft on the approach's
+	// waypoints, no longer intercepting.
+	t.Run("CancelledClearance", func(t *testing.T) {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "HAUPT LEFER ROSLY",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  7000,
+			InitialSpeed:     210,
+		})
+		f.ExpectApproach("I22L")
+		f.ClearedApproach("I22L")
+		f.nav.CancelApproachClearance()
+		f.AtFix("ZALPO", func(f *FlightTest) { f.AssertAltitudeNear(7000, 50) })
+		f.Run()
+	})
+}
+
 // TestRNAVApproachViaHeading verifies that an aircraft on a heading can
 // intercept the T-leg of an RNAV approach (BLINZ→DEBYE) and descend
 // when cleared.

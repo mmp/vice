@@ -485,28 +485,28 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 	snapshotAltitude := false
 
 	if _, ok := nav.AssignedHeading(); !ok {
+		// If an arrival is given a heading off of a route whose altitude
+		// constraints it is flying and it hasn't been issued an altitude,
+		// the pilot will request an altitude from the controller, and once
+		// the deferred heading actually takes effect we capture the current
+		// altitude into Altitude.Cleared so the aircraft holds whatever
+		// altitude the pilot was at when they turned. This is decided
+		// before the approach clearance is cancelled below, since a cleared
+		// approach's constraints are ones the aircraft is flying.
+		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) &&
+			!nav.hasIssuedAltitude() {
+			if _, ok := nav.findAltitudeTarget(); ok {
+				nav.Approach.RequestAltitude = true
+				snapshotAltitude = true
+			}
+		}
+
 		// Only cancel approach clearance if the aircraft wasn't on a
 		// heading and now we're giving them one.
 		nav.Approach.Cleared = false
 
 		// MVAs are back in the mix
 		nav.Approach.PassedApproachFix = false
-
-		// If an arrival is given a heading off of a route with altitude
-		// constraints, the pilot will request an altitude from the
-		// controller, and once the deferred heading actually takes effect
-		// we capture the current altitude into Altitude.Cleared so the
-		// aircraft holds whatever altitude the pilot was at when they
-		// turned. AfterSpeed counts as an explicit assignment too — the
-		// controller has assigned an altitude, it's just deferred until
-		// the speed change completes.
-		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) &&
-			nav.Altitude.Assigned == nil && nav.Altitude.AfterSpeed == nil {
-			if _, ok := nav.findAltitudeTarget(); ok {
-				nav.Approach.RequestAltitude = true
-				snapshotAltitude = true
-			}
-		}
 	}
 
 	// Don't carry this from a waypoint we may have previously passed.
@@ -674,8 +674,8 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 			nav.Approach.NoPT = false
 			if source == waypointSourceApproach && !nav.Approach.Cleared {
 				// The waypoints came from the approach but the aircraft
-				// hasn't been cleared; track the approach course laterally
-				// but gate altitude constraints via InterceptedButNotCleared().
+				// hasn't been cleared; track the approach course laterally.
+				// Its restrictions don't apply until the clearance.
 				nav.Approach.InterceptState = OnApproachCourse
 			} else {
 				nav.Approach.InterceptState = NotIntercepting
@@ -1470,6 +1470,16 @@ func (nav *Nav) AltitudeOurDiscretion() speech.CommandIntent {
 	nav.Altitude.Cleared = &alt
 
 	return speech.NavigationIntent{Type: speech.NavAltitudeDiscretion}
+}
+
+// hasIssuedAltitude reports whether the aircraft has an altitude to fly
+// besides its route's constraints: one assigned or cleared by a controller,
+// a waypoint action, or its scenario, which it keeps flying when vectored off
+// its route, or one it is already holding after an earlier vector.
+// AfterSpeed counts: the altitude is assigned, just deferred until the speed
+// change completes.
+func (nav *Nav) hasIssuedAltitude() bool {
+	return nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil || nav.Altitude.Cleared != nil
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {

@@ -371,6 +371,30 @@ func (f *FlightTest) Run() {
 	}
 }
 
+// Step advances the simulation n ticks without running the test's events,
+// for tests that issue commands in response to the aircraft's state.
+func (f *FlightTest) Step(n int) {
+	for range n {
+		wxs := f.weather(f.nav.FlightState.Altitude)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.simTime = f.simTime.Add(time.Second)
+		f.tick++
+	}
+}
+
+// StepUntil steps the simulation until done returns true, failing the test
+// if that takes more than 15 minutes of simulated time.
+func (f *FlightTest) StepUntil(what string, done func() bool) {
+	f.t.Helper()
+	for range 900 {
+		if done() {
+			return
+		}
+		f.Step(1)
+	}
+	f.t.Fatalf("aircraft never %s", what)
+}
+
 func (f *FlightTest) fireAtFixEvents(fix string) {
 	for i := range f.events {
 		if f.events[i].trigger.atFix == fix && !f.events[i].fired {
@@ -644,6 +668,7 @@ func (f *FlightTest) makeAirport() *av.Airport {
 				}
 				thresholdWP.MergeActions(av.WaypointActions{Land: true})
 				thresholdWP.SetFlyOver(true)
+				thresholdWP.SetOnApproach(true)
 				thresholdWP.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt)))
 				a.Waypoints[i] = append(a.Waypoints[i], thresholdWP)
 			}

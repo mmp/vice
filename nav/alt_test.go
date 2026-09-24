@@ -623,6 +623,136 @@ func TestDescendViaSTARAtPassedFix(t *testing.T) {
 	f.Run()
 }
 
+// TestVectorKeepsIssuedAltitude verifies that an aircraft vectored off its
+// route keeps flying to an altitude it has been issued, rather than holding
+// the altitude it was at when it turned.
+func TestVectorKeepsIssuedAltitude(t *testing.T) {
+	turnLeft := func(f *FlightTest, degrees float32) {
+		f.AssignHeading(int(math.OffsetHeading(f.nav.FlightState.Heading, -degrees)), av.TurnLeft)
+		f.Step(15)
+	}
+
+	// "Fly heading, maintain 3000 until established, cleared ILS", then a
+	// turn at 4000. A heading given to an aircraft already on one leaves
+	// the approach clearance in place.
+	t.Run("TurnWhileVectoredToFinal", func(t *testing.T) {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "HAUPT LEFER ROSLY",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  5000,
+			InitialSpeed:     210,
+		})
+		f.ExpectApproach("I22L")
+		course := math.TrueToMagnetic(f.nav.Approach.Assigned.RunwayHeading(f.nav.FlightState.NmPerLongitude),
+			f.nav.FlightState.MagneticVariation)
+		f.AssignHeading(int(math.OffsetHeading(course, -30)), av.TurnClosest)
+		f.Step(20)
+		f.AssignAltitude(3000)
+		f.ClearedApproach("I22L")
+		f.StepUntil("descended to 4,000", func() bool { return f.nav.FlightState.Altitude <= 4000 })
+
+		turnLeft(f, 10)
+		if !f.nav.Approach.Cleared {
+			t.Error("expected the approach clearance to stand")
+		}
+		f.Step(60)
+		f.AssertAltitudeNear(3000, 50)
+	})
+
+	// "Descend and maintain 3000, cleared ILS" on the route: once the
+	// aircraft joins the approach, the 3000 is carried as its cleared
+	// altitude. A heading takes it off the approach, cancelling the
+	// clearance, and it continues down to 3000.
+	t.Run("TurnOffJoinedApproach", func(t *testing.T) {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL DETGY HAUPT LEFER ROSLY",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  7000,
+			InitialSpeed:     210,
+		})
+		f.ExpectApproach("I22L")
+		f.AssignAltitude(3000)
+		f.ClearedApproach("I22L")
+		f.StepUntil("passed a fix on the approach", func() bool { return f.nav.Approach.PassedApproachFix })
+
+		turnLeft(f, 10)
+		if f.nav.Approach.Cleared {
+			t.Error("expected the heading to cancel the approach clearance")
+		}
+		if c := f.nav.Altitude.Cleared; c == nil || *c != 3000 {
+			t.Fatalf("expected the cleared altitude 3000 to be kept, got %+v", c)
+		}
+		f.Step(180)
+		f.AssertAltitudeNear(3000, 50)
+	})
+
+	t.Run("ScenarioClearedAltitude", func(t *testing.T) {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  11000,
+			InitialSpeed:     250,
+			ClearedAltitude:  8000,
+		})
+		f.StepUntil("started the STAR descent", func() bool { return f.nav.FlightState.AltitudeRate < -50 })
+
+		turnLeft(f, 10)
+		if c := f.nav.Altitude.Cleared; c == nil || *c != 8000 {
+			t.Fatalf("expected the cleared altitude 8000 to be kept, got %v", c)
+		}
+		if f.nav.Approach.RequestAltitude {
+			t.Error("expected no altitude request with an altitude issued")
+		}
+		f.Step(120)
+		f.AssertAltitudeNear(8000, 50)
+	})
+}
+
+// TestVectorOffLocalizerHoldsAltitude verifies that an aircraft established
+// on the localizer of a cleared approach, with no altitude issued, holds its
+// altitude and asks for one when it is vectored off, as it does off a STAR.
+func TestVectorOffLocalizerHoldsAltitude(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KJFK", "I22L")
+	pos := apg.ThresholdOffset(14, -2)
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " HAUPT LEFER ROSLY",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  3000,
+		InitialSpeed:     180,
+		InitialHeading:   190,
+	})
+	f.ExpectApproach("I22L")
+	f.ClearedApproach("I22L")
+	f.StepUntil("established on the localizer", func() bool {
+		return f.nav.Approach.InterceptState == OnApproachCourse && f.nav.Heading.Assigned == nil
+	})
+	f.StepUntil("started down the approach", func() bool { return f.nav.FlightState.AltitudeRate < -50 })
+
+	f.AssignHeading(int(math.OffsetHeading(f.nav.FlightState.Heading, -30)), av.TurnLeft)
+	f.Step(15)
+	if f.nav.Approach.Cleared {
+		t.Error("expected the heading to cancel the approach clearance")
+	}
+	if !f.nav.Approach.RequestAltitude {
+		t.Error("expected the pilot to ask for an altitude")
+	}
+	c := f.nav.Altitude.Cleared
+	if c == nil {
+		t.Fatal("expected the altitude to be held once the heading took effect")
+	}
+	f.Step(60)
+	f.AssertAltitudeNear(*c, 50)
+	f.AssertNotDescending()
+}
+
 // TestDescentContinuesAfterMissedRestriction verifies that an aircraft
 // continues descending after missing an altitude restriction at a fix,
 // rather than leveling off (regression test for 3c74afba).
