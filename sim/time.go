@@ -105,6 +105,13 @@ func (s Time) MarshalMsgpack() ([]byte, error) {
 	return msgpack.Marshal(s.t)
 }
 
+// UnmarshalMsgpack gives the time in UTC, as the sim keeps its times:
+// msgpack decodes a time in the machine's local time zone, which would make
+// anything reading the hour or minute depend on where it runs.
 func (s *Time) UnmarshalMsgpack(b []byte) error {
-	return msgpack.Unmarshal(b, &s.t)
+	if err := msgpack.Unmarshal(b, &s.t); err != nil {
+		return err
+	}
+	s.t = s.t.UTC()
+	return nil
 }
