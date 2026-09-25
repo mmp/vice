@@ -970,14 +970,16 @@ func (sp *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 		if positionSymbol != "" {
 			font := sp.systemFont(ctx, ps.CharSize.PositionSymbols)
 			outlineFont := sp.systemOutlineFont(ctx, ps.CharSize.PositionSymbols)
-			// Half-pixel nudge: pw is a continuous window coord that generally
-			// doesn't land on a pixel boundary; this lines the resulting glyph
-			// quad up with the pixel grid for crisp rasterization.
-			pt := math.Add2f(pw, [2]float32{0.5, -0.5})
-			td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
+			// Center the fill glyph and draw the outline from the same origin:
+			// that is how the outline glyphs surround the fill glyphs, but the
+			// outline's ink isn't always centered the same way.
+			if ink := font.InkBounds(positionSymbol, 0); !ink.IsEmpty() {
+				p := math.Sub2f(pw, ink.Center())
+				td.AddText(positionSymbol, p, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
 
-			posColor := posBrightness.ScaleRGB(color)
-			td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
+				posColor := posBrightness.ScaleRGB(color)
+				td.AddText(positionSymbol, p, renderer.TextStyle{Font: font, Color: posColor})
+			}
 		} else {
 			// diagonals
 			dx := transforms.LatLongFromWindowV([2]float32{1, 0})

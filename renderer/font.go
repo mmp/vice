@@ -187,6 +187,7 @@ func CreateBitmapFontAtlas(r Renderer, dpiScale float32, fontIter iter.Seq2[stri
 		}
 
 		for ch, glyph := range bf.Glyphs {
+			glyph = glyph.trimmed()
 			dx := glyph.Bounds[0] + 1 // pad
 			if x+dx > xres {
 				// Start a new line
@@ -229,6 +230,31 @@ func (glyph BitmapGlyph) Rasterize(img *image.RGBA, x0, y0 int, c color.RGBA) {
 	}
 }
 
+// trimmed returns the glyph with its blank margins removed, keeping its set
+// pixels at the same place in the character cell. Some fonts (e.g., the STARS
+// ARTS fonts) store each glyph as a full padded cell; trimming them makes each
+// Glyph's quad bound its ink, which in turn keeps Font.InkBounds tight.
+func (glyph BitmapGlyph) trimmed() BitmapGlyph {
+	x0, y0, x1, y1 := glyph.Bounds[0], glyph.Bounds[1], 0, 0
+	for y, line := range glyph.Bitmap {
+		for x := range glyph.Bounds[0] {
+			if line&(1<<uint(31-x)) != 0 {
+				x0, y0 = min(x0, x), min(y0, y)
+				x1, y1 = max(x1, x+1), max(y1, y+1)
+			}
+		}
+	}
+	if x1 == 0 {
+		return BitmapGlyph{Name: glyph.Name, StepX: glyph.StepX}
+	}
+
+	glyph.Offset[0] += x0
+	glyph.Offset[1] += glyph.Bounds[1] - y1
+	glyph.Bounds = [2]int{x1 - x0, y1 - y0}
+	glyph.Bitmap = util.MapSlice(glyph.Bitmap[y0:y1], func(line uint32) uint32 { return line << uint(x0) })
+	return glyph
+}
+
 func (glyph BitmapGlyph) addToFont(ch, x, y, xres, yres int, bf BitmapFont, f *Font, scale float32) {
 	g := &Glyph{
 		// Vertex coordinates for the quad: shift based on the offset
@@ -247,7 +273,7 @@ func (glyph BitmapGlyph) addToFont(ch, x, y, xres, yres int, bf BitmapFont, f *F
 		V1: (float32(y + glyph.Bounds[1])) / float32(yres),
 
 		AdvanceX: scale * float32(glyph.StepX),
-		Visible:  true,
+		Visible:  glyph.Bounds[0] > 0 && glyph.Bounds[1] > 0,
 	}
 	f.AddGlyph(ch, g)
 }
