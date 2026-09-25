@@ -53,8 +53,8 @@ func (ee *ERAMEntries) CheckInbound(assignedAltitude float32, scratchpad, second
 	if (ee.Heading != 0 || ee.FreeText != "") && scratchpad != "" {
 		e.ErrorString(`"scratchpad" and the "eram" "heading"/"free_text" use the same data block field`)
 	}
-	if (ee.Speed != 0 || ee.Mach != 0) && secondaryScratchpad != "" {
-		e.ErrorString(`"secondary_scratchpad" and the "eram" "speed"/"mach" use the same data block field`)
+	if (ee.Speed != 0 || ee.Mach != 0 || ee.FreeText != "") && secondaryScratchpad != "" {
+		e.ErrorString(`"secondary_scratchpad" and the "eram" "speed"/"mach"/"free_text" use the same data block field`)
 	}
 }
 
@@ -88,6 +88,9 @@ func (ee *ERAMEntries) Check(e *util.ErrorLogger) {
 
 	if ee.Heading != 0 && ee.FreeText != "" {
 		e.ErrorString(`cannot specify both "heading" and "free_text"; ERAM shows one or the other`)
+	}
+	if (ee.Speed != 0 || ee.Mach != 0) && ee.FreeText != "" {
+		e.ErrorString(`cannot specify "speed" or "mach" with "free_text"; free text occupies the entire data block line`)
 	}
 	if ee.Heading < 0 || ee.Heading > 360 {
 		e.ErrorString(`"heading": must be between 1 and 360`)

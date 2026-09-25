@@ -32,11 +32,15 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 		}
 		return wp
 	}
+	approachWaypoint := av.Waypoint{Fix: "APP"}
+	approachWaypoint.SetOnApproach(true)
+	approachWaypoint.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(3000))
 
 	for _, tc := range []struct {
 		name             string
 		facility         string
 		humanControlled  bool
+		approachCleared  bool
 		waypoints        []av.Waypoint
 		actions          av.WaypointActions
 		assignedAltitude int
@@ -78,6 +82,25 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 			assignedAltitude: 11000,
 		},
 		{
+			name:             "descend via ignores an uncleared approach",
+			waypoints:        []av.Waypoint{starWaypoint(11000), approachWaypoint},
+			actions:          av.WaypointActions{DescendViaSTAR: true},
+			assignedAltitude: 11000,
+		},
+		{
+			name:             "descend via includes a cleared approach",
+			waypoints:        []av.Waypoint{starWaypoint(11000), approachWaypoint},
+			approachCleared:  true,
+			actions:          av.WaypointActions{DescendViaSTAR: true},
+			assignedAltitude: 3000,
+		},
+		{
+			name:             "descend via with no applicable restrictions preserves the entry",
+			waypoints:        []av.Waypoint{starWaypoint(0), approachWaypoint},
+			actions:          av.WaypointActions{DescendViaSTAR: true},
+			assignedAltitude: cruise,
+		},
+		{
 			name:             "descend via the STAR except an altitude amends it",
 			waypoints:        []av.Waypoint{starWaypoint(11000)},
 			actions:          av.WaypointActions{DescendViaSTAR: true, ExceptAltitude: 19000},
@@ -113,6 +136,7 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 			ac.Nav.Perf.Ceiling = 41000
 			ac.Nav.FlightState.Altitude = cruise
 			ac.Nav.Waypoints = tc.waypoints
+			ac.Nav.Approach.Cleared = tc.approachCleared
 			ac.FlightPlan.Altitude = cruise
 			ac.ControllerFrequency = util.Select(tc.humanControlled, ControlPosition("2A"), ControlPosition(""))
 			ac.NASFlightPlan = &NASFlightPlan{ACID: "AAL123", AssignedAltitude: cruise}

@@ -442,6 +442,24 @@ func (nav *Nav) chartedAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestrict
 	return wp.AltitudeRestriction()
 }
 
+// LowestProcedureAltitude returns the lowest applicable published altitude
+// target on the assigned route, or false if there are no applicable restrictions.
+func (nav *Nav) LowestProcedureAltitude() (float32, bool) {
+	var lowest float32
+	found := false
+	wps := nav.AssignedWaypoints()
+	for i := range wps {
+		if ar := nav.chartedAltitudeRestriction(&wps[i]); ar != nil {
+			alt := ar.TargetAltitude(nav.FlightState.Altitude)
+			if !found || alt < lowest {
+				lowest = alt
+				found = true
+			}
+		}
+	}
+	return lowest, found
+}
+
 // findAltitudeTarget scans waypoints to determine the target altitude and
 // fix, using the reverse-walk logic to satisfy all downstream altitude
 // constraints. Returns the target and true if found.

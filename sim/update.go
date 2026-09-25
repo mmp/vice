@@ -430,11 +430,10 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 	if actions.DescendViaSTAR && ac.Nav.DescendViaSTARAtPassedFix(exceptAlt) {
 		if actions.ExceptAltitude != 0 {
 			s.recordVirtualAltitudeEntry(sfp, actions.ExceptAltitude, false)
-		} else if alt, ok := findLowestWaypointAltitude(ac.Nav.AssignedWaypoints(),
-			ac.Nav.FlightState.Altitude); ok {
+		} else if alt, ok := ac.Nav.LowestProcedureAltitude(); ok {
 			// Without an exception, the aircraft descends to the bottom of
 			// the procedure ahead.
-			s.recordVirtualAltitudeEntry(sfp, alt, false)
+			s.recordVirtualAltitudeEntry(sfp, int(alt), false)
 		}
 	}
 

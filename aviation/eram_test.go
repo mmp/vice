@@ -24,6 +24,12 @@ func TestERAMEntriesCheck(t *testing.T) {
 		{name: "speed", entries: ERAMEntries{Speed: 280}},
 		{name: "mach", entries: ERAMEntries{Mach: 78}},
 		{name: "heading", entries: ERAMEntries{Heading: 310}},
+		{name: "heading and speed", entries: ERAMEntries{Heading: 310, Speed: 280}},
+		{name: "valid free text", entries: ERAMEntries{FreeText: "VIAJ121"}},
+		{name: "speed and free text", entries: ERAMEntries{Speed: 280, FreeText: "VIAJ121"},
+			expect: "free text occupies the entire data block line"},
+		{name: "mach and free text", entries: ERAMEntries{Mach: 78, FreeText: "VIAJ121"},
+			expect: "free text occupies the entire data block line"},
 		{name: "free text", entries: ERAMEntries{FreeText: "VIA J121"}, expect: "must be A-Z"},
 		{name: "altitude in hundreds", entries: ERAMEntries{InterimAltitude: 170},
 			expect: "must be given in feet"},
@@ -75,6 +81,8 @@ func TestERAMEntriesCheckInbound(t *testing.T) {
 			scratchpad: "JFK", expect: "same data block field"},
 		{name: "speed over a secondary scratchpad", entries: ERAMEntries{Speed: 280},
 			secondaryScratchpad: "JFK", expect: "same data block field"},
+		{name: "free text over a secondary scratchpad", entries: ERAMEntries{FreeText: "VIAJ121"},
+			secondaryScratchpad: "S280", expect: "same data block field"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			e := &util.ErrorLogger{}
