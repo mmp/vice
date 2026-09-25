@@ -277,7 +277,7 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 		// check to see if the a/c has reached the altitude
 		if trk.IsAssociated() {
 			qalt := func(alt float32) int { return int(alt+50) / 100 }
-			if qalt(state.Track.TransponderAltitude) == qalt(float32(trk.FlightPlan.AssignedAltitude)) {
+			if qalt(state.Track.TransponderAltitude) == qalt(float32(trk.FlightPlan.DataBlockAltitude())) {
 				state.ReachedAltitude = true
 			}
 		}

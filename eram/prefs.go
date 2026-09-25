@@ -235,23 +235,25 @@ const (
 	NexradToolbarAll     = 123
 )
 
-// altitudeLimitsLength is the number of characters in an altitude limits
-// filter entry such as "100B230".
-const altitudeLimitsLength = 7
+// altitudeBlockLength is the number of characters in an altitude block
+// entry such as "100B230".
+const altitudeBlockLength = 7
 
-// formatAltitudeLimits renders limits the way the ALT LIM button and the
-// altitude limits entry boxes display them.
-func formatAltitudeLimits(limits [2]int) string {
-	return fmt.Sprintf("%03dB%03d", limits[0], limits[1])
+// formatAltitudeBlock renders a floor and ceiling in hundreds of feet in the
+// <floor>B<ceiling> form that parseAltitudeBlock reads.
+func formatAltitudeBlock(block [2]int) string {
+	return fmt.Sprintf("%03dB%03d", block[0], block[1])
 }
 
-// parseAltitudeLimits parses an altitude limits filter entry such as
-// "100B230". ok is false if s is malformed or gives an inverted range.
-func parseAltitudeLimits(s string) (limits [2]int, ok bool) {
-	if len(s) != altitudeLimitsLength || s[3] != 'B' {
+// parseAltitudeBlock parses a <floor>B<ceiling> altitude entry in hundreds
+// of feet, such as "100B230", as given to QD for the altitude limits filters
+// and QZ for a block altitude. It only checks the format; the entry may still
+// fail validAltitudeBlock.
+func parseAltitudeBlock(s string) (block [2]int, ok bool) {
+	if len(s) != altitudeBlockLength || s[3] != 'B' {
 		return [2]int{}, false
 	}
-	for i := range altitudeLimitsLength {
+	for i := range altitudeBlockLength {
 		if i != 3 && !isNum(s[i]) {
 			return [2]int{}, false
 		}
@@ -259,10 +261,13 @@ func parseAltitudeLimits(s string) (limits [2]int, ok bool) {
 
 	low, _ := strconv.Atoi(s[:3])
 	high, _ := strconv.Atoi(s[4:])
-	if low > high {
-		return [2]int{}, false
-	}
 	return [2]int{low, high}, true
+}
+
+// validAltitudeBlock reports whether block spans a range: a floor equal to
+// or above the ceiling is rejected.
+func validAltitudeBlock(block [2]int) bool {
+	return block[0] < block[1]
 }
 
 // defaultERAMRange is the initial scope range, in nautical miles of vertical

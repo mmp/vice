@@ -2566,16 +2566,16 @@ type altitudeLimitsLayout struct {
 // have been split to different ranges.
 func altitudeLimitsButtonLabel(ps *Preferences) string {
 	if ps.AltitudeLimits.Targets != ps.AltitudeLimits.LDBs {
-		return "ALT LIM\n" + strings.Repeat("X", altitudeLimitsLength)
+		return "ALT LIM\n" + strings.Repeat("X", altitudeBlockLength)
 	}
-	return "ALT LIM\n" + formatAltitudeLimits(ps.AltitudeLimits.Targets)
+	return "ALT LIM\n" + formatAltitudeBlock(ps.AltitudeLimits.Targets)
 }
 
 // altitudeLimitsInkBounds returns the ink bounds of a full filter entry. The
 // labels and the entries are all capitals and digits, which share this band,
 // so it serves as a fixed reference that doesn't shift as a filter is typed.
 func (ep *Scope) altitudeLimitsInkBounds() math.Extent2D {
-	return ep.ERAMToolbarFont().InkBounds(formatAltitudeLimits(sim.UnrestrictedAltitudeLimits), 0)
+	return ep.ERAMToolbarFont().InkBounds(formatAltitudeBlock(sim.UnrestrictedAltitudeLimits), 0)
 }
 
 // altitudeLimitsLayoutAt lays out the sub-entry box with its top-left corner
@@ -2597,7 +2597,7 @@ func (ep *Scope) altitudeLimitsLayoutAt(anchor [2]float32, scale float32) altitu
 	for _, row := range rows {
 		labelWidth = max(labelWidth, font.LayoutBounds(row.label, 0).Width())
 	}
-	valueWidth := font.LayoutBounds(formatAltitudeLimits(sim.UnrestrictedAltitudeLimits), 0).Width() + 2*altitudeLimitsPad
+	valueWidth := font.LayoutBounds(formatAltitudeBlock(sim.UnrestrictedAltitudeLimits), 0).Width() + 2*altitudeLimitsPad
 
 	width := 3*altitudeLimitsPad + labelWidth + valueWidth
 	if ep.altLimits.invalid {
@@ -2666,7 +2666,7 @@ func (ep *Scope) drawAltitudeLimitsEntry(ctx *scope.Context, layout altitudeLimi
 		ld.AddLineLoop(ps.Brightness.Border.ScaleRGB(outline), [][2]float32{
 			value.P0, {value.P1[0], value.P0[1]}, value.P1, {value.P0[0], value.P1[1]}})
 
-		text := formatAltitudeLimits(row.limits)
+		text := formatAltitudeBlock(row.limits)
 		if row.field == ep.altLimits.field {
 			text = ep.altLimits.buf
 		}
@@ -2754,7 +2754,7 @@ func (ep *Scope) handleAltitudeLimitsInput(ctx *scope.Context) {
 // finishAltitudeLimitsEntry ends keyboard entry into the sub-entry box,
 // keeping a complete and valid entry and silently discarding anything else.
 func (ep *Scope) finishAltitudeLimitsEntry() {
-	if limits, ok := parseAltitudeLimits(ep.altLimits.buf); ok {
+	if limits, ok := parseAltitudeBlock(ep.altLimits.buf); ok && validAltitudeBlock(limits) {
 		ep.setAltitudeLimits(limits)
 	}
 	ep.altLimits.field = altitudeLimitsNone
@@ -2786,7 +2786,7 @@ func (ep *Scope) handleAltitudeLimitsKeyboard(ctx *scope.Context) bool {
 	}
 
 	for _, r := range strings.ToUpper(ctx.Keyboard.Input) {
-		if r <= ' ' || r > '~' || len(ep.altLimits.buf) >= altitudeLimitsLength {
+		if r <= ' ' || r > '~' || len(ep.altLimits.buf) >= altitudeBlockLength {
 			continue
 		}
 		ep.altLimits.buf += string(r)
@@ -2801,7 +2801,8 @@ func (ep *Scope) handleAltitudeLimitsKeyboard(ctx *scope.Context) bool {
 				ep.altLimits.invalid = false
 			}
 		case imgui.KeyEnter:
-			limits, ok := parseAltitudeLimits(ep.altLimits.buf)
+			limits, ok := parseAltitudeBlock(ep.altLimits.buf)
+			ok = ok && validAltitudeBlock(limits)
 			if ok {
 				ep.setAltitudeLimits(limits)
 			}

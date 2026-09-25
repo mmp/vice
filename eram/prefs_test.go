@@ -11,22 +11,42 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-func TestParseAltitudeLimits(t *testing.T) {
-	for _, s := range []string{"000B999", "100B230", "234B400", "050B050"} {
-		limits, ok := parseAltitudeLimits(s)
+func TestParseAltitudeBlock(t *testing.T) {
+	for _, s := range []string{"000B999", "100B230", "234B400", "050B050", "230B100"} {
+		block, ok := parseAltitudeBlock(s)
 		if !ok {
 			t.Errorf("%q: rejected", s)
-		} else if got := formatAltitudeLimits(limits); got != s {
+		} else if got := formatAltitudeBlock(block); got != s {
 			t.Errorf("%q: formatted back as %q", s, got)
 		}
 	}
 
-	// Malformed entries and inverted ranges are both rejected; the entry box
-	// restores the previous filter and QD gives FORMAT.
+	// Malformed entries are rejected, so QD gives FORMAT.
 	for _, s := range []string{"", "100B23", "100B2300", "AAAAAAA", "100X230", "10BB230",
-		"1 0B230", "230B100"} {
-		if _, ok := parseAltitudeLimits(s); ok {
+		"1 0B230"} {
+		if _, ok := parseAltitudeBlock(s); ok {
 			t.Errorf("%q: accepted", s)
+		}
+	}
+}
+
+func TestAltitudeLimitsFilterRange(t *testing.T) {
+	ep := &Scope{prefSet: &PrefrenceSet{}}
+	for _, limits := range [][2]int{{0, 999}, {100, 230}, {234, 400}} {
+		if err := handleAltitudeLimitsFilter(ep, limits); err != nil {
+			t.Errorf("%v: %v", limits, err)
+		} else if f := ep.currentPrefs().AltitudeLimits; f.Targets != limits || f.LDBs != limits {
+			t.Errorf("%v: filters set to %v and %v", limits, f.Targets, f.LDBs)
+		}
+	}
+
+	// Degenerate and inverted ranges leave the filters as they were.
+	for _, limits := range [][2]int{{0, 0}, {50, 50}, {200, 100}} {
+		if err := handleAltitudeLimitsFilter(ep, limits); err != ErrInvalidAltitudeLimits {
+			t.Errorf("%v: got error %v", limits, err)
+		}
+		if f := ep.currentPrefs().AltitudeLimits; f.Targets != [2]int{234, 400} {
+			t.Errorf("%v: filter changed to %v", limits, f.Targets)
 		}
 	}
 }

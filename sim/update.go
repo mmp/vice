@@ -526,6 +526,7 @@ func (s *Sim) recordVirtualAltitudeEntry(sfp *NASFlightPlan, alt int, climb bool
 	}
 
 	sfp.AssignedAltitude = alt
+	sfp.AltitudeBlock = [2]int{}
 	sfp.InterimAlt, sfp.InterimType = 0, InterimNormal
 }
 

@@ -27,16 +27,17 @@ func NewError(msg string, args ...any) *Error {
 }
 
 var ( // TODO: Get actual error messages for this
-	ErrCommandFormat     = NewError("FORMAT")
-	ErrAmbiguousACID     = NewError("AMB ACID")
-	ErrIllegalACID       = NewError("ILL CID")
-	ErrIllegalPosition   = NewError("ILLEGAL POSITION")
-	ErrIllegalValue      = NewError("ILLEGAL VALUE")
-	ErrIllegalAirport    = NewError("ILLEGAL AIRPORT")
-	ErrIllegalUserAction = NewError("ILLEGAL USER ACTION")
-	ErrMapUnavailable    = NewError("MAP UNAVAILABLE")
-	ErrMessageTooLong    = NewError("MESSAGE TOO LONG")
-	ErrSectorNotActive   = NewError("SECTOR NOT ACTIVE")
+	ErrCommandFormat         = NewError("FORMAT")
+	ErrAmbiguousACID         = NewError("AMB ACID")
+	ErrIllegalACID           = NewError("ILL CID")
+	ErrIllegalPosition       = NewError("ILLEGAL POSITION")
+	ErrIllegalValue          = NewError("ILLEGAL VALUE")
+	ErrIllegalAirport        = NewError("ILLEGAL AIRPORT")
+	ErrIllegalUserAction     = NewError("ILLEGAL USER ACTION")
+	ErrInvalidAltitudeLimits = NewError("INVALID ALTITUDE LIMITS")
+	ErrMapUnavailable        = NewError("MAP UNAVAILABLE")
+	ErrMessageTooLong        = NewError("MESSAGE TOO LONG")
+	ErrSectorNotActive       = NewError("SECTOR NOT ACTIVE")
 )
 
 var eramErrorRemap = map[error]*Error{

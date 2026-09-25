@@ -54,7 +54,7 @@ var typeParsers = []typeParser{
 	// Altitude parsers
 	&eramAltAParser{},
 	&eramAltIParser{},
-	&altLimitsParser{},
+	&altBlockParser{},
 
 	// Controller/Sector
 	&sectorIDParser{},
@@ -320,23 +320,24 @@ func (h *eramAltIParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 func (h *eramAltIParser) GoType() reflect.Type { return reflect.TypeFor[InterimAltitude]() }
 func (h *eramAltIParser) AcceptsClick() bool   { return false }
 
-// altLimitsParser parses an altitude limits filter range in hundreds of feet,
-// low to high (e.g., "100B230").
-type altLimitsParser struct{}
+// altBlockParser parses a <floor>B<ceiling> altitude range in hundreds of
+// feet (e.g., "100B230"). Handlers decide whether the range is valid, so
+// that a well-formed but inverted range gets their error rather than FORMAT.
+type altBlockParser struct{}
 
-func (h *altLimitsParser) Identifier() string { return "ALT_LIMITS" }
+func (h *altBlockParser) Identifier() string { return "ALT_BLOCK" }
 
-func (h *altLimitsParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+func (h *altBlockParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
-	limits, ok := parseAltitudeLimits(field)
+	block, ok := parseAltitudeBlock(field)
 	if !ok {
 		return nil, text, false, nil
 	}
-	return limits, remaining, true, nil
+	return block, remaining, true, nil
 }
 
-func (h *altLimitsParser) GoType() reflect.Type { return reflect.TypeFor[[2]int]() }
-func (h *altLimitsParser) AcceptsClick() bool   { return false }
+func (h *altBlockParser) GoType() reflect.Type { return reflect.TypeFor[[2]int]() }
+func (h *altBlockParser) AcceptsClick() bool   { return false }
 
 // InterimAltitude holds an interim altitude value with optional type (P for procedure, L for local)
 type InterimAltitude struct {

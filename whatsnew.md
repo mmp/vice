@@ -6,6 +6,7 @@
     `/d` and `/dv` amend the assigned altitude and a `/c` or `/cv` short of it is an interim altitude
   - Add datablock portal fence option
   - Add support for altitude limits, including the `QD` command
+  - Added support for block altitudes, including the `QZ` command
 - Facility engineering
   - ERAM altitude limits can be specified per-controller and/or per-scenario
   - Added `/cvs` and `/dvs` waypoint actions for virtual controllers to issue "climb via SID"/"descend via STAR"

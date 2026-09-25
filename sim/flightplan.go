@@ -95,7 +95,7 @@ type NASFlightPlan struct {
 	PerceivedAssigned     int // what the previous controller would put into the hard alt, even though the aircraft is descending via a STAR.
 	InterimAlt            int
 	InterimType           InterimAltType
-	AltitudeBlock         [2]int
+	AltitudeBlock         [2]int // floor and ceiling in feet; zero when none is assigned
 	ControllerReportedAlt int
 	VFROTP                bool
 
@@ -179,6 +179,12 @@ type NASFlightPlan struct {
 	StripOwner       ControlPosition // which TCP position has this strip (empty = no strip)
 }
 
+// HasAltitudeBlock reports whether the flight is assigned a block altitude,
+// AltitudeBlock, in place of a hard altitude.
+func (fp *NASFlightPlan) HasAltitudeBlock() bool {
+	return fp.AltitudeBlock != [2]int{}
+}
+
 func (fp *NASFlightPlan) AddPointOutHistory(tcp TCP) {
 	if len(fp.PointOutHistory) >= 20 {
 		fp.PointOutHistory = fp.PointOutHistory[:19]
@@ -189,11 +195,14 @@ func (fp *NASFlightPlan) AddPointOutHistory(tcp TCP) {
 // DataBlockAltitude returns the altitude shown in the ERAM data block — the
 // "hard altitude or interim altitude" referenced in ERAM conflict alert and
 // other altitude-cap logic. Priority: InterimAlt (TODO: confirm interim really
-// wins) > AssignedAltitude > PerceivedAssigned. Returns 0 if none are set.
-// TODO: AltitudeBlock once block clearances are wired up.
+// wins) > AssignedAltitude > PerceivedAssigned. Returns 0 if none are set or
+// if the flight is assigned a block altitude, which has no single altitude.
 func (fp *NASFlightPlan) DataBlockAltitude() int {
 	if fp.InterimAlt > 0 {
 		return fp.InterimAlt
+	}
+	if fp.HasAltitudeBlock() {
+		return 0
 	}
 	if fp.AssignedAltitude != 0 {
 		return fp.AssignedAltitude
@@ -369,8 +378,15 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		fp.TrackingController = spec.TrackingController.Get()
 		fp.OwningTCW = sim.tcwForPosition(fp.TrackingController)
 	}
+	// A flight is assigned either a hard altitude or a block altitude, so
+	// each replaces the other.
 	if spec.AssignedAltitude.IsSet {
 		fp.AssignedAltitude = spec.AssignedAltitude.Get()
+		fp.AltitudeBlock = [2]int{}
+	}
+	if spec.AltitudeBlock.IsSet {
+		fp.AltitudeBlock = spec.AltitudeBlock.Get()
+		fp.AssignedAltitude = 0
 	}
 	if spec.RequestedAltitude.IsSet {
 		fp.RequestedAltitude = spec.RequestedAltitude.Get()

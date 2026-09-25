@@ -565,7 +565,8 @@ func speedStartFromGroundspeedLine4(gsText string) int {
 func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 	state := ep.TrackState[track.ADSBCallsign]
 	currentAltitude := state.Track.TransponderAltitude
-	displayAlt := track.FlightPlan.DataBlockAltitude()
+	fp := track.FlightPlan
+	displayAlt := fp.DataBlockAltitude()
 	formatScopeAltitude := func(alt int) string {
 		alt = int(alt+50) / 100
 		return string([]byte{
@@ -576,9 +577,19 @@ func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 	}
 	formatCurrent := formatScopeAltitude(int(currentAltitude))
 	formatDisplay := formatScopeAltitude(displayAlt)
-	if track.FlightPlan.InterimAlt > 0 {
+	if fp.InterimAlt > 0 {
 		intType := getInterimAltitudeType(track)
 		return formatDisplay + intType + formatCurrent
+	}
+	if fp.HasAltitudeBlock() {
+		// Inside the block, the floor and ceiling; outside it, the floor
+		// and the current altitude.
+		floor, ceiling := fp.AltitudeBlock[0], fp.AltitudeBlock[1]
+		upper := formatCurrent
+		if cur := (int(currentAltitude) + 50) / 100 * 100; cur >= floor && cur <= ceiling {
+			upper = formatScopeAltitude(ceiling)
+		}
+		return formatScopeAltitude(floor) + "B" + upper
 	}
 	switch {
 	case formatCurrent == formatDisplay:

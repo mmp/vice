@@ -31,7 +31,9 @@ func registerOpsCommands() {
 
 	// QZ - Assigned altitude
 	// QZ [ALT] [TRACK]: Set assigned altitude
+	// QZ [FLOOR]B[CEILING] [TRACK]: Set block altitude
 	registerCommand(CommandModeNone, "QZ [ERAM_ALT_A] [TRACK]", handleAssignedAltitude)
+	registerCommand(CommandModeNone, "QZ [ALT_BLOCK] [TRACK]", handleAssignedAltitudeBlock)
 
 	// QX - Drop track
 	// QX [TRACK]
@@ -81,7 +83,7 @@ func registerOpsCommands() {
 
 	// QD - Altitude limits filters
 	// QD [LOW]B[HIGH]: set both the target and the LDB filter
-	registerCommand(CommandModeNone, "QD [ALT_LIMITS]", handleAltitudeLimitsFilter)
+	registerCommand(CommandModeNone, "QD [ALT_BLOCK]", handleAltitudeLimitsFilter)
 
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)
@@ -265,6 +267,26 @@ func handleAssignedAltitude(ep *Scope, ctx *scope.Context, alt int, trk *sim.Tra
 	}, nil
 }
 
+// handleAssignedAltitudeBlock amends the flight plan's assigned altitude to a
+// block. Pilots have no block clearance to fly, so unlike a hard altitude,
+// no climb or descent is issued to the aircraft.
+func handleAssignedAltitudeBlock(ep *Scope, ctx *scope.Context, block [2]int, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrIllegalACID
+	}
+	if !validAltitudeBlock(block) {
+		return CommandStatus{}, ErrIllegalValue
+	}
+
+	fp := sim.FlightPlanSpecifier{}
+	fp.AltitudeBlock.Set([2]int{block[0] * 100, block[1] * 100})
+	ep.modifyFlightPlan(ctx, trk, fp)
+
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "ASSIGNED ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+	}, nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // QX - Drop Track Handler
 
@@ -423,10 +445,14 @@ func handleBeaconCodeViewList(ep *Scope, codes []av.Squawk) error {
 // handleAltitudeLimitsFilter sets both the target and the LDB altitude limits
 // filter; there is no command that sets only one of them. Whether the toolbar
 // displays them as one filter or two is left as it was.
-func handleAltitudeLimitsFilter(ep *Scope, limits [2]int) {
+func handleAltitudeLimitsFilter(ep *Scope, limits [2]int) error {
+	if !validAltitudeBlock(limits) {
+		return ErrInvalidAltitudeLimits
+	}
 	ps := ep.currentPrefs()
 	ps.AltitudeLimits.Targets = limits
 	ps.AltitudeLimits.LDBs = limits
+	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -457,11 +483,15 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 	rte := strings.TrimPrefix(fp.Route, "/. ")
 	rte = strings.ReplaceAll(rte, " ", ".")
 	rte += "." + string(fp.ArrivalAirport)
+	alt := fmt.Sprint(fp.AssignedAltitude / 100)
+	if fp.HasAltitudeBlock() {
+		alt = formatAltitudeBlock([2]int{fp.AltitudeBlock[0] / 100, fp.AltitudeBlock[1] / 100})
+	}
 	return CommandStatus{
 		responseArea: []string{
 			zTime,
 			fmt.Sprintf("%v %v(%v) %v %v 0 %v %v", fp.CID, fp.ACID, fp.TrackingController,
-				fp.AircraftType, fp.AssignedSquawk, fp.AssignedAltitude/100, rte),
+				fp.AircraftType, fp.AssignedSquawk, alt, rte),
 		},
 	}, nil
 }
