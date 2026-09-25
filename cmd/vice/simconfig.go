@@ -1252,15 +1252,9 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	publishedTraffic := c.ScenarioSpec != nil &&
 		c.ScenarioSpec.LaunchConfig.TrafficSource != sim.TrafficSourceScenario
 	if publishedTraffic {
-		imgui.BeginDisabled()
 		c.NewSimRequest.EnforceUniqueCallsignSuffix = false
-	}
-	imgui.Checkbox("Ensure unique callsign suffixes", &c.NewSimRequest.EnforceUniqueCallsignSuffix)
-	if publishedTraffic {
-		imgui.EndDisabled()
-		imgui.SameLine()
-		imgui.Text("(" + c.ScenarioSpec.LaunchConfig.TrafficSource.String() +
-			" traffic flies the callsigns it really used)")
+	} else {
+		imgui.Checkbox("Ensure unique callsign suffixes", &c.NewSimRequest.EnforceUniqueCallsignSuffix)
 	}
 
 	imgui.Text("Readback error interval:")
