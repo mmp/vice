@@ -626,7 +626,6 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 		return ErrRPCVersionMismatch
 	}
 
-	// Before we acquire the lock...
 	if err := sm.GetRunningSims(0, &result.RunningSims); err != nil {
 		return err
 	}
@@ -634,9 +633,6 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	result.AvailableWXByFacility = make(map[string][]util.TimeInterval)
 	maps.Copy(result.AvailableWXByFacility, wx.GetTRACONTimeIntervals())
 	maps.Copy(result.AvailableWXByFacility, wx.GetARTCCTimeIntervals())
-
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
 
 	result.ScenarioCatalogs = sm.scenarios.Load().Catalogs
 
@@ -818,9 +814,6 @@ func (sm *SimManager) GetSerializeSimJSON(token string, s *[]byte) error {
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
 
 	var err error
 	c.session.withSim(func() { *s, err = c.sim.GetSerializeSimJSON() })
