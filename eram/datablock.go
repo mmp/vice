@@ -587,7 +587,7 @@ func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 		middle := util.Select(!state.ReachedAltitude, downArrow, "+")
 		return formatDisplay + middle + formatCurrent
 	case currentAltitude < float32(displayAlt):
-		middle := util.Select(!state.ReachedAltitude, upArrow, "+")
+		middle := util.Select(!state.ReachedAltitude, upArrow, "-")
 		return formatDisplay + middle + formatCurrent
 	}
 	return "" // This shouldn't happen?
