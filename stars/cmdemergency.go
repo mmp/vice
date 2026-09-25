@@ -26,7 +26,8 @@ func registerEmergencyCommands() {
 			if !trk.IsAssociated() || !ctx.Client.StringIsSPC(spc) {
 				return ErrCommandFormat
 			}
-			if sqspc, _ := trk.Squawk.IsSPC(); sqspc && trk.Mode != av.TransponderModeStandby {
+			rt := sp.radarTrack(trk.ADSBCallsign)
+			if sqspc, _ := rt.Squawk.IsSPC(); sqspc && rt.Mode != av.TransponderModeStandby {
 				// Can't override if they're already squawking a different one.
 				return ErrIllegalFunctionAlertActive
 			}

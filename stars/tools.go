@@ -347,7 +347,7 @@ func (sp *Scope) drawMinSep(ctx *scope.Context, transforms scope.Transformations
 	}
 
 	// Go ahead and draw the minimum separation lines and text.
-	p0ll, p1ll := trk0.Location, trk1.Location
+	p0ll, p1ll := s0.track.Location, s1.track.Location
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 

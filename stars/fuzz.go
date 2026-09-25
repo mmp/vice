@@ -539,7 +539,7 @@ func (g *trackMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) Gene
 	trk := candidates[r.Intn(len(candidates))]
 	switch g.Style {
 	case "TRK_BCN":
-		return GeneratorResult{Text: trk.Squawk.String()}
+		return GeneratorResult{Text: ctx.SP.radarTrack(trk.ADSBCallsign).Squawk.String()}
 	case "TRK_INDEX":
 		return GeneratorResult{Text: fmt.Sprintf("%d", trk.FlightPlan.ListIndex)}
 	case "TRK_INDEX_SUSPENDED":

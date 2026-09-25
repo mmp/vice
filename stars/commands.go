@@ -957,7 +957,7 @@ func (sp *Scope) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32
 
 	for i := range sp.visibleTracks {
 		t := &sp.visibleTracks[i]
-		pw := transforms.WindowFromLatLongP(t.Location)
+		pw := transforms.WindowFromLatLongP(sp.TrackState[t.ADSBCallsign].track.Location)
 		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {
 			trk = t

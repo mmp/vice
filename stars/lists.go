@@ -541,7 +541,7 @@ func (sp *Scope) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle render
 		// Active special purpose codes.
 		codes := make(map[string]any)
 		for _, trk := range sp.visibleTracks {
-			if ok, code := trk.Squawk.IsSPC(); ok {
+			if ok, code := sp.radarTrack(trk.ADSBCallsign).Squawk.IsSPC(); ok {
 				codes[code] = nil
 			} else if trk.IsAssociated() && trk.FlightPlan.SPCOverride != "" {
 				codes[trk.FlightPlan.SPCOverride] = nil
@@ -995,8 +995,9 @@ func (sp *Scope) drawAlertList(ctx *scope.Context, drawExtent math.Extent2D, sty
 		mci = slices.SortedFunc(slices.Values(util.FilterSlice(sp.MCIAircraft, func(mci CAAircraft) bool {
 			// remove suppressed ones
 			trk0, ok0 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
-			trk1, ok1 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[1])
-			return ok0 && ok1 && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk1.Squawk
+			_, ok1 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[1])
+			return ok0 && ok1 && trk0.IsAssociated() &&
+				trk0.FlightPlan.MCISuppressedCode != sp.radarTrack(mci.ADSBCallsigns[1]).Squawk
 		})), cmpCA)
 	}
 
@@ -1034,7 +1035,7 @@ func (sp *Scope) drawAlertList(ctx *scope.Context, drawExtent math.Extent2D, sty
 				if trk.IsAssociated() && trk.FlightPlan.PilotReportedAltitude != 0 {
 					return strconv.Itoa(trk.FlightPlan.PilotReportedAltitude/100) + "*"
 				}
-				return strconv.Itoa(int((trk.TransponderAltitude + 50) / 100))
+				return strconv.Itoa(int((sp.radarTrack(trk.ADSBCallsign).TransponderAltitude + 50) / 100))
 			}
 
 			// FIXME: should be using ACIDs for the second two cases.
@@ -1045,9 +1046,10 @@ func (sp *Scope) drawAlertList(ctx *scope.Context, drawExtent math.Extent2D, sty
 			} else if mcipair != nil {
 				// For MCIs, the unassociated track is always the second callsign.
 				// Beacon code is reported for MCI or blank if we don't have it.
-				trk1, ok := ctx.GetTrackByCallsign(mcipair.ADSBCallsigns[1])
-				if ok && trk1.Mode != av.TransponderModeStandby {
-					fmt.Fprintf(&text, "%-17s MCI\n", string(mcipair.ADSBCallsigns[0])+"*"+trk1.Squawk.String())
+				_, ok := ctx.GetTrackByCallsign(mcipair.ADSBCallsigns[1])
+				if ok && sp.radarTrack(mcipair.ADSBCallsigns[1]).Mode != av.TransponderModeStandby {
+					fmt.Fprintf(&text, "%-17s MCI\n",
+						string(mcipair.ADSBCallsigns[0])+"*"+sp.radarTrack(mcipair.ADSBCallsigns[1]).Squawk.String())
 				} else {
 					fmt.Fprintf(&text, "%-17s MCI\n", mcipair.ADSBCallsigns[0]+"*")
 				}
@@ -1086,8 +1088,8 @@ func (sp *Scope) drawCoastList(ctx *scope.Context, drawExtent math.Extent2D, sty
 				map[string]func() string{
 					"ALT": func() string {
 						// For suspended, we always just show altitude (of one sort or another)
-						if trk.Mode == av.TransponderModeAltitude {
-							return fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
+						if rt := sp.radarTrack(trk.ADSBCallsign); rt.Mode == av.TransponderModeAltitude {
+							return fmt.Sprintf("%03d", int(rt.TransponderAltitude+50)/100)
 						} else if fp.PilotReportedAltitude != 0 {
 							return fmt.Sprintf("%03d", fp.PilotReportedAltitude)
 						} else {
@@ -1278,7 +1280,7 @@ func (sp *Scope) drawTowerList(ctx *scope.Context, drawExtent math.Extent2D, air
 	m := make(map[float32]string)
 	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() && trk.ArrivalAirport == airport {
-			dist := math.NMDistance2LL(loc, trk.Location)
+			dist := math.NMDistance2LL(loc, sp.radarTrack(trk.ADSBCallsign).Location)
 			// We'll punt on the chance that two aircraft have the
 			// exact same distance to the airport...
 			m[dist] = sp.formatListEntry(ctx, ctx.FacilityAdaptation.Lists.Tower.Format, trk.FlightPlan, nil)

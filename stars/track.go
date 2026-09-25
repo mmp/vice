@@ -202,6 +202,12 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) math.TrueHeading {
 	return math.Heading2LL(ts.previousTrack.Location, ts.track.Location, nmPerLongitude)
 }
 
+// radarTrack returns the most recent radar sample of the aircraft with the
+// given callsign.
+func (sp *Scope) radarTrack(callsign av.ADSBCallsign) av.RadarTrack {
+	return sp.TrackState[callsign].track
+}
+
 func (sp *Scope) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
 	for _, trk := range sp.visibleTracks {
@@ -243,9 +249,9 @@ func (sp *Scope) processEvents(ctx *scope.Context) {
 			sp.TrackState[trk.ADSBCallsign] = sa
 		}
 
-		if ok, _ := trk.Squawk.IsSPC(); ok && !sp.TrackState[trk.ADSBCallsign].SPCAlert {
+		state := sp.TrackState[trk.ADSBCallsign]
+		if ok, _ := state.track.Squawk.IsSPC(); ok && !state.SPCAlert {
 			// First we've seen it squawking the SPC
-			state := sp.TrackState[trk.ADSBCallsign]
 			state.SPCAlert = true
 			state.SPCAcknowledged = false
 			state.SPCSoundEnd = ctx.InterpolatedSimTime.Add(AlertAudioDuration)
@@ -276,17 +282,23 @@ func (sp *Scope) processEvents(ctx *scope.Context) {
 	sp.DuplicateBeacons = make(map[av.Squawk]any)
 	beaconCount := make(map[av.Squawk]int)
 	for _, trk := range ctx.Client.State.Tracks {
-		// Don't count SPC or VFR as duplicates.
-		if trk.Squawk == 0o1200 {
+		state := sp.TrackState[trk.ADSBCallsign]
+		if state.trackTime.IsZero() {
+			// The radar hasn't reported its code yet.
 			continue
 		}
-		if ok, _ := av.SquawkIsSPC(trk.Squawk); ok {
+		sq := state.track.Squawk
+		// Don't count SPC or VFR as duplicates.
+		if sq == 0o1200 {
+			continue
+		}
+		if ok, _ := av.SquawkIsSPC(sq); ok {
 			continue
 		}
 
-		beaconCount[trk.Squawk] = beaconCount[trk.Squawk] + 1
-		if beaconCount[trk.Squawk] > 1 {
-			sp.DuplicateBeacons[trk.Squawk] = nil
+		beaconCount[sq] = beaconCount[sq] + 1
+		if beaconCount[sq] > 1 {
+			sp.DuplicateBeacons[sq] = nil
 		}
 	}
 
@@ -465,13 +477,13 @@ func (sp *Scope) updateMSAWs(ctx *scope.Context) {
 		}
 
 		pilotAlt := trk.FlightPlan.PilotReportedAltitude
-		if (trk.FlightPlan.InhibitModeCAltitudeDisplay || trk.Mode != av.TransponderModeAltitude) && pilotAlt == 0 {
+		if (trk.FlightPlan.InhibitModeCAltitudeDisplay || state.track.Mode != av.TransponderModeAltitude) && pilotAlt == 0 {
 			// We can use pilot reported for low altitude alerts: 5-167.
 			state.MSAW = false
 			continue
 		}
 
-		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.TransponderAltitude))
+		alt := util.Select(pilotAlt != 0, pilotAlt, int(state.track.TransponderAltitude))
 
 		// Check MSAW suppression filters
 		msawFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitMSAW
@@ -501,14 +513,17 @@ func (sp *Scope) updateRadarTracks(ctx *scope.Context) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	fa := ctx.Client.State.FacilityAdaptation
 	appliedSimTime := ctx.Client.State.SimTime
-	if sp.radarMode(fa.RadarSites) == RadarModeFused {
-		if appliedSimTime.Sub(sp.lastTrackUpdate) < 1*time.Second {
-			return
+	interval := util.Select(sp.radarMode(fa.RadarSites) == RadarModeFused, 1*time.Second, 5*time.Second)
+	if appliedSimTime.Sub(sp.lastTrackUpdate) < interval {
+		// A track that has just become visible gets its first sample
+		// immediately rather than waiting for the next radar update.
+		for _, trk := range sp.visibleTracks {
+			if state := sp.TrackState[trk.ADSBCallsign]; state.trackTime.IsZero() {
+				state.track = trk.RadarTrack
+				state.trackTime = appliedSimTime
+			}
 		}
-	} else {
-		if appliedSimTime.Sub(sp.lastTrackUpdate) < 5*time.Second {
-			return
-		}
+		return
 	}
 	sp.lastTrackUpdate = appliedSimTime
 
@@ -654,28 +669,29 @@ func (sp *Scope) drawTracks(ctx *scope.Context, transforms scope.Transformations
 		positionSymbol := ""
 
 		if trk.IsUnassociated() {
+			rt := state.track
 			// See if a position symbol override applies. Note that this may be overridden in code following shortly.
 			fa := ctx.Client.State.FacilityAdaptation
 			for _, r := range fa.UntrackedPositionSymbolOverrides.CodeRanges {
-				if trk.Squawk >= r[0] && trk.Squawk <= r[1] { // ranges are inclusive
+				if rt.Squawk >= r[0] && rt.Squawk <= r[1] { // ranges are inclusive
 					positionSymbol = fa.UntrackedPositionSymbolOverrides.Symbol
 					break
 				}
 			}
 
-			switch trk.Mode {
+			switch rt.Mode {
 			case av.TransponderModeStandby:
 				ps := sp.currentPrefs()
 				positionSymbol = util.Select(ps.InhibitPositionSymOnUnassociatedPrimary,
 					" ", string(rune(140))) // diamond
 			case av.TransponderModeAltitude:
-				if sp.beaconCodeSelected(trk.Squawk) {
+				if sp.beaconCodeSelected(rt.Squawk) {
 					positionSymbol = string(rune(129)) // square
 				} else if positionSymbol == "" {
 					positionSymbol = "*"
 				}
 			case av.TransponderModeOn:
-				if sp.beaconCodeSelected(trk.Squawk) {
+				if sp.beaconCodeSelected(rt.Squawk) {
 					positionSymbol = string(rune(128)) // triangle
 				} else if positionSymbol == "" {
 					positionSymbol = "+"
@@ -789,9 +805,9 @@ func (sp *Scope) getGhostTracks(ctx *scope.Context) []*av.GhostTrack {
 			force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
 			heading := util.Select(state.HaveHeading(),
 				float32(math.TrueToMagnetic(state.TrackHeading(nmPerLongitude), ctx.MagneticVariation)),
-				float32(trk.Heading))
+				float32(state.track.Heading))
 
-			g := src.TryMakeGhost(trk.RadarTrack, heading, trk.FlightPlan.Scratchpad, force, offset,
+			g := src.TryMakeGhost(state.track, heading, trk.FlightPlan.Scratchpad, force, offset,
 				leaderDirection, nmPerLongitude, ghost)
 			if g != nil {
 				g.TrackId = trackId
@@ -876,7 +892,7 @@ func (sp *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 		switch mode := sp.radarMode(ctx.FacilityAdaptation.RadarSites); mode {
 		case RadarModeSingle:
 			site := ctx.FacilityAdaptation.RadarSites[ps.RadarSiteSelected]
-			primary, secondary, dist := site.CheckVisibility(pos, int(trk.TrueAltitude))
+			primary, secondary, dist := site.CheckVisibility(pos, int(state.track.TrueAltitude))
 
 			// Orient the box toward the radar
 			h := float32(math.TrueToMagnetic(math.Heading2LL(site.Position.Point2LL, pos, ctx.NmPerLongitude), ctx.MagneticVariation))
@@ -913,12 +929,12 @@ func (sp *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 
 		case RadarModeMulti:
 			primary, secondary, _ := sp.radarVisibility(ctx.FacilityAdaptation.RadarSites,
-				pos, int(trk.TrueAltitude))
-			// "cheat" by using trk.Heading if we don't yet have two radar tracks to compute the
+				pos, int(state.track.TrueAltitude))
+			// "cheat" by using the reported heading if we don't yet have two radar tracks to compute the
 			// heading with; this makes things look better when we first see a track or when
 			// restarting a simulation...
 			heading := util.Select(state.HaveHeading(),
-				float32(math.TrueToMagnetic(state.TrackHeading(ctx.NmPerLongitude), ctx.MagneticVariation)), float32(trk.Heading))
+				float32(math.TrueToMagnetic(state.TrackHeading(ctx.NmPerLongitude), ctx.MagneticVariation)), float32(state.track.Heading))
 
 			rot := math.Rotator2f(heading)
 
@@ -1035,7 +1051,7 @@ func (sp *Scope) drawHistoryTrails(ctx *scope.Context, transforms scope.Transfor
 		// In general, if the datablock isn't being drawn (e.g. due to
 		// altitude filters), don't draw history. The one exception is
 		// unassociated tracks squawking standby (I think!).
-		if !sp.datablockVisible(ctx, trk) && !(trk.IsUnassociated() && trk.Mode == av.TransponderModeStandby) {
+		if !sp.datablockVisible(ctx, trk) && !(trk.IsUnassociated() && state.track.Mode == av.TransponderModeStandby) {
 			continue
 		}
 
@@ -1124,6 +1140,7 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 		if !oka || !okb {
 			return false
 		}
+		ra, rb := sp.radarTrack(callsigna), sp.radarTrack(callsignb)
 
 		// Both must be associated
 		if trka.IsUnassociated() || trkb.IsUnassociated() {
@@ -1132,7 +1149,7 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 		if trka.FlightPlan.InhibitModeCAltitudeDisplay || trkb.FlightPlan.InhibitModeCAltitudeDisplay {
 			return false
 		}
-		if trka.Mode != av.TransponderModeAltitude || trkb.Mode != av.TransponderModeAltitude {
+		if ra.Mode != av.TransponderModeAltitude || rb.Mode != av.TransponderModeAltitude {
 			return false
 		}
 		if trka.FlightPlan.DisableCA || trkb.FlightPlan.DisableCA {
@@ -1148,8 +1165,8 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 		// Quick outs before more expensive checks: using approximate
 		// distance; don't bother if they're >10nm apart or have >5000'
 		// vertical separation.
-		if math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) > 5000 ||
-			math.NMLength2LL(math.Sub2f(trka.Location, trkb.Location), nmPerLongitude) > 10 {
+		if math.Abs(ra.TransponderAltitude-rb.TransponderAltitude) > 5000 ||
+			math.NMLength2LL(math.Sub2f(ra.Location, rb.Location), nmPerLongitude) > 10 {
 			return false
 		}
 
@@ -1163,8 +1180,8 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 			return false
 		}
 
-		return math.NMDistance2LL(trka.Location, trkb.Location) <= LateralMinimum &&
-			math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) <= VerticalMinimum-5 && /*small slop for fp error*/
+		return math.NMDistance2LL(ra.Location, rb.Location) <= LateralMinimum &&
+			math.Abs(ra.TransponderAltitude-rb.TransponderAltitude) <= VerticalMinimum-5 && /*small slop for fp error*/
 			!sp.diverging(ctx, trka, trkb)
 	}
 
@@ -1175,6 +1192,7 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 		if !oka || !okb {
 			return false
 		}
+		ra, rb := sp.radarTrack(callsigna), sp.radarTrack(callsignb)
 		if trka.IsAssociated() && trka.FlightPlan.DisableCA {
 			return false
 		}
@@ -1182,20 +1200,20 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 		if trka.IsAssociated() && trka.FlightPlan.InhibitModeCAltitudeDisplay {
 			return false
 		}
-		if trka.Mode != av.TransponderModeAltitude || trkb.Mode != av.TransponderModeAltitude {
+		if ra.Mode != av.TransponderModeAltitude || rb.Mode != av.TransponderModeAltitude {
 			return false
 		}
 
 		// Is this beacon code suppressed for this aircraft?
-		if trka.IsAssociated() && trka.FlightPlan.MCISuppressedCode == trkb.Squawk {
+		if trka.IsAssociated() && trka.FlightPlan.MCISuppressedCode == rb.Squawk {
 			return false
 		}
 
 		// Quick outs before more expensive checks: using approximate
 		// distance; don't bother if they're >10nm apart or have >5000'
 		// vertical separation.
-		if math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) > 5000 ||
-			math.NMLength2LL(math.Sub2f(trka.Location, trkb.Location), nmPerLongitude) > 10 {
+		if math.Abs(ra.TransponderAltitude-rb.TransponderAltitude) > 5000 ||
+			math.NMLength2LL(math.Sub2f(ra.Location, rb.Location), nmPerLongitude) > 10 {
 			return false
 		}
 
@@ -1203,8 +1221,8 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 			return false
 		}
 
-		return math.NMDistance2LL(trka.Location, trkb.Location) <= 1.5 &&
-			math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) <= 500-5 && /*small slop for fp error*/
+		return math.NMDistance2LL(ra.Location, rb.Location) <= 1.5 &&
+			math.Abs(ra.TransponderAltitude-rb.TransponderAltitude) <= 500-5 && /*small slop for fp error*/
 			!sp.diverging(ctx, trka, trkb)
 	}
 
@@ -1371,9 +1389,9 @@ func MakeModeledAircraft(ctx *scope.Context, trk sim.Track, state *TrackState, t
 
 	ma := ModeledAircraft{
 		callsign:  trk.ADSBCallsign,
-		p:         math.LL2NM(trk.Location, nmPerLongitude),
-		gs:        trk.Groundspeed,
-		alt:       trk.TransponderAltitude,
+		p:         math.LL2NM(state.track.Location, nmPerLongitude),
+		gs:        state.track.Groundspeed,
+		alt:       state.track.TransponderAltitude,
 		dalt:      float32(state.TrackDeltaAltitude()),
 		threshold: math.LL2NM(threshold, nmPerLongitude),
 	}
@@ -1421,7 +1439,7 @@ func (sp *Scope) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.T
 
 	eligible25nm := vol.Enable25nmApproach &&
 		ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) &&
-		math.NMDistance2LL(vol.Threshold.Point2LL, back.Location) < vol.Dist25nmApproach &&
+		math.NMDistance2LL(vol.Threshold.Point2LL, state.track.Location) < vol.Dist25nmApproach &&
 		back.OnExtendedCenterline && front.OnExtendedCenterline
 	cwtSeparation := av.CWTApproachSeparation(
 		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
@@ -1468,9 +1486,9 @@ func (sp *Scope) diverging(ctx *scope.Context, a, b *sim.Track) bool {
 
 	sa, sb := sp.TrackState[a.ADSBCallsign], sp.TrackState[b.ADSBCallsign]
 
-	pa := math.LL2NM(a.Location, nmPerLongitude)
+	pa := math.LL2NM(sa.track.Location, nmPerLongitude)
 	da := math.LL2NM(sa.HeadingVector(nmPerLongitude, magneticVariation), nmPerLongitude)
-	pb := math.LL2NM(b.Location, nmPerLongitude)
+	pb := math.LL2NM(sb.track.Location, nmPerLongitude)
 	db := math.LL2NM(sb.HeadingVector(nmPerLongitude, magneticVariation), nmPerLongitude)
 
 	pint, ok := math.LineLineIntersect(pa, math.Add2f(pa, da), pb, math.Add2f(pb, db))

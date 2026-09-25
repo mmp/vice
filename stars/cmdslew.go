@@ -112,10 +112,10 @@ func registerSlewCommands() {
 				fp := trk.FlightPlan
 
 				// 5.6.1 Change ABC to RBC for track in mismatch (implied)
-				if !trk.IsUnsupportedDB() && trk.Squawk != fp.AssignedSquawk {
+				if !trk.IsUnsupportedDB() && state.track.Squawk != fp.AssignedSquawk {
 					spec := sim.FlightPlanSpecifier{}
 					spec.ACID.Set(fp.ACID)
-					spec.ImplicitSquawkAssignment.Set(trk.Squawk)
+					spec.ImplicitSquawkAssignment.Set(state.track.Squawk)
 					modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
 					return CommandStatus{}
 				}
@@ -127,8 +127,8 @@ func registerSlewCommands() {
 				}
 
 				// 5.6.4 Inhibit duplicate beacon code indicator (implied)
-				if _, ok := sp.DuplicateBeacons[trk.Squawk]; ok && state.DBAcknowledged != trk.Squawk {
-					state.DBAcknowledged = trk.Squawk
+				if _, ok := sp.DuplicateBeacons[state.track.Squawk]; ok && state.DBAcknowledged != state.track.Squawk {
+					state.DBAcknowledged = state.track.Squawk
 					return CommandStatus{Output: formatFlightPlan(sp, ctx, trk.FlightPlan, trk)}
 				}
 			}
@@ -174,7 +174,7 @@ func registerSlewCommands() {
 					return CommandStatus{}
 				} else if ctx.UserOwnsFlightPlan(fp) {
 					// 6.13.3 Beacon readout - owned and associated track (implied)
-					rbc := util.Select(trk.Mode == av.TransponderModeStandby, "    ", trk.Squawk.String())
+					rbc := util.Select(state.track.Mode == av.TransponderModeStandby, "    ", state.track.Squawk.String())
 					return CommandStatus{Output: string(fp.ACID) + " " + rbc + " " + fp.AssignedSquawk.String()}
 				} else if fp.SPCOverride != "" && !state.SPCAcknowledged {
 					// Remove FDB forced by SPC

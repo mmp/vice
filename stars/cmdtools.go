@@ -771,7 +771,8 @@ func registerToolsCommands() {
 	registerCommand(CommandModeMultiFunc, "B[SLEW]", func(sp *Scope, trk *sim.Track) CommandStatus {
 		if trk.IsAssociated() {
 			// Display ACID, RBC (received beacon code), ABC (assigned beacon code)
-			rbc := util.Select(trk.Mode == av.TransponderModeStandby, "    ", trk.Squawk.String())
+			rt := sp.radarTrack(trk.ADSBCallsign)
+			rbc := util.Select(rt.Mode == av.TransponderModeStandby, "    ", rt.Squawk.String())
 			return CommandStatus{Output: string(trk.FlightPlan.ACID) + " " + rbc + " " + trk.FlightPlan.AssignedSquawk.String()}
 		} else {
 			// 6.13.7 For unassociated tracks, toggle beacon code display in LDB
@@ -1045,7 +1046,9 @@ func registerToolsCommands() {
 	// 6.13.28 Selected beacon code display
 	registerCommand(CommandModeNone, "**[BCN]",
 		func(sp *Scope, ctx *scope.Context, beacon av.Squawk) error {
-			if !slices.ContainsFunc(sp.visibleTracks, func(trk sim.Track) bool { return trk.Squawk == beacon }) {
+			if !slices.ContainsFunc(sp.visibleTracks, func(trk sim.Track) bool {
+				return sp.radarTrack(trk.ADSBCallsign).Squawk == beacon
+			}) {
 				return ErrNoTrack
 			}
 
@@ -1312,7 +1315,7 @@ func trackInCRDARegion(sp *Scope, ctx *scope.Context, trk *sim.Track) bool {
 			if !rs.state.Enabled {
 				continue
 			}
-			if lat, _ := rs.region.Inside(state.track.Location, trk.TrueAltitude,
+			if lat, _ := rs.region.Inside(state.track.Location, state.track.TrueAltitude,
 				ctx.NmPerLongitude); lat {
 				return true
 			}

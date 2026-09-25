@@ -112,7 +112,7 @@ func (sp *Scope) updateAudio(ctx *scope.Context) {
 	playSPCSound := func() bool {
 		for _, trk := range sp.visibleTracks {
 			state := sp.TrackState[trk.ADSBCallsign]
-			ok, _ := trk.Squawk.IsSPC()
+			ok, _ := state.track.Squawk.IsSPC()
 			if ok && !state.SPCAcknowledged && ctx.InterpolatedSimTime.Before(state.SPCSoundEnd) {
 				return true
 			}

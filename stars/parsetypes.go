@@ -210,7 +210,7 @@ func (h *trackBeaconParser) Parse(sp *Scope, ctx *scope.Context, input *CommandI
 	}
 
 	idx := slices.IndexFunc(sp.visibleTracks, func(trk sim.Track) bool {
-		return trk.IsAssociated() && trk.Squawk == sq
+		return trk.IsAssociated() && sp.radarTrack(trk.ADSBCallsign).Squawk == sq
 	})
 	if idx == -1 {
 		return nil, text, false, nil

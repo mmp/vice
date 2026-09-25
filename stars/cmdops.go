@@ -219,7 +219,7 @@ func registerOpsCommands() {
 
 			if dep == nil {
 				for _, trk := range sp.visibleTracks {
-					if trk.Squawk == sq {
+					if sp.radarTrack(trk.ADSBCallsign).Squawk == sq {
 						// There is such a flight but it's not in our release list.
 						if trk.HoldForRelease {
 							// It's in another controller's list
@@ -619,7 +619,7 @@ func registerOpsCommands() {
 		}
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		if !spec.SquawkAssignment.IsSet {
-			spec.ImplicitSquawkAssignment.Set(trk.Squawk)
+			spec.ImplicitSquawkAssignment.Set(sp.radarTrack(trk.ADSBCallsign).Squawk)
 		}
 		associateFlightPlan(sp, ctx, trk.ADSBCallsign, spec)
 		return nil
@@ -672,7 +672,7 @@ func registerOpsCommands() {
 		}
 		spec.TypeOfFlight.Set(av.FlightTypeArrival)
 		if !spec.SquawkAssignment.IsSet {
-			spec.ImplicitSquawkAssignment.Set(trk.Squawk)
+			spec.ImplicitSquawkAssignment.Set(sp.radarTrack(trk.ADSBCallsign).Squawk)
 		}
 		associateFlightPlan(sp, ctx, trk.ADSBCallsign, spec)
 		return nil
@@ -798,7 +798,7 @@ func registerOpsCommands() {
 
 		// 5-166: pilot-reported altitude can't be entered if mode-c is available and it hasn't
 		// been toggled off. (Though allow zero to clear pilot-reported altitude.)
-		if trk.Mode == av.TransponderModeAltitude && !trk.FlightPlan.InhibitModeCAltitudeDisplay &&
+		if sp.radarTrack(trk.ADSBCallsign).Mode == av.TransponderModeAltitude && !trk.FlightPlan.InhibitModeCAltitudeDisplay &&
 			spec.PilotReportedAltitude.GetOr(0) != 0 {
 			return ErrIllegalFunction
 		}
@@ -848,7 +848,7 @@ func registerOpsCommands() {
 		// Mode-C validation (STARS Manual 5-166): Can't set non-zero pilot altitude
 		// if mode-c is available and it hasn't been toggled off.
 		// Exception: Allow zero to clear pilot-reported altitude.
-		if trk.Mode == av.TransponderModeAltitude &&
+		if sp.radarTrack(trk.ADSBCallsign).Mode == av.TransponderModeAltitude &&
 			!trk.FlightPlan.InhibitModeCAltitudeDisplay &&
 			spec.PilotReportedAltitude.GetOr(0) != 0 {
 			return ErrIllegalFunction
@@ -896,7 +896,7 @@ func registerOpsCommands() {
 			var spec sim.FlightPlanSpecifier
 			inhibit := !trk.FlightPlan.InhibitModeCAltitudeDisplay
 			spec.InhibitModeCAltitudeDisplay.Set(inhibit)
-			if trk.Mode == av.TransponderModeAltitude && !inhibit {
+			if sp.radarTrack(trk.ADSBCallsign).Mode == av.TransponderModeAltitude && !inhibit {
 				// Clear pilot reported if inhibit toggled on and we have mode-C altitude
 				spec.PilotReportedAltitude.Set(0)
 			}
@@ -1163,8 +1163,8 @@ func formatFlightPlan(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk 
 	trkalt := func() string {
 		if trk == nil {
 			return ""
-		} else if trk.Mode == av.TransponderModeAltitude {
-			return fmt.Sprintf("%03d ", int(trk.TransponderAltitude+50)/100)
+		} else if rt := sp.radarTrack(trk.ADSBCallsign); rt.Mode == av.TransponderModeAltitude {
+			return fmt.Sprintf("%03d ", int(rt.TransponderAltitude+50)/100)
 		} else if fp.PilotReportedAltitude != 0 {
 			return fmt.Sprintf("%03d ", fp.PilotReportedAltitude/100)
 		} else {

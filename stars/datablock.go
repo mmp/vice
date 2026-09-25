@@ -315,7 +315,7 @@ func (sp *Scope) datablockType(ctx *scope.Context, trk sim.Track) DatablockType 
 			return FullDatablock
 		}
 
-		if ctx.InterpolatedSimTime.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode {
+		if ctx.InterpolatedSimTime.Before(sp.DisplayBeaconCodeEndTime) && state.track.Squawk == sp.DisplayBeaconCode {
 			// 6-117
 			return FullDatablock
 		}
@@ -412,9 +412,10 @@ func (sp *Scope) getAllDatablocks(ctx *scope.Context) map[av.ADSBCallsign]databl
 func (sp *Scope) getDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan,
 	color renderer.RGB, brightness scope.Brightness) datablock {
 	state := sp.TrackState[trk.ADSBCallsign]
-	if state != nil && !sp.datablockVisible(ctx, trk) {
+	if !sp.datablockVisible(ctx, trk) {
 		return nil
 	}
+	rt := state.track
 
 	handoffId, handoffTCP := sp.resolveHandoff(ctx, sfp, state)
 
@@ -424,19 +425,15 @@ func (sp *Scope) getDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFli
 	if sfp != nil {
 		actype = sfp.AircraftType
 	}
-	squawkingSPC, _ := trk.Squawk.IsSPC()
+	squawkingSPC, _ := rt.Squawk.IsSPC()
 
-	altitude, pilotReportedAltitude := formatAltitude(trk, sfp,
-		state != nil && state.UnreasonableModeC)
+	altitude, pilotReportedAltitude := formatAltitude(trk, rt, sfp, state.UnreasonableModeC)
 
-	displayBeaconCode := ctx.InterpolatedSimTime.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode
+	displayBeaconCode := ctx.InterpolatedSimTime.Before(sp.DisplayBeaconCodeEndTime) && rt.Squawk == sp.DisplayBeaconCode
 
-	groundspeed := fmt.Sprintf("%02d", int(trk.Groundspeed+5)/10)
-	if state != nil {
-		groundspeed = fmt.Sprintf("%02d", int(state.track.Groundspeed+5)/10)
-	}
-	beaconMismatch := trk.IsAssociated() && trk.Squawk != sfp.AssignedSquawk && !squawkingSPC && !trk.IsUnsupportedDB() &&
-		trk.Mode != av.TransponderModeStandby
+	groundspeed := fmt.Sprintf("%02d", int(rt.Groundspeed+5)/10)
+	beaconMismatch := trk.IsAssociated() && rt.Squawk != sfp.AssignedSquawk && !squawkingSPC && !trk.IsUnsupportedDB() &&
+		rt.Mode != av.TransponderModeStandby
 
 	sp1 := sp.resolveScratchpad1(ctx, trk, sfp, state)
 
@@ -464,7 +461,7 @@ func (sp *Scope) getDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFli
 
 		s := strconv.Itoa(sfp.CoastSuspendIndex)
 		if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
-			state.SuspendedShowAltitudeEndTime.After(ctx.InterpolatedSimTime) && trk.Mode == av.TransponderModeAltitude {
+			state.SuspendedShowAltitudeEndTime.After(ctx.InterpolatedSimTime) && rt.Mode == av.TransponderModeAltitude {
 			s += " " + altitude
 		}
 		formatDBText(db.field0[:], s, color, false)
@@ -547,7 +544,9 @@ func ahopInhibitIndicator(ctx *scope.Context, sfp *sim.NASFlightPlan, handoffId 
 	return handoffId
 }
 
-func formatAltitude(trk sim.Track, sfp *sim.NASFlightPlan, unreasonableModeC bool) (altitude string, pilotReported bool) {
+// formatAltitude returns the datablock altitude for the track's radar
+// sample rt, falling back to a pilot-reported altitude from the flight plan.
+func formatAltitude(trk sim.Track, rt av.RadarTrack, sfp *sim.NASFlightPlan, unreasonableModeC bool) (altitude string, pilotReported bool) {
 	if trk.IsUnsupportedDB() {
 		if sfp != nil && sfp.PilotReportedAltitude != 0 {
 			return fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100), true
@@ -555,15 +554,15 @@ func formatAltitude(trk sim.Track, sfp *sim.NASFlightPlan, unreasonableModeC boo
 		return "", false
 	}
 
-	haveTransponderAltitude := trk.Mode == av.TransponderModeAltitude && (sfp == nil || !sfp.InhibitModeCAltitudeDisplay)
+	haveTransponderAltitude := rt.Mode == av.TransponderModeAltitude && (sfp == nil || !sfp.InhibitModeCAltitudeDisplay)
 	if haveTransponderAltitude && unreasonableModeC {
 		return "XXX", false
 	}
 	if haveTransponderAltitude {
-		if trk.TransponderAltitude < 0 {
-			return fmt.Sprintf("N%02d", int(-trk.TransponderAltitude+50)/100), false
+		if rt.TransponderAltitude < 0 {
+			return fmt.Sprintf("N%02d", int(-rt.TransponderAltitude+50)/100), false
 		}
-		return fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100), false
+		return fmt.Sprintf("%03d", int(rt.TransponderAltitude+50)/100), false
 	}
 	if sfp != nil && sfp.PilotReportedAltitude != 0 {
 		return fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100), true
@@ -571,7 +570,7 @@ func formatAltitude(trk sim.Track, sfp *sim.NASFlightPlan, unreasonableModeC boo
 	if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
 		return "***", false
 	}
-	if trk.Mode == av.TransponderModeStandby {
+	if rt.Mode == av.TransponderModeStandby {
 		return "RDR", false
 	}
 	return "   ", false
@@ -676,6 +675,7 @@ func (sp *Scope) buildLimitedDatablock(ctx *scope.Context, trk sim.Track,
 	color renderer.RGB, brightness scope.Brightness,
 	beaconator, displayBeaconCode bool, groundspeed string) *limitedDatablock {
 	state := sp.TrackState[trk.ADSBCallsign]
+	rt := state.track
 	db := sp.ldbArena.AllocClear()
 
 	// Field 0: CA, MCI, and squawking special codes
@@ -683,36 +683,36 @@ func (sp *Scope) buildLimitedDatablock(ctx *scope.Context, trk sim.Track,
 	copy(db.field0[:], alerts[:])
 
 	extended := state.FullLDBEndTime.After(ctx.InterpolatedSimTime)
-	sqspc, _ := trk.Squawk.IsSPC()
-	extended = extended || (trk.Mode != av.TransponderModeStandby && sqspc)
+	sqspc, _ := rt.Squawk.IsSPC()
+	extended = extended || (rt.Mode != av.TransponderModeStandby && sqspc)
 
 	who := trk.MissingFlightPlan && !state.MissingFlightPlanAcknowledged
 
-	if len(alerts) == 0 && trk.Mode == av.TransponderModeOn && !extended {
+	if len(alerts) == 0 && rt.Mode == av.TransponderModeOn && !extended {
 		return nil
 	}
 
 	ps := sp.currentPrefs()
-	if trk.Mode != av.TransponderModeStandby {
+	if rt.Mode != av.TransponderModeStandby {
 		mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
 			trk0, ok := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
-			return ok && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk.Squawk &&
+			return ok && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != rt.Squawk &&
 				mci.ADSBCallsigns[1] == trk.ADSBCallsign
 		})
 
-		if mci || beaconator || who || extended || trk.Ident || ps.DisplayLDBBeaconCodes ||
+		if mci || beaconator || who || extended || rt.Ident || ps.DisplayLDBBeaconCodes ||
 			state.DisplayLDBBeaconCode || displayBeaconCode {
 			// Field 1: reported beacon code
 			// TODO: Field 1: WHO if unassociated and no flight plan
 			var f1 int
 			if displayBeaconCode { // flashing yellow
-				f1 = formatDBText(db.field1[:], trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
+				f1 = formatDBText(db.field1[:], rt.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
 			} else {
-				f1 = formatDBText(db.field1[:], trk.Squawk.String(), color, false)
+				f1 = formatDBText(db.field1[:], rt.Squawk.String(), color, false)
 			}
 			if who {
 				formatDBText(db.field1[f1:], "WHO", color, true)
-			} else if trk.Ident {
+			} else if rt.Ident {
 				// Field 1: flashing ID after beacon code if ident.
 				formatDBText(db.field1[f1:], "ID", color, true)
 			}
@@ -720,17 +720,17 @@ func (sp *Scope) buildLimitedDatablock(ctx *scope.Context, trk sim.Track,
 	}
 
 	// Field 3: mode C altitude (intentionally different from formatAltitude)
-	altitude := fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
-	if trk.TransponderAltitude < 0 {
-		altitude = fmt.Sprintf("N%02d", int(-trk.TransponderAltitude+50)/100)
+	altitude := fmt.Sprintf("%03d", int(rt.TransponderAltitude+50)/100)
+	if rt.TransponderAltitude < 0 {
+		altitude = fmt.Sprintf("N%02d", int(-rt.TransponderAltitude+50)/100)
 	}
-	if trk.Mode == av.TransponderModeStandby {
+	if rt.Mode == av.TransponderModeStandby {
 		if extended {
 			altitude = "RDR"
 		} else {
 			altitude = ""
 		}
-	} else if trk.Mode == av.TransponderModeOn { // mode-a; altitude is blank
+	} else if rt.Mode == av.TransponderModeOn { // mode-a; altitude is blank
 		altitude = ""
 	}
 
@@ -741,7 +741,7 @@ func (sp *Scope) buildLimitedDatablock(ctx *scope.Context, trk sim.Track,
 		formatDBText(db.field5[:], groundspeed, color, false)
 	}
 
-	if (extended || beaconator) && trk.Mode != av.TransponderModeStandby {
+	if (extended || beaconator) && rt.Mode != av.TransponderModeStandby {
 		// Field 6: ACID
 		formatDBText(db.field6[:], string(trk.ADSBCallsign), color, false)
 	}
@@ -815,7 +815,7 @@ func (sp *Scope) buildPartialDatablock(ctx *scope.Context, trk sim.Track, sfp *s
 	}
 
 	// Field 4: ident
-	if trk.Ident {
+	if sp.radarTrack(trk.ADSBCallsign).Ident {
 		formatDBText(db.field4[:], "ID", color, true)
 	}
 
@@ -836,8 +836,8 @@ func (sp *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.
 
 	// Line 1
 	// Field 1: ACID (or squawk if beaconator)
-	if beaconator && trk.Mode != av.TransponderModeStandby {
-		formatDBText(db.field1[:], trk.Squawk.String(), color, false)
+	if beaconator && state.track.Mode != av.TransponderModeStandby {
+		formatDBText(db.field1[:], state.track.Squawk.String(), color, false)
 	} else {
 		formatDBText(db.field1[:], string(sfp.ACID), color, false)
 	}
@@ -959,8 +959,9 @@ func (sp *Scope) fillFDBField5(ctx *scope.Context, trk sim.Track, sfp *sim.NASFl
 		(state != nil && state.InhibitACTypeDisplay != nil && *state.InhibitACTypeDisplay)
 	forceACType := ctx.InterpolatedSimTime.Before(sfp.ForceACTypeDisplayEndTime) ||
 		(state != nil && ctx.InterpolatedSimTime.Before(state.ForceACTypeDisplayEndTime))
-	hasForceACType := forceACType && !inhibitACType && actype != "" && !trk.Ident
-	showACType := !trk.Ident && actype != "" && !inhibitACType
+	ident := state.track.Ident
+	hasForceACType := forceACType && !inhibitACType && actype != "" && !ident
+	showACType := !ident && actype != "" && !inhibitACType
 
 	// Helper: write groundspeed + indicators (IF/HL/ID + rules/CWT).
 	writeGSRules := func(field []dbChar) {
@@ -979,7 +980,7 @@ func (sp *Scope) fillFDBField5(ctx *scope.Context, trk sim.Track, sfp *sim.NASFl
 		// flight-rules + CWT) follows it in every case.
 		speed := util.Select(state.IFFlashing, "IF", util.Select(sfp.HoldState, "HL", groundspeed))
 		idx := formatDBText(field, speed, color, state.IFFlashing)
-		if trk.Ident {
+		if ident {
 			formatDBText(field[idx:], "ID", color, true)
 		} else {
 			formatDBText(field[idx:], rulesCategory, color, false)
@@ -994,7 +995,7 @@ func (sp *Scope) fillFDBField5(ctx *scope.Context, trk sim.Track, sfp *sim.NASFl
 
 	// Helper: write requested altitude if adapted and available.
 	writeReqAlt := func(field []dbChar) bool {
-		if trk.Ident || forceACType {
+		if ident || forceACType {
 			return false
 		}
 		if state != nil && state.DisplayRequestedAltitude != nil && !*state.DisplayRequestedAltitude {
@@ -1076,14 +1077,14 @@ func (sp *Scope) fillFDBField6(ctx *scope.Context, trk sim.Track, sfp *sim.NASFl
 	// Helper: try to write beacon code content (display beacon, mismatch, or duplicate).
 	writeBeacon := func(field []dbChar) bool {
 		if displayBeaconCode {
-			formatDBText(field, trk.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
+			formatDBText(field, state.track.Squawk.String(), brightness.ScaleRGB(sp.Colors.TextWarning), true)
 			return true
 		}
 		if beaconMismatch {
-			formatDBText(field, trk.Squawk.String(), color, false)
+			formatDBText(field, state.track.Squawk.String(), color, false)
 			return true
 		}
-		if _, ok := sp.DuplicateBeacons[trk.Squawk]; ok && state.DBAcknowledged != trk.Squawk {
+		if _, ok := sp.DuplicateBeacons[state.track.Squawk]; ok && state.DBAcknowledged != state.track.Squawk {
 			formatDBText(field, "DB", color, false)
 			return true
 		}
@@ -1329,7 +1330,7 @@ func (sp *Scope) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 
 	af := sp.currentPrefs().AltitudeFilters
 
-	if ctx.InterpolatedSimTime.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode {
+	if ctx.InterpolatedSimTime.Before(sp.DisplayBeaconCodeEndTime) && state.track.Squawk == sp.DisplayBeaconCode {
 		// beacon code display 6-117
 		return true
 	}
@@ -1344,12 +1345,13 @@ func (sp *Scope) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 		if trk.MissingFlightPlan {
 			return true // WHO
 		}
-		if trk.Mode == av.TransponderModeStandby {
+		if state.track.Mode == av.TransponderModeStandby {
 			return false
 		}
-		if trk.Mode == av.TransponderModeAltitude {
+		if state.track.Mode == av.TransponderModeAltitude {
 			// Check altitude filters
-			return int(trk.TransponderAltitude) >= af.Unassociated[0] && int(trk.TransponderAltitude) <= af.Unassociated[1]
+			alt := int(state.track.TransponderAltitude)
+			return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
 		}
 		return true
 	} else { // associated
@@ -1366,7 +1368,7 @@ func (sp *Scope) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 			// Pointouts: This is if its been accepted,
 			// for an incoming pointout, it falls to the FDB check
 			return true
-		} else if ok, _ := trk.Squawk.IsSPC(); ok {
+		} else if ok, _ := state.track.Squawk.IsSPC(); ok {
 			// Special purpose codes
 			return true
 		} else if state.DisplayFDB {
@@ -1387,9 +1389,10 @@ func (sp *Scope) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
 			return true
 		} else if trk.IsUnsupportedDB() {
 			return true
-		} else if trk.Mode == av.TransponderModeAltitude {
+		} else if state.track.Mode == av.TransponderModeAltitude {
 			// Check altitude filters
-			return int(trk.TransponderAltitude) >= af.Associated[0] && int(trk.TransponderAltitude) <= af.Associated[1]
+			alt := int(state.track.TransponderAltitude)
+			return alt >= af.Associated[0] && alt <= af.Associated[1]
 		}
 		return true
 	}
@@ -1506,7 +1509,7 @@ func (sp *Scope) haveActiveWarnings(ctx *scope.Context, trk sim.Track) bool {
 	state := sp.TrackState[trk.ADSBCallsign]
 
 	// Only this applies to unassociated tracks(?)
-	if ok, _ := trk.Squawk.IsSPC(); ok {
+	if ok, _ := state.track.Squawk.IsSPC(); ok {
 		return true
 	}
 	if trk.IsUnassociated() {
@@ -1529,9 +1532,9 @@ func (sp *Scope) haveActiveWarnings(ctx *scope.Context, trk sim.Track) bool {
 			}) ||
 		slices.ContainsFunc(sp.MCIAircraft,
 			func(ca CAAircraft) bool {
-				trk0, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				_, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
 				return ok && ca.ADSBCallsigns[0] == trk.ADSBCallsign &&
-					trk0.Squawk != sfp.MCISuppressedCode
+					sp.radarTrack(ca.ADSBCallsigns[1]).Squawk != sfp.MCISuppressedCode
 			}) {
 		return true
 	}
@@ -1574,9 +1577,10 @@ func (sp *Scope) getDatablockAlerts(ctx *scope.Context, trk sim.Track, dbtype Da
 					return false
 				}
 				trk0, ok0 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
-				trk1, ok1 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[1])
+				_, ok1 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[1])
 
-				if ok0 && ok1 && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode == trk1.Squawk {
+				if ok0 && ok1 && trk0.IsAssociated() &&
+					trk0.FlightPlan.MCISuppressedCode == sp.radarTrack(mci.ADSBCallsigns[1]).Squawk {
 					return false
 				}
 				return true
@@ -1584,7 +1588,7 @@ func (sp *Scope) getDatablockAlerts(ctx *scope.Context, trk sim.Track, dbtype Da
 				addAlert("CA", !sp.MCIAircraft[idx].Acknowledged, true)
 			}
 		}
-		if ok, code := trk.Squawk.IsSPC(); ok && trk.Mode != av.TransponderModeStandby {
+		if ok, code := state.track.Squawk.IsSPC(); ok && state.track.Mode != av.TransponderModeStandby {
 			addAlert(code, !state.SPCAcknowledged, true)
 		}
 	}
@@ -1600,7 +1604,7 @@ func (sp *Scope) getDatablockAlerts(ctx *scope.Context, trk sim.Track, dbtype Da
 		}
 		if spc := sfp.SPCOverride; spc != "" {
 			// squawked SPC takes priority
-			if sqspc, _ := trk.Squawk.IsSPC(); !sqspc || trk.Mode == av.TransponderModeStandby {
+			if sqspc, _ := state.track.Squawk.IsSPC(); !sqspc || state.track.Mode == av.TransponderModeStandby {
 				red := av.StringIsSPC(spc)            // std ones are red, adapted ones are yellow.
 				addAlert(sfp.SPCOverride, false, red) // controller-added SPC doesn't flash
 			}
@@ -1634,7 +1638,7 @@ func (sp *Scope) getDatablockAlerts(ctx *scope.Context, trk sim.Track, dbtype Da
 	// Both FDB and PDB
 	if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused &&
 		sfp.PilotReportedAltitude == 0 &&
-		(trk.Mode != av.TransponderModeAltitude || sfp.InhibitModeCAltitudeDisplay) {
+		(state.track.Mode != av.TransponderModeAltitude || sfp.InhibitModeCAltitudeDisplay) {
 		// No altitude being reported, one way or another (off or mode
 		// A). Only when FUSED and for tracked aircraft.
 		addAlert("ISR", false, false)
