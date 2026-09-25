@@ -40,32 +40,33 @@ type simSession struct {
 	scenarioGroup string
 	scenario      string
 	// sim is not safe for concurrent use. Once the session is running, it is
-	// only used with stepMu held, through apply and withSim, and nothing taken
-	// out from under stepMu may alias its state: an RPC reply is encoded after
+	// only used with mu held, through apply and withSim, and nothing taken
+	// out from under mu may alias its state: an RPC reply is encoded after
 	// the lock is released.
-	sim                *sim.Sim
-	password           string
+	sim      *sim.Sim
+	password string
+	// connectionsByToken holds the controllers connected to the sim. Like
+	// the SimManager's session tables, it is guarded by SimManager.mu.
 	connectionsByToken map[string]*connectionState
 
-	// stepMu is the sim's lock. It is held while the sim ticks and while a
+	// mu is the sim's lock. It is held while the sim ticks and while a
 	// request changes or reads it, so that each request happens between two
 	// ticks and the session log records it at the sim time it took effect.
-	// mu may be held while acquiring stepMu, never the reverse.
-	stepMu util.LoggingMutex
+	// SimManager.mu may be held while acquiring it, never the reverse.
+	mu util.LoggingMutex
 	// log is the session log, if the server is writing one for the
-	// session. It is only accessed with stepMu held.
+	// session. It is only accessed with mu held.
 	log *simlog.Writer
 	// request is the record of the request being applied, as far as the
 	// request itself fills it in: what it read from outside the sim and
 	// the aircraft it turned out to be about. If the session is a replay,
 	// replayInputs holds what the request read when the session made it.
-	// Both are only accessed with stepMu held.
+	// Both are only accessed with mu held.
 	request      simlog.Request
 	replaying    bool
 	replayInputs []msgpack.RawMessage
 
 	lg *log.Logger
-	mu util.LoggingMutex
 }
 
 func makeSimSession(name, scenarioGroup, scenario, password string, s *sim.Sim, lg *log.Logger) *simSession {
@@ -112,8 +113,8 @@ type connectionState struct {
 // transmission. The session log records the request under the RPC's method
 // with its arguments, which is how a replay makes it again (see Replay).
 func (ss *simSession) apply(tcw sim.TCW, method string, args any, f func() error) error {
-	ss.stepMu.Lock(ss.lg)
-	defer ss.stepMu.Unlock(ss.lg)
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
 
 	t := ss.sim.SimTime()
 	ss.request = simlog.Request{}
@@ -236,8 +237,8 @@ func describeRequest(method string, args any) (aircraft, summary string) {
 // a replay doesn't make again, whether reading the sim or running it forward,
 // where the ticks f runs record themselves.
 func (ss *simSession) withSim(f func()) {
-	ss.stepMu.Lock(ss.lg)
-	defer ss.stepMu.Unlock(ss.lg)
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
 
 	f()
 }
@@ -245,8 +246,8 @@ func (ss *simSession) withSim(f func()) {
 // startLog starts recording the session in w, which already holds the
 // snapshot the sim started from.
 func (ss *simSession) startLog(w *simlog.Writer) {
-	ss.stepMu.Lock(ss.lg)
-	defer ss.stepMu.Unlock(ss.lg)
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
 
 	ss.log = w
 	ss.sim.SetSessionLog(w)
@@ -254,8 +255,8 @@ func (ss *simSession) startLog(w *simlog.Writer) {
 
 // closeLog stops recording the session and finishes its log.
 func (ss *simSession) closeLog() {
-	ss.stepMu.Lock(ss.lg)
-	defer ss.stepMu.Unlock(ss.lg)
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
 
 	if ss.log == nil {
 		return
@@ -270,11 +271,10 @@ func (ss *simSession) closeLog() {
 ///////////////////////////////////////////////////////////////////////////
 // Controller Lifecycle
 
-func (ss *simSession) AddHumanController(token string, tcw sim.TCW, initials string,
+// addHumanController connects a controller to the sim at tcw. The caller
+// holds SimManager.mu.
+func (ss *simSession) addHumanController(token string, tcw sim.TCW, initials string,
 	sub *sim.EventsSubscription) {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
 	ss.connectionsByToken[token] = &connectionState{
 		token:               token,
 		tcw:                 tcw,
@@ -293,10 +293,9 @@ type signOffResult struct {
 	UsersAtTCW int
 }
 
-func (ss *simSession) SignOff(token string) (signOffResult, bool) {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
+// signOff disconnects the controller with the given token and reports how
+// many others remain at its TCW. The caller holds SimManager.mu.
+func (ss *simSession) signOff(token string) (signOffResult, bool) {
 	conn, ok := ss.connectionsByToken[token]
 	if !ok {
 		return signOffResult{}, false
@@ -327,42 +326,8 @@ func (ss *simSession) SignOff(token string) (signOffResult, bool) {
 	return result, true
 }
 
-func (ss *simSession) CullIdleControllers(sm *SimManager) {
-	ss.mu.Lock(ss.lg)
-
-	var tokensToSignOff []string
-	for token, conn := range ss.connectionsByToken {
-		if time.Since(conn.lastUpdateCall) > StateUpdateWarn {
-			if !conn.warnedNoUpdateCalls {
-				conn.warnedNoUpdateCalls = true
-				ss.lg.Warnf("%s: no messages for %s", conn.tcw, StateUpdateWarn)
-				ss.sim.PostEvent(sim.Event{
-					Type: sim.StatusMessageEvent,
-					WrittenText: fmt.Sprintf("%s (%s) has not been heard from for %s. Connection lost?",
-						string(conn.tcw), conn.initials, StateUpdateWarn),
-				})
-			}
-
-			if time.Since(conn.lastUpdateCall) > StateUpdateKick {
-				ss.lg.Warnf("%s (%s): signing off idle controller", conn.tcw, conn.initials)
-				// Collect tokens to sign off after releasing the lock
-				tokensToSignOff = append(tokensToSignOff, token)
-			}
-		}
-	}
-	ss.mu.Unlock(ss.lg)
-
-	// Sign off controllers without holding ss.mu to avoid deadlock
-	for _, token := range tokensToSignOff {
-		if err := sm.SignOff(token); err != nil {
-			ss.lg.Errorf("error signing off idle controller: %v", err)
-		}
-		// Note: SignOff handles deletion from connectionsByToken
-	}
-}
-
 // updateSimPauseState pauses the sim if no humans are connected, unpauses if at least one.
-// Must be called with ss.mu held.
+// The caller holds SimManager.mu.
 func (ss *simSession) updateSimPauseState() {
 	hasHumans := util.SeqContainsFunc(maps.Values(ss.connectionsByToken),
 		func(conn *connectionState) bool { return conn.tcw != "" })
@@ -385,60 +350,6 @@ const (
 	StateUpdateWarn = 5 * time.Second
 	StateUpdateKick = 15 * time.Second
 )
-
-// GetStateUpdate is the main entry point for periodic state updates from a controller. It is a
-// long-poll: when the caller's lastSentGen is already behind the sim's publication generation, it
-// returns the current snapshot immediately; otherwise it parks until the sim publishes new state,
-// the heartbeat timer fires, or the sim is destroyed.
-func (ss *simSession) GetStateUpdate(token string) (*SimStateUpdate, error) {
-	ss.mu.Lock(ss.lg)
-	conn, ok := ss.connectionsByToken[token]
-	if !ok {
-		ss.mu.Unlock(ss.lg)
-		ss.lg.Errorf("%s: unknown token for sim", token)
-		return nil, nil
-	}
-
-	conn.lastUpdateCall = time.Now()
-	if conn.warnedNoUpdateCalls {
-		conn.warnedNoUpdateCalls = false
-		ss.lg.Warnf("%s(%s): connection re-established", conn.tcw, conn.initials)
-		ss.sim.PostEvent(sim.Event{
-			Type:        sim.StatusMessageEvent,
-			WrittenText: fmt.Sprintf("%s (%s) is back online.", string(conn.tcw), conn.initials),
-		})
-	}
-
-	tcw := conn.tcw
-	eventSub := conn.stateUpdateEventSub
-	sinceGen := conn.lastSentGen
-	ss.mu.Unlock(ss.lg)
-
-	update, err := ss.waitForStateUpdate(tcw, sinceGen)
-	if err != nil {
-		return nil, err
-	}
-
-	// The client may have signed off while we were waiting. Re-validate under
-	// ss.mu before calling eventSub.Get(): SignOff serializes Unsubscribe via
-	// ss.mu, so this closes the lifecycle race that would otherwise produce
-	// "Attempted to get with unregistered subscription" errors.
-	ss.mu.Lock(ss.lg)
-	var events []sim.Event
-	if conn, ok = ss.connectionsByToken[token]; ok {
-		conn.lastSentGen = uint64(update.GenerationIndex)
-		events = eventSub.Get()
-	}
-	ss.mu.Unlock(ss.lg)
-
-	ss.withSim(func() { events = ss.sim.PrepareRadioTransmissionsForTCW(tcw, events) })
-
-	return &SimStateUpdate{
-		StateUpdate: update,
-		ActiveTCWs:  ss.GetActiveTCWs(),
-		Events:      events,
-	}, nil
-}
 
 // waitForStateUpdate returns the sim's state for the controller at tcw once
 // the sim has published a generation past sinceGen, the last one the
@@ -472,11 +383,9 @@ func (ss *simSession) waitForStateUpdate(tcw sim.TCW, sinceGen uint64) (sim.Stat
 	return update, nil
 }
 
-// MakeControllerContext returns a ControllerContext for the given token, or nil if not found.
-func (ss *simSession) MakeControllerContext(token string) *controllerContext {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
+// makeControllerContext returns a ControllerContext for the given token, or nil if not found.
+// The caller holds SimManager.mu.
+func (ss *simSession) makeControllerContext(token string) *controllerContext {
 	conn, ok := ss.connectionsByToken[token]
 	if !ok {
 		return nil
@@ -494,10 +403,9 @@ func (ss *simSession) MakeControllerContext(token string) *controllerContext {
 ///////////////////////////////////////////////////////////////////////////
 // Position/TCW State Queries (for GetRunningSims)
 
-func (ss *simSession) GetCurrentConsolidation() map[sim.TCW]TCPConsolidation {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
+// getCurrentConsolidation returns the sim's consolidation with the initials of
+// the controllers signed in at each TCW. The caller holds SimManager.mu.
+func (ss *simSession) getCurrentConsolidation() map[sim.TCW]TCPConsolidation {
 	tcwInitials := make(map[sim.TCW][]string)
 	for _, conn := range ss.connectionsByToken {
 		tcwInitials[conn.tcw] = append(tcwInitials[conn.tcw], conn.initials)
@@ -518,8 +426,8 @@ func (ss *simSession) GetCurrentConsolidation() map[sim.TCW]TCPConsolidation {
 	return consolidation
 }
 
-// getActiveTCWs returns the set of TCWs that have at least one human signed in.
-// Must be called with ss.mu held.
+// getActiveTCWs returns the sorted set of TCWs that have at least one human
+// signed in. The caller holds SimManager.mu.
 func (ss *simSession) getActiveTCWs() []sim.TCW {
 	var tcws []string
 	for _, conn := range ss.connectionsByToken {
@@ -530,14 +438,6 @@ func (ss *simSession) getActiveTCWs() []sim.TCW {
 	slices.Sort(tcws)
 	tcws = slices.Compact(tcws) // may have multiple connections to a TCW...
 	return util.MapSlice(tcws, func(tcw string) sim.TCW { return sim.TCW(tcw) })
-}
-
-// GetActiveTCWs returns a sorted list of TCWs that have humans signed in.
-func (ss *simSession) GetActiveTCWs() []sim.TCW {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
-	return ss.getActiveTCWs()
 }
 
 // RequestContact pops the next pending contact for the TCW, generates the transmission
@@ -637,9 +537,9 @@ func (rp *replayer) request(r *simlog.Request) error {
 	if t := rp.ss.sim.SimTime().Time(); !t.Equal(r.Time) {
 		return fmt.Errorf("%s: recorded at %s but replayed at %s", r.Method, r.Time.UTC(), t.UTC())
 	}
-	rp.ss.stepMu.Lock(rp.ss.lg)
+	rp.ss.mu.Lock(rp.ss.lg)
 	rp.ss.replayInputs = r.Inputs
-	rp.ss.stepMu.Unlock(rp.ss.lg)
+	rp.ss.mu.Unlock(rp.ss.lg)
 
 	tcw := sim.TCW(r.TCW)
 	switch r.Method {
@@ -653,7 +553,7 @@ func (rp *replayer) request(r *simlog.Request) error {
 		defer sm.mu.Unlock(sm.lg)
 		req := &JoinSimRequest{TCW: tcw, SelectedTCPs: args.TCPs, Privileged: args.Privileged}
 		if token, sub, err := sm.signOn(rp.ss, req); err == nil {
-			rp.ss.AddHumanController(token, tcw, "", sub)
+			rp.ss.addHumanController(token, tcw, "", sub)
 			sm.sessionsByToken[token] = rp.ss
 			rp.tokens[tcw] = token
 		}

@@ -100,7 +100,7 @@ func (sm *SimManager) GetSimStatus() []simStatus {
 
 	var status []simStatus
 	for name, ss := range util.SortedMap(sm.sessionsByName) {
-		activeTCWs := util.MapSlice(ss.GetActiveTCWs(), func(tcw sim.TCW) string { return string(tcw) })
+		activeTCWs := util.MapSlice(ss.getActiveTCWs(), func(tcw sim.TCW) string { return string(tcw) })
 		st := simStatus{
 			Name:       name,
 			Config:     ss.scenario,

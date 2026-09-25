@@ -42,7 +42,7 @@ func (sd *dispatcher) runSimCommand(token string, update *SimStateUpdate, method
 	if err := c.session.apply(c.tcw, method, args, func() error { return f(c) }); err != nil {
 		update.SimErrorMessage = err.Error()
 	} else {
-		*update = c.GetStateUpdate()
+		*update = sd.sm.StateUpdateFor(c)
 	}
 	return nil
 }
@@ -56,15 +56,12 @@ func (sd *dispatcher) GetStateUpdate(token string, update *SimStateUpdate) error
 	// like this...
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	// GetStateUpdate may return nil if user signs off concurrently.
-	if u, err := sd.sm.GetStateUpdate(token); err != nil {
+	u, err := sd.sm.GetStateUpdate(token)
+	if err != nil {
 		return err
-	} else if u == nil {
-		return ErrNoSimForControllerToken
-	} else {
-		*update = *u
-		return nil
 	}
+	*update = *u
+	return nil
 }
 
 const SignOffRPC = "Sim.SignOff"
@@ -206,7 +203,7 @@ func (sd *dispatcher) FastForward(token string, update *SimStateUpdate) error {
 		c.sim.FastForward()
 		c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has fast-forwarded the sim", c.tcw, c.initials))
 	})
-	*update = c.GetStateUpdate()
+	*update = sd.sm.StateUpdateFor(c)
 	return nil
 }
 
@@ -316,7 +313,7 @@ func (sd *dispatcher) UpdateATISGIText(args *UpdateATISGITextArgs, update *SimSt
 	if err != nil {
 		update.SimErrorMessage = err.Error()
 	} else {
-		*update = c.GetStateUpdate()
+		*update = sd.sm.StateUpdateFor(c)
 	}
 	return nil
 }

@@ -46,7 +46,9 @@ type SimManager struct {
 	providersReady chan struct{}
 	lg             *log.Logger
 
-	// Stats and internal details
+	// mu guards the session tables and every session's connections. The
+	// lock order is mu, then a session's mu (its sim's lock), then an event
+	// stream's; a session's mu is never held while acquiring this one.
 	mu        util.LoggingMutex
 	startTime time.Time
 	httpPort  int
@@ -285,7 +287,7 @@ func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) er
 		}
 	}
 
-	session.AddHumanController(token, tcw, req.Initials, eventSub)
+	session.addHumanController(token, tcw, req.Initials, eventSub)
 	sm.sessionsByToken[token] = session
 
 	*result = *sm.buildNewSimResult(session, tcw, token)
@@ -308,9 +310,6 @@ func (sm *SimManager) makeControllerToken() string {
 // Returns ErrTCWAlreadyOccupied if the TCW is in use.
 // Assumes SimManager lock is held.
 func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
 	for _, conn := range ss.connectionsByToken {
 		if conn.tcw == tcw {
 			return ErrTCWAlreadyOccupied
@@ -320,10 +319,12 @@ func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
 	return nil
 }
 
+// buildNewSimResult assembles what a controller that has just signed on is
+// sent. The caller holds sm.mu.
 func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
 	state := &SimState{
 		UserTCW:    tcw,
-		ActiveTCWs: session.GetActiveTCWs(),
+		ActiveTCWs: session.getActiveTCWs(),
 	}
 	var facility string
 	session.withSim(func() {
@@ -422,16 +423,13 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 		return err
 	}
 
-	session.AddHumanController(token, tcw, initials, eventSub)
+	session.addHumanController(token, tcw, initials, eventSub)
 	sm.sessionsByToken[token] = session
+	*result = *sm.buildNewSimResult(session, tcw, token)
 
 	sm.mu.Unlock(sm.lg)
 
 	go sm.runSimUpdateLoop(session)
-
-	// buildNewSimResult only reads init-immutable sm fields and takes the
-	// sim's lock itself; no sm.mu needed.
-	*result = *sm.buildNewSimResult(session, tcw, token)
 
 	return nil
 }
@@ -446,7 +444,7 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 	var idle time.Duration
 	for {
 		if !sm.local && !util.DebuggerIsRunning() {
-			session.CullIdleControllers(sm)
+			sm.CullIdleControllers(session)
 		}
 
 		session.withSim(func() {
@@ -476,6 +474,36 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 	sm.mu.Unlock(sm.lg)
 }
 
+// CullIdleControllers warns the other controllers about a connection to the
+// session that has gone quiet and signs it off once it has been quiet for
+// long enough.
+func (sm *SimManager) CullIdleControllers(ss *simSession) {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	for token, conn := range ss.connectionsByToken {
+		quiet := time.Since(conn.lastUpdateCall)
+		if quiet <= StateUpdateWarn {
+			continue
+		}
+		if !conn.warnedNoUpdateCalls {
+			conn.warnedNoUpdateCalls = true
+			ss.lg.Warnf("%s: no messages for %s", conn.tcw, StateUpdateWarn)
+			ss.sim.PostEvent(sim.Event{
+				Type: sim.StatusMessageEvent,
+				WrittenText: fmt.Sprintf("%s (%s) has not been heard from for %s. Connection lost?",
+					string(conn.tcw), conn.initials, StateUpdateWarn),
+			})
+		}
+		if quiet > StateUpdateKick {
+			ss.lg.Warnf("%s (%s): signing off idle controller", conn.tcw, conn.initials)
+			if err := sm.signOff(token); err != nil {
+				ss.lg.Errorf("error signing off idle controller: %v", err)
+			}
+		}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Session Management - Sign On/Off
 
@@ -494,7 +522,7 @@ func (sm *SimManager) signOff(token string) error {
 
 	delete(sm.sessionsByToken, token)
 
-	result, ok := session.SignOff(token)
+	result, ok := session.signOff(token)
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
@@ -644,7 +672,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) erro
 			GroupName:            ss.scenarioGroup,
 			ScenarioName:         ss.scenario,
 			RequirePassword:      ss.password != "",
-			CurrentConsolidation: ss.GetCurrentConsolidation(),
+			CurrentConsolidation: ss.getCurrentConsolidation(),
 		}
 		ss.withSim(func() { rs.ScenarioDefaultConsolidation = ss.sim.DefaultConsolidation() })
 		running[name] = rs
@@ -674,21 +702,61 @@ func (sm *SimManager) LookupController(token string) *controllerContext {
 
 func (sm *SimManager) lookupController(token string) *controllerContext {
 	if session, ok := sm.sessionsByToken[token]; ok {
-		return session.MakeControllerContext(token)
+		return session.makeControllerContext(token)
 	}
 	return nil
 }
 
+// GetStateUpdate is the main entry point for periodic state updates from a controller. It is a
+// long-poll: when the caller's lastSentGen is already behind the sim's publication generation, it
+// returns the current snapshot immediately; otherwise it parks until the sim publishes new state,
+// the heartbeat timer fires, or the sim is destroyed.
 func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	sm.mu.Lock(sm.lg)
-	session, ok := sm.sessionsByToken[token]
+	ss, ok := sm.sessionsByToken[token]
 	if !ok {
 		sm.mu.Unlock(sm.lg)
 		return nil, ErrNoSimForControllerToken
 	}
+	conn, ok := ss.connectionsByToken[token]
+	if !ok {
+		sm.mu.Unlock(sm.lg)
+		return nil, ErrNoSimForControllerToken
+	}
+
+	conn.lastUpdateCall = time.Now()
+	if conn.warnedNoUpdateCalls {
+		conn.warnedNoUpdateCalls = false
+		ss.lg.Warnf("%s(%s): connection re-established", conn.tcw, conn.initials)
+		ss.sim.PostEvent(sim.Event{
+			Type:        sim.StatusMessageEvent,
+			WrittenText: fmt.Sprintf("%s (%s) is back online.", string(conn.tcw), conn.initials),
+		})
+	}
+	tcw, eventSub, sinceGen := conn.tcw, conn.stateUpdateEventSub, conn.lastSentGen
 	sm.mu.Unlock(sm.lg)
 
-	return session.GetStateUpdate(token)
+	update, err := ss.waitForStateUpdate(tcw, sinceGen)
+	if err != nil {
+		return nil, err
+	}
+
+	// The client may have signed off while we were waiting. Re-validate under
+	// sm.mu before calling eventSub.Get(): signOff serializes Unsubscribe via
+	// sm.mu, so this closes the lifecycle race that would otherwise produce
+	// "Attempted to get with unregistered subscription" errors.
+	sm.mu.Lock(sm.lg)
+	var events []sim.Event
+	if conn, ok := ss.connectionsByToken[token]; ok {
+		conn.lastSentGen = uint64(update.GenerationIndex)
+		events = eventSub.Get()
+	}
+	activeTCWs := ss.getActiveTCWs()
+	sm.mu.Unlock(sm.lg)
+
+	ss.withSim(func() { events = ss.sim.PrepareRadioTransmissionsForTCW(tcw, events) })
+
+	return &SimStateUpdate{StateUpdate: update, ActiveTCWs: activeTCWs, Events: events}, nil
 }
 
 // SimStateUpdate wraps sim.StateUpdate and adds server-specific fields.
@@ -717,18 +785,20 @@ func (su *SimStateUpdate) Apply(state *SimState) {
 	state.FlightStripACIDs = su.FlightStripACIDs
 }
 
-// GetStateUpdate fills in a server.SimStateUpdate with both sim state and human controllers.
-func (c *controllerContext) GetStateUpdate() SimStateUpdate {
-	// Re-validate the connection under the session lock before pulling events:
-	// the client may have signed off (via SimManager.SignOff or CullIdleControllers)
-	// between LookupController and now, in which case c.eventSub.Unsubscribe()
-	// has already run.
+// StateUpdateFor returns the state update that replies to a request the
+// controller made: the sim's state as it is now, the events posted since the
+// controller's last update, and the human controllers.
+func (sm *SimManager) StateUpdateFor(c *controllerContext) SimStateUpdate {
+	// Re-validate the connection before pulling events: the client may have
+	// signed off (via SignOff or CullIdleControllers) between LookupController
+	// and now, in which case c.eventSub.Unsubscribe() has already run.
 	var events []sim.Event
-	c.session.mu.Lock(c.session.lg)
+	sm.mu.Lock(sm.lg)
 	if _, ok := c.session.connectionsByToken[c.token]; ok {
 		events = c.eventSub.Get()
 	}
-	c.session.mu.Unlock(c.session.lg)
+	activeTCWs := c.session.getActiveTCWs()
+	sm.mu.Unlock(sm.lg)
 
 	var update sim.StateUpdate
 	c.session.withSim(func() {
@@ -736,11 +806,7 @@ func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 		events = c.sim.PrepareRadioTransmissionsForTCW(c.tcw, events)
 	})
 
-	return SimStateUpdate{
-		StateUpdate: update,
-		ActiveTCWs:  c.session.GetActiveTCWs(),
-		Events:      events,
-	}
+	return SimStateUpdate{StateUpdate: update, ActiveTCWs: activeTCWs, Events: events}
 }
 
 const GetSerializeSimJSONRPC = "SimManager.GetSerializeSimJSON"
