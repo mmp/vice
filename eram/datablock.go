@@ -219,6 +219,7 @@ type fullDatablock struct {
 	// line 2
 	vci   [2]dbChar
 	line2 [16]dbChar
+	hsf   [1]dbChar // drawn right after the altitude in line2
 	// line3
 	col1   [2]dbChar
 	fieldD [8]dbChar
@@ -233,7 +234,7 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
-		dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:])),
+		dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]), dbChopTrailing(db.hsf[:])),
 		dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:])),
 		dbMakeLine(dbChopTrailing(db.line4[:])),
 	}
@@ -311,6 +312,7 @@ func (db *fullDatablock) dim(factor float32) {
 	dimChars(db.line1[:], factor)
 	dimChars(db.vci[:], factor)
 	dimChars(db.line2[:], factor)
+	dimChars(db.hsf[:], factor)
 	dimChars(db.col1[:], factor)
 	dimChars(db.fieldD[:], factor)
 	dimChars(db.fieldE[:], factor)
@@ -386,6 +388,9 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 
 		// Line 2
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
+		if hsfDataExists(trk.FlightPlan) {
+			dbWriteText(db.hsf[:], hsfIndicator, color, false)
+		}
 
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
@@ -504,17 +509,6 @@ func stripQSFreeTextIndicator(s string) string {
 		return s[1:]
 	}
 	return ""
-}
-
-func placeScratchpadArrowAfterText(dst *[8]dbChar, fieldEText string, c renderer.RGB) {
-	// Place arrow one cell after the last visible character (trim trailing spaces).
-	t := strings.TrimRight(fieldEText, " ")
-	idx := max(len(t), 0)
-	if idx >= len(dst) {
-		// If the field is full, fall back to the last cell.
-		idx = len(dst) - 1
-	}
-	dst[idx] = dbChar{ch: []rune(scratchpadArrow)[0], color: c, flashing: false}
 }
 
 // speedStartFromGroundspeedLine4 returns the column in line4 where the 'S'/'M' should start.

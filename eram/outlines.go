@@ -20,6 +20,7 @@ const (
 	DBFieldCallsign     DatablockFieldID = "callsign"
 	DBFieldVCI          DatablockFieldID = "vci"
 	DBFieldAltitude     DatablockFieldID = "altitude"
+	DBFieldHSF          DatablockFieldID = "hsf"
 	DBFieldCID          DatablockFieldID = "cid"
 	DBFieldHandoffSpeed DatablockFieldID = "handoff_speed"
 	DBFieldSpeed        DatablockFieldID = "speed"
@@ -93,10 +94,14 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 				}
 			}
 		}
-		// Field clicks that open the datablock menus.
+		// Field clicks that open the datablock menus or toggle line 4
+		// between its default contents and the HSF data.
 		if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 			opened := true
 			switch {
+			case db.Fields[DBFieldHSF].Inside(mouse.Pos):
+				status, err := handleQSToggleHSF(ep, &trk)
+				ep.applyCommandStatus(ctx, status, err)
 			case db.Fields[DBFieldAltitude].Inside(mouse.Pos):
 				ep.openAltitudeMenu(ctx, &trk, db.Fields[DBFieldMain])
 			case db.Fields[DBFieldCID].Inside(mouse.Pos),
@@ -314,6 +319,7 @@ func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 	// even when nothing is currently drawn there.
 	outlines.Fields[DBFieldVCI] = layout.FieldExtent(DatablockFieldSpec{Line: 2, Col: 0, Cols: 2})
 	setField(DBFieldAltitude, 2, 2, fdb.line2[:])
+	setField(DBFieldHSF, 2, 2+len(dbChopTrailing(fdb.line2[:])), fdb.hsf[:])
 	setField(DBFieldCID, 3, 2, fdb.fieldD[:])
 	// Line 3 draws field E immediately after the trailing-chopped CID, not
 	// at fieldD's maximum width.
@@ -394,7 +400,7 @@ func (ep *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track) *fullData
 func fullDatablockLines(db *fullDatablock, out *[5]dbLine) {
 	out[0] = dbMakeLine(dbChopTrailing(db.line0[:]))
 	out[1] = dbMakeLine(dbChopTrailing(db.line1[:]))
-	out[2] = dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]))
+	out[2] = dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]), dbChopTrailing(db.hsf[:]))
 	out[3] = dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]))
 	out[4] = dbMakeLine(dbChopTrailing(db.line4[:]))
 }
