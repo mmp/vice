@@ -1711,7 +1711,7 @@ func TestDepartureSplitRestartsOnConfigChange(t *testing.T) {
 	}
 
 	old := s.State.LaunchConfig
-	if s.applyScheduleConfigChanges(&old); s.DepartureState["KORG"]["30L"].PublishedDepartures["jet"] != 120 {
+	if s.applyScheduleConfigChanges(&old, nil); s.DepartureState["KORG"]["30L"].PublishedDepartures["jet"] != 120 {
 		t.Error("applyScheduleConfigChanges: an unchanged config shouldn't restart the split")
 	}
 
@@ -1720,7 +1720,7 @@ func TestDepartureSplitRestartsOnConfigChange(t *testing.T) {
 	s.State.LaunchConfig.DepartureEnabled = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
 		"KORG": {"30L": {"jet": true}, "30R": {"jet": true}},
 	}
-	s.applyScheduleConfigChanges(&old)
+	s.applyScheduleConfigChanges(&old, nil)
 	if n := s.DepartureState["KORG"]["30L"].PublishedDepartures["jet"]; n != 0 {
 		t.Errorf("30L has taken %d published departures, want the count restarted at 0", n)
 	}

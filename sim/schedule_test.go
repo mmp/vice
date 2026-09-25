@@ -226,7 +226,7 @@ func TestScheduleScalesPublishedRates(t *testing.T) {
 func TestScenarioScheduleGeneration(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
 	s := scenarioScheduleTestSim(start)
-	s.generateSchedule()
+	s.generateSchedule(nil)
 
 	from := s.State.SimTime
 	until := from.Add(scenarioScheduleHorizon)
@@ -307,8 +307,8 @@ func TestScheduleGenerationDeterministic(t *testing.T) {
 		t.Fatalf("unmarshal rand: %v", err)
 	}
 
-	s1.generateSchedule()
-	s2.generateSchedule()
+	s1.generateSchedule(nil)
+	s2.generateSchedule(nil)
 	if !reflect.DeepEqual(s1.Schedule, s2.Schedule) {
 		t.Error("identical random state generated different schedules")
 	}
@@ -317,7 +317,7 @@ func TestScheduleGenerationDeterministic(t *testing.T) {
 func TestExtendSchedule(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
 	s := scenarioScheduleTestSim(start)
-	s.generateSchedule()
+	s.generateSchedule(nil)
 	firstUntil := s.Schedule.ScenarioGeneratedUntil
 
 	// Far from the end of the generated window, nothing changes.
@@ -590,14 +590,14 @@ func TestFlowEnableTogglesRefitArrivals(t *testing.T) {
 
 	old := s.State.LaunchConfig
 	s.State.LaunchConfig.InboundFlowEnabled = map[string]map[string]bool{"TEST": {"KMSP": false}}
-	s.applyScheduleConfigChanges(&old)
+	s.applyScheduleConfigChanges(&old, nil)
 	if s.Schedule.Arrivals[0].DropReason == "" {
 		t.Error("arrival still placed with its only flow disabled")
 	}
 
 	old = s.State.LaunchConfig
 	s.State.LaunchConfig.InboundFlowEnabled = map[string]map[string]bool{"TEST": {"KMSP": true}}
-	s.applyScheduleConfigChanges(&old)
+	s.applyScheduleConfigChanges(&old, nil)
 	if e := s.Schedule.Arrivals[0]; e.DropReason != "" || e.Group != "TEST" {
 		t.Errorf("arrival not re-placed after re-enabling its flow: %+v", e)
 	}
@@ -608,7 +608,7 @@ func TestFlowEnableTogglesRefitArrivals(t *testing.T) {
 func TestScheduleSurvivesSaveAndReload(t *testing.T) {
 	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
 	s := scenarioScheduleTestSim(start)
-	s.generateSchedule()
+	s.generateSchedule(nil)
 
 	encoded, err := json.Marshal(s)
 	if err != nil {

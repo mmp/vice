@@ -232,7 +232,7 @@ func TestManualModeShiftsScheduleOnResume(t *testing.T) {
 		scenario,
 	}
 
-	s.applyScheduleConfigChanges(&old)
+	s.applyScheduleConfigChanges(&old, nil)
 
 	want := []struct {
 		callsign string
@@ -264,7 +264,7 @@ func TestManualModeShiftsScheduleOnResume(t *testing.T) {
 	// long the schedule sat.
 	old = s.State.LaunchConfig
 	s.State.LaunchConfig.ArrivalMode = LaunchManual
-	s.applyScheduleConfigChanges(&old)
+	s.applyScheduleConfigChanges(&old, nil)
 	if s.ArrivalManualSince != now {
 		t.Errorf("ArrivalManualSince = %s after switching to manual, want %s",
 			s.ArrivalManualSince.Time(), now.Time())

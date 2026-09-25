@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 
 	"github.com/goforj/godump"
@@ -489,7 +490,9 @@ func sumRateMap2(rates map[av.RunwayID]map[string]float32, scale float32) float3
 	return sum
 }
 
-func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
+// SetLaunchConfig changes the sim's launch config. published is what
+// PublishedFlightsFor read for it.
+func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig, published []traffic.Flight) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -533,7 +536,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
 
 	s.State.LaunchConfig = lc
-	s.applyScheduleConfigChanges(&old)
+	s.applyScheduleConfigChanges(&old, published)
 
 	s.publish()
 	return nil
@@ -614,7 +617,7 @@ func (s *Sim) Prespawn() {
 	s.lg.Info("starting aircraft prespawn")
 
 	s.initDepartureState(s.State.SimTime)
-	s.generateSchedule()
+	s.generateSchedule(s.publishedFlights(&s.State.LaunchConfig))
 
 	s.mu.Lock(s.lg)
 

@@ -100,7 +100,12 @@ func (sd *dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) erro
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.session.apply(func() error { return c.sim.SetLaunchConfig(c.tcw, lc.Config) })
+	// The flights are looked up inside the step as well, so that no other
+	// launch config change can come between deciding whether the traffic
+	// source changes and making the change.
+	return c.session.apply(func() error {
+		return c.sim.SetLaunchConfig(c.tcw, lc.Config, c.sim.PublishedFlightsFor(lc.Config))
+	})
 }
 
 const TogglePauseRPC = "Sim.TogglePause"

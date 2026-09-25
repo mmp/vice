@@ -155,9 +155,10 @@ func (fs *FlightSchedule) sortEntries() {
 }
 
 // generateSchedule builds the schedule from scratch starting at the sim's
-// current time, which for a new sim is the start of prespawn. It runs before
-// the sim is shared, or with the sim's mutex held.
-func (s *Sim) generateSchedule() {
+// current time, which for a new sim is the start of prespawn. published is
+// what publishedFlights read for the launch config's traffic source. It runs
+// before the sim is shared, or with the sim's mutex held.
+func (s *Sim) generateSchedule(published []traffic.Flight) {
 	now := s.State.SimTime
 	until := now.Add(scenarioScheduleHorizon)
 	s.Schedule = FlightSchedule{ScenarioGeneratedUntil: until}
@@ -166,7 +167,7 @@ func (s *Sim) generateSchedule() {
 		s.generateScenarioDepartures(now, until)
 		s.generateScenarioArrivals(now, until)
 	} else {
-		s.generatePublishedFlights()
+		s.generatePublishedFlights(published)
 	}
 	// Overflights are rate-based under every source: neither timetables nor
 	// historical data cover them.
@@ -518,41 +519,86 @@ func pickWeighted(rates map[string]float32, scale float32, r *rand.Rand) (string
 
 // generatePublishedFlights queues the published traffic a non-scenario source
 // flies: the whole selected timetable day, or the historical flights over the
-// sim's window. Missing data leaves the published portion of the schedule
-// empty, with the reason logged.
-func (s *Sim) generatePublishedFlights() {
-	lc := &s.State.LaunchConfig
-
-	switch lc.TrafficSource {
+// sim's window.
+func (s *Sim) generatePublishedFlights(flights []traffic.Flight) {
+	switch s.State.LaunchConfig.TrafficSource {
 	case TrafficSourceHistorical:
-		flights := s.readHistoricalFlights()
-		if len(flights) == 0 {
-			s.log("Traffic source: historical, but no flights were found for %s from %s",
-				s.State.Facility, s.StartTime.Time().Format("2006-01-02 15:04Z"))
-			return
-		}
-		s.log("Traffic source: historical, %d flights found for %s from %s",
-			len(flights), s.State.Facility, s.StartTime.Time().Format("2006-01-02 15:04Z"))
 		// Historical published times are when the aircraft actually took off,
 		// so a departure needs the spawn lead to push back and taxi.
 		s.schedulePublishedFlights(flights, flightSpawnLead)
 
 	case TrafficSourceTimetable:
+		// A timetable's published departure times are pushback times, so
+		// departures spawn at them directly.
+		s.schedulePublishedFlights(flights, 0)
+	}
+}
+
+// publishedFlights reads the flights lc's traffic source flies from the
+// resources: the historical flights at its airports over the sim's window, or
+// its timetable's day of flights. It returns none for scenario traffic, and
+// when there are none to be had it posts the reason. It is kept apart from
+// building the schedule so that a session log can carry what it read, and a
+// replay doesn't depend on the resources as they are later.
+func (s *Sim) publishedFlights(lc *LaunchConfig) []traffic.Flight {
+	switch lc.TrafficSource {
+	case TrafficSourceHistorical:
+		// This asks for the most the sim could ever reach, since the rate
+		// scale can be raised while the sim runs and the schedule is built
+		// only once.
+		flights, err := s.State.historicalFlights(lc, s.StartTime.Time(), MaxPublishedRateScale)
+		if err != nil {
+			s.lg.Errorf("%v", err)
+		}
+		if len(flights) == 0 {
+			s.log("Traffic source: historical, but no flights were found for %s from %s",
+				s.State.Facility, s.StartTime.Time().Format("2006-01-02 15:04Z"))
+			return nil
+		}
+		s.log("Traffic source: historical, %d flights found for %s from %s",
+			len(flights), s.State.Facility, s.StartTime.Time().Format("2006-01-02 15:04Z"))
+		return flights
+
+	case TrafficSourceTimetable:
 		catalog, err := traffic.LoadAirportTimetables(lc.TimetableAirport)
 		if err != nil {
 			s.log("Timetable traffic: %v", err)
-			return
+			return nil
 		}
 		timetable, ok := catalog.Find(lc.TimetableAirport, lc.TimetableID)
 		if !ok {
 			s.log("Timetable traffic: timetable %q not found for %s", lc.TimetableID, lc.TimetableAirport)
-			return
+			return nil
 		}
 		s.log("Traffic source: timetable %q for %s", timetable.Name, timetable.Airport)
-		// A timetable's published departure times are pushback times, so
-		// departures spawn at them directly.
-		s.schedulePublishedFlights(timetableFlights(s.StartTime, timetable, lc), 0)
+		return timetableFlights(s.StartTime, timetable, lc)
+
+	default:
+		return nil
 	}
+}
+
+// PublishedFlightsFor returns the published flights SetLaunchConfig needs to
+// rebuild the schedule for lc, reading them from the resources, or nil if lc
+// keeps the traffic source the sim is flying. Since that depends on the
+// sim's current config, no other launch config change may come between this
+// and the SetLaunchConfig call it is for.
+func (s *Sim) PublishedFlightsFor(lc LaunchConfig) []traffic.Flight {
+	s.mu.Lock(s.lg)
+	changed := trafficSourceChanged(&lc, &s.State.LaunchConfig)
+	s.mu.Unlock(s.lg)
+
+	if !changed {
+		return nil
+	}
+	return s.publishedFlights(&lc)
+}
+
+// trafficSourceChanged reports whether going from old to lc changes where the
+// sim's traffic comes from, so that its schedule has to be built again.
+func trafficSourceChanged(lc, old *LaunchConfig) bool {
+	return lc.TrafficSource != old.TrafficSource || lc.TimetableID != old.TimetableID ||
+		lc.TimetableAirport != old.TimetableAirport || lc.TimetableStartMinute != old.TimetableStartMinute
 }
 
 // schedulePublishedFlights queues published flights in time order; departures
@@ -999,16 +1045,16 @@ func (s *Sim) routedPairsIndex() routedPairs {
 // config: regenerating what a rate change invalidates, rewriting published
 // spawn times under a new rate scale, and rebasing flows whose launches
 // switch from manual back to automatic. Called with the new config already
-// stored in s.State.LaunchConfig.
-func (s *Sim) applyScheduleConfigChanges(old *LaunchConfig) {
+// stored in s.State.LaunchConfig; published is what PublishedFlightsFor
+// read for it.
+func (s *Sim) applyScheduleConfigChanges(old *LaunchConfig, published []traffic.Flight) {
 	lc := &s.State.LaunchConfig
 
-	if lc.TrafficSource != old.TrafficSource || lc.TimetableID != old.TimetableID ||
-		lc.TimetableAirport != old.TimetableAirport || lc.TimetableStartMinute != old.TimetableStartMinute {
+	if trafficSourceChanged(lc, old) {
 		// The source's flights changed wholesale, so rebuild from scratch;
 		// recycle shifts on published entries belong to the old dataset, and
 		// pending manual-launch flights may be its too.
-		s.generateSchedule()
+		s.generateSchedule(published)
 		s.clearPendingLaunches()
 	} else {
 		scenario := lc.TrafficSource == TrafficSourceScenario
@@ -1246,25 +1292,12 @@ func shiftScheduledLater[T any](entries []T, flight func(*T) *ScheduledFlight,
 	return shifted
 }
 
-// readHistoricalFlights gathers the flights a scenario using historical
-// traffic flies: those at its airports over the window starting at the
-// selected time. It asks for the most the sim could ever reach, since the
-// rate scale can be raised while the sim runs and the schedule is built only
-// once.
-func (s *Sim) readHistoricalFlights() []traffic.Flight {
-	flights, err := s.State.historicalFlights(s.StartTime.Time(), MaxPublishedRateScale)
-	if err != nil {
-		s.lg.Errorf("%v", err)
-	}
-	return flights
-}
-
-// historicalFlights returns the recorded flights at the scenario's airports
-// over the window a sim starting at start reads through at the given rate
-// scale. start also keys the decoded-cell cache, so the traffic preview and
-// the sim the user launches from it share one decode of the data.
-func (ss *CommonState) historicalFlights(start time.Time, scale int) ([]traffic.Flight, error) {
-	departureAirports, arrivalAirports := ss.LaunchConfig.IFRAirports()
+// historicalFlights returns the recorded flights at lc's airports over the
+// window a sim starting at start reads through at the given rate scale.
+// start also keys the decoded-cell cache, so the traffic preview and the sim
+// the user launches from it share one decode of the data.
+func (ss *CommonState) historicalFlights(lc *LaunchConfig, start time.Time, scale int) ([]traffic.Flight, error) {
+	departureAirports, arrivalAirports := lc.IFRAirports()
 	flights, err := traffic.ReadFlightDataCellsAround(util.GetResourcesFS(),
 		traffic.FlightDataCells(departureAirports, arrivalAirports), start)
 	if err != nil {
