@@ -17,9 +17,6 @@ import (
 )
 
 func (s *Sim) AssignAltitude(tcw TCW, callsign av.ADSBCallsign, altitude int, afterSpeed bool, delayReduction time.Duration) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AssignAltitude(altitude, afterSpeed, s.State.SimTime, delayReduction)
@@ -38,9 +35,6 @@ type HeadingArgs struct {
 }
 
 func (s *Sim) AssignHeading(hdg *HeadingArgs) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(hdg.TCW, hdg.ADSBCallsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if hdg.Present {
@@ -61,9 +55,6 @@ func (s *Sim) temperatureAt(ac *Aircraft) av.Temperature {
 }
 
 func (s *Sim) AssignMach(tcw TCW, callsign av.ADSBCallsign, mach float32, afterAltitude bool) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AssignMach(mach, afterAltitude, s.temperatureAt(ac))
@@ -71,9 +62,6 @@ func (s *Sim) AssignMach(tcw TCW, callsign av.ADSBCallsign, mach float32, afterA
 }
 
 func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, sr *av.SpeedRestriction, afterAltitude bool) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AssignSpeed(sr, afterAltitude, s.temperatureAt(ac))
@@ -81,9 +69,6 @@ func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, sr *av.SpeedRestric
 }
 
 func (s *Sim) AssignSpeedUntil(tcw TCW, callsign av.ADSBCallsign, sr *av.SpeedRestriction, until *speech.SpeedUntil) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AssignSpeedUntil(sr, until, s.temperatureAt(ac))
@@ -91,9 +76,6 @@ func (s *Sim) AssignSpeedUntil(tcw TCW, callsign av.ADSBCallsign, sr *av.SpeedRe
 }
 
 func (s *Sim) AssignCompoundSpeed(tcw TCW, callsign av.ADSBCallsign, segments []speech.CompoundSpeedSegment) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AssignCompoundSpeed(segments, s.temperatureAt(ac))
@@ -101,9 +83,6 @@ func (s *Sim) AssignCompoundSpeed(tcw TCW, callsign av.ADSBCallsign, segments []
 }
 
 func (s *Sim) MaintainSlowestPractical(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.MaintainSlowestPractical()
@@ -111,9 +90,6 @@ func (s *Sim) MaintainSlowestPractical(tcw TCW, callsign av.ADSBCallsign) (speec
 }
 
 func (s *Sim) MaintainMaximumForward(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.MaintainMaximumForward()
@@ -121,9 +97,6 @@ func (s *Sim) MaintainMaximumForward(tcw TCW, callsign av.ADSBCallsign) (speech.
 }
 
 func (s *Sim) MaintainPresentSpeed(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.MaintainPresentSpeed()
@@ -131,9 +104,6 @@ func (s *Sim) MaintainPresentSpeed(tcw TCW, callsign av.ADSBCallsign) (speech.Co
 }
 
 func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.SaySpeed(s.temperatureAt(ac))
@@ -141,9 +111,6 @@ func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent,
 }
 
 func (s *Sim) SayIndicatedSpeed(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.SayIndicatedSpeed(s.temperatureAt(ac))
@@ -151,9 +118,6 @@ func (s *Sim) SayIndicatedSpeed(tcw TCW, callsign av.ADSBCallsign) (speech.Comma
 }
 
 func (s *Sim) SayMach(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.SayMach()
@@ -161,9 +125,6 @@ func (s *Sim) SayMach(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, 
 }
 
 func (s *Sim) SayAltitude(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.SayAltitude()
@@ -171,9 +132,6 @@ func (s *Sim) SayAltitude(tcw TCW, callsign av.ADSBCallsign) (speech.CommandInte
 }
 
 func (s *Sim) SayHeading(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.SayHeading()
@@ -181,9 +139,6 @@ func (s *Sim) SayHeading(tcw TCW, callsign av.ADSBCallsign) (speech.CommandInten
 }
 
 func (s *Sim) ExpediteDescent(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ExpediteDescent()
@@ -191,9 +146,6 @@ func (s *Sim) ExpediteDescent(tcw TCW, callsign av.ADSBCallsign) (speech.Command
 }
 
 func (s *Sim) ExpediteClimb(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ExpediteClimb()
@@ -201,9 +153,6 @@ func (s *Sim) ExpediteClimb(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIn
 }
 
 func (s *Sim) ExpediteDescentThrough(tcw TCW, callsign av.ADSBCallsign, alt float32) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ExpediteDescentThrough(alt)
@@ -211,9 +160,6 @@ func (s *Sim) ExpediteDescentThrough(tcw TCW, callsign av.ADSBCallsign, alt floa
 }
 
 func (s *Sim) ExpediteClimbThrough(tcw TCW, callsign av.ADSBCallsign, alt float32) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ExpediteClimbThrough(alt)
@@ -221,9 +167,6 @@ func (s *Sim) ExpediteClimbThrough(tcw TCW, callsign av.ADSBCallsign, alt float3
 }
 
 func (s *Sim) GoodRateDescent(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.GoodRateDescent()
@@ -231,9 +174,6 @@ func (s *Sim) GoodRateDescent(tcw TCW, callsign av.ADSBCallsign) (speech.Command
 }
 
 func (s *Sim) GoodRateClimb(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.GoodRateClimb()
@@ -241,9 +181,6 @@ func (s *Sim) GoodRateClimb(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIn
 }
 
 func (s *Sim) GoodRateThrough(tcw TCW, callsign av.ADSBCallsign, alt float32) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.GoodRateThrough(alt)
@@ -251,9 +188,6 @@ func (s *Sim) GoodRateThrough(tcw TCW, callsign av.ADSBCallsign, alt float32) (s
 }
 
 func (s *Sim) ExpectDirect(tcw TCW, callsign av.ADSBCallsign, fix string) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ExpectDirect(fix)
@@ -261,9 +195,6 @@ func (s *Sim) ExpectDirect(tcw TCW, callsign av.ADSBCallsign, fix string) (speec
 }
 
 func (s *Sim) DirectFix(tcw TCW, callsign av.ADSBCallsign, fix string, turn av.TurnDirection, delayReduction time.Duration) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.DirectFix(fix, turn, s.State.SimTime, delayReduction)
@@ -272,9 +203,6 @@ func (s *Sim) DirectFix(tcw TCW, callsign av.ADSBCallsign, fix string, turn av.T
 
 func (s *Sim) InterceptRadial(tcw TCW, callsign av.ADSBCallsign, fix string, radial int, outbound bool,
 	delayReduction time.Duration) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.InterceptRadial(fix, radial, outbound, s.State.SimTime, delayReduction)
@@ -282,9 +210,6 @@ func (s *Sim) InterceptRadial(tcw TCW, callsign av.ADSBCallsign, fix string, rad
 }
 
 func (s *Sim) HoldAtFix(tcw TCW, callsign av.ADSBCallsign, fix string, hold *av.Hold) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.HoldAtFix(fix, hold)
@@ -292,9 +217,6 @@ func (s *Sim) HoldAtFix(tcw TCW, callsign av.ADSBCallsign, fix string, hold *av.
 }
 
 func (s *Sim) DepartFixDirect(tcw TCW, callsign av.ADSBCallsign, fixa string, fixb string) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.DepartFixDirect(fixa, fixb)
@@ -302,9 +224,6 @@ func (s *Sim) DepartFixDirect(tcw TCW, callsign av.ADSBCallsign, fixa string, fi
 }
 
 func (s *Sim) DepartFixHeading(tcw TCW, callsign av.ADSBCallsign, fix string, heading int) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.DepartFixHeading(fix, heading)
@@ -312,9 +231,6 @@ func (s *Sim) DepartFixHeading(tcw TCW, callsign av.ADSBCallsign, fix string, he
 }
 
 func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.CrossFixAt(fix, ar, sr, s.temperatureAt(ac))
@@ -324,9 +240,6 @@ func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.A
 func (s *Sim) CrossDistanceFromFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, dist float32,
 	dir math.CardinalOrdinalDirection, ar *av.AltitudeRestriction,
 	sr *av.SpeedRestriction) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.CrossDistanceFromFixAt(fix, dist, dir, ar, sr, s.temperatureAt(ac))
@@ -335,9 +248,6 @@ func (s *Sim) CrossDistanceFromFixAt(tcw TCW, callsign av.ADSBCallsign, fix stri
 
 func (s *Sim) CrossDMEAt(tcw TCW, callsign av.ADSBCallsign, dist float32, ar *av.AltitudeRestriction,
 	sr *av.SpeedRestriction) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.CrossDMEAt(dist, ar, sr, s.temperatureAt(ac))
@@ -345,9 +255,6 @@ func (s *Sim) CrossDMEAt(tcw TCW, callsign av.ADSBCallsign, dist float32, ar *av
 }
 
 func (s *Sim) AfterFixSpeed(tcw TCW, callsign av.ADSBCallsign, fix string, sr *av.SpeedRestriction) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AfterFixSpeed(fix, sr)
@@ -355,9 +262,6 @@ func (s *Sim) AfterFixSpeed(tcw TCW, callsign av.ADSBCallsign, fix string, sr *a
 }
 
 func (s *Sim) AfterFixAltitude(tcw TCW, callsign av.ADSBCallsign, fix string, alt int) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AfterFixAltitude(fix, float32(alt))
@@ -365,9 +269,6 @@ func (s *Sim) AfterFixAltitude(tcw TCW, callsign av.ADSBCallsign, fix string, al
 }
 
 func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach string, straightIn bool, delayReduction time.Duration) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AtFixCleared(fix, approach, s.State.SimTime, delayReduction, straightIn)
@@ -375,9 +276,6 @@ func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach stri
 }
 
 func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string, delayReduction time.Duration) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AtFixIntercept(fix, s.State.SimTime, delayReduction)
@@ -387,9 +285,6 @@ func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string, dela
 // ClimbViaSID is "climb via SID", with "except maintain exceptAlt" if it is
 // non-nil.
 func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.ClimbViaSID(exceptAlt, s.State.SimTime)
@@ -399,9 +294,6 @@ func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32)
 // DescendViaSTAR is "descend via STAR", with "except maintain exceptAlt" if
 // it is non-nil.
 func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.DescendViaSTAR(exceptAlt, s.State.SimTime)
@@ -409,9 +301,6 @@ func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float
 }
 
 func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign, freq av.Frequency) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			result, ok := ac.ContactTower(s.lg, freq)
@@ -426,9 +315,6 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign, freq av.Frequency)
 // If the aircraft already reported the correct ATIS, no readback is needed.
 // Otherwise the pilot responds with "we'll pick up (letter)".
 func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if ac.ReportedATIS == letter {
@@ -441,9 +327,6 @@ func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (spe
 
 // TrafficAdvisory handles controller-issued traffic advisories.
 func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, trafficAlt int, altUnknown, otherMaintainsVisual bool) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error { return nil },
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
@@ -635,9 +518,6 @@ func (s *Sim) nearestMETAR(pos math.Point2LL) (wx.METAR, float32) {
 // MaintainVisualSeparation handles "maintain visual separation from the traffic" command.
 // The aircraft should have recently reported traffic in sight.
 func (s *Sim) MaintainVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error { return nil },
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
@@ -653,9 +533,6 @@ func (s *Sim) MaintainVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (speec
 
 // CautionWakeTurbulence handles "caution wake turbulence" advisories.
 func (s *Sim) CautionWakeTurbulence(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchAircraftCommand(tcw, callsign,
 		nil,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
@@ -666,9 +543,6 @@ func (s *Sim) CautionWakeTurbulence(tcw TCW, callsign av.ADSBCallsign) (speech.C
 // ApproveVisualSeparation handles "approved" after a pilot has volunteered
 // to maintain visual separation from traffic called by the controller.
 func (s *Sim) ApproveVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error { return nil },
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
@@ -686,9 +560,6 @@ func (s *Sim) ApproveVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (speech
 }
 
 func (s *Sim) AltitudeOurDiscretion(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.AltitudeOurDiscretion()
@@ -696,9 +567,6 @@ func (s *Sim) AltitudeOurDiscretion(tcw TCW, callsign av.ADSBCallsign) (speech.C
 }
 
 func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
@@ -714,9 +582,6 @@ func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (speech
 }
 
 func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	_, err := s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if !ac.WaitingForGoAhead {
@@ -735,9 +600,6 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 // SayAgain triggers a pilot saying "say again" in response to an unclear command.
 // Returns the spoken text for TTS synthesis and the callsign to use for voice selection.
 func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	tr := speech.MakeReadbackTransmission("say again for")
 	s.postReadbackTransmission(callsign, *tr, tcw)
 
@@ -758,9 +620,6 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, stri
 // aircraft that hasn't been cleared for an approach. The pilot responds that they
 // haven't received approach clearance.
 func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	tr := speech.MakeReadbackTransmission("we haven't been cleared for an approach")
 	s.postReadbackTransmission(callsign, *tr, tcw)
 

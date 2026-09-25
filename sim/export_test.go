@@ -105,7 +105,5 @@ func E2ETCW() TCW { return TCW("TEST") }
 // way stt.BuildAircraftContext does. (stt imports sim, so those tests cannot be in
 // package sim and reach it directly.)
 func LastAddressedCallsign(s *Sim, tcw TCW) av.ADSBCallsign {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
 	return s.lastAddressedCallsign(tcw)
 }

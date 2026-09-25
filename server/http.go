@@ -100,16 +100,17 @@ func (sm *SimManager) GetSimStatus() []simStatus {
 
 	var status []simStatus
 	for name, ss := range util.SortedMap(sm.sessionsByName) {
-		ifr, vfr := ss.sim.GetTrafficCounts()
-		activeTCWs := util.MapSlice(ss.GetActiveTCWs(), func(tcw sim.TCW) string { return string(tcw) })
-		status = append(status, simStatus{
+		activeTCWs := util.MapSlice(ss.getActiveTCWs(), func(tcw sim.TCW) string { return string(tcw) })
+		st := simStatus{
 			Name:       name,
 			Config:     ss.scenario,
-			IdleTime:   ss.sim.IdleTime().Round(time.Second),
-			TotalIFR:   ifr,
-			TotalVFR:   vfr,
 			ActiveTCWs: strings.Join(activeTCWs, ", "),
+		}
+		ss.withSim(func() {
+			st.TotalIFR, st.TotalVFR = ss.sim.GetTrafficCounts()
+			st.IdleTime = ss.sim.IdleTime().Round(time.Second)
 		})
+		status = append(status, st)
 	}
 
 	return status

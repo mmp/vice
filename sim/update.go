@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/simlog"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -24,7 +25,6 @@ import (
 // prepareRadioTransmissions adds callsign/controller prefixes to radio transmissions.
 // (Multi-command batching is now handled at intent generation time in RunAircraftControlCommands.)
 // This is called for both main event subscriptions and TTS event subscriptions.
-// Must be called with s.mu held.
 func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 	ctrl := s.State.Controllers[primaryTCP]
@@ -107,46 +107,11 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 // callsign/controller prefixes to radio transmissions. This is the public API
 // for the server to process TTS events from a separate subscription.
 func (s *Sim) PrepareRadioTransmissionsForTCW(tcw TCW, events []Event) []Event {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.prepareRadioTransmissions(tcw, events)
 }
 
 func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.snapshot(tcw)
-}
-
-// WaitForStateUpdate waits until the publication generation advances past sinceGen or the timeout /
-// sim teardown fires, then returns the current snapshot together with the generation it was taken at.
-//
-// In healthy operation Sim.Update emits a heartbeat publish every ~1.1s, so the timeout arm never
-// fires. If it does fire, the sim's publish loop has hung (e.g. it panicked and the goroutine
-// exited); return ErrSimPublishStalled so the caller can surface a real failure rather than
-// silently delivering a stale snapshot to clients.
-func (s *Sim) WaitForStateUpdate(tcw TCW, sinceGen uint64, timeout time.Duration) (StateUpdate, uint64, error) {
-	s.mu.Lock(s.lg)
-	gen, ch := s.snapshotPub()
-	if gen > sinceGen {
-		update := s.snapshot(tcw)
-		s.mu.Unlock(s.lg)
-		return update, gen, nil
-	}
-	s.mu.Unlock(s.lg)
-
-	select {
-	case <-ch:
-	case <-time.After(timeout):
-		return StateUpdate{}, sinceGen, ErrSimPublishStalled
-	case <-s.simDoneCh:
-	}
-
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-	return s.snapshot(tcw), s.pubGen, nil
 }
 
 // snapshot builds and deep-copies a StateUpdate for the given TCW.
@@ -204,9 +169,6 @@ func (s *Sim) areaForTCP(tcp TCP) string {
 // Simulation
 
 func (s *Sim) Update() {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if !util.DebuggerIsRunning() {
 		startUpdate := time.Now()
 		defer func() {
@@ -234,7 +196,7 @@ func (s *Sim) Update() {
 		elapsed := time.Since(s.lastSimUpdateTime)
 		elapsed = time.Duration(s.State.SimRate * float32(elapsed))
 		s.lastSimUpdateTime = time.Now()
-		if s.step(elapsed) {
+		if s.Step(elapsed) {
 			// Don't bother with these Check()s if we didn't change any aircraft state
 			for _, ac := range s.Aircraft {
 				ac.Check(s.lg)
@@ -531,15 +493,7 @@ func (s *Sim) recordVirtualAltitudeEntry(sfp *NASFlightPlan, alt int, climb bool
 }
 
 // Step advances the simulation by the given elapsed time duration.
-// It acquires the sim mutex for the duration of the step.
 func (s *Sim) Step(elapsed time.Duration) bool {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-	return s.step(elapsed)
-}
-
-// step is the inner implementation of Step; the caller must hold s.mu.
-func (s *Sim) step(elapsed time.Duration) bool {
 	elapsed += s.updateTimeSlop
 
 	// Run the sim for this many seconds
@@ -610,9 +564,10 @@ func shouldAskAboutTowerSwitch(ac *Aircraft) bool {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
-	// Weather fetched in the background takes effect only here, at the
-	// start of a tick, so that it doesn't depend on when the fetch finished.
-	s.wxModel.Advance(now.Time())
+	// Update both current wx and logged at the start of a tick for consistency in replays.
+	if u := s.wxModel.Advance(s.State.SimTime.Time()); u != nil && s.sessionLog != nil {
+		s.sessionLog.Weather(simlog.Weather{Time: s.State.SimTime.Time(), Update: *u})
+	}
 
 	for acid, ho := range util.SortedMap(s.Handoffs) {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
@@ -759,35 +714,25 @@ func (s *Sim) updateState() {
 			if passedWaypoint != nil {
 				for tcp, wpCommands := range util.SortedMap(s.waypointCommands) {
 					if cmds, ok := wpCommands[passedWaypoint.Fix]; ok {
-						func() {
-							// The mutex is held when we get here, but RunScriptedControlCommands and the
-							// command methods it dispatches to acquire it themselves. Release it for the
-							// duration and take it back afterward, including if they panic; otherwise the
-							// deferred unlock in Update would release a mutex it no longer holds.
-							s.mu.Unlock(s.lg)
-							defer s.mu.Lock(s.lg)
+						// Execute waypoint commands using the waypoint commands controller (typically an instructor)
+						nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
+						s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
+						result := s.RunScriptedControlCommands(TCW(tcp), callsign, cmds)
+						if result.Error != nil {
+							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
+								result.RemainingInput)
+							s.lg.Errorf("Waypoint command execution failed: %v (remaining: %s)", result.Error, result.RemainingInput)
+						} else {
+							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s success", callsign)
+						}
 
-							// Execute waypoint commands using the waypoint commands controller (typically an instructor)
-							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
-							s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
-							result := s.RunScriptedControlCommands(TCW(tcp), callsign, cmds)
-							if result.Error != nil {
-								nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
-									result.RemainingInput)
-								s.lg.Errorf("Waypoint command execution failed: %v (remaining: %s)", result.Error, result.RemainingInput)
-							} else {
-								nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand, "aircraft=%s success", callsign)
-							}
-
-							// Log updated route and waypoint state after commands
-							nav.LogRoute(string(callsign), s.State.SimTime.NavTime(), ac.Nav.Waypoints)
-							nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand,
-								"aircraft=%s post-cmd nwaypoints=%d approach_cleared=%v approach_id=%s",
-								callsign, len(ac.Nav.Waypoints), ac.Nav.Approach.Cleared, ac.Nav.Approach.AssignedId)
-						}()
+						// Log updated route and waypoint state after commands
+						nav.LogRoute(string(callsign), s.State.SimTime.NavTime(), ac.Nav.Waypoints)
+						nav.NavLog(string(callsign), s.State.SimTime.NavTime(), nav.NavLogCommand,
+							"aircraft=%s post-cmd nwaypoints=%d approach_cleared=%v approach_id=%s",
+							callsign, len(ac.Nav.Waypoints), ac.Nav.Approach.Cleared, ac.Nav.Approach.AssignedId)
 					}
 				}
-
 			}
 
 			deletedByAction := false
@@ -910,4 +855,6 @@ func (s *Sim) updateState() {
 			}
 		}
 	}
+
+	s.logTick()
 }

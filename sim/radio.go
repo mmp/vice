@@ -181,16 +181,6 @@ func (s *Sim) setControllerFrequency(ac *Aircraft, pos ControlPosition) {
 	}
 }
 
-// PopReadyContact removes and returns the first pending contact whose ReadyTime has passed
-// for any of the given positions, or nil if none are ready yet.
-// This is called when the client is ready to play a contact.
-func (s *Sim) PopReadyContact(positions []TCP) *PendingContact {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.popReadyContact(positions)
-}
-
 // isInitialCheckIn reports whether the transmission type is an aircraft's
 // first call to the controller, as opposed to a response or request made
 // during an already-established exchange.
@@ -203,8 +193,10 @@ func (t PendingTransmissionType) isInitialCheckIn() bool {
 	}
 }
 
-// popReadyContact is the internal version that requires the lock to already be held.
-func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
+// PopReadyContact removes and returns the first pending contact whose ReadyTime has passed
+// for any of the given positions, or nil if none are ready yet.
+// This is called when the client is ready to play a contact.
+func (s *Sim) PopReadyContact(positions []TCP) *PendingContact {
 	if s.PendingContacts == nil {
 		return nil
 	}
@@ -221,11 +213,35 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 	return s.popReadyMatching(positions, func(t PendingTransmissionType) bool { return t.isInitialCheckIn() })
 }
 
-// popReadyMatching removes and returns the longest-waiting pending contact
-// across the given positions whose type satisfies match and whose ReadyTime has
-// passed. Taking the oldest rather than the first position's first entry keeps a
-// busy position from starving the others. Returns nil if none qualify.
+// HaveReadyContact reports whether PopReadyContact would return a contact
+// for the given positions. Clients ask for contacts many times a second, and
+// this lets a request that would find none be answered without changing the
+// sim.
+func (s *Sim) HaveReadyContact(positions []TCP) bool {
+	_, i := s.readyMatching(positions, func(PendingTransmissionType) bool { return true })
+	return i != -1
+}
+
+// popReadyMatching removes and returns the contact readyMatching finds, or
+// nil if there is none.
 func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionType) bool) *PendingContact {
+	tcp, i := s.readyMatching(positions, match)
+	if i == -1 {
+		return nil
+	}
+
+	pc := s.PendingContacts[tcp][i]
+	s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
+	return &pc
+}
+
+// readyMatching finds the longest-waiting pending contact across the given
+// positions whose type satisfies match and whose ReadyTime has passed,
+// returning its position and its index in the position's pending contacts,
+// or -1 for the index if none qualify. Taking the oldest rather than the
+// first position's first entry keeps a busy position from starving the
+// others.
+func (s *Sim) readyMatching(positions []TCP, match func(PendingTransmissionType) bool) (TCP, int) {
 	var bestTCP TCP
 	best := -1
 	for _, tcp := range positions {
@@ -238,14 +254,7 @@ func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionTy
 			}
 		}
 	}
-
-	if best == -1 {
-		return nil
-	}
-
-	pc := s.PendingContacts[bestTCP][best]
-	s.PendingContacts[bestTCP] = slices.Delete(s.PendingContacts[bestTCP], best, best+1)
-	return &pc
+	return bestTCP, best
 }
 
 // processVirtualControllerContacts handles pending contacts for virtual
@@ -422,7 +431,6 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 // cancelPendingInitialContact removes any pending Departure or Arrival contact
 // for the given aircraft. Called when a controller issues a command to an
 // aircraft that hasn't checked in yet, preventing stale check-ins.
-// Caller must hold s.mu.
 func (s *Sim) cancelPendingInitialContact(callsign av.ADSBCallsign) {
 	if s.PendingContacts == nil {
 		return
@@ -441,9 +449,6 @@ func (s *Sim) cancelPendingInitialContact(callsign av.ADSBCallsign) {
 // Returns the spoken and written text, or empty strings if the contact is invalid.
 // This is called when the client requests a contact, using current aircraft state.
 func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writtenText string) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	ac, ok := s.Aircraft[pc.ADSBCallsign]
 	if !ok {
 		return "", ""

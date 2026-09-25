@@ -46,6 +46,7 @@ func (sg *Group) NewSimConfiguration(scenarioName string, lc sim.LaunchConfig) (
 
 	nsc := &sim.NewSimConfiguration{
 		Facility:                   sg.facility(),
+		ScenarioName:               scenarioName,
 		LaunchConfig:               lc,
 		FacilityAdaptation:         deep.MustCopy(fa),
 		DisableTFRRestrictionAreas: sg.FacilityConfig.DisableTFRRestrictionAreas,

@@ -1253,9 +1253,6 @@ func (va *VoiceAssigner) GetVoice(callsign av.ADSBCallsign, r *rand.Rand) string
 // GetReadbackVoice returns the voice to use for the aircraft's radio
 // transmissions, assigning one if it doesn't have a voice yet.
 func (s *Sim) GetReadbackVoice(callsign av.ADSBCallsign) string {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.VoiceAssigner.GetVoice(callsign, s.textRand)
 }
 

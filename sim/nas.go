@@ -91,7 +91,6 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 	sc.HoldForRelease = append(sc.HoldForRelease, ac)
 }
 
-// Note: called with Sim holding its mutex, so we can access its members here.
 func (sc *STARSComputer) Update(s *Sim) {
 	// Delete any dropped flight plans after the few minute delay has passed.
 	sc.FlightPlans = util.FilterSlice(sc.FlightPlans, func(fp *NASFlightPlan) bool {

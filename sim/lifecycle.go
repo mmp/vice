@@ -18,6 +18,13 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
+// SetWeatherModel sets the model the sim flies in; it must be called before
+// the sim is activated. A replay gives the sim a model that installs only
+// the grids the session's log records.
+func (s *Sim) SetWeatherModel(m *wx.Model) {
+	s.wxModel = m
+}
+
 func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	s.lg = lg
 	s.lastSTTCommands = make(map[TCW]*lastSTTCommand)
@@ -103,8 +110,6 @@ func restoreControllerFields(controllers map[TCP]*av.Controller) {
 func (s *Sim) Destroy() {
 	s.eventStream.Destroy()
 
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
 	select {
 	case <-s.simDoneCh:
 		// already closed
@@ -113,16 +118,8 @@ func (s *Sim) Destroy() {
 	}
 }
 
-// Publish makes the caller's state updates available to clients.
-func (s *Sim) Publish() {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	s.publish()
-}
-
 // publish bumps the publication generation and wakes any parked
-// GetStateUpdate waiters. Caller must hold s.mu.
+// GetStateUpdate waiters.
 func (s *Sim) publish() {
 	s.pubGen++
 	if s.pubCh != nil {
@@ -132,9 +129,12 @@ func (s *Sim) publish() {
 	s.lastPublishTime = time.Now()
 }
 
-// snapshotPub returns the current publication generation and the channel
-// that will be closed on the next publication. Caller must hold s.mu.
-func (s *Sim) snapshotPub() (uint64, chan struct{}) {
+// Publication returns the current publication generation and the channel
+// that will be closed on the next publication. A long-poll for the next state
+// update compares the generation with the last one it delivered and, if that
+// was the current one, waits on the channel; the sim's Update publishes at
+// least every 1.1 seconds, even when paused, so the wait is bounded.
+func (s *Sim) Publication() (uint64, <-chan struct{}) {
 	return s.pubGen, s.pubCh
 }
 
@@ -153,8 +153,6 @@ func (s *Sim) Subscribe() *EventsSubscription {
 // GetSerializeSimJSON returns the sim encoded as JSON, for saving in the
 // user's configuration file.
 func (s *Sim) GetSerializeSimJSON() ([]byte, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
 	return json.Marshal(s)
 }
 
@@ -186,22 +184,18 @@ func (s *Sim) log(format string, args ...any) {
 	}
 }
 
-func (s *Sim) TogglePause() {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
+// TogglePause pauses or unpauses the sim and returns whether it is now paused.
+func (s *Sim) TogglePause() bool {
 	s.State.Paused = !s.State.Paused
 	s.lastSimUpdateTime = time.Now() // ignore time passage...
 	s.lastControlCommandTime = time.Now()
 	s.publish()
+	return s.State.Paused
 }
 
 // SetPausedByServer allows the server to pause/unpause the sim when
 // humans connect or disconnect.
 func (s *Sim) SetPausedByServer(paused bool) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if s.pausedByServer == paused {
 		return
 	}
@@ -214,9 +208,6 @@ func (s *Sim) SetPausedByServer(paused bool) {
 }
 
 func (s *Sim) FastForward() {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	for range 15 {
 		s.State.SimTime = s.State.SimTime.Add(time.Second)
 		s.updateState()
@@ -228,24 +219,15 @@ func (s *Sim) FastForward() {
 }
 
 func (s *Sim) IdleTime() time.Duration {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return time.Since(s.lastSimUpdateTime)
 }
 
 // SimTime returns the current simulation time.
 func (s *Sim) SimTime() Time {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.State.SimTime
 }
 
 func (s *Sim) SetSimRate(tcw TCW, rate float32) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.State.SimRate = rate
 	s.lastControlCommandTime = time.Now()
 

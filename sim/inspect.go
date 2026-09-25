@@ -424,9 +424,6 @@ type FlightRecordings struct {
 // whole flight is simulated at once and played back afterwards, which is also
 // what makes going back in time possible when the sim itself only goes forward.
 func (s *Sim) RecordFlights() FlightRecordings {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	var result FlightRecordings
 	recordings := make(map[av.ADSBCallsign]*FlightRecording)
 	seconds := 0

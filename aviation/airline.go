@@ -36,6 +36,19 @@ const (
 	FlightTypeOverflight
 )
 
+func (t TypeOfFlight) String() string {
+	switch t {
+	case FlightTypeDeparture:
+		return "departure"
+	case FlightTypeArrival:
+		return "arrival"
+	case FlightTypeOverflight:
+		return "overflight"
+	default:
+		return "unknown"
+	}
+}
+
 func (a AirlineSpecifier) Aircraft(db Database) []FleetAircraft {
 	if a.Fleet == "" && len(a.AircraftTypes) == 0 {
 		return airlineFleets(db, a.ICAO)["default"]

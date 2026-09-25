@@ -28,9 +28,6 @@ var notLandingHere = speech.MakeUnableIntent("unable, we're not landing here")
 // pilot's response depends on weather, ceiling, and distance to the airport —
 // no o'clock/bearing validation is performed.
 func (s *Sim) AirportInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if !ac.IsArrival() {
@@ -51,9 +48,6 @@ func (s *Sim) AirportInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (speech.C
 // aircraft in front and within tight tolerances; if exactly one matches, the
 // pilot reports it in sight, otherwise the pilot asks where the traffic was.
 func (s *Sim) TrafficInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return s.handleTrafficInSightInquiry(ac)
@@ -61,7 +55,6 @@ func (s *Sim) TrafficInSightInquiry(tcw TCW, callsign av.ADSBCallsign) (speech.C
 }
 
 // handleTrafficInSightInquiry implements the bare TRAFFIC inquiry resolution.
-// Caller must hold the sim mutex.
 func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) speech.CommandIntent {
 	// If there is a queued FutureTrafficCheck for this aircraft, re-evaluate
 	// visibility.
@@ -135,9 +128,6 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) speech.CommandIntent {
 // pilot where to look for the airport: "airport, {oclock} o'clock, {miles} miles".
 // The pilot responds with "field in sight", "looking", or an IMC indication.
 func (s *Sim) AirportAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles int) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if !ac.IsArrival() {
@@ -241,9 +231,6 @@ func (s *Sim) cancelFutureTrafficCheck(callsign av.ADSBCallsign) {
 }
 
 func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	var ap *av.Airport
 	if ac, ok := s.Aircraft[callsign]; ok {
 		ap = s.State.Airports[ac.FlightPlan.ArrivalAirport]
@@ -259,9 +246,6 @@ func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string)
 }
 
 func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			var following *nav.FollowTraffic
@@ -305,9 +289,6 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 }
 
 func (s *Sim) InterceptApproach(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.InterceptApproach()
@@ -315,9 +296,6 @@ func (s *Sim) InterceptApproach(tcw TCW, callsign av.ADSBCallsign) (speech.Comma
 }
 
 func (s *Sim) CancelApproachClearance(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.CancelApproachClearance()

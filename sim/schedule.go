@@ -156,8 +156,7 @@ func (fs *FlightSchedule) sortEntries() {
 
 // generateSchedule builds the schedule from scratch starting at the sim's
 // current time, which for a new sim is the start of prespawn. published is
-// what publishedFlights read for the launch config's traffic source. It runs
-// before the sim is shared, or with the sim's mutex held.
+// what publishedFlights read for the launch config's traffic source.
 func (s *Sim) generateSchedule(published []traffic.Flight) {
 	now := s.State.SimTime
 	until := now.Add(scenarioScheduleHorizon)
@@ -584,11 +583,7 @@ func (s *Sim) publishedFlights(lc *LaunchConfig) []traffic.Flight {
 // sim's current config, no other launch config change may come between this
 // and the SetLaunchConfig call it is for.
 func (s *Sim) PublishedFlightsFor(lc LaunchConfig) []traffic.Flight {
-	s.mu.Lock(s.lg)
-	changed := trafficSourceChanged(&lc, &s.State.LaunchConfig)
-	s.mu.Unlock(s.lg)
-
-	if !changed {
+	if !trafficSourceChanged(&lc, &s.State.LaunchConfig) {
 		return nil
 	}
 	return s.publishedFlights(&lc)
@@ -890,7 +885,7 @@ func (s *Sim) spawnScheduledArrivals() {
 		} else if err != nil {
 			s.lg.Errorf("%s: unable to create arrival: %v", e.Callsign, err)
 		} else {
-			s.addAircraftNoLock(*ac)
+			s.addAircraft(*ac)
 			spawned[e.Group] = true
 		}
 		s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
@@ -918,7 +913,7 @@ func (s *Sim) spawnScheduledOverflights() {
 		if err != nil {
 			s.lg.Errorf("%s: unable to create overflight: %v", e.Callsign, err)
 		} else {
-			s.addAircraftNoLock(*ac)
+			s.addAircraft(*ac)
 			spawned[e.Group] = true
 		}
 		s.Schedule.Overflights = deleteScheduledEntry(s.Schedule.Overflights, i)

@@ -644,9 +644,6 @@ func assignCode(assignment util.Optional[string], planType NASFlightPlanType, ru
 ///////////////////////////////////////////////////////////////////////////
 
 func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.lastControlCommandTime = time.Now()
 
 	if err := s.preCheckFlightPlanSpecifier(&spec); err != nil {
@@ -690,9 +687,6 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 // and will auto-associate with the track after a delay, creating a beacon
 // mismatch until the pilot squawks the new code.
 func (s *Sim) CreateInterfacilityVFR(tcw TCW, acid ACID, isIntermediate bool, requestedAlt int) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.lastControlCommandTime = time.Now()
 
 	fp, ac, _ := s.getFlightPlanForACID(acid)
@@ -783,9 +777,6 @@ func (s FlightPlanSpecifier) postCheck() error {
 }
 
 func (s *Sim) ModifyFlightPlan(tcw TCW, acid ACID, spec FlightPlanSpecifier) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.lastControlCommandTime = time.Now()
 
 	fp, ac, active := s.getFlightPlanForACID(acid)
@@ -839,9 +830,6 @@ func (s *Sim) ModifyFlightPlan(tcw TCW, acid ACID, spec FlightPlanSpecifier) err
 // Associate the specified flight plan with the track. Flight plan for ACID
 // must not already exist.
 func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec FlightPlanSpecifier) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if spec.QuickFlightPlan.IsSet && spec.QuickFlightPlan.Get() {
 		base := s.State.FacilityAdaptation.FlightPlan.QuickACID
 		acid := base + fmt.Sprintf("%02d", s.QuickFlightPlanIndex%100)
@@ -913,9 +901,6 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 
 // Flight plan for acid must already exist; spec gives optional amendments.
 func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, spec *FlightPlanSpecifier) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	// Validate the target aircraft BEFORE taking the flight plan
 	// to avoid orphaning it if the target is invalid.
 	ac, ok := s.Aircraft[callsign]
@@ -949,8 +934,6 @@ func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, s
 }
 
 func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) (err error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
 	defer func() {
 		if err == nil {
 			s.publish()

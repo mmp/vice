@@ -158,7 +158,7 @@ func (s *Sim) refillPendingLaunches() {
 
 // currentLaunchSlots returns the launch control slots for the current
 // publication generation, rebuilding them when the sim has changed since they
-// were last built. Caller must hold s.mu.
+// were last built.
 func (s *Sim) currentLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 	if !s.launchSlotsBuilt || s.launchSlotGen != s.pubGen {
 		s.launchDepartureSlots, s.launchInboundSlots = s.buildLaunchSlots()
@@ -326,9 +326,6 @@ func (s *Sim) arrivalSpawnPosition(e *ScheduledArrival) math.Point2LL {
 // aircraft is created--resources and all--and enters the sim, and the slot
 // refills. A published flight may launch ahead of its scheduled time.
 func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	// Refill the emptied slot in the same update, so it never shows blank.
 	defer func() {
 		s.refillPendingLaunches()
@@ -339,7 +336,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 		for key, ac := range s.PendingVFR {
 			if ac.ADSBCallsign == flight.Callsign {
 				delete(s.PendingVFR, key)
-				s.addAircraftNoLock(*ac)
+				s.addAircraft(*ac)
 				return nil
 			}
 		}
@@ -389,7 +386,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 			if err != nil {
 				return err
 			}
-			s.addAircraftNoLock(*ac)
+			s.addAircraft(*ac)
 			return nil
 		}
 	}
@@ -403,7 +400,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 			if err != nil {
 				return err
 			}
-			s.addAircraftNoLock(*ac)
+			s.addAircraft(*ac)
 			return nil
 		}
 	}
@@ -415,7 +412,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 			return err
 		}
 		s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
-		s.addAircraftNoLock(*ac)
+		s.addAircraft(*ac)
 		return nil
 	}
 
@@ -439,7 +436,7 @@ func (s *Sim) launchDeparture(ac *Aircraft, runway av.RunwayID, flight LaunchFli
 		// Clicking the launch slot stands in for the wait at the gate.
 		s.addDepartureToPool(ac, runway, 0)
 	} else {
-		s.addAircraftNoLock(*ac)
+		s.addAircraft(*ac)
 	}
 }
 
@@ -449,9 +446,6 @@ func (s *Sim) launchDeparture(ac *Aircraft, runway av.RunwayID, flight LaunchFli
 // and pulls the rest of its flow earlier by the gap it leaves, so that
 // switching back to automatic launches doesn't sit through a hole.
 func (s *Sim) RecycleLaunchAircraft(tcw TCW, flight LaunchFlight) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	// Refill the emptied slot in the same update, so it never shows blank.
 	defer func() {
 		s.refillPendingLaunches()

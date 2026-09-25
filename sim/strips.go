@@ -45,7 +45,7 @@ func shouldCreateFlightStrip(fp *NASFlightPlan) bool {
 }
 
 // flightStripACIDsForTCW returns the ACIDs of all flight plans with strips
-// owned by TCPs controlled by the given TCW. Caller must hold the mutex.
+// owned by TCPs controlled by the given TCW.
 func (s *Sim) flightStripACIDsForTCW(tcw TCW) []ACID {
 	var result []ACID
 	for _, ac := range s.Aircraft {
@@ -63,9 +63,6 @@ func (s *Sim) flightStripACIDsForTCW(tcw TCW) []ACID {
 
 // PushFlightStrip moves a flight strip to the given TCP.
 func (s *Sim) PushFlightStrip(tcw TCW, acid ACID, toTCP TCP) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	fp, _, _ := s.getFlightPlanForACID(acid)
 	if fp == nil || !s.State.TCWControlsPosition(tcw, fp.StripOwner) {
 		return ErrNoMatchingFlight
@@ -78,9 +75,6 @@ func (s *Sim) PushFlightStrip(tcw TCW, acid ACID, toTCP TCP) error {
 
 // AnnotateFlightStrip updates the annotations on a flight strip.
 func (s *Sim) AnnotateFlightStrip(tcw TCW, acid ACID, annotations [9]string) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	fp, _, _ := s.getFlightPlanForACID(acid)
 	if fp == nil || !s.State.TCWControlsPosition(tcw, fp.StripOwner) {
 		return ErrNoMatchingFlight
@@ -92,9 +86,6 @@ func (s *Sim) AnnotateFlightStrip(tcw TCW, acid ACID, annotations [9]string) err
 }
 
 func (s *Sim) GlobalMessage(tcw TCW, message string) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.eventStream.Post(Event{
 		Type:           GlobalMessageEvent,
 		WrittenText:    message,
@@ -104,9 +95,6 @@ func (s *Sim) GlobalMessage(tcw TCW, message string) {
 }
 
 func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	ra.UpdateTriangles()
 
 	// Find the smallest unused key in 1-MaxRestrictionAreas (user range)
@@ -122,9 +110,6 @@ func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
 }
 
 func (s *Sim) UpdateRestrictionArea(idx int, ra av.RestrictionArea) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if idx < 1 || idx > av.MaxRestrictionAreas {
 		return ErrInvalidRestrictionAreaIndex
 	}
@@ -141,9 +126,6 @@ func (s *Sim) UpdateRestrictionArea(idx int, ra av.RestrictionArea) error {
 }
 
 func (s *Sim) DeleteRestrictionArea(idx int) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if idx < 1 || idx > av.MaxRestrictionAreas {
 		return ErrInvalidRestrictionAreaIndex
 	}
@@ -168,8 +150,6 @@ const (
 )
 
 func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (msg string, err error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
 	defer func() {
 		if err == nil {
 			s.publish()
@@ -270,8 +250,6 @@ const (
 )
 
 func (s *Sim) ConfigureFDAM(op FDAMConfigOp, regionId string) (msg string, err error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
 	defer func() {
 		if err == nil {
 			s.publish()
@@ -363,16 +341,10 @@ func (s *Sim) fdamStatusString() string {
 }
 
 func (s *Sim) PostEvent(e Event) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.eventStream.Post(e)
 }
 
 func (s *Sim) UpdateATISGIText(_ TCW, line int, auxiliary bool, atis *string, text *string) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	// Main and auxiliary commands use different line domains even though they
 	// update the same shared arrays.
 	if auxiliary {
@@ -405,18 +377,12 @@ func (s *Sim) UpdateATISGIText(_ TCW, line int, auxiliary bool, atis *string, te
 }
 
 func (s *Sim) Facility() string {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.State.Facility
 }
 
 // GetUserState returns a deep copy of the simulation state for a client.
 // Server-only fields (like Airport.Departures) are pruned to reduce bandwidth.
 func (s *Sim) GetUserState() *UserState {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	state := UserState{
 		CommonState:  *s.State,
 		DerivedState: makeDerivedState(s),
@@ -454,13 +420,6 @@ func (s *Sim) GetDepartureController(airport av.ICAOAirportCode, runway, sid str
 
 // ScenarioRootPosition returns the root position from the scenario's default consolidation.
 func (s *Sim) ScenarioRootPosition() TCP {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.scenarioRootPosition()
-}
-
-func (s *Sim) scenarioRootPosition() TCP {
 	if root, err := s.ScenarioDefaultConsolidation.RootPosition(); err != nil {
 		return ""
 	} else {
@@ -470,17 +429,11 @@ func (s *Sim) scenarioRootPosition() TCP {
 
 // AllScenarioPositions returns all positions defined in the scenario's default consolidation.
 func (s *Sim) AllScenarioPositions() []TCP {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.ScenarioDefaultConsolidation.AllPositions()
 }
 
 // GetTrafficCounts returns the current IFR and VFR traffic counts.
 func (s *Sim) GetTrafficCounts() (ifr, vfr int) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.TotalIFR, s.TotalVFR
 }
 
