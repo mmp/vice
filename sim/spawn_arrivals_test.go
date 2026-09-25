@@ -524,3 +524,45 @@ func TestPatternAircraftOnDownwindBlocksAdmission(t *testing.T) {
 		t.Errorf("admitted %v, expected just N111", admit)
 	}
 }
+
+// An inbound flight's ERAM hard altitude is what it was cleared to, since
+// conflict alert takes a level flight to be free to go anywhere between its
+// altitude and the hard altitude.
+func TestSetInboundERAMAltitudes(t *testing.T) {
+	restricted := func(fix string, ar av.AltitudeRestriction) av.Waypoint {
+		wp := av.Waypoint{Fix: fix}
+		wp.SetAltitudeRestriction(ar)
+		return wp
+	}
+	// The BAUBB3 as the ZLA scenarios fly it: its bottom is 4000 at EZKEL.
+	baubb := av.WaypointArray{
+		restricted("TCUPS", av.MakeAtOrAboveAltitudeRestriction(26000)),
+		restricted("BAUBB", av.MakeRangeAltitudeRestriction(11000, 13000)),
+		{Fix: "STYFF"},
+		restricted("EZKEL", av.MakeAtAltitudeRestriction(4000)),
+	}
+
+	for _, tc := range []struct {
+		name              string
+		wps               av.WaypointArray
+		assigned, cleared float32
+		expected          int
+	}{
+		{name: "assigned altitude", wps: baubb, assigned: 21000, expected: 21000},
+		{name: "assigned wins over cleared", wps: baubb, assigned: 21000, cleared: 24000, expected: 21000},
+		{name: "descend via, except maintain", wps: baubb, cleared: 24000, expected: 24000},
+		{name: "descend via", wps: baubb, expected: 4000},
+		{name: "no restrictions", wps: av.WaypointArray{{Fix: "GVE"}, {Fix: "BAILZ"}}, expected: 35000},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var fp NASFlightPlan
+			fp.setInboundERAMAltitudes(tc.wps, tc.assigned, tc.cleared, 35000)
+			if fp.AssignedAltitude != tc.expected {
+				t.Errorf("assigned altitude %d, expected %d", fp.AssignedAltitude, tc.expected)
+			}
+			if fp.DataBlockAltitude() != tc.expected {
+				t.Errorf("data block altitude %d, expected %d", fp.DataBlockAltitude(), tc.expected)
+			}
+		})
+	}
+}

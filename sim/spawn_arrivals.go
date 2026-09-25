@@ -58,24 +58,9 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && arr.IsRNAV
 	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 
-	// For ERAM, set AssignedAltitude and derive PerceivedAssigned from waypoint restrictions.
-	if _, isERAM := db.DB.ARTCCs[s.State.Facility]; isERAM {
-		spawnAlt := ac.Nav.FlightState.Altitude
-		if arr.AssignedAltitude > 0 {
-			nasFp.AssignedAltitude = int(arr.AssignedAltitude)
-			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, spawnAlt); ok {
-				nasFp.PerceivedAssigned = alt
-			}
-		} else {
-			// Try to derive from waypoint restrictions
-			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, spawnAlt); ok {
-				nasFp.AssignedAltitude = alt
-				nasFp.PerceivedAssigned = alt
-			} else {
-				nasFp.AssignedAltitude = int(spawnAlt)
-			}
-		}
-
+	if db.DB.IsARTCC(s.State.Facility) {
+		nasFp.setInboundERAMAltitudes(arr.Waypoints, arr.AssignedAltitude, arr.ClearedAltitude,
+			ac.Nav.FlightState.Altitude)
 		nasFp.applyERAMEntries(arr.ERAM)
 	}
 
@@ -493,6 +478,30 @@ func findLowestWaypointAltitude(wps av.WaypointArray, initialAlt float32) (int, 
 	return lowestAlt, true
 }
 
+// setInboundERAMAltitudes enters the hard altitude an inbound flight arrives
+// with at an ERAM facility: the altitude the previous controller cleared it
+// to. Conflict alert treats a level flight as free to go anywhere between its
+// altitude and this one, so it has to match the clearance. In order of
+// precedence, that is the assigned altitude, the "except maintain" altitude
+// of a descend via, or the bottom of the route's restrictions; a flight with
+// none of these holds its spawn altitude.
+func (fp *NASFlightPlan) setInboundERAMAltitudes(wps av.WaypointArray, assigned, cleared, spawnAlt float32) {
+	lowest, ok := findLowestWaypointAltitude(wps, spawnAlt)
+	if ok {
+		fp.PerceivedAssigned = lowest
+	}
+	switch {
+	case assigned > 0:
+		fp.AssignedAltitude = int(assigned)
+	case cleared > 0:
+		fp.AssignedAltitude = int(cleared)
+	case ok:
+		fp.AssignedAltitude = lowest
+	default:
+		fp.AssignedAltitude = int(spawnAlt)
+	}
+}
+
 // createScheduledOverflight creates the overflight a schedule entry describes;
 // the overflight route was sampled when the entry was generated.
 func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error) {
@@ -527,7 +536,6 @@ func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error
 // finalizeOverflightNoLock builds the overflight's NAS flight plan with
 // controller assignments and registers it with STARS.
 func (s *Sim) finalizeOverflightNoLock(ac *Aircraft, of *av.Overflight, group string) error {
-	isTRACON := db.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeOverflight)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
@@ -538,11 +546,11 @@ func (s *Sim) finalizeOverflightNoLock(ac *Aircraft, of *av.Overflight, group st
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = of.Scratchpad
 	nasFp.SecondaryScratchpad = of.SecondaryScratchpad
-	nasFp.AssignedAltitude = util.Select(!isTRACON, int(of.AssignedAltitude), 0)
 	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && of.IsRNAV
 	nasFp.TypeOfFlight = of.TypeOfFlight
 	if db.DB.IsARTCC(s.State.Facility) {
+		nasFp.setInboundERAMAltitudes(of.Waypoints, of.AssignedAltitude, 0, ac.Nav.FlightState.Altitude)
 		nasFp.applyERAMEntries(of.ERAM)
 	}
 
