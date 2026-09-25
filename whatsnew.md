@@ -1,10 +1,10 @@
 - Scenario updates: IND (Ethan Hawes), D01 (Mike Fries)
 - Added delay before launching subsequent same-exit departures
-- Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
-- Fixed vectored aircraft given "intercept localizer" then flying procedure turns after being cleared for the approach
-- Fixed multiple bugs with airspeed handling and altitude/temperature adjustments for TAS
+adjustments for TAS
 - Flight model
-  - VFRs are better at scud-running under B and C airspace shelves
+  - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
+  - Fixed vectored aircraft given "intercept localizer" then flying procedure turns after being cleared for the approach
+  - Fixed multiple bugs with airspeed handling and altitude/temperature   - VFRs are better at scud-running under B and C airspace shelves
   - Fixed VFR airwork descending below the ground
 - ERAM
   - Altitudes that virtual controllers assign along a route are now entered in the datablock:
