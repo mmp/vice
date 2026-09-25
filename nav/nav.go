@@ -204,9 +204,9 @@ type Altitude struct {
 	RateThrough     *float32      // revert to RateNormal after passing this altitude; nil = all the way
 	RateAfterSpeed  RateQualifier // preserved across speed transitions
 
-	// Carried after passing a waypoint if we were unable to meet the
-	// restriction at the way point; we keep trying until we get there (or
-	// are given another instruction..)
+	// The restriction at the last waypoint passed, carried forward so
+	// that an aircraft that couldn't meet it keeps trying until it gets
+	// there (or is given another instruction).
 	Restriction *av.AltitudeRestriction
 }
 
@@ -294,6 +294,25 @@ func (nav *Nav) clearedForVisualApproach() bool {
 	}
 	t := nav.Approach.Assigned.Type
 	return t == av.VisualApproach || t == av.ChartedVisualApproach
+}
+
+// descendsOnGlidepath reports whether the aircraft descends on the exact
+// geometric path to its next altitude restriction rather than holding
+// level until it has to start down: past the FAF, cleared for a visual
+// approach, or on a VFR landing's base, final, or straight-in legs.
+func (nav *Nav) descendsOnGlidepath() bool {
+	if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
+		return true
+	}
+	if len(nav.Waypoints) == 0 {
+		return false
+	}
+	switch nav.Waypoints[0].VFRPhase {
+	case av.VFRPhaseBase, av.VFRPhaseFinal, av.VFRPhaseStraightIn:
+		return true
+	default:
+		return false
+	}
 }
 
 // hasDeferredRoute reports whether a controller-issued route assignment is

@@ -472,6 +472,127 @@ func TestAltitudeTargetCoincidentWaypointsAtRest(t *testing.T) {
 	}
 }
 
+// TestAltitudeTargetLevelAtMetRestriction verifies that an aircraft already
+// at an "at" restriction ahead stays level until that fix, both when nothing
+// ahead remains unmet and when later restrictions pin it there, rather than
+// leaving for a cleared altitude above it or an except-maintain floor below.
+func TestAltitudeTargetLevelAtMetRestriction(t *testing.T) {
+	for _, route := range []string{"DETGY/a5000 HAUPT/a5000", "DETGY/a5000 HAUPT/a3000"} {
+		for _, cleared := range []float32{11000, 3000} {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        route,
+				DepartureAirport: "KMCO",
+				ArrivalAirport:   "KJFK",
+				AircraftType:     "A320",
+				InitialAltitude:  5000,
+				InitialSpeed:     250,
+				ClearedAltitude:  cleared,
+				ClearedFloor:     cleared < 5000,
+			})
+
+			target, ok := f.nav.findAltitudeTarget()
+			if !ok || !target.level || target.fix != "DETGY" || target.altitude != 5000 {
+				t.Errorf("%s cleared %.0f: got target %+v (ok %v), want level at 5000 until DETGY",
+					route, cleared, target, ok)
+			}
+			if alt, _, _ := f.nav.TargetAltitude(); alt != 5000 {
+				t.Errorf("%s cleared %.0f: TargetAltitude = %.0f, want 5000", route, cleared, alt)
+			}
+		}
+	}
+}
+
+// TestNotTimeYetDoesNotClimbToRestrictionBehind verifies that the restriction
+// carried from the fix behind the aircraft doesn't pull it back up when its
+// descent to the next fix tapers off just short of it, as happened to
+// arrivals crossing GREKO/a1900 after N040.55.25/a2000 into LGA.
+func TestNotTimeYetDoesNotClimbToRestrictionBehind(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT/a1900",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  1910,
+		InitialSpeed:     180,
+	})
+	behind := av.MakeAtAltitudeRestriction(2000)
+	f.nav.Altitude.Restriction = &behind
+	f.nav.FlightState.Position = math.Offset2LL(f.nav.Waypoints[0].Location, 0, 5, f.nav.FlightState.NmPerLongitude)
+
+	if alt, _, _ := f.nav.TargetAltitude(); alt > 1910 {
+		t.Errorf("TargetAltitude = %.0f, want no climb above 1910", alt)
+	}
+}
+
+// TestVFRStraightInStaysAboveField flies a VFR straight-in like the ones
+// sim generates and verifies the aircraft never goes below the field, where
+// it used to sink 15-70' after touching down on its way back toward cruise,
+// and never climbs once it has started down.
+func TestVFRStraightInStaysAboveField(t *testing.T) {
+	const cruise = 4500
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY",
+		DepartureAirport: "KJFK",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "C172",
+		InitialAltitude:  cruise,
+		InitialSpeed:     90,
+		ClearedAltitude:  cruise,
+	})
+
+	rwy, ok := av.LookupRunway(db.Lookups{}, "KJFK", "22L")
+	if !ok {
+		t.Fatal("unknown runway KJFK/22L")
+	}
+	elev := float32(db.DB.Airports["KJFK"].Elevation)
+	nmPerLong := f.nav.FlightState.NmPerLongitude
+	magVar := f.nav.FlightState.MagneticVariation
+	rwyTrue := math.MagneticToTrue(rwy.Heading, magVar)
+	along := func(dist float32) math.Point2LL {
+		return math.Offset2LL(rwy.Threshold, rwyTrue, dist, nmPerLong)
+	}
+	waypoint := func(fix string, dist, agl, speed float32) av.Waypoint {
+		wp := av.Waypoint{Fix: fix, Location: along(dist), VFRPhase: av.VFRPhaseStraightIn}
+		wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(elev + agl))
+		wp.SetSpeedRestriction(av.MakeAtSpeedRestriction(speed))
+		return wp
+	}
+	f.nav.Waypoints = []av.Waypoint{
+		waypoint("_pat_lineup", -2, 300, 70),
+		waypoint("_pat_threshold", 0, 0, 60),
+		waypoint("_pat_end", 1, 0, 60),
+	}
+
+	// Coming off the VFR route's last leg at circuit height, with that
+	// leg's window carried forward.
+	f.nav.FlightState.Position = along(-6)
+	f.nav.FlightState.Heading = math.TrueToMagnetic(rwyTrue, magVar)
+	f.nav.FlightState.Altitude = elev + 1500
+	window := av.MakeRangeAltitudeRestriction(elev+1500, elev+2000)
+	f.nav.Altitude.Restriction = &window
+
+	if _, _, geometric := f.nav.TargetAltitude(); !geometric {
+		t.Error("expected a steady glidepath descent from the start, not level until a late dive")
+	}
+
+	descending := false
+	prev := f.nav.FlightState.Altitude
+	f.StepUntil("passed the end of the runway", func() bool {
+		alt := f.nav.FlightState.Altitude
+		if alt < elev {
+			t.Fatalf("altitude %.0f below field elevation %.0f", alt, elev)
+		}
+		if descending && alt > prev {
+			t.Fatalf("climbed from %.0f to %.0f after starting down", prev, alt)
+		}
+		descending = descending || alt < prev
+		prev = alt
+		// Passing its last waypoint leaves the aircraft on a heading; sim
+		// deletes it there.
+		return f.nav.Heading.Assigned != nil
+	})
+}
+
 // TestCrossFixAtAltitude verifies that "cross fix at altitude"
 // assignments are respected when the restriction differs from charted.
 func TestCrossFixAtAltitude(t *testing.T) {
@@ -1825,4 +1946,52 @@ func TestDepartOnCourseKeepsAssignedAltitude(t *testing.T) {
 		f.AssertAltitudeAbove(6000)
 	})
 	f.Run()
+}
+
+// TestVFRHeldUnderShelf flies the route sim builds for a VFR that passes
+// under a Class B shelf: cruise, an "at" restriction where it goes under the
+// shelf and another where it comes out, then cruise again. The aircraft has
+// to be down by the first, stay there until the second, and climb once past
+// it, both in the sim's prespawn validation flight and in the flight itself.
+func TestVFRHeldUnderShelf(t *testing.T) {
+	const cruise, under = 6500, 2500
+	for _, tc := range []struct {
+		name     string
+		prespawn bool
+	}{{"flight", false}, {"prespawn", true}} {
+		t.Run(tc.name, func(t *testing.T) {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        "SAJUL DETGY",
+				DepartureAirport: "KJFK",
+				ArrivalAirport:   "KJFK",
+				AircraftType:     "C172",
+				InitialAltitude:  cruise,
+				InitialSpeed:     100,
+				ClearedAltitude:  cruise,
+			})
+			f.nav.Prespawn = tc.prespawn
+
+			origin := f.nav.FlightState.Position
+			waypoint := func(fix string, dist float32, ar av.AltitudeRestriction) av.Waypoint {
+				wp := av.Waypoint{Fix: fix, Location: math.Offset2LL(origin, 90, dist, f.nav.FlightState.NmPerLongitude)}
+				wp.SetAltitudeRestriction(ar)
+				return wp
+			}
+			f.nav.Waypoints = []av.Waypoint{
+				waypoint("BEFORE", 3, av.MakeAtOrAboveAltitudeRestriction(cruise)),
+				waypoint("ENTRY", 30, av.MakeAtAltitudeRestriction(under)),
+				waypoint("EXIT", 40, av.MakeAtAltitudeRestriction(under)),
+				waypoint("AFTER", 60, av.MakeAtOrAboveAltitudeRestriction(cruise)),
+				waypoint("END", 70, av.MakeAtOrBelowAltitudeRestriction(cruise)),
+			}
+			f.nav.FlightState.Heading = math.TrueToMagnetic(90, f.nav.FlightState.MagneticVariation)
+
+			f.AtFix("BEFORE", func(f *FlightTest) { f.AssertAltitudeNear(cruise, 50) })
+			f.AtFix("ENTRY", func(f *FlightTest) { f.AssertAltitudeNear(under, 200) })
+			f.BetweenFixes("ENTRY", "EXIT", func(f *FlightTest) { f.AssertAltitudeBelow(under + 100) })
+			f.AtFix("EXIT", func(f *FlightTest) { f.AssertAltitudeNear(under, 100) })
+			f.AtFix("AFTER", func(f *FlightTest) { f.AssertAltitudeAbove(cruise - 100) })
+			f.Run()
+		})
+	}
 }

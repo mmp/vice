@@ -206,11 +206,10 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 			maxRateChange *= 2
 		}
 
-		// After passing the FAF on approach, allow immediate descent rate changes
-		// to ensure aircraft can meet the runway altitude restriction. Cleared
-		// visuals run the same exact-geometric descent from clearance time and
-		// need the same freedom to set rate.
-		if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
+		// Aircraft on an exact glidepath (past the FAF, on a cleared
+		// visual, or landing VFR) need immediate descent rate changes to
+		// meet the runway altitude restriction.
+		if nav.descendsOnGlidepath() {
 			maxRateChange = math.Abs(-descent - nav.FlightState.AltitudeRate)
 		}
 
@@ -314,6 +313,9 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 
 	if target, ok := nav.findAltitudeTarget(); ok {
 		alt := nav.limitAltitude(target.altitude)
+		if target.level && alt == nav.FlightState.Altitude {
+			return alt, 0, false
+		}
 		if nav.FlightState.Altitude < target.altitude ||
 			(alt > target.altitude && alt >= nav.FlightState.Altitude) {
 			// Climbing, which starts immediately, or held at or climbing
@@ -328,7 +330,7 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 			if ok && eta > 0 {
 				geometricRate := (nav.FlightState.Altitude - target.altitude) / eta * 60
 
-				if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
+				if nav.descendsOnGlidepath() {
 					return alt, geometricRate, true // exact glideslope
 				}
 
@@ -355,7 +357,11 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 				// The restriction carried forward from the fix behind us may
 				// be lower than what the route ahead requires (SID
 				// restrictions step up); it doesn't supersede the target.
-				held := max(ar.TargetAltitude(nav.FlightState.Altitude), target.altitude)
+				// Nor does it ever take the aircraft back up: at the tail of
+				// a descent it would otherwise climb back toward the fix it
+				// has already passed.
+				held := min(max(ar.TargetAltitude(nav.FlightState.Altitude), target.altitude),
+					nav.FlightState.Altitude)
 				return nav.limitAltitude(held), MaximumRate, false
 			}
 			if c := nav.Altitude.Cleared; c != nil && c.Altitude < nav.FlightState.Altitude {
@@ -420,6 +426,9 @@ func (nav *Nav) routeDistanceToFix(fix string) (float32, bool) {
 type altitudeTarget struct {
 	altitude float32
 	fix      string
+	// level is set when the restrictions ahead require exactly the current
+	// altitude at fix, so the aircraft stays level until it gets there.
+	level bool
 }
 
 func (nav *Nav) controllerAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestriction {
@@ -488,7 +497,13 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		// and the reverse walk with ClampRange for intermediate waypoints.
 		for i := range wps {
 			ar := nav.chartedAltitudeRestriction(&wps[i])
-			if ar == nil || ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
+			if ar == nil {
+				continue
+			}
+			if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
+				if _, ok := ar.ExactValue(); ok {
+					return altitudeTarget{altitude: nav.FlightState.Altitude, fix: wps[i].Fix, level: true}, true
+				}
 				continue
 			}
 			alt := util.Select(ar.Range[1] != av.MaxAltitude, ar.Range[1], nav.FinalAltitude)
@@ -538,21 +553,34 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	}
 
 	// Find the *last* waypoint that has an altitude restriction that
-	// applies to the aircraft.
-	lastWp := -1
+	// applies to the aircraft. Along the way, note the nearest met
+	// restriction that requires exactly the current altitude.
+	lastWp, levelWp := -1, -1
 	for i := range slices.Backward(wps) {
+		r := getRestriction(i)
+		if r == nil {
+			continue
+		}
 		// Skip restrictions that don't apply (e.g. "at or above" if we're
 		// already above.) I think(?) we would actually bail out and return
 		// nil if we find one that doesn't apply, under the principle that
 		// we should also already be meeting any restrictions that are
 		// before it, but this seems less risky.
-		if r := getRestriction(i); r != nil &&
-			r.TargetAltitude(nav.FlightState.Altitude) != nav.FlightState.Altitude {
+		if r.TargetAltitude(nav.FlightState.Altitude) != nav.FlightState.Altitude {
 			lastWp = i
 			break
 		}
+		if _, ok := r.ExactValue(); ok {
+			levelWp = i
+		}
 	}
 	if lastWp == -1 {
+		if levelWp != -1 {
+			// Everything ahead is met, but the aircraft still has to cross
+			// this fix at its current altitude rather than leave for its
+			// cleared altitude.
+			return altitudeTarget{altitude: nav.FlightState.Altitude, fix: wps[levelWp].Fix, level: true}, true
+		}
 		// No applicable altitude restrictions found, so nothing to do here.
 		return altitudeTarget{}, false
 	}
@@ -654,7 +682,8 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		}
 	}
 
-	return altitudeTarget{altitude: alt, fix: fix}, true
+	level := altRange[0] == altRange[1] && altRange[0] == nav.FlightState.Altitude
+	return altitudeTarget{altitude: alt, fix: fix, level: level}, true
 }
 
 // clearAltitudeForApproach resets altitude state when an approach-cleared
