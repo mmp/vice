@@ -259,7 +259,7 @@ func (s *Sim) spawnPatternAircraft() {
 			continue
 		}
 
-		s.addAircraftNoLock(*ac)
+		s.addAircraft(*ac)
 
 		// Record as a departure for sequencing
 		depac := makeDepartureAircraft(ac, now, 0 /* no wait at the gate */)

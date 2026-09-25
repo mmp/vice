@@ -34,20 +34,20 @@ func TestPopReadyContactPrioritizesResponses(t *testing.T) {
 	}
 
 	// The go-ahead response comes out first despite being enqueued later.
-	if pc := s.popReadyContact([]TCP{tcp}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "N509EZ" {
 		t.Fatalf("expected N509EZ (go-ahead response) first, got %s (type %v)", pc.ADSBCallsign, pc.Type)
 	}
 
 	// The unrelated initial check-in follows.
-	if pc := s.popReadyContact([]TCP{tcp}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
 		t.Fatal("expected the initial check-in next")
 	} else if pc.ADSBCallsign != "AAL90" {
 		t.Fatalf("expected AAL90 next, got %s", pc.ADSBCallsign)
 	}
 
-	if pc := s.popReadyContact([]TCP{tcp}); pc != nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc != nil {
 		t.Fatalf("expected empty queue, got %s", pc.ADSBCallsign)
 	}
 }
@@ -68,14 +68,14 @@ func TestPopReadyContactRespectsReadyTime(t *testing.T) {
 		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingFull, ReadyTime: future},
 	}
 
-	if pc := s.popReadyContact([]TCP{tcp}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
 		t.Fatal("expected the ready initial check-in")
 	} else if pc.ADSBCallsign != "AAL90" {
 		t.Fatalf("expected AAL90 (only ready contact), got %s", pc.ADSBCallsign)
 	}
 
 	// The response is still not ready.
-	if pc := s.popReadyContact([]TCP{tcp}); pc != nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc != nil {
 		t.Fatalf("expected no ready contact, got %s", pc.ADSBCallsign)
 	}
 }
@@ -95,7 +95,7 @@ func TestPopReadyContactAbbreviatedVFRIsInitial(t *testing.T) {
 		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingFull, ReadyTime: past},
 	}
 
-	if pc := s.popReadyContact([]TCP{tcp}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "N509EZ" {
 		t.Fatalf("expected N509EZ (response) before the abbreviated VFR request, got %s", pc.ADSBCallsign)
@@ -120,13 +120,13 @@ func TestPopReadyContactWaitsForAssociation(t *testing.T) {
 			ReadyTime: s.State.SimTime.Add(-time.Second)},
 	}
 
-	if pc := s.popReadyContact([]TCP{tcp}); pc != nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc != nil {
 		t.Fatalf("popped %s before its track associated", pc.ADSBCallsign)
 	}
 
 	ac.AssociateFlightPlan(&NASFlightPlan{ACID: ACID(ac.ADSBCallsign)})
 
-	if pc := s.popReadyContact([]TCP{tcp}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
 		t.Fatal("expected the check-in once the track associated")
 	} else if pc.ADSBCallsign != ac.ADSBCallsign {
 		t.Fatalf("expected %s, got %s", ac.ADSBCallsign, pc.ADSBCallsign)
@@ -168,12 +168,12 @@ func TestTransferCommsBeforeAssociation(t *testing.T) {
 
 	// The check-in itself waits until the track tags up.
 	s.State.SimTime = s.State.SimTime.Add(time.Second)
-	if pc := s.popReadyContact([]TCP{dep}); pc != nil {
+	if pc := s.PopReadyContact([]TCP{dep}); pc != nil {
 		t.Fatalf("popped %s's check-in before its track associated", pc.ADSBCallsign)
 	}
 
 	ac.AssociateFlightPlan(s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign)))
-	if pc := s.popReadyContact([]TCP{dep}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{dep}); pc == nil {
 		t.Error("expected the check-in once the track associated")
 	}
 }
@@ -284,13 +284,13 @@ func TestPopReadyContactTakesOldestAcrossPositions(t *testing.T) {
 			ReadyTime: s.State.SimTime.Add(-time.Minute)},
 	}
 
-	if pc := s.popReadyContact([]TCP{first, last}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{first, last}); pc == nil {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "SWA22" {
 		t.Fatalf("expected the longer-waiting SWA22, got %s", pc.ADSBCallsign)
 	}
 
-	if pc := s.popReadyContact([]TCP{first, last}); pc == nil {
+	if pc := s.PopReadyContact([]TCP{first, last}); pc == nil {
 		t.Fatal("expected the second contact")
 	} else if pc.ADSBCallsign != "AAL90" {
 		t.Fatalf("expected AAL90, got %s", pc.ADSBCallsign)
@@ -449,7 +449,7 @@ func TestEmergencyTransmissionSurvivesSaving(t *testing.T) {
 		t.Fatalf("unmarshal: %v", err)
 	}
 
-	pc := s.popReadyContact([]TCP{tcp})
+	pc := s.PopReadyContact([]TCP{tcp})
 	if pc == nil {
 		t.Fatal("no pending contact after saving and reloading")
 	}

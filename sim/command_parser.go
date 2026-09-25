@@ -35,7 +35,7 @@ type ControlCommandsResult struct {
 // Returns the remaining unparsed input and any error that occurred.
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string, audioDuration time.Duration) ControlCommandsResult {
 	res := s.RunControlCommands(tcw, callsign, commandStr, audioDuration, true)
-	s.Publish()
+	s.publish()
 	return res
 }
 
@@ -43,7 +43,7 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 // transmissions, so they leave the correction history of whoever is at tcw alone.
 func (s *Sim) RunScriptedControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
 	res := s.RunControlCommands(tcw, callsign, commandStr, 0, false)
-	s.Publish()
+	s.publish()
 	return res
 }
 
@@ -52,8 +52,8 @@ func (s *Sim) RunScriptedControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 // transmission. audioDuration is the length of the voice transmission (zero for typed or
 // non-voice commands); the pilot-reaction delay applied by deferred-action Nav commands is
 // reduced by (audioDuration - callsignAudioOffset), floored at zero.
-// It takes s.mu where it needs it but does not publish; callers should generally go through
-// RunAircraftControlCommands or RunScriptedControlCommands, which do.
+// It does not publish; callers should generally go through RunAircraftControlCommands or
+// RunScriptedControlCommands, which do.
 func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string,
 	audioDuration time.Duration, recordHistory bool) ControlCommandsResult {
 	commands := strings.Fields(commandStr)
@@ -73,25 +73,20 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 		marker, commands = commands[0], commands[1:]
 	}
 
-	func() {
-		s.mu.Lock(s.lg)
-		defer s.mu.Unlock(s.lg)
-
-		// Update aircraft's last addressing form for readback rendering
-		if ac, ok := s.Aircraft[callsign]; ok {
-			ac.LastAddressingForm = addressingForm
+	// Update aircraft's last addressing form for readback rendering
+	if ac, ok := s.Aircraft[callsign]; ok {
+		ac.LastAddressingForm = addressingForm
+	}
+	// "Correction" retracts the previous transmission only when it re-addresses a
+	// different aircraft. Naming the same one amends what the controller said to it,
+	// leaving the instructions the pilot got right in place.
+	last := s.lastSTTCommands[tcw]
+	if marker == rollbackCommand || (marker == correctionCommand && last != nil && last.Callsign != callsign) {
+		// A failed undo must not swallow the instruction that follows it.
+		if err := s.rollbackLastCommand(tcw); err != nil {
+			s.lg.Warnf("%s: could not undo the previous transmission: %v", callsign, err)
 		}
-		// "Correction" retracts the previous transmission only when it re-addresses a
-		// different aircraft. Naming the same one amends what the controller said to it,
-		// leaving the instructions the pilot got right in place.
-		last := s.lastSTTCommands[tcw]
-		if marker == rollbackCommand || (marker == correctionCommand && last != nil && last.Callsign != callsign) {
-			// A failed undo must not swallow the instruction that follows it.
-			if err := s.rollbackLastCommand(tcw); err != nil {
-				s.lg.Warnf("%s: could not undo the previous transmission: %v", callsign, err)
-			}
-		}
-	}()
+	}
 
 	if marker != "" && len(commands) == 0 {
 		return ControlCommandsResult{}
@@ -121,18 +116,13 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 	// Take a snapshot before executing commands, so that a following "correction"
 	// can undo them.
 	if recordHistory {
-		func() {
-			s.mu.Lock(s.lg)
-			defer s.mu.Unlock(s.lg)
-
-			if ac, ok := s.Aircraft[callsign]; ok && s.TCWCanCommandAircraft(tcw, ac) {
-				s.lastSTTCommands[tcw] = &lastSTTCommand{
-					Callsign:     callsign,
-					NavSnapshot:  ac.Nav.TakeSnapshot(),
-					ReportedATIS: ac.ReportedATIS,
-				}
+		if ac, ok := s.Aircraft[callsign]; ok && s.TCWCanCommandAircraft(tcw, ac) {
+			s.lastSTTCommands[tcw] = &lastSTTCommand{
+				Callsign:     callsign,
+				NavSnapshot:  ac.Nav.TakeSnapshot(),
+				ReportedATIS: ac.ReportedATIS,
 			}
-		}()
+		}
 	}
 
 	var intents []speech.CommandIntent
@@ -152,11 +142,7 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 
 	// Render all intents together as a single transmission, including the ones collected
 	// before a command failed.
-	spokenText := func() string {
-		s.mu.Lock(s.lg)
-		defer s.mu.Unlock(s.lg)
-		return s.renderAndPostReadback(callsign, tcw, intents)
-	}()
+	spokenText := s.renderAndPostReadback(callsign, tcw, intents)
 
 	return ControlCommandsResult{
 		RemainingInput:     remaining,
@@ -221,8 +207,6 @@ func (s *Sim) lastAddressedCallsign(tcw TCW) av.ADSBCallsign {
 
 // ClearSTTCommands discards the correction history for a TCW that has become unoccupied.
 func (s *Sim) ClearSTTCommands(tcw TCW) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
 	delete(s.lastSTTCommands, tcw)
 }
 

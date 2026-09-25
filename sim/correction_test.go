@@ -122,9 +122,7 @@ func TestCorrectionFrequencyTransfer(t *testing.T) {
 			runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "L010 D20")
 			switch transfer {
 			case "controller":
-				s.mu.Lock(s.lg)
 				s.contactController("125.0", &NASFlightPlan{}, ac, "126.0")
-				s.mu.Unlock(s.lg)
 			case "tower":
 				ac.Nav.Approach.Cleared = true
 				runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "TO")
@@ -180,62 +178,4 @@ func TestCorrectionMissingContext(t *testing.T) {
 	s.ClearSTTCommands(E2ETCW())
 	runCorrectionCommand(t, s, E2ETCW(), "UAL123", "ROLLBACK")
 	assertHeading(t, s, "UAL123", 20)
-}
-
-func TestCorrectionConcurrentTCWs(t *testing.T) {
-	s := makeCorrectionSim()
-	start := make(chan struct{})
-	done := make(chan error, 2)
-	for tcw, cs := range map[TCW]av.ADSBCallsign{E2ETCW(): "UAL123", "OTHER": "DAL456"} {
-		go func() {
-			<-start
-			for range 10 {
-				if res := s.RunAircraftControlCommands(tcw, cs, "H010", 0); res.Error != nil {
-					done <- res.Error
-					return
-				}
-				if res := s.RunAircraftControlCommands(tcw, cs, "CORRECTION H020", 0); res.Error != nil {
-					done <- res.Error
-					return
-				}
-			}
-			done <- nil
-		}()
-	}
-	close(start)
-	for range 2 {
-		if err := <-done; err != nil {
-			t.Fatal(err)
-		}
-	}
-	for _, cs := range []av.ADSBCallsign{"UAL123", "DAL456"} {
-		assertHeading(t, s, cs, 20)
-	}
-}
-
-// A panic while running control commands must surface as a panic rather than deadlocking
-// on s.mu, and must not leave the mutex held. Nilling the correction history reproduces
-// the nil-map write that originally hung the sim instead of reporting a crash.
-func TestControlCommandPanicSurfaces(t *testing.T) {
-	s := makeCorrectionSim()
-	s.lastSTTCommands = nil
-
-	panicked := make(chan any, 1)
-	go func() {
-		defer func() { panicked <- recover() }()
-		s.RunAircraftControlCommands(E2ETCW(), "UAL123", "H010", 0)
-	}()
-
-	select {
-	case r := <-panicked:
-		if r == nil {
-			t.Fatal("expected a panic from the nil correction history map")
-		}
-	case <-time.After(5 * time.Second):
-		t.Fatal("RunAircraftControlCommands deadlocked instead of panicking")
-	}
-
-	if !s.mu.TryLock() {
-		t.Error("s.mu still held after the panic unwound")
-	}
 }

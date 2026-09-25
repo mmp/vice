@@ -321,37 +321,38 @@ func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
 }
 
 func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
-	videoMaps, defaultMaps, beaconCodes := session.sim.GetControllerVideoMaps(tcw)
-
-	vmFile := session.sim.GetControllerVideoMapFile(tcw)
+	state := &SimState{
+		UserTCW:    tcw,
+		ActiveTCWs: session.GetActiveTCWs(),
+	}
+	var facility string
+	session.withSim(func() {
+		s := session.sim
+		state.UserState = *s.GetUserState()
+		state.ControllerVideoMaps, state.ControllerDefaultVideoMaps, state.ControllerMonitoredBeaconCodeBlocks =
+			s.GetControllerVideoMaps(tcw)
+		state.ControllerVideoMapFile = s.GetControllerVideoMapFile(tcw)
+		state.UserIsPrivileged = s.TCWIsPrivileged(tcw)
+		facility = s.Facility()
+	})
 
 	// Collect hashes for every video map file the client may need: the
 	// controller's primary file plus any referenced by the scenario brief.
 	hashes := make(map[string][]byte)
 	tables := sm.scenarios.Load()
-	maps.Copy(hashes, tables.Briefs.VideoMapHashes(session.sim.Facility()))
-	if _, present := hashes[vmFile]; !present && vmFile != "" {
-		if spec, ok := tables.MapSpecs[vmFile]; ok {
-			if h, err := spec.Hash(); err == nil {
-				hashes[vmFile] = h
+	maps.Copy(hashes, tables.Briefs.VideoMapHashes(facility))
+	if vmFile := state.ControllerVideoMapFile; vmFile != "" {
+		if _, present := hashes[vmFile]; !present {
+			if spec, ok := tables.MapSpecs[vmFile]; ok {
+				if h, err := spec.Hash(); err == nil {
+					hashes[vmFile] = h
+				}
 			}
 		}
 	}
+	state.VideoMapLibraryHashes = hashes
 
-	return &NewSimResult{
-		SimState: &SimState{
-			UserState:                           *session.sim.GetUserState(),
-			UserTCW:                             tcw,
-			ActiveTCWs:                          session.GetActiveTCWs(),
-			ControllerVideoMaps:                 videoMaps,
-			ControllerDefaultVideoMaps:          defaultMaps,
-			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
-			ControllerVideoMapFile:              vmFile,
-			VideoMapLibraryHashes:               hashes,
-			UserIsPrivileged:                    session.sim.TCWIsPrivileged(tcw),
-		},
-		ControllerToken: token,
-	}
+	return &NewSimResult{SimState: state, ControllerToken: token}
 }
 
 const AddLocalRPC = "SimManager.AddLocal"
@@ -428,8 +429,8 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 
 	go sm.runSimUpdateLoop(session)
 
-	// buildNewSimResult only reads init-immutable sm fields and goes
-	// through Sim accessors that take their own lock — no sm.mu needed.
+	// buildNewSimResult only reads init-immutable sm fields and takes the
+	// sim's lock itself; no sm.mu needed.
 	*result = *sm.buildNewSimResult(session, tcw, token)
 
 	return nil
@@ -442,20 +443,27 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 
 	// Terminate idle Sims after 4 hours, but not local Sims.
 	const simIdleLimit = 4 * time.Hour
-	for sm.local || session.sim.IdleTime() < simIdleLimit {
+	var idle time.Duration
+	for {
 		if !sm.local && !util.DebuggerIsRunning() {
 			session.CullIdleControllers(sm)
 		}
 
-		session.advance(session.sim.Update)
+		session.withSim(func() {
+			session.sim.Update()
+			idle = session.sim.IdleTime()
+		})
+		if !sm.local && idle >= simIdleLimit {
+			break
+		}
 
 		time.Sleep(100 * time.Millisecond)
 	}
 
-	sm.lg.Infof("%s: terminating sim after %s idle", session.name, session.sim.IdleTime())
+	sm.lg.Infof("%s: terminating sim after %s idle", session.name, idle)
 
 	session.closeLog()
-	session.sim.Destroy()
+	session.withSim(session.sim.Destroy)
 
 	sm.mu.Lock(sm.lg)
 	// Clean up all controllers for this sim
@@ -493,14 +501,13 @@ func (sm *SimManager) signOff(token string) error {
 
 	// If this was the last user at the TCW, post messages and clear privileges
 	if result.UsersAtTCW == 0 {
+		var uncoveredPositions []sim.ControlPosition
 		_ = session.apply(result.TCW, signOffMethod, nil, func() error {
 			session.sim.ClearSTTCommands(result.TCW)
 			session.sim.SetPrivilegedTCW(result.TCW, false)
+			uncoveredPositions = session.sim.GetPositionsForTCW(result.TCW)
 			return nil
 		})
-
-		// Get positions for the uncovered message
-		uncoveredPositions := session.sim.GetPositionsForTCW(result.TCW)
 
 		msg := string(result.TCW)
 		if result.Initials != "" {
@@ -545,6 +552,7 @@ type signOnArgs struct {
 
 // assume SimManager lock is held
 func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.EventsSubscription, error) {
+	var positions []sim.ControlPosition
 	err := ss.apply(req.TCW, signOnMethod, &signOnArgs{TCPs: req.SelectedTCPs, Privileged: req.Privileged}, func() error {
 		if err := ss.sim.SignOn(req.TCW, req.SelectedTCPs); err != nil {
 			return err
@@ -552,6 +560,7 @@ func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.
 		if req.Privileged {
 			ss.sim.SetPrivilegedTCW(req.TCW, true)
 		}
+		positions = ss.sim.GetPositionsForTCW(req.TCW)
 		return nil
 	})
 	if err != nil {
@@ -561,7 +570,6 @@ func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.
 
 	// Post sign-on message
 	msg := string(req.TCW) + " (" + req.Initials + ") has signed on for "
-	positions := ss.sim.GetPositionsForTCW(req.TCW)
 	msg += strings.Join(util.MapSlice(positions, func(p sim.ControlPosition) string { return string(p) }), ", ")
 	msg += "."
 	ss.sim.PostEvent(sim.Event{
@@ -632,13 +640,14 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) erro
 
 	running := make(map[string]*RunningSim)
 	for name, ss := range sm.sessionsByName {
-		running[name] = &RunningSim{
-			GroupName:                    ss.scenarioGroup,
-			ScenarioName:                 ss.scenario,
-			RequirePassword:              ss.password != "",
-			ScenarioDefaultConsolidation: ss.sim.ScenarioDefaultConsolidation,
-			CurrentConsolidation:         ss.GetCurrentConsolidation(),
+		rs := &RunningSim{
+			GroupName:            ss.scenarioGroup,
+			ScenarioName:         ss.scenario,
+			RequirePassword:      ss.password != "",
+			CurrentConsolidation: ss.GetCurrentConsolidation(),
 		}
+		ss.withSim(func() { rs.ScenarioDefaultConsolidation = ss.sim.DefaultConsolidation() })
+		running[name] = rs
 	}
 
 	*result = running
@@ -721,10 +730,16 @@ func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 	}
 	c.session.mu.Unlock(c.session.lg)
 
+	var update sim.StateUpdate
+	c.session.withSim(func() {
+		update = c.sim.GetStateUpdate(c.tcw)
+		events = c.sim.PrepareRadioTransmissionsForTCW(c.tcw, events)
+	})
+
 	return SimStateUpdate{
-		StateUpdate: c.sim.GetStateUpdate(c.tcw),
+		StateUpdate: update,
 		ActiveTCWs:  c.session.GetActiveTCWs(),
-		Events:      c.sim.PrepareRadioTransmissionsForTCW(c.tcw, events),
+		Events:      events,
 	}
 }
 
@@ -742,7 +757,7 @@ func (sm *SimManager) GetSerializeSimJSON(token string, s *[]byte) error {
 	defer sm.mu.Unlock(sm.lg)
 
 	var err error
-	*s, err = c.sim.GetSerializeSimJSON()
+	c.session.withSim(func() { *s, err = c.sim.GetSerializeSimJSON() })
 	return err
 }
 

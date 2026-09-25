@@ -36,16 +36,21 @@ import (
 // Types and Constructors
 
 type simSession struct {
-	name               string
-	scenarioGroup      string
-	scenario           string
+	name          string
+	scenarioGroup string
+	scenario      string
+	// sim is not safe for concurrent use. Once the session is running, it is
+	// only used with stepMu held, through apply and withSim, and nothing taken
+	// out from under stepMu may alias its state: an RPC reply is encoded after
+	// the lock is released.
 	sim                *sim.Sim
 	password           string
 	connectionsByToken map[string]*connectionState
 
-	// stepMu is held while the sim ticks and while a request changes it,
-	// so that each request happens between two ticks and the session log
-	// records it at the sim time it took effect. It is never held with mu.
+	// stepMu is the sim's lock. It is held while the sim ticks and while a
+	// request changes or reads it, so that each request happens between two
+	// ticks and the session log records it at the sim time it took effect.
+	// mu may be held while acquiring stepMu, never the reverse.
 	stepMu util.LoggingMutex
 	// log is the session log, if the server is writing one for the
 	// session. It is only accessed with stepMu held.
@@ -226,9 +231,11 @@ func describeRequest(method string, args any) (aircraft, summary string) {
 	return aircraft, strings.Join(append([]string{summary}, fields...), " ")
 }
 
-// advance runs f, which runs the sim forward, between requests. The ticks f
-// runs record themselves in the session log.
-func (ss *simSession) advance(f func()) {
+// withSim runs f with the sim held, so that no tick or request runs while it
+// does. Unlike apply, it doesn't record f in the session log: it is for what
+// a replay doesn't make again, whether reading the sim or running it forward,
+// where the ticks f runs record themselves.
+func (ss *simSession) withSim(f func()) {
 	ss.stepMu.Lock(ss.lg)
 	defer ss.stepMu.Unlock(ss.lg)
 
@@ -359,7 +366,7 @@ func (ss *simSession) CullIdleControllers(sm *SimManager) {
 func (ss *simSession) updateSimPauseState() {
 	hasHumans := util.SeqContainsFunc(maps.Values(ss.connectionsByToken),
 		func(conn *connectionState) bool { return conn.tcw != "" })
-	ss.sim.SetPausedByServer(!hasHumans)
+	ss.withSim(func() { ss.sim.SetPausedByServer(!hasHumans) })
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -368,7 +375,7 @@ func (ss *simSession) updateSimPauseState() {
 // State-update timing constants.
 const (
 	// StateUpdateMaxWait is the bound past which we assume the publish loop has stalled, in which
-	// case WaitForStateUpdate returns ErrSimPublishStalled and the client surfaces a
+	// case waitForStateUpdate returns ErrSimPublishStalled and the client surfaces a
 	// connection-lost status event.
 	StateUpdateMaxWait = 2 * time.Second
 
@@ -407,7 +414,7 @@ func (ss *simSession) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	sinceGen := conn.lastSentGen
 	ss.mu.Unlock(ss.lg)
 
-	update, gen, err := ss.sim.WaitForStateUpdate(tcw, sinceGen, StateUpdateMaxWait)
+	update, err := ss.waitForStateUpdate(tcw, sinceGen)
 	if err != nil {
 		return nil, err
 	}
@@ -419,16 +426,50 @@ func (ss *simSession) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	ss.mu.Lock(ss.lg)
 	var events []sim.Event
 	if conn, ok = ss.connectionsByToken[token]; ok {
-		conn.lastSentGen = gen
+		conn.lastSentGen = uint64(update.GenerationIndex)
 		events = eventSub.Get()
 	}
 	ss.mu.Unlock(ss.lg)
 
+	ss.withSim(func() { events = ss.sim.PrepareRadioTransmissionsForTCW(tcw, events) })
+
 	return &SimStateUpdate{
 		StateUpdate: update,
 		ActiveTCWs:  ss.GetActiveTCWs(),
-		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, events),
+		Events:      events,
 	}, nil
+}
+
+// waitForStateUpdate returns the sim's state for the controller at tcw once
+// the sim has published a generation past sinceGen, the last one the
+// controller was sent. The sim publishes at least every 1.1 seconds, so if
+// StateUpdateMaxWait passes without one its update loop has stalled, and
+// rather than deliver a stale snapshot this reports ErrSimPublishStalled.
+func (ss *simSession) waitForStateUpdate(tcw sim.TCW, sinceGen uint64) (sim.StateUpdate, error) {
+	var update sim.StateUpdate
+	var published, done <-chan struct{}
+	current := false
+	ss.withSim(func() {
+		var gen uint64
+		gen, published = ss.sim.Publication()
+		done = ss.sim.Done()
+		if current = gen > sinceGen; current {
+			update = ss.sim.GetStateUpdate(tcw)
+		}
+	})
+	if current {
+		return update, nil
+	}
+
+	select {
+	case <-published:
+	case <-done:
+	case <-time.After(StateUpdateMaxWait):
+		return sim.StateUpdate{}, ErrSimPublishStalled
+	}
+
+	ss.withSim(func() { update = ss.sim.GetStateUpdate(tcw) })
+	return update, nil
 }
 
 // MakeControllerContext returns a ControllerContext for the given token, or nil if not found.
@@ -462,9 +503,12 @@ func (ss *simSession) GetCurrentConsolidation() map[sim.TCW]TCPConsolidation {
 		tcwInitials[conn.tcw] = append(tcwInitials[conn.tcw], conn.initials)
 	}
 
+	var current map[sim.TCW]*sim.TCPConsolidation
+	ss.withSim(func() { current = ss.sim.GetCurrentConsolidation() })
+
 	// Get consolidation from sim and add initials
 	consolidation := make(map[sim.TCW]TCPConsolidation)
-	for tcw, cons := range ss.sim.GetCurrentConsolidation() {
+	for tcw, cons := range current {
 		consolidation[tcw] = TCPConsolidation{
 			TCPConsolidation: *cons,
 			Initials:         tcwInitials[tcw],
@@ -570,7 +614,7 @@ func Replay(sess *simlog.Session, w *simlog.Writer, lg *log.Logger) error {
 			}
 
 		case simlog.KindTick:
-			ss.advance(func() { s.Step(time.Second) })
+			ss.withSim(func() { s.Step(time.Second) })
 			if t := s.SimTime().Time(); !t.Equal(e.Tick.Time) {
 				return fmt.Errorf("replay reached %s at a tick the session reached %s", t.UTC(), e.Tick.Time.UTC())
 			}

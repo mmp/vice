@@ -20,5 +20,6 @@ var (
 	ErrRPCTimeout                = errors.New("RPC call timed out")
 	ErrRPCVersionMismatch        = errors.New("Client and server RPC versions don't match")
 	ErrServerDisconnected        = errors.New("Server disconnected")
+	ErrSimPublishStalled         = errors.New("Sim publish loop has stalled")
 	ErrTCWAlreadyOccupied        = errors.New("TCW is already occupied")
 )

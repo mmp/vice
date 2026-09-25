@@ -27,10 +27,12 @@ import (
 	"github.com/goforj/godump"
 )
 
+// Sim is a running simulation. It is not safe for concurrent use: the server
+// runs each sim under one lock that its simSession holds across every tick and
+// every request, so that a request lands between two ticks and the session
+// log records it at the sim time it took effect.
 type Sim struct {
 	State *CommonState
-
-	mu util.LoggingMutex
 
 	Aircraft map[av.ADSBCallsign]*Aircraft
 
@@ -386,9 +388,6 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 }
 
 func (s *Sim) SetWaypointCommands(tcw TCW, commands string) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 	if s.waypointCommands == nil {
 		s.waypointCommands = make(map[TCP]map[string]string)
@@ -494,9 +493,6 @@ func (s *Sim) AddMETAR(icao av.ICAOAirportCode, metar []wx.METAR) error {
 		return av.ErrUnknownAirport
 	}
 
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if _, ok := s.METAR[icao]; ok || len(metar) == 0 {
 		return nil
 	}
@@ -516,13 +512,6 @@ func (s *Sim) addMETARWindow(icao av.ICAOAirportCode, metar []wx.METAR) {
 	s.METAR[icao] = append(s.METAR[icao], metar...)
 }
 
-func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.callsignForACID(acid)
-}
-
 func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	for cs, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
@@ -533,9 +522,6 @@ func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 }
 
 func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplayState, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if ac, ok := s.Aircraft[callsign]; !ok {
 		return AircraftDisplayState{}, ErrNoMatchingFlight
 	} else {
@@ -547,13 +533,6 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 }
 
 // *Aircraft may be nil. bool indicates whether the flight plan is active.
-func (s *Sim) GetFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.getFlightPlanForACID(acid)
-}
-
 func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
@@ -582,12 +561,6 @@ func (s *Sim) flightPlans() iter.Seq[*NASFlightPlan] {
 			}
 		}
 	}
-}
-
-func (s *Sim) TCWForPosition(pos ControlPosition) TCW {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-	return s.tcwForPosition(pos)
 }
 
 func (s *Sim) tcwForPosition(pos ControlPosition) TCW {

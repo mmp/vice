@@ -493,9 +493,6 @@ func sumRateMap2(rates map[av.RunwayID]map[string]float32, scale float32) float3
 // SetLaunchConfig changes the sim's launch config. published is what
 // PublishedFlightsFor read for it.
 func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig, published []traffic.Flight) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	old := s.State.LaunchConfig
 
 	// Update the runway launch state for any rates that changed. All of
@@ -546,7 +543,7 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, gateDelay tim
 	depac := makeDepartureAircraft(ac, s.State.SimTime, gateDelay)
 
 	ac.WaitingForLaunch = true
-	s.addAircraftNoLock(*ac)
+	s.addAircraft(*ac)
 
 	// The journey begins...
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
@@ -561,8 +558,7 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, gateDelay tim
 	}
 }
 
-// Assumes the lock is already held (as is the case e.g. for automatic spawning...)
-func (s *Sim) addAircraftNoLock(ac Aircraft) {
+func (s *Sim) addAircraft(ac Aircraft) {
 	if _, ok := s.Aircraft[ac.ADSBCallsign]; ok {
 		s.lg.Warn("already have an aircraft with that callsign!",
 			slog.String("adsb_callsign", string(ac.ADSBCallsign)))
@@ -620,8 +616,6 @@ func (s *Sim) Prespawn() {
 	s.initDepartureState(s.State.SimTime)
 	s.generateSchedule(s.publishedFlights(&s.State.LaunchConfig))
 
-	s.mu.Lock(s.lg)
-
 	// Prime the pump before the user gets involved
 	s.prespawn = true
 	for i := range initialSimSeconds {
@@ -648,8 +642,6 @@ func (s *Sim) Prespawn() {
 		delay := max(5*time.Minute, randomInitialWait(s.State.LaunchConfig.EmergencyAircraftRate, s.Rand))
 		s.NextEmergencyTime = s.State.SimTime.Add(delay)
 	}
-
-	s.mu.Unlock(s.lg)
 
 	s.lg.Info("finished aircraft prespawn")
 	fmt.Printf("Prespawn in %s, rates: dep %f arrival %f overflight %f\n", time.Since(start),

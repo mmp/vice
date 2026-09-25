@@ -435,33 +435,30 @@ func (fa *FacilityAdaptation) VideoMapFileForArea(area string) string {
 	return fa.VideoMapFile
 }
 
+// GetControllerVideoMaps returns copies of the video maps the controller at tcw
+// may display, the ones shown by default, and the beacon code blocks it
+// monitors: they go into an RPC reply, which is encoded after the sim is
+// released.
 func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, beaconCodes []av.Squawk) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	fa := &s.State.FacilityAdaptation
 
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 
 	if config, ok := fa.Controllers[tcp]; ok && len(config.VideoMapNames) > 0 {
-		return config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
-	}
-
-	if ac, ok := fa.Areas[s.areaForTCP(tcp)]; ok && len(ac.VideoMapNames) > 0 {
+		videoMaps, defaultMaps, beaconCodes = config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
+	} else if ac, ok := fa.Areas[s.areaForTCP(tcp)]; ok && len(ac.VideoMapNames) > 0 {
 		dm := s.State.ScenarioDefaultVideoMaps
 		if len(dm) == 0 {
 			dm = ac.DefaultMaps
 		}
-		return ac.VideoMapNames, dm, ac.MonitoredBeaconCodeBlocks
+		videoMaps, defaultMaps, beaconCodes = ac.VideoMapNames, dm, ac.MonitoredBeaconCodeBlocks
+	} else {
+		defaultMaps, beaconCodes = s.State.ScenarioDefaultVideoMaps, fa.MonitoredBeaconCodeBlocks
 	}
-
-	return nil, s.State.ScenarioDefaultVideoMaps, fa.MonitoredBeaconCodeBlocks
+	return slices.Clone(videoMaps), slices.Clone(defaultMaps), slices.Clone(beaconCodes)
 }
 
 func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	fa := &s.State.FacilityAdaptation
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 

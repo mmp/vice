@@ -258,15 +258,11 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 // TCPs to it. The controller's client gets its events from a subscription it
 // makes separately.
 func (s *Sim) SignOn(tcw TCW, tcps []TCP) error {
-	s.mu.Lock(s.lg)
-
 	if _, ok := s.State.CurrentConsolidation[tcw]; !ok {
-		s.mu.Unlock(s.lg)
 		return av.ErrNoController
 	}
 
 	s.publish()
-	s.mu.Unlock(s.lg)
 
 	for _, tcp := range tcps {
 		if err := s.ConsolidateTCP(tcw, tcp, ConsolidationFull); err != nil {
@@ -331,9 +327,6 @@ func (s *Sim) findBasicConsolidation(tcp TCP) (TCW, bool) {
 // ConsolidationFull transfers active tracks and allows moving already-consolidated positions.
 // ConsolidationBasic only consolidates inactive/future and rejects already-consolidated positions.
 func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType ConsolidationType) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if _, ok := s.State.CurrentConsolidation[receivingTCW]; !ok {
 		return ErrTCWNotFound
 	}
@@ -446,9 +439,6 @@ func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType Consolid
 // back to themselves (e.g., user at TCW "1A" wants TCP "1A" returned to them).
 // If tcp is specified, that TCP is deconsolidated back to its default TCW.
 func (s *Sim) DeconsolidateTCP(tcw TCW, tcp TCP) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	// If no TCP specified, the user wants their own TCW's TCP back
 	if tcp == "" {
 		tcp = TCP(tcw)
@@ -504,18 +494,12 @@ func (s *Sim) DeconsolidateTCP(tcw TCW, tcp TCP) error {
 // TCWControlsPosition returns true if the given TCW controls the specified position.
 // Thread-safe wrapper around State.TCWControlsPosition.
 func (s *Sim) TCWControlsPosition(tcw TCW, pos ControlPosition) bool {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.State.TCWControlsPosition(tcw, pos)
 }
 
 // SetPrivilegedTCW sets or clears privileged (instructor) status for a TCW.
 // Privileged TCWs can control any aircraft regardless of which position owns it.
 func (s *Sim) SetPrivilegedTCW(tcw TCW, privileged bool) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if privileged {
 		s.PrivilegedTCWs[tcw] = true
 	} else {
@@ -526,23 +510,20 @@ func (s *Sim) SetPrivilegedTCW(tcw TCW, privileged bool) {
 
 // TCWIsPrivileged returns whether the given TCW has elevated privileges.
 func (s *Sim) TCWIsPrivileged(tcw TCW) bool {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.PrivilegedTCWs[tcw]
 }
 
 // GetConsolidatedPositions returns all positions controlled by a TCW
 func (s *Sim) GetPositionsForTCW(tcw TCW) []ControlPosition {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return s.State.GetPositionsForTCW(tcw)
 }
 
 func (s *Sim) GetCurrentConsolidation() map[TCW]*TCPConsolidation {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	return deep.MustCopy(s.State.CurrentConsolidation)
+}
+
+// DefaultConsolidation returns a copy of the scenario's default position
+// consolidation.
+func (s *Sim) DefaultConsolidation() PositionConsolidation {
+	return deep.MustCopy(s.ScenarioDefaultConsolidation)
 }

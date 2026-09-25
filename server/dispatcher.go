@@ -89,7 +89,9 @@ func (sd *dispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.SetSimRate(c.tcw, r.Rate)
+	var err error
+	c.session.withSim(func() { err = c.sim.SetSimRate(c.tcw, r.Rate) })
+	return err
 }
 
 type SetLaunchConfigArgs struct {
@@ -125,9 +127,10 @@ func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	}
 
-	c.sim.TogglePause()
-	action := util.Select(c.sim.State.Paused, "paused", "unpaused")
-	c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has %s the sim", c.tcw, c.initials, action))
+	c.session.withSim(func() {
+		action := util.Select(c.sim.TogglePause(), "paused", "unpaused")
+		c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has %s the sim", c.tcw, c.initials, action))
+	})
 	return nil
 }
 
@@ -199,8 +202,10 @@ func (sd *dispatcher) FastForward(token string, update *SimStateUpdate) error {
 		return ErrNoSimForControllerToken
 	}
 	// Not recorded as a request: the ticks it runs are recorded.
-	c.session.advance(c.sim.FastForward)
-	c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has fast-forwarded the sim", c.tcw, c.initials))
+	c.session.withSim(func() {
+		c.sim.FastForward()
+		c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has fast-forwarded the sim", c.tcw, c.initials))
+	})
 	*update = c.GetStateUpdate()
 	return nil
 }
@@ -306,7 +311,9 @@ func (sd *dispatcher) UpdateATISGIText(args *UpdateATISGITextArgs, update *SimSt
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	if err := c.sim.UpdateATISGIText(c.tcw, args.Line, args.Auxiliary, args.ATIS, args.GIText); err != nil {
+	var err error
+	c.session.withSim(func() { err = c.sim.UpdateATISGIText(c.tcw, args.Line, args.Auxiliary, args.ATIS, args.GIText) })
+	if err != nil {
 		update.SimErrorMessage = err.Error()
 	} else {
 		*update = c.GetStateUpdate()
@@ -449,7 +456,7 @@ func (sd *dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s(%s): %s", c.initials, c.tcw, gm.Message))
+	c.session.withSim(func() { c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s(%s): %s", c.initials, c.tcw, gm.Message)) })
 	return nil
 }
 
@@ -774,7 +781,7 @@ func (sd *dispatcher) GetAircraftDisplayState(as *AircraftSpecifier, state *sim.
 		return ErrNoSimForControllerToken
 	}
 	var err error
-	*state, err = c.sim.GetAircraftDisplayState(as.Callsign)
+	c.session.withSim(func() { *state, err = c.sim.GetAircraftDisplayState(as.Callsign) })
 	return err
 }
 
@@ -903,7 +910,9 @@ func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, resul
 	// Clients ask whenever they are ready to play a contact, and there is
 	// rarely one waiting. Only a request that finds one changes the sim, so
 	// only those go through the session log.
-	if !c.sim.HaveReadyContact(c.sim.GetPositionsForTCW(c.tcw)) {
+	var ready bool
+	c.session.withSim(func() { ready = c.sim.HaveReadyContact(c.sim.GetPositionsForTCW(c.tcw)) })
+	if !ready {
 		return nil
 	}
 
@@ -950,7 +959,9 @@ func (sd *dispatcher) AnnotateFlightStrip(args *AnnotateFlightStripArgs, _ *stru
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.AnnotateFlightStrip(c.tcw, args.ACID, args.Annotations)
+	var err error
+	c.session.withSim(func() { err = c.sim.AnnotateFlightStrip(c.tcw, args.ACID, args.Annotations) })
+	return err
 }
 
 const RecordFlightsRPC = "Sim.RecordFlights"
@@ -962,6 +973,6 @@ func (sd *dispatcher) RecordFlights(token string, recordings *sim.FlightRecordin
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	c.session.advance(func() { *recordings = c.sim.RecordFlights() })
+	c.session.withSim(func() { *recordings = c.sim.RecordFlights() })
 	return nil
 }

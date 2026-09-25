@@ -150,9 +150,6 @@ func (s *Sim) dispatchTrackedFlightPlanCommand(tcw TCW, acid ACID, check func(tc
 }
 
 func (s *Sim) DeleteAircraft(tcw TCW, callsign av.ADSBCallsign) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	_, err := s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error { return nil },
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
@@ -257,9 +254,6 @@ func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
 }
 
 func (s *Sim) DeleteAllAircraft(tcw TCW) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	// In order, since deleting returns list indices and strip CIDs to
 	// the lists they are handed out from.
 	for ac := range util.SortedMapValues(s.Aircraft) {
@@ -296,9 +290,6 @@ func (s *Sim) clearDepartureQueues() {
 }
 
 func (s *Sim) ReleaseDeparture(tcw TCW, callsign av.ADSBCallsign) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.lastControlCommandTime = time.Now()
 
 	ac, ok := s.Aircraft[callsign]
@@ -324,9 +315,6 @@ func (s *Sim) ReleaseDeparture(tcw TCW, callsign av.ADSBCallsign) error {
 }
 
 func (s *Sim) ShouldTriggerPilotMixUp(callsign av.ADSBCallsign) bool {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	// If pilot errors are disabled (interval == 0), never trigger mix-ups
 	if s.PilotErrorInterval == 0 {
 		return false
@@ -353,9 +341,6 @@ func (s *Sim) ShouldTriggerPilotMixUp(callsign av.ADSBCallsign) bool {
 // PilotMixUp is called standalone (not as part of a command batch) so it posts its own event.
 // Returns the spoken text for TTS synthesis.
 func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) (string, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	intent, err := s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.PilotMixUp()

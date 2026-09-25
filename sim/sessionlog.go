@@ -29,9 +29,6 @@ import (
 // sim's description, which carries the name its creator gave it; the sim
 // returned keeps them.
 func Restart(s *Sim) ([]byte, *Sim, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	description, giText := s.State.SimDescription, s.State.GIText
 	annotations := make(map[ACID][9]string)
 	for fp := range s.flightPlans() {
@@ -82,9 +79,6 @@ func DecodeSnapshot(b []byte) (*Sim, error) {
 // its recording if w is nil. The log starts with the grids the weather model
 // has already installed and the aircraft already in the sim.
 func (s *Sim) SetSessionLog(w *simlog.Writer) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	s.sessionLog = w
 	if w != nil {
 		for _, u := range s.wxModel.Installed() {

@@ -10,7 +10,6 @@ import (
 
 var (
 	ErrAircraftAlreadyReleased         = errors.New("Aircraft already released")
-	ErrSimPublishStalled               = errors.New("Sim publish loop has stalled")
 	ErrATPADisabled                    = errors.New("ATPA is disabled system-wide")
 	ErrBeaconMismatch                  = errors.New("Beacon code mismatch")
 	ErrControllerAlreadySignedIn       = errors.New("Controller with that callsign already signed in")
