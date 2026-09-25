@@ -536,6 +536,7 @@ func (p *Preferences) Reset(ss client.SimState) {
 	p.CurrentCenter = p.Center
 	p.Range = initialERAMRange(ss)
 	p.VideoMapGroup = ss.ScenarioDefaultVideoGroup
+	p.VideoMapVisible = make(map[string]any)
 
 	p.AltitudeLimits.Targets, p.AltitudeLimits.LDBs = ss.GetInitialAltitudeLimits()
 	// Adapting the target and LDB filters separately brings the sub-entry box

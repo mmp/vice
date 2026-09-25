@@ -650,6 +650,32 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.drawRoutePoints = nil
 	ep.drawRouteAircraft = ""
 
+	ep.Input.Clear()
+	ep.responseArea = ""
+	ep.feedbackArea.Clear()
+	ep.popup = nil
+
+	// Everything about the previous sim's aircraft, sectors, and airports
+	// goes with it. Track state in particular must not carry over: a
+	// callsign that recurs in the new sim would otherwise inherit the old
+	// aircraft's leader line, history trail, and datablock state.
+	clear(ep.TrackState)
+	clear(ep.InboundPointOuts)
+	clear(ep.OutboundPointOuts)
+	clear(ep.QuickLookSectors)
+	ep.AddedBeaconCodes = nil
+	clear(ep.aircraftFixCoordinates)
+	ep.targetGenLastCallsign = ""
+	clear(ep.posCheckToggled)
+	clear(ep.emergCheckToggled)
+	clear(ep.CRRGroups)
+	ep.AltimSetAirports = nil
+	ep.altimSetScroll = ViewScrollState{}
+	ep.altimSetSelect = ViewSelectionState{Selected: -1}
+	ep.WXReportStations = nil
+	ep.wxScroll = ViewScrollState{}
+	ep.wxSelect = ViewSelectionState{Selected: -1}
+
 	ep.weatherRadar.Reset(lg)
 }
 
@@ -767,7 +793,7 @@ const checkMark string = "r"
 const xMark string = "s"
 const upArrow string = "t"
 const downArrow string = "u"
-const scratchpadArrow string = "v"
+const hsfIndicator string = "v"
 const locationSymbol string = "w"
 const vci string = " x"
 const circleClear string = "y"
