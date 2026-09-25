@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -50,6 +51,12 @@ type SimManager struct {
 	startTime time.Time
 	httpPort  int
 	local     bool
+
+	// The static database most recently saved for session logs and its
+	// hash; see saveDatabase.
+	dbSnapshotMu   sync.Mutex
+	dbSnapshotDB   *db.StaticDatabase
+	dbSnapshotHash string
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -157,9 +164,12 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 		return err
 	}
 	s := sim.NewSim(*nsc, lg)
+	s.Activate(lg, sm.getWXProvider())
+	s.Prespawn()
+
 	session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
 	pos := s.ScenarioRootPosition()
-	return sm.Add(session, result, pos, req.Initials, req.Privileged, true)
+	return sm.Add(session, result, pos, req.Initials, req.Privileged)
 }
 
 // makeSimConfiguration only accesses read-only SimManager members that are set at
@@ -354,28 +364,50 @@ type AddLocalRequest struct {
 func (sm *SimManager) AddLocal(req *AddLocalRequest, result *NewSimResult) error {
 	defer sm.lg.CatchAndReportCrash()
 
+	req.Sim.Activate(sm.lg, sm.getWXProvider())
 	session := makeLocalSimSession(req.Sim, sm.lg)
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
 	}
-	return sm.Add(session, result, req.Sim.ScenarioRootPosition(), req.Initials, false, false)
+	return sm.Add(session, result, req.Sim.ScenarioRootPosition(), req.Initials, false)
 }
 
-func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string, instructor bool,
-	prespawn bool) error {
-	wxp := sm.getWXProvider()
-	session.sim.Activate(session.lg, wxp)
+// Add starts running the session's sim, which has been activated, with the
+// controller at initialTCP signed on.
+func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string,
+	instructor bool) error {
+	// The session runs the sim decoded from the snapshot its log starts
+	// with, so that a replay of the log starts from exactly the same state.
+	snapshot, s, err := sim.Restart(session.sim)
+	session.sim.Destroy()
+	if err != nil {
+		return err
+	}
+	s.Activate(session.lg, sm.getWXProvider())
+	session.sim = s
+
+	dbHash, dbErr := sm.saveDatabase()
 
 	sm.mu.Lock(sm.lg)
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
-	if _, ok := sm.sessionsByName[session.name]; ok && session.name != "" {
-		sm.mu.Unlock(sm.lg)
-		return ErrDuplicateSimName
+	if prev, ok := sm.sessionsByName[session.name]; ok {
+		if session.name != "" {
+			sm.mu.Unlock(sm.lg)
+			s.Destroy()
+			return ErrDuplicateSimName
+		}
+		prev.closeLog()
 	}
 
 	sm.lg.Infof("%s: adding sim", session.name)
 	sm.sessionsByName[session.name] = session
+
+	if dbErr != nil {
+		sm.lg.Errorf("unable to save the static database for the session log: %v", dbErr)
+	} else if w := sm.createSessionLog(session, dbHash, snapshot); w != nil {
+		session.startLog(w)
+	}
 
 	tcw := sim.TCW(initialTCP)
 	joinReq := &JoinSimRequest{
@@ -393,11 +425,6 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	sm.sessionsByToken[token] = session
 
 	sm.mu.Unlock(sm.lg)
-
-	// Run prespawn after the root controller is signed in.
-	if prespawn {
-		session.sim.Prespawn()
-	}
 
 	go sm.runSimUpdateLoop(session)
 
@@ -427,6 +454,7 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 
 	sm.lg.Infof("%s: terminating sim after %s idle", session.name, session.sim.IdleTime())
 
+	session.closeLog()
 	session.sim.Destroy()
 
 	sm.mu.Lock(sm.lg)
@@ -465,7 +493,7 @@ func (sm *SimManager) signOff(token string) error {
 
 	// If this was the last user at the TCW, post messages and clear privileges
 	if result.UsersAtTCW == 0 {
-		_ = session.apply(func() error {
+		_ = session.apply(result.TCW, signOffMethod, nil, func() error {
 			session.sim.ClearSTTCommands(result.TCW)
 			session.sim.SetPrivilegedTCW(result.TCW, false)
 			return nil
@@ -501,9 +529,23 @@ func (sm *SimManager) signOff(token string) error {
 	return nil
 }
 
+// Session logs record signing on, and the last controller at a TCW signing
+// off, under these methods: they are the parts of the SimManager RPCs that
+// change the sim.
+const (
+	signOnMethod  = "SignOn"
+	signOffMethod = "SignOff"
+)
+
+// signOnArgs is what a session log records of a controller signing on.
+type signOnArgs struct {
+	TCPs       []sim.TCP
+	Privileged bool
+}
+
 // assume SimManager lock is held
 func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.EventsSubscription, error) {
-	err := ss.apply(func() error {
+	err := ss.apply(req.TCW, signOnMethod, &signOnArgs{TCPs: req.SelectedTCPs, Privileged: req.Privileged}, func() error {
 		if err := ss.sim.SignOn(req.TCW, req.SelectedTCPs); err != nil {
 			return err
 		}

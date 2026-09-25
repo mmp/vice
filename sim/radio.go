@@ -221,11 +221,38 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 	return s.popReadyMatching(positions, func(t PendingTransmissionType) bool { return t.isInitialCheckIn() })
 }
 
-// popReadyMatching removes and returns the longest-waiting pending contact
-// across the given positions whose type satisfies match and whose ReadyTime has
-// passed. Taking the oldest rather than the first position's first entry keeps a
-// busy position from starving the others. Returns nil if none qualify.
+// HaveReadyContact reports whether PopReadyContact would return a contact
+// for the given positions. Clients ask for contacts many times a second, and
+// this lets a request that would find none be answered without changing the
+// sim.
+func (s *Sim) HaveReadyContact(positions []TCP) bool {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	_, i := s.readyMatching(positions, func(PendingTransmissionType) bool { return true })
+	return i != -1
+}
+
+// popReadyMatching removes and returns the contact readyMatching finds, or
+// nil if there is none.
 func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionType) bool) *PendingContact {
+	tcp, i := s.readyMatching(positions, match)
+	if i == -1 {
+		return nil
+	}
+
+	pc := s.PendingContacts[tcp][i]
+	s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
+	return &pc
+}
+
+// readyMatching finds the longest-waiting pending contact across the given
+// positions whose type satisfies match and whose ReadyTime has passed,
+// returning its position and its index in the position's pending contacts,
+// or -1 for the index if none qualify. Taking the oldest rather than the
+// first position's first entry keeps a busy position from starving the
+// others.
+func (s *Sim) readyMatching(positions []TCP, match func(PendingTransmissionType) bool) (TCP, int) {
 	var bestTCP TCP
 	best := -1
 	for _, tcp := range positions {
@@ -238,14 +265,7 @@ func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionTy
 			}
 		}
 	}
-
-	if best == -1 {
-		return nil
-	}
-
-	pc := s.PendingContacts[bestTCP][best]
-	s.PendingContacts[bestTCP] = slices.Delete(s.PendingContacts[bestTCP], best, best+1)
-	return &pc
+	return bestTCP, best
 }
 
 // processVirtualControllerContacts handles pending contacts for virtual
