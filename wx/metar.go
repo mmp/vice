@@ -31,6 +31,12 @@ const (
 	hazeScaleHeightFt = 2500 // aerosol extinction e-folding height
 )
 
+// METARSubstitutes maps each fictional airport to the real one whose METAR
+// wxingest copies for it.
+var METARSubstitutes = map[string]string{
+	"KAAC": "KOKC", // FAA Academy: Oklahoma City
+}
+
 // This is as much of the METAR as we need at runtime.
 type METAR struct {
 	ICAO        string `json:"icaoId"`

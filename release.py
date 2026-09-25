@@ -65,6 +65,14 @@ def validate_tag(tag):
     return latest
 
 
+def check_wx():
+    """Exit if the committed resources/wx lacks weather that the scenarios use."""
+    if run("git status --porcelain -- resources/wx"):
+        print("Error: resources/wx has uncommitted changes; commit them before releasing")
+        sys.exit(1)
+    print(run("go run ./cmd/checkwx"))
+
+
 def parse_whatsnew_md(path):
     """Parse whatsnew.md, combining all sections (beta1, beta2, final).
 
@@ -462,6 +470,8 @@ def main():
 
     old_tag = validate_tag(tag)
     print(f"Releasing {tag} (previous: {old_tag})")
+
+    check_wx()
 
     # Parse whatsnew.md
     structured_items = parse_whatsnew_md("whatsnew.md")

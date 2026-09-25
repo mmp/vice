@@ -299,20 +299,22 @@ func mergeMETAR(cm wx.CompressedMETAR, scraped map[string][]wx.METAR) (map[strin
 		LogError("%d airports failed round-trip check and were skipped", nFailedAirports)
 	}
 
-	// Make fake METAR for KAAC based on KOKC.
-	if _, ok := times["KOKC"]; ok {
-		recs, err := cm.GetAirportMETAR("KOKC")
+	for fictional, donor := range wx.METARSubstitutes {
+		if _, ok := times[donor]; !ok {
+			continue
+		}
+		recs, err := cm.GetAirportMETAR(donor)
 		if err != nil {
 			return nil, err
 		}
 		for i := range recs {
-			recs[i].ICAO = "KAAC"
-			recs[i].Raw = strings.ReplaceAll(recs[i].Raw, "KOKC", "KAAC")
+			recs[i].ICAO = fictional
+			recs[i].Raw = strings.ReplaceAll(recs[i].Raw, donor, fictional)
 		}
-		if err := cm.SetAirportMETAR("KAAC", recs); err != nil {
+		if err := cm.SetAirportMETAR(fictional, recs); err != nil {
 			return nil, err
 		}
-		times["KAAC"] = times["KOKC"]
+		times[fictional] = times[donor]
 	}
 
 	return times, nil
