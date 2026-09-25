@@ -377,22 +377,25 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 		}
 
 		if strings.HasSuffix(path, ".mappack") {
-			mapSpecs[path], err = videomaps.LoadLibrarySpec(path)
+			if mapSpecs[path], err = videomaps.LoadLibrarySpec(path); err != nil {
+				return fmt.Errorf("%s: %w", path, err)
+			}
 		}
 
-		return err
+		return nil
 	})
+	// Everything after this validates against the video maps.
 	if err != nil {
-		lg.Errorf("error loading videomaps: %v", err)
-		os.Exit(1)
+		e.Error(err)
+		return nil, overrideErrors
 	}
 
 	// Load the video map specified on the command line, if any.
 	if overrides.VideoMap != "" {
 		mapSpecs[overrides.VideoMap], err = videomaps.LoadLibrarySpec(overrides.VideoMap)
 		if err != nil {
-			lg.Errorf("%s: %v", overrides.VideoMap, err)
-			os.Exit(1)
+			e.ErrorString("%s: %v", overrides.VideoMap, err)
+			return nil, overrideErrors
 		}
 	}
 
