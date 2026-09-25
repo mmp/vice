@@ -474,7 +474,6 @@ func (lc *LaunchConfig) ClampRates(limit float32) {
 	}
 
 	if baseInboundRate > limit {
-		fmt.Printf("%f > %f -> scale %f\n", baseInboundRate, limit, limit/baseInboundRate)
 		lc.InboundFlowRateScale *= limit / baseInboundRate * 0.99
 	}
 }
