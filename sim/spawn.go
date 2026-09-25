@@ -584,6 +584,7 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 	}
 
 	s.Aircraft[ac.ADSBCallsign] = &ac
+	s.logSpawn(&ac)
 
 	ac.Nav.Prespawn = s.prespawn && ac.FlightPlan.Rules == av.FlightRulesVFR
 

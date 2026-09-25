@@ -6,6 +6,7 @@ package sim
 
 import (
 	"fmt"
+	"iter"
 	"maps"
 	"slices"
 	"strconv"
@@ -19,6 +20,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/simlog"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -115,6 +117,8 @@ type Sim struct {
 	// text for clients nor changes to the phrasing change what the aircraft
 	// do.
 	textRand *rand.Rand
+
+	sessionLog *simlog.Writer
 
 	// User-selected scenario start time before Vice rewinds the clock for prespawn.
 	StartTime Time
@@ -562,6 +566,22 @@ func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) 
 		}
 	}
 	return nil, nil, false
+}
+
+// flightPlans returns all of the sim's flight plans, associated and not.
+func (s *Sim) flightPlans() iter.Seq[*NASFlightPlan] {
+	return func(yield func(*NASFlightPlan) bool) {
+		for _, ac := range util.SortedMap(s.Aircraft) {
+			if ac.NASFlightPlan != nil && !yield(ac.NASFlightPlan) {
+				return
+			}
+		}
+		for _, fp := range s.STARSComputer.FlightPlans {
+			if !yield(fp) {
+				return
+			}
+		}
+	}
 }
 
 func (s *Sim) TCWForPosition(pos ControlPosition) TCW {

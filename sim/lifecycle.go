@@ -18,6 +18,13 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
+// SetWeatherModel sets the model the sim flies in; it must be called before
+// the sim is activated. A replay gives the sim a model that installs only
+// the grids the session's log records.
+func (s *Sim) SetWeatherModel(m *wx.Model) {
+	s.wxModel = m
+}
+
 func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	s.lg = lg
 	s.lastSTTCommands = make(map[TCW]*lastSTTCommand)

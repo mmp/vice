@@ -200,6 +200,8 @@ func (r DeleteReason) String() string {
 }
 
 func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
+	s.logDelete(ac, reason)
+
 	if s.CIDAllocator != nil {
 		if fp := ac.NASFlightPlan; fp != nil && fp.CID != "" {
 			s.CIDAllocator.Release(fp.CID)
