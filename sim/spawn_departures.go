@@ -27,7 +27,7 @@ const vfrMVABuffer = 1000
 // 1200' and 3000' shelves gives 1000' and 2500' -- what pilots fly there.
 // Scud running under a shelf is ordinary VFR practice; brushing its floor is
 // not, and neither is squeezing through less than minVFRShelfRoom of air
-// between the departure field and the airspace over it.
+// between a field and the airspace over it.
 const (
 	vfrShelfBuffer    = 200
 	vfrShelfIncrement = 500

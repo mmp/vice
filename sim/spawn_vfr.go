@@ -6,6 +6,7 @@ package sim
 
 import (
 	"fmt"
+	"iter"
 	"maps"
 	"slices"
 	"strconv"
@@ -257,16 +258,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		wps = append(wps, rg.Waypoint("_dep_downwind3", -2*k, side*vfrDownwindOffset))
 	}
 
-	// A flight leaving a field under a Class B or C shelf scud runs beneath
-	// it rather than climbing into airspace it has no clearance for, so the
-	// airspace over the route bounds the cruise altitude before the route's
-	// restrictions are built from it.
-	ceiling, ok := s.vfrCruiseCeiling(vfrRoutePath(wps, mid, routeWps, arrap.Location), depap, arrap)
-	if !ok {
-		return nil, "", ErrViolatedAirspace
-	}
-	ac.FlightPlan.Altitude = min(FiledCruiseAltitude(ac.FlightPlan, perf, CruiseLimits{},
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.Rand), ceiling)
+	ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, CruiseLimits{},
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.Rand)
 
 	var randomizeAltitudeRange bool
 	if len(routeWps) > 0 {
@@ -348,10 +341,15 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	}
 
 	// Only now is the route the one the aircraft will fly: building the Nav
-	// scatters the waypoints within their radii. The MVA legs have to be
-	// sampled along that route rather than the one they were planned on,
-	// both so the terrain they clear is the terrain overflown and so they
-	// land on the legs they divide rather than off to one side of them.
+	// scatters the waypoints within their radii. The shelf and MVA legs have
+	// to be sampled along that route rather than the one they were planned
+	// on, both so the airspace and terrain they clear are what is overflown
+	// and so they land on the legs they divide rather than off to one side
+	// of them.
+	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.FlightPlan.Altitude, depap, arrap)
+	if !ok {
+		return nil, "", ErrViolatedAirspace
+	}
 	ac.Nav.Waypoints = s.adjustRouteForMVA(string(ac.ADSBCallsign), ac.Nav.Waypoints)
 
 	// Deep-copy only Nav (not the full Aircraft) to avoid copying
@@ -442,64 +440,123 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	return nil, "", ErrVFRSimTookTooLong
 }
 
-// vfrRoutePath is the ground track a generated VFR route follows: the
-// departure legs built so far, then either the route it was given or the
-// midpoint its random legs bend around, and finally the arrival field.
-func vfrRoutePath(departure []av.Waypoint, mid math.Point2LL, routeWps []av.Waypoint,
-	arrival math.Point2LL) []math.Point2LL {
-	path := util.MapSlice(departure, func(wp av.Waypoint) math.Point2LL { return wp.Location })
-	if len(routeWps) > 0 {
-		path = append(path, util.MapSlice(routeWps,
-			func(wp av.Waypoint) math.Point2LL { return wp.Location })...)
-	} else {
-		path = append(path, mid)
+// legSamples yields points about a mile apart along the leg from a to b,
+// excluding both ends.
+func legSamples(a, b math.Point2LL) iter.Seq[math.Point2LL] {
+	return func(yield func(math.Point2LL) bool) {
+		n := max(1, int(math.NMDistance2LL(a, b)+0.5))
+		for i := range n {
+			if !yield(math.Lerp2f(float32(i+1)/float32(n+1), a, b)) {
+				return
+			}
+		}
 	}
-	return append(path, arrival)
 }
 
-// vfrCruiseCeiling returns the highest altitude a VFR flight can hold along
-// path and stay clear of the Class B and C airspace over it. It reports false
-// where there is no room to fly under that airspace at all: either the ground
-// is too close or the MVA is above it, so the flight has to go somewhere else.
-// The MVA is left out near either field, as it is during the route's
-// validation flight, since an aircraft is below it on departure and arrival.
-func (s *Sim) vfrCruiseCeiling(path []math.Point2LL, depap, arrap db.Airport) (int, bool) {
-	ceiling := maxVFRAltitude
-	roomAt := func(p math.Point2LL) bool {
+// adjustRouteForShelves holds a VFR route under the Class B and C shelves it
+// crosses. A waypoint beneath a shelf is restricted to the altitude flown
+// under it and, where the shelf over a leg changes, waypoints are added so
+// that the aircraft is down before it passes under a lower one and stays down
+// until it is out from under it. Everywhere else the route keeps its cruise
+// altitude, so a shelf near one end of the route doesn't hold the whole
+// flight under it. It reports false where there is no room to fly under a
+// shelf at all: the ground is too close or the MVA is above it, so the flight
+// has to go somewhere else. The MVA is left out near either field, as it is
+// during the route's validation flight, since an aircraft is below it on
+// departure and arrival.
+func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap db.Airport) ([]av.Waypoint, bool) {
+	// Sample the route about a mile apart, keeping track of which points
+	// are its waypoints.
+	type routePoint struct {
+		loc math.Point2LL
+		wp  int // index in wps, or -1 for a point sampled along a leg
+	}
+	pts := []routePoint{{wps[0].Location, 0}}
+	for i := 1; i < len(wps); i++ {
+		for p := range legSamples(wps[i-1].Location, wps[i].Location) {
+			pts = append(pts, routePoint{p, -1})
+		}
+		pts = append(pts, routePoint{wps[i].Location, i})
+	}
+
+	// The altitude to fly at each point: the cruise altitude, or under the
+	// lowest shelf over it.
+	ceiling := util.MapSlice(pts, func(p routePoint) int {
+		c := cruise
 		for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
-			if floor, covered := grid.ShelfFloor(p); covered {
-				under := (floor - vfrShelfBuffer) / vfrShelfIncrement * vfrShelfIncrement
-				ceiling = min(ceiling, under)
+			if floor, covered := grid.ShelfFloor(p.loc); covered {
+				c = min(c, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
 			}
 		}
-		if ceiling < depap.Elevation+minVFRShelfRoom {
-			return false
-		}
-		if math.NMDistance2LL(p, depap.Location) > 3 && math.NMDistance2LL(p, arrap.Location) > 5 {
-			if mva := s.mvaGrid.GetMVA(p); mva > 0 && ceiling < mva-vfrMVABuffer {
-				return false
-			}
-		}
-		return true
-	}
+		return c
+	})
 
-	for i, p := range path {
+	// A shelf's edge lies somewhere between two adjacent points, so at each
+	// of them the aircraft must be under the lower of the two: down before
+	// the first point beneath a lower shelf and still down at the first
+	// point past it.
+	held := make([]int, len(pts))
+	for i := range pts {
+		held[i] = ceiling[i]
 		if i > 0 {
-			prev := path[i-1]
-			nSamples := max(1, int(math.NMDistance2LL(prev, p)+0.5))
-			for j := range nSamples {
-				t := float32(j+1) / float32(nSamples+1)
-				if !roomAt(math.Lerp2f(t, prev, p)) {
-					return 0, false
-				}
-			}
+			held[i] = min(held[i], ceiling[i-1])
 		}
-		if !roomAt(p) {
-			return 0, false
+		if i+1 < len(pts) {
+			held[i] = min(held[i], ceiling[i+1])
 		}
 	}
 
-	return ceiling, true
+	for i, p := range pts {
+		if held[i] == cruise {
+			continue
+		}
+		dDep, dArr := math.NMDistance2LL(p.loc, depap.Location), math.NMDistance2LL(p.loc, arrap.Location)
+		nearer := util.Select(dDep < dArr, depap, arrap)
+		if held[i] < nearer.Elevation+minVFRShelfRoom {
+			return nil, false
+		}
+		if dDep > 3 && dArr > 5 {
+			if mva := s.mvaGrid.GetMVA(p.loc); mva > 0 && held[i] < mva-vfrMVABuffer {
+				return nil, false
+			}
+		}
+	}
+
+	hold := func(wp *av.Waypoint, alt int) {
+		if wp.AltitudeRestriction() == nil {
+			wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt)))
+			return
+		}
+		wp.AltRestriction.Range[1] = min(wp.AltRestriction.Range[1], float32(alt))
+		wp.AltRestriction.Range[0] = min(wp.AltRestriction.Range[0], wp.AltRestriction.Range[1])
+	}
+
+	result := make([]av.Waypoint, 0, len(wps)+4)
+	shelfWpNum := 0
+	for i, p := range pts {
+		if p.wp != -1 {
+			wp := wps[p.wp]
+			if held[i] < cruise {
+				hold(&wp, held[i])
+			}
+			result = append(result, wp)
+			continue
+		}
+		// Between waypoints, only the ends of a stretch held at one altitude
+		// need a waypoint: the aircraft must be down by the first and stay
+		// down through the last.
+		if held[i] == cruise || (held[i] == held[i-1] && held[i] == held[i+1]) {
+			continue
+		}
+		shelfWpNum++
+		wp := av.Waypoint{
+			Fix:      fmt.Sprintf("_shelf%d@%d", shelfWpNum, held[i]),
+			Location: p.loc,
+		}
+		wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(held[i])))
+		result = append(result, wp)
+	}
+	return result, true
 }
 
 // vfrTerminalRadius bounds where a VFR arrival maneuvers at its destination.
@@ -586,16 +643,10 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 		if i > 0 {
 			// Sample between previous waypoint and this one to look for MVA transitions.
 			prevWp := wps[i-1]
-			dist := math.NMDistance2LL(prevWp.Location, wp.Location)
-			nSamples := max(1, int(dist+0.5))
-
 			prevMVA := s.mvaGrid.GetMVA(prevWp.Location)
 			prevPos := prevWp.Location
 
-			for j := range nSamples {
-				// Sample between waypoints, not at them
-				t := float32(j+1) / float32(nSamples+1)
-				pos := math.Lerp2f(t, prevWp.Location, wp.Location)
+			for pos := range legSamples(prevWp.Location, wp.Location) {
 				mva := s.mvaGrid.GetMVA(pos)
 
 				if mva != prevMVA && mva > 0 && prevMVA > 0 {
