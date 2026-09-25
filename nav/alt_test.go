@@ -449,6 +449,29 @@ func altitudeTargetTestHold(fix string) av.Hold {
 	}
 }
 
+// TestAltitudeTargetCoincidentWaypointsAtRest verifies that two restricted
+// waypoints at the same spot don't give a NaN target when the aircraft has
+// no groundspeed, as at the start of a VFR departure's takeoff roll where
+// an MVA waypoint may sit on the runway threshold.
+func TestAltitudeTargetCoincidentWaypointsAtRest(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "DETGY/a5500+ DETGY/a6000+ HAUPT/a2000-2500",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "C172",
+		InitialAltitude:  5000,
+		InitialSpeed:     0,
+	})
+
+	target, ok := f.nav.findAltitudeTarget()
+	if !ok {
+		t.Fatal("expected an altitude target")
+	}
+	if target.altitude != target.altitude { // NaN check
+		t.Fatalf("NaN altitude target at %s", target.fix)
+	}
+}
+
 // TestCrossFixAtAltitude verifies that "cross fix at altitude"
 // assignments are respected when the restriction differs from charted.
 func TestCrossFixAtAltitude(t *testing.T) {

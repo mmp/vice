@@ -593,15 +593,19 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 
 		fix = wps[i].Fix
 
-		// TODO: account for decreasing GS with altitude?
-		// TODO: incorporate a simple wind model in GS?
-		eta := sumDist / nav.FlightState.GS * 3600 // seconds
-
 		// Maximum change in altitude possible before reaching this
 		// waypoint. The aircraft flies these legs consecutively, so it's
 		// already at rate by the time it reaches them; the spool-up at the
 		// start of the descent is handled by TargetAltitude's safety factor.
-		dalt := altRate * eta / 60
+		// Coincident waypoints allow no change at all; handling them here
+		// also avoids 0/0 on a departure's first tick, when GS is 0.
+		var dalt float32
+		if sumDist > 0 {
+			// TODO: account for decreasing GS with altitude?
+			// TODO: incorporate a simple wind model in GS?
+			eta := sumDist / nav.FlightState.GS * 3600 // seconds
+			dalt = altRate * eta / 60
+		}
 
 		// possibleRange is altitude range the aircraft could have at this
 		// waypoint, given its performance characteristics and assuming it
