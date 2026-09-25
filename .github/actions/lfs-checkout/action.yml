@@ -1,0 +1,36 @@
+name: Check out LFS files
+description: >-
+  Restores the git lfs objects that ci.yml's lfs job cached and checks out the
+  files git lfs tracks, failing rather than leaving any of them as pointers.
+
+inputs:
+  key:
+    description: The key the lfs job saved the objects under.
+    required: true
+
+runs:
+  using: composite
+  steps:
+  # Without enableCrossOsArchive, a Windows runner never matches an entry
+  # saved on Linux.
+  - name: Restore LFS objects
+    uses: actions/cache/restore@v5
+    with:
+      path: .git/lfs/objects
+      key: ${{ inputs.key }}
+      fail-on-cache-miss: true
+      enableCrossOsArchive: true
+
+  # git lfs install sets up the filter that keeps git status clean once the
+  # files hold their contents; release builds stamp vcs.modified from it.
+  # git lfs checkout skips a file whose object is missing yet still succeeds,
+  # so look for pointers afterward.
+  - name: Check out LFS files
+    shell: bash
+    run: |
+      git lfs install
+      git lfs checkout
+      if git lfs ls-files | grep -E '^[0-9a-f]+ - '; then
+        echo "::error::git lfs left the files above as pointers"
+        exit 1
+      fi

@@ -9,10 +9,71 @@ on:
     paths-ignore:
       - 'website/**'
       - '**.md'
+  workflow_dispatch:
 
 jobs:
+  # Git LFS bandwidth is expensive, so this is the only job that downloads
+  # from it. It keeps .git/lfs/objects in the actions cache, and every job
+  # that needs the files git lfs tracks restores them from there with
+  # .github/actions/lfs-checkout.
+  lfs:
+    name: LFS Objects
+    runs-on: ubuntu-latest
+    outputs:
+      key: ${{ steps.key.outputs.key }}
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v6
+      with:
+        lfs: false
+
+    # Named for the objects the files git lfs tracks refer to, so the name
+    # changes exactly when their contents do.
+    - name: Name the cache entry
+      id: key
+      run: echo "key=lfs-objects-v3-$(git lfs ls-files --long | cut -d' ' -f1 | sort -u | sha256sum | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+    - name: Look for the cache entry
+      id: lookup
+      uses: actions/cache/restore@v5
+      with:
+        path: .git/lfs/objects
+        key: ${{ steps.key.outputs.key }}
+        lookup-only: true
+
+    # Starting from the newest entry, the pull downloads only the objects
+    # that changed since it was saved.
+    - name: Restore the newest cache entry
+      if: steps.lookup.outputs.cache-hit != 'true'
+      uses: actions/cache/restore@v5
+      with:
+        path: .git/lfs/objects
+        key: ${{ steps.key.outputs.key }}
+        restore-keys: lfs-objects-v3-
+
+    # Without the prune, the entry would keep every superseded version of
+    # every file.
+    - name: Fetch new LFS objects
+      if: steps.lookup.outputs.cache-hit != 'true'
+      run: |
+        git lfs install
+        git lfs pull
+        git lfs prune
+        git lfs fsck --objects
+
+    # The Windows job restores this entry as well.
+    - name: Save the cache entry
+      if: steps.lookup.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v5
+      with:
+        path: .git/lfs/objects
+        key: ${{ steps.key.outputs.key }}
+        enableCrossOsArchive: true
+
   bundle-resources:
     name: Bundle Resources
+    needs: lfs
     runs-on: ubuntu-latest
 
     steps:
@@ -35,27 +96,11 @@ jobs:
         go-version-file: go.mod
         cache-dependency-path: go.sum
 
-    # The key must cover every path .gitattributes tracks with LFS; a path
-    # missing here means its objects go stale in the cache and the working-tree
-    # files stay as pointer files.
-    - name: Restore LFS objects cache
-      id: lfs-cache
-      uses: actions/cache@v5
-      with:
-        path: .git/lfs/objects
-        key: lfs-objects-v2-${{ hashFiles('.gitattributes', 'resources/videomaps/**', 'resources/wx/**', 'resources/traffic/flights/**') }}
-
-    - name: Fetch LFS
-      if: steps.lfs-cache.outputs.cache-hit != 'true'
-      run: |
-        git lfs install
-        git lfs pull
-
-    - name: Materialize LFS working-tree files
+    - name: Check out LFS files
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
-      run: |
-        git lfs install
-        git lfs checkout
+      uses: ./.github/actions/lfs-checkout
+      with:
+        key: ${{ needs.lfs.outputs.key }}
 
     - name: Generate manifest and upload to R2
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
@@ -77,7 +122,7 @@ jobs:
 
   build-linux:
     name: Build Linux
-    needs: bundle-resources
+    needs: [lfs, bundle-resources]
     runs-on: ubuntu-latest
 
     steps:
@@ -87,6 +132,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         lfs: false
+
+    - name: Check out LFS files
+      uses: ./.github/actions/lfs-checkout
+      with:
+        key: ${{ needs.lfs.outputs.key }}
 
     - name: Setup go
       uses: actions/setup-go@v6
@@ -127,24 +177,6 @@ jobs:
     - name: Run tests
       run: go test -v ./...
 
-    - name: Restore LFS objects cache
-      id: lfs-cache
-      uses: actions/cache@v5
-      with:
-        path: .git/lfs/objects
-        key: lfs-objects-v2-${{ hashFiles('.gitattributes', 'resources/videomaps/**', 'resources/wx/**', 'resources/traffic/flights/**') }}
-
-    - name: Fetch LFS
-      if: steps.lfs-cache.outputs.cache-hit != 'true'
-      run: |
-        git lfs install
-        git lfs pull
-
-    - name: Materialize LFS working-tree files
-      run: |
-        git lfs install
-        git lfs checkout
-
     - name: Race-detector smoketest (viceserver -smoketest)
       run: |
         go build -race -o viceserver-race ./cmd/viceserver
@@ -168,7 +200,7 @@ jobs:
 
   build-mac:
     name: Build macOS
-    needs: bundle-resources
+    needs: [lfs, bundle-resources]
     runs-on: macos-latest
 
     env:
@@ -183,6 +215,11 @@ jobs:
         submodules: true
         fetch-depth: 0
         lfs: false
+
+    - name: Check out LFS files
+      uses: ./.github/actions/lfs-checkout
+      with:
+        key: ${{ needs.lfs.outputs.key }}
 
     - name: Setup go
       uses: actions/setup-go@v6
@@ -286,7 +323,7 @@ jobs:
 
   build-windows:
     name: Build Windows
-    needs: bundle-resources
+    needs: [lfs, bundle-resources]
     runs-on: windows-latest
 
     steps:
@@ -296,6 +333,11 @@ jobs:
         lfs: false
         fetch-depth: 0   # fetch whole history so we can get tags for the installer :-(
         submodules: true
+
+    - name: Check out LFS files
+      uses: ./.github/actions/lfs-checkout
+      with:
+        key: ${{ needs.lfs.outputs.key }}
 
     - name: Check git tags
       run: |
@@ -453,3 +495,50 @@ jobs:
         prerelease: ${{ contains(github.ref_name, '-beta') }}
         files: |
           Vice-${{ github.ref_name }}-installer.msi
+
+  run-scenarios:
+    name: Run All Scenarios
+    needs: lfs
+    if: github.event_name != 'push' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v6
+      with:
+        submodules: true
+        fetch-depth: 0
+        lfs: false
+
+    - name: Check out LFS files
+      uses: ./.github/actions/lfs-checkout
+      with:
+        key: ${{ needs.lfs.outputs.key }}
+
+    - name: Setup go
+      uses: actions/setup-go@v6
+      with:
+        go-version-file: go.mod
+        cache-dependency-path: go.sum
+
+    - name: Install Linux dependencies
+      run: |
+        sudo apt update
+        sudo apt install xorg-dev libsdl2-dev libsystemd-dev
+
+    - name: Build vice
+      run: ./build.sh
+
+    - name: Check scenarios
+      run: ./vice -lint
+
+    - name: Run all scenarios
+      run: ./run-all-scenarios.sh ./vice
+
+    - name: Upload logs
+      uses: actions/upload-artifact@v7
+      if: always()
+      with:
+        name: scenario-logs
+        path: |
+          scenario-test-*.txt
