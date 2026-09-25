@@ -8,6 +8,7 @@ package eram
 
 import (
 	"fmt"
+	"log/slog"
 	"maps"
 	"slices"
 	"strings"
@@ -20,6 +21,8 @@ import (
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+
+	"github.com/goforj/godump"
 )
 
 func registerOpsCommands() {
@@ -197,6 +200,9 @@ func registerOpsCommands() {
 
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
+
+	// ? - Custom command to print aircraft state to stdout
+	registerCommand(CommandModeNone, "?[TRACK]|? [TRACK]", handlePrintAircraftState)
 
 	// Commands available in draw route mode
 	registerCommand(CommandModeDrawRoute, "[POS]", handleDrawRoutePoint)
@@ -1057,6 +1063,19 @@ func handleDrawRoutePoint(ep *Scope, ctx *scope.Context, pos math.Point2LL) Comm
 	ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
 
 	return CommandStatus{}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ? - Custom command
+
+func handlePrintAircraftState(ep *Scope, ctx *scope.Context, trk *sim.Track) {
+	ads, err := ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign)
+	if err != nil {
+		ctx.Lg.Error("print aircraft", slog.String("callsign", string(trk.ADSBCallsign)),
+			slog.Any("err", err))
+		return
+	}
+	fmt.Println(ads.Spew + "\n\n\n" + godump.DumpStr(ep.TrackState[trk.ADSBCallsign]))
 }
 
 ///////////////////////////////////////////////////////////////////////////
