@@ -4,6 +4,12 @@
 
 package sim
 
+import (
+	"slices"
+
+	"github.com/mmp/vice/rand"
+)
+
 var preferredAlphas = []rune{'P', 'K', 'N', 'Y', 'T', 'V', 'F', 'R', 'C', 'D', 'E', 'W', 'A'}
 var nonPreferredAlphas = []rune{'M', 'X', 'L', 'J', 'U', 'B', 'G', 'Q', 'S', 'H', 'Z'}
 
@@ -18,25 +24,25 @@ func NewCIDAllocator() *CIDAllocator {
 	}
 }
 
-// Allocate returns the next Available CID.
-func (c *CIDAllocator) Allocate() (string, error) {
-	var cid string
-Top:
-	for i, m := range c.List {
-		var allValues []string
-		for k := range m {
-			allValues = append(allValues, k)
-		}
-
-		for _, v := range allValues {
-			if k, ok := m[v]; ok && k == nil {
-				cid = v
-				c.List[i][v] = ""
-				break Top
+// Allocate returns a CID chosen at random from the first list that still
+// has one available. The candidates are sorted before one is drawn so that
+// the choice depends only on r and not on map iteration order.
+func (c *CIDAllocator) Allocate(r *rand.Rand) (string, error) {
+	for _, m := range c.List {
+		var available []string
+		for cid, used := range m {
+			if used == nil {
+				available = append(available, cid)
 			}
 		}
+		if len(available) > 0 {
+			slices.Sort(available)
+			cid := rand.SampleSlice(r, available)
+			m[cid] = ""
+			return cid, nil
+		}
 	}
-	return cid, nil
+	return "", nil
 }
 
 // Release frees a CID so it can be reused.

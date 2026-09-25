@@ -344,10 +344,11 @@ const (
 )
 
 func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan, perf av.AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) *Nav {
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
+	lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, lg); nav != nil {
+		magneticVariation, r, lg); nav != nil {
 		if !arr.SpeedRestriction.IsZero() {
 			sr := arr.SpeedRestriction
 			nav.Speed.Restriction = &sr
@@ -378,9 +379,10 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 
 func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance,
 	assignedAlt, clearedAlt int, wp av.WaypointArray, randomizeAltitudeRange bool,
-	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) *Nav {
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
+	lg *log.Logger) *Nav {
 	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
-		lg); nav != nil {
+		r, lg); nav != nil {
 		if assignedAlt != 0 {
 			nav.setAssignedAltitude(float32(min(assignedAlt, fp.Altitude)))
 		} else {
@@ -394,10 +396,11 @@ func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.Aircra
 }
 
 func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.FlightPlan, perf av.AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) *Nav {
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
+	lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, lg); nav != nil {
+		magneticVariation, r, lg); nav != nil {
 		if !of.SpeedRestriction.IsZero() {
 			sr := of.SpeedRestriction
 			nav.Speed.Restriction = &sr
@@ -424,14 +427,16 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 	return nil
 }
 
+// makeNav seeds the aircraft's random number generator from r, so that a
+// sim's aircraft draw repeatable numbers when its own generator is seeded.
 func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance, wp av.WaypointArray,
-	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32,
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, r *rand.Rand,
 	lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
 		FixAssignments: make(map[string]FixAssignment),
-		Rand:           rand.Make(),
+		Rand:           rand.New(r.Uint64()),
 	}
 
 	// Clone the provided waypoints so that any local modifications we make don't pollute the
@@ -812,8 +817,10 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 // Communication
 
 // Full human-readable summary of nav state for use when paused and mouse
-// hover on the scope
-func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log.Logger) string {
+// hover on the scope. Its phrasing is drawn from r rather than from the
+// aircraft's own generator, so that asking for one doesn't change what the
+// aircraft does next.
+func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) string {
 	var lines []string
 	lines = append(lines, "Departure from "+string(fp.DepartureAirport)+" to "+string(fp.ArrivalAirport))
 
@@ -948,7 +955,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, lg *log
 			line := "Cross " + fix + " "
 			if nfa.Arrive.Altitude != nil {
 				ar := speech.MakeReadbackTransmission("{altrest}", nfa.Arrive.Altitude)
-				if s, err := ar.Written(nav.Rand); err != nil {
+				if s, err := ar.Written(r); err != nil {
 					lg.Errorf("%v", err)
 				} else {
 					line += s + " "

@@ -12,6 +12,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/util"
 )
 
 // callsignAudioOffset is the approximate time taken by the callsign at the
@@ -226,7 +227,9 @@ func (s *Sim) DeleteAllAircraft(tcw TCW) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	for _, ac := range s.Aircraft {
+	// In order, since deleting returns list indices and strip CIDs to
+	// the lists they are handed out from.
+	for ac := range util.SortedMapValues(s.Aircraft) {
 		// Only delete airborne aircraft; leave all of the ones at the
 		// gate, etc., so we don't have a bubble of no departures for a
 		// long time while the departure queues refill.
@@ -244,8 +247,8 @@ func (s *Sim) DeleteAllAircraft(tcw TCW) error {
 
 func (s *Sim) clearDepartureQueues() {
 	// Clear HFR (Hold For Release) departure queues to remove aircraft that are held for release
-	for _, runways := range s.DepartureState {
-		for _, depState := range runways {
+	for _, runways := range util.SortedMap(s.DepartureState) {
+		for _, depState := range util.SortedMap(runways) {
 			// Delete aircraft from the Held queue (HFR)
 			for _, dep := range depState.Held {
 				if ac, ok := s.Aircraft[dep.ADSBCallsign]; ok {

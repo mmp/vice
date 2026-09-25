@@ -36,8 +36,8 @@ func makeERAMComputer(fac string, loc *av.LocalSquawkCodePool) *ERAMComputer {
 	return ec
 }
 
-func (ec *ERAMComputer) CreateSquawk() (av.Squawk, error) {
-	return ec.SquawkCodePool.Get(rand.Make())
+func (ec *ERAMComputer) CreateSquawk(r *rand.Rand) (av.Squawk, error) {
+	return ec.SquawkCodePool.Get(r)
 }
 
 func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {
@@ -46,8 +46,8 @@ func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {
 
 // AssignSquawk allocates an enroute squawk code and assigns it to both the
 // aircraft and NAS flight plan.
-func (ec *ERAMComputer) AssignSquawk(ac *Aircraft, fp *NASFlightPlan) error {
-	sq, err := ec.CreateSquawk()
+func (ec *ERAMComputer) AssignSquawk(ac *Aircraft, fp *NASFlightPlan, r *rand.Rand) error {
+	sq, err := ec.CreateSquawk(r)
 	if err != nil {
 		return err
 	}
@@ -103,7 +103,9 @@ func (sc *STARSComputer) Update(s *Sim) {
 		return true
 	})
 
-	for _, ac := range s.Aircraft {
+	// In order: associating a track can hand it off and send it on course,
+	// both of which draw random numbers, and adds to the flight plan list.
+	for ac := range util.SortedMapValues(s.Aircraft) {
 		if !ac.IsAirborne() || ac.Squawk == 0o1200 {
 			continue
 		}

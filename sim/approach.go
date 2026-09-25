@@ -367,7 +367,7 @@ type FutureTrafficCheck struct {
 }
 
 func (s *Sim) processFutureFieldChecks() {
-	for callsign, f := range s.FutureFieldChecks {
+	for callsign, f := range util.SortedMap(s.FutureFieldChecks) {
 		if !s.State.SimTime.After(f.Time) {
 			continue
 		}
@@ -389,7 +389,7 @@ func (s *Sim) processFutureFieldChecks() {
 }
 
 func (s *Sim) processFutureTrafficChecks() {
-	for callsign, f := range s.FutureTrafficChecks {
+	for callsign, f := range util.SortedMap(s.FutureTrafficChecks) {
 		if !s.State.SimTime.After(f.Time) {
 			continue
 		}

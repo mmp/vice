@@ -32,9 +32,14 @@ type Rand struct {
 }
 
 func Make() *Rand {
+	return New(makeSeed())
+}
+
+// New returns a generator seeded with the given value.
+func New(seed uint64) *Rand {
 	r := &Rand{pcg: mrand.NewPCG(0, 0)}
 	r.r = mrand.New(r.pcg)
-	r.Seed(makeSeed())
+	r.Seed(seed)
 	return r
 }
 
@@ -98,6 +103,10 @@ func (r *Rand) DurationRange(low, high time.Duration) time.Duration {
 
 func (r *Rand) Uint32() uint32 {
 	return r.r.Uint32()
+}
+
+func (r *Rand) Uint64() uint64 {
+	return r.r.Uint64()
 }
 
 func (r *Rand) Bool() bool {

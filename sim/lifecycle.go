@@ -44,6 +44,9 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	if s.Rand == nil {
 		s.Rand = rand.Make()
 	}
+	if s.textRand == nil {
+		s.textRand = rand.Make()
+	}
 
 	s.wxProvider = provider
 	if s.wxModel == nil {

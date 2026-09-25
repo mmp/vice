@@ -6,6 +6,7 @@ package wx
 
 import (
 	"bytes"
+	"cmp"
 	"fmt"
 	"iter"
 	"maps"
@@ -720,8 +721,15 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 
 	// In xy, we accumulate to the nearest sample in the grid; for
 	// z/altitude, we lerp along the non-uniform altitude spacing from the
-	// original data.
-	for p, stack := range sampleStacks {
+	// original data. The points are taken in order since float addition
+	// isn't associative: in map order, a cell that several points land in
+	// would get sums whose last bits vary from one build of the grid to the
+	// next.
+	points := slices.SortedFunc(maps.Keys(sampleStacks), func(a, b math.Point2LL) int {
+		return cmp.Or(cmp.Compare(a[0], b[0]), cmp.Compare(a[1], b[1]))
+	})
+	for _, p := range points {
+		stack := sampleStacks[p]
 		pg := g.PtToGrid(p)
 		ipg := [2]int{int(math.Round(pg[0])), int(math.Round(pg[1]))}
 

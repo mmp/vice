@@ -252,7 +252,7 @@ func (s *Sim) spawnPatternAircraft() {
 			s.State.MagneticVariation)
 
 		err := ac.InitializeVFRDeparture(ap, wps, false, s.State.NmPerLongitude,
-			s.State.MagneticVariation, s.wxModel, now, s.lg)
+			s.State.MagneticVariation, s.wxModel, now, s.Rand, s.lg)
 		if err != nil {
 			s.lg.Warn("failed to initialize pattern aircraft", slog.Any("error", err))
 			ps.NextSpawn = now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand))

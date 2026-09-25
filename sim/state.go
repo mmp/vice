@@ -327,7 +327,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 	}
 
 	// Grab initial METAR for each airport and assign initial ATIS letters
-	for ap, m := range metar {
+	for ap, m := range util.SortedMap(metar) {
 		if len(m) > 0 {
 			ss.METAR[ap] = m[0]
 		}

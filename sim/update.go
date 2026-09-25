@@ -53,7 +53,7 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 		case speech.RadioTransmissionContact:
 			// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
 			// Only on initial contact, not subsequent transmissions.
-			if ac.EmergencyState != nil && s.Rand.Bool() {
+			if ac.EmergencyState != nil && s.textRand.Bool() {
 				heavySuper += " emergency aircraft"
 			}
 			csArg := speech.CallsignArg{
@@ -67,8 +67,8 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 			} else {
 				tr = speech.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
 			}
-			w, werr := tr.Written(s.Rand)
-			sp, serr := tr.Spoken(s.Rand)
+			w, werr := tr.Written(s.textRand)
+			sp, serr := tr.Spoken(s.textRand)
 			if err := cmp.Or(werr, serr); err != nil {
 				// This runs once per destination TCW as events are
 				// delivered, so posting here would repeat the message;
@@ -89,8 +89,8 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 				IsEmergency: ac.EmergencyState != nil,
 			}
 			tr := speech.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
-			w, werr := tr.Written(s.Rand)
-			sp, serr := tr.Spoken(s.Rand)
+			w, werr := tr.Written(s.textRand)
+			sp, serr := tr.Spoken(s.textRand)
 			if err := cmp.Or(werr, serr); err != nil {
 				s.lg.Errorf("%s: %v", ac.ADSBCallsign, err)
 			} else {
@@ -608,6 +608,10 @@ func shouldAskAboutTowerSwitch(ac *Aircraft) bool {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
+	// Weather fetched in the background takes effect only here, at the
+	// start of a tick, so that it doesn't depend on when the fetch finished.
+	s.wxModel.Advance(now.Time())
+
 	for acid, ho := range util.SortedMap(s.Handoffs) {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
@@ -751,7 +755,7 @@ func (s *Sim) updateState() {
 			}
 
 			if passedWaypoint != nil {
-				for tcp, wpCommands := range s.waypointCommands {
+				for tcp, wpCommands := range util.SortedMap(s.waypointCommands) {
 					if cmds, ok := wpCommands[passedWaypoint.Fix]; ok {
 						func() {
 							// The mutex is held when we get here, but RunScriptedControlCommands and the

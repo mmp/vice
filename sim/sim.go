@@ -110,6 +110,11 @@ type Sim struct {
 	prespawnPatternEligible  bool
 
 	Rand *rand.Rand
+	// textRand chooses how pilots phrase what they say and which voice
+	// they say it in. It is kept apart from Rand so that neither rendering
+	// text for clients nor changes to the phrasing change what the aircraft
+	// do.
+	textRand *rand.Rand
 
 	// User-selected scenario start time before Vice rewinds the clock for prespawn.
 	StartTime Time
@@ -295,7 +300,8 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		VirtualControllers: config.VirtualControllers,
 
-		Rand: rand.Make(),
+		Rand:     rand.Make(),
+		textRand: rand.Make(),
 
 		StartTime: NewSimTime(config.StartTime.UTC()),
 
@@ -316,7 +322,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		simDoneCh: make(chan struct{}),
 	}
 
-	s.VoiceAssigner = NewVoiceAssigner(s.Rand)
+	s.VoiceAssigner = NewVoiceAssigner(s.textRand)
 
 	// Load METAR data from local resources
 	apmetar, err := wx.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
@@ -535,7 +541,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	} else {
 		return AircraftDisplayState{
 			Spew:        godump.DumpStr(ac),
-			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.lg),
+			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.textRand, s.lg),
 		}, nil
 	}
 }

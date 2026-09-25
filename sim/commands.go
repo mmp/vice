@@ -747,7 +747,7 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, stri
 	}
 	// postReadbackTransmission has already reported any formatting failure;
 	// this only costs the controller the spoken form.
-	spoken, err := tr.Spoken(s.Rand)
+	spoken, err := tr.Spoken(s.textRand)
 	if err != nil {
 		s.lg.Errorf("%s: %v", callsign, err)
 	}
@@ -770,7 +770,7 @@ func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign,
 	}
 	// postReadbackTransmission has already reported any formatting failure;
 	// this only costs the controller the spoken form.
-	spoken, err := tr.Spoken(s.Rand)
+	spoken, err := tr.Spoken(s.textRand)
 	if err != nil {
 		s.lg.Errorf("%s: %v", callsign, err)
 	}

@@ -96,7 +96,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 		ac.VisualApproachRequestDistance = s.Rand.Float32Range(9, 16)
 	}
 
-	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp); err != nil {
+	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp, s.Rand); err != nil {
 		return nil, err
 	}
 	// Create a flight strip at the inbound handoff controller if it's a human position
@@ -374,7 +374,7 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 
 	if err := ac.InitializeArrival(s.State.Airports[e.ArrivalAirport], arr, e.Cruise,
 		s.State.NmPerLongitude, s.State.MagneticVariation,
-		s.wxModel, s.State.SimTime, s.lg); err != nil {
+		s.wxModel, s.State.SimTime, s.Rand, s.lg); err != nil {
 		return nil, err
 	}
 	if published {
@@ -517,7 +517,7 @@ func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error
 	ac.InitializeFlightPlan(av.FlightRulesIFR, e.AircraftType, e.DepartureAirport, e.ArrivalAirport)
 
 	if err := ac.InitializeOverflight(of, s.State.NmPerLongitude, s.State.MagneticVariation,
-		s.wxModel, s.State.SimTime, s.lg); err != nil {
+		s.wxModel, s.State.SimTime, s.Rand, s.lg); err != nil {
 		return nil, err
 	}
 
@@ -552,7 +552,7 @@ func (s *Sim) finalizeOverflightNoLock(ac *Aircraft, of *av.Overflight, group st
 	s.applyFixPairAssignment(&nasFp, ac)
 	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 
-	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp); err != nil {
+	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp, s.Rand); err != nil {
 		return err
 	}
 

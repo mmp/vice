@@ -334,7 +334,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 	} else if spec.SquawkAssignment.IsSet {
 		var rules av.FlightRules
 		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, sim.LocalCodePool,
-			sim.ERAMComputer.SquawkCodePool)
+			sim.ERAMComputer.SquawkCodePool, sim.Rand)
 		if !spec.Rules.IsSet {
 			// Only take the rules from the pool if no rules were given in spec.
 			fp.Rules = rules
@@ -512,7 +512,7 @@ type FlightPlanSpecifier struct {
 }
 
 func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
-	nasPool *av.EnrouteSquawkCodePool) (NASFlightPlan, error) {
+	nasPool *av.EnrouteSquawkCodePool, r *rand.Rand) (NASFlightPlan, error) {
 	sfp := NASFlightPlan{
 		ACID:                  s.ACID.GetOr(""),
 		EntryFix:              s.EntryFix.GetOr(""),
@@ -568,7 +568,7 @@ func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 		sfp.AssignedSquawk = s.ImplicitSquawkAssignment.Get()
 	} else {
 		var rules av.FlightRules
-		sfp.AssignedSquawk, rules, err = assignCode(s.SquawkAssignment, sfp.PlanType, sfp.Rules, localPool, nasPool)
+		sfp.AssignedSquawk, rules, err = assignCode(s.SquawkAssignment, sfp.PlanType, sfp.Rules, localPool, nasPool, r)
 		sfp.Rules = s.Rules.GetOr(rules) // explicit rules from caller override squawk code pool rules
 	}
 
@@ -607,11 +607,11 @@ func (s *FlightPlanSpecifier) Merge(other FlightPlanSpecifier) {
 }
 
 func assignCode(assignment util.Optional[string], planType NASFlightPlanType, rules av.FlightRules,
-	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool) (av.Squawk, av.FlightRules, error) {
+	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool, r *rand.Rand) (av.Squawk, av.FlightRules, error) {
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
 		if !assignment.IsSet || assignment.Get() == "" {
-			sq, err := nasPool.Get(rand.Make())
+			sq, err := nasPool.Get(r)
 			return sq, rules, err
 		} else {
 			sq, err := av.ParseSquawk(assignment.Get())
@@ -621,7 +621,7 @@ func assignCode(assignment util.Optional[string], planType NASFlightPlanType, ru
 			return sq, rules, err
 		}
 	} else {
-		return localPool.Get(assignment.GetOr(""), rules, rand.Make())
+		return localPool.Get(assignment.GetOr(""), rules, r)
 	}
 }
 
@@ -637,7 +637,7 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 		return err
 	}
 
-	fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+	fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool, s.Rand)
 	if err != nil {
 		return err
 	}
@@ -711,7 +711,7 @@ func (s *Sim) CreateInterfacilityVFR(tcw TCW, acid ACID, isIntermediate bool, re
 		spec.RequestedAltitude.Set(requestedAlt)
 	}
 
-	newFP, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+	newFP, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool, s.Rand)
 	if err != nil {
 		return err
 	}
@@ -850,7 +850,7 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 				return ErrDuplicateACID
 			}
 
-			fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+			fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool, s.Rand)
 			if err != nil {
 				return err
 			}

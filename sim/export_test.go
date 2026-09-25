@@ -41,6 +41,8 @@ func NewTestSim(lg *log.Logger) *Sim {
 	return &Sim{
 		lg:          lg,
 		Rand:        vrand.Make(),
+		textRand:    vrand.Make(),
+		wxModel:     wx.MakeCalmModel(),
 		eventStream: NewEventStream(lg),
 		State: &CommonState{
 			DynamicState: DynamicState{

@@ -673,7 +673,7 @@ func (ac *Aircraft) InterceptApproachAtPassedFix(fix string) speech.CommandInten
 
 func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise CruiseLimits,
 	nmPerLongitude float32, magneticVariation float32,
-	model *wx.Model, simTime Time, lg *log.Logger) error {
+	model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
 
@@ -683,7 +683,6 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 		return ErrUnknownAircraftType
 	}
 
-	r := rand.Make()
 	if idx := rand.SampleFiltered(r, arr.CruiseAltitudes, withinCeiling(perf)); idx != -1 {
 		ac.FlightPlan.Altitude = arr.CruiseAltitudes[idx]
 	} else {
@@ -698,7 +697,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 	ac.TypeOfFlight = av.FlightTypeArrival
 
 	nav := nav.MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation, model,
-		simTime.NavTime(), lg)
+		simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -717,7 +716,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 
 func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAOAirportCode, dep *av.Departure,
 	runway string, exitRoute av.ExitRoute, cruise CruiseLimits, nmPerLongitude float32,
-	magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) error {
+	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	wp := av.SpliceRoutes(exitRoute.Waypoints, dep.RouteWaypoints)
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
@@ -737,7 +736,6 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 	ac.FlightPlan.Exit = dep.Exit
 	ac.FlightPlan.DepartureRunway = runway
 
-	r := rand.Make()
 	if idx := rand.SampleFiltered(r, dep.Altitudes, withinCeiling(perf)); idx != -1 {
 		ac.FlightPlan.Altitude = dep.Altitudes[idx]
 	} else {
@@ -750,7 +748,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 	randomizeAltitudeRange := ac.FlightPlan.Rules == av.FlightRulesVFR
 	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, wp, randomizeAltitudeRange,
-		nmPerLongitude, magneticVariation, model, simTime.NavTime(), lg)
+		nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -763,7 +761,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 
 func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
-	simTime Time, lg *log.Logger) error {
+	simTime Time, r *rand.Rand, lg *log.Logger) error {
 	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
@@ -774,7 +772,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 
 	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
 		ac.FlightPlan.Altitude /* cleared alt */, wps,
-		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), lg)
+		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -785,14 +783,13 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 }
 
 func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float32,
-	magneticVariation float32, model *wx.Model, simTime Time, lg *log.Logger) error {
+	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
 		return ErrUnknownAircraftType
 	}
 
-	r := rand.Make()
 	if idx := rand.SampleFiltered(r, of.CruiseAltitudes, withinCeiling(perf)); idx != -1 {
 		ac.FlightPlan.Altitude = of.CruiseAltitudes[idx]
 	} else {
@@ -804,7 +801,7 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 	ac.TypeOfFlight = av.FlightTypeOverflight
 
 	nav := nav.MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
-		magneticVariation, model, simTime.NavTime(), lg)
+		magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -813,8 +810,8 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 	return nil
 }
 
-func (ac *Aircraft) NavSummary(model *wx.Model, simTime Time, lg *log.Logger) string {
-	return ac.Nav.Summary(ac.FlightPlan, model, simTime.NavTime(), lg)
+func (ac *Aircraft) NavSummary(model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) string {
+	return ac.Nav.Summary(ac.FlightPlan, model, simTime.NavTime(), r, lg)
 }
 
 func (ac *Aircraft) ContactMessage() *speech.RadioTransmission {
@@ -1259,7 +1256,7 @@ func (s *Sim) GetReadbackVoice(callsign av.ADSBCallsign) string {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.VoiceAssigner.GetVoice(callsign, s.Rand)
+	return s.VoiceAssigner.GetVoice(callsign, s.textRand)
 }
 
 type AircraftDisplayState struct {

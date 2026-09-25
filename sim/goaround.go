@@ -13,6 +13,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 )
 
 func (s *Sim) contactDeparture(ac *Aircraft, fp *NASFlightPlan) {
@@ -166,26 +167,24 @@ func (s *Sim) checkFinalApproachSpacing() {
 		return
 	}
 
-	type runwayKey struct {
-		airport av.ICAOAirportCode
-		runway  string
-	}
-	aircraftByRunway := make(map[runwayKey][]*Aircraft)
-
-	// Group IFR aircraft with assigned approaches by airport+runway
-	for _, ac := range s.Aircraft {
+	// Group IFR aircraft with assigned approaches by airport/runway. The
+	// aircraft and runways are both taken in order: a spacing bust may be
+	// settled with a random draw, and they have to come in the same order
+	// each run for the same aircraft to get the same draw.
+	aircraftByRunway := make(map[string][]*Aircraft)
+	for ac := range util.SortedMapValues(s.Aircraft) {
 		// Only tower sends aircraft around; don't include ones that have already been sent around
 		// since presumably we'll have vertical separation soon if not already.
 		if ac.Nav.Approach.Assigned != nil && ac.GotContactTower && !ac.SentAroundForSpacing {
-			key := runwayKey{ac.FlightPlan.ArrivalAirport, ac.Nav.Approach.Assigned.Runway}
+			key := string(ac.FlightPlan.ArrivalAirport) + "/" + ac.Nav.Approach.Assigned.Runway
 			aircraftByRunway[key] = append(aircraftByRunway[key], ac)
 		}
 	}
 
-	for _, aircraft := range aircraftByRunway {
+	for _, aircraft := range util.SortedMap(aircraftByRunway) {
 		// Sort by distance to threshold (closest first)
 		threshold := aircraft[0].Nav.Approach.Assigned.Threshold
-		slices.SortFunc(aircraft, func(a, b *Aircraft) int {
+		slices.SortStableFunc(aircraft, func(a, b *Aircraft) int {
 			return cmp.Compare(math.NMDistance2LL(a.Position(), threshold),
 				math.NMDistance2LL(b.Position(), threshold))
 		})

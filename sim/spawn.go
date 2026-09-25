@@ -495,15 +495,16 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	old := s.State.LaunchConfig
 
-	// Update the runway launch state for any rates that changed.
-	for ap, rwyRates := range lc.DepartureRates {
-		for rwy, categoryRates := range rwyRates {
+	// Update the runway launch state for any rates that changed. All of
+	// these are taken in order since changing a rate can draw random numbers.
+	for ap, rwyRates := range util.SortedMap(lc.DepartureRates) {
+		for rwy, categoryRates := range util.SortedMap(rwyRates) {
 			r := sumRateMap(categoryRates, lc.DepartureRateScale)
 			s.DepartureState[ap][rwy].setIFRRate(s, r)
 		}
 	}
 
-	for name, rate := range lc.VFRAirportRates {
+	for name, rate := range util.SortedMap(lc.VFRAirportRates) {
 		r := scaleRate(rate, lc.VFRDepartureRateScale)
 		rwy := s.State.VFRRunways[name]
 		s.DepartureState[name][av.RunwayID(rwy.Id)].setVFRRate(s, r)
@@ -511,7 +512,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	if lc.VFRDepartureRateScale != old.VFRDepartureRateScale {
 		r := scaleRate(patternSpawnRate, lc.VFRDepartureRateScale)
-		for _, ps := range s.PatternState {
+		for _, ps := range util.SortedMap(s.PatternState) {
 			ps.NextSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
 		}
 	}
@@ -571,7 +572,7 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		}
 		if fp != nil && fp.CID == "" {
-			if cid, err := s.CIDAllocator.Allocate(); err == nil {
+			if cid, err := s.CIDAllocator.Allocate(s.Rand); err == nil {
 				fp.CID = cid
 			} else {
 				s.lg.Warn("no CID available", slog.String("callsign", string(ac.ADSBCallsign)))

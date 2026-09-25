@@ -241,7 +241,7 @@ func (s *Sim) clearAircraftSTTCommands(callsign av.ADSBCallsign) {
 // regardless of any consolidation changes.
 // Returns the spoken text for TTS synthesis, including the callsign suffix.
 func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []speech.CommandIntent) string {
-	if rt := speech.RenderIntents(intents, s.Rand); rt != nil {
+	if rt := speech.RenderIntents(intents, s.textRand); rt != nil {
 		s.postReadbackTransmission(callsign, *rt, tcw)
 		// MixUp transmissions already include the callsign in the message
 		if rt.Type != speech.RadioTransmissionMixUp {
@@ -251,7 +251,7 @@ func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents [
 		}
 		// postReadbackTransmission has already reported any formatting
 		// failure; this only costs the controller the spoken form.
-		spoken, err := rt.Spoken(s.Rand)
+		spoken, err := rt.Spoken(s.textRand)
 		if err != nil {
 			s.lg.Errorf("%s: %v", callsign, err)
 			return ""

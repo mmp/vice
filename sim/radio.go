@@ -38,8 +38,8 @@ func (s *Sim) reportTransmissionFailure(callsign av.ADSBCallsign, tcp ControlPos
 // regardless of any consolidation changes.
 func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr speech.RadioTransmission, tcw TCW) {
 	tcp := s.State.PrimaryPositionForTCW(tcw)
-	written, werr := tr.Written(s.Rand)
-	spoken, serr := tr.Spoken(s.Rand)
+	written, werr := tr.Written(s.textRand)
+	spoken, serr := tr.Spoken(s.textRand)
 	if err := cmp.Or(werr, serr); err != nil {
 		s.reportTransmissionFailure(from, tcp, err)
 		return
@@ -617,8 +617,8 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	// Get the base (unprefixed) text for the event stream.
 	// prepareRadioTransmissions will add the prefix when delivering to clients.
-	baseSpoken, serr := rt.Spoken(s.Rand)
-	baseWritten, werr := rt.Written(s.Rand)
+	baseSpoken, serr := rt.Spoken(s.textRand)
+	baseWritten, werr := rt.Written(s.textRand)
 	if err := cmp.Or(serr, werr); err != nil {
 		s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
 		return "", ""
@@ -654,7 +654,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	}
 
 	// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super
-	if ac.EmergencyState != nil && s.Rand.Bool() {
+	if ac.EmergencyState != nil && s.textRand.Bool() {
 		heavySuper += " emergency aircraft"
 	}
 
@@ -672,8 +672,8 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	}
 
 	prefix.Merge(rt)
-	spokenText, serr = prefix.Spoken(s.Rand)
-	writtenText, werr = prefix.Written(s.Rand)
+	spokenText, serr = prefix.Spoken(s.textRand)
+	writtenText, werr = prefix.Written(s.textRand)
 	if err := cmp.Or(serr, werr); err != nil {
 		s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
 		return "", ""

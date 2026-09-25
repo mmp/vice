@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -343,7 +344,7 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 	}
 	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
 	n := MakeDepartureNav("TEST001", fp, perf, 0, 5000, wps, false, nmPerLongitude, magneticVariation,
-		nil, simTime, nil)
+		nil, simTime, rand.New(42), nil)
 	if n == nil {
 		t.Fatal("no nav")
 	}
@@ -450,7 +451,7 @@ func makeCenterlineDeparture(t *testing.T, groups []av.WaypointActionGroup) cent
 	}
 	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
 	n := MakeDepartureNav("TEST001", fp, perf, 0, 5000, wps, false, nmPerLongitude, magneticVariation,
-		nil, simTime, nil)
+		nil, simTime, rand.New(42), nil)
 	if n == nil {
 		t.Fatal("no nav")
 	}
