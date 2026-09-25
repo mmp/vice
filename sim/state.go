@@ -105,6 +105,7 @@ type CommonState struct {
 	MagneticVariation float32
 	NmPerLongitude    float32
 
+	ScenarioName   string
 	SimDescription string
 	ScenarioBrief  string
 
@@ -319,6 +320,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		Facility:          config.Facility,
 		MagneticVariation: config.MagneticVariation,
 		NmPerLongitude:    config.NmPerLongitude,
+		ScenarioName:      config.ScenarioName,
 		SimDescription:    config.Description,
 
 		TFRs: config.TFRs,

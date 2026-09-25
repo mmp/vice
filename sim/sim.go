@@ -202,9 +202,10 @@ type lastSTTCommand struct {
 
 // NewSimConfiguration collects all of the information required to create a new Sim
 type NewSimConfiguration struct {
-	Facility    string
-	Description string
-	Brief       string
+	Facility     string
+	ScenarioName string
+	Description  string
+	Brief        string
 
 	Airports           map[av.ICAOAirportCode]*av.Airport
 	DepartureRunways   []DepartureRunway
