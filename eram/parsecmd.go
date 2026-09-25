@@ -869,7 +869,6 @@ func validateReturnTypes(funcType reflect.Type) error {
 var initialArgTypes = []reflect.Type{
 	reflect.TypeFor[*Scope](),
 	reflect.TypeFor[*scope.Context](),
-	reflect.TypeFor[*PrefrenceSet](),
 }
 
 // countInitialArgs counts how many initial arguments a function expects.
@@ -945,7 +944,6 @@ func (cmd userCommand) bindArgs(ep *Scope, extractedArgs []any) []any {
 var initialArgProviders = map[reflect.Type]func(ep *Scope, ctx *scope.Context) reflect.Value{
 	reflect.TypeFor[*Scope]():         func(ep *Scope, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep) },
 	reflect.TypeFor[*scope.Context](): func(ep *Scope, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ctx) },
-	reflect.TypeFor[*PrefrenceSet]():  func(ep *Scope, ctx *scope.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
 }
 
 // call invokes the command handler function with the provided arguments.
