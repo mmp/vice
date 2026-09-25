@@ -330,7 +330,11 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				extra := w.InitExtra()
 				extra.AirworkRadius = int8(s.Rand.IntRange(4, 8))
 				extra.AirworkMinutes = int8(s.Rand.IntRange(5, 20))
-				w.AltRestriction.Range[0] -= 500
+				// Airwork dives and descending turns go down to the floor,
+				// so it must stay well clear of the ground; this waypoint's
+				// "at or below" floor of 0 is no floor at all.
+				fieldClearance := float32(max(depap.Elevation, arrap.Elevation) + 1000)
+				w.AltRestriction.Range[0] = min(alt, max(alt-500, fieldClearance))
 				w.AltRestriction.Range[1] = min(w.AltRestriction.Range[1]+2000, maxVFRAltitude)
 			}
 		}
