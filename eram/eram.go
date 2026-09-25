@@ -260,11 +260,10 @@ type Scope struct {
 
 	altLimits altitudeLimitsEntry
 
-	lastTrackUpdate time.Time `json:"-"`
-
 	// Short-term conflict alert state; recomputed every caUpdateInterval.
 	CAPairs            []CAPair  `json:"-"`
 	lastConflictUpdate time.Time `json:"-"`
+	lastRadarUpdate    sim.Time  `json:"-"`
 
 	fdbArena util.ObjectArena[fullDatablock]    `json:"-"`
 	ldbArena util.ObjectArena[limitedDatablock] `json:"-"`
@@ -290,7 +289,7 @@ type Scope struct {
 
 	targetGenLastCallsign av.ADSBCallsign `json:"-"`
 
-	aircraftFixCoordinates map[string]aircraftFixCoordinates `json:"-"`
+	aircraftFixCoordinates map[sim.ACID]aircraftFixCoordinates `json:"-"`
 
 	prefrencesVisible bool `json:"-"`
 
@@ -369,7 +368,7 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	}
 
 	if ep.aircraftFixCoordinates == nil {
-		ep.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
+		ep.aircraftFixCoordinates = make(map[sim.ACID]aircraftFixCoordinates)
 	}
 	if ep.CRRGroups == nil {
 		ep.CRRGroups = make(map[string]*CRRGroup)
@@ -533,9 +532,9 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 
 	ps := ep.currentPrefs()
 
+	ep.updateRadarTracks(ctx)
 	ep.updateVisibleTracks(ctx)
 	tracks := ep.visibleTracks
-	ep.updateRadarTracks(ctx, tracks)
 	ep.updateConflictAlerts(ctx, tracks)
 
 	// draw the ERAM pane
@@ -632,17 +631,17 @@ func (ep *Scope) Upgrade(from, to int) {
 func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
-	ep.lastTrackUpdate = time.Time{}
 	ep.CAPairs = nil
 	ep.lastConflictUpdate = time.Time{}
+	ep.lastRadarUpdate = sim.Time{}
 }
 
 func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.resetPrefsForNewSim(client.State)
 	ep.makeMaps(client, lg)
-	ep.lastTrackUpdate = time.Time{}
 	ep.CAPairs = nil
 	ep.lastConflictUpdate = time.Time{}
+	ep.lastRadarUpdate = sim.Time{}
 
 	ep.scopeDraw.Clear()
 

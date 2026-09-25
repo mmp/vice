@@ -132,7 +132,7 @@ func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms 
 
 	trackPos := make(map[av.ADSBCallsign]math.Point2LL)
 	for _, trk := range tracks {
-		trackPos[trk.ADSBCallsign] = trk.Location
+		trackPos[trk.ADSBCallsign] = ep.TrackState[trk.ADSBCallsign].Track.Location
 	}
 	labels := util.SortedMapKeys(ep.CRRGroups)
 

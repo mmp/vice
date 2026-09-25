@@ -5,6 +5,7 @@
 package eram
 
 import (
+	"maps"
 	"slices"
 	"time"
 
@@ -18,15 +19,23 @@ import (
 
 // Gap ranges (in degrees) where reduced separation J rings should not be drawn.
 
+// eramUpdateInterval is how often all radar samples are refreshed: the
+// 12 second scan of the long-range radars that ERAM uses for most of its
+// coverage.
+const eramUpdateInterval = 12 * time.Second
+
 type TrackState struct {
+	// Track is the most recent radar sample of the aircraft; everything
+	// the scope displays about its position and transponder comes from it
+	// rather than from the continuously-updated sim state.
 	Track             av.RadarTrack
 	PreviousTrack     av.RadarTrack
-	PreviousAltitude  float32 // for seeing if the track is climbing or descending. This may need to be moved someplace else later
-	PreviousTrackTime time.Time
-	TrackTime         time.Time
-	CID               int
+	TrackTime         sim.Time
+	PreviousTrackTime sim.Time
 
-	HistoryTracks     [6]historyTrack // I think it's six?
+	// The current sample plus the 5 past positions that the HISTORY
+	// setting can display at most.
+	HistoryTracks     [6]historyTrack
 	HistoryTrackIndex int
 
 	DatablockType DatablockType
@@ -64,42 +73,8 @@ type aircraftFixCoordinates struct {
 	deleteTime sim.Time
 }
 
-func (ts *TrackState) TrackDeltaAltitude() int {
-	if ts.PreviousTrack.Location.IsZero() {
-		// No previous track
-		return 0
-	}
-	return int(ts.Track.TransponderAltitude - ts.PreviousTrack.TransponderAltitude)
-}
-
-func (ts *TrackState) Descending() bool {
-	return ts.Track.TransponderAltitude < ts.PreviousTrack.TransponderAltitude
-}
-
-func (ts *TrackState) Climbing() bool {
-	return ts.Track.TransponderAltitude > ts.PreviousTrack.TransponderAltitude
-}
-
-func (ts *TrackState) IsLevel() bool {
-	return ts.Track.TransponderAltitude == ts.PreviousTrack.TransponderAltitude
-}
-
 func (ts *TrackState) HaveHeading() bool {
 	return !ts.PreviousTrack.Location.IsZero()
-}
-
-func (ts *TrackState) HeadingVector(nmPerLongitude, magneticVariation float32) math.Point2LL {
-	if !ts.HaveHeading() {
-		return math.Point2LL{}
-	}
-
-	p0 := math.LL2NM(ts.Track.Location, nmPerLongitude)
-	p1 := math.LL2NM(ts.PreviousTrack.Location, nmPerLongitude)
-	v := math.Sub2LL(p0, p1)
-	v = math.Normalize2f(v)
-	// v's length should be groundspeed / 60 nm.
-	v = math.Scale2f(v, float32(ts.Track.Groundspeed)/60) // hours to minutes
-	return math.NM2LL(v, nmPerLongitude)
 }
 
 func (ts *TrackState) TrackHeading(nmPerLongitude float32) math.TrueHeading {
@@ -129,6 +104,34 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 			ep.TrackState[trk.ADSBCallsign] = sa
 		}
 	}
+
+	// Forget everything about aircraft that are gone.
+	for callsign := range ep.TrackState {
+		if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
+			delete(ep.TrackState, callsign)
+		}
+	}
+	trackExists := func(acid sim.ACID) bool {
+		_, ok := ctx.Client.State.GetTrackByACID(acid)
+		return ok
+	}
+	maps.DeleteFunc(ep.InboundPointOuts, func(acid sim.ACID, _ []sim.ControlPosition) bool {
+		return !trackExists(acid)
+	})
+	maps.DeleteFunc(ep.OutboundPointOuts, func(acid sim.ACID, _ []outboundPointOut) bool {
+		return !trackExists(acid)
+	})
+	for _, g := range ep.CRRGroups {
+		if g != nil {
+			maps.DeleteFunc(g.Aircraft, func(callsign av.ADSBCallsign, _ struct{}) bool {
+				_, ok := ctx.GetTrackByCallsign(callsign)
+				return !ok
+			})
+		}
+	}
+
+	// Events may refer to aircraft that no longer exist, so track state
+	// lookups must be checked.
 	for _, event := range ctx.Events {
 		switch event.Type {
 		case sim.AcceptedHandoffEvent:
@@ -136,9 +139,10 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 			if !thisCtrl {
 				continue
 			}
-			state := ep.TrackState[av.ADSBCallsign(event.ACID)]
-			state.EFDB = true
-			state.OSectorEndTime = ctx.InterpolatedSimTime.Add(30 * time.Second)
+			if state, ok := ep.trackStateForACID(ctx, event.ACID); ok {
+				state.EFDB = true
+				state.OSectorEndTime = ctx.InterpolatedSimTime.Add(30 * time.Second)
+			}
 
 		case sim.PointOutEvent:
 			if ctx.UserControlsPosition(event.ToController) {
@@ -194,22 +198,18 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 			}
 
 		case sim.FixCoordinatesEvent:
-			ac := event.ACID
-			coords := event.WaypointInfo
-			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
-				coords:     coords,
+			ep.aircraftFixCoordinates[event.ACID] = aircraftFixCoordinates{
+				coords:     event.WaypointInfo,
 				deleteTime: ctx.InterpolatedSimTime.Add(15 * time.Second),
 			}
 
 		case sim.FlightPlanDirectEvent:
-			ac := event.ACID
 			// Draw the waypoints like QU /M line
-
 			var coords []math.Point2LL
 			for _, wp := range event.Route {
 				coords = append(coords, wp.Location)
 			}
-			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
+			ep.aircraftFixCoordinates[event.ACID] = aircraftFixCoordinates{
 				coords:     coords,
 				deleteTime: ctx.InterpolatedSimTime.Add(15 * time.Second),
 			}
@@ -217,61 +217,50 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 	}
 }
 
-func (ep *Scope) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
-	// Update the track states based on the current radar tracks.
+// updateRadarTracks samples tracks on a shared scan. New tracks wait for the
+// next scan before appearing on the scope.
+func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 	nowInterp := ctx.InterpolatedSimTime.Time()
-	nowApplied := ctx.Client.State.SimTime.Time()
 	if nowInterp.Sub(ep.dbLastAlternateTime) > 6*time.Second {
 		ep.dbAlternate = !ep.dbAlternate
 		ep.dbLastAlternateTime = nowInterp
 	}
-	// The data block shows an amended altitude as soon as it is entered,
-	// whether by a controller here or by the virtual controller working the
-	// aircraft, so the climb/descent arrow must follow it just as promptly.
-	for _, trk := range tracks {
+
+	now := ctx.Client.State.SimTime
+	updateAll := ep.lastRadarUpdate.IsZero() || now.Sub(ep.lastRadarUpdate) >= eramUpdateInterval
+	if updateAll {
+		ep.lastRadarUpdate = now
+	}
+	for _, trk := range ctx.Client.State.Tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		if state == nil || !trk.IsAssociated() {
+
+		// The data block shows an amended altitude as soon as it is entered,
+		// whether by a controller here or by the virtual controller working the
+		// aircraft, so the climb/descent arrow must follow it just as promptly.
+		if trk.IsAssociated() {
+			if alt := trk.FlightPlan.DataBlockAltitude(); alt != state.LastDataBlockAltitude {
+				state.LastDataBlockAltitude = alt
+				state.ReachedAltitude = false
+			}
+		}
+
+		if !updateAll {
 			continue
 		}
-		if alt := trk.FlightPlan.DataBlockAltitude(); alt != state.LastDataBlockAltitude {
-			state.LastDataBlockAltitude = alt
-			state.ReachedAltitude = false
-		}
-	}
-
-	if nowApplied.Sub(ep.lastTrackUpdate) < 12*time.Second {
-		return
-	}
-	ep.lastTrackUpdate = nowApplied
-	for _, trk := range tracks {
-		state := ep.TrackState[trk.ADSBCallsign]
-		if state == nil {
-			state = &TrackState{
-				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
-			}
-			ep.TrackState[trk.ADSBCallsign] = state
-		}
-
 		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.TrackTime.IsZero() {
 			// Get the first track for tentative tracks but then don't
 			// update any further until it's no longer tentative.
 			continue
 		}
 
-		// check if tracks with a reduced DRI are above FL230
-		if state.DisplayReducedJRing && state.Track.TransponderAltitude > 23000 {
-			state.DisplayReducedJRing = false
-		}
-
 		state.PreviousTrack = state.Track
-		state.PreviousAltitude = state.Track.TransponderAltitude
 		state.PreviousTrackTime = state.TrackTime
 		state.Track = trk.RadarTrack
-		state.TrackTime = nowApplied
+		state.TrackTime = now
 
 		// Update history tracks
 		idx := state.HistoryTrackIndex % len(state.HistoryTracks)
-		state.HistoryTracks[idx] = historyTrack{state.Track, ep.getTarget(trk, state)}
+		state.HistoryTracks[idx] = historyTrack{state.Track, ep.getTarget(*trk, state)}
 		state.HistoryTrackIndex++
 
 		// check to see if the a/c has reached the altitude
@@ -280,6 +269,11 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context, tracks []sim.Track) {
 			if qalt(state.Track.TransponderAltitude) == qalt(float32(trk.FlightPlan.DataBlockAltitude())) {
 				state.ReachedAltitude = true
 			}
+		}
+
+		// check if tracks with a reduced DRI are above FL230
+		if state.DisplayReducedJRing && state.Track.TransponderAltitude > 23000 {
+			state.DisplayReducedJRing = false
 		}
 
 		// TODO: check unreasonable C
@@ -363,28 +357,31 @@ func (ep *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 		renderer.TextStyle{Font: font, Color: ep.trackColor()})
 }
 
+// getTarget returns the target symbol for the track's radar sample; only
+// whether it is associated with a flight plan comes from the live track.
 func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
+	rt := state.Track
 	symbol := "\u0001"
 	if trk.IsUnassociated() {
-		switch trk.Mode {
+		switch rt.Mode {
 		case av.TransponderModeStandby:
 			symbol = "\u0000"
 		case av.TransponderModeAltitude:
 			switch {
-			case trk.Ident:
+			case rt.Ident:
 				symbol = "\u0006"
-			case trk.Squawk == 0o1200 && trk.TransponderAltitude < 1000:
+			case rt.Squawk == 0o1200 && rt.TransponderAltitude < 1000:
 				symbol = "\u0008"
-			case trk.Squawk != 0o1200 && trk.TransponderAltitude < 1000:
+			case rt.Squawk != 0o1200 && rt.TransponderAltitude < 1000:
 				symbol = "\u0003"
-			case trk.TransponderAltitude >= 1000:
+			case rt.TransponderAltitude >= 1000:
 				symbol = "\u0007"
 			}
 		}
 	} else {
-		if trk.Mode == av.TransponderModeStandby {
+		if rt.Mode == av.TransponderModeStandby {
 			symbol = "\u0002"
-		} else if state.Track.TransponderAltitude < 23000 {
+		} else if rt.TransponderAltitude < 23000 {
 			symbol = "\u0005"
 		} else {
 			symbol = "\u0004"
@@ -419,7 +416,8 @@ func (ep *Scope) updateVisibleTracks(ctx *scope.Context) { // When radar holes a
 	ep.visibleTracks = ep.visibleTracks[:0]
 	for _, trk := range ctx.Client.State.Tracks {
 		// Radar wholes neeeded for this. For now, return true
-		if trk.TransponderAltitude <= 49 {
+		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil || state.TrackTime.IsZero() || state.Track.TransponderAltitude <= 49 {
 			continue
 		}
 		ep.visibleTracks = append(ep.visibleTracks, *trk)
@@ -495,7 +493,7 @@ func altitudeInLimits(alt float32, limits [2]int) bool {
 // displayed, as are tracks that aren't reporting an altitude to filter on.
 func (ep *Scope) passesAltitudeLimits(ctx *scope.Context, trk sim.Track, limits [2]int) bool {
 	state := ep.TrackState[trk.ADSBCallsign]
-	if state == nil || trk.Mode != av.TransponderModeAltitude ||
+	if state == nil || state.Track.Mode != av.TransponderModeAltitude ||
 		ep.datablockType(ctx, trk) == FullDatablock {
 		return true
 	}
@@ -695,9 +693,12 @@ func (ep *Scope) drawHistoryTracks(ctx *scope.Context, tracks []sim.Track,
 
 		color := bright.ScaleRGB(colors.yellow)
 
-		// Draw newest first (circular buffer handling), respecting selected history length.
-		for i := range min(ps.HistoryLength, len(state.HistoryTracks)) {
-			idx := (state.HistoryTrackIndex - 1 - i + len(state.HistoryTracks)) % len(state.HistoryTracks)
+		// Draw newest first (circular buffer handling), respecting selected
+		// history length. The newest entry is the current sample, which the
+		// target symbol already marks, so the trail starts with the one
+		// before it.
+		for i := range min(ps.HistoryLength, len(state.HistoryTracks)-1) {
+			idx := (state.HistoryTrackIndex - 2 - i + len(state.HistoryTracks)) % len(state.HistoryTracks)
 			hist := state.HistoryTracks[idx]
 
 			loc := hist.Location
@@ -763,11 +764,14 @@ func (ep *Scope) drawQULines(ctx *scope.Context, transforms scope.Transformation
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	for acid, info := range ep.aircraftFixCoordinates {
-		trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(acid))
+		trk, ok := ctx.Client.State.GetTrackByACID(acid)
 		if !ok {
 			continue
 		}
 		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil {
+			continue
+		}
 		color := ep.trackDatablockColor(ctx, *trk)
 
 		// Convert aircraft position to window coordinates

@@ -183,11 +183,11 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 	}
 	var candidates []caCandidate
 	for _, trk := range tracks {
-		if trk.IsUnassociated() || trk.Mode != av.TransponderModeAltitude || trk.IsTentative {
+		if trk.IsUnassociated() || trk.IsTentative {
 			continue
 		}
 		state := ep.TrackState[trk.ADSBCallsign]
-		if state == nil || !state.HaveHeading() {
+		if state == nil || state.Track.Mode != av.TransponderModeAltitude || !state.HaveHeading() {
 			continue
 		}
 		dt := float32(state.TrackTime.Sub(state.PreviousTrackTime).Seconds())

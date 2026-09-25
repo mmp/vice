@@ -288,11 +288,12 @@ func (ep *Scope) flightPlanDirect(ctx *scope.Context, acid sim.ACID, fix string)
 
 // closestTrackToLL returns the closest track to the given lat/long within maxNm.
 // Returns nil if no track is within that distance.
-func (ep *Scope) closestTrackToLL(ctx *scope.Context, loc math.Point2LL, maxNm float32) *sim.Track {
+func (ep *Scope) closestTrackToLL(loc math.Point2LL, maxNm float32) *sim.Track {
 	var best *sim.Track
 	bestDist := maxNm
-	for _, t := range ctx.Client.State.Tracks {
-		d := math.NMDistance2LL(t.Location, loc)
+	for i := range ep.visibleTracks {
+		t := &ep.visibleTracks[i]
+		d := math.NMDistance2LL(ep.TrackState[t.ADSBCallsign].Track.Location, loc)
 		if d <= bestDist {
 			bestDist = d
 			best = t
@@ -381,11 +382,12 @@ func (ep *Scope) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32
 	var trk *sim.Track
 	distance := float32(20)
 
-	for _, t := range ctx.Client.State.Tracks {
+	for i := range ep.visibleTracks {
+		t := &ep.visibleTracks[i]
 		if !ep.targetVisible(ctx, *t) {
 			continue // a target the altitude limits filter hides can't be slewed
 		}
-		pw := transforms.WindowFromLatLongP(t.Location)
+		pw := transforms.WindowFromLatLongP(ep.TrackState[t.ADSBCallsign].Track.Location)
 		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {
 			trk = t

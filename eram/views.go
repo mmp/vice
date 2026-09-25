@@ -203,7 +203,7 @@ func beaconCodeRows(ctx *scope.Context, ep *Scope, ps *Preferences) []Row {
 	var owned []av.Squawk
 	for _, trk := range ctx.Client.State.Tracks {
 		if trk.IsAssociated() && ctx.UserOwnsFlightPlan(trk.FlightPlan) {
-			owned = append(owned, trk.Squawk)
+			owned = append(owned, ep.TrackState[trk.ADSBCallsign].Track.Squawk)
 		}
 	}
 

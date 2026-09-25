@@ -121,13 +121,13 @@ func registerOpsCommands() {
 		})
 	registerCommand(CommandModeNone, "LA [TRACK] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, trk1, trk2 *sim.Track) CommandStatus {
-			return handleLATrkLoc(ep, ctx, trk1, trk2.Location, laOptions{})
+			return handleLATrkLoc(ep, ctx, trk1, ep.TrackState[trk2.ADSBCallsign].Track.Location, laOptions{})
 		})
 	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] [LA_OPTS]", handleLALocLoc)
 	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] [LA_OPTS]", handleLATrkLoc)
 	registerCommand(CommandModeNone, "LA [TRACK] [TRACK] [LA_OPTS]",
 		func(ep *Scope, ctx *scope.Context, trk1, trk2 *sim.Track, opts laOptions) CommandStatus {
-			return handleLATrkLoc(ep, ctx, trk1, trk2.Location, opts)
+			return handleLATrkLoc(ep, ctx, trk1, ep.TrackState[trk2.ADSBCallsign].Track.Location, opts)
 		})
 
 	// LB - track range - distance between fix and track/location
@@ -320,13 +320,13 @@ func handleDefaultRouteDisplay(ep *Scope, ctx *scope.Context, trk *sim.Track) (C
 	}
 
 	// Check if the route is currently displayed
-	if _, ok := ep.aircraftFixCoordinates[trk.ADSBCallsign.String()]; ok {
-		delete(ep.aircraftFixCoordinates, trk.ADSBCallsign.String())
+	if _, ok := ep.aircraftFixCoordinates[trk.FlightPlan.ACID]; ok {
+		delete(ep.aircraftFixCoordinates, trk.FlightPlan.ACID)
 		return CommandStatus{
 			feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID}, // TODO: Find correct message
 		}, nil
 	}
-	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), 20)
+	ep.getQULines(ctx, trk.FlightPlan.ACID, 20)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -567,10 +567,11 @@ func handleLALocLoc(ep *Scope, ctx *scope.Context, from math.Point2LL, to math.P
 }
 
 func handleLATrkLoc(ep *Scope, ctx *scope.Context, trk *sim.Track, to math.Point2LL, opts laOptions) CommandStatus {
+	rt := ep.TrackState[trk.ADSBCallsign].Track
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
-			opts.True, util.Select(opts.Speed > 0, float32(opts.Speed), trk.Groundspeed), "FROM 1ST TB ENTRY"),
+		responseArea: formatRangeBearing(rt.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation,
+			opts.True, util.Select(opts.Speed > 0, float32(opts.Speed), rt.Groundspeed), "FROM 1ST TB ENTRY"),
 	}
 }
 
@@ -595,10 +596,11 @@ func handleLBFixTrk(ep *Scope, ctx *scope.Context, fix string, trk *sim.Track) (
 	if !ok {
 		return CommandStatus{}, ErrIllegalValue
 	}
+	rt := ep.TrackState[trk.ADSBCallsign].Track
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(trk.Location, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
-			false, trk.Groundspeed, "FROM TB TO FIX "+fix),
+		responseArea: formatRangeBearing(rt.Location, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
+			false, rt.Groundspeed, "FROM TB TO FIX "+fix),
 	}, nil
 }
 
@@ -609,8 +611,8 @@ func handleLBFixSpeedTrk(ep *Scope, ctx *scope.Context, fix string, speed int, t
 	}
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: formatRangeBearing(trk.Location, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
-			false, float32(speed), "FROM TB TO FIX "+fix),
+		responseArea: formatRangeBearing(ep.TrackState[trk.ADSBCallsign].Track.Location, fixPos,
+			ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed), "FROM TB TO FIX "+fix),
 	}, nil
 }
 
@@ -638,13 +640,14 @@ func handleLCFixTimeTrk(ep *Scope, ctx *scope.Context, fix string, hhmm int, trk
 		return CommandStatus{}, ErrIllegalValue
 	}
 
-	dist := math.NMDistance2LL(trk.Location, fixPos)
+	rt := ep.TrackState[trk.ADSBCallsign].Track
+	dist := math.NMDistance2LL(rt.Location, fixPos)
 	reqGS := int(math.Round(dist / float32(dtHours)))
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
 		responseArea: []string{fmt.Sprintf("%s AT %02d%02dZ+%dK", fix, hh, mm, reqGS),
-			fmt.Sprintf("CURRENT SPEED %.0fK", trk.Groundspeed)},
+			fmt.Sprintf("CURRENT SPEED %.0fK", rt.Groundspeed)},
 	}, nil
 }
 
@@ -731,7 +734,7 @@ func handleCRRAddClicked(ep *Scope, ctx *scope.Context, loc math.Point2LL, label
 	}
 
 	// Group exists - find nearest track and add to group
-	nearest := ep.closestTrackToLL(ctx, loc, 5)
+	nearest := ep.closestTrackToLL(loc, 5)
 	if nearest == nil {
 		return CommandStatus{}, NewError("REJECT - NO TB FLIGHT ID\nCAPTURE\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
 	}

@@ -406,7 +406,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 			0o1276: "ADIZ", 0o7400: "LLNK", 0o7500: "HIJK",
 			0o7600: "RDOF", 0o7700: "EMRG", 0o7777: "AFIO",
 		}
-		if text, ok := flaggedCodes[trk.Squawk]; ok {
+		if text, ok := flaggedCodes[state.Track.Squawk]; ok {
 			dbWriteText(db.fieldE[:], text, color, true)
 		} else if trk.FlightPlan.HandoffController != "" {
 			var controller string
