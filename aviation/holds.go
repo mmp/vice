@@ -51,7 +51,7 @@ func (arc *DMEArc) Initialize(loc Locator, startLoc, endLoc math.Point2LL, nmPer
 		// Center point was specified
 		var ok bool
 		if arc.Center, ok = loc.Locate(arc.Fix); !ok {
-			e.ErrorString("unable to locate arc center %q", arc.Fix)
+			e.ErrorString("unable to locate arc center %q%s", arc.Fix, SuggestFixes(loc, arc.Fix, startLoc))
 			return false
 		}
 	} else {

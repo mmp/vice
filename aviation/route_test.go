@@ -262,6 +262,15 @@ func TestInitializeLocationsSuggestsFixes(t *testing.T) {
 	if msg := locate(loc); !strings.Contains(msg, "unable to locate waypoint") || strings.Contains(msg, "Did you mean") {
 		t.Errorf("expected an unknown-waypoint error with no alternatives, got %q", msg)
 	}
+
+	// With no location to measure from, all of the alternatives are offered
+	// as the locator gives them.
+	var e util.ErrorLogger
+	p := ScenarioPoint2LL{String: "MREIT"}
+	p.Resolve(suggestingLocator{loc, []string{"MERIK", "MERIT"}}, "center", &e)
+	if msg := e.String(); !strings.HasSuffix(msg, `unknown point "MREIT" in "center". Did you mean: MERIK MERIT`) {
+		t.Errorf("expected MERIK and MERIT to be offered, got %q", msg)
+	}
 }
 
 func TestParseCourseTerminationErrors(t *testing.T) {

@@ -48,7 +48,7 @@ type FacilityAdaptation struct {
 	Areas             map[string]*STARSArea                `json:"areas,omitempty"`
 	RadarSites        map[string]*av.RadarSite             `json:"radar_sites"`
 	Center            av.ScenarioPoint2LL                  `json:"center"`
-	MaxDistance       float32                              `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm STARS, 400nm ERAM)
+	MaxDistance       float32                              `json:"max_distance"` // Distance from center where aircraft get culled from (default 200nm STARS, 400nm ERAM)
 	Range             float32                              `json:"range"`
 	Scratchpads       map[string]string                    `json:"scratchpads"`
 	SignificantPoints map[string]SignificantPoint          `json:"significant_points"`
@@ -349,6 +349,15 @@ func (fa *FacilityAdaptation) CurrentDatablockClockPhase(now time.Time) int {
 		}
 	}
 	return seq[0]
+}
+
+// CullDistance is how far from the facility's center an aircraft flies before
+// the sim lets it go; facility is the TRACON or ARTCC the adaptation is for.
+func (fa *FacilityAdaptation) CullDistance(facility string) float32 {
+	if fa.MaxDistance > 0 {
+		return fa.MaxDistance
+	}
+	return util.Select(db.DB.IsARTCC(facility), float32(400), float32(200))
 }
 
 // DefaultAirportForArea returns the CRDA default airport for a given

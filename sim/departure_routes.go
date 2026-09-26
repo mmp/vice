@@ -208,7 +208,7 @@ func (ss *CommonState) departureRouteWaypoints(route string) av.WaypointArray {
 	wps := av.RouteWaypoints(db.Lookups{}, route, nil).InitializeLocations(ss, ss.NmPerLongitude,
 		ss.MagneticVariation, true /* allowSlop */, nil)
 
-	cull := ss.cullDistance()
+	cull := ss.FacilityAdaptation.CullDistance(ss.Facility)
 	if i := slices.IndexFunc(wps, func(wp av.Waypoint) bool {
 		return math.NMDistance2LL(wp.Location, ss.Center) > cull
 	}); i != -1 {

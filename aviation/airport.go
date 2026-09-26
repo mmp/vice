@@ -281,7 +281,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 							e.ErrorString(`"climbout_actions": %v`, err)
 						} else {
 							override = ovr
-							override.initializeActionLocations(db, magneticVariation, false, e)
+							override.initializeActionLocations(db, ap.Location, magneticVariation, false, e)
 							WaypointArray{override}.checkBasics(e, controlPositions, checkScratchpad)
 						}
 					}

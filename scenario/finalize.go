@@ -131,7 +131,7 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 			// "FIX@HDG/DIST"
 			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
 			if pll, ok := sg.Locate(strs[1]); !ok {
-				e.ErrorString("base fix %q unknown", strs[1])
+				e.ErrorString("base fix %q unknown%s", strs[1], av.SuggestFixes(sg, strs[1], math.Point2LL{}))
 			} else if hdg, err := strconv.Atoi(strs[2]); err != nil {
 				e.ErrorString("heading %q: %v", strs[2], err)
 			} else if dist, err := strconv.ParseFloat(strs[3], 32); err != nil {
@@ -148,7 +148,8 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 			// case.
 			sg.Fixes[fix] = pos
 		} else {
-			e.ErrorString("invalid location syntax %q for fix %q", location, fix)
+			e.ErrorString("invalid location syntax %q for fix %q%s", location, fix,
+				av.SuggestFixes(sg, location, math.Point2LL{}))
 		}
 
 		// Entries in "fixes" should not shadow navaids, fixes, airports, or

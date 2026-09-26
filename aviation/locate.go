@@ -83,7 +83,7 @@ func (sp *ScenarioPoint2LL) Resolve(loc Locator, key string, e *util.ErrorLogger
 		return
 	}
 	if p, ok := loc.Locate(sp.String); !ok {
-		e.ErrorString("unknown point %q in %q", sp.String, key)
+		e.ErrorString("unknown point %q in %q%s", sp.String, key, SuggestFixes(loc, sp.String, math.Point2LL{}))
 	} else {
 		sp.Point2LL = p
 	}
@@ -150,17 +150,26 @@ type FixSuggester interface {
 	Similar(fix string) []string
 }
 
-// suggestFixes returns a " Did you mean: ..." clause for an error that reports
-// fix unknown, offering the fixes loc suggests within 150nm of near, nearest
-// first, or "" if there are none.
-func suggestFixes(loc Locator, fix string, near math.Point2LL) string {
+// SuggestFixes returns a ". Did you mean: ..." clause to end an error that
+// reports fix unknown, or "" if loc has nothing to suggest. Given a point near
+// where the fix should be, it offers only the fixes within 150nm of it, nearest
+// first; callers with no such point pass the zero point to get all of them.
+func SuggestFixes(loc Locator, fix string, near math.Point2LL) string {
 	fs, ok := loc.(FixSuggester)
 	if !ok {
 		return ""
 	}
 
+	similar := fs.Similar(fix)
+	if near.IsZero() {
+		if len(similar) == 0 {
+			return ""
+		}
+		return ". Did you mean: " + strings.Join(similar, " ")
+	}
+
 	dist := make(map[string]float32)
-	for _, s := range fs.Similar(fix) {
+	for _, s := range similar {
 		if p, ok := loc.Locate(s); ok {
 			if d := math.NMDistance2LL(near, p); d < 150 {
 				dist[s] = d
@@ -172,16 +181,17 @@ func suggestFixes(loc Locator, fix string, near math.Point2LL) string {
 	}
 
 	sim := slices.SortedFunc(maps.Keys(dist), func(a, b string) int { return cmp.Compare(dist[a], dist[b]) })
-	return " Did you mean: " + strings.Join(util.MapSlice(sim, func(s string) string {
+	return ". Did you mean: " + strings.Join(util.MapSlice(sim, func(s string) string {
 		return fmt.Sprintf("%s (%.1fnm)", s, dist[s])
 	}), " ")
 }
 
 // initializeActionLocations resolves the fixes the waypoint's action groups
 // refer to: the navaids that DME distances and radials are measured from and
-// the fixes whose radials are flown.
-func (wp *Waypoint) initializeActionLocations(loc Locator, magneticVariation float32, allowSlop bool,
-	e *util.ErrorLogger) {
+// the fixes whose radials are flown. near is a point close to the waypoint,
+// for suggesting alternatives to a fix that can't be located.
+func (wp *Waypoint) initializeActionLocations(loc Locator, near math.Point2LL, magneticVariation float32,
+	allowSlop bool, e *util.ErrorLogger) {
 	// radialVariation returns the variation a radial of fix is referenced
 	// to. A VHF navaid's radials are fixed to its station declination,
 	// which the local variation has usually drifted from since the station
@@ -214,8 +224,8 @@ func (wp *Waypoint) initializeActionLocations(loc Locator, magneticVariation flo
 				until := &wp.InitExtra().ActionGroups[j].Until
 				until.RadialFixLocation, until.RadialFixVariation = pos, radialVariation(group.Until.RadialFix)
 			} else if e != nil && !allowSlop {
-				e.ErrorString("%s: unable to locate %q for waypoint action group %q",
-					wp.Fix, group.Until.RadialFix, group.Encoded())
+				e.ErrorString("%s: unable to locate %q for waypoint action group %q%s",
+					wp.Fix, group.Until.RadialFix, group.Encoded(), SuggestFixes(loc, group.Until.RadialFix, near))
 			}
 		}
 		// The course's line runs through the next fix, so the navaid it
@@ -224,8 +234,8 @@ func (wp *Waypoint) initializeActionLocations(loc Locator, magneticVariation flo
 			if _, ok := loc.Locate(fix); ok {
 				wp.InitExtra().ActionGroups[j].Until.CourseFixVariation = radialVariation(fix)
 			} else if e != nil && !allowSlop {
-				e.ErrorString("%s: unable to locate %q for waypoint action group %q",
-					wp.Fix, fix, group.Encoded())
+				e.ErrorString("%s: unable to locate %q for waypoint action group %q%s",
+					wp.Fix, fix, group.Encoded(), SuggestFixes(loc, fix, near))
 			}
 		}
 		if fix := group.Actions.Heading.Fix; fix != "" {
@@ -233,8 +243,8 @@ func (wp *Waypoint) initializeActionLocations(loc Locator, magneticVariation flo
 				heading := &wp.InitExtra().ActionGroups[j].Actions.Heading
 				heading.FixLocation, heading.FixVariation = pos, radialVariation(fix)
 			} else if e != nil && !allowSlop {
-				e.ErrorString("%s: unable to locate %q for waypoint action group %q",
-					wp.Fix, fix, group.Encoded())
+				e.ErrorString("%s: unable to locate %q for waypoint action group %q%s",
+					wp.Fix, fix, group.Encoded(), SuggestFixes(loc, fix, near))
 			}
 		}
 	}
@@ -260,13 +270,13 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 		if e != nil {
 			e.Push("Fix " + wp.Fix)
 		}
-		wa[i].initializeActionLocations(loc, magneticVariation, allowSlop, e)
+		wa[i].initializeActionLocations(loc, prev, magneticVariation, allowSlop, e)
 
 		if wp.AlongLeg() {
 			// Placed below, once the fixes on either side have been located.
 		} else if pos, ok := loc.Locate(wp.Fix); !ok {
 			if e != nil && !allowSlop {
-				e.ErrorString("unable to locate waypoint.%s", suggestFixes(loc, wp.Fix, prev))
+				e.ErrorString("unable to locate waypoint%s", SuggestFixes(loc, wp.Fix, prev))
 			}
 		} else {
 			wa[i].Location = pos

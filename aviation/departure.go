@@ -756,7 +756,8 @@ func (ap *Airport) checkExits(db Database, e *util.ErrorLogger) {
 			continue
 		}
 		if _, ok := db.Locate(exit.Base()); !ok {
-			e.ErrorString(`"departure_routes" exit %q names no fix and nothing else uses it`, exit)
+			e.ErrorString(`"departure_routes" exit %q names no fix and nothing else uses it%s`, exit,
+				SuggestFixes(db, exit.Base(), ap.Location))
 		}
 	}
 }

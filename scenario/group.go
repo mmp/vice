@@ -199,13 +199,27 @@ func (sg *Group) resolveControllerRefs() {
 
 // Similar returns the fixes, navaids, and airports spelled within one edit of
 // fix, or within two if there are none that close, for the "did you mean"
-// in an error about a fix that couldn't be located.
+// in an error about a fix that couldn't be located. Only those within the
+// facility's cull distance of its center are offered, sorted by name: the
+// published data covers the whole country.
 func (sg *Group) Similar(fix string) []string {
 	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(sg.Fixes), nil, nil)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Navaids), d1, d2)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Airports), d1, d2)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Fixes), d1, d2)
-	return util.Select(len(d1) > 0, d1, d2)
+
+	fa := &sg.FacilityConfig.FacilityAdaptation
+	cull := fa.CullDistance(sg.facility())
+	inFacility := func(s string) bool {
+		p, ok := sg.Locate(s)
+		return ok && math.NMDistance2LL(p, fa.Center.Point2LL) < cull
+	}
+	d1, d2 = util.FilterSliceInPlace(d1, inFacility), util.FilterSliceInPlace(d2, inFacility)
+
+	similar := util.Select(len(d1) > 0, d1, d2)
+	slices.Sort(similar)
+	// A name may be in more than one of the maps searched.
+	return slices.Compact(similar)
 }
 
 var (

@@ -132,7 +132,7 @@ func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {
 
 			for _, s := range vstrs {
 				if p, ok := loc.Locate(s); !ok {
-					e.ErrorString(`unknown point %q in "vertices"`, s)
+					e.ErrorString(`unknown point %q in "vertices"%s`, s, SuggestFixes(loc, s, math.Point2LL{}))
 				} else {
 					a.Vertices = append(a.Vertices, p)
 				}
@@ -268,7 +268,7 @@ func parseCRDARoute(s string, loc Locator, nmPerLongitude, magneticVariation flo
 
 		e.Push("Fix " + pt.Fix)
 		if pos, ok := loc.Locate(pt.Fix); !ok {
-			e.ErrorString("unable to locate waypoint")
+			e.ErrorString("unable to locate waypoint%s", SuggestFixes(loc, pt.Fix, math.Point2LL{}))
 		} else {
 			pt.Location = pos
 		}

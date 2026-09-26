@@ -199,7 +199,7 @@ func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Grou
 				// located by its own name.
 				where := util.Select(sp.Location.String != "", sp.Location.String, name)
 				if p, ok := sg.Locate(where); !ok {
-					e.ErrorString("unable to find location of %q", where)
+					e.ErrorString("unable to find location of %q%s", where, av.SuggestFixes(sg, where, math.Point2LL{}))
 				} else {
 					sp.Location.Point2LL = p
 				}
@@ -300,7 +300,7 @@ func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Grou
 	for _, aa := range s.AirspaceAwareness {
 		for _, fix := range aa.Fix {
 			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
-				e.ErrorString("%s : fix unknown", fix)
+				e.ErrorString("%s : fix unknown%s", fix, av.SuggestFixes(sg, fix, math.Point2LL{}))
 			}
 		}
 
@@ -324,7 +324,7 @@ func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Grou
 		for _, aa := range area.AirspaceAwareness {
 			for _, fix := range aa.Fix {
 				if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
-					e.ErrorString("%s : fix unknown", fix)
+					e.ErrorString("%s : fix unknown%s", fix, av.SuggestFixes(sg, fix, math.Point2LL{}))
 				}
 			}
 

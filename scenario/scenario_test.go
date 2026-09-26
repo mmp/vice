@@ -109,6 +109,33 @@ func TestAirportFiltersCoverTheField(t *testing.T) {
 	}
 }
 
+// A misspelled fix is offered the similarly-spelled ones near the facility, not
+// the ones across the country.
+func TestSimilarStaysNearTheFacility(t *testing.T) {
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Fixes: map[string]db.Fix{
+			"MERIT": {Id: "MERIT", Location: math.Point2LL{-73.13, 41.38}},  // ~50nm from JFK
+			"MERIK": {Id: "MERIK", Location: math.Point2LL{-118.41, 33.94}}, // Los Angeles
+			"ABCDE": {Id: "ABCDE", Location: math.Point2LL{-118.41, 33.94}},
+			"ABXDE": {Id: "ABXDE", Location: math.Point2LL{-73.13, 41.38}},
+		},
+	}
+	t.Cleanup(func() { db.DB = oldDB })
+
+	sg := &Group{TRACON: "N90", Fixes: map[string]math.Point2LL{"MERIX": {-73.9, 40.8}}}
+	sg.FacilityConfig.FacilityAdaptation.Center.Point2LL = math.Point2LL{-73.78, 40.64}
+
+	if got := sg.Similar("MERIZ"); !slices.Equal(got, []string{"MERIT", "MERIX"}) {
+		t.Errorf("expected the nearby MERIT and scenario fix MERIX, got %v", got)
+	}
+	// The one-edit match is across the country, so the nearby two-edit one
+	// is offered instead.
+	if got := sg.Similar("ABCDF"); !slices.Equal(got, []string{"ABXDE"}) {
+		t.Errorf("expected the nearby ABXDE, got %v", got)
+	}
+}
+
 // A location written in a scenario or facility configuration may name a fix as
 // well as give a latitude-longitude, and which fixes exist isn't known until
 // the scenario is finalized. So the JSON-facing field holds text until then: a
