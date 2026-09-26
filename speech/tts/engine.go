@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -24,6 +25,37 @@ const DefaultPlaybackSpeed = 1.5
 // chineseSpeedRatio scales the user-selected speed for Chinese voices,
 // which work better slower.
 const chineseSpeedRatio float32 = 1.3 / 1.75
+
+// maxKokoroSpeed is the fastest that Kokoro itself is asked to speak; any
+// further speedup comes from time-stretching its output. Kokoro implements
+// speed by dividing each phoneme's predicted duration and rounding it to
+// whole frames, which squeezes short unstressed syllables out of fast
+// speech: at 1.5x, "seventy zero one" is heard as "seven zero one". Up to
+// this speed, its one- and two-frame phonemes keep their length.
+const maxKokoroSpeed = 1.25
+
+// kokoroTempos records how much faster than at speed 1 Kokoro actually
+// speaks when it is asked for a given speed, measured over transmissions
+// from a vice log. Its frame rounding makes the two differ: asked for 1.5x,
+// it speaks 1.6x faster, and asked for 2.5x, only 2x. Playback speeds were
+// chosen by ear against these tempos, so the time stretch aims for them in
+// order to keep transmissions as fast as they have been.
+var kokoroTempos = []struct{ speed, tempo float32 }{
+	{1, 1}, {1.25, 1.161}, {1.3, 1.205}, {1.35, 1.484}, {1.4, 1.531}, {1.45, 1.565},
+	{1.5, 1.597}, {1.75, 1.703}, {2, 1.853}, {2.25, 1.951}, {2.5, 2.009},
+}
+
+// kokoroTempo returns how much faster than at speed 1 Kokoro speaks when it
+// is asked for the given speed, interpolating between (or extrapolating
+// from) the measured kokoroTempos.
+func kokoroTempo(speed float32) float32 {
+	i := 1
+	for i < len(kokoroTempos)-1 && kokoroTempos[i].speed < speed {
+		i++
+	}
+	a, b := kokoroTempos[i-1], kokoroTempos[i]
+	return math.Lerp((speed-a.speed)/(b.speed-a.speed), a.tempo, b.tempo)
+}
 
 var playbackSpeed = float32(DefaultPlaybackSpeed)
 var playbackSpeedMu sync.Mutex
@@ -196,14 +228,21 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, kind, text,
 	defer mu.Unlock()
 	queueWait := time.Since(lockStart)
 
+	speed := voiceSpeed(voice)
+	kokoroSpeed := min(speed, maxKokoroSpeed)
+
 	genStart := time.Now()
-	audio := ttsEngine.Generate(text, voiceID, voiceSpeed(voice))
+	audio := ttsEngine.Generate(text, voiceID, kokoroSpeed)
 	if audio == nil || len(audio.Samples) == 0 {
 		return nil, fmt.Errorf("TTS generation failed for text: %q", text)
 	}
 	generate := time.Since(genStart)
 
-	pcm := t.convertAndResample(audio.Samples, audio.SampleRate)
+	stretchStart := time.Now()
+	samples := timeStretch(audio.Samples, audio.SampleRate, kokoroTempo(speed)/kokoroTempo(kokoroSpeed))
+	stretch := time.Since(stretchStart)
+
+	pcm := t.convertAndResample(samples, audio.SampleRate)
 
 	if radio {
 		// Prepend silence to simulate the pilot pressing the transmit key
@@ -223,8 +262,8 @@ func (t *localTTS) synthesize(mu *sync.Mutex, ttsEngine *OfflineTts, kind, text,
 		addRadioEffect(pcm, t.targetSampleRate, radioSeed, 1)
 	}
 
-	t.lg.Infof("TTS %s: %q (%s) in %s: model wait %s, queue wait %s, generate %s",
-		kind, text, voice, time.Since(start), loadWait, queueWait, generate)
+	t.lg.Infof("TTS %s: %q (%s) in %s: model wait %s, queue wait %s, generate %s, stretch %s",
+		kind, text, voice, time.Since(start), loadWait, queueWait, generate, stretch)
 
 	return pcm, nil
 }
@@ -325,5 +364,73 @@ func resampleAudio(samples []float32, srcRate, dstRate int) []float32 {
 		}
 	}
 
+	return out
+}
+
+// timeStretch speeds speech up by rate (or slows it down, for rate < 1)
+// without changing its pitch, using WSOLA (waveform similarity
+// overlap-add). The output is made of overlapping windows of the input
+// that are taken rate times farther apart than they are placed; each one
+// is shifted by up to a few milliseconds to where it best matches how the
+// input continued after the previous window, so that the seams don't
+// click.
+func timeStretch(samples []float32, sampleRate int, rate float32) []float32 {
+	if rate == 1 || len(samples) == 0 {
+		return samples
+	}
+
+	winLen := sampleRate * 30 / 1000
+	synthesisHop := winLen / 2
+	analysisHop := float32(synthesisHop) * rate
+	tolerance := sampleRate * 10 / 1000
+
+	window := make([]float32, winLen)
+	for i := range window {
+		window[i] = 0.5 - 0.5*math.Cos(2*math.Pi*float32(i)/float32(winLen))
+	}
+
+	// Zero padding on both sides lets windows near the ends be shifted by
+	// the tolerance and compared with what follows them without special
+	// cases.
+	pad := tolerance + winLen
+	x := make([]float32, pad+len(samples)+pad+winLen)
+	copy(x[pad:], samples)
+
+	out := make([]float32, int(float32(len(samples))/rate))
+	weight := make([]float32, len(out))
+	prev := -1
+	for k := 0; ; k++ {
+		ts, ta := k*synthesisHop, int(float32(k)*analysisHop)
+		if ts >= len(out) || ta >= len(samples) {
+			break
+		}
+
+		start := pad + ta
+		if prev >= 0 {
+			natural := x[prev+synthesisHop : prev+synthesisHop+winLen]
+			bestCorr := float32(0)
+			for s := pad + ta - tolerance; s <= pad+ta+tolerance; s++ {
+				var corr float32
+				for i, v := range natural {
+					corr += v * x[s+i]
+				}
+				if s == pad+ta-tolerance || corr > bestCorr {
+					start, bestCorr = s, corr
+				}
+			}
+		}
+
+		for i, w := range window[:min(winLen, len(out)-ts)] {
+			out[ts+i] += w * x[start+i]
+			weight[ts+i] += w
+		}
+		prev = start
+	}
+
+	for i, w := range weight {
+		if w > 1e-3 {
+			out[i] /= w
+		}
+	}
 	return out
 }
