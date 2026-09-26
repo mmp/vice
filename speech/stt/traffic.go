@@ -111,6 +111,13 @@ func extractTraffic(tokens []Token) (int, int, int, bool, bool, int) {
 			continue
 		}
 
+		// "type unknown" fills the aircraft-type slot; consume it so its
+		// "unknown" isn't paired with a following "altitude".
+		if next, ok := consumeTypeUnknown(tokens, consumed); ok {
+			consumed = next
+			continue
+		}
+
 		// Check for "altitude unknown" / "unknown altitude" phrasing.
 		if next, ok := consumeAltitudeUnknown(tokens, consumed); ok {
 			altUnknown = true
@@ -275,10 +282,24 @@ func extractTraffic(tokens []Token) (int, int, int, bool, bool, int) {
 	return oclock, miles, alt, altUnknown, otherAircraftWillMaintainVisualSeparation, consumed
 }
 
+// consumeTypeUnknown recognizes "type unknown", given in place of the
+// traffic's aircraft type. Returns the new token index and true if matched.
+func consumeTypeUnknown(tokens []Token, pos int) (int, bool) {
+	if pos+1 >= len(tokens) {
+		return pos, false
+	}
+	if FuzzyMatch(tokens[pos].Text, "type", 0.8) && FuzzyMatch(tokens[pos+1].Text, "unknown", 0.8) {
+		return pos + 2, true
+	}
+	return pos, false
+}
+
 // consumeAltitudeUnknown recognizes "[at] altitude unknown" or
 // "unknown altitude" — the controller is reporting traffic from a primary
 // return without Mode C. STT transcription is noisy, so each word is matched
-// fuzzily. Returns the new token index and true if matched.
+// fuzzily. "unknown altitude" followed by "[indicates] (altitude)" is not
+// matched: the altitude is known and the "unknown" ends a (possibly
+// garbled) "type unknown". Returns the new token index and true if matched.
 func consumeAltitudeUnknown(tokens []Token, pos int) (int, bool) {
 	// Skip a leading "at".
 	start := pos
@@ -294,6 +315,13 @@ func consumeAltitudeUnknown(tokens []Token, pos int) (int, bool) {
 		return start + 2, true
 	}
 	if FuzzyMatch(a, "unknown", 0.8) && FuzzyMatch(b, "altitude", 0.8) {
+		next := start + 2
+		if next < len(tokens) && FuzzyMatch(tokens[next].Text, "indicates", 0.8) {
+			next++
+		}
+		if next < len(tokens) && (tokens[next].Type == TokenNumber || tokens[next].Type == TokenAltitude) {
+			return pos, false
+		}
 		return start + 2, true
 	}
 	return pos, false

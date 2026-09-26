@@ -3476,6 +3476,48 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			expected: "AAL123 TRAFFIC/10/3/UNK",
 		},
 		{
+			// "unknown altitude" here spans "type unknown" and "altitude
+			// indicates"; the altitude is known.
+			name:       "type unknown altitude indicates",
+			transcript: "United 13 zero niner traffic one o'clock three miles  southbound type unknown altitude indicates one thousand four hundred",
+			aircraft: map[string]Aircraft{
+				"United 1309": {Callsign: "UAL1309", State: "arrival", Altitude: 5000},
+			},
+			expected: "UAL1309 TRAFFIC/1/3/14",
+		},
+		{
+			name:       "typo known altitude indicates",
+			transcript: "United Twenty Six Zero Seven maintain two one zero knots traffic one o'clock three miles northeastbound typo known altitude indicates  eight thousand one hundred",
+			aircraft: map[string]Aircraft{
+				"United 2607": {Callsign: "UAL2607", State: "arrival", Altitude: 5000},
+			},
+			expected: "UAL2607 S210 TRAFFIC/1/3/81",
+		},
+		{
+			name:       "type unknown altitude unknown",
+			transcript: "United 13 zero niner traffic one o'clock three miles southbound type unknown altitude unknown report in sight",
+			aircraft: map[string]Aircraft{
+				"United 1309": {Callsign: "UAL1309", State: "arrival", Altitude: 5000},
+			},
+			expected: "UAL1309 TRAFFIC/1/3/UNK",
+		},
+		{
+			name:       "type unknown altitude without indicates",
+			transcript: "United 13 zero niner traffic one o'clock three miles southbound type unknown altitude one thousand four hundred",
+			aircraft: map[string]Aircraft{
+				"United 1309": {Callsign: "UAL1309", State: "arrival", Altitude: 5000},
+			},
+			expected: "UAL1309 TRAFFIC/1/3/14",
+		},
+		{
+			name:       "garbled type unknown altitude indicates",
+			transcript: "United 13 zero niner traffic one o'clock three miles southbound tight unknown altitude indicates one thousand four hundred",
+			aircraft: map[string]Aircraft{
+				"United 1309": {Callsign: "UAL1309", State: "arrival", Altitude: 5000},
+			},
+			expected: "UAL1309 TRAFFIC/1/3/14",
+		},
+		{
 			// "landing the parallel runway" with no altitude given
 			name:       "parallel runway no altitude",
 			transcript: "American 123 traffic one o'clock five miles north eastbound a seven thirty seven landing the parallel runway report traffic in sight",
