@@ -329,9 +329,9 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 		imgui.PopStyleColor()
 
+		ui.menuBarHeight = imgui.WindowSize().Y
 		imgui.EndMainMenuBar()
 	}
-	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
 	activeModal := hasActiveModalDialogs()
 	if controlClient != nil {
