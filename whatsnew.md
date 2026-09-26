@@ -4,7 +4,8 @@ adjustments for TAS
 - Flight model
   - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
   - Fixed vectored aircraft given "intercept localizer" then flying procedure turns after being cleared for the approach
-  - Fixed multiple bugs with airspeed handling and altitude/temperature   - VFRs are better at scud-running under B and C airspace shelves
+  - Fixed multiple bugs with airspeed handling and altitude/temperature
+  - VFRs are better at scud-running under B and C airspace shelves
   - Fixed VFR airwork descending below the ground
 - ERAM
   - Altitudes that virtual controllers assign along a route are now entered in the datablock:
