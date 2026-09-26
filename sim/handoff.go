@@ -257,7 +257,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			if s.State.TCWControlsPosition(tcw, fp.HandoffController) {
 				return nil
 			}
-			if _, ok := s.findInboundPointOut(fp.ACID, tcw); ok {
+			if _, ok := s.findInboundPointOut(fp, tcw); ok {
 				// Point out where the recipient decided to take it as a handoff instead.
 				return nil
 			}
@@ -268,7 +268,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			// not the acceptor's primary TCP. This preserves correct ownership when accepting
 			// handoffs to consolidated secondary positions.
 			newTrackingController := fp.HandoffController
-			if po, ok := s.findInboundPointOut(fp.ACID, tcw); ok {
+			if po, ok := s.findInboundPointOut(fp, tcw); ok {
 				// Point out accepted as handoff - use the point-out target
 				newTrackingController = po.ToController
 			}
@@ -289,7 +289,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			fp.OwningTCW = tcw // The accepting TCW owns the track
 
 			// Clean up if a point out was accepted as a handoff
-			delete(s.PointOuts, acid)
+			fp.PointOuts = nil
 
 			if ac != nil {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
@@ -433,6 +433,7 @@ func (s *Sim) acceptRedirectedHandoff(fp *NASFlightPlan, ac *Aircraft, owningTCW
 	fp.TrackingController = rh.RedirectedTo
 	fp.LastLocalController = rh.RedirectedTo
 	fp.OwningTCW = owningTCW
+	fp.PointOuts = nil
 	*rh = RedirectedHandoff{}
 
 	if ac != nil {
@@ -494,7 +495,7 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 			// STARS (per 6.12.1 / 6.12.7) rejects any PO initiation while a
 			// track already has an active PO. ERAM permits concurrent POs.
 			fromCtrl := s.State.Controllers[s.State.PrimaryPositionForTCW(fromTCW)]
-			if fromCtrl != nil && !fromCtrl.ERAMFacility && len(s.PointOuts[acid]) > 0 {
+			if fromCtrl != nil && !fromCtrl.ERAMFacility && len(fp.PointOuts) > 0 {
 				return ErrTrackHasActivePointOut
 			}
 			return nil
@@ -503,7 +504,7 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 			fromTCP := s.State.PrimaryPositionForTCW(fromTCW)
 			ctrl := s.State.Controllers[fromTCP]
 			octrl := s.State.Controllers[toTCP]
-			s.pointOut(acid, ctrl, octrl)
+			s.pointOut(fp, ctrl, octrl)
 		}); err != nil {
 		return err
 	}
@@ -511,20 +512,12 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 	return nil
 }
 
-func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
-	// Always post the event
-	s.eventStream.Post(Event{
-		Type:           PointOutEvent,
-		FromController: from.PositionId(),
-		ToController:   to.PositionId(),
-		ACID:           acid,
-	})
-
-	// But don't have duplicate entries in the PointOut slice for a repeated p/o.
-	if !slices.ContainsFunc(s.PointOuts[acid], func(po PointOut) bool {
+func (s *Sim) pointOut(fp *NASFlightPlan, from *av.Controller, to *av.Controller) {
+	// Don't have duplicate entries in the PointOut slice for a repeated p/o.
+	if !slices.ContainsFunc(fp.PointOuts, func(po PointOut) bool {
 		return po.FromController == from.PositionId() && po.ToController == to.PositionId()
 	}) {
-		s.PointOuts[acid] = append(s.PointOuts[acid], PointOut{
+		fp.PointOuts = append(fp.PointOuts, PointOut{
 			FromController: from.PositionId(),
 			ToController:   to.PositionId(),
 			AcceptTime:     s.State.SimTime.Add(s.Rand.DurationRange(4*time.Second, 14*time.Second)),
@@ -534,8 +527,8 @@ func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 
 // findInboundPointOut returns the first pending PointOut whose ToController is
 // controlled by tcw (an inbound point out the caller can act on).
-func (s *Sim) findInboundPointOut(acid ACID, tcw TCW) (PointOut, bool) {
-	for _, po := range s.PointOuts[acid] {
+func (s *Sim) findInboundPointOut(fp *NASFlightPlan, tcw TCW) (PointOut, bool) {
+	for _, po := range fp.PointOuts {
 		if s.State.TCWControlsPosition(tcw, po.ToController) {
 			return po, true
 		}
@@ -543,27 +536,18 @@ func (s *Sim) findInboundPointOut(acid ACID, tcw TCW) (PointOut, bool) {
 	return PointOut{}, false
 }
 
-func (s *Sim) deletePointOuts(acid ACID, match func(PointOut) bool) {
-	s.PointOuts[acid] = slices.DeleteFunc(s.PointOuts[acid], match)
-	if len(s.PointOuts[acid]) == 0 {
-		delete(s.PointOuts, acid)
-	}
-}
-
 func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
-	acked := util.FilterSlice(s.PointOuts[acid], func(po PointOut) bool {
-		return s.State.TCWControlsPosition(tcw, po.ToController)
-	})
+	toTCW := func(po PointOut) bool { return s.State.TCWControlsPosition(tcw, po.ToController) }
 
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
-			if len(acked) == 0 {
+			if !slices.ContainsFunc(fp.PointOuts, toTCW) {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
-			for _, po := range acked {
+			for _, po := range util.FilterSlice(fp.PointOuts, toTCW) {
 				// As with auto accepts, "to" and "from" are swapped in
 				// the event since they are w.r.t. the original point out.
 				s.eventStream.Post(Event{
@@ -575,9 +559,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 				fp.AddPointOutHistory(po.ToController)
 			}
 
-			s.deletePointOuts(acid, func(po PointOut) bool {
-				return s.State.TCWControlsPosition(tcw, po.ToController)
-			})
+			fp.PointOuts = slices.DeleteFunc(fp.PointOuts, toTCW)
 
 			return nil
 		}); err != nil {
@@ -588,30 +570,17 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 }
 
 func (s *Sim) RecallPointOut(tcw TCW, acid ACID) error {
-	recalled := util.FilterSlice(s.PointOuts[acid], func(po PointOut) bool {
-		return s.State.TCWControlsPosition(tcw, po.FromController)
-	})
+	fromTCW := func(po PointOut) bool { return s.State.TCWControlsPosition(tcw, po.FromController) }
 
 	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
-			if len(recalled) == 0 {
+			if !slices.ContainsFunc(fp.PointOuts, fromTCW) {
 				return av.ErrNotPointedOutByMe
 			}
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
-			for _, po := range recalled {
-				s.eventStream.Post(Event{
-					Type:           RecalledPointOutEvent,
-					FromController: po.FromController,
-					ToController:   po.ToController,
-					ACID:           acid,
-				})
-			}
-
-			s.deletePointOuts(acid, func(po PointOut) bool {
-				return s.State.TCWControlsPosition(tcw, po.FromController)
-			})
+			fp.PointOuts = slices.DeleteFunc(fp.PointOuts, fromTCW)
 		}); err != nil {
 		return err
 	}
@@ -620,19 +589,17 @@ func (s *Sim) RecallPointOut(tcw TCW, acid ACID) error {
 }
 
 func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
-	rejected := util.FilterSlice(s.PointOuts[acid], func(po PointOut) bool {
-		return s.State.TCWControlsPosition(tcw, po.ToController)
-	})
+	toTCW := func(po PointOut) bool { return s.State.TCWControlsPosition(tcw, po.ToController) }
 
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
-			if len(rejected) == 0 {
+			if !slices.ContainsFunc(fp.PointOuts, toTCW) {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
-			for _, po := range rejected {
+			for _, po := range util.FilterSlice(fp.PointOuts, toTCW) {
 				// As with auto accepts, "to" and "from" are swapped in
 				// the event since they are w.r.t. the original point out.
 				s.eventStream.Post(Event{
@@ -643,9 +610,7 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 				})
 			}
 
-			s.deletePointOuts(acid, func(po PointOut) bool {
-				return s.State.TCWControlsPosition(tcw, po.ToController)
-			})
+			fp.PointOuts = slices.DeleteFunc(fp.PointOuts, toTCW)
 
 			return nil
 		}); err != nil {

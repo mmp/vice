@@ -170,8 +170,7 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Int("scheduled_departures", len(s.Schedule.Departures)),
 		slog.Int("scheduled_arrivals", len(s.Schedule.Arrivals)),
 		slog.Int("scheduled_overflights", len(s.Schedule.Overflights)),
-		slog.Any("automatic_handoffs", s.Handoffs),
-		slog.Any("automatic_pointouts", s.PointOuts))
+		slog.Any("automatic_handoffs", s.Handoffs))
 }
 
 // log prints the provided message to stdout and posts it to the clients' event streams so that it

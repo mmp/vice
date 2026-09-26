@@ -108,7 +108,9 @@ import (
 // 93: the ERAM altitude limits filters are saved with the preference set
 //
 // 94: the ERAM altitude limits filters can be adapted per control position and per scenario
-const ViceSerializeVersion = 94
+//
+// 95: pending point outs moved from Sim.PointOuts to NASFlightPlan.PointOuts
+const ViceSerializeVersion = 95
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

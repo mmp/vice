@@ -99,8 +99,6 @@ type Scope struct {
 	// thickness doesn't change between menus, and scrolling is disabled.
 	DCBScaleToFit bool
 
-	// a/c callsign -> controllers
-	PointOuts         map[sim.ACID]PointOutControllers
 	RejectedPointOuts map[sim.ACID]any
 	ForceQLACIDs      map[sim.ACID]any
 
@@ -284,10 +282,6 @@ func (sp *Scope) clearPendingATISGITextUpdate(line int) {
 	}{}
 }
 
-type PointOutControllers struct {
-	From, To sim.TCP
-}
-
 const (
 	fontDefault = iota
 	fontLegacy
@@ -405,9 +399,6 @@ func NewScope() *Scope {
 }
 
 func (sp *Scope) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
-	if sp.PointOuts == nil {
-		sp.PointOuts = make(map[sim.ACID]PointOutControllers)
-	}
 	if sp.RejectedPointOuts == nil {
 		sp.RejectedPointOuts = make(map[sim.ACID]any)
 	}
@@ -538,7 +529,6 @@ func (sp *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	sp.wxNextHistoryStepTime = sim.Time{}
 	clear(sp.DuplicateBeacons)
 	clear(sp.ReleaseRequests)
-	clear(sp.PointOuts)
 	clear(sp.RejectedPointOuts)
 	clear(sp.ForceQLACIDs)
 	sp.RangeBearingLines = nil

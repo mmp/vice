@@ -242,8 +242,9 @@ type Scope struct {
 	cursorOverrideUntil     time.Time `json:"-"`
 	cursorRollbackSelection string    `json:"-"` // Cursor to use after temporary cursor expires
 
-	InboundPointOuts  map[sim.ACID][]sim.ControlPosition
-	OutboundPointOuts map[sim.ACID][]outboundPointOut
+	// AckedPointOuts holds the receivers who have acknowledged the user's
+	// point outs; they are shown as a white "A" until the user dismisses them.
+	AckedPointOuts map[sim.ACID][]sim.ControlPosition
 
 	QuickLookSectors map[string]struct{}
 
@@ -353,11 +354,8 @@ func NewScope() *Scope {
 
 func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Logger) {
 	// Activate maps
-	if ep.InboundPointOuts == nil {
-		ep.InboundPointOuts = make(map[sim.ACID][]sim.ControlPosition)
-	}
-	if ep.OutboundPointOuts == nil {
-		ep.OutboundPointOuts = make(map[sim.ACID][]outboundPointOut)
+	if ep.AckedPointOuts == nil {
+		ep.AckedPointOuts = make(map[sim.ACID][]sim.ControlPosition)
 	}
 	if ep.QuickLookSectors == nil {
 		ep.QuickLookSectors = make(map[string]struct{})
@@ -659,8 +657,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	// callsign that recurs in the new sim would otherwise inherit the old
 	// aircraft's leader line, history trail, and datablock state.
 	clear(ep.TrackState)
-	clear(ep.InboundPointOuts)
-	clear(ep.OutboundPointOuts)
+	clear(ep.AckedPointOuts)
 	clear(ep.QuickLookSectors)
 	ep.AddedBeaconCodes = nil
 	clear(ep.aircraftFixCoordinates)

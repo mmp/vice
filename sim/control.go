@@ -245,7 +245,6 @@ func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
 	}
 	if fp != nil {
 		delete(s.Handoffs, fp.ACID)
-		delete(s.PointOuts, fp.ACID)
 		delete(s.DeferredOnCourse, fp.ACID)
 		s.deleteFlightPlan(fp)
 	}

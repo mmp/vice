@@ -74,8 +74,7 @@ type Sim struct {
 	PatternState   map[av.ICAOAirportCode]*PatternState
 	NextVFFRequest Time
 
-	Handoffs  map[ACID]Handoff
-	PointOuts map[ACID][]PointOut
+	Handoffs map[ACID]Handoff
 
 	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
 
@@ -300,8 +299,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		lastSimUpdateTime: time.Now(),
 
-		Handoffs:  make(map[ACID]Handoff),
-		PointOuts: make(map[ACID][]PointOut),
+		Handoffs: make(map[ACID]Handoff),
 
 		PrivilegedTCWs: make(map[TCW]bool),
 

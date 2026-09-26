@@ -363,11 +363,12 @@ func (ep *Scope) acknowledgePointOut(ctx *scope.Context, trk *sim.Track) error {
 	return nil
 }
 
-func (ep *Scope) clearPointOutLock(trk *sim.Track) (CommandStatus, error) {
+func (ep *Scope) clearPointOutLock(ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	state := ep.TrackState[trk.ADSBCallsign]
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
-	} else if !state.PointOutFDBLocked {
+	} else if !state.PointOutFDBLocked || len(ctx.InboundPointOuts(trk.FlightPlan)) > 0 {
+		// While a point out to the user is pending, the lock stays.
 		return CommandStatus{}, ErrIllegalUserAction
 	} else {
 		state.PointOutFDBLocked = false

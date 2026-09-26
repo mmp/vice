@@ -13,76 +13,50 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
-// outboundPointOut tracks one receiver of a point out the user initiated.  Acked flips to true when
-// an AcknowledgedPointOutEvent for the matching (acid, receiver) arrives; the entry persists
-// locally until the user clicks the white "A" row in the pop-up to dismiss it.
-type outboundPointOut struct {
-	Receiver sim.ControlPosition
-	Acked    bool
-}
-
 // pointOutIndicatorActive reports whether a P/A indicator should be drawn on
 // datablock line 0 for the track.
-func (ep *Scope) pointOutIndicatorActive(trk *sim.Track) bool {
+func (ep *Scope) pointOutIndicatorActive(ctx *scope.Context, trk *sim.Track) bool {
 	if trk.FlightPlan == nil {
 		return false
 	}
-	return len(ep.InboundPointOuts[trk.FlightPlan.ACID]) > 0 ||
-		len(ep.OutboundPointOuts[trk.FlightPlan.ACID]) > 0
+	fp := trk.FlightPlan
+	return len(ctx.InboundPointOuts(fp)) > 0 || len(ctx.OutboundPointOuts(fp)) > 0 ||
+		len(ep.AckedPointOuts[fp.ACID]) > 0
 }
 
 // pointOutIndicatorGlyph returns the indicator character (P or A) and color for the line-0
-// indicator, or zero rune if nothing should be drawn. Yellow "P" is shown if any inbound or any
-// unacked outbound entry exists; white "A" if outbound is non-empty and every entry is already
-// acked.
-func (ep *Scope) pointOutIndicatorGlyph(trk *sim.Track, fdbBrightness scope.Brightness) (rune, renderer.RGB, bool) {
+// indicator, or zero rune if nothing should be drawn. Yellow "P" is shown if any inbound or
+// outbound point out is pending; white "A" if all that remain are the user's acknowledged ones.
+func (ep *Scope) pointOutIndicatorGlyph(ctx *scope.Context, trk *sim.Track, fdbBrightness scope.Brightness) (rune, renderer.RGB, bool) {
 	if trk.FlightPlan == nil {
 		return 0, renderer.RGB{}, false
 	}
-	acid := trk.FlightPlan.ACID
-	y := fdbBrightness.ScaleRGB(colors.yellow)
-	if len(ep.InboundPointOuts[acid]) > 0 {
-		return 'P', y, true
+	fp := trk.FlightPlan
+	if len(ctx.InboundPointOuts(fp)) > 0 || len(ctx.OutboundPointOuts(fp)) > 0 {
+		return 'P', fdbBrightness.ScaleRGB(colors.yellow), true
+	} else if len(ep.AckedPointOuts[fp.ACID]) > 0 {
+		return 'A', fdbBrightness.ScaleRGB(colors.pointOut.white), true
 	}
-
-	outbound := ep.OutboundPointOuts[acid]
-	if len(outbound) == 0 {
-		return 0, renderer.RGB{}, false
-	} else if slices.ContainsFunc(outbound, func(po outboundPointOut) bool { return !po.Acked }) {
-		return 'P', y, true
-	} else {
-		white := fdbBrightness.ScaleRGB(colors.pointOut.white)
-		return 'A', white, true
-	}
+	return 0, renderer.RGB{}, false
 }
 
 // handlePointOutIndicatorClick handles a click on the line-0 P/A point-out indicator. Clicking the
 // yellow "P" opens the pop-up menu; clicking the white "A" removes it directly. With inbound
-// entries the P always wins; otherwise we open the originator pop-up if anything outbound is still
-// pending and direct-dismiss if every outbound entry is already acked (the "A" case). dbMain is
-// the main datablock extent; the menu is anchored at its top-right corner so it sits immediately
-// to the right of the datablock.
+// point outs the P always opens the receiver pop-up; otherwise it opens the originator pop-up.
+// dbMain is the main datablock extent; the menu is anchored at its top-right corner so it sits
+// immediately to the right of the datablock.
 func (ep *Scope) handlePointOutIndicatorClick(ctx *scope.Context, trk sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
 	}
-	acid := trk.FlightPlan.ACID
+	fp := trk.FlightPlan
 	origin := [2]float32{dbMain.P1[0], dbMain.P1[1]}
-	if len(ep.InboundPointOuts[acid]) > 0 {
-		ep.popup = &pointOutPopup{acid: acid, outbound: false, origin: origin}
-		return
-	}
-
-	outbound := ep.OutboundPointOuts[acid]
-	if len(outbound) == 0 {
-		return
-	} else if slices.ContainsFunc(outbound, func(po outboundPointOut) bool {
-		return po.Acked
-	}) {
-		// Have unacknowledged p/os
-		ep.popup = &pointOutPopup{acid: acid, outbound: true, origin: origin}
+	if len(ctx.InboundPointOuts(fp)) > 0 {
+		ep.popup = &pointOutPopup{acid: fp.ACID, outbound: false, origin: origin}
+	} else if len(ctx.OutboundPointOuts(fp)) > 0 {
+		ep.popup = &pointOutPopup{acid: fp.ACID, outbound: true, origin: origin}
 	} else {
-		delete(ep.OutboundPointOuts, acid)
+		delete(ep.AckedPointOuts, fp.ACID)
 	}
 }
 
@@ -110,56 +84,52 @@ func (po *pointOutPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 		return string(p)
 	}
 
+	trk, ok := ctx.Client.State.GetTrackByACID(acid)
+	if !ok {
+		ep.popup = nil
+		return
+	}
+
 	var rows []MenuItem
 	if po.outbound {
-		entries := ep.OutboundPointOuts[acid]
-		if len(entries) == 0 {
-			ep.popup = nil
-			return
-		}
-		for i, entry := range entries {
-			if entry.Acked {
-				rows = append(rows, MenuItem{
-					Label:       "A",
-					BoxedSuffix: label(entry.Receiver),
-					Color:       colors.pointOut.white, // TODO brightness???
-					OnClick: func(_ MenuClickType) bool {
-						ep.removeOutboundPointOut(acid, i)
-						return len(ep.OutboundPointOuts[acid]) == 0
-					},
-				})
-			} else {
-				rows = append(rows, MenuItem{
-					Label:       "P",
-					BoxedSuffix: label(entry.Receiver),
-					Color:       colors.yellow, // todo: scale by some brightness?
-					// Originator can't ack their own p/o; the click is a no-op but still closes the
-					// menu.
-					OnClick: func(_ MenuClickType) bool { return false },
-				})
-			}
-		}
-	} else {
-		senders := ep.InboundPointOuts[acid]
-		if len(senders) == 0 {
-			ep.popup = nil
-			return
-		}
-
-		for _, sender := range senders {
+		pending := ctx.OutboundPointOuts(trk.FlightPlan)
+		for _, p := range pending {
 			rows = append(rows, MenuItem{
 				Label:       "P",
-				BoxedSuffix: label(sender),
+				BoxedSuffix: label(p.ToController),
+				Color:       colors.yellow, // todo: scale by some brightness?
+				// Originator can't ack their own p/o; the click is a no-op but still closes the
+				// menu.
+				OnClick: func(_ MenuClickType) bool { return false },
+			})
+		}
+		for _, receiver := range ep.AckedPointOuts[acid] {
+			rows = append(rows, MenuItem{
+				Label:       "A",
+				BoxedSuffix: label(receiver),
+				Color:       colors.pointOut.white, // TODO brightness???
+				OnClick: func(_ MenuClickType) bool {
+					ep.removeAckedPointOut(acid, receiver)
+					return len(pending) == 0 && len(ep.AckedPointOuts[acid]) == 0
+				},
+			})
+		}
+	} else {
+		for _, p := range ctx.InboundPointOuts(trk.FlightPlan) {
+			rows = append(rows, MenuItem{
+				Label:       "P",
+				BoxedSuffix: label(p.FromController),
 				Color:       colors.pointOut.cyan,
 				OnClick: func(_ MenuClickType) bool {
-					if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok {
-						ep.acknowledgePointOut(ctx, trk)
-					}
-					// Not sure what else to do if the lookup fails...
+					ep.acknowledgePointOut(ctx, trk)
 					return true
 				},
 			})
 		}
+	}
+	if len(rows) == 0 {
+		ep.popup = nil
+		return
 	}
 
 	ps := ep.currentPrefs()
@@ -182,48 +152,12 @@ func (po *pointOutPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 	ep.DrawERAMMenu(ctx, transforms, cb, po.origin, cfg)
 }
 
-// removeOutboundPointOut deletes a single outbound entry by index, cleaning
-// up the map slot if empty.
-func (ep *Scope) removeOutboundPointOut(acid sim.ACID, idx int) {
-	entries := ep.OutboundPointOuts[acid]
-	if idx < 0 || idx >= len(entries) {
-		return
-	}
-	ep.OutboundPointOuts[acid] = slices.Delete(entries, idx, idx+1)
-	if len(ep.OutboundPointOuts[acid]) == 0 {
-		delete(ep.OutboundPointOuts, acid)
-	}
-}
-
-// removeOutboundPointOutByReceiver removes the first outbound entry whose
-// Receiver matches.
-func (ep *Scope) removeOutboundPointOutByReceiver(acid sim.ACID, receiver sim.ControlPosition) {
-	if i := slices.IndexFunc(ep.OutboundPointOuts[acid], func(e outboundPointOut) bool {
-		return e.Receiver == receiver
-	}); i >= 0 {
-		ep.removeOutboundPointOut(acid, i)
-	}
-}
-
-// removeInboundPointOut removes the first inbound entry from the given sender.
-func (ep *Scope) removeInboundPointOut(acid sim.ACID, sender sim.ControlPosition) {
-	senders := ep.InboundPointOuts[acid]
-	if i := slices.Index(senders, sender); i >= 0 {
-		ep.InboundPointOuts[acid] = slices.Delete(senders, i, i+1)
-		if len(ep.InboundPointOuts[acid]) == 0 {
-			delete(ep.InboundPointOuts, acid)
-		}
-	}
-}
-
-// markOutboundPointOutAcked finds the outbound entry for receiver and flips
-// its Acked flag.
-func (ep *Scope) markOutboundPointOutAcked(acid sim.ACID, receiver sim.ControlPosition) {
-	entries := ep.OutboundPointOuts[acid]
-	for i := range entries {
-		if entries[i].Receiver == receiver && !entries[i].Acked {
-			entries[i].Acked = true
-			return
-		}
+// removeAckedPointOut dismisses receiver's acknowledgment of the user's point
+// out.
+func (ep *Scope) removeAckedPointOut(acid sim.ACID, receiver sim.ControlPosition) {
+	ep.AckedPointOuts[acid] = slices.DeleteFunc(ep.AckedPointOuts[acid],
+		func(p sim.ControlPosition) bool { return p == receiver })
+	if len(ep.AckedPointOuts[acid]) == 0 {
+		delete(ep.AckedPointOuts, acid)
 	}
 }

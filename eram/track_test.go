@@ -25,8 +25,7 @@ func makeTrackTestHarness() *trackTestHarness {
 	ep := &Scope{
 		prefSet:                &PrefrenceSet{Current: *makeDefaultPreferences()},
 		TrackState:             make(map[av.ADSBCallsign]*TrackState),
-		InboundPointOuts:       make(map[sim.ACID][]sim.ControlPosition),
-		OutboundPointOuts:      make(map[sim.ACID][]outboundPointOut),
+		AckedPointOuts:         make(map[sim.ACID][]sim.ControlPosition),
 		CRRGroups:              make(map[string]*CRRGroup),
 		aircraftFixCoordinates: make(map[sim.ACID]aircraftFixCoordinates),
 	}
@@ -132,8 +131,7 @@ func TestTrackStateRemoval(t *testing.T) {
 		FlightPlan: &sim.NASFlightPlan{ACID: "AAL1"},
 	})
 	h.frame(0)
-	h.ep.InboundPointOuts["AAL1"] = []sim.ControlPosition{"2B"}
-	h.ep.OutboundPointOuts["AAL1"] = []outboundPointOut{{Receiver: "2B"}}
+	h.ep.AckedPointOuts["AAL1"] = []sim.ControlPosition{"2B"}
 	h.ep.CRRGroups["A"] = &CRRGroup{Label: "A", Aircraft: map[av.ADSBCallsign]struct{}{"AAL1": {}}}
 
 	delete(h.ctx.Client.State.Tracks, "AAL1")
@@ -145,8 +143,8 @@ func TestTrackStateRemoval(t *testing.T) {
 	if _, ok := h.ep.TrackState["AAL1"]; ok {
 		t.Errorf("track state not deleted for a departed aircraft")
 	}
-	if len(h.ep.InboundPointOuts) != 0 || len(h.ep.OutboundPointOuts) != 0 {
-		t.Errorf("point outs not pruned: %v %v", h.ep.InboundPointOuts, h.ep.OutboundPointOuts)
+	if len(h.ep.AckedPointOuts) != 0 {
+		t.Errorf("point outs not pruned: %v", h.ep.AckedPointOuts)
 	}
 	if len(h.ep.CRRGroups["A"].Aircraft) != 0 {
 		t.Errorf("CRR membership not pruned: %v", h.ep.CRRGroups["A"].Aircraft)
@@ -249,5 +247,76 @@ func TestAcceptedHandoffUsesACID(t *testing.T) {
 		FromController: "2B", ToController: "1A"})
 	if !h.ep.TrackState["N123AB"].EFDB {
 		t.Errorf("accepted handoff did not force a full datablock for an ACID that differs from the callsign")
+	}
+}
+
+// A pending point out is shown from the flight plan alone, so a scope that
+// was not signed on when it was made--during prespawn, say--still shows it,
+// and the receiver's FDB stays after it is acknowledged until QP <FLID>.
+// Once the user's point out is acknowledged, its indicator stays as a white
+// "A" until dismissed.
+func TestPointOutIndicator(t *testing.T) {
+	h := makeTrackTestHarness()
+	inbound := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000, Location: math.Point2LL{-73, 40}},
+		FlightPlan: &sim.NASFlightPlan{ACID: "AAL1", OwningTCW: "TCW2",
+			PointOuts: []sim.PointOut{{FromController: "2B", ToController: "1A"}}},
+	}
+	outbound := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "UAL2", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000, Location: math.Point2LL{-73.5, 40}},
+		FlightPlan: &sim.NASFlightPlan{ACID: "UAL2",
+			PointOuts: []sim.PointOut{{FromController: "1A", ToController: "2B"}}},
+	}
+	h.addTrack(inbound)
+	h.addTrack(outbound)
+	h.frame(0)
+
+	glyph := func(trk *sim.Track) rune {
+		ch, _, _ := h.ep.pointOutIndicatorGlyph(h.ctx, trk, 100)
+		return ch
+	}
+
+	if g := glyph(inbound); g != 'P' {
+		t.Errorf("inbound point out: got indicator %q, want 'P'", g)
+	}
+	if dt := h.ep.datablockType(h.ctx, *inbound); dt != FullDatablock {
+		t.Errorf("inbound point out: got datablock type %v, want a full datablock", dt)
+	}
+	if g := glyph(outbound); g != 'P' {
+		t.Errorf("outbound point out: got indicator %q, want 'P'", g)
+	}
+	if _, err := h.ep.clearPointOutLock(h.ctx, inbound); err == nil {
+		t.Errorf("QP cleared the FDB lock of a pending point out")
+	}
+
+	h.ep.handlePointOutIndicatorClick(h.ctx, *outbound, math.Extent2D{})
+	if h.ep.popup == nil {
+		t.Errorf("clicking a pending outbound point out did not open the pop-up")
+	}
+	h.ep.popup = nil
+
+	inbound.FlightPlan.PointOuts = nil
+	outbound.FlightPlan.PointOuts = nil
+	h.frame(time.Second, sim.Event{Type: sim.AcknowledgedPointOutEvent, ACID: "UAL2",
+		FromController: "2B", ToController: "1A"})
+	if g := glyph(outbound); g != 'A' {
+		t.Errorf("acknowledged point out: got indicator %q, want 'A'", g)
+	}
+
+	if dt := h.ep.datablockType(h.ctx, *inbound); dt != FullDatablock {
+		t.Errorf("acknowledged inbound point out: got datablock type %v, want a full datablock", dt)
+	}
+	if _, err := h.ep.clearPointOutLock(h.ctx, inbound); err != nil {
+		t.Errorf("QP of an acknowledged point out: %v", err)
+	}
+	if dt := h.ep.datablockType(h.ctx, *inbound); dt != LimitedDatablock {
+		t.Errorf("after QP: got datablock type %v, want a limited datablock", dt)
+	}
+
+	h.ep.handlePointOutIndicatorClick(h.ctx, *outbound, math.Extent2D{})
+	if h.ep.pointOutIndicatorActive(h.ctx, outbound) {
+		t.Errorf("dismissed acknowledgment is still shown")
 	}
 }

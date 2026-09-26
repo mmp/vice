@@ -219,6 +219,22 @@ func (ctx *Context) IsHandoffToUser(trk *sim.Track) bool {
 	return true
 }
 
+// InboundPointOuts returns the flight plan's pending point outs to any of
+// the user's positions.
+func (ctx *Context) InboundPointOuts(fp *sim.NASFlightPlan) []sim.PointOut {
+	return util.FilterSlice(fp.PointOuts, func(po sim.PointOut) bool {
+		return ctx.UserControlsPosition(po.ToController)
+	})
+}
+
+// OutboundPointOuts returns the flight plan's pending point outs from any of
+// the user's positions.
+func (ctx *Context) OutboundPointOuts(fp *sim.NASFlightPlan) []sim.PointOut {
+	return util.FilterSlice(fp.PointOuts, func(po sim.PointOut) bool {
+		return ctx.UserControlsPosition(po.FromController)
+	})
+}
+
 // Returns all aircraft that match the given suffix. If instructor, returns
 // all matching aircraft; otherwise only ones under the current
 // controller's control are considered for matching.

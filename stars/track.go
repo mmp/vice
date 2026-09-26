@@ -321,35 +321,26 @@ func (sp *Scope) processEvents(ctx *scope.Context) {
 	// for.
 	for _, event := range ctx.Events {
 		switch event.Type {
-		case sim.PointOutEvent:
-			sp.PointOuts[event.ACID] = PointOutControllers{
-				From: event.FromController,
-				To:   event.ToController,
-			}
-
+		// Pending point outs are in the flight plan; the events only drive
+		// what the originator and receiver see once one is resolved. The
+		// event's controllers are swapped relative to the original point
+		// out: ToController is its originator.
 		case sim.AcknowledgedPointOutEvent:
-			if tcps, ok := sp.PointOuts[event.ACID]; ok {
-				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					if ctx.UserControlsPosition(tcps.From) {
-						state.POFlashingEndTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
-					} else if ctx.UserControlsPosition(tcps.To) {
-						state.PointOutAcknowledged = true
-					}
+			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
+				if ctx.UserControlsPosition(event.ToController) {
+					state.POFlashingEndTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
+				} else if ctx.UserControlsPosition(event.FromController) {
+					state.PointOutAcknowledged = true
 				}
-				delete(sp.PointOuts, event.ACID)
 			}
-
-		case sim.RecalledPointOutEvent:
-			delete(sp.PointOuts, event.ACID)
 
 		case sim.RejectedPointOutEvent:
-			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.UserControlsPosition(tcps.From) {
+			if ctx.UserControlsPosition(event.ToController) {
 				sp.RejectedPointOuts[event.ACID] = nil
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					state.UNFlashingEndTime = ctx.InterpolatedSimTime.Add(5 * time.Second)
 				}
 			}
-			delete(sp.PointOuts, event.ACID)
 
 		case sim.FlightPlanAssociatedEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
@@ -399,8 +390,6 @@ func (sp *Scope) processEvents(ctx *scope.Context) {
 					}
 				}
 			}
-			// Clean up if a point out was instead taken as a handoff.
-			delete(sp.PointOuts, event.ACID)
 
 		case sim.SetGlobalLeaderLineEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {

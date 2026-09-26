@@ -463,7 +463,7 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 			// Only do automatic point outs for virtual controllers
 			if s.isVirtualController(ac.ControllerFrequency) {
 				fromCtrl := s.State.Controllers[TCP(ac.ControllerFrequency)]
-				s.pointOut(sfp.ACID, fromCtrl, ctrl)
+				s.pointOut(sfp, fromCtrl, ctrl)
 			}
 		}
 	}
@@ -606,6 +606,7 @@ func (s *Sim) updateState() {
 			fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 			fp.HandoffController = ""
 			fp.HandoffWasAutomatic = false
+			fp.PointOuts = nil
 
 			if ac != nil {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
@@ -617,19 +618,21 @@ func (s *Sim) updateState() {
 		}
 	}
 
-	for acid, pos := range util.SortedMap(s.PointOuts) {
-		fp, _, _ := s.getFlightPlanForACID(acid)
-		s.PointOuts[acid] = util.FilterSlice(pos, func(po PointOut) bool {
-			if now.After(po.AcceptTime) && fp != nil && s.isVirtualController(po.ToController) {
+	for fp := range s.flightPlans() {
+		if len(fp.PointOuts) == 0 {
+			continue
+		}
+		fp.PointOuts = util.FilterSlice(fp.PointOuts, func(po PointOut) bool {
+			if now.After(po.AcceptTime) && s.isVirtualController(po.ToController) {
 				// Note that "to" and "from" are swapped in the event, since the ack is coming from
 				// the "to" controller of the original point out.
 				s.eventStream.Post(Event{
 					Type:           AcknowledgedPointOutEvent,
 					FromController: po.ToController,
 					ToController:   po.FromController,
-					ACID:           acid,
+					ACID:           fp.ACID,
 				})
-				s.lg.Debug("automatic pointout accept", slog.String("acid", string(acid)),
+				s.lg.Debug("automatic pointout accept", slog.String("acid", string(fp.ACID)),
 					slog.String("by", string(po.ToController)), slog.String("to", string(po.FromController)))
 
 				fp.AddPointOutHistory(po.ToController)
@@ -637,9 +640,6 @@ func (s *Sim) updateState() {
 			}
 			return true // keep
 		})
-		if fp == nil || len(s.PointOuts[acid]) == 0 {
-			delete(s.PointOuts, acid)
-		}
 	}
 
 	// Update the simulation state once a second.

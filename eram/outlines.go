@@ -87,7 +87,7 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 			state.HoverVCI = false
 		}
 		if db.Fields[DBFieldPointOut].Inside(mouse.Pos) {
-			if ep.pointOutIndicatorActive(&trk) {
+			if ep.pointOutIndicatorActive(ctx, &trk) {
 				if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 					ep.handlePointOutIndicatorClick(ctx, trk, db.Fields[DBFieldMain])
 					mouse.Clicked = [platform.MouseButtonCount]bool{}

@@ -341,7 +341,7 @@ func (sp *Scope) datablockType(ctx *scope.Context, trk sim.Track) DatablockType 
 		}
 
 		// Point outs are FDB until acked.
-		if tcps, ok := sp.PointOuts[trk.FlightPlan.ACID]; ok && ctx.UserControlsPosition(tcps.To) {
+		if len(ctx.InboundPointOuts(trk.FlightPlan)) > 0 {
 			return FullDatablock
 		}
 		if state.PointOutAcknowledged {
@@ -858,10 +858,11 @@ func (sp *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.
 	// Field 8: point out, rejected pointout, redirected
 	// handoffs... Some flash, some don't.
 	if state != nil {
-		if tcps, ok := sp.PointOuts[sfp.ACID]; ok && ctx.UserControlsPosition(tcps.To) {
+		outbound := ctx.OutboundPointOuts(sfp)
+		if len(ctx.InboundPointOuts(sfp)) > 0 {
 			formatDBText(db.field8[:], "PO", color, false)
-		} else if ok && ctx.UserControlsPosition(tcps.From) {
-			id := tcps.To
+		} else if len(outbound) > 0 {
+			id := outbound[0].ToController
 			if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
 				id = id[1:]
 			}
@@ -1240,7 +1241,7 @@ func (sp *Scope) trackDatablockColorBrightness(ctx *scope.Context, trk sim.Track
 	inboundPointOut := false
 	forceFDB := false
 	if trk.IsAssociated() {
-		if tcps, ok := sp.PointOuts[trk.FlightPlan.ACID]; ok && ctx.UserControlsPosition(tcps.To) {
+		if len(ctx.InboundPointOuts(trk.FlightPlan)) > 0 {
 			forceFDB = true
 			inboundPointOut = true
 		} else {

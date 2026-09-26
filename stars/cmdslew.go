@@ -50,19 +50,16 @@ func registerSlewCommands() {
 					}
 				}
 
-				if tcps, ok := sp.PointOuts[fp.ACID]; ok {
-					if ctx.UserControlsPosition(tcps.To) {
-						// 6.12.2 Accept intrafacility pointout (implied)
-						// 6.12.8 Accept interfacility pointout (implied)
-						ctx.Client.AcknowledgePointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
-						return CommandStatus{}
-					} else if ctx.UserControlsPosition(tcps.From) {
-						// 6.12.4 Recall intrafacility pointout
-						// 6.12.9 Recall interfacility pointout
-						ctx.Client.RecallPointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
-						return CommandStatus{}
-					}
-
+				if len(ctx.InboundPointOuts(fp)) > 0 {
+					// 6.12.2 Accept intrafacility pointout (implied)
+					// 6.12.8 Accept interfacility pointout (implied)
+					ctx.Client.AcknowledgePointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+					return CommandStatus{}
+				} else if len(ctx.OutboundPointOuts(fp)) > 0 {
+					// 6.12.4 Recall intrafacility pointout
+					// 6.12.9 Recall interfacility pointout
+					ctx.Client.RecallPointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+					return CommandStatus{}
 				}
 				// 6.12.5 Clear pointout color (implied)
 				if state.PointOutAcknowledged {

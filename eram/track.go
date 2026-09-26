@@ -97,11 +97,17 @@ func (ep *Scope) trackStateForACID(ctx *scope.Context, acid sim.ACID) (*TrackSta
 
 func (ep *Scope) processEvents(ctx *scope.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
-		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
-			sa := &TrackState{
+		state, ok := ep.TrackState[trk.ADSBCallsign]
+		if !ok {
+			state = &TrackState{
 				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
 			}
-			ep.TrackState[trk.ADSBCallsign] = sa
+			ep.TrackState[trk.ADSBCallsign] = state
+		}
+		// The point out may have been made before the user signed on, so
+		// the lock follows the flight plan rather than an event.
+		if trk.IsAssociated() && len(ctx.InboundPointOuts(trk.FlightPlan)) > 0 {
+			state.PointOutFDBLocked = true
 		}
 	}
 
@@ -115,10 +121,7 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 		_, ok := ctx.Client.State.GetTrackByACID(acid)
 		return ok
 	}
-	maps.DeleteFunc(ep.InboundPointOuts, func(acid sim.ACID, _ []sim.ControlPosition) bool {
-		return !trackExists(acid)
-	})
-	maps.DeleteFunc(ep.OutboundPointOuts, func(acid sim.ACID, _ []outboundPointOut) bool {
+	maps.DeleteFunc(ep.AckedPointOuts, func(acid sim.ACID, _ []sim.ControlPosition) bool {
 		return !trackExists(acid)
 	})
 	for _, g := range ep.CRRGroups {
@@ -144,57 +147,14 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 				state.OSectorEndTime = ctx.InterpolatedSimTime.Add(30 * time.Second)
 			}
 
-		case sim.PointOutEvent:
-			if ctx.UserControlsPosition(event.ToController) {
-				// The receiver's FDB stays forced until cleared by QP <FLID>.
-				if state, ok := ep.trackStateForACID(ctx, event.ACID); ok && state != nil {
-					state.PointOutFDBLocked = true
-				}
-				senders := ep.InboundPointOuts[event.ACID]
-				if !slices.Contains(senders, event.FromController) {
-					ep.InboundPointOuts[event.ACID] = append(senders, event.FromController)
-				}
-			}
-			if ctx.UserControlsPosition(event.FromController) {
-				entries := ep.OutboundPointOuts[event.ACID]
-				dupe := slices.ContainsFunc(entries, func(po outboundPointOut) bool {
-					return po.Receiver == event.ToController
-				})
-				if !dupe {
-					ep.OutboundPointOuts[event.ACID] = append(entries,
-						outboundPointOut{Receiver: event.ToController})
-				}
-			}
-
 		case sim.AcknowledgedPointOutEvent:
 			// Per sim/handoff.go, From/To are swapped in this event relative to the original p/o.
-			if ctx.UserControlsPosition(event.FromController) {
-				// We were the recipient
-				delete(ep.InboundPointOuts, event.ACID)
-			}
 			if ctx.UserControlsPosition(event.ToController) {
-				// We were the originator; mark the specific receiver as acked.
-				ep.markOutboundPointOutAcked(event.ACID, event.FromController)
-			}
-
-		case sim.RecalledPointOutEvent:
-			// Receiver clears the originator from its inbound list; the originator clears the
-			// specific receiver from its outbound list.
-			if ctx.UserControlsPosition(event.ToController) {
-				ep.removeInboundPointOut(event.ACID, event.FromController)
-			}
-			if ctx.UserControlsPosition(event.FromController) {
-				ep.removeOutboundPointOutByReceiver(event.ACID, event.ToController)
-			}
-
-		case sim.RejectedPointOutEvent:
-			// From/To are swapped here too (event.FromController is the
-			// recipient who rejected; event.ToController is the originator).
-			if ctx.UserControlsPosition(event.FromController) {
-				delete(ep.InboundPointOuts, event.ACID)
-			}
-			if ctx.UserControlsPosition(event.ToController) {
-				ep.removeOutboundPointOutByReceiver(event.ACID, event.FromController)
+				// We were the originator.
+				acked := ep.AckedPointOuts[event.ACID]
+				if !slices.Contains(acked, event.FromController) {
+					ep.AckedPointOuts[event.ACID] = append(acked, event.FromController)
+				}
 			}
 
 		case sim.FixCoordinatesEvent:
@@ -534,7 +494,7 @@ func (ep *Scope) datablockType(ctx *scope.Context, trk sim.Track) DatablockType 
 		if ctx.IsHandoffToUser(&trk) {
 			return FullDatablock
 		}
-		if len(ep.InboundPointOuts[fp.ACID]) > 0 {
+		if len(ctx.InboundPointOuts(fp)) > 0 {
 			return FullDatablock
 		}
 		if _, ok := ep.QuickLookSectors[string(ctx.PrimaryTCPForTCW(fp.OwningTCW))]; ok {

@@ -667,7 +667,7 @@ func registerToolsCommands() {
 		}
 
 		acid := trk.FlightPlan.ACID
-		if po, ok := sp.PointOuts[acid]; ok && ctx.UserControlsPosition(po.To) {
+		if len(ctx.InboundPointOuts(trk.FlightPlan)) > 0 {
 			// 5.1.11 Accept handoff of track in intrafacility pointout
 			ctx.Client.AcceptHandoff(acid, func(err error) { sp.displayError(err, ctx, "") })
 			return nil

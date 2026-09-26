@@ -73,8 +73,8 @@ func registerOpsCommands() {
 			return ep.pointOutTrack(ctx, trk, sector)
 		})
 	registerCommand(CommandModeNone, "QP [TRACK]",
-		func(ep *Scope, trk *sim.Track) (CommandStatus, error) {
-			return ep.clearPointOutLock(trk)
+		func(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+			return ep.clearPointOutLock(ctx, trk)
 		})
 
 	// QL - Quicklook

@@ -113,6 +113,7 @@ type NASFlightPlan struct {
 	Location math.Point2LL
 	Route    string
 
+	PointOuts                   []PointOut
 	PointOutHistory             []ControlPosition
 	InhibitModeCAltitudeDisplay bool
 	SPCOverride                 string

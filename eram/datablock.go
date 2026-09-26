@@ -377,7 +377,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	case FullDatablock:
 		db := ep.fdbArena.AllocClear()
 		// Line 0: point-out indicator.
-		if ch, glyphColor, ok := ep.pointOutIndicatorGlyph(&trk, ps.Brightness.FDB); ok {
+		if ch, glyphColor, ok := ep.pointOutIndicatorGlyph(ctx, &trk, ps.Brightness.FDB); ok {
 			dbWriteText(db.line0[2:], string(ch), glyphColor, false)
 		}
 

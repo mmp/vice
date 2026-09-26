@@ -7,7 +7,9 @@ package sim
 import (
 	"io"
 	"log/slog"
+	"slices"
 	"testing"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
@@ -378,5 +380,58 @@ func TestAutoHandoffToggleChecks(t *testing.T) {
 	}
 	if err := s.checkAutoHandoffToggle(fp, ac); err != ErrIllegalFunction {
 		t.Errorf("site AHOP off: err = %v, want %v", err, ErrIllegalFunction)
+	}
+}
+
+// Pending point outs live on the flight plan, where clients see them with
+// every state update. A virtual controller acknowledges one made to it; one
+// made to a human position waits there for the human, however long ago it
+// was made.
+func TestVirtualControllerPointOuts(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	s.STARSComputer = makeSTARSComputer("TEST")
+	s.ScenarioDefaultConsolidation = PositionConsolidation{TCP("2A"): nil}
+
+	human, owner, other := TCP("2A"), TCP("14"), TCP("15")
+	s.ControlPositions = map[TCP]*av.Controller{human: {}, owner: {}, other: {}}
+	s.State.Controllers = map[ControlPosition]*av.Controller{
+		human: {Position: "2A"}, owner: {Position: "14"}, other: {Position: "15"}}
+
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.ControllerFrequency = owner
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	acid := ACID(ac.ADSBCallsign)
+	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{ACID: acid, TrackingController: owner}); err != nil {
+		t.Fatalf("CreateFlightPlan: %v", err)
+	}
+	fp := s.STARSComputer.takeFlightPlanByACID(acid)
+	ac.AssociateFlightPlan(fp)
+
+	for _, to := range []TCP{human, other} {
+		s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{PointOut: to}})
+	}
+	if len(fp.PointOuts) != 2 {
+		t.Fatalf("expected point outs to %s and %s on the flight plan, got %+v", human, other, fp.PointOuts)
+	}
+
+	sub := s.eventStream.Subscribe()
+	defer sub.Unsubscribe()
+
+	s.State.SimTime = s.State.SimTime.Add(time.Minute)
+	s.lastSimUpdate = s.State.SimTime // skip the once-a-second aircraft update
+	s.updateState()
+
+	if len(fp.PointOuts) != 1 || fp.PointOuts[0].FromController != owner || fp.PointOuts[0].ToController != human {
+		t.Errorf("expected only the point out to %s to remain pending, got %+v", human, fp.PointOuts)
+	}
+	if !slices.Contains(fp.PointOutHistory, other) {
+		t.Errorf("expected %s in the point out history, got %v", other, fp.PointOutHistory)
+	}
+	if !slices.ContainsFunc(sub.Get(), func(e Event) bool {
+		return e.Type == AcknowledgedPointOutEvent && e.ACID == acid && e.FromController == other && e.ToController == owner
+	}) {
+		t.Errorf("no acknowledgment from %s was posted", other)
 	}
 }
