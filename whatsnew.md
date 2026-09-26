@@ -9,7 +9,7 @@ adjustments for TAS
   - Fixed VFR airwork descending below the ground
 - ERAM
   - Altitudes that virtual controllers assign along a route are now entered in the datablock:
-    `/d` and `/dv` amend the assigned altitude and a `/c` or `/cv` short of it is an interim altitude
+    `/d` and `/c` amend the assigned altitude and `/dv`/`/cv` set interim altitude
   - Add datablock portal fence option
   - Add support for altitude limits, including the `QD` command
   - Added support for block altitudes, including the `QZ` command
