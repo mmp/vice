@@ -1387,7 +1387,7 @@
       "approaches": {
         "VN7R": {
           "runway": "17R",
-          "type": "RNAV",
+          "type": "ChartedVisual",
           "full_name": "RNAV Visual N Runway 17R",
           "waypoints": [
             "PIGOW/a8300+ HAKID/a6000+ JEXIX/a5700+ KAYTU JONLO HAFWA/faf MARKP/a3800+/arc1.1CFKKG LEZRU/arc1.1CFKKG ONDUE/a2800+",
@@ -1397,7 +1397,7 @@
         },
         "V35L": {
           "runway": "35L",
-          "type": "RNAV",
+          "type": "ChartedVisual",
           "full_name": "RNAV Visual Runway 35L",
           "waypoints": [
             "PIGOW/a8300+ HAKID/a6000+ ILIAL/a5700+ BALMR/a4000+ LONGO/a3800+ CAKCA/a3000/faf",

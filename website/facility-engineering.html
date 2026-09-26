@@ -4714,8 +4714,9 @@
                   <tr>
                     <td>"full_name"</td>
                     <td>String</td>
-                    <td>(<i>Optional</i>) A string giving the full name of the approach (e.g., "RNAV Z Runway 13L").
-                      If not specified and the approach is not a visual approach, the approach's name is generated automatically using "runway" and "type".</td>
+                    <td>A string giving the full name of the approach (e.g., "RNAV Z Runway 13L"); it must include "Runway" or "runway".
+                      It is required for "ChartedVisual" approaches. For other types it is optional; if it is not specified,
+                      the approach's name is generated automatically using "runway" and "type".</td>
                   </tr>
                   <tr>
                     <td>"runway"</td>
@@ -4731,13 +4732,15 @@
                   <tr>
                     <td>"waypoints"</td>
                     <td>Array of strings</td>
-                    <td>Each given string specifies an approach route. Multiple strings can be provided for "waypoints" for approaches
-                      with multiple IAFs (e.g. an RNAV "T" configuration).
+                    <td>Each given string specifies a complete route to the runway. Multiple strings can be provided for "waypoints"
+                      for approaches with multiple IAFs (e.g. an RNAV "T" configuration) or, for a "ChartedVisual" approach,
+                      multiple feeder legs; each string then gives one of them followed by the segment they share.
                       <i>vice</i> automatically adds a final waypoint at the arrival runway threshold; aircraft are deleted from
                       the simulation when they reach that point.</td>
                   </tr>
                 </tbody>
               </table>
+
             </section>
             <section class="docs-section" id="fe-departures">
               <h2 class="section-heading">Departures</h2>

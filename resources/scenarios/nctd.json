@@ -1900,7 +1900,7 @@
         },
         "FMS": {
           "runway": "28R",
-          "type": "RNAV",
+          "type": "ChartedVisual",
           "full_name": "FMS Bridge Visual Runway 28R",
           "waypoints": [
             "ARCHI/iaf/a7000 TRBOW/a6000+ GAROW/a5000+ JANYY/if/a2500+ RAACL/faf/a1600+ SHLTN/a900+ SAPPP/a387+",

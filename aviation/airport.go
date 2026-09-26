@@ -185,12 +185,6 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			e.ErrorString(`Must have "runway" in approach's "full_name"`)
 		}
 
-		if appr.Type == ChartedVisualApproach && len(appr.Waypoints) != 1 {
-			// Note: nothing in Nav requires this any more; it could be
-			// relaxed if a charted visual ever needs multiple routes.
-			e.ErrorString("Only a single set of waypoints are allowed for a charted visual approach route")
-		}
-
 		e.Pop()
 	}
 

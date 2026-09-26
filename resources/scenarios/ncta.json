@@ -1138,7 +1138,7 @@
         },
         "FMS": {
           "runway": "28R",
-          "type": "ILS",
+          "type": "ChartedVisual",
           "full_name": "FMS Bridge Visual Runway 28R",
           "waypoints": [
             "ARCHI/iaf/a7000 TRBOW/a6000+ GAROW/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+",
@@ -3243,7 +3243,7 @@
         },
         "RV8L": {
           "runway": "28L",
-          "type": "ILS",
+          "type": "ChartedVisual",
           "full_name": "Raceway Visual Runway 28L",
           "waypoints": ["CHRLE/a6100 HUTAD/a1500/faf", "SNS/a4500+ OKUPE/arc1.5CFBRC HUTAD/a1500+/faf"]
         },

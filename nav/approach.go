@@ -630,7 +630,7 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) speech.Comma
 
 	// Charted visual is special in all sorts of ways
 	if ap.Type == av.ChartedVisualApproach {
-		return nav.prepareForChartedVisual()
+		return nav.prepareForChartedVisual(joinFix)
 	}
 
 	_, assignedHeading := nav.AssignedHeading()
@@ -658,7 +658,20 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) speech.Comma
 	return nil
 }
 
-func (nav *Nav) prepareForChartedVisual() speech.CommandIntent {
+// prepareForChartedVisual sets up the aircraft to fly the assigned charted
+// visual from where it joins one of the approach's routes. joinFix has the
+// same meaning as in joinApproach.
+func (nav *Nav) prepareForChartedVisual(joinFix string) speech.CommandIntent {
+	// An active arc already joins the approach at its endpoint. Keep its
+	// guidance until that fix is sequenced, unless a newer instruction supersedes it.
+	if nav.Heading.Arc != nil && nav.DeferredNavHeading == nil && joinFix == "" && len(nav.Waypoints) > 0 {
+		if route, idx := approachRouteThrough(nav.Approach.Assigned, nav.Waypoints[0].Fix); route != nil {
+			nav.Waypoints = nav.spliceApproachRoute(nav.Waypoints, 0, route[idx:])
+			nav.Approach.PassedApproachFix = true
+			return nil
+		}
+	}
+
 	routes := nav.Approach.Assigned.Waypoints
 	pos := nav.FlightState.Position
 	nmPerLong := nav.FlightState.NmPerLongitude
@@ -668,29 +681,34 @@ func (nav *Nav) prepareForChartedVisual() speech.CommandIntent {
 	// fallback past that: the published track has to be joined where it is
 	// charted, so a pilot who isn't pointed at it answers unable.
 	var wi av.WaypointArray
-	if join := nav.visualJoinFromInstructions(routes); join != nil {
+	if route, idx := approachRouteThrough(nav.Approach.Assigned, joinFix); route != nil {
+		wi = route[idx+1:]
+	} else if join := nav.visualJoinFromInstructions(routes); join != nil {
 		if join.segmentFraction == 0 {
 			// The join is the charted fix that starts the segment, or is
 			// upstream of it; fly the fix itself so that its altitude and
 			// speed restrictions come along rather than being displaced by a
 			// bare intercept point.
-			wi = join.route[join.segment:].Clone()
+			wi = join.route[join.segment:]
 		} else {
 			wi = append(av.WaypointArray{{Fix: "intercept", Location: join.location}},
-				join.route[join.segment+1:].Clone()...)
+				join.route[join.segment+1:]...)
 		}
 	} else {
-		// No intercept. Fall back to the first waypoint whose bearing is
-		// within 30° of the instructed heading — lets a pilot already
-		// pointed at a chart waypoint join there directly.
+		// No intercept. Fall back to each route's first waypoint whose
+		// bearing is within 30° of the instructed heading — lets a pilot
+		// already pointed at a chart waypoint join there directly. Where
+		// several routes have one, the pilot takes the one closest to the
+		// nose.
 		hdg := nav.intendedHeading()
+		offNose := func(wp av.Waypoint) float32 {
+			return math.HeadingDifference(math.Heading2LL(pos, wp.Location, nmPerLong), hdg)
+		}
+		var minOffNose float32
 		for _, route := range routes {
-			i := slices.IndexFunc(route, func(wp av.Waypoint) bool {
-				return math.HeadingDifference(math.Heading2LL(pos, wp.Location, nmPerLong), hdg) < 30
-			})
-			if i != -1 {
-				wi = route[i:].Clone()
-				break
+			i := slices.IndexFunc(route, func(wp av.Waypoint) bool { return offNose(wp) < 30 })
+			if i != -1 && (wi == nil || offNose(route[i]) < minOffNose) {
+				wi, minOffNose = route[i:], offNose(route[i])
 			}
 		}
 	}
@@ -699,7 +717,7 @@ func (nav *Nav) prepareForChartedVisual() speech.CommandIntent {
 		return speech.MakeUnableIntent("unable. We are not on course to intercept the approach")
 	}
 
-	nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
+	nav.Waypoints = append(wi.Clone(), nav.FlightState.ArrivalAirport)
 	nav.Heading = Heading{}
 	nav.DeferredNavHeading = nil
 	nav.Approach.PassedApproachFix = true // allow descent

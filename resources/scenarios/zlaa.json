@@ -1663,7 +1663,7 @@
         },
         "V25T": {
           "runway": "25",
-          "type": "RNAV",
+          "type": "ChartedVisual",
           "full_name": "RNAV Visual Runway 25 (TF)",
           "waypoints": [
             "GVO LOVIE/a8000+ ARIIN/a6000+ FREBD VANCA/s210/a4000+ LARRS STUCC TOUDD/a1900+/faf RECTR/a1100+ PANTZ/a600 FISHI/a240",
@@ -1673,7 +1673,7 @@
         },
         "V25R": {
           "runway": "25",
-          "type": "RNAV",
+          "type": "ChartedVisual",
           "full_name": "RNAV Visual Runway 25 (RF)",
           "waypoints": [
             "GVO LOVIE/a8000+ ARIIN/a6000+ WODDI/a4000+/s210/arc2.1CFXMP WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+/faf RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240",

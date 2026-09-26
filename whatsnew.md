@@ -21,4 +21,5 @@ adjustments for TAS
   - Added `/cv` and `/dv` waypoint actions for "climb via SID/descend via STAR, except maintain (altitude)"
   - Added an "eram" object to allow specifying ERAM datablock entries for assigned altitudes, etc.
   - An arrival's "cleared_altitude" now stops its descent, as documented; scenarios that expect the descent to continue must use `/dvs`.
+  - Charted visual approaches may now give multiple routes in "waypoints", e.g. for procedures with several feeder legs
 

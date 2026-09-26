@@ -2961,7 +2961,7 @@
         "RV5": {
           "full_name": "RNAV Visual Runway 15",
           "runway": "15",
-          "type": "ILS",
+          "type": "ChartedVisual",
           "waypoints": [
             "TWACK/s210/a5000+ AZKBN/a4100 SCRET/a3500 GOBLT/faf/a2500",
             "BATTT/s210/a5000+ MATRX/a4500 SCRET/a3500 GOBLT/faf/a2500"
@@ -2970,7 +2970,7 @@
         "RV3": {
           "full_name": "RNAV Visual Runway 33",
           "runway": "33",
-          "type": "ILS",
+          "type": "ChartedVisual",
           "waypoints": [
             "GZILA/s210/a6000+ FILMZ/a3500 LGEND/a2100 KNGHT/faf/a1500",
             "WRNER/s210/a5000+ FILMZ/a3500 LGEND/a2100 KNGHT/faf/a1500"

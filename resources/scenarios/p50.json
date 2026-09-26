@@ -1064,7 +1064,7 @@
         "V3L": {
           "full_name": "RNAV Visual Runway 30L",
           "runway": "30L",
-          "type": "RNAV",
+          "type": "ChartedVisual",
           "waypoints": [
             "AEJAY/a7000/s210 KADRE/a5800+ GFOUR/a4800+ MADOG/a4100+ EMMEE/a3400/faf",
             "SQUEZ/a9000/s250 SUNSS RAMIN/a5000+ EMMEE/a3400/faf",

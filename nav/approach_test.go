@@ -270,6 +270,68 @@ func TestSelectVisualApproachRouteJFK13L(t *testing.T) {
 	}
 }
 
+func TestChartedVisualClearancePreservesActiveArc(t *testing.T) {
+	route := parseRoute(t, "WODDI/a4000+/s210/arc2.1CFXMP WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+/faf RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240", 0)
+	for i, wp := range route {
+		if wp.Arc() == nil {
+			continue
+		}
+		for _, phase := range []string{"joining", "mid arc", "near endpoint", "pending direct"} {
+			t.Run(wp.Fix+"/"+phase, func(t *testing.T) {
+				arc := wp.Arc()
+				n := Nav{
+					FlightState: FlightState{
+						Position:       wp.Location,
+						Heading:        arc.InitialHeading,
+						NmPerLongitude: math.NMPerLongitudeAt(wp.Location),
+						ArrivalAirport: av.Waypoint{Fix: "KSBA"},
+					},
+					Heading:   Heading{Arc: arc, JoiningArc: phase == "joining"},
+					Waypoints: route[i+1:].Clone(),
+					Approach: Approach{
+						AssignedId: "V25R",
+						Assigned: &av.Approach{
+							Type:      av.ChartedVisualApproach,
+							Runway:    "25",
+							Waypoints: []av.WaypointArray{route},
+						},
+					},
+				}
+				if phase == "mid arc" {
+					nmPerLong := n.FlightState.NmPerLongitude
+					center := math.LL2NM(arc.Center, nmPerLong)
+					mid := math.LL2NM(math.Lerp2f(0.5, wp.Location, route[i+1].Location), nmPerLong)
+					radial := math.Normalize2f(math.Sub2f(mid, center))
+					n.FlightState.Position = math.NM2LL(math.Add2f(center, math.Scale2f(radial, arc.Radius)), nmPerLong)
+				}
+				if phase == "near endpoint" {
+					n.FlightState.Position = route[i+1].Location
+				}
+				if phase == "pending direct" {
+					n.DeferredNavHeading = &DeferredNavHeading{Waypoints: route[i+1:].Clone()}
+				}
+
+				if intent := n.ClearedApproach("V25R", nil, Time{}, false, ""); !n.Approach.Cleared {
+					t.Fatalf("clearance failed: %v", intent)
+				}
+				if phase == "pending direct" {
+					if n.Heading.Arc != nil || n.DeferredNavHeading != nil {
+						t.Fatal("pending direct did not replace the active arc")
+					}
+					return
+				}
+				if n.Heading.Arc != arc || n.Heading.JoiningArc != (phase == "joining") {
+					t.Errorf("active arc state changed: %+v", n.Heading)
+				}
+				want := append(util.MapSlice(route[i+1:], func(wp av.Waypoint) string { return wp.Fix }), "KSBA")
+				if fixes := navRouteFixes(&n); !slices.Equal(fixes, want) {
+					t.Errorf("route = %v, want %v", fixes, want)
+				}
+			})
+		}
+	}
+}
+
 func TestPrepareForChartedVisualSkipsBehindSegmentIntercept(t *testing.T) {
 	nmPerLong := float32(60)
 	n := Nav{
@@ -293,7 +355,7 @@ func TestPrepareForChartedVisualSkipsBehindSegmentIntercept(t *testing.T) {
 		},
 	}
 
-	intent := n.prepareForChartedVisual()
+	intent := n.prepareForChartedVisual("")
 	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected unable intent: %v", intent)
 	}
@@ -338,7 +400,7 @@ func TestPrepareForChartedVisualUsesAssignedHeading(t *testing.T) {
 		},
 	}
 
-	intent := n.prepareForChartedVisual()
+	intent := n.prepareForChartedVisual("")
 	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected unable intent: %v", intent)
 	}
@@ -350,6 +412,139 @@ func TestPrepareForChartedVisualUsesAssignedHeading(t *testing.T) {
 	if math.Abs(intercept[0]-1) > 0.05 || math.Abs(intercept[1]) > 0.05 {
 		t.Fatalf("intercept = %.2f, %.2f; want near 1.00, 0.00 on the assigned heading",
 			intercept[0], intercept[1])
+	}
+}
+
+// makeTwoFeederChartedVisualNav returns a Nav at pos (in nm) that expects a
+// charted visual to runway 09 with two feeder legs, from A1 in the northwest
+// and from B1 in the southwest, that merge at J before the final through F to
+// the threshold T.
+func makeTwoFeederChartedVisualNav(pos [2]float32, hdg math.MagneticHeading) *Nav {
+	nmPerLong := float32(60)
+	wp := func(fix string, x, y float32) av.Waypoint {
+		return av.Waypoint{Fix: fix, Location: math.NM2LL([2]float32{x, y}, nmPerLong)}
+	}
+	final := av.WaypointArray{wp("J", 0, 0), wp("F", 5, 0), wp("T", 10, 0)}
+	return &Nav{
+		FlightState: FlightState{
+			Position:       math.NM2LL(pos, nmPerLong),
+			Heading:        hdg,
+			NmPerLongitude: nmPerLong,
+			ArrivalAirport: wp("KTEST", 11, 0),
+		},
+		Approach: Approach{
+			AssignedId: "V09",
+			Assigned: &av.Approach{
+				Type:   av.ChartedVisualApproach,
+				Runway: "09",
+				Waypoints: []av.WaypointArray{
+					slices.Concat(av.WaypointArray{wp("A1", -5, 5)}, final.Clone()),
+					slices.Concat(av.WaypointArray{wp("B1", -5, -5)}, final.Clone()),
+				},
+			},
+		},
+	}
+}
+
+func navRouteFixes(n *Nav) []string {
+	return util.MapSlice(n.Waypoints, func(wp av.Waypoint) string { return wp.Fix })
+}
+
+// TestChartedVisualInterceptsFeederOnHeading checks that a heading that
+// crosses one of a charted visual's feeder legs joins that leg.
+func TestChartedVisualInterceptsFeederOnHeading(t *testing.T) {
+	hdg := math.MagneticHeading(90)
+	n := makeTwoFeederChartedVisualNav([2]float32{-5, -3}, hdg)
+	n.Heading = Heading{Assigned: &hdg}
+
+	if intent, unable := n.prepareForChartedVisual("").(speech.UnableIntent); unable {
+		t.Fatalf("unexpected unable intent: %v", intent)
+	}
+	want := []string{"intercept", "J", "F", "T", "KTEST"}
+	if fixes := navRouteFixes(n); !slices.Equal(fixes, want) {
+		t.Fatalf("route = %v, want %v", fixes, want)
+	}
+	intercept := math.LL2NM(n.Waypoints[0].Location, n.FlightState.NmPerLongitude)
+	if math.Abs(intercept[0]+3) > 0.05 || math.Abs(intercept[1]+3) > 0.05 {
+		t.Errorf("intercept = %.2f, %.2f; want near -3, -3 on the B1-J leg", intercept[0], intercept[1])
+	}
+}
+
+// TestChartedVisualJoinsFeederAtNextWaypoint checks that an aircraft whose
+// route takes it to the first fix of one of the feeder legs joins there.
+func TestChartedVisualJoinsFeederAtNextWaypoint(t *testing.T) {
+	n := makeTwoFeederChartedVisualNav([2]float32{-8, -8}, 45)
+	b1 := n.Approach.Assigned.Waypoints[1][0]
+	n.Waypoints = []av.Waypoint{b1, n.FlightState.ArrivalAirport}
+
+	if intent, unable := n.prepareForChartedVisual("").(speech.UnableIntent); unable {
+		t.Fatalf("unexpected unable intent: %v", intent)
+	}
+	want := []string{"B1", "J", "F", "T", "KTEST"}
+	if fixes := navRouteFixes(n); !slices.Equal(fixes, want) {
+		t.Fatalf("route = %v, want %v", fixes, want)
+	}
+}
+
+// TestChartedVisualJoinsFeederItIsPointedAt checks the fallback join when the
+// aircraft's heading intercepts none of the legs: it joins the feeder it is
+// pointed at, even though it is also pointed close enough to the fix where the
+// legs merge for that to be a candidate on the other feeder's route.
+func TestChartedVisualJoinsFeederItIsPointedAt(t *testing.T) {
+	// B1 is 3° off the nose, J is 22° off, and A1 is 60° off; the heading
+	// passes just south of B1, so there is no intercept.
+	n := makeTwoFeederChartedVisualNav([2]float32{-8, -6}, 75)
+
+	if intent, unable := n.prepareForChartedVisual("").(speech.UnableIntent); unable {
+		t.Fatalf("unexpected unable intent: %v", intent)
+	}
+	want := []string{"B1", "J", "F", "T", "KTEST"}
+	if fixes := navRouteFixes(n); !slices.Equal(fixes, want) {
+		t.Fatalf("route = %v, want %v", fixes, want)
+	}
+}
+
+// TestChartedVisualClearedAtPassedFeederFix checks that the clearance a
+// /clearapp route action gives at a feeder's first fix, which the aircraft
+// has just crossed, continues along that feeder. Here the feeder is a
+// downwind leg flown away from the airport, the last waypoint of the
+// aircraft's route, so where the aircraft is headed says nothing about where
+// it joins.
+func TestChartedVisualClearedAtPassedFeederFix(t *testing.T) {
+	nmPerLong := float32(60)
+	wp := func(fix string, x, y float32) av.Waypoint {
+		return av.Waypoint{Fix: fix, Location: math.NM2LL([2]float32{x, y}, nmPerLong)}
+	}
+	final := av.WaypointArray{wp("J", 0, 0), wp("F", 5, 0), wp("T", 10, 0)}
+	airport := wp("KTEST", 11, 0)
+	n := &Nav{
+		FlightState: FlightState{
+			Position:       math.NM2LL([2]float32{5.7, -3}, nmPerLong),
+			Heading:        270,
+			NmPerLongitude: nmPerLong,
+			ArrivalAirport: airport,
+		},
+		Waypoints: []av.Waypoint{airport},
+		Approach: Approach{
+			AssignedId: "V09",
+			Assigned: &av.Approach{
+				Type:   av.ChartedVisualApproach,
+				Runway: "09",
+				Waypoints: []av.WaypointArray{
+					slices.Concat(av.WaypointArray{wp("A1", -5, 5)}, final.Clone()),
+					slices.Concat(av.WaypointArray{wp("D1", 6, -3), wp("D2", 0, -3)}, final.Clone()),
+				},
+			},
+		},
+	}
+
+	intent := n.ClearedApproach("", nil, Time{}, false, "D1")
+	if _, unable := intent.(speech.UnableIntent); unable {
+		t.Fatalf("unexpected unable intent: %v", intent)
+	}
+	want := []string{"D2", "J", "F", "T", "KTEST"}
+	if fixes := navRouteFixes(n); !slices.Equal(fixes, want) {
+		t.Fatalf("route = %v, want %v", fixes, want)
 	}
 }
 
