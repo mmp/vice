@@ -67,8 +67,8 @@ type candidateDeparture struct {
 // compatibleDepartures collects the exits the given runway categories can
 // launch the aircraft type out of, one candidate per exit: published traffic
 // brings its own destination, and the routes say which exit it really leaves
-// through. The scenario's "departures" have no say here; they belong to its
-// own generator.
+// through. The scenario's "departures" have no say in the exit; placement
+// takes only their scratchpads, from departureScratchpad.
 func (ss *CommonState) compatibleDepartures(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, aircraftType string) []candidateDeparture {
 	var candidates []candidateDeparture
@@ -93,6 +93,25 @@ func (ss *CommonState) compatibleDepartures(departureAirport av.ICAOAirportCode,
 		}
 	}
 	return candidates
+}
+
+// departureScratchpad returns the scratchpad the scenario's "departures" give a
+// published flight out the exit to the destination, if any.
+func departureScratchpad(ap *av.Airport, exitRoutes map[av.ExitID]*av.ExitRoute, exit av.ExitID,
+	destination av.ICAOAirportCode) string {
+	matching := util.FilterSlice(ap.Departures, func(d av.Departure) bool {
+		return d.Destination == destination && d.Exit.Base() == exit.Base() && d.Scratchpad != ""
+	})
+	if i := slices.IndexFunc(matching, func(d av.Departure) bool {
+		_, ok := exitRoutes[d.Exit]
+		return ok
+	}); i != -1 {
+		return matching[i].Scratchpad
+	}
+	if len(matching) > 0 {
+		return matching[0].Scratchpad
+	}
+	return ""
 }
 
 // departureFit ranks how well a runway's gates suit a published flight, best
@@ -122,9 +141,8 @@ type departureChoice struct {
 }
 
 // departurePlacement is the departure a published flight flies and how the
-// choice was made, for reporting. Its departure is a resolved copy of the
-// candidate's: one authored by the scenario carries its own route, while one
-// synthesized for an airport that names no departures gets the route here.
+// choice was made, for reporting. Its departure is a copy of the candidate's
+// with departureScratchpad's scratchpad, flying the route the choice found.
 type departurePlacement struct {
 	ap         *av.Airport
 	rwy        *DepartureRunway
@@ -142,6 +160,7 @@ func (ss *CommonState) placement(choice departureChoice, departureAirport, desti
 	c := choice.candidate
 	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep,
 		cruise: choice.cruise, how: choice.how}
+	p.dep.Scratchpad = departureScratchpad(c.ap, c.exitRoutes, c.dep.Exit, traffic.NormalizeAirportCode(destination))
 	if choice.route != "" {
 		p.cruise.Floor = av.RouteAltitudeFloor(db.Lookups{}, choice.route, departureAirport, destination)
 	}

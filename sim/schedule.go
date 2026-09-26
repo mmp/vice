@@ -794,27 +794,27 @@ func (s *Sim) spawnScheduledDepartures() {
 			continue
 		}
 
-		runway, categories, choice, err := s.State.resolvePublishedDepartureRunway(&e, s.routedPairsIndex(),
+		runway, categories, _, err := s.State.resolvePublishedDepartureRunway(&e, s.routedPairsIndex(),
 			s.DepartureState[e.DepartureAirport])
 		if err != nil {
-			if errors.Is(err, errNoDepartureRunwayEnabled) {
-				// Nothing is launching from this airport right now; leave the
-				// flight for when a flow is enabled.
-				i++
-				continue
-			}
 			// The flight is due and no runway the scenario is launching can
-			// fly it.
-			s.log("%s: dropped departure %s->%s (%s): %v", e.Callsign,
-				e.DepartureAirport, e.ArrivalAirport, e.AircraftType, err)
+			// fly it. It is dropped, as an arrival whose flow is switched off
+			// is, rather than piling up to launch all at once should a runway
+			// that would fly it be switched on.
+			s.log("%s: dropped departure %s->%s (%s): %v", e.Callsign, e.DepartureAirport,
+				e.ArrivalAirport, e.AircraftType, s.State.departureDropReason(&e, s.routedPairsIndex(), err))
 			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
 			continue
 		}
 		key := string(e.DepartureAirport) + "/" + string(runway)
 		depState := s.DepartureState[e.DepartureAirport][runway]
+		if depState == nil {
+			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
+			continue
+		}
 		// A backed-up gate defers the entry rather than losing it, as for
 		// scenario traffic.
-		if spawned[key] || depState == nil || len(depState.Gate) >= maxGateDepartures {
+		if spawned[key] || len(depState.Gate) >= maxGateDepartures {
 			i++
 			continue
 		}
@@ -826,7 +826,6 @@ func (s *Sim) spawnScheduledDepartures() {
 			s.lg.Warnf("%s: unable to create published departure: %v", e.Callsign, err)
 		} else {
 			s.addDepartureToPool(ac, runway, departureGateDelay(e.Source, s.Rand))
-			depState.PublishedDepartures[choice.candidate.rwy.Category]++
 			spawned[key] = true
 		}
 		s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
@@ -839,7 +838,7 @@ func (s *Sim) spawnScheduledArrivals() {
 	}
 	lc := &s.State.LaunchConfig
 	now := s.State.SimTime
-	spawned := make(map[string]bool) // flow group launched (or deferred) this tick
+	spawned := make(map[string]bool) // flow group launched this tick
 
 	for i := 0; i < len(s.Schedule.Arrivals); {
 		e := s.Schedule.Arrivals[i]
@@ -866,20 +865,15 @@ func (s *Sim) spawnScheduledArrivals() {
 			}
 		}
 
-		if spawned[e.Group] {
+		// Scenario arrivals were spaced by their flow's rate when they were
+		// generated. Published ones come when the data says, so they wait in
+		// order to satisfy MIT requirements.
+		if spawned[e.Group] || (e.Source != TrafficSourceScenario && !s.arrivalFlowSpaced(e.Group)) {
 			i++
 			continue
 		}
 
 		ac, err := s.createScheduledArrival(e)
-		if errors.Is(err, errPublishedArrivalSpawnConflict) {
-			// Leave this arrival where it is and retry next tick, so that it
-			// keeps its place while the preceding one moves clear of the
-			// spawn point; nothing else in the flow may jump ahead of it.
-			spawned[e.Group] = true
-			i++
-			continue
-		}
 		if errors.Is(err, errCallsignInUse) {
 			s.noteCallsignClash(e.Callsign, err)
 		} else if err != nil {
@@ -919,11 +913,6 @@ func (s *Sim) spawnScheduledOverflights() {
 		s.Schedule.Overflights = deleteScheduledEntry(s.Schedule.Overflights, i)
 	}
 }
-
-// errNoDepartureRunwayEnabled says no runway at a published departure's
-// airport has any enabled category, so the flight waits rather than being
-// dropped.
-var errNoDepartureRunwayEnabled = errors.New("no departure runway is enabled")
 
 // runwayFit is a runway a published departure could leave from, with the
 // exit and route it would fly there and what the scenario asks the runway to
@@ -981,7 +970,8 @@ func (ss *CommonState) resolvePublishedDepartureRunway(e *ScheduledDeparture, ro
 
 	if len(fits) == 0 {
 		if !launching {
-			return "", nil, departureChoice{}, errNoDepartureRunwayEnabled
+			return "", nil, departureChoice{}, fmt.Errorf("no runway at %s is launching departures",
+				e.DepartureAirport)
 		}
 		return "", nil, fitChoice, fitErr
 	}
@@ -996,6 +986,20 @@ func (ss *CommonState) resolvePublishedDepartureRunway(e *ScheduledDeparture, ro
 	// runway in sorted order.
 	f := slices.MinFunc(fits, func(a, b runwayFit) int { return cmp.Compare(a.share(), b.share()) })
 	return f.runway, f.categories, f.choice, nil
+}
+
+// departureDropReason says why a published departure no runway the scenario
+// is launching can fly is dropped: errFlowDisabled when a runway the scenario
+// has switched off would fly it, and otherwise err, what kept the launching
+// runways from flying it.
+func (ss *CommonState) departureDropReason(e *ScheduledDeparture, routed routedPairs, err error) error {
+	for runway, categories := range util.SortedMap(ss.LaunchConfig.DepartureEnabled[e.DepartureAirport]) {
+		if _, ferr := ss.findPublishedDeparture(e.DepartureAirport, runway, util.SortedMapKeys(categories),
+			e.ArrivalAirport, e.AircraftType, routed.destinationsByOrigin); ferr == nil {
+			return fmt.Errorf("%w: runway %s", errFlowDisabled, runway)
+		}
+	}
+	return err
 }
 
 // noteCallsignClash reports a published flight discarded because its callsign

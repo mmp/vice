@@ -11,6 +11,7 @@ import (
 	gomath "math"
 	"slices"
 	"strings"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
@@ -20,27 +21,65 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-const publishedArrivalMinSpawnSeparationNM = 10
-
-var errPublishedArrivalSpawnConflict = errors.New("published arrival spawn point occupied")
-
 // errCallsignInUse means another aircraft is already flying a published flight's
 // callsign: the inbound leg of a turnaround that hasn't landed yet, most often.
 // A published callsign is the real one and can't be resampled, so the flight is
 // discarded rather than flown under a different one.
 var errCallsignInUse = errors.New("callsign is already in use")
 
-func (s *Sim) publishedArrivalSpawnConflict(candidate *Aircraft) bool {
-	for _, existing := range s.Aircraft {
-		if !existing.IsArrival() {
+// Published arrivals come when their data says, so each inbound flow spaces
+// them into a single stream the way a center delivers one: never closer than
+// minArrivalTrailNM miles in trail, and at least arrivalTrailNM on average
+// over any arrivalTrailWindow. Nothing outside the flow has a say in when its
+// arrivals launch. Scenario arrivals are spaced by their flow's rate instead.
+const (
+	minArrivalTrailNM  = 6
+	arrivalTrailNM     = 10
+	arrivalTrailWindow = 30 * time.Minute
+)
+
+// ArrivalLaunch is an arrival launched from an inbound flow. Its true airspeed
+// at the spawn point says how long it takes to open up the trail behind it.
+type ArrivalLaunch struct {
+	Time Time
+	TAS  float32
+}
+
+func (l ArrivalLaunch) timeToFly(nm float32) time.Duration {
+	return time.Duration(nm / l.TAS * float32(time.Hour))
+}
+
+// arrivalFlowSpaced reports whether the inbound flow may launch its next
+// arrival: every aircraft it launched within the window has flown
+// minArrivalTrailNM, and the time each of them needs to open arrivalTrailNM
+// doesn't add up to the whole window.
+func (s *Sim) arrivalFlowSpaced(group string) bool {
+	now := s.State.SimTime
+	var reserved time.Duration
+	for _, l := range s.ArrivalLaunches[group] {
+		since := now.Sub(l.Time)
+		if since >= arrivalTrailWindow {
 			continue
 		}
-		if math.NMDistance2LL(candidate.Position(), existing.Position()) <
-			publishedArrivalMinSpawnSeparationNM {
-			return true
+		if since < l.timeToFly(minArrivalTrailNM) {
+			return false
 		}
+		reserved += l.timeToFly(arrivalTrailNM)
 	}
-	return false
+	return reserved < arrivalTrailWindow
+}
+
+// recordArrivalLaunch adds ac to its inbound flow's launches, dropping the
+// ones that have aged out of the window.
+func (s *Sim) recordArrivalLaunch(group string, ac *Aircraft) {
+	now := s.State.SimTime
+	if s.ArrivalLaunches == nil {
+		s.ArrivalLaunches = make(map[string][]ArrivalLaunch)
+	}
+	launches := util.FilterSlice(s.ArrivalLaunches[group], func(l ArrivalLaunch) bool {
+		return now.Sub(l.Time) < arrivalTrailWindow
+	})
+	s.ArrivalLaunches[group] = append(launches, ArrivalLaunch{Time: now, TAS: ac.TAS(s.temperatureAt(ac))})
 }
 
 func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
@@ -320,7 +359,8 @@ func arrivalNearestArc(candidates []candidateArrival, arrivalAirport,
 // both scenario and published entries. Vice resolves the STAR, initial
 // controller, altitude, and spawn geometry from the scenario; the flow and
 // arrival index were resolved when the entry was generated. All resource
-// allocation--squawk, flight strip, flight plan, list index--happens here.
+// allocation--squawk, flight strip, flight plan, list index--happens here, and
+// the flight counts as launched from its flow from here on.
 func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 	inboundFlow, ok := s.State.InboundFlows[e.Group]
 	if !ok {
@@ -331,51 +371,51 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 	}
 	arr := &inboundFlow.Arrivals[e.Index]
 
-	published := e.Source != TrafficSourceScenario
-	callsign, err := s.resolveScheduledCallsign(&e.ScheduledFlight, "arrival")
+	// The flight plan keeps the real origin even when another airport's route
+	// is being flown.
+	ac, err := s.newScheduledAircraft(&e.ScheduledFlight, "arrival")
 	if err != nil {
 		return nil, err
 	}
-
-	if _, ok := db.DB.AircraftPerformance[e.AircraftType]; !ok {
-		return nil, fmt.Errorf(
-			"aircraft type %s is not present in the performance database",
-			e.AircraftType,
-		)
-	}
-
-	ac := &Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		Mode:         av.TransponderModeAltitude,
-	}
-	// The flight plan keeps the real origin even when another airport's route
-	// is being flown.
-	ac.InitializeFlightPlan(
-		av.FlightRulesIFR,
-		e.AircraftType,
-		traffic.NormalizeAirportCode(e.DepartureAirport),
-		traffic.NormalizeAirportCode(e.ArrivalAirport),
-	)
 
 	if err := ac.InitializeArrival(s.State.Airports[e.ArrivalAirport], arr, e.Cruise,
 		s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.wxModel, s.State.SimTime, s.Rand, s.lg); err != nil {
 		return nil, err
 	}
-	if published {
-		if s.publishedArrivalSpawnConflict(ac) {
-			return nil, errPublishedArrivalSpawnConflict
-		}
+	if e.Source != TrafficSourceScenario {
 		if e.FiledRoute != "" {
 			// The flight files the route the pair is really flown on; within the
 			// facility it still flies the scenario's arrival geometry.
 			ac.FlightPlan.Route = e.FiledRoute
 		}
-		s.log("%s: arrival %s->%s via %s %s (%s)", callsign, e.DepartureAirport, e.ArrivalAirport,
+		s.log("%s: arrival %s->%s via %s %s (%s)", ac.ADSBCallsign, e.DepartureAirport, e.ArrivalAirport,
 			e.Group, util.Select(arr.STAR == "", arr.FlightStripDisplayRoute, arr.STAR), e.How)
 	}
 
-	return s.finalizeArrivalNoLock(ac, arr, e.Group, e.ArrivalAirport)
+	if _, err := s.finalizeArrivalNoLock(ac, arr, e.Group, e.ArrivalAirport); err != nil {
+		return nil, err
+	}
+	s.recordArrivalLaunch(e.Group, ac)
+	return ac, nil
+}
+
+// newScheduledAircraft creates the aircraft a schedule entry flies, whatever
+// the kind of flight and wherever its traffic comes from: the callsign
+// resolveScheduledCallsign settles on and a flight plan between the entry's
+// airports. The caller initializes the rest as its kind of flight requires.
+func (s *Sim) newScheduledAircraft(f *ScheduledFlight, kind string) (*Aircraft, error) {
+	callsign, err := s.resolveScheduledCallsign(f, kind)
+	if err != nil {
+		return nil, err
+	}
+	ac := &Aircraft{
+		ADSBCallsign: av.ADSBCallsign(callsign),
+		Mode:         av.TransponderModeAltitude,
+	}
+	ac.InitializeFlightPlan(av.FlightRulesIFR, f.AircraftType,
+		traffic.NormalizeAirportCode(f.DepartureAirport), traffic.NormalizeAirportCode(f.ArrivalAirport))
+	return ac, nil
 }
 
 // resolveScheduledCallsign checks a schedule entry's callsign against what the
@@ -514,16 +554,10 @@ func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error
 	}
 	of := &flow.Overflights[e.Index]
 
-	callsign, err := s.resolveScheduledCallsign(&e.ScheduledFlight, "overflight")
+	ac, err := s.newScheduledAircraft(&e.ScheduledFlight, "overflight")
 	if err != nil {
 		return nil, err
 	}
-
-	ac := &Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		Mode:         av.TransponderModeAltitude,
-	}
-	ac.InitializeFlightPlan(av.FlightRulesIFR, e.AircraftType, e.DepartureAirport, e.ArrivalAirport)
 
 	if err := ac.InitializeOverflight(of, s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.wxModel, s.State.SimTime, s.Rand, s.lg); err != nil {

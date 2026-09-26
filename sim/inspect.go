@@ -89,7 +89,7 @@ func (ss *CommonState) RoutesForPair(from, to av.ICAOAirportCode) PairRoutes {
 		}
 	}
 	if arrivalAirports[to] {
-		if arrivals = ss.candidateArrivals(to); len(arrivals) > 0 {
+		if arrivals = ss.candidateArrivals(to, false); len(arrivals) > 0 {
 			pr.IsArrival = true
 		} else {
 			pr.Notes = append(pr.Notes, "No enabled inbound flow lands at "+string(to)+".")
@@ -221,9 +221,9 @@ type FlightOutcome int
 const (
 	// FlightFlown: the scenario has a runway and exit, or an arrival, for it.
 	FlightFlown FlightOutcome = iota
-	// FlightWaiting: no departure flow at its airport is enabled, so it waits
-	// in the queue instead of being dropped; enabling one would fly it.
-	FlightWaiting
+	// FlightDisabled: it is dropped because the flow that would fly it--an
+	// inbound flow, or a runway's departures--is switched off.
+	FlightDisabled
 	// FlightDropped: nothing the scenario models can carry it.
 	FlightDropped
 )
@@ -346,8 +346,8 @@ func (ss *CommonState) reportDeparture(pf *PublishedFlight, routed routedPairs) 
 	}}
 	runway, _, choice, err := ss.resolvePublishedDepartureRunway(&e, routed, nil)
 	if err != nil {
-		pf.Outcome = util.Select(errors.Is(err, errNoDepartureRunwayEnabled),
-			FlightWaiting, FlightDropped)
+		err = ss.departureDropReason(&e, routed, err)
+		pf.Outcome = util.Select(errors.Is(err, errFlowDisabled), FlightDisabled, FlightDropped)
 		pf.Problem, pf.Route = err.Error(), choice.route
 		return
 	}
@@ -361,7 +361,8 @@ func (ss *CommonState) reportDeparture(pf *PublishedFlight, routed routedPairs) 
 func (ss *CommonState) reportArrival(pf *PublishedFlight, routed routedPairs) {
 	placement, err := ss.placeArrival(pf.To, pf.From, pf.AircraftType, routed)
 	if err != nil {
-		pf.Outcome, pf.Problem, pf.Route = FlightDropped, err.Error(), placement.filedRoute
+		pf.Outcome = util.Select(errors.Is(err, errFlowDisabled), FlightDisabled, FlightDropped)
+		pf.Problem, pf.Route = err.Error(), placement.filedRoute
 		return
 	}
 	pf.Flow, pf.ArrivalIndex = placement.group, placement.index

@@ -867,16 +867,10 @@ func (s *Sim) createScenarioIFRDeparture(e ScheduledDeparture) (*Aircraft, error
 	}
 	dep := &ap.Departures[e.DepartureIndex]
 
-	callsign, err := s.resolveScheduledCallsign(&e.ScheduledFlight, "departure")
+	ac, err := s.newScheduledAircraft(&e.ScheduledFlight, "departure")
 	if err != nil {
 		return nil, err
 	}
-
-	ac := &Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		Mode:         av.TransponderModeAltitude,
-	}
-	ac.InitializeFlightPlan(av.FlightRulesIFR, e.AircraftType, e.DepartureAirport, dep.Destination)
 
 	routes := av.ExitRoutesForAircraft(db.Lookups{}, exitRoutes, e.AircraftType)
 	if _, ok := routes[dep.Exit]; !ok {
@@ -895,23 +889,13 @@ func (s *Sim) createScenarioIFRDeparture(e ScheduledDeparture) (*Aircraft, error
 // The categories are the ones the scenario is launching from this runway; the
 // one used is whichever gets the aircraft closest to where it really went,
 // rather than one sampled by rate. Published traffic takes its share of each
-// exit from the flights themselves.
+// exit from the flights themselves, and the flight counts toward the runway's
+// share of the airport's published departures from here on.
 func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.RunwayID,
 	categories []string) (*Aircraft, error) {
-	callsign := strings.ToUpper(strings.TrimSpace(e.Callsign))
-	if callsign == "" {
-		return nil, fmt.Errorf("published departure callsign is empty")
-	}
-
-	if av.CallsignClashesWithExisting(s.currentCallsigns(), callsign, s.EnforceUniqueCallsignSuffix) {
-		return nil, fmt.Errorf("published departure %s: %w", callsign, errCallsignInUse)
-	}
-
-	if _, ok := db.DB.AircraftPerformance[e.AircraftType]; !ok {
-		return nil, fmt.Errorf(
-			"aircraft type %s is not present in the performance database",
-			e.AircraftType,
-		)
+	ac, err := s.newScheduledAircraft(&e.ScheduledFlight, "departure")
+	if err != nil {
+		return nil, err
 	}
 
 	placement, err := s.State.resolvePublishedDeparture(e.DepartureAirport, runway, categories,
@@ -920,15 +904,15 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 		return nil, err
 	}
 
-	ac := &Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		Mode:         av.TransponderModeAltitude,
-	}
-	ac.InitializeFlightPlan(av.FlightRulesIFR, e.AircraftType, e.DepartureAirport, e.ArrivalAirport)
-
-	s.log("%s: departure %s->%s runway %s exit %s (%s)", callsign, e.DepartureAirport,
+	s.log("%s: departure %s->%s runway %s exit %s (%s)", ac.ADSBCallsign, e.DepartureAirport,
 		e.ArrivalAirport, runway, placement.dep.Exit, placement.how)
 
-	return s.initializeIFRDepartureNoLock(ac, placement.ap, e.DepartureAirport, runway, &placement.dep,
-		placement.cruise, placement.exitRoutes)
+	if _, err := s.initializeIFRDepartureNoLock(ac, placement.ap, e.DepartureAirport, runway, &placement.dep,
+		placement.cruise, placement.exitRoutes); err != nil {
+		return nil, err
+	}
+	if depState := s.DepartureState[e.DepartureAirport][runway]; depState != nil {
+		depState.PublishedDepartures[placement.rwy.Category]++
+	}
+	return ac, nil
 }

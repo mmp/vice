@@ -65,6 +65,9 @@ var (
 	// errNoPlausibleArrival: no arrival comes in plausibly from the flight's
 	// direction.
 	errNoPlausibleArrival = errors.New("no plausible arrival to fly")
+	// errFlowDisabled: only a flow the scenario has switched off--an inbound
+	// flow, or a runway's departures--would fly the flight, so it is dropped.
+	errFlowDisabled = errors.New("the flow that would fly it is disabled")
 )
 
 // IFRAirports returns every airport the scenario generates IFR traffic at, departures and
@@ -139,13 +142,15 @@ type candidateArrival struct {
 }
 
 // candidateArrivals gathers them in sorted flow order, so that a choice between
-// equally good ones doesn't vary between runs.
-func (ss *CommonState) candidateArrivals(arrivalAirport av.ICAOAirportCode) []candidateArrival {
+// equally good ones doesn't vary between runs. includeDisabled takes in the
+// flows the scenario has switched off, too.
+func (ss *CommonState) candidateArrivals(arrivalAirport av.ICAOAirportCode, includeDisabled bool) []candidateArrival {
 	arrivalAirport = traffic.NormalizeAirportCode(arrivalAirport)
 
 	var candidates []candidateArrival
 	for _, group := range util.SortedMapKeys(ss.InboundFlows) {
-		if !ss.LaunchConfig.InboundFlowEnabled[group][string(arrivalAirport)] {
+		enabled, listed := ss.LaunchConfig.InboundFlowEnabled[group][string(arrivalAirport)]
+		if !enabled && !(includeDisabled && listed) {
 			continue
 		}
 		arrivals := ss.InboundFlows[group].Arrivals
@@ -606,13 +611,27 @@ func dropReturnedLegs(flights []traffic.Flight) ([]traffic.Flight, int) {
 // placeArrival decides how a published flight into arrivalAirport from origin
 // is flown: the inbound flow and arrival that carry it, the route it files, and
 // the airport standing in for its origin when neither the scenario nor the
-// route database covers where it really came from.
+// route database covers where it really came from. A flight only a flow the
+// scenario has switched off would carry fails with errFlowDisabled.
 func (ss *CommonState) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftType string,
 	routed routedPairs) (arrivalPlacement, error) {
 	arrivalAirport = traffic.NormalizeAirportCode(arrivalAirport)
 	origin = traffic.NormalizeAirportCode(origin)
 
-	candidates := ss.candidateArrivals(arrivalAirport)
+	p, err := ss.placeArrivalAmong(ss.candidateArrivals(arrivalAirport, false), arrivalAirport, origin,
+		aircraftType, routed)
+	if err != nil {
+		if d, derr := ss.placeArrivalAmong(ss.candidateArrivals(arrivalAirport, true), arrivalAirport,
+			origin, aircraftType, routed); derr == nil {
+			return p, fmt.Errorf("%w: %s", errFlowDisabled, d.group)
+		}
+	}
+	return p, err
+}
+
+// placeArrivalAmong places the flight on one of the given candidates.
+func (ss *CommonState) placeArrivalAmong(candidates []candidateArrival, arrivalAirport, origin av.ICAOAirportCode,
+	aircraftType string, routed routedPairs) (arrivalPlacement, error) {
 	if len(candidates) == 0 {
 		return arrivalPlacement{}, errNoPlausibleArrival
 	}

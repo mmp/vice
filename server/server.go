@@ -110,7 +110,9 @@ import (
 // 94: the ERAM altitude limits filters can be adapted per control position and per scenario
 //
 // 95: pending point outs moved from Sim.PointOuts to NASFlightPlan.PointOuts
-const ViceSerializeVersion = 95
+//
+// 96: published arrivals are spaced per inbound flow by miles in trail: Sim gained ArrivalLaunches
+const ViceSerializeVersion = 96
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

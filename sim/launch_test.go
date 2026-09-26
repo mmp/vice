@@ -207,6 +207,37 @@ func TestRecyclePendingAllocatesNothing(t *testing.T) {
 	}
 }
 
+// A published flight that can't be launched manually--most often because its
+// callsign is still flying--leaves the queue as it would when launched
+// automatically, so that its slot moves on to the next flight.
+func TestFailedManualLaunchDropsPublishedFlight(t *testing.T) {
+	now := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := launchTestSim()
+	s.STARSComputer = makeSTARSComputer("TEST")
+	s.State.SimTime = now
+	s.State.LaunchConfig.DepartureEnabled = map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
+		"KMSP": {"12L": {"": true}},
+	}
+	s.State.InboundFlows = map[string]*av.InboundFlow{"TEST": {Arrivals: []av.Arrival{{}}}}
+
+	// WUP214 is still flying in when both of its published legs come up.
+	s.Aircraft["WUP214"] = &Aircraft{ADSBCallsign: "WUP214"}
+	s.Schedule.Departures = []ScheduledDeparture{testScheduledDeparture("WUP214", "KMSP", "KORD", now)}
+	s.Schedule.Arrivals = []ScheduledArrival{testScheduledArrival("WUP214", "TEST", "KMSP", now)}
+
+	err := s.LaunchAircraft("TCW", LaunchFlight{Callsign: "WUP214", Departure: true, Runway: "12L"})
+	if !errors.Is(err, errCallsignInUse) {
+		t.Errorf("departure launch returned %v, want the callsign clash", err)
+	}
+	if err := s.LaunchAircraft("TCW", LaunchFlight{Callsign: "WUP214"}); !errors.Is(err, errCallsignInUse) {
+		t.Errorf("arrival launch returned %v, want the callsign clash", err)
+	}
+	if len(s.Schedule.Departures) != 0 || len(s.Schedule.Arrivals) != 0 {
+		t.Errorf("%d departures and %d arrivals still queued, want both dropped",
+			len(s.Schedule.Departures), len(s.Schedule.Arrivals))
+	}
+}
+
 // Switching launches from manual back to automatic pushes the kind's schedule
 // later by the time spent in manual mode: every flight resumes as far from
 // launch as it was when manual mode began, rather than a backlog spawning at

@@ -365,11 +365,13 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 				return fmt.Errorf("%s/%s: runway is not launching departures",
 					e.DepartureAirport, flight.Runway)
 			}
+			// A flight that can't be created is dropped, as it is when
+			// launched automatically, so that the slot moves on.
+			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
 			ac, err := s.createPublishedIFRDeparture(e, flight.Runway, categories)
 			if err != nil {
 				return err
 			}
-			s.Schedule.Departures = deleteScheduledEntry(s.Schedule.Departures, i)
 			s.launchDeparture(ac, flight.Runway, flight)
 			return nil
 		}
@@ -407,11 +409,13 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 
 	if i := findScheduledPublished(s.Schedule.Arrivals,
 		func(e *ScheduledArrival) *ScheduledFlight { return &e.ScheduledFlight }, flight); i != -1 {
-		ac, err := s.createScheduledArrival(s.Schedule.Arrivals[i])
+		e := s.Schedule.Arrivals[i]
+		// Dropped if it can't be created, as for a departure.
+		s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
+		ac, err := s.createScheduledArrival(e)
 		if err != nil {
 			return err
 		}
-		s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
 		s.addAircraft(*ac)
 		return nil
 	}

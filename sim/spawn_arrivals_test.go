@@ -368,6 +368,112 @@ func TestZeroRateArrivalsDoNotBlock(t *testing.T) {
 	}
 }
 
+// An inbound flow launches its arrivals no closer than 6 miles in trail, and
+// 10 on average over any 30 minutes. At 240 knots, 6 miles takes 90 seconds
+// and 10 takes 150.
+func TestArrivalFlowSpacing(t *testing.T) {
+	now := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := NewTestSim(testLogger())
+	s.State.SimTime = now
+	launched := func(ago time.Duration) ArrivalLaunch {
+		return ArrivalLaunch{Time: now.Add(-ago), TAS: 240}
+	}
+
+	if !s.arrivalFlowSpaced("TEST") {
+		t.Error("held a flow that has launched nothing")
+	}
+
+	s.ArrivalLaunches = map[string][]ArrivalLaunch{"TEST": {launched(80 * time.Second)}}
+	if s.arrivalFlowSpaced("TEST") {
+		t.Error("launched 5.3 miles behind the flow's last arrival")
+	}
+	if !s.arrivalFlowSpaced("OTHER") {
+		t.Error("another flow's launch held this one")
+	}
+	s.ArrivalLaunches["TEST"] = []ArrivalLaunch{launched(90 * time.Second)}
+	if !s.arrivalFlowSpaced("TEST") {
+		t.Error("held 6 miles behind the flow's last arrival")
+	}
+
+	// Twelve launches 8 miles apart over the last 24 minutes: each is well
+	// clear of the next, but 10 miles apiece fills the window.
+	var launches []ArrivalLaunch
+	for i := 12; i >= 1; i-- {
+		launches = append(launches, launched(time.Duration(2*i)*time.Minute))
+	}
+	s.ArrivalLaunches["TEST"] = launches
+	if s.arrivalFlowSpaced("TEST") {
+		t.Error("launched a thirteenth arrival 8 miles in trail within 30 minutes")
+	}
+	s.ArrivalLaunches["TEST"] = launches[1:]
+	if !s.arrivalFlowSpaced("TEST") {
+		t.Error("held after eleven launches 8 miles apart")
+	}
+	s.ArrivalLaunches["TEST"] = launches
+	s.State.SimTime = now.Add(6 * time.Minute)
+	if !s.arrivalFlowSpaced("TEST") {
+		t.Error("held once the oldest launch aged out of the window")
+	}
+}
+
+// Recording a launch notes the aircraft's true airspeed and forgets the
+// flow's launches that have aged out of the window.
+func TestRecordArrivalLaunch(t *testing.T) {
+	now := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := NewTestSim(testLogger())
+	s.State.SimTime = now
+	s.ArrivalLaunches = map[string][]ArrivalLaunch{"TEST": {
+		{Time: now.Add(-31 * time.Minute), TAS: 250},
+		{Time: now.Add(-10 * time.Minute), TAS: 250},
+	}}
+	ac := &Aircraft{Nav: nav.Nav{FlightState: nav.FlightState{IAS: 250, Altitude: 12000}}}
+
+	s.recordArrivalLaunch("TEST", ac)
+
+	launches := s.ArrivalLaunches["TEST"]
+	if len(launches) != 2 || launches[0].Time != now.Add(-10*time.Minute) || launches[1].Time != now {
+		t.Fatalf("flow holds launches %+v, want the one 10 minutes ago and this one", launches)
+	}
+	if tas := launches[1].TAS; tas <= 290 || tas >= 320 {
+		t.Errorf("recorded %.0f knots, want the true airspeed of 250 knots at 12,000'", tas)
+	}
+}
+
+// Due published arrivals in a flow that isn't spaced yet stay queued in
+// order, and hold up no other flow's. Scenario arrivals are spaced by their
+// rates and never held.
+func TestSpacedFlowHoldsOnlyItsOwnArrivals(t *testing.T) {
+	now := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := NewTestSim(testLogger())
+	s.State.SimTime = now
+	s.State.LaunchConfig = LaunchConfig{
+		InboundFlowRates:   map[string]map[string]float32{"PUCKY1": {"KJFK": 7}, "MIP4": {"KLGA": 30}},
+		InboundFlowEnabled: map[string]map[string]bool{"PUCKY1": {"KJFK": true}, "MIP4": {"KLGA": true}},
+	}
+	justLaunched := []ArrivalLaunch{{Time: now.Add(-30 * time.Second), TAS: 300}}
+	s.ArrivalLaunches = map[string][]ArrivalLaunch{"PUCKY1": justLaunched, "CAMRN5": justLaunched}
+	scenario := testScheduledArrival("AAL4", "CAMRN5", "KJFK", now)
+	scenario.Source = TrafficSourceScenario
+	s.Schedule.Arrivals = []ScheduledArrival{
+		testScheduledArrival("DAL1", "PUCKY1", "KJFK", now.Add(-5*time.Minute)),
+		testScheduledArrival("DAL2", "MIP4", "KLGA", now.Add(-time.Minute)),
+		testScheduledArrival("DAL3", "PUCKY1", "KJFK", now),
+		scenario,
+	}
+
+	// DAL2 and AAL4 are taken up in their turn; creating them fails in this
+	// bare test sim, which has no flows to fly, and so they leave the queue.
+	s.spawnScheduledArrivals()
+
+	var queued []string
+	for _, e := range s.Schedule.Arrivals {
+		queued = append(queued, e.Callsign)
+	}
+	if !slices.Equal(queued, []string{"DAL1", "DAL3"}) {
+		t.Errorf("queue holds %v, want the PUCKY1 arrivals waiting in order", queued)
+	}
+}
+
 // A published arrival files within the band the pair's recent filings were
 // seen at, and no lower than the STAR it comes in on requires.
 func TestPlaceArrivalCarriesCruiseLimits(t *testing.T) {

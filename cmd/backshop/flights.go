@@ -537,8 +537,8 @@ func flightText(f sim.PublishedFlight) string {
 		line += " (as from " + string(f.Substitute) + ")"
 	}
 	switch f.Outcome {
-	case sim.FlightWaiting:
-		line += " WAITING: " + f.Problem
+	case sim.FlightDisabled:
+		line += " DROPPED (flow disabled): " + f.Problem
 	case sim.FlightDropped:
 		line += " DROPPED: " + f.Problem
 	}
@@ -546,9 +546,9 @@ func flightText(f sim.PublishedFlight) string {
 }
 
 // outcomeColor separates the traffic the scenario has no way to fly from the
-// traffic that is only waiting for a flow to be switched on.
+// traffic dropped only because the flow that would fly it is switched off.
 func outcomeColor(outcome sim.FlightOutcome) imgui.Vec4 {
-	if outcome == sim.FlightWaiting {
+	if outcome == sim.FlightDisabled {
 		return imgui.Vec4{X: 1, Y: 0.8, Z: 0.3, W: 1}
 	}
 	return warningColor

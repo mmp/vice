@@ -839,6 +839,64 @@ func TestResolvePublishedDepartureScenarioRoute(t *testing.T) {
 	}
 }
 
+// A published flight takes the scratchpad of the scenario's departure to the
+// same destination out the same exit, exits comparing by their fix; one for
+// an exit the flight's runway launches wins over another configuration's.
+func TestDepartureScratchpad(t *testing.T) {
+	ap := &av.Airport{Departures: []av.Departure{
+		{Exit: "EAST.J.30L", Destination: "KTGT", Scratchpad: "TGT"},
+		{Exit: "NORTH.E", Destination: "KNOR", Scratchpad: "NOE"},
+		{Exit: "NORTH", Destination: "KNOR", Scratchpad: "NOR"},
+		{Exit: "NORTH", Destination: "KSOU", SecondaryScratchpad: "S"},
+	}}
+	exitRoutes := map[av.ExitID]*av.ExitRoute{"NORTH": {}, "EAST": {}}
+	for _, tc := range []struct {
+		exit        av.ExitID
+		destination av.ICAOAirportCode
+		want        string
+	}{
+		{"EAST", "KTGT", "TGT"},  // EAST.J.30L is the EAST exit
+		{"EAST", "KEAS", ""},     // nothing to KEAS
+		{"NORTH", "KTGT", ""},    // KTGT's departure leaves over EAST
+		{"NORTH", "KNOR", "NOR"}, // the runway launches NORTH, not NORTH.E
+		{"NORTH", "KSOU", ""},    // no scratchpad to take
+	} {
+		if sp := departureScratchpad(ap, exitRoutes, tc.exit, tc.destination); sp != tc.want {
+			t.Errorf("%s to %s: scratchpad %q, want %q", tc.exit, tc.destination, sp, tc.want)
+		}
+	}
+}
+
+// The scenario's departure to the same destination out the same exit lends a
+// published flight its scratchpad, but nothing else: the flight flies the
+// route placement found and files the altitude its real route does.
+func TestResolvePublishedDepartureTakesScenarioScratchpad(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	s := publishedDepartureSim()
+	s.State.Airports["KORG"].Departures = []av.Departure{
+		{Exit: "NORTH.J", Destination: "KTGT", Scratchpad: "NTG", Altitudes: []int{7000}, Route: "NORTH KTGT"},
+	}
+	s.State.Airports["KORG"].TrafficRoutes = av.TrafficRoutes{
+		Departures: map[av.ICAOAirportCode]av.TrafficRouteSet{
+			"KTGT": {av.TrafficRoute{Route: "NORTH J111 KTGT"}},
+		},
+	}
+
+	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if placement.dep.Scratchpad != "NTG" {
+		t.Errorf("scratchpad = %q, want the scenario departure's NTG", placement.dep.Scratchpad)
+	}
+	if placement.dep.Route != "NORTH J111 KTGT" || len(placement.dep.Altitudes) > 0 {
+		t.Errorf("route %q altitudes %v, want the traffic route and no altitude from the scenario",
+			placement.dep.Route, placement.dep.Altitudes)
+	}
+}
+
 // When the FAA route database knows how a city pair is flown, the flight
 // takes the modeled exit its real route passes through and files that route.
 func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {

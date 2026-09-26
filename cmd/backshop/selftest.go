@@ -141,18 +141,18 @@ func selfTestReports(a *app) error {
 		return fmt.Errorf("%s traffic: %s", t.query.Source, t.err)
 	}
 
-	dropped, waiting := 0, 0
+	dropped, disabled := 0, 0
 	for _, f := range t.report.Flights {
 		switch f.Outcome {
 		case sim.FlightDropped:
 			dropped++
-		case sim.FlightWaiting:
-			waiting++
+		case sim.FlightDisabled:
+			disabled++
 		}
 	}
 	fmt.Printf("%s traffic from %s: %d flights, %d with no route the scenario can fly, "+
-		"%d waiting on a flow to be enabled\n", t.query.Source,
-		t.query.Start.Format(startTimeFormat), len(t.report.Flights), dropped, waiting)
+		"%d dropped because their flow is disabled\n", t.query.Source,
+		t.query.Start.Format(startTimeFormat), len(t.report.Flights), dropped, disabled)
 	if len(t.report.Flights) == 0 {
 		return nil
 	}
