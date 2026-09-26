@@ -23,10 +23,6 @@ func (tl testLocator) Locate(fix string) (math.Point2LL, bool) {
 	return p, ok
 }
 
-func (tl testLocator) Similar(fix string) []string {
-	return nil
-}
-
 func (tl testLocator) Declination(fix string) (float32, bool) {
 	return 0, false
 }
@@ -227,6 +223,44 @@ func TestParseRadialCourseTermination(t *testing.T) {
 	wps.InitializeLocations(testLocator{"KSEA-34R": {-122.308, 47.431}, "NEVJO": {-122.310, 47.252}}, 40.7, 0, false, e)
 	if !e.HaveErrors() {
 		t.Error("expected an error for an unknown course navaid")
+	}
+}
+
+// suggestingLocator is a testLocator that offers the same alternatives to
+// any fix it can't locate.
+type suggestingLocator struct {
+	testLocator
+	similar []string
+}
+
+func (sl suggestingLocator) Similar(fix string) []string { return sl.similar }
+
+func TestInitializeLocationsSuggestsFixes(t *testing.T) {
+	loc := testLocator{
+		"JFK":   {-73.779, 40.640},
+		"MREI":  {-73.900, 40.800},  // ~11nm from JFK
+		"MERIT": {-73.130, 41.380},  // ~50nm
+		"MERIK": {-118.408, 33.943}, // across the country
+	}
+	locate := func(loc Locator) string {
+		var e util.ErrorLogger
+		WaypointArray{{Fix: "JFK"}, {Fix: "MREIT"}}.InitializeLocations(loc, 45, 0, false, &e)
+		return e.String()
+	}
+
+	msg := locate(suggestingLocator{loc, []string{"MERIK", "MERIT", "MREIS", "MREI"}})
+	if !strings.Contains(msg, "Did you mean: MREI (") {
+		t.Errorf("expected the nearest alternative MREI to be offered first, got %q", msg)
+	}
+	if !strings.Contains(msg, " MERIT (") {
+		t.Errorf("expected MERIT to be offered, got %q", msg)
+	}
+	if strings.Contains(msg, "MERIK") || strings.Contains(msg, "MREIS") {
+		t.Errorf("expected no distant or unlocatable alternatives, got %q", msg)
+	}
+
+	if msg := locate(loc); !strings.Contains(msg, "unable to locate waypoint") || strings.Contains(msg, "Did you mean") {
+		t.Errorf("expected an unknown-waypoint error with no alternatives, got %q", msg)
 	}
 }
 

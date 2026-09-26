@@ -5,8 +5,10 @@
 package aviation
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"slices"
 	"strings"
 
@@ -27,10 +29,6 @@ type Locator interface {
 	// Declination returns the station declination of the named VHF navaid,
 	// if it has one: the variation its radials are referenced to.
 	Declination(fix string) (float32, bool)
-
-	// If Locate fails, Similar can be called to get alternatives that are
-	// similarly-spelled to be offered in error messages.
-	Similar(fix string) []string
 
 	// Airways returns the airways published under the given name, if any.
 	// A route string names an airway between two fixes; which fixes lie on
@@ -145,6 +143,40 @@ type DMELocator interface {
 	LocateDME(fix string) (math.Point2LL, int, bool)
 }
 
+// FixSuggester is implemented by Locators that can offer alternatives to a
+// fix they couldn't locate, for error messages.
+type FixSuggester interface {
+	// Similar returns the fixes spelled like fix, which is likely a typo.
+	Similar(fix string) []string
+}
+
+// suggestFixes returns a " Did you mean: ..." clause for an error that reports
+// fix unknown, offering the fixes loc suggests within 150nm of near, nearest
+// first, or "" if there are none.
+func suggestFixes(loc Locator, fix string, near math.Point2LL) string {
+	fs, ok := loc.(FixSuggester)
+	if !ok {
+		return ""
+	}
+
+	dist := make(map[string]float32)
+	for _, s := range fs.Similar(fix) {
+		if p, ok := loc.Locate(s); ok {
+			if d := math.NMDistance2LL(near, p); d < 150 {
+				dist[s] = d
+			}
+		}
+	}
+	if len(dist) == 0 {
+		return ""
+	}
+
+	sim := slices.SortedFunc(maps.Keys(dist), func(a, b string) int { return cmp.Compare(dist[a], dist[b]) })
+	return " Did you mean: " + strings.Join(util.MapSlice(sim, func(s string) string {
+		return fmt.Sprintf("%s (%.1fnm)", s, dist[s])
+	}), " ")
+}
+
 // initializeActionLocations resolves the fixes the waypoint's action groups
 // refer to: the navaids that DME distances and radials are measured from and
 // the fixes whose radials are flown.
@@ -234,32 +266,7 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 			// Placed below, once the fixes on either side have been located.
 		} else if pos, ok := loc.Locate(wp.Fix); !ok {
 			if e != nil && !allowSlop {
-				var errstr strings.Builder
-				errstr.WriteString("unable to locate waypoint.")
-				if sim := loc.Similar(wp.Fix); len(sim) > 0 {
-					dist := make(map[string]float32)
-					for _, s := range sim {
-						if p, ok := loc.Locate(s); ok {
-							dist[s] = math.NMDistance2LL(prev, p)
-						} else {
-							dist[s] = 999999
-						}
-					}
-
-					sim = util.FilterSliceInPlace(sim, func(s string) bool { return dist[s] < 150 })
-
-					slices.SortFunc(sim, func(a, b string) int {
-						return util.Select(dist[a] < dist[b], -1, 1)
-					})
-
-					if len(sim) > 0 {
-						errstr.WriteString(" Did you mean: ")
-					}
-					for _, s := range sim {
-						errstr.WriteString(fmt.Sprintf("%s (%.1fnm) ", s, dist[s]))
-					}
-				}
-				e.ErrorString("%s", errstr.String())
+				e.ErrorString("unable to locate waypoint.%s", suggestFixes(loc, wp.Fix, prev))
 			}
 		} else {
 			wa[i].Location = pos

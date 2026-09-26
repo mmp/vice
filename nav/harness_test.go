@@ -879,8 +879,6 @@ func (dbLocator) Airways(name string) ([]av.Airway, bool) {
 	return aw, ok
 }
 
-func (dbLocator) Similar(fix string) []string { return nil }
-
 func (dbLocator) Declination(fix string) (float32, bool) { return db.DB.Declination(fix) }
 
 // parseRoute parses a waypoint string using the scenario JSON format and

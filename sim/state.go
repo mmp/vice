@@ -460,14 +460,6 @@ func (ss *CommonState) Airways(name string) ([]av.Airway, bool) {
 	return aw, ok
 }
 
-func (ss *CommonState) Similar(fix string) []string {
-	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(ss.Fixes), nil, nil)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Navaids), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Airports), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Fixes), d1, d2)
-	return util.Select(len(d1) > 0, d1, d2)
-}
-
 func (ss *CommonState) LocateDME(s string) (math.Point2LL, int, bool) {
 	return db.DB.LookupDME(s)
 }

@@ -45,13 +45,6 @@ func (Lookups) Declination(s string) (float32, bool) {
 	return DB.Declination(s)
 }
 
-func (Lookups) Similar(fix string) []string {
-	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(DB.Navaids), nil, nil)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(DB.Airports), d1, d2)
-	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(DB.Fixes), d1, d2)
-	return util.Select(len(d1) > 0, d1, d2)
-}
-
 func (Lookups) Airways(name string) ([]av.Airway, bool) {
 	aw, ok := DB.Airways[name]
 	return aw, ok

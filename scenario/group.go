@@ -197,6 +197,9 @@ func (sg *Group) resolveControllerRefs() {
 	}
 }
 
+// Similar returns the fixes, navaids, and airports spelled within one edit of
+// fix, or within two if there are none that close, for the "did you mean"
+// in an error about a fix that couldn't be located.
 func (sg *Group) Similar(fix string) []string {
 	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(sg.Fixes), nil, nil)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(db.DB.Navaids), d1, d2)
