@@ -175,8 +175,11 @@ func TestEditDistance(t *testing.T) {
 	options := []string{"hello", "house", "mouse", "Hallow", "blunt", "blouse", "mousse", "halo"}
 	tests := []test{
 		{input: "hallo", options: options, expected1: []string{"hello", "halo"}, expected2: []string{"Hallow"}},
-		{input: "houses", options: options, expected1: []string{"house"}, expected2: []string{"mouse", "blouse"}},
+		// "blouse" is three edits away; "mousse" is two, with the "es" swapped.
+		{input: "houses", options: options, expected1: []string{"house"}, expected2: []string{"mouse", "mousse"}},
 		{input: "monitor", options: options, expected1: nil, expected2: nil},
+		{input: "KRZAE", options: []string{"KRAZE", "OKRAE", "LVZ", "KHZL", "KRDG", "KRIZZ"},
+			expected1: []string{"KRAZE"}, expected2: []string{"OKRAE"}},
 	}
 	for tc := range slices.Values(tests) {
 		d1, d2 := SelectInTwoEdits(tc.input, slices.Values(tc.options), nil, nil)

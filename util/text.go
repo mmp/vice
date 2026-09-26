@@ -231,23 +231,13 @@ func HashString64(s string) uint64 {
 
 // Given a string iterator and a base string, return two arrays of strings
 // from the iterator that are respectively within one or two edits of the
-// base string. // https://en.wikipedia.org/wiki/Levenshtein_distance
+// base string. Swapping two adjacent characters counts as a single edit,
+// since that is a common typo.
+// https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance#Optimal_string_alignment_distance
 func SelectInTwoEdits[S ~string](str string, seq iter.Seq[S], dist1, dist2 []string) ([]string, []string) {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
-	var cur, prev []int
+	var prev2, prev, cur []int
 	n := len(str)
+candidates:
 	for s2 := range seq {
 		str2 := string(s2)
 		if str == str2 {
@@ -255,15 +245,12 @@ func SelectInTwoEdits[S ~string](str string, seq iter.Seq[S], dist1, dist2 []str
 		}
 
 		n2 := len(str2)
-		nmax := max(n, n2)
-
-		if nmax >= len(cur) {
-			cur = make([]int, nmax+1)
-			prev = make([]int, nmax+1)
+		if n2+1 > len(cur) {
+			prev2, prev, cur = make([]int, n2+1), make([]int, n2+1), make([]int, n2+1)
 		}
 
-		for i := range n2 + 1 {
-			prev[i] = i
+		for x := range n2 + 1 {
+			prev[x] = x
 		}
 
 		for y := 1; y <= n; y++ {
@@ -275,24 +262,24 @@ func SelectInTwoEdits[S ~string](str string, seq iter.Seq[S], dist1, dist2 []str
 				if str[y-1] != str2[x-1] {
 					cost = 1
 				}
-
-				cur[x] = min(prev[x-1]+cost, min(cur[x-1], prev[x])+1)
-
-				if cur[x] < rowBest {
-					rowBest = cur[x]
+				cur[x] = min(prev[x-1]+cost, cur[x-1]+1, prev[x]+1)
+				if y > 1 && x > 1 && str[y-1] == str2[x-2] && str[y-2] == str2[x-1] {
+					cur[x] = min(cur[x], prev2[x-2]+1)
 				}
+				rowBest = min(rowBest, cur[x])
 			}
 
+			// The distance never drops below the best in a row.
 			if rowBest > 2 {
-				continue
+				continue candidates
 			}
-			// Swap cur and prev
-			cur, prev = prev, cur
+			prev2, prev, cur = prev, cur, prev2
 		}
 
-		if prev[n2] == 1 {
+		switch prev[n2] {
+		case 1:
 			dist1 = append(dist1, str2)
-		} else if prev[n2] == 2 {
+		case 2:
 			dist2 = append(dist2, str2)
 		}
 	}
