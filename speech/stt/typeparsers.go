@@ -5,12 +5,15 @@
 package stt
 
 import (
+	"maps"
 	"reflect"
 	"slices"
 	"strconv"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
+	"github.com/mmp/vice/util"
 )
 
 // typeParser is the interface for type-specific value extraction.
@@ -255,6 +258,33 @@ func (p *reportingPointParser) parseScored(tokens []Token, pos int, ac Aircraft)
 	}
 	// Reporting point names are matched like multi-word fix names.
 	if cands := fixCandidates(tokens[pos:], ac.ReportingPoints); len(cands) > 0 {
+		return cands[0].fix, cands[0].consumed, cands[0].score, ""
+	}
+	return nil, 0, 1, ""
+}
+
+// airportParser matches the name of one of the airports among the
+// aircraft's fixes: its arrival or departure airport, if nearby.
+type airportParser struct{}
+
+func (p *airportParser) goType() reflect.Type {
+	return reflect.TypeFor[string]()
+}
+
+func (p *airportParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	value, consumed, _, sayAgain := p.parseScored(tokens, pos, ac)
+	return value, consumed, sayAgain
+}
+
+func (p *airportParser) parseScored(tokens []Token, pos int, ac Aircraft) (any, int, float64, string) {
+	airports := maps.Collect(util.FilterSeq2(maps.All(ac.Fixes), func(_, id string) bool {
+		_, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(id))
+		return ok
+	}))
+	if pos >= len(tokens) || len(airports) == 0 {
+		return nil, 0, 1, ""
+	}
+	if cands := fixCandidates(tokens[pos:], airports); len(cands) > 0 {
 		return cands[0].fix, cands[0].consumed, cands[0].score, ""
 	}
 	return nil, 0, 1, ""
@@ -1008,6 +1038,8 @@ func getTypeParser(typeID string) typeParser {
 		return &fixParser{}
 	case "reporting_point":
 		return &reportingPointParser{}
+	case "airport":
+		return &airportParser{}
 	case "approach":
 		return &approachParser{garbledFallback: true, garbledRequireEvidence: true}
 	case "approach_lahso":

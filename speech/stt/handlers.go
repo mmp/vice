@@ -2153,15 +2153,30 @@ func registerAllCommands() {
 		WithName("airport_advisory_report"),
 		WithPriority(10),
 	)
-	// Variant that accepts any leading word(s) before o'clock (e.g., "kennedy is at
-	// your 11 o'clock 8 miles"). The {fix} type absorbs the airport name token.
+	// Variants that name the airport ("kennedy is at your 11 o'clock 8 miles",
+	// "report kennedy in sight"). Their priority is lower so that the explicit
+	// "airport"/"field" patterns win, and the same as the reporting point
+	// patterns below so that the better match decides a name that could be
+	// either.
 	registerSTTCommand(
-		"{fix} [is] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
+		"{airport} [is] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [the] [field|airport] [in] [sight]",
 		func(_ string, oclock int, miles int) string {
 			return fmt.Sprintf("AP/%d/%d", oclock, miles)
 		},
 		WithName("airport_advisory_named"),
-		WithPriority(9), // Lower priority so explicit "airport"/"field" patterns win
+		WithPriority(9),
+	)
+	registerSTTCommand(
+		"[do] have {airport} [in sight]",
+		func(_ string) string { return "AP" },
+		WithName("airport_in_sight_inquiry_named"),
+		WithPriority(9),
+	)
+	registerSTTCommand(
+		"report {airport} in sight",
+		func(_ string) string { return "AP" },
+		WithName("airport_in_sight_report_named"),
+		WithPriority(9),
 	)
 	// "do you have the field/airport [in sight]" — bare inquiry with no o'clock
 	// or distance. The "in sight" suffix is optional so this also covers
@@ -2182,27 +2197,28 @@ func registerAllCommands() {
 
 	// === REPORTING POINT ADVISORY ===
 	// A charted visual approach's landmark ("the Dumbarton bridge is at your
-	// three o'clock, three miles, report in sight"). Higher priority than
-	// airport_advisory_named, whose {fix} slot would otherwise take the name.
+	// three o'clock, three miles, report in sight"). The priority matches the
+	// named airport patterns: "San Francisco" must still be the airport when
+	// "San Mateo bridge" is a landmark.
 	registerSTTCommand(
 		"[the] {reporting_point} [is|its] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [it] [in] [sight]",
 		func(id string, oclock int, miles int) string {
 			return fmt.Sprintf("RP/%d/%d/%s", oclock, miles, id)
 		},
 		WithName("reporting_point_advisory"),
-		WithPriority(10),
+		WithPriority(9),
 	)
 	registerSTTCommand(
 		"report [the] {reporting_point} in sight",
 		func(id string) string { return "RP/" + id },
 		WithName("reporting_point_in_sight_report"),
-		WithPriority(10),
+		WithPriority(9),
 	)
 	registerSTTCommand(
 		"[do] have [the] {reporting_point} [in sight]",
 		func(id string) string { return "RP/" + id },
 		WithName("reporting_point_in_sight_inquiry"),
-		WithPriority(10),
+		WithPriority(9),
 	)
 
 	// === TRAFFIC IN-SIGHT INQUIRY ===

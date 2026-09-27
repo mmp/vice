@@ -3284,6 +3284,24 @@ func TestAirportAdvisorySTTPatterns(t *testing.T) {
 			},
 			expected: "AAL123 AP",
 		},
+		{
+			name:       "do you have the airport by name",
+			transcript: "American 123 do you have kennedy in sight",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000,
+					Fixes: map[string]string{"kennedy": "KJFK"}},
+			},
+			expected: "AAL123 AP",
+		},
+		{
+			name:       "report the airport by name in sight",
+			transcript: "American 123 report kennedy in sight",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000,
+					Fixes: map[string]string{"kennedy": "KJFK"}},
+			},
+			expected: "AAL123 AP",
+		},
 	}
 
 	for _, tt := range tests {
@@ -3308,12 +3326,13 @@ func TestReportingPointSTTPatterns(t *testing.T) {
 			Callsign: "AAL123",
 			State:    "arrival",
 			Altitude: 5000,
-			Fixes:    map[string]string{"kennedy": "KJFK"},
+			Fixes:    map[string]string{"kennedy": "KJFK", "san francisco": "KSFO"},
 			ReportingPoints: map[string]string{
 				"dumbarton":        "BRIDGE",
 				"bridge":           "BRIDGE",
 				"dumbarton bridge": "BRIDGE",
 				"stadium":          "STADIUM",
+				"san mateo bridge": "SMBRIDGE",
 			},
 		},
 	}
@@ -3390,6 +3409,31 @@ func TestReportingPointSTTPatterns(t *testing.T) {
 			aircraft:   expecting,
 			expected:   "AAL123 AP",
 		},
+		{
+			// An exact airport name beats a landmark whose name resembles it.
+			name:       "airport named like a landmark",
+			transcript: "American 123 San Francisco at your eleven o'clock eight miles",
+			aircraft:   expecting,
+			expected:   "AAL123 AP/11/8",
+		},
+		{
+			name:       "airport named like a landmark inquiry",
+			transcript: "American 123 do you have San Francisco in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 AP",
+		},
+		{
+			name:       "report airport named like a landmark in sight",
+			transcript: "American 123 report San Francisco in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 AP",
+		},
+		{
+			name:       "landmark named like an airport",
+			transcript: "American 123 the San Mateo bridge is at your eleven o'clock eight miles",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/11/8/SMBRIDGE",
+		},
 	}
 
 	for _, tt := range tests {
@@ -3405,16 +3449,21 @@ func TestReportingPointSTTPatterns(t *testing.T) {
 		})
 	}
 
-	// Without an expected charted visual, there's nothing to call.
+	// Without an expected charted visual, there's nothing to call. Nor is a
+	// landmark taken for the airport: "at" once matched the fix EDDYY
+	// ("Eddie") in the named-airport pattern.
 	notExpecting := map[string]Aircraft{
-		"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+		"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000,
+			Fixes: map[string]string{"eddie": "EDDYY"}},
 	}
 	for _, transcript := range []string{
 		"American 123 the dumbarton bridge is at your three o'clock three miles report in sight",
+		"American 123 cement plant is at your eleven o'clock seven miles report in sight",
 		"American 123 report the bridge in sight",
 	} {
-		if result, err := provider.DecodeTranscript(notExpecting, transcript, ""); err != nil || strings.Contains(result, "RP") {
-			t.Errorf("%q: got %q (err %v), want no RP command", transcript, result, err)
+		if result, err := provider.DecodeTranscript(notExpecting, transcript, ""); err != nil ||
+			strings.Contains(result, "RP") || strings.Contains(result, "AP") {
+			t.Errorf("%q: got %q (err %v), want no RP or AP command", transcript, result, err)
 		}
 	}
 }

@@ -267,6 +267,7 @@ func (s *Sim) enqueueFutureFieldCheck(ac *Aircraft, rp *av.ReportingPoint) {
 			Time:             t,
 			ClearedWhenAsked: ac.Nav.Approach.EffectivelyCleared(),
 			ReportingPoint:   rp,
+			ApproachId:       ac.Nav.Approach.AssignedId,
 		}
 	}
 }
@@ -427,6 +428,10 @@ type FutureFieldCheck struct {
 	// ReportingPoint is the charted visual reporting point the pilot is
 	// looking for; they are looking for the field if it is nil.
 	ReportingPoint *av.ReportingPoint
+	// ApproachId is the approach the aircraft was expecting when asked. A
+	// look for one of its reporting points ends when the aircraft is told to
+	// expect another, even one with a reporting point of the same identifier.
+	ApproachId string
 }
 
 // FutureTrafficCheck is enqueued when a pilot says "looking" in response to
@@ -447,7 +452,7 @@ func (s *Sim) processFutureFieldChecks() {
 		if !ok || ac.ControllerFrequency == "" ||
 			(rp == nil && ac.FieldInSight) ||
 			(rp != nil && ac.SightedReportingPoint != nil && ac.SightedReportingPoint.Id == rp.Id) ||
-			(rp != nil && ac.calledReportingPoint(rp.Id, 0, 0) == nil) ||
+			(rp != nil && f.ApproachId != ac.Nav.Approach.AssignedId) ||
 			(!f.ClearedWhenAsked && ac.Nav.Approach.EffectivelyCleared()) {
 			delete(s.FutureFieldChecks, callsign)
 			continue

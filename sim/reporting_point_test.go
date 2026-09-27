@@ -296,22 +296,69 @@ func TestExpectApproachResetsReportingPoint(t *testing.T) {
 	}
 }
 
+// A look for a landmark ends with the approach it belongs to, even if the new
+// approach has a landmark of the same identifier; finding the old one mustn't
+// permit the new approach's clearance.
+func TestLandmarkLookEndsWithItsApproach(t *testing.T) {
+	vs := newReportingPointScenario(t, testBridge)
+	ap := vs.Sim.State.Airports["KJFK"]
+	other := *ap.Approaches["V36"]
+	other.ReportingPoints = reportingPoints(testReportingPoint("BRIDGE", fromTestPosition(180, 20), "San Mateo bridge"))
+	ap.Approaches["OTHER"] = &other
+
+	// Called at the wrong o'clock, the pilot keeps looking for the bridge,
+	// though pilotNoReportProb of the time they never speak up.
+	for range 50 {
+		vs.ReportingPointAdvisory(3, 4)
+		if vs.lookingFor() != nil {
+			break
+		}
+	}
+	if f := vs.Sim.FutureFieldChecks[vs.callsign]; f == nil || f.ApproachId != "V36" {
+		t.Fatalf("got look %+v, want one for the V36 bridge", f)
+	}
+
+	if _, err := vs.Sim.ExpectApproach(vs.tcw, vs.callsign, "OTHER"); err != nil {
+		t.Fatal(err)
+	}
+	vs.AdvanceTime(time.Minute)
+	vs.CheckDelayedFieldInSight()
+
+	if vs.HasPendingTransmission(PendingTransmissionReportingPointInSight) || vs.AC.SightedReportingPoint != nil {
+		t.Errorf("pilot reported the previous approach's bridge in sight")
+	}
+	if vs.lookingFor() != nil {
+		t.Error("look for the previous approach's bridge was kept")
+	}
+	intent, err := vs.Sim.ClearedApproach(vs.tcw, vs.callsign, "OTHER", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := intent.(speech.UnableIntent); !ok {
+		t.Errorf("clearance accepted without the new approach's bridge in sight: %#v", intent)
+	}
+}
+
 func TestDelayedReportingPointWithPreviousSighting(t *testing.T) {
 	stadium := testReportingPoint("STADIUM", fromTestPosition(0, 5), "stadium")
 	for _, c := range []struct {
-		name   string
-		seen   *av.ReportingPoint
-		points []*av.ReportingPoint
-		report bool
+		name     string
+		seen     *av.ReportingPoint
+		points   []*av.ReportingPoint
+		approach string // that the pilot was asked to look for the stadium on
+		report   bool
 	}{
-		{name: "different landmark", seen: testBridge, points: []*av.ReportingPoint{testBridge, stadium}, report: true},
-		{name: "same landmark", seen: stadium, points: []*av.ReportingPoint{testBridge, stadium}},
-		{name: "landmark from previous approach", seen: testBridge, points: []*av.ReportingPoint{testBridge}},
+		{name: "different landmark", seen: testBridge, points: []*av.ReportingPoint{testBridge, stadium},
+			approach: "V36", report: true},
+		{name: "same landmark", seen: stadium, points: []*av.ReportingPoint{testBridge, stadium}, approach: "V36"},
+		{name: "landmark from previous approach", seen: testBridge, points: []*av.ReportingPoint{testBridge},
+			approach: "STADIUM"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			vs := newReportingPointScenario(t, c.points...)
 			vs.AC.SightedReportingPoint = c.seen
-			vs.Sim.FutureFieldChecks[vs.callsign] = &FutureFieldCheck{Time: vs.Sim.State.SimTime, ReportingPoint: stadium}
+			vs.Sim.FutureFieldChecks[vs.callsign] = &FutureFieldCheck{Time: vs.Sim.State.SimTime,
+				ReportingPoint: stadium, ApproachId: c.approach}
 			vs.AdvanceTime(time.Second)
 			vs.CheckDelayedFieldInSight()
 			if reported := vs.HasPendingTransmission(PendingTransmissionReportingPointInSight); reported != c.report {
@@ -329,7 +376,8 @@ func TestDelayedReportingPointWithPreviousSighting(t *testing.T) {
 
 func TestDelayedReportingPointInSight(t *testing.T) {
 	vs := newReportingPointScenario(t, testBridge)
-	vs.Sim.FutureFieldChecks[vs.callsign] = &FutureFieldCheck{Time: vs.Sim.State.SimTime, ReportingPoint: testBridge}
+	vs.Sim.FutureFieldChecks[vs.callsign] = &FutureFieldCheck{Time: vs.Sim.State.SimTime,
+		ReportingPoint: testBridge, ApproachId: "V36"}
 
 	vs.AdvanceTime(time.Second)
 	vs.CheckDelayedFieldInSight()
