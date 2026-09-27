@@ -298,8 +298,7 @@ func (r Report) Diverged() bool {
 // Write writes the report for someone to read.
 func (r Report) Write(w io.Writer) {
 	h := r.Header
-	fmt.Fprintf(w, "%s %s (%s), recorded %s\n", h.Facility, h.Scenario, h.ScenarioGroup,
-		h.Start.UTC().Format("2006-01-02 15:04Z"))
+	fmt.Fprintln(w, h.Describe())
 
 	for _, ar := range r.Aircraft {
 		ar.write(w, h.SimStart)

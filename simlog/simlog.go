@@ -48,6 +48,13 @@ type Header struct {
 	Revision      string // revision of the code that wrote the log
 }
 
+// Describe names the session for a reader: its facility and scenario, and
+// when it was recorded.
+func (h Header) Describe() string {
+	return fmt.Sprintf("%s %s (%s), recorded %s", h.Facility, h.Scenario, h.ScenarioGroup,
+		h.Start.UTC().Format("2006-01-02 15:04Z"))
+}
+
 // Kind identifies a record in a log.
 type Kind uint8
 

@@ -15,9 +15,15 @@
 // A directory stands for the logs in it. With -bless, each log is replaced
 // by its replay, making the current code's flights the reference that later
 // runs are compared with. The exit status is 1 if any replay differed.
+//
+// With -summary, simtest doesn't replay the logs but describes what
+// happened in each session: the aircraft of each kind of flight, how many
+// of them the controllers worked, what became of them, and the requests the
+// controllers made.
 package main
 
 import (
+	"cmp"
 	"flag"
 	"fmt"
 	"io"
@@ -26,6 +32,9 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
@@ -45,6 +54,7 @@ var (
 	speedTol  = flag.Float64("speed", 2, "speed `tolerance`, in knots")
 	hdgTol    = flag.Float64("hdg", 2, "heading `tolerance`, in degrees")
 	logLevel  = flag.String("loglevel", "error", "`level` of the sim's own log messages to write to stderr: debug, info, warn, error")
+	summary   = flag.Bool("summary", false, "describe what happened in each log's session instead of replaying it")
 
 	navLogEnabled    = flag.Bool("navlog", false, "enable navigation logging (requires the navlog build tag)")
 	navLogCategories = flag.String("navlog-categories", "all", "navigation log `categories`")
@@ -65,12 +75,29 @@ func main() {
 	os.Exit(run(flag.Args()))
 }
 
-// run checks the logs the arguments name and returns the exit status.
+// run checks or summarizes the logs the arguments name and returns the exit
+// status.
 func run(args []string) int {
 	logs, err := findLogs(args)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return 2
+	}
+
+	if *summary {
+		status := 0
+		for _, path := range logs {
+			sess, err := simlog.Load(path)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				status = 1
+				continue
+			}
+			fmt.Println(filepath.Base(path))
+			summarize(os.Stdout, sess)
+			fmt.Println()
+		}
+		return status
 	}
 
 	// Replays run in an empty directory to be sure that there are no inadvertent
@@ -269,4 +296,170 @@ func (t *tester) replay(sess *simlog.Session, dir string) (string, *simlog.Sessi
 		return "", nil, err
 	}
 	return f.Name(), replay, replayErr
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Summaries
+
+// flightKind is a kind of flight, like IFR arrivals.
+type flightKind struct{ rules, flight string }
+
+// loggedAircraft is what a session log says of one aircraft's time in the
+// sim.
+type loggedAircraft struct {
+	kind   flightKind
+	flew   bool   // it was ever flying, rather than only waiting to depart
+	worked bool   // a controller made a request about it that the sim carried out
+	end    string // why it left the sim, or "" if it was still there when the log ended
+}
+
+// summarize describes what happened in a session: how long it ran, the
+// aircraft of each kind of flight and what became of them, and the requests
+// the controllers made.
+func summarize(w io.Writer, sess *simlog.Session) {
+	var aircraft []*loggedAircraft
+	inSim := make(map[string]*loggedAircraft)                       // by callsign
+	requests, refused := make(map[string]int), make(map[string]int) // by method
+	tcws := make(map[string]bool)
+	var end time.Time
+	for _, e := range sess.Events {
+		switch e.Kind {
+		case simlog.KindSpawn:
+			ac := &loggedAircraft{kind: flightKind{rules: e.Spawn.Rules, flight: e.Spawn.Flight}}
+			aircraft = append(aircraft, ac)
+			inSim[e.Spawn.Callsign] = ac
+		case simlog.KindDelete:
+			if ac, ok := inSim[e.Delete.Callsign]; ok {
+				ac.end = e.Delete.Reason
+				delete(inSim, e.Delete.Callsign)
+			}
+		case simlog.KindTick:
+			end = e.Tick.Time
+			for _, s := range e.Tick.Aircraft {
+				if ac, ok := inSim[s.Callsign]; ok {
+					ac.flew = true
+				}
+			}
+		case simlog.KindRequest:
+			r := e.Request
+			method := r.Method[strings.LastIndex(r.Method, ".")+1:]
+			requests[method]++
+			tcws[r.TCW] = true
+			if r.Error != "" {
+				refused[method]++
+			} else if ac, ok := inSim[r.Aircraft]; ok && r.Method != server.LaunchAircraftRPC {
+				// Launching an aircraft brings it into the sim but isn't
+				// working it.
+				ac.worked = true
+			}
+		}
+	}
+
+	h := sess.Header
+	fmt.Fprintln(w, h.Describe())
+	if end.IsZero() {
+		fmt.Fprintln(w, "The sim never ran.")
+	} else {
+		fmt.Fprintf(w, "Ran %s of sim time, %s to %s.\n", end.Sub(h.SimStart).Round(time.Second),
+			h.SimStart.UTC().Format(time.TimeOnly), end.UTC().Format(time.TimeOnly))
+	}
+	writeAircraftTable(w, aircraft)
+	writeRequestCounts(w, requests, refused, util.SortedMapKeys(tcws))
+}
+
+// writeAircraftTable writes a table with a column for each kind of flight
+// and one for all of them. Its rows count the aircraft, the ones the
+// controllers worked, and what became of them.
+func writeAircraftTable(w io.Writer, aircraft []*loggedAircraft) {
+	kinds := util.MapSlice(aircraft, func(ac *loggedAircraft) flightKind { return ac.kind })
+	slices.SortFunc(kinds, func(a, b flightKind) int {
+		return cmp.Or(cmp.Compare(a.flight, b.flight), cmp.Compare(a.rules, b.rules))
+	})
+	kinds = slices.Compact(kinds)
+
+	type row struct {
+		label  string
+		counts []int // for each kind, then for all of them
+	}
+	count := func(label string, pred func(*loggedAircraft) bool) row {
+		r := row{label: label, counts: make([]int, len(kinds)+1)}
+		for _, ac := range aircraft {
+			if pred(ac) {
+				r.counts[slices.Index(kinds, ac.kind)]++
+				r.counts[len(kinds)]++
+			}
+		}
+		return r
+	}
+	total := func(r row) int { return r.counts[len(kinds)] }
+
+	reasons := util.MapSlice(aircraft, func(ac *loggedAircraft) string { return ac.end })
+	slices.Sort(reasons)
+	reasons = slices.DeleteFunc(slices.Compact(reasons), func(r string) bool { return r == "" })
+	var ends []row
+	for _, reason := range reasons {
+		ends = append(ends, count(reason, func(ac *loggedAircraft) bool { return ac.end == reason }))
+	}
+	slices.SortStableFunc(ends, func(a, b row) int { return total(b) - total(a) })
+	ends = append(ends,
+		count("still flying", func(ac *loggedAircraft) bool { return ac.end == "" && ac.flew }),
+		count("never flew", func(ac *loggedAircraft) bool { return ac.end == "" && !ac.flew }))
+	ends = slices.DeleteFunc(ends, func(r row) bool { return total(r) == 0 })
+
+	rows := append([]row{
+		count("aircraft", func(*loggedAircraft) bool { return true }),
+		count("worked", func(ac *loggedAircraft) bool { return ac.worked }),
+	}, ends...)
+
+	rules := append(util.MapSlice(kinds, func(k flightKind) string { return k.rules }), "")
+	flights := append(util.MapSlice(kinds, func(k flightKind) string { return k.flight + "s" }), "total")
+	widths := make([]int, len(kinds)+1)
+	for i := range widths {
+		widths[i] = max(len(rules[i]), len(flights[i]), len(strconv.Itoa(rows[0].counts[i])))
+	}
+	labelWidth := 0
+	for _, r := range rows {
+		labelWidth = max(labelWidth, len(r.label))
+	}
+
+	line := func(label string, cells []string) {
+		var s strings.Builder
+		fmt.Fprintf(&s, "  %-*s", labelWidth, label)
+		for i, c := range cells {
+			fmt.Fprintf(&s, "  %*s", widths[i], c)
+		}
+		fmt.Fprintln(w, strings.TrimRight(s.String(), " "))
+	}
+	line("", rules)
+	line("", flights)
+	for _, r := range rows {
+		line(r.label, util.MapSlice(r.counts, strconv.Itoa))
+	}
+}
+
+// writeRequestCounts writes how many requests the controllers at the given
+// positions made with each method and how many of them the sim refused.
+func writeRequestCounts(w io.Writer, requests, refused map[string]int, tcws []string) {
+	if len(requests) == 0 {
+		fmt.Fprintln(w, "The controllers made no requests.")
+		return
+	}
+
+	refusals := func(n int) string {
+		return util.Select(n == 0, "", fmt.Sprintf(" (%d refused)", n))
+	}
+	total, totalRefused := 0, 0
+	for method, n := range requests {
+		total += n
+		totalRefused += refused[method]
+	}
+	fmt.Fprintf(w, "Controllers at %s made %d %s%s:\n", strings.Join(tcws, ", "), total,
+		util.Select(total == 1, "request", "requests"), refusals(totalRefused))
+
+	methods := util.SortedMapKeys(requests)
+	slices.SortStableFunc(methods, func(a, b string) int { return requests[b] - requests[a] })
+	width := len(strconv.Itoa(requests[methods[0]]))
+	for _, m := range methods {
+		fmt.Fprintf(w, "  %*d %s%s\n", width, requests[m], m, refusals(refused[m]))
+	}
 }
