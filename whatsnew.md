@@ -1,4 +1,4 @@
-- Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane)
+- Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane), D10 (Alexander Rueffer)
 - Added delay before launching subsequent same-exit departures
 adjustments for TAS
 - Flight model

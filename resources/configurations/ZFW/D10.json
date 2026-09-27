@@ -170,10 +170,11 @@
           "WHINY4": "1A"
         },
         "departure_assignments": {
-          "KADS": "1L",
-          "KAFW": "1Z",
-          "KDAL": "1Z",
-          "KDFW": "1Z",
+          "KADS": "1N",
+          "KAFW": "1M",
+          "KDAL": "1L",
+          "KDFW/35L": "1L",
+          "KDFW/36R": "1Z",
           "KTKI": "1N"
         },
         "default_consolidation": {
@@ -245,10 +246,11 @@
           "WESAT3": "1M"
         },
         "departure_assignments": {
-          "KADS": "1L",
-          "KAFW": "1Z",
-          "KDAL": "1Z",
-          "KDFW": "1Z",
+          "KADS": "1N",
+          "KAFW": "1D",
+          "KDAL": "1L",
+          "KDFW/17R": "1L",
+          "KDFW/18L": "1Z",
           "KTKI": "1N"
         },
         "default_consolidation": {
@@ -329,14 +331,19 @@
       },
       "DEP": {
         "departure_assignments": {
-          "KADS": "1L",
-          "KAFW": "1Z",
+          "KADS": "1N",
+          "KAFW/16L": "1D",
+          "KAFW/34R": "1M",
           "KDAL": "1L",
-          "KDFW": "1L",
-          "KTKI": "1L"
+          "KDFW/17R": "1L",
+          "KDFW/18L": "1Z",
+          "KDFW/35L": "1L",
+          "KDFW/36R": "1Z",
+          "KTKI": "1N"
         },
         "default_consolidation": {
-          "1L": ["1Z"]
+          "1L": ["1Z", "1M"],
+          "1M": ["1D", "1N"]
         }
       },
       "DFW": {
@@ -486,16 +493,17 @@
           "WESAT3": "1D"
         },
         "departure_assignments": {
-          "KAFW": "1D",
-          "KDTO": "1D",
-          "KFTW": "1D",
-          "KFWS": "1M",
-          "KGKY": "1M",
-          "KGPM": "1M",
-          "KNFW": "1M"
+          "KAFW": "1M",
+          "KDTO": "1M",
+          "KFTW": "1M",
+          "KFWS": "1D",
+          "KGKY": "1H",
+          "KGPM": "1H",
+          "KNFW": "1P"
         },
         "default_consolidation": {
-          "1D": ["1E", "1M"]
+          "1M": ["1E", "1D", "1P"],
+          "1D": ["1H"]
         }
       },
       "ME1": {
@@ -510,15 +518,15 @@
         },
         "departure_assignments": {
           "KAFW": "1M",
-          "KDTO": "1D",
-          "KFTW": "1M",
-          "KFWS": "1M",
-          "KGKY": "1M",
-          "KGPM": "1M",
-          "KNFW": "1M"
+          "KDTO": "1M",
+          "KFTW": "1D",
+          "KFWS": "1D",
+          "KGKY": "1D",
+          "KGPM": "1D",
+          "KNFW": "1P"
         },
         "default_consolidation": {
-          "1D": ["1E", "1M"]
+          "1M": ["1E", "1D", "1P"]
         }
       },
       "ME2": {
@@ -530,12 +538,12 @@
           "WESAT3": "1D"
         },
         "departure_assignments": {
-          "KAFW": "1D",
-          "KDTO": "1D",
-          "KFTW": "1D"
+          "KAFW": "1M",
+          "KDTO": "1M",
+          "KFTW": "1M"
         },
         "default_consolidation": {
-          "1D": ["1E", "1M"]
+          "1M": ["1E", "1D"]
         }
       },
       "ME3": {
@@ -548,11 +556,11 @@
         },
         "departure_assignments": {
           "KAFW": "1M",
-          "KDTO": "1D",
-          "KFTW": "1M"
+          "KDTO": "1M",
+          "KFTW": "1D"
         },
         "default_consolidation": {
-          "1D": ["1E", "1M"]
+          "1M": ["1E", "1D"]
         }
       },
       "ME4": {
@@ -567,12 +575,13 @@
         "departure_assignments": {
           "KFTW": "1M",
           "KFWS": "1M",
-          "KGKY": "1M",
-          "KGPM": "1M",
-          "KNFW": "1M"
+          "KGKY": "1H",
+          "KGPM": "1H",
+          "KNFW": "1P"
         },
         "default_consolidation": {
-          "1M": ["1D", "1E"]
+          "1M": ["1D", "1E", "1P"],
+          "1D": ["1H"]
         }
       },
       "DSA": {
@@ -595,7 +604,7 @@
           "KAFW": "1M",
           "KDTO": "1M",
           "KFTW": "1D",
-          "KDAL": "1Z",
+          "KDAL": "1L",
           "KDFW/18L": "1Z",
           "KDFW/17R": "1L",
           "KTKI": "1N",
