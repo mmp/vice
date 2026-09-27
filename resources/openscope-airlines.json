@@ -2710,7 +2710,8 @@
           ["B772", 47],
           ["B77W", 20],
           ["B788", 20],
-          ["B789", 22]
+          ["B789", 22],
+          ["MD82", 19]
         ],
         "long": [
           ["B772", 47],
@@ -3749,7 +3750,8 @@
           ["CRJ7", 42],
           ["CRJ9", 3],
           ["E135", 3],
-          ["E145", 114]
+          ["E145", 114],
+          ["CRJ2", 4]
         ]
       }
     },
@@ -6338,7 +6340,9 @@
           ["B752", 102],
           ["B753", 16],
           ["B763", 56],
-          ["B764", 21]
+          ["B764", 21],
+          ["MD88", 8],
+          ["CRJ2", 8]
         ],
         "long": [
           ["A332", 11],
@@ -8428,7 +8432,8 @@
           ["A20N", 82],
           ["A320", 6],
           ["A321", 21],
-          ["A21N", 57]
+          ["A21N", 57],
+          ["A319", 8]
         ]
       }
     },
@@ -10668,7 +10673,8 @@
         "default": [
           ["DH8D", 37],
           ["CRJ9", 35],
-          ["E75L", 23]
+          ["E75L", 23],
+          ["CRJ2", 6]
         ],
         "turboprops": [["DH8D", 37]],
         "aus": [
@@ -15260,7 +15266,8 @@
         "default": [
           ["CRJ7", 109],
           ["CRJ9", 36],
-          ["E75L", 258]
+          ["E75L", 258],
+          ["CRJ2", 6]
         ],
         "CRJ": [
           ["CRJ7", 109],
@@ -17343,7 +17350,8 @@
           ["B77W", 22],
           ["B788", 12],
           ["B789", 28],
-          ["B78X", 14]
+          ["B78X", 14],
+          ["B733", 3]
         ],
         "long": [
           ["B763", 38],
@@ -22834,6 +22842,145 @@
           ["PC12", 3],
           ["BE20", 2],
           ["LJ45", 1]
+        ]
+      }
+    },
+    {
+      "icao": "amt",
+      "name": "ATA Airlines",
+      "callsign": {
+        "name": "Amtran",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["B738", 6]]
+      }
+    },
+    {
+      "icao": "bta",
+      "name": "Continental Express / ExpressJet",
+      "callsign": {
+        "name": "Jet Link",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["E145", 6]]
+      }
+    },
+    {
+      "icao": "coa",
+      "name": "Continental Airlines",
+      "callsign": {
+        "name": "Continental",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["B735", 17],
+          ["E145", 7]
+        ]
+      }
+    },
+    {
+      "icao": "com",
+      "name": "Comair",
+      "callsign": {
+        "name": "Comair",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["CRJ2", 6]]
+      }
+    },
+    {
+      "icao": "egf",
+      "name": "American Eagle Airlines",
+      "callsign": {
+        "name": "Eagle Flight",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["E145", 6]]
+      }
+    },
+    {
+      "icao": "flg",
+      "name": "Pinnacle Airlines",
+      "callsign": {
+        "name": "Flagship",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["CRJ2", 199]]
+      }
+    },
+    {
+      "icao": "mep",
+      "name": "Midwest Airlines",
+      "callsign": {
+        "name": "Midex",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["B712", 6]]
+      }
+    },
+    {
+      "icao": "mes",
+      "name": "Mesaba Airlines",
+      "callsign": {
+        "name": "Mesaba",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["SF34", 168],
+          ["RJ85", 86]
+        ]
+      }
+    },
+    {
+      "icao": "nwa",
+      "name": "Northwest Airlines",
+      "callsign": {
+        "name": "Northwest",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["DC93", 176],
+          ["A320", 164],
+          ["A319", 114],
+          ["B752", 80],
+          ["DC95", 64],
+          ["B753", 34],
+          ["DC10", 10],
+          ["B744", 2]
+        ]
+      }
+    },
+    {
+      "icao": "trs",
+      "name": "AirTran Airways",
+      "callsign": {
+        "name": "Citrus",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [["B712", 10]]
+      }
+    },
+    {
+      "icao": "usa",
+      "name": "US Airways",
+      "callsign": {
+        "name": "US Air",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["A319", 16],
+          ["B733", 4]
         ]
       }
     }

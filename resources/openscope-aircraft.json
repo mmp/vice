@@ -12371,6 +12371,51 @@
       }
     },
     {
+      "name": "McDonnell-Douglas DC-9-50",
+      "icao": "DC95",
+      "engines": {
+        "number": 2,
+        "type": "J"
+      },
+      "weightClass": "L",
+      "category": {
+        "srs": 3,
+        "lahso": 8,
+        "cwt": "F"
+      },
+      "ceiling": 37000,
+      "rate": {
+        "climb": 1900,
+        "descent": 2500,
+        "accelerate": 5.9,
+        "decelerate": 3
+      },
+      "runway": {
+        "takeoff": 2.3,
+        "landing": 1.8
+      },
+      "speed": {
+        "min": 135,
+        "landing": 140,
+        "cruise": 430,
+        "cruiseM": 0.77,
+        "max": 450,
+        "maxM": 0.79
+      },
+      "capability": {
+        "ils": true,
+        "fix": true
+      },
+      "turn": {
+        "maxBankAngle": 25,
+        "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 139,
+        "fuel_pounds": 29000
+      }
+    },
+    {
       "name": "Bombardier Dash 8-100",
       "icao": "DH8A",
       "engines": {

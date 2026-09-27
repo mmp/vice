@@ -12553,148 +12553,23 @@
     "BAINY4.30s": {
       "arrivals": [
         {
-          "waypoints": "BAINY/a15000+/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
-              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
-              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
-              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/t121",
-              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
-            }
-          },
-          "star": "BAINY4",
+          "waypoints": "GOLLF/ho OLLEE SAUGR GEP/a11000 VYKES/h120",
           "initial_controller": "C10",
-          "initial_altitude": 15000,
+          "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I30R",
           "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
               {
-                "callsign": "DAL261",
-                "types": ["B752"],
-                "airport": "BIKF"
+                "callsign": "WEN3824",
+                "types": ["DH8D"],
+                "airport": "CYQR"
               },
               {
-                "callsign": "ICE657",
-                "types": ["B38M"],
-                "airport": "BIKF"
-              },
-              {
-                "callsign": "WJA1530",
-                "types": ["B737"],
-                "airport": "CYEG"
-              },
-              {
-                "callsign": "SKW3526",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "SKW3660",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "SKW3871",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "SKW4005",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "WJA1900",
-                "types": ["B738", "B737"],
-                "airport": "CYXE"
-              },
-              {
-                "callsign": "DAL2489",
-                "types": ["A321"],
-                "airport": "CYYC"
-              },
-              {
-                "callsign": "DAL2492",
-                "types": ["A320"],
-                "airport": "CYYC"
-              },
-              {
-                "callsign": "WJA1810",
-                "types": ["B38M"],
-                "airport": "CYYC"
-              },
-              {
-                "callsign": "OCN52",
-                "types": ["A333"],
-                "airport": "EDDF"
-              },
-              {
-                "callsign": "DAL9",
-                "types": ["A339"],
-                "airport": "EGLL"
-              },
-              {
-                "callsign": "DAL161",
-                "types": ["A359"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "DAL163",
-                "types": ["A333"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "DAL165",
-                "types": ["A339"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "KLM655",
-                "types": ["B789"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "DAL259",
-                "types": ["A332"],
-                "airport": "EIDW"
-              },
-              {
-                "callsign": "EIN89",
-                "types": ["A21N"],
-                "airport": "EIDW"
-              },
-              {
-                "callsign": "DAL117",
-                "types": ["A339"],
-                "airport": "EKCH"
-              },
-              {
-                "callsign": "DAL2446",
-                "types": ["BCS1"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "EDV4992",
-                "types": ["CRJ9"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "SKW3914",
-                "types": ["E75L"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "SKW3935",
-                "types": ["E75L"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "SKW4066",
-                "types": ["CRJ9"],
-                "airport": "KBIS"
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KBJI"
               },
               {
                 "callsign": "SKW4283",
@@ -12707,6 +12582,11 @@
                 "airport": "KBJI"
               },
               {
+                "callsign": "BMJ51",
+                "types": ["BE99"],
+                "airport": "KBRD"
+              },
+              {
                 "callsign": "SKW4273",
                 "types": ["CRJ7"],
                 "airport": "KBRD"
@@ -12715,6 +12595,11 @@
                 "callsign": "SKW4336",
                 "types": ["CRJ7"],
                 "airport": "KBRD"
+              },
+              {
+                "callsign": "BMJ57",
+                "types": ["SW4"],
+                "airport": "KDLH"
               },
               {
                 "callsign": "SKW3666",
@@ -12737,64 +12622,14 @@
                 "airport": "KDLH"
               },
               {
-                "callsign": "DAL2237",
-                "types": ["A320"],
-                "airport": "KFAR"
+                "callsign": "BMJ53",
+                "types": ["BE99"],
+                "airport": "KGPZ"
               },
               {
-                "callsign": "DAL2452",
-                "types": ["A321"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "EDV4774",
-                "types": ["CRJ7"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "EDV4782",
-                "types": ["CRJ7"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "EDV5077",
-                "types": ["CRJ7"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "SKW3771",
-                "types": ["E75L"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "SKW4328",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4329",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4330",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4331",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4229",
-                "types": ["CRJ7"],
-                "airport": "KHIB"
-              },
-              {
-                "callsign": "SKW4236",
-                "types": ["CRJ7"],
-                "airport": "KHIB"
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KINL"
               },
               {
                 "callsign": "SKW4245",
@@ -12807,24 +12642,9 @@
                 "airport": "KINL"
               },
               {
-                "callsign": "SKW4130",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
-              },
-              {
-                "callsign": "SKW4136",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
-              },
-              {
-                "callsign": "SKW4144",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
-              },
-              {
-                "callsign": "SKW4158",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
+                "callsign": "BMJ1024",
+                "types": ["SW4"],
+                "airport": "KTVF"
               },
               {
                 "callsign": "LYM5107",
@@ -12835,76 +12655,127 @@
                 "callsign": "LYM5112",
                 "types": ["E145"],
                 "airport": "KTVF"
-              },
-              {
-                "callsign": "SKW4261",
-                "types": ["CRJ7"],
-                "airport": "KXWA"
-              },
-              {
-                "callsign": "SKW4284",
-                "types": ["CRJ7"],
-                "airport": "KXWA"
-              },
-              {
-                "callsign": "SKW4296",
-                "types": ["CRJ7"],
-                "airport": "KXWA"
-              },
-              {
-                "callsign": "AFR88",
-                "types": ["B772"],
-                "airport": "LFPG"
-              },
-              {
-                "callsign": "DAL153",
-                "types": ["A333"],
-                "airport": "LFPG"
-              },
-              {
-                "callsign": "DAL1055",
-                "types": ["B739"],
-                "airport": "PAFA"
-              },
-              {
-                "callsign": "DAL447",
-                "types": ["B752"],
-                "airport": "PANC"
-              },
-              {
-                "callsign": "DAL555",
-                "types": ["B752"],
-                "airport": "PANC"
-              },
-              {
-                "callsign": "SCX472",
-                "types": ["B738"],
-                "airport": "PANC"
-              },
-              {
-                "callsign": "DAL120",
-                "types": ["A359"],
-                "airport": "RJTT"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"],
+          "star": "GEP1"
+        },
+        {
+          "waypoints": "GOLLF/ho OLLEE/a9000 SAUGR GEP VYKES/h120",
+          "initial_controller": "C10",
+          "initial_altitude": 13000,
+          "initial_speed": 230,
+          "expect_approach": "I30R",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "WEN3824",
+                "types": ["DH8D"],
+                "airport": "CYQR"
+              },
+              {
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KBJI"
+              },
+              {
+                "callsign": "SKW4283",
+                "types": ["CRJ7"],
+                "airport": "KBJI"
+              },
+              {
+                "callsign": "SKW4303",
+                "types": ["CRJ7"],
+                "airport": "KBJI"
+              },
+              {
+                "callsign": "BMJ51",
+                "types": ["BE99"],
+                "airport": "KBRD"
+              },
+              {
+                "callsign": "SKW4273",
+                "types": ["CRJ7"],
+                "airport": "KBRD"
+              },
+              {
+                "callsign": "SKW4336",
+                "types": ["CRJ7"],
+                "airport": "KBRD"
+              },
+              {
+                "callsign": "BMJ57",
+                "types": ["SW4"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3666",
+                "types": ["CRJ9"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3686",
+                "types": ["E75L"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3922",
+                "types": ["CRJ9"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3930",
+                "types": ["E75L"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "BMJ53",
+                "types": ["BE99"],
+                "airport": "KGPZ"
+              },
+              {
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KINL"
+              },
+              {
+                "callsign": "SKW4245",
+                "types": ["CRJ7"],
+                "airport": "KINL"
+              },
+              {
+                "callsign": "SKW4266",
+                "types": ["CRJ7"],
+                "airport": "KINL"
+              },
+              {
+                "callsign": "BMJ1024",
+                "types": ["SW4"],
+                "airport": "KTVF"
+              },
+              {
+                "callsign": "LYM5107",
+                "types": ["E145"],
+                "airport": "KTVF"
+              },
+              {
+                "callsign": "LYM5112",
+                "types": ["E145"],
+                "airport": "KTVF"
+              }
+            ]
+          },
+          "aircraft": "turboprop",
+          "star": "GEP1"
         }
       ]
     },
     "BAINY4.12s": {
       "arrivals": [
         {
-          "waypoints": "BAINY/a15000+/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
-              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/t181",
-              "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
-              "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210/t121",
-              "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
-            }
-          },
-          "star": "BAINY4",
+          "waypoints": "GOLLF/ho OLLEE/a11000 SAUGR GEP VYKES",
           "initial_controller": "C10",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -12913,129 +12784,14 @@
           "airlines": {
             "KMSP": [
               {
-                "callsign": "DAL261",
-                "types": ["B752"],
-                "airport": "BIKF"
+                "callsign": "WEN3824",
+                "types": ["DH8D"],
+                "airport": "CYQR"
               },
               {
-                "callsign": "ICE657",
-                "types": ["B38M"],
-                "airport": "BIKF"
-              },
-              {
-                "callsign": "WJA1530",
-                "types": ["B737"],
-                "airport": "CYEG"
-              },
-              {
-                "callsign": "SKW3526",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "SKW3660",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "SKW3871",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "SKW4005",
-                "types": ["E75L"],
-                "airport": "CYWG"
-              },
-              {
-                "callsign": "WJA1900",
-                "types": ["B738", "B737"],
-                "airport": "CYXE"
-              },
-              {
-                "callsign": "DAL2489",
-                "types": ["A321"],
-                "airport": "CYYC"
-              },
-              {
-                "callsign": "DAL2492",
-                "types": ["A320"],
-                "airport": "CYYC"
-              },
-              {
-                "callsign": "WJA1810",
-                "types": ["B38M"],
-                "airport": "CYYC"
-              },
-              {
-                "callsign": "OCN52",
-                "types": ["A333"],
-                "airport": "EDDF"
-              },
-              {
-                "callsign": "DAL9",
-                "types": ["A339"],
-                "airport": "EGLL"
-              },
-              {
-                "callsign": "DAL161",
-                "types": ["A359"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "DAL163",
-                "types": ["A333"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "DAL165",
-                "types": ["A339"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "KLM655",
-                "types": ["B789"],
-                "airport": "EHAM"
-              },
-              {
-                "callsign": "DAL259",
-                "types": ["A332"],
-                "airport": "EIDW"
-              },
-              {
-                "callsign": "EIN89",
-                "types": ["A21N"],
-                "airport": "EIDW"
-              },
-              {
-                "callsign": "DAL117",
-                "types": ["A339"],
-                "airport": "EKCH"
-              },
-              {
-                "callsign": "DAL2446",
-                "types": ["BCS1"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "EDV4992",
-                "types": ["CRJ9"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "SKW3914",
-                "types": ["E75L"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "SKW3935",
-                "types": ["E75L"],
-                "airport": "KBIS"
-              },
-              {
-                "callsign": "SKW4066",
-                "types": ["CRJ9"],
-                "airport": "KBIS"
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KBJI"
               },
               {
                 "callsign": "SKW4283",
@@ -13048,6 +12804,11 @@
                 "airport": "KBJI"
               },
               {
+                "callsign": "BMJ51",
+                "types": ["BE99"],
+                "airport": "KBRD"
+              },
+              {
                 "callsign": "SKW4273",
                 "types": ["CRJ7"],
                 "airport": "KBRD"
@@ -13056,6 +12817,11 @@
                 "callsign": "SKW4336",
                 "types": ["CRJ7"],
                 "airport": "KBRD"
+              },
+              {
+                "callsign": "BMJ57",
+                "types": ["SW4"],
+                "airport": "KDLH"
               },
               {
                 "callsign": "SKW3666",
@@ -13078,64 +12844,14 @@
                 "airport": "KDLH"
               },
               {
-                "callsign": "DAL2237",
-                "types": ["A320"],
-                "airport": "KFAR"
+                "callsign": "BMJ53",
+                "types": ["BE99"],
+                "airport": "KGPZ"
               },
               {
-                "callsign": "DAL2452",
-                "types": ["A321"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "EDV4774",
-                "types": ["CRJ7"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "EDV4782",
-                "types": ["CRJ7"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "EDV5077",
-                "types": ["CRJ7"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "SKW3771",
-                "types": ["E75L"],
-                "airport": "KFAR"
-              },
-              {
-                "callsign": "SKW4328",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4329",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4330",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4331",
-                "types": ["CRJ7"],
-                "airport": "KGFK"
-              },
-              {
-                "callsign": "SKW4229",
-                "types": ["CRJ7"],
-                "airport": "KHIB"
-              },
-              {
-                "callsign": "SKW4236",
-                "types": ["CRJ7"],
-                "airport": "KHIB"
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KINL"
               },
               {
                 "callsign": "SKW4245",
@@ -13148,24 +12864,9 @@
                 "airport": "KINL"
               },
               {
-                "callsign": "SKW4130",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
-              },
-              {
-                "callsign": "SKW4136",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
-              },
-              {
-                "callsign": "SKW4144",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
-              },
-              {
-                "callsign": "SKW4158",
-                "types": ["CRJ9"],
-                "airport": "KMOT"
+                "callsign": "BMJ1024",
+                "types": ["SW4"],
+                "airport": "KTVF"
               },
               {
                 "callsign": "LYM5107",
@@ -13176,59 +12877,120 @@
                 "callsign": "LYM5112",
                 "types": ["E145"],
                 "airport": "KTVF"
-              },
-              {
-                "callsign": "SKW4261",
-                "types": ["CRJ7"],
-                "airport": "KXWA"
-              },
-              {
-                "callsign": "SKW4284",
-                "types": ["CRJ7"],
-                "airport": "KXWA"
-              },
-              {
-                "callsign": "SKW4296",
-                "types": ["CRJ7"],
-                "airport": "KXWA"
-              },
-              {
-                "callsign": "AFR88",
-                "types": ["B772"],
-                "airport": "LFPG"
-              },
-              {
-                "callsign": "DAL153",
-                "types": ["A333"],
-                "airport": "LFPG"
-              },
-              {
-                "callsign": "DAL1055",
-                "types": ["B739"],
-                "airport": "PAFA"
-              },
-              {
-                "callsign": "DAL447",
-                "types": ["B752"],
-                "airport": "PANC"
-              },
-              {
-                "callsign": "DAL555",
-                "types": ["B752"],
-                "airport": "PANC"
-              },
-              {
-                "callsign": "SCX472",
-                "types": ["B738"],
-                "airport": "PANC"
-              },
-              {
-                "callsign": "DAL120",
-                "types": ["A359"],
-                "airport": "RJTT"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"],
+          "star": "GEP1"
+        },
+        {
+          "waypoints": "GOLLF/ho OLLEE/a7000 SAUGR GEP VYKES",
+          "initial_controller": "C10",
+          "initial_altitude": 11000,
+          "initial_speed": 230,
+          "expect_approach": "I12L",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "WEN3824",
+                "types": ["DH8D"],
+                "airport": "CYQR"
+              },
+              {
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KBJI"
+              },
+              {
+                "callsign": "SKW4283",
+                "types": ["CRJ7"],
+                "airport": "KBJI"
+              },
+              {
+                "callsign": "SKW4303",
+                "types": ["CRJ7"],
+                "airport": "KBJI"
+              },
+              {
+                "callsign": "BMJ51",
+                "types": ["BE99"],
+                "airport": "KBRD"
+              },
+              {
+                "callsign": "SKW4273",
+                "types": ["CRJ7"],
+                "airport": "KBRD"
+              },
+              {
+                "callsign": "SKW4336",
+                "types": ["CRJ7"],
+                "airport": "KBRD"
+              },
+              {
+                "callsign": "BMJ57",
+                "types": ["SW4"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3666",
+                "types": ["CRJ9"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3686",
+                "types": ["E75L"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3922",
+                "types": ["CRJ9"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "SKW3930",
+                "types": ["E75L"],
+                "airport": "KDLH"
+              },
+              {
+                "callsign": "BMJ53",
+                "types": ["BE99"],
+                "airport": "KGPZ"
+              },
+              {
+                "callsign": "BMJ70",
+                "types": ["BE99"],
+                "airport": "KINL"
+              },
+              {
+                "callsign": "SKW4245",
+                "types": ["CRJ7"],
+                "airport": "KINL"
+              },
+              {
+                "callsign": "SKW4266",
+                "types": ["CRJ7"],
+                "airport": "KINL"
+              },
+              {
+                "callsign": "BMJ1024",
+                "types": ["SW4"],
+                "airport": "KTVF"
+              },
+              {
+                "callsign": "LYM5107",
+                "types": ["E145"],
+                "airport": "KTVF"
+              },
+              {
+                "callsign": "LYM5112",
+                "types": ["E145"],
+                "airport": "KTVF"
+              }
+            ]
+          },
+          "aircraft": "turboprop",
+          "star": "GEP1"
         }
       ]
     },
@@ -13576,21 +13338,11 @@
     "BLUEM5_NITZR4.30s": {
       "arrivals": [
         {
-          "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a10000+/s280 HHAMR/a10000+ FARBO",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
-              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
-              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/t013"
-            }
-          },
-          "star": "BLUEM5",
+          "waypoints": "JAGOW/ho KASPR ZIBBY DELZY/a10000 PEPPY AHMIT FGT",
           "initial_controller": "C07",
-          "initial_altitude": 20000,
+          "initial_altitude": 17000,
           "initial_speed": 280,
-          "expect_approach": "I30L",
+          "expect_approach": "I30R",
           "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
@@ -13965,24 +13717,400 @@
                 "airport": "TJSJ"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"],
+          "star": "KASPR8"
         },
         {
-          "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a11000+/s280 WRSAW/a11000+ DAHRL",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
-              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
-              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/t023"
-            }
-          },
-          "star": "NITZR4",
+          "waypoints": "JAGOW/ho KASPR ZIBBY DELZY/a7000 PEPPY AHMIT FGT",
           "initial_controller": "C07",
-          "initial_altitude": 20000,
+          "initial_altitude": 15000,
+          "initial_speed": 230,
+          "expect_approach": "I30R",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "DAL1280",
+                "types": ["B752"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2090",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2654",
+                "types": ["B752"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2668",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2825",
+                "types": ["B739"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2901",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2960",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2981",
+                "types": ["B739"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "FFT3045",
+                "types": ["A20N"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2181",
+                "types": ["BCS1"],
+                "airport": "KAVL"
+              },
+              {
+                "callsign": "DAL2221",
+                "types": ["B739"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "DAL2612",
+                "types": ["A321"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "DAL2724",
+                "types": ["A321"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "DAL2843",
+                "types": ["B739"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "SCX634",
+                "types": ["B738"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "SWA2160",
+                "types": ["B737"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "EDV4899",
+                "types": ["CRJ7"],
+                "airport": "KCID"
+              },
+              {
+                "callsign": "EDV4906",
+                "types": ["CRJ7"],
+                "airport": "KCID"
+              },
+              {
+                "callsign": "EDV5248",
+                "types": ["CRJ7"],
+                "airport": "KCID"
+              },
+              {
+                "callsign": "DAL673",
+                "types": ["B753"],
+                "airport": "KFLL"
+              },
+              {
+                "callsign": "DAL475",
+                "types": ["BCS1", "BCS3"],
+                "airport": "KILM"
+              },
+              {
+                "callsign": "SCX910",
+                "types": ["B738"],
+                "airport": "KILM"
+              },
+              {
+                "callsign": "DAL2392",
+                "types": ["A320"],
+                "airport": "KJAX"
+              },
+              {
+                "callsign": "SCX326",
+                "types": ["B738"],
+                "airport": "KJAX"
+              },
+              {
+                "callsign": "DAL1208",
+                "types": ["B753"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL1250",
+                "types": ["B753"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL1730",
+                "types": ["B739"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL1885",
+                "types": ["B752"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL2225",
+                "types": ["B753"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "SCX342",
+                "types": ["B738"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "SCX346",
+                "types": ["B738"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "SKW3899",
+                "types": ["E75L"],
+                "airport": "KMEM"
+              },
+              {
+                "callsign": "SKW3989",
+                "types": ["E75L"],
+                "airport": "KMEM"
+              },
+              {
+                "callsign": "SKW4063",
+                "types": ["E75L"],
+                "airport": "KMEM"
+              },
+              {
+                "callsign": "DAL1056",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2129",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL1274",
+                "types": ["B739"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "EDV5480",
+                "types": ["CRJ7"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4032",
+                "types": ["E75L"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4102",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4103",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "DAL2695",
+                "types": ["A321"],
+                "airport": "KMSY"
+              },
+              {
+                "callsign": "EDV5464",
+                "types": ["CRJ7"],
+                "airport": "KORF"
+              },
+              {
+                "callsign": "UPS556",
+                "types": ["A306"],
+                "airport": "KRFD"
+              },
+              {
+                "callsign": "SCX8105",
+                "types": ["B738"],
+                "airport": "KRFD"
+              },
+              {
+                "callsign": "EDV4702",
+                "types": ["CRJ7"],
+                "airport": "KRST"
+              },
+              {
+                "callsign": "EDV4705",
+                "types": ["CRJ9"],
+                "airport": "KRST"
+              },
+              {
+                "callsign": "SKW4473",
+                "types": ["E75L"],
+                "airport": "KRST"
+              },
+              {
+                "callsign": "DAL2219",
+                "types": ["A321"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "DAL2400",
+                "types": ["B739"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "DAL402",
+                "types": ["B739"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "SCX384",
+                "types": ["B739"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "EDV4923",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "EDV4928",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "EDV4988",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "EDV5017",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "DAL1597",
+                "types": ["BCS1"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "DAL3185",
+                "types": ["BCS1"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "DAL3188",
+                "types": ["BCS1"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "EDV5325",
+                "types": ["CRJ9"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "SKW4167",
+                "types": ["CRJ9"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "SWA3961",
+                "types": ["B737"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "SWA4880",
+                "types": ["B738"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "DAL2263",
+                "types": ["B752"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "DAL2264",
+                "types": ["A321"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "DAL2301",
+                "types": ["A321"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "DAL2696",
+                "types": ["B739"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "SCX214",
+                "types": ["B738"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "EDV4803",
+                "types": ["CRJ7"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "EDV5523",
+                "types": ["CRJ9"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "SKW3536",
+                "types": ["E75L"],
+                "airport": "KXNA"
+              },
+              {
+                "callsign": "SKW4012",
+                "types": ["E75L"],
+                "airport": "KXNA"
+              },
+              {
+                "callsign": "DAL1878",
+                "types": ["A321"],
+                "airport": "MMUN"
+              },
+              {
+                "callsign": "SCX784",
+                "types": ["B738"],
+                "airport": "TJSJ"
+              }
+            ]
+          },
+          "aircraft": "turboprop",
+          "star": "KASPR8"
+        },
+        {
+          "waypoints": "TWOLF/ho KGEEE TRGET/a11000 FGT",
+          "initial_controller": "C07",
+          "initial_altitude": 13000,
           "initial_speed": 280,
-          "expect_approach": "I30L",
+          "expect_approach": "I30R",
           "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
@@ -14237,26 +14365,17 @@
                 "airport": "MMMX"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"]
         }
       ]
     },
     "BLUEM5_NITZR4.12s": {
       "arrivals": [
         {
-          "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a10000+/s280 HHAMR/a10000+ FARBO",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
-              "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
-              "30L": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "30R": "FARBO NOFLD/a8000-9000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/s210/t013"
-            }
-          },
-          "star": "BLUEM5",
+          "waypoints": "JAGOW/ho KASPR ZIBBY DELZY/a10000 PEPPY AHMIT FGT SLIKK/h300",
           "initial_controller": "C07",
-          "initial_altitude": 20000,
+          "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I12R",
           "airports": ["KMSP"],
@@ -14633,22 +14752,398 @@
                 "airport": "TJSJ"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"],
+          "star": "KASPR8"
         },
         {
-          "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a11000+/s280 WRSAW/a11000+ DAHRL",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
-              "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 TIETN/a8000/s230/t301",
-              "30L": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "30R": "DAHRL AANAH/a9000+ WBSTR/a8000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/t036",
-              "35": "DAHRL SHILD/a9000+ GDNEE NNEWW/a7000/s210/t023"
-            }
-          },
-          "star": "NITZR4",
+          "waypoints": "JAGOW/ho KASPR ZIBBY DELZY/a9000 PEPPY AHMIT FGT SLIKK/h300",
           "initial_controller": "C07",
-          "initial_altitude": 20000,
+          "initial_altitude": 15000,
+          "initial_speed": 230,
+          "expect_approach": "I12R",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "DAL1280",
+                "types": ["B752"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2090",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2654",
+                "types": ["B752"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2668",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2825",
+                "types": ["B739"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2901",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2960",
+                "types": ["A321"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2981",
+                "types": ["B739"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "FFT3045",
+                "types": ["A20N"],
+                "airport": "KATL"
+              },
+              {
+                "callsign": "DAL2181",
+                "types": ["BCS1"],
+                "airport": "KAVL"
+              },
+              {
+                "callsign": "DAL2221",
+                "types": ["B739"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "DAL2612",
+                "types": ["A321"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "DAL2724",
+                "types": ["A321"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "DAL2843",
+                "types": ["B739"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "SCX634",
+                "types": ["B738"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "SWA2160",
+                "types": ["B737"],
+                "airport": "KBNA"
+              },
+              {
+                "callsign": "EDV4899",
+                "types": ["CRJ7"],
+                "airport": "KCID"
+              },
+              {
+                "callsign": "EDV4906",
+                "types": ["CRJ7"],
+                "airport": "KCID"
+              },
+              {
+                "callsign": "EDV5248",
+                "types": ["CRJ7"],
+                "airport": "KCID"
+              },
+              {
+                "callsign": "DAL673",
+                "types": ["B753"],
+                "airport": "KFLL"
+              },
+              {
+                "callsign": "DAL475",
+                "types": ["BCS1", "BCS3"],
+                "airport": "KILM"
+              },
+              {
+                "callsign": "SCX910",
+                "types": ["B738"],
+                "airport": "KILM"
+              },
+              {
+                "callsign": "DAL2392",
+                "types": ["A320"],
+                "airport": "KJAX"
+              },
+              {
+                "callsign": "SCX326",
+                "types": ["B738"],
+                "airport": "KJAX"
+              },
+              {
+                "callsign": "DAL1208",
+                "types": ["B753"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL1250",
+                "types": ["B753"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL1730",
+                "types": ["B739"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL1885",
+                "types": ["B752"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "DAL2225",
+                "types": ["B753"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "SCX342",
+                "types": ["B738"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "SCX346",
+                "types": ["B738"],
+                "airport": "KMCO"
+              },
+              {
+                "callsign": "SKW3899",
+                "types": ["E75L"],
+                "airport": "KMEM"
+              },
+              {
+                "callsign": "SKW3989",
+                "types": ["E75L"],
+                "airport": "KMEM"
+              },
+              {
+                "callsign": "SKW4063",
+                "types": ["E75L"],
+                "airport": "KMEM"
+              },
+              {
+                "callsign": "DAL1056",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2129",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL1274",
+                "types": ["B739"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "EDV5480",
+                "types": ["CRJ7"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4032",
+                "types": ["E75L"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4102",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4103",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "DAL2695",
+                "types": ["A321"],
+                "airport": "KMSY"
+              },
+              {
+                "callsign": "EDV5464",
+                "types": ["CRJ7"],
+                "airport": "KORF"
+              },
+              {
+                "callsign": "UPS556",
+                "types": ["A306"],
+                "airport": "KRFD"
+              },
+              {
+                "callsign": "SCX8105",
+                "types": ["B738"],
+                "airport": "KRFD"
+              },
+              {
+                "callsign": "EDV4702",
+                "types": ["CRJ7"],
+                "airport": "KRST"
+              },
+              {
+                "callsign": "EDV4705",
+                "types": ["CRJ9"],
+                "airport": "KRST"
+              },
+              {
+                "callsign": "SKW4473",
+                "types": ["E75L"],
+                "airport": "KRST"
+              },
+              {
+                "callsign": "DAL2219",
+                "types": ["A321"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "DAL2400",
+                "types": ["B739"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "DAL402",
+                "types": ["B739"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "SCX384",
+                "types": ["B739"],
+                "airport": "KRSW"
+              },
+              {
+                "callsign": "EDV4923",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "EDV4928",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "EDV4988",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "EDV5017",
+                "types": ["CRJ7"],
+                "airport": "KSDF"
+              },
+              {
+                "callsign": "DAL1597",
+                "types": ["BCS1"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "DAL3185",
+                "types": ["BCS1"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "DAL3188",
+                "types": ["BCS1"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "EDV5325",
+                "types": ["CRJ9"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "SKW4167",
+                "types": ["CRJ9"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "SWA3961",
+                "types": ["B737"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "SWA4880",
+                "types": ["B738"],
+                "airport": "KSTL"
+              },
+              {
+                "callsign": "DAL2263",
+                "types": ["B752"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "DAL2264",
+                "types": ["A321"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "DAL2301",
+                "types": ["A321"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "DAL2696",
+                "types": ["B739"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "SCX214",
+                "types": ["B738"],
+                "airport": "KTPA"
+              },
+              {
+                "callsign": "EDV4803",
+                "types": ["CRJ7"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "EDV5523",
+                "types": ["CRJ9"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "SKW3536",
+                "types": ["E75L"],
+                "airport": "KXNA"
+              },
+              {
+                "callsign": "SKW4012",
+                "types": ["E75L"],
+                "airport": "KXNA"
+              },
+              {
+                "callsign": "DAL1878",
+                "types": ["A321"],
+                "airport": "MMUN"
+              },
+              {
+                "callsign": "SCX784",
+                "types": ["B738"],
+                "airport": "TJSJ"
+              }
+            ]
+          },
+          "aircraft": "turboprop",
+          "star": "KASPR8"
+        },
+        {
+          "waypoints": "TWOLF/ho KGEEE TRGET/a11000 FGT SLIKK/h300",
+          "initial_controller": "C07",
+          "initial_altitude": 13000,
           "initial_speed": 280,
           "expect_approach": "I12R",
           "airports": ["KMSP"],
@@ -14905,7 +15400,8 @@
                 "airport": "MMMX"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"]
         }
       ]
     },
@@ -18006,19 +18502,9 @@
     "MUSCL4.30s": {
       "arrivals": [
         {
-          "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
-              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
-              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
-              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
-              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
-            }
-          },
-          "star": "MUSCL4",
+          "waypoints": "EAU/ho TWINZ/a11000 WOLVS LOON8 ZASKY",
           "initial_controller": "C06",
-          "initial_altitude": 21000,
+          "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I30R",
           "airports": ["KMSP"],
@@ -18418,28 +18904,1547 @@
                 "callsign": "DAL299",
                 "types": ["A339"],
                 "airport": "LIRF"
+              },
+              {
+                "callsign": "DAL2357",
+                "types": ["BCS1"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2565",
+                "types": ["BCS3"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2872",
+                "types": ["B739"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SCX194",
+                "types": ["B738"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA1016",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA863",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2463",
+                "types": ["A320"],
+                "airport": "KCHS"
+              },
+              {
+                "callsign": "DAL1357",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL1449",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2057",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2847",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "AAL2151",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2153",
+                "types": ["A320"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2154",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2176",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL1827",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2491",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2819",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2820",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "SCX1948",
+                "types": ["B738"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2113",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2403",
+                "types": ["A320"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2550",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2772",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "SCX1492",
+                "types": ["B738"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2752",
+                "types": ["A321"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL3113",
+                "types": ["BCS1"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL703",
+                "types": ["B739"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL954",
+                "types": ["A320"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "SCX220",
+                "types": ["B738"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL1193",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL1493",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2863",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2958",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2963",
+                "types": ["BCS1"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "ENY3796",
+                "types": ["E75L"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5416",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5506",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "SKW3702",
+                "types": ["CRJ9"],
+                "airport": "KFWA"
+              },
+              {
+                "callsign": "RPA3576",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "RPA3649",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SCX668",
+                "types": ["B738"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3699",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3783",
+                "types": ["CRJ9"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3996",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "DAL1456",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2456",
+                "types": ["BCS1"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2757",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2912",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "SCX500",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "EDV4713",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV4820",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV5469",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2832",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2869",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4085",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4643",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "DAL1056",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2129",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2006",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL561",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4458",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4460",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4462",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4466",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL1274",
+                "types": ["B739"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "EDV5480",
+                "types": ["CRJ7"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4032",
+                "types": ["E75L"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4102",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4103",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "DAL2327",
+                "types": ["BCS1"],
+                "airport": "KMYR"
+              },
+              {
+                "callsign": "DAL1306",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1533",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1554",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1567",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1717",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL2130",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY3375",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY4162",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4425",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4727",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SCX262",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5684",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5871",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL1131",
+                "types": ["B739"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2005",
+                "types": ["B39M"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2232",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2298",
+                "types": ["A320"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2749",
+                "types": ["A319"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2805",
+                "types": ["B737"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "AAL2157",
+                "types": ["A319"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2594",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2679",
+                "types": ["BCS3"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2688",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2791",
+                "types": ["B739"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5460",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5658",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "SCX1776",
+                "types": ["B738"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2848",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL845",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "EDV5249",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "SKW3709",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL2519",
+                "types": ["A21N"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2521",
+                "types": ["BCS3"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2538",
+                "types": ["A321"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2699",
+                "types": ["B739"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "SCX920",
+                "types": ["B738"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "EDV5063",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "EDV5344",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "SCX1420",
+                "types": ["B738"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "DAL2574",
+                "types": ["BCS1"],
+                "airport": "KSAV"
+              },
+              {
+                "callsign": "SKW3835",
+                "types": ["CRJ9"],
+                "airport": "KSBN"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"]
+        },
+        {
+          "waypoints": "EAU/ho TWINZ/a7000 WOLVS LOON8 ZASKY",
+          "initial_controller": "C06",
+          "initial_altitude": 15000,
+          "initial_speed": 230,
+          "expect_approach": "I30R",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "EDV5427",
+                "types": ["CRJ7"],
+                "airport": "CYUL"
+              },
+              {
+                "callsign": "JZA851",
+                "types": ["CRJ9"],
+                "airport": "CYUL"
+              },
+              {
+                "callsign": "JZA719",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "JZA721",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "SKW3829",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "SKW3836",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "SKW4073",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "EDV4951",
+                "types": ["CRJ7"],
+                "airport": "KATW"
+              },
+              {
+                "callsign": "EDV4995",
+                "types": ["CRJ9"],
+                "airport": "KATW"
+              },
+              {
+                "callsign": "SKW3861",
+                "types": ["CRJ9"],
+                "airport": "KATW"
+              },
+              {
+                "callsign": "DAL1330",
+                "types": ["A321"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "DAL2007",
+                "types": ["A319"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "DAL2285",
+                "types": ["BCS1"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "SCX1982",
+                "types": ["B738"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "DAL1098",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1103",
+                "types": ["A21N"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1127",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1138",
+                "types": ["A21N"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1308",
+                "types": ["B752"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL2303",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "SCX250",
+                "types": ["B738"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "SCX252",
+                "types": ["B738"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "EDV4931",
+                "types": ["CRJ9"],
+                "airport": "KBTV"
+              },
+              {
+                "callsign": "DAL1751",
+                "types": ["A320"],
+                "airport": "KBUF"
+              },
+              {
+                "callsign": "SCX1058",
+                "types": ["B738"],
+                "airport": "KBUF"
+              },
+              {
+                "callsign": "SKW4251",
+                "types": ["CRJ7"],
+                "airport": "KCIU"
+              },
+              {
+                "callsign": "EDV4982",
+                "types": ["CRJ7"],
+                "airport": "KCWA"
+              },
+              {
+                "callsign": "EDV5384",
+                "types": ["CRJ9"],
+                "airport": "KCWA"
+              },
+              {
+                "callsign": "DAL1303",
+                "types": ["A321"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL1746",
+                "types": ["B752"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL1842",
+                "types": ["A320"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL2203",
+                "types": ["A320"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL2258",
+                "types": ["A321"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL2697",
+                "types": ["B739"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "SCX1908",
+                "types": ["B738"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "SKW4239",
+                "types": ["CRJ7"],
+                "airport": "KESC"
+              },
+              {
+                "callsign": "DAL1641",
+                "types": ["BCS1"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "DAL2864",
+                "types": ["A320"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "DAL2866",
+                "types": ["BCS1"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "DAL2895",
+                "types": ["BCS1"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "SCX234",
+                "types": ["B738"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "UAL1068",
+                "types": ["A319"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "UAL1331",
+                "types": ["B739"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "UAL2183",
+                "types": ["A319"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "SKW3843",
+                "types": ["CRJ9"],
+                "airport": "KGRB"
+              },
+              {
+                "callsign": "SKW3920",
+                "types": ["CRJ9"],
+                "airport": "KGRB"
+              },
+              {
+                "callsign": "SKW4140",
+                "types": ["CRJ9"],
+                "airport": "KGRB"
+              },
+              {
+                "callsign": "DAL1555",
+                "types": ["BCS1"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "DAL2913",
+                "types": ["BCS3"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "SCX1914",
+                "types": ["B738"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "SKW3865",
+                "types": ["CRJ9"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "SKW3990",
+                "types": ["CRJ9"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "EDV4693",
+                "types": ["CRJ9"],
+                "airport": "KHPN"
+              },
+              {
+                "callsign": "SKW4288",
+                "types": ["CRJ7"],
+                "airport": "KIMT"
+              },
+              {
+                "callsign": "LYM5115",
+                "types": ["E145"],
+                "airport": "KIWD"
+              },
+              {
+                "callsign": "DAL2390",
+                "types": ["BCS1"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "DAL2414",
+                "types": ["BCS1"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "EDV4933",
+                "types": ["CRJ9"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "SCX568",
+                "types": ["B738"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "DAL2015",
+                "types": ["B739"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2349",
+                "types": ["A321"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2409",
+                "types": ["A321"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2473",
+                "types": ["B739"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2510",
+                "types": ["B739"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL1224",
+                "types": ["A319"],
+                "airport": "KPVD"
+              },
+              {
+                "callsign": "SCX266",
+                "types": ["B738"],
+                "airport": "KPVD"
+              },
+              {
+                "callsign": "DAL1766",
+                "types": ["B739"],
+                "airport": "KPWM"
+              },
+              {
+                "callsign": "SCX1822",
+                "types": ["B738"],
+                "airport": "KPWM"
+              },
+              {
+                "callsign": "SKW4292",
+                "types": ["CRJ7"],
+                "airport": "KRHI"
+              },
+              {
+                "callsign": "SKW4305",
+                "types": ["CRJ7"],
+                "airport": "KRHI"
+              },
+              {
+                "callsign": "SKW4295",
+                "types": ["CRJ7"],
+                "airport": "KSAW"
+              },
+              {
+                "callsign": "DAL2834",
+                "types": ["A319"],
+                "airport": "KSYR"
+              },
+              {
+                "callsign": "EDV4915",
+                "types": ["CRJ9"],
+                "airport": "KTVC"
+              },
+              {
+                "callsign": "SCX1926",
+                "types": ["B738"],
+                "airport": "KTVC"
+              },
+              {
+                "callsign": "SKW3995",
+                "types": ["CRJ9"],
+                "airport": "KTVC"
+              },
+              {
+                "callsign": "EDV4803",
+                "types": ["CRJ7"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "EDV5523",
+                "types": ["CRJ9"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "DAL2462",
+                "types": ["B739"],
+                "airport": "KVPS"
+              },
+              {
+                "callsign": "DAL299",
+                "types": ["A339"],
+                "airport": "LIRF"
+              },
+              {
+                "callsign": "DAL2357",
+                "types": ["BCS1"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2565",
+                "types": ["BCS3"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2872",
+                "types": ["B739"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SCX194",
+                "types": ["B738"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA1016",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA863",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2463",
+                "types": ["A320"],
+                "airport": "KCHS"
+              },
+              {
+                "callsign": "DAL1357",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL1449",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2057",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2847",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "AAL2151",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2153",
+                "types": ["A320"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2154",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2176",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL1827",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2491",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2819",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2820",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "SCX1948",
+                "types": ["B738"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2113",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2403",
+                "types": ["A320"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2550",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2772",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "SCX1492",
+                "types": ["B738"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2752",
+                "types": ["A321"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL3113",
+                "types": ["BCS1"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL703",
+                "types": ["B739"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL954",
+                "types": ["A320"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "SCX220",
+                "types": ["B738"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL1193",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL1493",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2863",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2958",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2963",
+                "types": ["BCS1"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "ENY3796",
+                "types": ["E75L"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5416",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5506",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "SKW3702",
+                "types": ["CRJ9"],
+                "airport": "KFWA"
+              },
+              {
+                "callsign": "RPA3576",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "RPA3649",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SCX668",
+                "types": ["B738"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3699",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3783",
+                "types": ["CRJ9"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3996",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "DAL1456",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2456",
+                "types": ["BCS1"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2757",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2912",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "SCX500",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "EDV4713",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV4820",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV5469",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2832",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2869",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4085",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4643",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "DAL1056",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2129",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2006",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL561",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4458",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4460",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4462",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4466",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL1274",
+                "types": ["B739"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "EDV5480",
+                "types": ["CRJ7"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4032",
+                "types": ["E75L"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4102",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4103",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "DAL2327",
+                "types": ["BCS1"],
+                "airport": "KMYR"
+              },
+              {
+                "callsign": "DAL1306",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1533",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1554",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1567",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1717",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL2130",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY3375",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY4162",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4425",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4727",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SCX262",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5684",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5871",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL1131",
+                "types": ["B739"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2005",
+                "types": ["B39M"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2232",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2298",
+                "types": ["A320"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2749",
+                "types": ["A319"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2805",
+                "types": ["B737"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "AAL2157",
+                "types": ["A319"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2594",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2679",
+                "types": ["BCS3"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2688",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2791",
+                "types": ["B739"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5460",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5658",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "SCX1776",
+                "types": ["B738"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2848",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL845",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "EDV5249",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "SKW3709",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL2519",
+                "types": ["A21N"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2521",
+                "types": ["BCS3"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2538",
+                "types": ["A321"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2699",
+                "types": ["B739"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "SCX920",
+                "types": ["B738"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "EDV5063",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "EDV5344",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "SCX1420",
+                "types": ["B738"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "DAL2574",
+                "types": ["BCS1"],
+                "airport": "KSAV"
+              },
+              {
+                "callsign": "SKW3835",
+                "types": ["CRJ9"],
+                "airport": "KSBN"
+              }
+            ]
+          },
+          "aircraft": "turboprop"
         }
       ]
     },
     "MUSCL4.12s": {
       "arrivals": [
         {
-          "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 FSCOT/a8000/s230/t301",
-              "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301",
-              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
-              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/t224",
-              "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 TIETN/a8000/s230/t301"
-            }
-          },
-          "star": "MUSCL4",
+          "waypoints": "EAU/ho TWINZ/a11000 WOLVS LOON8 ZASKY/h300",
           "initial_controller": "C06",
-          "initial_altitude": 21000,
+          "initial_altitude": 17000,
           "initial_speed": 280,
           "expect_approach": "I12L",
           "airports": ["KMSP"],
@@ -18839,9 +20844,1538 @@
                 "callsign": "DAL299",
                 "types": ["A339"],
                 "airport": "LIRF"
+              },
+              {
+                "callsign": "DAL2357",
+                "types": ["BCS1"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2565",
+                "types": ["BCS3"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2872",
+                "types": ["B739"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SCX194",
+                "types": ["B738"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA1016",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA863",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2463",
+                "types": ["A320"],
+                "airport": "KCHS"
+              },
+              {
+                "callsign": "DAL1357",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL1449",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2057",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2847",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "AAL2151",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2153",
+                "types": ["A320"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2154",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2176",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL1827",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2491",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2819",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2820",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "SCX1948",
+                "types": ["B738"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2113",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2403",
+                "types": ["A320"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2550",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2772",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "SCX1492",
+                "types": ["B738"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2752",
+                "types": ["A321"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL3113",
+                "types": ["BCS1"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL703",
+                "types": ["B739"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL954",
+                "types": ["A320"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "SCX220",
+                "types": ["B738"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL1193",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL1493",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2863",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2958",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2963",
+                "types": ["BCS1"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "ENY3796",
+                "types": ["E75L"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5416",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5506",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "SKW3702",
+                "types": ["CRJ9"],
+                "airport": "KFWA"
+              },
+              {
+                "callsign": "RPA3576",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "RPA3649",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SCX668",
+                "types": ["B738"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3699",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3783",
+                "types": ["CRJ9"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3996",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "DAL1456",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2456",
+                "types": ["BCS1"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2757",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2912",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "SCX500",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "EDV4713",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV4820",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV5469",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2832",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2869",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4085",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4643",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "DAL1056",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2129",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2006",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL561",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4458",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4460",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4462",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4466",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL1274",
+                "types": ["B739"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "EDV5480",
+                "types": ["CRJ7"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4032",
+                "types": ["E75L"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4102",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4103",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "DAL2327",
+                "types": ["BCS1"],
+                "airport": "KMYR"
+              },
+              {
+                "callsign": "DAL1306",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1533",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1554",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1567",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1717",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL2130",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY3375",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY4162",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4425",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4727",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SCX262",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5684",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5871",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL1131",
+                "types": ["B739"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2005",
+                "types": ["B39M"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2232",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2298",
+                "types": ["A320"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2749",
+                "types": ["A319"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2805",
+                "types": ["B737"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "AAL2157",
+                "types": ["A319"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2594",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2679",
+                "types": ["BCS3"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2688",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2791",
+                "types": ["B739"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5460",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5658",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "SCX1776",
+                "types": ["B738"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2848",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL845",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "EDV5249",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "SKW3709",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL2519",
+                "types": ["A21N"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2521",
+                "types": ["BCS3"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2538",
+                "types": ["A321"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2699",
+                "types": ["B739"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "SCX920",
+                "types": ["B738"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "EDV5063",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "EDV5344",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "SCX1420",
+                "types": ["B738"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "DAL2574",
+                "types": ["BCS1"],
+                "airport": "KSAV"
+              },
+              {
+                "callsign": "SKW3835",
+                "types": ["CRJ9"],
+                "airport": "KSBN"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"]
+        },
+        {
+          "waypoints": "EAU/ho TWINZ/a9000 WOLVS LOON8 ZASKY/h300",
+          "initial_controller": "C06",
+          "initial_altitude": 15000,
+          "initial_speed": 230,
+          "expect_approach": "I12L",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "EDV5427",
+                "types": ["CRJ7"],
+                "airport": "CYUL"
+              },
+              {
+                "callsign": "JZA851",
+                "types": ["CRJ9"],
+                "airport": "CYUL"
+              },
+              {
+                "callsign": "JZA719",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "JZA721",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "SKW3829",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "SKW3836",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "SKW4073",
+                "types": ["CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "callsign": "EDV4951",
+                "types": ["CRJ7"],
+                "airport": "KATW"
+              },
+              {
+                "callsign": "EDV4995",
+                "types": ["CRJ9"],
+                "airport": "KATW"
+              },
+              {
+                "callsign": "SKW3861",
+                "types": ["CRJ9"],
+                "airport": "KATW"
+              },
+              {
+                "callsign": "DAL1330",
+                "types": ["A321"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "DAL2007",
+                "types": ["A319"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "DAL2285",
+                "types": ["BCS1"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "SCX1982",
+                "types": ["B738"],
+                "airport": "KBDL"
+              },
+              {
+                "callsign": "DAL1098",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1103",
+                "types": ["A21N"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1127",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1138",
+                "types": ["A21N"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL1308",
+                "types": ["B752"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "DAL2303",
+                "types": ["A321"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "SCX250",
+                "types": ["B738"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "SCX252",
+                "types": ["B738"],
+                "airport": "KBOS"
+              },
+              {
+                "callsign": "EDV4931",
+                "types": ["CRJ9"],
+                "airport": "KBTV"
+              },
+              {
+                "callsign": "DAL1751",
+                "types": ["A320"],
+                "airport": "KBUF"
+              },
+              {
+                "callsign": "SCX1058",
+                "types": ["B738"],
+                "airport": "KBUF"
+              },
+              {
+                "callsign": "SKW4251",
+                "types": ["CRJ7"],
+                "airport": "KCIU"
+              },
+              {
+                "callsign": "EDV4982",
+                "types": ["CRJ7"],
+                "airport": "KCWA"
+              },
+              {
+                "callsign": "EDV5384",
+                "types": ["CRJ9"],
+                "airport": "KCWA"
+              },
+              {
+                "callsign": "DAL1303",
+                "types": ["A321"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL1746",
+                "types": ["B752"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL1842",
+                "types": ["A320"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL2203",
+                "types": ["A320"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL2258",
+                "types": ["A321"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "DAL2697",
+                "types": ["B739"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "SCX1908",
+                "types": ["B738"],
+                "airport": "KDTW"
+              },
+              {
+                "callsign": "SKW4239",
+                "types": ["CRJ7"],
+                "airport": "KESC"
+              },
+              {
+                "callsign": "DAL1641",
+                "types": ["BCS1"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "DAL2864",
+                "types": ["A320"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "DAL2866",
+                "types": ["BCS1"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "DAL2895",
+                "types": ["BCS1"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "SCX234",
+                "types": ["B738"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "UAL1068",
+                "types": ["A319"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "UAL1331",
+                "types": ["B739"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "UAL2183",
+                "types": ["A319"],
+                "airport": "KEWR"
+              },
+              {
+                "callsign": "SKW3843",
+                "types": ["CRJ9"],
+                "airport": "KGRB"
+              },
+              {
+                "callsign": "SKW3920",
+                "types": ["CRJ9"],
+                "airport": "KGRB"
+              },
+              {
+                "callsign": "SKW4140",
+                "types": ["CRJ9"],
+                "airport": "KGRB"
+              },
+              {
+                "callsign": "DAL1555",
+                "types": ["BCS1"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "DAL2913",
+                "types": ["BCS3"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "SCX1914",
+                "types": ["B738"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "SKW3865",
+                "types": ["CRJ9"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "SKW3990",
+                "types": ["CRJ9"],
+                "airport": "KGRR"
+              },
+              {
+                "callsign": "EDV4693",
+                "types": ["CRJ9"],
+                "airport": "KHPN"
+              },
+              {
+                "callsign": "SKW4288",
+                "types": ["CRJ7"],
+                "airport": "KIMT"
+              },
+              {
+                "callsign": "LYM5115",
+                "types": ["E145"],
+                "airport": "KIWD"
+              },
+              {
+                "callsign": "DAL2390",
+                "types": ["BCS1"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "DAL2414",
+                "types": ["BCS1"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "EDV4933",
+                "types": ["CRJ9"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "SCX568",
+                "types": ["B738"],
+                "airport": "KJFK"
+              },
+              {
+                "callsign": "DAL2015",
+                "types": ["B739"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2349",
+                "types": ["A321"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2409",
+                "types": ["A321"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2473",
+                "types": ["B739"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL2510",
+                "types": ["B739"],
+                "airport": "KLGA"
+              },
+              {
+                "callsign": "DAL1224",
+                "types": ["A319"],
+                "airport": "KPVD"
+              },
+              {
+                "callsign": "SCX266",
+                "types": ["B738"],
+                "airport": "KPVD"
+              },
+              {
+                "callsign": "DAL1766",
+                "types": ["B739"],
+                "airport": "KPWM"
+              },
+              {
+                "callsign": "SCX1822",
+                "types": ["B738"],
+                "airport": "KPWM"
+              },
+              {
+                "callsign": "SKW4292",
+                "types": ["CRJ7"],
+                "airport": "KRHI"
+              },
+              {
+                "callsign": "SKW4305",
+                "types": ["CRJ7"],
+                "airport": "KRHI"
+              },
+              {
+                "callsign": "SKW4295",
+                "types": ["CRJ7"],
+                "airport": "KSAW"
+              },
+              {
+                "callsign": "DAL2834",
+                "types": ["A319"],
+                "airport": "KSYR"
+              },
+              {
+                "callsign": "EDV4915",
+                "types": ["CRJ9"],
+                "airport": "KTVC"
+              },
+              {
+                "callsign": "SCX1926",
+                "types": ["B738"],
+                "airport": "KTVC"
+              },
+              {
+                "callsign": "SKW3995",
+                "types": ["CRJ9"],
+                "airport": "KTVC"
+              },
+              {
+                "callsign": "EDV4803",
+                "types": ["CRJ7"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "EDV5523",
+                "types": ["CRJ9"],
+                "airport": "KTYS"
+              },
+              {
+                "callsign": "DAL2462",
+                "types": ["B739"],
+                "airport": "KVPS"
+              },
+              {
+                "callsign": "DAL299",
+                "types": ["A339"],
+                "airport": "LIRF"
+              },
+              {
+                "callsign": "DAL2357",
+                "types": ["BCS1"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2565",
+                "types": ["BCS3"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2872",
+                "types": ["B739"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SCX194",
+                "types": ["B738"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA1016",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "SWA863",
+                "types": ["B38M"],
+                "airport": "KBWI"
+              },
+              {
+                "callsign": "DAL2463",
+                "types": ["A320"],
+                "airport": "KCHS"
+              },
+              {
+                "callsign": "DAL1357",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL1449",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2057",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "DAL2847",
+                "types": ["BCS1"],
+                "airport": "KCLE"
+              },
+              {
+                "callsign": "AAL2151",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2153",
+                "types": ["A320"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2154",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "AAL2176",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL1827",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2491",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2819",
+                "types": ["BCS1"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2820",
+                "types": ["A319"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "SCX1948",
+                "types": ["B738"],
+                "airport": "KCLT"
+              },
+              {
+                "callsign": "DAL2113",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2403",
+                "types": ["A320"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2550",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2772",
+                "types": ["BCS1"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "SCX1492",
+                "types": ["B738"],
+                "airport": "KCMH"
+              },
+              {
+                "callsign": "DAL2752",
+                "types": ["A321"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL3113",
+                "types": ["BCS1"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL703",
+                "types": ["B739"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL954",
+                "types": ["A320"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "SCX220",
+                "types": ["B738"],
+                "airport": "KCVG"
+              },
+              {
+                "callsign": "DAL1193",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL1493",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2863",
+                "types": ["A319"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2958",
+                "types": ["BCS3"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "DAL2963",
+                "types": ["BCS1"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "ENY3796",
+                "types": ["E75L"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5416",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "JIA5506",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "callsign": "SKW3702",
+                "types": ["CRJ9"],
+                "airport": "KFWA"
+              },
+              {
+                "callsign": "RPA3576",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "RPA3649",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SCX668",
+                "types": ["B738"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3699",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3783",
+                "types": ["CRJ9"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "SKW3996",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "callsign": "DAL1456",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2456",
+                "types": ["BCS1"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2757",
+                "types": ["B739"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "DAL2912",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "SCX500",
+                "types": ["B738"],
+                "airport": "KIND"
+              },
+              {
+                "callsign": "EDV4713",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV4820",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "EDV5469",
+                "types": ["CRJ7"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2832",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA2869",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4085",
+                "types": ["B737"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "SWA4643",
+                "types": ["B738"],
+                "airport": "KMDW"
+              },
+              {
+                "callsign": "DAL1056",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2129",
+                "types": ["B739"],
+                "airport": "KMIA"
+              },
+              {
+                "callsign": "DAL2006",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL561",
+                "types": ["BCS1"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4458",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4460",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4462",
+                "types": ["E75L"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "SKW4466",
+                "types": ["CRJ9"],
+                "airport": "KMKE"
+              },
+              {
+                "callsign": "DAL1274",
+                "types": ["B739"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "EDV5480",
+                "types": ["CRJ7"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4032",
+                "types": ["E75L"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4102",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "SKW4103",
+                "types": ["CRJ9"],
+                "airport": "KMSN"
+              },
+              {
+                "callsign": "DAL2327",
+                "types": ["BCS1"],
+                "airport": "KMYR"
+              },
+              {
+                "callsign": "DAL1306",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1533",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1554",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1567",
+                "types": ["BCS3"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL1717",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "DAL2130",
+                "types": ["BCS1"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY3375",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "ENY4162",
+                "types": ["E170"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4425",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "RPA4727",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SCX262",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5684",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "SKW5871",
+                "types": ["E75L"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL1131",
+                "types": ["B739"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2005",
+                "types": ["B39M"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2232",
+                "types": ["B738"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2298",
+                "types": ["A320"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2749",
+                "types": ["A319"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "UAL2805",
+                "types": ["B737"],
+                "airport": "KORD"
+              },
+              {
+                "callsign": "AAL2157",
+                "types": ["A319"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2594",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2679",
+                "types": ["BCS3"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2688",
+                "types": ["BCS1"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2791",
+                "types": ["B739"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5460",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "JIA5658",
+                "types": ["CRJ9"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "SCX1776",
+                "types": ["B738"],
+                "airport": "KPHL"
+              },
+              {
+                "callsign": "DAL2848",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL845",
+                "types": ["BCS1"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "EDV5249",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "SKW3709",
+                "types": ["CRJ9"],
+                "airport": "KPIT"
+              },
+              {
+                "callsign": "DAL2519",
+                "types": ["A21N"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2521",
+                "types": ["BCS3"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2538",
+                "types": ["A321"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "DAL2699",
+                "types": ["B739"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "SCX920",
+                "types": ["B738"],
+                "airport": "KRDU"
+              },
+              {
+                "callsign": "EDV5063",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "EDV5344",
+                "types": ["CRJ7"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "SCX1420",
+                "types": ["B738"],
+                "airport": "KRIC"
+              },
+              {
+                "callsign": "DAL2574",
+                "types": ["BCS1"],
+                "airport": "KSAV"
+              },
+              {
+                "callsign": "SKW3835",
+                "types": ["CRJ9"],
+                "airport": "KSBN"
+              }
+            ]
+          },
+          "aircraft": "turboprop"
         }
       ]
     },
@@ -19269,21 +22803,11 @@
     "TORGY4.30s": {
       "arrivals": [
         {
-          "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+/s280 HMBRG/a10000+/s280 CONIA",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
-              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
-              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
-              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/t122",
-              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
-            }
-          },
-          "star": "TORGY4",
+          "waypoints": "SKETR/ho SHONN/a11000 NORWD JAEDN MONKY/h120",
           "initial_controller": "C09",
-          "initial_altitude": 16000,
+          "initial_altitude": 14000,
           "initial_speed": 280,
-          "expect_approach": "I30L",
+          "expect_approach": "I30R",
           "airports": ["KMSP"],
           "airlines": {
             "KMSP": [
@@ -19912,26 +23436,654 @@
                 "airport": "RKSI"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"]
+        },
+        {
+          "waypoints": "SKETR/ho SHONN/a9000 NORWD JAEDN MONKY/h120",
+          "initial_controller": "C09",
+          "initial_altitude": 12000,
+          "initial_speed": 230,
+          "expect_approach": "I30R",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "DAL2366",
+                "types": ["A321"],
+                "airport": "CYVR"
+              },
+              {
+                "callsign": "DAL2483",
+                "types": ["B739"],
+                "airport": "CYVR"
+              },
+              {
+                "callsign": "DAL2875",
+                "types": ["A320"],
+                "airport": "CYVR"
+              },
+              {
+                "callsign": "DAL535",
+                "types": ["BCS1"],
+                "airport": "KABQ"
+              },
+              {
+                "callsign": "SKW4238",
+                "types": ["CRJ7"],
+                "airport": "KABR"
+              },
+              {
+                "callsign": "SKW4262",
+                "types": ["CRJ7"],
+                "airport": "KABR"
+              },
+              {
+                "callsign": "DAL2254",
+                "types": ["A321"],
+                "airport": "KBIL"
+              },
+              {
+                "callsign": "DAL2017",
+                "types": ["A320"],
+                "airport": "KBOI"
+              },
+              {
+                "callsign": "DAL2808",
+                "types": ["A320"],
+                "airport": "KBOI"
+              },
+              {
+                "callsign": "DAL2982",
+                "types": ["A320"],
+                "airport": "KBOI"
+              },
+              {
+                "callsign": "DAL1226",
+                "types": ["B739"],
+                "airport": "KBZN"
+              },
+              {
+                "callsign": "DAL1678",
+                "types": ["B739"],
+                "airport": "KBZN"
+              },
+              {
+                "callsign": "DAL2946",
+                "types": ["B739"],
+                "airport": "KBZN"
+              },
+              {
+                "callsign": "SKW4089",
+                "types": ["CRJ9"],
+                "airport": "KCOS"
+              },
+              {
+                "callsign": "DAL1129",
+                "types": ["B739"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL1220",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL1675",
+                "types": ["A21N"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL2271",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL2849",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL2877",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "FFT1150",
+                "types": ["A21N"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "FFT1292",
+                "types": ["A20N"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SCX652",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SCX656",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA1638",
+                "types": ["B38M"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA1639",
+                "types": ["B38M"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA2677",
+                "types": ["B737"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA3420",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA3973",
+                "types": ["B38M"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL2076",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL2470",
+                "types": ["A319"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL397",
+                "types": ["A320"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL667",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL732",
+                "types": ["A319"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL773",
+                "types": ["A320"],
+                "airport": "KDEN"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KEGE"
+              },
+              {
+                "callsign": "DAL1006",
+                "types": ["A319"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3534",
+                "types": ["CRJ9"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3538",
+                "types": ["CRJ9"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3561",
+                "types": ["E75L"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3840",
+                "types": ["CRJ9"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "DAL1615",
+                "types": ["B739"],
+                "airport": "KGEG"
+              },
+              {
+                "callsign": "DAL1853",
+                "types": ["A320"],
+                "airport": "KGEG"
+              },
+              {
+                "callsign": "DAL2437",
+                "types": ["B739"],
+                "airport": "KGEG"
+              },
+              {
+                "callsign": "DAL1578",
+                "types": ["A321"],
+                "airport": "KGPI"
+              },
+              {
+                "callsign": "DAL2575",
+                "types": ["A320"],
+                "airport": "KGPI"
+              },
+              {
+                "callsign": "SCX490",
+                "types": ["B738"],
+                "airport": "KGPI"
+              },
+              {
+                "callsign": "SKW3931",
+                "types": ["E75L"],
+                "airport": "KJAC"
+              },
+              {
+                "callsign": "DAL1282",
+                "types": ["B753"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL1542",
+                "types": ["B739"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL2238",
+                "types": ["B752"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL2272",
+                "types": ["B752"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL630",
+                "types": ["B739"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "SCX104",
+                "types": ["B739"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "SCX106",
+                "types": ["B738"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL2084",
+                "types": ["B753"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL2198",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL413",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL792",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL799",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL914",
+                "types": ["B753"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "SCX422",
+                "types": ["B738"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "SCX426",
+                "types": ["B738"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL2907",
+                "types": ["A320"],
+                "airport": "KMSO"
+              },
+              {
+                "callsign": "DAL362",
+                "types": ["BCS1"],
+                "airport": "KMSO"
+              },
+              {
+                "callsign": "ASA1429",
+                "types": ["B739"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL1661",
+                "types": ["A21N"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2167",
+                "types": ["A321"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2359",
+                "types": ["A21N"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2369",
+                "types": ["B739"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2415",
+                "types": ["B752"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "SCX296",
+                "types": ["B738"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "AAL1750",
+                "types": ["B738"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "AAL3142",
+                "types": ["B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL1047",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2208",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2274",
+                "types": ["B752"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2284",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2553",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "SCX606",
+                "types": ["B738"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2622",
+                "types": ["BCS1"],
+                "airport": "KPSC"
+              },
+              {
+                "callsign": "SCX1880",
+                "types": ["B738"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3851",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3927",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3967",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3971",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "DAL2987",
+                "types": ["B738"],
+                "airport": "KRNO"
+              },
+              {
+                "callsign": "DAL2121",
+                "types": ["A321"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "DAL2134",
+                "types": ["B739"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "DAL2191",
+                "types": ["A321"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "DAL2647",
+                "types": ["A321"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "SCX408",
+                "types": ["B738"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "ASA386",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "ASA509",
+                "types": ["B738"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "ASA527",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "ASA555",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL536",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL941",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL942",
+                "types": ["B753"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL943",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL949",
+                "types": ["A321"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "SCX282",
+                "types": ["B738"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "SCX286",
+                "types": ["B738"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL2078",
+                "types": ["A321"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2159",
+                "types": ["B739"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2178",
+                "types": ["A321"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2789",
+                "types": ["B739"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL756",
+                "types": ["A21N"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "SCX392",
+                "types": ["B738"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "SCX396",
+                "types": ["B738"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "UAL283",
+                "types": ["A320"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "UAL648",
+                "types": ["A319"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2156",
+                "types": ["BCS1"],
+                "airport": "KSJC"
+              },
+              {
+                "callsign": "DAL2383",
+                "types": ["A320"],
+                "airport": "KSJC"
+              },
+              {
+                "callsign": "DAL2916",
+                "types": ["B739"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL2924",
+                "types": ["B739"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL2935",
+                "types": ["A21N"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL2936",
+                "types": ["A321"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "SCX1700",
+                "types": ["B738"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL1701",
+                "types": ["B739"],
+                "airport": "KSMF"
+              },
+              {
+                "callsign": "DAL2229",
+                "types": ["B739"],
+                "airport": "KSMF"
+              },
+              {
+                "callsign": "DAL2061",
+                "types": ["BCS1"],
+                "airport": "KSNA"
+              },
+              {
+                "callsign": "DAL2185",
+                "types": ["BCS3"],
+                "airport": "KSNA"
+              },
+              {
+                "callsign": "DAL313",
+                "types": ["A333"],
+                "airport": "PHNL"
+              },
+              {
+                "callsign": "DAL170",
+                "types": ["A359"],
+                "airport": "RKSI"
+              }
+            ]
+          },
+          "aircraft": "turboprop"
         }
       ]
     },
     "TORGY4.12s": {
       "arrivals": [
         {
-          "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+/s280 HMBRG/a10000+/s280 CONIA",
-          "runway_waypoints": {
-            "KMSP": {
-              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
-              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/t042",
-              "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 LEDRZ/a8000/s210/t121",
-              "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ WILKN/a8000/s210 OSMOH/a8000/s210/t122",
-              "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 LISEL/a8000/s210/t176"
-            }
-          },
-          "star": "TORGY4",
+          "waypoints": "SKETR/ho SHONN/a11000 NORWD JAEDN MONKY",
           "initial_controller": "C09",
-          "initial_altitude": 16000,
+          "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": "I12R",
           "airports": ["KMSP"],
@@ -20562,7 +24714,645 @@
                 "airport": "RKSI"
               }
             ]
-          }
+          },
+          "aircraft": ["jet", "heavy"]
+        },
+        {
+          "waypoints": "SKETR/ho SHONN/a7000 NORWD JAEDN MONKY",
+          "initial_controller": "C09",
+          "initial_altitude": 10000,
+          "initial_speed": 230,
+          "expect_approach": "I12R",
+          "airports": ["KMSP"],
+          "airlines": {
+            "KMSP": [
+              {
+                "callsign": "DAL2366",
+                "types": ["A321"],
+                "airport": "CYVR"
+              },
+              {
+                "callsign": "DAL2483",
+                "types": ["B739"],
+                "airport": "CYVR"
+              },
+              {
+                "callsign": "DAL2875",
+                "types": ["A320"],
+                "airport": "CYVR"
+              },
+              {
+                "callsign": "DAL535",
+                "types": ["BCS1"],
+                "airport": "KABQ"
+              },
+              {
+                "callsign": "SKW4238",
+                "types": ["CRJ7"],
+                "airport": "KABR"
+              },
+              {
+                "callsign": "SKW4262",
+                "types": ["CRJ7"],
+                "airport": "KABR"
+              },
+              {
+                "callsign": "DAL2254",
+                "types": ["A321"],
+                "airport": "KBIL"
+              },
+              {
+                "callsign": "DAL2017",
+                "types": ["A320"],
+                "airport": "KBOI"
+              },
+              {
+                "callsign": "DAL2808",
+                "types": ["A320"],
+                "airport": "KBOI"
+              },
+              {
+                "callsign": "DAL2982",
+                "types": ["A320"],
+                "airport": "KBOI"
+              },
+              {
+                "callsign": "DAL1226",
+                "types": ["B739"],
+                "airport": "KBZN"
+              },
+              {
+                "callsign": "DAL1678",
+                "types": ["B739"],
+                "airport": "KBZN"
+              },
+              {
+                "callsign": "DAL2946",
+                "types": ["B739"],
+                "airport": "KBZN"
+              },
+              {
+                "callsign": "SKW4089",
+                "types": ["CRJ9"],
+                "airport": "KCOS"
+              },
+              {
+                "callsign": "DAL1129",
+                "types": ["B739"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL1220",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL1675",
+                "types": ["A21N"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL2271",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL2849",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "DAL2877",
+                "types": ["A321"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "FFT1150",
+                "types": ["A21N"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "FFT1292",
+                "types": ["A20N"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SCX652",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SCX656",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA1638",
+                "types": ["B38M"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA1639",
+                "types": ["B38M"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA2677",
+                "types": ["B737"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA3420",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "SWA3973",
+                "types": ["B38M"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL2076",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL2470",
+                "types": ["A319"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL397",
+                "types": ["A320"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL667",
+                "types": ["B738"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL732",
+                "types": ["A319"],
+                "airport": "KDEN"
+              },
+              {
+                "callsign": "UAL773",
+                "types": ["A320"],
+                "airport": "KDEN"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KEGE"
+              },
+              {
+                "callsign": "DAL1006",
+                "types": ["A319"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3534",
+                "types": ["CRJ9"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3538",
+                "types": ["CRJ9"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3561",
+                "types": ["E75L"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "SKW3840",
+                "types": ["CRJ9"],
+                "airport": "KFSD"
+              },
+              {
+                "callsign": "DAL1615",
+                "types": ["B739"],
+                "airport": "KGEG"
+              },
+              {
+                "callsign": "DAL1853",
+                "types": ["A320"],
+                "airport": "KGEG"
+              },
+              {
+                "callsign": "DAL2437",
+                "types": ["B739"],
+                "airport": "KGEG"
+              },
+              {
+                "callsign": "DAL1578",
+                "types": ["A321"],
+                "airport": "KGPI"
+              },
+              {
+                "callsign": "DAL2575",
+                "types": ["A320"],
+                "airport": "KGPI"
+              },
+              {
+                "callsign": "SCX490",
+                "types": ["B738"],
+                "airport": "KGPI"
+              },
+              {
+                "callsign": "SKW3931",
+                "types": ["E75L"],
+                "airport": "KJAC"
+              },
+              {
+                "callsign": "DAL1282",
+                "types": ["B753"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL1542",
+                "types": ["B739"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL2238",
+                "types": ["B752"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL2272",
+                "types": ["B752"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL630",
+                "types": ["B739"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "SCX104",
+                "types": ["B739"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "SCX106",
+                "types": ["B738"],
+                "airport": "KLAS"
+              },
+              {
+                "callsign": "DAL2084",
+                "types": ["B753"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL2198",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL413",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL792",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL799",
+                "types": ["A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL914",
+                "types": ["B753"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "SCX422",
+                "types": ["B738"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "SCX426",
+                "types": ["B738"],
+                "airport": "KLAX"
+              },
+              {
+                "callsign": "DAL2907",
+                "types": ["A320"],
+                "airport": "KMSO"
+              },
+              {
+                "callsign": "DAL362",
+                "types": ["BCS1"],
+                "airport": "KMSO"
+              },
+              {
+                "callsign": "ASA1429",
+                "types": ["B739"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL1661",
+                "types": ["A21N"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2167",
+                "types": ["A321"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2359",
+                "types": ["A21N"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2369",
+                "types": ["B739"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "DAL2415",
+                "types": ["B752"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "SCX296",
+                "types": ["B738"],
+                "airport": "KPDX"
+              },
+              {
+                "callsign": "AAL1750",
+                "types": ["B738"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "AAL3142",
+                "types": ["B38M"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL1047",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2208",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2274",
+                "types": ["B752"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2284",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2553",
+                "types": ["B739"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "SCX606",
+                "types": ["B738"],
+                "airport": "KPHX"
+              },
+              {
+                "callsign": "DAL2622",
+                "types": ["BCS1"],
+                "airport": "KPSC"
+              },
+              {
+                "callsign": "SCX1880",
+                "types": ["B738"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3851",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3927",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3967",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "SKW3971",
+                "types": ["CRJ9"],
+                "airport": "KRAP"
+              },
+              {
+                "callsign": "DAL2987",
+                "types": ["B738"],
+                "airport": "KRNO"
+              },
+              {
+                "callsign": "DAL2121",
+                "types": ["A321"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "DAL2134",
+                "types": ["B739"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "DAL2191",
+                "types": ["A321"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "DAL2647",
+                "types": ["A321"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "SCX408",
+                "types": ["B738"],
+                "airport": "KSAN"
+              },
+              {
+                "callsign": "ASA386",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "ASA509",
+                "types": ["B738"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "ASA527",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "ASA555",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL536",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL941",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL942",
+                "types": ["B753"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL943",
+                "types": ["B739"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL949",
+                "types": ["A321"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "SCX282",
+                "types": ["B738"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "SCX286",
+                "types": ["B738"],
+                "airport": "KSEA"
+              },
+              {
+                "callsign": "DAL2078",
+                "types": ["A321"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2159",
+                "types": ["B739"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2178",
+                "types": ["A321"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2789",
+                "types": ["B739"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL756",
+                "types": ["A21N"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "SCX392",
+                "types": ["B738"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "SCX396",
+                "types": ["B738"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "UAL283",
+                "types": ["A320"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "UAL648",
+                "types": ["A319"],
+                "airport": "KSFO"
+              },
+              {
+                "callsign": "DAL2156",
+                "types": ["BCS1"],
+                "airport": "KSJC"
+              },
+              {
+                "callsign": "DAL2383",
+                "types": ["A320"],
+                "airport": "KSJC"
+              },
+              {
+                "callsign": "DAL2916",
+                "types": ["B739"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL2924",
+                "types": ["B739"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL2935",
+                "types": ["A21N"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL2936",
+                "types": ["A321"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "SCX1700",
+                "types": ["B738"],
+                "airport": "KSLC"
+              },
+              {
+                "callsign": "DAL1701",
+                "types": ["B739"],
+                "airport": "KSMF"
+              },
+              {
+                "callsign": "DAL2229",
+                "types": ["B739"],
+                "airport": "KSMF"
+              },
+              {
+                "callsign": "DAL2061",
+                "types": ["BCS1"],
+                "airport": "KSNA"
+              },
+              {
+                "callsign": "DAL2185",
+                "types": ["BCS3"],
+                "airport": "KSNA"
+              },
+              {
+                "callsign": "DAL313",
+                "types": ["A333"],
+                "airport": "PHNL"
+              },
+              {
+                "callsign": "DAL170",
+                "types": ["A359"],
+                "airport": "RKSI"
+              }
+            ]
+          },
+          "aircraft": "turboprop"
         }
       ]
     },
@@ -25534,6 +30324,128 @@
       "wind": {
         "direction": "260-30"
       }
+    },
+    "MSP 2005 Conventional 12s": {
+      "arrival_runways": [
+        {
+          "airport": "KMSP",
+          "runway": "12R"
+        },
+        {
+          "airport": "KMSP",
+          "runway": "12L"
+        }
+      ],
+      "airspace": {
+        "1I": ["NFEEDER_12S"],
+        "1H": ["SFEEDER_12S"],
+        "1N": ["NFINAL_12S"],
+        "1S": ["SFINAL_12S"],
+        "1D": ["NDEPARTURE_12S", "NCLOSEDEP_12S"],
+        "1R": ["SDEPARTURE_12S", "SCLOSEDEP_12S"],
+        "1E": ["ESAT_12S"],
+        "1G": ["GSAT_12S"],
+        "1K": ["KSAT_12S"]
+      },
+      "inbound_rates": {
+        "LSE.12s": {
+          "KMSP": 1
+        },
+        "RPD": {
+          "KMSP": 1
+        },
+        "BAINY4.12s": {
+          "KMSP": 3
+        },
+        "MUSCL4.12s": {
+          "KMSP": 4
+        },
+        "TORGY4.12s": {
+          "KMSP": 3
+        },
+        "BLUEM5_NITZR4.12s": {
+          "KMSP": 4
+        }
+      },
+      "configuration": "12S",
+      "default_maps": ["M98 204 12 B"],
+      "departure_runways": [
+        {
+          "airport": "KMSP",
+          "rate": 7,
+          "runway": "12L"
+        },
+        {
+          "airport": "KMSP",
+          "rate": 9,
+          "runway": "12R"
+        }
+      ],
+      "wind": {
+        "direction": "60-180"
+      }
+    },
+    "MSP 2005 Conventional 30s": {
+      "arrival_runways": [
+        {
+          "airport": "KMSP",
+          "runway": "30R"
+        },
+        {
+          "airport": "KMSP",
+          "runway": "30L"
+        }
+      ],
+      "airspace": {
+        "1I": ["NFEEDER_30S"],
+        "1H": ["SFEEDER_30S"]
+      },
+      "inbound_rates": {
+        "LSE.30s": {
+          "KMSP": 1
+        },
+        "RPD": {
+          "KMSP": 1
+        },
+        "BAINY4.30s": {
+          "KMSP": 3
+        },
+        "MUSCL4.30s": {
+          "KMSP": 4
+        },
+        "TORGY4.30s": {
+          "KMSP": 3
+        },
+        "BLUEM5_NITZR4.30s": {
+          "KMSP": 4
+        }
+      },
+      "configuration": "30S",
+      "default_maps": ["M98 203 30 B"],
+      "departure_runways": [
+        {
+          "airport": "KMSP",
+          "rate": 7,
+          "runway": "30R"
+        },
+        {
+          "airport": "KMSP",
+          "rate": 9,
+          "runway": "30L"
+        }
+      ],
+      "wind": {
+        "direction": "240-360"
+      }
     }
+  },
+  "fixes": {
+    "SKETR": "N044.38.33.99,W094.22.29.31",
+    "SHONN": "N044.41.36.39,W094.09.07.94",
+    "NORWD": "N044.44.54.77,W093.54.27.23",
+    "MONKY": "N044.51.09.10,W093.26.17.53",
+    "CHYMP": "N044.51.35.55,W093.24.16.58",
+    "PEPPY": "N044.22.54.0,W093.12.24.0",
+    "LOON8": "N044.58.55.32,W092.42.40.72"
   }
 }
