@@ -8,13 +8,13 @@
         "16L": {
           "runway_threshold": "KSEA-16L",
           "heading": 164,
-          "max_heading_deviation": 30,
+          "max_heading_deviation": 90,
           "floor": 0,
           "ceiling": 6000,
-          "length": 20,
-          "left_width": 2000,
-          "right_width": 2000,
-          "filtered_scratchpads": ["VAL"],
+          "length": 30,
+          "left_width": 48608,
+          "right_width": 48608,
+          "filtered_scratchpads": ["VVL"],
           "excluded_scratchpads": ["16C", "16R", "Z6R", "M6R", "VAR", "VAC"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -22,13 +22,13 @@
         "16C": {
           "runway_threshold": "KSEA-16C",
           "heading": 164,
-          "max_heading_deviation": 30,
+          "max_heading_deviation": 90,
           "floor": 0,
           "ceiling": 6000,
-          "length": 20,
-          "left_width": 2000,
-          "right_width": 2000,
-          "filtered_scratchpads": ["VAC"],
+          "length": 30,
+          "left_width": 48608,
+          "right_width": 48608,
+          "filtered_scratchpads": ["VVC"],
           "excluded_scratchpads": ["16L", "16R", "Z6R", "M6R", "VAR", "VAL"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -36,13 +36,13 @@
         "16R": {
           "runway_threshold": "KSEA-16R",
           "heading": 164,
-          "max_heading_deviation": 30,
+          "max_heading_deviation": 90,
           "floor": 0,
           "ceiling": 6000,
-          "length": 20,
-          "left_width": 2000,
-          "right_width": 2000,
-          "filtered_scratchpads": ["VAR"],
+          "length": 30,
+          "left_width": 48608,
+          "right_width": 48608,
+          "filtered_scratchpads": ["VVR"],
           "excluded_scratchpads": ["16C", "16L", "VAL", "VAC"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -50,13 +50,13 @@
         "34L": {
           "runway_threshold": "KSEA-34L",
           "heading": 344,
-          "max_heading_deviation": 30,
+          "max_heading_deviation": 90,
           "floor": 0,
           "ceiling": 6000,
-          "length": 20,
-          "left_width": 2000,
-          "right_width": 2000,
-          "filtered_scratchpads": ["VAL"],
+          "length": 30,
+          "left_width": 48608,
+          "right_width": 48608,
+          "filtered_scratchpads": ["VVL"],
           "excluded_scratchpads": ["34C", "34R", "Z6R", "M6R", "VAR", "VAC"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -64,13 +64,13 @@
         "34C": {
           "runway_threshold": "KSEA-34C",
           "heading": 344,
-          "max_heading_deviation": 30,
+          "max_heading_deviation": 90,
           "floor": 0,
           "ceiling": 6000,
-          "length": 20,
-          "left_width": 2000,
-          "right_width": 2000,
-          "filtered_scratchpads": ["VAC"],
+          "length": 30,
+          "left_width": 48608,
+          "right_width": 48608,
+          "filtered_scratchpads": ["VVC"],
           "excluded_scratchpads": ["34L", "34R", "VAR", "VAL"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -78,13 +78,13 @@
         "34R": {
           "runway_threshold": "KSEA-34R",
           "heading": 344,
-          "max_heading_deviation": 30,
+          "max_heading_deviation": 90,
           "floor": 0,
           "ceiling": 6000,
           "length": 20,
-          "left_width": 2000,
-          "right_width": 2000,
-          "filtered_scratchpads": ["VAR"],
+          "left_width": 48608,
+          "right_width": 48608,
+          "filtered_scratchpads": ["VVR"],
           "excluded_scratchpads": ["34C", "34L", "VAL", "VAC"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -92,32 +92,81 @@
       },
       "crda_regions": {
         "01": {
-          "descent_distance": 0,
-          "reference_route": "NETTZ KWEST VASHN RAYUU/arc4.4 SEGAW/arc1.5 PINTR/arc2.9 WOTIK",
-          "near_distance": 1,
+          "reference_route": "BREVE NETTZ KWEST RAYUU N047.34.21.872,W122.27.11.140 N047.34.54.996,W122.26.56.390 N047.35.22.421,W122.26.36.533 N047.35.48.129,W122.26.01.679 N047.36.07.781,W122.25.22.924 N047.36.21.349,W122.24.49.004 N047.36.28.792,W122.24.13.298 N047.36.34.299,W122.23.36.275 SEGAW N047.36.27.034,W122.22.00.199 PINTR",
+          "near_distance": 0,
+          "near_half_width": 1.5,
+          "far_half_width": 1.5,
           "heading_tolerance": 30,
-          "near_half_width": 0.5,
-          "far_half_width": 0.5,
-          "descent_altitude": 6100,
-          "above_altitude_tolerance": 3300,
-          "below_altitude_tolerance": 3300,
-          "scratchpad_patterns": ["M6R", "Z6R"]
+          "descent_distance": 0,
+          "descent_altitude": 1900,
+          "above_altitude_tolerance": 10100,
+          "below_altitude_tolerance": 0,
+          "scratchpad_patterns": ["Z6R", "16R"]
         },
-        "RW16R": {
-          "reference_point": "WOTIK",
+        "16R": {
+          "reference_point": "N047.36.37.100,W122.19.00.765",
           "reference_heading": 165,
-          "reference_length": 25
+          "reference_length": 28,
+          "near_distance": 0.1,
+          "region_length": 28,
+          "near_half_width": 8,
+          "far_half_width": 1.5,
+          "heading_tolerance": 90,
+          "descent_distance": 0,
+          "descent_altitude": 1900,
+          "above_altitude_tolerance": 5100,
+          "below_altitude_tolerance": 0,
+          "scratchpad_patterns": ["16R", "VAR"]
+        },
+        "16": {
+          "reference_point": "N047.32.33.245,W122.18.46.867",
+          "reference_heading": 165,
+          "reference_length": 25,
+          "near_distance": 0.1,
+          "region_length": 25,
+          "near_half_width": 4,
+          "far_half_width": 1.5,
+          "heading_tolerance": 90,
+          "descent_distance": 0,
+          "descent_altitude": 1900,
+          "above_altitude_tolerance": 8000,
+          "below_altitude_tolerance": 0,
+          "scratchpad_patterns": ["16R", "Z4R", "Y4R", "VAR", "16L", "16C", "Y4L", "VAL"]
+        },
+        "14": {
+          "reference_point": "N047.32.33.245,W122.18.46.867",
+          "reference_heading": 135,
+          "reference_length": 25,
+          "near_distance": 0.1,
+          "region_length": 25,
+          "near_half_width": 4,
+          "far_half_width": 1.5,
+          "heading_tolerance": 90,
+          "descent_distance": 0,
+          "descent_altitude": 10,
+          "above_altitude_tolerance": 3000,
+          "below_altitude_tolerance": 1000,
+          "scratchpad_patterns": ["BIF", "BFI", "I4R", "14R"]
         }
       },
       "crda_pairs": [
         {
           "source_region": "01",
-          "ghost_region": "RW16R",
-          "source_leader_direction": "N",
-          "ghost_leader_direction": "N",
-          "tie_symbol": "/",
-          "stagger_symbol": "/",
-          "tie_offset": 3
+          "ghost_region": "16R",
+          "source_leader_direction": "W",
+          "ghost_leader_direction": "NW",
+          "stagger_symbol": "*",
+          "tie_offset": 3,
+          "tie_symbol": "+"
+        },
+        {
+          "source_region": "16",
+          "ghost_region": "14",
+          "source_leader_direction": "SW",
+          "ghost_leader_direction": "SW",
+          "stagger_symbol": "*",
+          "tie_offset": 3,
+          "tie_symbol": "+"
         }
       ],
       "approaches": {
@@ -163,39 +212,35 @@
           "ARRIE,PANGL": {
             "aircraft": "jet",
             "assigned_altitude": 7000,
-            "sid": "BANGR9"
+            "sid": "BANGR9",
+            "is_rnav": true
           },
           "ERAVE,FEPOT,HISKU,HQM": {
             "aircraft": "jet",
             "assigned_altitude": 7000,
-            "sid": "HAROB6"
-          },
-          "KRNT,VAMPS": {
-            "aircraft": ["prop", "turboprop"],
-            "assigned_altitude": 3000,
-            "waypoints": "KSEA-34R/h140"
-          },
-          "KTIW,KPWT,OLM,KOLM,CARRO,LOFAL,AST": {
-            "aircraft": ["prop", "turboprop"],
-            "assigned_altitude": 3000,
-            "waypoints": "KSEA-34R/h230"
+            "sid": "HAROB6",
+            "is_rnav": true
           },
           "HQM.NON-RNAV": {
+            "aircraft": "jet",
             "assigned_altitude": 7000,
             "sid": "ELMAA5",
             "waypoints": "KSEA-34R/h169/@SEA-R161 PEAKK/flyover/a3000+/h251/@SEA-R230 ELMAA"
           },
           "NORMY": {
+            "aircraft": "jet",
             "assigned_altitude": 7000,
             "sid": "MONTN2",
             "waypoints": "PEAKK/flyover/a3000+/h071 NORMY"
           },
           "STEVS,CASHS,": {
+            "aircraft": "jet",
             "assigned_altitude": 7000,
             "sid": "MONTN2",
             "waypoints": "PEAKK/flyover/a3000+/h071 NORMY MODDA"
           },
           "ZELAK": {
+            "aircraft": "jet",
             "assigned_altitude": 7000,
             "sid": "MONTN2",
             "waypoints": "PEAKK/flyover/a3000+/h071 ZADON ZELAK"
@@ -212,16 +257,6 @@
               "assigned_altitude": 7000,
               "sid": "MONTN2",
               "waypoints": "PEAKK/flyover/a3000+/h071 PAE"
-            },
-            {
-              "aircraft": "turboprop",
-              "assigned_altitude": 3000,
-              "waypoints": "KSEA-34R/h230 PAE"
-            },
-            {
-              "aircraft": "prop",
-              "assigned_altitude": 3000,
-              "waypoints": "KSEA-34R/h140 PAE"
             }
           ],
           "ALPSE": {
@@ -231,6 +266,7 @@
             "waypoints": "PEAKK/flyover/a3000+/h071 ALPSE"
           },
           "BUWZO": {
+            "aircraft": "jet",
             "assigned_altitude": 7000,
             "sid": "SEA1",
             "waypoints": "SEA161/h165 BUWZO"
@@ -241,16 +277,6 @@
               "assigned_altitude": 7000,
               "sid": "MONTN2",
               "waypoints": "PEAKK/flyover/a3000+/h071 YDC"
-            },
-            {
-              "aircraft": "turboprop",
-              "assigned_altitude": 3000,
-              "waypoints": "KSEA-34R/h230"
-            },
-            {
-              "aircraft": "prop",
-              "assigned_altitude": 3000,
-              "waypoints": "KSEA-34R/h140"
             }
           ],
           "SUMMA": {
@@ -261,22 +287,27 @@
         },
         "34R": {
           "ARRIE,PANGL": {
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "sid": "BANGR9"
           },
           "ERAVE,FEPOT,HISKU": {
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "sid": "HAROB6"
           },
           "ISBRG": {
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "sid": "ISBRG1"
           },
           "JEFPO,NORMY.NITE,PAE.NITE,ALPSE.NITE": {
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "sid": "JEFPO1"
           },
           "OZWLD,SUMMA.NITE,BUWZO.NITE": {
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "sid": "OZWLD1"
           },
@@ -297,14 +328,10 @@
               "aircraft": "jet",
               "cleared_altitude": 9000,
               "sid": "MONTN2"
-            },
-            {
-              "aircraft": ["prop", "turboprop"],
-              "cleared_altitude": 3000,
-              "waypoints": "KSEA-16L/h020 TAGOR NORMY"
             }
           ],
           "STEVS,CASHS": {
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "sid": "MONTN2",
             "waypoints": "NEZUG/flyover/a4000+/h071 NORMY MODDA"
@@ -315,11 +342,6 @@
               "cleared_altitude": 9000,
               "sid": "MONTN2",
               "waypoints": "NEZUG/flyover/a4000+/h071 ZADON ZELAK"
-            },
-            {
-              "aircraft": ["prop", "turboprop"],
-              "cleared_altitude": 3000,
-              "waypoints": "KSEA-16L/h020 ZADON ZELAK"
             }
           ],
           "YDC,YVR,TOU,ALPSE,BUWZO,PAE": {
@@ -328,21 +350,11 @@
             "sid": "SEA1",
             "waypoints": "KSEA-16L/ltSEA-R341"
           },
-          "PAE.P": {
-            "aircraft": ["turboprop", "prop"],
-            "assigned_altitude": 3000,
-            "waypoints": "KSEA-16L/h020"
-          },
           "SUMMA": [
             {
               "aircraft": "jet",
               "cleared_altitude": 9000,
               "sid": "SUMMA2"
-            },
-            {
-              "aircraft": ["prop", "turboprop"],
-              "cleared_altitude": 3000,
-              "waypoints": "KSEA-16L/h020 TAOMA SUMMA"
             }
           ],
           "BANDR": [
@@ -351,60 +363,11 @@
               "assigned_altitude": 9000,
               "sid": "MONTN2",
               "waypoints": "NEZUG/flyover/a4000+/h071 VAMPS BANDR"
-            },
-            {
-              "aircraft": ["prop", "turboprop"],
-              "cleared_altitude": 3000,
-              "waypoints": "KSEA-16L/h020 VAMPS BANDR"
             }
           ]
         }
       },
       "departures": [
-        {
-          "airlines": [
-            {
-              "types": ["PA24", "SR22", "COL4"],
-              "icao": "N"
-            }
-          ],
-          "destination": "KBLI",
-          "exit": "PAE",
-          "route": "PAE"
-        },
-        {
-          "airlines": [
-            {
-              "types": ["PA24", "SR22", "COL4"],
-              "icao": "N"
-            }
-          ],
-          "destination": "KRNT",
-          "exit": "KRNT",
-          "route": "KRNT"
-        },
-        {
-          "airlines": [
-            {
-              "types": ["PA24", "SR22", "COL4"],
-              "icao": "N"
-            }
-          ],
-          "destination": "KTIW",
-          "exit": "KTIW",
-          "route": "KTIW"
-        },
-        {
-          "airlines": [
-            {
-              "types": ["PA24", "SR22", "COL4"],
-              "icao": "N"
-            }
-          ],
-          "destination": "KPWT",
-          "exit": "KPWT",
-          "route": "KPWT"
-        },
         {
           "airlines": [
             {
@@ -614,14 +577,8 @@
       "exit_categories": {
         "HQM": "Day",
         "HQM.NON-RNAV": "Day",
-        "KPWT": "ALL",
-        "KTIW": "ALL",
-        "KRNT": "ALL",
         "YDC": "ALL",
         "PAE": "Day",
-        "PAE.P": "ALL",
-        "OLM": "ALL",
-        "AST": "ALL",
         "TOU": "ALL",
         "YVR": "ALL",
         "CASHS": "Day",
@@ -637,10 +594,6 @@
         "HISKU": "ALL",
         "ZELAK": "Day",
         "ALPSE": "Day",
-        "VAMPS": "ALL",
-        "CARRO": "ALL",
-        "KOLM": "ALL",
-        "LOFAL": "ALL",
         "NORMY.NITE": "Sleepy",
         "ZELAK.NITE": "Sleepy",
         "BANDR.NITE": "Sleepy",
@@ -655,17 +608,54 @@
       "tower_list": 1,
       "traffic_routes": {
         "departures": {
-          "KCLM": [{ "route": "LOFAL WATTR" }],
-          "KSUN": [{ "route": "SUMMA J54 BKE VALYY SOLDE PRESN", "aircraft": "jet" }],
-          "KPHX": [{ "route": "SUMMA LTJ IMB Q35 CORKR TENTS BRUSR1", "aircraft": "jet" }],
-          "KMCO": [{ "route": "NORMY J90 MWH LKT BOY SNY SLN EOS UJM IGB DEEDA GRNCH5", "aircraft": "jet" }],
-          "KATL": [
-            { "route": "NORMY J90 MWH KU06M KU87S KD75Y KK60E FAM BNA NEWBB IHAVE MTHEW CHPPR1", "aircraft": "jet" }
+          "KSUN": [
+            {
+              "route": "SUMMA J54 BKE VALYY SOLDE PRESN",
+              "aircraft": "jet"
+            }
           ],
-          "KALW": [{ "route": "BANDR ELN FEBUS", "aircraft": "jet" }],
-          "KIND": [{ "route": "NORMY J90 MWH KS12K HLN MARLS KP87C KP78I BRBIE JAKKS2", "aircraft": "jet" }],
-          "KBZN": [{ "route": "NORMY MODDA STEVS EATZZ", "aircraft": "jet" }],
-          "KBNA": [{ "route": "NORMY MODDA STEVS FINUT HIA KD75A KP66E MWA RANTS RYYMN3", "aircraft": "jet" }],
+          "KPHX": [
+            {
+              "route": "SUMMA LTJ IMB Q35 CORKR TENTS BRUSR1",
+              "aircraft": "jet"
+            }
+          ],
+          "KMCO": [
+            {
+              "route": "NORMY J90 MWH LKT BOY SNY SLN EOS UJM IGB DEEDA GRNCH5",
+              "aircraft": "jet"
+            }
+          ],
+          "KATL": [
+            {
+              "route": "NORMY J90 MWH KU06M KU87S KD75Y KK60E FAM BNA NEWBB IHAVE MTHEW CHPPR1",
+              "aircraft": "jet"
+            }
+          ],
+          "KALW": [
+            {
+              "route": "BANDR ELN FEBUS",
+              "aircraft": "jet"
+            }
+          ],
+          "KIND": [
+            {
+              "route": "NORMY J90 MWH KS12K HLN MARLS KP87C KP78I BRBIE JAKKS2",
+              "aircraft": "jet"
+            }
+          ],
+          "KBZN": [
+            {
+              "route": "NORMY MODDA STEVS EATZZ",
+              "aircraft": "jet"
+            }
+          ],
+          "KBNA": [
+            {
+              "route": "NORMY MODDA STEVS FINUT HIA KD75A KP66E MWA RANTS RYYMN3",
+              "aircraft": "jet"
+            }
+          ],
           "KEWR": [
             {
               "route": "ZADON ZELAK ZIRAN ZAXBY BLOWS KU12U KP06C GEP ODI KG78K KG72M EVOTE NELLS KEEHO J584 SLT FQM3",
@@ -673,23 +663,60 @@
             }
           ],
           "KCLT": [
-            { "route": "NORMY J90 MWH LEZLE LAMON DNW HCT ATIJA TYGER SLITZ BNA TAZZA FILPZ6", "aircraft": "jet" }
+            {
+              "route": "NORMY J90 MWH LEZLE LAMON DNW HCT ATIJA TYGER SLITZ BNA TAZZA FILPZ6",
+              "aircraft": "jet"
+            }
           ],
-          "KDTW": [{ "route": "ZADON ZELAK ZIRAN ZAXBY BLOWS HILGR KU12W KP06E GRB HOOTA RKCTY2", "aircraft": "jet" }],
-          "KBOI": [{ "route": "SUMMA J54 BKE DEVLE KYAAN4", "aircraft": "jet" }],
-          "KSLC": [{ "route": "SUMMA WANTA Q154 BYI SKEES6", "aircraft": "jet" }],
-          "KPAE": [{ "route": "PAE" }],
-          "KMFR": [{ "route": "FEPOT SAMIE", "aircraft": "jet" }],
+          "KDTW": [
+            {
+              "route": "ZADON ZELAK ZIRAN ZAXBY BLOWS HILGR KU12W KP06E GRB HOOTA RKCTY2",
+              "aircraft": "jet"
+            }
+          ],
+          "KBOI": [
+            {
+              "route": "SUMMA J54 BKE DEVLE KYAAN4",
+              "aircraft": "jet"
+            }
+          ],
+          "KSLC": [
+            {
+              "route": "SUMMA WANTA Q154 BYI SKEES6",
+              "aircraft": "jet"
+            }
+          ],
+          "KPAE": [
+            {
+              "route": "PAE"
+            }
+          ],
+          "KMFR": [
+            {
+              "route": "FEPOT SAMIE",
+              "aircraft": "jet"
+            }
+          ],
           "KPIT": [
-            { "route": "ZADON ZELAK ZIRAN ZAXBY BLOWS LWT KU09W DKOTA DLL TAMDE GRIVY JESEY5", "aircraft": "jet" }
+            {
+              "route": "ZADON ZELAK ZIRAN ZAXBY BLOWS LWT KU09W DKOTA DLL TAMDE GRIVY JESEY5",
+              "aircraft": "jet"
+            }
           ],
           "KPDX": [
-            { "route": "OLM V287 BTG", "aircraft": "prop" },
-            { "route": "BUWZO KRATR3", "aircraft": "jet" }
+            {
+              "route": "BUWZO KRATR3",
+              "aircraft": "jet"
+            }
           ]
         },
         "arrivals": {
-          "KMFR": [{ "route": "OED V595 CUTTR RENAA BTG HAWKZ8", "aircraft": "jet" }]
+          "KMFR": [
+            {
+              "route": "OED V595 CUTTR RENAA BTG HAWKZ8",
+              "aircraft": "jet"
+            }
+          ]
         }
       }
     },
@@ -839,15 +866,56 @@
       ],
       "traffic_routes": {
         "departures": {
-          "KSJC": [{ "route": "SEA J70 ELMAA ERAVE Q1 EASON CHBLI", "aircraft": "jet" }],
-          "KOAK": [{ "route": "SEA J70 ELMAA ERAVE Q1 EASON SPAMY", "aircraft": "jet" }],
-          "KSNA": [{ "route": "SEA J5 SUMMA Q9 SUNBE FRA REBRG OHSEA3", "aircraft": "jet" }],
-          "KLAX": [{ "route": "SEA J5 SUMMA JINMO Q7 JAGWA BURGL IRNMN2", "aircraft": "jet" }],
-          "KTTD": [{ "route": "SEA BUWZO HELNS6", "aircraft": "jet" }],
-          "KCIC": [{ "route": "SEA V495 ALDER V495 BTG" }],
-          "KFHR": [{ "route": "JAWBN" }],
-          "KBLI": [{ "route": "MADEE" }],
-          "KCLM": [{ "route": "JAWBN" }]
+          "KSJC": [
+            {
+              "route": "SEA J70 ELMAA ERAVE Q1 EASON CHBLI",
+              "aircraft": "jet"
+            }
+          ],
+          "KOAK": [
+            {
+              "route": "SEA J70 ELMAA ERAVE Q1 EASON SPAMY",
+              "aircraft": "jet"
+            }
+          ],
+          "KSNA": [
+            {
+              "route": "SEA J5 SUMMA Q9 SUNBE FRA REBRG OHSEA3",
+              "aircraft": "jet"
+            }
+          ],
+          "KLAX": [
+            {
+              "route": "SEA J5 SUMMA JINMO Q7 JAGWA BURGL IRNMN2",
+              "aircraft": "jet"
+            }
+          ],
+          "KTTD": [
+            {
+              "route": "SEA BUWZO HELNS6",
+              "aircraft": "jet"
+            }
+          ],
+          "KCIC": [
+            {
+              "route": "SEA V495 ALDER V495 BTG"
+            }
+          ],
+          "KFHR": [
+            {
+              "route": "JAWBN"
+            }
+          ],
+          "KBLI": [
+            {
+              "route": "MADEE"
+            }
+          ],
+          "KCLM": [
+            {
+              "route": "JAWBN"
+            }
+          ]
         }
       },
       "departure_routes": {
@@ -943,7 +1011,68 @@
       }
     },
     "KBFI": {
+      "print_departure_strips": true,
+      "print_arrival_strips": true,
       "hold_for_release": true,
+      "atpa_volumes": {
+        "14R": {
+          "runway_threshold": "KBFI-14R",
+          "heading": 135,
+          "max_heading_deviation": 90,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 30,
+          "left_width": 48608,
+          "right_width": 48608,
+          "excluded_scratchpads": [
+            "16L",
+            "16C",
+            "16R",
+            "VAL",
+            "VAC",
+            "VAR",
+            "VVL",
+            "VVC",
+            "VVR",
+            "Z6R",
+            "Z6C",
+            "Z6L",
+            "Y6L",
+            "Y6C",
+            "Y6R",
+            "SEA"
+          ]
+        },
+        "32L": {
+          "runway_threshold": "KBFI-32L",
+          "heading": 315,
+          "max_heading_deviation": 90,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 30,
+          "left_width": 48608,
+          "right_width": 48608,
+          "excluded_scratchpads": [
+            "34L",
+            "34C",
+            "34R",
+            "VAL",
+            "VAC",
+            "VAR",
+            "VVL",
+            "VVC",
+            "VVR",
+            "Z4R",
+            "Z4C",
+            "Z4L",
+            "Y4L",
+            "Y4C",
+            "Y4R",
+            "RNT",
+            "RGF"
+          ]
+        }
+      },
       "approaches": {
         "I14R": {
           "cifp_id": "I14R"
@@ -969,6 +1098,7 @@
           "PERLL,ALDER,ALPSE,ARRIE,BANGR,BUWZO,ELMAA,HAROB,LOFAL,NORMY,PAE,VAMPS": {
             "cleared_altitude": 2000,
             "sid": "NRVNA1",
+            "is_rnav": true,
             "waypoints": "NRVNA/t135"
           },
           "OLM": {
@@ -984,16 +1114,19 @@
           "ZADON": {
             "cleared_altitude": 2000,
             "sid": "NRVNA1",
+            "is_rnav": true,
             "waypoints": "NRVNA/t135 ZADON ZELAK ZIRAN"
           },
           "TAOMA": {
             "cleared_altitude": 2000,
             "sid": "NRVNA1",
+            "is_rnav": true,
             "waypoints": "NRVNA/t135 TAOMA J5 SUMMA"
           },
           "SUMMA": {
             "cleared_altitude": 2000,
             "sid": "NRVNA1",
+            "is_rnav": true,
             "waypoints": "NRVNA/t135 SUMMA"
           }
         },
@@ -1092,54 +1225,154 @@
   "airspace": {
     "boundaries": {
       "W-S-60-150": [
-        "N047.55.00.251,W122.53.01.008",
-        "N047.59.59.958,W122.46.46.979",
-        "N047.59.58.544,W122.35.54.638",
-        "N047.55.01.762,W122.35.53.759",
-        "N047.55.00.251,W122.53.01.008"
+        "N047.59.59.615,W122.46.47.583",
+        "N048.00.02.114,W122.35.53.622",
+        "N047.55.01.913,W122.35.53.842",
+        "N047.54.59.990,W122.53.01.201",
+        "N047.59.59.615,W122.46.47.583"
       ],
       "W-S-60-120": [
-        "N047.55.00.251,W122.53.01.008",
-        "N047.45.49.974,W122.55.00.402",
-        "N047.26.34.198,W122.30.20.242",
-        "N048.00.00.260,W122.30.21.011",
-        "N047.59.58.544,W122.35.54.638"
+        "N048.00.02.156,W122.35.53.952",
+        "N048.00.02.609,W122.30.21.340",
+        "N047.26.33.882,W122.30.20.709",
+        "N047.31.09.708,W122.36.14.523",
+        "N047.45.49.768,W122.55.01.473",
+        "N047.54.59.757,W122.53.01.695",
+        "N047.55.01.199,W122.35.54.666",
+        "N048.00.02.156,W122.35.53.952"
       ],
       "W-S-70-100": [
-        "N048.00.00.260,W122.30.21.011",
-        "N048.00.01.400,W122.18.27.421",
-        "N047.26.36.972,W122.18.27.669",
-        "N047.26.34.198,W122.30.20.242"
+        "N048.00.02.609,W122.30.21.340",
+        "N048.00.00.823,W122.18.27.833",
+        "N047.26.36.780,W122.18.28.245",
+        "N047.26.33.690,W122.30.20.159",
+        "N048.00.02.609,W122.30.21.340"
       ],
       "W-S-70-150": [
-        "N047.26.36.972,W122.18.27.669",
-        "N047.21.55.612,W122.18.27.009",
-        "N047.19.26.995,W122.21.46.521",
-        "N047.21.48.361,W122.31.46.924",
-        "N047.24.58.329,W122.30.20.297",
-        "N047.26.34.198,W122.30.20.242"
+        "N047.26.34.198,W122.30.20.764",
+        "N047.26.36.643,W122.18.28.273",
+        "N047.21.54.624,W122.18.28.355",
+        "N047.19.26.336,W122.21.46.411",
+        "N047.21.48.183,W122.31.47.144",
+        "N047.24.58.329,W122.30.20.516",
+        "N047.26.34.198,W122.30.20.764"
       ],
-      "W-S-70-120": ["N047.21.48.361,W122.31.46.924", "N047.22.51.121,W122.36.14.194", "N047.31.09.351,W122.36.13.754"],
-      "W-S-80-120": ["N047.22.51.121,W122.36.14.194", "N047.18.14.883,W122.36.14.359"],
+      "W-S-70-120": [
+        "N047.31.09.859,W122.36.13.919",
+        "N047.26.34.171,W122.30.20.846",
+        "N047.24.57.944,W122.30.21.313",
+        "N047.21.47.688,W122.31.47.199",
+        "N047.22.50.214,W122.36.14.935",
+        "N047.31.09.859,W122.36.13.919"
+      ],
+      "W-S-80-120": [
+        "N047.22.51.011,W122.36.14.331",
+        "N047.21.47.757,W122.31.48.462",
+        "N047.18.15.364,W122.36.14.194",
+        "N047.22.51.011,W122.36.14.331"
+      ],
       "W-S-80-150": [
-        "N047.21.48.361,W122.31.46.924",
-        "N047.10.45.281,W122.45.38.919",
-        "N047.10.21.400,W122.24.33.403",
-        "N047.19.26.995,W122.21.46.521"
+        "N047.21.48.636,W122.31.47.226",
+        "N047.19.26.239,W122.21.46.796",
+        "N047.10.20.906,W122.24.34.145",
+        "N047.10.45.021,W122.45.39.495",
+        "N047.18.13.620,W122.36.15.677",
+        "N047.21.48.636,W122.31.47.226"
       ],
       "W-S-100-150": [
-        "N047.10.21.400,W122.24.33.403",
-        "N046.53.32.196,W122.29.39.071",
-        "N046.59.02.637,W122.40.14.877",
-        "N047.07.13.959,W122.53.42.125",
-        "N047.10.13.462,W122.46.16.931",
-        "N047.10.45.281,W122.45.38.919"
+        "N047.10.44.403,W122.45.39.935",
+        "N047.10.21.139,W122.24.33.541",
+        "N046.53.31.674,W122.29.39.016",
+        "N046.58.59.135,W122.39.59.468",
+        "N047.07.13.740,W122.53.41.850",
+        "N047.10.11.238,W122.46.17.755",
+        "N047.10.44.403,W122.45.39.935"
+      ],
+      "W-N-100-150": [
+        "N048.00.00.096,W122.46.48.325",
+        "N047.59.59.340,W122.42.21.906",
+        "N047.40.01.501,W122.23.55.501",
+        "N047.32.16.614,W122.18.25.471",
+        "N047.36.37.705,W122.26.49.277",
+        "N047.35.55.078,W122.28.46.885",
+        "N047.34.12.465,W122.30.00.549",
+        "N047.32.16.175,W122.29.59.752",
+        "N047.46.41.019,W122.43.06.593",
+        "N047.55.32.592,W122.52.18.986",
+        "N048.00.00.096,W122.46.48.325"
+      ],
+      "W-N-70-150": [
+        "N047.25.51.818,W122.29.58.434",
+        "N047.32.15.859,W122.30.00.302",
+        "N047.34.13.001,W122.29.59.945",
+        "N047.35.55.751,W122.28.47.050",
+        "N047.36.37.828,W122.26.49.579",
+        "N047.32.16.752,W122.18.25.801",
+        "N047.25.51.516,W122.18.29.344",
+        "N047.25.51.818,W122.29.58.434"
+      ],
+      "W-N-70-100": [
+        "N047.25.51.750,W122.29.58.599",
+        "N047.25.51.145,W122.18.30.278",
+        "N046.54.02.120,W122.18.48.817",
+        "N046.53.44.981,W122.25.07.708",
+        "N047.01.20.873,W122.25.27.264",
+        "N047.01.07.071,W122.30.10.601",
+        "N047.01.33.891,W122.30.10.903",
+        "N047.15.37.051,W122.32.31.968",
+        "N047.21.44.695,W122.31.51.099",
+        "N047.23.11.404,W122.30.00.329",
+        "N047.25.51.750,W122.29.58.599"
+      ],
+      "W-N-70-130": [
+        "N047.01.06.247,W122.30.10.601",
+        "N047.01.20.680,W122.25.27.813",
+        "N046.53.44.734,W122.25.07.516",
+        "N046.53.32.017,W122.29.39.345",
+        "N047.01.06.247,W122.30.10.601"
+      ],
+      "W-N-80-90": [
+        "N046.56.31.246,W122.35.22.860",
+        "N046.53.31.537,W122.29.39.510",
+        "N046.53.26.991,W122.32.59.214",
+        "N046.55.51.145,W122.35.40.548",
+        "N046.56.31.246,W122.35.22.860"
+      ],
+      "W-N-90": [
+        "N047.04.18.096,W122.48.52.086",
+        "N046.59.18.224,W122.40.32.785",
+        "N046.56.31.630,W122.35.22.943",
+        "N046.55.51.654,W122.35.41.345",
+        "N046.53.26.634,W122.33.01.109",
+        "N046.53.22.693,W122.36.47.482",
+        "N047.00.23.414,W122.50.06.628",
+        "N047.04.18.096,W122.48.52.086"
+      ],
+      "W-N-100-130": [
+        "N047.07.12.215,W122.53.39.433",
+        "N047.10.35.133,W122.45.27.191",
+        "N047.04.18.522,W122.48.52.223",
+        "N047.07.12.215,W122.53.39.433"
+      ],
+      "W-N-60-130": [
+        "N047.21.44.626,W122.31.52.060",
+        "N047.15.40.429,W122.32.31.446",
+        "N047.01.25.913,W122.30.11.563",
+        "N047.01.07.112,W122.30.11.206",
+        "N046.53.32.704,W122.29.39.153",
+        "N046.56.30.078,W122.35.23.217",
+        "N046.59.18.897,W122.40.31.604",
+        "N047.04.19.030,W122.48.52.388",
+        "N047.10.35.023,W122.45.26.861",
+        "N047.18.23.549,W122.36.03.977",
+        "N047.21.44.626,W122.31.52.060"
       ],
       "E-S-50-120": [
         "N047.51.23.793,W122.05.52.029",
         "N047.30.02.252,W122.05.52.304",
         "N047.39.13.257,W121.57.49.262",
-        "N047.54.39.556,W121.57.57.117"
+        "N047.54.39.556,W121.57.57.117",
+        "N047.51.23.793,W122.05.52.029"
       ],
       "E-S-60-120": [
         "N047.59.59.697,W122.05.52.029",
@@ -1149,18 +1382,20 @@
         "N047.59.59.697,W122.05.52.029"
       ],
       "E-S-50-150": [
-        "N048.00.00.233,W121.58.01.237",
-        "N047.49.59.418,W121.41.59.659",
-        "N047.39.20.083,W121.35.54.418",
-        "N047.39.12.612,W121.57.48.960",
-        "N047.39.13.257,W121.57.49.262"
+        "N048.00.00.068,W121.58.01.320",
+        "N047.54.37.908,W121.57.57.310",
+        "N047.39.12.653,W121.57.48.850",
+        "N047.39.19.506,W121.35.53.842",
+        "N047.49.58.841,W121.41.59.796",
+        "N048.00.00.068,W121.58.01.320"
       ],
       "E-S-70-150": [
         "N047.24.30.533,W122.05.52.304",
         "N047.30.02.252,W122.05.52.304",
         "N047.30.00.714,W122.12.58.216",
         "N047.32.06.686,W122.18.25.361",
-        "N047.21.55.612,W122.18.27.009"
+        "N047.21.55.612,W122.18.27.009",
+        "N047.24.30.533,W122.05.52.304"
       ],
       "E-S-100-150": [
         "N047.21.55.612,W122.18.27.009",
@@ -1170,7 +1405,80 @@
         "N047.07.19.480,W121.46.53.296",
         "N047.21.55.612,W122.18.27.009"
       ],
-      "E-S-70-100": ["N047.32.06.686,W122.18.25.361", "N048.00.01.400,W122.18.27.421", "N048.00.00.233,W121.58.01.237"],
+      "E-S-70-100": [
+        "N048.00.01.304,W122.18.28.108",
+        "N047.32.06.205,W122.18.26.268",
+        "N047.30.00.563,W122.12.57.612",
+        "N047.30.01.496,W122.05.53.457",
+        "N047.51.23.422,W122.05.53.457",
+        "N048.00.00.082,W122.05.51.754",
+        "N048.00.01.304,W122.18.28.108"
+      ],
+      "E-N-0-120": [
+        "N047.18.11.629,W121.52.13.602",
+        "N047.12.20.382,W121.39.40.325",
+        "N047.00.23.359,W121.51.34.766",
+        "N046.54.59.221,W121.58.00.551",
+        "N047.02.34.495,W121.59.11.605",
+        "N047.12.00.661,W122.00.09.146",
+        "N047.12.47.559,W121.58.37.382",
+        "N047.13.53.367,W121.56.49.442",
+        "N047.16.57.594,W121.53.20.207",
+        "N047.18.11.629,W121.52.13.602"
+      ],
+      "E-N-60-120": [
+        "N047.32.16.134,W122.18.25.856",
+        "N047.26.37.247,W122.06.24.823",
+        "N047.24.51.339,W122.06.30.948",
+        "N047.18.11.519,W121.52.13.602",
+        "N047.16.55.644,W121.53.21.278",
+        "N047.13.56.128,W121.56.47.080",
+        "N047.12.46.090,W121.58.38.289",
+        "N047.12.00.593,W122.00.08.569",
+        "N047.02.33.973,W121.59.12.374",
+        "N046.54.59.414,W121.58.01.567",
+        "N046.54.28.981,W122.08.49.376",
+        "N047.02.09.185,W122.08.49.019",
+        "N047.06.46.466,W122.08.48.552",
+        "N047.12.03.916,W122.07.15.937",
+        "N047.26.23.953,W122.18.29.399",
+        "N047.32.16.134,W122.18.25.856"
+      ],
+      "E-N-70-120": [
+        "N047.16.56.029,W122.11.04.810",
+        "N047.12.03.614,W122.07.16.376",
+        "N047.06.46.452,W122.08.48.112",
+        "N047.02.08.677,W122.08.48.085",
+        "N046.54.29.132,W122.08.48.991",
+        "N046.54.22.376,W122.11.07.062",
+        "N047.16.56.029,W122.11.04.810"
+      ],
+      "E-N-70-100": [
+        "N047.26.22.951,W122.18.29.866",
+        "N047.16.56.455,W122.11.05.277",
+        "N046.54.22.802,W122.11.07.309",
+        "N046.54.01.653,W122.18.49.284",
+        "N047.26.22.951,W122.18.29.866"
+      ],
+      "E-N-70-150": [
+        "N047.32.15.653,W122.18.25.718",
+        "N047.34.48.432,W122.15.05.905",
+        "N047.31.18.552,W122.04.33.147",
+        "N047.29.59.560,W122.06.19.248",
+        "N047.26.37.151,W122.06.24.548",
+        "N047.32.15.653,W122.18.25.718"
+      ],
+      "E-N-100-150": [
+        "N047.34.48.459,W122.15.05.465",
+        "N047.43.18.211,W122.03.15.227",
+        "N047.47.00.712,W121.58.06.483",
+        "N047.59.59.354,W121.58.01.814",
+        "N047.49.58.004,W121.41.57.791",
+        "N047.39.16.484,W121.35.48.815",
+        "N047.39.22.321,W121.53.43.361",
+        "N047.31.18.538,W122.04.32.598",
+        "N047.34.48.459,W122.15.05.465"
+      ],
       "F-S-60": [
         "N048.00.00.260,W122.30.21.011",
         "N047.59.59.697,W122.05.52.029",
@@ -1182,38 +1490,98 @@
         "N047.51.23.793,W122.05.52.029",
         "N047.48.10.036,W122.05.52.304",
         "N047.48.06.534,W122.30.21.038",
-        "N047.51.21.239,W122.30.21.231"
+        "N047.51.21.239,W122.30.21.231",
+        "N047.51.23.793,W122.05.52.029"
       ],
       "F-S-40-60": [
         "N047.48.10.036,W122.05.52.304",
         "N047.41.46.338,W122.05.52.441",
         "N047.41.43.111,W122.30.20.214",
-        "N047.48.06.534,W122.30.21.038"
+        "N047.48.06.534,W122.30.21.038",
+        "N047.48.10.036,W122.05.52.304"
       ],
       "F-S-30-60": [
         "N047.41.46.338,W122.05.52.441",
         "N047.39.09.179,W122.05.52.688",
         "N047.30.00.714,W122.12.58.326",
         "N047.32.07.386,W122.18.27.861",
-        "N047.41.44.663,W122.18.27.778"
+        "N047.41.44.663,W122.18.27.778",
+        "N047.41.46.338,W122.05.52.441"
       ],
       "F-S-50-60.2": [
         "N047.39.09.179,W122.05.52.688",
         "N047.30.02.307,W122.05.52.029",
-        "N047.30.00.714,W122.12.58.326"
+        "N047.30.00.714,W122.12.58.326",
+        "N047.39.09.179,W122.05.52.688"
       ],
-      "F-S-32-60": ["N047.32.07.386,W122.18.27.861", "N047.32.04.392,W122.30.20.819", "N047.41.43.111,W122.30.20.214"],
+      "F-S-32-60": [
+        "N047.41.43.070,W122.30.20.544",
+        "N047.32.03.637,W122.30.21.340",
+        "N047.32.06.947,W122.18.27.696",
+        "N047.41.43.797,W122.18.27.147",
+        "N047.41.43.070,W122.30.20.544"
+      ],
       "F-S-50-60.3": [
-        "N047.32.07.386,W122.18.27.861",
-        "N047.26.37.494,W122.18.27.449",
-        "N047.26.34.720,W122.30.21.011",
-        "N047.32.04.392,W122.30.20.819"
+        "N047.32.03.966,W122.30.21.533",
+        "N047.26.34.184,W122.30.20.983",
+        "N047.26.36.134,W122.18.28.712",
+        "N047.32.06.274,W122.18.28.328",
+        "N047.32.03.966,W122.30.21.533"
       ],
       "F-S-60.2": [
-        "N047.26.37.494,W122.18.27.449",
-        "N047.25.00.897,W122.18.27.476",
-        "N047.24.58.205,W122.30.19.885",
-        "N047.32.04.392,W122.30.20.819"
+        "N047.26.34.184,W122.30.20.983",
+        "N047.24.57.862,W122.30.20.901",
+        "N047.25.00.677,W122.18.27.476",
+        "N047.26.36.299,W122.18.29.426",
+        "N047.26.34.184,W122.30.20.983"
+      ],
+      "F-N-60": [
+        "N046.53.31.495,W122.29.38.576",
+        "N046.56.10.536,W122.29.50.716",
+        "N046.57.11.950,W122.08.49.870",
+        "N046.54.29.325,W122.08.50.255",
+        "N046.53.31.495,W122.29.38.576"
+      ],
+      "F-N-50-60": [
+        "N046.56.10.619,W122.29.50.826",
+        "N047.01.06.453,W122.30.10.546",
+        "N047.02.09.487,W122.08.47.783",
+        "N046.57.12.705,W122.08.48.991",
+        "N046.56.10.619,W122.29.50.826"
+      ],
+      "F-N-40-60": [
+        "N047.23.11.651,W122.30.01.263",
+        "N047.21.27.377,W122.26.08.518",
+        "N047.15.26.133,W122.26.05.634",
+        "N047.13.28.511,W122.21.32.321",
+        "N047.09.06.899,W122.11.13.379",
+        "N047.09.06.501,W122.08.07.545",
+        "N047.06.45.079,W122.08.47.700",
+        "N047.02.10.036,W122.08.48.140",
+        "N047.01.07.373,W122.30.10.711",
+        "N047.01.37.723,W122.30.12.771",
+        "N047.15.41.487,W122.32.32.792",
+        "N047.21.45.120,W122.31.50.824",
+        "N047.23.11.651,W122.30.01.263"
+      ],
+      "F-N-30-60": [
+        "N047.21.28.037,W122.26.08.023",
+        "N047.19.31.115,W122.21.41.522",
+        "N047.13.28.483,W122.21.31.168",
+        "N047.15.25.872,W122.26.06.156",
+        "N047.21.28.037,W122.26.08.023"
+      ],
+      "F-N-0-60": [
+        "N047.26.58.011,W122.29.58.461",
+        "N047.26.59.261,W122.18.28.602",
+        "N047.26.24.571,W122.18.29.097",
+        "N047.12.05.660,W122.07.16.074",
+        "N047.09.05.677,W122.08.07.820",
+        "N047.09.06.858,W122.11.14.890",
+        "N047.13.28.250,W122.21.31.003",
+        "N047.19.30.030,W122.21.42.484",
+        "N047.23.11.418,W122.29.59.972",
+        "N047.26.58.011,W122.29.58.461"
       ],
       "D-S-0-50": [
         "N047.32.04.282,W122.30.19.802",
@@ -1226,15 +1594,61 @@
         "N047.51.20.895,W122.30.21.231",
         "N047.32.04.282,W122.30.19.802"
       ],
-      "D-S-40-50": ["N047.45.50.399,W122.55.01.638", "N047.26.34.528,W122.30.21.176", "N047.32.04.282,W122.30.19.802"],
-      "D-S-0-40": [
-        "N047.26.34.528,W122.30.21.176",
-        "N047.26.37.206,W122.18.27.723",
-        "N047.32.07.578,W122.18.27.449",
-        "N047.32.04.282,W122.30.19.802"
+      "D-S-40-50": [
+        "N047.45.49.644,W122.55.01.007",
+        "N047.36.58.524,W122.34.38.613",
+        "N047.32.04.282,W122.30.19.802",
+        "N047.26.33.635,W122.30.20.516",
+        "N047.45.49.644,W122.55.01.007"
       ],
-      "D-S-0-22": ["N047.32.07.578,W122.18.27.449", "N047.41.46.105,W122.18.27.559", "N047.41.42.781,W122.30.20.791"],
-      "D-S-0-30": ["N047.41.46.105,W122.18.27.559", "N047.48.09.967,W122.18.27.669", "N047.48.06.465,W122.30.21.176"],
+      "D-S-0-40": [
+        "N047.32.02.607,W122.30.19.775",
+        "N047.26.33.717,W122.30.21.231",
+        "N047.26.37.741,W122.18.28.520",
+        "N047.32.05.326,W122.18.28.767",
+        "N047.32.02.607,W122.30.19.775"
+      ],
+      "D-S-0-22": [
+        "N047.32.03.115,W122.30.20.379",
+        "N047.32.07.056,W122.18.27.284",
+        "N047.41.45.638,W122.18.27.696",
+        "N047.41.42.328,W122.30.21.313",
+        "N047.32.03.115,W122.30.20.379"
+      ],
+      "D-S-0-30": [
+        "N047.51.18.259,W122.30.19.033",
+        "N047.41.42.507,W122.30.22.137",
+        "N047.41.43.633,W122.18.28.328",
+        "N047.51.21.637,W122.18.27.669",
+        "N047.51.18.259,W122.30.19.033"
+      ],
+      "O-N-0-50": [
+        "N047.32.16.326,W122.18.25.664",
+        "N047.26.37.370,W122.06.24.548",
+        "N047.24.52.025,W122.06.30.509",
+        "N047.18.12.288,W121.52.13.740",
+        "N047.16.56.908,W121.53.21.058",
+        "N047.13.55.881,W121.56.47.766",
+        "N047.12.49.180,W121.58.34.746",
+        "N047.12.00.840,W122.00.09.063",
+        "N047.02.34.591,W121.59.12.456",
+        "N047.02.09.158,W122.08.48.057",
+        "N047.06.47.427,W122.08.47.920",
+        "N047.09.05.732,W122.08.08.204",
+        "N047.12.04.562,W122.07.16.184",
+        "N047.26.24.420,W122.18.28.822",
+        "N047.32.16.326,W122.18.25.664"
+      ],
+      "O-N-0-60": [
+        "N047.26.37.370,W122.06.24.548",
+        "N047.24.52.025,W122.06.30.509",
+        "N047.18.12.288,W121.52.13.740",
+        "N047.18.20.445,W121.52.07.505",
+        "N047.19.35.770,W121.51.23.038",
+        "N047.21.47.002,W121.50.22.421",
+        "N047.23.06.474,W121.49.57.647",
+        "N047.26.37.370,W122.06.24.548"
+      ],
       "P-S-0-50": [
         "N048.01.09.831,W122.43.24.611",
         "N048.05.07.713,W122.31.48.242",
@@ -1257,219 +1671,743 @@
         "N047.39.09.288,W122.05.53.100",
         "N047.48.10.269,W122.05.51.919",
         "N047.48.06.616,W122.30.21.093",
-        "N047.51.20.868,W122.30.21.368"
+        "N047.51.20.868,W122.30.21.368",
+        "N047.51.23.450,W122.05.52.551",
+        "N047.54.39.501,W121.57.57.337",
+        "N047.59.59.450,W121.58.00.715"
       ],
-      "P-S-0-30": ["N047.48.08.594,W122.18.27.531", "N047.41.46.077,W122.18.27.916", "N047.41.46.420,W122.05.52.770"],
-      "P-S-0-20": ["N047.41.46.077,W122.18.27.916", "N047.32.06.658,W122.18.27.833", "N047.30.00.288,W122.12.58.601"],
+      "P-S-0-30": [
+        "N047.48.08.594,W122.18.27.531",
+        "N047.41.46.077,W122.18.27.916",
+        "N047.41.46.420,W122.05.52.770",
+        "N047.48.09.033,W122.05.54.693",
+        "N047.48.08.594,W122.18.27.531"
+      ],
+      "P-S-0-20": [
+        "N047.41.46.077,W122.18.27.916",
+        "N047.32.06.658,W122.18.27.833",
+        "N047.30.00.288,W122.12.58.601",
+        "N047.39.06.954,W122.05.55.270",
+        "N047.41.46.242,W122.05.53.018",
+        "N047.41.46.077,W122.18.27.916"
+      ],
+      "P-N-0-50": [
+        "N048.13.47.215,W122.24.20.906",
+        "N048.14.23.786,W121.58.07.829",
+        "N047.59.59.642,W121.58.00.166",
+        "N047.59.59.244,W122.46.47.061",
+        "N048.05.07.109,W122.31.45.990",
+        "N048.13.47.215,W122.24.20.906"
+      ],
+      "P-N-0-50.2": [
+        "N047.55.33.348,W122.52.17.887",
+        "N047.46.42.722,W122.43.05.604",
+        "N047.45.57.238,W122.54.59.578",
+        "N047.55.00.540,W122.53.00.432",
+        "N047.55.33.348,W122.52.17.887"
+      ],
+      "P-N-0-40": [
+        "N047.46.42.543,W122.43.05.769",
+        "N047.48.07.536,W122.23.59.593",
+        "N047.48.06.492,W122.05.44.943",
+        "N047.45.16.094,W122.00.31.750",
+        "N047.43.18.431,W122.03.15.364",
+        "N047.43.13.130,W122.23.56.380",
+        "N047.42.03.861,W122.38.53.825",
+        "N047.46.42.543,W122.43.05.769"
+      ],
+      "P-N-0-60": [
+        "N047.59.59.794,W122.46.47.528",
+        "N047.59.59.821,W121.58.00.963",
+        "N047.54.39.460,W121.58.00.963",
+        "N047.48.06.616,W122.05.45.684",
+        "N047.48.08.346,W122.23.59.373",
+        "N047.46.42.062,W122.43.06.236",
+        "N047.55.33.114,W122.52.18.848",
+        "N047.59.59.794,W122.46.47.528"
+      ],
+      "P-N-0-90": [
+        "N047.59.58.873,W121.57.59.809",
+        "N047.53.59.071,W121.48.24.840",
+        "N047.47.00.245,W121.58.06.126",
+        "N047.45.16.355,W122.00.31.503",
+        "N047.48.06.891,W122.05.45.300",
+        "N047.54.40.503,W121.58.00.249",
+        "N047.59.58.873,W121.57.59.809"
+      ],
       "A-S-110-130": [
-        "N047.59.29.499,W122.05.51.370",
-        "N047.59.59.876,W122.05.00.613",
-        "N047.59.59.903,W122.30.20.928",
-        "N047.53.09.537,W122.16.41.760",
-        "N047.59.29.499,W122.05.51.370"
+        "N047.53.09.207,W122.16.41.870",
+        "N047.59.59.217,W122.04.59.816",
+        "N048.00.01.785,W122.30.20.709",
+        "N047.59.59.148,W122.30.20.983",
+        "N047.53.09.207,W122.16.41.870"
       ],
       "A-S-130-150": [
-        "N047.30.01.881,W122.05.52.359",
-        "N047.59.29.499,W122.05.51.370",
-        "N047.59.59.876,W122.05.00.613",
-        "N047.59.59.807,W121.58.00.496",
-        "N047.39.12.983,W121.57.49.097"
+        "N047.30.01.744,W122.05.52.413",
+        "N047.39.12.310,W121.57.50.553",
+        "N047.59.59.450,W121.58.00.496",
+        "N047.59.59.024,W122.05.00.915",
+        "N047.59.28.908,W122.05.52.578",
+        "N047.30.01.744,W122.05.52.413"
       ],
       "A-S-0-150": [
-        "N047.39.20.343,W121.35.54.144",
-        "N047.30.59.628,W121.30.59.985",
-        "N047.20.59.376,W121.31.00.507",
-        "N047.12.24.021,W121.39.38.182",
-        "N047.24.31.687,W122.05.52.194",
-        "N047.30.01.881,W122.05.52.359",
-        "N047.39.12.983,W121.57.49.097",
-        "N047.39.20.343,W121.35.54.144"
+        "N047.30.01.043,W122.05.53.759",
+        "N047.24.31.632,W122.05.52.304",
+        "N047.12.23.650,W121.39.37.770",
+        "N047.20.58.731,W121.30.59.930",
+        "N047.30.58.213,W121.30.59.875",
+        "N047.39.20.247,W121.35.54.556",
+        "N047.39.12.502,W121.57.49.921",
+        "N047.30.01.043,W122.05.53.759"
       ],
       "A-S-110-150": [
-        "N047.54.02.601,W122.18.27.696",
-        "N047.32.07.304,W122.18.27.861",
-        "N047.30.00.796,W122.12.57.859",
-        "N047.30.01.881,W122.05.52.359"
+        "N047.32.06.631,W122.18.27.916",
+        "N047.30.00.590,W122.12.57.035",
+        "N047.30.00.823,W122.05.52.743",
+        "N047.59.28.840,W122.05.52.770",
+        "N047.53.09.125,W122.16.41.486",
+        "N047.54.01.818,W122.18.27.751",
+        "N047.32.06.631,W122.18.27.916"
       ],
-      "A-S-0-60": ["N047.32.07.304,W122.18.27.861", "N047.21.55.200,W122.18.27.806", "N047.24.31.687,W122.05.52.194"],
+      "A-S-0-60": [
+        "N047.32.06.631,W122.18.27.916",
+        "N047.30.00.590,W122.12.57.035",
+        "N047.30.00.823,W122.05.52.743",
+        "N047.24.31.179,W122.05.52.908",
+        "N047.21.54.967,W122.18.28.081",
+        "N047.32.06.631,W122.18.27.916"
+      ],
       "A-S-0-90": [
-        "N047.21.55.200,W122.18.27.806",
-        "N047.07.19.810,W121.46.53.021",
-        "N047.07.09.785,W121.44.52.749",
-        "N047.12.24.021,W121.39.38.182"
+        "N047.21.54.637,W122.18.28.740",
+        "N047.07.19.082,W121.46.53.296",
+        "N047.07.09.167,W121.44.53.161",
+        "N047.12.23.472,W121.39.39.281",
+        "N047.24.31.302,W122.05.53.347",
+        "N047.21.54.637,W122.18.28.740"
       ],
       "A-S-0-150.2": [
-        "N047.07.19.810,W121.46.53.021",
-        "N047.09.10.840,W122.11.14.835",
-        "N047.17.00.066,W122.18.27.916",
-        "N047.21.55.200,W122.18.27.806"
+        "N047.21.54.637,W122.18.28.740",
+        "N047.07.19.082,W121.46.53.296",
+        "N047.09.10.222,W122.11.15.659",
+        "N047.16.59.943,W122.18.29.124",
+        "N047.21.54.637,W122.18.28.740"
       ],
-      "Y-S-110-150": [
-        "N047.54.02.601,W122.18.27.696",
-        "N047.59.59.903,W122.30.20.928",
-        "N047.26.34.473,W122.30.20.462",
-        "N047.26.37.261,W122.18.28.575",
-        "N047.54.02.601,W122.18.27.696"
+      "A-N-70-130": [
+        "N047.59.59.807,W122.30.20.324",
+        "N047.53.09.743,W122.16.42.502",
+        "N047.59.59.601,W122.05.02.206",
+        "N047.59.59.807,W122.30.20.324"
       ],
-      "Y-S-0-50": [
-        "N047.26.37.261,W122.18.28.575",
-        "N047.25.00.979,W122.18.27.751",
-        "N047.24.58.384,W122.30.20.736",
-        "N047.26.34.473,W122.30.20.462"
+      "A-N-70-150": [
+        "N047.56.50.884,W122.24.04.042",
+        "N047.53.09.248,W122.16.43.573",
+        "N047.59.59.272,W122.05.01.492",
+        "N047.59.59.642,W121.58.01.100",
+        "N047.54.39.721,W121.58.00.496",
+        "N047.48.06.589,W122.05.45.465",
+        "N047.48.07.701,W122.23.58.906",
+        "N047.56.50.884,W122.24.04.042"
       ],
-      "Y-S-0-60": [
-        "N047.24.58.384,W122.30.20.736",
-        "N047.21.48.334,W122.31.47.034",
-        "N047.19.26.638,W122.21.46.604",
-        "N047.21.55.351,W122.18.27.614",
-        "N047.25.00.979,W122.18.27.751"
+      "A-N-100-150": [
+        "N047.54.39.487,W121.58.01.512",
+        "N047.47.00.739,W121.58.06.813",
+        "N047.45.16.342,W122.00.32.409",
+        "N047.48.06.753,W122.05.45.465",
+        "N047.54.39.487,W121.58.01.512"
       ],
-      "Y-S-0-150": ["N047.19.26.638,W122.21.46.604", "N047.17.00.066,W122.18.27.916", "N047.25.00.979,W122.18.27.751"],
-      "Y-S-130-150": [
-        "N047.59.59.903,W122.30.20.928",
-        "N047.59.59.986,W122.35.53.759",
-        "N047.55.01.872,W122.35.53.759",
-        "N047.54.59.949,W122.53.00.075",
-        "N047.45.49.905,W122.55.00.787",
-        "N047.26.34.473,W122.30.20.462"
+      "A-N-50-150": [
+        "N047.48.07.550,W122.23.59.703",
+        "N047.48.06.808,W122.05.45.382",
+        "N047.45.16.108,W122.00.30.871",
+        "N047.43.18.554,W122.03.15.199",
+        "N047.43.13.666,W122.23.56.544",
+        "N047.48.07.550,W122.23.59.703"
       ],
-      "Y-S-60-150": [
-        "N047.45.49.905,W122.55.00.787",
-        "N047.22.59.910,W123.00.00.823",
-        "N047.10.59.632,W123.00.00.219",
-        "N047.10.45.474,W122.45.37.573",
-        "N047.18.15.584,W122.36.13.974",
-        "N047.31.10.710,W122.36.13.947"
+      "A-N-0-150": [
+        "N047.43.13.775,W122.23.55.748",
+        "N047.43.18.445,W122.03.16.078",
+        "N047.34.48.748,W122.15.06.454",
+        "N047.32.17.342,W122.18.24.949",
+        "N047.40.01.419,W122.23.54.622",
+        "N047.43.13.775,W122.23.55.748"
       ],
-      "Y-S-130-150.2": ["N047.18.15.584,W122.36.13.974", "N047.21.48.334,W122.31.47.034"],
-      "Y-S-50-60": ["N047.21.48.334,W122.31.47.034", "N047.22.50.764,W122.36.14.359"],
-      "Y-S-50-70": [
-        "N047.21.48.334,W122.31.47.034",
-        "N047.15.40.841,W122.32.30.814",
-        "N047.10.28.829,W122.31.34.207",
-        "N047.10.45.474,W122.45.37.573"
+      "A-N-0-90": [
+        "N047.53.58.288,W121.48.24.428",
+        "N047.49.57.441,W121.41.56.775",
+        "N047.39.15.757,W121.35.49.804",
+        "N047.39.22.225,W121.53.42.784",
+        "N047.31.18.153,W122.04.32.598",
+        "N047.34.48.610,W122.15.05.905",
+        "N047.43.18.541,W122.03.15.364",
+        "N047.45.16.081,W122.00.31.036",
+        "N047.47.00.025,W121.58.05.879",
+        "N047.53.58.288,W121.48.24.428"
+      ],
+      "A-N-0-150.2": [
+        "N047.39.16.498,W121.35.47.579",
+        "N047.30.57.925,W121.31.00.260",
+        "N047.20.58.387,W121.31.02.759",
+        "N047.12.21.398,W121.39.38.979",
+        "N047.18.12.453,W121.52.13.630",
+        "N047.19.33.216,W121.51.23.807",
+        "N047.21.40.465,W121.50.24.783",
+        "N047.23.05.911,W121.49.57.537",
+        "N047.26.37.082,W122.06.24.329",
+        "N047.29.59.629,W122.06.19.852",
+        "N047.31.19.389,W122.04.35.015",
+        "N047.39.22.074,W121.53.41.905",
+        "N047.39.16.498,W121.35.47.579"
+      ],
+      "A-N-0-60": [
+        "N047.32.16.518,W122.18.25.334",
+        "N047.34.48.926,W122.15.06.454",
+        "N047.31.18.579,W122.04.33.806",
+        "N047.29.59.588,W122.06.19.934",
+        "N047.26.38.675,W122.06.24.686",
+        "N047.32.16.518,W122.18.25.334"
+      ],
+      "A-N-70-150.2": [
+        "N047.26.37.590,W122.06.25.372",
+        "N047.23.05.403,W121.49.58.828",
+        "N047.21.51.135,W121.50.19.949",
+        "N047.19.35.056,W121.51.23.285",
+        "N047.18.12.150,W121.52.13.273",
+        "N047.24.50.982,W122.06.30.948",
+        "N047.26.37.590,W122.06.25.372"
+      ],
+      "A-N-130-150": [
+        "N047.32.15.681,W122.18.25.993",
+        "N047.26.37.892,W122.06.25.345",
+        "N047.24.51.339,W122.06.30.921",
+        "N047.18.11.436,W121.52.13.493",
+        "N047.12.21.439,W121.39.38.869",
+        "N046.54.59.153,W121.58.01.320",
+        "N046.54.23.049,W122.11.08.023",
+        "N047.16.56.194,W122.11.05.029",
+        "N047.26.25.450,W122.18.29.838",
+        "N047.32.15.681,W122.18.25.993"
+      ],
+      "A-N-110-150": [
+        "N047.23.38.678,W122.16.20.722",
+        "N047.16.55.534,W122.11.05.304",
+        "N046.54.22.541,W122.11.07.996",
+        "N046.54.08.519,W122.16.22.287",
+        "N047.23.38.678,W122.16.20.722"
+      ],
+      "Y-S-0-150": [
+        "N047.07.09.208,W121.44.51.210",
+        "N047.00.24.925,W121.51.35.260",
+        "N047.00.23.854,W122.00.05.355",
+        "N047.08.20.550,W122.00.07.031",
+        "N047.07.09.208,W121.44.51.210"
+      ],
+      "Y-S-0-150.2": [
+        "N047.19.26.294,W122.21.46.411",
+        "N047.21.55.434,W122.18.27.257",
+        "N047.16.59.984,W122.18.27.147",
+        "N047.19.26.294,W122.21.46.411"
       ],
       "Y-S-100-150": [
-        "N047.10.45.474,W122.45.37.573",
-        "N047.10.13.394,W122.46.16.794",
-        "N047.07.13.094,W122.53.40.010",
-        "N047.10.59.632,W123.00.00.219"
+        "N047.00.24.980,W121.51.34.381",
+        "N046.54.58.699,W121.58.00.853",
+        "N046.53.31.550,W122.29.38.933",
+        "N047.00.19.981,W122.27.36.930",
+        "N047.00.23.551,W122.00.06.124",
+        "N047.00.24.980,W121.51.34.381"
+      ],
+      "Y-S-60-150": [
+        "N047.10.20.823,W122.24.34.475",
+        "N047.09.11.033,W122.11.14.642",
+        "N047.08.20.234,W122.00.07.250",
+        "N047.00.24.211,W122.00.06.015",
+        "N047.00.20.104,W122.27.36.985",
+        "N047.10.20.823,W122.24.34.475"
+      ],
+      "Y-S-30-150": [
+        "N047.19.26.294,W122.21.46.329",
+        "N047.17.00.767,W122.18.28.355",
+        "N047.09.10.346,W122.11.11.182",
+        "N047.14.11.083,W122.23.22.734",
+        "N047.19.26.294,W122.21.46.329"
+      ],
+      "Y-S-40-150": [
+        "N047.09.10.346,W122.11.11.182",
+        "N047.14.11.083,W122.23.22.734",
+        "N047.10.20.919,W122.24.33.129",
+        "N047.09.10.346,W122.11.11.182"
+      ],
+      "Y-S-30-70": [
+        "N047.19.26.308,W122.21.46.961",
+        "N047.14.10.616,W122.23.23.695",
+        "N047.15.18.086,W122.25.55.471",
+        "N047.20.25.181,W122.25.54.867",
+        "N047.19.26.308,W122.21.46.961"
       ],
       "Y-S-40-70": [
-        "N047.10.28.829,W122.31.34.207",
-        "N047.10.21.359,W122.24.33.760",
-        "N047.14.12.003,W122.23.23.036",
-        "N047.15.18.127,W122.25.55.471",
-        "N047.20.25.154,W122.25.55.334"
+        "N047.21.48.375,W122.31.46.430",
+        "N047.20.25.030,W122.25.54.483",
+        "N047.15.17.701,W122.25.56.680",
+        "N047.14.10.643,W122.23.23.942",
+        "N047.10.20.549,W122.24.34.035",
+        "N047.10.29.145,W122.31.34.015",
+        "N047.15.41.404,W122.32.30.677",
+        "N047.21.48.375,W122.31.46.430"
       ],
-      "Y-S-30-70": ["N047.14.12.003,W122.23.23.036", "N047.19.26.638,W122.21.46.604"],
-      "Y-S-30-150": ["N047.14.12.003,W122.23.23.036", "N047.09.11.582,W122.11.14.670", "N047.17.00.066,W122.18.27.916"],
-      "Y-S-40-150": ["N047.09.11.582,W122.11.14.670", "N047.10.21.359,W122.24.33.760"],
+      "Y-S-50-70": [
+        "N047.21.47.963,W122.31.47.363",
+        "N047.15.41.610,W122.32.32.188",
+        "N047.10.28.720,W122.31.34.976",
+        "N047.10.45.295,W122.45.37.545",
+        "N047.18.15.941,W122.36.14.111",
+        "N047.22.50.393,W122.36.14.276",
+        "N047.21.47.963,W122.31.47.363"
+      ],
+      "Y-S-100-150.2": [
+        "N047.10.45.378,W122.45.38.177",
+        "N047.10.13.188,W122.46.15.640",
+        "N047.07.13.039,W122.53.39.955",
+        "N047.10.59.385,W123.00.01.565",
+        "N047.10.45.378,W122.45.38.177"
+      ],
       "Y-S-60-150.2": [
+        "N047.45.50.743,W122.55.01.419",
+        "N047.31.09.735,W122.36.12.656",
+        "N047.22.51.093,W122.36.13.397",
+        "N047.18.16.202,W122.36.14.523",
+        "N047.10.45.350,W122.45.38.644",
+        "N047.10.59.619,W123.00.00.357",
+        "N047.22.59.347,W122.59.59.835",
+        "N047.45.50.743,W122.55.01.419"
+      ],
+      "Y-S-50-60": [
+        "N047.31.09.694,W122.36.12.903",
+        "N047.26.34.143,W122.30.20.571",
+        "N047.24.58.136,W122.30.19.610",
+        "N047.21.47.620,W122.31.47.171",
+        "N047.22.48.896,W122.36.13.809",
+        "N047.31.09.694,W122.36.12.903"
+      ],
+      "Y-S-0-60": [
+        "N047.24.57.985,W122.30.20.516",
+        "N047.21.47.839,W122.31.47.171",
+        "N047.20.24.989,W122.25.55.004",
+        "N047.19.26.596,W122.21.46.961",
+        "N047.21.55.434,W122.18.27.092",
+        "N047.25.00.773,W122.18.27.806",
+        "N047.24.57.985,W122.30.20.516"
+      ],
+      "Y-S-0-50": [
+        "N047.26.34.171,W122.30.20.599",
+        "N047.24.57.683,W122.30.19.775",
+        "N047.25.00.636,W122.18.27.064",
+        "N047.26.37.618,W122.18.27.696",
+        "N047.26.34.171,W122.30.20.599"
+      ],
+      "Y-S-130-150": [
+        "N047.18.15.433,W122.36.13.617",
+        "N047.22.48.827,W122.36.13.068",
+        "N047.31.09.639,W122.36.12.271",
+        "N047.45.50.427,W122.55.01.913",
+        "N047.54.59.482,W122.53.00.404",
+        "N047.55.01.748,W122.35.53.979",
+        "N048.00.01.812,W122.35.52.963",
+        "N048.00.02.156,W122.30.19.638",
+        "N047.26.34.006,W122.30.20.379",
+        "N047.26.34.006,W122.30.20.379",
+        "N047.24.57.518,W122.30.20.242",
+        "N047.21.48.512,W122.31.46.539",
+        "N047.18.15.433,W122.36.13.617"
+      ],
+      "Y-S-110-150": [
+        "N047.26.33.347,W122.30.20.269",
+        "N047.26.37.384,W122.18.27.696",
+        "N047.54.02.614,W122.18.27.476",
+        "N047.59.59.368,W122.30.20.489",
+        "N047.26.33.347,W122.30.20.269"
+      ],
+      "Y-N-0-60": [
+        "N047.26.57.970,W122.29.57.912",
+        "N047.32.15.914,W122.29.59.230",
+        "N047.34.12.836,W122.30.00.549",
+        "N047.35.55.091,W122.28.47.847",
+        "N047.36.37.444,W122.26.48.755",
+        "N047.32.16.505,W122.18.25.718",
+        "N047.26.59.577,W122.18.27.888",
+        "N047.26.57.970,W122.29.57.912"
+      ],
+      "Y-N-0-90": [
+        "N047.42.02.639,W122.38.53.029",
+        "N047.43.00.400,W122.26.40.186",
+        "N047.40.01.995,W122.23.55.968",
+        "N047.32.16.051,W122.18.24.785",
+        "N047.36.37.773,W122.26.49.112",
+        "N047.35.54.927,W122.28.48.396",
+        "N047.34.12.397,W122.29.59.642",
+        "N047.32.16.381,W122.30.00.329",
+        "N047.42.02.639,W122.38.53.029"
+      ],
+      "Y-N-0-150": [
+        "N047.43.01.045,W122.26.41.229",
+        "N047.43.14.078,W122.23.56.132",
+        "N047.40.01.103,W122.23.54.457",
+        "N047.43.01.045,W122.26.41.229"
+      ],
+      "Y-N-50-90": [
+        "N047.46.42.502,W122.43.05.083",
+        "N047.47.36.335,W122.30.55.151",
+        "N047.43.01.114,W122.26.40.790",
+        "N047.42.02.653,W122.38.51.793",
+        "N047.46.42.502,W122.43.05.083"
+      ],
+      "Y-N-70-90": [
+        "N047.55.32.702,W122.52.19.178",
+        "N047.59.58.832,W122.46.47.583",
+        "N047.59.59.217,W122.42.21.494",
+        "N047.47.36.472,W122.30.56.195",
+        "N047.46.42.790,W122.43.06.895",
+        "N047.55.32.702,W122.52.19.178"
+      ],
+      "Y-N-50-150": [
+        "N047.47.36.678,W122.30.56.195",
+        "N047.48.07.701,W122.23.59.318",
+        "N047.43.13.844,W122.23.56.215",
+        "N047.43.00.180,W122.26.40.762",
+        "N047.47.36.678,W122.30.56.195"
+      ],
+      "Y-N-70-150": [
+        "N047.59.59.574,W122.42.23.334",
+        "N048.00.00.357,W122.30.18.841",
+        "N047.56.51.694,W122.24.04.152",
+        "N047.48.08.360,W122.23.58.989",
+        "N047.47.36.829,W122.30.56.057",
+        "N047.59.59.574,W122.42.23.334"
+      ],
+      "Y-N-40-150": [
+        "N047.36.49.597,W122.34.09.005",
+        "N047.32.15.942,W122.30.00.357",
+        "N047.23.11.349,W122.30.01.428",
+        "N047.21.44.132,W122.31.52.280",
+        "N047.18.23.713,W122.36.04.471",
+        "N047.31.20.323,W122.36.12.738",
+        "N047.36.49.597,W122.34.09.005"
+      ],
+      "Y-N-60-150": [
+        "N047.55.33.142,W122.52.19.480",
+        "N047.46.42.955,W122.43.06.538",
+        "N047.42.03.545,W122.38.52.809",
+        "N047.36.48.540,W122.34.08.126",
+        "N047.31.20.488,W122.36.13.645",
+        "N047.18.24.098,W122.36.04.443",
+        "N047.10.35.298,W122.45.26.943",
+        "N047.10.59.454,W122.59.58.901",
+        "N047.22.59.608,W122.59.59.725",
+        "N047.45.57.128,W122.54.58.947",
+        "N047.55.00.279,W122.52.59.003",
+        "N047.55.33.142,W122.52.19.480"
+      ],
+      "Y-N-100-150": [
+        "N047.10.59.289,W123.00.00.109",
+        "N047.10.35.847,W122.45.26.229",
+        "N047.07.12.792,W122.53.37.730",
+        "N047.10.59.289,W123.00.00.109"
+      ],
+      "Y-N-110-150": [
+        "N047.25.51.571,W122.29.58.956",
+        "N047.25.51.461,W122.18.30.443",
+        "N047.26.25.038,W122.18.29.619",
+        "N047.23.42.303,W122.16.20.941",
+        "N046.54.08.835,W122.16.22.095",
+        "N046.53.44.610,W122.25.07.736",
+        "N047.01.20.928,W122.25.27.127",
+        "N047.01.07.112,W122.30.10.464",
+        "N047.01.31.447,W122.30.11.782",
+        "N047.15.40.361,W122.32.31.309",
+        "N047.21.43.555,W122.31.52.280",
+        "N047.23.10.896,W122.30.02.032",
+        "N047.25.51.571,W122.29.58.956"
+      ],
+      "Y-N-140-150": [
+        "N047.21.44.667,W122.31.51.456",
+        "N047.15.41.102,W122.32.31.309",
+        "N047.01.33.685,W122.30.11.013",
+        "N047.01.06.233,W122.30.10.162",
+        "N047.01.20.969,W122.25.28.143",
+        "N046.53.44.830,W122.25.07.022",
+        "N046.53.31.619,W122.29.39.043",
+        "N046.56.31.960,W122.35.22.943",
+        "N046.59.23.044,W122.40.39.651",
+        "N047.04.19.071,W122.48.52.580",
+        "N047.07.12.229,W122.53.36.796",
+        "N047.10.34.968,W122.45.26.971",
+        "N047.18.22.670,W122.36.04.553",
+        "N047.21.44.667,W122.31.51.456"
+      ],
+      "K-S-0-30": [
+        "N047.45.50.372,W122.55.01.309",
+        "N047.31.08.074,W122.36.12.573",
+        "N047.26.34.418,W122.30.21.917",
+        "N047.32.03.788,W122.30.20.269",
+        "N047.36.57.576,W122.34.36.663",
+        "N047.45.50.372,W122.55.01.309"
+      ],
+      "K-S-0-50": [
+        "N047.10.44.650,W122.45.36.611",
+        "N047.18.14.787,W122.36.14.111",
+        "N047.22.51.107,W122.36.14.716",
+        "N047.31.08.637,W122.36.13.727",
+        "N047.45.50.372,W122.55.01.309",
+        "N047.22.58.028,W123.00.02.142",
+        "N047.10.58.836,W123.00.00.769",
+        "N047.10.44.650,W122.45.36.611"
+      ],
+      "K-S-0-40": [
+        "N047.10.44.650,W122.45.36.611",
+        "N047.04.31.856,W122.41.06.870",
+        "N047.01.14.679,W122.31.57.636",
+        "N047.02.28.562,W122.30.42.132",
+        "N047.10.29.818,W122.31.35.251",
+        "N047.15.40.402,W122.32.31.831",
+        "N047.21.47.853,W122.31.47.611",
+        "N047.24.58.027,W122.30.21.038",
+        "N047.26.34.020,W122.30.22.055",
+        "N047.31.08.637,W122.36.13.727",
+        "N047.22.51.107,W122.36.14.716",
+        "N047.18.14.787,W122.36.14.111",
+        "N047.10.44.650,W122.45.36.611"
+      ],
+      "K-S-0-90": [
+        "N047.22.58.482,W123.00.01.290",
+        "N047.23.00.830,W123.10.01.748",
+        "N047.15.00.357,W123.17.00.437",
+        "N047.07.03.687,W123.16.06.055",
+        "N047.10.58.918,W123.00.00.961",
+        "N047.22.58.482,W123.00.01.290"
+      ],
+      "K-N-0-30": [
+        "N047.21.44.530,W122.31.51.566",
+        "N047.15.42.668,W122.32.34.714",
+        "N047.01.38.876,W122.30.13.073",
+        "N047.01.23.839,W122.30.12.771",
+        "N047.01.14.295,W122.31.43.656",
+        "N047.04.32.941,W122.41.09.836",
+        "N047.10.34.886,W122.45.27.301",
+        "N047.18.23.837,W122.36.04.361",
+        "N047.31.21.188,W122.36.15.018",
+        "N047.36.48.705,W122.34.08.291",
+        "N047.32.15.049,W122.29.59.642",
+        "N047.23.10.731,W122.30.00.247",
+        "N047.21.44.530,W122.31.51.566"
+      ],
+      "K-N-0-50": [
+        "N047.22.59.154,W123.00.00.219",
+        "N047.10.58.699,W122.59.59.780",
+        "N047.10.34.858,W122.45.26.889",
+        "N047.18.23.810,W122.36.04.855",
+        "N047.31.18.813,W122.36.13.974",
+        "N047.36.49.501,W122.34.08.318",
+        "N047.42.03.435,W122.38.53.084",
+        "N047.46.42.777,W122.43.06.566",
+        "N047.45.57.527,W122.54.59.139",
+        "N047.22.59.154,W123.00.00.219"
+      ],
+      "K-N-0-90": [
+        "N047.22.59.154,W123.00.00.219",
+        "N047.10.58.699,W122.59.59.780",
+        "N047.07.04.003,W123.16.06.275",
+        "N047.15.01.881,W123.17.01.316",
+        "N047.22.59.841,W123.10.04.632",
+        "N047.22.59.154,W123.00.00.219"
+      ],
+      "N-S-0-20": [
+        "N047.20.25.415,W122.25.55.856",
+        "N047.19.26.899,W122.21.47.098",
+        "N047.16.59.737,W122.18.28.987",
+        "N047.09.09.851,W122.11.14.835",
+        "N047.14.14.132,W122.23.22.624",
+        "N047.15.17.481,W122.25.55.279",
+        "N047.20.25.415,W122.25.55.856"
+      ],
+      "N-S-0-30": [
+        "N047.21.47.757,W122.31.47.556",
+        "N047.20.25.415,W122.25.55.856",
+        "N047.15.17.481,W122.25.55.279",
+        "N047.14.14.132,W122.23.22.624",
+        "N047.09.09.851,W122.11.14.835",
+        "N047.10.20.933,W122.24.33.321",
+        "N047.10.28.665,W122.31.34.427",
+        "N047.15.41.555,W122.32.31.611",
+        "N047.21.47.757,W122.31.47.556"
+      ],
+      "N-S-0-50": [
         "N047.10.21.359,W122.24.33.760",
         "N047.00.20.503,W122.27.36.765",
         "N047.00.24.266,W122.00.05.712",
         "N047.08.20.454,W122.00.06.591",
         "N047.09.11.582,W122.11.14.670",
+        "N047.10.21.359,W122.24.33.760",
         "N047.10.21.359,W122.24.33.760"
       ],
-      "Y-S-0-150.2": [
-        "N047.00.24.266,W122.00.05.712",
-        "N047.00.25.639,W121.51.33.695",
-        "N047.07.09.510,W121.44.50.414",
-        "N047.08.20.454,W122.00.06.591"
-      ],
-      "Y-S-100-150.2": [
-        "N047.00.25.639,W121.51.33.695",
-        "N046.54.59.400,W121.58.01.347",
-        "N046.53.31.962,W122.29.39.235",
-        "N047.00.20.503,W122.27.36.765"
-      ],
-      "K-S-0-30": [
-        "N047.45.50.399,W122.55.01.638",
-        "N047.26.34.528,W122.30.21.176",
-        "N047.32.04.282,W122.30.19.802",
-        "N047.36.58.345,W122.34.37.569",
-        "N047.45.50.399,W122.55.01.638"
-      ],
-      "K-S-0-50": [
-        "N047.45.50.399,W122.55.01.638",
-        "N047.22.59.347,W123.00.01.043",
-        "N047.10.59.742,W123.00.00.082",
-        "N047.10.45.570,W122.45.37.271",
-        "N047.18.15.405,W122.36.14.826",
-        "N047.31.08.499,W122.36.13.342"
-      ],
-      "K-S-0-40": [
-        "N047.26.34.528,W122.30.21.176",
-        "N047.24.58.493,W122.30.21.011",
-        "N047.21.48.059,W122.31.47.226",
-        "N047.15.39.660,W122.32.30.952",
-        "N047.10.29.598,W122.31.34.619",
-        "N047.02.29.345,W122.30.41.775",
-        "N047.01.15.201,W122.31.57.004",
-        "N047.04.32.474,W122.41.05.661",
-        "N047.10.45.254,W122.45.37.298"
-      ],
-      "K-S-0-90": [
-        "N047.22.59.347,W123.00.01.043",
-        "N047.23.00.967,W123.10.00.402",
-        "N047.14.59.876,W123.16.59.696",
-        "N047.07.03.632,W123.16.05.039",
-        "N047.10.59.742,W123.00.00.082"
-      ],
-      "N-S-0-20": [
-        "N047.20.25.305,W122.25.55.554",
-        "N047.15.18.402,W122.25.55.224",
-        "N047.09.11.266,W122.11.14.588",
-        "N047.09.04.839,W122.11.06.485"
-      ],
       "N-S-0-90": [
-        "N047.22.59.347,W123.00.01.043",
-        "N047.23.00.967,W123.10.00.402",
-        "N047.14.59.876,W123.16.59.696",
-        "N047.07.03.632,W123.16.05.039",
-        "N047.10.59.742,W123.00.00.082"
-      ],
-      "N-S-0-30": [
-        "N047.21.48.059,W122.31.47.226",
-        "N047.20.25.305,W122.25.55.554",
-        "N047.15.18.402,W122.25.55.224",
-        "N047.09.10.840,W122.11.14.835",
-        "N047.10.21.249,W122.24.33.541"
+        "N047.00.25.144,W121.51.33.969",
+        "N046.54.58.892,W121.58.01.896",
+        "N046.39.59.606,W122.17.59.901",
+        "N046.49.59.212,W123.14.00.261",
+        "N047.07.04.127,W123.16.03.858",
+        "N047.10.59.811,W123.00.00.659",
+        "N047.10.45.240,W122.45.38.836",
+        "N047.04.31.266,W122.41.07.007",
+        "N047.01.15.379,W122.31.56.784",
+        "N047.02.26.269,W122.30.40.292",
+        "N047.10.28.198,W122.31.34.317",
+        "N047.10.19.944,W122.24.34.749",
+        "N047.00.20.146,W122.27.36.546",
+        "N047.00.23.744,W122.00.06.124",
+        "N047.00.25.144,W121.51.33.969"
       ],
       "N-S-50-90": [
-        "N047.22.59.347,W123.00.01.043",
-        "N047.23.00.967,W123.10.00.402",
-        "N047.14.59.876,W123.16.59.696",
-        "N047.07.03.632,W123.16.05.039",
-        "N047.10.59.742,W123.00.00.082"
+        "N047.10.45.501,W122.45.38.287",
+        "N047.04.31.513,W122.41.06.156",
+        "N047.01.15.833,W122.31.56.317",
+        "N047.02.27.463,W122.30.40.072",
+        "N047.10.28.294,W122.31.33.905",
+        "N047.10.28.294,W122.31.33.905",
+        "N047.10.45.501,W122.45.38.287"
       ],
-      "N-S-0-50": [
-        "N047.22.59.347,W123.00.01.043",
-        "N047.23.00.967,W123.10.00.402",
-        "N047.14.59.876,W123.16.59.696",
-        "N047.07.03.632,W123.16.05.039",
-        "N047.10.59.742,W123.00.00.082",
-        "N047.10.29.598,W122.31.34.619"
+      "N-N-0-20": [
+        "N047.21.28.037,W122.26.08.023",
+        "N047.19.31.115,W122.21.41.522",
+        "N047.13.28.483,W122.21.31.168",
+        "N047.15.25.872,W122.26.06.156",
+        "N047.21.28.037,W122.26.08.023"
+      ],
+      "N-N-0-30": [
+        "N047.23.11.651,W122.30.01.263",
+        "N047.21.27.377,W122.26.08.518",
+        "N047.15.26.133,W122.26.05.634",
+        "N047.13.28.511,W122.21.32.321",
+        "N047.09.06.899,W122.11.13.379",
+        "N047.09.06.501,W122.08.07.545",
+        "N047.06.45.079,W122.08.47.700",
+        "N047.02.10.036,W122.08.48.140",
+        "N047.01.07.373,W122.30.10.711",
+        "N047.01.37.723,W122.30.12.771",
+        "N047.15.41.487,W122.32.32.792",
+        "N047.21.45.120,W122.31.50.824",
+        "N047.23.11.651,W122.30.01.263"
+      ],
+      "N-N-0-40": [
+        "N047.01.06.796,W122.30.10.601",
+        "N047.02.09.899,W122.08.47.920",
+        "N046.57.12.719,W122.08.49.321",
+        "N046.56.10.976,W122.29.50.386",
+        "N047.01.06.796,W122.30.10.601"
+      ],
+      "N-N-0-50": [
+        "N047.10.35.380,W122.45.26.284",
+        "N047.04.34.177,W122.41.10.083",
+        "N047.01.15.064,W122.31.44.150",
+        "N047.01.24.471,W122.30.12.524",
+        "N047.01.07.030,W122.30.10.821",
+        "N046.56.10.701,W122.29.51.210",
+        "N046.57.12.746,W122.08.49.101",
+        "N047.02.09.446,W122.08.47.151",
+        "N047.02.34.165,W121.59.10.534",
+        "N046.55.00.155,W121.57.59.589",
+        "N046.53.31.660,W122.29.39.977",
+        "N046.59.21.218,W122.40.35.888",
+        "N047.04.18.906,W122.48.52.113",
+        "N047.10.35.380,W122.45.26.284"
+      ],
+      "N-N-0-70": [
+        "N046.56.33.374,W122.35.21.350",
+        "N046.53.30.932,W122.29.40.664",
+        "N046.53.26.758,W122.32.59.434",
+        "N046.55.50.816,W122.35.43.185",
+        "N046.56.33.374,W122.35.21.350"
+      ],
+      "N-N-0-80": [
+        "N046.56.34.638,W122.35.22.421",
+        "N046.55.51.818,W122.35.42.773",
+        "N046.53.26.881,W122.33.00.148",
+        "N046.53.23.105,W122.36.47.235",
+        "N047.00.23.606,W122.50.07.946",
+        "N047.04.18.645,W122.48.52.635",
+        "N047.04.18.645,W122.48.52.635",
+        "N046.59.19.075,W122.40.35.009",
+        "N046.56.34.638,W122.35.22.421"
+      ],
+      "N-N-0-90": [
+        "N047.10.59.262,W123.00.00.576",
+        "N047.10.34.941,W122.45.27.767",
+        "N047.04.19.510,W122.48.53.047",
+        "N047.00.22.755,W122.50.07.424",
+        "N046.53.22.844,W122.36.47.180",
+        "N046.53.31.070,W122.29.39.675",
+        "N046.54.59.208,W121.57.59.260",
+        "N046.39.59.771,W122.17.59.681",
+        "N046.45.10.093,W122.46.35.086",
+        "N046.49.58.553,W123.14.01.003",
+        "N047.07.04.209,W123.16.04.544",
+        "N047.10.59.262,W123.00.00.576"
+      ],
+      "N-N-40-50": [
+        "N047.21.44.530,W122.31.51.566",
+        "N047.15.42.668,W122.32.34.714",
+        "N047.01.38.876,W122.30.13.073",
+        "N047.01.23.839,W122.30.12.771",
+        "N047.01.14.295,W122.31.43.656",
+        "N047.04.32.941,W122.41.09.836",
+        "N047.10.34.886,W122.45.27.301",
+        "N047.18.23.837,W122.36.04.361",
+        "N047.21.44.530,W122.31.51.566"
       ],
       "SEA0150": [
-        "N48.14.09.920,W121.57.58.895",
-        "N48.13.37.496,W122.24.19.647",
-        "N48.05.03.158,W122.31.41.437",
-        "N47.59.52.991,W122.46.35.299",
-        "N47.54.57.397,W122.52.50.532",
-        "N47.22.58.784,W122.59.49.508",
-        "N47.22.43.510,W123.09.57.231",
-        "N47.14.59.161,W123.16.50.914",
-        "N46.49.48.610,W123.13.51.530",
-        "N46.39.49.820,W122.17.45.071",
-        "N47.12.10.971,W121.39.15.897",
-        "N47.20.49.252,W121.30.54.831",
-        "N47.30.39.845,W121.30.41.276",
-        "N47.49.47.982,W121.41.44.711",
-        "N47.59.49.451,W121.57.57.124",
-        "N48.14.10.494,W121.57.56.994"
+        "N047.59.59.162,W121.58.01.759",
+        "N047.49.58.347,W121.41.57.187",
+        "N047.30.58.158,W121.31.01.990",
+        "N047.20.58.772,W121.31.02.622",
+        "N047.00.25.144,W121.51.34.848",
+        "N046.54.58.645,W121.58.06.318",
+        "N046.53.32.072,W122.29.38.494",
+        "N046.58.30.708,W122.39.14.617",
+        "N047.10.57.778,W123.00.01.263",
+        "N047.22.59.182,W123.00.01.428",
+        "N047.29.50.483,W122.58.29.939",
+        "N047.54.56.681,W122.53.02.327",
+        "N047.59.56.539,W122.46.53.955",
+        "N047.59.59.958,W122.30.20.214",
+        "N047.53.09.619,W122.16.41.980",
+        "N047.59.59.903,W122.05.01.245",
+        "N047.59.59.162,W121.58.01.759"
+      ],
+      "SEA0130": [
+        "N047.59.59.807,W122.30.20.324",
+        "N047.53.09.743,W122.16.42.502",
+        "N047.59.59.601,W122.05.02.206",
+        "N047.59.59.807,W122.30.20.324"
+      ],
+      "SEA090": [
+        "N047.22.59.264,W123.00.00.851",
+        "N047.10.59.646,W123.00.01.730",
+        "N046.58.23.182,W122.38.59.428",
+        "N046.53.31.756,W122.29.38.192",
+        "N046.54.59.922,W121.58.00.688",
+        "N046.39.59.963,W122.17.59.928",
+        "N046.42.29.542,W122.31.31.021",
+        "N046.49.59.707,W123.14.04.985",
+        "N047.15.00.370,W123.17.01.701",
+        "N047.22.59.937,W123.10.00.430",
+        "N047.22.59.264,W123.00.00.851"
+      ],
+      "SEA050": [
+        "N048.00.00.000,W122.46.47.473",
+        "N048.05.07.878,W122.31.47.556",
+        "N048.13.47.929,W122.24.20.604",
+        "N048.14.24.651,W121.58.08.296",
+        "N048.00.00.000,W121.58.00.908",
+        "N048.00.00.000,W122.05.03.552",
+        "N047.59.59.601,W122.30.20.050",
+        "N048.00.00.000,W122.46.47.473"
       ]
     },
     "volumes": {
@@ -1477,17 +2415,20 @@
         {
           "boundaries": ["N-S-0-20"],
           "lower": 0,
-          "upper": 4000
-        },
-        {
-          "boundaries": ["N-S-0-50"],
-          "lower": 0,
-          "upper": 5000
+          "upper": 2000,
+          "label_position": "N047.15.32.203,W122.21.20.813"
         },
         {
           "boundaries": ["N-S-0-30"],
           "lower": 0,
-          "upper": 5000
+          "upper": 3000,
+          "label_position": "N047.13.15.629,W122.28.20.354"
+        },
+        {
+          "boundaries": ["N-S-0-50"],
+          "lower": 0,
+          "upper": 5000,
+          "label_position": "N047.03.38.902,W122.14.56.182"
         },
         {
           "boundaries": ["N-S-0-90"],
@@ -1496,9 +2437,56 @@
         },
         {
           "boundaries": ["N-S-50-90"],
+          "lower": 5000,
+          "upper": 9000
+        }
+      ],
+      "McChord (North)": [
+        {
+          "boundaries": ["N-N-0-20"],
+          "lower": 0,
+          "upper": 2000,
+          "label_position": "N047.17.08.018,W122.24.13.765"
+        },
+        {
+          "boundaries": ["N-N-0-30"],
           "lower": 0,
           "upper": 3000,
-          "label_position": "N047.36.29.794,W122.39.48.922"
+          "label_position": "N047.07.53.291,W122.22.15.772"
+        },
+        {
+          "boundaries": ["N-N-0-40"],
+          "lower": 0,
+          "upper": 4000
+        },
+        {
+          "boundaries": ["N-N-0-50"],
+          "lower": 0,
+          "upper": 5000,
+          "label_position": "N047.00.10.285,W122.36.18.067"
+        },
+        {
+          "boundaries": ["N-N-0-70"],
+          "lower": 0,
+          "upper": 7000,
+          "label_position": "N046.54.36.960,W122.33.05.202"
+        },
+        {
+          "boundaries": ["N-N-0-80"],
+          "lower": 0,
+          "upper": 8000
+        },
+        {
+          "boundaries": ["N-N-0-90"],
+          "lower": 0,
+          "upper": 9000,
+          "label_position": "N046.51.13.054,W122.49.06.313"
+        },
+        {
+          "boundaries": ["N-N-40-50"],
+          "lower": 4000,
+          "upper": 5000,
+          "label_position": "N047.09.13.944,W122.37.26.511"
         }
       ],
       "Bremerton (South)": [
@@ -1506,7 +2494,7 @@
           "boundaries": ["K-S-0-40"],
           "lower": 0,
           "upper": 4000,
-          "label_position": "N047.11.50.527,W122.36.58.881"
+          "label_position": "N047.14.17.936,W122.36.33.145"
         },
         {
           "boundaries": ["K-S-0-50"],
@@ -1525,69 +2513,34 @@
           "label_position": "N047.36.29.794,W122.39.48.922"
         }
       ],
-      "Departure West (South)": [
+      "Bremerton (North)": [
         {
-          "boundaries": ["Y-S-40-150"],
-          "lower": 4000,
-          "upper": 15000,
-          "label_position": "N047.11.08.325,W122.19.36.855"
-        },
-        {
-          "boundaries": ["Y-S-30-150"],
-          "lower": 3000,
-          "upper": 15000,
-          "label_position": "N047.14.20.270,W122.19.16.750"
-        },
-        {
-          "boundaries": ["Y-S-30-70"],
-          "lower": 3000,
-          "upper": 7000,
-          "label_position": "N047.17.23.838,W122.24.12.996"
-        },
-        {
-          "boundaries": ["Y-S-0-150.2"],
+          "boundaries": ["K-N-0-30"],
           "lower": 0,
-          "upper": 15000,
-          "label_position": "N047.04.03.305,W121.54.23.763"
+          "upper": 3000,
+          "label_position": "N047.12.26.699,W122.37.31.153"
         },
+        {
+          "boundaries": ["K-N-0-50"],
+          "lower": 0,
+          "upper": 5000,
+          "label_position": "N047.27.15.356,W122.48.24.373"
+        },
+        {
+          "boundaries": ["K-N-0-90"],
+          "lower": 0,
+          "upper": 9000
+        }
+      ],
+      "Departure West (South)": [
         {
           "boundaries": ["Y-S-0-150"],
           "lower": 0,
-          "upper": 15000,
-          "label_position": "N047.19.21.680,W122.19.41.195"
-        },
-        {
-          "boundaries": ["Y-S-50-60"],
-          "lower": 5000,
-          "upper": 6000,
-          "label_position": "N047.25.05.456,W122.33.20.610"
-        },
-        {
-          "boundaries": ["Y-S-50-70"],
-          "lower": 5000,
-          "upper": 7000,
-          "label_position": "N047.14.07.677,W122.36.43.280"
-        },
-        {
-          "boundaries": ["Y-S-100-150.2"],
-          "lower": 10000,
-          "upper": 15000,
-          "label_position": "N046.56.41.188,W122.14.03.447"
+          "upper": 15000
         },
         {
           "boundaries": ["Y-S-100-150"],
           "lower": 10000,
-          "upper": 15000
-        },
-        {
-          "boundaries": ["Y-S-40-70"],
-          "lower": 4000,
-          "upper": 7000,
-          "label_position": "N047.14.16.233,W122.28.50.978"
-        },
-        {
-          "boundaries": ["Y-S-60-150.2"],
-          "lower": 6000,
           "upper": 15000
         },
         {
@@ -1596,15 +2549,53 @@
           "upper": 15000
         },
         {
-          "boundaries": ["Y-S-130-150.2"],
-          "lower": 13000,
+          "boundaries": ["Y-S-30-150"],
+          "lower": 3000,
           "upper": 15000,
-          "label_position": "N047.21.02.933,W122.34.53.582"
+          "label_position": "N047.14.40.513,W122.19.55.697"
         },
         {
-          "boundaries": ["Y-S-130-150"],
-          "lower": 13000,
+          "boundaries": ["Y-S-40-150"],
+          "lower": 4000,
+          "upper": 15000,
+          "label_position": "N047.11.15.782,W122.20.39.010"
+        },
+        {
+          "boundaries": ["Y-S-0-150.2"],
+          "lower": 0,
           "upper": 15000
+        },
+        {
+          "boundaries": ["Y-S-30-70"],
+          "lower": 3000,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["Y-S-40-70"],
+          "lower": 4000,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["Y-S-50-70"],
+          "lower": 5000,
+          "upper": 7000,
+          "label_position": "N047.13.50.717,W122.37.29.560"
+        },
+        {
+          "boundaries": ["Y-S-100-150.2"],
+          "lower": 10000,
+          "upper": 15000,
+          "label_position": "N047.09.28.460,W122.53.19.603"
+        },
+        {
+          "boundaries": ["Y-S-60-150.2"],
+          "lower": 6000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["Y-S-50-60"],
+          "lower": 5000,
+          "upper": 6000
         },
         {
           "boundaries": ["Y-S-0-60"],
@@ -1617,8 +2608,77 @@
           "upper": 5000
         },
         {
+          "boundaries": ["Y-S-130-150"],
+          "lower": 13000,
+          "upper": 15000,
+          "label_position": "N047.44.30.405,W122.41.06.897"
+        },
+        {
           "boundaries": ["Y-S-110-150"],
           "lower": 11000,
+          "upper": 15000
+        }
+      ],
+      "Departure West (North)": [
+        {
+          "boundaries": ["Y-N-0-60"],
+          "lower": 0,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["Y-N-0-90"],
+          "lower": 0,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["Y-N-0-150"],
+          "lower": 0,
+          "upper": 15000,
+          "label_position": "N047.42.27.358,W122.25.19.491"
+        },
+        {
+          "boundaries": ["Y-N-50-90"],
+          "lower": 5000,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["Y-N-70-90"],
+          "lower": 7000,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["Y-N-50-150"],
+          "lower": 5000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["Y-N-70-150"],
+          "lower": 7000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["Y-N-40-150"],
+          "lower": 4000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["Y-N-60-150"],
+          "lower": 6000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["Y-N-100-150"],
+          "lower": 10000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["Y-N-110-150"],
+          "lower": 10000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["Y-N-140-150"],
+          "lower": 10000,
           "upper": 15000
         }
       ],
@@ -1660,6 +2720,63 @@
           "upper": 15000
         }
       ],
+      "Departure East (North)": [
+        {
+          "boundaries": ["A-N-70-130"],
+          "lower": 7000,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["A-N-70-150"],
+          "lower": 7000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["A-N-100-150"],
+          "lower": 10000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["A-N-50-150"],
+          "lower": 5000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["A-N-0-150"],
+          "lower": 0,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["A-N-0-90"],
+          "lower": 0,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["A-N-0-60"],
+          "lower": 0,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["A-N-0-150.2"],
+          "lower": 0,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["A-N-130-150"],
+          "lower": 13000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["A-N-70-150.2"],
+          "lower": 7000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["A-N-110-150"],
+          "lower": 11000,
+          "upper": 15000
+        }
+      ],
       "Paine (South)": [
         {
           "boundaries": ["P-S-0-40"],
@@ -1682,6 +2799,36 @@
           "boundaries": ["P-S-0-50"],
           "lower": 0,
           "upper": 5000
+        }
+      ],
+      "Paine (North)": [
+        {
+          "boundaries": ["P-N-0-50"],
+          "lower": 0,
+          "upper": 5000,
+          "label_position": "N048.06.31.429,W122.16.13.910"
+        },
+        {
+          "boundaries": ["P-N-0-50.2"],
+          "lower": 0,
+          "upper": 5000,
+          "label_position": "N047.48.53.953,W122.50.42.581"
+        },
+        {
+          "boundaries": ["P-N-0-60"],
+          "lower": 0,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["P-N-0-40"],
+          "lower": 0,
+          "upper": 4000
+        },
+        {
+          "boundaries": ["P-N-0-90"],
+          "lower": 0,
+          "upper": 9000,
+          "label_position": "N047.54.02.230,W121.54.59.029"
         }
       ],
       "Arrival Boeing (South)": [
@@ -1710,6 +2857,20 @@
           "lower": 4000,
           "upper": 5000,
           "label_position": "N047.35.46.852,W122.38.14.384"
+        }
+      ],
+      "Arrival Boeing (North)": [
+        {
+          "boundaries": ["O-N-0-50"],
+          "lower": 0,
+          "upper": 5000,
+          "label_position": "N047.06.49.446,W122.04.52.456"
+        },
+        {
+          "boundaries": ["O-N-0-60"],
+          "lower": 0,
+          "upper": 6000,
+          "label_position": "N047.22.51.505,W121.56.06.513"
         }
       ],
       "Final (South)": [
@@ -1756,6 +2917,35 @@
           "upper": 6000
         }
       ],
+      "Final (North)": [
+        {
+          "boundaries": ["F-N-60"],
+          "lower": 6000,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["F-N-50-60"],
+          "lower": 5000,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["F-N-40-60"],
+          "lower": 4000,
+          "upper": 6000,
+          "label_position": "N047.08.10.045,W122.21.49.954"
+        },
+        {
+          "boundaries": ["F-N-30-60"],
+          "lower": 3000,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["F-N-0-60"],
+          "lower": 0,
+          "upper": 6000,
+          "label_position": "N047.23.38.774,W122.23.00.816"
+        }
+      ],
       "Arrival West (South)": [
         {
           "boundaries": ["W-S-60-150"],
@@ -1800,6 +2990,49 @@
           "upper": 12000
         }
       ],
+      "Arrival West (North)": [
+        {
+          "boundaries": ["W-N-100-150"],
+          "lower": 10000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["W-N-70-150"],
+          "lower": 7000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["W-N-70-100"],
+          "lower": 7000,
+          "upper": 10000
+        },
+        {
+          "boundaries": ["W-N-70-130"],
+          "lower": 7000,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["W-N-60-130"],
+          "lower": 6000,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["W-N-100-130"],
+          "lower": 10000,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["W-N-90"],
+          "lower": 9000,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["W-N-80-90"],
+          "lower": 8000,
+          "upper": 9000,
+          "label_position": "N046.54.39.226,W122.33.12.480"
+        }
+      ],
       "Arrival East (South)": [
         {
           "boundaries": ["E-S-50-120"],
@@ -1839,11 +3072,65 @@
           "upper": 15000
         }
       ],
+      "Arrival East (North)": [
+        {
+          "boundaries": ["E-N-0-120"],
+          "lower": 0,
+          "upper": 12000,
+          "label_position": "N047.09.21.538,W121.52.31.565"
+        },
+        {
+          "boundaries": ["E-N-60-120"],
+          "lower": 6000,
+          "upper": 12000,
+          "label_position": "N047.17.52.059,W122.04.20.568"
+        },
+        {
+          "boundaries": ["E-N-70-100"],
+          "lower": 7000,
+          "upper": 10000
+        },
+        {
+          "boundaries": ["E-N-70-120"],
+          "lower": 7000,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["E-N-70-150"],
+          "lower": 7000,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["E-N-100-150"],
+          "lower": 10000,
+          "upper": 15000,
+          "label_position": "N047.43.45.856,W121.53.40.339"
+        }
+      ],
       "SEAAPP": [
         {
           "boundaries": ["SEA0150"],
           "lower": 0,
-          "upper": 15000
+          "upper": 15000,
+          "label_position": "N047.40.28.376,W122.16.58.460"
+        },
+        {
+          "boundaries": ["SEA0130"],
+          "lower": 0,
+          "upper": 13000,
+          "label_position": "N047.57.31.712,W122.18.00.944"
+        },
+        {
+          "boundaries": ["SEA090"],
+          "lower": 0,
+          "upper": 9000,
+          "label_position": "N046.53.27.485,W122.56.02.448"
+        },
+        {
+          "boundaries": ["SEA050"],
+          "lower": 0,
+          "upper": 5000,
+          "label_position": "N048.07.24.575,W122.15.54.217"
         }
       ]
     }
@@ -1856,7 +3143,7 @@
           "waypoints": "JAWBN/ho DIGGN KSEA",
           "airports": ["KBFI", "KRNT"],
           "cruise_altitude": 5000,
-          "initial_controller": "S03",
+          "initial_controller": "11W",
           "initial_altitude": 5000,
           "assigned_altitude": 5000,
           "initial_speed": 180,
@@ -1886,7 +3173,7 @@
             "KSEA": [
               {
                 "icao": "CFS",
-                "fleet": "default",
+                "types": ["C208"],
                 "airport": "KCLM"
               }
             ]
@@ -1911,8 +3198,8 @@
             "KSEA": [
               {
                 "icao": "CFS",
-                "fleet": "default",
-                "airport": "KBLI"
+                "types": ["C208"],
+                "airport": "KCLM"
               }
             ]
           }
@@ -1932,8 +3219,8 @@
             "KSEA": [
               {
                 "icao": "CFS",
-                "fleet": "default",
-                "airport": "KBVS"
+                "types": ["C208"],
+                "airport": "KCLM"
               }
             ]
           }
@@ -2463,7 +3750,7 @@
         {
           "waypoints": "COUGA/s280 OLM/a13000/s250/ho LACEE ARVAD FOURT/h70",
           "cruise_altitude": 34000,
-          "airports": ["KBFI"],
+          "airports": ["KBFI", "KPAE"],
           "route": "/. OLM",
           "star": "OLM2",
           "initial_controller": "S04",
@@ -2477,6 +3764,18 @@
                 "fleet": "default",
                 "airport": "KSJC"
               }
+            ],
+            "KPAE": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "ASA",
+                "fleet": "default",
+                "airport": "KLAX"
+              }
             ]
           }
         },
@@ -2484,12 +3783,12 @@
           "waypoints": "AAYRR N046.41.20.342,W123.25.19.354/ho HAWKZ/a12000+/s270 LIINE FOOTT/a10000/s250 GOALZ/a8000+ SONDR/a6000/s230",
           "cruise_altitude": 34000,
           "star": "HAWKZ8",
+          "is_rnav": true,
           "airports": ["KSEA"],
           "route": "/. KRIEG",
           "initial_controller": "S04",
           "initial_altitude": 24000,
           "initial_speed": 280,
-          "secondary_scratchpad": "HWK",
           "description": "LATAY Transition",
           "airlines": {
             "KSEA": [
@@ -2569,12 +3868,12 @@
           "waypoints": "PTERA KRIEG/ho HAWKZ/a12000+/s270 LIINE FOOTT/a10000/s250 GOALZ/a8000+ SONDR/a6000/s230",
           "cruise_altitude": 34000,
           "star": "HAWKZ8",
+          "is_rnav": true,
           "airports": ["KSEA"],
           "route": "/. KRIEG",
           "initial_controller": "S04",
           "initial_altitude": 24000,
           "initial_speed": 280,
-          "secondary_scratchpad": "HWK",
           "description": "BTG and South Transitions",
           "airlines": {
             "KSEA": [
@@ -2937,19 +4236,31 @@
         {
           "waypoints": "COUGA/s300 OLM/a17000+/s270/ho LACEE ARVAD/a13000/s250 FOURT/h343",
           "cruise_altitude": 34000,
-          "airports": ["KBFI"],
+          "airports": ["KBFI", "KPAE"],
           "route": "/. OLM",
           "star": "OLM2",
           "initial_controller": "S04",
           "initial_altitude": 34000,
           "initial_speed": 300,
-          "expect_approach": null,
+          "description": "BTG Transition (Jets)",
           "airlines": {
             "KBFI": [
               {
                 "icao": "EJA",
                 "fleet": "default",
                 "airport": "KSJC"
+              }
+            ],
+            "KPAE": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "ASA",
+                "fleet": "default",
+                "airport": "KLAX"
               }
             ]
           }
@@ -2958,12 +4269,12 @@
           "waypoints": "AAYRR N046.41.20.342,W123.25.19.354/ho HAWKZ/a12000+/s270 LIINE PIKEZ/a12000-15000/s250 COFAY BREVE/a10000-11000/s250 NETTZ/a8000+/s230 KWEST/a7000+ VASHN/a6000/s210/t344",
           "cruise_altitude": 34000,
           "star": "HAWKZ8",
+          "is_rnav": true,
           "airports": ["KSEA"],
           "route": "/. KRIEG",
           "initial_controller": "S04",
           "initial_altitude": 30000,
           "initial_speed": 280,
-          "secondary_scratchpad": "HWK",
           "description": "LATAY Transition",
           "airlines": {
             "KSEA": [
@@ -3045,10 +4356,10 @@
           "airports": ["KSEA"],
           "route": "/. KRIEG",
           "star": "HAWKZ8",
+          "is_rnav": true,
           "initial_controller": "S04",
           "initial_altitude": 30450,
           "initial_speed": 280,
-          "secondary_scratchpad": "HWK",
           "description": "BTG and South Transitions",
           "airlines": {
             "KSEA": [
@@ -3362,11 +4673,11 @@
           "waypoints": "N048.33.11.230,W123.19.22.875 ORCUS/a17000+/ho/s280 MARNR/a12000+/s270 PNELA/a12000+/s270 VEGGN/a11000-15000/s250 UNITT/a10000+/s230 WUBET/a8000+ SHIPZ/a7000/s210 EMMSS/t164",
           "cruise_altitude": 35000,
           "star": "MARNR8",
+          "is_rnav": true,
           "description": "VIXOR Transition",
           "airports": ["KSEA"],
           "route": "/. MARNR",
-          "initial_controller": "S16",
-          "secondary_scratchpad": "MRN",
+          "initial_controller": "S03",
           "initial_altitude": 30000,
           "initial_speed": 280,
           "airlines": {
@@ -3449,6 +4760,7 @@
           "waypoints": "N048.10.13.847,W123.43.46.226/ho/s280 MARNR/a12000+/s270 PNELA/a12000+/s270 VEGGN/a11000-15000/s250 UNITT/a10000+/s230 WUBET/a8000+ SHIPZ/a7000/s210 EMMSS/t164",
           "cruise_altitude": 35000,
           "star": "MARNR8",
+          "is_rnav": true,
           "description": "TOU Transition",
           "airports": ["KSEA"],
           "route": "/. MARNR",
@@ -3544,6 +4856,7 @@
           "waypoints": "ROESH/ho/s280 MARNR/a12000+/s270 PNELA/a12000+/s270 VEGGN/a11000-15000/s250 UNITT/a10000+/s230 WUBET/a8000+ SHIPZ/a7000/s210 EMMSS/t164",
           "cruise_altitude": 15000,
           "star": "MARNR8",
+          "is_rnav": true,
           "description": "ROESH Transition",
           "airports": ["KSEA"],
           "route": "/. MARNR",
@@ -3592,11 +4905,11 @@
           "waypoints": "N048.33.11.230,W123.19.22.875 ORCUS/a17000+/ho/s280 MARNR/a12000+/s270 BOANE/a11000+/s250 NEHOS/a8000+/s230 GRIFY/a6000/s210",
           "cruise_altitude": 35000,
           "star": "MARNR8",
+          "is_rnav": true,
           "description": "VIXOR Transition",
           "airports": ["KSEA"],
           "route": "/. MARNR",
-          "secondary_scratchpad": "MRN",
-          "initial_controller": "S16",
+          "initial_controller": "S03",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "airlines": {
@@ -3679,10 +4992,10 @@
           "waypoints": "N048.10.13.847,W123.43.46.226/ho/s280 MARNR/a12000+/s270 BOANE/a11000+/s250 NEHOS/a8000+/s230 GRIFY/a6000/s210",
           "cruise_altitude": 35000,
           "star": "MARNR8",
+          "is_rnav": true,
           "description": "TOU Transition",
           "airports": ["KSEA"],
           "route": "/. MARNR",
-          "secondary_scratchpad": "MRN",
           "initial_controller": "S03",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -3775,8 +5088,8 @@
           "waypoints": "ROESH/ho/s280 MARNR/a12000+/s270 BOANE/a11000+/s250 NEHOS/a8000+/s230 GRIFY/a6000/s210",
           "cruise_altitude": 15000,
           "star": "MARNR8",
+          "is_rnav": true,
           "description": "ROESH Transition",
-          "secondary_scratchpad": "MRN",
           "airports": ["KSEA"],
           "route": "/. MARNR",
           "initial_controller": "S03",
@@ -3806,10 +5119,9 @@
           "star": "SKYKO1",
           "cruise_altitude": 34000,
           "airports": ["KSEA", "KBFI", "KRNT"],
-          "initial_controller": "S16",
+          "initial_controller": "S31",
           "initial_altitude": 18000,
           "initial_speed": 200,
-          "expect_approach": null,
           "aircraft": ["prop", "turboprop"],
           "airlines": {
             "KSEA": [
@@ -3978,7 +5290,8 @@
         },
         "HAWKZ/OLM.S": {
           "KSEA": 11,
-          "KBFI": 2
+          "KBFI": 2,
+          "KPAE": 2
         },
         "MARNR/JAWBN.S": {
           "KSEA": 4,
@@ -3993,7 +5306,7 @@
       },
       "configuration": "1",
       "range": 65,
-      "default_maps": ["SFLOW", "BASE MAP 1", "BASE MAP 2", "MVA FUS 3NM", "16R", "BFI 14R FINAL"],
+      "default_maps": ["BASE MAP 2", "SFLOW TEMP", "16R", "16L", "BFI 14R FINAL"],
       "wind": {
         "direction": "130-190"
       }
@@ -4052,7 +5365,7 @@
       },
       "configuration": "3",
       "range": 65,
-      "default_maps": ["NFLOW", "BASE MAP 1", "BASE MAP 2", "MVA FUS 3NM", "34L", "BFI 32L FINAL", "NORTH SHORELINE"],
+      "default_maps": ["BASE MAP 1", "BASE MAP 2"],
       "departure_runways": [
         {
           "airport": "KBFI",
@@ -4078,8 +5391,15 @@
     },
     "KSEA North": {
       "airspace": {
-        "1W": ["SEAAPP"],
-        "1E": ["SEAAPP"]
+        "1W": ["Arrival West (North)"],
+        "1O": ["Arrival Boeing (North)"],
+        "1E": ["Arrival East (North)"],
+        "1F": ["Final (North)"],
+        "1P": ["Paine (North)"],
+        "1A": ["Departure East (North)"],
+        "1Y": ["Departure West (North)"],
+        "1K": ["Bremerton (North)"],
+        "1N": ["McChord (North)"]
       },
       "arrival_runways": [
         {
@@ -4135,7 +5455,7 @@
       },
       "configuration": "2",
       "range": 65,
-      "default_maps": ["NFLOW", "BASE MAP 1", "BASE MAP 2", "MVA FUS 3NM", "34L"],
+      "default_maps": ["BASE MAP 2", "NFLOW TEMP", "34L", "34R", "BFI 32L FINAL"],
       "departure_runways": [
         {
           "airport": "KSEA",

@@ -1,22 +1,21 @@
 {
   "control_positions": {
-    "2J": {
+    "1U": {
       "callsign": "SEA Local Control West",
+      "frequency": 120950,
+      "radio_name": "Seattle Tower"
+    },
+    "1T": {
+      "callsign": "SEA Local Control East",
       "frequency": 119900,
       "radio_name": "Seattle Tower"
     },
-    "2A": {
-      "callsign": "SEA Local Control East",
-      "frequency": 119900,
-      "radio_name": "Seattle Tower",
-      "scope_char": "T"
-    },
-    "2T": {
+    "1L": {
       "callsign": "PAE Local Control",
       "frequency": 132950,
       "radio_name": "Paine Tower"
     },
-    "2B": {
+    "1B": {
       "callsign": "BFI Local Control",
       "frequency": 118300,
       "radio_name": "Boeing Tower"
@@ -76,30 +75,42 @@
     "airspace_awareness": [
       {
         "fixes": ["MCKEN", "OZEYO", "CETRA", "TONNO", "LACEE", "ARVAD"],
+        "altitude_range": [7000, 9000],
         "receiving_controller": "S04"
       },
       {
+        "fixes": ["MCKEN", "OZEYO", "CETRA", "TONNO", "LACEE", "ARVAD"],
+        "altitude_range": [10000, 999000],
+        "receiving_controller": "S02"
+      },
+      {
         "fixes": ["SUMMA", "BUWZO"],
+        "altitude_range": [10000, 999000],
         "receiving_controller": "S32"
       },
       {
         "fixes": ["BANGR", "ARRIE", "PANGL"],
+        "altitude_range": [10000, 999000],
         "receiving_controller": "S03"
       },
       {
         "fixes": ["ELMAA", "HAROB"],
+        "altitude_range": [10000, 999000],
         "receiving_controller": "S02"
       },
       {
         "fixes": ["CASHS", "STEVS", "ZELAK", "NORMY"],
+        "altitude_range": [12000, 999000],
         "receiving_controller": "S31"
       },
       {
         "fixes": ["BANDR"],
+        "altitude_range": [9000, 23000],
         "receiving_controller": "S01"
       },
       {
         "fixes": ["ALPSE", "PAE"],
+        "altitude_range": [10000, 999000],
         "receiving_controller": "S12"
       }
     ],
@@ -126,9 +137,21 @@
         },
         "default_consolidation": {
           "1N": ["1W", "1Y", "1K"],
-          "1W": ["1E", "1F", "1D"],
-          "1Y": ["1A", "1P"],
-          "1E": ["1O"]
+          "1W": ["1E", "1F"],
+          "1Y": ["1A"],
+          "1E": ["1O", "1P"],
+          "1P": ["1D"]
+        },
+        "scratchpad_leader_line_directions": {
+          "Z6R": "W",
+          "Y6R": "NW",
+          "16R": "NW",
+          "VAR": "NW",
+          "Z6L": "NE",
+          "Y6L": "NE",
+          "16L": "NE",
+          "VAL": "NE",
+          "BIF": "SW"
         }
       },
       "2": {
@@ -140,7 +163,7 @@
           "MARNR/JAWBN.N": "1W",
           "SKYKO": "1E",
           "Props NW": "1W",
-          "DEVYN": "1E"
+          "DEVYN": "1P"
         },
         "departure_assignments": {
           "KBFI": "1Y",
@@ -153,7 +176,7 @@
         },
         "default_consolidation": {
           "1N": ["1W", "1Y", "1K"],
-          "1W": ["1E", "1F", "1D"],
+          "1W": ["1E", "1F"],
           "1Y": ["1A", "1P"],
           "1E": ["1O"]
         }
@@ -176,7 +199,7 @@
         },
         "default_consolidation": {
           "1N": ["1W", "1Y", "1K"],
-          "1W": ["1E", "1F", "1D"],
+          "1W": ["1E", "1F"],
           "1Y": ["1A", "1P"],
           "1E": ["1O"]
         }
@@ -215,7 +238,11 @@
     "datablocks": {
       "scratchpad1": {
         "display_exit_gate": true
-      }
+      },
+      "clock_phase": {
+        "intervals": [1, 1, 1, 1]
+      },
+      "display_rnav_symbol": true
     },
     "filters": {
       "fdam": [
@@ -251,15 +278,77 @@
           "radius": 60,
           "floor": 0,
           "ceiling": 60000,
-          "secondary_scratchpad": "HWK,MRN",
           "owning_tcp": "1W,1N",
           "new_owner_leader_direction": "W"
+        },
+        {
+          "id": "LDR16R",
+          "description": "16R Final Leader",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 60000,
+          "scratchpad": "Z6R,Y6R,16R,VAR",
+          "new_owner_leader_direction": "NW",
+          "vertices": [
+            "N047.59.57.445,W121.58.12.691",
+            "N047.21.14.441,W121.58.46.281",
+            "N047.16.23.660,W122.06.50.256",
+            "N047.18.07.399,W122.36.27.872",
+            "N047.37.07.574,W122.35.01.547",
+            "N047.47.08.402,W122.40.51.242",
+            "N047.59.57.528,W122.38.22.844"
+          ]
+        },
+        {
+          "id": "LDR16L",
+          "description": "16L Final Leader",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 60000,
+          "scratchpad": "Z6L,Y6L,16L,VAL",
+          "new_owner_leader_direction": "NE",
+          "vertices": [
+            "N047.59.57.445,W121.58.12.691",
+            "N047.21.14.441,W121.58.46.281",
+            "N047.16.23.660,W122.06.50.256",
+            "N047.18.07.399,W122.36.27.872",
+            "N047.37.07.574,W122.35.01.547",
+            "N047.47.08.402,W122.40.51.242",
+            "N047.59.57.528,W122.38.22.844"
+          ]
+        }
+      ],
+      "secondary_drop": [
+        {
+          "id": "S46DROP",
+          "description": "S46 Secondary Drop",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 60000,
+          "vertices": [
+            "N047.42.53.339,W123.25.37.654",
+            "N048.03.23.889,W123.21.14.642",
+            "N048.15.56.823,W123.05.46.112",
+            "N048.20.07.186,W122.53.27.109",
+            "N048.33.19.605,W122.42.24.213",
+            "N048.34.59.592,W121.28.12.196",
+            "N048.08.41.616,W121.28.12.886",
+            "N048.01.24.045,W121.16.36.623",
+            "N047.34.32.586,W121.01.30.296",
+            "N047.14.41.338,W121.01.32.361",
+            "N046.48.00.833,W121.28.32.386",
+            "N046.17.27.084,W122.08.09.913",
+            "N046.33.58.647,W123.41.13.874",
+            "N047.19.38.645,W123.47.10.014",
+            "N047.42.52.890,W123.26.49.372"
+          ]
         }
       ]
     },
     "airports": {
       "SEA": {},
       "BFI": {},
+      "PAE": {},
       "RNT": {}
     },
     "automatic_scratchpad_assignment": [
@@ -590,26 +679,229 @@
     "areas": {
       "1": {
         "video_maps": [
-          "SFLOW",
-          "NFLOW",
-          "CLASS B",
           "S46 EOVM",
-          "",
+          "GPS",
+          "CLASS B",
           "MVA FUS 3NM",
-          "BASE MAP 1",
-          "BASE MAP 2",
+          "S46 AIRWAYS",
+          "ZSE BOUNDARIES",
+          "NOMRTS",
+          "TIE POINTS SOUTH",
+          "SFLOW TEMP",
+          "SF AY TEMP",
+          "SF PD TEMP",
+          "SF EWF TEMP",
+          "SF F TEMP",
+          "SF NK TEMP",
+          "RNP SOUTH NO NAMES",
           "16R",
-          "16C",
           "16L",
+          "BNDRY",
+          "BFI 14R FINAL",
+          "BFI RNAV 14",
+          "NORTH SHORELINE",
+          "NOMRTN",
+          "TIE POINTS NORTH",
+          "NFLOW TEMP",
+          "NF AY TEMP",
+          "NF P TEMP",
+          "NF EWD TEMP",
+          "NF F TEMP",
+          "NF NK TEMP",
+          "RNP NORTH NO NAMES",
           "34L",
-          "34C",
-          "34R"
+          "34R",
+          "",
+          "BFI 32L FINAL",
+          "BFI RNAV 32",
+          "SOUTH SHORELINE"
         ]
       }
     },
     "lists": {
-      "ssa": { "system_altimeter": "KSEA", "altimeters": ["KSEA"] }
-    }
+      "ssa": {
+        "system_altimeter": "KSEA",
+        "altimeters": ["KSEA"]
+      }
+    },
+    "restriction_areas": {
+      "101": {
+        "circle_center": "N047.54.24.697,W122.16.54.450",
+        "circle_radius": 4.5,
+        "text": ["PAE", ""],
+        "title": "PAE"
+      }
+    },
+    "ssr_codes": {
+      "auto_assignable_codes": {
+        "ifr": {
+          "ranges": ["0201-0277"]
+        },
+        "vfr": {
+          "ranges": ["0301-0377"]
+        }
+      }
+    },
+    "flight_plan": {
+      "modify_after_display": true,
+      "quick_acid": "ZSE"
+    },
+    "untracked_position_symbol_overrides": {
+      "beacon_codes": "1200",
+      "symbol": "V"
+    },
+    "stars_macros": [
+      {
+        "input": "44[SLEW]",
+        "commands": ["[F7]Y16R"],
+        "output": "",
+        "description": "ILS 16R SCRACHPAD SF"
+      },
+      {
+        "input": "55[SLEW]",
+        "commands": ["[F7]Y16C"],
+        "output": "",
+        "description": "ILS 16C SCRACHPAD SF"
+      },
+      {
+        "input": "66[SLEW]",
+        "commands": ["[F7]Y16L"],
+        "output": "",
+        "description": "ILS 16L SCRACHPAD SF"
+      },
+      {
+        "input": "77[SLEW]",
+        "commands": ["[F7]YVAR"],
+        "output": "",
+        "description": "VIS APP Right SCRACHPAD SF"
+      },
+      {
+        "input": "88[SLEW]",
+        "commands": ["[F7]YVAC"],
+        "output": "",
+        "description": "VIS APP Center SCRACHPAD SF"
+      },
+      {
+        "input": "99[SLEW]",
+        "commands": ["[F7]YVAL"],
+        "output": "",
+        "description": "VIS APP Left SCRACHPAD SF"
+      },
+      {
+        "input": "00[SLEW]",
+        "commands": ["[F7]Y+VV"],
+        "output": "",
+        "description": "Pilot VIS"
+      },
+      {
+        "input": "Z44[SLEW]",
+        "commands": ["[F7]YZ6R"],
+        "output": "",
+        "description": "SEA RNAV Z 16R"
+      },
+      {
+        "input": "Y44[SLEW]",
+        "commands": ["[F7]YY6R"],
+        "output": "",
+        "description": "SEA RNAV Y 16R"
+      },
+      {
+        "input": "Z66[SLEW]",
+        "commands": ["[F7]YZ6L"],
+        "output": "",
+        "description": "SEA RNAV Z 16L"
+      },
+      {
+        "input": "Y66[SLEW]",
+        "commands": ["[F7]YY6L"],
+        "output": "",
+        "description": "SEA RNAV Y 16L"
+      },
+      {
+        "input": "[F16]NK",
+        "commands": ["[MAP]44"],
+        "output": "",
+        "description": "Videomap: SR NK Finals"
+      },
+      {
+        "input": "[F16]P",
+        "commands": ["[MAP]70"],
+        "output": "",
+        "description": "Videomap: SR P Finals"
+      },
+      {
+        "input": "[F16]RG",
+        "commands": ["[MAP]76"],
+        "output": "",
+        "description": "Videomap: RNT GPS Finals"
+      },
+      {
+        "input": "[F16]MARS",
+        "commands": ["[MAP]51"],
+        "output": "",
+        "description": "Videomap: MARNR STAR South Flow"
+      },
+      {
+        "input": "[F16]MARN",
+        "commands": ["[MAP]52"],
+        "output": "",
+        "description": "Videomap: MARNR STAR North Flow"
+      },
+      {
+        "input": "[F16]HWKS",
+        "commands": ["[MAP]53"],
+        "output": "",
+        "description": "Videomap: HAWKZ STAR South Flow"
+      },
+      {
+        "input": "[F16]HWKN",
+        "commands": ["[MAP]54"],
+        "output": "",
+        "description": "Videomap: HAWKZ STAR South Flow"
+      },
+      {
+        "input": "[F16]SIDS",
+        "commands": ["[MAP]58"],
+        "output": "",
+        "description": "Videomap: BANGR/HAROB SIDS South Flow"
+      },
+      {
+        "input": "[F16]SIDN",
+        "commands": ["[MAP]59"],
+        "output": "",
+        "description": "Videomap: BANGR/HAROB SIDS North Flow"
+      },
+      {
+        "input": "[F16]ST",
+        "commands": ["[MAP]4"],
+        "output": "",
+        "description": "Videomap: Sleepy time SIDS North Flow"
+      },
+      {
+        "input": "[F16]Z6RE",
+        "commands": ["[MULTI FUNC]NP1", "[MULTI FUNC]N01"],
+        "output": "RY.16R.RNP-Z.CRDA.ON",
+        "description": "VASHN/RNAV Z 16R CRDA"
+      },
+      {
+        "input": "[F16]Z6RI",
+        "commands": ["[MULTI FUNC]NP1"],
+        "output": "RY.16R.RNP-Z.CRDA.OFF",
+        "description": "VASHN/RNAV Z 16R CRDA"
+      },
+      {
+        "input": "[F16]SBE",
+        "commands": ["[MULTI FUNC]NP2", "[MULTI FUNC]N16", "[MULTI FUNC]N16"],
+        "output": "RY.16.CRDA.ON",
+        "description": "BFI 14/ SEA 16 CRDA ON"
+      },
+      {
+        "input": "[F16]SBI",
+        "commands": ["[MULTI FUNC]NP2"],
+        "output": "RY.16.CRDA.OFF",
+        "description": "BFI 14/ SEA 16 CRDA OFF"
+      }
+    ]
   },
   "handoff_ids": [
     {
