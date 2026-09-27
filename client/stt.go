@@ -1040,6 +1040,20 @@ func makeWhisperPrompt(state SimState) string {
 		}
 	}
 
+	// The names of the reporting points ahead of aircraft expecting a charted visual approach, in
+	// case the controller calls one; like fix names, whisper is unlikely to spell them unprimed.
+	seenReportingPoints := make(map[string]struct{})
+	for _, trk := range util.SortedMap(onFrequencyTracks) {
+		for _, rp := range trk.ReportingPoints {
+			for _, name := range rp.Names {
+				if _, ok := seenReportingPoints[name]; !ok {
+					seenReportingPoints[name] = struct{}{}
+					promptParts = append(promptParts, name)
+				}
+			}
+		}
+	}
+
 	for _, trk := range util.SortedMap(onFrequencyTracks) {
 		callsign := string(trk.ADSBCallsign)
 		tele := speech.GetCallsignSpoken(callsign, trk.CWTCategory)

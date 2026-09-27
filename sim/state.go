@@ -218,6 +218,7 @@ func makeDerivedState(s *Sim) DerivedState {
 			ClearedForApproach:        ac.Nav.Approach.Cleared,
 			Approach:                  approach,
 			Fixes:                     ac.GetSTTFixes(db.DB.IsARTCC(s.State.Facility)),
+			ReportingPoints:           ac.ReportingPointsAhead(),
 			RouteFixes:                ac.GetRouteFixes(),
 			ExpectedDirectFix:         ac.Nav.ExpectedDirectFix,
 			SID:                       ac.SID,
@@ -620,13 +621,14 @@ type Track struct {
 	OnExtendedCenterline      bool
 	OnApproach                bool
 	ClearedForApproach        bool
-	Approach                  string   // Full name of assigned approach, if any
-	Fixes                     []string // Relevant fix names for STT
-	RouteFixes                []string // Ordered route waypoint fix names (no truncation)
-	ExpectedDirectFix         string   // Fix the controller said to "expect direct", if any
-	AssignedHeading           int      // Controller-assigned heading from nav (0 if none), for STT
-	AssignedSpeed             int      // Controller-assigned speed in knots from nav (0 if none / if mach), for STT
-	AssignedMach              int      // Controller-assigned mach in hundredths from nav (0 if none / if knots), for STT
+	Approach                  string              // Full name of assigned approach, if any
+	Fixes                     []string            // Relevant fix names for STT
+	ReportingPoints           []av.ReportingPoint // Expected charted visual's reporting points that aren't behind the aircraft, for STT
+	RouteFixes                []string            // Ordered route waypoint fix names (no truncation)
+	ExpectedDirectFix         string              // Fix the controller said to "expect direct", if any
+	AssignedHeading           int                 // Controller-assigned heading from nav (0 if none), for STT
+	AssignedSpeed             int                 // Controller-assigned speed in knots from nav (0 if none / if mach), for STT
+	AssignedMach              int                 // Controller-assigned mach in hundredths from nav (0 if none / if knots), for STT
 	SID                       string
 	STAR                      string
 	ATPAVolume                *av.ATPAVolume

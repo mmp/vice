@@ -235,6 +235,31 @@ func (p *fixParser) parseScored(tokens []Token, pos int, ac Aircraft) (any, int,
 	return nil, 0, 1, ""
 }
 
+// reportingPointParser matches the name of one of the reporting points of
+// the charted visual approach the aircraft is expecting, giving its
+// identifier.
+type reportingPointParser struct{}
+
+func (p *reportingPointParser) goType() reflect.Type {
+	return reflect.TypeFor[string]()
+}
+
+func (p *reportingPointParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	value, consumed, _, sayAgain := p.parseScored(tokens, pos, ac)
+	return value, consumed, sayAgain
+}
+
+func (p *reportingPointParser) parseScored(tokens []Token, pos int, ac Aircraft) (any, int, float64, string) {
+	if pos >= len(tokens) || len(ac.ReportingPoints) == 0 {
+		return nil, 0, 1, ""
+	}
+	// Reporting point names are matched like multi-word fix names.
+	if cands := fixCandidates(tokens[pos:], ac.ReportingPoints); len(cands) > 0 {
+		return cands[0].fix, cands[0].consumed, cands[0].score, ""
+	}
+	return nil, 0, 1, ""
+}
+
 // approachParser extracts approach names.
 type approachParser struct {
 	allowLAHSO bool
@@ -981,6 +1006,8 @@ func getTypeParser(typeID string) typeParser {
 		return &machParser{}
 	case "fix":
 		return &fixParser{}
+	case "reporting_point":
+		return &reportingPointParser{}
 	case "approach":
 		return &approachParser{garbledFallback: true, garbledRequireEvidence: true}
 	case "approach_lahso":

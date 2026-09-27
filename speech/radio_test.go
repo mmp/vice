@@ -34,11 +34,12 @@ func TestTransmissionArgsRoundTrip(t *testing.T) {
 	ar := av.MakeAtAltitudeRestriction(8000)
 	rt := RadioTransmission{
 		Strings: []PhraseFormatString{"{alt} {num} {spd} {hdg} {gf} {mach}", "{airport} {fix} {ch}",
-			"{beacon} {freq} {callsign} {altrest}"},
+			"{beacon} {freq} {callsign} {altrest}", "{rp}"},
 		Args: [][]any{
 			{3000, 5, float32(210), math.MagneticHeading(90), 12, float32(0.75)},
 			{av.ICAOAirportCode("KJFK"), "MERIT", "B"},
 			{av.Squawk(0o1234), av.NewFrequency(118.9), CallsignArg{Callsign: "AAL123"}, &ar},
+			{"Dumbarton bridge"},
 		},
 		Type: RadioTransmissionContact,
 	}

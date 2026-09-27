@@ -797,9 +797,11 @@ func (s *Sim) updateState() {
 				s.deleteAircraft(ac, DeleteCulled)
 			}
 
-			// Enqueue a spontaneous "field in sight" transmission if the pilot
-			// wants to report and the field is currently visible.
+			// Enqueue a spontaneous "field in sight" or reporting point "in
+			// sight" transmission if the pilot wants to report and it is
+			// currently visible.
 			s.checkSpontaneousVisualRequest(ac)
+			s.checkSpontaneousReportingPoint(ac)
 		}
 
 		s.possiblyRequestFlightFollowing()

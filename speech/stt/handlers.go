@@ -2180,6 +2180,31 @@ func registerAllCommands() {
 		WithPriority(10),
 	)
 
+	// === REPORTING POINT ADVISORY ===
+	// A charted visual approach's landmark ("the Dumbarton bridge is at your
+	// three o'clock, three miles, report in sight"). Higher priority than
+	// airport_advisory_named, whose {fix} slot would otherwise take the name.
+	registerSTTCommand(
+		"[the] {reporting_point} [is|its] [at] [your] {num:1-12} o'clock {num:1-50} [miles|mile] [report] [it] [in] [sight]",
+		func(id string, oclock int, miles int) string {
+			return fmt.Sprintf("RP/%d/%d/%s", oclock, miles, id)
+		},
+		WithName("reporting_point_advisory"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"report [the] {reporting_point} in sight",
+		func(id string) string { return "RP/" + id },
+		WithName("reporting_point_in_sight_report"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"[do] have [the] {reporting_point} [in sight]",
+		func(id string) string { return "RP/" + id },
+		WithName("reporting_point_in_sight_inquiry"),
+		WithPriority(10),
+	)
+
 	// === TRAFFIC IN-SIGHT INQUIRY ===
 	// Bare traffic inquiries with no o'clock/distance/altitude — the controller
 	// is asking whether the pilot has previously-called or obvious nearby

@@ -875,7 +875,8 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                   <tr>
                     <td><code>C<var>approach</var></code></td>
                     <td>Clears the aircraft for the specified
-                    approach. The aircraft must have been told to expect the approach before it is cleared for it.</td>
+                    approach. The aircraft must have been told to expect the approach before it is cleared for it.
+                    For a visual approach, the pilot must have reported seeing the airport, an aircraft to follow, or a landmark (for a charted visual approach).</td>
                     <td><code>CI2L</code></td>
                   </tr>
                   <tr>
@@ -938,8 +939,25 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     (e.g., "airport, 2 o'clock, 8 miles"). The pilot
                     responds "field in sight" or "looking" depending
                     on conditions. The pilot must have the field in
-                    sight before you can clear the visual approach.</td>
+                    sight before you can clear them for a visual approach.</td>
                     <td><code>AP/2/8</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>RP</code>[<code>/</code><var>oclock</var><code>/</code><var>miles</var>][<code>/</code><var>id</var>]</td>
+                    <td>Tells the pilot where to look for a landmark on the
+                    charted visual approach they have been told to expect
+                    (e.g., "the Dumbarton bridge is at your 3 o'clock, 3 miles,
+                    report in sight"). The landmark may be given by its
+                    identifier, which the scope shows next to it when the
+                    approach is drawn from the scenario information window;
+                    otherwise it is the one nearest the given position. The
+                    pilot responds "in sight" or "looking" depending on
+                    conditions. With neither a position nor an identifier,
+                    <code>RP</code> asks whether they have the nearest landmark
+                    ahead in sight. Pilots expecting a
+                    charted visual approach sometimes report its landmarks in
+                    sight on their own, too.</td>
+                    <td><code>RP/3/3</code>, <code>RP/BRIDGE</code>, <code>RP/3/3/BRIDGE</code></td>
                   </tr>
                   <tr>
                     <td><code>CVA<var>runway</var></code></td>
@@ -1430,6 +1448,14 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                   <td>
                     <i>Do you have the (field|airport) in sight?</i> /  <i>Report the (field|airport) in sight</i>.
                     Whether the pilot reports the airport in sight depends on distance and the effective visual range.
+                  </td>
+                </tr>
+                <tr><td>Charted Visual Landmark Advisory</td>
+                  <td>
+                    <i>(landmark) is at your (N) o'clock (N) miles, report in sight</i> /
+                    <i>Report (landmark) in sight</i> / <i>Do you have (landmark) in sight?</i>.
+                    For an aircraft that has been told to expect a charted visual approach, (landmark) is one of
+                    the approach's landmarks that is ahead of it, e.g. <i>the Dumbarton bridge</i> or <i>the bridge</i>.
                   </td>
                 </tr>
               </tbody>

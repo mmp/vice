@@ -7,6 +7,8 @@ package aviation
 import (
 	"fmt"
 	"slices"
+	"strings"
+	"unicode"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -91,9 +93,86 @@ type Approach struct {
 	Runway    string          `json:"runway"`
 	Waypoints []WaypointArray `json:"waypoints"`
 
+	// ReportingPoints are the charted visual landmarks that a pilot
+	// expecting a charted visual approach may report in sight, keyed by the
+	// identifier the RP command names them by.
+	ReportingPoints map[string]*ReportingPoint `json:"reporting_points,omitempty"`
+
 	// Set in Airport Finalize()
 	Threshold         math.Point2LL
 	OppositeThreshold math.Point2LL
+}
+
+// ReportingPoint is a landmark on a charted visual approach, e.g. the
+// Dumbarton bridge.
+type ReportingPoint struct {
+	// Names are the names pilots and controllers use for the landmark
+	// ("Dumbarton bridge", "bridge"). The first is its full name, which
+	// pilots use when they bring it up themselves.
+	Names    []string         `json:"names"`
+	Location ScenarioPoint2LL `json:"location"`
+
+	// Set in Airport Finalize() from its key in the approach's reporting
+	// points.
+	Id string
+}
+
+// Name returns the reporting point's full name.
+func (rp ReportingPoint) Name() string {
+	return rp.Names[0]
+}
+
+// maxReportingPointDistance bounds how far from its airport (in nm) a
+// reporting point may be; it catches mistyped locations.
+const maxReportingPointDistance = 50
+
+// finalizeReportingPoints resolves the locations of the approach's reporting
+// points and checks them, given the location of its airport.
+func (ap *Approach) finalizeReportingPoints(loc Locator, airport math.Point2LL, e *util.ErrorLogger) {
+	if len(ap.ReportingPoints) > 0 && ap.Type != ChartedVisualApproach {
+		e.ErrorString(`"reporting_points" can only be given for "ChartedVisual" approaches`)
+	}
+
+	// Identifiers and names each have to pick out a single reporting point:
+	// identifiers for RP commands, which are typed in upper case, and names
+	// for speech recognition.
+	ids := make(map[string]string)   // lowercased identifier -> identifier
+	named := make(map[string]string) // lowercased name -> identifier
+	for id, rp := range util.SortedMap(ap.ReportingPoints) {
+		e.Push("Reporting point " + id)
+		rp.Id = id
+
+		if id == "" || strings.ContainsFunc(id, unicode.IsSpace) || strings.Contains(id, "/") {
+			e.ErrorString(`identifier must be a single word without "/"`)
+		}
+		if other, ok := ids[strings.ToLower(id)]; ok {
+			e.ErrorString("identifier differs from %q only in case", other)
+		}
+		ids[strings.ToLower(id)] = id
+
+		if len(rp.Names) == 0 {
+			e.ErrorString(`Must specify "names"`)
+		} else if slices.Contains(rp.Names, "") {
+			e.ErrorString(`"names" cannot include an empty name`)
+		}
+		for _, name := range rp.Names {
+			if other, ok := named[strings.ToLower(name)]; ok && other != id {
+				e.ErrorString("%q is also a name of reporting point %s", name, other)
+			}
+			named[strings.ToLower(name)] = id
+		}
+
+		if rp.Location.String == "" && rp.Location.IsZero() {
+			e.ErrorString(`Must specify "location"`)
+		} else {
+			rp.Location.Resolve(loc, "location", e)
+			if d := math.NMDistance2LL(rp.Location.Point2LL, airport); !rp.Location.IsZero() && d > maxReportingPointDistance {
+				e.ErrorString(`"location" is %.0f nm from the airport; it must be within %d nm`,
+					d, maxReportingPointDistance)
+			}
+		}
+		e.Pop()
+	}
 }
 
 // DefaultFullName is the approach's name as it is charted, worked out from

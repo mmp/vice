@@ -91,6 +91,7 @@ func (ep *Scope) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope
 					for _, wp := range appr.Waypoints {
 						scope.DrawWaypoints(ctx.NmPerLongitude, ctx.MagneticVariation, wp, scope.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
 					}
+					scope.DrawReportingPoints(appr, drawn, transforms, td, style, ldr, color)
 				}
 			}
 		}

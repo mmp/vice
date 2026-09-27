@@ -271,6 +271,9 @@ func (s *Sim) AfterFixAltitude(tcw TCW, callsign av.ADSBCallsign, fix string, al
 func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach string, straightIn bool, delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
+			if unable := s.refuseChartedVisualClearance(ac, approach); unable != nil {
+				return unable
+			}
 			return ac.AtFixCleared(fix, approach, s.State.SimTime, delayReduction, straightIn)
 		})
 }
@@ -415,11 +418,8 @@ const (
 // matchTrafficCall returns the aircraft the controller's traffic call most likely refers
 // to, or nil if nothing plausibly matches.
 func (s *Sim) matchTrafficCall(ac *Aircraft, oclock, miles, callAlt int, altUnknown bool) *Aircraft {
-	// Convert o'clock to heading offset from aircraft heading
-	// 12 o'clock = 0 degrees, 3 o'clock = 90 degrees, etc.
-	oclockHeading := math.MagneticHeading((oclock % 12) * 30) // 0, 30, 60, 90... 330
 	nmPerLong := ac.NmPerLongitude()
-	callBearing := math.MagneticToTrue(math.NormalizeHeading(ac.Heading()+oclockHeading), ac.MagneticVariation())
+	callBearing := math.MagneticToTrue(ac.oclockBearing(oclock), ac.MagneticVariation())
 	callPos := math.Offset2LL(ac.Position(), callBearing, float32(miles), nmPerLong)
 	maxCrossTrack := max(trafficCallMinCrossTrackNM, trafficCallCrossTrackFraction*float32(miles))
 

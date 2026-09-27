@@ -188,6 +188,22 @@ func DrawWaypoints(nmPerLongitude, magneticVariation float32, waypoints []av.Way
 	w.drawLabels(waypoints, transforms, td, style, pd, ldr)
 }
 
+// DrawReportingPoints marks the approach's charted visual reporting points
+// with diamonds, each labeled with the identifier the RP command takes and,
+// below it, the point's full name. The markers and labels go to ldr and td in
+// window coordinates.
+func DrawReportingPoints(appr *av.Approach, drawn *DrawnRoutes, transforms Transformations,
+	td *renderer.TextDrawBuilder, style renderer.TextStyle, ldr *renderer.ColoredLinesDrawBuilder, color renderer.RGB) {
+	const size = 5 // pixels from a diamond's center to its corners
+	for id, rp := range util.SortedMap(appr.ReportingPoints) {
+		p := transforms.WindowFromLatLongP(rp.Location.Point2LL)
+		ldr.AddLineLoop(color, [][2]float32{{p[0], p[1] + size}, {p[0] + size, p[1]}, {p[0], p[1] - size}, {p[0] - size, p[1]}})
+		// The second label joins the first's block as its next line.
+		drawn.Label(td, style, p, [2]float32{1, 0}, id)
+		drawn.Label(td, style, p, [2]float32{1, 0}, rp.Name())
+	}
+}
+
 const (
 	stubLength             = 3   // nm of an open-ended heading's arrow
 	indeterminateLegLength = 5   // nm of a leg whose trigger can't be placed

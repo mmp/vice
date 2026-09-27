@@ -5,6 +5,7 @@
 package speech
 
 import (
+	"slices"
 	"strings"
 	"testing"
 
@@ -299,5 +300,22 @@ func TestTrafficHasYouInSightOmitsCallsignOnlyWhenAlone(t *testing.T) {
 				t.Errorf("got type %v, want %v", rt.Type, test.want)
 			}
 		})
+	}
+}
+
+func TestReportingPointInSightUsesNames(t *testing.T) {
+	names := []string{"Dumbarton bridge", "bridge", "Dumbarton"}
+	intent := ReportingPointIntent{Response: ReportingPointInSight, Names: names}
+	r := rand.Make()
+
+	for range 50 {
+		rt := RenderIntents([]CommandIntent{intent}, r)
+		w, err := rt.Written(r)
+		if err != nil {
+			t.Fatalf("Written: %v", err)
+		}
+		if name, ok := strings.CutSuffix(w, " in sight"); w != "in sight" && (!ok || !slices.Contains(names, name)) {
+			t.Errorf("got %q, want \"in sight\", optionally preceded by one of %v", w, names)
+		}
 	}
 }

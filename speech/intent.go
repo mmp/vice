@@ -1092,6 +1092,41 @@ func (f LookForFieldIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// ReportingPointIntent
+
+// ReportingPointResponse represents a pilot's response to an RP (reporting
+// point advisory) command.
+type ReportingPointResponse int
+
+const (
+	ReportingPointLooking ReportingPointResponse = iota
+	ReportingPointLookingIMC
+	ReportingPointLookingObscured
+	ReportingPointInSight
+)
+
+// ReportingPointIntent represents a pilot's response to an RP command.
+type ReportingPointIntent struct {
+	Response ReportingPointResponse
+	// Names are the names the pilot may use for the reporting point when
+	// reporting it in sight.
+	Names []string
+}
+
+func (i ReportingPointIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	switch i.Response {
+	case ReportingPointLooking:
+		rt.Add("[looking|looking for it]")
+	case ReportingPointLookingIMC:
+		rt.Add("[we're in the clouds|we're IMC]")
+	case ReportingPointLookingObscured:
+		rt.Add("[looking, it's pretty hazy|looking, visibility is pretty bad]")
+	case ReportingPointInSight:
+		rt.Add("[in sight|{rp} in sight]", rand.SampleSlice(r, i.Names))
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 // RenderIntents converts a slice of CommandIntents into a single coherent RadioTransmission.
 // It handles merging related intents (e.g., altitude + expedite), PTACs, etc., for more

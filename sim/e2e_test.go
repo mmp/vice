@@ -238,6 +238,35 @@ func TestE2E_STTToSim(t *testing.T) {
 				}
 			},
 		},
+		{
+			// The pilot may or may not see it right away, but either way
+			// knows what to look for.
+			name:       "reporting point advisory → RP",
+			transcript: "Delta forty three the dumbarton bridge is at your twelve o'clock three miles report in sight",
+			sttAircraft: map[string]stt.Aircraft{
+				"Delta 43": {
+					Callsign:     "DAL43",
+					AircraftType: "A321",
+					State:        "arrival",
+					Altitude:     3000,
+					ReportingPoints: map[string]string{
+						"bridge":           "BRIDGE",
+						"dumbarton bridge": "BRIDGE",
+					},
+				},
+			},
+			simSetup: func(s *sim.Sim) {
+				appr := s.State.Airports["KJFK"].Approaches["V22L"]
+				appr.ReportingPoints = map[string]*av.ReportingPoint{"BRIDGE": {
+					Id:       "BRIDGE",
+					Names:    []string{"Dumbarton bridge", "bridge"},
+					Location: av.ScenarioPoint2LL{Point2LL: [2]float32{0, 2.0 / 60}}, // 3nm ahead of the aircraft
+				}}
+				s.Aircraft["DAL43"].Nav.Approach = nav.Approach{AssignedId: "V22L", Assigned: appr}
+			},
+			wantCommand:   "DAL43 RP/12/3/BRIDGE",
+			notInReadback: "unable",
+		},
 	}
 
 	for _, tt := range tests {

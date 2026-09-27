@@ -901,3 +901,100 @@ func seedTestPerformance(t *testing.T) {
 	}}
 	t.Cleanup(func() { testDB = oldDB })
 }
+
+func TestCheckReportingPoints(t *testing.T) {
+	airport := math.Point2LL{-122.375, 37.619} // KSFO
+	bridge := func(modify func(*ReportingPoint)) *ReportingPoint {
+		rp := &ReportingPoint{
+			Names:    []string{"Dumbarton bridge", "bridge"},
+			Location: ScenarioPoint2LL{Point2LL: math.Point2LL{-122.115, 37.507}},
+		}
+		modify(rp)
+		return rp
+	}
+	unchanged := func(*ReportingPoint) {}
+
+	for _, c := range []struct {
+		name string
+		typ  ApproachType
+		id   string
+		rp   *ReportingPoint
+		want string // expected in the error; "" for none
+	}{
+		{"valid", ChartedVisualApproach, "BRIDGE", bridge(unchanged), ""},
+		{"not a charted visual", ILSApproach, "BRIDGE", bridge(unchanged), `only be given for "ChartedVisual"`},
+		{"identifier with a space", ChartedVisualApproach, "DUMBARTON BRIDGE", bridge(unchanged), "single word"},
+		{"identifier with a slash", ChartedVisualApproach, "DUMBARTON/BRIDGE", bridge(unchanged), "single word"},
+		{"empty identifier", ChartedVisualApproach, "", bridge(unchanged), "single word"},
+		{"no names", ChartedVisualApproach, "BRIDGE", bridge(func(rp *ReportingPoint) { rp.Names = nil }), `Must specify "names"`},
+		{"empty name", ChartedVisualApproach, "BRIDGE",
+			bridge(func(rp *ReportingPoint) { rp.Names = append(rp.Names, "") }), "empty name"},
+		{"no location", ChartedVisualApproach, "BRIDGE",
+			bridge(func(rp *ReportingPoint) { rp.Location = ScenarioPoint2LL{} }), `"location"`},
+		{"far from the airport", ChartedVisualApproach, "BRIDGE",
+			bridge(func(rp *ReportingPoint) { rp.Location = ScenarioPoint2LL{Point2LL: math.Point2LL{-73.271, 40.675}} }),
+			"nm from the airport"},
+		{"fix location", ChartedVisualApproach, "BRIDGE",
+			bridge(func(rp *ReportingPoint) { rp.Location = ScenarioPoint2LL{String: "DUMBO"} }), ""},
+		{"unknown fix location", ChartedVisualApproach, "BRIDGE",
+			bridge(func(rp *ReportingPoint) { rp.Location = ScenarioPoint2LL{String: "DUMBX"} }), `unknown point "DUMBX"`},
+	} {
+		var e util.ErrorLogger
+		appr := Approach{Type: c.typ, ReportingPoints: map[string]*ReportingPoint{c.id: c.rp}}
+		appr.finalizeReportingPoints(testLocator{"DUMBO": {-122.12, 37.51}}, airport, &e)
+		if c.want == "" {
+			if e.HaveErrors() {
+				t.Errorf("%s: unexpected error: %s", c.name, e.String())
+			} else if c.rp.Location.IsZero() {
+				t.Errorf("%s: location wasn't resolved", c.name)
+			} else if c.rp.Id != c.id {
+				t.Errorf("%s: identifier %q, want %q", c.name, c.rp.Id, c.id)
+			}
+		} else if !strings.Contains(e.String(), c.want) {
+			t.Errorf("%s: got error %q, want one mentioning %q", c.name, e.String(), c.want)
+		}
+	}
+
+	// Neither identifiers nor names can be shared, whatever their case.
+	for _, c := range []struct {
+		name   string
+		points map[string]*ReportingPoint
+		want   string
+	}{
+		{"shared name", map[string]*ReportingPoint{
+			"BRIDGE":   bridge(unchanged),
+			"SANMATEO": bridge(func(rp *ReportingPoint) { rp.Names = []string{"San Mateo bridge", "Bridge"} }),
+		}, `"Bridge" is also a name of reporting point BRIDGE`},
+		{"identifiers differing in case", map[string]*ReportingPoint{
+			"BRIDGE": bridge(unchanged),
+			"bridge": bridge(func(rp *ReportingPoint) { rp.Names = []string{"San Mateo bridge"} }),
+		}, `differs from "BRIDGE" only in case`},
+	} {
+		var e util.ErrorLogger
+		appr := Approach{Type: ChartedVisualApproach, ReportingPoints: c.points}
+		appr.finalizeReportingPoints(testLocator{}, airport, &e)
+		if !strings.Contains(e.String(), c.want) {
+			t.Errorf("%s: got error %q, want one mentioning %q", c.name, e.String(), c.want)
+		}
+	}
+}
+
+func TestReportingPointUnmarshal(t *testing.T) {
+	var appr Approach
+	if err := json.Unmarshal([]byte(`{"type": "ChartedVisual", "reporting_points": {"BRIDGE": {
+		"names": ["Dumbarton bridge", "bridge", "Dumbarton"], "location": "N037.30.25.200,W122.06.54.000"}}}`),
+		&appr); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	rp, ok := appr.ReportingPoints["BRIDGE"]
+	if !ok || len(appr.ReportingPoints) != 1 {
+		t.Fatalf("got reporting points %v, want just BRIDGE", appr.ReportingPoints)
+	}
+	if !slices.Equal(rp.Names, []string{"Dumbarton bridge", "bridge", "Dumbarton"}) || rp.Name() != "Dumbarton bridge" {
+		t.Errorf("got names %v, full name %q", rp.Names, rp.Name())
+	}
+	if d := math.NMDistance2LL(rp.Location.Point2LL, math.Point2LL{-122.115, 37.507}); d > 0.1 {
+		t.Errorf("location %v is %.2f nm from where it should be", rp.Location, d)
+	}
+}

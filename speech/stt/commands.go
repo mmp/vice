@@ -40,6 +40,7 @@ var categoryRules = []categoryRule{
 	// C-approach, AP/1/5 as an A-crossing, TRAFFIC as a T-turn).
 	{match: func(cmd string) bool { return cmd == "CWT" }, category: "wake"},
 	{match: func(cmd string) bool { return cmd == "AP" || strings.HasPrefix(cmd, "AP/") }, category: "advisory"},
+	{match: func(cmd string) bool { return cmd == "RP" || strings.HasPrefix(cmd, "RP/") }, category: "reporting_point"},
 	{match: func(cmd string) bool { return strings.HasPrefix(cmd, "TRAFFIC") }, category: "traffic"},
 	{match: func(cmd string) bool {
 		return cmd == "VISSEP" || cmd == "RST" || cmd == "TO" || strings.HasPrefix(cmd, "TO/")

@@ -549,6 +549,7 @@ func (sp *Scope) drawScenarioApproachRoutes(ctx *scope.Context, transforms scope
 						scope.DrawWaypoints(ctx.NmPerLongitude, ctx.MagneticVariation, wp, scope.ApproachRouteContext(appr), drawn, transforms, td, style, ld, pd, ldr, color)
 						scope.SkipProcedureTurnHolds(wp, drawnHolds)
 					}
+					scope.DrawReportingPoints(appr, drawn, transforms, td, style, ldr, color)
 
 					// Draw holds associated with this approach
 					for _, holds := range db.DB.TerminalHolds[rwy.Airport] {

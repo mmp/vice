@@ -418,8 +418,8 @@ func TestCheckVisualEligibility(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			elig := tt.sim.checkAirportVisibility(tt.ac)
-			if elig.FieldInSight != tt.wantField {
-				t.Errorf("FieldInSight = %v, want %v", elig.FieldInSight, tt.wantField)
+			if elig.Visible != tt.wantField {
+				t.Errorf("Visible = %v, want %v", elig.Visible, tt.wantField)
 			}
 		})
 	}
@@ -2530,8 +2530,8 @@ func TestAirportVisibilityAirportNotInScenario(t *testing.T) {
 	vs.AC.FlightPlan.ArrivalAirport = "KXYZ"
 
 	elig := vs.Sim.checkAirportVisibility(vs.AC)
-	if !elig.FieldInSight {
-		t.Errorf("FieldInSight = false, want true (reason %v)", elig.Reason)
+	if !elig.Visible {
+		t.Errorf("Visible = false, want true (reason %v)", elig.Reason)
 	}
 	if math.Abs(elig.Distance-5) > 0.1 {
 		t.Errorf("Distance = %f, want 5", elig.Distance)
@@ -2557,8 +2557,8 @@ func TestAirportVisibilityFallsBackToNearestMETAR(t *testing.T) {
 
 	// A sim with no weather at all still reads as VMC rather than IMC.
 	clear(vs.Sim.State.METAR)
-	if elig := vs.Sim.checkAirportVisibility(vs.AC); !elig.FieldInSight {
-		t.Errorf("FieldInSight = false with no METAR, want true (reason %v)", elig.Reason)
+	if elig := vs.Sim.checkAirportVisibility(vs.AC); !elig.Visible {
+		t.Errorf("Visible = false with no METAR, want true (reason %v)", elig.Reason)
 	}
 }
 

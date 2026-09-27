@@ -197,6 +197,7 @@ func (in *inspector) drawRoutes(a *app, transforms scope.Transformations, cb *re
 					td, apprStyle, ld, pd, ldr, apprColor)
 				scope.SkipProcedureTurnHolds(wp, drawnHolds)
 			}
+			scope.DrawReportingPoints(appr, drawn, transforms, td, apprStyle, ldr, apprColor)
 			for _, holds := range db.DB.TerminalHolds[rwy.Airport] {
 				for _, h := range holds {
 					if h.Procedure != name {

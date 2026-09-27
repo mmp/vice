@@ -295,7 +295,8 @@ func (in *inspector) drawAirportRunways(a *app, icao av.ICAOAirportCode) {
 
 // drawAirportApproaches lists the approaches to the runways the scenario is
 // landing on, one row per transition so that each route can be read and
-// copied on its own.
+// copied on its own, followed by a row for each of a charted visual's
+// reporting points.
 func (in *inspector) drawAirportApproaches(a *app, icao av.ICAOAirportCode, ap *av.Airport) {
 	ss := &a.cc.State
 	r := &in.routes
@@ -318,7 +319,7 @@ func (in *inspector) drawAirportApproaches(a *app, icao av.ICAOAirportCode, ap *
 				continue
 			}
 			rows = append(rows, approachRow{runway: base, name: name, appr: appr})
-			nroutes += len(appr.Waypoints)
+			nroutes += len(appr.Waypoints) + len(appr.ReportingPoints)
 		}
 	}
 
@@ -370,6 +371,14 @@ func (in *inspector) drawAirportApproaches(a *app, icao av.ICAOAirportCode, ap *
 			imgui.Text(fafFix(wps))
 			imgui.TableNextColumn()
 			in.routeCell(a, fmt.Sprint(i), wps.Encode())
+		}
+		for id, rp := range util.SortedMap(row.appr.ReportingPoints) {
+			imgui.TableNextRow()
+			for range 5 {
+				imgui.TableNextColumn()
+			}
+			imgui.TextWrapped(fmt.Sprintf("Reporting point %s (%s) at %s", id, strings.Join(rp.Names, ", "),
+				rp.Location.DMSString()))
 		}
 		imgui.PopID()
 	}

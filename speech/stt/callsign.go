@@ -85,6 +85,7 @@ type Aircraft struct {
 	CandidateApproaches       map[string]string            `json:",omitempty"` // canonical name ("RNAV Z Runway 28R") -> approach ID
 	CandidateVisualApproaches map[string]string            `json:",omitempty"` // spoken name -> runway ID for active plain visual approaches
 	ApproachFixes             map[string]map[string]string `json:",omitempty"` // approach ID -> (spoken name -> fix ID)
+	ReportingPoints           map[string]string            `json:",omitempty"` // spoken name -> identifier, for the expected charted visual's reporting points ahead
 	AssignedApproach          string                       `json:",omitempty"`
 	ExpectedDirectFix         string                       `json:",omitempty"` // Fix the controller said to "expect direct" (if any)
 	SID                       string                       `json:",omitempty"`

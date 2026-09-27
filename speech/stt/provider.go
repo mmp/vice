@@ -643,6 +643,15 @@ func (p *Transcriber) BuildAircraftContext(
 			sttAc.Fixes[speech.GetFixTelephony(fix)] = fix
 		}
 
+		if len(trk.ReportingPoints) > 0 {
+			sttAc.ReportingPoints = make(map[string]string)
+			for _, rp := range trk.ReportingPoints {
+				for _, name := range rp.Names {
+					sttAc.ReportingPoints[strings.ToLower(name)] = rp.Id
+				}
+			}
+		}
+
 		// Determine state and set SID/STAR
 		if trk.IsDeparture() {
 			sttAc.State = "departure"

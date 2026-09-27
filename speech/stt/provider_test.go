@@ -5,12 +5,15 @@
 package stt
 
 import (
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
+	"github.com/mmp/vice/sim"
 )
 
 // TestMain initializes the aviation database and STT registries for all tests.
@@ -3294,6 +3297,158 @@ func TestAirportAdvisorySTTPatterns(t *testing.T) {
 				t.Errorf("got %q, want %q", result, tt.expected)
 			}
 		})
+	}
+}
+
+func TestReportingPointSTTPatterns(t *testing.T) {
+	provider := NewTranscriber(nil)
+
+	expecting := map[string]Aircraft{
+		"American 123": {
+			Callsign: "AAL123",
+			State:    "arrival",
+			Altitude: 5000,
+			Fixes:    map[string]string{"kennedy": "KJFK"},
+			ReportingPoints: map[string]string{
+				"dumbarton":        "BRIDGE",
+				"bridge":           "BRIDGE",
+				"dumbarton bridge": "BRIDGE",
+				"stadium":          "STADIUM",
+			},
+		},
+	}
+
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "reporting point advisory",
+			transcript: "American 123 the dumbarton bridge is at your three o'clock three miles report in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/3/3/BRIDGE",
+		},
+		{
+			name:       "short name",
+			transcript: "American 123 the bridge is at your two o'clock five miles",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/2/5/BRIDGE",
+		},
+		{
+			name:       "garbled name",
+			transcript: "American 123 the dumb barton bridge is at your three o'clock three miles report in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/3/3/BRIDGE",
+		},
+		{
+			name:       "name restated in the report request",
+			transcript: "American 123 dumbarton bridge three o'clock three miles report the bridge in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/3/3/BRIDGE",
+		},
+		{
+			name:       "report in sight",
+			transcript: "American 123 report the bridge in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/BRIDGE",
+		},
+		{
+			name:       "in sight inquiry",
+			transcript: "American 123 do you have the dumbarton bridge in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/BRIDGE",
+		},
+		{
+			name:       "report another landmark in sight",
+			transcript: "American 123 report the stadium in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/STADIUM",
+		},
+		{
+			name:       "another landmark inquiry",
+			transcript: "American 123 do you have the stadium in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 RP/STADIUM",
+		},
+		{
+			name:       "airport advisory while expecting a charted visual",
+			transcript: "American 123 the airport is at your eleven o'clock eight miles",
+			aircraft:   expecting,
+			expected:   "AAL123 AP/11/8",
+		},
+		{
+			name:       "named airport while expecting a charted visual",
+			transcript: "American 123 kennedy at your eleven o'clock eight miles",
+			aircraft:   expecting,
+			expected:   "AAL123 AP/11/8",
+		},
+		{
+			name:       "report the field in sight while expecting a charted visual",
+			transcript: "American 123 report the field in sight",
+			aircraft:   expecting,
+			expected:   "AAL123 AP",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+
+	// Without an expected charted visual, there's nothing to call.
+	notExpecting := map[string]Aircraft{
+		"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+	}
+	for _, transcript := range []string{
+		"American 123 the dumbarton bridge is at your three o'clock three miles report in sight",
+		"American 123 report the bridge in sight",
+	} {
+		if result, err := provider.DecodeTranscript(notExpecting, transcript, ""); err != nil || strings.Contains(result, "RP") {
+			t.Errorf("%q: got %q (err %v), want no RP command", transcript, result, err)
+		}
+	}
+}
+
+// The names of the reporting points on an aircraft's track are what the
+// {reporting_point} slot matches, lowercased as transcripts are; each gives
+// the point's identifier for the RP command.
+func TestBuildAircraftContextReportingPoints(t *testing.T) {
+	state := &sim.UserState{}
+	state.CurrentConsolidation = map[sim.TCW]*sim.TCPConsolidation{"TEST": {PrimaryTCP: "TEST"}}
+	state.Tracks = map[av.ADSBCallsign]*sim.Track{
+		"AAL123": {
+			RadarTrack:          av.RadarTrack{ADSBCallsign: "AAL123"},
+			ControllerFrequency: "TEST",
+			ReportingPoints: []av.ReportingPoint{
+				{Id: "BRIDGE", Names: []string{"Dumbarton bridge", "bridge"}},
+				{Id: "STADIUM", Names: []string{"stadium"}},
+			},
+		},
+	}
+
+	ctx := NewTranscriber(nil).BuildAircraftContext(state, "TEST")
+	want := map[string]string{
+		"dumbarton bridge": "BRIDGE",
+		"bridge":           "BRIDGE",
+		"stadium":          "STADIUM",
+	}
+	if len(ctx) == 0 {
+		t.Fatal("empty aircraft context")
+	}
+	for spoken, ac := range ctx {
+		if !maps.Equal(ac.ReportingPoints, want) {
+			t.Errorf("%s: reporting points %v, want %v", spoken, ac.ReportingPoints, want)
+		}
 	}
 }
 

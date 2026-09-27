@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
@@ -70,21 +71,23 @@ func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr speech.RadioTran
 type PendingTransmissionType int
 
 const (
-	PendingTransmissionDeparture                PendingTransmissionType = iota // Departure checking in
-	PendingTransmissionArrival                                                 // Arrival/handoff checking in
-	PendingTransmissionTrafficInSight                                          // "Traffic in sight" call
-	PendingTransmissionFlightFollowingReq                                      // Abbreviated "VFR request"
-	PendingTransmissionFlightFollowingFull                                     // Full flight following request
-	PendingTransmissionGoAround                                                // Go-around announcement
-	PendingTransmissionEmergency                                               // Emergency stage transmission
-	PendingTransmissionRequestApproachClearance                                // Pilot requesting approach clearance
-	PendingTransmissionFieldInSight                                            // Delayed "field in sight" after "looking"
-	PendingTransmissionSpontaneousFieldInSight                                 // Unprompted "field in sight"
-	PendingTransmissionFieldNegativeContact                                    // "Negative contact" after looking timer expires
-	PendingTransmissionRequestVisual                                           // Spontaneous "field in sight, requesting visual"
-	PendingTransmissionRequestVectors                                          // Pilot requesting vectors (overshot localizer)
-	PendingTransmissionRequestAltitude                                         // Pilot requesting altitude after being vectored off STAR
-	PendingTransmissionRequestTowerSwitch                                      // Pilot is close in on the approach without being sent to tower
+	PendingTransmissionDeparture                        PendingTransmissionType = iota // Departure checking in
+	PendingTransmissionArrival                                                         // Arrival/handoff checking in
+	PendingTransmissionTrafficInSight                                                  // "Traffic in sight" call
+	PendingTransmissionFlightFollowingReq                                              // Abbreviated "VFR request"
+	PendingTransmissionFlightFollowingFull                                             // Full flight following request
+	PendingTransmissionGoAround                                                        // Go-around announcement
+	PendingTransmissionEmergency                                                       // Emergency stage transmission
+	PendingTransmissionRequestApproachClearance                                        // Pilot requesting approach clearance
+	PendingTransmissionFieldInSight                                                    // Delayed "field in sight" after "looking"
+	PendingTransmissionSpontaneousFieldInSight                                         // Unprompted "field in sight"
+	PendingTransmissionFieldNegativeContact                                            // "Negative contact" after looking timer expires
+	PendingTransmissionRequestVisual                                                   // Spontaneous "field in sight, requesting visual"
+	PendingTransmissionRequestVectors                                                  // Pilot requesting vectors (overshot localizer)
+	PendingTransmissionRequestAltitude                                                 // Pilot requesting altitude after being vectored off STAR
+	PendingTransmissionRequestTowerSwitch                                              // Pilot is close in on the approach without being sent to tower
+	PendingTransmissionReportingPointInSight                                           // Delayed reporting point "in sight" after "looking"
+	PendingTransmissionSpontaneousReportingPointInSight                                // Unprompted reporting point "in sight"
 )
 
 // FutureFrequencyChange represents a pilot switching to a new frequency.
@@ -524,6 +527,20 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			return "", ""
 		}
 		rt = speech.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
+
+	case PendingTransmissionReportingPointInSight, PendingTransmissionSpontaneousReportingPointInSight:
+		rp := ac.SightedReportingPoint
+		if rp == nil ||
+			(pc.Type == PendingTransmissionSpontaneousReportingPointInSight && ac.Nav.Approach.EffectivelyCleared()) {
+			return "", ""
+		}
+		if pc.Type == PendingTransmissionReportingPointInSight {
+			// The controller named it, so any of its names will do.
+			rt = speech.MakeContactTransmission("[{rp} in sight now|{rp} in sight]", rand.SampleSlice(s.textRand, rp.Names))
+		} else {
+			// Unprompted, the pilot gives its full name.
+			rt = speech.MakeContactTransmission("{rp} in sight", rp.Name())
+		}
 
 	case PendingTransmissionFieldNegativeContact:
 		rt = speech.MakeContactTransmission("[negative field|field not in sight|no joy on the field]")

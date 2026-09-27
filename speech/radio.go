@@ -293,6 +293,7 @@ var (
 		"gf":       &GroupFormSnippetFormatter{},
 		"hdg":      &HeadingSnippetFormatter{},
 		"num":      &BasicNumberSnippetFormatter{},
+		"rp":       &ReportingPointSnippetFormatter{},
 		"rwy":      &RunwaySnippetFormatter{},
 		"sid":      &SIDSnippetFormatter{},
 		"mach":     &MachSnippetFormatter{},
@@ -652,6 +653,21 @@ func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 	} else {
 		return string(icao), nil
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ReportingPointSnippetFormatter
+
+// ReportingPointSnippetFormatter formats the name of a charted visual
+// approach's reporting point, which is written and spoken as given.
+type ReportingPointSnippetFormatter struct{}
+
+func (ReportingPointSnippetFormatter) Written(arg any) (string, error) {
+	return stringArg(arg)
+}
+
+func (ReportingPointSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
+	return stringArg(arg)
 }
 
 ///////////////////////////////////////////////////////////////////////////

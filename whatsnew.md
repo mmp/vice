@@ -4,6 +4,7 @@ adjustments for TAS
 - Flight model
   - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
   - Traffic calls ending "has you in sight and will maintain visual separation" (`TRAFFIC/INSIGHT`) now get just "roger", without a callsign
+  - Landmarks on charted visual approaches can be called (`RP/3/3`, or by voice: "the Dumbarton bridge is at your 3 o'clock, 3 miles, report in sight").
   - Fixed vectored aircraft given "intercept localizer" then flying procedure turns after being cleared for the approach
   - Fixed multiple bugs with airspeed handling and altitude/temperature
   - VFRs are better at scud-running under B and C airspace shelves
@@ -23,4 +24,5 @@ adjustments for TAS
   - Added an "eram" object to allow specifying ERAM datablock entries for assigned altitudes, etc.
   - An arrival's "cleared_altitude" now stops its descent, as documented; scenarios that expect the descent to continue must use `/dvs`.
   - Charted visual approaches may now give multiple routes in "waypoints", e.g. for procedures with several feeder legs
+  - Charted visual approaches may now give "reporting_points": landmarks that pilots can be told to look for and report in sight
 

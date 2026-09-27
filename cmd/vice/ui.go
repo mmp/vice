@@ -521,6 +521,7 @@ var secondaryAcCommands = [][3]string{
 	{"*CVA_rwy*", `"Cleared visual approach runway _rwy_." Requires field in sight, visual request, or traffic in sight.`, "*CVA13L*"},
 	{"*CDME_nm*/A_alt*", `"Cross _nm_ DME at _alt_" on a cleared visual approach. Append *+* for "or above", *-* for "or below". Combine with *S_spd* for a speed.`, "*CDME10/A30+*"},
 	{"*AP/_oclock_/_miles_*", `"Airport, _oclock_ o'clock, _miles_ miles." Pilot responds with field in sight or looking.`, "*AP/12/5*"},
+	{"*RP[/_oclock_/_miles_][/_id_]*", `"(Charted visual landmark) is at your _oclock_ o'clock, _miles_ miles, report in sight." _id_ is the landmark's identifier; *RP* alone asks if it is in sight.`, "*RP/3/3*, *RP/BRIDGE*"},
 	{"*ID*", `"Ident."`, "*ID*"},
 	{"*CVS*", `"Climb via the SID"`, "*CVS*"},
 	{"*CVS/A_alt*", `"Climb via the SID, except maintain _alt_.`, "*CVS/A100*"},

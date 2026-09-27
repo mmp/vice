@@ -406,7 +406,29 @@
           "waypoints": [
             "ARCHI/iaf/a7000 TRBOW/a6000+ GAROW/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+",
             "EDDYY/iaf/a6000+ SIDBY/iaf/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+"
-          ]
+          ],
+          "reporting_points": {
+            "PLANT": {
+              "names": ["cement plant", "plant"],
+              "location": "N037.31.56.674,W122.13.27.275"
+            },
+            "DBRIDGE": {
+              "names": ["Dumbarton bridge", "Dumbarton"],
+              "location": "N037.30.21.368,W122.07.05.967"
+            },
+            "SMBRIDGE": {
+              "names": ["San Mateo bridge"],
+              "location": "N037.35.03.977,W122.15.04.751"
+            },
+            "PONDS": {
+              "names": ["salt ponds"],
+              "location": "N037.31.01.193,W122.05.46.069"
+            },
+            "COYOTE": {
+              "names": ["Coyote point", "marina"],
+              "location": "N037.35.11.366,W122.19.18.178"
+            }
+          }
         },
         "Y8R": {
           "cifp_id": "RY28R"

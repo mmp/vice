@@ -4738,8 +4738,40 @@
                       <i>vice</i> automatically adds a final waypoint at the arrival runway threshold; aircraft are deleted from
                       the simulation when they reach that point.</td>
                   </tr>
+                  <tr>
+                    <td>"reporting_points"</td>
+                    <td>Object</td>
+                    <td>Optional, and only for "ChartedVisual" approaches: the landmarks on the chart that pilots may report
+                      in sight. Controllers can call them for aircraft that have been told to expect the approach ("the
+                      Dumbarton bridge is at your 3 o'clock, 3 miles, report in sight"), and pilots sometimes report them
+                      in sight on their own when they are 3&ndash;10 miles ahead. A pilot must have one of them, the field, or
+                      preceding traffic landing the same runway in sight to accept a clearance for the approach; without
+                      reporting points, the controller has to call the field or the traffic before clearing it.
+                      The member names are identifiers for the landmarks: controllers name a landmark by its identifier
+                      in the <code>RP</code> command, and the scope labels the landmark with it when the approach is drawn.
+                      An identifier must be a single word without "/", and two can't differ only in case.
+                      Each member's value is an object with the following members:
+                      <ul>
+                        <li>"names": the names pilots and controllers use for the landmark (e.g., "Dumbarton bridge",
+                          "bridge"). They are what speech recognition listens for, and a pilot reports the landmark in
+                          sight with any of them. The first is its full name, which pilots use when they report it
+                          without being asked. Two landmarks on an approach can't share a name.</li>
+                        <li>"location": where the landmark is: a fix name or a lat-long coordinate, as described in
+                          <a href="#fe-locations">Specifying Locations</a>.</li>
+                      </ul>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
+              <p>For example:</p>
+              <pre>
+"reporting_points": {
+  "BRIDGE": {
+    "names": ["Dumbarton bridge", "bridge", "Dumbarton"],
+    "location": "N037.30.25.200,W122.06.54.000"
+  }
+}
+              </pre>
 
             </section>
             <section class="docs-section" id="fe-departures">

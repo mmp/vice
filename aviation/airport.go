@@ -175,6 +175,8 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		requireFAF := appr.Type != ChartedVisualApproach && appr.Type != VisualApproach
 		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions, checkScratchpad)
 
+		appr.finalizeReportingPoints(db, ap.Location, e)
+
 		if appr.FullName == "" {
 			if appr.Type == ChartedVisualApproach {
 				e.ErrorString(`Must provide "full_name" for charted visual approach`)

@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"cmp"
 	"fmt"
 	"log/slog"
 	"slices"
@@ -133,11 +134,16 @@ type Aircraft struct {
 	// (either via AP command response or spontaneous report).
 	FieldInSight bool
 
+	// SightedReportingPoint is the reporting point of an expected charted
+	// visual approach that the pilot has reported in sight, if any.
+	SightedReportingPoint *av.ReportingPoint
+
 	// RequestedVisualApproach is set when the pilot has spontaneously requested
 	// the visual approach (field in sight). Prevents repeated requests.
 	RequestedVisualApproach bool
 	// WantsVisualApproach is decided at aircraft creation: whether this pilot spontaneously reports
-	// field in sight when eligible.
+	// field in sight when eligible, or, when expecting a charted visual approach, one of its
+	// reporting points.
 	WantsVisualApproach bool
 	// VisualApproachRequestDistance, if non-zero, is the distance (NM) from the arrival airport at
 	// which the pilot will perform a single visibility check and request the visual approach if the
@@ -239,13 +245,21 @@ func (ac *Aircraft) canRequestVisualApproach() bool {
 	return appr != nil && appr.Type != av.ChartedVisualApproach && appr.Type != av.VisualApproach
 }
 
+// bearingTo returns the magnetic bearing from the aircraft to p.
+func (ac *Aircraft) bearingTo(p math.Point2LL) math.MagneticHeading {
+	return math.TrueToMagnetic(math.Heading2LL(ac.Position(), p, ac.NmPerLongitude()), ac.MagneticVariation())
+}
+
+// oclockBearing returns the magnetic bearing of the controller's "(oclock)
+// o'clock" in a position call.
+func (ac *Aircraft) oclockBearing(oclock int) math.MagneticHeading {
+	return math.NormalizeHeading(ac.Heading() + math.MagneticHeading((oclock%12)*30))
+}
+
 // canSeeTraffic reports whether traffic is within the pilot's visibility arc,
 // horizontally and vertically.
 func (ac *Aircraft) canSeeTraffic(traffic *Aircraft) bool {
-	bearingToTraffic := math.TrueToMagnetic(
-		math.Heading2LL(ac.Position(), traffic.Position(), ac.NmPerLongitude()),
-		ac.MagneticVariation())
-	return math.HeadingDifference(ac.Heading(), bearingToTraffic) <= visualMaxBearingOff &&
+	return math.HeadingDifference(ac.Heading(), ac.bearingTo(traffic.Position())) <= visualMaxBearingOff &&
 		withinVerticalFieldOfView(traffic.Altitude()-ac.Altitude(),
 			math.NMDistance2LL(ac.Position(), traffic.Position()))
 }
@@ -369,6 +383,65 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 	}
 
 	return fixes
+}
+
+// expectedReportingPoints returns the reporting points of the charted visual
+// approach the aircraft has been told to expect, if any, ordered by
+// identifier.
+func (ac *Aircraft) expectedReportingPoints() []*av.ReportingPoint {
+	if appr := ac.Nav.Approach.Assigned; appr != nil {
+		return slices.Collect(util.SortedMapValues(appr.ReportingPoints))
+	}
+	return nil
+}
+
+// reportingPointAhead reports whether rp isn't behind the aircraft.
+func (ac *Aircraft) reportingPointAhead(rp *av.ReportingPoint) bool {
+	return math.HeadingDifference(ac.Heading(), ac.bearingTo(rp.Location.Point2LL)) <= 90
+}
+
+// ReportingPointsAhead returns the reporting points of the charted visual
+// approach the aircraft has been told to expect that aren't behind it; the
+// controller has no reason to call the others.
+func (ac *Aircraft) ReportingPointsAhead() []av.ReportingPoint {
+	var ahead []av.ReportingPoint
+	for _, rp := range ac.expectedReportingPoints() {
+		if ac.reportingPointAhead(rp) {
+			ahead = append(ahead, *rp)
+		}
+	}
+	return ahead
+}
+
+// calledReportingPoint returns the reporting point of the expected charted
+// visual approach that the controller identifies, or otherwise the one
+// nearest the called position. With neither an identifier nor a position, it
+// chooses the nearest point, preferring those ahead of the aircraft. It
+// returns nil if no point matches.
+func (ac *Aircraft) calledReportingPoint(id string, oclock, miles int) *av.ReportingPoint {
+	points := ac.expectedReportingPoints()
+	if id != "" {
+		// Typed commands are upper case.
+		if i := slices.IndexFunc(points, func(rp *av.ReportingPoint) bool { return strings.EqualFold(rp.Id, id) }); i != -1 {
+			return points[i]
+		}
+		return nil
+	}
+	if len(points) == 0 {
+		return nil
+	}
+
+	target := ac.Position()
+	if oclock > 0 {
+		target = math.Offset2LL(target, math.MagneticToTrue(ac.oclockBearing(oclock), ac.MagneticVariation()),
+			float32(miles), ac.NmPerLongitude())
+	} else if ahead := util.FilterSlice(points, ac.reportingPointAhead); len(ahead) > 0 {
+		points = ahead
+	}
+
+	return slices.MinFunc(points, func(a, b *av.ReportingPoint) int {
+		return cmp.Compare(math.NMDistance2LL(target, a.Location.Point2LL), math.NMDistance2LL(target, b.Location.Point2LL))
+	})
 }
 
 // GetRouteFixes returns the ordered list of fix names from the aircraft's
@@ -588,7 +661,12 @@ func (ac *Aircraft) AfterFixAltitude(fix string, alt float32) speech.CommandInte
 }
 
 func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport) speech.CommandIntent {
-	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints)
+	previous := ac.Nav.Approach.Assigned
+	intent := ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints)
+	if ac.Nav.Approach.Assigned != previous {
+		ac.SightedReportingPoint = nil
+	}
+	return intent
 }
 
 func (ac *Aircraft) AtFixCleared(fix, approach string, simTime Time, delayReduction time.Duration, straightIn bool) speech.CommandIntent {
