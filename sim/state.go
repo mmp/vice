@@ -626,7 +626,7 @@ type Track struct {
 	ReportingPoints           []av.ReportingPoint // Expected charted visual's reporting points that aren't behind the aircraft, for STT
 	RouteFixes                []string            // Ordered route waypoint fix names (no truncation)
 	ExpectedDirectFix         string              // Fix the controller said to "expect direct", if any
-	AssignedHeading           int                 // Controller-assigned heading from nav (0 if none), for STT
+	AssignedHeading           int                 // Controller-assigned heading from nav (0 if none)
 	AssignedSpeed             int                 // Controller-assigned speed in knots from nav (0 if none / if mach), for STT
 	AssignedMach              int                 // Controller-assigned mach in hundredths from nav (0 if none / if knots), for STT
 	SID                       string

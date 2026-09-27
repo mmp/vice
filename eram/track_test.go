@@ -236,6 +236,61 @@ func TestConflictAlertsWithStaggeredArrivals(t *testing.T) {
 	}
 }
 
+// headOnConflict flies two tracks toward each other at FL300 and 480
+// knots, starting 40 nm apart, after configure sets them up, and reports
+// whether conflict alert has flagged them once both have radar history.
+// Flying straight, they would meet 150 seconds in.
+func headOnConflict(configure func(northbound, southbound *sim.Track)) bool {
+	h := makeTrackTestHarness()
+	h.ctx.NmPerLongitude = 60
+	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{"1A": {}}
+	makeTrack := func(callsign av.ADSBCallsign) *sim.Track {
+		return &sim.Track{
+			RadarTrack: av.RadarTrack{ADSBCallsign: callsign, Mode: av.TransponderModeAltitude,
+				TransponderAltitude: 30000, Groundspeed: 480},
+			FlightPlan: &sim.NASFlightPlan{ACID: sim.ACID(callsign), AssignedAltitude: 30000,
+				TrackingController: "1A"},
+		}
+	}
+	northbound, southbound := makeTrack("AAL1"), makeTrack("DAL2")
+	configure(northbound, southbound)
+	h.addTrack(northbound)
+	h.addTrack(southbound)
+
+	for seconds := 0; seconds <= 25; seconds++ {
+		flown := float32(seconds) * 480 / 3600 / 60 // degrees of latitude
+		northbound.Location = math.Point2LL{-73, 40 + flown}
+		southbound.Location = math.Point2LL{-73, 40 + 40.0/60 - flown}
+		h.frame(time.Duration(seconds) * time.Second)
+		h.ep.updateConflictAlerts(h.ctx, h.ep.visibleTracks)
+	}
+	return len(h.ep.CAPairs) != 0
+}
+
+func TestConflictAlertsFollowRoutes(t *testing.T) {
+	// The northbound aircraft's route turns east 10 nm ahead; the two then
+	// come no closer than 14 nm.
+	turnEast := []math.Point2LL{{-73, 40 + 10.0/60}, {-73 + 30.0/60, 40 + 10.0/60}}
+	if !headOnConflict(func(n, s *sim.Track) {}) {
+		t.Error("head-on tracks: want conflict")
+	}
+	if headOnConflict(func(n, s *sim.Track) { n.Route = turnEast }) {
+		t.Error("route turns away before they meet: want no conflict")
+	}
+	if !headOnConflict(func(n, s *sim.Track) { n.Route, n.AssignedHeading = turnEast, 360 }) {
+		t.Error("on an assigned heading rather than its route: want conflict")
+	}
+}
+
+func TestConflictAlertsSkipVirtualPairs(t *testing.T) {
+	if headOnConflict(func(n, s *sim.Track) { n.VirtuallyControlled, s.VirtuallyControlled = true, true }) {
+		t.Error("both tracks worked by virtual controllers: want no conflict")
+	}
+	if !headOnConflict(func(n, s *sim.Track) { n.VirtuallyControlled = true }) {
+		t.Error("one track worked by a human: want conflict")
+	}
+}
+
 func TestAcceptedHandoffUsesACID(t *testing.T) {
 	h := makeTrackTestHarness()
 	h.addTrack(&sim.Track{

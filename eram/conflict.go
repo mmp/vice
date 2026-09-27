@@ -20,6 +20,10 @@ import (
 // simultaneously within both the lateral and vertical separation minima.
 // Targets in conflict render with "flashing" (brightness-cycling) full
 // datablocks.
+//
+// An aircraft flying its route is predicted to follow it; straight-line
+// extrapolation would carry it through the route's turns and raise alerts
+// against traffic it will never come near. One on a heading holds its track.
 
 const (
 	caUpdateInterval   = 5 * time.Second // sim-time between detection passes
@@ -32,8 +36,9 @@ const (
 	caVerticalMinimum       = 1000  // ft
 	caVerticalSlop          = 5     // ft; keeps exactly-1000-ft-separated targets from alerting on float error
 
-	caLevelRateThreshold  = 300 // ft/min; below this the target is treated as level
-	caLevelDBAltTolerance = 200 // ft; DB altitude within this of current altitude = at assigned altitude
+	caLevelRateThreshold  = 300  // ft/min; below this the target is treated as level
+	caLevelDBAltTolerance = 200  // ft; DB altitude within this of current altitude = at assigned altitude
+	caMaxVerticalRate     = 2500 // ft/min; fastest a level target is assumed to head for its data block altitude
 
 	caDimFactor = 0.5 // datablock brightness scale during the dim phase of the flash cycle
 )
@@ -41,11 +46,38 @@ const (
 // caTarget is a snapshot of one aircraft's state for conflict prediction,
 // in flat NM coordinates.
 type caTarget struct {
-	pos   [2]float32 // NM
-	vel   [2]float32 // NM/second
-	alt   float32    // ft
-	rate  float32    // ft/minute
-	dbAlt int        // data block altitude (hard or interim), ft; 0 if unset
+	pos   [2]float32   // NM
+	vel   [2]float32   // NM/second
+	alt   float32      // ft
+	rate  float32      // ft/minute
+	dbAlt int          // data block altitude (hard or interim), ft; 0 if unset
+	route [][2]float32 // the waypoints ahead, NM, if it's flying its route
+}
+
+// position returns where the target will be t seconds from now. A target
+// flying its route follows it at its current groundspeed and carries on
+// along the last leg past its end.
+func (tgt caTarget) position(t float32) [2]float32 {
+	speed := math.Length2f(tgt.vel)
+	if len(tgt.route) == 0 || speed == 0 {
+		return math.Add2f(tgt.pos, math.Scale2f(tgt.vel, t))
+	}
+
+	p, dir := tgt.pos, math.Scale2f(tgt.vel, 1/speed)
+	d := speed * t // NM still to fly
+	for _, wp := range tgt.route {
+		leg := math.Sub2f(wp, p)
+		l := math.Length2f(leg)
+		if l == 0 {
+			continue
+		}
+		if d <= l {
+			return math.Add2f(p, math.Scale2f(leg, d/l))
+		}
+		d -= l
+		p, dir = wp, math.Scale2f(leg, 1/l)
+	}
+	return math.Add2f(p, math.Scale2f(dir, d))
 }
 
 // caAltitudeEnvelope returns the [lo, hi] altitude band the target may
@@ -53,7 +85,8 @@ type caTarget struct {
 // their current rate, leveling off at the data block altitude if they are
 // moving toward it. A level target whose data block altitude differs from
 // its current altitude may start toward it at any time, so it occupies the
-// whole band between the two.
+// band between the two that it could have covered by then at
+// caMaxVerticalRate.
 func caAltitudeEnvelope(tgt caTarget, t float32) (lo, hi float32) {
 	db := float32(tgt.dbAlt)
 	if math.Abs(tgt.rate) > caLevelRateThreshold {
@@ -68,7 +101,11 @@ func caAltitudeEnvelope(tgt caTarget, t float32) (lo, hi float32) {
 		return pred, pred
 	}
 	if tgt.dbAlt != 0 && math.Abs(db-tgt.alt) > caLevelDBAltTolerance {
-		return min(tgt.alt, db), max(tgt.alt, db)
+		maxChange := float32(caMaxVerticalRate) * t / 60
+		if db < tgt.alt {
+			return max(db, tgt.alt-maxChange), tgt.alt
+		}
+		return tgt.alt, min(db, tgt.alt+maxChange)
 	}
 	return tgt.alt, tgt.alt
 }
@@ -96,21 +133,21 @@ func caConflict(a, b caTarget) bool {
 	if sep > caLateralMinimum+maxClosure {
 		return false
 	}
-	bandSpan := func(t caTarget) float32 {
-		if math.Abs(t.rate) <= caLevelRateThreshold && t.dbAlt != 0 {
-			return math.Abs(float32(t.dbAlt) - t.alt)
+	maxAltitudeChange := func(t caTarget) float32 {
+		if math.Abs(t.rate) > caLevelRateThreshold {
+			return math.Abs(t.rate) / 60 * caLookaheadSeconds
+		}
+		if t.dbAlt != 0 {
+			return min(math.Abs(float32(t.dbAlt)-t.alt), float32(caMaxVerticalRate)/60*caLookaheadSeconds)
 		}
 		return 0
 	}
-	maxVertClosure := (math.Abs(a.rate)+math.Abs(b.rate))/60*caLookaheadSeconds +
-		bandSpan(a) + bandSpan(b)
-	if math.Abs(a.alt-b.alt) > caVerticalMinimum+maxVertClosure {
+	if math.Abs(a.alt-b.alt) > caVerticalMinimum+maxAltitudeChange(a)+maxAltitudeChange(b) {
 		return false
 	}
 
 	for t := float32(0); t <= caLookaheadSeconds; t += caSampleStep {
-		pa := math.Add2f(a.pos, math.Scale2f(a.vel, t))
-		pb := math.Add2f(b.pos, math.Scale2f(b.vel, t))
+		pa, pb := a.position(t), b.position(t)
 		alo, ahi := caAltitudeEnvelope(a, t)
 		blo, bhi := caAltitudeEnvelope(b, t)
 
@@ -165,7 +202,9 @@ func (ep *Scope) inConflictAlert(callsign av.ADSBCallsign) bool {
 // scratch and merges it into ep.CAPairs. Eligibility: associated, Mode C,
 // past tentative, with enough radar history to derive velocity and
 // vertical rate; at least one target of a pair must be owned by a
-// controller in this ERAM facility.
+// controller in this ERAM facility, and at least one must be worked by a
+// human: virtual controllers can't maneuver the background traffic they
+// work, so alerting on it is only a distraction.
 // Note: the caller passes ep.visibleTracks; today that is effectively all
 // tracks, but if display filtering (e.g. radar holes) is ever added there,
 // conflict detection coverage would narrow with it.
@@ -180,6 +219,7 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 		callsign av.ADSBCallsign
 		target   caTarget
 		owned    bool // owned by a controller in this ERAM facility
+		virtual  bool // tracked by a virtual controller
 	}
 	var candidates []caCandidate
 	for _, trk := range tracks {
@@ -202,6 +242,12 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 			vel = math.Scale2f(math.Normalize2f(d), state.Track.Groundspeed/3600) // knots -> NM/s
 		}
 		rate := (state.Track.TransponderAltitude - state.PreviousTrack.TransponderAltitude) / dt * 60 // ft/min
+		var route [][2]float32
+		if trk.AssignedHeading == 0 {
+			for _, p := range trk.Route {
+				route = append(route, math.LL2NM(p, ctx.NmPerLongitude))
+			}
+		}
 
 		candidates = append(candidates, caCandidate{
 			callsign: trk.ADSBCallsign,
@@ -211,15 +257,17 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 				alt:   state.Track.TransponderAltitude,
 				rate:  rate,
 				dbAlt: trk.FlightPlan.DataBlockAltitude(),
+				route: route,
 			},
-			owned: ctx.Client.State.IsLocalController(trk.FlightPlan.TrackingController),
+			owned:   ctx.Client.State.IsLocalController(trk.FlightPlan.TrackingController),
+			virtual: trk.VirtuallyControlled,
 		})
 	}
 
 	var detected [][2]av.ADSBCallsign
 	for i, ca := range candidates {
 		for _, cb := range candidates[i+1:] {
-			if !ca.owned && !cb.owned {
+			if (!ca.owned && !cb.owned) || (ca.virtual && cb.virtual) {
 				continue
 			}
 			if caConflict(ca.target, cb.target) {

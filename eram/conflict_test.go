@@ -9,6 +9,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 )
 
@@ -32,11 +33,13 @@ func TestCAAltitudeEnvelope(t *testing.T) {
 		{"climb away from db", caTarget{alt: 30000, rate: 1000, dbAlt: 26000}, 240, 34000, 34000},
 		// Level at the DB altitude: point envelope.
 		{"level at db", caTarget{alt: 34000, rate: 0, dbAlt: 34000}, 120, 34000, 34000},
-		// Level with DB altitude below: occupies the whole band at all t.
-		{"level band below", caTarget{alt: 34000, rate: 0, dbAlt: 30000}, 0, 30000, 34000},
+		// Level with DB altitude below: the band grows toward it at the
+		// maximum rate.
+		{"level band below now", caTarget{alt: 34000, rate: 0, dbAlt: 30000}, 0, 34000, 34000},
+		{"level band below", caTarget{alt: 34000, rate: 0, dbAlt: 30000}, 60, 31500, 34000},
 		{"level band below later", caTarget{alt: 34000, rate: 0, dbAlt: 30000}, 240, 30000, 34000},
-		// Level with DB altitude above: band up to the DB altitude.
-		{"level band above", caTarget{alt: 30000, rate: 0, dbAlt: 33000}, 60, 30000, 33000},
+		// Level with DB altitude above: band up toward the DB altitude.
+		{"level band above", caTarget{alt: 30000, rate: 0, dbAlt: 33000}, 60, 30000, 32500},
 		// Level with no DB altitude: point envelope.
 		{"level no db", caTarget{alt: 31000, rate: 0, dbAlt: 0}, 240, 31000, 31000},
 	} {
@@ -46,6 +49,32 @@ func TestCAAltitudeEnvelope(t *testing.T) {
 				t.Errorf("got [%v, %v], want [%v, %v]", lo, hi, tc.lo, tc.hi)
 			}
 		})
+	}
+}
+
+func TestCATargetPosition(t *testing.T) {
+	// 0.1 NM/s east, with a route that goes 3 nm east and then turns north.
+	tgt := caTarget{pos: [2]float32{0, 0}, vel: [2]float32{0.1, 0}, route: [][2]float32{{3, 0}, {3, 3}}}
+	for _, tc := range []struct {
+		t    float32
+		want [2]float32
+	}{
+		{0, [2]float32{0, 0}},
+		{10, [2]float32{1, 0}},
+		{30, [2]float32{3, 0}},
+		{45, [2]float32{3, 1.5}},
+		// Past the end of the route, it carries on along the last leg.
+		{90, [2]float32{3, 6}},
+	} {
+		if p := tgt.position(tc.t); math.Length2f(math.Sub2f(p, tc.want)) > 1e-4 {
+			t.Errorf("at %vs: got %v, want %v", tc.t, p, tc.want)
+		}
+	}
+
+	// Without a route, it holds its track.
+	tgt.route = nil
+	if p := tgt.position(90); math.Length2f(math.Sub2f(p, [2]float32{9, 0})) > 1e-4 {
+		t.Errorf("without a route: got %v, want [9 0]", p)
 	}
 }
 
@@ -107,6 +136,17 @@ func TestCAConflictLevelBand(t *testing.T) {
 	a.dbAlt = 35000
 	if caConflict(a, b) {
 		t.Error("both level at their DB altitudes, 1000 ft apart: want no conflict")
+	}
+}
+
+func TestCAConflictLevelBandTooFarToDescend(t *testing.T) {
+	// A is level at 11,000 with 3,100 in its data block and passes over B,
+	// which is climbing out underneath it. They are within 3 nm only until
+	// t=46s, by when A could have descended no lower than 9,083.
+	a := caTarget{pos: [2]float32{0, 0}, vel: [2]float32{0.08, 0}, alt: 11000, rate: 0, dbAlt: 3100}
+	b := caTarget{pos: [2]float32{3, 0}, vel: [2]float32{-0.05, 0}, alt: 1000, rate: 2500, dbAlt: 10000}
+	if caConflict(a, b) {
+		t.Error("level arrival 10,000 feet above a departure it passes over: want no conflict")
 	}
 }
 
