@@ -525,9 +525,8 @@ func (p *trafficParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 // trafficVisualSepParser recognizes a descriptor-position traffic advisory
 // whose only actionable content is "(other aircraft) has you in sight and
 // will maintain visual separation". The controller gives a non-o'clock
-// position ("off your left", "from the north", etc.); the pilot has no
-// command to issue. Pattern is registered with an empty-string handler so
-// the simulator treats it as informational chatter.
+// position ("off your left", "from the north", etc.), which the pilot has
+// no need for since they don't look for the traffic.
 type trafficVisualSepParser struct{}
 
 func (p *trafficVisualSepParser) goType() reflect.Type { return reflect.TypeFor[bool]() }

@@ -227,8 +227,9 @@ func (s *Sim) clearAircraftSTTCommands(callsign av.ADSBCallsign) {
 func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []speech.CommandIntent) string {
 	if rt := speech.RenderIntents(intents, s.textRand); rt != nil {
 		s.postReadbackTransmission(callsign, *rt, tcw)
-		// MixUp transmissions already include the callsign in the message
-		if rt.Type != speech.RadioTransmissionMixUp {
+		// MixUp transmissions already include the callsign in the message and
+		// NoId ones go without it.
+		if rt.Type != speech.RadioTransmissionMixUp && rt.Type != speech.RadioTransmissionNoId {
 			if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
 				rt.Merge(suffix)
 			}
@@ -979,20 +980,15 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 	case 'T':
 		if command == "TRAFFIC" {
 			return s.TrafficInSightInquiry(tcw, callsign)
+		} else if command == "TRAFFIC/INSIGHT" {
+			return s.TrafficHasYouInSight(tcw, callsign)
 		} else if trafficSpec, ok := strings.CutPrefix(command, "TRAFFIC/"); ok {
-			// Parse the command: TRAFFIC/oclock/miles/altitude[/VISSEP]
+			// Parse the command: TRAFFIC/oclock/miles/altitude
 			// Altitude may be the literal "UNK" if the controller said
 			// "altitude unknown".
 			args := strings.Split(trafficSpec, "/")
-			if len(args) != 3 && len(args) != 4 {
+			if len(args) != 3 {
 				return nil, ErrInvalidCommandSyntax
-			}
-			otherMaintainsVisual := false
-			if len(args) == 4 {
-				if args[3] != "VISSEP" {
-					return nil, ErrInvalidCommandSyntax
-				}
-				otherMaintainsVisual = true
 			}
 
 			oclock, err := strconv.Atoi(args[0])
@@ -1014,7 +1010,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				}
 			}
 
-			return s.TrafficAdvisory(tcw, callsign, oclock, miles, trafficAlt*100, altUnknown, otherMaintainsVisual)
+			return s.TrafficAdvisory(tcw, callsign, oclock, miles, trafficAlt*100, altUnknown)
 		} else if command == "TO" {
 			return s.ContactTower(tcw, callsign, av.Frequency(0))
 		} else if f, ok := strings.CutPrefix(command, "TO/"); ok {

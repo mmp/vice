@@ -2061,11 +2061,11 @@ func registerAllCommands() {
 	// Descriptor-position visual-sep advisory: controller calls traffic by
 	// relative direction ("off your left", "from the north") rather than
 	// o'clock, and reports that the other aircraft has us in sight and will
-	// maintain visual separation. The pilot has nothing to do — emit no
-	// command so the framework treats it as informational chatter.
+	// maintain visual separation. The pilot has nothing to look for and just
+	// says "roger".
 	registerSTTCommand(
 		"traffic {traffic_visual_sep}",
-		func(_ bool) string { return "" },
+		func(_ bool) string { return "TRAFFIC/INSIGHT" },
 		WithName("traffic_descriptor_visual_sep"),
 		WithPriority(11),
 	)
@@ -2264,12 +2264,12 @@ func registerAllCommands() {
 }
 
 func formatTrafficCommand(tr trafficResult) string {
+	if tr.otherTrafficMaintainsVisual {
+		return "TRAFFIC/INSIGHT"
+	}
 	alt := fmt.Sprintf("%d", tr.altitude)
 	if tr.altitudeUnknown {
 		alt = "UNK"
-	}
-	if tr.otherTrafficMaintainsVisual {
-		return fmt.Sprintf("TRAFFIC/%d/%d/%s/VISSEP", tr.oclock, tr.miles, alt)
 	}
 	return fmt.Sprintf("TRAFFIC/%d/%d/%s", tr.oclock, tr.miles, alt)
 }

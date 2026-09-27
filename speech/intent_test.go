@@ -277,3 +277,27 @@ func TestCompoundSpeedReadbackIncludesQualifiers(t *testing.T) {
 		}
 	}
 }
+
+func TestTrafficHasYouInSightOmitsCallsignOnlyWhenAlone(t *testing.T) {
+	ack := TrafficAdvisoryIntent{Response: TrafficResponseAcknowledged}
+	alt := AltitudeIntent{Altitude: 3000, Direction: AltitudeDescend}
+	unable := MakeUnableIntent("unable, that is above our ceiling")
+	for _, test := range []struct {
+		name    string
+		intents []CommandIntent
+		want    RadioTransmissionType
+	}{
+		{"acknowledgment alone", []CommandIntent{ack}, RadioTransmissionNoId},
+		{"after altitude", []CommandIntent{alt, ack}, RadioTransmissionReadback},
+		{"before altitude", []CommandIntent{ack, alt}, RadioTransmissionReadback},
+		{"after unable", []CommandIntent{unable, ack}, RadioTransmissionUnexpected},
+		{"before unable", []CommandIntent{ack, unable}, RadioTransmissionUnexpected},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			rt := RenderIntents(test.intents, rand.Make())
+			if rt.Type != test.want {
+				t.Errorf("got type %v, want %v", rt.Type, test.want)
+			}
+		})
+	}
+}

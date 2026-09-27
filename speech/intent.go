@@ -5,10 +5,11 @@
 package speech
 
 import (
-	av "github.com/mmp/vice/aviation"
 	"reflect"
 	"slices"
 	"strings"
+
+	av "github.com/mmp/vice/aviation"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
@@ -979,7 +980,11 @@ func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("[we have the traffic|traffic in sight|we see the traffic|got the traffic]")
 		}
 	case TrafficResponseAcknowledged:
-		rt.Add("[roger|copy the traffic]")
+		// The other aircraft has us in sight, so there is nothing to look for.
+		if rt.Type == RadioTransmissionReadback {
+			rt.Type = RadioTransmissionNoId
+		}
+		rt.Add("[roger|copy the traffic|copy traffic]")
 	case TrafficResponseWhereWasIt:
 		rt.Add("[where was that traffic|where was the traffic|where was that traffic again|say again on the traffic]")
 	}
@@ -1097,8 +1102,14 @@ func RenderIntents(intents []CommandIntent, r *rand.Rand) *RadioTransmission {
 	}
 
 	rt := &RadioTransmission{Type: RadioTransmissionReadback}
-	for _, intent := range mergeIntents(intents) {
+	merged := mergeIntents(intents)
+	for _, intent := range merged {
 		intent.Render(rt, r)
+	}
+	// Only a transmission that is nothing but the acknowledgment goes without the
+	// callsign; the rest of a readback still needs it.
+	if rt.Type == RadioTransmissionNoId && len(merged) > 1 {
+		rt.Type = RadioTransmissionReadback
 	}
 
 	return rt

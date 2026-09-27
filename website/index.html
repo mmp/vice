@@ -1011,6 +1011,24 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 </thead>
                 <tbody>
                   <tr>
+                    <td><code>TRAFFIC/<var>oclock</var>/<var>miles</var>/<var>alt</var></code></td>
+                    <td>Issues a traffic advisory (e.g., "traffic, 10 o'clock, 2 miles, 3,000").
+                    The altitude is given in hundreds of feet, or <code>UNK</code> if it is unknown.
+                    The pilot reports the traffic in sight or "looking", depending on conditions.</td>
+                    <td><code>TRAFFIC/10/2/30</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>TRAFFIC</code></td>
+                    <td>Asks the pilot whether they have previously-called traffic in sight.</td>
+                    <td><code>TRAFFIC</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>TRAFFIC/INSIGHT</code></td>
+                    <td>Issues a traffic advisory for an aircraft that "has you in sight and will maintain visual separation".
+                    The pilot doesn't look for the traffic and just replies "roger", without their callsign.</td>
+                    <td><code>TRAFFIC/INSIGHT</code></td>
+                  </tr>
+                  <tr>
                     <td><code>VISSEP</code></td>
                     <td>Instructs the aircraft to maintain visual separation.</td>
                     <td><code>VISSEP</code></td>
@@ -1494,9 +1512,16 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
               <tbody>
                 <tr><td>Traffic Advisory</td>
                   <td>
-                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), they have you in sight and will maintain visual separation</i>.
+                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i>.
                     The variant <i>Traffic landing the parallel, (o'clock), (miles), ...</i> is also accepted.
                     The phrase <i>altitude unknown</i> (or <i>unknown altitude</i>) may be substituted for the numeric altitude when calling primary-only traffic; the simulator will identify the target by position alone.
+                  </td>
+                </tr>
+                <tr><td>Traffic Has You in Sight</td>
+                  <td>
+                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude), has you in sight and will maintain visual separation</i> (or <i>they have you in sight...</i>).
+                    The position may also be given as a direction, as in <i>Traffic off your left, landing the parallel, a (aircraft type), has you in sight and will maintain visual separation</i>.
+                    Since the other aircraft is maintaining separation, the pilot doesn't look for it and just replies "roger", without their callsign.
                   </td>
                 </tr>
                 <tr><td>Traffic in Sight Inquiry</td>

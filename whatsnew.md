@@ -3,6 +3,7 @@
 adjustments for TAS
 - Flight model
   - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
+  - Traffic calls ending "has you in sight and will maintain visual separation" (`TRAFFIC/INSIGHT`) now get just "roger", without a callsign
   - Fixed vectored aircraft given "intercept localizer" then flying procedure turns after being cleared for the approach
   - Fixed multiple bugs with airspeed handling and altitude/temperature
   - VFRs are better at scud-running under B and C airspace shelves

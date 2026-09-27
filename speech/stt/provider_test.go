@@ -3409,7 +3409,7 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123 TRAFFIC/10/2/30/VISSEP",
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 		{
 			name:       "landing the parallel with other traffic maintaining visual",
@@ -3417,7 +3417,7 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123 TRAFFIC/10/2/30/VISSEP",
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 		{
 			name:       "other traffic maintains visual with dropped word",
@@ -3425,7 +3425,7 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123 TRAFFIC/10/2/30/VISSEP",
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 		{
 			name:       "other traffic maintains visual with misheard sight",
@@ -3433,7 +3433,7 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123 TRAFFIC/10/2/30/VISSEP",
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 		{
 			name:       "altitude unknown",
@@ -3465,7 +3465,7 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123 TRAFFIC/2/6/UNK/VISSEP",
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 		{
 			name:       "landing the parallel altitude unknown",
@@ -3534,18 +3534,27 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123 TRAFFIC/9/3/UNK/VISSEP",
+			expected: "AAL123 TRAFFIC/INSIGHT",
+		},
+		{
+			// "has you in sight" after a full o'clock/miles/type/altitude call.
+			name:       "has you in sight after altitude",
+			transcript: "American 123 traffic ten o'clock two miles a seven thirty seven three thousand has you in sight and will maintain visual separation",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 		{
 			// Descriptor-position advisory ("off your left"), no o'clock,
-			// no miles, no altitude. Pilot has nothing to do — pattern
-			// emits empty command, framework returns just the callsign.
+			// no miles, no altitude. The pilot doesn't need a position
+			// since they don't look for the traffic.
 			name:       "descriptor position off your left visual sep",
 			transcript: "American 123 traffic off your left landing the parallel a twin Cessna has you in sight and will maintain visual separation",
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123",
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 		{
 			// Same shape, "from the north" descriptor.
@@ -3554,7 +3563,7 @@ func TestTrafficAdvisorySTTPatterns(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival", Altitude: 5000},
 			},
-			expected: "AAL123",
+			expected: "AAL123 TRAFFIC/INSIGHT",
 		},
 	}
 

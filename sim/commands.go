@@ -326,7 +326,7 @@ func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (spe
 }
 
 // TrafficAdvisory handles controller-issued traffic advisories.
-func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, trafficAlt int, altUnknown, otherMaintainsVisual bool) (speech.CommandIntent, error) {
+func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, trafficAlt int, altUnknown bool) (speech.CommandIntent, error) {
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error { return nil },
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
@@ -335,10 +335,21 @@ func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, oclock, miles, 
 			s.cancelFutureTrafficCheck(ac.ADSBCallsign)
 			ac.clearOfferedToMaintainSeparation()
 
-			if otherMaintainsVisual {
-				return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseAcknowledged}
-			}
 			return s.handleTrafficAdvisory(ac, oclock, miles, trafficAlt, altUnknown)
+		})
+}
+
+// TrafficHasYouInSight handles a traffic call that ends with "(traffic) has you in sight
+// and will maintain visual separation". The pilot has nothing to look for and just
+// acknowledges it.
+func (s *Sim) TrafficHasYouInSight(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
+	return s.dispatchAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) error { return nil },
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
+			s.cancelFutureTrafficCheck(ac.ADSBCallsign)
+			ac.clearOfferedToMaintainSeparation()
+
+			return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseAcknowledged}
 		})
 }
 
