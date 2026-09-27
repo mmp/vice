@@ -1,4 +1,4 @@
-- Scenario updates: IND (Ethan Hawes), D01 (Mike Fries)
+- Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B)
 - Added delay before launching subsequent same-exit departures
 adjustments for TAS
 - Flight model

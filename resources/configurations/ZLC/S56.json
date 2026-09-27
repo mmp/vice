@@ -66,21 +66,20 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "CARTR1.N": "1K",
-          "CARTR1.S": "1K",
-          "JAZZZ1": "1K",
-          "PITTT2.E": "1K",
-          "PITTT2.S": "1K",
-          "QWENN7.BCE": "1K",
-          "QWENN7.MLF": "1K",
-          "YUTES2.N": "1K",
-          "YUTES2.S": "1K"
+          "CARTR1.N": "1B",
+          "JAZZZ1": "1J",
+          "QWENN7.BCE": "1J",
+          "QWENN7.MLF": "1J",
+          "YUTES2.N": "1S"
         },
         "departure_assignments": {
-          "KSLC": "1K"
+          "KSLC/ARCHZ1": "1S",
+          "KSLC/CGULL1": "1G",
+          "KSLC/DEZRT2": "1G",
+          "KSLC/RUGGD3": "1K"
         },
         "default_consolidation": {
-          "1K": []
+          "1K": ["1A", "1B", "1F", "1G", "1H", "1J", "1S", "1V"]
         }
       }
     },
