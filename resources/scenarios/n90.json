@@ -16,7 +16,21 @@
           "full_name": "River Visual Runway 13",
           "runway": "13",
           "type": "ChartedVisual",
-          "waypoints": ["VEZEE/a4000 ZTONI LAYDE LBRTY/a3300- RAIOH ZLNGR"]
+          "waypoints": ["VEZEE/a4000 ZTONI LAYDE LBRTY/a3300- RAIOH ZLNGR"],
+          "reporting_points": {
+            "VZ": {
+              "names": ["Verrazzano Narrows bridge", "v-z bridge"],
+              "location": "VEZEE"
+            },
+            "PIERS": {
+              "names": ["Twin piers"],
+              "location": "ZTONI"
+            },
+            "LIB": {
+              "names": ["Statue of Liberty", "statue"],
+              "location": "LAYDE"
+            }
+          }
         },
         "I22": {
           "cifp_id": "I22"
@@ -50,7 +64,25 @@
           "type": "ChartedVisual",
           "waypoints": [
             "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+"
-          ]
+          ],
+          "reporting_points": {
+            "VZ": {
+              "names": ["Verrazzano Narrows bridge", "v-z bridge", "bridge"],
+              "location": "VEZEE"
+            },
+            "PROSPECT": {
+              "names": ["Prospect park", "park"],
+              "location": "PACHU"
+            },
+            "HIGHRISES": {
+              "names": ["Seven high rises", "high rises"],
+              "location": "N040.42.16.660,W073.57.41.984"
+            },
+            "TANKS": {
+              "names": ["Twin white tanks", "twin tanks"],
+              "location": "N040.43.51.816,W073.55.39.321"
+            }
+          }
         },
         "L31": {
           "cifp_id": "L31"
@@ -1095,7 +1127,29 @@
           "full_name": "Stadium Visual Runway 29",
           "runway": "29",
           "type": "ChartedVisual",
-          "waypoints": ["TEB/a3000 GIMEE/a2500 HILOK/a1500-2000 SLIMR/a1500-2000 COPKO/a700 CHUMR/a500"]
+          "waypoints": ["TEB/a3000 GIMEE/a2500 HILOK/a1500-2000 SLIMR/a1500-2000 COPKO/a700 CHUMR/a500"],
+          "reporting_points": {
+            "TEB": {
+              "names": ["Teterboro"],
+              "location": "TEB"
+            },
+            "MEADOWLANDS": {
+              "names": ["Meadowlands"],
+              "location": "GIMEE"
+            },
+            "LAURELHILL": {
+              "names": ["Laurel Hill Park"],
+              "location": "HILOK"
+            },
+            "CEMETERY": {
+              "names": ["Cemetery"],
+              "location": "N040.44.22.371,W074.03.55.437"
+            },
+            "LINCOLN": {
+              "names": ["Lincoln Park"],
+              "location": "SLIMR"
+            }
+          }
         }
       },
       "crda_regions": {
@@ -4141,7 +4195,25 @@
           "type": "ChartedVisual",
           "waypoints": [
             "N040.28.17.250,W074.00.28.729 N040.35.46.632,W073.54.23.543/a1500+ CRI N040.39.00.280,W073.51.11.310 N040.40.04.344,W073.49.33.147 N040.39.38.608,W073.47.49.161"
-          ]
+          ],
+          "reporting_points": {
+            "ROCKAWAY": {
+              "names": ["Rockaway point"],
+              "location": "N040.33.19.456,W073.56.19.476"
+            },
+            "KINGSBOROUGH": {
+              "names": ["Kingsborough Community College", "Kingsborough"],
+              "location": "N040.34.42.403,W073.56.17.719"
+            },
+            "CLOVERLEAF": {
+              "names": ["Cloverleaf", "Shore Parkway", "Flatbush Avenue"],
+              "location": "N040.35.52.098,W073.54.03.218"
+            },
+            "PIER": {
+              "names": ["Canarsie Pier", "pier"],
+              "location": "N040.37.56.078,W073.52.51.066"
+            }
+          }
         },
         "R3R": {
           "full_name": "RNAV Z Runway 13 Right",
@@ -4167,7 +4239,25 @@
           "type": "ChartedVisual",
           "waypoints": [
             "N040.28.17.250,W074.00.28.729 N040.35.46.632,W073.54.23.543/a1500+ CRI N040.39.00.280,W073.51.11.310"
-          ]
+          ],
+          "reporting_points": {
+            "ROCKAWAY": {
+              "names": ["Rockaway point"],
+              "location": "N040.33.19.456,W073.56.19.476"
+            },
+            "KINGSBOROUGH": {
+              "names": ["Kingsborough Community College", "Kingsborough"],
+              "location": "N040.34.42.403,W073.56.17.719"
+            },
+            "CLOVERLEAF": {
+              "names": ["Cloverleaf", "Shore Parkway", "Flatbush Avenue"],
+              "location": "N040.35.52.098,W073.54.03.218"
+            },
+            "PIER": {
+              "names": ["Canarsie Pier", "pier"],
+              "location": "N040.37.56.078,W073.52.51.066"
+            }
+          }
         },
         "I2L": {
           "cifp_id": "I22L"
@@ -4184,7 +4274,21 @@
           "type": "ChartedVisual",
           "waypoints": [
             "N040.48.24.798,W073.22.52.247 N040.47.44.094,W073.25.04.879 N040.48.28.905,W073.31.48.599 N040.46.55.988,W073.32.51.771/a3000+ ZALPO/a1600"
-          ]
+          ],
+          "reporting_points": {
+            "CEMETERY": {
+              "names": ["National Cemetery", "cemetery"],
+              "location": "N040.46.45.674,W073.22.55.213"
+            },
+            "LANDFILL": {
+              "names": ["Landfill"],
+              "location": "N040.44.29.485,W073.22.01.600"
+            },
+            "BELMONT": {
+              "names": ["Belmont race track", "race track"],
+              "location": "N040.43.32.329,W073.41.52.271"
+            }
+          }
         },
         "I2R": {
           "cifp_id": "I22R"
@@ -7280,7 +7384,7 @@
         "V11": {
           "full_name": "Visual Runway 11",
           "runway": "11",
-          "type": "ChartedVisual",
+          "type": "Visual",
           "waypoints": ["N041.11.10.481,W073.20.21.542/a2000 N041.10.32.249,W073.13.36.174/a1800"]
         }
       },
@@ -7355,13 +7459,13 @@
         "V33": {
           "full_name": "Visual Runway 33",
           "runway": "33",
-          "type": "ChartedVisual",
+          "type": "Visual",
           "waypoints": ["N040.45.13.719,W072.30.32.986/a2000 N040.47.43.462,W072.34.04.857/a1500"]
         },
         "V15": {
           "full_name": "Visual Runway 15",
           "runway": "15",
-          "type": "ChartedVisual",
+          "type": "Visual",
           "waypoints": ["N040.55.37.756,W072.45.26.229/a2000 N040.53.07.998,W072.41.45.734/a1500"]
         }
       },

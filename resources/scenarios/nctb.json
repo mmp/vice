@@ -443,7 +443,21 @@
           "full_name": "Tipp Toe Visual Runway 28R",
           "waypoints": [
             "EDDYY/a6000 SIDBY/a5000+ CHERA N037.33.59.927,W122.13.07.857/a2000+ N037.34.43.763,W122.15.11.260/a1500+"
-          ]
+          ],
+          "reporting_points": {
+            "PLANT": {
+              "names": ["cement plant", "plant"],
+              "location": "N037.31.56.674,W122.13.27.275"
+            },
+            "DBRIDGE": {
+              "names": ["Dumbarton bridge", "Dumbarton"],
+              "location": "N037.30.21.368,W122.07.05.967"
+            },
+            "SMBRIDGE": {
+              "names": ["San Mateo bridge"],
+              "location": "N037.35.03.977,W122.15.04.751"
+            }
+          }
         },
         "TTL": {
           "runway": "28L",
@@ -451,7 +465,21 @@
           "full_name": "Tipp Toe Visual Runway 28L",
           "waypoints": [
             "EDDYY/a6000 SIDBY/a5000+ CHERA N037.33.26.350,W122.13.39.552/a2300+ N037.34.11.367,W122.15.31.063/a1500+"
-          ]
+          ],
+          "reporting_points": {
+            "PLANT": {
+              "names": ["cement plant", "plant"],
+              "location": "N037.31.56.674,W122.13.27.275"
+            },
+            "DBRIDGE": {
+              "names": ["Dumbarton bridge", "Dumbarton"],
+              "location": "N037.30.21.368,W122.07.05.967"
+            },
+            "SMBRIDGE": {
+              "names": ["San Mateo bridge"],
+              "location": "N037.35.03.977,W122.15.04.751"
+            }
+          }
         }
       },
       "departure_controller": "4U",
