@@ -457,7 +457,7 @@ func (lc *LaunchConfig) InboundFlowIsBackground(flow, airport string) bool {
 
 // MaxLaunchRate is the most departures an hour a launch config may ask for,
 // and separately the most arrivals and overflights.
-const MaxLaunchRate = 100
+const MaxLaunchRate = 150
 
 // CheckRateLimits returns true if both total departure rates and total inbound flow rates
 // sum to no more than MaxLaunchRate (aircraft per hour)

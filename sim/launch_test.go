@@ -607,7 +607,7 @@ func TestLaunchConfigValidate(t *testing.T) {
 		}},
 		{"negative VFF request rate", func(lc *LaunchConfig) { lc.VFFRequestRate = -1 }},
 		{"too many arrivals", func(lc *LaunchConfig) { lc.InboundFlowRates["WORKED"]["KMSP"] = MaxLaunchRate }},
-		{"too many departures", func(lc *LaunchConfig) { lc.DepartureRateScale = 5 }},
+		{"too many departures", func(lc *LaunchConfig) { lc.DepartureRateScale = 10 }},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			lc := backgroundRateConfig()
