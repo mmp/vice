@@ -550,6 +550,7 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 	}
 
 	if changed {
+		lc.client.State.LaunchConfig.ClampRates()
 		lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 	}
 

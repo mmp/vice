@@ -7,6 +7,7 @@ package sim
 import (
 	"errors"
 	"maps"
+	gomath "math"
 	"reflect"
 	"slices"
 	"testing"
@@ -576,5 +577,44 @@ func TestWorkedFlowCountsWithoutClassification(t *testing.T) {
 	}
 	if got, want := lc.WorkedOverflightGroups(), []string{"BACKGROUND", "WORKED"}; !slices.Equal(got, want) {
 		t.Errorf("WorkedOverflightGroups = %v, want %v", got, want)
+	}
+}
+
+// Schedule generation steps through time at the configured rates, and a rate
+// that is negative or not a number never gets anywhere. A client can send any
+// launch config, so these have to be turned away.
+func TestLaunchConfigValidate(t *testing.T) {
+	if err := backgroundRateConfig().Validate(); err != nil {
+		t.Errorf("valid config: %v", err)
+	}
+
+	atLimit := backgroundRateConfig()
+	atLimit.DepartureRates["KMSP"]["30L"][""] = MaxLaunchRate - 5
+	if err := atLimit.Validate(); err != nil {
+		t.Errorf("config at the rate limit: %v", err)
+	}
+
+	for _, test := range []struct {
+		name   string
+		modify func(lc *LaunchConfig)
+	}{
+		{"negative arrival rate", func(lc *LaunchConfig) { lc.InboundFlowRates["WORKED"]["KMSP"] = -3 }},
+		{"negative overflight rate", func(lc *LaunchConfig) { lc.InboundFlowRates["WORKED"]["overflights"] = -1 }},
+		{"negative departure rate", func(lc *LaunchConfig) { lc.DepartureRates["KMSP"]["30L"][""] = -1 }},
+		{"NaN rate scale", func(lc *LaunchConfig) { lc.InboundFlowRateScale = float32(gomath.NaN()) }},
+		{"infinite VFR rate", func(lc *LaunchConfig) {
+			lc.VFRAirportRates = map[av.ICAOAirportCode]float32{"KFCM": float32(gomath.Inf(1))}
+		}},
+		{"negative VFF request rate", func(lc *LaunchConfig) { lc.VFFRequestRate = -1 }},
+		{"too many arrivals", func(lc *LaunchConfig) { lc.InboundFlowRates["WORKED"]["KMSP"] = MaxLaunchRate }},
+		{"too many departures", func(lc *LaunchConfig) { lc.DepartureRateScale = 5 }},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			lc := backgroundRateConfig()
+			test.modify(lc)
+			if err := lc.Validate(); !errors.Is(err, ErrInvalidLaunchConfig) {
+				t.Errorf("error is %v, want %v", err, ErrInvalidLaunchConfig)
+			}
+		})
 	}
 }

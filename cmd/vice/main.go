@@ -571,11 +571,16 @@ func selectRandomScenario(srv *client.Server) (server.NewSimRequest, error) {
 
 	choice := rand.SampleSlice(rand.Make(), choices)
 
+	// The server rejects rates over its limits. Clamp them as the new sim
+	// dialog does, in a copy so that the catalog's defaults are left alone.
+	spec := *choice.spec
+	spec.LaunchConfig.ClampRates()
+
 	return server.NewSimRequest{
 		Facility:     choice.tracon,
 		GroupName:    choice.groupName,
 		ScenarioName: choice.scenarioName,
-		ScenarioSpec: choice.spec,
+		ScenarioSpec: &spec,
 	}, nil
 }
 

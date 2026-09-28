@@ -9,6 +9,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -237,7 +238,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 
 					r := lc.DepartureRateScale * lc.DepartureRates[airport][runway][category]
 					if imgui.InputFloatV("##adr", &r, 0, 0, "%g", 0) {
-						lc.DepartureRates[airport][runway][category] = r / max(.01, lc.DepartureRateScale)
+						lc.DepartureRates[airport][runway][category] = math.Clamp(r, 0, sim.MaxLaunchRate) / max(.01, lc.DepartureRateScale)
 						changed = true
 					}
 
@@ -278,7 +279,10 @@ func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool
 	if !lc.HaveVFRReportingRegions {
 		imgui.BeginDisabled()
 	}
-	changed = imgui.InputIntV("Flight following request rate", &lc.VFFRequestRate, 0, 60, 0) || changed
+	if imgui.InputIntV("Flight following request rate", &lc.VFFRequestRate, 0, 60, 0) {
+		lc.VFFRequestRate = max(0, lc.VFFRequestRate)
+		changed = true
+	}
 	if !lc.HaveVFRReportingRegions {
 		imgui.EndDisabled()
 	}
@@ -355,7 +359,7 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 					r := rate * lc.InboundFlowRateScale
 					if imgui.InputFloatV("##aar-"+string(ap), &r, 0, 0, "%g", 0) {
 						changed = true
-						lc.InboundFlowRates[group][string(ap)] = r / max(.01, lc.InboundFlowRateScale)
+						lc.InboundFlowRates[group][string(ap)] = math.Clamp(r, 0, sim.MaxLaunchRate) / max(.01, lc.InboundFlowRateScale)
 					}
 					aarCol++
 
@@ -418,7 +422,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 			r := lc.InboundFlowRates[group]["overflights"] * lc.InboundFlowRateScale
 			if imgui.InputFloatV("##of-"+group, &r, 0, 0, "%g", 0) {
 				changed = true
-				lc.InboundFlowRates[group]["overflights"] = r / max(.01, lc.InboundFlowRateScale)
+				lc.InboundFlowRates[group]["overflights"] = math.Clamp(r, 0, sim.MaxLaunchRate) / max(.01, lc.InboundFlowRateScale)
 			}
 			ofCol++
 

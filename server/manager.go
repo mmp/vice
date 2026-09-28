@@ -202,6 +202,11 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 		return nil, err
 	}
 
+	if err := req.ScenarioSpec.LaunchConfig.Validate(); err != nil {
+		lg.Warn("rejected launch config", slog.Any("launch_config", req.ScenarioSpec.LaunchConfig))
+		return nil, err
+	}
+
 	nsc, err := sg.NewSimConfiguration(req.ScenarioName, req.ScenarioSpec.LaunchConfig)
 	if err != nil {
 		lg.Errorf("%s: %v", req.ScenarioName, err)

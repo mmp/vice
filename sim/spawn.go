@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"maps"
+	gomath "math"
 	"slices"
 	"time"
 
@@ -454,28 +455,58 @@ func (lc *LaunchConfig) InboundFlowIsBackground(flow, airport string) bool {
 	return lc.InboundFlowBackground[flow][airport]
 }
 
+// MaxLaunchRate is the most departures an hour a launch config may ask for,
+// and separately the most arrivals and overflights.
+const MaxLaunchRate = 100
+
 // CheckRateLimits returns true if both total departure rates and total inbound flow rates
-// sum to less than the provided limit (aircraft per hour)
-func (lc *LaunchConfig) CheckRateLimits(limit float32) bool {
+// sum to no more than MaxLaunchRate (aircraft per hour)
+func (lc *LaunchConfig) CheckRateLimits() bool {
 	totalDepartures := lc.TotalDepartureRate()
 	totalInbound := lc.TotalInboundFlowRate()
-	return totalDepartures < limit && totalInbound < limit
+	return totalDepartures <= MaxLaunchRate && totalInbound <= MaxLaunchRate
 }
 
 // ClampRates adjusts the rate scale variables to ensure the total launch rate
-// does not exceed the given limit (aircraft per hour)
-func (lc *LaunchConfig) ClampRates(limit float32) {
+// does not exceed MaxLaunchRate (aircraft per hour)
+func (lc *LaunchConfig) ClampRates() {
 	baseDepartureRate := lc.TotalDepartureRate()
 	baseInboundRate := lc.TotalInboundFlowRate()
 
 	// If either rate would exceed the limit with current scale, adjust it
-	if baseDepartureRate > limit {
-		lc.DepartureRateScale *= limit / baseDepartureRate * 0.99
+	if baseDepartureRate > MaxLaunchRate {
+		lc.DepartureRateScale *= MaxLaunchRate / baseDepartureRate * 0.99
 	}
 
-	if baseInboundRate > limit {
-		lc.InboundFlowRateScale *= limit / baseInboundRate * 0.99
+	if baseInboundRate > MaxLaunchRate {
+		lc.InboundFlowRateScale *= MaxLaunchRate / baseInboundRate * 0.99
 	}
+}
+
+// Validate returns ErrInvalidLaunchConfig if lc has a rate or rate scale that
+// is negative, infinite, or not a number, or if it asks for more traffic than
+// CheckRateLimits allows. Clients can send anything, and schedule generation,
+// which steps through time at these rates, never finishes with some of them.
+func (lc *LaunchConfig) Validate() error {
+	valid := func(r float32) bool { return r >= 0 && !gomath.IsInf(float64(r), 1) }
+
+	ok := valid(lc.DepartureRateScale) && valid(lc.InboundFlowRateScale) && valid(lc.VFRDepartureRateScale) &&
+		valid(lc.PublishedArrivalRateScale) && valid(lc.PublishedDepartureRateScale) &&
+		valid(lc.EmergencyAircraftRate) && lc.VFFRequestRate >= 0 &&
+		util.SeqContainsAllFunc(maps.Values(lc.VFRAirportRates), valid)
+	for _, runwayRates := range lc.DepartureRates {
+		for _, categoryRates := range runwayRates {
+			ok = ok && util.SeqContainsAllFunc(maps.Values(categoryRates), valid)
+		}
+	}
+	for _, flowRates := range lc.InboundFlowRates {
+		ok = ok && util.SeqContainsAllFunc(maps.Values(flowRates), valid)
+	}
+
+	if !ok || !lc.CheckRateLimits() {
+		return ErrInvalidLaunchConfig
+	}
+	return nil
 }
 
 // sumRateMap2 computes the total rate from a nested map structure
@@ -492,6 +523,11 @@ func sumRateMap2(rates map[av.RunwayID]map[string]float32, scale float32) float3
 // SetLaunchConfig changes the sim's launch config. published is what
 // PublishedFlightsFor read for it.
 func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig, published []traffic.Flight) error {
+	if err := lc.Validate(); err != nil {
+		s.lg.Warn("rejected launch config", slog.Any("launch_config", lc))
+		return err
+	}
+
 	old := s.State.LaunchConfig
 
 	// Update the runway launch state for any rates that changed. All of
@@ -717,26 +753,36 @@ func sumRateMap(rates map[string]float32, scale float32) float32 {
 	return sum
 }
 
+// maxSpawnWait is the wait when the rate is zero. It also bounds the waits
+// for tiny rates, which would otherwise overflow a time.Duration; on amd64
+// the overflow comes out negative.
+const maxSpawnWait = 365 * 24 * time.Hour
+
 func randomWait(rate float32, pushActive bool, r *rand.Rand) time.Duration {
 	if rate == 0 {
-		return 365 * 24 * time.Hour
+		return maxSpawnWait
 	}
 	if pushActive {
 		rate = rate * 3 / 2
 	}
 
 	avgSeconds := 3600 / rate
-	seconds := r.Float32Range(.85*avgSeconds, 1.15*avgSeconds)
-	return time.Duration(seconds * float32(time.Second))
+	return spawnWait(r.Float32Range(.85*avgSeconds, 1.15*avgSeconds))
 }
 
 // Wait from 0 up to the rate.
 func randomInitialWait(rate float32, r *rand.Rand) time.Duration {
 	if rate == 0 {
-		return 365 * 24 * time.Hour
+		return maxSpawnWait
 	}
 
-	seconds := r.Float32Range(0, 3600/rate)
+	return spawnWait(r.Float32Range(0, 3600/rate))
+}
+
+func spawnWait(seconds float32) time.Duration {
+	if seconds >= float32(maxSpawnWait/time.Second) {
+		return maxSpawnWait
+	}
 	return time.Duration(seconds * float32(time.Second))
 }
 

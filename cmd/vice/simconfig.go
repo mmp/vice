@@ -1298,9 +1298,8 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	drawSectionHeader("Traffic Rates")
 
 	// Rate limit warning
-	const rateLimit = 100.0
-	if !c.ScenarioSpec.LaunchConfig.CheckRateLimits(rateLimit) {
-		c.ScenarioSpec.LaunchConfig.ClampRates(rateLimit)
+	if !c.ScenarioSpec.LaunchConfig.CheckRateLimits() {
+		c.ScenarioSpec.LaunchConfig.ClampRates()
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
 		imgui.Text(gui.Icons.ExclamationTriangle + " Rates reduced to stay within limits")
 		imgui.PopStyleColor()

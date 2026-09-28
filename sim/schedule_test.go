@@ -6,6 +6,7 @@ package sim
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
@@ -13,6 +14,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/traffic"
 )
 
@@ -620,5 +622,39 @@ func TestScheduleSurvivesSaveAndReload(t *testing.T) {
 	}
 	if !reflect.DeepEqual(s.Schedule, reloaded.Schedule) {
 		t.Error("schedule changed across a save and reload")
+	}
+}
+
+// A negative arrival rate once had regenerating the schedule step backward
+// through time forever with the sim locked, which wedged the server.
+func TestSetLaunchConfigRejectsInvalidRates(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := scenarioScheduleTestSim(start)
+	s.generateSchedule(nil)
+	arrivals := len(s.Schedule.Arrivals)
+
+	lc := s.State.LaunchConfig
+	lc.InboundFlowRates = map[string]map[string]float32{"TEST": {"KMSP": -3, "overflights": 10}}
+	if err := s.SetLaunchConfig("", lc, nil); !errors.Is(err, ErrInvalidLaunchConfig) {
+		t.Errorf("error is %v, want %v", err, ErrInvalidLaunchConfig)
+	}
+	if r := s.State.LaunchConfig.InboundFlowRates["TEST"]["KMSP"]; r != 20 {
+		t.Errorf("arrival rate %v after the rejected config, want 20", r)
+	}
+	if n := len(s.Schedule.Arrivals); n != arrivals {
+		t.Errorf("%d scheduled arrivals after the rejected config, want %d", n, arrivals)
+	}
+}
+
+// The waits for tiny rates are longer than a time.Duration holds. On amd64
+// the conversion's overflow came out negative, and schedule generation then
+// stepped backward through time forever.
+func TestRandomWaitTinyRate(t *testing.T) {
+	r := rand.Make()
+	if w := randomWait(1e-7, false, r); w != maxSpawnWait {
+		t.Errorf("randomWait = %s, want %s", w, maxSpawnWait)
+	}
+	if w := randomInitialWait(1e-7, r); w < 0 || w > maxSpawnWait {
+		t.Errorf("randomInitialWait = %s, want within [0, %s]", w, maxSpawnWait)
 	}
 }
