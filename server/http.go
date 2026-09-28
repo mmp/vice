@@ -95,22 +95,25 @@ func (ss simStatus) LogValue() slog.Value {
 }
 
 func (sm *SimManager) GetSimStatus() []simStatus {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
 	var status []simStatus
+	var sessions []*simSession
+	sm.mu.Lock(sm.lg)
 	for name, ss := range util.SortedMap(sm.sessionsByName) {
 		activeTCWs := util.MapSlice(ss.getActiveTCWs(), func(tcw sim.TCW) string { return string(tcw) })
-		st := simStatus{
+		status = append(status, simStatus{
 			Name:       name,
 			Config:     ss.scenario,
 			ActiveTCWs: strings.Join(activeTCWs, ", "),
-		}
-		ss.withSim(func() {
-			st.TotalIFR, st.TotalVFR = ss.sim.GetTrafficCounts()
-			st.IdleTime = ss.sim.IdleTime().Round(time.Second)
 		})
-		status = append(status, st)
+		sessions = append(sessions, ss)
+	}
+	sm.mu.Unlock(sm.lg)
+
+	for i, ss := range sessions {
+		ss.withSim(func() {
+			status[i].TotalIFR, status[i].TotalVFR = ss.sim.GetTrafficCounts()
+			status[i].IdleTime = ss.sim.IdleTime().Round(time.Second)
+		})
 	}
 
 	return status

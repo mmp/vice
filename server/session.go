@@ -17,6 +17,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -46,12 +47,22 @@ type simSession struct {
 	password string
 	// connectionsByToken holds the controllers connected to the sim. Like
 	// the SimManager's session tables, it is guarded by SimManager.mu.
+	// Controllers are added and removed with mu held as well, so that
+	// signing on and off happens one controller at a time.
 	connectionsByToken map[string]*connectionState
+
+	// GetRunningSims lists every session for each client that connects, so
+	// it can't wait on mu: a sim that is slow to finish a request would hold
+	// up every connection. It reads these instead. The scenario's default
+	// consolidation never changes, and consolidation is a copy of the sim's
+	// current one that apply refreshes, since only requests change it.
+	defaultConsolidation sim.PositionConsolidation
+	consolidation        atomic.Pointer[map[sim.TCW]*sim.TCPConsolidation]
 
 	// mu is the sim's lock. It is held while the sim ticks and while a
 	// request changes or reads it, so that each request happens between two
 	// ticks and the session log records it at the sim time it took effect.
-	// SimManager.mu may be held while acquiring it, never the reverse.
+	// It may be held while acquiring SimManager.mu, never the reverse.
 	mu util.LoggingMutex
 	// log is the session log, if the server is writing one for the
 	// session. It is only accessed with mu held.
@@ -72,15 +83,18 @@ func makeSimSession(name, scenarioGroup, scenario, password string, s *sim.Sim, 
 	if name != "" {
 		lg = lg.With(slog.String("sim_name", name))
 	}
-	return &simSession{
-		name:               name,
-		scenarioGroup:      scenarioGroup,
-		scenario:           scenario,
-		sim:                s,
-		password:           password,
-		lg:                 lg,
-		connectionsByToken: make(map[string]*connectionState),
+	ss := &simSession{
+		name:                 name,
+		scenarioGroup:        scenarioGroup,
+		scenario:             scenario,
+		sim:                  s,
+		password:             password,
+		lg:                   lg,
+		connectionsByToken:   make(map[string]*connectionState),
+		defaultConsolidation: s.DefaultConsolidation(),
 	}
+	ss.saveConsolidation()
+	return ss
 }
 
 func makeLocalSimSession(s *sim.Sim, lg *log.Logger) *simSession {
@@ -115,11 +129,25 @@ func (ss *simSession) apply(tcw sim.TCW, method string, args any, f func() error
 	ss.mu.Lock(ss.lg)
 	defer ss.mu.Unlock(ss.lg)
 
+	return ss.applyLocked(tcw, method, args, f)
+}
+
+// applyLocked is apply for a caller that already holds mu.
+func (ss *simSession) applyLocked(tcw sim.TCW, method string, args any, f func() error) error {
 	t := ss.sim.SimTime()
 	ss.request = simlog.Request{}
 	err := f()
 	ss.recordRequest(t, tcw, method, args, err)
+	ss.saveConsolidation()
 	return err
+}
+
+// saveConsolidation copies the sim's current consolidation for
+// getCurrentConsolidation. The caller holds mu, unless the session isn't
+// running yet.
+func (ss *simSession) saveConsolidation() {
+	c := ss.sim.GetCurrentConsolidation()
+	ss.consolidation.Store(&c)
 }
 
 func (ss *simSession) recordRequest(t sim.Time, tcw sim.TCW, method string, args any, err error) {
@@ -243,11 +271,8 @@ func (ss *simSession) withSim(f func()) {
 }
 
 // startLog starts recording the session in w, which already holds the
-// snapshot the sim started from.
+// snapshot the sim started from. The caller holds mu.
 func (ss *simSession) startLog(w *simlog.Writer) {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
 	ss.log = w
 	ss.sim.SetSessionLog(w)
 }
@@ -271,7 +296,7 @@ func (ss *simSession) closeLog() {
 // Controller Lifecycle
 
 // addHumanController connects a controller to the sim at tcw. The caller
-// holds SimManager.mu.
+// holds mu and SimManager.mu.
 func (ss *simSession) addHumanController(token string, tcw sim.TCW, initials string,
 	sub *sim.EventsSubscription) {
 	ss.connectionsByToken[token] = &connectionState{
@@ -281,9 +306,6 @@ func (ss *simSession) addHumanController(token string, tcw sim.TCW, initials str
 		lastUpdateCall:      time.Now(),
 		stateUpdateEventSub: sub,
 	}
-
-	// Update pause state - may unpause sim now that a human is connected
-	ss.updateSimPauseState()
 }
 
 type signOffResult struct {
@@ -293,7 +315,7 @@ type signOffResult struct {
 }
 
 // signOff disconnects the controller with the given token and reports how
-// many others remain at its TCW. The caller holds SimManager.mu.
+// many others remain at its TCW. The caller holds mu and SimManager.mu.
 func (ss *simSession) signOff(token string) (signOffResult, bool) {
 	conn, ok := ss.connectionsByToken[token]
 	if !ok {
@@ -319,18 +341,14 @@ func (ss *simSession) signOff(token string) (signOffResult, bool) {
 		}
 	}
 
-	// Update pause state - may pause sim if no humans remain
-	ss.updateSimPauseState()
-
 	return result, true
 }
 
-// updateSimPauseState pauses the sim if no humans are connected, unpauses if at least one.
-// The caller holds SimManager.mu.
-func (ss *simSession) updateSimPauseState() {
-	hasHumans := util.SeqContainsFunc(maps.Values(ss.connectionsByToken),
+// hasHumans reports whether any human is connected; the sim is paused when
+// none is. The caller holds SimManager.mu.
+func (ss *simSession) hasHumans() bool {
+	return util.SeqContainsFunc(maps.Values(ss.connectionsByToken),
 		func(conn *connectionState) bool { return conn.tcw != "" })
-	ss.withSim(func() { ss.sim.SetPausedByServer(!hasHumans) })
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -410,12 +428,9 @@ func (ss *simSession) getCurrentConsolidation() map[sim.TCW]TCPConsolidation {
 		tcwInitials[conn.tcw] = append(tcwInitials[conn.tcw], conn.initials)
 	}
 
-	var current map[sim.TCW]*sim.TCPConsolidation
-	ss.withSim(func() { current = ss.sim.GetCurrentConsolidation() })
-
-	// Get consolidation from sim and add initials
+	// Add the initials to the consolidation the sim's last request left
 	consolidation := make(map[sim.TCW]TCPConsolidation)
-	for tcw, cons := range current {
+	for tcw, cons := range *ss.consolidation.Load() {
 		consolidation[tcw] = TCPConsolidation{
 			TCPConsolidation: *cons,
 			Initials:         tcwInitials[tcw],
@@ -489,7 +504,7 @@ func Replay(sess *simlog.Session, w *simlog.Writer, lg *log.Logger) error {
 
 	ss := makeSimSession("", sess.Header.ScenarioGroup, sess.Header.Scenario, "", s, lg)
 	ss.replaying = true
-	ss.startLog(w)
+	ss.withSim(func() { ss.startLog(w) })
 
 	rp := replayer{
 		sd: &dispatcher{sm: &SimManager{
@@ -547,15 +562,12 @@ func (rp *replayer) request(r *simlog.Request) error {
 		if err := msgpack.Unmarshal(r.Args, &args); err != nil {
 			return fmt.Errorf("%s: %w", r.Method, err)
 		}
-		sm := rp.sd.sm
-		sm.mu.Lock(sm.lg)
-		defer sm.mu.Unlock(sm.lg)
 		req := &JoinSimRequest{TCW: tcw, SelectedTCPs: args.TCPs, Privileged: args.Privileged}
-		if token, sub, err := sm.signOn(rp.ss, req); err == nil {
-			rp.ss.addHumanController(token, tcw, "", sub)
-			sm.sessionsByToken[token] = rp.ss
-			rp.tokens[tcw] = token
-		}
+		rp.ss.withSim(func() {
+			if token, err := rp.sd.sm.SignOn(rp.ss, req); err == nil {
+				rp.tokens[tcw] = token
+			}
+		})
 		return nil
 
 	case signOffMethod:

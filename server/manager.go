@@ -47,9 +47,11 @@ type SimManager struct {
 	providersReady chan struct{}
 	lg             *log.Logger
 
-	// mu guards the session tables and every session's connections. The
-	// lock order is mu, then a session's mu (its sim's lock), then an event
-	// stream's; a session's mu is never held while acquiring this one.
+	// mu guards the session tables and every session's connections. It is
+	// only held briefly: a session's mu (its sim's lock) is held for as long
+	// as the sim takes over a request, so mu is never held while acquiring
+	// one, lest one slow sim hold up every other. The lock order is a
+	// session's mu, then mu, then an event stream's.
 	mu        util.LoggingMutex
 	startTime time.Time
 	httpPort  int
@@ -262,9 +264,8 @@ func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) er
 	defer sm.lg.CatchAndReportCrash()
 
 	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
 	session, ok := sm.sessionsByName[req.SimName]
+	sm.mu.Unlock(sm.lg)
 	if !ok {
 		return ErrNoNamedSim
 	}
@@ -273,37 +274,14 @@ func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) er
 		return ErrInvalidPassword
 	}
 
-	tcw := req.TCW
-
-	var token string
-	var eventSub *sim.EventsSubscription
-	if req.JoiningAsRelief {
-		// Relief mode: don't call sim.SignOn (position already signed in)
-		// Just generate a token for this user
-		token = sm.makeControllerToken()
-
-		// Relief controllers get their own event subscription
-		eventSub = session.sim.Subscribe()
-	} else {
-		// Normal sign-in: check if TCW is already occupied
-		if err := sm.checkTCWAvailable(session, tcw); err != nil {
-			return err
+	var err error
+	session.withSim(func() {
+		var token string
+		if token, err = sm.SignOn(session, req); err == nil {
+			*result = *sm.BuildNewSimResult(session, req.TCW, token)
 		}
-
-		// Normal sign-in: call sim.SignOn
-		var err error
-		token, eventSub, err = sm.signOn(session, req)
-		if err != nil {
-			return err
-		}
-	}
-
-	session.addHumanController(token, tcw, req.Initials, eventSub)
-	sm.sessionsByToken[token] = session
-
-	*result = *sm.buildNewSimResult(session, tcw, token)
-
-	return nil
+	})
+	return err
 }
 
 // makeControllerToken touches no sm.* fields beyond the logger and so
@@ -330,23 +308,24 @@ func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
 	return nil
 }
 
-// buildNewSimResult assembles what a controller that has just signed on is
-// sent. The caller holds sm.mu.
-func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
+// BuildNewSimResult assembles what a controller that has just signed on is
+// sent. The caller holds session.mu.
+func (sm *SimManager) BuildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
+	sm.mu.Lock(sm.lg)
+	activeTCWs := session.getActiveTCWs()
+	sm.mu.Unlock(sm.lg)
+
+	s := session.sim
 	state := &SimState{
+		UserState:  *s.GetUserState(),
 		UserTCW:    tcw,
-		ActiveTCWs: session.getActiveTCWs(),
+		ActiveTCWs: activeTCWs,
 	}
-	var facility string
-	session.withSim(func() {
-		s := session.sim
-		state.UserState = *s.GetUserState()
-		state.ControllerVideoMaps, state.ControllerDefaultVideoMaps, state.ControllerMonitoredBeaconCodeBlocks =
-			s.GetControllerVideoMaps(tcw)
-		state.ControllerVideoMapFile = s.GetControllerVideoMapFile(tcw)
-		state.UserIsPrivileged = s.TCWIsPrivileged(tcw)
-		facility = s.Facility()
-	})
+	state.ControllerVideoMaps, state.ControllerDefaultVideoMaps, state.ControllerMonitoredBeaconCodeBlocks =
+		s.GetControllerVideoMaps(tcw)
+	state.ControllerVideoMapFile = s.GetControllerVideoMapFile(tcw)
+	state.UserIsPrivileged = s.TCWIsPrivileged(tcw)
+	facility := s.Facility()
 
 	// Collect hashes for every video map file the client may need: the
 	// controller's primary file plus any referenced by the scenario brief.
@@ -401,44 +380,47 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 
 	dbHash, dbErr := sm.saveDatabase()
 
-	sm.mu.Lock(sm.lg)
-
-	// Empty sim name is just a local sim, so no problem with replacing it...
-	if prev, ok := sm.sessionsByName[session.name]; ok {
-		if session.name != "" {
+	// The session's mu is held from when it is listed until its creator has
+	// signed on, so that nobody else can sign on at the creator's TCW first.
+	var replaced *simSession
+	session.withSim(func() {
+		sm.mu.Lock(sm.lg)
+		prev, ok := sm.sessionsByName[session.name]
+		if ok && session.name != "" {
 			sm.mu.Unlock(sm.lg)
 			s.Destroy()
-			return ErrDuplicateSimName
+			err = ErrDuplicateSimName
+			return
 		}
-		prev.closeLog()
-	}
-
-	sm.lg.Infof("%s: adding sim", session.name)
-	sm.sessionsByName[session.name] = session
-
-	if dbErr != nil {
-		sm.lg.Errorf("unable to save the static database for the session log: %v", dbErr)
-	} else if w := sm.createSessionLog(session, dbHash, snapshot); w != nil {
-		session.startLog(w)
-	}
-
-	tcw := sim.TCW(initialTCP)
-	joinReq := &JoinSimRequest{
-		TCW:        tcw,
-		Initials:   initials,
-		Privileged: instructor,
-	}
-	token, eventSub, err := sm.signOn(session, joinReq)
-	if err != nil {
+		// Empty sim name is just a local sim, so no problem with replacing it...
+		replaced = prev
+		sm.lg.Infof("%s: adding sim", session.name)
+		sm.sessionsByName[session.name] = session
 		sm.mu.Unlock(sm.lg)
+
+		if dbErr != nil {
+			sm.lg.Errorf("unable to save the static database for the session log: %v", dbErr)
+		} else if w := sm.createSessionLog(session, dbHash, snapshot); w != nil {
+			session.startLog(w)
+		}
+
+		tcw := sim.TCW(initialTCP)
+		joinReq := &JoinSimRequest{
+			TCW:        tcw,
+			Initials:   initials,
+			Privileged: instructor,
+		}
+		var token string
+		if token, err = sm.SignOn(session, joinReq); err == nil {
+			*result = *sm.BuildNewSimResult(session, tcw, token)
+		}
+	})
+	if replaced != nil {
+		replaced.closeLog()
+	}
+	if err != nil {
 		return err
 	}
-
-	session.addHumanController(token, tcw, initials, eventSub)
-	sm.sessionsByToken[token] = session
-	*result = *sm.buildNewSimResult(session, tcw, token)
-
-	sm.mu.Unlock(sm.lg)
 
 	go sm.runSimUpdateLoop(session)
 
@@ -489,9 +471,8 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 // session that has gone quiet and signs it off once it has been quiet for
 // long enough.
 func (sm *SimManager) CullIdleControllers(ss *simSession) {
+	var idle []string
 	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
 	for token, conn := range ss.connectionsByToken {
 		quiet := time.Since(conn.lastUpdateCall)
 		if quiet <= StateUpdateWarn {
@@ -508,9 +489,16 @@ func (sm *SimManager) CullIdleControllers(ss *simSession) {
 		}
 		if quiet > StateUpdateKick {
 			ss.lg.Warnf("%s (%s): signing off idle controller", conn.tcw, conn.initials)
-			if err := sm.signOff(token); err != nil {
-				ss.lg.Errorf("error signing off idle controller: %v", err)
-			}
+			idle = append(idle, token)
+		}
+	}
+	sm.mu.Unlock(sm.lg)
+
+	// Signing off takes the session's mu, which sm.mu is never held while
+	// acquiring.
+	for _, token := range idle {
+		if err := sm.SignOff(token); err != nil {
+			ss.lg.Errorf("error signing off idle controller: %v", err)
 		}
 	}
 }
@@ -518,60 +506,72 @@ func (sm *SimManager) CullIdleControllers(ss *simSession) {
 ///////////////////////////////////////////////////////////////////////////
 // Session Management - Sign On/Off
 
+// SignOff disconnects the controller with the given token. The controller
+// leaves with the session's mu held, so that nobody can sign on at their TCW
+// until the sim is done with them leaving it.
 func (sm *SimManager) SignOff(token string) error {
 	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	return sm.signOff(token)
-}
-
-func (sm *SimManager) signOff(token string) error {
 	session, ok := sm.sessionsByToken[token]
+	sm.mu.Unlock(sm.lg)
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
 
-	delete(sm.sessionsByToken, token)
-
-	result, ok := session.signOff(token)
-	if !ok {
-		return ErrNoSimForControllerToken
-	}
-
-	// If this was the last user at the TCW, post messages and clear privileges
-	if result.UsersAtTCW == 0 {
-		var uncoveredPositions []sim.ControlPosition
-		_ = session.apply(result.TCW, signOffMethod, nil, func() error {
-			session.sim.ClearSTTCommands(result.TCW)
-			session.sim.SetPrivilegedTCW(result.TCW, false)
-			uncoveredPositions = session.sim.GetPositionsForTCW(result.TCW)
-			return nil
-		})
-
-		msg := string(result.TCW)
-		if result.Initials != "" {
-			msg += " (" + result.Initials + ")"
+	session.withSim(func() {
+		sm.mu.Lock(sm.lg)
+		// Someone else may have signed the controller off since the lookup.
+		var result signOffResult
+		var hasHumans bool
+		if _, ok = sm.sessionsByToken[token]; ok {
+			delete(sm.sessionsByToken, token)
+			result, ok = session.signOff(token)
+			hasHumans = session.hasHumans()
 		}
-		msg += " has signed off."
-		session.sim.PostEvent(sim.Event{
-			Type:        sim.StatusMessageEvent,
-			WrittenText: msg,
-		})
+		sm.mu.Unlock(sm.lg)
+		if !ok {
+			return
+		}
 
-		// If there are uncovered positions, post an error message
-		if len(uncoveredPositions) > 0 {
-			tcpStrs := make([]string, len(uncoveredPositions))
-			for i, tcp := range uncoveredPositions {
-				tcpStrs[i] = string(tcp)
-			}
-			slices.Sort(tcpStrs)
-			session.sim.PostEvent(sim.Event{
-				Type:        sim.ErrorMessageEvent,
-				WrittenText: "Uncovered positions: " + strings.Join(tcpStrs, ", "),
+		// Update pause state - may pause sim if no humans remain
+		session.sim.SetPausedByServer(!hasHumans)
+
+		// If this was the last user at the TCW, post messages and clear privileges
+		if result.UsersAtTCW == 0 {
+			var uncoveredPositions []sim.ControlPosition
+			_ = session.applyLocked(result.TCW, signOffMethod, nil, func() error {
+				session.sim.ClearSTTCommands(result.TCW)
+				session.sim.SetPrivilegedTCW(result.TCW, false)
+				uncoveredPositions = session.sim.GetPositionsForTCW(result.TCW)
+				return nil
 			})
-		}
-	}
 
+			msg := string(result.TCW)
+			if result.Initials != "" {
+				msg += " (" + result.Initials + ")"
+			}
+			msg += " has signed off."
+			session.sim.PostEvent(sim.Event{
+				Type:        sim.StatusMessageEvent,
+				WrittenText: msg,
+			})
+
+			// If there are uncovered positions, post an error message
+			if len(uncoveredPositions) > 0 {
+				tcpStrs := make([]string, len(uncoveredPositions))
+				for i, tcp := range uncoveredPositions {
+					tcpStrs[i] = string(tcp)
+				}
+				slices.Sort(tcpStrs)
+				session.sim.PostEvent(sim.Event{
+					Type:        sim.ErrorMessageEvent,
+					WrittenText: "Uncovered positions: " + strings.Join(tcpStrs, ", "),
+				})
+			}
+		}
+	})
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
 	return nil
 }
 
@@ -589,34 +589,60 @@ type signOnArgs struct {
 	Privileged bool
 }
 
-// assume SimManager lock is held
-func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.EventsSubscription, error) {
-	var positions []sim.ControlPosition
-	err := ss.apply(req.TCW, signOnMethod, &signOnArgs{TCPs: req.SelectedTCPs, Privileged: req.Privileged}, func() error {
-		if err := ss.sim.SignOn(req.TCW, req.SelectedTCPs); err != nil {
-			return err
+// SignOn connects the controller req describes to the session and returns
+// their token. The caller holds ss.mu, so that the TCW it finds free stays
+// free until the controller has signed on at it.
+func (sm *SimManager) SignOn(ss *simSession, req *JoinSimRequest) (string, error) {
+	var eventSub *sim.EventsSubscription
+	if req.JoiningAsRelief {
+		// Relief mode: don't call sim.SignOn (position already signed in).
+		// Relief controllers get their own event subscription
+		eventSub = ss.sim.Subscribe()
+	} else {
+		sm.mu.Lock(sm.lg)
+		err := sm.checkTCWAvailable(ss, req.TCW)
+		sm.mu.Unlock(sm.lg)
+		if err != nil {
+			return "", err
 		}
-		if req.Privileged {
-			ss.sim.SetPrivilegedTCW(req.TCW, true)
+
+		var positions []sim.ControlPosition
+		err = ss.applyLocked(req.TCW, signOnMethod, &signOnArgs{TCPs: req.SelectedTCPs, Privileged: req.Privileged}, func() error {
+			if err := ss.sim.SignOn(req.TCW, req.SelectedTCPs); err != nil {
+				return err
+			}
+			if req.Privileged {
+				ss.sim.SetPrivilegedTCW(req.TCW, true)
+			}
+			positions = ss.sim.GetPositionsForTCW(req.TCW)
+			return nil
+		})
+		if err != nil {
+			return "", err
 		}
-		positions = ss.sim.GetPositionsForTCW(req.TCW)
-		return nil
-	})
-	if err != nil {
-		return "", nil, err
+		eventSub = ss.sim.Subscribe()
+
+		// Post sign-on message
+		msg := string(req.TCW) + " (" + req.Initials + ") has signed on for "
+		msg += strings.Join(util.MapSlice(positions, func(p sim.ControlPosition) string { return string(p) }), ", ")
+		msg += "."
+		ss.sim.PostEvent(sim.Event{
+			Type:        sim.StatusMessageEvent,
+			WrittenText: msg,
+		})
 	}
-	eventSub := ss.sim.Subscribe()
 
-	// Post sign-on message
-	msg := string(req.TCW) + " (" + req.Initials + ") has signed on for "
-	msg += strings.Join(util.MapSlice(positions, func(p sim.ControlPosition) string { return string(p) }), ", ")
-	msg += "."
-	ss.sim.PostEvent(sim.Event{
-		Type:        sim.StatusMessageEvent,
-		WrittenText: msg,
-	})
+	token := sm.makeControllerToken()
+	sm.mu.Lock(sm.lg)
+	ss.addHumanController(token, req.TCW, req.Initials, eventSub)
+	sm.sessionsByToken[token] = ss
+	hasHumans := ss.hasHumans()
+	sm.mu.Unlock(sm.lg)
 
-	return sm.makeControllerToken(), eventSub, nil
+	// Update pause state - may unpause sim now that a human is connected
+	ss.sim.SetPausedByServer(!hasHumans)
+
+	return token, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -675,14 +701,13 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) erro
 
 	running := make(map[string]*RunningSim)
 	for name, ss := range sm.sessionsByName {
-		rs := &RunningSim{
-			GroupName:            ss.scenarioGroup,
-			ScenarioName:         ss.scenario,
-			RequirePassword:      ss.password != "",
-			CurrentConsolidation: ss.getCurrentConsolidation(),
+		running[name] = &RunningSim{
+			GroupName:                    ss.scenarioGroup,
+			ScenarioName:                 ss.scenario,
+			RequirePassword:              ss.password != "",
+			ScenarioDefaultConsolidation: ss.defaultConsolidation,
+			CurrentConsolidation:         ss.getCurrentConsolidation(),
 		}
-		ss.withSim(func() { rs.ScenarioDefaultConsolidation = ss.sim.DefaultConsolidation() })
-		running[name] = rs
 	}
 
 	*result = running
