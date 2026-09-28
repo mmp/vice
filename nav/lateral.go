@@ -111,6 +111,9 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 	if idx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
 	}
+	// The aircraft goes to the exit from wherever it is; it isn't on a leg
+	// of the route that it could be turned back to.
+	nav.PassedWaypoint = av.Waypoint{}
 	if !nav.RouteAltitudeActions {
 		nav.climbToCruise(alt)
 	}
@@ -196,9 +199,13 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 	// Is it time to start following a heading or direct to a fix recently issued by the controller?
 	if dh := nav.DeferredNavHeading; dh != nil && simTime.After(dh.Time) {
 		// These may all be nil; whichever the instruction set takes effect now.
-		nav.Heading = Heading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers}
+		nav.Heading = Heading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers,
+			Join: dh.Join}
 		if len(dh.Waypoints) > 0 {
+			// The new route starts from wherever the aircraft is; it isn't
+			// on a leg of it.
 			nav.Waypoints = dh.Waypoints
+			nav.PassedWaypoint = av.Waypoint{}
 		}
 		// If the heading was assigned while the aircraft was descending on
 		// a STAR/approach with no issued altitude, snapshot the current
@@ -572,6 +579,9 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			hdg := nav.FlightState.Heading
 			nav.Heading = Heading{Assigned: &hdg}
 		} else {
+			if !wp.SyntheticCrossing() {
+				nav.PassedWaypoint = *wp
+			}
 			nav.Waypoints = nav.Waypoints[1:]
 		}
 

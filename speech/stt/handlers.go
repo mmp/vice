@@ -1454,13 +1454,18 @@ func registerAllCommands() {
 	// "intercept", so the leading keyword alone anchors on unrelated speed
 	// instructions and would ask the pilot to repeat a fix that was never
 	// spoken. Requiring the article too keeps the anchor honest.
+	//
+	// "Vector to intercept (NAVAID) (radial)" is 7110.65 5-6-2's advisory of
+	// why a vector is being given, not the intercept instruction itself, so
+	// the templates don't accept it; the absorb templates after them
+	// swallow it.
 	interceptRadial := func(fix string, radial int) string { return fmt.Sprintf("I%s/%03d", fix, radial) }
 	interceptRadialOutbound := func(fix string, radial int) string {
 		return fmt.Sprintf("I%s/%03dO", fix, radial)
 	}
 
 	registerSTTCommand(
-		"[vector|vectors] [to] intercept|join [the] {fix} {heading} radial|bearing [and] [then] [track] [proceed] inbound",
+		"intercept|join [the] {fix} {heading} radial|bearing [and] [then] [track] [proceed] inbound",
 		interceptRadial,
 		WithName("intercept_fix_radial_inbound"),
 		WithPriority(17),
@@ -1468,7 +1473,7 @@ func registerAllCommands() {
 		WithSayAgainMinTokens(2),
 	)
 	registerSTTCommand(
-		"[vector|vectors] [to] intercept|join [the] {fix} {heading} radial|bearing [and] [then] [track] [proceed] outbound",
+		"intercept|join [the] {fix} {heading} radial|bearing [and] [then] [track] [proceed] outbound",
 		interceptRadialOutbound,
 		WithName("intercept_fix_radial_outbound"),
 		WithPriority(17),
@@ -1476,7 +1481,7 @@ func registerAllCommands() {
 		WithSayAgainMinTokens(2),
 	)
 	registerSTTCommand(
-		"[vector|vectors] [to] intercept|join [the] {fix} {heading} radial|bearing",
+		"intercept|join [the] {fix} {heading} radial|bearing",
 		interceptRadial,
 		WithName("intercept_fix_radial"),
 		WithPriority(15),
@@ -1487,7 +1492,7 @@ func registerAllCommands() {
 	// Radial first, with the fix named after it: "intercept the zero five zero
 	// radial from WAVEY".
 	registerSTTCommand(
-		"[vector|vectors] [to] intercept|join [the] {heading} radial|bearing [from|off|of] {fix} [and] [then] [track] [proceed] [inbound]",
+		"intercept|join [the] {heading} radial|bearing [from|off|of] {fix} [and] [then] [track] [proceed] [inbound]",
 		func(radial int, fix string) string { return interceptRadial(fix, radial) },
 		WithName("intercept_radial_from_fix"),
 		WithPriority(16),
@@ -1495,7 +1500,7 @@ func registerAllCommands() {
 		WithSayAgainMinTokens(2),
 	)
 	registerSTTCommand(
-		"[vector|vectors] [to] intercept|join [the] {heading} radial|bearing [from|off|of] {fix} [and] [then] [track] [proceed] outbound",
+		"intercept|join [the] {heading} radial|bearing [from|off|of] {fix} [and] [then] [track] [proceed] outbound",
 		func(radial int, fix string) string { return interceptRadialOutbound(fix, radial) },
 		WithName("intercept_radial_from_fix_outbound"),
 		WithPriority(17),
@@ -1506,12 +1511,143 @@ func registerAllCommands() {
 	// "join the zero five six course to WAVEY". A course to the fix is the
 	// reciprocal of the radial the command is expressed in terms of.
 	registerSTTCommand(
-		"[vector|vectors] [to] intercept|join [the] {heading} course [to|inbound] [to] {fix}",
+		"intercept|join [the] {heading} course [to|inbound] [to] {fix}",
 		func(course int, fix string) string { return interceptRadial(fix, reciprocalCourse(course)) },
 		WithName("intercept_course_to_fix"),
 		WithPriority(16),
 		WithSayAgainOnFail(),
 		WithSayAgainMinTokens(2),
+	)
+
+	// The advisory forms: "heading 200, vector to intercept the WAVEY zero
+	// five zero radial" is only the heading.
+	registerSTTCommand(
+		"vector|vectors [to] [intercept|join] [the] {fix} {heading} radial|bearing [and] [then] [track] [proceed] [inbound|outbound]",
+		func(string, int) string { return "" },
+		WithName("vectors_fix_radial_absorb"),
+		WithPriority(6),
+	)
+	registerSTTCommand(
+		"vector|vectors [to] [intercept|join] [the] {heading} radial|bearing [from|off|of] {fix} [and] [then] [track] [proceed] [inbound|outbound]",
+		func(int, string) string { return "" },
+		WithName("vectors_radial_from_fix_absorb"),
+		WithPriority(6),
+	)
+	registerSTTCommand(
+		"vector|vectors [to] [intercept|join] [the] {heading} course [to|inbound] [to] {fix}",
+		func(int, string) string { return "" },
+		WithName("vectors_course_to_fix_absorb"),
+		WithPriority(6),
+	)
+
+	// === AIRWAY AND PROCEDURE JOIN COMMANDS ===
+	// 7110.65 4-4-1 has "join Victor (number)" for airways and 5-6-2 has
+	// "resume (SID/STAR)" for vectored aircraft rejoining their procedure;
+	// the other verbs are what controllers say in practice. The airway slot
+	// only asks for a repeat when the letter was heard but not the number,
+	// so "join the localizer" is never taken for a garbled airway.
+	registerSTTCommand(
+		"join|intercept [the] {airway} [airway]",
+		func(airway string) string { return "J" + airway },
+		WithName("join_airway"),
+		WithPriority(15),
+		WithSayAgainOnFail(),
+	)
+	registerSTTCommand(
+		"resume|rejoin|join|intercept [the] {sid} [departure]",
+		func(string) string { return "RSID" },
+		WithName("resume_sid"),
+		WithPriority(15),
+	)
+	registerSTTCommand(
+		"resume|rejoin|join|intercept [the] {star} [arrival]",
+		func(string) string { return "RSTAR" },
+		WithName("resume_star"),
+		WithPriority(15),
+	)
+
+	// "Vector to (fix or airway)" is 7110.65 5-6-2's advisory of why the
+	// vector is being given, not an instruction to join it: like "vectors
+	// to the localizer" above, "heading 120, vectors to join Victor 1" is
+	// only the heading, and the join comes later as its own instruction.
+	registerSTTCommand(
+		"vector|vectors [to] [join|intercept] [the] {airway} [airway]",
+		func(string) string { return "" },
+		WithName("vectors_airway_absorb"),
+		WithPriority(6),
+	)
+	registerSTTCommand(
+		"vector|vectors [to] [resume|rejoin|join|intercept] [the] {sid} [departure]",
+		func(string) string { return "" },
+		WithName("vectors_sid_absorb"),
+		WithPriority(6),
+	)
+	registerSTTCommand(
+		"vector|vectors [to] [resume|rejoin|join|intercept] [the] {star} [arrival]",
+		func(string) string { return "" },
+		WithName("vectors_star_absorb"),
+		WithPriority(6),
+	)
+
+	// A new heading for a join the aircraft was already told to make,
+	// without saying again what it is joining: "make it a one two zero
+	// heading to join". When the transmission does name what to join, the
+	// decoder prefers the plain heading followed by the join, since that
+	// explains all of it.
+	headingToJoin := func(hdg int) string { return fmt.Sprintf("H%03d/J", hdg) }
+	registerSTTCommand(
+		"[fly] heading {heading} to join|intercept",
+		headingToJoin,
+		WithName("heading_to_join"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"make it [a] {heading} [heading] to join|intercept",
+		headingToJoin,
+		WithName("make_it_heading_to_join"),
+		WithPriority(10),
+	)
+	registerSTTCommand(
+		"[turn] [to] left [heading] {heading} to join|intercept",
+		func(hdg int) string { return fmt.Sprintf("L%03d/J", hdg) },
+		WithName("turn_left_heading_to_join"),
+		WithPriority(11),
+	)
+	registerSTTCommand(
+		"[turn] [to] right [heading] {heading} to join|intercept",
+		func(hdg int) string { return fmt.Sprintf("R%03d/J", hdg) },
+		WithName("turn_right_heading_to_join"),
+		WithPriority(11),
+	)
+
+	// "Heading 120 to join the localizer" is the heading and the localizer
+	// intercept. Without these, the "to join" templates take the heading
+	// and the bare "localizer" template takes the rest, which explains
+	// every word and so wins over the plain heading with "to" left over.
+	headingToLocalizer := func(hdg int) string { return fmt.Sprintf("H%03d I", hdg) }
+	registerSTTCommand(
+		"[fly] heading {heading} to join|intercept [the] localizer",
+		headingToLocalizer,
+		WithName("heading_to_join_localizer"),
+		WithPriority(12),
+	)
+	registerSTTCommand(
+		"make it [a] {heading} [heading] to join|intercept [the] localizer",
+		headingToLocalizer,
+		WithName("make_it_heading_to_join_localizer"),
+		WithPriority(12),
+	)
+	registerSTTCommand(
+		"[turn] [to] left [heading] {heading} to join|intercept [the] localizer",
+		func(hdg int) string { return fmt.Sprintf("L%03d I", hdg) },
+		WithName("turn_left_heading_to_join_localizer"),
+		WithPriority(13),
+	)
+	registerSTTCommand(
+		"[turn] [to] right [heading] {heading} to join|intercept [the] localizer",
+		func(hdg int) string { return fmt.Sprintf("R%03d I", hdg) },
+		WithName("turn_right_heading_to_join_localizer"),
+		WithPriority(13),
 	)
 
 	// === AFTER FIX SPEED COMMANDS ===

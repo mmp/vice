@@ -503,6 +503,32 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>IWAVEY/050</code><br><code>IWAVEY/050O</code></td>
                   </tr>
                   <tr>
+                    <td><code>J<var>airway</var></code></td>
+                    <td><p>Directs an aircraft that has been assigned a heading to join the given airway: it flies the
+                    heading until it intercepts the part of its route that follows the airway and then continues
+                    along the route from there. The route must follow the airway, whether it was filed by name
+                    (<code>CYN V1 MOVFA</code>) or as the airway's fixes; the aircraft is unable if it isn't in its
+                    route or if the heading won't cross it.</p>
+                    <p>The heading is normally given first: <code>H090 JV1</code>. A later heading without
+                    <code>/J</code> (below) cancels the join.</p>
+                    </td>
+                    <td><code>JV1</code>, <code>JJ80</code>, <code>JT123</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>RSID</code>, <code>RSTAR</code></td>
+                    <td>Directs an aircraft that has been assigned a heading to resume its SID or STAR: it flies the
+                    heading until it intercepts the procedure and then continues along it. Like a vector followed by a
+                    direct-to, this doesn't restore a climb via or descend via clearance; issue <code>CVS</code> or
+                    <code>DVS</code> again as needed.</td>
+                    <td><code>RSTAR</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>H<var>heading</var>/J</code>, <code>L<var>heading</var>/J</code>, <code>R<var>heading</var>/J</code></td>
+                    <td>Gives an aircraft that has been told to join a radial, an airway, or its SID or STAR a new
+                    heading to make the join from. (Without <code>/J</code>, a new heading cancels the join.)</td>
+                    <td><code>H120/J</code>, <code>R120/J</code></td>
+                  </tr>
+                  <tr>
                     <td><code>H<var>fix</var></code></td>
                     <td><p>Directs the aircraft to hold at the specified fix using a published holding pattern.
                         (The specified fix must be in the aircraft's flight plan; for one that is not, first give them <code>D<var>fix</var></code>
@@ -1189,6 +1215,13 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <i>Climb via the (SID), except maintain (altitude)</i> /  <i>Climb via SID, except maintain (speed) knots</i> /  <i>Descend via the (STAR), except maintain (altitude) and (speed) knots</i> /  <i>Descend via the (STAR), except maintain (speed) or greater</i> /  <i>Descend via the arrival, except do not exceed (speed)</i> /  <i>Climb via the (SID), except maintain mach (mach)</i>
                   </td>
                 </tr>
+                <tr><td>Resume SID/STAR</td>
+                  <td>
+                    <i>Resume the (SID) departure</i> / <i>Rejoin the (STAR) arrival</i> / <i>Join the SID</i> /
+                    <i>Intercept the arrival</i> / <i>Fly heading (heading), resume the (STAR)</i>.
+                    For an aircraft on a heading; it flies the heading until it intercepts the procedure.
+                  </td>
+                </tr>
               </tbody>
             </table>
             <h3 id="spoken-lateral">Lateral Navigation</h3>
@@ -1220,7 +1253,24 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                   <td>
                     <i>Intercept the (fix) (radial) radial inbound</i> / <i>Join the (fix) (radial) radial outbound</i> /
                     <i>Intercept the (radial) radial from (fix)</i> / <i>Join the (course) course to (fix)</i>.
-                    Inbound is assumed if neither is said.
+                    Inbound is assumed if neither is said. "Vector to intercept the (fix) (radial) radial" only
+                    explains the vector; the intercept is a separate instruction.
+                  </td>
+                </tr>
+                <tr><td>Join Airway</td>
+                  <td>
+                    <i>Join Victor one</i> / <i>Intercept Tango one twenty three</i> / <i>Join J eighty</i> /
+                    <i>Fly heading (heading), join Victor one</i>.
+                    Victor and Tango airways are named with the NATO words for their letters; J and Q routes with the
+                    letters themselves. "Vectors to Victor one" only explains the vector; the join is a separate
+                    instruction.
+                  </td>
+                </tr>
+                <tr><td>Heading to Join</td>
+                  <td>
+                    <i>Heading (heading) to join</i> / <i>Turn right heading (heading) to intercept</i> /
+                    <i>Make it a (heading) heading to join</i>.
+                    A new heading for a radial, airway, or procedure the aircraft was already told to join.
                   </td>
                 </tr>
                 <tr><td>Say Heading</td>

@@ -66,6 +66,12 @@ type Nav struct {
 
 	FinalAltitude float32
 	Waypoints     av.WaypointArray
+	// PassedWaypoint is the route fix behind the aircraft on the leg it is
+	// flying: the last one it passed, or the start of a leg it joined
+	// partway along. An aircraft vectored off the leg can be told to rejoin
+	// it. The crossing points that restrictions add along a leg don't
+	// count, and a route the aircraft joins from wherever it is has none.
+	PassedWaypoint av.Waypoint
 
 	// RouteAltitudeActions is set at creation time if the route includes
 	// /c, /d, /cvs, or /dvs altitude actions at any of its waypoints. If it
@@ -100,6 +106,7 @@ type DeferredNavHeading struct {
 	Turn      *av.TurnDirection
 	Hold      *FlyHold
 	Maneuvers []LateralManeuver
+	Join      *RouteJoin
 	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
 	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be
@@ -120,6 +127,7 @@ type Snapshot struct {
 	Heading            Heading
 	Approach           Approach
 	Waypoints          av.WaypointArray
+	PassedWaypoint     av.Waypoint
 	DeferredNavHeading *DeferredNavHeading
 	FixAssignments     map[string]FixAssignment
 }
@@ -132,6 +140,7 @@ func (nav *Nav) TakeSnapshot() Snapshot {
 		Heading:            nav.Heading,
 		Approach:           nav.Approach,
 		Waypoints:          nav.Waypoints,
+		PassedWaypoint:     nav.PassedWaypoint,
 		DeferredNavHeading: nav.DeferredNavHeading,
 		FixAssignments:     nav.FixAssignments,
 	})
@@ -145,6 +154,7 @@ func (nav *Nav) RestoreSnapshot(snap Snapshot) {
 	nav.Heading = snap.Heading
 	nav.Approach = snap.Approach
 	nav.Waypoints = snap.Waypoints
+	nav.PassedWaypoint = snap.PassedWaypoint
 	nav.DeferredNavHeading = snap.DeferredNavHeading
 	nav.FixAssignments = snap.FixAssignments
 }
@@ -237,6 +247,8 @@ type Heading struct {
 	JoiningArc bool
 	Maneuvers  []LateralManeuver
 	Hold       *FlyHold
+	// Join is what Maneuvers are flying the heading to join, if anything.
+	Join *RouteJoin
 }
 
 type Approach struct {

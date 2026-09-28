@@ -1183,6 +1183,8 @@ func generateOneAircraftCommand(r *rand.Rand, ctx *GeneratorContext) string {
 
 		// Misc commands
 		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return "RON" }},
+		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return "RSID" }},
+		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return "RSTAR" }},
 		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return "X" }},
 		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return "SS" }},
 		{1, func(r *rand.Rand, ctx *GeneratorContext) string { return "SH" }},

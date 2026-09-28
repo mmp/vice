@@ -620,6 +620,23 @@ func (ac *Aircraft) InterceptRadial(fix string, radial int, outbound bool, simTi
 		simTime.NavTime(), delayReduction)
 }
 
+func (ac *Aircraft) JoinAirway(airway string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	return ac.Nav.JoinAirway(strings.ToUpper(airway), simTime.NavTime(), delayReduction)
+}
+
+func (ac *Aircraft) ResumeSID(simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	return ac.Nav.ResumeSID(ac.SID, simTime.NavTime(), delayReduction)
+}
+
+func (ac *Aircraft) ResumeSTAR(simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	return ac.Nav.ResumeSTAR(ac.STAR, simTime.NavTime(), delayReduction)
+}
+
+func (ac *Aircraft) AssignHeadingToJoin(heading int, turn av.TurnDirection, simTime Time,
+	delayReduction time.Duration) speech.CommandIntent {
+	return ac.Nav.AssignHeadingToJoin(math.MagneticHeading(heading), turn, simTime.NavTime(), delayReduction)
+}
+
 func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) speech.CommandIntent {
 	return ac.Nav.HoldAtFix(string(ac.ADSBCallsign), strings.ToUpper(fix), hold)
 }

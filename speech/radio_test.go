@@ -34,12 +34,12 @@ func TestTransmissionArgsRoundTrip(t *testing.T) {
 	ar := av.MakeAtAltitudeRestriction(8000)
 	rt := RadioTransmission{
 		Strings: []PhraseFormatString{"{alt} {num} {spd} {hdg} {gf} {mach}", "{airport} {fix} {ch}",
-			"{beacon} {freq} {callsign} {altrest}", "{rp}"},
+			"{beacon} {freq} {callsign} {altrest}", "{rp} {airway}"},
 		Args: [][]any{
 			{3000, 5, float32(210), math.MagneticHeading(90), 12, float32(0.75)},
 			{av.ICAOAirportCode("KJFK"), "MERIT", "B"},
 			{av.Squawk(0o1234), av.NewFrequency(118.9), CallsignArg{Callsign: "AAL123"}, &ar},
-			{"Dumbarton bridge"},
+			{"Dumbarton bridge", "V1"},
 		},
 		Type: RadioTransmissionContact,
 	}
@@ -194,6 +194,25 @@ func TestFrequencySpoken(t *testing.T) {
 		want := slices.Sorted(slices.Values(fs.spokens))
 		if !slices.Equal(got, want) {
 			t.Errorf("Frequency %s spoken forms %q; expected %q", fs.f, got, want)
+		}
+	}
+}
+
+func TestAirwaySpoken(t *testing.T) {
+	r := rand.Make()
+	for id, want := range map[string]string{
+		"V1":   "victor one",
+		"V16":  "victor 16",
+		"J80":  "jay 80",
+		"T123": "tango one 23",
+		"Q42":  "cue 42",
+		"V1R":  "victor one Romeo",
+	} {
+		got, err := AirwaySnippetFormatter{}.Spoken(r, id)
+		if err != nil {
+			t.Errorf("%s: %v", id, err)
+		} else if got != want {
+			t.Errorf("%s: spoken as %q, want %q", id, got, want)
 		}
 	}
 }

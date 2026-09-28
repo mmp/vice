@@ -281,6 +281,7 @@ var (
 		"actrl":    &ControllerSnippetFormatter{From: "Departure", To: "Approach"},
 		"actype":   &AircraftTypeSnippetFormatter{},
 		"airport":  &AirportSnippetFormatter{},
+		"airway":   &AirwaySnippetFormatter{},
 		"alt":      &AltSnippetFormatter{},
 		"altrest":  &AltRestrictionSnippetFormatter{},
 		"appr":     &ApproachSnippetFormatter{},
@@ -668,6 +669,48 @@ func (ReportingPointSnippetFormatter) Written(arg any) (string, error) {
 
 func (ReportingPointSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 	return stringArg(arg)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AirwaySnippetFormatter
+
+// AirwaySnippetFormatter formats an airway identifier such as V1 or J80.
+// Following 7110.65 4-4-1, Victor and Tango airways are spoken with the
+// NATO word for their letter while J and Q routes are spoken with the
+// letter itself, all with the number in group form.
+type AirwaySnippetFormatter struct{}
+
+func (AirwaySnippetFormatter) Written(arg any) (string, error) {
+	return stringArg(arg)
+}
+
+var spokenAirwayLetters = map[string]string{"J": "jay", "Q": "cue"}
+
+func (AirwaySnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
+	id, err := stringArg(arg)
+	if err != nil {
+		return "", err
+	}
+
+	var words []string
+	for id != "" {
+		if id[0] >= '0' && id[0] <= '9' {
+			n := 0
+			for id != "" && id[0] >= '0' && id[0] <= '9' {
+				n, id = 10*n+int(id[0]-'0'), id[1:]
+			}
+			words = append(words, groupForm(n))
+		} else {
+			ch := strings.ToUpper(id[:1])
+			if say, ok := spokenAirwayLetters[ch]; ok {
+				words = append(words, say)
+			} else {
+				words = append(words, spokenLetters[ch])
+			}
+			id = id[1:]
+		}
+	}
+	return strings.Join(words, " "), nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

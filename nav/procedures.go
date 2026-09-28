@@ -6,6 +6,7 @@ package nav
 
 import (
 	"fmt"
+	"slices"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
@@ -159,6 +160,10 @@ type LateralManeuver struct {
 	ClearAltitudeOnFinal bool
 	Waypoint             av.Waypoint
 	Actions              av.WaypointActions
+	// ResumeFix, if set, names the route fix the maneuver joins the leg to:
+	// when it completes, the route is taken up from there. Until then the
+	// route is left as it is, in case the join is cancelled.
+	ResumeFix string
 }
 
 func (m *LateralManeuver) String() string {
@@ -440,6 +445,9 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 
 	if m.Until.Done(nav, simTime, wxs, heading) {
 		*maneuvers = (*maneuvers)[1:]
+		if m.ResumeFix != "" {
+			nav.resumeRouteAt(m.ResumeFix, m.Until.InterceptCourse)
+		}
 		if len(*maneuvers) == 0 {
 			if m.ClearAltitudeOnFinal {
 				nav.Altitude = Altitude{}
@@ -458,6 +466,50 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 	}
 
 	return maneuverResult{heading: heading, turn: m.Turn, rate: StandardTurnRate}
+}
+
+// resumeRouteAt takes up the route at the named fix after a maneuver that
+// joined the given course to it. The waypoints before the fix are dropped,
+// except for crossing points on that course still ahead of the aircraft,
+// which is now on it; a crossing on the route's own leg into the fix is
+// off a radial that comes in from another direction. The fix's leg origin
+// becomes the waypoint passed, so the leg can be rejoined if the aircraft
+// is vectored off it again. A route that no longer has the fix, having
+// been replaced in the meantime, is left as it is.
+func (nav *Nav) resumeRouteAt(fix string, course math.MagneticHeading) {
+	wps := nav.Waypoints
+	i := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == fix })
+	if i == -1 {
+		return
+	}
+
+	fs := &nav.FlightState
+	p := math.LL2NM(fs.Position, fs.NmPerLongitude)
+	f := math.LL2NM(wps[i].Location, fs.NmPerLongitude)
+	dir := math.HeadingVector(math.MagneticToTrue(course, fs.MagneticVariation))
+	onCourseAhead := func(wp av.Waypoint) bool {
+		q := math.LL2NM(wp.Location, fs.NmPerLongitude)
+		return math.Dot(math.Sub2f(q, p), dir) > 0 &&
+			math.Abs(math.SignedPointLineDistance(q, f, math.Add2f(f, dir))) < 0.25
+	}
+	for i > 0 && wps[i-1].SyntheticCrossing() && onCourseAhead(wps[i-1]) {
+		i--
+	}
+	if origin, ok := legOriginBefore(wps, i); ok {
+		nav.PassedWaypoint = origin
+	}
+	nav.Waypoints = wps[i:]
+}
+
+// legOriginBefore returns the last route fix before index i, skipping the
+// crossing points that restrictions add between fixes.
+func legOriginBefore(wps []av.Waypoint, i int) (av.Waypoint, bool) {
+	for i--; i >= 0; i-- {
+		if !wps[i].SyntheticCrossing() {
+			return wps[i], true
+		}
+	}
+	return av.Waypoint{}, false
 }
 
 func (nav *Nav) flyProcedureTurnIfNecessary() {

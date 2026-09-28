@@ -319,3 +319,28 @@ func TestReportingPointInSightUsesNames(t *testing.T) {
 		}
 	}
 }
+
+// A heading given "to join" reads back the heading and then what it is
+// joining.
+func TestHeadingToJoinReadback(t *testing.T) {
+	join := NavigationIntent{Type: NavJoinAirway, Airway: "V1"}
+	intent := HeadingIntent{Heading: 120, Type: HeadingAssign, Join: &join}
+	for seed := uint64(1); seed <= 20; seed++ {
+		readback := renderIntentForTest(t, intent, seed)
+		if !strings.Contains(readback, "120") || !strings.HasSuffix(readback, "v1") {
+			t.Errorf("seed %d: got %q, want the heading followed by the airway", seed, readback)
+		}
+		assertContainsAny(t, readback, "join", "intercept")
+	}
+}
+
+func TestResumeProcedureReadback(t *testing.T) {
+	intent := NavigationIntent{Type: NavResumeSTAR, Procedure: "CAMRN4"}
+	for seed := uint64(1); seed <= 20; seed++ {
+		readback := renderIntentForTest(t, intent, seed)
+		if !strings.Contains(readback, "the camrn4") {
+			t.Errorf("seed %d: got %q, want the STAR named", seed, readback)
+		}
+		assertContainsAny(t, readback, "resume", "rejoin")
+	}
+}

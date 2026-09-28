@@ -1846,8 +1846,23 @@ func TestInterceptRadialCommands(t *testing.T) {
 		},
 		{
 			name:       "turn left heading, outbound",
-			transcript: "American 870 turn left heading three one zero, vector to intercept the CAMRN three three zero radial outbound",
+			transcript: "American 870 turn left heading three one zero, intercept the CAMRN three three zero radial outbound",
 			expected:   "AAL870 L310 ICAMRN/330O",
+		},
+		{
+			name:       "vector to intercept only explains the heading",
+			transcript: "American 870 turn left heading three one zero, vector to intercept the CAMRN three three zero radial outbound",
+			expected:   "AAL870 L310",
+		},
+		{
+			name:       "vectors to the radial from the fix only explains the heading",
+			transcript: "American 870 fly heading two zero zero vectors to the zero five zero radial from WAVEY",
+			expected:   "AAL870 H200",
+		},
+		{
+			name:       "vectors to the course only explains the heading",
+			transcript: "American 870 fly heading two zero zero vectors to join the two three zero course to WAVEY",
+			expected:   "AAL870 H200",
 		},
 		{
 			name:       "radial first",
@@ -5333,5 +5348,88 @@ func TestProceedDirectDistantFixes(t *testing.T) {
 		} else if result != tt.expected {
 			t.Errorf("%q: got %q, want %q", tt.transcript, result, tt.expected)
 		}
+	}
+}
+
+func TestJoinCommands(t *testing.T) {
+	ac := func() map[string]Aircraft {
+		return map[string]Aircraft{
+			"American 870": {
+				Callsign: "AAL870",
+				Altitude: 11000,
+				State:    "arrival",
+				STAR:     "CAMRN4",
+				Fixes:    map[string]string{"wavey": "WAVEY", "camrn": "CAMRN"},
+			},
+			"Delta 123": {
+				Callsign: "DAL123",
+				Altitude: 4000,
+				State:    "departure",
+				SID:      "SKORR5",
+				Fixes:    map[string]string{"skorr": "SKORR", "wavey": "WAVEY"},
+			},
+		}
+	}
+
+	tests := []struct {
+		name       string
+		transcript string
+		expected   string
+	}{
+		{"join victor", "American 870 join victor one", "AAL870 JV1"},
+		{"intercept victor airway", "American 870 intercept victor one airway", "AAL870 JV1"},
+		{"jay route", "American 870 join jay eighty", "AAL870 JJ80"},
+		{"tango route", "American 870 join tango one twenty three", "AAL870 JT123"},
+		{"run together", "American 870 join v1", "AAL870 JV1"},
+		{"heading then join", "American 870 fly heading zero niner zero join victor one", "AAL870 H090 JV1"},
+		{"heading to join named", "American 870 fly heading two zero zero to join victor one", "AAL870 H200 JV1"},
+		{"heading to join", "American 870 heading one two zero to join", "AAL870 H120/J"},
+		{"make it a heading to join", "American 870 make it a one two zero heading to join", "AAL870 H120/J"},
+		{"turn right to join", "American 870 turn right heading one two zero to join", "AAL870 R120/J"},
+		{"turn left to intercept", "American 870 turn left heading one two zero to intercept", "AAL870 L120/J"},
+		{"resume named star", "American 870 resume the camrn four arrival", "AAL870 RSTAR"},
+		{"rejoin the arrival", "American 870 rejoin the arrival", "AAL870 RSTAR"},
+		{"resume the star", "American 870 resume the star", "AAL870 RSTAR"},
+		{"resume named sid", "Delta 123 resume the skorr five departure", "DAL123 RSID"},
+		{"join the sid", "Delta 123 join the sid", "DAL123 RSID"},
+		{"heading then resume star", "American 870 fly heading two seven zero resume the camrn four arrival", "AAL870 H270 RSTAR"},
+		{"garbled airway number", "American 870 join victor blorp", "AAL870 SAYAGAIN/AIRWAY"},
+
+		// "Vector to (airway)" explains the vector; the join is a separate
+		// instruction.
+		{"vector to join is the heading only", "American 870 fly heading one two zero vector to join victor one", "AAL870 H120"},
+		{"vectors to airway is the heading only", "American 870 fly heading one two zero vectors to victor one", "AAL870 H120"},
+		{"vectors to rejoin the arrival is the heading only", "American 870 turn left heading one two zero vectors to rejoin the camrn four arrival",
+			"AAL870 L120"},
+		{"vectors to the sid is the heading only", "Delta 123 fly heading one two zero vectors to the sid", "DAL123 H120"},
+
+		// Nearby instructions that must not become joins.
+		{"resume own navigation", "American 870 resume own navigation", "AAL870 RON"},
+		{"resume normal speed", "American 870 resume normal speed", "AAL870 S"},
+		{"join the localizer", "American 870 join the localizer", "AAL870 I"},
+		{"heading to join the localizer", "American 870 fly heading one two zero to join the localizer", "AAL870 H120 I"},
+		{"heading to intercept the localizer", "American 870 fly heading one two zero to intercept the localizer", "AAL870 H120 I"},
+		{"turn right to join the localizer", "American 870 turn right heading one two zero to join the localizer", "AAL870 R120 I"},
+		{"turn left to intercept the localizer", "American 870 turn left heading one two zero to intercept the localizer", "AAL870 L120 I"},
+		{"make it a heading to join the localizer", "American 870 make it a one two zero heading to join the localizer", "AAL870 H120 I"},
+		{"heading to join the final approach course", "American 870 fly heading one two zero to join the final approach course", "AAL870 H120 I"},
+		{"expect to rejoin the arrival", "American 870 expect to rejoin the arrival at camrn", "AAL870 EXPDIRCAMRN"},
+		{"intercept radial", "American 870 intercept the wavey zero five zero radial inbound", "AAL870 IWAVEY/050"},
+		{"heading to intercept radial", "American 870 fly heading two zero zero to intercept the wavey zero five zero radial inbound",
+			"AAL870 H200 IWAVEY/050"},
+		{"plain heading", "American 870 fly heading one two zero", "AAL870 H120"},
+	}
+
+	provider := NewTranscriber(nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(ac(), tt.transcript, "")
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
 	}
 }

@@ -460,24 +460,26 @@ func (nav *Nav) AssignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 	cancelHold := nav.Heading.Hold != nil
 	nav.assignHeading(hdg, turn, simTime, delayReduction)
 
-	intent := speech.HeadingIntent{
+	return speech.HeadingIntent{
 		Heading:    hdg,
 		Type:       speech.HeadingAssign,
+		Turn:       headingTurn(turn),
 		CancelHold: cancelHold,
 	}
+}
 
+// headingTurn returns the readback's form of a heading's turn direction.
+func headingTurn(turn av.TurnDirection) speech.HeadingTurn {
 	switch turn {
 	case av.TurnClosest:
-		intent.Turn = speech.HeadingTurnClosest
+		return speech.HeadingTurnClosest
 	case av.TurnRight:
-		intent.Turn = speech.HeadingTurnToRight
+		return speech.HeadingTurnToRight
 	case av.TurnLeft:
-		intent.Turn = speech.HeadingTurnToLeft
+		return speech.HeadingTurnToLeft
 	default:
 		panic(fmt.Sprintf("%d: unhandled turn type", turn))
 	}
-
-	return intent
 }
 
 func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
@@ -737,11 +739,29 @@ func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outboun
 		return speech.MakeUnableIntent("unable. {hdg} isn't a valid radial", radial)
 	}
 
-	wps, _, err := nav.directFixWaypoints(fix)
+	join := RouteJoin{Kind: JoinRadial, Name: fix, Radial: radial, Outbound: outbound}
+	hdg, turn, ok := nav.headingToJoinFrom()
+	if !ok {
+		hdg, turn = nav.FlightState.Heading, av.TurnClosest
+	}
+	if unable := nav.startJoin(join, hdg, turn, simTime, delayReduction); unable != nil {
+		return unable
+	}
+	return join.intent()
+}
+
+// radialJoinManeuvers returns the maneuvers that fly hdg until intercepting
+// the join's radial and then follow it, or an unable response if hdg never
+// reaches it. Inbound to a fix that isn't in the aircraft's route, it also
+// returns the route to fly from the fix, which replaces the aircraft's along
+// with the heading, as a direct to the fix would.
+func (nav *Nav) radialJoinManeuvers(join RouteJoin, hdg math.MagneticHeading, turn av.TurnDirection) ([]LateralManeuver, []av.Waypoint, speech.CommandIntent) {
+	fix, radial, outbound := join.Name, join.Radial, join.Outbound
+	wps, source, err := nav.directFixWaypoints(fix)
 	if err == ErrFixIsTooFarAway {
-		return speech.MakeUnableIntent("unable. {fix} is too far away", fix)
+		return nil, nil, speech.MakeUnableIntent("unable. {fix} is too far away", fix)
 	} else if err != nil {
-		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
+		return nil, nil, speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	}
 
 	// A radial extends outward from the fix, so flying it inbound means
@@ -754,20 +774,8 @@ func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outboun
 		course = math.OppositeHeading(course)
 	}
 
-	hdg, turn := nav.FlightState.Heading, av.TurnClosest
-	if dh := nav.DeferredNavHeading; dh != nil && dh.Heading != nil {
-		hdg = *dh.Heading
-		if dh.Turn != nil {
-			turn = *dh.Turn
-		}
-	} else if nav.Heading.Assigned != nil {
-		hdg = *nav.Heading.Assigned
-		if nav.Heading.Turn != nil {
-			turn = *nav.Heading.Turn
-		}
-	}
 	if !nav.reachesRadial(hdg, radial, wps[0].Location, variation) {
-		return speech.MakeUnableIntent("unable to intercept the {fix} {hdg} radial", fix, radial)
+		return nil, nil, speech.MakeUnableIntent("unable to intercept the {fix} {hdg} radial", fix, radial)
 	}
 
 	// The turn onto the course is always the short way around, regardless of
@@ -775,32 +783,19 @@ func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outboun
 	intercept := flyHeadingUntilIntercept(hdg, turn, wps[0].Location, course)
 	intercept.Until.InterceptTurn = av.TurnClosest
 	intercept.Until.InterceptFix, intercept.Until.InterceptOutbound = fix, outbound
-	maneuvers := []LateralManeuver{intercept}
 	if outbound {
 		// There is nothing to go direct to once established, so hold the
 		// radial as a ground track.
-		maneuvers = append(maneuvers, LateralManeuver{
+		return []LateralManeuver{intercept, {
 			Track: course,
 			Until: ManeuverComplete{Type: UntilControllerIntervention},
-		})
+		}}, nil, nil
 	}
-
-	// Assign the heading for its approach and altitude side effects and its
-	// pilot reaction delay; the maneuvers take effect along with it.
-	nav.assignHeading(hdg, turn, simTime, delayReduction)
-	nav.Approach.InterceptState = NotIntercepting
-	dh := nav.DeferredNavHeading
-	dh.Maneuvers = maneuvers
-	if !outbound {
-		dh.Waypoints = wps
+	if source == waypointSourceRoute {
+		intercept.ResumeFix = fix
+		return []LateralManeuver{intercept}, nil, nil
 	}
-
-	return speech.NavigationIntent{
-		Type:     speech.NavInterceptRadial,
-		Fix:      fix,
-		Radial:   radial,
-		Outbound: outbound,
-	}
+	return []LateralManeuver{intercept}, wps, nil
 }
 
 func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.CommandIntent {
@@ -1389,7 +1384,7 @@ func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time) speech.CommandInte
 		return speech.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
-	nav.EnqueueOnCourse(simTime)
+	nav.resumeProcedureCourse(simTime)
 	return intent
 }
 
@@ -1414,8 +1409,20 @@ func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandI
 		return speech.MakeUnableIntent("unable. We're not on a STAR")
 	}
 
-	nav.EnqueueOnCourse(simTime)
+	nav.resumeProcedureCourse(simTime)
 	return intent
+}
+
+// resumeProcedureCourse puts the aircraft back on course after a via
+// clearance. One flying a heading to rejoin the procedure keeps doing so;
+// the clearance is a new altitude, so the heading no longer captures an
+// altitude floor when it takes effect.
+func (nav *Nav) resumeProcedureCourse(simTime Time) {
+	if nav.pendingJoin() == nil {
+		nav.EnqueueOnCourse(simTime)
+	} else if dh := nav.DeferredNavHeading; dh != nil {
+		dh.SnapshotAltitudeOnEffect = false
+	}
 }
 
 // ClimbViaSIDAtPassedFix carries out a /cvs or /cv route action at the fix
@@ -1508,6 +1515,9 @@ func (nav *Nav) ResumeOwnNavigation() speech.CommandIntent {
 				minDist = d
 				startIdx = i + 1
 			}
+		}
+		if origin, ok := legOriginBefore(nav.Waypoints, startIdx); ok {
+			nav.PassedWaypoint = origin
 		}
 		nav.Waypoints = nav.Waypoints[startIdx:]
 	}

@@ -238,6 +238,46 @@ func (p *fixParser) parseScored(tokens []Token, pos int, ac Aircraft) (any, int,
 	return nil, 0, 1, ""
 }
 
+// airwayParser matches a spoken airway identifier, giving it as written:
+// "victor one" and "V1" both give "V1". Following 7110.65 4-4-1, Victor
+// and Tango airways are named with the NATO words for their letters and J
+// and Q routes with the letters themselves.
+type airwayParser struct{}
+
+var airwayLetterWords = map[string]string{
+	"victor": "V", "v": "V",
+	"tango": "T", "t": "T",
+	"jay": "J", "j": "J", "juliet": "J", "juliett": "J",
+	"cue": "Q", "queue": "Q", "q": "Q", "quebec": "Q",
+}
+
+func (p *airwayParser) goType() reflect.Type {
+	return reflect.TypeFor[string]()
+}
+
+func (p *airwayParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	if pos >= len(tokens) {
+		return nil, 0, "AIRWAY"
+	}
+
+	w := strings.ToLower(tokens[pos].Text)
+	// Whisper sometimes runs the letter and number together: "v1", "j80".
+	if len(w) >= 2 && tokens[pos].Type == TokenWord && IsNumber(w[1:]) {
+		if letter, ok := airwayLetterWords[w[:1]]; ok {
+			return letter + w[1:], 1, ""
+		}
+	}
+	letter, ok := airwayLetterWords[w]
+	if !ok {
+		// Not an airway at all, rather than a garbled one.
+		return nil, 0, ""
+	}
+	if pos+1 < len(tokens) && tokens[pos+1].Type == TokenNumber && tokens[pos+1].Value > 0 {
+		return letter + strconv.Itoa(tokens[pos+1].Value), 2, ""
+	}
+	return nil, 0, "AIRWAY"
+}
+
 // reportingPointParser matches the name of one of the reporting points of
 // the charted visual approach the aircraft is expecting, giving its
 // identifier.
@@ -1036,6 +1076,8 @@ func getTypeParser(typeID string) typeParser {
 		return &machParser{}
 	case "fix":
 		return &fixParser{}
+	case "airway":
+		return &airwayParser{}
 	case "reporting_point":
 		return &reportingPointParser{}
 	case "airport":

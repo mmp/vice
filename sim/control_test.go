@@ -8,6 +8,7 @@
 package sim
 
 import (
+	"fmt"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
@@ -445,4 +446,137 @@ func TestRunOneControlCommandAtFixClearedStraightInApproach(t *testing.T) {
 	if s.Aircraft[callsign].Nav.Approach.AtFixClearedRoute == nil {
 		t.Fatal("AtFixClearedRoute was not populated")
 	}
+}
+
+func TestParseHeading(t *testing.T) {
+	for _, tc := range []struct {
+		spec    string
+		hdg     int
+		toJoin  bool
+		wantErr bool
+	}{
+		{spec: "120", hdg: 120},
+		{spec: "120/J", hdg: 120, toJoin: true},
+		{spec: "/J", wantErr: true},
+		{spec: "WAVEY", wantErr: true},
+	} {
+		hdg, toJoin, err := parseHeading(tc.spec)
+		if (err != nil) != tc.wantErr {
+			t.Errorf("parseHeading(%q) error = %v, want error %v", tc.spec, err, tc.wantErr)
+		} else if err == nil && (hdg != tc.hdg || toJoin != tc.toJoin) {
+			t.Errorf("parseHeading(%q) = (%d, %v), want (%d, %v)", tc.spec, hdg, toJoin, tc.hdg, tc.toJoin)
+		}
+	}
+}
+
+func TestRunOneControlCommandJoin(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+
+	fixes := make(map[string]math.Point2LL)
+	for _, id := range []string{"CYN", "WHITE", "DIXIE", "MOVFA"} {
+		p, ok := db.DB.LookupWaypoint(id)
+		if !ok {
+			t.Fatalf("%s not found", id)
+		}
+		fixes[id] = p
+	}
+
+	// Ten miles to the left of the V1 leg from WHITE to DIXIE, heading to
+	// cross it partway along.
+	const magneticVariation = 13
+	nmPerLong := math.NMPerLongitudeAt(fixes["WHITE"])
+	white, dixie := math.LL2NM(fixes["WHITE"], nmPerLong), math.LL2NM(fixes["DIXIE"], nmPerLong)
+	leg := math.Normalize2f(math.Sub2f(dixie, white))
+	pos := math.NM2LL(math.Add2f(math.Lerp2f(0.5, white, dixie), math.Scale2f([2]float32{-leg[1], leg[0]}, 10)), nmPerLong)
+	headingTo := func(t float32) int {
+		target := math.NM2LL(math.Lerp2f(t, white, dixie), nmPerLong)
+		return int(math.TrueToMagnetic(math.Heading2LL(pos, target, nmPerLong), magneticVariation))
+	}
+
+	newSim := func(sid, star string, onSTAR bool) (*Sim, av.ADSBCallsign) {
+		callsign := av.ADSBCallsign("TEST123")
+		s := NewTestSim(lg)
+		s.State.CurrentConsolidation["TCW1"] = &TCPConsolidation{PrimaryTCP: "1A"}
+
+		var wps []av.Waypoint
+		for _, id := range []string{"CYN", "WHITE", "DIXIE", "MOVFA"} {
+			wp := av.Waypoint{Fix: id, Location: fixes[id]}
+			wp.SetOnSTAR(onSTAR)
+			wps = append(wps, wp)
+		}
+		hdg := math.MagneticHeading(headingTo(0.75))
+		s.Aircraft[callsign] = &Aircraft{
+			ADSBCallsign:        callsign,
+			ControllerFrequency: "1A",
+			SID:                 sid,
+			STAR:                star,
+			Nav: nav.Nav{
+				FlightState: nav.FlightState{
+					Position:          pos,
+					Heading:           hdg,
+					NmPerLongitude:    nmPerLong,
+					MagneticVariation: magneticVariation,
+				},
+				Heading:   nav.Heading{Assigned: &hdg},
+				Waypoints: wps,
+				Rand:      rand.Make(),
+			},
+		}
+		return s, callsign
+	}
+
+	run := func(t *testing.T, s *Sim, callsign av.ADSBCallsign, command string) speech.CommandIntent {
+		t.Helper()
+		intent, err := s.runOneControlCommand("TCW1", callsign, command, 0)
+		if err != nil {
+			t.Fatalf("%s: runOneControlCommand() returned error: %v", command, err)
+		}
+		return intent
+	}
+	wantNavigation := func(t *testing.T, intent speech.CommandIntent, want speech.NavigationIntent) {
+		t.Helper()
+		if got, ok := intent.(speech.NavigationIntent); !ok || got != want {
+			t.Errorf("got %+v, want %+v", intent, want)
+		}
+	}
+	wantUnable := func(t *testing.T, intent speech.CommandIntent) {
+		t.Helper()
+		if _, ok := intent.(speech.UnableIntent); !ok {
+			t.Errorf("got %+v, want an unable response", intent)
+		}
+	}
+
+	t.Run("JV1", func(t *testing.T) {
+		s, callsign := newSim("", "", false)
+		wantNavigation(t, run(t, s, callsign, "JV1"), speech.NavigationIntent{Type: speech.NavJoinAirway, Airway: "V1"})
+		if dh := s.Aircraft[callsign].Nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 || dh.Join == nil {
+			t.Error("no maneuvers were queued for the join")
+		}
+
+		// A new heading to make the same join.
+		command := fmt.Sprintf("H%03d/J", headingTo(0.9))
+		intent := run(t, s, callsign, command)
+		hi, ok := intent.(speech.HeadingIntent)
+		if !ok || hi.Join == nil || hi.Join.Type != speech.NavJoinAirway || hi.Join.Airway != "V1" {
+			t.Errorf("%s: got %+v, want a heading to join V1", command, intent)
+		}
+	})
+	t.Run("J", func(t *testing.T) {
+		s, callsign := newSim("", "", false)
+		if _, err := s.runOneControlCommand("TCW1", callsign, "J", 0); err != ErrInvalidCommandSyntax {
+			t.Errorf("J: got error %v, want %v", err, ErrInvalidCommandSyntax)
+		}
+	})
+	t.Run("RSTAR", func(t *testing.T) {
+		s, callsign := newSim("", "CAMRN4", true)
+		wantNavigation(t, run(t, s, callsign, "RSTAR"), speech.NavigationIntent{Type: speech.NavResumeSTAR, Procedure: "CAMRN4"})
+	})
+	t.Run("RSID without a SID", func(t *testing.T) {
+		s, callsign := newSim("", "CAMRN4", true)
+		wantUnable(t, run(t, s, callsign, "RSID"))
+	})
+	t.Run("heading to join without a join", func(t *testing.T) {
+		s, callsign := newSim("", "", false)
+		wantUnable(t, run(t, s, callsign, "R120/J"))
+	})
 }

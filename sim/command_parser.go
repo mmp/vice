@@ -370,6 +370,14 @@ func parseCompoundSpeed(s string) ([]speech.CompoundSpeedSegment, error) {
 	return segments, nil
 }
 
+// parseHeading parses the heading of an H, L, or R command, which may be
+// given "to join" with a /J suffix: "120" or "120/J".
+func parseHeading(spec string) (hdg int, toJoin bool, err error) {
+	spec, toJoin = strings.CutSuffix(spec, "/J")
+	hdg, err = strconv.Atoi(spec)
+	return
+}
+
 // parseInterceptRadial parses the argument of an intercept-radial command,
 // "FIX/radial" or "FIX/radialO", and returns the fix, the radial, and whether
 // it is to be flown outbound. Inbound is the default.
@@ -822,13 +830,14 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				Present:        true,
 				DelayReduction: delayReduction,
 			})
-		} else if hdg, err := strconv.Atoi(command[1:]); err == nil {
+		} else if hdg, toJoin, err := parseHeading(command[1:]); err == nil {
 			// Fly heading xxx
 			return s.AssignHeading(&HeadingArgs{
 				TCW:            tcw,
 				ADSBCallsign:   callsign,
 				Heading:        hdg,
 				Turn:           av.TurnClosest,
+				ToJoin:         toJoin,
 				DelayReduction: delayReduction,
 			})
 		} else {
@@ -851,6 +860,12 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return nil, ErrInvalidCommandSyntax
 		}
 
+	case 'J':
+		if len(command) == 1 {
+			return nil, ErrInvalidCommandSyntax
+		}
+		return s.JoinAirway(tcw, callsign, command[1:], delayReduction)
+
 	case 'L':
 		if len(command) >= 5 && command[1] == 'D' {
 			return s.DirectFix(tcw, callsign, command[2:], av.TurnLeft, delayReduction)
@@ -866,7 +881,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				DelayReduction: delayReduction,
 			})
 		} else {
-			hdg, err := strconv.Atoi(command[1:])
+			hdg, toJoin, err := parseHeading(command[1:])
 			if err != nil {
 				return nil, err
 			}
@@ -875,6 +890,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				ADSBCallsign:   callsign,
 				Heading:        hdg,
 				Turn:           av.TurnLeft,
+				ToJoin:         toJoin,
 				DelayReduction: delayReduction,
 			})
 		}
@@ -897,6 +913,10 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 	case 'R':
 		if command == "RON" {
 			return s.ResumeOwnNavigation(tcw, callsign)
+		} else if command == "RSID" {
+			return s.ResumeSID(tcw, callsign, delayReduction)
+		} else if command == "RSTAR" {
+			return s.ResumeSTAR(tcw, callsign, delayReduction)
 		} else if command == "RST" {
 			return s.RadarServicesTerminated(tcw, callsign)
 		} else if command == "RP" {
@@ -936,7 +956,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				DelayReduction: delayReduction,
 			})
 		} else {
-			hdg, err := strconv.Atoi(command[1:])
+			hdg, toJoin, err := parseHeading(command[1:])
 			if err != nil {
 				return nil, err
 			}
@@ -945,6 +965,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				ADSBCallsign:   callsign,
 				Heading:        hdg,
 				Turn:           av.TurnRight,
+				ToJoin:         toJoin,
 				DelayReduction: delayReduction,
 			})
 		}

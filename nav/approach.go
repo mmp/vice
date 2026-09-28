@@ -1145,17 +1145,9 @@ func (nav *Nav) visualJoinFromInstructions(routes []av.WaypointArray) *visualApp
 		}
 	}
 
-	// Forward ray intercept along the instructed heading; pick the closest viable hit.
-	tHdg := nav.intendedHeading()
-	var bestJoin *visualApproachJoinPoint
-	var bestDist float32
-	for _, hit := range av.IntersectRayWithRoutes(pos, tHdg, routes) {
+	// Forward ray intercept along the instructed heading; take the closest viable hit.
+	for _, hit := range nav.forwardRouteIntercepts(nav.intendedHeading(), routes) {
 		route := routes[hit.RouteIndex]
-		segHdg := math.Heading2LL(route[hit.Index].Location, route[hit.Index+1].Location, nmPerLong)
-		if math.HeadingDifference(tHdg, segHdg) > 90 {
-			continue
-		}
-
 		distToThreshold := math.NMDistance2LL(hit.Location, route[hit.Index+1].Location)
 		for i := hit.Index + 1; i < len(route)-1; i++ {
 			distToThreshold += math.NMDistance2LL(route[i].Location, route[i+1].Location)
@@ -1164,23 +1156,19 @@ func (nav *Nav) visualJoinFromInstructions(routes []av.WaypointArray) *visualApp
 		if stabilizedRequired && distToThreshold < 3 {
 			continue
 		}
-		rayDist := math.NMDistance2LL(pos, hit.Location)
-		if bestJoin == nil || rayDist < bestDist {
-			bestJoin = &visualApproachJoinPoint{
-				route:               route,
-				segment:             hit.Index,
-				segmentFraction:     hit.SegT,
-				location:            hit.Location,
-				distanceToThreshold: distToThreshold,
-				// When the intercept is at/inside the 3-NM final, treat the
-				// join as the FAF — there's no separate stabilized segment
-				// to insert between the join and the threshold.
-				finalPoint: distToThreshold <= 3.25,
-			}
-			bestDist = rayDist
+		return &visualApproachJoinPoint{
+			route:               route,
+			segment:             hit.Index,
+			segmentFraction:     hit.SegT,
+			location:            hit.Location,
+			distanceToThreshold: distToThreshold,
+			// When the intercept is at/inside the 3-NM final, treat the
+			// join as the FAF — there's no separate stabilized segment
+			// to insert between the join and the threshold.
+			finalPoint: distToThreshold <= 3.25,
 		}
 	}
-	return bestJoin
+	return nil
 }
 
 // selectVisualApproachRoute picks the join point and route across the supplied reference

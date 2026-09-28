@@ -478,9 +478,10 @@ const (
 type HeadingIntent struct {
 	Heading    math.MagneticHeading
 	Type       HeadingType
-	Turn       HeadingTurn // for HeadingAssign: which way to turn
-	Degrees    int         // for HeadingTurnLeft/Right: how many degrees
-	CancelHold bool        // heading cancels an active hold
+	Turn       HeadingTurn       // for HeadingAssign: which way to turn
+	Degrees    int               // for HeadingTurnLeft/Right: how many degrees
+	CancelHold bool              // heading cancels an active hold
+	Join       *NavigationIntent // joining an airway/procedure
 }
 
 func (h HeadingIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -498,6 +499,9 @@ func (h HeadingIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add(prefix+"[right heading|right|turn right] {hdg}", h.Heading)
 		case HeadingTurnToLeft:
 			rt.Add(prefix+"[left heading|left|turn left] {hdg}", h.Heading)
+		}
+		if h.Join != nil {
+			h.Join.Render(rt, r)
 		}
 	case HeadingTurnLeft:
 		rt.Add("[turn {num} degrees left|{num} to the left|{num} left]", h.Degrees)
@@ -587,6 +591,9 @@ const (
 	NavCrossDistanceFromFixAt
 	NavCrossDME
 	NavInterceptRadial
+	NavJoinAirway
+	NavResumeSID
+	NavResumeSTAR
 	NavResumeOwnNav
 	NavAltitudeDiscretion
 )
@@ -599,6 +606,8 @@ type NavigationIntent struct {
 	Heading          math.MagneticHeading          // for DepartFixHeading
 	Radial           math.MagneticHeading          // for NavInterceptRadial
 	Outbound         bool                          // for NavInterceptRadial
+	Airway           string                        // for NavJoinAirway
+	Procedure        string                        // SID or STAR name, for NavResumeSID and NavResumeSTAR
 	Turn             av.TurnDirection              // for NavDirectFix / NavDirectFixFromHold
 	HoldDirection    string                        // "left" or "right" for holds
 	HoldLegLength    string                        // e.g., "2 mile" or "1 minute"
@@ -677,6 +686,12 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	case NavInterceptRadial:
 		rt.Add("[intercept|join] the {fix} {hdg} radial "+util.Select(n.Outbound, "outbound", "inbound"),
 			n.Fix, n.Radial)
+	case NavJoinAirway:
+		rt.Add("[join|intercept] {airway}", n.Airway)
+	case NavResumeSID:
+		rt.Add("[resume|rejoin] the {sid} [departure|]", n.Procedure)
+	case NavResumeSTAR:
+		rt.Add("[resume|rejoin] the {star} [arrival|]", n.Procedure)
 	case NavResumeOwnNav:
 		rt.Add("[own navigation|resuming own navigation]")
 	case NavAltitudeDiscretion:
@@ -1018,6 +1033,7 @@ const (
 	SayAgainTurn
 	SayAgainSquawk
 	SayAgainFix
+	SayAgainAirway
 )
 
 // SayAgainIntent represents a pilot requesting the controller repeat part of a clearance.
@@ -1043,6 +1059,8 @@ func (s SayAgainIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		rt.Add("[say again on that squawk|what was that squawk again|sorry, you got blocked on the squawk|missed the squawk code, say again]")
 	case SayAgainFix:
 		rt.Add("[say again on that fix|what fix was that again|sorry, you got blocked on the fix|missed the fix, say again]")
+	case SayAgainAirway:
+		rt.Add("[say again on that airway|what airway was that again|sorry, you got blocked on the airway|missed the airway, say again]")
 	}
 }
 

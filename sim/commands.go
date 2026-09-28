@@ -31,6 +31,7 @@ type HeadingArgs struct {
 	LeftDegrees    int
 	RightDegrees   int
 	Turn           av.TurnDirection
+	ToJoin         bool
 	DelayReduction time.Duration
 }
 
@@ -39,6 +40,8 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) (speech.CommandIntent, error) {
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if hdg.Present {
 				return ac.FlyPresentHeading(s.State.SimTime, hdg.DelayReduction)
+			} else if hdg.ToJoin {
+				return ac.AssignHeadingToJoin(hdg.Heading, hdg.Turn, s.State.SimTime, hdg.DelayReduction)
 			} else if hdg.LeftDegrees != 0 {
 				return ac.TurnLeft(hdg.LeftDegrees, s.State.SimTime, hdg.DelayReduction)
 			} else if hdg.RightDegrees != 0 {
@@ -206,6 +209,27 @@ func (s *Sim) InterceptRadial(tcw TCW, callsign av.ADSBCallsign, fix string, rad
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			return ac.InterceptRadial(fix, radial, outbound, s.State.SimTime, delayReduction)
+		})
+}
+
+func (s *Sim) JoinAirway(tcw TCW, callsign av.ADSBCallsign, airway string, delayReduction time.Duration) (speech.CommandIntent, error) {
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
+			return ac.JoinAirway(airway, s.State.SimTime, delayReduction)
+		})
+}
+
+func (s *Sim) ResumeSID(tcw TCW, callsign av.ADSBCallsign, delayReduction time.Duration) (speech.CommandIntent, error) {
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
+			return ac.ResumeSID(s.State.SimTime, delayReduction)
+		})
+}
+
+func (s *Sim) ResumeSTAR(tcw TCW, callsign av.ADSBCallsign, delayReduction time.Duration) (speech.CommandIntent, error) {
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
+			return ac.ResumeSTAR(s.State.SimTime, delayReduction)
 		})
 }
 
@@ -667,6 +691,8 @@ func sayAgainIntent(commandType string) (speech.CommandIntent, error) {
 		cmdType = speech.SayAgainSquawk
 	case "FIX":
 		cmdType = speech.SayAgainFix
+	case "AIRWAY":
+		cmdType = speech.SayAgainAirway
 	default:
 		return nil, ErrInvalidCommandSyntax
 	}

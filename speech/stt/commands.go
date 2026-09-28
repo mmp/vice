@@ -41,6 +41,8 @@ var categoryRules = []categoryRule{
 	{match: func(cmd string) bool { return cmd == "CWT" }, category: "wake"},
 	{match: func(cmd string) bool { return cmd == "AP" || strings.HasPrefix(cmd, "AP/") }, category: "advisory"},
 	{match: func(cmd string) bool { return cmd == "RP" || strings.HasPrefix(cmd, "RP/") }, category: "reporting_point"},
+	// Joining an airway (JV1) or resuming a SID or STAR from a heading
+	{match: func(cmd string) bool { return cmd[0] == 'J' || cmd == "RSID" || cmd == "RSTAR" }, category: "navigation"},
 	{match: func(cmd string) bool { return strings.HasPrefix(cmd, "TRAFFIC") }, category: "traffic"},
 	{match: func(cmd string) bool {
 		return cmd == "VISSEP" || cmd == "RST" || cmd == "TO" || strings.HasPrefix(cmd, "TO/")
