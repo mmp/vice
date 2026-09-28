@@ -24,6 +24,7 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/simlog"
 	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
@@ -74,6 +75,11 @@ func NewSimManager(config LaunchConfig, tables *scenario.Tables, lg *log.Logger)
 		lg:              lg,
 	}
 	sm.scenarios.Store(tables)
+
+	if sm.sessionLogDir() != "" && simlog.CurrentBuild().Revision == "" {
+		lg.Warn("session logs won't record the code's revision: the binary has no version control " +
+			"information, as when it is run with go run, built with -buildvcs=false, or built outside a git checkout")
+	}
 
 	// Initialize WX provider asynchronously so the server can start
 	// accepting connections immediately. Callers that need providers will

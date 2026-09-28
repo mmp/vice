@@ -12,11 +12,13 @@ package simlog
 
 import (
 	"bufio"
+	"cmp"
 	"compress/flate"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"runtime/debug"
 	"sync"
 	"time"
@@ -44,15 +46,14 @@ type Header struct {
 	Start         time.Time // wall clock time the session started
 	SimStart      time.Time // sim time the snapshot was taken at
 	Database      string    // hash of the static database the session ran on
-	GOARCH        string
-	Revision      string // revision of the code that wrote the log
+	Build                   // the binary that wrote the log
 }
 
 // Describe names the session for a reader: its facility and scenario, and
-// when it was recorded.
+// when it was recorded and by what revision of the code.
 func (h Header) Describe() string {
-	return fmt.Sprintf("%s %s (%s), recorded %s", h.Facility, h.Scenario, h.ScenarioGroup,
-		h.Start.UTC().Format("2006-01-02 15:04Z"))
+	return fmt.Sprintf("%s %s (%s), recorded %s by %s", h.Facility, h.Scenario, h.ScenarioGroup,
+		h.Start.UTC().Format("2006-01-02 15:04Z"), cmp.Or(h.Revision, "an unknown revision"))
 }
 
 // Kind identifies a record in a log.
@@ -131,28 +132,59 @@ type Sample struct {
 	Heading  float32
 }
 
-// Revision returns the version control revision the running binary was
-// built from, marked if it had local modifications, or "" if it isn't known.
-func Revision() string {
+// Build describes a binary that writes or replays logs. Its GOARCH,
+// GOAMD64, and GoVersion decide how the sim's floating-point arithmetic
+// rounds: arm64 fuses a multiply into the add that follows it, amd64 does so
+// only at GOAMD64 v3 and above, and which ones are fused is up to the
+// compiler.
+type Build struct {
+	GOARCH    string
+	GOAMD64   string // microarchitecture level of an amd64 binary, like "v1"
+	GoVersion string
+	// Revision is the version control revision the binary was built from,
+	// marked if it had local modifications, or "" if it isn't known.
+	Revision string
+}
+
+// CurrentBuild describes the running binary.
+func CurrentBuild() Build {
+	b := Build{GOARCH: runtime.GOARCH, GoVersion: runtime.Version()}
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
-		return ""
+		return b
 	}
-	var rev, modified string
+	modified := false
 	for _, s := range info.Settings {
 		switch s.Key {
+		case "GOAMD64":
+			b.GOAMD64 = s.Value
 		case "vcs.revision":
-			rev = s.Value
+			b.Revision = s.Value
 		case "vcs.modified":
-			if s.Value == "true" {
-				modified = "+modified"
-			}
+			modified = s.Value == "true"
 		}
 	}
-	if rev == "" {
-		return ""
+	if b.Revision != "" && modified {
+		b.Revision += "+modified"
 	}
-	return rev + modified
+	return b
+}
+
+// SameArithmetic reports whether floating point rounds the same way in the
+// binaries b and o describe, which a replay by one of a log the other wrote
+// needs in order to match it exactly.
+func (b Build) SameArithmetic(o Build) bool {
+	return b.GOARCH == o.GOARCH && b.GOAMD64 == o.GOAMD64 && b.GoVersion == o.GoVersion
+}
+
+// Platform describes what decides b's arithmetic, like "amd64 (GOAMD64=v1)
+// with go1.25.1".
+func (b Build) Platform() string {
+	arch := b.GOARCH
+	if b.GOAMD64 != "" {
+		arch += " (GOAMD64=" + b.GOAMD64 + ")"
+	}
+	return arch + " with " + cmp.Or(b.GoVersion, "an unknown Go version")
 }
 
 ///////////////////////////////////////////////////////////////////////////

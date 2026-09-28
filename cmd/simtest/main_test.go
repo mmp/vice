@@ -35,7 +35,8 @@ func TestSummarize(t *testing.T) {
 	}
 
 	sess := &simlog.Session{
-		Header: simlog.Header{Facility: "PHL", Scenario: "KPHL 27L", ScenarioGroup: "KPHL", Start: start, SimStart: start},
+		Header: simlog.Header{Facility: "PHL", Scenario: "KPHL 27L", ScenarioGroup: "KPHL", Start: start, SimStart: start,
+			Build: simlog.Build{Revision: "a5dfc5a34"}},
 		Events: []simlog.Event{
 			request(0, "1N", "SignOn", "", ""),
 			spawn(0, "AAL1", "IFR", "arrival"),
@@ -60,7 +61,7 @@ func TestSummarize(t *testing.T) {
 
 	var b strings.Builder
 	summarize(&b, sess)
-	want := `PHL KPHL 27L (KPHL), recorded 2026-09-27 14:00Z
+	want := `PHL KPHL 27L (KPHL), recorded 2026-09-27 14:00Z by a5dfc5a34
 Ran 3s of sim time, 14:00:00 to 14:00:03.
                      IFR         IFR         VFR          IFR
                 arrivals  departures  departures  overflights  total

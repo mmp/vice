@@ -30,7 +30,6 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -204,9 +203,16 @@ func (t *tester) check(path string) bool {
 	if err != nil {
 		return fail(err)
 	}
-	if arch := sess.Header.GOARCH; arch != runtime.GOARCH {
-		fmt.Fprintf(t.out, "Recorded on %s; floating-point arithmetic there may differ enough to exceed tight tolerances.\n",
-			arch)
+	if rec, cur := sess.Header.Build, simlog.CurrentBuild(); !rec.SameArithmetic(cur) {
+		fmt.Fprintf(t.out, "Recorded on %s; replaying on %s. Floating point may round differently, and a "+
+			"difference too small to see can go on to change which aircraft spawn.\n", rec.Platform(), cur.Platform())
+		if rec.GOARCH != cur.GOARCH || rec.GOAMD64 != cur.GOAMD64 {
+			env := "GOARCH=" + rec.GOARCH
+			if rec.GOAMD64 != "" {
+				env += " GOAMD64=" + rec.GOAMD64
+			}
+			fmt.Fprintf(t.out, "To replay it on the architecture it was recorded on: %s go run ./cmd/simtest %s\n", env, path)
+		}
 	}
 
 	dir := filepath.Dir(path)
@@ -276,7 +282,7 @@ func (t *tester) replay(sess *simlog.Session, dir string) (string, *simlog.Sessi
 	}
 
 	h := sess.Header
-	h.GOARCH, h.Revision = runtime.GOARCH, simlog.Revision()
+	h.Build = simlog.CurrentBuild()
 	w, err := simlog.NewWriter(f, h, sess.Snapshot)
 	if err != nil {
 		f.Close()

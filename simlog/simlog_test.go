@@ -18,6 +18,7 @@ import (
 )
 
 var testStart = time.Date(2025, 7, 28, 12, 0, 0, 0, time.UTC)
+var testBuild = Build{GOARCH: "amd64", GOAMD64: "v1", GoVersion: "go1.25.1", Revision: "a5dfc5a34+modified"}
 
 func sample(callsign string, alt float32) Sample {
 	return Sample{Callsign: callsign, Position: math.Point2LL{-75.2, 39.9}, Altitude: alt, IAS: 210, GS: 230, Heading: 270}
@@ -28,7 +29,8 @@ func writeTestLog(t *testing.T, close bool) string {
 	t.Helper()
 
 	path := filepath.Join(t.TempDir(), "test.simlog")
-	w, err := Create(path, Header{Facility: "PHL", Scenario: "test", SimStart: testStart}, []byte("snapshot"))
+	w, err := Create(path, Header{Facility: "PHL", Scenario: "test", SimStart: testStart, Build: testBuild},
+		[]byte("snapshot"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +66,8 @@ func TestLogRoundTrip(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if s.Header.Facility != "PHL" || s.Header.Version != FormatVersion || !s.Header.SimStart.Equal(testStart) {
+	if s.Header.Facility != "PHL" || s.Header.Version != FormatVersion || !s.Header.SimStart.Equal(testStart) ||
+		s.Header.Build != testBuild {
 		t.Errorf("header %+v", s.Header)
 	}
 	if string(s.Snapshot) != "snapshot" {

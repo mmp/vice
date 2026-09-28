@@ -15,7 +15,6 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
-	"runtime"
 	"slices"
 	"strings"
 	"time"
@@ -650,8 +649,7 @@ func (sm *SimManager) createSessionLog(ss *simSession, dbHash string, snapshot [
 		Start:         start,
 		SimStart:      ss.sim.SimTime().Time(),
 		Database:      dbHash,
-		GOARCH:        runtime.GOARCH,
-		Revision:      simlog.Revision(),
+		Build:         simlog.CurrentBuild(),
 	}
 
 	name := start.Format("2006-01-02T15-04-05Z") + "_" + fileNameComponent(h.Facility) + "_" +

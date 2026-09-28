@@ -75,8 +75,11 @@ func (s *Sim) goAround(ac *Aircraft) {
 	s.holdDeparturesForGoAround(airport, holdRunways, proc.HandoffController)
 }
 
-// getGoAroundController returns the TCP that should handle a go-around for the given aircraft.
-// Lookup priority: go_around_assignments for airport/runway, airport, then departure_assignments for airport.
+// getGoAroundController returns the TCP that should handle a go-around for
+// the given aircraft: the go_around_assignments for its airport and runway or
+// for its airport, else the departure_assignments for them, else the
+// controller tracking it. Its frequency is the last resort, since after
+// "contact tower" that is the tower's, which no controller in the sim works.
 func (s *Sim) getGoAroundController(ac *Aircraft) TCP {
 	airport := ac.FlightPlan.ArrivalAirport
 	runway := ""
@@ -96,12 +99,18 @@ func (s *Sim) getGoAroundController(ac *Aircraft) TCP {
 		return tcp
 	}
 
-	// Fall back to departure_assignments for airport
-	if tcp, ok := s.DepartureAssignments[string(airport)]; ok {
+	if tcp := s.GetDepartureController(airport, runway, ""); tcp != "" {
 		return tcp
 	}
 
-	// We shouldn't get here but just in case--current controller
+	fp := ac.NASFlightPlan
+	if fp == nil {
+		fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+	}
+	if fp != nil && fp.TrackingController != "" {
+		return fp.TrackingController
+	}
+
 	return TCP(ac.ControllerFrequency)
 }
 
