@@ -536,7 +536,7 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig, published []traffic.Flig
 	}
 
 	if lc.VFRDepartureRateScale != old.VFRDepartureRateScale {
-		r := scaleRate(patternSpawnRate, lc.VFRDepartureRateScale)
+		r := lc.patternSpawnRate()
 		for _, ps := range util.SortedMap(s.PatternState) {
 			ps.NextSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
 		}

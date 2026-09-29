@@ -8,6 +8,7 @@ import (
 	"cmp"
 	"fmt"
 	"log/slog"
+	"maps"
 	"slices"
 	"time"
 
@@ -42,14 +43,15 @@ type PatternState struct {
 	NextSpawn Time
 }
 
-// patternSpawnRate is the nominal rate (aircraft per hour) for pattern spawns.
-const patternSpawnRate float32 = 5
+// nominalPatternSpawnRate is the rate (aircraft per hour) for pattern spawns
+// before the VFR departure rate scale is applied.
+const nominalPatternSpawnRate float32 = 5
 
-// effectivePatternSpawnRate returns patternSpawnRate scaled by the launch
-// config's VFRDepartureRateScale, so the slider controls pattern activity
-// the same way it controls regular VFR departures.
-func (s *Sim) effectivePatternSpawnRate() float32 {
-	return scaleRate(patternSpawnRate, s.State.LaunchConfig.VFRDepartureRateScale)
+// patternSpawnRate returns nominalPatternSpawnRate scaled by
+// VFRDepartureRateScale, so the slider controls pattern activity the same way
+// it controls regular VFR departures.
+func (lc *LaunchConfig) patternSpawnRate() float32 {
+	return scaleRate(nominalPatternSpawnRate, lc.VFRDepartureRateScale)
 }
 
 // bestRunwayForWind returns the runway id best aligned with the current
@@ -237,13 +239,13 @@ func (s *Sim) spawnPatternAircraft() {
 			break
 		}
 		if ac == nil {
-			ps.NextSpawn = now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand))
+			ps.NextSpawn = now.Add(randomWait(s.State.LaunchConfig.patternSpawnRate(), false, s.Rand))
 			continue
 		}
 
 		ac.Squawk = 0o1200
 		ac.InitializeFlightPlan(av.FlightRulesVFR, acType, name, name)
-		ac.FlightPlan.Altitude = faaAP.Elevation + 1000 // pattern altitude (TPA)
+		ac.FlightPlan.Altitude = faaAP.Elevation + vfrPatternAltitude
 
 		touchAndGos := s.Rand.IntRange(2, 5)      // 2-5 total laps
 		ac.TouchAndGosRemaining = touchAndGos - 1 // first lap is in progress, remaining are after
@@ -255,7 +257,7 @@ func (s *Sim) spawnPatternAircraft() {
 			s.State.MagneticVariation, s.wxModel, now, s.Rand, s.lg)
 		if err != nil {
 			s.lg.Warn("failed to initialize pattern aircraft", slog.Any("error", err))
-			ps.NextSpawn = now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand))
+			ps.NextSpawn = now.Add(randomWait(s.State.LaunchConfig.patternSpawnRate(), false, s.Rand))
 			continue
 		}
 
@@ -275,7 +277,7 @@ func (s *Sim) spawnPatternAircraft() {
 			Phase:        PatternUpwind,
 		})
 
-		ps.NextSpawn = now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand))
+		ps.NextSpawn = now.Add(randomWait(s.State.LaunchConfig.patternSpawnRate(), false, s.Rand))
 
 		s.lg.Info("spawned pattern aircraft",
 			slog.String("callsign", string(ac.ADSBCallsign)),
@@ -301,13 +303,8 @@ func (s *Sim) canLaunchPattern(airport av.ICAOAirportCode, rwy av.Runway) bool {
 		}
 	}
 
-	// Check for arrivals on short final (< 2nm from end of approach)
-	for _, ac := range s.Aircraft {
-		if ac.Nav.Approach.Assigned != nil && ac.Nav.Approach.Assigned.Runway == rwy.Id {
-			if dist, err := ac.Nav.DistanceToEndOfApproach(); err == nil && dist < 2.0 {
-				return false
-			}
-		}
+	if util.SeqContainsFunc(maps.Values(s.Aircraft), func(ac *Aircraft) bool { return ac.onShortFinal(rwy.Id) }) {
+		return false
 	}
 
 	// Check for other pattern aircraft on upwind or rollout

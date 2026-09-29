@@ -968,6 +968,16 @@ func (ac *Aircraft) OnExtendedCenterline(maxNmDeviation float32) bool {
 	return ac.Nav.OnExtendedCenterline(maxNmDeviation)
 }
 
+// onShortFinal reports whether the aircraft is within 2nm of the end of its
+// assigned approach to the given runway.
+func (ac *Aircraft) onShortFinal(runway string) bool {
+	if ac.Nav.Approach.Assigned == nil || ac.Nav.Approach.Assigned.Runway != runway {
+		return false
+	}
+	dist, err := ac.Nav.DistanceToEndOfApproach()
+	return err == nil && dist < 2
+}
+
 func (ac *Aircraft) DepartureAirportElevation() float32 {
 	return ac.Nav.FlightState.DepartureAirportElevation
 }

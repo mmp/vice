@@ -7,6 +7,7 @@ package sim
 import (
 	"fmt"
 	"iter"
+	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -97,7 +98,7 @@ func (s *Sim) initDepartureState(now Time) {
 	// time.
 	randomDelay := func(rate float32) Time {
 		if rate == 0 {
-			return now.Add(365 * 24 * time.Hour)
+			return now.Add(maxSpawnWait)
 		}
 		avgWait := 3600 / rate
 		delta := s.Rand.Float32Range(-avgWait/2, avgWait/2)
@@ -133,7 +134,7 @@ func (s *Sim) initDepartureState(now Time) {
 			_, hasIFRArrivals := s.State.ArrivalAirports[name]
 			if !hasIFRDepartures && !hasIFRArrivals {
 				s.PatternState[name] = &PatternState{
-					NextSpawn: now.Add(randomWait(s.effectivePatternSpawnRate(), false, s.Rand)),
+					NextSpawn: now.Add(randomWait(s.State.LaunchConfig.patternSpawnRate(), false, s.Rand)),
 				}
 			}
 		}
@@ -166,7 +167,7 @@ func (s *Sim) createScenarioIFRDeparture(e ScheduledDeparture) (*Aircraft, error
 			dep.Exit, e.AircraftType)
 	}
 
-	return s.initializeIFRDepartureNoLock(ac, ap, e.DepartureAirport, e.Runway, dep,
+	return ac, s.initializeIFRDeparture(ac, ap, e.DepartureAirport, e.Runway, dep,
 		CruiseLimits{}, routes)
 }
 
@@ -195,7 +196,7 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 	s.log("%s: departure %s->%s runway %s exit %s (%s)", ac.ADSBCallsign, e.DepartureAirport,
 		e.ArrivalAirport, runway, placement.dep.Exit, placement.how)
 
-	if _, err := s.initializeIFRDepartureNoLock(ac, placement.ap, e.DepartureAirport, runway, &placement.dep,
+	if err := s.initializeIFRDeparture(ac, placement.ap, e.DepartureAirport, runway, &placement.dep,
 		placement.cruise, placement.exitRoutes); err != nil {
 		return nil, err
 	}
@@ -205,17 +206,16 @@ func (s *Sim) createPublishedIFRDeparture(e ScheduledDeparture, runway av.Runway
 	return ac, nil
 }
 
-func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport av.ICAOAirportCode,
+func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirport av.ICAOAirportCode,
 	runway av.RunwayID, dep *av.Departure, cruise CruiseLimits,
-	exitRoutes map[av.ExitID]*av.ExitRoute) (*Aircraft, error) {
+	exitRoutes map[av.ExitID]*av.ExitRoute) error {
 	exitRoute := exitRoutes[dep.Exit]
 	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, cruise,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.Rand, s.lg)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	// Departures aren't immediately associated, but the STARSComputer will
 	ac.ReportDepartureHeading = exitRoutesHaveVariedHeadings(exitRoutes)
 	ac.ReportDepartureSID = exitRoutesHaveVariedSIDs(exitRoutes)
 
@@ -232,7 +232,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && exitRoute.IsRNAV
 
-	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
+	ac.HoldForRelease = ap.HoldForRelease || exitRoute.HoldForRelease
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
 
 	// Adapted scratchpads are per-area, so this must follow the controller assignment above.
@@ -269,7 +269,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 
 	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp, s.Rand); err != nil {
-		return nil, err
+		return err
 	}
 
 	// Departures aren't immediately associated, but the STARSComputer will
@@ -289,7 +289,7 @@ func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departu
 	}
 
 	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
-	return ac, err
+	return err
 }
 
 // exitRoutesHaveVariedHeadings returns true if the given exit routes have
@@ -335,36 +335,27 @@ func exitRoutesHaveVariedSIDs(exitRoutes map[av.ExitID]*av.ExitRoute) bool {
 }
 
 // assignDepartureController sets up controller assignments for a departure.
-// It handles three cases:
-// 1. Airport has a virtual departure controller -> auto-release, use airport controller
-// 2. Exit route has a virtual departure controller -> auto-release, use exit route controller
-// 3. Human controller -> set contact altitude, use human controller position
+// It handles two cases:
+//  1. The airport or, failing that, the exit route has a virtual departure
+//     controller -> auto-release, use that controller
+//  2. Human controller -> set contact altitude, use human controller position
 func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	ap *av.Airport, exitRoute *av.ExitRoute, departureAirport av.ICAOAirportCode, runway string) {
 
 	// Departures that start with a virtual controller are already on its
 	// frequency, so they never check in with a departure controller; -1 keeps
-	// them from being mistaken for ones waiting on a /tc point.
-	if ap.DepartureController != "" && s.isVirtualController(ap.DepartureController) {
-		// Virtual controller from airport; automatically release since there's no human.
-		nasFp.TrackingController = TCP(ap.DepartureController)
-		nasFp.OwningTCW = s.tcwForPosition(ap.DepartureController)
-		nasFp.InboundHandoffController = TCP(exitRoute.HandoffController)
-		ac.ControllerFrequency = ControlPosition(ap.DepartureController)
-		ac.DepartureContactAltitude = -1
-		ac.HoldForRelease = false
-		return
-	}
-
-	if exitRoute.DepartureController != "" && s.isVirtualController(exitRoute.DepartureController) {
-		// Virtual controller from exit route; automatically release.
-		nasFp.TrackingController = TCP(exitRoute.DepartureController)
-		nasFp.OwningTCW = s.tcwForPosition(exitRoute.DepartureController)
-		nasFp.InboundHandoffController = TCP(exitRoute.HandoffController)
-		ac.ControllerFrequency = ControlPosition(exitRoute.DepartureController)
-		ac.DepartureContactAltitude = -1
-		ac.HoldForRelease = false
-		return
+	// them from being mistaken for ones waiting on a /tc point. There's no
+	// human to release them, so they're released automatically.
+	for _, ctrl := range []ControlPosition{ap.DepartureController, exitRoute.DepartureController} {
+		if ctrl != "" && s.isVirtualController(ctrl) {
+			nasFp.TrackingController = ctrl
+			nasFp.OwningTCW = s.tcwForPosition(ctrl)
+			nasFp.InboundHandoffController = exitRoute.HandoffController
+			ac.ControllerFrequency = ctrl
+			ac.DepartureContactAltitude = -1
+			ac.HoldForRelease = false
+			return
+		}
 	}
 
 	// Human controller will be first
@@ -660,20 +651,13 @@ func (s *Sim) runwayAvailable(depState *RunwayLaunchState, airport av.ICAOAirpor
 		}
 	}
 
-	// Check for imminent arrivals on this runway
-	// Skip this check if both arriving and departing aircraft are VFR
-	for _, ac := range s.Aircraft {
-		if ac.Nav.Approach.Assigned != nil && ac.Nav.Approach.Assigned.Runway == runway.Base() {
-			// Skip if both aircraft are VFR
-			if ac.FlightPlan.Rules == av.FlightRulesVFR && rules == av.FlightRulesVFR {
-				continue
-			}
-
-			if dist, err := ac.Nav.DistanceToEndOfApproach(); err == nil && dist < 2.0 {
-				// Hold departure; the arrival's too close
-				return false
-			}
-		}
+	// Hold for an arrival on short final, unless both it and the departure
+	// are VFR.
+	if util.SeqContainsFunc(maps.Values(s.Aircraft), func(ac *Aircraft) bool {
+		bothVFR := ac.FlightPlan.Rules == av.FlightRulesVFR && rules == av.FlightRulesVFR
+		return !bothVFR && ac.onShortFinal(runway.Base())
+	}) {
+		return false
 	}
 
 	// Don't launch yet if a pattern aircraft is about to land or just departed.

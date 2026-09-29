@@ -52,15 +52,17 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 			e.Group, util.Select(arr.STAR == "", arr.FlightStripDisplayRoute, arr.STAR), e.How)
 	}
 
-	if _, err := s.finalizeArrivalNoLock(ac, arr, e.Group, e.ArrivalAirport); err != nil {
+	if err := s.finalizeArrival(ac, arr, e.Group, e.ArrivalAirport); err != nil {
 		return nil, err
 	}
 	s.recordArrivalLaunch(e.Group, ac)
 	return ac, nil
 }
 
-func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
-	arrivalAirport av.ICAOAirportCode) (*Aircraft, error) {
+// finalizeArrival builds the arrival's NAS flight plan with controller
+// assignments and registers it with STARS.
+func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, group string,
+	arrivalAirport av.ICAOAirportCode) error {
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = ""
@@ -98,7 +100,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 	}
 
 	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp, s.Rand); err != nil {
-		return nil, err
+		return err
 	}
 	// Create a flight strip at the inbound handoff controller if it's a human position
 	ap, ok := s.State.Airports[arrivalAirport]
@@ -108,7 +110,7 @@ func (s *Sim) finalizeArrivalNoLock(ac *Aircraft, arr *av.Arrival, group string,
 		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
 	}
 
-	return ac, s.associateAtSpawn(ac, nasFp)
+	return s.associateAtSpawn(ac, nasFp)
 }
 
 // Published arrivals come when their data says, so each inbound flow spaces
@@ -188,12 +190,12 @@ func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error
 		return nil, err
 	}
 
-	return ac, s.finalizeOverflightNoLock(ac, of, e.Group)
+	return ac, s.finalizeOverflight(ac, of, e.Group)
 }
 
-// finalizeOverflightNoLock builds the overflight's NAS flight plan with
+// finalizeOverflight builds the overflight's NAS flight plan with
 // controller assignments and registers it with STARS.
-func (s *Sim) finalizeOverflightNoLock(ac *Aircraft, of *av.Overflight, group string) error {
+func (s *Sim) finalizeOverflight(ac *Aircraft, of *av.Overflight, group string) error {
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeOverflight)
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO

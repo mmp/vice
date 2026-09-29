@@ -24,6 +24,14 @@ import (
 // How low below the MVA a VFR can be
 const vfrMVABuffer = 1000
 
+// vfrMVAApplies reports whether the MVA limits a VFR flight dDep nm from its
+// departure airport and dArr nm from its arrival airport. It doesn't near
+// either field, where the flight is below the MVA climbing out or descending
+// to land.
+func vfrMVAApplies(dDep, dArr float32) bool {
+	return dDep > 3 && dArr > 5
+}
+
 // A VFR flight under Class B or C airspace stays vfrShelfBuffer below its
 // floor and then drops to the next vfrShelfIncrement, which under the usual
 // 1200' and 3000' shelves gives 1000' and 2500' -- what pilots fly there.
@@ -38,6 +46,10 @@ const (
 
 // Max altitude for VFR aircraft (below Class A airspace at 18,000')
 const maxVFRAltitude = 17500
+
+// maxHoldingShortVFR bounds how many VFR departures wait for the runway at a
+// time; no more are spawned until the backlog clears.
+const maxHoldingShortVFR = 5
 
 // errNoVFRDestination is returned when arrivals are backed up at every
 // airport that takes VFR traffic, leaving nowhere to send a VFR departure
@@ -72,97 +84,98 @@ func (s *Sim) spawnVFRDepartures() {
 	}
 }
 
-func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID) (ac *Aircraft, err error) {
+func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID) (*Aircraft, error) {
 	depState := s.DepartureState[depart][runway]
-	if len(depState.ReleasedVFR) >= 5 || len(depState.ReleasedIFR) >= maxHoldingShort {
+	if len(depState.ReleasedVFR) >= maxHoldingShortVFR || len(depState.ReleasedIFR) >= maxHoldingShort {
 		// There's a backup; hold off on more.
-		return
+		return nil, nil
 	}
 
 	if depState.VFRSpawnRate == 0 {
-		return
+		return nil, nil
 	}
 
 	// Don't waste time trying to find a valid launch if it's been
 	// near-impossible to find valid routes.
-	if depState.VFRAttempts < 400 ||
-		(depState.VFRSuccesses > 0 && depState.VFRAttempts/depState.VFRSuccesses < 200) {
-		ap := s.State.Airports[depart]
-
-		// Sample among the randoms and the routes
-		var rateSum float32
-		var sampledRandoms *av.VFRRandomsSpec
-		var sampledRoute *av.VFRRouteSpec
-		if ap.VFR.Randoms.Rate > 0 {
-			rateSum = ap.VFR.Randoms.Rate
-			sampledRandoms = &ap.VFR.Randoms
-		}
-		for _, route := range ap.VFR.Routes {
-			if route.Rate > 0 {
-				rateSum += route.Rate
-				p := route.Rate / rateSum
-				if s.Rand.Float32() < p {
-					sampledRandoms = nil
-					sampledRoute = &route
-				}
-			}
-		}
-
-		if sampledRandoms == nil && sampledRoute == nil {
-			// Nothing with a nonzero rate to sample from.
-			return
-		}
-
-		if sampledRoute != nil && s.orbitingArrivals(sampledRoute.Destination) > 0 {
-			// Arrivals are backed up at the route's destination; hold off
-			// on this one and try again later.
-			return nil, errNoVFRDestination
-		}
-
-		// The candidates a destination is sampled from don't change over the
-		// attempts below: a failed one leaves no trace in the sim and a
-		// successful one returns before another sample is drawn.
-		var destinations []av.ICAOAirportCode
-		var destinationWeights map[av.ICAOAirportCode]float32
-		if sampledRandoms != nil {
-			destinations = util.SortedMapKeys(s.State.DepartureAirports)
-			destinationWeights = s.vfrDestinationWeights()
-		}
-		callsigns := s.currentCallsigns()
-
-		for range 5 {
-			var arrive av.ICAOAirportCode
-			var fleet string
-			var routeWps []av.Waypoint
-			if sampledRandoms != nil {
-				// Sample destination airport: may be where we started from.
-				dest, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(destinations),
-					func(ap av.ICAOAirportCode) float32 { return destinationWeights[ap] })
-				if !ok {
-					// Arrivals are backed up at every airport that takes
-					// VFR traffic; wait for one of them to clear.
-					return nil, errNoVFRDestination
-				}
-				arrive, fleet = dest, sampledRandoms.Fleet
-			} else {
-				arrive, fleet, routeWps = sampledRoute.Destination, sampledRoute.Fleet, sampledRoute.Waypoints
-			}
-
-			// Only count attempts where we actually went looking for a
-			// route; the circuit breaker above is about routes that can't
-			// be found, not about destinations being busy.
-			depState.VFRAttempts++
-			ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns, s.State.SimTime)
-
-			if err == nil && ac != nil {
-				ac.ReleaseTime = s.State.SimTime
-				depState.VFRSuccesses++
-				return
-			}
-		}
-		return nil, ErrViolatedAirspace
+	if depState.VFRAttempts >= 400 &&
+		(depState.VFRSuccesses == 0 || depState.VFRAttempts/depState.VFRSuccesses >= 200) {
+		return nil, nil
 	}
-	return
+
+	randoms, route := s.sampleVFRFlight(s.State.Airports[depart])
+	if randoms == nil && route == nil {
+		// Nothing with a nonzero rate to sample from.
+		return nil, nil
+	}
+
+	if route != nil && s.orbitingArrivals(route.Destination) > 0 {
+		// Arrivals are backed up at the route's destination; hold off
+		// on this one and try again later.
+		return nil, errNoVFRDestination
+	}
+
+	// The candidates a destination is sampled from don't change over the
+	// attempts below: a failed one leaves no trace in the sim and a
+	// successful one returns before another sample is drawn.
+	var destinations []av.ICAOAirportCode
+	var destinationWeights map[av.ICAOAirportCode]float32
+	if randoms != nil {
+		destinations = util.SortedMapKeys(s.State.DepartureAirports)
+		destinationWeights = s.vfrDestinationWeights()
+	}
+	callsigns := s.currentCallsigns()
+
+	for range 5 {
+		var arrive av.ICAOAirportCode
+		var fleet string
+		var routeWps []av.Waypoint
+		if randoms != nil {
+			// Sample destination airport: may be where we started from.
+			dest, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(destinations),
+				func(ap av.ICAOAirportCode) float32 { return destinationWeights[ap] })
+			if !ok {
+				// Arrivals are backed up at every airport that takes
+				// VFR traffic; wait for one of them to clear.
+				return nil, errNoVFRDestination
+			}
+			arrive, fleet = dest, randoms.Fleet
+		} else {
+			arrive, fleet, routeWps = route.Destination, route.Fleet, route.Waypoints
+		}
+
+		// Only count attempts where we actually went looking for a
+		// route; the circuit breaker above is about routes that can't
+		// be found, not about destinations being busy.
+		depState.VFRAttempts++
+		if ac, err := s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns); err == nil {
+			ac.ReleaseTime = s.State.SimTime
+			depState.VFRSuccesses++
+			return ac, nil
+		}
+	}
+	return nil, ErrViolatedAirspace
+}
+
+// sampleVFRFlight chooses between the airport's random VFR flights and its
+// VFR routes in proportion to their rates. It returns nil for both if none of
+// them has a nonzero rate.
+func (s *Sim) sampleVFRFlight(ap *av.Airport) (*av.VFRRandomsSpec, *av.VFRRouteSpec) {
+	var rateSum float32
+	var randoms *av.VFRRandomsSpec
+	var route *av.VFRRouteSpec
+	if ap.VFR.Randoms.Rate > 0 {
+		rateSum = ap.VFR.Randoms.Rate
+		randoms = &ap.VFR.Randoms
+	}
+	for i, r := range ap.VFR.Routes {
+		if r.Rate > 0 {
+			rateSum += r.Rate
+			if s.Rand.Float32() < r.Rate/rateSum {
+				randoms, route = nil, &ap.VFR.Routes[i]
+			}
+		}
+	}
+	return randoms, route
 }
 
 // sampleVFRDeparture samples a VFR departure from the given airport for a
@@ -189,9 +202,7 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 		return nil, nil
 	}
 
-	ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil,
-		s.currentCallsigns(), s.State.SimTime)
-	return ac, err
+	return s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.currentCallsigns())
 }
 
 // vfrDestinationWeights gives the weight for sampling each airport as the
@@ -227,23 +238,24 @@ func vfrClimboutSpeed(perf av.AircraftPerformance) float32 {
 }
 
 func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, fleet string, routeWps []av.Waypoint,
-	callsigns []av.ADSBCallsign, simTime Time) (*Aircraft, string, error) {
+	callsigns []av.ADSBCallsign) (*Aircraft, error) {
+	simTime := s.State.SimTime
 	depap, arrap := db.DB.Airports[depart], db.DB.Airports[arrive]
 	rwy, _, ok := s.currentVFRRunway(depart)
 	if !ok {
-		return nil, "", fmt.Errorf("%s: unable to find current VFR runway", depart)
+		return nil, fmt.Errorf("%s: unable to find current VFR runway", depart)
 	}
 
 	// Nothing else about the candidate matters if there is no room to get
 	// into the pattern at the far end without entering the airspace over it.
 	terminalCeiling, ok := s.vfrTerminalCeiling(arrap)
 	if !ok {
-		return nil, "", ErrViolatedAirspace
+		return nil, ErrViolatedAirspace
 	}
 
 	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, callsigns, s.lg)
 	if ac == nil {
-		return nil, "", fmt.Errorf("unable to sample a valid aircraft")
+		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
 	rules := av.FlightRulesVFR
@@ -257,7 +269,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 
 	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
-		return nil, "", fmt.Errorf("invalid aircraft type: no performance data %q", ac.FlightPlan.AircraftType)
+		return nil, fmt.Errorf("invalid aircraft type: no performance data %q", ac.FlightPlan.AircraftType)
 	}
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
@@ -385,7 +397,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 
 	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, simTime, s.Rand, s.lg); err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	// Only now is the route the one the aircraft will fly: building the Nav
@@ -396,7 +408,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	// of them.
 	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.FlightPlan.Altitude, depap, arrap)
 	if !ok {
-		return nil, "", ErrViolatedAirspace
+		return nil, ErrViolatedAirspace
 	}
 	ac.Nav.Waypoints = s.adjustRouteForMVA(string(ac.ADSBCallsign), ac.Nav.Waypoints)
 
@@ -411,7 +423,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		if wp := simNav.UpdateWithWeather("", prespawnWxs, nil, &simFP,
 			simTime.NavTime(), nil).PassedWaypoint; wp != nil {
 			if wp.HasDeleteAction() {
-				return ac, rwy.Id, nil
+				return ac, nil
 			}
 			if wp.SequenceVFRLanding() {
 				// Generate descent waypoints so prespawn validates the
@@ -419,9 +431,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				// airspace down to pattern altitude.
 				arrAP, ok := db.DB.Airports[ac.FlightPlan.ArrivalAirport]
 				if !ok {
-					return ac, rwy.Id, nil
+					return ac, nil
 				}
-				patternAlt := float32(arrAP.Elevation + 1000)
+				patternAlt := float32(arrAP.Elevation + vfrPatternAltitude)
 				pos := simNav.FlightState.Position
 				alt := simNav.FlightState.Altitude
 				dest := arrAP.Location
@@ -459,13 +471,12 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		if s.bravoAirspace.Inside(pos, alt) ||
 			s.charlieAirspace.Inside(pos, alt) ||
 			s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
-			return nil, "", ErrViolatedAirspace
+			return nil, ErrViolatedAirspace
 		}
 		// Check MVA violation: aircraft must stay at or above MVA - 1000'.
-		// Skip when within 3nm of departure airport or 5nm of arrival airport.
 		distFromDeparture := math.NMDistance2LL(pos, simNav.FlightState.DepartureAirportLocation)
 		distToArrival := math.NMDistance2LL(pos, simNav.FlightState.ArrivalAirportLocation)
-		if distFromDeparture > 3 && distToArrival > 5 {
+		if vfrMVAApplies(distFromDeparture, distToArrival) {
 			if mva := s.mvaGrid.GetMVA(pos); mva > 0 && simNav.FlightState.Altitude < float32(mva-vfrMVABuffer) {
 				// Find which waypoint we're heading toward
 				wpIdx := -1
@@ -478,14 +489,12 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				nav.NavLog(string(ac.ADSBCallsign), simTime.NavTime(), "state",
 					"rejected at %.0f' (MVA %d, need %d) heading to wp %d %q, pos %v, %.1fnm from dep, %.1fnm from arr",
 					simNav.FlightState.Altitude, mva, mva-vfrMVABuffer, wpIdx, wpName, pos, distFromDeparture, distToArrival)
-				return nil, "", ErrVFRBelowMVA
+				return nil, ErrVFRBelowMVA
 			}
 		}
 	}
 
-	//s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",		ac.ADSBCallsign, depart, arrive)
-
-	return nil, "", ErrVFRSimTookTooLong
+	return nil, ErrVFRSimTookTooLong
 }
 
 // vfrTerminalRadius bounds where a VFR arrival maneuvers at its destination.
@@ -512,20 +521,11 @@ func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
 		return alt, alt > 0
 	}
 
-	ceiling := maxVFRAltitude
-	sample := func(p math.Point2LL) {
-		for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
-			if floor, covered := grid.ShelfFloor(p); covered {
-				ceiling = min(ceiling, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
-			}
-		}
-	}
-
-	sample(ap.Location)
+	ceiling := s.clampUnderShelves(ap.Location, maxVFRAltitude)
 	for r := 1; r <= vfrTerminalRadius; r++ {
 		for hdg := 0; hdg < 360; hdg += 30 {
-			sample(math.Offset2LL(ap.Location, math.TrueHeading(float32(hdg)), float32(r),
-				s.State.NmPerLongitude))
+			p := math.Offset2LL(ap.Location, math.TrueHeading(float32(hdg)), float32(r), s.State.NmPerLongitude)
+			ceiling = s.clampUnderShelves(p, ceiling)
 		}
 	}
 
@@ -534,6 +534,17 @@ func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
 	}
 	s.vfrTerminalAlts[ap.Id] = ceiling
 	return ceiling, ceiling > 0
+}
+
+// clampUnderShelves returns alt, lowered if need be to the altitude a VFR
+// flight at p flies under the Class B and C shelves over it.
+func (s *Sim) clampUnderShelves(p math.Point2LL, alt int) int {
+	for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
+		if floor, covered := grid.ShelfFloor(p); covered {
+			alt = min(alt, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
+		}
+	}
+	return alt
 }
 
 // legSamples yields points about a mile apart along the leg from a to b,
@@ -577,15 +588,7 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 
 	// The altitude to fly at each point: the cruise altitude, or under the
 	// lowest shelf over it.
-	ceiling := util.MapSlice(pts, func(p routePoint) int {
-		c := cruise
-		for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
-			if floor, covered := grid.ShelfFloor(p.loc); covered {
-				c = min(c, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
-			}
-		}
-		return c
-	})
+	ceiling := util.MapSlice(pts, func(p routePoint) int { return s.clampUnderShelves(p.loc, cruise) })
 
 	// A shelf's edge lies somewhere between two adjacent points, so at each
 	// of them the aircraft must be under the lower of the two: down before
@@ -611,7 +614,7 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 		if held[i] < nearer.Elevation+minVFRShelfRoom {
 			return nil, false
 		}
-		if dDep > 3 && dArr > 5 {
+		if vfrMVAApplies(dDep, dArr) {
 			if mva := s.mvaGrid.GetMVA(p.loc); mva > 0 && held[i] < mva-vfrMVABuffer {
 				return nil, false
 			}
