@@ -5,12 +5,12 @@
 package sim
 
 import (
+	"errors"
 	"fmt"
 	"iter"
 	"maps"
 	"slices"
 	"strconv"
-	"time"
 
 	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/aviation"
@@ -19,94 +19,150 @@ import (
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
-	"github.com/mmp/vice/wx"
 )
 
-func (s *Sim) initializeIFRDepartureNoLock(ac *Aircraft, ap *av.Airport, departureAirport av.ICAOAirportCode,
-	runway av.RunwayID, dep *av.Departure, cruise CruiseLimits,
-	exitRoutes map[av.ExitID]*av.ExitRoute) (*Aircraft, error) {
-	exitRoute := exitRoutes[dep.Exit]
-	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, cruise,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.Rand, s.lg)
-	if err != nil {
-		return nil, err
+// How low below the MVA a VFR can be
+const vfrMVABuffer = 1000
+
+// A VFR flight under Class B or C airspace stays vfrShelfBuffer below its
+// floor and then drops to the next vfrShelfIncrement, which under the usual
+// 1200' and 3000' shelves gives 1000' and 2500' -- what pilots fly there.
+// Scud running under a shelf is ordinary VFR practice; brushing its floor is
+// not, and neither is squeezing through less than minVFRShelfRoom of air
+// between a field and the airspace over it.
+const (
+	vfrShelfBuffer    = 200
+	vfrShelfIncrement = 500
+	minVFRShelfRoom   = 500
+)
+
+// Max altitude for VFR aircraft (below Class A airspace at 18,000')
+const maxVFRAltitude = 17500
+
+// errNoVFRDestination is returned when arrivals are backed up at every
+// airport that takes VFR traffic, leaving nowhere to send a VFR departure
+// at the moment.
+var errNoVFRDestination = errors.New("no VFR destination airport is accepting arrivals")
+
+// spawnVFRDepartures spawns rate-based VFR departures. VFR traffic isn't part
+// of the pregenerated schedule: its destinations depend on live arrival
+// congestion and its routes on the wind-selected runway.
+func (s *Sim) spawnVFRDepartures() {
+	if s.State.LaunchConfig.DepartureMode != LaunchAutomatic {
+		return
 	}
+	now := s.State.SimTime
 
-	// Departures aren't immediately associated, but the STARSComputer will
-	ac.ReportDepartureHeading = exitRoutesHaveVariedHeadings(exitRoutes)
-	ac.ReportDepartureSID = exitRoutesHaveVariedSIDs(exitRoutes)
-
-	shortExit := dep.Exit.Base()
-	isTRACON := db.DB.IsTRACON(s.State.Facility)
-	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
-	nasFp.Route = ac.FlightPlan.Route
-	nasFp.EntryFix = db.AirportDisplayId(ac.FlightPlan.DepartureAirport)
-	// The flight plan carries the exit's 3-character fix id when one is
-	// adapted; fix-pair endpoints and adapted fix criteria match against it.
-	nasFp.ExitFix = s.State.FacilityAdaptation.FixPairFixID(shortExit)
-	nasFp.SecondaryScratchpad = dep.SecondaryScratchpad
-	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
-	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
-	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && exitRoute.IsRNAV
-
-	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
-	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, string(runway))
-
-	// Adapted scratchpads are per-area, so this must follow the controller assignment above.
-	if dep.Scratchpad != "" {
-		nasFp.Scratchpad = dep.Scratchpad
-	} else if sp1 := s.State.FacilityAdaptation.Datablocks.Scratchpad1; sp1.DisplayExitFix ||
-		sp1.DisplayExitFix1 || sp1.DisplayExitGate || sp1.DisplayAltExitGate {
-		// Don't set the scratchpad; it will be set automatically.
-	} else {
-		nasFp.Scratchpad = s.State.FacilityAdaptation.ScratchpadForExit(dep.Exit,
-			s.areaForTCP(nasFp.TrackingController))
-	}
-
-	if db.DB.IsARTCC(s.State.Facility) {
-		// The departure levels off at the exit route's altitude until it is
-		// climbed further, so the data block needs it as an interim altitude
-		// for conflict alert to know where the climb stops.
-		alt := util.Select(exitRoute.AssignedAltitude != 0, exitRoute.AssignedAltitude, exitRoute.ClearedAltitude)
-		s.recordVirtualAltitudeEntry(&nasFp, min(alt, ac.FlightPlan.Altitude), true)
-		nasFp.applyERAMEntries(exitRoute.ERAM)
-	}
-
-	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
-	// departure assignment above when adapted.
-	s.deriveERAMFixPair(&nasFp, ac)
-	s.applyFixPairAssignment(&nasFp, ac)
-	// A fully-contained (internal) flight whose exit fix is a local-arrival
-	// airport is reclassified as an arrival for display/processing. The initial
-	// owner stays the departure controller assigned above; ownership is
-	// deliberately not re-derived as an arrival.
-	if nasFp.LocalArrival {
-		nasFp.TypeOfFlight = av.FlightTypeArrival
-	}
-	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
-
-	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp, s.Rand); err != nil {
-		return nil, err
-	}
-
-	// Departures aren't immediately associated, but the STARSComputer will
-	// hold on to their flight plans for now.
-	// Create a flight strip for departures
-	printStrips := ap.PrintDepartureStrips == nil || *ap.PrintDepartureStrips
-	if printStrips && shouldCreateFlightStrip(&nasFp) {
-		if s.isVirtualController(nasFp.TrackingController) {
-			// Virtual controller: strip goes to the handoff target
-			if !s.isVirtualController(nasFp.InboundHandoffController) {
-				s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
+	for airport, runways := range util.SortedMap(s.DepartureState) {
+		for runway, depState := range util.SortedMap(runways) {
+			if now.After(depState.NextVFRSpawn) {
+				ac, err := s.makeNewVFRDeparture(airport, runway)
+				launched := ac != nil && err == nil
+				if launched {
+					s.addDepartureToPool(ac, runway, 0 /* no wait at the gate */)
+				}
+				// Also skip the slot if there was nowhere to send the
+				// aircraft; otherwise we'd try again every second for as
+				// long as arrivals are backed up.
+				if launched || errors.Is(err, errNoVFRDestination) {
+					depState.NextVFRSpawn = now.Add(randomWait(depState.VFRSpawnRate, false, s.Rand))
+				}
 			}
-		} else {
-			// Human controller: strip goes to the tracking controller
-			s.initFlightStrip(&nasFp, nasFp.TrackingController)
 		}
 	}
+}
 
-	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
-	return ac, err
+func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID) (ac *Aircraft, err error) {
+	depState := s.DepartureState[depart][runway]
+	if len(depState.ReleasedVFR) >= 5 || len(depState.ReleasedIFR) >= maxHoldingShort {
+		// There's a backup; hold off on more.
+		return
+	}
+
+	if depState.VFRSpawnRate == 0 {
+		return
+	}
+
+	// Don't waste time trying to find a valid launch if it's been
+	// near-impossible to find valid routes.
+	if depState.VFRAttempts < 400 ||
+		(depState.VFRSuccesses > 0 && depState.VFRAttempts/depState.VFRSuccesses < 200) {
+		ap := s.State.Airports[depart]
+
+		// Sample among the randoms and the routes
+		var rateSum float32
+		var sampledRandoms *av.VFRRandomsSpec
+		var sampledRoute *av.VFRRouteSpec
+		if ap.VFR.Randoms.Rate > 0 {
+			rateSum = ap.VFR.Randoms.Rate
+			sampledRandoms = &ap.VFR.Randoms
+		}
+		for _, route := range ap.VFR.Routes {
+			if route.Rate > 0 {
+				rateSum += route.Rate
+				p := route.Rate / rateSum
+				if s.Rand.Float32() < p {
+					sampledRandoms = nil
+					sampledRoute = &route
+				}
+			}
+		}
+
+		if sampledRandoms == nil && sampledRoute == nil {
+			// Nothing with a nonzero rate to sample from.
+			return
+		}
+
+		if sampledRoute != nil && s.orbitingArrivals(sampledRoute.Destination) > 0 {
+			// Arrivals are backed up at the route's destination; hold off
+			// on this one and try again later.
+			return nil, errNoVFRDestination
+		}
+
+		// The candidates a destination is sampled from don't change over the
+		// attempts below: a failed one leaves no trace in the sim and a
+		// successful one returns before another sample is drawn.
+		var destinations []av.ICAOAirportCode
+		var destinationWeights map[av.ICAOAirportCode]float32
+		if sampledRandoms != nil {
+			destinations = util.SortedMapKeys(s.State.DepartureAirports)
+			destinationWeights = s.vfrDestinationWeights()
+		}
+		callsigns := s.currentCallsigns()
+
+		for range 5 {
+			var arrive av.ICAOAirportCode
+			var fleet string
+			var routeWps []av.Waypoint
+			if sampledRandoms != nil {
+				// Sample destination airport: may be where we started from.
+				dest, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(destinations),
+					func(ap av.ICAOAirportCode) float32 { return destinationWeights[ap] })
+				if !ok {
+					// Arrivals are backed up at every airport that takes
+					// VFR traffic; wait for one of them to clear.
+					return nil, errNoVFRDestination
+				}
+				arrive, fleet = dest, sampledRandoms.Fleet
+			} else {
+				arrive, fleet, routeWps = sampledRoute.Destination, sampledRoute.Fleet, sampledRoute.Waypoints
+			}
+
+			// Only count attempts where we actually went looking for a
+			// route; the circuit breaker above is about routes that can't
+			// be found, not about destinations being busy.
+			depState.VFRAttempts++
+			ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns, s.State.SimTime)
+
+			if err == nil && ac != nil {
+				ac.ReleaseTime = s.State.SimTime
+				depState.VFRSuccesses++
+				return
+			}
+		}
+		return nil, ErrViolatedAirspace
+	}
+	return
 }
 
 // sampleVFRDeparture samples a VFR departure from the given airport for a
@@ -138,44 +194,36 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 	return ac, err
 }
 
-func makeDepartureAircraft(ac *Aircraft, simTime Time, gateDelay time.Duration) DepartureAircraft {
-	d := DepartureAircraft{
-		ADSBCallsign:        ac.ADSBCallsign,
-		SpawnTime:           simTime,
-		ReadyDepartGateTime: simTime.Add(gateDelay),
-	}
-
-	// Simulate out the takeoff roll and initial climb to figure out when
-	// we'll have sufficient separation to launch the next aircraft and to
-	// record the aircraft's initial flight path. The simulation uses calm
-	// wind so that the courses measured from the paths reflect the charted
-	// departure procedures: controllers judge divergence from what's
-	// charted, and wind drift varying with each aircraft's spawn time and
-	// speed would otherwise blur it.
-	model := wx.MakeCalmModel()
-	simAc := *ac
-	start := ac.Position()
-	const nsteps = 120
-	d.MinSeparation = nsteps * time.Second // just in case
-	d.AirborneDistance = -1                // not airborne within the simulation horizon
-	d.LaunchPath = make([]math.Point2LL, 0, nsteps+1)
-	d.LaunchPath = append(d.LaunchPath, start)
-	minSepSet := false
-	for i := range nsteps {
-		simAc.Update(model, simTime, nil, nil, nil /* lg */)
-		d.LaunchPath = append(d.LaunchPath, simAc.Position())
-		if d.AirborneDistance < 0 && simAc.IsAirborne() {
-			d.AirborneDistance = math.NMDistance2LL(start, simAc.Position())
-			d.AirborneTime = time.Duration(i+1) * time.Second
-		}
-		// We need 6,000' and airborne, but we'll add a bit of slop
-		if !minSepSet && simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
-			d.MinSeparation = time.Duration(i) * time.Second
-			minSepSet = true
+// vfrDestinationWeights gives the weight for sampling each airport as the
+// destination of a random VFR departure. Airports where arrivals are already
+// backed up waiting to land weigh nothing, so that we don't keep adding to
+// the pile. Which those are takes a pass over every aircraft in the sim, so
+// they are counted once for all the airports rather than once per airport.
+func (s *Sim) vfrDestinationWeights() map[av.ICAOAirportCode]float32 {
+	orbiting := make(map[av.ICAOAirportCode]int)
+	for _, ac := range s.Aircraft {
+		if isHoldingArrival(ac) {
+			orbiting[ac.FlightPlan.ArrivalAirport]++
 		}
 	}
 
-	return d
+	weights := make(map[av.ICAOAirportCode]float32, len(s.State.DepartureAirports))
+	for ap := range s.State.DepartureAirports {
+		if orbiting[ap] == 0 {
+			weights[ap] = s.State.Airports[ap].VFRRateSum()
+		}
+	}
+	return weights
+}
+
+// vfrDownwindOffset is how far to the side of the runway a departure's
+// downwind runs for a light aircraft; faster types fly it proportionally
+// wider. vfrClimboutSpeed is the speed the turn onto it is flown at, which
+// below 10,000' is the 250 knot limit for anything that can reach it.
+const vfrDownwindOffset = 1.5
+
+func vfrClimboutSpeed(perf av.AircraftPerformance) float32 {
+	return min(250, perf.Speed.CruiseTAS)
 }
 
 func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, fleet string, routeWps []av.Waypoint,
@@ -440,6 +488,55 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	return nil, "", ErrVFRSimTookTooLong
 }
 
+// vfrTerminalRadius bounds where a VFR arrival maneuvers at its destination.
+// The traffic pattern, the 45-degree entry to it, and the orbit it holds in
+// when the pattern is full all fall within it.
+const vfrTerminalRadius = 5
+
+// vfrPatternAltitude is how far above the field a VFR aircraft flies the
+// pattern. vfrPatternMinRoom is the least room it can be squeezed into: below
+// that the airspace is down around the base and final legs and there is no
+// pattern left to fly.
+const vfrPatternAltitude = 1000
+
+const vfrPatternMinRoom = 500
+
+// vfrTerminalCeiling returns the highest altitude a VFR arrival can use while
+// maneuvering at ap and stay clear of Class B and C airspace. It reports
+// false where there is no room above the pattern to do that: entering such a
+// field means entering the airspace, which is not something we fly, so no VFR
+// is sent there. The answer depends only on the airspace and the field, so it
+// is worked out once per airport.
+func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
+	s.ensureAirspaceGrids()
+	if alt, ok := s.vfrTerminalAlts[ap.Id]; ok {
+		return alt, alt > 0
+	}
+
+	ceiling := maxVFRAltitude
+	sample := func(p math.Point2LL) {
+		for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
+			if floor, covered := grid.ShelfFloor(p); covered {
+				ceiling = min(ceiling, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
+			}
+		}
+	}
+
+	sample(ap.Location)
+	for r := 1; r <= vfrTerminalRadius; r++ {
+		for hdg := 0; hdg < 360; hdg += 30 {
+			sample(math.Offset2LL(ap.Location, math.TrueHeading(float32(hdg)), float32(r),
+				s.State.NmPerLongitude))
+		}
+	}
+
+	if ceiling < ap.Elevation+vfrPatternMinRoom {
+		ceiling = 0
+	}
+	s.vfrTerminalAlts[ap.Id] = ceiling
+	return ceiling, ceiling > 0
+}
+
 // legSamples yields points about a mile apart along the leg from a to b,
 // excluding both ends.
 func legSamples(a, b math.Point2LL) iter.Seq[math.Point2LL] {
@@ -559,76 +656,6 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 	return result, true
 }
 
-// vfrTerminalRadius bounds where a VFR arrival maneuvers at its destination.
-// The traffic pattern, the 45-degree entry to it, and the orbit it holds in
-// when the pattern is full all fall within it.
-const vfrTerminalRadius = 5
-
-// vfrPatternAltitude is how far above the field a VFR aircraft flies the
-// pattern. vfrPatternMinRoom is the least room it can be squeezed into: below
-// that the airspace is down around the base and final legs and there is no
-// pattern left to fly.
-const vfrPatternAltitude = 1000
-const vfrPatternMinRoom = 500
-
-// vfrTerminalCeiling returns the highest altitude a VFR arrival can use while
-// maneuvering at ap and stay clear of Class B and C airspace. It reports
-// false where there is no room above the pattern to do that: entering such a
-// field means entering the airspace, which is not something we fly, so no VFR
-// is sent there. The answer depends only on the airspace and the field, so it
-// is worked out once per airport.
-func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
-	s.ensureAirspaceGrids()
-	if alt, ok := s.vfrTerminalAlts[ap.Id]; ok {
-		return alt, alt > 0
-	}
-
-	ceiling := maxVFRAltitude
-	sample := func(p math.Point2LL) {
-		for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
-			if floor, covered := grid.ShelfFloor(p); covered {
-				ceiling = min(ceiling, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
-			}
-		}
-	}
-
-	sample(ap.Location)
-	for r := 1; r <= vfrTerminalRadius; r++ {
-		for hdg := 0; hdg < 360; hdg += 30 {
-			sample(math.Offset2LL(ap.Location, math.TrueHeading(float32(hdg)), float32(r),
-				s.State.NmPerLongitude))
-		}
-	}
-
-	if ceiling < ap.Elevation+vfrPatternMinRoom {
-		ceiling = 0
-	}
-	s.vfrTerminalAlts[ap.Id] = ceiling
-	return ceiling, ceiling > 0
-}
-
-func (s *Sim) ensureAirspaceGrids() {
-	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
-		s.initializeAirspaceGrids()
-	}
-}
-
-func (s *Sim) initializeAirspaceGrids() {
-	s.vfrTerminalAlts = make(map[av.ICAOAirportCode]int)
-	initAirspace := func(a map[string][]av.AirspaceVolume) *db.AirspaceGrid {
-		var vols []*av.AirspaceVolume
-		for volslice := range maps.Values(a) {
-			for _, v := range volslice {
-				vols = append(vols, &v)
-			}
-		}
-		return db.MakeAirspaceGrid(vols)
-	}
-	s.bravoAirspace = initAirspace(db.DB.BravoAirspace)
-	s.charlieAirspace = initAirspace(db.DB.CharlieAirspace)
-	s.mvaGrid = db.MakeMVAGrid(db.DB.MVAs[s.State.Facility])
-}
-
 // adjustRouteForMVA modifies the waypoint altitude restrictions to ensure
 // the aircraft stays above MVA - vfrMVABuffer along the route.
 func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoint {
@@ -691,4 +718,26 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 	}
 
 	return result
+}
+
+func (s *Sim) ensureAirspaceGrids() {
+	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
+		s.initializeAirspaceGrids()
+	}
+}
+
+func (s *Sim) initializeAirspaceGrids() {
+	s.vfrTerminalAlts = make(map[av.ICAOAirportCode]int)
+	initAirspace := func(a map[string][]av.AirspaceVolume) *db.AirspaceGrid {
+		var vols []*av.AirspaceVolume
+		for volslice := range maps.Values(a) {
+			for _, v := range volslice {
+				vols = append(vols, &v)
+			}
+		}
+		return db.MakeAirspaceGrid(vols)
+	}
+	s.bravoAirspace = initAirspace(db.DB.BravoAirspace)
+	s.charlieAirspace = initAirspace(db.DB.CharlieAirspace)
+	s.mvaGrid = db.MakeMVAGrid(db.DB.MVAs[s.State.Facility])
 }

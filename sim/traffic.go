@@ -48,46 +48,9 @@ const (
 	repeatedRecordWindow = 30 * time.Minute
 )
 
-// publishedArrivalMaxHeadingDifference is how far an origin may lie from the
-// direction an arrival flies in from and still plausibly come in on it. Gates
-// are rarely less than this far apart, so a smaller difference doesn't say the
-// traffic would come in anywhere else.
-const publishedArrivalMaxHeadingDifference = 60 // degrees
-
-var (
-	// errNoSuitableArrival: no active arrival can carry the aircraft at all,
-	// by class or by altitude.
-	errNoSuitableArrival = errors.New("no arrival suits the aircraft")
-	// errArrivalSTARInactive: the flight's real route ends with a STAR no
-	// active arrival flies, so it is dropped rather than shoehorned onto a
-	// flow it never flies.
-	errArrivalSTARInactive = errors.New("no active arrival flies STAR")
-	// errNoPlausibleArrival: no arrival comes in plausibly from the flight's
-	// direction.
-	errNoPlausibleArrival = errors.New("no plausible arrival to fly")
-	// errFlowDisabled: only a flow the scenario has switched off--an inbound
-	// flow, or a runway's departures--would fly the flight, so it is dropped.
-	errFlowDisabled = errors.New("the flow that would fly it is disabled")
-)
-
-// IFRAirports returns every airport the scenario generates IFR traffic at, departures and
-// arrivals separately. It reads the rate maps, not the enable maps: which flows are switched on
-// can change while a sim runs, so that is judged flight by flight at spawn.
-func (lc *LaunchConfig) IFRAirports() (departures, arrivals map[av.ICAOAirportCode]bool) {
-	departures = make(map[av.ICAOAirportCode]bool)
-	arrivals = make(map[av.ICAOAirportCode]bool)
-	for airport := range lc.DepartureRates {
-		departures[airport] = true
-	}
-	for _, rates := range lc.InboundFlowRates {
-		for airport := range rates {
-			if airport != "overflights" {
-				arrivals[av.ICAOAirportCode(airport)] = true
-			}
-		}
-	}
-	return
-}
+// errFlowDisabled: only a flow the scenario has switched off--an inbound
+// flow, or a runway's departures--would fly the flight, so it is dropped.
+var errFlowDisabled = errors.New("the flow that would fly it is disabled")
 
 // publishedTrafficTime is when a flight published at t operates in a sim that
 // started at start: its offset from the start, drawn in by the rate scale. That
@@ -97,18 +60,6 @@ func publishedTrafficTime(t, start time.Time, scale float32) time.Time {
 	return start.Add(time.Duration(float64(t.Sub(start)) / float64(scale)))
 }
 
-// enrouteFixes returns the fixes a real route names between its endpoints. A
-// route reads "ORIGIN ...fixes... DESTINATION", so its two ends are airport
-// identifiers rather than points to match a scenario's exits or arrivals
-// against: every route into JFK ends with "JFK".
-func enrouteFixes(route string) []string {
-	fixes := strings.Fields(route)
-	if len(fixes) <= 2 {
-		return nil
-	}
-	return fixes[1 : len(fixes)-1]
-}
-
 // engineTypeFor is how an aircraft is classified when choosing among a city
 // pair's real routes: jets fly the high-altitude ones, everything else the low.
 func engineTypeFor(aircraftType string) string {
@@ -116,51 +67,6 @@ func engineTypeFor(aircraftType string) string {
 		return perf.Engine.AircraftType
 	}
 	return ""
-}
-
-// arrivalPlacement is the inbound flow and arrival a published flight comes in
-// on, the route it files when the route database is what found it, the airport
-// standing in for its origin if the scenario has no way to fly it from where it
-// really came from, and how the choice was made, for reporting.
-type arrivalPlacement struct {
-	group      string
-	index      int
-	filedRoute string
-	substitute av.ICAOAirportCode
-	cruise     CruiseLimits
-	how        string
-}
-
-// candidateArrival is an arrival an inbound flow the scenario is running could
-// bring a published flight in on. Only the flows it works count: putting an
-// arrival on one it doesn't model would hand the controller traffic down a
-// feeder nobody is working.
-type candidateArrival struct {
-	group string
-	index int
-	arr   *av.Arrival
-}
-
-// candidateArrivals gathers them in sorted flow order, so that a choice between
-// equally good ones doesn't vary between runs. includeDisabled takes in the
-// flows the scenario has switched off, too.
-func (ss *CommonState) candidateArrivals(arrivalAirport av.ICAOAirportCode, includeDisabled bool) []candidateArrival {
-	arrivalAirport = traffic.NormalizeAirportCode(arrivalAirport)
-
-	var candidates []candidateArrival
-	for _, group := range util.SortedMapKeys(ss.InboundFlows) {
-		enabled, listed := ss.LaunchConfig.InboundFlowEnabled[group][string(arrivalAirport)]
-		if !enabled && !(includeDisabled && listed) {
-			continue
-		}
-		arrivals := ss.InboundFlows[group].Arrivals
-		for i := range arrivals {
-			if slices.Contains(arrivals[i].Airports, arrivalAirport) {
-				candidates = append(candidates, candidateArrival{group, i, &arrivals[i]})
-			}
-		}
-	}
-	return candidates
 }
 
 // TimetableStartMinute is a start time as a local clock time at the timetable's
@@ -331,32 +237,6 @@ func TrafficCounts(lc *LaunchConfig, start time.Time,
 		}
 	}
 	return departures, arrivals, operations, nil
-}
-
-// departsAirport reports whether any of an airport's departure flows are both
-// enabled and a human's to work, and landsAirport whether any inbound flow into
-// it is. Published traffic leaves from and lands at the flows the user leaves
-// on, so an airport with all of them off flies nothing; and traffic the
-// scenario flies purely for realism is nothing the user will see, so a preview
-// of what they are in for leaves it out.
-func (lc *LaunchConfig) departsAirport(airport av.ICAOAirportCode) bool {
-	for runway, categories := range lc.DepartureEnabled[airport] {
-		for category, enabled := range categories {
-			if enabled && !lc.DepartureIsBackground(airport, runway, category) {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (lc *LaunchConfig) landsAirport(airport av.ICAOAirportCode) bool {
-	for flow, airports := range lc.InboundFlowEnabled {
-		if airports[string(airport)] && !lc.InboundFlowIsBackground(flow, string(airport)) {
-			return true
-		}
-	}
-	return false
 }
 
 // MarkBackgroundTraffic records which of a scenario's traffic no human
@@ -608,135 +488,6 @@ func dropReturnedLegs(flights []traffic.Flight) ([]traffic.Flight, int) {
 	return kept, dropped
 }
 
-// placeArrival decides how a published flight into arrivalAirport from origin
-// is flown: the inbound flow and arrival that carry it, the route it files, and
-// the airport standing in for its origin when neither the scenario nor the
-// route database covers where it really came from. A flight only a flow the
-// scenario has switched off would carry fails with errFlowDisabled.
-func (ss *CommonState) placeArrival(arrivalAirport, origin av.ICAOAirportCode, aircraftType string,
-	routed routedPairs) (arrivalPlacement, error) {
-	arrivalAirport = traffic.NormalizeAirportCode(arrivalAirport)
-	origin = traffic.NormalizeAirportCode(origin)
-
-	p, err := ss.placeArrivalAmong(ss.candidateArrivals(arrivalAirport, false), arrivalAirport, origin,
-		aircraftType, routed)
-	if err != nil {
-		if d, derr := ss.placeArrivalAmong(ss.candidateArrivals(arrivalAirport, true), arrivalAirport,
-			origin, aircraftType, routed); derr == nil {
-			return p, fmt.Errorf("%w: %s", errFlowDisabled, d.group)
-		}
-	}
-	return p, err
-}
-
-// placeArrivalAmong places the flight on one of the given candidates.
-func (ss *CommonState) placeArrivalAmong(candidates []candidateArrival, arrivalAirport, origin av.ICAOAirportCode,
-	aircraftType string, routed routedPairs) (arrivalPlacement, error) {
-	if len(candidates) == 0 {
-		return arrivalPlacement{}, errNoPlausibleArrival
-	}
-	if len(suitableArrivals(candidates, aircraftType)) == 0 {
-		return arrivalPlacement{}, errNoSuitableArrival
-	}
-
-	hour, hourKnown := ss.localHour(arrivalAirport)
-	scenarioRoutes := func(from av.ICAOAirportCode) []string {
-		if ap, ok := ss.Airports[arrivalAirport]; ok {
-			return ap.TrafficRoutes.Arrivals[from].Routes(db.Lookups{}, aircraftType)
-		}
-		return nil
-	}
-	scrapedRoutes := func(from av.ICAOAirportCode) []av.ScrapedRoute {
-		return orderScrapedRoutes(db.DB.ScrapedRoutesBetween(from, arrivalAirport),
-			aircraftType, hour, hourKnown)
-	}
-	scrapedNames := func(routes []av.ScrapedRoute) []string {
-		return util.MapSlice(routes, func(r av.ScrapedRoute) string { return r.Route })
-	}
-	faaRoutes := func(from av.ICAOAirportCode) []string {
-		eligible := eligibleAirportPairRoutes(db.DB.RoutesBetween(from, arrivalAirport),
-			engineTypeFor(aircraftType))
-		return util.MapSlice(eligible, func(r db.AirportPairRoute) string { return r.Route })
-	}
-
-	// The scenario says in so many words how traffic from this origin comes in,
-	// or failing that the scraped filings and the route database say how the
-	// pair is really flown. Either way the route is the flight's own, so
-	// failing to fit it--its STAR isn't active in this configuration--drops the
-	// flight rather than shoehorning it onto a flow it never flies: a scenario
-	// working one gate of an airport shouldn't be handed every flight bound for
-	// the others.
-	if routes := scenarioRoutes(origin); len(routes) > 0 {
-		c, route, err := matchArrivalRoutes(candidates, aircraftType, routes, arrivalAirport, origin)
-		if err != nil {
-			// The route comes back with the error: it is what says why the
-			// scenario has no way to fly the flight.
-			return arrivalPlacement{filedRoute: route}, err
-		}
-		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, nil),
-			"scenario route"), nil
-	}
-	if scraped, faa := scrapedRoutes(origin), faaRoutes(origin); len(scraped)+len(faa) > 0 {
-		names := scrapedNames(scraped)
-		c, route, err := matchArrivalRoutes(candidates, aircraftType,
-			slices.Concat(names, faa), arrivalAirport, origin)
-		if err != nil {
-			return arrivalPlacement{filedRoute: route}, err
-		}
-		how := util.Select(slices.Contains(names, route), "scraped route", "faa route")
-		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, scraped),
-			how), nil
-	}
-
-	// Neither knows this origin, so fly the flight the way the nearest airport
-	// one of them does know is flown: from JFK, Norfolk stands in for Kill Devil
-	// Hills. Real traffic comes from far more airports than either source
-	// covers, and arriving as one's neighbors do beats not arriving at all. The
-	// flight files its own route rather than the substitute's, which starts
-	// somewhere it has never been.
-	pool := slices.Clone(routed.originsByDestination[arrivalAirport])
-	if ap, ok := ss.Airports[arrivalAirport]; ok {
-		for _, from := range util.SortedMapKeys(ap.TrafficRoutes.Arrivals) {
-			if len(scenarioRoutes(from)) > 0 {
-				pool = append(pool, from)
-			}
-		}
-	}
-	for _, substitute := range substituteAirports(arrivalAirport, origin, pool,
-		publishedArrivalMaxHeadingDifference) {
-		routes := slices.Concat(scenarioRoutes(substitute), scrapedNames(scrapedRoutes(substitute)),
-			faaRoutes(substitute))
-		if c, _, err := matchArrivalRoutes(candidates, aircraftType, routes, arrivalAirport, substitute); err == nil {
-			return c.placement("", substitute, CruiseLimits{}, "nearest route, from "+string(substitute)), nil
-		}
-	}
-
-	// Nothing is routed anywhere near it; the gate nearest the great-circle arc
-	// the flight actually flies is all that is left to go on.
-	if c, ok := arrivalNearestArc(suitableArrivals(candidates, aircraftType),
-		arrivalAirport, origin); ok {
-		return c.placement("", "", CruiseLimits{}, "great-circle gate"), nil
-	}
-	return arrivalPlacement{}, errNoPlausibleArrival
-}
-
-func (c candidateArrival) placement(filedRoute string, substitute av.ICAOAirportCode, cruise CruiseLimits,
-	how string) arrivalPlacement {
-	return arrivalPlacement{group: c.group, index: c.index, filedRoute: filedRoute,
-		substitute: substitute, cruise: cruise, how: how}
-}
-
-// arrivalCruiseLimits is what the route a published arrival files says about
-// the altitude it cruises at: what its procedures require, and what the pair's
-// recent filings of that route were seen at, when it is one of them.
-func arrivalCruiseLimits(route string, origin, arrivalAirport av.ICAOAirportCode, scraped []av.ScrapedRoute) CruiseLimits {
-	limits := CruiseLimits{Floor: av.RouteAltitudeFloor(db.Lookups{}, route, origin, arrivalAirport)}
-	if i := slices.IndexFunc(scraped, func(r av.ScrapedRoute) bool { return r.Route == route }); i != -1 {
-		limits.Low, limits.High = scraped[i].MinAltitude, scraped[i].MaxAltitude
-	}
-	return limits
-}
-
 // publishedSubstituteFraction is how much of the trip an airport drawn from the
 // route database may be away from the airport it stands in for, at either end.
 const publishedSubstituteFraction = 0.5
@@ -899,18 +650,4 @@ func hourDistance(h av.HourRanges, hour int) int {
 		}
 	}
 	return 12
-}
-
-// enabledDepartureCategories returns the categories the scenario is launching
-// from a runway, and nothing more: how many aircraft go where comes from the
-// published flights themselves.
-func (lc *LaunchConfig) enabledDepartureCategories(airport av.ICAOAirportCode, runway av.RunwayID) []string {
-	var categories []string
-	for category, enabled := range lc.DepartureEnabled[airport][runway] {
-		if enabled {
-			categories = append(categories, category)
-		}
-	}
-	slices.Sort(categories)
-	return categories
 }
