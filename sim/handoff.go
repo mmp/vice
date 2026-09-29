@@ -697,37 +697,90 @@ func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID, minutes int) (err error) 
 	return nil
 }
 
+// FlightPlanDirect amends the route of the flight with the given ACID as
+// ERAM's QU <fixes> <FLID> does: the route's fixes before the last of fixes,
+// which must be on the route, are removed, and the others, which may be any
+// location Locate accepts, such as an FRD, are inserted ahead of it. The flight plan's
+// route then starts with an FRD for the aircraft's present position. Only a
+// controller with control of the track may amend it. If issueDirect is set and
+// the controller is talking to the aircraft, the pilot is also cleared direct
+// to the first fix; the returned callsign and spoken text are those of the
+// pilot's readback.
 // TODO: Migrate to ERAM computer.
-func (s *Sim) FlightPlanDirect(fix string, acid ACID) error {
-	ac, ok := s.Aircraft[av.ADSBCallsign(acid)]
-	if !ok {
-		return ErrNoMatchingFlight
+func (s *Sim) FlightPlanDirect(tcw TCW, acid ACID, fixes []string, issueDirect bool) (av.ADSBCallsign, string, error) {
+	fp, ac, _ := s.getFlightPlanForACID(acid)
+	if fp == nil {
+		return "", "", ErrNoMatchingFlightPlan
+	}
+	if !s.TCWCanModifyFlightPlan(tcw, fp) {
+		return "", "", av.ErrOtherControllerHasTrack
+	}
+	if ac == nil {
+		return "", "", ErrTrackIsNotActive
+	}
+	if len(fixes) == 0 {
+		return "", "", av.ErrNoMatchingFix
 	}
 
-	var success bool
-	for i, wp := range ac.Nav.Waypoints {
-		if wp.Fix == fix {
-			// Remove all waypoints before the fix
-			ac.Nav.Waypoints = ac.Nav.Waypoints[i:]
-			success = true
-			break
+	prefix := make([]av.Waypoint, len(fixes)-1)
+	for i := range len(fixes) - 1 {
+		loc, ok := s.State.Locate(fixes[i])
+		if !ok {
+			return "", "", av.ErrNoMatchingFix
+		}
+		prefix[i] = av.Waypoint{
+			Fix:      fixes[i],
+			Location: loc,
+		}
+	}
+	// The FRD is taken from the first fix of the route being replaced: the
+	// one the pilot has been cleared on, even if they haven't reacted yet.
+	var frd string
+	old := ac.Nav.AssignedWaypoints()
+	if i := slices.IndexFunc(old, isNamedFix); i != -1 {
+		frd, _ = db.FormatFRD(old[i].Fix, old[i].Location, ac.Position())
+	}
+	// The amendment splices in at the last fix in fixes, which must be on
+	// the route.
+	if !ac.Nav.AmendRoute(prefix, fixes[len(fixes)-1]) {
+		return "", "", av.ErrNoMatchingFix
+	}
+	route := av.WaypointArray(util.FilterSlice(ac.Nav.AssignedWaypoints(), func(wp av.Waypoint) bool {
+		return !strings.HasPrefix(wp.Fix, "_")
+	}))
+	// Flight plan routes leave off the destination airport, which readouts
+	// add, but the waypoints end there.
+	if n := len(route); n > 0 && route[n-1].Fix == string(fp.ArrivalAirport) {
+		route = route[:n-1]
+	}
+	fp.Route = strings.TrimSpace(frd + " " + route.RouteString())
+
+	// DirectFix fails if the controller isn't talking to the aircraft; the
+	// amendment stands regardless.
+	var readback string
+	if issueDirect {
+		if intent, err := s.DirectFix(tcw, ac.ADSBCallsign, fixes[0], av.TurnClosest,
+			0 /* delay reduction */); err == nil {
+			readback = s.renderAndPostReadback(ac.ADSBCallsign, tcw, []speech.CommandIntent{intent})
 		}
 	}
 
-	if !success {
-		return av.ErrNoMatchingFix
-	}
-
-	// Cloned because the route is encoded for the RPC reply after the sim
-	// lock has been released, while updateWaypoints keeps reslicing it.
+	// Waypoints are cloned because the route is encoded for the RPC reply after the sim lock has
+	// been released, while updateWaypoints keeps reslicing it.
 	s.eventStream.Post(Event{
 		Type:  FlightPlanDirectEvent,
 		ACID:  acid,
-		Route: slices.Clone(ac.Nav.Waypoints),
+		Route: slices.Clone(ac.Nav.AssignedWaypoints()),
 	})
 
 	s.publish()
-	return nil
+	return ac.ADSBCallsign, readback, nil
+}
+
+// isNamedFix reports whether wp is at a published fix, navaid, or airport, as
+// opposed to a waypoint vice synthesized or one given as coordinates or an FRD.
+func isNamedFix(wp av.Waypoint) bool {
+	return !strings.HasPrefix(wp.Fix, "_") && len(wp.Fix) <= 5
 }
 
 type Handoff struct {

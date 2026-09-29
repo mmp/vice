@@ -540,16 +540,31 @@ func (sd *dispatcher) SendRouteCoordinates(rca *SendRouteCoordinatesArgs, update
 type FlightPlanDirectArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	Fix             string
+	Fixes           []string
+	IssueDirect     bool
+	EnableTTS       bool // Whether to synthesize readback audio
+}
+
+type FlightPlanDirectResult struct {
+	SimStateUpdate
+	ReadbackText      string          // Text for client to synthesize
+	ReadbackVoiceName string          // Voice name for synthesis (e.g., "am_adam")
+	ReadbackCallsign  av.ADSBCallsign // Callsign for the readback
 }
 
 const FlightPlanDirectRPC = "Sim.FlightPlanDirect"
 
-func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *SimStateUpdate) error {
+func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, result *FlightPlanDirectResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	return sd.runSimCommand(da.ControllerToken, update, FlightPlanDirectRPC, da, func(c *controllerContext) error {
-		return c.sim.FlightPlanDirect(da.Fix, da.ACID)
+	return sd.runSimCommand(da.ControllerToken, &result.SimStateUpdate, FlightPlanDirectRPC, da, func(c *controllerContext) error {
+		callsign, readback, err := c.sim.FlightPlanDirect(c.tcw, da.ACID, da.Fixes, da.IssueDirect)
+		if da.EnableTTS && readback != "" {
+			result.ReadbackText = readback
+			result.ReadbackVoiceName = c.sim.GetReadbackVoice(callsign)
+			result.ReadbackCallsign = callsign
+		}
+		return err
 	})
 }
 

@@ -272,17 +272,24 @@ func (ep *Scope) tgtGenDefaultCallsign(ctx *scope.Context) av.ADSBCallsign {
 	return ep.targetGenLastCallsign
 }
 
-func (ep *Scope) flightPlanDirect(ctx *scope.Context, acid sim.ACID, fix string) error {
-	ctx.Client.FlightPlanDirect(acid, fix, func(err error) {
-		if err != nil {
-			ep.displayError(err, ctx)
-		}
-	})
-	trk, _ := ctx.Client.State.GetTrackByACID(acid)
-	if !ep.DisableERAMtoRadio && trk != nil {
-		cmd := "D" + fix
-		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
+func (ep *Scope) flightPlanDirect(ctx *scope.Context, trk *sim.Track, fixes []string) error {
+	if trk.FlightPlan == nil {
+		return ErrIllegalACID
 	}
+
+	issueDirect := !ep.DisableERAMtoRadio
+	if issueDirect {
+		ep.targetGenLastCallsign = trk.ADSBCallsign
+	}
+	ctx.Client.FlightPlanDirect(trk.FlightPlan.ACID, fixes, issueDirect,
+		func(err error) {
+			if err != nil {
+				ep.displayError(err, ctx)
+			} else {
+				ep.feedbackArea.Success("ACCEPT REROUTE " + string(trk.ADSBCallsign) +
+					"/" + trk.FlightPlan.CID)
+			}
+		})
 	return nil
 }
 

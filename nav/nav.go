@@ -724,6 +724,19 @@ func (nav *Nav) editAssignedWaypoints() ([]av.Waypoint, func([]av.Waypoint)) {
 	return nav.AssignedWaypoints(), nav.setAssignedWaypoints
 }
 
+// AmendRoute replaces the waypoints of the assigned route before the one at
+// fix with wps, as a flight plan amendment does. It reports false, leaving
+// the route alone, if fix isn't on it.
+func (nav *Nav) AmendRoute(wps []av.Waypoint, fix string) bool {
+	route := nav.AssignedWaypoints()
+	idx := slices.IndexFunc(route, func(wp av.Waypoint) bool { return wp.Fix == fix })
+	if idx == -1 {
+		return false
+	}
+	nav.setAssignedWaypoints(slices.Concat(wps, route[idx:]))
+	return true
+}
+
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
 	var d time.Duration
 	if len(wps) > 0 && nav.ExpectedDirectFix == wps[0].Fix {

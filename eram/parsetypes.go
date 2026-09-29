@@ -62,6 +62,7 @@ var typeParsers = []typeParser{
 
 	// Navigation
 	&fixParser{},
+	&fixesAndTrackParser{},
 	&crrLocParser{},
 	&crrLabelParser{},
 	&locSymParser{}, // Matches location symbol 'w' in text
@@ -141,6 +142,18 @@ type trackParser struct{}
 
 func (h *trackParser) Identifier() string { return "TRACK" }
 
+func parseTrack(ctx *scope.Context, input *CommandInput, text string) *sim.Track {
+	if !strings.HasPrefix(text, locationSymbol) {
+		return nil
+	}
+	idx := len(input.mousePositions) - strings.Count(text, locationSymbol)
+	if idx < 0 || idx >= len(input.mousePositions) {
+		return nil
+	}
+
+	return ctx.Client.State.Tracks[input.trackCallsigns[idx]]
+}
+
 func (h *trackParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	if field, remaining := util.CutAtSpace(text); field != "" {
 		if trk := trackFromFLID(ctx, field); trk != nil {
@@ -148,15 +161,8 @@ func (h *trackParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, 
 		}
 	}
 	trimmed := strings.TrimLeft(text, " ")
-	if !strings.HasPrefix(trimmed, locationSymbol) {
-		return nil, text, false, nil
-	}
-	idx := len(input.mousePositions) - strings.Count(text, locationSymbol)
-	if idx < 0 || idx >= len(input.mousePositions) {
-		return nil, text, false, nil
-	}
-	trk, ok := ctx.Client.State.Tracks[input.trackCallsigns[idx]]
-	if !ok {
+	trk := parseTrack(ctx, input, trimmed)
+	if trk == nil {
 		return nil, text, false, nil
 	}
 	return trk, strings.TrimPrefix(trimmed, locationSymbol), true, nil
@@ -450,6 +456,53 @@ func (h *fixParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, te
 
 func (h *fixParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *fixParser) AcceptsClick() bool   { return false }
+
+// fixesAndTrackParser parses one or more fixes or locations followed by a
+// track, which may be clicked or given by its FLID.
+type fixesAndTrackParser struct{}
+
+func (h *fixesAndTrackParser) Identifier() string { return "FIXES_AND_TRACK" }
+
+type fixesAndTrack struct {
+	fixes []string
+	trk   *sim.Track
+}
+
+func (h *fixesAndTrackParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+	f := strings.Fields(text)
+	if len(f) < 2 {
+		return nil, text, false, nil
+	}
+
+	var fixesAndTrack fixesAndTrack
+	for i := range len(f) - 1 {
+		fix := f[i]
+
+		// Rudimentary validation only here; the server checks the fixes. A
+		// number is QU's count of minutes, not a fix, and anything that
+		// isn't fix-sized has to parse as a location.
+		if _, err := strconv.Atoi(fix); err == nil {
+			return nil, text, false, nil
+		}
+		if len(fix) < 2 || len(fix) > 5 {
+			if _, ok := ctx.Client.State.Locate(fix); !ok {
+				return nil, text, false, nil
+			}
+		}
+		fixesAndTrack.fixes = append(fixesAndTrack.fixes, fix)
+	}
+
+	last := f[len(f)-1]
+	if fixesAndTrack.trk = trackFromFLID(ctx, last); fixesAndTrack.trk == nil {
+		if fixesAndTrack.trk = parseTrack(ctx, input, last); fixesAndTrack.trk == nil {
+			return nil, text, false, nil
+		}
+	}
+	return fixesAndTrack, "", true, nil
+}
+
+func (h *fixesAndTrackParser) GoType() reflect.Type { return reflect.TypeFor[fixesAndTrack]() }
+func (h *fixesAndTrackParser) AcceptsClick() bool   { return true }
 
 // numberParser parses integer numbers.
 type numberParser struct {

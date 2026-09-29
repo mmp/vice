@@ -705,6 +705,17 @@ func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, t
 	}
 }
 
+// enqueueReadback speaks the pilot's readback of a command that was sent with
+// TTS enabled, and so with transmissions held; if the server returned none,
+// it releases the hold.
+func (c *ControlClient) enqueueReadback(callsign av.ADSBCallsign, text, voice string) {
+	if text != "" {
+		go c.synthesizeAndEnqueueReadback(callsign, text, voice)
+	} else {
+		c.transmissions.Unhold()
+	}
+}
+
 // synthesizeAndEnqueueContact synthesizes text and enqueues it as a contact transmission.
 // Called from a goroutine. Unlike readbacks, no Hold() is acquired before requesting
 // contacts, so no Unhold() is needed on failure.

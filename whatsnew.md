@@ -18,6 +18,7 @@ adjustments for TAS
   - Added support for block altitudes, including the `QZ` command
   - HSF indicator is now on FDB line 2 and can be clicked to toggle HSF data
   - Show `-` rather than `+` in the FDB when below the datablock altitude
+  - `QU` now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when `QU` was used
 - Facility engineering
   - ERAM altitude limits can be specified per-controller and/or per-scenario
   - Added `/cvs` and `/dvs` waypoint actions for virtual controllers to issue "climb via SID"/"descend via STAR"

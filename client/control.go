@@ -418,13 +418,42 @@ func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, minutes int, cal
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback func(err error)) {
-	var update server.SimStateUpdate
-	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.FlightPlanDirectRPC, &server.FlightPlanDirectArgs{
+func (c *ControlClient) FlightPlanDirect(acid sim.ACID, fixes []string, issueDirect bool, callback func(err error)) {
+	// As in RunAircraftCommands, hold transmissions until the pilot's
+	// readback arrives so that no one else's call gets in ahead of it.
+	enableTTS := issueDirect && c.ttsEnabled()
+	if enableTTS {
+		c.transmissions.Hold()
+	}
+
+	var result server.FlightPlanDirectResult
+	call := makeStateUpdateRPCCall(c.client.Go(server.FlightPlanDirectRPC, &server.FlightPlanDirectArgs{
 		ControllerToken: c.controllerToken,
-		ACID:            aircraft,
-		Fix:             fix,
-	}, &update, nil), &update, callback))
+		ACID:            acid,
+		Fixes:           fixes,
+		IssueDirect:     issueDirect,
+		EnableTTS:       enableTTS,
+	}, &result, nil), &result.SimStateUpdate,
+		func(err error) {
+			if enableTTS {
+				c.enqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName)
+			}
+			if callback != nil {
+				callback(err)
+			}
+		})
+	if enableTTS {
+		// makeStateUpdateRPCCall doesn't call back if the call itself fails,
+		// but the hold still has to go.
+		stateUpdated := call.Callback
+		call.Callback = func(c *ControlClient, err error) {
+			if err != nil {
+				c.transmissions.Unhold()
+			}
+			stateUpdated(c, err)
+		}
+	}
+	c.addCall(call)
 }
 
 func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
@@ -469,12 +498,8 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 				c.lg.Infof("RPC round-trip: %v", rpcDuration)
 			}
 
-			// Synthesize readback locally if text was returned
-			if enableTTS && result.ReadbackText != "" {
-				go c.synthesizeAndEnqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName)
-			} else if enableTTS {
-				// No readback text - release hold
-				c.transmissions.Unhold()
+			if enableTTS {
+				c.enqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName)
 			}
 
 			if handleResult != nil {

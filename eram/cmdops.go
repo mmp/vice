@@ -47,12 +47,12 @@ func registerOpsCommands() {
 	// QU [TRACK]: Toggle 20-minute route display
 	// QU /M [TRACK]: Display full route
 	// QU [MINUTES] [TRACK]: Display route for specified minutes
-	// QU [FIX] [TRACK]: Direct to fix
+	// QU [FIXES_AND_TRACK]: Amend route for track
 	registerCommand(CommandModeNone, "QU", handleClearRouteDisplay)
 	registerCommand(CommandModeNone, "QU [TRACK]", handleDefaultRouteDisplay)
 	registerCommand(CommandModeNone, "QU /M [TRACK]", handleMaxRouteDisplay)
 	registerCommand(CommandModeNone, "QU [MINUTES] [TRACK]", handleRouteDisplayMinutes)
-	registerCommand(CommandModeNone, "QU [FIX] [TRACK]", handleDirectToFix)
+	registerCommand(CommandModeNone, "QU [FIXES_AND_TRACK]", handleAmendRoute)
 
 	// QP - J rings
 	// QP J [TRACK]: Toggle J ring
@@ -363,16 +363,13 @@ func handleRouteDisplayMinutes(ep *Scope, ctx *scope.Context, minutes int, trk *
 	}, nil
 }
 
-func handleDirectToFix(ep *Scope, ctx *scope.Context, fix string, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrIllegalACID
+func handleAmendRoute(ep *Scope, ctx *scope.Context, fixesAndTrack fixesAndTrack) error {
+	if fixesAndTrack.trk.FlightPlan == nil {
+		return ErrIllegalACID
 	}
 
-	ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "REROUTE", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}, nil
+	ep.flightPlanDirect(ctx, fixesAndTrack.trk, fixesAndTrack.fixes)
+	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

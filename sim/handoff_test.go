@@ -8,12 +8,15 @@ import (
 	"io"
 	"log/slog"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/util"
 )
 
@@ -433,5 +436,163 @@ func TestVirtualControllerPointOuts(t *testing.T) {
 		return e.Type == AcknowledgedPointOutEvent && e.ACID == acid && e.FromController == other && e.ToController == owner
 	}) {
 		t.Errorf("no acknowledgment from %s was posted", other)
+	}
+}
+
+// flightPlanDirectOrigin is where ONE is in makeFlightPlanDirectSim: an FRD
+// needs the magnetic variation where its fix is, which vice only has for
+// North America.
+var flightPlanDirectOrigin = math.Point2LL{-73.5, 40.5}
+
+// makeFlightPlanDirectSim returns a sim with one associated aircraft on its
+// own navigation along ONE TWO THREE FOUR to KJFK, 5nm north of ONE and on
+// the frequency of the controller at E2ETCW, with its check-in still pending.
+// ALPHA is a scenario fix off the route.
+func makeFlightPlanDirectSim() (*Sim, *Aircraft) {
+	o := flightPlanDirectOrigin
+	s := NewTestSim(testLogger())
+	s.State.NmPerLongitude = math.NMPerLongitudeAt(o)
+	s.State.Fixes = map[string]math.Point2LL{"ALPHA": {o[0] + 0.1, o[1] + 0.2}}
+
+	ac := MakeTestAircraft("AAL123", "22L")
+	ac.Nav.Approach = nav.Approach{}
+	ac.Nav.FlightState.Position = math.Point2LL{o[0], o[1] + 5.0/60}
+	for i, fix := range []string{"ONE", "TWO", "THREE", "FOUR", "KJFK"} {
+		ac.Nav.Waypoints = append(ac.Nav.Waypoints, av.Waypoint{Fix: fix, Location: math.Point2LL{o[0], o[1] - float32(i)/60}})
+	}
+	ac.AssociateFlightPlan(&NASFlightPlan{ACID: "AAL123", ArrivalAirport: "KJFK", TrackingController: "125.0",
+		OwningTCW: E2ETCW()})
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	s.PendingContacts["125.0"] = []PendingContact{{ADSBCallsign: ac.ADSBCallsign, TCP: "125.0",
+		Type: PendingTransmissionArrival, ReadyTime: s.State.SimTime.Add(time.Minute)}}
+	return s, ac
+}
+
+// routeFixes returns the fixes of the route the aircraft has been cleared on,
+// which a direct-to it hasn't yet reacted to may have replaced.
+func routeFixes(ac *Aircraft) []string {
+	return util.MapSlice(ac.Nav.AssignedWaypoints(), func(wp av.Waypoint) string { return wp.Fix })
+}
+
+// presentPositionFRD returns the FRD FlightPlanDirect should start the flight
+// plan's route with: the aircraft's position off ONE, 5nm away.
+func presentPositionFRD(t *testing.T, ac *Aircraft) string {
+	frd, ok := db.FormatFRD("ONE", flightPlanDirectOrigin, ac.Position())
+	if !ok || !strings.HasSuffix(frd, "005") {
+		t.Fatalf("FRD for the aircraft's position is %q", frd)
+	}
+	return frd
+}
+
+// TestFlightPlanDirect checks that QU ALPHA THREE amends the route to ALPHA
+// THREE FOUR KJFK, with the flight plan's route starting at an FRD off ONE and
+// leaving off the destination, as flight plan routes do, and,
+// when the controller asks for it, clears the pilot direct: the pilot reads
+// it back and doesn't check in again afterward.
+func TestFlightPlanDirect(t *testing.T) {
+	for _, issueDirect := range []bool{false, true} {
+		s, ac := makeFlightPlanDirectSim()
+		frd := presentPositionFRD(t, ac)
+		sub := s.eventStream.Subscribe()
+
+		callsign, readback, err := s.FlightPlanDirect(E2ETCW(), "AAL123", []string{"ALPHA", "THREE"}, issueDirect)
+		events := sub.Get()
+		sub.Unsubscribe()
+		if err != nil {
+			t.Fatalf("issueDirect %v: %v", issueDirect, err)
+		}
+
+		if got := routeFixes(ac); !slices.Equal(got, []string{"ALPHA", "THREE", "FOUR", "KJFK"}) {
+			t.Errorf("issueDirect %v: route is %v, want [ALPHA THREE FOUR KJFK]", issueDirect, got)
+		}
+		if route, want := ac.NASFlightPlan.Route, frd+" ALPHA THREE FOUR"; route != want {
+			t.Errorf("issueDirect %v: flight plan route is %q, want %q", issueDirect, route, want)
+		}
+		spoke := slices.ContainsFunc(events, func(e Event) bool {
+			return e.Type == RadioTransmissionEvent && e.ADSBCallsign == "AAL123"
+		})
+		if spoke != issueDirect || (readback != "") != issueDirect {
+			t.Errorf("issueDirect %v: readback %q, transmission posted %v", issueDirect, readback, spoke)
+		}
+		if issueDirect && callsign != "AAL123" {
+			t.Errorf("readback is attributed to %q", callsign)
+		}
+		if pending := s.hasPendingCheckIn(ac.ADSBCallsign); pending == issueDirect {
+			t.Errorf("issueDirect %v: check-in still pending %v", issueDirect, pending)
+		}
+	}
+}
+
+// TestFlightPlanDirectNeedsTrackControl checks that a controller without
+// control of the track can't amend its route, and that one who has it but
+// isn't talking to the pilot amends it without a radio call.
+func TestFlightPlanDirectNeedsTrackControl(t *testing.T) {
+	s, ac := makeFlightPlanDirectSim()
+	delete(s.PrivilegedTCWs, E2ETCW())
+	ac.NASFlightPlan.TrackingController, ac.NASFlightPlan.OwningTCW = "126.0", "OTHER"
+
+	if _, _, err := s.FlightPlanDirect(E2ETCW(), "AAL123", []string{"THREE"}, true); err != av.ErrOtherControllerHasTrack {
+		t.Errorf("amending another controller's track: got %v, want ErrOtherControllerHasTrack", err)
+	}
+	if got := routeFixes(ac); !slices.Equal(got, []string{"ONE", "TWO", "THREE", "FOUR", "KJFK"}) {
+		t.Errorf("refused amendment changed the route to %v", got)
+	}
+
+	ac.NASFlightPlan.TrackingController, ac.NASFlightPlan.OwningTCW = "125.0", E2ETCW()
+	ac.ControllerFrequency = "126.0"
+	_, readback, err := s.FlightPlanDirect(E2ETCW(), "AAL123", []string{"THREE"}, true)
+	if err != nil {
+		t.Fatalf("amending own track: %v", err)
+	}
+	if got := routeFixes(ac); !slices.Equal(got, []string{"THREE", "FOUR", "KJFK"}) {
+		t.Errorf("route is %v, want [THREE FOUR KJFK]", got)
+	}
+	if readback != "" {
+		t.Errorf("pilot on another frequency read back %q", readback)
+	}
+}
+
+// TestFlightPlanDirectToLocation checks that QU can take the aircraft through
+// a location given as an FRD off a scenario fix, which ends up in the flight
+// plan's route as entered.
+func TestFlightPlanDirectToLocation(t *testing.T) {
+	s, ac := makeFlightPlanDirectSim()
+	frd := presentPositionFRD(t, ac)
+
+	if _, _, err := s.FlightPlanDirect(E2ETCW(), "AAL123", []string{"ALPHA090030", "FOUR"}, false); err != nil {
+		t.Fatal(err)
+	}
+	if wp := ac.Nav.Waypoints[0]; wp.Fix != "ALPHA090030" {
+		t.Errorf("first waypoint is %s, want ALPHA090030", wp.Fix)
+	} else if d := math.NMDistance2LL(wp.Location, s.State.Fixes["ALPHA"]); math.Abs(d-30) > 0.3 {
+		t.Errorf("ALPHA090030 is %.1fnm from ALPHA", d)
+	}
+	if route, want := ac.NASFlightPlan.Route, frd+" ALPHA090030 FOUR"; route != want {
+		t.Errorf("flight plan route is %q, want %q", route, want)
+	}
+}
+
+// TestFlightPlanDirectAmendsPendingRoute checks that QU amends the route of a
+// direct-to the pilot hasn't reacted to yet, which is what the aircraft will
+// fly: the pilot can then be cleared direct to the amendment's first fix, and
+// the amendment isn't lost when the earlier clearance takes effect.
+func TestFlightPlanDirectAmendsPendingRoute(t *testing.T) {
+	for _, issueDirect := range []bool{false, true} {
+		s, ac := makeFlightPlanDirectSim()
+		if _, err := s.DirectFix(E2ETCW(), ac.ADSBCallsign, "TWO", av.TurnClosest, 0); err != nil {
+			t.Fatal(err)
+		}
+
+		_, readback, err := s.FlightPlanDirect(E2ETCW(), "AAL123", []string{"ALPHA", "THREE"}, issueDirect)
+		if err != nil {
+			t.Fatalf("issueDirect %v: %v", issueDirect, err)
+		}
+		if got := routeFixes(ac); !slices.Equal(got, []string{"ALPHA", "THREE", "FOUR", "KJFK"}) {
+			t.Errorf("issueDirect %v: cleared route is %v, want [ALPHA THREE FOUR KJFK]", issueDirect, got)
+		}
+		if strings.Contains(readback, "unable") {
+			t.Errorf("issueDirect %v: pilot read back %q", issueDirect, readback)
+		}
 	}
 }

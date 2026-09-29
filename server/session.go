@@ -248,7 +248,8 @@ func describeRequest(method string, args any) (aircraft, summary string) {
 			if cs := f.FieldByName("Callsign"); cs.IsValid() && !cs.IsZero() {
 				aircraft = cmp.Or(aircraft, fmt.Sprint(cs.Interface()))
 			}
-		case f.Kind() == reflect.String || f.Kind() == reflect.Bool || f.CanInt() || f.CanUint() || f.CanFloat():
+		case f.Kind() == reflect.String || f.Kind() == reflect.Bool || f.CanInt() || f.CanUint() || f.CanFloat() ||
+			(f.Kind() == reflect.Slice && f.Type().Elem().Kind() == reflect.String):
 			fields = append(fields, fmt.Sprintf("%s=%v", name, f.Interface()))
 		}
 	}
