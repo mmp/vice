@@ -152,15 +152,15 @@ func (nav *Nav) Check(lg *log.Logger) {
 	}
 }
 
-func (nav *Nav) Update(callsign string, model *wx.Model, fp *av.FlightPlan, arrivalMETAR *wx.METAR, simTime Time,
+func (nav *Nav) Update(callsign string, model *wx.Model, rules av.FlightRules, arrivalMETAR *wx.METAR, simTime Time,
 	bravo *db.AirspaceGrid) UpdateResult {
 	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime.Time())
-	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, fp, simTime, bravo)
+	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, rules, simTime, bravo)
 }
 
 // UpdateWithWeather is a helper for simulations that use pre-fetched weather.
 // arrivalMETAR, if non-nil, is used for the approach speed wind additive.
-func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, fp *av.FlightPlan, simTime Time, bravo *db.AirspaceGrid) UpdateResult {
+func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, rules av.FlightRules, simTime Time, bravo *db.AirspaceGrid) UpdateResult {
 	nav.PendingWaypointActionEvents = nil
 	nav.activatePendingAltitude(simTime)
 
@@ -172,7 +172,7 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 		nav.FlightState.BankAngle, nav.FlightState.AltitudeRate)
 
 	targetAltitude, altitudeRate, geometricDescent := nav.TargetAltitude()
-	deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, fp, wxs, arrivalMETAR, simTime, bravo)
+	deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, rules, wxs, arrivalMETAR, simTime, bravo)
 	nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
 	nav.updateHeading(callsign, wxs, simTime)
 	nav.updatePositionAndGS(wxs)
@@ -183,7 +183,7 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 	result := UpdateResult{ActionEvents: nav.PendingWaypointActionEvents}
 	if nav.Airwork == nil && nav.Heading.Assigned == nil &&
 		nav.Heading.Hold == nil && len(nav.Heading.Maneuvers) == 0 {
-		result = nav.updateWaypoints(callsign, wxs, fp, simTime)
+		result = nav.updateWaypoints(callsign, wxs, simTime)
 		result.ActionEvents = append(nav.PendingWaypointActionEvents, result.ActionEvents...)
 		return result
 	}
@@ -381,7 +381,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 	return
 }
 
-func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPlan, simTime Time) UpdateResult {
+func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) UpdateResult {
 	if len(nav.Waypoints) == 0 {
 		return UpdateResult{}
 	}

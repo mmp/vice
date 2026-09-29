@@ -32,7 +32,7 @@ func (s *Sim) TCWCanCommandAircraft(tcw TCW, ac *Aircraft) bool {
 
 // TCWCanModifyTrack returns true if the TCW can modify the track itself (delete, reposition).
 // This is true if the TCW is privileged, owns the track, or controls the TrackingController position.
-func (s *Sim) TCWCanModifyTrack(tcw TCW, fp *NASFlightPlan) bool {
+func (s *Sim) TCWCanModifyTrack(tcw TCW, fp *FlightPlan) bool {
 	return s.PrivilegedTCWs[tcw] ||
 		fp.OwningTCW == tcw ||
 		s.State.TCWControlsPosition(tcw, fp.TrackingController) ||
@@ -42,7 +42,7 @@ func (s *Sim) TCWCanModifyTrack(tcw TCW, fp *NASFlightPlan) bool {
 // TCWCanModifyFlightPlan returns true if the TCW can access/modify flight plan fields.
 // Checks if TCW controls the owner's position (consolidation-aware). This is true if
 // the TCW is privileged, owns the track, or controls the position that owns the track.
-func (s *Sim) TCWCanModifyFlightPlan(tcw TCW, fp *NASFlightPlan) bool {
+func (s *Sim) TCWCanModifyFlightPlan(tcw TCW, fp *FlightPlan) bool {
 	return s.PrivilegedTCWs[tcw] ||
 		fp.OwningTCW == tcw ||
 		s.State.TCWControlsPosition(tcw, fp.TrackingController) ||
@@ -99,8 +99,8 @@ func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsig
 }
 
 // Note that ac may be nil, but flight plan will not be!
-func (s *Sim) dispatchFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error,
-	cmd func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent) (speech.CommandIntent, error) {
+func (s *Sim) dispatchFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, fp *FlightPlan, ac *Aircraft) error,
+	cmd func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent) (speech.CommandIntent, error) {
 	s.lastControlCommandTime = time.Now()
 
 	fp, ac, _ := s.getFlightPlanForACID(acid)
@@ -123,16 +123,16 @@ func (s *Sim) dispatchFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, 
 	intent := cmd(tcw, fp, ac)
 
 	s.lg.Info("dispatch_fp_command", slog.String("acid", string(fp.ACID)),
-		slog.Any("prepost_fp", []NASFlightPlan{preFp, *fp}),
+		slog.Any("prepost_fp", []FlightPlan{preFp, *fp}),
 		slog.Any("intent", intent))
 
 	return intent, nil
 }
 
-func (s *Sim) dispatchTrackedFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error,
-	cmd func(tcw TCW, fp *NASFlightPlan, ac *Aircraft)) error {
+func (s *Sim) dispatchTrackedFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, fp *FlightPlan, ac *Aircraft) error,
+	cmd func(tcw TCW, fp *FlightPlan, ac *Aircraft)) error {
 	_, err := s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			if !s.TCWCanModifyFlightPlan(tcw, fp) {
 				return av.ErrOtherControllerHasTrack
 			}
@@ -141,7 +141,7 @@ func (s *Sim) dispatchTrackedFlightPlanCommand(tcw TCW, acid ACID, check func(tc
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			cmd(tcw, fp, ac)
 			// No radio transmissions for these
 			return nil
@@ -200,7 +200,7 @@ func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
 	s.logDelete(ac, reason)
 
 	if s.CIDAllocator != nil {
-		if fp := ac.NASFlightPlan; fp != nil && fp.CID != "" {
+		if fp := ac.FlightPlan; fp != nil && fp.CID != "" {
 			s.CIDAllocator.Release(fp.CID)
 			fp.CID = ""
 		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
@@ -239,7 +239,7 @@ func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
 		})
 	}
 
-	fp := ac.NASFlightPlan
+	fp := ac.FlightPlan
 	if fp == nil {
 		fp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign))
 	}

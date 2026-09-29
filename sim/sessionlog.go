@@ -92,15 +92,19 @@ func (s *Sim) SetSessionLog(w *simlog.Writer) {
 
 func (s *Sim) logSpawn(ac *Aircraft) {
 	if s.sessionLog != nil {
+		var route string
+		if fp := s.aircraftFlightPlan(ac); fp != nil {
+			route = fp.Route
+		}
 		s.sessionLog.Spawn(simlog.Spawn{
 			Time:         s.State.SimTime.Time(),
 			Callsign:     string(ac.ADSBCallsign),
-			AircraftType: ac.FlightPlan.AircraftType,
-			Rules:        ac.FlightPlan.Rules.String(),
+			AircraftType: ac.AircraftType,
+			Rules:        ac.FlightRules.String(),
 			Flight:       ac.TypeOfFlight.String(),
-			Departure:    string(ac.FlightPlan.DepartureAirport),
-			Arrival:      string(ac.FlightPlan.ArrivalAirport),
-			Route:        ac.FlightPlan.Route,
+			Departure:    string(ac.DepartureAirport),
+			Arrival:      string(ac.ArrivalAirport),
+			Route:        route,
 		})
 	}
 }

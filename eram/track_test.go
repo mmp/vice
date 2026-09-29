@@ -63,7 +63,7 @@ func TestRadarSampleUpdates(t *testing.T) {
 			Location:            math.Point2LL{-73, 40},
 			Groundspeed:         400,
 		},
-		FlightPlan: &sim.NASFlightPlan{ACID: "AAL1", AssignedAltitude: 30000},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", AssignedAltitude: 30000},
 	}
 	h.addTrack(trk)
 	vfr := &sim.Track{
@@ -128,7 +128,7 @@ func TestTrackStateRemoval(t *testing.T) {
 	h.addTrack(&sim.Track{
 		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
 			TransponderAltitude: 20000, Location: math.Point2LL{-73, 40}},
-		FlightPlan: &sim.NASFlightPlan{ACID: "AAL1"},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1"},
 	})
 	h.frame(0)
 	h.ep.AckedPointOuts["AAL1"] = []sim.ControlPosition{"2B"}
@@ -206,7 +206,7 @@ func TestConflictAlertsWithStaggeredArrivals(t *testing.T) {
 				return &sim.Track{
 					RadarTrack: av.RadarTrack{ADSBCallsign: callsign, Mode: av.TransponderModeAltitude,
 						TransponderAltitude: 30000, Groundspeed: 480},
-					FlightPlan: &sim.NASFlightPlan{ACID: sim.ACID(callsign), AssignedAltitude: 30000,
+					FlightPlan: &sim.FlightPlan{ACID: sim.ACID(callsign), AssignedAltitude: 30000,
 						TrackingController: "1A"},
 				}
 			}
@@ -248,7 +248,7 @@ func headOnConflict(configure func(northbound, southbound *sim.Track)) bool {
 		return &sim.Track{
 			RadarTrack: av.RadarTrack{ADSBCallsign: callsign, Mode: av.TransponderModeAltitude,
 				TransponderAltitude: 30000, Groundspeed: 480},
-			FlightPlan: &sim.NASFlightPlan{ACID: sim.ACID(callsign), AssignedAltitude: 30000,
+			FlightPlan: &sim.FlightPlan{ACID: sim.ACID(callsign), AssignedAltitude: 30000,
 				TrackingController: "1A"},
 		}
 	}
@@ -296,7 +296,7 @@ func TestAcceptedHandoffUsesACID(t *testing.T) {
 	h.addTrack(&sim.Track{
 		RadarTrack: av.RadarTrack{ADSBCallsign: "N123AB", Mode: av.TransponderModeAltitude,
 			TransponderAltitude: 8000, Location: math.Point2LL{-73, 40}},
-		FlightPlan: &sim.NASFlightPlan{ACID: "LIFEGUARD1"},
+		FlightPlan: &sim.FlightPlan{ACID: "LIFEGUARD1"},
 	})
 	h.frame(0, sim.Event{Type: sim.AcceptedHandoffEvent, ACID: "LIFEGUARD1",
 		FromController: "2B", ToController: "1A"})
@@ -315,13 +315,13 @@ func TestPointOutIndicator(t *testing.T) {
 	inbound := &sim.Track{
 		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
 			TransponderAltitude: 20000, Location: math.Point2LL{-73, 40}},
-		FlightPlan: &sim.NASFlightPlan{ACID: "AAL1", OwningTCW: "TCW2",
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", OwningTCW: "TCW2",
 			PointOuts: []sim.PointOut{{FromController: "2B", ToController: "1A"}}},
 	}
 	outbound := &sim.Track{
 		RadarTrack: av.RadarTrack{ADSBCallsign: "UAL2", Mode: av.TransponderModeAltitude,
 			TransponderAltitude: 20000, Location: math.Point2LL{-73.5, 40}},
-		FlightPlan: &sim.NASFlightPlan{ACID: "UAL2",
+		FlightPlan: &sim.FlightPlan{ACID: "UAL2",
 			PointOuts: []sim.PointOut{{FromController: "1A", ToController: "2B"}}},
 	}
 	h.addTrack(inbound)

@@ -97,23 +97,6 @@ func (f FlightRules) String() string {
 	return [...]string{"Unknown", "IFR", "VFR", "DVFR", "SVFR"}[f]
 }
 
-// FlightPlan represents the flight plan from the perspective of the
-// Aircraft: who they are, what they're doing, how they're going to get
-// there.
-type FlightPlan struct {
-	Rules            FlightRules
-	AircraftType     string
-	CruiseSpeed      int
-	DepartureAirport ICAOAirportCode
-	DepartureRunway  string
-	Altitude         int
-	ArrivalAirport   ICAOAirportCode
-	AlternateAirport ICAOAirportCode
-	Exit             ExitID
-	Route            string
-	Remarks          string
-}
-
 // FormatAltitude returns an altitude in feet rounded down to the next
 // hundred and written the way a controller says it: a flight level at and
 // above 18,000', otherwise thousands and hundreds. Altitudes below sea level

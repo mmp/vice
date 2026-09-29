@@ -198,7 +198,7 @@ func TestSetInboundERAMAltitudes(t *testing.T) {
 		{name: "no restrictions", wps: av.WaypointArray{{Fix: "GVE"}, {Fix: "BAILZ"}}, expected: 35000},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			var fp NASFlightPlan
+			var fp FlightPlan
 			fp.setInboundERAMAltitudes(tc.wps, tc.assigned, tc.cleared, 35000)
 			if fp.AssignedAltitude != tc.expected {
 				t.Errorf("assigned altitude %d, expected %d", fp.AssignedAltitude, tc.expected)

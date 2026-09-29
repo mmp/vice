@@ -59,7 +59,7 @@ func (ss *SimState) BeaconCodeInUse(sq av.Squawk) bool {
 	}
 
 	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp *sim.NASFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		func(fp *sim.FlightPlan) bool { return fp.AssignedSquawk == sq }) {
 		return true
 	}
 
@@ -102,7 +102,7 @@ func (ss *SimState) GetTrackBySquawk(code av.Squawk) (*sim.Track, bool) {
 	return nil, false
 }
 
-func (ss *SimState) GetFlightPlanForACID(acid sim.ACID) *sim.NASFlightPlan {
+func (ss *SimState) GetFlightPlanForACID(acid sim.ACID) *sim.FlightPlan {
 	for _, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
 			return trk.FlightPlan

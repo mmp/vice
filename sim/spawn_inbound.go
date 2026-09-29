@@ -42,17 +42,16 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 		s.wxModel, s.State.SimTime, s.Rand, s.lg); err != nil {
 		return nil, err
 	}
+	var filedRoute string
 	if e.Source != TrafficSourceScenario {
-		if e.FiledRoute != "" {
-			// The flight files the route the pair is really flown on; within the
-			// facility it still flies the scenario's arrival geometry.
-			ac.FlightPlan.Route = e.FiledRoute
-		}
+		// The flight files the route the pair is really flown on; within the
+		// facility it still flies the scenario's arrival geometry.
+		filedRoute = e.FiledRoute
 		s.log("%s: arrival %s->%s via %s %s (%s)", ac.ADSBCallsign, e.DepartureAirport, e.ArrivalAirport,
 			e.Group, util.Select(arr.STAR == "", arr.FlightStripDisplayRoute, arr.STAR), e.How)
 	}
 
-	if err := s.finalizeArrival(ac, arr, e.Group, e.ArrivalAirport); err != nil {
+	if err := s.finalizeArrival(ac, arr, filedRoute, e.Group, e.ArrivalAirport); err != nil {
 		return nil, err
 	}
 	s.recordArrivalLaunch(e.Group, ac)
@@ -60,13 +59,21 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 }
 
 // finalizeArrival builds the arrival's NAS flight plan with controller
-// assignments and registers it with STARS.
-func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, group string,
+// assignments and registers it with STARS. filedRoute, if set, is the route
+// the flight files in place of the one the arrival displays.
+func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, filedRoute string, group string,
 	arrivalAirport av.ICAOAirportCode) error {
-	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
-	nasFp.Route = ac.FlightPlan.Route
+	nasFp := s.initFlightPlan(ac, av.FlightTypeArrival)
+	switch {
+	case filedRoute != "":
+		nasFp.Route = filedRoute
+	case arr.FlightStripDisplayRoute != "":
+		nasFp.Route = arr.FlightStripDisplayRoute
+	case arr.STAR != "":
+		nasFp.Route = "/. " + arr.STAR
+	}
 	nasFp.EntryFix = ""
-	nasFp.ExitFix = db.AirportDisplayId(ac.FlightPlan.ArrivalAirport)
+	nasFp.ExitFix = db.AirportDisplayId(ac.ArrivalAirport)
 	nasFp.TrackingController = arr.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
 	ac.ControllerFrequency = arr.InitialController
@@ -74,7 +81,6 @@ func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, group string,
 	nasFp.Scratchpad = arr.Scratchpad
 	nasFp.SecondaryScratchpad = arr.SecondaryScratchpad
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && arr.IsRNAV
-	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 
 	if db.DB.IsARTCC(s.State.Facility) {
 		nasFp.setInboundERAMAltitudes(arr.Waypoints, arr.AssignedAltitude, arr.ClearedAltitude,
@@ -86,7 +92,7 @@ func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, group string,
 	// pipeline then reassigns the pair and assigns the owning position,
 	// overriding the inbound-flow default above.
 	s.deriveERAMFixPair(&nasFp, ac)
-	s.applyFixPairAssignment(&nasFp, ac)
+	s.applyFixPairAssignment(&nasFp, "")
 	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 
 	ac.maybeSetGoAround(s.State.LaunchConfig.GoAroundRate, s.Rand)
@@ -196,8 +202,8 @@ func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error
 // finalizeOverflight builds the overflight's NAS flight plan with
 // controller assignments and registers it with STARS.
 func (s *Sim) finalizeOverflight(ac *Aircraft, of *av.Overflight, group string) error {
-	nasFp := s.initNASFlightPlan(ac, av.FlightTypeOverflight)
-	nasFp.Route = ac.FlightPlan.Route
+	nasFp := s.initFlightPlan(ac, av.FlightTypeOverflight)
+	nasFp.Route = of.Waypoints.RouteString()
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = ""  // TODO
 	nasFp.TrackingController = of.InitialController
@@ -206,7 +212,6 @@ func (s *Sim) finalizeOverflight(ac *Aircraft, of *av.Overflight, group string) 
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = of.Scratchpad
 	nasFp.SecondaryScratchpad = of.SecondaryScratchpad
-	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && of.IsRNAV
 	nasFp.TypeOfFlight = of.TypeOfFlight
 	if db.DB.IsARTCC(s.State.Facility) {
@@ -217,7 +222,7 @@ func (s *Sim) finalizeOverflight(ac *Aircraft, of *av.Overflight, group string) 
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
 	// inbound-flow default above when adapted.
 	s.deriveERAMFixPair(&nasFp, ac)
-	s.applyFixPairAssignment(&nasFp, ac)
+	s.applyFixPairAssignment(&nasFp, "")
 	nasFp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 
 	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp, s.Rand); err != nil {
@@ -239,7 +244,7 @@ func (s *Sim) finalizeOverflight(ac *Aircraft, of *av.Overflight, group string) 
 // precedence, that is the assigned altitude, the "except maintain" altitude
 // of a descend via, or the bottom of the route's restrictions; a flight with
 // none of these holds its spawn altitude.
-func (fp *NASFlightPlan) setInboundERAMAltitudes(wps av.WaypointArray, assigned, cleared, spawnAlt float32) {
+func (fp *FlightPlan) setInboundERAMAltitudes(wps av.WaypointArray, assigned, cleared, spawnAlt float32) {
 	lowest, ok := findLowestWaypointAltitude(wps, spawnAlt)
 	if ok {
 		fp.PerceivedAssigned = lowest
@@ -281,7 +286,7 @@ func findLowestWaypointAltitude(wps av.WaypointArray, initialAlt float32) (int, 
 // never appears in UnassociatedFlightPlans / the STARS FLIGHT PLAN list.
 // External-facility-owned flight plans stay unassociated until the handoff
 // into the facility completes.
-func (s *Sim) associateAtSpawn(ac *Aircraft, nasFp NASFlightPlan) error {
+func (s *Sim) associateAtSpawn(ac *Aircraft, nasFp FlightPlan) error {
 	created, err := s.STARSComputer.CreateFlightPlan(nasFp)
 	if err != nil {
 		return err

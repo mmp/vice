@@ -72,9 +72,7 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 		ADSBCallsign:        callsign,
 		TypeOfFlight:        av.FlightTypeArrival,
 		ControllerFrequency: ControlPosition("125.0"),
-		FlightPlan: av.FlightPlan{
-			ArrivalAirport: "KJFK",
-		},
+		ArrivalAirport:      "KJFK",
 		Nav: nav.Nav{
 			Rand: vrand.Make(),
 			FlightState: nav.FlightState{

@@ -20,9 +20,9 @@ var patternTestTime = NewSimTime(time.Date(2026, time.August, 4, 15, 0, 0, 0, ti
 // in the given phase of a VFR arrival.
 func vfrArrival(callsign string, airport av.ICAOAirportCode, phase uint8) *Aircraft {
 	return &Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		FlightPlan:   av.FlightPlan{ArrivalAirport: airport},
-		Nav:          nav.Nav{Waypoints: av.WaypointArray{{Fix: "_wp", VFRPhase: phase}}},
+		ADSBCallsign:   av.ADSBCallsign(callsign),
+		ArrivalAirport: airport,
+		Nav:            nav.Nav{Waypoints: av.WaypointArray{{Fix: "_wp", VFRPhase: phase}}},
 	}
 }
 

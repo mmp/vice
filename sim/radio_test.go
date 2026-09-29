@@ -124,7 +124,7 @@ func TestPopReadyContactWaitsForAssociation(t *testing.T) {
 		t.Fatalf("popped %s before its track associated", pc.ADSBCallsign)
 	}
 
-	ac.AssociateFlightPlan(&NASFlightPlan{ACID: ACID(ac.ADSBCallsign)})
+	ac.AssociateFlightPlan(&FlightPlan{ACID: ACID(ac.ADSBCallsign)})
 
 	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
 		t.Fatal("expected the check-in once the track associated")
@@ -150,7 +150,7 @@ func TestTransferCommsBeforeAssociation(t *testing.T) {
 	ac.ControllerFrequency = "" // hasn't been sent to anyone yet
 	s.Aircraft[ac.ADSBCallsign] = ac
 
-	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{
+	if _, err := s.STARSComputer.CreateFlightPlan(FlightPlan{
 		ACID:                     ACID(ac.ADSBCallsign),
 		InboundHandoffController: dep,
 	}); err != nil {
@@ -201,7 +201,7 @@ func TestVirtualHandoffAcceptBeforeAssociation(t *testing.T) {
 	ac.DepartureContactAltitude = -1
 	s.Aircraft[ac.ADSBCallsign] = ac
 
-	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{
+	if _, err := s.STARSComputer.CreateFlightPlan(FlightPlan{
 		ACID:               ACID(ac.ADSBCallsign),
 		TypeOfFlight:       av.FlightTypeDeparture,
 		TrackingController: dep,
@@ -246,7 +246,7 @@ func TestWaypointScratchpadBeforeAssociation(t *testing.T) {
 	ac.ControllerFrequency = ""
 	s.Aircraft[ac.ADSBCallsign] = ac
 
-	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{ACID: ACID(ac.ADSBCallsign)}); err != nil {
+	if _, err := s.STARSComputer.CreateFlightPlan(FlightPlan{ACID: ACID(ac.ADSBCallsign)}); err != nil {
 		t.Fatalf("CreateFlightPlan: %v", err)
 	}
 
@@ -428,13 +428,13 @@ func TestEmergencyTransmissionSurvivesSaving(t *testing.T) {
 	lg := testLogger()
 	s := NewTestSim(lg)
 	ac := MakeTestAircraft("AAL123", "22L")
-	ac.FlightPlan.DepartureAirport = "KFRG"
+	ac.DepartureAirport = "KFRG"
 	s.Aircraft[ac.ADSBCallsign] = ac
 
 	tcp := TCP("125.0")
 	rt := speech.MakeContactTransmission(
 		"declaring an emergency, [we have|] {num} souls, request return to {airport}, level at {alt}",
-		112, ac.FlightPlan.DepartureAirport, 4000)
+		112, ac.DepartureAirport, 4000)
 	s.enqueueEmergencyTransmission(ac.ADSBCallsign, tcp, rt)
 	for i := range s.PendingContacts[tcp] {
 		s.PendingContacts[tcp][i].ReadyTime = s.State.SimTime.Add(-time.Second)

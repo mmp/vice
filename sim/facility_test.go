@@ -20,11 +20,11 @@ import (
 	"log/slog"
 )
 
-func TestNASFlightPlanUpdateClearsDerivedFix(t *testing.T) {
+func TestFlightPlanUpdateClearsDerivedFix(t *testing.T) {
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
 	s := NewTestSim(lg)
 
-	fp := &NASFlightPlan{EntryFix: "PVA", ExitFix: "BOS", DerivedEntryFix: "ROB", DerivedExitFix: "LGA"}
+	fp := &FlightPlan{EntryFix: "PVA", ExitFix: "BOS", DerivedEntryFix: "ROB", DerivedExitFix: "LGA"}
 
 	// Re-affirming the same fixes leaves the derived substitutions in place.
 	var spec FlightPlanSpecifier
@@ -153,21 +153,21 @@ func TestAirspaceAwarenessController(t *testing.T) {
 
 	for _, tc := range []struct {
 		name string
-		fp   NASFlightPlan
+		fp   FlightPlan
 		want string
 	}{
 		{"adapted fix matches by its short name",
-			NASFlightPlan{ExitFix: "BOX", RequestedAltitude: 20000, AircraftType: "B738"}, "C18"},
+			FlightPlan{ExitFix: "BOX", RequestedAltitude: 20000, AircraftType: "B738"}, "C18"},
 		{"a plan carrying the rule's full name does not match it",
-			NASFlightPlan{ExitFix: "BOSOX", RequestedAltitude: 20000, AircraftType: "B738"}, "1Z"},
+			FlightPlan{ExitFix: "BOSOX", RequestedAltitude: 20000, AircraftType: "B738"}, "1Z"},
 		{"altitude below the range falls through",
-			NASFlightPlan{ExitFix: "BOX", RequestedAltitude: 8000, AircraftType: "B738"}, "1Z"},
+			FlightPlan{ExitFix: "BOX", RequestedAltitude: 8000, AircraftType: "B738"}, "1Z"},
 		{"short name defaults to the first three characters",
-			NASFlightPlan{ExitFix: "ROB", AircraftType: "B738"}, "C37"},
+			FlightPlan{ExitFix: "ROB", AircraftType: "B738"}, "C37"},
 		{"aircraft type gates the match",
-			NASFlightPlan{ExitFix: "ROB", AircraftType: "C172"}, "1Z"},
+			FlightPlan{ExitFix: "ROB", AircraftType: "C172"}, "1Z"},
 		{"an unadapted fix takes the wildcard",
-			NASFlightPlan{ExitFix: "PVD", RequestedAltitude: 20000, AircraftType: "B738"}, "1Z"},
+			FlightPlan{ExitFix: "PVD", RequestedAltitude: 20000, AircraftType: "B738"}, "1Z"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			if tcp, ok := fa.AirspaceAwarenessController("", &tc.fp); !ok || tcp != tc.want {
@@ -182,7 +182,7 @@ func TestAirspaceAwarenessController(t *testing.T) {
 		SignificantPoints: fa.SignificantPoints,
 		AirspaceAwareness: fa.AirspaceAwareness[:1],
 	}
-	fp := NASFlightPlan{ExitFix: "PVD", RequestedAltitude: 20000, AircraftType: "B738"}
+	fp := FlightPlan{ExitFix: "PVD", RequestedAltitude: 20000, AircraftType: "B738"}
 	if tcp, ok := noWildcard.AirspaceAwarenessController("", &fp); ok {
 		t.Errorf("unmatched fix returned %q, want no match", tcp)
 	}
@@ -198,9 +198,8 @@ func TestDeriveERAMFixPairFullyContained(t *testing.T) {
 	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"KVPC": {}, "KCPP": {}}
 	// Internal departure KVPC -> KCPP (both local): exit fix = destination (K
 	// stripped), route/zone skipped.
-	ac := &Aircraft{TypeOfFlight: av.FlightTypeDeparture,
-		FlightPlan: av.FlightPlan{ArrivalAirport: "KCPP"}}
-	fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, ExitFix: "SOONE"}
+	ac := &Aircraft{TypeOfFlight: av.FlightTypeDeparture, ArrivalAirport: "KCPP"}
+	fp := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, ExitFix: "SOONE"}
 	res := s.deriveERAMFixPair(fp, ac)
 	if !res.OK || res.Fix != "CPP" {
 		t.Errorf("fully-contained: got fix=%q ok=%v, want CPP/true", res.Fix, res.OK)
@@ -251,8 +250,8 @@ func TestDeriveERAMFixPairNormalizesFix(t *testing.T) {
 			s := coordSim(tc.points, tc.fix)
 
 			ac := &Aircraft{TypeOfFlight: av.FlightTypeDeparture,
-				FlightPlan: av.FlightPlan{DepartureAirport: "KBOS", ArrivalAirport: "KORD"}}
-			fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, Route: tc.fix}
+				DepartureAirport: "KBOS", ArrivalAirport: "KORD"}
+			fp := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, Route: tc.fix}
 			if res := s.deriveERAMFixPair(fp, ac); !res.OK || res.Fix != tc.want {
 				t.Errorf("departure: got fix=%q ok=%v, want %q/true", res.Fix, res.OK, tc.want)
 			}
@@ -263,8 +262,8 @@ func TestDeriveERAMFixPairNormalizesFix(t *testing.T) {
 			// An arrival's coordination fix lands on the entry side and is
 			// normalized the same way.
 			arrAc := &Aircraft{TypeOfFlight: av.FlightTypeArrival,
-				FlightPlan: av.FlightPlan{DepartureAirport: "KORD", ArrivalAirport: "KBOS"}}
-			arrFp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, Route: tc.fix}
+				DepartureAirport: "KORD", ArrivalAirport: "KBOS"}
+			arrFp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, Route: tc.fix}
 			s.deriveERAMFixPair(arrFp, arrAc)
 			if arrFp.EntryFix != tc.want {
 				t.Errorf("arrival EntryFix = %q, want %q", arrFp.EntryFix, tc.want)
@@ -276,17 +275,17 @@ func TestDeriveERAMFixPairNormalizesFix(t *testing.T) {
 // TestAssignedLevelForCoord verifies that ARTS coordination's "Assigned"
 // altitude compares against the flight's actual operational level rather than
 // always falling back to filed cruise, per fixPairLevel, when
-// NASFlightPlan.AssignedAltitude hasn't been set yet (as for a TRACON-facility
+// FlightPlan.AssignedAltitude hasn't been set yet (as for a TRACON-facility
 // spawn).
 func TestAssignedLevelForCoord(t *testing.T) {
 	// Departures are unaffected: same as fixPairLevel (requested altitude).
-	depFp := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, RequestedAltitude: 24000, AssignedAltitude: 10000}
+	depFp := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, RequestedAltitude: 24000, AssignedAltitude: 10000}
 	if got := assignedLevelForCoord(depFp, &Aircraft{}); got != 240 {
 		t.Errorf("departure = %d, want 240 (fixPairLevel unchanged)", got)
 	}
 
 	// Arrival with AssignedAltitude already known (an ERAM-facility spawn) uses it directly.
-	arrFp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, AssignedAltitude: 11000, RequestedAltitude: 35000}
+	arrFp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, AssignedAltitude: 11000, RequestedAltitude: 35000}
 	if got := assignedLevelForCoord(arrFp, &Aircraft{}); got != 110 {
 		t.Errorf("arrival with AssignedAltitude = %d, want 110", got)
 	}
@@ -296,14 +295,14 @@ func TestAssignedLevelForCoord(t *testing.T) {
 	// falling back to filed cruise.
 	wp := av.Waypoint{Fix: "FIXXX"}
 	wp.SetAltitudeRestriction(av.MakeAtOrBelowAltitudeRestriction(8000))
-	noAssignedFp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, RequestedAltitude: 35000}
+	noAssignedFp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, RequestedAltitude: 35000}
 	ac := &Aircraft{Nav: nav.Nav{Waypoints: av.WaypointArray{wp}, FlightState: nav.FlightState{Altitude: 12000}}}
 	if got := assignedLevelForCoord(noAssignedFp, ac); got != 80 {
 		t.Errorf("arrival with restriction, no AssignedAltitude = %d, want 80 (nav/route derived)", got)
 	}
 
 	// No AssignedAltitude and no restrictions falls back to fixPairLevel (cruise).
-	noDataFp := &NASFlightPlan{TypeOfFlight: av.FlightTypeOverflight, RequestedAltitude: 24000}
+	noDataFp := &FlightPlan{TypeOfFlight: av.FlightTypeOverflight, RequestedAltitude: 24000}
 	if got := assignedLevelForCoord(noDataFp, &Aircraft{}); got != 240 {
 		t.Errorf("overflight no data = %d, want 240 (fixPairLevel fallback)", got)
 	}

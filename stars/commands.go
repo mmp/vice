@@ -838,7 +838,7 @@ func (sp *Scope) displayError(err error, ctx *scope.Context, acid sim.ACID) {
 			if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok && trk.IsAssociated() {
 				sp.previewAreaOutput += "\nFLIGHT ACTIVE AT " + string(trk.FlightPlan.TrackingController)
 			} else if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.NASFlightPlan) bool {
+				func(fp *sim.FlightPlan) bool {
 					return fp.ACID == acid
 				}); idx != -1 {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]

@@ -552,7 +552,7 @@ func checkScratchpad(ctx *scope.Context, contents string, isSecondary, isImplied
 
 // TODO Make for ERAM
 
-// func (sp *STARSPane) formatFlightPlan(ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
+// func (sp *STARSPane) formatFlightPlan(ctx *scope.Context, fp *sim.FlightPlan, trk *sim.Track) string {
 // 	if fp == nil { // shouldn't happen...
 // 		return "NO PLAN"
 // 	}

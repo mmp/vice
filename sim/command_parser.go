@@ -259,7 +259,7 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *speech.
 
 	var heavySuper string
 	if ctrl != nil && !ctrl.ERAMFacility {
-		if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+		if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok {
 			if perf.WeightClass == "H" {
 				heavySuper = " heavy"
 			} else if perf.WeightClass == "J" {
@@ -273,7 +273,7 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *speech.
 	if strings.HasPrefix(string(callsign), "N") && ac.LastAddressingForm == AddressingFormTypeTrailing3 {
 		csArg = speech.GACallsignArg{
 			Callsign:     ac.ADSBCallsign,
-			AircraftType: ac.FlightPlan.AircraftType,
+			AircraftType: ac.AircraftType,
 			UseTypeForm:  true,
 			IsEmergency:  ac.EmergencyState != nil,
 		}

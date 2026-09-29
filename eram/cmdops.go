@@ -477,10 +477,10 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 		The track's owning sector ID (in parentheses)
 		The aircraft's type and equipment suffix
 		The aircraft's assigned beacon code
-		The aircraft's filed cruise speed (not in NASFlightPlan so 0 for now)
+		The aircraft's filed cruise speed
 		The aircraft's assigned altitude (in 100s of feet)
 		The aircraft's route
-		The aircraft's flight plan remarks (not in NASFlightPlan so nothing for now)
+		The aircraft's flight plan remarks (not in FlightPlan so nothing for now)
 	*/
 	zTime := ctx.Client.State.SimTime.Format("1504")
 	rte := strings.TrimPrefix(fp.Route, "/. ")
@@ -493,8 +493,8 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 	return CommandStatus{
 		responseArea: []string{
 			zTime,
-			fmt.Sprintf("%v %v(%v) %v %v 0 %v %v", fp.CID, fp.ACID, fp.TrackingController,
-				fp.AircraftType, fp.AssignedSquawk, alt, rte),
+			fmt.Sprintf("%v %v(%v) %v %v %v %v %v", fp.CID, fp.ACID, fp.TrackingController,
+				fp.AircraftType, fp.AssignedSquawk, fp.CruiseSpeed, alt, rte),
 		},
 	}, nil
 }

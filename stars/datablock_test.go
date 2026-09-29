@@ -22,7 +22,7 @@ func TestFormatAltitudeUsesRadarSample(t *testing.T) {
 	for _, c := range []struct {
 		name         string
 		rt           av.RadarTrack
-		sfp          *sim.NASFlightPlan
+		sfp          *sim.FlightPlan
 		unreasonable bool
 		want         string
 		wantPilot    bool
@@ -31,7 +31,7 @@ func TestFormatAltitudeUsesRadarSample(t *testing.T) {
 		{"below sea level", sample(av.TransponderModeAltitude, -500), nil, false, "N05", false},
 		{"sample in standby", sample(av.TransponderModeStandby, 0), nil, false, "RDR", false},
 		{"unreasonable mode C", sample(av.TransponderModeAltitude, 20000), nil, true, "XXX", false},
-		{"pilot reported", sample(av.TransponderModeOn, 0), &sim.NASFlightPlan{PilotReportedAltitude: 5000}, false, "050", true},
+		{"pilot reported", sample(av.TransponderModeOn, 0), &sim.FlightPlan{PilotReportedAltitude: 5000}, false, "050", true},
 	} {
 		got, pilot := formatAltitude(live, c.rt, c.sfp, c.unreasonable)
 		if got != c.want || pilot != c.wantPilot {

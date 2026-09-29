@@ -154,7 +154,7 @@ func (ctx *Context) UserControlsPosition(pos sim.ControlPosition) bool {
 
 // UserOwnsFlightPlan returns true if the current user owns the given flight plan.
 // Track ownership is determined by the OwningTCW field.
-func (ctx *Context) UserOwnsFlightPlan(fp *sim.NASFlightPlan) bool {
+func (ctx *Context) UserOwnsFlightPlan(fp *sim.FlightPlan) bool {
 	return fp != nil && fp.OwningTCW == ctx.UserTCW
 }
 
@@ -221,7 +221,7 @@ func (ctx *Context) IsHandoffToUser(trk *sim.Track) bool {
 
 // InboundPointOuts returns the flight plan's pending point outs to any of
 // the user's positions.
-func (ctx *Context) InboundPointOuts(fp *sim.NASFlightPlan) []sim.PointOut {
+func (ctx *Context) InboundPointOuts(fp *sim.FlightPlan) []sim.PointOut {
 	return util.FilterSlice(fp.PointOuts, func(po sim.PointOut) bool {
 		return ctx.UserControlsPosition(po.ToController)
 	})
@@ -229,7 +229,7 @@ func (ctx *Context) InboundPointOuts(fp *sim.NASFlightPlan) []sim.PointOut {
 
 // OutboundPointOuts returns the flight plan's pending point outs from any of
 // the user's positions.
-func (ctx *Context) OutboundPointOuts(fp *sim.NASFlightPlan) []sim.PointOut {
+func (ctx *Context) OutboundPointOuts(fp *sim.FlightPlan) []sim.PointOut {
 	return util.FilterSlice(fp.PointOuts, func(po sim.PointOut) bool {
 		return ctx.UserControlsPosition(po.FromController)
 	})

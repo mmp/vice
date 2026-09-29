@@ -125,7 +125,7 @@ func TestTurnPathMatchesFlightModel(t *testing.T) {
 // tickOnce advances the flight one simulation second outside of Run().
 func (f *FlightTest) tickOnce() UpdateResult {
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	result := f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+	result := f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 	f.simTime = f.simTime.Add(time.Second)
 	f.tick++
 	return result

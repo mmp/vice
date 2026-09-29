@@ -465,15 +465,18 @@ func (s *Sim) RecordFlights() FlightRecordings {
 }
 
 func (s *Sim) newRecording(ac *Aircraft) *FlightRecording {
-	return &FlightRecording{
+	r := &FlightRecording{
 		Callsign:         ac.ADSBCallsign,
-		AircraftType:     ac.FlightPlan.AircraftType,
+		AircraftType:     ac.AircraftType,
 		Departure:        ac.IsDeparture(),
-		DepartureAirport: ac.FlightPlan.DepartureAirport,
-		ArrivalAirport:   ac.FlightPlan.ArrivalAirport,
+		DepartureAirport: ac.DepartureAirport,
+		ArrivalAirport:   ac.ArrivalAirport,
 		SID:              ac.SID,
 		STAR:             ac.STAR,
-		Route:            ac.FlightPlan.Route,
 		Start:            s.State.SimTime,
 	}
+	if fp := s.aircraftFlightPlan(ac); fp != nil {
+		r.Route = fp.Route
+	}
+	return r
 }

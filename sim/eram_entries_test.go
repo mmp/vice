@@ -76,7 +76,7 @@ func TestApplyERAMEntries(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fp := NASFlightPlan{AssignedAltitude: 35000}
+			fp := FlightPlan{AssignedAltitude: 35000}
 			fp.applyERAMEntries(tc.entries)
 
 			got := fields{fp.AssignedAltitude, fp.InterimAlt, fp.InterimType, fp.Scratchpad,

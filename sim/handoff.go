@@ -35,13 +35,13 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 	}
 
 	// Find the corresponding flight plan.
-	var fp *NASFlightPlan
+	var fp *FlightPlan
 	// First look for the referenced flight plan in associated aircraft.
 	for _, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
-			if !s.TCWCanModifyTrack(tcw, ac.NASFlightPlan) {
+		if ac.IsAssociated() && ac.FlightPlan.ACID == acid {
+			if !s.TCWCanModifyTrack(tcw, ac.FlightPlan) {
 				return av.ErrOtherControllerHasTrack
-			} else if ac.NASFlightPlan.HandoffController != "" {
+			} else if ac.FlightPlan.HandoffController != "" {
 				return ErrTrackIsBeingHandedOff
 			} else {
 				fp = ac.DisassociateFlightPlan()
@@ -98,7 +98,7 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 
 func (s *Sim) HandoffTrack(tcw TCW, acid ACID, toTCP TCP) error {
 	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			// Resolve the target TCP - it may be consolidated to another controller
 			resolvedTCP := s.State.ResolveController(toTCP)
 			if _, ok := s.State.Controllers[resolvedTCP]; !ok {
@@ -109,7 +109,7 @@ func (s *Sim) HandoffTrack(tcw TCW, acid ACID, toTCP TCP) error {
 			} else if ac != nil {
 				// Disallow handoff if there's a beacon code mismatch.
 				squawkingSPC, _ := ac.Squawk.IsSPC()
-				if ac.Squawk != ac.NASFlightPlan.AssignedSquawk && !squawkingSPC {
+				if ac.Squawk != ac.FlightPlan.AssignedSquawk && !squawkingSPC {
 					return ErrBeaconMismatch
 				}
 			}
@@ -123,7 +123,7 @@ func (s *Sim) HandoffTrack(tcw TCW, acid ACID, toTCP TCP) error {
 
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) {
 			// Pass the original toTCP so HandoffTrackController records the actual target position
 			s.handoffTrack(fp, toTCP)
 		}); err != nil {
@@ -133,7 +133,7 @@ func (s *Sim) HandoffTrack(tcw TCW, acid ACID, toTCP TCP) error {
 	return nil
 }
 
-func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
+func (s *Sim) handoffTrack(fp *FlightPlan, toTCP TCP) {
 	s.eventStream.Post(Event{
 		Type:           OfferedHandoffEvent,
 		FromController: fp.TrackingController,
@@ -174,7 +174,7 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 
 func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (speech.CommandIntent, error) {
 	return s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) error {
 			if ac == nil {
 				return av.ErrNoAircraftForCallsign
 			}
@@ -183,14 +183,14 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (speech.CommandInten
 			}
 			return nil
 		},
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, sfp.TrackingController)
 		})
 }
 
 func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (speech.CommandIntent, error) {
 	return s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) error {
 			if ac == nil {
 				return av.ErrNoAircraftForCallsign
 			}
@@ -199,7 +199,7 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (speech.CommandIn
 			}
 			return nil
 		},
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			if s.State.TCWControlsPosition(tcw, toTCP) {
 				return speech.MakeUnableIntent("Unable, we are already on your frequency")
 			} else {
@@ -208,7 +208,7 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (speech.CommandIn
 		})
 }
 
-func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, toTCP TCP) speech.CommandIntent {
+func (s *Sim) contactController(fromTCP TCP, sfp *FlightPlan, ac *Aircraft, toTCP TCP) speech.CommandIntent {
 	// Immediately respond to the current controller that we're
 	// changing frequency.
 	var intent speech.ContactIntent
@@ -247,7 +247,7 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 
 func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			if fp.RedirectedHandoff.RedirectedTo != "" {
 				// Once redirected, the handoff can only be accepted (or
 				// recalled) via the redirected handoff path.
@@ -263,7 +263,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			}
 			return av.ErrNotBeingHandedOffToMe
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			// The new tracking controller should be the HandoffTrackController (the target TCP),
 			// not the acceptor's primary TCP. This preserves correct ownership when accepting
 			// handoffs to consolidated secondary positions.
@@ -311,7 +311,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 
 func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
 	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid, nil,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) {
 			// Recalling an *automatic* handoff makes the track ineligible for further auto-handoff
 			// (STARS 5.1.17, p. 5-33).
 			if fp.HandoffWasAutomatic {
@@ -330,7 +330,7 @@ func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
 
 func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 			if octrl, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
@@ -347,7 +347,7 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 			octrl := s.State.Controllers[controller]
 			rh := &fp.RedirectedHandoff
@@ -379,13 +379,13 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 
 func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			// TODO(mtrokel): need checks here that we do have an inbound
 			// redirected handoff or that we have an outbound one to
 			// recall.
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			rh := &fp.RedirectedHandoff
 			if s.State.TCWControlsPosition(tcw, rh.RedirectedTo) { // Accept
 				s.acceptRedirectedHandoff(fp, ac, tcw)
@@ -412,7 +412,7 @@ func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 // follow the original handoff: if a virtual controller is talking to the
 // aircraft, it sends it to the controller the handoff was first offered to,
 // who can then pass it along to the accepting controller with an FC.
-func (s *Sim) acceptRedirectedHandoff(fp *NASFlightPlan, ac *Aircraft, owningTCW TCW) {
+func (s *Sim) acceptRedirectedHandoff(fp *FlightPlan, ac *Aircraft, owningTCW TCW) {
 	rh := &fp.RedirectedHandoff
 
 	// Events are encoded for the RPC reply after the sim lock has been
@@ -447,7 +447,7 @@ func (s *Sim) acceptRedirectedHandoff(fp *NASFlightPlan, ac *Aircraft, owningTCW
 
 func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			}
@@ -460,7 +460,7 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			octrl := s.State.Controllers[controller]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
@@ -479,7 +479,7 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 
 func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 	if err := s.dispatchTrackedFlightPlanCommand(fromTCW, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			if octrl, ok := s.State.Controllers[toTCP]; !ok {
 				return av.ErrNoController
 			} else if octrl.IsExternal() && (fp.PlanType == LocalNonEnroute || fp.PlanType == RemoteNonEnroute) {
@@ -500,7 +500,7 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) {
 			fromTCP := s.State.PrimaryPositionForTCW(fromTCW)
 			ctrl := s.State.Controllers[fromTCP]
 			octrl := s.State.Controllers[toTCP]
@@ -512,7 +512,7 @@ func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
 	return nil
 }
 
-func (s *Sim) pointOut(fp *NASFlightPlan, from *av.Controller, to *av.Controller) {
+func (s *Sim) pointOut(fp *FlightPlan, from *av.Controller, to *av.Controller) {
 	// Don't have duplicate entries in the PointOut slice for a repeated p/o.
 	if !slices.ContainsFunc(fp.PointOuts, func(po PointOut) bool {
 		return po.FromController == from.PositionId() && po.ToController == to.PositionId()
@@ -527,7 +527,7 @@ func (s *Sim) pointOut(fp *NASFlightPlan, from *av.Controller, to *av.Controller
 
 // findInboundPointOut returns the first pending PointOut whose ToController is
 // controlled by tcw (an inbound point out the caller can act on).
-func (s *Sim) findInboundPointOut(fp *NASFlightPlan, tcw TCW) (PointOut, bool) {
+func (s *Sim) findInboundPointOut(fp *FlightPlan, tcw TCW) (PointOut, bool) {
 	for _, po := range fp.PointOuts {
 		if s.State.TCWControlsPosition(tcw, po.ToController) {
 			return po, true
@@ -540,13 +540,13 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 	toTCW := func(po PointOut) bool { return s.State.TCWControlsPosition(tcw, po.ToController) }
 
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			if !slices.ContainsFunc(fp.PointOuts, toTCW) {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			for _, po := range util.FilterSlice(fp.PointOuts, toTCW) {
 				// As with auto accepts, "to" and "from" are swapped in
 				// the event since they are w.r.t. the original point out.
@@ -573,13 +573,13 @@ func (s *Sim) RecallPointOut(tcw TCW, acid ACID) error {
 	fromTCW := func(po PointOut) bool { return s.State.TCWControlsPosition(tcw, po.FromController) }
 
 	if err := s.dispatchTrackedFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			if !slices.ContainsFunc(fp.PointOuts, fromTCW) {
 				return av.ErrNotPointedOutByMe
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) {
 			fp.PointOuts = slices.DeleteFunc(fp.PointOuts, fromTCW)
 		}); err != nil {
 		return err
@@ -592,13 +592,13 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 	toTCW := func(po PointOut) bool { return s.State.TCWControlsPosition(tcw, po.ToController) }
 
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
 			if !slices.ContainsFunc(fp.PointOuts, toTCW) {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) speech.CommandIntent {
+		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
 			for _, po := range util.FilterSlice(fp.PointOuts, toTCW) {
 				// As with auto accepts, "to" and "from" are swapped in
 				// the event since they are w.r.t. the original point out.
@@ -854,14 +854,14 @@ func (s *Sim) ConfigureAutoHandoff(tcw TCW, op AutoHandoffOp, enable bool) (msg 
 // automatic handoff processing for a reason a controller can't reverse: a
 // non-discrete beacon code, being suspended, or having been disabled by a
 // handoff filter row with the "D" action (STARS 5.1.7, p. 5-15).
-func autoHandoffDisabledByCondition(fp *NASFlightPlan, ac *Aircraft) bool {
+func autoHandoffDisabledByCondition(fp *FlightPlan, ac *Aircraft) bool {
 	return fp.AutoHandoffInhibitLocked || fp.Suspended || (ac != nil && !ac.Squawk.IsDiscrete())
 }
 
 // checkAutoHandoffToggle validates a controller's request to enable or inhibit
 // automatic handoffs for a single track (STARS 5.1.7, p. 5-15 and 5.1.20,
 // p. 5-38).
-func (s *Sim) checkAutoHandoffToggle(fp *NASFlightPlan, ac *Aircraft) error {
+func (s *Sim) checkAutoHandoffToggle(fp *FlightPlan, ac *Aircraft) error {
 	if s.State.IsExternalController(fp.TrackingController) {
 		// Not valid for tracks owned by another facility.
 		return av.ErrOtherControllerHasTrack
@@ -1047,7 +1047,7 @@ func engineClass(acType string) string {
 // type class, and the shared FilterQualifiers). acTypeClasses is the adapted
 // "automatic_handoff_classes" map. Owner and slave matching is handled
 // separately in the Sim since it needs the current consolidation.
-func (r *HandoffFilterRegion) qualifies(p math.Point2LL, alt int, fp *NASFlightPlan,
+func (r *HandoffFilterRegion) qualifies(p math.Point2LL, alt int, fp *FlightPlan,
 	acType, activeConfigPlan string, acTypeClasses map[string][]string,
 	significantPoints map[string]SignificantPoint) bool {
 	if !r.AirspaceVolume.Inside(p, alt) {

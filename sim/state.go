@@ -123,7 +123,7 @@ type CommonState struct {
 type DerivedState struct {
 	Tracks                  map[av.ADSBCallsign]*Track
 	LastSTTCallsigns        map[TCW]av.ADSBCallsign
-	UnassociatedFlightPlans []*NASFlightPlan // Unassociated ones, including unsupported DBs
+	UnassociatedFlightPlans []*FlightPlan // Unassociated ones, including unsupported DBs
 	ReleaseDepartures       []ReleaseDeparture
 
 	// The launch control window's manual launch slots; empty for kinds whose
@@ -183,7 +183,7 @@ func makeDerivedState(s *Sim) DerivedState {
 		ds.ReleaseDepartures = append(ds.ReleaseDepartures,
 			ReleaseDeparture{
 				ADSBCallsign:        ac.ADSBCallsign,
-				DepartureAirport:    ac.FlightPlan.DepartureAirport,
+				DepartureAirport:    ac.DepartureAirport,
 				DepartureController: fp.InboundHandoffController,
 				Released:            ac.Released,
 				Squawk:              ac.Squawk,
@@ -207,16 +207,14 @@ func makeDerivedState(s *Sim) DerivedState {
 
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
-			FlightPlan:                ac.NASFlightPlan,
+			FlightPlan:                ac.FlightPlan,
 			ControllerFrequency:       ac.ControllerFrequency,
-			DepartureAirport:          ac.FlightPlan.DepartureAirport,
+			DepartureAirport:          ac.DepartureAirport,
 			DepartureAirportElevation: ac.DepartureAirportElevation(),
 			DepartureAirportLocation:  ac.DepartureAirportLocation(),
-			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
+			ArrivalAirport:            ac.ArrivalAirport,
 			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
 			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
-			FiledRoute:                ac.FlightPlan.Route,
-			FiledAltitude:             ac.FlightPlan.Altitude,
 			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
 			ClearedForApproach:        ac.Nav.Approach.Cleared,
@@ -233,11 +231,11 @@ func makeDerivedState(s *Sim) DerivedState {
 			ATPAVolume:                ac.ATPAVolume(),
 			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
 			RequestedFlightFollowing:  ac.RequestedFlightFollowing,
-			VirtuallyControlled: ac.NASFlightPlan != nil &&
-				s.isVirtualController(ac.NASFlightPlan.TrackingController),
+			VirtuallyControlled: ac.FlightPlan != nil &&
+				s.isVirtualController(ac.FlightPlan.TrackingController),
 		}
 
-		if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+		if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok {
 			rt.CWTCategory = perf.Category.CWT
 		}
 
@@ -611,7 +609,7 @@ func assignedSpeedForSTT(sr *av.SpeedRestriction) (knots, mach int) {
 type Track struct {
 	av.RadarTrack
 
-	FlightPlan          *NASFlightPlan
+	FlightPlan          *FlightPlan
 	ControllerFrequency ControlPosition
 
 	// Sort of hacky to carry these along here but it's convenient...
@@ -621,8 +619,6 @@ type Track struct {
 	ArrivalAirport            av.ICAOAirportCode
 	ArrivalAirportElevation   float32
 	ArrivalAirportLocation    math.Point2LL
-	FiledRoute                string
-	FiledAltitude             int
 	OnExtendedCenterline      bool
 	OnApproach                bool
 	ClearedForApproach        bool

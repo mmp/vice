@@ -122,7 +122,7 @@ func TestCorrectionFrequencyTransfer(t *testing.T) {
 			runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "L010 D20")
 			switch transfer {
 			case "controller":
-				s.contactController("125.0", &NASFlightPlan{}, ac, "126.0")
+				s.contactController("125.0", &FlightPlan{}, ac, "126.0")
 			case "tower":
 				ac.Nav.Approach.Cleared = true
 				runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "TO")

@@ -233,7 +233,7 @@ func (fsp *FlightStripWindow) DrawWindow(show *bool, c *client.ControlClient,
 		}
 
 		imgui.PushIDInt(int32(i))
-		tableMin, tableMax := fsp.drawStripImgui(acid, sfp, track, c, fw)
+		tableMin, tableMax := fsp.drawStripImgui(acid, sfp, c, fw)
 		imgui.PopID()
 
 		if tableMin.X != tableMax.X { // table was rendered
@@ -288,8 +288,8 @@ func (fsp *FlightStripWindow) DrawWindow(show *bool, c *client.ControlClient,
 // 7 columns (callsign, squawk/time, airport, route, ann0, ann1, ann2)
 // and 3 rows. It returns the table's screen-space bounding rect for
 // drag-reorder hit testing (zero if the table was not rendered).
-func (fsp *FlightStripWindow) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPlan,
-	track *sim.Track, c *client.ControlClient, fw float32) (tableMin, tableMax imgui.Vec2) {
+func (fsp *FlightStripWindow) drawStripImgui(acid sim.ACID, sfp *sim.FlightPlan,
+	c *client.ControlClient, fw float32) (tableMin, tableMax imgui.Vec2) {
 
 	tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsSizingFixedFit |
 		imgui.TableFlagsRowBg | imgui.TableFlagsNoHostExtendX
@@ -313,15 +313,7 @@ func (fsp *FlightStripWindow) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPl
 	cells[1][0] = sfp.CWTCategory + "/" + sfp.AircraftType
 	cells[2][0] = fmt.Sprintf("%03d", sfp.StripCID)
 
-	depAirport, arrAirport := "", string(sfp.ArrivalAirport)
-	filedRoute := sfp.Route
-	filedAlt := sfp.RequestedAltitude
-	if track != nil {
-		depAirport = string(track.DepartureAirport)
-		arrAirport = string(track.ArrivalAirport)
-		filedRoute = track.FiledRoute
-		filedAlt = track.FiledAltitude
-	}
+	depAirport, arrAirport := string(sfp.DepartureAirport), string(sfp.ArrivalAirport)
 
 	// Estimate route column width for word-wrapping.
 	routeWidth := imgui.ContentRegionAvail().X - (8+5+5+3*3)*fw
@@ -338,7 +330,7 @@ func (fsp *FlightStripWindow) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPl
 
 		cells[0][2] = depAirport
 
-		route := formatRoute(filedRoute+" "+arrAirport, fw, routeWidth, 3)
+		route := formatRoute(sfp.Route+" "+arrAirport, fw, routeWidth, 3)
 		cells[0][3], cells[1][3], cells[2][3] = route[0], route[1], route[2]
 
 	case av.FlightTypeArrival:
@@ -356,8 +348,8 @@ func (fsp *FlightStripWindow) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPl
 		arrivalTime := "E" + sfp.CoordinationTime.UTC().Format("1504")
 		cells[0][2] = arrivalTime
 
-		route := formatRoute(depAirport+" "+filedRoute+" "+arrAirport, fw, routeWidth, 2)
-		cells[0][3] = strconv.Itoa(filedAlt / 100)
+		route := formatRoute(depAirport+" "+sfp.Route+" "+arrAirport, fw, routeWidth, 2)
+		cells[0][3] = strconv.Itoa(sfp.RequestedAltitude / 100)
 		cells[1][3], cells[2][3] = route[0], route[1]
 	}
 

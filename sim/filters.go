@@ -184,7 +184,7 @@ func (r *FilterQualifiers) Finalize(controlPositions map[TCP]*av.Controller, e *
 	}
 }
 
-func (r FilterQualifiers) Match(fp *NASFlightPlan, userPositions []ControlPosition,
+func (r FilterQualifiers) Match(fp *FlightPlan, userPositions []ControlPosition,
 	aircraftType string, significantPoints map[string]SignificantPoint) bool {
 	if len(r.TCPs) > 0 {
 		if !slices.ContainsFunc(userPositions, func(pos ControlPosition) bool {
@@ -313,14 +313,14 @@ func exitFixDisplayName(exitFix string, significantPoints map[string]Significant
 	return ""
 }
 
-func (r QuicklookRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
+func (r QuicklookRegion) Match(p math.Point2LL, alt int, fp *FlightPlan,
 	userPositions []ControlPosition, aircraftType string,
 	significantPoints map[string]SignificantPoint) bool {
 	return r.AirspaceVolume.Inside(p, alt) &&
 		r.FilterQualifiers.Match(fp, userPositions, aircraftType, significantPoints)
 }
 
-func (r QuicklookRegions) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
+func (r QuicklookRegions) Match(p math.Point2LL, alt int, fp *FlightPlan,
 	userPositions []ControlPosition, aircraftType string,
 	significantPoints map[string]SignificantPoint) bool {
 	return slices.ContainsFunc(r, func(r QuicklookRegion) bool {
@@ -449,7 +449,7 @@ func (r *FDAMRegion) Finalize(loc av.Locator, e *util.ErrorLogger) {
 	}
 }
 
-func (r FDAMRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan, aircraftType string,
+func (r FDAMRegion) Match(p math.Point2LL, alt int, fp *FlightPlan, aircraftType string,
 	significantPoints map[string]SignificantPoint) bool {
 	// FDAM uses TCPs="ALL" per the DMS manual, so no userPositions filtering
 	return r.AirspaceVolume.Inside(p, alt) &&

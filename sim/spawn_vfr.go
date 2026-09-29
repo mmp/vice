@@ -225,7 +225,7 @@ func (s *Sim) vfrDestinationWeights() map[av.ICAOAirportCode]float32 {
 	orbiting := make(map[av.ICAOAirportCode]int)
 	for _, ac := range s.Aircraft {
 		if isHoldingArrival(ac) {
-			orbiting[ac.FlightPlan.ArrivalAirport]++
+			orbiting[ac.ArrivalAirport]++
 		}
 	}
 
@@ -264,23 +264,22 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		return nil, ErrViolatedAirspace
 	}
 
-	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, callsigns, s.lg)
+	ac := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, callsigns, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	rules := av.FlightRulesVFR
+	ac.FlightRules = av.FlightRulesVFR
 	ac.Squawk = 0o1200
 	if r := s.Rand.Float32(); r < .02 {
 		ac.Mode = av.TransponderModeOn // mode-A
 	} else if r < .03 {
 		ac.Mode = av.TransponderModeStandby // flat out off
 	}
-	ac.InitializeFlightPlan(rules, acType, depart, arrive)
 
-	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
-		return nil, fmt.Errorf("invalid aircraft type: no performance data %q", ac.FlightPlan.AircraftType)
+		return nil, fmt.Errorf("invalid aircraft type: no performance data %q", ac.AircraftType)
 	}
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
@@ -329,8 +328,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		wps = append(wps, rg.Waypoint("_dep_downwind3", -2*k, side*vfrDownwindOffset))
 	}
 
-	ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, CruiseLimits{},
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.Rand)
+	ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, CruiseLimits{}, s.State.NmPerLongitude,
+		s.State.MagneticVariation, s.Rand)
 
 	var randomizeAltitudeRange bool
 	if len(routeWps) > 0 {
@@ -362,7 +361,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 			}()
 
 			var ar av.AltitudeRestriction
-			alt := float32(ac.FlightPlan.Altitude)
+			alt := float32(ac.CruiseAltitude)
 			if i < nsteps/2 {
 				// At or above for the first half, even if unattainable so that they climb
 				ar = av.MakeAtOrAboveAltitudeRestriction(alt)
@@ -417,7 +416,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	// on, both so the airspace and terrain they clear are what is overflown
 	// and so they land on the legs they divide rather than off to one side
 	// of them.
-	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.FlightPlan.Altitude, depap, arrap)
+	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.CruiseAltitude, depap, arrap)
 	if !ok {
 		return nil, ErrViolatedAirspace
 	}
@@ -427,11 +426,10 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	// maps, pointers, and fields unused during route validation.
 	simNav := deep.MustCopy(ac.Nav)
 	simNav.Prespawn = true
-	simFP := ac.FlightPlan
 	prespawnWxs := s.wxModel.Lookup(simNav.FlightState.Position,
 		simNav.FlightState.Altitude, simTime.Time())
 	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
-		if wp := simNav.UpdateWithWeather("", prespawnWxs, nil, &simFP,
+		if wp := simNav.UpdateWithWeather("", prespawnWxs, nil, ac.FlightRules,
 			simTime.NavTime(), nil).PassedWaypoint; wp != nil {
 			if wp.HasDeleteAction() {
 				return ac, nil
@@ -440,7 +438,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				// Generate descent waypoints so prespawn validates the
 				// descent from cruise altitude through any bravo/charlie
 				// airspace down to pattern altitude.
-				arrAP, ok := db.DB.Airports[ac.FlightPlan.ArrivalAirport]
+				arrAP, ok := db.DB.Airports[ac.ArrivalAirport]
 				if !ok {
 					return ac, nil
 				}

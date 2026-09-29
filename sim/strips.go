@@ -31,7 +31,7 @@ func (s *Sim) freeStripCID(cid int) {
 
 // initFlightStrip assigns a strip CID and owner on the flight plan.
 // No-op if the flight plan already has a strip.
-func (s *Sim) initFlightStrip(fp *NASFlightPlan, owner ControlPosition) {
+func (s *Sim) initFlightStrip(fp *FlightPlan, owner ControlPosition) {
 	if fp.StripOwner != "" {
 		return
 	}
@@ -40,7 +40,7 @@ func (s *Sim) initFlightStrip(fp *NASFlightPlan, owner ControlPosition) {
 	s.lg.Debug("created flight strip", slog.String("acid", string(fp.ACID)), slog.String("owner", string(owner)))
 }
 
-func shouldCreateFlightStrip(fp *NASFlightPlan) bool {
+func shouldCreateFlightStrip(fp *FlightPlan) bool {
 	return fp.Rules == av.FlightRulesIFR || (fp.PlanType != LocalNonEnroute && fp.TypeOfFlight == av.FlightTypeDeparture)
 }
 
@@ -49,8 +49,8 @@ func shouldCreateFlightStrip(fp *NASFlightPlan) bool {
 func (s *Sim) flightStripACIDsForTCW(tcw TCW) []ACID {
 	var result []ACID
 	for _, ac := range s.Aircraft {
-		if ac.IsAssociated() && s.State.TCWControlsPosition(tcw, ac.NASFlightPlan.StripOwner) {
-			result = append(result, ac.NASFlightPlan.ACID)
+		if ac.IsAssociated() && s.State.TCWControlsPosition(tcw, ac.FlightPlan.StripOwner) {
+			result = append(result, ac.FlightPlan.ACID)
 		}
 	}
 	for _, fp := range s.STARSComputer.FlightPlans {
@@ -456,13 +456,13 @@ func (s *Sim) processFutureOnCourse() {
 			if s.State.SimTime.After(oc.Time) {
 				if ac, ok := s.Aircraft[oc.ADSBCallsign]; ok {
 					s.lg.Info("departing on course", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
-						slog.Int("final_altitude", ac.FlightPlan.Altitude))
+						slog.Int("final_altitude", ac.CruiseAltitude))
 					// Clear temporary altitude, unless the route's altitude
 					// actions govern the aircraft's altitude and it isn't
 					// climbing to cruise.
-					if ac.NASFlightPlan != nil && !ac.Nav.RouteAltitudeActions {
-						ac.NASFlightPlan.InterimAlt = 0
-						ac.NASFlightPlan.InterimType = InterimNormal
+					if ac.FlightPlan != nil && !ac.Nav.RouteAltitudeActions {
+						ac.FlightPlan.InterimAlt = 0
+						ac.FlightPlan.InterimType = InterimNormal
 					}
 					ac.DepartOnCourse(s.State.SimTime, s.lg)
 				}

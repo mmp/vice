@@ -374,12 +374,11 @@ const (
 	OnApproachCourse
 )
 
-func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan, perf av.AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
-	lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
-	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, r, lg); nav != nil {
+func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, depAirport, arrAirport av.ICAOAirportCode,
+	cruiseAlt int, perf av.AircraftPerformance, randomizeAltitudeRange bool, nmPerLongitude float32,
+	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) *Nav {
+	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, arr.Waypoints, randomizeAltitudeRange,
+		nmPerLongitude, magneticVariation, r, lg); nav != nil {
 		if !arr.SpeedRestriction.IsZero() {
 			sr := arr.SpeedRestriction
 			nav.Speed.Restriction = &sr
@@ -408,16 +407,16 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 	return nil
 }
 
-func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance,
-	assignedAlt, clearedAlt int, wp av.WaypointArray, randomizeAltitudeRange bool,
+func MakeDepartureNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAirportCode, cruiseAlt int,
+	perf av.AircraftPerformance, assignedAlt, clearedAlt int, wp av.WaypointArray, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
 	lg *log.Logger) *Nav {
-	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
-		r, lg); nav != nil {
+	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, wp, randomizeAltitudeRange,
+		nmPerLongitude, magneticVariation, r, lg); nav != nil {
 		if assignedAlt != 0 {
-			nav.setAssignedAltitude(float32(min(assignedAlt, fp.Altitude)))
+			nav.setAssignedAltitude(float32(min(assignedAlt, cruiseAlt)))
 		} else {
-			nav.Altitude.Cleared = &ClearedAltitude{Altitude: float32(min(clearedAlt, fp.Altitude))}
+			nav.Altitude.Cleared = &ClearedAltitude{Altitude: float32(min(clearedAlt, cruiseAlt))}
 		}
 		nav.FlightState.InitialDepartureClimb = true
 		nav.FlightState.Altitude = nav.FlightState.DepartureAirportElevation
@@ -426,12 +425,11 @@ func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.Aircra
 	return nil
 }
 
-func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.FlightPlan, perf av.AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
-	lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
-	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, r, lg); nav != nil {
+func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, depAirport, arrAirport av.ICAOAirportCode,
+	cruiseAlt int, perf av.AircraftPerformance, randomizeAltitudeRange bool, nmPerLongitude float32,
+	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) *Nav {
+	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, of.Waypoints, randomizeAltitudeRange,
+		nmPerLongitude, magneticVariation, r, lg); nav != nil {
 		if !of.SpeedRestriction.IsZero() {
 			sr := of.SpeedRestriction
 			nav.Speed.Restriction = &sr
@@ -460,12 +458,12 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 
 // makeNav seeds the aircraft's random number generator from r, so that a
 // sim's aircraft draw repeatable numbers when its own generator is seeded.
-func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance, wp av.WaypointArray,
-	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, r *rand.Rand,
-	lg *log.Logger) *Nav {
+func makeNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAirportCode, cruiseAlt int,
+	perf av.AircraftPerformance, wp av.WaypointArray, randomizeAltitudeRange bool, nmPerLongitude float32,
+	magneticVariation float32, r *rand.Rand, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
-		FinalAltitude:  float32(fp.Altitude),
+		FinalAltitude:  float32(cruiseAlt),
 		FixAssignments: make(map[string]FixAssignment),
 		Rand:           rand.New(r.Uint64()),
 	}
@@ -475,7 +473,7 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	nav.Waypoints = append(wp.Clone(), av.Waypoint{})
 
 	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
-		magneticVariation, fp.ArrivalAirport, lg)
+		magneticVariation, arrAirport, lg)
 
 	nav.RouteAltitudeActions = slices.ContainsFunc(nav.Waypoints,
 		func(wp av.Waypoint) bool { return wp.HasAltitudeActions() })
@@ -511,22 +509,22 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	nav.Waypoints = util.FilterSliceInPlace(nav.Waypoints,
 		func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
-	if ap, ok := db.DB.Airports[fp.DepartureAirport]; !ok {
-		lg.Errorf("%s: departure airport unknown", fp.DepartureAirport)
+	if ap, ok := db.DB.Airports[depAirport]; !ok {
+		lg.Errorf("%s: departure airport unknown", depAirport)
 		return nil
 	} else {
 		nav.FlightState.DepartureAirportLocation = ap.Location
 		nav.FlightState.DepartureAirportElevation = float32(ap.Elevation)
 	}
-	if ap, ok := db.DB.Airports[fp.ArrivalAirport]; !ok {
-		lg.Errorf("%s: arrival airport unknown", fp.ArrivalAirport)
+	if ap, ok := db.DB.Airports[arrAirport]; !ok {
+		lg.Errorf("%s: arrival airport unknown", arrAirport)
 		return nil
 	} else {
 		nav.FlightState.ArrivalAirportLocation = ap.Location
 		nav.FlightState.ArrivalAirportElevation = float32(ap.Elevation)
 
 		nav.FlightState.ArrivalAirport = av.Waypoint{
-			Fix:      string(fp.ArrivalAirport),
+			Fix:      string(arrAirport),
 			Location: ap.Location,
 		}
 		// VFR routes with SequenceVFRLanding get dynamic landing
@@ -864,10 +862,8 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 // hover on the scope. Its phrasing is drawn from r rather than from the
 // aircraft's own generator, so that asking for one doesn't change what the
 // aircraft does next.
-func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) string {
+func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) string {
 	var lines []string
-	lines = append(lines, "Departure from "+string(fp.DepartureAirport)+" to "+string(fp.ArrivalAirport))
-
 	if nav.Altitude.Assigned != nil {
 		if math.Abs(nav.FlightState.Altitude-*nav.Altitude.Assigned) < 100 {
 			lines = append(lines, "At assigned altitude "+
@@ -976,7 +972,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime Time, r *rand
 	targetAltitude, _, _ := nav.TargetAltitude()
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
 		int(nav.FlightState.GS), int(nav.TAS(wxs.Temperature()))))
-	ias, _ := nav.TargetSpeed(targetAltitude, &fp, wxs, nil, nil)
+	ias, _ := nav.TargetSpeed(targetAltitude, rules, wxs, nil, nil)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
 	} else if nav.Speed.MaintainMaximumForward {

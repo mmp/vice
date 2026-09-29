@@ -409,7 +409,7 @@ func (sp *Scope) getAllDatablocks(ctx *scope.Context) map[av.ADSBCallsign]databl
 	return sp.datablocks
 }
 
-func (sp *Scope) getDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan,
+func (sp *Scope) getDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.FlightPlan,
 	color renderer.RGB, brightness scope.Brightness) datablock {
 	state := sp.TrackState[trk.ADSBCallsign]
 	if !sp.datablockVisible(ctx, trk) {
@@ -471,7 +471,7 @@ func (sp *Scope) getDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFli
 	return nil
 }
 
-func (sp *Scope) resolveHandoff(ctx *scope.Context, sfp *sim.NASFlightPlan,
+func (sp *Scope) resolveHandoff(ctx *scope.Context, sfp *sim.FlightPlan,
 	state *TrackState) (handoffId, handoffTCP string) {
 	handoffId = " "
 	if sfp != nil {
@@ -535,7 +535,7 @@ func (sp *Scope) resolveHandoff(ctx *scope.Context, sfp *sim.NASFlightPlan,
 // corresponding field shows just the handoff receiver (Figure 2-22, p. 2-69).
 // Tracks whose owner has AHOP inhibited outright don't show it (STARS 4.3 /
 // 8.8).
-func ahopInhibitIndicator(ctx *scope.Context, sfp *sim.NASFlightPlan, handoffId string) string {
+func ahopInhibitIndicator(ctx *scope.Context, sfp *sim.FlightPlan, handoffId string) string {
 	if handoffId == " " && sfp != nil && sfp.AutoHandoffInhibited &&
 		!ctx.Client.State.IsExternalController(sfp.TrackingController) &&
 		!ctx.Client.State.AutoHandoffInhibitedForTCW(sfp.OwningTCW) {
@@ -546,7 +546,7 @@ func ahopInhibitIndicator(ctx *scope.Context, sfp *sim.NASFlightPlan, handoffId 
 
 // formatAltitude returns the datablock altitude for the track's radar
 // sample rt, falling back to a pilot-reported altitude from the flight plan.
-func formatAltitude(trk sim.Track, rt av.RadarTrack, sfp *sim.NASFlightPlan, unreasonableModeC bool) (altitude string, pilotReported bool) {
+func formatAltitude(trk sim.Track, rt av.RadarTrack, sfp *sim.FlightPlan, unreasonableModeC bool) (altitude string, pilotReported bool) {
 	if trk.IsUnsupportedDB() {
 		if sfp != nil && sfp.PilotReportedAltitude != 0 {
 			return fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100), true
@@ -577,7 +577,7 @@ func formatAltitude(trk sim.Track, rt av.RadarTrack, sfp *sim.NASFlightPlan, unr
 }
 
 func (sp *Scope) resolveScratchpad1(ctx *scope.Context, trk sim.Track,
-	sfp *sim.NASFlightPlan, state *TrackState) string {
+	sfp *sim.FlightPlan, state *TrackState) string {
 	if sfp == nil {
 		return ""
 	}
@@ -661,7 +661,7 @@ func (sp *Scope) resolveScratchpad1(ctx *scope.Context, trk sim.Track,
 	return ""
 }
 
-func flightRulesIndicator(sfp *sim.NASFlightPlan) string {
+func flightRulesIndicator(sfp *sim.FlightPlan) string {
 	if sfp.Rules == av.FlightRulesVFR {
 		return "V"
 	}
@@ -749,7 +749,7 @@ func (sp *Scope) buildLimitedDatablock(ctx *scope.Context, trk sim.Track,
 	return db
 }
 
-func (sp *Scope) buildPartialDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan,
+func (sp *Scope) buildPartialDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.FlightPlan,
 	color renderer.RGB, altitude, sp1, groundspeed, handoffId, actype string, pilotReportedAltitude bool) *partialDatablock {
 	fa := ctx.FacilityAdaptation
 	db := sp.pdbArena.AllocClear()
@@ -822,7 +822,7 @@ func (sp *Scope) buildPartialDatablock(ctx *scope.Context, trk sim.Track, sfp *s
 	return db
 }
 
-func (sp *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, color renderer.RGB,
+func (sp *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.FlightPlan, color renderer.RGB,
 	brightness scope.Brightness, altitude, sp1, groundspeed, handoffId, handoffTCP, actype string,
 	pilotReportedAltitude, beaconator, beaconMismatch, displayBeaconCode bool) *fullDatablock {
 	fa := ctx.FacilityAdaptation
@@ -843,7 +843,7 @@ func (sp *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.
 	}
 
 	// Field 2: various symbols for inhibited stuff
-	if state != nil { // FIXME: these should live in NASFlightPlan
+	if state != nil { // FIXME: these should live in FlightPlan
 		if state.InhibitMSAW || sfp.DisableMSAW {
 			if sfp.DisableCA {
 				formatDBText(db.field2[:], "+", color, false)
@@ -949,7 +949,7 @@ func (sp *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track, sfp *sim.
 	return db
 }
 
-func (sp *Scope) fillFDBField5(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
+func (sp *Scope) fillFDBField5(ctx *scope.Context, trk sim.Track, sfp *sim.FlightPlan, db *fullDatablock,
 	color renderer.RGB, groundspeed, actype string) {
 	state := sp.TrackState[trk.ADSBCallsign]
 	rulesCategory := flightRulesIndicator(sfp)
@@ -1045,7 +1045,7 @@ func (sp *Scope) fillFDBField5(ctx *scope.Context, trk sim.Track, sfp *sim.NASFl
 	copy(db.field5[3][:], db.field5[1][:])
 }
 
-func (sp *Scope) fillFDBField6(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
+func (sp *Scope) fillFDBField6(ctx *scope.Context, trk sim.Track, sfp *sim.FlightPlan, db *fullDatablock,
 	color renderer.RGB, brightness scope.Brightness, beaconMismatch, displayBeaconCode bool) {
 	if trk.IsUnsupportedDB() {
 		return
@@ -1110,7 +1110,7 @@ func (sp *Scope) fillFDBField6(ctx *scope.Context, trk sim.Track, sfp *sim.NASFl
 	// Phase 4: blank
 }
 
-func (sp *Scope) fillFDBField7(ctx *scope.Context, trk sim.Track, sfp *sim.NASFlightPlan, db *fullDatablock,
+func (sp *Scope) fillFDBField7(ctx *scope.Context, trk sim.Track, sfp *sim.FlightPlan, db *fullDatablock,
 	color renderer.RGB, beaconMismatch bool) {
 	leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
 	altSet := sfp.AssignedAltitude != 0

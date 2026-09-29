@@ -371,7 +371,7 @@ func registerOpsCommands() {
 
 	// 5.4.1 Activate FP and associate or create Unsupported data block (Implied command)
 	registerCommand(CommandModeNone, "[UNASSOC_FP][SLEW]",
-		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan, trk *sim.Track) error {
 			if trk.IsAssociated() {
 				return ErrIllegalTrack
 			}
@@ -382,7 +382,7 @@ func registerOpsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeNone, "[UNASSOC_FP][POS]",
-		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, pos math.Point2LL) {
+		func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan, pos math.Point2LL) {
 			var spec sim.FlightPlanSpecifier
 			spec.Location.Set(pos)
 			modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
@@ -390,13 +390,13 @@ func registerOpsCommands() {
 
 	// 5.4.2 Activate existing flight plan or create Unsupported data block
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A][POS]",
-		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, spec sim.FlightPlanSpecifier, pos math.Point2LL) {
+		func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan, spec sim.FlightPlanSpecifier, pos math.Point2LL) {
 			spec.Location.Set(pos)
 			spec.TrackingController.Set(ctx.UserPrimaryPosition())
 			modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
 		})
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A][SLEW]",
-		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan, spec sim.FlightPlanSpecifier, trk *sim.Track) error {
 			if trk.IsAssociated() {
 				return ErrIllegalTrack
 			}
@@ -406,7 +406,7 @@ func registerOpsCommands() {
 			return nil
 		})
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP][SLEW]",
-		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) error {
+		func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan, trk *sim.Track) error {
 			if trk.IsAssociated() {
 				return ErrIllegalTrack
 			}
@@ -549,7 +549,7 @@ func registerOpsCommands() {
 			ctx.Client.DeleteFlightPlan(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
-	registerCommand(CommandModeTerminateControl, "[UNASSOC_FP]", func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan) {
+	registerCommand(CommandModeTerminateControl, "[UNASSOC_FP]", func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan) {
 		ctx.Client.DeleteFlightPlan(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 	})
 	// This runs if the above one can't find a flight plan...
@@ -561,7 +561,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeVFRPlan, "[FIELD]",
 		func(sp *Scope, ctx *scope.Context, acid string) error {
 			fps := ctx.Client.State.UnassociatedFlightPlans
-			if idx := slices.IndexFunc(fps, func(fp *sim.NASFlightPlan) bool {
+			if idx := slices.IndexFunc(fps, func(fp *sim.FlightPlan) bool {
 				return fp.ACID == sim.ACID(acid) && fp.Rules == av.FlightRulesVFR
 			}); idx != -1 {
 				ctx.Client.DeleteFlightPlan(fps[idx].ACID, func(err error) { sp.displayError(err, ctx, "") })
@@ -572,7 +572,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeVFRPlan, "[NUM]",
 		func(sp *Scope, ctx *scope.Context, index int) error {
 			fps := ctx.Client.State.UnassociatedFlightPlans
-			if idx := slices.IndexFunc(fps, func(fp *sim.NASFlightPlan) bool {
+			if idx := slices.IndexFunc(fps, func(fp *sim.FlightPlan) bool {
 				return fp.ListIndex == index && fp.ListIndex != sim.UnsetSTARSListIndex && fp.Rules == av.FlightRulesVFR
 			}); idx != -1 {
 				ctx.Client.DeleteFlightPlan(fps[idx].ACID, func(err error) { sp.displayError(err, ctx, "") })
@@ -937,7 +937,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "*[FP_ACID][SLEW]", modifyFP)
 
 	// 5.7.1 Display flight plan in Preview area (p. 5-186)
-	displayFlightPlan := func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) (CommandStatus, error) {
+	displayFlightPlan := func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan, trk *sim.Track) (CommandStatus, error) {
 		output := formatFlightPlan(sp, ctx, fp, trk)
 
 		// Handle ModifyAfterDisplay mode transition (STARS Manual 5-186)
@@ -959,7 +959,7 @@ func registerOpsCommands() {
 			return displayFlightPlan(sp, ctx, trk.FlightPlan, trk)
 		})
 	registerCommand(CommandModeMultiFunc, "D[UNASSOC_FP]",
-		func(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan) (CommandStatus, error) {
+		func(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan) (CommandStatus, error) {
 			return displayFlightPlan(sp, ctx, fp, nil)
 		})
 
@@ -1120,7 +1120,7 @@ func modifyFlightPlan(sp *Scope, ctx *scope.Context, acid sim.ACID, spec sim.Fli
 
 // See STARS Operators Manual 5-184...
 // trk may be nil
-func formatFlightPlan(sp *Scope, ctx *scope.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
+func formatFlightPlan(sp *Scope, ctx *scope.Context, fp *sim.FlightPlan, trk *sim.Track) string {
 	if fp == nil { // shouldn't happen...
 		return "NO PLAN"
 	}

@@ -490,7 +490,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 		// Pilots only give the ATIS when they first contact a TRACON controller in a facility.
 		if pc.FirstInFacility && s.isTRACONController(pc.TCP) && !ac.IsOverflight() {
-			arrivalAirport := ac.FlightPlan.ArrivalAirport
+			arrivalAirport := ac.ArrivalAirport
 			if letter, ok := s.State.ATISLetter[arrivalAirport]; ok && letter != "" {
 				if s.Rand.Float32() < 0.85 { // 85% of aircraft give the ATIS
 					reportLetter := letter
@@ -667,7 +667,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	}
 
 	var heavySuper string
-	if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
+	if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok && !ctrl.ERAMFacility {
 		if perf.WeightClass == "H" {
 			heavySuper = " heavy"
 		} else if perf.WeightClass == "J" {

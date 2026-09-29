@@ -26,7 +26,7 @@ func TestFixesAndTrackParser(t *testing.T) {
 	ctx.Client.State.Tracks = map[av.ADSBCallsign]*sim.Track{
 		"AAL123": {
 			RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123"},
-			FlightPlan: &sim.NASFlightPlan{ACID: "AAL123", CID: "123"},
+			FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123"},
 		},
 	}
 

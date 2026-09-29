@@ -34,12 +34,12 @@ func (s *Sim) processInterfacilityVFR(now Time) {
 
 		// Find the associated track with matching ACID.
 		for _, ac := range s.Aircraft {
-			if !ac.IsAssociated() || ac.NASFlightPlan.ACID != vfrFP.ACID {
+			if !ac.IsAssociated() || ac.FlightPlan.ACID != vfrFP.ACID {
 				continue
 			}
 
 			// Clean up old local plan: return its local squawk to the pool.
-			oldFP := ac.NASFlightPlan
+			oldFP := ac.FlightPlan
 			s.LocalCodePool.Return(oldFP.AssignedSquawk)
 			s.STARSComputer.returnListIndex(oldFP.ListIndex)
 			if s.CIDAllocator != nil && oldFP.CID != "" {
@@ -84,7 +84,7 @@ func (s *Sim) requestRandomFlightFollowing() error {
 	candidates := make(map[av.ADSBCallsign]TCP)
 
 	for ac := range util.SortedMapValues(s.Aircraft) {
-		if ac.IsAssociated() || ac.FlightPlan.Rules != av.FlightRulesVFR || ac.RequestedFlightFollowing || !ac.IsAirborne() {
+		if ac.IsAssociated() || ac.FlightRules != av.FlightRulesVFR || ac.RequestedFlightFollowing || !ac.IsAirborne() {
 			continue
 		}
 		if ac.Altitude() < ac.DepartureAirportElevation()+500 &&
@@ -186,7 +186,7 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *speech.RadioTransmis
 			// the TRACON.
 			if d := math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()); d < dist {
 				hdg := math.Heading2LL(ac.DepartureAirportLocation(), ac.Position(), s.State.NmPerLongitude)
-				return ac.FlightPlan.DepartureAirport, "", math.Compass(hdg), d
+				return ac.DepartureAirport, "", math.Compass(hdg), d
 			} else {
 				hdg := math.Heading2LL(center, ac.Position(), s.State.NmPerLongitude)
 				return "", closest.Description, math.Compass(hdg), dist
@@ -195,11 +195,11 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *speech.RadioTransmis
 		return "", "", "", 0
 	}
 
-	rt := speech.MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
+	rt := speech.MakeContactTransmission("[we're a|] {actype}", ac.AircraftType)
 
 	rpap, rpdesc, rpdir, dist := closestReportingPoint(ac)
 	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
-		rt.Add("departing {airport}", ac.FlightPlan.DepartureAirport)
+		rt.Add("departing {airport}", ac.DepartureAirport)
 	} else if dist < 1 {
 		if rpap != "" {
 			rt.Add("overhead {airport}", rpap)
@@ -245,7 +245,7 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *speech.RadioTransmis
 	}
 
 	rt.Add("[looking for flight-following|request flight-following|request radar advisories|request advisories] to {airport}",
-		ac.FlightPlan.ArrivalAirport)
+		ac.ArrivalAirport)
 
 	if !earlyAlt {
 		rt.Merge(alt)

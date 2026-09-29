@@ -290,7 +290,7 @@ func (s *Sim) cancelFutureTrafficCheck(callsign av.ADSBCallsign) {
 func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (speech.CommandIntent, error) {
 	var ap *av.Airport
 	if ac, ok := s.Aircraft[callsign]; ok {
-		ap = s.State.Airports[ac.FlightPlan.ArrivalAirport]
+		ap = s.State.Airports[ac.ArrivalAirport]
 		if ap == nil {
 			return nil, av.ErrUnknownAirport
 		}
@@ -325,7 +325,7 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 				// visual assignment so nav.ClearedApproach has the references it
 				// needs.
 				if ac.Nav.Approach.AssignedId != approach {
-					ap := s.State.Airports[ac.FlightPlan.ArrivalAirport]
+					ap := s.State.Airports[ac.ArrivalAirport]
 					if ap == nil {
 						return speech.MakeUnableIntent("unable, we can't accept a visual approach there")
 					}
@@ -404,7 +404,7 @@ func (s *Sim) recentApproachTrafficInSightForRunway(ac *Aircraft, runway string)
 		if !ok || !traffic.Nav.Approach.Cleared || traffic.Nav.Approach.Assigned == nil {
 			continue
 		}
-		if traffic.FlightPlan.ArrivalAirport != ac.FlightPlan.ArrivalAirport {
+		if traffic.ArrivalAirport != ac.ArrivalAirport {
 			continue
 		}
 		if !ac.canSeeTraffic(traffic) {
@@ -537,7 +537,7 @@ func (s *Sim) checkVisibility(ac *Aircraft, p math.Point2LL) VisualEligibility {
 	// Must be VMC at the arrival airport. The arrival airport may not be one of
 	// the sim's airports (e.g. a satellite field a VFR is headed for), in which
 	// case there's no METAR for it; fall back to the nearest one.
-	metar, ok := s.State.METAR[ac.FlightPlan.ArrivalAirport]
+	metar, ok := s.State.METAR[ac.ArrivalAirport]
 	if !ok {
 		metar, _ = s.nearestMETAR(apLoc)
 		ok = metar.ICAO != ""

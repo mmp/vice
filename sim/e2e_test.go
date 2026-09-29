@@ -479,7 +479,7 @@ func TestATISCorrectionPreservesApproach(t *testing.T) {
 	s := sim.NewTestSim(lg)
 	ac := sim.MakeTestAircraft("SWA2949", "30")
 	s.Aircraft[ac.ADSBCallsign] = ac
-	ac.FlightPlan.ArrivalAirport = "KOAK"
+	ac.ArrivalAirport = "KOAK"
 	ac.Nav.FlightState.ArrivalAirport = av.Waypoint{Fix: "KOAK"}
 	ac.Nav.Approach = nav.Approach{}
 	ac.Nav.Waypoints = av.WaypointArray{{Fix: "BOYYS"}, {Fix: "HOPTA"}, {Fix: "KOAK"}}

@@ -515,7 +515,7 @@ func (s *Sim) addMETARWindow(icao av.ICAOAirportCode, metar []wx.METAR) {
 
 func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	for cs, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
+		if ac.IsAssociated() && ac.FlightPlan.ACID == acid {
 			return cs, true
 		}
 	}
@@ -534,10 +534,10 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 }
 
 // *Aircraft may be nil. bool indicates whether the flight plan is active.
-func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
+func (s *Sim) getFlightPlanForACID(acid ACID) (*FlightPlan, *Aircraft, bool) {
 	for _, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
-			return ac.NASFlightPlan, ac, true
+		if ac.IsAssociated() && ac.FlightPlan.ACID == acid {
+			return ac.FlightPlan, ac, true
 		}
 	}
 	for i, fp := range s.STARSComputer.FlightPlans {
@@ -548,11 +548,20 @@ func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) 
 	return nil, nil, false
 }
 
+// aircraftFlightPlan returns the aircraft's flight plan, whether or not it has
+// associated with the aircraft's track yet, or nil if it has none.
+func (s *Sim) aircraftFlightPlan(ac *Aircraft) *FlightPlan {
+	if ac.FlightPlan != nil {
+		return ac.FlightPlan
+	}
+	return s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+}
+
 // flightPlans returns all of the sim's flight plans, associated and not.
-func (s *Sim) flightPlans() iter.Seq[*NASFlightPlan] {
-	return func(yield func(*NASFlightPlan) bool) {
+func (s *Sim) flightPlans() iter.Seq[*FlightPlan] {
+	return func(yield func(*FlightPlan) bool) {
 		for _, ac := range util.SortedMap(s.Aircraft) {
-			if ac.NASFlightPlan != nil && !yield(ac.NASFlightPlan) {
+			if ac.FlightPlan != nil && !yield(ac.FlightPlan) {
 				return
 			}
 		}
@@ -574,7 +583,7 @@ func (s *Sim) CheckLeaks() {
 	nUsedIndices := 0
 	seenSquawks := make(map[av.Squawk]any)
 
-	check := func(fp *NASFlightPlan) {
+	check := func(fp *FlightPlan) {
 		if fp.ListIndex != UnsetSTARSListIndex {
 			if usedIndices[fp.ListIndex] {
 				s.lg.Errorf("List index %d used more than once", fp.ListIndex)
@@ -612,7 +621,7 @@ func (s *Sim) CheckLeaks() {
 	nAircraftFPs := 0
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() {
-			check(ac.NASFlightPlan)
+			check(ac.FlightPlan)
 			nAircraftFPs++
 		}
 	}

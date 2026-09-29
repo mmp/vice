@@ -18,46 +18,46 @@ func TestGetGoAroundController(t *testing.T) {
 		name       string
 		goArounds  map[string]TCP
 		departures map[string]TCP
-		fp         *NASFlightPlan // associated with the aircraft
-		stars      *NASFlightPlan // in the STARS computer, unassociated
+		fp         *FlightPlan // associated with the aircraft
+		stars      *FlightPlan // in the STARS computer, unassociated
 		want       TCP
 	}{
 		{
 			name:       "runway go-around assignment",
 			goArounds:  map[string]TCP{"KIND/5L": "1S", "KIND": "1N"},
 			departures: map[string]TCP{"KIND": "1E"},
-			fp:         &NASFlightPlan{ACID: "DAL49", TrackingController: "1B"},
+			fp:         &FlightPlan{ACID: "DAL49", TrackingController: "1B"},
 			want:       "1S",
 		},
 		{
 			name:       "airport go-around assignment",
 			goArounds:  map[string]TCP{"KIND/23R": "1S", "KIND": "1N"},
 			departures: map[string]TCP{"KIND": "1E"},
-			fp:         &NASFlightPlan{ACID: "DAL49", TrackingController: "1B"},
+			fp:         &FlightPlan{ACID: "DAL49", TrackingController: "1B"},
 			want:       "1N",
 		},
 		{
 			name:       "airport departure assignment",
 			departures: map[string]TCP{"KIND": "1E"},
-			fp:         &NASFlightPlan{ACID: "DAL49", TrackingController: "1B"},
+			fp:         &FlightPlan{ACID: "DAL49", TrackingController: "1B"},
 			want:       "1E",
 		},
 		{
 			name:       "runway departure assignment",
 			departures: runwayDepartures,
-			fp:         &NASFlightPlan{ACID: "DAL49", TrackingController: "1B"},
+			fp:         &FlightPlan{ACID: "DAL49", TrackingController: "1B"},
 			want:       "1W",
 		},
 		{
 			name:       "SID departure assignments: tracking controller",
 			departures: sidDepartures,
-			fp:         &NASFlightPlan{ACID: "DAL49", TrackingController: "1B"},
+			fp:         &FlightPlan{ACID: "DAL49", TrackingController: "1B"},
 			want:       "1B",
 		},
 		{
 			name:       "unassociated flight plan's tracking controller",
 			departures: sidDepartures,
-			stars:      &NASFlightPlan{ACID: "DAL49", TrackingController: "1B"},
+			stars:      &FlightPlan{ACID: "DAL49", TrackingController: "1B"},
 			want:       "1B",
 		},
 		{
@@ -80,10 +80,10 @@ func TestGetGoAroundController(t *testing.T) {
 
 			ac := &Aircraft{
 				ADSBCallsign:        "DAL49",
-				NASFlightPlan:       tc.fp,
+				FlightPlan:          tc.fp,
 				ControllerFrequency: "_TOWER", // after "contact tower"
 			}
-			ac.FlightPlan.ArrivalAirport = "KIND"
+			ac.ArrivalAirport = "KIND"
 			ac.Nav.Approach.Assigned = &av.Approach{Runway: "5L"}
 
 			if got := s.getGoAroundController(ac); got != tc.want {

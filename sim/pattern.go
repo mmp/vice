@@ -226,14 +226,13 @@ func (s *Sim) spawnPatternAircraft() {
 
 		// Sample a non-jet GA aircraft
 		var ac *Aircraft
-		var acType string
 		for range 20 {
-			ac, acType = s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: ap.VFR.Randoms.Fleet}, name, name,
+			ac = s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: ap.VFR.Randoms.Fleet}, name, name,
 				s.currentCallsigns(), s.lg)
 			if ac == nil {
 				continue
 			}
-			perf, ok := db.DB.AircraftPerformance[acType]
+			perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 			if !ok {
 				ac = nil
 				continue
@@ -250,8 +249,8 @@ func (s *Sim) spawnPatternAircraft() {
 		}
 
 		ac.Squawk = 0o1200
-		ac.InitializeFlightPlan(av.FlightRulesVFR, acType, name, name)
-		ac.FlightPlan.Altitude = faaAP.Elevation + vfrPatternAltitude
+		ac.FlightRules = av.FlightRulesVFR
+		ac.CruiseAltitude = faaAP.Elevation + vfrPatternAltitude
 
 		touchAndGos := s.Rand.IntRange(2, 5)      // 2-5 total laps
 		ac.TouchAndGosRemaining = touchAndGos - 1 // first lap is in progress, remaining are after
@@ -315,7 +314,7 @@ func (s *Sim) canLaunchPattern(airport av.ICAOAirportCode, rwy av.Runway) bool {
 
 	// Check for VFR arrivals about to land.
 	for cs, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport != airport || s.isPatternAircraft(airport, cs) ||
+		if ac.ArrivalAirport != airport || s.isPatternAircraft(airport, cs) ||
 			len(ac.Nav.Waypoints) == 0 {
 			continue
 		}
@@ -409,7 +408,7 @@ func (s *Sim) patternConflictsWithLaunch(airport av.ICAOAirportCode) bool {
 // resetPatternLap replaces the aircraft's waypoints with a new pattern lap.
 // Called after a touch-and-go when TouchAndGosRemaining > 0.
 func (s *Sim) resetPatternLap(ac *Aircraft) {
-	airport := ac.FlightPlan.DepartureAirport
+	airport := ac.DepartureAirport
 
 	faaAP, ok := db.DB.Airports[airport]
 	if !ok {
@@ -462,7 +461,7 @@ func (s *Sim) recordPatternTouchAndGo(ac *Aircraft, airport av.ICAOAirportCode, 
 // SequenceVFRLanding waypoint. It either sends the aircraft into the
 // pattern or puts it in an orbit to wait its turn.
 func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
-	airport := ac.FlightPlan.ArrivalAirport
+	airport := ac.ArrivalAirport
 
 	if !s.arrivalsMustHold(airport) {
 		s.enterPattern(ac, airport)
@@ -539,7 +538,7 @@ func (s *Sim) enterPattern(ac *Aircraft, airport av.ICAOAirportCode) {
 // aircraft that had been holding for much longer.
 func (s *Sim) admitHoldingArrivals() {
 	for _, ac := range s.holdingArrivalsToAdmit() {
-		s.enterPattern(ac, ac.FlightPlan.ArrivalAirport)
+		s.enterPattern(ac, ac.ArrivalAirport)
 	}
 }
 
@@ -550,7 +549,7 @@ func (s *Sim) holdingArrivalsToAdmit() []*Aircraft {
 	airports := make(map[av.ICAOAirportCode]any)
 	for _, ac := range s.Aircraft {
 		if isHoldingArrival(ac) {
-			airports[ac.FlightPlan.ArrivalAirport] = nil
+			airports[ac.ArrivalAirport] = nil
 		}
 	}
 
@@ -591,7 +590,7 @@ func isHoldingArrival(ac *Aircraft) bool {
 func (s *Sim) orbitingArrivals(airport av.ICAOAirportCode) int {
 	n := 0
 	for _, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport == airport && isHoldingArrival(ac) {
+		if ac.ArrivalAirport == airport && isHoldingArrival(ac) {
 			n++
 		}
 	}
@@ -614,7 +613,7 @@ func (s *Sim) arrivalsMustHold(airport av.ICAOAirportCode) bool {
 func (s *Sim) longestHoldingArrival(airport av.ICAOAirportCode) *Aircraft {
 	var longest *Aircraft
 	for _, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport != airport || !isHoldingArrival(ac) {
+		if ac.ArrivalAirport != airport || !isHoldingArrival(ac) {
 			continue
 		}
 		if longest == nil {
@@ -645,7 +644,7 @@ func (s *Sim) patternClearForEntry(airport av.ICAOAirportCode) bool {
 	// pattern entry to this airport; once it has turned base there is
 	// room for the next one to enter behind it.
 	for cs, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport == airport && !s.isPatternAircraft(airport, cs) &&
+		if ac.ArrivalAirport == airport && !s.isPatternAircraft(airport, cs) &&
 			len(ac.Nav.Waypoints) > 0 &&
 			ac.Nav.Waypoints[0].VFRPhase == av.VFRPhaseDownwind {
 			return false
@@ -667,7 +666,7 @@ func (s *Sim) finalClear(airport av.ICAOAirportCode) bool {
 	}
 
 	for cs, ac := range s.Aircraft {
-		if ac.FlightPlan.ArrivalAirport != airport || s.isPatternAircraft(airport, cs) ||
+		if ac.ArrivalAirport != airport || s.isPatternAircraft(airport, cs) ||
 			len(ac.Nav.Waypoints) == 0 {
 			continue
 		}

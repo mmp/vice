@@ -197,7 +197,7 @@ func TestAssignedAtOrAboveSpeedDoesNotAccelerateWhenAlreadyCompliant(t *testing.
 	f.nav.AssignSpeed(&sr, false, f.temp())
 
 	targetAltitude, _, _ := f.nav.TargetAltitude()
-	targetSpeed, _ := f.nav.TargetSpeed(targetAltitude, &f.fp, f.weather(f.nav.FlightState.Altitude), nil, nil)
+	targetSpeed, _ := f.nav.TargetSpeed(targetAltitude, f.rules, f.weather(f.nav.FlightState.Altitude), nil, nil)
 	if targetSpeed != f.nav.FlightState.IAS {
 		t.Fatalf("target speed = %.0f, want current compliant speed %.0f", targetSpeed, f.nav.FlightState.IAS)
 	}
@@ -218,7 +218,7 @@ func TestAssignedAtOrBelowSpeedDoesNotAccelerateWhenAlreadyCompliant(t *testing.
 	f.nav.AssignSpeed(&sr, false, f.temp())
 
 	targetAltitude, _, _ := f.nav.TargetAltitude()
-	targetSpeed, _ := f.nav.TargetSpeed(targetAltitude, &f.fp, f.weather(f.nav.FlightState.Altitude), nil, nil)
+	targetSpeed, _ := f.nav.TargetSpeed(targetAltitude, f.rules, f.weather(f.nav.FlightState.Altitude), nil, nil)
 	if targetSpeed != f.nav.FlightState.IAS {
 		t.Fatalf("target speed = %.0f, want current compliant speed %.0f", targetSpeed, f.nav.FlightState.IAS)
 	}
@@ -259,7 +259,7 @@ func TestVisualApproachSpeedUntilFiveMileFinal(t *testing.T) {
 	}
 
 	targetAltitude, _, _ := f.nav.TargetAltitude()
-	spd, _ := f.nav.TargetSpeed(targetAltitude, &f.fp, f.weather(f.nav.FlightState.Altitude), nil, nil)
+	spd, _ := f.nav.TargetSpeed(targetAltitude, f.rules, f.weather(f.nav.FlightState.Altitude), nil, nil)
 	if f.nav.Speed.Assigned == nil {
 		t.Fatal("speed restriction cleared too early at 7 NM from threshold")
 	}
@@ -277,7 +277,7 @@ func TestVisualApproachSpeedUntilFiveMileFinal(t *testing.T) {
 		t.Fatalf("at 4 NM final: DistanceToEndOfApproach = %.2f, want ~4", d)
 	}
 
-	f.nav.TargetSpeed(targetAltitude, &f.fp, f.weather(f.nav.FlightState.Altitude), nil, nil)
+	f.nav.TargetSpeed(targetAltitude, f.rules, f.weather(f.nav.FlightState.Altitude), nil, nil)
 	if f.nav.Speed.Assigned != nil {
 		t.Errorf("speed restriction should be cleared inside 5 NM final, still set to %v", f.nav.Speed.Assigned)
 	}

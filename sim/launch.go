@@ -245,8 +245,8 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 			}
 			if ac := s.PendingVFR[airport]; ac != nil {
 				slot.Callsign = ac.ADSBCallsign
-				slot.AircraftType = ac.FlightPlan.AircraftType
-				slot.Destination = ac.FlightPlan.ArrivalAirport
+				slot.AircraftType = ac.AircraftType
+				slot.Destination = ac.ArrivalAirport
 				slot.Position = ac.Position()
 			}
 			departures = append(departures, slot)

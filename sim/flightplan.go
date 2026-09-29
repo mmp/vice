@@ -57,9 +57,14 @@ func ParseInterimAltType(ch byte) (t InterimAltType, ok bool) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// NASFlightPlan
+// FlightPlan
 
-type NASFlightPlan struct {
+// FlightPlan is the NAS automation's record of a flight: what was filed and
+// what controllers have entered and amended since. IFR aircraft and VFRs
+// receiving flight following have one; other aircraft don't. Amending the
+// record doesn't change the aircraft itself (see Aircraft), so the two can
+// differ.
+type FlightPlan struct {
 	ACID     ACID
 	CID      string
 	EntryFix string
@@ -72,11 +77,12 @@ type NASFlightPlan struct {
 	// abbreviation, but the displayed entry/exit fixes remain the actual ones.
 	DerivedEntryFix       string
 	DerivedExitFix        string
+	DepartureAirport      av.ICAOAirportCode
 	ArrivalAirport        av.ICAOAirportCode
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      Time
-	PlanType              NASFlightPlanType
+	PlanType              FlightPlanType
 
 	AssignedSquawk av.Squawk
 
@@ -88,6 +94,7 @@ type NASFlightPlan struct {
 	AircraftCount   int
 	AircraftType    string
 	EquipmentSuffix string
+	CruiseSpeed     int // filed true airspeed, knots
 
 	TypeOfFlight av.TypeOfFlight
 
@@ -182,11 +189,11 @@ type NASFlightPlan struct {
 
 // HasAltitudeBlock reports whether the flight is assigned a block altitude,
 // AltitudeBlock, in place of a hard altitude.
-func (fp *NASFlightPlan) HasAltitudeBlock() bool {
+func (fp *FlightPlan) HasAltitudeBlock() bool {
 	return fp.AltitudeBlock != [2]int{}
 }
 
-func (fp *NASFlightPlan) AddPointOutHistory(tcp TCP) {
+func (fp *FlightPlan) AddPointOutHistory(tcp TCP) {
 	if len(fp.PointOutHistory) >= 20 {
 		fp.PointOutHistory = fp.PointOutHistory[:19]
 	}
@@ -198,7 +205,7 @@ func (fp *NASFlightPlan) AddPointOutHistory(tcp TCP) {
 // other altitude-cap logic. Priority: InterimAlt (TODO: confirm interim really
 // wins) > AssignedAltitude > PerceivedAssigned. Returns 0 if none are set or
 // if the flight is assigned a block altitude, which has no single altitude.
-func (fp *NASFlightPlan) DataBlockAltitude() int {
+func (fp *FlightPlan) DataBlockAltitude() int {
 	if fp.InterimAlt > 0 {
 		return fp.InterimAlt
 	}
@@ -216,7 +223,7 @@ func (fp *NASFlightPlan) DataBlockAltitude() int {
 // entered scratchpad is never overridden). A no-op without adapted rows. Fix
 // criteria consider the derived fix pair first and then the actual one, so it
 // must run after fix-pair reassignment.
-func (fp *NASFlightPlan) applyAutoScratchpad(rows []AutoScratchpadRow, plan string) {
+func (fp *FlightPlan) applyAutoScratchpad(rows []AutoScratchpadRow, plan string) {
 	if len(rows) == 0 || (fp.Scratchpad != "" && fp.SecondaryScratchpad != "") {
 		return
 	}
@@ -244,7 +251,7 @@ const QSFreeTextIndicator = "`"
 // gives an aircraft, as if the controller who had it before the simulation
 // started had made them. The entries only change what is displayed, so the
 // aircraft flies no differently for them.
-func (fp *NASFlightPlan) applyERAMEntries(ee *av.ERAMEntries) {
+func (fp *FlightPlan) applyERAMEntries(ee *av.ERAMEntries) {
 	if ee == nil {
 		return
 	}
@@ -270,11 +277,11 @@ func (fp *NASFlightPlan) applyERAMEntries(ee *av.ERAMEntries) {
 	}
 }
 
-type NASFlightPlanType int
+type FlightPlanType int
 
 // Flight plan types (STARS)
 const (
-	UnknownFlightPlanType NASFlightPlanType = iota
+	UnknownFlightPlanType FlightPlanType = iota
 
 	// Flight plan received from a NAS ARTCC.  This is a flight plan that
 	// has been sent over by an overlying ERAM facility.
@@ -297,7 +304,7 @@ const (
 
 type ACID string
 
-func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) {
+func (fp *FlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) {
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()
 	}
@@ -481,7 +488,7 @@ type FlightPlanSpecifier struct {
 	ExitFixIsIntermediate util.Optional[bool]
 	Rules                 util.Optional[av.FlightRules]
 	CoordinationTime      util.Optional[Time]
-	PlanType              util.Optional[NASFlightPlanType]
+	PlanType              util.Optional[FlightPlanType]
 
 	SquawkAssignment         util.Optional[string]
 	ImplicitSquawkAssignment util.Optional[av.Squawk] // only used when taking the track's current code
@@ -529,8 +536,8 @@ type FlightPlanSpecifier struct {
 }
 
 func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
-	nasPool *av.EnrouteSquawkCodePool, r *rand.Rand) (NASFlightPlan, error) {
-	sfp := NASFlightPlan{
+	nasPool *av.EnrouteSquawkCodePool, r *rand.Rand) (FlightPlan, error) {
+	sfp := FlightPlan{
 		ACID:                  s.ACID.GetOr(""),
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
@@ -623,7 +630,7 @@ func (s *FlightPlanSpecifier) Merge(other FlightPlanSpecifier) {
 	}
 }
 
-func assignCode(assignment util.Optional[string], planType NASFlightPlanType, rules av.FlightRules,
+func assignCode(assignment util.Optional[string], planType FlightPlanType, rules av.FlightRules,
 	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool, r *rand.Rand) (av.Squawk, av.FlightRules, error) {
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
@@ -663,12 +670,12 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 	isInterfacilityVFR := fp.PlanType == LocalEnroute && fp.Rules == av.FlightRulesVFR
 	if !isInterfacilityVFR {
 		if util.SeqContainsFunc(maps.Values(s.Aircraft),
-			func(ac *Aircraft) bool { return ac.IsAssociated() && ac.NASFlightPlan.ACID == fp.ACID }) {
+			func(ac *Aircraft) bool { return ac.IsAssociated() && ac.FlightPlan.ACID == fp.ACID }) {
 			return ErrDuplicateACID
 		}
 	}
 	if slices.ContainsFunc(s.STARSComputer.FlightPlans,
-		func(fp2 *NASFlightPlan) bool { return fp.ACID == fp2.ACID }) {
+		func(fp2 *FlightPlan) bool { return fp.ACID == fp2.ACID }) {
 		return ErrDuplicateACID
 	}
 
@@ -944,8 +951,8 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) (err error) {
 	s.lastControlCommandTime = time.Now()
 
 	for _, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
-			if s.TCWCanModifyTrack(tcw, ac.NASFlightPlan) {
+		if ac.IsAssociated() && ac.FlightPlan.ACID == acid {
+			if s.TCWCanModifyTrack(tcw, ac.FlightPlan) {
 				fp := ac.DisassociateFlightPlan()
 				fp.DeleteTime = s.State.SimTime.Add(4 * time.Minute)
 				s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
@@ -962,7 +969,7 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) (err error) {
 	return ErrNoMatchingFlightPlan
 }
 
-func (s *Sim) deleteFlightPlan(fp *NASFlightPlan) {
+func (s *Sim) deleteFlightPlan(fp *FlightPlan) {
 	if s.CIDAllocator != nil && fp.CID != "" {
 		s.CIDAllocator.Release(fp.CID)
 	}

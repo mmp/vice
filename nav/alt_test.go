@@ -38,12 +38,12 @@ func TestAssignAltitudeDelaysVerticalGuidance(t *testing.T) {
 	}
 
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 	f.AssertLevelFlight()
 
 	f.simTime = f.nav.Altitude.ActivateAt
 	wxs = f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 
 	if f.nav.Altitude.ActiveAssigned == nil || *f.nav.Altitude.ActiveAssigned != 3000 {
 		t.Fatalf("expected ActiveAssigned=3000 after delay, got %v", f.nav.Altitude.ActiveAssigned)
@@ -72,7 +72,7 @@ func TestAssignAltitudeKeepsPreviousActiveAltitudeDuringDelay(t *testing.T) {
 	}
 
 	f.simTime = f.nav.Altitude.ActivateAt
-	f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, nil)
 	target, _, _ = f.nav.TargetAltitude()
 	if target != 3000 {
 		t.Fatalf("expected new assigned altitude 3000 after delay, got %.0f", target)
@@ -91,7 +91,7 @@ func TestAssignAltitudeKeepsSTARDescentDuringDelay(t *testing.T) {
 
 	for range 300 {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 		if f.nav.FlightState.AltitudeRate < -50 {
 			break
@@ -155,7 +155,7 @@ func TestExpediteDuringAssignedAltitudeDelay(t *testing.T) {
 	}
 
 	f.simTime = f.nav.Altitude.ActivateAt.Add(time.Second)
-	f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, nil)
 	if f.nav.Altitude.Rate != RateExpedite {
 		t.Fatalf("expected expedite rate after delayed activation, got %v", f.nav.Altitude.Rate)
 	}
@@ -1331,7 +1331,7 @@ func TestAltitudeAfterSpeedDelaysAfterSpeedReached(t *testing.T) {
 
 	for range 300 {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 		if f.nav.Altitude.AfterSpeed == nil {
 			break
@@ -1352,7 +1352,7 @@ func TestAltitudeAfterSpeedDelaysAfterSpeedReached(t *testing.T) {
 	f.AssertLevelFlight()
 
 	f.simTime = f.nav.Altitude.ActivateAt.Add(time.Second)
-	f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, &f.fp, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, nil)
 	if f.nav.Altitude.ActiveAssigned == nil || *f.nav.Altitude.ActiveAssigned != 3000 {
 		t.Fatalf("expected ActiveAssigned=3000 after delayed activation, got %v", f.nav.Altitude.ActiveAssigned)
 	}
@@ -1462,7 +1462,7 @@ func TestGoodRateDescentFasterThanNormal(t *testing.T) {
 	runForTicks := func(f *FlightTest, ticks int) {
 		for range ticks {
 			wxs := f.weather(f.nav.FlightState.Altitude)
-			f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+			f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 			f.simTime = f.simTime.Add(1e9)
 		}
 	}
@@ -1796,7 +1796,7 @@ func TestVectorOffSTARHoldsAltitude(t *testing.T) {
 	// Tick until the STAR descent is active.
 	for range 300 {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 		if f.nav.FlightState.AltitudeRate < -50 {
 			break
@@ -1828,7 +1828,7 @@ func TestVectorOffSTARHoldsAltitude(t *testing.T) {
 	// the STAR; it should never climb during this window.
 	for f.simTime.Before(deferredEffectTime.Add(time.Second)) {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 		if f.nav.FlightState.Altitude > altAtCommand+5 {
 			t.Fatalf("aircraft climbed during deferred window: current=%.0f command-time=%.0f",
@@ -1861,7 +1861,7 @@ func TestVectorOffSTARHoldsAltitude(t *testing.T) {
 	altAtEffect := f.nav.FlightState.Altitude
 	for range 30 {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 		if f.nav.FlightState.Altitude > altAtEffect+50 {
 			t.Fatalf("aircraft climbed above heading-effect altitude: current=%.0f effect-time=%.0f command-time=%.0f",

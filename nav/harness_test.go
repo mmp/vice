@@ -43,16 +43,17 @@ func writtenForTest(t *testing.T, rt *speech.RadioTransmission, r *rand.Rand) st
 
 // FlightTest orchestrates a simulated flight with events and assertions.
 type FlightTest struct {
-	t        testing.TB
-	nav      *Nav
-	fp       av.FlightPlan
-	callsign string
-	simTime  Time
-	maxTicks int
-	weather  func(float32) wx.Sample
-	events   []flightEvent
-	passed   []string // fixes passed so far
-	tick     int
+	t              testing.TB
+	nav            *Nav
+	rules          av.FlightRules
+	arrivalAirport av.ICAOAirportCode
+	callsign       string
+	simTime        Time
+	maxTicks       int
+	weather        func(float32) wx.Sample
+	events         []flightEvent
+	passed         []string // fixes passed so far
+	tick           int
 }
 
 // flightEvent is a scheduled action or assertion.
@@ -131,14 +132,6 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 	rng := rand.Make()
 	rng.Seed(42)
 
-	fp := av.FlightPlan{
-		Rules:            av.FlightRulesIFR,
-		AircraftType:     cfg.AircraftType,
-		DepartureAirport: cfg.DepartureAirport,
-		ArrivalAirport:   cfg.ArrivalAirport,
-		Altitude:         int(cfg.InitialAltitude),
-	}
-
 	// Build waypoints with arrival airport at the end
 	navWps := make([]av.Waypoint, len(wps)+1)
 	copy(navWps, wps)
@@ -193,13 +186,14 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 	}
 
 	return &FlightTest{
-		t:        t,
-		nav:      n,
-		fp:       fp,
-		callsign: "TEST001",
-		simTime:  NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC)),
-		maxTicks: 7200,
-		weather:  func(alt float32) wx.Sample { return wx.MakeStandardSampleForAltitude(alt) },
+		t:              t,
+		nav:            n,
+		rules:          av.FlightRulesIFR,
+		arrivalAirport: cfg.ArrivalAirport,
+		callsign:       "TEST001",
+		simTime:        NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC)),
+		maxTicks:       7200,
+		weather:        func(alt float32) wx.Sample { return wx.MakeStandardSampleForAltitude(alt) },
 	}
 }
 
@@ -379,7 +373,7 @@ func (f *FlightTest) Run() {
 
 	for f.tick = 0; f.tick < f.maxTicks; f.tick++ {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		passedWp := f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil).PassedWaypoint
+		passedWp := f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil).PassedWaypoint
 
 		if passedWp != nil {
 			f.passed = append(f.passed, passedWp.Fix)
@@ -428,7 +422,7 @@ func (f *FlightTest) Run() {
 func (f *FlightTest) Step(n int) {
 	for range n {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		f.nav.UpdateWithWeather(f.callsign, wxs, nil, &f.fp, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
 		f.simTime = f.simTime.Add(time.Second)
 		f.tick++
 	}
@@ -679,7 +673,7 @@ func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {
 // resolving approach waypoint locations and adding runway threshold
 // waypoints — mirroring the essential parts of Airport.Finalize.
 func (f *FlightTest) makeAirport() *av.Airport {
-	icao := f.fp.ArrivalAirport
+	icao := f.arrivalAirport
 	faa, ok := db.DB.Airports[icao]
 	if !ok {
 		f.t.Fatalf("unknown airport %q", icao)

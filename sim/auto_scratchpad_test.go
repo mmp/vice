@@ -15,8 +15,8 @@ import (
 
 func TestAutoScratchpadMatches(t *testing.T) {
 	// Flight-plan constructor: fp(entry, exit, type, requested, assigned).
-	fp := func(entry, exit string, ft av.TypeOfFlight, req, asg int) *NASFlightPlan {
-		return &NASFlightPlan{EntryFix: entry, ExitFix: exit, TypeOfFlight: ft,
+	fp := func(entry, exit string, ft av.TypeOfFlight, req, asg int) *FlightPlan {
+		return &FlightPlan{EntryFix: entry, ExitFix: exit, TypeOfFlight: ft,
 			RequestedAltitude: req * 100, AssignedAltitude: asg * 100}
 	}
 	vfrFp := fp("X", "Y", av.FlightTypeDeparture, 0, 0)
@@ -33,7 +33,7 @@ func TestAutoScratchpadMatches(t *testing.T) {
 		name string
 		r    AutoScratchpadRow
 		plan string
-		fp   *NASFlightPlan
+		fp   *FlightPlan
 		want bool
 	}{
 		{"exact RA departure at/below", base, "CO1", fp("LEENA", "SEEDS", av.FlightTypeDeparture, 200, 0), true},
@@ -132,7 +132,7 @@ func TestApplyAutoScratchpadAssignment(t *testing.T) {
 	sortAutoScratchpad(rows)
 	s.State.FacilityAdaptation.AutoScratchpadAssignment = rows
 	// Matches the specific rule: scratchpad1 = AAA, scratchpad2 = delta.
-	fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "LEENA",
+	fp := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "LEENA",
 		RequestedAltitude: 15000}
 	fp.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 	if fp.Scratchpad != "AAA" {
@@ -142,7 +142,7 @@ func TestApplyAutoScratchpadAssignment(t *testing.T) {
 		t.Errorf("scratchpad2 = %q, want delta", fp.SecondaryScratchpad)
 	}
 	// An explicitly-set scratchpad is not overridden; the other still fills.
-	fp2 := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "LEENA",
+	fp2 := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "LEENA",
 		RequestedAltitude: 15000, Scratchpad: "USR"}
 	fp2.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 	if fp2.Scratchpad != "USR" {
@@ -152,7 +152,7 @@ func TestApplyAutoScratchpadAssignment(t *testing.T) {
 		t.Errorf("scratchpad2 = %q, want delta", fp2.SecondaryScratchpad)
 	}
 	// No specific match -> falls through to the wildcard rule.
-	fp3 := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "OTHER",
+	fp3 := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "OTHER",
 		RequestedAltitude: 9000}
 	fp3.applyAutoScratchpad(s.State.FacilityAdaptation.AutoScratchpadAssignment, s.State.ConfigurationId)
 	if fp3.Scratchpad != "ZZZ" {

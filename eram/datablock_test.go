@@ -14,21 +14,21 @@ import (
 func TestAltitudeFormatFieldB(t *testing.T) {
 	for _, c := range []struct {
 		name    string
-		fp      sim.NASFlightPlan
+		fp      sim.FlightPlan
 		alt     float32
 		reached bool
 		want    string
 	}{
-		{"at assigned", sim.NASFlightPlan{AssignedAltitude: 30000}, 30000, true, "300C"},
-		{"climbing", sim.NASFlightPlan{AssignedAltitude: 30000}, 25300, false, "300" + upArrow + "253"},
-		{"descending", sim.NASFlightPlan{AssignedAltitude: 23000}, 25300, false, "230" + downArrow + "253"},
-		{"climbed through", sim.NASFlightPlan{AssignedAltitude: 23000}, 25300, true, "230+253"},
-		{"descended below", sim.NASFlightPlan{AssignedAltitude: 23000}, 21200, true, "230-212"},
-		{"interim", sim.NASFlightPlan{AssignedAltitude: 30000, InterimAlt: 10000}, 25300, false, "100T253"},
-		{"above block", sim.NASFlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 35300, false, "200B353"},
-		{"within block", sim.NASFlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 22100, false, "200B250"},
-		{"block ceiling", sim.NASFlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 25040, false, "200B250"},
-		{"below block", sim.NASFlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 19300, false, "200B193"},
+		{"at assigned", sim.FlightPlan{AssignedAltitude: 30000}, 30000, true, "300C"},
+		{"climbing", sim.FlightPlan{AssignedAltitude: 30000}, 25300, false, "300" + upArrow + "253"},
+		{"descending", sim.FlightPlan{AssignedAltitude: 23000}, 25300, false, "230" + downArrow + "253"},
+		{"climbed through", sim.FlightPlan{AssignedAltitude: 23000}, 25300, true, "230+253"},
+		{"descended below", sim.FlightPlan{AssignedAltitude: 23000}, 21200, true, "230-212"},
+		{"interim", sim.FlightPlan{AssignedAltitude: 30000, InterimAlt: 10000}, 25300, false, "100T253"},
+		{"above block", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 35300, false, "200B353"},
+		{"within block", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 22100, false, "200B250"},
+		{"block ceiling", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 25040, false, "200B250"},
+		{"below block", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 19300, false, "200B193"},
 	} {
 		trk := sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1"}, FlightPlan: &c.fp}
 		ep := &Scope{TrackState: map[av.ADSBCallsign]*TrackState{

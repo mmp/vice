@@ -357,7 +357,7 @@ func (c *FixPairConfiguration) AssignTCP(pair FixPair, ft av.TypeOfFlight, activ
 // the assigned altitude for arrivals and overflights (DMS Table 4-26). TRACON
 // flight plans may carry only one of the two, so the missing one falls back
 // to the other.
-func fixPairLevel(fp *NASFlightPlan) int {
+func fixPairLevel(fp *FlightPlan) int {
 	if fp.TypeOfFlight == av.FlightTypeDeparture {
 		if fp.RequestedAltitude != 0 {
 			return fp.RequestedAltitude / 100
@@ -397,8 +397,9 @@ func (s *Sim) activeRunways() []string {
 // match, sets the inbound handoff controller to the owning TCP for the active
 // plan; it returns true in that case. Facilities without a
 // fix_pair_configuration are left untouched so the caller keeps its existing
-// inbound-flow assignment.
-func (s *Sim) applyFixPairAssignment(nasFp *NASFlightPlan, ac *Aircraft) bool {
+// inbound-flow assignment. departureRunway is the runway a departure takes off
+// from; it is empty for arrivals and overflights.
+func (s *Sim) applyFixPairAssignment(nasFp *FlightPlan, departureRunway string) bool {
 	cfg := s.State.FacilityAdaptation.FixPairConfiguration
 	if cfg == nil {
 		return false
@@ -413,7 +414,7 @@ func (s *Sim) applyFixPairAssignment(nasFp *NASFlightPlan, ac *Aircraft) bool {
 		ACType:          nasFp.AircraftType,
 		ACID:            string(nasFp.ACID),
 		ActiveRunways:   s.activeRunways(),
-		DepartureRunway: ac.FlightPlan.DepartureRunway,
+		DepartureRunway: departureRunway,
 	}
 	// Reassignment may substitute a derived pair; the flight plan keeps its
 	// actual fixes and carries the substitutions separately.
@@ -465,7 +466,7 @@ func (s *Sim) applyFixPairAssignment(nasFp *NASFlightPlan, ac *Aircraft) bool {
 // owned by a local position from the start, so when it is owned by a human
 // position that owner is set too — not just a downstream handoff target. Virtual
 // (auto-release) departures keep their virtual owner; only the handoff is set.
-func (s *Sim) setOwningPosition(nasFp *NASFlightPlan, tcp TCP) {
+func (s *Sim) setOwningPosition(nasFp *FlightPlan, tcp TCP) {
 	nasFp.InboundHandoffController = tcp
 	if nasFp.TypeOfFlight == av.FlightTypeDeparture && !s.isVirtualController(nasFp.TrackingController) {
 		nasFp.TrackingController = tcp

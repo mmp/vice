@@ -41,7 +41,7 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 		}
 
 		var heavySuper string
-		if perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
+		if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok && !ctrl.ERAMFacility {
 			if perf.WeightClass == "H" {
 				heavySuper = " heavy"
 			} else if perf.WeightClass == "J" {
@@ -217,7 +217,7 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, event av.WaypointActionEven
 	// its transfer of comms point a few seconds before its track tags up, and
 	// handoffs still happen for tracks an external facility is working, so
 	// resolve it whether or not it has associated with the aircraft yet.
-	sfp := ac.NASFlightPlan
+	sfp := ac.FlightPlan
 	if sfp == nil {
 		sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 	}
@@ -283,8 +283,8 @@ func (s *Sim) deleteAtWaypoint(ac *Aircraft, wp av.Waypoint) {
 	if ac.TouchAndGosRemaining > 0 {
 		ac.TouchAndGosRemaining--
 
-		runway := s.vfrRunwayId(ac.FlightPlan.ArrivalAirport)
-		s.recordPatternTouchAndGo(ac, ac.FlightPlan.ArrivalAirport, runway)
+		runway := s.vfrRunwayId(ac.ArrivalAirport)
+		s.recordPatternTouchAndGo(ac, ac.ArrivalAirport, runway)
 		s.resetPatternLap(ac)
 		s.lg.Debug("pattern touch-and-go", slog.String("callsign", string(ac.ADSBCallsign)),
 			slog.Int("remaining", ac.TouchAndGosRemaining))
@@ -293,7 +293,7 @@ func (s *Sim) deleteAtWaypoint(ac *Aircraft, wp av.Waypoint) {
 
 	reason := DeleteAtWaypoint
 	if wp.VFRPhase != av.VFRPhaseNone {
-		s.recordArrivalLanding(ac, s.vfrRunwayId(ac.FlightPlan.ArrivalAirport))
+		s.recordArrivalLanding(ac, s.vfrRunwayId(ac.ArrivalAirport))
 		reason = DeleteLanded
 	}
 	s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", wp))
@@ -316,7 +316,7 @@ func (s *Sim) landAtWaypoint(ac *Aircraft, wp av.Waypoint) bool {
 	if ac.Nav.Approach.Assigned != nil {
 		runway = ac.Nav.Approach.Assigned.Runway
 	} else {
-		runway = s.vfrRunwayId(ac.FlightPlan.ArrivalAirport)
+		runway = s.vfrRunwayId(ac.ArrivalAirport)
 	}
 	s.lg.Debug("landing at waypoint", slog.Any("waypoint", wp))
 	s.recordArrivalLanding(ac, runway)
@@ -327,14 +327,14 @@ func (s *Sim) landAtWaypoint(ac *Aircraft, wp av.Waypoint) bool {
 // recordArrivalLanding notes the landing for the sake of scheduling
 // departures off the runway.
 func (s *Sim) recordArrivalLanding(ac *Aircraft, runway string) {
-	depState, ok := s.DepartureState[ac.FlightPlan.ArrivalAirport]
+	depState, ok := s.DepartureState[ac.ArrivalAirport]
 	if !ok {
 		return
 	}
 	for rwyID, rwyState := range depState {
 		if rwyID.Base() == runway {
 			rwyState.LastArrivalLandingTime = s.State.SimTime
-			rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
+			rwyState.LastArrivalFlightRules = ac.FlightRules
 		}
 	}
 }
@@ -342,7 +342,7 @@ func (s *Sim) recordArrivalLanding(ac *Aircraft, runway string) {
 // applyVirtualControllerActions carries out the route actions a virtual
 // controller working the aircraft issues at fix, which the aircraft has just
 // crossed. It returns true if the aircraft was deleted.
-func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fix string, actions av.WaypointActions) bool {
+func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *FlightPlan, fix string, actions av.WaypointActions) bool {
 	if actions.HumanHandoff {
 		// Handoff from virtual controller to a human controller.
 		// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
@@ -386,7 +386,7 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 	}
 	if actions.ClimbViaSID && ac.Nav.ClimbViaSIDAtPassedFix(exceptAlt) {
 		// Without an exception, the aircraft climbs to its filed altitude.
-		alt := util.Select(actions.ExceptAltitude != 0, actions.ExceptAltitude, ac.FlightPlan.Altitude)
+		alt := util.Select(actions.ExceptAltitude != 0, actions.ExceptAltitude, ac.CruiseAltitude)
 		s.recordVirtualAltitudeEntry(sfp, alt, true)
 	}
 	if actions.DescendViaSTAR && ac.Nav.DescendViaSTARAtPassedFix(exceptAlt) {
@@ -477,7 +477,7 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *NASFlightPlan, fi
 // hard altitude is an interim altitude and anything else amends the hard
 // altitude. STARS leaves both to the controller, so this is only done at
 // ERAM facilities.
-func (s *Sim) recordVirtualAltitudeEntry(sfp *NASFlightPlan, alt int, climb bool) {
+func (s *Sim) recordVirtualAltitudeEntry(sfp *FlightPlan, alt int, climb bool) {
 	if sfp == nil || !db.DB.IsARTCC(s.State.Facility) {
 		return
 	}
@@ -661,7 +661,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			arrivalMETAR := s.State.METAR[ac.FlightPlan.ArrivalAirport]
+			arrivalMETAR := s.State.METAR[ac.ArrivalAirport]
 			updateResult := ac.Update(s.wxModel, s.State.SimTime, &arrivalMETAR, s.bravoAirspace, nil /* s.lg*/)
 			passedWaypoint := updateResult.PassedWaypoint
 			ac.refreshSeenTraffic(now, s.Aircraft)
@@ -769,7 +769,7 @@ func (s *Sim) updateState() {
 
 			// Possibly contact the departure controller
 			if ac.IsDeparture() && ((ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil)) {
-				fp := ac.NASFlightPlan
+				fp := ac.FlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
 				}

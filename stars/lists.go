@@ -62,10 +62,10 @@ func (sp *Scope) drawSystemList(ctx *scope.Context, drawExtent math.Extent2D, po
 // the provided format string, which uses []-delimited specifiers to
 // specify entries in a line; characters outside of brackets are passed
 // through unchanged. A number of built-in specifiers are available to show
-// values from the NASFlightPlan; additional custom specifiers can be
+// values from the FlightPlan; additional custom specifiers can be
 // provided in custom for items that are not in the flight plan and are
 // limited to specific list types.
-func (sp *Scope) formatListEntry(ctx *scope.Context, format string, fp *sim.NASFlightPlan,
+func (sp *Scope) formatListEntry(ctx *scope.Context, format string, fp *sim.FlightPlan,
 	custom map[string]func() string) string {
 	var result strings.Builder
 	i := 0
@@ -109,7 +109,7 @@ func (sp *Scope) rewriteFixForList(fix string) string {
 	return fmt.Sprintf("%3s", fix)
 }
 
-func (sp *Scope) formatBuiltinSpecifier(ctx *scope.Context, name string, fp *sim.NASFlightPlan) (string, bool) {
+func (sp *Scope) formatBuiltinSpecifier(ctx *scope.Context, name string, fp *sim.FlightPlan) (string, bool) {
 	switch name {
 	case "ACID":
 		return fmt.Sprintf("%-7s", string(fp.ACID)), true
@@ -840,7 +840,7 @@ func (sp *Scope) drawVFRList(ctx *scope.Context, drawExtent math.Extent2D, style
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp *sim.NASFlightPlan) bool {
+		func(fp *sim.FlightPlan) bool {
 			// Only include NAS VFR flight plans.
 			return fp.Rules != av.FlightRulesIFR && fp.Location.IsZero() && fp.PlanType == sim.LocalEnroute
 		})
@@ -852,11 +852,11 @@ func (sp *Scope) drawVFRList(ctx *scope.Context, drawExtent math.Extent2D, style
 	}
 	// Prune entries for plans no longer in the unassociated list.
 	for acid := range sp.VFRFPFirstSeen {
-		if !slices.ContainsFunc(vfr, func(fp *sim.NASFlightPlan) bool { return fp.ACID == acid }) {
+		if !slices.ContainsFunc(vfr, func(fp *sim.FlightPlan) bool { return fp.ACID == acid }) {
 			delete(sp.VFRFPFirstSeen, acid)
 		}
 	}
-	slices.SortFunc(vfr, func(a, b *sim.NASFlightPlan) int {
+	slices.SortFunc(vfr, func(a, b *sim.FlightPlan) int {
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
@@ -889,7 +889,7 @@ func (sp *Scope) drawTABList(ctx *scope.Context, drawExtent math.Extent2D, style
 	}
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp *sim.NASFlightPlan) bool {
+		func(fp *sim.FlightPlan) bool {
 			if seen, ok := sp.VFRFPFirstSeen[fp.ACID]; ok {
 				// If it's a VFR still waiting for a NAS code, don't show it yet.
 				if ctx.InterpolatedSimTime.Sub(seen) < 2*time.Second {
@@ -924,7 +924,7 @@ func (sp *Scope) drawTABList(ctx *scope.Context, drawExtent math.Extent2D, style
 		})
 
 	// 2-92: default sort is by ACID
-	slices.SortFunc(plans, func(a, b *sim.NASFlightPlan) int {
+	slices.SortFunc(plans, func(a, b *sim.FlightPlan) int {
 		return strings.Compare(string(a.ACID), string(b.ACID))
 	})
 
@@ -1437,7 +1437,7 @@ func (sp *Scope) drawCoordinationLists(ctx *scope.Context, drawExtent math.Exten
 			text.Reset()
 			text.WriteString("     ")
 			if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.NASFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
+				func(fp *sim.FlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
 				fmt.Fprintf(&text, " %-10s NO FP\n", string(dep.ADSBCallsign))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]

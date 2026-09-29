@@ -230,15 +230,15 @@ func TestFixPairDepartureRunway(t *testing.T) {
 func TestFixPairLevel(t *testing.T) {
 	// Departures use the requested altitude; arrivals/overflights the assigned
 	// altitude, each falling back to the other when unset.
-	dep := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, RequestedAltitude: 24000, AssignedAltitude: 10000}
+	dep := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, RequestedAltitude: 24000, AssignedAltitude: 10000}
 	if lvl := fixPairLevel(dep); lvl != 240 {
 		t.Errorf("departure level = %d, want 240 (requested)", lvl)
 	}
-	arr := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, RequestedAltitude: 35000, AssignedAltitude: 11000}
+	arr := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, RequestedAltitude: 35000, AssignedAltitude: 11000}
 	if lvl := fixPairLevel(arr); lvl != 110 {
 		t.Errorf("arrival level = %d, want 110 (assigned)", lvl)
 	}
-	ovf := &NASFlightPlan{TypeOfFlight: av.FlightTypeOverflight, RequestedAltitude: 24000}
+	ovf := &FlightPlan{TypeOfFlight: av.FlightTypeOverflight, RequestedAltitude: 24000}
 	if lvl := fixPairLevel(ovf); lvl != 240 {
 		t.Errorf("overflight level = %d, want 240 (requested fallback)", lvl)
 	}
@@ -465,8 +465,8 @@ func TestApplyFixPairAssignment(t *testing.T) {
 		{"catch-all for unlisted fix", "ZZZ", "1U"},
 		{"catch-all even with empty entry", "", "1U"},
 	} {
-		fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: tc.entry, ExitFix: "BOS"}
-		if !s.applyFixPairAssignment(fp, &Aircraft{}) {
+		fp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: tc.entry, ExitFix: "BOS"}
+		if !s.applyFixPairAssignment(fp, "") {
 			t.Errorf("%s: applyFixPairAssignment returned false", tc.name)
 			continue
 		}
@@ -481,16 +481,16 @@ func TestApplyFixPairAssignment(t *testing.T) {
 		{FixPair: [2]string{"BOS", "*"}, TCP: map[string]TCP{"CNE": "1L"}},
 	}
 	// Human-owned departure: owner becomes the fix-pair position.
-	dep := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "BOS", ExitFix: "ORW", TrackingController: "1D"}
-	if !s.applyFixPairAssignment(dep, &Aircraft{}) {
+	dep := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "BOS", ExitFix: "ORW", TrackingController: "1D"}
+	if !s.applyFixPairAssignment(dep, "") {
 		t.Errorf("human departure: applyFixPairAssignment returned false")
 	}
 	if dep.TrackingController != "1L" || dep.InboundHandoffController != "1L" {
 		t.Errorf("human departure: owner=%q handoff=%q, want both 1L", dep.TrackingController, dep.InboundHandoffController)
 	}
 	// Virtual (auto-release) departure: owner stays virtual; only handoff set.
-	vdep := &NASFlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "BOS", ExitFix: "ORW", TrackingController: "9V"}
-	if !s.applyFixPairAssignment(vdep, &Aircraft{}) {
+	vdep := &FlightPlan{TypeOfFlight: av.FlightTypeDeparture, EntryFix: "BOS", ExitFix: "ORW", TrackingController: "9V"}
+	if !s.applyFixPairAssignment(vdep, "") {
 		t.Errorf("virtual departure: applyFixPairAssignment returned false")
 	}
 	if vdep.TrackingController != "9V" {
@@ -512,8 +512,8 @@ func TestApplyFixPairAssignment(t *testing.T) {
 			},
 		},
 	}
-	rfp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS"}
-	if !s.applyFixPairAssignment(rfp, &Aircraft{}) {
+	rfp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS"}
+	if !s.applyFixPairAssignment(rfp, "") {
 		t.Errorf("reassigned arrival: applyFixPairAssignment returned false")
 	}
 	if rfp.EntryFix != "PVA" || rfp.DerivedEntryFix != "ROB" {
@@ -538,9 +538,9 @@ func TestApplyFixPairAssignment(t *testing.T) {
 			},
 		},
 	}
-	xfp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS",
+	xfp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS",
 		InboundHandoffController: "1L"}
-	if s.applyFixPairAssignment(xfp, &Aircraft{}) {
+	if s.applyFixPairAssignment(xfp, "") {
 		t.Errorf("row with unloaded TCP should not assign")
 	}
 	if xfp.InboundHandoffController != "1L" {
@@ -550,9 +550,9 @@ func TestApplyFixPairAssignment(t *testing.T) {
 	// No fix_pair_configuration adapted: the pipeline is a no-op (keeps whatever
 	// the inbound-flow default set), so shipped facilities are unaffected.
 	s.State.FacilityAdaptation.FixPairConfiguration = nil
-	fp := &NASFlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS",
+	fp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, EntryFix: "PVA", ExitFix: "BOS",
 		InboundHandoffController: "9Z"}
-	if s.applyFixPairAssignment(fp, &Aircraft{}) {
+	if s.applyFixPairAssignment(fp, "") {
 		t.Errorf("applyFixPairAssignment should be a no-op with no config")
 	}
 	if fp.InboundHandoffController != "9Z" {

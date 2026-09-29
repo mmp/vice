@@ -112,7 +112,7 @@ func TestHandoffFilterQualifies(t *testing.T) {
 	}
 	r.FlightType = "ARRIVAL"
 	ac := MakeTestAircraft("TST100", "22L")
-	fp := &NASFlightPlan{ACID: "TST100", TypeOfFlight: av.FlightTypeArrival}
+	fp := &FlightPlan{ACID: "TST100", TypeOfFlight: av.FlightTypeArrival}
 	// Matches when config plan matches and flight type matches.
 	if !r.qualifies(ac.Position(), int(ac.Altitude()), fp, "B738", "CP2", nil, nil) {
 		t.Error("should qualify: config plan + flight type match")
@@ -122,7 +122,7 @@ func TestHandoffFilterQualifies(t *testing.T) {
 		t.Error("should not qualify: wrong active config plan")
 	}
 	// Wrong flight type -> no match.
-	dep := &NASFlightPlan{ACID: "TST100", TypeOfFlight: av.FlightTypeDeparture}
+	dep := &FlightPlan{ACID: "TST100", TypeOfFlight: av.FlightTypeDeparture}
 	if r.qualifies(ac.Position(), int(ac.Altitude()), dep, "B738", "CP2", nil, nil) {
 		t.Error("should not qualify: departure vs arrival filter")
 	}
@@ -151,10 +151,10 @@ func newHandoffTestSim() *Sim {
 
 // newHandoffTestTrack returns an associated aircraft owned by 125.0 at the
 // TEST TCW, squawking a discrete code so that it is AHOP-eligible.
-func newHandoffTestTrack(s *Sim, acid ACID) (*Aircraft, *NASFlightPlan) {
+func newHandoffTestTrack(s *Sim, acid ACID) (*Aircraft, *FlightPlan) {
 	ac := MakeTestAircraft(av.ADSBCallsign(acid), "22L")
 	ac.Squawk = 0o1234
-	fp := &NASFlightPlan{ACID: acid, TypeOfFlight: av.FlightTypeArrival,
+	fp := &FlightPlan{ACID: acid, TypeOfFlight: av.FlightTypeArrival,
 		TrackingController: "125.0", OwningTCW: "TEST"}
 	ac.AssociateFlightPlan(fp)
 	s.Aircraft[ac.ADSBCallsign] = ac
@@ -164,7 +164,7 @@ func TestHandoffFilterOwnerMatch(t *testing.T) {
 	s := newHandoffTestSim()
 	// Consolidate 1B under the TEST TCW (whose primary is 125.0).
 	s.State.CurrentConsolidation["TEST"].SecondaryTCPs = []SecondaryTCP{{TCP: "1B"}}
-	fp := &NASFlightPlan{TrackingController: "125.0", OwningTCW: "TEST"}
+	fp := &FlightPlan{TrackingController: "125.0", OwningTCW: "TEST"}
 	// Blank owning TCP -> always matches.
 	if !s.handoffFilterOwnerMatch(&HandoffFilterRegion{}, fp) {
 		t.Error("blank owning_tcp should match")
@@ -189,7 +189,7 @@ func TestHandoffFilterOwnerMatch(t *testing.T) {
 func TestHandoffFilterActions(t *testing.T) {
 	s := newHandoffTestSim()
 	// D disables auto-handoff (delta) and locks it against controller input.
-	fp := &NASFlightPlan{TrackingController: "125.0", OwningTCW: "TEST"}
+	fp := &FlightPlan{TrackingController: "125.0", OwningTCW: "TEST"}
 	s.applyHandoffFilterAction(&HandoffFilterRegion{HandoffAction: "D"}, fp)
 	if !fp.AutoHandoffInhibited || !fp.AutoHandoffInhibitLocked {
 		t.Error("D action should set AutoHandoffInhibited and AutoHandoffInhibitLocked")
@@ -200,7 +200,7 @@ func TestHandoffFilterActions(t *testing.T) {
 		t.Error("I action should be suppressed for an inhibited track")
 	}
 	// I on an eligible track initiates the handoff and records it as automatic.
-	fp2 := &NASFlightPlan{ACID: "TST200", TrackingController: "125.0", OwningTCW: "TEST"}
+	fp2 := &FlightPlan{ACID: "TST200", TrackingController: "125.0", OwningTCW: "TEST"}
 	s.applyHandoffFilterAction(&HandoffFilterRegion{HandoffAction: "I", HORcvr: "1B"}, fp2)
 	if fp2.HandoffController != "1B" {
 		t.Errorf("I action: HandoffController = %q, want 1B", fp2.HandoffController)
@@ -209,7 +209,7 @@ func TestHandoffFilterActions(t *testing.T) {
 		t.Error("I action should record the handoff as automatic")
 	}
 	// A row whose receiver already owns the track does nothing.
-	fp3 := &NASFlightPlan{ACID: "TST210", TrackingController: "1B", OwningTCW: "1B"}
+	fp3 := &FlightPlan{ACID: "TST210", TrackingController: "1B", OwningTCW: "1B"}
 	s.applyHandoffFilterAction(&HandoffFilterRegion{HandoffAction: "I", HORcvr: "1B"}, fp3)
 	if fp3.HandoffController != "" {
 		t.Error("I action should not hand a track off to its current owner")
@@ -248,12 +248,12 @@ func TestHandoffFilterIneligibleTracks(t *testing.T) {
 
 	for _, tc := range []struct {
 		name  string
-		setup func(ac *Aircraft, fp *NASFlightPlan)
+		setup func(ac *Aircraft, fp *FlightPlan)
 	}{
-		{"in-handoff", func(ac *Aircraft, fp *NASFlightPlan) { fp.HandoffController = "1B" }},
-		{"non-discrete-code", func(ac *Aircraft, fp *NASFlightPlan) { ac.Squawk = 0o1200 }},
-		{"suspended", func(ac *Aircraft, fp *NASFlightPlan) { fp.Suspended = true }},
-		{"external-owner", func(ac *Aircraft, fp *NASFlightPlan) { fp.TrackingController = "N56" }},
+		{"in-handoff", func(ac *Aircraft, fp *FlightPlan) { fp.HandoffController = "1B" }},
+		{"non-discrete-code", func(ac *Aircraft, fp *FlightPlan) { ac.Squawk = 0o1200 }},
+		{"suspended", func(ac *Aircraft, fp *FlightPlan) { fp.Suspended = true }},
+		{"external-owner", func(ac *Aircraft, fp *FlightPlan) { fp.TrackingController = "N56" }},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			s := newHandoffTestSim()
@@ -406,7 +406,7 @@ func TestVirtualControllerPointOuts(t *testing.T) {
 	s.Aircraft[ac.ADSBCallsign] = ac
 
 	acid := ACID(ac.ADSBCallsign)
-	if _, err := s.STARSComputer.CreateFlightPlan(NASFlightPlan{ACID: acid, TrackingController: owner}); err != nil {
+	if _, err := s.STARSComputer.CreateFlightPlan(FlightPlan{ACID: acid, TrackingController: owner}); err != nil {
 		t.Fatalf("CreateFlightPlan: %v", err)
 	}
 	fp := s.STARSComputer.takeFlightPlanByACID(acid)
@@ -460,7 +460,7 @@ func makeFlightPlanDirectSim() (*Sim, *Aircraft) {
 	for i, fix := range []string{"ONE", "TWO", "THREE", "FOUR", "KJFK"} {
 		ac.Nav.Waypoints = append(ac.Nav.Waypoints, av.Waypoint{Fix: fix, Location: math.Point2LL{o[0], o[1] - float32(i)/60}})
 	}
-	ac.AssociateFlightPlan(&NASFlightPlan{ACID: "AAL123", ArrivalAirport: "KJFK", TrackingController: "125.0",
+	ac.AssociateFlightPlan(&FlightPlan{ACID: "AAL123", ArrivalAirport: "KJFK", TrackingController: "125.0",
 		OwningTCW: E2ETCW()})
 	s.Aircraft[ac.ADSBCallsign] = ac
 
@@ -506,7 +506,7 @@ func TestFlightPlanDirect(t *testing.T) {
 		if got := routeFixes(ac); !slices.Equal(got, []string{"ALPHA", "THREE", "FOUR", "KJFK"}) {
 			t.Errorf("issueDirect %v: route is %v, want [ALPHA THREE FOUR KJFK]", issueDirect, got)
 		}
-		if route, want := ac.NASFlightPlan.Route, frd+" ALPHA THREE FOUR"; route != want {
+		if route, want := ac.FlightPlan.Route, frd+" ALPHA THREE FOUR"; route != want {
 			t.Errorf("issueDirect %v: flight plan route is %q, want %q", issueDirect, route, want)
 		}
 		spoke := slices.ContainsFunc(events, func(e Event) bool {
@@ -530,7 +530,7 @@ func TestFlightPlanDirect(t *testing.T) {
 func TestFlightPlanDirectNeedsTrackControl(t *testing.T) {
 	s, ac := makeFlightPlanDirectSim()
 	delete(s.PrivilegedTCWs, E2ETCW())
-	ac.NASFlightPlan.TrackingController, ac.NASFlightPlan.OwningTCW = "126.0", "OTHER"
+	ac.FlightPlan.TrackingController, ac.FlightPlan.OwningTCW = "126.0", "OTHER"
 
 	if _, _, err := s.FlightPlanDirect(E2ETCW(), "AAL123", []string{"THREE"}, true); err != av.ErrOtherControllerHasTrack {
 		t.Errorf("amending another controller's track: got %v, want ErrOtherControllerHasTrack", err)
@@ -539,7 +539,7 @@ func TestFlightPlanDirectNeedsTrackControl(t *testing.T) {
 		t.Errorf("refused amendment changed the route to %v", got)
 	}
 
-	ac.NASFlightPlan.TrackingController, ac.NASFlightPlan.OwningTCW = "125.0", E2ETCW()
+	ac.FlightPlan.TrackingController, ac.FlightPlan.OwningTCW = "125.0", E2ETCW()
 	ac.ControllerFrequency = "126.0"
 	_, readback, err := s.FlightPlanDirect(E2ETCW(), "AAL123", []string{"THREE"}, true)
 	if err != nil {
@@ -568,7 +568,7 @@ func TestFlightPlanDirectToLocation(t *testing.T) {
 	} else if d := math.NMDistance2LL(wp.Location, s.State.Fixes["ALPHA"]); math.Abs(d-30) > 0.3 {
 		t.Errorf("ALPHA090030 is %.1fnm from ALPHA", d)
 	}
-	if route, want := ac.NASFlightPlan.Route, frd+" ALPHA090030 FOUR"; route != want {
+	if route, want := ac.FlightPlan.Route, frd+" ALPHA090030 FOUR"; route != want {
 		t.Errorf("flight plan route is %q, want %q", route, want)
 	}
 }

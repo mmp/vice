@@ -210,8 +210,8 @@ func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirp
 	runway av.RunwayID, dep *av.Departure, cruise CruiseLimits,
 	exitRoutes map[av.ExitID]*av.ExitRoute) error {
 	exitRoute := exitRoutes[dep.Exit]
-	err := ac.InitializeDeparture(ap, departureAirport, dep, string(runway), *exitRoute, cruise,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.Rand, s.lg)
+	err := ac.InitializeDeparture(ap, departureAirport, dep, *exitRoute, cruise, s.State.NmPerLongitude,
+		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.Rand, s.lg)
 	if err != nil {
 		return err
 	}
@@ -221,15 +221,18 @@ func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirp
 
 	shortExit := dep.Exit.Base()
 	isTRACON := db.DB.IsTRACON(s.State.Facility)
-	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
-	nasFp.Route = ac.FlightPlan.Route
-	nasFp.EntryFix = db.AirportDisplayId(ac.FlightPlan.DepartureAirport)
+	nasFp := s.initFlightPlan(ac, av.FlightTypeDeparture)
+	if exitRoute.SID != "" {
+		nasFp.Route = exitRoute.SID + " " + dep.Route
+	} else {
+		nasFp.Route = dep.Route
+	}
+	nasFp.EntryFix = db.AirportDisplayId(ac.DepartureAirport)
 	// The flight plan carries the exit's 3-character fix id when one is
 	// adapted; fix-pair endpoints and adapted fix criteria match against it.
 	nasFp.ExitFix = s.State.FacilityAdaptation.FixPairFixID(shortExit)
 	nasFp.SecondaryScratchpad = dep.SecondaryScratchpad
-	nasFp.RequestedAltitude = ac.FlightPlan.Altitude
-	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
+	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.CruiseAltitude, 0)
 	nasFp.RNAV = s.State.FacilityAdaptation.Datablocks.DisplayRNAVSymbol && exitRoute.IsRNAV
 
 	ac.HoldForRelease = ap.HoldForRelease || exitRoute.HoldForRelease
@@ -251,14 +254,14 @@ func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirp
 		// climbed further, so the data block needs it as an interim altitude
 		// for conflict alert to know where the climb stops.
 		alt := util.Select(exitRoute.AssignedAltitude != 0, exitRoute.AssignedAltitude, exitRoute.ClearedAltitude)
-		s.recordVirtualAltitudeEntry(&nasFp, min(alt, ac.FlightPlan.Altitude), true)
+		s.recordVirtualAltitudeEntry(&nasFp, min(alt, ac.CruiseAltitude), true)
 		nasFp.applyERAMEntries(exitRoute.ERAM)
 	}
 
 	// Pseudo-ERAM coordination then the STARS fix-pair pipeline; overrides the
 	// departure assignment above when adapted.
 	s.deriveERAMFixPair(&nasFp, ac)
-	s.applyFixPairAssignment(&nasFp, ac)
+	s.applyFixPairAssignment(&nasFp, string(runway))
 	// A fully-contained (internal) flight whose exit fix is a local-arrival
 	// airport is reclassified as an arrival for display/processing. The initial
 	// owner stays the departure controller assigned above; ownership is
@@ -339,7 +342,7 @@ func exitRoutesHaveVariedSIDs(exitRoutes map[av.ExitID]*av.ExitRoute) bool {
 //  1. The airport or, failing that, the exit route has a virtual departure
 //     controller -> auto-release, use that controller
 //  2. Human controller -> set contact altitude, use human controller position
-func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
+func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *FlightPlan,
 	ap *av.Airport, exitRoute *av.ExitRoute, departureAirport av.ICAOAirportCode, runway string) {
 
 	// Departures that start with a virtual controller are already on its
@@ -369,7 +372,7 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 		ac.DepartureContactAltitude = 0
 	} else {
 		ac.DepartureContactAltitude = ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
-		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.CruiseAltitude))
 	}
 
 	nasFp.TrackingController = pos
@@ -384,8 +387,8 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway av.RunwayID, gateDelay tim
 	s.addAircraft(*ac)
 
 	// The journey begins...
-	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
-	if ac.FlightPlan.Rules == av.FlightRulesIFR {
+	depState := s.DepartureState[ac.DepartureAirport][runway]
+	if ac.FlightRules == av.FlightRulesIFR {
 		// IFRs spend some time at the gate to give them a chance to appear
 		// in the FLIGHT PLAN list.
 		depState.Gate = append(depState.Gate, depac)
@@ -564,7 +567,7 @@ func (s *Sim) launchNextDeparture(depState *RunwayLaunchState, airport av.ICAOAi
 	for _, state := range s.samePavementRunways(airport, depRunway) {
 		state.LastDeparture = &dep
 	}
-	if exit := ac.FlightPlan.Exit; exit != "" {
+	if exit := ac.Exit; exit != "" {
 		if s.LastExitLaunch[airport] == nil {
 			s.LastExitLaunch[airport] = make(map[av.ExitID]Time)
 		}
@@ -654,7 +657,7 @@ func (s *Sim) runwayAvailable(depState *RunwayLaunchState, airport av.ICAOAirpor
 	// Hold for an arrival on short final, unless both it and the departure
 	// are VFR.
 	if util.SeqContainsFunc(maps.Values(s.Aircraft), func(ac *Aircraft) bool {
-		bothVFR := ac.FlightPlan.Rules == av.FlightRulesVFR && rules == av.FlightRulesVFR
+		bothVFR := ac.FlightRules == av.FlightRulesVFR && rules == av.FlightRulesVFR
 		return !bothVFR && ac.onShortFinal(runway.Base())
 	}) {
 		return false
@@ -678,8 +681,8 @@ func (s *Sim) departureSpaced(depState *RunwayLaunchState, dep DepartureAircraft
 	// Going out a gate is a property of the airport, so this holds a
 	// departure behind an earlier one over the same exit whichever runway
 	// flew it.
-	if ac, ok := s.Aircraft[dep.ADSBCallsign]; ok && ac.FlightPlan.Exit != "" {
-		if t, ok := s.LastExitLaunch[airport][ac.FlightPlan.Exit]; ok && now.Sub(t) < sameExitSeparation {
+	if ac, ok := s.Aircraft[dep.ADSBCallsign]; ok && ac.Exit != "" {
+		if t, ok := s.LastExitLaunch[airport][ac.Exit]; ok && now.Sub(t) < sameExitSeparation {
 			return false
 		}
 	}
@@ -861,7 +864,7 @@ func (s *Sim) sameRunwayLaunchInterval(prev, cur DepartureAircraft) time.Duratio
 
 	pac, pok := s.Aircraft[prev.ADSBCallsign]
 	cac, cok := s.Aircraft[cur.ADSBCallsign]
-	if !pok || !cok || pac.FlightPlan.Rules != av.FlightRulesIFR || cac.FlightPlan.Rules != av.FlightRulesIFR {
+	if !pok || !cok || pac.FlightRules != av.FlightRulesIFR || cac.FlightRules != av.FlightRulesIFR {
 		return wait // visual separation covers a pair involving a VFR
 	}
 	if climboutCoursesDiverge(prev, cur, s.State.NmPerLongitude) {

@@ -56,7 +56,7 @@ func asaFixMatch(field, actual, derived string) bool {
 // altitudeMatches evaluates the altitude / altitude-type criterion. R requires
 // the requested altitude to equal the adapted value; RA requires the requested
 // (departures) or assigned (arrivals/overflights) altitude to be at or below it.
-func (r AutoScratchpadRow) altitudeMatches(fp *NASFlightPlan) bool {
+func (r AutoScratchpadRow) altitudeMatches(fp *FlightPlan) bool {
 	switch strings.ToUpper(strings.TrimSpace(r.Altitude)) {
 	case "", "*":
 		return true
@@ -79,7 +79,7 @@ func (r AutoScratchpadRow) altitudeMatches(fp *NASFlightPlan) bool {
 }
 
 // matches reports whether all of the row's criteria fire for the flight.
-func (r AutoScratchpadRow) matches(plan string, fp *NASFlightPlan) bool {
+func (r AutoScratchpadRow) matches(plan string, fp *FlightPlan) bool {
 	return wildcardMatch(r.ConfigPlan, plan) &&
 		asaFixMatch(r.EntryFix, fp.EntryFix, fp.DerivedEntryFix) &&
 		asaFixMatch(r.ExitFix, fp.ExitFix, fp.DerivedExitFix) &&

@@ -149,7 +149,7 @@ func TestBuildAircraftContextLastAddressed(t *testing.T) {
 			"N123AB": {
 				RadarTrack:          av.RadarTrack{ADSBCallsign: "N123AB"},
 				ControllerFrequency: "TEST",
-				FlightPlan:          &sim.NASFlightPlan{AircraftType: "C172"},
+				FlightPlan:          &sim.FlightPlan{AircraftType: "C172"},
 			},
 		}
 		state.LastSTTCallsigns = map[sim.TCW]av.ADSBCallsign{"TEST": last}

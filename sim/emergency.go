@@ -277,7 +277,7 @@ func getSoulsOnBoard(ac *Aircraft, rng *rand.Rand) int {
 	}
 
 	// Check if we have specific data for this aircraft type from the database
-	acType := ac.FlightPlan.AircraftType
+	acType := ac.AircraftType
 	if perf, ok := db.DB.AircraftPerformance[acType]; ok && perf.Capacity.Passengers > 0 {
 		maxPax := perf.Capacity.Passengers
 		// Use 70-95% of capacity for a typical load; ignore crew (relatively negligible)
@@ -302,7 +302,7 @@ func getFuelRemaining(ac *Aircraft, rng *rand.Rand) int {
 	maxFuel := 10000 // fallback if we somehow don't find something better
 
 	// Check if we have specific data for this aircraft type from the database
-	perf := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf := db.DB.AircraftPerformance[ac.AircraftType]
 	if perf.Capacity.FuelPounds > 0 {
 		maxFuel = perf.Capacity.FuelPounds
 	} else if avg, ok := cwtFuelPounds[perf.Category.CWT]; ok {
@@ -436,8 +436,8 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	}
 
 	if stage.RequestReturn && ac.IsDeparture() {
-		transmit("[request|request immediate|we'd like to] return to {airport}", ac.FlightPlan.DepartureAirport)
-		ac.DivertToAirport(ac.FlightPlan.DepartureAirport)
+		transmit("[request|request immediate|we'd like to] return to {airport}", ac.DepartureAirport)
+		ac.DivertToAirport(ac.DepartureAirport)
 	}
 
 	if stage.RequestDelayVectors {

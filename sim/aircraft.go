@@ -56,7 +56,15 @@ type Aircraft struct {
 
 	IdentStartTime, IdentEndTime Time
 
-	FlightPlan   av.FlightPlan
+	// What the pilot is flying and where to. Every aircraft has these,
+	// whether or not it has a FlightPlan; the FlightPlan is ATC's record
+	// of them, which controllers amend without changing the aircraft.
+	FlightRules      av.FlightRules
+	AircraftType     string
+	DepartureAirport av.ICAOAirportCode
+	ArrivalAirport   av.ICAOAirportCode
+	CruiseAltitude   int
+
 	TypeOfFlight av.TypeOfFlight
 	// For departures, after we first see them in the departure acquisition
 	// volume, we set a time a bit in the future for the flight plan to
@@ -67,7 +75,8 @@ type Aircraft struct {
 	Nav nav.Nav
 
 	// Departure-related state
-	SID string
+	SID  string
+	Exit av.ExitID
 
 	// Arrival-related state
 	STAR                  string
@@ -75,7 +84,7 @@ type Aircraft struct {
 	GotContactTower       bool
 	AskedAboutTowerSwitch bool
 
-	NASFlightPlan *NASFlightPlan
+	FlightPlan *FlightPlan
 
 	// ControllerFrequency is the controller position whose radio frequency
 	// this aircraft is tuned to. Only this controller can issue ATC commands
@@ -216,7 +225,7 @@ func (ac *Aircraft) RecentSighting() *SeenAircraft {
 // that will be handed off to a human controller (checked via HumanHandoff
 // waypoint), subject to the configured GoAroundRate probability.
 func (ac *Aircraft) maybeSetGoAround(goAroundRate float32, r *rand.Rand) {
-	if ac.FlightPlan.Rules != av.FlightRulesIFR {
+	if ac.FlightRules != av.FlightRulesIFR {
 		return // VFRs don't go around since they aren't talking to us
 	}
 	if r.Float32() >= goAroundRate {
@@ -298,7 +307,7 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 	// only the ones the aircraft is near: an airport 100nm behind or ahead
 	// is never named, and carrying it only costs a slot in the fix
 	// vocabulary and in the whisper prompt.
-	for _, id := range []av.ICAOAirportCode{ac.FlightPlan.ArrivalAirport, ac.FlightPlan.DepartureAirport} {
+	for _, id := range []av.ICAOAirportCode{ac.ArrivalAirport, ac.DepartureAirport} {
 		if id == "" {
 			continue
 		}
@@ -331,7 +340,7 @@ func (ac *Aircraft) GetSTTFixes(isERAM bool) []string {
 		// the aircraft direct to one; Nav.directFixWaypoints applies the
 		// same cutoff to fixes that aren't in the route at all.
 		const maxDepartureFixDistance = 150
-		exit := ac.FlightPlan.Exit.Base()
+		exit := ac.Exit.Base()
 		for _, wp := range ac.Nav.AssignedWaypoints() {
 			if !av.IsNamedFix(wp.Fix) || slices.Contains(fixes, wp.Fix) {
 				continue
@@ -459,16 +468,6 @@ func (ac *Aircraft) GetRouteFixes() []string {
 	return fixes
 }
 
-func (ac *Aircraft) InitializeFlightPlan(r av.FlightRules, acType string, dep, arr av.ICAOAirportCode) {
-	ac.FlightPlan = av.FlightPlan{
-		Rules:            r,
-		AircraftType:     acType,
-		DepartureAirport: dep,
-		ArrivalAirport:   arr,
-		CruiseSpeed:      int(ac.AircraftPerformance().Speed.CruiseTAS),
-	}
-}
-
 func (ac *Aircraft) TAS(temp av.Temperature) float32 {
 	return ac.Nav.TAS(temp)
 }
@@ -481,7 +480,7 @@ func (ac *Aircraft) Update(model *wx.Model, simTime Time, arrivalMETAR *wx.METAR
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 
-	navUpdate := ac.Nav.Update(string(ac.ADSBCallsign), model, &ac.FlightPlan, arrivalMETAR, simTime.NavTime(), bravo)
+	navUpdate := ac.Nav.Update(string(ac.ADSBCallsign), model, ac.FlightRules, arrivalMETAR, simTime.NavTime(), bravo)
 	if navUpdate.PassedWaypoint != nil && lg != nil {
 		lg.Debug("passed", slog.Any("waypoint", navUpdate.PassedWaypoint))
 	}
@@ -722,7 +721,7 @@ func (ac *Aircraft) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.Comm
 }
 
 func (ac *Aircraft) ResumeOwnNavigation() speech.CommandIntent {
-	if ac.FlightPlan.Rules == av.FlightRulesIFR {
+	if ac.FlightRules == av.FlightRulesIFR {
 		return speech.MakeUnableIntent("unable. We're IFR")
 	} else {
 		return ac.Nav.ResumeOwnNavigation()
@@ -730,7 +729,7 @@ func (ac *Aircraft) ResumeOwnNavigation() speech.CommandIntent {
 }
 
 func (ac *Aircraft) AltitudeOurDiscretion() speech.CommandIntent {
-	if ac.FlightPlan.Rules == av.FlightRulesIFR {
+	if ac.FlightRules == av.FlightRulesIFR {
 		return speech.MakeUnableIntent("unable. We're IFR")
 	} else {
 		return ac.Nav.AltitudeOurDiscretion()
@@ -741,7 +740,7 @@ func (ac *Aircraft) ContactTower(lg *log.Logger, freq av.Frequency) (speech.Comm
 	if ac.GotContactTower {
 		// No response; they're not on our frequency any more.
 		return nil, false
-	} else if ac.FlightPlan.Rules == av.FlightRulesVFR {
+	} else if ac.FlightRules == av.FlightRulesVFR {
 		// VFR aircraft on flight following can be told to contact tower
 		// without needing an approach assignment.
 		ac.GotContactTower = true
@@ -770,29 +769,24 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 	nmPerLongitude float32, magneticVariation float32,
 	model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	ac.STAR = arr.STAR
-	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
+	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.ArrivalAirport]
 
-	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
-		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
+		lg.Errorf("%s: unable to get performance model", ac.AircraftType)
 		return ErrUnknownAircraftType
 	}
 
 	if idx := rand.SampleFiltered(r, arr.CruiseAltitudes, withinCeiling(perf)); idx != -1 {
-		ac.FlightPlan.Altitude = arr.CruiseAltitudes[idx]
+		ac.CruiseAltitude = arr.CruiseAltitudes[idx]
 	} else {
-		ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, cruise, nmPerLongitude,
-			magneticVariation, r)
-	}
-	if arr.FlightStripDisplayRoute != "" {
-		ac.FlightPlan.Route = arr.FlightStripDisplayRoute
-	} else if arr.STAR != "" {
-		ac.FlightPlan.Route = "/. " + arr.STAR
+		ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, cruise, nmPerLongitude, magneticVariation, r)
 	}
 	ac.TypeOfFlight = av.FlightTypeArrival
 
-	nav := nav.MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation, model,
-		simTime.NavTime(), r, lg)
+	randomizeAltitudeRange := ac.FlightRules == av.FlightRulesVFR
+	nav := nav.MakeArrivalNav(ac.ADSBCallsign, arr, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
+		perf, randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -801,7 +795,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 	if arr.ExpectApproach.A != nil {
 		ac.ExpectApproach(*arr.ExpectApproach.A, ap)
 	} else if arr.ExpectApproach.B != nil {
-		if app, ok := (*arr.ExpectApproach.B)[ac.FlightPlan.ArrivalAirport]; ok {
+		if app, ok := (*arr.ExpectApproach.B)[ac.ArrivalAirport]; ok {
 			ac.ExpectApproach(app, ap)
 		}
 	}
@@ -810,39 +804,32 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 }
 
 func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAOAirportCode, dep *av.Departure,
-	runway string, exitRoute av.ExitRoute, cruise CruiseLimits, nmPerLongitude float32,
+	exitRoute av.ExitRoute, cruise CruiseLimits, nmPerLongitude float32,
 	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	wp := av.SpliceRoutes(exitRoute.Waypoints, dep.RouteWaypoints)
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
-	if exitRoute.SID != "" {
-		ac.SID = exitRoute.SID
-		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
-	} else {
-		ac.FlightPlan.Route = dep.Route
-	}
+	ac.SID = exitRoute.SID
 
-	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
-		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
+		lg.Errorf("%s: unable to get performance model", ac.AircraftType)
 		return ErrUnknownAircraftType
 	}
 
-	ac.FlightPlan.Exit = dep.Exit
-	ac.FlightPlan.DepartureRunway = runway
+	ac.Exit = dep.Exit
 
 	if idx := rand.SampleFiltered(r, dep.Altitudes, withinCeiling(perf)); idx != -1 {
-		ac.FlightPlan.Altitude = dep.Altitudes[idx]
+		ac.CruiseAltitude = dep.Altitudes[idx]
 	} else {
-		ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, cruise, nmPerLongitude,
-			magneticVariation, r)
+		ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, cruise, nmPerLongitude, magneticVariation, r)
 	}
 
 	ac.TypeOfFlight = av.FlightTypeDeparture
 
-	randomizeAltitudeRange := ac.FlightPlan.Rules == av.FlightRulesVFR
-	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
-		exitRoute.ClearedAltitude, wp, randomizeAltitudeRange,
+	randomizeAltitudeRange := ac.FlightRules == av.FlightRulesVFR
+	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
+		perf, exitRoute.AssignedAltitude, exitRoute.ClearedAltitude, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
@@ -857,16 +844,16 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
 	simTime Time, r *rand.Rand, lg *log.Logger) error {
-	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
-		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
+		lg.Errorf("%s: unable to get performance model", ac.AircraftType)
 		return ErrUnknownAircraftType
 	}
 
 	ac.TypeOfFlight = av.FlightTypeDeparture
 
-	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
-		ac.FlightPlan.Altitude /* cleared alt */, wps,
+	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
+		perf, 0 /* assigned alt */, ac.CruiseAltitude /* cleared alt */, wps,
 		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
@@ -879,24 +866,23 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 
 func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float32,
 	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
-	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
-		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
+		lg.Errorf("%s: unable to get performance model", ac.AircraftType)
 		return ErrUnknownAircraftType
 	}
 
 	if idx := rand.SampleFiltered(r, of.CruiseAltitudes, withinCeiling(perf)); idx != -1 {
-		ac.FlightPlan.Altitude = of.CruiseAltitudes[idx]
+		ac.CruiseAltitude = of.CruiseAltitudes[idx]
 	} else {
 		cruise := CruiseLimits{Floor: of.Waypoints.AltitudeFloor()}
-		ac.FlightPlan.Altitude = FiledCruiseAltitude(ac.FlightPlan, perf, cruise, nmPerLongitude,
-			magneticVariation, r)
+		ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, cruise, nmPerLongitude, magneticVariation, r)
 	}
-	ac.FlightPlan.Route = of.Waypoints.RouteString()
 	ac.TypeOfFlight = av.FlightTypeOverflight
 
-	nav := nav.MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
-		magneticVariation, model, simTime.NavTime(), r, lg)
+	randomizeAltitudeRange := ac.FlightRules == av.FlightRulesVFR
+	nav := nav.MakeOverflightNav(ac.ADSBCallsign, of, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
+		perf, randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -906,7 +892,8 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 }
 
 func (ac *Aircraft) NavSummary(model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) string {
-	return ac.Nav.Summary(ac.FlightPlan, model, simTime.NavTime(), r, lg)
+	return "Departure from " + string(ac.DepartureAirport) + " to " + string(ac.ArrivalAirport) + "\n" +
+		ac.Nav.Summary(ac.FlightRules, model, simTime.NavTime(), r, lg)
 }
 
 func (ac *Aircraft) ContactMessage() *speech.RadioTransmission {
@@ -921,7 +908,7 @@ func (ac *Aircraft) ContactMessage() *speech.RadioTransmission {
 }
 
 func (ac *Aircraft) DepartOnCourse(simTime Time, lg *log.Logger) {
-	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), string(ac.FlightPlan.Exit), simTime.NavTime())
+	ac.Nav.DepartOnCourse(float32(ac.CruiseAltitude), string(ac.Exit), simTime.NavTime())
 }
 
 func (ac *Aircraft) Check(lg *log.Logger) {
@@ -1023,7 +1010,7 @@ func (ac *Aircraft) DistanceAlongRoute(fix string) (float32, error) {
 }
 
 func (ac *Aircraft) CWT() string {
-	perf, ok := db.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
 		return "NOWGT"
 	}
@@ -1125,12 +1112,12 @@ var cruiseBands = []cruiseBand{
 
 // plausibleCruiseBand returns the altitudes trips like this one are really
 // flown at: how far it is going and what the aircraft is.
-func plausibleCruiseBand(fp av.FlightPlan, perf av.AircraftPerformance) altitudeRange {
+func plausibleCruiseBand(depAirport, arrAirport av.ICAOAirportCode, perf av.AircraftPerformance) altitudeRange {
 	// Without both airports there is no distance to go on, so take the flight
 	// to be a long one.
 	d := float32(maxCruiseDistance)
-	if dep, ok := db.DB.Airports[fp.DepartureAirport]; ok {
-		if arr, ok := db.DB.Airports[fp.ArrivalAirport]; ok {
+	if dep, ok := db.DB.Airports[depAirport]; ok {
+		if arr, ok := db.DB.Airports[arrAirport]; ok {
 			d = math.NMDistance2LL(dep.Location, arr.Location)
 		}
 	}
@@ -1151,12 +1138,12 @@ func plausibleCruiseBand(fp av.FlightPlan, perf av.AircraftPerformance) altitude
 // terrainFloor is the lowest altitude a flight between the two airports can
 // cruise at: 2,000 feet above the higher of the two fields. Only 20 of the
 // 4,957 jet routes in the scraped database were ever filed below it.
-func terrainFloor(fp av.FlightPlan) int {
+func terrainFloor(depAirport, arrAirport av.ICAOAirportCode) int {
 	elevation := 0
-	if ap, ok := db.DB.Airports[fp.DepartureAirport]; ok {
+	if ap, ok := db.DB.Airports[depAirport]; ok {
 		elevation = max(elevation, ap.Elevation)
 	}
-	if ap, ok := db.DB.Airports[fp.ArrivalAirport]; ok {
+	if ap, ok := db.DB.Airports[arrAirport]; ok {
 		elevation = max(elevation, ap.Elevation)
 	}
 	return elevation + 2000
@@ -1164,9 +1151,10 @@ func terrainFloor(fp av.FlightPlan) int {
 
 // cruiseCourse is the magnetic course the flight makes good, which decides
 // which side of the hemispheric rule its altitude falls on.
-func cruiseCourse(fp av.FlightPlan, nmPerLongitude float32, magneticVariation float32) math.MagneticHeading {
-	dep, dok := db.DB.Airports[fp.DepartureAirport]
-	arr, aok := db.DB.Airports[fp.ArrivalAirport]
+func cruiseCourse(depAirport, arrAirport av.ICAOAirportCode, nmPerLongitude float32,
+	magneticVariation float32) math.MagneticHeading {
+	dep, dok := db.DB.Airports[depAirport]
+	arr, aok := db.DB.Airports[arrAirport]
 	if !dok || !aok {
 		return 0
 	}
@@ -1184,30 +1172,32 @@ type CruiseLimits struct {
 	Low, High int
 }
 
-// FiledCruiseAltitude returns the altitude a flight files. It narrows the range
-// the flight may cruise in by each thing that has a say: what it can physically
-// do, then what its route requires and is really flown at, and last--as a bias
-// rather than a bound, since a route observed at 30,000 shouldn't be dragged
-// down because trips that long usually are--what trips like it are flown at.
-func FiledCruiseAltitude(fp av.FlightPlan, perf av.AircraftPerformance, limits CruiseLimits,
+// FiledCruiseAltitude returns the altitude the aircraft files. It narrows the
+// range the flight may cruise in by each thing that has a say: what it can
+// physically do, then what its route requires and is really flown at, and
+// last--as a bias rather than a bound, since a route observed at 30,000
+// shouldn't be dragged down because trips that long usually are--what trips
+// like it are flown at.
+func (ac *Aircraft) FiledCruiseAltitude(perf av.AircraftPerformance, limits CruiseLimits,
 	nmPerLongitude float32, magneticVariation float32, r *rand.Rand) int {
 	ceiling := int(perf.Ceiling)
-	if fp.Rules == av.FlightRulesVFR {
+	if ac.FlightRules == av.FlightRulesVFR {
 		ceiling = min(ceiling, 17000) // VFRs stay out of class A airspace
 	}
 	// What the aircraft can do bounds everything that follows: nothing below
 	// narrows the range without also staying inside it.
-	a := altitudeRange{min(terrainFloor(fp), ceiling), ceiling}
+	a := altitudeRange{min(terrainFloor(ac.DepartureAirport, ac.ArrivalAirport), ceiling), ceiling}
 	if limits.Floor > 0 {
 		a = a.above(limits.Floor) // the route's own crossing restrictions
 	}
 	if limits.Low > 0 {
 		a = a.narrowedTo(altitudeRange{limits.Low, limits.High}) // where it is really flown
 	}
-	a = a.biasedTo(plausibleCruiseBand(fp, perf)) // what trips like it are flown at
+	a = a.biasedTo(plausibleCruiseBand(ac.DepartureAirport, ac.ArrivalAirport, perf)) // what trips like it are flown at
 
-	alt := a.sample(r, cruiseCourse(fp, nmPerLongitude, magneticVariation), ceiling)
-	if fp.Rules == av.FlightRulesVFR {
+	alt := a.sample(r, cruiseCourse(ac.DepartureAirport, ac.ArrivalAirport, nmPerLongitude, magneticVariation),
+		ceiling)
+	if ac.FlightRules == av.FlightRulesVFR {
 		alt += 500
 	}
 	return alt
@@ -1231,26 +1221,26 @@ func (ac *Aircraft) WillDoAirwork() bool {
 }
 
 func (ac *Aircraft) IsUnassociated() bool {
-	return ac.NASFlightPlan == nil
+	return ac.FlightPlan == nil
 }
 
 func (ac *Aircraft) IsAssociated() bool {
-	return ac.NASFlightPlan != nil
+	return ac.FlightPlan != nil
 }
 
-func (ac *Aircraft) AssociateFlightPlan(fp *NASFlightPlan) {
+func (ac *Aircraft) AssociateFlightPlan(fp *FlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
-	ac.NASFlightPlan = fp
+	ac.FlightPlan = fp
 }
 
-func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {
-	fp := ac.NASFlightPlan
-	ac.NASFlightPlan = nil
+func (ac *Aircraft) DisassociateFlightPlan() *FlightPlan {
+	fp := ac.FlightPlan
+	ac.FlightPlan = nil
 	return fp
 }
 
 func (ac *Aircraft) DivertToAirport(ap av.ICAOAirportCode) {
-	ac.FlightPlan.ArrivalAirport = ap
+	ac.ArrivalAirport = ap
 	ac.TypeOfFlight = av.FlightTypeArrival
 
 	ac.Nav.DivertToAirport(ap)

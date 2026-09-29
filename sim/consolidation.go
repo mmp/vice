@@ -423,14 +423,14 @@ func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType Consolid
 	// For full consolidation, transfer track ownership
 	if consType == ConsolidationFull && len(transferredTCPs) > 0 {
 		for _, ac := range s.Aircraft {
-			if ac.NASFlightPlan != nil && slices.Contains(transferredTCPs, ac.NASFlightPlan.TrackingController) {
-				ac.NASFlightPlan.OwningTCW = receivingTCW
-				if ac.NASFlightPlan.HandoffController != "" && s.State.TCWControlsPosition(receivingTCW, ac.NASFlightPlan.HandoffController) {
+			if ac.FlightPlan != nil && slices.Contains(transferredTCPs, ac.FlightPlan.TrackingController) {
+				ac.FlightPlan.OwningTCW = receivingTCW
+				if ac.FlightPlan.HandoffController != "" && s.State.TCWControlsPosition(receivingTCW, ac.FlightPlan.HandoffController) {
 					// It's being flashed to us but was then consolidated; the handoff is now irrelevant...
-					ac.NASFlightPlan.HandoffController = ""
-					ac.NASFlightPlan.HandoffWasAutomatic = false
+					ac.FlightPlan.HandoffController = ""
+					ac.FlightPlan.HandoffWasAutomatic = false
 				}
-				s.lg.Infof("transferred track %s ownership to %s", ac.NASFlightPlan.ACID, receivingTCW)
+				s.lg.Infof("transferred track %s ownership to %s", ac.FlightPlan.ACID, receivingTCW)
 			}
 		}
 	}
@@ -485,9 +485,9 @@ func (s *Sim) DeconsolidateTCP(tcw TCW, tcp TCP) error {
 
 	// Transfer ownership of tracks back to the original TCW
 	for _, ac := range s.Aircraft {
-		if ac.NASFlightPlan != nil && ac.NASFlightPlan.TrackingController == TCP(tcp) {
-			ac.NASFlightPlan.OwningTCW = TCW(tcp)
-			s.lg.Infof("transferred track %s ownership to %s (deconsolidation)", ac.NASFlightPlan.ACID, tcp)
+		if ac.FlightPlan != nil && ac.FlightPlan.TrackingController == TCP(tcp) {
+			ac.FlightPlan.OwningTCW = TCW(tcp)
+			s.lg.Infof("transferred track %s ownership to %s (deconsolidation)", ac.FlightPlan.ACID, tcp)
 		}
 	}
 

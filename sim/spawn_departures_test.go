@@ -151,8 +151,8 @@ func TestDepartureSpacedIntersectingRunways(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
 	now := NewSimTime(time.Now())
-	prevAc := &Aircraft{ADSBCallsign: "PRV1", FlightPlan: av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR}}
-	depAc := &Aircraft{ADSBCallsign: "DEP1", FlightPlan: av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR}}
+	prevAc := &Aircraft{ADSBCallsign: "PRV1", AircraftType: "B738", FlightRules: av.FlightRulesIFR}
+	depAc := &Aircraft{ADSBCallsign: "DEP1", AircraftType: "B738", FlightRules: av.FlightRulesIFR}
 
 	rwy9, rwy36, rwy8 := &RunwayLaunchState{}, &RunwayLaunchState{}, &RunwayLaunchState{}
 
@@ -229,8 +229,8 @@ func TestHoldForCrossingDeparture(t *testing.T) {
 	installIntersectingRunwayFixture(t)
 
 	now := NewSimTime(time.Now())
-	prevAc := &Aircraft{ADSBCallsign: "PRV1", FlightPlan: av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR}}
-	depAc := &Aircraft{ADSBCallsign: "DEP1", FlightPlan: av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR}}
+	prevAc := &Aircraft{ADSBCallsign: "PRV1", AircraftType: "B738", FlightRules: av.FlightRulesIFR}
+	depAc := &Aircraft{ADSBCallsign: "DEP1", AircraftType: "B738", FlightRules: av.FlightRulesIFR}
 
 	rwy8, rwy9 := &RunwayLaunchState{}, &RunwayLaunchState{}
 
@@ -368,7 +368,7 @@ func TestSameRunwayWakeAlwaysApplies(t *testing.T) {
 	// A heavy leader, with both aircraft fast enough that the 3 nm delay is
 	// small compared to the wake turbulence interval.
 	prev := stageDeparture(s, "PRV1", "ODI", now)
-	s.Aircraft["PRV1"].FlightPlan.AircraftType = "B744"
+	s.Aircraft["PRV1"].AircraftType = "B744"
 	prev.LaunchTime = now
 	prev.MinSeparation = 10 * time.Second
 	prev.LaunchPath = makeTestLaunchPath(0, 0, 0.1, 0, 121)
@@ -424,7 +424,7 @@ func TestSameRunwayLaunchIntervalGuards(t *testing.T) {
 	}
 
 	// A pair involving a VFR is separated visually.
-	s.Aircraft["PRV1"].FlightPlan.Rules = av.FlightRulesVFR
+	s.Aircraft["PRV1"].FlightRules = av.FlightRulesVFR
 	if got := s.sameRunwayLaunchInterval(prev, dep); got != base {
 		t.Errorf("sameRunwayLaunchInterval = %v with a VFR leader, want %v", got, base)
 	}
@@ -517,7 +517,9 @@ func departureQueueSim(now Time) (*Sim, *RunwayLaunchState, *RunwayLaunchState) 
 func stageDeparture(s *Sim, callsign av.ADSBCallsign, exit av.ExitID, queued Time) DepartureAircraft {
 	s.Aircraft[callsign] = &Aircraft{
 		ADSBCallsign: callsign,
-		FlightPlan:   av.FlightPlan{AircraftType: "B738", Rules: av.FlightRulesIFR, Exit: exit},
+		AircraftType: "B738",
+		FlightRules:  av.FlightRulesIFR,
+		Exit:         exit,
 	}
 	return DepartureAircraft{ADSBCallsign: callsign, QueuedTime: queued, MinSeparation: time.Minute}
 }

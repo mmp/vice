@@ -18,7 +18,7 @@ import (
 // engine tokens come from the aircraft-performance database's engine type
 // (J=jet, T=turboprop, anything else=prop); nav is "conventional" for
 // non-RNAV flights.
-func coordAttrsFor(nasFp *NASFlightPlan, ac *Aircraft, destAirport av.ICAOAirportCode) enroute.Attrs {
+func coordAttrsFor(nasFp *FlightPlan, ac *Aircraft, destAirport av.ICAOAirportCode) enroute.Attrs {
 	nav := "conventional"
 	if nasFp.RNAV {
 		nav = "rnav"
@@ -36,12 +36,12 @@ func coordAttrsFor(nasFp *NASFlightPlan, ac *Aircraft, destAirport av.ICAOAirpor
 // coordination compares against a fix's altitude range for the default
 // "Assigned" altitude_kind: the flight's operational level. For departures
 // climbing to their filed altitude, that's fixPairLevel's requested-altitude
-// case. For arrivals/overflights it's NASFlightPlan.AssignedAltitude when
+// case. For arrivals/overflights it's FlightPlan.AssignedAltitude when
 // already known (set for ERAM-facility spawns), else the altitude implied by
 // the aircraft's route/waypoint restrictions — the actual nav/route assigned
 // altitude, still meaningful for a TRACON-facility spawn even though STARS
 // hasn't set AssignedAltitude there — else fixPairLevel's cruise fallback.
-func assignedLevelForCoord(nasFp *NASFlightPlan, ac *Aircraft) int {
+func assignedLevelForCoord(nasFp *FlightPlan, ac *Aircraft) int {
 	if nasFp.TypeOfFlight == av.FlightTypeDeparture {
 		return fixPairLevel(nasFp)
 	}
@@ -56,8 +56,8 @@ func assignedLevelForCoord(nasFp *NASFlightPlan, ac *Aircraft) int {
 
 // makeTrajectory builds the trajectory model for a spawning aircraft, with
 // its vertical envelope capped by any matching adapted restrictions.
-func (s *Sim) makeTrajectory(ac *Aircraft, nasFp *NASFlightPlan) *enroute.Trajectory {
-	cruiseAlt := float32(ac.FlightPlan.Altitude)
+func (s *Sim) makeTrajectory(ac *Aircraft, nasFp *FlightPlan) *enroute.Trajectory {
+	cruiseAlt := float32(ac.CruiseAltitude)
 	fieldElev := cruiseAlt // overflight: level at the filed altitude
 	switch nasFp.TypeOfFlight {
 	case av.FlightTypeDeparture:
@@ -68,7 +68,7 @@ func (s *Sim) makeTrajectory(ac *Aircraft, nasFp *NASFlightPlan) *enroute.Trajec
 	traj := enroute.MakeTrajectory(ac.Nav.Waypoints, nasFp.TypeOfFlight, nasFp.AircraftType,
 		cruiseAlt, fieldElev, s.State.NmPerLongitude)
 	if ec := s.State.ERAMCoordination; ec != nil && len(ec.Restrictions) > 0 {
-		arrivalAirport := ac.FlightPlan.ArrivalAirport
+		arrivalAirport := ac.ArrivalAirport
 		traj.ApplyRestrictions(ec.Restrictions, nasFp.Route, arrivalAirport,
 			coordAttrsFor(nasFp, ac, arrivalAirport))
 	}
@@ -85,12 +85,12 @@ func (s *Sim) makeTrajectory(ac *Aircraft, nasFp *NASFlightPlan) *enroute.Trajec
 // - arrival: coordination fix -> EntryFix (ExitFix stays the arrival airport)
 // - departure: coordination fix -> ExitFix (EntryFix stays the departure airport)
 // - overflight: coordination fix -> EntryFix (ExitFix left for the assignment "*")
-func (s *Sim) deriveERAMFixPair(nasFp *NASFlightPlan, ac *Aircraft) enroute.Result {
+func (s *Sim) deriveERAMFixPair(nasFp *FlightPlan, ac *Aircraft) enroute.Result {
 	ec := s.State.ERAMCoordination
 	if ec == nil || ec.Coord == nil {
 		return enroute.Result{}
 	}
-	destAirport := ac.FlightPlan.ArrivalAirport
+	destAirport := ac.ArrivalAirport
 	// Fully-contained (internal) flight: a departure whose destination is a
 	// local facility airport never leaves the ARTS airspace, so its
 	// coordination (exit) fix is the destination airport itself, not a

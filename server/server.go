@@ -112,7 +112,12 @@ import (
 // 95: pending point outs moved from Sim.PointOuts to NASFlightPlan.PointOuts
 //
 // 96: published arrivals are spaced per inbound flow by miles in trail: Sim gained ArrivalLaunches
-const ViceSerializeVersion = 96
+//
+// 97: aviation.FlightPlan removed: Aircraft holds its rules, type, airports, cruise altitude,
+// and exit directly; NASFlightPlan renamed FlightPlan (Aircraft.NASFlightPlan is now
+// Aircraft.FlightPlan), gaining DepartureAirport and CruiseSpeed; NASFlightPlanType renamed
+// FlightPlanType; Track lost FiledRoute and FiledAltitude
+const ViceSerializeVersion = 97
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

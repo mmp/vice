@@ -27,10 +27,8 @@ func wp(fix string, latDeg float32) av.Waypoint {
 // TestGetSTTFixes_AirportsOnlyWhenNear.
 func makeAircraftForSTTFixes(wps []av.Waypoint) *Aircraft {
 	return &Aircraft{
-		FlightPlan: av.FlightPlan{
-			DepartureAirport: "KJFK",
-			ArrivalAirport:   "KBOS",
-		},
+		DepartureAirport: "KJFK",
+		ArrivalAirport:   "KBOS",
 		Nav: nav.Nav{
 			FlightState: nav.FlightState{Position: math.Point2LL{0, 0}},
 			Waypoints:   wps,
@@ -56,7 +54,7 @@ func TestGetSTTFixes_STARS_Departure(t *testing.T) {
 	}
 	ac := makeAircraftForSTTFixes(wps)
 	ac.TypeOfFlight = av.FlightTypeDeparture
-	ac.FlightPlan.Exit = "EXITF"
+	ac.Exit = "EXITF"
 
 	got := ac.GetSTTFixes(false)
 	want := []string{"SIDAA", "SIDBB", "EXITF", "NEARE"}
@@ -75,7 +73,7 @@ func TestGetSTTFixes_STARS_DepartureFarSIDAndExit(t *testing.T) {
 	}
 	ac := makeAircraftForSTTFixes(wps)
 	ac.TypeOfFlight = av.FlightTypeDeparture
-	ac.FlightPlan.Exit = "EXITF"
+	ac.Exit = "EXITF"
 
 	got := ac.GetSTTFixes(false)
 	want := []string{"SIDAA", "EXITF"}
@@ -239,8 +237,8 @@ func TestGetSTTFixes_AirportsOnlyWhenNear(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ac := makeAircraftForSTTFixes([]av.Waypoint{{Fix: "GOOD", Location: jfk.Location}})
 			ac.Nav.FlightState.Position = jfk.Location
-			ac.FlightPlan.DepartureAirport = tc.departure
-			ac.FlightPlan.ArrivalAirport = tc.arrival
+			ac.DepartureAirport = tc.departure
+			ac.ArrivalAirport = tc.arrival
 			ac.TypeOfFlight = av.FlightTypeArrival
 
 			if got := ac.GetSTTFixes(false); !equalStrings(got, tc.want) {
@@ -364,9 +362,7 @@ func TestPlausibleCruiseBand(t *testing.T) {
 		// Without both airports there is no distance to go on.
 		{"KLAX", "ZZZZ", "B738", altitudeRange{34000, 38000}},
 	} {
-		fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: tc.acType,
-			DepartureAirport: tc.from, ArrivalAirport: tc.to}
-		got := plausibleCruiseBand(fp, db.DB.AircraftPerformance[tc.acType])
+		got := plausibleCruiseBand(tc.from, tc.to, db.DB.AircraftPerformance[tc.acType])
 		if got != tc.want {
 			t.Errorf("%s-%s %s: band = %v, want %v", tc.from, tc.to, tc.acType, got, tc.want)
 		}
@@ -399,11 +395,11 @@ func TestFiledCruiseAltitude(t *testing.T) {
 		{"KSNA", "KLAS", "C172", CruiseLimits{Low: 33000, High: 37000}, []int{7000, 9000}},
 	} {
 		perf := db.DB.AircraftPerformance[tc.acType]
-		fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: tc.acType,
+		ac := &Aircraft{FlightRules: av.FlightRulesIFR, AircraftType: tc.acType,
 			DepartureAirport: tc.from, ArrivalAirport: tc.to}
 		seen := make(map[int]bool)
 		for range 400 {
-			alt := FiledCruiseAltitude(fp, perf, tc.limits, 60, 12, r)
+			alt := ac.FiledCruiseAltitude(perf, tc.limits, 60, 12, r)
 			if !slices.Contains(tc.want, alt) {
 				t.Fatalf("%s-%s %s: filed %d, want one of %v", tc.from, tc.to, tc.acType, alt, tc.want)
 			}

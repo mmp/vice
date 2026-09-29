@@ -340,7 +340,7 @@ func (h *unassociatedFPParser) Parse(sp *Scope, ctx *scope.Context, input *Comma
 }
 
 func (h *unassociatedFPParser) GoType() reflect.Type {
-	return reflect.TypeFor[*sim.NASFlightPlan]()
+	return reflect.TypeFor[*sim.FlightPlan]()
 }
 func (h *unassociatedFPParser) ConsumesClick() bool { return false }
 

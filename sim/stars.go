@@ -412,7 +412,7 @@ func (fa *FacilityAdaptation) AirspaceAwarenessForArea(area string) []AirspaceAw
 // AirspaceAwarenessController returns the controller responsible for a flight
 // given the exit fix and requested altitude in its flight plan, per the
 // airspace awareness rules in effect for area.
-func (fa *FacilityAdaptation) AirspaceAwarenessController(area string, fp *NASFlightPlan) (string, bool) {
+func (fa *FacilityAdaptation) AirspaceAwarenessController(area string, fp *FlightPlan) (string, bool) {
 	for _, rules := range fa.AirspaceAwarenessForArea(area) {
 		for _, fix := range rules.Fix {
 			// A rule names a fix in full, while a flight plan carries

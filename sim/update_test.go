@@ -137,20 +137,20 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 			ac.Nav.FlightState.Altitude = cruise
 			ac.Nav.Waypoints = tc.waypoints
 			ac.Nav.Approach.Cleared = tc.approachCleared
-			ac.FlightPlan.Altitude = cruise
+			ac.CruiseAltitude = cruise
 			ac.ControllerFrequency = util.Select(tc.humanControlled, ControlPosition("2A"), ControlPosition(""))
-			ac.NASFlightPlan = &NASFlightPlan{ACID: "AAL123", AssignedAltitude: cruise}
+			ac.FlightPlan = &FlightPlan{ACID: "AAL123", AssignedAltitude: cruise}
 			s.Aircraft[ac.ADSBCallsign] = ac
 
 			s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: tc.actions})
 
-			if got := ac.NASFlightPlan.AssignedAltitude; got != tc.assignedAltitude {
+			if got := ac.FlightPlan.AssignedAltitude; got != tc.assignedAltitude {
 				t.Errorf("assigned altitude: got %d, expected %d", got, tc.assignedAltitude)
 			}
-			if got := ac.NASFlightPlan.InterimAlt; got != tc.interimAltitude {
+			if got := ac.FlightPlan.InterimAlt; got != tc.interimAltitude {
 				t.Errorf("interim altitude: got %d, expected %d", got, tc.interimAltitude)
 			}
-			if got := ac.NASFlightPlan.InterimType; got != InterimNormal {
+			if got := ac.FlightPlan.InterimType; got != InterimNormal {
 				t.Errorf("interim type: got %s, expected T", got)
 			}
 		})
@@ -167,19 +167,19 @@ func TestVirtualControllerInterimAltitudeCleared(t *testing.T) {
 
 	ac := MakeTestAircraft("AAL123", "13L")
 	ac.Nav.Perf.Ceiling = 41000
-	ac.FlightPlan.Altitude = 35000
+	ac.CruiseAltitude = 35000
 	ac.ControllerFrequency = ""
-	ac.NASFlightPlan = &NASFlightPlan{ACID: "AAL123", AssignedAltitude: 35000}
+	ac.FlightPlan = &FlightPlan{ACID: "AAL123", AssignedAltitude: 35000}
 	s.Aircraft[ac.ADSBCallsign] = ac
 
 	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{ClimbAltitude: 17000}})
-	if ac.NASFlightPlan.InterimAlt != 17000 {
-		t.Fatalf("expected an interim altitude of 17000, got %d", ac.NASFlightPlan.InterimAlt)
+	if ac.FlightPlan.InterimAlt != 17000 {
+		t.Fatalf("expected an interim altitude of 17000, got %d", ac.FlightPlan.InterimAlt)
 	}
 
 	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{ClimbAltitude: 35000}})
-	if ac.NASFlightPlan.InterimAlt != 0 {
+	if ac.FlightPlan.InterimAlt != 0 {
 		t.Errorf("the interim altitude outlived the climb to the assigned altitude: %d",
-			ac.NASFlightPlan.InterimAlt)
+			ac.FlightPlan.InterimAlt)
 	}
 }

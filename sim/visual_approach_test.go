@@ -65,9 +65,7 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 		ADSBCallsign:        callsign,
 		TypeOfFlight:        av.FlightTypeArrival,
 		ControllerFrequency: freq,
-		FlightPlan: av.FlightPlan{
-			ArrivalAirport: "KJFK",
-		},
+		ArrivalAirport:      "KJFK",
 		Nav: nav.Nav{
 			FlightState: nav.FlightState{
 				Position:                acPos,
@@ -243,9 +241,7 @@ func makeVisualTestAircraftAlt(pos math.Point2LL, heading math.MagneticHeading, 
 		ADSBCallsign:        "AAL123",
 		TypeOfFlight:        av.FlightTypeArrival,
 		ControllerFrequency: "125.0",
-		FlightPlan: av.FlightPlan{
-			ArrivalAirport: "KJFK",
-		},
+		ArrivalAirport:      "KJFK",
 		Nav: nav.Nav{
 			FlightState: nav.FlightState{
 				Position:          pos,
@@ -1966,7 +1962,7 @@ func TestRecentApproachTrafficInSightRejectsOtherAirport(t *testing.T) {
 
 	traffic := makeVisualTestAircraft(math.Point2LL{0, 4.0 / 60}, 180)
 	traffic.ADSBCallsign = "DAL456"
-	traffic.FlightPlan.ArrivalAirport = "KLGA"
+	traffic.ArrivalAirport = "KLGA"
 	traffic.Nav.Approach.Cleared = true
 	traffic.Nav.Approach.Assigned.Runway = "13L"
 	vs.Sim.Aircraft[traffic.ADSBCallsign] = traffic
@@ -2527,7 +2523,7 @@ func TestAirportVisibilityAirportNotInScenario(t *testing.T) {
 	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
 
 	// A field the scenario doesn't model; the aircraft still knows where it is.
-	vs.AC.FlightPlan.ArrivalAirport = "KXYZ"
+	vs.AC.ArrivalAirport = "KXYZ"
 
 	elig := vs.Sim.checkAirportVisibility(vs.AC)
 	if !elig.Visible {
@@ -2548,7 +2544,7 @@ func TestAirportVisibilityFallsBackToNearestMETAR(t *testing.T) {
 	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
 	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
 
-	vs.AC.FlightPlan.ArrivalAirport = "KXYZ"
+	vs.AC.ArrivalAirport = "KXYZ"
 	vs.Sim.State.METAR["KJFK"] = wx.METAR{ICAO: "KJFK", Raw: "KJFK 1SM OVC003"}
 
 	if elig := vs.Sim.checkAirportVisibility(vs.AC); elig.Reason != visualEligibilityIMC {

@@ -22,7 +22,7 @@ type ERAMComputer struct {
 
 type STARSComputer struct {
 	Identifier       string
-	FlightPlans      []*NASFlightPlan
+	FlightPlans      []*FlightPlan
 	HoldForRelease   []*Aircraft
 	AvailableIndices []int
 }
@@ -46,7 +46,7 @@ func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {
 
 // AssignSquawk allocates an enroute squawk code and assigns it to both the
 // aircraft and NAS flight plan.
-func (ec *ERAMComputer) AssignSquawk(ac *Aircraft, fp *NASFlightPlan, r *rand.Rand) error {
+func (ec *ERAMComputer) AssignSquawk(ac *Aircraft, fp *FlightPlan, r *rand.Rand) error {
 	sq, err := ec.CreateSquawk(r)
 	if err != nil {
 		return err
@@ -93,7 +93,7 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 
 func (sc *STARSComputer) Update(s *Sim) {
 	// Delete any dropped flight plans after the few minute delay has passed.
-	sc.FlightPlans = util.FilterSlice(sc.FlightPlans, func(fp *NASFlightPlan) bool {
+	sc.FlightPlans = util.FilterSlice(sc.FlightPlans, func(fp *FlightPlan) bool {
 		if !fp.DeleteTime.IsZero() && s.State.SimTime.After(fp.DeleteTime) {
 			// Return beacon code, list index
 			s.deleteFlightPlan(fp)
@@ -122,7 +122,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 		drop := func() bool {
 			if ac.TypeOfFlight == av.FlightTypeArrival && !ac.WentAround && inVolumes(filters.ArrivalDrop) {
 				return true
-			} else if fp := ac.NASFlightPlan; fp != nil {
+			} else if fp := ac.FlightPlan; fp != nil {
 				if fp.LastLocalController != "" && s.State.IsExternalController(fp.TrackingController) &&
 					inVolumes(filters.SecondaryDrop) {
 					return true
@@ -245,7 +245,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 // volume and matches a row's conditions, the first matching row's Handoff
 // Action fires.
 func (s *Sim) processHandoffFilterRegions(ac *Aircraft) {
-	fp := ac.NASFlightPlan
+	fp := ac.FlightPlan
 	if fp == nil {
 		return
 	}
@@ -309,7 +309,7 @@ func (s *Sim) processHandoffFilterRegions(ac *Aircraft) {
 
 // handoffFilterOwnerMatch checks the Owning TCP / "+ Slave TCPs" condition
 // (DMS Table 4-30) against the track's current owner.
-func (s *Sim) handoffFilterOwnerMatch(region *HandoffFilterRegion, fp *NASFlightPlan) bool {
+func (s *Sim) handoffFilterOwnerMatch(region *HandoffFilterRegion, fp *FlightPlan) bool {
 	if len(region.OwnerTCPs) == 0 {
 		return true
 	}
@@ -322,7 +322,7 @@ func (s *Sim) handoffFilterOwnerMatch(region *HandoffFilterRegion, fp *NASFlight
 }
 
 // applyHandoffFilterAction executes a matched row's Handoff Action.
-func (s *Sim) applyHandoffFilterAction(region *HandoffFilterRegion, fp *NASFlightPlan) {
+func (s *Sim) applyHandoffFilterAction(region *HandoffFilterRegion, fp *FlightPlan) {
 	if region.HandoffAction == "D" {
 		// Disable automatic handoff for this track; shows the delta indicator
 		// and can't be undone by the controller.
@@ -359,7 +359,7 @@ func (s *Sim) applyHandoffFilterAction(region *HandoffFilterRegion, fp *NASFligh
 }
 
 func (s *Sim) processFDAMRegions(ac *Aircraft) {
-	fp := ac.NASFlightPlan
+	fp := ac.FlightPlan
 	if fp == nil {
 		return
 	}
@@ -402,7 +402,7 @@ func (s *Sim) processFDAMRegions(ac *Aircraft) {
 	}
 }
 
-func (s *Sim) applyFDAMEntryActions(region *FDAMRegion, fp *NASFlightPlan, state *FDAMTrackState) {
+func (s *Sim) applyFDAMEntryActions(region *FDAMRegion, fp *FlightPlan, state *FDAMTrackState) {
 	// Save pre-entry state for potential revert on exit.
 	state.PreEntryOwnerLeaderDirection = fp.GlobalLeaderLineDirection
 
@@ -481,7 +481,7 @@ func (s *Sim) applyFDAMEntryActions(region *FDAMRegion, fp *NASFlightPlan, state
 	}
 }
 
-func (s *Sim) applyFDAMExitActions(region *FDAMRegion, fp *NASFlightPlan, state *FDAMTrackState) {
+func (s *Sim) applyFDAMExitActions(region *FDAMRegion, fp *FlightPlan, state *FDAMTrackState) {
 	// Revert owner leader direction if not retained
 	if !region.RetainOwnerLeaderDirection && region.NewOwnerLeaderDirection != nil {
 		fp.GlobalLeaderLineDirection = state.PreEntryOwnerLeaderDirection
@@ -507,17 +507,17 @@ func (s *Sim) applyFDAMExitActions(region *FDAMRegion, fp *NASFlightPlan, state 
 	state.PreEntryOwnerLeaderDirection = nil
 }
 
-func (sc *STARSComputer) lookupFlightPlanByACID(acid ACID) *NASFlightPlan {
+func (sc *STARSComputer) lookupFlightPlanByACID(acid ACID) *FlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *NASFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
+		func(fp *FlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		return sc.FlightPlans[idx]
 	}
 	return nil
 }
 
-func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *NASFlightPlan {
+func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *FlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *NASFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
+		func(fp *FlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		fp := sc.FlightPlans[idx]
 		sc.FlightPlans = append(sc.FlightPlans[:idx], sc.FlightPlans[idx+1:]...)
 		return fp
@@ -525,17 +525,17 @@ func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *NASFlightPlan {
 	return nil
 }
 
-func (sc *STARSComputer) lookupFlightPlanBySquawk(sq av.Squawk) *NASFlightPlan {
+func (sc *STARSComputer) lookupFlightPlanBySquawk(sq av.Squawk) *FlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *NASFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
+		func(fp *FlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
 		return sc.FlightPlans[idx]
 	}
 	return nil
 }
 
-func (sc *STARSComputer) takeFlightPlanBySquawk(sq av.Squawk) *NASFlightPlan {
+func (sc *STARSComputer) takeFlightPlanBySquawk(sq av.Squawk) *FlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *NASFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
+		func(fp *FlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
 		fp := sc.FlightPlans[idx]
 		sc.FlightPlans = slices.Delete(sc.FlightPlans, idx, idx+1)
 		return fp
@@ -543,7 +543,7 @@ func (sc *STARSComputer) takeFlightPlanBySquawk(sq av.Squawk) *NASFlightPlan {
 	return nil
 }
 
-func (sc *STARSComputer) CreateFlightPlan(fp NASFlightPlan) (NASFlightPlan, error) {
+func (sc *STARSComputer) CreateFlightPlan(fp FlightPlan) (FlightPlan, error) {
 	if fp2 := sc.lookupFlightPlanByACID(fp.ACID); fp2 != nil {
 		return fp, ErrDuplicateACID
 	}

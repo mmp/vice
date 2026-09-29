@@ -490,7 +490,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	}
 }
 
-func hsfDataExists(fp *sim.NASFlightPlan) bool {
+func hsfDataExists(fp *sim.FlightPlan) bool {
 	if fp == nil {
 		return false
 	}

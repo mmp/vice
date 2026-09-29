@@ -16,7 +16,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (s *Sim) contactDeparture(ac *Aircraft, fp *NASFlightPlan) {
+func (s *Sim) contactDeparture(ac *Aircraft, fp *FlightPlan) {
 	tcp := fp.InboundHandoffController
 	s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
@@ -40,7 +40,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 			slog.String("callsign", string(ac.ADSBCallsign)))
 		return
 	}
-	airport := ac.FlightPlan.ArrivalAirport
+	airport := ac.ArrivalAirport
 	runway := approach.Runway
 
 	proc := s.getGoAroundProcedureForAircraft(ac)
@@ -81,7 +81,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 // controller tracking it. Its frequency is the last resort, since after
 // "contact tower" that is the tower's, which no controller in the sim works.
 func (s *Sim) getGoAroundController(ac *Aircraft) TCP {
-	airport := ac.FlightPlan.ArrivalAirport
+	airport := ac.ArrivalAirport
 	runway := ""
 	if ac.Nav.Approach.Assigned != nil {
 		runway = ac.Nav.Approach.Assigned.Runway
@@ -103,7 +103,7 @@ func (s *Sim) getGoAroundController(ac *Aircraft) TCP {
 		return tcp
 	}
 
-	fp := ac.NASFlightPlan
+	fp := ac.FlightPlan
 	if fp == nil {
 		fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 	}
@@ -150,7 +150,7 @@ func (s *Sim) holdDeparturesForGoAround(airport av.ICAOAirportCode, holdRunways 
 // getGoAroundProcedureForAircraft returns the go-around procedure defined for the
 // aircraft's arrival airport/runway, if one exists in the scenario's arrival_runways.
 func (s *Sim) getGoAroundProcedureForAircraft(ac *Aircraft) *GoAroundProcedure {
-	airport := ac.FlightPlan.ArrivalAirport
+	airport := ac.ArrivalAirport
 	runway := ac.Nav.Approach.Assigned.Runway
 
 	// Find matching arrival runway with a go-around procedure
@@ -185,7 +185,7 @@ func (s *Sim) checkFinalApproachSpacing() {
 		// Only tower sends aircraft around; don't include ones that have already been sent around
 		// since presumably we'll have vertical separation soon if not already.
 		if ac.Nav.Approach.Assigned != nil && ac.GotContactTower && !ac.SentAroundForSpacing {
-			key := string(ac.FlightPlan.ArrivalAirport) + "/" + ac.Nav.Approach.Assigned.Runway
+			key := string(ac.ArrivalAirport) + "/" + ac.Nav.Approach.Assigned.Runway
 			aircraftByRunway[key] = append(aircraftByRunway[key], ac)
 		}
 	}

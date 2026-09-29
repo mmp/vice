@@ -95,11 +95,7 @@ func (s *Sim) addAircraft(ac Aircraft) {
 	}
 
 	if s.CIDAllocator != nil {
-		fp := ac.NASFlightPlan
-		if fp == nil {
-			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
-		}
-		if fp != nil && fp.CID == "" {
+		if fp := s.aircraftFlightPlan(&ac); fp != nil && fp.CID == "" {
 			if cid, err := s.CIDAllocator.Allocate(s.Rand); err == nil {
 				fp.CID = cid
 			} else {
@@ -111,14 +107,14 @@ func (s *Sim) addAircraft(ac Aircraft) {
 	s.Aircraft[ac.ADSBCallsign] = &ac
 	s.logSpawn(&ac)
 
-	ac.Nav.Prespawn = s.prespawn && ac.FlightPlan.Rules == av.FlightRulesVFR
+	ac.Nav.Prespawn = s.prespawn && ac.FlightRules == av.FlightRulesVFR
 
 	ac.Nav.Check(s.lg)
 
 	// Log initial route for navigation debugging
 	nav.LogRoute(string(ac.ADSBCallsign), s.State.SimTime.NavTime(), ac.Nav.Waypoints)
 
-	if ac.FlightPlan.Rules == av.FlightRulesIFR {
+	if ac.FlightRules == av.FlightRulesIFR {
 		s.TotalIFR++
 	} else {
 		s.TotalVFR++
@@ -146,20 +142,21 @@ var errCallsignInUse = errors.New("callsign is already in use")
 
 // newScheduledAircraft creates the aircraft a schedule entry flies, whatever
 // the kind of flight and wherever its traffic comes from: the callsign
-// resolveScheduledCallsign settles on and a flight plan between the entry's
+// resolveScheduledCallsign settles on, flying IFR between the entry's
 // airports. The caller initializes the rest as its kind of flight requires.
 func (s *Sim) newScheduledAircraft(f *ScheduledFlight, kind string) (*Aircraft, error) {
 	callsign, err := s.resolveScheduledCallsign(f, kind)
 	if err != nil {
 		return nil, err
 	}
-	ac := &Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		Mode:         av.TransponderModeAltitude,
-	}
-	ac.InitializeFlightPlan(av.FlightRulesIFR, f.AircraftType,
-		traffic.NormalizeAirportCode(f.DepartureAirport), traffic.NormalizeAirportCode(f.ArrivalAirport))
-	return ac, nil
+	return &Aircraft{
+		ADSBCallsign:     av.ADSBCallsign(callsign),
+		Mode:             av.TransponderModeAltitude,
+		FlightRules:      av.FlightRulesIFR,
+		AircraftType:     f.AircraftType,
+		DepartureAirport: traffic.NormalizeAirportCode(f.DepartureAirport),
+		ArrivalAirport:   traffic.NormalizeAirportCode(f.ArrivalAirport),
+	}, nil
 }
 
 // resolveScheduledCallsign checks a schedule entry's callsign against what the
@@ -208,37 +205,46 @@ func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	return callsigns
 }
 
-// sampleAircraft draws an aircraft type and an unused callsign. callsigns is
-// what is already in use or soon to be; callers that sample repeatedly gather
-// it once rather than walking the sim for each draw.
+// sampleAircraft draws an aircraft type and an unused callsign for a flight
+// between the given airports. callsigns is what is already in use or soon to
+// be; callers that sample repeatedly gather it once rather than walking the
+// sim for each draw.
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport av.ICAOAirportCode,
-	callsigns []av.ADSBCallsign, lg *log.Logger) (*Aircraft, string) {
+	callsigns []av.ADSBCallsign, lg *log.Logger) *Aircraft {
 	actype, callsign := al.SampleAcTypeAndCallsign(db.Lookups{}, s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, departureAirport, arrivalAirport, lg)
 
 	if actype == "" {
-		return nil, ""
+		return nil
 	}
 
 	return &Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		Mode:         av.TransponderModeAltitude,
-	}, actype
+		ADSBCallsign:     av.ADSBCallsign(callsign),
+		Mode:             av.TransponderModeAltitude,
+		AircraftType:     actype,
+		DepartureAirport: departureAirport,
+		ArrivalAirport:   arrivalAirport,
+	}
 }
 
-// initNASFlightPlan creates a NASFlightPlan with common fields pre-populated.
-// Callers must set type-specific fields (EntryFix, ExitFix, controller
-// assignments, scratchpads, altitudes, etc.) after calling this function.
-func (s *Sim) initNASFlightPlan(ac *Aircraft, flightType av.TypeOfFlight) NASFlightPlan {
-	return NASFlightPlan{
-		ACID:             ACID(ac.ADSBCallsign),
-		ArrivalAirport:   ac.FlightPlan.ArrivalAirport,
-		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
-		PlanType:         RemoteEnroute,
-		Rules:            av.FlightRulesIFR,
-		TypeOfFlight:     flightType,
-		AircraftCount:    1,
-		AircraftType:     ac.FlightPlan.AircraftType,
-		CWTCategory:      db.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+// initFlightPlan creates the FlightPlan the aircraft files, with common
+// fields pre-populated. Callers must set type-specific fields (Route,
+// EntryFix, ExitFix, controller assignments, scratchpads, assigned altitudes,
+// etc.) after calling this function.
+func (s *Sim) initFlightPlan(ac *Aircraft, flightType av.TypeOfFlight) FlightPlan {
+	perf := db.DB.AircraftPerformance[ac.AircraftType]
+	return FlightPlan{
+		ACID:              ACID(ac.ADSBCallsign),
+		DepartureAirport:  ac.DepartureAirport,
+		ArrivalAirport:    ac.ArrivalAirport,
+		CoordinationTime:  getAircraftTime(s.State.SimTime, s.Rand),
+		PlanType:          RemoteEnroute,
+		Rules:             av.FlightRulesIFR,
+		TypeOfFlight:      flightType,
+		AircraftCount:     1,
+		AircraftType:      ac.AircraftType,
+		CruiseSpeed:       int(perf.Speed.CruiseTAS),
+		RequestedAltitude: ac.CruiseAltitude,
+		CWTCategory:       perf.Category.CWT,
 	}
 }
 

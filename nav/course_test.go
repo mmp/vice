@@ -336,15 +336,13 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 		nmPerLongitude)+45), 15, nmPerLongitude)
 	wps := []av.Waypoint{{Fix: runway, Location: r.Threshold}, mid, {Fix: "EXITF", Location: exit}}
 
-	fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: acType, DepartureAirport: icao,
-		ArrivalAirport: icao, Altitude: 8000}
-	perf, ok := db.DB.AircraftPerformance[fp.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[acType]
 	if !ok {
-		t.Fatalf("no performance for %s", fp.AircraftType)
+		t.Fatalf("no performance for %s", acType)
 	}
 	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
-	n := MakeDepartureNav("TEST001", fp, perf, 0, 5000, wps, false, nmPerLongitude, magneticVariation,
-		nil, simTime, rand.New(42), nil)
+	n := MakeDepartureNav("TEST001", icao, icao, 8000, perf, 0, 5000, wps, false, nmPerLongitude,
+		magneticVariation, nil, simTime, rand.New(42), nil)
 	if n == nil {
 		t.Fatal("no nav")
 	}
@@ -365,7 +363,7 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 	var maxOffsetRolling, maxOffsetLow, aglTurned float32
 	tracking, turned, rolledTracking := false, false, false
 	for range 200 {
-		n.UpdateWithWeather("TEST001", wxs, nil, &fp, simTime, nil)
+		n.UpdateWithWeather("TEST001", wxs, nil, av.FlightRulesIFR, simTime, nil)
 		simTime = simTime.Add(time.Second)
 		if !n.IsAirborne() {
 			maxOffsetRolling = max(maxOffsetRolling, offset())
@@ -408,7 +406,6 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 // runway, in calm air.
 type centerlineDeparture struct {
 	nav       *Nav
-	fp        av.FlightPlan
 	elevation int
 	simTime   Time
 	wxs       wx.Sample
@@ -443,22 +440,20 @@ func makeCenterlineDeparture(t *testing.T, groups []av.WaypointActionGroup) cent
 		nmPerLongitude)+45), 15, nmPerLongitude)
 	wps := []av.Waypoint{{Fix: runway, Location: r.Threshold}, mid, {Fix: "EXITF", Location: exit}}
 
-	fp := av.FlightPlan{Rules: av.FlightRulesIFR, AircraftType: acType, DepartureAirport: icao,
-		ArrivalAirport: icao, Altitude: 8000}
-	perf, ok := db.DB.AircraftPerformance[fp.AircraftType]
+	perf, ok := db.DB.AircraftPerformance[acType]
 	if !ok {
-		t.Fatalf("no performance for %s", fp.AircraftType)
+		t.Fatalf("no performance for %s", acType)
 	}
 	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
-	n := MakeDepartureNav("TEST001", fp, perf, 0, 5000, wps, false, nmPerLongitude, magneticVariation,
-		nil, simTime, rand.New(42), nil)
+	n := MakeDepartureNav("TEST001", icao, icao, 8000, perf, 0, 5000, wps, false, nmPerLongitude,
+		magneticVariation, nil, simTime, rand.New(42), nil)
 	if n == nil {
 		t.Fatal("no nav")
 	}
 
 	std := wx.MakeStandardSampleForAltitude(float32(ap.Elevation))
 	wxs := wx.MakeSample([2]float32{0, 0}, std.Temperature().Celsius(), std.Dewpoint().Celsius(), std.Pressure())
-	return centerlineDeparture{nav: n, fp: fp, elevation: ap.Elevation, simTime: simTime, wxs: wxs}
+	return centerlineDeparture{nav: n, elevation: ap.Elevation, simTime: simTime, wxs: wxs}
 }
 
 // An absorbed departure-end action group that only carries sim actions (like
@@ -472,7 +467,7 @@ func TestDepartureEventActionsFireAtFourHundred(t *testing.T) {
 	var aglHandoff, aglResumed float32
 	maneuvering, resumed, handoff := false, false, false
 	for range 200 {
-		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
 		d.simTime = d.simTime.Add(time.Second)
 		agl := d.nav.FlightState.Altitude - float32(d.elevation)
 		if slices.ContainsFunc(result.ActionEvents,
@@ -515,7 +510,7 @@ func TestDepartureDelayedEventActionResumesRoute(t *testing.T) {
 	var aglHandoff, aglResumed float32
 	maneuvering, resumed, handoff := false, false, false
 	for range 300 {
-		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
 		d.simTime = d.simTime.Add(time.Second)
 		agl := d.nav.FlightState.Altitude - float32(d.elevation)
 		if slices.ContainsFunc(result.ActionEvents,
@@ -558,7 +553,7 @@ func TestDelayedDeleteActionFiresAtItsTrigger(t *testing.T) {
 	var aglDelete float32
 	deleted := false
 	for range 300 {
-		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
 		d.simTime = d.simTime.Add(time.Second)
 		if !deleted && slices.ContainsFunc(result.ActionEvents,
 			func(e av.WaypointActionEvent) bool { return e.Actions.Delete }) {
@@ -588,7 +583,7 @@ func TestDepartureTrailingHeadingHeldUntilIntervention(t *testing.T) {
 	})
 
 	for range 300 {
-		d.nav.UpdateWithWeather("TEST001", d.wxs, nil, &d.fp, d.simTime, nil)
+		d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
 		d.simTime = d.simTime.Add(time.Second)
 	}
 
