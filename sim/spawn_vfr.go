@@ -508,7 +508,6 @@ const vfrPatternMinRoom = 500
 // is sent there. The answer depends only on the airspace and the field, so it
 // is worked out once per airport.
 func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
-	s.ensureAirspaceGrids()
 	if alt, ok := s.vfrTerminalAlts[ap.Id]; ok {
 		return alt, alt > 0
 	}
@@ -659,7 +658,7 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 // adjustRouteForMVA modifies the waypoint altitude restrictions to ensure
 // the aircraft stays above MVA - vfrMVABuffer along the route.
 func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoint {
-	if s.mvaGrid == nil || len(wps) < 2 {
+	if len(wps) < 2 {
 		return wps
 	}
 
@@ -718,12 +717,6 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 	}
 
 	return result
-}
-
-func (s *Sim) ensureAirspaceGrids() {
-	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
-		s.initializeAirspaceGrids()
-	}
 }
 
 func (s *Sim) initializeAirspaceGrids() {

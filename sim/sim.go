@@ -173,7 +173,7 @@ type Sim struct {
 
 	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
 
-	// No need to serialize these; they're caches anyway.
+	// Built from the static database by Activate rather than serialized.
 	bravoAirspace   *db.AirspaceGrid
 	charlieAirspace *db.AirspaceGrid
 	mvaGrid         *db.MVAGrid

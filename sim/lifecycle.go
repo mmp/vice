@@ -61,6 +61,8 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 			s.State.SimTime.Time(), s.lg)
 	}
 
+	s.initializeAirspaceGrids()
+
 	// Restore json:"-" fields that are lost during JSON config save/load.
 	restoreControllerFields(s.ControlPositions)
 	restoreControllerFields(s.State.Controllers)
