@@ -72,6 +72,11 @@ func (sg *Group) Locate(s string) (math.Point2LL, bool) {
 	if p, ok := sg.Fixes[s]; ok {
 		return p, true
 	}
+	// An FRD's fix is looked up here too, so that it can be one of the
+	// group's, including one that redefines a published fix...
+	if p, ok := db.LocateFRD(s, sg.Locate); ok {
+		return p, true
+	}
 	//... and then the static database.
 	return enroute.DBLocator{}.Locate(s)
 }

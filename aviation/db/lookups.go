@@ -5,9 +5,11 @@
 package db
 
 import (
+	"fmt"
 	"iter"
 	"maps"
 	"slices"
+	"strconv"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
@@ -38,7 +40,69 @@ func (Lookups) Locate(s string) (math.Point2LL, bool) {
 		}
 	}
 
-	return math.Point2LL{}, false
+	return LocateFRD(s, Lookups{}.Locate)
+}
+
+// LocateFRD returns the point a fix-radial-distance such as JFK090020 names:
+// two or more letters naming a fix, which locate finds, then a magnetic
+// radial from it and a distance from it in nm, three digits each. The radial
+// is referenced to the fix's station declination if it is a VHF navaid and
+// to the magnetic variation where it is otherwise.
+func LocateFRD(s string, locate func(string) (math.Point2LL, bool)) (math.Point2LL, bool) {
+	n := len(s) - 6
+	if n < 2 || !util.IsAllLetters(s[:n]) || !util.IsAllNumbers(s[n:]) {
+		return math.Point2LL{}, false
+	}
+	fix := s[:n]
+	radial, _ := strconv.Atoi(s[n : n+3])
+	dist, _ := strconv.Atoi(s[n+3:])
+	if radial > 360 {
+		return math.Point2LL{}, false
+	}
+
+	loc, ok := locate(fix)
+	if !ok {
+		return math.Point2LL{}, false
+	}
+	variation, ok := radialVariation(fix, loc)
+	if !ok {
+		return math.Point2LL{}, false
+	}
+	hdg := math.MagneticToTrue(math.MagneticHeading(radial), variation)
+	return math.Offset2LL(loc, hdg, float32(dist), math.NMPerLongitudeAt(loc)), true
+}
+
+// FormatFRD returns p as a fix-radial-distance from fix, which is at loc, in
+// the form LocateFRD takes. The distance is measured in the projection
+// LocateFRD offsets the fix in, so that the FRD names p to within the whole
+// degree and nm it gives.
+func FormatFRD(fix string, loc, p math.Point2LL) (string, bool) {
+	variation, ok := radialVariation(fix, loc)
+	if !ok {
+		return "", false
+	}
+	nmPerLongitude := math.NMPerLongitudeAt(loc)
+	radial := int(math.Round(float32(math.TrueToMagnetic(math.Heading2LL(loc, p, nmPerLongitude), variation))))
+	if radial == 0 {
+		radial = 360
+	}
+	dist := int(math.Round(math.NMDistance2LLFast(loc, p, nmPerLongitude)))
+	if dist > 999 {
+		return "", false
+	}
+	return fmt.Sprintf("%s%03d%03d", fix, radial, dist), true
+}
+
+// radialVariation returns the variation the radials of the fix at loc are
+// referenced to: a VHF navaid's station declination, which the local
+// variation has usually drifted from since the station was aligned, or else
+// the variation there.
+func radialVariation(fix string, loc math.Point2LL) (float32, bool) {
+	if d, ok := DB.Declination(fix); ok {
+		return d, true
+	}
+	variation, err := DB.MagneticGrid.Lookup(loc)
+	return variation, err == nil
 }
 
 func (Lookups) Declination(s string) (float32, bool) {

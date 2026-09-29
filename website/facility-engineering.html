@@ -395,6 +395,12 @@
               </table>
               <p>(In all of the examples above, the location specified is the same—the JFK VOR.)
               </p>
+              <p>A location can also be given as a fix-radial-distance (FRD): the name of a fix followed by three digits
+                giving a magnetic radial from it and three giving a distance from it in nautical miles. For example,
+                <code>"JFK090020"</code> is 20nm from the JFK VOR along its 090 radial. As in the real world, a VOR's radials
+                are referenced to its station declination; radials from any other fix are referenced to the magnetic
+                variation where it is.
+              </p>
               <p>
                 In <i>vice</i>, if you hold down the control and shift keys and click on a point on the video map, the corresponding
                 latitude-longitude position is copied to the clipboard—this can be very useful when developing new scenarios!
@@ -4096,8 +4102,11 @@
                         previously-specified fixes (or standard fixes from the
                         FAA database) using the syntax <i>FIX@HDG/DIST</i>,
                         where <i>FIX</i> is the name of a fix, <i>HDG</i> is a
-                        heading leaving it, and <i>DIST</i> is a distance along
-                        that heading given in nautical miles.
+                        three-digit <em>true</em> heading leaving it, and
+                        <i>DIST</i> is a distance along that heading given in
+                        nautical miles. They may also be given as
+                        <a href="#fe-locations">FRDs</a>, whose radials are
+                        magnetic.
                       </p>
                     </td>
                   </tr>

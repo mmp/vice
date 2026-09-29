@@ -136,6 +136,22 @@ func TestSimilarStaysNearTheFacility(t *testing.T) {
 	}
 }
 
+// TestLocateFRDFromRedefinedFix checks that an FRD off a fix that the scenario
+// group redefines is measured from the group's definition and not from the
+// published fix of the same name: the Academy's BRITT is near Tulsa, while the
+// published one is in Indiana.
+func TestLocateFRDFromRedefinedFix(t *testing.T) {
+	db.InitDB()
+	britt := math.Point2LL{-95.612015, 36.349606}
+	sg := &Group{Fixes: map[string]math.Point2LL{"BRITT": britt}}
+
+	if p, ok := sg.Locate("BRITT090020"); !ok {
+		t.Error("BRITT090020 doesn't locate")
+	} else if d := math.NMDistance2LL(britt, p); math.Abs(d-20) > 0.2 {
+		t.Errorf("BRITT090020 is %.1fnm from the group's BRITT", d)
+	}
+}
+
 // A location written in a scenario or facility configuration may name a fix as
 // well as give a latitude-longitude, and which fixes exist isn't known until
 // the scenario is finalized. So the JSON-facing field holds text until then: a

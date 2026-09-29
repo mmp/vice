@@ -452,7 +452,7 @@ func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 			}
 		}
 	}
-	return math.Point2LL{}, false
+	return db.LocateFRD(s, ss.Locate)
 }
 
 // Airways returns the airways published under the given name.

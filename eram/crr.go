@@ -81,8 +81,6 @@ func validCRRLabel(s string) bool {
 // CRR Command Helpers
 ///////////////////////////////////////////////////////////////////////////////
 
-var reFRD = regexp.MustCompile(`^([A-Z0-9]{3,5})(\d{3})(\d{3})$`)
-
 // tryExtractLocation scans the input text for an embedded location character
 // added via Input.AddLocation and returns it if present.
 func tryExtractLocation(it inputText) (math.Point2LL, bool) {
@@ -90,29 +88,6 @@ func tryExtractLocation(it inputText) (math.Point2LL, bool) {
 		if string(ic.char) == locationSymbol {
 			return ic.location, true
 		}
-	}
-	return math.Point2LL{}, false
-}
-
-// parseLocation parses location tokens used by LF: //FIX, //FRD,
-// //lat/long. Returns true if a location was resolved.
-func parseLocation(ctx *scope.Context, token string) (math.Point2LL, bool) {
-	s := strings.TrimPrefix(strings.ToUpper(token), "//")
-	// FRD?
-	if m := reFRD.FindStringSubmatch(s); len(m) == 4 {
-		base, ok := ctx.Client.State.Locate(m[1])
-		if !ok {
-			return math.Point2LL{}, false
-		}
-		hdg, _ := strconv.Atoi(m[2])
-		distInt, _ := strconv.Atoi(m[3])
-		dist := float32(distInt)
-		return math.Offset2LL(base, math.MagneticToTrue(math.MagneticHeading(hdg), ctx.MagneticVariation),
-			dist, ctx.NmPerLongitude), true
-	}
-	// Lat/long, fix, navaid, airport
-	if p, ok := ctx.Client.State.Locate(s); ok {
-		return p, true
 	}
 	return math.Point2LL{}, false
 }

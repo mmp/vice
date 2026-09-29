@@ -26,4 +26,5 @@ adjustments for TAS
   - An arrival's "cleared_altitude" now stops its descent, as documented; scenarios that expect the descent to continue must use `/dvs`.
   - Charted visual approaches may now give multiple routes in "waypoints", e.g. for procedures with several feeder legs
   - Charted visual approaches may now give "reporting_points": landmarks that pilots can be told to look for and report in sight
+  - Locations in scenarios can be given as fix-radial-distances (FRDs), e.g. `JFK090020` (JFK 090 radial, 20 nm)
 

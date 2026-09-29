@@ -705,13 +705,11 @@ func (h *crrLocParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput,
 		return nil, text, false, nil
 	}
 
-	// Parse using existing CRR location logic
-	loc, ok := parseLocation(ctx, field)
+	token := strings.TrimPrefix(strings.ToUpper(field), "//")
+	loc, ok := ctx.Client.State.Locate(token)
 	if !ok {
 		return nil, text, false, nil
 	}
-
-	token := strings.TrimPrefix(strings.ToUpper(field), "//")
 	return CRRLocation{Location: loc, Token: token}, remaining, true, nil
 }
 

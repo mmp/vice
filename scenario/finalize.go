@@ -137,9 +137,10 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 			} else if dist, err := strconv.ParseFloat(strs[3], 32); err != nil {
 				e.ErrorString("distance %q: %v", strs[3], err)
 			} else {
-				// Offset along the given heading and distance from the fix.
-				sg.Fixes[fix] = math.Offset2LL(pll, math.MagneticToTrue(math.MagneticHeading(hdg), sg.MagneticVariation),
-					float32(dist), sg.NmPerLongitude)
+				// The heading is a true heading, which is how the scenarios'
+				// relative fixes are laid out; the group's magnetic variation
+				// isn't known until further down in any case.
+				sg.Fixes[fix] = math.Offset2LL(pll, math.TrueHeading(hdg), float32(dist), sg.NmPerLongitude)
 			}
 		} else if pos, ok := sg.Locate(location); ok {
 			// It's something simple. Check this after FIX@HDG/DIST,
