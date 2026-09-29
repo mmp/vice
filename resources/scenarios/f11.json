@@ -1600,7 +1600,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KCLT",
           "exit": "VIYAP",
-          "route": "VIYAP CHECR STOCR6"
+          "route": "VIYAP CHECR STOCR7"
         },
         {
           "airlines": [
@@ -4513,7 +4513,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KCLT",
           "exit": "VIYAP",
-          "route": "VIYAP CHECR STOCR6"
+          "route": "VIYAP CHECR STOCR7"
         },
         {
           "airlines": [
@@ -6635,7 +6635,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KCLT",
           "exit": "WORMS",
-          "route": "WORMS GUANO BKENI VIYAP CHECR STOCR6"
+          "route": "WORMS GUANO BKENI VIYAP CHECR STOCR7"
         },
         {
           "airlines": [
@@ -7654,7 +7654,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KJQF",
           "exit": "WORMS",
-          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO WANSA JOOLS3"
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 WIGVO WANSA JOOLS4"
         },
         {
           "airlines": [
@@ -9584,7 +9584,7 @@
           "destination": "KYIP",
           "exit": "WORMS",
           "altitude": [31000, 33000, 35000, 37000, 39000],
-          "route": "WORMS JEEMY ACCHE PAINN SHRKS TEUFL Q77 WIGVO PONZE SPA HNN HIDON WWSHR FOREY2"
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS TEUFL Q77 WIGVO PONZE SPA HNN HIDON WWSHR FOREY3"
         },
         {
           "airlines": [

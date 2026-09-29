@@ -184,11 +184,11 @@
           },
           "HULZE": {
             "cleared_altitude": 10000,
-            "sid": "HRPER3"
+            "sid": "HRPER4"
           },
           "HUDAD": {
             "cleared_altitude": 10000,
-            "sid": "HUDAD2"
+            "sid": "HUDAD3"
           },
           "WINDU": {
             "cleared_altitude": 10000,
@@ -196,7 +196,7 @@
           },
           "BRHMA": {
             "cleared_altitude": 10000,
-            "sid": "KATZZ2"
+            "sid": "KATZZ3"
           },
           "ADM,ROLLS": {
             "cleared_altitude": 10000,
@@ -254,11 +254,11 @@
           },
           "HULZE": {
             "cleared_altitude": 10000,
-            "sid": "HRPER3"
+            "sid": "HRPER4"
           },
           "HUDAD": {
             "cleared_altitude": 10000,
-            "sid": "HUDAD2"
+            "sid": "HUDAD3"
           },
           "WINDU": {
             "cleared_altitude": 10000,
@@ -266,7 +266,7 @@
           },
           "BRHMA": {
             "cleared_altitude": 10000,
-            "sid": "KATZZ2"
+            "sid": "KATZZ3"
           },
           "ADM,ROLLS": {
             "cleared_altitude": 10000,
@@ -328,11 +328,11 @@
           },
           "HULZE": {
             "cleared_altitude": 5000,
-            "sid": "HRPER3"
+            "sid": "HRPER4"
           },
           "HUDAD": {
             "cleared_altitude": 5000,
-            "sid": "HUDAD2"
+            "sid": "HUDAD3"
           },
           "WINDU": {
             "cleared_altitude": 5000,
@@ -340,7 +340,7 @@
           },
           "BRHMA": {
             "cleared_altitude": 5000,
-            "sid": "KATZZ2"
+            "sid": "KATZZ3"
           },
           "ADM,ROLLS": {
             "cleared_altitude": 5000,
@@ -402,11 +402,11 @@
           },
           "HULZE": {
             "cleared_altitude": 10000,
-            "sid": "HRPER3"
+            "sid": "HRPER4"
           },
           "HUDAD": {
             "cleared_altitude": 10000,
-            "sid": "HUDAD2"
+            "sid": "HUDAD3"
           },
           "WINDU": {
             "cleared_altitude": 10000,
@@ -414,7 +414,7 @@
           },
           "BRHMA": {
             "cleared_altitude": 10000,
-            "sid": "KATZZ2"
+            "sid": "KATZZ3"
           },
           "ADM,ROLLS": {
             "cleared_altitude": 10000,
@@ -472,11 +472,11 @@
           },
           "HULZE": {
             "cleared_altitude": 10000,
-            "sid": "HRPER3"
+            "sid": "HRPER4"
           },
           "HUDAD": {
             "cleared_altitude": 10000,
-            "sid": "HUDAD2"
+            "sid": "HUDAD3"
           },
           "WINDU": {
             "cleared_altitude": 10000,
@@ -484,7 +484,7 @@
           },
           "BRHMA": {
             "cleared_altitude": 10000,
-            "sid": "KATZZ2"
+            "sid": "KATZZ3"
           },
           "ADM,ROLLS": {
             "cleared_altitude": 10000,
@@ -637,7 +637,7 @@
           "exit": "HUDAD",
           "destination": "KDRO",
           "altitude": 34000,
-          "route": "HUDAD2 HUDAD YACUL DRO",
+          "route": "HUDAD3 HUDAD YACUL DRO",
           "airlines": [
             {
               "icao": "SKW",
@@ -929,7 +929,7 @@
           "exit": "HUDAD",
           "destination": "KASE",
           "altitude": 36000,
-          "route": "HUDAD2 HUDAD KA30Y CIM KANON HAREI DBL",
+          "route": "HUDAD3 HUDAD KA30Y CIM KANON HAREI DBL",
           "airlines": [
             {
               "icao": "SKW",
@@ -953,7 +953,7 @@
           "exit": "HULZE",
           "destination": "KLAS",
           "altitude": 32000,
-          "route": "HRPER3 HULZE TXO J72 GUP HAHAA RKSTR3",
+          "route": "HRPER4 HULZE TXO J72 GUP HAHAA RKSTR3",
           "airlines": [
             {
               "icao": "AAL",
@@ -977,7 +977,7 @@
           "exit": "HUDAD",
           "destination": "KSEA",
           "altitude": 36000,
-          "route": "HUDAD2 HUDAD PNH TBE EKR PIH PDT CHINS5",
+          "route": "HUDAD3 HUDAD PNH TBE EKR PIH PDT CHINS5",
           "airlines": [
             {
               "icao": "ASA",
@@ -1229,7 +1229,7 @@
           "exit": "HUDAD",
           "destination": "KSEA",
           "altitude": 34000,
-          "route": "HUDAD2 HUDAD KENTO RADIO FLOOD EKR BETRE ODYSY PDT CHINS5",
+          "route": "HUDAD3 HUDAD KENTO RADIO FLOOD EKR BETRE ODYSY PDT CHINS5",
           "airlines": [
             {
               "icao": "AAL",
@@ -1273,7 +1273,7 @@
           "exit": "HULZE",
           "destination": "KABQ",
           "altitude": 38000,
-          "route": "HRPER3 HULZE RECKN COLTR4",
+          "route": "HRPER4 HULZE RECKN COLTR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1289,7 +1289,7 @@
           "exit": "HUDAD",
           "destination": "KGJT",
           "altitude": 32000,
-          "route": "HUDAD2 HUDAD PNH ALS JNC",
+          "route": "HUDAD3 HUDAD PNH ALS JNC",
           "airlines": [
             {
               "icao": "ENY",
@@ -1325,7 +1325,7 @@
           "exit": "FORCK",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE7",
+          "route": "FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE8",
           "airlines": [
             {
               "icao": "AAL",
@@ -1405,7 +1405,7 @@
           "exit": "HUDAD",
           "destination": "KPDX",
           "altitude": 34000,
-          "route": "HUDAD2 HUDAD PNH KD48U KU75M JOTBA HHOOD5",
+          "route": "HUDAD3 HUDAD PNH KD48U KU75M JOTBA HHOOD5",
           "airlines": [
             {
               "icao": "ASA",

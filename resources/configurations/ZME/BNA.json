@@ -41,10 +41,14 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "CHSNE3": "1W",
-          "PASLY5": "1E",
-          "RYYMN3": "1W",
-          "SWFFT3": "1E"
+          "CHSNE.S": "1W",
+          "CHSNE.N": "1W",
+          "PASLY.N": "1E",
+          "PASLY.S": "1E",
+          "RYYMN.N": "1W",
+          "RYYMN.S": "1W",
+          "SWFFT.S": "1E",
+          "SWFFT.N": "1E"
         },
         "departure_assignments": {
           "KBNA": "1X",
@@ -136,7 +140,7 @@
       "TINGS": {},
       "TIPPN": {}
     },
-    "video_map_file": "videomaps/ZME-stars.mappack",
+    "video_map_file": "videomaps/ZME-BNA.mappack",
     "airspace_awareness": [
       {
         "fixes": ["CHADM", "MUNNY", "KRSTA", "OLSIE"],
@@ -189,13 +193,22 @@
       "1": {
         "video_maps": [
           "BNA_NORTH FLOW",
+          "BNA_NORTH 2C",
           "BNA_SOUTH FLOW",
+          "BNA_MVA",
           "BNA_CLASS C",
           "BNA_EOVM",
-          "BNA_EW NORTH SPLIT",
-          "BNA_EW SOUTH SPLIT",
           "BNA_SID EXIT GATES",
-          "BNA_SID EXIT"
+          "BNA_NORTH STAR LABELS",
+          "BNA_SOUTH STAR LABELS",
+          "BNA_NORTH STAR FIXES",
+          "BNA_SOUTH STAR FIXES",
+          "BNA_NORTH DP WPTS",
+          "BNA_NORTH DP WP LABEL",
+          "BNA_NORTH DP TRACKS",
+          "BNA_SOUTH DP WPTS",
+          "BNA_SOUTH DP WP LABELS",
+          "BNA_SOUTH DP TRACKS"
         ]
       }
     }

@@ -66,7 +66,7 @@
           ],
           "destination": "KCLT",
           "exit": "JROSS",
-          "route": "JROSS FLLGG STOCR6"
+          "route": "JROSS FLLGG STOCR7"
         },
         {
           "airlines": [
@@ -409,7 +409,7 @@
           ],
           "destination": "KCLT",
           "exit": "CHS",
-          "route": "CHS STOCR6"
+          "route": "CHS STOCR7"
         },
         {
           "airlines": [

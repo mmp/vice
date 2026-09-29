@@ -270,7 +270,7 @@
           "ALDAN4.MELTN (32)": "32",
           "ALDAN4.KPASS (32)": "32",
           "ALDAN4.FRIKY (32)": "32",
-          "CHSLY8 (32)": "32",
+          "CHSLY9 (32)": "32",
           "PAATS4.GVE (32)": "32"
         },
         "default_consolidation": {
@@ -297,7 +297,7 @@
           "CLT Overflights": "36",
           "RAVNN9 - ZTL": "36",
           "RAVNN9 - JAX": "36",
-          "CHSLY8": "36",
+          "CHSLY9": "36",
           "CAPSS4": "36",
           "CAVLR7": "36",
           "DUCXS5": "36",
@@ -330,7 +330,7 @@
           "ALDAN4.MELTN (32)": "32",
           "CAVLR7 (32)": "32",
           "COATT5 (32)": "32",
-          "CHSLY8 (32)": "32",
+          "CHSLY9 (32)": "32",
           "DUCXS5 (32)": "32",
           "SPIDR5 (52)": "52",
           "POWTN5 (52)": "52",

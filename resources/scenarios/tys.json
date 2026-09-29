@@ -180,7 +180,7 @@
           "altitude": [21000, 23000, 25000, 27000],
           "destination": "KCLT",
           "exit": "COMDY",
-          "route": "COMDY FILPZ6"
+          "route": "COMDY FILPZ7"
         },
         {
           "airlines": [{ "icao": "ENY" }, { "icao": "N", "fleet": "fastGA" }],

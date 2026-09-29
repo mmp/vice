@@ -116,7 +116,7 @@
           "exit": "GSH",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "GSH FWA FLM LNDIZ PARQR6",
+          "route": "GSH FWA FLM LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -308,7 +308,7 @@
           "exit": "GSH",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "GSH FWA FLM LNDIZ PARQR6",
+          "route": "GSH FWA FLM LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -416,7 +416,7 @@
           "exit": "OTENS",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "OTENS RDBUV HVQ LNDIZ PARQR6",
+          "route": "OTENS RDBUV HVQ LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -584,7 +584,7 @@
           "exit": "GSH",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "GSH FWA FLM LNDIZ PARQR6",
+          "route": "GSH FWA FLM LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",

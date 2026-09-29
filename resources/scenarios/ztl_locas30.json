@@ -7,40 +7,40 @@
     "KCLT": {
       "departure_controller": "C1W",
       "departure_routes": {
-        "18L": {
+        "18": {
           "BEAVY": {
             "cleared_altitude": 16000,
-            "sid": "BEAVY8",
+            "sid": "BEAVY9",
             "handoff_controller": "30",
             "waypoint_actions": { "UGANG": "ho" }
           },
           "ICONS": {
             "cleared_altitude": 16000,
-            "sid": "ICONS7",
+            "sid": "ICONS8",
             "handoff_controller": "30",
             "waypoint_actions": { "GILFN": "ho" }
           },
           "KWEEN": {
             "cleared_altitude": 16000,
-            "sid": "KWEEN7",
+            "sid": "KWEEN8",
             "handoff_controller": "30",
             "waypoint_actions": { "HMMPY": "ho" }
           },
           "LILLS": {
             "cleared_altitude": 13000,
-            "sid": "LILLS5",
+            "sid": "LILLS6",
             "waypoints": "N035.08.40.504,W080.54.03.850/ho LAMDE",
             "handoff_controller": "30"
           },
           "BARMY": {
             "cleared_altitude": 16000,
-            "sid": "BARMY7",
+            "sid": "BATTA1",
             "handoff_controller": "30",
             "waypoint_actions": { "MESHY": "ho" }
           },
           "KILNS": {
             "cleared_altitude": 16000,
-            "sid": "KILNS7",
+            "sid": "DURST1",
             "handoff_controller": "30",
             "waypoint_actions": { "MUNBE": "ho" }
           }
@@ -48,37 +48,37 @@
         "1R": {
           "BEAVY": {
             "cleared_altitude": 16000,
-            "sid": "BEAVY8",
+            "sid": "BEAVY9",
             "handoff_controller": "30",
             "waypoint_actions": { "UGANG": "ho" }
           },
           "ICONS": {
             "cleared_altitude": 16000,
-            "sid": "ICONS7",
+            "sid": "ICONS8",
             "handoff_controller": "30",
             "waypoint_actions": { "GILFN": "ho" }
           },
           "KWEEN": {
             "cleared_altitude": 16000,
-            "sid": "KWEEN7",
+            "sid": "KWEEN8",
             "handoff_controller": "30",
             "waypoint_actions": { "HMMPY": "ho" }
           },
           "LILLS": {
             "cleared_altitude": 13000,
-            "sid": "LILLS5",
+            "sid": "LILLS6",
             "waypoints": "N035.16.16.300,W080.55.00.265/ho LAMDE",
             "handoff_controller": "30"
           },
           "BARMY": {
             "cleared_altitude": 16000,
-            "sid": "BARMY7",
+            "sid": "BATTA1",
             "handoff_controller": "30",
             "waypoint_actions": { "MESHY": "ho" }
           },
           "KILNS": {
             "cleared_altitude": 16000,
-            "sid": "KILNS7",
+            "sid": "DURST1",
             "handoff_controller": "30",
             "waypoint_actions": { "MUNBE": "ho" }
           }
@@ -212,7 +212,7 @@
         {
           "airport": "KCLT",
           "rate": 34,
-          "runway": "18L"
+          "runway": "18"
         }
       ],
       "arrival_runways": [],

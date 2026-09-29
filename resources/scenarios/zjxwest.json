@@ -85,7 +85,7 @@
           "altitude": 33000,
           "destination": "KCLT",
           "exit": "CEW",
-          "route": "PENSI CEW MCN PONZE BANKR7"
+          "route": "PENSI CEW MCN PONZE BANKR8"
         },
         {
           "airlines": [{ "icao": "RPA" }],
@@ -405,7 +405,7 @@
           "altitude": 35000,
           "destination": "KCLT",
           "exit": "CORKY",
-          "route": "CORKY ACORI CSG BESTT JONZE7"
+          "route": "CORKY ACORI CSG BESTT JONZE8"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "JIA" }],

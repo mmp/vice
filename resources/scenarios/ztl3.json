@@ -12,8 +12,8 @@
     },
     "KCLT": {
       "approaches": {
-        "I8L": {
-          "cifp_id": "I18L"
+        "I8": {
+          "cifp_id": "I18"
         }
       },
       "departures": []
@@ -127,7 +127,7 @@
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSO",
@@ -194,7 +194,7 @@
         "WORXS2": {
           "overflights": 5
         },
-        "BOBZY7": {
+        "BOBZY8": {
           "overflights": 10
         },
         "J85": {
@@ -330,7 +330,7 @@
         }
       ]
     },
-    "BOBZY7": {
+    "BOBZY8": {
       "overflights": [
         {
           "airlines": [

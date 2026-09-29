@@ -6,8 +6,8 @@
   "airports": {
     "KCLT": {
       "approaches": {
-        "I8L": {
-          "cifp_id": "I18L"
+        "I8": {
+          "cifp_id": "I18"
         },
         "I9R": {
           "cifp_id": "I19R"
@@ -18,8 +18,8 @@
         "I1R": {
           "cifp_id": "I1R"
         },
-        "I6R": {
-          "cifp_id": "I36R"
+        "I36": {
+          "cifp_id": "I36"
         }
       }
     },
@@ -153,7 +153,7 @@
     "_CLT_CHSLY_N_OUT": "EPAYE@183/25"
   },
   "inbound_flows": {
-    "CHSLY8-AIROW": {
+    "CHSLY9-AIROW": {
       "arrivals": [
         {
           "airlines": {
@@ -177,14 +177,14 @@
           "initial_speed": 280,
           "cleared_altitude": 6000,
           "cruise_altitude": 33000,
-          "star": "CHSLY8",
-          "route": "/. CHSLY8",
+          "star": "CHSLY9",
+          "route": "/. CHSLY9",
           "is_rnav": true,
           "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d4000 _CLT_CHSLY_S_OUT/delete"
         }
       ]
     },
-    "CHSLY8-RDU": {
+    "CHSLY9-RDU": {
       "arrivals": [
         {
           "airlines": {
@@ -205,13 +205,13 @@
           "assigned_altitude": 23000,
           "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/d4000 _CLT_CHSLY_S_OUT/delete",
           "cruise_altitude": 24000,
-          "star": "CHSLY8",
-          "route": "/. CHSLY8",
+          "star": "CHSLY9",
+          "route": "/. CHSLY9",
           "is_rnav": true
         }
       ]
     },
-    "CHSLY8-AIROW-N": {
+    "CHSLY9-AIROW-N": {
       "arrivals": [
         {
           "airlines": {
@@ -235,14 +235,14 @@
           "initial_speed": 280,
           "cleared_altitude": 10000,
           "cruise_altitude": 33000,
-          "star": "CHSLY8",
-          "route": "/. CHSLY8",
+          "star": "CHSLY9",
+          "route": "/. CHSLY9",
           "is_rnav": true,
           "waypoints": "BLUEJ/ho BURRZ/a24000-27000/s280 SKLES/a22000+ DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d5000 _CLT_CHSLY_N_OUT/delete"
         }
       ]
     },
-    "CHSLY8-RDU-N": {
+    "CHSLY9-RDU-N": {
       "arrivals": [
         {
           "airlines": {
@@ -263,8 +263,8 @@
           "assigned_altitude": 23000,
           "waypoints": "CATAR/ho SDAIL/a17000-23000/s280 WLLSH/a16000+/s270 CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/d5000 _CLT_CHSLY_N_OUT/delete",
           "cruise_altitude": 24000,
-          "star": "CHSLY8",
-          "route": "/. CHSLY8",
+          "star": "CHSLY9",
+          "route": "/. CHSLY9",
           "is_rnav": true
         }
       ]
@@ -311,7 +311,7 @@
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSP",
@@ -319,10 +319,10 @@
         }
       ],
       "inbound_rates": {
-        "CHSLY8-AIROW": {
+        "CHSLY9-AIROW": {
           "KCLT": 6
         },
-        "CHSLY8-RDU": {
+        "CHSLY9-RDU": {
           "KCLT": 4
         },
         "GSP-JUNNR": {
@@ -351,10 +351,10 @@
         }
       ],
       "inbound_rates": {
-        "CHSLY8-AIROW-N": {
+        "CHSLY9-AIROW-N": {
           "KCLT": 6
         },
-        "CHSLY8-RDU-N": {
+        "CHSLY9-RDU-N": {
           "KCLT": 4
         },
         "GSP-JUNNR": {

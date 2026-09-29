@@ -192,13 +192,13 @@
         }
       ],
       "inbound_rates": {
-        "RYYMN3 - NMANN": {
+        "RYYMN4 - NMANN": {
           "KBNA": 5
         },
-        "RYYMN3 - TONES": {
+        "RYYMN4 - TONES": {
           "KBNA": 5
         },
-        "RYYMN3 - LOONE": {
+        "RYYMN4 - LOONE": {
           "KBNA": 5
         },
         "PASLY5 - CUTRR": {
@@ -236,13 +236,13 @@
         }
       ],
       "inbound_rates": {
-        "RYYMN3 - NMANN": {
+        "RYYMN4 - NMANN": {
           "KBNA": 5
         },
-        "RYYMN3 - TONES": {
+        "RYYMN4 - TONES": {
           "KBNA": 5
         },
-        "RYYMN3 - LOONE": {
+        "RYYMN4 - LOONE": {
           "KBNA": 5
         },
         "PASLY5 - CUTRR": {
@@ -457,13 +457,13 @@
         }
       ]
     },
-    "RYYMN3 - NMANN": {
+    "RYYMN4 - NMANN": {
       "arrivals": [
         {
           "waypoints": "NMANN SOKOL N037.15.36.625,W088.05.01.245/ho RANTS/a24000+ RYYMN/a15000-19000/s280 PEKIE/a12000 WILEE/a9000/s210 DRUMZ/a9000/s210/delete",
           "cruise_altitude": 34000,
-          "star": "RYYMN3",
-          "route": "/. RYYMN3",
+          "star": "RYYMN4",
+          "route": "/. RYYMN4",
           "initial_controller": "63",
           "initial_altitude": 28000,
           "assigned_altitude": 24000,
@@ -500,13 +500,13 @@
         }
       ]
     },
-    "RYYMN3 - TONES": {
+    "RYYMN4 - TONES": {
       "arrivals": [
         {
           "waypoints": "TONES ULTRA/a23000-/ho RYYMN/a15000-19000/s280 PEKIE/a12000 WILEE/a9000/s210 DRUMZ/a9000/s210/delete",
           "cruise_altitude": 34000,
-          "star": "RYYMN3",
-          "route": "/. RYYMN3",
+          "star": "RYYMN4",
+          "route": "/. RYYMN4",
           "initial_controller": "63",
           "initial_altitude": 28000,
           "assigned_altitude": 23000,
@@ -543,13 +543,13 @@
         }
       ]
     },
-    "RYYMN3 - LOONE": {
+    "RYYMN4 - LOONE": {
       "arrivals": [
         {
           "waypoints": "LOONE ULTRA/a23000-/ho RYYMN/a15000-19000/s280 PEKIE/a12000 WILEE/a9000/s210 DRUMZ/a9000/s210/delete",
           "cruise_altitude": 34000,
-          "star": "RYYMN3",
-          "route": "/. RYYMN3",
+          "star": "RYYMN4",
+          "route": "/. RYYMN4",
           "initial_controller": "63",
           "initial_altitude": 28000,
           "assigned_altitude": 23000,

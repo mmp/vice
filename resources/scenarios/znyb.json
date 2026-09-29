@@ -82,7 +82,7 @@
           ],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KCLT",
-          "route": "BIGGY Q75 GVE AIROW CHSLY8",
+          "route": "BIGGY Q75 GVE AIROW CHSLY9",
           "exit": "BIGGY"
         },
         {
@@ -674,7 +674,7 @@
           ],
           "altitude": [26000, 30000, 32000, 34000, 36000, 38000, 43000],
           "destination": "KCLT",
-          "route": "BIGGY Q75 GVE AIROW CHSLY8",
+          "route": "BIGGY Q75 GVE AIROW CHSLY9",
           "exit": "BIGGY"
         },
         {
@@ -1467,7 +1467,7 @@
           "airlines": [{ "icao": "AAL", "types": ["A319", "B738", "B38M"] }, { "icao": "EDV" }],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KCLT",
-          "route": "RBV Q430 COPES Q75 GVE AIROW CHSLY8",
+          "route": "RBV Q430 COPES Q75 GVE AIROW CHSLY9",
           "exit": "RBV"
         },
         {

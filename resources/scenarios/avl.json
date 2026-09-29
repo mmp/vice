@@ -85,7 +85,7 @@
           "exit": "JJENY",
           "destination": "KCLT",
           "altitude": 11000,
-          "route": "JJENY FILPZ6",
+          "route": "JJENY FILPZ7",
           "airlines": [
             {
               "icao": "JIA",
@@ -169,7 +169,7 @@
           "exit": "JJENY",
           "destination": "KCLT",
           "altitude": 11000,
-          "route": "JJENY FILPZ6",
+          "route": "JJENY FILPZ7",
           "airlines": [
             {
               "icao": "PDT",
@@ -354,11 +354,10 @@
         }
       ]
     },
-    "JONEB": {
+    "JAKIB": {
       "arrivals": [
         {
-          "waypoints": "PITTY JAKIB/ho/a11000/h296",
-          "route": "/. JONEB",
+          "waypoints": "CLT JAKIB/ho/a11000/h296",
           "initial_controller": "C43",
           "initial_altitude": 13000,
           "initial_speed": 250,
@@ -366,14 +365,6 @@
           "airports": ["KAVL"],
           "airlines": {
             "KAVL": [
-              {
-                "icao": "N",
-                "airport": "8NC9"
-              },
-              {
-                "icao": "N",
-                "airport": "K1A5"
-              },
               {
                 "icao": "JIA",
                 "airport": "KCLT"
@@ -543,7 +534,7 @@
         "TUSRE": {
           "KAVL": 4
         },
-        "JONEB": {
+        "JAKIB": {
           "KAVL": 8
         },
         "LEAVI": {
@@ -587,7 +578,7 @@
         "TUSRE": {
           "KAVL": 4
         },
-        "JONEB": {
+        "JAKIB": {
           "KAVL": 8
         },
         "LEAVI": {

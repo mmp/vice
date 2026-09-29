@@ -89,8 +89,8 @@
     },
     "KCLT": {
       "approaches": {
-        "I3R": {
-          "cifp_id": "I36R"
+        "I36": {
+          "cifp_id": "I36"
         }
       }
     },
@@ -1571,13 +1571,13 @@
         }
       ]
     },
-    "CHSLY8 (32)": {
+    "CHSLY9 (32)": {
       "arrivals": [
         {
           "waypoints": "MURPH Q75 HAMMZ/ho32 Q75 GVE AIROW BEMOH WRLLD BLUEJ/a27000+ BURRZ/a24000-27000/s280 SKLES/a22000+/s280 DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250/delete",
           "cruise_altitude": 33000,
-          "star": "CHSLY8",
-          "route": "/. AIROW CHSLY8",
+          "star": "CHSLY9",
+          "route": "/. AIROW CHSLY9",
           "initial_controller": "05",
           "initial_altitude": 33000,
           "assigned_altitude": 33000,
@@ -2463,7 +2463,7 @@
         },
         {
           "airport": "KCLT",
-          "runway": "36R"
+          "runway": "36"
         },
         {
           "airport": "KRIC",
@@ -2512,7 +2512,7 @@
         "ALDAN4.FRIKY (32)": {
           "KRDU": 10
         },
-        "CHSLY8 (32)": {
+        "CHSLY9 (32)": {
           "KCLT": 10
         },
         "PAATS4.GVE (32)": {
@@ -2541,7 +2541,7 @@
         },
         {
           "airport": "KCLT",
-          "runway": "36R"
+          "runway": "36"
         },
         {
           "airport": "KRIC",
@@ -2617,7 +2617,7 @@
         },
         {
           "airport": "KCLT",
-          "runway": "36R"
+          "runway": "36"
         },
         {
           "airport": "KRIC",
@@ -2651,7 +2651,7 @@
         "COATT5 (32)": {
           "KIAD": 3
         },
-        "CHSLY8 (32)": {
+        "CHSLY9 (32)": {
           "KCLT": 9
         },
         "DUCXS5 (32)": {

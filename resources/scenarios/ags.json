@@ -53,8 +53,8 @@
           },
           "RDBUD": {
             "cleared_altitude": 10000,
-            "description": "RDBUD4",
-            "sid": "RDBUD4",
+            "description": "RDBUD5",
+            "sid": "RDBUD5",
             "initial_heading": 85
           },
           "SAMMI": {
@@ -95,8 +95,8 @@
           },
           "RDBUD": {
             "cleared_altitude": 10000,
-            "description": "RDBUD4",
-            "sid": "RDBUD4",
+            "description": "RDBUD5",
+            "sid": "RDBUD5",
             "initial_heading": 265
           },
           "SAMMI": {

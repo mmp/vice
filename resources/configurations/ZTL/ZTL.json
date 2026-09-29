@@ -520,8 +520,8 @@
           "43": []
         },
         "inbound_assignments": {
-          "PARQR6 - LNDIZ": "43",
-          "PARQR6 - TAFTT": "43",
+          "PARQR7 - LNDIZ": "43",
+          "PARQR7 - TAFTT": "43",
           "OZZZI2": "43",
           "Q103": "43",
           "J85": "43",
@@ -533,8 +533,8 @@
           "43": ["42", "44", "45", "47", "48"]
         },
         "inbound_assignments": {
-          "PARQR6 - LNDIZ": "43",
-          "PARQR6 - TAFTT": "43",
+          "PARQR7 - LNDIZ": "43",
+          "PARQR7 - TAFTT": "43",
           "TRAKS4 - OTONE": "43",
           "OZZZI2": "43",
           "Q103": "43",
@@ -549,8 +549,8 @@
         },
         "departure_assignments": {},
         "inbound_assignments": {
-          "BANKR7": "32",
-          "JONZE7": "32",
+          "BANKR8": "32",
+          "JONZE8": "32",
           "TRAK4 - BURGG": "34",
           "Q60 (33)": "33",
           "Q60 (28)": "28",
@@ -579,8 +579,8 @@
           "KCLT": "30"
         },
         "inbound_assignments": {
-          "BANKR7": "32",
-          "JONZE7": "32",
+          "BANKR8": "32",
+          "JONZE8": "32",
           "TRAK4 - BURGG": "34",
           "SPA - HMV": "34",
           "Q60 (33)": "33",
@@ -621,7 +621,7 @@
           "OZZZI2": "18",
           "ONDRE1": "18",
           "WORXS2": "49",
-          "BOBZY7": "50",
+          "BOBZY8": "50",
           "Q103": "15",
           "J85": "15",
           "Q40": "15"
@@ -699,8 +699,8 @@
           "31": []
         },
         "departure_assignments": {
-          "KCLT/ESTRR7": "31",
-          "KCLT/BOBZY7": "31",
+          "KCLT/ESTRR8": "31",
+          "KCLT/BOBZY8": "31",
           "KGSP": "31"
         },
         "inbound_assignments": {
@@ -709,8 +709,8 @@
           "AGS_UNARM31": "31",
           "HKY_SVH_CLT_UNARM31": "31",
           "HKY_SVH_SHINE_UNARM31": "31",
-          "BANKR7": "31",
-          "JONZE7": "31"
+          "BANKR8": "31",
+          "JONZE8": "31"
         }
       },
       "L30": {
@@ -718,12 +718,12 @@
           "30": []
         },
         "departure_assignments": {
-          "KCLT/BEAVY8": "30",
-          "KCLT/ICONS7": "30",
-          "KCLT/KWEEN7": "30",
-          "KCLT/LILLS5": "30",
-          "KCLT/BARMY7": "30",
-          "KCLT/KILNS7": "30"
+          "KCLT/BEAVY9": "30",
+          "KCLT/ICONS8": "30",
+          "KCLT/KWEEN8": "30",
+          "KCLT/LILLS6": "30",
+          "KCLT/BATTA1": "30",
+          "KCLT/DURST1": "30"
         },
         "inbound_assignments": {}
       },
@@ -737,10 +737,10 @@
           "KGSO/QUAK8": "29"
         },
         "inbound_assignments": {
-          "CHSLY8-AIROW": "29",
-          "CHSLY8-RDU": "29",
-          "CHSLY8-AIROW-N": "29",
-          "CHSLY8-RDU-N": "29",
+          "CHSLY9-AIROW": "29",
+          "CHSLY9-RDU": "29",
+          "CHSLY9-AIROW-N": "29",
+          "CHSLY9-RDU-N": "29",
           "GSP-JUNNR": "29"
         }
       },
@@ -749,12 +749,12 @@
           "47": []
         },
         "departure_assignments": {
-          "KCLT/KRITR8": "47",
-          "KCLT/WEAZL7": "47"
+          "KCLT/KRITR9": "47",
+          "KCLT/WEAZL8": "47"
         },
         "inbound_assignments": {
-          "PARQR6": "47",
-          "PARQR6-N": "47",
+          "PARQR7": "47",
+          "PARQR7-N": "47",
           "GSP-JUNNR-MOPED": "47",
           "GSO-TRAKS": "47"
         }
@@ -764,12 +764,12 @@
           "44": []
         },
         "departure_assignments": {
-          "KCLT/JOJJO7": "44",
+          "KCLT/JOJJO8": "44",
           "KGSP/BWALL2": "44"
         },
         "inbound_assignments": {
-          "FILPZ6": "44",
-          "FILPZ6-N": "44",
+          "FILPZ7": "44",
+          "FILPZ7-N": "44",
           "GSO-TRAKS-SHINE": "44"
         }
       },

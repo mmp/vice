@@ -1899,7 +1899,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KCLT",
           "exit": "SHAYK",
-          "route": "SHAYK ANX KOOOP JHAUN  ESTEE GUMMA SKYWA FILPZ6"
+          "route": "SHAYK ANX KOOOP JHAUN  ESTEE GUMMA SKYWA FILPZ7"
         },
         {
           "airlines": [
@@ -8362,7 +8362,7 @@
         }
       ]
     },
-    "PINNR3": {
+    "PINNR4": {
       "arrivals": [
         {
           "airports": ["KAPA", "KFNL", "KGXY"],
@@ -8394,7 +8394,7 @@
           "initial_altitude": 30000,
           "initial_controller": "C13",
           "initial_speed": 290,
-          "star": "PINNR3",
+          "star": "PINNR4",
           "speed_restriction": 250,
           "waypoints": "BANNA CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
         },
@@ -8414,7 +8414,7 @@
           "initial_altitude": 29000,
           "initial_controller": "C13",
           "initial_speed": 290,
-          "star": "PINNR3",
+          "star": "PINNR4",
           "speed_restriction": 250,
           "spawn": "BANNA",
           "waypoint_actions": { "CHOTS": "ho" }
@@ -11069,7 +11069,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -11285,7 +11285,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -11501,7 +11501,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -11717,7 +11717,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -11925,7 +11925,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -12133,7 +12133,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -12353,7 +12353,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -12573,7 +12573,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -12793,7 +12793,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -13013,7 +13013,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 2,
@@ -13345,7 +13345,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 2,
           "KBJC": 2,
           "KFNL": 1,
@@ -13480,7 +13480,7 @@
           "KFNL": 2,
           "KGXY": 1
         },
-        "PINNR3": {
+        "PINNR4": {
           "KAPA": 3,
           "KBJC": 3,
           "KFNL": 1,

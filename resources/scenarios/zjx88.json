@@ -70,7 +70,7 @@
           "altitude": 39000,
           "destination": "KJQF",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO HEPAR WANSA JOOLS3"
+          "route": "LLRGO1 CAMJO HEPAR WANSA JOOLS4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
@@ -793,7 +793,7 @@
           "altitude": [27000, 29000, 31000, 33000, 35000, 37000, 41000],
           "destination": "KCLT",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO TWINS PONZE BANKR7"
+          "route": "TIDES1 CAMJO TWINS PONZE BANKR8"
         },
         {
           "airlines": [{ "icao": "AAL" }],

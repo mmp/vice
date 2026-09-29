@@ -905,7 +905,7 @@
           "exit": "MXE",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR6",
+          "route": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -989,7 +989,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY8",
+          "route": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -1121,7 +1121,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY8",
+          "route": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -1217,7 +1217,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 34000,
-          "route": "STOEN Q75 GVE AIROW CHSLY8",
+          "route": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -1277,7 +1277,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY8",
+          "route": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -1601,7 +1601,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 38000,
-          "route": "STOEN Q75 GVE AIROW CHSLY8",
+          "route": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "FFT",
@@ -1805,7 +1805,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 30000,
-          "route": "STOEN Q75 GVE AIROW CHSLY8",
+          "route": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "UPS",

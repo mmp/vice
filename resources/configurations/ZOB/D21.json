@@ -98,7 +98,7 @@
         "inbound_assignments": {
           "CRAKN2": "1H",
           "CUUGR2": "1F",
-          "FOREY2": "1D",
+          "FOREY3": "1D",
           "GIGGY2": "1D",
           "GRAYT2": "1R",
           "HAYLL3": "1V",
@@ -143,7 +143,7 @@
         "inbound_assignments": {
           "BONZZ2": "1H",
           "FERRL2": "1F",
-          "FOREY2": "1D",
+          "FOREY3": "1D",
           "GIGGY2": "1D",
           "HANBL3": "1V",
           "HTROD2": "1H",
@@ -174,7 +174,7 @@
         "inbound_assignments": {
           "BONZZ2": "1H",
           "FERRL2": "1F",
-          "FOREY2": "1D",
+          "FOREY3": "1D",
           "GIGGY2": "1D",
           "HANBL3": "1V",
           "HTROD2": "1H",
@@ -220,7 +220,7 @@
         "inbound_assignments": {
           "CRAKN2": "1H",
           "FERRL2": "1F",
-          "FOREY2": "1D",
+          "FOREY3": "1D",
           "GIGGY2": "1D",
           "GRAYT2": "1R",
           "HANBL3": "1V",
@@ -274,7 +274,7 @@
         "inbound_assignments": {
           "CRAKN2": "1H",
           "CUUGR2": "1F",
-          "FOREY2": "1D",
+          "FOREY3": "1D",
           "GIGGY2": "1D",
           "GRAYT2": "1R",
           "HAYLL3": "1V",

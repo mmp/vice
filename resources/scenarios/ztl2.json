@@ -13,12 +13,12 @@
     "KCLT": {
       "approaches": {
         "I8L": {
-          "cifp_id": "I18L"
+          "cifp_id": "I18"
         }
       },
       "departure_controller": "C1W",
       "departure_routes": {
-        "18L": {
+        "18": {
           "ESTRR": {
             "cleared_altitude": 11000,
             "waypoints": "GINNN/ho ESTRR",
@@ -99,13 +99,13 @@
         {
           "airport": "KCLT",
           "rate": 15,
-          "runway": "18L"
+          "runway": "18"
         }
       ],
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSO",
@@ -117,10 +117,10 @@
         }
       ],
       "inbound_rates": {
-        "BANKR7": {
+        "BANKR8": {
           "KCLT": 10
         },
-        "JONZE7": {
+        "JONZE8": {
           "KCLT": 10
         },
         "TRAK4 - BURGG": {
@@ -153,7 +153,7 @@
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSO",
@@ -161,10 +161,10 @@
         }
       ],
       "inbound_rates": {
-        "BANKR7": {
+        "BANKR8": {
           "KCLT": 10
         },
-        "JONZE7": {
+        "JONZE8": {
           "KCLT": 10
         },
         "TRAK4 - BURGG": {
@@ -194,7 +194,7 @@
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSO",
@@ -218,13 +218,13 @@
     }
   },
   "inbound_flows": {
-    "BANKR7": {
+    "BANKR8": {
       "arrivals": [
         {
           "waypoints": "N033.31.40.360,W082.02.02.415/ho32 PONZE NTRST CRDET BANKR DEBBT ROBRR FOBAR DEELX STKUP DOSBE/delete",
           "cruise_altitude": 29000,
-          "star": "BANKR7",
-          "route": "/. BANKR7",
+          "star": "BANKR8",
+          "route": "/. BANKR8",
           "initial_controller": "J30",
           "initial_altitude": 29000,
           "assigned_altitude": 29000,
@@ -265,13 +265,13 @@
         }
       ]
     },
-    "JONZE7": {
+    "JONZE8": {
       "arrivals": [
         {
           "waypoints": "N033.33.32.832,W084.03.56.590/ho32 BESTT CNTLR EVRRR KUPPP CAAKE JONZE WHYLE FREEK DOSBE AAIRE/delete",
           "cruise_altitude": 29000,
-          "star": "JONZE7",
-          "route": "/. JONZE7",
+          "star": "JONZE8",
+          "route": "/. JONZE8",
           "initial_controller": "22",
           "initial_altitude": 29000,
           "assigned_altitude": 29000,

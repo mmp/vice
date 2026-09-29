@@ -19,8 +19,8 @@
     },
     "KCLT": {
       "approaches": {
-        "I8L": {
-          "cifp_id": "I18L"
+        "I8": {
+          "cifp_id": "I18"
         }
       }
     },
@@ -41,7 +41,7 @@
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSO",
@@ -49,10 +49,10 @@
         }
       ],
       "inbound_rates": {
-        "PARQR6 - LNDIZ": {
+        "PARQR7 - LNDIZ": {
           "KCLT": 5
         },
-        "PARQR6 - TAFTT": {
+        "PARQR7 - TAFTT": {
           "KCLT": 5
         },
         "TRAKS4 - OTONE": {
@@ -82,14 +82,14 @@
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         }
       ],
       "inbound_rates": {
-        "PARQR6 - LNDIZ": {
+        "PARQR7 - LNDIZ": {
           "KCLT": 5
         },
-        "PARQR6 - TAFTT": {
+        "PARQR7 - TAFTT": {
           "KCLT": 5
         },
         "OZZZI2": {
@@ -108,13 +108,13 @@
     }
   },
   "inbound_flows": {
-    "PARQR6 - LNDIZ": {
+    "PARQR7 - LNDIZ": {
       "arrivals": [
         {
           "waypoints": "N037.24.33.074,W081.37.36.866/ho LNDIZ CITUS WILUM/a24000+/s270 SUZNN/a17000+/s270 PARQR PAYKN THACK/delete",
           "cruise_altitude": 34000,
-          "star": "PARQR6",
-          "route": "/. PARQR6",
+          "star": "PARQR7",
+          "route": "/. PARQR7",
           "initial_controller": "I83",
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
@@ -175,13 +175,13 @@
         }
       ]
     },
-    "PARQR6 - TAFTT": {
+    "PARQR7 - TAFTT": {
       "arrivals": [
         {
           "waypoints": "TAFTT/ho MAHAF SCRZA WILUM/a24000+/s270 SUZNN/a17000+/s270 PARQR PAYKN THACK CEDOX/delete",
           "cruise_altitude": 33000,
-          "star": "PARQR6",
-          "route": "/. PARQR6",
+          "star": "PARQR7",
+          "route": "/. PARQR7",
           "initial_controller": "I83",
           "initial_altitude": 33000,
           "assigned_altitude": 33000,

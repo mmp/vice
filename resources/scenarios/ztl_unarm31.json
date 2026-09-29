@@ -5,8 +5,8 @@
   "airports": {
     "KCLT": {
       "approaches": {
-        "I8L": {
-          "cifp_id": "I18L"
+        "I8": {
+          "cifp_id": "I18"
         },
         "I9L": {
           "cifp_id": "I19L"
@@ -20,22 +20,22 @@
         "I1R": {
           "cifp_id": "I1R"
         },
-        "I6R": {
-          "cifp_id": "I36R"
+        "I36": {
+          "cifp_id": "I36"
         }
       },
       "departure_controller": "C1W",
       "departure_routes": {
-        "18L": {
+        "18": {
           "ESTRR": {
             "cleared_altitude": 16000,
-            "sid": "ESTRR7",
+            "sid": "ESTRR8",
             "handoff_controller": "31",
             "waypoint_actions": { "GINNN": "ho" }
           },
           "BOBZY": {
             "cleared_altitude": 16000,
-            "sid": "BOBZY7",
+            "sid": "BOBZY8",
             "handoff_controller": "31",
             "waypoint_actions": { "LACHN": "ho" }
           }
@@ -43,13 +43,13 @@
         "1L": {
           "ESTRR": {
             "cleared_altitude": 16000,
-            "sid": "ESTRR7",
+            "sid": "ESTRR8",
             "handoff_controller": "31",
             "waypoint_actions": { "GINNN": "ho" }
           },
           "BOBZY": {
             "cleared_altitude": 16000,
-            "sid": "BOBZY7",
+            "sid": "BOBZY8",
             "handoff_controller": "31",
             "waypoint_actions": { "LACHN": "ho" }
           }
@@ -208,7 +208,7 @@
         {
           "airport": "KCLT",
           "rate": 8,
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSP",
@@ -219,7 +219,7 @@
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KCLT",
@@ -250,10 +250,10 @@
         "HKY_SVH_SHINE_UNARM31": {
           "overflights": 1
         },
-        "BANKR7": {
+        "BANKR8": {
           "KCLT": 7
         },
-        "JONZE7": {
+        "JONZE8": {
           "KCLT": 9
         }
       }
@@ -284,7 +284,7 @@
         },
         {
           "airport": "KCLT",
-          "runway": "36R"
+          "runway": "36"
         },
         {
           "airport": "KGSP",
@@ -307,10 +307,10 @@
         "HKY_SVH_SHINE_UNARM31": {
           "overflights": 1
         },
-        "BANKR7": {
+        "BANKR8": {
           "KCLT": 7
         },
-        "JONZE7": {
+        "JONZE8": {
           "KCLT": 9
         }
       }
@@ -508,12 +508,12 @@
         }
       ]
     },
-    "BANKR7": {
+    "BANKR8": {
       "arrivals": [
         {
           "cruise_altitude": 29000,
-          "star": "BANKR7",
-          "route": "/. BANKR7",
+          "star": "BANKR8",
+          "route": "/. BANKR8",
           "initial_controller": "32",
           "initial_altitude": 24000,
           "initial_speed": 270,
@@ -546,23 +546,23 @@
           "waypoints": "CRDET/ho BANKR/a13000-22000 DEBBT/a12000-21000/s250",
           "runway_waypoints": {
             "KCLT": {
-              "18L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d5000 _CLT_OUT/delete",
+              "18": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d5000 _CLT_OUT/delete",
               "19L": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d5000 _CLT_OUT/delete",
               "19R": "DEBBT/a12000-21000/s250 ROBRR/a12000-16000 FOBAR/a12000-14000 DEELX/a12000 STKUP/a12000 DOSBE/a12000 AAIRE/a12000 JRDEN/a12000/d5000 _CLT_OUT/delete",
               "1L": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d5000 _CLT_BANKR_N_OUT/delete",
               "1R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d5000 _CLT_BANKR_N_OUT/delete",
-              "36R": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d5000 _CLT_BANKR_N_OUT/delete"
+              "36": "DEBBT/a12000-21000/s250 CONTR/a11000-12000 OPALS BLNCE/a9000/s210/d5000 _CLT_BANKR_N_OUT/delete"
             }
           }
         }
       ]
     },
-    "JONZE7": {
+    "JONZE8": {
       "arrivals": [
         {
           "cruise_altitude": 29000,
-          "star": "JONZE7",
-          "route": "/. JONZE7",
+          "star": "JONZE8",
+          "route": "/. JONZE8",
           "initial_controller": "32",
           "initial_altitude": 24000,
           "initial_speed": 270,
@@ -595,12 +595,12 @@
           "waypoints": "CAAKE/ho JONZE/a11000-21000/s250",
           "runway_waypoints": {
             "KCLT": {
-              "18L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d5000 _CLT_OUT/delete",
+              "18": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d5000 _CLT_OUT/delete",
               "19L": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d5000 _CLT_OUT/delete",
               "19R": "JONZE/a11000-21000/s250 WHYLE/a10000-16000 FREEK/a10000-11000 DOSBE/a10000 AAIRE/a10000/s210 JRDEN/a10000/d5000 _CLT_OUT/delete",
               "1L": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d4000 _CLT_JONZE_N_OUT/delete",
               "1R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d4000 _CLT_JONZE_N_OUT/delete",
-              "36R": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d4000 _CLT_JONZE_N_OUT/delete"
+              "36": "JONZE/a11000-21000/s250 DUBBB/a10000-12000 CHELE/a7000/s210/d4000 _CLT_JONZE_N_OUT/delete"
             }
           }
         }

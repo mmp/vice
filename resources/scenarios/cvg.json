@@ -726,7 +726,7 @@
           ],
           "destination": "KCLT",
           "exit": "SHIPR",
-          "route": "KENLN6 SHIPR TAFTT PARQR6",
+          "route": "KENLN6 SHIPR TAFTT PARQR7",
           "scratchpad": "KEN"
         },
         {
@@ -1213,7 +1213,7 @@
           ],
           "destination": "KBNA",
           "exit": "CHCLL",
-          "route": "CHCLL6 CHCLL LOONE RYYMN3",
+          "route": "CHCLL6 CHCLL LOONE RYYMN4",
           "scratchpad": "CHC"
         }
       ],

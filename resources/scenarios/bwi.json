@@ -975,7 +975,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY8",
+          "route": "GLANC AIROW CHSLY9",
           "scratchpad": "TSC"
         },
         {
@@ -993,7 +993,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY8",
+          "route": "GLANC AIROW CHSLY9",
           "scratchpad": "TSC"
         },
         {

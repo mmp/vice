@@ -393,7 +393,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ6",
+          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",
@@ -585,7 +585,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ6",
+          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",
@@ -789,7 +789,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ6",
+          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",

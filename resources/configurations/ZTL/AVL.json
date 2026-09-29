@@ -22,7 +22,7 @@
       "STD": {
         "inbound_assignments": {
           "BARRD": "1W",
-          "JONEB": "1E",
+          "JAKIB": "1E",
           "LEAVI": "1E",
           "OBURY": "1E",
           "PUPDG": "1W",
@@ -95,7 +95,7 @@
           "from": "ZTL"
         }
       ],
-      "JONEB": [
+      "JAKIB": [
         {
           "type": "route",
           "to": "AVL",

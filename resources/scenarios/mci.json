@@ -574,7 +574,7 @@
           "exit": "SPI",
           "destination": "KCLT",
           "altitude": 37000,
-          "route": "LAKES5 SPI TILMN FLM TAFTT PARQR6",
+          "route": "LAKES5 SPI TILMN FLM TAFTT PARQR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -1174,7 +1174,7 @@
           "exit": "COU",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "LAKES5 COU NMANN TINGS TAZZA FILPZ6",
+          "route": "LAKES5 COU NMANN TINGS TAZZA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",

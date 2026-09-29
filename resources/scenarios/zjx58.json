@@ -391,7 +391,7 @@
           "exit": "CRG",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CRG VIYAP CHECR STOCR6",
+          "route": "CRG VIYAP CHECR STOCR7",
           "airlines": [
             {
               "icao": "AAL",

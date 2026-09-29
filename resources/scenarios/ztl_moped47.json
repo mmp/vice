@@ -7,16 +7,16 @@
     "KCLT": {
       "departure_controller": "C1W",
       "departure_routes": {
-        "18L": {
+        "18": {
           "KRITR": {
             "cleared_altitude": 16000,
-            "sid": "KRITR8",
+            "sid": "KRITR9",
             "waypoints": "N035.15.09.214,W081.16.06.577/ho JDEAN",
             "handoff_controller": "47"
           },
           "CLAWD": {
             "cleared_altitude": 16000,
-            "sid": "WEAZL7",
+            "sid": "WEAZL8",
             "waypoints": "N035.15.09.214,W081.16.06.577/ho WHFRD WEAZL",
             "handoff_controller": "47"
           }
@@ -24,13 +24,13 @@
         "1R": {
           "KRITR": {
             "cleared_altitude": 16000,
-            "sid": "KRITR8",
+            "sid": "KRITR9",
             "waypoints": "N035.22.41.000,W080.59.25.200/ho JDEAN",
             "handoff_controller": "47"
           },
           "CLAWD": {
             "cleared_altitude": 16000,
-            "sid": "WEAZL7",
+            "sid": "WEAZL8",
             "waypoints": "N035.22.41.000,W080.59.25.200/ho WHFRD WEAZL",
             "handoff_controller": "47"
           }
@@ -125,8 +125,8 @@
         }
       ],
       "approaches": {
-        "I8L": {
-          "cifp_id": "I18L"
+        "I8": {
+          "cifp_id": "I18"
         },
         "I1L": {
           "cifp_id": "I1L"
@@ -149,7 +149,7 @@
     }
   },
   "inbound_flows": {
-    "PARQR6": {
+    "PARQR7": {
       "arrivals": [
         {
           "airlines": {
@@ -172,15 +172,15 @@
           "initial_altitude": 24000,
           "initial_speed": 270,
           "cruise_altitude": 33000,
-          "star": "PARQR6",
-          "route": "/. PARQR6",
+          "star": "PARQR7",
+          "route": "/. PARQR7",
           "is_rnav": true,
           "cleared_altitude": 11000,
           "waypoints": "WILUM/a24000+/ho SUZNN/a17000+ PARQR/a20000-/s250 NCOMA/a11000 BOATN CAMPR/delete"
         }
       ]
     },
-    "PARQR6-N": {
+    "PARQR7-N": {
       "arrivals": [
         {
           "airlines": {
@@ -203,8 +203,8 @@
           "initial_altitude": 24000,
           "initial_speed": 270,
           "cruise_altitude": 33000,
-          "star": "PARQR6",
-          "route": "/. PARQR6",
+          "star": "PARQR7",
+          "route": "/. PARQR7",
           "is_rnav": true,
           "cleared_altitude": 12000,
           "waypoints": "WILUM/a24000+/ho SUZNN/a17000+ PARQR/a20000-/s250 PAYKN/a12000-15000 THACK/a12000 BBQEE CEDOX VALLL/delete"
@@ -275,14 +275,14 @@
       "departure_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L",
+          "runway": "18",
           "rate": 8
         }
       ],
       "arrival_runways": [
         {
           "airport": "KCLT",
-          "runway": "18L"
+          "runway": "18"
         },
         {
           "airport": "KGSP",
@@ -294,7 +294,7 @@
         }
       ],
       "inbound_rates": {
-        "PARQR6": {
+        "PARQR7": {
           "KCLT": 8
         },
         "GSP-JUNNR-MOPED": {
@@ -330,7 +330,7 @@
         }
       ],
       "inbound_rates": {
-        "PARQR6-N": {
+        "PARQR7-N": {
           "KCLT": 8
         },
         "GSP-JUNNR-MOPED": {

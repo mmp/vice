@@ -701,7 +701,7 @@
           ],
           "destination": "KCLT",
           "exit": "STAZE",
-          "route": "STAZE TAFTT PARQR6"
+          "route": "STAZE TAFTT PARQR7"
         }
       ],
       "exit_categories": {
@@ -1498,12 +1498,12 @@
         }
       ]
     },
-    "FOREY2": {
+    "FOREY3": {
       "arrivals": [
         {
           "spawn": "WWSHR",
           "waypoint_actions": { "WWSHR": "ho" },
-          "star": "FOREY2",
+          "star": "FOREY3",
           "initial_controller": "C48",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -2903,7 +2903,7 @@
         "GRAYT2": {
           "KDTW": 3
         },
-        "FOREY2": {
+        "FOREY3": {
           "KYIP": 1,
           "KPTK": 4,
           "KDET": 3
@@ -3010,7 +3010,7 @@
         "GRAYT2": {
           "KDTW": 3
         },
-        "FOREY2": {
+        "FOREY3": {
           "KYIP": 1,
           "KPTK": 4,
           "KDET": 3
@@ -3113,7 +3113,7 @@
         "VCTRZ2": {
           "KDTW": 3
         },
-        "FOREY2": {
+        "FOREY3": {
           "KYIP": 1,
           "KPTK": 4,
           "KDET": 3
@@ -3220,7 +3220,7 @@
         "VCTRZ2": {
           "KDTW": 3
         },
-        "FOREY2": {
+        "FOREY3": {
           "KYIP": 1,
           "KPTK": 4,
           "KDET": 3
@@ -3323,7 +3323,7 @@
         "VCTRZ2": {
           "KDTW": 5
         },
-        "FOREY2": {
+        "FOREY3": {
           "KYIP": 1,
           "KPTK": 4,
           "KDET": 3

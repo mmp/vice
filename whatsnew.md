@@ -1,6 +1,7 @@
 - Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane), D10 (Alexander Rueffer), S46 (Alex L)
 - Added delay before launching subsequent same-exit departures
 adjustments for TAS
+- Updated to Oct 1 AIRAC cycle (Mike Fries)
 - Flight model
   - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
   - Traffic calls ending "has you in sight and will maintain visual separation" (`TRAFFIC/INSIGHT`) now get just "roger", without a callsign

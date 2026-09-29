@@ -128,9 +128,6 @@
         "R7L": {
           "cifp_id": "R7L"
         },
-        "R7R": {
-          "cifp_id": "R7R"
-        },
         "R16": {
           "cifp_id": "R16"
         },
@@ -487,7 +484,7 @@
           ],
           "destination": "KCLT",
           "exit": "CRG",
-          "route": "CRG VIYAP CHECR STOCR6"
+          "route": "CRG VIYAP CHECR STOCR7"
         },
         {
           "airlines": [
@@ -2512,10 +2509,6 @@
         {
           "airport": "KDAB",
           "runway": "7L"
-        },
-        {
-          "airport": "KDAB",
-          "runway": "7R"
         },
         {
           "airport": "KOMN",

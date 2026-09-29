@@ -560,7 +560,7 @@
           ],
           "destination": "KCLT",
           "exit": "NORMY.NITE",
-          "route": "NORMY J90 MWH KU09M LVM RAP GUDDY KP78C IOW ARLYN GVR TAFTT PARQR6"
+          "route": "NORMY J90 MWH KU09M LVM RAP GUDDY KP78C IOW ARLYN GVR TAFTT PARQR7"
         },
         {
           "airlines": [
@@ -652,7 +652,7 @@
           ],
           "KBNA": [
             {
-              "route": "NORMY MODDA STEVS FINUT HIA KD75A KP66E MWA RANTS RYYMN3",
+              "route": "NORMY MODDA STEVS FINUT HIA KD75A KP66E MWA RANTS RYYMN4",
               "aircraft": "jet"
             }
           ],
@@ -664,7 +664,7 @@
           ],
           "KCLT": [
             {
-              "route": "NORMY J90 MWH LEZLE LAMON DNW HCT ATIJA TYGER SLITZ BNA TAZZA FILPZ6",
+              "route": "NORMY J90 MWH LEZLE LAMON DNW HCT ATIJA TYGER SLITZ BNA TAZZA FILPZ7",
               "aircraft": "jet"
             }
           ],

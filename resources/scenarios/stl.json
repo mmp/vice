@@ -2519,22 +2519,6 @@
         },
         "R35": {
           "cifp_id": "R35"
-        },
-        "V11": {
-          "cifp_id": "VAOR",
-          "runway": "11"
-        },
-        "V17": {
-          "cifp_id": "VAOR",
-          "runway": "17"
-        },
-        "V29": {
-          "cifp_id": "VAOR",
-          "runway": "29"
-        },
-        "V35": {
-          "cifp_id": "VAOR",
-          "runway": "35"
         }
       },
       "departure_routes": {

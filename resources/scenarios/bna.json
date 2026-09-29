@@ -54,6 +54,9 @@
         "I2L": {
           "cifp_id": "I2L"
         },
+        "I2C": {
+          "cifp_id": "IC2"
+        },
         "I2R": {
           "cifp_id": "I2R"
         },
@@ -71,6 +74,9 @@
         },
         "Y2L": {
           "cifp_id": "RY2L"
+        },
+        "Z2C": {
+          "cifp_id": "RZ2C"
         },
         "Y2R": {
           "cifp_id": "RY2R"
@@ -458,7 +464,7 @@
           ],
           "destination": "KCLT",
           "exit": "BURME",
-          "route": "TAZMO5 BURME VXV COMDY FILPZ6"
+          "route": "TAZMO5 BURME VXV COMDY FILPZ7"
         },
         {
           "airlines": [
@@ -894,16 +900,57 @@
     }
   },
   "inbound_flows": {
-    "CHSNE3": {
+    "CHSNE.N": {
       "arrivals": [
         {
-          "spawn": "KNEEY@0.5",
-          "cruise_altitude": 19000,
+          "spawn": "LOPPY",
+          "description": "LOPPY Transition Landing North",
+          "waypoint_actions": { "HUGHE@0.8": "ho" },
           "star": "CHSNE3",
           "initial_controller": "C42",
-          "initial_altitude": 15000,
+          "initial_altitude": 24000,
           "initial_speed": 280,
-          "expect_approach": null,
+          "expect_approach": "I2L",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KSMF"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KSLC"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "MEMFS@0.94",
+          "description": "MEMFS Transition Landing North",
+          "waypoint_actions": { "WITOS@0.8": "ho" },
+          "star": "CHSNE3",
+          "initial_controller": "C42",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "expect_approach": "I2L",
           "airports": ["KBNA"],
           "airlines": {
             "KBNA": [
@@ -921,14 +968,115 @@
                 "airport": "KIAH"
               },
               {
+                "icao": "SWA",
+                "airport": "KDAL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KDFW"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "DIERK",
+          "description": "KISTS Transition Landing North",
+          "waypoint_actions": { "BNTLE@0.83": "ho" },
+          "cruise_altitude": 19000,
+          "star": "CHSNE3",
+          "initial_controller": "C42",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "expect_approach": "I2L",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
                 "icao": "UAL",
                 "fleet": "short",
                 "airport": "KIAH"
               },
               {
+                "icao": "VIV",
+                "airport": "MMUN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CHSNE.S": {
+      "arrivals": [
+        {
+          "spawn": "LOPPY",
+          "description": "LOPPY Transition Landing South",
+          "waypoint_actions": { "HUGHE@0.8": "ho" },
+          "cruise_altitude": 19000,
+          "star": "CHSNE3",
+          "initial_controller": "C42",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "expect_approach": "I0R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KSMF"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KLAX"
+              },
+              {
                 "icao": "DAL",
                 "fleet": "short",
-                "airport": "KLAX"
+                "airport": "KSLC"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "MEMFS@0.94",
+          "description": "MEMFS Transition Landing South",
+          "waypoint_actions": { "WITOS@0.8": "ho" },
+          "cruise_altitude": 19000,
+          "star": "CHSNE3",
+          "initial_controller": "C42",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "expect_approach": "I0R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "ENY",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "ASH",
+                "airport": "KIAH"
               },
               {
                 "icao": "SWA",
@@ -941,6 +1089,27 @@
               {
                 "icao": "NKS",
                 "airport": "KDFW"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "DIERK",
+          "description": "KISTS Transition Landing South",
+          "waypoint_actions": { "BNTLE@0.83": "ho" },
+          "cruise_altitude": 19000,
+          "star": "CHSNE3",
+          "initial_controller": "C42",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "expect_approach": "I0R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KIAH"
               },
               {
                 "icao": "VIV",
@@ -951,16 +1120,16 @@
         }
       ]
     },
-    "PASLY5": {
+    "PASLY.S": {
       "arrivals": [
         {
-          "spawn": "PASLY",
-          "cruise_altitude": 20000,
+          "spawn": "GROAT",
+          "waypoint_actions": { "GROAT@.67": "ho" },
           "star": "PASLY5",
           "initial_controller": "C40",
-          "initial_altitude": 15000,
+          "initial_altitude": 22000,
           "initial_speed": 280,
-          "expect_approach": null,
+          "expect_approach": "I0L",
           "airports": ["KBNA"],
           "airlines": {
             "KBNA": [
@@ -983,96 +1152,35 @@
                 "airport": "EGLL"
               },
               {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KCMH"
               },
               {
                 "icao": "UAL",
                 "fleet": "short",
-                "airport": "KIAH"
+                "airport": "KEWR"
               },
               {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KDAL"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KDFW"
+                "icao": "ENY",
+                "fleet": "default",
+                "airport": "KDCA"
               }
             ]
           }
         }
       ]
     },
-    "RYYMN3": {
+    "PASLY.N": {
       "arrivals": [
         {
-          "spawn": "RYYMN",
-          "cruise_altitude": 19000,
-          "star": "RYYMN3",
-          "initial_controller": "C41",
-          "initial_altitude": 15000,
+          "spawn": "GROAT",
+          "waypoint_actions": { "GROAT@.67": "ho" },
+          "star": "PASLY5",
+          "initial_controller": "C40",
+          "initial_altitude": 22000,
           "initial_speed": 280,
-          "expect_approach": null,
-          "airports": ["KBNA"],
-          "airlines": {
-            "KBNA": [
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KDAL"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "NKS",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KSEA"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "SWFFT3": {
-      "arrivals": [
-        {
-          "spawn": "SWFFT",
-          "cruise_altitude": 20000,
-          "star": "SWFFT3",
-          "initial_controller": "C60",
-          "initial_altitude": 15000,
-          "initial_speed": 280,
-          "expect_approach": null,
+          "expect_approach": "I2C",
           "airports": ["KBNA"],
           "airlines": {
             "KBNA": [
@@ -1081,6 +1189,54 @@
                 "airport": "KJFK"
               },
               {
+                "icao": "WJA",
+                "airport": "CYYZ"
+              },
+              {
+                "icao": "ACA",
+                "fleet": "short",
+                "airport": "CYYZ"
+              },
+              {
+                "icao": "BAW",
+                "fleet": "long",
+                "airport": "EGLL"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "default",
+                "airport": "KCMH"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "ENY",
+                "fleet": "default",
+                "airport": "KDCA"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RYYMN.N": {
+      "arrivals": [
+        {
+          "cruise_altitude": 19000,
+          "spawn": "RANTS@.3",
+          "waypoint_actions": { "RANTS@.34": "ho" },
+          "star": "RYYMN4",
+          "initial_controller": "C41",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "expect_approach": "I2C",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
                 "icao": "AAL",
                 "fleet": "short",
                 "airport": "KDFW"
@@ -1088,7 +1244,7 @@
               {
                 "icao": "UAL",
                 "fleet": "short",
-                "airport": "KIAH"
+                "airport": "KDEN"
               },
               {
                 "icao": "DAL",
@@ -1097,15 +1253,273 @@
               },
               {
                 "icao": "SWA",
-                "airport": "KDAL"
+                "airport": "KMCI"
               },
               {
-                "icao": "FFT",
+                "icao": "SWA",
+                "airport": "KSTL"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "ASA",
+                "airport": "KSEA"
+              }
+            ]
+          }
+        },
+        {
+          "cruise_altitude": 19000,
+          "star": "RYYMN4",
+          "spawn": "RROCC",
+          "waypoint_actions": { "RROCC": "ho" },
+          "initial_controller": "C41",
+          "initial_altitude": 23000,
+          "initial_speed": 280,
+          "expect_approach": "I0R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KORD"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMDW"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KCVG"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RYYMN.S": {
+      "arrivals": [
+        {
+          "cruise_altitude": 19000,
+          "spawn": "RANTS@.3",
+          "waypoint_actions": { "RANTS@.34": "ho" },
+          "star": "RYYMN4",
+          "initial_controller": "C41",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "expect_approach": "I0R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "AAL",
+                "fleet": "short",
                 "airport": "KDFW"
               },
               {
-                "icao": "NKS",
-                "airport": "KDFW"
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMCI"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KSTL"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "ASA",
+                "airport": "KSEA"
+              }
+            ]
+          }
+        },
+        {
+          "cruise_altitude": 19000,
+          "spawn": "RROCC",
+          "waypoint_actions": { "RROCC": "ho" },
+          "star": "RYYMN4",
+          "initial_controller": "C41",
+          "initial_altitude": 23000,
+          "initial_speed": 280,
+          "expect_approach": "I0R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "UAL",
+                "fleet": "short",
+                "airport": "KORD"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMDW"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KCVG"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SWFFT.N": {
+      "arrivals": [
+        {
+          "spawn": "JAGIR@.92",
+          "star": "SWFFT3",
+          "initial_controller": "C60",
+          "initial_altitude": 25000,
+          "initial_speed": 280,
+          "expect_approach": "I2R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "JBU",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KRSW"
+              },
+              {
+                "icao": "FWK",
+                "airport": "KDJT"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KFLL"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "BAMMA",
+          "star": "SWFFT3",
+          "initial_controller": "C60",
+          "initial_altitude": 20000,
+          "initial_speed": 280,
+          "expect_approach": "I2R",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KRDU"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SWFFT.S": {
+      "arrivals": [
+        {
+          "spawn": "BAMMA",
+          "star": "SWFFT3",
+          "initial_controller": "C60",
+          "initial_altitude": 20000,
+          "initial_speed": 280,
+          "expect_approach": "I0L",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KRDU"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "JAGIR@.95",
+          "star": "SWFFT3",
+          "initial_controller": "C60",
+          "initial_altitude": 25000,
+          "initial_speed": 280,
+          "expect_approach": "I0L",
+          "airports": ["KBNA"],
+          "airlines": {
+            "KBNA": [
+              {
+                "icao": "JBU",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KRSW"
+              },
+              {
+                "icao": "FWK",
+                "airport": "KDJT"
               },
               {
                 "icao": "AAY",
@@ -1132,16 +1546,16 @@
         }
       ],
       "inbound_rates": {
-        "CHSNE3": {
+        "CHSNE.S": {
           "KBNA": 10
         },
-        "PASLY5": {
+        "PASLY.S": {
           "KBNA": 10
         },
-        "RYYMN3": {
+        "RYYMN.S": {
           "KBNA": 10
         },
-        "SWFFT3": {
+        "SWFFT.S": {
           "KBNA": 10
         }
       },
@@ -1181,16 +1595,16 @@
         }
       ],
       "inbound_rates": {
-        "CHSNE3": {
+        "CHSNE.N": {
           "KBNA": 10
         },
-        "PASLY5": {
+        "PASLY.N": {
           "KBNA": 10
         },
-        "RYYMN3": {
+        "RYYMN.N": {
           "KBNA": 10
         },
-        "SWFFT3": {
+        "SWFFT.N": {
           "KBNA": 10
         }
       },

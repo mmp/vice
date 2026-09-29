@@ -41,7 +41,7 @@
     "KCLT": {
       "approaches": {
         "I3R": {
-          "cifp_id": "I36R"
+          "cifp_id": "I36"
         }
       }
     }
@@ -121,13 +121,13 @@
         }
       ]
     },
-    "CHSLY8": {
+    "CHSLY9": {
       "arrivals": [
         {
           "waypoints": "CCV COUPN/ho ARGAL PELTS FEDOX SDAIL WLLSH CHSLY SLPOH CAATT/delete",
           "cruise_altitude": 28000,
-          "star": "CHSLY8",
-          "route": "/. COUPN CHSLY8",
+          "star": "CHSLY9",
+          "route": "/. COUPN CHSLY9",
           "initial_controller": "09",
           "initial_altitude": [28000, 30000, 32000, 34000],
           "initial_speed": 300,
@@ -555,7 +555,7 @@
           "cruise_altitude": [31000, 33000, 35000],
           "initial_controller": "09",
           "initial_speed": 300,
-          "waypoints": "MUNBE LILIC/ho KILNS DURST AUDII NOWAE Q87 HURTS/delete"
+          "waypoints": "MUNBE CAARZ/ho KILNS DURST AUDII NOWAE Q87 HURTS/delete"
         }
       ]
     }
@@ -589,7 +589,7 @@
         },
         {
           "airport": "KCLT",
-          "runway": "36R"
+          "runway": "36"
         }
       ],
       "inbound_rates": {
@@ -599,7 +599,7 @@
         "RAVNN9 - JAX": {
           "KBWI": 10
         },
-        "CHSLY8": {
+        "CHSLY9": {
           "KCLT": 10
         },
         "CAPSS4": {
