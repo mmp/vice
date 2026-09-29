@@ -513,7 +513,7 @@ func sumRateMap2(rates map[av.RunwayID]map[string]float32, scale float32) float3
 // SetLaunchConfig changes the sim's launch config. published is what
 // PublishedFlightsFor read for it.
 func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig, published []traffic.Flight) error {
-	if err := lc.Validate(); err != nil {
+	if err := s.validateLaunchConfig(lc); err != nil {
 		s.lg.Warn("rejected launch config", slog.Any("launch_config", lc))
 		return err
 	}
@@ -561,5 +561,28 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig, published []traffic.Flig
 	s.applyScheduleConfigChanges(&old, published)
 
 	s.publish()
+	return nil
+}
+
+// validateLaunchConfig adds to LaunchConfig.Validate a check that every
+// departure runway and VFR airport lc gives a rate for has launch state here
+// for SetLaunchConfig to update. A config the server built always does; one
+// from a buggy or hostile client may not.
+func (s *Sim) validateLaunchConfig(lc LaunchConfig) error {
+	if err := lc.Validate(); err != nil {
+		return err
+	}
+	for ap, rwyRates := range lc.DepartureRates {
+		for rwy := range rwyRates {
+			if s.DepartureState[ap][rwy] == nil {
+				return ErrInvalidLaunchConfig
+			}
+		}
+	}
+	for ap := range lc.VFRAirportRates {
+		if s.DepartureState[ap][av.RunwayID(s.State.VFRRunways[ap].Id)] == nil {
+			return ErrInvalidLaunchConfig
+		}
+	}
 	return nil
 }

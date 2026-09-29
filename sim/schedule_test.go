@@ -646,6 +646,43 @@ func TestSetLaunchConfigRejectsInvalidRates(t *testing.T) {
 	}
 }
 
+// A rate for a runway or VFR airport the sim doesn't launch from has no
+// launch state to update, and once dereferenced a nil one.
+func TestSetLaunchConfigRejectsUnknownRunways(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	for _, tc := range []struct {
+		name   string
+		modify func(lc *LaunchConfig)
+	}{
+		{"unknown airport", func(lc *LaunchConfig) {
+			lc.DepartureRates = map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{"KXXX": {"4": {"": 10}}}
+		}},
+		{"unknown runway", func(lc *LaunchConfig) {
+			lc.DepartureRates = map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{"KMSP": {"4": {"": 10}}}
+		}},
+		{"unknown VFR airport", func(lc *LaunchConfig) {
+			lc.VFRAirportRates = map[av.ICAOAirportCode]float32{"KXXX": 10}
+		}},
+		{"airport without VFR traffic", func(lc *LaunchConfig) {
+			lc.VFRAirportRates = map[av.ICAOAirportCode]float32{"KMSP": 10}
+		}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := scenarioScheduleTestSim(start)
+			s.DepartureState["KMSP"] = map[av.RunwayID]*RunwayLaunchState{"12L": {IFRSpawnRate: 30}}
+
+			lc := s.State.LaunchConfig
+			tc.modify(&lc)
+			if err := s.SetLaunchConfig("", lc, nil); !errors.Is(err, ErrInvalidLaunchConfig) {
+				t.Errorf("error is %v, want %v", err, ErrInvalidLaunchConfig)
+			}
+			if r := s.State.LaunchConfig.DepartureRates["KMSP"]["12L"][""]; r != 30 {
+				t.Errorf("departure rate %v after the rejected config, want 30", r)
+			}
+		})
+	}
+}
+
 // The waits for tiny rates are longer than a time.Duration holds. On amd64
 // the conversion's overflow came out negative, and schedule generation then
 // stepped backward through time forever.
