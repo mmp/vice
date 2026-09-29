@@ -104,7 +104,6 @@ type Catalog struct {
 	Facility         string
 	ARTCC            string
 	Area             string
-	Airports         []av.ICAOAirportCode // airports in this scenario group
 }
 
 type Spec struct {
@@ -153,7 +152,6 @@ func initializeSimConfigurations(sg *Group, catalogs map[string]map[string]*Cata
 		Facility:         facility,
 		ARTCC:            artcc,
 		Area:             sg.Area,
-		Airports:         util.SortedMapKeys(sg.Airports),
 	}
 
 	vfrAirports := make(map[av.ICAOAirportCode]*av.Airport)

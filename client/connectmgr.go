@@ -180,6 +180,12 @@ func (cm *ConnectionManager) Connected() bool {
 	return cm.client != nil
 }
 
+// Client returns the client for the sim the user is connected to, or nil if
+// there is none.
+func (cm *ConnectionManager) Client() *ControlClient {
+	return cm.client
+}
+
 func (cm *ConnectionManager) ConnectionStartTime() time.Time {
 	if cm.client == nil {
 		return time.Time{}

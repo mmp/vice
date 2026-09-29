@@ -458,3 +458,49 @@ func TestValidateAndAdjustDatePreservesTime(t *testing.T) {
 		t.Errorf("got %v, expected %v", date, expected)
 	}
 }
+
+func TestScenarioMatchesFilter(t *testing.T) {
+	// A departure scenario that works KJFK departures and KISP arrivals and
+	// flies KTEB departures and KLGA arrivals purely in the background.
+	spec := &scenario.Spec{
+		LaunchConfig: sim.LaunchConfig{
+			DepartureRates: map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{
+				"KJFK": {"31L": {"": 10}},
+				"KTEB": {"24": {"": 5}},
+			},
+			DepartureBackground: map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool{
+				"KTEB": {"24": {"": true}},
+			},
+			InboundFlowRates: map[string]map[string]float32{
+				"camrn": {"KLGA": 5, "KISP": 2, "overflights": 2},
+			},
+			InboundFlowBackground: map[string]map[string]bool{
+				"camrn": {"KLGA": true},
+			},
+		},
+	}
+
+	for _, test := range []struct {
+		filter string
+		match  bool
+	}{
+		{"", true},
+		{"  ", true},
+		{"JFK", true},
+		{"jfk ", true},
+		{" KJFK", true},
+		{"ISP", true},
+		{"LGA", false},
+		{"TEB", false},
+		{"liberty", true},
+		{"East ", true},
+		{"N90", true},
+		{"zny", true},
+		{"New York", true},
+		{"Boston", false},
+	} {
+		if got := scenarioMatchesFilter(test.filter, "ZNY", "N90", "Liberty East", spec); got != test.match {
+			t.Errorf("filter %q: got match %v, expected %v", test.filter, got, test.match)
+		}
+	}
+}

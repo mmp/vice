@@ -113,7 +113,11 @@ func MakeNewSimConfiguration(mgr *client.ConnectionManager, defaultFacility *str
 		NewSimRequest:   server.MakeNewSimRequest(),
 	}
 
-	c.SetFacility(*defaultFacility)
+	if cc := mgr.Client(); cc != nil {
+		c.SetScenarioByName(cc.State.Facility, cc.State.ScenarioName)
+	} else {
+		c.SetFacility(*defaultFacility)
+	}
 
 	return c
 }
@@ -134,6 +138,18 @@ func (c *NewSimConfiguration) SetFacility(name string) {
 	c.GroupName, scenarioCatalog = util.FirstSortedMapEntry(c.selectedFacilityCatalogs)
 
 	c.SetScenario(c.GroupName, scenarioCatalog.DefaultScenario)
+}
+
+// SetScenarioByName selects the named scenario in the given facility, falling
+// back to the facility's default scenario if it has none by that name.
+func (c *NewSimConfiguration) SetScenarioByName(facility, scenarioName string) {
+	c.SetFacility(facility)
+	for groupName, catalog := range util.SortedMap(c.selectedFacilityCatalogs) {
+		if _, ok := catalog.Scenarios[scenarioName]; ok {
+			c.SetScenario(groupName, scenarioName)
+			return
+		}
+	}
 }
 
 func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
@@ -390,6 +406,60 @@ func getAreaKey(facility, groupName string, catalog *scenario.Catalog) string {
 	return trimFacilityName(catalog.Area, "Area")
 }
 
+// scenarioMatchesFilter reports whether a scenario should be listed for the
+// search text filter. Besides the ARTCC, facility, and scenario names, it
+// matches the airports where a human controller works the scenario's IFR
+// traffic; airports whose traffic runs purely in the background, as an
+// enroute scenario may fly a busy airport's arrivals, don't count.
+func scenarioMatchesFilter(filter, artcc, facility, name string, spec *scenario.Spec) bool {
+	filter = strings.ToLower(strings.TrimSpace(filter))
+	if filter == "" {
+		return true
+	}
+	matches := func(s string) bool { return strings.Contains(strings.ToLower(s), filter) }
+	return matches(artcc) || matches(db.DB.ARTCCs[artcc].Name) || matches(facility) || matches(name) ||
+		util.SeqContainsFunc(maps.Keys(spec.LaunchConfig.WorkedAirportRates()),
+			func(ap av.ICAOAirportCode) bool { return matches(string(ap)) })
+}
+
+// selectClosestScenario selects the matching scenario closest to the current
+// selection: preferably one in the same area, then the same facility, then
+// the same ARTCC. Within a group, its default scenario comes first and then
+// the rest alphabetically.
+func (c *NewSimConfiguration) selectClosestScenario(catalogsByFacility map[string]map[string]*scenario.Catalog,
+	facilityARTCCs map[string]string, matching map[*scenario.Spec]bool) {
+	selectedArea := getAreaKey(c.Facility, c.GroupName, c.selectedFacilityCatalogs[c.GroupName])
+	closeness := func(facility, groupName string, catalog *scenario.Catalog) int {
+		if facility == c.Facility {
+			return util.Select(getAreaKey(facility, groupName, catalog) == selectedArea, 3, 2)
+		}
+		return util.Select(facilityARTCCs[facility] == facilityARTCCs[c.Facility], 1, 0)
+	}
+
+	bestCloseness := -1
+	var bestFacility, bestGroup, bestScenario string
+	for facility, catalogs := range util.SortedMap(catalogsByFacility) {
+		for groupName, catalog := range util.SortedMap(catalogs) {
+			cl := closeness(facility, groupName, catalog)
+			if cl <= bestCloseness {
+				continue
+			}
+			names := append([]string{catalog.DefaultScenario}, util.SortedMapKeys(catalog.Scenarios)...)
+			if i := slices.IndexFunc(names, func(name string) bool { return matching[catalog.Scenarios[name]] }); i != -1 {
+				bestCloseness, bestFacility, bestGroup, bestScenario = cl, facility, groupName, names[i]
+			}
+		}
+	}
+	if bestCloseness == -1 {
+		return
+	}
+
+	if bestFacility != c.Facility {
+		c.SetFacility(bestFacility)
+	}
+	c.SetScenario(bestGroup, bestScenario)
+}
+
 // DrawScenarioSelectionUI draws Screen 1: scenario selection, sim type choice, and join flow UI
 func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, config *Config) bool {
 	if err := c.mgr.UpdateRunningSims(); err != nil {
@@ -424,7 +494,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			doButton := func(ty newSimType, srv *client.Server) {
 				if imgui.RadioButtonIntPtr(ty.String(), (*int32)(&c.newSimType), int32(ty)) && origType != ty {
 					c.selectedServer = srv
-					c.SetFacility(c.Facility)
+					c.SetScenarioByName(c.Facility, c.ScenarioName)
 					c.displayError = nil
 				}
 			}
@@ -473,7 +543,6 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 	type scenarioInfo struct {
 		groupName    string
 		scenarioName string
-		spec         *scenario.Spec
 	}
 
 	if c.newSimType == NewSimCreateLocal || c.newSimType == NewSimCreateRemote {
@@ -490,67 +559,6 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		}
 		imgui.Spacing()
 
-		// Precompute lowercased filter text once for all filter checks
-		filterLower := strings.ToLower(c.filterText)
-
-		// Helper to check if text matches filter
-		matchesFilter := func(text string) bool {
-			if filterLower == "" {
-				return true
-			}
-			return strings.Contains(strings.ToLower(text), filterLower)
-		}
-
-		// Helper to check if a catalog has matching airports
-		catalogHasMatchingAirport := func(catalog *scenario.Catalog) bool {
-			return filterLower == "" || util.SeqContainsFunc(slices.Values(catalog.Airports),
-				func(ap av.ICAOAirportCode) bool { return strings.Contains(strings.ToLower(string(ap)), filterLower) })
-		}
-
-		// Helper to check if a catalog has matching scenario names
-		catalogHasMatchingScenario := func(catalog *scenario.Catalog) bool {
-			return filterLower == "" || util.SeqContainsFunc(maps.Keys(catalog.Scenarios),
-				func(scenarioName string) bool { return strings.Contains(strings.ToLower(scenarioName), filterLower) })
-		}
-
-		// Helper to check if a catalog matches the filter (name, facility, airports, or scenarios)
-		catalogMatchesFilter := func(catalog *scenario.Catalog) bool {
-			if filterLower == "" {
-				return true
-			}
-			// Check airports in the catalog
-			if catalogHasMatchingAirport(catalog) {
-				return true
-			}
-			// Check facility name
-			if matchesFilter(catalog.Facility) {
-				return true
-			}
-			// Check scenario names
-			if catalogHasMatchingScenario(catalog) {
-				return true
-			}
-			return false
-		}
-
-		// Helper to check if any catalog in a facility matches
-		facilityMatchesFilter := func(facility string, catalogs map[string]*scenario.Catalog) bool {
-			if filterLower == "" {
-				return true
-			}
-			// Check facility name
-			if matchesFilter(facility) {
-				return true
-			}
-			// Check catalogs (airports and scenario names)
-			for _, catalog := range catalogs {
-				if catalogHasMatchingAirport(catalog) || catalogHasMatchingScenario(catalog) {
-					return true
-				}
-			}
-			return false
-		}
-
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
 		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 700, tableScale * 500}, 0.) {
@@ -563,115 +571,36 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			// Build facility data structures
 			catalogsByFacility := c.selectedServer.GetScenarioCatalogs()
 			allFacilities := util.SortedMapKeys(catalogsByFacility)
-			facilityCatalogs := make(map[string]*scenario.Catalog, len(catalogsByFacility))
+			facilityARTCCs := make(map[string]string, len(catalogsByFacility))
 			for facility, catalogs := range catalogsByFacility {
-				for _, cfg := range catalogs {
-					facilityCatalogs[facility] = cfg
-					break
-				}
+				_, catalog := util.FirstSortedMapEntry(catalogs)
+				facilityARTCCs[facility] = getARTCCForFacility(facility, catalog)
 			}
 
-			// Collect unique ARTCCs and track which ones match the filter
-			artccs := make(map[string]struct{})
-			matchingARTCCs := make(map[string]struct{})
-			matchingFacilities := make(map[string]struct{})
-			// Track groups that have matching scenarios specifically
-			type facilityGroup struct {
-				facility  string
-				groupName string
-			}
-			var matchingGroups []facilityGroup
-			// Helper to check if an ARTCC matches the filter
-			artccMatchesFilter := func(artcc string) bool {
-				if filterLower == "" {
-					return true
-				}
-				if matchesFilter(artcc) {
-					return true
-				}
-				// Also check the ARTCC's full name
-				if artccInfo, ok := db.DB.ARTCCs[artcc]; ok {
-					if matchesFilter(artccInfo.Name) {
-						return true
-					}
-				}
-				return false
-			}
-
+			// Only the scenarios that match the filter are listed, along
+			// with the groups, facilities, and ARTCCs that hold them.
+			matchingScenarios := make(map[*scenario.Spec]bool)
+			matchingGroups := make(map[*scenario.Catalog]bool)
+			matchingFacilities := make(map[string]bool)
+			matchingARTCCs := make(map[string]bool)
 			for facility, catalogs := range catalogsByFacility {
-				info := facilityCatalogs[facility]
-				if info == nil {
-					continue
-				}
-				artcc := getARTCCForFacility(facility, info)
-				artccs[artcc] = struct{}{}
-
-				// Check if this facility matches the filter (including ARTCC name)
-				if facilityMatchesFilter(facility, catalogs) || artccMatchesFilter(artcc) {
-					matchingARTCCs[artcc] = struct{}{}
-					matchingFacilities[facility] = struct{}{}
-				}
-
-				// Track groups with matching scenarios
-				if filterLower != "" {
-					for groupName, catalog := range catalogs {
-						if catalogHasMatchingScenario(catalog) {
-							matchingGroups = append(matchingGroups, facilityGroup{facility, groupName})
+				artcc := facilityARTCCs[facility]
+				for _, catalog := range catalogs {
+					for name, spec := range catalog.Scenarios {
+						if scenarioMatchesFilter(c.filterText, artcc, facility, name, spec) {
+							matchingScenarios[spec] = true
+							matchingGroups[catalog] = true
+							matchingFacilities[facility] = true
+							matchingARTCCs[artcc] = true
 						}
 					}
 				}
 			}
 
-			// Auto-select ARTCC if only one matches the filter
-			selectedARTCC := ""
-			if c.Facility != "" {
-				selectedARTCC = getARTCCForFacility(c.Facility, facilityCatalogs[c.Facility])
+			if len(matchingScenarios) > 0 && !matchingScenarios[c.ScenarioSpec] {
+				c.selectClosestScenario(catalogsByFacility, facilityARTCCs, matchingScenarios)
 			}
-			if filterLower != "" && len(matchingARTCCs) == 1 {
-				for artcc := range matchingARTCCs {
-					if artcc != selectedARTCC {
-						// Find first matching facility in this ARTCC and select it
-						for facility := range matchingFacilities {
-							if getARTCCForFacility(facility, facilityCatalogs[facility]) == artcc {
-								c.SetFacility(facility)
-								selectedARTCC = artcc
-								break
-							}
-						}
-					}
-					break
-				}
-			}
-
-			// Auto-select facility if only one matches within the selected ARTCC
-			if filterLower != "" && selectedARTCC != "" {
-				var matchingInARTCC []string
-				for facility := range matchingFacilities {
-					if getARTCCForFacility(facility, facilityCatalogs[facility]) == selectedARTCC {
-						matchingInARTCC = append(matchingInARTCC, facility)
-					}
-				}
-				if len(matchingInARTCC) == 1 && matchingInARTCC[0] != c.Facility {
-					c.SetFacility(matchingInARTCC[0])
-				}
-			}
-
-			// Ensure we have a group with matching scenarios selected, but only if the
-			// current ARTCC doesn't have any matching facilities (respect user's ARTCC choice)
-			_, currentARTCCHasMatches := matchingARTCCs[selectedARTCC]
-			if filterLower != "" && len(matchingGroups) > 0 && !currentARTCCHasMatches {
-				// Sort for deterministic selection
-				sort.Slice(matchingGroups, func(i, j int) bool {
-					if matchingGroups[i].facility != matchingGroups[j].facility {
-						return matchingGroups[i].facility < matchingGroups[j].facility
-					}
-					return matchingGroups[i].groupName < matchingGroups[j].groupName
-				})
-				fg := matchingGroups[0]
-				c.SetFacility(fg.facility)
-				c.SetScenario(fg.groupName, c.selectedFacilityCatalogs[fg.groupName].DefaultScenario)
-				selectedARTCC = getARTCCForFacility(fg.facility, facilityCatalogs[fg.facility])
-			}
+			selectedARTCC := facilityARTCCs[c.Facility]
 
 			// Calculate proportional column widths: 25%, 25%, 50%
 			totalWidth := tableScale * 700
@@ -683,37 +612,17 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			// Column 1: ARTCC list
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("artccs", imgui.Vec2{artccWidth, columnHeight}, 0, 0) {
-				for artcc := range util.SortedMap(artccs) {
+				for _, artcc := range util.SortedMapKeys(matchingARTCCs) {
 					name := trimFacilityName(db.DB.ARTCCs[artcc].Name, "ARTCC")
 					if name == "" {
 						name = artcc
 					}
 					label := fmt.Sprintf("%s (%s)", artcc, name)
-					// Filter: show if name matches or if any facility in this ARTCC has matching airports
-					_, artccMatches := matchingARTCCs[artcc]
-					if filterLower != "" && !artccMatches && !matchesFilter(artcc) && !matchesFilter(name) {
-						continue
-					}
 					if imgui.SelectableBoolV(label, artcc == selectedARTCC, 0, imgui.Vec2{}) && artcc != selectedARTCC {
-						// Find first matching facility in this ARTCC
-						var facilityToSelect string
-						for facility := range matchingFacilities {
-							if getARTCCForFacility(facility, facilityCatalogs[facility]) == artcc {
-								facilityToSelect = facility
-								break
-							}
-						}
-						if facilityToSelect == "" {
-							// No matching facility, just pick the first one
-							for _, facility := range allFacilities {
-								if getARTCCForFacility(facility, facilityCatalogs[facility]) == artcc {
-									facilityToSelect = facility
-									break
-								}
-							}
-						}
-						if facilityToSelect != "" {
-							c.SetFacility(facilityToSelect)
+						if i := slices.IndexFunc(allFacilities, func(facility string) bool {
+							return facilityARTCCs[facility] == artcc && matchingFacilities[facility]
+						}); i != -1 {
+							c.SetFacility(allFacilities[i])
 							selectedARTCC = artcc // Update for this frame
 						}
 					}
@@ -725,33 +634,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("tracons/areas", imgui.Vec2{traconWidth, columnHeight}, 0, 0) {
 				for _, facility := range allFacilities {
-					info := facilityCatalogs[facility]
-					if info == nil {
-						continue
-					}
-					artcc := getARTCCForFacility(facility, info)
-					if selectedARTCC != "" && artcc != selectedARTCC {
-						continue
-					}
-
-					// Build area/group structure for this facility, only including matching catalogs
-					catalogs := catalogsByFacility[facility]
-					isTRACON := db.DB.IsTRACON(facility)
-					areaToGroups := make(map[string]*areaInfo)
-
-					for groupName, gcfg := range catalogs {
-						// Skip catalogs that don't match the filter (unless ARTCC matches)
-						if filterLower != "" && !catalogMatchesFilter(gcfg) && !artccMatchesFilter(artcc) {
-							continue
-						}
-						area := getAreaKey(facility, groupName, gcfg)
-						if areaToGroups[area] == nil {
-							areaToGroups[area] = &areaInfo{area: area}
-						}
-						areaToGroups[area].groupNames = append(areaToGroups[area].groupNames, groupName)
-					}
-
-					if len(areaToGroups) == 0 {
+					if facilityARTCCs[facility] != selectedARTCC || !matchingFacilities[facility] {
 						continue
 					}
 
@@ -763,6 +646,20 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 					// Display sub-items (groups for TRACONs, areas for ARTCCs)
 					if facility == c.Facility {
+						catalogs := catalogsByFacility[facility]
+						isTRACON := db.DB.IsTRACON(facility)
+						areaToGroups := make(map[string]*areaInfo)
+						for groupName, catalog := range util.SortedMap(catalogs) {
+							if !matchingGroups[catalog] {
+								continue
+							}
+							area := getAreaKey(facility, groupName, catalog)
+							if areaToGroups[area] == nil {
+								areaToGroups[area] = &areaInfo{area: area}
+							}
+							areaToGroups[area].groupNames = append(areaToGroups[area].groupNames, groupName)
+						}
+
 						for aInfo := range util.SortedMapValues(areaToGroups) {
 							// For TRACONs, just show group names; for ARTCCs, show area names
 							itemLabel := indentSpaces + aInfo.area
@@ -790,23 +687,14 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 				if selectedCatalog != nil {
 					selectedArea := getAreaKey(c.Facility, c.GroupName, selectedCatalog)
 
-					// Collect all scenarios from groups with the same area
-					type scenarioWithCatalog struct {
-						scenarioInfo
-						catalog *scenario.Catalog
-					}
-					var allScenarios []scenarioWithCatalog
+					// Collect the matching scenarios from all groups in the same area
+					var allScenarios []scenarioInfo
 					for groupName, group := range c.selectedFacilityCatalogs {
 						if getAreaKey(c.Facility, groupName, group) == selectedArea {
 							for name, spec := range group.Scenarios {
-								allScenarios = append(allScenarios, scenarioWithCatalog{
-									scenarioInfo: scenarioInfo{
-										groupName:    groupName,
-										scenarioName: name,
-										spec:         spec,
-									},
-									catalog: group,
-								})
+								if matchingScenarios[spec] {
+									allScenarios = append(allScenarios, scenarioInfo{groupName: groupName, scenarioName: name})
+								}
 							}
 						}
 					}
@@ -816,16 +704,6 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 						return allScenarios[i].scenarioName < allScenarios[j].scenarioName
 					})
 					for _, s := range allScenarios {
-						// Filter scenarios: show if this specific scenario name matches, OR
-						// if the catalog has a matching airport/facility name (but NOT because
-						// another scenario in the catalog matches), OR if the ARTCC matches
-						if filterLower != "" &&
-							!matchesFilter(s.scenarioName) &&
-							!catalogHasMatchingAirport(s.catalog) &&
-							!matchesFilter(s.catalog.Facility) &&
-							!artccMatchesFilter(selectedARTCC) {
-							continue
-						}
 						selected := s.groupName == c.GroupName && s.scenarioName == c.ScenarioName
 						if imgui.SelectableBoolV(s.scenarioName, selected, 0, imgui.Vec2{}) {
 							c.SetScenario(s.groupName, s.scenarioName)
