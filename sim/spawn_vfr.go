@@ -264,7 +264,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 
 	mid := math.Mid2f(depap.Location, arrap.Location)
 	if arrive == depart {
-		dist := float32(s.Rand.IntRange(10, 30))
+		dist = float32(s.Rand.IntRange(10, 30))
 		// Bias heading to within ±90° of the departure runway heading so
 		// the aircraft flies away from the airport before sightseeing,
 		// rather than immediately looping back over the field.
