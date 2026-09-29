@@ -54,31 +54,38 @@ func (lc *LaunchConfig) patternSpawnRate() float32 {
 	return scaleRate(nominalPatternSpawnRate, lc.VFRDepartureRateScale)
 }
 
-// bestRunwayForWind returns the runway id best aligned with the current
-// wind at the given airport. It returns "" if the airport is unknown or
-// has no runways.
-func (s *Sim) bestRunwayForWind(airport av.ICAOAirportCode) string {
-	if rwy, _, ok := s.currentVFRRunway(airport); ok {
+// vfrRunwayId returns the id of the airport's VFR runway, or "" if it has
+// none.
+func (s *Sim) vfrRunwayId(airport av.ICAOAirportCode) string {
+	if rwy, _, ok := s.vfrRunway(airport); ok {
 		return rwy.Id
 	}
 	return ""
 }
 
-// currentVFRRunway returns the best runway for VFR operations at the given
-// airport based on current wind conditions. This ensures pattern aircraft
-// and VFR arrivals always agree on runway selection.
-func (s *Sim) currentVFRRunway(airport av.ICAOAirportCode) (rwy, opp av.Runway, ok bool) {
-	faaAP, found := db.DB.Airports[airport]
-	if !found {
-		return av.Runway{}, av.Runway{}, false
+// vfrRunway returns the runway VFR traffic uses at the given airport, along
+// with its opposite end. Like the IFR runway configuration, it doesn't change
+// during the sim: airports with VFR departures have theirs chosen from the
+// wind when the sim is created and any other airport from the wind the first
+// time it's needed there, so that pattern aircraft, VFR departures, and VFR
+// arrivals always agree on it.
+func (s *Sim) vfrRunway(airport av.ICAOAirportCode) (rwy, opp av.Runway, ok bool) {
+	rwy, ok = s.State.VFRRunways[airport]
+	if !ok {
+		faaAP, found := db.DB.Airports[airport]
+		if !found {
+			return av.Runway{}, av.Runway{}, false
+		}
+		as := s.wxModel.Lookup(faaAP.Location, float32(faaAP.Elevation), s.State.SimTime.Time())
+		r, _ := faaAP.SelectBestRunway(as.WindDirection(), s.State.MagneticVariation)
+		if r == nil {
+			return av.Runway{}, av.Runway{}, false
+		}
+		rwy = *r
+		s.State.VFRRunways[airport] = rwy
 	}
-
-	as := s.wxModel.Lookup(faaAP.Location, float32(faaAP.Elevation), s.State.SimTime.Time())
-	r, o := faaAP.SelectBestRunway(as.WindDirection(), s.State.MagneticVariation)
-	if r == nil || o == nil {
-		return av.Runway{}, av.Runway{}, false
-	}
-	return *r, *o, true
+	opp, ok = av.LookupOppositeRunway(db.Lookups{}, airport, rwy.Id)
+	return rwy, opp, ok
 }
 
 // patternBuilder creates waypoints offset from a runway threshold.
@@ -208,8 +215,7 @@ func (s *Sim) spawnPatternAircraft() {
 			continue
 		}
 
-		// Use current wind for runway selection.
-		rwy, opp, ok := s.currentVFRRunway(name)
+		rwy, opp, ok := s.vfrRunway(name)
 		if !ok {
 			continue
 		}
@@ -389,7 +395,7 @@ func (s *Sim) patternConflictsWithLaunch(airport av.ICAOAirportCode) bool {
 		case PatternUpwind:
 			// Block if the aircraft is still close to the threshold
 			if ac, ok := s.Aircraft[pa.ADSBCallsign]; ok {
-				rwy, _, rok := s.currentVFRRunway(airport)
+				rwy, _, rok := s.vfrRunway(airport)
 				if rok && math.NMDistance2LL(ac.Position(), rwy.Threshold) < 1 {
 					return true
 				}
@@ -411,8 +417,7 @@ func (s *Sim) resetPatternLap(ac *Aircraft) {
 		return
 	}
 
-	// Use current wind; the runway may have changed since the last lap.
-	rwy, opp, ok := s.currentVFRRunway(airport)
+	rwy, opp, ok := s.vfrRunway(airport)
 	if !ok {
 		s.lg.Warn("no runway for pattern reset", slog.String("airport", string(airport)))
 		return
@@ -498,7 +503,7 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 // a 45-degree entry to downwind depending on the angle it's coming from and
 // whether the final is clear.
 func (s *Sim) enterPattern(ac *Aircraft, airport av.ICAOAirportCode) {
-	rwy, opp, ok := s.currentVFRRunway(airport)
+	rwy, opp, ok := s.vfrRunway(airport)
 	if !ok {
 		s.lg.Warn("enterPattern: no runway", slog.String("airport", string(airport)))
 		return
@@ -680,7 +685,7 @@ func (s *Sim) finalClear(airport av.ICAOAirportCode) bool {
 // side) near TPA. The center and altitude are randomized slightly so
 // multiple arrivals don't stack on top of each other.
 func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
-	rwy, _, ok := s.currentVFRRunway(airport)
+	rwy, _, ok := s.vfrRunway(airport)
 	if !ok {
 		return nil
 	}

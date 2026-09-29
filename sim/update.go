@@ -283,7 +283,7 @@ func (s *Sim) deleteAtWaypoint(ac *Aircraft, wp av.Waypoint) {
 	if ac.TouchAndGosRemaining > 0 {
 		ac.TouchAndGosRemaining--
 
-		runway := s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
+		runway := s.vfrRunwayId(ac.FlightPlan.ArrivalAirport)
 		s.recordPatternTouchAndGo(ac, ac.FlightPlan.ArrivalAirport, runway)
 		s.resetPatternLap(ac)
 		s.lg.Debug("pattern touch-and-go", slog.String("callsign", string(ac.ADSBCallsign)),
@@ -293,7 +293,7 @@ func (s *Sim) deleteAtWaypoint(ac *Aircraft, wp av.Waypoint) {
 
 	reason := DeleteAtWaypoint
 	if wp.VFRPhase != av.VFRPhaseNone {
-		s.recordArrivalLanding(ac, s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport))
+		s.recordArrivalLanding(ac, s.vfrRunwayId(ac.FlightPlan.ArrivalAirport))
 		reason = DeleteLanded
 	}
 	s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", wp))
@@ -316,7 +316,7 @@ func (s *Sim) landAtWaypoint(ac *Aircraft, wp av.Waypoint) bool {
 	if ac.Nav.Approach.Assigned != nil {
 		runway = ac.Nav.Approach.Assigned.Runway
 	} else {
-		runway = s.bestRunwayForWind(ac.FlightPlan.ArrivalAirport)
+		runway = s.vfrRunwayId(ac.FlightPlan.ArrivalAirport)
 	}
 	s.lg.Debug("landing at waypoint", slog.Any("waypoint", wp))
 	s.recordArrivalLanding(ac, runway)

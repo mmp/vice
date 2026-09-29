@@ -58,7 +58,7 @@ var errNoVFRDestination = errors.New("no VFR destination airport is accepting ar
 
 // spawnVFRDepartures spawns rate-based VFR departures. VFR traffic isn't part
 // of the pregenerated schedule: its destinations depend on live arrival
-// congestion and its routes on the wind-selected runway.
+// congestion.
 func (s *Sim) spawnVFRDepartures() {
 	if s.State.LaunchConfig.DepartureMode != LaunchAutomatic {
 		return
@@ -252,9 +252,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	callsigns []av.ADSBCallsign) (*Aircraft, error) {
 	simTime := s.State.SimTime
 	depap, arrap := db.DB.Airports[depart], db.DB.Airports[arrive]
-	rwy, _, ok := s.currentVFRRunway(depart)
+	rwy, _, ok := s.vfrRunway(depart)
 	if !ok {
-		return nil, fmt.Errorf("%s: unable to find current VFR runway", depart)
+		return nil, fmt.Errorf("%s: unable to find VFR runway", depart)
 	}
 
 	// Nothing else about the candidate matters if there is no room to get

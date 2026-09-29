@@ -76,7 +76,7 @@ type CommonState struct {
 	DepartureAirports map[av.ICAOAirportCode]any
 	ArrivalAirports   map[av.ICAOAirportCode]any
 	Fixes             map[string]math.Point2LL
-	VFRRunways        map[av.ICAOAirportCode]av.Runway // assume just one runway per airport
+	VFRRunways        map[av.ICAOAirportCode]av.Runway // fixed for the sim; see Sim.vfrRunway
 
 	ConfigurationId string // Short identifier for the configuration (from scenario's "configuration" field)
 

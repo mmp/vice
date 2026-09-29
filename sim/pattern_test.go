@@ -5,10 +5,12 @@
 package sim
 
 import (
+	"slices"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/nav"
 )
 
@@ -134,5 +136,37 @@ func TestPatternAircraftOnDownwindBlocksAdmission(t *testing.T) {
 	admit := s.holdingArrivalsToAdmit()
 	if len(admit) != 1 || admit[0] != holding {
 		t.Errorf("admitted %v, expected just N111", admit)
+	}
+}
+
+// TestVFRRunwayIsLocked checks that an airport's VFR runway doesn't follow the
+// wind: one chosen when the sim was created stays in use whatever the wind is
+// now, and an airport without one has it chosen the first time it's needed and
+// keeps it.
+func TestVFRRunwayIsLocked(t *testing.T) {
+	s := NewTestSim(testLogger())
+
+	fcm := db.DB.Airports["KFCM"]
+	wx := s.wxModel.Lookup(fcm.Location, float32(fcm.Elevation), s.State.SimTime.Time())
+	windRwy, _ := fcm.SelectBestRunway(wx.WindDirection(), s.State.MagneticVariation)
+	locked := fcm.Runways[slices.IndexFunc(fcm.Runways, func(r av.Runway) bool {
+		_, ok := av.LookupOppositeRunway(db.Lookups{}, "KFCM", r.Id)
+		return ok && r.Id != windRwy.Id
+	})]
+	s.State.VFRRunways["KFCM"] = locked
+
+	rwy, opp, ok := s.vfrRunway("KFCM")
+	wantOpp, _ := av.LookupOppositeRunway(db.Lookups{}, "KFCM", locked.Id)
+	if !ok || rwy.Id != locked.Id || opp.Id != wantOpp.Id {
+		t.Errorf("KFCM VFR runway is %s/%s (ok %v), want the locked %s/%s", rwy.Id, opp.Id, ok,
+			locked.Id, wantOpp.Id)
+	}
+
+	rwy, _, ok = s.vfrRunway("KANE")
+	if !ok {
+		t.Fatal("KANE has no VFR runway")
+	}
+	if got, ok := s.State.VFRRunways["KANE"]; !ok || got.Id != rwy.Id {
+		t.Errorf("KANE VFR runway %s wasn't locked; have %q", rwy.Id, got.Id)
 	}
 }
