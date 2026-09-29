@@ -30,6 +30,10 @@ type Scenario struct {
 	// configuration's is used.
 	DefaultConsolidation sim.PositionConsolidation `json:"default_consolidation,omitempty"`
 
+	// ListedPositions optionally replaces the referenced facility
+	// configuration's and the facility's "listed_positions".
+	ListedPositions map[sim.TCP]string `json:"listed_positions,omitempty"`
+
 	// VirtualControllers is auto-derived at runtime from the facility config
 	// and scenario routes; it is NOT read from JSON.
 	VirtualControllers []sim.TCP `json:"-"`

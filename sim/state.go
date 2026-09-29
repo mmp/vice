@@ -80,6 +80,10 @@ type CommonState struct {
 
 	ConfigurationId string // Short identifier for the configuration (from scenario's "configuration" field)
 
+	// ListedPositions maps the positions that the scenario info window lists
+	// besides the human ones to descriptions of their roles; nil lists them all.
+	ListedPositions map[ControlPosition]string
+
 	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
 	DepartureRunways []DepartureRunway
@@ -301,6 +305,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		VFRRunways:  make(map[av.ICAOAirportCode]av.Runway),
 
 		ConfigurationId: config.ConfigurationId,
+		ListedPositions: maps.Clone(config.ControllerConfiguration.ListedPositions),
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,

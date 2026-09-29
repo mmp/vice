@@ -1696,6 +1696,16 @@
                                   that handles them. This determines where handoffs of inbound aircraft go.</td>
                               </tr>
                               <tr>
+                                <td>"listed_positions"</td>
+                                <td>Map of strings to strings</td>
+                                <td>(<i>Optional</i>) The control positions listed in the scenario information window
+                                  for scenarios that use this configuration, mapped to descriptions of their roles.
+                                  The format is the same as the facility-level
+                                  <a href="#fe-config-common">"listed_positions"</a>, which this replaces rather than
+                                  adds to. A scenario may in turn replace it with its own
+                                  <a href="#fe-scenarios">"listed_positions"</a>.</td>
+                              </tr>
+                              <tr>
                                 <td>"scratchpad_leader_line_directions"</td>
                                 <td>Map of strings to strings</td>
                                 <td>(<i>Optional</i>) Maps
@@ -1818,6 +1828,21 @@
                           </table>
                         </details>
                     </td></tr>
+                    <tr>
+                      <td>"listed_positions"</td>
+                      <td>Map of strings to strings</td>
+                      <td>(<i>Optional</i>) The control positions listed in the "Controllers" section of the
+                        scenario information window. Each key is a position and its value is a description of the
+                        position's role, which may be empty: for example,
+                        <code>{"5E": "Liberty departure: East and North gate departures", "4J": ""}</code>.
+                        Positions at neighboring facilities are written as they are for handoffs.
+                        Positions covered by humans are always listed; an entry for one just adds its description.
+                        This is used only for scenarios that don't specify their own
+                        <a href="#fe-scenarios">"listed_positions"</a> and whose
+                        <a href="#fe-config-common">"configurations"</a> entry doesn't either; only one of the three
+                        is used and they are not merged. If none of them is given, all of the facility's and its
+                        neighbors' positions are listed.</td>
+                    </tr>
                     <tr>
                       <td>"max_distance"</td>
                       <td>Number</td>
@@ -6285,6 +6310,15 @@
                       It can be useful to specify a rate of zero—in this case, the inbound flow
                       will still be included in the UI shown to the user, which allows the user to enable it.
                     </td>
+                  </tr>
+                  <tr>
+                    <td>"listed_positions"</td>
+                    <td>Map of strings to strings</td>
+                    <td>(<i>Optional</i>) The control positions listed in the scenario information window, mapped
+                      to descriptions of their roles, in the same format as
+                      <a href="#fe-config-common">"listed_positions"</a> in "facility_adaptations".
+                      When given, it replaces the "listed_positions" of the scenario's
+                      <a href="#fe-scenarios">"configuration"</a> and of the facility; they are not merged.</td>
                   </tr>
                   <tr>
                     <td>"ldb_altitude_limits"</td>

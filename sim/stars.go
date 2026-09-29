@@ -27,6 +27,11 @@ type FacilityConfiguration struct {
 	GoAroundAssignments  map[string]TCP        `json:"go_around_assignments"`
 	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
 
+	// ListedPositions maps the positions that the scenario info window lists,
+	// besides the human ones, to optional descriptions of their roles. A
+	// scenario's own "listed_positions" replaces it.
+	ListedPositions map[TCP]string `json:"listed_positions"`
+
 	// ScratchpadLeaderLineDirectionStrings is the JSON-facing map from
 	// primary scratchpad values to cardinal/ordinal direction strings
 	// (e.g. "N", "NE", "SW"). Resolved into ScratchpadLeaderLineDirections
@@ -41,6 +46,11 @@ type FacilityAdaptation struct {
 	// Configurations maps config IDs (max 3 chars) to facility configurations.
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
 	Configurations map[string]*FacilityConfiguration `json:"configurations"`
+
+	// ListedPositions is the facility-wide default for
+	// FacilityConfiguration.ListedPositions, used when neither the scenario
+	// nor its configuration gives one.
+	ListedPositions map[TCP]string `json:"listed_positions"`
 
 	AirspaceAwareness []AirspaceAwareness                  `json:"airspace_awareness"`
 	VideoMapLabels    map[string]string                    `json:"map_labels"`

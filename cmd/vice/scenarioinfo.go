@@ -5,7 +5,7 @@
 package main
 
 import (
-	"fmt"
+	"cmp"
 	"maps"
 	"slices"
 	"strings"
@@ -16,7 +16,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/scope"
-	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -38,23 +37,32 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 		// Make big(ish) tables somewhat more legible
 		tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 			imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-		if imgui.BeginTableV("controllers", 4, tableFlags, imgui.Vec2{}, 0) {
-			imgui.TableSetupColumn("Workstation")
+		if imgui.BeginTableV("controllers", 6, tableFlags, imgui.Vec2{}, 0) {
+			imgui.TableSetupColumn("Position")
 			imgui.TableSetupColumn("Name")
+			imgui.TableSetupColumn("Frequency")
 			imgui.TableSetupColumn("Human")
-			imgui.TableSetupColumn("Positions")
+			imgui.TableSetupColumn("Covering")
+			imgui.TableSetupColumn("Role")
 			imgui.TableHeadersRow()
+
+			label := func(pos av.ControlPosition) string { return controllerDisplayLabel(c.State.Controllers, pos) }
 
 			// First the potentially-human-controlled ones
 			tcws := util.SortedMapKeys(c.State.CurrentConsolidation)
 			coveredPositions := make(map[av.ControlPosition]struct{})
 			for _, tcw := range tcws {
+				tcp := av.ControlPosition(tcw)
+				ctrl := c.State.Controllers[tcp]
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(controllerDisplayLabel(c.State.Controllers, av.ControlPosition(tcw)))
+				imgui.Text(label(tcp))
 
 				imgui.TableNextColumn()
-				imgui.Text(c.State.Controllers[av.ControlPosition(tcw)].Callsign)
+				imgui.Text(ctrl.Callsign)
+
+				imgui.TableNextColumn()
+				imgui.Text(ctrl.Frequency.String())
 
 				imgui.TableNextColumn()
 				sq := gui.Icons.CheckSquare
@@ -67,41 +75,33 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 				imgui.Text(sq)
 
 				imgui.TableNextColumn()
-				if cons, ok := c.State.CurrentConsolidation[tcw]; ok {
-					var p []string
-					for _, pos := range cons.OwnedPositions() {
-						coveredPositions[pos] = struct{}{}
-						ctrl := c.State.Controllers[pos]
-						p = append(p, fmt.Sprintf("%s (%s, %s)",
-							controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()),
-							ctrl.Position,
-							ctrl.Frequency.String(),
-						))
+				var covering []string
+				for _, pos := range c.State.CurrentConsolidation[tcw].OwnedPositions() {
+					coveredPositions[pos] = struct{}{}
+					if pos != tcp {
+						covering = append(covering, label(pos))
 					}
-
-					var s strings.Builder
-					for len(p) > 3 {
-						s.WriteString(strings.Join(p[:3], ", ") + "\n")
-						p = p[3:]
-					}
-					s.WriteString(strings.Join(p, ", "))
-					imgui.Text(s.String())
 				}
+				var lines []string
+				for chunk := range slices.Chunk(covering, 8) {
+					lines = append(lines, strings.Join(chunk, ", "))
+				}
+				imgui.Text(strings.Join(lines, "\n"))
+
+				imgui.TableNextColumn()
+				imgui.Text(c.State.ListedPositions[tcp])
 			}
 
+			others := slices.Collect(maps.Keys(c.State.ListedPositions))
+			if c.State.ListedPositions == nil {
+				others = slices.Collect(maps.Keys(c.State.Controllers))
+			}
 			// Sort 2-char before 3-char and then alphabetically
-			sorted := slices.Collect(maps.Keys(c.State.Controllers))
-			slices.SortFunc(sorted, func(a, b sim.TCP) int {
-				if len(a) < len(b) {
-					return -1
-				} else if len(a) > len(b) {
-					return 1
-				} else {
-					return strings.Compare(string(a), string(b))
-				}
+			slices.SortFunc(others, func(a, b av.ControlPosition) int {
+				return cmp.Or(cmp.Compare(len(a), len(b)), strings.Compare(string(a), string(b)))
 			})
 
-			for _, pos := range sorted {
+			for _, pos := range others {
 				if _, ok := coveredPositions[pos]; ok {
 					continue
 				}
@@ -109,16 +109,15 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 				ctrl := c.State.Controllers[pos]
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()))
+				imgui.Text(label(pos))
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Callsign)
 				imgui.TableNextColumn()
+				imgui.Text(ctrl.Frequency.String())
 				imgui.TableNextColumn()
-				imgui.Text(fmt.Sprintf("%s (%s, %s)",
-					controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()),
-					ctrl.Position,
-					ctrl.Frequency.String(),
-				))
+				imgui.TableNextColumn()
+				imgui.TableNextColumn()
+				imgui.Text(c.State.ListedPositions[pos])
 			}
 
 			imgui.EndTable()

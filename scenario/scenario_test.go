@@ -5,6 +5,7 @@
 package scenario
 
 import (
+	"maps"
 	"reflect"
 	"slices"
 	"strings"
@@ -222,5 +223,55 @@ func TestLocationFieldsAreTextUntilFinalized(t *testing.T) {
 			t.Errorf("%s is a math.Point2LL that JSON writes into; it should be an "+
 				"av.ScenarioPoint2LL resolved when the scenario is finalized", f)
 		}
+	}
+}
+
+// TestListedPositions verifies that the scenario's "listed_positions" beats
+// its configuration's, which beats the facility's, that only the winning one
+// is used, and that its positions are resolved to canonical TCPs.
+func TestListedPositions(t *testing.T) {
+	sg := &Group{
+		FacilityConfig: sim.FacilityConfig{
+			ControlPositions: map[sim.TCP]*av.Controller{"4J": {}, "4T": {}, "5E": {}, "N902K": {}},
+			HandoffIDs:       []sim.HandoffID{{ID: "N90", StarsID: "N90", SingleCharStarsID: "N"}},
+			FacilityAdaptation: sim.FacilityAdaptation{
+				ListedPositions: map[sim.TCP]string{"4J": "tower"},
+			},
+		},
+	}
+
+	for _, tc := range []struct {
+		name     string
+		scenario map[sim.TCP]string
+		config   map[sim.TCP]string
+		want     map[sim.TCP]string
+		wantErr  string
+	}{
+		{"scenario wins", map[sim.TCP]string{"4T": ""}, map[sim.TCP]string{"5E": "departures"}, map[sim.TCP]string{"4T": ""}, ""},
+		{"configuration next", map[sim.TCP]string{}, map[sim.TCP]string{"5E": "departures"}, map[sim.TCP]string{"5E": "departures"}, ""},
+		{"then the facility", nil, nil, map[sim.TCP]string{"4J": "tower"}, ""},
+		{"short prefix resolves", map[sim.TCP]string{"N2K": "arrivals"}, nil, map[sim.TCP]string{"N902K": "arrivals"}, ""},
+		{"unknown position", nil, map[sim.TCP]string{"5E": "", "9Z": ""}, map[sim.TCP]string{"5E": ""}, `configuration "FIN"`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := &Scenario{ConfigurationString: "FIN", ListedPositions: tc.scenario}
+			var e util.ErrorLogger
+			got := s.listedPositions(sg, &sim.FacilityConfiguration{ListedPositions: tc.config}, &e)
+			if !maps.Equal(got, tc.want) {
+				t.Errorf("got %v, want %v", got, tc.want)
+			}
+			errs := slices.Collect(e.Errors())
+			if tc.wantErr == "" && len(errs) > 0 {
+				t.Errorf("unexpected errors: %v", errs)
+			} else if tc.wantErr != "" && (len(errs) != 1 || !strings.Contains(errs[0], tc.wantErr) || !strings.Contains(errs[0], "9Z")) {
+				t.Errorf("errors %v, want one naming 9Z and %s", errs, tc.wantErr)
+			}
+		})
+	}
+
+	sg.FacilityConfig.FacilityAdaptation.ListedPositions = nil
+	var e util.ErrorLogger
+	if got := (&Scenario{}).listedPositions(sg, &sim.FacilityConfiguration{}, &e); got != nil {
+		t.Errorf("got %v with no listed_positions anywhere, want nil", got)
 	}
 }

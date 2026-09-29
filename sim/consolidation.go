@@ -105,6 +105,12 @@ type ControllerConfiguration struct {
 	// GoAroundAssignments maps airport or airport/runway to the TCP that handles go-arounds.
 	// This is populated from the referenced configuration during post-deserialization.
 	GoAroundAssignments map[string]TCP
+
+	// ListedPositions maps the positions that the scenario info window lists,
+	// besides the human ones, to descriptions of their roles; nil lists every
+	// position. It comes from the first of the scenario, its configuration,
+	// and the facility adaptation that gives "listed_positions".
+	ListedPositions map[TCP]string
 }
 
 type PositionConsolidation map[TCP][]TCP

@@ -376,6 +376,8 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 			s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(config.DefaultConsolidation)
 		}
 
+		s.ControllerConfiguration.ListedPositions = s.listedPositions(sg, config, e)
+
 		// Filter assignments to only include entries targeting positions that
 		// exist as known controllers. The facility config's full assignments
 		// cover all positions in the TRACON, but some may reference
@@ -883,6 +885,34 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 		ten := int32(10)
 		s.VFFRequestRate = &ten
 	}
+}
+
+// listedPositions returns the first "listed_positions" given by the scenario,
+// its configuration, and the facility adaptation, with each position resolved
+// to its canonical TCP, or nil if none of them gives one. Only one is used:
+// they are not merged.
+func (s *Scenario) listedPositions(sg *Group, config *sim.FacilityConfiguration, e *util.ErrorLogger) map[sim.TCP]string {
+	listed, from := s.ListedPositions, "the scenario"
+	if len(listed) == 0 {
+		listed, from = config.ListedPositions, fmt.Sprintf("configuration %q", s.ConfigurationString)
+	}
+	if len(listed) == 0 {
+		listed, from = sg.FacilityConfig.FacilityAdaptation.ListedPositions, `"facility_adaptations"`
+	}
+	if len(listed) == 0 {
+		return nil
+	}
+
+	resolved := make(map[sim.TCP]string, len(listed))
+	for tcp, role := range util.SortedMap(listed) {
+		r := sg.resolveController(tcp)
+		if _, ok := sg.FacilityConfig.ControlPositions[r]; !ok {
+			e.ErrorString(`"listed_positions" in %s: %q is not in "control_positions"`, from, tcp)
+		} else {
+			resolved[r] = role
+		}
+	}
+	return resolved
 }
 
 // CheckLocationsResolved reports any location in the group that was written as

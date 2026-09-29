@@ -28,4 +28,5 @@ adjustments for TAS
   - Charted visual approaches may now give multiple routes in "waypoints", e.g. for procedures with several feeder legs
   - Charted visual approaches may now give "reporting_points": landmarks that pilots can be told to look for and report in sight
   - Locations in scenarios can be given as fix-radial-distances (FRDs), e.g. `JFK090020` (JFK 090 radial, 20 nm)
+  - Added "listed_positions" to specify the controllers in the scenario information window and their roles
 
