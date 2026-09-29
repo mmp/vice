@@ -680,6 +680,12 @@
         }
       },
       "JFF": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "2G": "JFK CAMRN",
+          "2K": "JFK ROBER",
+          "2M": "JFK LENDY"
+        },
         "inbound_assignments": {
           "CAMRN/PUCKY1.Finals22": "2A",
           "CAMRN/PUCKY1.Finals31": "2A",
@@ -698,6 +704,16 @@
         }
       },
       "N2J": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "3H": "Islip (Primary)",
+          "1L": "LGA Departure",
+          "1X": "LGA NOBBI (LGA Sats)",
+          "5E": "Liberty Departure East (East & North Gates)",
+          "5S": "Liberty South",
+          "C66": "NY Center - MANTA (SHIPP, WAVEY deps)",
+          "B32": "Boston Center - Clipper (HAPIE, BETTE deps)"
+        },
         "inbound_assignments": {},
         "departure_assignments": {
           "KJFK": "2J",
@@ -708,6 +724,12 @@
         }
       },
       "JF4": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "2G": "JFK CAMRN",
+          "2K": "JFK ROBER",
+          "2M": "JFK LENDY"
+        },
         "inbound_assignments": {
           "PUCKY1.Finals4": "2A",
           "PARCH4.Finals4": "2A",
@@ -718,6 +740,22 @@
         }
       },
       "JFK": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "2A": "JFK Final Vector",
+          "2G": "JFK CAMRN",
+          "2K": "JFK ROBER",
+          "2M": "JFK LENDY",
+          "3H": "Islip (Primary)",
+          "3N": "Islip (Calverton)",
+          "1L": "LGA Departure",
+          "1V": "LGA Approach",
+          "1X": "LGA NOBBI (LGA Sats)",
+          "5E": "Liberty Departure East (East & North Gates)",
+          "5S": "Liberty South",
+          "C66": "NY Center - MANTA (SHIPP, WAVEY deps)",
+          "B32": "Boston Center - Clipper (HAPIE, BETTE deps)"
+        },
         "inbound_assignments": {
           "CAMRN5": "2G",
           "Intra-TRACON (JFK/FRG East)": "2K",
@@ -790,6 +828,22 @@
         }
       },
       "J22": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "2A": "JFK Final Vector",
+          "2G": "JFK CAMRN",
+          "2K": "JFK ROBER",
+          "2M": "JFK LENDY",
+          "3H": "Islip (Primary)",
+          "3N": "Islip (Calverton)",
+          "1L": "LGA Departure",
+          "1V": "LGA Approach",
+          "1X": "LGA NOBBI (LGA Sats)",
+          "5E": "Liberty Departure East (East & North Gates)",
+          "5S": "Liberty South",
+          "C66": "NY Center - MANTA (SHIPP, WAVEY deps)",
+          "B32": "Boston Center - Clipper (HAPIE, BETTE deps)"
+        },
         "default_consolidation": {
           "2G": ["2E", "2J", "2K"],
           "2K": ["2A", "2M"]
@@ -810,6 +864,22 @@
         }
       },
       "J31": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "2A": "JFK Final Vector",
+          "2G": "JFK CAMRN",
+          "2K": "JFK ROBER",
+          "2M": "JFK LENDY",
+          "3H": "Islip (Primary)",
+          "3N": "Islip (Calverton)",
+          "1L": "LGA Departure",
+          "1V": "LGA Approach",
+          "1X": "LGA NOBBI (LGA Sats)",
+          "5E": "Liberty Departure East (East & North Gates)",
+          "5S": "Liberty South",
+          "C66": "NY Center - MANTA (SHIPP, WAVEY deps)",
+          "B32": "Boston Center - Clipper (HAPIE, BETTE deps)"
+        },
         "default_consolidation": {
           "2G": ["2A", "2E", "2J", "2K"],
           "2K": ["2M"]
@@ -832,6 +902,22 @@
         }
       },
       "J04": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "2A": "JFK Final Vector",
+          "2G": "JFK CAMRN",
+          "2K": "JFK ROBER",
+          "2M": "JFK LENDY",
+          "3H": "Islip (Primary)",
+          "3N": "Islip (Calverton)",
+          "1L": "LGA Departure",
+          "1V": "LGA Approach",
+          "1X": "LGA NOBBI (LGA Sats)",
+          "5E": "Liberty Departure East (East & North Gates)",
+          "5S": "Liberty South",
+          "C66": "NY Center - MANTA (SHIPP, WAVEY deps)",
+          "B32": "Boston Center - Clipper (HAPIE, BETTE deps)"
+        },
         "default_consolidation": {
           "2G": ["2A", "2K"],
           "2K": ["2E", "2J", "2M"]
