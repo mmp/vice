@@ -266,10 +266,8 @@ func (s *Sim) spawnPatternAircraft() {
 		// Record as a departure for sequencing
 		depac := makeDepartureAircraft(ac, now, 0 /* no wait at the gate */)
 		depac.LaunchTime = now
-		for rwyID, depState := range s.DepartureState[name] {
-			if rwyID.Base() == rwy.Id {
-				depState.LastDeparture = &depac
-			}
+		for _, depState := range s.samePavementRunways(name, av.RunwayID(rwy.Id)) {
+			depState.LastDeparture = &depac
 		}
 
 		ps.Aircraft = append(ps.Aircraft, PatternAircraft{
@@ -290,16 +288,9 @@ func (s *Sim) spawnPatternAircraft() {
 // runway at the given airport.
 func (s *Sim) canLaunchPattern(airport av.ICAOAirportCode, rwy av.Runway) bool {
 	// Check recent departures on same runway
-	if depState, ok := s.DepartureState[airport]; ok {
-		for rwyID, state := range depState {
-			if rwyID.Base() == rwy.Id {
-				if state.LastDeparture != nil {
-					elapsed := s.State.SimTime.Sub(state.LastDeparture.LaunchTime)
-					if elapsed < 90*time.Second {
-						return false
-					}
-				}
-			}
+	for _, state := range s.samePavementRunways(airport, av.RunwayID(rwy.Id)) {
+		if state.LastDeparture != nil && s.State.SimTime.Sub(state.LastDeparture.LaunchTime) < 90*time.Second {
+			return false
 		}
 	}
 
@@ -450,19 +441,15 @@ func (s *Sim) resetPatternLap(ac *Aircraft) {
 
 // recordPatternTouchAndGo records a touch-and-go for departure sequencing.
 func (s *Sim) recordPatternTouchAndGo(ac *Aircraft, airport av.ICAOAirportCode, rwyId string) {
-	if depState, ok := s.DepartureState[airport]; ok {
-		for rwyID, state := range depState {
-			if rwyID.Base() == rwyId {
-				state.LastArrivalLandingTime = s.State.SimTime
-				state.LastArrivalFlightRules = av.FlightRulesVFR
+	for _, state := range s.samePavementRunways(airport, av.RunwayID(rwyId)) {
+		state.LastArrivalLandingTime = s.State.SimTime
+		state.LastArrivalFlightRules = av.FlightRulesVFR
 
-				depac := DepartureAircraft{
-					ADSBCallsign: ac.ADSBCallsign,
-					LaunchTime:   s.State.SimTime,
-				}
-				state.LastDeparture = &depac
-			}
+		depac := DepartureAircraft{
+			ADSBCallsign: ac.ADSBCallsign,
+			LaunchTime:   s.State.SimTime,
 		}
+		state.LastDeparture = &depac
 	}
 }
 

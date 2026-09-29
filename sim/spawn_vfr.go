@@ -125,6 +125,7 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 	}
 	callsigns := s.currentCallsigns()
 
+	var err error
 	for range 5 {
 		var arrive av.ICAOAirportCode
 		var fleet string
@@ -147,13 +148,14 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 		// route; the circuit breaker above is about routes that can't
 		// be found, not about destinations being busy.
 		depState.VFRAttempts++
-		if ac, err := s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns); err == nil {
+		var ac *Aircraft
+		if ac, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns); err == nil {
 			ac.ReleaseTime = s.State.SimTime
 			depState.VFRSuccesses++
 			return ac, nil
 		}
 	}
-	return nil, ErrViolatedAirspace
+	return nil, err
 }
 
 // sampleVFRFlight chooses between the airport's random VFR flights and its
@@ -182,6 +184,21 @@ func (s *Sim) sampleVFRFlight(ap *av.Airport) (*av.VFRRandomsSpec, *av.VFRRouteS
 // manual launch slot. Note that it may fail without an error if it's having
 // trouble finding a route.
 func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft, error) {
+	ap, ok := s.State.Airports[departureAirport]
+	if !ok {
+		// This shouldn't happen...
+		return nil, nil
+	}
+	randoms, route := s.sampleVFRFlight(ap)
+	if route != nil {
+		return s.createUncontrolledVFRDeparture(departureAirport, route.Destination, route.Fleet,
+			route.Waypoints, s.currentCallsigns())
+	}
+	if randoms == nil {
+		// This shouldn't happen either...
+		return nil, nil
+	}
+
 	// Sample destination airport: may be where we started from.
 	weights := s.vfrDestinationWeights()
 	arrive, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
@@ -196,13 +213,7 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 		}
 	}
 
-	ap, ok := s.State.Airports[departureAirport]
-	if !ok || ap.VFRRateSum() == 0 {
-		// This shouldn't happen...
-		return nil, nil
-	}
-
-	return s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.currentCallsigns())
+	return s.createUncontrolledVFRDeparture(departureAirport, arrive, randoms.Fleet, nil, s.currentCallsigns())
 }
 
 // vfrDestinationWeights gives the weight for sampling each airport as the
@@ -478,17 +489,13 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		distToArrival := math.NMDistance2LL(pos, simNav.FlightState.ArrivalAirportLocation)
 		if vfrMVAApplies(distFromDeparture, distToArrival) {
 			if mva := s.mvaGrid.GetMVA(pos); mva > 0 && simNav.FlightState.Altitude < float32(mva-vfrMVABuffer) {
-				// Find which waypoint we're heading toward
-				wpIdx := -1
 				var wpName string
-				for j, wp := range simNav.Waypoints {
-					wpIdx = j
-					wpName = wp.Fix
-					break
+				if len(simNav.Waypoints) > 0 {
+					wpName = simNav.Waypoints[0].Fix
 				}
 				nav.NavLog(string(ac.ADSBCallsign), simTime.NavTime(), "state",
-					"rejected at %.0f' (MVA %d, need %d) heading to wp %d %q, pos %v, %.1fnm from dep, %.1fnm from arr",
-					simNav.FlightState.Altitude, mva, mva-vfrMVABuffer, wpIdx, wpName, pos, distFromDeparture, distToArrival)
+					"rejected at %.0f' (MVA %d, need %d) heading to %q, pos %v, %.1fnm from dep, %.1fnm from arr",
+					simNav.FlightState.Altitude, mva, mva-vfrMVABuffer, wpName, pos, distFromDeparture, distToArrival)
 				return nil, ErrVFRBelowMVA
 			}
 		}
