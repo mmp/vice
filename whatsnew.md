@@ -1,6 +1,7 @@
 - Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane), D10 (Alexander Rueffer), S46 (Alex L)
 - Added delay before launching subsequent same-exit departures
-adjustments for TAS
+- Fixed bugs with handling of TAS, IAS, and aircraft speed constraints
+- Fixed bugs with sequencing aircraft pilot transmissions
 - Updated to Oct 1 AIRAC cycle (Mike Fries)
 - Flight model
   - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
@@ -21,7 +22,7 @@ adjustments for TAS
   - Show `-` rather than `+` in the FDB when below the datablock altitude
   - `QU` now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when `QU` was used
 - Facility engineering
-  - Added `"historical_scenario": true` to allow manually authored retired STAR arrivals without checking them against current FAA procedures; waypoint and operational validation remains active.
+  - Added `"historical_scenario": true` to allow manually authored retired STAR arrivals without checking them against current FAA procedures (Logan S)
   - ERAM altitude limits can be specified per-controller and/or per-scenario
   - Added `/cvs` and `/dvs` waypoint actions for virtual controllers to issue "climb via SID"/"descend via STAR"
   - Added `/cv` and `/dv` waypoint actions for "climb via SID/descend via STAR, except maintain (altitude)"
