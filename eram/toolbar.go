@@ -240,11 +240,11 @@ func (ep *Scope) drawToolbarMenu(ctx *scope.Context, scale float32) {
 			handleClick(ep, &ps.ToolbarSize, 1, 2, 1) // Handle click for Toolbar size
 		}
 		toolbarDrawState.offsetBottom = true // Offset the next row
-		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LDB\n%v", ps.RDBSize), 0, scale, false, true) {
-			handleClick(ep, &ps.LDBSize, 1, 5, 1) // Handle click for RDB size
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LDB\n%v", ps.LDBSize), 0, scale, false, true) {
+			handleClick(ep, &ps.LDBSize, 1, 5, 1) // Handle click for LDB size
 		}
-		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("RDB\n%v", ps.LDBSize), 0, scale, false, false) {
-			handleClick(ep, &ps.RDBSize, 1, 5, 1) // Handle click for LDB size
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("RDB\n%v", ps.RDBSize), 0, scale, false, false) {
+			handleClick(ep, &ps.RDBSize, 1, 5, 1) // Handle click for RDB size
 		}
 
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("OUTAGE\n%v", ps.OutageSize), 0, scale, false, false) {
