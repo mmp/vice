@@ -14,8 +14,18 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/speech"
 )
+
+// addTunedAircraft adds an associated aircraft tuned to tcp, so that the
+// contacts it queues there apply.
+func addTunedAircraft(s *Sim, callsign av.ADSBCallsign, tcp TCP) {
+	ac := MakeTestAircraft(callsign, "13L")
+	ac.ControllerFrequency = ControlPosition(tcp)
+	ac.AssociateFlightPlan(&FlightPlan{ACID: ACID(callsign)})
+	s.Aircraft[callsign] = ac
+}
 
 // TestPopReadyContactPrioritizesResponses verifies that a pilot's response or
 // request during an established exchange (here, the full request after "go
@@ -27,6 +37,8 @@ func TestPopReadyContactPrioritizesResponses(t *testing.T) {
 
 	tcp := TCP("125.0")
 	past := s.State.SimTime.Add(-time.Second)
+	addTunedAircraft(s, "AAL90", tcp)
+	addTunedAircraft(s, "N509EZ", tcp)
 
 	s.PendingContacts[tcp] = []PendingContact{
 		{ADSBCallsign: "AAL90", TCP: tcp, Type: PendingTransmissionArrival, ReadyTime: past},
@@ -62,6 +74,8 @@ func TestPopReadyContactRespectsReadyTime(t *testing.T) {
 	tcp := TCP("125.0")
 	past := s.State.SimTime.Add(-time.Second)
 	future := s.State.SimTime.Add(10 * time.Second)
+	addTunedAircraft(s, "AAL90", tcp)
+	addTunedAircraft(s, "N509EZ", tcp)
 
 	s.PendingContacts[tcp] = []PendingContact{
 		{ADSBCallsign: "AAL90", TCP: tcp, Type: PendingTransmissionArrival, ReadyTime: past},
@@ -89,6 +103,8 @@ func TestPopReadyContactAbbreviatedVFRIsInitial(t *testing.T) {
 
 	tcp := TCP("125.0")
 	past := s.State.SimTime.Add(-time.Second)
+	addTunedAircraft(s, "N12AB", tcp)
+	addTunedAircraft(s, "N509EZ", tcp)
 
 	s.PendingContacts[tcp] = []PendingContact{
 		{ADSBCallsign: "N12AB", TCP: tcp, Type: PendingTransmissionFlightFollowingReq, ReadyTime: past},
@@ -274,6 +290,8 @@ func TestPopReadyContactTakesOldestAcrossPositions(t *testing.T) {
 	s := NewTestSim(lg)
 
 	first, last := TCP("125.0"), TCP("126.6")
+	addTunedAircraft(s, "AAL90", first)
+	addTunedAircraft(s, "SWA22", last)
 
 	s.PendingContacts[first] = []PendingContact{
 		{ADSBCallsign: "AAL90", TCP: first, Type: PendingTransmissionDeparture,
@@ -354,36 +372,154 @@ func TestTowerSwitchDistanceGate(t *testing.T) {
 	}
 }
 
-// TestTowerSwitchTransmissionGoesStale verifies that a queued tower-switch
-// question is dropped at dispatch if it went moot while waiting to be spoken,
-// either because the controller sent the aircraft to tower or because it is no
-// longer flying the approach (go-around, cancelled clearance).
-func TestTowerSwitchTransmissionGoesStale(t *testing.T) {
+// instruct has the controller at the test TCW give the aircraft an
+// instruction.
+func instruct(s *Sim, ac *Aircraft) {
+	if _, err := s.dispatchControlledAircraftCommand(E2ETCW(), ac.ADSBCallsign,
+		func(TCW, *Aircraft) speech.CommandIntent { return nil }); err != nil {
+		panic(err)
+	}
+}
+
+// TestContactGoesStale verifies each pending transmission type's rule for
+// when it has gone moot while waiting to be spoken.
+func TestContactGoesStale(t *testing.T) {
 	lg := log.New(true, "error", t.TempDir())
 	tcp := TCP("125.0")
 
+	clear := func(s *Sim, ac *Aircraft) { ac.Nav.Approach.Cleared = true }
+	intercepted := func(ac *Aircraft) { ac.Nav.Approach.InterceptState = nav.OnApproachCourse }
+	cleared := func(ac *Aircraft) { ac.Nav.Approach.Cleared = true }
+	sighted := func(ac *Aircraft) { ac.SightedReportingPoint = &av.ReportingPoint{Names: []string{"Bridge"}} }
+
 	for _, tc := range []struct {
 		name  string
-		spoil func(*Aircraft)
+		ty    PendingTransmissionType
+		setup func(*Aircraft)
+		spoil func(*Sim, *Aircraft)
 	}{
-		{"sent to tower", func(ac *Aircraft) { ac.GotContactTower = true }},
-		{"no longer cleared", func(ac *Aircraft) { ac.Nav.Approach.Cleared = false }},
+		{"aircraft gone", PendingTransmissionGoAround, nil,
+			func(s *Sim, ac *Aircraft) { delete(s.Aircraft, ac.ADSBCallsign) }},
+		{"off frequency", PendingTransmissionTrafficInSight, nil,
+			func(s *Sim, ac *Aircraft) { ac.ControllerFrequency = "_TOWER" }},
+		{"check-in after an instruction", PendingTransmissionArrival, nil, instruct},
+		{"vectors after an instruction", PendingTransmissionRequestVectors, nil, instruct},
+		{"approach clearance request cleared", PendingTransmissionRequestApproachClearance, intercepted, clear},
+		{"approach clearance request off course", PendingTransmissionRequestApproachClearance, intercepted,
+			func(s *Sim, ac *Aircraft) { ac.Nav.Approach.InterceptState = nav.NotIntercepting }},
+		{"field in sight cleared", PendingTransmissionSpontaneousFieldInSight, nil, clear},
+		{"field in sight cleared at fix", PendingTransmissionSpontaneousFieldInSight, nil,
+			func(s *Sim, ac *Aircraft) { ac.Nav.Approach.AtFixClearedRoute = []av.Waypoint{{Fix: "ONE"}} }},
+		{"visual request cleared", PendingTransmissionRequestVisual, nil, clear},
+		{"altitude assigned", PendingTransmissionRequestAltitude, nil,
+			func(s *Sim, ac *Aircraft) { ac.Nav.Altitude.Assigned = new(float32(3000)) }},
+		{"altitude after speed", PendingTransmissionRequestAltitude, nil,
+			func(s *Sim, ac *Aircraft) { ac.Nav.Altitude.AfterSpeed = new(float32(3000)) }},
+		{"altitude request cleared", PendingTransmissionRequestAltitude, nil, clear},
+		{"tower switch no longer cleared", PendingTransmissionRequestTowerSwitch, cleared,
+			func(s *Sim, ac *Aircraft) { ac.Nav.Approach.Cleared = false }},
+		{"reporting point cleared", PendingTransmissionSpontaneousReportingPointInSight, sighted, clear},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			s := NewTestSim(lg)
-			ac := makeTowerSwitchAircraft("J", 2)
+			ac := MakeTestAircraft("UPS1330", "12")
+			if tc.setup != nil {
+				tc.setup(ac)
+			}
 			s.Aircraft[ac.ADSBCallsign] = ac
 
-			pc := &PendingContact{ADSBCallsign: ac.ADSBCallsign, TCP: tcp, Type: PendingTransmissionRequestTowerSwitch}
-			if spoken, _ := s.GenerateContactTransmission(pc); spoken == "" {
-				t.Fatal("expected a transmission before the question goes stale")
+			pc := PendingContact{ADSBCallsign: ac.ADSBCallsign, TCP: tcp, Type: tc.ty,
+				QueuedTime: s.State.SimTime.Add(-2 * time.Second), ReadyTime: s.State.SimTime.Add(-time.Second)}
+			if !s.contactApplies(pc) {
+				t.Fatal("expected the transmission to apply before it goes stale")
 			}
 
-			tc.spoil(ac)
-			if spoken, _ := s.GenerateContactTransmission(pc); spoken != "" {
-				t.Errorf("expected the stale question to be dropped, got %q", spoken)
+			tc.spoil(s, ac)
+			if s.contactApplies(pc) {
+				t.Error("expected the stale transmission not to apply")
 			}
 		})
+	}
+}
+
+// TestCheckInSurvivesOtherInstructions verifies that a check-in is only moot
+// once the controller it is for gives the pilot an instruction: the previous
+// controller's instructions and any given before the pilot queued the
+// check-in don't count.
+func TestCheckInSurvivesOtherInstructions(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	ac := MakeTestAircraft("AAL123", "13L")
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	instruct(s, ac)
+	s.State.SimTime = s.State.SimTime.Add(time.Second)
+	pc := PendingContact{ADSBCallsign: ac.ADSBCallsign, TCP: "126.6", Type: PendingTransmissionArrival,
+		QueuedTime: s.State.SimTime, ReadyTime: s.State.SimTime.Add(8 * time.Second)}
+	if !s.contactApplies(pc) {
+		t.Fatal("expected a check-in queued after an instruction to apply")
+	}
+
+	instruct(s, ac) // still on the previous controller's frequency
+	if !s.contactApplies(pc) {
+		t.Error("expected the previous controller's instruction to leave the check-in in place")
+	}
+
+	ac.ControllerFrequency = "126.6"
+	s.State.SimTime = s.State.SimTime.Add(10 * time.Second)
+	if !s.contactApplies(pc) {
+		t.Fatal("expected the check-in to apply once the pilot is on the frequency")
+	}
+	instruct(s, ac)
+	if s.contactApplies(pc) {
+		t.Error("expected the check-in to be moot once the new controller gave an instruction")
+	}
+}
+
+// TestContactWaitsForFrequencySwitch verifies that a check-in isn't dropped
+// for being off frequency while the pilot is still switching, only once the
+// pilot is ready to talk.
+func TestContactWaitsForFrequencySwitch(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.ControllerFrequency = ""
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	pc := PendingContact{ADSBCallsign: ac.ADSBCallsign, TCP: "126.6", Type: PendingTransmissionArrival,
+		QueuedTime: s.State.SimTime, ReadyTime: s.State.SimTime.Add(8 * time.Second)}
+	if !s.contactApplies(pc) {
+		t.Fatal("expected the check-in to apply while the pilot switches frequencies")
+	}
+
+	s.State.SimTime = s.State.SimTime.Add(10 * time.Second)
+	if s.contactApplies(pc) {
+		t.Error("expected the check-in not to apply once ready with the pilot elsewhere")
+	}
+}
+
+// TestStaleContactIsCulled verifies that a contact that has gone moot is
+// neither offered to the controller nor kept in the queue.
+func TestStaleContactIsCulled(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	s := NewTestSim(lg)
+	tcp := TCP("125.0")
+	ac := MakeTestAircraft("UPS1330", "12")
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	s.enqueuePilotTransmission(ac.ADSBCallsign, tcp, PendingTransmissionRequestAltitude)
+	s.State.SimTime = s.State.SimTime.Add(time.Second)
+	if !s.HaveReadyContact([]TCP{tcp}) {
+		t.Fatal("expected the altitude request to be ready")
+	}
+
+	ac.Nav.Altitude.Assigned = new(float32(3000))
+	if s.HaveReadyContact([]TCP{tcp}) {
+		t.Error("expected the moot altitude request not to be offered")
+	}
+	s.cullStaleContacts()
+	if n := len(s.PendingContacts[tcp]); n != 0 {
+		t.Errorf("expected the moot altitude request to be culled, %d contacts left", n)
 	}
 }
 

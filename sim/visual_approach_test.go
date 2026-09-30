@@ -2368,11 +2368,8 @@ func TestScenarioCVACancelsPendingInitialContact(t *testing.T) {
 		t.Fatal("expected non-nil intent from CVA")
 	}
 
-	for _, pc := range vs.Sim.PendingContacts[tcp] {
-		if pc.ADSBCallsign == vs.callsign &&
-			(pc.Type == PendingTransmissionArrival || pc.Type == PendingTransmissionDeparture) {
-			t.Fatal("expected pending initial contact to be canceled after CVA")
-		}
+	if vs.Sim.hasPendingCheckIn(vs.callsign) {
+		t.Fatal("expected pending initial contact to be moot after CVA")
 	}
 }
 

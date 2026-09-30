@@ -81,7 +81,6 @@ const (
 	PendingTransmissionRequestApproachClearance                                        // Pilot requesting approach clearance
 	PendingTransmissionFieldInSight                                                    // Delayed "field in sight" after "looking"
 	PendingTransmissionSpontaneousFieldInSight                                         // Unprompted "field in sight"
-	PendingTransmissionFieldNegativeContact                                            // "Negative contact" after looking timer expires
 	PendingTransmissionRequestVisual                                                   // Spontaneous "field in sight, requesting visual"
 	PendingTransmissionRequestVectors                                                  // Pilot requesting vectors (overshot localizer)
 	PendingTransmissionRequestAltitude                                                 // Pilot requesting altitude after being vectored off STAR
@@ -103,6 +102,7 @@ type FutureFrequencyChange struct {
 type PendingContact struct {
 	ADSBCallsign           av.ADSBCallsign
 	TCP                    TCP
+	QueuedTime             Time                      // When the pilot decided to transmit
 	ReadyTime              Time                      // When pilot is ready to transmit
 	Type                   PendingTransmissionType   // What kind of transmission
 	ReportDepartureHeading bool                      // For departures: include assigned heading
@@ -112,12 +112,13 @@ type PendingContact struct {
 }
 
 // hasPendingCheckIn reports whether the aircraft has a pending arrival or
-// departure check-in that hasn't been transmitted yet.
+// departure check-in that hasn't been transmitted yet and still applies.
 func (s *Sim) hasPendingCheckIn(callsign av.ADSBCallsign) bool {
 	for _, pcs := range s.PendingContacts {
 		for _, pc := range pcs {
 			if pc.ADSBCallsign == callsign &&
-				(pc.Type == PendingTransmissionArrival || pc.Type == PendingTransmissionDeparture) {
+				(pc.Type == PendingTransmissionArrival || pc.Type == PendingTransmissionDeparture) &&
+				s.contactApplies(pc) {
 				return true
 			}
 		}
@@ -137,11 +138,97 @@ func (s *Sim) waitingForAssociation(pc PendingContact) bool {
 	return ok && !ac.IsAssociated()
 }
 
+// contactApplies reports whether a pending contact is still worth saying:
+// the aircraft is still around, a pilot who is ready to talk is on the
+// frequency they meant to call, and nothing that has happened since the
+// pilot queued it has made it moot. Every transmission type states its
+// rule here; a type without one is never said.
+func (s *Sim) contactApplies(pc PendingContact) bool {
+	ac, ok := s.Aircraft[pc.ADSBCallsign]
+	if !ok {
+		return false
+	}
+	// A pilot who isn't ready to talk yet may still be switching to the
+	// frequency.
+	if s.State.SimTime.After(pc.ReadyTime) && ac.ControllerFrequency != ControlPosition(pc.TCP) {
+		return false
+	}
+
+	switch pc.Type {
+	case PendingTransmissionDeparture, PendingTransmissionArrival:
+		// Checking in is moot once the controller has given the pilot an
+		// instruction.
+		return !ac.instructedSince(pc)
+
+	case PendingTransmissionTrafficInSight, PendingTransmissionFlightFollowingReq,
+		PendingTransmissionFlightFollowingFull, PendingTransmissionGoAround,
+		PendingTransmissionEmergency, PendingTransmissionFieldInSight:
+		// Reports of what happened, requests for service, and reports the
+		// controller asked for stay worth making.
+		return true
+
+	case PendingTransmissionRequestApproachClearance:
+		// Moot once the clearance came in or the aircraft is no longer
+		// tracking the approach course waiting for one.
+		return !ac.Nav.Approach.EffectivelyCleared() && ac.Nav.InterceptedButNotCleared()
+
+	case PendingTransmissionSpontaneousFieldInSight, PendingTransmissionRequestVisual:
+		// An unprompted report or request is moot once the aircraft is
+		// cleared for an approach, immediately or "at fix".
+		return !ac.Nav.Approach.EffectivelyCleared()
+
+	case PendingTransmissionRequestVectors:
+		// Moot once the controller has given the pilot an instruction,
+		// having seen the overshoot and vectored or re-cleared the aircraft.
+		return !ac.instructedSince(pc)
+
+	case PendingTransmissionRequestAltitude:
+		// Moot once the controller has assigned an altitude, possibly
+		// deferred behind a speed change, or cleared the approach, whose
+		// altitudes now govern.
+		return ac.Nav.Altitude.Assigned == nil && ac.Nav.Altitude.AfterSpeed == nil &&
+			!ac.Nav.Approach.EffectivelyCleared()
+
+	case PendingTransmissionRequestTowerSwitch:
+		// Moot once the aircraft is no longer flying the approach (went
+		// around, clearance cancelled, vectored off). Being sent to tower
+		// takes it off the frequency.
+		return ac.Nav.Approach.Cleared
+
+	case PendingTransmissionReportingPointInSight:
+		return ac.SightedReportingPoint != nil
+
+	case PendingTransmissionSpontaneousReportingPointInSight:
+		return ac.SightedReportingPoint != nil && !ac.Nav.Approach.EffectivelyCleared()
+
+	default:
+		return false
+	}
+}
+
+// instructedSince reports whether the controller the contact is for has
+// given the pilot an instruction since the pilot queued it. Controller
+// requests run between ticks, so one made at the sim time a contact was
+// queued came after it.
+func (ac *Aircraft) instructedSince(pc PendingContact) bool {
+	return ac.LastInstructionFrequency == ControlPosition(pc.TCP) && !ac.LastInstructionTime.Before(pc.QueuedTime)
+}
+
+// cullStaleContacts drops the pending contacts that no longer apply.
+func (s *Sim) cullStaleContacts() {
+	for tcp, pcs := range s.PendingContacts {
+		s.PendingContacts[tcp] = slices.DeleteFunc(pcs, func(pc PendingContact) bool {
+			return !s.contactApplies(pc)
+		})
+	}
+}
+
 // addPendingContact adds an aircraft to the pending contacts queue for a controller.
 func (s *Sim) addPendingContact(pc PendingContact) {
 	if s.PendingContacts == nil {
 		s.PendingContacts = make(map[TCP][]PendingContact)
 	}
+	pc.QueuedTime = s.State.SimTime
 	s.PendingContacts[pc.TCP] = append(s.PendingContacts[pc.TCP], pc)
 }
 
@@ -249,7 +336,8 @@ func (s *Sim) readyMatching(positions []TCP, match func(PendingTransmissionType)
 	best := -1
 	for _, tcp := range positions {
 		for i, pc := range s.PendingContacts[tcp] {
-			if !match(pc.Type) || !s.State.SimTime.After(pc.ReadyTime) || s.waitingForAssociation(pc) {
+			if !match(pc.Type) || !s.State.SimTime.After(pc.ReadyTime) || s.waitingForAssociation(pc) ||
+				!s.contactApplies(pc) {
 				continue
 			}
 			if best == -1 || pc.ReadyTime.Before(s.PendingContacts[bestTCP][best].ReadyTime) {
@@ -431,23 +519,6 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 	})
 }
 
-// cancelPendingInitialContact removes any pending Departure or Arrival contact
-// for the given aircraft. Called when a controller issues a command to an
-// aircraft that hasn't checked in yet, preventing stale check-ins.
-func (s *Sim) cancelPendingInitialContact(callsign av.ADSBCallsign) {
-	if s.PendingContacts == nil {
-		return
-	}
-
-	ac := s.Aircraft[callsign]
-	tcp := TCP(ac.ControllerFrequency)
-
-	s.PendingContacts[tcp] = slices.DeleteFunc(s.PendingContacts[tcp], func(pc PendingContact) bool {
-		return pc.ADSBCallsign == callsign &&
-			(pc.Type == PendingTransmissionDeparture || pc.Type == PendingTransmissionArrival)
-	})
-}
-
 // GenerateContactTransmission generates a transmission for a pending contact.
 // Returns the spoken and written text, or empty strings if the contact is invalid.
 // This is called when the client requests a contact, using current aircraft state.
@@ -520,20 +591,10 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt = speech.MakeContactTransmission("[we've got the traffic|we have the traffic in sight|traffic in sight now]")
 
 	case PendingTransmissionFieldInSight, PendingTransmissionSpontaneousFieldInSight:
-		// An unprompted call is moot if the aircraft was cleared for an
-		// approach between enqueue and dispatch (immediate or "at fix"); a
-		// report the controller asked for is still worth making.
-		if pc.Type == PendingTransmissionSpontaneousFieldInSight && ac.Nav.Approach.EffectivelyCleared() {
-			return "", ""
-		}
 		rt = speech.MakeContactTransmission("[we have the field in sight now|field in sight|we have the airport in sight now]")
 
 	case PendingTransmissionReportingPointInSight, PendingTransmissionSpontaneousReportingPointInSight:
 		rp := ac.SightedReportingPoint
-		if rp == nil ||
-			(pc.Type == PendingTransmissionSpontaneousReportingPointInSight && ac.Nav.Approach.EffectivelyCleared()) {
-			return "", ""
-		}
 		if pc.Type == PendingTransmissionReportingPointInSight {
 			// The controller named it, so any of its names will do.
 			rt = speech.MakeContactTransmission("[{rp} in sight now|{rp} in sight]", rand.SampleSlice(s.textRand, rp.Names))
@@ -541,9 +602,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			// Unprompted, the pilot gives its full name.
 			rt = speech.MakeContactTransmission("{rp} in sight", rp.Name())
 		}
-
-	case PendingTransmissionFieldNegativeContact:
-		rt = speech.MakeContactTransmission("[negative field|field not in sight|no joy on the field]")
 
 	case PendingTransmissionFlightFollowingReq:
 		rt = speech.MakeContactTransmission("[VFR request|with a VFR request]")
@@ -572,12 +630,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestApproachClearance:
-		// Drop the request if it went moot between enqueue and dispatch: the
-		// clearance came in, or the aircraft is no longer tracking the
-		// approach course waiting for one.
-		if ac.Nav.Approach.EffectivelyCleared() || !ac.Nav.InterceptedButNotCleared() {
-			return "", ""
-		}
 		rt = speech.MakeContactTransmission("[are we cleared for the approach|looking for the approach|we're going to need the approach here shortly]")
 		rt.Type = speech.RadioTransmissionUnexpected
 
@@ -594,12 +646,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionRequestTowerSwitch:
-		// Drop the question if it went moot between enqueue and dispatch: the
-		// controller sent the aircraft to tower, or it's no longer flying the
-		// approach at all (went around, clearance cancelled, vectored off).
-		if ac.GotContactTower || !ac.Nav.Approach.Cleared {
-			return "", ""
-		}
 		rt = speech.MakeContactTransmission("[should we switch to tower|do you want us with tower|should we contact tower]")
 		rt.Type = speech.RadioTransmissionUnexpected
 
@@ -611,12 +657,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt.Type = speech.RadioTransmissionUnexpected // Mark as urgent for display
 
 	case PendingTransmissionRequestVisual:
-		// If the aircraft was cleared for an approach between enqueue and
-		// dispatch, drop the now-redundant visual approach request. Covers
-		// both immediate and "at fix" clearances.
-		if ac.Nav.Approach.EffectivelyCleared() {
-			return "", ""
-		}
 		runway := ""
 		if ac.Nav.Approach.Assigned != nil {
 			runway = ac.Nav.Approach.Assigned.Runway

@@ -117,7 +117,11 @@ import (
 // and exit directly; NASFlightPlan renamed FlightPlan (Aircraft.NASFlightPlan is now
 // Aircraft.FlightPlan), gaining DepartureAirport and CruiseSpeed; NASFlightPlanType renamed
 // FlightPlanType; Track lost FiledRoute and FiledAltitude
-const ViceSerializeVersion = 97
+//
+// 98: PendingTransmissionFieldNegativeContact removed, renumbering the later pending
+// transmission types; PendingContact gained QueuedTime; Aircraft gained
+// LastInstructionTime and LastInstructionFrequency
+const ViceSerializeVersion = 98
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 80 + ViceRPCVersion

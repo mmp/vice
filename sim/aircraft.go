@@ -127,6 +127,11 @@ type Aircraft struct {
 
 	LastRadioTransmission Time
 
+	// LastInstructionTime and LastInstructionFrequency record when the
+	// pilot last got an instruction and on which frequency.
+	LastInstructionTime      Time
+	LastInstructionFrequency ControlPosition
+
 	// LastAddressingForm tracks how the controller last addressed this aircraft.
 	// Used for readbacks to match the controller's style.
 	LastAddressingForm CallsignAddressingForm

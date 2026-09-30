@@ -79,23 +79,18 @@ func (s *Sim) dispatchAircraftCommand(tcw TCW, callsign av.ADSBCallsign, check f
 // TCW controls the position whose frequency the aircraft is tuned to.
 func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
 	cmd func(tcw TCW, ac *Aircraft) speech.CommandIntent) (speech.CommandIntent, error) {
-	intent, err := s.dispatchAircraftCommand(tcw, callsign,
+	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
 			if !s.TCWCanCommandAircraft(tcw, ac) {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		cmd)
-
-	// If command succeeded, cancel any pending initial contact for this aircraft.
-	// This handles the case where a controller issues commands to an aircraft
-	// that hasn't checked in yet.
-	if err == nil {
-		s.cancelPendingInitialContact(callsign)
-	}
-
-	return intent, err
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
+			ac.LastInstructionTime = s.State.SimTime
+			ac.LastInstructionFrequency = ac.ControllerFrequency
+			return cmd(tcw, ac)
+		})
 }
 
 // Note that ac may be nil, but flight plan will not be!
