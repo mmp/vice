@@ -98,35 +98,20 @@ import (
 // 86: airports gained print_departure_strips/print_arrival_strips
 // 87: /delete, /land and /intercept moved from Waypoint.Flags into WaypointActions, renumbering the remaining flags
 // 88: WaypointExtra gained LegOffset, how far along its leg a synthesized waypoint sits
-// 89: departures are chosen when the runway is free rather than sequenced ahead: RunwayLaunchState lost Sequenced and gained PublishedDepartures, DepartureAircraft gained QueuedTime, Sim gained LastExitLaunch
+// 89: departures are chosen when the runway is free rather than sequenced ahead
 // 90: DepartureAircraft gained AirborneTime, when its takeoff-roll simulation lifts off
-// 91: phrase arguments are tagged with their Go type name, and the callsign ones moved from aviation to speech
-// 92: airspace volume centers, CRDA reference points, VFR reporting points and significant points keep the
-//
-//	text they were written as and resolve it when finalized, so the resolved point serializes under its own name
-//
-// 93: the ERAM altitude limits filters are saved with the preference set
-//
-// 94: the ERAM altitude limits filters can be adapted per control position and per scenario
-//
+// 91: phrase arguments are tagged with their Go type name
+// 92: updated resolution of airspace centers, etc. to lat-longs
+// 93: ERAM altitude limits filters in preference sets
+// 94: ERAM altitude limits filters adapted per control position and per scenario
 // 95: pending point outs moved from Sim.PointOuts to NASFlightPlan.PointOuts
-//
-// 96: published arrivals are spaced per inbound flow by miles in trail: Sim gained ArrivalLaunches
-//
-// 97: aviation.FlightPlan removed: Aircraft holds its rules, type, airports, cruise altitude,
-// and exit directly; NASFlightPlan renamed FlightPlan (Aircraft.NASFlightPlan is now
-// Aircraft.FlightPlan), gaining DepartureAirport and CruiseSpeed; NASFlightPlanType renamed
-// FlightPlanType; Track lost FiledRoute and FiledAltitude
-//
-// 98: PendingTransmissionFieldNegativeContact removed, renumbering the later pending
-// transmission types; PendingContact gained QueuedTime, ID, and ATIS and lost FirstInFacility;
-// Sim gained LastContactID; Aircraft gained LastInstructionTime and LastInstructionFrequency;
-// Event lost SpokenText and DestinationTCW; StateUpdate gained NextPilotTransmission;
-// RequestContactTransmission RPC replaced by CheckPilotTransmission and ReportPilotTransmission
+// 96: published arrivals are spaced per inbound flow by miles in trail: added Sim.ArrivalLaunches
+// 97: removed aviation.FlightPlan removed
+// 98: reworked TTS and pilot transmission flow
 const ViceSerializeVersion = 98
 
 const ViceServerAddress = "vice.pharr.org"
-const ViceServerPort = 8000 - 80 + ViceRPCVersion
+const ViceServerPort = 8000 - 90 + ViceRPCVersion
 const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
