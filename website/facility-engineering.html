@@ -4095,8 +4095,12 @@
                       flow names, STAR names, or route legs against current FAA STARs. Provide explicit
                       waypoints and destination airports for retired procedures. Waypoint, altitude,
                       speed, and route instruction validation remains active. This does not load a
-                      historical navigation database or change the traffic date. Published traffic still matches
-                      routes against current procedure data, and <code>"star_feeds"</code>, departures,
+                      historical navigation database or change the traffic date. Published arrivals first use explicit airport-pair <code>traffic_routes</code>,
+                      including scenario-defined retired STAR names. Otherwise, they use a suitable active
+                      arrival gate within 60 degrees of the origin direction, nearest the origin-to-destination
+                      great-circle segment, without consulting modern route databases. This is an approximation,
+                      not a reconstruction of historical routes; explicit routes can refine it. Departures keep
+                      their existing route matching, and <code>"star_feeds"</code>, departures,
                       and approaches retain their existing validation. Default is false.</td>
                   </tr>
                   <tr>

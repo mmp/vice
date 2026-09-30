@@ -348,3 +348,69 @@ func TestSuitableArrivals(t *testing.T) {
 		t.Errorf("C172 suits %v, expected the unrestricted and filed-cruise arrivals", got)
 	}
 }
+
+func TestHistoricalArrivalRouting(t *testing.T) {
+	db.InitDB()
+	arrivals := []av.Arrival{{STAR: "OLD1", Airports: []av.ICAOAirportCode{"KJFK"},
+		Waypoints: av.WaypointArray{{Fix: "GATE", Location: math.Point2LL{-74, 39}}}}}
+	s := placeArrivalTestSim("KJFK", arrivals, nil)
+	s.State.HistoricalScenario = true
+	p, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if err != nil || p.how != "historical great-circle gate" || p.filedRoute != "" {
+		t.Fatalf("historical placement: %+v, %v", p, err)
+	}
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"KJFK": {TrafficRoutes: av.TrafficRoutes{Arrivals: map[av.ICAOAirportCode]av.TrafficRouteSet{"KORF": {{Route: "OLD1"}}}}}}
+	p, err = s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if err != nil || p.how != "scenario route" || p.filedRoute != "OLD1" {
+		t.Fatalf("explicit placement: %+v, %v", p, err)
+	}
+	delete(s.State.Airports, "KJFK")
+	s.State.InboundFlows["TEST"].Arrivals[0].InitialAltitudes = []int{99999}
+	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errNoSuitableArrival) {
+		t.Fatalf("unsuitable altitude: %v", err)
+	}
+	s.State.InboundFlows["TEST"].Arrivals[0].InitialAltitudes = nil
+	s.State.LaunchConfig.InboundFlowEnabled["TEST"]["KJFK"] = false
+	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errFlowDisabled) {
+		t.Fatalf("disabled flow: %v", err)
+	}
+}
+
+func TestHistoricalArrivalOverrides(t *testing.T) {
+	db.InitDB()
+	arrivals := []av.Arrival{
+		{STAR: "OLD1", Airports: []av.ICAOAirportCode{"KJFK"}, InitialAltitudes: []int{99999}},
+		{STAR: "OTHER1", Airports: []av.ICAOAirportCode{"KJFK"}, Waypoints: av.WaypointArray{{Fix: "GATE", Location: math.Point2LL{-74, 39}}}},
+	}
+	candidates := testCandidates(arrivals)
+	p, route, err := matchHistoricalArrivalRoutes(candidates, candidates, "B738", []string{"OLD1", "OTHER1 KJFK"}, "KJFK", "KORF")
+	if err != nil || p.index != 1 || route != "OTHER1 KJFK" {
+		t.Fatalf("alternative route: %+v %q %v", p, route, err)
+	}
+	p, route, err = matchHistoricalArrivalRoutes(candidates, candidates, "B738", []string{"DIRECT", "OTHER1"}, "KJFK", "KORF")
+	if err != nil || route != "DIRECT" {
+		t.Fatalf("route order: %+v %q %v", p, route, err)
+	}
+	arrivals[0].InitialAltitudes = nil
+	s := placeArrivalTestSim("KJFK", arrivals[1:], &av.Airport{TrafficRoutes: av.TrafficRoutes{Arrivals: map[av.ICAOAirportCode]av.TrafficRouteSet{"KORF": {{Route: "OLD1"}}}}})
+	s.State.HistoricalScenario = true
+	s.State.InboundFlows["DISABLED"] = &av.InboundFlow{Arrivals: arrivals[:1]}
+	s.State.LaunchConfig.InboundFlowEnabled["DISABLED"] = map[string]bool{"KJFK": false}
+	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errFlowDisabled) {
+		t.Fatalf("explicit disabled STAR: %v", err)
+	}
+}
+
+func TestHistoricalArrivalDirectionAndClass(t *testing.T) {
+	db.InitDB()
+	arrivals := []av.Arrival{{STAR: "OLD1", Airports: []av.ICAOAirportCode{"KJFK"}, Waypoints: av.WaypointArray{{Fix: "NORTH", Location: math.Point2LL{-73.8, 43}}}}}
+	s := placeArrivalTestSim("KJFK", arrivals, nil)
+	s.State.HistoricalScenario = true
+	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errNoPlausibleArrival) {
+		t.Fatalf("opposite direction: %v", err)
+	}
+	s.State.InboundFlows["TEST"].Arrivals[0].Aircraft = av.AircraftClassProp
+	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errNoSuitableArrival) {
+		t.Fatalf("aircraft class: %v", err)
+	}
+}

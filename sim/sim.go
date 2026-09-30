@@ -219,6 +219,7 @@ type NewSimConfiguration struct {
 	Airports           map[av.ICAOAirportCode]*av.Airport
 	DepartureRunways   []DepartureRunway
 	ArrivalRunways     []ArrivalRunway
+	HistoricalScenario bool
 	InboundFlows       map[string]*av.InboundFlow
 	LaunchConfig       LaunchConfig
 	Fixes              map[string]math.Point2LL
