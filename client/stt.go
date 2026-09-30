@@ -36,10 +36,11 @@ import (
 //
 // Readbacks are queued as pilots answer the controller, and they play first.
 // A pilot who calls the controller is heard only when the radio is quiet, one
-// at a time: the client synthesizes the pilot transmission the server last
-// published, asks the server whether it is still the one to say, and then
-// plays it. Anything that uses the radio in the meantime makes the
-// synthesized speech stale, so it is dropped and the client starts over from
+// at a time: shortly before it is, the client synthesizes the pilot
+// transmission the server last published, and once it is, the client takes
+// the call from the server, which hands it over only if it is still the one
+// to hear next, and plays it. Anything that uses the radio in the meantime
+// makes the call stale, so it is dropped and the client starts over from
 // what the server publishes next.
 type TransmissionManager struct {
 	mu           sync.Mutex
@@ -49,6 +50,12 @@ type TransmissionManager struct {
 	holdUntil    time.Time // time-based hold for post-transmission pauses
 	lastCallsign av.ADSBCallsign
 	lg           *log.Logger
+
+	// composingUntil is how long the controller is taken to be entering an
+	// instruction, during which no pilot call is prepared: each keystroke
+	// would make it stale. Keystrokes extend it, so it ends on its own if
+	// they stop.
+	composingUntil time.Time
 
 	// radioUses counts the times something has used the radio: the
 	// controller keying up or sending a command, a readback arriving, a
@@ -77,8 +84,7 @@ type pilotCallStage int
 const (
 	pilotCallSynthesizing pilotCallStage = iota
 	pilotCallSynthesized
-	pilotCallChecking
-	pilotCallApproved
+	pilotCallTaking // the server has been asked for it
 )
 
 // pilotCallStep is what the client has to do next for a pilot call.
@@ -87,8 +93,7 @@ type pilotCallStep int
 const (
 	pilotCallWait       pilotCallStep = iota
 	pilotCallSynthesize               // synthesize its speech and pass it to PilotCallSynthesized
-	pilotCallCheck                    // ask the server whether it is still next; pass the answer to PilotCallChecked
-	pilotCallReport                   // tell the server it has started
+	pilotCallTake                     // take it from the server; pass the answer to PilotCallTaken
 )
 
 const (
@@ -96,6 +101,11 @@ const (
 	pauseAfterPilotCall = 8 * time.Second
 	// pauseAfterReadback is a brief pause before the next pilot calls.
 	pauseAfterReadback = 3 * time.Second
+	// pilotCallLeadTime is how long before a pause ends the next pilot call
+	// is synthesized, so that it is ready to play when the pause does.
+	// Synthesis takes about a second, and the call reports the aircraft's
+	// state as of when it starts.
+	pilotCallLeadTime = 2 * time.Second
 )
 
 // NewTransmissionManager creates a new TransmissionManager.
@@ -187,59 +197,43 @@ func (tm *TransmissionManager) startPlayback(p audio.Engine, callsign av.ADSBCal
 
 // AdvancePilotCall moves along the pilot call the client is getting ready to
 // play, given next, the pilot transmission the server last published, and
-// returns what the caller has to do for it next. Once the server has approved
-// it and the radio is quiet, it plays the call itself.
-func (tm *TransmissionManager) AdvancePilotCall(p audio.Engine, next *sim.PilotTransmission,
-	paused, sttActive bool) (pilotCallStep, *pilotCall) {
+// returns what the caller has to do for it next. Without speak, pilot calls
+// are shown without being spoken.
+func (tm *TransmissionManager) AdvancePilotCall(next *sim.PilotTransmission, paused, sttActive,
+	speak bool) (pilotCallStep, *pilotCall) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
-	if pc := tm.pilotCall; pc != nil &&
+	// Once the server has been asked for a call, its answer settles it.
+	pc := tm.pilotCall
+	if pc != nil && pc.stage != pilotCallTaking &&
 		(pc.radioUses != tm.radioUses || next == nil || next.ContactID != pc.transmission.ContactID) {
 		tm.lg.Infof("SPEECH dropped stale pilot call: %s", pc.transmission.ADSBCallsign)
-		tm.pilotCall = nil
+		tm.pilotCall, pc = nil, nil
 	}
 
 	if paused || sttActive || tm.playing || tm.holdCount > 0 || len(tm.queue) > 0 ||
-		time.Now().Before(tm.holdUntil) {
+		time.Now().Before(tm.composingUntil) {
 		return pilotCallWait, nil
 	}
 
-	pc := tm.pilotCall
-	switch {
-	case pc == nil && next != nil:
-		tm.pilotCall = &pilotCall{transmission: *next, radioUses: tm.radioUses}
-		return pilotCallSynthesize, tm.pilotCall
-
-	case pc == nil:
-		return pilotCallWait, nil
-
-	case pc.stage == pilotCallSynthesized:
-		pc.stage = pilotCallChecking
-		return pilotCallCheck, pc
-
-	case pc.stage == pilotCallApproved:
-		callsign := pc.transmission.ADSBCallsign
-		if pc.pcm != nil {
-			err := tm.startPlayback(p, callsign, pc.pcm, pauseAfterPilotCall)
-			if errors.Is(err, audio.ErrCurrentlyPlayingSpeech) {
-				return pilotCallWait, nil // try again next frame
-			} else if err != nil {
-				tm.lg.Warnf("SPEECH playback failed for %s: %v (shown only)", callsign, err)
-				pc.pcm = nil
-			}
+	if pc == nil {
+		if next == nil || time.Until(tm.holdUntil) > pilotCallLeadTime {
+			return pilotCallWait, nil
 		}
-		if pc.pcm == nil {
-			tm.lastCallsign = callsign
-			tm.holdUntil = time.Now().Add(pauseAfterPilotCall)
-			tm.radioUses++
+		pc = &pilotCall{transmission: *next, radioUses: tm.radioUses}
+		tm.pilotCall = pc
+		if speak {
+			return pilotCallSynthesize, pc
 		}
-		tm.pilotCall = nil
-		return pilotCallReport, pc
-
-	default:
-		return pilotCallWait, nil
+		pc.stage = pilotCallSynthesized
 	}
+
+	if pc.stage == pilotCallSynthesized && !time.Now().Before(tm.holdUntil) {
+		pc.stage = pilotCallTaking
+		return pilotCallTake, pc
+	}
+	return pilotCallWait, nil
 }
 
 // PilotCallSynthesized records the speech synthesized for pc, or nil if it
@@ -253,21 +247,34 @@ func (tm *TransmissionManager) PilotCallSynthesized(pc *pilotCall, pcm []int16) 
 	}
 }
 
-// PilotCallChecked records the server's answer to whether pc is still the
-// pilot transmission to say next.
-func (tm *TransmissionManager) PilotCallChecked(pc *pilotCall, isNext bool) {
+// PilotCallTaken records whether the server handed over pc for the client
+// to play, and plays it if so. The server has posted its text by then, so
+// it plays even if the controller has keyed up in the meantime, just as a
+// pilot who has started talking would.
+func (tm *TransmissionManager) PilotCallTaken(p audio.Engine, pc *pilotCall, taken bool) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
-	if tm.pilotCall != pc || pc.stage != pilotCallChecking {
+	if tm.pilotCall != pc {
 		return
 	}
-	if isNext {
-		pc.stage = pilotCallApproved
-	} else {
-		tm.lg.Infof("SPEECH pilot call no longer next: %s", pc.transmission.ADSBCallsign)
-		tm.pilotCall = nil
+	tm.pilotCall = nil
+	callsign := pc.transmission.ADSBCallsign
+	if !taken {
+		tm.lg.Infof("SPEECH pilot call no longer next: %s", callsign)
+		return
 	}
+
+	if pc.pcm != nil {
+		err := tm.startPlayback(p, callsign, pc.pcm, pauseAfterPilotCall)
+		if err == nil {
+			return
+		}
+		tm.lg.Warnf("SPEECH playback failed for %s: %v (shown only)", callsign, err)
+	}
+	tm.lastCallsign = callsign
+	tm.holdUntil = time.Now().Add(pauseAfterPilotCall)
+	tm.radioUses++
 }
 
 // HoldAfterTransmission sets a hold period, used when the user initiates
@@ -277,6 +284,7 @@ func (tm *TransmissionManager) HoldAfterTransmission() {
 	defer tm.mu.Unlock()
 
 	tm.holdUntil = time.Now().Add(2 * time.Second)
+	tm.composingUntil = tm.holdUntil
 	tm.radioUses++
 }
 

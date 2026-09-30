@@ -407,32 +407,22 @@ func (s *Sim) NextPilotTransmission(tcw TCW) *PilotTransmission {
 	return pt
 }
 
-// PilotTransmissionIsNext reports whether the pending contact with the given
-// ID is still the one the controller at tcw is to hear next.
-func (s *Sim) PilotTransmissionIsNext(tcw TCW, id uint64) bool {
-	pc := s.nextContact(s.GetPositionsForTCW(tcw))
-	return pc != nil && pc.ID == id
-}
+// TakePilotTransmission takes pt out of the queue for the client to play it,
+// if it is still what the controller at tcw is to hear next, and reports
+// whether it did; the client plays pt only then. Its text, which is what the
+// client synthesized, goes to the messages pane, and whatever follows the
+// pilot saying it is set in motion. Either way the state is published so
+// that the client's reply carries what is now next.
+func (s *Sim) TakePilotTransmission(tcw TCW, pt PilotTransmission) bool {
+	defer s.publish()
 
-// ReportPilotTransmission records that the controller at tcw heard pt: it
-// leaves the queue, its text goes to the messages pane, and whatever saying
-// it sets in motion happens. A transmission that is no longer queued has
-// already been reported, or has gone stale since the client checked it, and
-// is ignored.
-func (s *Sim) ReportPilotTransmission(tcw TCW, pt PilotTransmission) {
-	var pc PendingContact
-	found := false
-	for _, tcp := range s.GetPositionsForTCW(tcw) {
-		if i := slices.IndexFunc(s.PendingContacts[tcp], func(p PendingContact) bool { return p.ID == pt.ContactID }); i != -1 {
-			pc, found = s.PendingContacts[tcp][i], true
-			s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
-			break
-		}
+	pc := s.nextContact(s.GetPositionsForTCW(tcw))
+	if pc == nil || pc.ID != pt.ContactID {
+		return false
 	}
-	ac, ok := s.Aircraft[pc.ADSBCallsign]
-	if !found || !ok {
-		return
-	}
+	s.PendingContacts[pc.TCP] = slices.DeleteFunc(s.PendingContacts[pc.TCP],
+		func(p PendingContact) bool { return p.ID == pc.ID })
+	ac := s.Aircraft[pc.ADSBCallsign] // present, since the contact applies
 
 	switch pc.Type {
 	case PendingTransmissionDeparture:
@@ -461,7 +451,7 @@ func (s *Sim) ReportPilotTransmission(tcw TCW, pt PilotTransmission) {
 		WrittenText:           pt.Written,
 		RadioTransmissionType: pt.Type,
 	})
-	s.publish()
+	return true
 }
 
 // processVirtualControllerContacts handles pending contacts for virtual

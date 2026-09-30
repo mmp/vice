@@ -75,17 +75,10 @@ func TestSessionReplay(t *testing.T) {
 			}
 		}
 		if pt := update.NextPilotTransmission; pt != nil {
-			var isNext bool
-			args := &CheckPilotTransmissionArgs{ControllerToken: token, ContactID: pt.ContactID}
-			if err := sd.CheckPilotTransmission(args, &isNext); err != nil {
+			var taken TakePilotTransmissionResult
+			args := &TakePilotTransmissionArgs{ControllerToken: token, Transmission: *pt}
+			if err := sd.TakePilotTransmission(args, &taken); err != nil {
 				t.Fatal(err)
-			}
-			if isNext {
-				var reported SimStateUpdate
-				args := &ReportPilotTransmissionArgs{ControllerToken: token, Transmission: *pt}
-				if err := sd.ReportPilotTransmission(args, &reported); err != nil {
-					t.Fatal(err)
-				}
 			}
 		}
 		if i == iterations/2 {
@@ -129,7 +122,7 @@ func TestSessionReplay(t *testing.T) {
 			counts[simlog.KindTick], counts[simlog.KindRequest], counts[simlog.KindSpawn])
 	}
 	if !slices.ContainsFunc(sess.Events, func(e simlog.Event) bool {
-		return e.Kind == simlog.KindRequest && e.Request.Method == ReportPilotTransmissionRPC
+		return e.Kind == simlog.KindRequest && e.Request.Method == TakePilotTransmissionRPC
 	}) {
 		t.Error("session log records no pilot transmissions, so the replay doesn't cover them")
 	}
@@ -315,7 +308,6 @@ func TestDispatcherRequestsRecorded(t *testing.T) {
 		GlobalMessageRPC:           "chat between controllers",
 		UpdateATISGITextRPC:        "free text that nothing flies by",
 		AnnotateFlightStripRPC:     "free text that nothing flies by",
-		CheckPilotTransmissionRPC:  "a query",
 	}
 
 	lg, sm := makeReplayTestSimManager(t)

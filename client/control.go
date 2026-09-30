@@ -10,6 +10,7 @@ import (
 	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/speech/stt"
@@ -515,30 +516,29 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 		}))
 }
 
-// checkPilotCall asks the server whether the pilot call the client has
-// synthesized is still the one to say.
-func (c *ControlClient) checkPilotCall(pc *pilotCall) {
-	var isNext bool
-	c.addCall(makeRPCCall(c.client.Go(server.CheckPilotTransmissionRPC, &server.CheckPilotTransmissionArgs{
-		ControllerToken: c.controllerToken,
-		ContactID:       pc.transmission.ContactID,
-	}, &isNext, nil),
-		func(err error) {
-			if err != nil {
-				c.lg.Errorf("CheckPilotTransmission: %v", err)
-			}
-			c.transmissions.PilotCallChecked(pc, err == nil && isNext)
-		}))
-}
-
-// reportPilotCall tells the server that a pilot call has started. Its text
-// comes back to the messages pane with the reply.
-func (c *ControlClient) reportPilotCall(pc *pilotCall) {
-	var update server.SimStateUpdate
-	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ReportPilotTransmissionRPC, &server.ReportPilotTransmissionArgs{
+// takePilotCall takes a pilot call the client is ready to play from the
+// server, which hands it over only if it is still the one the controller is
+// to hear next, and plays it if so. The call's text comes back to the
+// messages pane with the reply.
+func (c *ControlClient) takePilotCall(p audio.Engine, pc *pilotCall) {
+	var result server.TakePilotTransmissionResult
+	call := makeStateUpdateRPCCall(c.client.Go(server.TakePilotTransmissionRPC, &server.TakePilotTransmissionArgs{
 		ControllerToken: c.controllerToken,
 		Transmission:    pc.transmission,
-	}, &update, nil), &update, nil))
+	}, &result, nil), &result.SimStateUpdate,
+		func(err error) {
+			c.transmissions.PilotCallTaken(p, pc, err == nil && result.Taken)
+		})
+	// makeStateUpdateRPCCall doesn't call back if the call itself fails,
+	// but the pilot call still has to be let go of.
+	stateUpdated := call.Callback
+	call.Callback = func(c *ControlClient, err error) {
+		if err != nil {
+			c.transmissions.PilotCallTaken(p, pc, false)
+		}
+		stateUpdated(c, err)
+	}
+	c.addCall(call)
 }
 
 func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, volumeId string, callback func(output string, err error)) {

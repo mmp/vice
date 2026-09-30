@@ -897,43 +897,31 @@ func (sd *dispatcher) ConfigureAutoHandoff(args *AutoHandoffConfigArgs, result *
 	})
 }
 
-type CheckPilotTransmissionArgs struct {
-	ControllerToken string
-	ContactID       uint64
-}
-
-const CheckPilotTransmissionRPC = "Sim.CheckPilotTransmission"
-
-// CheckPilotTransmission reports whether the pilot transmission a client has
-// synthesized is still the one its controller is to hear next, just before
-// the client plays it.
-func (sd *dispatcher) CheckPilotTransmission(args *CheckPilotTransmissionArgs, isNext *bool) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	c := sd.sm.LookupController(args.ControllerToken)
-	if c == nil {
-		return ErrNoSimForControllerToken
-	}
-	c.session.withSim(func() { *isNext = c.sim.PilotTransmissionIsNext(c.tcw, args.ContactID) })
-	return nil
-}
-
-type ReportPilotTransmissionArgs struct {
+type TakePilotTransmissionArgs struct {
 	ControllerToken string
 	Transmission    sim.PilotTransmission
 }
 
-const ReportPilotTransmissionRPC = "Sim.ReportPilotTransmission"
+type TakePilotTransmissionResult struct {
+	SimStateUpdate
+	Taken bool // whether the transmission was still next, and so is to be played
+}
 
-// ReportPilotTransmission tells the sim that a client has started playing
-// (or, with speech off, showing) a pilot transmission.
-func (sd *dispatcher) ReportPilotTransmission(args *ReportPilotTransmissionArgs, update *SimStateUpdate) error {
+const TakePilotTransmissionRPC = "Sim.TakePilotTransmission"
+
+// TakePilotTransmission takes a pilot transmission the client is ready to
+// play (or, with speech off, to show) out of the sim's queue, if it is still
+// the one the controller is to hear next. The client plays it only if it was
+// taken.
+func (sd *dispatcher) TakePilotTransmission(args *TakePilotTransmissionArgs, result *TakePilotTransmissionResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	return sd.runSimCommand(args.ControllerToken, update, ReportPilotTransmissionRPC, args,
+	return sd.runSimCommand(args.ControllerToken, &result.SimStateUpdate, TakePilotTransmissionRPC, args,
 		func(c *controllerContext) error {
-			c.sim.ReportPilotTransmission(c.tcw, args.Transmission)
-			c.session.recordAircraft(args.Transmission.ADSBCallsign)
+			result.Taken = c.sim.TakePilotTransmission(c.tcw, args.Transmission)
+			if result.Taken {
+				c.session.recordAircraft(args.Transmission.ADSBCallsign)
+			}
 			return nil
 		})
 }

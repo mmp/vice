@@ -337,8 +337,8 @@ func (c *ControlClient) GetUpdates(p audio.Engine, onErr func(error)) {
 	c.transmissions.Update(p, c.State.Paused, c.sttActive)
 	// The next step for the pilot call may be an RPC, which is issued after
 	// releasing the lock.
-	pilotCallStep, pilotCall := c.transmissions.AdvancePilotCall(p, c.State.NextPilotTransmission,
-		c.State.Paused, c.sttActive)
+	pilotCallStep, pilotCall := c.transmissions.AdvancePilotCall(c.State.NextPilotTransmission,
+		c.State.Paused, c.sttActive, c.ttsEnabled())
 
 	if callbackErr == nil {
 		completedCalls, callbackErr = c.checkPendingRPCs()
@@ -349,10 +349,8 @@ func (c *ControlClient) GetUpdates(p audio.Engine, onErr func(error)) {
 	switch pilotCallStep {
 	case pilotCallSynthesize:
 		c.synthesizePilotCall(pilotCall)
-	case pilotCallCheck:
-		c.checkPilotCall(pilotCall)
-	case pilotCallReport:
-		c.reportPilotCall(pilotCall)
+	case pilotCallTake:
+		c.takePilotCall(p, pilotCall)
 	}
 
 	// Invoke callbacks after releasing lock to avoid deadlock.
@@ -712,13 +710,8 @@ func (c *ControlClient) enqueueReadback(callsign av.ADSBCallsign, text, voice st
 }
 
 // synthesizePilotCall synthesizes the speech for a pilot call off the main
-// thread. With speech off, or if synthesis fails, the call is only shown.
+// thread. If synthesis fails, the call is only shown.
 func (c *ControlClient) synthesizePilotCall(pc *pilotCall) {
-	if !c.ttsEnabled() {
-		c.transmissions.PilotCallSynthesized(pc, nil)
-		return
-	}
-
 	go func() {
 		defer c.lg.CatchAndReportCrash()
 

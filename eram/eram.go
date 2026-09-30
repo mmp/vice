@@ -1025,6 +1025,13 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 			ep.Input.Set("QB ")
 		}
 	}
+
+	if (keyboardInput != "" || len(ctx.Keyboard.Pressed) > 0) && !ctx.TCWIsPrivileged(ctx.UserTCW) &&
+		strings.HasPrefix(ep.Input.String(), "TG") {
+		// An aircraft control instruction is being entered; as with STARS'
+		// TGT GEN mode, hold radio transmissions for the coming few seconds.
+		ctx.Client.HoldRadioTransmissions()
+	}
 }
 
 func (ep *Scope) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {

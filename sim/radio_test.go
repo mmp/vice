@@ -693,7 +693,9 @@ func TestTransmissionTextMatchesSpeech(t *testing.T) {
 		check("call", pt.Written, pt.Spoken)
 
 		sub = s.eventStream.Subscribe()
-		s.ReportPilotTransmission(E2ETCW(), *pt)
+		if !s.TakePilotTransmission(E2ETCW(), *pt) {
+			t.Fatal("the published call wasn't taken")
+		}
 		if written := writtenEvent(sub); written != pt.Written {
 			t.Errorf("posted %q for the call, but the client said %q", written, pt.Written)
 		}
@@ -702,9 +704,10 @@ func TestTransmissionTextMatchesSpeech(t *testing.T) {
 }
 
 // TestPilotTransmissionLifecycle verifies that the next pilot transmission is
-// published with the same phrasing until it is reported, that reporting it
-// takes it out of the queue and moves on to the next one, and that a report
-// of a transmission no longer queued changes nothing.
+// published with the same phrasing until it is taken, that only the
+// published one can be taken, that taking it moves on to the next one, and
+// that taking a transmission no longer queued changes nothing beyond
+// publishing the state.
 func TestPilotTransmissionLifecycle(t *testing.T) {
 	s := NewTestSim(testLogger())
 	tcp := TCP("125.0")
@@ -724,25 +727,43 @@ func TestPilotTransmissionLifecycle(t *testing.T) {
 			t.Fatalf("republished call changed from %+v to %+v", first, again)
 		}
 	}
-	if !s.PilotTransmissionIsNext(E2ETCW(), first.ContactID) {
-		t.Error("expected the published call to be next")
-	}
 
 	sub := s.eventStream.Subscribe()
 	defer sub.Unsubscribe()
-	s.ReportPilotTransmission(E2ETCW(), *first)
-	if s.PilotTransmissionIsNext(E2ETCW(), first.ContactID) {
-		t.Error("expected the reported call not to be next any more")
+	transmissions := func() int {
+		return len(slices.DeleteFunc(sub.Get(), func(e Event) bool { return e.Type != RadioTransmissionEvent }))
+	}
+
+	// The client may have a call the server has since put behind another.
+	gen := s.pubGen
+	second := *first
+	second.ContactID = first.ContactID + 1
+	if s.TakePilotTransmission(E2ETCW(), second) {
+		t.Error("took a call that isn't the published one")
+	}
+	if s.pubGen == gen {
+		t.Error("expected refusing a call to publish what is next")
+	}
+	if n := transmissions(); n != 0 {
+		t.Errorf("refusing a call posted %d transmissions, want none", n)
+	}
+
+	if !s.TakePilotTransmission(E2ETCW(), *first) {
+		t.Fatal("expected the published call to be taken")
+	}
+	if n := transmissions(); n != 1 {
+		t.Errorf("taking the call posted %d transmissions, want 1", n)
 	}
 	if next := s.NextPilotTransmission(E2ETCW()); next == nil || next.ADSBCallsign != "UAL456" {
 		t.Errorf("expected UAL456's call next, got %+v", next)
 	}
 
-	// A second report, as from another connection at the TCW, is ignored.
-	s.ReportPilotTransmission(E2ETCW(), *first)
-	n := len(slices.DeleteFunc(sub.Get(), func(e Event) bool { return e.Type != RadioTransmissionEvent }))
-	if n != 1 {
-		t.Errorf("reporting the call twice posted %d transmissions, want 1", n)
+	// Taken again, as from another connection at the TCW, it is refused.
+	if s.TakePilotTransmission(E2ETCW(), *first) {
+		t.Error("took a call a second time")
+	}
+	if n := transmissions(); n != 0 {
+		t.Errorf("taking the call twice posted %d more transmissions, want none", n)
 	}
 	if len(s.PendingContacts[tcp]) != 1 {
 		t.Errorf("expected UAL456's call to stay queued, have %d contacts", len(s.PendingContacts[tcp]))
