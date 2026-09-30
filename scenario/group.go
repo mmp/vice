@@ -38,7 +38,7 @@ type Group struct {
 	InboundFlows       map[string]*av.InboundFlow         `json:"inbound_flows"`
 	VFRReportingPoints []av.VFRReportingPoint             `json:"vfr_reporting_points"`
 
-	HistoricalScenario HistoricalSetting `json:"historical_scenario,omitempty"`
+	HistoricalScenario bool `json:"historical_scenario,omitempty"`
 
 	AllowFixRedefinitions bool `json:"allow_fix_redefinitions"`
 

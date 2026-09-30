@@ -21,6 +21,7 @@ adjustments for TAS
   - Show `-` rather than `+` in the FDB when below the datablock altitude
   - `QU` now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when `QU` was used
 - Facility engineering
+  - Added `"historical_scenario": true` to allow manually authored retired STAR arrivals without checking them against current FAA procedures; waypoint and operational validation remains active.
   - ERAM altitude limits can be specified per-controller and/or per-scenario
   - Added `/cvs` and `/dvs` waypoint actions for virtual controllers to issue "climb via SID"/"descend via STAR"
   - Added `/cv` and `/dv` waypoint actions for "climb via SID/descend via STAR, except maintain (altitude)"

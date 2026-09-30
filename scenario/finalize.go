@@ -309,7 +309,7 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 		}
 
 		for i := range flow.Arrivals {
-			flow.Arrivals[i].HistoricalProcedure = bool(sg.HistoricalScenario)
+			flow.Arrivals[i].HistoricalProcedure = sg.HistoricalScenario
 			flow.Arrivals[i].Finalize(sg, sg.NmPerLongitude, sg.MagneticVariation,
 				sg.Airports, sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
 			checkArrivalSpawnAltitude(flow.Arrivals[i], e)
