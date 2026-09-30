@@ -176,16 +176,41 @@ func TestPilotCallDroppedWhenRadioUsed(t *testing.T) {
 
 			tc.use(tm)
 			tm.holdUntil, tm.composingUntil = time.Time{}, time.Time{}
+			if stage == pilotCallSynthesizing {
+				advance(t, tm, next, pilotCallWait)     // its synthesis has to finish first
+				tm.PilotCallSynthesized(pc, []int16{1}) // the late result for the stale call is ignored
+			}
 			again := advance(t, tm, next, pilotCallSynthesize)
 			if again == pc {
 				t.Errorf("%s at stage %d: kept the stale call", tc.name, stage)
 			}
-			tm.PilotCallSynthesized(pc, []int16{1}) // a late result for the stale call is ignored
 			advance(t, tm, next, pilotCallWait)
 			if len(p.played) != 0 {
 				t.Errorf("%s at stage %d: played the stale call", tc.name, stage)
 			}
 		}
+	}
+}
+
+// Synthesis can't be stopped, so only one runs at a time, however many calls
+// go stale while it does; the next starts, for the call published by then,
+// once it is done.
+func TestPilotCallSynthesizesOneAtATime(t *testing.T) {
+	tm := makeTestTransmissionManager()
+	first := &sim.PilotTransmission{ContactID: 1, ADSBCallsign: "AAL123"}
+	pc := advance(t, tm, first, pilotCallSynthesize)
+
+	var next *sim.PilotTransmission
+	for i := range 20 {
+		tm.Hold()
+		tm.Unhold()
+		next = &sim.PilotTransmission{ContactID: uint64(i + 2), ADSBCallsign: "UAL456"}
+		advance(t, tm, next, pilotCallWait)
+	}
+
+	tm.PilotCallSynthesized(pc, []int16{1})
+	if again := advance(t, tm, next, pilotCallSynthesize); again.transmission.ContactID != next.ContactID {
+		t.Errorf("synthesizing contact %d, want %d", again.transmission.ContactID, next.ContactID)
 	}
 }
 

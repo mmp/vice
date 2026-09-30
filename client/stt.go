@@ -41,7 +41,8 @@ import (
 // the call from the server, which hands it over only if it is still the one
 // to hear next, and plays it. Anything that uses the radio in the meantime
 // makes the call stale, so it is dropped and the client starts over from
-// what the server publishes next.
+// what the server publishes next. Synthesis is expensive and can't be
+// stopped once started, so only one runs at a time.
 type TransmissionManager struct {
 	mu           sync.Mutex
 	queue        []queuedTransmission // readbacks waiting to play
@@ -62,6 +63,9 @@ type TransmissionManager struct {
 	// transmission starting to play.
 	radioUses uint64
 	pilotCall *pilotCall
+	// synthesizing is the pilot call whose speech is being synthesized, if
+	// any; it may have been dropped since.
+	synthesizing *pilotCall
 }
 
 // queuedTransmission holds a readback ready for playback with pre-decoded PCM audio.
@@ -221,9 +225,16 @@ func (tm *TransmissionManager) AdvancePilotCall(next *sim.PilotTransmission, pau
 		if next == nil || time.Until(tm.holdUntil) > pilotCallLeadTime {
 			return pilotCallWait, nil
 		}
+		// A synthesis still running for a call that was dropped has to
+		// finish first; starting another would only queue behind it, and
+		// the words are fresher for the wait.
+		if speak && tm.synthesizing != nil {
+			return pilotCallWait, nil
+		}
 		pc = &pilotCall{transmission: *next, radioUses: tm.radioUses}
 		tm.pilotCall = pc
 		if speak {
+			tm.synthesizing = pc
 			return pilotCallSynthesize, pc
 		}
 		pc.stage = pilotCallSynthesized
@@ -242,6 +253,9 @@ func (tm *TransmissionManager) PilotCallSynthesized(pc *pilotCall, pcm []int16) 
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
+	if tm.synthesizing == pc {
+		tm.synthesizing = nil
+	}
 	if tm.pilotCall == pc && pc.stage == pilotCallSynthesizing {
 		pc.pcm, pc.stage = pcm, pilotCallSynthesized
 	}
