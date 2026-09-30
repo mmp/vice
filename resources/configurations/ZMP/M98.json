@@ -373,7 +373,13 @@
           "FGT_SIMMN_GEP.G": "1G",
           "MKT": "1E",
           "GEP.E": "1E",
-          "GEP.K": "1K"
+          "GEP.K": "1K",
+          "DELZY1.12s": "1H",
+          "KASPR3": "1H",
+          "EAU8": "1H",
+          "GEP5": "1H",
+          "SKETR3": "1H",
+          "WILDD1.12s": "1H"
         },
         "departure_assignments": {
           "KMSP/12L": "1D",
@@ -438,7 +444,14 @@
           "FGT_SIMMN_GEP.G": "1G",
           "MKT": "1E",
           "GEP.E": "1E",
-          "GEP.K": "1K"
+          "GEP.K": "1K",
+          "KASPR3": "1H",
+          "EAU8": "1H",
+          "GEP5": "1H",
+          "SAUGR1.30s": "1H",
+          "SKETR3": "1H",
+          "SNOPY1.30s": "1H",
+          "WILDD1.30s": "1H"
         },
         "departure_assignments": {
           "KMSP/30L": "1R",
@@ -517,92 +530,6 @@
             "N044.46.98.000,W093.15.89.000"
           ]
         }
-      ],
-      "fdam": [
-        {
-          "id": "MSP 12L",
-          "description": "MSP 12L AUTO LEADER LINE DIRECTION",
-          "type": "polygon",
-          "flight_type": "arrival",
-          "scratchpad": "12L, VL1, YL1, ZL1",
-          "new_owner_leader_direction": "NE",
-          "floor": 0,
-          "ceiling": 24000,
-          "vertices": [
-            "N045.27.54.316,W092.46.13.361",
-            "N045.02.19.059,W092.19.02.495",
-            "N044.34.35.166,W092.23.56.846",
-            "N044.15.57.609,W092.52.21.375",
-            "N044.16.24.594,W093.28.08.131",
-            "N044.28.55.249,W093.52.43.677",
-            "N044.41.29.007,W094.07.48.127",
-            "N045.10.39.871,W094.05.46.563",
-            "N045.30.27.232,W093.33.52.662"
-          ]
-        },
-        {
-          "id": "MSP 12R",
-          "description": "MSP 12R AUTO LEADER LINE DIRECTION",
-          "type": "polygon",
-          "flight_type": "arrival",
-          "scratchpad": "12R, VR1, YR1, ZR1",
-          "new_owner_leader_direction": "SW",
-          "floor": 0,
-          "ceiling": 24000,
-          "vertices": [
-            "N045.27.54.316,W092.46.13.361",
-            "N045.02.19.059,W092.19.02.495",
-            "N044.34.35.166,W092.23.56.846",
-            "N044.15.57.609,W092.52.21.375",
-            "N044.16.24.594,W093.28.08.131",
-            "N044.28.55.249,W093.52.43.677",
-            "N044.41.29.007,W094.07.48.127",
-            "N045.10.39.871,W094.05.46.563",
-            "N045.30.27.232,W093.33.52.662"
-          ]
-        },
-        {
-          "id": "MSP 30L",
-          "description": "MSP 30L AUTO LEADER LINE DIRECTION",
-          "type": "polygon",
-          "flight_type": "arrival",
-          "scratchpad": "30L, VL3, YL3, ZL3",
-          "new_owner_leader_direction": "SW",
-          "floor": 0,
-          "ceiling": 24000,
-          "vertices": [
-            "N045.27.54.316,W092.46.13.361",
-            "N045.02.19.059,W092.19.02.495",
-            "N044.34.35.166,W092.23.56.846",
-            "N044.15.57.609,W092.52.21.375",
-            "N044.16.24.594,W093.28.08.131",
-            "N044.28.55.249,W093.52.43.677",
-            "N044.41.29.007,W094.07.48.127",
-            "N045.10.39.871,W094.05.46.563",
-            "N045.30.27.232,W093.33.52.662"
-          ]
-        },
-        {
-          "id": "MSP 30R",
-          "description": "MSP 30R AUTO LEADER LINE DIRECTION",
-          "type": "polygon",
-          "flight_type": "arrival",
-          "scratchpad": "30R, VR3, YR3, ZR3",
-          "new_owner_leader_direction": "NE",
-          "floor": 0,
-          "ceiling": 24000,
-          "vertices": [
-            "N045.27.54.316,W092.46.13.361",
-            "N045.02.19.059,W092.19.02.495",
-            "N044.34.35.166,W092.23.56.846",
-            "N044.15.57.609,W092.52.21.375",
-            "N044.16.24.594,W093.28.08.131",
-            "N044.28.55.249,W093.52.43.677",
-            "N044.41.29.007,W094.07.48.127",
-            "N045.10.39.871,W094.05.46.563",
-            "N045.30.27.232,W093.33.52.662"
-          ]
-        }
       ]
     },
     "radar_sites": {
@@ -632,7 +559,10 @@
       "RXANN": "ONL",
       "ONTIJ": "FOD",
       "ORSKY": "FOD",
+      "FOD": "FOD",
+      "OVR": "FOD",
       "ALO": "RST",
+      "DBQ": "RST",
       "RST": "RST",
       "ODI": "ODI",
       "DLL": "DLL",
@@ -640,6 +570,7 @@
       "WLSTN": "GRB",
       "DLH": "DLH",
       "BRNRD": "BRD",
+      "BRD": "BRD",
       "LSE": "LSE",
       "FGT": "FGT",
       "GEP": "GEP",
@@ -653,7 +584,9 @@
       "LENCK": "LNK",
       "ZOSAG": "ZSG",
       "ANIML": "AML",
-      "FCM": "FCM"
+      "FCM": "FCM",
+      "ABR": "ABR",
+      "ONL": "ONL"
     },
     "significant_points": {
       "HRBEK": {},
