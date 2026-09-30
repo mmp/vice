@@ -611,7 +611,7 @@ func TestUnformattableTransmissionIsReported(t *testing.T) {
 	defer sub.Unsubscribe()
 
 	rt := speech.MakeReadbackTransmission("departing {airport}", "KFRG") // want an ICAOAirportCode
-	s.postReadbackTransmission(ac.ADSBCallsign, *rt, TCW("TEST"))
+	s.postReadbackTransmission(ac.ADSBCallsign, rt, TCW("TEST"))
 
 	events := sub.Get()
 	if slices.ContainsFunc(events, func(e Event) bool { return e.Type == RadioTransmissionEvent }) {
@@ -628,5 +628,56 @@ func TestUnformattableTransmissionIsReported(t *testing.T) {
 	}
 	if to := events[i].ToController; to != TCP("125.0") {
 		t.Errorf("report went to %q, want the controller the readback was for", to)
+	}
+}
+
+// TestTransmissionTextMatchesSpeech verifies that what the messages pane
+// shows for a pilot transmission is what the pilot says: the same choice of
+// phrasing, with the callsign, for both a readback and a call the pilot
+// starts.
+func TestTransmissionTextMatchesSpeech(t *testing.T) {
+	s := NewTestSim(testLogger())
+	s.State.Controllers = map[ControlPosition]*av.Controller{"125.0": {RadioName: "Test Approach"}}
+	ac := MakeTestAircraft("AAL123", "22L")
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	phrasings := []string{"what altitude should we maintain", "what altitude do you want us at"}
+	check := func(what, written, spoken string) {
+		t.Helper()
+		if !strings.Contains(written, "American 123") {
+			t.Errorf("%s text %q is missing the callsign", what, written)
+		}
+		for _, p := range phrasings {
+			if strings.Contains(written, p) != strings.Contains(spoken, p) {
+				t.Errorf("%s text %q and speech %q differ on %q", what, written, spoken, p)
+			}
+		}
+	}
+	writtenEvent := func(sub *EventsSubscription) string {
+		t.Helper()
+		events := sub.Get()
+		i := slices.IndexFunc(events, func(e Event) bool { return e.Type == RadioTransmissionEvent })
+		if i == -1 {
+			t.Fatal("no transmission posted")
+		}
+		return events[i].WrittenText
+	}
+
+	for range 20 {
+		sub := s.eventStream.Subscribe()
+		spoken := s.postReadbackTransmission(ac.ADSBCallsign,
+			speech.MakeReadbackTransmission("["+strings.Join(phrasings, "|")+"]"), E2ETCW())
+		check("readback", writtenEvent(sub), spoken)
+		sub.Unsubscribe()
+
+		sub = s.eventStream.Subscribe()
+		spoken, _ = s.GenerateContactTransmission(&PendingContact{ADSBCallsign: ac.ADSBCallsign, TCP: "125.0",
+			Type: PendingTransmissionRequestAltitude})
+		written := writtenEvent(sub)
+		if !strings.HasPrefix(written, "Test Approach") {
+			t.Errorf("call text %q doesn't start with the controller's name", written)
+		}
+		check("call", written, spoken)
+		sub.Unsubscribe()
 	}
 }

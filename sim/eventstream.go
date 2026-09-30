@@ -278,9 +278,7 @@ type Event struct {
 	FromController        ControlPosition
 	ToController          ControlPosition   // For radio transmissions, the controlling controller.
 	Redirectors           []ControlPosition // For AcceptedRedirectedHandoffEvent, the redirecting positions.
-	DestinationTCW        TCW               // The TCW that should receive this transmission's TTS
 	WrittenText           string
-	SpokenText            string
 	RadioTransmissionType speech.RadioTransmissionType   // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent, FDAMLeaderLineEvent
 	WaypointInfo          []math.Point2LL
@@ -293,12 +291,12 @@ type Event struct {
 func (e *Event) String() string {
 	switch e.Type {
 	case RadioTransmissionEvent:
-		return fmt.Sprintf("%s: ADSB callsign %q ACID %q controller %q->%q written %q spoken %q type %v",
-			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.WrittenText, e.SpokenText,
+		return fmt.Sprintf("%s: ADSB callsign %q ACID %q controller %q->%q written %q type %v",
+			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.WrittenText,
 			e.RadioTransmissionType)
 	default:
-		return fmt.Sprintf("%s: ADSB callsign %q ACID %q controller %q->%q written %q spoken %q",
-			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.WrittenText, e.SpokenText)
+		return fmt.Sprintf("%s: ADSB callsign %q ACID %q controller %q->%q written %q",
+			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.WrittenText)
 	}
 }
 
@@ -318,9 +316,6 @@ func (e Event) LogValue() slog.Value {
 	}
 	if e.WrittenText != "" {
 		attrs = append(attrs, slog.String("written_text", e.WrittenText))
-	}
-	if e.SpokenText != "" {
-		attrs = append(attrs, slog.String("spoken_text", e.SpokenText))
 	}
 	return slog.GroupValue(attrs...)
 }

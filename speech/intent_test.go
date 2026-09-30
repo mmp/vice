@@ -26,11 +26,11 @@ func renderIntentForTest(t *testing.T, intent CommandIntent, seed uint64) string
 
 	r := rand.Make()
 	r.Seed(seed)
-	written, err := RenderIntents([]CommandIntent{intent}, r).Written(r)
+	rd, err := RenderIntents([]CommandIntent{intent}, r).Render(r)
 	if err != nil {
 		t.Fatalf("seed %d: %v", seed, err)
 	}
-	return strings.ToLower(written)
+	return strings.ToLower(rd.Written)
 }
 
 func assertContainsAny(t *testing.T, readback string, values ...string) {
@@ -157,11 +157,11 @@ func TestProcedureExceptReadback(t *testing.T) {
 			for seed := uint64(1); seed <= 5; seed++ {
 				r := rand.Make()
 				r.Seed(seed)
-				written, err := RenderIntents(test.intents, r).Written(r)
+				rd, err := RenderIntents(test.intents, r).Render(r)
 				if err != nil {
 					t.Fatalf("seed %d: %v", seed, err)
 				}
-				readback := strings.ToLower(written)
+				readback := strings.ToLower(rd.Written)
 				for _, w := range test.want {
 					if !strings.Contains(readback, w) {
 						t.Fatalf("readback %q does not contain %q", readback, w)
@@ -309,11 +309,11 @@ func TestReportingPointInSightUsesNames(t *testing.T) {
 	r := rand.Make()
 
 	for range 50 {
-		rt := RenderIntents([]CommandIntent{intent}, r)
-		w, err := rt.Written(r)
+		rd, err := RenderIntents([]CommandIntent{intent}, r).Render(r)
 		if err != nil {
-			t.Fatalf("Written: %v", err)
+			t.Fatalf("Render: %v", err)
 		}
+		w := rd.Written
 		if name, ok := strings.CutSuffix(w, " in sight"); w != "in sight" && (!ok || !slices.Contains(names, name)) {
 			t.Errorf("got %q, want \"in sight\", optionally preceded by one of %v", w, names)
 		}

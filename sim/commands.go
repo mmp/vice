@@ -636,19 +636,7 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 // Returns the spoken text for TTS synthesis and the callsign to use for voice selection.
 func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
 	tr := speech.MakeReadbackTransmission("say again for")
-	s.postReadbackTransmission(callsign, *tr, tcw)
-
-	// Return spoken text with callsign suffix for TTS synthesis
-	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
-		tr.Merge(suffix)
-	}
-	// postReadbackTransmission has already reported any formatting failure;
-	// this only costs the controller the spoken form.
-	spoken, err := tr.Spoken(s.textRand)
-	if err != nil {
-		s.lg.Errorf("%s: %v", callsign, err)
-	}
-	return callsign, spoken, nil
+	return callsign, s.postReadbackTransmission(callsign, tr, tcw), nil
 }
 
 // SayNotCleared is called when the controller issues "contact tower" to an arrival
@@ -656,19 +644,7 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, stri
 // haven't received approach clearance.
 func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
 	tr := speech.MakeReadbackTransmission("we haven't been cleared for an approach")
-	s.postReadbackTransmission(callsign, *tr, tcw)
-
-	// Return spoken text with callsign suffix for TTS synthesis
-	if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
-		tr.Merge(suffix)
-	}
-	// postReadbackTransmission has already reported any formatting failure;
-	// this only costs the controller the spoken form.
-	spoken, err := tr.Spoken(s.textRand)
-	if err != nil {
-		s.lg.Errorf("%s: %v", callsign, err)
-	}
-	return callsign, spoken, nil
+	return callsign, s.postReadbackTransmission(callsign, tr, tcw), nil
 }
 
 // sayAgainIntent returns an intent for when STT partially parsed a command but

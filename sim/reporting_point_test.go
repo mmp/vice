@@ -500,8 +500,8 @@ func TestChartedVisualClearanceRequiresSighting(t *testing.T) {
 			}
 
 			r := vrand.Make()
-			if w, err := speech.RenderIntents([]speech.CommandIntent{intent}, r).Written(r); err != nil || w != c.refusal {
-				t.Errorf("got %q (err %v), want %q", w, err, c.refusal)
+			if rd, err := speech.RenderIntents([]speech.CommandIntent{intent}, r).Render(r); err != nil || rd.Written != c.refusal {
+				t.Errorf("got %q (err %v), want %q", rd.Written, err, c.refusal)
 			}
 			if vs.AC.Nav.Approach.Cleared {
 				t.Error("refused clearance left the aircraft cleared")

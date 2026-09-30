@@ -5,10 +5,8 @@
 package sim
 
 import (
-	"cmp"
 	"log/slog"
 	"slices"
-	"strings"
 	"time"
 
 	"github.com/brunoga/deep"
@@ -17,98 +15,9 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/simlog"
-	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
-
-// prepareRadioTransmissions adds callsign/controller prefixes to radio transmissions.
-// (Multi-command batching is now handled at intent generation time in RunAircraftControlCommands.)
-// This is called for both main event subscriptions and TTS event subscriptions.
-func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
-	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
-	ctrl := s.State.Controllers[primaryTCP]
-
-	// Add identifying info to radio transmissions destined for this TCW
-	for i, e := range events {
-		if e.Type != RadioTransmissionEvent || e.DestinationTCW != tcw {
-			continue
-		}
-
-		ac, ok := s.Aircraft[e.ADSBCallsign]
-		if !ok {
-			continue
-		}
-
-		var heavySuper string
-		if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok && !ctrl.ERAMFacility {
-			if perf.WeightClass == "H" {
-				heavySuper = " heavy"
-			} else if perf.WeightClass == "J" {
-				heavySuper = " super"
-			}
-		}
-
-		switch e.RadioTransmissionType {
-		case speech.RadioTransmissionContact:
-			// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
-			// Only on initial contact, not subsequent transmissions.
-			if ac.EmergencyState != nil && s.textRand.Bool() {
-				heavySuper += " emergency aircraft"
-			}
-			csArg := speech.CallsignArg{
-				Callsign:           ac.ADSBCallsign,
-				IsEmergency:        ac.EmergencyState != nil,
-				AlwaysFullCallsign: true,
-			}
-			var tr *speech.RadioTransmission
-			if ac.TypeOfFlight == av.FlightTypeDeparture {
-				tr = speech.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
-			} else {
-				tr = speech.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
-			}
-			w, werr := tr.Written(s.textRand)
-			sp, serr := tr.Spoken(s.textRand)
-			if err := cmp.Or(werr, serr); err != nil {
-				// This runs once per destination TCW as events are
-				// delivered, so posting here would repeat the message;
-				// the transmission itself still goes out, just without
-				// the controller and callsign in front of it.
-				s.lg.Errorf("%s: %v", ac.ADSBCallsign, err)
-			} else {
-				events[i].WrittenText = w + ", " + e.WrittenText
-				events[i].SpokenText = strings.TrimSuffix(sp, ".") + ", " + e.SpokenText
-			}
-		case speech.RadioTransmissionMixUp:
-			// No additional formatting for mix-up transmissions; the callsign is already in there.
-		case speech.RadioTransmissionNoId:
-			// No callsign formatting for NoId transmissions (e.g., "blocked").
-		default:
-			csArg := speech.CallsignArg{
-				Callsign:    ac.ADSBCallsign,
-				IsEmergency: ac.EmergencyState != nil,
-			}
-			tr := speech.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
-			w, werr := tr.Written(s.textRand)
-			sp, serr := tr.Spoken(s.textRand)
-			if err := cmp.Or(werr, serr); err != nil {
-				s.lg.Errorf("%s: %v", ac.ADSBCallsign, err)
-			} else {
-				events[i].WrittenText = e.WrittenText + ", " + w
-				events[i].SpokenText = strings.TrimSuffix(e.SpokenText, ".") + ", " + sp
-			}
-		}
-	}
-
-	return events
-}
-
-// PrepareRadioTransmissionsForTCW processes events for TTS, adding
-// callsign/controller prefixes to radio transmissions. This is the public API
-// for the server to process TTS events from a separate subscription.
-func (s *Sim) PrepareRadioTransmissionsForTCW(tcw TCW, events []Event) []Event {
-	return s.prepareRadioTransmissions(tcw, events)
-}
 
 func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
 	return s.snapshot(tcw)

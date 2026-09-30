@@ -34,11 +34,11 @@ func TestMain(m *testing.M) {
 func writtenForTest(t *testing.T, rt *speech.RadioTransmission, r *rand.Rand) string {
 	t.Helper()
 
-	s, err := rt.Written(r)
+	rd, err := rt.Render(r)
 	if err != nil {
 		t.Fatalf("%v", err)
 	}
-	return s
+	return rd.Written
 }
 
 // FlightTest orchestrates a simulated flight with events and assertions.

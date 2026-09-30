@@ -120,7 +120,7 @@ import (
 //
 // 98: PendingTransmissionFieldNegativeContact removed, renumbering the later pending
 // transmission types; PendingContact gained QueuedTime; Aircraft gained
-// LastInstructionTime and LastInstructionFrequency
+// LastInstructionTime and LastInstructionFrequency; Event lost SpokenText and DestinationTCW
 const ViceSerializeVersion = 98
 
 const ViceServerAddress = "vice.pharr.org"

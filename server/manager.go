@@ -786,8 +786,6 @@ func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	activeTCWs := ss.getActiveTCWs()
 	sm.mu.Unlock(sm.lg)
 
-	ss.withSim(func() { events = ss.sim.PrepareRadioTransmissionsForTCW(tcw, events) })
-
 	return &SimStateUpdate{StateUpdate: update, ActiveTCWs: activeTCWs, Events: events}, nil
 }
 
@@ -833,10 +831,7 @@ func (sm *SimManager) StateUpdateFor(c *controllerContext) SimStateUpdate {
 	sm.mu.Unlock(sm.lg)
 
 	var update sim.StateUpdate
-	c.session.withSim(func() {
-		update = c.sim.GetStateUpdate(c.tcw)
-		events = c.sim.PrepareRadioTransmissionsForTCW(c.tcw, events)
-	})
+	c.session.withSim(func() { update = c.sim.GetStateUpdate(c.tcw) })
 
 	return SimStateUpdate{StateUpdate: update, ActiveTCWs: activeTCWs, Events: events}
 }

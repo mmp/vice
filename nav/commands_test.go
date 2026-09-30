@@ -998,16 +998,16 @@ func TestViaExceptionValidation(t *testing.T) {
 				t.Fatalf("accepted exception not applied: %+v", f.nav.Altitude)
 			}
 			rt := speech.RenderIntents([]speech.CommandIntent{intent}, f.nav.Rand)
-			written, err := rt.Written(f.nav.Rand)
+			rd, err := rt.Render(f.nav.Rand)
 			if err != nil {
 				t.Fatal(err)
 			}
-			readback := strings.ToLower(written)
+			readback := strings.ToLower(rd.Written)
 			if test.refusal != "" && !strings.Contains(readback, strings.ToLower(test.refusal)) {
-				t.Errorf("readback %q missing %q", written, test.refusal)
+				t.Errorf("readback %q missing %q", rd.Written, test.refusal)
 			}
 			if strings.Contains(readback, "currently") != test.warn {
-				t.Errorf("unexpected altitude caution in readback %q, want caution: %v", written, test.warn)
+				t.Errorf("unexpected altitude caution in readback %q, want caution: %v", rd.Written, test.warn)
 			}
 		})
 	}

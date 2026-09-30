@@ -5,8 +5,8 @@
 package sim
 
 import (
-	"cmp"
 	"slices"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -20,9 +20,6 @@ import (
 // formatted. The pilot says nothing at all in that case, which to the
 // controller is indistinguishable from an aircraft ignoring them, so the
 // phrase that failed goes to the messages pane along with the callsign.
-// Only the places that would have posted the transmission report it; the
-// paths that re-render it for speech synthesis just log, so that a single
-// failure doesn't produce a run of identical messages.
 func (s *Sim) reportTransmissionFailure(callsign av.ADSBCallsign, tcp ControlPosition, err error) {
 	s.lg.Errorf("%s: %v", callsign, err)
 	s.eventStream.Post(Event{
@@ -33,20 +30,26 @@ func (s *Sim) reportTransmissionFailure(callsign av.ADSBCallsign, tcp ControlPos
 	})
 }
 
-// postReadbackTransmission posts a radio event for a pilot responding to a command.
-// DestinationTCW is the specific TCW that issued the command.
-// Use this for readbacks, where the response must go to the issuing controller
-// regardless of any consolidation changes.
-func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr speech.RadioTransmission, tcw TCW) {
-	tcp := s.State.PrimaryPositionForTCW(tcw)
-	written, werr := tr.Written(s.textRand)
-	spoken, serr := tr.Spoken(s.textRand)
-	if err := cmp.Or(werr, serr); err != nil {
-		s.reportTransmissionFailure(from, tcp, err)
-		return
+// postReadbackTransmission posts a pilot's response to a command from the
+// controller at tcw, which goes to that controller regardless of any
+// consolidation changes, and returns it as spoken. The pilot ends it with
+// the callsign unless it is a mix-up, which already names one, or goes
+// without one.
+func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr *speech.RadioTransmission, tcw TCW) string {
+	if tr.Type != speech.RadioTransmissionMixUp && tr.Type != speech.RadioTransmissionNoId {
+		if suffix := s.readbackCallsignSuffix(from, tcw); suffix != nil {
+			tr.Merge(suffix)
+		}
 	}
-	if written == "" && spoken == "" {
-		return
+
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+	rd, err := tr.Render(s.textRand)
+	if err != nil {
+		s.reportTransmissionFailure(from, tcp, err)
+		return ""
+	}
+	if rd.Written == "" && rd.Spoken == "" {
+		return ""
 	}
 
 	if ac, ok := s.Aircraft[from]; ok {
@@ -57,11 +60,50 @@ func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr speech.RadioTran
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
 		ToController:          tcp,
-		DestinationTCW:        tcw,
-		WrittenText:           written,
-		SpokenText:            spoken,
+		WrittenText:           rd.Written,
 		RadioTransmissionType: tr.Type,
 	})
+	return rd.Spoken
+}
+
+// readbackCallsignSuffix returns the callsign a pilot ends a readback to the
+// controller at tcw with.
+func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *speech.RadioTransmission {
+	ac, ok := s.Aircraft[callsign]
+	if !ok {
+		return nil
+	}
+
+	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
+	ctrl := s.State.Controllers[primaryTCP]
+
+	var heavySuper string
+	if ctrl != nil && !ctrl.ERAMFacility {
+		if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok {
+			if perf.WeightClass == "H" {
+				heavySuper = " heavy"
+			} else if perf.WeightClass == "J" {
+				heavySuper = " super"
+			}
+		}
+	}
+
+	// Use GACallsignArg for GA aircraft when addressed with type+trailing3 form
+	var csArg any
+	if strings.HasPrefix(string(callsign), "N") && ac.LastAddressingForm == AddressingFormTypeTrailing3 {
+		csArg = speech.GACallsignArg{
+			Callsign:     ac.ADSBCallsign,
+			AircraftType: ac.AircraftType,
+			UseTypeForm:  true,
+			IsEmergency:  ac.EmergencyState != nil,
+		}
+	} else {
+		csArg = speech.CallsignArg{
+			Callsign:    ac.ADSBCallsign,
+			IsEmergency: ac.EmergencyState != nil,
+		}
+	}
+	return speech.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -679,33 +721,33 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 
 	// Get the base (unprefixed) text for the event stream.
 	// prepareRadioTransmissions will add the prefix when delivering to clients.
-	baseSpoken, serr := rt.Spoken(s.textRand)
-	baseWritten, werr := rt.Written(s.textRand)
-	if err := cmp.Or(serr, werr); err != nil {
+	// The pilot starts with the name of the controller they are calling and
+	// their callsign.
+	if ctrl := s.State.Controllers[pc.TCP]; ctrl != nil {
+		prefix := contactPrefix(ac, ctrl, s.textRand)
+		prefix.Merge(rt)
+		rt = prefix
+	}
+
+	rd, err := rt.Render(s.textRand)
+	if err != nil {
 		s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
 		return "", ""
 	}
-	if baseSpoken == "" && baseWritten == "" {
-		return "", ""
-	}
 
-	// Post the radio event with unprefixed text
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          pc.ADSBCallsign,
 		ToController:          pc.TCP,
-		DestinationTCW:        s.State.TCWForPosition(pc.TCP),
-		WrittenText:           baseWritten,
-		SpokenText:            baseSpoken,
+		WrittenText:           rd.Written,
 		RadioTransmissionType: rt.Type,
 	})
+	return rd.Spoken, rd.Written
+}
 
-	// Generate prefixed text for the TTS return value (not going through event stream)
-	ctrl := s.State.Controllers[pc.TCP]
-	if ctrl == nil {
-		return baseSpoken, baseWritten
-	}
-
+// contactPrefix returns how a pilot starts a call to ctrl: the controller's
+// name and the full callsign.
+func contactPrefix(ac *Aircraft, ctrl *av.Controller, r *rand.Rand) *speech.RadioTransmission {
 	var heavySuper string
 	if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok && !ctrl.ERAMFacility {
 		if perf.WeightClass == "H" {
@@ -716,7 +758,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	}
 
 	// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super
-	if ac.EmergencyState != nil && s.textRand.Bool() {
+	if ac.EmergencyState != nil && r.Bool() {
 		heavySuper += " emergency aircraft"
 	}
 
@@ -726,21 +768,10 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		AlwaysFullCallsign: true,
 	}
 
-	var prefix *speech.RadioTransmission
 	if ac.TypeOfFlight == av.FlightTypeDeparture {
-		prefix = speech.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
-	} else {
-		prefix = speech.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
+		return speech.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper, ctrl, csArg)
 	}
-
-	prefix.Merge(rt)
-	spokenText, serr = prefix.Spoken(s.textRand)
-	writtenText, werr = prefix.Written(s.textRand)
-	if err := cmp.Or(serr, werr); err != nil {
-		s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
-		return "", ""
-	}
-	return spokenText, writtenText
+	return speech.MakeContactTransmission("{actrl}, {callsign}"+heavySuper, ctrl, csArg)
 }
 
 type FutureChangeSquawk struct {

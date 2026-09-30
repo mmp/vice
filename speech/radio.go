@@ -199,30 +199,44 @@ func (rt *RadioTransmission) Merge(r *RadioTransmission) {
 	}
 }
 
-// render formats each of the transmission's snippets with f, which is either
-// PhraseFormatString's Spoken or its Written. An argument that isn't one of the
-// types its directive handles is an error; since that leaves the transmission
-// saying something other than what was intended, the pilot says nothing at all
-// rather than transmitting a mangled instruction. The error names the phrase
-// that couldn't be formatted so that the caller can report which transmission
-// was lost.
-func (rt RadioTransmission) render(f func(PhraseFormatString, []any) (string, error)) ([]string, error) {
+// Rendering is a radio transmission as it is displayed and as it is spoken,
+// with the same choice among its alternative phrasings.
+type Rendering struct {
+	Written string
+	Spoken  string // with phonetic substitutions made (e.g. "9" -> "niner")
+}
+
+// Render picks one of the alternative phrasings for each of the
+// transmission's snippets and renders it both for display and for speech.
+// An argument that isn't one of the types its directive handles is an error;
+// since that leaves the transmission saying something other than what was
+// intended, the pilot says nothing at all rather than transmitting a mangled
+// instruction. The error names the phrase that couldn't be formatted so that
+// the caller can report which transmission was lost.
+func (rt RadioTransmission) Render(r *rand.Rand) (Rendering, error) {
 	if len(rt.Strings) != len(rt.Args) {
-		return nil, fmt.Errorf("mismatching len(Strings) %d and len(Args) %d", len(rt.Strings), len(rt.Args))
+		return Rendering{}, fmt.Errorf("mismatching len(Strings) %d and len(Args) %d", len(rt.Strings), len(rt.Args))
 	}
 
-	var result []string
-	for i := range rt.Strings {
-		s, err := f(rt.Strings[i], rt.Args[i])
+	var written, spoken []string
+	for i, s := range rt.Strings {
+		w, sp, err := s.render(r, rt.Args[i])
 		if err != nil {
-			return nil, fmt.Errorf("%q: %w", rt.Strings[i], err)
+			return Rendering{}, fmt.Errorf("%q: %w", s, err)
 		}
-		s = strings.TrimRight(strings.TrimSpace(s), ",.")
-		if s != "" {
-			result = append(result, s)
+		if w = strings.TrimRight(strings.TrimSpace(w), ",."); w != "" {
+			written = append(written, w)
+		}
+		if sp = strings.TrimRight(strings.TrimSpace(sp), ",."); sp != "" {
+			spoken = append(spoken, sp)
 		}
 	}
-	return result, nil
+
+	rd := Rendering{Written: strings.Join(written, ", ")}
+	if len(spoken) > 0 {
+		rd.Spoken = strings.Join(spoken, ", ") + "."
+	}
+	return rd, nil
 }
 
 // Add is a convenience function to add a transmission snippet to the RadioTransmission.
@@ -230,32 +244,6 @@ func (rt RadioTransmission) render(f func(PhraseFormatString, []any) (string, er
 func (rt *RadioTransmission) Add(s string, args ...any) {
 	rt.Strings = append(rt.Strings, PhraseFormatString(s))
 	rt.Args = append(rt.Args, args)
-}
-
-// Spoken returns a string corresponding to how the transmission should be
-// spoken, which appropriate phonetic substitutions made (e.g. "9" ->
-// "niner"). It returns an error if any of its arguments can't be formatted.
-func (rt RadioTransmission) Spoken(r *rand.Rand) (string, error) {
-	result, err := rt.render(func(s PhraseFormatString, args []any) (string, error) {
-		return s.Spoken(r, args)
-	})
-	if err != nil || len(result) == 0 {
-		return "", err
-	}
-	return strings.Join(result, ", ") + ".", nil
-}
-
-// Written returns a string corresponding to how the transmission should be
-// displayed as text on the screen. It returns an error if any of its arguments
-// can't be formatted.
-func (rt RadioTransmission) Written(r *rand.Rand) (string, error) {
-	result, err := rt.render(func(s PhraseFormatString, args []any) (string, error) {
-		return s.Written(r, args)
-	})
-	if err != nil {
-		return "", err
-	}
-	return strings.Join(result, ", "), nil
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -311,11 +299,34 @@ type PhraseFormatString string
 
 // NOTE: allow extra args for variants. But need 1:1 for ordering...
 
-// format resolves the phrase's alternations and fills in its directives using
-// snippet, which is either a SnippetFormatter's Written or its Spoken. It
-// returns the first error any of them reported.
-func (s PhraseFormatString) format(r *rand.Rand, args []any,
-	snippet func(SnippetFormatter, any) (string, error)) (string, error) {
+// render picks one of the phrase's alternations and fills in its directives
+// for display and for speech.
+func (s PhraseFormatString) render(r *rand.Rand, args []any) (written, spoken string, err error) {
+	var resolveErr error
+	phrase := s.resolveOptions(r, func(e error) {
+		if resolveErr == nil {
+			resolveErr = e
+		}
+	})
+	if resolveErr != nil {
+		return "", "", resolveErr
+	}
+
+	if written, err = phrase.format(args, func(f SnippetFormatter, arg any) (string, error) {
+		return f.Written(arg)
+	}); err != nil {
+		return "", "", err
+	}
+	spoken, err = phrase.format(args, func(f SnippetFormatter, arg any) (string, error) {
+		return f.Spoken(r, arg)
+	})
+	return written, spoken, err
+}
+
+// format fills in the directives of a phrase whose alternations have been
+// resolved using snippet, which is either a SnippetFormatter's Written or its
+// Spoken. It returns the first error any of them reported.
+func (s PhraseFormatString) format(args []any, snippet func(SnippetFormatter, any) (string, error)) (string, error) {
 	var err error
 	record := func(e error) {
 		if err == nil {
@@ -324,7 +335,7 @@ func (s PhraseFormatString) format(r *rand.Rand, args []any,
 	}
 
 	var result strings.Builder
-	s.resolveOptions(r, record).applyFormatting(args, func(f SnippetFormatter, arg any) {
+	s.applyFormatting(args, func(f SnippetFormatter, arg any) {
 		if err != nil {
 			return
 		}
@@ -337,18 +348,6 @@ func (s PhraseFormatString) format(r *rand.Rand, args []any,
 	}, record)
 
 	return result.String(), err
-}
-
-func (s PhraseFormatString) Written(r *rand.Rand, args []any) (string, error) {
-	return s.format(r, args, func(f SnippetFormatter, arg any) (string, error) {
-		return f.Written(arg)
-	})
-}
-
-func (s PhraseFormatString) Spoken(r *rand.Rand, args []any) (string, error) {
-	return s.format(r, args, func(f SnippetFormatter, arg any) (string, error) {
-		return f.Spoken(r, arg)
-	})
 }
 
 // applyFormatting walks the phrase, calling format for each directive that has

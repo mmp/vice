@@ -11,7 +11,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -226,64 +225,9 @@ func (s *Sim) clearAircraftSTTCommands(callsign av.ADSBCallsign) {
 // Returns the spoken text for TTS synthesis, including the callsign suffix.
 func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []speech.CommandIntent) string {
 	if rt := speech.RenderIntents(intents, s.textRand); rt != nil {
-		s.postReadbackTransmission(callsign, *rt, tcw)
-		// MixUp transmissions already include the callsign in the message and
-		// NoId ones go without it.
-		if rt.Type != speech.RadioTransmissionMixUp && rt.Type != speech.RadioTransmissionNoId {
-			if suffix := s.readbackCallsignSuffix(callsign, tcw); suffix != nil {
-				rt.Merge(suffix)
-			}
-		}
-		// postReadbackTransmission has already reported any formatting
-		// failure; this only costs the controller the spoken form.
-		spoken, err := rt.Spoken(s.textRand)
-		if err != nil {
-			s.lg.Errorf("%s: %v", callsign, err)
-			return ""
-		}
-		return spoken
+		return s.postReadbackTransmission(callsign, rt, tcw)
 	}
 	return ""
-}
-
-// readbackCallsignSuffix generates a RadioTransmission for the callsign suffix in readbacks.
-// This is used both for synchronous TTS and matches what prepareRadioTransmissions does for events.
-func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) *speech.RadioTransmission {
-	ac, ok := s.Aircraft[callsign]
-	if !ok {
-		return nil
-	}
-
-	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
-	ctrl := s.State.Controllers[primaryTCP]
-
-	var heavySuper string
-	if ctrl != nil && !ctrl.ERAMFacility {
-		if perf, ok := db.DB.AircraftPerformance[ac.AircraftType]; ok {
-			if perf.WeightClass == "H" {
-				heavySuper = " heavy"
-			} else if perf.WeightClass == "J" {
-				heavySuper = " super"
-			}
-		}
-	}
-
-	// Use GACallsignArg for GA aircraft when addressed with type+trailing3 form
-	var csArg any
-	if strings.HasPrefix(string(callsign), "N") && ac.LastAddressingForm == AddressingFormTypeTrailing3 {
-		csArg = speech.GACallsignArg{
-			Callsign:     ac.ADSBCallsign,
-			AircraftType: ac.AircraftType,
-			UseTypeForm:  true,
-			IsEmergency:  ac.EmergencyState != nil,
-		}
-	} else {
-		csArg = speech.CallsignArg{
-			Callsign:    ac.ADSBCallsign,
-			IsEmergency: ac.EmergencyState != nil,
-		}
-	}
-	return speech.MakeReadbackTransmission("{callsign}"+heavySuper, csArg)
 }
 
 // parseSpeedUntil parses the "until" specification from a speed command.

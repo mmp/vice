@@ -460,8 +460,10 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	}
 
 	// Queue the radio transmission (TTS will be synthesized when client requests it)
-	rt := speech.MakeContactTransmission(strings.Join(transmission, ", "), args...)
-	s.enqueueEmergencyTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), rt)
+	if len(transmission) > 0 {
+		rt := speech.MakeContactTransmission(strings.Join(transmission, ", "), args...)
+		s.enqueueEmergencyTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), rt)
+	}
 
 	// Schedule next stage based on current stage's duration
 	es.CurrentStage++

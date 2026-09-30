@@ -995,10 +995,10 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 			line := "Cross " + fix + " "
 			if nfa.Arrive.Altitude != nil {
 				ar := speech.MakeReadbackTransmission("{altrest}", nfa.Arrive.Altitude)
-				if s, err := ar.Written(r); err != nil {
+				if rd, err := ar.Render(r); err != nil {
 					lg.Errorf("%v", err)
 				} else {
-					line += s + " "
+					line += rd.Written + " "
 				}
 			}
 			if nfa.Arrive.Speed != nil {

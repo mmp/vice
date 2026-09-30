@@ -77,16 +77,16 @@ func TestTransmissionArgsRoundTrip(t *testing.T) {
 		r.Seed(seed)
 		rgot.Seed(seed)
 
-		want, err := rt.Written(r)
+		want, err := rt.Render(r)
 		if err != nil {
 			t.Fatalf("seed %d: %v", seed, err)
 		}
-		s, err := got.Written(rgot)
+		rd, err := got.Render(rgot)
 		if err != nil {
 			t.Fatalf("seed %d: recovered transmission: %v", seed, err)
 		}
-		if s != want {
-			t.Errorf("seed %d: recovered transmission wrote %q, want %q", seed, s, want)
+		if rd != want {
+			t.Errorf("seed %d: recovered transmission rendered %+v, want %+v", seed, rd, want)
 		}
 	}
 }
@@ -110,23 +110,44 @@ func TestMistypedArgReported(t *testing.T) {
 	rt := MakeContactTransmission("departing {airport}", "KFRG") // want an ICAOAirportCode
 	r := rand.Make()
 
-	s, err := rt.Spoken(r)
-	if s != "" || err == nil {
-		t.Errorf("Spoken with a bad argument = %q, %v; want \"\" and an error", s, err)
+	rd, err := rt.Render(r)
+	if rd != (Rendering{}) || err == nil {
+		t.Errorf("Render with a bad argument = %+v, %v; want nothing and an error", rd, err)
 	} else if !strings.Contains(err.Error(), "departing {airport}") {
-		t.Errorf("Spoken error %q doesn't name the phrase that failed", err)
-	}
-
-	if s, err := rt.Written(r); s != "" || err == nil {
-		t.Errorf("Written with a bad argument = %q, %v; want \"\" and an error", s, err)
+		t.Errorf("Render error %q doesn't name the phrase that failed", err)
 	}
 }
 
 // A directive with no argument left is reported rather than silently dropped.
 func TestMissingArgReported(t *testing.T) {
 	rt := MakeContactTransmission("climbing {alt} for {alt}", 3000)
-	if s, err := rt.Written(rand.Make()); s != "" || err == nil {
-		t.Errorf("Written with a missing argument = %q, %v; want \"\" and an error", s, err)
+	if rd, err := rt.Render(rand.Make()); rd != (Rendering{}) || err == nil {
+		t.Errorf("Render with a missing argument = %+v, %v; want nothing and an error", rd, err)
+	}
+}
+
+// The displayed and spoken forms of a transmission pick the same phrasing,
+// including after a snippet whose spoken form made random choices of its own.
+func TestRenderPicksOnePhrasing(t *testing.T) {
+	rt := MakeContactTransmission("[what altitude should we maintain|what altitude do you want us at]")
+	rt.Add("{spd}", 210)
+	rt.Add("[alpha|bravo|charlie]")
+
+	for seed := uint64(1); seed <= 100; seed++ {
+		r := rand.Make()
+		r.Seed(seed)
+		rd, err := rt.Render(r)
+		if err != nil {
+			t.Fatalf("seed %d: %v", seed, err)
+		}
+		for _, alts := range [][]string{{"what altitude should we maintain", "what altitude do you want us at"},
+			{"alpha", "bravo", "charlie"}} {
+			for _, a := range alts {
+				if strings.Contains(rd.Written, a) != strings.Contains(rd.Spoken, a) {
+					t.Errorf("seed %d: written %q and spoken %q differ on %q", seed, rd.Written, rd.Spoken, a)
+				}
+			}
+		}
 	}
 }
 
@@ -143,11 +164,11 @@ func TestControllerPositionRenaming(t *testing.T) {
 		{"{actrl}", "New York Approach", "New York Approach"},
 	} {
 		rt := MakeContactTransmission(test.phrase, &av.Controller{RadioName: test.radioName})
-		got, err := rt.Written(rand.Make())
+		rd, err := rt.Render(rand.Make())
 		if err != nil {
 			t.Errorf("%s with %q: %v", test.phrase, test.radioName, err)
-		} else if got != test.want {
-			t.Errorf("%s with %q = %q, want %q", test.phrase, test.radioName, got, test.want)
+		} else if rd.Written != test.want {
+			t.Errorf("%s with %q = %q, want %q", test.phrase, test.radioName, rd.Written, test.want)
 		}
 	}
 }
@@ -155,8 +176,8 @@ func TestControllerPositionRenaming(t *testing.T) {
 // A nil controller is reported rather than panicking in the formatter.
 func TestNilControllerArgReported(t *testing.T) {
 	rt := MakeContactTransmission("{actrl}", (*av.Controller)(nil))
-	if s, err := rt.Written(rand.Make()); s != "" || err == nil {
-		t.Errorf("Written with a nil controller = %q, %v; want \"\" and an error", s, err)
+	if rd, err := rt.Render(rand.Make()); rd != (Rendering{}) || err == nil {
+		t.Errorf("Render with a nil controller = %+v, %v; want nothing and an error", rd, err)
 	}
 }
 
