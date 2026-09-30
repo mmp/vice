@@ -909,10 +909,12 @@ type TakePilotTransmissionResult struct {
 
 const TakePilotTransmissionRPC = "Sim.TakePilotTransmission"
 
-// TakePilotTransmission takes a pilot transmission the client is ready to
-// play (or, with speech off, to show) out of the sim's queue, if it is still
-// the one the controller is to hear next. The client plays it only if it was
-// taken.
+// TakePilotTransmission is called by client code when it is ready to play the audio for a
+// pilot radio transmission (note: not a readback, which is handled separately.) It checks
+// if the transmission is still the first in the transmission queue and removes it if so,
+// with the Taken return value indicating success. If false is returned, the client should
+// not play the transmission audio; it may be from a deleted aircraft or it may no longer
+// be relevant.
 func (sd *dispatcher) TakePilotTransmission(args *TakePilotTransmissionArgs, result *TakePilotTransmissionResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 

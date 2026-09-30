@@ -325,6 +325,35 @@ func TestContactMessageReportsViaExceptAltitude(t *testing.T) {
 	})
 }
 
+// TestContactMessageOnSTARAtAssignedAltitude verifies that an arrival on a
+// STAR that has leveled at its assigned altitude, give or take the few feet
+// of a level-off, reports that altitude alone rather than "at 12,000 for
+// 12,000", while one still descending to it reports both.
+func TestContactMessageOnSTARAtAssignedAltitude(t *testing.T) {
+	newArrival := func(t *testing.T, initialAltitude float32) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT/a6000/star",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  initialAltitude,
+			InitialSpeed:     250,
+		})
+	}
+	written := func(t *testing.T, f *FlightTest) string {
+		t.Helper()
+		f.AssignAltitude(12000)
+		return strings.ToLower(writtenForTest(t, f.nav.ContactMessage("DETGY1", "", false, false), f.nav.Rand))
+	}
+
+	if w := written(t, newArrival(t, 12020)); !strings.Contains(w, "12,000") || strings.Contains(w, "for 12,000") {
+		t.Errorf("contact message %q: want 12,000 alone", w)
+	}
+	if w := written(t, newArrival(t, 13000)); !strings.Contains(w, "13,000") || !strings.Contains(w, "12,000") {
+		t.Errorf("contact message %q: want 13,000 for 12,000", w)
+	}
+}
+
 // AtFix fires action when the named fix is passed.
 func (f *FlightTest) AtFix(fix string, action func(*FlightTest)) *FlightTest {
 	f.events = append(f.events, flightEvent{

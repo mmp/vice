@@ -224,10 +224,10 @@ func (rt RadioTransmission) Render(r *rand.Rand) (Rendering, error) {
 		if err != nil {
 			return Rendering{}, fmt.Errorf("%q: %w", s, err)
 		}
-		if w = strings.TrimRight(strings.TrimSpace(w), ",."); w != "" {
+		if w = tidySnippet(w); w != "" {
 			written = append(written, w)
 		}
-		if sp = strings.TrimRight(strings.TrimSpace(sp), ",."); sp != "" {
+		if sp = tidySnippet(sp); sp != "" {
 			spoken = append(spoken, sp)
 		}
 	}
@@ -237,6 +237,13 @@ func (rt RadioTransmission) Render(r *rand.Rand) (Rendering, error) {
 		rd.Spoken = strings.Join(spoken, ", ") + "."
 	}
 	return rd, nil
+}
+
+// tidySnippet collapses the extra spaces an empty alternative leaves behind
+// in a rendered snippet and drops any punctuation it ends with, which the
+// join supplies.
+func tidySnippet(s string) string {
+	return strings.TrimRight(strings.Join(strings.Fields(s), " "), ",.")
 }
 
 // Add is a convenience function to add a transmission snippet to the RadioTransmission.

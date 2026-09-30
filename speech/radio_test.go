@@ -151,6 +151,23 @@ func TestRenderPicksOnePhrasing(t *testing.T) {
 	}
 }
 
+// An empty alternative in the middle of a phrase leaves no double space
+// behind in either rendering.
+func TestRenderCollapsesEmptyAlternative(t *testing.T) {
+	rt := MakeContactTransmission("on the arrival [at|] {alt}", 12000)
+	for seed := uint64(1); seed <= 20; seed++ {
+		r := rand.Make()
+		r.Seed(seed)
+		rd, err := rt.Render(r)
+		if err != nil {
+			t.Fatalf("seed %d: %v", seed, err)
+		}
+		if strings.Contains(rd.Written, "  ") || strings.Contains(rd.Spoken, "  ") {
+			t.Errorf("seed %d: double space in written %q or spoken %q", seed, rd.Written, rd.Spoken)
+		}
+	}
+}
+
 // {dctrl} and {actrl} rename the position in a controller's radio name so that
 // a departure is handed to "departure" and an arrival to "approach", whichever
 // way the controller happens to be named.

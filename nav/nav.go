@@ -1075,25 +1075,30 @@ func (nav *Nav) procedureHasAltRestrictions(checkSID bool) bool {
 	return false
 }
 
-// addAltitudePhrasing appends realistic altitude reporting to the
-// transmission based on the aircraft's current flight state.
-func (nav *Nav) addAltitudePhrasing(rt *speech.RadioTransmission, targetAlt float32) {
+// altitudePhrasing returns the format and arguments that report the
+// aircraft's altitude against the one it is climbing or descending to, or
+// has reached.
+func (nav *Nav) altitudePhrasing(targetAlt float32) (string, []any) {
 	cur := nav.FlightState.Altitude
 	diff := targetAlt - cur
 
-	if diff > 200 {
-		// Climbing, not near target
-		rt.Add("[leaving|out of] {alt} [climbing|for] {alt}", cur, targetAlt)
-	} else if diff < -200 {
-		// Descending, not near target
-		rt.Add("[leaving|out of] {alt} [descending to|for] {alt}", cur, targetAlt)
-	} else if math.Abs(diff) > 50 {
-		// Leveling near target
-		rt.Add("[leveling|at] {alt}", targetAlt)
-	} else {
-		// At altitude
-		rt.Add("[at|] {alt}", targetAlt)
+	switch {
+	case diff > 200:
+		return "[leaving|out of] {alt} [climbing|for] {alt}", []any{cur, targetAlt}
+	case diff < -200:
+		return "[leaving|out of] {alt} [descending to|for] {alt}", []any{cur, targetAlt}
+	case math.Abs(diff) > 50:
+		return "[leveling|at] {alt}", []any{targetAlt}
+	default:
+		return "[at|] {alt}", []any{targetAlt}
 	}
+}
+
+// addAltitudePhrasing appends realistic altitude reporting to the
+// transmission based on the aircraft's current flight state.
+func (nav *Nav) addAltitudePhrasing(rt *speech.RadioTransmission, targetAlt float32) {
+	format, args := nav.altitudePhrasing(targetAlt)
+	rt.Add(format, args...)
 }
 
 func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *speech.RadioTransmission {
@@ -1247,9 +1252,11 @@ func (nav *Nav) addStarAltitude(rt *speech.RadioTransmission, star string, cross
 	} else if descending {
 		// Descending via STAR, no override
 		rt.Add("[leaving|out of] {alt} descending via the {star} [arrival|]", cur, star)
-	} else if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != cur {
-		// On STAR with controller-assigned altitude
-		rt.Add("on the {star} [at|] {alt} for {alt} [assigned|]", star, cur, *nav.Altitude.Assigned)
+	} else if nav.Altitude.Assigned != nil {
+		// On STAR with a controller-assigned altitude, which "assigned"
+		// tells apart from one the procedure publishes.
+		format, args := nav.altitudePhrasing(*nav.Altitude.Assigned)
+		rt.Add("on the {star} "+format+" [assigned|]", append([]any{star}, args...)...)
 	} else {
 		// On STAR at altitude
 		rt.Add("on the {star} [at|] {alt}", star, cur)
@@ -1269,15 +1276,10 @@ func (nav *Nav) addContactAltitude(rt *speech.RadioTransmission, star string, cr
 		// Fix crossing restriction without a STAR
 		format, args := crossingInstructionFormat(crossing, crossingAltitude(crossing), true)
 		rt.Add("[leaving|out of] {alt} "+format, append([]any{cur}, args...)...)
-	} else if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != cur {
+	} else if nav.Altitude.Assigned != nil {
 		nav.addAltitudePhrasing(rt, *nav.Altitude.Assigned)
 	} else if target, ok := nav.findAltitudeTarget(); ok {
-		alt := nav.limitAltitude(target.altitude)
-		if cur != alt {
-			nav.addAltitudePhrasing(rt, alt)
-		} else {
-			rt.Add("[at|] {alt}", cur)
-		}
+		nav.addAltitudePhrasing(rt, nav.limitAltitude(target.altitude))
 	} else {
 		rt.Add("[at|] {alt}", cur)
 	}

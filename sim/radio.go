@@ -32,9 +32,7 @@ func (s *Sim) reportTransmissionFailure(callsign av.ADSBCallsign, tcp ControlPos
 
 // postReadbackTransmission posts a pilot's response to a command from the
 // controller at tcw, which goes to that controller regardless of any
-// consolidation changes, and returns it as spoken. The pilot ends it with
-// the callsign unless it is a mix-up, which already names one, or goes
-// without one.
+// consolidation changes.
 func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr *speech.RadioTransmission, tcw TCW) string {
 	if tr.Type != speech.RadioTransmissionMixUp && tr.Type != speech.RadioTransmissionNoId {
 		if suffix := s.readbackCallsignSuffix(from, tcw); suffix != nil {
@@ -196,8 +194,7 @@ func (s *Sim) contactReady(pc PendingContact) bool {
 // contactApplies reports whether a pending contact is still worth saying:
 // the aircraft is still around, a pilot who is ready to talk is on the
 // frequency they meant to call, and nothing that has happened since the
-// pilot queued it has made it moot. Every transmission type states its
-// rule here; a type without one is never said.
+// pilot queued it has made it moot.
 func (s *Sim) contactApplies(pc PendingContact) bool {
 	ac, ok := s.Aircraft[pc.ADSBCallsign]
 	if !ok {
@@ -219,7 +216,7 @@ func (s *Sim) contactApplies(pc PendingContact) bool {
 		PendingTransmissionFlightFollowingFull, PendingTransmissionGoAround,
 		PendingTransmissionEmergency, PendingTransmissionFieldInSight:
 		// Reports of what happened, requests for service, and reports the
-		// controller asked for stay worth making.
+		// controller asked for.
 		return true
 
 	case PendingTransmissionRequestApproachClearance:
@@ -257,6 +254,7 @@ func (s *Sim) contactApplies(pc PendingContact) bool {
 		return ac.SightedReportingPoint != nil && !ac.Nav.Approach.EffectivelyCleared()
 
 	default:
+		// A type without a rule above is never said.
 		return false
 	}
 }
@@ -343,12 +341,8 @@ func (s *Sim) setControllerFrequency(ac *Aircraft, pos ControlPosition) {
 // first call to the controller, as opposed to a response or request made
 // during an already-established exchange.
 func (t PendingTransmissionType) isInitialCheckIn() bool {
-	switch t {
-	case PendingTransmissionDeparture, PendingTransmissionArrival, PendingTransmissionFlightFollowingReq:
-		return true
-	default:
-		return false
-	}
+	return t == PendingTransmissionDeparture || t == PendingTransmissionArrival ||
+		t == PendingTransmissionFlightFollowingReq
 }
 
 // nextContact returns the pending contact the controller working the given
