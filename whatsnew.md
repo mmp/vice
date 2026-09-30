@@ -24,6 +24,7 @@
   - `QU` now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when `QU` was used
   - Fix bugs with overly-cautious CAs for aircraft controlled by virtual controllers
 - Facility engineering
+  - Historical scenarios now place published arrivals on scenario-defined retired STARs or suitable arrival gates by origin direction, rather than requiring modern STARs. Explicit airport-pair routes take priority.
   - Added `"historical_scenario": true` to allow manually authored retired STAR arrivals without checking them against current FAA procedures (Logan S)
   - ERAM altitude limits can be specified per-controller and/or per-scenario
   - Added `/cvs` and `/dvs` waypoint actions for virtual controllers to issue "climb via SID"/"descend via STAR"
