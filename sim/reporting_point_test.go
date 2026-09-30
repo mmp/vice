@@ -86,8 +86,11 @@ func (vs *VisualScenario) pendingTransmissionText(txType PendingTransmissionType
 	for _, pcs := range vs.Sim.PendingContacts {
 		for i, pc := range pcs {
 			if pc.ADSBCallsign == vs.callsign && pc.Type == txType {
-				_, written := vs.Sim.GenerateContactTransmission(&pcs[i])
-				return written
+				pt, err := vs.Sim.renderContact(pcs[i])
+				if err != nil {
+					vs.t.Fatalf("%v", err)
+				}
+				return pt.Written
 			}
 		}
 	}

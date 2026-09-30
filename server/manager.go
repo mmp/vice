@@ -154,6 +154,10 @@ type SimState struct {
 	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
 
 	FlightStripACIDs []sim.ACID
+
+	// NextPilotTransmission is what the controller is to hear next from a
+	// pilot calling them, if any.
+	NextPilotTransmission *sim.PilotTransmission
 }
 
 // TCWIsPrivileged returns whether the given TCW has elevated privileges.
@@ -809,6 +813,7 @@ func (su *SimStateUpdate) Apply(state *SimState) {
 	if state.GenerationIndex < su.GenerationIndex {
 		state.DynamicState = su.DynamicState
 		state.DerivedState = su.DerivedState
+		state.NextPilotTransmission = su.NextPilotTransmission
 	}
 
 	state.ActiveTCWs = su.ActiveTCWs

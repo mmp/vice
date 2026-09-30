@@ -19,7 +19,6 @@ import (
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/speech/tts"
 	"github.com/mmp/vice/util"
@@ -335,14 +334,11 @@ func (c *ControlClient) GetUpdates(p audio.Engine, onErr func(error)) {
 		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update, nil)
 	}
 
-	c.updateSpeech(p)
-
-	// Check if we should request a contact transmission from the server.
-	// We request contacts when the server has TTS capability, even if the user
-	// has disabled TTS locally. This ensures pilots still join the frequency
-	// and text transmissions appear. Audio playback is controlled separately.
-	// The actual request is made after releasing the lock.
-	shouldRequestContact := c.transmissions.ShouldRequestContact()
+	c.transmissions.Update(p, c.State.Paused, c.sttActive)
+	// The next step for the pilot call may be an RPC, which is issued after
+	// releasing the lock.
+	pilotCallStep, pilotCall := c.transmissions.AdvancePilotCall(p, c.State.NextPilotTransmission,
+		c.State.Paused, c.sttActive)
 
 	if callbackErr == nil {
 		completedCalls, callbackErr = c.checkPendingRPCs()
@@ -350,9 +346,13 @@ func (c *ControlClient) GetUpdates(p audio.Engine, onErr func(error)) {
 
 	c.mu.Unlock()
 
-	// Make RPC calls that need addCall after releasing the lock
-	if shouldRequestContact {
-		c.RequestContactTransmission()
+	switch pilotCallStep {
+	case pilotCallSynthesize:
+		c.synthesizePilotCall(pilotCall)
+	case pilotCallCheck:
+		c.checkPilotCall(pilotCall)
+	case pilotCallReport:
+		c.reportPilotCall(pilotCall)
 	}
 
 	// Invoke callbacks after releasing lock to avoid deadlock.
@@ -379,11 +379,6 @@ func (c *ControlClient) GetUpdates(p audio.Engine, onErr func(error)) {
 	if callbackErr != nil && onErr != nil {
 		onErr(callbackErr)
 	}
-}
-
-func (c *ControlClient) updateSpeech(p audio.Engine) {
-	// Delegate to TransmissionManager
-	c.transmissions.Update(p, c.State.Paused, c.sttActive)
 }
 
 func (c *ControlClient) checkPendingRPCs() ([]*pendingCall, error) {
@@ -701,7 +696,7 @@ func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, t
 	} else {
 		durationMs := int64(len(pcm)) * 1000 / audio.SampleRate
 		c.lg.Infof("SPEECH queued readback: %s (%dms audio) %q", callsign, durationMs, text)
-		c.transmissions.EnqueueReadbackPCM(callsign, speech.RadioTransmissionReadback, pcm)
+		c.transmissions.EnqueueReadbackPCM(callsign, pcm)
 	}
 }
 
@@ -716,19 +711,28 @@ func (c *ControlClient) enqueueReadback(callsign av.ADSBCallsign, text, voice st
 	}
 }
 
-// synthesizeAndEnqueueContact synthesizes text and enqueues it as a contact transmission.
-// Called from a goroutine. Unlike readbacks, no Hold() is acquired before requesting
-// contacts, so no Unhold() is needed on failure.
-func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty speech.RadioTransmissionType, text, voice string) {
-	radioSeed := uint32(util.HashString64(string(callsign)))
-	if pcm, err := tts.SynthesizeContactTTS(text, voice, radioSeed); err != nil {
-		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
-	} else if pcm != nil {
-		durationMs := int64(len(pcm)) * 1000 / audio.SampleRate
-		c.lg.Infof("SPEECH queued contact: %s (%dms audio) %q", callsign, durationMs, text)
-		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm)
+// synthesizePilotCall synthesizes the speech for a pilot call off the main
+// thread. With speech off, or if synthesis fails, the call is only shown.
+func (c *ControlClient) synthesizePilotCall(pc *pilotCall) {
+	if !c.ttsEnabled() {
+		c.transmissions.PilotCallSynthesized(pc, nil)
+		return
 	}
-	c.transmissions.SetContactRequested(false)
+
+	go func() {
+		defer c.lg.CatchAndReportCrash()
+
+		pt := pc.transmission
+		radioSeed := uint32(util.HashString64(string(pt.ADSBCallsign)))
+		pcm, err := tts.SynthesizeContactTTS(pt.Spoken, pt.Voice, radioSeed)
+		if err != nil {
+			c.lg.Errorf("TTS synthesis error for %s: %v", pt.ADSBCallsign, err)
+		} else if pcm != nil {
+			durationMs := int64(len(pcm)) * 1000 / audio.SampleRate
+			c.lg.Infof("SPEECH synthesized pilot call: %s (%dms audio) %q", pt.ADSBCallsign, durationMs, pt.Spoken)
+		}
+		c.transmissions.PilotCallSynthesized(pc, pcm)
+	}()
 }
 
 // ScenarioReload is an in-flight request for the server to re-read the

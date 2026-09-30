@@ -515,41 +515,30 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 		}))
 }
 
-// RequestContactTransmission requests the next pending contact transmission from the server.
-// The result (if any) will be synthesized locally and enqueued for playback.
-func (c *ControlClient) RequestContactTransmission() {
-	c.transmissions.SetContactRequested(true)
-
-	var result server.RequestContactResult
-	c.addCall(makeRPCCall(c.client.Go(server.RequestContactTransmissionRPC, &server.RequestContactArgs{
+// checkPilotCall asks the server whether the pilot call the client has
+// synthesized is still the one to say.
+func (c *ControlClient) checkPilotCall(pc *pilotCall) {
+	var isNext bool
+	c.addCall(makeRPCCall(c.client.Go(server.CheckPilotTransmissionRPC, &server.CheckPilotTransmissionArgs{
 		ControllerToken: c.controllerToken,
-	}, &result, nil),
+		ContactID:       pc.transmission.ContactID,
+	}, &isNext, nil),
 		func(err error) {
 			if err != nil {
-				c.transmissions.SetContactRequested(false)
-				c.lg.Errorf("RequestContactTransmission: %v", err)
-				return
+				c.lg.Errorf("CheckPilotTransmission: %v", err)
 			}
-
-			if result.ContactText == "" {
-				c.transmissions.SetContactRequested(false)
-				return
-			}
-
-			if !c.ttsEnabled() {
-				c.transmissions.SetContactRequested(false)
-				// Contact was processed on server (pilot joins frequency, text event posted)
-				// but user doesn't want audio. Set a hold to maintain pacing.
-				c.transmissions.HoldAfterSilentContact(result.ContactCallsign)
-				return
-			}
-
-			// For the TTS path, contactRequested stays true until synthesis
-			// completes, preventing additional contacts from being requested
-			// during synthesis.
-			go c.synthesizeAndEnqueueContact(result.ContactCallsign, result.ContactType,
-				result.ContactText, result.ContactVoiceName)
+			c.transmissions.PilotCallChecked(pc, err == nil && isNext)
 		}))
+}
+
+// reportPilotCall tells the server that a pilot call has started. Its text
+// comes back to the messages pane with the reply.
+func (c *ControlClient) reportPilotCall(pc *pilotCall) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ReportPilotTransmissionRPC, &server.ReportPilotTransmissionArgs{
+		ControllerToken: c.controllerToken,
+		Transmission:    pc.transmission,
+	}, &update, nil), &update, nil))
 }
 
 func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, volumeId string, callback func(output string, err error)) {

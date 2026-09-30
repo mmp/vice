@@ -25,7 +25,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/simlog"
-	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -453,36 +452,6 @@ func (ss *simSession) getActiveTCWs() []sim.TCW {
 	slices.Sort(tcws)
 	tcws = slices.Compact(tcws) // may have multiple connections to a TCW...
 	return util.MapSlice(tcws, func(tcw string) sim.TCW { return sim.TCW(tcw) })
-}
-
-// RequestContact pops the next pending contact for the TCW, generates the transmission
-// with current aircraft state, and returns text + voice name for client-side synthesis.
-// Returns empty values if no contact is pending.
-func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string, callsign av.ADSBCallsign, ty speech.RadioTransmissionType) {
-	// Get all positions controlled by this TCW (primary + consolidated secondaries)
-	positions := ss.sim.GetPositionsForTCW(tcw)
-	if len(positions) == 0 {
-		return "", "", "", 0
-	}
-
-	// Try pending contacts from any of the controlled positions
-	for {
-		pc := ss.sim.PopReadyContact(positions)
-		if pc == nil {
-			return "", "", "", 0
-		}
-
-		// Generate the contact transmission with current aircraft state
-		spokenText, _ := ss.sim.GenerateContactTransmission(pc)
-		if spokenText == "" {
-			// Aircraft may be gone or invalid - try the next one
-			continue
-		}
-
-		voiceName := ss.sim.GetReadbackVoice(pc.ADSBCallsign)
-
-		return spokenText, voiceName, pc.ADSBCallsign, speech.RadioTransmissionContact
-	}
 }
 
 // Replay runs a recorded session again with the code as it is now, writing a

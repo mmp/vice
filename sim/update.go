@@ -28,9 +28,10 @@ func (s *Sim) snapshot(tcw TCW) StateUpdate {
 	s.State.GenerationIndex = int(s.pubGen)
 
 	update := StateUpdate{
-		DynamicState:     s.State.DynamicState,
-		DerivedState:     makeDerivedState(s),
-		FlightStripACIDs: s.flightStripACIDsForTCW(tcw),
+		DynamicState:          s.State.DynamicState,
+		DerivedState:          makeDerivedState(s),
+		FlightStripACIDs:      s.flightStripACIDsForTCW(tcw),
+		NextPilotTransmission: s.NextPilotTransmission(tcw),
 	}
 
 	// While it seemed that this could be skipped, this is actually necessary

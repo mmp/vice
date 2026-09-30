@@ -86,6 +86,7 @@ type Sim struct {
 	EnforceUniqueCallsignSuffix bool
 
 	PendingContacts        map[TCP][]PendingContact
+	LastContactID          uint64 // ID of the most recently queued pending contact
 	FutureFrequencyChanges []FutureFrequencyChange
 	DeferredContacts       map[av.ADSBCallsign]map[ControlPosition]TCP
 	FutureOnCourse         []FutureOnCourse

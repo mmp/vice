@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"bytes"
 	"encoding/json"
 	"slices"
 	"strings"
@@ -18,6 +19,18 @@ import (
 	"github.com/mmp/vice/speech"
 )
 
+// sayNextContact returns the pending contact to be said next on the given
+// positions and takes it out of the queue, as reporting it would.
+func sayNextContact(s *Sim, positions []TCP) *PendingContact {
+	pc := s.nextContact(positions)
+	if pc != nil {
+		s.PendingContacts[pc.TCP] = slices.DeleteFunc(s.PendingContacts[pc.TCP], func(p PendingContact) bool {
+			return p.ADSBCallsign == pc.ADSBCallsign && p.Type == pc.Type
+		})
+	}
+	return pc
+}
+
 // addTunedAircraft adds an associated aircraft tuned to tcp, so that the
 // contacts it queues there apply.
 func addTunedAircraft(s *Sim, callsign av.ADSBCallsign, tcp TCP) {
@@ -27,11 +40,11 @@ func addTunedAircraft(s *Sim, callsign av.ADSBCallsign, tcp TCP) {
 	s.Aircraft[callsign] = ac
 }
 
-// TestPopReadyContactPrioritizesResponses verifies that a pilot's response or
+// TestNextContactPrioritizesResponses verifies that a pilot's response or
 // request during an established exchange (here, the full request after "go
 // ahead") is spoken before an unrelated aircraft's initial check-in, even when
 // the check-in was queued first.
-func TestPopReadyContactPrioritizesResponses(t *testing.T) {
+func TestNextContactPrioritizesResponses(t *testing.T) {
 	lg := log.New(true, "error", t.TempDir())
 	s := NewTestSim(lg)
 
@@ -46,28 +59,28 @@ func TestPopReadyContactPrioritizesResponses(t *testing.T) {
 	}
 
 	// The go-ahead response comes out first despite being enqueued later.
-	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
+	if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "N509EZ" {
 		t.Fatalf("expected N509EZ (go-ahead response) first, got %s (type %v)", pc.ADSBCallsign, pc.Type)
 	}
 
 	// The unrelated initial check-in follows.
-	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
+	if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
 		t.Fatal("expected the initial check-in next")
 	} else if pc.ADSBCallsign != "AAL90" {
 		t.Fatalf("expected AAL90 next, got %s", pc.ADSBCallsign)
 	}
 
-	if pc := s.PopReadyContact([]TCP{tcp}); pc != nil {
+	if pc := sayNextContact(s, []TCP{tcp}); pc != nil {
 		t.Fatalf("expected empty queue, got %s", pc.ADSBCallsign)
 	}
 }
 
-// TestPopReadyContactRespectsReadyTime verifies that response prioritization
+// TestNextContactRespectsReadyTime verifies that response prioritization
 // does not override ReadyTime: a response that isn't ready yet must not
 // preempt an initial check-in that is.
-func TestPopReadyContactRespectsReadyTime(t *testing.T) {
+func TestNextContactRespectsReadyTime(t *testing.T) {
 	lg := log.New(true, "error", t.TempDir())
 	s := NewTestSim(lg)
 
@@ -82,22 +95,22 @@ func TestPopReadyContactRespectsReadyTime(t *testing.T) {
 		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingFull, ReadyTime: future},
 	}
 
-	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
+	if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
 		t.Fatal("expected the ready initial check-in")
 	} else if pc.ADSBCallsign != "AAL90" {
 		t.Fatalf("expected AAL90 (only ready contact), got %s", pc.ADSBCallsign)
 	}
 
 	// The response is still not ready.
-	if pc := s.PopReadyContact([]TCP{tcp}); pc != nil {
+	if pc := sayNextContact(s, []TCP{tcp}); pc != nil {
 		t.Fatalf("expected no ready contact, got %s", pc.ADSBCallsign)
 	}
 }
 
-// TestPopReadyContactAbbreviatedVFRIsInitial verifies that the abbreviated
+// TestNextContactAbbreviatedVFRIsInitial verifies that the abbreviated
 // "VFR request" is classified as an initial check-in, so it yields to a
 // response-type transmission.
-func TestPopReadyContactAbbreviatedVFRIsInitial(t *testing.T) {
+func TestNextContactAbbreviatedVFRIsInitial(t *testing.T) {
 	lg := log.New(true, "error", t.TempDir())
 	s := NewTestSim(lg)
 
@@ -111,18 +124,17 @@ func TestPopReadyContactAbbreviatedVFRIsInitial(t *testing.T) {
 		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingFull, ReadyTime: past},
 	}
 
-	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
+	if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "N509EZ" {
 		t.Fatalf("expected N509EZ (response) before the abbreviated VFR request, got %s", pc.ADSBCallsign)
 	}
 }
 
-// TestPopReadyContactWaitsForAssociation verifies that a departure's check-in
-// stays queued until its track tags up. GenerateContactTransmission has nothing
-// to say for an unassociated track, and a popped contact that comes back empty
-// is discarded, so popping one early would lose the check-in for good.
-func TestPopReadyContactWaitsForAssociation(t *testing.T) {
+// TestNextContactWaitsForAssociation verifies that a departure's check-in
+// isn't offered until its track tags up; the pilot has nothing to say for an
+// unassociated track.
+func TestNextContactWaitsForAssociation(t *testing.T) {
 	lg := log.New(true, "error", t.TempDir())
 	s := NewTestSim(lg)
 
@@ -136,13 +148,13 @@ func TestPopReadyContactWaitsForAssociation(t *testing.T) {
 			ReadyTime: s.State.SimTime.Add(-time.Second)},
 	}
 
-	if pc := s.PopReadyContact([]TCP{tcp}); pc != nil {
-		t.Fatalf("popped %s before its track associated", pc.ADSBCallsign)
+	if pc := sayNextContact(s, []TCP{tcp}); pc != nil {
+		t.Fatalf("offered %s before its track associated", pc.ADSBCallsign)
 	}
 
 	ac.AssociateFlightPlan(&FlightPlan{ACID: ACID(ac.ADSBCallsign)})
 
-	if pc := s.PopReadyContact([]TCP{tcp}); pc == nil {
+	if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
 		t.Fatal("expected the check-in once the track associated")
 	} else if pc.ADSBCallsign != ac.ADSBCallsign {
 		t.Fatalf("expected %s, got %s", ac.ADSBCallsign, pc.ADSBCallsign)
@@ -184,12 +196,12 @@ func TestTransferCommsBeforeAssociation(t *testing.T) {
 
 	// The check-in itself waits until the track tags up.
 	s.State.SimTime = s.State.SimTime.Add(time.Second)
-	if pc := s.PopReadyContact([]TCP{dep}); pc != nil {
-		t.Fatalf("popped %s's check-in before its track associated", pc.ADSBCallsign)
+	if pc := sayNextContact(s, []TCP{dep}); pc != nil {
+		t.Fatalf("offered %s's check-in before its track associated", pc.ADSBCallsign)
 	}
 
 	ac.AssociateFlightPlan(s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign)))
-	if pc := s.PopReadyContact([]TCP{dep}); pc == nil {
+	if pc := sayNextContact(s, []TCP{dep}); pc == nil {
 		t.Error("expected the check-in once the track associated")
 	}
 }
@@ -281,11 +293,11 @@ func TestWaypointScratchpadBeforeAssociation(t *testing.T) {
 	}
 }
 
-// TestPopReadyContactTakesOldestAcrossPositions verifies that a check-in on a
+// TestNextContactTakesOldestAcrossPositions verifies that a check-in on a
 // later-scanned position isn't starved by a fresher one on an earlier position:
 // with departures split across positions by SID, first-position-first ordering
 // would leave the last position's SID silent whenever the queue is backed up.
-func TestPopReadyContactTakesOldestAcrossPositions(t *testing.T) {
+func TestNextContactTakesOldestAcrossPositions(t *testing.T) {
 	lg := log.New(true, "error", t.TempDir())
 	s := NewTestSim(lg)
 
@@ -302,13 +314,13 @@ func TestPopReadyContactTakesOldestAcrossPositions(t *testing.T) {
 			ReadyTime: s.State.SimTime.Add(-time.Minute)},
 	}
 
-	if pc := s.PopReadyContact([]TCP{first, last}); pc == nil {
+	if pc := sayNextContact(s, []TCP{first, last}); pc == nil {
 		t.Fatal("expected a ready contact")
 	} else if pc.ADSBCallsign != "SWA22" {
 		t.Fatalf("expected the longer-waiting SWA22, got %s", pc.ADSBCallsign)
 	}
 
-	if pc := s.PopReadyContact([]TCP{first, last}); pc == nil {
+	if pc := sayNextContact(s, []TCP{first, last}); pc == nil {
 		t.Fatal("expected the second contact")
 	} else if pc.ADSBCallsign != "AAL90" {
 		t.Fatalf("expected AAL90, got %s", pc.ADSBCallsign)
@@ -509,12 +521,12 @@ func TestStaleContactIsCulled(t *testing.T) {
 
 	s.enqueuePilotTransmission(ac.ADSBCallsign, tcp, PendingTransmissionRequestAltitude)
 	s.State.SimTime = s.State.SimTime.Add(time.Second)
-	if !s.HaveReadyContact([]TCP{tcp}) {
+	if s.nextContact([]TCP{tcp}) == nil {
 		t.Fatal("expected the altitude request to be ready")
 	}
 
 	ac.Nav.Altitude.Assigned = new(float32(3000))
-	if s.HaveReadyContact([]TCP{tcp}) {
+	if s.nextContact([]TCP{tcp}) != nil {
 		t.Error("expected the moot altitude request not to be offered")
 	}
 	s.cullStaleContacts()
@@ -585,17 +597,16 @@ func TestEmergencyTransmissionSurvivesSaving(t *testing.T) {
 		t.Fatalf("unmarshal: %v", err)
 	}
 
-	pc := s.PopReadyContact([]TCP{tcp})
-	if pc == nil {
-		t.Fatal("no pending contact after saving and reloading")
+	pt := s.NextPilotTransmission(E2ETCW())
+	if pt == nil {
+		t.Fatal("no pilot transmission after saving and reloading")
 	}
-	spoken, written := s.GenerateContactTransmission(pc)
-	if spoken == "" || written == "" {
-		t.Fatalf("emergency transmission rendered nothing after saving: %q / %q", spoken, written)
+	if pt.Spoken == "" || pt.Written == "" {
+		t.Fatalf("emergency transmission rendered nothing after saving: %q / %q", pt.Spoken, pt.Written)
 	}
-	if !strings.Contains(written, "KFRG") || !strings.Contains(written, "112") ||
-		!strings.Contains(written, "4,000") {
-		t.Errorf("emergency transmission lost arguments after saving: %q", written)
+	if !strings.Contains(pt.Written, "KFRG") || !strings.Contains(pt.Written, "112") ||
+		!strings.Contains(pt.Written, "4,000") {
+		t.Errorf("emergency transmission lost arguments after saving: %q", pt.Written)
 	}
 }
 
@@ -670,14 +681,125 @@ func TestTransmissionTextMatchesSpeech(t *testing.T) {
 		check("readback", writtenEvent(sub), spoken)
 		sub.Unsubscribe()
 
-		sub = s.eventStream.Subscribe()
-		spoken, _ = s.GenerateContactTransmission(&PendingContact{ADSBCallsign: ac.ADSBCallsign, TCP: "125.0",
-			Type: PendingTransmissionRequestAltitude})
-		written := writtenEvent(sub)
-		if !strings.HasPrefix(written, "Test Approach") {
-			t.Errorf("call text %q doesn't start with the controller's name", written)
+		s.enqueuePilotTransmission(ac.ADSBCallsign, "125.0", PendingTransmissionRequestAltitude)
+		s.State.SimTime = s.State.SimTime.Add(time.Second)
+		pt := s.NextPilotTransmission(E2ETCW())
+		if pt == nil {
+			t.Fatal("no pilot transmission published")
 		}
-		check("call", written, spoken)
+		if !strings.HasPrefix(pt.Written, "Test Approach") {
+			t.Errorf("call text %q doesn't start with the controller's name", pt.Written)
+		}
+		check("call", pt.Written, pt.Spoken)
+
+		sub = s.eventStream.Subscribe()
+		s.ReportPilotTransmission(E2ETCW(), *pt)
+		if written := writtenEvent(sub); written != pt.Written {
+			t.Errorf("posted %q for the call, but the client said %q", written, pt.Written)
+		}
 		sub.Unsubscribe()
+	}
+}
+
+// TestPilotTransmissionLifecycle verifies that the next pilot transmission is
+// published with the same phrasing until it is reported, that reporting it
+// takes it out of the queue and moves on to the next one, and that a report
+// of a transmission no longer queued changes nothing.
+func TestPilotTransmissionLifecycle(t *testing.T) {
+	s := NewTestSim(testLogger())
+	tcp := TCP("125.0")
+	addTunedAircraft(s, "AAL123", tcp)
+	addTunedAircraft(s, "UAL456", tcp)
+
+	s.enqueuePilotTransmission("AAL123", tcp, PendingTransmissionTrafficInSight)
+	s.enqueuePilotTransmission("UAL456", tcp, PendingTransmissionTrafficInSight)
+	s.State.SimTime = s.State.SimTime.Add(time.Second)
+
+	first := s.NextPilotTransmission(E2ETCW())
+	if first == nil || first.ADSBCallsign != "AAL123" {
+		t.Fatalf("expected AAL123's call first, got %+v", first)
+	}
+	for range 10 {
+		if again := s.NextPilotTransmission(E2ETCW()); again == nil || *again != *first {
+			t.Fatalf("republished call changed from %+v to %+v", first, again)
+		}
+	}
+	if !s.PilotTransmissionIsNext(E2ETCW(), first.ContactID) {
+		t.Error("expected the published call to be next")
+	}
+
+	sub := s.eventStream.Subscribe()
+	defer sub.Unsubscribe()
+	s.ReportPilotTransmission(E2ETCW(), *first)
+	if s.PilotTransmissionIsNext(E2ETCW(), first.ContactID) {
+		t.Error("expected the reported call not to be next any more")
+	}
+	if next := s.NextPilotTransmission(E2ETCW()); next == nil || next.ADSBCallsign != "UAL456" {
+		t.Errorf("expected UAL456's call next, got %+v", next)
+	}
+
+	// A second report, as from another connection at the TCW, is ignored.
+	s.ReportPilotTransmission(E2ETCW(), *first)
+	n := len(slices.DeleteFunc(sub.Get(), func(e Event) bool { return e.Type != RadioTransmissionEvent }))
+	if n != 1 {
+		t.Errorf("reporting the call twice posted %d transmissions, want 1", n)
+	}
+	if len(s.PendingContacts[tcp]) != 1 {
+		t.Errorf("expected UAL456's call to stay queued, have %d contacts", len(s.PendingContacts[tcp]))
+	}
+}
+
+// TestPublishingPilotTransmissionsLeavesSimRandAlone verifies, for every type
+// of pilot transmission, that publishing it, which happens for every state
+// update and isn't recorded in the session log, draws nothing from the sim's
+// random numbers and words it the same way each time.
+func TestPublishingPilotTransmissionsLeavesSimRandAlone(t *testing.T) {
+	sighted := func(ac *Aircraft) {
+		ac.SightedReportingPoint = &av.ReportingPoint{Names: []string{"Dumbarton bridge", "bridge"}}
+	}
+	setup := map[PendingTransmissionType]func(*Aircraft){
+		PendingTransmissionRequestApproachClearance: func(ac *Aircraft) {
+			ac.Nav.Approach.InterceptState = nav.OnApproachCourse
+		},
+		PendingTransmissionRequestTowerSwitch:               func(ac *Aircraft) { ac.Nav.Approach.Cleared = true },
+		PendingTransmissionReportingPointInSight:            sighted,
+		PendingTransmissionSpontaneousReportingPointInSight: sighted,
+	}
+
+	for ty := PendingTransmissionDeparture; ty <= PendingTransmissionSpontaneousReportingPointInSight; ty++ {
+		s := NewTestSim(testLogger())
+		ac := MakeTestAircraft("AAL123", "22L")
+		ac.DepartureAirport = "KJFK"
+		ac.AssociateFlightPlan(&FlightPlan{ACID: ACID(ac.ADSBCallsign)})
+		if f := setup[ty]; f != nil {
+			f(ac)
+		}
+		s.Aircraft[ac.ADSBCallsign] = ac
+		if ty == PendingTransmissionEmergency {
+			s.enqueueEmergencyTransmission(ac.ADSBCallsign, "125.0",
+				speech.MakeContactTransmission("[declaring an emergency|mayday mayday mayday]"))
+		} else {
+			s.enqueuePilotTransmission(ac.ADSBCallsign, "125.0", ty)
+		}
+		s.State.SimTime = s.State.SimTime.Add(time.Second)
+
+		before, err := json.Marshal(s.Rand)
+		if err != nil {
+			t.Fatal(err)
+		}
+		first := s.NextPilotTransmission(E2ETCW())
+		if first == nil {
+			t.Errorf("type %d: nothing published", ty)
+			continue
+		}
+		for range 20 {
+			if pt := s.NextPilotTransmission(E2ETCW()); pt == nil || *pt != *first {
+				t.Errorf("type %d: published %+v, then %+v", ty, first, pt)
+				break
+			}
+		}
+		if after, err := json.Marshal(s.Rand); err != nil || !bytes.Equal(before, after) {
+			t.Errorf("type %d: publishing drew from the sim's random numbers", ty)
+		}
 	}
 }

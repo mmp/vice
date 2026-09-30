@@ -160,9 +160,9 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 	}
 }
 
-// generateFlightFollowingMessage creates the full flight following request message.
-// This is called on-demand to use current aircraft state.
-func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *speech.RadioTransmission {
+// generateFlightFollowingMessage creates the full flight following request message
+// from the aircraft's current state, making its choices of what to say with r.
+func (s *Sim) generateFlightFollowingMessage(ac *Aircraft, r *rand.Rand) *speech.RadioTransmission {
 	// Returns the departure airport if the aircraft is still closer to it than
 	// to any reporting point, and otherwise the closest reporting point's
 	// description; exactly one of ap and desc is set.
@@ -234,12 +234,12 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *speech.RadioTransmis
 		// Just report current altitude if we're level
 		alt = speech.MakeContactTransmission("at {alt}", currentAlt)
 	}
-	earlyAlt := s.Rand.Bool()
+	earlyAlt := r.Bool()
 	if earlyAlt {
 		rt.Merge(alt)
 	}
 
-	if s.Rand.Bool() {
+	if r.Bool() {
 		// Heading only sometimes
 		rt.Add(math.Compass(ac.Heading()) + "bound")
 	}

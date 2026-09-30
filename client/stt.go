@@ -30,30 +30,73 @@ import (
 ///////////////////////////////////////////////////////////////////////////
 // TransmissionManager
 
-// TransmissionManager manages queuing and playback of radio transmissions.
-// It centralizes the logic for playing MP3s in the correct order and handling
-// playback state like holds after transmissions.
+// TransmissionManager manages playback of radio transmissions. It centralizes
+// the logic for playing them in the correct order and for the pauses between
+// them.
+//
+// Readbacks are queued as pilots answer the controller, and they play first.
+// A pilot who calls the controller is heard only when the radio is quiet, one
+// at a time: the client synthesizes the pilot transmission the server last
+// published, asks the server whether it is still the one to say, and then
+// plays it. Anything that uses the radio in the meantime makes the
+// synthesized speech stale, so it is dropped and the client starts over from
+// what the server publishes next.
 type TransmissionManager struct {
 	mu           sync.Mutex
-	queue        []queuedTransmission // pending transmissions
+	queue        []queuedTransmission // readbacks waiting to play
 	playing      bool
 	holdCount    int       // explicit holds (e.g., during STT recording/processing)
 	holdUntil    time.Time // time-based hold for post-transmission pauses
 	lastCallsign av.ADSBCallsign
 	lg           *log.Logger
 
-	// Contact request management
-	lastWasContact   bool
-	contactRequested bool
+	// radioUses counts the times something has used the radio: the
+	// controller keying up or sending a command, a readback arriving, a
+	// transmission starting to play.
+	radioUses uint64
+	pilotCall *pilotCall
 }
 
-// queuedTransmission holds a transmission ready for playback with pre-decoded PCM audio.
+// queuedTransmission holds a readback ready for playback with pre-decoded PCM audio.
 type queuedTransmission struct {
-	Callsign       av.ADSBCallsign
-	Type           speech.RadioTransmissionType
-	PCM            []int16 // Pre-decoded PCM audio
-	PTTReleaseTime time.Time
+	Callsign av.ADSBCallsign
+	PCM      []int16
 }
+
+// pilotCall is a pilot transmission the client is getting ready to play.
+type pilotCall struct {
+	transmission sim.PilotTransmission
+	radioUses    uint64 // TransmissionManager.radioUses when its synthesis started
+	stage        pilotCallStage
+	pcm          []int16 // nil if it is shown without being spoken
+}
+
+// pilotCallStage is how far along a pilot call is toward being played.
+type pilotCallStage int
+
+const (
+	pilotCallSynthesizing pilotCallStage = iota
+	pilotCallSynthesized
+	pilotCallChecking
+	pilotCallApproved
+)
+
+// pilotCallStep is what the client has to do next for a pilot call.
+type pilotCallStep int
+
+const (
+	pilotCallWait       pilotCallStep = iota
+	pilotCallSynthesize               // synthesize its speech and pass it to PilotCallSynthesized
+	pilotCallCheck                    // ask the server whether it is still next; pass the answer to PilotCallChecked
+	pilotCallReport                   // tell the server it has started
+)
+
+const (
+	// pauseAfterPilotCall gives the controller time to respond.
+	pauseAfterPilotCall = 8 * time.Second
+	// pauseAfterReadback is a brief pause before the next pilot calls.
+	pauseAfterReadback = 3 * time.Second
+)
 
 // NewTransmissionManager creates a new TransmissionManager.
 func NewTransmissionManager(lg *log.Logger) *TransmissionManager {
@@ -63,7 +106,7 @@ func NewTransmissionManager(lg *log.Logger) *TransmissionManager {
 }
 
 // EnqueueReadbackPCM adds a readback with pre-decoded PCM to the front of the queue (high priority).
-func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty speech.RadioTransmissionType, pcm []int16) {
+func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, pcm []int16) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
@@ -72,119 +115,158 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty s
 		tm.holdCount--
 	}
 
-	// Clear any post-transmission hold timer. After a contact plays, an
-	// 8-second hold gives the controller time to respond; once the
-	// controller has responded and we have a readback, that hold is moot.
+	// Clear any post-transmission hold timer. After a pilot call plays, a
+	// pause gives the controller time to respond; once the controller has
+	// responded and we have a readback, that pause is moot.
 	tm.holdUntil = time.Time{}
+	tm.radioUses++
 
 	if len(pcm) == 0 {
 		tm.lg.Warnf("Skipping readback for %s due to empty PCM", callsign)
 		return
 	}
 
-	// Drop any pending initial contact for this aircraft; the controller
-	// has already talked to them so the check-in is stale.
-	tm.queue = slices.DeleteFunc(tm.queue, func(qt queuedTransmission) bool {
-		return qt.Callsign == callsign && qt.Type == speech.RadioTransmissionContact
-	})
-
-	qt := queuedTransmission{
-		Callsign: callsign,
-		Type:     ty,
-		PCM:      pcm,
-	}
 	// Insert at front - readbacks have priority
-	tm.queue = append([]queuedTransmission{qt}, tm.queue...)
+	tm.queue = append([]queuedTransmission{{Callsign: callsign, PCM: pcm}}, tm.queue...)
 }
 
-// EnqueueTransmissionPCM adds a pilot transmission with pre-decoded PCM to the queue.
-func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, ty speech.RadioTransmissionType, pcm []int16) {
-	tm.mu.Lock()
-	defer tm.mu.Unlock()
-
-	if len(pcm) == 0 {
-		tm.lg.Warnf("Skipping transmission for %s due to empty PCM", callsign)
-		return
-	}
-
-	qt := queuedTransmission{
-		Callsign: callsign,
-		Type:     ty,
-		PCM:      pcm,
-	}
-	tm.queue = append(tm.queue, qt)
-}
-
-// Update manages playback state, called each frame.
-// It handles hold timeouts and initiates playback when appropriate.
+// Update plays queued readbacks, called each frame.
 func (tm *TransmissionManager) Update(p audio.Engine, paused, sttActive bool) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
-	// Don't play speech while paused or during STT recording
-	if paused || sttActive {
+	// Don't play speech while paused or during STT recording, while held, or
+	// during a post-transmission pause.
+	if paused || sttActive || tm.holdCount > 0 || time.Now().Before(tm.holdUntil) {
 		return
 	}
-
-	// Check if there's an explicit hold (e.g., STT processing)
-	if tm.holdCount > 0 {
-		return
-	}
-
-	// Check if we're in a time-based hold period (post-transmission pause)
-	if time.Now().Before(tm.holdUntil) {
-		return
-	}
-
-	// Can't play if already playing or nothing to play
 	if tm.playing || len(tm.queue) == 0 {
 		return
 	}
 
-	// Get next speech to play
 	qt := tm.queue[0]
 	tm.queue = tm.queue[1:]
 
-	// Track whether this is a contact (vs readback)
-	isContact := qt.Type == speech.RadioTransmissionContact
+	if err := tm.startPlayback(p, qt.Callsign, qt.PCM, pauseAfterReadback); errors.Is(err, audio.ErrCurrentlyPlayingSpeech) {
+		// Audio engine is busy. Put it back at the front so we'll retry on
+		// the next Update.
+		tm.queue = append([]queuedTransmission{qt}, tm.queue...)
+		tm.lg.Warnf("SPEECH playback refused for %s: %v (requeued)", qt.Callsign, err)
+	} else if err != nil {
+		tm.lg.Warnf("SPEECH playback failed for %s: %v (dropped)", qt.Callsign, err)
+	}
+}
 
+// startPlayback starts playing pcm, followed by the given pause. The caller
+// holds tm.mu.
+func (tm *TransmissionManager) startPlayback(p audio.Engine, callsign av.ADSBCallsign, pcm []int16,
+	pause time.Duration) error {
 	// Compute audio duration: PCM is 44.1kHz mono int16.
-	durationMs := int64(len(qt.PCM)) * 1000 / audio.SampleRate
+	durationMs := int64(len(pcm)) * 1000 / audio.SampleRate
 	startTime := time.Now()
 
 	finishedCallback := func() {
 		tm.mu.Lock()
 		defer tm.mu.Unlock()
 
-		tm.lg.Infof("SPEECH playback finished: %s (%s, played %dms)", qt.Callsign, qt.Type,
-			time.Since(startTime).Milliseconds())
+		tm.lg.Infof("SPEECH playback finished: %s (played %dms)", callsign, time.Since(startTime).Milliseconds())
 
 		tm.playing = false
-		tm.lastCallsign = qt.Callsign
-		tm.lastWasContact = isContact
-
-		// Different hold times based on transmission type:
-		// - After contact: 8 seconds (controller needs time to respond)
-		// - After readback: 3 seconds (brief pause before next contact)
-		if isContact {
-			tm.holdUntil = time.Now().Add(8 * time.Second)
-		} else {
-			tm.holdUntil = time.Now().Add(3 * time.Second)
-		}
+		tm.lastCallsign = callsign
+		tm.holdUntil = time.Now().Add(pause)
 	}
 
-	// Enqueue pre-decoded PCM for playback
-	if err := p.TryEnqueueSpeechPCM(qt.PCM, finishedCallback); err == nil {
-		tm.playing = true
-		tm.lg.Infof("SPEECH playback started: %s (%s, %dms audio, %d queued behind)",
-			qt.Callsign, qt.Type, durationMs, len(tm.queue))
-	} else if errors.Is(err, audio.ErrCurrentlyPlayingSpeech) {
-		// Audio engine is busy. Put it back at the front so we'll retry on
-		// the next Update.
-		tm.queue = append([]queuedTransmission{qt}, tm.queue...)
-		tm.lg.Warnf("SPEECH playback refused for %s: %v (requeued)", qt.Callsign, err)
+	if err := p.TryEnqueueSpeechPCM(pcm, finishedCallback); err != nil {
+		return err
+	}
+	tm.playing = true
+	tm.radioUses++
+	tm.lg.Infof("SPEECH playback started: %s (%dms audio, %d queued behind)", callsign, durationMs, len(tm.queue))
+	return nil
+}
+
+// AdvancePilotCall moves along the pilot call the client is getting ready to
+// play, given next, the pilot transmission the server last published, and
+// returns what the caller has to do for it next. Once the server has approved
+// it and the radio is quiet, it plays the call itself.
+func (tm *TransmissionManager) AdvancePilotCall(p audio.Engine, next *sim.PilotTransmission,
+	paused, sttActive bool) (pilotCallStep, *pilotCall) {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	if pc := tm.pilotCall; pc != nil &&
+		(pc.radioUses != tm.radioUses || next == nil || next.ContactID != pc.transmission.ContactID) {
+		tm.lg.Infof("SPEECH dropped stale pilot call: %s", pc.transmission.ADSBCallsign)
+		tm.pilotCall = nil
+	}
+
+	if paused || sttActive || tm.playing || tm.holdCount > 0 || len(tm.queue) > 0 ||
+		time.Now().Before(tm.holdUntil) {
+		return pilotCallWait, nil
+	}
+
+	pc := tm.pilotCall
+	switch {
+	case pc == nil && next != nil:
+		tm.pilotCall = &pilotCall{transmission: *next, radioUses: tm.radioUses}
+		return pilotCallSynthesize, tm.pilotCall
+
+	case pc == nil:
+		return pilotCallWait, nil
+
+	case pc.stage == pilotCallSynthesized:
+		pc.stage = pilotCallChecking
+		return pilotCallCheck, pc
+
+	case pc.stage == pilotCallApproved:
+		callsign := pc.transmission.ADSBCallsign
+		if pc.pcm != nil {
+			err := tm.startPlayback(p, callsign, pc.pcm, pauseAfterPilotCall)
+			if errors.Is(err, audio.ErrCurrentlyPlayingSpeech) {
+				return pilotCallWait, nil // try again next frame
+			} else if err != nil {
+				tm.lg.Warnf("SPEECH playback failed for %s: %v (shown only)", callsign, err)
+				pc.pcm = nil
+			}
+		}
+		if pc.pcm == nil {
+			tm.lastCallsign = callsign
+			tm.holdUntil = time.Now().Add(pauseAfterPilotCall)
+			tm.radioUses++
+		}
+		tm.pilotCall = nil
+		return pilotCallReport, pc
+
+	default:
+		return pilotCallWait, nil
+	}
+}
+
+// PilotCallSynthesized records the speech synthesized for pc, or nil if it
+// is to be shown without being spoken.
+func (tm *TransmissionManager) PilotCallSynthesized(pc *pilotCall, pcm []int16) {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	if tm.pilotCall == pc && pc.stage == pilotCallSynthesizing {
+		pc.pcm, pc.stage = pcm, pilotCallSynthesized
+	}
+}
+
+// PilotCallChecked records the server's answer to whether pc is still the
+// pilot transmission to say next.
+func (tm *TransmissionManager) PilotCallChecked(pc *pilotCall, isNext bool) {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	if tm.pilotCall != pc || pc.stage != pilotCallChecking {
+		return
+	}
+	if isNext {
+		pc.stage = pilotCallApproved
 	} else {
-		tm.lg.Warnf("SPEECH playback failed for %s: %v (dropped)", qt.Callsign, err)
+		tm.lg.Infof("SPEECH pilot call no longer next: %s", pc.transmission.ADSBCallsign)
+		tm.pilotCall = nil
 	}
 }
 
@@ -195,6 +277,7 @@ func (tm *TransmissionManager) HoldAfterTransmission() {
 	defer tm.mu.Unlock()
 
 	tm.holdUntil = time.Now().Add(2 * time.Second)
+	tm.radioUses++
 }
 
 // HoldForRetransmit defers check-ins for 3 seconds after a silent STT
@@ -205,18 +288,7 @@ func (tm *TransmissionManager) HoldForRetransmit() {
 	defer tm.mu.Unlock()
 
 	tm.holdUntil = time.Now().Add(3 * time.Second)
-}
-
-// HoldAfterSilentContact sets a hold period after processing a contact without
-// audio playback (when TTS is disabled). This maintains proper pacing of contacts.
-func (tm *TransmissionManager) HoldAfterSilentContact(callsign av.ADSBCallsign) {
-	tm.mu.Lock()
-	defer tm.mu.Unlock()
-
-	tm.lastCallsign = callsign
-	tm.lastWasContact = true
-	// 8 seconds is the same hold time used after playing a contact transmission
-	tm.holdUntil = time.Now().Add(8 * time.Second)
+	tm.radioUses++
 }
 
 // Hold increments the hold counter, preventing playback until Unhold is called.
@@ -226,6 +298,7 @@ func (tm *TransmissionManager) Hold() {
 	defer tm.mu.Unlock()
 
 	tm.holdCount++
+	tm.radioUses++
 }
 
 // Unhold decrements the hold counter. Playback resumes when count reaches zero.
@@ -252,35 +325,6 @@ func (tm *TransmissionManager) IsPlaying() bool {
 	defer tm.mu.Unlock()
 
 	return tm.playing
-}
-
-// ShouldRequestContact returns true if the client should request a contact from the server.
-// It checks that we're not playing, not held, queue is empty, and no request is pending.
-func (tm *TransmissionManager) ShouldRequestContact() bool {
-	tm.mu.Lock()
-	defer tm.mu.Unlock()
-
-	if tm.contactRequested || tm.playing || tm.holdCount > 0 || len(tm.queue) > 0 {
-		return false
-	}
-
-	return time.Now().After(tm.holdUntil)
-}
-
-// SetContactRequested marks that we've sent a contact request and are waiting.
-func (tm *TransmissionManager) SetContactRequested(requested bool) {
-	tm.mu.Lock()
-	defer tm.mu.Unlock()
-
-	tm.contactRequested = requested
-}
-
-// IsContactRequested returns true if we're waiting for a contact response.
-func (tm *TransmissionManager) IsContactRequested() bool {
-	tm.mu.Lock()
-	defer tm.mu.Unlock()
-
-	return tm.contactRequested
 }
 
 ///////////////////////////////////////////////////////////////////////////

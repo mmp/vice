@@ -37,13 +37,15 @@ func testLogger() *log.Logger {
 func NewTestSim(lg *log.Logger) *Sim {
 	tcw := TCW("TEST")
 	freq := ControlPosition("125.0")
+	textRand := vrand.Make()
 
 	return &Sim{
-		lg:          lg,
-		Rand:        vrand.Make(),
-		textRand:    vrand.Make(),
-		wxModel:     wx.MakeCalmModel(),
-		eventStream: NewEventStream(lg),
+		lg:            lg,
+		Rand:          vrand.Make(),
+		textRand:      textRand,
+		VoiceAssigner: NewVoiceAssigner(textRand),
+		wxModel:       wx.MakeCalmModel(),
+		eventStream:   NewEventStream(lg),
 		State: &CommonState{
 			DynamicState: DynamicState{
 				METAR:                map[av.ICAOAirportCode]wx.METAR{},

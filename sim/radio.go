@@ -142,6 +142,7 @@ type FutureFrequencyChange struct {
 
 // PendingContact represents a pilot-initiated transmission waiting to be played.
 type PendingContact struct {
+	ID                     uint64 // Identifies the contact to the clients that say it
 	ADSBCallsign           av.ADSBCallsign
 	TCP                    TCP
 	QueuedTime             Time                      // When the pilot decided to transmit
@@ -150,7 +151,18 @@ type PendingContact struct {
 	ReportDepartureHeading bool                      // For departures: include assigned heading
 	HasQueuedEmergency     bool                      // For departures: trigger emergency after contact
 	PrebuiltTransmission   *speech.RadioTransmission // For emergency transmissions: pre-built message
-	FirstInFacility        bool                      // First contact with a controller in this facility
+	ATIS                   string                    // For arrivals: the ATIS letter the pilot reports, if any
+}
+
+// PilotTransmission is what a pilot who has called a controller says,
+// rendered from the aircraft's state when it was published.
+type PilotTransmission struct {
+	ContactID    uint64
+	ADSBCallsign av.ADSBCallsign
+	Written      string
+	Spoken       string
+	Voice        string
+	Type         speech.RadioTransmissionType
 }
 
 // hasPendingCheckIn reports whether the aircraft has a pending arrival or
@@ -168,16 +180,17 @@ func (s *Sim) hasPendingCheckIn(callsign av.ADSBCallsign) bool {
 	return false
 }
 
-// waitingForAssociation reports whether a queued check-in can't be spoken yet
-// because the track hasn't tagged up. GenerateContactTransmission has no text
-// for those, and a contact that is popped and comes back empty is discarded for
-// good, so they stay in the queue instead.
-func (s *Sim) waitingForAssociation(pc PendingContact) bool {
-	if pc.Type != PendingTransmissionDeparture && pc.Type != PendingTransmissionArrival {
+// contactReady reports whether the pilot is ready to say a pending contact:
+// its ReadyTime has passed and, for a check-in, the track has tagged up.
+func (s *Sim) contactReady(pc PendingContact) bool {
+	if !s.State.SimTime.After(pc.ReadyTime) {
 		return false
 	}
+	if pc.Type != PendingTransmissionDeparture && pc.Type != PendingTransmissionArrival {
+		return true
+	}
 	ac, ok := s.Aircraft[pc.ADSBCallsign]
-	return ok && !ac.IsAssociated()
+	return ok && ac.IsAssociated()
 }
 
 // contactApplies reports whether a pending contact is still worth saying:
@@ -256,11 +269,22 @@ func (ac *Aircraft) instructedSince(pc PendingContact) bool {
 	return ac.LastInstructionFrequency == ControlPosition(pc.TCP) && !ac.LastInstructionTime.Before(pc.QueuedTime)
 }
 
-// cullStaleContacts drops the pending contacts that no longer apply.
+// cullStaleContacts drops the pending contacts that no longer apply. It also
+// drops, and reports, ready ones whose transmission can't be rendered, which
+// would otherwise stay at the front of their controller's queue.
 func (s *Sim) cullStaleContacts() {
-	for tcp, pcs := range s.PendingContacts {
+	for tcp, pcs := range util.SortedMap(s.PendingContacts) {
 		s.PendingContacts[tcp] = slices.DeleteFunc(pcs, func(pc PendingContact) bool {
-			return !s.contactApplies(pc)
+			if !s.contactApplies(pc) {
+				return true
+			}
+			if s.contactReady(pc) {
+				if _, err := s.renderContact(pc); err != nil {
+					s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
+					return true
+				}
+			}
+			return false
 		})
 	}
 }
@@ -270,6 +294,8 @@ func (s *Sim) addPendingContact(pc PendingContact) {
 	if s.PendingContacts == nil {
 		s.PendingContacts = make(map[TCP][]PendingContact)
 	}
+	s.LastContactID++
+	pc.ID = s.LastContactID
 	pc.QueuedTime = s.State.SimTime
 	s.PendingContacts[pc.TCP] = append(s.PendingContacts[pc.TCP], pc)
 }
@@ -325,75 +351,123 @@ func (t PendingTransmissionType) isInitialCheckIn() bool {
 	}
 }
 
-// PopReadyContact removes and returns the first pending contact whose ReadyTime has passed
-// for any of the given positions, or nil if none are ready yet.
-// This is called when the client is ready to play a contact.
-func (s *Sim) PopReadyContact(positions []TCP) *PendingContact {
-	if s.PendingContacts == nil {
-		return nil
-	}
-
+// nextContact returns the pending contact the controller working the given
+// positions is to hear next, or nil if no pilot is ready to call them.
+func (s *Sim) nextContact(positions []TCP) *PendingContact {
 	// A pilot's response or request during an already-established exchange
 	// (the full request after "go ahead", "traffic in sight", a go-around,
 	// etc.) takes priority over an unrelated aircraft's initial check-in: it
 	// would be unrealistic for a third party to key up in the middle of an
 	// exchange the controller just initiated. Prefer a ready response, then
 	// fall back to initial check-ins.
-	if pc := s.popReadyMatching(positions, func(t PendingTransmissionType) bool { return !t.isInitialCheckIn() }); pc != nil {
+	if pc := s.readyMatching(positions, func(t PendingTransmissionType) bool { return !t.isInitialCheckIn() }); pc != nil {
 		return pc
 	}
-	return s.popReadyMatching(positions, func(t PendingTransmissionType) bool { return t.isInitialCheckIn() })
+	return s.readyMatching(positions, PendingTransmissionType.isInitialCheckIn)
 }
 
-// HaveReadyContact reports whether PopReadyContact would return a contact
-// for the given positions. Clients ask for contacts many times a second, and
-// this lets a request that would find none be answered without changing the
-// sim.
-func (s *Sim) HaveReadyContact(positions []TCP) bool {
-	_, i := s.readyMatching(positions, func(PendingTransmissionType) bool { return true })
-	return i != -1
-}
-
-// popReadyMatching removes and returns the contact readyMatching finds, or
-// nil if there is none.
-func (s *Sim) popReadyMatching(positions []TCP, match func(PendingTransmissionType) bool) *PendingContact {
-	tcp, i := s.readyMatching(positions, match)
-	if i == -1 {
-		return nil
-	}
-
-	pc := s.PendingContacts[tcp][i]
-	s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
-	return &pc
-}
-
-// readyMatching finds the longest-waiting pending contact across the given
-// positions whose type satisfies match and whose ReadyTime has passed,
-// returning its position and its index in the position's pending contacts,
-// or -1 for the index if none qualify. Taking the oldest rather than the
-// first position's first entry keeps a busy position from starving the
+// readyMatching returns the longest-waiting pending contact across the given
+// positions whose type satisfies match, that the pilot is ready to say, and
+// that still applies, or nil if none qualify. Taking the oldest rather than
+// the first position's first entry keeps a busy position from starving the
 // others.
-func (s *Sim) readyMatching(positions []TCP, match func(PendingTransmissionType) bool) (TCP, int) {
-	var bestTCP TCP
-	best := -1
+func (s *Sim) readyMatching(positions []TCP, match func(PendingTransmissionType) bool) *PendingContact {
+	var best *PendingContact
 	for _, tcp := range positions {
 		for i, pc := range s.PendingContacts[tcp] {
-			if !match(pc.Type) || !s.State.SimTime.After(pc.ReadyTime) || s.waitingForAssociation(pc) ||
-				!s.contactApplies(pc) {
+			if !match(pc.Type) || !s.contactReady(pc) || !s.contactApplies(pc) {
 				continue
 			}
-			if best == -1 || pc.ReadyTime.Before(s.PendingContacts[bestTCP][best].ReadyTime) {
-				bestTCP, best = tcp, i
+			if best == nil || pc.ReadyTime.Before(best.ReadyTime) {
+				best = &s.PendingContacts[tcp][i]
 			}
 		}
 	}
-	return bestTCP, best
+	if best == nil {
+		return nil
+	}
+	pc := *best
+	return &pc
+}
+
+// NextPilotTransmission returns what the controller at tcw is to hear next
+// from a pilot calling them, or nil if no pilot is ready to.
+func (s *Sim) NextPilotTransmission(tcw TCW) *PilotTransmission {
+	pc := s.nextContact(s.GetPositionsForTCW(tcw))
+	if pc == nil {
+		return nil
+	}
+	pt, err := s.renderContact(*pc)
+	if err != nil {
+		// The next tick's culling reports it.
+		s.lg.Errorf("%s: %v", pc.ADSBCallsign, err)
+		return nil
+	}
+	pt.Voice = s.GetReadbackVoice(pc.ADSBCallsign)
+	return pt
+}
+
+// PilotTransmissionIsNext reports whether the pending contact with the given
+// ID is still the one the controller at tcw is to hear next.
+func (s *Sim) PilotTransmissionIsNext(tcw TCW, id uint64) bool {
+	pc := s.nextContact(s.GetPositionsForTCW(tcw))
+	return pc != nil && pc.ID == id
+}
+
+// ReportPilotTransmission records that the controller at tcw heard pt: it
+// leaves the queue, its text goes to the messages pane, and whatever saying
+// it sets in motion happens. A transmission that is no longer queued has
+// already been reported, or has gone stale since the client checked it, and
+// is ignored.
+func (s *Sim) ReportPilotTransmission(tcw TCW, pt PilotTransmission) {
+	var pc PendingContact
+	found := false
+	for _, tcp := range s.GetPositionsForTCW(tcw) {
+		if i := slices.IndexFunc(s.PendingContacts[tcp], func(p PendingContact) bool { return p.ID == pt.ContactID }); i != -1 {
+			pc, found = s.PendingContacts[tcp][i], true
+			s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
+			break
+		}
+	}
+	ac, ok := s.Aircraft[pc.ADSBCallsign]
+	if !found || !ok {
+		return
+	}
+
+	switch pc.Type {
+	case PendingTransmissionDeparture:
+		if pc.HasQueuedEmergency && ac.EmergencyState != nil {
+			ac.EmergencyState.CurrentStage = 0
+			s.runEmergencyStage(ac)
+		}
+
+	case PendingTransmissionArrival:
+		if pc.ATIS != "" {
+			ac.ReportedATIS = pc.ATIS
+		}
+		if ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
+			ac.EmergencyState.CurrentStage = 0
+			s.runEmergencyStage(ac)
+		}
+
+	case PendingTransmissionGoAround:
+		ac.SentAroundForSpacing = false
+	}
+
+	s.eventStream.Post(Event{
+		Type:                  RadioTransmissionEvent,
+		ADSBCallsign:          pc.ADSBCallsign,
+		ToController:          pc.TCP,
+		WrittenText:           pt.Written,
+		RadioTransmissionType: pt.Type,
+	})
+	s.publish()
 }
 
 // processVirtualControllerContacts handles pending contacts for virtual
-// controllers. Human controllers' contacts are processed by their clients
-// via PopReadyContact/GenerateContactTransmission, but virtual controllers
-// have no client, so we process their contacts here in the update loop.
+// controllers. Human controllers hear theirs when their clients play and
+// report them, but virtual controllers have no client, so we process their
+// contacts here in the update loop.
 func (s *Sim) processVirtualControllerContacts() {
 	for tcp, contacts := range util.SortedMap(s.PendingContacts) {
 		if !s.isVirtualController(tcp) {
@@ -434,12 +508,36 @@ func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPos
 		FutureFrequencyChange{ADSBCallsign: ac.ADSBCallsign, TCP: tcp, Time: s.State.SimTime.Add(switchDelay)})
 
 	s.addPendingContact(PendingContact{
-		ADSBCallsign:    ac.ADSBCallsign,
-		TCP:             tcp,
-		ReadyTime:       s.State.SimTime.Add(switchDelay + listenDelay),
-		Type:            util.Select(ac.IsDeparture(), PendingTransmissionDeparture, PendingTransmissionArrival),
-		FirstInFacility: s.isFirstFacilityContact(fromPos),
+		ADSBCallsign: ac.ADSBCallsign,
+		TCP:          tcp,
+		ReadyTime:    s.State.SimTime.Add(switchDelay + listenDelay),
+		Type:         util.Select(ac.IsDeparture(), PendingTransmissionDeparture, PendingTransmissionArrival),
+		ATIS:         s.atisToReport(ac, tcp, fromPos),
 	})
+}
+
+// atisToReport returns the ATIS letter an arrival checking in with tcp will
+// report, if any. Pilots only give the ATIS when they first contact a TRACON
+// controller in a facility, and not all of them do.
+func (s *Sim) atisToReport(ac *Aircraft, tcp TCP, fromPos ControlPosition) string {
+	if ac.IsDeparture() || ac.IsOverflight() || !s.isTRACONController(ControlPosition(tcp)) ||
+		!s.isFirstFacilityContact(fromPos) {
+		return ""
+	}
+	letter := s.State.ATISLetter[ac.ArrivalAirport]
+	if letter == "" || s.Rand.Float32() >= 0.85 { // 85% of aircraft give the ATIS
+		return ""
+	}
+
+	// Possible report having the previous ATIS if it has changed recently: always
+	// report the last one in the first 20 seconds after a change, then linearly
+	// ramp down the probability to zero 3 minutes after a change.
+	age := s.State.SimTime.Sub(s.ATISChangedTime[ac.ArrivalAirport])
+	p := 1 - max(0, (age.Seconds()-20)/(300-20))
+	if s.Rand.Float32() < float32(p) {
+		return string(rune((letter[0]-'A'+25)%26 + 'A'))
+	}
+	return letter
 }
 
 // isFirstFacilityContact reports whether the aircraft is making its first
@@ -561,72 +659,57 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 	})
 }
 
-// GenerateContactTransmission generates a transmission for a pending contact.
-// Returns the spoken and written text, or empty strings if the contact is invalid.
-// This is called when the client requests a contact, using current aircraft state.
-func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writtenText string) {
+// renderContact renders what the pilot says for a pending contact, from the
+// aircraft's current state. Its choice of phrasing depends only on the
+// contact, so it stays the same from one state update to the next while the
+// facts it reports change. It changes nothing in the sim.
+func (s *Sim) renderContact(pc PendingContact) (*PilotTransmission, error) {
 	ac, ok := s.Aircraft[pc.ADSBCallsign]
 	if !ok {
-		return "", ""
+		return nil, av.ErrNoAircraftForCallsign
 	}
 
+	r := rand.New(pc.ID)
+	rt := s.contactTransmission(pc, ac, r)
+	// The pilot starts with the name of the controller they are calling and
+	// their callsign.
+	if ctrl := s.State.Controllers[pc.TCP]; ctrl != nil {
+		prefix := contactPrefix(ac, ctrl, r)
+		prefix.Merge(rt)
+		rt = prefix
+	}
+
+	rd, err := rt.Render(r)
+	if err != nil {
+		return nil, err
+	}
+	return &PilotTransmission{
+		ContactID:    pc.ID,
+		ADSBCallsign: pc.ADSBCallsign,
+		Written:      rd.Written,
+		Spoken:       rd.Spoken,
+		Type:         rt.Type,
+	}, nil
+}
+
+// contactTransmission returns what the pilot says for a pending contact after
+// calling the controller.
+func (s *Sim) contactTransmission(pc PendingContact, ac *Aircraft, r *rand.Rand) *speech.RadioTransmission {
 	var rt *speech.RadioTransmission
 
 	switch pc.Type {
 	case PendingTransmissionDeparture:
-		if !ac.IsAssociated() {
-			return "", ""
-		}
 		sid := ""
 		if ac.ReportDepartureSID {
 			sid = ac.SID
 		}
 		rt = ac.Nav.DepartureMessage(sid, pc.ReportDepartureHeading)
 
-		// Handle emergency activation for departures
-		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
-		if humanAllocated && pc.HasQueuedEmergency {
-			ac.EmergencyState.CurrentStage = 0
-			s.runEmergencyStage(ac)
-		}
-		// For departures to virtual controllers, enqueue climbing to cruise
-		if ac.IsDeparture() && !humanAllocated {
-			s.enqueueDepartOnCourse(ac.ADSBCallsign)
-		}
-
 	case PendingTransmissionArrival:
-		if !ac.IsAssociated() {
-			return "", ""
-		}
 		rt = ac.ContactMessage()
 		rt.Type = speech.RadioTransmissionContact
-
-		// Pilots only give the ATIS when they first contact a TRACON controller in a facility.
-		if pc.FirstInFacility && s.isTRACONController(pc.TCP) && !ac.IsOverflight() {
-			arrivalAirport := ac.ArrivalAirport
-			if letter, ok := s.State.ATISLetter[arrivalAirport]; ok && letter != "" {
-				if s.Rand.Float32() < 0.85 { // 85% of aircraft give the ATIS
-					reportLetter := letter
-					age := s.State.SimTime.Sub(s.ATISChangedTime[arrivalAirport])
-
-					// Possible report having the previous ATIS if it has changed recently: always
-					// report the last one in the first 20 seconds after a change, then linearly
-					// ramp down the probability to zero 3 minutes after a change.
-					p := 1 - max(0, (age.Seconds()-20)/(300-20))
-					if s.Rand.Float32() < float32(p) {
-						reportLetter = string(rune((letter[0]-'A'+25)%26 + 'A'))
-					}
-					ac.ReportedATIS = reportLetter
-					rt.Add("[we have information {ch}|information {ch}|we have {ch}]", reportLetter)
-				}
-			}
-		}
-
-		// Handle emergency activation for arrivals
-		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
-		if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
-			ac.EmergencyState.CurrentStage = 0
-			s.runEmergencyStage(ac)
+		if pc.ATIS != "" {
+			rt.Add("[we have information {ch}|information {ch}|we have {ch}]", pc.ATIS)
 		}
 
 	case PendingTransmissionTrafficInSight:
@@ -639,7 +722,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rp := ac.SightedReportingPoint
 		if pc.Type == PendingTransmissionReportingPointInSight {
 			// The controller named it, so any of its names will do.
-			rt = speech.MakeContactTransmission("[{rp} in sight now|{rp} in sight]", rand.SampleSlice(s.textRand, rp.Names))
+			rt = speech.MakeContactTransmission("[{rp} in sight now|{rp} in sight]", rand.SampleSlice(r, rp.Names))
 		} else {
 			// Unprompted, the pilot gives its full name.
 			rt = speech.MakeContactTransmission("{rp} in sight", rp.Name())
@@ -649,7 +732,7 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt = speech.MakeContactTransmission("[VFR request|with a VFR request]")
 
 	case PendingTransmissionFlightFollowingFull:
-		rt = s.generateFlightFollowingMessage(ac)
+		rt = s.generateFlightFollowingMessage(ac, r)
 
 	case PendingTransmissionGoAround:
 		rt = speech.MakeContactTransmission("[going around|on the go]")
@@ -667,7 +750,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		}
 		if ac.SentAroundForSpacing {
 			rt.Add("[tower sent us around for spacing|we were sent around for spacing]")
-			ac.SentAroundForSpacing = false
 		}
 		rt.Type = speech.RadioTransmissionUnexpected
 
@@ -692,11 +774,9 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt.Type = speech.RadioTransmissionUnexpected
 
 	case PendingTransmissionEmergency:
-		if pc.PrebuiltTransmission == nil {
-			return "", ""
-		}
-		rt = pc.PrebuiltTransmission
-		rt.Type = speech.RadioTransmissionUnexpected // Mark as urgent for display
+		t := *pc.PrebuiltTransmission
+		t.Type = speech.RadioTransmissionUnexpected // Mark as urgent for display
+		rt = &t
 
 	case PendingTransmissionRequestVisual:
 		runway := ""
@@ -711,38 +791,9 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			"[field in sight|we have the airport in sight], [request visual|requesting the visual|can we get the visual] [approach |]runway {rwy}",
 			runway)
 
-	default:
-		return "", ""
 	}
 
-	if rt == nil {
-		return "", ""
-	}
-
-	// Get the base (unprefixed) text for the event stream.
-	// prepareRadioTransmissions will add the prefix when delivering to clients.
-	// The pilot starts with the name of the controller they are calling and
-	// their callsign.
-	if ctrl := s.State.Controllers[pc.TCP]; ctrl != nil {
-		prefix := contactPrefix(ac, ctrl, s.textRand)
-		prefix.Merge(rt)
-		rt = prefix
-	}
-
-	rd, err := rt.Render(s.textRand)
-	if err != nil {
-		s.reportTransmissionFailure(pc.ADSBCallsign, pc.TCP, err)
-		return "", ""
-	}
-
-	s.eventStream.Post(Event{
-		Type:                  RadioTransmissionEvent,
-		ADSBCallsign:          pc.ADSBCallsign,
-		ToController:          pc.TCP,
-		WrittenText:           rd.Written,
-		RadioTransmissionType: rt.Type,
-	})
-	return rd.Spoken, rd.Written
+	return rt
 }
 
 // contactPrefix returns how a pilot starts a call to ctrl: the controller's

@@ -14,7 +14,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
@@ -898,44 +897,45 @@ func (sd *dispatcher) ConfigureAutoHandoff(args *AutoHandoffConfigArgs, result *
 	})
 }
 
-type RequestContactArgs struct {
+type CheckPilotTransmissionArgs struct {
 	ControllerToken string
+	ContactID       uint64
 }
 
-type RequestContactResult struct {
-	ContactText      string          // Text to synthesize
-	ContactVoiceName string          // Voice name for synthesis (e.g., "am_adam")
-	ContactCallsign  av.ADSBCallsign // Callsign of the aircraft
-	ContactType      speech.RadioTransmissionType
-}
+const CheckPilotTransmissionRPC = "Sim.CheckPilotTransmission"
 
-const RequestContactTransmissionRPC = "Sim.RequestContactTransmission"
-
-func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, result *RequestContactResult) error {
+// CheckPilotTransmission reports whether the pilot transmission a client has
+// synthesized is still the one its controller is to hear next, just before
+// the client plays it.
+func (sd *dispatcher) CheckPilotTransmission(args *CheckPilotTransmissionArgs, isNext *bool) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	c := sd.sm.LookupController(args.ControllerToken)
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-
-	// Clients ask whenever they are ready to play a contact, and there is
-	// rarely one waiting. Only a request that finds one changes the sim, so
-	// only those go through the session log.
-	var ready bool
-	c.session.withSim(func() { ready = c.sim.HaveReadyContact(c.sim.GetPositionsForTCW(c.tcw)) })
-	if !ready {
-		return nil
-	}
-
-	// Request a contact from the session - returns text and voice name for client-side synthesis
-	_ = c.session.apply(c.tcw, RequestContactTransmissionRPC, args, func() error {
-		result.ContactText, result.ContactVoiceName, result.ContactCallsign, result.ContactType =
-			c.session.RequestContact(c.tcw)
-		c.session.recordAircraft(result.ContactCallsign)
-		return nil
-	})
+	c.session.withSim(func() { *isNext = c.sim.PilotTransmissionIsNext(c.tcw, args.ContactID) })
 	return nil
+}
+
+type ReportPilotTransmissionArgs struct {
+	ControllerToken string
+	Transmission    sim.PilotTransmission
+}
+
+const ReportPilotTransmissionRPC = "Sim.ReportPilotTransmission"
+
+// ReportPilotTransmission tells the sim that a client has started playing
+// (or, with speech off, showing) a pilot transmission.
+func (sd *dispatcher) ReportPilotTransmission(args *ReportPilotTransmissionArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	return sd.runSimCommand(args.ControllerToken, update, ReportPilotTransmissionRPC, args,
+		func(c *controllerContext) error {
+			c.sim.ReportPilotTransmission(c.tcw, args.Transmission)
+			c.session.recordAircraft(args.Transmission.ADSBCallsign)
+			return nil
+		})
 }
 
 type PushFlightStripArgs struct {

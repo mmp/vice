@@ -74,9 +74,19 @@ func TestSessionReplay(t *testing.T) {
 				t.Fatal(err)
 			}
 		}
-		var contact RequestContactResult
-		if err := sd.RequestContactTransmission(&RequestContactArgs{ControllerToken: token}, &contact); err != nil {
-			t.Fatal(err)
+		if pt := update.NextPilotTransmission; pt != nil {
+			var isNext bool
+			args := &CheckPilotTransmissionArgs{ControllerToken: token, ContactID: pt.ContactID}
+			if err := sd.CheckPilotTransmission(args, &isNext); err != nil {
+				t.Fatal(err)
+			}
+			if isNext {
+				var reported SimStateUpdate
+				args := &ReportPilotTransmissionArgs{ControllerToken: token, Transmission: *pt}
+				if err := sd.ReportPilotTransmission(args, &reported); err != nil {
+					t.Fatal(err)
+				}
+			}
 		}
 		if i == iterations/2 {
 			if err := sd.FastForward(token, &update); err != nil {
@@ -117,6 +127,11 @@ func TestSessionReplay(t *testing.T) {
 	if counts[simlog.KindTick] < 100 || counts[simlog.KindRequest] < 30 || counts[simlog.KindSpawn] == 0 {
 		t.Fatalf("session log has %d ticks, %d requests, and %d spawns; the session didn't run as expected",
 			counts[simlog.KindTick], counts[simlog.KindRequest], counts[simlog.KindSpawn])
+	}
+	if !slices.ContainsFunc(sess.Events, func(e simlog.Event) bool {
+		return e.Kind == simlog.KindRequest && e.Request.Method == ReportPilotTransmissionRPC
+	}) {
+		t.Error("session log records no pilot transmissions, so the replay doesn't cover them")
 	}
 	if sess.Header.Scenario != req.ScenarioName || sess.Header.Facility != req.Facility {
 		t.Errorf("header names %s/%s, want %s/%s", sess.Header.Facility, sess.Header.Scenario,
@@ -289,18 +304,18 @@ func TestDispatcherRequestsRecorded(t *testing.T) {
 	}
 
 	unrecorded := map[string]string{
-		GetStateUpdateRPC:             "a query",
-		GetAircraftDisplayStateRPC:    "a query",
-		GetMapLibraryRPC:              "a query",
-		SignOffRPC:                    "recorded as " + signOffMethod + " when the last controller at a TCW leaves",
-		SetSimRateRPC:                 "the replay steps the sim tick by tick",
-		TogglePauseRPC:                "the replay steps the sim tick by tick",
-		FastForwardRPC:                "its ticks are recorded",
-		RecordFlightsRPC:              "its ticks are recorded",
-		GlobalMessageRPC:              "chat between controllers",
-		UpdateATISGITextRPC:           "free text that nothing flies by",
-		AnnotateFlightStripRPC:        "free text that nothing flies by",
-		RequestContactTransmissionRPC: "recorded only when a contact is waiting, as TestSessionReplay checks",
+		GetStateUpdateRPC:          "a query",
+		GetAircraftDisplayStateRPC: "a query",
+		GetMapLibraryRPC:           "a query",
+		SignOffRPC:                 "recorded as " + signOffMethod + " when the last controller at a TCW leaves",
+		SetSimRateRPC:              "the replay steps the sim tick by tick",
+		TogglePauseRPC:             "the replay steps the sim tick by tick",
+		FastForwardRPC:             "its ticks are recorded",
+		RecordFlightsRPC:           "its ticks are recorded",
+		GlobalMessageRPC:           "chat between controllers",
+		UpdateATISGITextRPC:        "free text that nothing flies by",
+		AnnotateFlightStripRPC:     "free text that nothing flies by",
+		CheckPilotTransmissionRPC:  "a query",
 	}
 
 	lg, sm := makeReplayTestSimManager(t)

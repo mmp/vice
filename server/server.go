@@ -119,8 +119,10 @@ import (
 // FlightPlanType; Track lost FiledRoute and FiledAltitude
 //
 // 98: PendingTransmissionFieldNegativeContact removed, renumbering the later pending
-// transmission types; PendingContact gained QueuedTime; Aircraft gained
-// LastInstructionTime and LastInstructionFrequency; Event lost SpokenText and DestinationTCW
+// transmission types; PendingContact gained QueuedTime, ID, and ATIS and lost FirstInFacility;
+// Sim gained LastContactID; Aircraft gained LastInstructionTime and LastInstructionFrequency;
+// Event lost SpokenText and DestinationTCW; StateUpdate gained NextPilotTransmission;
+// RequestContactTransmission RPC replaced by CheckPilotTransmission and ReportPilotTransmission
 const ViceSerializeVersion = 98
 
 const ViceServerAddress = "vice.pharr.org"
