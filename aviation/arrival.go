@@ -62,11 +62,13 @@ func (f InboundFlow) InitialControllers() []ControlPosition {
 }
 
 type Arrival struct {
-	Waypoints       WaypointArray                                `json:"waypoints"`
-	RunwayWaypoints map[ICAOAirportCode]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
-	SpawnWaypoint   string                                       `json:"spawn"`            // if "waypoints" aren't specified
-	CruiseAltitudes util.SingleOrArray[int]                      `json:"cruise_altitude"`
-	STAR            string                                       `json:"star"`
+	// Set by scenario finalization; only relaxes current-chart comparisons for explicit routes.
+	HistoricalProcedure bool                                         `json:"-"`
+	Waypoints           WaypointArray                                `json:"waypoints"`
+	RunwayWaypoints     map[ICAOAirportCode]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
+	SpawnWaypoint       string                                       `json:"spawn"`            // if "waypoints" aren't specified
+	CruiseAltitudes     util.SingleOrArray[int]                      `json:"cruise_altitude"`
+	STAR                string                                       `json:"star"`
 
 	// WaypointActions amends the fixes of a route taken from the CIFP.
 	WaypointActions map[string]string `json:"waypoint_actions"`
@@ -607,6 +609,8 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
+	historicalManual := ar.HistoricalProcedure && len(ar.Waypoints) > 0
+
 	if ar.FlightStripDisplayRoute != "" {
 		r := strings.TrimPrefix(strings.TrimPrefix(ar.FlightStripDisplayRoute, "/."), "./")
 		for word := range strings.FieldsSeq(r) {
@@ -656,7 +660,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 		}
 	}
 
-	if ar.STAR != "" && len(ar.Waypoints) > 0 {
+	if !historicalManual && ar.STAR != "" && len(ar.Waypoints) > 0 {
 		if !slices.ContainsFunc(ar.Airports, func(icao ICAOAirportCode) bool {
 			_, ok := db.AirportSTARs(icao)[ar.STAR]
 			return ok
@@ -789,7 +793,9 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 			e.Pop()
 		}
 
-		ar.checkChartedSTARRoute(db, nmPerLongitude, magneticVariation, e)
+		if !historicalManual {
+			ar.checkChartedSTARRoute(db, nmPerLongitude, magneticVariation, e)
+		}
 	}
 
 	for i := range ar.Waypoints {
@@ -799,21 +805,22 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 
 	// Which STAR the waypoints fly: one the arrival doesn't name it should,
 	// and one it does name should be the one they fly.
-	star, run, namedRun := ar.followedSTAR(db)
-	switch {
-	case ar.STAR == "" && star != "":
-		// An arrival that gives "star_feeds" takes traffic from several STARs
-		// and flies the stretch they share, so there is no one STAR to ask it
-		// to name.
-		if len(ar.STARFeeds) == 0 {
-			e.ErrorString(`the arrival's waypoints follow the %s STAR; give it in "star"`, star)
+	if !historicalManual {
+		star, run, namedRun := ar.followedSTAR(db)
+		switch {
+		case ar.STAR == "" && star != "":
+			// An arrival that gives "star_feeds" takes traffic from several STARs
+			// and flies the stretch they share, so there is no one STAR to ask it
+			// to name.
+			if len(ar.STARFeeds) == 0 {
+				e.ErrorString(`the arrival's waypoints follow the %s STAR; give it in "star"`, star)
+			}
+		case ar.STAR != "" && star != "" && ProcedureBase(star) != ProcedureBase(ar.STAR) &&
+			run-namedRun >= starRunMargin:
+			e.ErrorString(`"star" is %s but the waypoints fly %d of the %s STAR's legs in a row and %d of %s's`,
+				ar.STAR, run, star, namedRun, ar.STAR)
 		}
-	case ar.STAR != "" && star != "" && ProcedureBase(star) != ProcedureBase(ar.STAR) &&
-		run-namedRun >= starRunMargin:
-		e.ErrorString(`"star" is %s but the waypoints fly %d of the %s STAR's legs in a row and %d of %s's`,
-			ar.STAR, run, star, namedRun, ar.STAR)
 	}
-
 	for _, star := range ar.STARFeeds {
 		if !slices.ContainsFunc(ar.Airports, func(icao ICAOAirportCode) bool {
 			_, ok := db.AirportSTARs(icao)[star]

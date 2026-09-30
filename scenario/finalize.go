@@ -304,9 +304,12 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 		if len(flow.Arrivals) == 0 && len(flow.Overflights) == 0 {
 			e.ErrorString("no arrivals or overflights in inbound flow group")
 		}
-		checkFlowNameRevisions(name, sg.Airports, e)
+		if !sg.HistoricalScenario {
+			checkFlowNameRevisions(name, sg.Airports, e)
+		}
 
 		for i := range flow.Arrivals {
+			flow.Arrivals[i].HistoricalProcedure = bool(sg.HistoricalScenario)
 			flow.Arrivals[i].Finalize(sg, sg.NmPerLongitude, sg.MagneticVariation,
 				sg.Airports, sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
 			checkArrivalSpawnAltitude(flow.Arrivals[i], e)

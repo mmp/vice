@@ -4089,6 +4089,17 @@
                     <td>Defines the extent of controllers' airspace; see <a href="#fe-airspace">airspace</a> for details.</td>
                   </tr>
                   <tr>
+                    <td>"historical_scenario"</td>
+                    <td>Boolean or "yes"/"no"</td>
+                    <td>(<i>Optional</i>) Allows manually authored historical arrivals without comparing
+                      flow names, STAR names, or route legs against current FAA STARs. Provide explicit
+                      waypoints and destination airports for retired procedures. Waypoint, altitude,
+                      speed, and route instruction validation remains active. This does not load a
+                      historical navigation database or change the traffic date. Published traffic still matches
+                      routes against current procedure data, and <code>"star_feeds"</code>, departures,
+                      and approaches retain their existing validation. Default is false.</td>
+                  </tr>
+                  <tr>
                     <td>"allow_fix_redefinitions"</td>
                     <td>Boolean</td>
                     <td>(<i>Optional</i>) When set to <code>true</code>, disables the validation checks that
