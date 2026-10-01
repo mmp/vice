@@ -653,9 +653,8 @@ func (sm *SimManager) SignOn(ss *simSession, req *JoinSimRequest) (string, error
 // Controller Lookup and State Updates
 
 type ConnectResult struct {
-	ScenarioCatalogs      map[string]map[string]*scenario.Catalog
-	RunningSims           map[string]*RunningSim
-	AvailableWXByFacility map[string][]util.TimeInterval
+	ScenarioCatalogs map[string]map[string]*scenario.Catalog
+	RunningSims      map[string]*RunningSim
 }
 
 const ConnectRPC = "SimManager.Connect"
@@ -670,10 +669,6 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	if err := sm.GetRunningSims(0, &result.RunningSims); err != nil {
 		return err
 	}
-
-	result.AvailableWXByFacility = make(map[string][]util.TimeInterval)
-	maps.Copy(result.AvailableWXByFacility, wx.GetTRACONTimeIntervals())
-	maps.Copy(result.AvailableWXByFacility, wx.GetARTCCTimeIntervals())
 
 	result.ScenarioCatalogs = sm.scenarios.Load().Catalogs
 

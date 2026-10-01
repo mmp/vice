@@ -182,18 +182,9 @@ func (c *NewSimConfiguration) computeAvailableWXIntervals(facility string) {
 		metarIntervals = wx.METARIntervals(metarTimes)
 	}
 
-	// Get facility-specific intervals from local resources.
-	// TRACONs and ARTCCs have different data histories.
-	var facilityIntervals []util.TimeInterval
-	if c.isTRACON {
-		if intervals, ok := wx.GetTRACONTimeIntervals()[facility]; ok {
-			facilityIntervals = intervals
-		}
-	} else {
-		if intervals, ok := wx.GetARTCCTimeIntervals()[facility]; ok {
-			facilityIntervals = intervals
-		}
-	}
+	// The days with atmospheric data and radar for the facility, from local
+	// resources; the server is assumed to have the same.
+	facilityIntervals := wx.FacilityTimeIntervals(facility)
 
 	if len(facilityIntervals) == 0 {
 		// Just use the METAR.

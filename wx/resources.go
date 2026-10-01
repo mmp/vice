@@ -13,7 +13,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
@@ -29,10 +28,6 @@ var (
 		done chan struct{}
 		cm   CompressedMETAR
 		err  error
-	}
-	atmosCache struct {
-		done    chan struct{}
-		timeInt map[string][]util.TimeInterval // keyed by facility
 	}
 	tfrCache struct {
 		done chan struct{}
@@ -90,28 +85,6 @@ func initResources() {
 			return
 		}
 		tfrCache.tfrs, tfrCache.err = LoadCompressedTFRs(bytes.NewReader(f))
-	}()
-
-	atmosCache.done = make(chan struct{})
-	go func() {
-		defer close(atmosCache.done)
-		atmosCache.timeInt = make(map[string][]util.TimeInterval)
-		manifest, err := bundledAtmosManifest()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
-			return
-		}
-
-		for _, facility := range manifest.Facilities() {
-			times, ok := manifest.GetTimestamps(facility)
-			if !ok {
-				continue
-			}
-			intervals := MergeAndAlignToMidnight(AtmosIntervals(times))
-			if len(intervals) > 0 {
-				atmosCache.timeInt[facility] = intervals
-			}
-		}
 	}()
 }
 
@@ -212,36 +185,54 @@ func GetMETAR(airports []av.ICAOAirportCode) (map[av.ICAOAirportCode]METARSOA, e
 	return m, nil
 }
 
-// GetTRACONTimeIntervals returns available time intervals for TRACONs from
-// bundled resources. Returns a map from TRACON id to available time
-// intervals.
-func GetTRACONTimeIntervals() map[string][]util.TimeInterval {
-	Init()
-	<-atmosCache.done
-
-	result := make(map[string][]util.TimeInterval)
-	for facility, intervals := range atmosCache.timeInt {
-		if _, ok := db.DB.TRACONs[facility]; ok {
-			result[facility] = intervals
-		}
-	}
-	return result
+var facilityIntervals struct {
+	mu sync.Mutex
+	m  map[string][]util.TimeInterval
 }
 
-// GetARTCCTimeIntervals returns available time intervals for ARTCCs from
-// bundled resources. Returns a map from ARTCC id to available time
-// intervals.
-func GetARTCCTimeIntervals() map[string][]util.TimeInterval {
-	Init()
-	<-atmosCache.done
+// FacilityTimeIntervals returns the days that the bundled manifests have both
+// atmospheric data and radar for the facility; sims for it should start
+// within them. It returns nil if the manifests have neither for the facility.
+func FacilityTimeIntervals(facility string) []util.TimeInterval {
+	facilityIntervals.mu.Lock()
+	defer facilityIntervals.mu.Unlock()
 
-	result := make(map[string][]util.TimeInterval)
-	for facility, intervals := range atmosCache.timeInt {
-		if _, ok := db.DB.ARTCCs[facility]; ok {
-			result[facility] = intervals
+	if iv, ok := facilityIntervals.m[facility]; ok {
+		return iv
+	}
+
+	atmos, err := bundledAtmosManifest()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+	}
+	precip, err := bundledPrecipManifest()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+	}
+
+	iv := facilityTimeIntervals(atmos, precip, facility)
+	if facilityIntervals.m == nil {
+		facilityIntervals.m = make(map[string][]util.TimeInterval)
+	}
+	facilityIntervals.m[facility] = iv
+	return iv
+}
+
+// facilityTimeIntervals intersects whichever of the atmos and precip
+// manifests have the facility; either may be nil.
+func facilityTimeIntervals(atmos, precip *Manifest, facility string) []util.TimeInterval {
+	var intervals [][]util.TimeInterval
+	if atmos != nil {
+		if times, ok := atmos.decodeTimestamps(facility); ok {
+			intervals = append(intervals, AtmosIntervals(times))
 		}
 	}
-	return result
+	if precip != nil {
+		if times, ok := precip.decodeTimestamps(facility); ok {
+			intervals = append(intervals, PrecipIntervals(times))
+		}
+	}
+	return MergeAndAlignToMidnight(intervals...)
 }
 
 // GetAtmosByTime returns atmospheric data for a facility from bundled resources.

@@ -270,10 +270,7 @@ func makeTestSimRequest(t *testing.T, sm *SimManager, facility, scenarioName str
 		req.ScenarioSpec = spec
 		req.Initials = "XX"
 		req.Privileged = true // so every aircraft takes commands
-		intervals := wx.GetTRACONTimeIntervals()[facility]
-		if len(intervals) == 0 {
-			intervals = wx.GetARTCCTimeIntervals()[facility]
-		}
+		intervals := wx.FacilityTimeIntervals(facility)
 		if len(intervals) == 0 {
 			t.Fatalf("%s: no weather in the resources", facility)
 		}

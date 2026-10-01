@@ -7,10 +7,12 @@ package wx
 import (
 	"image"
 	"io"
+	"slices"
 	"testing"
 	"time"
 
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/util"
 
 	"image/color"
 	"log/slog"
@@ -52,6 +54,55 @@ func TestProviderCachesAtmosGridByReturnedInterval(t *testing.T) {
 
 	if backend.calls != 1 {
 		t.Fatalf("backend calls = %d, want 1", backend.calls)
+	}
+}
+
+// timesEvery returns the times from start through end, step apart, leaving
+// out those in [gapStart, gapEnd).
+func timesEvery(start, end time.Time, step time.Duration, gapStart, gapEnd time.Time) []time.Time {
+	var times []time.Time
+	for t := start; !t.After(end); t = t.Add(step) {
+		if t.Before(gapStart) || !t.Before(gapEnd) {
+			times = append(times, t)
+		}
+	}
+	return times
+}
+
+func TestFacilityTimeIntervalsRequireRadar(t *testing.T) {
+	day := func(d int) time.Time { return time.Date(2026, time.January, d, 0, 0, 0, 0, time.UTC) }
+
+	// Atmos covers January 1-3 for both facilities. P31's radar has a
+	// two-hour gap on the 2nd; ZJX's radar doesn't start until the 3rd.
+	atmos, err := MakeManifestFromMap(map[string][]time.Time{
+		"P31": timesEvery(day(1), day(4), time.Hour, time.Time{}, time.Time{}),
+		"ZJX": timesEvery(day(1), day(4), time.Hour, time.Time{}, time.Time{}),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	precip, err := MakeManifestFromMap(map[string][]time.Time{
+		"P31": timesEvery(day(1), day(4), 5*time.Minute, day(2).Add(10*time.Hour), day(2).Add(12*time.Hour)),
+		"ZJX": timesEvery(day(3), day(4), 5*time.Minute, time.Time{}, time.Time{}),
+		"HNL": timesEvery(day(1), day(3), 5*time.Minute, time.Time{}, time.Time{}),
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, tc := range []struct {
+		facility string
+		want     []util.TimeInterval
+	}{
+		{"P31", []util.TimeInterval{{day(1), day(2)}, {day(3), day(4)}}},
+		{"ZJX", []util.TimeInterval{{day(3), day(4)}}},
+		{"HNL", []util.TimeInterval{{day(1), day(3)}}}, // radar but no atmos
+		{"ZZZ", nil},
+	} {
+		if got := facilityTimeIntervals(atmos, precip, tc.facility); !slices.EqualFunc(got, tc.want,
+			func(a, b util.TimeInterval) bool { return a[0].Equal(b[0]) && a[1].Equal(b[1]) }) {
+			t.Errorf("%s: got %v, want %v", tc.facility, got, tc.want)
+		}
 	}
 }
 

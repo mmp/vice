@@ -57,13 +57,13 @@ func run() error {
 		return fmt.Errorf("%s: %w", wx.METARFilename, err)
 	}
 
-	r, err = readBundled(wx.ManifestPath("atmos"))
+	atmos, err := readBundledManifest("atmos")
 	if err != nil {
 		return err
 	}
-	manifest, err := wx.LoadManifest(r)
+	precip, err := readBundledManifest("precip")
 	if err != nil {
-		return fmt.Errorf("%s: %w", wx.ManifestPath("atmos"), err)
+		return err
 	}
 
 	// Re-running the pipeline only brings in METAR for the airports that
@@ -78,12 +78,16 @@ func run() error {
 
 	facilities := slices.Concat(fac.TRACONs, fac.ARTCCs)
 	missingAtmos := util.FilterSlice(facilities, func(f string) bool {
-		_, ok := manifest.GetTimestamps(f)
+		_, ok := atmos.GetTimestamps(f)
+		return !ok
+	})
+	missingPrecip := util.FilterSlice(facilities, func(f string) bool {
+		_, ok := precip.GetTimestamps(f)
 		return !ok
 	})
 
-	if len(missingMETAR) == 0 && len(missingAtmos) == 0 {
-		fmt.Printf("resources/wx has METAR for all %d fetched scenario airports and atmospheric data for all %d facilities\n",
+	if len(missingMETAR) == 0 && len(missingAtmos) == 0 && len(missingPrecip) == 0 {
+		fmt.Printf("resources/wx has METAR for all %d fetched scenario airports and atmospheric data and radar for all %d facilities\n",
 			len(airports), len(facilities))
 		return nil
 	}
@@ -95,7 +99,23 @@ func run() error {
 	if len(missingAtmos) > 0 {
 		msg += "\n  atmospheric data: " + strings.Join(missingAtmos, " ")
 	}
+	if len(missingPrecip) > 0 {
+		msg += "\n  radar: " + strings.Join(missingPrecip, " ")
+	}
 	return errors.New(msg)
+}
+
+// readBundledManifest loads the manifest that resources/wx has for prefix.
+func readBundledManifest(prefix string) (*wx.Manifest, error) {
+	r, err := readBundled(wx.ManifestPath(prefix))
+	if err != nil {
+		return nil, err
+	}
+	m, err := wx.LoadManifest(r)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", wx.ManifestPath(prefix), err)
+	}
+	return m, nil
 }
 
 // readBundled returns a reader for the file at path within resources/wx.

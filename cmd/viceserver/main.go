@@ -178,7 +178,7 @@ func runSmoketest(config server.LaunchConfig, d time.Duration, lg *log.Logger) e
 	req.Initials = "XX"
 	req.StartTime = time.Now().UTC()
 	for _, facility := range util.SortedMapKeys(connect.ScenarioCatalogs) {
-		if wxAvail := connect.AvailableWXByFacility[facility]; len(wxAvail) > 0 {
+		if wxAvail := wx.FacilityTimeIntervals(facility); len(wxAvail) > 0 {
 			req.Facility, req.StartTime = facility, wxAvail[0].Start()
 			break
 		}

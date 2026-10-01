@@ -132,24 +132,26 @@ func (m *Manifest) GetTimestamps(identifier string) ([]time.Time, bool) {
 		return times, true
 	}
 
-	compressed, ok := m.data[identifier]
+	times, ok := m.decodeTimestamps(identifier)
+	if ok {
+		m.cache.Add(identifier, times)
+	}
+	return times, ok
+}
 
+// decodeTimestamps is GetTimestamps without the cache, for callers that only
+// need the timestamps briefly; a facility's precip timestamps take a few MB.
+func (m *Manifest) decodeTimestamps(identifier string) ([]time.Time, bool) {
+	compressed, ok := m.data[identifier]
 	if !ok {
 		return nil, false
 	}
 
-	// Decompress timestamps
 	timestamps, err := decompressTimestamps(compressed)
 	if err != nil {
 		return nil, false
 	}
-
-	times := util.TimesFromUnixTimestamps(timestamps)
-
-	// Cache the result
-	m.cache.Add(identifier, times)
-
-	return times, true
+	return util.TimesFromUnixTimestamps(timestamps), true
 }
 
 // RawManifest returns the underlying RawManifest for compatibility with

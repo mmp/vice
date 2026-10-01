@@ -94,11 +94,10 @@ func (cm *ConnectionManager) launchLocalServer(serverAddress string, overrides s
 				errorLogger.Error(err)
 			} else {
 				cm.LocalServer = &Server{
-					RPCClient:             client,
-					AvailableWXByFacility: cr.AvailableWXByFacility,
-					name:                  "Local (Single controller)",
-					catalogs:              cr.ScenarioCatalogs,
-					runningSims:           cr.RunningSims,
+					RPCClient:   client,
+					name:        "Local (Single controller)",
+					catalogs:    cr.ScenarioCatalogs,
+					runningSims: cr.RunningSims,
 				}
 			}
 		}
