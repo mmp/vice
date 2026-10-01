@@ -5,6 +5,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"flag"
@@ -127,6 +128,12 @@ func main() {
 	fmt.Printf("Processing atmospheric data for %d facilities\n", len(facilities))
 	if err := processAtmos(ctx, bucket, facilities, startDate, endDate, atmosDir); err != nil {
 		fmt.Printf("Failed to process atmospheric data: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Copying precipitation manifest\n")
+	if err := processPrecipManifest(ctx, bucket, *outputDir); err != nil {
+		fmt.Printf("Failed to copy precipitation manifest: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -388,6 +395,40 @@ func writePackagedAtmosManifest(packaged map[string][]time.Time, outputDir strin
 	}
 
 	fmt.Printf("Wrote atmosphere manifest: %s\n", path)
+	return nil
+}
+
+// processPrecipManifest copies the precipitation manifest as is. The GCS
+// weather backend finds radar images through it, and the start-time picker
+// requires radar coverage. It isn't filtered by the facility list: that list
+// leaves out facilities whose atmospheric data is excluded, like HNL, but
+// whose scenarios still show radar. Nor is it filtered by date, since the
+// bundled METAR and atmospheric data already bound the selectable times.
+func processPrecipManifest(ctx context.Context, bucket *storage.BucketHandle, outputDir string) error {
+	r, err := gcsNewReader(ctx, bucket, wx.ManifestPath("precip"))
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	b, err := io.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	manifest, err := wx.LoadManifest(bytes.NewReader(b))
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(outputDir, wx.ManifestPath("precip"))
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
+	if err := os.WriteFile(path, b, 0644); err != nil {
+		return err
+	}
+
+	fmt.Printf("Wrote precipitation manifest for %d facilities: %s\n", manifest.Count(), path)
 	return nil
 }
 

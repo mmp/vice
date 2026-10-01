@@ -71,6 +71,6 @@ gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wai
     --tasks=1 --args=-nworkers=64,atmosseries
 
 # Packaging runs locally: one object per facility, ~40MB in total, rather
-# than the ~700GiB of grids they were distilled from. It writes straight
-# into the checkout.
+# than the ~700GiB of grids they were distilled from, plus the METAR, the
+# TFRs, and the precip manifest. It writes straight into the checkout.
 go run ./cmd/wxpackage -output=resources/wx -facilities=$FACILITIES
