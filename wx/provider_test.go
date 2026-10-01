@@ -5,6 +5,7 @@
 package wx
 
 import (
+	"errors"
 	"image"
 	"io"
 	"slices"
@@ -102,6 +103,51 @@ func TestFacilityTimeIntervalsRequireRadar(t *testing.T) {
 		if got := facilityTimeIntervals(atmos, precip, tc.facility); !slices.EqualFunc(got, tc.want,
 			func(a, b util.TimeInterval) bool { return a[0].Equal(b[0]) && a[1].Equal(b[1]) }) {
 			t.Errorf("%s: got %v, want %v", tc.facility, got, tc.want)
+		}
+	}
+}
+
+// testStore is an ObjectStore whose URLs are the object paths.
+type testStore struct{}
+
+func (testStore) GetReader(path string) (io.ReadCloser, error) {
+	return nil, errors.New("unimplemented")
+}
+func (testStore) GetURL(path string, lifetime time.Duration) (string, error) { return path, nil }
+
+func TestGCSPrecipURLIsEmptyInGaps(t *testing.T) {
+	t0 := time.Date(2026, time.January, 1, 0, 0, 0, 0, time.UTC)
+	gapStart, gapEnd := t0.Add(2*time.Hour), t0.Add(5*time.Hour)
+	times := timesEvery(t0, t0.Add(8*time.Hour), 5*time.Minute, gapStart, gapEnd)
+	precip, err := MakeManifestFromMap(map[string][]time.Time{"P31": times})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := &gcsBackend{gcsClient: testStore{}, precipManifest: precip}
+
+	for _, tc := range []struct {
+		t         time.Time
+		wantImage time.Time // zero if there should be none
+		wantNext  time.Time
+	}{
+		{t0.Add(-time.Minute), time.Time{}, t0}, // before the data
+		{t0, t0, t0.Add(5 * time.Minute)},       // on an image
+		{t0.Add(7 * time.Minute), t0.Add(5 * time.Minute), t0.Add(10 * time.Minute)},
+		{gapStart.Add(30 * time.Minute), gapStart.Add(-5 * time.Minute), gapEnd}, // early in the gap
+		{gapStart.Add(time.Hour), time.Time{}, gapEnd},                           // too far into it
+		{t0.Add(8 * time.Hour), t0.Add(8 * time.Hour), time.Time{}},              // the last image
+		{t0.Add(10 * time.Hour), time.Time{}, time.Time{}},                       // after the data
+	} {
+		url, next, err := g.getPrecipURL("P31", tc.t)
+		if err != nil {
+			t.Fatalf("%s: %v", tc.t, err)
+		}
+		var wantURL string
+		if !tc.wantImage.IsZero() {
+			wantURL = BuildObjectPath("precip", "P31", tc.wantImage)
+		}
+		if url != wantURL || !next.Equal(tc.wantNext) {
+			t.Errorf("%s: got %q, next %s; want %q, next %s", tc.t, url, next, wantURL, tc.wantNext)
 		}
 	}
 }

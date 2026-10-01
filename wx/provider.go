@@ -11,6 +11,7 @@ import (
 	"io"
 	"net"
 	"net/rpc"
+	"slices"
 	"sync"
 	"time"
 
@@ -108,7 +109,8 @@ func MakeProvider(serverAddress string, lg *log.Logger) *Provider {
 // Provider API
 
 // GetPrecipURL returns a URL to access the specified precipitation radar image.
-// Returns the image at-or-before the given time.
+// Returns the image at-or-before the given time, or an empty URL if that
+// image is too old to stand for it, along with the time of the next image.
 func (p *Provider) GetPrecipURL(facility string, t time.Time) (string, time.Time, error) {
 	// Precip requests are cheap for GCS because URL signing is local. RPC has
 	// its own timeout; resources returns a typed unavailable error.
@@ -259,17 +261,24 @@ func (g *gcsBackend) getPrecipURL(facility string, t time.Time) (string, time.Ti
 		return "", time.Time{}, errors.New(facility + ": unknown facility")
 	}
 
-	idx, err := util.FindTimeAtOrBefore(times, t)
-	if err != nil {
-		return "", time.Time{}, fmt.Errorf("%s: %w", facility, err)
+	// times[next] is the first image after t.
+	next, found := slices.BinarySearchFunc(times, t, func(a, b time.Time) int { return a.Compare(b) })
+	if found {
+		next++
 	}
-
 	var nextTime time.Time
-	if idx+1 < len(times) {
-		nextTime = times[idx+1]
+	if next < len(times) {
+		nextTime = times[next]
 	}
 
-	path := BuildObjectPath("precip", facility, times[idx])
+	// When t is in a gap in the data, or before or after it, return no
+	// image rather than a stale one. The tolerance is the one that start
+	// times are chosen with, so a sim started in a covered day has radar.
+	if next == 0 || t.Sub(times[next-1]) > precipIntervalTolerance {
+		return "", nextTime, nil
+	}
+
+	path := BuildObjectPath("precip", facility, times[next-1])
 
 	// Signing is local; success here does not prove that the client will be
 	// able to download the image if the user's network is down.
@@ -316,7 +325,7 @@ type PrecipURLArgs struct {
 }
 
 type PrecipURL struct {
-	URL      string
+	URL      string // empty if there's no radar for the time
 	NextTime time.Time
 }
 

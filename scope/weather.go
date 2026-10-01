@@ -68,10 +68,7 @@ func (w *WeatherRadar) tick(ctx *Context) {
 		ctx.Lg.Warnf("%v", err)
 		w.fetchInProgress = false
 	case precip := <-w.precipCh:
-		w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
-		w.cb[0] = makeWeatherCommandBuffers(precip)
-		w.latestPrecip = precip
-		w.generation++
+		w.installPrecip(precip)
 		w.fetchInProgress = false
 	default:
 	}
@@ -79,6 +76,18 @@ func (w *WeatherRadar) tick(ctx *Context) {
 	if ctx.InterpolatedSimTime.After(w.nextFetchTime) && !w.fetchInProgress {
 		w.fetchPrecipitation(ctx)
 	}
+}
+
+// installPrecip makes precip the latest image, nil meaning that there is no
+// radar for the current time. Caller must hold w.mu.
+func (w *WeatherRadar) installPrecip(precip *wx.Precip) {
+	w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
+	w.cb[0] = [NumWxLevels]*renderer.CommandBuffer{}
+	if precip != nil {
+		w.cb[0] = makeWeatherCommandBuffers(precip)
+	}
+	w.latestPrecip = precip
+	w.generation++
 }
 
 // WXHistory and Levels should eventually be omitted as they're dependent on the scope used.
@@ -109,13 +118,28 @@ func (w *WeatherRadar) fetchPrecipitation(ctx *Context) {
 		}
 
 		w.nextFetchTime = nextTime
+		if nextTime.IsZero() {
+			// There are no more images; check back at the usual cadence.
+			w.nextFetchTime = fetchTime.Add(5 * time.Minute)
+		}
 
-		go w.fetchPrecip(url, ctx.Lg)
+		if url == "" {
+			// There's no radar for this time, as in a gap in the data;
+			// show none until the next image rather than a stale one.
+			w.installPrecip(nil)
+			w.fetchInProgress = false
+		} else {
+			go w.fetchPrecip(url, ctx.Lg)
+		}
 	})
 }
 
+// precipHTTPClient bounds radar downloads so that a stalled one doesn't
+// leave fetchInProgress set and stop the updates.
+var precipHTTPClient = &http.Client{Timeout: 30 * time.Second}
+
 func (w *WeatherRadar) fetchPrecip(url string, lg *log.Logger) {
-	resp, err := http.Get(url)
+	resp, err := precipHTTPClient.Get(url)
 	if err != nil {
 		w.errCh <- err
 		return
