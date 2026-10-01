@@ -838,7 +838,7 @@ func (ep *Scope) drawToolbarMenu(ctx *scope.Context, scale float32) {
 			}
 		}
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength), 0, scale, false, false) {
-			handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
+			ep.handleFDBLeaderClick()
 		}
 		if ep.drawToolbarFullButton(ctx, "BCAST\nFLID", 0, scale, false, false) {
 			// handle BCAST FLD
@@ -1504,6 +1504,19 @@ func handleClick[T ~int](ep *Scope, pref *T, min, max, step int) {
 		}
 	}
 	*pref = T(v)
+}
+
+// handleFDBLeaderClick adjusts the FDB LDR length, which applies to all FDBs,
+// including those whose leader line length was set individually.
+func (ep *Scope) handleFDBLeaderClick() {
+	ps := ep.currentPrefs()
+	length := ps.FDBLdrLength
+	handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
+	if ps.FDBLdrLength != length {
+		for _, state := range ep.TrackState {
+			state.LeaderLineLength = nil
+		}
+	}
 }
 
 // handleClickWrapping handles additive clicks with wrapping behavior at min/max boundaries
@@ -2470,8 +2483,7 @@ func (ep *Scope) handleTornOffButtonClick(ctx *scope.Context, buttonName string,
 	case "VECTOR":
 		handleMultiplicativeClick(ep, &ep.VelocityTime, 0, 8, 2)
 	case "FDB LDR":
-		ps := ep.currentPrefs()
-		handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
+		ep.handleFDBLeaderClick()
 	case "NX LVL":
 		handleNexradLevelClick(ep, &ps.NexradLevel)
 	case "VIEWS":

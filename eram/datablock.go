@@ -41,6 +41,9 @@ type datablock interface {
 	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
 		sb *strings.Builder, brightness scope.Brightness,
 		dir math.CardinalOrdinalDirection, halfSeconds int64)
+	// xOffset returns the horizontal offset from the end of the leader line
+	// to the datablock's text anchor when it is positioned in direction dir.
+	xOffset(dir math.CardinalOrdinalDirection, font *renderer.Font) float32
 	// dim scales every populated character's color; used for the conflict
 	// alert brightness-cycle flash.
 	dim(factor float32)
@@ -203,7 +206,6 @@ type limitedDatablock struct {
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-	dir = math.East // Always east or west for LDBs (west not simulated)
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
@@ -211,6 +213,14 @@ func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	}
 	pt[1] += float32(font.Size)
 	dbDrawLines(lines, td, pt, font, sb, brightness, dir, halfSeconds)
+}
+
+func (db *limitedDatablock) xOffset(dir math.CardinalOrdinalDirection, font *renderer.Font) float32 {
+	if dir != math.West {
+		return 0
+	}
+	cols := max(len(dbChopTrailing(db.line0[:])), len(dbChopTrailing(db.line1[:])), len(dbChopTrailing(db.line2[:])))
+	return -dbTextWidth(cols, font)
 }
 
 type fullDatablock struct {
@@ -274,13 +284,18 @@ func (db *fullDatablock) mainWidth(font *renderer.Font) float32 {
 		}
 		cols = max(cols, n)
 	}
-	if cols == 0 {
-		return 0
-	}
-	return float32(cols-1)*font.LookupGlyph(' ').AdvanceX + font.LookupGlyph('0').Width()
+	return dbTextWidth(cols, font)
 }
 
-func datablockXOffset(dir math.CardinalOrdinalDirection, db *fullDatablock, font *renderer.Font) float32 {
+// dbTextWidth returns the width of the ink of a line of n characters.
+func dbTextWidth(n int, font *renderer.Font) float32 {
+	if n == 0 {
+		return 0
+	}
+	return float32(n-1)*font.LookupGlyph(' ').AdvanceX + font.LookupGlyph('0').Width()
+}
+
+func (db *fullDatablock) xOffset(dir math.CardinalOrdinalDirection, font *renderer.Font) float32 {
 	clearance := dbLeaderClearance * font.LookupGlyph(' ').AdvanceX
 	switch dir {
 	case math.West, math.NorthWest, math.SouthWest:
@@ -653,41 +668,26 @@ func (ep *Scope) datablockAnchor(ctx *scope.Context, trk sim.Track, db datablock
 	transforms scope.Transformations) ([2]float32, math.CardinalOrdinalDirection) {
 	state := ep.TrackState[trk.ADSBCallsign]
 	start := transforms.WindowFromLatLongP(state.Track.Location)
-	dir := ep.leaderLineDirection(ctx, trk)
-	lengthMode := state.LeaderLineLength
-
-	// For mode 0, restrict to W/E only
-	if lengthMode == 0 {
-		if *dir != math.East && *dir != math.West {
-			*dir = math.East // Default to East if in mode 0
-		}
-	}
-
-	vector := ep.leaderLineVectorWithLength(*dir, lengthMode)
+	dir := ep.datablockDirection(state, dbType)
 
 	ps := ep.currentPrefs()
 	font := ep.ERAMFont(util.Select(dbType == FullDatablock, ps.FDBSize, ps.LDBSize))
-	dy := datablockLeaderConnectOffset(*dir, font)
 
-	var offset [2]float32
-	if fdb, ok := db.(*fullDatablock); ok {
-		offset[0] = datablockXOffset(*dir, fdb, font)
+	if dbType != FullDatablock {
+		end := math.Add2f(start, math.Scale2f(ep.leaderLineVectorNoLength(dir), ctx.DrawPixelScale))
+		end[0] += db.xOffset(dir, font)
+		end[1] -= 10 * ctx.DrawPixelScale
+		return end, dir
 	}
 
-	if lengthMode == 0 && *dir == math.East {
-		offset[0] += 2 * font.LookupGlyph(' ').AdvanceX
+	lengthMode := ep.leaderLineLength(state)
+	end := math.Add2f(start, math.Scale2f(ep.leaderLineVectorWithLength(dir, lengthMode), ctx.DrawPixelScale))
+	end[0] += db.xOffset(dir, font)
+	if lengthMode == 0 && dir == math.East {
+		end[0] += 2 * font.LookupGlyph(' ').AdvanceX
 	}
-
-	if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
-		*dir = math.East // TODO: change to state eventually
-		vector = ep.leaderLineVectorNoLength(*dir)
-		offset[1] = -10
-		dy = 0
-	}
-	end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
-	end[0] += offset[0]
-	end[1] += offset[1]*ctx.DrawPixelScale + dy
-	return end, *dir
+	end[1] += datablockLeaderConnectOffset(dir, font)
+	return end, dir
 }
 
 func datablockLeaderConnectOffset(dir math.CardinalOrdinalDirection, font *renderer.Font) float32 {

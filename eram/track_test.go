@@ -11,6 +11,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
@@ -373,5 +374,85 @@ func TestPointOutIndicator(t *testing.T) {
 	h.ep.handlePointOutIndicatorClick(h.ctx, *outbound, math.Extent2D{})
 	if h.ep.pointOutIndicatorActive(h.ctx, outbound) {
 		t.Errorf("dismissed acknowledgment is still shown")
+	}
+}
+
+func TestDatablockDirection(t *testing.T) {
+	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	pos := func(d math.CardinalOrdinalDirection) *math.CardinalOrdinalDirection { return &d }
+	noLeader := 0
+
+	for _, c := range []struct {
+		name   string
+		state  TrackState
+		dbType DatablockType
+		want   math.CardinalOrdinalDirection
+	}{
+		{"default FDB", TrackState{}, FullDatablock, math.NorthEast},
+		{"default LDB", TrackState{}, LimitedDatablock, math.East},
+		{"LDB positioned west", TrackState{LeaderLineDirection: pos(math.West)}, LimitedDatablock, math.West},
+		{"E-LDB positioned west", TrackState{LeaderLineDirection: pos(math.West)}, EnhancedLimitedDatablock, math.West},
+		{"LDB of a northwest FDB", TrackState{LeaderLineDirection: pos(math.NorthWest)}, LimitedDatablock, math.West},
+		{"LDB of a southwest FDB", TrackState{LeaderLineDirection: pos(math.SouthWest)}, LimitedDatablock, math.West},
+		{"LDB of a north FDB", TrackState{LeaderLineDirection: pos(math.North)}, LimitedDatablock, math.East},
+		{"FDB positioned northwest", TrackState{LeaderLineDirection: pos(math.NorthWest)}, FullDatablock, math.NorthWest},
+		{"northwest FDB without a leader", TrackState{LeaderLineDirection: pos(math.NorthWest), LeaderLineLength: &noLeader},
+			FullDatablock, math.West},
+		{"northeast FDB without a leader", TrackState{LeaderLineDirection: pos(math.NorthEast), LeaderLineLength: &noLeader},
+			FullDatablock, math.East},
+	} {
+		if got := ep.datablockDirection(&c.state, c.dbType); got != c.want {
+			t.Errorf("%s: got %v, want %v", c.name, got, c.want)
+		}
+	}
+}
+
+func TestFDBLeaderLengthAppliesToAllTracks(t *testing.T) {
+	individual := 3
+	ep := &Scope{
+		prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()},
+		TrackState: map[av.ADSBCallsign]*TrackState{
+			"AAL1": {},
+			"UAL2": {LeaderLineLength: &individual},
+		},
+	}
+
+	saved := toolbarDrawState.mouse
+	t.Cleanup(func() { toolbarDrawState.mouse = saved })
+	toolbarDrawState.mouse = &platform.MouseState{}
+	toolbarDrawState.mouse.Clicked[platform.MouseButtonTertiary] = true
+
+	want := ep.currentPrefs().FDBLdrLength + 1
+	ep.handleFDBLeaderClick()
+	for callsign, state := range ep.TrackState {
+		if got := ep.leaderLineLength(state); got != want {
+			t.Errorf("%s: got leader line length %d, want %d", callsign, got, want)
+		}
+	}
+}
+
+func TestPositionUnpairedLDB(t *testing.T) {
+	InitCommands()
+	ep := &Scope{
+		prefSet:    &PrefrenceSet{Current: *makeDefaultPreferences()},
+		TrackState: map[av.ADSBCallsign]*TrackState{"N810FR": {}},
+	}
+	ctx := &scope.Context{Client: &client.ControlClient{}}
+	ctx.Client.State.Tracks = map[av.ADSBCallsign]*sim.Track{
+		"N810FR": {RadarTrack: av.RadarTrack{ADSBCallsign: "N810FR", Squawk: 0o1200}},
+	}
+	click := func(cmd string) error {
+		_, err, _ := ep.tryExecuteUserCommand(ctx, cmd+" "+locationSymbol, []math.Point2LL{{}}, []av.ADSBCallsign{"N810FR"})
+		return err
+	}
+
+	if err := click("4"); err != nil {
+		t.Fatalf("4: %v", err)
+	}
+	if dir := ep.datablockDirection(ep.TrackState["N810FR"], LimitedDatablock); dir != math.West {
+		t.Errorf("after 4: LDB positioned %v, want West", dir)
+	}
+	if err := click("7"); err != ErrIllegalValue {
+		t.Errorf("7: got %v, want %v", err, ErrIllegalValue)
 	}
 }

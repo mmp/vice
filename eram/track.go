@@ -41,7 +41,8 @@ type TrackState struct {
 	DatablockType DatablockType
 
 	LeaderLineDirection *math.CardinalOrdinalDirection
-	LeaderLineLength    int // 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
+	// LeaderLineLength is set by the /<0-3> command; nil follows FDB LDR.
+	LeaderLineLength *int // 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
 
 	ELDB bool
 	EFDB bool
@@ -99,9 +100,7 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		state, ok := ep.TrackState[trk.ADSBCallsign]
 		if !ok {
-			state = &TrackState{
-				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
-			}
+			state = &TrackState{}
 			ep.TrackState[trk.ADSBCallsign] = state
 		}
 		// The point out may have been made before the user signed on, so
@@ -394,17 +393,31 @@ func (ep *Scope) datablockBrightness(state *TrackState) scope.Brightness {
 	return ps.Brightness.LDB
 }
 
-// leaderLineDirection returns the direction in which a datablock's leader line
-// should be drawn. The initial implementation always points northeast.
-func (ep *Scope) leaderLineDirection(ctx *scope.Context, trk sim.Track) *math.CardinalOrdinalDirection {
-	state := ep.TrackState[trk.ADSBCallsign]
-	dir := state.LeaderLineDirection
-	if dir == nil {
-		direction := math.NorthEast
-		dir = &direction
-		state.LeaderLineDirection = dir
+// datablockDirection returns the position of a track's datablock relative to
+// its target. LDBs and FDBs without a leader line may only be positioned to
+// the left or right of the target.
+func (ep *Scope) datablockDirection(state *TrackState, dbType DatablockType) math.CardinalOrdinalDirection {
+	dir := math.NorthEast
+	if state.LeaderLineDirection != nil {
+		dir = *state.LeaderLineDirection
 	}
-	return state.LeaderLineDirection
+	if dbType == FullDatablock && ep.leaderLineLength(state) != 0 {
+		return dir
+	}
+	switch dir {
+	case math.West, math.NorthWest, math.SouthWest:
+		return math.West
+	default:
+		return math.East
+	}
+}
+
+// leaderLineLength returns the length mode of a track's FDB leader line.
+func (ep *Scope) leaderLineLength(state *TrackState) int {
+	if state.LeaderLineLength != nil {
+		return *state.LeaderLineLength
+	}
+	return ep.currentPrefs().FDBLdrLength
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader
@@ -544,25 +557,15 @@ func (ep *Scope) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map
 			continue
 		}
 		p0 := transforms.WindowFromLatLongP(state.Track.Location)
-		dir := ep.leaderLineDirection(ctx, trk)
-		if dbType == LimitedDatablock || dbType == EnhancedLimitedDatablock {
-			*dir = math.East
-		}
+		dir := ep.datablockDirection(state, dbType)
 
-		// For /0 mode (LeaderLineLength == 0), restrict to W/E only
-		if dbType == FullDatablock && state.LeaderLineLength == 0 {
-			if *dir != math.East && *dir != math.West {
-				*dir = math.East // Default to East if in /0 mode
-			}
-		}
-
-		v := util.Select(dbType == FullDatablock, ep.leaderLineVectorWithLength(*dir, state.LeaderLineLength), ep.leaderLineVectorNoLength(*dir))
+		v := util.Select(dbType == FullDatablock, ep.leaderLineVectorWithLength(dir, ep.leaderLineLength(state)), ep.leaderLineVectorNoLength(dir))
 		pv := math.Scale2f(v, ctx.DrawPixelScale)
 
 		if fdb, ok := db.(*fullDatablock); ok && dbType == FullDatablock {
 			if over, l := fdb.leadOverhang(font), math.Length2f(pv); over > 0 {
 				var pull float32
-				switch *dir {
+				switch dir {
 				case math.East, math.NorthEast:
 					if pv[0] > 0 {
 						pull = over * l / pv[0]

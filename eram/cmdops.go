@@ -922,10 +922,6 @@ func handleInitiateHandoff(ep *Scope, ctx *scope.Context, sector string, trk *si
 }
 
 func handleLeaderLinePosition(ep *Scope, ctx *scope.Context, dir int, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrIllegalACID
-	}
-
 	direction, ok := ep.numberToLLDirection(dir)
 	if !ok {
 		return CommandStatus{}, ErrIllegalValue
@@ -939,7 +935,7 @@ func handleLeaderLinePosition(ep *Scope, ctx *scope.Context, dir int, trk *sim.T
 	ep.TrackState[trk.ADSBCallsign].LeaderLineDirection = &direction
 
 	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+		feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", offsetTrackID(trk)},
 	}, nil
 }
 
@@ -995,6 +991,15 @@ func (ep *Scope) numberToLLDirection(cmd int) (math.CardinalOrdinalDirection, bo
 	}
 }
 
+// offsetTrackID returns how datablock offset feedback identifies a track.
+// Unpaired tracks have no CID, so they are identified by callsign alone.
+func offsetTrackID(trk *sim.Track) string {
+	if trk.FlightPlan == nil {
+		return string(trk.ADSBCallsign)
+	}
+	return string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Leader Line Length Handlers
 
@@ -1002,21 +1007,19 @@ func handleLeaderLineLength(ep *Scope, ctx *scope.Context, length int, trk *sim.
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
 	} else if length < 0 || length > 3 {
-		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s", offsetTrackID(trk))
 	} else {
-		ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
+		ep.TrackState[trk.ADSBCallsign].LeaderLineLength = &length
 
 		return CommandStatus{
-			feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+			feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", offsetTrackID(trk)},
 		}, nil
 	}
 }
 
 func handleLeaderLinePositionAndLength(ep *Scope, ctx *scope.Context, dir, length int, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrIllegalACID
-	} else if length < 0 || length > 3 {
-		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+	if length < 0 || length > 3 {
+		return CommandStatus{}, fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s", offsetTrackID(trk))
 	} else {
 		direction, ok := ep.numberToLLDirection(dir)
 		if !ok {
@@ -1030,10 +1033,10 @@ func handleLeaderLinePositionAndLength(ep *Scope, ctx *scope.Context, dir, lengt
 		}
 
 		ep.TrackState[trk.ADSBCallsign].LeaderLineDirection = &direction
-		ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
+		ep.TrackState[trk.ADSBCallsign].LeaderLineLength = &length
 
 		return CommandStatus{
-			feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+			feedbackArea: []string{"ACCEPT", "OFFSET DATA BLK", offsetTrackID(trk)},
 		}, nil
 	}
 }
