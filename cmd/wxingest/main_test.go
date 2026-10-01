@@ -88,3 +88,21 @@ func TestAtmosIngestFollowsEachFacilitysRadar(t *testing.T) {
 		}
 	}
 }
+
+func TestHRRRIssuedEveryThreeHoursOutsideCONUS(t *testing.T) {
+	t0 := time.Date(2026, time.January, 1, 0, 0, 0, 0, time.UTC)
+	for _, tc := range []struct {
+		facility string
+		t        time.Time
+		want     bool
+	}{
+		{"P31", t0.Add(4 * time.Hour), true},
+		{"A11", t0.Add(3 * time.Hour), true},
+		{"A11", t0.Add(4 * time.Hour), false},
+		{"ZAN", t0.Add(21 * time.Hour), true},
+	} {
+		if got := hrrrIssued(tc.facility, tc.t); got != tc.want {
+			t.Errorf("%s at %s: got %v, want %v", tc.facility, tc.t, got, tc.want)
+		}
+	}
+}

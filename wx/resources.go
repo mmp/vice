@@ -94,7 +94,6 @@ func initResources() {
 const (
 	metarIntervalTolerance  = 75 * time.Minute
 	precipIntervalTolerance = 40 * time.Minute
-	atmosIntervalTolerance  = 65 * time.Minute
 )
 
 // METARIntervals converts METAR timestamps to time intervals suitable for weather data.
@@ -107,9 +106,11 @@ func PrecipIntervals(times []time.Time) []util.TimeInterval {
 	return util.FindTimeIntervals(times, precipIntervalTolerance)
 }
 
-// AtmosIntervals converts atmosphere timestamps to time intervals suitable for weather data.
-func AtmosIntervals(times []time.Time) []util.TimeInterval {
-	return util.FindTimeIntervals(times, atmosIntervalTolerance)
+// AtmosIntervals converts a facility's atmosphere timestamps to time
+// intervals suitable for weather data; data is continuous if it comes as
+// often as the facility's grids are issued.
+func AtmosIntervals(facility string, times []time.Time) []util.TimeInterval {
+	return util.FindTimeIntervals(times, AtmosInterval(facility)+5*time.Minute)
 }
 
 // MergeAndAlignToMidnight merges multiple sets of time intervals and aligns them to
@@ -146,22 +147,10 @@ func MergeAndAlignToMidnight(intervals ...[]util.TimeInterval) []util.TimeInterv
 	return iv
 }
 
-// FullDataDays computes time intervals where all three data sources (METAR, precip, atmos)
-// have continuous coverage, aligned to full 24-hour periods at midnight UTC.
-func FullDataDays(metar, precip, atmos []time.Time) []util.TimeInterval {
-	var intervals [][]util.TimeInterval
-
-	if metar != nil {
-		intervals = append(intervals, METARIntervals(metar))
-	}
-	if precip != nil {
-		intervals = append(intervals, PrecipIntervals(precip))
-	}
-	if atmos != nil {
-		intervals = append(intervals, AtmosIntervals(atmos))
-	}
-
-	return MergeAndAlignToMidnight(intervals...)
+// FullDataDays computes time intervals where both METAR and precip have
+// continuous coverage, aligned to full 24-hour periods at midnight UTC.
+func FullDataDays(metar, precip []time.Time) []util.TimeInterval {
+	return MergeAndAlignToMidnight(METARIntervals(metar), PrecipIntervals(precip))
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -224,7 +213,7 @@ func facilityTimeIntervals(atmos, precip *Manifest, facility string) []util.Time
 	var intervals [][]util.TimeInterval
 	if atmos != nil {
 		if times, ok := atmos.decodeTimestamps(facility); ok {
-			intervals = append(intervals, AtmosIntervals(times))
+			intervals = append(intervals, AtmosIntervals(facility, times))
 		}
 	}
 	if precip != nil {

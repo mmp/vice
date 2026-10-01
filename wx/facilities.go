@@ -11,6 +11,7 @@ import (
 	"io"
 	"os"
 	"slices"
+	"time"
 
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/util"
@@ -27,6 +28,29 @@ var atmosExcludedTRACONs = []string{
 var atmosExcludedARTCCs = []string{
 	"ZHN", // NOAA uses a currently unsupported grib2 grid format for Hawaii
 	"ZAE", // Anchorage Oceanic: outside HRRR coverage
+}
+
+// HRRRRegion returns the HRRR domain whose grids cover the facility: "conus",
+// "alaska", or "hawaii".
+func HRRRRegion(facility string) string {
+	switch facility {
+	case "A11", "FAI", "ZAN":
+		return "alaska"
+	case "ZHN":
+		return "hawaii"
+	default:
+		return "conus"
+	}
+}
+
+// AtmosInterval returns how often the facility has atmospheric data. The
+// HRRR grids outside CONUS are only issued every three hours (00Z, 03Z,
+// ...), rather than hourly.
+func AtmosInterval(facility string) time.Duration {
+	if HRRRRegion(facility) == "conus" {
+		return time.Hour
+	}
+	return 3 * time.Hour
 }
 
 // Facilities records the airports and facilities that vice's weather pipeline

@@ -85,8 +85,10 @@ func run() error {
 		_, ok := precip.GetTimestamps(f)
 		return !ok
 	})
+	// Sims can only start on days that have both.
+	noDays := util.FilterSlice(facilities, func(f string) bool { return len(wx.FacilityTimeIntervals(f)) == 0 })
 
-	if len(missingMETAR) == 0 && len(missingAtmos) == 0 && len(missingPrecip) == 0 {
+	if len(missingMETAR) == 0 && len(missingAtmos) == 0 && len(missingPrecip) == 0 && len(noDays) == 0 {
 		fmt.Printf("resources/wx has METAR for all %d fetched scenario airports and atmospheric data and radar for all %d facilities\n",
 			len(airports), len(facilities))
 		return nil
@@ -101,6 +103,9 @@ func run() error {
 	}
 	if len(missingPrecip) > 0 {
 		msg += "\n  radar: " + strings.Join(missingPrecip, " ")
+	}
+	if len(noDays) > 0 {
+		msg += "\n  days with both atmospheric data and radar: " + strings.Join(noDays, " ")
 	}
 	return errors.New(msg)
 }

@@ -43,14 +43,9 @@ func artccAtmosDownsampleRate(radius float32) int {
 	return rate
 }
 
-func facilityRegion(facilityID string) string {
-	if facilityID == "A11" || facilityID == "FAI" || facilityID == "ZAN" {
-		return "alaska"
-	}
-	if facilityID == "ZHN" {
-		return "hawaii"
-	}
-	return "conus"
+// hrrrIssued reports whether HRRR issues a grid covering the facility at t.
+func hrrrIssued(facility string, t time.Time) bool {
+	return t.Truncate(wx.AtmosInterval(facility)).Equal(t)
 }
 
 func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
@@ -76,7 +71,7 @@ func atmosIngestIntervals(metarTimes []time.Time, precip *wx.Manifest, facilitie
 	intervals := make(map[string][]util.TimeInterval)
 	for _, facility := range facilities {
 		if precipTimes, ok := precip.GetTimestamps(facility); ok {
-			if iv := wx.FullDataDays(metarTimes, precipTimes, nil); len(iv) > 0 {
+			if iv := wx.FullDataDays(metarTimes, precipTimes); len(iv) > 0 {
 				intervals[facility] = iv
 			}
 		}
@@ -189,15 +184,8 @@ func ingestHRRR(sb StorageBackend) error {
 				continue
 			}
 
-			missing := facilitiesMissingAtmos(t, intervals, existing[t])
-
-			// Alaska HRRR data is only available every 3 hours (00Z, 03Z, 06Z, etc.)
-			// Filter out Alaska/Hawaii facilities if this time doesn't align with their schedule
-			if t.Hour()%3 != 0 {
-				missing = util.FilterSlice(missing, func(facility string) bool {
-					return facilityRegion(facility) == "conus"
-				})
-			}
+			missing := util.FilterSlice(facilitiesMissingAtmos(t, intervals, existing[t]),
+				func(facility string) bool { return hrrrIssued(facility, t) })
 
 			if len(missing) > 0 {
 				LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
@@ -231,7 +219,7 @@ func ingestHRRR(sb StorageBackend) error {
 			// Group missing facilities by region
 			byRegion := make(map[string][]string)
 			for _, facility := range tw.missing {
-				region := facilityRegion(facility)
+				region := wx.HRRRRegion(facility)
 				byRegion[region] = append(byRegion[region], facility)
 			}
 
@@ -956,18 +944,13 @@ func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend, fac wx.Fac
 	defer tfr.RemoveAll()
 	registerCleanup(tfr.RemoveAll)
 
-	// Collect all facilities by region
+	// Collect the facilities that have a grid at t by region
 	byRegion := make(map[string][]string)
 	for _, facility := range slices.Concat(fac.TRACONs, fac.ARTCCs) {
-		region := facilityRegion(facility)
-		byRegion[region] = append(byRegion[region], facility)
-	}
-
-	// Filter out Alaska/Hawaii facilities if time doesn't align with their 3-hour schedule
-	if t.Hour()%3 != 0 {
-		LogInfo("Time %s is not on 3-hour boundary - skipping Alaska/Hawaii facilities", t.Format(time.RFC3339))
-		delete(byRegion, "alaska")
-		delete(byRegion, "hawaii")
+		if hrrrIssued(facility, t) {
+			region := wx.HRRRRegion(facility)
+			byRegion[region] = append(byRegion[region], facility)
+		}
 	}
 
 	LogInfo("Facilities by region: conus=%d, alaska=%d, hawaii=%d",

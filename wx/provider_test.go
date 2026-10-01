@@ -103,11 +103,13 @@ func timesEvery(start, end time.Time, step time.Duration, gapStart, gapEnd time.
 func TestFacilityTimeIntervalsRequireRadar(t *testing.T) {
 	day := func(d int) time.Time { return time.Date(2026, time.January, d, 0, 0, 0, 0, time.UTC) }
 
-	// Atmos covers January 1-3 for both facilities. P31's radar has a
-	// two-hour gap on the 2nd; ZJX's radar doesn't start until the 3rd.
+	// Atmos covers January 1-3 for each facility; A11's, from the Alaska
+	// HRRR, comes every three hours. P31's radar has a two-hour gap on the
+	// 2nd; ZJX's radar doesn't start until the 3rd.
 	atmos, err := MakeManifestFromMap(map[string][]time.Time{
 		"P31": timesEvery(day(1), day(4), time.Hour, time.Time{}, time.Time{}),
 		"ZJX": timesEvery(day(1), day(4), time.Hour, time.Time{}, time.Time{}),
+		"A11": timesEvery(day(1), day(4), 3*time.Hour, time.Time{}, time.Time{}),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -116,6 +118,7 @@ func TestFacilityTimeIntervalsRequireRadar(t *testing.T) {
 		"P31": timesEvery(day(1), day(4), 5*time.Minute, day(2).Add(10*time.Hour), day(2).Add(12*time.Hour)),
 		"ZJX": timesEvery(day(3), day(4), 5*time.Minute, time.Time{}, time.Time{}),
 		"HNL": timesEvery(day(1), day(3), 5*time.Minute, time.Time{}, time.Time{}),
+		"A11": timesEvery(day(1), day(4), 5*time.Minute, time.Time{}, time.Time{}),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -128,6 +131,7 @@ func TestFacilityTimeIntervalsRequireRadar(t *testing.T) {
 		{"P31", []util.TimeInterval{{day(1), day(2)}, {day(3), day(4)}}},
 		{"ZJX", []util.TimeInterval{{day(3), day(4)}}},
 		{"HNL", []util.TimeInterval{{day(1), day(3)}}}, // radar but no atmos
+		{"A11", []util.TimeInterval{{day(1), day(4)}}},
 		{"ZZZ", nil},
 	} {
 		if got := facilityTimeIntervals(atmos, precip, tc.facility); !slices.EqualFunc(got, tc.want,
