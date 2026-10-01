@@ -6,6 +6,7 @@ package eram
 
 import (
 	"fmt"
+	"github.com/mmp/vice/platform"
 	"slices"
 
 	"github.com/mmp/vice/renderer"
@@ -120,27 +121,22 @@ func nexradLevelLabel(level int) string {
 	return fmt.Sprintf("%d", level)
 }
 
-func handleNexradLevelClick(ep *Scope, pref *int) {
-	mouse := toolbarDrawState.mouse
-	if mouse == nil {
-		return
-	}
-
-	idx := max(0, slices.Index(nexradLevelCycle, *pref))
-
-	switch {
-	case ep.mousePrimaryClicked(mouse): // drop a level
-		if idx+1 < len(nexradLevelCycle) {
-			idx++
-		} else {
-			ep.SetTemporaryCursor("EramInvalidSelect", 0.5, "")
+// clickNexradLevel drops the lowest displayed NEXRAD level on a left click
+// and adds one back on a middle click.
+func clickNexradLevel(ep *Scope, c toolbarClick) error {
+	ps := ep.currentPrefs()
+	idx := max(0, slices.Index(nexradLevelCycle, ps.NexradLevel))
+	if c.clicked[platform.MouseButtonTertiary] {
+		if idx == 0 {
+			return errToolbarLimit
 		}
-	case ep.mouseTertiaryClicked(mouse): // add a level back
-		if idx > 0 {
-			idx--
-		} else {
-			ep.SetTemporaryCursor("EramInvalidEnter", 0.5, "")
+		idx--
+	} else {
+		if idx+1 == len(nexradLevelCycle) {
+			return errToolbarLimit
 		}
+		idx++
 	}
-	*pref = nexradLevelCycle[idx]
+	ps.NexradLevel = nexradLevelCycle[idx]
+	return nil
 }

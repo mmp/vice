@@ -11,7 +11,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
@@ -417,13 +416,10 @@ func TestFDBLeaderLengthAppliesToAllTracks(t *testing.T) {
 		},
 	}
 
-	saved := toolbarDrawState.mouse
-	t.Cleanup(func() { toolbarDrawState.mouse = saved })
-	toolbarDrawState.mouse = &platform.MouseState{}
-	toolbarDrawState.mouse.Clicked[platform.MouseButtonTertiary] = true
-
 	want := ep.currentPrefs().FDBLdrLength + 1
-	ep.handleFDBLeaderClick()
+	if err := clickFDBLeader(ep, tertiaryClick()); err != nil {
+		t.Fatal(err)
+	}
 	for callsign, state := range ep.TrackState {
 		if got := ep.leaderLineLength(state); got != want {
 			t.Errorf("%s: got leader line length %d, want %d", callsign, got, want)

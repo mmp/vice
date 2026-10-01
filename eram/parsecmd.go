@@ -101,7 +101,6 @@ var initCommandsOnce sync.Once
 func InitCommands() {
 	initCommandsOnce.Do(func() {
 		registerOpsCommands()
-		toolbarDrawState.mouseYetReleased = true
 	})
 }
 

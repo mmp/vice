@@ -53,14 +53,16 @@ type (
 	scrollPalette struct {
 		background, border, arrow renderer.RGB
 	}
+	// toolbarPalette colors the toolbar buttons by their kind; see
+	// toolbarButtonKind.
 	toolbarPalette struct {
-		background, submenuBackground                        renderer.RGB
-		button, tearoffButton, tearoffDisabled, activeButton renderer.RGB
-		text                                                 renderer.RGB
-		unsupportedButton, disabledButton                    renderer.RGB
-		outline, hoveredOutline                              renderer.RGB
-		greenButton, grayButton, blackButton                 renderer.RGB
-		vectorGreen, deleteTearoff                           renderer.RGB
+		background, submenuBackground renderer.RGB
+		menuButton, menuOpen          renderer.RGB
+		toggleButton, toggleOn        renderer.RGB
+		incDecButton                  renderer.RGB
+		commandButton, commandActive  renderer.RGB
+		tearoffBar, tearoffBarTorn    renderer.RGB
+		text, outline, hoveredOutline renderer.RGB
 	}
 	badgePalette struct {
 		fill, border renderer.RGB
@@ -153,20 +155,19 @@ var colors = struct {
 	toolbar: toolbarPalette{
 		background:        renderer.RGB{R: .78, G: .78, B: .78},
 		submenuBackground: renderer.RGB{R: .404, G: .404, B: .404},
-		button:            renderer.RGB{R: 0, G: 0, B: .867},
-		tearoffButton:     renderer.RGB{R: 1, G: 1, B: .576},
-		tearoffDisabled:   renderer.RGB{R: .7, G: .7, B: .7},
-		activeButton:      renderer.RGB{R: .906, G: .616, B: .6},
-		text:              renderer.RGB{R: .953, G: .953, B: .953},
-		unsupportedButton: renderer.RGB{R: .4, G: .4, B: .4},
-		disabledButton:    renderer.RGB{R: 0, G: .173 / 2, B: 0},
-		outline:           renderer.RGB{R: .38, G: .38, B: .38},
-		hoveredOutline:    renderer.RGB{R: .953, G: .953, B: .953},
-		greenButton:       renderer.RGB{R: 0, G: .804, B: 0},
-		grayButton:        renderer.RGB{R: .78, G: .78, B: .78},
-		blackButton:       renderer.RGB{R: 0, G: 0, B: 0},
-		vectorGreen:       renderer.RGB{R: 0, G: .82, B: 0},
-		deleteTearoff:     renderer.RGB{R: 0, G: .804, B: .843},
+		menuButton:        renderer.RGB{R: 0, G: 0, B: .867},
+		// The active colors are CRC's, at the same brightness as the blue.
+		menuOpen:       renderer.RGB{R: .556, G: .141, B: .141},
+		toggleButton:   renderer.RGB{R: 0, G: 0, B: 0},
+		toggleOn:       renderer.RGB{R: .78, G: .78, B: .78},
+		incDecButton:   renderer.RGB{R: 0, G: .804, B: 0},
+		commandButton:  renderer.RGB{R: 0, G: .804, B: .843},
+		commandActive:  renderer.RGB{R: .867, G: .429, B: .267},
+		tearoffBar:     renderer.RGB{R: 1, G: 1, B: .576},
+		tearoffBarTorn: renderer.RGB{R: .7, G: .7, B: .7},
+		text:           renderer.RGB{R: .953, G: .953, B: .953},
+		outline:        renderer.RGB{R: .38, G: .38, B: .38},
+		hoveredOutline: renderer.RGB{R: .953, G: .953, B: .953},
 	},
 	badge: badgePalette{
 		fill:   renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0},
@@ -256,10 +257,14 @@ type Scope struct {
 	feedbackArea feedbackMessage `json:"-"`
 	Input        inputText       `json:"-"`
 
-	activeToolbarMenu int  `json:"-"`
-	toolbarVisible    bool `json:"-"`
+	toolbarVisible bool `json:"-"`
 
-	altLimits altitudeLimitsEntry
+	toolbar    toolbarState
+	holdRepeat pressRepeat // paces held toolbar buttons and popup menu rows
+	altLimits  altitudeLimitsEntry
+	// viewExtents collects the views drawn in the frame, for the toolbar
+	// engine to yield to the next frame.
+	viewExtents []math.Extent2D
 
 	// Short-term conflict alert state; recomputed every caUpdateInterval.
 	CAPairs            []CAPair  `json:"-"`
@@ -272,16 +277,6 @@ type Scope struct {
 	// Scope-wide drag-to-reposition state. Only one view can be repositioned
 	// at a time; the active view is identified by its View.ID.
 	viewRepo ViewRepoState `json:"-"`
-
-	tearoffInProgress        string                   `json:"-"` // Button name being torn off
-	tearoffOrigin            [2]float32               // Where the button sat when the drag started
-	tearoffDragOffset        [2]float32               `json:"-"` // Mouse offset from button corner
-	deleteTearoffMode        bool                     `json:"-"` // Delete mode active
-	tearoffMenus             map[string]int           `json:"-"` // torn-off menu button name -> menu state
-	tearoffMenuOpened        map[string]time.Time     `json:"-"` // debounce open clicks per menu
-	tearoffMenuLightToolbar  map[string][4][2]float32 `json:"-"` // cached menu backgrounds for tearoffs
-	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
-	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
 
 	VelocityTime int // 0, 1, 4, or 8 minutes
 
@@ -552,18 +547,10 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
-	// Handle button tearoff placement BEFORE drawing toolbar (so placement click isn't consumed)
-	ep.handleTearoffPlacement(ctx)
-	// The altitude limits sub-entry box is drawn over the scope and the
-	// toolbar both, so it claims its clicks before anything underneath it
-	// gets a chance at them. A tearoff being dragged outranks it.
-	ep.handleAltitudeLimitsInput(ctx)
-	ep.handleTornOffButtonsInput(ctx)
+	ep.handleToolbarInput(ctx)
 	scopeExtent := ctx.DrawExtent
 	if ps.DisplayToolbar {
-		scale := ep.toolbarButtonScale(ctx)
-		sz := buttonSize(buttonFull, scale)
-		scopeExtent.P1[1] -= sz[1]
+		scopeExtent.P1[1] -= toolbarFaceHeight
 	}
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
@@ -581,11 +568,10 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 
 	// Draw toolbar and menus on top of the scope
 	cb.SetScissorBounds(ctx.DrawExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	ep.drawtoolbar(ctx, transforms, cb)
+	ep.drawToolbar(ctx, transforms, cb)
 
 	// Draw floating windows after toolbar so they render on top and appear in the same
 	// frame the toolbar button is clicked (toolbar sets Visible=true before this runs).
-	ep.startDrawCommandInput(ctx, transforms, cb)
 	ep.drawResponseArea(ctx, transforms, cb)
 	ep.drawMessageCompositionArea(ctx, transforms, cb)
 	ep.drawAltimSetView(ctx, transforms, cb)
@@ -599,13 +585,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 		ep.popup.draw(ep, ctx, transforms, cb)
 	}
 
-	// Tear-offs
-	ep.drawTornOffButtons(ctx, transforms, cb)
-	ep.drawTearoffMenus(ctx, transforms, cb)
-	ep.drawTearoffPreview(ctx, transforms, cb)
-
-	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
-	ep.drawMasterMenu(ctx, cb)
+	ep.drawTearoffs(ctx, transforms, cb)
 	if ctx.Mouse != nil {
 		mouseOverToolbar := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.DrawExtent.P0))
 		if !mouseOverToolbar || !ep.toolbarVisible {
@@ -948,15 +928,7 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 				ep.popup = nil
 				break
 			}
-			if ep.tearoffInProgress != "" || ep.deleteTearoffMode {
-				if ep.tearoffInProgress != "" {
-					ep.tearoffInProgress = ""
-					ctx.Platform.EndCaptureMouse()
-				}
-				if ep.deleteTearoffMode {
-					ep.deleteTearoffMode = false
-					ep.ClearTemporaryCursor()
-				}
+			if ep.cancelToolbarGesture(ctx) {
 				break
 			}
 			// Cancel any in-progress drag.

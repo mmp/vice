@@ -243,10 +243,31 @@ func makeIntMenuItem[T ~int](ep *Scope, v *T, label string, min, max, step int) 
 		Label:   fmt.Sprintf("%s %d", label, *v),
 		BgColor: colors.popup.backgroundGreen,
 		Color:   colors.popup.text,
-		OnClick: func(_ MenuClickType) bool {
-			handleClick(ep, v, min, max, step)
+		OnClick: func(click MenuClickType) bool {
+			adjustMenuValue(ep, v, click, min, max, step)
 			return false
 		},
+	}
+}
+
+// adjustMenuValue lowers or raises a menu row's value as a click on an
+// increment/decrement toolbar button would, flashing the invalid cursor
+// past the value's limits.
+func adjustMenuValue[T ~int](ep *Scope, v *T, click MenuClickType, min, max, step int) {
+	var c toolbarClick
+	c.clicked[util.Select(click == MenuClickTertiary, platform.MouseButtonTertiary, platform.MouseButtonPrimary)] = true
+	if err := adjust(v, c, min, max, step); err != nil {
+		ep.reportClickAtLimit(c)
+	}
+}
+
+// closeViewPopup closes the popup menu opened from the given view, if it
+// is the one displayed.
+func (ep *Scope) closeViewPopup(viewID string) {
+	if vap, ok := ep.popup.(viewAnchoredPopup); ok {
+		if id, _, _ := vap.viewAnchor(); id == viewID {
+			ep.popup = nil
+		}
 	}
 }
 
@@ -609,17 +630,7 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 				}
 			}
 			if hitRow >= 0 {
-				now := time.Now()
-				fire := false
-				if toolbarDrawState.mouseYetReleased {
-					toolbarDrawState.mouseYetReleased = false
-					toolbarDrawState.lastHold = now.Add(500 * time.Millisecond)
-					fire = true
-				} else if now.Sub(toolbarDrawState.lastHold) >= holdDuration {
-					toolbarDrawState.lastHold = now
-					fire = true
-				}
-				if fire && cfg.Rows[hitRow].OnClick != nil {
+				if ep.holdRepeat.fire(time.Now()) && cfg.Rows[hitRow].OnClick != nil {
 					clickType := MenuClickPrimary
 					if tertiaryDown {
 						clickType = MenuClickTertiary

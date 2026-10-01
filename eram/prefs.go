@@ -213,8 +213,11 @@ type CommonPreferences struct {
 	// 23=Heavy+Extreme, 123=Moderate+Heavy+Extreme.
 	NexradLevel int
 
-	TornOffButtons        map[string][2]float32 // button name -> screen position
+	TornOffButtons        map[string][2]float32 // toolbar button id -> top left of its tear-off bar
 	MasterToolbarPosition [2]float32            // top-left position of the master toolbar button
+	// MasterToolbarRaised displays the main toolbar over the torn-off
+	// buttons and the views rather than under them.
+	MasterToolbarRaised bool
 }
 
 const (
@@ -516,6 +519,10 @@ func (p *Preferences) Upgrade(from, to int) {
 		// zero-valued, which would filter out all but the ground.
 		p.AltitudeLimits.Targets = sim.UnrestrictedAltitudeLimits
 		p.AltitudeLimits.LDBs = sim.UnrestrictedAltitudeLimits
+	}
+	if from < 99 {
+		// Torn-off buttons are now keyed by their toolbar buttons' ids.
+		p.TornOffButtons = make(map[string][2]float32)
 	}
 }
 

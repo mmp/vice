@@ -299,17 +299,12 @@ func addQuad(trid *renderer.ColoredTrianglesDrawBuilder, ex math.Extent2D, color
 }
 
 // clampViewPos clamps a view top-left so the whole window stays inside the
-// pane, leaving the top-toolbar buffer free when the toolbar is visible.
-// pos is the view's top-left in pane-local coords (y up).
+// pane. pos is the view's top-left in pane-local coords (y up).
 func (ep *Scope) clampViewPos(ctx *scope.Context, pos [2]float32, width, totalH float32) [2]float32 {
 	paneW := ctx.DrawExtent.Width()
 	paneH := ctx.DrawExtent.Height()
-	toolbarH := float32(0)
-	if ep.currentPrefs().DisplayToolbar {
-		toolbarH = buttonSize(buttonFull, ep.toolbarButtonScale(ctx))[1]
-	}
 	pos[0] = math.Clamp(pos[0], 0, max(0, paneW-width))
-	pos[1] = math.Clamp(pos[1], totalH, max(totalH, paneH-toolbarH))
+	pos[1] = math.Clamp(pos[1], totalH, max(totalH, paneH))
 	return pos
 }
 
@@ -516,6 +511,7 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 		P0: [2]float32{pos[0], pos[1] - totalH},
 		P1: [2]float32{pos[0] + width, pos[1]},
 	}
+	ep.viewExtents = append(ep.viewExtents, outer)
 	bodyOuter := math.Extent2D{
 		P0: outer.P0,
 		P1: [2]float32{outer.P1[0], outer.P1[1] - titleH},

@@ -137,8 +137,8 @@ func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tra
 		ep.makeToggleMenuItem(&ps.AltimSet.ShowBorder, "BORDER"),
 		ep.makeToggleMenuItem(&ps.AltimSet.ShowIndicators, "TEAROFF"),
 		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
-			OnClick: func(_ MenuClickType) bool {
-				handleClick(ep, &ps.AltimSet.Lines, 3, 24, 1)
+			OnClick: func(click MenuClickType) bool {
+				adjustMenuValue(ep, &ps.AltimSet.Lines, click, 3, 24, 1)
 				maxOffset := max(0, len(ep.AltimSetAirports)-ps.AltimSet.Lines)
 				ep.altimSetScroll.Offset = math.Clamp(ep.altimSetScroll.Offset, 0, maxOffset)
 				return false
@@ -273,21 +273,6 @@ func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms sco
 
 ///////////////////////////////////////////////////////////////////////////
 // MCA - Message Composition Area
-
-func (ep *Scope) drawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-}
-
-func (ep *Scope) startDrawCommandInput(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	toolbarDrawState.style = renderer.TextStyle{
-		Font:        ep.ERAMInputFont(),
-		Color:       colors.toolbar.text,
-		LineSpacing: 0,
-	}
-
-	if ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse) {
-		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
-	}
-}
 
 // drawMessageCompositionArea renders the MCA: a feedback box below an input
 // box (where inputH grows beyond 38px if wrapped input exceeds it). Both
@@ -616,8 +601,8 @@ func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 		ep.makeToggleMenuItem(&ps.WX.ShowBorder, "BORDER"),
 		ep.makeToggleMenuItem(&ps.WX.ShowIndicators, "TEAROFF"),
 		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
-			OnClick: func(_ MenuClickType) bool {
-				handleClick(ep, &ps.WX.Lines, 3, 24, 1)
+			OnClick: func(click MenuClickType) bool {
+				adjustMenuValue(ep, &ps.WX.Lines, click, 3, 24, 1)
 				maxOffset := max(0, len(ep.WXReportStations)-ps.WX.Lines)
 				ep.wxScroll.Offset = math.Clamp(ep.wxScroll.Offset, 0, maxOffset)
 				return false

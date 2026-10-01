@@ -330,9 +330,9 @@ func (c *crrPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 		makeIntMenuItem(ep, &ps.CRR.Bright, "BRIGHT", 0, 100, 1),
 		ep.makeToggleMenuItem(&ps.CRR.ListMode, "LIST"),
 		{Label: fmt.Sprintf("COLOR %d", ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
-			Color: CRRGreen.BrightRGB(90), OnClick: func(_ MenuClickType) bool {
+			Color: CRRGreen.BrightRGB(90), OnClick: func(click MenuClickType) bool {
 				v := ps.CRR.ColorBright[ps.CRR.SelectedColor]
-				handleClick(ep, &v, 0, 100, 1)
+				adjustMenuValue(ep, &v, click, 0, 100, 1)
 				ps.CRR.ColorBright[ps.CRR.SelectedColor] = v
 				return false
 			}},
