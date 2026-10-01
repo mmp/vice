@@ -41,6 +41,28 @@ var (
 	}
 )
 
+// The bundled manifests are loaded on first use. The atmos manifest lists the
+// times of both the bundled averaged profiles and the full grids in GCS, which
+// are the same: each profile is the average of one grid. The precip manifest
+// lists the radar images in GCS.
+var (
+	bundledAtmosManifest  = sync.OnceValues(func() (*Manifest, error) { return loadBundledManifest("atmos") })
+	bundledPrecipManifest = sync.OnceValues(func() (*Manifest, error) { return loadBundledManifest("precip") })
+)
+
+func loadBundledManifest(prefix string) (*Manifest, error) {
+	path := "wx/" + ManifestPath(prefix)
+	f, err := fs.ReadFile(util.GetResourcesFS(), path)
+	if err != nil {
+		return nil, err
+	}
+	m, err := LoadManifest(bytes.NewReader(f))
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+	return m, nil
+}
+
 var wxInitOnce sync.Once
 
 func Init() {
@@ -74,15 +96,9 @@ func initResources() {
 	go func() {
 		defer close(atmosCache.done)
 		atmosCache.timeInt = make(map[string][]util.TimeInterval)
-		path := "wx/" + ManifestPath("atmos")
-		f, err := fs.ReadFile(util.GetResourcesFS(), path)
+		manifest, err := bundledAtmosManifest()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s: %v\n", path, err)
-			return
-		}
-		manifest, err := LoadManifest(bytes.NewReader(f))
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s: %v\n", path, err)
+			fmt.Fprintf(os.Stderr, "%v\n", err)
 			return
 		}
 

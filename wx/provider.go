@@ -92,7 +92,7 @@ func MakeProvider(serverAddress string, lg *log.Logger) *Provider {
 			lg.Infof("Using GCS weather provider")
 			return newProvider(lg, backend)
 		} else {
-			lg.Warnf("Have credentials but unable to initialize GCS weather provider: %v", err)
+			lg.Warnf("Have credentials but unable to read the weather manifests: %v", err)
 			return newProvider(lg, nil)
 		}
 	} else if backend, err := makeRPCBackend(serverAddress, lg); err == nil {
@@ -217,38 +217,24 @@ type gcsBackend struct {
 	atmosManifest  *Manifest
 }
 
+// makeGCSBackend makes a backend that finds the objects in GCS through the
+// bundled manifests, so making it doesn't touch the network.
 func makeGCSBackend(store ObjectStore, lg *log.Logger) (*gcsBackend, error) {
-	g := &gcsBackend{
-		lg:        lg,
-		gcsClient: store,
-	}
-
-	// Load the manifests synchronously before selecting GCS as the active
-	// provider. These may come from the local cache, so this validates that
-	// the provider has usable manifest data, not necessarily that the network
-	// is currently reachable.
-	var err error
-	if g.precipManifest, err = g.loadManifest("precip"); err != nil {
+	precip, err := bundledPrecipManifest()
+	if err != nil {
 		return nil, err
 	}
-	if g.atmosManifest, err = g.loadManifest("atmos"); err != nil {
+	atmos, err := bundledAtmosManifest()
+	if err != nil {
 		return nil, err
 	}
-	return g, nil
-}
 
-func (g *gcsBackend) loadManifest(prefix string) (*Manifest, error) {
-	var raw RawManifest
-	path := ManifestPath(prefix)
-
-	if t, err := util.CacheRetrieveObject("wx/"+path, &raw); err == nil && time.Since(t) < 6*time.Hour {
-		g.lg.Infof("%s: retrieved from cache", path)
-	} else if err := g.getObject(path, &raw); err == nil {
-		_ = util.CacheStoreObject("wx/"+path, raw)
-	} else {
-		return nil, err
-	}
-	return MakeManifest(raw), nil
+	return &gcsBackend{
+		lg:             lg,
+		gcsClient:      store,
+		precipManifest: precip,
+		atmosManifest:  atmos,
+	}, nil
 }
 
 func (g *gcsBackend) getObject(path string, obj any) error {
