@@ -3,12 +3,14 @@
 # jobs, in dependency order:
 #   1. metar and tfr, as a single task (atmos needs the METAR manifest)
 #   2. precip, fanned out across tasks that shard scrape/WX by object hash
-#   3. precip manifest (atmos needs it to know which hours have precip)
+#   3. precip manifest (atmos needs it to know which hours have precip for
+#      each facility)
 #   4. atmos, fanned out across tasks that shard the missing hours
 #   5. atmos-avg repair, for any grid whose average didn't get written
-#   6. atmos manifest
-#   7. atmos-series rollup, which is what packaging reads
-# and then package resources/wx locally from the results.
+#   6. atmos-series rollup, which is what packaging reads
+# and then package resources/wx locally from the results. The atmos manifest
+# that vice uses is the one packaging writes from the series: its times are
+# the grids' times, since each average is of one grid.
 # Requires a gcloud recent enough to support --tasks/--args overrides on
 # "gcloud run jobs execute". Run only one of these at a time.
 set -ex
@@ -60,9 +62,6 @@ gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wai
 
 gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wait \
     --tasks=$AVG_TASKS --args=atmosavg
-
-gcloud run jobs execute wxingest-atmos --region=$REGION --project=$PROJECT --wait \
-    --tasks=1 --args=-manifests-only,atmos
 
 # Gather each facility's hourly averages into one object. Reading the hourly
 # objects individually is fine in-region and hopeless from outside it: there

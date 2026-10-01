@@ -68,26 +68,40 @@ func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
 	return times, nil
 }
 
-func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
-	var rawManifest wx.RawManifest
-	if err := sb.ReadObject(wx.ManifestPath("precip"), &rawManifest); err != nil {
-		return nil, err
+// atmosIngestIntervals returns the days to ingest atmospheric data for each
+// facility: those with complete METAR and complete radar for the facility.
+// Sims can only start on days with both, so a facility gets nothing for the
+// days before its radar begins.
+func atmosIngestIntervals(metarTimes []time.Time, precip *wx.Manifest, facilities []string) map[string][]util.TimeInterval {
+	intervals := make(map[string][]util.TimeInterval)
+	for _, facility := range facilities {
+		if precipTimes, ok := precip.GetTimestamps(facility); ok {
+			if iv := wx.FullDataDays(metarTimes, precipTimes, nil); len(iv) > 0 {
+				intervals[facility] = iv
+			}
+		}
 	}
+	return intervals
+}
 
-	manifest := wx.MakeManifest(rawManifest)
-
-	// All timestamps from all TRACONs, then sort and remove duplicates
-	allTimes := manifest.GetAllTimestamps()
-	slices.SortFunc(allTimes, func(a, b time.Time) int { return a.Compare(b) })
-	allTimes = slices.CompactFunc(allTimes, func(a, b time.Time) bool { return a.Equal(b) })
-
-	return allTimes, nil
+// facilitiesMissingAtmos returns the facilities whose ingest intervals
+// include t but which don't have atmospheric data for it in ingested.
+func facilitiesMissingAtmos(t time.Time, intervals map[string][]util.TimeInterval, ingested []string) []string {
+	var missing []string
+	for _, facility := range util.SortedMapKeys(intervals) {
+		if slices.ContainsFunc(intervals[facility], func(iv util.TimeInterval) bool { return iv.Contains(t) }) &&
+			!slices.Contains(ingested, facility) {
+			missing = append(missing, facility)
+		}
+	}
+	return missing
 }
 
 // NOAA high-resolution rapid refresh: https://rapidrefresh.noaa.gov/hrrr/
 func ingestHRRR(sb StorageBackend) error {
 	if *manifestsOnly {
-		return generateAtmosManifest(sb)
+		// The atmos data's manifest is the one wxpackage writes.
+		return nil
 	}
 
 	// Read this before the chdir below, which would leave a relative path
@@ -113,24 +127,38 @@ func ingestHRRR(sb StorageBackend) error {
 		return ingestHRRRSingleTime(sb, hrrrsb, fac)
 	}
 
-	// Get available METAR and precip data times to determine valid intervals
+	// Each facility's atmos is ingested for the days that have METAR and
+	// radar for it.
 	metarTimes, err := getAvailableMETARTimes(sb)
 	if err != nil {
 		return fmt.Errorf("failed to get METAR times: %w", err)
 	}
 
-	precipTimes, err := getAvailablePrecipTimes(sb)
-	if err != nil {
-		return fmt.Errorf("failed to get precip times: %w", err)
+	var rawPrecip wx.RawManifest
+	if err := sb.ReadObject(wx.ManifestPath("precip"), &rawPrecip); err != nil {
+		return fmt.Errorf("failed to read precip manifest: %w", err)
 	}
 
-	// Find complete day intervals where both METAR and precip data are available
-	validIntervals := wx.FullDataDays(metarTimes, precipTimes, nil)
-	if len(validIntervals) == 0 {
-		return errors.New("no valid time intervals with complete METAR and precip data")
+	intervals := atmosIngestIntervals(metarTimes, wx.MakeManifest(rawPrecip), slices.Concat(fac.TRACONs, fac.ARTCCs))
+	if len(intervals) == 0 {
+		return errors.New("no facility has complete days of METAR and precip data")
 	}
-	for _, iv := range validIntervals {
-		LogInfo("Time interval with valid METAR/precip: %s - %s", iv[0], iv[1])
+	var start, end time.Time
+	for facility, ivs := range intervals {
+		first, last := ivs[0].Start(), ivs[len(ivs)-1].End()
+		if start.IsZero() || first.Before(start) {
+			start = first
+		}
+		if last.After(end) {
+			end = last
+		}
+		LogInfo("%s: %d intervals with METAR/precip from %s to %s", facility, len(ivs),
+			first.Format(time.DateOnly), last.Format(time.DateOnly))
+	}
+	for _, facility := range slices.Concat(fac.TRACONs, fac.ARTCCs) {
+		if _, ok := intervals[facility]; !ok {
+			LogError("%s: no complete days of METAR and precip data", facility)
+		}
 	}
 
 	tfr := util.MakeTempFileRegistry(nil)
@@ -148,63 +176,39 @@ func ingestHRRR(sb StorageBackend) error {
 	eg.Go(func() error {
 		defer close(tCh)
 
-		// Process all hours within valid day intervals
-		for _, interval := range validIntervals {
-			start := interval[0].UTC()
-			end := interval[1].UTC()
+		// Process every hour in some facility's intervals (including the
+		// 0000Z at the end of each).
+		for t := start.UTC(); !t.After(end); t = t.Add(time.Hour) {
+			// Stop once we get close to the current time
+			if time.Since(t) <= 3*time.Hour {
+				break
+			}
 
-			// Iterate through each hour in the interval (including the
-			// 0000Z at the end).
-			for t := start; !t.After(end); t = t.Add(time.Hour) {
-				// Stop once we get close to the current time
-				if time.Since(t) <= 3*time.Hour {
-					break
+			// Hours are partitioned across Cloud Run job tasks.
+			if !shardOwns(t.Format(time.RFC3339)) {
+				continue
+			}
+
+			missing := facilitiesMissingAtmos(t, intervals, existing[t])
+
+			// Alaska HRRR data is only available every 3 hours (00Z, 03Z, 06Z, etc.)
+			// Filter out Alaska/Hawaii facilities if this time doesn't align with their schedule
+			if t.Hour()%3 != 0 {
+				missing = util.FilterSlice(missing, func(facility string) bool {
+					return facilityRegion(facility) == "conus"
+				})
+			}
+
+			if len(missing) > 0 {
+				LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
+
+				select {
+				case tCh <- timeWithMissing{t: t, missing: missing}:
+				case <-ctx.Done():
+					return ctx.Err()
 				}
-
-				// Hours are partitioned across Cloud Run job tasks.
-				if !shardOwns(t.Format(time.RFC3339)) {
-					continue
-				}
-
-				// Check if we already have data for all facilities at this time
-				facilities := existing[t] // may be empty
-				slices.Sort(facilities)
-				var missing []string
-				for _, tracon := range fac.TRACONs {
-					if !slices.Contains(facilities, tracon) {
-						missing = append(missing, tracon)
-					}
-				}
-				// ARTCC precip data is only available starting Feb 1, 2026;
-				// skip ARTCC atmos ingest before then.
-				artccAtmosStart := time.Date(2026, time.February, 1, 0, 0, 0, 0, time.UTC)
-				if !t.Before(artccAtmosStart) {
-					for _, artcc := range fac.ARTCCs {
-						if !slices.Contains(facilities, artcc) {
-							missing = append(missing, artcc)
-						}
-					}
-				}
-
-				// Alaska HRRR data is only available every 3 hours (00Z, 03Z, 06Z, etc.)
-				// Filter out Alaska/Hawaii facilities if this time doesn't align with their schedule
-				if t.Hour()%3 != 0 {
-					missing = util.FilterSlice(missing, func(facility string) bool {
-						return facilityRegion(facility) == "conus"
-					})
-				}
-
-				if len(missing) > 0 {
-					LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
-
-					select {
-					case tCh <- timeWithMissing{t: t, missing: missing}:
-					case <-ctx.Done():
-						return ctx.Err()
-					}
-					if *hrrrQuick {
-						return nil
-					}
+				if *hrrrQuick {
+					return nil
 				}
 			}
 		}
@@ -267,29 +271,7 @@ func ingestHRRR(sb StorageBackend) error {
 		mainTB.MergeStats(hrrrsb)
 	}
 
-	if inCloudRunJob() {
-		// Manifest generation is deferred to a single -manifests-only
-		// execution after all of the job's tasks complete.
-		return nil
-	}
-
-	return generateAtmosManifest(sb)
-}
-
-func generateAtmosManifest(sb StorageBackend) error {
-	LogInfo("Updating consolidated atmos manifest")
-
-	paths, err := sb.List("atmos/")
-	if err != nil {
-		return err
-	}
-
-	manifest, err := wx.GenerateManifestWithPrefix(paths, "atmos")
-	if err != nil {
-		return err
-	}
-
-	return storeManifest(sb, manifest, wx.ManifestPath("atmos"), "atmos-manifest.msgpack.zst")
+	return nil
 }
 
 // rollupAtmosSeries gathers each facility's hourly averaged profiles into a

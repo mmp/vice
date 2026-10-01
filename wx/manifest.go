@@ -182,19 +182,6 @@ func (m *Manifest) TotalEntries() int {
 	return total
 }
 
-// GetAllTimestamps returns all timestamps from all facilities in the manifest.
-// The timestamps are collected in an unspecified order.
-func (m *Manifest) GetAllTimestamps() []time.Time {
-	var allTimes []time.Time
-	for _, facility := range m.Facilities() {
-		times, ok := m.GetTimestamps(facility)
-		if ok {
-			allTimes = append(allTimes, times...)
-		}
-	}
-	return allTimes
-}
-
 // ParseWeatherObjectPath extracts the facility identifier and timestamp
 // from a weather data object path.
 // Expected format: "FACILITY/2025-08-06T03:00:00Z.msgpack.zst"
@@ -213,53 +200,6 @@ func ParseWeatherObjectPath(relativePath string) (identifier string, timestamp i
 	}
 
 	return identifier, t.Unix(), nil
-}
-
-// GenerateManifest creates a manifest from a map of object paths to their sizes/timestamps.
-// The pathParser function extracts the identifier and timestamp from each path.
-// Timestamps are sorted, delta-encoded, and compressed for each identifier.
-func GenerateManifest(paths map[string]int64, pathParser func(string) (string, int64, error)) (*Manifest, error) {
-	// Collect timestamps per identifier
-	timestampsByID := make(map[string][]int64)
-
-	for path := range paths {
-		// Skip manifest files themselves
-		if strings.Contains(path, "manifest") {
-			continue
-		}
-
-		identifier, timestamp, err := pathParser(path)
-		if err != nil {
-			// Skip unparseable paths
-			continue
-		}
-
-		timestampsByID[identifier] = append(timestampsByID[identifier], timestamp)
-	}
-
-	// Sort, compress timestamps for each identifier
-	manifest := NewManifest()
-	for identifier, times := range timestampsByID {
-		slices.Sort(times)
-		compressed, err := compressTimestamps(times)
-		if err != nil {
-			return nil, fmt.Errorf("failed to compress timestamps for %s: %w", identifier, err)
-		}
-		manifest.data[identifier] = compressed
-	}
-
-	return manifest, nil
-}
-
-// GenerateManifestWithPrefix is a convenience function that generates a manifest
-// from paths that include a prefix. The prefix is stripped before parsing.
-// This is commonly used with storage backends that return full paths.
-func GenerateManifestWithPrefix(paths map[string]int64, prefix string) (*Manifest, error) {
-	return GenerateManifest(paths, func(path string) (string, int64, error) {
-		// Remove prefix
-		relativePath := strings.TrimPrefix(path, prefix+"/")
-		return ParseWeatherObjectPath(relativePath)
-	})
 }
 
 // All paths returned here flow into fs.FS lookups (which require "/") or
