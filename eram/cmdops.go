@@ -201,7 +201,7 @@ func registerOpsCommands() {
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
 
-	// ? - Custom command to print aircraft state to stdout
+	// ? - Custom command to print aircraft state to stdout and copy it to the clipboard
 	registerCommand(CommandModeNone, "?[TRACK]|? [TRACK]", handlePrintAircraftState)
 
 	// Commands available in draw route mode
@@ -1075,7 +1075,9 @@ func handlePrintAircraftState(ep *Scope, ctx *scope.Context, trk *sim.Track) {
 			slog.Any("err", err))
 		return
 	}
-	fmt.Println(ads.Spew + "\n\n\n" + godump.DumpStr(ep.TrackState[trk.ADSBCallsign]))
+	s := ads.Spew + "\n\n\n" + godump.DumpStr(ep.TrackState[trk.ADSBCallsign])
+	fmt.Println(s)
+	ctx.Platform.GetClipboard().SetClipboard(util.StripANSI(s))
 }
 
 ///////////////////////////////////////////////////////////////////////////

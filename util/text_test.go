@@ -165,6 +165,23 @@ func TestCutAtSpace(t *testing.T) {
 	}
 }
 
+func TestStripANSI(t *testing.T) {
+	tests := []struct {
+		input, want string
+	}{
+		{"plain", "plain"},
+		{"\x1b[90m#*sim.Aircraft\x1b[0m {", "#*sim.Aircraft {"},
+		{"\x1b[33m+\x1b[0mSquawk => \x1b[1;38;5;113m3556\x1b[0m", "+Squawk => 3556"},
+		{"", ""},
+	}
+
+	for _, tc := range tests {
+		if got := StripANSI(tc.input); got != tc.want {
+			t.Errorf("StripANSI(%q): got %q, want %q", tc.input, got, tc.want)
+		}
+	}
+}
+
 func TestEditDistance(t *testing.T) {
 	type test struct {
 		input     string

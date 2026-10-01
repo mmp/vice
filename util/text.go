@@ -11,6 +11,7 @@ import (
 	"hash/fnv"
 	"io"
 	"iter"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -327,4 +328,11 @@ func CutAtSpace(s string) (string, string) {
 		return s[:idx], s[idx:]
 	}
 	return s, ""
+}
+
+var ansiEscapeRE = regexp.MustCompile("\x1b\\[[0-9;]*m")
+
+// StripANSI removes ANSI color escape sequences from s.
+func StripANSI(s string) string {
+	return ansiEscapeRE.ReplaceAllString(s, "")
 }

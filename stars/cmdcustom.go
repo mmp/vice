@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
 	"github.com/goforj/godump"
@@ -56,15 +57,16 @@ func registerCustomCommands() {
 		return CommandStatus{Clear: ClearInput}
 	})
 
-	// ?: print aircraft state
+	// ?: print aircraft state and copy it to the clipboard
 	registerCommand(CommandModeNone, "?[SLEW]", func(sp *Scope, ctx *scope.Context, trk *sim.Track) {
 		ads, err := ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign)
 		if err != nil {
 			ctx.Lg.Error("print aircraft", slog.String("callsign", string(trk.ADSBCallsign)),
 				slog.Any("err", err))
 		} else {
-			state := sp.TrackState[trk.ADSBCallsign]
-			fmt.Println(ads.Spew + "\n\n\n" + godump.DumpStr(state))
+			s := ads.Spew + "\n\n\n" + godump.DumpStr(sp.TrackState[trk.ADSBCallsign])
+			fmt.Println(s)
+			ctx.Platform.GetClipboard().SetClipboard(util.StripANSI(s))
 		}
 	})
 
