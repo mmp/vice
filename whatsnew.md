@@ -6,8 +6,8 @@
 - Flight model
   - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
   - Traffic calls ending "has you in sight and will maintain visual separation" (`TRAFFIC/INSIGHT`) now get just "roger", without a callsign
-  - Landmarks on charted visual approaches can be called (`RP/3/3`, or by voice: "the Dumbarton bridge is at your 3 o'clock, 3 miles, report in sight").
-  - Vectored aircraft can be told to rejoin their route from their heading: "join Victor 1" (`JV1`) and "resume the SID/STAR" (`RSID`, `RSTAR`). "Heading 120 to join" (`H120/J`) revises the heading without repeating the join.
+  - Aircraft can be told to join an airway: "join Victor 1" (`JV1`) (and verbally)
+  - Aircraft can be told to rejoin a SID or STAR (`RSID`, `RSTAR`) (and verbally)
   - Fixed vectored aircraft given "intercept localizer" then flying procedure turns after being cleared for the approach
   - Fixed multiple bugs with airspeed handling and altitude/temperature
   - VFRs are better at scud-running under B and C airspace shelves
@@ -21,6 +21,7 @@
   - HSF indicator is now on FDB line 2 and can be clicked to toggle HSF data
   - Show `-` rather than `+` in the FDB when below the datablock altitude
   - `QU` now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when `QU` was used
+  - Fix bugs with overly-cautious CAs for aircraft controlled by virtual controllers
 - Facility engineering
   - Added `"historical_scenario": true` to allow manually authored retired STAR arrivals without checking them against current FAA procedures (Logan S)
   - ERAM altitude limits can be specified per-controller and/or per-scenario
