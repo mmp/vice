@@ -6051,8 +6051,7 @@
           "initial_speed": 280,
           "expect_approach": "I12R",
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6065,8 +6064,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6079,8 +6077,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6093,8 +6090,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6113,8 +6109,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6127,8 +6122,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6147,8 +6141,7 @@
           "initial_altitude": 15000,
           "initial_speed": 280,
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6170,8 +6163,7 @@
           "initial_speed": 280,
           "expect_approach": "I12R",
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6193,8 +6185,7 @@
           "initial_speed": 280,
           "expect_approach": "I30R",
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6208,8 +6199,7 @@
           "initial_speed": 250,
           "airports": ["KMSP"],
           "aircraft": ["prop"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6223,8 +6213,7 @@
           "initial_speed": 250,
           "airports": ["KMSP"],
           "aircraft": ["prop"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     },
@@ -6238,8 +6227,7 @@
           "initial_speed": 195,
           "aircraft": ["prop"],
           "airports": ["KMSP"],
-          "airlines": {
-          }
+          "airlines": {}
         }
       ]
     }
@@ -6529,35 +6517,15 @@
         }
       ],
       "airspace": {
-        "1I": [
-          "NFEEDER_12S"
-        ],
-        "1H": [
-          "SFEEDER_12S"
-        ],
-        "1N": [
-          "NFINAL_12S"
-        ],
-        "1S": [
-          "SFINAL_12S"
-        ],
-        "1D": [
-          "NDEPARTURE_12S",
-          "NCLOSEDEP_12S"
-        ],
-        "1R": [
-          "SDEPARTURE_12S",
-          "SCLOSEDEP_12S"
-        ],
-        "1E": [
-          "ESAT_12S"
-        ],
-        "1G": [
-          "GSAT_12S"
-        ],
-        "1K": [
-          "KSAT_12S"
-        ]
+        "1I": ["NFEEDER_12S"],
+        "1H": ["SFEEDER_12S"],
+        "1N": ["NFINAL_12S"],
+        "1S": ["SFINAL_12S"],
+        "1D": ["NDEPARTURE_12S", "NCLOSEDEP_12S"],
+        "1R": ["SDEPARTURE_12S", "SCLOSEDEP_12S"],
+        "1E": ["ESAT_12S"],
+        "1G": ["GSAT_12S"],
+        "1K": ["KSAT_12S"]
       },
       "inbound_rates": {
         "DELZY1.12s": {
@@ -6583,9 +6551,7 @@
         }
       },
       "configuration": "12S",
-      "default_maps": [
-        "M98 204 12 B"
-      ],
+      "default_maps": ["M98 204 12 B"],
       "departure_runways": [
         {
           "airport": "KMSP",
@@ -6614,12 +6580,8 @@
         }
       ],
       "airspace": {
-        "1I": [
-          "NFEEDER_30S"
-        ],
-        "1H": [
-          "SFEEDER_30S"
-        ]
+        "1I": ["NFEEDER_30S"],
+        "1H": ["SFEEDER_30S"]
       },
       "inbound_rates": {
         "KASPR3": {
@@ -6648,9 +6610,7 @@
         }
       },
       "configuration": "30S",
-      "default_maps": [
-        "M98 203 30 B"
-      ],
+      "default_maps": ["M98 203 30 B"],
       "departure_runways": [
         {
           "airport": "KMSP",
