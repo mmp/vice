@@ -43,9 +43,8 @@ type SimManager struct {
 	sessionsByToken map[string]*simSession
 
 	// Helpers and such
-	wxProvider     *wx.Provider
-	providersReady chan struct{}
-	lg             *log.Logger
+	wxProvider *wx.Provider
+	lg         *log.Logger
 
 	// mu guards the session tables and every session's connections. It is
 	// only held briefly: a session's mu (its sim's lock) is held for as long
@@ -73,7 +72,7 @@ func NewSimManager(config LaunchConfig, tables *scenario.Tables, lg *log.Logger)
 		sessionsByToken: make(map[string]*simSession),
 		startTime:       time.Now(),
 		local:           config.IsLocal,
-		providersReady:  make(chan struct{}),
+		wxProvider:      wx.MakeProvider(config.ServerAddress, lg),
 		lg:              lg,
 	}
 	sm.scenarios.Store(tables)
@@ -83,24 +82,9 @@ func NewSimManager(config LaunchConfig, tables *scenario.Tables, lg *log.Logger)
 			"information, as when it is run with go run, built with -buildvcs=false, or built outside a git checkout")
 	}
 
-	// Initialize WX provider asynchronously so the server can start
-	// accepting connections immediately. Callers that need providers will
-	// block in getProviders() until initialization completes or times out.
-	go func() {
-		defer close(sm.providersReady)
-		sm.wxProvider = wx.MakeProvider(config.ServerAddress, lg)
-	}()
-
 	sm.launchHTTPServer()
 
 	return sm
-}
-
-// getWXProvider blocks until the weather provider is initialized.
-// Synchronization is via the providersReady channel, not sm.mu.
-func (sm *SimManager) getWXProvider() *wx.Provider {
-	<-sm.providersReady
-	return sm.wxProvider
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -178,7 +162,7 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 		return err
 	}
 	s := sim.NewSim(*nsc, lg)
-	s.Activate(lg, sm.getWXProvider())
+	s.Activate(lg, sm.wxProvider)
 	s.Prespawn()
 
 	session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
@@ -228,7 +212,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 	nsc.Brief = briefMarkdown
 	nsc.EnforceUniqueCallsignSuffix = req.EnforceUniqueCallsignSuffix
 	nsc.PilotErrorInterval = req.PilotErrorInterval
-	nsc.WXProvider = sm.getWXProvider()
+	nsc.WXProvider = sm.wxProvider
 	nsc.Emergencies = tables.Emergencies
 	nsc.StartTime = req.StartTime
 
@@ -360,7 +344,7 @@ type AddLocalRequest struct {
 func (sm *SimManager) AddLocal(req *AddLocalRequest, result *NewSimResult) error {
 	defer sm.lg.CatchAndReportCrash()
 
-	req.Sim.Activate(sm.lg, sm.getWXProvider())
+	req.Sim.Activate(sm.lg, sm.wxProvider)
 	session := makeLocalSimSession(req.Sim, sm.lg)
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
@@ -379,7 +363,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	if err != nil {
 		return err
 	}
-	s.Activate(session.lg, sm.getWXProvider())
+	s.Activate(session.lg, sm.wxProvider)
 	session.sim = s
 
 	dbHash, dbErr := sm.saveDatabase()
@@ -857,21 +841,17 @@ func (sm *SimManager) GetSerializeSimJSON(token string, s *[]byte) error {
 func (sm *SimManager) GetPrecipURL(args wx.PrecipURLArgs, result *wx.PrecipURL) error {
 	defer sm.lg.CatchAndReportCrash()
 
-	provider := sm.getWXProvider()
-
 	var err error
-	result.URL, result.NextTime, err = provider.GetPrecipURL(args.Facility, args.Time)
+	result.URL, result.NextTime, err = sm.wxProvider.GetPrecipURL(args.Facility, args.Time)
 	return err
 }
 
 func (sm *SimManager) GetAtmosGrid(args wx.GetAtmosArgs, result *wx.GetAtmosResult) error {
 	defer sm.lg.CatchAndReportCrash()
 
-	provider := sm.getWXProvider()
-
 	var err error
 	result.AtmosByPointSOA, result.Time, result.NextTime, err =
-		provider.GetAtmosGrid(args.Facility, args.Time, args.WeatherStation)
+		sm.wxProvider.GetAtmosGrid(args.Facility, args.Time, args.WeatherStation)
 	return err
 }
 

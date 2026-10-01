@@ -58,6 +58,36 @@ func TestProviderCachesAtmosGridByReturnedInterval(t *testing.T) {
 	}
 }
 
+// stalledBackend never answers, like a server on a network that has stopped
+// delivering packets.
+type stalledBackend struct{ unblock chan struct{} }
+
+func (b stalledBackend) getPrecipURL(facility string, t time.Time) (string, time.Time, error) {
+	<-b.unblock
+	return "", time.Time{}, nil
+}
+
+func (b stalledBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
+	<-b.unblock
+	return nil, time.Time{}, time.Time{}, nil
+}
+
+func TestProviderGivesUpOnStalledPrecipRequest(t *testing.T) {
+	backend := stalledBackend{unblock: make(chan struct{})}
+	defer close(backend.unblock)
+	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
+	provider := newProvider(lg, backend)
+
+	start := time.Now()
+	if _, _, err := provider.GetPrecipURL("P31", start); err == nil {
+		t.Errorf("expected an error from the resources fallback")
+	}
+	// The client gives up on the local server after 5s.
+	if d := time.Since(start); d > backendFallbackTimeout+time.Second {
+		t.Errorf("GetPrecipURL took %s", d)
+	}
+}
+
 // timesEvery returns the times from start through end, step apart, leaving
 // out those in [gapStart, gapEnd).
 func timesEvery(start, end time.Time, step time.Duration, gapStart, gapEnd time.Time) []time.Time {

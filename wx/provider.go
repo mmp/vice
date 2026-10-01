@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"net/http"
 	"net/rpc"
 	"slices"
 	"sync"
@@ -53,7 +54,6 @@ type atmosGridResult struct {
 	atmos    *AtmosByPointSOA
 	time     time.Time
 	nextTime time.Time
-	err      error
 }
 
 type atmosGridCacheKey struct {
@@ -85,24 +85,51 @@ func newProvider(lg *log.Logger, backend weatherBackend) *Provider {
 ///////////////////////////////////////////////////////////////////////////
 // Provider construction
 
-// MakeProvider constructs the concrete WX provider.
+// MakeProvider constructs the concrete WX provider: one that reads GCS
+// directly if there are credentials for it, else one that asks the vice
+// server at serverAddress, if there is one. Either falls back to the bundled
+// resources for a request that fails. Making it doesn't touch the network.
 func MakeProvider(serverAddress string, lg *log.Logger) *Provider {
 	if store := gcsStore(lg); store != nil {
-		// We have credentials, assume they are valid (and any failure will be network-related).
 		if backend, err := makeGCSBackend(store, lg); err == nil {
 			lg.Infof("Using GCS weather provider")
 			return newProvider(lg, backend)
 		} else {
 			lg.Warnf("Have credentials but unable to read the weather manifests: %v", err)
-			return newProvider(lg, nil)
 		}
-	} else if backend, err := makeRPCBackend(serverAddress, lg); err == nil {
+	} else if serverAddress != "" {
 		lg.Infof("Using RPC weather provider")
-		return newProvider(lg, backend)
-	} else {
-		lg.Warnf("Unable to initialize RPC weather provider: %v", err)
-		return newProvider(lg, nil)
+		return newProvider(lg, makeRPCBackend(serverAddress, lg))
 	}
+	return newProvider(lg, nil)
+}
+
+// CheckGCS returns an error if the process has GCS credentials but can't
+// get weather from GCS with them: it checks that it can read the bundled
+// manifests, fetch an atmospheric grid, and download a radar image through
+// a signed URL, retrying for a while before giving up. It returns nil if
+// there are no credentials. The public server runs it at startup so that it
+// exits rather than serving degraded weather.
+func CheckGCS(lg *log.Logger) error {
+	store := gcsStore(lg)
+	if store == nil {
+		return nil
+	}
+	g, err := makeGCSBackend(store, lg)
+	if err != nil {
+		return err
+	}
+
+	for attempt := range 3 {
+		if attempt > 0 {
+			time.Sleep(10 * time.Second)
+		}
+		if err = g.check(); err == nil {
+			return nil
+		}
+		lg.Warnf("Unable to get weather from GCS: %v", err)
+	}
+	return fmt.Errorf("unable to get weather from GCS: %w", err)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -112,11 +139,12 @@ func MakeProvider(serverAddress string, lg *log.Logger) *Provider {
 // Returns the image at-or-before the given time, or an empty URL if that
 // image is too old to stand for it, along with the time of the next image.
 func (p *Provider) GetPrecipURL(facility string, t time.Time) (string, time.Time, error) {
-	// Precip requests are cheap for GCS because URL signing is local. RPC has
-	// its own timeout; resources returns a typed unavailable error.
-	url, nextTime, err := p.backend.getPrecipURL(facility, t)
+	r, err := callBackend(p, func() (PrecipURL, error) {
+		url, nextTime, err := p.backend.getPrecipURL(facility, t)
+		return PrecipURL{URL: url, NextTime: nextTime}, err
+	})
 	if err == nil || p.backend == p.resources {
-		return url, nextTime, err
+		return r.URL, r.NextTime, err
 	}
 
 	p.lg.Warnf("Falling back to local precip resources: %v", err)
@@ -133,16 +161,19 @@ func (p *Provider) GetAtmosGrid(facility string, t time.Time, station string) (*
 		return ar.atmos, ar.time, ar.nextTime, nil
 	}
 
-	ar := p.getAtmosGridFromBackend(facility, t, station)
-	if ar.err != nil && p.backend != p.resources {
-		p.lg.Warnf("Falling back to local atmos resources: %v", ar.err)
-		ar.atmos, ar.time, ar.nextTime, ar.err = p.resources.getAtmosGrid(facility, t, station)
+	ar, err := callBackend(p, func() (atmosGridResult, error) {
+		atmos, atmosTime, nextTime, err := p.backend.getAtmosGrid(facility, t, station)
+		return atmosGridResult{atmos: atmos, time: atmosTime, nextTime: nextTime}, err
+	})
+	if err != nil && p.backend != p.resources {
+		p.lg.Warnf("Falling back to local atmos resources: %v", err)
+		ar.atmos, ar.time, ar.nextTime, err = p.resources.getAtmosGrid(facility, t, station)
 	}
 
-	if ar.err == nil {
+	if err == nil {
 		p.cacheAtmosGrid(facility, station, ar)
 	}
-	return ar.atmos, ar.time, ar.nextTime, ar.err
+	return ar.atmos, ar.time, ar.nextTime, err
 }
 
 func (p *Provider) lookupAtmosGridCache(facility string, t time.Time, station string) (atmosGridResult, bool) {
@@ -157,7 +188,7 @@ func (p *Provider) lookupAtmosGridCache(facility string, t time.Time, station st
 		}
 
 		ar, ok := p.atmosGridCache.Get(key)
-		if !ok || ar.atmos == nil || ar.err != nil || ar.time.After(t) {
+		if !ok || ar.atmos == nil || ar.time.After(t) {
 			continue
 		}
 		if ar.nextTime.IsZero() {
@@ -185,26 +216,31 @@ func (p *Provider) cacheAtmosGrid(facility, station string, ar atmosGridResult) 
 	p.atmosGridCache.Add(key, ar)
 }
 
-func (p *Provider) getAtmosGridFromBackend(facility string, t time.Time, station string) atmosGridResult {
+// callBackend makes a request of p's backend. A network-backed request must
+// return before the client marks its connection to the local server dead,
+// which it does after a few seconds, so if the backend stalls, it gives up
+// and returns an error; the caller then falls back to the resources.
+func callBackend[T any](p *Provider, request func() (T, error)) (T, error) {
 	if p.backend == p.resources {
-		atmos, atmosTime, nextTime, err := p.backend.getAtmosGrid(facility, t, station)
-		return atmosGridResult{atmos: atmos, time: atmosTime, nextTime: nextTime, err: err}
+		return request()
 	}
 
-	// Network-backed atmos fetches must return before the client marks the
-	// local RPC connection dead. If the backend stalls, return to the caller and
-	// let the normal resources fallback path handle the request.
-	ch := make(chan atmosGridResult, 1)
+	type result struct {
+		v   T
+		err error
+	}
+	ch := make(chan result, 1)
 	go func() {
-		atmos, atmosTime, nextTime, err := p.backend.getAtmosGrid(facility, t, station)
-		ch <- atmosGridResult{atmos: atmos, time: atmosTime, nextTime: nextTime, err: err}
+		v, err := request()
+		ch <- result{v, err}
 	}()
 
 	select {
-	case ar := <-ch:
-		return ar
+	case r := <-ch:
+		return r.v, r.err
 	case <-time.After(backendFallbackTimeout):
-		return atmosGridResult{err: fmt.Errorf("weather backend timeout after %s", backendFallbackTimeout)}
+		var zero T
+		return zero, fmt.Errorf("weather backend timeout after %s", backendFallbackTimeout)
 	}
 }
 
@@ -237,6 +273,41 @@ func makeGCSBackend(store ObjectStore, lg *log.Logger) (*gcsBackend, error) {
 		precipManifest: precip,
 		atmosManifest:  atmos,
 	}, nil
+}
+
+// check fetches the latest atmospheric grid for a facility and downloads its
+// latest radar image.
+func (g *gcsBackend) check() error {
+	facility, ok := util.SeqLookupFunc(slices.Values(g.atmosManifest.Facilities()), func(f string) bool {
+		_, ok := g.precipManifest.GetTimestamps(f)
+		return ok
+	})
+	if !ok {
+		return errors.New("no facility has both atmospheric data and radar")
+	}
+
+	atmosTimes, _ := g.atmosManifest.GetTimestamps(facility)
+	if _, _, _, err := g.getAtmosGrid(facility, atmosTimes[len(atmosTimes)-1], ""); err != nil {
+		return fmt.Errorf("%s: atmospheric grid: %w", facility, err)
+	}
+
+	precipTimes, _ := g.precipManifest.GetTimestamps(facility)
+	url, _, err := g.getPrecipURL(facility, precipTimes[len(precipTimes)-1])
+	if err != nil {
+		return fmt.Errorf("%s: radar: %w", facility, err)
+	}
+	resp, err := (&http.Client{Timeout: 30 * time.Second}).Get(url)
+	if err != nil {
+		return fmt.Errorf("%s: radar: %w", facility, err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("%s: radar: HTTP status %d", facility, resp.StatusCode)
+	}
+	if _, err := DecodePrecip(resp.Body); err != nil {
+		return fmt.Errorf("%s: radar: %w", facility, err)
+	}
+	return nil
 }
 
 func (g *gcsBackend) getObject(path string, obj any) error {
@@ -352,30 +423,66 @@ type rpcBackend struct {
 	serverAddress string
 	lg            *log.Logger
 
+	// mu is held while dialing, so that concurrent requests share a dial.
 	mu     sync.Mutex
 	client *rpc.Client
+
+	// When the last dial failed, so that requests fail fast for a while
+	// rather than each waiting out a dial on a network that is down.
+	dialErr  error
+	dialTime time.Time
 }
 
-func makeRPCBackend(serverAddress string, lg *log.Logger) (*rpcBackend, error) {
+// rpcRedialDelay is how long after a failed dial requests go to the
+// resources rather than dialing again.
+const rpcRedialDelay = 30 * time.Second
+
+// makeRPCBackend doesn't wait to connect to the server: it starts
+// connecting in the background so that the connection is likely to be ready
+// for the first request, and a request connects if it isn't. When the server
+// can't be reached, requests try again every so often, so weather recovers
+// when the network does.
+func makeRPCBackend(serverAddress string, lg *log.Logger) *rpcBackend {
 	r := &rpcBackend{serverAddress: serverAddress, lg: lg}
-	if _, err := r.dial(); err != nil {
-		return nil, err
-	}
-	return r, nil
+	go func() {
+		if _, err := r.connect(nil); err != nil {
+			lg.Warnf("%v", err)
+		}
+	}()
+	return r
 }
 
-// dial opens a fresh connection to the WX server and installs it as the
-// current client, closing any previous one. The public server drops idle
-// connections, so this long-lived backend has to be able to reconnect.
-func (r *rpcBackend) dial() (*rpc.Client, error) {
+// connect returns the connection to the WX server, dialing a new one if
+// there is none or if the current one is stale, which is closed. The public
+// server drops idle connections, so this long-lived backend has to be able
+// to reconnect.
+func (r *rpcBackend) connect(stale *rpc.Client) (*rpc.Client, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	if r.client != nil && r.client != stale {
+		// Either it's fine or another request has already reconnected.
+		return r.client, nil
+	}
+	if r.client != nil {
+		r.client.Close()
+		r.client = nil
+	}
+	if r.dialErr != nil && time.Since(r.dialTime) < rpcRedialDelay {
+		return nil, r.dialErr
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
 	var d net.Dialer
 	conn, err := d.DialContext(ctx, "tcp", r.serverAddress)
 	if err != nil {
-		return nil, fmt.Errorf("unable to connect to WX server %s: %w", r.serverAddress, err)
+		r.dialErr = fmt.Errorf("unable to connect to WX server %s: %w", r.serverAddress, err)
+		r.dialTime = time.Now()
+		return nil, r.dialErr
 	}
+	r.dialErr = nil
 
 	cc, err := util.MakeCompressedConn(conn)
 	if err != nil {
@@ -385,32 +492,24 @@ func (r *rpcBackend) dial() (*rpc.Client, error) {
 
 	codec := util.MakeMessagepackClientCodec(cc)
 	codec = util.MakeLoggingClientCodec(r.serverAddress, codec, r.lg)
-	client := rpc.NewClientWithCodec(codec)
-
-	r.mu.Lock()
-	old := r.client
-	r.client = client
-	r.mu.Unlock()
-
-	if old != nil {
-		old.Close()
-	}
-	return client, nil
+	r.client = rpc.NewClientWithCodec(codec)
+	return r.client, nil
 }
 
 func (r *rpcBackend) call(serviceMethod string, args any, reply any) error {
-	r.mu.Lock()
-	client := r.client
-	r.mu.Unlock()
+	client, err := r.connect(nil)
+	if err != nil {
+		return err
+	}
 
-	err := callWithTimeout(client, serviceMethod, args, reply)
+	err = callWithTimeout(client, serviceMethod, args, reply)
 	if err == nil || !isConnDown(err) {
 		return err
 	}
 
 	// The server closed the connection (e.g. it reaped an idle one).
 	// Reconnect and retry once so weather keeps flowing without a restart.
-	if client, err = r.dial(); err != nil {
+	if client, err = r.connect(client); err != nil {
 		return err
 	}
 	return callWithTimeout(client, serviceMethod, args, reply)

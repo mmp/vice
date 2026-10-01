@@ -241,13 +241,11 @@ func makeReplayTestSimManager(t *testing.T) (*log.Logger, *SimManager) {
 	sm := &SimManager{
 		sessionsByName:  make(map[string]*simSession),
 		sessionsByToken: make(map[string]*simSession),
-		providersReady:  make(chan struct{}),
-		lg:              lg,
+		// With no server to ask, weather comes from the bundled resources.
+		wxProvider: wx.MakeProvider("", lg),
+		lg:         lg,
 	}
 	sm.scenarios.Store(tables)
-	// With no server to ask, weather comes from the bundled resources.
-	sm.wxProvider = wx.MakeProvider("", lg)
-	close(sm.providersReady)
 
 	return lg, sm
 }

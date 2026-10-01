@@ -115,6 +115,13 @@ func run(lg *log.Logger) error {
 		return writeWXFacilities(*wxFacilities, lg)
 	}
 
+	// A server with GCS credentials is the public one, which serves the
+	// weather that everyone else's sims use; rather than serve the bundled
+	// fallback, it doesn't run without GCS.
+	if err := wx.CheckGCS(lg); err != nil {
+		return err
+	}
+
 	nav.InitNavLog(*navLogEnabled, *navLogCategories, *navLogCallsign)
 
 	config := server.LaunchConfig{
