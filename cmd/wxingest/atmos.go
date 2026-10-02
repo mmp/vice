@@ -5,12 +5,14 @@
 package main
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"fmt"
 	"io"
 	"iter"
 	"maps"
+	"net/http"
 	"os"
 	"slices"
 	"strings"
@@ -43,9 +45,32 @@ func artccAtmosDownsampleRate(radius float32) int {
 	return rate
 }
 
-// hrrrIssued reports whether HRRR issues a grid covering the facility at t.
+// hrrrIssued reports whether a grid covering the facility is issued at t.
 func hrrrIssued(facility string, t time.Time) bool {
 	return t.Truncate(wx.AtmosInterval(facility)).Equal(t)
+}
+
+// namRetirement is when RRFS replaces the NAM, whose Hawaii nest is the
+// source of Hawaii's atmospheric data.
+//
+// TODO: ingest Hawaii from RRFS from namRetirement on. Its grids are
+// rrfs.tCCz.prslev.2p5km.fFFF.hi.grib2 on NOMADS (rrfs/prod/), with the same
+// grid and packing as the NAM nest; fillLevels covers its having a 70 mb
+// level rather than 75 mb.
+var namRetirement = time.Date(2026, time.October, 14, 0, 0, 0, 0, time.UTC)
+
+// checkNAMRetirement returns an error if any of the facilities is in Hawaii
+// and t is at or after the NAM's retirement, since there is no source for
+// its atmospheric data then.
+func checkNAMRetirement(t time.Time, facilities []string) error {
+	if t.Before(namRetirement) {
+		return nil
+	}
+	if i := slices.IndexFunc(facilities, func(f string) bool { return wx.FacilityRegion(f) == "hawaii" }); i != -1 {
+		return fmt.Errorf("%s at %s: no atmospheric data source for Hawaii after the NAM's retirement",
+			facilities[i], t.Format(time.RFC3339))
+	}
+	return nil
 }
 
 func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
@@ -186,6 +211,9 @@ func ingestHRRR(sb StorageBackend) error {
 
 			missing := util.FilterSlice(facilitiesMissingAtmos(t, intervals, existing[t]),
 				func(facility string) bool { return hrrrIssued(facility, t) })
+			if err := checkNAMRetirement(t, missing); err != nil {
+				return err
+			}
 
 			if len(missing) > 0 {
 				LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
@@ -219,7 +247,7 @@ func ingestHRRR(sb StorageBackend) error {
 			// Group missing facilities by region
 			byRegion := make(map[string][]string)
 			for _, facility := range tw.missing {
-				region := wx.HRRRRegion(facility)
+				region := wx.FacilityRegion(facility)
 				byRegion[region] = append(byRegion[region], facility)
 			}
 
@@ -243,7 +271,7 @@ func ingestHRRR(sb StorageBackend) error {
 	eg.Go(func() error {
 		for hrrr := range hrrrCh {
 			LogInfo("Starting work on %s (%s region)", hrrr.t.Format(time.RFC3339), hrrr.region)
-			if err := ingestHRRRForTime(hrrr.path, hrrr.t, hrrr.targetFacilities, sb); err != nil {
+			if err := ingestHRRRForTime(hrrr.path, hrrr.t, hrrr.region, hrrr.targetFacilities, sb); err != nil {
 				LogError("%s %s: %v", hrrr.t.Format(time.RFC3339), hrrr.region, err)
 			}
 		}
@@ -474,21 +502,13 @@ func downloadHRRRForTime(t time.Time, region string, tfr *util.TempFileRegistry,
 		return "", err
 	}
 
-	// Download the grib2 file from the NOAA archive
-	var hrrrpath string
-	if region == "alaska" {
-		hrrrpath = fmt.Sprintf("hrrr.%d%02d%02d/alaska/hrrr.t%02dz.wrfprsf00.ak.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
-	} else {
-		hrrrpath = fmt.Sprintf("hrrr.%d%02d%02d/conus/hrrr.t%02dz.wrfprsf00.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
-	}
-
-	localPath := fmt.Sprintf("%s-%s.grib2", t.Format(time.RFC3339), region)
-
-	hrrrr, err := hrrrsb.OpenRead(hrrrpath)
+	hrrrpath, hrrrr, err := openGRIB2(t, region, hrrrsb)
 	if err != nil {
 		return "", err
 	}
 	defer hrrrr.Close()
+
+	localPath := fmt.Sprintf("%s-%s.grib2", t.Format(time.RFC3339), region)
 
 	hf, err := os.Create(localPath)
 	if err != nil {
@@ -510,19 +530,59 @@ func downloadHRRRForTime(t time.Time, region string, tfr *util.TempFileRegistry,
 
 	LogInfo("%s: downloaded %s to %s", hrrrpath, util.ByteCount(n), hf.Name())
 
-	if n < 32*1024*1024 {
-		return "", fmt.Errorf("%s: grib2 file appears truncated: length %d", hrrrpath, n)
-	}
-
 	return hf.Name(), nil
 }
 
-func ingestHRRRForTime(gribPath string, t time.Time, targetFacilities []string, sb StorageBackend) error {
+// openGRIB2 opens the GRIB2 file with the analysis for the region at t,
+// returning its path along with a reader for it. The HRRR grids come from
+// hrrrsb, while the NAM Hawaii nest's come from AWS.
+func openGRIB2(t time.Time, region string, hrrrsb StorageBackend) (string, io.ReadCloser, error) {
+	switch region {
+	case "hawaii":
+		url := fmt.Sprintf("https://noaa-nam-pds.s3.amazonaws.com/nam.%d%02d%02d/nam.t%02dz.hawaiinest.hiresf00.tm00.grib2",
+			t.Year(), t.Month(), t.Day(), t.Hour())
+		resp, err := (&http.Client{Timeout: 5 * time.Minute}).Get(url)
+		if err != nil {
+			return "", nil, err
+		}
+		if resp.StatusCode != http.StatusOK {
+			resp.Body.Close()
+			return "", nil, fmt.Errorf("%s: %s", url, resp.Status)
+		}
+		return url, resp.Body, nil
+	case "alaska":
+		path := fmt.Sprintf("hrrr.%d%02d%02d/alaska/hrrr.t%02dz.wrfprsf00.ak.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
+		r, err := hrrrsb.OpenRead(path)
+		return path, r, err
+	default:
+		path := fmt.Sprintf("hrrr.%d%02d%02d/conus/hrrr.t%02dz.wrfprsf00.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
+		r, err := hrrrsb.OpenRead(path)
+		return path, r, err
+	}
+}
+
+// atmosParameters returns the GRIB2 parameters that the region's
+// atmospheric data comes from. The NAM Hawaii nest only has DPT at 7 of the
+// levels vice uses, so its dewpoints are derived from the specific humidity,
+// SPFH, which it has at all of them.
+func atmosParameters(region string) []string {
+	if region == "hawaii" {
+		return []string{"UGRD", "VGRD", "TMP", "HGT", "SPFH"}
+	}
+	return []string{"UGRD", "VGRD", "TMP", "HGT", "DPT"}
+}
+
+func ingestHRRRForTime(gribPath string, t time.Time, region string, targetFacilities []string, sb StorageBackend) error {
 	defer func() { _ = os.Remove(gribPath) }()
 
-	records, err := parseAndFilterGRIB2(gribPath)
+	params := atmosParameters(region)
+	records, err := parseAndFilterGRIB2(gribPath, params)
 	if err != nil {
 		return err
+	}
+	records, err = fillLevels(records, params)
+	if err != nil {
+		return fmt.Errorf("%s: %w", gribPath, err)
 	}
 
 	// Build grid once for all facilities
@@ -565,11 +625,11 @@ func ingestHRRRForFacility(grid *Grid, records []*squall.GRIB2, facilityID strin
 	return uploadWeatherAtmos(sf, facilityID, t, sb)
 }
 
-// keepHRRRMessage is a squall read filter that selects the parameters and
-// isobaric levels vice uses: UGRD, VGRD, TMP, DPT, and HGT at the levels
-// that wx.LevelIndexFromId recognizes. Filtering at this stage means the
-// other records--the majority of the file--are never decoded.
-func keepHRRRMessage(msg *squall.Message) bool {
+// keepHRRRMessage is a squall read filter that selects the given parameters
+// at the isobaric levels that vice uses and those near enough to them for
+// fillLevels to use. Filtering at this stage means the other records--the
+// majority of the file--are never decoded.
+func keepHRRRMessage(msg *squall.Message, params []string) bool {
 	if msg.Section0 == nil || msg.Section4 == nil || msg.Section4.Product == nil {
 		return false
 	}
@@ -579,9 +639,7 @@ func keepHRRRMessage(msg *squall.Message) bool {
 		Category:   msg.Section4.Product.GetParameterCategory(),
 		Number:     msg.Section4.Product.GetParameterNumber(),
 	}
-	switch p.ShortName() {
-	case "UGRD", "VGRD", "TMP", "DPT", "HGT":
-	default:
+	if !slices.Contains(params, p.ShortName()) {
 		return false
 	}
 
@@ -593,22 +651,20 @@ func keepHRRRMessage(msg *squall.Message) bool {
 		return false // layer between two isobaric surfaces
 	}
 
-	mb := t.FirstSurfaceValueScaled() / 100
-	if mb == 1013.2 {
-		return true
-	}
-	imb := int(mb)
-	return float64(imb) == mb && imb >= 50 && imb <= 1000 && (imb-50)%25 == 0
+	mb := float32(t.FirstSurfaceValueScaled() / 100)
+	return mb >= wx.PressureFromLevelIndex(wx.NumSampleLevels-1)-maxLevelFill &&
+		mb <= wx.PressureFromLevelIndex(0)+maxLevelFill
 }
 
-func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
+func parseAndFilterGRIB2(gribPath string, params []string) ([]*squall.GRIB2, error) {
 	f, err := os.Open(gribPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open GRIB2 file: %w", err)
 	}
 	defer f.Close()
 
-	records, err := squall.ReadWithOptions(f, squall.WithFilter(keepHRRRMessage))
+	keep := func(msg *squall.Message) bool { return keepHRRRMessage(msg, params) }
+	records, err := squall.ReadWithOptions(f, squall.WithFilter(keep))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse GRIB2 file: %w", err)
 	}
@@ -616,6 +672,89 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 	LogInfo("%s: parsed %d records", gribPath, len(records))
 
 	return records, nil
+}
+
+// maxLevelFill is how far, in mb, one of vice's levels may be from the
+// nearest level that a source has for fillLevels to fill it in. Any farther
+// suggests a truncated file rather than a source with different levels.
+const maxLevelFill = 25
+
+// fillLevels returns the records for each of the parameters at each of
+// vice's levels. Those that the source lacks--the NAM has no 1013.2 mb, and
+// RRFS has 70 mb rather than 75--are interpolated, or extrapolated, linearly
+// in log pressure from the two nearest levels that it has. Against the
+// HRRR's own 1013.2 mb fields over the ocean, extrapolating them from 1000
+// and 975 mb is off by 1.4 m, 0.16 K, and 0.9 kt on average.
+func fillLevels(records []*squall.GRIB2, params []string) ([]*squall.GRIB2, error) {
+	byParam := make(map[string][]*squall.GRIB2)
+	for _, r := range records {
+		byParam[r.Parameter.ShortName()] = append(byParam[r.Parameter.ShortName()], r)
+	}
+
+	var filled []*squall.GRIB2
+	var missing []string
+	for _, param := range params {
+		src := byParam[param]
+		slices.SortFunc(src, func(a, b *squall.GRIB2) int { return cmp.Compare(a.LevelValue, b.LevelValue) })
+
+		for level := range wx.NumSampleLevels {
+			mb := wx.PressureFromLevelIndex(level)
+			if r, ok := recordAtPressure(src, mb); ok {
+				filled = append(filled, r)
+			} else {
+				missing = append(missing, fmt.Sprintf("%s at %g mb", param, mb))
+			}
+		}
+	}
+	if len(missing) > 0 {
+		return nil, fmt.Errorf("GRIB2 is missing %s", strings.Join(missing, ", "))
+	}
+	return filled, nil
+}
+
+// recordAtPressure returns the record at pressure mb from records, which
+// are of a single parameter and sorted by pressure, interpolating or
+// extrapolating it from the nearest two if there's none at mb.
+func recordAtPressure(records []*squall.GRIB2, mb float32) (*squall.GRIB2, bool) {
+	pa := mb * 100 // records' levels are in Pa
+	i, found := slices.BinarySearchFunc(records, pa, func(r *squall.GRIB2, pa float32) int {
+		return cmp.Compare(r.LevelValue, pa)
+	})
+	if found {
+		return records[i], true
+	}
+	if len(records) < 2 {
+		return nil, false
+	}
+
+	// The two that bracket mb or, past either end, the two at that end.
+	i = math.Clamp(i-1, 0, len(records)-2)
+	r0, r1 := records[i], records[i+1]
+	if min(math.Abs(r0.LevelValue-pa), math.Abs(r1.LevelValue-pa)) > maxLevelFill*100 {
+		return nil, false
+	}
+
+	t := math.Log(pa/r0.LevelValue) / math.Log(r1.LevelValue/r0.LevelValue)
+	data := make([]float32, len(r0.Data))
+	for j, v0 := range r0.Data {
+		if v1 := r1.Data[j]; squall.IsMissing(v0) || squall.IsMissing(v1) {
+			data[j] = util.Select(squall.IsMissing(v0), v0, v1)
+		} else {
+			data[j] = math.Lerp(t, v0, v1)
+		}
+	}
+
+	return &squall.GRIB2{
+		Data:       data,
+		Latitudes:  r0.Latitudes,
+		Longitudes: r0.Longitudes,
+		Parameter:  r0.Parameter,
+		Level:      fmt.Sprintf("%g mb", mb),
+		LevelValue: pa,
+		GridNi:     r0.GridNi,
+		GridNj:     r0.GridNj,
+		NumPoints:  r0.NumPoints,
+	}, true
 }
 
 func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string) (*wx.AtmosByPoint, error) {
@@ -690,6 +829,9 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 			set = func(s *wx.AtmosSample, v float32) { s.Temperature = av.MakeTemperatureFromKelvin(v) }
 		case "DPT":
 			set = func(s *wx.AtmosSample, v float32) { s.Dewpoint = av.MakeTemperatureFromKelvin(v) }
+		case "SPFH":
+			mb := wx.PressureFromLevelIndex(levelIndex)
+			set = func(s *wx.AtmosSample, v float32) { s.Dewpoint = dewpointFromSpecificHumidity(v, mb) }
 		case "HGT":
 			set = func(s *wx.AtmosSample, v float32) { s.Height = v }
 		default:
@@ -704,6 +846,23 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string
 	}
 
 	return &at, nil
+}
+
+// minDewpoint is the lowest dewpoint derived from specific humidity, in
+// Celsius. GRIB2 packing rounds the driest air's specific humidity to zero,
+// which has no dewpoint.
+const minDewpoint = -100
+
+// dewpointFromSpecificHumidity returns the dewpoint of air at pressure mb
+// with specific humidity q (kg/kg): the temperature at which its vapor
+// pressure saturates it over water, using Bolton's (1980) formula.
+func dewpointFromSpecificHumidity(q, mb float32) av.Temperature {
+	if q <= 0 {
+		return av.MakeTemperatureFromCelsius(minDewpoint)
+	}
+	e := q * mb / (0.622 + 0.378*q) // vapor pressure, mb
+	l := math.Log(e / 6.112)
+	return av.MakeTemperatureFromCelsius(max(243.5*l/(17.67-l), minDewpoint))
 }
 
 func uploadWeatherAtmos(at *wx.AtmosByPoint, facilityID string, t time.Time, st StorageBackend) (int64, error) {
@@ -948,9 +1107,12 @@ func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend, fac wx.Fac
 	byRegion := make(map[string][]string)
 	for _, facility := range slices.Concat(fac.TRACONs, fac.ARTCCs) {
 		if hrrrIssued(facility, t) {
-			region := wx.HRRRRegion(facility)
+			region := wx.FacilityRegion(facility)
 			byRegion[region] = append(byRegion[region], facility)
 		}
+	}
+	if err := checkNAMRetirement(t, byRegion["hawaii"]); err != nil {
+		return err
 	}
 
 	LogInfo("Facilities by region: conus=%d, alaska=%d, hawaii=%d",
@@ -966,7 +1128,7 @@ func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend, fac wx.Fac
 			continue
 		}
 
-		if err := ingestHRRRForTime(path, t, facilities, sb); err != nil {
+		if err := ingestHRRRForTime(path, t, region, facilities, sb); err != nil {
 			LogError("Failed to ingest HRRR for %s: %v", region, err)
 			continue
 		}

@@ -378,12 +378,7 @@ func fetchFacilityPrecip(ctx context.Context, bucket *storage.BucketHandle, faci
 	wpx, hpx, bbox := fetchGeometry(facilityID, fac)
 	center := bbox.Center()
 
-	area := "conus"
-	if facilityID == "HCF" || facilityID == "OGG" || facilityID == "ZHN" {
-		area = "hawaii"
-	} else if facilityID == "A11" || facilityID == "FAI" || facilityID == "ZAN" {
-		area = "alaska"
-	}
+	area := wx.FacilityRegion(facilityID)
 
 	// The weather radar image comes via a WMS GetMap request to the Iowa
 	// Environmental Mesonet's NEXRAD n0q (0.5 dBZ resolution base

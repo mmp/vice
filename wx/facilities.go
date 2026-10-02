@@ -17,26 +17,20 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// atmosExcludedTRACONs are TRACONs with vice scenarios that are nonetheless
-// skipped for atmos ingest.
-var atmosExcludedTRACONs = []string{
-	// NOAA uses a currently unsupported grib2 grid format for Hawaii.
-	"HNL", "OGG",
-}
-
 // atmosExcludedARTCCs are ARTCCs skipped for atmos ingest.
 var atmosExcludedARTCCs = []string{
-	"ZHN", // NOAA uses a currently unsupported grib2 grid format for Hawaii
 	"ZAE", // Anchorage Oceanic: outside HRRR coverage
 }
 
-// HRRRRegion returns the HRRR domain whose grids cover the facility: "conus",
-// "alaska", or "hawaii".
-func HRRRRegion(facility string) string {
+// FacilityRegion returns the region the facility is in, "conus", "alaska",
+// or "hawaii", which determines where its radar images and atmospheric data
+// come from. There is no HRRR for Hawaii; its atmospheric data comes from the
+// NAM's Hawaii nest.
+func FacilityRegion(facility string) string {
 	switch facility {
 	case "A11", "FAI", "ZAN":
 		return "alaska"
-	case "ZHN":
+	case "HNL", "ITO", "OGG", "ZHN":
 		return "hawaii"
 	default:
 		return "conus"
@@ -44,13 +38,17 @@ func HRRRRegion(facility string) string {
 }
 
 // AtmosInterval returns how often the facility has atmospheric data. The
-// HRRR grids outside CONUS are only issued every three hours (00Z, 03Z,
-// ...), rather than hourly.
+// CONUS HRRR is issued hourly, the Alaska HRRR every three hours (00Z, 03Z,
+// ...), and the NAM Hawaii nest every six (00Z, 06Z, 12Z, 18Z).
 func AtmosInterval(facility string) time.Duration {
-	if HRRRRegion(facility) == "conus" {
+	switch FacilityRegion(facility) {
+	case "alaska":
+		return 3 * time.Hour
+	case "hawaii":
+		return 6 * time.Hour
+	default:
 		return time.Hour
 	}
-	return 3 * time.Hour
 }
 
 // Facilities records the airports and facilities that vice's weather pipeline
@@ -69,9 +67,6 @@ type Facilities struct {
 // which have scenarios: center scenarios are under active development and
 // pre-ingesting spares us historical backfills as they arrive.
 func MakeFacilities(airports, tracons []string) Facilities {
-	tracons = util.FilterSlice(tracons, func(id string) bool {
-		return !slices.Contains(atmosExcludedTRACONs, id)
-	})
 	// Not currently needed but let's save ourselves the trouble of
 	// downloading all the Alaska gribs again if an FAI scenario is added.
 	tracons = append(tracons, "FAI")

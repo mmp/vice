@@ -20,7 +20,7 @@ require (
 	github.com/iancoleman/orderedmap v0.3.0
 	github.com/klauspost/compress v1.17.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
-	github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323
+	github.com/mmp/squall v0.0.0-20261001224140-6bfa530e5b04
 	github.com/ncruces/zenity v0.10.14
 	github.com/parquet-go/parquet-go v0.30.1
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8

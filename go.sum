@@ -163,8 +163,8 @@ github.com/mmp/cimgui-go v0.0.0-20260603153430-77cbc0c31fec h1:adD1E8U3A2ptQc6SZ
 github.com/mmp/cimgui-go v0.0.0-20260603153430-77cbc0c31fec/go.mod h1:gz4dVFwmfoyUkBgVzBhiCJj1JXXWISQa8SQ190MlouY=
 github.com/mmp/earcut v0.0.0-20260825135629-4f5709f5dc2f h1:P/hH9TTvkYLTH3ZhEgOh9gm0DM+kFR4SB5BIlfDh6XQ=
 github.com/mmp/earcut v0.0.0-20260825135629-4f5709f5dc2f/go.mod h1:q6q7tYvNOIIlYzrkBWA4ZKdeot/GsBfK5MeJhXT9SAA=
-github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323 h1:umANwIF39T/eAiVPWF2qNVVFxIcCirhD5DMexF5pMNM=
-github.com/mmp/squall v0.0.0-20260310141042-e3ce8bc98323/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
+github.com/mmp/squall v0.0.0-20261001224140-6bfa530e5b04 h1:Yj2OBjeWAfz7j4ZkG1xhILLVsy2oTIfGCrw715NvFTg=
+github.com/mmp/squall v0.0.0-20261001224140-6bfa530e5b04/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
 github.com/ncruces/zenity v0.10.14 h1:OBFl7qfXcvsdo1NUEGxTlZvAakgWMqz9nG38TuiaGLI=
 github.com/ncruces/zenity v0.10.14/go.mod h1:ZBW7uVe/Di3IcRYH0Br8X59pi+O6EPnNIOU66YHpOO4=
 github.com/parquet-go/bitpack v1.0.0 h1:AUqzlKzPPXf2bCdjfj4sTeacrUwsT7NlcYDMUQxPcQA=
