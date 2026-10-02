@@ -134,7 +134,7 @@ func (m *Model) Advance(t time.Time) *AtmosUpdate {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	if !m.updates[1].Time.IsZero() && t.After(m.updates[1].Time) && !m.nextFetch.IsZero() && m.ch == nil {
+	if !m.updates[1].Time.IsZero() && t.After(m.updates[1].Time) && !m.nextFetch.Equal(noNextTime) && m.ch == nil {
 		m.ch = m.fetchAtmos(m.nextFetch)
 	}
 
@@ -156,7 +156,7 @@ func (m *Model) installFetched(f atmosFetch) *AtmosUpdate {
 		}
 		// Carry on with the grids we have rather than asking again
 		// every tick.
-		m.nextFetch = time.Time{}
+		m.nextFetch = noNextTime
 		return nil
 	}
 	m.install(f.update, f.grid)
@@ -198,9 +198,8 @@ func (m *Model) install(u AtmosUpdate, grid *AtmosGrid) {
 		m.grids[0], m.updates[0] = m.grids[1], m.updates[1]
 
 		// And get started on fetching the next one, when the series has
-		// one: a time past the end of it comes back with no next time,
-		// and fetching that would ask for the zero time and fail.
-		if !m.nextFetch.IsZero() {
+		// one.
+		if !m.nextFetch.Equal(noNextTime) {
 			m.ch = m.fetchAtmos(m.nextFetch)
 		}
 	}

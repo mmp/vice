@@ -68,7 +68,10 @@ func (w *WeatherRadar) tick(ctx *Context) {
 		ctx.Lg.Warnf("%v", err)
 		w.fetchInProgress = false
 	case precip := <-w.precipCh:
-		w.installPrecip(precip)
+		w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
+		w.cb[0] = makeWeatherCommandBuffers(precip)
+		w.latestPrecip = precip
+		w.generation++
 		w.fetchInProgress = false
 	default:
 	}
@@ -76,18 +79,6 @@ func (w *WeatherRadar) tick(ctx *Context) {
 	if ctx.InterpolatedSimTime.After(w.nextFetchTime) && !w.fetchInProgress {
 		w.fetchPrecipitation(ctx)
 	}
-}
-
-// installPrecip makes precip the latest image, nil meaning that there is no
-// radar for the current time. Caller must hold w.mu.
-func (w *WeatherRadar) installPrecip(precip *wx.Precip) {
-	w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
-	w.cb[0] = [NumWxLevels]*renderer.CommandBuffer{}
-	if precip != nil {
-		w.cb[0] = makeWeatherCommandBuffers(precip)
-	}
-	w.latestPrecip = precip
-	w.generation++
 }
 
 // WXHistory and Levels should eventually be omitted as they're dependent on the scope used.
@@ -117,20 +108,11 @@ func (w *WeatherRadar) fetchPrecipitation(ctx *Context) {
 			return
 		}
 
+		// The data doesn't change while the sim runs, so each image is shown
+		// until the next one, however long that is.
 		w.nextFetchTime = nextTime
-		if nextTime.IsZero() {
-			// There are no more images; check back at the usual cadence.
-			w.nextFetchTime = fetchTime.Add(5 * time.Minute)
-		}
 
-		if url == "" {
-			// There's no radar for this time, as in a gap in the data;
-			// show none until the next image rather than a stale one.
-			w.installPrecip(nil)
-			w.fetchInProgress = false
-		} else {
-			go w.fetchPrecip(url, ctx.Lg)
-		}
+		go w.fetchPrecip(url, ctx.Lg)
 	})
 }
 

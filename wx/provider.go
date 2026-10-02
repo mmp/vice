@@ -68,6 +68,11 @@ const (
 	atmosGridCacheTTL      = time.Hour
 )
 
+// noNextTime is the next time that the radar images and the atmospheric
+// grids give after their last one: the data doesn't change while a sim runs,
+// so the last one stands for the rest of it.
+var noNextTime = time.Date(9999, time.December, 31, 0, 0, 0, 0, time.UTC)
+
 func newProvider(lg *log.Logger, backend weatherBackend) *Provider {
 	resources := newResourcesBackend(lg)
 	if backend == nil {
@@ -136,8 +141,8 @@ func CheckGCS(lg *log.Logger) error {
 // Provider API
 
 // GetPrecipURL returns a URL to access the specified precipitation radar image.
-// Returns the image at-or-before the given time, or an empty URL if that
-// image is too old to stand for it, along with the time of the next image.
+// Returns the image at-or-before the given time, along with the time of the
+// next image, which is noNextTime after the last one.
 func (p *Provider) GetPrecipURL(facility string, t time.Time) (string, time.Time, error) {
 	r, err := callBackend(p, func() (PrecipURL, error) {
 		url, nextTime, err := p.backend.getPrecipURL(facility, t)
@@ -153,9 +158,10 @@ func (p *Provider) GetPrecipURL(facility string, t time.Time) (string, time.Time
 
 // GetAtmosGrid returns atmospheric grid for simulation.
 // GCS and RPC provide full spatial grids; local fallback provides a single
-// averaged sample. Returns atmos, its time, and the next time in the series.
-// If station is non-empty and no atmos data is available, creates a
-// fallback grid from that station's METAR wind data.
+// averaged sample. Returns atmos, its time, and the next time in the series,
+// which is noNextTime after the last one. If station is non-empty and no
+// atmos data is available, creates a fallback grid from that station's METAR
+// wind data, which has a zero time and noNextTime.
 func (p *Provider) GetAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
 	if ar, ok := p.lookupAtmosGridCache(facility, t, station); ok {
 		return ar.atmos, ar.time, ar.nextTime, nil
@@ -188,14 +194,7 @@ func (p *Provider) lookupAtmosGridCache(facility string, t time.Time, station st
 		}
 
 		ar, ok := p.atmosGridCache.Get(key)
-		if !ok || ar.atmos == nil || ar.time.After(t) {
-			continue
-		}
-		if ar.nextTime.IsZero() {
-			if ar.time.Equal(t) {
-				return ar, true
-			}
-		} else if t.Before(ar.nextTime) {
+		if ok && ar.atmos != nil && !ar.time.After(t) && t.Before(ar.nextTime) {
 			return ar, true
 		}
 	}
@@ -337,16 +336,12 @@ func (g *gcsBackend) getPrecipURL(facility string, t time.Time) (string, time.Ti
 	if found {
 		next++
 	}
-	var nextTime time.Time
+	if next == 0 {
+		return "", time.Time{}, fmt.Errorf("%s: no radar at or before %s", facility, t.Format(time.RFC3339))
+	}
+	nextTime := noNextTime
 	if next < len(times) {
 		nextTime = times[next]
-	}
-
-	// When t is in a gap in the data, or before or after it, return no
-	// image rather than a stale one. The tolerance is the one that start
-	// times are chosen with, so a sim started in a covered day has radar.
-	if next == 0 || t.Sub(times[next-1]) > precipIntervalTolerance {
-		return "", nextTime, nil
 	}
 
 	path := BuildObjectPath("precip", facility, times[next-1])
@@ -364,7 +359,7 @@ func (g *gcsBackend) getAtmosGrid(facility string, t time.Time, station string) 
 	times, ok := g.atmosManifest.GetTimestamps(facility)
 	if !ok {
 		atmos, err := createFallbackAtmos(station, facility, t)
-		return atmos, time.Time{}, time.Time{}, err
+		return atmos, time.Time{}, noNextTime, err
 	}
 
 	idx, err := util.FindTimeAtOrBefore(times, t)
@@ -378,7 +373,7 @@ func (g *gcsBackend) getAtmosGrid(facility string, t time.Time, station string) 
 		return nil, time.Time{}, time.Time{}, err
 	}
 
-	var nextTime time.Time
+	nextTime := noNextTime
 	if idx+1 < len(times) {
 		nextTime = times[idx+1]
 	}
@@ -396,7 +391,7 @@ type PrecipURLArgs struct {
 }
 
 type PrecipURL struct {
-	URL      string // empty if there's no radar for the time
+	URL      string
 	NextTime time.Time
 }
 
@@ -586,13 +581,14 @@ func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, station
 		if fallbackErr != nil {
 			return nil, time.Time{}, time.Time{}, fmt.Errorf("%s: no atmos data and fallback failed: %w", facility, fallbackErr)
 		}
-		return atmos, time.Time{}, time.Time{}, nil
+		return atmos, time.Time{}, noNextTime, nil
 	}
 
 	// Find the time at or before the requested time as well as the next
 	// time where we have atmos data. This is intentionally linear: local
 	// resources are only queried hourly and via .WIND.
-	var t0, t1 time.Time
+	var t0 time.Time
+	t1 := noNextTime
 	var sampleStack *AtmosSampleStack
 
 	for tStack, stack := range atmosByTime.SampleStacks {
@@ -601,7 +597,7 @@ func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, station
 				t0 = tStack
 				sampleStack = stack
 			}
-		} else if t1.IsZero() || tStack.Before(t1) {
+		} else if tStack.Before(t1) {
 			t1 = tStack
 		}
 	}
