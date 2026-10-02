@@ -86,10 +86,11 @@ type CommonState struct {
 
 	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
-	DepartureRunways []DepartureRunway
-	ArrivalRunways   []ArrivalRunway
-	InboundFlows     map[string]*av.InboundFlow
-	Emergencies      []Emergency
+	DepartureRunways   []DepartureRunway
+	ArrivalRunways     []ArrivalRunway
+	HistoricalScenario bool
+	InboundFlows       map[string]*av.InboundFlow
+	Emergencies        []Emergency
 
 	Center                    math.Point2LL
 	Range                     float32
@@ -306,10 +307,11 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 		ConfigurationId: config.ConfigurationId,
 		ListedPositions: maps.Clone(config.ControllerConfiguration.ListedPositions),
 
-		DepartureRunways: config.DepartureRunways,
-		ArrivalRunways:   config.ArrivalRunways,
-		InboundFlows:     config.InboundFlows,
-		Emergencies:      config.Emergencies,
+		DepartureRunways:   config.DepartureRunways,
+		ArrivalRunways:     config.ArrivalRunways,
+		InboundFlows:       config.InboundFlows,
+		HistoricalScenario: config.HistoricalScenario,
+		Emergencies:        config.Emergencies,
 
 		Center:                    config.Center,
 		Range:                     config.Range,

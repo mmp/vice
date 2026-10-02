@@ -140,7 +140,14 @@ func (ss *CommonState) placeArrivalAmong(candidates []candidateArrival, arrivalA
 	// working one gate of an airport shouldn't be handed every flight bound for
 	// the others.
 	if routes := scenarioRoutes(origin); len(routes) > 0 {
-		c, route, err := matchArrivalRoutes(candidates, aircraftType, routes, arrivalAirport, origin)
+		match := matchArrivalRoutes
+		if ss.HistoricalScenario {
+			all := ss.candidateArrivals(arrivalAirport, true)
+			match = func(candidates []candidateArrival, aircraftType string, routes []string, airport, origin av.ICAOAirportCode) (candidateArrival, string, error) {
+				return matchHistoricalArrivalRoutes(candidates, all, aircraftType, routes, airport, origin)
+			}
+		}
+		c, route, err := match(candidates, aircraftType, routes, arrivalAirport, origin)
 		if err != nil {
 			// The route comes back with the error: it is what says why the
 			// scenario has no way to fly the flight.
@@ -148,6 +155,14 @@ func (ss *CommonState) placeArrivalAmong(candidates []candidateArrival, arrivalA
 		}
 		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, nil),
 			"scenario route"), nil
+	}
+	// Today's routes cannot identify which retired procedure a historical flight
+	// used. Without an explicit scenario route, approximate its gate by direction.
+	if ss.HistoricalScenario {
+		if c, ok := arrivalNearestArc(suitableArrivals(candidates, aircraftType), arrivalAirport, origin); ok {
+			return c.placement("", "", CruiseLimits{}, "historical great-circle gate"), nil
+		}
+		return arrivalPlacement{}, errNoPlausibleArrival
 	}
 	if scraped, faa := scrapedRoutes(origin), faaRoutes(origin); len(scraped)+len(faa) > 0 {
 		names := scrapedNames(scraped)
@@ -441,4 +456,54 @@ func arrivalNearestArc(candidates []candidateArrival, arrivalAirport,
 		return candidateArrival{}, false
 	}
 	return candidates[best], true
+}
+
+// matchHistoricalArrivalRoutes recognizes scenario-defined STARs even when they
+// are absent from current CIFP. all includes disabled flows so an explicit route
+// to one cannot silently fall back to another arrival. Preserve override order.
+func matchHistoricalArrivalRoutes(candidates, all []candidateArrival, aircraftType string, routes []string,
+	airport, origin av.ICAOAirportCode) (candidateArrival, string, error) {
+	var firstErr error
+	var firstRoute string
+	for _, route := range routes {
+		fields := strings.Fields(route)
+		if len(fields) > 0 && traffic.NormalizeAirportCode(av.ICAOAirportCode(fields[len(fields)-1])) == airport {
+			fields = fields[:len(fields)-1]
+		}
+		star := ""
+		if len(fields) > 0 {
+			token := fields[len(fields)-1]
+			if slices.ContainsFunc(all, func(c candidateArrival) bool { return slices.Contains(c.arr.ServedSTARs(), token) }) {
+				star = token
+			}
+		}
+		var c candidateArrival
+		var err error
+		if star == "" {
+			c, err = matchArrivalRoute(candidates, aircraftType, route, airport, origin)
+		} else {
+			matching := util.FilterSlice(candidates, func(c candidateArrival) bool { return slices.Contains(c.arr.ServedSTARs(), star) })
+			if len(matching) == 0 {
+				err = fmt.Errorf("%w %s into %s", errArrivalSTARInactive, star, airport)
+			} else if matching = suitableArrivals(matching, aircraftType); len(matching) == 0 {
+				err = errNoSuitableArrival
+			} else if len(matching) == 1 {
+				c = matching[0]
+			} else if chosen, ok := arrivalNearestArc(matching, airport, origin); ok {
+				c = chosen
+			} else {
+				err = errNoPlausibleArrival
+			}
+		}
+		if err == nil {
+			return c, route, nil
+		}
+		if firstErr == nil {
+			firstErr, firstRoute = err, route
+		}
+	}
+	if firstErr == nil {
+		firstErr = errNoPlausibleArrival
+	}
+	return candidateArrival{}, firstRoute, firstErr
 }
