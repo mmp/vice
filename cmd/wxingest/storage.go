@@ -140,6 +140,11 @@ func MakeGCSBackend(bucketName string) (StorageBackend, error) {
 	if err != nil {
 		return nil, err
 	}
+	// By default the client only retries idempotent operations, which
+	// excludes writes, copies, and deletes without preconditions. Ours are
+	// safe to repeat, and retrying with backoff is how GCS expects clients to
+	// handle 429s while a bucket scales up to a burst of Cloud Run tasks.
+	client.SetRetry(storage.WithPolicy(storage.RetryAlways))
 
 	return &GCSBackend{
 		ctx:    context.Background(),
