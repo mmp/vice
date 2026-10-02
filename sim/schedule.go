@@ -855,14 +855,10 @@ func (s *Sim) spawnScheduledArrivals() {
 			continue
 		}
 
-		if e.Source != TrafficSourceScenario {
-			if _, ok := lc.InboundFlowRates[e.Group][string(e.ArrivalAirport)]; !ok ||
-				!lc.InboundFlowEnabled[e.Group][string(e.ArrivalAirport)] {
-				// This scenario isn't landing traffic at that airport.
-				s.discardPublishedArrival(e.ArrivalAirport, e.Group)
-				s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
-				continue
-			}
+		if e.Source != TrafficSourceScenario && !lc.landsArrivals(e.Group, e.ArrivalAirport) {
+			s.discardPublishedArrival(e.ArrivalAirport, e.Group)
+			s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
+			continue
 		}
 
 		// Scenario arrivals were spaced by their flow's rate when they were

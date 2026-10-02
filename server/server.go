@@ -108,7 +108,8 @@ import (
 // 96: published arrivals are spaced per inbound flow by miles in trail: added Sim.ArrivalLaunches
 // 97: removed aviation.FlightPlan removed
 // 98: reworked TTS and pilot transmission flow
-const ViceSerializeVersion = 99
+// 100: published arrival spacing looks ahead along the flow: Sim.ArrivalLaunches holds each flow's last launch
+const ViceSerializeVersion = 100
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

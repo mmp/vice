@@ -70,9 +70,9 @@ type Sim struct {
 	// of one runway: two departures over the same fix must be spaced
 	// whichever runways they use.
 	LastExitLaunch map[av.ICAOAirportCode]map[av.ExitID]Time
-	// ArrivalLaunches holds each inbound flow's arrivals launched over the
-	// last arrivalTrailWindow, which space the flow's next published ones.
-	ArrivalLaunches map[string][]ArrivalLaunch
+	// ArrivalLaunches holds each inbound flow's last launch, which spaces the
+	// flow's next published arrivals.
+	ArrivalLaunches map[string]ArrivalLaunch
 	// Airport -> pattern state
 	PatternState   map[av.ICAOAirportCode]*PatternState
 	NextVFFRequest Time

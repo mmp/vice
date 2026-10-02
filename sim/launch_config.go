@@ -425,6 +425,13 @@ func (lc *LaunchConfig) landsAirport(airport av.ICAOAirportCode) bool {
 	return false
 }
 
+// landsArrivals reports whether the scenario lands an inbound flow's traffic
+// at an airport.
+func (lc *LaunchConfig) landsArrivals(flow string, airport av.ICAOAirportCode) bool {
+	_, ok := lc.InboundFlowRates[flow][string(airport)]
+	return ok && lc.InboundFlowEnabled[flow][string(airport)]
+}
+
 // MaxPublishedRateScale is how much faster than the data's own pace published
 // traffic can be flown.
 const MaxPublishedRateScale = 4

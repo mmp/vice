@@ -120,18 +120,24 @@ func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, filedRoute string, 
 }
 
 // Published arrivals come when their data says, so each inbound flow spaces
-// them into a single stream the way a center delivers one: never closer than
-// minArrivalTrailNM miles in trail, and at least arrivalTrailNM on average
-// over any arrivalTrailWindow. Nothing outside the flow has a say in when its
-// arrivals launch. Scenario arrivals are spaced by their flow's rate instead.
+// them into a single stream the way a center delivers one. Like a string of
+// aircraft joined by springs, each gap opens up to arrivalTrailNM miles in
+// trail, closing up toward minArrivalTrailNM only as far as the arrivals due
+// over the next arrivalLookahead need to launch within maxArrivalHold of
+// their data times. minArrivalTrailNM is a hard floor: when the data has more
+// arrivals than fit at that spacing, they launch more than maxArrivalHold
+// late. Nothing outside the flow has a say in when its arrivals launch.
+// Scenario arrivals are spaced by their flow's rate instead.
 const (
-	minArrivalTrailNM  = 6
-	arrivalTrailNM     = 10
-	arrivalTrailWindow = 30 * time.Minute
+	minArrivalTrailNM = 6
+	arrivalTrailNM    = 10
+	maxArrivalHold    = 3 * time.Minute
+	arrivalLookahead  = 30 * time.Minute
 )
 
-// ArrivalLaunch is an arrival launched from an inbound flow. Its true airspeed
-// at the spawn point says how long it takes to open up the trail behind it.
+// ArrivalLaunch is the last arrival launched from an inbound flow. Its true
+// airspeed at the spawn point says how long it takes to open up the trail
+// behind it.
 type ArrivalLaunch struct {
 	Time Time
 	TAS  float32
@@ -142,36 +148,38 @@ func (l ArrivalLaunch) timeToFly(nm float32) time.Duration {
 }
 
 // arrivalFlowSpaced reports whether the inbound flow may launch its next
-// arrival: every aircraft it launched within the window has flown
-// minArrivalTrailNM, and the time each of them needs to open arrivalTrailNM
-// doesn't add up to the whole window.
+// arrival. The flow's queued arrivals follow its last launch at an even
+// spacing: the widest, up to arrivalTrailNM, that launches the kth of them no
+// later than maxArrivalHold past its data time. minArrivalTrailNM is a hard
+// floor: when even that can't keep them within maxArrivalHold, they go at
+// minArrivalTrailNM and launch later.
 func (s *Sim) arrivalFlowSpaced(group string) bool {
-	now := s.State.SimTime
-	var reserved time.Duration
-	for _, l := range s.ArrivalLaunches[group] {
-		since := now.Sub(l.Time)
-		if since >= arrivalTrailWindow {
-			continue
-		}
-		if since < l.timeToFly(minArrivalTrailNM) {
-			return false
-		}
-		reserved += l.timeToFly(arrivalTrailNM)
+	last, ok := s.ArrivalLaunches[group]
+	if !ok {
+		return true
 	}
-	return reserved < arrivalTrailWindow
+	lc := &s.State.LaunchConfig
+	trail := last.timeToFly(arrivalTrailNM)
+	horizon := s.State.SimTime.Add(arrivalLookahead)
+	k := 0
+	for _, e := range s.Schedule.Arrivals {
+		if e.SpawnTime.After(horizon) {
+			break
+		}
+		if e.Group == group && e.DropReason == "" && lc.landsArrivals(group, e.ArrivalAirport) {
+			k++
+			trail = min(trail, e.SpawnTime.Add(maxArrivalHold).Sub(last.Time)/time.Duration(k))
+		}
+	}
+	return s.State.SimTime.Sub(last.Time) >= max(trail, last.timeToFly(minArrivalTrailNM))
 }
 
-// recordArrivalLaunch adds ac to its inbound flow's launches, dropping the
-// ones that have aged out of the window.
+// recordArrivalLaunch makes ac its inbound flow's last launch.
 func (s *Sim) recordArrivalLaunch(group string, ac *Aircraft) {
-	now := s.State.SimTime
 	if s.ArrivalLaunches == nil {
-		s.ArrivalLaunches = make(map[string][]ArrivalLaunch)
+		s.ArrivalLaunches = make(map[string]ArrivalLaunch)
 	}
-	launches := util.FilterSlice(s.ArrivalLaunches[group], func(l ArrivalLaunch) bool {
-		return now.Sub(l.Time) < arrivalTrailWindow
-	})
-	s.ArrivalLaunches[group] = append(launches, ArrivalLaunch{Time: now, TAS: ac.TAS(s.temperatureAt(ac))})
+	s.ArrivalLaunches[group] = ArrivalLaunch{Time: s.State.SimTime, TAS: ac.TAS(s.temperatureAt(ac))}
 }
 
 // createScheduledOverflight creates the overflight a schedule entry describes;
