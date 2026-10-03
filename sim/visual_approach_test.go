@@ -139,7 +139,7 @@ func (vs *VisualScenario) ClearedVisual(runway string) (speech.CommandIntent, er
 	if vs.AC.Nav.Approach.AssignedId != id {
 		_, _ = vs.Sim.ExpectApproach(vs.tcw, vs.callsign, id)
 	}
-	return vs.Sim.ClearedApproach(vs.tcw, vs.callsign, id, true)
+	return vs.Sim.ClearedApproach(vs.tcw, vs.callsign, id, true, 0)
 }
 
 // AdvanceTime moves sim time forward by d.
@@ -2267,7 +2267,7 @@ func TestScenarioEVAInvalidRunwayIsUnable(t *testing.T) {
 	setupTestRunway(t, "KJFK", av.Runway{Id: "22L", Heading: 220, Threshold: airportLoc, Elevation: 13})
 
 	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
-	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA2LL", 0)
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA2LL", 0, 0)
 
 	if res.Error != nil {
 		t.Fatalf("expected nil error (unable is an intent, not an error), got %v", res.Error)
@@ -2290,7 +2290,7 @@ func TestScenarioEVAInactiveRunwayIsUnable(t *testing.T) {
 	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
 	vs.Sim.State.ArrivalRunways = []ArrivalRunway{{Airport: "KJFK", Runway: "22L"}}
 
-	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA31R", 0)
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "EVA31R", 0, 0)
 
 	if res.Error != nil {
 		t.Fatalf("expected nil error (unable is an intent, not an error), got %v", res.Error)
@@ -2315,7 +2315,7 @@ func TestScenarioCVAWithoutEVASynthesizesAssignment(t *testing.T) {
 	vs.AC.FieldInSight = true
 	vs.AC.Nav.Approach = nav.Approach{}
 
-	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0)
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0, 0)
 	if strings.Contains(strings.ToLower(res.ReadbackSpokenText), "unable") {
 		t.Fatalf("CVA with FieldInSight=true should not be unable: %q", res.ReadbackSpokenText)
 	}
@@ -2337,7 +2337,7 @@ func TestScenarioCVAWithoutEVANoFieldInSight(t *testing.T) {
 	vs := NewVisualScenario(t, airportLoc, "22L", math.Point2LL{0, 5.0 / 60}, 180)
 	vs.AC.Nav.Approach = nav.Approach{}
 
-	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0)
+	res := vs.Sim.RunAircraftControlCommands(vs.tcw, vs.callsign, "CVA22L", 0, 0)
 	if !strings.Contains(strings.ToLower(res.ReadbackSpokenText), "field in sight") {
 		t.Fatalf("expected 'field in sight' unable, got %q", res.ReadbackSpokenText)
 	}

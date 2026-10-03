@@ -520,13 +520,13 @@ func TestScriptedCommandsLeaveRollbackHistoryAlone(t *testing.T) {
 		s.Aircraft[cs] = MakeTestAircraft(cs, "22L")
 	}
 
-	if res := s.RunAircraftControlCommands(E2ETCW(), "AAL111", "L010", 0); res.Error != nil {
+	if res := s.RunAircraftControlCommands(E2ETCW(), "AAL111", "L010", 0, 0); res.Error != nil {
 		t.Fatal(res.Error)
 	}
 	if res := s.RunScriptedControlCommands(E2ETCW(), "AAL222", "L040"); res.Error != nil {
 		t.Fatal(res.Error)
 	}
-	s.RunAircraftControlCommands(E2ETCW(), "AAL111", "ROLLBACK", 0)
+	s.RunAircraftControlCommands(E2ETCW(), "AAL111", "ROLLBACK", 0, 0)
 
 	if _, ok := s.Aircraft["AAL111"].Nav.AssignedHeading(); ok {
 		t.Error("rollback did not undo the controller's own transmission")

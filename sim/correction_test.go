@@ -33,7 +33,7 @@ func makeCorrectionSim() *Sim {
 
 func runCorrectionCommand(t *testing.T, s *Sim, tcw TCW, callsign av.ADSBCallsign, commands string) {
 	t.Helper()
-	if res := s.RunAircraftControlCommands(tcw, callsign, commands, 0); res.Error != nil {
+	if res := s.RunAircraftControlCommands(tcw, callsign, commands, 0, 0); res.Error != nil {
 		t.Fatalf("%s: %s %s: %v", tcw, callsign, commands, res.Error)
 	}
 }
@@ -122,21 +122,21 @@ func TestCorrectionFrequencyTransfer(t *testing.T) {
 			runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "L010 D20")
 			switch transfer {
 			case "controller":
-				s.contactController("125.0", &FlightPlan{}, ac, "126.0")
+				s.contactController("125.0", &FlightPlan{}, ac, "126.0", 0)
 			case "tower":
 				ac.Nav.Approach.Cleared = true
 				runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "TO")
 			case "radar services terminated":
-				if _, err := s.RadarServicesTerminated(E2ETCW(), ac.ADSBCallsign); err != nil {
+				if _, err := s.RadarServicesTerminated(E2ETCW(), ac.ADSBCallsign, 0); err != nil {
 					t.Fatal(err)
 				}
 			}
 
-			res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "CORRECTION L020", 0)
+			res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "CORRECTION L020", 0, 0)
 			if !errors.Is(res.Error, av.ErrOtherControllerHasTrack) {
 				t.Fatalf("correction after leaving frequency: %v", res.Error)
 			}
-			if res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "ROLLBACK", 0); res.Error != nil {
+			if res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "ROLLBACK", 0, 0); res.Error != nil {
 				t.Fatal(res.Error)
 			}
 			assertHeading(t, s, "UAL123", 10)

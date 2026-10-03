@@ -311,19 +311,21 @@ func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string, dela
 
 // ClimbViaSID is "climb via SID", with "except maintain exceptAlt" if it is
 // non-nil.
-func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32) (speech.CommandIntent, error) {
+func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32,
+	delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.ClimbViaSID(exceptAlt, s.State.SimTime)
+			return ac.ClimbViaSID(exceptAlt, s.State.SimTime, delayReduction)
 		})
 }
 
 // DescendViaSTAR is "descend via STAR", with "except maintain exceptAlt" if
 // it is non-nil.
-func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32) (speech.CommandIntent, error) {
+func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign, exceptAlt *float32,
+	delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.DescendViaSTAR(exceptAlt, s.State.SimTime)
+			return ac.DescendViaSTAR(exceptAlt, s.State.SimTime, delayReduction)
 		})
 }
 
@@ -601,10 +603,10 @@ func (s *Sim) AltitudeOurDiscretion(tcw TCW, callsign av.ADSBCallsign) (speech.C
 		})
 }
 
-func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
+func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign, delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
+			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode, delayReduction)
 
 			// Leave our frequency
 			s.cancelFutureFrequencyChange(ac.ADSBCallsign)

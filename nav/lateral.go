@@ -118,7 +118,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 		nav.climbToCruise(alt)
 	}
 	nav.Speed = Speed{}
-	nav.EnqueueOnCourse(simTime)
+	nav.EnqueueOnCourse(simTime, 0)
 }
 
 // climbToCruise sends the aircraft up to the given cruise altitude. A

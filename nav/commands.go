@@ -1370,7 +1370,7 @@ func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
 // non-nil. Otherwise the aircraft climbs to its cruise altitude: the
 // scenario's cleared altitude for a departure is an earlier controller's
 // "except maintain", and cruise is the only top altitude it gives a SID.
-func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time) speech.CommandIntent {
+func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	intent := speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID, ExceptAltitude: exceptAlt}
 	if exceptAlt != nil {
 		if *exceptAlt > nav.Perf.Ceiling {
@@ -1387,14 +1387,14 @@ func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time) speech.CommandInte
 		return speech.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
-	nav.resumeProcedureCourse(simTime)
+	nav.resumeProcedureCourse(simTime, delayReduction)
 	return intent
 }
 
 // DescendViaSTAR is "descend via STAR", with "except maintain exceptAlt" if
 // it is non-nil; otherwise the aircraft descends to the STAR's last
 // restriction.
-func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandIntent {
+func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	intent := speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR, ExceptAltitude: exceptAlt}
 	if exceptAlt != nil {
 		if *exceptAlt > nav.Perf.Ceiling {
@@ -1412,7 +1412,7 @@ func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandI
 		return speech.MakeUnableIntent("unable. We're not on a STAR")
 	}
 
-	nav.resumeProcedureCourse(simTime)
+	nav.resumeProcedureCourse(simTime, delayReduction)
 	return intent
 }
 
@@ -1420,9 +1420,9 @@ func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandI
 // clearance. One flying a heading to rejoin the procedure keeps doing so;
 // the clearance is a new altitude, so the heading no longer captures an
 // altitude floor when it takes effect.
-func (nav *Nav) resumeProcedureCourse(simTime Time) {
+func (nav *Nav) resumeProcedureCourse(simTime Time, delayReduction time.Duration) {
 	if nav.pendingJoin() == nil {
-		nav.EnqueueOnCourse(simTime)
+		nav.EnqueueOnCourse(simTime, delayReduction)
 	} else if dh := nav.DeferredNavHeading; dh != nil {
 		dh.SnapshotAltitudeOnEffect = false
 	}

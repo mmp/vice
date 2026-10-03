@@ -58,7 +58,7 @@ func TestCommandValidation(t *testing.T) {
 
 	t.Run("ClearedApproachWithoutExpect", func(t *testing.T) {
 		f := makeNav(t)
-		intent := f.nav.ClearedApproach("I22L", nil, f.simTime, false, "")
+		intent := f.nav.ClearedApproach("I22L", nil, f.simTime, 0, false, "")
 		AssertUnable(t, intent)
 	})
 
@@ -72,7 +72,7 @@ func TestCommandValidation(t *testing.T) {
 			InitialAltitude:  11000,
 			InitialSpeed:     250,
 		})
-		intent := f.nav.DescendViaSTAR(nil, f.simTime)
+		intent := f.nav.DescendViaSTAR(nil, f.simTime, 0)
 		AssertUnable(t, intent)
 	})
 
@@ -1014,9 +1014,9 @@ func TestViaExceptionValidation(t *testing.T) {
 			before := *f.nav
 			var intent speech.CommandIntent
 			if test.climb {
-				intent = f.nav.ClimbViaSID(&test.exception, f.simTime)
+				intent = f.nav.ClimbViaSID(&test.exception, f.simTime, 0)
 			} else {
-				intent = f.nav.DescendViaSTAR(&test.exception, f.simTime)
+				intent = f.nav.DescendViaSTAR(&test.exception, f.simTime, 0)
 			}
 			if test.refusal != "" {
 				AssertUnable(t, intent)

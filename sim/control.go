@@ -15,13 +15,6 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// callsignAudioOffset is the approximate time taken by the callsign at the
-// start of a voice transmission. When a controller issues a long instruction,
-// we subtract (audioDuration - callsignAudioOffset) from the pilot-reaction
-// delay in the Nav layer to offset the latency already spent receiving the
-// voice transmission.
-const callsignAudioOffset = time.Second
-
 // TCWCanCommandAircraft returns true if the TCW can issue ATC commands to an aircraft
 // (altitude, heading, speed, etc.). This is true if the TCW is privileged or controls
 // the position whose frequency the aircraft is tuned to.

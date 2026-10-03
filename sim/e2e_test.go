@@ -322,7 +322,7 @@ func TestE2E_STTToSim(t *testing.T) {
 			}
 
 			// Step 4: Execute command
-			res := s.RunAircraftControlCommands(sim.E2ETCW(), av.ADSBCallsign(callsign), commands, 0)
+			res := s.RunAircraftControlCommands(sim.E2ETCW(), av.ADSBCallsign(callsign), commands, 0, 0)
 
 			if tt.wantError && res.Error == nil {
 				t.Error("expected error from command dispatch, got nil")
@@ -402,7 +402,7 @@ func correctionRunner(t *testing.T, s *sim.Sim, aircraft map[string]stt.Aircraft
 			t.Fatalf("%q decoded to %q, want %q", transcript, decoded, want)
 		}
 		cs, commands := splitCallsignAndCommands(decoded)
-		if res := s.RunAircraftControlCommands(sim.E2ETCW(), av.ADSBCallsign(cs), commands, 0); res.Error != nil {
+		if res := s.RunAircraftControlCommands(sim.E2ETCW(), av.ADSBCallsign(cs), commands, 0, 0); res.Error != nil {
 			t.Fatalf("dispatch %q: %v (remaining %q)", decoded, res.Error, res.RemainingInput)
 		}
 	}

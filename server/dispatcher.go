@@ -574,7 +574,7 @@ type AircraftCommandsArgs struct {
 	Multiple          bool
 	ClickedTrack      bool
 	EnableTTS         bool          // Whether to synthesize readback audio
-	WhisperDuration   time.Duration // Time from PTT release to whisper completion (zero for keyboard input)
+	WhisperDuration   time.Duration // Time from PTT release until the transcript was decoded (zero for keyboard input)
 	AudioDuration     time.Duration // Duration of the recorded audio (zero for keyboard input)
 	WhisperTranscript string        // Raw whisper transcript (empty for keyboard input)
 	WhisperPrompt     string        // Initial prompt given to whisper (empty for keyboard input)
@@ -610,9 +610,10 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	}
 
 	// What the controller asked for goes into the session log; how the speech
-	// recognizer heard them doesn't.
+	// recognizer heard them doesn't. The audio and recognition durations are
+	// kept: they set how soon pilots act on the commands.
 	recorded := *cmds
-	recorded.WhisperDuration, recorded.WhisperTranscript, recorded.WhisperPrompt = 0, "", ""
+	recorded.WhisperTranscript, recorded.WhisperPrompt = "", ""
 	recorded.WhisperProcessor, recorded.WhisperModel = "", ""
 	recorded.AircraftContext, recorded.STTDebugLogs = nil, nil
 
@@ -645,7 +646,8 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			return cmp.Or(err, errPilotMixUp)
 		}
 
-		execResult := c.sim.RunAircraftControlCommands(c.tcw, cmds.Callsign, cmds.Commands, cmds.AudioDuration)
+		execResult := c.sim.RunAircraftControlCommands(c.tcw, cmds.Callsign, cmds.Commands, cmds.AudioDuration,
+			cmds.WhisperDuration)
 		result.RemainingInput = execResult.RemainingInput
 		if execResult.Error != nil {
 			result.ErrorMessage = execResult.Error.Error()

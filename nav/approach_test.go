@@ -311,7 +311,7 @@ func TestChartedVisualClearancePreservesActiveArc(t *testing.T) {
 					n.DeferredNavHeading = &DeferredNavHeading{Waypoints: route[i+1:].Clone()}
 				}
 
-				if intent := n.ClearedApproach("V25R", nil, Time{}, false, ""); !n.Approach.Cleared {
+				if intent := n.ClearedApproach("V25R", nil, Time{}, 0, false, ""); !n.Approach.Cleared {
 					t.Fatalf("clearance failed: %v", intent)
 				}
 				if phase == "pending direct" {
@@ -538,7 +538,7 @@ func TestChartedVisualClearedAtPassedFeederFix(t *testing.T) {
 		},
 	}
 
-	intent := n.ClearedApproach("", nil, Time{}, false, "D1")
+	intent := n.ClearedApproach("", nil, Time{}, 0, false, "D1")
 	if _, unable := intent.(speech.UnableIntent); unable {
 		t.Fatalf("unexpected unable intent: %v", intent)
 	}
@@ -1122,7 +1122,7 @@ func TestClearedApproachAfterVectorEstablishmentSkipsProcedureTurn(t *testing.T)
 			if !f.nav.Approach.NoPT {
 				t.Errorf("expected NoPT once established on the localizer via vectors, before clearance")
 			}
-			if intent := f.nav.ClearedApproach("I28R", nil, f.simTime, false, ""); intent == nil {
+			if intent := f.nav.ClearedApproach("I28R", nil, f.simTime, 0, false, ""); intent == nil {
 				t.Fatal("no intent from the approach clearance")
 			}
 			if !f.nav.Approach.Cleared {
@@ -1181,7 +1181,7 @@ func TestClearedApproachDirectToFixStillFliesProcedureTurn(t *testing.T) {
 		t.Error("NoPT should not be set yet: not cleared, and FUZYY has a procedure turn")
 	}
 
-	if intent := f.nav.ClearedApproach("I28R", nil, f.simTime, false, ""); intent == nil {
+	if intent := f.nav.ClearedApproach("I28R", nil, f.simTime, 0, false, ""); intent == nil {
 		t.Fatal("no intent from the approach clearance")
 	}
 	if !f.nav.Approach.Cleared {

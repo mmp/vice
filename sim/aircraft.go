@@ -500,8 +500,9 @@ func (ac *Aircraft) PilotMixUp() speech.CommandIntent {
 	}
 }
 
-func (ac *Aircraft) Ident(now Time) speech.CommandIntent {
-	ac.IdentStartTime = now.Add(ac.Nav.Rand.DurationRange(2*time.Second, 5*time.Second)) // delay the start a bit
+func (ac *Aircraft) Ident(now Time, delayReduction time.Duration) speech.CommandIntent {
+	// delay the start a bit
+	ac.IdentStartTime = now.Add(max(ac.Nav.Rand.DurationRange(2*time.Second, 5*time.Second)-delayReduction, 0))
 	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
 	return speech.TransponderIntent{Ident: true}
 }
@@ -698,31 +699,33 @@ func (ac *Aircraft) AtFixIntercept(fix string, simTime Time, delayReduction time
 	return ac.Nav.AtFixIntercept(fix, simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) ClearedApproach(id string, simTime Time, follow *nav.FollowTraffic) speech.CommandIntent {
-	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), false, "")
+func (ac *Aircraft) ClearedApproach(id string, simTime Time, delayReduction time.Duration,
+	follow *nav.FollowTraffic) speech.CommandIntent {
+	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), delayReduction, false, "")
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string, simTime Time, follow *nav.FollowTraffic) speech.CommandIntent {
-	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), true, "")
+func (ac *Aircraft) ClearedStraightInApproach(id string, simTime Time, delayReduction time.Duration,
+	follow *nav.FollowTraffic) speech.CommandIntent {
+	return ac.Nav.ClearedApproach(id, follow, simTime.NavTime(), delayReduction, true, "")
 }
 
 // ClearedApproachAtPassedFix issues the approach clearance a /clearapp route
 // action calls for at fix. The aircraft has already crossed fix and dropped it
 // from its route, so the approach is joined there rather than at a fix ahead.
 func (ac *Aircraft) ClearedApproachAtPassedFix(fix string, simTime Time) speech.CommandIntent {
-	return ac.Nav.ClearedApproach(ac.Nav.Approach.AssignedId, nil, simTime.NavTime(), false, fix)
+	return ac.Nav.ClearedApproach(ac.Nav.Approach.AssignedId, nil, simTime.NavTime(), 0, false, fix)
 }
 
 func (ac *Aircraft) CancelApproachClearance() speech.CommandIntent {
 	return ac.Nav.CancelApproachClearance()
 }
 
-func (ac *Aircraft) ClimbViaSID(exceptAlt *float32, simTime Time) speech.CommandIntent {
-	return ac.Nav.ClimbViaSID(exceptAlt, simTime.NavTime())
+func (ac *Aircraft) ClimbViaSID(exceptAlt *float32, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	return ac.Nav.ClimbViaSID(exceptAlt, simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) DescendViaSTAR(exceptAlt *float32, simTime Time) speech.CommandIntent {
-	return ac.Nav.DescendViaSTAR(exceptAlt, simTime.NavTime())
+func (ac *Aircraft) DescendViaSTAR(exceptAlt *float32, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	return ac.Nav.DescendViaSTAR(exceptAlt, simTime.NavTime(), delayReduction)
 }
 
 func (ac *Aircraft) ResumeOwnNavigation() speech.CommandIntent {

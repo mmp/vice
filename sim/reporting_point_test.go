@@ -333,7 +333,7 @@ func TestLandmarkLookEndsWithItsApproach(t *testing.T) {
 	if vs.lookingFor() != nil {
 		t.Error("look for the previous approach's bridge was kept")
 	}
-	intent, err := vs.Sim.ClearedApproach(vs.tcw, vs.callsign, "OTHER", false)
+	intent, err := vs.Sim.ClearedApproach(vs.tcw, vs.callsign, "OTHER", false, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -491,7 +491,7 @@ func TestChartedVisualClearanceRequiresSighting(t *testing.T) {
 				c.setup(vs)
 			}
 
-			intent, err := vs.Sim.ClearedApproach(vs.tcw, vs.callsign, "V36", false)
+			intent, err := vs.Sim.ClearedApproach(vs.tcw, vs.callsign, "V36", false, 0)
 			if err != nil {
 				t.Fatalf("ClearedApproach error: %v", err)
 			}

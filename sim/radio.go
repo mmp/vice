@@ -479,7 +479,7 @@ func (s *Sim) processVirtualControllerContacts() {
 // Called when an aircraft should contact a controller (after handoff accepted, etc.)
 // fromPos is the controller position the aircraft is coming from, used to
 // determine whether this is the first contact in a TRACON facility (for ATIS reporting).
-func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPosition) {
+func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPosition, delayReduction time.Duration) {
 	if tcp == "" {
 		s.lg.Errorf("%s: no controller to send the pilot to", ac.ADSBCallsign)
 		return
@@ -488,13 +488,16 @@ func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPos
 	// Aircraft will switch frequency (2-4 sec), then listen before transmitting (3-6 sec).
 	switchDelay := s.Rand.DurationRange(2*time.Second, 5*time.Second)
 	listenDelay := s.Rand.DurationRange(3*time.Second, 7*time.Second)
-	s.FutureFrequencyChanges = append(s.FutureFrequencyChanges,
-		FutureFrequencyChange{ADSBCallsign: ac.ADSBCallsign, TCP: tcp, Time: s.State.SimTime.Add(switchDelay)})
+	s.FutureFrequencyChanges = append(s.FutureFrequencyChanges, FutureFrequencyChange{
+		ADSBCallsign: ac.ADSBCallsign,
+		TCP:          tcp,
+		Time:         s.State.SimTime.Add(max(switchDelay-delayReduction, 0)),
+	})
 
 	s.addPendingContact(PendingContact{
 		ADSBCallsign: ac.ADSBCallsign,
 		TCP:          tcp,
-		ReadyTime:    s.State.SimTime.Add(switchDelay + listenDelay),
+		ReadyTime:    s.State.SimTime.Add(max(switchDelay+listenDelay-delayReduction, 0)),
 		Type:         util.Select(ac.IsDeparture(), PendingTransmissionDeparture, PendingTransmissionArrival),
 		ATIS:         s.atisToReport(ac, tcp, fromPos),
 	})
@@ -548,7 +551,7 @@ func (s *Sim) virtualControllerTransferComms(ac *Aircraft, virtualTCP TCP, targe
 			s.processDeferredContact(ac)
 		} else {
 			// Virtual-to-human: realistic switch/listen delay.
-			s.enqueueControllerContact(ac, targetTCP, ControlPosition(virtualTCP))
+			s.enqueueControllerContact(ac, targetTCP, ControlPosition(virtualTCP), 0)
 		}
 	} else {
 		// Pilot hasn't reached the virtual's frequency yet. Store a
@@ -598,7 +601,7 @@ func (s *Sim) processDeferredContact(ac *Aircraft) {
 		s.processDeferredContact(ac)
 	} else {
 		// Virtual-to-human: realistic delay.
-		s.enqueueControllerContact(ac, targetTCP, ac.ControllerFrequency)
+		s.enqueueControllerContact(ac, targetTCP, ac.ControllerFrequency, 0)
 	}
 }
 
@@ -816,8 +819,9 @@ type FutureChangeSquawk struct {
 	Time         Time
 }
 
-func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk, mode av.TransponderMode) {
-	wait := s.Rand.DurationRange(5*time.Second, 10*time.Second)
+func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk, mode av.TransponderMode,
+	delayReduction time.Duration) {
+	wait := max(s.Rand.DurationRange(5*time.Second, 10*time.Second)-delayReduction, 0)
 	s.FutureSquawkChanges = append(s.FutureSquawkChanges,
 		FutureChangeSquawk{ADSBCallsign: callsign, Code: code, Mode: mode, Time: s.State.SimTime.Add(wait)})
 }

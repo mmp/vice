@@ -64,12 +64,20 @@ func TestSessionReplay(t *testing.T) {
 			return strings.HasPrefix(string(cs), "__") // unsupported datablocks
 		})
 		if len(callsigns) > 0 {
+			// Every other command is spoken; the voice timing sets how soon
+			// the pilot acts on it.
+			var audio, stt time.Duration
+			if i%2 == 1 {
+				audio, stt = 4*time.Second, 700*time.Millisecond
+			}
 			var cr AircraftCommandsResult
 			if err := sd.RunAircraftCommands(&AircraftCommandsArgs{
 				ControllerToken: token,
 				Callsign:        callsigns[i%len(callsigns)],
 				Commands:        commands[i%len(commands)],
 				ClickedTrack:    true,
+				AudioDuration:   audio,
+				WhisperDuration: stt,
 			}, &cr); err != nil {
 				t.Fatal(err)
 			}

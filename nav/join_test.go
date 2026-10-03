@@ -704,9 +704,9 @@ func TestViaClearancePreservesJoin(t *testing.T) {
 						t.Fatal("join has not taken effect")
 					}
 					if sid {
-						assertNotUnable(t, f.nav.ClimbViaSID(nil, f.simTime))
+						assertNotUnable(t, f.nav.ClimbViaSID(nil, f.simTime, 0))
 					} else {
-						assertNotUnable(t, f.nav.DescendViaSTAR(nil, f.simTime))
+						assertNotUnable(t, f.nav.DescendViaSTAR(nil, f.simTime, 0))
 					}
 					if f.nav.pendingJoin() == nil {
 						t.Fatal("via clearance cancelled the join")

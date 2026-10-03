@@ -834,7 +834,7 @@ func TestDescendViaSTARExceptMaintain(t *testing.T) {
 			InitialSpeed:     250,
 		})
 		alt := float32(8000)
-		if _, unable := f.nav.DescendViaSTAR(&alt, f.simTime).(speech.UnableIntent); unable {
+		if _, unable := f.nav.DescendViaSTAR(&alt, f.simTime, 0).(speech.UnableIntent); unable {
 			t.Fatal("expected descend via except maintain above the aircraft to be accepted")
 		}
 		f.AtFix("DETGY", func(f *FlightTest) { f.AssertAltitudeNear(8000, 50) })
@@ -918,7 +918,7 @@ func TestClimbViaSIDExceptMaintain(t *testing.T) {
 	t.Run("DescendsToException", func(t *testing.T) {
 		f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 7000, AssignedAltitude: 7000})
 		alt := float32(4000)
-		if _, unable := f.nav.ClimbViaSID(&alt, f.simTime).(speech.UnableIntent); unable {
+		if _, unable := f.nav.ClimbViaSID(&alt, f.simTime, 0).(speech.UnableIntent); unable {
 			t.Fatal("expected climb via except maintain below the aircraft to be accepted")
 		}
 		f.AtFix("GRAYN", func(f *FlightTest) { f.AssertAltitudeNear(4000, 50) })
@@ -940,7 +940,7 @@ func TestClimbViaSIDExceptMaintain(t *testing.T) {
 		f.nav.FinalAltitude = 35000
 		f.nav.FlightState.InitialDepartureClimb = true
 
-		if intent := f.nav.ClimbViaSID(nil, f.simTime); intent == nil {
+		if intent := f.nav.ClimbViaSID(nil, f.simTime, 0); intent == nil {
 			t.Fatal("expected climb via SID to be accepted with the SID's fixes ahead")
 		} else if _, unable := intent.(speech.UnableIntent); unable {
 			t.Fatalf("expected climb via SID to be accepted with the SID's fixes ahead, got %v", intent)
@@ -1657,7 +1657,7 @@ func (f *FlightTest) clearChartedVisual(cv chartedVisual) {
 	if intent := f.nav.ExpectApproach(cv.airport, "MV22L", nil); intent == nil {
 		f.t.Fatal("no intent from expect approach")
 	}
-	if intent, unable := f.nav.ClearedApproach("MV22L", nil, f.simTime, false, "").(speech.UnableIntent); unable {
+	if intent, unable := f.nav.ClearedApproach("MV22L", nil, f.simTime, 0, false, "").(speech.UnableIntent); unable {
 		f.t.Fatalf("unable to clear the charted visual: %v", intent)
 	}
 	if !f.nav.Approach.Cleared {

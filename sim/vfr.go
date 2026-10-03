@@ -255,28 +255,30 @@ func (s *Sim) generateFlightFollowingMessage(ac *Aircraft, r *rand.Rand) *speech
 	return rt
 }
 
-func (s *Sim) ChangeSquawk(tcw TCW, callsign av.ADSBCallsign, sq av.Squawk) (speech.CommandIntent, error) {
+func (s *Sim) ChangeSquawk(tcw TCW, callsign av.ADSBCallsign, sq av.Squawk,
+	delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
+			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode, delayReduction)
 
 			return speech.TransponderIntent{Code: &sq}
 		})
 }
 
-func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.TransponderMode) (speech.CommandIntent, error) {
+func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.TransponderMode,
+	delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
+			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode, delayReduction)
 
 			return speech.TransponderIntent{Mode: &mode}
 		})
 }
 
-func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {
+func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign, delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.Ident(s.State.SimTime)
+			return ac.Ident(s.State.SimTime, delayReduction)
 		})
 }
 

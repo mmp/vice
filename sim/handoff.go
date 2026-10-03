@@ -172,7 +172,7 @@ func (s *Sim) handoffTrack(fp *FlightPlan, toTCP TCP) {
 	}
 }
 
-func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (speech.CommandIntent, error) {
+func (s *Sim) ContactTrackingController(tcw TCW, acid ACID, delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) error {
 			if ac == nil {
@@ -184,11 +184,11 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (speech.CommandInten
 			return nil
 		},
 		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) speech.CommandIntent {
-			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, sfp.TrackingController)
+			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, sfp.TrackingController, delayReduction)
 		})
 }
 
-func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (speech.CommandIntent, error) {
+func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP, delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) error {
 			if ac == nil {
@@ -203,12 +203,13 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (speech.CommandIn
 			if s.State.TCWControlsPosition(tcw, toTCP) {
 				return speech.MakeUnableIntent("Unable, we are already on your frequency")
 			} else {
-				return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, toTCP)
+				return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, toTCP, delayReduction)
 			}
 		})
 }
 
-func (s *Sim) contactController(fromTCP TCP, sfp *FlightPlan, ac *Aircraft, toTCP TCP) speech.CommandIntent {
+func (s *Sim) contactController(fromTCP TCP, sfp *FlightPlan, ac *Aircraft, toTCP TCP,
+	delayReduction time.Duration) speech.CommandIntent {
 	// Immediately respond to the current controller that we're
 	// changing frequency.
 	var intent speech.ContactIntent
@@ -240,7 +241,7 @@ func (s *Sim) contactController(fromTCP TCP, sfp *FlightPlan, ac *Aircraft, toTC
 	// controller deferred contact chain.
 	delete(s.DeferredContacts, ac.ADSBCallsign)
 
-	s.enqueueControllerContact(ac, toTCP, ControlPosition(fromTCP))
+	s.enqueueControllerContact(ac, toTCP, ControlPosition(fromTCP), delayReduction)
 
 	return intent
 }

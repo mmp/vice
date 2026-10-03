@@ -721,7 +721,7 @@ func (f *FlightTest) ExpectVisualApproach(runway string) speech.CommandIntent {
 
 func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {
 	f.t.Helper()
-	return f.nav.ClearedApproach("_VIS"+runway, nil, f.simTime, false, "")
+	return f.nav.ClearedApproach("_VIS"+runway, nil, f.simTime, 0, false, "")
 }
 
 // makeAirport constructs an *av.Airport from the db.Airport in db.DB,
@@ -789,19 +789,19 @@ func (f *FlightTest) makeAirport() *av.Airport {
 
 func (f *FlightTest) ClearedApproach(id string) {
 	f.t.Helper()
-	f.nav.ClearedApproach(id, nil, f.simTime, false, "")
+	f.nav.ClearedApproach(id, nil, f.simTime, 0, false, "")
 }
 
 func (f *FlightTest) ClearedStraightInApproach(id string) {
 	f.t.Helper()
-	f.nav.ClearedApproach(id, nil, f.simTime, true, "")
+	f.nav.ClearedApproach(id, nil, f.simTime, 0, true, "")
 }
 
 // ClearedApproachAtPassedFix issues the clearance a /clearapp route action at
 // fix calls for, as the sim does after nav has dropped the fix from the route.
 func (f *FlightTest) ClearedApproachAtPassedFix(id, fix string) speech.CommandIntent {
 	f.t.Helper()
-	return f.nav.ClearedApproach(id, nil, f.simTime, false, fix)
+	return f.nav.ClearedApproach(id, nil, f.simTime, 0, false, fix)
 }
 
 func (f *FlightTest) AssignHeading(hdg int, turn av.TurnDirection) {
@@ -836,22 +836,22 @@ func (f *FlightTest) GoodRateDescent() {
 
 func (f *FlightTest) DescendViaSTAR() {
 	f.t.Helper()
-	f.nav.DescendViaSTAR(nil, f.simTime)
+	f.nav.DescendViaSTAR(nil, f.simTime, 0)
 }
 
 func (f *FlightTest) DescendViaSTARExcept(alt float32) {
 	f.t.Helper()
-	f.nav.DescendViaSTAR(&alt, f.simTime)
+	f.nav.DescendViaSTAR(&alt, f.simTime, 0)
 }
 
 func (f *FlightTest) ClimbViaSID() {
 	f.t.Helper()
-	f.nav.ClimbViaSID(nil, f.simTime)
+	f.nav.ClimbViaSID(nil, f.simTime, 0)
 }
 
 func (f *FlightTest) ClimbViaSIDExcept(alt float32) {
 	f.t.Helper()
-	f.nav.ClimbViaSID(&alt, f.simTime)
+	f.nav.ClimbViaSID(&alt, f.simTime, 0)
 }
 
 func (f *FlightTest) AfterFixSpeed(fix string, spd float32) {

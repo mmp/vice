@@ -302,7 +302,8 @@ func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string)
 		})
 }
 
-func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool) (speech.CommandIntent, error) {
+func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool,
+	delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			var following *nav.FollowTraffic
@@ -340,9 +341,9 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 			}
 
 			if straightIn {
-				return ac.ClearedStraightInApproach(approach, s.State.SimTime, following)
+				return ac.ClearedStraightInApproach(approach, s.State.SimTime, delayReduction, following)
 			} else {
-				return ac.ClearedApproach(approach, s.State.SimTime, following)
+				return ac.ClearedApproach(approach, s.State.SimTime, delayReduction, following)
 			}
 		})
 }

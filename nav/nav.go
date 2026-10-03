@@ -666,9 +666,9 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 // EnqueueHeading enqueues the given heading assignment to be followed a
 // few seconds in the future. It should only be called for heading changes
 // due to controller instructions to the pilot and never in cases where the
-// autopilot is changing the heading assignment. delayReduction is subtracted
-// from the pilot-reaction delay (floored at zero) to offset latency already
-// spent receiving the voice transmission.
+// autopilot is changing the heading assignment. delayReduction, the time
+// since the pilot heard the instruction, is subtracted from the
+// pilot-reaction delay (floored at zero).
 func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, approachCleared bool, simTime Time, delayReduction time.Duration) {
 	var d time.Duration
 	if approachCleared {
@@ -764,9 +764,10 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTi
 	nav.DeferredNavHeading = dh
 }
 
-func (nav *Nav) EnqueueOnCourse(simTime Time) {
+func (nav *Nav) EnqueueOnCourse(simTime Time, delayReduction time.Duration) {
+	d := max(nav.Rand.DurationRange(8*time.Second, 13*time.Second)-delayReduction, 0)
 	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time: simTime.Add(nav.Rand.DurationRange(8*time.Second, 13*time.Second)),
+		Time: simTime.Add(d),
 	}
 }
 

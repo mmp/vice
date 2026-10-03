@@ -734,7 +734,8 @@ type FollowTraffic struct {
 
 // ClearedApproach issues an approach clearance. joinFix has the same meaning
 // as in joinApproach and is empty for a controller-issued clearance.
-func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, straightIn bool, joinFix string) speech.CommandIntent {
+func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, delayReduction time.Duration,
+	straightIn bool, joinFix string) speech.CommandIntent {
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return speech.MakeUnableIntent("unable. We haven't been told to expect an approach")
@@ -785,9 +786,13 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 		nav.Approach.NoPT = true
 	}
 
-	// Minimal delay for heading changes given an approach clearance.
+	// A pilot who has been cleared for the approach is quick to act on a
+	// pending heading or direct; the clearance never delays one.
 	if dh := nav.DeferredNavHeading; dh != nil {
-		dh.Time = simTime.Add(nav.Rand.DurationRange(1*time.Second, 3*time.Second))
+		d := max(nav.Rand.DurationRange(1*time.Second, 3*time.Second)-delayReduction, 0)
+		if t := simTime.Add(d); t.Before(dh.Time) {
+			dh.Time = t
+		}
 	}
 
 	nav.flyProcedureTurnIfNecessary()

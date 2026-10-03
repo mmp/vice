@@ -338,7 +338,7 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *FlightPlan, fix s
 			ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 			// Make sure they've bought the handoff.
 			if ctrl != sfp.HandoffController {
-				s.enqueueControllerContact(ac, TCP(ctrl), ac.ControllerFrequency)
+				s.enqueueControllerContact(ac, TCP(ctrl), ac.ControllerFrequency, 0)
 			}
 		}
 	}
