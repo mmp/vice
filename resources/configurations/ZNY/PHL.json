@@ -15,6 +15,21 @@
       "frequency": 118500,
       "radio_name": "Philly tower"
     },
+    "1O": {
+      "callsign": "ILG_TWR",
+      "frequency": 126000,
+      "radio_name": "Wilmington tower"
+    },
+    "1I": {
+      "callsign": "PNE_TWR",
+      "frequency": 126900,
+      "radio_name": "NE Philly tower"
+    },
+    "1Z": {
+      "callsign": "TTN_TWR",
+      "frequency": 126000,
+      "radio_name": "Trenton tower"
+    },
     "1D": {
       "callsign": "PHL_DU_APP",
       "frequency": 118350,
@@ -70,6 +85,9 @@
     "lists": { "ssa": { "system_altimeter": "KPHL" } },
     "configurations": {
       "21X": {
+        "listed_positions": {
+          "1Q": "Philly Tower"
+        },
         "inbound_assignments": {
           "FINAL17_NORTH": "1F",
           "FINAL27_NORTH": "1F",
@@ -80,6 +98,31 @@
         }
       },
       "27L": {
+        "listed_positions": {
+          "1Q": "Philly Tower",
+          "1O": "Wilmington Tower",
+          "1I": "NE Philly Tower",
+          "1Z": "Trenton Tower",
+          "1E": "Philadelphia Departure (North)",
+          "1H": "Philadelphia Departure (North High)",
+          "1V": "Philadelphia Departure (South)",
+          "1J": "Philadelphia Departure (South High)",
+          "1N": "Philadelphia Approach (North)",
+          "1S": "Philadelphia Approach (South)",
+          "1F": "Philadelphia Final Vectors",
+          "1W": "Philadelphia Woodstown",
+          "1D": "Philadelphia Dupont",
+          "1P": "Philadelphia Pottstown",
+          "1Y": "Philadelphia Yardley",
+          "14H": "EWR METRO",
+          "14P": "EWR Yardley",
+          "11D": "LGA EMPYR",
+          "C25": "New York Center Modena",
+          "C92": "New York Center Pottstown",
+          "C68": "New York Center DIXIE",
+          "W19": "Washington Center Woodstown"
+        },
+
         "inbound_assignments": {
           "ABE-ACY": "1N",
           "BOJID4": "1N",
