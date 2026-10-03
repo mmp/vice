@@ -195,6 +195,11 @@
       "frequency": 125225,
       "radio_name": "East Hampton Tower"
     },
+    "3C": {
+      "callsign": "ISP_TWR",
+      "frequency": 119300,
+      "radio_name": "Long Island Tower"
+    },
     "3L": {
       "callsign": "FOK_TWR",
       "frequency": 125300,
@@ -314,6 +319,28 @@
         }
       },
       "EWR": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
@@ -342,6 +369,28 @@
         }
       },
       "EWD": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
@@ -378,6 +427,28 @@
         }
       },
       "ESP": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
@@ -414,6 +485,28 @@
         }
       },
       "ENA": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
@@ -450,6 +543,28 @@
         }
       },
       "EWU": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "LVZ5": "4S",
@@ -476,6 +591,28 @@
         }
       },
       "EWP": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "FQM3": "4W",
           "JAIKE4": "4H",
@@ -503,6 +640,28 @@
         }
       },
       "EPS": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "FQM3": "4W",
           "JAIKE4": "4H",
@@ -528,6 +687,28 @@
         }
       },
       "EWA": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
@@ -556,6 +737,28 @@
         }
       },
       "EWN": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
@@ -584,6 +787,28 @@
         }
       },
       "EWF": {
+        "listed_positions": {
+          "4Z": "EWR Tower",
+          "4T": "CDW Tower",
+          "4K": "MMU Tower",
+          "4J": "TEB Tower",
+          "4N": "EWR Departure",
+          "4P": "EWR Yardley",
+          "4A": "EWR North Arrival",
+          "4U": "EWR MUGZY",
+          "4S": "EWR ZEEBO",
+          "4H": "EWR METRO",
+          "1L": "LGA Departure",
+          "1D": "LGA EMPYR",
+          "1Y": "LGA NYACK",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill",
+          "21Y": "PHL Approach (Yardley)",
+          "41D": "Allentown Approach",
+          "51Y": "McGuire Approach"
+        },
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
@@ -613,6 +838,28 @@
         }
       },
       "LGA": {
+        "listed_positions": {
+          "1I": "LGA Tower",
+          "1W": "HPN Tower",
+          "14": "DXR Tower",
+          "1L": "LGA Departure",
+          "1V": "LGA HAARP",
+          "1F": "LGA Final Vector",
+          "1X": "LGA NOBBI",
+          "1Y": "LGA NYACK",
+          "1D": "LGA EMPYR",
+          "2K": "JFK ROBER",
+          "2J": "JFK Departure",
+          "3R": "Islip SEALL",
+          "3Z": "Islip LOVES",
+          "3I": "Islip BEADS Low",
+          "4S": "EWR ZEEBO",
+          "5E": "Liberty East",
+          "5W": "Liberty West",
+          "5T": "Liberty North",
+          "5S": "Liberty South",
+          "5H": "Liberty Catskill"
+        },
         "inbound_assignments": {
           "VADDR1": "1V",
           "PROUD2": "1D",
@@ -632,6 +879,17 @@
         }
       },
       "LGF": {
+        "listed_positions": {
+          "1I": "LGA Tower",
+          "1W": "HPN Tower",
+          "14": "DXR Tower",
+          "1L": "LGA Departure",
+          "1V": "LGA HAARP",
+          "1F": "LGA Final Vector",
+          "1X": "LGA NOBBI",
+          "1Y": "LGA NYACK",
+          "1D": "LGA EMPYR"
+        },
         "inbound_assignments": {
           "Finals-EMPYR-ILS13": "1F",
           "Finals-HAARP-ILS13": "1F",
@@ -652,6 +910,17 @@
         }
       },
       "LAF": {
+        "listed_positions": {
+          "1I": "LGA Tower",
+          "1W": "HPN Tower",
+          "14": "DXR Tower",
+          "1L": "LGA Departure",
+          "1V": "LGA HAARP",
+          "1F": "LGA Final Vector",
+          "1X": "LGA NOBBI",
+          "1Y": "LGA NYACK",
+          "1D": "LGA EMPYR"
+        },
         "inbound_assignments": {
           "MIP4": "1D",
           "PROUD2": "1D"
@@ -661,6 +930,17 @@
         }
       },
       "1DF": {
+        "listed_positions": {
+          "1I": "LGA Tower",
+          "1W": "HPN Tower",
+          "14": "DXR Tower",
+          "1L": "LGA Departure",
+          "1V": "LGA HAARP",
+          "1F": "LGA Final Vector",
+          "1X": "LGA NOBBI",
+          "1Y": "LGA NYACK",
+          "1D": "LGA EMPYR"
+        },
         "inbound_assignments": {
           "Finals-HAARP-L4/D13": "1F",
           "PROUD2": "1D",
@@ -671,6 +951,17 @@
         }
       },
       "1VF": {
+        "listed_positions": {
+          "1I": "LGA Tower",
+          "1W": "HPN Tower",
+          "14": "DXR Tower",
+          "1L": "LGA Departure",
+          "1V": "LGA HAARP",
+          "1F": "LGA Final Vector",
+          "1X": "LGA NOBBI",
+          "1Y": "LGA NYACK",
+          "1D": "LGA EMPYR"
+        },
         "inbound_assignments": {
           "VADDR1": "1V",
           "Finals-EMPYR-ILS22/D13-R": "1F"
@@ -682,10 +973,11 @@
       "JFF": {
         "listed_positions": {
           "2W": "JFK Tower",
+          "2P": "FRG Tower",
           "2J": "JFK Departure",
           "2G": "JFK CAMRN",
           "2K": "JFK ROBER",
-          "2M": "JFK LENDY"
+          "2E": "JFK LENDY"
         },
         "inbound_assignments": {
           "CAMRN/PUCKY1.Finals22": "2A",
@@ -707,6 +999,7 @@
       "N2J": {
         "listed_positions": {
           "2W": "JFK Tower",
+          "2P": "FRG Tower",
           "2J": "JFK Departure",
           "3H": "Islip (Primary)",
           "1L": "LGA Departure",
@@ -728,10 +1021,11 @@
       "JF4": {
         "listed_positions": {
           "2W": "JFK Tower",
+          "2P": "FRG Tower",
           "2J": "JFK Departure",
           "2G": "JFK CAMRN",
           "2K": "JFK ROBER",
-          "2M": "JFK LENDY"
+          "2E": "JFK LENDY"
         },
         "inbound_assignments": {
           "PUCKY1.Finals4": "2A",
@@ -745,13 +1039,16 @@
       "JFK": {
         "listed_positions": {
           "2W": "JFK Tower",
+          "2P": "FRG Tower",
           "2J": "JFK Departure",
           "2A": "JFK Final Vector",
           "2G": "JFK CAMRN",
           "2K": "JFK ROBER",
-          "2M": "JFK LENDY",
+          "2E": "JFK LENDY",
           "3H": "Islip (Primary)",
           "3N": "Islip (Calverton)",
+          "3R": "Islip (SEALL)",
+          "3Z": "Islip (LOVES)",
           "1L": "LGA Departure",
           "1V": "LGA Approach",
           "1X": "LGA NOBBI (LGA Sats)",
@@ -780,6 +1077,20 @@
         }
       },
       "LIB": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "1L": "LGA Departure",
+          "4N": "EWR Departure",
+          "3H": "Islip (Primary)",
+          "1X": "LGA NOBBI",
+          "4H": "EWR METRO",
+          "51Y": "McGuire Approach",
+          "71B": "Wilkes-Barre Approach",
+          "81B": "Bradley Approach",
+          "B19": "Boston Center (Danbury)",
+          "C34": "New York Center (Elmira)",
+          "C56": "New York Center (Kennedy)"
+        },
         "inbound_assignments": {
           "WRI DIXIE": "5S",
           "MIP4 LGA background 4": "1D"
@@ -790,6 +1101,28 @@
         }
       },
       "ISP": {
+        "listed_positions": {
+          "3H": "Islip (Primary)",
+          "3N": "Islip (Calverton)",
+          "3R": "Islip (SEALL)",
+          "3O": "Islip (VIKKY)",
+          "3Z": "Islip (LOVES)",
+          "3I": "Islip (BEADS Low)",
+          "3B": "Islip (BEADS High)",
+          "3C": "ISP Tower",
+          "3G": "BDR Tower",
+          "3P": "HVN Tower",
+          "3S": "OXC Tower",
+          "3L": "FOK Tower",
+          "2J": "JFK Departure",
+          "2K": "JFK (ROBER)",
+          "5E": "Liberty Departure East (East Gate)",
+          "5H": "Liberty Departure Catskill",
+          "1V": "LGA HAARP",
+          "1X": "LGA NOBBI",
+          "1Y": "LGA NYACK",
+          "B17": "Boston Center (Nantucket)"
+        },
         "inbound_assignments": {
           "BOUNO5.ISP": "3O",
           "DENNA1": "3R",
@@ -834,13 +1167,16 @@
       "J22": {
         "listed_positions": {
           "2W": "JFK Tower",
+          "2P": "FRG Tower",
           "2J": "JFK Departure",
           "2A": "JFK Final Vector",
           "2G": "JFK CAMRN",
           "2K": "JFK ROBER",
-          "2M": "JFK LENDY",
+          "2E": "JFK LENDY",
           "3H": "Islip (Primary)",
           "3N": "Islip (Calverton)",
+          "3R": "Islip (SEALL)",
+          "3Z": "Islip (LOVES)",
           "1L": "LGA Departure",
           "1V": "LGA Approach",
           "1X": "LGA NOBBI (LGA Sats)",
@@ -871,13 +1207,16 @@
       "J31": {
         "listed_positions": {
           "2W": "JFK Tower",
+          "2P": "FRG Tower",
           "2J": "JFK Departure",
           "2A": "JFK Final Vector",
           "2G": "JFK CAMRN",
           "2K": "JFK ROBER",
-          "2M": "JFK LENDY",
+          "2E": "JFK LENDY",
           "3H": "Islip (Primary)",
           "3N": "Islip (Calverton)",
+          "3R": "Islip (SEALL)",
+          "3Z": "Islip (LOVES)",
           "1L": "LGA Departure",
           "1V": "LGA Approach",
           "1X": "LGA NOBBI (LGA Sats)",
@@ -910,13 +1249,16 @@
       "J04": {
         "listed_positions": {
           "2W": "JFK Tower",
+          "2P": "FRG Tower",
           "2J": "JFK Departure",
           "2A": "JFK Final Vector",
           "2G": "JFK CAMRN",
           "2K": "JFK ROBER",
-          "2M": "JFK LENDY",
+          "2E": "JFK LENDY",
           "3H": "Islip (Primary)",
           "3N": "Islip (Calverton)",
+          "3R": "Islip (SEALL)",
+          "3Z": "Islip (LOVES)",
           "1L": "LGA Departure",
           "1V": "LGA Approach",
           "1X": "LGA NOBBI (LGA Sats)",
@@ -945,16 +1287,39 @@
         }
       },
       "LBE": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "1L": "LGA Departure",
+          "3H": "Islip (Primary)",
+          "1X": "LGA NOBBI",
+          "81B": "Bradley Approach",
+          "B19": "Boston Center (Danbury)"
+        },
         "default_consolidation": {
           "5E": []
         }
       },
       "LBN": {
+        "listed_positions": {
+          "1L": "LGA Departure",
+          "4N": "EWR Departure",
+          "1X": "LGA NOBBI",
+          "4H": "EWR METRO",
+          "71B": "Wilkes-Barre Approach",
+          "C34": "New York Center (Elmira)"
+        },
         "default_consolidation": {
           "5T": []
         }
       },
       "LBS": {
+        "listed_positions": {
+          "2J": "JFK Departure",
+          "1L": "LGA Departure",
+          "4N": "EWR Departure",
+          "51Y": "McGuire Approach",
+          "C56": "New York Center (Kennedy)"
+        },
         "default_consolidation": {
           "5S": []
         },
@@ -964,6 +1329,11 @@
         }
       },
       "LBW": {
+        "listed_positions": {
+          "1L": "LGA Departure",
+          "4N": "EWR Departure",
+          "C56": "New York Center (Kennedy)"
+        },
         "default_consolidation": {
           "5W": []
         }
