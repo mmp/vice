@@ -912,12 +912,15 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 		tgt := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
 		tgt = min(tgt, nav.FinalAltitude)
 
-		if tgt < nav.FlightState.Altitude {
+		switch {
+		case tgt < nav.FlightState.Altitude:
 			lines = append(lines, "Descending "+av.FormatAltitude(nav.FlightState.Altitude)+
 				" to "+av.FormatAltitude(tgt)+" from previous crossing restriction")
-		} else {
+		case tgt > nav.FlightState.Altitude:
 			lines = append(lines, "Climbing "+av.FormatAltitude(nav.FlightState.Altitude)+
 				" to "+av.FormatAltitude(tgt)+" from previous crossing restriction")
+		default:
+			lines = append(lines, "At "+av.FormatAltitude(tgt)+" from previous crossing restriction")
 		}
 	}
 	if nav.FlightState.Altitude < nav.FlightState.PrevAltitude {

@@ -101,6 +101,27 @@ func TestSTARSpeedRestrictions(t *testing.T) {
 	f.Run()
 }
 
+// TestCrossFixAtSpeedCarriesForward verifies that a crossing speed the
+// controller gives for a fix replaces the charted one after the fix as well
+// as before it: told to cross JAMIE at 210 where 230 is charted, the
+// aircraft doesn't speed back up to 230 past JAMIE.
+func TestCrossFixAtSpeedCarriesForward(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "ZJAAY ARICE JAMIE/s230 N037.35.18.411,W076.13.00.468",
+		DepartureAirport: "KBOS",
+		ArrivalAirport:   "KRIC",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     250,
+		OnSTAR:           true,
+	})
+	sr := av.MakeAtSpeedRestriction(210)
+	f.nav.CrossFixAt("JAMIE", nil, &sr, f.temp())
+
+	f.BetweenFixes("N037.35.18.411,W076.13.00.468", "KRIC", func(f *FlightTest) { f.AssertSpeedNear(210, 5) })
+	f.Run()
+}
+
 // TestSpeed250Below10000 verifies that aircraft decelerate to 250kt or
 // below when descending through 10000 ft.
 func TestSpeed250Below10000(t *testing.T) {

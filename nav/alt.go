@@ -442,13 +442,18 @@ func (nav *Nav) controllerAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestr
 }
 
 // chartedAltitudeRestriction returns wp's published altitude restriction,
-// or nil if wp is on an approach the aircraft hasn't been cleared for: an
-// approach's restrictions apply only once the aircraft is cleared for it.
+// or nil if it doesn't apply to the aircraft. An approach's restrictions
+// apply only once the aircraft is cleared for it, and an arrival climbs
+// only when a controller tells it to, so one above it doesn't apply.
 func (nav *Nav) chartedAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestriction {
 	if wp.OnApproach() && !nav.Approach.Cleared {
 		return nil
 	}
-	return wp.AltitudeRestriction()
+	ar := wp.AltitudeRestriction()
+	if ar != nil && wp.OnSTAR() && !wp.SyntheticCrossing() && ar.Range[0] > nav.FlightState.Altitude {
+		return nil
+	}
+	return ar
 }
 
 // LowestProcedureAltitude returns the lowest applicable published altitude

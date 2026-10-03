@@ -618,6 +618,63 @@ func TestCrossFixAtAltitude(t *testing.T) {
 	f.Run()
 }
 
+// TestCrossFixBelowArrivalRestriction flies a RIC arrival told to cross
+// JAMIE at 7,000, below the 12,000 charted there; it used to climb back to
+// 12,000 once past JAMIE. An arrival only climbs when told to, so after
+// JAMIE it ignores charted restrictions above it but still descends for
+// ones below it.
+func TestCrossFixBelowArrivalRestriction(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		restriction string // at the fix after JAMIE
+		alt         float32
+	}{
+		{name: "NoneAfter", alt: 7000},
+		{name: "ChartedAboveAfter", restriction: "/a10000", alt: 7000},
+		{name: "ChartedBelowAfter", restriction: "/a5000", alt: 5000},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        "CAANO PAJET ZJAAY ARICE JAMIE/a12000 N037.35.18.411,W076.13.00.468" + tc.restriction,
+				DepartureAirport: "KBOS",
+				ArrivalAirport:   "KRIC",
+				AircraftType:     "A320",
+				InitialAltitude:  16000,
+				InitialSpeed:     280,
+				OnSTAR:           true,
+			})
+			ar := av.MakeAtAltitudeRestriction(7000)
+			f.nav.CrossFixAt("JAMIE", &ar, nil, f.temp())
+
+			f.AtFix("JAMIE", func(f *FlightTest) { f.AssertAltitudeNear(7000, 100) })
+			f.BetweenFixes("JAMIE", "KRIC", func(f *FlightTest) { f.AssertAltitudeBelow(7100) })
+			f.AtFix("KRIC", func(f *FlightTest) { f.AssertAltitudeNear(tc.alt, 50) })
+			f.Run()
+		})
+	}
+}
+
+// TestDescendViaBelowArrivalRestrictions verifies that an arrival given
+// "descend via" while below the STAR's next restriction holds its altitude
+// rather than climbing to it, then descends for the one after that. (HAUPT
+// is too close to DETGY to reach its altitude by HAUPT.)
+func TestDescendViaBelowArrivalRestrictions(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/star DETGY/a7000/star HAUPT/a5000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  6000,
+		InitialSpeed:     250,
+		AssignedAltitude: 6000,
+	})
+	f.DescendViaSTAR()
+
+	f.BeforeFix("DETGY", func(f *FlightTest) { f.AssertAltitudeNear(6000, 10) })
+	f.AtFix("KJFK", func(f *FlightTest) { f.AssertAltitudeNear(5000, 50) })
+	f.Run()
+}
+
 // TestCrossDistanceFromFixAtAltitude verifies that "cross N miles dir of fix
 // at altitude" causes the aircraft to descend to the correct altitude at
 // the synthetic waypoint position.
