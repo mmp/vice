@@ -224,6 +224,21 @@ func sharedRun(fixes []string, wps WaypointArray) int {
 	return best
 }
 
+// onServedSTAR reports whether the fix is on a transition or runway
+// transition of one of the STARs the arrival serves.
+func (ar *Arrival) onServedSTAR(db Database, fix string) bool {
+	hasFix := func(_ string, wps WaypointArray) bool { return wps.containsFix(fix) }
+	for _, name := range ar.ServedSTARs() {
+		for _, icao := range ar.Airports {
+			if star, ok := db.AirportSTARs(icao)[name]; ok &&
+				(util.MapContains(star.Transitions, hasFix) || util.MapContains(star.RunwayWaypoints, hasFix)) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // sharedFixes is how many of the fixes the waypoints also pass over.
 func sharedFixes(fixes []string, wps WaypointArray) int {
 	n := 0
@@ -711,6 +726,9 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 		ar.addAutomaticHandoff(spawnT)
 
 		ar.Waypoints = ar.Waypoints.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
+		for i := range ar.Waypoints {
+			ar.Waypoints[i].SetOnSTAR(true)
+		}
 		ar.eachRunwayTransition(e, func(wps WaypointArray) WaypointArray {
 			wps = wps.InitializeLocations(db, nmPerLongitude, magneticVariation, false, e)
 			for i := range wps {
@@ -743,6 +761,17 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 		if len(ar.Waypoints) == 0 {
 			// Every waypoint named an airway; takeAirways has said why.
 			return
+		}
+
+		// Enroute arrivals often start ahead of the STAR, at fixes that
+		// aren't on it. If none are, as when a historical scenario names a
+		// retired STAR, all of them are taken to be.
+		start := slices.IndexFunc(ar.Waypoints, func(wp Waypoint) bool { return ar.onServedSTAR(db, wp.Fix) })
+		if start == -1 {
+			start = 0
+		}
+		for i := start; i < len(ar.Waypoints); i++ {
+			ar.Waypoints[i].SetOnSTAR(true)
 		}
 
 		for ap, rwywp := range ar.RunwayWaypoints {
@@ -798,9 +827,6 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 		}
 	}
 
-	for i := range ar.Waypoints {
-		ar.Waypoints[i].SetOnSTAR(true)
-	}
 	ar.Waypoints.checkProcedureActions(e)
 
 	// Which STAR the waypoints fly: one the arrival doesn't name it should,

@@ -599,6 +599,73 @@ func TestArrivalAirports(t *testing.T) {
 	})
 }
 
+// TestArrivalSTARWaypoints checks that an arrival's waypoints are flagged as
+// on its STAR from the first of the STAR's fixes onward.
+func TestArrivalSTARWaypoints(t *testing.T) {
+	loc := testLocator{}
+	dbFixes := make(map[string]bool)
+	var star WaypointArray
+	for i, f := range []string{"AHEAD", "MIPP", "LIZZI", "BEUTY", "APPLE"} {
+		loc[f] = math.Point2LL{float32(-73 - i), float32(40 + i)}
+		dbFixes[f] = true
+		if f != "AHEAD" {
+			star = append(star, Waypoint{Fix: f})
+		}
+	}
+
+	oldDB := testDB
+	testDB = testDatabase{
+		Airports: map[ICAOAirportCode]testAirport{
+			"KTST": {Id: "KTST", STARs: map[string]STAR{"MIPP4": {Transitions: map[string]WaypointArray{"ALL": star}}}},
+		},
+		Fixes: dbFixes,
+	}
+	t.Cleanup(func() { testDB = oldDB })
+
+	scenarioAirports := map[ICAOAirportCode]*Airport{"KTST": {}}
+	controlPositions := map[ControlPosition]*Controller{"1T": {}}
+
+	for _, tc := range []struct {
+		name      string
+		arr       Arrival
+		unflagged int // leading waypoints that aren't on the STAR
+	}{
+		{
+			name:      "waypoints starting ahead of the STAR",
+			arr:       Arrival{STAR: "MIPP4", Waypoints: WaypointArray{{Fix: "AHEAD"}, {Fix: "MIPP"}, {Fix: "LIZZI"}}},
+			unflagged: 1,
+		},
+		{
+			name: "waypoints starting on the STAR",
+			arr:  Arrival{STAR: "MIPP4", Waypoints: WaypointArray{{Fix: "MIPP"}, {Fix: "LIZZI"}, {Fix: "BEUTY"}}},
+		},
+		{
+			name: "spawning partway along the STAR's first leg",
+			arr:  Arrival{STAR: "MIPP4", SpawnWaypoint: "MIPP@0.5"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var e util.ErrorLogger
+			arr := tc.arr
+			arr.Airports = []ICAOAirportCode{"KTST"}
+			arr.InitialController = "1T"
+			arr.InitialAltitudes = []int{10000}
+			arr.InitialSpeed = MakeIAS(250)
+			arr.Finalize(loc, 45, 0, scenarioAirports, controlPositions,
+				func(string) bool { return true }, &e)
+			if e.HaveErrors() {
+				t.Fatal(e.String())
+			}
+
+			for i, wp := range arr.Waypoints {
+				if wp.OnSTAR() != (i >= tc.unflagged) {
+					t.Errorf("%s: OnSTAR = %v, want %v", wp.Fix, wp.OnSTAR(), i >= tc.unflagged)
+				}
+			}
+		})
+	}
+}
+
 // TestArrivalApproachRoutes covers the pairing behind the /clearapp and
 // /intercept checks: which approaches an arrival's aircraft may be cleared for,
 // and the route each of them is flying when the clearance comes.

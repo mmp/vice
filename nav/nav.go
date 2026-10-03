@@ -1176,7 +1176,7 @@ func (nav *Nav) ContactMessage(star string, runway string, reportHeading bool,
 		// Being vectored - heading + altitude
 		resp.Add("[heading {hdg}|on a {hdg} heading]", hdg)
 		nav.addContactAltitude(&resp, "", crossing)
-	} else if star != "" {
+	} else if star != "" && len(nav.Waypoints) > 0 && nav.Waypoints[0].OnSTAR() {
 		// On a STAR
 		nav.addStarAltitude(&resp, star, crossing)
 	} else {

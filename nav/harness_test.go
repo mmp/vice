@@ -277,6 +277,32 @@ func TestContactMessageIncludesCrossDistanceAltitudeAndSpeed(t *testing.T) {
 	}
 }
 
+// TestContactMessageAheadOfSTAR verifies that an arrival reports being on
+// its STAR only once the next fix is on it.
+func TestContactMessageAheadOfSTAR(t *testing.T) {
+	for _, tc := range []struct {
+		route  string
+		onSTAR bool
+	}{
+		{route: "RST ZZIPR/star WELCM/star BHAWK/a21000-26000/star", onSTAR: false},
+		{route: "RST/star ZZIPR/star WELCM/star BHAWK/a21000-26000/star", onSTAR: true},
+	} {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        tc.route,
+			DepartureAirport: "KMSP",
+			ArrivalAirport:   "KORD",
+			AircraftType:     "A320",
+			InitialAltitude:  35000,
+			InitialSpeed:     300,
+			AssignedAltitude: 31000,
+		})
+		written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("FYTTE7", "", true, false), f.nav.Rand))
+		if strings.Contains(written, "fytte7") != tc.onSTAR || !strings.Contains(written, "fl310") {
+			t.Errorf("%s: contact message %q: want FL310, on the STAR %v", tc.route, written, tc.onSTAR)
+		}
+	}
+}
+
 // TestContactMessageReportsViaExceptAltitude verifies that the altitude
 // excepted from a climb via SID or descend via STAR is reported on initial
 // contact (AIM 5-2-9, 5-4-1), and that an arrival held at it reports its

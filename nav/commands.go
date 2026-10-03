@@ -492,10 +492,13 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 		// the pilot will request an altitude from the controller, and once
 		// the deferred heading actually takes effect we capture the current
 		// altitude into Altitude.Cleared so the aircraft holds whatever
-		// altitude the pilot was at when they turned. This is decided
-		// before the approach clearance is cancelled below, since a cleared
-		// approach's constraints are ones the aircraft is flying.
-		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR() || nav.Waypoints[0].OnApproach()) &&
+		// altitude the pilot was at when they turned. An arrival that hasn't
+		// reached its STAR yet is flying toward its constraints, so it does
+		// the same. This is decided before the approach clearance is
+		// cancelled below, since a cleared approach's constraints are ones
+		// the aircraft is flying.
+		if len(nav.Waypoints) > 0 &&
+			(slices.ContainsFunc(nav.Waypoints, av.Waypoint.OnSTAR) || nav.Waypoints[0].OnApproach()) &&
 			!nav.hasIssuedAltitude() {
 			if _, ok := nav.findAltitudeTarget(); ok {
 				nav.Approach.RequestAltitude = true

@@ -918,6 +918,35 @@ func TestHeadingOffSTARWithNoAltitudeRequestsAltitude(t *testing.T) {
 	}
 }
 
+// TestHeadingAheadOfSTARRequestsAltitudeAndLevels verifies that an arrival
+// vectored before it reaches its STAR does what it would on the STAR: it
+// asks for an altitude and levels off rather than descending toward the
+// STAR's restrictions.
+func TestHeadingAheadOfSTARRequestsAltitudeAndLevels(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "RST ZZIPR WELCM TEEOO MITEE/star BHAWK/a21000-26000/star STNLE/a17000-21000/star",
+		DepartureAirport: "KMSP",
+		ArrivalAirport:   "KORD",
+		AircraftType:     "A320",
+		InitialAltitude:  35000,
+		InitialSpeed:     300,
+	})
+	f.StepUntil("descending", func() bool { return f.nav.FlightState.AltitudeRate < -500 })
+	if f.nav.Waypoints[0].OnSTAR() {
+		t.Fatalf("%s: expected to still be ahead of the STAR", f.nav.Waypoints[0].Fix)
+	}
+
+	f.AssignHeading(int(f.nav.FlightState.Heading), av.TurnClosest)
+	if !f.nav.Approach.RequestAltitude {
+		t.Error("pilot should request altitude when vectored ahead of the STAR with no assigned altitude")
+	}
+
+	f.Step(60)
+	leveled := f.nav.FlightState.Altitude
+	f.Step(120)
+	f.AssertAltitudeNear(leveled, 50)
+}
+
 func slicesIndex(wps []av.Waypoint, name string) int {
 	for i, wp := range wps {
 		if wp.Fix == name {
