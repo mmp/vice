@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"fmt"
 	"slices"
 	"testing"
 	"time"
@@ -162,14 +163,18 @@ func TestSpacedFlowHoldsOnlyItsOwnArrivals(t *testing.T) {
 		InboundFlowEnabled: map[string]map[string]bool{"PUCKY1": {"KJFK": true}, "MIP4": {"KLGA": true}},
 	}
 	justLaunched := ArrivalLaunch{Time: now.Add(-30 * time.Second), TAS: 300}
-	s.ArrivalLaunches = map[string]ArrivalLaunch{"PUCKY1": justLaunched, "CAMRN5": justLaunched}
-	scenario := testScheduledArrival("AAL4", "CAMRN5", "KJFK", now)
+	s.ArrivalLaunches = map[string]ArrivalLaunch{"PUCKY1": justLaunched}
+	scenario := testScheduledArrival("AAL4", "PUCKY1", "KJFK", now)
 	scenario.Source = TrafficSourceScenario
+	dropped := testScheduledArrival("DAL5", "PUCKY1", "KJFK", now)
+	dropped.DropReason = "no route"
 	s.Schedule.Arrivals = []ScheduledArrival{
 		testScheduledArrival("DAL1", "PUCKY1", "KJFK", now.Add(-5*time.Minute)),
 		testScheduledArrival("DAL2", "MIP4", "KLGA", now.Add(-time.Minute)),
 		testScheduledArrival("DAL3", "PUCKY1", "KJFK", now),
 		scenario,
+		dropped,
+		testScheduledArrival("DAL6", "PUCKY1", "KFRG", now),
 	}
 
 	// DAL2 and AAL4 are taken up in their turn; creating them fails in this
@@ -182,6 +187,40 @@ func TestSpacedFlowHoldsOnlyItsOwnArrivals(t *testing.T) {
 	}
 	if !slices.Equal(queued, []string{"DAL1", "DAL3"}) {
 		t.Errorf("queue holds %v, want the PUCKY1 arrivals waiting in order", queued)
+	}
+	if s.discardedArrivals["KFRG"] != 1 {
+		t.Error("blocked flow did not discard its disabled airport's arrival")
+	}
+
+	s.State.SimTime = now.Add(3 * time.Minute)
+	s.spawnScheduledArrivals()
+	if len(s.Schedule.Arrivals) != 0 {
+		t.Error("flow remained blocked after spacing opened on a later tick")
+	}
+}
+
+func BenchmarkHeldArrivals(b *testing.B) {
+	for _, n := range []int{20, 50, 5000} {
+		b.Run(fmt.Sprint(n), func(b *testing.B) {
+			now := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+			s := NewTestSim(testLogger())
+			s.State.SimTime = now
+			s.State.LaunchConfig = LaunchConfig{
+				InboundFlowRates:   map[string]map[string]float32{"TEST": {"KJFK": 12}},
+				InboundFlowEnabled: map[string]map[string]bool{"TEST": {"KJFK": true}},
+			}
+			s.ArrivalLaunches = map[string]ArrivalLaunch{"TEST": {Time: now, TAS: 240}}
+			for i := range n {
+				s.Schedule.Arrivals = append(s.Schedule.Arrivals,
+					testScheduledArrival(fmt.Sprintf("DAL%d", i), "TEST", "KJFK", now.Add(-5*time.Minute)))
+			}
+			for b.Loop() {
+				s.spawnScheduledArrivals()
+			}
+			if len(s.Schedule.Arrivals) != n {
+				b.Fatal("held arrivals left the queue")
+			}
+		})
 	}
 }
 

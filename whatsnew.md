@@ -12,6 +12,7 @@
   - Fixed multiple bugs with airspeed handling and altitude/temperature
   - VFRs are better at scud-running under B and C airspace shelves
   - Fixed VFR airwork descending below the ground
+  - Adjusted delays for pilots to follow control instructions
 - ERAM
   - Altitudes that virtual controllers assign along a route are now entered in the datablock:
     `/d` and `/c` amend the assigned altitude and `/dv`/`/cv` set interim altitude

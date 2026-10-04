@@ -158,6 +158,11 @@ func (s *Sim) arrivalFlowSpaced(group string) bool {
 	if !ok {
 		return true
 	}
+	elapsed := s.State.SimTime.Sub(last.Time)
+	minTrail := last.timeToFly(minArrivalTrailNM)
+	if elapsed < minTrail {
+		return false
+	}
 	lc := &s.State.LaunchConfig
 	trail := last.timeToFly(arrivalTrailNM)
 	horizon := s.State.SimTime.Add(arrivalLookahead)
@@ -171,7 +176,7 @@ func (s *Sim) arrivalFlowSpaced(group string) bool {
 			trail = min(trail, e.SpawnTime.Add(maxArrivalHold).Sub(last.Time)/time.Duration(k))
 		}
 	}
-	return s.State.SimTime.Sub(last.Time) >= max(trail, last.timeToFly(minArrivalTrailNM))
+	return elapsed >= trail
 }
 
 // recordArrivalLaunch makes ac its inbound flow's last launch.

@@ -839,6 +839,7 @@ func (s *Sim) spawnScheduledArrivals() {
 	lc := &s.State.LaunchConfig
 	now := s.State.SimTime
 	spawned := make(map[string]bool) // flow group launched this tick
+	blocked := make(map[string]bool) // flows whose published arrivals wait for spacing this tick
 
 	for i := 0; i < len(s.Schedule.Arrivals); {
 		e := s.Schedule.Arrivals[i]
@@ -864,7 +865,12 @@ func (s *Sim) spawnScheduledArrivals() {
 		// Scenario arrivals were spaced by their flow's rate when they were
 		// generated. Published ones come when the data says, so they wait in
 		// order to satisfy MIT requirements.
-		if spawned[e.Group] || (e.Source != TrafficSourceScenario && !s.arrivalFlowSpaced(e.Group)) {
+		if spawned[e.Group] {
+			i++
+			continue
+		}
+		if e.Source != TrafficSourceScenario && (blocked[e.Group] || !s.arrivalFlowSpaced(e.Group)) {
+			blocked[e.Group] = true
 			i++
 			continue
 		}
