@@ -311,6 +311,7 @@ func TestDispatcherRequestsRecorded(t *testing.T) {
 		GlobalMessageRPC:           "chat between controllers",
 		UpdateATISGITextRPC:        "free text that nothing flies by",
 		AnnotateFlightStripRPC:     "free text that nothing flies by",
+		SetPilotDelaysRPC:          "a tuning control shared by all of the server's sims",
 	}
 
 	lg, sm := makeReplayTestSimManager(t)

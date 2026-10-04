@@ -104,7 +104,7 @@ func (nav *Nav) setAssignedAltitude(alt float32) {
 
 func (nav *Nav) enqueueAssignedAltitude(alt float32, simTime Time, delayReduction time.Duration) {
 	active := nav.activeAssignedAltitude()
-	d := nav.Rand.DurationRange(2*time.Second, 4*time.Second)
+	d := nav.drawDelay(currentPilotDelays().Altitude)
 	if d > delayReduction {
 		d -= delayReduction
 	} else {
@@ -124,7 +124,7 @@ func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
 	nav.Altitude = Altitude{
 		Assigned:       &alt,
 		ActiveAssigned: active,
-		ActivateAt:     simTime.Add(nav.Rand.DurationRange(2*time.Second, 4*time.Second)),
+		ActivateAt:     simTime.Add(nav.drawDelay(currentPilotDelays().AltitudeAfterSpeed)),
 		Rate:           rate,
 	}
 }

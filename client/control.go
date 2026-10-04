@@ -10,6 +10,7 @@ import (
 	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
@@ -264,6 +265,15 @@ func (c *ControlClient) SetWaypointCommands(commands string) {
 	c.addCall(makeRPCCall(c.client.Go(server.SetWaypointCommandsRPC, &server.SetWaypointCommandsArgs{
 		ControllerToken: c.controllerToken,
 		Commands:        commands,
+	}, nil, nil), nil))
+}
+
+// SetPilotDelays installs the pilot delays that the server's aircraft use
+// from now on.
+func (c *ControlClient) SetPilotDelays(d nav.PilotDelays) {
+	c.addCall(makeRPCCall(c.client.Go(server.SetPilotDelaysRPC, &server.SetPilotDelaysArgs{
+		ControllerToken: c.controllerToken,
+		Delays:          d,
 	}, nil, nil), nil))
 }
 

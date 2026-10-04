@@ -789,7 +789,7 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 	// A pilot who has been cleared for the approach is quick to act on a
 	// pending heading or direct; the clearance never delays one.
 	if dh := nav.DeferredNavHeading; dh != nil {
-		d := max(nav.Rand.DurationRange(1*time.Second, 3*time.Second)-delayReduction, 0)
+		d := max(nav.drawDelay(currentPilotDelays().PendingApproachCleared)-delayReduction, 0)
 		if t := simTime.Add(d); t.Before(dh.Time) {
 			dh.Time = t
 		}

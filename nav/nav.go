@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -663,6 +664,68 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 	return 0, NoHeading
 }
 
+// DelayRange is the range of times from which a pilot's delay in starting
+// to follow an instruction is drawn.
+type DelayRange struct {
+	Min, Max time.Duration
+}
+
+// PilotDelays holds the ranges of pilot delays for each kind of
+// instruction and for each situation the pilot may be in when it is issued.
+type PilotDelays struct {
+	Altitude               DelayRange
+	AltitudeAfterSpeed     DelayRange
+	HeadingApproachCleared DelayRange
+	HeadingFromHeading     DelayRange
+	HeadingFromLNAV        DelayRange
+	DirectExpected         DelayRange
+	DirectFromLNAV         DelayRange
+	DirectFromHeading      DelayRange
+	OnCourse               DelayRange
+	// PendingApproachCleared caps the delay of a heading or direct that
+	// is still pending when the aircraft is cleared for an approach.
+	PendingApproachCleared DelayRange
+}
+
+// DefaultPilotDelays are the pilot delays used unless SetPilotDelays
+// installs others.
+var DefaultPilotDelays = PilotDelays{
+	Altitude:               DelayRange{2 * time.Second, 4 * time.Second},
+	AltitudeAfterSpeed:     DelayRange{2 * time.Second, 4 * time.Second},
+	HeadingApproachCleared: DelayRange{1 * time.Second, 2 * time.Second},
+	HeadingFromHeading:     DelayRange{1 * time.Second, 2 * time.Second},
+	HeadingFromLNAV:        DelayRange{2 * time.Second, 4 * time.Second},
+	DirectExpected:         DelayRange{2 * time.Second, 4 * time.Second},
+	DirectFromLNAV:         DelayRange{4 * time.Second, 7 * time.Second},
+	DirectFromHeading:      DelayRange{8 * time.Second, 13 * time.Second},
+	OnCourse:               DelayRange{8 * time.Second, 13 * time.Second},
+	PendingApproachCleared: DelayRange{1 * time.Second, 3 * time.Second},
+}
+
+// The pilot delays are shared by all sims in the process so that they can
+// be tuned from the settings window while a sim runs.
+var (
+	pilotDelaysMu sync.Mutex
+	pilotDelays   = DefaultPilotDelays
+)
+
+// SetPilotDelays installs the pilot delays that all aircraft use from now on.
+func SetPilotDelays(d PilotDelays) {
+	pilotDelaysMu.Lock()
+	defer pilotDelaysMu.Unlock()
+	pilotDelays = d
+}
+
+func currentPilotDelays() PilotDelays {
+	pilotDelaysMu.Lock()
+	defer pilotDelaysMu.Unlock()
+	return pilotDelays
+}
+
+func (nav *Nav) drawDelay(r DelayRange) time.Duration {
+	return nav.Rand.DurationRange(r.Min, r.Max)
+}
+
 // onHeading reports whether the aircraft is flying a heading: one it was
 // assigned, or a heading leg of a procedure, like a SID's after the climb
 // off the runway.
@@ -684,16 +747,17 @@ func (nav *Nav) onHeading() bool {
 // since the pilot heard the instruction, is subtracted from the
 // pilot-reaction delay (floored at zero).
 func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, approachCleared bool, simTime Time, delayReduction time.Duration) {
+	delays := currentPilotDelays()
 	var d time.Duration
 	if approachCleared {
 		// Minimal delay if the aircraft has been cleared for an approach.
-		d = nav.Rand.DurationRange(1*time.Second, 2*time.Second)
+		d = nav.drawDelay(delays.HeadingApproachCleared)
 	} else if nav.onHeading() && nav.DeferredNavHeading == nil {
 		// Already flying a heading; minimal delay.
-		d = nav.Rand.DurationRange(1*time.Second, 2*time.Second)
+		d = nav.drawDelay(delays.HeadingFromHeading)
 	} else {
 		// LNAV -> heading mode
-		d = nav.Rand.DurationRange(2*time.Second, 4*time.Second)
+		d = nav.drawDelay(delays.HeadingFromLNAV)
 	}
 
 	if d > delayReduction {
@@ -750,17 +814,18 @@ func (nav *Nav) AmendRoute(wps []av.Waypoint, fix string) bool {
 }
 
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
+	delays := currentPilotDelays()
 	var d time.Duration
 	if len(wps) > 0 && nav.ExpectedDirectFix == wps[0].Fix {
 		// Pilot was told to expect this fix; shorter delay
-		d = nav.Rand.DurationRange(2*time.Second, 4*time.Second)
+		d = nav.drawDelay(delays.DirectExpected)
 		nav.ExpectedDirectFix = ""
 	} else if nav.Heading.Assigned == nil && nav.DeferredNavHeading == nil {
 		// Already in LNAV mode; have less of a delay
-		d = nav.Rand.DurationRange(4*time.Second, 7*time.Second)
+		d = nav.drawDelay(delays.DirectFromLNAV)
 	} else {
 		// heading->LNAV--longer delay
-		d = nav.Rand.DurationRange(8*time.Second, 13*time.Second)
+		d = nav.drawDelay(delays.DirectFromHeading)
 	}
 
 	if d > delayReduction {
@@ -779,7 +844,7 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTi
 }
 
 func (nav *Nav) EnqueueOnCourse(simTime Time, delayReduction time.Duration) {
-	d := max(nav.Rand.DurationRange(8*time.Second, 13*time.Second)-delayReduction, 0)
+	d := max(nav.drawDelay(currentPilotDelays().OnCourse)-delayReduction, 0)
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time: simTime.Add(d),
 	}
