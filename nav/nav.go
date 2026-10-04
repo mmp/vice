@@ -663,6 +663,20 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 	return 0, NoHeading
 }
 
+// onHeading reports whether the aircraft is flying a heading: one it was
+// assigned, or a heading leg of a procedure, like a SID's after the climb
+// off the runway.
+func (nav *Nav) onHeading() bool {
+	if nav.Heading.Assigned != nil {
+		return true
+	}
+	if len(nav.Heading.Maneuvers) == 0 {
+		return false
+	}
+	m := nav.Heading.Maneuvers[0]
+	return m.FlyToward.IsZero() && m.TrackFrom.IsZero() && m.Track == 0
+}
+
 // EnqueueHeading enqueues the given heading assignment to be followed a
 // few seconds in the future. It should only be called for heading changes
 // due to controller instructions to the pilot and never in cases where the
@@ -674,7 +688,7 @@ func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, 
 	if approachCleared {
 		// Minimal delay if the aircraft has been cleared for an approach.
 		d = nav.Rand.DurationRange(1*time.Second, 2*time.Second)
-	} else if nav.Heading.Assigned != nil && nav.DeferredNavHeading == nil {
+	} else if nav.onHeading() && nav.DeferredNavHeading == nil {
 		// Already flying a heading; minimal delay.
 		d = nav.Rand.DurationRange(1*time.Second, 2*time.Second)
 	} else {
