@@ -77,12 +77,12 @@ func TestParseAnalyzerRoutes(t *testing.T) {
 func TestCullRareRoutes(t *testing.T) {
 	routes := []av.ScrapedRoute{
 		{Route: "A", Count: 100},
-		{Route: "B", Count: 11},
-		{Route: "C", Count: 10}, // a tenth or less of the most common goes
+		{Route: "B", Count: 6},
+		{Route: "C", Count: 5}, // a twentieth or less of the most common goes
 		{Route: "D", Count: 1},
 	}
-	kept := cullRareRoutes(routes)
-	if len(kept) != 2 || kept[0].Route != "A" || kept[1].Route != "B" {
+	kept := cullRareRoutes(routes, true, true)
+	if len(kept) != 2 || kept[0] != routes[0] || kept[1] != routes[1] {
 		t.Errorf("kept %v, want A and B", kept)
 	}
 }
@@ -91,7 +91,7 @@ func TestCullRareRoutes(t *testing.T) {
 // has one lone route to measure against itself, and keeps it.
 func TestCullRareRoutesFloor(t *testing.T) {
 	routes := []av.ScrapedRoute{{Route: "A", Count: 2}, {Route: "B", Count: 1}}
-	if kept := cullRareRoutes(routes); len(kept) != 0 {
+	if kept := cullRareRoutes(routes, true, true); len(kept) != 0 {
 		t.Errorf("kept %v, want nothing", kept)
 	}
 }
@@ -137,41 +137,67 @@ func TestConsolidateRoute(t *testing.T) {
 }
 
 // Atlanta to Los Angeles: no route is filed whole often enough to keep, but
-// the ways out and in are, and each is kept as its most-filed route.
+// the ways out and in are. The main way in is kept as the route of the main
+// way out that arrives by it.
 func TestCullRareRoutesByEnds(t *testing.T) {
 	routes := []av.ScrapedRoute{
 		{Route: "CUTTN2 HANKO MEMFS KM33G ACH ZUN J6 DRK GABBL HLYWD1", Count: 3, Aircraft: av.AircraftClassNonheavyJet},
 		{Route: "CUTTN2 HANKO MEMFS TUL FTI HIPPI GABBL HLYWD1", Count: 2, Hours: 1 << 7, MinAltitude: 34000},
 		{Route: "CUTTN2 HANKO MEM PNH ACH ZUN J6 DRK GABBL HLYWD1", Count: 1, Aircraft: av.AircraftClassHeavyJet,
 			MinAltitude: 36000, MaxAltitude: 38000},
-		{Route: "NASSA2 YAALL J14 IRW J6 ABQ KA30Q HIPPI GABBL HLYWD1", Count: 2},
 		{Route: "NASSA2 YAALL LIT KLUBB DWINE KF33A FTI INW DRK HIPPI GABBL HLYWD1", Count: 2},
+		{Route: "NASSA2 YAALL J14 IRW J6 ABQ KA30Q HIPPI GABBL HLYWD1", Count: 2},
 		{Route: "NASSA2 YAALL J14 LIT J14 PNH ACH ABQ J78 DRK GABBL HLYWD1", Count: 2},
 		{Route: "POUNC2 STEIT MEI LCH J2 SAT FST J2 ELP BXK J4 WLVRN ESTWD HLYWD1", Count: 2},
 	}
-	kept := cullRareRoutes(routes)
-	if len(kept) != 2 {
-		t.Fatalf("kept %v, want the CUTTN2 and NASSA2 groups", kept)
+	kept := cullRareRoutes(routes, true, true)
+	want := []av.ScrapedRoute{
+		// Twelve filings arrive by GABBL; six of them leave by HANKO.
+		{Route: "CUTTN2 HANKO MEMFS KM33G ACH ZUN J6 DRK GABBL HLYWD1", Count: 12,
+			Aircraft: av.AircraftClassNonheavyJet | av.AircraftClassHeavyJet, Hours: 1 << 7,
+			MinAltitude: 34000, MaxAltitude: 38000},
+		// Ties go to the first alphabetically.
+		{Route: "NASSA2 YAALL J14 IRW J6 ABQ KA30Q HIPPI GABBL HLYWD1", Count: 6},
 	}
-	want := av.ScrapedRoute{Route: "CUTTN2 HANKO MEMFS KM33G ACH ZUN J6 DRK GABBL HLYWD1", Count: 6,
-		Aircraft: av.AircraftClassNonheavyJet | av.AircraftClassHeavyJet, Hours: 1 << 7,
-		MinAltitude: 34000, MaxAltitude: 38000}
-	if kept[0] != want {
-		t.Errorf("kept %+v, want %+v", kept[0], want)
-	}
-	// Ties go to the first alphabetically.
-	if kept[1].Route != "NASSA2 YAALL J14 IRW J6 ABQ KA30Q HIPPI GABBL HLYWD1" || kept[1].Count != 6 {
-		t.Errorf("kept %+v, want the NASSA2 YAALL group's first route with 6 filings", kept[1])
+	if !slices.Equal(kept, want) {
+		t.Errorf("kept %+v, want %+v", kept, want)
 	}
 
-	// Routes that differ in their ends stay apart, however alike otherwise.
+	// San Francisco to Portland repeats whole, and keeps its night departure
+	// and its second way in.
 	routes = []av.ScrapedRoute{
 		{Route: "TRUKN2 GRTFL MACHU TMBRS4", Count: 74},
 		{Route: "NIITE4 GRTFL MACHU TMBRS4", Count: 8},
 		{Route: "TRUKN2 GRTFL MACHU MOXEE TMBRS4", Count: 8},
 	}
-	if kept := cullRareRoutes(routes); !slices.Equal(kept, routes) {
-		t.Errorf("kept %v, want %v", kept, routes)
+	want = []av.ScrapedRoute{
+		{Route: "TRUKN2 GRTFL MACHU TMBRS4", Count: 82},
+		{Route: "NIITE4 GRTFL MACHU TMBRS4", Count: 8},
+		{Route: "TRUKN2 GRTFL MACHU MOXEE TMBRS4", Count: 8},
+	}
+	if kept := cullRareRoutes(routes, true, true); !slices.Equal(kept, want) {
+		t.Errorf("kept %+v, want %+v", kept, want)
+	}
+}
+
+// Montreal to Los Angeles: FlightAware picks up some of the flights only
+// partway, and how the routes begin says nothing in any case, but how they
+// arrive does. Each way in is kept as a route that begins as most do.
+func TestCullRareRoutesArrivingOnly(t *testing.T) {
+	routes := []av.ScrapedRoute{
+		{Route: "KESKA SAVEX Q806 KANUR HAKMN ANJLL4", Count: 3},
+		{Route: "KD45Q KL42O HAKMN ANJLL4", Count: 2},
+		{Route: "KD39Q JASSE Q90 DNERO ANJLL4", Count: 2},
+		{Route: "KESKA SAVEX KANUR JASSE Q90 DNERO ANJLL4", Count: 2},
+		{Route: "HLC TBC JASSE Q90 DNERO ANJLL4", Count: 1},
+		{Route: "GLD TBC JASSE Q90 DNERO MDNYT2", Count: 1},
+	}
+	want := []av.ScrapedRoute{
+		{Route: "KESKA SAVEX KANUR JASSE Q90 DNERO ANJLL4", Count: 5},
+		{Route: "KESKA SAVEX Q806 KANUR HAKMN ANJLL4", Count: 5},
+	}
+	if kept := cullRareRoutes(routes, false, true); !slices.Equal(kept, want) {
+		t.Errorf("kept %+v, want %+v", kept, want)
 	}
 }
 
@@ -180,7 +206,7 @@ func TestCullRareRoutesCap(t *testing.T) {
 	for i := range 12 {
 		routes = append(routes, av.ScrapedRoute{Route: fmt.Sprintf("R%d", i), Count: 100 - i})
 	}
-	if kept := cullRareRoutes(routes); len(kept) != maxRoutesPerPair {
+	if kept := cullRareRoutes(routes, true, true); len(kept) != maxRoutesPerPair {
 		t.Errorf("kept %d routes, want the cap of %d", len(kept), maxRoutesPerPair)
 	}
 }

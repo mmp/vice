@@ -218,13 +218,14 @@ func ClosestRayRouteIntersection(origin math.Point2LL, heading math.TrueHeading,
 ///////////////////////////////////////////////////////////////////////////
 
 // ScrapedRoute is one way a city pair has recently been flown, taken from
-// recently filed flight plans by cmd/scraperoutes. The routes that leave and
-// arrive the same way are recorded as one, the most-filed of them, and what
-// is recorded with it was seen of all of them.
+// recently filed flight plans by cmd/scraperoutes. Rather than every route
+// filed, a pair keeps one for each common way of leaving its origin and each
+// common way of arriving at its destination, the most typical of the routes
+// filed that way, and what is recorded with it was seen of all of them.
 type ScrapedRoute struct {
 	Route string `json:"route"`
-	// Count is how many times a route leaving and arriving this way was filed
-	// over the sampled period.
+	// Count is how many times the route's way of leaving, or of arriving,
+	// was filed over the sampled period: whichever it stands for more of.
 	Count int `json:"count"`
 	// Aircraft is the classes observed flying the route; zero means no one
 	// looked.

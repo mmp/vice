@@ -165,7 +165,7 @@ func runWorker(loc string) {
 			continue
 		}
 		failures = 0
-		routes = cullRareRoutes(routes)
+		routes = cullRareRoutes(routes, domestic(from), domestic(to))
 
 		if len(routes) == 0 {
 			fmt.Printf("%s->%s: no routes found\n", from, to)
