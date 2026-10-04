@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"path"
 	"path/filepath"
+	"slices"
 	"testing"
 	"time"
 
@@ -132,6 +133,45 @@ func TestConsolidateRoute(t *testing.T) {
 		if got != tc.want {
 			t.Errorf("%s->%s: consolidated to %q, want %q", tc.from, tc.to, got, tc.want)
 		}
+	}
+}
+
+// Atlanta to Los Angeles: no route is filed whole often enough to keep, but
+// the ways out and in are, and each is kept as its most-filed route.
+func TestCullRareRoutesByEnds(t *testing.T) {
+	routes := []av.ScrapedRoute{
+		{Route: "CUTTN2 HANKO MEMFS KM33G ACH ZUN J6 DRK GABBL HLYWD1", Count: 3, Aircraft: av.AircraftClassNonheavyJet},
+		{Route: "CUTTN2 HANKO MEMFS TUL FTI HIPPI GABBL HLYWD1", Count: 2, Hours: 1 << 7, MinAltitude: 34000},
+		{Route: "CUTTN2 HANKO MEM PNH ACH ZUN J6 DRK GABBL HLYWD1", Count: 1, Aircraft: av.AircraftClassHeavyJet,
+			MinAltitude: 36000, MaxAltitude: 38000},
+		{Route: "NASSA2 YAALL J14 IRW J6 ABQ KA30Q HIPPI GABBL HLYWD1", Count: 2},
+		{Route: "NASSA2 YAALL LIT KLUBB DWINE KF33A FTI INW DRK HIPPI GABBL HLYWD1", Count: 2},
+		{Route: "NASSA2 YAALL J14 LIT J14 PNH ACH ABQ J78 DRK GABBL HLYWD1", Count: 2},
+		{Route: "POUNC2 STEIT MEI LCH J2 SAT FST J2 ELP BXK J4 WLVRN ESTWD HLYWD1", Count: 2},
+	}
+	kept := cullRareRoutes(routes)
+	if len(kept) != 2 {
+		t.Fatalf("kept %v, want the CUTTN2 and NASSA2 groups", kept)
+	}
+	want := av.ScrapedRoute{Route: "CUTTN2 HANKO MEMFS KM33G ACH ZUN J6 DRK GABBL HLYWD1", Count: 6,
+		Aircraft: av.AircraftClassNonheavyJet | av.AircraftClassHeavyJet, Hours: 1 << 7,
+		MinAltitude: 34000, MaxAltitude: 38000}
+	if kept[0] != want {
+		t.Errorf("kept %+v, want %+v", kept[0], want)
+	}
+	// Ties go to the first alphabetically.
+	if kept[1].Route != "NASSA2 YAALL J14 IRW J6 ABQ KA30Q HIPPI GABBL HLYWD1" || kept[1].Count != 6 {
+		t.Errorf("kept %+v, want the NASSA2 YAALL group's first route with 6 filings", kept[1])
+	}
+
+	// Routes that differ in their ends stay apart, however alike otherwise.
+	routes = []av.ScrapedRoute{
+		{Route: "TRUKN2 GRTFL MACHU TMBRS4", Count: 74},
+		{Route: "NIITE4 GRTFL MACHU TMBRS4", Count: 8},
+		{Route: "TRUKN2 GRTFL MACHU MOXEE TMBRS4", Count: 8},
+	}
+	if kept := cullRareRoutes(routes); !slices.Equal(kept, routes) {
+		t.Errorf("kept %v, want %v", kept, routes)
 	}
 }
 

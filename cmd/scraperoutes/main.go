@@ -8,9 +8,10 @@
 // file a route, looks each city pair it flies up on FlightAware's IFR route
 // analyzer, and records the routes actually filed along with how often, at
 // what altitudes, by what kinds of aircraft, and at what hours of the
-// day--noise abatement runs some routes only at night. Rarely filed routes are
-// culled. Pairs are fetched busiest first, whatever routes the FAA databases
-// hold for them, and refetched after they go stale (60 days, by default).
+// day--noise abatement runs some routes only at night. Routes that leave and
+// arrive the same way are counted as one, and rarely filed ones are culled.
+// Pairs are fetched busiest first, whatever routes the FAA databases hold for
+// them, and refetched after they go stale (60 days, by default).
 //
 // A big queue can be spread across Cloud Run tasks, each fetching its share
 // from its own instance; see cloudrun/run.sh, which drives the -plan, -worker
@@ -458,12 +459,7 @@ func parseAnalyzerRoutes(body string, from, to av.ICAOAirportCode, fromScenario,
 			routes = append(routes, *r)
 		}
 	}
-	slices.SortFunc(routes, func(a, b av.ScrapedRoute) int {
-		if a.Count != b.Count {
-			return cmp.Compare(b.Count, a.Count)
-		}
-		return strings.Compare(a.Route, b.Route)
-	})
+	sortRoutes(routes)
 	return routes
 }
 
@@ -471,30 +467,97 @@ func parseAnalyzerRoutes(body string, from, to av.ICAOAirportCode, fromScenario,
 // ever wants a few, and anything past the first several is one-off noise.
 const maxRoutesPerPair = 8
 
-// minRouteFilings is how often the analyzer has to have seen a route to call it
-// how the pair is flown rather than one flight's paperwork. Its window is about
+// minRouteFilings is how often the analyzer has to have seen a route, or one
+// leaving and arriving the same way, to call it how the pair is flown rather
+// than one flight's paperwork. Its window is about
 // a week, going by what the busiest pairs come back with against how often they
 // are really flown, so this asks a route to turn up most days. Without it a
 // pair whose whole sample is a filing or two keeps all of it: the relative rule
 // below has nothing to measure one lone route against another.
 const minRouteFilings = 5
 
-// cullRareRoutes drops the routes filed a tenth or less as often as the pair's
-// most common, which are one-off reroutes rather than how the pair is flown,
-// and the ones barely filed at all, and keeps at most maxRoutesPerPair of the
-// rest.
+// cullRareRoutes groups the routes that share their ends, then drops the
+// groups filed a tenth or less as often as the pair's most common, which are
+// one-off reroutes rather than how the pair is flown, and the ones barely
+// filed at all, and keeps at most maxRoutesPerPair of the rest, most-filed
+// first.
 func cullRareRoutes(routes []av.ScrapedRoute) []av.ScrapedRoute {
+	routes = groupByEnds(routes)
 	if len(routes) == 0 {
 		return routes
 	}
 	most := routes[0].Count
-	for _, r := range routes {
-		most = max(most, r.Count)
-	}
 	routes = util.FilterSlice(routes, func(r av.ScrapedRoute) bool {
 		return r.Count >= minRouteFilings && r.Count*10 > most
 	})
 	return routes[:min(len(routes), maxRoutesPerPair)]
+}
+
+// groupByEnds merges the routes that leave and arrive the same way into the
+// most-filed of them, which then carries what was seen of all of them.
+// Long-haul jets file wind-optimal routes whose middles are rarely the same
+// twice--Atlanta to Los Angeles comes back as 87 routes in 102 filings, none
+// filed more than four times--but they leave by a handful of SIDs and gates
+// and arrive by a handful of STARs, and the ends are what route selection
+// fits to a scenario. Taken whole, nothing such a pair files recurs enough to
+// keep; taken by their ends, five routes account for three-quarters of its
+// filings. A pair whose routes repeat whole comes out as it went in.
+func groupByEnds(routes []av.ScrapedRoute) []av.ScrapedRoute {
+	// The same route can come more than once--consolidateSets reworks
+	// recorded routes into each other--and it is the most-filed route that
+	// stands for its group, so those merge first.
+	routes = mergeRoutes(routes, func(r av.ScrapedRoute) string { return r.Route })
+	return mergeRoutes(routes, func(r av.ScrapedRoute) string { return routeEnds(r.Route) })
+}
+
+// routeEnds is a route's first two tokens and its last two--typically the
+// SID and the gate it leaves by, and the fix it joins the STAR at and the
+// STAR--or the whole of a route too short to have a middle.
+func routeEnds(route string) string {
+	fields := strings.Fields(route)
+	if len(fields) <= 4 {
+		return route
+	}
+	return strings.Join(slices.Concat(fields[:2], fields[len(fields)-2:]), " ")
+}
+
+// mergeRoutes merges the routes that share a key into the first of them,
+// most-filed first, and returns them most-filed first.
+func mergeRoutes(routes []av.ScrapedRoute, key func(av.ScrapedRoute) string) []av.ScrapedRoute {
+	sorted := slices.Clone(routes)
+	sortRoutes(sorted)
+
+	var merged []av.ScrapedRoute
+	index := make(map[string]int)
+	for _, r := range sorted {
+		k := key(r)
+		i, ok := index[k]
+		if !ok {
+			index[k] = len(merged)
+			merged = append(merged, r)
+			continue
+		}
+		m := &merged[i]
+		m.Count += r.Count
+		m.Aircraft |= r.Aircraft
+		m.Hours |= r.Hours
+		if r.MinAltitude > 0 && (m.MinAltitude == 0 || r.MinAltitude < m.MinAltitude) {
+			m.MinAltitude = r.MinAltitude
+		}
+		m.MaxAltitude = max(m.MaxAltitude, r.MaxAltitude)
+	}
+	sortRoutes(merged)
+	return merged
+}
+
+// sortRoutes orders routes most-filed first.
+func sortRoutes(routes []av.ScrapedRoute) {
+	slices.SortStableFunc(routes, func(a, b av.ScrapedRoute) int {
+		if a.Count != b.Count {
+			return cmp.Compare(b.Count, a.Count)
+		}
+		return strings.Compare(a.Route, b.Route)
+	})
 }
 
 // prunePairs drops the entries for pairs nothing that would file a route flies
@@ -530,43 +593,18 @@ func prunePairs(sets map[string]av.ScrapedRouteSet, flown map[db.AirportPair]int
 func consolidateSets(sets map[string]av.ScrapedRouteSet) bool {
 	changed := false
 	for key, set := range sets {
-		fromStr, toStr, ok := strings.Cut(key, "-")
+		from, to, ok := parsePairKey(key)
 		if !ok {
 			continue
 		}
-		from, to := av.ICAOAirportCode(fromStr), av.ICAOAirportCode(toStr)
 
-		var order []string
-		merged := make(map[string]*av.ScrapedRoute)
+		var routes []av.ScrapedRoute
 		for _, r := range set.Routes {
-			route := consolidateRoute(cleanRoute(r.Route, from, to), domestic(from), domestic(to))
-			if route == "" {
-				continue
+			r.Route = consolidateRoute(cleanRoute(r.Route, from, to), domestic(from), domestic(to))
+			if r.Route != "" {
+				routes = append(routes, r)
 			}
-			m, ok := merged[route]
-			if !ok {
-				c := r
-				c.Route = route
-				merged[route] = &c
-				order = append(order, route)
-				continue
-			}
-			m.Count += r.Count
-			m.Aircraft |= r.Aircraft
-			m.Hours |= r.Hours
-			if r.MinAltitude > 0 && (m.MinAltitude == 0 || r.MinAltitude < m.MinAltitude) {
-				m.MinAltitude = r.MinAltitude
-			}
-			m.MaxAltitude = max(m.MaxAltitude, r.MaxAltitude)
 		}
-
-		routes := util.MapSlice(order, func(route string) av.ScrapedRoute { return *merged[route] })
-		slices.SortStableFunc(routes, func(a, b av.ScrapedRoute) int {
-			if a.Count != b.Count {
-				return cmp.Compare(b.Count, a.Count)
-			}
-			return strings.Compare(a.Route, b.Route)
-		})
 		routes = cullRareRoutes(routes)
 
 		if !slices.Equal(routes, set.Routes) {
