@@ -6,7 +6,10 @@ package main
 
 import (
 	"fmt"
+	"path"
+	"path/filepath"
 	"testing"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
@@ -212,56 +215,47 @@ func TestFilesIFR(t *testing.T) {
 	}
 }
 
-func TestFAACoverage(t *testing.T) {
-	for _, tc := range []struct {
-		name   string
-		routes []db.AirportPairRoute
-		want   coverage
-	}{
-		{"none at all", nil, coverage{}},
-		{
-			// KSFO-KLAX: one low-altitude route down the Victor airways, which
-			// is the whole of what its jets have to file.
-			"low altitude only", []db.AirportPairRoute{{Type: "L"}}, coverage{props: true},
-		},
-		{
-			"tower en route only", []db.AirportPairRoute{{Type: "TEC"}, {Type: "TEC"}},
-			coverage{props: true},
-		},
-		{
-			// The mirror of it: a pair with nothing for the props that fly it.
-			"high altitude only", []db.AirportPairRoute{{Type: "H"}, {Type: "CDR"}},
-			coverage{jets: true},
-		},
-		{
-			"one of each", []db.AirportPairRoute{{Type: "L"}, {Type: "H"}},
-			coverage{jets: true, props: true},
-		},
-		{
-			"each class restricted away from its own structure",
-			[]db.AirportPairRoute{{Type: "L", Aircraft: "jet"}, {Type: "H", Aircraft: "prop"}},
-			coverage{},
-		},
-	} {
-		if got := faaCoverage(tc.routes); got != tc.want {
-			t.Errorf("%s: faaCoverage is %+v, want %+v", tc.name, got, tc.want)
-		}
+// The FAA databases hold routes for both the jets and the props flying
+// KJFK-KBOS, but they have no say in what is fetched.
+func TestGatherPairs(t *testing.T) {
+	db.InitDB()
+
+	flown := map[db.AirportPair]int{{From: "KJFK", To: "KBOS"}: 47, {From: "KBOS", To: "KJFK"}: 52}
+	pairs := gatherPairs(flown)
+	if len(pairs) != 2 || pairs[0].key() != "KBOS-KJFK" || pairs[1].flights != 47 {
+		t.Errorf("got %+v, want KBOS-KJFK with 52 flights, then KJFK-KBOS with 47", pairs)
 	}
 }
 
-func TestCoverageUnrouted(t *testing.T) {
-	f := filings{jets: 40, props: 7}
-	for _, tc := range []struct {
-		c    coverage
-		want int
-	}{
-		{coverage{jets: true, props: true}, 0},
-		{coverage{props: true}, 40},
-		{coverage{jets: true}, 7},
-		{coverage{}, 47},
-	} {
-		if got := tc.c.unrouted(f); got != tc.want {
-			t.Errorf("%+v: unrouted is %d, want %d", tc.c, got, tc.want)
+// A task's results replace what the database holds for a pair unless that was
+// fetched more recently--by a local run while the tasks were at it, say.
+func TestMergeResults(t *testing.T) {
+	dir := t.TempDir()
+	dbPath := filepath.Join(dir, "db.json")
+	writeRouteSets(dbPath, map[string]av.ScrapedRouteSet{
+		"KSFO-KPDX": {Updated: "2026-01-01"},
+		"KSFO-KLAX": {Updated: "2026-03-01", Routes: []av.ScrapedRoute{{Route: "NEWER", Count: 9}}},
+		"KSFO-KSEA": {Updated: "2026-01-01"},
+	})
+	writePlan(dir, []pair{{from: "KSFO", to: "KPDX"}, {from: "KSFO", to: "KLAX"}, {from: "KSFO", to: "KSAN"}},
+		time.Second)
+	if err := (dirShared(dir)).write(path.Join(resultsDir, "task-000.json"), []byte(`{
+		"KSFO-KPDX": {"updated": "2026-02-01", "routes": [{"route": "FETCHED", "count": 5}]},
+		"KSFO-KLAX": {"updated": "2026-02-01", "routes": [{"route": "OLDER", "count": 5}]}
+	}`)); err != nil {
+		t.Fatal(err)
+	}
+
+	mergeResults(dir, dbPath, false)
+
+	sets := readRouteSets(dbPath)
+	for key, want := range map[string]string{"KSFO-KPDX": "FETCHED", "KSFO-KLAX": "NEWER", "KSFO-KSEA": ""} {
+		var got string
+		if routes := sets[key].Routes; len(routes) > 0 {
+			got = routes[0].Route
+		}
+		if got != want {
+			t.Errorf("%s: route %q, want %q", key, got, want)
 		}
 	}
 }

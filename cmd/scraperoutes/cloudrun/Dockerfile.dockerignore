@@ -1,0 +1,16 @@
+# Keep the build context and image small: the worker only needs the Go
+# sources and the aviation data that db.InitDB reads from resources/. The
+# pairs to fetch are decided locally from the flight data, so it needs none of
+# that, nor the models, videomaps, scenarios, or bundled weather that the vice
+# client uses.
+.git
+whisper.cpp
+sherpa-onnx
+resources/models
+resources/scenarios
+resources/traffic
+resources/videomaps
+resources/wx
+vice
+*.prof
+*.pprof

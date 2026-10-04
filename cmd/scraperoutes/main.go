@@ -3,18 +3,22 @@
 // SPDX: GPL-3.0-only
 
 // scraperoutes maintains resources/scraped-routes.json, the database of
-// recently filed routes that route selection consults for city pairs the FAA
-// databases don't usefully cover. It finds the traffic in the historical flight
-// data with no FAA route to file--jets on a pair the databases give only a
-// low-altitude route, props on one they give only a high-altitude route--looks
-// each such pair up on FlightAware's IFR route analyzer, and records the routes
-// actually filed along with how often, at what altitudes, by what kinds of
-// aircraft, and at what hours of the day--noise abatement runs some routes only
-// at night. Rarely filed routes are culled. Pairs are fetched worst-served
-// first, and refetched after they go stale (60 days, by default).
+// recently filed routes that route selection consults ahead of the FAA
+// databases. It counts the traffic in the historical flight data that would
+// file a route, looks each city pair it flies up on FlightAware's IFR route
+// analyzer, and records the routes actually filed along with how often, at
+// what altitudes, by what kinds of aircraft, and at what hours of the
+// day--noise abatement runs some routes only at night. Rarely filed routes are
+// culled. Pairs are fetched busiest first, whatever routes the FAA databases
+// hold for them, and refetched after they go stale (60 days, by default).
+//
+// A big queue can be spread across Cloud Run tasks, each fetching its share
+// from its own instance; see cloudrun/run.sh, which drives the -plan, -worker
+// and -merge modes.
 //
 //	go run ./cmd/scraperoutes [-cell N40W074] [-limit 25] [-dryrun]
 //	go run ./cmd/scraperoutes -lookup KCPS/KORD
+//	cmd/scraperoutes/cloudrun/run.sh [-limit 2000]
 package main
 
 import (
@@ -45,18 +49,31 @@ func main() {
 	cell := flag.String("cell", "", "only process pairs from this flight data `cell`, e.g. N40W074")
 	limit := flag.Int("limit", 25, "maximum `number` of city pairs to fetch routes for in this run")
 	minCount := flag.Int("mincount", 100,
-		"skip pairs the flight data records fewer than `count` flights with no route to file for")
+		"skip pairs the flight data records fewer than `count` flights that would file a route for")
 	delay := flag.Duration("delay", 10*time.Second, "`wait` between web requests")
 	recheck := flag.Int("recheck", 60, "refetch pairs last fetched more than `days` ago")
 	dryRun := flag.Bool("dryrun", false, "report what would be recorded without updating the database")
 	lookup := flag.String("lookup", "", "look up a single airport `pair`, e.g. KCPS/KORD, and print its routes")
 	dbPath := flag.String("db", "resources/"+av.ScrapedRoutesPath, "scraped route database `file` to update")
+	planDir := flag.String("plan", "", "write the pairs to fetch to `dir`/"+planFile+
+		" for Cloud Run tasks, rather than fetching them")
+	worker := flag.String("worker", "", "fetch this Cloud Run task's share of the pairs in `location`/"+
+		planFile+", a directory or gs://bucket/prefix, into location/"+resultsDir)
+	mergeDir := flag.String("merge", "", "record the routes Cloud Run tasks fetched into `dir`/"+resultsDir)
 	flag.Parse()
 
 	db.InitDB()
 
 	if *lookup != "" {
 		lookupPair(*lookup)
+		return
+	}
+	if *worker != "" {
+		runWorker(*worker)
+		return
+	}
+	if *mergeDir != "" {
+		mergeResults(*mergeDir, *dbPath, *dryRun)
 		return
 	}
 
@@ -82,22 +99,30 @@ func main() {
 
 	pairs := gatherPairs(flown)
 	pairs = util.FilterSlice(pairs, func(p pair) bool {
-		if p.unrouted < *minCount {
+		if p.flights < *minCount {
 			return false
 		}
 		set, ok := sets[p.key()]
 		return !ok || set.Updated <= stale
 	})
-	fmt.Printf("%d city pairs to fetch: %d or more flights with no FAA route to file, "+
-		"not fetched since %s\n", len(pairs), *minCount, stale)
+	fmt.Printf("%d city pairs to fetch: %d or more flights that would file, not fetched since %s\n",
+		len(pairs), *minCount, stale)
 
 	// A dry run is for reading the queue rather than filling it, so print what
 	// it would work through. With -limit 0 that is the whole of what the run
 	// would do, and it never reaches the network.
 	if *dryRun {
 		for _, p := range pairs {
-			fmt.Printf("  %s->%s: %d flights with no route\n", p.from, p.to, p.unrouted)
+			fmt.Printf("  %s->%s: %d flights\n", p.from, p.to, p.flights)
 		}
+	}
+
+	if *planDir != "" {
+		writePlan(*planDir, pairs[:min(len(pairs), *limit)], *delay)
+		if remaining := len(pairs) - *limit; remaining > 0 {
+			fmt.Printf("%d pairs remain past -limit\n", remaining)
+		}
+		return
 	}
 
 	client := &http.Client{Timeout: 30 * time.Second}
@@ -120,10 +145,10 @@ func main() {
 		routes = cullRareRoutes(routes)
 
 		if len(routes) == 0 {
-			fmt.Printf("%s->%s (%d flights with no route): no routes found\n", pr.from, pr.to, pr.unrouted)
+			fmt.Printf("%s->%s (%d flights): no routes found\n", pr.from, pr.to, pr.flights)
 		}
 		for _, r := range routes {
-			fmt.Printf("%s->%s (%d flights with no route): %q %s\n", pr.from, pr.to, pr.unrouted,
+			fmt.Printf("%s->%s (%d flights): %q %s\n", pr.from, pr.to, pr.flights,
 				r.Route, describe(r))
 		}
 
@@ -200,25 +225,19 @@ func describe(r av.ScrapedRoute) string {
 // City pairs from the flight data
 
 // pair is a directed city pair from the flight data and how many of the
-// flights recorded for it have no route to file.
+// flights recorded for it would file a route.
 type pair struct {
 	from, to av.ICAOAirportCode
-	unrouted int
+	flights  int
 }
 
 func (p pair) key() string { return string(p.from) + "-" + string(p.to) }
 
-// filings counts a pair's flights that would file a route, by the class of
-// route they would file: jets want the flight levels, everything else the
-// low-altitude structure.
-type filings struct{ jets, props int }
-
 // gatherFilings walks the flight data and counts, for every directed city pair
-// it holds, the flights that would file a route, by the class of route they
-// would file. A pair is recorded in the cell of the airport it departs and
-// again in the cell of the one it lands at, so its counts are the larger of
-// what the two give.
-func gatherFilings(onlyCell string) map[db.AirportPair]filings {
+// it holds, the flights that would file a route. A pair is recorded in the
+// cell of the airport it departs and again in the cell of the one it lands
+// at, so its count is the larger of what the two give.
+func gatherFilings(onlyCell string) map[db.AirportPair]int {
 	resources := util.GetResourcesFS()
 	files, err := fs.Glob(resources, traffic.FlightDataDirectory+"/*"+traffic.FlightDataExtension)
 	if err != nil {
@@ -226,7 +245,7 @@ func gatherFilings(onlyCell string) map[db.AirportPair]filings {
 		os.Exit(1)
 	}
 
-	counts := make(map[db.AirportPair]filings)
+	counts := make(map[db.AirportPair]int)
 	for _, file := range files {
 		cell := strings.TrimSuffix(path.Base(file), traffic.FlightDataExtension)
 		if onlyCell != "" && !strings.EqualFold(cell, onlyCell) {
@@ -243,7 +262,7 @@ func gatherFilings(onlyCell string) map[db.AirportPair]filings {
 			continue
 		}
 
-		local := make(map[db.AirportPair]filings)
+		local := make(map[db.AirportPair]int)
 		for _, f := range flights {
 			if !filesIFR(f.Callsign, f.AircraftType) {
 				continue
@@ -252,27 +271,19 @@ func gatherFilings(onlyCell string) map[db.AirportPair]filings {
 			if f.Departure {
 				from, to = f.Airport, f.Other
 			}
-			key := db.AirportPair{From: from, To: to}
-			n := local[key]
-			if av.AircraftClassOf(db.Lookups{}, f.AircraftType)&jetClasses != 0 {
-				n.jets++
-			} else {
-				n.props++
-			}
-			local[key] = n
+			local[db.AirportPair{From: from, To: to}]++
 		}
 		for key, n := range local {
-			counts[key] = filings{jets: max(counts[key].jets, n.jets),
-				props: max(counts[key].props, n.props)}
+			counts[key] = max(counts[key], n)
 		}
 	}
 
 	return counts
 }
 
-// gatherPairs returns the directed city pairs with traffic the FAA databases
-// hold no route for, worst-served first.
-func gatherPairs(flown map[db.AirportPair]filings) []pair {
+// gatherPairs returns the directed city pairs with traffic that would file a
+// route, busiest first.
+func gatherPairs(flown map[db.AirportPair]int) []pair {
 	var pairs []pair
 	for key, n := range flown {
 		from, to := key.From, key.To
@@ -285,23 +296,17 @@ func gatherPairs(flown map[db.AirportPair]filings) []pair {
 		if _, ok := db.DB.Airports[to]; !ok {
 			continue
 		}
-		if unrouted := faaCoverage(db.DB.RoutesBetween(from, to)).unrouted(n); unrouted > 0 {
-			pairs = append(pairs, pair{from: from, to: to, unrouted: unrouted})
-		}
+		pairs = append(pairs, pair{from: from, to: to, flights: n})
 	}
 
 	slices.SortFunc(pairs, func(a, b pair) int {
-		if a.unrouted != b.unrouted {
-			return cmp.Compare(b.unrouted, a.unrouted)
+		if a.flights != b.flights {
+			return cmp.Compare(b.flights, a.flights)
 		}
 		return strings.Compare(a.key(), b.key())
 	})
 	return pairs
 }
-
-// jetClasses is the aircraft classes that fly the high-altitude route
-// structure; everything else flies the low-altitude one.
-const jetClasses = av.AircraftClassHeavyJet | av.AircraftClassNonheavyJet
 
 // classAFloor is where the flight levels begin. An aircraft that cannot get
 // near it is a light one flying locally, whatever its operator: the trainers,
@@ -326,41 +331,6 @@ func filesIFR(callsign, aircraftType string) bool {
 		return false // a helicopter goes where the route structure doesn't
 	}
 	return perf.Ceiling > classAFloor
-}
-
-// coverage is what the FAA databases hold for a pair: a route its jets could
-// file, a route its props could file, or neither. Selection wants the flight
-// levels for jets and the low-altitude structure for everything else, so a
-// pair is covered for one and not the other often enough to have to ask
-// separately.
-type coverage struct{ jets, props bool }
-
-func faaCoverage(routes []db.AirportPairRoute) coverage {
-	var c coverage
-	for _, r := range routes {
-		if r.LowAltitude() {
-			c.props = c.props || r.Aircraft != "jet"
-		} else {
-			c.jets = c.jets || r.Aircraft != "prop"
-		}
-	}
-	return c
-}
-
-// unrouted is how many of a pair's flights have nothing to file: its jets when
-// the databases hold no high-altitude route, its props when they hold no
-// low-altitude one. San Francisco to Los Angeles has one route, down the Victor
-// airways, and is flown almost entirely by jets; the mirror of it is a pair
-// with nothing but a jet route that Cape Air flies.
-func (c coverage) unrouted(f filings) int {
-	var n int
-	if !c.jets {
-		n += f.jets
-	}
-	if !c.props {
-		n += f.props
-	}
-	return n
 }
 
 // madeUpAirport reports whether an airport is one of the fictional ones the FAA
@@ -411,6 +381,13 @@ func fetchRoutes(client *http.Client, from, to av.ICAOAirportCode,
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 4<<20))
 	if err != nil {
 		return nil, err
+	}
+	// The analyzer's title is on its page whether or not it found any routes.
+	// Without it, this is something else--a block page served to a client it
+	// has decided is a bot--and reading it as no routes would record the pair
+	// as having none until it went stale.
+	if !strings.Contains(string(body), "IFR Route Analyzer") {
+		return nil, fmt.Errorf("fetching routes: not the route analyzer's page")
 	}
 	return parseAnalyzerRoutes(string(body), from, to, fromScenario, toScenario), nil
 }
@@ -529,15 +506,14 @@ func cullRareRoutes(routes []av.ScrapedRoute) []av.ScrapedRoute {
 // Nothing flying a pair that would file is a statement about the pair, not
 // about this run, which is why the -mincount bar has no say here: keying
 // deletion to a flag would let one run with a high one empty the database.
-func prunePairs(sets map[string]av.ScrapedRouteSet, flown map[db.AirportPair]filings) int {
+func prunePairs(sets map[string]av.ScrapedRouteSet, flown map[db.AirportPair]int) int {
 	pruned := 0
 	for key := range sets {
 		fromStr, toStr, ok := strings.Cut(key, "-")
 		if !ok {
 			continue
 		}
-		f := flown[db.AirportPair{From: av.ICAOAirportCode(fromStr), To: av.ICAOAirportCode(toStr)}]
-		if f.jets+f.props > 0 {
+		if flown[db.AirportPair{From: av.ICAOAirportCode(fromStr), To: av.ICAOAirportCode(toStr)}] > 0 {
 			continue
 		}
 		fmt.Printf("  %s: nothing that files flies it any more\n", key)
