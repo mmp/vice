@@ -1,13 +1,4 @@
 {
-  "BIKF-KBOS": {
-    "updated": "2026-09-18"
-  },
-  "BIKF-KJFK": {
-    "updated": "2026-09-18"
-  },
-  "CYEG-KDEN": {
-    "updated": "2026-09-18"
-  },
   "CYHM-KCAK": {
     "updated": "2026-09-18",
     "routes": [
@@ -218,9 +209,6 @@
       }
     ]
   },
-  "CYUL-KFLL": {
-    "updated": "2026-10-04"
-  },
   "CYUL-KIAD": {
     "updated": "2026-08-07",
     "routes": [
@@ -234,9 +222,6 @@
       }
     ]
   },
-  "CYUL-KLAX": {
-    "updated": "2026-09-18"
-  },
   "CYUL-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -249,12 +234,6 @@
         "hours": "1,3-4,6-15,17,19-20"
       }
     ]
-  },
-  "CYUL-KMCO": {
-    "updated": "2026-10-04"
-  },
-  "CYUL-KMIA": {
-    "updated": "2026-10-04"
   },
   "CYUL-KORD": {
     "updated": "2026-08-06",
@@ -319,12 +298,6 @@
       }
     ]
   },
-  "CYVR-KDFW": {
-    "updated": "2026-09-18"
-  },
-  "CYVR-KIAH": {
-    "updated": "2026-09-18"
-  },
   "CYVR-KLAS": {
     "updated": "2026-08-07",
     "routes": [
@@ -367,9 +340,6 @@
       }
     ]
   },
-  "CYVR-KORD": {
-    "updated": "2026-08-07"
-  },
   "CYVR-KPDX": {
     "updated": "2026-08-06",
     "routes": [
@@ -393,9 +363,6 @@
         "hours": "8,12-13,22"
       }
     ]
-  },
-  "CYVR-KPHX": {
-    "updated": "2026-09-18"
   },
   "CYVR-KSAN": {
     "updated": "2026-09-18",
@@ -484,9 +451,6 @@
       }
     ]
   },
-  "CYVR-PHNL": {
-    "updated": "2026-08-07"
-  },
   "CYWG-KMSP": {
     "updated": "2026-08-07",
     "routes": [
@@ -513,15 +477,6 @@
       }
     ]
   },
-  "CYYC-KIAH": {
-    "updated": "2026-08-07"
-  },
-  "CYYC-KLAS": {
-    "updated": "2026-08-07"
-  },
-  "CYYC-KLAX": {
-    "updated": "2026-08-07"
-  },
   "CYYC-KORD": {
     "updated": "2026-08-07",
     "routes": [
@@ -534,9 +489,6 @@
         "hours": "8,12,18,21"
       }
     ]
-  },
-  "CYYC-KPHX": {
-    "updated": "2026-08-07"
   },
   "CYYC-KSEA": {
     "updated": "2026-08-07",
@@ -695,9 +647,6 @@
       }
     ]
   },
-  "CYYZ-KDFW": {
-    "updated": "2026-08-06"
-  },
   "CYYZ-KDTW": {
     "updated": "2026-08-06",
     "routes": [
@@ -774,9 +723,6 @@
       }
     ]
   },
-  "CYYZ-KIAH": {
-    "updated": "2026-08-06"
-  },
   "CYYZ-KJFK": {
     "updated": "2026-08-06",
     "routes": [
@@ -789,12 +735,6 @@
         "hours": "3,5-8,12,15,18-20"
       }
     ]
-  },
-  "CYYZ-KLAS": {
-    "updated": "2026-08-06"
-  },
-  "CYYZ-KLAX": {
-    "updated": "2026-08-06"
   },
   "CYYZ-KLGA": {
     "updated": "2026-10-04",
@@ -901,12 +841,6 @@
       }
     ]
   },
-  "CYYZ-KRSW": {
-    "updated": "2026-10-04"
-  },
-  "CYYZ-KSFO": {
-    "updated": "2026-10-04"
-  },
   "CYYZ-KTEB": {
     "updated": "2026-08-06",
     "routes": [
@@ -933,21 +867,6 @@
       }
     ]
   },
-  "EDDF-KATL": {
-    "updated": "2026-08-07"
-  },
-  "EDDF-KEWR": {
-    "updated": "2026-09-18"
-  },
-  "EDDF-KIAD": {
-    "updated": "2026-08-07"
-  },
-  "EDDF-KIAH": {
-    "updated": "2026-09-18"
-  },
-  "EDDF-KJFK": {
-    "updated": "2026-08-06"
-  },
   "EDDF-KLAX": {
     "updated": "2026-09-18",
     "routes": [
@@ -960,30 +879,6 @@
         "hours": "7,10-11"
       }
     ]
-  },
-  "EDDF-KORD": {
-    "updated": "2026-08-06"
-  },
-  "EDDF-KSFO": {
-    "updated": "2026-08-07"
-  },
-  "EDDK-KSDF": {
-    "updated": "2026-09-18"
-  },
-  "EDDM-KEWR": {
-    "updated": "2026-09-18"
-  },
-  "EDDM-KIAD": {
-    "updated": "2026-09-18"
-  },
-  "EDDM-KORD": {
-    "updated": "2026-09-18"
-  },
-  "EDDM-KSFO": {
-    "updated": "2026-09-18"
-  },
-  "EGKK-KMCO": {
-    "updated": "2026-09-18"
   },
   "EGLL-KATL": {
     "updated": "2026-08-06",
@@ -998,24 +893,6 @@
       }
     ]
   },
-  "EGLL-KBOS": {
-    "updated": "2026-08-06"
-  },
-  "EGLL-KCLT": {
-    "updated": "2026-08-07"
-  },
-  "EGLL-KDEN": {
-    "updated": "2026-08-07"
-  },
-  "EGLL-KDFW": {
-    "updated": "2026-08-06"
-  },
-  "EGLL-KEWR": {
-    "updated": "2026-08-06"
-  },
-  "EGLL-KIAD": {
-    "updated": "2026-08-06"
-  },
   "EGLL-KIAH": {
     "updated": "2026-08-07",
     "routes": [
@@ -1028,9 +905,6 @@
         "hours": "0-1,3-4,8,10,12"
       }
     ]
-  },
-  "EGLL-KJFK": {
-    "updated": "2026-08-06"
   },
   "EGLL-KLAS": {
     "updated": "2026-09-18",
@@ -1078,18 +952,6 @@
         "hours": "7-8,11-12"
       }
     ]
-  },
-  "EGLL-KORD": {
-    "updated": "2026-08-06"
-  },
-  "EGLL-KPHL": {
-    "updated": "2026-08-07"
-  },
-  "EGLL-KSEA": {
-    "updated": "2026-08-07"
-  },
-  "EGLL-KSFO": {
-    "updated": "2026-08-06"
   },
   "EHAM-KATL": {
     "updated": "2026-08-07",
@@ -1143,12 +1005,6 @@
       }
     ]
   },
-  "EHAM-KMSP": {
-    "updated": "2026-08-07"
-  },
-  "EHAM-KORD": {
-    "updated": "2026-09-18"
-  },
   "EIDW-KBOS": {
     "updated": "2026-08-07",
     "routes": [
@@ -1162,12 +1018,6 @@
       }
     ]
   },
-  "EIDW-KEWR": {
-    "updated": "2026-08-07"
-  },
-  "EIDW-KIAD": {
-    "updated": "2026-08-07"
-  },
   "EIDW-KJFK": {
     "updated": "2026-08-06",
     "routes": [
@@ -1180,12 +1030,6 @@
         "hours": "9-10"
       }
     ]
-  },
-  "EIDW-KORD": {
-    "updated": "2026-08-07"
-  },
-  "EIDW-KPHL": {
-    "updated": "2026-09-18"
   },
   "KABE-KATL": {
     "updated": "2026-08-07",
@@ -1212,12 +1056,6 @@
         "hours": "1,3,5-6,11,14,17"
       }
     ]
-  },
-  "KABE-KHZL": {
-    "updated": "2026-08-26"
-  },
-  "KABE-KMPO": {
-    "updated": "2026-08-08"
   },
   "KABE-KORD": {
     "updated": "2026-08-07",
@@ -1413,9 +1251,6 @@
       }
     ]
   },
-  "KABQ-KLAM": {
-    "updated": "2026-08-08"
-  },
   "KABQ-KLAS": {
     "updated": "2026-08-07",
     "routes": [
@@ -1474,9 +1309,6 @@
       }
     ]
   },
-  "KABQ-KONM": {
-    "updated": "2026-08-08"
-  },
   "KABQ-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -1511,9 +1343,6 @@
       }
     ]
   },
-  "KABQ-KSFO": {
-    "updated": "2026-09-18"
-  },
   "KABQ-KSLC": {
     "updated": "2026-08-07",
     "routes": [
@@ -1534,9 +1363,6 @@
         "hours": "7,12,20"
       }
     ]
-  },
-  "KABR-KFSD": {
-    "updated": "2026-08-26"
   },
   "KABR-KMSP": {
     "updated": "2026-09-18",
@@ -1607,12 +1433,6 @@
       }
     ]
   },
-  "KADS-KAFW": {
-    "updated": "2026-08-06"
-  },
-  "KADS-KAUS": {
-    "updated": "2026-08-06"
-  },
   "KADS-KDAL": {
     "updated": "2026-08-06",
     "routes": [
@@ -1625,24 +1445,6 @@
         "hours": "6,14,19"
       }
     ]
-  },
-  "KADS-KFTW": {
-    "updated": "2026-08-06"
-  },
-  "KADS-KGLE": {
-    "updated": "2026-08-07"
-  },
-  "KADS-KGVT": {
-    "updated": "2026-08-06"
-  },
-  "KADS-KGYI": {
-    "updated": "2026-08-06"
-  },
-  "KADS-KRBD": {
-    "updated": "2026-08-06"
-  },
-  "KADS-KTRL": {
-    "updated": "2026-08-07"
   },
   "KAEX-KATL": {
     "updated": "2026-08-07",
@@ -1665,9 +1467,6 @@
       }
     ]
   },
-  "KAFW-KADS": {
-    "updated": "2026-08-06"
-  },
   "KAFW-KAUS": {
     "updated": "2026-08-07",
     "routes": [
@@ -1680,30 +1479,6 @@
         "hours": "0-3"
       }
     ]
-  },
-  "KAFW-KFTW": {
-    "updated": "2026-08-06"
-  },
-  "KAFW-KGLE": {
-    "updated": "2026-08-06"
-  },
-  "KAFW-KGYI": {
-    "updated": "2026-08-08"
-  },
-  "KAFW-KMWL": {
-    "updated": "2026-08-06"
-  },
-  "KAFW-KNFW": {
-    "updated": "2026-08-06"
-  },
-  "KAFW-KRBD": {
-    "updated": "2026-08-06"
-  },
-  "KAGC-KBTP": {
-    "updated": "2026-08-07"
-  },
-  "KAGC-KLBE": {
-    "updated": "2026-08-08"
   },
   "KAGS-KATL": {
     "updated": "2026-08-06",
@@ -1872,9 +1647,6 @@
       }
     ]
   },
-  "KALB-KSCH": {
-    "updated": "2026-08-07"
-  },
   "KALS-KDEN": {
     "updated": "2026-09-18",
     "routes": [
@@ -1951,9 +1723,6 @@
       }
     ]
   },
-  "KAPA-KBJC": {
-    "updated": "2026-08-07"
-  },
   "KAPA-KSDL": {
     "updated": "2026-10-04",
     "routes": [
@@ -1966,9 +1735,6 @@
         "hours": "0-1,6,8-10,15-21,23"
       }
     ]
-  },
-  "KAPC-KSTS": {
-    "updated": "2026-08-08"
   },
   "KAPF-KBCT": {
     "updated": "2026-08-08",
@@ -1996,9 +1762,6 @@
       }
     ]
   },
-  "KAPF-KFMY": {
-    "updated": "2026-08-08"
-  },
   "KAPF-KFXE": {
     "updated": "2026-08-08",
     "routes": [
@@ -2019,24 +1782,6 @@
         "hours": "10-13,20"
       }
     ]
-  },
-  "KAPF-KHWO": {
-    "updated": "2026-08-08"
-  },
-  "KAPF-KIMM": {
-    "updated": "2026-08-08"
-  },
-  "KAPF-KMKY": {
-    "updated": "2026-08-08"
-  },
-  "KAPF-KSUA": {
-    "updated": "2026-08-08"
-  },
-  "KARA-KLFT": {
-    "updated": "2026-08-08"
-  },
-  "KARR-KDPA": {
-    "updated": "2026-08-06"
   },
   "KASE-KDEN": {
     "updated": "2026-08-06",
@@ -2090,9 +1835,6 @@
       }
     ]
   },
-  "KASH-KBED": {
-    "updated": "2026-08-26"
-  },
   "KATL-CYUL": {
     "updated": "2026-10-04",
     "routes": [
@@ -2134,15 +1876,6 @@
         "hours": "9,15,19,21-22"
       }
     ]
-  },
-  "KATL-EDDF": {
-    "updated": "2026-08-07"
-  },
-  "KATL-EGLL": {
-    "updated": "2026-08-06"
-  },
-  "KATL-EHAM": {
-    "updated": "2026-08-06"
   },
   "KATL-KABE": {
     "updated": "2026-10-04",
@@ -2805,9 +2538,6 @@
       }
     ]
   },
-  "KATL-KFTY": {
-    "updated": "2026-08-06"
-  },
   "KATL-KFWA": {
     "updated": "2026-10-04",
     "routes": [
@@ -3098,9 +2828,6 @@
       }
     ]
   },
-  "KATL-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KATL-KLEX": {
     "updated": "2026-10-04",
     "routes": [
@@ -3140,9 +2867,6 @@
       }
     ]
   },
-  "KATL-KLGC": {
-    "updated": "2026-08-06"
-  },
   "KATL-KLIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -3155,9 +2879,6 @@
         "hours": "0,8-10,13-23"
       }
     ]
-  },
-  "KATL-KLZU": {
-    "updated": "2026-08-07"
   },
   "KATL-KMCI": {
     "updated": "2026-10-04",
@@ -3223,9 +2944,6 @@
         "hours": "0,7-23"
       }
     ]
-  },
-  "KATL-KMGE": {
-    "updated": "2026-08-07"
   },
   "KATL-KMGM": {
     "updated": "2026-10-04",
@@ -3415,9 +3133,6 @@
       }
     ]
   },
-  "KATL-KONT": {
-    "updated": "2026-10-04"
-  },
   "KATL-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -3467,12 +3182,6 @@
         "hours": "0-1,8,10-14,16,18,20-23"
       }
     ]
-  },
-  "KATL-KPDK": {
-    "updated": "2026-08-06"
-  },
-  "KATL-KPDX": {
-    "updated": "2026-10-04"
   },
   "KATL-KPHL": {
     "updated": "2026-10-04",
@@ -3604,9 +3313,6 @@
       }
     ]
   },
-  "KATL-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KATL-KSAT": {
     "updated": "2026-10-04",
     "routes": [
@@ -3680,9 +3386,6 @@
       }
     ]
   },
-  "KATL-KSFO": {
-    "updated": "2026-10-04"
-  },
   "KATL-KSGF": {
     "updated": "2026-10-04",
     "routes": [
@@ -3725,9 +3428,6 @@
       }
     ]
   },
-  "KATL-KSJC": {
-    "updated": "2026-10-04"
-  },
   "KATL-KSLC": {
     "updated": "2026-10-04",
     "routes": [
@@ -3740,12 +3440,6 @@
         "hours": "0,9,12,21"
       }
     ]
-  },
-  "KATL-KSMF": {
-    "updated": "2026-10-04"
-  },
-  "KATL-KSNA": {
-    "updated": "2026-10-04"
   },
   "KATL-KSRQ": {
     "updated": "2026-10-04",
@@ -3890,9 +3584,6 @@
       }
     ]
   },
-  "KATL-LFPG": {
-    "updated": "2026-08-06"
-  },
   "KATL-MDPC": {
     "updated": "2026-09-18",
     "routes": [
@@ -3960,9 +3651,6 @@
         "hours": "0,9,11-13"
       }
     ]
-  },
-  "KATL-RKSI": {
-    "updated": "2026-08-07"
   },
   "KATL-TJSJ": {
     "updated": "2026-10-04",
@@ -4047,21 +3735,6 @@
         "hours": "0,4,6,8,10,13,17"
       }
     ]
-  },
-  "KAUN-KBLU": {
-    "updated": "2026-08-08"
-  },
-  "KAUN-KMCC": {
-    "updated": "2026-08-08"
-  },
-  "KAUN-KPVF": {
-    "updated": "2026-08-08"
-  },
-  "KAUO-KALX": {
-    "updated": "2026-08-08"
-  },
-  "KAUO-KLGC": {
-    "updated": "2026-08-06"
   },
   "KAUS-KADS": {
     "updated": "2026-08-06",
@@ -4172,9 +3845,6 @@
         "hours": "2,4-6,8-9,14-16,18"
       }
     ]
-  },
-  "KAUS-KCLL": {
-    "updated": "2026-08-08"
   },
   "KAUS-KCLT": {
     "updated": "2026-10-04",
@@ -4326,9 +3996,6 @@
       }
     ]
   },
-  "KAUS-KERV": {
-    "updated": "2026-08-06"
-  },
   "KAUS-KEWR": {
     "updated": "2026-10-04",
     "routes": [
@@ -4426,9 +4093,6 @@
       }
     ]
   },
-  "KAUS-KILE": {
-    "updated": "2026-08-06"
-  },
   "KAUS-KIND": {
     "updated": "2026-10-04",
     "routes": [
@@ -4441,9 +4105,6 @@
         "hours": "2,6-7,10,13,18-19"
       }
     ]
-  },
-  "KAUS-KIWS": {
-    "updated": "2026-08-07"
   },
   "KAUS-KJFK": {
     "updated": "2026-10-04",
@@ -4769,9 +4430,6 @@
       }
     ]
   },
-  "KAUS-KRBD": {
-    "updated": "2026-08-07"
-  },
   "KAUS-KRDU": {
     "updated": "2026-10-04",
     "routes": [
@@ -4874,12 +4532,6 @@
       }
     ]
   },
-  "KAUS-KSLC": {
-    "updated": "2026-10-04"
-  },
-  "KAUS-KSTL": {
-    "updated": "2026-10-04"
-  },
   "KAUS-KTPA": {
     "updated": "2026-10-04",
     "routes": [
@@ -4900,9 +4552,6 @@
         "hours": "1,3,7-8,10,13,17"
       }
     ]
-  },
-  "KAUS-MMUN": {
-    "updated": "2026-09-18"
   },
   "KAVL-KATL": {
     "updated": "2026-08-06",
@@ -5016,24 +4665,6 @@
       }
     ]
   },
-  "KAVQ-KCGZ": {
-    "updated": "2026-08-26"
-  },
-  "KAVQ-KFFZ": {
-    "updated": "2026-08-08"
-  },
-  "KAVQ-KIWA": {
-    "updated": "2026-08-08"
-  },
-  "KAVQ-KTUS": {
-    "updated": "2026-08-26"
-  },
-  "KAVX-KLGB": {
-    "updated": "2026-08-07"
-  },
-  "KAVX-KTOA": {
-    "updated": "2026-08-26"
-  },
   "KAZO-KDTW": {
     "updated": "2026-08-07",
     "routes": [
@@ -5067,15 +4698,6 @@
         "hours": "1,5-6,15-16"
       }
     ]
-  },
-  "KBAK-KIND": {
-    "updated": "2026-08-07"
-  },
-  "KBCT-KAPF": {
-    "updated": "2026-08-08"
-  },
-  "KBCT-KDJT": {
-    "updated": "2026-08-26"
   },
   "KBDL-KATL": {
     "updated": "2026-10-04",
@@ -5129,9 +4751,6 @@
       }
     ]
   },
-  "KBDL-KDEN": {
-    "updated": "2026-10-04"
-  },
   "KBDL-KDTW": {
     "updated": "2026-10-04",
     "routes": [
@@ -5165,9 +4784,6 @@
         "hours": "1-2,5-7,10,14-16,18-19,21"
       }
     ]
-  },
-  "KBDL-KJFK": {
-    "updated": "2026-09-18"
   },
   "KBDL-KMCO": {
     "updated": "2026-10-04",
@@ -5263,12 +4879,6 @@
       }
     ]
   },
-  "KBDL-TJSJ": {
-    "updated": "2026-10-04"
-  },
-  "KBED-KBOS": {
-    "updated": "2026-08-06"
-  },
   "KBED-KHPN": {
     "updated": "2026-10-04",
     "routes": [
@@ -5281,9 +4891,6 @@
         "hours": "4,7,10-12,14-16,18-19,21"
       }
     ]
-  },
-  "KBED-KPSM": {
-    "updated": "2026-08-07"
   },
   "KBED-KTEB": {
     "updated": "2026-10-04",
@@ -5327,9 +4934,6 @@
         "hours": "8-9,11,13,15-18,20"
       }
     ]
-  },
-  "KBFI-KPAE": {
-    "updated": "2026-08-08"
   },
   "KBFI-KPDX": {
     "updated": "2026-09-18",
@@ -5391,12 +4995,6 @@
         "hours": "7,9,11,13-14,17,20"
       }
     ]
-  },
-  "KBFM-KMOB": {
-    "updated": "2026-08-08"
-  },
-  "KBGE-KDHN": {
-    "updated": "2026-08-08"
   },
   "KBGR-KLGA": {
     "updated": "2026-10-04",
@@ -5682,12 +5280,6 @@
       }
     ]
   },
-  "KBHM-KTCL": {
-    "updated": "2026-08-08"
-  },
-  "KBIL-KBZN": {
-    "updated": "2026-08-07"
-  },
   "KBIL-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -5713,9 +5305,6 @@
         "hours": "5-7"
       }
     ]
-  },
-  "KBIL-KPOY": {
-    "updated": "2026-08-08"
   },
   "KBIL-KSEA": {
     "updated": "2026-09-18",
@@ -5772,9 +5361,6 @@
       }
     ]
   },
-  "KBIS-KFAR": {
-    "updated": "2026-08-08"
-  },
   "KBIS-KMSP": {
     "updated": "2026-08-06",
     "routes": [
@@ -5801,12 +5387,6 @@
       }
     ]
   },
-  "KBJC-KBDU": {
-    "updated": "2026-08-07"
-  },
-  "KBJC-KGXY": {
-    "updated": "2026-08-06"
-  },
   "KBJI-KMSP": {
     "updated": "2026-09-18",
     "routes": [
@@ -5819,12 +5399,6 @@
         "hours": "1,6-7,11,14-15"
       }
     ]
-  },
-  "KBLI-KFHR": {
-    "updated": "2026-08-08"
-  },
-  "KBLI-KORS": {
-    "updated": "2026-08-08"
   },
   "KBLI-KSEA": {
     "updated": "2026-08-06",
@@ -5970,9 +5544,6 @@
       }
     ]
   },
-  "KBNA-KBWG": {
-    "updated": "2026-08-08"
-  },
   "KBNA-KBWI": {
     "updated": "2026-10-04",
     "routes": [
@@ -5998,9 +5569,6 @@
         "hours": "1,3,9,12-14,18"
       }
     ]
-  },
-  "KBNA-KCKV": {
-    "updated": "2026-08-07"
   },
   "KBNA-KCLE": {
     "updated": "2026-10-04",
@@ -6324,9 +5892,6 @@
       }
     ]
   },
-  "KBNA-KLAX": {
-    "updated": "2026-08-06"
-  },
   "KBNA-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -6437,12 +6002,6 @@
       }
     ]
   },
-  "KBNA-KMKE": {
-    "updated": "2026-08-07"
-  },
-  "KBNA-KMQY": {
-    "updated": "2026-08-06"
-  },
   "KBNA-KMSP": {
     "updated": "2026-10-04",
     "routes": [
@@ -6527,9 +6086,6 @@
       }
     ]
   },
-  "KBNA-KPHX": {
-    "updated": "2026-08-06"
-  },
   "KBNA-KPIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -6585,9 +6141,6 @@
       }
     ]
   },
-  "KBNA-KSAN": {
-    "updated": "2026-09-18"
-  },
   "KBNA-KSAT": {
     "updated": "2026-10-04",
     "routes": [
@@ -6626,12 +6179,6 @@
         "hours": "2,6-7,9,17-18,20"
       }
     ]
-  },
-  "KBNA-KSFO": {
-    "updated": "2026-08-07"
-  },
-  "KBNA-KSLC": {
-    "updated": "2026-08-07"
   },
   "KBNA-KSRQ": {
     "updated": "2026-09-18",
@@ -6743,9 +6290,6 @@
       }
     ]
   },
-  "KBOI-KDFW": {
-    "updated": "2026-09-18"
-  },
   "KBOI-KGEG": {
     "updated": "2026-08-07",
     "routes": [
@@ -6797,9 +6341,6 @@
         "hours": "5,14-16,22"
       }
     ]
-  },
-  "KBOI-KONO": {
-    "updated": "2026-08-06"
   },
   "KBOI-KORD": {
     "updated": "2026-10-04",
@@ -7000,12 +6541,6 @@
       }
     ]
   },
-  "KBOI-KU70": {
-    "updated": "2026-08-07"
-  },
-  "KBOS-BIKF": {
-    "updated": "2026-09-18"
-  },
   "KBOS-CYTZ": {
     "updated": "2026-08-07",
     "routes": [
@@ -7087,9 +6622,6 @@
       }
     ]
   },
-  "KBOS-EIDW": {
-    "updated": "2026-08-07"
-  },
   "KBOS-KATL": {
     "updated": "2026-10-04",
     "routes": [
@@ -7123,9 +6655,6 @@
         "hours": "4,12,14-16"
       }
     ]
-  },
-  "KBOS-KBED": {
-    "updated": "2026-08-06"
   },
   "KBOS-KBNA": {
     "updated": "2026-10-04",
@@ -7434,9 +6963,6 @@
       }
     ]
   },
-  "KBOS-KFMH": {
-    "updated": "2026-08-06"
-  },
   "KBOS-KHYA": {
     "updated": "2026-10-04",
     "routes": [
@@ -7546,12 +7072,6 @@
         "hours": "0-1,4-22"
       }
     ]
-  },
-  "KBOS-KLAS": {
-    "updated": "2026-10-04"
-  },
-  "KBOS-KLAX": {
-    "updated": "2026-10-04"
   },
   "KBOS-KLGA": {
     "updated": "2026-10-04",
@@ -7718,9 +7238,6 @@
       }
     ]
   },
-  "KBOS-KPHX": {
-    "updated": "2026-10-04"
-  },
   "KBOS-KPIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -7862,9 +7379,6 @@
       }
     ]
   },
-  "KBOS-KSEA": {
-    "updated": "2026-10-04"
-  },
   "KBOS-KSFO": {
     "updated": "2026-10-04",
     "routes": [
@@ -7877,9 +7391,6 @@
         "hours": "1,4,7,16-18,20-21,23"
       }
     ]
-  },
-  "KBOS-KSLC": {
-    "updated": "2026-10-04"
   },
   "KBOS-KSLK": {
     "updated": "2026-09-18",
@@ -7949,9 +7460,6 @@
       }
     ]
   },
-  "KBOS-LEMD": {
-    "updated": "2026-09-18"
-  },
   "KBOS-LFPG": {
     "updated": "2026-08-07",
     "routes": [
@@ -7977,12 +7485,6 @@
         "hours": "13-14,18-19"
       }
     ]
-  },
-  "KBOS-TJSJ": {
-    "updated": "2026-10-04"
-  },
-  "KBOS-TNCA": {
-    "updated": "2026-10-04"
   },
   "KBQK-KATL": {
     "updated": "2026-08-07",
@@ -8052,12 +7554,6 @@
       }
     ]
   },
-  "KBTL-KJXN": {
-    "updated": "2026-08-08"
-  },
-  "KBTP-KAGC": {
-    "updated": "2026-08-07"
-  },
   "KBTR-KATL": {
     "updated": "2026-10-04",
     "routes": [
@@ -8113,9 +7609,6 @@
       }
     ]
   },
-  "KBTR-KHEZ": {
-    "updated": "2026-08-08"
-  },
   "KBTR-KIAH": {
     "updated": "2026-10-04",
     "routes": [
@@ -8136,9 +7629,6 @@
         "hours": "5,7,9,18"
       }
     ]
-  },
-  "KBTR-KNEW": {
-    "updated": "2026-08-08"
   },
   "KBTV-KDCA": {
     "updated": "2026-10-04",
@@ -8207,9 +7697,6 @@
         "hours": "6,11-12,14-16"
       }
     ]
-  },
-  "KBTV-KPBG": {
-    "updated": "2026-08-06"
   },
   "KBTV-KPHL": {
     "updated": "2026-10-04",
@@ -8597,18 +8084,6 @@
       }
     ]
   },
-  "KBVS-KFHR": {
-    "updated": "2026-08-26"
-  },
-  "KBVU-K1G4": {
-    "updated": "2026-08-08"
-  },
-  "KBVU-KLAS": {
-    "updated": "2026-08-06"
-  },
-  "KBWG-KBNA": {
-    "updated": "2026-08-08"
-  },
   "KBWI-KALB": {
     "updated": "2026-10-04",
     "routes": [
@@ -8972,12 +8447,6 @@
       }
     ]
   },
-  "KBWI-KLAS": {
-    "updated": "2026-10-04"
-  },
-  "KBWI-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KBWI-KMCI": {
     "updated": "2026-10-04",
     "routes": [
@@ -9268,9 +8737,6 @@
       }
     ]
   },
-  "KBWI-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KBWI-KSAV": {
     "updated": "2026-10-04",
     "routes": [
@@ -9304,9 +8770,6 @@
         "hours": "3,7-10,13-16,19-21,23"
       }
     ]
-  },
-  "KBWI-KSFO": {
-    "updated": "2026-10-04"
   },
   "KBWI-KSRQ": {
     "updated": "2026-10-04",
@@ -9376,21 +8839,6 @@
       }
     ]
   },
-  "KBWI-TJSJ": {
-    "updated": "2026-10-04"
-  },
-  "KBXK-KDVT": {
-    "updated": "2026-08-08"
-  },
-  "KBXK-KGYR": {
-    "updated": "2026-08-08"
-  },
-  "KBXK-KLUF": {
-    "updated": "2026-08-08"
-  },
-  "KBZN-KBIL": {
-    "updated": "2026-08-07"
-  },
   "KBZN-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -9411,9 +8859,6 @@
         "hours": "0,10-11,13-16,18,20"
       }
     ]
-  },
-  "KBZN-KLAS": {
-    "updated": "2026-09-18"
   },
   "KBZN-KMSP": {
     "updated": "2026-08-26",
@@ -9512,9 +8957,6 @@
       }
     ]
   },
-  "KCAE-KCHS": {
-    "updated": "2026-08-26"
-  },
   "KCAE-KCLT": {
     "updated": "2026-08-06",
     "routes": [
@@ -9580,9 +9022,6 @@
       }
     ]
   },
-  "KCAE-KMYR": {
-    "updated": "2026-09-18"
-  },
   "KCAE-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -9638,27 +9077,6 @@
       }
     ]
   },
-  "KCDW-KMGJ": {
-    "updated": "2026-08-08"
-  },
-  "KCEW-KEDN": {
-    "updated": "2026-08-08"
-  },
-  "KCEW-KMVC": {
-    "updated": "2026-08-08"
-  },
-  "KCEW-KNSE": {
-    "updated": "2026-08-08"
-  },
-  "KCEW-KPNS": {
-    "updated": "2026-08-08"
-  },
-  "KCGZ-KFFZ": {
-    "updated": "2026-08-08"
-  },
-  "KCGZ-KIWA": {
-    "updated": "2026-08-06"
-  },
   "KCHA-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -9697,12 +9115,6 @@
         "hours": "1,12,20-21"
       }
     ]
-  },
-  "KCHA-KDNN": {
-    "updated": "2026-08-08"
-  },
-  "KCHA-KMMI": {
-    "updated": "2026-08-08"
   },
   "KCHA-KORD": {
     "updated": "2026-10-04",
@@ -9793,9 +9205,6 @@
       }
     ]
   },
-  "KCHS-KARW": {
-    "updated": "2026-08-08"
-  },
   "KCHS-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -9881,9 +9290,6 @@
         "hours": "1,3,5,7,11,13-16,18-20,23"
       }
     ]
-  },
-  "KCHS-KDFW": {
-    "updated": "2026-08-07"
   },
   "KCHS-KDTW": {
     "updated": "2026-10-04",
@@ -10021,12 +9427,6 @@
       }
     ]
   },
-  "KCHS-KRBW": {
-    "updated": "2026-08-07"
-  },
-  "KCHS-KSAV": {
-    "updated": "2026-08-08"
-  },
   "KCID-KDEN": {
     "updated": "2026-08-07",
     "routes": [
@@ -10094,18 +9494,6 @@
         "hours": "0,2,4-6,8,10-15,17-18"
       }
     ]
-  },
-  "KCID-KPHX": {
-    "updated": "2026-09-18"
-  },
-  "KCKN-KGFK": {
-    "updated": "2026-08-08"
-  },
-  "KCKV-KBNA": {
-    "updated": "2026-08-07"
-  },
-  "KCKV-KMQY": {
-    "updated": "2026-08-08"
   },
   "KCLE-KATL": {
     "updated": "2026-10-04",
@@ -10197,9 +9585,6 @@
         "hours": "1-2,6,8-10,12,16-17"
       }
     ]
-  },
-  "KCLE-KDFW": {
-    "updated": "2026-10-04"
   },
   "KCLE-KDTW": {
     "updated": "2026-10-04",
@@ -10319,9 +9704,6 @@
       }
     ]
   },
-  "KCLE-KLAS": {
-    "updated": "2026-10-04"
-  },
   "KCLE-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -10421,9 +9803,6 @@
       }
     ]
   },
-  "KCLE-KPHX": {
-    "updated": "2026-10-04"
-  },
   "KCLE-KRSW": {
     "updated": "2026-10-04",
     "routes": [
@@ -10449,9 +9828,6 @@
         "hours": "0-1,5,9,11,13,16-18,20"
       }
     ]
-  },
-  "KCLL-KAUS": {
-    "updated": "2026-08-08"
   },
   "KCLL-KDFW": {
     "updated": "2026-08-07",
@@ -10486,9 +9862,6 @@
         "hours": "1-2,8-9,12-16,20-21"
       }
     ]
-  },
-  "KCLT-EGLL": {
-    "updated": "2026-08-07"
   },
   "KCLT-KABE": {
     "updated": "2026-10-04",
@@ -11074,9 +10447,6 @@
       }
     ]
   },
-  "KCLT-KHKY": {
-    "updated": "2026-08-08"
-  },
   "KCLT-KHPN": {
     "updated": "2026-10-04",
     "routes": [
@@ -11233,12 +10603,6 @@
         "hours": "0-3,5-6,8-12,14-17,19-20"
       }
     ]
-  },
-  "KCLT-KJQF": {
-    "updated": "2026-08-08"
-  },
-  "KCLT-KLAS": {
-    "updated": "2026-10-04"
   },
   "KCLT-KLAX": {
     "updated": "2026-10-04",
@@ -11514,12 +10878,6 @@
       }
     ]
   },
-  "KCLT-KOKC": {
-    "updated": "2026-09-18"
-  },
-  "KCLT-KOMA": {
-    "updated": "2026-10-04"
-  },
   "KCLT-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -11710,9 +11068,6 @@
       }
     ]
   },
-  "KCLT-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KCLT-KSAT": {
     "updated": "2026-10-04",
     "routes": [
@@ -11791,9 +11146,6 @@
       }
     ]
   },
-  "KCLT-KSFO": {
-    "updated": "2026-10-04"
-  },
   "KCLT-KSGF": {
     "updated": "2026-08-07",
     "routes": [
@@ -11806,9 +11158,6 @@
         "hours": "9-12,15,18-20"
       }
     ]
-  },
-  "KCLT-KSLC": {
-    "updated": "2026-10-04"
   },
   "KCLT-KSRQ": {
     "updated": "2026-10-04",
@@ -11835,9 +11184,6 @@
         "hours": "1-2,7-8,10-16,19,21-23"
       }
     ]
-  },
-  "KCLT-KSVH": {
-    "updated": "2026-08-06"
   },
   "KCLT-KSYR": {
     "updated": "2026-10-04",
@@ -11904,9 +11250,6 @@
       }
     ]
   },
-  "KCLT-KUZA": {
-    "updated": "2026-08-07"
-  },
   "KCLT-KVPS": {
     "updated": "2026-10-04",
     "routes": [
@@ -11945,12 +11288,6 @@
         "hours": "1-2,8,10,12"
       }
     ]
-  },
-  "KCLT-TJSJ": {
-    "updated": "2026-09-18"
-  },
-  "KCLW-KPIE": {
-    "updated": "2026-08-08"
   },
   "KCMH-KATL": {
     "updated": "2026-08-06",
@@ -12106,9 +11443,6 @@
       }
     ]
   },
-  "KCMH-KFLL": {
-    "updated": "2026-10-04"
-  },
   "KCMH-KIAD": {
     "updated": "2026-08-06",
     "routes": [
@@ -12155,9 +11489,6 @@
         "hours": "1,6-9,12-13,18-21"
       }
     ]
-  },
-  "KCMH-KLAS": {
-    "updated": "2026-09-18"
   },
   "KCMH-KLGA": {
     "updated": "2026-08-06",
@@ -12266,9 +11597,6 @@
       }
     ]
   },
-  "KCMH-KPHX": {
-    "updated": "2026-08-07"
-  },
   "KCMH-KSTL": {
     "updated": "2026-09-18",
     "routes": [
@@ -12289,9 +11617,6 @@
         "hours": "6,19-20"
       }
     ]
-  },
-  "KCMH-KTPA": {
-    "updated": "2026-08-07"
   },
   "KCMI-KORD": {
     "updated": "2026-08-07",
@@ -12314,9 +11639,6 @@
       }
     ]
   },
-  "KCNO-KHMT": {
-    "updated": "2026-08-08"
-  },
   "KCOD-KDEN": {
     "updated": "2026-09-18",
     "routes": [
@@ -12330,9 +11652,6 @@
       }
     ]
   },
-  "KCOE-KSFF": {
-    "updated": "2026-08-08"
-  },
   "KCOS-KAPA": {
     "updated": "2026-08-08",
     "routes": [
@@ -12345,9 +11664,6 @@
         "hours": "5,12-13,15,18"
       }
     ]
-  },
-  "KCOS-KBJC": {
-    "updated": "2026-08-08"
   },
   "KCOS-KDAL": {
     "updated": "2026-09-18",
@@ -12448,9 +11764,6 @@
       }
     ]
   },
-  "KCOS-KPUB": {
-    "updated": "2026-08-08"
-  },
   "KCOS-KSLC": {
     "updated": "2026-09-18",
     "routes": [
@@ -12506,12 +11819,6 @@
       }
     ]
   },
-  "KCPM-KLGB": {
-    "updated": "2026-08-08"
-  },
-  "KCPM-KTOA": {
-    "updated": "2026-08-08"
-  },
   "KCPR-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -12524,15 +11831,6 @@
         "hours": "0,5-11,13-15,17-18,20,23"
       }
     ]
-  },
-  "KCPS-KSUS": {
-    "updated": "2026-08-26"
-  },
-  "KCRG-KNRB": {
-    "updated": "2026-08-06"
-  },
-  "KCRG-KSGJ": {
-    "updated": "2026-08-07"
   },
   "KCRP-KDFW": {
     "updated": "2026-10-04",
@@ -12631,9 +11929,6 @@
       }
     ]
   },
-  "KCRQ-KSEE": {
-    "updated": "2026-08-06"
-  },
   "KCRQ-KSNA": {
     "updated": "2026-10-04",
     "routes": [
@@ -12649,9 +11944,6 @@
         "hours": "6,10-12,16"
       }
     ]
-  },
-  "KCRS-KRBD": {
-    "updated": "2026-08-08"
   },
   "KCRW-KATL": {
     "updated": "2026-08-07",
@@ -12720,9 +12012,6 @@
         "hours": "6-7,9,12,14"
       }
     ]
-  },
-  "KCVG-EDDP": {
-    "updated": "2026-09-18"
   },
   "KCVG-KATL": {
     "updated": "2026-10-04",
@@ -12923,9 +12212,6 @@
       }
     ]
   },
-  "KCVG-KHAO": {
-    "updated": "2026-08-08"
-  },
   "KCVG-KIAD": {
     "updated": "2026-10-04",
     "routes": [
@@ -12996,9 +12282,6 @@
         "hours": "5,11-12"
       }
     ]
-  },
-  "KCVG-KLAX": {
-    "updated": "2026-10-04"
   },
   "KCVG-KLGA": {
     "updated": "2026-10-04",
@@ -13110,21 +12393,6 @@
       }
     ]
   },
-  "KCVG-KPHX": {
-    "updated": "2026-10-04"
-  },
-  "KCVG-KSEA": {
-    "updated": "2026-10-04"
-  },
-  "KCVH-KRHV": {
-    "updated": "2026-08-08"
-  },
-  "KCVH-KWVI": {
-    "updated": "2026-08-08"
-  },
-  "KCVO-KHIO": {
-    "updated": "2026-08-08"
-  },
   "KCVO-KPDX": {
     "updated": "2026-08-08",
     "routes": [
@@ -13145,9 +12413,6 @@
         "hours": "16"
       }
     ]
-  },
-  "KCVO-KSLE": {
-    "updated": "2026-08-07"
   },
   "KCWA-KMSP": {
     "updated": "2026-09-18",
@@ -13183,18 +12448,6 @@
       }
     ]
   },
-  "KCXO-KDWH": {
-    "updated": "2026-08-07"
-  },
-  "KCXO-KLFK": {
-    "updated": "2026-08-08"
-  },
-  "KCXO-KUTS": {
-    "updated": "2026-08-08"
-  },
-  "KCYS-KDEN": {
-    "updated": "2026-08-06"
-  },
   "KDAB-KATL": {
     "updated": "2026-10-04",
     "routes": [
@@ -13229,9 +12482,6 @@
       }
     ]
   },
-  "KDAB-KLEE": {
-    "updated": "2026-08-07"
-  },
   "KDAB-KMLB": {
     "updated": "2026-08-08",
     "routes": [
@@ -13245,12 +12495,6 @@
       }
     ]
   },
-  "KDAB-KOCF": {
-    "updated": "2026-08-07"
-  },
-  "KDAB-KORL": {
-    "updated": "2026-08-07"
-  },
   "KDAB-KSFB": {
     "updated": "2026-08-06",
     "routes": [
@@ -13263,12 +12507,6 @@
         "hours": "13,16-20,22"
       }
     ]
-  },
-  "KDAB-KSGJ": {
-    "updated": "2026-08-06"
-  },
-  "KDAB-KTIX": {
-    "updated": "2026-08-08"
   },
   "KDAL-KABQ": {
     "updated": "2026-10-04",
@@ -13490,12 +12728,6 @@
         "hours": "11,14-15,17"
       }
     ]
-  },
-  "KDAL-KECP": {
-    "updated": "2026-08-26"
-  },
-  "KDAL-KFTW": {
-    "updated": "2026-08-07"
   },
   "KDAL-KHOU": {
     "updated": "2026-10-04",
@@ -13792,9 +13024,6 @@
       }
     ]
   },
-  "KDAL-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KDAL-KSAT": {
     "updated": "2026-10-04",
     "routes": [
@@ -13815,9 +13044,6 @@
         "hours": "5,7,9-10,12-13,15,19-21"
       }
     ]
-  },
-  "KDAL-KSLC": {
-    "updated": "2026-10-04"
   },
   "KDAL-KSTL": {
     "updated": "2026-10-04",
@@ -13881,9 +13107,6 @@
         "hours": "2,7,9,12,16,19-20,22"
       }
     ]
-  },
-  "KDAN-KGSO": {
-    "updated": "2026-08-08"
   },
   "KDAY-KATL": {
     "updated": "2026-08-06",
@@ -14422,9 +13645,6 @@
       }
     ]
   },
-  "KDCA-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KDCA-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -14759,12 +13979,6 @@
       }
     ]
   },
-  "KDCA-KSEA": {
-    "updated": "2026-10-04"
-  },
-  "KDCA-KSFO": {
-    "updated": "2026-10-04"
-  },
   "KDCA-KSTL": {
     "updated": "2026-10-04",
     "routes": [
@@ -14884,9 +14098,6 @@
         "hours": "2,9,16"
       }
     ]
-  },
-  "KDEN-EGLL": {
-    "updated": "2026-08-07"
   },
   "KDEN-KABQ": {
     "updated": "2026-10-04",
@@ -15011,12 +14222,6 @@
         "hours": "0,12-14,21,23"
       }
     ]
-  },
-  "KDEN-KBDL": {
-    "updated": "2026-10-04"
-  },
-  "KDEN-KBHM": {
-    "updated": "2026-10-04"
   },
   "KDEN-KBIL": {
     "updated": "2026-10-04",
@@ -15537,9 +14742,6 @@
       }
     ]
   },
-  "KDEN-KFLL": {
-    "updated": "2026-10-04"
-  },
   "KDEN-KFSD": {
     "updated": "2026-10-04",
     "routes": [
@@ -15853,9 +15055,6 @@
       }
     ]
   },
-  "KDEN-KJAX": {
-    "updated": "2026-10-04"
-  },
   "KDEN-KJFK": {
     "updated": "2026-10-04",
     "routes": [
@@ -16082,9 +15281,6 @@
       }
     ]
   },
-  "KDEN-KMDW": {
-    "updated": "2026-10-04"
-  },
   "KDEN-KMEM": {
     "updated": "2026-10-04",
     "routes": [
@@ -16105,9 +15301,6 @@
         "hours": "5-6,11,19-20"
       }
     ]
-  },
-  "KDEN-KMIA": {
-    "updated": "2026-10-04"
   },
   "KDEN-KMKE": {
     "updated": "2026-10-04",
@@ -16510,9 +15703,6 @@
         "hours": "0,8,11-13,15-16,19-20,23"
       }
     ]
-  },
-  "KDEN-KRSW": {
-    "updated": "2026-10-04"
   },
   "KDEN-KSAF": {
     "updated": "2026-10-04",
@@ -16927,9 +16117,6 @@
       }
     ]
   },
-  "KDEN-KTYS": {
-    "updated": "2026-10-04"
-  },
   "KDEN-KXNA": {
     "updated": "2026-10-04",
     "routes": [
@@ -16998,9 +16185,6 @@
       }
     ]
   },
-  "KDFW-CYVR": {
-    "updated": "2026-09-18"
-  },
   "KDFW-CYYZ": {
     "updated": "2026-08-06",
     "routes": [
@@ -17013,12 +16197,6 @@
         "hours": "2,9,11-12,18,20"
       }
     ]
-  },
-  "KDFW-EDDF": {
-    "updated": "2026-09-18"
-  },
-  "KDFW-EGLL": {
-    "updated": "2026-08-06"
   },
   "KDFW-KABI": {
     "updated": "2026-10-04",
@@ -17271,9 +16449,6 @@
         "hours": "0-1,8,11,14-15,17,19"
       }
     ]
-  },
-  "KDFW-KCHS": {
-    "updated": "2026-10-04"
   },
   "KDFW-KCID": {
     "updated": "2026-10-04",
@@ -17786,9 +16961,6 @@
         "hours": "1,8,14-15,17,19,21"
       }
     ]
-  },
-  "KDFW-KGLS": {
-    "updated": "2026-08-07"
   },
   "KDFW-KGRK": {
     "updated": "2026-10-04",
@@ -18446,9 +17618,6 @@
       }
     ]
   },
-  "KDFW-KMSN": {
-    "updated": "2026-10-04"
-  },
   "KDFW-KMSP": {
     "updated": "2026-10-04",
     "routes": [
@@ -18575,9 +17744,6 @@
       }
     ]
   },
-  "KDFW-KORF": {
-    "updated": "2026-10-04"
-  },
   "KDFW-KPDX": {
     "updated": "2026-10-04",
     "routes": [
@@ -18670,9 +17836,6 @@
       }
     ]
   },
-  "KDFW-KPIT": {
-    "updated": "2026-10-04"
-  },
   "KDFW-KPNS": {
     "updated": "2026-10-04",
     "routes": [
@@ -18693,9 +17856,6 @@
         "hours": "1,8,10,12-13,15"
       }
     ]
-  },
-  "KDFW-KPSP": {
-    "updated": "2026-10-04"
   },
   "KDFW-KPVU": {
     "updated": "2026-09-18",
@@ -18764,9 +17924,6 @@
         "hours": "7,11"
       }
     ]
-  },
-  "KDFW-KRNO": {
-    "updated": "2026-10-04"
   },
   "KDFW-KRSW": {
     "updated": "2026-10-04",
@@ -18983,9 +18140,6 @@
       }
     ]
   },
-  "KDFW-KSJC": {
-    "updated": "2026-10-04"
-  },
   "KDFW-KSLC": {
     "updated": "2026-10-04",
     "routes": [
@@ -19030,9 +18184,6 @@
         "hours": "0,16,19,22"
       }
     ]
-  },
-  "KDFW-KSMF": {
-    "updated": "2026-10-04"
   },
   "KDFW-KSNA": {
     "updated": "2026-10-04",
@@ -19315,15 +18466,6 @@
       }
     ]
   },
-  "KDFW-PANC": {
-    "updated": "2026-08-07"
-  },
-  "KDFW-PHNL": {
-    "updated": "2026-09-18"
-  },
-  "KDFW-RJTT": {
-    "updated": "2026-09-18"
-  },
   "KDFW-RKSI": {
     "updated": "2026-09-18",
     "routes": [
@@ -19336,9 +18478,6 @@
         "hours": "2,11"
       }
     ]
-  },
-  "KDFW-TJSJ": {
-    "updated": "2026-09-18"
   },
   "KDHN-KATL": {
     "updated": "2026-08-07",
@@ -19361,15 +18500,6 @@
       }
     ]
   },
-  "KDHN-KBGE": {
-    "updated": "2026-08-08"
-  },
-  "KDHN-KEDN": {
-    "updated": "2026-08-08"
-  },
-  "KDJT-KAPF": {
-    "updated": "2026-08-26"
-  },
   "KDJT-KATL": {
     "updated": "2026-10-04",
     "routes": [
@@ -19390,9 +18520,6 @@
         "hours": "6,8-12,14,16,18-19"
       }
     ]
-  },
-  "KDJT-KBCT": {
-    "updated": "2026-08-26"
   },
   "KDJT-KBOS": {
     "updated": "2026-10-04",
@@ -19635,9 +18762,6 @@
       }
     ]
   },
-  "KDJT-KLNA": {
-    "updated": "2026-08-26"
-  },
   "KDJT-KMCO": {
     "updated": "2026-10-04",
     "routes": [
@@ -19650,9 +18774,6 @@
         "hours": "2,5-7,10,13,16-18,20"
       }
     ]
-  },
-  "KDJT-KOBE": {
-    "updated": "2026-08-26"
   },
   "KDJT-KOPF": {
     "updated": "2026-08-26",
@@ -19688,9 +18809,6 @@
       }
     ]
   },
-  "KDJT-KPHK": {
-    "updated": "2026-08-26"
-  },
   "KDJT-KPHL": {
     "updated": "2026-10-04",
     "routes": [
@@ -19711,9 +18829,6 @@
         "hours": "0,6,12,14"
       }
     ]
-  },
-  "KDJT-KSUA": {
-    "updated": "2026-08-26"
   },
   "KDJT-KTEB": {
     "updated": "2026-10-04",
@@ -19770,12 +18885,6 @@
       }
     ]
   },
-  "KDPA-KARR": {
-    "updated": "2026-08-06"
-  },
-  "KDPA-KLOT": {
-    "updated": "2026-08-07"
-  },
   "KDPA-KMDW": {
     "updated": "2026-08-06",
     "routes": [
@@ -19788,9 +18897,6 @@
         "hours": "5,11"
       }
     ]
-  },
-  "KDPA-KORD": {
-    "updated": "2026-08-06"
   },
   "KDRO-KDEN": {
     "updated": "2026-08-06",
@@ -19847,9 +18953,6 @@
       }
     ]
   },
-  "KDRT-KDLF": {
-    "updated": "2026-08-08"
-  },
   "KDSM-KATL": {
     "updated": "2026-08-07",
     "routes": [
@@ -19862,9 +18965,6 @@
         "hours": "14-15,18-19,23"
       }
     ]
-  },
-  "KDSM-KCLT": {
-    "updated": "2026-09-18"
   },
   "KDSM-KDEN": {
     "updated": "2026-08-06",
@@ -19929,9 +19029,6 @@
       }
     ]
   },
-  "KDSM-KIAH": {
-    "updated": "2026-09-18"
-  },
   "KDSM-KLGA": {
     "updated": "2026-09-18",
     "routes": [
@@ -19979,15 +19076,6 @@
       }
     ]
   },
-  "KDSM-KPHX": {
-    "updated": "2026-08-07"
-  },
-  "KDSM-KTNU": {
-    "updated": "2026-08-08"
-  },
-  "KDTA-KPVU": {
-    "updated": "2026-08-08"
-  },
   "KDTW-CYUL": {
     "updated": "2026-10-04",
     "routes": [
@@ -20021,9 +19109,6 @@
         "hours": "1-2,7,9-10,12-16,18-22"
       }
     ]
-  },
-  "KDTW-EHAM": {
-    "updated": "2026-08-07"
   },
   "KDTW-KALB": {
     "updated": "2026-10-04",
@@ -20538,12 +19623,6 @@
       }
     ]
   },
-  "KDTW-KLAS": {
-    "updated": "2026-10-04"
-  },
-  "KDTW-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KDTW-KLEX": {
     "updated": "2026-10-04",
     "routes": [
@@ -20771,9 +19850,6 @@
       }
     ]
   },
-  "KDTW-KPHX": {
-    "updated": "2026-10-04"
-  },
   "KDTW-KPIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -20860,9 +19936,6 @@
       }
     ]
   },
-  "KDTW-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KDTW-KSAT": {
     "updated": "2026-10-04",
     "routes": [
@@ -20901,12 +19974,6 @@
         "hours": "6,17"
       }
     ]
-  },
-  "KDTW-KSFO": {
-    "updated": "2026-10-04"
-  },
-  "KDTW-KSLC": {
-    "updated": "2026-10-04"
   },
   "KDTW-KSTL": {
     "updated": "2026-10-04",
@@ -20960,12 +20027,6 @@
       }
     ]
   },
-  "KDTW-LFPG": {
-    "updated": "2026-09-18"
-  },
-  "KDTW-MMUN": {
-    "updated": "2026-09-18"
-  },
   "KDUJ-KIAD": {
     "updated": "2026-08-26",
     "routes": [
@@ -20978,36 +20039,6 @@
         "hours": "1-3,5-6"
       }
     ]
-  },
-  "KDVO-KSTS": {
-    "updated": "2026-08-08"
-  },
-  "KDVT-KBXK": {
-    "updated": "2026-08-08"
-  },
-  "KDVT-KLUF": {
-    "updated": "2026-08-08"
-  },
-  "KDVT-KPAN": {
-    "updated": "2026-08-08"
-  },
-  "KDWH-KCXO": {
-    "updated": "2026-08-08"
-  },
-  "KDWH-KHOU": {
-    "updated": "2026-08-07"
-  },
-  "KDWH-KIWS": {
-    "updated": "2026-08-07"
-  },
-  "KDWH-KSGR": {
-    "updated": "2026-08-07"
-  },
-  "KDXR-KHPN": {
-    "updated": "2026-08-07"
-  },
-  "KDYL-KTTN": {
-    "updated": "2026-08-08"
   },
   "KECP-KATL": {
     "updated": "2026-08-06",
@@ -21118,21 +20149,6 @@
         "hours": "0-2,6,8-9,11-12,16-17"
       }
     ]
-  },
-  "KEDN-KCEW": {
-    "updated": "2026-08-08"
-  },
-  "KEDN-KDHN": {
-    "updated": "2026-08-08"
-  },
-  "KEFD-KHOU": {
-    "updated": "2026-08-07"
-  },
-  "KEFD-KHPY": {
-    "updated": "2026-08-08"
-  },
-  "KEFD-KLBX": {
-    "updated": "2026-08-08"
   },
   "KEGE-KDEN": {
     "updated": "2026-09-18",
@@ -21303,12 +20319,6 @@
       }
     ]
   },
-  "KENW-KUES": {
-    "updated": "2026-08-07"
-  },
-  "KENW-KUGN": {
-    "updated": "2026-08-08"
-  },
   "KERI-KCLT": {
     "updated": "2026-10-04",
     "routes": [
@@ -21321,12 +20331,6 @@
         "hours": "3,5,11-13,17"
       }
     ]
-  },
-  "KERV-KAUS": {
-    "updated": "2026-08-06"
-  },
-  "KERV-KSAT": {
-    "updated": "2026-08-07"
   },
   "KEUG-KDEN": {
     "updated": "2026-08-07",
@@ -21356,9 +20360,6 @@
         "hours": "4,7-8"
       }
     ]
-  },
-  "KEUG-KHIO": {
-    "updated": "2026-08-08"
   },
   "KEUG-KPDX": {
     "updated": "2026-08-06",
@@ -21428,9 +20429,6 @@
       }
     ]
   },
-  "KEUG-KSLE": {
-    "updated": "2026-08-07"
-  },
   "KEVV-KATL": {
     "updated": "2026-08-26",
     "routes": [
@@ -21469,9 +20467,6 @@
         "hours": "3-12,15-19"
       }
     ]
-  },
-  "KEWN-KPGV": {
-    "updated": "2026-08-08"
   },
   "KEWN-KRDU": {
     "updated": "2026-08-07",
@@ -21580,12 +20575,6 @@
       }
     ]
   },
-  "KEWR-EDDF": {
-    "updated": "2026-09-18"
-  },
-  "KEWR-EDDM": {
-    "updated": "2026-09-18"
-  },
   "KEWR-EGLL": {
     "updated": "2026-08-06",
     "routes": [
@@ -21614,9 +20603,6 @@
         "hours": "14-16,18"
       }
     ]
-  },
-  "KEWR-EIDW": {
-    "updated": "2026-08-07"
   },
   "KEWR-KATL": {
     "updated": "2026-10-04",
@@ -22263,15 +21249,6 @@
       }
     ]
   },
-  "KEWR-KOXB": {
-    "updated": "2026-08-07"
-  },
-  "KEWR-KPDX": {
-    "updated": "2026-10-04"
-  },
-  "KEWR-KPHX": {
-    "updated": "2026-10-04"
-  },
   "KEWR-KPIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -22374,9 +21351,6 @@
       }
     ]
   },
-  "KEWR-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KEWR-KSAV": {
     "updated": "2026-10-04",
     "routes": [
@@ -22419,9 +21393,6 @@
       }
     ]
   },
-  "KEWR-KSEA": {
-    "updated": "2026-10-04"
-  },
   "KEWR-KSFO": {
     "updated": "2026-10-04",
     "routes": [
@@ -22451,15 +21422,6 @@
       }
     ]
   },
-  "KEWR-KSLC": {
-    "updated": "2026-10-04"
-  },
-  "KEWR-KSNA": {
-    "updated": "2026-08-07"
-  },
-  "KEWR-KSRQ": {
-    "updated": "2026-10-04"
-  },
   "KEWR-KSTL": {
     "updated": "2026-10-04",
     "routes": [
@@ -22480,9 +21442,6 @@
         "hours": "0-1,9,19-20"
       }
     ]
-  },
-  "KEWR-KTEB": {
-    "updated": "2026-08-06"
   },
   "KEWR-KTPA": {
     "updated": "2026-10-04",
@@ -22526,12 +21485,6 @@
       }
     ]
   },
-  "KEWR-LLBG": {
-    "updated": "2026-08-07"
-  },
-  "KEWR-LPPR": {
-    "updated": "2026-09-18"
-  },
   "KEWR-LPPT": {
     "updated": "2026-08-07",
     "routes": [
@@ -22553,12 +21506,6 @@
       }
     ]
   },
-  "KEWR-LSZH": {
-    "updated": "2026-09-18"
-  },
-  "KEWR-MDPC": {
-    "updated": "2026-09-18"
-  },
   "KEWR-MDSD": {
     "updated": "2026-09-18",
     "routes": [
@@ -22572,9 +21519,6 @@
       }
     ]
   },
-  "KEWR-MDST": {
-    "updated": "2026-09-18"
-  },
   "KEWR-MMMX": {
     "updated": "2026-08-07",
     "routes": [
@@ -22587,9 +21531,6 @@
         "hours": "8,15"
       }
     ]
-  },
-  "KEWR-MMUN": {
-    "updated": "2026-08-06"
   },
   "KEWR-TJSJ": {
     "updated": "2026-08-06",
@@ -22619,9 +21560,6 @@
         "hours": "8-9"
       }
     ]
-  },
-  "KEWR-TNCA": {
-    "updated": "2026-09-18"
   },
   "KEYW-KATL": {
     "updated": "2026-08-07",
@@ -22678,9 +21616,6 @@
       }
     ]
   },
-  "KFAR-KBIS": {
-    "updated": "2026-08-08"
-  },
   "KFAR-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -22714,12 +21649,6 @@
         "hours": "0,5,11,17"
       }
     ]
-  },
-  "KFAR-KDTL": {
-    "updated": "2026-08-08"
-  },
-  "KFAR-KJMS": {
-    "updated": "2026-08-08"
   },
   "KFAR-KMSP": {
     "updated": "2026-08-06",
@@ -22880,9 +21809,6 @@
       }
     ]
   },
-  "KFAT-KVIS": {
-    "updated": "2026-08-08"
-  },
   "KFAT-MMGL": {
     "updated": "2026-09-18",
     "routes": [
@@ -22930,42 +21856,6 @@
       }
     ]
   },
-  "KFAY-KRDU": {
-    "updated": "2026-08-08"
-  },
-  "KFCM-KMIC": {
-    "updated": "2026-08-08"
-  },
-  "KFCM-KSTP": {
-    "updated": "2026-08-26"
-  },
-  "KFDK-KTHV": {
-    "updated": "2026-08-08"
-  },
-  "KFFT-KLEX": {
-    "updated": "2026-08-08"
-  },
-  "KFFZ-KAVQ": {
-    "updated": "2026-08-08"
-  },
-  "KFFZ-KCGZ": {
-    "updated": "2026-08-08"
-  },
-  "KFFZ-KIWA": {
-    "updated": "2026-08-06"
-  },
-  "KFFZ-KMZJ": {
-    "updated": "2026-08-08"
-  },
-  "KFFZ-KPAN": {
-    "updated": "2026-08-08"
-  },
-  "KFFZ-KSDL": {
-    "updated": "2026-08-08"
-  },
-  "KFFZ-KSEZ": {
-    "updated": "2026-08-07"
-  },
   "KFFZ-KTUS": {
     "updated": "2026-08-08",
     "routes": [
@@ -22995,12 +21885,6 @@
       }
     ]
   },
-  "KFHR-KBLI": {
-    "updated": "2026-08-08"
-  },
-  "KFHR-KBVS": {
-    "updated": "2026-08-08"
-  },
   "KFHR-KORS": {
     "updated": "2026-08-08",
     "routes": [
@@ -23022,12 +21906,6 @@
       }
     ]
   },
-  "KFHR-KPAE": {
-    "updated": "2026-08-08"
-  },
-  "KFHR-WN07": {
-    "updated": "2026-08-08"
-  },
   "KFLG-KPHX": {
     "updated": "2026-08-06",
     "routes": [
@@ -23048,9 +21926,6 @@
         "hours": "0,8,16"
       }
     ]
-  },
-  "KFLL-CYUL": {
-    "updated": "2026-10-04"
   },
   "KFLL-CYYZ": {
     "updated": "2026-10-04",
@@ -23228,9 +22103,6 @@
       }
     ]
   },
-  "KFLL-KCMH": {
-    "updated": "2026-10-04"
-  },
   "KFLL-KCVG": {
     "updated": "2026-10-04",
     "routes": [
@@ -23370,9 +22242,6 @@
       }
     ]
   },
-  "KFLL-KFXE": {
-    "updated": "2026-09-18"
-  },
   "KFLL-KHOU": {
     "updated": "2026-10-04",
     "routes": [
@@ -23507,12 +22376,6 @@
       }
     ]
   },
-  "KFLL-KLAS": {
-    "updated": "2026-10-04"
-  },
-  "KFLL-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KFLL-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -23560,9 +22423,6 @@
       }
     ]
   },
-  "KFLL-KMIA": {
-    "updated": "2026-08-07"
-  },
   "KFLL-KMSP": {
     "updated": "2026-10-04",
     "routes": [
@@ -23596,9 +22456,6 @@
         "hours": "6,15-16,20-21"
       }
     ]
-  },
-  "KFLL-KOPF": {
-    "updated": "2026-08-07"
   },
   "KFLL-KORD": {
     "updated": "2026-10-04",
@@ -23716,9 +22573,6 @@
       }
     ]
   },
-  "KFLL-KSFO": {
-    "updated": "2026-10-04"
-  },
   "KFLL-KSTL": {
     "updated": "2026-10-04",
     "routes": [
@@ -23758,12 +22612,6 @@
       }
     ]
   },
-  "KFLL-MMUN": {
-    "updated": "2026-10-04"
-  },
-  "KFLL-MYBS": {
-    "updated": "2026-08-06"
-  },
   "KFLL-MYGF": {
     "updated": "2026-09-18",
     "routes": [
@@ -23787,9 +22635,6 @@
         "hours": "3,12,14"
       }
     ]
-  },
-  "KFLL-MYGW": {
-    "updated": "2026-08-07"
   },
   "KFLL-MYNN": {
     "updated": "2026-10-04",
@@ -23846,18 +22691,6 @@
       }
     ]
   },
-  "KFMY-KPGD": {
-    "updated": "2026-08-08"
-  },
-  "KFMY-KRSW": {
-    "updated": "2026-08-07"
-  },
-  "KFNL-KCYS": {
-    "updated": "2026-08-07"
-  },
-  "KFNL-KGXY": {
-    "updated": "2026-08-07"
-  },
   "KFNT-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -23870,9 +22703,6 @@
         "hours": "0-1,3,5-8,15,17-18,21"
       }
     ]
-  },
-  "KFNT-KPTK": {
-    "updated": "2026-08-08"
   },
   "KFOK-KHPN": {
     "updated": "2026-08-06",
@@ -23902,15 +22732,6 @@
         "hours": "2,8,11-15,17,23"
       }
     ]
-  },
-  "KFPR-KOBE": {
-    "updated": "2026-08-08"
-  },
-  "KFPR-KSUA": {
-    "updated": "2026-08-08"
-  },
-  "KFPR-KVRB": {
-    "updated": "2026-08-08"
   },
   "KFRG-KFOK": {
     "updated": "2026-08-26",
@@ -23943,12 +22764,6 @@
         "hours": "7,11,18"
       }
     ]
-  },
-  "KFRG-KISP": {
-    "updated": "2026-08-06"
-  },
-  "KFRG-KPOU": {
-    "updated": "2026-08-07"
   },
   "KFRG-KTEB": {
     "updated": "2026-08-06",
@@ -23984,9 +22799,6 @@
       }
     ]
   },
-  "KFSD-KDFW": {
-    "updated": "2026-08-26"
-  },
   "KFSD-KMSP": {
     "updated": "2026-08-06",
     "routes": [
@@ -24012,9 +22824,6 @@
         "hours": "1,5-9,11-13,15-19,23"
       }
     ]
-  },
-  "KFSD-KPIR": {
-    "updated": "2026-08-08"
   },
   "KFSD-KRAP": {
     "updated": "2026-08-08",
@@ -24050,24 +22859,6 @@
       }
     ]
   },
-  "KFTW-KADS": {
-    "updated": "2026-08-07"
-  },
-  "KFTW-KAFW": {
-    "updated": "2026-08-06"
-  },
-  "KFTW-KDAL": {
-    "updated": "2026-08-07"
-  },
-  "KFTW-KRBD": {
-    "updated": "2026-08-07"
-  },
-  "KFTY-KATL": {
-    "updated": "2026-08-06"
-  },
-  "KFTY-KPDK": {
-    "updated": "2026-08-06"
-  },
   "KFUL-KLGB": {
     "updated": "2026-08-07",
     "routes": [
@@ -24080,9 +22871,6 @@
         "hours": "9-12"
       }
     ]
-  },
-  "KFUL-KSNA": {
-    "updated": "2026-08-26"
   },
   "KFWA-KATL": {
     "updated": "2026-10-04",
@@ -24135,15 +22923,6 @@
         "hours": "0-2,4-13,15-20"
       }
     ]
-  },
-  "KFXE-KBCT": {
-    "updated": "2026-09-18"
-  },
-  "KFXE-KDJT": {
-    "updated": "2026-09-18"
-  },
-  "KFYM-KHSV": {
-    "updated": "2026-08-08"
   },
   "KGEG-KBOI": {
     "updated": "2026-08-07",
@@ -24212,9 +22991,6 @@
         "hours": "6"
       }
     ]
-  },
-  "KGEG-KMSP": {
-    "updated": "2026-09-18"
   },
   "KGEG-KPDX": {
     "updated": "2026-08-06",
@@ -24302,9 +23078,6 @@
       }
     ]
   },
-  "KGFK-KCKN": {
-    "updated": "2026-08-08"
-  },
   "KGFK-KMSP": {
     "updated": "2026-08-07",
     "routes": [
@@ -24317,9 +23090,6 @@
         "hours": "0,4-5,10-11,15-19"
       }
     ]
-  },
-  "KGFK-KRDR": {
-    "updated": "2026-08-08"
   },
   "KGJT-KDEN": {
     "updated": "2026-08-06",
@@ -24376,21 +23146,6 @@
       }
     ]
   },
-  "KGLE-KADS": {
-    "updated": "2026-08-08"
-  },
-  "KGLE-KAFW": {
-    "updated": "2026-08-06"
-  },
-  "KGLS-KIAH": {
-    "updated": "2026-08-26"
-  },
-  "KGLS-KLBX": {
-    "updated": "2026-08-07"
-  },
-  "KGNT-KABQ": {
-    "updated": "2026-08-06"
-  },
   "KGNV-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -24424,12 +23179,6 @@
         "hours": "1,5-7,9-10,13-14,19-22"
       }
     ]
-  },
-  "KGNV-KDAB": {
-    "updated": "2026-08-07"
-  },
-  "KGNV-KOCF": {
-    "updated": "2026-08-07"
   },
   "KGPI-KDEN": {
     "updated": "2026-08-07",
@@ -24573,9 +23322,6 @@
       }
     ]
   },
-  "KGPT-KNSE": {
-    "updated": "2026-08-08"
-  },
   "KGRB-KDTW": {
     "updated": "2026-08-07",
     "routes": [
@@ -24690,9 +23436,6 @@
         "hours": "2-3,7-8,12,14-18"
       }
     ]
-  },
-  "KGRR-KDFW": {
-    "updated": "2026-10-04"
   },
   "KGRR-KDTW": {
     "updated": "2026-08-06",
@@ -24931,9 +23674,6 @@
       }
     ]
   },
-  "KGSP-KDFW": {
-    "updated": "2026-10-04"
-  },
   "KGSP-KDTW": {
     "updated": "2026-10-04",
     "routes": [
@@ -25075,45 +23815,6 @@
       }
     ]
   },
-  "KGVL-KPDK": {
-    "updated": "2026-08-07"
-  },
-  "KGVL-KTOC": {
-    "updated": "2026-08-26"
-  },
-  "KGVL-KWDR": {
-    "updated": "2026-08-07"
-  },
-  "KGVT-KADS": {
-    "updated": "2026-08-07"
-  },
-  "KGVT-KTRL": {
-    "updated": "2026-08-26"
-  },
-  "KGXY-KBJC": {
-    "updated": "2026-08-06"
-  },
-  "KGXY-KFNL": {
-    "updated": "2026-08-07"
-  },
-  "KGYI-KADS": {
-    "updated": "2026-08-07"
-  },
-  "KGYI-KAFW": {
-    "updated": "2026-08-08"
-  },
-  "KGYR-KBXK": {
-    "updated": "2026-08-08"
-  },
-  "KGYR-KLUF": {
-    "updated": "2026-08-08"
-  },
-  "KHAO-KCVG": {
-    "updated": "2026-08-08"
-  },
-  "KHAO-KLUK": {
-    "updated": "2026-08-08"
-  },
   "KHDN-KDEN": {
     "updated": "2026-08-07",
     "routes": [
@@ -25135,9 +23836,6 @@
       }
     ]
   },
-  "KHEF-KIAD": {
-    "updated": "2026-08-26"
-  },
   "KHEF-KRIC": {
     "updated": "2026-08-07",
     "routes": [
@@ -25150,33 +23848,6 @@
         "hours": "18-19"
       }
     ]
-  },
-  "KHFD-KOXC": {
-    "updated": "2026-08-08"
-  },
-  "KHIO-KCVO": {
-    "updated": "2026-08-08"
-  },
-  "KHIO-KEUG": {
-    "updated": "2026-08-08"
-  },
-  "KHIO-KPDX": {
-    "updated": "2026-08-06"
-  },
-  "KHIO-KRDM": {
-    "updated": "2026-08-07"
-  },
-  "KHIO-KSLE": {
-    "updated": "2026-08-06"
-  },
-  "KHIO-KTTD": {
-    "updated": "2026-08-08"
-  },
-  "KHKY-KCLT": {
-    "updated": "2026-08-07"
-  },
-  "KHKY-KSVH": {
-    "updated": "2026-08-08"
   },
   "KHLN-KDEN": {
     "updated": "2026-09-18",
@@ -25212,9 +23883,6 @@
       }
     ]
   },
-  "KHMT-KCNO": {
-    "updated": "2026-08-08"
-  },
   "KHND-KSNA": {
     "updated": "2026-09-18",
     "routes": [
@@ -25227,9 +23895,6 @@
         "hours": "6,10,12,15-16,20"
       }
     ]
-  },
-  "KHND-KVGT": {
-    "updated": "2026-08-07"
   },
   "KHOU-KABQ": {
     "updated": "2026-10-04",
@@ -25407,9 +24072,6 @@
       }
     ]
   },
-  "KHOU-KDWH": {
-    "updated": "2026-08-06"
-  },
   "KHOU-KFLL": {
     "updated": "2026-10-04",
     "routes": [
@@ -25422,9 +24084,6 @@
         "hours": "1,9-12,17-18,20"
       }
     ]
-  },
-  "KHOU-KGLS": {
-    "updated": "2026-08-07"
   },
   "KHOU-KHRL": {
     "updated": "2026-10-04",
@@ -25439,9 +24098,6 @@
       }
     ]
   },
-  "KHOU-KIWS": {
-    "updated": "2026-08-08"
-  },
   "KHOU-KLAS": {
     "updated": "2026-10-04",
     "routes": [
@@ -25454,9 +24110,6 @@
         "hours": "1-2,12,14"
       }
     ]
-  },
-  "KHOU-KLAX": {
-    "updated": "2026-10-04"
   },
   "KHOU-KLGA": {
     "updated": "2026-10-04",
@@ -25599,9 +24252,6 @@
       }
     ]
   },
-  "KHOU-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KHOU-KSAT": {
     "updated": "2026-10-04",
     "routes": [
@@ -25617,9 +24267,6 @@
         "hours": "0,2-3,7-11,13-14,16,18-21,23"
       }
     ]
-  },
-  "KHOU-KSGR": {
-    "updated": "2026-08-06"
   },
   "KHOU-KSTL": {
     "updated": "2026-10-04",
@@ -25903,9 +24550,6 @@
       }
     ]
   },
-  "KHPN-KSWF": {
-    "updated": "2026-08-07"
-  },
   "KHPN-KTEB": {
     "updated": "2026-08-06",
     "routes": [
@@ -25922,12 +24566,6 @@
         "hours": "7-14,17-22"
       }
     ]
-  },
-  "KHPY-KEFD": {
-    "updated": "2026-08-08"
-  },
-  "KHPY-KHOU": {
-    "updated": "2026-08-08"
   },
   "KHRL-KDFW": {
     "updated": "2026-10-04",
@@ -25984,9 +24622,6 @@
       }
     ]
   },
-  "KHST-KTMB": {
-    "updated": "2026-08-07"
-  },
   "KHSV-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -26034,9 +24669,6 @@
       }
     ]
   },
-  "KHSV-KDCU": {
-    "updated": "2026-08-08"
-  },
   "KHSV-KDEN": {
     "updated": "2026-09-18",
     "routes": [
@@ -26078,9 +24710,6 @@
         "hours": "4,11,15,18,23"
       }
     ]
-  },
-  "KHSV-KFYM": {
-    "updated": "2026-08-08"
   },
   "KHSV-KIAD": {
     "updated": "2026-08-07",
@@ -26134,24 +24763,6 @@
       }
     ]
   },
-  "KHUF-KIND": {
-    "updated": "2026-08-08"
-  },
-  "KHVN-KOXC": {
-    "updated": "2026-08-06"
-  },
-  "KHWO-KAPF": {
-    "updated": "2026-08-08"
-  },
-  "KHWO-KIMM": {
-    "updated": "2026-08-08"
-  },
-  "KHWO-KOBE": {
-    "updated": "2026-08-26"
-  },
-  "KHWO-KPHK": {
-    "updated": "2026-08-08"
-  },
   "KHXD-KCLT": {
     "updated": "2026-08-07",
     "routes": [
@@ -26195,9 +24806,6 @@
       }
     ]
   },
-  "KHZL-KABE": {
-    "updated": "2026-08-08"
-  },
   "KIAD-CYOW": {
     "updated": "2026-10-04",
     "routes": [
@@ -26236,15 +24844,6 @@
         "hours": "1-2,6,8-14,16-17,19,22"
       }
     ]
-  },
-  "KIAD-EDDF": {
-    "updated": "2026-08-07"
-  },
-  "KIAD-EGLL": {
-    "updated": "2026-08-06"
-  },
-  "KIAD-EIDW": {
-    "updated": "2026-08-07"
   },
   "KIAD-KALB": {
     "updated": "2026-10-04",
@@ -26727,9 +25326,6 @@
       }
     ]
   },
-  "KIAD-KLAS": {
-    "updated": "2026-10-04"
-  },
   "KIAD-KLAX": {
     "updated": "2026-10-04",
     "routes": [
@@ -26763,9 +25359,6 @@
         "hours": "8,11,14,17,21"
       }
     ]
-  },
-  "KIAD-KLNS": {
-    "updated": "2026-08-07"
   },
   "KIAD-KMCO": {
     "updated": "2026-10-04",
@@ -26890,9 +25483,6 @@
       }
     ]
   },
-  "KIAD-KPHX": {
-    "updated": "2026-10-04"
-  },
   "KIAD-KPIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -26991,9 +25581,6 @@
         "hours": "1-2,4,7-9,12-13,17-18,21-23"
       }
     ]
-  },
-  "KIAD-KSAN": {
-    "updated": "2026-10-04"
   },
   "KIAD-KSAV": {
     "updated": "2026-10-04",
@@ -27144,18 +25731,6 @@
       }
     ]
   },
-  "KIAD-LFPG": {
-    "updated": "2026-08-07"
-  },
-  "KIAD-LPPT": {
-    "updated": "2026-09-18"
-  },
-  "KIAD-LTFM": {
-    "updated": "2026-09-18"
-  },
-  "KIAD-MMMX": {
-    "updated": "2026-09-18"
-  },
   "KIAD-MPTO": {
     "updated": "2026-09-18",
     "routes": [
@@ -27182,12 +25757,6 @@
       }
     ]
   },
-  "KIAD-RJTT": {
-    "updated": "2026-09-18"
-  },
-  "KIAH-CYYC": {
-    "updated": "2026-10-04"
-  },
   "KIAH-CYYZ": {
     "updated": "2026-10-04",
     "routes": [
@@ -27208,12 +25777,6 @@
         "hours": "6-7,11-12"
       }
     ]
-  },
-  "KIAH-EDDF": {
-    "updated": "2026-09-18"
-  },
-  "KIAH-EGLL": {
-    "updated": "2026-08-07"
   },
   "KIAH-KABQ": {
     "updated": "2026-10-04",
@@ -27713,9 +26276,6 @@
         "hours": "7-8,10,19"
       }
     ]
-  },
-  "KIAH-KGLS": {
-    "updated": "2026-08-06"
   },
   "KIAH-KGPT": {
     "updated": "2026-10-04",
@@ -28332,9 +26892,6 @@
       }
     ]
   },
-  "KIAH-KPDX": {
-    "updated": "2026-10-04"
-  },
   "KIAH-KPHL": {
     "updated": "2026-10-04",
     "routes": [
@@ -28901,9 +27458,6 @@
       }
     ]
   },
-  "KIAH-TJSJ": {
-    "updated": "2026-09-18"
-  },
   "KICT-KATL": {
     "updated": "2026-08-07",
     "routes": [
@@ -29080,12 +27634,6 @@
       }
     ]
   },
-  "KILE-KAUS": {
-    "updated": "2026-08-06"
-  },
-  "KILE-KDFW": {
-    "updated": "2026-08-07"
-  },
   "KILM-KATL": {
     "updated": "2026-10-04",
     "routes": [
@@ -29146,18 +27694,6 @@
       }
     ]
   },
-  "KILM-KRDU": {
-    "updated": "2026-08-07"
-  },
-  "KIMM-KAPF": {
-    "updated": "2026-08-08"
-  },
-  "KIMM-KHWO": {
-    "updated": "2026-08-08"
-  },
-  "KIND-KAID": {
-    "updated": "2026-08-06"
-  },
   "KIND-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -29191,12 +27727,6 @@
         "hours": "1,7,11-12,16-18"
       }
     ]
-  },
-  "KIND-KBAK": {
-    "updated": "2026-08-06"
-  },
-  "KIND-KBMG": {
-    "updated": "2026-08-08"
   },
   "KIND-KBNA": {
     "updated": "2026-08-06",
@@ -29384,12 +27914,6 @@
       }
     ]
   },
-  "KIND-KFLL": {
-    "updated": "2026-08-07"
-  },
-  "KIND-KHUF": {
-    "updated": "2026-08-08"
-  },
   "KIND-KIAD": {
     "updated": "2026-10-04",
     "routes": [
@@ -29436,12 +27960,6 @@
         "hours": "1-7,12-14,17,19"
       }
     ]
-  },
-  "KIND-KLAF": {
-    "updated": "2026-08-07"
-  },
-  "KIND-KLAS": {
-    "updated": "2026-08-07"
   },
   "KIND-KLAX": {
     "updated": "2026-08-07",
@@ -29503,9 +28021,6 @@
       }
     ]
   },
-  "KIND-KMIA": {
-    "updated": "2026-08-07"
-  },
   "KIND-KMSP": {
     "updated": "2026-08-06",
     "routes": [
@@ -29553,12 +28068,6 @@
       }
     ]
   },
-  "KIND-KPHX": {
-    "updated": "2026-08-06"
-  },
-  "KIND-KSEA": {
-    "updated": "2026-09-18"
-  },
   "KIND-KTPA": {
     "updated": "2026-08-07",
     "routes": [
@@ -29572,9 +28081,6 @@
       }
     ]
   },
-  "KINT-KUKF": {
-    "updated": "2026-08-08"
-  },
   "KIPL-KLAX": {
     "updated": "2026-09-18",
     "routes": [
@@ -29587,12 +28093,6 @@
         "hours": "5-7,14-15,18"
       }
     ]
-  },
-  "KISM-KMCO": {
-    "updated": "2026-08-07"
-  },
-  "KISM-KORL": {
-    "updated": "2026-08-06"
   },
   "KISP-KBOS": {
     "updated": "2026-10-04",
@@ -29660,9 +28160,6 @@
       }
     ]
   },
-  "KISP-KFRG": {
-    "updated": "2026-08-06"
-  },
   "KISP-KMCO": {
     "updated": "2026-10-04",
     "routes": [
@@ -29689,24 +28186,6 @@
       }
     ]
   },
-  "KIWA-KAVQ": {
-    "updated": "2026-08-07"
-  },
-  "KIWA-KCGZ": {
-    "updated": "2026-08-06"
-  },
-  "KIWA-KFFZ": {
-    "updated": "2026-08-07"
-  },
-  "KIWA-KMZJ": {
-    "updated": "2026-08-08"
-  },
-  "KIWA-KPAN": {
-    "updated": "2026-08-26"
-  },
-  "KIWA-KPHX": {
-    "updated": "2026-08-06"
-  },
   "KIWA-KPVU": {
     "updated": "2026-09-18",
     "routes": [
@@ -29720,27 +28199,6 @@
       }
     ]
   },
-  "KIWA-KSDL": {
-    "updated": "2026-08-07"
-  },
-  "KIWA-KSEZ": {
-    "updated": "2026-08-07"
-  },
-  "KIWS-KAUS": {
-    "updated": "2026-08-07"
-  },
-  "KIWS-KHOU": {
-    "updated": "2026-08-08"
-  },
-  "KIWS-KSGR": {
-    "updated": "2026-08-07"
-  },
-  "KIXD-KMKC": {
-    "updated": "2026-08-06"
-  },
-  "KIXD-KOJC": {
-    "updated": "2026-08-26"
-  },
   "KJAC-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -29753,9 +28211,6 @@
         "hours": "6-7,10-11,13-16"
       }
     ]
-  },
-  "KJAC-KORD": {
-    "updated": "2026-09-18"
   },
   "KJAC-KSLC": {
     "updated": "2026-10-04",
@@ -29999,9 +28454,6 @@
       }
     ]
   },
-  "KJAX-KDEN": {
-    "updated": "2026-08-07"
-  },
   "KJAX-KDFW": {
     "updated": "2026-08-06",
     "routes": [
@@ -30182,9 +28634,6 @@
         "hours": "0-1,8,15-18,20-21"
       }
     ]
-  },
-  "KJFK-BIKF": {
-    "updated": "2026-09-18"
   },
   "KJFK-CYYZ": {
     "updated": "2026-10-04",
@@ -30827,9 +29276,6 @@
       }
     ]
   },
-  "KJFK-KMSY": {
-    "updated": "2026-10-04"
-  },
   "KJFK-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -30855,12 +29301,6 @@
         "hours": "1-2,9-10,15-17,20-21"
       }
     ]
-  },
-  "KJFK-KOXB": {
-    "updated": "2026-08-06"
-  },
-  "KJFK-KPDX": {
-    "updated": "2026-10-04"
   },
   "KJFK-KPHX": {
     "updated": "2026-10-04",
@@ -30961,9 +29401,6 @@
       }
     ]
   },
-  "KJFK-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KJFK-KSAV": {
     "updated": "2026-10-04",
     "routes": [
@@ -31050,12 +29487,6 @@
       }
     ]
   },
-  "KJFK-LEBL": {
-    "updated": "2026-08-07"
-  },
-  "KJFK-LEMD": {
-    "updated": "2026-08-06"
-  },
   "KJFK-LFPG": {
     "updated": "2026-08-06",
     "routes": [
@@ -31093,9 +29524,6 @@
       }
     ]
   },
-  "KJFK-LIMC": {
-    "updated": "2026-08-06"
-  },
   "KJFK-LIRF": {
     "updated": "2026-08-06",
     "routes": [
@@ -31117,18 +29545,6 @@
       }
     ]
   },
-  "KJFK-LLBG": {
-    "updated": "2026-08-06"
-  },
-  "KJFK-LSZH": {
-    "updated": "2026-08-07"
-  },
-  "KJFK-LTFM": {
-    "updated": "2026-08-07"
-  },
-  "KJFK-MDPC": {
-    "updated": "2026-09-18"
-  },
   "KJFK-MDSD": {
     "updated": "2026-09-18",
     "routes": [
@@ -31149,9 +29565,6 @@
         "hours": "2-3,5,9"
       }
     ]
-  },
-  "KJFK-MDST": {
-    "updated": "2026-09-18"
   },
   "KJFK-MKJP": {
     "updated": "2026-08-07",
@@ -31226,9 +29639,6 @@
       }
     ]
   },
-  "KJFK-MSLP": {
-    "updated": "2026-09-18"
-  },
   "KJFK-MYNN": {
     "updated": "2026-10-04",
     "routes": [
@@ -31241,12 +29651,6 @@
         "hours": "8-9"
       }
     ]
-  },
-  "KJFK-OTHH": {
-    "updated": "2026-09-18"
-  },
-  "KJFK-PANC": {
-    "updated": "2026-08-06"
   },
   "KJFK-RJTT": {
     "updated": "2026-08-06",
@@ -31289,18 +29693,6 @@
         "hours": "0,2,12-13"
       }
     ]
-  },
-  "KJFK-SBGR": {
-    "updated": "2026-08-07"
-  },
-  "KJFK-SEGU": {
-    "updated": "2026-09-18"
-  },
-  "KJFK-SKBO": {
-    "updated": "2026-09-18"
-  },
-  "KJFK-SYCJ": {
-    "updated": "2026-09-18"
   },
   "KJFK-TJSJ": {
     "updated": "2026-08-06",
@@ -31355,39 +29747,6 @@
       }
     ]
   },
-  "KJFK-TNCA": {
-    "updated": "2026-09-18"
-  },
-  "KJFK-TTPP": {
-    "updated": "2026-09-18"
-  },
-  "KJFK-VHHH": {
-    "updated": "2026-09-18"
-  },
-  "KJKA-KNBJ": {
-    "updated": "2026-08-08"
-  },
-  "KJOT-KLOT": {
-    "updated": "2026-08-08"
-  },
-  "KJQF-KCLT": {
-    "updated": "2026-08-08"
-  },
-  "KJQF-KRUQ": {
-    "updated": "2026-08-08"
-  },
-  "KJVL-KMSN": {
-    "updated": "2026-08-08"
-  },
-  "KJVL-KRFD": {
-    "updated": "2026-08-08"
-  },
-  "KJVL-KUES": {
-    "updated": "2026-08-08"
-  },
-  "KLAF-KIND": {
-    "updated": "2026-08-07"
-  },
   "KLAF-KORD": {
     "updated": "2026-08-08",
     "routes": [
@@ -31400,15 +29759,6 @@
         "hours": "6,14-15"
       }
     ]
-  },
-  "KLAL-KDAB": {
-    "updated": "2026-08-07"
-  },
-  "KLAL-KTPF": {
-    "updated": "2026-08-08"
-  },
-  "KLAM-KABQ": {
-    "updated": "2026-08-08"
   },
   "KLAN-KDTW": {
     "updated": "2026-08-07",
@@ -31490,12 +29840,6 @@
         "hours": "0,13-14,19,21,23"
       }
     ]
-  },
-  "KLAS-CYYZ": {
-    "updated": "2026-08-06"
-  },
-  "KLAS-EGLL": {
-    "updated": "2026-08-26"
   },
   "KLAS-KABQ": {
     "updated": "2026-08-06",
@@ -31634,9 +29978,6 @@
       }
     ]
   },
-  "KLAS-KBOS": {
-    "updated": "2026-08-06"
-  },
   "KLAS-KBUR": {
     "updated": "2026-08-06",
     "routes": [
@@ -31650,18 +29991,6 @@
       }
     ]
   },
-  "KLAS-KBVU": {
-    "updated": "2026-08-06"
-  },
-  "KLAS-KBWI": {
-    "updated": "2026-08-06"
-  },
-  "KLAS-KBZN": {
-    "updated": "2026-09-18"
-  },
-  "KLAS-KCLE": {
-    "updated": "2026-08-07"
-  },
   "KLAS-KCLT": {
     "updated": "2026-08-06",
     "routes": [
@@ -31674,9 +30003,6 @@
         "hours": "6-7,10,12,22-23"
       }
     ]
-  },
-  "KLAS-KCMH": {
-    "updated": "2026-09-18"
   },
   "KLAS-KCOS": {
     "updated": "2026-09-18",
@@ -31788,9 +30114,6 @@
       }
     ]
   },
-  "KLAS-KDTW": {
-    "updated": "2026-08-06"
-  },
   "KLAS-KEWR": {
     "updated": "2026-10-04",
     "routes": [
@@ -31845,9 +30168,6 @@
         "hours": "10,21-22"
       }
     ]
-  },
-  "KLAS-KGEG": {
-    "updated": "2026-09-18"
   },
   "KLAS-KHOU": {
     "updated": "2026-08-06",
@@ -31911,9 +30231,6 @@
         "hours": "10,12,15"
       }
     ]
-  },
-  "KLAS-KIND": {
-    "updated": "2026-08-07"
   },
   "KLAS-KJFK": {
     "updated": "2026-10-04",
@@ -32001,9 +30318,6 @@
       }
     ]
   },
-  "KLAS-KMEM": {
-    "updated": "2026-09-18"
-  },
   "KLAS-KMIA": {
     "updated": "2026-08-07",
     "routes": [
@@ -32024,9 +30338,6 @@
         "hours": "21"
       }
     ]
-  },
-  "KLAS-KMKE": {
-    "updated": "2026-08-08"
   },
   "KLAS-KMSP": {
     "updated": "2026-08-06",
@@ -32074,9 +30385,6 @@
         "hours": "4-23"
       }
     ]
-  },
-  "KLAS-KOKC": {
-    "updated": "2026-08-07"
   },
   "KLAS-KOMA": {
     "updated": "2026-09-18",
@@ -32290,9 +30598,6 @@
       }
     ]
   },
-  "KLAS-KSDF": {
-    "updated": "2026-09-18"
-  },
   "KLAS-KSDL": {
     "updated": "2026-08-06",
     "routes": [
@@ -32407,9 +30712,6 @@
         "hours": "0-1,3-22"
       }
     ]
-  },
-  "KLAS-KSTL": {
-    "updated": "2026-08-06"
   },
   "KLAS-KTPA": {
     "updated": "2026-08-07",
@@ -32534,9 +30836,6 @@
       }
     ]
   },
-  "KLAX-CYUL": {
-    "updated": "2026-09-18"
-  },
   "KLAX-CYVR": {
     "updated": "2026-08-06",
     "routes": [
@@ -32573,18 +30872,6 @@
         "hours": "12-13,16-17"
       }
     ]
-  },
-  "KLAX-CYYC": {
-    "updated": "2026-08-07"
-  },
-  "KLAX-CYYZ": {
-    "updated": "2026-08-06"
-  },
-  "KLAX-EDDF": {
-    "updated": "2026-09-18"
-  },
-  "KLAX-EGLL": {
-    "updated": "2026-08-06"
   },
   "KLAX-KABQ": {
     "updated": "2026-08-06",
@@ -32681,9 +30968,6 @@
       }
     ]
   },
-  "KLAX-KBNA": {
-    "updated": "2026-08-06"
-  },
   "KLAX-KBOI": {
     "updated": "2026-08-07",
     "routes": [
@@ -32726,9 +31010,6 @@
       }
     ]
   },
-  "KLAX-KBWI": {
-    "updated": "2026-08-07"
-  },
   "KLAX-KBZN": {
     "updated": "2026-09-18",
     "routes": [
@@ -32742,9 +31023,6 @@
       }
     ]
   },
-  "KLAX-KCLE": {
-    "updated": "2026-09-18"
-  },
   "KLAX-KCLT": {
     "updated": "2026-08-06",
     "routes": [
@@ -32757,15 +31035,6 @@
         "hours": "0,5-10,13,20,22-23"
       }
     ]
-  },
-  "KLAX-KCVG": {
-    "updated": "2026-08-07"
-  },
-  "KLAX-KDAL": {
-    "updated": "2026-10-04"
-  },
-  "KLAX-KDCA": {
-    "updated": "2026-08-07"
   },
   "KLAX-KDEN": {
     "updated": "2026-08-06",
@@ -32808,9 +31077,6 @@
         "hours": "0,5,7-8,10,13-14,16-18,22-23"
       }
     ]
-  },
-  "KLAX-KDTW": {
-    "updated": "2026-08-06"
   },
   "KLAX-KEWR": {
     "updated": "2026-10-04",
@@ -32880,9 +31146,6 @@
       }
     ]
   },
-  "KLAX-KHOU": {
-    "updated": "2026-09-18"
-  },
   "KLAX-KIAD": {
     "updated": "2026-08-06",
     "routes": [
@@ -32924,9 +31187,6 @@
         "hours": "9,18-19,21"
       }
     ]
-  },
-  "KLAX-KIND": {
-    "updated": "2026-08-07"
   },
   "KLAX-KJFK": {
     "updated": "2026-10-04",
@@ -32993,15 +31253,6 @@
         "hours": "1,4-6,8,11-12,14,19-23"
       }
     ]
-  },
-  "KLAX-KMCI": {
-    "updated": "2026-09-18"
-  },
-  "KLAX-KMCO": {
-    "updated": "2026-08-06"
-  },
-  "KLAX-KMDW": {
-    "updated": "2026-09-18"
   },
   "KLAX-KMEM": {
     "updated": "2026-08-06",
@@ -33255,9 +31506,6 @@
       }
     ]
   },
-  "KLAX-KRDU": {
-    "updated": "2026-09-18"
-  },
   "KLAX-KRNO": {
     "updated": "2026-08-06",
     "routes": [
@@ -33317,9 +31565,6 @@
         "hours": "7-8,10-12,16,18,20-23"
       }
     ]
-  },
-  "KLAX-KSDF": {
-    "updated": "2026-08-26"
   },
   "KLAX-KSEA": {
     "updated": "2026-08-06",
@@ -33486,15 +31731,6 @@
       }
     ]
   },
-  "KLAX-LFPG": {
-    "updated": "2026-08-06"
-  },
-  "KLAX-LTFM": {
-    "updated": "2026-09-18"
-  },
-  "KLAX-MGGT": {
-    "updated": "2026-09-18"
-  },
   "KLAX-MMGL": {
     "updated": "2026-09-18",
     "routes": [
@@ -33605,15 +31841,6 @@
       }
     ]
   },
-  "KLAX-MSLP": {
-    "updated": "2026-09-18"
-  },
-  "KLAX-NZAA": {
-    "updated": "2026-09-18"
-  },
-  "KLAX-PANC": {
-    "updated": "2026-09-18"
-  },
   "KLAX-PHKO": {
     "updated": "2026-09-18",
     "routes": [
@@ -33626,9 +31853,6 @@
         "hours": "8-9,16"
       }
     ]
-  },
-  "KLAX-PHLI": {
-    "updated": "2026-09-18"
   },
   "KLAX-PHNL": {
     "updated": "2026-08-06",
@@ -33819,9 +32043,6 @@
         "hours": "5,10,12-13,18,22-23"
       }
     ]
-  },
-  "KLAX-RPLL": {
-    "updated": "2026-09-18"
   },
   "KLAX-VHHH": {
     "updated": "2026-08-07",
@@ -34018,9 +32239,6 @@
       }
     ]
   },
-  "KLBE-KAGC": {
-    "updated": "2026-08-08"
-  },
   "KLBL-KDEN": {
     "updated": "2026-09-18",
     "routes": [
@@ -34047,12 +32265,6 @@
       }
     ]
   },
-  "KLCK-KOSU": {
-    "updated": "2026-08-08"
-  },
-  "KLDJ-KTTN": {
-    "updated": "2026-08-08"
-  },
   "KLEB-KBOS": {
     "updated": "2026-09-18",
     "routes": [
@@ -34065,18 +32277,6 @@
         "hours": "1-3,6-8,11,14-17,19"
       }
     ]
-  },
-  "KLEE-KDAB": {
-    "updated": "2026-08-07"
-  },
-  "KLEE-KOCF": {
-    "updated": "2026-08-06"
-  },
-  "KLEE-KORL": {
-    "updated": "2026-08-06"
-  },
-  "KLEE-KSFB": {
-    "updated": "2026-08-06"
   },
   "KLEX-KATL": {
     "updated": "2026-08-06",
@@ -34138,15 +32338,6 @@
       }
     ]
   },
-  "KLEX-KFFT": {
-    "updated": "2026-08-08"
-  },
-  "KLEX-KLOU": {
-    "updated": "2026-08-08"
-  },
-  "KLEX-KLUK": {
-    "updated": "2026-08-08"
-  },
   "KLEX-KORD": {
     "updated": "2026-08-06",
     "routes": [
@@ -34167,9 +32358,6 @@
         "hours": "1,10,13-14,16-18"
       }
     ]
-  },
-  "KLFT-KARA": {
-    "updated": "2026-08-08"
   },
   "KLFT-KATL": {
     "updated": "2026-08-07",
@@ -35260,12 +33448,6 @@
       }
     ]
   },
-  "KLGB-KAVX": {
-    "updated": "2026-08-07"
-  },
-  "KLGB-KCPM": {
-    "updated": "2026-08-07"
-  },
   "KLGB-KDEN": {
     "updated": "2026-08-07",
     "routes": [
@@ -35278,9 +33460,6 @@
         "hours": "0,6-7,9-11,13-15,22-23"
       }
     ]
-  },
-  "KLGB-KFUL": {
-    "updated": "2026-08-06"
   },
   "KLGB-KLAS": {
     "updated": "2026-08-06",
@@ -35381,9 +33560,6 @@
       }
     ]
   },
-  "KLGB-KTOA": {
-    "updated": "2026-08-06"
-  },
   "KLGB-PHNL": {
     "updated": "2026-09-18",
     "routes": [
@@ -35396,12 +33572,6 @@
         "hours": "6-7,23"
       }
     ]
-  },
-  "KLGC-KATL": {
-    "updated": "2026-08-06"
-  },
-  "KLGC-KAUO": {
-    "updated": "2026-08-06"
   },
   "KLIT-KATL": {
     "updated": "2026-08-06",
@@ -35529,9 +33699,6 @@
       }
     ]
   },
-  "KLNA-KDJT": {
-    "updated": "2026-08-26"
-  },
   "KLNK-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -35557,27 +33724,6 @@
         "hours": "0-1,5-11,13-15"
       }
     ]
-  },
-  "KLNR-KMSN": {
-    "updated": "2026-08-08"
-  },
-  "KLNS-KIAD": {
-    "updated": "2026-08-07"
-  },
-  "KLNS-KMDT": {
-    "updated": "2026-08-07"
-  },
-  "KLOT-KARR": {
-    "updated": "2026-08-26"
-  },
-  "KLOT-KDPA": {
-    "updated": "2026-08-07"
-  },
-  "KLOT-KJOT": {
-    "updated": "2026-08-08"
-  },
-  "KLOU-KLEX": {
-    "updated": "2026-08-26"
   },
   "KLRD-KDFW": {
     "updated": "2026-08-06",
@@ -35642,27 +33788,6 @@
       }
     ]
   },
-  "KLSV-KLAS": {
-    "updated": "2026-08-08"
-  },
-  "KLSV-KVGT": {
-    "updated": "2026-08-08"
-  },
-  "KLUF-KBXK": {
-    "updated": "2026-08-08"
-  },
-  "KLUF-KDVT": {
-    "updated": "2026-08-08"
-  },
-  "KLUF-KGYR": {
-    "updated": "2026-08-08"
-  },
-  "KLUK-KHAO": {
-    "updated": "2026-08-08"
-  },
-  "KLUK-KLEX": {
-    "updated": "2026-08-08"
-  },
   "KLYH-KCLT": {
     "updated": "2026-10-04",
     "routes": [
@@ -35675,18 +33800,6 @@
         "hours": "3-4,6-7,9,11-12,15-20"
       }
     ]
-  },
-  "KLZU-KATL": {
-    "updated": "2026-08-07"
-  },
-  "KLZU-KGVL": {
-    "updated": "2026-08-07"
-  },
-  "KLZU-KPDK": {
-    "updated": "2026-08-06"
-  },
-  "KLZU-KWDR": {
-    "updated": "2026-08-06"
   },
   "KMAF-KAUS": {
     "updated": "2026-09-18",
@@ -35782,12 +33895,6 @@
       }
     ]
   },
-  "KMAF-KINK": {
-    "updated": "2026-08-08"
-  },
-  "KMAF-KMDD": {
-    "updated": "2026-08-08"
-  },
   "KMBS-KDTW": {
     "updated": "2026-08-07",
     "routes": [
@@ -35821,9 +33928,6 @@
         "hours": "1-2,4,7-8,10-11,18,21"
       }
     ]
-  },
-  "KMCC-KAUN": {
-    "updated": "2026-08-08"
   },
   "KMCI-KATL": {
     "updated": "2026-08-06",
@@ -36154,9 +34258,6 @@
       }
     ]
   },
-  "KMCI-KLAX": {
-    "updated": "2026-09-18"
-  },
   "KMCI-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -36170,9 +34271,6 @@
       }
     ]
   },
-  "KMCI-KMCO": {
-    "updated": "2026-08-06"
-  },
   "KMCI-KMDW": {
     "updated": "2026-10-04",
     "routes": [
@@ -36185,12 +34283,6 @@
         "hours": "0-2,4-6,8,10-11,13-17,19-21"
       }
     ]
-  },
-  "KMCI-KMIA": {
-    "updated": "2026-09-18"
-  },
-  "KMCI-KMKC": {
-    "updated": "2026-08-07"
   },
   "KMCI-KMSP": {
     "updated": "2026-08-06",
@@ -36324,9 +34416,6 @@
         "hours": "1-2,6-7,11-14,16-17,20-22"
       }
     ]
-  },
-  "KMCO-EGKK": {
-    "updated": "2026-09-18"
   },
   "KMCO-KALB": {
     "updated": "2026-10-04",
@@ -37269,9 +35358,6 @@
       }
     ]
   },
-  "KMCO-KPHX": {
-    "updated": "2026-10-04"
-  },
   "KMCO-KPIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -37340,9 +35426,6 @@
       }
     ]
   },
-  "KMCO-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KMCO-KSAT": {
     "updated": "2026-10-04",
     "routes": [
@@ -37389,12 +35472,6 @@
         "hours": "8,17-19"
       }
     ]
-  },
-  "KMCO-KSFO": {
-    "updated": "2026-10-04"
-  },
-  "KMCO-KSLC": {
-    "updated": "2026-10-04"
   },
   "KMCO-KSRQ": {
     "updated": "2026-08-06",
@@ -37498,9 +35575,6 @@
       }
     ]
   },
-  "KMCO-MROC": {
-    "updated": "2026-09-18"
-  },
   "KMCO-MYNN": {
     "updated": "2026-09-18",
     "routes": [
@@ -37585,9 +35659,6 @@
       }
     ]
   },
-  "KMDD-KMAF": {
-    "updated": "2026-08-08"
-  },
   "KMDT-KATL": {
     "updated": "2026-08-07",
     "routes": [
@@ -37655,9 +35726,6 @@
         "hours": "1-2,6,10,14-15,19-21"
       }
     ]
-  },
-  "KMDT-KLNS": {
-    "updated": "2026-08-07"
   },
   "KMDT-KORD": {
     "updated": "2026-10-04",
@@ -37855,9 +35923,6 @@
       }
     ]
   },
-  "KMDW-KDPA": {
-    "updated": "2026-08-07"
-  },
   "KMDW-KDTW": {
     "updated": "2026-10-04",
     "routes": [
@@ -37952,9 +36017,6 @@
       }
     ]
   },
-  "KMDW-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KMDW-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -38041,9 +36103,6 @@
       }
     ]
   },
-  "KMDW-KORD": {
-    "updated": "2026-08-06"
-  },
   "KMDW-KPHL": {
     "updated": "2026-10-04",
     "routes": [
@@ -38125,9 +36184,6 @@
       }
     ]
   },
-  "KMDW-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KMDW-KSDF": {
     "updated": "2026-10-04",
     "routes": [
@@ -38179,12 +36235,6 @@
         "hours": "1-2,4,7-8,11-15,17-18,20,22"
       }
     ]
-  },
-  "KMDW-KVPZ": {
-    "updated": "2026-08-08"
-  },
-  "KMEB-KFAY": {
-    "updated": "2026-08-26"
   },
   "KMEM-KATL": {
     "updated": "2026-08-06",
@@ -38512,12 +36562,6 @@
       }
     ]
   },
-  "KMEM-KLAS": {
-    "updated": "2026-09-18"
-  },
-  "KMEM-KLAX": {
-    "updated": "2026-08-07"
-  },
   "KMEM-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -38602,9 +36646,6 @@
       }
     ]
   },
-  "KMEM-KOAK": {
-    "updated": "2026-08-07"
-  },
   "KMEM-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -38680,9 +36721,6 @@
         "hours": "3-4,6-8,16-17,21-22"
       }
     ]
-  },
-  "KMEM-KSLC": {
-    "updated": "2026-09-18"
   },
   "KMEM-PANC": {
     "updated": "2026-08-06",
@@ -38865,15 +36903,6 @@
       }
     ]
   },
-  "KMGE-KFTY": {
-    "updated": "2026-08-06"
-  },
-  "KMGE-KPDK": {
-    "updated": "2026-08-06"
-  },
-  "KMGJ-KCDW": {
-    "updated": "2026-08-08"
-  },
   "KMGM-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -38894,9 +36923,6 @@
         "hours": "5,7,9-10,13-14,17-18,21"
       }
     ]
-  },
-  "KMGY-KMWO": {
-    "updated": "2026-08-08"
   },
   "KMHK-KDFW": {
     "updated": "2026-08-07",
@@ -39002,9 +37028,6 @@
       }
     ]
   },
-  "KMIA-CYUL": {
-    "updated": "2026-10-04"
-  },
   "KMIA-CYYZ": {
     "updated": "2026-10-04",
     "routes": [
@@ -39046,9 +37069,6 @@
         "hours": "14-15,18,21"
       }
     ]
-  },
-  "KMIA-EHAM": {
-    "updated": "2026-08-26"
   },
   "KMIA-KATL": {
     "updated": "2026-10-04",
@@ -39258,9 +37278,6 @@
       }
     ]
   },
-  "KMIA-KCMH": {
-    "updated": "2026-10-04"
-  },
   "KMIA-KCVG": {
     "updated": "2026-10-04",
     "routes": [
@@ -39424,9 +37441,6 @@
       }
     ]
   },
-  "KMIA-KFLL": {
-    "updated": "2026-08-07"
-  },
   "KMIA-KIAD": {
     "updated": "2026-10-04",
     "routes": [
@@ -39477,9 +37491,6 @@
       }
     ]
   },
-  "KMIA-KIND": {
-    "updated": "2026-10-04"
-  },
   "KMIA-KJAX": {
     "updated": "2026-10-04",
     "routes": [
@@ -39513,9 +37524,6 @@
         "hours": "0,5,8-9,11,13"
       }
     ]
-  },
-  "KMIA-KLAS": {
-    "updated": "2026-10-04"
   },
   "KMIA-KLAX": {
     "updated": "2026-10-04",
@@ -39610,9 +37618,6 @@
         "hours": "1,7-9,15,17,23"
       }
     ]
-  },
-  "KMIA-KOPF": {
-    "updated": "2026-08-06"
   },
   "KMIA-KORD": {
     "updated": "2026-10-04",
@@ -39756,12 +37761,6 @@
       }
     ]
   },
-  "KMIA-KSEA": {
-    "updated": "2026-10-04"
-  },
-  "KMIA-KSFO": {
-    "updated": "2026-10-04"
-  },
   "KMIA-KSTL": {
     "updated": "2026-10-04",
     "routes": [
@@ -39801,9 +37800,6 @@
       }
     ]
   },
-  "KMIA-KTMB": {
-    "updated": "2026-08-07"
-  },
   "KMIA-KTPA": {
     "updated": "2026-10-04",
     "routes": [
@@ -39816,9 +37812,6 @@
         "hours": "1-2,4,7-9,11-23"
       }
     ]
-  },
-  "KMIA-LEMD": {
-    "updated": "2026-08-07"
   },
   "KMIA-MBPV": {
     "updated": "2026-10-04",
@@ -40191,9 +38184,6 @@
       }
     ]
   },
-  "KMIA-PANC": {
-    "updated": "2026-08-07"
-  },
   "KMIA-SAEZ": {
     "updated": "2026-08-06",
     "routes": [
@@ -40206,15 +38196,6 @@
         "hours": "3-4,21-22"
       }
     ]
-  },
-  "KMIA-SBGR": {
-    "updated": "2026-08-06"
-  },
-  "KMIA-SBKP": {
-    "updated": "2026-08-26"
-  },
-  "KMIA-SCEL": {
-    "updated": "2026-10-04"
   },
   "KMIA-SEQM": {
     "updated": "2026-10-04",
@@ -40382,9 +38363,6 @@
       }
     ]
   },
-  "KMIA-TNCC": {
-    "updated": "2026-10-04"
-  },
   "KMIA-TTPP": {
     "updated": "2026-10-04",
     "routes": [
@@ -40405,24 +38383,6 @@
         "hours": "2,9-10"
       }
     ]
-  },
-  "KMIC-KFCM": {
-    "updated": "2026-08-08"
-  },
-  "KMIC-KSTC": {
-    "updated": "2026-08-08"
-  },
-  "KMIC-KSTP": {
-    "updated": "2026-08-08"
-  },
-  "KMKC-KIXD": {
-    "updated": "2026-08-07"
-  },
-  "KMKC-KMCI": {
-    "updated": "2026-08-07"
-  },
-  "KMKC-KOJC": {
-    "updated": "2026-08-06"
   },
   "KMKE-KATL": {
     "updated": "2026-10-04",
@@ -40597,9 +38557,6 @@
       }
     ]
   },
-  "KMKE-KLAS": {
-    "updated": "2026-10-04"
-  },
   "KMKE-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -40675,9 +38632,6 @@
         "hours": "1,4-20,22-23"
       }
     ]
-  },
-  "KMKE-KPHX": {
-    "updated": "2026-10-04"
   },
   "KMLB-KATL": {
     "updated": "2026-08-06",
@@ -40781,12 +38735,6 @@
       }
     ]
   },
-  "KMMI-KCHA": {
-    "updated": "2026-08-08"
-  },
-  "KMMI-KTYS": {
-    "updated": "2026-08-07"
-  },
   "KMMU-KTEB": {
     "updated": "2026-08-06",
     "routes": [
@@ -40799,9 +38747,6 @@
         "hours": "6,8,11-12,14,16,18,20"
       }
     ]
-  },
-  "KMMU-KTTN": {
-    "updated": "2026-08-08"
   },
   "KMOB-KATL": {
     "updated": "2026-10-04",
@@ -40823,9 +38768,6 @@
         "hours": "5,9,12,16,18"
       }
     ]
-  },
-  "KMOB-KBFM": {
-    "updated": "2026-08-08"
   },
   "KMOB-KCLT": {
     "updated": "2026-08-07",
@@ -40907,21 +38849,6 @@
         "hours": "0-1,4-7,10,12,17-18"
       }
     ]
-  },
-  "KMPO-KABE": {
-    "updated": "2026-08-08"
-  },
-  "KMQY-KBNA": {
-    "updated": "2026-08-06"
-  },
-  "KMQY-KCKV": {
-    "updated": "2026-08-08"
-  },
-  "KMQY-KRNC": {
-    "updated": "2026-08-08"
-  },
-  "KMQY-KSYI": {
-    "updated": "2026-08-08"
   },
   "KMRY-KLAX": {
     "updated": "2026-09-18",
@@ -41059,9 +38986,6 @@
       }
     ]
   },
-  "KMSN-KDFW": {
-    "updated": "2026-10-04"
-  },
   "KMSN-KDTW": {
     "updated": "2026-10-04",
     "routes": [
@@ -41083,9 +39007,6 @@
       }
     ]
   },
-  "KMSN-KJVL": {
-    "updated": "2026-08-08"
-  },
   "KMSN-KLGA": {
     "updated": "2026-08-26",
     "routes": [
@@ -41106,9 +39027,6 @@
         "hours": "8,15"
       }
     ]
-  },
-  "KMSN-KLNR": {
-    "updated": "2026-08-08"
   },
   "KMSN-KMSP": {
     "updated": "2026-08-06",
@@ -41227,9 +39145,6 @@
         "hours": "0,7,15-16"
       }
     ]
-  },
-  "KMSP-EHAM": {
-    "updated": "2026-08-07"
   },
   "KMSP-KATL": {
     "updated": "2026-10-04",
@@ -41657,9 +39572,6 @@
         "hours": "1-2,6,8-9,11-14,16-19,21-23"
       }
     ]
-  },
-  "KMSP-KFLL": {
-    "updated": "2026-10-04"
   },
   "KMSP-KFSD": {
     "updated": "2026-10-04",
@@ -42155,9 +40067,6 @@
       }
     ]
   },
-  "KMSP-KSAN": {
-    "updated": "2026-10-04"
-  },
   "KMSP-KSDF": {
     "updated": "2026-10-04",
     "routes": [
@@ -42259,12 +40168,6 @@
         "hours": "6,9-10,12,15,18,20,23"
       }
     ]
-  },
-  "KMSP-MMUN": {
-    "updated": "2026-09-18"
-  },
-  "KMSP-PANC": {
-    "updated": "2026-08-26"
   },
   "KMSS-KBOS": {
     "updated": "2026-08-07",
@@ -42525,12 +40428,6 @@
       }
     ]
   },
-  "KMSY-KLAS": {
-    "updated": "2026-10-04"
-  },
-  "KMSY-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KMSY-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -42564,9 +40461,6 @@
         "hours": "2-7,9-11,13-15,19,22"
       }
     ]
-  },
-  "KMSY-KMDW": {
-    "updated": "2026-08-07"
   },
   "KMSY-KMIA": {
     "updated": "2026-10-04",
@@ -42631,9 +40525,6 @@
       }
     ]
   },
-  "KMSY-KPHX": {
-    "updated": "2026-08-07"
-  },
   "KMSY-KSTL": {
     "updated": "2026-09-18",
     "routes": [
@@ -42689,9 +40580,6 @@
       }
     ]
   },
-  "KMTN-KESN": {
-    "updated": "2026-08-08"
-  },
   "KMVY-KBOS": {
     "updated": "2026-10-04",
     "routes": [
@@ -42707,12 +40595,6 @@
         "hours": "1-3,6-20"
       }
     ]
-  },
-  "KMWL-KAFW": {
-    "updated": "2026-08-06"
-  },
-  "KMWO-KMGY": {
-    "updated": "2026-08-08"
   },
   "KMYR-KATL": {
     "updated": "2026-08-06",
@@ -42761,9 +40643,6 @@
       }
     ]
   },
-  "KMYR-KCRE": {
-    "updated": "2026-08-06"
-  },
   "KMYR-KEWR": {
     "updated": "2026-08-07",
     "routes": [
@@ -42784,9 +40663,6 @@
         "hours": "9-10"
       }
     ]
-  },
-  "KMYR-KGGE": {
-    "updated": "2026-08-08"
   },
   "KMYR-KLGA": {
     "updated": "2026-09-18",
@@ -42813,51 +40689,6 @@
         "hours": "1,5,10-14,16-18,21"
       }
     ]
-  },
-  "KMZJ-KIWA": {
-    "updated": "2026-08-08"
-  },
-  "KNBJ-KBFM": {
-    "updated": "2026-08-08"
-  },
-  "KNBJ-KJKA": {
-    "updated": "2026-08-08"
-  },
-  "KNBJ-KPNS": {
-    "updated": "2026-08-08"
-  },
-  "KNEN-KVQQ": {
-    "updated": "2026-08-06"
-  },
-  "KNEW-KBTR": {
-    "updated": "2026-08-08"
-  },
-  "KNFW-KAFW": {
-    "updated": "2026-08-06"
-  },
-  "KNFW-KFTW": {
-    "updated": "2026-08-07"
-  },
-  "KNFW-KRBD": {
-    "updated": "2026-08-06"
-  },
-  "KNGU-KPHF": {
-    "updated": "2026-08-06"
-  },
-  "KNQA-KOLV": {
-    "updated": "2026-08-08"
-  },
-  "KNSE-KCEW": {
-    "updated": "2026-08-08"
-  },
-  "KNSE-KNBJ": {
-    "updated": "2026-08-08"
-  },
-  "KNSE-KPNS": {
-    "updated": "2026-08-07"
-  },
-  "KNTD-KOXR": {
-    "updated": "2026-08-08"
   },
   "KNYL-KPHX": {
     "updated": "2026-08-06",
@@ -42914,9 +40745,6 @@
       }
     ]
   },
-  "KOAJ-KEWN": {
-    "updated": "2026-08-08"
-  },
   "KOAK-KBUR": {
     "updated": "2026-08-06",
     "routes": [
@@ -42958,9 +40786,6 @@
         "hours": "7-8,12-14,19"
       }
     ]
-  },
-  "KOAK-KHAF": {
-    "updated": "2026-08-07"
   },
   "KOAK-KLAS": {
     "updated": "2026-08-06",
@@ -43313,36 +41138,6 @@
       }
     ]
   },
-  "KOBE-KFPR": {
-    "updated": "2026-08-08"
-  },
-  "KOBE-KSUA": {
-    "updated": "2026-08-08"
-  },
-  "KOBE-KVRB": {
-    "updated": "2026-08-07"
-  },
-  "KOCF-KDAB": {
-    "updated": "2026-08-07"
-  },
-  "KOCF-KGNV": {
-    "updated": "2026-08-06"
-  },
-  "KOCF-KLEE": {
-    "updated": "2026-08-06"
-  },
-  "KOCF-KZPH": {
-    "updated": "2026-08-07"
-  },
-  "KOJC-KIXD": {
-    "updated": "2026-08-26"
-  },
-  "KOJC-KMKC": {
-    "updated": "2026-08-07"
-  },
-  "KOKB-KCRQ": {
-    "updated": "2026-08-07"
-  },
   "KOKC-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -43371,9 +41166,6 @@
         "hours": "6,11,14,17-18"
       }
     ]
-  },
-  "KOKC-KCLT": {
-    "updated": "2026-09-18"
   },
   "KOKC-KDEN": {
     "updated": "2026-08-06",
@@ -43467,9 +41259,6 @@
       }
     ]
   },
-  "KOKC-KLAS": {
-    "updated": "2026-08-07"
-  },
   "KOKC-KLAX": {
     "updated": "2026-09-18",
     "routes": [
@@ -43551,15 +41340,6 @@
       }
     ]
   },
-  "KOKH-KPAE": {
-    "updated": "2026-08-08"
-  },
-  "KOLV-KNQA": {
-    "updated": "2026-08-26"
-  },
-  "KOLV-KUOX": {
-    "updated": "2026-08-26"
-  },
   "KOMA-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -43572,9 +41352,6 @@
         "hours": "10,13,18,22-23"
       }
     ]
-  },
-  "KOMA-KCLT": {
-    "updated": "2026-08-07"
   },
   "KOMA-KDEN": {
     "updated": "2026-08-06",
@@ -43659,9 +41436,6 @@
         "hours": "14"
       }
     ]
-  },
-  "KOMA-KLAS": {
-    "updated": "2026-08-26"
   },
   "KOMA-KLGA": {
     "updated": "2026-08-07",
@@ -43778,15 +41552,6 @@
       }
     ]
   },
-  "KONM-KABQ": {
-    "updated": "2026-08-08"
-  },
-  "KONO-KBOI": {
-    "updated": "2026-08-07"
-  },
-  "KONT-KATL": {
-    "updated": "2026-10-04"
-  },
   "KONT-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -43828,9 +41593,6 @@
         "hours": "6,9,11"
       }
     ]
-  },
-  "KONT-KIAH": {
-    "updated": "2026-09-18"
   },
   "KONT-KLAS": {
     "updated": "2026-08-06",
@@ -43900,9 +41662,6 @@
       }
     ]
   },
-  "KONT-KRFD": {
-    "updated": "2026-09-18"
-  },
   "KONT-KSBP": {
     "updated": "2026-08-07",
     "routes": [
@@ -43915,9 +41674,6 @@
         "hours": "4-8"
       }
     ]
-  },
-  "KONT-KSDF": {
-    "updated": "2026-08-06"
   },
   "KONT-KSEA": {
     "updated": "2026-08-06",
@@ -44039,9 +41795,6 @@
       }
     ]
   },
-  "KOPF-KFLL": {
-    "updated": "2026-08-07"
-  },
   "KOPF-KHPN": {
     "updated": "2026-10-04",
     "routes": [
@@ -44055,9 +41808,6 @@
       }
     ]
   },
-  "KOPF-KMIA": {
-    "updated": "2026-08-06"
-  },
   "KOPF-KTEB": {
     "updated": "2026-10-04",
     "routes": [
@@ -44070,9 +41820,6 @@
         "hours": "0-1,4,6,9-12,16-18,20,23"
       }
     ]
-  },
-  "KOPF-KTMB": {
-    "updated": "2026-08-07"
   },
   "KOPF-KTPA": {
     "updated": "2026-09-18",
@@ -44129,12 +41876,6 @@
       }
     ]
   },
-  "KORD-CYVR": {
-    "updated": "2026-10-04"
-  },
-  "KORD-CYYC": {
-    "updated": "2026-10-04"
-  },
   "KORD-CYYZ": {
     "updated": "2026-10-04",
     "routes": [
@@ -44156,12 +41897,6 @@
       }
     ]
   },
-  "KORD-EDDF": {
-    "updated": "2026-08-06"
-  },
-  "KORD-EDDM": {
-    "updated": "2026-09-18"
-  },
   "KORD-EGLL": {
     "updated": "2026-08-06",
     "routes": [
@@ -44174,12 +41909,6 @@
         "hours": "2,16,19-20"
       }
     ]
-  },
-  "KORD-EHAM": {
-    "updated": "2026-09-18"
-  },
-  "KORD-EIDW": {
-    "updated": "2026-08-07"
   },
   "KORD-KABE": {
     "updated": "2026-10-04",
@@ -44909,9 +42638,6 @@
       }
     ]
   },
-  "KORD-KDPA": {
-    "updated": "2026-08-06"
-  },
   "KORD-KDSM": {
     "updated": "2026-10-04",
     "routes": [
@@ -45500,9 +43226,6 @@
         "hours": "6,8"
       }
     ]
-  },
-  "KORD-KMDW": {
-    "updated": "2026-08-06"
   },
   "KORD-KMEM": {
     "updated": "2026-10-04",
@@ -46200,9 +43923,6 @@
       }
     ]
   },
-  "KORD-KSNA": {
-    "updated": "2026-10-04"
-  },
   "KORD-KSRQ": {
     "updated": "2026-10-04",
     "routes": [
@@ -46284,9 +44004,6 @@
       }
     ]
   },
-  "KORD-KTUS": {
-    "updated": "2026-10-04"
-  },
   "KORD-KTVC": {
     "updated": "2026-10-04",
     "routes": [
@@ -46350,18 +44067,6 @@
       }
     ]
   },
-  "KORD-LFPG": {
-    "updated": "2026-08-07"
-  },
-  "KORD-LSZH": {
-    "updated": "2026-09-18"
-  },
-  "KORD-LTFM": {
-    "updated": "2026-09-18"
-  },
-  "KORD-MDPC": {
-    "updated": "2026-09-18"
-  },
   "KORD-MMGL": {
     "updated": "2026-09-18",
     "routes": [
@@ -46412,9 +44117,6 @@
       }
     ]
   },
-  "KORD-MMUN": {
-    "updated": "2026-10-04"
-  },
   "KORD-MPTO": {
     "updated": "2026-09-18",
     "routes": [
@@ -46428,15 +44130,6 @@
       }
     ]
   },
-  "KORD-PANC": {
-    "updated": "2026-08-06"
-  },
-  "KORD-RJAA": {
-    "updated": "2026-08-06"
-  },
-  "KORD-RJTT": {
-    "updated": "2026-08-26"
-  },
   "KORD-RKSI": {
     "updated": "2026-08-06",
     "routes": [
@@ -46449,9 +44142,6 @@
         "hours": "7,14,16-18"
       }
     ]
-  },
-  "KORD-TJSJ": {
-    "updated": "2026-08-07"
   },
   "KORD-ZSPD": {
     "updated": "2026-09-18",
@@ -46683,30 +44373,6 @@
       }
     ]
   },
-  "KORL-KDAB": {
-    "updated": "2026-08-08"
-  },
-  "KORL-KISM": {
-    "updated": "2026-08-06"
-  },
-  "KORL-KLEE": {
-    "updated": "2026-08-06"
-  },
-  "KORS-KBLI": {
-    "updated": "2026-08-08"
-  },
-  "KORS-KFHR": {
-    "updated": "2026-08-08"
-  },
-  "KOSU-KMNN": {
-    "updated": "2026-08-08"
-  },
-  "KOXB-KJFK": {
-    "updated": "2026-08-06"
-  },
-  "KOXC-KHFD": {
-    "updated": "2026-08-26"
-  },
   "KOXC-KHPN": {
     "updated": "2026-08-06",
     "routes": [
@@ -46723,21 +44389,6 @@
       }
     ]
   },
-  "KOXR-KNTD": {
-    "updated": "2026-08-08"
-  },
-  "KOXR-KSZP": {
-    "updated": "2026-08-08"
-  },
-  "KPAE-KBFI": {
-    "updated": "2026-08-08"
-  },
-  "KPAE-KBVS": {
-    "updated": "2026-08-08"
-  },
-  "KPAE-KFHR": {
-    "updated": "2026-08-08"
-  },
   "KPAE-KLAS": {
     "updated": "2026-09-18",
     "routes": [
@@ -46751,9 +44402,6 @@
       }
     ]
   },
-  "KPAE-KOKH": {
-    "updated": "2026-08-08"
-  },
   "KPAE-KPHX": {
     "updated": "2026-09-18",
     "routes": [
@@ -46766,27 +44414,6 @@
         "hours": "0,6-7,15"
       }
     ]
-  },
-  "KPAE-KPWT": {
-    "updated": "2026-08-08"
-  },
-  "KPAE-KSEA": {
-    "updated": "2026-08-08"
-  },
-  "KPAE-KTIW": {
-    "updated": "2026-08-08"
-  },
-  "KPAN-KDVT": {
-    "updated": "2026-08-08"
-  },
-  "KPAN-KFFZ": {
-    "updated": "2026-08-08"
-  },
-  "KPBG-KBTV": {
-    "updated": "2026-08-06"
-  },
-  "KPDK-KATL": {
-    "updated": "2026-08-06"
   },
   "KPDK-KBHM": {
     "updated": "2026-08-07",
@@ -46803,21 +44430,6 @@
         "hours": "0-1,3,10-11,16,21-22"
       }
     ]
-  },
-  "KPDK-KFTY": {
-    "updated": "2026-08-07"
-  },
-  "KPDK-KGVL": {
-    "updated": "2026-08-07"
-  },
-  "KPDK-KLZU": {
-    "updated": "2026-08-06"
-  },
-  "KPDK-KMGE": {
-    "updated": "2026-08-06"
-  },
-  "KPDK-KWDR": {
-    "updated": "2026-08-07"
   },
   "KPDT-KPDX": {
     "updated": "2026-08-07",
@@ -46847,9 +44459,6 @@
         "hours": "10-11,13,15,17,19-23"
       }
     ]
-  },
-  "KPDX-KATL": {
-    "updated": "2026-08-06"
   },
   "KPDX-KBFI": {
     "updated": "2026-09-18",
@@ -46959,9 +44568,6 @@
       }
     ]
   },
-  "KPDX-KEWR": {
-    "updated": "2026-09-18"
-  },
   "KPDX-KGEG": {
     "updated": "2026-08-06",
     "routes": [
@@ -46974,15 +44580,6 @@
         "hours": "1,6-7,10-11,14,16-18,21-23"
       }
     ]
-  },
-  "KPDX-KHIO": {
-    "updated": "2026-08-06"
-  },
-  "KPDX-KIAH": {
-    "updated": "2026-10-04"
-  },
-  "KPDX-KJFK": {
-    "updated": "2026-08-26"
   },
   "KPDX-KLAS": {
     "updated": "2026-08-06",
@@ -47307,9 +44904,6 @@
       }
     ]
   },
-  "KPDX-KSLE": {
-    "updated": "2026-08-08"
-  },
   "KPDX-KSMF": {
     "updated": "2026-08-06",
     "routes": [
@@ -47348,9 +44942,6 @@
         "hours": "1,7,14,19-20"
       }
     ]
-  },
-  "KPDX-KTTD": {
-    "updated": "2026-08-08"
   },
   "KPDX-PANC": {
     "updated": "2026-08-06",
@@ -47394,15 +44985,6 @@
       }
     ]
   },
-  "KPGD-KFMY": {
-    "updated": "2026-08-07"
-  },
-  "KPGD-KSRQ": {
-    "updated": "2026-08-07"
-  },
-  "KPGD-KVNC": {
-    "updated": "2026-08-07"
-  },
   "KPGV-KCLT": {
     "updated": "2026-10-04",
     "routes": [
@@ -47416,12 +44998,6 @@
       }
     ]
   },
-  "KPGV-KEWN": {
-    "updated": "2026-08-08"
-  },
-  "KPGV-KRWI": {
-    "updated": "2026-08-26"
-  },
   "KPHF-KCLT": {
     "updated": "2026-10-04",
     "routes": [
@@ -47434,15 +45010,6 @@
         "hours": "2-3,5-6,10,12,15-19"
       }
     ]
-  },
-  "KPHF-KNGU": {
-    "updated": "2026-08-07"
-  },
-  "KPHK-KFXE": {
-    "updated": "2026-08-26"
-  },
-  "KPHK-KHWO": {
-    "updated": "2026-08-08"
   },
   "KPHL-CYUL": {
     "updated": "2026-10-04",
@@ -47477,9 +45044,6 @@
         "hours": "1,6-8,10-11,13-16,19-22"
       }
     ]
-  },
-  "KPHL-EGLL": {
-    "updated": "2026-08-07"
   },
   "KPHL-KALB": {
     "updated": "2026-10-04",
@@ -47959,9 +45523,6 @@
         "hours": "1-3,5,7-8,12-13,15-18"
       }
     ]
-  },
-  "KPHL-KLAS": {
-    "updated": "2026-10-04"
   },
   "KPHL-KLAX": {
     "updated": "2026-10-04",
@@ -48493,9 +46054,6 @@
       }
     ]
   },
-  "KPHL-MMUN": {
-    "updated": "2026-09-18"
-  },
   "KPHL-TJSJ": {
     "updated": "2026-08-06",
     "routes": [
@@ -48516,9 +46074,6 @@
         "hours": "9,11-12,18"
       }
     ]
-  },
-  "KPHX-CYYC": {
-    "updated": "2026-08-07"
   },
   "KPHX-KABQ": {
     "updated": "2026-10-04",
@@ -48633,9 +46188,6 @@
       }
     ]
   },
-  "KPHX-KBOS": {
-    "updated": "2026-10-04"
-  },
   "KPHX-KBUR": {
     "updated": "2026-10-04",
     "routes": [
@@ -48660,9 +46212,6 @@
       }
     ]
   },
-  "KPHX-KBWI": {
-    "updated": "2026-10-04"
-  },
   "KPHX-KCID": {
     "updated": "2026-09-18",
     "routes": [
@@ -48676,9 +46225,6 @@
       }
     ]
   },
-  "KPHX-KCLE": {
-    "updated": "2026-10-04"
-  },
   "KPHX-KCLT": {
     "updated": "2026-10-04",
     "routes": [
@@ -48691,9 +46237,6 @@
         "hours": "1,4-5,8-9,11,22"
       }
     ]
-  },
-  "KPHX-KCMH": {
-    "updated": "2026-10-04"
   },
   "KPHX-KCOS": {
     "updated": "2026-10-04",
@@ -48720,9 +46263,6 @@
         "hours": "8-10,15-17,20-21"
       }
     ]
-  },
-  "KPHX-KCVG": {
-    "updated": "2026-10-04"
   },
   "KPHX-KDAL": {
     "updated": "2026-10-04",
@@ -48752,9 +46292,6 @@
         "hours": "4,8,10,12,23"
       }
     ]
-  },
-  "KPHX-KDCA": {
-    "updated": "2026-10-04"
   },
   "KPHX-KDEN": {
     "updated": "2026-10-04",
@@ -48867,12 +46404,6 @@
       }
     ]
   },
-  "KPHX-KDTW": {
-    "updated": "2026-10-04"
-  },
-  "KPHX-KDVT": {
-    "updated": "2026-08-08"
-  },
   "KPHX-KELP": {
     "updated": "2026-10-04",
     "routes": [
@@ -48885,9 +46416,6 @@
         "hours": "0,7-9,11-12,14-16,18-23"
       }
     ]
-  },
-  "KPHX-KEWR": {
-    "updated": "2026-10-04"
   },
   "KPHX-KFAT": {
     "updated": "2026-10-04",
@@ -48922,9 +46450,6 @@
         "hours": "0,8-11,13-14,16,19-20,22-23"
       }
     ]
-  },
-  "KPHX-KGEG": {
-    "updated": "2026-10-04"
   },
   "KPHX-KGJT": {
     "updated": "2026-10-04",
@@ -48986,12 +46511,6 @@
       }
     ]
   },
-  "KPHX-KIND": {
-    "updated": "2026-10-04"
-  },
-  "KPHX-KIWA": {
-    "updated": "2026-08-06"
-  },
   "KPHX-KJFK": {
     "updated": "2026-10-04",
     "routes": [
@@ -49043,12 +46562,6 @@
         "hours": "0-1,7,9-13,15-16,18-19,21"
       }
     ]
-  },
-  "KPHX-KMCI": {
-    "updated": "2026-10-04"
-  },
-  "KPHX-KMCO": {
-    "updated": "2026-10-04"
   },
   "KPHX-KMDW": {
     "updated": "2026-10-04",
@@ -49105,9 +46618,6 @@
       }
     ]
   },
-  "KPHX-KMKE": {
-    "updated": "2026-10-04"
-  },
   "KPHX-KMRY": {
     "updated": "2026-10-04",
     "routes": [
@@ -49141,9 +46651,6 @@
         "hours": "9,16-17"
       }
     ]
-  },
-  "KPHX-KMSY": {
-    "updated": "2026-10-04"
   },
   "KPHX-KNYL": {
     "updated": "2026-08-06",
@@ -49310,9 +46817,6 @@
         "hours": "10,18"
       }
     ]
-  },
-  "KPHX-KPAN": {
-    "updated": "2026-08-26"
   },
   "KPHX-KPDX": {
     "updated": "2026-10-04",
@@ -49724,9 +47228,6 @@
       }
     ]
   },
-  "KPHX-KTPA": {
-    "updated": "2026-10-04"
-  },
   "KPHX-KTUL": {
     "updated": "2026-10-04",
     "routes": [
@@ -49755,9 +47256,6 @@
         "hours": "1,5,7-13,15-23"
       }
     ]
-  },
-  "KPHX-KXNA": {
-    "updated": "2026-09-18"
   },
   "KPHX-MMMX": {
     "updated": "2026-09-18",
@@ -49831,15 +47329,6 @@
         "hours": "0,5-6,8,10,13,15,17-19"
       }
     ]
-  },
-  "KPIE-KCLW": {
-    "updated": "2026-08-08"
-  },
-  "KPIM-KATL": {
-    "updated": "2026-08-06"
-  },
-  "KPIR-KFSD": {
-    "updated": "2026-08-08"
   },
   "KPIT-KATL": {
     "updated": "2026-10-04",
@@ -49939,9 +47428,6 @@
         "hours": "1,8,16,20"
       }
     ]
-  },
-  "KPIT-KDFW": {
-    "updated": "2026-10-04"
   },
   "KPIT-KDTW": {
     "updated": "2026-10-04",
@@ -50141,9 +47627,6 @@
       }
     ]
   },
-  "KPLK-KSGF": {
-    "updated": "2026-08-08"
-  },
   "KPNS-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -50185,9 +47668,6 @@
         "hours": "6-7,11-12,18-19"
       }
     ]
-  },
-  "KPNS-KCEW": {
-    "updated": "2026-08-08"
   },
   "KPNS-KCLT": {
     "updated": "2026-08-06",
@@ -50277,24 +47757,6 @@
         "hours": "1,5-6,11-14,19"
       }
     ]
-  },
-  "KPNS-KMVC": {
-    "updated": "2026-08-08"
-  },
-  "KPNS-KNBJ": {
-    "updated": "2026-08-08"
-  },
-  "KPNS-KNSE": {
-    "updated": "2026-08-07"
-  },
-  "KPOU-KFRG": {
-    "updated": "2026-08-07"
-  },
-  "KPOU-KHPN": {
-    "updated": "2026-08-07"
-  },
-  "KPRB-KSBP": {
-    "updated": "2026-08-08"
   },
   "KPSC-KDEN": {
     "updated": "2026-09-18",
@@ -50424,9 +47886,6 @@
       }
     ]
   },
-  "KPSP-KORD": {
-    "updated": "2026-09-18"
-  },
   "KPSP-KPDX": {
     "updated": "2026-09-18",
     "routes": [
@@ -50515,18 +47974,6 @@
         "hours": "12,17,22"
       }
     ]
-  },
-  "KPTB-KRIC": {
-    "updated": "2026-08-08"
-  },
-  "KPTK-KDET": {
-    "updated": "2026-08-06"
-  },
-  "KPTK-KFNT": {
-    "updated": "2026-08-08"
-  },
-  "KPUB-KCOS": {
-    "updated": "2026-08-08"
   },
   "KPUB-KDEN": {
     "updated": "2026-08-08",
@@ -50706,9 +48153,6 @@
       }
     ]
   },
-  "KPVF-KAUN": {
-    "updated": "2026-08-08"
-  },
   "KPVU-KDFW": {
     "updated": "2026-09-18",
     "routes": [
@@ -50722,9 +48166,6 @@
       }
     ]
   },
-  "KPVU-KDTA": {
-    "updated": "2026-08-08"
-  },
   "KPVU-KIWA": {
     "updated": "2026-09-18",
     "routes": [
@@ -50737,12 +48178,6 @@
         "hours": "7-8,12-13,17"
       }
     ]
-  },
-  "KPVU-KSGU": {
-    "updated": "2026-08-08"
-  },
-  "KPVU-KSLC": {
-    "updated": "2026-08-06"
   },
   "KPVU-KSNA": {
     "updated": "2026-08-06",
@@ -50880,12 +48315,6 @@
       }
     ]
   },
-  "KPWT-KPAE": {
-    "updated": "2026-08-08"
-  },
-  "KPYM-KFMH": {
-    "updated": "2026-08-08"
-  },
   "KRAP-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -50938,36 +48367,6 @@
       }
     ]
   },
-  "KRBD-KADS": {
-    "updated": "2026-08-06"
-  },
-  "KRBD-KAFW": {
-    "updated": "2026-08-06"
-  },
-  "KRBD-KAUS": {
-    "updated": "2026-08-07"
-  },
-  "KRBD-KCRS": {
-    "updated": "2026-08-08"
-  },
-  "KRBD-KDAL": {
-    "updated": "2026-08-07"
-  },
-  "KRBD-KFTW": {
-    "updated": "2026-08-07"
-  },
-  "KRBD-KNFW": {
-    "updated": "2026-08-06"
-  },
-  "KRBD-KTRL": {
-    "updated": "2026-08-08"
-  },
-  "KRBW-KCHS": {
-    "updated": "2026-08-07"
-  },
-  "KRDD-KRBL": {
-    "updated": "2026-08-08"
-  },
   "KRDD-KSFO": {
     "updated": "2026-08-07",
     "routes": [
@@ -51009,9 +48408,6 @@
         "hours": "1,13,20"
       }
     ]
-  },
-  "KRDM-KHIO": {
-    "updated": "2026-08-07"
   },
   "KRDM-KLAX": {
     "updated": "2026-09-18",
@@ -51059,9 +48455,6 @@
         "hours": "5,14,22"
       }
     ]
-  },
-  "KRDM-KS21": {
-    "updated": "2026-08-08"
   },
   "KRDM-KSEA": {
     "updated": "2026-08-06",
@@ -51282,9 +48675,6 @@
       }
     ]
   },
-  "KRDU-KFAY": {
-    "updated": "2026-08-08"
-  },
   "KRDU-KFLL": {
     "updated": "2026-10-04",
     "routes": [
@@ -51313,12 +48703,6 @@
         "hours": "0,10-12"
       }
     ]
-  },
-  "KRDU-KGSB": {
-    "updated": "2026-08-07"
-  },
-  "KRDU-KGSO": {
-    "updated": "2026-08-07"
   },
   "KRDU-KIAD": {
     "updated": "2026-10-04",
@@ -51384,9 +48768,6 @@
       }
     ]
   },
-  "KRDU-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KRDU-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -51399,9 +48780,6 @@
         "hours": "0-9,11-21"
       }
     ]
-  },
-  "KRDU-KLHZ": {
-    "updated": "2026-08-07"
   },
   "KRDU-KMCO": {
     "updated": "2026-10-04",
@@ -51510,15 +48888,6 @@
       }
     ]
   },
-  "KRDU-KSEA": {
-    "updated": "2026-10-04"
-  },
-  "KRDU-KSFO": {
-    "updated": "2026-10-04"
-  },
-  "KRDU-KSOP": {
-    "updated": "2026-08-06"
-  },
   "KRDU-KTPA": {
     "updated": "2026-10-04",
     "routes": [
@@ -51531,18 +48900,6 @@
         "hours": "0,2-3,6-7,9,14-18,20-21,23"
       }
     ]
-  },
-  "KRFD-KJVL": {
-    "updated": "2026-08-08"
-  },
-  "KRFD-KONT": {
-    "updated": "2026-09-18"
-  },
-  "KRHV-KCVH": {
-    "updated": "2026-08-08"
-  },
-  "KRHV-KWVI": {
-    "updated": "2026-08-08"
   },
   "KRIC-KATL": {
     "updated": "2026-10-04",
@@ -51751,9 +49108,6 @@
       }
     ]
   },
-  "KRIC-KPTB": {
-    "updated": "2026-08-07"
-  },
   "KRIW-KDEN": {
     "updated": "2026-09-18",
     "routes": [
@@ -51790,12 +49144,6 @@
         "hours": "6-13,15-19,21"
       }
     ]
-  },
-  "KRNC-KMQY": {
-    "updated": "2026-08-08"
-  },
-  "KRND-KSSF": {
-    "updated": "2026-08-08"
   },
   "KRNO-KDEN": {
     "updated": "2026-10-04",
@@ -52036,9 +49384,6 @@
       }
     ]
   },
-  "KRNT-KPAE": {
-    "updated": "2026-08-26"
-  },
   "KROA-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -52077,9 +49422,6 @@
         "hours": "1-2,5-7,10,14-15"
       }
     ]
-  },
-  "KROA-KLYH": {
-    "updated": "2026-08-08"
   },
   "KROA-KORD": {
     "updated": "2026-10-04",
@@ -52153,9 +49495,6 @@
         "hours": "1-2,4-6,11-12,17-18"
       }
     ]
-  },
-  "KROC-KDSV": {
-    "updated": "2026-08-08"
   },
   "KROC-KDTW": {
     "updated": "2026-10-04",
@@ -52256,9 +49595,6 @@
       }
     ]
   },
-  "KROG-KXNA": {
-    "updated": "2026-08-08"
-  },
   "KROW-KDFW": {
     "updated": "2026-09-18",
     "routes": [
@@ -52297,9 +49633,6 @@
         "hours": "1-2,5-6,10-11,13,18-19"
       }
     ]
-  },
-  "KRSW-CYYZ": {
-    "updated": "2026-10-04"
   },
   "KRSW-KATL": {
     "updated": "2026-10-04",
@@ -52382,9 +49715,6 @@
       }
     ]
   },
-  "KRSW-KDEN": {
-    "updated": "2026-10-04"
-  },
   "KRSW-KDFW": {
     "updated": "2026-10-04",
     "routes": [
@@ -52431,9 +49761,6 @@
         "hours": "1,6,8-12,15-16"
       }
     ]
-  },
-  "KRSW-KFMY": {
-    "updated": "2026-08-06"
   },
   "KRSW-KJFK": {
     "updated": "2026-10-04",
@@ -52529,9 +49856,6 @@
       }
     ]
   },
-  "KRUQ-KJQF": {
-    "updated": "2026-08-08"
-  },
   "KRUT-KBOS": {
     "updated": "2026-08-26",
     "routes": [
@@ -52544,18 +49868,6 @@
         "hours": "6-10,13-15"
       }
     ]
-  },
-  "KRVS-KTUL": {
-    "updated": "2026-08-08"
-  },
-  "KRWI-KPGV": {
-    "updated": "2026-08-08"
-  },
-  "KSAC-KSCK": {
-    "updated": "2026-08-07"
-  },
-  "KSAC-KSMF": {
-    "updated": "2026-08-06"
   },
   "KSAF-KDEN": {
     "updated": "2026-08-07",
@@ -52612,9 +49924,6 @@
       }
     ]
   },
-  "KSAN-KATL": {
-    "updated": "2026-10-04"
-  },
   "KSAN-KAUS": {
     "updated": "2026-10-04",
     "routes": [
@@ -52644,9 +49953,6 @@
       }
     ]
   },
-  "KSAN-KBNA": {
-    "updated": "2026-09-18"
-  },
   "KSAN-KBOI": {
     "updated": "2026-09-18",
     "routes": [
@@ -52667,18 +49973,6 @@
         "hours": "1,10-11"
       }
     ]
-  },
-  "KSAN-KBOS": {
-    "updated": "2026-10-04"
-  },
-  "KSAN-KBWI": {
-    "updated": "2026-09-18"
-  },
-  "KSAN-KCLT": {
-    "updated": "2026-08-26"
-  },
-  "KSAN-KDAL": {
-    "updated": "2026-10-04"
   },
   "KSAN-KDEN": {
     "updated": "2026-08-06",
@@ -52722,12 +50016,6 @@
       }
     ]
   },
-  "KSAN-KDTW": {
-    "updated": "2026-08-07"
-  },
-  "KSAN-KEWR": {
-    "updated": "2026-10-04"
-  },
   "KSAN-KFAT": {
     "updated": "2026-08-07",
     "routes": [
@@ -52741,12 +50029,6 @@
       }
     ]
   },
-  "KSAN-KHOU": {
-    "updated": "2026-09-18"
-  },
-  "KSAN-KIAD": {
-    "updated": "2026-08-07"
-  },
   "KSAN-KIAH": {
     "updated": "2026-08-06",
     "routes": [
@@ -52759,9 +50041,6 @@
         "hours": "10,15-16"
       }
     ]
-  },
-  "KSAN-KJFK": {
-    "updated": "2026-10-04"
   },
   "KSAN-KLAS": {
     "updated": "2026-08-06",
@@ -52796,12 +50075,6 @@
         "hours": "6"
       }
     ]
-  },
-  "KSAN-KMCO": {
-    "updated": "2026-09-18"
-  },
-  "KSAN-KMDW": {
-    "updated": "2026-09-18"
   },
   "KSAN-KMRY": {
     "updated": "2026-09-18",
@@ -52870,9 +50143,6 @@
         "hours": "0,6,9,11,13-14,17-21"
       }
     ]
-  },
-  "KSAN-KPHL": {
-    "updated": "2026-09-18"
   },
   "KSAN-KPHX": {
     "updated": "2026-08-06",
@@ -53219,9 +50489,6 @@
       }
     ]
   },
-  "KSAT-KERV": {
-    "updated": "2026-08-06"
-  },
   "KSAT-KHOU": {
     "updated": "2026-10-04",
     "routes": [
@@ -53388,12 +50655,6 @@
       }
     ]
   },
-  "KSAT-KRND": {
-    "updated": "2026-08-08"
-  },
-  "KSAT-KSKF": {
-    "updated": "2026-08-06"
-  },
   "KSAT-KSLC": {
     "updated": "2026-10-04",
     "routes": [
@@ -53414,15 +50675,6 @@
         "hours": "5-6,11"
       }
     ]
-  },
-  "KSAT-KSSF": {
-    "updated": "2026-08-07"
-  },
-  "KSAT-KUVA": {
-    "updated": "2026-08-26"
-  },
-  "KSAT-MMAN": {
-    "updated": "2026-08-26"
   },
   "KSAT-MMGL": {
     "updated": "2026-09-18",
@@ -53539,9 +50791,6 @@
       }
     ]
   },
-  "KSAV-KCHS": {
-    "updated": "2026-08-06"
-  },
   "KSAV-KCLT": {
     "updated": "2026-10-04",
     "routes": [
@@ -53601,9 +50850,6 @@
         "hours": "6,15,21"
       }
     ]
-  },
-  "KSAV-KHXD": {
-    "updated": "2026-08-26"
   },
   "KSAV-KIAD": {
     "updated": "2026-10-04",
@@ -53727,9 +50973,6 @@
         "hours": "2,13-18"
       }
     ]
-  },
-  "KSAV-KTBR": {
-    "updated": "2026-08-07"
   },
   "KSBA-KDEN": {
     "updated": "2026-08-07",
@@ -53908,12 +51151,6 @@
       }
     ]
   },
-  "KSBP-KPRB": {
-    "updated": "2026-08-08"
-  },
-  "KSBP-KSBA": {
-    "updated": "2026-08-07"
-  },
   "KSBP-KSFO": {
     "updated": "2026-08-07",
     "routes": [
@@ -53926,9 +51163,6 @@
         "hours": "6-7,14-15,17,20-23"
       }
     ]
-  },
-  "KSBP-KSMX": {
-    "updated": "2026-08-07"
   },
   "KSBY-KCLT": {
     "updated": "2026-10-04",
@@ -53955,15 +51189,6 @@
         "hours": "6-7,18"
       }
     ]
-  },
-  "KSCH-KALB": {
-    "updated": "2026-08-07"
-  },
-  "KSCK-KLVK": {
-    "updated": "2026-08-08"
-  },
-  "KSDF-EDDK": {
-    "updated": "2026-09-18"
   },
   "KSDF-KATL": {
     "updated": "2026-08-06",
@@ -54243,9 +51468,6 @@
       }
     ]
   },
-  "KSDF-KLAS": {
-    "updated": "2026-09-18"
-  },
   "KSDF-KLGA": {
     "updated": "2026-08-07",
     "routes": [
@@ -54314,9 +51536,6 @@
       }
     ]
   },
-  "KSDF-KMHR": {
-    "updated": "2026-09-18"
-  },
   "KSDF-KMHT": {
     "updated": "2026-08-07",
     "routes": [
@@ -54380,12 +51599,6 @@
       }
     ]
   },
-  "KSDF-KOAK": {
-    "updated": "2026-08-07"
-  },
-  "KSDF-KONT": {
-    "updated": "2026-08-07"
-  },
   "KSDF-KORD": {
     "updated": "2026-08-06",
     "routes": [
@@ -54398,9 +51611,6 @@
         "hours": "0-14,16-20"
       }
     ]
-  },
-  "KSDF-KPDX": {
-    "updated": "2026-08-07"
   },
   "KSDF-KPHL": {
     "updated": "2026-08-06",
@@ -54430,9 +51640,6 @@
         "hours": "0,4,10"
       }
     ]
-  },
-  "KSDF-KPHX": {
-    "updated": "2026-08-07"
   },
   "KSDF-KPIT": {
     "updated": "2026-09-18",
@@ -54473,9 +51680,6 @@
       }
     ]
   },
-  "KSDF-KSLC": {
-    "updated": "2026-08-07"
-  },
   "KSDF-KTPA": {
     "updated": "2026-08-07",
     "routes": [
@@ -54510,12 +51714,6 @@
       }
     ]
   },
-  "KSDF-PHNL": {
-    "updated": "2026-08-26"
-  },
-  "KSDF-TJSJ": {
-    "updated": "2026-08-07"
-  },
   "KSDL-KAPA": {
     "updated": "2026-08-07",
     "routes": [
@@ -54542,15 +51740,6 @@
       }
     ]
   },
-  "KSDL-KDVT": {
-    "updated": "2026-08-07"
-  },
-  "KSDL-KFFZ": {
-    "updated": "2026-08-08"
-  },
-  "KSDL-KIWA": {
-    "updated": "2026-08-07"
-  },
   "KSDL-KLAS": {
     "updated": "2026-10-04",
     "routes": [
@@ -54563,12 +51752,6 @@
         "hours": "3-13,15-16,18-23"
       }
     ]
-  },
-  "KSDL-KSEZ": {
-    "updated": "2026-08-07"
-  },
-  "KSDL-KSLC": {
-    "updated": "2026-09-18"
   },
   "KSDL-KSNA": {
     "updated": "2026-08-06",
@@ -54664,9 +51847,6 @@
         "hours": "11,18"
       }
     ]
-  },
-  "KSEA-KATL": {
-    "updated": "2026-08-06"
   },
   "KSEA-KAUS": {
     "updated": "2026-10-04",
@@ -54794,9 +51974,6 @@
       }
     ]
   },
-  "KSEA-KBWI": {
-    "updated": "2026-09-18"
-  },
   "KSEA-KBZN": {
     "updated": "2026-08-06",
     "routes": [
@@ -54809,12 +51986,6 @@
         "hours": "6-7,9,11-12,15-16,19-22"
       }
     ]
-  },
-  "KSEA-KCLT": {
-    "updated": "2026-08-07"
-  },
-  "KSEA-KCVG": {
-    "updated": "2026-08-07"
   },
   "KSEA-KDCA": {
     "updated": "2026-08-07",
@@ -54953,9 +52124,6 @@
       }
     ]
   },
-  "KSEA-KEWR": {
-    "updated": "2026-10-04"
-  },
   "KSEA-KFAT": {
     "updated": "2026-08-26",
     "routes": [
@@ -54968,9 +52136,6 @@
         "hours": "7-8,12-14,19-20,22"
       }
     ]
-  },
-  "KSEA-KFLL": {
-    "updated": "2026-09-18"
   },
   "KSEA-KGEG": {
     "updated": "2026-08-06",
@@ -55005,12 +52170,6 @@
         "hours": "9-10,15-17,19-20"
       }
     ]
-  },
-  "KSEA-KIAD": {
-    "updated": "2026-08-06"
-  },
-  "KSEA-KIAH": {
-    "updated": "2026-10-04"
   },
   "KSEA-KJFK": {
     "updated": "2026-10-04",
@@ -55080,9 +52239,6 @@
       }
     ]
   },
-  "KSEA-KMCO": {
-    "updated": "2026-08-06"
-  },
   "KSEA-KMFR": {
     "updated": "2026-08-06",
     "routes": [
@@ -55095,9 +52251,6 @@
         "hours": "0,8-9,11,13,15-19,21-23"
       }
     ]
-  },
-  "KSEA-KMIA": {
-    "updated": "2026-08-07"
   },
   "KSEA-KMSO": {
     "updated": "2026-09-18",
@@ -55212,9 +52365,6 @@
       }
     ]
   },
-  "KSEA-KPAE": {
-    "updated": "2026-08-08"
-  },
   "KSEA-KPDX": {
     "updated": "2026-09-18",
     "routes": [
@@ -55227,9 +52377,6 @@
         "hours": "0-1,7-13,15-23"
       }
     ]
-  },
-  "KSEA-KPHL": {
-    "updated": "2026-08-07"
   },
   "KSEA-KPHX": {
     "updated": "2026-08-06",
@@ -55335,9 +52482,6 @@
         "hours": "21-23"
       }
     ]
-  },
-  "KSEA-KRDU": {
-    "updated": "2026-09-18"
   },
   "KSEA-KRNO": {
     "updated": "2026-08-07",
@@ -55467,9 +52611,6 @@
       }
     ]
   },
-  "KSEA-KTCM": {
-    "updated": "2026-08-08"
-  },
   "KSEA-KTPA": {
     "updated": "2026-08-07",
     "routes": [
@@ -55585,12 +52726,6 @@
       }
     ]
   },
-  "KSEA-PHKO": {
-    "updated": "2026-09-18"
-  },
-  "KSEA-PHLI": {
-    "updated": "2026-09-18"
-  },
   "KSEA-PHNL": {
     "updated": "2026-08-06",
     "routes": [
@@ -55646,24 +52781,6 @@
       }
     ]
   },
-  "KSEA-RJAA": {
-    "updated": "2026-09-18"
-  },
-  "KSEA-RKSI": {
-    "updated": "2026-08-06"
-  },
-  "KSEE-KCRQ": {
-    "updated": "2026-08-06"
-  },
-  "KSEP-KMWL": {
-    "updated": "2026-08-08"
-  },
-  "KSEZ-KFFZ": {
-    "updated": "2026-08-26"
-  },
-  "KSEZ-KSDL": {
-    "updated": "2026-08-07"
-  },
   "KSFB-KDAB": {
     "updated": "2026-08-06",
     "routes": [
@@ -55679,18 +52796,6 @@
         "hours": "9,14"
       }
     ]
-  },
-  "KSFB-KLEE": {
-    "updated": "2026-08-06"
-  },
-  "KSFB-KORL": {
-    "updated": "2026-08-07"
-  },
-  "KSFB-KTIX": {
-    "updated": "2026-08-07"
-  },
-  "KSFF-KCOE": {
-    "updated": "2026-08-08"
   },
   "KSFO-CYVR": {
     "updated": "2026-08-06",
@@ -55717,21 +52822,6 @@
         "hours": "0,8-9"
       }
     ]
-  },
-  "KSFO-CYYZ": {
-    "updated": "2026-10-04"
-  },
-  "KSFO-EDDF": {
-    "updated": "2026-08-07"
-  },
-  "KSFO-EDDM": {
-    "updated": "2026-09-18"
-  },
-  "KSFO-EGLL": {
-    "updated": "2026-08-06"
-  },
-  "KSFO-KABQ": {
-    "updated": "2026-09-18"
   },
   "KSFO-KACV": {
     "updated": "2026-09-18",
@@ -55791,9 +52881,6 @@
       }
     ]
   },
-  "KSFO-KBNA": {
-    "updated": "2026-08-07"
-  },
   "KSFO-KBOI": {
     "updated": "2026-08-06",
     "routes": [
@@ -55833,9 +52920,6 @@
       }
     ]
   },
-  "KSFO-KBWI": {
-    "updated": "2026-08-07"
-  },
   "KSFO-KCLT": {
     "updated": "2026-08-07",
     "routes": [
@@ -55848,9 +52932,6 @@
         "hours": "0,7,9,11,23"
       }
     ]
-  },
-  "KSFO-KDCA": {
-    "updated": "2026-08-07"
   },
   "KSFO-KDEN": {
     "updated": "2026-10-04",
@@ -55926,9 +53007,6 @@
       }
     ]
   },
-  "KSFO-KDTW": {
-    "updated": "2026-10-04"
-  },
   "KSFO-KEUG": {
     "updated": "2026-08-07",
     "routes": [
@@ -55968,9 +53046,6 @@
       }
     ]
   },
-  "KSFO-KFLL": {
-    "updated": "2026-08-07"
-  },
   "KSFO-KGEG": {
     "updated": "2026-08-26",
     "routes": [
@@ -55983,9 +53058,6 @@
         "hours": "8,11-12,16,18,20-21"
       }
     ]
-  },
-  "KSFO-KIAD": {
-    "updated": "2026-08-06"
   },
   "KSFO-KIAH": {
     "updated": "2026-10-04",
@@ -56047,9 +53119,6 @@
       }
     ]
   },
-  "KSFO-KMCO": {
-    "updated": "2026-08-06"
-  },
   "KSFO-KMFR": {
     "updated": "2026-08-07",
     "routes": [
@@ -56070,9 +53139,6 @@
         "hours": "16-18,23"
       }
     ]
-  },
-  "KSFO-KMIA": {
-    "updated": "2026-08-06"
   },
   "KSFO-KMRY": {
     "updated": "2026-08-06",
@@ -56187,9 +53253,6 @@
       }
     ]
   },
-  "KSFO-KPHL": {
-    "updated": "2026-08-06"
-  },
   "KSFO-KPHX": {
     "updated": "2026-10-04",
     "routes": [
@@ -56257,9 +53320,6 @@
         "hours": "9-10,12-17,19,21-22"
       }
     ]
-  },
-  "KSFO-KRDU": {
-    "updated": "2026-08-07"
   },
   "KSFO-KRNO": {
     "updated": "2026-08-06",
@@ -56437,12 +53497,6 @@
       }
     ]
   },
-  "KSFO-KSTL": {
-    "updated": "2026-09-18"
-  },
-  "KSFO-KTPA": {
-    "updated": "2026-09-18"
-  },
   "KSFO-KTUS": {
     "updated": "2026-09-18",
     "routes": [
@@ -56468,9 +53522,6 @@
         "hours": "6,10-11,13-16,21"
       }
     ]
-  },
-  "KSFO-LFPG": {
-    "updated": "2026-09-18"
   },
   "KSFO-MMMX": {
     "updated": "2026-08-06",
@@ -56513,12 +53564,6 @@
         "hours": "0,6-7"
       }
     ]
-  },
-  "KSFO-MMUN": {
-    "updated": "2026-09-18"
-  },
-  "KSFO-MSLP": {
-    "updated": "2026-09-18"
   },
   "KSFO-PHKO": {
     "updated": "2026-09-18",
@@ -56744,9 +53789,6 @@
       }
     ]
   },
-  "KSFO-VHHH": {
-    "updated": "2026-08-07"
-  },
   "KSFO-WSSS": {
     "updated": "2026-08-07",
     "routes": [
@@ -56878,12 +53920,6 @@
       }
     ]
   },
-  "KSGF-KPLK": {
-    "updated": "2026-08-08"
-  },
-  "KSGJ-KDAB": {
-    "updated": "2026-08-06"
-  },
   "KSGR-KAUS": {
     "updated": "2026-08-07",
     "routes": [
@@ -56899,15 +53935,6 @@
         "hours": "6,10-13"
       }
     ]
-  },
-  "KSGR-KDWH": {
-    "updated": "2026-08-07"
-  },
-  "KSGR-KHOU": {
-    "updated": "2026-08-06"
-  },
-  "KSGR-KIWS": {
-    "updated": "2026-08-08"
   },
   "KSGU-KDEN": {
     "updated": "2026-08-07",
@@ -57056,9 +54083,6 @@
       }
     ]
   },
-  "KSJC-KATL": {
-    "updated": "2026-08-26"
-  },
   "KSJC-KAUS": {
     "updated": "2026-10-04",
     "routes": [
@@ -57134,9 +54158,6 @@
         "hours": "5-6,8,12-14,16,20,23"
       }
     ]
-  },
-  "KSJC-KDFW": {
-    "updated": "2026-08-07"
   },
   "KSJC-KLAS": {
     "updated": "2026-08-06",
@@ -57326,9 +54347,6 @@
       }
     ]
   },
-  "KSJC-PHNL": {
-    "updated": "2026-09-18"
-  },
   "KSJT-KDFW": {
     "updated": "2026-08-07",
     "routes": [
@@ -57349,9 +54367,6 @@
         "hours": "4,10,13,18,21"
       }
     ]
-  },
-  "KSKF-KSAT": {
-    "updated": "2026-08-06"
   },
   "KSLC-CYVR": {
     "updated": "2026-09-18",
@@ -57471,9 +54486,6 @@
       }
     ]
   },
-  "KSLC-KBNA": {
-    "updated": "2026-08-07"
-  },
   "KSLC-KBOI": {
     "updated": "2026-08-06",
     "routes": [
@@ -57495,9 +54507,6 @@
       }
     ]
   },
-  "KSLC-KBOS": {
-    "updated": "2026-10-04"
-  },
   "KSLC-KBUR": {
     "updated": "2026-08-07",
     "routes": [
@@ -57518,9 +54527,6 @@
         "hours": "7-8,10,21"
       }
     ]
-  },
-  "KSLC-KBWI": {
-    "updated": "2026-09-18"
   },
   "KSLC-KBZN": {
     "updated": "2026-08-07",
@@ -57556,9 +54562,6 @@
       }
     ]
   },
-  "KSLC-KCLT": {
-    "updated": "2026-09-18"
-  },
   "KSLC-KCOS": {
     "updated": "2026-09-18",
     "routes": [
@@ -57571,12 +54574,6 @@
         "hours": "13,15,20"
       }
     ]
-  },
-  "KSLC-KCVG": {
-    "updated": "2026-09-18"
-  },
-  "KSLC-KDAL": {
-    "updated": "2026-09-18"
   },
   "KSLC-KDEN": {
     "updated": "2026-08-06",
@@ -57691,9 +54688,6 @@
       }
     ]
   },
-  "KSLC-KEWR": {
-    "updated": "2026-08-07"
-  },
   "KSLC-KFAT": {
     "updated": "2026-08-07",
     "routes": [
@@ -57753,9 +54747,6 @@
         "hours": "0,10,14-16,20-21"
       }
     ]
-  },
-  "KSLC-KIAD": {
-    "updated": "2026-09-18"
   },
   "KSLC-KIAH": {
     "updated": "2026-10-04",
@@ -57928,9 +54919,6 @@
       }
     ]
   },
-  "KSLC-KMCI": {
-    "updated": "2026-08-07"
-  },
   "KSLC-KMCO": {
     "updated": "2026-08-07",
     "routes": [
@@ -57951,12 +54939,6 @@
         "hours": "9,11,17,23"
       }
     ]
-  },
-  "KSLC-KMEM": {
-    "updated": "2026-09-18"
-  },
-  "KSLC-KMIA": {
-    "updated": "2026-09-18"
   },
   "KSLC-KMSO": {
     "updated": "2026-08-07",
@@ -58126,9 +55108,6 @@
       }
     ]
   },
-  "KSLC-KPHL": {
-    "updated": "2026-09-18"
-  },
   "KSLC-KPHX": {
     "updated": "2026-08-06",
     "routes": [
@@ -58208,9 +55187,6 @@
       }
     ]
   },
-  "KSLC-KPVU": {
-    "updated": "2026-08-06"
-  },
   "KSLC-KRDM": {
     "updated": "2026-09-18",
     "routes": [
@@ -58266,9 +55242,6 @@
       }
     ]
   },
-  "KSLC-KSAT": {
-    "updated": "2026-10-04"
-  },
   "KSLC-KSBA": {
     "updated": "2026-08-07",
     "routes": [
@@ -58281,12 +55254,6 @@
         "hours": "0,10-11,14-15,20-21"
       }
     ]
-  },
-  "KSLC-KSDF": {
-    "updated": "2026-09-18"
-  },
-  "KSLC-KSDL": {
-    "updated": "2026-09-18"
   },
   "KSLC-KSEA": {
     "updated": "2026-08-06",
@@ -58482,18 +55449,6 @@
       }
     ]
   },
-  "KSLC-PHNL": {
-    "updated": "2026-09-18"
-  },
-  "KSLE-KCVO": {
-    "updated": "2026-08-06"
-  },
-  "KSLE-KEUG": {
-    "updated": "2026-08-07"
-  },
-  "KSLE-KHIO": {
-    "updated": "2026-08-06"
-  },
   "KSLE-KPDX": {
     "updated": "2026-08-06",
     "routes": [
@@ -58506,12 +55461,6 @@
         "hours": "17"
       }
     ]
-  },
-  "KSLE-KTTD": {
-    "updated": "2026-08-08"
-  },
-  "KSMF-KATL": {
-    "updated": "2026-08-07"
   },
   "KSMF-KBOI": {
     "updated": "2026-08-07",
@@ -58649,9 +55598,6 @@
       }
     ]
   },
-  "KSMF-KORD": {
-    "updated": "2026-08-07"
-  },
   "KSMF-KPDX": {
     "updated": "2026-08-06",
     "routes": [
@@ -58714,9 +55660,6 @@
         "hours": "5-7,15"
       }
     ]
-  },
-  "KSMF-KSAC": {
-    "updated": "2026-08-07"
   },
   "KSMF-KSAN": {
     "updated": "2026-08-06",
@@ -58833,12 +55776,6 @@
       }
     ]
   },
-  "KSMX-KSBP": {
-    "updated": "2026-08-07"
-  },
-  "KSNA-KATL": {
-    "updated": "2026-10-04"
-  },
   "KSNA-KDEN": {
     "updated": "2026-08-06",
     "routes": [
@@ -58872,12 +55809,6 @@
         "hours": "1,5-14,16,18"
       }
     ]
-  },
-  "KSNA-KEWR": {
-    "updated": "2026-10-04"
-  },
-  "KSNA-KFUL": {
-    "updated": "2026-08-07"
   },
   "KSNA-KHND": {
     "updated": "2026-09-18",
@@ -59023,9 +55954,6 @@
       }
     ]
   },
-  "KSNA-KSBP": {
-    "updated": "2026-08-07"
-  },
   "KSNA-KSDL": {
     "updated": "2026-08-06",
     "routes": [
@@ -59125,18 +56053,6 @@
       }
     ]
   },
-  "KSNA-KTRM": {
-    "updated": "2026-09-18"
-  },
-  "KSOP-KRDU": {
-    "updated": "2026-08-07"
-  },
-  "KSPG-KSRQ": {
-    "updated": "2026-08-26"
-  },
-  "KSQL-KHWD": {
-    "updated": "2026-08-07"
-  },
   "KSRQ-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -59230,15 +56146,6 @@
         "hours": "2,10-12"
       }
     ]
-  },
-  "KSRQ-KPGD": {
-    "updated": "2026-08-07"
-  },
-  "KSRQ-KVNC": {
-    "updated": "2026-08-07"
-  },
-  "KSSF-KRND": {
-    "updated": "2026-08-08"
   },
   "KSTL-KATL": {
     "updated": "2026-08-06",
@@ -59568,9 +56475,6 @@
       }
     ]
   },
-  "KSTL-KLAX": {
-    "updated": "2026-09-18"
-  },
   "KSTL-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -59783,12 +56687,6 @@
       }
     ]
   },
-  "KSTL-KSEA": {
-    "updated": "2026-09-18"
-  },
-  "KSTL-KSFO": {
-    "updated": "2026-09-18"
-  },
   "KSTL-KSLC": {
     "updated": "2026-09-18",
     "routes": [
@@ -59801,9 +56699,6 @@
         "hours": "13-14,16-17,23"
       }
     ]
-  },
-  "KSTL-KSUS": {
-    "updated": "2026-08-06"
   },
   "KSTL-KTPA": {
     "updated": "2026-10-04",
@@ -59818,15 +56713,6 @@
       }
     ]
   },
-  "KSTL-MMUN": {
-    "updated": "2026-09-18"
-  },
-  "KSTP-KMIC": {
-    "updated": "2026-08-08"
-  },
-  "KSTP-KSYN": {
-    "updated": "2026-08-08"
-  },
   "KSTS-KBUR": {
     "updated": "2026-09-18",
     "routes": [
@@ -59839,9 +56725,6 @@
         "hours": "9-11,14-15,18-19,22"
       }
     ]
-  },
-  "KSTS-KDVO": {
-    "updated": "2026-08-08"
   },
   "KSTS-KLAX": {
     "updated": "2026-09-18",
@@ -59903,21 +56786,6 @@
       }
     ]
   },
-  "KSTS-KUKI": {
-    "updated": "2026-08-08"
-  },
-  "KSUA-KAPF": {
-    "updated": "2026-08-08"
-  },
-  "KSUA-KDJT": {
-    "updated": "2026-08-26"
-  },
-  "KSUA-KFPR": {
-    "updated": "2026-08-08"
-  },
-  "KSUA-KOBE": {
-    "updated": "2026-08-07"
-  },
   "KSUN-KSLC": {
     "updated": "2026-08-07",
     "routes": [
@@ -59943,18 +56811,6 @@
         "hours": "8,13"
       }
     ]
-  },
-  "KSVH-KCLT": {
-    "updated": "2026-08-26"
-  },
-  "KSVH-KHKY": {
-    "updated": "2026-08-08"
-  },
-  "KSYI-KMQY": {
-    "updated": "2026-08-08"
-  },
-  "KSYN-KSTP": {
-    "updated": "2026-08-08"
   },
   "KSYR-KATL": {
     "updated": "2026-10-04",
@@ -60102,15 +56958,6 @@
       }
     ]
   },
-  "KTCL-KBHM": {
-    "updated": "2026-08-26"
-  },
-  "KTCM-KSEA": {
-    "updated": "2026-08-08"
-  },
-  "KTDZ-KTOL": {
-    "updated": "2026-08-08"
-  },
   "KTEB-CYYZ": {
     "updated": "2026-10-04",
     "routes": [
@@ -60189,9 +57036,6 @@
         "hours": "7,10,12,14-16,19-20"
       }
     ]
-  },
-  "KTEB-KEWR": {
-    "updated": "2026-08-06"
   },
   "KTEB-KFOK": {
     "updated": "2026-08-06",
@@ -60324,15 +57168,6 @@
       }
     ]
   },
-  "KTEB-KVNY": {
-    "updated": "2026-10-04"
-  },
-  "KTIW-KPAE": {
-    "updated": "2026-08-08"
-  },
-  "KTIX-KCOI": {
-    "updated": "2026-08-26"
-  },
   "KTIX-KDAB": {
     "updated": "2026-08-08",
     "routes": [
@@ -60345,9 +57180,6 @@
         "hours": "10"
       }
     ]
-  },
-  "KTIX-KSFB": {
-    "updated": "2026-08-26"
   },
   "KTLH-KATL": {
     "updated": "2026-08-06",
@@ -60429,24 +57261,6 @@
         "hours": "1,5-6,8,11,13-14,16-17,19-21"
       }
     ]
-  },
-  "KTMB-KHST": {
-    "updated": "2026-08-06"
-  },
-  "KTMB-KMIA": {
-    "updated": "2026-08-07"
-  },
-  "KTMB-KOPF": {
-    "updated": "2026-08-07"
-  },
-  "KTMB-KTNT": {
-    "updated": "2026-08-08"
-  },
-  "KTOA-KCPM": {
-    "updated": "2026-08-08"
-  },
-  "KTOC-KGVL": {
-    "updated": "2026-08-08"
   },
   "KTPA-CYYZ": {
     "updated": "2026-10-04",
@@ -60622,9 +57436,6 @@
         "hours": "1-2,5-11,13-20"
       }
     ]
-  },
-  "KTPA-KDEN": {
-    "updated": "2026-10-04"
   },
   "KTPA-KDFW": {
     "updated": "2026-10-04",
@@ -60807,12 +57618,6 @@
       }
     ]
   },
-  "KTPA-KLAS": {
-    "updated": "2026-10-04"
-  },
-  "KTPA-KLAX": {
-    "updated": "2026-10-04"
-  },
   "KTPA-KLGA": {
     "updated": "2026-10-04",
     "routes": [
@@ -60957,9 +57762,6 @@
       }
     ]
   },
-  "KTPA-KPHX": {
-    "updated": "2026-10-04"
-  },
   "KTPA-KPIT": {
     "updated": "2026-10-04",
     "routes": [
@@ -61015,9 +57817,6 @@
       }
     ]
   },
-  "KTPA-KSEA": {
-    "updated": "2026-10-04"
-  },
   "KTPA-KSTL": {
     "updated": "2026-10-04",
     "routes": [
@@ -61043,9 +57842,6 @@
         "hours": "12-13,15"
       }
     ]
-  },
-  "KTPF-KLAL": {
-    "updated": "2026-08-08"
   },
   "KTRI-KATL": {
     "updated": "2026-08-06",
@@ -61081,33 +57877,6 @@
       }
     ]
   },
-  "KTRL-KADS": {
-    "updated": "2026-08-07"
-  },
-  "KTRL-KDAL": {
-    "updated": "2026-08-08"
-  },
-  "KTRL-KGVT": {
-    "updated": "2026-08-08"
-  },
-  "KTRL-KRBD": {
-    "updated": "2026-08-08"
-  },
-  "KTTD-KHIO": {
-    "updated": "2026-08-08"
-  },
-  "KTTD-KPDX": {
-    "updated": "2026-08-08"
-  },
-  "KTTD-KSLE": {
-    "updated": "2026-08-08"
-  },
-  "KTTN-KDYL": {
-    "updated": "2026-08-26"
-  },
-  "KTTN-KMMU": {
-    "updated": "2026-08-08"
-  },
   "KTUL-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -61120,9 +57889,6 @@
         "hours": "5,8-12,16,18,20,23"
       }
     ]
-  },
-  "KTUL-KCLT": {
-    "updated": "2026-09-18"
   },
   "KTUL-KDAL": {
     "updated": "2026-08-06",
@@ -61221,9 +57987,6 @@
       }
     ]
   },
-  "KTUL-KLAS": {
-    "updated": "2026-09-18"
-  },
   "KTUL-KLGA": {
     "updated": "2026-09-18",
     "routes": [
@@ -61270,12 +58033,6 @@
         "hours": "6,8-10,17-18"
       }
     ]
-  },
-  "KTUL-KRVS": {
-    "updated": "2026-08-08"
-  },
-  "KTUL-KSTL": {
-    "updated": "2026-09-18"
   },
   "KTUS-KDEN": {
     "updated": "2026-10-04",
@@ -61343,9 +58100,6 @@
       }
     ]
   },
-  "KTUS-KFFZ": {
-    "updated": "2026-08-08"
-  },
   "KTUS-KLAS": {
     "updated": "2026-09-18",
     "routes": [
@@ -61388,9 +58142,6 @@
       }
     ]
   },
-  "KTUS-KORD": {
-    "updated": "2026-10-04"
-  },
   "KTUS-KPHX": {
     "updated": "2026-08-06",
     "routes": [
@@ -61411,9 +58162,6 @@
         "hours": "0-1,4-11,21,23"
       }
     ]
-  },
-  "KTUS-KSDL": {
-    "updated": "2026-09-18"
   },
   "KTUS-KSEA": {
     "updated": "2026-09-18",
@@ -61499,9 +58247,6 @@
       }
     ]
   },
-  "KTWF-KBOI": {
-    "updated": "2026-08-26"
-  },
   "KTWF-KSLC": {
     "updated": "2026-08-26",
     "routes": [
@@ -61514,9 +58259,6 @@
         "hours": "2,6,8,11,13,15"
       }
     ]
-  },
-  "KTWF-KSUN": {
-    "updated": "2026-08-08"
   },
   "KTYR-KDFW": {
     "updated": "2026-08-07",
@@ -61654,9 +58396,6 @@
       }
     ]
   },
-  "KTYS-KGKT": {
-    "updated": "2026-08-08"
-  },
   "KTYS-KIAD": {
     "updated": "2026-08-06",
     "routes": [
@@ -61704,9 +58443,6 @@
       }
     ]
   },
-  "KTYS-KMMI": {
-    "updated": "2026-08-07"
-  },
   "KTYS-KORD": {
     "updated": "2026-10-04",
     "routes": [
@@ -61740,18 +58476,6 @@
         "hours": "0-1,11,13-14,18,20"
       }
     ]
-  },
-  "KTYS-KRKW": {
-    "updated": "2026-08-07"
-  },
-  "KUES-KENW": {
-    "updated": "2026-08-07"
-  },
-  "KUGN-KENW": {
-    "updated": "2026-08-08"
-  },
-  "KUKI-KSTS": {
-    "updated": "2026-08-08"
   },
   "KUNV-KIAD": {
     "updated": "2026-08-07",
@@ -61787,18 +58511,6 @@
       }
     ]
   },
-  "KUTS-KCXO": {
-    "updated": "2026-08-08"
-  },
-  "KUZA-KCLT": {
-    "updated": "2026-08-08"
-  },
-  "KVGT-KHND": {
-    "updated": "2026-08-07"
-  },
-  "KVGT-KLSV": {
-    "updated": "2026-08-08"
-  },
   "KVIS-KOAK": {
     "updated": "2026-09-18",
     "routes": [
@@ -61832,12 +58544,6 @@
         "hours": "6,13-14,20,22"
       }
     ]
-  },
-  "KVNC-KPGD": {
-    "updated": "2026-08-26"
-  },
-  "KVNC-KSRQ": {
-    "updated": "2026-08-08"
   },
   "KVNY-KBUR": {
     "updated": "2026-09-18",
@@ -61991,27 +58697,6 @@
       }
     ]
   },
-  "KVPZ-KMDW": {
-    "updated": "2026-08-08"
-  },
-  "KVQQ-KNEN": {
-    "updated": "2026-08-06"
-  },
-  "KVRB-KFPR": {
-    "updated": "2026-08-07"
-  },
-  "KVRB-KOBE": {
-    "updated": "2026-08-07"
-  },
-  "KWDR-KLZU": {
-    "updated": "2026-08-07"
-  },
-  "KWVI-KCVH": {
-    "updated": "2026-08-08"
-  },
-  "KWVI-KRHV": {
-    "updated": "2026-08-26"
-  },
   "KXNA-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -62143,12 +58828,6 @@
       }
     ]
   },
-  "KXNA-KPHX": {
-    "updated": "2026-09-18"
-  },
-  "KXNA-KROG": {
-    "updated": "2026-08-08"
-  },
   "KXWA-KDEN": {
     "updated": "2026-09-18",
     "routes": [
@@ -62161,9 +58840,6 @@
         "hours": "1-2,7,10-19"
       }
     ]
-  },
-  "KXWA-KMSP": {
-    "updated": "2026-09-18"
   },
   "KYKM-KGEG": {
     "updated": "2026-09-18",
@@ -62198,12 +58874,6 @@
         "hours": "0,6,15"
       }
     ]
-  },
-  "KZPH-KOCF": {
-    "updated": "2026-08-07"
-  },
-  "LEBL-KJFK": {
-    "updated": "2026-08-26"
   },
   "LEMD-KBOS": {
     "updated": "2026-09-18",
@@ -62244,21 +58914,6 @@
       }
     ]
   },
-  "LFPG-KATL": {
-    "updated": "2026-08-06"
-  },
-  "LFPG-KBOS": {
-    "updated": "2026-08-07"
-  },
-  "LFPG-KDTW": {
-    "updated": "2026-09-18"
-  },
-  "LFPG-KEWR": {
-    "updated": "2026-08-06"
-  },
-  "LFPG-KIAD": {
-    "updated": "2026-08-07"
-  },
   "LFPG-KJFK": {
     "updated": "2026-08-06",
     "routes": [
@@ -62293,21 +58948,6 @@
       }
     ]
   },
-  "LFPG-KMIA": {
-    "updated": "2026-09-18"
-  },
-  "LFPG-KORD": {
-    "updated": "2026-08-07"
-  },
-  "LFPG-KSFO": {
-    "updated": "2026-09-18"
-  },
-  "LGAV-KEWR": {
-    "updated": "2026-09-18"
-  },
-  "LGAV-KJFK": {
-    "updated": "2026-09-18"
-  },
   "LIMC-KJFK": {
     "updated": "2026-08-06",
     "routes": [
@@ -62320,12 +58960,6 @@
         "hours": "5,10-11"
       }
     ]
-  },
-  "LIRF-KATL": {
-    "updated": "2026-09-18"
-  },
-  "LIRF-KEWR": {
-    "updated": "2026-09-18"
   },
   "LIRF-KIAD": {
     "updated": "2026-08-07",
@@ -62360,9 +58994,6 @@
         "hours": "6,8,16"
       }
     ]
-  },
-  "LIRF-KORD": {
-    "updated": "2026-08-26"
   },
   "LLBG-KEWR": {
     "updated": "2026-09-18",
@@ -62403,9 +59034,6 @@
       }
     ]
   },
-  "LPPT-KBOS": {
-    "updated": "2026-08-07"
-  },
   "LPPT-KEWR": {
     "updated": "2026-08-07",
     "routes": [
@@ -62431,18 +59059,6 @@
         "hours": "5,7-8,12-13"
       }
     ]
-  },
-  "LSZH-KEWR": {
-    "updated": "2026-09-18"
-  },
-  "LSZH-KIAD": {
-    "updated": "2026-09-18"
-  },
-  "LSZH-KJFK": {
-    "updated": "2026-08-07"
-  },
-  "LSZH-KORD": {
-    "updated": "2026-09-18"
   },
   "LTFM-KIAD": {
     "updated": "2026-09-18",
@@ -62477,12 +59093,6 @@
         "hours": "0-1,3-4,9,12-13,16,18,21"
       }
     ]
-  },
-  "LTFM-KLAX": {
-    "updated": "2026-09-18"
-  },
-  "LTFM-KMIA": {
-    "updated": "2026-09-18"
   },
   "LTFM-KORD": {
     "updated": "2026-09-18",
@@ -62557,9 +59167,6 @@
       }
     ]
   },
-  "MDPC-KJFK": {
-    "updated": "2026-09-18"
-  },
   "MDPC-KMCO": {
     "updated": "2026-09-18",
     "routes": [
@@ -62601,9 +59208,6 @@
         "hours": "10,13"
       }
     ]
-  },
-  "MDPC-KORD": {
-    "updated": "2026-09-18"
   },
   "MDPC-TJSJ": {
     "updated": "2026-08-08",
@@ -62698,9 +59302,6 @@
         "hours": "1,3-4,10-13,15-17,19-21"
       }
     ]
-  },
-  "MDST-KEWR": {
-    "updated": "2026-08-07"
   },
   "MDST-KJFK": {
     "updated": "2026-08-07",
@@ -62897,9 +59498,6 @@
         "hours": "2,13,15"
       }
     ]
-  },
-  "MKJS-KJFK": {
-    "updated": "2026-09-18"
   },
   "MMCZ-KMIA": {
     "updated": "2026-08-07",
@@ -63208,12 +59806,6 @@
       }
     ]
   },
-  "MMMX-KEWR": {
-    "updated": "2026-08-07"
-  },
-  "MMMX-KIAD": {
-    "updated": "2026-09-18"
-  },
   "MMMX-KIAH": {
     "updated": "2026-08-06",
     "routes": [
@@ -63279,9 +59871,6 @@
         "hours": "5-9,16"
       }
     ]
-  },
-  "MMMX-KLAS": {
-    "updated": "2026-08-07"
   },
   "MMMX-KLAX": {
     "updated": "2026-08-06",
@@ -63599,9 +60188,6 @@
       }
     ]
   },
-  "MMSD-KDEN": {
-    "updated": "2026-09-18"
-  },
   "MMSD-KHOU": {
     "updated": "2026-09-18",
     "routes": [
@@ -63678,9 +60264,6 @@
       }
     ]
   },
-  "MMSD-KSFO": {
-    "updated": "2026-09-18"
-  },
   "MMUN-KATL": {
     "updated": "2026-08-06",
     "routes": [
@@ -63706,12 +60289,6 @@
         "hours": "13-15"
       }
     ]
-  },
-  "MMUN-KBOS": {
-    "updated": "2026-09-18"
-  },
-  "MMUN-KBWI": {
-    "updated": "2026-09-18"
   },
   "MMUN-KCLT": {
     "updated": "2026-08-07",
@@ -63776,9 +60353,6 @@
       }
     ]
   },
-  "MMUN-KDTW": {
-    "updated": "2026-09-18"
-  },
   "MMUN-KEWR": {
     "updated": "2026-08-06",
     "routes": [
@@ -63834,9 +60408,6 @@
       }
     ]
   },
-  "MMUN-KIAD": {
-    "updated": "2026-09-18"
-  },
   "MMUN-KIAH": {
     "updated": "2026-08-06",
     "routes": [
@@ -63887,12 +60458,6 @@
       }
     ]
   },
-  "MMUN-KLAX": {
-    "updated": "2026-08-07"
-  },
-  "MMUN-KMCO": {
-    "updated": "2026-08-07"
-  },
   "MMUN-KMIA": {
     "updated": "2026-08-06",
     "routes": [
@@ -63905,21 +60470,6 @@
         "hours": "9-11,13,15-17"
       }
     ]
-  },
-  "MMUN-KMSP": {
-    "updated": "2026-08-26"
-  },
-  "MMUN-KORD": {
-    "updated": "2026-08-06"
-  },
-  "MMUN-KPHL": {
-    "updated": "2026-09-18"
-  },
-  "MMUN-KPHX": {
-    "updated": "2026-09-18"
-  },
-  "MMUN-KSFO": {
-    "updated": "2026-09-18"
   },
   "MMUN-KSTL": {
     "updated": "2026-09-18",
@@ -63980,9 +60530,6 @@
         "hours": "9-10,15-16"
       }
     ]
-  },
-  "MPTO-KJFK": {
-    "updated": "2026-09-18"
   },
   "MPTO-KLAX": {
     "updated": "2026-09-18",
@@ -64351,9 +60898,6 @@
       }
     ]
   },
-  "MYNN-KATL": {
-    "updated": "2026-08-07"
-  },
   "MYNN-KFLL": {
     "updated": "2026-08-06",
     "routes": [
@@ -64430,12 +60974,6 @@
       }
     ]
   },
-  "NZAA-KLAX": {
-    "updated": "2026-09-18"
-  },
-  "OMAA-KJFK": {
-    "updated": "2026-09-18"
-  },
   "OTHH-KJFK": {
     "updated": "2026-09-18",
     "routes": [
@@ -64448,9 +60986,6 @@
         "hours": "4-5,10,22"
       }
     ]
-  },
-  "PAAQ-PAWS": {
-    "updated": "2026-08-08"
   },
   "PABE-PANC": {
     "updated": "2026-08-06",
@@ -64569,18 +61104,6 @@
       }
     ]
   },
-  "PAEI-PAFA": {
-    "updated": "2026-08-08"
-  },
-  "PAEN-PANC": {
-    "updated": "2026-08-06"
-  },
-  "PAEN-PASX": {
-    "updated": "2026-08-08"
-  },
-  "PAFA-AK13": {
-    "updated": "2026-08-08"
-  },
   "PAFA-KSEA": {
     "updated": "2026-08-06",
     "routes": [
@@ -64601,12 +61124,6 @@
         "hours": "0-1,13-15,20"
       }
     ]
-  },
-  "PAFA-PAEI": {
-    "updated": "2026-08-08"
-  },
-  "PAFA-PAML": {
-    "updated": "2026-08-08"
   },
   "PAFA-PANC": {
     "updated": "2026-08-06",
@@ -64648,9 +61165,6 @@
       }
     ]
   },
-  "PAFA-PANN": {
-    "updated": "2026-08-08"
-  },
   "PAHO-PANC": {
     "updated": "2026-09-18",
     "routes": [
@@ -64683,9 +61197,6 @@
         "hours": "8-10,16-17"
       }
     ]
-  },
-  "PAII-PAKN": {
-    "updated": "2026-08-26"
   },
   "PAJN-KSEA": {
     "updated": "2026-08-06",
@@ -64740,9 +61251,6 @@
       }
     ]
   },
-  "PAKN-PAII": {
-    "updated": "2026-08-08"
-  },
   "PAKN-PANC": {
     "updated": "2026-08-06",
     "routes": [
@@ -64777,18 +61285,6 @@
         "hours": "8-9,11-12,17,20-21"
       }
     ]
-  },
-  "PAML-PAFA": {
-    "updated": "2026-08-08"
-  },
-  "PANC-CYYZ": {
-    "updated": "2026-09-18"
-  },
-  "PANC-KDEN": {
-    "updated": "2026-09-18"
-  },
-  "PANC-KDFW": {
-    "updated": "2026-08-06"
   },
   "PANC-KJFK": {
     "updated": "2026-08-06",
@@ -64828,9 +61324,6 @@
         "hours": "0-3,15"
       }
     ]
-  },
-  "PANC-KMIA": {
-    "updated": "2026-08-06"
   },
   "PANC-KMSP": {
     "updated": "2026-08-26",
@@ -65006,9 +61499,6 @@
       }
     ]
   },
-  "PANC-PACV": {
-    "updated": "2026-09-18"
-  },
   "PANC-PADL": {
     "updated": "2026-08-07",
     "routes": [
@@ -65069,9 +61559,6 @@
         "hours": "7-8"
       }
     ]
-  },
-  "PANC-PAEN": {
-    "updated": "2026-08-06"
   },
   "PANC-PAFA": {
     "updated": "2026-08-06",
@@ -65236,12 +61723,6 @@
       }
     ]
   },
-  "PANC-RJBB": {
-    "updated": "2026-08-26"
-  },
-  "PANC-RKSI": {
-    "updated": "2026-08-06"
-  },
   "PANC-VHHH": {
     "updated": "2026-08-07",
     "routes": [
@@ -65276,18 +61757,6 @@
       }
     ]
   },
-  "PASO-PAHO": {
-    "updated": "2026-08-26"
-  },
-  "PASX-PAEN": {
-    "updated": "2026-08-08"
-  },
-  "PAWS-PAAQ": {
-    "updated": "2026-08-08"
-  },
-  "PHDH-PHJR": {
-    "updated": "2026-08-08"
-  },
   "PHJH-PHNL": {
     "updated": "2026-09-18",
     "routes": [
@@ -65300,15 +61769,6 @@
         "hours": "12-13,15"
       }
     ]
-  },
-  "PHJR-PHDH": {
-    "updated": "2026-08-08"
-  },
-  "PHJR-PHNL": {
-    "updated": "2026-08-06"
-  },
-  "PHKO-KLAX": {
-    "updated": "2026-08-07"
   },
   "PHKO-KSEA": {
     "updated": "2026-08-07",
@@ -65385,9 +61845,6 @@
       }
     ]
   },
-  "PHLI-KSEA": {
-    "updated": "2026-09-18"
-  },
   "PHLI-PHNL": {
     "updated": "2026-08-06",
     "routes": [
@@ -65441,12 +61898,6 @@
         "hours": "5,7-9,11-14,16-17,19,21-22"
       }
     ]
-  },
-  "PHNG-PHNL": {
-    "updated": "2026-08-26"
-  },
-  "PHNL-CYVR": {
-    "updated": "2026-08-07"
   },
   "PHNL-KLAS": {
     "updated": "2026-08-06",
@@ -65537,9 +61988,6 @@
         "hours": "8,10,14,18"
       }
     ]
-  },
-  "PHNL-KLGB": {
-    "updated": "2026-09-18"
   },
   "PHNL-KOAK": {
     "updated": "2026-08-07",
@@ -65677,9 +62125,6 @@
       }
     ]
   },
-  "PHNL-KSLC": {
-    "updated": "2026-09-18"
-  },
   "PHNL-KSMF": {
     "updated": "2026-09-18",
     "routes": [
@@ -65713,9 +62158,6 @@
         "hours": "10-12,14,16"
       }
     ]
-  },
-  "PHNL-PHJR": {
-    "updated": "2026-08-07"
   },
   "PHNL-PHKO": {
     "updated": "2026-08-06",
@@ -65893,9 +62335,6 @@
       }
     ]
   },
-  "PHNL-YSSY": {
-    "updated": "2026-08-07"
-  },
   "PHNY-PHNL": {
     "updated": "2026-08-07",
     "routes": [
@@ -65925,9 +62364,6 @@
         "hours": "13-15,19"
       }
     ]
-  },
-  "PHOG-KSAN": {
-    "updated": "2026-09-18"
   },
   "PHOG-KSEA": {
     "updated": "2026-08-07",
@@ -66290,12 +62726,6 @@
       }
     ]
   },
-  "RJTT-KDFW": {
-    "updated": "2026-09-18"
-  },
-  "RJTT-KIAD": {
-    "updated": "2026-09-18"
-  },
   "RJTT-KJFK": {
     "updated": "2026-08-06",
     "routes": [
@@ -66353,9 +62783,6 @@
         "hours": "13,15,17"
       }
     ]
-  },
-  "RJTT-KORD": {
-    "updated": "2026-08-07"
   },
   "RJTT-KSFO": {
     "updated": "2026-08-07",
@@ -66604,9 +63031,6 @@
       }
     ]
   },
-  "RPLL-KLAX": {
-    "updated": "2026-09-18"
-  },
   "RPLL-KSFO": {
     "updated": "2026-08-07",
     "routes": [
@@ -66655,9 +63079,6 @@
         "hours": "20,22"
       }
     ]
-  },
-  "SBGR-KJFK": {
-    "updated": "2026-08-07"
   },
   "SBGR-KMIA": {
     "updated": "2026-08-06",
@@ -66829,9 +63250,6 @@
       }
     ]
   },
-  "SPJC-KLAX": {
-    "updated": "2026-09-18"
-  },
   "SPJC-KMIA": {
     "updated": "2026-08-06",
     "routes": [
@@ -66860,12 +63278,6 @@
         "hours": "0,8-9,12-13,20"
       }
     ]
-  },
-  "SYCJ-KJFK": {
-    "updated": "2026-09-18"
-  },
-  "TAPA-KMIA": {
-    "updated": "2026-09-18"
   },
   "TFFJ-TJSJ": {
     "updated": "2026-08-08",
@@ -66934,12 +63346,6 @@
       }
     ]
   },
-  "TJIG-TJRV": {
-    "updated": "2026-08-08"
-  },
-  "TJIG-TJSJ": {
-    "updated": "2026-08-08"
-  },
   "TJSJ-KATL": {
     "updated": "2026-10-04",
     "routes": [
@@ -66960,9 +63366,6 @@
         "hours": "0,6-7,14"
       }
     ]
-  },
-  "TJSJ-KBDL": {
-    "updated": "2026-10-04"
   },
   "TJSJ-KBOS": {
     "updated": "2026-08-06",
@@ -66998,15 +63401,6 @@
       }
     ]
   },
-  "TJSJ-KCLT": {
-    "updated": "2026-10-04"
-  },
-  "TJSJ-KDFW": {
-    "updated": "2026-08-07"
-  },
-  "TJSJ-KEWR": {
-    "updated": "2026-10-04"
-  },
   "TJSJ-KFLL": {
     "updated": "2026-08-06",
     "routes": [
@@ -67027,9 +63421,6 @@
         "hours": "4,6-7,9-10,13,17,20"
       }
     ]
-  },
-  "TJSJ-KIAH": {
-    "updated": "2026-08-07"
   },
   "TJSJ-KJFK": {
     "updated": "2026-10-04",
@@ -67085,9 +63476,6 @@
         "hours": "0-7,9-14,16,18-19,22"
       }
     ]
-  },
-  "TJSJ-KORD": {
-    "updated": "2026-08-07"
   },
   "TJSJ-KPHL": {
     "updated": "2026-10-04",
@@ -67199,9 +63587,6 @@
       }
     ]
   },
-  "TJSJ-SKRG": {
-    "updated": "2026-09-18"
-  },
   "TJSJ-TFFJ": {
     "updated": "2026-09-18",
     "routes": [
@@ -67249,15 +63634,6 @@
       }
     ]
   },
-  "TJSJ-TJCP": {
-    "updated": "2026-08-08"
-  },
-  "TJSJ-TJIG": {
-    "updated": "2026-08-08"
-  },
-  "TJSJ-TJRV": {
-    "updated": "2026-08-08"
-  },
   "TJSJ-TUPJ": {
     "updated": "2026-09-18",
     "routes": [
@@ -67274,12 +63650,6 @@
       }
     ]
   },
-  "TNCA-KBOS": {
-    "updated": "2026-09-18"
-  },
-  "TNCA-KEWR": {
-    "updated": "2026-09-18"
-  },
   "TNCA-KJFK": {
     "updated": "2026-09-18",
     "routes": [
@@ -67292,12 +63662,6 @@
         "hours": "2,12,16-17"
       }
     ]
-  },
-  "TNCC-KMIA": {
-    "updated": "2026-09-18"
-  },
-  "TTPP-KJFK": {
-    "updated": "2026-09-18"
   },
   "TTPP-KMIA": {
     "updated": "2026-09-18",
@@ -67327,9 +63691,6 @@
         "hours": "0-2,4,7,9-19"
       }
     ]
-  },
-  "VHHH-KJFK": {
-    "updated": "2026-08-07"
   },
   "VHHH-KLAX": {
     "updated": "2026-08-06",
@@ -67406,15 +63767,6 @@
         "hours": "8,13,20,22"
       }
     ]
-  },
-  "YMML-KLAX": {
-    "updated": "2026-09-18"
-  },
-  "YSSY-KLAX": {
-    "updated": "2026-08-06"
-  },
-  "ZGGG-PANC": {
-    "updated": "2026-09-18"
   },
   "ZGSZ-PANC": {
     "updated": "2026-08-06",
