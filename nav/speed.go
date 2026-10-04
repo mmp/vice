@@ -386,6 +386,13 @@ func (nav *Nav) targetAltitudeIAS(temp av.Temperature) (float32, float32) {
 	return math.Lerp(x, min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
+// hasIssuedSpeed reports whether a controller speed instruction, rather than
+// the route's restrictions, governs the aircraft's speed.
+func (nav *Nav) hasIssuedSpeed() bool {
+	s := nav.Speed
+	return s.Assigned != nil || s.AfterAltitude != nil || s.MaintainSlowestPractical || s.MaintainMaximumForward
+}
+
 // chartedSpeedRestriction returns wp's inline speed restriction. Published
 // approach restrictions require approach clearance; synthetic controller
 // crossings apply regardless of clearance.

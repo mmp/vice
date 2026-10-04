@@ -102,24 +102,47 @@ func TestSTARSpeedRestrictions(t *testing.T) {
 }
 
 // TestCrossFixAtSpeedCarriesForward verifies that a crossing speed the
-// controller gives for a fix replaces the charted one after the fix as well
-// as before it: told to cross JAMIE at 210 where 230 is charted, the
-// aircraft doesn't speed back up to 230 past JAMIE.
+// controller gives for a fix is held after the fix: told to cross JAMIE at
+// 210 where 230 is charted, the aircraft doesn't speed back up to 230 past
+// JAMIE. It is held as an assigned speed, so a later via clearance cancels
+// it and restores the charted speed, and a speed instruction given after it
+// takes precedence.
 func TestCrossFixAtSpeedCarriesForward(t *testing.T) {
-	f := NewArrivalFlight(t, ArrivalConfig{
-		Waypoints:        "ZJAAY ARICE JAMIE/s230 N037.35.18.411,W076.13.00.468",
-		DepartureAirport: "KBOS",
-		ArrivalAirport:   "KRIC",
-		AircraftType:     "A320",
-		InitialAltitude:  7000,
-		InitialSpeed:     250,
-		OnSTAR:           true,
-	})
-	sr := av.MakeAtSpeedRestriction(210)
-	f.nav.CrossFixAt("JAMIE", nil, &sr, f.temp())
+	const next = "N037.35.18.411,W076.13.00.468"
+	newFlight := func(t *testing.T) *FlightTest {
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "ZJAAY ARICE JAMIE/s230 " + next,
+			DepartureAirport: "KBOS",
+			ArrivalAirport:   "KRIC",
+			AircraftType:     "A320",
+			InitialAltitude:  7000,
+			InitialSpeed:     250,
+			OnSTAR:           true,
+		})
+		sr := av.MakeAtSpeedRestriction(210)
+		f.nav.CrossFixAt("JAMIE", nil, &sr, f.temp())
+		return f
+	}
 
-	f.BetweenFixes("N037.35.18.411,W076.13.00.468", "KRIC", func(f *FlightTest) { f.AssertSpeedNear(210, 5) })
-	f.Run()
+	t.Run("HeldPastFix", func(t *testing.T) {
+		f := newFlight(t)
+		f.BetweenFixes(next, "KRIC", func(f *FlightTest) { f.AssertSpeedNear(210, 5) })
+		f.Run()
+	})
+
+	t.Run("DescendViaRestoresCharted", func(t *testing.T) {
+		f := newFlight(t)
+		f.AtFix("JAMIE", func(f *FlightTest) { f.DescendViaSTAR() })
+		f.BetweenFixes(next, "KRIC", func(f *FlightTest) { f.AssertSpeedNear(230, 5) })
+		f.Run()
+	})
+
+	t.Run("LaterSpeedKept", func(t *testing.T) {
+		f := newFlight(t)
+		f.AssignSpeed(190)
+		f.BetweenFixes("JAMIE", "KRIC", func(f *FlightTest) { f.AssertSpeedBelow(195) })
+		f.Run()
+	})
 }
 
 // TestSpeed250Below10000 verifies that aircraft decelerate to 250kt or

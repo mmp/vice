@@ -509,8 +509,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) Up
 			}
 		}
 
-		// The controller's crossing altitude and speed for the fix, if
-		// given, replace the charted ones after the fix as well as before.
+		// The controller's crossing altitude for the fix, if given,
+		// replaces the charted one after the fix as well as before.
 		if ar := cmp.Or(nav.controllerAltitudeRestriction(wp), nav.chartedAltitudeRestriction(wp)); ar != nil &&
 			(!nav.Approach.Cleared || ar.Range[0] < nav.FlightState.Altitude) {
 			// Don't climb if we're cleared approach and below the next
@@ -519,11 +519,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) Up
 			arCopy := *ar
 			nav.Altitude.Restriction = &arCopy
 		}
-		sr := nav.chartedSpeedRestriction(wp)
-		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Speed != nil {
-			sr = nfa.Arrive.Speed
-		}
-		if sr != nil && !wp.OnSID() {
+		if sr := nav.chartedSpeedRestriction(wp); sr != nil && !wp.OnSID() {
 			// Carry on the speed restriction unless it's a SID
 			srCopy := *sr
 			nav.Speed.Restriction = &srCopy
@@ -540,6 +536,12 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) Up
 				nav.Speed = Speed{Assigned: &sr}
 			} else if nfa.Depart.CancelSpeed {
 				nav.Speed = Speed{}
+			} else if nfa.Arrive.Speed != nil && !wp.OnSID() && !nav.hasIssuedSpeed() {
+				// The controller's crossing speed is held past the fix as an
+				// assigned speed, which a via clearance cancels, unless a
+				// later speed instruction has replaced it.
+				sr := *nfa.Arrive.Speed
+				nav.Speed.Assigned = &sr
 			}
 		}
 
