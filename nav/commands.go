@@ -103,29 +103,27 @@ func (nav *Nav) setAssignedAltitude(alt float32) {
 }
 
 func (nav *Nav) enqueueAssignedAltitude(alt float32, simTime Time, delayReduction time.Duration) {
-	active := nav.activeAssignedAltitude()
-	d := nav.drawDelay(currentPilotDelays().Altitude)
-	if d > delayReduction {
-		d -= delayReduction
-	} else {
-		d = 0
-	}
-	nav.Altitude = Altitude{
-		Assigned:       &alt,
-		ActiveAssigned: active,
-		ActivateAt:     simTime.Add(d),
-	}
+	d := max(nav.drawDelay(currentPilotDelays().Altitude)-delayReduction, 0)
+	nav.enqueueAltitude(alt, RateNormal, simTime.Add(d))
 }
 
 func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
-	alt := *nav.Altitude.AfterSpeed
-	rate := nav.Altitude.RateAfterSpeed
-	active := nav.activeAssignedAltitude()
+	nav.enqueueAltitude(*nav.Altitude.AfterSpeed, nav.Altitude.RateAfterSpeed,
+		simTime.Add(nav.drawDelay(currentPilotDelays().AltitudeAfterSpeed)))
+}
+
+// enqueueAltitude assigns alt, to be flown at rate once the pilot reacts at
+// activateAt. Until then the aircraft keeps flying its previous altitude:
+// an earlier assignment, or its cleared altitude and the restrictions it
+// was following.
+func (nav *Nav) enqueueAltitude(alt float32, rate RateQualifier, activateAt Time) {
 	nav.Altitude = Altitude{
 		Assigned:       &alt,
-		ActiveAssigned: active,
-		ActivateAt:     simTime.Add(nav.drawDelay(currentPilotDelays().AltitudeAfterSpeed)),
+		ActiveAssigned: nav.activeAssignedAltitude(),
+		ActivateAt:     activateAt,
 		Rate:           rate,
+		Cleared:        nav.Altitude.Cleared,
+		Restriction:    nav.Altitude.Restriction,
 	}
 }
 

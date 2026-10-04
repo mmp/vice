@@ -162,6 +162,62 @@ func TestExpediteDuringAssignedAltitudeDelay(t *testing.T) {
 	f.AssertDescending()
 }
 
+// While the pilot reacts to a higher altitude, an aircraft climbing to its
+// cleared altitude keeps climbing to it rather than leveling off.
+func TestAssignAltitudeContinuesClimbToClearedAltitude(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  2000,
+		InitialSpeed:     250,
+		ClearedAltitude:  5000,
+	})
+	f.nav.FinalAltitude = 23000
+	f.StepUntil("climbing", func() bool { return f.nav.FlightState.AltitudeRate > 500 })
+
+	f.AssignAltitude(7000)
+	if f.nav.Altitude.ActivateAt.IsZero() {
+		t.Fatal("expected a reaction delay")
+	}
+	for f.nav.FlightState.Altitude < 6900 {
+		alt := f.nav.FlightState.Altitude
+		f.Step(1)
+		if f.nav.FlightState.Altitude <= alt {
+			t.Fatalf("climb paused at %.0f", alt)
+		}
+	}
+}
+
+// Until the pilot acts on an altitude assignment, the aircraft keeps flying
+// its earlier clearance: one level at its climb via's "except maintain"
+// altitude doesn't start up toward the SID's restrictions above it.
+func TestPendingAltitudeKeepsClearedAltitude(t *testing.T) {
+	f := newDepartureOnSID(t, ArrivalConfig{InitialAltitude: 2500, ClearedAltitude: 5000})
+	// Past BOTLL's at-or-below 5,000, only GRAYN's at-or-above 11,000 is ahead.
+	f.StepUntil("level at 5000 past BOTLL", func() bool {
+		return f.nav.Waypoints[0].Fix == "MMUGS" && f.nav.FlightState.Altitude == 5000 &&
+			f.nav.FlightState.AltitudeRate == 0
+	})
+
+	f.AssignAltitude(3000)
+	if f.nav.Altitude.ActivateAt.IsZero() {
+		t.Fatal("expected a reaction delay for a level aircraft")
+	}
+	for f.simTime.Before(f.nav.Altitude.ActivateAt) {
+		f.Step(1)
+		f.AssertAltitudeNear(5000, 1)
+	}
+
+	f.Step(1)
+	if f.nav.Altitude.Cleared != nil {
+		t.Errorf("expected the assignment to replace the cleared altitude, got %+v", *f.nav.Altitude.Cleared)
+	}
+	f.Step(10)
+	f.AssertDescending()
+}
+
 // TestSTARDescentMeetsRestrictions verifies that an aircraft descending
 // via a STAR meets altitude restrictions at each fix.
 func TestSTARDescentMeetsRestrictions(t *testing.T) {

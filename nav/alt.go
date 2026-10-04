@@ -22,6 +22,10 @@ func (nav *Nav) activatePendingAltitude(simTime Time) {
 	}
 	nav.Altitude.ActiveAssigned = nav.Altitude.Assigned
 	nav.Altitude.ActivateAt = Time{}
+	// The assignment replaces the clearance the aircraft flew while the
+	// pilot reacted, as it does when it takes effect at once.
+	nav.Altitude.Cleared = nil
+	nav.Altitude.Restriction = nil
 }
 
 func (nav *Nav) activeAssignedAltitude() *float32 {
