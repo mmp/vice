@@ -397,9 +397,9 @@ type realRoute struct {
 	maxAltitude  int
 }
 
-// realDepartureRoutes returns the ways the pair is really flown: recently
-// scraped filings first, ordered for the aircraft and the hour of day,
-// followed by the FAA databases' routes.
+// realDepartureRoutes returns the ways the pair is really flown: its recently
+// scraped filings, ordered for the aircraft and the hour of day, or the FAA
+// databases' routes for a pair without any.
 func realDepartureRoutes(from, to av.ICAOAirportCode, aircraftType string, hour int, hourKnown bool) []realRoute {
 	var routes []realRoute
 	for _, r := range orderScrapedRoutes(db.DB.ScrapedRoutesBetween(from, to),
@@ -407,12 +407,21 @@ func realDepartureRoutes(from, to av.ICAOAirportCode, aircraftType string, hour 
 		routes = append(routes, realRoute{route: r.Route, how: "scraped route",
 			minAltitude: r.MinAltitude, maxAltitude: r.MaxAltitude})
 	}
-	for _, r := range eligibleAirportPairRoutes(db.DB.RoutesBetween(from, to),
+	for _, r := range eligibleAirportPairRoutes(faaFallbackRoutes(from, to),
 		engineTypeFor(aircraftType)) {
 		routes = append(routes, realRoute{route: r.Route, departureFix: r.DepartureFix,
 			how: "faa route"})
 	}
 	return routes
+}
+
+// faaFallbackRoutes returns the FAA databases' routes for a pair that has no
+// scraped filings.
+func faaFallbackRoutes(from, to av.ICAOAirportCode) []db.AirportPairRoute {
+	if len(db.DB.ScrapedRoutesBetween(from, to)) > 0 {
+		return nil
+	}
+	return db.DB.RoutesBetween(from, to)
 }
 
 // exitHeadingDifference is how far a candidate's exit fix lies from the

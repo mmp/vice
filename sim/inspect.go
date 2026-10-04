@@ -113,7 +113,7 @@ func (ss *CommonState) RoutesForPair(from, to av.ICAOAirportCode) PairRoutes {
 			Aircraft: r.Aircraft.String(), Filings: r.Count, MinAltitude: r.MinAltitude,
 			MaxAltitude: r.MaxAltitude, Hours: r.Hours.String()})
 	}
-	for _, r := range db.DB.RoutesBetween(from, to) {
+	for _, r := range faaFallbackRoutes(from, to) {
 		pr.Routes = append(pr.Routes, PairRoute{Route: r.Route, Source: r.Type, Aircraft: r.Aircraft,
 			RNAVRequired: r.RNAVRequired, DepartureFix: r.DepartureFix})
 	}

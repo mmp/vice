@@ -275,7 +275,8 @@
                       can be listed a SID at a time or an exit at a time, since a SID serving twenty exits is unreadable
                       drawn all at once.</td></tr>
                     <tr><td>Routes</td><td>The ways a city pair is really flown&mdash;from the scenario's own
-                      <code>traffic_routes</code>, the recently filed routes, and the FAA route databases&mdash;and what
+                      <code>traffic_routes</code> and the recently filed routes, or the FAA route databases for a pair
+                      with no filings&mdash;and what
                       this scenario would do with each of them: which exit or arrival it would fly, or why it can't fly
                       the route at all.</td></tr>
                     <tr><td>Traffic</td><td>The real-world traffic the scenario's airports see, from a timetable or from
@@ -5819,8 +5820,10 @@
                   airport's "traffic_routes" defined in the scenario.</li>
                 <li>A recently-filed route for the exact city pair from <i>vice</i>'s
                   database of recent flights, stored in <code>resources/scraped-routes.json</code>.</li>
-                <li>real-world route for the exact city pair from the FAA's preferred
-                  route and coded departure route databases.</li>
+                <li>For a city pair with no recently-filed routes, a real-world route from the
+                  FAA's preferred route and coded departure route databases. A pair's recently-filed
+                  routes replace its FAA routes rather than just taking priority over them, since
+                  the FAA's preferred routes often aren't what is actually filed.</li>
               </ul>
               <p>Neither of the two route databases has good coverage of small airports,
                 so if a route is not found with an exact airport match, the route to/from a

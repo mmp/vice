@@ -127,18 +127,17 @@ func (ss *CommonState) placeArrivalAmong(candidates []candidateArrival, arrivalA
 		return util.MapSlice(routes, func(r av.ScrapedRoute) string { return r.Route })
 	}
 	faaRoutes := func(from av.ICAOAirportCode) []string {
-		eligible := eligibleAirportPairRoutes(db.DB.RoutesBetween(from, arrivalAirport),
+		eligible := eligibleAirportPairRoutes(faaFallbackRoutes(from, arrivalAirport),
 			engineTypeFor(aircraftType))
 		return util.MapSlice(eligible, func(r db.AirportPairRoute) string { return r.Route })
 	}
 
-	// The scenario says in so many words how traffic from this origin comes in,
-	// or failing that the scraped filings and the route database say how the
-	// pair is really flown. Either way the route is the flight's own, so
-	// failing to fit it--its STAR isn't active in this configuration--drops the
-	// flight rather than shoehorning it onto a flow it never flies: a scenario
-	// working one gate of an airport shouldn't be handed every flight bound for
-	// the others.
+	// Use the scenario's routes from this origin if it has any. Otherwise use
+	// the pair's scraped routes, or its FAA routes if it has no scraped ones.
+	// If none of the routes fits the scenario (e.g., their STAR isn't active),
+	// drop the flight instead of moving it to an arrival it wouldn't fly. A
+	// scenario that only works one arrival gate shouldn't get all of the
+	// airport's arrivals.
 	if routes := scenarioRoutes(origin); len(routes) > 0 {
 		c, route, err := matchArrivalRoutes(candidates, aircraftType, routes, arrivalAirport, origin)
 		if err != nil {

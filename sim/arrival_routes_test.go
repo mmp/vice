@@ -259,6 +259,44 @@ func TestPlaceArrivalCarriesCruiseLimits(t *testing.T) {
 	}
 }
 
+// When a pair has scraped routes, its FAA routes aren't used. Here the scraped
+// route's STAR isn't active, so the flight is dropped even though the FAA
+// route's STAR is. Once the scraped route is removed, the FAA route is used.
+func TestPlaceArrivalScrapedRoutesReplaceFAARoutes(t *testing.T) {
+	pair := db.AirportPair{From: "KFAR", To: "KTST"}
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Airports: map[av.ICAOAirportCode]db.Airport{
+			"KTST": {Id: "KTST", Location: math.Point2LL{-93.2, 44.9}, STARs: map[string]av.STAR{
+				"WESTT4": {Transitions: map[string]av.WaypointArray{"MISN": {{Fix: "MISN"}}}},
+				"EASTT5": {Transitions: map[string]av.WaypointArray{"NOTE": {{Fix: "NOTE"}}}},
+			}},
+			"KFAR": {Id: "KFAR", Location: math.Point2LL{-103.0, 44.0}},
+		},
+		ScrapedRoutes: map[db.AirportPair][]av.ScrapedRoute{
+			pair: {{Route: "MISN WESTT4", Count: 100}},
+		},
+		AirportPairRoutes: map[db.AirportPair][]db.AirportPairRoute{
+			pair: {{Route: "KFAR NOTE EASTT5 KTST", Type: "H"}},
+		},
+	}
+	t.Cleanup(func() { db.DB = oldDB })
+
+	s := placeArrivalTestSim("KTST", []av.Arrival{{STAR: "EASTT5", Airports: []av.ICAOAirportCode{"KTST"}}}, nil)
+	if _, err := s.State.placeArrival("KTST", "KFAR", "B738", routedPairs{}); !errors.Is(err, errArrivalSTARInactive) {
+		t.Errorf("placeArrival = %v, expected the flight dropped for its filings' inactive STAR", err)
+	}
+
+	delete(db.DB.ScrapedRoutes, pair)
+	placement, err := s.State.placeArrival("KTST", "KFAR", "B738", routedPairs{})
+	if err != nil {
+		t.Fatalf("placeArrival with no filings: %v", err)
+	}
+	if placement.filedRoute != "KFAR NOTE EASTT5 KTST" {
+		t.Errorf("filed route %q, want the FAA route once the pair has no filings", placement.filedRoute)
+	}
+}
+
 // The CIFP transition a route joins a STAR at says which of the STAR's
 // arrivals the flight reaches: entering LUCKI1 at TTRUE leads through MOMAR,
 // not HEELX.

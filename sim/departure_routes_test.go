@@ -243,6 +243,31 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	}
 }
 
+// When a pair has scraped routes, its FAA routes aren't used. Here the scraped
+// route's exit isn't modeled, so the flight takes the exit closest to its
+// direction instead of the FAA route's NORTH exit.
+func TestResolvePublishedDepartureScrapedRoutesReplaceFAARoutes(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	s := publishedDepartureSim()
+
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{
+		{Route: "KORG NORTH J111 KTGT", Type: "H"},
+	})
+	seedTestScrapedRoutes(t, "KORG", "KTGT", []av.ScrapedRoute{
+		{Route: "WSSST J22", Count: 100},
+	})
+	placement, err := s.State.resolvePublishedDeparture("KORG", "30L",
+		[]string{"jet"}, "KTGT", "B738", nil)
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if placement.dep.Exit != "EAST" || placement.dep.Route != "EAST" {
+		t.Errorf("got exit %q route %q, want the directional fallback out EAST, not the FAA route via NORTH",
+			placement.dep.Exit, placement.dep.Route)
+	}
+}
+
 // A piston can't fly a route that needs RNAV; with no eligible database route
 // it falls back to the directional match.
 func TestResolvePublishedDepartureRNAVGating(t *testing.T) {

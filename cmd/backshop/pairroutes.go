@@ -18,9 +18,9 @@ import (
 )
 
 // routesTab looks up how a city pair is really flown--the scenario's own
-// "traffic_routes", the routes recently filed between the pair, and the FAA
-// preferred and coded departure routes--and says what the scenario would do
-// with each of them.
+// "traffic_routes" and the routes recently filed between the pair, or the FAA
+// preferred and coded departure routes for a pair with no filings--and says
+// what the scenario would do with each of them.
 type routesTab struct {
 	from, to string
 
@@ -50,8 +50,8 @@ func (in *inspector) drawRoutesTab(a *app) {
 
 	r := &in.pairRoutes
 	imgui.TextWrapped("The ways a city pair is really flown, from the scenario's own " +
-		"\"traffic_routes\", the recently filed routes, and the FAA route databases, with what " +
-		"this scenario would do with each of them.")
+		"\"traffic_routes\" and the recently filed routes, or the FAA route databases for a pair " +
+		"with no filings, with what this scenario would do with each of them.")
 
 	submitted := false
 	airportInput := func(id, hint string, value *string) {
