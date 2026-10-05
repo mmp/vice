@@ -9,6 +9,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
@@ -437,15 +438,13 @@ func (s *Sim) applyFDAMEntryActions(region *FDAMRegion, fp *FlightPlan, state *F
 		})
 	}
 
-	// TCP-specific leader direction: set via event for each pointout TCP
-	if region.NewTCPSpecificLeaderDirection != nil && len(region.PointoutTCPs) > 0 {
+	// TCP-specific leader direction at each pointout TCP
+	if dir := region.NewTCPSpecificLeaderDirection; dir != nil && len(region.PointoutTCPs) > 0 {
+		if fp.FDAMLeaderLineDirections == nil {
+			fp.FDAMLeaderLineDirections = make(map[ControlPosition]math.CardinalOrdinalDirection)
+		}
 		for _, tcp := range region.PointoutTCPs {
-			s.eventStream.Post(Event{
-				Type:                FDAMLeaderLineEvent,
-				ACID:                fp.ACID,
-				ToController:        tcp,
-				LeaderLineDirection: region.NewTCPSpecificLeaderDirection,
-			})
+			fp.FDAMLeaderLineDirections[tcp] = *dir
 		}
 	}
 
@@ -494,12 +493,7 @@ func (s *Sim) applyFDAMExitActions(region *FDAMRegion, fp *FlightPlan, state *FD
 	// Revert TCP-specific leader directions if not retained
 	if !region.RetainTCPSpecificLeaderDirection && region.NewTCPSpecificLeaderDirection != nil {
 		for _, tcp := range region.PointoutTCPs {
-			s.eventStream.Post(Event{
-				Type:         FDAMLeaderLineEvent,
-				ACID:         fp.ACID,
-				ToController: tcp,
-				// nil LeaderLineDirection signals revert
-			})
+			delete(fp.FDAMLeaderLineDirections, tcp)
 		}
 	}
 

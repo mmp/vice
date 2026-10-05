@@ -109,7 +109,8 @@ import (
 // 97: removed aviation.FlightPlan removed
 // 98: reworked TTS and pilot transmission flow
 // 100: published arrival spacing looks ahead along the flow: Sim.ArrivalLaunches holds each flow's last launch
-const ViceSerializeVersion = 100
+// 101: FDAM TCP-specific leader directions moved from FDAMLeaderLineEvent to FlightPlan.FDAMLeaderLineDirections
+const ViceSerializeVersion = 101
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

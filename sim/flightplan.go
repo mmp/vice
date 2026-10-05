@@ -133,6 +133,11 @@ type FlightPlan struct {
 	Suspended                   bool
 	CoastSuspendIndex           int
 
+	// FDAMLeaderLineDirections holds the leader directions that FDAM regions
+	// set at specific TCPs ("New TCP Specific Leader Direction", DMS Table
+	// 4-109), keyed by TCP.
+	FDAMLeaderLineDirections map[ControlPosition]math.CardinalOrdinalDirection
+
 	// FIXME: the following are all used internally by NAS code. It's
 	// convenient to have them here but this stuff should just be managed
 	// internally there.
@@ -820,10 +825,9 @@ func (s *Sim) ModifyFlightPlan(tcw TCW, acid ACID, spec FlightPlanSpecifier) err
 
 		if spec.GlobalLeaderLineDirection.IsSet {
 			s.eventStream.Post(Event{
-				Type:                SetGlobalLeaderLineEvent,
-				ACID:                acid,
-				FromController:      s.State.PrimaryPositionForTCW(tcw),
-				LeaderLineDirection: spec.GlobalLeaderLineDirection.Get(),
+				Type:           SetGlobalLeaderLineEvent,
+				ACID:           acid,
+				FromController: s.State.PrimaryPositionForTCW(tcw),
 			})
 		}
 	}

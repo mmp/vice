@@ -258,7 +258,6 @@ const (
 	FixCoordinatesEvent
 	STTCommandEvent
 	FlightPlanDirectEvent
-	FDAMLeaderLineEvent
 	SimLogMessageEvent
 )
 
@@ -268,7 +267,7 @@ func (t EventType) String() string {
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
 		"FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",
-		"FDAMLeaderLine", "SimLogMessage"}[t]
+		"SimLogMessage"}[t]
 }
 
 type Event struct {
@@ -279,8 +278,7 @@ type Event struct {
 	ToController          ControlPosition   // For radio transmissions, the controlling controller.
 	Redirectors           []ControlPosition // For AcceptedRedirectedHandoffEvent, the redirecting positions.
 	WrittenText           string
-	RadioTransmissionType speech.RadioTransmissionType   // For radio transmissions only
-	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent, FDAMLeaderLineEvent
+	RadioTransmissionType speech.RadioTransmissionType // For radio transmissions only
 	WaypointInfo          []math.Point2LL
 	STTTranscript         string
 	STTCommand            string

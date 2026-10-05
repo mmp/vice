@@ -75,9 +75,8 @@ type TrackState struct {
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
-	LeaderLineDirection     *math.CardinalOrdinalDirection
-	FDAMLeaderLineDirection *math.CardinalOrdinalDirection
-	UseGlobalLeaderLine     bool
+	LeaderLineDirection *math.CardinalOrdinalDirection
+	UseGlobalLeaderLine bool
 
 	Ghost struct {
 		PartialDatablock bool
@@ -395,13 +394,6 @@ func (sp *Scope) processEvents(ctx *scope.Context) {
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					state.UseGlobalLeaderLine = fp.GlobalLeaderLineDirection != nil
-				}
-			}
-
-		case sim.FDAMLeaderLineEvent:
-			if ctx.UserControlsPosition(event.ToController) {
-				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					state.FDAMLeaderLineDirection = event.LeaderLineDirection
 				}
 			}
 
@@ -1549,8 +1541,13 @@ func (sp *Scope) getLeaderLineDirection(ctx *scope.Context, trk sim.Track) math.
 		} else if state.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
 			return *state.LeaderLineDirection
-		} else if state.FDAMLeaderLineDirection != nil {
-			return *state.FDAMLeaderLineDirection
+		}
+		// A direction an FDAM region set at a position the user controls;
+		// sorted so that the choice is stable if there are several.
+		for tcp, dir := range util.SortedMap(sfp.FDAMLeaderLineDirections) {
+			if ctx.UserControlsPosition(tcp) {
+				return dir
+			}
 		}
 
 		// Check if the active configuration specifies a leader line
