@@ -21,10 +21,10 @@ type MonitorColors struct {
 	TrackHistory      [5]renderer.RGB
 
 	// Lists / text
-	List        renderer.RGB
-	ListFrame   renderer.RGB
-	TextAlert   renderer.RGB
-	TextWarning renderer.RGB // caution
+	List            renderer.RGB
+	MovingListFrame renderer.RGB // 4.9.27: frames and titles while moving a list
+	TextAlert       renderer.RGB
+	TextWarning     renderer.RGB // caution
 
 	// UI
 	Cursor     renderer.RGB
@@ -83,10 +83,10 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(30, 30, 90),
 		},
 
-		List:        renderer.RGBFromUInt8(0, 255, 0),
-		ListFrame:   renderer.RGBFromUInt8(0, 255, 0),
-		TextAlert:   renderer.RGBFromUInt8(255, 0, 0),
-		TextWarning: renderer.RGBFromUInt8(255, 255, 0),
+		List:            renderer.RGBFromUInt8(0, 255, 0),
+		MovingListFrame: renderer.RGBFromUInt8(255, 255, 255),
+		TextAlert:       renderer.RGBFromUInt8(255, 0, 0),
+		TextWarning:     renderer.RGBFromUInt8(255, 255, 0),
 
 		Cursor:     renderer.RGBFromUInt8(255, 255, 255),
 		Background: renderer.RGBFromUInt8(50, 50, 50),
@@ -172,10 +172,10 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(64, 55, 67),
 		},
 
-		List:        renderer.RGBFromUInt8(106, 218, 88),
-		ListFrame:   renderer.RGBFromUInt8(106, 218, 88),
-		TextAlert:   renderer.RGBFromUInt8(255, 56, 24),
-		TextWarning: renderer.RGBFromUInt8(254, 255, 50),
+		List:            renderer.RGBFromUInt8(106, 218, 88),
+		MovingListFrame: renderer.RGBFromUInt8(254, 236, 237),
+		TextAlert:       renderer.RGBFromUInt8(255, 56, 24),
+		TextWarning:     renderer.RGBFromUInt8(254, 255, 50),
 
 		Cursor:     renderer.RGBFromUInt8(254, 236, 237),
 		Background: renderer.RGBFromUInt8(50, 50, 50),
@@ -261,10 +261,10 @@ var monitorColorSets = map[string]MonitorColors{
 			renderer.RGBFromUInt8(20, 44, 56),
 		},
 
-		List:        renderer.RGBFromUInt8(41, 202, 48),
-		ListFrame:   renderer.RGBFromUInt8(41, 202, 48),
-		TextAlert:   renderer.RGBFromUInt8(255, 20, 14),
-		TextWarning: renderer.RGBFromUInt8(253, 255, 32),
+		List:            renderer.RGBFromUInt8(41, 202, 48),
+		MovingListFrame: renderer.RGBFromUInt8(253, 241, 237),
+		TextAlert:       renderer.RGBFromUInt8(255, 20, 14),
+		TextWarning:     renderer.RGBFromUInt8(253, 255, 32),
 
 		Cursor:     renderer.RGBFromUInt8(253, 241, 237),
 		Background: renderer.RGBFromUInt8(50, 50, 50),

@@ -149,9 +149,8 @@ type Scope struct {
 	showListFrames    bool
 
 	// For 4.9.27 list moving
-	movingList       string
-	movingListBounds math.Extent2D
-	movingListOffset [2]float32 // offset from cursor to list position when move started
+	movingList       string     // frame title of the list being moved
+	movingListAnchor [2]float32 // cursor position when the move started
 
 	drawRoutePoints []math.Point2LL
 

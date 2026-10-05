@@ -37,15 +37,18 @@ type ListFormatter struct {
 }
 
 // drawSystemList draws a list with title, optional "MORE" indicator, and formatted lines.
-// Returns the bounds of the drawn list.
+// Returns the frame of the drawn list.
 func (sp *Scope) drawSystemList(ctx *scope.Context, drawExtent math.Extent2D, pos *[2]float32,
-	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder, formatter ListFormatter) math.Extent2D {
+	style renderer.TextStyle, td *renderer.TextDrawBuilder, formatter ListFormatter) listFrame {
 	var allText strings.Builder
+	rows := formatter.Lines
 	if formatter.Title != "" {
 		allText.WriteString(formatter.Title + "\n")
+		rows++
 	}
 	if formatter.Entries > formatter.Lines && formatter.Lines > 0 {
 		fmt.Fprintf(&allText, "MORE: %d/%d\n", formatter.Lines, formatter.Entries)
+		rows++
 	}
 	for i := range min(formatter.Entries, formatter.Lines) {
 		l := allText.Len()
@@ -55,7 +58,9 @@ func (sp *Scope) drawSystemList(ctx *scope.Context, drawExtent math.Extent2D, po
 		}
 	}
 
-	return sp.drawListText(ctx, drawExtent, pos, rewriteDelta(allText.String()), style, td, formatter.FrameTitle, ld)
+	f := sp.drawListText(ctx, drawExtent, pos, rewriteDelta(allText.String()), style, td, formatter.FrameTitle)
+	f.reserve(style.Font, 0, rows)
+	return f
 }
 
 // formatListEntry formats a single entry of a STARS system list based on
@@ -193,66 +198,132 @@ func (sp *Scope) drawSystemLists(ctx *scope.Context, drawExtent math.Extent2D, t
 		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.TextAlert)
 	}
 
-	// Collect bounds from all lists for overlap detection
-	allBounds := []math.Extent2D{
-		sp.drawPreviewArea(ctx, drawExtent, previewAreaColor, td, ld),
+	lists := []listFrame{
+		sp.drawPreviewArea(ctx, drawExtent, previewAreaColor, td),
 		sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), listStyle, td, transforms, ld, drawExtent, cb),
-		sp.drawVFRList(ctx, drawExtent, listStyle, td, ld),
-		sp.drawTABList(ctx, drawExtent, listStyle, td, ld),
-		sp.drawAlertList(ctx, drawExtent, listStyle, td, ld),
-		sp.drawCoastList(ctx, drawExtent, listStyle, td, ld),
-		sp.drawMapsList(ctx, drawExtent, listStyle, td, ld),
-		sp.drawRestrictionAreasList(ctx, drawExtent, listStyle, td, ld),
-		sp.drawCRDAStatusList(ctx, drawExtent, listStyle, td, ld),
-		sp.drawMCISuppressionList(ctx, drawExtent, listStyle, td, ld),
+		sp.drawVFRList(ctx, drawExtent, listStyle, td),
+		sp.drawTABList(ctx, drawExtent, listStyle, td),
+		sp.drawAlertList(ctx, drawExtent, listStyle, td),
+		sp.drawCoastList(ctx, drawExtent, listStyle, td),
+		sp.drawMapsList(ctx, drawExtent, listStyle, td),
+		sp.drawRestrictionAreasList(ctx, drawExtent, listStyle, td),
+		sp.drawCRDAStatusList(ctx, drawExtent, listStyle, td),
+		sp.drawMCISuppressionList(ctx, drawExtent, listStyle, td),
 	}
 
 	towerListAirports := ctx.Client.TowerListAirports()
 	for i := range ps.TowerLists {
 		if ps.TowerLists[i].Visible && i < len(towerListAirports) {
-			allBounds = append(allBounds, sp.drawTowerList(ctx, drawExtent, towerListAirports[i], i, listStyle, td, ld))
+			lists = append(lists, sp.drawTowerList(ctx, drawExtent, towerListAirports[i], i, listStyle, td))
 		}
 	}
 
-	allBounds = append(allBounds, sp.drawSignOnList(ctx, drawExtent, listStyle, td, ld))
-	allBounds = append(allBounds, sp.drawCoordinationLists(ctx, drawExtent, transforms, td, ld)...)
+	lists = append(lists, sp.drawSignOnList(ctx, drawExtent, listStyle, td))
+	lists = append(lists, sp.drawCoordinationLists(ctx, drawExtent, transforms, td)...)
+
+	sp.drawListFrames(ctx, lists, drawExtent, td, ld)
 
 	td.GenerateCommands(cb)
-
-	// Draw green frames around overlapping lists (only when not actively moving a list)
-	if sp.movingList == "" && ctx.Mouse != nil && !ctx.Mouse.Down[platform.MouseButtonTertiary] {
-		for i, b1 := range allBounds {
-			if b1.Width() <= 0 {
-				continue
-			}
-			for _, b2 := range allBounds[i+1:] {
-				if b2.Width() <= 0 {
-					continue
-				}
-				if math.Overlaps(b1, b2) {
-					sp.drawListFrameColor(ctx, b1, sp.Colors.List, ld)
-					sp.drawListFrameColor(ctx, b2, sp.Colors.List, ld)
-				}
-			}
-		}
-	}
-
 	ld.GenerateCommands(cb)
 }
 
-func (sp *Scope) drawListFrame(ctx *scope.Context, bounds math.Extent2D, title string,
+// listFrame records where a data area or list was drawn so that list
+// frames and list moves can be handled for all of them together.
+type listFrame struct {
+	bounds math.Extent2D
+	title  string
+	pos    *[2]float32 // normalized list position; updated when the list is moved
+}
+
+// reserve grows the frame down and to the right to cover at least the
+// given number of character columns and rows, so that the frame shows the
+// space allocated to a list that isn't full.
+func (l *listFrame) reserve(font *renderer.Font, cols, rows int) {
+	if l.pos == nil { // the list wasn't drawn
+		return
+	}
+	l.bounds.P1[0] = max(l.bounds.P1[0], l.bounds.P0[0]+float32(cols)*font.LookupGlyph(' ').AdvanceX)
+	l.bounds.P0[1] = min(l.bounds.P0[1], l.bounds.P1[1]-float32(rows*font.Size))
+}
+
+// drawListFrames handles list moves (4.9.27) and draws list frames: white
+// for a list being moved and the lists it overlaps, green with titles for
+// all lists while the middle button is held away from tracks and lists
+// (4.9.28), and otherwise green around lists that overlap.
+func (sp *Scope) drawListFrames(ctx *scope.Context, lists []listFrame, drawExtent math.Extent2D,
 	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) {
-	if bounds.Width() <= 0 {
+	lists = slices.DeleteFunc(lists, func(l listFrame) bool { return l.bounds.Width() <= 0 })
+	underCursor := func(l listFrame) bool { return ctx.Mouse != nil && l.bounds.Inside(ctx.Mouse.Pos) }
+
+	// One middle click on a list picks it up and the next one places it.
+	place := false
+	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonTertiary] {
+		if sp.movingList != "" {
+			place = true
+		} else if i := slices.IndexFunc(lists, underCursor); i != -1 {
+			sp.movingList = lists[i].title
+			sp.movingListAnchor = ctx.Mouse.Pos
+		}
+	}
+
+	if sp.movingList != "" {
+		sp.drawMovingListFrames(ctx, lists, drawExtent, place, td, ld)
 		return
 	}
 
-	sp.drawListFrameColor(ctx, bounds, sp.Colors.List, ld)
+	if sp.showListFrames && !slices.ContainsFunc(lists, underCursor) {
+		for _, l := range lists {
+			sp.drawListFrame(ctx, l, sp.Colors.List, td, ld)
+		}
+		return
+	}
 
-	// Draw title above the frame in a smaller font
+	for i, l1 := range lists {
+		for _, l2 := range lists[i+1:] {
+			if math.Overlaps(l1.bounds, l2.bounds) {
+				sp.drawListFrameColor(ctx, l1.bounds, sp.Colors.List, ld)
+				sp.drawListFrameColor(ctx, l2.bounds, sp.Colors.List, ld)
+			}
+		}
+	}
+}
+
+// drawMovingListFrames draws the frame of the list being moved at the
+// cursor, along with the frames of the lists it overlaps there, and moves
+// the list there if place is set.
+func (sp *Scope) drawMovingListFrames(ctx *scope.Context, lists []listFrame, drawExtent math.Extent2D, place bool,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) {
+	i := slices.IndexFunc(lists, func(l listFrame) bool { return l.title == sp.movingList })
+	if i == -1 || ctx.Mouse == nil {
+		return
+	}
+
+	list := lists[i]
+	delta := math.Sub2f(ctx.Mouse.Pos, sp.movingListAnchor)
+	moved := listFrame{bounds: list.bounds.Offset(delta), title: list.title}
+	sp.drawListFrame(ctx, moved, sp.Colors.MovingListFrame, td, ld)
+	for j, l := range lists {
+		if j != i && math.Overlaps(l.bounds, moved.bounds) {
+			sp.drawListFrame(ctx, l, sp.Colors.MovingListFrame, td, ld)
+		}
+	}
+
+	if place {
+		list.pos[0] += delta[0] / drawExtent.Width()
+		list.pos[1] += delta[1] / drawExtent.Height()
+		sp.movingList = ""
+	}
+}
+
+func (sp *Scope) drawListFrame(ctx *scope.Context, l listFrame, color renderer.RGB,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) {
+	sp.drawListFrameColor(ctx, l.bounds, color, ld)
+
+	// Draw title above the frame
 	ps := sp.currentPrefs()
-	font := sp.systemFont(ctx, max(0, ps.CharSize.Lists-1))
-	style := renderer.TextStyle{Font: font, Color: ps.Brightness.Lists.ScaleRGB(sp.Colors.List)}
-	td.AddText(title, [2]float32{bounds.P0[0], bounds.P1[1] + float32(font.Size)}, style)
+	font := sp.systemFont(ctx, ps.CharSize.Lists)
+	style := renderer.TextStyle{Font: font, Color: ps.Brightness.Lists.ScaleRGB(color)}
+	td.AddText(l.title, [2]float32{l.bounds.P0[0], l.bounds.P1[1] + float32(font.Size)}, style)
 }
 
 func (sp *Scope) drawListFrameColor(ctx *scope.Context, bounds math.Extent2D, color renderer.RGB,
@@ -262,67 +333,30 @@ func (sp *Scope) drawListFrameColor(ctx *scope.Context, bounds math.Extent2D, co
 	ld.AddLineLoop(c, [][2]float32{bounds.P0, {bounds.P1[0], bounds.P0[1]}, bounds.P1, {bounds.P0[0], bounds.P1[1]}})
 }
 
-func (sp *Scope) handleListDrag(ctx *scope.Context, bounds math.Extent2D, pos *[2]float32, listId string, drawExtent math.Extent2D,
-	ld *renderer.ColoredLinesDrawBuilder) {
-	if ctx.Mouse == nil {
-		return
-	}
-
-	// First middle click inside this list's bounds starts moving
-	if sp.movingList == "" && ctx.Mouse.Clicked[platform.MouseButtonTertiary] && bounds.Inside(ctx.Mouse.Pos) {
-		sp.movingList = listId
-		sp.movingListBounds = bounds
-		sp.movingListOffset = math.Sub2f(ctx.Mouse.Pos, bounds.P0)
-	}
-
-	if sp.movingList == listId {
-		// Draw green frame at original location
-		sp.drawListFrameColor(ctx, sp.movingListBounds, sp.Colors.List, ld)
-
-		// Draw white frame at current cursor position
-		cursorPos := ctx.Mouse.Pos
-		offset := sp.movingListOffset
-		size := [2]float32{sp.movingListBounds.Width(), sp.movingListBounds.Height()}
-		movedBounds := math.Extent2D{
-			P0: math.Sub2f(cursorPos, offset),
-			P1: math.Add2f(math.Sub2f(cursorPos, offset), size),
-		}
-		sp.drawListFrameColor(ctx, movedBounds, sp.Colors.ListFrame, ld)
-
-		// Second middle click outside original bounds finishes the move
-		if ctx.Mouse.Clicked[platform.MouseButtonTertiary] && !sp.movingListBounds.Inside(ctx.Mouse.Pos) {
-			delta := math.Sub2f(movedBounds.P0, sp.movingListBounds.P0)
-			pos[0] += delta[0] / drawExtent.Width()
-			pos[1] += delta[1] / drawExtent.Height()
-			sp.movingList = ""
-		}
-	}
-}
-
 func (sp *Scope) drawListText(ctx *scope.Context, drawExtent math.Extent2D, pos *[2]float32,
 	text string, style renderer.TextStyle, td *renderer.TextDrawBuilder,
-	frameTitle string, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	frameTitle string) listFrame {
 	if text == "" {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	pw := [2]float32{pos[0] * drawExtent.Width(), pos[1] * drawExtent.Height()}
-	ext := style.Font.LayoutBounds(text, 0)
+	// A trailing newline ends the last row rather than starting another.
+	ext := style.Font.LayoutBounds(strings.TrimSuffix(text, "\n"), 0)
 	td.AddText(text, pw, style)
 
-	bounds := math.Extent2D{
-		P0: [2]float32{pw[0], pw[1] - ext.Height()},
-		P1: [2]float32{pw[0] + ext.Width(), pw[1]},
+	return listFrame{
+		bounds: math.Extent2D{
+			P0: [2]float32{pw[0], pw[1] - ext.Height()},
+			P1: [2]float32{pw[0] + ext.Width(), pw[1]},
+		},
+		title: frameTitle,
+		pos:   pos,
 	}
-	sp.handleListDrag(ctx, bounds, pos, frameTitle, drawExtent, ld)
-	if sp.showListFrames {
-		sp.drawListFrame(ctx, bounds, frameTitle, td, ld)
-	}
-	return bounds
 }
 
 func (sp *Scope) drawPreviewArea(ctx *scope.Context, drawExtent math.Extent2D, color renderer.RGB,
-	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	td *renderer.TextDrawBuilder) listFrame {
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
@@ -348,8 +382,13 @@ func (sp *Scope) drawPreviewArea(ctx *scope.Context, drawExtent math.Extent2D, c
 		Font:  sp.systemFont(ctx, ps.CharSize.Lists),
 		Color: color,
 	}
-	return sp.drawListText(ctx, drawExtent, &ps.PreviewAreaPosition, rewriteDelta(text.String()),
-		style, td, "PREVIEW AREA (P)", ld)
+	f := sp.drawListText(ctx, drawExtent, &ps.PreviewAreaPosition, rewriteDelta(text.String()),
+		style, td, "PREVIEW AREA (P)")
+	// 2.14: one extrinsic message line, three readout lines, and at least
+	// two preview display lines. The manual doesn't give a width; 40
+	// columns leaves room past the 32-character input lines.
+	f.reserve(style.Font, 40, 6)
+	return f
 }
 
 // systemAltimeter returns the station whose setting the SSA ALTSTG field shows
@@ -407,7 +446,7 @@ func (sp *Scope) altimeterAirports(ctx *scope.Context) []av.ICAOAirportCode {
 }
 
 func (sp *Scope) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle renderer.TextStyle, td *renderer.TextDrawBuilder,
-	transforms scope.Transformations, ld *renderer.ColoredLinesDrawBuilder, drawExtent math.Extent2D, cb *renderer.CommandBuffer) math.Extent2D {
+	transforms scope.Transformations, ld *renderer.ColoredLinesDrawBuilder, drawExtent math.Extent2D, cb *renderer.CommandBuffer) listFrame {
 	ps := sp.currentPrefs()
 	startY := pw[1]
 	startX := pw[0]
@@ -802,11 +841,7 @@ func (sp *Scope) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle render
 		P0: [2]float32{startX, pw[1]},
 		P1: [2]float32{maxX, startY},
 	}
-	sp.handleListDrag(ctx, bounds, &ps.SSAList.Position, "ssa", drawExtent, ld)
-	if sp.showListFrames {
-		sp.drawListFrame(ctx, bounds, "SSA (S)", td, ld)
-	}
-	return bounds
+	return listFrame{bounds: bounds, title: "SSA (S)", pos: &ps.SSAList.Position}
 }
 
 func getDuplicateBeaconCodes(ctx *scope.Context) map[av.Squawk]any {
@@ -833,10 +868,10 @@ func getDuplicateBeaconCodes(ctx *scope.Context) map[av.Squawk]any {
 }
 
 func (sp *Scope) drawVFRList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	if !ps.VFRList.Visible {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
@@ -860,7 +895,7 @@ func (sp *Scope) drawVFRList(ctx *scope.Context, drawExtent math.Extent2D, style
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
-	return sp.drawSystemList(ctx, drawExtent, &ps.VFRList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.VFRList.Position, style, td, ListFormatter{
 		Title:      "VFR LIST",
 		FrameTitle: "VFR LIST (TV)",
 		Lines:      ps.VFRList.Lines,
@@ -882,10 +917,10 @@ func (sp *Scope) drawVFRList(ctx *scope.Context, drawExtent math.Extent2D, style
 }
 
 func (sp *Scope) drawTABList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	if !ps.TABList.Visible {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
@@ -930,7 +965,7 @@ func (sp *Scope) drawTABList(ctx *scope.Context, drawExtent math.Extent2D, style
 
 	dupes := getDuplicateBeaconCodes(ctx)
 
-	return sp.drawSystemList(ctx, drawExtent, &ps.TABList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.TABList.Position, style, td, ListFormatter{
 		Title:      "FLIGHT PLAN",
 		FrameTitle: "FLIGHT PLAN (T)",
 		Lines:      ps.TABList.Lines,
@@ -952,14 +987,14 @@ func (sp *Scope) drawTABList(ctx *scope.Context, drawExtent math.Extent2D, style
 }
 
 func (sp *Scope) drawAlertList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	td *renderer.TextDrawBuilder) listFrame {
 	// The alert list can't be hidden.
 	var text strings.Builder
 	var lists []string
 	ps := sp.currentPrefs()
 
 	if ps.DisableMSAW && ps.DisableCAWarnings && ps.DisableMCIWarnings {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	var msaw []sim.Track
@@ -1060,14 +1095,13 @@ func (sp *Scope) drawAlertList(ctx *scope.Context, drawExtent math.Extent2D, sty
 
 		if text.Len() > 0 {
 			return sp.drawListText(ctx, drawExtent, &ps.AlertList.Position, text.String(),
-				style, td, "ALERT LIST (TM)", ld)
+				style, td, "ALERT LIST (TM)")
 		}
 	}
-	return math.Extent2D{}
+	return listFrame{}
 }
 
-func (sp *Scope) drawCoastList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
-	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+func (sp *Scope) drawCoastList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder) listFrame {
 	// Get suspended tracks (coast not yet supported)
 	tracks := slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks),
 		func(t *sim.Track) bool { return t.IsAssociated() && t.FlightPlan.Suspended }))
@@ -1076,10 +1110,10 @@ func (sp *Scope) drawCoastList(ctx *scope.Context, drawExtent math.Extent2D, sty
 		func(a, b *sim.Track) int { return a.FlightPlan.CoastSuspendIndex - b.FlightPlan.CoastSuspendIndex })
 
 	ps := sp.currentPrefs()
-	return sp.drawSystemList(ctx, drawExtent, &ps.CoastList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.CoastList.Position, style, td, ListFormatter{
 		Title:      "COAST/SUSPEND",
 		FrameTitle: "COAST/SUSPEND (TC)",
-		Lines:      len(tracks), // Show all suspended tracks
+		Lines:      max(len(tracks), ps.CoastList.Lines), // Show all suspended tracks
 		Entries:    len(tracks),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			trk := tracks[idx]
@@ -1104,11 +1138,10 @@ func (sp *Scope) drawCoastList(ctx *scope.Context, drawExtent math.Extent2D, sty
 	})
 }
 
-func (sp *Scope) drawMapsList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
-	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+func (sp *Scope) drawMapsList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	if !ps.VideoMapsList.Visible {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	var text strings.Builder
@@ -1161,14 +1194,13 @@ func (sp *Scope) drawMapsList(ctx *scope.Context, drawExtent math.Extent2D, styl
 	}
 
 	return sp.drawListText(ctx, drawExtent, &ps.VideoMapsList.Position, text.String(),
-		style, td, "MAPS", ld)
+		style, td, "MAPS")
 }
 
-func (sp *Scope) drawRestrictionAreasList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
-	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+func (sp *Scope) drawRestrictionAreasList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	if !ps.RestrictionAreaList.Visible {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	// Collect all restriction areas with their indices
@@ -1181,7 +1213,7 @@ func (sp *Scope) drawRestrictionAreasList(ctx *scope.Context, drawExtent math.Ex
 		areas = append(areas, indexedRA{ra, idx})
 	}
 
-	return sp.drawSystemList(ctx, drawExtent, &ps.RestrictionAreaList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.RestrictionAreaList.Position, style, td, ListFormatter{
 		Title:      "GEO RESTRICTIONS",
 		FrameTitle: "GEO RESTRICTIONS (TRA)",
 		Lines:      len(areas), // Show all restriction areas
@@ -1204,10 +1236,10 @@ func (sp *Scope) drawRestrictionAreasList(ctx *scope.Context, drawExtent math.Ex
 }
 
 func (sp *Scope) drawCRDAStatusList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	if !ps.CRDAStatusList.Visible {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	// Pre-compute the line data since it needs stateful processing
@@ -1234,7 +1266,7 @@ func (sp *Scope) drawCRDAStatusList(ctx *scope.Context, drawExtent math.Extent2D
 		lines = append(lines, line.String())
 	}
 
-	return sp.drawSystemList(ctx, drawExtent, &ps.CRDAStatusList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.CRDAStatusList.Position, style, td, ListFormatter{
 		Title:      "CRDA STATUS",
 		FrameTitle: "CRDA STATUS (TN)",
 		Lines:      len(lines), // Show all CRDA pairs
@@ -1246,10 +1278,10 @@ func (sp *Scope) drawCRDAStatusList(ctx *scope.Context, drawExtent math.Extent2D
 }
 
 func (sp *Scope) drawMCISuppressionList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	if !ps.MCISuppressionList.Visible {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	// Filter tracks with MCI suppression
@@ -1257,7 +1289,7 @@ func (sp *Scope) drawMCISuppressionList(ctx *scope.Context, drawExtent math.Exte
 		return trk.IsAssociated() && trk.FlightPlan.MCISuppressedCode != av.Squawk(0)
 	})
 
-	return sp.drawSystemList(ctx, drawExtent, &ps.MCISuppressionList.Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.MCISuppressionList.Position, style, td, ListFormatter{
 		Title:      "MCI SUPPRESSION",
 		FrameTitle: "MCI SUPPRESSION (TQ)",
 		Lines:      len(mciTracks), // Show all MCI tracks
@@ -1274,7 +1306,7 @@ func (sp *Scope) drawMCISuppressionList(ctx *scope.Context, drawExtent math.Exte
 }
 
 func (sp *Scope) drawTowerList(ctx *scope.Context, drawExtent math.Extent2D, airport av.ICAOAirportCode, towerIndex int,
-	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	style renderer.TextStyle, td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	loc := ctx.Client.State.Airports[airport].Location
 	m := make(map[float32]string)
@@ -1289,7 +1321,7 @@ func (sp *Scope) drawTowerList(ctx *scope.Context, drawExtent math.Extent2D, air
 
 	k := util.SortedMapKeys(m)
 
-	return sp.drawSystemList(ctx, drawExtent, &ps.TowerLists[towerIndex].Position, style, td, ld, ListFormatter{
+	return sp.drawSystemList(ctx, drawExtent, &ps.TowerLists[towerIndex].Position, style, td, ListFormatter{
 		Title:      db.AirportDisplayId(airport) + " TOWER",
 		FrameTitle: db.AirportDisplayId(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
 		Lines:      ps.TowerLists[towerIndex].Lines,
@@ -1300,11 +1332,10 @@ func (sp *Scope) drawTowerList(ctx *scope.Context, drawExtent math.Extent2D, air
 	})
 }
 
-func (sp *Scope) drawSignOnList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
-	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+func (sp *Scope) drawSignOnList(ctx *scope.Context, drawExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder) listFrame {
 	ps := sp.currentPrefs()
 	if !ps.SignOnList.Visible {
-		return math.Extent2D{}
+		return listFrame{}
 	}
 
 	if ctrl := ctx.UserController(); ctrl != nil {
@@ -1315,13 +1346,13 @@ func (sp *Scope) drawSignOnList(ctx *scope.Context, drawExtent math.Extent2D, st
 		}
 		s := string(ctx.UserTCW) + initials + " " + signOnTime.UTC().Format("1504")
 		return sp.drawListText(ctx, drawExtent, &ps.SignOnList.Position, s,
-			style, td, "SIGN ON (TS)", ld)
+			style, td, "SIGN ON (TS)")
 	}
-	return math.Extent2D{}
+	return listFrame{}
 }
 
 func (sp *Scope) drawCoordinationLists(ctx *scope.Context, drawExtent math.Extent2D, transforms scope.Transformations,
-	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) []math.Extent2D {
+	td *renderer.TextDrawBuilder) []listFrame {
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	titleStyle := renderer.TextStyle{
@@ -1335,7 +1366,7 @@ func (sp *Scope) drawCoordinationLists(ctx *scope.Context, drawExtent math.Exten
 
 	releaseDepartures := ctx.Client.State.GetSTARSReleaseDepartures()
 
-	var allBounds []math.Extent2D
+	var frames []listFrame
 	fa := ctx.FacilityAdaptation
 
 	// Per airport, the set of owners that have a dedicated (owner-scoped) list.
@@ -1421,15 +1452,20 @@ func (sp *Scope) drawCoordinationLists(ctx *scope.Context, drawExtent math.Exten
 		halfSeconds := time.Now().UnixMilli() / 500
 		blinkDim := halfSeconds&1 == 0
 
-		if list.AutoRelease {
-			pw = td.AddText(strings.ToUpper(cl.Name)+"    AUTO\n", pw, titleStyle)
-		} else {
-			pw = td.AddText(strings.ToUpper(cl.Name)+"\n", pw, titleStyle)
+		addText := func(s string, style renderer.TextStyle) {
+			pw = td.AddText(s, pw, style)
+			maxX = max(maxX, startPos[0]+font.LayoutBounds(s, 0).Width())
 		}
-		maxX = max(maxX, pw[0])
+
+		rows := 1 + list.Lines
+		if list.AutoRelease {
+			addText(strings.ToUpper(cl.Name)+"    AUTO\n", titleStyle)
+		} else {
+			addText(strings.ToUpper(cl.Name)+"\n", titleStyle)
+		}
 		if len(rel) > list.Lines {
-			pw = td.AddText(fmt.Sprintf("MORE: %d/%d\n", list.Lines, len(rel)), pw, listStyle)
-			maxX = max(maxX, pw[0])
+			addText(fmt.Sprintf("MORE: %d/%d\n", list.Lines, len(rel)), listStyle)
+			rows++
 		}
 		var text strings.Builder
 		for i := range min(len(rel), list.Lines) {
@@ -1446,21 +1482,20 @@ func (sp *Scope) drawCoordinationLists(ctx *scope.Context, drawExtent math.Exten
 				}))
 				text.WriteString("\n")
 			}
-			style := util.Select(!dep.Released && blinkDim, dimStyle, listStyle)
-			pw = td.AddText(rewriteDelta(text.String()), pw, style)
-			maxX = max(maxX, pw[0])
+			addText(rewriteDelta(text.String()), util.Select(!dep.Released && blinkDim, dimStyle, listStyle))
 		}
 
-		bounds := math.Extent2D{
-			P0: [2]float32{startPos[0], pw[1]},
-			P1: [2]float32{maxX, startPos[1]},
+		f := listFrame{
+			bounds: math.Extent2D{
+				P0: [2]float32{startPos[0], pw[1]},
+				P1: [2]float32{maxX, startPos[1]},
+			},
+			title: strings.ToUpper(cl.Name),
+			pos:   &list.Position,
 		}
-		sp.handleListDrag(ctx, bounds, &list.Position, "coord:"+cl.Name, drawExtent, ld)
-		if sp.showListFrames {
-			sp.drawListFrame(ctx, bounds, strings.ToUpper(cl.Name), td, ld)
-		}
-		allBounds = append(allBounds, bounds)
+		f.reserve(font, 0, rows)
+		frames = append(frames, f)
 	}
 
-	return allBounds
+	return frames
 }
