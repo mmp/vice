@@ -998,3 +998,39 @@ func TestReportingPointUnmarshal(t *testing.T) {
 		t.Errorf("location %v is %.2f nm from where it should be", rp.Location, d)
 	}
 }
+
+// A route's final STAR has to be one the CIFP charts at the airport or, in a
+// historical scenario, one of the scenario's arrivals flies, matched by its
+// base name either way.
+func TestTrafficRouteSTARs(t *testing.T) {
+	oldDB := testDB
+	testDB = testDatabase{Airports: map[ICAOAirportCode]testAirport{
+		"KTST": {Id: "KTST", Location: math.Point2LL{-93, 45}, Runways: []Runway{{Id: "12"}},
+			STARs: map[string]STAR{"CURRENT1": {}}},
+		"KORD": {Id: "KORD"},
+	}}
+	t.Cleanup(func() { testDB = oldDB })
+
+	for _, tc := range []struct {
+		route      string
+		historical []string
+		ok         bool
+	}{
+		{"SHONN CURRENT2", nil, true},
+		{"SHONN RETIRED3", nil, false},
+		{"SHONN RETIRED3", []string{"RETIRED3"}, true},
+		{"SHONN RETIRED2", []string{"RETIRED3"}, true},
+		{"SHONN RETIERD3", []string{"RETIRED3"}, false},
+		{"SHONN CURRENT1", []string{"RETIRED3"}, true},
+	} {
+		ap := &Airport{TrafficRoutes: TrafficRoutes{Arrivals: map[ICAOAirportCode]TrafficRouteSet{
+			"KORD": {{Route: tc.route}}}}}
+		var e util.ErrorLogger
+		ap.Finalize("KTST", testLocator{"SHONN": {-94, 45}}, 45, 0, nil, nil, nil,
+			func(string) bool { return true }, tc.historical, &e)
+		if ok := !strings.Contains(e.String(), "matches no STAR"); ok != tc.ok {
+			t.Errorf("%q with historical STARs %v: accepted %v, expected %v: %s", tc.route,
+				tc.historical, ok, tc.ok, e.String())
+		}
+	}
+}

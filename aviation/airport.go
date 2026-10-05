@@ -77,9 +77,14 @@ type VFRRouteSpec struct {
 	Description string          `json:"description"`
 }
 
+// Finalize checks the airport's definition and resolves its routes.
+// historicalSTARs are the STARs a historical scenario's arrivals fly into the
+// airport; its "traffic_routes" may name them though the CIFP doesn't chart
+// them.
 func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[ControlPosition]*Controller, scratchpads map[string]string,
-	facilityAirports map[ICAOAirportCode]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
+	facilityAirports map[ICAOAirportCode]*Airport, checkScratchpad func(string) bool, historicalSTARs []string,
+	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if p, ok := db.AirportLocation(icao); !ok {
@@ -373,9 +378,13 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 				continue
 			}
 			// A final token that looks like a procedure name must be one of
-			// the airport's STARs; anything else is likely a typo.
+			// the airport's charted STARs or, in a historical scenario, one
+			// its arrivals fly; anything else is likely a typo.
 			if token, _ := RouteFiledSTAR(db, r.Route, icao); token != "" {
-				if star, _ := RouteSTAR(db, r.Route, icao); star == "" {
+				star, _ := RouteSTAR(db, r.Route, icao)
+				flown := slices.ContainsFunc(historicalSTARs,
+					func(s string) bool { return ProcedureBase(s) == ProcedureBase(token) })
+				if star == "" && !flown {
 					e.ErrorString("%s: %q matches no STAR at %s", r.Route, token, icao)
 				}
 			}

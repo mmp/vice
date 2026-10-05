@@ -258,11 +258,23 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	if len(sg.Airports) == 0 {
 		e.ErrorString(`No "airports" specified in scenario group`)
 	}
+	// A historical scenario's arrivals fly STARs the CIFP may no longer chart,
+	// and published traffic is matched against those rather than the CIFP's.
+	historicalSTARs := make(map[av.ICAOAirportCode][]string)
+	if sg.HistoricalScenario {
+		for _, flow := range sg.InboundFlows {
+			for _, ar := range flow.Arrivals {
+				for _, icao := range ar.Airports {
+					historicalSTARs[icao] = append(historicalSTARs[icao], ar.ServedSTARs()...)
+				}
+			}
+		}
+	}
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + string(name))
 		ap.Finalize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
 			sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.Scratchpads, sg.Airports,
-			sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, e)
+			sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, historicalSTARs[name], e)
 		e.Pop()
 	}
 
