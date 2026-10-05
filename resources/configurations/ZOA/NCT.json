@@ -235,97 +235,136 @@
     "configurations": {
       "C1A": {
         "inbound_assignments": {
-          "BRINY2": "1K",
           "BRIXX4": "1K",
           "EMZOH4.W": "1M",
           "PYE3": "1K",
           "RAZRR5.W": "1Q",
           "RISTI1.ORRCA": "1L",
           "RISTI1.TIPRE": "1L",
+          "SJC OCEANIC.SFOW": "1K",
+          "SOUTH NUQ ARR": "1M",
+          "EAST NUQ ARR": "1Q",
+          "EAST SJC CX ARR (T J).W": "1L",
+          "EAST SJC CX ARR (PROP)": "1T",
+          "SOUTH OAK/SJC/MRY CX ARR.W": "1Q",
+          "PXN6": "1M",
           "SAT.EAST": "1M",
-          "SAT.SOUTH": "1M",
+          "SAT.SOUTH.W": "1M",
           "SILCN6.N": "1M"
         },
         "departure_assignments": {
           "KMRY": "1S",
           "KPAO": "1T",
           "KSJC": "1T",
-          "KSNS": "1M"
+          "KRHV": "1T",
+          "KSNS": "1M",
+          "KNUQ": "1T"
         },
         "default_consolidation": {
-          "1L": ["1K", "1T"],
-          "1M": ["1L", "1Q", "1S"],
+          "1M": ["1T", "1Q", "1S"],
+          "1T": ["1L"],
+          "1L": ["1K"],
           "1S": ["1F"]
         }
       },
       "C2A": {
         "inbound_assignments": {
-          "BRINY2": "1M",
+          "BRINY2/PYE3.SFOE": "1L",
           "EMZOH4.E": "1M",
-          "FRLON2": "1M",
+          "FRLON2": "1L",
           "PYE3": "1L",
-          "RAZRR5.E": "1M",
-          "RISTI1.ORRCA": "1M",
-          "RISTI1.TIPRE": "1M",
-          "SAT.EAST": "1M",
-          "SAT.SOUTH": "1M",
+          "RAZRR5.E": "1Q",
+          "RISTI1.ORRCA": "1T",
+          "RISTI1.TIPRE": "1T",
+          "SJC OCEANIC.SFOE": "1L",
+          "SOUTH NUQ ARR": "1M",
+          "EAST NUQ ARR": "1Q",
+          "EAST SJC CX ARR (T J).E": "1L",
+          "EAST SJC CX ARR (PROP)": "1T",
+          "SOUTH OAK/SJC/MRY CX ARR.E": "1Q",
+          "PXN6": "1M",
+          "SAT.EAST": "1Q",
+          "SAT.SOUTH.E": "1S",
           "SILCN6.S": "1M"
         },
         "departure_assignments": {
           "KMRY": "1S",
           "KPAO": "1L",
           "KSJC": "1T",
+          "KRHV": "1T",
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": ["1T"],
-          "1M": ["1L", "1S"]
+          "1M": ["1T", "1Q", "1S"],
+          "1T": ["1L"],
+          "1L": ["1K"],
+          "1S": ["1F"]
         }
       },
       "C3A": {
         "inbound_assignments": {
-          "BRIXX4": "1M",
+          "BRIXX4": "1K",
           "EMZOH4.E": "1M",
-          "PYE3": "1L",
-          "RAZRR5.E": "1M",
-          "RISTI1.ORRCA": "1M",
-          "RISTI1.TIPRE": "1M",
-          "SAT.EAST": "1M",
-          "SAT.SOUTH": "1M",
+          "PYE3": "1K",
+          "RAZRR5.E": "1Q",
+          "RISTI1.ORRCA": "1T",
+          "RISTI1.TIPRE": "1T",
+          "SJC OCEANIC.SFOW": "1K",
+          "SOUTH NUQ ARR": "1M",
+          "EAST NUQ ARR": "1Q",
+          "EAST SJC CX ARR (T J).E": "1L",
+          "EAST SJC CX ARR (PROP)": "1T",
+          "SOUTH OAK/SJC/MRY CX ARR.E": "1Q",
+          "PXN6": "1M",
+          "SAT.EAST": "1Q",
+          "SAT.SOUTH.E": "1S",
           "SILCN6.S": "1M"
         },
         "departure_assignments": {
           "KMRY": "1S",
           "KPAO": "1L",
           "KSJC": "1T",
-          "KSNS": "1M"
+          "KRHV": "1T",
+          "KSNS": "1S"
         },
         "default_consolidation": {
-          "1L": ["1T"],
-          "1M": ["1L", "1S"]
+          "1M": ["1T", "1Q", "1S"],
+          "1T": ["1L"],
+          "1L": ["1K"],
+          "1S": ["1F"]
         }
       },
       "C4A": {
         "inbound_assignments": {
-          "BRIXX4": "1M",
+          "BRIXX4": "1L",
           "EMZOH4.W": "1M",
           "PYE3": "1L",
-          "RAZRR5.E": "1M",
-          "RISTI1.ORRCA": "1M",
-          "RISTI1.TIPRE": "1M",
-          "SAT.EAST": "1M",
-          "SAT.SOUTH": "1M",
+          "RAZRR5.E": "1Q",
+          "RISTI1.ORRCA": "1T",
+          "RISTI1.TIPRE": "1T",
+          "SJC OCEANIC.SFOW": "1K",
+          "SOUTH NUQ ARR": "1M",
+          "EAST NUQ ARR": "1Q",
+          "EAST SJC CX ARR (T J).E": "1L",
+          "EAST SJC CX ARR (PROP)": "1T",
+          "SOUTH OAK/SJC/MRY CX ARR.E": "1Q",
+          "PXN6": "1M",
+          "SAT.EAST": "1Q",
+          "SAT.SOUTH.E": "1S",
           "SILCN6.S": "1M"
         },
         "departure_assignments": {
           "KMRY": "1S",
           "KPAO": "1L",
           "KSJC": "1T",
+          "KRHV": "1T",
           "KSNS": "1M"
         },
         "default_consolidation": {
-          "1L": ["1T"],
-          "1M": ["1L", "1S"]
+          "1M": ["1T", "1Q", "1S"],
+          "1T": ["1L"],
+          "1L": ["1K"],
+          "1S": ["1F"]
         }
       },
       "C1B": {
@@ -335,29 +374,26 @@
           "DYAMD5": "2Z",
           "PIRAT3": "2B",
           "PYE3": "2B",
-          "RISTI1.ORRCA": "2Z",
-          "RISTI1.TIPRE": "2Z",
           "SERFR4": "2G",
-          "SJC OCEANIC": "2B",
-          "VNYRD1": "2Z",
+          "SJC OCEANIC.SFOW": "2B",
+          "VNYRD1.YOSEM/RUSME": "2Z",
           "YOSEM3": "2Z"
         },
         "departure_assignments": {
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"],
+          "2B": ["2G", "2W", "2N"],
           "2W": ["2F"],
-          "2Z": ["2N"]
+          "2N": ["2Z"]
         }
       },
       "C2B": {
         "inbound_assignments": {
           "ALWYS3": "2Z",
-          "PIRAT3": "2B",
-          "REBAS1": "2Z",
-          "RISTI1.ORRCA": "2Z",
-          "RISTI1.TIPRE": "2Z",
+          "PIRAT ARR.E": "2B",
+          "SJC OCEANIC.SFOE": "2B",
+          "REBAS1.YOSEM/RUSME": "2Z",
           "STLER4": "2B",
           "WWAVS2": "2G"
         },
@@ -365,9 +401,9 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"],
+          "2B": ["2G", "2W", "2N"],
           "2W": ["2F"],
-          "2Z": ["2N"]
+          "2N": ["2Z"]
         }
       },
       "C3B": {
@@ -377,30 +413,27 @@
           "DYAMD5": "2Z",
           "PIRAT3": "2B",
           "PYE3": "2B",
-          "RISTI1.ORRCA": "2Z",
-          "RISTI1.TIPRE": "2Z",
           "SERFR4": "2G",
-          "SJC OCEANIC": "2B",
-          "VNYRD1": "2Z",
+          "SJC OCEANIC.SFOW": "2B",
+          "VNYRD1.YOSEM/RUSME": "2Z",
           "YOSEM3": "2Z"
         },
         "departure_assignments": {
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"],
+          "2B": ["2G", "2W", "2N"],
           "2W": ["2F"],
-          "2Z": ["2N"]
+          "2N": ["2Z"]
         }
       },
       "C4B": {
         "inbound_assignments": {
           "ALWYS3": "2Z",
-          "PIRAT3": "2B",
+          "PIRAT ARR.E": "2B",
           "PYE3.SFOE": "2B",
-          "REBAS1": "2Z",
-          "RISTI1.ORRCA": "2Z",
-          "RISTI1.TIPRE": "2Z",
+          "REBAS1.YOSEM/RUSME": "2Z",
+          "SJC OCEANIC.SFOE": "2B",
           "STLER4": "2B",
           "WWAVS2": "2G"
         },
@@ -408,23 +441,31 @@
           "KSQL": "2W"
         },
         "default_consolidation": {
-          "2B": ["2G", "2W", "2Z"],
+          "2B": ["2G", "2W", "2N"],
           "2W": ["2F"],
-          "2Z": ["2N"]
+          "2N": ["2Z"]
         }
       },
       "C1C": {
         "inbound_assignments": {
           "EMZOH4.W": "3S",
           "OAKES3.W": "3S",
-          "BMBER1.NURAY": "3S",
           "BMBER1.OAKES": "3S",
-          "SUUTR4": "3S",
+          "SUUTR4/BMBER1": "3S",
+          "EAST SJC CX ARR (T J)": "3S",
+          "EAST SJC CX ARR (PROP)": "3S",
+          "SOUTH OAK/SCK/MOD CX ARR": "3K",
           "PIRAT3": "3M",
           "PXN6": "3S",
           "WNDSR2": "3G",
           "SAT.EAST": "3Y",
           "SAT.SOUTH": "3S"
+        },
+        "departure_assignments": {
+          "KHWD": "3M",
+          "KLVK": "3G",
+          "KSCK": "3Y",
+          "KMER": "3K"
         },
         "default_consolidation": {
           "3Y": ["3S", "3K", "3J"],
@@ -434,16 +475,24 @@
       },
       "C2C": {
         "inbound_assignments": {
-          "EMZOH4.E": "3S",
+          "EMZOH4.OAKE": "3S",
           "OAKES3.E": "3S",
-          "BMBER1.NURAY": "3S",
           "BMBER1.OAKES": "3S",
-          "SUUTR4": "3S",
+          "SUUTR4/BMBER1": "3S",
+          "EAST SJC CX ARR (T J)": "3S",
+          "EAST SJC CX ARR (PROP)": "3S",
+          "SOUTH OAK/SCK/MOD CX ARR": "3K",
           "PXN6": "3S",
-          "PIRAT3": "3M",
-          "AANET1": "3G",
+          "PIRAT3.OAKE": "3M",
+          "AANET1": "3M",
           "SAT.EAST": "3Y",
           "SAT.SOUTH": "3S"
+        },
+        "departure_assignments": {
+          "KHWD": "3G",
+          "KLVK": "3G",
+          "KSCK": "3Y",
+          "KMER": "3K"
         },
         "default_consolidation": {
           "3Y": ["3S", "3K", "3J"],
@@ -455,13 +504,20 @@
         "inbound_assignments": {
           "EMZOH4.E": "3S",
           "OAKES3.E": "3S",
-          "BMBER1.NURAY": "3S",
           "BMBER1.OAKES": "3S",
-          "SUUTR4": "3S",
-          "PIRAT3": "3M",
+          "SUUTR4/BMBER1": "3S",
+          "EAST SJC CX ARR (T J)": "3S",
+          "EAST SJC CX ARR (PROP)": "3S",
+          "SOUTH OAK/SCK/MOD CX ARR": "3K",
+          "PIRAT3.E": "3G",
           "AANET1": "3G",
           "SAT.EAST": "3Y",
           "SAT.SOUTH": "3S"
+        },
+        "departure_assignments": {
+          "KLVK": "3J",
+          "KSCK": "3Y",
+          "KMER": "3K"
         },
         "default_consolidation": {
           "3Y": ["3S", "3K", "3J"],
@@ -499,7 +555,9 @@
         "inbound_assignments": {
           "REBAS1.RGOOD": "4R",
           "REBAS1.YOSEM/RUSME": "4R",
-          "PYE3.SFOE": "4U"
+          "PYE3.SFOE": "4U",
+          "EMZOH4.E": "4D",
+          "OAKES3.E": "4D"
         },
         "departure_assignments": {
           "KOAK/KATFH3": "4U",
@@ -543,7 +601,8 @@
         "inbound_assignments": {
           "VNYRD1.RGOOD": "4Q",
           "VNYRD1.YOSEM/RUSME": "4Q",
-          "PYE3": "4U"
+          "PYE3": "4U",
+          "EMZOH4.E": "4D"
         },
         "departure_assignments": {
           "KOAK/QUAKE2": "4R",
@@ -559,12 +618,13 @@
       },
       "C1E": {
         "inbound_assignments": {
-          "AMRVR2": "5P",
-          "BMBER1": "5P",
+          "AMRVR2": "5X",
           "FEVTA1": "5D",
           "SAT.SOUTH": "5P",
-          "SLMMR5": "5B",
-          "SUUTR4": "5P",
+          "SLMMR5.S": "5B",
+          "SMF OCEANIC.S": "5E",
+          "BMBER1.OAKES": "5P",
+          "SUUTR4/BMBER1.S": "5P",
           "TUDOR2": "5B"
         },
         "departure_assignments": {
@@ -574,19 +634,20 @@
           "KBAB": "5E"
         },
         "default_consolidation": {
-          "5E": ["5B"],
           "5P": ["5E", "5X"],
+          "5E": ["5B"],
           "5X": ["5D"]
         }
       },
       "C3E": {
         "inbound_assignments": {
-          "AMRVR2": "5P",
-          "BMBER1": "5P",
+          "AMRVR2": "5X",
           "FEVTA1": "5D",
           "SAT.SOUTH": "5P",
-          "SLMMR5": "5B",
-          "SUUTR4": "5P",
+          "SLMMR5.N": "5B",
+          "SMF OCEANIC.N": "5D",
+          "BMBER1.OAKES": "5P",
+          "SUUTR4/BMBER1.N": "5P",
           "TUDOR2": "5B"
         },
         "departure_assignments": {
@@ -596,8 +657,8 @@
           "KBAB": "5E"
         },
         "default_consolidation": {
-          "5E": ["5B"],
           "5P": ["5E", "5X"],
+          "5E": ["5B"],
           "5X": ["5D"]
         }
       },
@@ -748,6 +809,16 @@
     "filters": {
       "quicklook": [
         {
+          "id": "Q05",
+          "description": "DELTA EXPO QUICKLOOK",
+          "type": "polygon",
+          "owning_tcp": "5X",
+          "tcps": "5D",
+          "floor": 0,
+          "ceiling": 2300,
+          "vertices": "N038.33.55.148,W121.32.17.411 N038.34.11.834,W121.27.50.086 N038.33.02.180,W121.24.59.578 N038.27.14.078,W121.24.35.656 N038.27.07.528,W121.26.30.573 N038.29.05.040,W121.31.04.984 N038.33.55.148,W121.32.17.411"
+        },
+        {
           "id": "Q09",
           "description": "BRIXX QUICKLOOK",
           "type": "polygon",
@@ -758,23 +829,14 @@
           "vertices": "N037.59.58.832,W123.05.11.682 N038.21.13.439,W122.16.20.914 N037.25.29.653,W122.12.20.423 N037.23.21.031,W122.20.10.528 N037.59.58.832,W123.05.11.682"
         },
         {
-          "id": "Q69",
-          "description": "SECA SERFR QUICKLOOK",
+          "id": "Q11",
+          "description": "WOODSIDE FOSTER SJC QUICKLOOK",
           "type": "polygon",
-          "tcps": "1S",
-          "scratchpad": "SF1,SJ1,SFO,SJC",
-          "floor": 15000,
-          "ceiling": 24000,
-          "vertices": [
-            "N036.33.08.800,W121.41.41.394",
-            "N036.14.50.112,W121.26.57.791",
-            "N036.11.45.390,W121.33.15.474",
-            "N036.09.23.612,W121.49.30.703",
-            "N036.06.55.667,W122.02.46.827",
-            "N036.11.04.219,W122.23.48.195",
-            "N036.23.39.680,W122.32.16.257",
-            "N036.33.08.800,W121.41.41.394"
-          ]
+          "tcps": "2F,2W",
+          "scratchpad": "SJ1,SJC",
+          "floor": 0,
+          "ceiling": 4000,
+          "vertices": "N037.23.05.581,W122.04.03.814 N037.22.21.911,W122.08.17.378 N037.28.05.577,W122.10.35.614 N037.30.08.596,W122.09.53.618 N037.33.01.356,W122.05.14.978 N037.31.55.150,W122.00.49.163 N037.28.05.659,W122.05.30.139 N037.27.07.871,W122.05.43.048 N037.23.05.581,W122.04.03.814"
         },
         {
           "id": "Q13",
@@ -927,14 +989,53 @@
           "vertices": "N037.23.50.845,W121.56.21.784 N037.23.37.057,W121.40.42.974 N037.43.27.646,W121.31.06.577 N037.58.44.153,W120.13.45.183 N039.07.00.913,W120.43.11.867 N038.47.22.410,W121.57.18.198 N037.54.21.360,W122.36.55.036 N037.35.36.085,W122.24.17.089 N037.23.50.845,W121.56.21.784"
         },
         {
+          "id": "Q50",
+          "description": "AREA E WINE COUNTRY QUICKLOOK",
+          "type": "polygon",
+          "scratchpad": "APC,DVO,HES,O69,STS",
+          "tcps": "5B,5D,5E",
+          "floor": 8000,
+          "ceiling": 19000,
+          "vertices": "N038.51.57.013,W121.24.49.443 N038.20.46.220,W121.07.06.049 N038.17.19.814,W121.41.25.327 N038.47.46.799,W121.55.44.320 N038.51.57.013,W121.24.49.443"
+        },
+        {
           "id": "Q53",
-          "description": "LVK QUICKLOOK",
+          "description": "LVK 1 QUICKLOOK",
           "type": "polygon",
           "scratchpad": "LKV",
           "tcps": "3G,3J",
           "floor": 0,
           "ceiling": 5000,
           "vertices": "N037.38.08.685,W121.55.48.880 N037.47.52.883,W121.56.19.888 N037.51.27.721,W121.46.59.558 N037.52.47.797,W121.16.15.421 N037.33.59.749,W121.14.53.984 N037.38.08.685,W121.55.48.880"
+        },
+        {
+          "id": "Q54",
+          "description": "LVK 2 QUICKLOOK",
+          "type": "polygon",
+          "entry_fix": "LKV",
+          "tcps": "3G,3J",
+          "floor": 0,
+          "ceiling": 5000,
+          "vertices": "N037.39.17.157,W121.42.07.954 N037.39.01.516,W121.51.46.961 N037.55.59.976,W121.48.15.144 N037.55.05.950,W121.38.18.834 N037.47.33.259,W121.41.13.187 N037.39.17.157,W121.42.07.954"
+        },
+        {
+          "id": "Q69",
+          "description": "SECA SERFR QUICKLOOK",
+          "type": "polygon",
+          "tcps": "1S",
+          "scratchpad": "SF1,SJ1,SFO,SJC",
+          "floor": 15000,
+          "ceiling": 24000,
+          "vertices": [
+            "N036.33.08.800,W121.41.41.394",
+            "N036.14.50.112,W121.26.57.791",
+            "N036.11.45.390,W121.33.15.474",
+            "N036.09.23.612,W121.49.30.703",
+            "N036.06.55.667,W122.02.46.827",
+            "N036.11.04.219,W122.23.48.195",
+            "N036.23.39.680,W122.32.16.257",
+            "N036.33.08.800,W121.41.41.394"
+          ]
         },
         {
           "id": "Q81",
@@ -965,6 +1066,16 @@
           "vertices": "N037.19.50.148,W121.28.14.393 N037.22.21.156,W121.16.46.237 N036.39.06.995,W120.32.04.227 N036.13.34.773,W120.50.20.635 N036.06.07.369,W121.04.55.642 N036.10.05.387,W121.36.12.683 N037.00.36.776,W122.03.28.135 N037.19.50.148,W121.28.14.393"
         },
         {
+          "id": "Q85",
+          "description": "SUNOL DYAMD QUICKLOOK",
+          "type": "polygon",
+          "scratchpad": "SFO,SF1",
+          "tcps": "3S",
+          "floor": 7000,
+          "ceiling": 21000,
+          "vertices": "N037.40.05.799,W121.20.35.659 N037.39.35.257,W121.34.11.916 N037.46.28.330,W121.41.22.745 N037.48.43.406,W121.52.07.395 N037.57.22.483,W121.50.05.062 N037.55.31.631,W121.30.01.153 N037.40.05.799,W121.20.35.659"
+        },
+        {
           "id": "Q86",
           "description": "MORGAN QUICKLOOK",
           "type": "polygon",
@@ -983,6 +1094,26 @@
           "floor": 9000,
           "ceiling": 21000,
           "vertices": "N038.41.36.588,W120.56.41.614 N038.57.56.321,W121.04.35.756 N039.20.25.318,W120.19.53.527 N038.44.06.592,W120.07.33.323 N038.41.36.588,W120.56.41.614"
+        },
+        {
+          "id": "Q91",
+          "description": "OAK SFO DEP QUICKLOOK",
+          "type": "polygon",
+          "tcps": "4U,4R",
+          "entry_fix": "SFO,OAK",
+          "floor": 0,
+          "ceiling": 21000,
+          "vertices": "N037.44.09.119,W122.52.01.105 N037.58.42.903,W122.29.23.827 N037.35.03.387,W121.33.41.786 N037.08.20.070,W122.14.46.816 N037.31.11.795,W122.51.49.048 N037.44.09.119,W122.52.01.105"
+        },
+        {
+          "id": "Q96",
+          "description": "SMF DEP QUICKLOOK",
+          "type": "polygon",
+          "tcps": "5D,5E,5X,5P",
+          "entry_fix": "SMF",
+          "floor": 0,
+          "ceiling": 13000,
+          "vertices": "N038.37.59.869,W121.46.01.798 N038.46.51.854,W121.50.02.838 N038.55.15.742,W121.30.19.445 N038.52.04.140,W121.27.38.743 N038.43.05.920,W121.27.23.170 N038.34.02.152,W121.29.54.699 N038.37.59.869,W121.46.01.798"
         }
       ],
       "inhibit_ca": [
@@ -1227,7 +1358,7 @@
     "radar_sites": {
       "NUQ": {
         "char": "N",
-        "position": "37.424528,122.01511",
+        "position": "37.424528,-122.01511",
         "elevation": 112,
         "primary_range": 60,
         "secondary_range": 60,
@@ -1254,10 +1385,10 @@
       },
       "FLX": {
         "char": "L",
-        "position": "37.424528,122.01511",
-        "elevation": 5436,
-        "primary_range": 225,
-        "secondary_range": 225,
+        "position": "39.405283,-118.722456",
+        "elevation": 3929,
+        "primary_range": 250,
+        "secondary_range": 250,
         "silence_angle": 30,
         "slope_angle": 0.3
       },
@@ -1308,10 +1439,10 @@
       },
       "RNO": {
         "char": "R",
-        "position": "36.69462,-121.76025",
+        "position": "39.501253,-119.779589",
         "elevation": 4519,
-        "primary_range": 250,
-        "secondary_range": 250,
+        "primary_range": 60,
+        "secondary_range": 60,
         "silence_angle": 30,
         "slope_angle": 0.3
       },
@@ -1470,80 +1601,941 @@
       }
     },
     "range": 45,
-    "scratchpads": {
-      "ALANN": "ALA",
-      "ALCOA": "ALC",
-      "ALCOA.28": "ALC",
-      "ALLBE": "ALL",
-      "AMAKR": "AMK",
-      "AMAKR.28": "AMK",
-      "AVE": "AVE",
-      "BAART": "BAA",
-      "BSR": "BSR",
-      "BEBOP": "BEB",
-      "BEBOP.28": "BEB",
-      "CINNY": "CIN",
-      "CINNY.28": "CIN",
-      "DEDHD": "DHD",
-      "DEDHD.28": "DHD",
-      "DEDHD.28RT": "DHD",
-      "DOSCO": "DOS",
-      "SHUFL": "DOS",
-      "EBAYE": "EBY",
-      "ENI": "ENI",
-      "FMG": "FMG",
-      "YYUNG": "FOI",
-      "FRA": "FRA",
-      "FRAME": "FRM",
-      "FROGO": "FRO",
-      "FTHIL": "FTL",
-      "GOBBS": "GOB",
-      "GRTFL": "GRT",
-      "GRTFL.28": "GRT",
-      "GRTFL.28RT": "GRT",
-      "HOBOA": "HOB",
-      "HRNER": "HRN",
-      "KAYEX": "KAY",
-      "KAYEX.28": "KAY",
-      "KTINA": "KTI",
-      "KTINA.28": "KTI",
-      "LANDO": "LDO",
-      "LIDAT": "LID",
-      "LIN": "LIN",
-      "MACHU": "MAC",
-      "MACUS": "MCS",
-      "MOGEE": "MOG",
-      "MOGEE.28": "MOG",
-      "MOGEE.28RT": "MOG",
-      "MOXEE": "MOX",
-      "NTELL": "NTE",
-      "NTELL.28": "NTE",
-      "OAL": "OAL",
-      "OAKEY": "OKY",
-      "ORRCA": "ORR",
-      "ORRCA.28": "ORR",
-      "ORRCA.28RT": "ORR",
-      "PXN": "PXN",
-      "REBRG": "RBR",
-      "RDD": "RDD",
-      "RBL": "RBL",
-      "RALEY": "RLY",
-      "PRNCS": "PRN",
-      "SERFR": "SFR",
-      "SIGNA": "SIG",
-      "SYRAH": "SRH",
-      "SYRAH.28": "SRH",
-      "SYRAH.28RT": "SRH",
-      "SUSEY": "SSY",
-      "SUSEY.28": "SSY",
-      "TARVR": "TAR",
-      "TECKY": "NTE",
-      "TIPRE": "TPR",
-      "TIPRE.28": "TPR",
-      "TIPRE.28RT": "TPR",
-      "VLREE": "VLR"
+    "scratchpads": {},
+    "airports": {
+      "SFO": {},
+      "OAK": {},
+      "SJC": {},
+      "SMF": {},
+      "MHR": {},
+      "MRY": {},
+      "MOD": {},
+      "SCK": {}
+    },
+    "automatic_scratchpad_assignment": [
+      {
+        "config_plan": "*",
+        "entry_fix": "SIL",
+        "exit_fix": "SJC",
+        "altitude": "*",
+        "scratchpad1": "SJ1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "STU",
+        "exit_fix": "SJC",
+        "altitude": "*",
+        "scratchpad1": "SJ1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "ZIN",
+        "exit_fix": "SJC",
+        "altitude": "*",
+        "scratchpad1": "SJ1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "FRL",
+        "exit_fix": "SJC",
+        "altitude": "*",
+        "scratchpad1": "SJ1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "ZOM",
+        "exit_fix": "SFO",
+        "altitude": "*",
+        "scratchpad1": "YSM",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "LOZ",
+        "exit_fix": "SFO",
+        "altitude": "*",
+        "scratchpad1": "SF1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SER",
+        "exit_fix": "SFO",
+        "altitude": "*",
+        "scratchpad1": "SF1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "ALW",
+        "exit_fix": "SFO",
+        "altitude": "*",
+        "scratchpad1": "SF1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "ARG",
+        "exit_fix": "SFO",
+        "altitude": "*",
+        "scratchpad1": "SF1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "AAN",
+        "exit_fix": "OAK",
+        "altitude": "*",
+        "scratchpad1": "OA1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "WEB",
+        "exit_fix": "OAK",
+        "altitude": "*",
+        "scratchpad1": "OA1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "EMZ",
+        "exit_fix": "OAK",
+        "altitude": "*",
+        "scratchpad1": "OA1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "OAK",
+        "altitude": "*",
+        "scratchpad1": "OA1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "ARG",
+        "exit_fix": "OAK",
+        "altitude": "*",
+        "scratchpad1": "OA1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "NUR",
+        "exit_fix": "SMF",
+        "altitude": "*",
+        "scratchpad1": "SM1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "MA1",
+        "exit_fix": "MHR",
+        "altitude": "*",
+        "scratchpad1": "MA1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SLM",
+        "exit_fix": "SMF",
+        "altitude": "*",
+        "scratchpad1": "SM1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RR1",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SCO",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "BBO",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "KLU",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "UUP",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "HOB",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RM1",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RR1",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RN1",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "ALC",
+        "altitude": "*",
+        "scratchpad1": "ALC",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "AMA",
+        "altitude": "*",
+        "scratchpad1": "AMK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "BEB",
+        "altitude": "*",
+        "scratchpad1": "BEB",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "CIN",
+        "altitude": "*",
+        "scratchpad1": "CIN",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "GRT",
+        "altitude": "*",
+        "scratchpad1": "GRT",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "DED",
+        "altitude": "*",
+        "scratchpad1": "DHD",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "ORR",
+        "altitude": "*",
+        "scratchpad1": "ORR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "MOG",
+        "altitude": "*",
+        "scratchpad1": "MOG",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "TIP",
+        "altitude": "*",
+        "scratchpad1": "TPR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "SYR",
+        "altitude": "*",
+        "scratchpad1": "SRH",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "YYU",
+        "altitude": "*",
+        "scratchpad1": "FOI",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "KTI",
+        "altitude": "*",
+        "scratchpad1": "KTI",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "KAY",
+        "altitude": "*",
+        "scratchpad1": "KAY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "SSY",
+        "altitude": "*",
+        "scratchpad1": "SSY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "NTE",
+        "altitude": "*",
+        "scratchpad1": "NTE",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SFO",
+        "exit_fix": "ELK",
+        "altitude": "*",
+        "scratchpad1": "SM2",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "ELK",
+        "altitude": "*",
+        "scratchpad1": "SM2",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "ALC",
+        "altitude": "*",
+        "scratchpad1": "ALC",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "AMA",
+        "altitude": "*",
+        "scratchpad1": "AMK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "BEB",
+        "altitude": "*",
+        "scratchpad1": "BEB",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "CIN",
+        "altitude": "*",
+        "scratchpad1": "CIN",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "GRT",
+        "altitude": "*",
+        "scratchpad1": "GRT",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "DED",
+        "altitude": "*",
+        "scratchpad1": "DHD",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "ORR",
+        "altitude": "*",
+        "scratchpad1": "ORR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "MOG",
+        "altitude": "*",
+        "scratchpad1": "MOG",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "TIP",
+        "altitude": "*",
+        "scratchpad1": "TPR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "SYR",
+        "altitude": "*",
+        "scratchpad1": "SRH",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "YYU",
+        "altitude": "*",
+        "scratchpad1": "FOI",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "KTI",
+        "altitude": "*",
+        "scratchpad1": "KTI",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "KAY",
+        "altitude": "*",
+        "scratchpad1": "KAY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "SSY",
+        "altitude": "*",
+        "scratchpad1": "SSY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "NTE",
+        "altitude": "*",
+        "scratchpad1": "NTE",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "OAK",
+        "exit_fix": "BLE",
+        "altitude": "*",
+        "scratchpad1": "FRM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "HWD",
+        "exit_fix": "BLE",
+        "altitude": "*",
+        "scratchpad1": "FRM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "HWD",
+        "exit_fix": "STE",
+        "altitude": "*",
+        "scratchpad1": "STV",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "CCR",
+        "exit_fix": "BLE",
+        "altitude": "*",
+        "scratchpad1": "FRM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "CCR",
+        "exit_fix": "STE",
+        "altitude": "*",
+        "scratchpad1": "STV",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "LVK",
+        "exit_fix": "STE",
+        "altitude": "*",
+        "scratchpad1": "STV",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "ALC",
+        "altitude": "*",
+        "scratchpad1": "ALC",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "AMA",
+        "altitude": "*",
+        "scratchpad1": "AMK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "BEB",
+        "altitude": "*",
+        "scratchpad1": "BEB",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "CIN",
+        "altitude": "*",
+        "scratchpad1": "CIN",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "HRN",
+        "altitude": "*",
+        "scratchpad1": "HRN",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "ORR",
+        "altitude": "*",
+        "scratchpad1": "ORR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "MOG",
+        "altitude": "*",
+        "scratchpad1": "MOG",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "TIP",
+        "altitude": "*",
+        "scratchpad1": "TPR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "SYR",
+        "altitude": "*",
+        "scratchpad1": "SRH",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "BLE",
+        "altitude": "*",
+        "scratchpad1": "FRM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "NTE",
+        "altitude": "*",
+        "scratchpad1": "NTE",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "JFR",
+        "altitude": "*",
+        "scratchpad1": "JFR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SJC",
+        "exit_fix": "VLR",
+        "altitude": "*",
+        "scratchpad1": "VLR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PAO",
+        "exit_fix": "BLE",
+        "altitude": "*",
+        "scratchpad1": "FRM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RHV",
+        "exit_fix": "BLE",
+        "altitude": "*",
+        "scratchpad1": "FRM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SQL",
+        "exit_fix": "BLE",
+        "altitude": "*",
+        "scratchpad1": "FRM",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "MRY",
+        "exit_fix": "SER",
+        "altitude": "*",
+        "scratchpad1": "SFR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SMF",
+        "exit_fix": "DOS",
+        "altitude": "*",
+        "scratchpad1": "DOS",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SMF",
+        "exit_fix": "FRA",
+        "altitude": "*",
+        "scratchpad1": "FRA",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "FRO",
+        "altitude": "*",
+        "scratchpad1": "FRO",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SMF",
+        "exit_fix": "RAL",
+        "altitude": "*",
+        "scratchpad1": "RLY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SMF",
+        "exit_fix": "MCS",
+        "altitude": "*",
+        "scratchpad1": "MCS",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SMF",
+        "exit_fix": "CED",
+        "altitude": "*",
+        "scratchpad1": "SFO",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "SAC",
+        "altitude": "*",
+        "scratchpad1": "SA9",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "YER",
+        "altitude": "*",
+        "scratchpad1": "RYA",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "HAL",
+        "altitude": "*",
+        "scratchpad1": "HAL",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "PYG",
+        "altitude": "*",
+        "scratchpad1": "PYG",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "CRD",
+        "altitude": "*",
+        "scratchpad1": "CRD",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "DAR",
+        "altitude": "*",
+        "scratchpad1": "DAR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "MRL",
+        "altitude": "*",
+        "scratchpad1": "MRL",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "PES",
+        "altitude": "*",
+        "scratchpad1": "PES",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RNO",
+        "exit_fix": "BLK",
+        "altitude": "*",
+        "scratchpad1": "BLK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "APC",
+        "altitude": "*",
+        "scratchpad1": "APC",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "BAB",
+        "altitude": "*",
+        "scratchpad1": "BAB",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "CA7",
+        "altitude": "*",
+        "scratchpad1": "CA7",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "CCR",
+        "altitude": "*",
+        "scratchpad1": "CCR",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "HWD",
+        "altitude": "*",
+        "scratchpad1": "HWD",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "LVK",
+        "altitude": "*",
+        "scratchpad1": "LVK",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "MHR",
+        "altitude": "*",
+        "scratchpad1": "MHR",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "MRY",
+        "altitude": "*",
+        "scratchpad1": "MRY",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "NUQ",
+        "altitude": "*",
+        "scratchpad1": "NUQ",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "OAK",
+        "altitude": "*",
+        "scratchpad1": "OAK",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "PAO",
+        "altitude": "*",
+        "scratchpad1": "PAO",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "RHV",
+        "altitude": "*",
+        "scratchpad1": "RHV",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "RNO",
+        "altitude": "*",
+        "scratchpad1": "RNO",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "SFO",
+        "altitude": "*",
+        "scratchpad1": "SFO",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "SMF",
+        "altitude": "*",
+        "scratchpad1": "SMF",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "SJC",
+        "altitude": "*",
+        "scratchpad1": "SJC",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "SQL",
+        "altitude": "*",
+        "scratchpad1": "SQL",
+        "flight_type": "A"
+      }
+    ],
+    "fix_pair_configuration": {
+      "plans": {
+        "C1E": "C1E",
+        "C3E": "C3E"
+      },
+      "fix_pair_assignments": {
+        "arrival": [
+          {
+            "fix_pair": ["SLM", "SMF"],
+            "tcp": {
+              "C1E,C3E": "5B"
+            }
+          },
+          {
+            "fix_pair": ["NUR", "SMF"],
+            "tcp": {
+              "C1E,C3E": "5P"
+            }
+          }
+        ]
+      }
     },
     "significant_points": {
+      "AANET": {
+        "short_name": "AAN"
+      },
       "ALANN": {
         "short_name": "ALA"
       },
@@ -1553,22 +2545,46 @@
       "ALLBE": {
         "short_name": "ALL"
       },
+      "ALWYS": {
+        "short_name": "ALW"
+      },
       "AMAKR": {
         "short_name": "AMK"
+      },
+      "ARGGG": {
+        "short_name": "ARG"
       },
       "AVE": {},
       "BAART": {
         "short_name": "BAA"
       },
+      "BBOOT": {
+        "short_name": "BBO"
+      },
       "BSR": {},
       "BEBOP": {
         "short_name": "BEB"
       },
+      "BLEAR": {
+        "short_name": "BLE"
+      },
+      "BLKJK": {
+        "short_name": "BLK"
+      },
+      "CEDES": {
+        "short_name": "CED"
+      },
       "CINNY": {
         "short_name": "CIN"
       },
+      "CRDDZ": {
+        "short_name": "CRD"
+      },
+      "DARBI": {
+        "short_name": "DAR"
+      },
       "DEDHD": {
-        "short_name": "DHD"
+        "short_name": "DED"
       },
       "DOSCO": {
         "short_name": "DOS"
@@ -1576,14 +2592,23 @@
       "EBAYE": {
         "short_name": "EBY"
       },
+      "ELKOE": {
+        "short_name": "ELK"
+      },
+      "EMZOH": {
+        "short_name": "EMZ"
+      },
       "ENI": {},
       "FMG": {},
       "YYUNG": {
-        "short_name": "FOI"
+        "short_name": "YYU"
       },
       "FRA": {},
       "FRAME": {
         "short_name": "FRM"
+      },
+      "FRLON": {
+        "short_name": "FRL"
       },
       "FROGO": {
         "short_name": "FRO"
@@ -1597,14 +2622,23 @@
       "GRTFL": {
         "short_name": "GRT"
       },
+      "HALLE": {
+        "short_name": "HAL"
+      },
       "HOBOA": {
         "short_name": "HOB"
       },
       "HRNER": {
         "short_name": "HRN"
       },
+      "JFREE": {
+        "short_name": "JFR"
+      },
       "KAYEX": {
         "short_name": "KAY"
+      },
+      "KLUBS": {
+        "short_name": "KLU"
       },
       "KTINA": {
         "short_name": "KTI"
@@ -1616,17 +2650,29 @@
         "short_name": "LID"
       },
       "LIN": {},
+      "LOZIT": {
+        "short_name": "LOZ"
+      },
       "MACHU": {
         "short_name": "MAC"
       },
       "MACUS": {
         "short_name": "MCS"
       },
+      "MKNNA": {
+        "short_name": "MKN"
+      },
       "MOGEE": {
         "short_name": "MOG"
       },
       "MOXEE": {
         "short_name": "MOX"
+      },
+      "MRLET": {
+        "short_name": "MRL"
+      },
+      "MYYAA": {
+        "short_name": "RM1"
       },
       "NTELL": {
         "short_name": "NTE"
@@ -1635,10 +2681,19 @@
       "OAKEY": {
         "short_name": "OKY"
       },
+      "OAKES": {
+        "short_name": "OAK"
+      },
       "ORRCA": {
         "short_name": "ORR"
       },
+      "PESKE": {
+        "short_name": "PES"
+      },
       "PXN": {},
+      "PYGOW": {
+        "short_name": "PYG"
+      },
       "REBRG": {
         "short_name": "RBR"
       },
@@ -1647,29 +2702,68 @@
       "RALEY": {
         "short_name": "RLY"
       },
-      "PRNCS": {
-        "short_name": "PRN"
+      "RYANN": {
+        "short_name": "RYA"
+      },
+      "SCOLA": {
+        "short_name": "SCO"
       },
       "SERFR": {
-        "short_name": "SFR"
+        "short_name": "SER"
+      },
+      "SHIMR": {
+        "short_name": "SHI"
       },
       "SIGNA": {
         "short_name": "SIG"
       },
+      "SILCN": {
+        "short_name": "SIL"
+      },
+      "SLMMR": {
+        "short_name": "SLM"
+      },
+      "STEEV": {
+        "short_name": "STE"
+      },
+      "STUBL": {
+        "short_name": "STU"
+      },
+      "NURAY": {
+        "short_name": "NUR"
+      },
       "SYRAH": {
-        "short_name": "SRH"
+        "short_name": "SYR"
       },
       "SUSEY": {
         "short_name": "SSY"
       },
       "TARVR": {
-        "short_name": "TAR"
+        "short_name": "RR1"
       },
       "TIPRE": {
-        "short_name": "TPR"
+        "short_name": "TIP"
+      },
+      "TRUCK": {
+        "short_name": "TRU"
+      },
+      "UUPPP": {
+        "short_name": "UUP"
       },
       "VLREE": {
         "short_name": "VLR"
+      },
+      "WEBRR": {
+        "short_name": "WEB"
+      },
+      "YERIN": {
+        "short_name": "YER"
+      },
+      "ZINNN": {
+        "short_name": "ZIN"
+      },
+      "ZOMER": {
+        "short_name": "ZOM"
       }
     },
     "video_map_file": "videomaps/ZOA-NCT.mappack",
@@ -2324,44 +3418,84 @@
     "lists": {
       "coordination": [
         {
-          "name": "Palo Alto",
-          "id": "1P",
-          "airports": ["KPAO"]
+          "name": "MRY",
+          "id": "15",
+          "airports": ["KMRY"]
         },
         {
-          "name": "Salinas",
-          "id": "1Y",
-          "airports": ["KSNS"]
+          "name": "SJC",
+          "id": "17",
+          "airports": ["KSJC"]
         },
         {
-          "name": "San Carlos",
-          "id": "2S",
-          "airports": ["KSQL"]
+          "name": "SMF",
+          "id": "18",
+          "airports": ["KSMF"]
         },
         {
           "name": "MHR",
-          "id": "5M",
+          "id": "19",
           "airports": ["KMHR"]
         },
         {
           "name": "SAC",
-          "id": "5Z",
+          "id": "20",
           "airports": ["KSAC"]
         },
         {
-          "name": "Castle",
-          "id": "3K",
-          "airports": ["KMER"]
+          "name": "BAB",
+          "id": "21",
+          "airports": ["KBAB"]
         },
         {
-          "name": "Modesto",
-          "id": "3P",
+          "name": "RNOR",
+          "id": "22",
+          "airports": ["KRNO"]
+        },
+        {
+          "name": "PAO",
+          "id": "24",
+          "airports": ["KPAO"]
+        },
+        {
+          "name": "RHV",
+          "id": "25",
+          "airports": ["KRHV"]
+        },
+        {
+          "name": "SCK",
+          "id": "26",
+          "airports": ["KSCK"]
+        },
+        {
+          "name": "HWD",
+          "id": "27",
+          "airports": ["KHWD"]
+        },
+        {
+          "name": "LVK",
+          "id": "28",
+          "airports": ["KLVK"]
+        },
+        {
+          "name": "MOD",
+          "id": "29",
           "airports": ["KMOD"]
         },
         {
-          "name": "Livermore",
-          "id": "3L",
-          "airports": ["KLVK"]
+          "name": "NUQ",
+          "id": "30",
+          "airports": ["KNUQ"]
+        },
+        {
+          "name": "SNS",
+          "id": "31",
+          "airports": ["KSNS"]
+        },
+        {
+          "name": "SQL",
+          "id": "32",
+          "airports": ["KSQL"]
         }
       ],
       "ssa": {

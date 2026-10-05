@@ -129,10 +129,285 @@
       "callsign": "ZOA 99 TMU FD",
       "frequency": 133800,
       "radio_name": "Oakland Center Flight Data"
+    },
+    "90": {
+      "callsign": "NCTD",
+      "frequency": 135100,
+      "radio_name": "Norcal Departure"
     }
   },
   "facility_adaptations": {
+    "configurations": {
+      "29": {
+        "inbound_assignments": {
+          "VNYRD1.RGOOD": "33",
+          "WNDSR2": "41",
+          "SERFR4": "14",
+          "DYAMD5": "33"
+        },
+        "departure_assignments": {},
+        "default_consolidation": {
+          "29": []
+        }
+      }
+    },
+    "filters": {
+      "inhibit_ca": [
+        {
+          "id": "Q4UNOCA",
+          "description": "SUTRO CONFLICT SUPPRESS",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 19000,
+          "vertices": [
+            "N037.37.09.867,W122.22.25.907",
+            "N037.33.45.411,W122.51.17.792",
+            "N037.44.00.756,W122.51.28.366",
+            "N037.51.56.711,W122.39.40.847",
+            "N037.55.36.877,W122.32.17.713",
+            "N037.59.59.011,W122.24.57.216",
+            "N037.37.09.867,W122.22.25.907"
+          ]
+        }
+      ]
+    },
+    "center": "TIPRE",
+    "range": 120,
+    "video_map_file": "videomaps/ZOA.mappack",
+    "arts_coordination": {
+      "QQQ": {
+        "route_based": [
+          {
+            "type": "star",
+            "id": "BDEGA4",
+            "fixes": [],
+            "default_fix": "LOZIT"
+          },
+          {
+            "type": "star",
+            "id": "DYAMD5",
+            "fixes": [],
+            "default_fix": "ALWYS"
+          },
+          {
+            "type": "star",
+            "id": "SERFR4",
+            "fixes": [],
+            "default_fix": "SERFR"
+          },
+          {
+            "type": "star",
+            "id": "PIRAT3",
+            "fixes": [],
+            "default_fix": "ARGGG"
+          },
+          {
+            "type": "star",
+            "id": "STLER4",
+            "fixes": [],
+            "default_fix": "LOZIT"
+          },
+          {
+            "type": "star",
+            "id": "ALWYS3",
+            "fixes": [],
+            "default_fix": "ALWYS"
+          },
+          {
+            "type": "star",
+            "id": "WWAVS2",
+            "fixes": [],
+            "default_fix": "SERFR"
+          },
+          {
+            "type": "star",
+            "id": "OAKES3",
+            "fixes": [],
+            "default_fix": "OAKES"
+          },
+          {
+            "type": "star",
+            "id": "EMZOH4",
+            "fixes": [],
+            "default_fix": "EMZOH"
+          },
+          {
+            "type": "star",
+            "id": "WNDSR2",
+            "fixes": [],
+            "default_fix": "WEBRR"
+          },
+          {
+            "type": "star",
+            "id": "AANET1",
+            "fixes": [],
+            "default_fix": "AANET"
+          },
+          {
+            "type": "star",
+            "id": "SILCN6",
+            "fixes": [],
+            "default_fix": "SILCN"
+          },
+          {
+            "type": "star",
+            "id": "RAZRR5",
+            "fixes": [],
+            "default_fix": "STUBL"
+          },
+          {
+            "type": "star",
+            "id": "BRIXX4",
+            "fixes": [],
+            "default_fix": "ZINNN"
+          },
+          {
+            "type": "star",
+            "id": "FRLON2",
+            "fixes": [],
+            "default_fix": "FRLON"
+          },
+          {
+            "type": "star",
+            "id": "SUUTR4",
+            "fixes": [],
+            "default_fix": "NURAY"
+          },
+          {
+            "type": "star",
+            "id": "BMBER1",
+            "fixes": [],
+            "default_fix": "NURAY"
+          },
+          {
+            "type": "star",
+            "id": "SLMMR5",
+            "fixes": [],
+            "default_fix": "SLMMR"
+          },
+          {
+            "type": "star",
+            "id": "FEVTA1",
+            "fixes": [],
+            "default_fix": "ELKOE"
+          },
+          {
+            "type": "star",
+            "id": "DNGLE1",
+            "fixes": [],
+            "default_fix": "BBOOT"
+          },
+          {
+            "type": "star",
+            "id": "SCOLA1",
+            "fixes": [],
+            "default_fix": "SCOLA"
+          },
+          {
+            "type": "star",
+            "id": "EELZA4",
+            "fixes": [],
+            "default_fix": "KLUBS"
+          },
+          {
+            "type": "star",
+            "id": "ORRCA1",
+            "fixes": [],
+            "default_fix": "HOBOA"
+          },
+          {
+            "type": "star",
+            "id": "KLUBS1",
+            "fixes": [],
+            "default_fix": "KLUBS"
+          },
+          {
+            "type": "star",
+            "id": "WINRZ1",
+            "fixes": [],
+            "default_fix": "UUPPP"
+          },
+          {
+            "type": "star",
+            "id": "WADOL4",
+            "fixes": [],
+            "default_fix": "MYYAA"
+          },
+          {
+            "type": "star",
+            "id": "RYANN2",
+            "fixes": [],
+            "default_fix": "RYANN"
+          },
+          {
+            "type": "star",
+            "id": "TARVR2",
+            "fixes": [],
+            "default_fix": "RR1"
+          },
+          {
+            "type": "string",
+            "id": "CEDES HARGO BLEAR FRAME",
+            "fixes": [],
+            "default_fix": "BLEAR"
+          },
+          {
+            "type": "string",
+            "id": "CEDES HARGO BLEAR NTELL",
+            "fixes": [],
+            "default_fix": "BLEAR"
+          },
+          {
+            "type": "string",
+            "id": "MOD PXN AVE",
+            "fixes": [],
+            "default_fix": "PXN"
+          },
+          {
+            "type": "string",
+            "id": "CEDES MKNNA NTELL",
+            "fixes": [],
+            "default_fix": "MKNNA"
+          },
+          {
+            "type": "string",
+            "id": "ORANG SHIMR",
+            "fixes": [],
+            "default_fix": "SHIMR"
+          },
+          {
+            "type": "string",
+            "id": "ORANG SHIMR",
+            "fixes": [],
+            "default_fix": "SHIMR"
+          },
+          {
+            "type": "airway",
+            "id": "V23",
+            "direction": "both",
+            "fixes": [],
+            "default_fix": "LIN"
+          }
+        ],
+        "zone_based": [
+          {
+            "area_id": "NCT",
+            "center": "SFO",
+            "arrival": [],
+            "departure": [],
+            "overflight": []
+          }
+        ]
+      }
+    },
     "coordination_fixes": {
+      "ALTAM": [
+        {
+          "type": "route",
+          "to": "NCT",
+          "from": "NCT"
+        }
+      ],
       "OSI": [
         {
           "type": "route",
@@ -211,6 +486,13 @@
         }
       ],
       "FLOWZ": [
+        {
+          "type": "route",
+          "to": "NCT",
+          "from": "ZOA"
+        }
+      ],
+      "FEVTA": [
         {
           "type": "route",
           "to": "NCT",
@@ -409,6 +691,27 @@
       "PXN": [
         {
           "type": "route",
+          "to": "ZOA",
+          "from": "NCT"
+        }
+      ],
+      "ALCOA": [
+        {
+          "type": "route",
+          "to": "ZOA",
+          "from": "NCT"
+        }
+      ],
+      "BEBOP": [
+        {
+          "type": "route",
+          "to": "ZOA",
+          "from": "NCT"
+        }
+      ],
+      "CINNY": [
+        {
+          "type": "route",
           "to": "NCT",
           "from": "ZOA"
         }
@@ -416,19 +719,32 @@
       "ORRCA": [
         {
           "type": "route",
-          "to": "NCT",
-          "from": "ZOA"
+          "to": "ZOA",
+          "from": "NCT"
+        }
+      ],
+      "MOGEE": [
+        {
+          "type": "route",
+          "to": "ZOA",
+          "from": "NCT"
         }
       ],
       "TIPRE": [
         {
           "type": "route",
-          "to": "NCT",
-          "from": "ZOA"
+          "to": "ZOA",
+          "from": "NCT"
+        }
+      ],
+      "SYRAH": [
+        {
+          "type": "route",
+          "to": "ZOA",
+          "from": "NCT"
         }
       ]
-    },
-    "configurations": {}
+    }
   },
   "handoff_ids": [
     {
