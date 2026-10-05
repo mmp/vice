@@ -69,49 +69,49 @@
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "LAS": {
@@ -186,49 +186,49 @@
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
             "handoff_controller": "14",
-            "waypoint_actions": { "MKGEE": "ho" },
+            "waypoint_actions": { "MKGEE": "cvs/ho" },
             "is_rnav": true
           },
           "CLEEE": {
@@ -291,49 +291,49 @@
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "NAANC": "ho" },
+            "waypoint_actions": { "NAANC": "cvs/ho" },
             "is_rnav": true
           },
           "STOKD": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "NAANC": "ho" },
+            "waypoint_actions": { "NAANC": "cvs/ho" },
             "is_rnav": true
           },
           "MCKEY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "NAANC": "ho" },
+            "waypoint_actions": { "NAANC": "cvs/ho" },
             "is_rnav": true
           },
           "DINTY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "NAANC": "ho" },
+            "waypoint_actions": { "NAANC": "cvs/ho" },
             "is_rnav": true
           },
           "RIZIN": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "NAANC": "ho" },
+            "waypoint_actions": { "NAANC": "cvs/ho" },
             "is_rnav": true
           },
           "FICKY": {
             "cleared_altitude": 23000,
             "sid": "SUMMR2",
             "handoff_controller": "14",
-            "waypoint_actions": { "NAANC": "ho" },
+            "waypoint_actions": { "NAANC": "cvs/ho" },
             "is_rnav": true
           },
           "RZS,KWANG": {
             "cleared_altitude": 10000,
             "sid": "MUELR4",
             "handoff_controller": "14",
-            "waypoint_actions": { "NAANC": "ho" },
+            "waypoint_actions": { "NAANC": "cvs/ho" },
             "is_rnav": true
           },
           "CLEEE": {
@@ -2232,6 +2232,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KHHR", "KLAX"],
@@ -2376,6 +2380,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KHHR", "KLAX"],
@@ -2484,6 +2492,10 @@
           "route": "/. LEGOZ4",
           "initial_controller": "25",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2522,6 +2534,10 @@
           "route": "/. LEGOZ4",
           "initial_controller": "25",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2566,6 +2582,10 @@
           "route": "/. RYDRR2",
           "initial_controller": "28",
           "initial_altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KLAX"],
@@ -2679,6 +2699,10 @@
           "route": "/. RYDRR2",
           "initial_controller": "28",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KLAX"],
@@ -2787,11 +2811,14 @@
     "PITBL2": {
       "arrivals": [
         {
-          "waypoints": "HEC/ho38/dvs N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR N034.26.39.732,W118.34.41.250/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "HEC/ho38 N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR N034.26.39.732,W118.34.41.250/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "39",
           "initial_altitude": [30000, 32000, 34000, 36000, 38000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 320,
           "expect_approach": null,
@@ -2847,11 +2874,14 @@
           }
         },
         {
-          "waypoints": "PSP/ho37/dvs N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "PSP/ho37 N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho HMBOY/a24000 PITBL/a21000+ TELLA STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "40",
           "initial_altitude": [30000, 32000, 34000, 36000, 38000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 320,
           "expect_approach": null,
@@ -2902,12 +2932,15 @@
     "RUKKI1/BAUBB3/LEGOZ4.ZIPRR (14)": {
       "arrivals": [
         {
-          "waypoints": "YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho/dvs RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
+          "waypoints": "YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
           "star": "RUKKI1",
           "route": "/. RUKKI1",
           "initial_controller": "25",
           "initial_altitude": 35000,
-          "cleared_altitude": 24000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": "Z0R",
           "airports": ["KSNA"],
@@ -2937,12 +2970,15 @@
           }
         },
         {
-          "waypoints": "TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho/dvs TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
+          "waypoints": "TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
           "star": "BAUBB3",
           "route": "/. BAUBB3",
           "initial_controller": "25",
           "initial_altitude": 35000,
-          "cleared_altitude": 24000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": "I30",
           "airports": ["KLGB"],
@@ -2957,12 +2993,15 @@
           }
         },
         {
-          "waypoints": "YYUNG ZIPRR WURLL TCUPS/ho/dvs RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "YYUNG ZIPRR WURLL TCUPS/ho RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
           "initial_altitude": 29000,
-          "cleared_altitude": 24000,
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KCRQ"],
@@ -2990,12 +3029,15 @@
     "RUKKI1/BAUBB3/LEGOZ4.ZIPRR (13/15)": {
       "arrivals": [
         {
-          "waypoints": "LIBBO/ho25/dvs YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho14 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
+          "waypoints": "LIBBO/ho25 YYUNG TILLT ZIPRR WURLL TCUPS/a26000+/s280/ho14 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
           "star": "RUKKI1",
           "route": "/. RUKKI1",
           "initial_controller": "O14",
           "initial_altitude": 35000,
-          "cleared_altitude": 24000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": "Z0R",
           "airports": ["KSNA"],
@@ -3025,12 +3067,15 @@
           }
         },
         {
-          "waypoints": "LIBBO/ho25/dvs YYUNG TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho14 TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
+          "waypoints": "LIBBO/ho25 YYUNG TILLT ZIPRR WURLL N034.20.12.808,W119.59.38.356/ho14 TCUPS/a26000+/s280 RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
           "star": "BAUBB3",
           "route": "/. BAUBB3",
           "initial_controller": "O14",
           "initial_altitude": 35000,
-          "cleared_altitude": 24000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": "I30",
           "airports": ["KLGB"],
@@ -3045,12 +3090,15 @@
           }
         },
         {
-          "waypoints": "LIBBO/ho25/dvs YYUNG ZIPRR WURLL TCUPS/ho14 RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "LIBBO/ho25 YYUNG ZIPRR WURLL TCUPS/ho14 RUKKI SCANN BAUBB/a16000 LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "O14",
           "initial_altitude": 29000,
-          "cleared_altitude": 24000,
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KCRQ"],
@@ -3083,6 +3131,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KHHR", "KLAX"],
@@ -3227,6 +3279,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KHHR", "KLAX"],
@@ -3335,6 +3391,10 @@
           "route": "/. LEGOZ4",
           "initial_controller": "25",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -3373,6 +3433,10 @@
           "route": "/. LEGOZ4",
           "initial_controller": "25",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -3417,6 +3481,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 13000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KHHR", "KLAX"],
@@ -3561,6 +3629,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KHHR", "KLAX"],
@@ -3669,6 +3741,10 @@
           "route": "/. LEGOZ4",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KCRQ"],
@@ -3706,6 +3782,10 @@
           "route": "/. LEGOZ4",
           "initial_controller": "26",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KCRQ"],
@@ -3745,6 +3825,10 @@
           "route": "/. OHSEA3",
           "initial_controller": "26",
           "initial_altitude": [31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 14000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KSNA"],
@@ -3815,6 +3899,10 @@
           "route": "/. PCIFC3",
           "initial_controller": "26",
           "initial_altitude": [31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 14000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KLGB"],
@@ -3853,6 +3941,11 @@
           "route": "/. ROKKR3",
           "initial_controller": "26",
           "initial_altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "cleared_altitude": 11000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KBUR"],
@@ -3905,6 +3998,11 @@
           "route": "/. IVINS2",
           "initial_controller": "26",
           "initial_altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "cleared_altitude": 11000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KVNY"],
@@ -3964,6 +4062,11 @@
           "route": "/. BONJO3",
           "initial_controller": "26",
           "initial_altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "cleared_altitude": 11000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KSMO"],
@@ -3991,6 +4094,11 @@
           "is_rnav": true,
           "initial_controller": "26",
           "initial_altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "cleared_altitude": 11000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KBUR"],
@@ -4066,6 +4174,11 @@
           "is_rnav": true,
           "initial_controller": "26",
           "initial_altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "cleared_altitude": 11000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KVNY"],
@@ -4097,6 +4210,11 @@
           "is_rnav": true,
           "initial_controller": "26",
           "initial_altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "cleared_altitude": 11000,
+          "eram": {
+            "interim_altitude": 11000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KSMO"],
@@ -4124,6 +4242,10 @@
           "route": "/. RYDRR2",
           "initial_controller": "28",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KLAX"],
@@ -4237,6 +4359,10 @@
           "route": "/. RYDRR2",
           "initial_controller": "28",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000],
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "airports": ["KLAX"],
@@ -4350,6 +4476,9 @@
           "route": "/. HUULL2",
           "initial_controller": "15",
           "initial_altitude": 23000,
+          "eram": {
+            "assigned_altitude": 23000
+          },
           "cleared_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -4449,11 +4578,15 @@
     "PITBL2 (13/15)": {
       "arrivals": [
         {
-          "waypoints": "HEC/ho38/dvs N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR/po13 N034.26.39.732,W118.34.41.250/ho14 HMBOY/a24000 PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "HEC/ho38 N034.36.44.722,W117.39.38.759/ho27 N034.33.52.772,W117.58.56.251/po26 FRIRR/po13 N034.26.39.732,W118.34.41.250/ho14 HMBOY/a24000/dvs PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "39",
           "initial_altitude": [30000, 32000, 34000, 36000, 38000],
+          "eram": {
+            "interim_altitude": 9000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 320,
           "expect_approach": null,
@@ -4509,11 +4642,15 @@
           }
         },
         {
-          "waypoints": "PSP/ho37/dvs N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho14 HMBOY/a24000 PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
+          "waypoints": "PSP/ho37 N033.57.33.140,W116.48.37.254/ho39 N034.04.10.392,W117.16.16.382/ho38 N034.12.42.670,W117.52.23.353/ho27 PORPS/a30000-/po26 N034.20.25.222,W118.36.52.948/ho14 HMBOY/a24000 PITBL/a21000+ TELLA/hoG1H STBBZ HHOME/a9000+ LCLRK/a4000/delete",
           "star": "PITBL2",
           "route": "/. PITBL2",
           "initial_controller": "40",
           "initial_altitude": [30000, 32000, 34000, 36000, 38000],
+          "eram": {
+            "interim_altitude": 9000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 320,
           "expect_approach": null,
@@ -4644,6 +4781,9 @@
           "route": "/. DECAS FIM CNDOR CADAB",
           "initial_controller": "40",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 320,
           "expect_approach": null,
           "airports": ["KSBP"],
@@ -4695,6 +4835,9 @@
           "route": "/. PMD FIM CNDOR CADAB",
           "initial_controller": "40",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 320,
           "expect_approach": null,
           "airports": ["KSBP"],
@@ -4735,6 +4878,9 @@
           "route": "/. DECAS FIM CNDOR CADAB",
           "initial_controller": "40",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 17000
+          },
           "initial_speed": 320,
           "expect_approach": null,
           "airports": ["KSBP"],
@@ -4786,6 +4932,9 @@
           "route": "/. PMD FIM CNDOR CADAB",
           "initial_controller": "40",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 17000
+          },
           "initial_speed": 320,
           "expect_approach": null,
           "airports": ["KSBP"],
@@ -4826,6 +4975,9 @@
           "route": "YYUNG GVO HABUT",
           "initial_controller": "O14",
           "initial_altitude": [25000, 27000, 29000, 31000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -4857,6 +5009,9 @@
           "route": "JINMO Q7 AVE GVO HABUT",
           "initial_controller": "O11",
           "initial_altitude": 29000,
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KSBA"],
@@ -4886,6 +5041,9 @@
           "route": "FRA GBO HABUT",
           "initial_controller": "O11",
           "initial_altitude": [25000, 27000, 29000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KSBA"],
@@ -4911,6 +5069,9 @@
           "route": "NIKOL REBRG GVO HABUT",
           "initial_controller": "O11",
           "initial_altitude": [28000, 30000, 32000, 34000],
+          "eram": {
+            "assigned_altitude": 22000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KSBA"],
@@ -5266,6 +5427,7 @@
       "configuration": "14",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAA",
+      "altitude_limits": [0, 242],
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -5367,6 +5529,7 @@
       "configuration": "13",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAA",
+      "altitude_limits": [0, 242],
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -5482,6 +5645,7 @@
       "configuration": "15",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAA",
+      "altitude_limits": [0, 242],
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -5603,6 +5767,7 @@
       "configuration": "3@5",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAA",
+      "altitude_limits": [0, 242],
       "departure_runways": [
         {
           "airport": "KLAX",

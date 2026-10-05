@@ -222,6 +222,7 @@
       },
       "09": {
         "inbound_assignments": {
+          "CHASR2.IPL": "09",
           "LUCKI1.MOMAR": "09",
           "LUCKI1.HOGGZ": "09"
         },
@@ -231,6 +232,7 @@
       },
       "9@2": {
         "inbound_assignments": {
+          "CHASR2.IPL": "09",
           "OLAAA2/SCBBY2/THRNE4": "12",
           "EAST CRQ ARR": "12",
           "LUCKI1.MOMAR": "12",

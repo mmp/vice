@@ -124,13 +124,13 @@
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "is_rnav": true,
-            "waypoints": "DOCKR/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN LAS"
+            "waypoints": "DOCKR/cvs/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN LAS"
           },
           "MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "is_rnav": true,
-            "waypoints": "DOCKR/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY MISEN"
+            "waypoints": "DOCKR/cvs/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY MISEN"
           },
           "CLEEE": {
             "cleared_altitude": 5000,
@@ -180,13 +180,13 @@
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "is_rnav": true,
-            "waypoints": "HIIPR/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN LAS"
+            "waypoints": "HIIPR/cvs/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY BLAZN LAS"
           },
           "MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "is_rnav": true,
-            "waypoints": "HIIPR/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY MISEN"
+            "waypoints": "HIIPR/cvs/ho18/a3000-/h236/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY MISEN"
           },
           "SCTRR": {
             "cleared_altitude": 23000,
@@ -285,13 +285,13 @@
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "is_rnav": true,
-            "waypoints": "DLREY/ho18/a3000-/t251/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY LAS"
+            "waypoints": "DLREY/cvs/ho18/a3000-/t251/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY LAS"
           },
           "MISEN": {
             "cleared_altitude": 15000,
             "sid": "ORCKA5",
             "is_rnav": true,
-            "waypoints": "DLREY/ho18/a3000-/t251/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY MISEN"
+            "waypoints": "DLREY/cvs/ho18/a3000-/t251/@a5000+/ld KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY MISEN"
           },
           "SCTRR": {
             "cleared_altitude": 23000,
@@ -1187,161 +1187,153 @@
       "departure_controller": "T3P",
       "departure_routes": {
         "26L": {
-          "AVRRY,MTBAL": {
-            "cleared_altitude": 13000,
+          "AVRRY,MTBAL,OTAYY": {
+            "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
-          "OTAYY": {
-            "cleared_altitude": 13000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA/ho21 RORBE OTAYY"
-          },
-          "COREZ": {
+          "COREZ,EHF": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ SHORS MDWAY COREZ",
-            "handoff_controller": "18"
-          },
-          "GMN": {
-            "cleared_altitude": 14000,
-            "sid": "POM1",
-            "waypoints": "N034.03.14.732,W117.44.47.393 POM/a7000- N034.06.34.862,W117.49.57.097/ho BUCCK/a14000+ TOOBD GMN",
-            "handoff_controller": "18"
-          },
-          "EHF": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ TUNAY EHF",
-            "handoff_controller": "18"
+            "waypoint_actions": { "SNSHN": "ho18" }
           },
           "LAS,MISEN": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY",
-            "handoff_controller": "18"
+            "eram": {
+              "interim_altitude": 14100,
+              "interim_type": "temp"
+            },
+            "waypoint_actions": { "SNSHN": "ho18" }
           },
-          "DINTY": {
-            "cleared_altitude": 13000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC"
-          },
-          "MALIT": {
-            "cleared_altitude": 13000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC MALIT"
+          "AVE,DAG,GMN,COREZ.P": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
           }
         },
         "26R": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
-          "OTAYY": {
-            "cleared_altitude": 14000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA/ho21 RORBE OTAYY"
-          },
-          "GMN": {
-            "cleared_altitude": 14000,
-            "sid": "POM1",
-            "waypoints": "N034.03.25.224,W117.45.04.943 POM/a7000- N034.06.34.862,W117.49.57.097/ho BUCCK/a14000+ TOOBD GMN",
-            "handoff_controller": "18"
-          },
-          "COREZ": {
+          "COREZ,EHF": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ SHORS MDWAY COREZ",
-            "handoff_controller": "18"
-          },
-          "EHF": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ TUNAY EHF",
-            "handoff_controller": "18"
+            "waypoint_actions": { "SNSHN": "ho18" }
           },
           "LAS,MISEN": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY",
-            "handoff_controller": "18"
+            "eram": {
+              "interim_altitude": 14100,
+              "interim_type": "temp"
+            },
+            "waypoint_actions": { "SNSHN": "ho18" }
           },
-          "DINTY": {
+          "AVE,DAG,GMN,COREZ.P": {
             "cleared_altitude": 14000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC"
-          },
-          "MALIT": {
-            "cleared_altitude": 14000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC MALIT"
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
           }
         },
         "26L.04": {
-          "AVRRY,MTBAL": {
-            "cleared_altitude": 13000,
+          "AVRRY,MTBAL,OTAYY": {
+            "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
-          "OTAYY": {
-            "cleared_altitude": 13000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA/ho21 RORBE OTAYY"
-          },
-          "COREZ": {
+          "COREZ,EHF": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho18 NLAND/a14000+/po04 SHORS MDWAY COREZ"
-          },
-          "GMN": {
-            "cleared_altitude": 14000,
-            "sid": "POM1",
-            "waypoints": "N034.03.14.732,W117.44.47.393 POM/a7000- N034.06.34.862,W117.49.57.097/ho18 BUCCK/a14000+/po04 TOOBD GMN"
-          },
-          "EHF": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+/po04 TUNAY EHF",
-            "handoff_controller": "18"
+            "waypoint_actions": { "SNSHN": "ho18", "NLAND": "po04" }
           },
           "LAS,MISEN": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY",
-            "handoff_controller": "18"
+            "waypoint_actions": { "SNSHN": "ho18" }
+          },
+          "AVE,GMN,COREZ.P": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18", "BUCCK": "po04" }
+          },
+          "DAG": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
           }
         },
         "26R.04": {
-          "AVRRY,MTBAL": {
+          "AVRRY,MTBAL,OTAYY": {
             "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000-/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
-          "OTAYY": {
-            "cleared_altitude": 14000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/a8000- JUMPA/ho21 RORBE OTAYY"
-          },
-          "GMN": {
-            "cleared_altitude": 14000,
-            "sid": "POM1",
-            "waypoints": "N034.03.25.224,W117.45.04.943 POM/a7000- N034.06.34.862,W117.49.57.097/ho18 BUCCK/a14000+/po04 TOOBD GMN"
-          },
-          "COREZ": {
+          "COREZ,EHF": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho18 NLAND/a14000+/po04 SHORS MDWAY COREZ"
-          },
-          "EHF": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho18 NLAND/a14000+/po04 TUNAY EHF"
+            "waypoint_actions": { "SNSHN": "ho18", "NLAND": "po04" }
           },
           "LAS,MISEN": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho18 BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+            "waypoint_actions": { "SNSHN": "ho18" }
+          },
+          "AVE,GMN,COREZ.P": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18", "BUCCK": "po04" }
+          },
+          "DAG": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
+          }
+        },
+        "26L.O": {
+          "AVRRY,MTBAL,OTAYY": {
+            "cleared_altitude": 14000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "DINTY,MALIT": {
+            "cleared_altitude": 13000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "COREZ,EHF,LAS,MISEN": {
+            "cleared_altitude": 14000,
+            "sid": "SNSHN5",
+            "waypoint_actions": { "SNSHN": "ho18" }
+          },
+          "AVE,DAG,GMN,COREZ.P": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
+          }
+        },
+        "26R.O": {
+          "AVRRY,MTBAL,OTAYY": {
+            "cleared_altitude": 14000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "DINTY,MALIT": {
+            "cleared_altitude": 13000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "COREZ,EHF,LAS,MISEN": {
+            "cleared_altitude": 14000,
+            "sid": "SNSHN5",
+            "waypoint_actions": { "SNSHN": "ho18" }
+          },
+          "AVE,DAG,GMN,COREZ.P": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
           }
         }
       },
@@ -1452,7 +1444,7 @@
           ],
           "destination": "KCLT",
           "exit": "MTBAL",
-          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ7"
+          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ6"
         },
         {
           "airlines": [
@@ -2827,7 +2819,7 @@
         "RV5": {
           "full_name": "RNAV Visual Runway 15",
           "runway": "15",
-          "type": "ChartedVisual",
+          "type": "ILS",
           "waypoints": [
             "TWACK/s210/a5000+ AZKBN/a4100 SCRET/a3500 GOBLT/faf/a2500",
             "BATTT/s210/a5000+ MATRX/a4500 SCRET/a3500 GOBLT/faf/a2500"
@@ -2836,7 +2828,7 @@
         "RV3": {
           "full_name": "RNAV Visual Runway 33",
           "runway": "33",
-          "type": "ChartedVisual",
+          "type": "ILS",
           "waypoints": [
             "GZILA/s210/a6000+ FILMZ/a3500 LGEND/a2100 KNGHT/faf/a1500",
             "WRNER/s210/a5000+ FILMZ/a3500 LGEND/a2100 KNGHT/faf/a1500"
@@ -3010,6 +3002,10 @@
             "aircraft": ["jet"],
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KBUR-33/c13000/ho04/h210/@a4000+/rd RAYVE/a7000+/c19000/ho SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
           },
           "MISEN": {
@@ -3018,6 +3014,10 @@
             "aircraft": ["jet"],
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KBUR-33/c13000/ho04/h210/@a4000+/rd RAYVE/a7000+/c19000/ho SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
           },
           "HEC": {
@@ -3026,6 +3026,10 @@
             "aircraft": ["jet"],
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KBUR-33/c13000/ho04/h210/@a4000+/rd RAYVE/a7000+/c19000/ho SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
           },
           "BLH": {
@@ -3042,6 +3046,10 @@
             "aircraft": ["turboprop"],
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KBUR-33/c13000/ho04/h210/@a4000+/rd CCHUM/a6800+ KIMMO/a7000+/c19000/ho SLAPP JARZO VVERA SSETH DAG"
           },
           "HEC.T": {
@@ -3050,6 +3058,10 @@
             "aircraft": ["turboprop"],
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KBUR-33/c13000/ho04/h210/@a4000+/rd CCHUM/a6800+ KIMMO/a7000+/c19000/ho SLAPP JARZO VVERA SSETH HEC"
           },
           "FIM": {
@@ -3066,12 +3078,20 @@
             "cleared_altitude": 4000,
             "sid": "VNY4",
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KBUR-33/c13000/ho04/h213/@a3300+/rd LANGE/c19000/ho SLAPP BOGET PMD"
           },
           "DAG": {
             "cleared_altitude": 4000,
             "sid": "VNY4",
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KBUR-33/c13000/ho04/h213/@a3300+/rd LANGE/c19000/ho SLAPP BOGET PMD ETHER DAG"
           }
         },
@@ -3804,12 +3824,12 @@
           "DAG.N": {
             "cleared_altitude": 4000,
             "sid": "NUAL2",
-            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld TWINE/ho04 LANGE SLAPP BOGET PMD ETHER DAG"
+            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld LANGE/ho04 SLAPP BOGET PMD ETHER DAG"
           },
           "PMD.N": {
             "cleared_altitude": 4000,
             "sid": "NUAL2",
-            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld TWINE/ho04 LANGE SLAPP BOGET PMD"
+            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld LANGE/ho04 SLAPP BOGET PMD"
           }
         },
         "16R.17": {
@@ -3818,6 +3838,10 @@
             "sid": "HARYS5",
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KVNY-34L/a1750-/h164/@crs109 DSSRT/ho04/a3000+/flyover/h109/c15000/@a4000+/ld HARYS/c19000/ho SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
           },
           "MISEN": {
@@ -3825,6 +3849,10 @@
             "sid": "HARYS5",
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KVNY-34L/a1750-/h164/@crs109 DSSRT/ho04/a3000+/flyover/h109/c15000/@a4000+/ld HARYS/c19000/ho SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
           },
           "HEC": {
@@ -3832,6 +3860,10 @@
             "sid": "HARYS5",
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KVNY-34L/a1750-/h164/@crs109 DSSRT/ho04/a3000+/flyover/h109/c15000/@a4000+/ld HARYS/c19000/ho SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
           },
           "BLH": {
@@ -3839,6 +3871,10 @@
             "sid": "HARYS5",
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KVNY-34L/a1750-/h164/@crs109 DSSRT/ho04/a3000+/flyover/h109/c15000/@a4000+/ld HARYS/c19000/ho SLAPP/a13000+ YAAPY/a15000+ JETHK/a19000- AERRO DECAS BLH"
           },
           "HEC.R": {
@@ -3846,6 +3882,10 @@
             "sid": "RSCO4",
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KVNY-34L/a1750-/h164/@crs109 DSSRT/a3000+/flyover/h109/c13000/@a4000+/ld CCHUM/a6800+/c15000/ho04 KIMMO/a7100+/c19000/ho SLAPP JARZO VVERA SSETH HEC"
           },
           "DAG.R": {
@@ -3853,6 +3893,10 @@
             "sid": "RSCO4",
             "is_rnav": true,
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KVNY-34L/a1750-/h164/@crs109 DSSRT/a3000+/flyover/h109/c13000/@a4000+/ld CCHUM/a6800+/c15000/ho04 KIMMO/a7100+/c19000/ho SLAPP/c19000/ho17 JARZO VVERA SSETH DAG"
           },
           "CSTRO": {
@@ -3881,13 +3925,21 @@
             "cleared_altitude": 4000,
             "sid": "NUAL2",
             "handoff_controller": "17",
-            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld TWINE/ho04 LANGE/c19000/ho SLAPP BOGET PMD"
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
+            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld LANGE/ho04/c19000/ho SLAPP BOGET PMD"
           },
           "DAG.N": {
             "cleared_altitude": 4000,
             "sid": "NUAL2",
             "handoff_controller": "17",
-            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld TWINE/ho04 LANGE/c19000/ho SLAPP BOGET PMD ETHER DAG"
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
+            "waypoints": "KVNY-34L/a1750-/h163/@VNY-D2.2+/c13000/h113/@a4000+/ld LANGE/ho04/c19000/ho SLAPP BOGET PMD ETHER DAG"
           }
         },
         "34L": {
@@ -4849,14 +4901,14 @@
             "sid": "SMO3",
             "is_rnav": true,
             "departure_controller": "T6N",
-            "waypoints": "KSMO-3/h213/c7000/@crs260 WRASH/h340/hoT1V/@a5000+/rd SEAEM/c15000 CHOII/a7100+/ho04 SLAPP/a9000+ JARZO/a10300+/s250- VVERA SSETH HEC"
+            "waypoints": "KSMO-3/h213/c7000/@crs260 WRASH/h340/hoT1V/@a5000+/rd SEAEM/c15000/ho04 CHOII/a7100+ SLAPP/a9000+ JARZO/a10300+/s250- VVERA SSETH HEC"
           },
           "DAG.T": {
             "cleared_altitude": 3000,
             "sid": "SMO3",
             "is_rnav": true,
             "departure_controller": "T6N",
-            "waypoints": "KSMO-3/h213/c7000/@crs260 WRASH/h340/hoT1V/@a5000+/rd SEAEM/c15000 CHOII/a7100+/ho04 SLAPP/a9000+ JARZO/a10300+/s250- VVERA SSETH DAG"
+            "waypoints": "KSMO-3/h213/c7000/@crs260 WRASH/h340/hoT1V/@a5000+/rd SEAEM/c15000/ho04 CHOII/a7100+ SLAPP/a9000+ JARZO/a10300+/s250- VVERA SSETH DAG"
           },
           "SMO": {
             "cleared_altitude": 3000,
@@ -4886,6 +4938,10 @@
             "is_rnav": true,
             "departure_controller": "T6N",
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "N033.59.50.084,W118.28.21.892/c7000 N033.59.58.228,W118.33.03.554/hoT1V N034.04.05.379,W118.35.40.795/c15000/ho04 SEAEM/c19000/ho SLAPP YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP HEC"
           },
           "MISEN": {
@@ -4894,6 +4950,10 @@
             "is_rnav": true,
             "departure_controller": "T6N",
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "N033.59.50.084,W118.28.21.892/c7000 N033.59.58.228,W118.33.03.554/hoT1V N034.04.05.379,W118.35.40.795/c15000/ho04 SEAEM/c19000/ho SLAPP YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY MISEN"
           },
           "LAS": {
@@ -4902,6 +4962,10 @@
             "is_rnav": true,
             "departure_controller": "T6N",
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "N033.59.50.084,W118.28.21.892/c7000 N033.59.58.228,W118.33.03.554/hoT1V N034.04.05.379,W118.35.40.795/c15000/ho04 SEAEM/c19000/ho SLAPP YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY BLAZN LAS"
           },
           "HEC.T": {
@@ -4910,6 +4974,10 @@
             "is_rnav": true,
             "departure_controller": "T6N",
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KSMO-3/h213/c7000/@crs260 WRASH/h340/hoT1V/@a5000+/rd SEAEM/c15000/ho04 CHOII/a7100+/c19000/ho SLAPP/a9000+ JARZO/a10300+/s250- VVERA SSETH HEC"
           },
           "DAG.T": {
@@ -4918,6 +4986,10 @@
             "is_rnav": true,
             "departure_controller": "T6N",
             "handoff_controller": "17",
+            "eram": {
+              "interim_altitude": 19000,
+              "interim_type": "temp"
+            },
             "waypoints": "KSMO-3/h213/c7000/@crs260 WRASH/h340/hoT1V/@a5000+/rd SEAEM/c15000/ho04 CHOII/a7100+/c19000/ho SLAPP/a9000+ JARZO/a10300+/s250- VVERA SSETH DAG"
           },
           "SMO": {
@@ -5107,6 +5179,9 @@
           "route": "/. ZIGGY8",
           "initial_controller": "27",
           "initial_altitude": [27000, 29000, 31000, 33000, 35000],
+          "eram": {
+            "assigned_altitude": 14000
+          },
           "initial_speed": 300,
           "expect_approach": { "KONT": "I6R", "KSBD": "R24" },
           "airports": ["KONT", "KSBD"],
@@ -5180,6 +5255,10 @@
           "route": "/. SIZLR4",
           "initial_controller": "27",
           "initial_altitude": [25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000],
+          "eram": {
+            "interim_altitude": 16000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "aircraft": ["jet", "turboprop"],
           "expect_approach": null,
@@ -5537,6 +5616,9 @@
           "initial_altitude": [27000, 29000, 31000, 33000, 35000],
           "initial_speed": 300,
           "expect_approach": { "KONT": "I6R", "KSBD": "R24" },
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "airports": ["KONT", "KSBD"],
           "airlines": {
             "KONT": [
@@ -5618,6 +5700,9 @@
           "initial_altitude": [26000, 28000, 30000, 32000],
           "initial_speed": 300,
           "expect_approach": { "KONT": "I6R", "KSBD": "R24" },
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "airports": ["KONT", "KSBD"],
           "airlines": {
             "KONT": [
@@ -5691,6 +5776,9 @@
           "route": "/. JCKIE2",
           "initial_controller": "37",
           "initial_altitude": [26000, 28000, 30000, 32000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": "Z6R",
           "airports": ["KONT"],
@@ -5751,6 +5839,9 @@
           "route": "/. JCKIE2",
           "initial_controller": "37",
           "initial_altitude": [26000, 28000, 30000, 32000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": "Z6R",
           "airports": ["KONT"],
@@ -5811,6 +5902,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": "RY8",
           "airports": ["KBUR"],
@@ -5865,6 +5959,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": "IZR",
           "airports": ["KVNY"],
@@ -5916,6 +6013,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KSMO", "KLAX"],
@@ -5984,6 +6084,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KOXR", "KCMA", "KNTD"],
@@ -6117,6 +6220,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": "RY8",
           "airports": ["KBUR"],
@@ -6203,6 +6309,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KSMO", "KLAX"],
@@ -6260,6 +6369,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KOXR", "KCMA", "KNTD"],
@@ -6360,6 +6472,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": "RY8",
           "airports": ["KBUR"],
@@ -6414,6 +6529,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": "IZR",
           "airports": ["KVNY"],
@@ -6457,6 +6575,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KSMO", "KLAX"],
@@ -6517,6 +6638,9 @@
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KOXR", "KCMA", "KNTD"],
@@ -6621,11 +6745,14 @@
     "JANNY5/GUERA2/BOGET2.EED": {
       "arrivals": [
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 ELMRR/a7000+ WABBT/a6000/clearapp",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 ELMRR/a7000+ WABBT/a6000/clearapp",
           "star": "JANNY5",
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": "RY8",
@@ -6658,11 +6785,14 @@
           }
         },
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 EIFEL/a7000+ UMBER/a6000/clearapp",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F PUCCK/a8000 EIFEL/a7000+ UMBER/a6000/clearapp",
           "star": "JANNY5",
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": "IZR",
@@ -6702,11 +6832,14 @@
           }
         },
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 ROPEZ/a11000-13000 BOGET/a8000/hoT1F MEETT/a7500+ WATSS/a6900+ UPDOC/a6000/delete",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 ROPEZ/a11000-13000 BOGET/a8000/hoT1F MEETT/a7500+ WATSS/a6900+ UPDOC/a6000/delete",
           "star": "BOGET2",
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -6763,11 +6896,14 @@
           }
         },
         {
-          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho/dvs TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F ALYSN/a7100+ GUERA/delete",
+          "waypoints": "COOOP N034.47.13.030,W115.40.29.022/ho TAAAP JOEES/a24000 DNUTT/a23000 JOHHN/a22000 BASAL DYVER/a19000- CHKNZ KOPLE/a14000 PMD/a13000-/s250 JANNY/a8000/hoT1F ALYSN/a7100+ GUERA/delete",
           "star": "GUERA2",
           "is_rnav": true,
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -6878,6 +7014,9 @@
           "route": "/. SIZLR4",
           "initial_controller": "27",
           "initial_altitude": [25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "aircraft": ["jet", "turboprop"],
           "expect_approach": null,
@@ -6941,6 +7080,9 @@
           "route": "/. SIZLR4",
           "initial_controller": "27",
           "initial_altitude": [25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 300,
           "aircraft": ["jet", "turboprop"],
           "expect_approach": null,
@@ -7005,6 +7147,9 @@
           "route": "WRING WAYVE1",
           "initial_controller": "03",
           "initial_altitude": [15000, 17000, 19000, 21000, 23000],
+          "eram": {
+            "assigned_altitude": 15000
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "aircraft": ["turboprop", "prop"],
@@ -7047,6 +7192,9 @@
           "route": "WRING WAYVE1",
           "initial_controller": "03",
           "initial_altitude": [15000, 17000, 19000, 21000, 23000],
+          "eram": {
+            "assigned_altitude": 15000
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "aircraft": ["turboprop", "prop"],
@@ -7089,6 +7237,9 @@
           "route": "WRING WAYVE1",
           "initial_controller": "03",
           "initial_altitude": [15000, 17000, 19000, 21000, 23000],
+          "eram": {
+            "assigned_altitude": 15000
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "aircraft": ["turboprop", "prop"],
@@ -7141,6 +7292,10 @@
           "route": "EHF WEESL1",
           "initial_controller": "03",
           "initial_altitude": [15000, 17000, 19000, 21000, 23000],
+          "eram": {
+            "interim_altitude": 9000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "aircraft": ["turboprop", "prop"],
@@ -7179,6 +7334,10 @@
           "route": "WRING WEESL1",
           "initial_controller": "03",
           "initial_altitude": [15000, 17000, 19000, 21000, 23000],
+          "eram": {
+            "interim_altitude": 9000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "aircraft": ["turboprop", "prop"],
@@ -7217,6 +7376,10 @@
           "route": "NINTY WEESL1",
           "initial_controller": "03",
           "initial_altitude": [15000, 17000, 19000, 21000, 23000],
+          "eram": {
+            "interim_altitude": 9000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": null,
           "aircraft": ["turboprop", "prop"],
@@ -7356,6 +7519,9 @@
           "route": "/. FASTO2",
           "initial_controller": "37",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": "I3R",
@@ -7382,12 +7548,12 @@
           }
         },
         {
-          "waypoints": "N034.46.53.832,W115.31.57.141 HEC N034.42.06.731,W117.22.31.016/ho PMD WIJYI KELEN JAPAR/d4000 MINGI FASTO/clearapp",
+          "waypoints": "N034.46.53.832,W115.31.57.141 HEC N034.42.06.731,W117.22.31.016/d24000/ho PMD WIJYI KELEN JAPAR/d4000 MINGI FASTO/clearapp",
           "star": "FASTO2",
           "route": "/. FASTO2",
           "initial_controller": "38",
           "initial_altitude": [16000, 18000, 20000, 22000],
-          "cleared_altitude": 16000,
+          "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": "I3R",
           "aircraft": ["turboprop"],
@@ -7422,6 +7588,9 @@
           "route": "/. FASTO2",
           "initial_controller": "38",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": "I3R",
@@ -7471,6 +7640,9 @@
           "route": "/. LEGOZ4",
           "initial_controller": "27",
           "initial_altitude": 31000,
+          "eram": {
+            "assigned_altitude": 23000
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KCRQ"],
@@ -7503,6 +7675,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": 35000,
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KLAX"],
@@ -7640,6 +7816,10 @@
           "route": "/. IRNMN2",
           "initial_controller": "26",
           "initial_altitude": 35000,
+          "eram": {
+            "interim_altitude": 12000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KLAX"],
@@ -7736,11 +7916,15 @@
           }
         },
         {
-          "waypoints": "BURGL DOUIT BLOXX/a24000+/ho14/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "BURGL DOUIT BLOXX/a24000+/ho14 BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
           "initial_altitude": 29000,
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -7774,11 +7958,15 @@
           }
         },
         {
-          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho14/dvs BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "REBRG DOUIT BLOXX/a24000+/ho14 BLDIT TANDY/a17000 NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
           "initial_altitude": 29000,
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "cleared_altitude": 24000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -7823,6 +8011,10 @@
           "is_rnav": true,
           "initial_controller": "17",
           "initial_altitude": 23000,
+          "eram": {
+            "interim_altitude": 14000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": "RY8",
           "airports": ["KBUR"],
@@ -7909,6 +8101,10 @@
           "is_rnav": true,
           "initial_controller": "17",
           "initial_altitude": 23000,
+          "eram": {
+            "interim_altitude": 14000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 280,
           "expect_approach": "IZR",
           "airports": ["KVNY"],
@@ -8019,6 +8215,10 @@
           "route": "PHRED.THRNE4",
           "initial_controller": "06",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000],
+          "eram": {
+            "interim_altitude": 16000,
+            "interim_type": "procedure"
+          },
           "initial_speed": 300,
           "expect_approach": null,
           "aircraft": ["jet"],
@@ -8309,6 +8509,7 @@
       "configuration": "18",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAB",
+      "altitude_limits": [118, 242],
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -8404,6 +8605,7 @@
       "configuration": "17",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAB",
+      "altitude_limits": [0, 242],
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -8564,6 +8766,7 @@
       "configuration": "7@8",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAB",
+      "altitude_limits": [0, 242],
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -8729,6 +8932,7 @@
       "configuration": "04",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAB",
+      "altitude_limits": [0, 242],
       "departure_runways": [
         {
           "airport": "KLAX",

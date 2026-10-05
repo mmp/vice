@@ -128,12 +128,12 @@
           "CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "CLEEE": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
@@ -144,17 +144,17 @@
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
             "handoff_controller": "18",
-            "waypoint_actions": { "CAHIL": "ho", "PEVEE": "ho21" }
+            "waypoint_actions": { "CAHIL": "ho", "PEVEE": "cvs/ho21" }
           },
           "TCATE": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "OTAYY": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           }
         },
         "25L": {
@@ -215,12 +215,12 @@
           "CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "CLEEE": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
@@ -231,17 +231,17 @@
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
             "handoff_controller": "18",
-            "waypoint_actions": { "CAHIL": "ho", "PEVEE": "ho21" }
+            "waypoint_actions": { "CAHIL": "ho", "PEVEE": "cvs/ho21" }
           },
           "OTAYY": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "TCATE": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           }
         },
         "24L": {
@@ -296,12 +296,12 @@
           "CNERY": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "CLEEE": {
             "cleared_altitude": 17000,
             "sid": "DOTSS2",
-            "waypoint_actions": { "PEVEE": "ho21" }
+            "waypoint_actions": { "PEVEE": "cvs/ho21" }
           },
           "CSTRO,COREZ": {
             "cleared_altitude": 23000,
@@ -312,17 +312,17 @@
             "cleared_altitude": 17000,
             "sid": "OSHNN1",
             "handoff_controller": "18",
-            "waypoint_actions": { "CAHIL": "ho", "PEVEE": "ho21" }
+            "waypoint_actions": { "CAHIL": "ho", "PEVEE": "cvs/ho21" }
           },
           "OTAYY": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/ho21 TANNN/a15000+ NNICE PNDAH/a20000+ OTAYY"
+            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/cvs/ho21 TANNN/a15000+ NNICE PNDAH/a20000+ OTAYY"
           },
           "TCATE": {
             "cleared_altitude": 20000,
             "sid": "PNDAH2",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/ho21 TANNN/a15000+ NNICE PNDAH/a20000+ TCATE"
+            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE/cvs/ho21 TANNN/a15000+ NNICE PNDAH/a20000+ TCATE"
           }
         }
       },
@@ -1163,67 +1163,71 @@
             "sid": "PADRZ2",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "GYWNN": "ho21" }
+            "waypoint_actions": { "KERNL": "cvs/ho21" }
           },
           "MALIT": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "GYWNN": "ho21" }
+            "waypoint_actions": { "KERNL": "cvs/ho21" }
           },
           "IKAYE": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "GYWNN": "ho21" }
+            "waypoint_actions": { "KERNL": "cvs/ho21" }
           },
           "CHKNN": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "GYWNN": "ho21" }
+            "waypoint_actions": { "KERNL": "cvs/ho21" }
           },
           "EHF": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "GYWNN": "ho21" }
+            "waypoint_actions": { "KERNL": "cvs/ho21" }
           },
           "OROSZ": {
             "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "GYWNN": "ho21" }
+            "waypoint_actions": { "KERNL": "cvs/ho21" }
           },
           "MTBAL": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "ZZOOO": "ho09" }
+            "waypoint_actions": { "ZZOOO": "cvs/ho09" }
           },
           "HOGGZ,TGOLD,GBN": {
             "cleared_altitude": 23000,
             "sid": "ZZOOO4",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "ZZOOO": "ho09" }
+            "waypoint_actions": { "ZZOOO": "cvs/ho09" }
           },
           "CENZA": {
             "cleared_altitude": 13000,
             "sid": "ZZOOO4",
             "aircraft": ["jet", "turboprop"],
             "is_rnav": true,
-            "waypoint_actions": { "ZZOOO": "ho09" }
+            "waypoint_actions": { "ZZOOO": "cvs/ho09" }
           },
           "JLI": {
             "cleared_altitude": 8000,
             "sid": "BRDR7",
+            "eram": {
+              "interim_altitude": 23100,
+              "interim_type": "temp"
+            },
             "waypoints": "N032.46.04.558,W117.18.31.981/flyover N032.36.42.044,W117.07.24.424 PGY/ho09 BROWS JLI"
           },
           "IPL": {
@@ -1314,7 +1318,6 @@
           ],
           "destination": "KIPL",
           "exit": "IPL",
-          "scratchpad": "BDI",
           "altitude": 7000,
           "route": "IPL"
         },
@@ -1327,7 +1330,6 @@
           ],
           "destination": "KLAS",
           "exit": "CHKNN",
-          "scratchpad": "PAD",
           "altitude": 29000,
           "route": "CHKNN SEBBY YELAH MISEN RNDRZ2"
         },
@@ -1339,7 +1341,6 @@
           ],
           "destination": "KLAS",
           "exit": "CHKNN",
-          "scratchpad": "PAD",
           "altitude": 29000,
           "route": "CHKNN SEBBY YELAH MISEN RNDRZ2"
         },
@@ -1377,7 +1378,6 @@
           ],
           "destination": "KSFO",
           "exit": "IKAYE",
-          "scratchpad": "PAD",
           "route": "IKAYE RIZIN SPLNT STOKD SERFR SERFR4"
         },
         {
@@ -1388,7 +1388,6 @@
           ],
           "destination": "KSFO",
           "exit": "IKAYE",
-          "scratchpad": "PAD",
           "route": "IKAYE RIZIN SPLNT STOKD SERFR SERFR4"
         },
         {
@@ -1399,7 +1398,6 @@
           ],
           "destination": "KSFO",
           "exit": "IKAYE",
-          "scratchpad": "PAD",
           "route": "IKAYE RIZIN SPLNT STOKD SERFR SERFR4"
         },
         {
@@ -1410,7 +1408,6 @@
           ],
           "destination": "KSJC",
           "exit": "IKAYE",
-          "scratchpad": "PAD",
           "route": "IKAYE TESEA SCTRR TROXX SILCN6"
         },
         {
@@ -1421,7 +1418,6 @@
           ],
           "destination": "KSJC",
           "exit": "IKAYE",
-          "scratchpad": "PAD",
           "route": "IKAYE TESEA SCTRR TROXX SILCN6"
         },
         {
@@ -1436,7 +1432,6 @@
           ],
           "destination": "PHOG",
           "exit": "IKAYE",
-          "scratchpad": "PAD",
           "route": "IKAYE RZS DINTY R576 DIALO R576 DUSAC R576 DENNS LNDHY1"
         },
         {
@@ -1454,7 +1449,6 @@
           ],
           "destination": "PHNL",
           "exit": "MALIT",
-          "scratchpad": "PAD",
           "route": "MALIT ROSIN FICKY FOOTS ETECO DIALO R576 DRAYK R576 DENNS MAGGI3"
         },
         {
@@ -1472,7 +1466,6 @@
           ],
           "destination": "PHNL",
           "exit": "IKAYE",
-          "scratchpad": "PAD",
           "route": "IKAYE RZS DINTY R576 DADIE R576 DUSAC R576 DENNS MAGGI3"
         },
         {
@@ -1486,7 +1479,6 @@
           ],
           "destination": "PHLI",
           "exit": "MALIT",
-          "scratchpad": "PAD",
           "route": "MALIT C1177 FICKY R578 FITES LNY V16 NAPUA"
         },
         {
@@ -1498,7 +1490,6 @@
           ],
           "destination": "KOAK",
           "exit": "OROSZ",
-          "scratchpad": "PAD",
           "route": "OROSZ COREZ RGOOD EMZOH3"
         },
         {
@@ -1510,7 +1501,6 @@
           ],
           "destination": "KOAK",
           "exit": "OROSZ",
-          "scratchpad": "PAD",
           "route": "OROSZ COREZ RGOOD EMZOH3"
         },
         {
@@ -1522,7 +1512,6 @@
           ],
           "destination": "KSEA",
           "exit": "EHF",
-          "scratchpad": "PAD",
           "route": "EHF SHIMR LKV HAWKZ7"
         },
         {
@@ -1534,7 +1523,6 @@
           ],
           "destination": "KSEA",
           "exit": "EHF",
-          "scratchpad": "PAD",
           "route": "EHF SHIMR LKV HAWKZ7"
         },
         {
@@ -2397,94 +2385,100 @@
       "departure_routes": {
         "26L": {
           "AVRRY,MTBAL": {
-            "cleared_altitude": 13000,
+            "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
           "OTAYY": {
-            "cleared_altitude": 13000,
+            "cleared_altitude": 12000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 JUMPA RORBE OTAYY"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
-          "COREZ": {
+          "COREZ,EHF,LAS,MISEN": {
             "cleared_altitude": 14000,
             "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ SHORS MDWAY COREZ",
-            "handoff_controller": "18"
+            "waypoint_actions": { "SNSHN": "ho18" }
           },
-          "GMN": {
+          "AVE,DAG,GMN,COREZ.P": {
             "cleared_altitude": 14000,
             "sid": "POM1",
-            "waypoints": "N034.03.14.732,W117.44.47.393 POM/a7000- N034.06.34.862,W117.49.57.097/ho BUCCK/a14000+ TOOBD GMN",
-            "handoff_controller": "18"
-          },
-          "EHF": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ TUNAY EHF",
-            "handoff_controller": "18"
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+ DINNK POM/a8000- SNSHN/ho BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY",
-            "handoff_controller": "18"
-          },
-          "DINTY": {
-            "cleared_altitude": 13000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC"
-          },
-          "MALIT": {
-            "cleared_altitude": 13000,
-            "sid": "RAJEE4",
-            "waypoints": "N034.03.17.616,W117.39.23.900/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC MALIT"
+            "waypoint_actions": { "POM": "ho18" }
           }
         },
         "26R": {
           "AVRRY,MTBAL": {
             "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 ARRDY/a13000+ PEELR MTBAL"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
           "OTAYY": {
-            "cleared_altitude": 14000,
+            "cleared_altitude": 12000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- ELLBO/ho12 JUMPA RORBE OTAYY"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
-          "GMN": {
+          "COREZ,EHF,LAS,MISEN": {
+            "cleared_altitude": 14000,
+            "sid": "SNSHN5",
+            "waypoint_actions": { "SNSHN": "ho18" }
+          },
+          "AVE,DAG,GMN,COREZ.P": {
             "cleared_altitude": 14000,
             "sid": "POM1",
-            "waypoints": "N034.03.25.224,W117.45.04.943 POM/a7000- N034.06.34.862,W117.49.57.097/ho BUCCK/a14000+ TOOBD GMN",
-            "handoff_controller": "18"
-          },
-          "COREZ": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ SHORS MDWAY COREZ",
-            "handoff_controller": "18"
-          },
-          "EHF": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho NLAND/a14000+ TUNAY EHF",
-            "handoff_controller": "18"
-          },
-          "LAS,MISEN": {
-            "cleared_altitude": 14000,
-            "sid": "SNSHN5",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK POM/a8000- SNSHN/ho BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY",
-            "handoff_controller": "18"
-          },
-          "DINTY": {
+            "waypoint_actions": { "POM": "ho18" }
+          }
+        },
+        "26L.O": {
+          "AVRRY,MTBAL": {
             "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC"
+            "waypoint_actions": { "RAJEE": "ho12" }
           },
-          "MALIT": {
+          "OTAYY": {
+            "cleared_altitude": 12000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "DINTY,MALIT": {
+            "cleared_altitude": 13000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "COREZ,EHF,LAS,MISEN": {
+            "cleared_altitude": 14000,
+            "sid": "SNSHN5",
+            "waypoint_actions": { "SNSHN": "ho18" }
+          },
+          "AVE,DAG,GMN,COREZ.P": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
+          }
+        },
+        "26R.O": {
+          "AVRRY,MTBAL": {
             "cleared_altitude": 14000,
             "sid": "RAJEE4",
-            "waypoints": "N034.03.27.971,W117.39.23.626/a1460+/flyover SOEHL/a4000+ RAJEE/a7000- NIKKL/ho12 SHAYL ARIII LANAA TUDOO SXC MALIT"
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "OTAYY": {
+            "cleared_altitude": 12000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "DINTY,MALIT": {
+            "cleared_altitude": 13000,
+            "sid": "RAJEE4",
+            "waypoint_actions": { "RAJEE": "ho12" }
+          },
+          "COREZ,EHF,LAS,MISEN": {
+            "cleared_altitude": 14000,
+            "sid": "SNSHN5",
+            "waypoint_actions": { "SNSHN": "ho18" }
+          },
+          "AVE,DAG,GMN,COREZ.P": {
+            "cleared_altitude": 14000,
+            "sid": "POM1",
+            "waypoint_actions": { "POM": "ho18" }
           }
         }
       },
@@ -2595,7 +2589,7 @@
           ],
           "destination": "KCLT",
           "exit": "MTBAL",
-          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ7"
+          "route": "MTBAL CNERY BLH SALOM J169 KOFFA KA24Q TXO J74 IRW OKM ECIGE TROVE HCH TAZZA FILPZ6"
         },
         {
           "airlines": [
@@ -2749,64 +2743,49 @@
       "departure_routes": {
         "20R": {
           "IKAYE": {
-            "cleared_altitude": 5000,
+            "cleared_altitude": 16000,
             "sid": "HHERO3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6K MIKAA/c16000/ho22 SNYPR HHERO FAYHE/a20000+ IKAYE"
+            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6K MIKAA/cvs/ho22 SNYPR HHERO FAYHE/a20000+ IKAYE"
           },
           "OROSZ": {
-            "cleared_altitude": 5000,
+            "cleared_altitude": 16000,
             "sid": "HHERO3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6K MIKAA/c16000/ho22 SNYPR HHERO CMINO/a20000+ RIDDL TWINE OROSZ"
+            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6K MIKAA/cvs/ho22 SNYPR HHERO CMINO/a20000+ RIDDL TWINE OROSZ"
           },
           "EHF": {
-            "cleared_altitude": 5000,
+            "cleared_altitude": 16000,
             "sid": "HHERO3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6K MIKAA/c16000/ho22 SNYPR HHERO CMINO/a20000+ RIDDL LANDO EHF"
+            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6K MIKAA/cvs/ho22 SNYPR HHERO CMINO/a20000+ RIDDL LANDO EHF"
           },
           "BEALE,MISEN": {
-            "cleared_altitude": 5000,
+            "cleared_altitude": 17000,
             "sid": "FINZZ3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6X FINZZ/a10000+/c17000/ho21 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c8000 DOLLF/a8000-/c14000/hoT6X FINZZ/a10000+/cvs/ho21 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
           },
           "AVRRY.S": {
             "cleared_altitude": 5000,
             "sid": "STAYY4",
-            "waypoint_actions": { "LRREN": "c13000", "TANGL": "ho12" }
+            "waypoint_actions": { "LRREN": "c13000", "TANGL": "cvs/ho12" }
           },
           "CNERY.S": {
             "cleared_altitude": 5000,
             "sid": "STAYY4",
-            "waypoint_actions": { "LRREN": "c13000", "TANGL": "ho12" }
+            "waypoint_actions": { "LRREN": "c13000", "TANGL": "cvs/ho12" }
           },
           "TCATE.S": {
             "cleared_altitude": 5000,
             "sid": "STAYY4",
-            "waypoint_actions": { "LRREN": "c13000", "TANGL": "ho12" }
+            "waypoint_actions": { "LRREN": "c13000", "TANGL": "cvs/ho12" }
           },
           "OTAYY.S": {
             "cleared_altitude": 5000,
             "sid": "STAYY4",
-            "waypoint_actions": { "LRREN": "c13000", "TANGL": "ho12" }
+            "waypoint_actions": { "LRREN": "c13000", "TANGL": "cvs/ho12" }
           },
-          "AVRRY": {
+          "AVRRY,CNERY,TCATE,OTAYY": {
             "cleared_altitude": 5000,
             "sid": "PIGGN3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c13000 TANGL/ho12 SHIRR/a7000+ DANAH PIGGN/a9000+ FNCHH TBERD PEELR MTBAL AVRRY"
-          },
-          "CNERY": {
-            "cleared_altitude": 5000,
-            "sid": "PIGGN3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c13000 TANGL/ho12 SHIRR/a7000+ DANAH PIGGN/a9000+ WIILD FLWRZ BLCKD CSTWY CNERY"
-          },
-          "TCATE": {
-            "cleared_altitude": 5000,
-            "sid": "PIGGN3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c13000 TANGL/ho12 SHIRR/a7000+ DANAH PIGGN/a9000+ WIILD TCATE"
-          },
-          "OTAYY": {
-            "cleared_altitude": 5000,
-            "sid": "PIGGN3",
-            "waypoints": "N033.38.51.175,W117.53.09.825 STREL/a5000-/c13000 TANGL/ho12 SHIRR/a7000+ DANAH PIGGN/a9000+ WIILD WAGAV OTAYY"
+            "waypoint_actions": { "STREL": "c13000", "TANGL": "cvs/ho12" }
           },
           "VTU": {
             "assigned_altitude": 2000,
@@ -3234,19 +3213,19 @@
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/ho21 DOTSS AREAE PEELR MTBAL AVRRY"
+            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/cvs/ho21 DOTSS AREAE PEELR MTBAL AVRRY"
           },
           "CNERY": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/ho21 DOTSS WIILD BLCKD CSTWY CNERY"
+            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/cvs/ho21 DOTSS WIILD BLCKD CSTWY CNERY"
           },
           "TCATE": {
             "assigned_altitude": 3000,
             "sid": "FRITR3",
             "is_rnav": true,
-            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/ho21 DOTSS WIILD TCATE"
+            "waypoints": "KLGB-12/h301/@a1500+/h180/c17000/@a7000+/ld FRITR/a5000+/cvs/ho21 DOTSS WIILD TCATE"
           },
           "BEALE,MISEN": {
             "assigned_altitude": 3000,
@@ -3511,7 +3490,7 @@
         "24": {
           "OCN": {
             "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/c6000/h247/@a2000+/rd N033.07.48.264,W117.10.25.506/hoT4S OCN"
+            "waypoints": "KCRQ-6/c6000/h247/@a2000+/hoT4S/rd OCN"
           },
           "MZB": {
             "cleared_altitude": 3000,
@@ -3519,53 +3498,53 @@
           },
           "JLI": {
             "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/c11000/h247/@a2000+/ld N033.07.48.264,W117.10.25.506/ho12 JLI"
+            "waypoints": "KCRQ-6/h247/c11000/@a2000+/h150/@a3000+/ho09/ld JLI"
           },
           "TRM": {
             "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/c11000/h247/@a2000+/ld N033.07.48.264,W117.10.25.506/ho12 TRM"
+            "waypoints": "KCRQ-6/h247/c11000/@a2000+/h150/@a3000+/ho12/ld TRM"
           },
           "LAX": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- LAX"
+            "waypoints": "KCRQ-6/h247/@a2000+/c10000/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- LAX"
           },
           "SLI": {
             "cleared_altitude": 3000,
             "sid": "CWARD2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- MADOW SLI"
+            "waypoints": "KCRQ-6/h247/@a2000+/c10000/rd GYWNN/a6000+/hoT4Y PADRZ CWARD/a12000- MADOW SLI"
           },
           "EHF": {
-            "cleared_altitude": 3000,
+            "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/cvs/ho21 PADRZ HFMNN CHKNN RIDDL LANDO EHF"
           },
           "OROSZ": {
-            "cleared_altitude": 3000,
+            "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/cvs/ho21 PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
           },
           "CHKNN": {
-            "cleared_altitude": 3000,
+            "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ HFMNN CHKNN"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/cvs/ho21 PADRZ HFMNN CHKNN"
           },
           "IKAYE": {
-            "cleared_altitude": 3000,
+            "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ IKAYE"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/cvs/ho21 PADRZ IKAYE"
           },
           "SXC,MALIT": {
-            "cleared_altitude": 3000,
+            "cleared_altitude": 15000,
             "sid": "PADRZ2",
             "is_rnav": true,
-            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/ho21 PADRZ SXC"
+            "waypoints": "KCRQ-6/h247/@a2000+/rd GYWNN/a6000+/cvs/ho21 PADRZ SXC"
           }
         }
       },
@@ -3983,7 +3962,7 @@
           ],
           "destination": "KCLT",
           "exit": "MTBAL",
-          "route": "MTBAL CNERY BLH SALOM J169 KOFFA J65 PXR KA21Q KA24U KF24A SPS TXK VLKNN THRSR BESTT JONZE8"
+          "route": "MTBAL CNERY BLH SALOM J169 KOFFA J65 PXR KA21Q KA24U KF24A SPS TXK VLKNN THRSR BESTT JONZE7"
         },
         {
           "airlines": [
@@ -4108,6 +4087,94 @@
       ],
       "hold_for_release": true,
       "tower_list": 1
+    },
+    "KSDM": {
+      "vfr": { "random_routes": { "fleet": "GAsinglepiston", "rate": 5 } },
+      "approaches": {
+        "R8L": {
+          "cifp_id": "R8L"
+        },
+        "VORA8": {
+          "cifp_id": "VAOR",
+          "runway": "8L"
+        },
+        "VORA6": {
+          "cifp_id": "VAOR",
+          "runway": "26R"
+        }
+      }
+    },
+    "KNZY": {
+      "approaches": {
+        "HV": {
+          "full_name": "Hotel Visual Runway 29",
+          "runway": "29",
+          "type": "ChartedVisual",
+          "waypoints": [
+            "N032.36.53.690,W117.09.33.074 N032.39.49.100,W117.10.41.464 N032.40.36.122,W117.10.59.481 N032.41.11.553,W117.11.19.092"
+          ]
+        },
+        "V29": {
+          "full_name": "VOR DME Runway 29",
+          "runway": "29",
+          "type": "ILS",
+          "waypoints": ["PGY/iaf/nopt180/hilpt/a4900 ZEKIR/a3600/faf ZAPUD/a2000"]
+        },
+        "T29": {
+          "full_name": "TACAN Runway 29",
+          "runway": "29",
+          "type": "ILS",
+          "waypoints": [
+            "SKATE/iaf/a3000 OBIME N032.33.54.722,W117.17.16.367 OCABI/arc9NZY ORPUE/if/a3000/arc9NZY ORTEE/a1600/faf OSBUE"
+          ]
+        },
+        "H29": {
+          "full_name": "Hi TACAN Runway 29",
+          "runway": "29",
+          "type": "ILS",
+          "waypoints": [
+            "MYSTY/iaf/a12000 SKATE/iaf OBIME N032.33.54.722,W117.17.16.367 OCABI/arc9NZY ORPUE/if/a3000/arc9NZY ORTEE/a1600/faf OSBUE"
+          ]
+        },
+        "RY36": {
+          "full_name": "RNAV Y Runway 36",
+          "runway": "36",
+          "type": "RNAV",
+          "waypoints": ["SKATE/iaf/a3000/nopt180/hilpt GASME/if/a3000 CATCC/a1600/faf ZOBAN"]
+        },
+        "RZ36": {
+          "full_name": "RNAV Z Runway 36",
+          "runway": "36",
+          "type": "RNAV",
+          "waypoints": [
+            "SKATE/iaf/a3000+ SOJAS/if/a2600+ WOTUV/arc1.4 FOLPI/faf PENDD",
+            "CHASR/a6400+/iaf HOGAK SOJAS/if/a2600+ WOTUV/arc1.4 FOLPI/faf PENDD"
+          ]
+        },
+        "R29": {
+          "full_name": "RNAV Runway 29",
+          "runway": "29",
+          "type": "RNAV",
+          "waypoints": [
+            "SKATE/iaf/a3000+ HIBKO/if/a2900+ NOVOE/a1500/faf ORRAD/arc1.6CFPJX WELEG HUTEK",
+            "CHASR/a6400+ LEDAC HIBKO/if/a2900+ NOVOE/a1500/faf ORRAD/arc1.6CFPJX WELEG HUTEK"
+          ]
+        },
+        "T36": {
+          "runway": "36",
+          "type": "VOR",
+          "full_name": "TACAN Runway 36",
+          "waypoints": ["SKATE/iaf/a3000 OBIME N032.33.54.722,W117.17.16.367 HUPKO/if/a2000 WASIR/faf ZOLOK"]
+        },
+        "H36": {
+          "runway": "36",
+          "type": "VOR",
+          "full_name": "Hi TACAN Runway 36",
+          "waypoints": [
+            "MYSTY/iaf/a3000 SKATE/iaf/a3000 OBIME N032.33.54.722,W117.17.16.367 HUPKO/if/a2000 WASIR/faf ZOLOK"
+          ]
+        }
+      }
     }
   },
   "inbound_flows": {
@@ -4120,7 +4187,10 @@
           "route": "OLAAA2",
           "initial_controller": "31",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
-          "initial_speed": "M85",
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "initial_speed": "M80",
           "expect_approach": "I5L",
           "airports": ["KLAX"],
           "airlines": {
@@ -4248,7 +4318,10 @@
           "is_rnav": true,
           "initial_controller": "31",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
-          "initial_speed": "M85",
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "initial_speed": "M80",
           "expect_approach": "I6L",
           "airports": ["KONT"],
           "airlines": {
@@ -4277,7 +4350,10 @@
           "is_rnav": true,
           "initial_controller": "31",
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
-          "initial_speed": "M85",
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "initial_speed": "M80",
           "expect_approach": null,
           "airports": ["KBUR"],
           "airlines": {
@@ -4315,10 +4391,14 @@
     "EAST CRQ ARR": {
       "arrivals": [
         {
-          "waypoints": "DECAS TRM/a16000/ho ESCON/delete",
+          "waypoints": "DECAS N033.42.32.041,W115.52.09.730/ho TRM/a16000 ESCON/delete",
           "route": "DECAS TRM ESCON",
           "initial_controller": "10",
           "initial_altitude": [20000, 22000, 24000, 26000, 28000, 30000],
+          "cleared_altitude": 16000,
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "initial_speed": 320,
           "expect_approach": null,
           "airports": ["KCRQ"],
@@ -4365,10 +4445,14 @@
           }
         },
         {
-          "waypoints": "N034.06.39.998,W115.42.27.839 TRM/a16000/ho ESCON/delete",
+          "waypoints": "N034.06.39.998,W115.42.27.839 N033.50.34.492,W115.57.32.288/ho TRM/a16000 ESCON/delete",
           "route": "LVELL TRM ESCON",
           "initial_controller": "10",
           "initial_altitude": [20000, 22000, 24000, 26000, 28000],
+          "cleared_altitude": 16000,
+          "eram": {
+            "assigned_altitude": 16000
+          },
           "initial_speed": 320,
           "expect_approach": null,
           "airports": ["KCRQ"],
@@ -4426,7 +4510,10 @@
           "is_rnav": true,
           "initial_controller": "40",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
-          "initial_speed": "M85",
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "initial_speed": "M80",
           "expect_approach": "RZ7",
           "airports": ["KSAN"],
           "airlines": {
@@ -4475,7 +4562,10 @@
           "is_rnav": true,
           "initial_controller": "40",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
-          "initial_speed": "M85",
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "initial_speed": "M80",
           "expect_approach": "RZ7",
           "airlines": {
             "KSAN": [
@@ -4652,7 +4742,10 @@
           "is_rnav": true,
           "initial_controller": "40",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
-          "initial_speed": "M85",
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "initial_speed": "M80",
           "expect_approach": "RZ7",
           "airlines": {
             "KSAN": [
@@ -4834,7 +4927,10 @@
           "initial_controller": "31",
           "initial_altitude": [24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "cleared_altitude": 24000,
-          "initial_speed": "M85",
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "initial_speed": "M80",
           "expect_approach": "RZ7",
           "airports": ["KSAN"],
           "airlines": {
@@ -5039,6 +5135,71 @@
         }
       ]
     },
+    "CHASR2.IPL": {
+      "arrivals": [
+        {
+          "waypoints": "N032.45.57.087,W114.42.31.547 HEEDS N032.45.28.042,W115.06.07.547/ho IPL/a24000-26000 BLUZE/a17000-19000 GUUSE/a10000-12000 TOPGN/a7300+ CHASR/a6400/delete",
+          "star": "CHASR2",
+          "is_rnav": true,
+          "initial_controller": "31",
+          "cleared_altitude": 24000,
+          "initial_altitude": [24000, 26000, 28000, 30000],
+          "initial_speed": 300,
+          "eram": {
+            "assigned_altitude": 24000
+          },
+          "expect_approach": null,
+          "aircraft": ["jet", "turboprop"],
+          "airports": ["KSDM", "KNZY"],
+          "airlines": {
+            "KSDM": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KIAH"
+              },
+              {
+                "icao": "XA",
+                "fleet": "fastGA",
+                "airport": "MMPR"
+              },
+              {
+                "icao": "XA",
+                "fleet": "fastGA",
+                "airport": "MMSD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "MMSD"
+              },
+              {
+                "icao": "EJA",
+                "airport": "MMSD"
+              }
+            ],
+            "KNZY": [
+              {
+                "icao": "CNV",
+                "airport": "KNIP"
+              },
+              {
+                "icao": "CNV",
+                "airport": "KADW"
+              },
+              {
+                "icao": "GTI",
+                "airport": "KWRI"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "COMIX2.HUULK": {
       "arrivals": [
         {
@@ -5048,6 +5209,9 @@
           "initial_controller": "27",
           "initial_altitude": [29000, 31000, 33000, 35000, 39000],
           "initial_speed": 320,
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "expect_approach": null,
           "airlines": {
             "KSAN": [
@@ -5151,6 +5315,9 @@
           "initial_controller": "25",
           "initial_altitude": [29000, 31000, 33000, 35000, 39000],
           "initial_speed": 320,
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "expect_approach": null,
           "airlines": {
             "KSAN": [
@@ -5209,6 +5376,9 @@
           "initial_controller": "26",
           "initial_altitude": [29000, 31000, 33000, 35000, 39000],
           "initial_speed": 320,
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "expect_approach": null,
           "airlines": {
             "KSAN": [
@@ -5271,6 +5441,9 @@
           "initial_controller": "28",
           "initial_altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "initial_speed": 280,
+          "eram": {
+            "assigned_altitude": 24000
+          },
           "expect_approach": null,
           "airlines": {
             "KSAN": [
@@ -5323,6 +5496,10 @@
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KCRQ"],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "airlines": {
             "KCRQ": [
               {
@@ -5347,7 +5524,7 @@
     "LEGOZ4.BURGL/REBRG": {
       "arrivals": [
         {
-          "waypoints": "BLOXX/a24000+/ho14/dvs BLDIT N033.50.23.670,W118.41.03.052/po21 TANDY/a17000/hoT6K NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
+          "waypoints": "BLOXX/a24000+/ho14 BLDIT N033.50.23.670,W118.41.03.052/po21 TANDY/a17000/hoT6K NJAGO/a16000- LEGOZ/a15000 BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/delete",
           "star": "LEGOZ4",
           "route": "/. LEGOZ4",
           "initial_controller": "25",
@@ -5356,6 +5533,10 @@
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KCRQ"],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "airlines": {
             "KCRQ": [
               {
@@ -5423,6 +5604,10 @@
           "initial_speed": 300,
           "expect_approach": null,
           "airports": ["KCRQ"],
+          "eram": {
+            "interim_altitude": 15000,
+            "interim_type": "procedure"
+          },
           "airlines": {
             "KCRQ": [
               {
@@ -5793,7 +5978,7 @@
           ],
           "initial_altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "initial_controller": "31",
-          "initial_speed": "M85",
+          "initial_speed": "M80",
           "scratchpad": "LAX",
           "waypoints": "ASUTA AMMOR RNCHO/a26000+ REGGO/a24000+/ho12 CYNDE/a14000-/hoT4S OLAAA/a11000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210/delete"
         }
@@ -5802,65 +5987,529 @@
   },
   "airspace": {
     "boundaries": {
-      "SECTOR 18 MAIN": [
-        "N033.54.29.654,W118.17.16.010",
-        "N034.00.20.750,W118.21.17.078",
-        "N034.05.07.809,W118.24.09.096",
-        "N034.06.00.379,W118.24.12.502",
-        "N034.06.00.049,W118.22.29.230",
-        "N034.20.26.856,W118.17.24.937",
-        "N034.26.59.467,W118.14.55.880",
-        "N034.27.03.847,W118.02.18.757",
-        "N034.27.42.959,W117.36.58.881",
-        "N034.37.57.781,W117.18.44.478",
-        "N034.34.00.641,W116.57.10.810",
-        "N034.23.17.282,W117.11.57.352",
-        "N034.20.54.885,W117.13.58.449",
-        "N034.15.07.374,W117.21.48.526",
-        "N034.13.58.943,W117.23.15.126",
-        "N034.02.41.032,W117.49.06.972",
-        "N033.55.58.451,W118.03.01.274",
-        "N033.54.29.654,W118.17.16.010"
+      "SECTOR 09 MAIN": [
+        "N032.35.25.126,W116.28.59.987",
+        "N032.58.00.207,W116.29.00.069",
+        "N033.14.45.140,W116.35.45.135",
+        "N033.24.29.009,W116.27.23.060",
+        "N033.30.02.169,W116.14.01.635",
+        "N033.26.40.392,W116.10.39.761",
+        "N033.32.31.885,W115.50.37.033",
+        "N033.33.27.215,W115.52.32.664",
+        "N033.32.48.969,W115.37.34.779",
+        "N033.31.13.429,W115.41.00.827",
+        "N033.29.35.967,W115.45.35.870",
+        "N033.29.10.959,W115.45.48.944",
+        "N033.28.30.104,W115.44.54.946",
+        "N033.27.30.064,W115.43.35.405",
+        "N033.22.55.117,W115.38.16.224",
+        "N033.21.05.583,W115.34.33.229",
+        "N033.19.30.442,W115.32.26.475",
+        "N032.56.30.092,W115.26.59.906",
+        "N032.51.00.241,W115.26.00.360",
+        "N032.50.59.980,W115.05.30.029",
+        "N032.41.30.078,W115.05.30.001",
+        "N032.39.35.216,W115.31.47.473",
+        "N032.38.28.927,W115.47.09.391",
+        "N032.36.59.924,W116.06.00.351",
+        "N032.36.20.937,W116.15.17.440",
+        "N032.35.25.126,W116.28.59.987"
       ],
-      "SECTOR 18 OVER LAX SHELF": [
-        "N034.06.00.379,W118.24.12.502",
-        "N034.06.01.216,W118.26.42.410",
-        "N034.01.15.119,W118.35.31.375",
-        "N033.58.58.764,W118.38.00.377",
-        "N033.57.28.429,W118.37.27.390",
-        "N033.53.22.061,W118.36.45.175",
-        "N033.45.20.887,W118.33.59.666",
-        "N033.46.57.800,W118.26.00.250",
-        "N033.48.14.252,W118.20.37.582",
-        "N033.51.58.414,W118.14.59.450",
-        "N033.51.59.691,W118.12.58.628",
-        "N033.54.29.654,W118.17.16.010",
-        "N034.00.20.750,W118.21.17.078",
-        "N034.05.07.809,W118.24.09.096",
-        "N034.06.00.379,W118.24.12.502"
+      "SECTOR 09 ABOVE SCT MIRAMAR SHELF": [
+        "N033.02.07.963,W116.37.39.832",
+        "N032.54.03.782,W116.39.20.055",
+        "N032.51.29.176,W116.51.02.191",
+        "N032.41.30.023,W116.58.59.932",
+        "N032.32.03.321,W117.07.25.220",
+        "N032.26.48.604,W117.18.51.784",
+        "N032.31.30.650,W117.30.03.460",
+        "N032.48.00.670,W117.39.00.170",
+        "N032.56.18.652,W117.23.17.268",
+        "N032.59.04.725,W117.16.19.705",
+        "N032.59.59.862,W117.14.00.289",
+        "N033.08.00.006,W117.08.20.234",
+        "N033.05.00.119,W116.43.59.849",
+        "N033.02.07.963,W116.37.39.832"
       ],
-      "SECTOR 18 EAST OF POM SHELF": [
-        "N034.03.05.092,W117.43.57.295",
-        "N034.04.43.460,W117.42.03.092",
-        "N034.07.33.694,W117.37.57.383",
-        "N034.04.47.374,W117.44.10.369",
-        "N034.03.05.092,W117.43.57.295"
+      "SECTOR 09 ABOVE SCT EAST SHELF": [
+        "N032.35.25.126,W116.28.59.987",
+        "N032.58.00.207,W116.29.00.069",
+        "N033.02.07.963,W116.37.39.832",
+        "N032.54.03.782,W116.39.20.055",
+        "N032.51.29.176,W116.51.02.191",
+        "N032.41.30.023,W116.58.59.932",
+        "N032.32.03.321,W117.07.25.220",
+        "N032.35.25.126,W116.28.59.987"
+      ],
+      "SECTOR 09 EAST OF JLI ABOVE SCT MIRAMAR SHELF": [
+        "N032.58.00.207,W116.29.00.069",
+        "N033.03.18.028,W116.40.13.861",
+        "N033.09.54.731,W116.33.48.048",
+        "N032.58.00.207,W116.29.00.069"
+      ],
+      "SECTOR 09 WEST OF JLI ABOVE SCT MIRAMAR SHELF": [
+        "N033.14.45.140,W116.35.45.135",
+        "N033.05.00.517,W116.43.59.904",
+        "N033.03.18.028,W116.40.13.861",
+        "N033.09.54.676,W116.33.48.131",
+        "N033.14.45.140,W116.35.45.135"
+      ],
+      "SECTOR 09 BELOW SECTOR 10 SHELF": [
+        "N033.24.29.009,W116.27.23.060",
+        "N033.30.02.169,W116.14.01.635",
+        "N033.34.30.016,W116.18.29.976",
+        "N033.24.29.009,W116.27.23.060"
+      ],
+      "SECTOR 09 ABOVE SCT DESERT BELOW SECTOR 10 SHELF": [
+        "N033.30.02.169,W116.14.01.635",
+        "N033.33.44.945,W116.05.06.024",
+        "N033.33.59.927,W116.10.58.602",
+        "N033.34.29.892,W116.18.29.866",
+        "N033.30.02.169,W116.14.01.635"
+      ],
+      "SECTOR 09 ABOVE SCT DESERT SHELF": [
+        "N033.30.02.169,W116.14.01.635",
+        "N033.26.40.392,W116.10.39.761",
+        "N033.32.31.885,W115.50.37.033",
+        "N033.33.27.215,W115.52.32.664",
+        "N033.33.30.086,W115.59.59.945",
+        "N033.33.44.945,W116.05.06.024",
+        "N033.30.02.169,W116.14.01.635"
+      ],
+      "SECTOR 09 ABOVE NYL SHELF": [
+        "N032.56.30.092,W115.26.59.906",
+        "N032.51.00.241,W115.26.00.360",
+        "N032.50.59.980,W115.05.30.029",
+        "N032.57.00.126,W115.10.50.006",
+        "N032.56.30.092,W115.26.59.906"
+      ],
+      "SECTOR 12 MAIN": [
+        "N033.14.45.044,W116.35.45.025",
+        "N033.26.00.099,W116.48.45.000",
+        "N033.37.30.096,W116.49.59.816",
+        "N033.34.30.098,W116.18.29.948",
+        "N033.25.59.399,W116.26.10.550",
+        "N033.24.28.968,W116.27.23.197",
+        "N033.14.45.044,W116.35.45.025"
+      ],
+      "SECTOR 12 ABOVE SECTOR 09": [
+        "N033.14.45.044,W116.35.45.025",
+        "N033.09.54.964,W116.33.47.966",
+        "N033.03.16.792,W116.40.13.723",
+        "N033.04.59.926,W116.44.00.151",
+        "N033.14.45.044,W116.35.45.025"
+      ],
+      "SECTOR 12 ABOVE SCT MIRAMAR": [
+        "N033.14.45.044,W116.35.45.025",
+        "N033.05.00.050,W116.44.00.426",
+        "N033.08.00.033,W117.08.20.180",
+        "N033.09.00.142,W117.15.50.097",
+        "N033.15.59.957,W117.20.44.943",
+        "N033.20.15.678,W117.25.52.450",
+        "N033.22.33.103,W117.22.51.203",
+        "N033.27.30.091,W117.16.45.194",
+        "N033.26.00.099,W116.48.45.000",
+        "N033.14.45.044,W116.35.45.025"
+      ],
+      "SECTOR 12 ABOVE SCT HEMET": [
+        "N033.27.30.091,W117.16.45.194",
+        "N033.26.00.099,W116.48.45.000",
+        "N033.37.30.096,W116.49.59.816",
+        "N033.39.04.853,W117.14.00.179",
+        "N033.30.00.013,W117.14.00.151",
+        "N033.27.30.091,W117.16.45.194"
+      ],
+      "SECTOR 12 BELOW SECTORS 21/22 ABOVE SCT HEMET": [
+        "N033.39.04.853,W117.14.00.179",
+        "N033.30.00.013,W117.14.00.151",
+        "N033.27.30.091,W117.16.45.194",
+        "N033.39.59.867,W117.27.59.782",
+        "N033.39.04.853,W117.14.00.179"
+      ],
+      "SECTOR 12 BELOW SECTORS 21/22 ABOVE SCT SHORE": [
+        "N033.20.15.678,W117.25.52.450",
+        "N033.22.33.103,W117.22.51.203",
+        "N033.27.30.091,W117.16.45.194",
+        "N033.39.59.867,W117.27.59.782",
+        "N033.40.45.021,W117.35.59.884",
+        "N033.31.30.101,W117.38.00.020",
+        "N033.29.00.028,W117.34.59.954",
+        "N033.20.15.678,W117.25.52.450"
+      ],
+      "SECTOR 12 ABOVE SCT SPRINGS": [
+        "N033.34.30.043,W116.18.30.031",
+        "N033.41.59.384,W116.12.00.291",
+        "N033.43.00.249,W116.18.32.200",
+        "N033.43.30.227,W116.22.29.917",
+        "N033.44.15.203,W116.27.46.076",
+        "N033.46.34.866,W116.50.05.227",
+        "N033.46.00.108,W116.50.00.256",
+        "N033.37.30.027,W116.49.59.981",
+        "N033.34.30.043,W116.18.30.031"
+      ],
+      "SECTOR 12 ABOVE SCT HEMET (V64)": [
+        "N033.46.34.866,W116.50.05.227",
+        "N033.46.00.108,W116.50.00.256",
+        "N033.37.30.027,W116.49.59.981",
+        "N033.39.04.564,W117.13.59.877",
+        "N033.48.29.976,W117.14.00.014",
+        "N033.47.56.962,W117.10.34.817",
+        "N033.47.44.122,W117.00.20.434",
+        "N033.46.34.866,W116.50.05.227"
+      ],
+      "SECTOR 12 BELOW SECTORS 21/22 ABOVE SCT HEMET (V64)": [
+        "N033.39.04.564,W117.13.59.877",
+        "N033.48.29.976,W117.14.00.014",
+        "N033.48.32.228,W117.15.24.856",
+        "N033.48.44.258,W117.19.16.970",
+        "N033.48.53.020,W117.30.50.180",
+        "N033.49.00.216,W117.31.59.338",
+        "N033.48.59.913,W117.36.00.021",
+        "N033.40.45.034,W117.36.00.159",
+        "N033.40.00.018,W117.27.59.946",
+        "N033.39.04.564,W117.13.59.877"
+      ],
+      "SECTOR 21 BELOW SECTOR 22 ABOVE SCT NEWPORT SHELF": [
+        "N033.45.21.437,W118.34.00.106",
+        "N033.42.29.322,W118.32.44.685",
+        "N033.36.59.815,W118.26.59.741",
+        "N033.32.00.808,W118.26.44.608",
+        "N033.31.00.040,W118.13.29.774",
+        "N033.52.00.075,W118.12.59.864",
+        "N033.51.59.966,W118.15.00.109",
+        "N033.48.14.993,W118.20.40.246",
+        "N033.48.15.007,W118.20.40.164",
+        "N033.47.00.478,W118.25.58.163",
+        "N033.45.21.437,W118.34.00.106"
+      ],
+      "SECTOR 21 ABOVE SCT NEWPORT SHELF": [
+        "N033.31.00.040,W118.13.29.774",
+        "N033.52.00.075,W118.12.59.864",
+        "N033.52.00.075,W117.55.47.863",
+        "N033.51.59.581,W117.55.30.065",
+        "N033.49.44.985,W117.59.15.010",
+        "N033.44.00.028,W117.52.00.034",
+        "N033.41.59.961,W117.53.30.122",
+        "N033.38.37.359,W117.48.57.222",
+        "N033.35.57.110,W117.55.03.918",
+        "N033.29.16.095,W117.47.12.962",
+        "N033.29.59.917,W118.04.02.770",
+        "N033.31.00.040,W118.13.29.774"
+      ],
+      "SECTOR 21 ABOVE SHORE/MAVERICK SHELF": [
+        "N033.52.00.075,W118.12.59.864",
+        "N033.52.00.075,W117.55.47.863",
+        "N033.51.59.581,W117.55.30.065",
+        "N033.49.44.985,W117.59.15.010",
+        "N033.44.00.028,W117.52.00.034",
+        "N033.41.59.961,W117.53.30.122",
+        "N033.38.37.359,W117.48.57.222",
+        "N033.35.57.110,W117.55.03.918",
+        "N033.29.16.095,W117.47.12.962",
+        "N033.28.59.822,W117.41.01.322",
+        "N033.28.59.973,W117.41.01.074",
+        "N033.28.59.987,W117.35.00.173",
+        "N033.31.30.142,W117.38.00.020",
+        "N033.40.44.801,W117.35.59.994",
+        "N033.48.59.900,W117.35.59.692",
+        "N033.51.29.781,W117.42.29.926",
+        "N033.53.19.589,W117.44.59.945",
+        "N033.53.29.999,W117.49.29.961",
+        "N033.54.59.798,W117.50.00.091",
+        "N034.02.44.849,W117.49.00.216",
+        "N033.56.00.305,W118.02.59.296",
+        "N033.52.00.075,W118.12.59.864"
+      ],
+      "SECTOR 21 ABOVE SCT FEEDER SHELF": [
+        "N033.53.19.589,W117.44.59.945",
+        "N033.53.29.999,W117.49.29.961",
+        "N033.54.59.798,W117.50.00.091",
+        "N034.02.44.849,W117.49.00.216",
+        "N034.04.46.482,W117.44.10.506",
+        "N034.03.05.655,W117.43.57.432",
+        "N034.00.18.429,W117.43.45.430",
+        "N033.55.26.577,W117.42.59.425",
+        "N033.53.19.589,W117.44.59.945"
+      ],
+      "SECTOR 21 ABOVE SECTOR 12 SHELF": [
+        "N033.28.59.987,W117.35.00.173",
+        "N033.31.30.142,W117.38.00.020",
+        "N033.40.44.801,W117.35.59.994",
+        "N033.48.59.900,W117.35.59.692",
+        "N033.49.00.092,W117.31.59.064",
+        "N033.48.53.033,W117.30.51.745",
+        "N033.48.44.313,W117.19.23.644",
+        "N033.48.38.092,W117.17.16.560",
+        "N033.48.32.324,W117.15.26.834",
+        "N033.48.30.017,W117.13.59.932",
+        "N033.29.59.876,W117.13.59.904",
+        "N033.27.30.064,W117.16.44.974",
+        "N033.22.29.230,W117.22.55.982",
+        "N033.20.16.062,W117.25.52.560",
+        "N033.28.59.987,W117.35.00.173"
+      ],
+      "SECTOR 22 OVER TANDY SHELF": [
+        "N033.45.21.437,W118.34.00.106",
+        "N033.42.29.322,W118.32.44.685",
+        "N033.39.31.041,W118.32.28.095",
+        "N033.39.30.039,W118.46.00.122",
+        "N033.45.20.997,W118.49.59.707",
+        "N033.45.21.437,W118.34.00.106"
+      ],
+      "SECTOR 22 OVER SECTOR 21 AND SCT NEWPORT SHELF": [
+        "N033.45.21.437,W118.34.00.106",
+        "N033.42.29.322,W118.32.44.685",
+        "N033.36.59.815,W118.26.59.741",
+        "N033.32.00.808,W118.26.44.608",
+        "N033.31.00.040,W118.13.29.774",
+        "N033.52.00.075,W118.12.59.864",
+        "N033.51.59.966,W118.15.00.109",
+        "N033.48.14.993,W118.20.40.246",
+        "N033.48.15.007,W118.20.40.164",
+        "N033.47.00.478,W118.25.58.163",
+        "N033.45.21.437,W118.34.00.106"
+      ],
+      "SECTOR 22 ABOVE SCT NEWPORT, KATALINA, PACIFIC SHELF": [
+        "N033.42.29.322,W118.32.44.685",
+        "N033.36.59.815,W118.26.59.741",
+        "N033.32.00.808,W118.26.44.608",
+        "N033.31.00.040,W118.13.29.774",
+        "N033.29.59.945,W118.03.57.716",
+        "N033.29.16.315,W117.47.12.522",
+        "N033.22.04.594,W117.38.42.839",
+        "N033.17.43.929,W117.33.33.409",
+        "N033.19.10.021,W117.32.00.108",
+        "N033.20.15.637,W117.25.52.450",
+        "N033.15.59.861,W117.20.44.805",
+        "N033.11.28.128,W117.17.33.973",
+        "N033.13.45.389,W117.32.22.877",
+        "N033.13.41.488,W117.37.24.204",
+        "N033.04.53.389,W117.52.06.681",
+        "N033.08.15.346,W117.55.04.165",
+        "N033.12.30.009,W117.58.47.764",
+        "N033.15.27.163,W118.17.52.787",
+        "N033.16.34.880,W118.25.02.902",
+        "N033.13.00.125,W118.29.29.924",
+        "N033.28.29.980,W118.47.00.108",
+        "N033.31.00.314,W118.46.45.166",
+        "N033.31.27.355,W118.45.00.933",
+        "N033.32.41.361,W118.43.01.814",
+        "N033.35.09.539,W118.42.44.291",
+        "N033.39.29.970,W118.45.59.902",
+        "N033.39.31.179,W118.32.28.013",
+        "N033.42.29.322,W118.32.44.685"
+      ],
+      "SECTOR 22 BELOW SECTOR 30 ABOVE FACSFAC SHELF": [
+        "N033.08.15.346,W117.55.04.165",
+        "N033.12.30.009,W117.58.47.764",
+        "N033.15.27.163,W118.17.52.787",
+        "N033.08.15.346,W117.55.04.165"
+      ],
+      "SECTOR 22 ABOVE SCT WEST/NORTH SHELF": [
+        "N033.11.28.128,W117.17.33.973",
+        "N033.13.45.389,W117.32.22.877",
+        "N033.13.41.488,W117.37.24.204",
+        "N033.04.53.389,W117.52.06.681",
+        "N032.53.00.116,W117.41.43.070",
+        "N032.57.40.020,W117.35.00.228",
+        "N033.01.30.444,W117.28.14.201",
+        "N033.09.00.087,W117.15.50.537",
+        "N033.11.28.128,W117.17.33.973"
+      ],
+      "SECTOR 22 ABOVE SCT MIRAMAR SHELF": [
+        "N032.53.00.116,W117.41.43.070",
+        "N032.57.40.020,W117.35.00.228",
+        "N033.01.30.444,W117.28.14.201",
+        "N033.09.00.238,W117.15.50.070",
+        "N033.08.00.033,W117.08.19.850",
+        "N033.00.00.109,W117.13.59.877",
+        "N032.59.04.697,W117.16.19.595",
+        "N032.58.18.307,W117.18.16.929",
+        "N032.56.19.930,W117.23.15.373",
+        "N032.47.59.997,W117.39.00.032",
+        "N032.53.00.116,W117.41.43.070"
+      ],
+      "SECTOR 22 ABOVE SCT SHORE SHELF": [
+        "N033.29.16.315,W117.47.12.522",
+        "N033.22.04.594,W117.38.42.839",
+        "N033.17.43.929,W117.33.33.409",
+        "N033.19.10.021,W117.32.00.108",
+        "N033.20.15.596,W117.25.52.313",
+        "N033.29.00.014,W117.35.00.173",
+        "N033.28.59.698,W117.41.01.596",
+        "N033.29.16.315,W117.47.12.522"
+      ],
+      "SECTOR 22 OVER LAX ABOVE SECTOR 18 SHELF": [
+        "N033.45.21.437,W118.34.00.106",
+        "N033.47.00.478,W118.25.58.163",
+        "N033.48.14.993,W118.20.40.246",
+        "N033.52.00.021,W118.15.00.219",
+        "N033.51.59.993,W118.12.59.946",
+        "N033.54.29.984,W118.17.14.912",
+        "N034.00.19.390,W118.21.14.743",
+        "N034.05.11.489,W118.24.10.497",
+        "N034.05.59.912,W118.24.15.056",
+        "N034.06.00.104,W118.26.45.075",
+        "N034.01.14.761,W118.35.30.743",
+        "N033.58.59.877,W118.38.00.239",
+        "N033.57.29.652,W118.37.29.725",
+        "N033.53.15.002,W118.36.44.956",
+        "N033.45.21.437,W118.34.00.106"
       ]
     },
     "volumes": {
-      "SECTOR 18 (LAX WEST)": [
+      "SECTOR 09": [
         {
-          "boundaries": ["SECTOR 18 MAIN"],
+          "boundaries": ["SECTOR 09 MAIN"],
+          "lower": 0,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 09 ABOVE SCT MIRAMAR SHELF"],
+          "lower": 18000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 09 ABOVE SCT EAST SHELF"],
+          "lower": 16000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 09 EAST OF JLI ABOVE SCT MIRAMAR SHELF"],
+          "lower": 10000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 09 WEST OF JLI ABOVE SCT MIRAMAR SHELF"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["SECTOR 09 BELOW SECTOR 10 SHELF"],
+          "lower": 0,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["SECTOR 09 ABOVE SCT DESERT BELOW SECTOR 10 SHELF"],
+          "lower": 9000,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["SECTOR 09 ABOVE SCT DESERT SHELF"],
+          "lower": 9000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 09 ABOVE NYL SHELF"],
+          "lower": 19000,
+          "upper": 23000
+        }
+      ],
+      "SECTOR 12 (LAX WEST)": [
+        {
+          "boundaries": ["SECTOR 12 MAIN"],
+          "lower": 0,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 12 ABOVE SECTOR 09"],
+          "lower": 20000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 12 ABOVE SCT MIRAMAR"],
+          "lower": 12000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 12 ABOVE SCT HEMET"],
+          "lower": 12000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 12 BELOW SECTORS 21/22 ABOVE SCT HEMET"],
+          "lower": 12000,
+          "upper": 17000
+        },
+        {
+          "boundaries": ["SECTOR 12 BELOW SECTORS 21/22 ABOVE SCT SHORE"],
+          "lower": 14000,
+          "upper": 17000
+        },
+        {
+          "boundaries": ["SECTOR 12 ABOVE SCT SPRINGS"],
           "lower": 14000,
           "upper": 23000
         },
         {
-          "boundaries": ["SECTOR 18 OVER LAX SHELF"],
-          "lower": 16000,
-          "upper": 19000
+          "boundaries": ["SECTOR 12 ABOVE SCT HEMET (V64)"],
+          "lower": 15000,
+          "upper": 23000
         },
         {
-          "boundaries": ["SECTOR 18 EAST OF POM SHELF"],
+          "boundaries": ["SECTOR 12 BELOW SECTORS 21/22 ABOVE SCT HEMET (V64)"],
+          "lower": 15000,
+          "upper": 17000
+        }
+      ],
+      "SECTORS 21/22 (LAX WEST)": [
+        {
+          "boundaries": ["SECTOR 21 BELOW SECTOR 22 ABOVE SCT NEWPORT SHELF"],
+          "lower": 15000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 21 ABOVE SCT NEWPORT SHELF"],
+          "lower": 15000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 21 ABOVE SHORE/MAVERICK SHELF"],
+          "lower": 14000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 21 ABOVE SCT FEEDER SHELF"],
+          "lower": 16000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 21 ABOVE SECTOR 12 SHELF"],
+          "lower": 18000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 22 OVER TANDY SHELF"],
+          "lower": 16000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 22 ABOVE SCT NEWPORT, KATALINA, PACIFIC SHELF"],
+          "lower": 15000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 22 BELOW SECTOR 30 ABOVE FACSFAC SHELF"],
+          "lower": 14000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 22 ABOVE SCT WEST/NORTH SHELF"],
+          "lower": 16000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 22 ABOVE SCT MIRAMAR SHELF"],
+          "lower": 18000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 22 ABOVE SCT SHORE SHELF"],
+          "lower": 14000,
+          "upper": 23000
+        },
+        {
+          "boundaries": ["SECTOR 22 OVER LAX ABOVE SECTOR 18 SHELF"],
           "lower": 20000,
           "upper": 23000
         }
@@ -5871,9 +6520,14 @@
   "scenarios": {
     "ZLA Sector 12 (West Flow)": {
       "description": "Sector 12 works arrivals into the Los Angeles area and departures from KSNA, KONT and KRIV. The size of the sector makes it complex due to the lack of space. Traffic conflicts arise within the sector between KSNA and KONT departures climbing eastbound on converging courses and southbound KSNA and KONT departures climbing out with Los Angeles basin arrivals descending over CYNDE.",
+      "airspace": {
+        "12": ["SECTOR 12 (LAX WEST)"]
+      },
       "configuration": "12",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAE",
+      "altitude_limits": [0, 242],
+      "center": "FLWRZ",
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -5970,9 +6624,14 @@
     },
     "ZLA Sector 09 (West Flow)": {
       "description": "Most of Sector 09's traffic is made up of San Diego area arrivals and departures, military traffic transitioning between MCAS Miramar, NAF El Centro, and MCAS Yuma, and the various restricted areas and MOAs/ATCAAs located in the surrounding airspace. In addition, Sector 09 also provides approach control services for KIPL and the other non-towered airports within the sector limits. Much of the complexity in this sector is derived from the different types and speeds of aircraft that enter the airspace and the high volume of Special Use Airspace (SUA) activity. \n\nThe major conflict point in Sector 09 is between San Diego arrivals descending west of IPL and San Diego departures climbing eastbound toward IPL.",
+      "airspace": {
+        "09": ["SECTOR 09"]
+      },
       "configuration": "09",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAE",
+      "altitude_limits": [0, 242],
+      "center": "BOREN",
       "departure_runways": [
         {
           "airport": "KSAN",
@@ -5993,6 +6652,14 @@
         {
           "airport": "KCRQ",
           "runway": "24"
+        },
+        {
+          "airport": "KNZY",
+          "runway": "29"
+        },
+        {
+          "airport": "KSDM",
+          "runway": "26R"
         }
       ],
       "inbound_rates": {
@@ -6001,6 +6668,10 @@
         },
         "LUCKI1.HOGGZ": {
           "KSAN": 8
+        },
+        "CHASR2.IPL": {
+          "KSDM": 2,
+          "KNZY": 2
         },
         "OLAAA2.BCKGND": {
           "overflights": 5
@@ -6012,9 +6683,14 @@
     },
     "ZLA Sector 09/12 Combined (West Flow)": {
       "description": "See individual descriptions for Sectors 09 and 12 for traffic variety and conflict points.",
+      "airspace": {
+        "12": ["SECTOR 09", "SECTOR 12 (LAX WEST)"]
+      },
       "configuration": "9@2",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAE",
+      "altitude_limits": [0, 242],
+      "center": "ZASOG",
       "departure_runways": [
         {
           "airport": "KLAX",
@@ -6101,6 +6777,14 @@
         {
           "airport": "KLAX",
           "runway": "24R"
+        },
+        {
+          "airport": "KNZY",
+          "runway": "29"
+        },
+        {
+          "airport": "KSDM",
+          "runway": "26R"
         }
       ],
       "inbound_rates": {
@@ -6114,6 +6798,10 @@
         },
         "LUCKI1.HOGGZ": {
           "KSAN": 8
+        },
+        "CHASR2.IPL": {
+          "KSDM": 2,
+          "KNZY": 2
         },
         "EAST CRQ ARR": {
           "KCRQ": 5
@@ -6131,9 +6819,14 @@
     },
     "ZLA Sectors 21/22 (West Flow)": {
       "description": "Sector 21/22 works southbound, eastbound and northeast bound departures from several Los Angeles basin airports, in addition to San Diego and Orange County departures filed towards LAX and the Ventura area. Complexity within the sector comes from the blending of many traffic flows and the varying aircraft types that fly these routes. Additional complexity comes from the interaction of San Diego area arrivals with aircraft climbing out on several of these departure routes. \n\nConflict points within the sector include the crossover point between San Diego area arrivals and Los Angeles basin departures and San Diego area departures with both Orange County departures and southbound Los Angeles basin departures.",
+      "airspace": {
+        "21": ["SECTORS 21/22 (LAX WEST)"]
+      },
       "configuration": "21",
       "default_maps": ["LOW WEST"],
       "default_map_group": "ZLAE",
+      "altitude_limits": [118, 242],
+      "center": "TANNN",
       "departure_runways": [
         {
           "airport": "KLAX",
