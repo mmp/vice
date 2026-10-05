@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/enroute"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/traffic"
 	"github.com/mmp/vice/util"
 )
 
@@ -273,5 +274,55 @@ func TestListedPositions(t *testing.T) {
 	var e util.ErrorLogger
 	if got := (&Scenario{}).listedPositions(sg, &sim.FacilityConfiguration{}, &e); got != nil {
 		t.Errorf("got %v with no listed_positions anywhere, want nil", got)
+	}
+}
+
+// A group that names its timetables is offered just those, and a timetable a
+// group names is offered to no other group.
+func TestAttachTimetables(t *testing.T) {
+	timetables := traffic.TimetableCatalog{Timetables: []traffic.Timetable{
+		{ID: "summer_weekday", Airport: "KMSP"},
+		{ID: "MSP Circa Summer 2005", Airport: "KMSP"},
+		{ID: "evening", Airport: "KSTP"},
+	}}
+	airports := map[av.ICAOAirportCode]*av.Airport{"KMSP": {}, "KSTP": {}}
+	attach := func(named map[av.ICAOAirportCode][]string) (map[string][]string, *util.ErrorLogger) {
+		groups := map[string]map[string]*Group{"M98": {
+			"Modern": {Airports: airports},
+			"2005":   {Airports: airports, Timetables: named},
+		}}
+		catalogs := make(map[string]map[string]*Catalog)
+		catalogs["M98"] = make(map[string]*Catalog)
+		for name := range groups["M98"] {
+			catalogs["M98"][name] = &Catalog{Scenarios: map[string]*Spec{"S": {
+				ArrivalRunways: []sim.ArrivalRunway{{Airport: "KMSP"}, {Airport: "KSTP"}}}}}
+		}
+		var e util.ErrorLogger
+		attachTimetables(catalogs, groups, timetables, &e)
+		offered := make(map[string][]string)
+		for name, catalog := range catalogs["M98"] {
+			offered[name] = util.MapSlice(catalog.Scenarios["S"].Timetables,
+				func(s traffic.TimetableSummary) string { return string(s.Airport) + "/" + s.ID })
+		}
+		return offered, &e
+	}
+
+	offered, e := attach(map[av.ICAOAirportCode][]string{"KMSP": {"MSP Circa Summer 2005"}})
+	if e.HaveErrors() {
+		t.Errorf("unexpected errors: %s", e.String())
+	}
+	if want := []string{"KMSP/summer_weekday", "KSTP/evening"}; !slices.Equal(offered["Modern"], want) {
+		t.Errorf("modern group offered %v, want %v", offered["Modern"], want)
+	}
+	if want := []string{"KMSP/MSP Circa Summer 2005"}; !slices.Equal(offered["2005"], want) {
+		t.Errorf("2005 group offered %v, want %v", offered["2005"], want)
+	}
+
+	_, e = attach(map[av.ICAOAirportCode][]string{"KMSP": {"MSP 2005"}, "KORD": {"summer_weekday"}})
+	for _, want := range []string{`"MSP 2005", which isn't a timetable for KMSP`,
+		"KORD, which isn't one of the group's airports"} {
+		if !strings.Contains(e.String(), want) {
+			t.Errorf("errors %q don't report %q", e.String(), want)
+		}
 	}
 }

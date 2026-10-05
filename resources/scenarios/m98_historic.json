@@ -2,6 +2,7 @@
   "tracon": "M98",
   "historical_scenario": true,
   "allow_fix_redefinitions": true,
+  "timetables": { "KMSP": ["MSP Circa Summer 2005"] },
   "airports": {
     "10D": {
       "vfr": {

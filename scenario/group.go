@@ -42,6 +42,13 @@ type Group struct {
 
 	AllowFixRedefinitions bool `json:"allow_fix_redefinitions"`
 
+	// Timetables names the built-in timetables the group's scenarios are
+	// offered, by airport. If set, scenarios in the group only offer the
+	// specified timetables; further, those time tables are not offered in
+	// other Groups that have no "timetables" entry even if they would be
+	// applicable otherwise.
+	Timetables map[av.ICAOAirportCode][]string `json:"timetables"`
+
 	NmPerLatitude      float32 // Always 60
 	NmPerLongitude     float32 // Derived from Center
 	MagneticVariation  float32

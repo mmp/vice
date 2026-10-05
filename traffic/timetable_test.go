@@ -304,11 +304,7 @@ func TestLoadTimetableCatalog(t *testing.T) {
 		t.Fatalf("ForAirport returned %d KORD timetables, want 0", len(got))
 	}
 
-	summaries := catalog.SummariesForAirport("KMSP")
-	if len(summaries) != 1 {
-		t.Fatalf("SummariesForAirport returned %d timetables, want 1", len(summaries))
-	}
-	if summary := summaries[0]; summary.ID != timetable.ID ||
+	if summary := timetable.Summary(); summary.ID != timetable.ID ||
 		summary.Name != timetable.Name ||
 		summary.Airport != timetable.Airport ||
 		summary.Description != timetable.Description {

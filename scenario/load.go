@@ -781,7 +781,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	if err != nil {
 		e.Error(err)
 	} else {
-		attachTimetables(catalogs, timetableCatalog)
+		attachTimetables(catalogs, scenarioGroups, timetableCatalog, e)
 	}
 	attachHistoricalFlightIntervals(catalogs, lg)
 	finalizeTrafficSources(catalogs, scenarioGroups, e)

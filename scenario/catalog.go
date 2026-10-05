@@ -231,13 +231,55 @@ func canGenerateScenarioTraffic(sg *Group, lc *sim.LaunchConfig) bool {
 	return true
 }
 
-func attachTimetables(catalogs map[string]map[string]*Catalog, timetables traffic.TimetableCatalog) {
-	for _, facilityCatalogs := range catalogs {
-		for _, catalog := range facilityCatalogs {
+// attachTimetables offers each scenario the built-in timetables for its
+// airports: the ones its group names in "timetables" if it names any, and
+// otherwise the ones no group names.
+func attachTimetables(catalogs map[string]map[string]*Catalog, scenarioGroups map[string]map[string]*Group,
+	timetables traffic.TimetableCatalog, e *util.ErrorLogger) {
+	type timetableKey struct {
+		airport av.ICAOAirportCode
+		id      string
+	}
+	named := make(map[timetableKey]bool)
+	for _, facility := range util.SortedMapKeys(scenarioGroups) {
+		for _, name := range util.SortedMapKeys(scenarioGroups[facility]) {
+			sg := scenarioGroups[facility][name]
+			for _, airport := range util.SortedMapKeys(sg.Timetables) {
+				if _, ok := sg.Airports[airport]; !ok {
+					e.ErrorString(`%s/%s: "timetables" names %s, which isn't one of the group's airports`,
+						facility, name, airport)
+					continue
+				}
+				for _, id := range sg.Timetables[airport] {
+					t, ok := timetables.Find(airport, id)
+					if !ok {
+						e.ErrorString(`%s/%s: "timetables" names %q, which isn't a timetable for %s`,
+							facility, name, id, airport)
+						continue
+					}
+					named[timetableKey{t.Airport, t.ID}] = true
+				}
+			}
+		}
+	}
+
+	for facility, facilityCatalogs := range catalogs {
+		for name, catalog := range facilityCatalogs {
+			var listed map[av.ICAOAirportCode][]string
+			if sg, ok := scenarioGroups[facility][name]; ok {
+				listed = sg.Timetables
+			}
 			for _, scenario := range catalog.Scenarios {
 				for _, airport := range scenario.AllAirports() {
-					scenario.Timetables = append(scenario.Timetables,
-						timetables.SummariesForAirport(airport)...)
+					for _, t := range timetables.ForAirport(airport) {
+						offered := !named[timetableKey{t.Airport, t.ID}]
+						if len(listed) > 0 {
+							offered = slices.Contains(listed[t.Airport], t.ID)
+						}
+						if offered {
+							scenario.Timetables = append(scenario.Timetables, t.Summary())
+						}
+					}
 				}
 				if len(scenario.Timetables) > 0 {
 					scenario.TrafficSources = append(scenario.TrafficSources, sim.TrafficSourceTimetable)

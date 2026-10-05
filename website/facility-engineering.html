@@ -4175,6 +4175,13 @@
                     <td>This defines all of the ATC scenarios that are available in the scenario group. See the <a href="#fe-scenarios">scenarios section</a> for details.</td>
                   </tr>
                   <tr>
+                    <td>"timetables"</td>
+                    <td>Object</td>
+                    <td>(<i>Optional</i>) Names the timetables the group's scenarios are offered, as a map
+                      from an airport to its timetable names. See <a href="#fe-timetables">timetables</a>
+                      for details.</td>
+                  </tr>
+                  <tr>
                     <td>"tracon"</td>
                     <td>String</td>
                     <td>Name of the ATCT/TRACON that the scenario group is associated with. This is used to show all scenarios for a given ATCT/TRACON together in the UI.</td>
@@ -5807,6 +5814,15 @@
                 timetable for scenarios at that airport. The airport is inferred from the
                 directory name and the timetable's name from the file name.
               </p>
+              <p>
+                A scenario group can instead name the timetables its scenarios are offered with
+                <code>"timetables"</code>, which maps an airport to the names of its timetable
+                files without the <code>.csv</code> extension. A group that names timetables is
+                offered only those. A timetable that any group names is not offered to other
+                groups, which keeps a historical timetable out of the airport's modern scenarios.
+                For example, the M98 2005 scenarios use:
+              </p>
+              <pre><code class="language-json">"timetables": { "KMSP": ["MSP Circa Summer 2005"] }</code></pre>
               <p>The entries in each line of a timetable CSV file are:
                 callsign, origin airport ICAO, destination airport ICAO, aircraft type,
                 departure/arrival time (in local time at the airport), and a true/false

@@ -64,16 +64,6 @@ func (s Timetable) Summary() TimetableSummary {
 	}
 }
 
-// SummariesForAirport returns client-facing timetable metadata for airport.
-func (c TimetableCatalog) SummariesForAirport(airport av.ICAOAirportCode) []TimetableSummary {
-	timetables := c.ForAirport(airport)
-	summaries := make([]TimetableSummary, len(timetables))
-	for i, timetable := range timetables {
-		summaries[i] = timetable.Summary()
-	}
-	return summaries
-}
-
 // ForAirport returns timetables published for airport. The returned slice is a
 // copy and may be modified by the caller.
 func (c TimetableCatalog) ForAirport(airport av.ICAOAirportCode) []Timetable {
