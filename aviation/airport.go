@@ -374,7 +374,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			}
 			// A final token that looks like a procedure name must be one of
 			// the airport's STARs; anything else is likely a typo.
-			if token := routeProcedureToken(db, r.Route, icao); token != "" {
+			if token, _ := RouteFiledSTAR(db, r.Route, icao); token != "" {
 				if star, _ := RouteSTAR(db, r.Route, icao); star == "" {
 					e.ErrorString("%s: %q matches no STAR at %s", r.Route, token, icao)
 				}

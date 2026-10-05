@@ -157,17 +157,24 @@ func TrimDestinationAirportWaypoints(db Database, wps WaypointArray, icao ICAOAi
 	return wps
 }
 
-// routeProcedureToken returns the last token of a route into or out of the
-// airport if it names a procedure, or "" otherwise.
-func routeProcedureToken(db Database, route string, icao ICAOAirportCode) string {
+// RouteFiledSTAR returns the STAR a filed route into the airport ends with,
+// as the route names it, whether or not the CIFP charts it, along with the
+// fix filed ahead of it on the route, or empty strings if it names none.
+func RouteFiledSTAR(db Database, route string, icao ICAOAirportCode) (star, entry string) {
 	fields := strings.Fields(route)
 	if n := len(fields); n > 0 && TokenNamesAirport(db, fields[n-1], icao) {
 		fields = fields[:n-1]
 	}
-	if len(fields) == 0 || !TokenNamesProcedure(db, fields[len(fields)-1]) {
-		return ""
+	n := len(fields)
+	if n == 0 || !TokenNamesProcedure(db, fields[n-1]) {
+		return "", ""
 	}
-	return fields[len(fields)-1]
+	if n > 1 {
+		if _, ok := db.Airways(fields[n-2]); !ok {
+			entry = fields[n-2]
+		}
+	}
+	return fields[n-1], entry
 }
 
 // RouteSTAR returns the STAR a filed route into the airport ends with, under
@@ -176,25 +183,17 @@ func routeProcedureToken(db Database, route string, icao ICAOAirportCode) string
 // revision--CUUDA3 where the cycle has CUUDA4--so procedures match on their
 // base names.
 func RouteSTAR(db Database, route string, icao ICAOAirportCode) (star, entry string) {
-	token := routeProcedureToken(db, route, icao)
-	if token == "" {
+	filed, entry := RouteFiledSTAR(db, route, icao)
+	if filed == "" {
 		return "", ""
 	}
 
 	names := util.SortedMapKeys(db.AirportSTARs(icao))
-	i := slices.IndexFunc(names, func(name string) bool { return ProcedureBase(name) == ProcedureBase(token) })
+	i := slices.IndexFunc(names, func(name string) bool { return ProcedureBase(name) == ProcedureBase(filed) })
 	if i == -1 {
 		return "", ""
 	}
-	name := names[i]
-
-	fields := strings.Fields(route)
-	if i := slices.Index(fields, token); i > 0 {
-		if _, ok := db.Airways(fields[i-1]); !ok {
-			entry = fields[i-1]
-		}
-	}
-	return name, entry
+	return names[i], entry
 }
 
 // AltitudeFloor returns the highest "at or above" crossing restriction along

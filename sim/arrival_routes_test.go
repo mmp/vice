@@ -336,7 +336,7 @@ func TestMatchArrivalRouteWalksTheTransition(t *testing.T) {
 		{"KORD PWE TTRUE LUCKI1 KTST", 0},
 		{"KORD PWE SOFII LUCKI1 KTST", 1},
 	} {
-		c, err := matchArrivalRoute(candidates, "B738", tc.route, "KTST", "KORD")
+		c, err := matchArrivalRoute(candidates, "B738", tc.route, "KTST", "KORD", false)
 		if err != nil {
 			t.Errorf("%s: %v", tc.route, err)
 		} else if c.index != tc.want {
@@ -345,7 +345,8 @@ func TestMatchArrivalRouteWalksTheTransition(t *testing.T) {
 	}
 
 	// A route filing a stale revision of the STAR still matches it.
-	if c, err := matchArrivalRoute(candidates, "B738", "KORD TTRUE LUCKI2 KTST", "KTST", "KORD"); err != nil {
+	if c, err := matchArrivalRoute(candidates, "B738", "KORD TTRUE LUCKI2 KTST", "KTST", "KORD",
+		false); err != nil {
 		t.Errorf("stale revision: %v", err)
 	} else if c.index != 0 {
 		t.Errorf("stale revision matched arrival %d, expected 0", c.index)
@@ -387,68 +388,155 @@ func TestSuitableArrivals(t *testing.T) {
 	}
 }
 
+// With no route for the pair, a historical scenario puts the flight on the
+// gate its origin lies toward; with one, on the STAR the route names. Either
+// way the arrival has to admit the aircraft, and a disabled flow drops it.
 func TestHistoricalArrivalRouting(t *testing.T) {
 	db.InitDB()
+
 	arrivals := []av.Arrival{{STAR: "OLD1", Airports: []av.ICAOAirportCode{"KJFK"},
 		Waypoints: av.WaypointArray{{Fix: "GATE", Location: math.Point2LL{-74, 39}}}}}
 	s := placeArrivalTestSim("KJFK", arrivals, nil)
 	s.State.HistoricalScenario = true
+
 	p, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
 	if err != nil || p.how != "historical great-circle gate" || p.filedRoute != "" {
-		t.Fatalf("historical placement: %+v, %v", p, err)
+		t.Fatalf("no route: %+v, %v", p, err)
 	}
-	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"KJFK": {TrafficRoutes: av.TrafficRoutes{Arrivals: map[av.ICAOAirportCode]av.TrafficRouteSet{"KORF": {{Route: "OLD1"}}}}}}
+
+	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"KJFK": {TrafficRoutes: av.TrafficRoutes{
+		Arrivals: map[av.ICAOAirportCode]av.TrafficRouteSet{"KORF": {{Route: "GATE OLD1"}}}}}}
 	p, err = s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
-	if err != nil || p.how != "scenario route" || p.filedRoute != "OLD1" {
-		t.Fatalf("explicit placement: %+v, %v", p, err)
+	if err != nil || p.how != "scenario route" || p.filedRoute != "GATE OLD1" {
+		t.Fatalf("explicit route: %+v, %v", p, err)
 	}
 	delete(s.State.Airports, "KJFK")
+
 	s.State.InboundFlows["TEST"].Arrivals[0].InitialAltitudes = []int{99999}
-	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errNoSuitableArrival) {
-		t.Fatalf("unsuitable altitude: %v", err)
+	_, err = s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if !errors.Is(err, errNoSuitableArrival) {
+		t.Errorf("unsuitable altitude: %v", err)
 	}
 	s.State.InboundFlows["TEST"].Arrivals[0].InitialAltitudes = nil
+
 	s.State.LaunchConfig.InboundFlowEnabled["TEST"]["KJFK"] = false
-	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errFlowDisabled) {
-		t.Fatalf("disabled flow: %v", err)
+	_, err = s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if !errors.Is(err, errFlowDisabled) {
+		t.Errorf("disabled flow: %v", err)
 	}
 }
 
-func TestHistoricalArrivalOverrides(t *testing.T) {
+// A historical scenario's routes name STARs the CIFP may no longer chart. The
+// STAR is the one the route names, whichever of the airport's ids ends the
+// route and whatever its revision, and the fix filed ahead of it says which of
+// the arrivals flying it the flight joins.
+func TestMatchHistoricalArrivalRoute(t *testing.T) {
 	db.InitDB()
+
+	wp := func(fix string, lon, lat float32) av.Waypoint {
+		return av.Waypoint{Fix: fix, Location: math.Point2LL{lon, lat}}
+	}
+	jfk := []av.ICAOAirportCode{"KJFK"}
+	merge := wp("MERGE", -74, 40.3)
 	arrivals := []av.Arrival{
-		{STAR: "OLD1", Airports: []av.ICAOAirportCode{"KJFK"}, InitialAltitudes: []int{99999}},
-		{STAR: "OTHER1", Airports: []av.ICAOAirportCode{"KJFK"}, Waypoints: av.WaypointArray{{Fix: "GATE", Location: math.Point2LL{-74, 39}}}},
+		// Seen from KJFK, KORF lies to the southwest; AAAAA is nearer the
+		// great circle between them than BBBBB.
+		{STAR: "OLD1", Airports: jfk, Waypoints: av.WaypointArray{wp("AAAAA", -74.5, 39), merge}},
+		{STAR: "OLD1", Airports: jfk, Waypoints: av.WaypointArray{wp("BBBBB", -75.5, 40.3), merge}},
+		// These gates all face away from KORF.
+		{STAR: "NORTH1", Airports: jfk, Waypoints: av.WaypointArray{wp("NNNN1", -73.8, 43)}},
+		{STAR: "NORTH1", Airports: jfk, Waypoints: av.WaypointArray{wp("NNNN2", -73, 42.5)}},
+		{STAR: "OTHER1", Airports: jfk, Waypoints: av.WaypointArray{wp("OOOOO", -73.8, 43)}},
 	}
 	candidates := testCandidates(arrivals)
-	p, route, err := matchHistoricalArrivalRoutes(candidates, candidates, "B738", []string{"OLD1", "OTHER1 KJFK"}, "KJFK", "KORF")
-	if err != nil || p.index != 1 || route != "OTHER1 KJFK" {
-		t.Fatalf("alternative route: %+v %q %v", p, route, err)
+
+	for _, tc := range []struct {
+		route string
+		want  int
+	}{
+		{"AAAAA OLD1", 0},
+		{"BBBBB OLD1", 1},
+		{"KORF BBBBB OLD1 KJFK", 1},
+		{"BBBBB OLD1 JFK", 1},
+		{"BBBBB OLD2", 1},
+		// Nothing names a fix of either arrival, so the one nearest the
+		// great circle.
+		{"CCCCC OLD1", 0},
+		// A STAR the route names is flown wherever its gates face.
+		{"CCCCC OTHER1", 4},
+		{"CCCCC NORTH1", 2},
+	} {
+		c, err := matchArrivalRoute(candidates, "B738", tc.route, "KJFK", "KORF", true)
+		if err != nil {
+			t.Errorf("%s: %v", tc.route, err)
+		} else if c.index != tc.want {
+			t.Errorf("%s: matched arrival %d, expected %d", tc.route, c.index, tc.want)
+		}
 	}
-	p, route, err = matchHistoricalArrivalRoutes(candidates, candidates, "B738", []string{"DIRECT", "OTHER1"}, "KJFK", "KORF")
+
+	// A STAR no arrival flies drops the flight rather than leaving its gate
+	// to be picked by direction.
+	_, err := matchArrivalRoute(candidates, "B738", "BBBBB GONE1", "KJFK", "KORF", true)
+	if !errors.Is(err, errArrivalSTARInactive) {
+		t.Errorf("unflown STAR: %v", err)
+	}
+}
+
+// A historical route to a STAR no arrival admits the aircraft on gives way to
+// the pair's next route. One to a STAR only a disabled flow flies drops the
+// flight as disabled rather than moving it to an active arrival.
+func TestHistoricalArrivalRouteFallbacks(t *testing.T) {
+	db.InitDB()
+
+	jfk := []av.ICAOAirportCode{"KJFK"}
+	arrivals := []av.Arrival{
+		{STAR: "OLD1", Airports: jfk, InitialAltitudes: []int{99999}},
+		{STAR: "OTHER1", Airports: jfk,
+			Waypoints: av.WaypointArray{{Fix: "GATE", Location: math.Point2LL{-74, 39}}}},
+	}
+	candidates := testCandidates(arrivals)
+
+	c, route, err := matchArrivalRoutes(candidates, "B738", []string{"GATE OLD1", "GATE OTHER1 KJFK"},
+		"KJFK", "KORF", true)
+	if err != nil || c.index != 1 || route != "GATE OTHER1 KJFK" {
+		t.Errorf("unsuitable first route: %+v %q %v", c, route, err)
+	}
+	// A route naming no STAR comes in at the gate nearest the origin.
+	_, route, err = matchArrivalRoutes(candidates, "B738", []string{"DIRECT", "GATE OTHER1"},
+		"KJFK", "KORF", true)
 	if err != nil || route != "DIRECT" {
-		t.Fatalf("route order: %+v %q %v", p, route, err)
+		t.Errorf("route without a STAR: %q %v", route, err)
 	}
+
 	arrivals[0].InitialAltitudes = nil
-	s := placeArrivalTestSim("KJFK", arrivals[1:], &av.Airport{TrafficRoutes: av.TrafficRoutes{Arrivals: map[av.ICAOAirportCode]av.TrafficRouteSet{"KORF": {{Route: "OLD1"}}}}})
+	s := placeArrivalTestSim("KJFK", arrivals[1:], &av.Airport{TrafficRoutes: av.TrafficRoutes{
+		Arrivals: map[av.ICAOAirportCode]av.TrafficRouteSet{"KORF": {{Route: "GATE OLD1"}}}}})
 	s.State.HistoricalScenario = true
 	s.State.InboundFlows["DISABLED"] = &av.InboundFlow{Arrivals: arrivals[:1]}
 	s.State.LaunchConfig.InboundFlowEnabled["DISABLED"] = map[string]bool{"KJFK": false}
-	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errFlowDisabled) {
-		t.Fatalf("explicit disabled STAR: %v", err)
+	_, err = s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if !errors.Is(err, errFlowDisabled) {
+		t.Errorf("STAR only a disabled flow flies: %v", err)
 	}
 }
 
+// With no route for the pair, a historical scenario drops a flight from a
+// direction none of its gates face, and one no arrival admits.
 func TestHistoricalArrivalDirectionAndClass(t *testing.T) {
 	db.InitDB()
-	arrivals := []av.Arrival{{STAR: "OLD1", Airports: []av.ICAOAirportCode{"KJFK"}, Waypoints: av.WaypointArray{{Fix: "NORTH", Location: math.Point2LL{-73.8, 43}}}}}
+
+	arrivals := []av.Arrival{{STAR: "OLD1", Airports: []av.ICAOAirportCode{"KJFK"},
+		Waypoints: av.WaypointArray{{Fix: "NORTH", Location: math.Point2LL{-73.8, 43}}}}}
 	s := placeArrivalTestSim("KJFK", arrivals, nil)
 	s.State.HistoricalScenario = true
-	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errNoPlausibleArrival) {
-		t.Fatalf("opposite direction: %v", err)
+
+	_, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if !errors.Is(err, errNoPlausibleArrival) {
+		t.Errorf("opposite direction: %v", err)
 	}
 	s.State.InboundFlows["TEST"].Arrivals[0].Aircraft = av.AircraftClassProp
-	if _, err := s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs()); !errors.Is(err, errNoSuitableArrival) {
-		t.Fatalf("aircraft class: %v", err)
+	_, err = s.State.placeArrival("KJFK", "KORF", "B738", makeRoutedPairs())
+	if !errors.Is(err, errNoSuitableArrival) {
+		t.Errorf("aircraft class: %v", err)
 	}
 }
