@@ -30,13 +30,13 @@ type Group struct {
 	TRACON             string                             `json:"tracon"`
 	Name               string                             `json:"name"`
 	Airports           map[av.ICAOAirportCode]*av.Airport `json:"airports"`
-	Fixes              map[string]math.Point2LL           `json:"-"`
-	FixesStrings       util.OrderedMap                    `json:"fixes"`
-	Scenarios          map[string]*Scenario               `json:"scenarios"`
-	DefaultScenario    string                             `json:"default_scenario"`
-	Airspace           av.Airspace                        `json:"airspace"`
-	InboundFlows       map[string]*av.InboundFlow         `json:"inbound_flows"`
-	VFRReportingPoints []av.VFRReportingPoint             `json:"vfr_reporting_points"`
+	Fixes              map[string]math.Point2LL
+	FixesStrings       util.OrderedMap            `json:"fixes"`
+	Scenarios          map[string]*Scenario       `json:"scenarios"`
+	DefaultScenario    string                     `json:"default_scenario"`
+	Airspace           av.Airspace                `json:"airspace"`
+	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
+	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
 	HistoricalScenario bool `json:"historical_scenario,omitempty"`
 
@@ -56,12 +56,12 @@ type Group struct {
 
 	// FacilityConfig is populated at runtime from the facility config file,
 	// not from the scenario group JSON.
-	FacilityConfig sim.FacilityConfig `json:"-"`
+	FacilityConfig sim.FacilityConfig
 
 	// ERAMCoordination is the resolved pseudo-ERAM adaptation for this
 	// facility's TRACON computer id, loaded from the ERAM host (ARTCC)
 	// config. Nil if none is adapted.
-	ERAMCoordination *enroute.Coordination `json:"-"`
+	ERAMCoordination *enroute.Coordination
 
 	SourceFile string // path of the JSON file this was loaded from
 }

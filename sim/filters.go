@@ -44,14 +44,14 @@ type FilterQualifiers struct {
 	RequestedAltitudeString   string `json:"requested_altitude"`
 
 	// Parsed runtime fields
-	TCPs                 []ControlPosition `json:"-"`
-	Scratchpads          []string          `json:"-"`
-	SecondaryScratchpads []string          `json:"-"`
-	OwningTCPs           []ControlPosition `json:"-"`
-	EntryFixes           []string          `json:"-"`
-	ExitFixes            []string          `json:"-"`
-	SSRCodes             [][2]av.Squawk    `json:"-"`
-	RequestedAltitudes   [][2]int          `json:"-"`
+	TCPs                 []ControlPosition
+	Scratchpads          []string
+	SecondaryScratchpads []string
+	OwningTCPs           []ControlPosition
+	EntryFixes           []string
+	ExitFixes            []string
+	SSRCodes             [][2]av.Squawk
+	RequestedAltitudes   [][2]int
 }
 
 func (r *FilterQualifiers) Finalize(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {

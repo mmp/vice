@@ -92,7 +92,7 @@ type ControllerConfiguration struct {
 	// during post-deserialization: a scenario may define its own
 	// "default_consolidation", otherwise it falls back to the one on the
 	// referenced facility configuration.
-	DefaultConsolidation PositionConsolidation `json:"-"`
+	DefaultConsolidation PositionConsolidation
 
 	// InboundAssignments maps inbound flow names to the TCP that handles them.
 	// Populated from the referenced configuration during post-deserialization.

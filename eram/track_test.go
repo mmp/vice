@@ -228,8 +228,8 @@ func TestConflictAlertsWithStaggeredArrivals(t *testing.T) {
 				h.ep.updateConflictAlerts(h.ctx, h.ep.visibleTracks)
 				// The new target is sampled at 12s and 24s, so both targets
 				// have radar history by the detection pass at 25s.
-				if seconds >= 25 && (len(h.ep.CAPairs) != 0) != tc.wantConflict {
-					t.Errorf("at %ds: conflict = %v, want %v", seconds, h.ep.CAPairs, tc.wantConflict)
+				if seconds >= 25 && (len(h.ep.caPairs) != 0) != tc.wantConflict {
+					t.Errorf("at %ds: conflict = %v, want %v", seconds, h.ep.caPairs, tc.wantConflict)
 				}
 			}
 		})
@@ -264,7 +264,7 @@ func headOnConflict(configure func(northbound, southbound *sim.Track)) bool {
 		h.frame(time.Duration(seconds) * time.Second)
 		h.ep.updateConflictAlerts(h.ctx, h.ep.visibleTracks)
 	}
-	return len(h.ep.CAPairs) != 0
+	return len(h.ep.caPairs) != 0
 }
 
 func TestConflictAlertsFollowRoutes(t *testing.T) {

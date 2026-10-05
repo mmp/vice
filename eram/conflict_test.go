@@ -196,7 +196,7 @@ func TestMergeCAPairs(t *testing.T) {
 }
 
 func TestInConflictAlert(t *testing.T) {
-	ep := &Scope{CAPairs: []CAPair{
+	ep := &Scope{caPairs: []CAPair{
 		{ADSBCallsigns: [2]av.ADSBCallsign{"AAL1", "DAL2"}},
 	}}
 	if !ep.inConflictAlert("AAL1") || !ep.inConflictAlert("DAL2") {

@@ -23,7 +23,7 @@ type Scenario struct {
 
 	// ControllerConfiguration is the runtime-resolved configuration data,
 	// populated during Finalize from ConfigurationString.
-	ControllerConfiguration sim.ControllerConfiguration `json:"-"`
+	ControllerConfiguration sim.ControllerConfiguration
 
 	// DefaultConsolidation optionally overrides the referenced facility
 	// configuration's consolidation tree. When empty, the facility
@@ -35,8 +35,8 @@ type Scenario struct {
 	ListedPositions map[sim.TCP]string `json:"listed_positions,omitempty"`
 
 	// VirtualControllers is auto-derived at runtime from the facility config
-	// and scenario routes; it is NOT read from JSON.
-	VirtualControllers []sim.TCP `json:"-"`
+	// and scenario routes.
+	VirtualControllers []sim.TCP
 
 	WindSpecifier *wx.WindSpecifier `json:"wind,omitempty"`
 

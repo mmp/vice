@@ -148,7 +148,7 @@ type FlightPlan struct {
 
 	// LocalArrival marks an internal ("fully-contained") flight whose exit fix
 	// is a local-arrival airport, i.e. its destination is within this facility.
-	LocalArrival bool `json:"-"`
+	LocalArrival bool
 
 	// AutoHandoffInhibited marks the track ineligible for automatic handoff
 	// processing (AHOP); it drives the delta indicator in the data block.
@@ -175,11 +175,11 @@ type FlightPlan struct {
 	ManuallyCreated bool
 
 	// FDAM region membership state, keyed by region ID.
-	FDAMState map[string]*FDAMTrackState `json:"-"`
+	FDAMState map[string]*FDAMTrackState
 
 	// Auto-handoff filter membership state, keyed by region ID. The value is
 	// whether the track currently satisfies the region (inside + conditions).
-	HandoffFilterState map[string]bool `json:"-"`
+	HandoffFilterState map[string]bool
 
 	// Flight strip fields
 	StripCID         int             // numeric 000-999, allocated server-side

@@ -289,7 +289,7 @@ func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope
 	feedbackH := font.LayoutBounds("0", lineSpacing).Height()*float32(ps.MCA.PALines) + 4
 
 	// Compute input box height (grows with wrapped text).
-	input := ep.Input.String() + "_"
+	input := ep.input.String() + "_"
 	inText, _ := util.WrapText(input, cols, 0, true, true)
 	h := font.LayoutBounds(inText, lineSpacing).Height()
 	inputH := max(float32(38), h+4)

@@ -192,14 +192,14 @@ func mergeCAPairs(prev []CAPair, detected [][2]av.ADSBCallsign, now sim.Time) []
 // inConflictAlert reports whether the callsign is a member of any active
 // conflict alert pair.
 func (ep *Scope) inConflictAlert(callsign av.ADSBCallsign) bool {
-	return slices.ContainsFunc(ep.CAPairs, func(p CAPair) bool {
+	return slices.ContainsFunc(ep.caPairs, func(p CAPair) bool {
 		return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
 	})
 }
 
 // updateConflictAlerts runs an STCA detection pass every caUpdateInterval
 // of sim time. It rebuilds the set of predicted-conflict pairs from
-// scratch and merges it into ep.CAPairs. Eligibility: associated, Mode C,
+// scratch and merges it into ep.caPairs. Eligibility: associated, Mode C,
 // past tentative, with enough radar history to derive velocity and
 // vertical rate; at least one target of a pair must be owned by a
 // controller in this ERAM facility, and at least one must be worked by a
@@ -280,5 +280,5 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 		}
 	}
 
-	ep.CAPairs = mergeCAPairs(ep.CAPairs, detected, now)
+	ep.caPairs = mergeCAPairs(ep.caPairs, detected, now)
 }

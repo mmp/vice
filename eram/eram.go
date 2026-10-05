@@ -220,28 +220,28 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 }
 
 type Scope struct {
-	ERAMPreferenceSets map[string]*PrefrenceSet        `json:"PreferenceSets,omitempty"`
-	prefSet            *PrefrenceSet                   `json:"-"`
-	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
+	ERAMPreferenceSets map[string]*PrefrenceSet `json:"PreferenceSets,omitempty"`
+	prefSet            *PrefrenceSet
+	tempSavedNames     [numSavedPreferenceSets]string
 	TrackState         map[av.ADSBCallsign]*TrackState `json:"TrackState,omitempty"`
 
-	DisableERAMtoRadio bool `json:"-"`
+	DisableERAMtoRadio bool
 	FlipNumericKeypad  bool
 
-	systemFont [11]*renderer.Font `json:"-"`
+	systemFont [11]*renderer.Font
 
-	allVideoMaps  []videomaps.ERAMMap `json:"-"`
-	bcgNames      []string            `json:"-"` // current group's bcgMenu; index-stable, may include empty slots
-	videoMapLabel string              `json:"-"`
+	allVideoMaps  []videomaps.ERAMMap
+	bcgNames      []string // current group's bcgMenu; index-stable, may include empty slots
+	videoMapLabel string
 	// baseVideoMap is the current group's own always-displayed geometry.
-	baseVideoMap    videomaps.ERAMMap `json:"-"`
-	currentFacility string            `json:"-"`
+	baseVideoMap    videomaps.ERAMMap
+	currentFacility string
 
-	eramCursors map[string]platform.Cursor `json:"-"` // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
+	eramCursors map[string]platform.Cursor // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
 
-	cursorOverrideSelection string    `json:"-"`
-	cursorOverrideUntil     time.Time `json:"-"`
-	cursorRollbackSelection string    `json:"-"` // Cursor to use after temporary cursor expires
+	cursorOverrideSelection string
+	cursorOverrideUntil     time.Time
+	cursorRollbackSelection string // Cursor to use after temporary cursor expires
 
 	// AckedPointOuts holds the receivers who have acknowledged the user's
 	// point outs; they are shown as a white "A" until the user dismisses them.
@@ -253,11 +253,11 @@ type Scope struct {
 	AddedBeaconCodes []av.Squawk
 
 	// Output and input text for the command line interface.
-	responseArea string          `json:"-"`
-	feedbackArea feedbackMessage `json:"-"`
-	Input        inputText       `json:"-"`
+	responseArea string
+	feedbackArea feedbackMessage
+	input        inputText
 
-	toolbarVisible bool `json:"-"`
+	toolbarVisible bool
 
 	toolbar    toolbarState
 	holdRepeat pressRepeat // paces held toolbar buttons and popup menu rows
@@ -267,27 +267,27 @@ type Scope struct {
 	viewExtents []math.Extent2D
 
 	// Short-term conflict alert state; recomputed every caUpdateInterval.
-	CAPairs            []CAPair  `json:"-"`
-	lastConflictUpdate time.Time `json:"-"`
-	lastRadarUpdate    sim.Time  `json:"-"`
+	caPairs            []CAPair
+	lastConflictUpdate time.Time
+	lastRadarUpdate    sim.Time
 
-	fdbArena util.ObjectArena[fullDatablock]    `json:"-"`
-	ldbArena util.ObjectArena[limitedDatablock] `json:"-"`
+	fdbArena util.ObjectArena[fullDatablock]
+	ldbArena util.ObjectArena[limitedDatablock]
 
 	// Scope-wide drag-to-reposition state. Only one view can be repositioned
 	// at a time; the active view is identified by its View.ID.
-	viewRepo ViewRepoState `json:"-"`
+	viewRepo ViewRepoState
 
 	VelocityTime int // 0, 1, 4, or 8 minutes
 
-	dbLastAlternateTime time.Time `json:"-"` // Alternates every 6 seconds
-	dbAlternate         bool      `json:"-"`
+	dbLastAlternateTime time.Time // Alternates every 6 seconds
+	dbAlternate         bool
 
-	targetGenLastCallsign av.ADSBCallsign `json:"-"`
+	targetGenLastCallsign av.ADSBCallsign
 
-	aircraftFixCoordinates map[sim.ACID]aircraftFixCoordinates `json:"-"`
+	aircraftFixCoordinates map[sim.ACID]aircraftFixCoordinates
 
-	prefrencesVisible bool `json:"-"`
+	prefrencesVisible bool
 
 	scopeDraw scope.RouteDrawer
 
@@ -300,46 +300,46 @@ type Scope struct {
 	}
 
 	// At most one floating pop-up menu is open at a time; nil = none open.
-	popup popup `json:"-"`
+	popup popup
 
 	// popupExtent is the on-screen rectangle of the active popup, refreshed
 	// each frame by popup.draw. Used by DrawView to suppress view click
 	// handling when the cursor is inside the popup, so the popup always wins
 	// the click. Valid only while popup != nil.
-	popupExtent math.Extent2D `json:"-"`
+	popupExtent math.Extent2D
 
 	// CRR state (session)
-	CRRGroups        map[string]*CRRGroup                         `json:"CRRGroups,omitempty"`
-	crrFixRects      map[string]math.Extent2D                     `json:"-"`
-	crrLabelRects    map[string]math.Extent2D                     `json:"-"`
-	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
+	CRRGroups        map[string]*CRRGroup `json:"CRRGroups,omitempty"`
+	crrFixRects      map[string]math.Extent2D
+	crrLabelRects    map[string]math.Extent2D
+	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D
 
 	// ALTIM SET state (session)
 	AltimSetAirports []av.ICAOAirportCode `json:"AltimSetAirports,omitempty"`
-	altimSetScroll   ViewScrollState      `json:"-"`
-	altimSetSelect   ViewSelectionState   `json:"-"`
+	altimSetScroll   ViewScrollState
+	altimSetSelect   ViewSelectionState
 
 	// WX window state (session)
 	WXReportStations []av.ICAOAirportCode `json:"WXReportStations,omitempty"`
-	wxScroll         ViewScrollState      `json:"-"`
-	wxSelect         ViewSelectionState   `json:"-"`
+	wxScroll         ViewScrollState
+	wxSelect         ViewSelectionState
 
 	// Check list view toggle state (session). Each slice is parallel to
 	// checkListItems[…], with true = row is highlighted ("checked off").
-	posCheckToggled   []bool `json:"-"`
-	emergCheckToggled []bool `json:"-"`
+	posCheckToggled   []bool
+	emergCheckToggled []bool
 
-	weatherRadar scope.WeatherRadar `json:"-"`
-	nexrad       nexradCBs          `json:"-"`
+	weatherRadar scope.WeatherRadar
+	nexrad       nexradCBs
 
-	commandMode       CommandMode     `json:"-"`
-	drawRouteAircraft av.ADSBCallsign `json:"-"`
-	drawRoutePoints   []math.Point2LL `json:"-"`
+	commandMode       CommandMode
+	drawRouteAircraft av.ADSBCallsign
+	drawRoutePoints   []math.Point2LL
 
 	// Per-frame scratch buffers, reused across Draw calls to avoid
 	// allocations.
-	visibleTracks           []sim.Track `json:"-"`
-	fdbIdx, ldbIdx, eldbIdx []int       `json:"-"`
+	visibleTracks           []sim.Track
+	fdbIdx, ldbIdx, eldbIdx []int
 }
 
 func NewScope() *Scope {
@@ -609,7 +609,7 @@ func (ep *Scope) Upgrade(from, to int) {
 func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
-	ep.CAPairs = nil
+	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}
 }
@@ -617,7 +617,7 @@ func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, l
 func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.resetPrefsForNewSim(client.State)
 	ep.makeMaps(client, lg)
-	ep.CAPairs = nil
+	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}
 
@@ -627,7 +627,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.drawRoutePoints = nil
 	ep.drawRouteAircraft = ""
 
-	ep.Input.Clear()
+	ep.input.Clear()
 	ep.responseArea = ""
 	ep.feedbackArea.Clear()
 	ep.popup = nil
@@ -885,8 +885,8 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 	}
 	ps := ep.currentPrefs()
 	keyboardInput := strings.ToUpper(ctx.Keyboard.Input)
-	ep.Input.AddBasic(keyboardInput)
-	input := ep.Input.String()
+	ep.input.AddBasic(keyboardInput)
+	input := ep.input.String()
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
 		case imgui.KeyG: // debugging
@@ -911,8 +911,8 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 						ep.responseArea = "DRAWROUTE"
 					}
 				}
-			} else if len(ep.Input) > 0 {
-				ep.Input = ep.Input[:len(ep.Input)-1]
+			} else if len(ep.input) > 0 {
+				ep.input = ep.input[:len(ep.input)-1]
 			}
 		case imgui.KeyEnter:
 			// Cancel any in-progress view drag so an incidental click in the
@@ -920,8 +920,8 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 			// after the command completes.
 			ep.viewRepo.Cancel()
 			// Process the command
-			status, err := ep.executeERAMCommand(ctx, ep.Input)
-			ep.Input.Clear()
+			status, err := ep.executeERAMCommand(ctx, ep.input)
+			ep.input.Clear()
 			ep.applyCommandStatus(ctx, status, err)
 		case imgui.KeyEscape:
 			if _, ok := ep.popup.(*deleteEntryPopup); ok {
@@ -942,12 +942,12 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 					ep.drawRoutePoints = nil
 					ep.responseArea = ""
 				}
-				ep.Input.Clear()
+				ep.input.Clear()
 				ep.feedbackArea.Clear()
 			}
 		case imgui.KeyTab:
 			if input == "" {
-				ep.Input.Set("TG ")
+				ep.input.Set("TG ")
 			}
 		case imgui.KeyPageUp: // velocity vector *2
 			if ep.VelocityTime == 0 {
@@ -963,43 +963,43 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 			}
 		case imgui.KeyF1:
 			if ctx.Keyboard.KeyShift() {
-				ep.Input.Set("DM ")
+				ep.input.Set("DM ")
 			} else {
-				ep.Input.Set("QF ")
+				ep.input.Set("QF ")
 			}
 		case imgui.KeyF2:
 			if ctx.Keyboard.KeyShift() {
-				ep.Input.Set("QD ")
+				ep.input.Set("QD ")
 			} else {
-				ep.Input.Set("QP ")
+				ep.input.Set("QP ")
 			}
 		case imgui.KeyF3:
-			ep.Input.Set("QT ")
+			ep.input.Set("QT ")
 		case imgui.KeyF4:
-			ep.Input.Set("QX ")
+			ep.input.Set("QX ")
 		case imgui.KeyF5:
-			ep.Input.Set("QZ ")
+			ep.input.Set("QZ ")
 		case imgui.KeyF6:
-			ep.Input.Set("QU ")
+			ep.input.Set("QU ")
 		case imgui.KeyF7:
 			if ctx.Keyboard.KeyShift() {
-				ep.Input.Set("WR ")
+				ep.input.Set("WR ")
 			} else {
-				ep.Input.Set("QL ")
+				ep.input.Set("QL ")
 			}
 		case imgui.KeyF8:
 			if ctx.Keyboard.KeyShift() {
-				ep.Input.Set("QR ")
+				ep.input.Set("QR ")
 			} else {
-				ep.Input.Set("QQ ")
+				ep.input.Set("QQ ")
 			}
 		case imgui.KeyF9:
-			ep.Input.Set("QB ")
+			ep.input.Set("QB ")
 		}
 	}
 
 	if (keyboardInput != "" || len(ctx.Keyboard.Pressed) > 0) && !ctx.TCWIsPrivileged(ctx.UserTCW) &&
-		strings.HasPrefix(ep.Input.String(), "TG") {
+		strings.HasPrefix(ep.input.String(), "TG") {
 		// An aircraft control instruction is being entered; as with STARS'
 		// TGT GEN mode, hold radio transmissions for the coming few seconds.
 		ctx.Client.HoldRadioTransmissions()

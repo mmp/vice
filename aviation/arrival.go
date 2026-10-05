@@ -63,7 +63,7 @@ func (f InboundFlow) InitialControllers() []ControlPosition {
 
 type Arrival struct {
 	// Set by scenario finalization; only relaxes current-chart comparisons for explicit routes.
-	HistoricalProcedure bool                                         `json:"-"`
+	HistoricalProcedure bool
 	Waypoints           WaypointArray                                `json:"waypoints"`
 	RunwayWaypoints     map[ICAOAirportCode]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
 	SpawnWaypoint       string                                       `json:"spawn"`            // if "waypoints" aren't specified

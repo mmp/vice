@@ -148,7 +148,7 @@ func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms 
 			continue
 		}
 		if primary {
-			ep.Input.Set("LF " + strings.ToUpper(label) + " ")
+			ep.input.Set("LF " + strings.ToUpper(label) + " ")
 		} else if g := ep.CRRGroups[label]; g != nil {
 			if len(g.Aircraft) > 0 {
 				g.Aircraft = make(map[av.ADSBCallsign]struct{})
@@ -505,10 +505,10 @@ func (ep *Scope) drawCRRFixes(ctx *scope.Context, transforms scope.Transformatio
 	td.GenerateCommands(cb)
 
 	// Handle click to seed LF if input is empty
-	if mouse := ctx.Mouse; (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && len(ep.Input) == 0 {
+	if mouse := ctx.Mouse; (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && len(ep.input) == 0 {
 		for id, ex := range ep.crrFixRects {
 			if ex.Inside(mouse.Pos) {
-				ep.Input.Set("LF " + strings.ToUpper(id) + " ")
+				ep.input.Set("LF " + strings.ToUpper(id) + " ")
 				break
 			}
 		}

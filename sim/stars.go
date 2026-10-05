@@ -39,7 +39,7 @@ type FacilityConfiguration struct {
 	ScratchpadLeaderLineDirectionStrings map[string]string `json:"scratchpad_leader_line_directions"`
 	// ScratchpadLeaderLineDirections is the resolved map from primary
 	// scratchpad values to leader line directions.
-	ScratchpadLeaderLineDirections map[string]math.CardinalOrdinalDirection `json:"-"`
+	ScratchpadLeaderLineDirections map[string]math.CardinalOrdinalDirection
 }
 
 type FacilityAdaptation struct {
@@ -258,14 +258,14 @@ type STARSController struct {
 // within a TRACON area. Controller-specific settings in Controllers
 // override or append these defaults.
 type STARSArea struct {
-	DefaultAirport                  av.ICAOAirportCode   `json:"default_airport,omitempty"` // CRDA default airport for this area
-	VideoMapFile                    string               `json:"video_map_file,omitempty"`
-	VideoMapNames                   []string             `json:"video_maps,omitempty"`
-	DefaultMaps                     []string             `json:"default_maps,omitempty"`
-	Center                          av.ScenarioPoint2LL  `json:"center"`
-	Range                           float32              `json:"range,omitempty"`
-	MonitoredBeaconCodeBlocksString *string              `json:"beacon_code_blocks,omitempty"`
-	MonitoredBeaconCodeBlocks       []av.Squawk          `json:"-"`
+	DefaultAirport                  av.ICAOAirportCode  `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapFile                    string              `json:"video_map_file,omitempty"`
+	VideoMapNames                   []string            `json:"video_maps,omitempty"`
+	DefaultMaps                     []string            `json:"default_maps,omitempty"`
+	Center                          av.ScenarioPoint2LL `json:"center"`
+	Range                           float32             `json:"range,omitempty"`
+	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks,omitempty"`
+	MonitoredBeaconCodeBlocks       []av.Squawk
 	Altimeters                      []av.ICAOAirportCode `json:"altimeters,omitempty"`
 	// SystemAltimeter overrides the facility's SSA system altimeter for
 	// positions in this area.

@@ -948,7 +948,7 @@ type HandoffFilterRegion struct {
 	// FilterQualifiers, which is left empty: the match needs the SlaveTCPs
 	// flag and the current consolidation, so it is made in the Sim rather than
 	// by FilterQualifiers.Match.
-	OwnerTCPs []ControlPosition `json:"-"`
+	OwnerTCPs []ControlPosition
 	// ACTypeClass (A/C Type Class): an adapted class from
 	// "automatic_handoff_classes"; blank means any.
 	ACTypeClass string `json:"actype_class"`

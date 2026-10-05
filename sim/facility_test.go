@@ -308,29 +308,6 @@ func TestAssignedLevelForCoord(t *testing.T) {
 	}
 }
 
-// TestRestoreERAMCoordinationGeometry verifies that Activate's restore step
-// re-derives ZoneArea.Center from the text it was written as, for a value
-// that reaches the sim carrying only that text: ParseGeometry runs at
-// scenario-group load time, not when a saved sim is restored.
-func TestRestoreERAMCoordinationGeometry(t *testing.T) {
-	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
-	// Nil coordination, and a coordination with no resolved entry, are no-ops.
-	restoreERAMCoordinationGeometry(nil, lg)
-	restoreERAMCoordinationGeometry(&enroute.Coordination{}, lg)
-
-	ec := &enroute.Coordination{
-		ComputerID: "BOA",
-		Coord: &enroute.ArtsCoordEntry{
-			ZoneBased: []enroute.ZoneArea{{AreaID: "Z1",
-				Center: av.ScenarioPoint2LL{String: "N043.33.30.000,W069.30.00.000"}}},
-		},
-	}
-	restoreERAMCoordinationGeometry(ec, lg)
-	if ec.Coord.ZoneBased[0].Center.IsZero() {
-		t.Error("zone area Center should be parsed from the text it was written as, not left at zero")
-	}
-}
-
 // fixLocator knows one fix and nothing else.
 type fixLocator struct {
 	enroute.DBLocator

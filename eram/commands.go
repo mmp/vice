@@ -66,10 +66,10 @@ func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transfo
 			callsign = trk.ADSBCallsign
 		}
 		// Skip an empty middle-click on empty space: nothing to dispatch.
-		if callsign != "" || ep.Input.String() != "" {
-			ep.Input.AddLocation(pos, callsign)
-			status, err := ep.executeERAMCommand(ctx, ep.Input)
-			ep.Input.Clear()
+		if callsign != "" || ep.input.String() != "" {
+			ep.input.AddLocation(pos, callsign)
+			status, err := ep.executeERAMCommand(ctx, ep.input)
+			ep.input.Clear()
 			ep.applyCommandStatus(ctx, status, err)
 		}
 	}
@@ -95,13 +95,13 @@ func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transfo
 			}
 			ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
 			ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
-		} else if ep.Input.String() != "" {
+		} else if ep.input.String() != "" {
 			pos := transforms.LatLongFromWindowP(mouse.Pos)
 			var callsign av.ADSBCallsign
 			if trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms); trk != nil {
 				callsign = trk.ADSBCallsign
 			}
-			ep.Input.AddLocation(pos, callsign)
+			ep.input.AddLocation(pos, callsign)
 		}
 	}
 

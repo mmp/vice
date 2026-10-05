@@ -79,12 +79,12 @@ type ZoneEntry struct {
 // Restriction caps or floors a matching flight's modeled vertical profile;
 // only altitude restrictions are supported.
 type Restriction struct {
-	Name                string               `json:"name"`
-	FlightType          string               `json:"flight_type"` // arrival | departure
-	Procedure           string               `json:"procedure"`
-	Mode                string               `json:"mode"` // line
-	LineStr             string               `json:"line"`
-	Line                []math.Point2LL      `json:"-"`
+	Name                string `json:"name"`
+	FlightType          string `json:"flight_type"` // arrival | departure
+	Procedure           string `json:"procedure"`
+	Mode                string `json:"mode"` // line
+	LineStr             string `json:"line"`
+	Line                []math.Point2LL
 	AltitudeRestriction string               `json:"altitude_restriction"`
 	ArrivalAirports     []av.ICAOAirportCode `json:"arrival_airports"`
 	Aircraft            struct {
@@ -102,11 +102,9 @@ type Coordination struct {
 	Restrictions []Restriction
 }
 
-// DBLocator resolves locations against the static nav database alone; it is
+// DBLocator resolves locations against the static nav database alone. It is
 // used for facility-config data that must resolve the same way regardless of
-// which scenario group (with its own fixes) is loading it, and to re-derive
-// ArtsCoordEntry/Restriction geometry (see ParseGeometry) after a saved sim is
-// restored, since that geometry is excluded from JSON.
+// which scenario group (with its own fixes) is loading it.
 type DBLocator struct{ db.Lookups }
 
 // Airways returns the airways published under the given name.
