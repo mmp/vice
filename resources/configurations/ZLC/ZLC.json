@@ -1,45 +1,5 @@
 {
   "control_positions": {
-    "01": {
-      "callsign": "ZLC 01 Salt Lake TMAC",
-      "frequency": 123450,
-      "radio_name": "Salt Lake Center"
-    },
-    "02": {
-      "callsign": "ZLC 02 Salt Lake TMEC",
-      "frequency": 123450,
-      "radio_name": "Salt Lake Center"
-    },
-    "03": {
-      "callsign": "ZLC 03 Salt Lake 3",
-      "frequency": 119950,
-      "radio_name": "Salt Lake City Center"
-    },
-    "04": {
-      "callsign": "ZLC 04",
-      "frequency": 135775,
-      "radio_name": "Salt Lake Center"
-    },
-    "05": {
-      "callsign": "ZLC 05 Salt Lake 5",
-      "frequency": 124350,
-      "radio_name": "Salt Lake City Center"
-    },
-    "06": {
-      "callsign": "ZLC 06 Salt Lake 6",
-      "frequency": 132400,
-      "radio_name": "Salt Lake City Center"
-    },
-    "07": {
-      "callsign": "ZLC 07 Salt Lake 7",
-      "frequency": 127700,
-      "radio_name": "Salt Lake City Center"
-    },
-    "08": {
-      "callsign": "ZLC 08 Salt Lake 8",
-      "frequency": 128350,
-      "radio_name": "Salt Lake City Center"
-    },
     "11": {
       "callsign": "ZLC 11",
       "frequency": 127825,
@@ -169,6 +129,46 @@
       "callsign": "ZLC 71 Salt Lake TMWC",
       "frequency": 123450,
       "radio_name": "Salt Lake Center"
+    },
+    "01": {
+      "callsign": "ZLC 01 Salt Lake TMAC",
+      "frequency": 123450,
+      "radio_name": "Salt Lake Center"
+    },
+    "02": {
+      "callsign": "ZLC 02 Salt Lake TMEC",
+      "frequency": 123450,
+      "radio_name": "Salt Lake Center"
+    },
+    "03": {
+      "callsign": "ZLC 03 Salt Lake 3",
+      "frequency": 119950,
+      "radio_name": "Salt Lake City Center"
+    },
+    "04": {
+      "callsign": "ZLC 04",
+      "frequency": 135775,
+      "radio_name": "Salt Lake Center"
+    },
+    "05": {
+      "callsign": "ZLC 05 Salt Lake 5",
+      "frequency": 124350,
+      "radio_name": "Salt Lake City Center"
+    },
+    "06": {
+      "callsign": "ZLC 06 Salt Lake 6",
+      "frequency": 132400,
+      "radio_name": "Salt Lake City Center"
+    },
+    "07": {
+      "callsign": "ZLC 07 Salt Lake 7",
+      "frequency": 127700,
+      "radio_name": "Salt Lake City Center"
+    },
+    "08": {
+      "callsign": "ZLC 08 Salt Lake 8",
+      "frequency": 128350,
+      "radio_name": "Salt Lake City Center"
     }
   },
   "facility_adaptations": {
@@ -176,7 +176,21 @@
       "STD": {
         "inbound_assignments": {
           "QWENN7.MLF": "44",
-          "QWENN7.BCE": "44"
+          "QWENN7.BCE": "44",
+          "CARTR1.OCS": "44",
+          "CARTR1.CKW": "44",
+          "CARTR1.DDY": "44",
+          "SKEES6.PIH": "44",
+          "SKEES6.BYI": "44",
+          "JAZZZ1.HELPR": "44",
+          "JAZZZ1.MTU": "44",
+          "PITTT2.HELPR": "44",
+          "PITTT2.MLF": "44",
+          "PITTT2.BCE": "44",
+          "PITTT2.EKR": "44",
+          "PITTT2.MTU": "44",
+          "YUTES2.FLECC": "44",
+          "Overflights": "44"
         },
         "default_consolidation": {
           "44": []
