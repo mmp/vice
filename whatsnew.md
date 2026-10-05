@@ -1,5 +1,4 @@
-- Split M98 into modern and 2005 historical scenario groups, with historical arrival/departure procedures and pronunciation updates (Logan Schmidt).
-- Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane), D10 (Alexander Rueffer), S46 (Alex L)
+- Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane, Logan Schmidt), D10 (Alexander Rueffer), S46 (Alex L)
 - Added delay before launching subsequent same-exit departures
 - Fixed bugs with handling of TAS, IAS, and aircraft speed constraints
 - Fixed bugs with sequencing aircraft pilot transmissions
@@ -25,8 +24,7 @@
   - `QU` now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when `QU` was used
   - Fix bugs with overly-cautious CAs for aircraft controlled by virtual controllers
 - Facility engineering
-  - Historical scenarios now place published arrivals on scenario-defined retired STARs or suitable arrival gates by origin direction, rather than requiring modern STARs. Explicit airport-pair routes take priority.
-  - Added `"historical_scenario": true` to allow manually authored retired STAR arrivals without checking them against current FAA procedures (Logan S)
+  - Added `"historical_scenario": true` to allow manually authored retired STAR arrivals without checking them against current FAA procedures (Logan Schmidt)
   - ERAM altitude limits can be specified per-controller and/or per-scenario
   - Added `/cvs` and `/dvs` waypoint actions for virtual controllers to issue "climb via SID"/"descend via STAR"
   - Added `/cv` and `/dv` waypoint actions for "climb via SID/descend via STAR, except maintain (altitude)"
