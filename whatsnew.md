@@ -5,7 +5,7 @@
 - Updated to Oct 1 AIRAC cycle (Mike Fries)
 - Flight model
   - Added "climb via SID/descend via STAR, except maintain (altitude)" instructions (`CVS/A100`, `DVS/A120`) and by voice.
-  - Traffic calls ending "has you in sight and will maintain visual separation" (`TRAFFIC/INSIGHT`) now get just "roger", without a callsign
+  - Traffic calls ending "has you in sight and will maintain visual separation" (`TRAFFIC/INSIGHT`) now get just "roger" responses
   - Aircraft can be told to join an airway: "join Victor 1" (`JV1`) (and verbally)
   - Aircraft can be told to rejoin a SID or STAR (`RSID`, `RSTAR`) (and verbally)
   - Fixed vectored aircraft given "intercept localizer" then flying procedure turns after being cleared for the approach
@@ -13,9 +13,10 @@
   - VFRs are better at scud-running under B and C airspace shelves
   - Fixed VFR airwork descending below the ground
   - Adjusted delays for pilots to follow control instructions
+- STARS
+  - Polished up some of the details of middle-click dragging of system lists
 - ERAM
-  - Altitudes that virtual controllers assign along a route are now entered in the datablock:
-    `/d` and `/c` amend the assigned altitude and `/dv`/`/cv` set interim altitude
+  - Altitudes that virtual controllers assign along a route are now entered in the datablock:`/d` and `/c` amend the assigned altitude and `/dv`/`/cv` set interim altitude
   - Add datablock portal fence option
   - Add support for altitude limits, including the `QD` command
   - Added support for block altitudes, including the `QZ` command
