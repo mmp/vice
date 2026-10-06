@@ -1711,7 +1711,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.15.1/Vice-v0.15.1-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.1 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.2/Vice-v0.15.2-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.2 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1720,7 +1720,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Ventura or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.15.1/Vice-v0.15.1-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.1 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.2/Vice-v0.15.2-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.2 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1748,6 +1748,61 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.15.2" data-nav-title="0.15.2">0.15.2 (5 Oct 2026)</h3>
+            <ul>
+              <li>Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane, Logan Schmidt), D10 (Alexander Rueffer), S46 (Alex L), NCT, ZLA (Ketan K), ZLC (Ryan C)</li>
+              <li>Added delay before launching subsequent same-exit departures</li>
+              <li>Fixed bugs with handling of TAS, IAS, and aircraft speed constraints</li>
+              <li>Fixed bugs with sequencing aircraft pilot transmissions</li>
+              <li>Updated to Oct 1 AIRAC cycle (Mike Fries)</li>
+              <li>Flight model
+                <ul>
+                  <li>Added &quot;climb via SID/descend via STAR, except maintain (altitude)&quot; instructions (<code>CVS/A100</code>, <code>DVS/A120</code>) and by voice.</li>
+                  <li>Traffic calls ending &quot;has you in sight and will maintain visual separation&quot; (<code>TRAFFIC/INSIGHT</code>) now get just &quot;roger&quot; responses</li>
+                  <li>Aircraft can be told to join an airway: &quot;join Victor 1&quot; (<code>JV1</code>) (and verbally)</li>
+                  <li>Aircraft can be told to rejoin a SID or STAR (<code>RSID</code>, <code>RSTAR</code>) (and verbally)</li>
+                  <li>Fixed vectored aircraft given &quot;intercept localizer&quot; then flying procedure turns after being cleared for the approach</li>
+                  <li>Fixed multiple bugs with airspeed handling and altitude/temperature</li>
+                  <li>VFRs are better at scud-running under B and C airspace shelves</li>
+                  <li>Fixed VFR airwork descending below the ground</li>
+                  <li>Adjusted delays for pilots to follow control instructions</li>
+                </ul>
+              </li>
+              <li>STARS
+                <ul>
+                  <li>Polished up some of the details of middle-click dragging of system lists</li>
+                </ul>
+              </li>
+              <li>ERAM
+                <ul>
+                  <li>Altitudes that virtual controllers assign along a route are now entered in the datablock:<code>/d</code> and <code>/c</code> amend the assigned altitude and <code>/dv</code>/<code>/cv</code> set interim altitude</li>
+                  <li>Add datablock portal fence option</li>
+                  <li>Add support for altitude limits, including the <code>QD</code> command</li>
+                  <li>Added support for block altitudes, including the <code>QZ</code> command</li>
+                  <li>HSF indicator is now on FDB line 2 and can be clicked to toggle HSF data</li>
+                  <li>Show <code>-</code> rather than <code>+</code> in the FDB when below the datablock altitude</li>
+                  <li><code>QU</code> now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when <code>QU</code> was used</li>
+                  <li>Fix bugs with overly-cautious CAs for aircraft controlled by virtual controllers</li>
+                </ul>
+              </li>
+              <li>Facility engineering
+                <ul>
+                  <li>Added <code>&quot;historical_scenario&quot;: true</code> to allow manually authored retired STAR arrivals without checking them against current FAA procedures (Logan Schmidt)</li>
+                  <li>ERAM altitude limits can be specified per-controller and/or per-scenario</li>
+                  <li>Added <code>/cvs</code> and <code>/dvs</code> waypoint actions for virtual controllers to issue &quot;climb via SID&quot;/&quot;descend via STAR&quot;</li>
+                  <li>Added <code>/cv</code> and <code>/dv</code> waypoint actions for &quot;climb via SID/descend via STAR, except maintain (altitude)&quot;</li>
+                  <li>Added an &quot;eram&quot; object to allow specifying ERAM datablock entries for assigned altitudes, etc.</li>
+                  <li>An arrival's &quot;cleared_altitude&quot; now stops its descent, as documented; scenarios that expect the descent to continue must use <code>/dvs</code>.</li>
+                  <li>Charted visual approaches may now give multiple routes in &quot;waypoints&quot;, e.g. for procedures with several feeder legs</li>
+                  <li>Charted visual approaches may now give &quot;reporting_points&quot;: landmarks that pilots can be told to look for and report in sight</li>
+                  <li>Locations in scenarios can be given as fix-radial-distances (FRDs), e.g. <code>JFK090020</code> (JFK 090 radial, 20 nm)</li>
+                  <li>Added &quot;listed_positions&quot; to specify the controllers in the scenario information window and their roles</li>
+                  <li>Added optional &quot;timetables&quot; to specify applicable timetables in a scenario group.</li>
+                </ul>
+              </li>
+            </ul>
+
 
             <h3 id="release-0.15.1" data-nav-title="0.15.1">0.15.1 (21 Sep 2026)</h3>
             <ul>

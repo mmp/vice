@@ -48,6 +48,47 @@
   </branding>
 
   <releases>
+    <release version="0.15.2" date="2026-10-05">
+      <url type="details">https://pharr.org/vice/#release-0.15.2</url>
+      <description>
+        <ul>
+          <li>Scenario updates: IND (Ethan Hawes), D01 (Mike Fries), S56 (Elliott B), N90 (Flying High), M98 (Shane, Logan Schmidt), D10 (Alexander Rueffer), S46 (Alex L), NCT, ZLA (Ketan K), ZLC (Ryan C)</li>
+          <li>Added delay before launching subsequent same-exit departures</li>
+          <li>Fixed bugs with handling of TAS, IAS, and aircraft speed constraints</li>
+          <li>Fixed bugs with sequencing aircraft pilot transmissions</li>
+          <li>Updated to Oct 1 AIRAC cycle (Mike Fries)</li>
+          <li>Flight model: Added &quot;climb via SID/descend via STAR, except maintain (altitude)&quot; instructions (CVS/A100, DVS/A120) and by voice.</li>
+          <li>Flight model: Traffic calls ending &quot;has you in sight and will maintain visual separation&quot; (TRAFFIC/INSIGHT) now get just &quot;roger&quot; responses</li>
+          <li>Flight model: Aircraft can be told to join an airway: &quot;join Victor 1&quot; (JV1) (and verbally)</li>
+          <li>Flight model: Aircraft can be told to rejoin a SID or STAR (RSID, RSTAR) (and verbally)</li>
+          <li>Flight model: Fixed vectored aircraft given &quot;intercept localizer&quot; then flying procedure turns after being cleared for the approach</li>
+          <li>Flight model: Fixed multiple bugs with airspeed handling and altitude/temperature</li>
+          <li>Flight model: VFRs are better at scud-running under B and C airspace shelves</li>
+          <li>Flight model: Fixed VFR airwork descending below the ground</li>
+          <li>Flight model: Adjusted delays for pilots to follow control instructions</li>
+          <li>STARS: Polished up some of the details of middle-click dragging of system lists</li>
+          <li>ERAM: Altitudes that virtual controllers assign along a route are now entered in the datablock:/d and /c amend the assigned altitude and /dv//cv set interim altitude</li>
+          <li>ERAM: Add datablock portal fence option</li>
+          <li>ERAM: Add support for altitude limits, including the QD command</li>
+          <li>ERAM: Added support for block altitudes, including the QZ command</li>
+          <li>ERAM: HSF indicator is now on FDB line 2 and can be clicked to toggle HSF data</li>
+          <li>ERAM: Show - rather than + in the FDB when below the datablock altitude</li>
+          <li>ERAM: QU now allows multiple fixes to be given; it also adds a FRD to the route for the a/c position when QU was used</li>
+          <li>ERAM: Fix bugs with overly-cautious CAs for aircraft controlled by virtual controllers</li>
+          <li>Facility engineering: Added &quot;historical_scenario&quot;: true to allow manually authored retired STAR arrivals without checking them against current FAA procedures (Logan Schmidt)</li>
+          <li>Facility engineering: ERAM altitude limits can be specified per-controller and/or per-scenario</li>
+          <li>Facility engineering: Added /cvs and /dvs waypoint actions for virtual controllers to issue &quot;climb via SID&quot;/&quot;descend via STAR&quot;</li>
+          <li>Facility engineering: Added /cv and /dv waypoint actions for &quot;climb via SID/descend via STAR, except maintain (altitude)&quot;</li>
+          <li>Facility engineering: Added an &quot;eram&quot; object to allow specifying ERAM datablock entries for assigned altitudes, etc.</li>
+          <li>Facility engineering: An arrival's &quot;cleared_altitude&quot; now stops its descent, as documented; scenarios that expect the descent to continue must use /dvs.</li>
+          <li>Facility engineering: Charted visual approaches may now give multiple routes in &quot;waypoints&quot;, e.g. for procedures with several feeder legs</li>
+          <li>Facility engineering: Charted visual approaches may now give &quot;reporting_points&quot;: landmarks that pilots can be told to look for and report in sight</li>
+          <li>Facility engineering: Locations in scenarios can be given as fix-radial-distances (FRDs), e.g. JFK090020 (JFK 090 radial, 20 nm)</li>
+          <li>Facility engineering: Added &quot;listed_positions&quot; to specify the controllers in the scenario information window and their roles</li>
+          <li>Facility engineering: Added optional &quot;timetables&quot; to specify applicable timetables in a scenario group.</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.15.1" date="2026-09-21">
       <url type="details">https://pharr.org/vice/#release-0.15.1</url>
       <description>
