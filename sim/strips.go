@@ -29,19 +29,36 @@ func (s *Sim) freeStripCID(cid int) {
 	s.AvailableStripCIDs = append(s.AvailableStripCIDs, cid)
 }
 
-// initFlightStrip assigns a strip CID and owner on the flight plan.
-// No-op if the flight plan already has a strip.
-func (s *Sim) initFlightStrip(fp *FlightPlan, owner ControlPosition) {
-	if fp.StripOwner != "" {
-		return
+// printsFlightStrip reports whether the flight gets a flight strip: IFR
+// flights and VFR departures that aren't local do. None does if it departs an
+// airport that doesn't print departure strips or arrives at one that doesn't
+// print arrival strips. The airports decide rather than the type of flight,
+// since a departure to a nearby airport may be handled as an arrival.
+func (s *Sim) printsFlightStrip(fp *FlightPlan) bool {
+	if fp.Rules != av.FlightRulesIFR && (fp.PlanType == LocalNonEnroute || fp.TypeOfFlight != av.FlightTypeDeparture) {
+		return false
 	}
-	fp.StripCID = s.allocateStripCID()
-	fp.StripOwner = owner
-	s.lg.Debug("created flight strip", slog.String("acid", string(fp.ACID)), slog.String("owner", string(owner)))
+	if ap, ok := s.State.Airports[fp.DepartureAirport]; ok && ap.PrintDepartureStrips != nil && !*ap.PrintDepartureStrips {
+		return false
+	}
+	if ap, ok := s.State.Airports[fp.ArrivalAirport]; ok && ap.PrintArrivalStrips != nil && !*ap.PrintArrivalStrips {
+		return false
+	}
+	return true
 }
 
-func shouldCreateFlightStrip(fp *FlightPlan) bool {
-	return fp.Rules == av.FlightRulesIFR || (fp.PlanType != LocalNonEnroute && fp.TypeOfFlight == av.FlightTypeDeparture)
+// giveFlightStrip moves the flight's strip to a human position, printing the
+// strip first if the flight doesn't have one yet. Virtual positions never get
+// strips.
+func (s *Sim) giveFlightStrip(fp *FlightPlan, tcp ControlPosition) {
+	if !s.ScenarioDefaultConsolidation.IsHumanPosition(tcp) || !s.printsFlightStrip(fp) {
+		return
+	}
+	if fp.StripOwner == "" {
+		fp.StripCID = s.allocateStripCID()
+		s.lg.Debug("created flight strip", slog.String("acid", string(fp.ACID)), slog.String("owner", string(tcp)))
+	}
+	fp.StripOwner = tcp
 }
 
 // flightStripACIDsForTCW returns the ACIDs of all flight plans with strips

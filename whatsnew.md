@@ -1,0 +1,3 @@
+- Flight strips
+  - Fixed strips showing CID 000 after a frequency change
+  - Airports with "print_departure_strips" or "print_arrival_strips" set to false never get strips, including from starting a track or a frequency change

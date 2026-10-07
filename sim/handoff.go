@@ -229,8 +229,10 @@ func (s *Sim) contactController(fromTCP TCP, sfp *FlightPlan, ac *Aircraft, toTC
 		}
 	}
 
-	// Move the flight strip to the destination TCP.
-	sfp.StripOwner = toTCP
+	// Move the flight strip, if it has one, to the destination TCP.
+	if sfp.StripOwner != "" {
+		sfp.StripOwner = toTCP
+	}
 
 	// Cancel any in-progress frequency switch and take away the
 	// current controller's ability to issue control commands.

@@ -887,12 +887,12 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 			// Create a flight strip if one doesn't already exist.
 			// Assign to TrackingController so the strip follows
 			// the position if consolidation changes.
-			if shouldCreateFlightStrip(fp) {
+			if fp.StripOwner == "" {
 				owner := fp.TrackingController
 				if owner == "" {
 					owner = s.State.PrimaryPositionForTCW(tcw)
 				}
-				s.initFlightStrip(fp, owner)
+				s.giveFlightStrip(fp, owner)
 			}
 
 			s.eventStream.Post(Event{

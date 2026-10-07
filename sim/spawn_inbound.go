@@ -51,7 +51,7 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 			e.Group, util.Select(arr.STAR == "", arr.FlightStripDisplayRoute, arr.STAR), e.How)
 	}
 
-	if err := s.finalizeArrival(ac, arr, filedRoute, e.Group, e.ArrivalAirport); err != nil {
+	if err := s.finalizeArrival(ac, arr, filedRoute, e.Group); err != nil {
 		return nil, err
 	}
 	s.recordArrivalLaunch(e.Group, ac)
@@ -61,8 +61,7 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 // finalizeArrival builds the arrival's NAS flight plan with controller
 // assignments and registers it with STARS. filedRoute, if set, is the route
 // the flight files in place of the one the arrival displays.
-func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, filedRoute string, group string,
-	arrivalAirport av.ICAOAirportCode) error {
+func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, filedRoute string, group string) error {
 	nasFp := s.initFlightPlan(ac, av.FlightTypeArrival)
 	switch {
 	case filedRoute != "":
@@ -109,12 +108,7 @@ func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, filedRoute string, 
 		return err
 	}
 	// Create a flight strip at the inbound handoff controller if it's a human position
-	ap, ok := s.State.Airports[arrivalAirport]
-	printStrips := !ok || ap.PrintArrivalStrips == nil || *ap.PrintArrivalStrips
-	if printStrips && shouldCreateFlightStrip(&nasFp) &&
-		!s.isVirtualController(nasFp.InboundHandoffController) {
-		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
-	}
+	s.giveFlightStrip(&nasFp, nasFp.InboundHandoffController)
 
 	return s.associateAtSpawn(ac, nasFp)
 }
@@ -243,9 +237,7 @@ func (s *Sim) finalizeOverflight(ac *Aircraft, of *av.Overflight, group string) 
 	}
 
 	// Create a flight strip at the inbound handoff controller if it's a human position
-	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
-		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
-	}
+	s.giveFlightStrip(&nasFp, nasFp.InboundHandoffController)
 
 	return s.associateAtSpawn(ac, nasFp)
 }
