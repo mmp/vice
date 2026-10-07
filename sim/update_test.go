@@ -11,11 +11,20 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// testERAMControllers returns the controllers of an ERAM facility, 39, and
+// of the TRACON beneath it, N5W.
+func testERAMControllers() map[ControlPosition]*av.Controller {
+	return map[ControlPosition]*av.Controller{
+		"39":  {Position: "39", ERAMFacility: true},
+		"N5W": {Position: "5W", FacilityIdentifier: "N"},
+	}
+}
+
 // TestVirtualControllerAltitudeEntries checks that the altitudes a virtual
-// controller assigns along a route show up in the data block the way the
+// ERAM controller assigns along a route show up in the data block the way the
 // entries that controller would have made do: a climb that stops short of the
 // aircraft's altitude is an interim altitude and everything else amends the
-// assigned altitude.
+// assigned altitude. TRACON controllers can't make the entries.
 func TestVirtualControllerAltitudeEntries(t *testing.T) {
 	const cruise = 35000
 
@@ -39,7 +48,7 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 	for _, tc := range []struct {
 		name             string
 		facility         string
-		humanControlled  bool
+		frequency        ControlPosition
 		approachCleared  bool
 		waypoints        []av.Waypoint
 		actions          av.WaypointActions
@@ -113,8 +122,14 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 		},
 		{
 			name:             "an aircraft a human is working is left alone",
-			humanControlled:  true,
+			frequency:        "2A",
 			actions:          av.WaypointActions{DescendAltitude: 24000},
+			assignedAltitude: cruise,
+		},
+		{
+			name:             "a TRACON controller's climb leaves the entries alone",
+			frequency:        "N5W",
+			actions:          av.WaypointActions{ClimbAltitude: 17000},
 			assignedAltitude: cruise,
 		},
 		{
@@ -131,6 +146,7 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 				s.State.Facility = tc.facility
 			}
 			s.ScenarioDefaultConsolidation = PositionConsolidation{TCP("2A"): nil}
+			s.State.Controllers = testERAMControllers()
 
 			ac := MakeTestAircraft("AAL123", "13L")
 			ac.Nav.Perf.Ceiling = 41000
@@ -138,7 +154,7 @@ func TestVirtualControllerAltitudeEntries(t *testing.T) {
 			ac.Nav.Waypoints = tc.waypoints
 			ac.Nav.Approach.Cleared = tc.approachCleared
 			ac.CruiseAltitude = cruise
-			ac.ControllerFrequency = util.Select(tc.humanControlled, ControlPosition("2A"), ControlPosition(""))
+			ac.ControllerFrequency = util.Select(tc.frequency != "", tc.frequency, "39")
 			ac.FlightPlan = &FlightPlan{ACID: "AAL123", AssignedAltitude: cruise}
 			s.Aircraft[ac.ADSBCallsign] = ac
 
@@ -164,11 +180,12 @@ func TestVirtualControllerInterimAltitudeCleared(t *testing.T) {
 	s := NewTestSim(testLogger())
 	s.State.Facility = "ZNY"
 	s.ScenarioDefaultConsolidation = PositionConsolidation{TCP("2A"): nil}
+	s.State.Controllers = testERAMControllers()
 
 	ac := MakeTestAircraft("AAL123", "13L")
 	ac.Nav.Perf.Ceiling = 41000
 	ac.CruiseAltitude = 35000
-	ac.ControllerFrequency = ""
+	ac.ControllerFrequency = "39"
 	ac.FlightPlan = &FlightPlan{ACID: "AAL123", AssignedAltitude: 35000}
 	s.Aircraft[ac.ADSBCallsign] = ac
 

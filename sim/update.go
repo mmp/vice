@@ -284,10 +284,10 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *FlightPlan, fix s
 
 	if actions.ClimbAltitude != 0 {
 		ac.Nav.AssignAltitudeNow(float32(actions.ClimbAltitude), false)
-		s.recordVirtualAltitudeEntry(sfp, actions.ClimbAltitude, true)
+		s.recordVirtualAltitudeEntry(sfp, ac.ControllerFrequency, actions.ClimbAltitude, true)
 	} else if actions.DescendAltitude != 0 {
 		ac.Nav.AssignAltitudeNow(float32(actions.DescendAltitude), false)
-		s.recordVirtualAltitudeEntry(sfp, actions.DescendAltitude, false)
+		s.recordVirtualAltitudeEntry(sfp, ac.ControllerFrequency, actions.DescendAltitude, false)
 	}
 	var exceptAlt *float32
 	if actions.ExceptAltitude != 0 {
@@ -297,15 +297,15 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *FlightPlan, fix s
 	if actions.ClimbViaSID && ac.Nav.ClimbViaSIDAtPassedFix(exceptAlt) {
 		// Without an exception, the aircraft climbs to its filed altitude.
 		alt := util.Select(actions.ExceptAltitude != 0, actions.ExceptAltitude, ac.CruiseAltitude)
-		s.recordVirtualAltitudeEntry(sfp, alt, true)
+		s.recordVirtualAltitudeEntry(sfp, ac.ControllerFrequency, alt, true)
 	}
 	if actions.DescendViaSTAR && ac.Nav.DescendViaSTARAtPassedFix(exceptAlt) {
 		if actions.ExceptAltitude != 0 {
-			s.recordVirtualAltitudeEntry(sfp, actions.ExceptAltitude, false)
+			s.recordVirtualAltitudeEntry(sfp, ac.ControllerFrequency, actions.ExceptAltitude, false)
 		} else if alt, ok := ac.Nav.LowestProcedureAltitude(); ok {
 			// Without an exception, the aircraft descends to the bottom of
 			// the procedure ahead.
-			s.recordVirtualAltitudeEntry(sfp, int(alt), false)
+			s.recordVirtualAltitudeEntry(sfp, ac.ControllerFrequency, int(alt), false)
 		}
 	}
 
@@ -386,9 +386,11 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *FlightPlan, fix s
 // had made the corresponding keyboard entry: a climb that stops short of the
 // hard altitude is an interim altitude and anything else amends the hard
 // altitude. STARS leaves both to the controller, so this is only done at
-// ERAM facilities.
-func (s *Sim) recordVirtualAltitudeEntry(sfp *FlightPlan, alt int, climb bool) {
-	if sfp == nil || !db.DB.IsARTCC(s.State.Facility) {
+// ERAM facilities. Only ERAM controllers can make the entries, so altitudes
+// a TRACON controller assigns leave them as they are.
+func (s *Sim) recordVirtualAltitudeEntry(sfp *FlightPlan, issuer ControlPosition, alt int, climb bool) {
+	ctrl, ok := s.State.Controllers[issuer]
+	if sfp == nil || !db.DB.IsARTCC(s.State.Facility) || !ok || !ctrl.ERAMFacility {
 		return
 	}
 

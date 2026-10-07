@@ -4,3 +4,6 @@
   - A frequency change pushes the strip along unless the controller has already pushed it
   - Fixed strips showing CID 000 after a frequency change
   - Airports with "print_departure_strips" or "print_arrival_strips" set to false never get strips, including from starting a track or a frequency change
+- ERAM
+  - TRACON controllers no longer enter altitudes in ERAM data blocks, so departures reach the first ERAM controller showing their filed altitude
+  - Conflict alert no longer assumes that an aircraft a TRACON owns will climb or descend to its data block altitude

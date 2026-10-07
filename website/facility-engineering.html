@@ -772,7 +772,9 @@
                 block as well, as the virtual controller issuing them would have entered them:
                 <code>/d</code> and <code>/dv</code> amend the assigned altitude, as do
                 <code>/c</code> and <code>/cv</code> to an altitude at or above it, while a climb
-                that stops short of the assigned altitude becomes an interim altitude. See
+                that stops short of the assigned altitude becomes an interim altitude. Only ERAM
+                controllers make these entries. The altitudes a virtual TRACON controller assigns
+                leave the data block as it is. See
                 <a href="#fe-eram-entries">ERAM Data Block Entries</a>.
               </p>
 
@@ -5791,10 +5793,13 @@
                 scratchpads of the departures that fly it.
               </p>
               <p>
-                Altitudes a virtual controller assigns along a route update the data block the same
-                way, as if that controller had made the entry: a
+                Altitudes a virtual ERAM controller assigns along a route update the data block the
+                same way, as if that controller had made the entry: a
                 <a href="#fe-route-actions">/d or /dv action</a> amends the assigned altitude and a
-                /c or /cv action that stops short of it is an interim altitude.
+                /c or /cv action that stops short of it is an interim altitude. TRACON controllers
+                can't make data block entries, so a departure reaches the first ERAM controller
+                showing its filed altitude unless its departure route's "eram" entries give it
+                others.
               </p>
             </section>
 

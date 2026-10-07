@@ -204,7 +204,9 @@ func (ep *Scope) inConflictAlert(callsign av.ADSBCallsign) bool {
 // vertical rate; at least one target of a pair must be owned by a
 // controller in this ERAM facility, and at least one must be worked by a
 // human: virtual controllers can't maneuver the background traffic they
-// work, so alerting on it is only a distraction.
+// work, so alerting on it is only a distraction. The data block altitude of
+// a track a TRACON owns is ignored: TRACON controllers can't make data block
+// entries, so it doesn't say where the aircraft will level off.
 // Note: the caller passes ep.visibleTracks; today that is effectively all
 // tracks, but if display filtering (e.g. radar holes) is ever added there,
 // conflict detection coverage would narrow with it.
@@ -248,6 +250,10 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 				route = append(route, math.LL2NM(p, ctx.NmPerLongitude))
 			}
 		}
+		dbAlt := trk.FlightPlan.DataBlockAltitude()
+		if ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.TrackingController]; ok && !ctrl.ERAMFacility {
+			dbAlt = 0
+		}
 
 		candidates = append(candidates, caCandidate{
 			callsign: trk.ADSBCallsign,
@@ -256,7 +262,7 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 				vel:   vel,
 				alt:   state.Track.TransponderAltitude,
 				rate:  rate,
-				dbAlt: trk.FlightPlan.DataBlockAltitude(),
+				dbAlt: dbAlt,
 				route: route,
 			},
 			owned:   ctx.Client.State.IsLocalController(trk.FlightPlan.TrackingController),

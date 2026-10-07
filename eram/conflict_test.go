@@ -206,3 +206,52 @@ func TestInConflictAlert(t *testing.T) {
 		t.Error("non-member should not be in conflict alert")
 	}
 }
+
+// TestCATRACONDataBlockAltitude checks that a departure a TRACON holds below
+// traffic doesn't alert just because its data block shows its filed altitude.
+// TRACON controllers can't make data block entries, so that altitude doesn't
+// say where the departure will level off.
+func TestCATRACONDataBlockAltitude(t *testing.T) {
+	for _, tc := range []struct {
+		owner sim.ControlPosition
+		alert bool
+	}{
+		{owner: "N5W", alert: false},
+		{owner: "2B", alert: true},
+	} {
+		t.Run(string(tc.owner), func(t *testing.T) {
+			h := makeTrackTestHarness()
+			h.ctx.NmPerLongitude = 45.7
+			h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{
+				"1A":  {Position: "1A", ERAMFacility: true},
+				"2B":  {Position: "2B", ERAMFacility: true},
+				"N5W": {Position: "5W", FacilityIdentifier: "N"},
+			}
+			// The departure is level at 17,000 with FL380 filed and the
+			// traffic is level at 19,000 a mile ahead of it.
+			dep := &sim.Track{
+				RadarTrack: av.RadarTrack{ADSBCallsign: "DEP", Mode: av.TransponderModeAltitude,
+					TransponderAltitude: 17000, Location: math.Point2LL{-73, 40}, Groundspeed: 400},
+				FlightPlan:          &sim.FlightPlan{ACID: "DEP", TrackingController: tc.owner, AssignedAltitude: 38000},
+				VirtuallyControlled: true,
+			}
+			traffic := &sim.Track{
+				RadarTrack: av.RadarTrack{ADSBCallsign: "ENR", Mode: av.TransponderModeAltitude,
+					TransponderAltitude: 19000, Location: math.Point2LL{-72.98, 40}, Groundspeed: 400},
+				FlightPlan: &sim.FlightPlan{ACID: "ENR", TrackingController: "1A", AssignedAltitude: 19000},
+			}
+			h.addTrack(dep)
+			h.addTrack(traffic)
+			h.frame(0)
+			// Both fly east until the next radar sample gives them headings.
+			dep.Location[0] += 0.03
+			traffic.Location[0] += 0.03
+			h.frame(eramUpdateInterval)
+
+			h.ep.updateConflictAlerts(h.ctx, h.ep.visibleTracks)
+			if got := h.ep.inConflictAlert("DEP"); got != tc.alert {
+				t.Errorf("conflict alert: got %v, expected %v", got, tc.alert)
+			}
+		})
+	}
+}

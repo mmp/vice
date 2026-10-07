@@ -250,11 +250,6 @@ func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirp
 	}
 
 	if db.DB.IsARTCC(s.State.Facility) {
-		// The departure levels off at the exit route's altitude until it is
-		// climbed further, so the data block needs it as an interim altitude
-		// for conflict alert to know where the climb stops.
-		alt := util.Select(exitRoute.AssignedAltitude != 0, exitRoute.AssignedAltitude, exitRoute.ClearedAltitude)
-		s.recordVirtualAltitudeEntry(&nasFp, min(alt, ac.CruiseAltitude), true)
 		nasFp.applyERAMEntries(exitRoute.ERAM)
 	}
 
