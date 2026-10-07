@@ -1,3 +1,6 @@
 - Flight strips
+  - A departure's strip prints at its departure controller when it starts its takeoff roll
+  - A virtual controller's handoff pushes the strip to the controller it hands the flight to (fixes missing strips for flights that work more than one virtual controller first)
+  - A frequency change pushes the strip along unless the controller has already pushed it
   - Fixed strips showing CID 000 after a frequency change
   - Airports with "print_departure_strips" or "print_arrival_strips" set to false never get strips, including from starting a track or a frequency change

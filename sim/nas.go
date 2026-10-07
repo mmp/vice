@@ -354,6 +354,7 @@ func (s *Sim) applyHandoffFilterAction(region *HandoffFilterRegion, fp *FlightPl
 			ToController:   region.HORcvr,
 			ACID:           fp.ACID,
 		})
+		s.handOffFlightStrip(fp, region.HORcvr)
 		fp.TrackingController = region.HORcvr
 		fp.OwningTCW = s.tcwForPosition(region.HORcvr)
 	}
@@ -462,6 +463,7 @@ func (s *Sim) applyFDAMEntryActions(region *FDAMRegion, fp *FlightPlan, state *F
 				ToController:   region.NewOwnerTCP,
 				ACID:           fp.ACID,
 			})
+			s.handOffFlightStrip(fp, region.NewOwnerTCP)
 			fp.TrackingController = region.NewOwnerTCP
 			fp.OwningTCW = s.tcwForPosition(region.NewOwnerTCP)
 		}

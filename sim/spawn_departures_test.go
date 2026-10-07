@@ -501,6 +501,7 @@ func TestSamePavementRunways(t *testing.T) {
 // 9 and 8 ready to launch departures.
 func departureQueueSim(now Time) (*Sim, *RunwayLaunchState, *RunwayLaunchState) {
 	s := NewTestSim(testLogger())
+	s.STARSComputer = makeSTARSComputer("TEST")
 	s.State.NmPerLongitude = testNmPerLongitude
 	s.State.SimTime = now
 	s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"XTST": {}}

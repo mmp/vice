@@ -144,7 +144,7 @@ func (s *Sim) initDepartureState(now Time) {
 // createScenarioIFRDeparture creates the scenario IFR departure a schedule
 // entry describes; the runway, category, departure route, and identity were
 // all sampled when the entry was generated. All resource allocation--squawk,
-// flight strip, flight plan, list index--happens here.
+// flight plan, list index--happens here.
 func (s *Sim) createScenarioIFRDeparture(e ScheduledDeparture) (*Aircraft, error) {
 	ap, rwy, exitRoutes, err := s.State.departureConfiguration(e.DepartureAirport, e.Runway, e.Category)
 	if err != nil {
@@ -277,15 +277,6 @@ func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirp
 
 	// Departures aren't immediately associated, but the STARSComputer will
 	// hold on to their flight plans for now.
-	// Create a flight strip for departures
-	if s.isVirtualController(nasFp.TrackingController) {
-		// Virtual controller: strip goes to the handoff target
-		s.giveFlightStrip(&nasFp, nasFp.InboundHandoffController)
-	} else {
-		// Human controller: strip goes to the tracking controller
-		s.giveFlightStrip(&nasFp, nasFp.TrackingController)
-	}
-
 	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
 	return err
 }
@@ -556,6 +547,7 @@ func (s *Sim) launchNextDeparture(depState *RunwayLaunchState, airport av.ICAOAi
 
 	ac := s.Aircraft[dep.ADSBCallsign]
 	ac.WaitingForLaunch = false
+	s.printDepartureStrip(ac)
 	dep.LaunchTime = now
 	depState.LastDeparture = &dep
 

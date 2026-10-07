@@ -140,6 +140,7 @@ func (s *Sim) handoffTrack(fp *FlightPlan, toTCP TCP) {
 		ToController:   toTCP,
 	})
 
+	s.handOffFlightStrip(fp, toTCP)
 	fp.HandoffController = toTCP
 
 	// Resolve the target TCP - it may be consolidated to another controller
@@ -184,7 +185,7 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID, delayReduction time.
 			return nil
 		},
 		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) speech.CommandIntent {
-			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, sfp.TrackingController, delayReduction)
+			return s.contactController(tcw, sfp, ac, sfp.TrackingController, delayReduction)
 		})
 }
 
@@ -203,13 +204,15 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP, delayReduction ti
 			if s.State.TCWControlsPosition(tcw, toTCP) {
 				return speech.MakeUnableIntent("Unable, we are already on your frequency")
 			} else {
-				return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, toTCP, delayReduction)
+				return s.contactController(tcw, sfp, ac, toTCP, delayReduction)
 			}
 		})
 }
 
-func (s *Sim) contactController(fromTCP TCP, sfp *FlightPlan, ac *Aircraft, toTCP TCP,
+func (s *Sim) contactController(tcw TCW, sfp *FlightPlan, ac *Aircraft, toTCP TCP,
 	delayReduction time.Duration) speech.CommandIntent {
+	fromTCP := s.State.PrimaryPositionForTCW(tcw)
+
 	// Immediately respond to the current controller that we're
 	// changing frequency.
 	var intent speech.ContactIntent
@@ -229,8 +232,9 @@ func (s *Sim) contactController(fromTCP TCP, sfp *FlightPlan, ac *Aircraft, toTC
 		}
 	}
 
-	// Move the flight strip, if it has one, to the destination TCP.
-	if sfp.StripOwner != "" {
+	// The strip goes along with the aircraft unless the controller has
+	// already pushed it somewhere.
+	if s.State.TCWControlsPosition(tcw, sfp.StripOwner) {
 		sfp.StripOwner = toTCP
 	}
 

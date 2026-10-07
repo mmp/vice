@@ -61,6 +61,24 @@ func (s *Sim) giveFlightStrip(fp *FlightPlan, tcp ControlPosition) {
 	fp.StripOwner = tcp
 }
 
+// printDepartureStrip gives a departure's strip to its controller as it
+// starts its takeoff roll. A departure that starts out with a virtual
+// controller gets its strip when that controller hands it off instead.
+func (s *Sim) printDepartureStrip(ac *Aircraft) {
+	if fp := s.aircraftFlightPlan(ac); fp != nil {
+		s.giveFlightStrip(fp, fp.TrackingController)
+	}
+}
+
+// handOffFlightStrip gives the strip to the position that a virtual
+// controller is handing the track to. Human controllers push their own
+// strips, or the strip goes along when they switch the aircraft's frequency.
+func (s *Sim) handOffFlightStrip(fp *FlightPlan, toTCP TCP) {
+	if s.isVirtualController(fp.TrackingController) {
+		s.giveFlightStrip(fp, toTCP)
+	}
+}
+
 // flightStripACIDsForTCW returns the ACIDs of all flight plans with strips
 // owned by TCPs controlled by the given TCW.
 func (s *Sim) flightStripACIDsForTCW(tcw TCW) []ACID {

@@ -441,6 +441,7 @@ func (s *Sim) launchDeparture(ac *Aircraft, runway av.RunwayID, flight LaunchFli
 		s.addDepartureToPool(ac, runway, 0)
 	} else {
 		s.addAircraft(*ac)
+		s.printDepartureStrip(ac)
 	}
 }
 

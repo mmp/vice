@@ -5,7 +5,9 @@
 package sim
 
 import (
+	"slices"
 	"testing"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 )
@@ -53,6 +55,38 @@ func addStripTestDeparture(t *testing.T, s *Sim, owner TCP) (*Aircraft, *FlightP
 	return ac, fp
 }
 
+// acceptVirtualHandoffs runs the sim far enough for virtual controllers to
+// accept the handoffs offered to them.
+func acceptVirtualHandoffs(s *Sim) {
+	s.State.SimTime = s.State.SimTime.Add(time.Minute)
+	s.lastSimUpdate = s.State.SimTime // skip the once-a-second aircraft update
+	s.updateState()
+}
+
+// A departure that goes through a second virtual controller before reaching
+// the human gets its strip when the second one hands it off.
+func TestStripPushedOnVirtualHandoff(t *testing.T) {
+	s := newStripTestSim()
+	ac, fp := addStripTestDeparture(t, s, "14")
+
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{HandoffController: "15"}})
+	if fp.StripOwner != "" {
+		t.Fatalf("a handoff between virtual controllers gave the strip to %q", fp.StripOwner)
+	}
+	acceptVirtualHandoffs(s)
+	if fp.TrackingController != "15" {
+		t.Fatalf("15 didn't accept the handoff; %q owns the track", fp.TrackingController)
+	}
+
+	s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Actions: av.WaypointActions{HandoffController: "2A"}})
+	if fp.StripOwner != "2A" {
+		t.Errorf("the handoff to 2A gave the strip to %q", fp.StripOwner)
+	}
+	if !slices.Contains(s.flightStripACIDsForTCW("A"), fp.ACID) {
+		t.Errorf("A's strips %v don't include %s", s.flightStripACIDsForTCW("A"), fp.ACID)
+	}
+}
+
 // Only human positions get strips: a strip anywhere else is never seen, and
 // its CID is never freed.
 func TestStripOnlyForHumanPositions(t *testing.T) {
@@ -97,6 +131,31 @@ func TestNoStripWhenAirportDoesNotPrintThem(t *testing.T) {
 	}
 }
 
+// A human's handoff leaves the strip where it is until the controller pushes
+// it or switches the aircraft to the new controller.
+func TestStripGoesAlongWithFrequencyChange(t *testing.T) {
+	s := newStripTestSim()
+	_, fp := addStripTestDeparture(t, s, "2A")
+	s.giveFlightStrip(fp, "2A")
+
+	if err := s.HandoffTrack("A", fp.ACID, "2B"); err != nil {
+		t.Fatalf("HandoffTrack: %v", err)
+	}
+	if err := s.AcceptHandoff("B", fp.ACID); err != nil {
+		t.Fatalf("AcceptHandoff: %v", err)
+	}
+	if fp.StripOwner != "2A" {
+		t.Fatalf("the strip moved to %q before 2A pushed it", fp.StripOwner)
+	}
+
+	if _, err := s.ContactTrackingController("A", fp.ACID, 0); err != nil {
+		t.Fatalf("ContactTrackingController: %v", err)
+	}
+	if fp.StripOwner != "2B" {
+		t.Errorf("the frequency change left the strip at %q", fp.StripOwner)
+	}
+}
+
 func TestFrequencyChangeDoesNotPrintStrip(t *testing.T) {
 	s := newStripTestSim()
 	_, fp := addStripTestDeparture(t, s, "2A")
@@ -106,5 +165,33 @@ func TestFrequencyChangeDoesNotPrintStrip(t *testing.T) {
 	}
 	if fp.StripOwner != "" {
 		t.Errorf("a flight without a strip got one at %q", fp.StripOwner)
+	}
+}
+
+func TestDepartureStripPrintedAtTakeoffRoll(t *testing.T) {
+	installIntersectingRunwayFixture(t)
+
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+	s.ScenarioDefaultConsolidation = PositionConsolidation{"125.0": nil}
+
+	rwy9.ReleasedIFR = []DepartureAircraft{stageDeparture(s, "BAR1", "BAR", now)}
+	if _, err := s.STARSComputer.CreateFlightPlan(FlightPlan{
+		ACID:               "BAR1",
+		Rules:              av.FlightRulesIFR,
+		TypeOfFlight:       av.FlightTypeDeparture,
+		DepartureAirport:   "XTST",
+		TrackingController: "125.0",
+	}); err != nil {
+		t.Fatalf("CreateFlightPlan: %v", err)
+	}
+	fp := s.STARSComputer.lookupFlightPlanByACID("BAR1")
+	if fp.StripOwner != "" {
+		t.Fatalf("the strip went to %q before the takeoff roll", fp.StripOwner)
+	}
+
+	s.launchNextDeparture(rwy9, "XTST", "9", now)
+	if fp.StripOwner != "125.0" {
+		t.Errorf("at the takeoff roll, the strip went to %q", fp.StripOwner)
 	}
 }

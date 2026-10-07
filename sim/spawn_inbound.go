@@ -18,7 +18,7 @@ import (
 // both scenario and published entries. Vice resolves the STAR, initial
 // controller, altitude, and spawn geometry from the scenario; the flow and
 // arrival index were resolved when the entry was generated. All resource
-// allocation--squawk, flight strip, flight plan, list index--happens here, and
+// allocation--squawk, flight plan, list index--happens here, and
 // the flight counts as launched from its flow from here on.
 func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 	inboundFlow, ok := s.State.InboundFlows[e.Group]
@@ -107,8 +107,9 @@ func (s *Sim) finalizeArrival(ac *Aircraft, arr *av.Arrival, filedRoute string, 
 	if err := s.ERAMComputer.AssignSquawk(ac, &nasFp, s.Rand); err != nil {
 		return err
 	}
-	// Create a flight strip at the inbound handoff controller if it's a human position
-	s.giveFlightStrip(&nasFp, nasFp.InboundHandoffController)
+	// An arrival that enters already owned by a human gets its strip now;
+	// others get theirs when a virtual controller hands them off.
+	s.giveFlightStrip(&nasFp, nasFp.TrackingController)
 
 	return s.associateAtSpawn(ac, nasFp)
 }
@@ -236,8 +237,9 @@ func (s *Sim) finalizeOverflight(ac *Aircraft, of *av.Overflight, group string) 
 		return err
 	}
 
-	// Create a flight strip at the inbound handoff controller if it's a human position
-	s.giveFlightStrip(&nasFp, nasFp.InboundHandoffController)
+	// An overflight that enters already owned by a human gets its strip now;
+	// others get theirs when a virtual controller hands them off.
+	s.giveFlightStrip(&nasFp, nasFp.TrackingController)
 
 	return s.associateAtSpawn(ac, nasFp)
 }
