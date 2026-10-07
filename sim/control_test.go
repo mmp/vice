@@ -9,6 +9,7 @@ package sim
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
@@ -579,4 +580,62 @@ func TestRunOneControlCommandJoin(t *testing.T) {
 		s, callsign := newSim("", "", false)
 		wantUnable(t, run(t, s, callsign, "R120/J"))
 	})
+}
+
+// TestRunControlCommandsStaysOnFrequency checks that a pilot who asks for part of a
+// transmission again or refuses part of it stays on the controller's frequency.
+func TestRunControlCommandsStaysOnFrequency(t *testing.T) {
+	tests := []struct {
+		name         string
+		commands     string
+		wantTower    bool
+		wantAltitude bool
+		wantReadback string
+	}{
+		{name: "accepted", commands: "D20 TO", wantTower: true, wantAltitude: true},
+		{name: "say again", commands: "SAYAGAIN/FIX TO"},
+		{name: "commands after say again", commands: "SAYAGAIN/HEADING D20"},
+		{name: "commands before say again", commands: "D20 SAYAGAIN/HEADING", wantAltitude: true},
+		{name: "refused direct", commands: "DBOGUS D20 TO", wantAltitude: true, wantReadback: "isn't a valid fix"},
+		{name: "refused speed until", commands: "S170/UBOGUS TO/118300", wantReadback: "isn't a valid fix"},
+		{name: "refused before frequency change approved", commands: "DBOGUS FC"},
+		{name: "refused before radar service terminated", commands: "DBOGUS RST"},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewTestSim(log.New(true, "error", t.TempDir()))
+			ac := MakeTestAircraft("AAL123", "22L")
+			ac.Nav.Perf = db.DB.AircraftPerformance["A320"]
+			ac.Nav.Approach.Cleared = true
+			s.Aircraft[ac.ADSBCallsign] = ac
+			freq := ac.ControllerFrequency
+
+			res := s.RunAircraftControlCommands(E2ETCW(), ac.ADSBCallsign, tc.commands, 0, 0)
+			if res.Error != nil {
+				t.Fatalf("%s: %v", tc.commands, res.Error)
+			}
+			if !strings.Contains(res.ReadbackSpokenText, tc.wantReadback) {
+				t.Errorf("%s: readback %q does not contain %q", tc.commands, res.ReadbackSpokenText, tc.wantReadback)
+			}
+			if ac.GotContactTower != tc.wantTower {
+				t.Errorf("%s: contacted tower = %v, want %v", tc.commands, ac.GotContactTower, tc.wantTower)
+			}
+			if !tc.wantTower && ac.ControllerFrequency != freq {
+				t.Errorf("%s: frequency = %q, want %q", tc.commands, ac.ControllerFrequency, freq)
+			}
+			if got := ac.Nav.Altitude.Assigned != nil; got != tc.wantAltitude {
+				t.Errorf("%s: altitude assigned = %v, want %v", tc.commands, got, tc.wantAltitude)
+			}
+		})
+	}
+
+	s := NewTestSim(log.New(true, "error", t.TempDir()))
+	s.State.Controllers = map[ControlPosition]*av.Controller{"2B": {}}
+	if !s.changesFrequency("CT2B") {
+		t.Error("CT2B: contacting a controller should change frequency")
+	}
+	if s.changesFrequency("CTTL") {
+		t.Error("CTTL: clearing an approach should not change frequency")
+	}
 }

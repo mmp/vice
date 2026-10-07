@@ -40,6 +40,15 @@ func (u UnableIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	rt.Add(u.Message, u.Args...)
 }
 
+func (UnableIntent) refusal() {}
+
+// Refusal is implemented by intents in which the pilot declines an
+// instruction rather than carrying it out.
+type Refusal interface {
+	CommandIntent
+	refusal()
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Intent Merging Registration System
 

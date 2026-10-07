@@ -132,8 +132,15 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 	var intents []speech.CommandIntent
 	var cmdErr error
 	var remaining string
+	refused := false
 
 	for i, command := range commands {
+		// A pilot who refused part of the transmission stays on frequency so
+		// that the controller can amend it.
+		if refused && s.changesFrequency(command) {
+			continue
+		}
+
 		delayReduction := sttDuration + time.Duration(len(commands)-1-i)*audioShare
 		intent, err := s.runOneControlCommand(tcw, callsign, command, delayReduction)
 		if err != nil {
@@ -142,6 +149,15 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 		}
 		if intent != nil {
 			intents = append(intents, intent)
+		}
+
+		// The controller repeats the transmission after a pilot asks for part
+		// of it again, so the rest of it is moot.
+		if strings.HasPrefix(command, "SAYAGAIN/") {
+			break
+		}
+		if _, ok := intent.(speech.Refusal); ok {
+			refused = true
 		}
 	}
 
@@ -223,6 +239,19 @@ func (s *Sim) clearAircraftSTTCommands(callsign av.ADSBCallsign) {
 			delete(s.lastSTTCommands, tcw)
 		}
 	}
+}
+
+// changesFrequency reports whether command sends the aircraft off the
+// controller's frequency.
+func (s *Sim) changesFrequency(command string) bool {
+	if command == "TO" || strings.HasPrefix(command, "TO/") || command == "FC" || command == "RST" {
+		return true
+	}
+	if tcp, ok := strings.CutPrefix(command, "CT"); ok {
+		_, ok := s.State.Controllers[TCP(tcp)]
+		return ok
+	}
+	return false
 }
 
 // renderAndPostReadback renders a batch of command intents as a pilot readback transmission.
