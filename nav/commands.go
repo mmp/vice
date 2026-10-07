@@ -261,6 +261,10 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 }
 
 func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil, temp av.Temperature) speech.CommandIntent {
+	if until.Fix != "" && !nav.knowsFix(until.Fix) {
+		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", until.Fix)
+	}
+
 	nav.clearAfterFixSpeeds()
 
 	speed, exact := sr.ExactValue()
@@ -531,6 +535,13 @@ func (nav *Nav) FlyPresentHeading(simTime Time, delayReduction time.Duration) sp
 	}
 }
 
+// knowsFix reports whether fix is a fix the pilot can find: one in the
+// database or one on the aircraft's route or assigned approach.
+func (nav *Nav) knowsFix(fix string) bool {
+	_, ok := db.DB.LookupWaypoint(fix)
+	return ok || nav.fixInRoute(fix)
+}
+
 func (nav *Nav) fixInRoute(fix string) bool {
 	if slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return fix == wp.Fix }) {
 		return true
@@ -645,7 +656,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 }
 
 func (nav *Nav) ExpectDirect(fix string) speech.CommandIntent {
-	if _, ok := db.DB.LookupWaypoint(fix); !ok && !nav.fixInRoute(fix) {
+	if !nav.knowsFix(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	}
 	nav.ExpectedDirectFix = fix
