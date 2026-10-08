@@ -54,31 +54,11 @@
       }
     },
     "center": "KGSO",
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "BNOCA A",
-          "description": "BHM CONFLICT SUPPRESS AREA A",
-          "type": "polygon",
-          "floor": 0,
-          "ceiling": 3500,
-          "vertices": ["-86.897208,33.532504", "-86.641151,33.677967", "-86.584176,33.611529", "-86.839472,33.462847"]
-        },
-        {
-          "id": "BNOCA B",
-          "description": "BHM CONFLICT SUPPRESS AREA B",
-          "type": "polygon",
-          "floor": 0,
-          "ceiling": 3500,
-          "vertices": ["-86.695616,33.672883", "-86.695274,33.453065", "-86.79461,33.453311", "-86.794879,33.672271"]
-        }
-      ]
-    },
     "radar_sites": {
-      "BHM": {
-        "char": "B",
-        "position": "33.573611,-86.75611",
-        "elevation": 705,
+      "GSO": {
+        "char": "G",
+        "position": "36.101326,-79.941124",
+        "elevation": 926,
         "primary_range": 100,
         "secondary_range": 150,
         "silence_angle": 50.4,

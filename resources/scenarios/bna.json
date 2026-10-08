@@ -5,28 +5,36 @@
       "atpa_volumes": {
         "2L": {
           "runway_threshold": "KBNA-2L",
+          "heading": 21,
           "floor": 100,
+          "ceiling": 7000,
           "length": 40,
           "left_width": 2000,
           "right_width": 2000
         },
         "2R": {
           "runway_threshold": "KBNA-2R",
+          "heading": 21,
           "floor": 100,
+          "ceiling": 7000,
           "length": 30,
           "left_width": 2000,
           "right_width": 2000
         },
         "20L": {
           "runway_threshold": "KBNA-20L",
+          "heading": 201,
           "floor": 100,
+          "ceiling": 7000,
           "length": 30,
           "left_width": 2000,
           "right_width": 2000
         },
         "20R": {
           "runway_threshold": "KBNA-20R",
+          "heading": 201,
           "floor": 100,
+          "ceiling": 7000,
           "length": 30,
           "left_width": 2000,
           "right_width": 2000

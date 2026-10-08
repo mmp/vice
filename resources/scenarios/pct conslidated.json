@@ -92,7 +92,7 @@
         }
       }
     },
-    "KOPF": {
+    "KOFP": {
       "vfr": {
         "random_routes": {
           "rate": 5
@@ -221,7 +221,7 @@
           "above_altitude_tolerance": 1000,
           "below_altitude_tolerance": 500,
           "reference_point": "38.8445480,-77.0370490",
-          "reference_heading": 334,
+          "reference_heading": 7,
           "reference_length": 25,
           "reference_altitude": 0
         },

@@ -1124,3 +1124,13 @@ func TestCheckATPACourse(t *testing.T) {
 		}
 	}
 }
+
+func TestAverageVertexPosition(t *testing.T) {
+	ra := RestrictionArea{Vertices: [][]math.Point2LL{{{-77, 38}, {-77, 39}}, {{-76, 38}, {-76, 39}}}}
+	if p := ra.AverageVertexPosition(); p != (math.Point2LL{-76.5, 38.5}) {
+		t.Errorf("got %v, expected the mean of the vertices", p)
+	}
+	if p := (&RestrictionArea{}).AverageVertexPosition(); !p.IsZero() {
+		t.Errorf("got %v for an area with no vertices", p)
+	}
+}

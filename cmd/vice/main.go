@@ -220,7 +220,7 @@ func runLint(lg *log.Logger) error {
 
 	for _, groups := range tables.Groups {
 		for _, sg := range groups {
-			scenario.CheckLocationsResolved(sg, &e)
+			scenario.CheckLocations(sg, &e)
 		}
 	}
 	if e.HaveErrors() {

@@ -67,6 +67,17 @@ func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
 	}
 }
 
+// VertexNames returns the polygon's vertices as the scenario wrote them: fixes
+// or coordinates, given as a list or as a single space-separated string.
+func (a *AirspaceVolume) VertexNames() []string {
+	if a.VerticesStr.A != nil {
+		return strings.Fields(*a.VerticesStr.A)
+	} else if a.VerticesStr.B != nil {
+		return *a.VerticesStr.B
+	}
+	return nil
+}
+
 // Covers reports whether the volume lies over the given point, whatever the
 // altitude: inside its lateral bounds and outside any of its holes.
 func (a *AirspaceVolume) Covers(p math.Point2LL) bool {
@@ -118,12 +129,7 @@ func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {
 
 	case AirspaceVolumePolygon:
 		if len(a.Vertices) == 0 {
-			var vstrs []string
-			if a.VerticesStr.A != nil { // single string provided
-				vstrs = strings.Fields(*a.VerticesStr.A)
-			} else if a.VerticesStr.B != nil {
-				vstrs = *a.VerticesStr.B
-			}
+			vstrs := a.VertexNames()
 			if len(vstrs) == 0 {
 				e.ErrorString(`must provide "vertices" with "polygon" airspace volume`)
 			} else if len(vstrs) < 3 {
@@ -149,8 +155,8 @@ func (a *AirspaceVolume) Finalize(loc Locator, e *util.ErrorLogger) {
 		a.PolygonBounds = &b
 
 	case AirspaceVolumeCircle:
-		if a.Radius == 0 {
-			e.ErrorString(`must provide "radius" with "circle" airspace volume`)
+		if a.Radius <= 0 {
+			e.ErrorString(`must provide a positive "radius" with "circle" airspace volume`)
 		}
 		if a.Center.String == "" && a.Center.IsZero() {
 			e.ErrorString(`must provide "center" with "circle" airspace volume`)
@@ -488,6 +494,8 @@ func RestrictionAreaFromTFR(tfr TFR) RestrictionArea {
 	return ra
 }
 
+// AverageVertexPosition returns the mean of the area's vertices, or (0, 0) if
+// it has none.
 func (ra *RestrictionArea) AverageVertexPosition() math.Point2LL {
 	var c math.Point2LL
 	var n float32
@@ -497,7 +505,10 @@ func (ra *RestrictionArea) AverageVertexPosition() math.Point2LL {
 			c = math.Add2f(c, v)
 		}
 	}
-	return math.Scale2f(c, max(1, 1/n)) // avoid 1/0 and return (0,0) if there are no verts.
+	if n == 0 {
+		return c
+	}
+	return math.Scale2f(c, 1/n)
 }
 
 func (ra *RestrictionArea) UpdateTriangles() {

@@ -123,6 +123,11 @@ func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Grou
 			e.ErrorString(`radar site is missing "position"`)
 		} else {
 			rs.Position.Resolve(sg, "position", e)
+			cull := s.CullDistance(sg.facility())
+			if d := math.NMDistance2LL(rs.Position.Point2LL, s.Center.Point2LL); d > cull {
+				e.ErrorString(`"position" is %.0f nm from the facility's center; aircraft are deleted beyond %.0f nm%s`,
+					d, cull, av.SuggestFixes(sg, rs.Position.String, math.Point2LL{}))
+			}
 		}
 
 		if rs.Char == "" {

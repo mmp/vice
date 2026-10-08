@@ -96,9 +96,9 @@
     },
     "radar_sites": {
       "FAT": {
-        "char": "S",
-        "position": "35.394728, 120.354325",
-        "elevation": 3622,
+        "char": "F",
+        "position": "36.776554,-119.718834",
+        "elevation": 336,
         "primary_range": 55,
         "secondary_range": 120,
         "silence_angle": 30,

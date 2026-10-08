@@ -58,7 +58,7 @@
           "description": "LBB CONFLICT SUPPRESS",
           "type": "circle",
           "floor": 0,
-          "ceiling": 2000,
+          "ceiling": 5300,
           "radius": 5,
           "center": "KLBB"
         }

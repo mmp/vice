@@ -550,24 +550,16 @@
     "KTDW": { "vfr": { "random_routes": { "rate": 5 } } },
     "KMDD": { "vfr": { "random_routes": { "rate": 5 } } },
     "KODO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "T82": { "vfr": { "random_routes": { "rate": 5 } } },
     "KGNC": { "vfr": { "random_routes": { "rate": 5 } } },
     "KLUV": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KFWS": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KFTW": { "vfr": { "random_routes": { "rate": 3 } } },
     "KMWL": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KHQZ": { "vfr": { "random_routes": { "rate": 3 } } },
     "KBWD": { "vfr": { "random_routes": { "rate": 3 } } },
     "KSRR": { "vfr": { "random_routes": { "rate": 3 } } },
     "KHOB": { "vfr": { "random_routes": { "rate": 3 } } },
     "KCNM": { "vfr": { "random_routes": { "rate": 3 } } },
     "KCVN": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KALM": { "vfr": { "random_routes": { "rate": 3 } } },
     "KSJT": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KDHT": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KSAF": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KRBD": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KTKI": { "vfr": { "random_routes": { "rate": 3 } } }
+    "KDHT": { "vfr": { "random_routes": { "rate": 3 } } }
   },
   "inbound_flows": {
     "BRHMA": {

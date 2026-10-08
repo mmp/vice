@@ -402,7 +402,7 @@
     },
     "center": "N029.0.0.0,W085.20.16.982",
     "range": 600,
-    "max_distance": 350,
+    "max_distance": 375,
     "video_map_file": "videomaps/ZJX.mappack",
     "coordination_fixes": {
       "PLUMR": [

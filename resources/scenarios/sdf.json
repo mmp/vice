@@ -61,7 +61,7 @@
           "above_altitude_tolerance": 3000,
           "below_altitude_tolerance": 1000,
           "reference_point": "38.15846,-85.739345",
-          "reference_heading": 294,
+          "reference_heading": 349,
           "reference_length": 30,
           "reference_altitude": 0
         },

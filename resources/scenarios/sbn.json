@@ -673,13 +673,6 @@
         }
       }
     },
-    "01A": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
-    },
     "KRWN": {
       "vfr": {
         "random_routes": {

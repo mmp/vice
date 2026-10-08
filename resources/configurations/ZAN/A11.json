@@ -49,9 +49,9 @@
     "center": "PANC",
     "radar_sites": {
       "ANC": {
-        "char": "S",
-        "position": "35.394728, 120.354325",
-        "elevation": 3622,
+        "char": "A",
+        "position": "61.174088,-149.998138",
+        "elevation": 151,
         "primary_range": 55,
         "secondary_range": 120,
         "silence_angle": 30,

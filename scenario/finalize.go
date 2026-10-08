@@ -58,6 +58,27 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	})
 	nmPerLongitude := math.NMPerLongitudeAt(fa.Center.Point2LL)
 
+	// A region over one of the airports has to reach its field; otherwise it
+	// covers nothing there and the default region the airport then gets
+	// quietly takes its place.
+	e.Push("Facility config " + facilityConfigPath(sg))
+	for _, kind := range []struct {
+		name    string
+		regions sim.FilterRegions
+	}{{"arrival_drop", fa.Filters.ArrivalDrop}, {"departure", fa.Filters.Departure},
+		{"inhibit_ca", fa.Filters.InhibitCA}, {"inhibit_msaw", fa.Filters.InhibitMSAW},
+		{"surface_tracking", fa.Filters.SurfaceTracking}} {
+		for _, r := range kind.regions {
+			for _, name := range allAirports {
+				if ap, ok := db.DB.Airports[name]; ok && r.Covers(ap.Location) && r.Ceiling < ap.Elevation {
+					e.ErrorString(`%s %q: "ceiling" %d is below the %d foot elevation of %s, which it lies over`,
+						kind.name, r.Id, r.Ceiling, ap.Elevation, name)
+				}
+			}
+		}
+	}
+	e.Pop()
+
 	// An airport that one of the config's own regions already covers doesn't
 	// get a default one.
 	uncovered := func(regions sim.FilterRegions, airports []av.ICAOAirportCode) []av.ICAOAirportCode {
@@ -270,8 +291,15 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 			}
 		}
 	}
+	cull := fa.CullDistance(sg.facility())
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + string(name))
+		if dbAp, ok := db.DB.Airports[name]; ok {
+			if d := math.NMDistance2LL(dbAp.Location, fa.Center.Point2LL); d > cull {
+				e.ErrorString("airport is %.0f nm from the facility's center; aircraft are deleted beyond %.0f nm%s",
+					d, cull, av.SuggestFixes(sg, string(name), math.Point2LL{}))
+			}
+		}
 		ap.Finalize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
 			sg.FacilityConfig.ControlPositions, sg.FacilityConfig.FacilityAdaptation.Scratchpads, sg.Airports,
 			sg.FacilityConfig.FacilityAdaptation.CheckScratchpad, historicalSTARs[name], e)
@@ -930,14 +958,40 @@ func (s *Scenario) listedPositions(sg *Group, config *sim.FacilityConfiguration,
 	return resolved
 }
 
-// CheckLocationsResolved reports any location in the group that was written as
-// a name and never resolved. Finalizing resolves them by hand, a pass per kind
-// of thing, so a newly added field--or a new list of an existing one--can be
-// missed, and the location then silently reads as (0, 0). Walking the finalized
-// group catches that against the scenarios as they are really written. It uses
-// reflection and so is run by -lint rather than on every load.
-func CheckLocationsResolved(sg *Group, e *util.ErrorLogger) {
+// CheckLocations reports any location in the group that was written as a name
+// and never resolved, or that lies implausibly far from the facility.
+// Finalizing resolves locations by hand, a pass per kind of thing, so a newly
+// added field--or a new list of an existing one--can be missed, and the
+// location then silently reads as (0, 0). Walking the finalized group catches
+// that against the scenarios as they are really written, and also catches
+// locations copied from another facility or written with the latitude and
+// longitude swapped or a sign dropped. It uses reflection and so is run by
+// -lint rather than on every load.
+func CheckLocations(sg *Group, e *util.ErrorLogger) {
 	pointType := reflect.TypeFor[av.ScenarioPoint2LL]()
+	volumeType := reflect.TypeFor[av.AirspaceVolume]()
+	significantPointType := reflect.TypeFor[sim.SignificantPoint]()
+
+	// Some of what a facility defines reaches past where aircraft are culled:
+	// quicklook regions, an ARTCC's boundaries. None of it reaches twice as
+	// far, except significant points, which may name destinations anywhere
+	// (SBN's DVV for flights to Denver).
+	fa := &sg.FacilityConfig.FacilityAdaptation
+	maxDistance := 2 * fa.CullDistance(sg.facility())
+	// name is how the location was written, if as a name, which may be a
+	// misspelling of one nearby.
+	checkDistance := func(p math.Point2LL, name, path string) {
+		d := math.NMDistance2LL(p, fa.Center.Point2LL)
+		if p.IsZero() || d <= maxDistance {
+			return
+		}
+		if name == "" {
+			e.ErrorString("%s: location is %.0f nm from the facility's center", path, d)
+		} else {
+			e.ErrorString("%s: %q is %.0f nm from the facility's center%s", path, name, d,
+				av.SuggestFixes(sg, name, math.Point2LL{}))
+		}
+	}
 
 	// join builds the path to a field, which names the location in the error.
 	join := func(path, name string) string {
@@ -947,22 +1001,23 @@ func CheckLocationsResolved(sg *Group, e *util.ErrorLogger) {
 		return path + "." + name
 	}
 
-	var walk func(v reflect.Value, path string)
-	walk = func(v reflect.Value, path string) {
+	// anywhere is set beneath a significant point.
+	var walk func(v reflect.Value, path string, anywhere bool)
+	walk = func(v reflect.Value, path string, anywhere bool) {
 		switch v.Kind() {
 		case reflect.Pointer, reflect.Interface:
 			if !v.IsNil() {
-				walk(v.Elem(), path)
+				walk(v.Elem(), path, anywhere)
 			}
 			return
 		case reflect.Slice, reflect.Array:
 			for i := range v.Len() {
-				walk(v.Index(i), fmt.Sprintf("%s[%d]", path, i))
+				walk(v.Index(i), fmt.Sprintf("%s[%d]", path, i), anywhere)
 			}
 			return
 		case reflect.Map:
 			for _, k := range v.MapKeys() {
-				walk(v.MapIndex(k), fmt.Sprintf("%s[%v]", path, k.Interface()))
+				walk(v.MapIndex(k), fmt.Sprintf("%s[%v]", path, k.Interface()), anywhere)
 			}
 			return
 		case reflect.Struct:
@@ -975,12 +1030,29 @@ func CheckLocationsResolved(sg *Group, e *util.ErrorLogger) {
 			if str := v.FieldByName("String").String(); str != "" && v.FieldByName("Point2LL").IsZero() {
 				e.ErrorString("%s: location %q was never resolved during finalizing", path, str)
 			}
+			if !anywhere {
+				checkDistance(v.FieldByName("Point2LL").Interface().(math.Point2LL), v.FieldByName("String").String(), path)
+			}
 			return
+		}
+		anywhere = anywhere || t == significantPointType
+		if t == volumeType {
+			// Polygon vertices are resolved into plain points; the names
+			// they were written as are kept alongside.
+			vol := v.Interface().(av.AirspaceVolume)
+			names := vol.VertexNames()
+			for i, p := range vol.Vertices {
+				name := ""
+				if len(names) == len(vol.Vertices) {
+					name = names[i]
+				}
+				checkDistance(p, name, fmt.Sprintf("%s[%d]", join(path, "Vertices"), i))
+			}
 		}
 
 		for i := range t.NumField() {
 			if f := t.Field(i); f.PkgPath == "" {
-				walk(v.Field(i), join(path, f.Name))
+				walk(v.Field(i), join(path, f.Name), anywhere)
 			}
 		}
 	}
@@ -988,5 +1060,5 @@ func CheckLocationsResolved(sg *Group, e *util.ErrorLogger) {
 	e.Push(sg.Name)
 	defer e.Pop()
 
-	walk(reflect.ValueOf(sg).Elem(), "")
+	walk(reflect.ValueOf(sg).Elem(), "", false)
 }

@@ -326,3 +326,61 @@ func TestAttachTimetables(t *testing.T) {
 		}
 	}
 }
+
+// A polygon written longitude first lands thousands of miles from the
+// facility and is reported; a significant point may name a far-off
+// destination and is not.
+func TestCheckLocationsNearFacility(t *testing.T) {
+	sg := &Group{Name: "test", TRACON: "BHM"}
+	fa := &sg.FacilityConfig.FacilityAdaptation
+	fa.Center.Point2LL = math.Point2LL{-86.75, 33.56}
+	fa.MaxDistance = 200
+	fa.Filters.InhibitCA = sim.FilterRegions{{AirspaceVolume: av.AirspaceVolume{
+		Type: av.AirspaceVolumePolygon,
+		Vertices: []math.Point2LL{
+			{-86.89, 33.53}, {-86.64, 33.67}, {-86.58, 33.61}, // correct
+			{33.46, -86.83}, // longitude first
+		},
+	}}}
+	fa.SignificantPoints = map[string]sim.SignificantPoint{
+		"DVV": {Location: av.ScenarioPoint2LL{Point2LL: math.Point2LL{-104.62, 39.89}}},
+	}
+
+	var e util.ErrorLogger
+	CheckLocations(sg, &e)
+	errs := e.String()
+	if !strings.Contains(errs, "InhibitCA[0].AirspaceVolume.Vertices[3]") {
+		t.Errorf("expected the longitude-first vertex to be reported, got %q", errs)
+	}
+	if strings.Contains(errs, "Vertices[0]") || strings.Contains(errs, "SignificantPoints") {
+		t.Errorf("unexpected errors: %q", errs)
+	}
+}
+
+// A location written as a name that resolves far from the facility is likely a
+// misspelling, so the error offers the similarly-spelled fixes nearby.
+func TestCheckLocationsSuggestsNearbyFixes(t *testing.T) {
+	far := math.Point2LL{-81.36, 28.80}
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Fixes: map[string]db.Fix{
+			"PAOLA": {Id: "PAOLA", Location: far},
+			"PAOLE": {Id: "PAOLE", Location: math.Point2LL{-94.8, 38.6}},
+		},
+	}
+	t.Cleanup(func() { db.DB = oldDB })
+
+	sg := &Group{Name: "test", TRACON: "MCI"}
+	fa := &sg.FacilityConfig.FacilityAdaptation
+	fa.Center.Point2LL = math.Point2LL{-94.71, 39.30}
+	fa.MaxDistance = 200
+	fa.RestrictionAreas = map[int]av.RestrictionArea{
+		1: {TextPosition: av.ScenarioPoint2LL{String: "PAOLA", Point2LL: far}},
+	}
+
+	var e util.ErrorLogger
+	CheckLocations(sg, &e)
+	if errs := e.String(); !strings.Contains(errs, `"PAOLA"`) || !strings.Contains(errs, "Did you mean: PAOLE") {
+		t.Errorf("expected PAOLA to be reported with PAOLE suggested, got %q", errs)
+	}
+}
