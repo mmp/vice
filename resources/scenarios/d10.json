@@ -1558,8 +1558,8 @@
         },
         "13L": {
           "runway_threshold": "KDFW-13L",
-          "heading": 5,
-          "max_heading_deviation": 135,
+          "heading": 133,
+          "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
           "length": 20,
@@ -1571,7 +1571,7 @@
         },
         "31L": {
           "runway_threshold": "KDFW-31L",
-          "heading": 311,
+          "heading": 316,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
@@ -1583,8 +1583,8 @@
           "2.5nm_distance": 10
         },
         "36L": {
-          "runway_threshold": "KMCO-17R",
-          "heading": 185,
+          "runway_threshold": "KDFW-36L",
+          "heading": 357,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
@@ -1596,8 +1596,8 @@
           "2.5nm_distance": 10
         },
         "36R": {
-          "runway_threshold": "KMCO-18L",
-          "heading": 185,
+          "runway_threshold": "KDFW-36R",
+          "heading": 357,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
@@ -1609,8 +1609,8 @@
           "2.5nm_distance": 10
         },
         "35R": {
-          "runway_threshold": "KMCO-35L",
-          "heading": 5,
+          "runway_threshold": "KDFW-35R",
+          "heading": 357,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
@@ -1622,8 +1622,8 @@
           "2.5nm_distance": 10
         },
         "35C": {
-          "runway_threshold": "KMCO-35R",
-          "heading": 5,
+          "runway_threshold": "KDFW-35C",
+          "heading": 357,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
@@ -1636,8 +1636,8 @@
           "2.5nm_distance": 10
         },
         "35L": {
-          "runway_threshold": "KMCO-36L",
-          "heading": 5,
+          "runway_threshold": "KDFW-35L",
+          "heading": 357,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
@@ -1649,8 +1649,8 @@
           "2.5nm_distance": 10
         },
         "31R": {
-          "runway_threshold": "KMCO-36R",
-          "heading": 5,
+          "runway_threshold": "KDFW-31R",
+          "heading": 313,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,
@@ -2277,8 +2277,8 @@
           "excluded_scratchpads": ["W13", "E13", "W31"]
         },
         "31R": {
-          "runway_threshold": "KDFW-17R",
-          "heading": 176,
+          "runway_threshold": "KDAL-31R",
+          "heading": 313,
           "max_heading_deviation": 90,
           "floor": 96,
           "ceiling": 7300,

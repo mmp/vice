@@ -34,7 +34,7 @@
           "right_width": 20000
         },
         "25L": {
-          "runway_threshold": "KMKE-19R",
+          "runway_threshold": "KMKE-25L",
           "heading": 255,
           "max_heading_deviation": 90,
           "floor": 100,

@@ -1087,3 +1087,40 @@ func TestATPACourse(t *testing.T) {
 		}
 	}
 }
+
+func TestCheckATPACourse(t *testing.T) {
+	// Runway 17/35 runs north-south; 8/26 crosses it at its midpoint.
+	thr35 := math.Point2LL{-111.96, 40.77}
+	nmPerLongitude := math.NMPerLongitudeAt(thr35)
+	mid := math.Offset2LL(thr35, 0, 0.75, nmPerLongitude)
+	runways := []Runway{
+		{Id: "35", Threshold: thr35},
+		{Id: "17", Threshold: math.Offset2LL(thr35, 0, 1.5, nmPerLongitude)},
+		{Id: "8", Threshold: math.Offset2LL(mid, 270, 0.75, nmPerLongitude)},
+		{Id: "26", Threshold: math.Offset2LL(mid, 90, 0.75, nmPerLongitude)},
+	}
+	headings := map[string]math.MagneticHeading{"35": 360, "17": 180, "8": 90, "26": 270}
+
+	for _, tc := range []struct {
+		name      string
+		threshold math.Point2LL
+		heading   math.MagneticHeading
+		err       string
+	}{
+		{"own runway", thr35, 360, ""},
+		{"circling from 26", runways[3].Threshold, 270, ""},
+		{"another airport", math.Offset2LL(thr35, 90, 20, nmPerLongitude), 360, "nm from runway 35"},
+		{"no runway's course", thr35, 315, "follows none"},
+		{"opposite end", thr35, 180, "opposite end"},
+		{"far end of the runway", runways[1].Threshold, 360, "runway 17's threshold"},
+	} {
+		vol := &ATPAVolume{Threshold: ScenarioPoint2LL{Point2LL: tc.threshold}, Heading: tc.heading}
+		var e util.ErrorLogger
+		checkATPACourse(vol, runways[0], runways, headings, &e)
+		if tc.err == "" && e.HaveErrors() {
+			t.Errorf("%s: unexpected errors: %s", tc.name, e.String())
+		} else if tc.err != "" && !strings.Contains(e.String(), tc.err) {
+			t.Errorf("%s: expected an error containing %q, got %q", tc.name, tc.err, e.String())
+		}
+	}
+}

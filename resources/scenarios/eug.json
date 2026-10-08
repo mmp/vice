@@ -4,26 +4,6 @@
     "KEUG": {
       "atpa_volumes": {
         "16L": {
-          "runway_threshold": "KEUG-34L",
-          "heading": 344,
-          "max_heading_deviation": 30,
-          "floor": 0,
-          "ceiling": 6000,
-          "length": 20,
-          "left_width": 3000,
-          "right_width": 3000
-        },
-        "34L": {
-          "runway_threshold": "KEUG-16R",
-          "heading": 164,
-          "max_heading_deviation": 30,
-          "floor": 0,
-          "ceiling": 6000,
-          "length": 20,
-          "left_width": 3000,
-          "right_width": 3000
-        },
-        "34R": {
           "runway_threshold": "KEUG-16L",
           "heading": 164,
           "max_heading_deviation": 30,
@@ -33,9 +13,29 @@
           "left_width": 3000,
           "right_width": 3000
         },
-        "16R": {
+        "34L": {
+          "runway_threshold": "KEUG-34L",
+          "heading": 344,
+          "max_heading_deviation": 30,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 20,
+          "left_width": 3000,
+          "right_width": 3000
+        },
+        "34R": {
           "runway_threshold": "KEUG-34R",
           "heading": 344,
+          "max_heading_deviation": 30,
+          "floor": 0,
+          "ceiling": 6000,
+          "length": 20,
+          "left_width": 3000,
+          "right_width": 3000
+        },
+        "16R": {
+          "runway_threshold": "KEUG-16R",
+          "heading": 164,
           "max_heading_deviation": 30,
           "floor": 0,
           "ceiling": 6000,

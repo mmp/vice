@@ -629,10 +629,14 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 	if ap.ATPAVolumes == nil {
 		ap.ATPAVolumes = make(map[string]*ATPAVolume)
 	}
-	for _, rwy := range db.AirportRunways(icao) {
+	runways := db.AirportRunways(icao)
+	thresholds := make(map[string]math.Point2LL)
+	headings := make(map[string]math.MagneticHeading)
+	for _, rwy := range runways {
 		if _, ok := ap.ATPAVolumes[rwy.Id]; !ok {
 			ap.ATPAVolumes[rwy.Id] = &ATPAVolume{}
 		}
+		thresholds[rwy.Id], headings[rwy.Id] = ap.atpaCourse(db, icao, rwy, nmPerLongitude, magneticVariation)
 	}
 
 	for rwy, vol := range ap.ATPAVolumes {
@@ -646,12 +650,15 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			e.ErrorString("runway %q is unknown. Options: %s", rwy, db.ValidRunways(icao))
 		} else {
 			vol.Threshold.Resolve(db, "runway_threshold", e)
-			threshold, heading := ap.atpaCourse(db, icao, r, nmPerLongitude, magneticVariation)
+			handWritten := !vol.Threshold.IsZero() || vol.Heading != 0
 			if vol.Threshold.IsZero() {
-				vol.Threshold.Point2LL = threshold
+				vol.Threshold.Point2LL = thresholds[r.Id]
 			}
 			if vol.Heading == 0 {
-				vol.Heading = heading
+				vol.Heading = headings[r.Id]
+			}
+			if handWritten {
+				checkATPACourse(vol, r, runways, headings, e)
 			}
 		}
 
@@ -675,7 +682,58 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			vol.RightWidth = 2000
 		}
 
+		if vol.MaxHeadingDeviation < 0 || vol.MaxHeadingDeviation > 180 {
+			e.ErrorString(`"max_heading_deviation" %.0f must be between 0 and 180`, vol.MaxHeadingDeviation)
+		}
+		if elevation := db.AirportElevation(icao); vol.Ceiling < float32(elevation+1000) {
+			e.ErrorString(`"ceiling" %.0f is less than 1000 feet above the airport's elevation of %d`,
+				vol.Ceiling, elevation)
+		}
+		if vol.Floor >= vol.Ceiling {
+			e.ErrorString(`"floor" %.0f must be below "ceiling" %.0f`, vol.Floor, vol.Ceiling)
+		}
+
 		e.Pop()
+	}
+}
+
+// checkATPACourse reports a hand-written ATPA volume whose threshold or heading
+// can't be what the scenario meant, as when it was copied from another runway
+// or airport. A volume may follow another runway's final for a circling
+// approach (KEWR 29 follows 22L, KJFK 13L the 044 course of its RNAV), so its
+// heading is checked against the courses of all of the airport's runways.
+// headings gives each runway's course, as its default volume follows it.
+func checkATPACourse(vol *ATPAVolume, rwy Runway, runways []Runway, headings map[string]math.MagneticHeading,
+	e *util.ErrorLogger) {
+	// Thresholds this close are the same point; some runways share a corner.
+	const sameThreshold = 0.1 // nm
+	atThreshold := func(r Runway) bool {
+		return math.NMDistance2LL(vol.Threshold.Point2LL, r.Threshold) < sameThreshold
+	}
+
+	if d := math.NMDistance2LL(vol.Threshold.Point2LL, rwy.Threshold); d > 5 {
+		e.ErrorString(`"runway_threshold" is %.1f nm from runway %s's threshold`, d, rwy.Id)
+	}
+
+	follows := func(r Runway) bool { return math.HeadingDifference(vol.Heading, headings[r.Id]) <= 10 }
+	if !slices.ContainsFunc(runways, follows) {
+		e.ErrorString(`"heading" %.0f follows none of the airport's runways`, vol.Heading)
+	}
+	if d := math.HeadingDifference(vol.Heading, headings[rwy.Id]); d > 120 {
+		e.ErrorString(`"heading" %.0f is %.0f degrees from runway %s's course %.0f, so the volume `+
+			`covers arrivals to the opposite end`, vol.Heading, d, rwy.Id, headings[rwy.Id])
+	}
+
+	// Starting at another runway's threshold is only sensible when following
+	// that runway's final.
+	if atThreshold(rwy) {
+		return
+	}
+	for _, r := range runways {
+		if atThreshold(r) && !follows(r) {
+			e.ErrorString(`"runway_threshold" is runway %s's threshold, but "heading" %.0f isn't its course %.0f`,
+				r.Id, vol.Heading, headings[r.Id])
+		}
 	}
 }
 

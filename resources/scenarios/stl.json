@@ -1417,7 +1417,7 @@
       "hold_for_release": true,
       "atpa_volumes": {
         "8L": {
-          "runway_threshold": "KPHF-7",
+          "runway_threshold": "KSUS-8L",
           "heading": 79,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1427,7 +1427,7 @@
           "right_width": 2000
         },
         "8R": {
-          "runway_threshold": "KPHF-7",
+          "runway_threshold": "KSUS-8R",
           "heading": 79,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1437,7 +1437,7 @@
           "right_width": 2000
         },
         "26R": {
-          "runway_threshold": "KPHF-7",
+          "runway_threshold": "KSUS-26R",
           "heading": 259,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1447,7 +1447,7 @@
           "right_width": 2000
         },
         "26L": {
-          "runway_threshold": "KPHF-7",
+          "runway_threshold": "KSUS-26L",
           "heading": 259,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1910,7 +1910,7 @@
       "hold_for_release": true,
       "atpa_volumes": {
         "30L": {
-          "runway_threshold": "KCPS-12R",
+          "runway_threshold": "KCPS-30L",
           "heading": 302,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1920,7 +1920,7 @@
           "right_width": 2000
         },
         "30R": {
-          "runway_threshold": "KCPS-12L",
+          "runway_threshold": "KCPS-30R",
           "heading": 302,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1930,7 +1930,7 @@
           "right_width": 2000
         },
         "12R": {
-          "runway_threshold": "KCPS-30L",
+          "runway_threshold": "KCPS-12R",
           "heading": 122,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1940,7 +1940,7 @@
           "right_width": 2000
         },
         "12L": {
-          "runway_threshold": "KCPS-30R",
+          "runway_threshold": "KCPS-12L",
           "heading": 122,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1950,7 +1950,7 @@
           "right_width": 2000
         },
         "23": {
-          "runway_threshold": "KCPS-5",
+          "runway_threshold": "KCPS-23",
           "heading": 227,
           "max_heading_deviation": 54,
           "floor": 100,
@@ -1960,7 +1960,7 @@
           "right_width": 2000
         },
         "5": {
-          "runway_threshold": "KCPS-23",
+          "runway_threshold": "KCPS-5",
           "heading": 47,
           "max_heading_deviation": 54,
           "floor": 100,
