@@ -1034,3 +1034,56 @@ func TestTrafficRouteSTARs(t *testing.T) {
 		}
 	}
 }
+
+func TestATPACourse(t *testing.T) {
+	// Runway 35 runs true north; its published magnetic bearing is a few
+	// degrees off, as when it is referenced to an outdated variation.
+	const magVar = -11
+	thr35 := math.Point2LL{-111.96, 40.77}
+	nmPerLongitude := math.NMPerLongitudeAt(thr35)
+	thr17 := math.Offset2LL(thr35, 0, 1.5, nmPerLongitude)
+	rwy35 := Runway{Id: "35", Heading: 345, Threshold: thr35}
+
+	oldDB := testDB
+	testDB = testDatabase{Airports: map[ICAOAirportCode]testAirport{
+		"KTST": {Id: "KTST", Runways: []Runway{rwy35, {Id: "17", Heading: 165, Threshold: thr17}}},
+	}}
+	t.Cleanup(func() { testDB = oldDB })
+
+	// final returns an approach to runway 35 whose final approach segment
+	// flies the given true course and passes offset nm east of the threshold.
+	final := func(typ ApproachType, course math.TrueHeading, offset float32) *Approach {
+		p := math.Offset2LL(thr35, course+90, offset, nmPerLongitude)
+		back := math.OppositeHeading(course)
+		faf := Waypoint{Fix: "FAF", Location: math.Offset2LL(p, back, 5, nmPerLongitude)}
+		faf.SetFAF(true)
+		return &Approach{Type: typ, Runway: "35", Waypoints: []WaypointArray{{
+			{Fix: "IF", Location: math.Offset2LL(p, back, 10, nmPerLongitude)},
+			faf,
+			{Fix: "MAP", Location: math.Offset2LL(p, back, 0.5, nmPerLongitude)},
+		}}}
+	}
+
+	for _, tc := range []struct {
+		name       string
+		approaches map[string]*Approach
+		heading    math.MagneticHeading
+		offset     float32 // nm between the volume's threshold and the runway's
+	}{
+		{"no approaches", nil, 349, 0},
+		{"offset LDA", map[string]*Approach{"X35": final(ILSApproach, 355, 0.2)}, 344, 0.2},
+		{"aligned ILS and offset LDA", map[string]*Approach{
+			"I35": final(ILSApproach, 0, 0), "X35": final(ILSApproach, 355, 0.2)}, 349, 0},
+		{"offset RNAV", map[string]*Approach{"R35": final(RNAVApproach, 355, 0)}, 349, 0},
+		{"circling localizer", map[string]*Approach{"L35": final(LocalizerApproach, 320, 0)}, 349, 0},
+	} {
+		ap := &Airport{Approaches: tc.approaches}
+		thr, hdg := ap.atpaCourse(testLocator{}, "KTST", rwy35, nmPerLongitude, magVar)
+		if math.HeadingDifference(hdg, tc.heading) > 0.1 {
+			t.Errorf("%s: heading %.1f, expected %.1f", tc.name, hdg, tc.heading)
+		}
+		if d := math.NMDistance2LL(thr, thr35); math.Abs(d-tc.offset) > 0.01 {
+			t.Errorf("%s: threshold %.3f nm from the runway's, expected %.3f", tc.name, d, tc.offset)
+		}
+	}
+}
