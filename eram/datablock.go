@@ -397,7 +397,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 		}
 
 		// Line 1
-		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
+		dbWriteText(db.line1[:], string(trk.FlightPlan.ACID), color, false) // also * if satcom
 		vciColor := (ps.Brightness.ONFREQ + ps.Brightness.Portal).ScaleRGB(colors.vciGreen)
 		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
 
@@ -497,7 +497,11 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	case LimitedDatablock:
 		db := ep.ldbArena.AllocClear()
 		state := ep.TrackState[trk.ADSBCallsign]
-		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color, false)
+		id := trk.ADSBCallsign.String()
+		if trk.IsAssociated() {
+			id = string(trk.FlightPlan.ACID)
+		}
+		dbWriteText(db.line0[:], id, color, false)
 		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.Track.TransponderAltitude+50)/100), color, false)
 		return db
 	default:

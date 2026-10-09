@@ -344,7 +344,7 @@ func handleMaxRouteDisplay(ep *Scope, ctx *scope.Context, trk *sim.Track) (Comma
 		return CommandStatus{}, ErrIllegalACID
 	}
 
-	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), -1)
+	ep.getQULines(ctx, trk.FlightPlan.ACID, -1)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -356,7 +356,7 @@ func handleRouteDisplayMinutes(ep *Scope, ctx *scope.Context, minutes int, trk *
 		return CommandStatus{}, ErrIllegalACID
 	}
 
-	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), minutes)
+	ep.getQULines(ctx, trk.FlightPlan.ACID, minutes)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -874,7 +874,7 @@ func handleDefaultTrack(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandS
 
 	if ctx.IsHandoffToUser(trk) {
 		// Accept handoff
-		acid := sim.ACID(trk.ADSBCallsign.String())
+		acid := trk.FlightPlan.ACID
 		ep.acceptHandoff(ctx, acid)
 		return CommandStatus{
 			feedbackArea: []string{"ACCEPT", "ACCEPT HANDOFF", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -883,7 +883,7 @@ func handleDefaultTrack(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandS
 
 	if ctx.UserControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffController != "" {
 		// Recall handoff
-		acid := sim.ACID(trk.ADSBCallsign.String())
+		acid := trk.FlightPlan.ACID
 		ep.recallHandoff(ctx, acid)
 		return CommandStatus{
 			feedbackArea: []string{"ACCEPT", "RECALL HANDOFF", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -910,8 +910,7 @@ func handleInitiateHandoff(ep *Scope, ctx *scope.Context, sector string, trk *si
 		return CommandStatus{}, ErrIllegalACID
 	}
 
-	acid := sim.ACID(trk.ADSBCallsign)
-	err := ep.handoffTrack(ctx, acid, sector)
+	err := ep.handoffTrack(ctx, trk.FlightPlan.ACID, sector)
 	if err != nil {
 		return CommandStatus{}, err
 	}

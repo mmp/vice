@@ -179,7 +179,7 @@ func (ep *Scope) executeERAMCommand(ctx *scope.Context, cmdLine inputText) (Comm
 }
 
 func (ep *Scope) deleteFLightplan(ctx *scope.Context, trk sim.Track) {
-	ctx.Client.DeleteFlightPlan(sim.ACID(trk.ADSBCallsign.String()), func(err error) {
+	ctx.Client.DeleteFlightPlan(trk.FlightPlan.ACID, func(err error) {
 		if err != nil {
 			ep.displayError(err, ctx)
 			return
@@ -217,8 +217,7 @@ func (ep *Scope) modifyFlightPlan(ctx *scope.Context, trk *sim.Track, spec sim.F
 		}
 	}
 
-	acid := sim.ACID(trk.ADSBCallsign)
-	ctx.Client.ModifyFlightPlan(acid, spec,
+	ctx.Client.ModifyFlightPlan(trk.FlightPlan.ACID, spec,
 		func(err error) {
 			if err != nil {
 				ep.displayError(err, ctx)
