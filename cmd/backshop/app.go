@@ -40,6 +40,10 @@ type app struct {
 	render renderer.Renderer
 	lg     *log.Logger
 
+	// crashUploadDone is closed once the crash reports a prior run left
+	// behind have been sent; it is nil under -selftest, which sends none.
+	crashUploadDone <-chan struct{}
+
 	mgr *client.ConnectionManager
 	cc  *client.ControlClient
 
@@ -73,12 +77,14 @@ type selection struct {
 	scenario string
 }
 
-func newApp(config *Config, plat platform.Platform, render renderer.Renderer, lg *log.Logger) (*app, error) {
+func newApp(config *Config, plat platform.Platform, render renderer.Renderer, crashUploadDone <-chan struct{},
+	lg *log.Logger) (*app, error) {
 	a := &app{
-		config: config,
-		plat:   plat,
-		render: render,
-		lg:     lg,
+		config:          config,
+		plat:            plat,
+		render:          render,
+		lg:              lg,
+		crashUploadDone: crashUploadDone,
 	}
 
 	mgr, errorLogger, overrideErrors := client.MakeLocalServerManager(config.overrideFiles(),

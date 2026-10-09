@@ -122,7 +122,7 @@ func (in *inspector) drawTTSTab(a *app) {
 	t := &in.tts
 	if !t.preloaded {
 		t.preloaded = true
-		tts.PreloadTTSModel(a.lg, nil, audio.SampleRate)
+		tts.PreloadTTSModel(a.lg, a.crashUploadDone, audio.SampleRate)
 	}
 
 	t.drawStatus(a)

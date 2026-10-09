@@ -91,25 +91,20 @@ func (l *Logger) uploadAndDeleteCrashStderrFiles() {
 		return
 	}
 
-	// Wait for the crash RPC client to become available. Bounded tight
-	// because callers gate risky init on this returning — if the
-	// server isn't reachable we'd rather get on with startup than
-	// stall it indefinitely.
-	select {
-	case <-l.crashClientReady:
-	case <-time.After(10 * time.Second):
+	// The wait for the crash RPC client is bounded tight because
+	// callers gate risky init on this returning — if the server isn't
+	// reachable we'd rather get on with startup than stall it
+	// indefinitely.
+	rpcClient, release := l.crashReportClient(10 * time.Second)
+	defer release()
+	if rpcClient == nil {
 		l.Warnf("No crash RPC client available; %d crash-stderr file(s) will be retried next run", len(toUpload))
 		return
 	}
 
 	l.mu.Lock()
-	rpcClient := l.crashRPCClient
 	sysInfo := l.systemInfo
 	l.mu.Unlock()
-
-	if rpcClient == nil {
-		return
-	}
 
 	for _, fn := range toUpload {
 		l.uploadCrashStderrFile(rpcClient, sysInfo, fn)

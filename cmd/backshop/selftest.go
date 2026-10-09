@@ -25,7 +25,7 @@ func runSelfTest(config *Config, lg *log.Logger) error {
 		return err
 	}
 
-	a, err := newApp(config, nil, nil, lg)
+	a, err := newApp(config, nil, nil, nil, lg)
 	if err != nil {
 		return err
 	}

@@ -6,10 +6,10 @@
 
 package log
 
-// RedirectStderrToCrashFile is a no-op on non-Windows platforms: vice
-// is built as a console program there, so stderr already has a
-// reasonable destination (terminal or systemd journal).
-func RedirectStderrToCrashFile(logDir string) string { return "" }
+// redirectStderrToCrashFile is a no-op on non-Windows platforms: vice
+// and backshop are built as console programs there, so stderr already
+// has a reasonable destination (terminal or systemd journal).
+func redirectStderrToCrashFile(logDir string) string { return "" }
 
 // RemoveCurrentCrashStderrFile is a no-op on non-Windows platforms.
 func RemoveCurrentCrashStderrFile() {}

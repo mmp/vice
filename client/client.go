@@ -583,7 +583,10 @@ func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
 	if err != nil {
 		return nil, err
 	}
+	return makeRPCClient(conn, hostname, lg)
+}
 
+func makeRPCClient(conn net.Conn, hostname string, lg *log.Logger) (*RPCClient, error) {
 	cc, err := util.MakeCompressedConn(conn)
 	if err != nil {
 		conn.Close()
@@ -624,6 +627,26 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 	}()
 
 	return ch
+}
+
+// ReportCrashesTo has lg send crash reports to the vice server at hostname,
+// connecting only when there is a report to send. It is for programs that
+// don't otherwise talk to the server; vice's own connection to it carries
+// its crash reports.
+func ReportCrashesTo(hostname string, lg *log.Logger) {
+	lg.SetCrashReportDialer(func() (*rpc.Client, error) {
+		// A crashing program is waiting on this, so don't leave it to the
+		// operating system's much longer connection timeout.
+		conn, err := net.DialTimeout("tcp", hostname, 5*time.Second)
+		if err != nil {
+			return nil, err
+		}
+		c, err := makeRPCClient(conn, hostname, lg)
+		if err != nil {
+			return nil, err
+		}
+		return c.Client, nil
+	})
 }
 
 func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {

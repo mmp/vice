@@ -11,16 +11,20 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net"
 	"os"
 	"runtime"
+	"strconv"
 
 	"github.com/mmp/vice/aviation/db"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/platform/glfw"
 	"github.com/mmp/vice/platform/sdl2"
 	"github.com/mmp/vice/renderer/ogl21"
+	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -49,7 +53,8 @@ func main() {
 		fmt.Printf("FixConsole: %v\n", err)
 	}
 
-	lg := log.New(false /* not server mode */, "info", log.DefaultLogDir(false, ""))
+	lg := log.NewWithStderrCapture("info", "")
+	client.ReportCrashesTo(net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), lg)
 	config := loadConfig(lg)
 
 	run := run
@@ -59,9 +64,15 @@ func main() {
 		}
 		run = runSelfTest
 	}
-	if err := run(config, lg); err != nil {
+	err := run(config, lg)
+	if err != nil {
 		lg.Errorf("%v", err)
 		fmt.Fprintln(os.Stderr, err)
+	}
+	// An unrecovered panic or a runtime fatal ends the process before this,
+	// leaving this run's crash-stderr file for the next one to upload.
+	log.RemoveCurrentCrashStderrFile()
+	if err != nil {
 		os.Exit(1)
 	}
 }
@@ -89,6 +100,14 @@ func imguiInit(config *Config) {
 }
 
 func run(config *Config, lg *log.Logger) error {
+	defer lg.CatchAndReportCrash()
+
+	// Send the crash-stderr files left behind by a prior run that died of a
+	// runtime fatal, which skips the deferred crash handler. Loading the TTS
+	// model waits for this, so that a crash there can't keep recurring
+	// before its report reaches the server.
+	uploadDone := lg.UploadAndDeleteCrashStderrFiles()
+
 	imguiInit(config)
 
 	// backshop speaks but never listens, so it has no business asking for
@@ -109,6 +128,7 @@ func run(config *Config, lg *log.Logger) error {
 	if err != nil {
 		return fmt.Errorf("unable to initialize OpenGL: %w", err)
 	}
+	lg.SetGPUInfo(render.GetGPUInfo())
 	gui.InitFonts(plat.DPIScale(), lg)
 	plat.InitViewportBackends()
 
@@ -127,7 +147,7 @@ func run(config *Config, lg *log.Logger) error {
 		return err
 	}
 
-	app, err := newApp(config, plat, render, lg)
+	app, err := newApp(config, plat, render, uploadDone, lg)
 	if err != nil {
 		return err
 	}

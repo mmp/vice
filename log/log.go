@@ -54,6 +54,7 @@ type Logger struct {
 	crashRPCClient   *rpc.Client
 	crashClientReady chan struct{}
 	crashClientOnce  sync.Once
+	crashDial        func() (*rpc.Client, error)
 	systemInfo       SystemInfo
 }
 
@@ -260,6 +261,7 @@ func (l *Logger) With(args ...any) *Logger {
 		LogDir:         l.LogDir,
 		Start:          l.Start,
 		crashRPCClient: l.crashRPCClient,
+		crashDial:      l.crashDial,
 		systemInfo:     l.systemInfo,
 	}
 }
@@ -275,13 +277,55 @@ func (l *Logger) SetCrashReportClient(client *rpc.Client) {
 	}
 }
 
+// SetCrashReportDialer has crash reports sent over a connection that dial
+// makes when there is one to send. It is for programs that otherwise have
+// no connection to the server, which drops connections that sit idle.
+func (l *Logger) SetCrashReportDialer(dial func() (*rpc.Client, error)) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.crashDial = dial
+}
+
+// crashReportClient returns the client to send crash reports with, or nil
+// if there is none, along with a function to call once done with it. A
+// connection set with SetCrashReportClient may arrive after a crash, so
+// this waits up to wait for one unless there is a dialer to use instead.
+func (l *Logger) crashReportClient(wait time.Duration) (*rpc.Client, func()) {
+	l.mu.Lock()
+	client, dial := l.crashRPCClient, l.crashDial
+	l.mu.Unlock()
+
+	if client != nil {
+		return client, func() {}
+	}
+	if dial != nil {
+		c, err := dial()
+		if err != nil {
+			l.Warnf("Unable to connect to send crash report: %v", err)
+			return nil, func() {}
+		}
+		return c, func() { c.Close() }
+	}
+
+	select {
+	case <-l.crashClientReady:
+		l.mu.Lock()
+		client = l.crashRPCClient
+		l.mu.Unlock()
+	case <-time.After(wait):
+	}
+	return client, func() {}
+}
+
 // SetGPUInfo sets the GPU information for crash reports. This should be
 // called after OpenGL is initialized.
 func (l *Logger) SetGPUInfo(vendor, renderer string) {
 	l.mu.Lock()
-	defer l.mu.Unlock()
 	l.systemInfo.GPUVendor = vendor
 	l.systemInfo.GPURenderer = renderer
+	l.mu.Unlock()
+
+	l.Infof("GPU: %s (%s)", renderer, vendor)
 }
 
 // SetAudioDriver records the SDL audio driver in use for crash reports, or
@@ -320,25 +364,9 @@ func (l *Logger) ReportCrash(err any) {
 
 	now := time.Now()
 
-	// Get the system info and RPC client with a lock
 	l.mu.Lock()
 	sysInfo := l.systemInfo
-	rpcClient := l.crashRPCClient
 	l.mu.Unlock()
-
-	// If we don't have an RPC client yet, wait a few seconds for the
-	// remote server connection to be established. Only release builds
-	// report crashes over RPC, so don't bother waiting otherwise.
-	if ReleaseBuild && rpcClient == nil {
-		select {
-		case <-l.crashClientReady:
-			l.mu.Lock()
-			rpcClient = l.crashRPCClient
-			l.mu.Unlock()
-		case <-time.After(4 * time.Second):
-			l.Warn("No crash report RPC client available")
-		}
-	}
 
 	// Format the report information
 	var report strings.Builder
@@ -373,27 +401,36 @@ func (l *Logger) ReportCrash(err any) {
 	fn := filepath.Join(l.LogDir, "crash-"+now.Format(time.RFC3339)+".txt")
 	_ = os.WriteFile(fn, []byte(report.String()), 0o600)
 
-	// Send via RPC if we have a client. Non-release (developer) builds
-	// don't upload crash reports to the shared server.
-	if ReleaseBuild && rpcClient != nil {
-		crashReport := &CrashReport{
-			Report:    report.String(),
-			System:    sysInfo,
-			Timestamp: now,
+	// Non-release (developer) builds don't upload crash reports to the
+	// shared server.
+	if !ReleaseBuild {
+		return
+	}
+
+	rpcClient, release := l.crashReportClient(4 * time.Second)
+	defer release()
+	if rpcClient == nil {
+		l.Warn("No crash report RPC client available")
+		return
+	}
+
+	crashReport := &CrashReport{
+		Report:    report.String(),
+		System:    sysInfo,
+		Timestamp: now,
+	}
+	// Attempt to send, but don't block for long since we're crashing
+	done := make(chan *rpc.Call, 1)
+	rpcClient.Go(ReportCrashRPC, crashReport, &struct{}{}, done)
+	select {
+	case call := <-done:
+		if call.Error != nil {
+			l.Errorf("Error sending crash report via RPC: %v", call.Error)
+		} else {
+			l.Info("Crash report sent via RPC")
 		}
-		// Attempt to send, but don't block for long since we're crashing
-		done := make(chan *rpc.Call, 1)
-		rpcClient.Go(ReportCrashRPC, crashReport, &struct{}{}, done)
-		select {
-		case call := <-done:
-			if call.Error != nil {
-				l.Errorf("Error sending crash report via RPC: %v", call.Error)
-			} else {
-				l.Info("Crash report sent via RPC")
-			}
-		case <-time.After(4 * time.Second):
-			l.Warn("Timeout sending crash report via RPC")
-		}
+	case <-time.After(4 * time.Second):
+		l.Warn("Timeout sending crash report via RPC")
 	}
 }
 

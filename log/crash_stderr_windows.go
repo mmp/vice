@@ -13,9 +13,9 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// vice.exe is linked with -H=windowsgui (see build.bat), so when it is
-// launched normally there is no attached console and stderr writes go
-// nowhere. The Go runtime's fatal stack dump — including for
+// vice.exe and backshop.exe are linked with -H=windowsgui (see build.bat),
+// so when one is launched normally there is no attached console and stderr
+// writes go nowhere. The Go runtime's fatal stack dump — including for
 // unrecoverable conditions like "signal arrived during external code
 // execution" — is written to fd 2 via WriteFile(GetStdHandle(
 // STD_ERROR_HANDLE), ...). If we install a file as STD_ERROR_HANDLE
@@ -24,17 +24,17 @@ import (
 
 var currentCrashStderr *os.File
 
-// RedirectStderrToCrashFile creates a crash-stderr-<timestamp>.txt file
+// redirectStderrToCrashFile creates a crash-stderr-<timestamp>.txt file
 // in logDir and installs it as both STD_ERROR_HANDLE and os.Stderr. The
 // returned path is the file it created (empty on failure or when
 // skipped because stderr is already a real console).
 //
-// The file is left in place on process exit; the next vice startup
-// scans for these files and uploads any that aren't deleted via
+// The file is left in place on process exit; the next vice or backshop
+// startup scans for these files and uploads any that aren't deleted via
 // RemoveCurrentCrashStderrFile. That way a Go runtime fatal — which
 // does not run deferred functions — leaves its dump behind for the
 // next run to ship to the crash server.
-func RedirectStderrToCrashFile(logDir string) string {
+func redirectStderrToCrashFile(logDir string) string {
 	if logDir == "" {
 		return ""
 	}

@@ -111,21 +111,7 @@ func initCommon() (*log.Logger, *util.Profiler, error) {
 
 	flag.Parse()
 
-	// On Windows GUI builds there is no attached console when launched
-	// from Explorer, so the Go runtime's pre-death stack dump (e.g. for
-	// signals raised during cgo execution) would vanish. Redirect
-	// stderr to a file in the log dir *before* constructing the
-	// logger, so the slog text handler captures the redirected
-	// os.Stderr at construction time. No-op on other platforms and on
-	// Windows when stderr already targets a real console.
-	resolvedLogDir := log.DefaultLogDir(false /* not server mode */, *logDir)
-	redirectedStderrFn := log.RedirectStderrToCrashFile(resolvedLogDir)
-
-	// Initialize the logging system.
-	lg := log.New(false /* not server mode */, *logLevel, resolvedLogDir)
-	if redirectedStderrFn != "" {
-		lg.Infof("Redirected stderr to %s", redirectedStderrFn)
-	}
+	lg := log.NewWithStderrCapture(*logLevel, *logDir)
 
 	// Log CPU information for debugging hardware compatibility issues.
 	if cpuInfo, err := cpu.Info(); err == nil && len(cpuInfo) > 0 {
@@ -427,9 +413,7 @@ func initPlatformAndRenderer(config *Config, lg *log.Logger) (platform.Platform,
 	win.InitViewportBackends()
 
 	// Capture GPU info for crash reports now that OpenGL is initialized
-	gpuVendor, gpuDevice := render.GetGPUInfo()
-	lg.SetGPUInfo(gpuVendor, gpuDevice)
-	lg.Infof("GPU: %s (%s)", gpuDevice, gpuVendor)
+	lg.SetGPUInfo(render.GetGPUInfo())
 
 	<-audioDone
 
