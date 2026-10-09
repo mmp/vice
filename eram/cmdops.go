@@ -37,6 +37,8 @@ func registerOpsCommands() {
 	// QZ [FLOOR]B[CEILING] [TRACK]: Set block altitude
 	registerCommand(CommandModeNone, "QZ [ERAM_ALT_A] [TRACK]", handleAssignedAltitude)
 	registerCommand(CommandModeNone, "QZ [ALT_BLOCK] [TRACK]", handleAssignedAltitudeBlock)
+	// QZ VFR, VFR/[ALT], OTP, or OTP/[ALT] [TRACK]: Set VFR or VFR-on-top altitude
+	registerCommand(CommandModeNone, "QZ [ALT_VFR] [TRACK]", handleAssignedVFRAltitude)
 
 	// QX - Drop track
 	// QX [TRACK]
@@ -293,6 +295,22 @@ func handleAssignedAltitudeBlock(ep *Scope, ctx *scope.Context, block [2]int, tr
 	}, nil
 }
 
+// handleAssignedVFRAltitude assigns a VFR or VFR-on-top altitude. Those
+// aren't instructions a pilot is given, so no instruction is issued.
+func handleAssignedVFRAltitude(ep *Scope, ctx *scope.Context, alt altitudeEntry, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrIllegalACID
+	}
+
+	var spec sim.FlightPlanSpecifier
+	alt.setAssigned(&spec)
+	ctx.Client.ModifyFlightPlan(trk.FlightPlan.ACID, spec, func(err error) { ep.displayError(err, ctx) })
+
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "ASSIGNED ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+	}, nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // QX - Drop Track Handler
 
@@ -489,6 +507,11 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 	alt := fmt.Sprint(fp.AssignedAltitude / 100)
 	if fp.HasAltitudeBlock() {
 		alt = formatAltitudeBlock([2]int{fp.AltitudeBlock[0] / 100, fp.AltitudeBlock[1] / 100})
+	} else if q := fp.AssignedAltitudeQualifier; q != sim.PlainAltitude {
+		alt = q.String()
+		if fp.AssignedAltitude != 0 {
+			alt += fmt.Sprintf("/%03d", fp.AssignedAltitude/100)
+		}
 	}
 	return CommandStatus{
 		responseArea: []string{

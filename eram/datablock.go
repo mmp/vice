@@ -578,6 +578,9 @@ func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 		}
 		return formatScopeAltitude(floor) + "B" + upper
 	}
+	if q := fp.AssignedAltitudeQualifier; q == sim.VFRAltitude || q == sim.OTPAltitude {
+		return q.String() + "/" + formatCurrent
+	}
 	switch {
 	case formatCurrent == formatDisplay:
 		return formatCurrent + "C"

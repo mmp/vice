@@ -5,6 +5,7 @@
 package eram
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -546,6 +547,33 @@ func checkScratchpad(ctx *scope.Context, contents string, isSecondary, isImplied
 	}
 
 	return nil
+}
+
+// altitudeEntry is an altitude field of a flight plan; see
+// parseAltitudeEntry.
+type altitudeEntry struct {
+	altitude  int // feet
+	qualifier sim.AltitudeQualifier
+}
+
+// parseAltitudeEntry parses a VFR or VFR-on-top altitude field: VFR,
+// VFR/(d)dd, OTP, or OTP/(d)dd, with the altitude given in hundreds of
+// feet. formatErr is the error for a value that is none of those.
+func parseAltitudeEntry(s string, formatErr string) (altitudeEntry, error) {
+	q, alt, found := strings.Cut(s, "/")
+	e := altitudeEntry{qualifier: map[string]sim.AltitudeQualifier{"VFR": sim.VFRAltitude, "OTP": sim.OTPAltitude}[q]}
+	if e.qualifier == sim.PlainAltitude || (found && ((len(alt) != 2 && len(alt) != 3) || !allDigits(alt))) {
+		return e, errors.New(formatErr)
+	}
+	n, _ := strconv.Atoi(alt)
+	e.altitude = n * 100
+	return e, nil
+}
+
+// setAssigned adds assigning the altitude to spec.
+func (e altitudeEntry) setAssigned(spec *sim.FlightPlanSpecifier) {
+	spec.AssignedAltitude.Set(e.altitude)
+	spec.AssignedAltitudeQualifier.Set(e.qualifier)
 }
 
 // trk may be nil

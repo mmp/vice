@@ -410,7 +410,7 @@ func (s *Sim) applyFixPairAssignment(nasFp *FlightPlan, departureRunway string) 
 		FlightType:      nasFp.TypeOfFlight,
 		Level:           fixPairLevel(nasFp),
 		VFR:             nasFp.Rules == av.FlightRulesVFR,
-		OTP:             nasFp.VFROTP,
+		OTP:             nasFp.AssignedAltitudeQualifier == OTPAltitude,
 		ACType:          nasFp.AircraftType,
 		ACID:            string(nasFp.ACID),
 		ActiveRunways:   s.activeRunways(),

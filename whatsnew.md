@@ -2,6 +2,7 @@
 - Improved support for LDA approaches (don't just fly the extended centerline)
 - Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
 - ERAM
+  - `QZ` assigns VFR and VFR-on-top altitudes, which data blocks show as `VFR/` or `OTP/` and the reported altitude
   - TRACON controllers no longer enter altitudes in ERAM data blocks, so departures reach the first ERAM controller showing their filed altitude
   - Conflict alert no longer assumes that an aircraft a TRACON owns will climb or descend to its data block altitude
   - Fixed bug where virtual TRACON controllers would set ERAM data block altitudes

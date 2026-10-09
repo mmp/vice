@@ -29,6 +29,10 @@ func TestAltitudeFormatFieldB(t *testing.T) {
 		{"within block", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 22100, false, "200B250"},
 		{"block ceiling", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 25040, false, "200B250"},
 		{"below block", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 19300, false, "200B193"},
+		{"VFR", sim.FlightPlan{AssignedAltitudeQualifier: sim.VFRAltitude}, 5500, false, "VFR/055"},
+		{"VFR at an altitude", sim.FlightPlan{AssignedAltitude: 10500, AssignedAltitudeQualifier: sim.VFRAltitude},
+			5500, false, "VFR/055"},
+		{"VFR-on-top", sim.FlightPlan{AssignedAltitudeQualifier: sim.OTPAltitude}, 21800, false, "OTP/218"},
 	} {
 		trk := sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1"}, FlightPlan: &c.fp}
 		ep := &Scope{TrackState: map[av.ADSBCallsign]*TrackState{

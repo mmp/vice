@@ -399,8 +399,7 @@ func (s *Sim) recordVirtualAltitudeEntry(sfp *FlightPlan, issuer ControlPosition
 		return
 	}
 
-	sfp.AssignedAltitude = alt
-	sfp.AltitudeBlock = [2]int{}
+	sfp.assignAltitude(alt)
 	sfp.InterimAlt, sfp.InterimType = 0, InterimNormal
 }
 

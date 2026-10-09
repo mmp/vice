@@ -7789,7 +7789,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 character is <code>C</code> when the aircraft is at its assigned altitude (the reported altitude is then
                 omitted); <code>T</code>, <code>L</code>, or <code>P</code> for an interim, local interim, or procedure
                 altitude; &uarr; or &darr; while climbing or descending to it; <code>+</code> or <code>-</code> when the
-                aircraft has gone above or below it after reaching it; and <code>B</code> for a block altitude. The HSF
+                aircraft has gone above or below it after reaching it; and <code>B</code> for a block altitude. For a
+                VFR or VFR-on-top altitude, the line shows <code>VFR/</code> or <code>OTP/</code> and the reported
+                altitude. The HSF
                 indicator (&#x21B4;) follows when the track has heading, speed, or free text data. Clicking the
                 indicator switches line 4 between that data and its default contents.</li>
               <li>Line 3: the CID and field E. Field E shows the ground speed, preceded by the letter the ARTCC assigns
@@ -8134,6 +8136,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li><code>QZ [ALT] [FLID]</code> — assign an altitude, given in hundreds of feet</li>
                   <li><code>QZ [FLOOR]B[CEILING] [FLID]</code> — assign a block altitude. This only amends the flight
                     plan; no instruction is issued to the pilot.</li>
+                  <li><code>QZ VFR [FLID]</code>, <code>QZ VFR/[ALT] [FLID]</code>, <code>QZ OTP [FLID]</code>, and
+                    <code>QZ OTP/[ALT] [FLID]</code> — assign a VFR or VFR-on-top altitude. These also only amend the
+                    flight plan.</li>
                   <li><code>QQ [ALT] [FLID]</code> — assign an interim altitude. Prefixing the altitude with
                     <code>P</code> assigns a procedure altitude and <code>L</code> assigns a local interim
                     altitude.</li>
@@ -8246,9 +8251,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li><strong>Tracks</strong>: <code>QT</code> starting a track, <code>QH</code> freezing a track, and free,
                 coast, and frozen tracks</li>
               <li><strong>Altitudes</strong>: <code>QR</code> and <code>QQ R</code> controller-entered reported
-                altitudes; <code>QZ VFR</code>, <code>QZ VFR/[ALT]</code>, and <code>QZ OTP</code>; and clearing
-                just a local interim altitude with <code>QQ L [FLID]</code>. In <i>vice</i>, a track can have only one
-                interim altitude at a time, of any type.</li>
+                altitudes, and clearing just a local interim altitude with <code>QQ L [FLID]</code>. In <i>vice</i>, a
+                track can have only one interim altitude at a time, of any type.</li>
               <li><strong>Command options</strong>: <code>/OK</code> logic check overrides, including forcing a
                 handoff with <code>/OK [FLID]</code>, and <code>/TT</code> or <code>///</code> with <code>QQ</code>;
                 multiple FLIDs in one <code>QQ</code> or <code>QU</code> command; the <code>QN</code> and
@@ -8262,7 +8266,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li>Showing the beacon code in the LDBs of unassociated tracks; <i>vice</i> always shows the
                     callsign</li>
                   <li>Line 2 characters <code>X</code> (no Mode C), <code>A</code> and <code>#</code>
-                    (controller-entered reported altitude), <code>/</code> (VFR and VFR-on-top), and <code>N</code>
+                    (controller-entered reported altitude), and <code>N</code>
                     (no correlated target)</li>
                   <li>Field E contents <code>HUNK</code>, <code>OUNK</code>, <code>K</code> (handoff forced with
                     <code>/OK</code>), <code>CST</code>, <code>FRZN</code>, <code>NONE</code>, and the received beacon

@@ -57,6 +57,30 @@ func ParseInterimAltType(ch byte) (t InterimAltType, ok bool) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// AltitudeQualifier
+
+// AltitudeQualifier marks a flight plan altitude as a VFR or VFR-on-top
+// altitude rather than a plain one.
+type AltitudeQualifier int
+
+const (
+	PlainAltitude AltitudeQualifier = iota
+	VFRAltitude                     // VFR, at the altitude if one is given
+	OTPAltitude                     // VFR-on-top, at the altitude if one is given
+)
+
+// String returns the qualifier as ERAM writes it before an altitude.
+func (q AltitudeQualifier) String() string {
+	switch q {
+	case VFRAltitude:
+		return "VFR"
+	case OTPAltitude:
+		return "OTP"
+	}
+	return ""
+}
+
+///////////////////////////////////////////////////////////////////////////
 // FlightPlan
 
 // FlightPlan is the NAS automation's record of a flight: what was filed and
@@ -98,13 +122,16 @@ type FlightPlan struct {
 
 	TypeOfFlight av.TypeOfFlight
 
-	AssignedAltitude      int
-	PerceivedAssigned     int // what the previous controller would put into the hard alt, even though the aircraft is descending via a STAR.
-	InterimAlt            int
-	InterimType           InterimAltType
-	AltitudeBlock         [2]int // floor and ceiling in feet; zero when none is assigned
-	ControllerReportedAlt int
-	VFROTP                bool
+	AssignedAltitude  int
+	PerceivedAssigned int // what the previous controller would put into the hard alt, even though the aircraft is descending via a STAR.
+	InterimAlt        int
+	InterimType       InterimAltType
+	AltitudeBlock     [2]int // floor and ceiling in feet; zero when none is assigned
+	// AssignedAltitudeQualifier makes the assigned altitude a VFR or
+	// VFR-on-top altitude. AssignedAltitude is zero for VFR and VFR-on-top
+	// without an altitude.
+	AssignedAltitudeQualifier AltitudeQualifier
+	ControllerReportedAlt     int
 
 	RequestedAltitude     int
 	PilotReportedAltitude int
@@ -209,18 +236,28 @@ func (fp *FlightPlan) AddPointOutHistory(tcp TCP) {
 // "hard altitude or interim altitude" referenced in ERAM conflict alert and
 // other altitude-cap logic. Priority: InterimAlt (TODO: confirm interim really
 // wins) > AssignedAltitude > PerceivedAssigned. Returns 0 if none are set or
-// if the flight is assigned a block altitude, which has no single altitude.
+// if the flight is assigned a block, VFR, or VFR-on-top altitude, which the
+// data block shows no single altitude for.
 func (fp *FlightPlan) DataBlockAltitude() int {
 	if fp.InterimAlt > 0 {
 		return fp.InterimAlt
 	}
-	if fp.HasAltitudeBlock() {
+	if fp.HasAltitudeBlock() || fp.AssignedAltitudeQualifier == VFRAltitude ||
+		fp.AssignedAltitudeQualifier == OTPAltitude {
 		return 0
 	}
 	if fp.AssignedAltitude != 0 {
 		return fp.AssignedAltitude
 	}
 	return fp.PerceivedAssigned
+}
+
+// assignAltitude assigns the hard altitude alt in place of whatever kind of
+// altitude the flight was assigned.
+func (fp *FlightPlan) assignAltitude(alt int) {
+	fp.AssignedAltitude = alt
+	fp.AltitudeBlock = [2]int{}
+	fp.AssignedAltitudeQualifier = PlainAltitude
 }
 
 // applyAutoScratchpad fills a spawning flight's scratchpad(s) from the first
@@ -391,15 +428,13 @@ func (fp *FlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) {
 		fp.TrackingController = spec.TrackingController.Get()
 		fp.OwningTCW = sim.tcwForPosition(fp.TrackingController)
 	}
-	// A flight is assigned either a hard altitude or a block altitude, so
-	// each replaces the other.
-	if spec.AssignedAltitude.IsSet {
-		fp.AssignedAltitude = spec.AssignedAltitude.Get()
-		fp.AltitudeBlock = [2]int{}
-	}
-	if spec.AltitudeBlock.IsSet {
-		fp.AltitudeBlock = spec.AltitudeBlock.Get()
-		fp.AssignedAltitude = 0
+	// A flight is assigned one of a hard altitude, a block altitude, or a
+	// VFR or VFR-on-top altitude, so setting any part of the assigned
+	// altitude replaces all of it.
+	if spec.AssignedAltitude.IsSet || spec.AltitudeBlock.IsSet || spec.AssignedAltitudeQualifier.IsSet {
+		fp.AssignedAltitude = spec.AssignedAltitude.GetOr(0)
+		fp.AltitudeBlock = spec.AltitudeBlock.GetOr([2]int{})
+		fp.AssignedAltitudeQualifier = spec.AssignedAltitudeQualifier.GetOr(PlainAltitude)
 	}
 	if spec.RequestedAltitude.IsSet {
 		fp.RequestedAltitude = spec.RequestedAltitude.Get()
@@ -506,14 +541,14 @@ type FlightPlanSpecifier struct {
 
 	TypeOfFlight util.Optional[av.TypeOfFlight]
 
-	AssignedAltitude      util.Optional[int]
-	InterimAlt            util.Optional[int]
-	InterimType           util.Optional[InterimAltType]
-	AltitudeBlock         util.Optional[[2]int]
-	ControllerReportedAlt util.Optional[int]
-	VFROTP                util.Optional[bool]
-	RequestedAltitude     util.Optional[int]
-	PilotReportedAltitude util.Optional[int]
+	AssignedAltitude          util.Optional[int]
+	InterimAlt                util.Optional[int]
+	InterimType               util.Optional[InterimAltType]
+	AltitudeBlock             util.Optional[[2]int]
+	AssignedAltitudeQualifier util.Optional[AltitudeQualifier]
+	ControllerReportedAlt     util.Optional[int]
+	RequestedAltitude         util.Optional[int]
+	PilotReportedAltitude     util.Optional[int]
 
 	Scratchpad          util.Optional[string]
 	SecondaryScratchpad util.Optional[string]
@@ -558,9 +593,11 @@ func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 		TypeOfFlight:       s.TypeOfFlight.GetOr(av.FlightTypeUnknown),
 		TrackingController: s.TrackingController.GetOr(""),
 
-		AssignedAltitude:      s.AssignedAltitude.GetOr(0),
-		RequestedAltitude:     s.RequestedAltitude.GetOr(0),
-		PilotReportedAltitude: s.PilotReportedAltitude.GetOr(0),
+		AssignedAltitude:          s.AssignedAltitude.GetOr(0),
+		AltitudeBlock:             s.AltitudeBlock.GetOr([2]int{}),
+		AssignedAltitudeQualifier: s.AssignedAltitudeQualifier.GetOr(PlainAltitude),
+		RequestedAltitude:         s.RequestedAltitude.GetOr(0),
+		PilotReportedAltitude:     s.PilotReportedAltitude.GetOr(0),
 
 		Scratchpad:          s.Scratchpad.GetOr(""),
 		SecondaryScratchpad: s.SecondaryScratchpad.GetOr(""),

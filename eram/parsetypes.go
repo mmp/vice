@@ -55,6 +55,7 @@ var typeParsers = []typeParser{
 	&eramAltAParser{},
 	&eramAltIParser{},
 	&altBlockParser{},
+	&altVFRParser{},
 
 	// Controller/Sector
 	&sectorIDParser{},
@@ -344,6 +345,27 @@ func (h *altBlockParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 
 func (h *altBlockParser) GoType() reflect.Type { return reflect.TypeFor[[2]int]() }
 func (h *altBlockParser) AcceptsClick() bool   { return false }
+
+// altVFRParser parses the VFR and VFR-on-top forms of an assigned altitude:
+// VFR, VFR/ddd, OTP, and OTP/ddd.
+type altVFRParser struct{}
+
+func (h *altVFRParser) Identifier() string { return "ALT_VFR" }
+
+func (h *altVFRParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if !strings.HasPrefix(field, "VFR") && !strings.HasPrefix(field, "OTP") {
+		return nil, text, false, nil
+	}
+	alt, err := parseAltitudeEntry(field, "ALT FORMAT")
+	if err != nil {
+		return nil, text, true, err
+	}
+	return alt, remaining, true, nil
+}
+
+func (h *altVFRParser) GoType() reflect.Type { return reflect.TypeFor[altitudeEntry]() }
+func (h *altVFRParser) AcceptsClick() bool   { return false }
 
 // InterimAltitude holds an interim altitude value with optional type (P for procedure, L for local)
 type InterimAltitude struct {
