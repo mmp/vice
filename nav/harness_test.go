@@ -760,12 +760,9 @@ func (f *FlightTest) makeAirport() *av.Airport {
 			a.Threshold = rwy.Threshold
 			for i := range a.Waypoints {
 				alt := rwy.Elevation + rwy.ThresholdCrossingHeight
-				threshold := math.Offset2LL(rwy.Threshold,
-					math.MagneticToTrue(rwy.Heading, magVar),
-					rwy.DisplacedThresholdDistance, nmPerLong)
 				thresholdWP := av.Waypoint{
 					Fix:      "_" + a.Runway + "_THRESHOLD",
-					Location: threshold,
+					Location: rwy.Threshold,
 				}
 				thresholdWP.MergeActions(av.WaypointActions{Land: true})
 				thresholdWP.SetFlyOver(true)

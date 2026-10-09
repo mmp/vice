@@ -465,8 +465,8 @@ func atDepartureEnd(wp Waypoint, r, rend Runway, nmPerLongitude float32) bool {
 		math.Abs(math.Dot(v, [2]float32{along[1], -along[0]})) <= departureEndLateral
 }
 
-// initialize puts the runway in front of the route's located waypoints--its
-// threshold and then its midpoint, from which the aircraft tracks the runway
+// initialize puts the runway in front of the route's located waypoints--the
+// start of its takeoff roll and then its midpoint, from which the aircraft tracks the runway
 // centerline until it is 400' above the field and only then flies the
 // route--and checks the route's other members against them. override carries
 // the route's parsed "climbout_actions": actions and restrictions that
@@ -521,7 +521,7 @@ func (er *ExitRoute) initialize(db Database, icao ICAOAirportCode, rwy RunwayID,
 		}
 	}
 
-	midWp := Waypoint{Fix: rwy.Base() + "-mid", Location: math.Lerp2f(0.5, r.Threshold, rend.Threshold)}
+	midWp := Waypoint{Fix: rwy.Base() + "-mid", Location: math.Lerp2f(0.5, r.Start, rend.Start)}
 	// Every departure holds the runway centerline as a ground track until it
 	// is 400' above the field; only then does it turn on course.
 	track := int16(math.Round(float32(math.NormalizeHeading(course))))
@@ -575,7 +575,7 @@ func (er *ExitRoute) initialize(db Database, icao ICAOAirportCode, rwy RunwayID,
 	er.Waypoints = append([]Waypoint{
 		{
 			Fix:      rwy.Base(),
-			Location: r.Threshold,
+			Location: r.Start,
 		},
 		midWp}, er.Waypoints...)
 

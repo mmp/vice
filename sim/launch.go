@@ -186,7 +186,7 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 							Airport:      airport,
 							Category:     category,
 							Rules:        av.FlightRulesIFR,
-							Position:     runwayThresholdPosition(airport, runway),
+							Position:     departureStartPosition(airport, runway),
 						}
 						if e := s.PendingDepartures[string(airport)+"/"+string(runway)+"/"+category]; e != nil {
 							slot.Callsign = av.ADSBCallsign(e.Callsign)
@@ -211,7 +211,7 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 						LaunchFlight: LaunchFlight{Departure: true, Runway: runway},
 						Airport:      airport,
 						Rules:        av.FlightRulesIFR,
-						Position:     runwayThresholdPosition(airport, runway),
+						Position:     departureStartPosition(airport, runway),
 					}
 					// The next queued flight this runway's gates fly; a flight
 					// bound for another runway's gate is stepped over, as at
@@ -306,9 +306,11 @@ func (s *Sim) buildLaunchSlots() ([]DepartureLaunchSlot, []InboundLaunchSlot) {
 	return departures, inbounds
 }
 
-func runwayThresholdPosition(airport av.ICAOAirportCode, runway av.RunwayID) math.Point2LL {
+// departureStartPosition returns where departures from the runway start
+// their takeoff roll.
+func departureStartPosition(airport av.ICAOAirportCode, runway av.RunwayID) math.Point2LL {
 	if rwy, ok := av.LookupRunway(db.Lookups{}, airport, runway.Base()); ok {
-		return rwy.Threshold
+		return rwy.Start
 	}
 	return math.Point2LL{}
 }

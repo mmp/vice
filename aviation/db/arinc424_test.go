@@ -339,6 +339,41 @@ func TestParseARINC424CourseIntercept(t *testing.T) {
 // intercept the 177 localizer course to ESACO. Its LNK transition instead
 // reverses course with an FC/CI pair: a 357 track from JUSAM for 5.3nm, then
 // a right turn to 147 to intercept the localizer.
+// A runway's threshold is the CIFP's landing threshold point; its takeoff
+// roll starts the displaced threshold distance short of that, along the
+// runway. KSLC 35's threshold is displaced 324 feet and 17's isn't.
+func TestParseARINC424RunwayStart(t *testing.T) {
+	pad := func(s string) string { return s + strings.Repeat(" ", 132-len(s)) }
+	lines := []string{
+		pad("SUSAP KSLCK2GRW17    0095961690 N40475610W111574346         +1269804222000055150IIBNT2"),
+		pad("SUSAP KSLCK2GRW35    0095963490 N40462450W111574345         +1271304227032455150IIUTJ1"),
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	runways := result.Airports["KSLC"].Runways
+	rwy := func(id string) av.Runway {
+		i := slices.IndexFunc(runways, func(r av.Runway) bool { return r.Id == id })
+		if i == -1 {
+			t.Fatalf("no runway %s in %v", id, runways)
+		}
+		return runways[i]
+	}
+	r17, r35 := rwy("17"), rwy("35")
+	if r17.Start != r17.Threshold {
+		t.Errorf("17: start %v, want its threshold %v", r17.Start, r17.Threshold)
+	}
+	nmPerLongitude := math.NMPerLongitudeAt(r35.Threshold)
+	if d := math.NMDistance2LL(r35.Start, r35.Threshold); gomath.Abs(float64(d-324*math.FeetToNauticalMiles)) > 0.001 {
+		t.Errorf("35: start is %.4f nm from the threshold, want %.4f", d, 324*math.FeetToNauticalMiles)
+	}
+	// The start is behind the threshold on the runway's line.
+	along := math.Heading2LL(r35.Threshold, r17.Threshold, nmPerLongitude)
+	back := math.Heading2LL(r35.Threshold, r35.Start, nmPerLongitude)
+	if math.HeadingDifference(along, back) < 179 {
+		t.Errorf("35: start is %.1f true from the threshold; the runway runs %.1f", back, along)
+	}
+}
+
 func TestParseARINC424ApproachCourseIntercept(t *testing.T) {
 	lines := []string{
 		"SUSAP KLNKK3FI18-Y AHUSKR 010HUSKRK3EA0E  A    IF                                             18000                 0 NS   439802110",

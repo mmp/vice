@@ -14,12 +14,17 @@ import (
 )
 
 type Runway struct {
-	Id                         string
-	Heading                    math.MagneticHeading
-	Threshold                  math.Point2LL
-	ThresholdCrossingHeight    int // delta from elevation
-	Elevation                  int
-	DisplacedThresholdDistance float32 // in nm
+	Id      string
+	Heading math.MagneticHeading
+	// Threshold is the landing threshold point: the displaced threshold
+	// where the runway has one, as the CIFP gives it.
+	Threshold math.Point2LL
+	// Start is where a full-length takeoff roll begins: the runway's
+	// extremity at its approach end, which is short of Threshold where
+	// the threshold is displaced.
+	Start                   math.Point2LL
+	ThresholdCrossingHeight int // delta from elevation
+	Elevation               int
 }
 
 // RunwayID is a runway identifier that may include a dot-separated suffix

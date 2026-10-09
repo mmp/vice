@@ -300,11 +300,11 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	// This should be sufficient capacity to avoid reallocations / recopying in the following.
 	wps := make([]av.Waypoint, 0, 20)
 
-	wps = append(wps, av.Waypoint{Fix: "_dep_threshold", Location: rwy.Threshold})
-	opp := math.Offset2LL(rwy.Threshold, math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation), 1 /* nm */, s.State.NmPerLongitude)
+	wps = append(wps, av.Waypoint{Fix: "_dep_start", Location: rwy.Start})
+	opp := math.Offset2LL(rwy.Start, math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation), 1 /* nm */, s.State.NmPerLongitude)
 	wps = append(wps, av.Waypoint{Fix: "_opp", Location: opp})
 
-	rg := av.MakeRouteGenerator(rwy.Threshold, opp, s.State.NmPerLongitude)
+	rg := av.MakeRouteGenerator(rwy.Start, opp, s.State.NmPerLongitude)
 	wp0 := rg.Waypoint("_dep_climb", 3, 0)
 	wps = append(wps, wp0)
 

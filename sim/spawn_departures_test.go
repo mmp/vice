@@ -41,14 +41,14 @@ func installIntersectingRunwayFixture(t *testing.T) {
 	db.DB.Airports[airport] = db.Airport{
 		Id: airport,
 		Runways: []av.Runway{
-			{Id: "9", Threshold: nm(0, 0), Heading: 90},
-			{Id: "27", Threshold: nm(2, 0), Heading: 270},
-			{Id: "36", Threshold: nm(1, -1), Heading: 360},
-			{Id: "18", Threshold: nm(1, 1), Heading: 180},
-			{Id: "8", Threshold: nm(0, 5), Heading: 90},
-			{Id: "26", Threshold: nm(2, 5), Heading: 270},
-			{Id: "1", Threshold: nm(2.8, 0.3), Heading: 10},
-			{Id: "19", Threshold: nm(2.8, 2), Heading: 190},
+			{Id: "9", Threshold: nm(0, 0), Start: nm(0, 0), Heading: 90},
+			{Id: "27", Threshold: nm(2, 0), Start: nm(2, 0), Heading: 270},
+			{Id: "36", Threshold: nm(1, -1), Start: nm(1, -1), Heading: 360},
+			{Id: "18", Threshold: nm(1, 1), Start: nm(1, 1), Heading: 180},
+			{Id: "8", Threshold: nm(0, 5), Start: nm(0, 5), Heading: 90},
+			{Id: "26", Threshold: nm(2, 5), Start: nm(2, 5), Heading: 270},
+			{Id: "1", Threshold: nm(2.8, 0.3), Start: nm(2.8, 0.3), Heading: 10},
+			{Id: "19", Threshold: nm(2.8, 2), Start: nm(2.8, 2), Heading: 190},
 		},
 	}
 }

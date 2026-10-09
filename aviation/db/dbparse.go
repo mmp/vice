@@ -146,6 +146,7 @@ func parseAirports() (map[av.ICAOAirportCode]Airport, map[av.ICAOAirportCode]Air
 		fmt.Fprintf(os.Stderr, "custom_airports.json: %v\n", err)
 		os.Exit(1)
 	}
+	setRunwayStarts(customAirports, nil)
 	for icao, ap := range customAirports {
 		ap.Id = icao
 		airports[icao] = ap

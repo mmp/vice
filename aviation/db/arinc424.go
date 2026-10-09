@@ -84,6 +84,7 @@ type ARINC424Result struct {
 }
 
 func ParseARINC424(r io.Reader) ARINC424Result {
+	displacedThresholds := make(map[av.ICAOAirportCode]map[string]float32) // airport -> runway -> nm
 	start := time.Now()
 
 	result := ARINC424Result{
@@ -513,18 +514,21 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				rwy = strings.TrimPrefix(rwy, "0")
 				rwy = strings.TrimSpace(rwy)
 
-				displacedDistance := parseInt(line[71:75])
-
 				ap := result.Airports[icao]
 				ap.Runways = append(ap.Runways, av.Runway{
-					Id:                         rwy,
-					Heading:                    math.MagneticHeading(float32(parseInt(line[27:31])) / 10),
-					Threshold:                  parseLatLong(line[32:41], line[41:51]),
-					ThresholdCrossingHeight:    parseInt(line[75:77]),
-					Elevation:                  parseInt(line[66:71]),
-					DisplacedThresholdDistance: float32(displacedDistance) * math.FeetToNauticalMiles,
+					Id:                      rwy,
+					Heading:                 math.MagneticHeading(float32(parseInt(line[27:31])) / 10),
+					Threshold:               parseLatLong(line[32:41], line[41:51]),
+					ThresholdCrossingHeight: parseInt(line[75:77]),
+					Elevation:               parseInt(line[66:71]),
 				})
 				result.Airports[icao] = ap
+				if d := parseInt(line[71:75]); d > 0 {
+					if displacedThresholds[icao] == nil {
+						displacedThresholds[icao] = make(map[string]float32)
+					}
+					displacedThresholds[icao][rwy] = float32(d) * math.FeetToNauticalMiles
+				}
 
 			case 'P': // holding patterns
 				if hold, ok := parseHoldingPattern(line); ok {
@@ -539,12 +543,36 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 
 	}
 	flushSIDs()
+	setRunwayStarts(result.Airports, displacedThresholds)
 
 	if false {
 		fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
 	}
 
 	return result
+}
+
+// setRunwayStarts places each runway's Start, where a full-length takeoff
+// roll begins: the displaced threshold distance short of the threshold along
+// the runway's surveyed alignment, or the threshold itself where there is no
+// displacement or no opposite runway to take the alignment from.
+func setRunwayStarts(airports map[av.ICAOAirportCode]Airport, displaced map[av.ICAOAirportCode]map[string]float32) {
+	for icao, ap := range airports {
+		for i, rwy := range ap.Runways {
+			ap.Runways[i].Start = rwy.Threshold
+			d := displaced[icao][rwy.Id]
+			if d == 0 {
+				continue
+			}
+			opp := slices.IndexFunc(ap.Runways, func(r av.Runway) bool { return r.Id == av.OppositeRunwayId(rwy.Id) })
+			if opp == -1 {
+				continue
+			}
+			nmPerLongitude := math.NMPerLongitudeAt(rwy.Threshold)
+			back := math.Heading2LL(ap.Runways[opp].Threshold, rwy.Threshold, nmPerLongitude)
+			ap.Runways[i].Start = math.Offset2LL(rwy.Threshold, back, d, nmPerLongitude)
+		}
+	}
 }
 
 func tidyFAAApproachId(id string) string {

@@ -737,9 +737,9 @@ func (s *Sim) holdForCrossingDeparture(prev, dep DepartureAircraft) bool {
 		})
 }
 
-// runwayThresholdAndDirection returns the runway's threshold and its unit
-// departure direction in nm coordinates.
-func runwayThresholdAndDirection(airport av.ICAOAirportCode, rwy av.RunwayID, nmPerLongitude float32) ([2]float32, [2]float32, bool) {
+// runwayStartAndDirection returns where a takeoff roll on the runway starts
+// and its unit departure direction, in nm coordinates.
+func runwayStartAndDirection(airport av.ICAOAirportCode, rwy av.RunwayID, nmPerLongitude float32) ([2]float32, [2]float32, bool) {
 	runway, ok := av.LookupRunway(db.Lookups{}, airport, rwy.Base())
 	if !ok {
 		return [2]float32{}, [2]float32{}, false
@@ -748,8 +748,8 @@ func runwayThresholdAndDirection(airport av.ICAOAirportCode, rwy av.RunwayID, nm
 	if !ok {
 		return [2]float32{}, [2]float32{}, false
 	}
-	t := math.LL2NM(runway.Threshold, nmPerLongitude)
-	o := math.LL2NM(opp.Threshold, nmPerLongitude)
+	t := math.LL2NM(runway.Start, nmPerLongitude)
+	o := math.LL2NM(opp.Start, nmPerLongitude)
 	return t, math.Normalize2f(math.Sub2f(o, t)), true
 }
 
@@ -760,14 +760,14 @@ func (s *Sim) airborneBeforeIntersection(dep DepartureAircraft, airport av.ICAOA
 		// It didn't get airborne within the horizon of the takeoff-roll simulation.
 		return false
 	}
-	threshold, dir, ok := runwayThresholdAndDirection(airport, rwy, s.State.NmPerLongitude)
+	start, dir, ok := runwayStartAndDirection(airport, rwy, s.State.NmPerLongitude)
 	if !ok {
 		return true // shouldn't happen; be conservative and require the full interval
 	}
-	// Signed distance from the threshold to the intersection point along
-	// the runway; negative if pt is behind the threshold, in which case the
+	// Signed distance from the start of the roll to the intersection point
+	// along the runway; negative if pt is behind it, in which case the
 	// aircraft is never on the ground there.
-	d := math.Dot(math.Sub2f(math.LL2NM(pt, s.State.NmPerLongitude), threshold), dir)
+	d := math.Dot(math.Sub2f(math.LL2NM(pt, s.State.NmPerLongitude), start), dir)
 	return dep.AirborneDistance <= d
 }
 
@@ -778,7 +778,7 @@ func (s *Sim) departureHasPassedPoint(dep DepartureAircraft, airport av.ICAOAirp
 	if !ok {
 		return true // it's been deleted, so it's long gone
 	}
-	_, dir, ok := runwayThresholdAndDirection(airport, rwy, s.State.NmPerLongitude)
+	_, dir, ok := runwayStartAndDirection(airport, rwy, s.State.NmPerLongitude)
 	if !ok {
 		return false
 	}

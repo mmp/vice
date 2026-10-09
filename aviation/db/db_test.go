@@ -13,6 +13,23 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+func TestCustomAirportRunwayStarts(t *testing.T) {
+	InitDB()
+	_, custom := parseAirports()
+	for _, id := range util.SortedMapKeys(custom) {
+		ap, ok := DB.Airports[id]
+		if !ok || len(ap.Runways) != len(custom[id].Runways) {
+			t.Errorf("%s: custom airport runways missing from database", id)
+			continue
+		}
+		for _, rwy := range ap.Runways {
+			if rwy.Start.IsZero() || rwy.Start != rwy.Threshold {
+				t.Errorf("%s runway %s: start %v, want threshold %v", id, rwy.Id, rwy.Start, rwy.Threshold)
+			}
+		}
+	}
+}
+
 func TestAirportTimeZone(t *testing.T) {
 	InitDB()
 

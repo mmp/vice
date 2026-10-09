@@ -271,8 +271,8 @@ func tryInitializeTestExitRoute(t *testing.T, er ExitRoute, route string) (ExitR
 	at := func(p [2]float32) math.Point2LL {
 		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
 	}
-	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
-	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
+	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0}), Start: at([2]float32{0, 0})}
+	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0}), Start: at([2]float32{2, 0})}
 
 	if route != "" {
 		wps, err := parseWaypoints(route)
@@ -581,8 +581,8 @@ func TestChartedSIDRoute(t *testing.T) {
 	at := func(p [2]float32) math.Point2LL {
 		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
 	}
-	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
-	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
+	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0}), Start: at([2]float32{0, 0})}
+	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0}), Start: at([2]float32{2, 0})}
 
 	route := func(s string) WaypointArray {
 		wps, err := parseWaypoints(s)
@@ -746,7 +746,7 @@ func TestSIDOffsetActions(t *testing.T) {
 	at := func(p [2]float32) math.Point2LL {
 		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
 	}
-	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
+	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0}), Start: at([2]float32{2, 0})}
 
 	route := func(s string) WaypointArray {
 		wps, err := parseWaypoints(s)
@@ -802,7 +802,7 @@ func TestSIDOffsetActions(t *testing.T) {
 		if e.HaveErrors() {
 			t.Fatal(e.String())
 		}
-		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
+		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0}), Start: at([2]float32{0, 0})}
 		er.initialize(loc, "KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
 		if e.HaveErrors() {
 			t.Fatal(e.String())
@@ -822,7 +822,7 @@ func TestSIDOffsetActions(t *testing.T) {
 		if e.HaveErrors() {
 			t.Fatal(e.String())
 		}
-		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
+		r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0}), Start: at([2]float32{0, 0})}
 		er.initialize(loc, "KXXX", "9", r, rend, nmPerLongitude, 0, nil, Waypoint{}, &e)
 		if !strings.Contains(e.String(), "departure end of the runway") {
 			t.Errorf("didn't get the expected error; got: %s", e.String())
@@ -859,8 +859,8 @@ func TestExitRouteFirstFixBehindRunway(t *testing.T) {
 	at := func(p [2]float32) math.Point2LL {
 		return math.NM2LL([2]float32{100 + p[0], 100 + p[1]}, nmPerLongitude)
 	}
-	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0})}
-	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0})}
+	r := Runway{Id: "9", Heading: 90, Threshold: at([2]float32{0, 0}), Start: at([2]float32{0, 0})}
+	rend := Runway{Id: "27", Heading: 270, Threshold: at([2]float32{2, 0}), Start: at([2]float32{2, 0})}
 	for _, tc := range []struct {
 		name string
 		at   [2]float32 // nm east, north of the threshold

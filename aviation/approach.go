@@ -212,12 +212,9 @@ func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, db Database, nmPer
 
 		// Add the final fix at the runway threshold.
 		alt := rwy.Elevation + rwy.ThresholdCrossingHeight
-		threshold := math.Offset2LL(rwy.Threshold, math.MagneticToTrue(rwy.Heading, magneticVariation),
-			rwy.DisplacedThresholdDistance, nmPerLongitude)
-
 		thresholdWP := Waypoint{
 			Fix:      "_" + ap.Runway + "_THRESHOLD",
-			Location: threshold,
+			Location: rwy.Threshold,
 			Flags:    WaypointFlagFlyOver,
 		}
 		thresholdWP.MergeActions(WaypointActions{Land: true})
