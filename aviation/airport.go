@@ -126,6 +126,9 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 				if len(appr.Waypoints) > 0 {
 					e.ErrorString(`"waypoints" cannot be given with "cifp_id" approaches`)
 				}
+				if appr.FullName == "" {
+					appr.FullName = dbAppr.FullName
+				}
 
 				if dbAppr.Runway == "" {
 					if appr.Runway == "" {
@@ -180,6 +183,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		}
 		requireFAF := appr.Type != ChartedVisualApproach && appr.Type != VisualApproach
 		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions, checkScratchpad)
+		appr.checkCourseAlignment(nmPerLongitude, magneticVariation, e)
 
 		appr.finalizeReportingPoints(db, ap.Location, e)
 
@@ -630,13 +634,12 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		ap.ATPAVolumes = make(map[string]*ATPAVolume)
 	}
 	runways := db.AirportRunways(icao)
-	thresholds := make(map[string]math.Point2LL)
 	headings := make(map[string]math.MagneticHeading)
 	for _, rwy := range runways {
 		if _, ok := ap.ATPAVolumes[rwy.Id]; !ok {
 			ap.ATPAVolumes[rwy.Id] = &ATPAVolume{}
 		}
-		thresholds[rwy.Id], headings[rwy.Id] = ap.atpaCourse(db, icao, rwy, nmPerLongitude, magneticVariation)
+		headings[rwy.Id] = ap.atpaHeading(db, icao, rwy, nmPerLongitude, magneticVariation)
 	}
 
 	for rwy, vol := range ap.ATPAVolumes {
@@ -652,7 +655,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			vol.Threshold.Resolve(db, "runway_threshold", e)
 			handWritten := !vol.Threshold.IsZero() || vol.Heading != 0
 			if vol.Threshold.IsZero() {
-				vol.Threshold.Point2LL = thresholds[r.Id]
+				vol.Threshold.Point2LL = r.Threshold
 			}
 			if vol.Heading == 0 {
 				vol.Heading = headings[r.Id]
@@ -737,44 +740,34 @@ func checkATPACourse(vol *ATPAVolume, rwy Runway, runways []Runway, headings map
 	}
 }
 
-// atpaCourse returns the threshold and heading of a runway's ATPA volume when
-// the scenario doesn't give them. Where the runway has a localizer approach, the
-// volume follows its final approach segment: a localizer may be offset from its
-// runway (KSLC 35's LDA is 5 degrees off). RNAV finals aren't used since they
-// may curve after the FAF, and finals more than 30 degrees off the runway are
+// atpaHeading returns the heading of a runway's ATPA volume when the scenario
+// doesn't give one. Where the runway has a localizer approach, the volume
+// follows its final approach course: a localizer may be offset from its runway
+// (KSLC 35's LDA is 5 degrees off). RNAV finals aren't used since they may
+// curve after the FAF, and finals more than 30 degrees off the runway are
 // circling approaches. Otherwise the volume follows the runway's surveyed
 // alignment rather than its published magnetic bearing, which may be referenced
 // to an outdated magnetic variation.
-func (ap *Airport) atpaCourse(db Database, icao ICAOAirportCode, rwy Runway, nmPerLongitude,
-	magneticVariation float32) (math.Point2LL, math.MagneticHeading) {
+func (ap *Airport) atpaHeading(db Database, icao ICAOAirportCode, rwy Runway, nmPerLongitude,
+	magneticVariation float32) math.MagneticHeading {
 	rwyHeading := math.MagneticToTrue(rwy.Heading, magneticVariation)
 	if opp, ok := LookupOppositeRunway(db, icao, rwy.Id); ok {
 		rwyHeading = math.Heading2LL(rwy.Threshold, opp.Threshold, nmPerLongitude)
 	}
+	offset := func(course math.TrueHeading) float32 { return math.HeadingDifference(course, rwyHeading) }
 
-	heading := func(seg [2]math.Point2LL) math.TrueHeading { return math.Heading2LL(seg[0], seg[1], nmPerLongitude) }
-	offset := func(seg [2]math.Point2LL) float32 { return math.HeadingDifference(heading(seg), rwyHeading) }
-
-	var finals [][2]math.Point2LL
+	var finals []math.TrueHeading
 	for _, appr := range ap.ApproachesToRunway(rwy.Id) {
-		if appr.Type != ILSApproach && appr.Type != LocalizerApproach {
-			continue
-		}
-		for _, wps := range appr.Waypoints {
-			if i := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF() }); i != -1 && i+1 < len(wps) {
-				finals = append(finals, [2]math.Point2LL{wps[i].Location, wps[i+1].Location})
-			}
+		if appr.Type.HasLocalizer() {
+			finals = append(finals, appr.FinalApproachCourse(nmPerLongitude, magneticVariation))
 		}
 	}
-	finals = slices.DeleteFunc(finals, func(seg [2]math.Point2LL) bool { return offset(seg) > 30 })
+	finals = slices.DeleteFunc(finals, func(course math.TrueHeading) bool { return offset(course) > 30 })
 	if len(finals) == 0 {
-		return rwy.Threshold, math.TrueToMagnetic(rwyHeading, magneticVariation)
+		return math.TrueToMagnetic(rwyHeading, magneticVariation)
 	}
-
-	final := slices.MinFunc(finals, func(a, b [2]math.Point2LL) int { return cmp.Compare(offset(a), offset(b)) })
-	line := [2][2]float32{math.LL2NM(final[0], nmPerLongitude), math.LL2NM(final[1], nmPerLongitude)}
-	threshold := math.ClosestPointOnLine(line, math.LL2NM(rwy.Threshold, nmPerLongitude))
-	return math.NM2LL(threshold, nmPerLongitude), math.TrueToMagnetic(heading(final), magneticVariation)
+	final := slices.MinFunc(finals, func(a, b math.TrueHeading) int { return cmp.Compare(offset(a), offset(b)) })
+	return math.TrueToMagnetic(final, magneticVariation)
 }
 
 func (ap Airport) HasIFROperations() bool {

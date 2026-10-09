@@ -24,10 +24,18 @@ const (
 	VisualApproach
 	LocalizerApproach
 	VORApproach
+	LDAApproach
+	NDBApproach
 )
 
 func (at ApproachType) String() string {
-	return []string{"Unknown", "ILS", "RNAV", "Charted Visual", "Visual", "Localizer", "VOR"}[at]
+	return []string{"Unknown", "ILS", "RNAV", "Charted Visual", "Visual", "Localizer", "VOR", "LDA", "NDB"}[at]
+}
+
+// HasLocalizer reports whether the approach is flown on a localizer: a
+// straight course to intercept, which may be offset from the runway.
+func (at ApproachType) HasLocalizer() bool {
+	return at == ILSApproach || at == LocalizerApproach || at == LDAApproach
 }
 
 func (at ApproachType) MarshalJSON() ([]byte, error) {
@@ -46,6 +54,10 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 		return []byte(`"Localizer"`), nil
 	case VORApproach:
 		return []byte(`"VOR"`), nil
+	case LDAApproach:
+		return []byte(`"LDA"`), nil
+	case NDBApproach:
+		return []byte(`"NDB"`), nil
 	default:
 		return nil, fmt.Errorf("unhandled approach type in MarshalJSON()")
 	}
@@ -79,6 +91,14 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 
 	case `"VOR"`:
 		*at = VORApproach
+		return nil
+
+	case `"LDA"`:
+		*at = LDAApproach
+		return nil
+
+	case `"NDB"`:
+		*at = NDBApproach
 		return nil
 
 	default:
@@ -175,17 +195,10 @@ func (ap *Approach) finalizeReportingPoints(loc Locator, airport math.Point2LL, 
 	}
 }
 
-// DefaultFullName is the approach's name as it is charted, worked out from
-// its CIFP identifier: RZ22L is "RNAV Z Runway 22L".
+// DefaultFullName is the name of an approach that neither the scenario nor
+// the CIFP names: its type and runway.
 func (ap Approach) DefaultFullName() string {
-	name := ap.Type.String() + " "
-	if len(ap.Id) >= 3 && ap.Id[1] >= 'W' && ap.Id[1] <= 'Z' {
-		name += string(ap.Id[1]) + " "
-	}
-	if len(ap.Id) >= 3 && ap.Id[0] == 'G' {
-		name += "GPS "
-	}
-	return name + "Runway " + ap.Runway
+	return ap.Type.String() + " Runway " + ap.Runway
 }
 
 // InitializeWaypoints resolves waypoint locations and adds the runway
@@ -272,10 +285,58 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) (Waypo
 	}
 }
 
-func (ap *Approach) ExtendedCenterline(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+// FinalApproachCourseLine returns two points along the approach's final
+// approach course, in the direction of landing. An approach flown on a
+// localizer follows the line from its FAF to the runway threshold, since a
+// localizer may be offset from its runway (KSLC 35's LDA is 5 degrees off).
+// The FAF and the threshold are the two most precisely placed points on the
+// final: the fix before the FAF may sit off the course, and a step-down fix
+// after it gives too short a baseline. An LDA's course passes a few hundred
+// feet from the threshold at most, so the line is within half a degree of it.
+// Other approaches follow the runway's extended centerline, as their ATPA
+// volumes do.
+func (ap *Approach) FinalApproachCourseLine(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+	if ap.Type.HasLocalizer() {
+		if wps, _ := ap.FAFSegment(nmPerLongitude, magneticVariation); wps != nil {
+			if i := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF() }); i != -1 {
+				return [2]math.Point2LL{wps[i].Location, ap.Threshold}
+			}
+		}
+	}
 	return [2]math.Point2LL{ap.Threshold, ap.OppositeThreshold}
 }
 
+// FinalApproachCourse returns the true course of the approach's final
+// approach course.
+func (ap *Approach) FinalApproachCourse(nmPerLongitude, magneticVariation float32) math.TrueHeading {
+	line := ap.FinalApproachCourseLine(nmPerLongitude, magneticVariation)
+	return math.Heading2LL(line[0], line[1], nmPerLongitude)
+}
+
+// maxLocalizerOffset is how far, in degrees, an ILS or localizer approach's
+// final approach course may be from its runway: a localizer offset further
+// than that is an LDA. The largest offset among the CIFP's ILS and localizer
+// approaches is 3.1 degrees (KHWD's localizer 28L).
+const maxLocalizerOffset = 3.5
+
+// checkCourseAlignment reports an ILS or localizer approach whose final
+// approach course isn't aligned with its runway. Those are usually hand-written
+// approaches of some other kind that were given the type so that aircraft
+// would intercept them like a localizer; an aircraft cleared for one would
+// otherwise join the runway's extended centerline and then turn to the fixes.
+func (ap *Approach) checkCourseAlignment(nmPerLongitude, magneticVariation float32, e *util.ErrorLogger) {
+	if (ap.Type != ILSApproach && ap.Type != LocalizerApproach) || ap.Threshold.IsZero() || ap.OppositeThreshold.IsZero() {
+		return
+	}
+	offset := math.HeadingDifference(ap.FinalApproachCourse(nmPerLongitude, magneticVariation), ap.RunwayHeading(nmPerLongitude))
+	if offset > maxLocalizerOffset {
+		e.ErrorString(`final approach course is %.0f degrees off runway %s; %s approaches must be within %.1f degrees `+
+			`of the runway. Use "LDA" for an offset localizer, or the approach's actual type`, offset, ap.Runway, ap.Type, maxLocalizerOffset)
+	}
+}
+
+// RunwayHeading returns the true heading of the approach's runway, from its
+// threshold to the opposite runway's.
 func (ap *Approach) RunwayHeading(nmPerLongitude float32) math.TrueHeading {
 	return math.Heading2LL(ap.Threshold, ap.OppositeThreshold, nmPerLongitude)
 }

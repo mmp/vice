@@ -5,6 +5,7 @@
 package main
 
 import (
+	"cmp"
 	"slices"
 	"strconv"
 	"strings"
@@ -316,7 +317,7 @@ func (t *ttsTab) build(airports []av.ICAOAirportCode) {
 		}
 		for name, appr := range util.SortedMap(ap.Approaches) {
 			procedures = append(procedures, procedure{kind: "APPR",
-				name:  t.word(name, speech.GetApproachTelephony(appr.DefaultFullName())),
+				name:  t.word(name, speech.GetApproachTelephony(cmp.Or(appr.FullName, appr.DefaultFullName()))),
 				fixes: t.routeWords(appr.Waypoints)})
 		}
 

@@ -374,6 +374,66 @@ func TestParseARINC424RunwayStart(t *testing.T) {
 	}
 }
 
+// Approaches are typed and named by the route type letter that starts their
+// CIFP identifier; a kind vice doesn't know is left out.
+func TestParseARINC424ApproachTypes(t *testing.T) {
+	// The final approach of KLNK's ILS Y 18, with its identifier and route
+	// type replaced.
+	records := func(letter byte) string {
+		lines := []string{
+			"SUSAP KLNKK3F%c18   %c      010ESACOK3PC0E  I    IF IOCZK3      35730110        PI  J 032000290018000                 0 NS   439882110",
+			"SUSAP KLNKK3F%c18   %c      020CLONEK3PC0E  F    CF IOCZK3      3573007217700038PI  H 0290002837        -300LNK   K3D 0 NS   439892110",
+			"SUSAP KLNKK3F%c18   %c      030RW18 K3PG0GY M    CF IOCZK3      3573002317700049PI    01250             -300          0 NS   439902110",
+		}
+		var s string
+		for _, l := range lines {
+			s += fmt.Sprintf(l, letter, letter) + "\r\n"
+		}
+		return s
+	}
+
+	for _, tc := range []struct {
+		letter byte
+		typ    av.ApproachType
+		name   string
+	}{
+		{'I', av.ILSApproach, "ILS Runway 18"},
+		{'L', av.LocalizerApproach, "Localizer Runway 18"},
+		{'B', av.LocalizerApproach, "Localizer Back Course Runway 18"},
+		{'X', av.LDAApproach, "LDA Runway 18"},
+		{'R', av.RNAVApproach, "RNAV Runway 18"},
+		{'H', av.RNAVApproach, "RNAV Runway 18"},
+		{'P', av.RNAVApproach, "GPS Runway 18"},
+		{'V', av.VORApproach, "VOR Runway 18"},
+		{'S', av.VORApproach, "VOR Runway 18"},
+		{'D', av.VORApproach, "VOR DME Runway 18"},
+		{'N', av.NDBApproach, "NDB Runway 18"},
+		{'Q', av.NDBApproach, "NDB DME Runway 18"},
+		{'T', av.UnknownApproach, ""}, // TACAN: not in the FAA's file, so not handled
+	} {
+		result := ParseARINC424(strings.NewReader(records(tc.letter)))
+		approaches := result.Airports["KLNK"].Approaches
+		if tc.typ == av.UnknownApproach {
+			if len(approaches) != 0 {
+				t.Errorf("%c: expected no approach, got %v", tc.letter, approaches)
+			}
+			continue
+		}
+		id := string(tc.letter) + "18"
+		if tc.letter == 'H' {
+			id = "R18"
+		}
+		appr, ok := approaches[id]
+		if !ok {
+			t.Errorf("%c: no %s approach in %v", tc.letter, id, approaches)
+		} else if appr.Type != tc.typ {
+			t.Errorf("%c: type %s, expected %s", tc.letter, appr.Type, tc.typ)
+		} else if appr.FullName != tc.name {
+			t.Errorf("%c: named %q, expected %q", tc.letter, appr.FullName, tc.name)
+		}
+	}
+}
+
 func TestParseARINC424ApproachCourseIntercept(t *testing.T) {
 	lines := []string{
 		"SUSAP KLNKK3FI18-Y AHUSKR 010HUSKRK3EA0E  A    IF                                             18000                 0 NS   439802110",
@@ -393,6 +453,9 @@ func TestParseARINC424ApproachCourseIntercept(t *testing.T) {
 	appr, ok := result.Airports["KLNK"].Approaches["IY18"]
 	if !ok {
 		t.Fatalf("expected KLNK IY18 approach, got %v", result.Airports["KLNK"].Approaches)
+	}
+	if appr.FullName != "ILS Y Runway 18" {
+		t.Errorf("named %q, expected \"ILS Y Runway 18\"", appr.FullName)
 	}
 
 	transition := func(fix string) av.WaypointArray {

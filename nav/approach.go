@@ -29,8 +29,8 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 	var courseLine [2]math.Point2LL
 	var interceptWaypoints av.WaypointArray // waypoints from intercept point forward
 	if hasLocalizer {
-		courseTrue = ap.RunwayHeading(nav.FlightState.NmPerLongitude)
-		courseLine = ap.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		courseTrue = ap.FinalApproachCourse(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		courseLine = ap.FinalApproachCourseLine(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	} else if nav.Approach.InterceptState == TurningToJoin {
 		// Already committed to a segment; use cached values.
 		courseLine = nav.Approach.InterceptCourseLine
@@ -147,7 +147,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 		// We're established on the approach course. Figure out which
 		// fixes are still ahead and add them to the aircraft's waypoints.
 		if hasLocalizer {
-			apHeading := ap.RunwayHeading(nav.FlightState.NmPerLongitude)
+			apHeading := ap.FinalApproachCourse(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 			wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 			// The aircraft joins wherever the intercept brings it, which may
@@ -250,7 +250,7 @@ func (nav *Nav) approachRecoveryFeasible(ap *av.Approach) bool {
 	// that crossed final can still be given a corrective intercept without
 	// immediately asking ATC for new vectors. The previous 2° cone was too
 	// narrow and rejected ordinary intercept recoveries several miles out.
-	cl := ap.ExtendedCenterline(nmPerLong, magVar)
+	cl := ap.FinalApproachCourseLine(nmPerLong, magVar)
 	posNM := math.LL2NM(pos, nmPerLong)
 	cl0NM := math.LL2NM(cl[0], nmPerLong)
 	cl1NM := math.LL2NM(cl[1], nmPerLong)
@@ -419,7 +419,7 @@ func (nav *Nav) InterceptApproach(joinFix string) speech.CommandIntent {
 	// the localizer route when an ILS/Localizer reference is available.
 	if ap.Type == av.VisualApproach && nav.Approach.InterceptedReference == nil {
 		for _, ref := range nav.Approach.VisualReferences {
-			if ref.Type == av.ILSApproach || ref.Type == av.LocalizerApproach {
+			if ref.Type.HasLocalizer() {
 				nav.Approach.InterceptedReference = ref
 				break
 			}
@@ -472,7 +472,7 @@ func (nav *Nav) routeDirectIfNeeded(fix string, simTime Time, delayReduction tim
 // committed to an ILS-style route.
 func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
 	for _, ref := range nav.Approach.VisualReferences {
-		if ref.Type != av.ILSApproach && ref.Type != av.LocalizerApproach {
+		if !ref.Type.HasLocalizer() {
 			continue
 		}
 		for _, route := range ref.Waypoints {
@@ -836,8 +836,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	}
 
 	// Aircraft has been routed onto an ILS/Localizer reference; fly that.
-	if ref := nav.Approach.InterceptedReference; ref != nil &&
-		(ref.Type == av.ILSApproach || ref.Type == av.LocalizerApproach) {
+	if ref := nav.Approach.InterceptedReference; ref != nil && ref.Type.HasLocalizer() {
 		// Deep-copy + strip procedure turns: don't alias airport.Approaches[id].Waypoints,
 		// and a cleared visual shouldn't fly the underlying ILS's PT.
 		out := make([]av.WaypointArray, len(ref.Waypoints))
@@ -926,26 +925,23 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 // approaches are always included when present so direct-to-fix and at-fix
 // intercepts against a localizer route work after EVA. The "visual-style"
 // component is chosen by priority: VisualApproach if any are charted for the
-// runway, else VOR, else RNAV, else ChartedVisual. Returns an empty slice
+// runway, else VOR, else NDB, else RNAV, else ChartedVisual. Returns an empty slice
 // when no approaches at all are defined for the runway base.
 func selectVisualReferences(airport *av.Airport, runway string) []*av.Approach {
 	runwayBase := av.RunwayID(runway).Base()
-	matches := func(types ...av.ApproachType) []*av.Approach {
+	matches := func(match func(av.ApproachType) bool) []*av.Approach {
 		var out []*av.Approach
 		for ap := range util.SortedMapValues(airport.Approaches) {
-			if av.RunwayID(ap.Runway).Base() != runwayBase {
-				continue
-			}
-			if slices.Contains(types, ap.Type) {
+			if av.RunwayID(ap.Runway).Base() == runwayBase && match(ap.Type) {
 				out = append(out, ap)
 			}
 		}
 		return out
 	}
 
-	refs := matches(av.ILSApproach, av.LocalizerApproach)
-	for _, t := range []av.ApproachType{av.VisualApproach, av.VORApproach, av.RNAVApproach, av.ChartedVisualApproach} {
-		if extras := matches(t); len(extras) > 0 {
+	refs := matches(av.ApproachType.HasLocalizer)
+	for _, t := range []av.ApproachType{av.VisualApproach, av.VORApproach, av.NDBApproach, av.RNAVApproach, av.ChartedVisualApproach} {
+		if extras := matches(func(at av.ApproachType) bool { return at == t }); len(extras) > 0 {
 			refs = append(refs, extras...)
 			break
 		}

@@ -3561,7 +3561,7 @@
         "V30": {
           "full_name": "Visual Runway 30",
           "runway": "30",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": [
             "NODUQ/a5000 JAZEE/faf/a4700 WOSIR/a2220 N034.16.31.474,W118.26.07.227/a1960 N034.14.58.489,W118.25.17.376/a1460/arc1.1 N034.15.06.564,W118.24.22.033"
           ]
@@ -5913,13 +5913,13 @@
         "V29": {
           "full_name": "VOR DME Runway 29",
           "runway": "29",
-          "type": "ILS",
+          "type": "VOR",
           "waypoints": ["PGY/iaf/nopt180/hilpt/a4900 ZEKIR/a3600/faf ZAPUD/a2000"]
         },
         "T29": {
           "full_name": "TACAN Runway 29",
           "runway": "29",
-          "type": "ILS",
+          "type": "VOR",
           "waypoints": [
             "SKATE/iaf/a3000 OBIME N032.33.54.722,W117.17.16.367 OCABI/arc9NZY ORPUE/if/a3000/arc9NZY ORTEE/a1600/faf OSBUE"
           ]
@@ -5927,7 +5927,7 @@
         "H29": {
           "full_name": "HI-TACAN Runway 29",
           "runway": "29",
-          "type": "ILS",
+          "type": "VOR",
           "waypoints": [
             "MYSTY/iaf/a12000 SKATE/iaf OBIME N032.33.54.722,W117.17.16.367 OCABI/arc9NZY ORPUE/if/a3000/arc9NZY ORTEE/a1600/faf OSBUE"
           ]
@@ -7507,7 +7507,7 @@
         },
         "T14": {
           "runway": "14",
-          "type": "ILS",
+          "type": "VOR",
           "full_name": "TACAN Runway 14",
           "waypoints": ["SAKQU/if/a4500 JEGEX/faf MEKIE"]
         },
@@ -8051,7 +8051,7 @@
         "V21": {
           "full_name": "Visual Runway 21",
           "runway": "21",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": ["DARTS/if/a4200+ MOVVE/faf/a3000 MIPTE/a1440"]
         }
       },

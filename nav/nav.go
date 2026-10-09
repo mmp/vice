@@ -287,15 +287,8 @@ func (na *Approach) EffectivelyCleared() bool {
 // HasLocalizer reports whether the aircraft is currently flying localizer-style
 // course geometry.
 func (na *Approach) HasLocalizer() bool {
-	if na.Assigned != nil &&
-		(na.Assigned.Type == av.ILSApproach || na.Assigned.Type == av.LocalizerApproach) {
-		return true
-	}
-	if na.InterceptedReference != nil &&
-		(na.InterceptedReference.Type == av.ILSApproach || na.InterceptedReference.Type == av.LocalizerApproach) {
-		return true
-	}
-	return false
+	return (na.Assigned != nil && na.Assigned.Type.HasLocalizer()) ||
+		(na.InterceptedReference != nil && na.InterceptedReference.Type.HasLocalizer())
 }
 
 // clearedForVisualApproach reports whether the aircraft has been cleared for
@@ -923,15 +916,15 @@ func (nav *Nav) closingOnCourseLine(line [2]math.Point2LL, wxs wx.Sample) bool {
 	return angle*nav.signedCourseLineDistance(line) < 0 && math.Abs(angle) >= minInterceptAngle
 }
 
-// OnExtendedCenterline checks if the flight position is less than maxNmDeviation
-// from the infinite line defined by the assigned approach localizer
+// OnExtendedCenterline checks if the flight position is less than
+// maxNmDeviation from the assigned approach's final approach course.
 func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	approach := nav.Approach.Assigned
 	if approach == nil {
 		return false
 	}
 
-	cl := approach.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+	cl := approach.FinalApproachCourseLine(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	return nav.onCourseLine(cl, maxNmDeviation)
 }
 

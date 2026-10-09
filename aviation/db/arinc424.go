@@ -1561,16 +1561,32 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 
 	appr := av.Approach{Id: tidyFAAApproachId(recs[0].id)}
 
+	// The route type (ARINC 424 section 5.7) gives the approach's type and
+	// the first words of its charted name.
+	var kind string
 	switch recs[0].id[0] {
-	case 'H', 'R':
-		appr.Type = av.RNAVApproach
+	case 'I':
+		appr.Type, kind = av.ILSApproach, "ILS"
 	case 'L':
-		appr.Type = av.LocalizerApproach
-	case 'V', 'S':
-		appr.Type = av.VORApproach
+		appr.Type, kind = av.LocalizerApproach, "Localizer"
+	case 'B':
+		appr.Type, kind = av.LocalizerApproach, "Localizer Back Course"
+	case 'X':
+		appr.Type, kind = av.LDAApproach, "LDA"
+	case 'R', 'H': // RNAV, RNAV (RNP)
+		appr.Type, kind = av.RNAVApproach, "RNAV"
+	case 'P':
+		appr.Type, kind = av.RNAVApproach, "GPS"
+	case 'V', 'S': // VOR, VOR with a VOR/DME or VORTAC
+		appr.Type, kind = av.VORApproach, "VOR"
+	case 'D':
+		appr.Type, kind = av.VORApproach, "VOR DME"
+	case 'N':
+		appr.Type, kind = av.NDBApproach, "NDB"
+	case 'Q':
+		appr.Type, kind = av.NDBApproach, "NDB DME"
 	default:
-		// TODO? 'B': Localizer Back Course, 'X': LDA
-		appr.Type = av.ILSApproach
+		return nil
 	}
 
 	// RZ22L -> 22L, IC32 -> 32C
@@ -1586,6 +1602,16 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 			}
 			break
 		}
+	}
+
+	// RZ22L is "RNAV Z Runway 22L". An approach that isn't runway-specific
+	// is named once the scenario says which runway it serves.
+	if appr.Runway != "" {
+		appr.FullName = kind + " "
+		if appr.Id[1] >= 'W' && appr.Id[1] <= 'Z' {
+			appr.FullName += string(appr.Id[1]) + " "
+		}
+		appr.FullName += "Runway " + appr.Runway
 	}
 
 	/*

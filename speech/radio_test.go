@@ -254,3 +254,18 @@ func TestAirwaySpoken(t *testing.T) {
 		}
 	}
 }
+
+func TestApproachTelephony(t *testing.T) {
+	for _, tc := range []struct{ name, spoken string }{
+		{"ILS Runway 22L", "I L S runway two two left"},
+		{"RNAV Z Runway 13L", "r-nav zulu runway one three left"},
+		{"LDA Runway 35", "L D A runway three five"},
+		{"VOR DME Runway 23L", "V O R D M E runway two three left"},
+		{"NDB Runway 34", "N D B runway three four"},
+		{"Localizer Back Course Runway 2L", "Localizer Back Course runway two left"},
+	} {
+		if got := GetApproachTelephony(tc.name); got != tc.spoken {
+			t.Errorf("%q: got %q, want %q", tc.name, got, tc.spoken)
+		}
+	}
+}

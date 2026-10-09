@@ -666,7 +666,7 @@ func (f *FlightTest) SignedCenterlineDistance() float32 {
 	}
 	nmPerLong := f.nav.FlightState.NmPerLongitude
 	magVar := f.nav.FlightState.MagneticVariation
-	cl := ap.ExtendedCenterline(nmPerLong, magVar)
+	cl := ap.FinalApproachCourseLine(nmPerLong, magVar)
 	acftNM := math.LL2NM(f.nav.FlightState.Position, nmPerLong)
 	cl0NM := math.LL2NM(cl[0], nmPerLong)
 	cl1NM := math.LL2NM(cl[1], nmPerLong)

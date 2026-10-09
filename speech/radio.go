@@ -1187,6 +1187,8 @@ func ApproachTelephonyComponents(approach string) (types []string, runway string
 				types = append(types, "localizer")
 			} else if upper == "LDA" {
 				types = append(types, "L D A")
+			} else if upper == "DME" {
+				types = append(types, "D M E")
 			} else if upper == "NDB" {
 				types = append(types, "N D B")
 			} else if sp, ok := spokenLetters[upper]; ok {

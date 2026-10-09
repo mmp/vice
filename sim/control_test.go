@@ -449,6 +449,45 @@ func TestRunOneControlCommandAtFixClearedStraightInApproach(t *testing.T) {
 	}
 }
 
+// An approach whose scenario name reads as an expedite command ("D26" at
+// KLNS) is still expected as an approach; without such an approach the
+// command is the expedite.
+func TestRunOneControlCommandExpectApproachNamedLikeExpedite(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+	callsign := av.ADSBCallsign("TEST123")
+	for _, tc := range []struct {
+		name       string
+		approaches map[string]*av.Approach
+		expect     bool
+	}{
+		{"approach D26", map[string]*av.Approach{"D26": {FullName: "VOR DME Runway 26", Type: av.VORApproach, Runway: "26",
+			Waypoints: []av.WaypointArray{{{Fix: "AVOCI"}}}}}, true},
+		{"no such approach", nil, false},
+	} {
+		s := NewTestSim(lg)
+		s.State.CurrentConsolidation["TCW1"] = &TCPConsolidation{PrimaryTCP: "1A"}
+		s.State.Airports["KLNS"] = &av.Airport{Approaches: tc.approaches}
+		s.Aircraft[callsign] = &Aircraft{
+			ADSBCallsign:        callsign,
+			ControllerFrequency: "1A",
+			ArrivalAirport:      "KLNS",
+			Nav:                 nav.Nav{Waypoints: []av.Waypoint{{Fix: "AVOCI"}}, FlightState: nav.FlightState{Altitude: 8000}},
+		}
+
+		intent, err := s.runOneControlCommand("TCW1", callsign, "ED26", 0)
+		if err != nil {
+			t.Fatalf("%s: runOneControlCommand() returned error: %v", tc.name, err)
+		}
+		approachIntent, ok := intent.(speech.ApproachIntent)
+		if ok != tc.expect {
+			t.Fatalf("%s: runOneControlCommand() returned %T (%v), expected an approach intent: %v", tc.name, intent, intent, tc.expect)
+		}
+		if ok && (approachIntent.Type != speech.ApproachExpect || s.Aircraft[callsign].Nav.Approach.AssignedId != "D26") {
+			t.Errorf("%s: intent %v, assigned approach %q", tc.name, approachIntent, s.Aircraft[callsign].Nav.Approach.AssignedId)
+		}
+	}
+}
+
 func TestParseHeading(t *testing.T) {
 	for _, tc := range []struct {
 		spec    string

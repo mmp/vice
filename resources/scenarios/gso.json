@@ -21,17 +21,11 @@
         "Y32": {
           "cifp_id": "LY32"
         },
-        "I23L": {
+        "D23L": {
           "cifp_id": "D23L"
         },
         "R32": {
           "cifp_id": "R32"
-        },
-        "I23R": {
-          "full_name": "ILS Runway 23R",
-          "runway": "23R",
-          "type": "ILS",
-          "waypoints": ["LIB/iaf/a3100 HEVED/iaf/faf/pt45/a3100/pta2800"]
         },
         "R23L": {
           "cifp_id": "R23L"

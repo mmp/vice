@@ -2258,9 +2258,28 @@ func TestGetApproachPopulatesVisualReferencesForNamedVisual(t *testing.T) {
 	}
 }
 
+func TestGetApproachSynthesizesVisualFromNDB(t *testing.T) {
+	ndb, ok := db.DB.Airports["KAWO"].Approaches["N34"]
+	if !ok {
+		t.Fatal("missing KAWO N34 approach")
+	}
+	airport := &av.Airport{Approaches: map[string]*av.Approach{"N34": &ndb}}
+	n := Nav{FlightState: FlightState{ArrivalAirport: av.Waypoint{Fix: "KAWO"}}}
+	ap, refs, err := n.getApproach(airport, "_VIS34")
+	if err != nil {
+		t.Fatalf("getApproach(_VIS34): %v", err)
+	}
+	if ap.Type != av.VisualApproach || ap.Runway != "34" || len(ap.Waypoints) == 0 {
+		t.Fatalf("expected visual approach to runway 34 with reference routes, got %+v", ap)
+	}
+	if len(refs) != 1 || refs[0] != &ndb {
+		t.Errorf("expected N34 as the sole visual reference, got %v", refs)
+	}
+}
+
 // TestSelectVisualReferencesPrioritization verifies that ILS/Localizer are
 // always included, and the visual-style component is picked by priority:
-// VisualApproach > VOR > RNAV > ChartedVisual.
+// VisualApproach > VOR > NDB > RNAV > ChartedVisual.
 func TestSelectVisualReferencesPrioritization(t *testing.T) {
 	mk := func(ty av.ApproachType, rwy string) *av.Approach {
 		return &av.Approach{Type: ty, Runway: rwy}
@@ -2731,4 +2750,90 @@ func TestClearedApproachCarriesRouteActionsOntoApproach(t *testing.T) {
 	})
 
 	f.Run()
+}
+
+// An offset localizer is flown along its own course rather than the runway's
+// extended centerline: KSLC's LDA 35 is 5 degrees off runway 35. Having
+// captured the course, the aircraft tracks it to the FAF rather than joining
+// the centerline and then turning to the fixes.
+func TestOffsetLocalizerFliesItsCourse(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KSLC", "X35")
+	// 14 nm south of the threshold and 2.5 nm east of the runway centerline,
+	// heading 320 to intercept the LDA course from the east.
+	pos := apg.ThresholdOffset(14, -2.5)
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " PEDLE/a10000 KERNN/a6100",
+		DepartureAirport: "KLAS",
+		ArrivalAirport:   "KSLC",
+		AircraftType:     "A320",
+		InitialAltitude:  8000,
+		InitialSpeed:     180,
+		InitialHeading:   320,
+	})
+	f.ExpectApproach("X35")
+	f.ClearedApproach("X35")
+
+	ap := f.nav.Approach.Assigned
+	if ap.Type != av.LDAApproach {
+		t.Fatalf("X35 is typed %s, want LDA", ap.Type)
+	}
+	nmPerLong := f.nav.FlightState.NmPerLongitude
+	lda := ap.FinalApproachCourseLine(nmPerLong, f.nav.FlightState.MagneticVariation)
+	if d := math.HeadingDifference(math.Heading2LL(lda[0], lda[1], nmPerLong), ap.RunwayHeading(nmPerLong)); d < 4 || d > 6 {
+		t.Fatalf("LDA course is %.1f degrees off the runway, expected about 5", d)
+	}
+	runway := [2]math.Point2LL{ap.Threshold, ap.OppositeThreshold}
+
+	f.StepUntil("captured the LDA course", func() bool { return f.nav.Approach.InterceptState == OnApproachCourse })
+	if d := math.Abs(f.nav.signedCourseLineDistance(lda)); d > 0.2 {
+		t.Errorf("captured %.2f nm from the LDA course", d)
+	}
+
+	// Established, the aircraft tracks the LDA course to the FAF, where it is
+	// well off the runway centerline.
+	for f.nav.Waypoints[0].Fix == "KERNN" {
+		if d := math.Abs(f.nav.signedCourseLineDistance(lda)); d > 0.15 {
+			t.Fatalf("%.2f nm from the LDA course at %.1f nm from the threshold", d,
+				math.NMDistance2LL(f.nav.FlightState.Position, ap.Threshold))
+		}
+		f.Step(1)
+	}
+	if d := math.Abs(f.nav.signedCourseLineDistance(runway)); d < 0.35 {
+		t.Errorf("at the FAF the aircraft is %.2f nm from the runway centerline; the LDA course is 0.46 nm off", d)
+	}
+}
+
+// A localizer back course is flown like any other localizer approach, from a
+// vector on either side of the course: KSNA's localizer back course 2L.
+func TestBackCourseApproachFromVectors(t *testing.T) {
+	apg := LookupApproachGeometry(t, "KSNA", "B2L")
+	for _, lateral := range []float32{2.5, -2.5} {
+		// 12 nm out, pointed at the course 7 nm out: about a 27 degree intercept.
+		pos := apg.ThresholdOffset(12, lateral)
+		aim := apg.ThresholdOffset(7, 0)
+		hdg := math.TrueToMagnetic(math.Heading2LL(pos, aim, apg.NmPerLongitude), apg.MagneticVariation)
+		f := NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        pos.DMSString() + " NEWPO WUNAD",
+			DepartureAirport: "KSFO",
+			ArrivalAirport:   "KSNA",
+			AircraftType:     "A320",
+			InitialAltitude:  3000,
+			InitialSpeed:     180,
+			InitialHeading:   float32(hdg),
+		})
+		f.ExpectApproach("B2L")
+		f.ClearedApproach("B2L")
+
+		ap := f.nav.Approach.Assigned
+		if ap.Type != av.LocalizerApproach {
+			t.Fatalf("B2L is typed %s, want Localizer", ap.Type)
+		}
+		f.StepUntil("established on the back course", func() bool { return f.nav.Approach.InterceptState == OnApproachCourse })
+		f.StepUntil("reached short final", func() bool {
+			return f.nav.Waypoints[0].Fix == "_2L_THRESHOLD" && math.NMDistance2LL(f.nav.FlightState.Position, ap.Threshold) < 1
+		})
+		if alt := f.nav.FlightState.Altitude; alt > 600 {
+			t.Errorf("from %.1f nm abeam: %.0f feet a mile from the threshold", lateral, alt)
+		}
+	}
 }

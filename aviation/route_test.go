@@ -1375,6 +1375,10 @@ func TestProcedureTurnLegLimit(t *testing.T) {
 		{ProcedureTurn{}, ILSApproach, 0, 1},
 		{ProcedureTurn{}, LocalizerApproach, 0, 1},
 		{ProcedureTurn{}, VORApproach, 0, 1},
+		{ProcedureTurn{}, LDAApproach, 0, 1},
+		{ProcedureTurn{}, NDBApproach, 0, 1},
+		{ProcedureTurn{NmLimit: 6}, LDAApproach, 6, 0},
+		{ProcedureTurn{MinuteLimit: 2}, NDBApproach, 0, 2},
 		{ProcedureTurn{}, RNAVApproach, 4, 0},
 		{ProcedureTurn{}, VisualApproach, 0, 0},
 	} {

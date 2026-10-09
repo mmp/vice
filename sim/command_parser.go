@@ -733,6 +733,11 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		}
 
 	case 'E':
+		if len(command) > 1 && s.hasApproach(callsign, command[1:]) {
+			// An approach named like an expedite command, such as KLNS's
+			// D26, is still an approach to expect.
+			return s.ExpectApproach(tcw, callsign, command[1:])
+		}
 		if command == "ED" {
 			return s.ExpediteDescent(tcw, callsign)
 		} else if a, ok := strings.CutPrefix(command, "ED"); ok && len(a) > 0 {

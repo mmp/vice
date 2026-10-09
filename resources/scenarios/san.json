@@ -2647,13 +2647,13 @@
         "V29": {
           "full_name": "VOR DME Runway 29",
           "runway": "29",
-          "type": "ILS",
+          "type": "VOR",
           "waypoints": ["PGY/iaf/nopt180/hilpt/a4900 ZEKIR/a3600/faf ZAPUD/a2000"]
         },
         "T29": {
           "full_name": "TACAN Runway 29",
           "runway": "29",
-          "type": "ILS",
+          "type": "VOR",
           "waypoints": [
             "SKATE/iaf/a3000 OBIME N032.33.54.722,W117.17.16.367 OCABI/arc9NZY ORPUE/if/a3000/arc9NZY ORTEE/a1600/faf OSBUE"
           ]
@@ -2661,7 +2661,7 @@
         "H29": {
           "full_name": "Hi TACAN Runway 29",
           "runway": "29",
-          "type": "ILS",
+          "type": "VOR",
           "waypoints": [
             "MYSTY/iaf/a12000 SKATE/iaf OBIME N032.33.54.722,W117.17.16.367 OCABI/arc9NZY ORPUE/if/a3000/arc9NZY ORTEE/a1600/faf OSBUE"
           ]

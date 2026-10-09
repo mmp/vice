@@ -39,7 +39,7 @@ type ProcedureTurn struct {
 
 // LegLimit returns the extent of the procedure turn's outbound legs as a
 // distance or a time, whichever the turn gives. Without one, the legs of
-// an ILS, localizer, or VOR approach's turn are a minute long and an RNAV
+// an ILS, localizer, VOR, LDA, or NDB approach's turn are a minute long and an RNAV
 // approach's are 4nm; both are zero for other approach types.
 func (pt *ProcedureTurn) LegLimit(appr ApproachType) (nm, minutes float32) {
 	switch {
@@ -49,7 +49,7 @@ func (pt *ProcedureTurn) LegLimit(appr ApproachType) (nm, minutes float32) {
 		return 0, pt.MinuteLimit
 	}
 	switch appr {
-	case ILSApproach, LocalizerApproach, VORApproach:
+	case ILSApproach, LocalizerApproach, VORApproach, LDAApproach, NDBApproach:
 		return 0, 1
 	case RNAVApproach:
 		return 4, 0

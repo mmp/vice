@@ -1035,7 +1035,7 @@ func TestTrafficRouteSTARs(t *testing.T) {
 	}
 }
 
-func TestATPACourse(t *testing.T) {
+func TestATPAHeading(t *testing.T) {
 	// Runway 35 runs true north; its published magnetic bearing is a few
 	// degrees off, as when it is referenced to an outdated variation.
 	const magVar = -11
@@ -1050,40 +1050,108 @@ func TestATPACourse(t *testing.T) {
 	}}
 	t.Cleanup(func() { testDB = oldDB })
 
-	// final returns an approach to runway 35 whose final approach segment
-	// flies the given true course and passes offset nm east of the threshold.
-	final := func(typ ApproachType, course math.TrueHeading, offset float32) *Approach {
-		p := math.Offset2LL(thr35, course+90, offset, nmPerLongitude)
-		back := math.OppositeHeading(course)
-		faf := Waypoint{Fix: "FAF", Location: math.Offset2LL(p, back, 5, nmPerLongitude)}
-		faf.SetFAF(true)
-		return &Approach{Type: typ, Runway: "35", Waypoints: []WaypointArray{{
-			{Fix: "IF", Location: math.Offset2LL(p, back, 10, nmPerLongitude)},
-			faf,
-			{Fix: "MAP", Location: math.Offset2LL(p, back, 0.5, nmPerLongitude)},
-		}}}
-	}
-
 	for _, tc := range []struct {
 		name       string
 		approaches map[string]*Approach
 		heading    math.MagneticHeading
-		offset     float32 // nm between the volume's threshold and the runway's
 	}{
-		{"no approaches", nil, 349, 0},
-		{"offset LDA", map[string]*Approach{"X35": final(ILSApproach, 355, 0.2)}, 344, 0.2},
+		{"no approaches", nil, 349},
+		{"offset LDA", map[string]*Approach{"X35": testFinal(LDAApproach, thr35, thr17, 355)}, 344},
 		{"aligned ILS and offset LDA", map[string]*Approach{
-			"I35": final(ILSApproach, 0, 0), "X35": final(ILSApproach, 355, 0.2)}, 349, 0},
-		{"offset RNAV", map[string]*Approach{"R35": final(RNAVApproach, 355, 0)}, 349, 0},
-		{"circling localizer", map[string]*Approach{"L35": final(LocalizerApproach, 320, 0)}, 349, 0},
+			"I35": testFinal(ILSApproach, thr35, thr17, 0), "X35": testFinal(LDAApproach, thr35, thr17, 355)}, 349},
+		{"offset RNAV", map[string]*Approach{"R35": testFinal(RNAVApproach, thr35, thr17, 355)}, 349},
+		{"circling localizer", map[string]*Approach{"L35": testFinal(LocalizerApproach, thr35, thr17, 320)}, 349},
 	} {
 		ap := &Airport{Approaches: tc.approaches}
-		thr, hdg := ap.atpaCourse(testLocator{}, "KTST", rwy35, nmPerLongitude, magVar)
+		hdg := ap.atpaHeading(testLocator{}, "KTST", rwy35, nmPerLongitude, magVar)
 		if math.HeadingDifference(hdg, tc.heading) > 0.1 {
 			t.Errorf("%s: heading %.1f, expected %.1f", tc.name, hdg, tc.heading)
 		}
-		if d := math.NMDistance2LL(thr, thr35); math.Abs(d-tc.offset) > 0.01 {
-			t.Errorf("%s: threshold %.3f nm from the runway's, expected %.3f", tc.name, d, tc.offset)
+	}
+}
+
+// testFinal returns an approach to runway 35 whose final approach course
+// flies the given true course through the threshold.
+func testFinal(typ ApproachType, thr35, thr17 math.Point2LL, course math.TrueHeading) *Approach {
+	nmPerLongitude := math.NMPerLongitudeAt(thr35)
+	back := math.OppositeHeading(course)
+	faf := Waypoint{Fix: "FAF", Location: math.Offset2LL(thr35, back, 5, nmPerLongitude)}
+	faf.SetFAF(true)
+	return &Approach{Type: typ, Runway: "35", Threshold: thr35, OppositeThreshold: thr17,
+		Waypoints: []WaypointArray{{
+			{Fix: "IF", Location: math.Offset2LL(thr35, back, 10, nmPerLongitude)},
+			faf,
+			{Fix: "MAP", Location: math.Offset2LL(thr35, back, 0.5, nmPerLongitude)},
+		}}}
+}
+
+// An approach flown on a localizer follows the line from its FAF to the
+// threshold, which may be offset from the runway; others follow the runway's
+// centerline.
+func TestFinalApproachCourseLine(t *testing.T) {
+	thr35 := math.Point2LL{-111.96, 40.77}
+	nmPerLongitude := math.NMPerLongitudeAt(thr35)
+	thr17 := math.Offset2LL(thr35, 0, 1.5, nmPerLongitude)
+
+	for _, tc := range []struct {
+		name   string
+		appr   *Approach
+		course math.TrueHeading
+	}{
+		{"ILS", testFinal(ILSApproach, thr35, thr17, 1), 1},
+		{"offset LDA", testFinal(LDAApproach, thr35, thr17, 355), 355},
+		{"offset RNAV follows the runway", testFinal(RNAVApproach, thr35, thr17, 355), 0},
+		{"VOR follows the runway", testFinal(VORApproach, thr35, thr17, 10), 0},
+	} {
+		course := tc.appr.FinalApproachCourse(nmPerLongitude, -11)
+		if math.HeadingDifference(course, tc.course) > 0.1 {
+			t.Errorf("%s: course %.1f, expected %.1f", tc.name, course, tc.course)
+		}
+		if line := tc.appr.FinalApproachCourseLine(nmPerLongitude, -11); tc.appr.Type.HasLocalizer() && line[1] != thr35 {
+			t.Errorf("%s: course line ends at %v, expected the threshold", tc.name, line[1])
+		}
+	}
+
+	// Without a FAF there is no final approach course to follow.
+	noFAF := testFinal(ILSApproach, thr35, thr17, 355)
+	noFAF.Waypoints[0][1].SetFAF(false)
+	if course := noFAF.FinalApproachCourse(nmPerLongitude, -11); math.HeadingDifference(course, 0) > 0.1 {
+		t.Errorf("without a FAF: course %.1f, expected the runway's", course)
+	}
+}
+
+// ILS and localizer approaches must be aligned with their runway; hand-written
+// approaches of other kinds have been given those types to get localizer-style
+// intercepts, and an offset localizer is an LDA.
+func TestCheckCourseAlignment(t *testing.T) {
+	thr35 := math.Point2LL{-111.96, 40.77}
+	nmPerLongitude := math.NMPerLongitudeAt(thr35)
+	thr17 := math.Offset2LL(thr35, 0, 1.5, nmPerLongitude)
+	final := func(typ ApproachType, course math.TrueHeading) *Approach {
+		back := math.OppositeHeading(course)
+		faf := Waypoint{Fix: "FAF", Location: math.Offset2LL(thr35, back, 5, nmPerLongitude)}
+		faf.SetFAF(true)
+		return &Approach{Type: typ, Runway: "35", Threshold: thr35, OppositeThreshold: thr17,
+			Waypoints: []WaypointArray{{{Fix: "IF", Location: math.Offset2LL(thr35, back, 10, nmPerLongitude)}, faf}}}
+	}
+
+	for _, tc := range []struct {
+		name string
+		appr *Approach
+		err  bool
+	}{
+		{"aligned ILS", final(ILSApproach, 0), false},
+		{"ILS offset 3 degrees", final(ILSApproach, 3), false},
+		{"ILS offset 10 degrees", final(ILSApproach, 350), true},
+		{"localizer offset 10 degrees", final(LocalizerApproach, 10), true},
+		{"LDA offset 10 degrees", final(LDAApproach, 10), false},
+		{"VOR offset 10 degrees", final(VORApproach, 10), false},
+		{"reversed", final(ILSApproach, 180), true},
+	} {
+		var e util.ErrorLogger
+		tc.appr.checkCourseAlignment(nmPerLongitude, -11, &e)
+		if e.HaveErrors() != tc.err {
+			t.Errorf("%s: errors %q, expected an error: %v", tc.name, e.String(), tc.err)
 		}
 	}
 }

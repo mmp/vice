@@ -287,6 +287,17 @@ func (s *Sim) cancelFutureTrafficCheck(callsign av.ADSBCallsign) {
 	delete(s.FutureTrafficChecks, callsign)
 }
 
+// hasApproach reports whether the aircraft's arrival airport has an approach
+// the scenario identifies as id.
+func (s *Sim) hasApproach(callsign av.ADSBCallsign, id string) bool {
+	ac, ok := s.Aircraft[callsign]
+	if !ok {
+		return false
+	}
+	ap, ok := s.State.Airports[ac.ArrivalAirport]
+	return ok && ap != nil && ap.Approaches[id] != nil
+}
+
 func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (speech.CommandIntent, error) {
 	var ap *av.Airport
 	if ac, ok := s.Aircraft[callsign]; ok {
