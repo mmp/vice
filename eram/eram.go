@@ -811,6 +811,8 @@ func (inp *inputText) AddBasic(str string) {
 func formatInput(str string) string {
 	output := strings.ReplaceAll(str, "`", circleClear)
 	output = strings.ReplaceAll(output, "~", circleFilled)
+	output = strings.ReplaceAll(output, "[", upArrow)
+	output = strings.ReplaceAll(output, "]", downArrow)
 	return output
 }
 
