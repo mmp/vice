@@ -1,9 +1,9 @@
-- Flight strips
-  - A departure's strip prints at its departure controller when it starts its takeoff roll
-  - A virtual controller's handoff pushes the strip to the controller it hands the flight to (fixes missing strips for flights that work more than one virtual controller first)
-  - A frequency change pushes the strip along unless the controller has already pushed it
-  - Fixed strips showing CID 000 after a frequency change
-  - Airports with "print_departure_strips" or "print_arrival_strips" set to false never get strips, including from starting a track or a frequency change
+- Fixed multiple bugs with flight strip ownership
+- Improved support for LDA approaches (don't just fly the extended centerline)
+- Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
 - ERAM
   - TRACON controllers no longer enter altitudes in ERAM data blocks, so departures reach the first ERAM controller showing their filed altitude
   - Conflict alert no longer assumes that an aircraft a TRACON owns will climb or descend to its data block altitude
+  - Fixed bug where virtual TRACON controllers would set ERAM data block altitudes
+- Facility engineering
+  - Fixed a few bugs with automatically generated ATPA volumes
