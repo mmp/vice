@@ -6,6 +6,7 @@ package eram
 
 import (
 	"errors"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -549,6 +550,34 @@ func checkScratchpad(ctx *scope.Context, contents string, isSecondary, isImplied
 	return nil
 }
 
+// formatAircraftData formats flight plan field 03: the number of aircraft
+// when there is more than one and the heavy indicator, then the type and
+// the equipment suffix.
+func formatAircraftData(fp *sim.FlightPlan) string {
+	var prefix string
+	if fp.AircraftCount > 1 {
+		prefix = strconv.Itoa(fp.AircraftCount)
+	}
+	if isHeavy(fp.AircraftType) {
+		prefix += "H"
+	}
+	s := fp.AircraftType
+	if prefix != "" {
+		s = prefix + "/" + s
+	}
+	if fp.EquipmentSuffix != "" {
+		s += "/" + fp.EquipmentSuffix
+	}
+	return s
+}
+
+// isHeavy reports whether the aircraft type is a heavy or a super, which
+// field 03 marks with the heavy indicator.
+func isHeavy(actype string) bool {
+	weightClass := db.DB.AircraftPerformance[actype].WeightClass
+	return weightClass == "H" || weightClass == "J"
+}
+
 // altitudeEntry is an altitude field of a flight plan; see
 // parseAltitudeEntry.
 type altitudeEntry struct {
@@ -574,6 +603,14 @@ func parseAltitudeEntry(s string, formatErr string) (altitudeEntry, error) {
 func (e altitudeEntry) setAssigned(spec *sim.FlightPlanSpecifier) {
 	spec.AssignedAltitude.Set(e.altitude)
 	spec.AssignedAltitudeQualifier.Set(e.qualifier)
+}
+
+// formatRoute formats field 10 as a readout shows it, from the departure
+// airport to the destination, as in KBOS.SSOXS.SEY.PARCH4.KJFK.
+func formatRoute(fp *sim.FlightPlan) string {
+	route := slices.Concat([]string{string(fp.DepartureAirport)}, strings.Fields(strings.TrimPrefix(fp.Route, "/. ")),
+		[]string{string(fp.ArrivalAirport)})
+	return strings.Join(slices.DeleteFunc(route, func(s string) bool { return s == "" }), ".")
 }
 
 // trk may be nil

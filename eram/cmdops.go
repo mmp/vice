@@ -501,9 +501,6 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 		The aircraft's flight plan remarks (not in FlightPlan so nothing for now)
 	*/
 	zTime := ctx.Client.State.SimTime.Format("1504")
-	rte := strings.TrimPrefix(fp.Route, "/. ")
-	rte = strings.ReplaceAll(rte, " ", ".")
-	rte += "." + string(fp.ArrivalAirport)
 	alt := fmt.Sprint(fp.AssignedAltitude / 100)
 	if fp.HasAltitudeBlock() {
 		alt = formatAltitudeBlock([2]int{fp.AltitudeBlock[0] / 100, fp.AltitudeBlock[1] / 100})
@@ -517,7 +514,7 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 		responseArea: []string{
 			zTime,
 			fmt.Sprintf("%v %v(%v) %v %v %v %v %v", fp.CID, fp.ACID, fp.TrackingController,
-				fp.AircraftType, fp.AssignedSquawk, fp.CruiseSpeed, alt, rte),
+				formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, alt, formatRoute(fp)),
 		},
 	}, nil
 }
