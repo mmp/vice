@@ -595,6 +595,10 @@ func (s *Sim) CheckLeaks() {
 			}
 		}
 
+		if fp.AssignedSquawk == 0 {
+			// It has no code, as when its code has been deleted.
+			return
+		}
 		_, warned := s.SquawkWarnedACIDs[fp.ACID]
 
 		if _, ok := seenSquawks[fp.AssignedSquawk]; ok && !warned {

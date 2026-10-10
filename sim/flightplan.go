@@ -530,6 +530,9 @@ type FlightPlanSpecifier struct {
 	CoordinationTime      util.Optional[Time]
 	PlanType              util.Optional[FlightPlanType]
 
+	// SquawkAssignment is a code or the name of a pool to draw one from when
+	// a flight plan is created. Modifying a flight plan takes only a code, or
+	// "" to remove the plan's code.
 	SquawkAssignment         util.Optional[string]
 	ImplicitSquawkAssignment util.Optional[av.Squawk] // only used when taking the track's current code
 
@@ -869,11 +872,63 @@ func (s *Sim) ModifyFlightPlan(tcw TCW, acid ACID, spec FlightPlanSpecifier) err
 		}
 	}
 
+	if spec.SquawkAssignment.IsSet {
+		if err := s.amendSquawk(fp, spec.SquawkAssignment.Get()); err != nil {
+			return err
+		}
+		// The code is assigned; Update would draw another one from a pool.
+		spec.SquawkAssignment = util.Optional[string]{}
+	}
+
 	fp.Update(spec, s)
 
 	s.publish()
 
 	return spec.postCheck()
+}
+
+// amendSquawk replaces fp's beacon code with the four-digit code a
+// controller entered, or removes it if code is empty. The previous code goes
+// back to its pool and the new one is taken from the pool that manages it,
+// if any. No two flight plans may share a code.
+func (s *Sim) amendSquawk(fp *FlightPlan, code string) error {
+	if code == "" {
+		s.returnSquawk(fp)
+		fp.AssignedSquawk = 0
+		return nil
+	}
+
+	sq, err := av.ParseSquawk(code)
+	if err != nil {
+		return ErrIllegalBeaconCode
+	}
+	if sq == fp.AssignedSquawk {
+		return nil
+	}
+	if s.STARSComputer.lookupFlightPlanBySquawk(sq) != nil ||
+		util.SeqContainsFunc(maps.Values(s.Aircraft),
+			func(ac *Aircraft) bool { return ac.IsAssociated() && ac.FlightPlan.AssignedSquawk == sq }) {
+		return ErrDuplicateBeacon
+	}
+
+	s.returnSquawk(fp)
+	if fp.PlanType == LocalNonEnroute {
+		// Get takes an explicit code out of the local pool that covers it.
+		s.LocalCodePool.Get(code, fp.Rules, s.Rand)
+	} else if s.ERAMComputer.SquawkCodePool.InInitialPool(sq) {
+		s.ERAMComputer.SquawkCodePool.Take(sq)
+	}
+	fp.AssignedSquawk = sq
+	return nil
+}
+
+// returnSquawk gives fp's beacon code back to the pool it was drawn from.
+func (s *Sim) returnSquawk(fp *FlightPlan) {
+	if fp.PlanType == LocalNonEnroute {
+		s.LocalCodePool.Return(fp.AssignedSquawk)
+	} else {
+		s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
+	}
 }
 
 // Associate the specified flight plan with the track. Flight plan for ACID
@@ -1018,9 +1073,5 @@ func (s *Sim) deleteFlightPlan(fp *FlightPlan) {
 		s.freeStripCID(fp.StripCID)
 	}
 	s.STARSComputer.returnListIndex(fp.ListIndex)
-	if fp.PlanType == LocalNonEnroute {
-		s.LocalCodePool.Return(fp.AssignedSquawk)
-	} else {
-		s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
-	}
+	s.returnSquawk(fp)
 }
