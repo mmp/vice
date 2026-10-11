@@ -534,15 +534,6 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					}
 					displacedThresholds[icao][rwy] = float32(d) * math.FeetToNauticalMiles
 				}
-
-			case 'P': // holding patterns
-				if hold, ok := parseHoldingPattern(line); ok {
-					// Terminal hold at airport
-					if result.TerminalHolds[icao] == nil {
-						result.TerminalHolds[icao] = make(map[string][]av.Hold)
-					}
-					result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
-				}
 			}
 		}
 
@@ -1658,31 +1649,9 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 	return &appr
 }
 
-// parseHoldingPattern extracts a holding pattern from an ARINC-424 record
+// parseHoldingPattern extracts a holding pattern from an EP holding pattern
+// record (4.1.5).
 func parseHoldingPattern(line []byte) (av.Hold, bool) {
-	// Validate record type - must be 'S' (Standard)
-	if line[0] != 'S' {
-		return av.Hold{}, false
-	}
-
-	// Check section code: 'E' (Enroute) or 'P' (Airport)
-	sectionCode := line[4]
-	if sectionCode != 'E' && sectionCode != 'P' {
-		return av.Hold{}, false
-	}
-
-	// Check subsection code: must be 'P' (Holding Pattern)
-	var subsectionCode byte
-	if sectionCode == 'E' {
-		subsectionCode = line[5]
-	} else {
-		// For airport section, subsection is at column 13 (0-indexed 12)
-		subsectionCode = line[12]
-	}
-	if subsectionCode != 'P' {
-		return av.Hold{}, false
-	}
-
 	// Ignore continuation records
 	continuation := line[38]
 	if continuation != '0' && continuation != '1' {
