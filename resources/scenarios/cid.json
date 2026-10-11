@@ -42,8 +42,7 @@
         },
         "V9T": {
           "runway": "9",
-          "type": "ILS",
-          "full_name": "ILS Visual Runway 9 (TF)",
+          "type": "Visual",
           "waypoints": ["FONER/a2500/faf OPHAW/a1360"]
         }
       },

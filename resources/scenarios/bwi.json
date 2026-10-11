@@ -125,10 +125,8 @@
     "KDCA": {
       "approaches": {
         "N": {
-          "full_name": "Runway 1",
-          "runway": "1",
-          "type": "ILS",
-          "waypoints": ["KATRN/a2500 BADDN/a1600/faf"]
+          "cifp_id": "I1",
+          "full_name": "Runway 1"
         },
         "S": {
           "full_name": "Runway 19",

@@ -620,7 +620,7 @@
         "V1L": {
           "full_name": "Visual Runway 1L",
           "runway": "1L",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": [
             "WABER/a8000+ WESVA/a7000+ WOFUL/a6000+ WISHY/a5000+ WIRLY/a4000+ WERTH/a3000+ FAXES/faf/a2000+"
           ]
@@ -628,7 +628,7 @@
         "V1C": {
           "full_name": "Visual Runway 1C",
           "runway": "1C",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": [
             "BRODY/a9000+ MRTZY/a8000+ MOKRR/a7000+ MAYFR/a6000+ MODLL/a5000+ MOOOV/a4000+ MAMAA/a3000+ MEEST/a2000+ SKINS/faf/a1800+"
           ]
@@ -636,7 +636,7 @@
         "V1R": {
           "full_name": "Visual Runway 1R",
           "runway": "1R",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": [
             "EERRS/a7000+ ELLLA/a7000+ FAWLR/a6000+ TREAA/a5000+ TWOOT/a4000+ ESTYN/a3000+ EDSCO/a2000+ WAXIN/faf/a1500+"
           ]
@@ -644,7 +644,7 @@
         "V9L": {
           "full_name": "Visual Runway 19L",
           "runway": "19L",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": [
             "LEMIU/a7000+ LARKY/a6000+ FORKL/a6000+ THRET/a5000+ TOOPR/a4000+ LEFFY/a3000+ LOOOT/a2000 DOMSE/faf/a1500+"
           ]
@@ -652,7 +652,7 @@
         "V9C": {
           "full_name": "Visual Runway 19C",
           "runway": "19C",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": [
             "NOOXX/a9000+ CRLET/a8000+ COWRR/a7000+ COVUL/a6000+ CHDMN/a5000+ CUTZZ/a4000+ CRAKL/a3000+ CLARZ/a2000+ FEMKO/faf/a1500+"
           ]
@@ -660,7 +660,7 @@
         "V9R": {
           "full_name": "Visual Runway 19R",
           "runway": "19R",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": [
             "RUBNZ/a8000+ RAGGY/a7000+ RIECE/a6000+ RAYZE/a5000+ ROWYN/a4000+ REKKN/a3000+ RNDON/a2000+ MULKY/faf/a1500+"
           ]

@@ -3351,7 +3351,7 @@
         "V4L": {
           "full_name": "Visual Runway 34L",
           "runway": "34L",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": ["N034.06.56.574,W118.28.52.406 N034.10.11.306,W118.29.11.330/faf/a1300"]
         }
       },
@@ -3652,7 +3652,7 @@
         "V27": {
           "full_name": "Visual Runway 27",
           "runway": "27",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": ["LYNDI/iaf/a5000/s210 OKAIN/a3600 CIJHI/a2700 REEBO/faf/a2000"]
         },
         "V9": {

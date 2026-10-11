@@ -44,10 +44,7 @@
       },
       "approaches": {
         "I0L": {
-          "full_name": "ILS Runway 10L",
-          "runway": "10L",
-          "type": "ILS",
-          "waypoints": ["N045.43.33.359,W122.55.58.135 BUXOM/a3000+/if TRAYL/a2300+ BLAZR/a2000+/faf"]
+          "cifp_id": "I10L"
         },
         "I0R": {
           "cifp_id": "I10R"

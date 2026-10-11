@@ -3704,22 +3704,16 @@
     "KSMF": {
       "approaches": {
         "17L": {
-          "full_name": "Runway 17L",
-          "runway": "17L",
-          "type": "ILS",
-          "waypoints": ["DIRBE/if/a1900+ LEVEY/faf/a1900"]
+          "cifp_id": "I17L",
+          "full_name": "Runway 17L"
         },
         "17R": {
-          "full_name": "Runway 17R",
-          "runway": "17R",
-          "type": "ILS",
-          "waypoints": ["FAPIN/a1800+ JARNU/faf/a1800"]
+          "cifp_id": "I17R",
+          "full_name": "Runway 17R"
         },
         "35L": {
-          "full_name": "Runway 35L",
-          "runway": "35L",
-          "type": "ILS",
-          "waypoints": ["ELMAC/a3000+ HADSU/faf/a1400"]
+          "cifp_id": "I35L",
+          "full_name": "Runway 35L"
         },
         "35R": {
           "full_name": "Runway 35R",

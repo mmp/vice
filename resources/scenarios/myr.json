@@ -14,14 +14,12 @@
         },
         "V18": {
           "runway": "18",
-          "full_name": "ILS Approach Runway 18",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": ["PEDEE/faf/a2000"]
         },
         "V36": {
           "runway": "36",
-          "full_name": "ILS Approach Runway 36",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": ["CHACA/faf/a2000"]
         }
       },
@@ -221,13 +219,13 @@
         "V5": {
           "runway": "5",
           "full_name": "Visual Approach Runway 5",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": ["ZULSY/faf/a2000"]
         },
         "V23": {
           "runway": "23",
           "full_name": "Visual Approach Runway 23",
-          "type": "ILS",
+          "type": "Visual",
           "waypoints": ["FIPEG/faf/a2000"]
         }
       },

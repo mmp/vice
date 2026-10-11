@@ -487,9 +487,7 @@
           "waypoints": ["LORRA/a7000 EXBAN/a4000 AMEBE/a3000 BERDY/a1600/faf RUTNE/a780"]
         },
         "I6L": {
-          "runway": "36L",
-          "type": "ILS",
-          "waypoints": ["LORRA/a7000 EXBAN/a4000 AMEBE/a3000 BERDY/a1600/faf RUTNE/a780"]
+          "cifp_id": "I36L"
         }
       },
       "departure_routes": {

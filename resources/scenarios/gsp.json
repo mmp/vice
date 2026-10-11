@@ -4,9 +4,7 @@
     "KGSP": {
       "approaches": {
         "I4": {
-          "runway": "4",
-          "type": "ILS",
-          "waypoints": ["OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"]
+          "cifp_id": "I4"
         },
         "R4": {
           "runway": "4",
@@ -14,9 +12,7 @@
           "waypoints": ["OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"]
         },
         "I22": {
-          "runway": "22",
-          "type": "ILS",
-          "waypoints": ["RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET"]
+          "cifp_id": "I22"
         },
         "R22": {
           "runway": "22",

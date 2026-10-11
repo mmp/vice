@@ -128,9 +128,7 @@
     "KJAX": {
       "approaches": {
         "I8": {
-          "runway": "8",
-          "type": "ILS",
-          "waypoints": ["LIBBY/if/iaf/a2000 DINNS/iaf/a1900/faf"]
+          "cifp_id": "IY8"
         },
         "RZ8": {
           "cifp_id": "RZ8"
