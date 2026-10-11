@@ -1002,3 +1002,79 @@ func TestParseARINC424CirclingOnlyApproach(t *testing.T) {
 		t.Errorf("expected the KLNK ILS 18 to have straight-in minimums, got %+v", appr)
 	}
 }
+
+// Class C airspace at KABI: a 5nm surface area with a notch cut out of its
+// northeast side, and two halves of the 10nm shelf with different floors,
+// divided by a chord. The KMFD Class D is a 5.4nm circle and the
+// New York Class B's areas are filed under the airspace's name.
+func TestParseARINC424ClassAirspace(t *testing.T) {
+	lines := []string{
+		"SUSAUCK4AKABI PAC  A00100     G N32262144W099390000                              GND  A05800MABILENE REGIONAL AIRPORT      633351809",
+		"SUSAUCK4AKABI PAC  A00200     R N32253585W099350682N32244000W09940550000500793                                             633361809",
+		"SUSAUCK4AKABI PAC  A00300     GEN32292431W099390000                                                                        633371809",
+		"SUSAUCK4AKABI PAC  B00400     R N32285127W099513917N32244000W09940550001002948   03600M05800MABILENE REGIONAL AIRPORT      633381809",
+		"SUSAUCK4AKABI PAC  B00500     GEN32242430W099290651                                                                        633391809",
+		"SUSAUCK4AKABI PAC  C00600     R N32242430W099290651N32244000W09940550001000914   04300M05800MABILENE REGIONAL AIRPORT      633401809",
+		"SUSAUCK4AKABI PAC  C00700     GEN32285127W099513917                                                                        633411809",
+		"SUSAUCK5ZKMFD PAD  A00100     CE                   N40491710W0823059900054       GND  A03800MMANSFIELD                     669972605",
+		"SUSAUCK6TKJFK PAB  A00100     R N40394857W074144423N40413000W07409590000402450   GND  A07000MNEW YORK AREA A               675701703",
+		"SUSAUCK6TKJFK PAB  A00200     R N40373237W074104232N40413000W07409590000401879                                             675711703",
+		"SUSAUCK6TKJFK PAB  A00300     REN40383887W074133952N40413000W07409590000402245                                             675721703",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	abi := result.CharlieAirspace["ABILENE REGIONAL AIRPORT"]
+	if len(abi) != 3 {
+		t.Fatalf("expected 3 Abilene Class C volumes, got %d", len(abi))
+	}
+	for i, limits := range [][2]int{{0, 5800}, {3600, 5800}, {4300, 5800}} {
+		if abi[i].Floor != limits[0] || abi[i].Ceiling != limits[1] {
+			t.Errorf("volume %d: expected %d-%d, got %d-%d", i, limits[0], limits[1], abi[i].Floor, abi[i].Ceiling)
+		}
+	}
+
+	center := parseLatLong([]byte("N32244000"), []byte("W099405500"))
+	nmPerLongitude := math.NMPerLongitudeAt(center)
+	inside := func(vols []av.AirspaceVolume, hdg math.TrueHeading, dist float32, alt int) bool {
+		p := math.Offset2LL(center, hdg, dist, nmPerLongitude)
+		return slices.ContainsFunc(vols, func(v av.AirspaceVolume) bool { return v.Inside(p, alt) })
+	}
+	for _, tc := range []struct {
+		hdg    math.TrueHeading
+		dist   float32
+		alt    int
+		inside bool
+	}{
+		{90, 4.5, 1000, true},   // in the surface area
+		{90, 5.5, 1000, false},  // under the shelf
+		{90, 5.5, 4500, true},   // in the shelf
+		{90, 10.5, 4500, false}, // beyond it
+		{270, 4.5, 1000, true},  // on the other side of the surface area
+		{50, 4.5, 1000, false},  // in its notch
+		{0, 7, 4000, true},      // the northern half's floor is 3600
+		{180, 7, 4000, false},   // and the southern half's is 4300
+	} {
+		if got := inside(abi, tc.hdg, tc.dist, tc.alt); got != tc.inside {
+			t.Errorf("%.0f/%.1fnm at %d: expected inside %v", tc.hdg, tc.dist, tc.alt, tc.inside)
+		}
+	}
+
+	mfd := result.DeltaAirspace["MANSFIELD"]
+	if len(mfd) != 1 {
+		t.Fatalf("expected one Mansfield Class D volume, got %d", len(mfd))
+	}
+	mfdCenter := parseLatLong([]byte("N40491710"), []byte("W082305990"))
+	for _, tc := range []struct {
+		dist   float32
+		inside bool
+	}{{5.3, true}, {5.5, false}} {
+		p := math.Offset2LL(mfdCenter, 45, tc.dist, math.NMPerLongitudeAt(mfdCenter))
+		if got := mfd[0].Inside(p, 2000); got != tc.inside {
+			t.Errorf("Mansfield %.1fnm: expected inside %v", tc.dist, tc.inside)
+		}
+	}
+
+	if ny := result.BravoAirspace["NEW YORK"]; len(ny) != 1 || ny[0].Ceiling != 7000 {
+		t.Errorf("expected the New York Class B area A, got %v", slices.Sorted(maps.Keys(result.BravoAirspace)))
+	}
+}

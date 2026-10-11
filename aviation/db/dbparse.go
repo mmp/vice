@@ -610,59 +610,6 @@ func parseFacilities() (map[string]ARTCC, map[string]TRACON, map[string]ATCT) {
 	return artccs, tracons, atcts
 }
 
-func parseAirspace(filename string) map[string][]av.AirspaceVolume {
-	aj := util.LoadResource(filename)
-	defer aj.Close()
-
-	// These should match the definition in util/airspace.go
-	type AirspaceLoop [][2]float32
-	type airspaceEntry struct {
-		Bottom, Top int
-		// First one is exterior; any additional ones are holes.
-		Loops []AirspaceLoop
-	}
-
-	var airspace map[string][]airspaceEntry
-	if err := util.UnmarshalJSON(aj, &airspace); err != nil {
-		panic(err)
-	}
-
-	// Uplift to vice's internal AirspaceVolume representation.
-	convert := func(v [][2]float32) []math.Point2LL {
-		return util.MapSlice(v, func(p [2]float32) math.Point2LL { return math.Point2LL(p) })
-	}
-	vols := make(map[string][]av.AirspaceVolume)
-	for name, as := range airspace {
-		var v []av.AirspaceVolume
-		for _, a := range as {
-			bounds := math.Extent2DFromPoints(a.Loops[0])
-
-			id := name
-			if len(id) > 7 {
-				id = id[:7]
-			}
-			vol := av.AirspaceVolume{
-				Id:            id,
-				Description:   name,
-				Type:          av.AirspaceVolumePolygon,
-				Floor:         a.Bottom,
-				Ceiling:       a.Top,
-				Vertices:      convert(a.Loops[0]),
-				PolygonBounds: &bounds,
-			}
-			for _, l := range a.Loops[1:] {
-				vol.Holes = append(vol.Holes, util.MapSlice(l, func(p [2]float32) av.ScenarioPoint2LL {
-					return av.ScenarioPoint2LL{Point2LL: math.Point2LL(p)}
-				}))
-			}
-			v = append(v, vol)
-		}
-		vols[name] = v
-	}
-
-	return vols
-}
-
 // Pronunciations maps written text to the phonetic spellings that work
 // better with voice synthesis. Where a slice is stored, one of its items is
 // chosen at random when one is needed.

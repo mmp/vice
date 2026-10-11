@@ -439,6 +439,9 @@ func doInitDB() {
 		db.Airways = r.Airways
 		db.EnrouteHolds = r.EnrouteHolds
 		db.TerminalHolds = r.TerminalHolds
+		db.BravoAirspace = r.BravoAirspace
+		db.CharlieAirspace = r.CharlieAirspace
+		db.DeltaAirspace = r.DeltaAirspace
 	})
 	var hpfEnroute map[string][]av.Hold
 	wg.Go(func() { hpfEnroute = parseHPF() })
@@ -448,11 +451,6 @@ func doInitDB() {
 	wg.Go(func() { db.Say = parsePronunciations() })
 	wg.Go(func() { db.AirportPairRoutes = parseAirportPairRoutes() })
 	wg.Go(func() { db.ScrapedRoutes = parseScrapedRoutes() })
-	wg.Go(func() {
-		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
-		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
-		db.DeltaAirspace = parseAirspace("delta-airspace.json.zst")
-	})
 	wg.Wait()
 
 	// Merge HPF holds with CIFP holds

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	av "github.com/mmp/vice/aviation"
 	"io"
+	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -67,6 +68,25 @@ func parseMagneticCourse(s []byte) int16 {
 	return 360
 }
 
+func parseLLDigits(d, m, s []byte) float32 {
+	return float32(parseInt(d)) + float32(parseInt(m))/60 + float32(parseInt(s))/100/3600
+}
+
+func parseLatLong(lat, long []byte) math.Point2LL {
+	var p math.Point2LL
+
+	p[1] = parseLLDigits(lat[1:3], lat[3:5], lat[5:])
+	p[0] = parseLLDigits(long[1:4], long[4:6], long[6:])
+
+	if lat[0] == 'S' {
+		p[1] = -p[1]
+	}
+	if long[0] == 'W' {
+		p[0] = -p[0]
+	}
+	return p
+}
+
 func printColumnHeader() {
 	for range ARINC424LineLength / 10 {
 		fmt.Printf("         |")
@@ -81,6 +101,11 @@ type ARINC424Result struct {
 	Airways       map[string][]av.Airway
 	EnrouteHolds  map[string][]av.Hold
 	TerminalHolds map[av.ICAOAirportCode]map[string][]av.Hold
+
+	// Class B, C, and D airspace, keyed by the airspace's name.
+	BravoAirspace   map[string][]av.AirspaceVolume
+	CharlieAirspace map[string][]av.AirspaceVolume
+	DeltaAirspace   map[string][]av.AirspaceVolume
 }
 
 func ParseARINC424(r io.Reader) ARINC424Result {
@@ -88,44 +113,18 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 	start := time.Now()
 
 	result := ARINC424Result{
-		Airports:      make(map[av.ICAOAirportCode]Airport),
-		Navaids:       make(map[string]Navaid),
-		Fixes:         make(map[string]Fix),
-		Airways:       make(map[string][]av.Airway),
-		EnrouteHolds:  make(map[string][]av.Hold),
-		TerminalHolds: make(map[av.ICAOAirportCode]map[string][]av.Hold),
+		Airports:        make(map[av.ICAOAirportCode]Airport),
+		Navaids:         make(map[string]Navaid),
+		Fixes:           make(map[string]Fix),
+		Airways:         make(map[string][]av.Airway),
+		EnrouteHolds:    make(map[string][]av.Hold),
+		TerminalHolds:   make(map[av.ICAOAirportCode]map[string][]av.Hold),
+		BravoAirspace:   make(map[string][]av.AirspaceVolume),
+		CharlieAirspace: make(map[string][]av.AirspaceVolume),
+		DeltaAirspace:   make(map[string][]av.AirspaceVolume),
 	}
 	airwayWIP := make(map[string]av.AirwayFix)
-
-	parseLLDigits := func(d, m, s []byte) float32 {
-		deg, err := strconv.Atoi(string(d))
-		if err != nil {
-			panic(err)
-		}
-		min, err := strconv.Atoi(string(m))
-		if err != nil {
-			panic(err)
-		}
-		sec, err := strconv.Atoi(string(s))
-		if err != nil {
-			panic(err)
-		}
-		return float32(deg) + float32(min)/60 + float32(sec)/100/3600
-	}
-	parseLatLong := func(lat, long []byte) math.Point2LL {
-		var p math.Point2LL
-
-		p[1] = parseLLDigits(lat[1:3], lat[3:5], lat[5:])
-		p[0] = parseLLDigits(long[1:4], long[4:6], long[6:])
-
-		if lat[0] == 'S' {
-			p[1] = -p[1]
-		}
-		if long[0] == 'W' {
-			p[0] = -p[0]
-		}
-		return p
-	}
+	var airspaceRecs [][]byte
 
 	br := bufio.NewReader(r)
 	var lines [][]byte
@@ -534,6 +533,21 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					}
 					displacedThresholds[icao][rwy] = float32(d) * math.FeetToNauticalMiles
 				}
+			}
+
+		case 'U': // Airspace
+			if line[5] != 'C' {
+				break
+			}
+			if continuation := line[24]; continuation != '0' && continuation != '1' {
+				break
+			}
+			// A sector's records run through the one whose boundary via
+			// ends the description (5.118).
+			airspaceRecs = append(airspaceRecs, line)
+			if line[31] == 'E' {
+				result.addClassAirspaceSector(airspaceRecs)
+				airspaceRecs = nil
 			}
 		}
 
@@ -1781,4 +1795,111 @@ func extractHoldsFromSSA(rec ssaRecord, procName, procType string) (av.Hold, boo
 	}
 
 	return h, true
+}
+
+// addClassAirspaceSector adds a sector of Class B, C, or D airspace (4.1.17)
+// to the airspace it is part of. A sector's name may follow the airspace's
+// with its area, as in "NEW YORK AREA B".
+func (r *ARINC424Result) addClassAirspaceSector(recs [][]byte) {
+	var airspace map[string][]av.AirspaceVolume
+	switch recs[0][8] { // 5.213
+	case 'T':
+		airspace = r.BravoAirspace
+	case 'A':
+		airspace = r.CharlieAirspace
+	case 'Z':
+		airspace = r.DeltaAirspace
+	default:
+		return
+	}
+
+	first := recs[0]
+	name := strings.TrimSpace(string(first[93:123]))
+	if i := strings.LastIndex(name, " AREA "); i != -1 && !strings.Contains(name[i+len(" AREA "):], " ") {
+		name = name[:i]
+	}
+
+	// Limits above ground level are relative to the airport the airspace is
+	// centered on; surface areas start at zero so that they include
+	// everything under them.
+	elevation := r.Airports[av.ICAOAirportCode(strings.TrimSpace(string(first[9:14])))].Elevation
+	limit := func(s []byte, unit byte) int {
+		alt, agl := parseAirspaceLimit(s, unit)
+		if agl && alt != 0 {
+			alt += elevation
+		}
+		return alt
+	}
+
+	vertices := parseAirspaceBoundary(recs)
+	bounds := math.Extent2DFromP2LLs(vertices)
+	airspace[name] = append(airspace[name], av.AirspaceVolume{
+		Id:            name[:min(len(name), 7)],
+		Description:   name,
+		Type:          av.AirspaceVolumePolygon,
+		Floor:         limit(first[81:86], first[86]),
+		Ceiling:       limit(first[87:92], first[92]),
+		Vertices:      vertices,
+		PolygonBounds: &bounds,
+	})
+}
+
+// parseAirspaceLimit returns an airspace's floor or ceiling in feet (5.121)
+// and whether it is above ground level rather than mean sea level (5.133).
+// The ground is zero feet above it; an unlimited ceiling is math.MaxInt.
+func parseAirspaceLimit(s []byte, unit byte) (int, bool) {
+	switch string(s) {
+	case "GND  ":
+		return 0, true
+	case "UNLTD":
+		return gomath.MaxInt, false
+	default:
+		return parseAltitude(s), unit == 'A'
+	}
+}
+
+// parseAirspaceBoundary returns the polygon traced by an airspace sector's
+// records. Each record's boundary via (5.118) gives the path from its
+// position to the next record's, or back to the first record's from the last
+// one: a great circle or rhumb line, which are straight lines at the scale of
+// these airspaces, or an arc around the record's arc origin. A circle around
+// the arc origin is a sector's only record.
+func parseAirspaceBoundary(recs [][]byte) []math.Point2LL {
+	position := func(rec []byte) math.Point2LL { return parseLatLong(rec[32:41], rec[41:51]) }
+
+	var vertices []math.Point2LL
+	for i, rec := range recs {
+		via := rec[30]
+		if via != 'C' {
+			vertices = append(vertices, position(rec))
+		}
+		if via != 'C' && via != 'L' && via != 'R' {
+			continue
+		}
+
+		origin := parseLatLong(rec[51:60], rec[60:70])
+		radius := float32(parseInt(rec[70:74])) / 10
+		nmPerLongitude := math.NMPerLongitudeAt(origin)
+		from, sweep := float32(0), float32(360)
+		if via != 'C' {
+			from = float32(math.Heading2LL(origin, position(rec), nmPerLongitude))
+			to := float32(math.Heading2LL(origin, position(recs[(i+1)%len(recs)]), nmPerLongitude))
+			if via == 'R' {
+				sweep = math.NormalizeHeading(to - from)
+			} else {
+				sweep = -math.NormalizeHeading(from - to)
+			}
+		}
+
+		// An arc's endpoints are its record's position and the next one's,
+		// so only the points between them are added. Points are about two
+		// degrees apart.
+		n := int(math.Ceil(math.Abs(sweep) / 2))
+		start := util.Select(via == 'C', 0, 1)
+		for j := start; j < n; j++ {
+			hdg := math.TrueHeading(math.NormalizeHeading(from + sweep*float32(j)/float32(n)))
+			vertices = append(vertices, math.Offset2LL(origin, hdg, radius, nmPerLongitude))
+		}
+	}
+	return vertices
 }
