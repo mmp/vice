@@ -768,7 +768,9 @@ func (r *ssaRecord) GetWaypoint() (wp av.Waypoint, arc *av.DMEArc, ok bool) {
 	if sr, ok := r.speedRestriction(); ok {
 		wp.SetSpeedRestriction(sr)
 	}
-	if r.waypointDescription[1] == 'Y' {
+	// 5.17: B is a fly-over waypoint that ends a route type or approach
+	// transition; Y is any other.
+	if r.waypointDescription[1] == 'Y' || r.waypointDescription[1] == 'B' {
 		wp.SetFlyOver(true)
 	}
 	if r.waypointDescription[3] == 'A' || r.waypointDescription[3] == 'C' || r.waypointDescription[3] == 'D' {

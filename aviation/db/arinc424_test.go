@@ -873,6 +873,28 @@ func TestCIFPRoutesRoundTrip(t *testing.T) {
 	}
 }
 
+// A fly-over waypoint that ends a route type is coded B rather than Y: the
+// KDAL FINGR1 transitions end by flying over FINGR. The common route's record
+// for FINGR has the heading flown from it, which the transitions take on
+// where they join it.
+func TestParseARINC424FlyOverEndOfRoute(t *testing.T) {
+	lines := []string{
+		"SUSAP KDALK4EFINGR11BYP   010BYP  K4D 0V       IF                                             18000                        638292512",
+		"SUSAP KDALK4EFINGR11BYP   020FINGRK4EA0EB      TF                                                                          638302512",
+		"SUSAP KDALK4EFINGR12ALL   010FINGRK4EA0E       IF                                             18000                        638712512",
+		"SUSAP KDALK4EFINGR12ALL   020KDAL K4PA0AE      VM                     2300                                                 638722512",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	star := result.Airports["KDAL"].STARs["FINGR1"]
+	if got, want := star.Transitions["BYP"].Encode(), "BYP FINGR/flyover/h230"; got != want {
+		t.Errorf("expected BYP transition %q, got %q", want, got)
+	}
+	if got, want := star.Transitions["ALL"].Encode(), "FINGR/h230"; got != want {
+		t.Errorf("expected the common route %q, got %q", want, got)
+	}
+}
+
 // Where a STAR transition joins the common route, the common route's record
 // for the fix fills in what the transition's lacks: KCLT BANKR8's PONZE
 // transition reaches BANKR without the 270 knot limit the common route gives
