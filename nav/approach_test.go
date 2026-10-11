@@ -666,12 +666,46 @@ func TestAtFixInterceptFixNotOnApproach(t *testing.T) {
 	}
 }
 
-// TestAtFixInterceptApproachOnlyFix verifies that "at FIX intercept the
-// localizer" works when the named fix is on the assigned approach but not
-// yet in the aircraft's route (e.g., aircraft is being vectored). The
-// command should splice the direct-to-fix route in via directFixWaypoints
-// and arm the at-fix intercept.
-func TestAtFixInterceptApproachOnlyFix(t *testing.T) {
+// TestAtFixFixNotInRoute verifies that an aircraft flying its route refuses
+// "at FIX" approach instructions for a fix that isn't on that route rather
+// than leaving the route to go to the fix.
+func TestAtFixFixNotInRoute(t *testing.T) {
+	for _, c := range []struct {
+		name  string
+		issue func(f *FlightTest) speech.CommandIntent
+	}{
+		{"cleared", func(f *FlightTest) speech.CommandIntent { return f.AtFixCleared("ROSLY", "I22L", false) }},
+		{"intercept", func(f *FlightTest) speech.CommandIntent { return f.AtFixIntercept("ROSLY") }},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        "HAUPT/a6000 LEFER/a4000",
+				DepartureAirport: "KMCO",
+				ArrivalAirport:   "KJFK",
+				AircraftType:     "A320",
+				InitialAltitude:  5000,
+				InitialSpeed:     210,
+				AssignedAltitude: 5000,
+			})
+			f.ExpectApproach("I22L")
+
+			assertUnable(t, c.issue(f), "not in our route")
+			if dh := f.nav.DeferredNavHeading; dh != nil {
+				t.Errorf("pending route %v, want the route left alone", waypointFixes(dh.Waypoints))
+			}
+			if a := f.nav.Approach; a.AtFixInterceptFix != "" || a.AtFixClearedRoute != nil {
+				t.Errorf("at-fix instruction armed after unable: intercept %q, cleared route %v",
+					a.AtFixInterceptFix, waypointFixes(a.AtFixClearedRoute))
+			}
+		})
+	}
+}
+
+// TestAtFixInterceptAfterDirect covers "direct ROSLY, intercept the
+// localizer" given to a vectored aircraft, which speech recognition turns
+// into DROSLY AROSLY/I: the pending direct puts ROSLY on the route, so the
+// at-fix intercept arms without changing it.
+func TestAtFixInterceptAfterDirect(t *testing.T) {
 	f := NewArrivalFlight(t, ArrivalConfig{
 		Waypoints:        "HAUPT/a6000 LEFER/a4000",
 		DepartureAirport: "KMCO",
@@ -681,22 +715,157 @@ func TestAtFixInterceptApproachOnlyFix(t *testing.T) {
 		InitialSpeed:     210,
 		AssignedAltitude: 5000,
 	})
-
 	f.ExpectApproach("I22L")
-	intent := f.AtFixIntercept("ROSLY")
-	if _, ok := intent.(speech.UnableIntent); ok {
-		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
+	f.AssignHeading(180, av.TurnClosest)
+	f.Step(10)
+
+	f.DirectFix("ROSLY")
+	dh := f.nav.DeferredNavHeading
+	assertNotUnable(t, f.AtFixIntercept("ROSLY"))
+	if f.nav.DeferredNavHeading != dh {
+		t.Error("at-fix intercept replaced the pending direct")
 	}
 
-	if f.nav.Approach.AtFixInterceptFix != "ROSLY" {
-		t.Errorf("AtFixInterceptFix = %q, want ROSLY", f.nav.Approach.AtFixInterceptFix)
+	f.AtFix("ROSLY", func(f *FlightTest) {
+		if f.nav.Approach.InterceptState != OnApproachCourse {
+			t.Errorf("InterceptState = %d, want OnApproachCourse", f.nav.Approach.InterceptState)
+		}
+		if len(f.nav.Waypoints) == 0 || f.nav.Waypoints[0].Fix != "ZALPO" {
+			t.Errorf("next waypoint = %v, want ZALPO", navRouteFixes(f.nav))
+		}
+	})
+	f.Run()
+}
+
+// localizerInterceptFlight returns an aircraft expecting the KJFK ILS 22L
+// that is flying heading hdg from dist nm out along the final approach
+// course, offset lateral nm from it, at 3000. route follows its starting
+// point in its route.
+func localizerInterceptFlight(t *testing.T, dist, lateral float32, hdg int, route string) *FlightTest {
+	t.Helper()
+	pos := LookupApproachGeometry(t, "KJFK", "I22L").ThresholdOffset(dist, lateral)
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " " + route,
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  3000,
+		InitialSpeed:     180,
+		InitialHeading:   float32(hdg),
+		AssignedAltitude: 3000,
+	})
+	f.AssignHeading(hdg, av.TurnClosest)
+	f.Step(10)
+	f.ExpectApproach("I22L")
+	return f
+}
+
+// TestAtFixOnHeading verifies that an aircraft on a heading refuses "at FIX"
+// approach instructions that don't apply to it and stays on the heading,
+// whether or not the fix is on its route. An aircraft that was intercepting
+// goes on to join the localizer.
+func TestAtFixOnHeading(t *testing.T) {
+	cleared := func(f *FlightTest) speech.CommandIntent { return f.AtFixCleared("ROSLY", "I22L", false) }
+	intercept := func(f *FlightTest) speech.CommandIntent { return f.AtFixIntercept("ROSLY") }
+	interceptApproach := func(f *FlightTest) speech.CommandIntent { return f.InterceptApproach() }
+	clearApproach := func(f *FlightTest) speech.CommandIntent {
+		return f.nav.ClearedApproach("I22L", nil, f.simTime, 0, false, "")
 	}
-	if f.nav.Approach.InterceptState != OnApproachCourse {
-		t.Errorf("expected OnApproachCourse, got %d", f.nav.Approach.InterceptState)
+
+	for _, c := range []struct {
+		name  string
+		setup func(f *FlightTest) speech.CommandIntent
+		issue func(f *FlightTest) speech.CommandIntent
+		want  string
+	}{
+		{"heading/cleared", nil, cleared, "on a heading"},
+		{"heading/intercept", nil, intercept, "on a heading"},
+		{"intercepting/intercept", interceptApproach, intercept, "already intercepting"},
+		{"cleared/cleared", clearApproach, cleared, "already cleared"},
+		{"cleared/intercept", clearApproach, intercept, "already cleared"},
+	} {
+		for _, r := range []struct{ name, route string }{
+			{"ROSLY on route", "HAUPT/a6000 LEFER/a4000 ROSLY/a3000"},
+			{"ROSLY off route", "HAUPT/a6000 LEFER/a4000"},
+		} {
+			t.Run(c.name+"/"+r.name, func(t *testing.T) {
+				f := localizerInterceptFlight(t, 20, -4, 192, r.route)
+				if c.setup != nil {
+					assertNotUnable(t, c.setup(f))
+				}
+				state := f.nav.Approach.InterceptState
+				f.Step(5)
+
+				assertUnable(t, c.issue(f), c.want)
+				if dh := f.nav.DeferredNavHeading; dh != nil {
+					t.Errorf("pending route %v, want the aircraft left on its heading", waypointFixes(dh.Waypoints))
+				}
+				if a := f.nav.Approach; a.AtFixInterceptFix != "" || a.AtFixClearedRoute != nil {
+					t.Errorf("at-fix instruction armed after unable: intercept %q, cleared route %v",
+						a.AtFixInterceptFix, waypointFixes(a.AtFixClearedRoute))
+				}
+
+				if state == NotIntercepting {
+					f.Step(60)
+					if hdg := f.nav.Heading.Assigned; hdg == nil || *hdg != 192 {
+						t.Errorf("assigned heading %v, want 192", hdg)
+					}
+					return
+				}
+				f.StepUntil("joined the localizer", func() bool {
+					if f.nav.Approach.RequestVectors {
+						t.Fatal("aircraft requested vectors")
+					}
+					return f.nav.Approach.InterceptState == OnApproachCourse
+				})
+			})
+		}
 	}
-	if f.nav.Approach.Cleared {
-		t.Errorf("approach should not be cleared")
+}
+
+// TestAtFixClearedWhileIntercepting covers "fly heading 192, intercept the
+// localizer; at ROSLY cleared ILS 22L": the aircraft joins the localizer
+// at its altitude and descends only once the clearance takes effect at
+// ROSLY.
+func TestAtFixClearedWhileIntercepting(t *testing.T) {
+	f := localizerInterceptFlight(t, 20, -4, 192, "HAUPT/a6000 LEFER/a4000")
+	assertNotUnable(t, f.InterceptApproach())
+	assertNotUnable(t, f.AtFixCleared("ROSLY", "I22L", false))
+
+	f.BeforeFix("ROSLY", func(f *FlightTest) {
+		if f.nav.Approach.Cleared {
+			t.Fatalf("tick %d: cleared before ROSLY", f.tick)
+		}
+		if alt := f.nav.FlightState.Altitude; alt < 2950 {
+			t.Fatalf("tick %d: descended to %.0f before ROSLY", f.tick, alt)
+		}
+	})
+	f.AtFix("ROSLY", func(f *FlightTest) {
+		if !f.nav.Approach.Cleared {
+			t.Error("not cleared at ROSLY")
+		}
+		if len(f.nav.Waypoints) == 0 || f.nav.Waypoints[0].Fix != "ZALPO" {
+			t.Errorf("next waypoint = %v, want ZALPO", navRouteFixes(f.nav))
+		}
+	})
+	f.AtFix("ZALPO", func(f *FlightTest) {
+		f.AssertAltitudeBelow(2500)
+	})
+	f.Run()
+}
+
+// TestAtFixClearedBehindIntercept verifies that an aircraft intercepting
+// from a heading refuses "at FIX cleared" for a fix it will already be past
+// when it joins the localizer, and accepts it for one ahead of the join.
+func TestAtFixClearedBehindIntercept(t *testing.T) {
+	f := localizerInterceptFlight(t, 16, -4, 192, "HAUPT/a6000 LEFER/a4000")
+	assertNotUnable(t, f.InterceptApproach())
+
+	assertUnable(t, f.AtFixCleared("ROSLY", "I22L", false), "won't cross")
+	if f.nav.Approach.AtFixClearedRoute != nil {
+		t.Errorf("at-fix clearance armed after unable: %v", waypointFixes(f.nav.Approach.AtFixClearedRoute))
 	}
+	assertNotUnable(t, f.AtFixCleared("ZALPO", "I22L", false))
 }
 
 func TestAtFixInterceptSkipsRouteHeadingAtApproachFix(t *testing.T) {
@@ -726,27 +895,6 @@ func TestAtFixInterceptSkipsRouteHeadingAtApproachFix(t *testing.T) {
 	})
 
 	f.Run()
-}
-
-// TestAtFixClearedApproachOnlyFix verifies the same approach-only-fix
-// relaxation for AtFixCleared.
-func TestAtFixClearedApproachOnlyFix(t *testing.T) {
-	f := NewArrivalFlight(t, ArrivalConfig{
-		Waypoints:        "HAUPT/a6000 LEFER/a4000",
-		DepartureAirport: "KMCO",
-		ArrivalAirport:   "KJFK",
-		AircraftType:     "A320",
-		InitialAltitude:  5000,
-		InitialSpeed:     210,
-		AssignedAltitude: 5000,
-	})
-
-	f.ExpectApproach("I22L")
-	f.AtFixCleared("ROSLY", "I22L", false)
-
-	if f.nav.Approach.AtFixClearedRoute == nil {
-		t.Errorf("AtFixClearedRoute should be populated for approach-only fix")
-	}
 }
 
 // TestApproachWindCorrectionOnLocalizer verifies that an aircraft tracks
@@ -1780,7 +1928,7 @@ func TestDirectFixOnILSAfterEVA(t *testing.T) {
 // the ILS reference.
 func TestAtFixInterceptILSAfterEVA(t *testing.T) {
 	f := NewArrivalFlight(t, ArrivalConfig{
-		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		Waypoints:        "HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
 		DepartureAirport: "KMCO",
 		ArrivalAirport:   "KJFK",
 		AircraftType:     "A320",
@@ -1904,10 +2052,8 @@ func TestClearedVisualAlongILSAfterVectorArmsIntercept(t *testing.T) {
 
 // TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept covers the
 // AEDDYY/I path — InterceptedReference is set by AtFixIntercept (via
-// routeDirectIfNeeded → visualReferenceForFix), where the fix is already in
-// the route so the InterceptState=OnApproachCourse branch in
-// routeDirectIfNeeded is skipped. A subsequent vector + CVA must still
-// arm the intercept state machine.
+// visualReferenceForFix) and InterceptState is left alone. A subsequent
+// vector + CVA must still arm the intercept state machine.
 func TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept(t *testing.T) {
 	f := NewArrivalFlight(t, ArrivalConfig{
 		Waypoints:        "HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
@@ -2157,7 +2303,7 @@ func TestExpectApproachKeepsPendingDirect(t *testing.T) {
 // AtFixInterceptFix, etc.).
 func TestExpectVisualApproachResetsExpectApproachState(t *testing.T) {
 	f := NewArrivalFlight(t, ArrivalConfig{
-		Waypoints:        "HAUPT/a6000 LEFER/a4000",
+		Waypoints:        "HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
 		DepartureAirport: "KMCO",
 		ArrivalAirport:   "KJFK",
 		AircraftType:     "A320",

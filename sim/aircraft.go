@@ -691,12 +691,12 @@ func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport) speech.CommandInte
 	return intent
 }
 
-func (ac *Aircraft) AtFixCleared(fix, approach string, simTime Time, delayReduction time.Duration, straightIn bool) speech.CommandIntent {
-	return ac.Nav.AtFixCleared(fix, approach, simTime.NavTime(), delayReduction, straightIn)
+func (ac *Aircraft) AtFixCleared(fix, approach string, straightIn bool) speech.CommandIntent {
+	return ac.Nav.AtFixCleared(fix, approach, straightIn)
 }
 
-func (ac *Aircraft) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
-	return ac.Nav.AtFixIntercept(fix, simTime.NavTime(), delayReduction)
+func (ac *Aircraft) AtFixIntercept(fix string) speech.CommandIntent {
+	return ac.Nav.AtFixIntercept(fix)
 }
 
 func (ac *Aircraft) ClearedApproach(id string, simTime Time, delayReduction time.Duration,

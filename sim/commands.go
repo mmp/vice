@@ -292,20 +292,20 @@ func (s *Sim) AfterFixAltitude(tcw TCW, callsign av.ADSBCallsign, fix string, al
 		})
 }
 
-func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach string, straightIn bool, delayReduction time.Duration) (speech.CommandIntent, error) {
+func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach string, straightIn bool) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if unable := s.refuseChartedVisualClearance(ac, approach); unable != nil {
 				return unable
 			}
-			return ac.AtFixCleared(fix, approach, s.State.SimTime, delayReduction, straightIn)
+			return ac.AtFixCleared(fix, approach, straightIn)
 		})
 }
 
-func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string, delayReduction time.Duration) (speech.CommandIntent, error) {
+func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.AtFixIntercept(fix, s.State.SimTime, delayReduction)
+			return ac.AtFixIntercept(fix)
 		})
 }
 

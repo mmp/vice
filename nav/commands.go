@@ -1571,3 +1571,9 @@ func (nav *Nav) hasIssuedAltitude() bool {
 func (nav *Nav) InterceptedButNotCleared() bool {
 	return nav.Approach.InterceptState == OnApproachCourse && !nav.Approach.Cleared
 }
+
+// interceptingFromHeading reports whether the aircraft's heading is taking
+// it to join the approach course.
+func (nav *Nav) interceptingFromHeading() bool {
+	return nav.Approach.InterceptState == InitialHeading || nav.Approach.InterceptState == TurningToJoin
+}

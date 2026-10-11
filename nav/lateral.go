@@ -223,8 +223,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 	heading, turn = nav.FlightState.Heading, av.TurnClosest
 
 	// nav.Heading.Assigned may still be nil pending a deferred turn
-	if (nav.Approach.InterceptState == InitialHeading ||
-		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
+	if nav.interceptingFromHeading() && nav.Heading.Assigned != nil {
 		heading, turn = nav.ApproachHeading(callsign, wxs, simTime)
 	} else if len(nav.Heading.Maneuvers) > 0 {
 		// Maneuvers turn at a flat rate without banking, as holds do; a

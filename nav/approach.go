@@ -38,9 +38,9 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 		interceptWaypoints = nav.Approach.InterceptWaypoints
 	} else {
 		// For non-ILS approaches, find the approach segment that the
-		// aircraft's heading ray will cross.
+		// aircraft's ground track will cross.
 		var ok bool
-		courseTrue, courseLine, interceptWaypoints, ok = nav.findInterceptSegment(ap, wxs)
+		courseTrue, courseLine, interceptWaypoints, ok = nav.findInterceptSegment(ap, nav.groundTrack(wxs))
 		if !ok {
 			nav.approachOvershootRequestVectors()
 			return
@@ -147,39 +147,8 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 		// We're established on the approach course. Figure out which
 		// fixes are still ahead and add them to the aircraft's waypoints.
 		if hasLocalizer {
-			apHeading := ap.FinalApproachCourse(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-			wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-
-			// The aircraft joins wherever the intercept brings it, which may
-			// be abeam of or past one of the approach's fixes. Flying to one
-			// of those would turn it straight back off the course it just
-			// captured, so measure along the course: having joined within
-			// the capture tolerance of it, a fix less than that far ahead is
-			// where the aircraft already is.
-			pos := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
-			courseVec := math.HeadingVector(apHeading)
-			ahead := func(wp av.Waypoint) bool {
-				d := math.Sub2f(math.LL2NM(wp.Location, nav.FlightState.NmPerLongitude), pos)
-				return math.Dot(d, courseVec) > courseCaptureTolerance
-			}
-
-			for idx > 0 {
-				prev := wps[idx-1]
-				hdg := math.Heading2LL(prev.Location, wps[idx].Location,
-					nav.FlightState.NmPerLongitude)
-
-				if math.HeadingDifference(hdg, apHeading) > 5 { // not on the final approach course
-					break
-				}
-				if !ahead(prev) {
-					break
-				}
-				idx--
-			}
-			for idx < len(wps)-1 && !ahead(wps[idx]) {
-				idx++
-			}
-			nav.Waypoints = append(wps[idx:].Clone(), nav.FlightState.ArrivalAirport)
+			nav.Waypoints = append(nav.localizerWaypointsAhead(ap, nav.FlightState.Position).Clone(),
+				nav.FlightState.ArrivalAirport)
 		} else {
 			nav.Waypoints = append(interceptWaypoints.Clone(),
 				nav.FlightState.ArrivalAirport)
@@ -204,19 +173,93 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 	return
 }
 
-// findInterceptSegment finds the approach segment that the aircraft's
-// ground track will cross. Returns the segment course, the two endpoints
-// defining the line, the remaining waypoints from the intercept point
-// forward, and whether a valid segment was found.
-func (nav *Nav) findInterceptSegment(ap *av.Approach, wxs wx.Sample) (math.TrueHeading, [2]math.Point2LL, []av.Waypoint, bool) {
-	// Ground-track heading = heading + wind.
+// localizerWaypointsAhead returns the approach's waypoints from the first
+// fix on the final approach course that is ahead of p, a point on the
+// course, through the end of the approach.
+func (nav *Nav) localizerWaypointsAhead(ap *av.Approach, p math.Point2LL) av.WaypointArray {
+	apHeading := ap.FinalApproachCourse(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+	wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+
+	// The aircraft joins wherever the intercept brings it, which may
+	// be abeam of or past one of the approach's fixes. Flying to one
+	// of those would turn it straight back off the course it just
+	// captured, so measure along the course: having joined within
+	// the capture tolerance of it, a fix less than that far ahead is
+	// where the aircraft already is.
+	pos := math.LL2NM(p, nav.FlightState.NmPerLongitude)
+	courseVec := math.HeadingVector(apHeading)
+	ahead := func(wp av.Waypoint) bool {
+		d := math.Sub2f(math.LL2NM(wp.Location, nav.FlightState.NmPerLongitude), pos)
+		return math.Dot(d, courseVec) > courseCaptureTolerance
+	}
+
+	for idx > 0 {
+		prev := wps[idx-1]
+		hdg := math.Heading2LL(prev.Location, wps[idx].Location,
+			nav.FlightState.NmPerLongitude)
+
+		if math.HeadingDifference(hdg, apHeading) > 5 { // not on the final approach course
+			break
+		}
+		if !ahead(prev) {
+			break
+		}
+		idx--
+	}
+	for idx < len(wps)-1 && !ahead(wps[idx]) {
+		idx++
+	}
+	return wps[idx:]
+}
+
+// waypointsAfterIntercept returns the approach waypoints that an aircraft
+// flying hdg will follow once it joins the approach course: the ones that
+// ApproachHeading puts in its route at the capture. It returns nil if hdg
+// doesn't join the course.
+func (nav *Nav) waypointsAfterIntercept(hdg math.MagneticHeading) []av.Waypoint {
+	ap := nav.Approach.Assigned
+	nmPerLong, magVar := nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation
+	hdgTrue := math.MagneticToTrue(hdg, magVar)
+
+	if !nav.Approach.HasLocalizer() {
+		if nav.Approach.InterceptState == TurningToJoin {
+			return nav.Approach.InterceptWaypoints
+		}
+		_, _, wps, _ := nav.findInterceptSegment(ap, hdgTrue)
+		return wps
+	}
+
+	line := ap.FinalApproachCourseLine(nmPerLong, magVar)
+	pos := math.LL2NM(nav.FlightState.Position, nmPerLong)
+	dir := math.HeadingVector(hdgTrue)
+	p, ok := math.LineLineIntersect(pos, math.Add2f(pos, dir), math.LL2NM(line[0], nmPerLong),
+		math.LL2NM(line[1], nmPerLong))
+	if !ok || math.Dot(math.Sub2f(p, pos), dir) < 0 {
+		return nil
+	}
+	// The aircraft rolls out on the course somewhat past where its heading
+	// meets it; a fix within this distance of that point may be behind it
+	// by the time it captures the course.
+	const rollOutMargin = 1 // nm
+	courseVec := math.HeadingVector(ap.FinalApproachCourse(nmPerLong, magVar))
+	p = math.Add2f(p, math.Scale2f(courseVec, rollOutMargin))
+	return nav.localizerWaypointsAhead(ap, math.NM2LL(p, nmPerLong))
+}
+
+// groundTrack returns the aircraft's present true course over the ground.
+func (nav *Nav) groundTrack(wxs wx.Sample) math.TrueHeading {
 	hdgTrue := math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation)
 	TAS := nav.TAS(wxs.Temperature()) / 3600
 	flightVec := math.Scale2f(math.SinCos(math.Radians(hdgTrue)), TAS)
-	groundVec := math.Add2f(flightVec, wxs.WindVec())
-	groundTrack := math.VectorHeading(groundVec)
+	return math.VectorHeading(math.Add2f(flightVec, wxs.WindVec()))
+}
 
-	hit, ok := av.ClosestRayRouteIntersection(nav.FlightState.Position, groundTrack, ap.Waypoints)
+// findInterceptSegment finds the approach segment that a ray from the
+// aircraft along the given true track will cross. Returns the segment
+// course, the two endpoints defining the line, the remaining waypoints from
+// the intercept point forward, and whether a valid segment was found.
+func (nav *Nav) findInterceptSegment(ap *av.Approach, track math.TrueHeading) (math.TrueHeading, [2]math.Point2LL, []av.Waypoint, bool) {
+	hit, ok := av.ClosestRayRouteIntersection(nav.FlightState.Position, track, ap.Waypoints)
 	if !ok {
 		return 0, [2]math.Point2LL{}, nil, false
 	}
@@ -454,38 +497,11 @@ func (nav *Nav) InterceptApproach(joinFix string) speech.CommandIntent {
 	}
 }
 
-// routeDirectIfNeeded ensures the named fix is in the aircraft's route.
-// If it's already in AssignedWaypoints, this is a no-op for the route itself.
-// Otherwise it tries to route direct using directFixWaypoints (which searches
-// the assigned approach's waypoints), and on success enqueues the route via
-// EnqueueDirectFix. Returns true if the fix is now (or already was) in the
-// route.
-//
-// In either case, under a synthesized visual approach the fix may live on an
-// ILS/Localizer reference; we record that reference so a later cleared-visual
-// flies the localizer route rather than synthesizing a curved descent.
-func (nav *Nav) routeDirectIfNeeded(fix string, simTime Time, delayReduction time.Duration) bool {
-	if !slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
-		wps, source, err := nav.directFixWaypoints(fix)
-		if err != nil || wps == nil {
-			return false
-		}
-		nav.EnqueueDirectFix(wps, av.TurnClosest, simTime, delayReduction)
-		nav.Approach.NoPT = false
-		if source == waypointSourceApproach && !nav.Approach.Cleared {
-			nav.Approach.InterceptState = OnApproachCourse
-		}
-	}
-	if !nav.Approach.Cleared {
-		nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
-	}
-	return true
-}
-
 // visualReferenceForFix returns the ILS or Localizer reference approach
 // (from VisualReferences) that contains the given fix, or nil if none.
 // Used under a synthesized visual to identify when the aircraft has been
-// committed to an ILS-style route.
+// committed to an ILS-style route, so that a later cleared visual flies the
+// localizer route rather than a synthesized curved descent.
 func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
 	for _, ref := range nav.Approach.VisualReferences {
 		if !ref.Type.HasLocalizer() {
@@ -502,7 +518,11 @@ func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
 	return nil
 }
 
-func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.Duration, straightIn bool) speech.CommandIntent {
+// AtFixCleared clears the aircraft for the approach once it passes fix. An
+// aircraft flying its route must have the fix on it. One on a heading must
+// be intercepting the approach course and join it before the fix; it keeps
+// its altitude on the course until the clearance takes effect there.
+func (nav *Nav) AtFixCleared(fix, id string, straightIn bool) speech.CommandIntent {
 	if nav.Approach.AssignedId == "" {
 		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
@@ -515,16 +535,27 @@ func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.D
 		return speech.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
-	// Check this before routing direct: an unable reply shouldn't change
-	// the flight path.
 	route, idx := approachRouteThrough(ap, fix)
 	if route == nil {
 		return speech.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
 	}
+	if nav.Approach.Cleared {
+		return speech.MakeUnableIntent("we're already cleared for the {appr} approach", ap.FullName)
+	}
 
-	if !nav.routeDirectIfNeeded(fix, simTime, delayReduction) {
+	isFix := func(wp av.Waypoint) bool { return wp.Fix == fix }
+	if hdg, onHeading := nav.AssignedHeading(); onHeading {
+		if !nav.interceptingFromHeading() {
+			return speech.MakeUnableIntent("unable. We're on a heading")
+		}
+		if !slices.ContainsFunc(nav.waypointsAfterIntercept(hdg), isFix) {
+			return speech.MakeUnableIntent("unable. We won't cross {fix} on this intercept", fix)
+		}
+	} else if !slices.ContainsFunc(nav.AssignedWaypoints(), isFix) {
 		return speech.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
+
+	nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
 	nav.Approach.AtFixClearedRoute = route[idx:].Clone()
 	if straightIn && len(nav.Approach.AtFixClearedRoute) > 0 {
 		nav.Approach.AtFixClearedRoute[0].SetNoPT(true)
@@ -538,7 +569,10 @@ func (nav *Nav) AtFixCleared(fix, id string, simTime Time, delayReduction time.D
 	}
 }
 
-func (nav *Nav) AtFixIntercept(fix string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+// AtFixIntercept has the aircraft join the approach course once it passes
+// fix, which must be on the route it is flying. One on a heading never
+// passes the fix.
+func (nav *Nav) AtFixIntercept(fix string) speech.CommandIntent {
 	if nav.Approach.AssignedId == "" {
 		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
@@ -548,17 +582,25 @@ func (nav *Nav) AtFixIntercept(fix string, simTime Time, delayReduction time.Dur
 		return speech.MakeUnableIntent("unable. We were never told to expect an approach")
 	}
 
-	// Check this before routing direct: if the fix isn't on the approach,
-	// there will be nothing to join when we get there.
+	// If the fix isn't on the approach, there will be nothing to join when
+	// we get there.
 	if route, _ := approachRouteThrough(ap, fix); route == nil {
 		return speech.MakeUnableIntent("unable. {fix} is not on the {appr} approach", fix, ap.FullName)
 	}
-
-	if !nav.routeDirectIfNeeded(fix, simTime, delayReduction) {
+	if nav.Approach.Cleared {
+		return speech.MakeUnableIntent("we're already cleared for the {appr} approach", ap.FullName)
+	}
+	if _, onHeading := nav.AssignedHeading(); onHeading {
+		if nav.interceptingFromHeading() {
+			return speech.MakeUnableIntent("we're already intercepting")
+		}
+		return speech.MakeUnableIntent("unable. We're on a heading")
+	}
+	if !slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
 		return speech.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
 
-	// Store the fix where the aircraft should intercept
+	nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
 	nav.Approach.AtFixInterceptFix = fix
 
 	return speech.ApproachIntent{

@@ -568,7 +568,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 					}
 					return s.AfterFixAltitude(tcw, callsign, fix, alt*100)
 				}
-				return s.AtFixCleared(tcw, callsign, fix, rest, straightIn, delayReduction)
+				return s.AtFixCleared(tcw, callsign, fix, rest, straightIn)
 			case 'D':
 				rest := components[1][1:]
 				if !util.IsAllNumbers(rest) || len(rest) == 0 {
@@ -580,7 +580,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				}
 				return s.AfterFixAltitude(tcw, callsign, fix, alt*100)
 			case 'I':
-				return s.AtFixIntercept(tcw, callsign, fix, delayReduction)
+				return s.AtFixIntercept(tcw, callsign, fix)
 			case 'S':
 				sr, err := av.ParseSpeedRestriction(components[1][1:])
 				if err != nil {

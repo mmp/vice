@@ -914,14 +914,18 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                     <td><code>A<var>fix</var>/C</code>[<var>approach</var>]</td>
                     <td>Clears the aircraft for the approach when
                     it passes the given fix. The approach identifier is optional;
-                    if not specified, uses the previously-assigned approach.</td>
+                    if not specified, uses the previously-assigned approach.
+                    The fix must be on the aircraft's route, or, for an aircraft
+                    on a heading to intercept the approach, on the approach
+                    course after the point where the aircraft will join it.</td>
                     <td><code>AROSLY/C</code></td>
                   </tr>
                   <tr>
                     <td><code>A<var>fix</var>/I</code></td>
                     <td>Directs the aircraft to intercept the localizer when
                     it passes the given fix. The aircraft must have been told
-                    to expect an approach before this command is given.</td>
+                    to expect an approach before this command is given, and the
+                    fix must be on the route it is flying.</td>
                     <td><code>AROSLY/I</code></td>
                   </tr>
                   <tr>

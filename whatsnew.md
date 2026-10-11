@@ -1,6 +1,7 @@
 - Fixed multiple bugs with flight strip ownership
 - Improved support for LDA approaches (don't just fly the extended centerline)
 - Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
+- An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
 - STARS
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM

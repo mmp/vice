@@ -516,7 +516,7 @@ func TestChartedVisualClearanceRequiresSighting(t *testing.T) {
 func TestChartedVisualAtFixClearanceRequiresSighting(t *testing.T) {
 	vs := newReportingPointScenario(t, testBridge)
 
-	intent, err := vs.Sim.AtFixCleared(vs.tcw, vs.callsign, "FAF36", "V36", false, 0)
+	intent, err := vs.Sim.AtFixCleared(vs.tcw, vs.callsign, "FAF36", "V36", false)
 	if err != nil {
 		t.Fatalf("AtFixCleared error: %v", err)
 	}

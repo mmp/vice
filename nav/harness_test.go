@@ -850,14 +850,14 @@ func (f *FlightTest) CompoundSpeed(segments []speech.CompoundSpeedSegment) {
 	f.nav.AssignCompoundSpeed(segments, f.temp())
 }
 
-func (f *FlightTest) AtFixCleared(fix, approach string, straightIn bool) {
+func (f *FlightTest) AtFixCleared(fix, approach string, straightIn bool) speech.CommandIntent {
 	f.t.Helper()
-	f.nav.AtFixCleared(fix, approach, f.simTime, 0, straightIn)
+	return f.nav.AtFixCleared(fix, approach, straightIn)
 }
 
 func (f *FlightTest) AtFixIntercept(fix string) speech.CommandIntent {
 	f.t.Helper()
-	return f.nav.AtFixIntercept(fix, f.simTime, 0)
+	return f.nav.AtFixIntercept(fix)
 }
 
 func (f *FlightTest) InterceptRadial(fix string, radial int, outbound bool) speech.CommandIntent {
