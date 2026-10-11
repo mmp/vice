@@ -940,3 +940,17 @@ func TestParseARINC424SIDTransitionAfterLoop(t *testing.T) {
 		t.Errorf("expected %q, got %q", want, got)
 	}
 }
+
+// MAZ is both a VOR/DME and an NDB in Puerto Rico, a third of a mile apart.
+// The VOR is kept whichever record comes first.
+func TestParseARINC424NDBDoesNotReplaceVOR(t *testing.T) {
+	vor := "SLAMD        MAZ   TJ011060VDLW N18152323W067090372    N18152323W067090372W0100000181     NARMAYAGUEZ                      184082609"
+	ndb := "SLAMDB       MAZ   TJ002540H MW N18151353W067090895                       W0100           NARMAYAGUEZ                      184241703"
+	for _, lines := range [][]string{{vor, ndb}, {ndb, vor}} {
+		result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+		nav := result.Navaids["MAZ"]
+		if nav.Type != "VOR" || !nav.HasDME || !nav.HasDeclination {
+			t.Errorf("expected the MAZ VOR/DME, got %+v", nav)
+		}
+	}
+}

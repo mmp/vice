@@ -237,6 +237,11 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				if len(id) < 3 {
 					break
 				}
+				// A few NDBs share their identifier with a VOR, DME, or TACAN
+				// (MAZ in Puerto Rico, ADK in Alaska); the VHF navaid is kept.
+				if _, ok := result.Navaids[id]; ok && subsectionCode == 'B' {
+					break
+				}
 
 				name := strings.TrimSpace(string(line[93:123]))
 				dmeIdent := strings.TrimSpace(string(line[51:55]))
