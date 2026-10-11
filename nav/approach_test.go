@@ -5,6 +5,7 @@
 package nav
 
 import (
+	"fmt"
 	gomath "math"
 	"slices"
 	"testing"
@@ -2835,5 +2836,59 @@ func TestBackCourseApproachFromVectors(t *testing.T) {
 		if alt := f.nav.FlightState.Altitude; alt > 600 {
 			t.Errorf("from %.1f nm abeam: %.0f feet a mile from the threshold", lateral, alt)
 		}
+	}
+}
+
+// PHNL's LDA 26L doesn't point at its runway: the localizer course passes
+// 0.9nm from the threshold on its way to a visual turn to the runway, 14
+// degrees off the line from the FAF to the threshold. An aircraft vectored to
+// join it near SECIL, the intermediate fix, captures the localizer itself and
+// flies the step-down fix ONODE and the FAF HEFTL on it.
+func TestLDACoursePassingWideOfThreshold(t *testing.T) {
+	secil, _ := db.DB.LookupWaypoint("SECIL")
+	heftl, _ := db.DB.LookupWaypoint("HEFTL")
+	nmPerLong := math.NMPerLongitudeAt(heftl)
+	course := math.Heading2LL(secil, heftl, nmPerLong)
+
+	// The headings the reporting user gave, from 7nm before HEFTL and 0.6nm
+	// left of the localizer.
+	for _, hdg := range []float32{315, 330} {
+		t.Run(fmt.Sprintf("heading %.0f", hdg), func(t *testing.T) {
+			pos := math.Offset2LL(heftl, math.OppositeHeading(course), 7, nmPerLong)
+			pos = math.Offset2LL(pos, math.OffsetHeading(course, -90), 0.6, nmPerLong)
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        pos.DMSString() + " SECIL HEFTL",
+				DepartureAirport: "KLAX",
+				ArrivalAirport:   "PHNL",
+				AircraftType:     "B738",
+				InitialAltitude:  3000,
+				InitialSpeed:     180,
+				InitialHeading:   hdg,
+			})
+			f.ExpectApproach("X26L")
+			f.ClearedApproach("X26L")
+
+			ap := f.nav.Approach.Assigned
+			loc := ap.FinalApproachCourseLine(nmPerLong, f.nav.FlightState.MagneticVariation)
+			if d := math.HeadingDifference(math.Heading2LL(loc[0], loc[1], nmPerLong), course); d > 0.1 {
+				t.Fatalf("localizer course is %.2f degrees off the line through SECIL and HEFTL", d)
+			}
+
+			f.StepUntil("captured the localizer", func() bool {
+				if f.nav.Approach.RequestVectors {
+					t.Fatal("requested vectors")
+				}
+				return f.nav.Approach.InterceptState == OnApproachCourse
+			})
+			if fix := f.nav.Waypoints[0].Fix; fix != "ONODE" {
+				t.Errorf("joined the approach before %s, want ONODE", fix)
+			}
+			for f.nav.Waypoints[0].Fix != "_26L_THRESHOLD" {
+				if d := math.Abs(f.nav.signedCourseLineDistance(loc)); d > 0.15 {
+					t.Fatalf("%.2fnm off the localizer before %s", d, f.nav.Waypoints[0].Fix)
+				}
+				f.Step(1)
+			}
+		})
 	}
 }

@@ -147,6 +147,10 @@ const (
 
 func ParseARINC424(r io.Reader) ARINC424Result {
 	displacedThresholds := make(map[av.ICAOAirportCode]map[string]float32) // airport -> runway -> nm
+	// An airport's localizers follow its approaches in the file, so approaches
+	// are matched with their localizers once it has all been read.
+	approachLocalizers := make(map[av.ICAOAirportCode]map[string]string) // airport -> approach -> localizer id
+	localizers := make(map[av.ICAOAirportCode]map[string]math.Point2LL)  // airport -> localizer id -> antenna
 	start := time.Now()
 
 	result := ARINC424Result{
@@ -457,13 +461,20 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 				}
 				id := strings.TrimSpace(string(line[13:17]))
 				if id != "" && !empty(line[32:51]) {
+					location := parseLatLong(line[32:41], line[41:51])
 					if _, ok := result.Navaids[id]; !ok {
 						result.Navaids[id] = Navaid{
 							Id:       id,
 							Type:     "LOC",
-							Location: parseLatLong(line[32:41], line[41:51]),
+							Location: location,
 						}
 					}
+					// The navaid may well be the localizer's DME, which can
+					// be sited far from the antenna.
+					if localizers[icao] == nil {
+						localizers[icao] = make(map[string]math.Point2LL)
+					}
+					localizers[icao][id] = location
 				}
 
 			case 'D': // SID 4.1.9
@@ -538,6 +549,13 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 					}
 
 					result.Airports[icao].Approaches[appr.Id] = *appr
+
+					if loc := fafNavaid(recs); appr.Type.HasLocalizer() && loc != "" {
+						if approachLocalizers[icao] == nil {
+							approachLocalizers[icao] = make(map[string]string)
+						}
+						approachLocalizers[icao][appr.Id] = loc
+					}
 				}
 
 			case 'G': // runway records 4.1.10
@@ -596,6 +614,7 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 	}
 	flushSIDs()
 	setRunwayStarts(result.Airports, displacedThresholds)
+	setApproachLocalizers(result.Airports, approachLocalizers, localizers)
 
 	if false {
 		fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
@@ -623,6 +642,39 @@ func setRunwayStarts(airports map[av.ICAOAirportCode]Airport, displaced map[av.I
 			nmPerLongitude := math.NMPerLongitudeAt(rwy.Threshold)
 			back := math.Heading2LL(ap.Runways[opp].Threshold, rwy.Threshold, nmPerLongitude)
 			ap.Runways[i].Start = math.Offset2LL(rwy.Threshold, back, d, nmPerLongitude)
+		}
+	}
+}
+
+// fafNavaid returns the navaid that the CIFP record for an approach's final
+// approach fix names as the one the fix is defined from (the "Recommended
+// NAVAID" field, ARINC 424 5.23). For the final approach segment that is the
+// facility the procedure is built on: the localizer, for an approach flown on
+// one.
+func fafNavaid(recs []ssaRecord) string {
+	i := slices.IndexFunc(recs, func(r ssaRecord) bool {
+		return (r.continuation == '0' || r.continuation == '1') && r.waypointDescription[3] == 'F'
+	})
+	if i == -1 {
+		return ""
+	}
+	return strings.TrimSpace(string(recs[i].recommendedNavaid))
+}
+
+// setApproachLocalizers gives each approach flown on a localizer the
+// location of the localizer's antenna. approachLocalizers gives the
+// localizer each one names at its final approach fix.
+func setApproachLocalizers(airports map[av.ICAOAirportCode]Airport, approachLocalizers map[av.ICAOAirportCode]map[string]string,
+	localizers map[av.ICAOAirportCode]map[string]math.Point2LL) {
+	for icao, approaches := range approachLocalizers {
+		for id, loc := range approaches {
+			p, ok := localizers[icao][loc]
+			if !ok {
+				continue
+			}
+			appr := airports[icao].Approaches[id]
+			appr.LocalizerLocation = p
+			airports[icao].Approaches[id] = appr
 		}
 	}
 }

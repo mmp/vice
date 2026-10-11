@@ -122,6 +122,8 @@ type Approach struct {
 	// identifier the RP command names them by.
 	ReportingPoints map[string]*ReportingPoint `json:"reporting_points,omitempty"`
 
+	LocalizerLocation math.Point2LL
+
 	// Set in Airport Finalize()
 	Threshold         math.Point2LL
 	OppositeThreshold math.Point2LL
@@ -291,18 +293,21 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) (Waypo
 
 // FinalApproachCourseLine returns two points along the approach's final
 // approach course, in the direction of landing. An approach flown on a
-// localizer follows the line from its FAF to the runway threshold, since a
-// localizer may be offset from its runway (KSLC 35's LDA is 5 degrees off).
-// The FAF and the threshold are the two most precisely placed points on the
-// final: the fix before the FAF may sit off the course, and a step-down fix
-// after it gives too short a baseline. An LDA's course passes a few hundred
-// feet from the threshold at most, so the line is within half a degree of it.
-// Other approaches follow the runway's extended centerline, as their ATPA
-// volumes do.
+// localizer follows the line from its FAF to the localizer antenna, since a
+// localizer may be offset from its runway: KSLC 35's LDA is 5 degrees off,
+// and PHNL 26L's crosses 0.9nm from the threshold on its way to a visual
+// turn to the runway. A fix before the FAF may sit off the course, and a
+// step-down fix after it gives too short a baseline. Hand-written approaches
+// have no localizer data, so theirs follow the line from the FAF to the
+// threshold. Other approaches follow the runway's extended centerline, as
+// their ATPA volumes do.
 func (ap *Approach) FinalApproachCourseLine(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
 	if ap.Type.HasLocalizer() {
 		if wps, _ := ap.FAFSegment(nmPerLongitude, magneticVariation); wps != nil {
 			if i := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF() }); i != -1 {
+				if !ap.LocalizerLocation.IsZero() {
+					return [2]math.Point2LL{wps[i].Location, ap.LocalizerLocation}
+				}
 				return [2]math.Point2LL{wps[i].Location, ap.Threshold}
 			}
 		}
@@ -320,7 +325,8 @@ func (ap *Approach) FinalApproachCourse(nmPerLongitude, magneticVariation float3
 // maxLocalizerOffset is how far, in degrees, an ILS or localizer approach's
 // final approach course may be from its runway: a localizer offset further
 // than that is an LDA. The largest offset among the CIFP's ILS and localizer
-// approaches is 3.1 degrees (KHWD's localizer 28L).
+// approaches is 3.1 degrees (KFLG's ILS 21 and KHWD's localizer 28L, among
+// others).
 const maxLocalizerOffset = 3.5
 
 // checkCourseAlignment reports an ILS or localizer approach whose final

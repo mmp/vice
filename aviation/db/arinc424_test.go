@@ -1003,6 +1003,30 @@ func TestParseARINC424CirclingOnlyApproach(t *testing.T) {
 	}
 }
 
+// PHNL's LDA 26L names its localizer, I-EPC, at its FAF. The approach gets
+// the localizer antenna's location, not that of the DME that shares its
+// identifier, though both are listed before the localizer.
+func TestParseARINC424ApproachLocalizer(t *testing.T) {
+	lines := []string{
+		"SPACD PHNLPH IEPC  PH010910 ITW                    IEPCN21193700W157542599E0110000240     NARDANIEL K INOUYE INTL          197372010",
+		"SPACP PHNLPHFX26L  X      010SECILPHPC0E  I    IF IEPCPH      12400105        PI  + 03000     18000                 0 DS   233672002",
+		"SPACP PHNLPHFX26L  X      011ONODEPHPC0E       CF IEPCPH      1240005630400049PI  + 01800                           0 DS   233682002",
+		"SPACP PHNLPHFX26L  X      020HEFTLPHPC0E  F    CF IEPCPH      1240004430400013PI  + 01400                 HNL   PHD 0 DS   233692002",
+		"SPACP PHNLPHFX26L  X      030YUYXEPHPC0EY M    CF IEPCPH      1240002230400022PI    00646             -310          0 DS   233702002",
+		"SPACP PHNLPHIIEPC0   010910RW26LN21193508W1575428323040                   9999-    0500   E0110                            233862102",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	loc := result.Airports["PHNL"].Approaches["X26L"].LocalizerLocation
+	want := parseLatLong([]byte("N21193508"), []byte("W157542832"))
+	if loc != want {
+		t.Errorf("expected localizer at %v, got %v", want, loc)
+	}
+	if dme := result.Navaids["IEPC"]; dme.Location == want {
+		t.Errorf("expected the IEPC navaid to be the DME, got %+v", dme)
+	}
+}
+
 // Class C airspace at KABI: a 5nm surface area with a notch cut out of its
 // northeast side, and two halves of the 10nm shelf with different floors,
 // divided by a chord. The KMFD Class D is a 5.4nm circle and the

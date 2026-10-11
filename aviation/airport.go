@@ -126,6 +126,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 					e.ErrorString(`"type" cannot be given with "cifp_id" approaches`)
 				}
 				appr.Type = dbAppr.Type
+				appr.LocalizerLocation = dbAppr.LocalizerLocation
 
 				if len(appr.Waypoints) > 0 {
 					e.ErrorString(`"waypoints" cannot be given with "cifp_id" approaches`)
