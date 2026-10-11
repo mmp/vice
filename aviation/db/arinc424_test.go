@@ -1078,3 +1078,49 @@ func TestParseARINC424ClassAirspace(t *testing.T) {
 		t.Errorf("expected the New York Class B area A, got %v", slices.Sorted(maps.Keys(result.BravoAirspace)))
 	}
 }
+
+// R-5402 is a rhumb line closed by a clockwise arc, with its controlling
+// agency in a continuation record between them; the Gap A Low MOA starts
+// with a counterclockwise arc. Both floors are above ground level.
+func TestParseARINC424SpecialUseAirspace(t *testing.T) {
+	lines := []string{
+		"SUSAURK3R5402      A00101L    H N47450000W098471900                              00500A09999MR-5402                        827911703",
+		"SUSAURK3R5402      A00102C                                                                         FAA MINNEAPOLIS ARTCC   827921703",
+		"SUSAURK3R5402      A00200L    REN47450000W098312500N47403100W09839220000700501                                             827931703",
+		"SUSAURK1MGAP A L   A00101L    L N45575900W105592300N46225600W10557127002501835   00500A11999MGAP A LOW MOA                 715501703",
+		"SUSAURK1MGAP A L   A00102C                                                                         FAA DENVER ARTCC        715511703",
+		"SUSAURK1MGAP A L   A00200L    G N45592400W105450700                                                                        715521703",
+		"SUSAURK1MGAP A L   A00300L    G N44471200W105304100                                                                        715531703",
+		"SUSAURK1MGAP A L   A00400L    GEN44481100W105450300                                                                        715541703",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	if len(result.SpecialUseAirspace) != 2 {
+		t.Fatalf("expected 2 special use airspaces, got %d", len(result.SpecialUseAirspace))
+	}
+	r5402, moa := result.SpecialUseAirspace[0], result.SpecialUseAirspace[1]
+	if r5402.Type != RestrictedArea || r5402.Designation != "5402" || moa.Type != MilitaryOperationsArea ||
+		moa.Designation != "GAP A L" {
+		t.Fatalf("unexpected airspaces %+v and %+v", r5402, moa)
+	}
+	v := r5402.Volumes[0]
+	if v.Description != "R-5402" || v.Floor != 500 || !v.FloorAGL || v.Ceiling != 9999 || v.CeilingAGL {
+		t.Errorf("unexpected R-5402 volume %s %d-%d agl %v/%v", v.Description, v.Floor, v.Ceiling, v.FloorAGL,
+			v.CeilingAGL)
+	}
+
+	// R-5402's southern boundary is the arc, 7nm from its origin; its
+	// northern is the line of latitude through its two corners.
+	origin := parseLatLong([]byte("N47403100"), []byte("W098392200"))
+	nmPerLongitude := math.NMPerLongitudeAt(origin)
+	for _, tc := range []struct {
+		hdg    math.TrueHeading
+		dist   float32
+		inside bool
+	}{{180, 6.8, true}, {180, 7.2, false}, {0, 4.0, true}, {0, 4.6, false}} {
+		p := math.Offset2LL(origin, tc.hdg, tc.dist, nmPerLongitude)
+		if got := v.Covers(p); got != tc.inside {
+			t.Errorf("R-5402 %.0f/%.1fnm: expected inside %v", tc.hdg, tc.dist, tc.inside)
+		}
+	}
+}

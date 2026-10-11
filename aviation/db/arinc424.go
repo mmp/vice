@@ -106,7 +106,44 @@ type ARINC424Result struct {
 	BravoAirspace   map[string][]av.AirspaceVolume
 	CharlieAirspace map[string][]av.AirspaceVolume
 	DeltaAirspace   map[string][]av.AirspaceVolume
+
+	SpecialUseAirspace []SpecialUseAirspace
 }
+
+// SpecialUseAirspace is a restricted area, MOA, or other special use
+// airspace from the CIFP's restrictive airspace records (4.1.18).
+type SpecialUseAirspace struct {
+	Type SpecialUseAirspaceType
+	// Designation identifies the area among those of its type: "2508" for
+	// R-2508, "ABEL BRAVO" for the Abel Bravo MOA.
+	Designation string
+	Volumes     []SpecialUseAirspaceVolume
+}
+
+// SpecialUseAirspaceVolume is one sector of a special use airspace; its
+// Description is the sector's name. Its floor and ceiling are above ground
+// level where FloorAGL and CeilingAGL say so, and an unlimited ceiling is
+// math.MaxInt.
+type SpecialUseAirspaceVolume struct {
+	av.AirspaceVolume
+	FloorAGL, CeilingAGL bool
+}
+
+// SpecialUseAirspaceType is the kind of a special use airspace (5.128).
+type SpecialUseAirspaceType byte
+
+const (
+	AlertArea              SpecialUseAirspaceType = 'A'
+	CautionArea            SpecialUseAirspaceType = 'C'
+	DangerArea             SpecialUseAirspaceType = 'D'
+	MilitaryOperationsArea SpecialUseAirspaceType = 'M'
+	ProhibitedArea         SpecialUseAirspaceType = 'P'
+	RestrictedArea         SpecialUseAirspaceType = 'R'
+	TrainingArea           SpecialUseAirspaceType = 'T'
+	WarningArea            SpecialUseAirspaceType = 'W'
+	// The FAA uses this for areas such as SFRAs and national security areas.
+	UnspecifiedArea SpecialUseAirspaceType = 'U'
+)
 
 func ParseARINC424(r io.Reader) ARINC424Result {
 	displacedThresholds := make(map[av.ICAOAirportCode]map[string]float32) // airport -> runway -> nm
@@ -536,7 +573,8 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 			}
 
 		case 'U': // Airspace
-			if line[5] != 'C' {
+			subsection := line[5]
+			if subsection != 'C' && subsection != 'R' {
 				break
 			}
 			if continuation := line[24]; continuation != '0' && continuation != '1' {
@@ -546,7 +584,11 @@ func ParseARINC424(r io.Reader) ARINC424Result {
 			// ends the description (5.118).
 			airspaceRecs = append(airspaceRecs, line)
 			if line[31] == 'E' {
-				result.addClassAirspaceSector(airspaceRecs)
+				if subsection == 'C' {
+					result.addClassAirspaceSector(airspaceRecs)
+				} else {
+					result.addSpecialUseAirspaceSector(airspaceRecs)
+				}
 				airspaceRecs = nil
 			}
 		}
@@ -1841,6 +1883,39 @@ func (r *ARINC424Result) addClassAirspaceSector(recs [][]byte) {
 		Ceiling:       limit(first[87:92], first[92]),
 		Vertices:      vertices,
 		PolygonBounds: &bounds,
+	})
+}
+
+// addSpecialUseAirspaceSector adds a sector of a restrictive airspace record
+// (4.1.18) to its special use airspace. Each area's sectors are consecutive.
+func (r *ARINC424Result) addSpecialUseAirspaceSector(recs [][]byte) {
+	first := recs[0]
+	typ := SpecialUseAirspaceType(first[8])
+	designation := strings.TrimSpace(string(first[9:19]))
+	if n := len(r.SpecialUseAirspace); n == 0 || r.SpecialUseAirspace[n-1].Type != typ ||
+		r.SpecialUseAirspace[n-1].Designation != designation {
+		r.SpecialUseAirspace = append(r.SpecialUseAirspace, SpecialUseAirspace{Type: typ, Designation: designation})
+	}
+
+	name := strings.TrimSpace(string(first[93:123]))
+	floor, floorAGL := parseAirspaceLimit(first[81:86], first[86])
+	ceiling, ceilingAGL := parseAirspaceLimit(first[87:92], first[92])
+	vertices := parseAirspaceBoundary(recs)
+	bounds := math.Extent2DFromP2LLs(vertices)
+
+	sua := &r.SpecialUseAirspace[len(r.SpecialUseAirspace)-1]
+	sua.Volumes = append(sua.Volumes, SpecialUseAirspaceVolume{
+		AirspaceVolume: av.AirspaceVolume{
+			Id:            designation[:min(len(designation), 7)],
+			Description:   name,
+			Type:          av.AirspaceVolumePolygon,
+			Floor:         floor,
+			Ceiling:       ceiling,
+			Vertices:      vertices,
+			PolygonBounds: &bounds,
+		},
+		FloorAGL:   floorAGL,
+		CeilingAGL: ceilingAGL,
 	})
 }
 
