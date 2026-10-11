@@ -17,11 +17,6 @@ import (
 // is drawn through a checkerboard polygon stipple — the skipped screen
 // pixels let the scope background show through, matching the "Heavy =
 // checkered cyan and black" look in the ERAM docs.
-const (
-	nexradLevelModerate = iota + 1
-	nexradLevelHeavy
-	nexradLevelExtreme
-)
 
 var nexradScheme = scope.WxScheme{
 	// Moderate: dBZ 25-35, Heavy: 35-45, Extreme: 45+.

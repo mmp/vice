@@ -13,7 +13,6 @@ import (
 	"slices"
 	"strings"
 	"time"
-	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
@@ -1097,13 +1096,6 @@ func handlePrintAircraftState(ep *Scope, ctx *scope.Context, trk *sim.Track) {
 	s := ads.Spew + "\n\n\n" + godump.DumpStr(ep.TrackState[trk.ADSBCallsign])
 	fmt.Println(s)
 	ctx.Platform.GetClipboard().SetClipboard(util.StripANSI(s))
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Helper function to check if a character is a digit
-
-func isDigit(r rune) bool {
-	return unicode.IsDigit(r)
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -193,31 +193,6 @@ var colors = struct {
 	},
 }
 
-const numMapColors = 8
-
-var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
-	{ // Group A
-		renderer.RGBFromUInt8(140, 140, 140),
-		renderer.RGBFromUInt8(0, 255, 255),
-		renderer.RGBFromUInt8(255, 0, 255),
-		renderer.RGBFromUInt8(238, 201, 0),
-		renderer.RGBFromUInt8(238, 106, 80),
-		renderer.RGBFromUInt8(162, 205, 90),
-		renderer.RGBFromUInt8(218, 165, 32),
-		renderer.RGBFromUInt8(72, 118, 255),
-	},
-	{ // Group B
-		renderer.RGBFromUInt8(140, 140, 140),
-		renderer.RGBFromUInt8(132, 112, 255),
-		renderer.RGBFromUInt8(118, 238, 198),
-		renderer.RGBFromUInt8(237, 145, 33),
-		renderer.RGBFromUInt8(218, 112, 214),
-		renderer.RGBFromUInt8(238, 180, 180),
-		renderer.RGBFromUInt8(50, 205, 50),
-		renderer.RGBFromUInt8(255, 106, 106),
-	},
-}
-
 type Scope struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet `json:"PreferenceSets,omitempty"`
 	prefSet            *PrefrenceSet
@@ -285,8 +260,6 @@ type Scope struct {
 	targetGenLastCallsign av.ADSBCallsign
 
 	aircraftFixCoordinates map[sim.ACID]aircraftFixCoordinates
-
-	prefrencesVisible bool
 
 	scopeDraw scope.RouteDrawer
 
@@ -761,9 +734,6 @@ func (ep *Scope) ensurePrefSetForSim(ss client.SimState) {
 }
 
 // Custom text characters. Some of these are not for all fonts. Size 11 has everything.
-const insertCursor string = "o"
-const thickUpArrow string = "p"
-const thickDownArrow string = "q"
 const checkMark string = "r"
 const xMark string = "s"
 const upArrow string = "t"

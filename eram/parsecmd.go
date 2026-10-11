@@ -120,36 +120,6 @@ func registerCommand(m CommandMode, c string, f any) {
 	}
 }
 
-// makeCommandHandlers creates a slice of userCommands from alternating command specifier strings
-// and handler functions. It's used when running one command causes another set of commands to be
-// installed temporarily (e.g. to process further keyboard input or mouse clicks from the user.)
-func makeCommandHandlers(args ...any) []userCommand {
-	if len(args)%2 != 0 {
-		panic("makeCommandHandlers requires alternating spec strings and handler functions")
-	}
-
-	seen := make(map[string]bool)
-	var handlers []userCommand
-
-	for i := 0; i < len(args); i += 2 {
-		spec, ok := args[i].(string)
-		if !ok {
-			panic(fmt.Sprintf("makeCommandHandlers: expected string at position %d, got %T", i, args[i]))
-		}
-		handler := args[i+1]
-
-		for alt := range splitCommands(spec) {
-			if seen[alt] {
-				panic(fmt.Sprintf("makeCommandHandlers: duplicate command spec: %s", alt))
-			}
-			seen[alt] = true
-			handlers = append(handlers, makeUserCommand(alt, handler))
-		}
-	}
-
-	return handlers
-}
-
 func splitCommands(c string) iter.Seq[string] {
 	return func(yield func(string) bool) {
 		// Split command alternatives at the top level only (not within brackets); this ensures that

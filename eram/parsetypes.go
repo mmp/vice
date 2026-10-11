@@ -622,25 +622,6 @@ func (h *posParser) AcceptsClick() bool   { return true }
 ///////////////////////////////////////////////////////////////////////////
 // Additional ERAM-specific parsers
 
-// acidParser parses aircraft IDs (callsigns)
-type acidParser struct{}
-
-func (h *acidParser) Identifier() string { return "ACID" }
-
-func (h *acidParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if text == "" || !isAlpha(text[0]) {
-		return nil, text, false, nil
-	}
-	i := 1
-	for i < len(text) && i < 7 /* 7 chars maximum */ && (isAlpha(text[i]) || isNum(text[i])) {
-		i++
-	}
-	return sim.ACID(text[:i]), text[i:], true, nil
-}
-
-func (h *acidParser) GoType() reflect.Type { return reflect.TypeFor[sim.ACID]() }
-func (h *acidParser) AcceptsClick() bool   { return false }
-
 // laOptionParser parses trailing options for LA commands: /speed, T, and T/speed
 type laOptionParser struct{}
 
@@ -714,24 +695,6 @@ func (h *beaconListParser) Parse(ep *Scope, ctx *scope.Context, input *CommandIn
 
 func (h *beaconListParser) GoType() reflect.Type { return reflect.TypeFor[[]av.Squawk]() }
 func (h *beaconListParser) AcceptsClick() bool   { return false }
-
-// mapGroupParser parses video map group names
-type mapGroupParser struct{}
-
-func (h *mapGroupParser) Identifier() string { return "MAP_GROUP" }
-
-func (h *mapGroupParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
-	field, remaining := util.CutAtSpace(text)
-	if field == "" {
-		return nil, text, false, nil
-	}
-
-	// Return the map group name - validation happens in the handler
-	return field, remaining, true, nil
-}
-
-func (h *mapGroupParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
-func (h *mapGroupParser) AcceptsClick() bool   { return false }
 
 // crrLabelParser parses CRR group labels (1-5 alphanumeric characters)
 type crrLabelParser struct{}

@@ -349,21 +349,6 @@ func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
 	return symbol
 }
 
-func drawDiamond(ctx *scope.Context, transforms scope.Transformations, color renderer.RGB,
-	pos [2]float32, ld *renderer.ColoredLinesDrawBuilder, cb *renderer.CommandBuffer) {
-	cb.LineWidth(2, ctx.DPIScale)
-	pt := transforms.WindowFromLatLongP(pos)
-	scale := float32(5) * ctx.DPIScale
-	p0 := math.Add2f(pt, [2]float32{0, scale})
-	p1 := math.Add2f(pt, [2]float32{scale, 0})
-	p2 := math.Add2f(pt, [2]float32{0, -scale})
-	p3 := math.Add2f(pt, [2]float32{-scale, 0})
-	ld.AddLine(p0, p1, color)
-	ld.AddLine(p1, p2, color)
-	ld.AddLine(p2, p3, color)
-	ld.AddLine(p3, p0, color)
-}
-
 func (ep *Scope) trackColor() renderer.RGB {
 	ps := ep.currentPrefs()
 	bright := ps.Brightness.PRTGT
@@ -418,12 +403,6 @@ func (ep *Scope) leaderLineLength(state *TrackState) int {
 		return *state.LeaderLineLength
 	}
 	return ep.currentPrefs().FDBLdrLength
-}
-
-// leaderLineVector returns a vector in window coordinates representing a leader
-// line of a fixed length in the given direction.
-func (ep *Scope) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
-	return math.Scale2f(dir.UnitVector(), 60)
 }
 
 // leaderLineVectorWithLength returns a vector in window coordinates representing a leader

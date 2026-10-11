@@ -5,7 +5,6 @@
 package eram
 
 import (
-	"errors"
 	"fmt"
 	"net/rpc"
 	"strings"
@@ -23,7 +22,7 @@ type Error struct {
 }
 
 func NewError(msg string, args ...any) *Error {
-	return &Error{errors.New(fmt.Sprintf(msg, args...))}
+	return &Error{fmt.Errorf(msg, args...)}
 }
 
 var ( // TODO: Get actual error messages for this

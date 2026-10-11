@@ -81,17 +81,6 @@ func validCRRLabel(s string) bool {
 // CRR Command Helpers
 ///////////////////////////////////////////////////////////////////////////////
 
-// tryExtractLocation scans the input text for an embedded location character
-// added via Input.AddLocation and returns it if present.
-func tryExtractLocation(it inputText) (math.Point2LL, bool) {
-	for _, ic := range it {
-		if string(ic.char) == locationSymbol {
-			return ic.location, true
-		}
-	}
-	return math.Point2LL{}, false
-}
-
 // drawCRRView renders the Continuous Range Readout view.
 func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
@@ -524,7 +513,7 @@ func (ep *Scope) drawCRRFixes(ctx *scope.Context, transforms scope.Transformatio
 // CRR group the aircraft belongs to.
 func (ep *Scope) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	if ep.CRRGroups == nil || len(ep.CRRGroups) == 0 {
+	if len(ep.CRRGroups) == 0 {
 		return
 	}
 
