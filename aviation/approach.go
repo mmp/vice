@@ -113,6 +113,10 @@ type Approach struct {
 	Runway    string          `json:"runway"`
 	Waypoints []WaypointArray `json:"waypoints"`
 
+	// CirclingOnly is set for CIFP approaches that have only circle-to-land
+	// minimums.
+	CirclingOnly bool
+
 	// ReportingPoints are the charted visual landmarks that a pilot
 	// expecting a charted visual approach may report in sight, keyed by the
 	// identifier the RP command names them by.

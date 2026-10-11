@@ -979,3 +979,26 @@ func TestParseARINC424AltitudeDescriptions(t *testing.T) {
 		}
 	}
 }
+
+// The KPDX VOR-A has only circle-to-land minimums; the KLNK ILS 18 has
+// straight-in minimums.
+func TestParseARINC424CirclingOnlyApproach(t *testing.T) {
+	lines := []string{
+		"SUSAP KPDXK1FVOR-A ABTG   010BTG  K1D 0VE AR   PI BTG K1      0000000028400100D   + 04200     18000                 0 NC   861082204",
+		"SUSAP KPDXK1FVOR-A S      010ROARKK1EA0E  I    IF BTG K1      32920100        D   + 02400     18000                 0 NC   861092204",
+		"SUSAP KPDXK1FVOR-A S      020BTG  K1D 0V  F    CF BTG K1      0000000014920100D   + 02400                 BTG  AK1D 0 NC   861102204",
+		"SUSAP KPDXK1FVOR-A S      021ZOLILK1PC0E S     CF BTG K1      1606006016060060D   + 00980                           0 NC   861112204",
+		"SUSAP KPDXK1FVOR-A S      030FISUMK1PC0EY M    CF BTG K1      1606009116060031D     00031              000          0 NC   861122204",
+		"SUSAP KLNKK3FI18   I      010ESACOK3PC0E  I    IF IOCZK3      35730110        PI  J 032000290018000                 0 NS   439882110",
+		"SUSAP KLNKK3FI18   I      020CLONEK3PC0E  F    CF IOCZK3      3573007217700038PI  H 0290002837        -300LNK   K3D 0 NS   439892110",
+		"SUSAP KLNKK3FI18   I      030RW18 K3PG0GY M    CF IOCZK3      3573002317700049PI    01250             -300          0 NS   439902110",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	if appr, ok := result.Airports["KPDX"].Approaches["VAOR"]; !ok || !appr.CirclingOnly {
+		t.Errorf("expected the KPDX VOR-A to be circling only, got %+v", appr)
+	}
+	if appr, ok := result.Airports["KLNK"].Approaches["I18"]; !ok || appr.CirclingOnly {
+		t.Errorf("expected the KLNK ILS 18 to have straight-in minimums, got %+v", appr)
+	}
+}

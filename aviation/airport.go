@@ -116,6 +116,10 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 				e.Pop()
 				continue
 			} else {
+				// if dbAppr.CirclingOnly {
+				// 	e.ErrorString("Approach %q has only circle-to-land minimums", appr.Id)
+				// }
+
 				// Copy the approach from the database, doing checks to
 				// make sure bogus overrides haven't been specified.
 				if appr.Type != UnknownApproach {

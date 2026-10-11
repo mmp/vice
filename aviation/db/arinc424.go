@@ -619,6 +619,7 @@ type ssaRecord struct {
 	speed                  []byte
 	centerFix              []byte
 	speedLimitType         byte
+	routeQualifier2        byte
 }
 
 func (r ssaRecord) Print() {
@@ -654,6 +655,7 @@ func parseSSA(line []byte) ssaRecord {
 		speed:                  line[99:102],
 		centerFix:              line[106:111],
 		speedLimitType:         line[117], // 5.261
+		routeQualifier2:        line[119], // 5.7
 	}
 }
 
@@ -1560,7 +1562,13 @@ func parseApproach(recs []ssaRecord, fixes map[string]Fix, navaids map[string]Na
 			return false
 		})
 
-	appr := av.Approach{Id: tidyFAAApproachId(recs[0].id)}
+	appr := av.Approach{
+		Id: tidyFAAApproachId(recs[0].id),
+		// The final approach and missed approach records have the
+		// minimums in their second route qualifier: S for straight-in and
+		// C for circle-to-land.
+		CirclingOnly: slices.ContainsFunc(recs, func(r ssaRecord) bool { return r.routeQualifier2 == 'C' }),
+	}
 
 	// The route type (ARINC 424 section 5.7) gives the approach's type and
 	// the first words of its charted name.
