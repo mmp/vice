@@ -208,8 +208,9 @@ func (ap Approach) DefaultFullName() string {
 }
 
 // InitializeWaypoints resolves waypoint locations and adds the runway
-// threshold waypoint to each route. It also sets the OnApproach flag,
-// Threshold, and OppositeThreshold fields.
+// threshold waypoint to each route, preceded by the turn onto the runway
+// for a localizer well off it (see localizerTurnWaypoint). It also sets the
+// OnApproach flag, Threshold, and OppositeThreshold fields.
 func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, db Database, nmPerLongitude float32,
 	magneticVariation float32, e *util.ErrorLogger) {
 	rwy, ok := LookupRunway(db, icao, ap.Runway)
@@ -244,6 +245,54 @@ func (ap *Approach) InitializeWaypoints(icao ICAOAirportCode, db Database, nmPer
 			ap.Waypoints[i][j].SetOnApproach(true)
 		}
 	}
+
+	if turn, ok := ap.localizerTurnWaypoint(nmPerLongitude, magneticVariation); ok {
+		turn.SetOnApproach(true)
+		for i := range ap.Waypoints {
+			ap.Waypoints[i] = slices.Insert(ap.Waypoints[i], len(ap.Waypoints[i])-1, turn)
+		}
+	}
+}
+
+// minLocalizerTurn is how far, in degrees, a localizer has to be off its
+// runway for aircraft to turn onto the runway where the localizer crosses its
+// extended centerline. Smaller offsets aren't noticeable at the threshold.
+const minLocalizerTurn = 10
+
+// localizerTurnWaypoint returns a waypoint where the approach's localizer
+// crosses its runway's extended centerline, if the localizer is well off
+// the runway and crosses it between the approach's last fix and the
+// threshold. Aircraft fly the localizer and turn onto the centerline there;
+// PHNL's LDA 26L is 45 degrees off its runway, and the turn starts just past
+// its missed approach point, as a pilot's visual turn to the runway would.
+// It is a fly-by fix: the leg after it runs down the centerline, so the turn
+// rolls out on it. The approach's routes must already end at the threshold.
+func (ap *Approach) localizerTurnWaypoint(nmPerLongitude, magneticVariation float32) (Waypoint, bool) {
+	if ap.LocalizerLocation.IsZero() || ap.Threshold.IsZero() || ap.OppositeThreshold.IsZero() {
+		return Waypoint{}, false
+	}
+	wps, _ := ap.FAFSegment(nmPerLongitude, magneticVariation)
+	if len(wps) < 2 {
+		return Waypoint{}, false
+	}
+	course := ap.FinalApproachCourseLine(nmPerLongitude, magneticVariation)
+	if math.HeadingDifference(math.Heading2LL(course[0], course[1], nmPerLongitude),
+		ap.RunwayHeading(nmPerLongitude)) < minLocalizerTurn {
+		return Waypoint{}, false
+	}
+
+	nm := func(p math.Point2LL) [2]float32 { return math.LL2NM(p, nmPerLongitude) }
+	threshold, opposite := nm(ap.Threshold), nm(ap.OppositeThreshold)
+	p, ok := math.LineLineIntersect(nm(course[0]), nm(course[1]), threshold, opposite)
+	if !ok {
+		return Waypoint{}, false
+	}
+	pastLastFix := math.Dot(math.Sub2f(p, nm(wps[len(wps)-2].Location)), math.Sub2f(nm(course[1]), nm(course[0]))) > 0
+	shortOfThreshold := math.Dot(math.Sub2f(p, threshold), math.Sub2f(opposite, threshold)) < 0
+	if !pastLastFix || !shortOfThreshold {
+		return Waypoint{}, false
+	}
+	return Waypoint{Fix: "_" + ap.Runway + "_LOC_TURN", Location: math.NM2LL(p, nmPerLongitude)}, true
 }
 
 // Find the FAF: return the corresponding waypoint array and the index of the FAF within it.

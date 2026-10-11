@@ -725,8 +725,7 @@ func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {
 }
 
 // makeAirport constructs an *av.Airport from the db.Airport in db.DB,
-// resolving approach waypoint locations and adding runway threshold
-// waypoints — mirroring the essential parts of Airport.Finalize.
+// initializing its approaches' waypoints as Airport.Finalize does.
 func (f *FlightTest) makeAirport() *av.Airport {
 	icao := f.arrivalAirport
 	faa, ok := db.DB.Airports[icao]
@@ -747,33 +746,17 @@ func (f *FlightTest) makeAirport() *av.Airport {
 			a.Waypoints[i] = route.Clone()
 		}
 
-		// Resolve fix names to lat/lon coordinates.
-		for i := range a.Waypoints {
-			a.Waypoints[i] = a.Waypoints[i].InitializeLocations(dbLocator{}, nmPerLong, magVar, true, e)
-			for j := range a.Waypoints[i] {
-				a.Waypoints[i][j].SetOnApproach(true)
-			}
-		}
-
-		// Add runway threshold waypoint to each route.
-		if rwy, ok := av.LookupRunway(db.Lookups{}, icao, a.Runway); ok {
-			a.Threshold = rwy.Threshold
+		if _, ok := av.LookupRunway(db.Lookups{}, icao, a.Runway); ok {
+			a.InitializeWaypoints(icao, db.Lookups{}, nmPerLong, magVar, e)
+		} else {
+			// A circling approach serves no particular runway, so its
+			// routes don't end at a threshold.
 			for i := range a.Waypoints {
-				alt := rwy.Elevation + rwy.ThresholdCrossingHeight
-				thresholdWP := av.Waypoint{
-					Fix:      "_" + a.Runway + "_THRESHOLD",
-					Location: rwy.Threshold,
+				a.Waypoints[i] = a.Waypoints[i].InitializeLocations(dbLocator{}, nmPerLong, magVar, true, e)
+				for j := range a.Waypoints[i] {
+					a.Waypoints[i][j].SetOnApproach(true)
 				}
-				thresholdWP.MergeActions(av.WaypointActions{Land: true})
-				thresholdWP.SetFlyOver(true)
-				thresholdWP.SetOnApproach(true)
-				thresholdWP.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt)))
-				a.Waypoints[i] = append(a.Waypoints[i], thresholdWP)
 			}
-		}
-
-		if opp, ok := av.LookupOppositeRunway(db.Lookups{}, icao, a.Runway); ok {
-			a.OppositeThreshold = opp.Threshold
 		}
 
 		approaches[name] = &a

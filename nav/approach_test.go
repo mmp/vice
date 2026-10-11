@@ -2778,6 +2778,12 @@ func TestOffsetLocalizerFliesItsCourse(t *testing.T) {
 	if ap.Type != av.LDAApproach {
 		t.Fatalf("X35 is typed %s, want LDA", ap.Type)
 	}
+	// Too slight an offset for a turn onto the runway centerline.
+	for _, route := range ap.Waypoints {
+		if slices.ContainsFunc(route, func(wp av.Waypoint) bool { return wp.Fix == "_35_LOC_TURN" }) {
+			t.Errorf("route %s turns onto the centerline, 5 degrees off the localizer", route.Encode())
+		}
+	}
 	nmPerLong := f.nav.FlightState.NmPerLongitude
 	lda := ap.FinalApproachCourseLine(nmPerLong, f.nav.FlightState.MagneticVariation)
 	if d := math.HeadingDifference(math.Heading2LL(lda[0], lda[1], nmPerLong), ap.RunwayHeading(nmPerLong)); d < 4 || d > 6 {
@@ -2843,7 +2849,9 @@ func TestBackCourseApproachFromVectors(t *testing.T) {
 // 0.9nm from the threshold on its way to a visual turn to the runway, 14
 // degrees off the line from the FAF to the threshold. An aircraft vectored to
 // join it near SECIL, the intermediate fix, captures the localizer itself and
-// flies the step-down fix ONODE and the FAF HEFTL on it.
+// flies the step-down fix ONODE and the FAF HEFTL on it. It then turns onto
+// the runway where the localizer crosses its extended centerline, lining up
+// with it a mile out.
 func TestLDACoursePassingWideOfThreshold(t *testing.T) {
 	secil, _ := db.DB.LookupWaypoint("SECIL")
 	heftl, _ := db.DB.LookupWaypoint("HEFTL")
@@ -2880,14 +2888,25 @@ func TestLDACoursePassingWideOfThreshold(t *testing.T) {
 				}
 				return f.nav.Approach.InterceptState == OnApproachCourse
 			})
-			if fix := f.nav.Waypoints[0].Fix; fix != "ONODE" {
-				t.Errorf("joined the approach before %s, want ONODE", fix)
+			want := []string{"ONODE", "HEFTL", "_26L_LOC_TURN", "_26L_THRESHOLD", "PHNL"}
+			if got := navRouteFixes(f.nav); !slices.Equal(got, want) {
+				t.Errorf("route after joining the approach = %v, want %v", got, want)
 			}
 			for f.nav.Waypoints[0].Fix != "_26L_THRESHOLD" {
 				if d := math.Abs(f.nav.signedCourseLineDistance(loc)); d > 0.15 {
 					t.Fatalf("%.2fnm off the localizer before %s", d, f.nav.Waypoints[0].Fix)
 				}
 				f.Step(1)
+			}
+
+			f.StepUntil("reached the threshold", func() bool { return f.nav.Waypoints[0].Fix == "PHNL" })
+			runway := [2]math.Point2LL{ap.Threshold, ap.OppositeThreshold}
+			rwyHdg := math.TrueToMagnetic(ap.RunwayHeading(nmPerLong), f.nav.FlightState.MagneticVariation)
+			if d := math.HeadingDifference(f.nav.FlightState.Heading, rwyHdg); d > 3 {
+				t.Errorf("heading %.0f at the threshold, want the runway's %.0f", f.nav.FlightState.Heading, rwyHdg)
+			}
+			if d := math.Abs(f.nav.signedCourseLineDistance(runway)); d > 0.05 {
+				t.Errorf("%.2fnm off the runway centerline at the threshold", d)
 			}
 		})
 	}
