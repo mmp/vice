@@ -1035,41 +1035,6 @@ func TestTrafficRouteSTARs(t *testing.T) {
 	}
 }
 
-func TestATPAHeading(t *testing.T) {
-	// Runway 35 runs true north; its published magnetic bearing is a few
-	// degrees off, as when it is referenced to an outdated variation.
-	const magVar = -11
-	thr35 := math.Point2LL{-111.96, 40.77}
-	nmPerLongitude := math.NMPerLongitudeAt(thr35)
-	thr17 := math.Offset2LL(thr35, 0, 1.5, nmPerLongitude)
-	rwy35 := Runway{Id: "35", Heading: 345, Threshold: thr35}
-
-	oldDB := testDB
-	testDB = testDatabase{Airports: map[ICAOAirportCode]testAirport{
-		"KTST": {Id: "KTST", Runways: []Runway{rwy35, {Id: "17", Heading: 165, Threshold: thr17}}},
-	}}
-	t.Cleanup(func() { testDB = oldDB })
-
-	for _, tc := range []struct {
-		name       string
-		approaches map[string]*Approach
-		heading    math.MagneticHeading
-	}{
-		{"no approaches", nil, 349},
-		{"offset LDA", map[string]*Approach{"X35": testFinal(LDAApproach, thr35, thr17, 355)}, 344},
-		{"aligned ILS and offset LDA", map[string]*Approach{
-			"I35": testFinal(ILSApproach, thr35, thr17, 0), "X35": testFinal(LDAApproach, thr35, thr17, 355)}, 349},
-		{"offset RNAV", map[string]*Approach{"R35": testFinal(RNAVApproach, thr35, thr17, 355)}, 349},
-		{"circling localizer", map[string]*Approach{"L35": testFinal(LocalizerApproach, thr35, thr17, 320)}, 349},
-	} {
-		ap := &Airport{Approaches: tc.approaches}
-		hdg := ap.atpaHeading(testLocator{}, "KTST", rwy35, nmPerLongitude, magVar)
-		if math.HeadingDifference(hdg, tc.heading) > 0.1 {
-			t.Errorf("%s: heading %.1f, expected %.1f", tc.name, hdg, tc.heading)
-		}
-	}
-}
-
 // testFinal returns an approach to runway 35 whose final approach course
 // flies the given true course through the threshold.
 func testFinal(typ ApproachType, thr35, thr17 math.Point2LL, course math.TrueHeading) *Approach {
@@ -1152,43 +1117,6 @@ func TestCheckCourseAlignment(t *testing.T) {
 		tc.appr.checkCourseAlignment(nmPerLongitude, -11, &e)
 		if e.HaveErrors() != tc.err {
 			t.Errorf("%s: errors %q, expected an error: %v", tc.name, e.String(), tc.err)
-		}
-	}
-}
-
-func TestCheckATPACourse(t *testing.T) {
-	// Runway 17/35 runs north-south; 8/26 crosses it at its midpoint.
-	thr35 := math.Point2LL{-111.96, 40.77}
-	nmPerLongitude := math.NMPerLongitudeAt(thr35)
-	mid := math.Offset2LL(thr35, 0, 0.75, nmPerLongitude)
-	runways := []Runway{
-		{Id: "35", Threshold: thr35},
-		{Id: "17", Threshold: math.Offset2LL(thr35, 0, 1.5, nmPerLongitude)},
-		{Id: "8", Threshold: math.Offset2LL(mid, 270, 0.75, nmPerLongitude)},
-		{Id: "26", Threshold: math.Offset2LL(mid, 90, 0.75, nmPerLongitude)},
-	}
-	headings := map[string]math.MagneticHeading{"35": 360, "17": 180, "8": 90, "26": 270}
-
-	for _, tc := range []struct {
-		name      string
-		threshold math.Point2LL
-		heading   math.MagneticHeading
-		err       string
-	}{
-		{"own runway", thr35, 360, ""},
-		{"circling from 26", runways[3].Threshold, 270, ""},
-		{"another airport", math.Offset2LL(thr35, 90, 20, nmPerLongitude), 360, "nm from runway 35"},
-		{"no runway's course", thr35, 315, "follows none"},
-		{"opposite end", thr35, 180, "opposite end"},
-		{"far end of the runway", runways[1].Threshold, 360, "runway 17's threshold"},
-	} {
-		vol := &ATPAVolume{Threshold: ScenarioPoint2LL{Point2LL: tc.threshold}, Heading: tc.heading}
-		var e util.ErrorLogger
-		checkATPACourse(vol, runways[0], runways, headings, &e)
-		if tc.err == "" && e.HaveErrors() {
-			t.Errorf("%s: unexpected errors: %s", tc.name, e.String())
-		} else if tc.err != "" && !strings.Contains(e.String(), tc.err) {
-			t.Errorf("%s: expected an error containing %q, got %q", tc.name, tc.err, e.String())
 		}
 	}
 }

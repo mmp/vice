@@ -4292,14 +4292,6 @@
       },
       "atpa_volumes": {
         "30R": {
-          "runway_threshold": "KMSP-30R",
-          "heading": 301,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVN"],
           "excluded_scratchpads": [
             "ZL1",
@@ -4334,14 +4326,6 @@
           ]
         },
         "30L": {
-          "runway_threshold": "KMSP-30L",
-          "heading": 301,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVS"],
           "excluded_scratchpads": [
             "VVN",
@@ -4376,14 +4360,6 @@
           ]
         },
         "35": {
-          "runway_threshold": "KMSP-35",
-          "heading": 350,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 7700,
-          "length": 30,
-          "left_width": 24304,
-          "right_width": 24304,
           "filtered_scratchpads": ["VV5"],
           "excluded_scratchpads": [
             "VVN",
@@ -4420,14 +4396,6 @@
           "2.5nm_distance": 10
         },
         "12L": {
-          "runway_threshold": "KMSP-12L",
-          "heading": 121,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVN"],
           "excluded_scratchpads": [
             "VVS",
@@ -4462,14 +4430,6 @@
           ]
         },
         "12R": {
-          "runway_threshold": "KMSP-12R",
-          "heading": 121,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVS"],
           "excluded_scratchpads": [
             "VVN",
@@ -4504,14 +4464,6 @@
           ]
         },
         "4": {
-          "runway_threshold": "KMSP-4",
-          "heading": 45,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 24304,
-          "right_width": 24304,
           "filtered_scratchpads": ["VV4"],
           "excluded_scratchpads": [
             "VVN",
@@ -4547,14 +4499,6 @@
           ]
         },
         "22": {
-          "runway_threshold": "KMSP-22",
-          "heading": 225,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 24304,
-          "right_width": 24304,
           "filtered_scratchpads": ["VV2"],
           "excluded_scratchpads": [
             "VVN",
@@ -4590,14 +4534,6 @@
           ]
         },
         "17": {
-          "runway_threshold": "KMSP-17",
-          "heading": 170,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 24304,
-          "right_width": 24304,
           "filtered_scratchpads": ["VV7"],
           "excluded_scratchpads": [
             "VVN",

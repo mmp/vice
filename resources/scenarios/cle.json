@@ -658,14 +658,6 @@
       },
       "atpa_volumes": {
         "6L": {
-          "runway_threshold": "KBKL-6L",
-          "heading": 65,
-          "max_heading_deviation": 90,
-          "floor": 0,
-          "ceiling": 3000,
-          "length": 10,
-          "left_width": 2,
-          "right_width": 2,
           "filtered_scratchpads": ["V6L"]
         }
       },

@@ -3260,80 +3260,51 @@
       },
       "atpa_volumes": {
         "26R": {
-          "length": 20,
-          "left_width": 20000,
-          "right_width": 20000,
           "excluded_scratchpads": ["26L", "27R", "27L", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "26L": {
-          "length": 15,
-          "left_width": 20000,
-          "right_width": 20000,
           "excluded_scratchpads": ["26R", "27R", "27L", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "27R": {
-          "length": 26,
-          "left_width": 20000,
-          "right_width": 20000,
           "excluded_scratchpads": ["26R", "26L", "27L", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "27L": {
-          "length": 30,
-          "left_width": 20000,
-          "right_width": 15000,
           "excluded_scratchpads": ["26R", "26L", "27R", "28"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "28": {
-          "length": 30,
-          "left_width": 20000,
-          "right_width": 15000,
           "excluded_scratchpads": ["26R", "26L", "27R", "27L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "8L": {
-          "length": 30,
-          "left_width": 20000,
-          "right_width": 15000,
           "excluded_scratchpads": ["8R", "9L", "9R", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "8R": {
-          "length": 30,
-          "left_width": 20000,
-          "right_width": 15000,
           "excluded_scratchpads": ["8L", "9L", "9R", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "9L": {
-          "length": 30,
-          "left_width": 20000,
-          "right_width": 15000,
           "excluded_scratchpads": ["8R", "8L", "9R", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "9R": {
-          "length": 30,
-          "left_width": 20000,
-          "right_width": 15000,
           "excluded_scratchpads": ["8R", "8L", "9L", "10"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "10": {
-          "left_width": 20000,
-          "right_width": 15000,
           "excluded_scratchpads": ["8R", "8L", "9L", "9R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10

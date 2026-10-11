@@ -1037,53 +1037,21 @@
       "tower_list": 1,
       "atpa_volumes": {
         "4": {
-          "runway_threshold": "KLGA-4",
-          "heading": 44,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 3000,
           "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "13": {
-          "runway_threshold": "KLGA-13",
-          "heading": 134,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 3000,
           "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "22": {
-          "runway_threshold": "KLGA-22",
-          "heading": 224,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 3000,
           "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "31": {
-          "runway_threshold": "KLGA-31",
-          "heading": 316,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 3000,
           "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -4100,8 +4068,6 @@
       "tower_list": 1,
       "atpa_volumes": {
         "4R": {
-          "runway_threshold": "KEWR-4R",
-          "heading": 39,
           "max_heading_deviation": 50,
           "floor": 100,
           "ceiling": 5000,
@@ -4114,8 +4080,6 @@
           "2.5nm_distance": 10
         },
         "22L": {
-          "runway_threshold": "KEWR-22L",
-          "heading": 219,
           "max_heading_deviation": 50,
           "floor": 100,
           "ceiling": 5000,
@@ -4128,8 +4092,6 @@
           "2.5nm_distance": 10
         },
         "29": {
-          "runway_threshold": "KEWR-22L",
-          "heading": 219,
           "max_heading_deviation": 130,
           "floor": 100,
           "ceiling": 5000,
@@ -4811,104 +4773,40 @@
       "tower_list": 6,
       "atpa_volumes": {
         "4L": {
-          "runway_threshold": "KJFK-4L",
-          "heading": 44,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 1000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I4R", "R4R"]
         },
         "4R": {
-          "runway_threshold": "KJFK-4R",
-          "heading": 44,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 1000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I2L", "R2L", "BVA"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "13L": {
-          "runway_threshold": "LEISA",
-          "heading": 44,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 2000,
-          "right_width": 1000,
           "filtered_scratchpads": ["VAP", "PVA"],
           "excluded_scratchpads": ["I3R", "R3R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "13R": {
-          "runway_threshold": "LEISA",
-          "heading": 44,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 2000,
-          "right_width": 1000,
           "filtered_scratchpads": ["VAP", "PVA"],
           "excluded_scratchpads": ["I3L", "R3L"]
         },
         "22L": {
-          "runway_threshold": "KJFK-22L",
-          "heading": 224,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 1000,
           "filtered_scratchpads": ["VAP", "BVA"],
           "excluded_scratchpads": ["I2R", "R2R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "22R": {
-          "runway_threshold": "KJFK-22R",
-          "heading": 224,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 1000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I2L", "R2L", "BVA"]
         },
         "31L": {
-          "runway_threshold": "KJFK-31L",
-          "heading": 314,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 3000,
-          "right_width": 1000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I3R", "R3R"]
         },
         "31R": {
-          "runway_threshold": "KJFK-31R",
-          "heading": 314,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 14,
-          "left_width": 1000,
-          "right_width": 3000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I3L", "R3L"]
         }
@@ -6110,8 +6008,6 @@
       "tower_list": 1,
       "atpa_volumes": {
         "1": {
-          "runway_threshold": "KTEB-1",
-          "heading": 60,
           "max_heading_deviation": 100,
           "floor": 100,
           "ceiling": 5000,
@@ -6122,8 +6018,6 @@
           "2.5nm_distance": 10
         },
         "6": {
-          "runway_threshold": "KTEB-6",
-          "heading": 60,
           "max_heading_deviation": 50,
           "floor": 100,
           "ceiling": 5000,
@@ -6134,8 +6028,6 @@
           "2.5nm_distance": 10
         },
         "19": {
-          "runway_threshold": "KTEB-19",
-          "heading": 195,
           "max_heading_deviation": 50,
           "floor": 100,
           "ceiling": 5000,
@@ -6146,8 +6038,6 @@
           "2.5nm_distance": 10
         },
         "24": {
-          "runway_threshold": "KTEB-24",
-          "heading": 240,
           "max_heading_deviation": 50,
           "floor": 100,
           "ceiling": 5000,

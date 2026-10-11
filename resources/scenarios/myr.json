@@ -2,28 +2,6 @@
   "tracon": "MYR",
   "airports": {
     "KMYR": {
-      "atpa_volumes": {
-        "18": {
-          "runway_threshold": "KMYR-18",
-          "heading": 177,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 7000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        },
-        "36": {
-          "runway_threshold": "KMYR-36",
-          "heading": 357,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 7000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        }
-      },
       "approaches": {
         "I18": {
           "cifp_id": "I18"
@@ -230,28 +208,6 @@
       }
     },
     "KCRE": {
-      "atpa_volumes": {
-        "5": {
-          "runway_threshold": "KCRE-5",
-          "heading": 54,
-          "max_heading_deviation": 30,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        },
-        "23": {
-          "runway_threshold": "KCRE-23",
-          "heading": 234,
-          "max_heading_deviation": 30,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        }
-      },
       "approaches": {
         "R23": {
           "cifp_id": "R23"

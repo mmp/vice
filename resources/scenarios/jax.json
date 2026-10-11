@@ -126,48 +126,6 @@
       }
     },
     "KJAX": {
-      "atpa_volumes": {
-        "8": {
-          "runway_threshold": "KJAX-8",
-          "heading": 77,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 15000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        },
-        "14": {
-          "runway_threshold": "KJAX-14",
-          "heading": 137,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 15000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        },
-        "26": {
-          "runway_threshold": "KJAX-26",
-          "heading": 257,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 15000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        },
-        "32": {
-          "runway_threshold": "KJAX-32",
-          "heading": 317,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 15000,
-          "length": 40,
-          "left_width": 3000,
-          "right_width": 2500
-        }
-      },
       "approaches": {
         "I8": {
           "runway": "8",

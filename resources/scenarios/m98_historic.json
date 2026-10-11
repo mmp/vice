@@ -1039,14 +1039,6 @@
       },
       "atpa_volumes": {
         "30R": {
-          "runway_threshold": "KMSP-30R/flyover",
-          "heading": 301,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVN"],
           "excluded_scratchpads": [
             "ZL1",
@@ -1081,14 +1073,6 @@
           ]
         },
         "30L": {
-          "runway_threshold": "KMSP-30L/flyover",
-          "heading": 301,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVS"],
           "excluded_scratchpads": [
             "VVN",
@@ -1123,14 +1107,6 @@
           ]
         },
         "12L": {
-          "runway_threshold": "KMSP-12L/flyover",
-          "heading": 121,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVN"],
           "excluded_scratchpads": [
             "VVS",
@@ -1165,14 +1141,6 @@
           ]
         },
         "12R": {
-          "runway_threshold": "KMSP-12R/flyover",
-          "heading": 121,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 30380,
-          "right_width": 30380,
           "filtered_scratchpads": ["VVS"],
           "excluded_scratchpads": [
             "VVN",
@@ -1207,14 +1175,6 @@
           ]
         },
         "4": {
-          "runway_threshold": "KMSP-4",
-          "heading": 45,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 24304,
-          "right_width": 24304,
           "filtered_scratchpads": ["VV4"],
           "excluded_scratchpads": [
             "VVN",
@@ -1250,14 +1210,6 @@
           ]
         },
         "22": {
-          "runway_threshold": "KMSP-22",
-          "heading": 225,
-          "max_heading_deviation": 90,
-          "floor": 900,
-          "ceiling": 9000,
-          "length": 30,
-          "left_width": 24304,
-          "right_width": 24304,
           "filtered_scratchpads": ["VV2"],
           "excluded_scratchpads": [
             "VVN",

@@ -51,28 +51,6 @@
       }
     },
     "KORF": {
-      "atpa_volumes": {
-        "5": {
-          "runway_threshold": "KORF-5",
-          "heading": 48,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "23": {
-          "runway_threshold": "KORF-23",
-          "heading": 228,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I23": {
           "cifp_id": "I23"
@@ -433,48 +411,6 @@
       "tower_list": 1
     },
     "KPHF": {
-      "atpa_volumes": {
-        "7": {
-          "runway_threshold": "KPHF-7",
-          "heading": 69,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "25": {
-          "runway_threshold": "KPHF-25",
-          "heading": 249,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "2": {
-          "runway_threshold": "KPHF-2",
-          "heading": 24,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "20": {
-          "runway_threshold": "KPHF-20",
-          "heading": 204,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I25": {
           "cifp_id": "I25"
@@ -681,28 +617,6 @@
       "tower_list": 2
     },
     "KNGU": {
-      "atpa_volumes": {
-        "10": {
-          "runway_threshold": "KNGU-10",
-          "heading": 101,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "28": {
-          "runway_threshold": "KNGU-28",
-          "heading": 281,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I10": {
           "runway": "10",

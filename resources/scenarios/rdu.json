@@ -2,48 +2,6 @@
   "tracon": "RDU",
   "airports": {
     "KRDU": {
-      "atpa_volumes": {
-        "5L": {
-          "runway_threshold": "KRDU-5L",
-          "heading": 54,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "5R": {
-          "runway_threshold": "KRDU-5R",
-          "heading": 54,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "23L": {
-          "runway_threshold": "KRDU-23L",
-          "heading": 234,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "23R": {
-          "runway_threshold": "KRDU-23R",
-          "heading": 234,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I3L": {
           "cifp_id": "I23L"

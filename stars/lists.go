@@ -648,7 +648,10 @@ func (sp *Scope) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle render
 		var off, on, twoFive []string
 		for _, r := range ctx.Client.State.ArrivalRunways {
 			if ap, ok := ctx.Client.State.Airports[r.Airport]; ok {
-				if vol, ok := ap.ATPAVolumes[r.Runway.Base()]; ok {
+				for vol := range util.SortedMapValues(ap.ATPAVolumes) {
+					if vol.Runway != r.Runway.Base() {
+						continue
+					}
 					if ctx.Client.State.IsATPAVolumeDisabled(vol.Id) {
 						off = append(off, vol.Id)
 					} else {

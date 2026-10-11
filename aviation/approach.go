@@ -127,6 +127,7 @@ type Approach struct {
 	// Set in Airport Finalize()
 	Threshold         math.Point2LL
 	OppositeThreshold math.Point2LL
+	ATPAVolumeId      string
 }
 
 // ReportingPoint is a landmark on a charted visual approach, e.g. the
@@ -348,8 +349,7 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) (Waypo
 // turn to the runway. A fix before the FAF may sit off the course, and a
 // step-down fix after it gives too short a baseline. Hand-written approaches
 // have no localizer data, so theirs follow the line from the FAF to the
-// threshold. Other approaches follow the runway's extended centerline, as
-// their ATPA volumes do.
+// threshold. Other approaches follow the runway's extended centerline.
 func (ap *Approach) FinalApproachCourseLine(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
 	if ap.Type.HasLocalizer() {
 		if wps, _ := ap.FAFSegment(nmPerLongitude, magneticVariation); wps != nil {

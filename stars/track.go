@@ -1153,9 +1153,9 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 			return false
 		}
 
-		// No CA if they're in the same ATPA volume; let the ATPA monitor take it
+		// No CA if they're landing on the same runway; let the ATPA monitor take it
 		va, vb := trka.ATPAVolume, trkb.ATPAVolume
-		if va != nil && vb != nil && va.Id == vb.Id {
+		if va != nil && vb != nil && va.Runway == vb.Runway && trka.ArrivalAirport == trkb.ArrivalAirport {
 			return false
 		}
 
@@ -1269,7 +1269,6 @@ func (sp *Scope) updateCAAircraft(ctx *scope.Context) {
 
 func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 	nmPerLongitude := ctx.NmPerLongitude
-	magneticVariation := ctx.MagneticVariation
 
 	// Zero out the previous distance
 	for _, trk := range sp.visibleTracks {
@@ -1293,12 +1292,19 @@ func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 	// of the potential per-aircraft overrides. This does mean that
 	// sometimes the work here is fully wasted.
 
-	// Loop over each ATPA volume at arrival airports and process all
-	// aircraft inside it.
+	// Loop over each ATPA volume at arrival airports and process all aircraft inside it. An
+	// aircraft counts for every volume of its runway that it is in.  Its in-trail state comes from
+	// the last volume processed, so the runway's own volume, which holds everyone on the shared
+	// final, goes last.
 	ss := ctx.Client.State
 	for icao, apVolState := range ss.ATPAVolumeState {
-		for id, volState := range apVolState {
-			if volState.Disabled {
+		ids := util.SortedMapKeys(apVolState)
+		slices.SortStableFunc(ids, func(a, b string) int {
+			isRunway := func(id string) int { return util.Select(ss.Airports[icao].ATPAVolumes[id].Runway == id, 1, 0) }
+			return isRunway(a) - isRunway(b)
+		})
+		for _, id := range ids {
+			if apVolState[id].Disabled {
 				continue
 			}
 			vol := ss.Airports[icao].ATPAVolumes[id]
@@ -1309,7 +1315,7 @@ func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 					return false
 				}
 
-				if trk.ATPAVolume == nil || trk.ATPAVolume.Id != vol.Id || trk.ATPAVolume.Threshold != vol.Threshold {
+				if trk.ATPAVolume == nil || trk.ATPAVolume.Runway != vol.Runway || trk.ArrivalAirport != icao {
 					return false
 				}
 
@@ -1320,8 +1326,7 @@ func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 
 				state := sp.TrackState[trk.ADSBCallsign]
 				return vol.Inside(state.track.Location, state.track.TransponderAltitude,
-					math.TrueToMagnetic(state.TrackHeading(nmPerLongitude), magneticVariation),
-					nmPerLongitude, magneticVariation)
+					state.TrackHeading(nmPerLongitude), nmPerLongitude)
 			})
 
 			// Sort by distance to threshold (there will be some redundant lookups of TrackState
@@ -1330,7 +1335,7 @@ func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 			sort.Slice(runwayAircraft, func(i, j int) bool {
 				pi := sp.TrackState[runwayAircraft[i].ADSBCallsign].track.Location
 				pj := sp.TrackState[runwayAircraft[j].ADSBCallsign].track.Location
-				return math.NMDistance2LL(pi, vol.Threshold.Point2LL) < math.NMDistance2LL(pj, vol.Threshold.Point2LL)
+				return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
 			})
 
 			for i := range runwayAircraft {
@@ -1422,7 +1427,7 @@ func (sp *Scope) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.T
 
 	eligible25nm := vol.Enable25nmApproach &&
 		ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) &&
-		math.NMDistance2LL(vol.Threshold.Point2LL, state.track.Location) < vol.Dist25nmApproach &&
+		math.NMDistance2LL(vol.Threshold, state.track.Location) < vol.Dist25nmApproach &&
 		back.OnExtendedCenterline && front.OnExtendedCenterline
 	cwtSeparation := av.CWTApproachSeparation(
 		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
@@ -1439,8 +1444,8 @@ func (sp *Scope) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.T
 	}
 
 	// front, back aircraft
-	frontModel := MakeModeledAircraft(ctx, front, sp.TrackState[front.ADSBCallsign], vol.Threshold.Point2LL)
-	backModel := MakeModeledAircraft(ctx, back, state, vol.Threshold.Point2LL)
+	frontModel := MakeModeledAircraft(ctx, front, sp.TrackState[front.ADSBCallsign], vol.Threshold)
+	backModel := MakeModeledAircraft(ctx, back, state, vol.Threshold)
 
 	// Will there be a MIT violation s seconds in the future?  (Note that
 	// we don't include altitude separation here since what we need is

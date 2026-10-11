@@ -4250,10 +4250,15 @@
                   <tr>
                     <td>"atpa_volumes"</td>
                     <td>Object</td>
-                    <td><p>Each member is a string with a runway name and an associated object that specifies the region of space where
-                        the STARS automated terminal proximity alert (ATPA) feature is active for the runway. (If not specified, a default
-                        volume is generated along the runway's extended centerline.)</p>
-
+                    <td><p>Each member is a string with a runway name and an associated object that configures the volumes of space
+                        where the STARS automated terminal proximity alert (ATPA) feature is active for the runway.</p>
+                      <p>ATPA volumes are generated from the runway's approaches: one for each distinct final approach course,
+                        following the course from the runway threshold out to the volume's length, so that an offset localizer or an
+                        RNAV final that turns onto the runway is covered. Approaches that share a course share a volume. The volume
+                        along the runway's own centerline is named after the runway; any other is named after the approach that
+                        defines it, as it is listed in "approaches". The settings given here apply to all of the runway's
+                        volumes. A runway that isn't listed gets volumes with default settings: 15nm long, 2000 feet either side of the
+                        course, from 100 feet to 5000 feet above the airport.</p>
                     </td>
                   </tr>
                   <tr><td colspan="3">
@@ -4299,41 +4304,27 @@
                               <td>Bottom altitude of the volume, in feet.</td>
                             </tr>
                             <tr>
-                              <td>"heading"</td>
-                              <td>Number</td>
-                              <td>Runway heading or orientation of the volume.</td>
-                            </tr>
-                            <tr>
-                              <td>"id"</td>
-                              <td>String</td>
-                              <td>(<i>Optional</i>) Name of the volume. If not specified, the runway is used.</td>
-                            </tr>
-                            <tr>
                               <td>"left_width"</td>
                               <td>Number</td>
-                              <td>Width the volume extends to the left of the extended centerline, where "left" is with respect to an
-                                aircraft flying the approach.</td>
+                              <td>Width in feet that the volume extends to the left of the final approach course, where "left" is with
+                                respect to an aircraft flying the approach.</td>
                             </tr>
                             <tr>
                               <td>"length"</td>
                               <td>Number</td>
-                              <td>Length of the volume, from "runway_threshold" in direction "heading", given in nautical miles.</td>
+                              <td>Length of the volume along the final approach course from the runway threshold, given in nautical
+                                miles.</td>
                             </tr>
                             <tr>
                               <td>"max_heading_deviation"</td>
                               <td>Number</td>
-                              <td>Maximum deviation between an aircraft's heading and the ATPA volume heading allowed for an
-                                aircraft to be included in ATPA.</td>
+                              <td>Maximum deviation between an aircraft's heading and the final approach course where the aircraft is
+                                allowed for an aircraft to be included in ATPA.</td>
                             </tr>
                             <tr>
                               <td>"right_width"</td>
                               <td>Number</td>
-                              <td>Width the volume extends to the right of the extended centerline.</td>
-                            </tr>
-                            <tr>
-                              <td>"runway_threshold"</td>
-                              <td><a href="#fe-locations">Location</a></td>
-                              <td>Position of the runway threshold or point to use for the start of the volume.</td>
+                              <td>Width in feet that the volume extends to the right of the final approach course.</td>
                             </tr>
                           </tbody>
                         </table>

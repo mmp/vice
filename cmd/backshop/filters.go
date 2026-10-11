@@ -140,17 +140,16 @@ func atpaVolumes(ss *client.SimState) []av.AirspaceVolume {
 	var out []av.AirspaceVolume
 	for _, name := range util.SortedMapKeys(ss.ArrivalAirports) {
 		ap := ss.Airports[name]
-		for rwy, vol := range util.SortedMap(ap.ATPAVolumes) {
-			rect := vol.GetRect(ss.NmPerLongitude, ss.MagneticVariation)
+		for id, vol := range util.SortedMap(ap.ATPAVolumes) {
 			out = append(out, av.AirspaceVolume{
-				Id:          string(name) + rwy,
+				Id:          string(name) + id,
 				Description: "ATPA approach volume",
 				Type:        av.AirspaceVolumePolygon,
 				Floor:       int(vol.Floor),
 				Ceiling:     int(vol.Ceiling),
-				Vertices:    rect[:],
+				Vertices:    vol.Outline,
 				PolygonBounds: func() *math.Extent2D {
-					e := math.Extent2DFromPoints(util.MapSlice(rect[:],
+					e := math.Extent2DFromPoints(util.MapSlice(vol.Outline,
 						func(p math.Point2LL) [2]float32 { return p }))
 					return &e
 				}(),

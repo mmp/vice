@@ -328,22 +328,6 @@ func parseCRDARoute(s string, loc Locator, nmPerLongitude, magneticVariation flo
 	return points
 }
 
-type ATPAVolume struct {
-	Id                  string               `json:"id"`
-	Threshold           ScenarioPoint2LL     `json:"runway_threshold"`
-	Heading             math.MagneticHeading `json:"heading"`
-	MaxHeadingDeviation float32              `json:"max_heading_deviation"`
-	Floor               float32              `json:"floor"`
-	Ceiling             float32              `json:"ceiling"`
-	Length              float32              `json:"length"`
-	LeftWidth           float32              `json:"left_width"`
-	RightWidth          float32              `json:"right_width"`
-	FilteredScratchpads []string             `json:"filtered_scratchpads"`
-	ExcludedScratchpads []string             `json:"excluded_scratchpads"`
-	Enable25nmApproach  bool                 `json:"enable_2.5nm"`
-	Dist25nmApproach    float32              `json:"2.5nm_distance"`
-}
-
 // CourseLine returns a polyline for drawing the course line of this CRDA region.
 func (ar *CRDARegion) CourseLine(nmPerLongitude float32) []math.Point2LL {
 	polyNM := ar.Path.Polyline()

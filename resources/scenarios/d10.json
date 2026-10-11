@@ -1479,184 +1479,67 @@
       },
       "atpa_volumes": {
         "13R": {
-          "runway_threshold": "KDFW-13R",
-          "heading": 135,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I8R", "I8L", "I7L", "I7C", "I7R", "I3L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "18R": {
-          "runway_threshold": "KDFW-18R",
-          "heading": 176,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I3R", "I8L", "I7L", "I7C", "I7R", "I3L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "18L": {
-          "runway_threshold": "KDFW-18L",
-          "heading": 176,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I3R", "I8R", "I7L", "I7C", "I7R", "I3L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "17R": {
-          "runway_threshold": "KDFW-17R",
-          "heading": 176,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I3R", "I8R", "I8L", "I7L", "I7C", "I3L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "17C": {
-          "runway_threshold": "KDFW-17C",
-          "heading": 176,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I3R", "I8R", "I8L", "I7L", "I7R", "I3L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "17L": {
-          "runway_threshold": "KDFW-17L",
-          "heading": 176,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I3R", "I8R", "I8L", "I7C", "I7R", "I3L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
-        "13L": {
-          "runway_threshold": "KDFW-13L",
-          "heading": 133,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
-          "excluded_scratchpads": ["I3R", "I8R", "I8L", "I7C", "I7R", "17L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
-        },
         "31L": {
-          "runway_threshold": "KDFW-31L",
-          "heading": 316,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I6L", "I6R", "I5L", "I5C", "I5R", "I1R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "36L": {
-          "runway_threshold": "KDFW-36L",
-          "heading": 357,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I1L", "I6R", "I5L", "I5C", "I5R", "I1R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "36R": {
-          "runway_threshold": "KDFW-36R",
-          "heading": 357,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I1L", "I6L", "I5L", "I5C", "I5R", "I1R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "35R": {
-          "runway_threshold": "KDFW-35R",
-          "heading": 357,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5L", "I5C", "I1R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "35C": {
-          "runway_threshold": "KDFW-35C",
-          "heading": 357,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5L", "I5R", "I1R"],
           "filtered_scratchpads": ["VE"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "35L": {
-          "runway_threshold": "KDFW-35L",
-          "heading": 357,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5C", "I5R", "I1R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "31R": {
-          "runway_threshold": "KDFW-31R",
-          "heading": 313,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5L", "I5C", "I5R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
@@ -2244,47 +2127,15 @@
       ],
       "atpa_volumes": {
         "13L": {
-          "runway_threshold": "KDAL-13L",
-          "heading": 133,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["E13", "W31", "E31"]
         },
         "13R": {
-          "runway_threshold": "KDAL-13R",
-          "heading": 133,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["W13", "W31", "E31"]
         },
         "31L": {
-          "runway_threshold": "KDAL-31L",
-          "heading": 313,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["W13", "E13", "W31"]
         },
         "31R": {
-          "runway_threshold": "KDAL-31R",
-          "heading": 313,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000,
           "excluded_scratchpads": ["W13", "E13", "W31"]
         }
       },
@@ -2349,48 +2200,6 @@
         },
         "R4R": {
           "cifp_id": "R34R"
-        }
-      },
-      "atpa_volumes": {
-        "16L": {
-          "runway_threshold": "KAFW-16L",
-          "heading": 166,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000
-        },
-        "16R": {
-          "runway_threshold": "KAFW-16R",
-          "heading": 166,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000
-        },
-        "34L": {
-          "runway_threshold": "KAFW-34L",
-          "heading": 346,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000
-        },
-        "34R": {
-          "runway_threshold": "KAFW-34R",
-          "heading": 346,
-          "max_heading_deviation": 90,
-          "floor": 96,
-          "ceiling": 7300,
-          "length": 20,
-          "left_width": 30000,
-          "right_width": 30000
         }
       },
       "departure_routes": {

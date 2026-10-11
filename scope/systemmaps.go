@@ -189,19 +189,18 @@ func (g *systemMapGen) addRadarCoverage() {
 func (g *systemMapGen) addATPAVolumes() {
 	for _, name := range util.SortedMapKeys(g.spec.ArrivalAirports) {
 		ap := g.spec.Airports[name]
-		for rwy, vol := range util.SortedMap(ap.ATPAVolumes) {
-			label := "A" + db.AirportDisplayId(name) + rwy
+		for id, vol := range util.SortedMap(ap.ATPAVolumes) {
+			label := "A" + db.AirportDisplayId(name) + id
 			if len(label) > 7 {
 				label = label[:7]
 			}
 
-			g.add(label, string(name)+rwy+" ATPA APPROACH VOLUME", func(cb *renderer.CommandBuffer) {
+			g.add(label, string(name)+id+" ATPA APPROACH VOLUME", func(cb *renderer.CommandBuffer) {
 				ld := renderer.GetLinesDrawBuilder()
 				defer renderer.ReturnLinesDrawBuilder(ld)
 
-				rect := vol.GetRect(g.spec.NmPerLongitude, g.spec.MagneticVariation)
-				for i := range rect {
-					ld.AddLine(rect[i], rect[(i+1)%len(rect)])
+				for i := range vol.Outline {
+					ld.AddLine(vol.Outline[i], vol.Outline[(i+1)%len(vol.Outline)])
 				}
 				ld.GenerateCommands(cb)
 			})

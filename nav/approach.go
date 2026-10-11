@@ -305,6 +305,7 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 			Threshold:         rwy.Threshold,
 			OppositeThreshold: opp.Threshold,
 			Waypoints:         allApproachRoutes,
+			ATPAVolumeId:      visualATPAVolumeId(airport, runway, references),
 		}, references, nil
 	}
 
@@ -321,6 +322,21 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 		}
 	}
 	return nil, nil, ErrUnknownApproach
+}
+
+// visualATPAVolumeId returns the ATPA volume a visual approach to the runway
+// flies in: the runway's own, or failing that the one of the first reference
+// approach the visual is built from.
+func visualATPAVolumeId(airport *av.Airport, runway string, references []*av.Approach) string {
+	if _, ok := airport.ATPAVolumes[runway]; ok {
+		return runway
+	}
+	for _, ref := range references {
+		if ref.ATPAVolumeId != "" {
+			return ref.ATPAVolumeId
+		}
+	}
+	return ""
 }
 
 func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypoints map[string]av.WaypointArray) speech.CommandIntent {
@@ -353,7 +369,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 	nav.Approach = Approach{
 		Assigned:         ap,
 		AssignedId:       id,
-		ATPAVolume:       airport.ATPAVolumes[ap.Runway],
+		ATPAVolume:       airport.ATPAVolumes[ap.ATPAVolumeId],
 		RequestAltitude:  requestAltitude,
 		VisualReferences: refs,
 	}

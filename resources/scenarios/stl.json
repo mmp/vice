@@ -86,88 +86,6 @@
       }
     },
     "KSTL": {
-      "atpa_volumes": {
-        "29": {
-          "runway_threshold": "KSTL-29",
-          "heading": 303,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "11": {
-          "runway_threshold": "KSTL-11",
-          "heading": 123,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "30L": {
-          "runway_threshold": "KSTL-30L",
-          "heading": 303,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "30R": {
-          "runway_threshold": "KSTL-30R",
-          "heading": 303,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "12L": {
-          "runway_threshold": "KSTL-12L",
-          "heading": 123,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "12R": {
-          "runway_threshold": "KSTL-12R",
-          "heading": 123,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "24": {
-          "runway_threshold": "KSTL-24",
-          "heading": 244,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "6": {
-          "runway_threshold": "KSTL-6",
-          "heading": 64,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I11": {
           "cifp_id": "I11"
@@ -1415,48 +1333,6 @@
     },
     "KSUS": {
       "hold_for_release": true,
-      "atpa_volumes": {
-        "8L": {
-          "runway_threshold": "KSUS-8L",
-          "heading": 79,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "8R": {
-          "runway_threshold": "KSUS-8R",
-          "heading": 79,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "26R": {
-          "runway_threshold": "KSUS-26R",
-          "heading": 259,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "26L": {
-          "runway_threshold": "KSUS-26L",
-          "heading": 259,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I6L": {
           "cifp_id": "I26L"
@@ -1908,68 +1784,6 @@
     },
     "KCPS": {
       "hold_for_release": true,
-      "atpa_volumes": {
-        "30L": {
-          "runway_threshold": "KCPS-30L",
-          "heading": 302,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "30R": {
-          "runway_threshold": "KCPS-30R",
-          "heading": 302,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "12R": {
-          "runway_threshold": "KCPS-12R",
-          "heading": 122,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "12L": {
-          "runway_threshold": "KCPS-12L",
-          "heading": 122,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "23": {
-          "runway_threshold": "KCPS-23",
-          "heading": 227,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "5": {
-          "runway_threshold": "KCPS-5",
-          "heading": 47,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I3L": {
           "cifp_id": "I30L"
@@ -2459,48 +2273,6 @@
     },
     "KALN": {
       "hold_for_release": true,
-      "atpa_volumes": {
-        "17": {
-          "runway_threshold": "KALN-17",
-          "heading": 174,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "11": {
-          "runway_threshold": "KALN-11",
-          "heading": 114,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "35": {
-          "runway_threshold": "KALN-35",
-          "heading": 354,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        },
-        "29": {
-          "runway_threshold": "KALN-29",
-          "heading": 294,
-          "max_heading_deviation": 54,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 2000,
-          "right_width": 2000
-        }
-      },
       "approaches": {
         "I29": {
           "cifp_id": "I29"

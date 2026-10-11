@@ -16,48 +16,6 @@
           "cifp_id": "R15"
         }
       },
-      "atpa_volumes": {
-        "6": {
-          "runway_threshold": "N041.55.56.199,W072.41.44.388",
-          "heading": 57,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 25,
-          "left_width": 3000,
-          "right_width": 3000
-        },
-        "15": {
-          "runway_threshold": "N041.56.33.676,W072.41.36.588",
-          "heading": 147,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 25,
-          "left_width": 3000,
-          "right_width": 3000
-        },
-        "24": {
-          "runway_threshold": "N041.57.03.655,W072.40.14.822",
-          "heading": 237,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 25,
-          "left_width": 3000,
-          "right_width": 3000
-        },
-        "33": {
-          "runway_threshold": "N041.55.48.550,W072.40.32.043",
-          "heading": 327,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 25,
-          "left_width": 3000,
-          "right_width": 3000
-        }
-      },
       "departure_routes": {
         "6": {
           "PVD,THUMB": {

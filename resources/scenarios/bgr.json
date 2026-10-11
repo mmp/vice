@@ -119,28 +119,12 @@
       },
       "atpa_volumes": {
         "33": {
-          "runway_threshold": "N044.47.48.392,W068.48.41.264",
-          "heading": 330,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 8000,
-          "length": 50,
-          "left_width": 20000,
-          "right_width": 20000,
           "filtered_scratchpads": [""],
           "excluded_scratchpads": [""],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "15": {
-          "runway_threshold": "N044.49.04.143,W068.50.39.669",
-          "heading": 150,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 8000,
-          "length": 50,
-          "left_width": 20000,
-          "right_width": 20000,
           "filtered_scratchpads": [""],
           "excluded_scratchpads": [""],
           "enable_2.5nm": true,

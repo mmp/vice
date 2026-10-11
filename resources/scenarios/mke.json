@@ -2,48 +2,6 @@
   "tracon": "MKE",
   "airports": {
     "KMKE": {
-      "atpa_volumes": {
-        "1L": {
-          "runway_threshold": "KMKE-1L",
-          "heading": 11,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 20,
-          "left_width": 20000,
-          "right_width": 20000
-        },
-        "19R": {
-          "runway_threshold": "KMKE-19R",
-          "heading": 191,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 15,
-          "left_width": 20000,
-          "right_width": 20000
-        },
-        "7R": {
-          "runway_threshold": "KMKE-7R",
-          "heading": 76,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 26,
-          "left_width": 20000,
-          "right_width": 20000
-        },
-        "25L": {
-          "runway_threshold": "KMKE-25L",
-          "heading": 255,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
-          "left_width": 20000,
-          "right_width": 15000
-        }
-      },
       "approaches": {
         "I1L": {
           "cifp_id": "I1L"

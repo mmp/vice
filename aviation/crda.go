@@ -127,33 +127,3 @@ func (ar *CRDARegion) TryMakeGhost(trk RadarTrack, heading float32,
 		LeaderLineDirection: leaderDirection,
 	}
 }
-
-func (a *ATPAVolume) Inside(p math.Point2LL, alt float32, hdg math.MagneticHeading, nmPerLongitude, magneticVariation float32) bool {
-	if alt < a.Floor || alt > a.Ceiling {
-		return false
-	}
-	if math.HeadingDifference(hdg, a.Heading) > a.MaxHeadingDeviation {
-		return false
-	}
-
-	rect := a.GetRect(nmPerLongitude, magneticVariation)
-	return math.PointInPolygon2LL(p, rect[:])
-}
-
-func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.Point2LL {
-	// Segment along the approach course
-	p0 := math.LL2NM(a.Threshold.Point2LL, nmPerLongitude)
-	hdg := float32(math.MagneticToTrue(math.OppositeHeading(a.Heading), magneticVariation))
-	v := math.SinCos(math.Radians(hdg))
-	p1 := math.Add2f(p0, math.Scale2f(v, a.Length))
-
-	vp := [2]float32{-v[1], v[0]} // perp
-	left, right := a.LeftWidth/math.NauticalMilesToFeet, a.RightWidth/math.NauticalMilesToFeet
-
-	quad := [4][2]float32{
-		math.Add2f(p0, math.Scale2f(vp, -left)), math.Add2f(p1, math.Scale2f(vp, -left)),
-		math.Add2f(p1, math.Scale2f(vp, right)), math.Add2f(p0, math.Scale2f(vp, right))}
-	return [4]math.Point2LL{
-		math.NM2LL(quad[0], nmPerLongitude), math.NM2LL(quad[1], nmPerLongitude),
-		math.NM2LL(quad[2], nmPerLongitude), math.NM2LL(quad[3], nmPerLongitude)}
-}
