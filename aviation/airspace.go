@@ -99,6 +99,52 @@ func (a *AirspaceVolume) Covers(p math.Point2LL) bool {
 	}
 }
 
+// CoversSegment reports whether the volume lies over any point of the segment
+// from p0 to p1, whatever the altitude. Unlike Covers, it disregards holes, so
+// a segment that only passes over one counts.
+func (a *AirspaceVolume) CoversSegment(p0, p1 math.Point2LL) bool {
+	switch a.Type {
+	case AirspaceVolumePolygon:
+		if a.PolygonBounds != nil && !math.Overlaps(*a.PolygonBounds, math.Extent2DFromP2LLs([]math.Point2LL{p0, p1})) {
+			return false
+		}
+		// A segment with a point in the polygon either starts inside it or
+		// crosses into it.
+		return math.PointInPolygon2LL(p0, a.Vertices) || math.SegmentIntersectsPolygonEdges2LL(p0, p1, a.Vertices)
+	case AirspaceVolumeCircle:
+		return math.NMDistanceToSegment2LL(a.Center.Point2LL, p0, p1) < a.Radius
+	default:
+		panic("unhandled AirspaceVolume type")
+	}
+}
+
+// Near reports whether the volume lies over any point within r nm of p,
+// whatever the altitude. Like CoversSegment, it disregards holes.
+func (a *AirspaceVolume) Near(p math.Point2LL, r float32) bool {
+	switch a.Type {
+	case AirspaceVolumePolygon:
+		if a.PolygonBounds != nil && math.NMDistance2LL(a.PolygonBounds.ClosestPointInBox(p), p) > r {
+			return false
+		}
+		if math.PointInPolygon2LL(p, a.Vertices) {
+			return true
+		}
+		nmPerLongitude := math.NMPerLongitudeAt(p)
+		pnm := math.LL2NM(p, nmPerLongitude)
+		for i, v := range a.Vertices {
+			v0, v1 := math.LL2NM(v, nmPerLongitude), math.LL2NM(a.Vertices[(i+1)%len(a.Vertices)], nmPerLongitude)
+			if math.PointSegmentDistance(pnm, v0, v1) < r {
+				return true
+			}
+		}
+		return false
+	case AirspaceVolumeCircle:
+		return math.NMDistance2LL(p, a.Center.Point2LL) < a.Radius+r
+	default:
+		panic("unhandled AirspaceVolume type")
+	}
+}
+
 // Inside reports whether the given point and altitude are within the volume.
 // The floor is inclusive, so an aircraft on the ground at a field is inside a
 // volume that starts at the field elevation; Below covers everything under it.

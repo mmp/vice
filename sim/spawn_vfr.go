@@ -8,9 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"iter"
-	"maps"
 	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/aviation"
@@ -32,12 +32,13 @@ func vfrMVAApplies(dDep, dArr float32) bool {
 	return dDep > 3 && dArr > 5
 }
 
-// A VFR flight under Class B or C airspace stays vfrShelfBuffer below its
+// A VFR flight under airspace it avoids stays vfrShelfBuffer below its
 // floor and then drops to the next vfrShelfIncrement, which under the usual
-// 1200' and 3000' shelves gives 1000' and 2500' -- what pilots fly there.
-// Scud running under a shelf is ordinary VFR practice; brushing its floor is
-// not, and neither is squeezing through less than minVFRShelfRoom of air
-// between a field and the airspace over it.
+// 1200' and 3000' Class B shelves gives 1000' and 2500' -- what pilots fly
+// there. Scud running under a shelf is ordinary VFR practice; brushing its
+// floor is not, and neither is squeezing through less than minVFRShelfRoom of
+// air between a field and the airspace over it. A flight passing over such
+// airspace stays at least vfrShelfBuffer above its ceiling.
 const (
 	vfrShelfBuffer    = 200
 	vfrShelfIncrement = 500
@@ -411,11 +412,15 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	}
 
 	// Only now is the route the one the aircraft will fly: building the Nav
-	// scatters the waypoints within their radii. The shelf and MVA legs have
-	// to be sampled along that route rather than the one they were planned
-	// on, both so the airspace and terrain they clear are what is overflown
-	// and so they land on the legs they divide rather than off to one side
-	// of them.
+	// scatters the waypoints within their radii. Detours around airspace
+	// start from that route, and the shelf and MVA legs have to be sampled
+	// along it rather than the one they were planned on, both so the
+	// airspace and terrain they clear are what is overflown and so they land
+	// on the legs they divide rather than off to one side of them.
+	ac.Nav.Waypoints, ok = s.detourAroundAirspace(ac.Nav.Waypoints, ac.CruiseAltitude, depap, arrap)
+	if !ok {
+		return nil, ErrViolatedAirspace
+	}
 	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.CruiseAltitude, depap, arrap)
 	if !ok {
 		return nil, ErrViolatedAirspace
@@ -436,8 +441,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 			}
 			if wp.SequenceVFRLanding() {
 				// Generate descent waypoints so prespawn validates the
-				// descent from cruise altitude through any bravo/charlie
-				// airspace down to pattern altitude.
+				// descent from cruise altitude through any airspace down to
+				// pattern altitude.
 				arrAP, ok := db.DB.Airports[ac.ArrivalAirport]
 				if !ok {
 					return ac, nil
@@ -477,9 +482,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		}
 		pos := simNav.FlightState.Position
 		alt := int(simNav.FlightState.Altitude)
-		if s.bravoAirspace.Inside(pos, alt) ||
-			s.charlieAirspace.Inside(pos, alt) ||
-			s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
+		if s.vfrAirspace.Inside(pos, alt) || s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
 			return nil, ErrViolatedAirspace
 		}
 		// Check MVA violation: aircraft must stay at or above MVA - 1000'.
@@ -502,11 +505,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	return nil, ErrVFRSimTookTooLong
 }
 
-// vfrTerminalRadius bounds where a VFR arrival maneuvers at its destination.
-// The traffic pattern, the 45-degree entry to it, and the orbit it holds in
-// when the pattern is full all fall within it.
-const vfrTerminalRadius = 5
-
 // vfrPatternAltitude is how far above the field a VFR aircraft flies the
 // pattern. vfrPatternMinRoom is the least room it can be squeezed into: below
 // that the airspace is down around the base and final legs and there is no
@@ -516,22 +514,22 @@ const vfrPatternAltitude = 1000
 const vfrPatternMinRoom = 500
 
 // vfrTerminalCeiling returns the highest altitude a VFR arrival can use while
-// maneuvering at ap and stay clear of Class B and C airspace. It reports
-// false where there is no room above the pattern to do that: entering such a
-// field means entering the airspace, which is not something we fly, so no VFR
-// is sent there. The answer depends only on the airspace and the field, so it
-// is worked out once per airport.
+// maneuvering at ap and stay clear of the airspace VFR flights avoid. It
+// reports false where there is no room above the pattern to do that:
+// entering such a field means entering the airspace, which is not something
+// we fly, so no VFR is sent there. The answer depends only on the airspace
+// and the field, so it is worked out once per airport.
 func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
 	if alt, ok := s.vfrTerminalAlts[ap.Id]; ok {
 		return alt, alt > 0
 	}
 
-	ceiling := s.clampUnderShelves(ap.Location, maxVFRAltitude)
-	for r := 1; r <= vfrTerminalRadius; r++ {
-		for hdg := 0; hdg < 360; hdg += 30 {
-			p := math.Offset2LL(ap.Location, math.TrueHeading(float32(hdg)), float32(r), s.State.NmPerLongitude)
-			ceiling = s.clampUnderShelves(p, ceiling)
-		}
+	// Arrivals maneuver at every altitude from the pattern up to the
+	// ceiling, so they stay under the airspace over where they fly rather
+	// than passing over it as a route may.
+	ceiling := maxVFRAltitude
+	for _, vol := range s.vfrArrivalAirspace(ap) {
+		ceiling = min(ceiling, underFloor(vol.Floor))
 	}
 
 	if ceiling < ap.Elevation+vfrPatternMinRoom {
@@ -541,15 +539,86 @@ func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
 	return ceiling, ceiling > 0
 }
 
-// clampUnderShelves returns alt, lowered if need be to the altitude a VFR
-// flight at p flies under the Class B and C shelves over it.
-func (s *Sim) clampUnderShelves(p math.Point2LL, alt int) int {
-	for _, grid := range []*db.AirspaceGrid{s.bravoAirspace, s.charlieAirspace} {
-		if floor, covered := grid.ShelfFloor(p); covered {
-			alt = min(alt, (floor-vfrShelfBuffer)/vfrShelfIncrement*vfrShelfIncrement)
+// vfrArrivalAirspace returns the avoided airspace over where VFR arrivals fly
+// at ap: the traffic pattern for its VFR runway, the 45-degree entry and
+// straight-in that join it, and the orbits they hold in while it is full.
+// Airspace beside the field leaves room for its traffic on the other side.
+func (s *Sim) vfrArrivalAirspace(ap db.Airport) []*av.AirspaceVolume {
+	rwy, opp, ok := s.vfrRunway(ap.Id)
+	if !ok {
+		return nil
+	}
+	nmPerLongitude, magneticVariation := s.State.NmPerLongitude, s.State.MagneticVariation
+
+	rightHdg := math.MagneticToTrue(rwy.Heading, magneticVariation) + 90
+	orbit := math.Offset2LL(rwy.Threshold, rightHdg, vfrOrbitOffset, nmPerLongitude)
+	vols := s.vfrAirspace.Near(orbit, vfrOrbitRadius+vfrOrbitScatter*math.Sqrt2)
+
+	for _, wps := range [][]av.Waypoint{
+		generatePatternLap(rwy, opp, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
+		generatePatternEntryWaypoints(rwy, opp, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
+		generateStraightInWaypoints(rwy, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
+	} {
+		for i := 1; i < len(wps); i++ {
+			for _, vol := range s.vfrAirspace.Crossed(wps[i-1].Location, wps[i].Location) {
+				if !slices.Contains(vols, vol) {
+					vols = append(vols, vol)
+				}
+			}
 		}
 	}
+	return vols
+}
+
+// underFloor returns the altitude a VFR flight flies under airspace with the
+// given floor.
+func underFloor(floor int) int {
+	return (floor - vfrShelfBuffer) / vfrShelfIncrement * vfrShelfIncrement
+}
+
+// clearAltitude returns the highest altitude at or below alt at which a VFR
+// flight is clear of the given volumes, treating them as if they were
+// stacked over one point. The flight passes over the volumes whose ceilings
+// are below it and that passOver allows, and under the rest. It returns zero
+// if there is no such altitude above the ground.
+func clearAltitude(vols []*av.AirspaceVolume, alt int, passOver func(*av.AirspaceVolume) bool) int {
+	for alt > 0 {
+		// Drop only as far as the highest floor in the way requires.
+		floor, blocked := 0, false
+		for _, v := range vols {
+			inWay := alt > v.Floor-vfrShelfBuffer && (alt-vfrShelfBuffer < v.Ceiling || !passOver(v))
+			if inWay && (!blocked || v.Floor > floor) {
+				floor, blocked = v.Floor, true
+			}
+		}
+		if !blocked {
+			break
+		}
+		alt = underFloor(floor)
+	}
 	return alt
+}
+
+// vfrClimbGradient is how many feet a VFR flight is assumed to be above a
+// field for each nm away from it, up to its cruise altitude. It is a low
+// estimate, used to decide whether a flight near its departure or destination
+// is high enough to pass over airspace.
+const vfrClimbGradient = 300
+
+// vfrPassOver returns a function that reports whether a VFR flight between
+// depap and arrap is sure to be high enough to pass over a volume, given
+// vfrClimbGradient: whether everywhere over it the flight is at least
+// vfrShelfBuffer above its ceiling. The flight goes under or around a volume
+// it may not have climbed above, rather than climbing through it.
+func vfrPassOver(depap, arrap db.Airport, cruise int) func(*av.AirspaceVolume) bool {
+	return func(v *av.AirspaceVolume) bool {
+		lowest := func(ap db.Airport) float32 {
+			d := math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(ap.Location), ap.Location)
+			return float32(ap.Elevation) + vfrClimbGradient*d
+		}
+		low := int(min(float32(cruise), lowest(depap), lowest(arrap)))
+		return low-vfrShelfBuffer >= v.Ceiling
+	}
 }
 
 // legSamples yields points about a mile apart along the leg from a to b,
@@ -565,15 +634,247 @@ func legSamples(a, b math.Point2LL) iter.Seq[math.Point2LL] {
 	}
 }
 
-// adjustRouteForShelves holds a VFR route under the Class B and C shelves it
-// crosses. A waypoint beneath a shelf is restricted to the altitude flown
-// under it and, where the shelf over a leg changes, waypoints are added so
-// that the aircraft is down before it passes under a lower one and stays down
-// until it is out from under it. Everywhere else the route keeps its cruise
-// altitude, so a shelf near one end of the route doesn't hold the whole
-// flight under it. It reports false where there is no room to fly under a
-// shelf at all: the ground is too close or the MVA is above it, so the flight
-// has to go somewhere else. The MVA is left out near either field, as it is
+// A VFR flight goes around airspace that it can neither pass over nor fly
+// under by following a polygon with vfrDetourSides sides that stays
+// vfrDetourMargin nm from it. If going around would make its route more than
+// vfrMaxDetour times as long, it goes somewhere else instead.
+const (
+	vfrDetourSides  = 16
+	vfrDetourMargin = 1
+	vfrMaxDetour    = 1.5
+)
+
+// detourAroundAirspace routes a VFR flight around airspace that it avoids
+// and can neither fly under nor pass over. Where a leg runs into such
+// airspace, the waypoints inside a detourPolygon around it are replaced with
+// the polygon's vertices along the shorter way around. If that path runs
+// into more airspace, the polygon grows to take it in and the path is found
+// again. It reports false if there is no way around: the polygon takes in the
+// departure runway or the route's last waypoint, airspace blocks the way from
+// that waypoint to the field, or the detours make the route too long.
+func (s *Sim) detourAroundAirspace(wps []av.Waypoint, cruise int, depap, arrap db.Airport) ([]av.Waypoint, bool) {
+	nmPerLongitude := s.State.NmPerLongitude
+	passOver := vfrPassOver(depap, arrap, cruise)
+	// inWay returns the volumes along the leg from a to b that the flight
+	// must go around. It treats them as if they were stacked over one point;
+	// if that leaves no room to fly under them, every volume below the
+	// cruise altitude is in the way. The room is measured above the higher
+	// of the two fields: a flight held lower than that seldom gets down in
+	// time.
+	minFloor := max(depap.Elevation, arrap.Elevation) + minVFRShelfRoom
+	inWay := func(a, b math.Point2LL) []*av.AirspaceVolume {
+		vols := s.vfrAirspace.Crossed(a, b)
+		if clearAltitude(vols, cruise, passOver) >= minFloor {
+			return nil
+		}
+		return util.FilterSlice(vols, func(v *av.AirspaceVolume) bool { return v.Floor-vfrShelfBuffer < cruise })
+	}
+	pathLength := func(path []math.Point2LL) float32 {
+		var l float32
+		for i := 1; i < len(path); i++ {
+			l += math.NMDistance2LL(path[i-1], path[i])
+		}
+		return l
+	}
+	routeLength := func(wps []av.Waypoint) float32 {
+		return pathLength(util.MapSlice(wps, func(wp av.Waypoint) math.Point2LL { return wp.Location }))
+	}
+	maxLength := vfrMaxDetour * routeLength(wps)
+
+	detourWpNum := 0
+	for i := 0; i+1 < len(wps); i++ {
+		blocking := inWay(wps[i].Location, wps[i+1].Location)
+		if len(blocking) == 0 {
+			continue
+		}
+
+		poly := makeDetourPolygon(blocking, nmPerLongitude)
+		for {
+			start, end := i, i+1
+			inside := func(j int) bool { return poly.contains(math.LL2NM(wps[j].Location, nmPerLongitude)) }
+			for start > 0 && inside(start) {
+				start--
+			}
+			for end < len(wps) && inside(end) {
+				end++
+			}
+			if start == 0 || end == len(wps) {
+				return nil, false
+			}
+
+			a, b := wps[start].Location, wps[end].Location
+			path := []math.Point2LL{a}
+			if anm, bnm := math.LL2NM(a, nmPerLongitude), math.LL2NM(b, nmPerLongitude); poly.intersects(anm, bnm) {
+				for _, p := range poly.around(anm, bnm) {
+					path = append(path, math.NM2LL(p, nmPerLongitude))
+				}
+			}
+			path = append(path, b)
+			if pathLength(path) > maxLength {
+				return nil, false
+			}
+
+			var more []*av.AirspaceVolume
+			for j := 1; j < len(path); j++ {
+				for _, v := range inWay(path[j-1], path[j]) {
+					if !slices.Contains(blocking, v) && !slices.Contains(more, v) {
+						more = append(more, v)
+					}
+				}
+			}
+			if len(more) > 0 {
+				blocking = append(blocking, more...)
+				poly = makeDetourPolygon(blocking, nmPerLongitude)
+				continue
+			}
+
+			detour := util.MapSlice(path[1:len(path)-1], func(p math.Point2LL) av.Waypoint {
+				detourWpNum++
+				return av.Waypoint{Fix: "_detour" + strconv.Itoa(detourWpNum), Location: p}
+			})
+			wps = slices.Concat(wps[:start+1], detour, wps[end:])
+			i = start + len(detour)
+			break
+		}
+	}
+	if len(inWay(wps[len(wps)-1].Location, arrap.Location)) > 0 {
+		return nil, false
+	}
+	return wps, routeLength(wps) <= maxLength
+}
+
+// vfrDetourNormals are the outward normals of the sides of a detourPolygon,
+// counterclockwise.
+var vfrDetourNormals = func() [vfrDetourSides][2]float32 {
+	var n [vfrDetourSides][2]float32
+	for k := range n {
+		a := math.Radians(float32(k) * 360 / vfrDetourSides)
+		n[k] = [2]float32{math.Cos(a), math.Sin(a)}
+	}
+	return n
+}()
+
+// detourPolygon is a convex polygon, in nm, around airspace a VFR flight
+// detours around. Each side is perpendicular to one of vfrDetourNormals and
+// lies vfrDetourMargin past the farthest the airspace reaches in that
+// direction.
+type detourPolygon [vfrDetourSides]float32
+
+func makeDetourPolygon(vols []*av.AirspaceVolume, nmPerLongitude float32) detourPolygon {
+	var d detourPolygon
+	first := true
+	for _, vol := range vols {
+		for _, v := range vol.Vertices {
+			p := math.LL2NM(v, nmPerLongitude)
+			for k, n := range vfrDetourNormals {
+				if reach := math.Dot(p, n) + vfrDetourMargin; first || reach > d[k] {
+					d[k] = reach
+				}
+			}
+			first = false
+		}
+	}
+	return d
+}
+
+// sees reports whether side k faces p: p lies outside the line along it.
+func (d detourPolygon) sees(p [2]float32, k int) bool {
+	k = (k + vfrDetourSides) % vfrDetourSides
+	return math.Dot(p, vfrDetourNormals[k]) >= d[k]
+}
+
+func (d detourPolygon) contains(p [2]float32) bool {
+	for k := range d {
+		if d.sees(p, k) {
+			return false
+		}
+	}
+	return true
+}
+
+// vertex returns the vertex where side k meets side k+1.
+func (d detourPolygon) vertex(k int) [2]float32 {
+	k1 := (k + 1) % vfrDetourSides
+	n0, n1 := vfrDetourNormals[k], vfrDetourNormals[k1]
+	det := n0[0]*n1[1] - n0[1]*n1[0]
+	return [2]float32{(d[k]*n1[1] - n0[1]*d[k1]) / det, (n0[0]*d[k1] - d[k]*n1[0]) / det}
+}
+
+// intersects reports whether the segment from a to b passes through the
+// polygon.
+func (d detourPolygon) intersects(a, b [2]float32) bool {
+	// Clip the segment's parametric range to each side's half-plane.
+	t0, t1 := float32(0), float32(1)
+	ab := math.Sub2f(b, a)
+	for k, n := range vfrDetourNormals {
+		room, rate := d[k]-math.Dot(a, n), math.Dot(ab, n)
+		switch {
+		case rate > 0:
+			t1 = min(t1, room/rate)
+		case rate < 0:
+			t0 = max(t0, room/rate)
+		case room <= 0:
+			return false
+		}
+	}
+	return t0 < t1
+}
+
+// around returns the vertices of the shorter way around the polygon from a
+// to b, two points outside it on either side.
+func (d detourPolygon) around(a, b [2]float32) [][2]float32 {
+	const n = vfrDetourSides
+	// A point outside the polygon sees a consecutive run of its sides. A path
+	// around the polygon from the point leaves it at the vertex at one end of
+	// that run.
+	seen := func(p [2]float32) (first, last int) {
+		for k := range n {
+			if d.sees(p, k) && !d.sees(p, k-1) {
+				first = k
+			}
+			if d.sees(p, k) && !d.sees(p, k+1) {
+				last = k
+			}
+		}
+		return
+	}
+	walk := func(from, to, step int) [][2]float32 {
+		var path [][2]float32
+		for k := from; ; k = (k + step + n) % n {
+			path = append(path, d.vertex(k))
+			if k == to {
+				return path
+			}
+		}
+	}
+	length := func(path [][2]float32) float32 {
+		l := math.Distance2f(a, path[0]) + math.Distance2f(path[len(path)-1], b)
+		for i := 1; i < len(path); i++ {
+			l += math.Distance2f(path[i-1], path[i])
+		}
+		return l
+	}
+
+	// Going counterclockwise, the path leaves a at the vertex after the last
+	// side a sees and reaches b from the vertex before the first side b sees.
+	// Going clockwise is the mirror image.
+	af, al := seen(a)
+	bf, bl := seen(b)
+	ccw := walk(al, (bf+n-1)%n, 1)
+	cw := walk((af+n-1)%n, bl, -1)
+	return util.Select(length(ccw) < length(cw), ccw, cw)
+}
+
+// adjustRouteForShelves holds a VFR route under the airspace it crosses and
+// doesn't pass over: the shelves of Class B and C airspace and the like. A
+// waypoint beneath a shelf is restricted to the altitude flown under it and, where the
+// shelf over a leg changes, waypoints are added so that the aircraft is down
+// before it passes under a lower one and stays down until it is out from
+// under it. Everywhere else the route keeps its cruise altitude, so a shelf
+// near one end of the route doesn't hold the whole flight under it. It
+// reports false where there is no room to fly under a shelf at all: the
+// ground is too close or the MVA is above it, so the flight has to go
+// somewhere else. The MVA is left out near either field, as it is
 // during the route's validation flight, since an aircraft is below it on
 // departure and arrival.
 func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap db.Airport) ([]av.Waypoint, bool) {
@@ -591,9 +892,12 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 		pts = append(pts, routePoint{wps[i].Location, i})
 	}
 
-	// The altitude to fly at each point: the cruise altitude, or under the
-	// lowest shelf over it.
-	ceiling := util.MapSlice(pts, func(p routePoint) int { return s.clampUnderShelves(p.loc, cruise) })
+	// The altitude to fly at each point: the cruise altitude, or over or
+	// under the airspace there.
+	passOver := vfrPassOver(depap, arrap, cruise)
+	ceiling := util.MapSlice(pts, func(p routePoint) int {
+		return clearAltitude(slices.Collect(s.vfrAirspace.Over(p.loc)), cruise, passOver)
+	})
 
 	// A shelf's edge lies somewhere between two adjacent points, so at each
 	// of them the aircraft must be under the lower of the two: down before
@@ -727,18 +1031,64 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 	return result
 }
 
+// vfrAvoids reports whether VFR traffic stays out of the volume vol of the
+// special use airspace sua (AIM 3-4). Prohibited and restricted areas are
+// regulatory, and warning areas hold hazards such as live fire. MOAs and
+// alert areas only ask VFR pilots to take care. The CIFP codes national
+// security areas, special flight rules areas, and special air traffic rules
+// areas (AIM 3-5-7) as unspecified. Pilots are asked to avoid national
+// security areas. VFR traffic flies through the other two by following their
+// procedures, but stays out of the flight restricted zones (FRZ) and flight
+// free zones (FFZ) inside them.
+func vfrAvoids(sua db.SpecialUseAirspace, vol db.SpecialUseAirspaceVolume) bool {
+	switch sua.Type {
+	case db.ProhibitedArea, db.RestrictedArea, db.WarningArea:
+		return true
+	case db.UnspecifiedArea:
+		procedural := strings.Contains(sua.Designation, "SFRA") || strings.Contains(sua.Designation, "SATR")
+		closed := strings.Contains(vol.Description, " FRZ") || strings.Contains(vol.Description, " FFZ")
+		return !procedural || closed
+	default:
+		return false
+	}
+}
+
+// vfrAvoidedSpecialUseAirspace returns the volumes of special use airspace
+// that VFR traffic stays out of. Without the terrain under them, limits above
+// ground level are taken conservatively: a floor is at least as many feet
+// above sea level, which keeps flights below it, and a volume with such a
+// ceiling is taken to reach all the way up. A volume from the ground to 0'
+// AGL holds no airspace and is left out.
+func vfrAvoidedSpecialUseAirspace() []*av.AirspaceVolume {
+	var vols []*av.AirspaceVolume
+	for _, sua := range db.DB.SpecialUseAirspace {
+		for _, v := range sua.Volumes {
+			if !vfrAvoids(sua, v) || v.Ceiling == 0 {
+				continue
+			}
+			vol := v.AirspaceVolume
+			if v.CeilingAGL {
+				vol.Ceiling = db.UnlimitedCeiling
+			}
+			vols = append(vols, &vol)
+		}
+	}
+	return vols
+}
+
 func (s *Sim) initializeAirspaceGrids() {
 	s.vfrTerminalAlts = make(map[av.ICAOAirportCode]int)
-	initAirspace := func(a map[string][]av.AirspaceVolume) *db.AirspaceGrid {
+	volumes := func(a map[string][]av.AirspaceVolume) []*av.AirspaceVolume {
 		var vols []*av.AirspaceVolume
-		for volslice := range maps.Values(a) {
+		for _, volslice := range util.SortedMap(a) {
 			for _, v := range volslice {
 				vols = append(vols, &v)
 			}
 		}
-		return db.MakeAirspaceGrid(vols)
+		return vols
 	}
-	s.bravoAirspace = initAirspace(db.DB.BravoAirspace)
-	s.charlieAirspace = initAirspace(db.DB.CharlieAirspace)
+	bravo := volumes(db.DB.BravoAirspace)
+	s.bravoAirspace = db.MakeAirspaceGrid(bravo)
+	s.vfrAirspace = db.MakeAirspaceGrid(slices.Concat(bravo, volumes(db.DB.CharlieAirspace), vfrAvoidedSpecialUseAirspace()))
 	s.mvaGrid = db.MakeMVAGrid(db.DB.MVAs[s.State.Facility])
 }

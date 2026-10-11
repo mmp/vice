@@ -123,11 +123,14 @@ type SpecialUseAirspace struct {
 // SpecialUseAirspaceVolume is one sector of a special use airspace; its
 // Description is the sector's name. Its floor and ceiling are above ground
 // level where FloorAGL and CeilingAGL say so, and an unlimited ceiling is
-// math.MaxInt.
+// UnlimitedCeiling.
 type SpecialUseAirspaceVolume struct {
 	av.AirspaceVolume
 	FloorAGL, CeilingAGL bool
 }
+
+// UnlimitedCeiling is the ceiling of airspace with no upper limit.
+const UnlimitedCeiling = gomath.MaxInt
 
 // SpecialUseAirspaceType is the kind of a special use airspace (5.128).
 type SpecialUseAirspaceType byte
@@ -1973,13 +1976,13 @@ func (r *ARINC424Result) addSpecialUseAirspaceSector(recs [][]byte) {
 
 // parseAirspaceLimit returns an airspace's floor or ceiling in feet (5.121)
 // and whether it is above ground level rather than mean sea level (5.133).
-// The ground is zero feet above it; an unlimited ceiling is math.MaxInt.
+// The ground is zero feet above it; an unlimited ceiling is UnlimitedCeiling.
 func parseAirspaceLimit(s []byte, unit byte) (int, bool) {
 	switch string(s) {
 	case "GND  ":
 		return 0, true
 	case "UNLTD":
-		return gomath.MaxInt, false
+		return UnlimitedCeiling, false
 	default:
 		return parseAltitude(s), unit == 'A'
 	}

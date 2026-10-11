@@ -100,8 +100,8 @@ type patternBuilder struct {
 
 // newPatternBuilder makes a builder for the pattern at a runway. ceiling is
 // the highest altitude the pattern may use, which at a field under a Class B
-// or C shelf squeezes its upper legs down rather than putting them in the
-// airspace.
+// or C shelf or other airspace squeezes its upper legs down rather than
+// putting them in the airspace.
 func newPatternBuilder(rwy av.Runway, elevation, ceiling int, nmPerLongitude,
 	magneticVariation float32) patternBuilder {
 	depHdg := math.MagneticToTrue(rwy.Heading, magneticVariation)
@@ -208,8 +208,8 @@ func (s *Sim) spawnPatternAircraft() {
 			continue
 		}
 
-		// A field with Class B or C airspace down over its pattern has
-		// nowhere to fly one.
+		// A field with airspace down over its pattern has nowhere to fly
+		// one.
 		patternCeiling, ok := s.vfrTerminalCeiling(faaAP)
 		if !ok {
 			continue
@@ -679,6 +679,15 @@ func (s *Sim) finalClear(airport av.ICAOAirportCode) bool {
 	return true
 }
 
+// A VFR arrival holding for the pattern orbits vfrOrbitRadius nm around a
+// point vfrOrbitOffset nm right of the runway threshold, give or take
+// vfrOrbitScatter nm each way.
+const (
+	vfrOrbitOffset  = 3
+	vfrOrbitScatter = 0.5
+	vfrOrbitRadius  = 1
+)
+
 // generateOrbitWaypoints returns 4 waypoints forming a ~1nm-radius left
 // circle centered ~3nm to the right of the runway (opposite the pattern
 // side) near TPA. The center and altitude are randomized slightly so
@@ -693,8 +702,8 @@ func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
 		return nil
 	}
 
-	// Randomize altitude ±200ft around TPA, staying under any Class B or C
-	// airspace over the field.
+	// Randomize altitude ±200ft around TPA, staying under any airspace over
+	// the orbit.
 	tpa := float32(faaAP.Elevation+vfrPatternAltitude) + float32(s.Rand.Intn(401)-200)
 	if ceiling, ok := s.vfrTerminalCeiling(faaAP); ok {
 		tpa = min(tpa, float32(ceiling))
@@ -704,17 +713,14 @@ func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
 	// Right of runway (opposite the left-traffic pattern side).
 	rightHdg := math.NormalizeHeading(depHdg + 90)
 
-	// Randomize the center: 2.5–3.5nm right of the runway, shifted
-	// ±0.5nm along the runway heading.
-	lateralDist := s.Rand.Float32Range(2.5, 3.5)
-	alongDist := s.Rand.Float32Range(-0.5, 0.5)
+	lateralDist := s.Rand.Float32Range(vfrOrbitOffset-vfrOrbitScatter, vfrOrbitOffset+vfrOrbitScatter)
+	alongDist := s.Rand.Float32Range(-vfrOrbitScatter, vfrOrbitScatter)
 	center := math.Offset2LL(rwy.Threshold, rightHdg, lateralDist, s.State.NmPerLongitude)
 	center = math.Offset2LL(center, depHdg, alongDist, s.State.NmPerLongitude)
 
-	radius := float32(1) // nm
 	wps := make([]av.Waypoint, 4)
 	for i, hdg := range []math.TrueHeading{0, 90, 180, 270} {
-		p := math.Offset2LL(center, hdg, radius, s.State.NmPerLongitude)
+		p := math.Offset2LL(center, hdg, vfrOrbitRadius, s.State.NmPerLongitude)
 		wp := av.Waypoint{
 			Fix:      fmt.Sprintf("_orbit_%d", i+1),
 			Location: p,

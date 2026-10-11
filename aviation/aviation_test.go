@@ -1722,3 +1722,24 @@ func TestAirspaceVolumeCenterEncodings(t *testing.T) {
 		}
 	}
 }
+
+func TestAirspaceVolumeCoversSegment(t *testing.T) {
+	vertices := []math.Point2LL{{0, 0}, {0, 2}, {2, 2}, {2, 0}}
+	bounds := math.Extent2DFromP2LLs(vertices)
+	vol := AirspaceVolume{Type: AirspaceVolumePolygon, Vertices: vertices, PolygonBounds: &bounds}
+	for _, tc := range []struct {
+		name string
+		a, b math.Point2LL
+		want bool
+	}{
+		{"through", math.Point2LL{-1, 1}, math.Point2LL{3, 1}, true},
+		{"entirely inside", math.Point2LL{0.5, 0.5}, math.Point2LL{1.5, 1.5}, true},
+		{"a point inside", math.Point2LL{1, 1}, math.Point2LL{1, 1}, true},
+		{"ends inside", math.Point2LL{3, 3}, math.Point2LL{1, 1}, true},
+		{"outside", math.Point2LL{-1, 3}, math.Point2LL{3, 2.5}, false},
+	} {
+		if got := vol.CoversSegment(tc.a, tc.b); got != tc.want {
+			t.Errorf("%s: got %v, want %v", tc.name, got, tc.want)
+		}
+	}
+}

@@ -145,6 +145,54 @@ func TestPointInPolygon(t *testing.T) {
 	}
 }
 
+func TestSegmentIntersectsPolygonEdges2LL(t *testing.T) {
+	square := []Point2LL{{0, 0}, {0, 2}, {2, 2}, {2, 0}}
+	// An L whose notch is the square from (1, 1) to (2, 2).
+	ell := []Point2LL{{0, 0}, {0, 2}, {1, 2}, {1, 1}, {2, 1}, {2, 0}}
+
+	for _, tc := range []struct {
+		name    string
+		a, b    Point2LL
+		polygon []Point2LL
+		want    bool
+	}{
+		{"through", Point2LL{-1, 1}, Point2LL{3, 1}, square, true},
+		{"misses", Point2LL{-1, 3}, Point2LL{3, 2.5}, square, false},
+		{"starts inside", Point2LL{1, 1}, Point2LL{3, 3}, square, true},
+		{"ends inside", Point2LL{3, 3}, Point2LL{1, 1}, square, true},
+		{"entirely inside", Point2LL{0.5, 0.5}, Point2LL{1.5, 1.5}, square, false},
+		{"a point inside", Point2LL{1, 1}, Point2LL{1, 1}, square, false},
+		{"touches a corner", Point2LL{-1, 3}, Point2LL{1, 1}, []Point2LL{{0, 0}, {0, 2}, {-2, 2}}, true},
+		{"across the notch", Point2LL{1.2, 1.5}, Point2LL{1.8, 1.5}, ell, false},
+		{"into the notch and through", Point2LL{1.5, 1.5}, Point2LL{1.5, -1}, ell, true},
+		{"along an edge's line past it", Point2LL{0, 3}, Point2LL{0, 4}, square, false},
+	} {
+		if got := SegmentIntersectsPolygonEdges2LL(tc.a, tc.b, tc.polygon); got != tc.want {
+			t.Errorf("%s: got %v, want %v", tc.name, got, tc.want)
+		}
+	}
+
+	// A segment that starts outside the polygon and has a point inside it
+	// must cross an edge.
+	r := rand.Make()
+	for range 256 {
+		coord := func() float32 { return -1 + 4*r.Float32() }
+		a, b := Point2LL{coord(), coord()}, Point2LL{coord(), coord()}
+		for _, poly := range [][]Point2LL{square, ell} {
+			if PointInPolygon2LL(a, poly) {
+				continue
+			}
+			sampled := false
+			for i := range 1000 {
+				sampled = sampled || PointInPolygon2LL(Lerp2f(float32(i)/999, a, b), poly)
+			}
+			if sampled && !SegmentIntersectsPolygonEdges2LL(a, b, poly) {
+				t.Errorf("segment %v-%v passes into %v but crosses no edge", a, b, poly)
+			}
+		}
+	}
+}
+
 func TestPointSegmentDistance(t *testing.T) {
 	refSampled := func(p, v, w [2]float32) float32 {
 		const n = 16384

@@ -2,11 +2,8 @@
 - Improved support for LDA approaches (don't just fly the extended centerline)
 - Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
 - An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
-- Aircraft told to climb or descend after reaching an assigned Mach number now do so
-- Aircraft given a crossing restriction in Mach no longer slow to their minimum speed
-- `M78+` and `M78-` assign Mach .78 "or greater" and "or less", including in crossing restrictions and by voice
-- Fixed bugs with Mach speeds: aircraft no longer speed up after descending below FL240 with a Mach number assigned, and pilots no longer read Mach numbers back as knots
-- "Or greater" and "or less" speeds given to follow an altitude change (`TS250+`, `TM78-`) now wait until the aircraft reaches the altitude
+- Fixed a number of bugs related to handling Mach speeds in instructions
+- VFR aircraft routes now avoid special use airspace
 - STARS
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM

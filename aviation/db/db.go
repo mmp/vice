@@ -47,6 +47,7 @@ type StaticDatabase struct {
 	BravoAirspace       map[string][]av.AirspaceVolume
 	CharlieAirspace     map[string][]av.AirspaceVolume
 	DeltaAirspace       map[string][]av.AirspaceVolume
+	SpecialUseAirspace  []SpecialUseAirspace
 	Say                 Pronunciations
 }
 
@@ -442,6 +443,7 @@ func doInitDB() {
 		db.BravoAirspace = r.BravoAirspace
 		db.CharlieAirspace = r.CharlieAirspace
 		db.DeltaAirspace = r.DeltaAirspace
+		db.SpecialUseAirspace = r.SpecialUseAirspace
 	})
 	var hpfEnroute map[string][]av.Hold
 	wg.Go(func() { hpfEnroute = parseHPF() })

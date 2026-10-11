@@ -176,7 +176,7 @@ type Sim struct {
 
 	// Built from the static database by Activate rather than serialized.
 	bravoAirspace   *db.AirspaceGrid
-	charlieAirspace *db.AirspaceGrid
+	vfrAirspace     *db.AirspaceGrid // Class B and C and the special use airspace VFR flights avoid
 	mvaGrid         *db.MVAGrid
 	vfrTerminalAlts map[av.ICAOAirportCode]int
 

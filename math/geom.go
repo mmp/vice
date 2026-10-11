@@ -457,6 +457,29 @@ func PointInPolygon2LL[T LatLonger](p Point2LL, pts []T) bool {
 	return inside
 }
 
+// SegmentIntersectsPolygonEdges2LL reports whether the segment from a to b
+// crosses or touches any edge of the polygon.
+func SegmentIntersectsPolygonEdges2LL(a, b Point2LL, pts []Point2LL) bool {
+	for i := range pts {
+		if segmentsIntersect(a, b, pts[i], pts[(i+1)%len(pts)]) {
+			return true
+		}
+	}
+	return false
+}
+
+// segmentsIntersect reports whether the segments (p1, p2) and (p3, p4) have
+// a point in common, including where one ends on the other.
+func segmentsIntersect(p1, p2, p3, p4 [2]float32) bool {
+	if max(p1[0], p2[0]) < min(p3[0], p4[0]) || max(p3[0], p4[0]) < min(p1[0], p2[0]) ||
+		max(p1[1], p2[1]) < min(p3[1], p4[1]) || max(p3[1], p4[1]) < min(p1[1], p2[1]) {
+		return false
+	}
+	// Each segment's ends are on opposite sides of the other's line, or on it.
+	side := func(a, b, p [2]float32) float32 { return (b[0]-a[0])*(p[1]-a[1]) - (b[1]-a[1])*(p[0]-a[0]) }
+	return side(p1, p2, p3)*side(p1, p2, p4) <= 0 && side(p3, p4, p1)*side(p3, p4, p2) <= 0
+}
+
 var (
 	// So that we can efficiently draw circles with various tessellations,
 	// circlePoints caches vertex positions of a unit circle at the origin

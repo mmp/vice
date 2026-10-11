@@ -5,9 +5,10 @@
 package db
 
 import (
-	av "github.com/mmp/vice/aviation"
+	"iter"
 	"slices"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -39,30 +40,37 @@ func MakeAirspaceGrid(v []*av.AirspaceVolume) *AirspaceGrid {
 	}
 }
 
-func (g *AirspaceGrid) getEntries(p math.Point2LL) []*av.AirspaceVolume {
-	// Quantize coordinates to grid; roughly 6nm resolution (at least in
-	// latitude...)
-	pq := [2]int{int(10 * p[0]), int(10 * p[1])}
+// airspaceCell returns the cell of an AirspaceGrid that p lies in: a tenth
+// of a degree on a side, roughly 6nm in latitude.
+func airspaceCell(p math.Point2LL) [2]int {
+	return [2]int{int(math.Floor(10 * p[0])), int(math.Floor(10 * p[1]))}
+}
 
+// airspaceCellMargin is how far, in nm, beyond a grid cell the volumes it
+// holds may reach. Lookups for points that close to a cell may use its
+// entries.
+const airspaceCellMargin = 2
+
+func (g *AirspaceGrid) getEntries(pq [2]int) []*av.AirspaceVolume {
 	if vols, ok := g.entries[pq]; ok {
 		return vols
-	} else {
-		// Center of the grid cell
-		pc := math.Point2LL{(float32(pq[0]) + 0.5) / 10, (float32(pq[1]) + 0.5) / 10}
-
-		vols := util.FilterSlice(g.volumes, func(v *av.AirspaceVolume) bool {
-			// Assumes both polygonal and an initialized PolygonBounds...
-			// The distance check has some slop in it just so we can be
-			// lazy about thinking about rounding in the grid quantization.
-			return math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(pc), pc) < 10
-		})
-		g.entries[pq] = vols
-		return vols
 	}
+
+	p0 := math.Point2LL{float32(pq[0]) / 10, float32(pq[1]) / 10}
+	dlat := float32(airspaceCellMargin) / 60
+	dlong := airspaceCellMargin / math.NMPerLongitudeAt(math.Point2LL{p0[0], p0[1] + 0.05})
+	cell := math.Extent2D{
+		P0: [2]float32{p0[0] - dlong, p0[1] - dlat},
+		P1: [2]float32{p0[0] + 0.1 + dlong, p0[1] + 0.1 + dlat},
+	}
+	// Assumes both polygonal and an initialized PolygonBounds...
+	vols := util.FilterSlice(g.volumes, func(v *av.AirspaceVolume) bool { return math.Overlaps(cell, *v.PolygonBounds) })
+	g.entries[pq] = vols
+	return vols
 }
 
 func (g *AirspaceGrid) Inside(p math.Point2LL, alt int) bool {
-	for _, vol := range g.getEntries(p) {
+	for _, vol := range g.getEntries(airspaceCell(p)) {
 		if vol.Inside(p, alt) {
 			return true
 		}
@@ -71,7 +79,7 @@ func (g *AirspaceGrid) Inside(p math.Point2LL, alt int) bool {
 }
 
 func (g *AirspaceGrid) Below(p math.Point2LL, alt int) bool {
-	for _, vol := range g.getEntries(p) {
+	for _, vol := range g.getEntries(airspaceCell(p)) {
 		if vol.Below(p, alt) {
 			return true
 		}
@@ -79,17 +87,44 @@ func (g *AirspaceGrid) Below(p math.Point2LL, alt int) bool {
 	return false
 }
 
-// ShelfFloor returns the lowest floor of the volumes lying over p, and whether
-// any lies over it at all. Flying below the floor keeps clear of all of them;
-// a floor at the surface leaves nowhere to fly under.
-func (g *AirspaceGrid) ShelfFloor(p math.Point2LL) (int, bool) {
-	floor, covered := 0, false
-	for _, vol := range g.getEntries(p) {
-		if vol.Covers(p) && (!covered || vol.Floor < floor) {
-			floor, covered = vol.Floor, true
+// Over returns the volumes that lie over p.
+func (g *AirspaceGrid) Over(p math.Point2LL) iter.Seq[*av.AirspaceVolume] {
+	return func(yield func(*av.AirspaceVolume) bool) {
+		for _, vol := range g.getEntries(airspaceCell(p)) {
+			if vol.Covers(p) && !yield(vol) {
+				return
+			}
 		}
 	}
-	return floor, covered
+}
+
+// Crossed returns the volumes that lie over some part of the segment from a
+// to b.
+func (g *AirspaceGrid) Crossed(a, b math.Point2LL) []*av.AirspaceVolume {
+	// Every point of the segment is within airspaceCellMargin of one of
+	// these, so their cells hold every volume it could pass under.
+	var candidates []*av.AirspaceVolume
+	n := 1 + int(math.NMDistance2LL(a, b)/(2*airspaceCellMargin))
+	var prev [2]int
+	for i := range n + 1 {
+		pq := airspaceCell(math.Lerp2f(float32(i)/float32(n), a, b))
+		if i > 0 && pq == prev {
+			continue
+		}
+		prev = pq
+		for _, vol := range g.getEntries(pq) {
+			if !slices.Contains(candidates, vol) {
+				candidates = append(candidates, vol)
+			}
+		}
+	}
+	return util.FilterSlice(candidates, func(vol *av.AirspaceVolume) bool { return vol.CoversSegment(a, b) })
+}
+
+// Near returns the volumes that lie over some point within r nm of p, for r
+// no more than airspaceCellMargin.
+func (g *AirspaceGrid) Near(p math.Point2LL, r float32) []*av.AirspaceVolume {
+	return util.FilterSlice(g.getEntries(airspaceCell(p)), func(vol *av.AirspaceVolume) bool { return vol.Near(p, r) })
 }
 
 // MVAGrid organizes MVA definitions and provides efficient lookups via a
