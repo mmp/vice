@@ -5343,6 +5343,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
+                    <td><code><var>(FLT ID)</var>[SLEW]</code></td>
+                    <td>Activate the identified flight plan, associate it with the slewed track, and take control
+                      of it. The track must be unassociated.</td>
+                  </tr>
+                  <tr>
                     <td><code>[INIT CTNL]<var>(FLT ID)</var>[SLEW]</code></td>
                     <td>Activate the identified flight plan and associate it with the slewed track.
                     Takes the following optional parameters to modify the flight plan before it
@@ -5715,7 +5720,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <p>STARS has commands that allow transferring an associated flight plan from one track to another one
               or converting it to an <i>unsupported datablock</i>, which is effectively a flight plan temporarily
-              places at a position on the radar scope.</p>
+              placed at a position on the radar scope.</p>
             <table class="table table-bordered syntax">
               <thead>
                 <tr>
@@ -5747,7 +5752,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>Unsupported datablocks may be repositioned back onto existing tracks or may be deleted
               using <code>[TERM CNTL]</code> and slewing or entering its associated ACID.</p>
 
-            <p>An unsupported datablock can also be created from a preexisting flight plan:</p>
+            <p>An unsupported datablock can also be created from an existing unassociated flight plan
+              or along with a new flight plan:</p>
             <table class="table table-bordered syntax">
               <thead>
                 <tr>
@@ -5757,12 +5763,25 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </thead>
               <tbody>
                 <tr>
+                  <td><code><var>(FLT ID)</var>[SCOPE]</code></td>
+                  <td>Create an unsupported datablock at the clicked position on the scope, <code>[SCOPE]</code>,
+                    from an existing unassociated flight plan.</td>
+                </tr>
+                <tr>
                   <td><code>[INIT CTNL]<var>(FLT ID)</var>[SCOPE]</code></td>
-                  <td>Create an unsupported datablock at the clicked position on the scope, <code>[SCOPE]</code>
-                    from an existing flight plan. The following additional arguments to modify the
-                    unsupported datablock's flight plan may also be specified,
+                  <td>Create an unsupported datablock at the clicked position on the scope, <code>[SCOPE]</code>,
+                    from an existing unassociated flight plan and take control of it. The following additional
+                    arguments to modify the unsupported datablock's flight plan may also be specified,
                     separated by spaces: <code><var>(SP1)</var></code>, <code>∆<var>(SP1)</var></code>, <code>+<var>(SP2)</var></code>, or
                     <code><var>(ASSIGNED ALT)</var></code>.</td>
+                </tr>
+                <tr>
+                  <td><code><var>(ACID)</var>[SCOPE]</code>/<br><code>[INIT CTNL]<var>(ACID)</var>[SCOPE]</code></td>
+                  <td>Create a new flight plan and an unsupported datablock for it at the clicked position on
+                    the scope, <code>[SCOPE]</code>. If the beacon code isn't specified, one is assigned
+                    automatically. Optional additional parameters: <code><var>(BEACON)</var></code>,
+                    <code>∆<var>(SP1)</var></code>, <code>+<var>(SP2)</var></code>, <code><var>(ASSIGNED ALT)</var></code>,
+                    and <code><var>(#/AC TYPE/EQ)</var></code>.</td>
                 </tr>
               </tbody>
             </table>
