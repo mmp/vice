@@ -1041,6 +1041,14 @@ func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *av.STAR {
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
 		func(r ssaRecord, transitions map[string]av.WaypointArray) bool { return false }) // terminate
 
+	// The common route may be named ALL rather than left blank.
+	baseName := ""
+	base, hasBase := transitions[""]
+	if !hasBase {
+		baseName = "ALL"
+		base, hasBase = transitions["ALL"]
+	}
+
 	star := av.MakeSTAR()
 	for t, wps := range transitions {
 		if len(t) > 3 && t[:2] == "RW" && t[2] >= '0' && t[2] <= '9' {
@@ -1056,12 +1064,8 @@ func parseSTAR(recs []ssaRecord, navaids map[string]Navaid) *av.STAR {
 		} else if t == "" {
 			// common waypoints; skip...
 		} else {
-			base, ok := transitions[""]
-			if !ok {
-				base, ok = transitions["ALL"]
-			}
-			if !ok {
-				// There's no common segment, which is fine
+			if !hasBase || t == baseName {
+				// There's no common segment, which is fine, or this is it.
 				star.Transitions[t] = wps
 			} else {
 				sp := spliceTransition(wps, base)
@@ -1425,27 +1429,21 @@ func parseSIDLegs(recs []ssaRecord, navaids map[string]Navaid, runwayTransition 
 	return wps, true
 }
 
+// spliceTransition joins a STAR or approach transition onto the common route
+// at the fix the transition ends at. Each of them has a record for that fix;
+// the transition's comes first, so its procedure turn and restrictions are
+// kept, and the common route's fills in what it lacks, such as a speed
+// limit, the arc or heading that leaves the fix, and the fix's role in the
+// approach.
 func spliceTransition(tr av.WaypointArray, base av.WaypointArray) av.WaypointArray {
-	idx := slices.IndexFunc(base, func(wp av.Waypoint) bool { return wp.Fix == tr[len(tr)-1].Fix })
+	n := len(tr)
+	idx := slices.IndexFunc(base, func(wp av.Waypoint) bool { return wp.Fix == tr[n-1].Fix })
 	if idx == -1 {
 		return nil
 	}
 
-	// We need to merge some properties from the base path but don't want
-	// to take its fix completely, since the given transition may have
-	// things like procedure turn at the last fix that we want to preserve...
-	bwp := base[idx]
-	if bwp.IAF() {
-		tr[len(tr)-1].SetIAF(true)
-	}
-	if bwp.IF() {
-		tr[len(tr)-1].SetIF(true)
-	}
-	if bwp.FAF() {
-		tr[len(tr)-1].SetFAF(true)
-	}
-
-	return append(av.WaypointArray(tr), base[idx+1:]...)
+	tr[n-1] = tr[n-1].MergeWith(base[idx])
+	return append(tr, base[idx+1:]...)
 }
 
 // fixLocation looks up a fix's location in the fixes map, falling back to navaids.

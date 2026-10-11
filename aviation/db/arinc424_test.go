@@ -872,3 +872,49 @@ func TestCIFPRoutesRoundTrip(t *testing.T) {
 		}
 	}
 }
+
+// Where a STAR transition joins the common route, the common route's record
+// for the fix fills in what the transition's lacks: KCLT BANKR8's PONZE
+// transition reaches BANKR without the 270 knot limit the common route gives
+// it.
+func TestParseARINC424STARJunctionSpeed(t *testing.T) {
+	lines := []string{
+		"SUSAP KCLTK7EBANKR84PONZE 040CRDETK7PC0E       TF                                 + 17000                                  521762609",
+		"SUSAP KCLTK7EBANKR84PONZE 050BANKRK7PC0EE      TF                                 B FL22013000                             521772609",
+		"SUSAP KCLTK7EBANKR85      010BANKRK7PC0E       IF                                 B FL2201300018000270                     521782609",
+		"SUSAP KCLTK7EBANKR85      020DEBBTK7PC0EE      TF                                 B FL21012000     250                     521792609",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	got := result.Airports["KCLT"].STARs["BANKR8"].Transitions["PONZE"].Encode()
+	if want := "CRDET/a17000+ BANKR/a13000-22000/s270 DEBBT/a12000-21000/s250"; got != want {
+		t.Errorf("expected PONZE transition %q, got %q", want, got)
+	}
+}
+
+// A SID transition starts at the last fix of the route before it. The KTVL
+// RICHY7 runway 36 transition passes RICHY on the way out to SWR and again
+// on the way back, climbing, before the enroute transitions begin there.
+func TestParseARINC424SIDTransitionAfterLoop(t *testing.T) {
+	lines := []string{
+		"SUSAD        SWR   K2011320VDLW N39104916W120161060    N39104916W120161060E0160088501     NARPALISADES                     258822308",
+		"SUSAP KTVLK2DRICHY72RW36  010         0        VI                     3430                    18000                        361362304",
+		"SUSAP KTVLK2DRICHY72RW36  020RICHYK2EA0E       CF SWR K2      1170016029700020D   + 08300                                  361372304",
+		"SUSAP KTVLK2DRICHY72RW36  030SWR  K2D 0V       TF                                 + 11000                                  361382304",
+		"SUSAP KTVLK2DRICHY72RW36  040RICHYK2EA0EE  L   CFYSWR K2      1170016011700160D   + 13000                                  361392304",
+		"SUSAP KTVLK2DRICHY73MARRI 010RICHYK2EA0E       IF                                 + 13000     18000                        361432102",
+		"SUSAP KTVLK2DRICHY73MARRI 020MARRIK2EA0EE      TF                                   13000                                  361442102",
+		"SUSAP KTVLK2GRW18    0085411770 N38541146W119593341         +1882706255080060100RITVL0                                     361781909",
+		"SUSAP KTVLK2GRW36    0085413570 N38531648W119594954         +1885106263203350100D                                          361792102",
+	}
+	result := ParseARINC424(strings.NewReader(strings.Join(lines, "\r\n") + "\r\n"))
+
+	sid := result.Airports["KTVL"].SIDs["RICHY7"]
+	wps, err := sid.Waypoints("36", "MARRI", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got, want := wps.Encode(), "KTVL-18/h343/@crsSWR-R117 RICHY/a8300+ SWR/a11000+/ld RICHY/a13000+ MARRI/a13000"; got != want {
+		t.Errorf("expected %q, got %q", want, got)
+	}
+}

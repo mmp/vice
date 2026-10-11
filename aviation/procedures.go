@@ -406,30 +406,24 @@ func (s SID) Waypoints(runway, transition, exit string) (WaypointArray, error) {
 
 // SpliceSIDTransition appends tr to a copy of base. A transition starts at
 // the last fix of what precedes it (ARINC 424 attachment 5, 4.10), so if its
-// first fix is found in base the route continues from there, keeping the
-// transition's restrictions at the junction where base has none.
+// first fix is found in base the route continues from its last occurrence
+// there, with the transition's record for the fix filling in what base's
+// lacks, such as the leg that leaves it.
 func SpliceSIDTransition(base, tr WaypointArray) WaypointArray {
 	route := base.Clone()
 	if len(tr) == 0 {
 		return route
 	}
 
-	idx := slices.IndexFunc(route, func(wp Waypoint) bool { return wp.Fix == tr[0].Fix })
+	idx := len(route) - 1
+	for idx >= 0 && route[idx].Fix != tr[0].Fix {
+		idx--
+	}
 	if idx == -1 {
 		return append(route, tr.Clone()...)
 	}
 
-	junction := &route[idx]
-	if junction.AltitudeRestriction() == nil {
-		if ar := tr[0].AltitudeRestriction(); ar != nil {
-			junction.SetAltitudeRestriction(*ar)
-		}
-	}
-	if junction.SpeedRestriction() == nil {
-		if sr := tr[0].SpeedRestriction(); sr != nil {
-			junction.SetSpeedRestriction(*sr)
-		}
-	}
+	route[idx] = route[idx].MergeWith(tr[0])
 	return append(route[:idx+1], tr[1:].Clone()...)
 }
 

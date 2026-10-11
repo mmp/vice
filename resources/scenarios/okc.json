@@ -1014,15 +1014,8 @@
     "MURAH3": {
       "arrivals": [
         {
-          "waypoints": "FEDRL/a22000-/s280/ho MURAH/a11000-17000/s280 JASKA/a9000+/s250",
-          "runway_waypoints": {
-            "KOKC": {
-              "17L": "JASKA/a9000+/s250 BECTA/a6000+ GOLFS/a4000+/s210",
-              "17R": "JASKA/a9000+/s250 BECTA/a6000+ ROHAA/a4000+/s210",
-              "35L": "JASKA/a9000+/s250 BOSHY/a9000+ HEDIK/a8000+ MOVIE/a7000+/s220 IMAGE/a6000/s210 HALTO/flyover/h176",
-              "35R": "JASKA/a9000+/s250 BOSHY/a9000+ HEDIK/a8000+ MOVIE/a7000+/s220 IMAGE/a6000/s210 HALTO/flyover/h176"
-            }
-          },
+          "spawn": "FEDRL",
+          "waypoint_actions": { "FEDRL": "ho", "HALTO": "h176" },
           "star": "MURAH3",
           "initial_controller": "K62",
           "initial_altitude": 14000,
