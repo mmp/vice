@@ -147,7 +147,6 @@ func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transfo
 }
 
 type CommandStatus struct {
-	clear        bool
 	responseArea []string
 	feedbackArea []string
 }

@@ -865,7 +865,7 @@ func handleTargetGen(ep *Scope, ctx *scope.Context, cmd string) (CommandStatus, 
 
 	if trk != nil {
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmds)
-		return CommandStatus{clear: true}, nil
+		return CommandStatus{}, nil
 	}
 
 	return CommandStatus{}, ErrIllegalACID
@@ -875,7 +875,7 @@ func handleTargetGenClicked(ep *Scope, ctx *scope.Context, cmd string, trk *sim.
 	if cmd != "" {
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 	}
-	return CommandStatus{clear: true}
+	return CommandStatus{}
 }
 
 func handleTargetGenEmptyClicked(ep *Scope, trk *sim.Track) CommandStatus {
@@ -1066,7 +1066,7 @@ func handleDrawRouteMode(ep *Scope, ctx *scope.Context) CommandStatus {
 	ep.commandMode = CommandModeDrawRoute
 	ep.drawRoutePoints = nil
 	ep.responseArea = "DRAWROUTE"
-	return CommandStatus{clear: true}
+	return CommandStatus{}
 }
 
 func handleDrawRoutePoint(ep *Scope, ctx *scope.Context, pos math.Point2LL) CommandStatus {
@@ -1115,7 +1115,7 @@ func handleQSToggleHSF(ep *Scope, trk *sim.Track) (CommandStatus, error) {
 
 	state := ep.TrackState[trk.ADSBCallsign]
 	state.HSFHide = !state.HSFHide
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func handleQSDeleteHeading(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
@@ -1126,7 +1126,7 @@ func handleQSDeleteHeading(ep *Scope, ctx *scope.Context, trk *sim.Track) (Comma
 	var fp sim.FlightPlanSpecifier
 	fp.Scratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk, fp)
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func handleQSDeleteSpeed(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
@@ -1137,7 +1137,7 @@ func handleQSDeleteSpeed(ep *Scope, ctx *scope.Context, trk *sim.Track) (Command
 	var fp sim.FlightPlanSpecifier
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk, fp)
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func handleQSDeleteAll(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
@@ -1149,7 +1149,7 @@ func handleQSDeleteAll(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandSt
 	fp.Scratchpad.Set("")
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk, fp)
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func handleQSHeading(ep *Scope, ctx *scope.Context, heading string, trk *sim.Track) (CommandStatus, error) {
@@ -1161,7 +1161,7 @@ func handleQSHeading(ep *Scope, ctx *scope.Context, heading string, trk *sim.Tra
 	fp.Scratchpad.Set(heading)
 	ep.modifyFlightPlan(ctx, trk, fp)
 
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func handleQSSpeed(ep *Scope, ctx *scope.Context, speed string, trk *sim.Track) (CommandStatus, error) {
@@ -1176,7 +1176,7 @@ func handleQSSpeed(ep *Scope, ctx *scope.Context, speed string, trk *sim.Track) 
 	}
 	ep.modifyFlightPlan(ctx, trk, fp)
 
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func handleQSFreeText(ep *Scope, ctx *scope.Context, freeText string, trk *sim.Track) (CommandStatus, error) {
@@ -1189,7 +1189,7 @@ func handleQSFreeText(ep *Scope, ctx *scope.Context, freeText string, trk *sim.T
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk, fp)
 
-	return CommandStatus{clear: true, feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
 func isQSFreeText(s string) bool {
