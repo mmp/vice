@@ -954,3 +954,28 @@ func TestParseARINC424NDBDoesNotReplaceVOR(t *testing.T) {
 		}
 	}
 }
+
+// Altitude descriptions the FAA's file doesn't use yet (5.29): @ is the
+// same as blank, C is at or above the second altitude, and Y is at or below
+// the first with the vertical path's altitude in the second.
+func TestParseARINC424AltitudeDescriptions(t *testing.T) {
+	for _, tc := range []struct {
+		desc       byte
+		alt0, alt1 string
+		want       string
+	}{
+		{'@', "02500", "     ", "SKORR/a2500"},
+		{'C', "     ", "03000", "SKORR/a3000+"},
+		{'Y', "02500", "02300", "SKORR/a2500-"},
+	} {
+		line := []byte("SUSAP KJFKK6DDEEZZ64RW31B 020SKORRK6PC0E       DF                                                                          301492603\r\n")
+		line[82] = tc.desc
+		copy(line[84:], tc.alt0)
+		copy(line[89:], tc.alt1)
+		rec := parseSSA(line)
+		wp, _, _ := rec.GetWaypoint()
+		if got := (av.WaypointArray{wp}).Encode(); got != tc.want {
+			t.Errorf("%c: expected %q, got %q", tc.desc, tc.want, got)
+		}
+	}
+}

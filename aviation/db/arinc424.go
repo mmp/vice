@@ -789,7 +789,7 @@ func (r *ssaRecord) GetWaypoint() (wp av.Waypoint, arc *av.DMEArc, ok bool) {
 	}
 	if alt0 != 0 || alt1 != 0 {
 		switch r.altDescrip { // 5.29
-		case ' ':
+		case ' ', '@':
 			wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt0)))
 		case '+':
 			wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(float32(alt0)))
@@ -797,6 +797,8 @@ func (r *ssaRecord) GetWaypoint() (wp av.Waypoint, arc *av.DMEArc, ok bool) {
 			wp.SetAltitudeRestriction(av.MakeAtOrBelowAltitudeRestriction(float32(alt0)))
 		case 'B': // "At or above to at or below"; The higher value will always appear first.
 			wp.SetAltitudeRestriction(av.MakeRangeAltitudeRestriction(float32(alt1) /* low */, float32(alt0) /* high */))
+		case 'C': // 'at or above' in second; SIDs only
+			wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(float32(alt1)))
 		case 'G', 'I':
 			// glideslope alt in second, 'at' in first
 			wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt0)))
@@ -809,8 +811,11 @@ func (r *ssaRecord) GetWaypoint() (wp av.Waypoint, arc *av.DMEArc, ok bool) {
 		case 'X':
 			// coded vertical angle alt in second, 'at' in first
 			wp.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(float32(alt0)))
+		case 'Y':
+			// coded vertical angle alt in second, 'at or below' in first
+			wp.SetAltitudeRestriction(av.MakeAtOrBelowAltitudeRestriction(float32(alt0)))
 		default:
-			panic("TODO alt descrip: " + string(r.altDescrip))
+			panic("unexpected altitude description: " + string(r.altDescrip))
 		}
 	}
 
