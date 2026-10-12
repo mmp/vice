@@ -5,8 +5,14 @@
 package scope
 
 import (
+	"strings"
+	"time"
+
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 type Brightness int
@@ -166,4 +172,91 @@ func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms Transfo
 	td.GenerateCommands(cb)
 	cb.LineWidth(1, dpiScale)
 	ldr.GenerateCommands(cb)
+}
+
+// Cache the aircraft state we show when paused but periodically fetch it
+var pausedDisplayStates = util.NewTransientMap[av.ADSBCallsign, sim.AircraftDisplayState]()
+
+// DrawPausedAircraftState draws the sim's summary of the aircraft's flight
+// and the instructions it has been given beside its track, which is drawn
+// at pw in window coordinates. Scopes call it for the track under the
+// mouse while the sim is paused.
+func DrawPausedAircraftState(ctx *Context, trk *sim.Track, pw [2]float32, style renderer.TextStyle,
+	transforms Transformations, cb *renderer.CommandBuffer) {
+	if trk.IsUnsupportedDB() {
+		return
+	}
+
+	ads, ok := pausedDisplayStates.Get(trk.ADSBCallsign)
+	if !ok {
+		var err error
+		if ads, err = ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign); err != nil {
+			ctx.Lg.Errorf("%s: error fetching display state: %s", trk.ADSBCallsign, err)
+		} else {
+			pausedDisplayStates.Add(trk.ADSBCallsign, ads, 2*time.Second)
+		}
+	}
+
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+
+	// Long routes and transcripts are wrapped, with continuation lines
+	// indented, so that the text doesn't sprawl across the scope.
+	wrap := func(s string) (string, int) { return util.WrapText(s, 70, 4, true, false) }
+
+	// Upper-left corner of where we start drawing the text
+	pad := float32(5)
+	ptext := math.Add2f([2]float32{2 * pad, 0}, pw)
+	font := style.Font
+	flightState, _ := wrap(ads.FlightState)
+	td.AddText(flightState, ptext, style)
+	ext := font.LayoutBounds(flightState, style.LineSpacing)
+	bx, by := ext.Width(), ext.Height()
+
+	if len(ads.ControlTransmissions) > 0 {
+		// The commands go under a header, one transmission per line, with
+		// the transcripts of spoken ones in a column to their right. Blank
+		// lines after a transmission's commands leave room for its
+		// transcript's continuation lines.
+		var cmds, transcripts []string
+		for _, t := range ads.ControlTransmissions {
+			transcript, n := wrap(t.Transcript)
+			cmds = append(cmds, "  "+t.Commands+strings.Repeat("\n", n-1))
+			transcripts = append(transcripts, transcript)
+		}
+
+		const header = "Instructions:"
+		pheader := math.Add2f(ptext, [2]float32{0, -by})
+		td.AddText(header, pheader, style)
+		bx = max(bx, font.LayoutBounds(header, style.LineSpacing).Width())
+
+		pcmds := math.Add2f(pheader, [2]float32{0, -float32(font.Size + style.LineSpacing)})
+		cmdText := strings.Join(cmds, "\n")
+		td.AddText(cmdText, pcmds, style)
+		cext := font.LayoutBounds(cmdText, style.LineSpacing)
+
+		gap := font.LayoutBounds("  ", 0).Width()
+		transcriptText := strings.Join(transcripts, "\n")
+		td.AddText(transcriptText, math.Add2f(pcmds, [2]float32{cext.Width() + gap, 0}), style)
+		tw := font.LayoutBounds(transcriptText, style.LineSpacing).Width()
+
+		bx = max(bx, util.Select(tw > 0, cext.Width()+gap+tw, cext.Width()))
+		by = ptext[1] - pcmds[1] + cext.Height()
+	}
+
+	// Draw an alpha-blended quad behind the text to make it more legible.
+	trid := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(trid)
+	trid.AddQuad(math.Add2f(ptext, [2]float32{-pad, 0}),
+		math.Add2f(ptext, [2]float32{bx + pad, 0}),
+		math.Add2f(ptext, [2]float32{bx + pad, -by - pad}),
+		math.Add2f(ptext, [2]float32{-pad, -by - pad}))
+
+	// Get it all into the command buffer
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.SetRGBA(renderer.RGBA{R: 0.25, G: 0.25, B: 0.25, A: 0.75})
+	cb.Blend()
+	trid.GenerateCommands(cb)
+	cb.DisableBlend()
+	td.GenerateCommands(cb)
 }

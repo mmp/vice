@@ -529,8 +529,9 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 		return AircraftDisplayState{}, ErrNoMatchingFlight
 	} else {
 		return AircraftDisplayState{
-			Spew:        godump.DumpStr(ac),
-			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.textRand, s.lg),
+			Spew:                 godump.DumpStr(ac),
+			FlightState:          ac.NavSummary(s.wxModel, s.State.SimTime, s.textRand, s.lg),
+			ControlTransmissions: ac.ControlTransmissions,
 		}, nil
 	}
 }

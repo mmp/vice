@@ -132,6 +132,10 @@ type Aircraft struct {
 	LastInstructionTime      Time
 	LastInstructionFrequency ControlPosition
 
+	// ControlTransmissions records the transmissions the pilot has
+	// responded to, oldest first.
+	ControlTransmissions []ControlTransmission
+
 	// LastAddressingForm tracks how the controller last addressed this aircraft.
 	// Used for readbacks to match the controller's style.
 	LastAddressingForm CallsignAddressingForm
@@ -1356,6 +1360,15 @@ func (s *Sim) GetReadbackVoice(callsign av.ADSBCallsign) string {
 }
 
 type AircraftDisplayState struct {
-	Spew        string // for debugging
-	FlightState string // for display when paused
+	Spew                 string // for debugging
+	FlightState          string // for display when paused
+	ControlTransmissions []ControlTransmission
+}
+
+// ControlTransmission holds the commands from a transmission to an aircraft
+// that the pilot responded to. Transcript is what the speech recognizer
+// heard when the transmission was spoken.
+type ControlTransmission struct {
+	Commands   string
+	Transcript string
 }

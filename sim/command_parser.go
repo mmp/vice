@@ -33,8 +33,8 @@ type ControlCommandsResult struct {
 // "correction" revise or undo the transmission.
 // Returns the remaining unparsed input and any error that occurred.
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string,
-	audioDuration, sttDuration time.Duration) ControlCommandsResult {
-	res := s.RunControlCommands(tcw, callsign, commandStr, audioDuration, sttDuration, true)
+	audioDuration, sttDuration time.Duration, transcript string) ControlCommandsResult {
+	res := s.RunControlCommands(tcw, callsign, commandStr, audioDuration, sttDuration, transcript, true)
 	s.publish()
 	return res
 }
@@ -42,23 +42,23 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 // RunScriptedControlCommands executes scenario-scripted commands. They are not controller
 // transmissions, so they leave the correction history of whoever is at tcw alone.
 func (s *Sim) RunScriptedControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
-	res := s.RunControlCommands(tcw, callsign, commandStr, 0, 0, false)
+	res := s.RunControlCommands(tcw, callsign, commandStr, 0, 0, "", false)
 	s.publish()
 	return res
 }
 
 // RunControlCommands is the core command execution logic shared by the dispatcher and automated
 // test code. All intents from commands are collected and rendered together as a single
-// transmission. For voice commands, audioDuration is the length of the transmission and
-// sttDuration is the time from PTT release until it was decoded; both are zero for typed or
-// non-voice commands. Pilot reaction delays are measured from when the pilot heard each
-// instruction: the callsign and each command are taken to use an equal share of the audio,
-// so the time from hearing a command until it is executed is sttDuration plus a share for
-// each command that follows it.
+// transmission. For voice commands, audioDuration is the length of the transmission,
+// sttDuration is the time from PTT release until it was decoded, and transcript is what the
+// speech recognizer heard; they are zero and empty for typed or non-voice commands. Pilot
+// reaction delays are measured from when the pilot heard each instruction: the callsign and
+// each command are taken to use an equal share of the audio, so the time from hearing a
+// command until it is executed is sttDuration plus a share for each command that follows it.
 // It does not publish; callers should generally go through RunAircraftControlCommands or
 // RunScriptedControlCommands, which do.
 func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string,
-	audioDuration, sttDuration time.Duration, recordHistory bool) ControlCommandsResult {
+	audioDuration, sttDuration time.Duration, transcript string, recordHistory bool) ControlCommandsResult {
 	commands := strings.Fields(commandStr)
 
 	// A leading correction marker was spoken too, so it takes a share.
@@ -130,6 +130,7 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 	}
 
 	var intents []speech.CommandIntent
+	var executed []string
 	var cmdErr error
 	var remaining string
 	refused := false
@@ -147,6 +148,7 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 			cmdErr, remaining = err, strings.Join(commands[i:], " ")
 			break
 		}
+		executed = append(executed, command)
 		if intent != nil {
 			intents = append(intents, intent)
 		}
@@ -159,6 +161,14 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 		if _, ok := intent.(speech.Refusal); ok {
 			refused = true
 		}
+	}
+
+	// The aircraft is gone if one of the commands deleted it.
+	if ac, ok := s.Aircraft[callsign]; ok && len(executed) > 0 {
+		ac.ControlTransmissions = append(ac.ControlTransmissions, ControlTransmission{
+			Commands:   strings.Join(executed, " "),
+			Transcript: transcript,
+		})
 	}
 
 	// Render all intents together as a single transmission, including the ones collected

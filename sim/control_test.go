@@ -9,6 +9,7 @@ package sim
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"testing"
 
@@ -650,7 +651,7 @@ func TestRunControlCommandsStaysOnFrequency(t *testing.T) {
 			s.Aircraft[ac.ADSBCallsign] = ac
 			freq := ac.ControllerFrequency
 
-			res := s.RunAircraftControlCommands(E2ETCW(), ac.ADSBCallsign, tc.commands, 0, 0)
+			res := s.RunAircraftControlCommands(E2ETCW(), ac.ADSBCallsign, tc.commands, 0, 0, "")
 			if res.Error != nil {
 				t.Fatalf("%s: %v", tc.commands, res.Error)
 			}
@@ -676,5 +677,40 @@ func TestRunControlCommandsStaysOnFrequency(t *testing.T) {
 	}
 	if s.changesFrequency("CTTL") {
 		t.Error("CTTL: clearing an approach should not change frequency")
+	}
+}
+
+// TestRunControlCommandsRecordsTransmissions checks that each transmission's
+// commands are recorded up to any that fails, along with the transcript of
+// spoken ones.
+func TestRunControlCommandsRecordsTransmissions(t *testing.T) {
+	s := NewTestSim(log.New(true, "error", t.TempDir()))
+	ac := MakeTestAircraft("AAL123", "22L")
+	ac.Nav.Perf = db.DB.AircraftPerformance["A320"]
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	run := func(commands, transcript string) error {
+		return s.RunAircraftControlCommands(E2ETCW(), ac.ADSBCallsign, commands, 0, 0, transcript).Error
+	}
+	if err := run("L090 D20", ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := run("S210", "american 123 reduce speed to 210"); err != nil {
+		t.Fatal(err)
+	}
+	if err := run("R120 J C50", ""); err == nil {
+		t.Error("R120 J C50: expected an error")
+	}
+	if err := run("J", ""); err == nil {
+		t.Error("J: expected an error")
+	}
+
+	want := []ControlTransmission{
+		{Commands: "L090 D20"},
+		{Commands: "S210", Transcript: "american 123 reduce speed to 210"},
+		{Commands: "R120"},
+	}
+	if !slices.Equal(ac.ControlTransmissions, want) {
+		t.Errorf("got transmissions %+v, want %+v", ac.ControlTransmissions, want)
 	}
 }

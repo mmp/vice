@@ -562,6 +562,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 		mouseOverToolbar := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.DrawExtent.P0))
 		if !mouseOverToolbar || !ep.toolbarVisible {
 			ep.consumeMouseEvents(ctx, transforms)
+			ep.drawPausedAircraftState(ctx, transforms, cb)
 		}
 	}
 
@@ -975,6 +976,27 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 		// TGT GEN mode, hold radio transmissions for the coming few seconds.
 		ctx.Client.HoldRadioTransmissions()
 	}
+}
+
+// drawPausedAircraftState shows the sim's state for the aircraft under the
+// mouse while the sim is paused.
+func (ep *Scope) drawPausedAircraftState(ctx *scope.Context, transforms scope.Transformations,
+	cb *renderer.CommandBuffer) {
+	if !ctx.Client.State.Paused {
+		return
+	}
+	trk, _ := ep.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms)
+	if trk == nil {
+		return
+	}
+
+	ps := ep.currentPrefs()
+	style := renderer.TextStyle{
+		Font:  ep.ERAMFont(ps.FDBSize),
+		Color: ps.Brightness.FDB.ScaleRGB(colors.yellow),
+	}
+	pw := transforms.WindowFromLatLongP(ep.TrackState[trk.ADSBCallsign].Track.Location)
+	scope.DrawPausedAircraftState(ctx, trk, pw, style, transforms, cb)
 }
 
 func (ep *Scope) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {

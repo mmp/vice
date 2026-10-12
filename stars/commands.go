@@ -9,7 +9,6 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
@@ -23,9 +22,6 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
-
-// Cache the routes we show when paused but periodically fetch them
-var pausedAircraftInfo *util.TransientMap[av.ADSBCallsign, string] = util.NewTransientMap[av.ADSBCallsign, string]()
 
 type CommandMode int
 
@@ -743,53 +739,14 @@ func (sp *Scope) consumeMouseEvents(ctx *scope.Context, ghosts []*av.GhostTrack,
 			// Otherwise leave sp.dwellAircraft as is
 		}
 	} else {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil && !trk.IsUnsupportedDB() {
-			td := renderer.GetTextDrawBuilder()
-			defer renderer.ReturnTextDrawBuilder(td)
-
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
 			ps := sp.currentPrefs()
-			font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 			style := renderer.TextStyle{
-				Font:        font,
-				Color:       ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.List),
-				LineSpacing: 0}
-
-			// Track position in window coordinates
-			state := sp.TrackState[trk.ADSBCallsign]
-			pac := transforms.WindowFromLatLongP(state.track.Location)
-
-			// Upper-left corner of where we start drawing the text
-			pad := float32(5)
-			ptext := math.Add2f([2]float32{2 * pad, 0}, pac)
-			info := ""
-			var ok bool
-			if info, ok = pausedAircraftInfo.Get(trk.ADSBCallsign); !ok {
-				if ads, err := ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign); err != nil {
-					ctx.Lg.Errorf("%s: error fetching display state: %s", trk.ADSBCallsign, err)
-				} else {
-					info = ads.FlightState
-					pausedAircraftInfo.Add(trk.ADSBCallsign, info, 2*time.Second)
-				}
+				Font:  sp.systemFont(ctx, ps.CharSize.Datablocks),
+				Color: ps.Brightness.FullDatablocks.ScaleRGB(sp.Colors.List),
 			}
-			td.AddText(info, ptext, style)
-
-			// Draw an alpha-blended quad behind the text to make it more legible.
-			trid := renderer.GetTrianglesDrawBuilder()
-			defer renderer.ReturnTrianglesDrawBuilder(trid)
-			ext := font.LayoutBounds(info, style.LineSpacing)
-			bx, by := ext.Width(), ext.Height()
-			trid.AddQuad(math.Add2f(ptext, [2]float32{-pad, 0}),
-				math.Add2f(ptext, [2]float32{bx + pad, 0}),
-				math.Add2f(ptext, [2]float32{bx + pad, -by - pad}),
-				math.Add2f(ptext, [2]float32{-pad, -by - pad}))
-
-			// Get it all into the command buffer
-			transforms.LoadWindowViewingMatrices(cb)
-			cb.SetRGBA(renderer.RGBA{R: 0.25, G: 0.25, B: 0.25, A: 0.75})
-			cb.Blend()
-			trid.GenerateCommands(cb)
-			cb.DisableBlend()
-			td.GenerateCommands(cb)
+			pac := transforms.WindowFromLatLongP(sp.TrackState[trk.ADSBCallsign].track.Location)
+			scope.DrawPausedAircraftState(ctx, trk, pac, style, transforms, cb)
 		}
 	}
 }

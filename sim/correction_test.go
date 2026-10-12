@@ -33,7 +33,7 @@ func makeCorrectionSim() *Sim {
 
 func runCorrectionCommand(t *testing.T, s *Sim, tcw TCW, callsign av.ADSBCallsign, commands string) {
 	t.Helper()
-	if res := s.RunAircraftControlCommands(tcw, callsign, commands, 0, 0); res.Error != nil {
+	if res := s.RunAircraftControlCommands(tcw, callsign, commands, 0, 0, ""); res.Error != nil {
 		t.Fatalf("%s: %s %s: %v", tcw, callsign, commands, res.Error)
 	}
 }
@@ -132,11 +132,11 @@ func TestCorrectionFrequencyTransfer(t *testing.T) {
 				}
 			}
 
-			res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "CORRECTION L020", 0, 0)
+			res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "CORRECTION L020", 0, 0, "")
 			if !errors.Is(res.Error, av.ErrOtherControllerHasTrack) {
 				t.Fatalf("correction after leaving frequency: %v", res.Error)
 			}
-			if res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "ROLLBACK", 0, 0); res.Error != nil {
+			if res := s.RunAircraftControlCommands(E2ETCW(), "UAL123", "ROLLBACK", 0, 0, ""); res.Error != nil {
 				t.Fatal(res.Error)
 			}
 			assertHeading(t, s, "UAL123", 10)
