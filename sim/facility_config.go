@@ -19,7 +19,7 @@ import (
 )
 
 // FacilityConfig represents an external facility configuration file that
-// contains control positions, STARS configuration, and handoff IDs for a
+// contains control positions, the facility adaptation, and handoff IDs for a
 // facility (TRACON or ARTCC).
 type FacilityConfig struct {
 	ControlPositions           map[TCP]*av.Controller `json:"control_positions"`
@@ -308,7 +308,7 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	fa := &fc.FacilityAdaptation
 
-	for tcp, config := range fa.Controllers {
+	for tcp, config := range fa.Positions {
 		if config.AltitudeLimits.Adapted() {
 			e.ErrorString("controllers[%s]: the altitude limits filters are ERAM-only", tcp)
 		}
@@ -336,13 +336,13 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	}
 
 	// controller_configs TCP existence.
-	if len(fa.Controllers) > 0 {
+	if len(fa.Positions) > 0 {
 		var err error
-		fa.Controllers, err = util.CommaKeyExpand(fa.Controllers)
+		fa.Positions, err = util.CommaKeyExpand(fa.Positions)
 		if err != nil {
 			e.Error(err)
 		}
-		for tcp := range fa.Controllers {
+		for tcp := range fa.Positions {
 			if ctrl, ok := fc.ControlPositions[TCP(tcp)]; !ok {
 				e.ErrorString(`Control position %q in "controllers" not defined in "control_positions"`, tcp)
 			} else if ctrl.IsExternal() {
@@ -540,7 +540,7 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	// Scratchpads + display_exit_fix mutual exclusion; per-area scratchpads
 	// are just as much at odds with displaying the exit fix automatically.
 	if len(fa.Scratchpads) > 0 ||
-		util.MapContains(fa.Areas, func(_ string, ac *STARSArea) bool { return len(ac.Scratchpads) > 0 }) {
+		util.MapContains(fa.Areas, func(_ string, ac *AreaAdaptation) bool { return len(ac.Scratchpads) > 0 }) {
 		sp1 := fa.Datablocks.Scratchpad1
 		if sp1.DisplayExitFix || sp1.DisplayExitFix1 || sp1.DisplayExitGate || sp1.DisplayAltExitGate {
 			e.ErrorString(`cannot both specify "scratchpads" and "display_exit_fix"/"display_exit_fix_1"/"display_exit_gate"/"display_alternate_exit_gate"`)
@@ -573,8 +573,8 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	}
 
 	// Controller beacon code blocks and flight following auto-generation.
-	if len(fa.Controllers) > 0 {
-		for tcp, config := range fa.Controllers {
+	if len(fa.Positions) > 0 {
+		for tcp, config := range fa.Positions {
 			// Auto-generate flight following airspace IDs/descriptions.
 			for i := range config.FlightFollowingAirspace {
 				if config.FlightFollowingAirspace[i].Id == "" {
@@ -693,7 +693,7 @@ func (fc *FacilityConfig) validateERAMAdaptation(e *util.ErrorLogger) {
 	// Pseudo-ERAM coordination adaptation.
 	enroute.Validate(fa.ArtsCoordination, fa.Restrictions, e)
 
-	for tcp, config := range fa.Controllers {
+	for tcp, config := range fa.Positions {
 		e.Push(fmt.Sprintf("controllers[%s]", tcp))
 		config.AltitudeLimits.Validate(e)
 		e.Pop()

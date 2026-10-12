@@ -164,8 +164,8 @@ func initializeSimConfigurations(sg *Group, catalogs map[string]map[string]*Cata
 		if scenario.ConfigurationString == "" {
 			continue
 		}
-		haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(sg.FacilityConfig.FacilityAdaptation.Controllers),
-			func(cc *sim.STARSController) bool { return len(cc.FlightFollowingAirspace) > 0 })
+		haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(sg.FacilityConfig.FacilityAdaptation.Positions),
+			func(cc *sim.PositionAdaptation) bool { return len(cc.FlightFollowingAirspace) > 0 })
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, *scenario.VFFRequestRate,
 			vfrAirports, scenario.InboundFlowDefaultRates, haveVFRReportingRegions)
 		sim.MarkBackgroundTraffic(sg.Airports, sg.InboundFlows, &scenario.ControllerConfiguration,

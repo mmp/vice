@@ -104,7 +104,7 @@ func (s *Sim) requestRandomFlightFollowing() error {
 			continue
 		}
 
-		for tcpStr, cc := range util.SortedMap(s.State.FacilityAdaptation.Controllers) {
+		for tcpStr, cc := range util.SortedMap(s.State.FacilityAdaptation.Positions) {
 			tcp := s.State.ResolveController(TCP(tcpStr))
 			if s.isVirtualController(tcp) {
 				continue

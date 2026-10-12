@@ -1,4 +1,4 @@
-// sim/stars.go
+// sim/adaptation.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -52,16 +52,16 @@ type FacilityAdaptation struct {
 	// nor its configuration gives one.
 	ListedPositions map[TCP]string `json:"listed_positions"`
 
-	AirspaceAwareness []AirspaceAwareness                  `json:"airspace_awareness"`
-	VideoMapLabels    map[string]string                    `json:"map_labels"`
-	Controllers       map[ControlPosition]*STARSController `json:"controllers"`
-	Areas             map[string]*STARSArea                `json:"areas,omitempty"`
-	RadarSites        map[string]*av.RadarSite             `json:"radar_sites"`
-	Center            av.ScenarioPoint2LL                  `json:"center"`
-	MaxDistance       float32                              `json:"max_distance"` // Distance from center where aircraft get culled from (default 200nm STARS, 400nm ERAM)
-	Range             float32                              `json:"range"`
-	Scratchpads       map[string]string                    `json:"scratchpads"`
-	SignificantPoints map[string]SignificantPoint          `json:"significant_points"`
+	AirspaceAwareness []AirspaceAwareness                     `json:"airspace_awareness"`
+	VideoMapLabels    map[string]string                       `json:"map_labels"`
+	Positions         map[ControlPosition]*PositionAdaptation `json:"controllers"`
+	Areas             map[string]*AreaAdaptation              `json:"areas,omitempty"`
+	RadarSites        map[string]*av.RadarSite                `json:"radar_sites"`
+	Center            av.ScenarioPoint2LL                     `json:"center"`
+	MaxDistance       float32                                 `json:"max_distance"` // Distance from center where aircraft get culled from (default 200nm STARS, 400nm ERAM)
+	Range             float32                                 `json:"range"`
+	Scratchpads       map[string]string                       `json:"scratchpads"`
+	SignificantPoints map[string]SignificantPoint             `json:"significant_points"`
 
 	// WeatherStation is the METAR station standing in for the facility when no
 	// gridded weather is available for it: winds aloft are synthesized from its
@@ -171,7 +171,7 @@ type FacilityAdaptation struct {
 			Altimeters []av.ICAOAirportCode `json:"altimeters"`
 			// SystemAltimeter is the station whose setting the SSA ALTSTG field
 			// shows (5-55); it also heads the altimeter list when none is
-			// adapted. A STARSArea may override it for its positions.
+			// adapted. An AreaAdaptation may override it for its positions.
 			SystemAltimeter   av.ICAOAirportCode `json:"system_altimeter,omitempty"`
 			FlashOnATISUpdate bool               `json:"flash_on_atis_update"`
 		} `json:"ssa"`
@@ -241,7 +241,9 @@ func (m STARSMacro) HasParameters() bool {
 // It returns true if the given string is a valid command mode for macro commands.
 var ValidateMacroCommandMode func(string) bool
 
-type STARSController struct {
+// PositionAdaptation holds the adaptation for a single control position. Its
+// settings take precedence over those of the position's area and facility.
+type PositionAdaptation struct {
 	VideoMapFile  string              `json:"video_map_file,omitempty"`
 	VideoMapNames []string            `json:"video_maps"`
 	DefaultMaps   []string            `json:"default_maps"`
@@ -254,10 +256,10 @@ type STARSController struct {
 	Altimeters                      []av.ICAOAirportCode `json:"altimeters"`
 }
 
-// STARSArea provides default configuration for all controllers
-// within a TRACON area. Controller-specific settings in Controllers
+// AreaAdaptation provides default configuration for all controllers
+// within an area. Settings in a position's PositionAdaptation
 // override or append these defaults.
-type STARSArea struct {
+type AreaAdaptation struct {
 	DefaultAirport                  av.ICAOAirportCode  `json:"default_airport,omitempty"` // CRDA default airport for this area
 	VideoMapFile                    string              `json:"video_map_file,omitempty"`
 	VideoMapNames                   []string            `json:"video_maps,omitempty"`
@@ -463,7 +465,7 @@ func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, 
 
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 
-	if config, ok := fa.Controllers[tcp]; ok && len(config.VideoMapNames) > 0 {
+	if config, ok := fa.Positions[tcp]; ok && len(config.VideoMapNames) > 0 {
 		videoMaps, defaultMaps, beaconCodes = config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
 	} else if ac, ok := fa.Areas[s.areaForTCP(tcp)]; ok && len(ac.VideoMapNames) > 0 {
 		dm := s.State.ScenarioDefaultVideoMaps
@@ -481,7 +483,7 @@ func (s *Sim) GetControllerVideoMapFile(tcw TCW) string {
 	fa := &s.State.FacilityAdaptation
 	tcp := s.State.PrimaryPositionForTCW(tcw)
 
-	if config, ok := fa.Controllers[tcp]; ok && config.VideoMapFile != "" {
+	if config, ok := fa.Positions[tcp]; ok && config.VideoMapFile != "" {
 		return config.VideoMapFile
 	}
 
@@ -596,7 +598,7 @@ func (fa *FacilityAdaptation) Finalize(loc av.Locator, e *util.ErrorLogger) {
 	}
 
 	// Locator-dependent controller config validation.
-	for tcp, config := range fa.Controllers {
+	for tcp, config := range fa.Positions {
 		e.Push(fmt.Sprintf("controllers[%s]", tcp))
 
 		config.Center.Resolve(loc, "center", e)

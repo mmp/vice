@@ -439,12 +439,12 @@ func (sg *Group) rewriteControllers(e *util.ErrorLogger) {
 			rewriteString(&area.AirspaceAwareness[i].ReceivingController)
 		}
 	}
-	for position, config := range fa.Controllers {
+	for position, config := range fa.Positions {
 		// Rewrite controller
-		delete(fa.Controllers, position)
+		delete(fa.Positions, position)
 		p := string(position)
 		rewriteString(&p)
-		fa.Controllers[sim.ControlPosition(p)] = config
+		fa.Positions[sim.ControlPosition(p)] = config
 	}
 	// Rewrite TCP references in configurations (controller assignments)
 	for _, config := range fa.Configurations {

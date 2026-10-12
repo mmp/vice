@@ -121,7 +121,7 @@ func (ss *SimState) GetInitialRange() float32 {
 	fa := &ss.FacilityAdaptation
 
 	// Controller-specific config takes priority.
-	if config, ok := fa.Controllers[tcp]; ok && config.Range != 0 {
+	if config, ok := fa.Positions[tcp]; ok && config.Range != 0 {
 		return config.Range
 	}
 	// Then scenario, then area, then facility.
@@ -141,7 +141,7 @@ func (ss *SimState) GetInitialCenter() math.Point2LL {
 	fa := &ss.FacilityAdaptation
 
 	// Controller-specific config takes priority.
-	if config, ok := fa.Controllers[tcp]; ok && !config.Center.IsZero() {
+	if config, ok := fa.Positions[tcp]; ok && !config.Center.IsZero() {
 		return config.Center.Point2LL
 	}
 	// Then scenario, then area, then facility.
@@ -163,7 +163,7 @@ func (ss *SimState) GetInitialCenter() math.Point2LL {
 func (ss *SimState) GetInitialAltitudeLimits() (targets, ldbs [2]int) {
 	tcp := ss.PrimaryPositionForTCW(ss.UserTCW)
 
-	if config, ok := ss.FacilityAdaptation.Controllers[tcp]; ok && config.AltitudeLimits.Adapted() {
+	if config, ok := ss.FacilityAdaptation.Positions[tcp]; ok && config.AltitudeLimits.Adapted() {
 		return config.AltitudeLimits.Filters()
 	}
 	return ss.ScenarioAltitudeLimits.Filters()

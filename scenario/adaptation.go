@@ -36,7 +36,7 @@ func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Grou
 
 	// specForArea returns the effective spec for an area: the area's
 	// own mapSpec if it has a video_map_file, otherwise the facility-level one.
-	specForArea := func(ac *sim.STARSArea) *videomaps.LibrarySpec {
+	specForArea := func(ac *sim.AreaAdaptation) *videomaps.LibrarySpec {
 		if ac.VideoMapFile != "" {
 			if m, ok := mapSpecs[ac.VideoMapFile]; ok {
 				return m
@@ -79,14 +79,14 @@ func finalizeAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *Grou
 	for _, ac := range s.Areas {
 		allAreaVideoMaps = append(allAreaVideoMaps, ac.VideoMapNames...)
 	}
-	if sg.ARTCC == "" && len(s.Controllers) == 0 && len(allAreaVideoMaps) == 0 {
+	if sg.ARTCC == "" && len(s.Positions) == 0 && len(allAreaVideoMaps) == 0 {
 		e.ErrorString(`must specify either "controllers" or "video_maps" in "areas"`)
 	}
 
 	// Controller video maps (require mapSpec); the centers are resolved when
 	// the adaptation itself is finalized.
-	if len(s.Controllers) > 0 {
-		for tcp, config := range s.Controllers {
+	if len(s.Positions) > 0 {
+		for tcp, config := range s.Positions {
 			// Resolve mapSpec: controller video_map_file > area > facility.
 			ctrlSpec := mapSpec
 			if config.VideoMapFile != "" {

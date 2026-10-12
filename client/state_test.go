@@ -19,7 +19,7 @@ func TestGetInitialAltitudeLimits(t *testing.T) {
 		var ss SimState
 		ss.UserTCW = "08"
 		ss.ScenarioAltitudeLimits = scenario
-		ss.FacilityAdaptation.Controllers = map[sim.ControlPosition]*sim.STARSController{
+		ss.FacilityAdaptation.Positions = map[sim.ControlPosition]*sim.PositionAdaptation{
 			"08": {AltitudeLimits: position},
 		}
 		return ss

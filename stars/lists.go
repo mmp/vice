@@ -407,7 +407,7 @@ func systemAltimeter(ctx *scope.Context) av.ICAOAirportCode {
 // controller's adapted list first, then the area's, then the facility's, and
 // failing all of those the scenario's own IFR airports.
 func (sp *Scope) altimeterAirports(ctx *scope.Context) []av.ICAOAirportCode {
-	if cc, ok := ctx.FacilityAdaptation.Controllers[ctx.UserPrimaryPosition()]; ok && len(cc.Altimeters) > 0 {
+	if cc, ok := ctx.FacilityAdaptation.Positions[ctx.UserPrimaryPosition()]; ok && len(cc.Altimeters) > 0 {
 		return cc.Altimeters
 	}
 	if area := ctx.UserController().Area; area != "" {

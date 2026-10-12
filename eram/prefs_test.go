@@ -71,7 +71,7 @@ func TestResetAppliesAdaptedAltitudeLimits(t *testing.T) {
 	stateFor := func(limits sim.AltitudeLimits) client.SimState {
 		var ss client.SimState
 		ss.UserTCW = "08"
-		ss.FacilityAdaptation.Controllers = map[sim.ControlPosition]*sim.STARSController{
+		ss.FacilityAdaptation.Positions = map[sim.ControlPosition]*sim.PositionAdaptation{
 			"08": {AltitudeLimits: limits},
 		}
 		return ss
