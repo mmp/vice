@@ -298,6 +298,28 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 		e.ErrorString(`%s: invalid value for "monitor": must be "legacy", "mdm3", or "mdm4"`, fa.Monitor)
 	}
 
+	if len(fa.Positions) > 0 {
+		var err error
+		fa.Positions, err = util.CommaKeyExpand(fa.Positions)
+		if err != nil {
+			e.Error(err)
+		}
+	}
+	for tcp, config := range fa.Positions {
+		if _, ok := fc.ControlPositions[TCP(tcp)]; !ok {
+			e.ErrorString(`Control position %q in "controllers" not defined in "control_positions"`, tcp)
+		}
+
+		for i := range config.FlightFollowingAirspace {
+			if config.FlightFollowingAirspace[i].Id == "" {
+				config.FlightFollowingAirspace[i].Id = "FF" + string(tcp) + strconv.Itoa(i+1)
+			}
+			if config.FlightFollowingAirspace[i].Description == "" {
+				config.FlightFollowingAirspace[i].Description = "FLIGHT FOLLOWING " + string(tcp) + " " + strconv.Itoa(i+1)
+			}
+		}
+	}
+
 	if isARTCC {
 		fc.validateERAMAdaptation(e)
 	} else {
@@ -332,22 +354,6 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 	for m := range fa.VideoMapLabels {
 		if !slices.Contains(allAreaVideoMaps, m) {
 			e.ErrorString(`video map %q in "map_labels" is not in any area's "video_maps"`, m)
-		}
-	}
-
-	// controller_configs TCP existence.
-	if len(fa.Positions) > 0 {
-		var err error
-		fa.Positions, err = util.CommaKeyExpand(fa.Positions)
-		if err != nil {
-			e.Error(err)
-		}
-		for tcp := range fa.Positions {
-			if ctrl, ok := fc.ControlPositions[TCP(tcp)]; !ok {
-				e.ErrorString(`Control position %q in "controllers" not defined in "control_positions"`, tcp)
-			} else if ctrl.IsExternal() {
-				e.ErrorString(`Control position %q in "controllers" is external and not in this TRACON.`, tcp)
-			}
 		}
 	}
 
@@ -572,31 +578,18 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		e.Pop()
 	}
 
-	// Controller beacon code blocks and flight following auto-generation.
-	if len(fa.Positions) > 0 {
-		for tcp, config := range fa.Positions {
-			// Auto-generate flight following airspace IDs/descriptions.
-			for i := range config.FlightFollowingAirspace {
-				if config.FlightFollowingAirspace[i].Id == "" {
-					config.FlightFollowingAirspace[i].Id = "FF" + string(tcp) + strconv.Itoa(i+1)
-				}
-				if config.FlightFollowingAirspace[i].Description == "" {
-					config.FlightFollowingAirspace[i].Description = "FLIGHT FOLLOWING " + string(tcp) + " " + strconv.Itoa(i+1)
-				}
-			}
-
-			// Parse controller beacon code blocks.
-			config.MonitoredBeaconCodeBlocks = nil
-			if config.MonitoredBeaconCodeBlocksString == nil {
-				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
-			} else {
-				for s := range strings.SplitSeq(*config.MonitoredBeaconCodeBlocksString, ",") {
-					s = strings.TrimSpace(s)
-					if code, err := av.ParseSquawkOrBlock(s); err != nil {
-						e.ErrorString(`invalid beacon code %q in "beacon_code_blocks": %v`, s, err)
-					} else {
-						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
-					}
+	// Controller beacon code blocks.
+	for _, config := range fa.Positions {
+		config.MonitoredBeaconCodeBlocks = nil
+		if config.MonitoredBeaconCodeBlocksString == nil {
+			config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
+		} else {
+			for s := range strings.SplitSeq(*config.MonitoredBeaconCodeBlocksString, ",") {
+				s = strings.TrimSpace(s)
+				if code, err := av.ParseSquawkOrBlock(s); err != nil {
+					e.ErrorString(`invalid beacon code %q in "beacon_code_blocks": %v`, s, err)
+				} else {
+					config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
 				}
 			}
 		}

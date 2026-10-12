@@ -7,6 +7,7 @@ package sim
 import (
 	"io"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
@@ -425,6 +426,38 @@ func TestAltitudeLimitsValidate(t *testing.T) {
 	} {
 		if countErrors(limits) == 0 {
 			t.Errorf("%+v: accepted", limits)
+		}
+	}
+}
+
+func TestValidateAdaptationPositions(t *testing.T) {
+	for _, isARTCC := range []bool{false, true} {
+		fc := &FacilityConfig{ControlPositions: map[TCP]*av.Controller{"07": {}, "08": {}, "09": {}}}
+		fa := &fc.FacilityAdaptation
+		fa.Configurations = map[string]*FacilityConfiguration{}
+		fa.Positions = map[ControlPosition]*PositionAdaptation{
+			"07":    {FlightFollowingAirspace: []av.AirspaceVolume{{}}},
+			"08,09": {},
+			"10":    {},
+		}
+
+		var e util.ErrorLogger
+		fc.validateAdaptation(isARTCC, &e)
+
+		if keys := util.SortedMapKeys(fa.Positions); !slices.Equal(keys, []ControlPosition{"07", "08", "09", "10"}) {
+			t.Errorf("ARTCC %v: positions %v after expansion", isARTCC, keys)
+		}
+		errs := e.String()
+		if !strings.Contains(errs, `"10" in "controllers" not defined`) {
+			t.Errorf("ARTCC %v: unknown position not reported: %s", isARTCC, errs)
+		}
+		for _, tcp := range []string{"07", "08", "09"} {
+			if strings.Contains(errs, `"`+tcp+`" in "controllers"`) {
+				t.Errorf("ARTCC %v: position %s reported: %s", isARTCC, tcp, errs)
+			}
+		}
+		if id := fa.Positions["07"].FlightFollowingAirspace[0].Id; id != "FF071" {
+			t.Errorf("ARTCC %v: flight following airspace id %q, expected FF071", isARTCC, id)
 		}
 	}
 }
