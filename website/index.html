@@ -729,8 +729,9 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                   </tr>
                   <tr>
                     <td><code>M<var>mach</var></code></td>
-                    <td>Gives the aircraft a mach speed restriction.</td>
-                    <td><code>M78</code></td>
+                    <td>Gives the aircraft a mach speed restriction. Append <code>+</code> for
+                      "or greater" or <code>-</code> for "or less".</td>
+                    <td><code>M78</code>, <code>M78+</code></td>
                   </tr>
                   <tr>
                     <td><code>TM<var>mach</var></code></td>
@@ -1302,7 +1303,8 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <tr><td>Assign Mach</td>
                   <td>
                     <i>Reduce mach to Mach (mach)</i> /  <i>Slow to Mach (mach)</i> /  <i>Increase to Mach (mach)</i> / 
-                    <i>Mach (mach)</i> /  <i>Maintain mach (mach)</i>
+                    <i>Mach (mach)</i> /  <i>Maintain mach (mach)</i> / <i>Maintain Mach (mach) or greater</i> /
+                    <i>Maintain Mach (mach) or less</i> / <i>Do not exceed Mach (mach)</i>
                   </td>
                 </tr>
                 <tr><td>Speed at Fix</td>

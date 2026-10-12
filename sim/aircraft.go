@@ -511,10 +511,6 @@ func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool, simTime Time, 
 	return ac.Nav.AssignAltitude(float32(altitude), afterSpeed, simTime.NavTime(), delayReduction)
 }
 
-func (ac *Aircraft) AssignMach(mach float32, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
-	return ac.Nav.AssignMach(mach, afterAltitude, temp)
-}
-
 func (ac *Aircraft) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
 	return ac.Nav.AssignSpeed(sr, afterAltitude, temp)
 }

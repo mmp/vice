@@ -83,6 +83,54 @@ func TestParseAltitudeRestriction(t *testing.T) {
 	}
 }
 
+func TestParseSpeedRestriction(t *testing.T) {
+	machAtOrAbove, machAtOrBelow := MakeMachRestriction(.78), MakeMachRestriction(.78)
+	machAtOrAbove.Range[1] = MaxRestrictionSpeed
+	machAtOrBelow.Range[0] = 0
+	for _, test := range []struct {
+		s  string
+		sr SpeedRestriction
+	}{
+		{s: "210", sr: MakeAtSpeedRestriction(210)},
+		{s: "180-210", sr: MakeRangeSpeedRestriction(180, 210)},
+		{s: "250+", sr: MakeAtOrAboveSpeedRestriction(250)},
+		{s: "250-", sr: MakeAtOrBelowSpeedRestriction(250)},
+		{s: "M78", sr: MakeMachRestriction(.78)},
+		{s: "M78+", sr: machAtOrAbove},
+		{s: "M78-", sr: machAtOrBelow},
+	} {
+		sr, err := ParseSpeedRestriction(test.s)
+		if err != nil {
+			t.Errorf("%s: unexpected error parsing: %v", test.s, err)
+		} else if *sr != test.sr {
+			t.Errorf("%s: got %+v, expected %+v", test.s, *sr, test.sr)
+		} else if enc := sr.Encoded(); enc != test.s {
+			t.Errorf("encoding mismatch: got %q, expected %q", enc, test.s)
+		}
+	}
+
+	var sr SpeedRestriction
+	if err := json.Unmarshal([]byte(`{"Range": [0.78, 0.82], "IsMach": true}`), &sr); err == nil {
+		t.Errorf("expected a Mach band to be rejected; got %+v", sr)
+	}
+}
+
+func TestSpeedRestrictionIAS(t *testing.T) {
+	sr, _ := ParseSpeedRestriction("M78+")
+	ias := sr.IAS(35000)
+	if ias.IsMach || ias.Range[0] != MachToIAS(.78, 35000) || ias.Range[1] != MaxRestrictionSpeed {
+		t.Errorf("M78+ at FL350: got %+v", ias)
+	}
+	sr, _ = ParseSpeedRestriction("M78-")
+	ias = sr.IAS(35000)
+	if ias.IsMach || ias.Range[0] != 0 || ias.Range[1] != MachToIAS(.78, 35000) {
+		t.Errorf("M78- at FL350: got %+v", ias)
+	}
+	if knots := MakeAtOrAboveSpeedRestriction(250); knots.IAS(35000) != knots {
+		t.Errorf("knots don't vary with altitude: got %+v", knots.IAS(35000))
+	}
+}
+
 func TestSquawkCodePoolBasics(t *testing.T) {
 	p := MakeEnrouteSquawkCodePool(nil)
 

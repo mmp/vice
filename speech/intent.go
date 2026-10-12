@@ -370,6 +370,10 @@ func (s SpeedIntent) renderMach(rt *RadioTransmission, r *rand.Rand) {
 		} else {
 			rt.Add("[{mach}|maintain {mach}]", s.Speed)
 		}
+	case SpeedAtOrAbove:
+		rt.Add("[maintain {mach} or greater|{mach} or greater]", s.Speed)
+	case SpeedAtOrBelow:
+		rt.Add("[do not exceed {mach}|{mach} or less]", s.Speed)
 	}
 }
 
@@ -655,13 +659,8 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("{altrest}", n.AltRestriction)
 		}
 		if n.SpeedRestriction != nil {
-			if n.SpeedRestriction.IsMach {
-				mach, _ := n.SpeedRestriction.ExactValue()
-				rt.Add("at {mach}", mach)
-			} else {
-				speed, _ := n.SpeedRestriction.ExactValue()
-				rt.Add("at {spd}", speed)
-			}
+			phrase, args := SpeedRestrictionPhrase(*n.SpeedRestriction)
+			rt.Add(phrase, args...)
 		}
 	case NavCrossDistanceFromFixAt:
 		rt.Add("cross {num} miles "+math.Compass(n.Direction.Heading())+" of {fix}",
@@ -670,13 +669,8 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("{altrest}", n.AltRestriction)
 		}
 		if n.SpeedRestriction != nil {
-			if n.SpeedRestriction.IsMach {
-				mach, _ := n.SpeedRestriction.ExactValue()
-				rt.Add("at {mach}", mach)
-			} else {
-				speed, _ := n.SpeedRestriction.ExactValue()
-				rt.Add("at {spd}", speed)
-			}
+			phrase, args := SpeedRestrictionPhrase(*n.SpeedRestriction)
+			rt.Add(phrase, args...)
 		}
 	case NavCrossDME:
 		rt.Add("cross {num} D M E", int(n.Distance))
@@ -684,13 +678,8 @@ func (n NavigationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("{altrest}", n.AltRestriction)
 		}
 		if n.SpeedRestriction != nil {
-			if n.SpeedRestriction.IsMach {
-				mach, _ := n.SpeedRestriction.ExactValue()
-				rt.Add("at {mach}", mach)
-			} else {
-				speed, _ := n.SpeedRestriction.ExactValue()
-				rt.Add("at {spd}", speed)
-			}
+			phrase, args := SpeedRestrictionPhrase(*n.SpeedRestriction)
+			rt.Add(phrase, args...)
 		}
 	case NavInterceptRadial:
 		rt.Add("[intercept|join] the {fix} {hdg} radial "+util.Select(n.Outbound, "outbound", "inbound"),
@@ -846,15 +835,30 @@ func (p ProcedureIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 // exceptPhrase returns the speed as it is read back after "except maintain"
 // in a climb via SID or descend via STAR instruction.
 func (s SpeedIntent) exceptPhrase() string {
-	switch {
-	case s.Mach:
-		return "{mach}"
-	case s.Type == SpeedAtOrAbove:
-		return "{spd} or greater"
-	case s.Type == SpeedAtOrBelow:
-		return "{spd} or less"
+	spd := util.Select(s.Mach, "{mach}", "{spd}")
+	switch s.Type {
+	case SpeedAtOrAbove:
+		return spd + " or greater"
+	case SpeedAtOrBelow:
+		return spd + " or less"
 	default:
-		return "{spd}"
+		return spd
+	}
+}
+
+// SpeedRestrictionPhrase returns the phrase and its arguments for a speed
+// to cross a fix at: "at {spd}", "at {mach} or greater", and so forth.
+func SpeedRestrictionPhrase(sr av.SpeedRestriction) (string, []any) {
+	spd := util.Select(sr.IsMach, "{mach}", "{spd}")
+	switch {
+	case sr.Range[0] == sr.Range[1]:
+		return "at " + spd, []any{sr.Range[0]}
+	case sr.Range[1] == av.MaxRestrictionSpeed:
+		return "at " + spd + " or greater", []any{sr.Range[0]}
+	case sr.Range[0] == 0:
+		return "at " + spd + " or less", []any{sr.Range[1]}
+	default:
+		return "between " + spd + " and " + spd, []any{sr.Range[0], sr.Range[1]}
 	}
 }
 

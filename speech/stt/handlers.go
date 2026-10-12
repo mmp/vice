@@ -907,6 +907,21 @@ func registerAllCommands() {
 		WithName("maintain_mach"), WithPriority(10),
 	)
 	registerSTTCommand(
+		"[maintain] mach [point] {mach} or greater|better",
+		func(mach int) string { return fmt.Sprintf("M%d+", mach) },
+		WithName("mach_or_greater"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"[maintain] mach [point] {mach} or less",
+		func(mach int) string { return fmt.Sprintf("M%d-", mach) },
+		WithName("mach_or_less"), WithPriority(12),
+	)
+	registerSTTCommand(
+		"do not exceed mach [point] {mach}",
+		func(mach int) string { return fmt.Sprintf("M%d-", mach) },
+		WithName("do_not_exceed_mach"), WithPriority(12),
+	)
+	registerSTTCommand(
 		"mach [point] {mach}",
 		func(mach int) string { return fmt.Sprintf("M%d", mach) },
 		WithName("mach_only"), WithPriority(7),

@@ -878,21 +878,12 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				DelayReduction: delayReduction,
 			})
 		}
-	case 'M': // mach speed
-		// M78 for mach 0.78
-		// + and - operators work here as well
-		if len(command) != 3 {
+	case 'M': // Mach number: M78, M78+ (or greater), M78- (or less)
+		sr, err := av.ParseSpeedRestriction(command)
+		if err != nil || len(strings.TrimRight(command, "+-")) != 3 {
 			return nil, ErrInvalidCommandSyntax
 		}
-
-		machStr := command[1:]
-		mach, err := strconv.ParseFloat(machStr, 32)
-		if err != nil {
-			return nil, ErrInvalidCommandSyntax
-		}
-		mach /= 100.0
-
-		return s.AssignMach(tcw, callsign, float32(mach), false)
+		return s.AssignSpeed(tcw, callsign, sr, false)
 
 	case 'R':
 		if command == "RON" {
@@ -1082,12 +1073,11 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 				}
 				return s.AssignSpeed(tcw, callsign, sr, true)
 			case "TM":
-				mach, err := strconv.ParseFloat(command[2:], 32)
+				sr, err := av.ParseSpeedRestriction(command[1:])
 				if err != nil {
 					return nil, err
 				}
-				mach /= 100.0
-				return s.AssignMach(tcw, callsign, float32(mach), true)
+				return s.AssignSpeed(tcw, callsign, sr, true)
 			case "TA", "TC", "TD":
 				alt, err := strconv.Atoi(command[2:])
 				if err != nil {

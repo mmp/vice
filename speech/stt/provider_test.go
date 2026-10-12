@@ -933,6 +933,30 @@ func TestMachSpeedCommands(t *testing.T) {
 			},
 			expected: "NKS101 M70",
 		},
+		{
+			name:       "mach or greater",
+			transcript: "Delta 200 maintain mach point eight four or greater",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "overflight"},
+			},
+			expected: "DAL200 M84+",
+		},
+		{
+			name:       "mach or less",
+			transcript: "Delta 200 maintain mach point eight three or less",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "overflight"},
+			},
+			expected: "DAL200 M83-",
+		},
+		{
+			name:       "do not exceed mach",
+			transcript: "Delta 200 do not exceed mach point eight four",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "overflight"},
+			},
+			expected: "DAL200 M84-",
+		},
 	}
 
 	provider := NewTranscriber(nil)

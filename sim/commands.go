@@ -57,13 +57,6 @@ func (s *Sim) temperatureAt(ac *Aircraft) av.Temperature {
 	return s.wxModel.Lookup(ac.Nav.FlightState.Position, ac.Nav.FlightState.Altitude, s.State.SimTime.Time()).Temperature()
 }
 
-func (s *Sim) AssignMach(tcw TCW, callsign av.ADSBCallsign, mach float32, afterAltitude bool) (speech.CommandIntent, error) {
-	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.AssignMach(mach, afterAltitude, s.temperatureAt(ac))
-		})
-}
-
 func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, sr *av.SpeedRestriction, afterAltitude bool) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {

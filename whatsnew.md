@@ -4,6 +4,7 @@
 - An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
 - Aircraft told to climb or descend after reaching an assigned Mach number now do so
 - Aircraft given a crossing restriction in Mach no longer slow to their minimum speed
+- `M78+` and `M78-` assign Mach .78 "or greater" and "or less", including in crossing restrictions and by voice
 - STARS
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM

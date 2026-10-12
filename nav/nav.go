@@ -1056,14 +1056,10 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 	} else if ias != nav.FlightState.IAS {
 		lines = append(lines, fmt.Sprintf("Speed %.0f kts to %.0f", nav.FlightState.IAS, ias))
 	} else if sr := nav.Speed.Assigned; sr != nil {
-		if spd, exact := sr.ExactValue(); exact {
-			lines = append(lines, fmt.Sprintf("Maintaining %.0f kts assignment", spd))
-		} else {
-			lines = append(lines, fmt.Sprintf("Maintaining %s kts assignment", sr.Encoded()))
-		}
+		lines = append(lines, fmt.Sprintf("Maintaining %s assignment", sr))
 	} else if nav.Speed.AfterAltitude != nil && nav.Speed.AfterAltitudeAltitude != nil {
-		lines = append(lines, fmt.Sprintf("At %s, maintain %s kts", av.FormatAltitude(*nav.Speed.AfterAltitudeAltitude),
-			nav.Speed.AfterAltitude.Encoded()))
+		lines = append(lines, fmt.Sprintf("At %s, maintain %s", av.FormatAltitude(*nav.Speed.AfterAltitudeAltitude),
+			nav.Speed.AfterAltitude))
 	}
 
 	for fix, nfa := range util.SortedMap(nav.FixAssignments) {
@@ -1078,11 +1074,7 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 				}
 			}
 			if nfa.Arrive.Speed != nil {
-				if nfa.Arrive.Speed.IsMach {
-					line += "at " + nfa.Arrive.Speed.Encoded()
-				} else {
-					line += "at " + nfa.Arrive.Speed.Encoded() + " kts"
-				}
+				line += "at " + nfa.Arrive.Speed.String()
 			}
 			lines = append(lines, line)
 		}
@@ -1391,23 +1383,14 @@ func crossingInstructionFormat(crossing *contactCrossingRestriction, altitude fl
 }
 
 func crossingSpeedFormat(crossing *contactCrossingRestriction) (string, []any) {
-	if crossing.Speed != nil {
-		if crossing.Speed.IsMach {
-			mach, _ := crossing.Speed.ExactValue()
-			return " and {mach}", []any{mach}
-		}
-		if spd, exact := crossing.Speed.ExactValue(); exact {
-			return " and {spd}", []any{spd}
-		}
-		if crossing.Speed.Range[0] > 0 && crossing.Speed.Range[1] == av.MaxRestrictionSpeed {
-			return " at {spd} or greater", []any{crossing.Speed.Range[0]}
-		}
-		if crossing.Speed.Range[0] == 0 && crossing.Speed.Range[1] < av.MaxRestrictionSpeed {
-			return " at {spd} or less", []any{crossing.Speed.Range[1]}
-		}
-		return " between {spd} and {spd}", []any{crossing.Speed.Range[0], crossing.Speed.Range[1]}
+	if crossing.Speed == nil {
+		return "", nil
 	}
-	return "", nil
+	if spd, exact := crossing.Speed.ExactAirspeed(); exact {
+		return " and {airspeed}", []any{spd}
+	}
+	phrase, args := speech.SpeedRestrictionPhrase(*crossing.Speed)
+	return " " + phrase, args
 }
 
 func (nav *Nav) rateSummary() string {

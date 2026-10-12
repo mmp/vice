@@ -117,6 +117,21 @@ func TestAltitudeAfterSpeedReadback(t *testing.T) {
 	}
 }
 
+// TestCrossFixAtMachReadback verifies that a Mach crossing restriction is
+// read back with its qualifier.
+func TestCrossFixAtMachReadback(t *testing.T) {
+	sr, err := av.ParseSpeedRestriction("M78+")
+	if err != nil {
+		t.Fatal(err)
+	}
+	intent := NavigationIntent{Type: NavCrossFixAt, Fix: "ROSLY", SpeedRestriction: sr}
+	for seed := uint64(1); seed <= 10; seed++ {
+		if readback := renderIntentForTest(t, intent, seed); !strings.Contains(readback, "at mach .78 or greater") {
+			t.Fatalf("readback %q", readback)
+		}
+	}
+}
+
 // TestProcedureExceptReadback verifies that the altitude and speed excepted
 // from a climb via SID or descend via STAR are read back with it, including
 // a speed given as a separate command.
@@ -165,6 +180,12 @@ func TestProcedureExceptReadback(t *testing.T) {
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
 				SpeedIntent{Speed: 0.78, Type: SpeedAssign, Mach: true}},
 			want: []string{"descend via the star, except maintain mach .78"},
+		},
+		{
+			name: "mach or greater",
+			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
+				SpeedIntent{Speed: 0.78, Type: SpeedAtOrAbove, Mach: true}},
+			want: []string{"descend via the star, except maintain mach .78 or greater"},
 		},
 		{
 			name: "speed after a fix stays separate",

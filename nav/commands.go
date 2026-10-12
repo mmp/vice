@@ -127,56 +127,6 @@ func (nav *Nav) enqueueAltitude(alt float32, rate RateQualifier, activateAt Time
 	}
 }
 
-func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
-	// Round the limits to hundredths, with slack for the round trip
-	// through IAS when the maximum Mach number is what limits maxIAS.
-	alt := nav.FlightState.Altitude
-	minMach := math.Ceil(100*av.IASToMach(nav.Perf.Speed.Landing, alt)-0.01) / 100
-	maxMach := math.Floor(100*av.IASToMach(nav.maxIAS(temp), alt)+0.01) / 100
-
-	if mach == 0 {
-		nav.Speed = Speed{}
-		return speech.SpeedIntent{Type: speech.SpeedCancel}
-	} else if mach < minMach {
-		return speech.MakeUnableIntent("unable. Our minimum mach is {mach}", minMach)
-	} else if mach > maxMach {
-		return speech.MakeUnableIntent("unable. Our maximum mach is {mach}", maxMach)
-	} else if !nav.machTransition() {
-		return speech.MakeUnableIntent("unable. we haven't reached mach transition altitude")
-	} else if afterAltitude && nav.Altitude.Assigned != nil &&
-		*nav.Altitude.Assigned != nav.FlightState.Altitude {
-		alt := *nav.Altitude.Assigned
-		sr := av.MakeMachRestriction(mach)
-		nav.Speed = Speed{
-			AfterAltitude:         &sr,
-			AfterAltitudeAltitude: &alt,
-		}
-		return speech.SpeedIntent{Speed: mach, AfterAltitude: &alt, Type: speech.SpeedAssign, Mach: true}
-	} else {
-		sr := av.MakeMachRestriction(mach)
-		nav.Speed = Speed{Assigned: &sr}
-		// If there's an active altitude change and this is a significant speed change, defer the
-		// altitude until after the Mach speed change completes.
-		spd := av.MakeMach(mach)
-		if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
-			math.Abs(spd.IAS(nav.FlightState.Altitude)-nav.FlightState.IAS) >= 20 {
-			alt := *nav.Altitude.Assigned
-			nav.Altitude = Altitude{
-				AfterSpeed:      &alt,
-				AfterSpeedSpeed: &spd,
-				RateAfterSpeed:  nav.Altitude.Rate,
-			}
-		}
-		if mach < nav.Mach() {
-			return speech.SpeedIntent{Speed: mach, Type: speech.SpeedReduce, Mach: true}
-		} else if mach > nav.Mach() {
-			return speech.SpeedIntent{Speed: mach, Type: speech.SpeedIncrease, Mach: true}
-		} else {
-			return speech.SpeedIntent{Speed: mach, Type: speech.SpeedAssign, Mach: true}
-		}
-	}
-}
-
 // checkAssignedSpeed returns an unable intent and false if the aircraft
 // can't fly the given speed.
 func (nav *Nav) checkAssignedSpeed(speed float32, temp av.Temperature) (speech.CommandIntent, bool) {
@@ -189,6 +139,27 @@ func (nav *Nav) checkAssignedSpeed(speed float32, temp av.Temperature) (speech.C
 	return nil, true
 }
 
+// checkAssignedMach returns an unable intent and false if the aircraft
+// can't fly the given Mach number.
+func (nav *Nav) checkAssignedMach(mach float32, temp av.Temperature) (speech.CommandIntent, bool) {
+	// Round the limits to hundredths, with slack for the round trip
+	// through IAS when the maximum Mach number is what limits maxIAS.
+	alt := nav.FlightState.Altitude
+	minMach := math.Ceil(100*av.IASToMach(nav.Perf.Speed.Landing, alt)-0.01) / 100
+	maxMach := math.Floor(100*av.IASToMach(nav.maxIAS(temp), alt)+0.01) / 100
+
+	if mach < minMach {
+		return speech.MakeUnableIntent("unable. Our minimum mach is {mach}", minMach), false
+	} else if mach > maxMach {
+		return speech.MakeUnableIntent("unable. Our maximum mach is {mach}", maxMach), false
+	} else if !nav.machTransition() {
+		return speech.MakeUnableIntent("unable. we haven't reached mach transition altitude"), false
+	}
+	return nil, true
+}
+
+// AssignSpeed assigns a speed in knots or a Mach number; nil cancels
+// speed restrictions.
 func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
 	nav.clearAfterFixSpeeds()
 
@@ -206,7 +177,11 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 		}
 	}
 
-	if intent, ok := nav.checkAssignedSpeed(speed, temp); !ok {
+	if sr.IsMach {
+		if intent, ok := nav.checkAssignedMach(speed, temp); !ok {
+			return intent
+		}
+	} else if intent, ok := nav.checkAssignedSpeed(speed, temp); !ok {
 		return intent
 	}
 
@@ -214,19 +189,22 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 		// Range restriction: no afterAltitude deferral
 		nav.Speed = Speed{Assigned: sr}
 		if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
-			return speech.SpeedIntent{Speed: sr.Range[0], Type: speech.SpeedAtOrAbove}
+			return speech.SpeedIntent{Speed: sr.Range[0], Type: speech.SpeedAtOrAbove, Mach: sr.IsMach}
 		}
-		return speech.SpeedIntent{Speed: sr.Range[1], Type: speech.SpeedAtOrBelow}
+		return speech.SpeedIntent{Speed: sr.Range[1], Type: speech.SpeedAtOrBelow, Mach: sr.IsMach}
+	}
+
+	spd, _ := sr.ExactAirspeed()
+	ias := spd.IAS(nav.FlightState.Altitude)
+	dir := speech.SpeedAssign
+	if ias < nav.FlightState.IAS {
+		dir = speech.SpeedReduce
+	} else if ias > nav.FlightState.IAS {
+		dir = speech.SpeedIncrease
 	}
 
 	if nav.Approach.Cleared {
 		nav.Speed = Speed{Assigned: sr}
-		dir := speech.SpeedAssign
-		if speed < nav.FlightState.IAS {
-			dir = speech.SpeedReduce
-		} else if speed > nav.FlightState.IAS {
-			dir = speech.SpeedIncrease
-		}
 		return speech.SpeedIntent{Speed: speed, Type: speech.SpeedUntilFinal, UntilFinalDirection: dir}
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
@@ -235,30 +213,22 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 			AfterAltitude:         sr,
 			AfterAltitudeAltitude: &alt,
 		}
-		return speech.SpeedIntent{Speed: speed, AfterAltitude: &alt, Type: speech.SpeedAssign}
-	} else {
-		// If there's an active altitude change and the speed change is significant (>20kt), defer
-		// the altitude until after the speed change completes.
-		speedDelta := math.Abs(speed - nav.FlightState.IAS)
-		if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
-			speedDelta > 20 {
-			alt := *nav.Altitude.Assigned
-			spd := av.MakeIAS(speed)
-			nav.Altitude = Altitude{
-				AfterSpeed:      &alt,
-				AfterSpeedSpeed: &spd,
-				RateAfterSpeed:  nav.Altitude.Rate,
-			}
-		}
-		nav.Speed = Speed{Assigned: sr}
-		if speed < nav.FlightState.IAS {
-			return speech.SpeedIntent{Speed: speed, Type: speech.SpeedReduce}
-		} else if speed > nav.FlightState.IAS {
-			return speech.SpeedIntent{Speed: speed, Type: speech.SpeedIncrease}
-		} else {
-			return speech.SpeedIntent{Speed: speed, Type: speech.SpeedAssign}
+		return speech.SpeedIntent{Speed: speed, AfterAltitude: &alt, Type: speech.SpeedAssign, Mach: sr.IsMach}
+	}
+
+	// If there's an active altitude change and the speed change is significant (>20kt), defer
+	// the altitude until after the speed change completes.
+	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
+		math.Abs(ias-nav.FlightState.IAS) > 20 {
+		alt := *nav.Altitude.Assigned
+		nav.Altitude = Altitude{
+			AfterSpeed:      &alt,
+			AfterSpeedSpeed: &spd,
+			RateAfterSpeed:  nav.Altitude.Rate,
 		}
 	}
+	nav.Speed = Speed{Assigned: sr}
+	return speech.SpeedIntent{Speed: speed, Type: dir, Mach: sr.IsMach}
 }
 
 func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil, temp av.Temperature) speech.CommandIntent {

@@ -699,6 +699,17 @@ func (f *FlightTest) AssignSpeed(spd float32) {
 	f.nav.AssignSpeed(&sr, false, f.temp())
 }
 
+// AssignMach assigns a Mach number given in compact form: "M78", "M78+",
+// or "M78-".
+func (f *FlightTest) AssignMach(mach string) speech.CommandIntent {
+	f.t.Helper()
+	sr, err := av.ParseSpeedRestriction(mach)
+	if err != nil {
+		f.t.Fatal(err)
+	}
+	return f.nav.AssignSpeed(sr, false, f.temp())
+}
+
 // AssignSpeedAfterAltitude issues "then reduce speed to spd", to be complied
 // with after reaching the assigned altitude.
 func (f *FlightTest) AssignSpeedAfterAltitude(spd float32) {

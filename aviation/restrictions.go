@@ -188,6 +188,8 @@ func (a AltitudeRestriction) Encoded() string {
 // compare against aircraft performance for actual maxima.
 const MaxRestrictionSpeed float32 = 1000
 
+// SpeedRestriction is a restriction in knots or, if IsMach, in Mach. A Mach
+// restriction is exact, at or above, or at or below; never a band.
 type SpeedRestriction struct {
 	NavigationRestriction
 	IsMach bool
@@ -244,8 +246,8 @@ func (s *SpeedRestriction) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &ar); err == nil {
 		s.Range = ar.Range
 		s.IsMach = ar.IsMach
-		if s.IsMach && s.Range[0] != s.Range[1] {
-			return fmt.Errorf("mach restriction must be exact")
+		if s.IsMach && s.Range[0] != s.Range[1] && s.Range[0] != 0 && s.Range[1] != MaxRestrictionSpeed {
+			return fmt.Errorf("mach restriction can't be a band")
 		}
 		return nil
 	} else {
@@ -253,15 +255,30 @@ func (s *SpeedRestriction) UnmarshalJSON(b []byte) error {
 	}
 }
 
-// Encoded returns the restriction in compact text form, e.g. "210+", "250-", "210".
+// Encoded returns the restriction in compact text form, e.g. "210+", "250-",
+// "210", "M78", "M78+".
 func (s SpeedRestriction) Encoded() string {
-	if s.IsMach {
-		if s.Range[0] != s.Range[1] {
-			return ""
-		}
-		return fmt.Sprintf("M%02d", int(s.Range[0]*100+.5))
+	if !s.IsMach {
+		return s.encoded(MaxRestrictionSpeed)
 	}
-	return s.encoded(MaxRestrictionSpeed)
+	mach := func(m float32) string { return fmt.Sprintf("M%02d", int(m*100+.5)) }
+	switch {
+	case s.Range[0] == s.Range[1]:
+		return mach(s.Range[0])
+	case s.Range[1] == MaxRestrictionSpeed:
+		return mach(s.Range[0]) + "+"
+	default:
+		return mach(s.Range[1]) + "-"
+	}
+}
+
+// String returns the restriction's compact text form with the units for
+// knots: "210+ kts" or "M78+".
+func (s SpeedRestriction) String() string {
+	if s.IsMach {
+		return s.Encoded()
+	}
+	return s.Encoded() + " kts"
 }
 
 // ExactAirspeed returns the speed if this is an "at" restriction, or false
@@ -303,20 +320,27 @@ func (s SpeedRestriction) IsZero() bool {
 }
 
 // ParseSpeedRestriction parses a speed restriction from compact text form:
-// "210", "210+", "210-", "180-210".
+// "210", "210+", "210-", "180-210", "M78", "M78+", "M78-".
 func ParseSpeedRestriction(s string) (*SpeedRestriction, error) {
 	if s == "" {
 		return nil, fmt.Errorf("empty speed restriction")
 	}
-	if strings.HasPrefix(s, "M") || strings.HasPrefix(s, "m") {
-		machStr := s[1:]
-		machStr = strings.TrimSuffix(machStr, "+")
-		machStr = strings.TrimSuffix(machStr, "-")
-		mach, err := strconv.Atoi(machStr)
+	if s[0] == 'M' || s[0] == 'm' {
+		digits, orGreater := strings.CutSuffix(s[1:], "+")
+		orLess := false
+		if !orGreater {
+			digits, orLess = strings.CutSuffix(digits, "-")
+		}
+		hundredths, err := strconv.Atoi(digits)
 		if err != nil {
 			return nil, fmt.Errorf("%s: error parsing speed restriction: %v", s, err)
 		}
-		sr := MakeMachRestriction(float32(mach) / 100)
+		sr := MakeMachRestriction(float32(hundredths) / 100)
+		if orGreater {
+			sr.Range[1] = MaxRestrictionSpeed
+		} else if orLess {
+			sr.Range[0] = 0
+		}
 		return &sr, nil
 	}
 
