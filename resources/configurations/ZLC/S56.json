@@ -63,6 +63,23 @@
   },
   "facility_adaptations": {
     "lists": { "ssa": { "system_altimeter": "KSLC" } },
+    "filters": {
+      "inhibit_ca": [
+        {
+          "id": "SLCFCA",
+          "description": "SLC FINAL CA",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 10000,
+          "vertices": [
+            "N041.28.29.939,W112.05.42.498",
+            "N040.08.17.447,W111.56.07.391",
+            "N040.08.29.642,W111.52.46.973",
+            "N041.28.37.424,W112.02.17.603"
+          ]
+        }
+      ]
+    },
     "configurations": {
       "STD": {
         "inbound_assignments": {
