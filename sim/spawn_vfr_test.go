@@ -401,6 +401,10 @@ func TestVFRTerminalCeiling(t *testing.T) {
 		{"beside the pattern", testAirspaceBox(-1, 3, 3, 5, 0, 10000), maxVFRAltitude},
 		{"over the downwind", testAirspaceBox(-1, 0.5, 3, 5, 0, 10000), 0},
 		{"over the orbit", testAirspaceBox(-1, -5, 1, -4.5, 0, 10000), 0},
+		{"between orbit and pattern", testAirspaceBox(0.4, -0.8, 0.6, -0.6, 0, 10000), 0},
+		{"between orbit and pattern with room", testAirspaceBox(0.4, -0.8, 0.6, -0.6, 4000, 10000), 3500},
+		{"from scattered orbit to pattern", testAirspaceBox(1.2, -0.8, 1.3, -0.6, 0, 10000), 0},
+		{"between orbit and straight in", testAirspaceBox(-1.85, -1, -1.75, -0.8, 0, 10000), 0},
 		{"over the pattern with room", testAirspaceBox(-1, 0.5, 3, 5, 4000, 10000), 3500},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -410,9 +414,12 @@ func TestVFRTerminalCeiling(t *testing.T) {
 			s.vfrAirspace = db.MakeAirspaceGrid([]*av.AirspaceVolume{tc.vol})
 			s.vfrTerminalAlts = make(map[av.ICAOAirportCode]int)
 
-			ceiling, _ := s.vfrTerminalCeiling(ap)
+			ceiling, ok := s.vfrTerminalCeiling(ap)
 			if ceiling != tc.ceiling {
 				t.Errorf("got ceiling %d, want %d", ceiling, tc.ceiling)
+			}
+			if ok != (tc.ceiling > 0) {
+				t.Errorf("got arrival allowed %v, want %v", ok, tc.ceiling > 0)
 			}
 		})
 	}

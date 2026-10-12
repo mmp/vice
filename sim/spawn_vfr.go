@@ -541,7 +541,8 @@ func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
 
 // vfrArrivalAirspace returns the avoided airspace over where VFR arrivals fly
 // at ap: the traffic pattern for its VFR runway, the 45-degree entry and
-// straight-in that join it, and the orbits they hold in while it is full.
+// straight-in that join it, the orbits they hold in while it is full, and
+// the connections from those orbits to the entries.
 // Airspace beside the field leaves room for its traffic on the other side.
 func (s *Sim) vfrArrivalAirspace(ap db.Airport) []*av.AirspaceVolume {
 	rwy, opp, ok := s.vfrRunway(ap.Id)
@@ -552,19 +553,40 @@ func (s *Sim) vfrArrivalAirspace(ap db.Airport) []*av.AirspaceVolume {
 
 	rightHdg := math.MagneticToTrue(rwy.Heading, magneticVariation) + 90
 	orbit := math.Offset2LL(rwy.Threshold, rightHdg, vfrOrbitOffset, nmPerLongitude)
-	vols := s.vfrAirspace.Near(orbit, vfrOrbitRadius+vfrOrbitScatter*math.Sqrt2)
+	orbitRadius := float32(vfrOrbitRadius + vfrOrbitScatter*math.Sqrt2)
+	vols := s.vfrAirspace.Near(orbit, orbitRadius)
+	include := func(more []*av.AirspaceVolume) {
+		for _, vol := range more {
+			if !slices.Contains(vols, vol) {
+				vols = append(vols, vol)
+			}
+		}
+	}
 
-	for _, wps := range [][]av.Waypoint{
-		generatePatternLap(rwy, opp, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
+	entries := [][]av.Waypoint{
 		generatePatternEntryWaypoints(rwy, opp, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
 		generateStraightInWaypoints(rwy, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
-	} {
+	}
+	for _, wps := range entries {
+		// An arrival can leave any point of its scattered orbit for the
+		// first entry waypoint. These segments fill a disk that shrinks
+		// from orbitRadius at the orbit center to zero at the entry.
+		// Cover each interval with a disk at its midpoint, using the
+		// interval's largest radius plus half its length so there are no
+		// gaps. The 0.25nm spacing keeps Near's radius below its 2nm limit.
+		entry := wps[0].Location
+		distance := math.NMDistance2LL(orbit, entry)
+		n := max(1, int(math.Ceil(distance/0.25)))
+		for i := range n {
+			p := math.Point2LL(math.Lerp2f((float32(i)+0.5)/float32(n), orbit, entry))
+			radius := (1-float32(i)/float32(n))*orbitRadius + distance/(2*float32(n))
+			include(s.vfrAirspace.Near(p, radius))
+		}
+	}
+	for _, wps := range append(entries,
+		generatePatternLap(rwy, opp, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation)) {
 		for i := 1; i < len(wps); i++ {
-			for _, vol := range s.vfrAirspace.Crossed(wps[i-1].Location, wps[i].Location) {
-				if !slices.Contains(vols, vol) {
-					vols = append(vols, vol)
-				}
-			}
+			include(s.vfrAirspace.Crossed(wps[i-1].Location, wps[i].Location))
 		}
 	}
 	return vols
