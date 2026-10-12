@@ -85,14 +85,39 @@
           "1A": []
         }
       },
-      "KCL": {
+      "KCS": {
         "inbound_assignments": {
-          "BANKR8": "1D",
-          "CHSLY9": "1H",
-          "FILPZ7": "1U",
-          "JONZE8": "1D",
-          "PARQR7": "1U",
-          "STOCR7": "1H"
+          "BANKR8.South": "1D",
+          "CHSLY9.South": "1H",
+          "FILPZ7.South": "1U",
+          "JONZE8.South": "1D",
+          "PARQR7.South": "1U",
+          "MLLET6.South": "1H",
+          "STOCR7.South": "1H"
+        },
+        "departure_assignments": {
+          "KCLT": "1W"
+        },
+        "default_consolidation": {
+          "1A": ["1M"],
+          "1E": ["1S"],
+          "1H": ["1A", "1U"],
+          "1M": ["1F"],
+          "1N": ["1Q"],
+          "1S": ["1N"],
+          "1U": ["1D"],
+          "1W": ["1E", "1H"]
+        }
+      },
+      "KCN": {
+        "inbound_assignments": {
+          "BANKR8.North": "1D",
+          "CHSLY9.North": "1H",
+          "FILPZ7.North": "1U",
+          "JONZE8.North": "1D",
+          "PARQR7.North": "1U",
+          "MLLET6.North": "1H",
+          "STOCR7.North": "1H"
         },
         "departure_assignments": {
           "KCLT": "1W"

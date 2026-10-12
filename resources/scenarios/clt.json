@@ -25,38 +25,38 @@
       },
       "atpa_volumes": {
         "1R": {
-          "filtered_scratchpads": ["VAP"],
-          "excluded_scratchpads": ["IL, IR"],
+          "filtered_scratchpads": ["V1R"],
+          "excluded_scratchpads": ["IL", "IR"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "1L": {
-          "filtered_scratchpads": ["VAP"],
-          "excluded_scratchpads": ["IC, IR"],
+          "filtered_scratchpads": ["V1L"],
+          "excluded_scratchpads": ["IC", "IR"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "36": {
-          "filtered_scratchpads": ["VAP"],
-          "excluded_scratchpads": ["IL, IC"],
+          "filtered_scratchpads": ["V36"],
+          "excluded_scratchpads": ["IL", "IC"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "19L": {
-          "filtered_scratchpads": ["VAP"],
-          "excluded_scratchpads": ["IL, IR"],
+          "filtered_scratchpads": ["V9L"],
+          "excluded_scratchpads": ["IL", "IR"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "18": {
-          "filtered_scratchpads": ["VAP"],
-          "excluded_scratchpads": ["IC, IR"],
+          "filtered_scratchpads": ["V18"],
+          "excluded_scratchpads": ["IC", "IR"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
         "19R": {
-          "filtered_scratchpads": ["VAP"],
-          "excluded_scratchpads": ["IL, IC"],
+          "filtered_scratchpads": ["V9R"],
+          "excluded_scratchpads": ["IL", "IC"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         }
@@ -69,27 +69,33 @@
           },
           "AUDII": {
             "cleared_altitude": 8000,
-            "sid": "DURST1"
+            "sid": "DURST1",
+            "climbout_actions": "a2000/s250"
           },
           "LILLS": {
             "cleared_altitude": 8000,
-            "sid": "LILLS6"
+            "sid": "LILLS6",
+            "climbout_actions": "a2000/s250"
           },
           "NOOKS": {
             "cleared_altitude": 8000,
-            "sid": "ICONS8"
+            "sid": "ICONS8",
+            "climbout_actions": "a2000/s250"
           },
           "PITRW,UNJAM": {
             "cleared_altitude": 8000,
-            "sid": "KWEEN8"
+            "sid": "KWEEN8",
+            "climbout_actions": "a2000/s250"
           },
           "JENDO,GANDT": {
             "cleared_altitude": 8000,
-            "sid": "BEAVY9"
+            "sid": "BEAVY9",
+            "climbout_actions": "a2000/s250"
           },
           "TNSLY,BOBZY,REWET,BNA": {
             "cleared_altitude": 8000,
-            "sid": "BOBZY8"
+            "sid": "BOBZY8",
+            "climbout_actions": "a2000/s250"
           },
           "ESTRR,DEBIE,NEANO,SPA,GANTS": {
             "cleared_altitude": 8000,
@@ -98,19 +104,23 @@
           },
           "IPTAY": {
             "cleared_altitude": 8000,
-            "sid": "ESTRR8"
+            "sid": "ESTRR8",
+            "climbout_actions": "a2000/s250"
           },
           "CUBIM,DOOGE,BENBY,NOONN": {
             "cleared_altitude": 8000,
-            "sid": "JOJJO8"
+            "sid": "JOJJO8",
+            "climbout_actions": "a2000/s250"
           },
           "FILDS,SMIAM": {
             "cleared_altitude": 8000,
-            "sid": "KRITR9"
+            "sid": "KRITR9",
+            "climbout_actions": "a2000/s250"
           },
           "CLAWD": {
             "cleared_altitude": 8000,
-            "sid": "WEAZL8"
+            "sid": "WEAZL8",
+            "climbout_actions": "a2000/s250"
           }
         },
         "18.Background": {
@@ -4659,17 +4669,83 @@
     }
   },
   "inbound_flows": {
-    "BANKR8": {
+    "BANKR8.South": {
       "arrivals": [
         {
-          "spawn": "BANKR",
+          "spawn": "NTRST",
           "waypoint_actions": { "BANKR": "ho" },
           "cruise_altitude": 35000,
           "star": "BANKR8",
           "initial_controller": "C43",
-          "initial_altitude": 14000,
+          "initial_altitude": 25000,
+          "initial_speed": 270,
+          "expect_approach": "I9R",
+          "scratchpad": "19R",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KTPA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A321"],
+                "airport": "KTPA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KRSW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A21N"],
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "B38M", "A21N", "B38M", "B738", "B738", "B772", "B738", "B738"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KFLL"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N", "A21N", "A321"],
+                "airport": "KFLL"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BANKR8.North": {
+      "arrivals": [
+        {
+          "spawn": "NTRST",
+          "waypoint_actions": { "BANKR": "ho" },
+          "cruise_altitude": 35000,
+          "star": "BANKR8",
+          "initial_controller": "C43",
+          "initial_altitude": 25000,
           "initial_speed": 280,
-          "expect_approach": null,
+          "expect_approach": "I1L",
+          "scratchpad": "1L",
           "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
@@ -4789,26 +4865,253 @@
         }
       ]
     },
-    "CHSLY9": {
+    "CHSLY9.South": {
       "arrivals": [
         {
-          "waypoints": "WLLSH/a16000+/s270/ho CHSLY/a13000-22000/s250",
-          "runway_waypoints": {
-            "KCLT": {
-              "19L": "CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/h270",
-              "18": "CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/h270",
-              "19R": "CHSLY/a13000-22000/s250 KRISS/a11000-12000 NODEW/a8000-9000/s230 HEELZ/a6000/s210/h270",
-              "1R": "CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/h183",
-              "1L": "CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/h183",
-              "36": "CHSLY/a13000-22000/s250 SLPOH/a11000-21000 JAMGO/a10000-16000 WHIZE/a10000-12000 CAATT/a10000/s210 EPAYE/h183"
-            }
-          },
+          "spawn": "SDAIL",
+          "waypoint_actions": { "SDAIL": "ho" },
           "cruise_altitude": 34000,
           "star": "CHSLY9",
           "initial_controller": "C43",
-          "initial_altitude": 16000,
-          "initial_speed": 270,
-          "expect_approach": null,
+          "initial_altitude": 18000,
+          "initial_speed": 280,
+          "expect_approach": "I18",
+          "scratchpad": "R18",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "types": ["A319", "B738", "A319", "A319", "B738"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "EDV",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "RPA",
+                "types": ["E75L"],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319", "A319", "A320", "B738", "A319", "A320", "B738", "B738", "B738"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "EDV",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "RPA",
+                "types": ["E170", "E170"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A21N"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A320", "A320"],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B772", "B772", "B77W"],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B772", "B772"],
+                "airport": "EDDM"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B772"],
+                "airport": "EDDF"
+              },
+              {
+                "icao": "DLH",
+                "types": ["A359"],
+                "airport": "EDDM"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B772"],
+                "airport": "LEMD"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "A320", "A321", "B738", "A321", "A321", "B738", "B738"],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "RPA",
+                "types": ["E75L", "E75L"],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "RPA",
+                "types": ["E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "icao": "ASH",
+                "types": ["E75L", "E75L"],
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ7"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319", "A320", "A319", "A319", "A319", "B738", "B738", "A320", "A319"],
+                "airport": "KDCA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319", "A319", "B738", "A320", "A319"],
+                "airport": "KBWI"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A21N"],
+                "airport": "KBWI"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B737", "B737", "B737"],
+                "airport": "KBWI"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "A321", "A319", "A321", "A321", "B738", "A319", "A320", "A321"],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N", "A21N"],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319", "A319"],
+                "airport": "KSYR"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A320"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A319", "B38M"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "RPA",
+                "types": ["E170", "E75L"],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A321", "A319", "A321"],
+                "airport": "KPVD"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A21N", "A321", "A321", "A321", "A321"],
+                "airport": "KRDU"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A321", "A319", "A321", "A319"],
+                "airport": "KRIC"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9"],
+                "airport": "KRIC"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A320", "A319", "B738", "A321"],
+                "airport": "KBDL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319"],
+                "airport": "KMDT"
+              },
+              {
+                "icao": "PDT",
+                "types": ["E145", "E145", "E145", "E145", "E145"],
+                "airport": "KMDT"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319"],
+                "airport": "KGSO"
+              },
+              {
+                "icao": "PDT",
+                "types": ["E145", "E145", "E145"],
+                "airport": "KGSO"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KGSO"
+              },
+              {
+                "icao": "PDT",
+                "types": ["E145", "E145", "E145", "E145", "E145"],
+                "airport": "KROA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319", "A319", "A320"],
+                "airport": "KORF"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9"],
+                "airport": "KORF"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CHSLY9.North": {
+      "arrivals": [
+        {
+          "spawn": "SDAIL",
+          "waypoint_actions": { "SDAIL": "ho" },
+          "cruise_altitude": 34000,
+          "star": "CHSLY9",
+          "initial_controller": "C43",
+          "initial_altitude": 22000,
+          "initial_speed": 280,
+          "expect_approach": "I36",
+          "scratchpad": "R36",
           "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
@@ -5505,17 +5808,163 @@
         }
       ]
     },
-    "FILPZ7": {
+    "FILPZ7.South": {
       "arrivals": [
         {
-          "spawn": "JJENY",
+          "spawn": "COMDY",
           "waypoint_actions": { "JJENY": "ho" },
           "cruise_altitude": 37000,
           "star": "FILPZ7",
           "initial_controller": "C43",
-          "initial_altitude": 20000,
+          "initial_altitude": 30000,
           "initial_speed": 280,
-          "expect_approach": null,
+          "expect_approach": "I9R",
+          "scratchpad": "19R",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "SWA",
+                "types": ["B38M"],
+                "airport": "KBNA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A321", "A321", "A320", "A319", "A319", "A321", "B738"],
+                "airport": "KBNA"
+              },
+              {
+                "icao": "ENY",
+                "types": ["E170"],
+                "airport": "KBNA"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9"],
+                "airport": "KBNA"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B712", "B712", "B712", "B712"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A21N"],
+                "airport": "KSEA"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A319", "A320"],
+                "airport": "KDEN"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B737"],
+                "airport": "KDEN"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321"],
+                "airport": "KDEN"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "A321", "B38M", "B38M", "B738", "A321", "B738", "A321", "A321", "B738"],
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A319"],
+                "airport": "KORD"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A21N", "A321", "A321", "A321", "A321"],
+                "airport": "KDFW"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A320"],
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A21N", "A321", "A21N"],
+                "airport": "KPHX"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M"],
+                "airport": "KMDW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "B738", "A319", "B738", "B738"],
+                "airport": "KSTL"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M"],
+                "airport": "KSTL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A320"],
+                "airport": "KDSM"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "A321", "B738", "B38M", "A319", "B738"],
+                "airport": "KCLE"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A320", "A320", "A320", "B738", "A321"],
+                "airport": "KIND"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A21N", "A321", "A21N", "A321", "A321", "A321", "A21N"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N"],
+                "airport": "KLAS"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KLAS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "FILPZ7.North": {
+      "arrivals": [
+        {
+          "spawn": "COMDY",
+          "waypoint_actions": { "JJENY": "ho" },
+          "cruise_altitude": 37000,
+          "star": "FILPZ7",
+          "initial_controller": "C43",
+          "initial_altitude": 30000,
+          "initial_speed": 280,
+          "expect_approach": "I1L",
+          "scratchpad": "1L",
           "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
@@ -5795,7 +6244,112 @@
         }
       ]
     },
-    "JONZE8": {
+    "JONZE8.South": {
+      "arrivals": [
+        {
+          "spawn": "CAAKE",
+          "waypoint_actions": { "CAAKE": "ho" },
+          "cruise_altitude": 37000,
+          "star": "JONZE8",
+          "initial_controller": "C43",
+          "initial_altitude": 25000,
+          "initial_speed": 270,
+          "expect_approach": "I9R",
+          "scratchpad": "19R",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "ENY",
+                "types": ["E170"],
+                "airport": "KBNA"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M"],
+                "airport": "KBNA"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9"],
+                "airport": "KBNA"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B712", "B712", "B712", "B712"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "PDT",
+                "types": ["E145", "E145", "E145", "E145"],
+                "airport": "KMGM"
+              },
+              {
+                "icao": "PDT",
+                "types": ["E145", "E145", "E145", "E145"],
+                "airport": "KAGS"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ7"],
+                "airport": "KAGS"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A320"],
+                "airport": "KMSY"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A319", "A320", "A321", "A321", "A319"],
+                "airport": "KMSY"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A319", "A319", "B738"],
+                "airport": "KIAH"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KIAH"
+              },
+              {
+                "icao": "ASH",
+                "types": ["E75L"],
+                "airport": "KIAH"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321"],
+                "airport": "KIAH"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "B738", "B738", "B738"],
+                "airport": "KAUS"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "A321", "A320", "A321"],
+                "airport": "KSAT"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JONZE8.North": {
       "arrivals": [
         {
           "spawn": "CAAKE",
@@ -5804,8 +6358,9 @@
           "star": "JONZE8",
           "initial_controller": "C43",
           "initial_altitude": 17000,
-          "initial_speed": 280,
-          "expect_approach": null,
+          "initial_speed": 270,
+          "expect_approach": "I1L",
+          "scratchpad": "1L",
           "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
@@ -6111,17 +6666,238 @@
         }
       ]
     },
-    "PARQR7": {
+    "MLLET6.South": {
       "arrivals": [
         {
-          "spawn": "SUZNN",
+          "spawn": "MLLET",
+          "waypoint_actions": { "MLLET": "ho" },
+          "cruise_altitude": 35000,
+          "star": "MLLET6",
+          "initial_controller": "C43",
+          "initial_altitude": 14000,
+          "initial_speed": 250,
+          "expect_approach": "I18",
+          "scratchpad": "R18",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KTPA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A321"],
+                "airport": "KTPA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KRSW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A21N"],
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "B38M", "A21N", "B38M", "B738", "B738", "B772", "B738", "B738"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KFLL"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N", "A21N", "A321"],
+                "airport": "KFLL"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "MLLET6.North": {
+      "arrivals": [
+        {
+          "spawn": "MLLET",
+          "waypoint_actions": { "MLLET": "ho" },
+          "cruise_altitude": 35000,
+          "star": "MLLET6",
+          "initial_controller": "C43",
+          "initial_altitude": 12000,
+          "initial_speed": 250,
+          "expect_approach": "I36",
+          "scratchpad": "R36",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KTPA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A321"],
+                "airport": "KTPA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KRSW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A21N"],
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "B38M", "A21N", "B38M", "B738", "B738", "B772", "B738", "B738"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KFLL"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N", "A21N", "A321"],
+                "airport": "KFLL"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "PARQR7.South": {
+      "arrivals": [
+        {
+          "spawn": "WILUM",
           "waypoint_actions": { "SUZNN": "ho" },
           "cruise_altitude": 32000,
           "star": "PARQR7",
           "initial_controller": "C43",
-          "initial_altitude": 18000,
-          "initial_speed": 280,
-          "expect_approach": null,
+          "initial_altitude": 24000,
+          "initial_speed": 270,
+          "expect_approach": "I9R",
+          "scratchpad": "19R",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "CYYZ"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "A321", "B738", "B38M", "A319", "B738"],
+                "airport": "KCLE"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A320", "A320", "A320", "B738", "A321"],
+                "airport": "KIND"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9"],
+                "airport": "KCMH"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319", "A319", "A319"],
+                "airport": "KCMH"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "B38M", "B738", "B738", "B738"],
+                "airport": "KDTW"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B712", "B712"],
+                "airport": "KDTW"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ7", "CRJ9"],
+                "airport": "KCAK"
+              },
+              {
+                "icao": "DAL",
+                "types": ["B712", "B712"],
+                "airport": "KMSP"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A320", "B738", "B738", "B738"],
+                "airport": "KMSP"
+              },
+              {
+                "icao": "SWA",
+                "types": ["B38M"],
+                "airport": "KMDW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A320", "A319", "A321"],
+                "airport": "KMKE"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A320"],
+                "airport": "KDSM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "PARQR7.North": {
+      "arrivals": [
+        {
+          "spawn": "WILUM",
+          "waypoint_actions": { "SUZNN": "ho" },
+          "cruise_altitude": 32000,
+          "star": "PARQR7",
+          "initial_controller": "C43",
+          "initial_altitude": 24000,
+          "initial_speed": 270,
+          "expect_approach": "I1L",
+          "scratchpad": "1L",
           "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
@@ -6383,17 +7159,118 @@
         }
       ]
     },
-    "STOCR7": {
+    "STOCR7.South": {
       "arrivals": [
         {
-          "spawn": "FFNSH",
+          "spawn": "FLLGG",
           "waypoint_actions": { "FFNSH": "ho" },
           "cruise_altitude": 32000,
           "star": "STOCR7",
           "initial_controller": "J30",
-          "initial_altitude": 16000,
+          "initial_altitude": 23000,
           "initial_speed": 280,
-          "expect_approach": null,
+          "expect_approach": "I18",
+          "scratchpad": "R18",
+          "airports": ["KCLT"],
+          "airlines": {
+            "KCLT": [
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KDAB"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "B38M", "A21N", "B38M", "B738", "B738", "B772", "B738", "B738"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A20N"],
+                "airport": "KMIA"
+              },
+              {
+                "icao": "NKS",
+                "types": ["A20N", "A21N", "A321"],
+                "airport": "KFLL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KFLL"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A319", "A319", "A319"],
+                "airport": "KEYW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321"],
+                "airport": "MKJS"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A321", "A21N"],
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738", "B738"],
+                "airport": "MYNN"
+              },
+              {
+                "icao": "AAL",
+                "types": ["B738"],
+                "airport": "TNCA"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9"],
+                "airport": "KGNV"
+              },
+              {
+                "icao": "PDT",
+                "types": ["E145", "E145", "E145"],
+                "airport": "KGNV"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A320", "A321", "A321", "A321"],
+                "airport": "KJAX"
+              },
+              {
+                "icao": "JIA",
+                "types": ["CRJ9", "CRJ9", "CRJ9", "CRJ9"],
+                "airport": "KMLB"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321", "A321", "A321", "A321", "A321", "A321"],
+                "airport": "KDJT"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "STOCR7.North": {
+      "arrivals": [
+        {
+          "spawn": "FLLGG",
+          "waypoint_actions": { "FFNSH": "ho" },
+          "cruise_altitude": 32000,
+          "star": "STOCR7",
+          "initial_controller": "J30",
+          "initial_altitude": 21000,
+          "initial_speed": 280,
+          "expect_approach": "I36",
+          "scratchpad": "R36",
           "airports": ["KCLT"],
           "airlines": {
             "KCLT": [
@@ -6723,32 +7600,30 @@
         }
       ],
       "inbound_rates": {
-        "BANKR8": {
+        "BANKR8.South": {
           "KCLT": 7
         },
-        "STOCR7": {
+        "STOCR7.South": {
           "KCLT": 8
         },
-        "CHSLY9": {
+        "CHSLY9.South": {
           "KCLT": 12
         },
-        "FILPZ7": {
+        "FILPZ7.South": {
           "KCLT": 8
         },
-        "JONZE8": {
+        "JONZE8.South": {
           "KCLT": 10
         },
-        "PARQR7": {
+        "MLLET6.South": {
+          "KCLT": 6
+        },
+        "PARQR7.South": {
           "KCLT": 6
         }
       },
-      "configuration": "KCL",
-      "default_maps": [
-        "CLT SOUTH",
-        "CLT TRACON EXTERNAL BOUNDARY",
-        "NOISE 2NM/4NM LINES (SOUTH)",
-        "CAPTURES POINTS (18R/18L)"
-      ],
+      "configuration": "KCS",
+      "default_maps": ["CLT SOUTH", "CLT TRACON EXTERNAL BOUNDARY", "NOISE 2NM/4NM LINES (SOUTH)"],
       "departure_runways": [
         {
           "airport": "KCLT",
@@ -6796,26 +7671,29 @@
         }
       ],
       "inbound_rates": {
-        "BANKR8": {
+        "BANKR8.North": {
           "KCLT": 7
         },
-        "STOCR7": {
+        "STOCR7.North": {
           "KCLT": 8
         },
-        "CHSLY9": {
+        "CHSLY9.North": {
           "KCLT": 12
         },
-        "FILPZ7": {
+        "FILPZ7.North": {
           "KCLT": 8
         },
-        "JONZE8": {
+        "JONZE8.North": {
           "KCLT": 10
         },
-        "PARQR7": {
+        "MLLET6.North": {
+          "KCLT": 6
+        },
+        "PARQR7.North": {
           "KCLT": 6
         }
       },
-      "configuration": "KCL",
+      "configuration": "KCN",
       "default_maps": ["CLT NORTH", "CLT TRACON EXTERNAL BOUNDARY"],
       "departure_runways": [
         {

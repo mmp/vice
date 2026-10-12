@@ -1,3 +1,4 @@
+- Scenario updates: HNL (Mike Fries), CLT (anguse)
 - Fixed multiple bugs with flight strip ownership
 - Improved support for LDA approaches (don't just fly the extended centerline)
 - Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
