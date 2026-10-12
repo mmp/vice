@@ -46,6 +46,7 @@ type DynamicState struct {
 
 	ATPAEnabled     bool                                               // True if ATPA is enabled system-wide
 	ATPAVolumeState map[av.ICAOAirportCode]map[string]*ATPAVolumeState // airport -> volumeId -> state
+	ATPARunwayState map[av.ICAOAirportCode]map[string]*ATPARunwayState // airport -> runway -> state
 
 	// Automatic handoff processing (AHOP) inhibits: site-wide (STARS 8.8,
 	// p. 8-13) and per-TCP (STARS 4.3, p. 4-30). TCPs with nothing inhibited
@@ -55,8 +56,11 @@ type DynamicState struct {
 }
 
 type ATPAVolumeState struct {
-	Disabled          bool
-	Reduced25Disabled bool
+	Disabled bool
+}
+
+type ATPARunwayState struct {
+	ReducedSeparationDisabled bool
 }
 
 // AutoHandoffInhibit records which categories of automatic handoff processing
@@ -293,6 +297,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 
 			ATPAEnabled:     true,
 			ATPAVolumeState: initATPAVolumeState(config.Airports),
+			ATPARunwayState: initATPARunwayState(config.Airports),
 
 			AutoHandoffTCPInhibits: make(map[ControlPosition]AutoHandoffInhibit),
 		},
@@ -436,6 +441,19 @@ func initATPAVolumeState(airports map[av.ICAOAirportCode]*av.Airport) map[av.ICA
 	return result
 }
 
+func initATPARunwayState(airports map[av.ICAOAirportCode]*av.Airport) map[av.ICAOAirportCode]map[string]*ATPARunwayState {
+	result := make(map[av.ICAOAirportCode]map[string]*ATPARunwayState)
+	for icao, ap := range airports {
+		if len(ap.ATPARunways) > 0 {
+			result[icao] = make(map[string]*ATPARunwayState)
+			for rwy := range ap.ATPARunways {
+				result[icao][rwy] = &ATPARunwayState{}
+			}
+		}
+	}
+	return result
+}
+
 func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
@@ -570,18 +588,11 @@ func (ss *CommonState) IsATPAVolumeDisabled(volumeId string) bool {
 	return true
 }
 
-// IsATPAVolume25nmEnabled checks if 2.5nm reduced separation is enabled for the volume
-func (ss *CommonState) IsATPAVolume25nmEnabled(volumeId string) bool {
-	airport := ss.FindAirportForATPAVolume(volumeId)
-	if airport == "" {
-		return false
-	}
-	if ap, ok := ss.ATPAVolumeState[airport]; ok {
-		if vol, ok := ap[volumeId]; ok {
-			return !vol.Reduced25Disabled
-		}
-	}
-	return false
+// IsReducedSeparationEnabled reports whether 2.5nm in-trail separation is
+// authorized for the runway and has not been inhibited.
+func (ss *CommonState) IsReducedSeparationEnabled(icao av.ICAOAirportCode, rwy string) bool {
+	state, ok := ss.ATPARunwayState[icao][rwy]
+	return ok && ss.Airports[icao].ATPARunways[rwy].ReducedSeparation && !state.ReducedSeparationDisabled
 }
 
 type Track struct {

@@ -117,18 +117,16 @@
           }
         }
       },
-      "atpa_volumes": {
+      "atpa": {
         "33": {
           "filtered_scratchpads": [""],
           "excluded_scratchpads": [""],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "15": {
           "filtered_scratchpads": [""],
           "excluded_scratchpads": [""],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       },
       "departures": [

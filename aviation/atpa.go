@@ -12,20 +12,34 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// ATPAVolumeSettings are the parameters of a runway's ATPA approach volumes that a scenario may
-// set. They apply to every volume generated for the runway.
-type ATPAVolumeSettings struct {
-	MaxHeadingDeviation float32  `json:"max_heading_deviation"`
-	Floor               float32  `json:"floor"`
-	Ceiling             float32  `json:"ceiling"`
-	Length              float32  `json:"length"`
-	LeftWidth           float32  `json:"left_width"`
-	RightWidth          float32  `json:"right_width"`
+// ATPARunway is a runway's ATPA adaptation: how in-trail separation is
+// monitored for the aircraft landing on it and the shape of the approach
+// volumes generated along its final approach courses.
+type ATPARunway struct {
+	// ReducedSeparation authorizes 2.5nm in-trail separation within
+	// ReducedSeparationDistance of the runway (7110.65 5-5-4.j).
+	ReducedSeparation   bool     `json:"reduced_separation"`
 	FilteredScratchpads []string `json:"filtered_scratchpads"`
 	ExcludedScratchpads []string `json:"excluded_scratchpads"`
-	Enable25nmApproach  bool     `json:"enable_2.5nm"`
-	Dist25nmApproach    float32  `json:"2.5nm_distance"`
+
+	ATPAVolumeGeometry
 }
+
+// ATPAVolumeGeometry is the extent of an ATPA approach volume around its
+// final approach course.
+type ATPAVolumeGeometry struct {
+	MaxHeadingDeviation float32 `json:"max_heading_deviation"`
+	Floor               float32 `json:"floor"`
+	Ceiling             float32 `json:"ceiling"`
+	Length              float32 `json:"length"`
+	LeftWidth           float32 `json:"left_width"`
+	RightWidth          float32 `json:"right_width"`
+}
+
+// ReducedSeparationDistance is how close to the landing runway, in nm,
+// aircraft established on the final approach course may be separated by
+// 2.5nm (7110.65 5-5-4.j).
+const ReducedSeparationDistance = 10
 
 // ATPAVolume is a region along a final approach course in which STARS's
 // automated terminal proximity alert monitors in-trail spacing. STARS adapts
@@ -46,7 +60,7 @@ type ATPAVolume struct {
 	// Outline is the volume's boundary as a closed polygon, for drawing it.
 	Outline []math.Point2LL
 
-	ATPAVolumeSettings
+	ATPAVolumeGeometry
 }
 
 const (
@@ -65,9 +79,9 @@ const (
 	atpaCenterlineTolerance = 0.2 // nm
 )
 
-// finalize fills in defaults for settings the scenario left out and reports
+// finalize fills in defaults for dimensions the scenario left out and reports
 // ones that can't be meant.
-func (s *ATPAVolumeSettings) finalize(elevation int, e *util.ErrorLogger) {
+func (s *ATPAVolumeGeometry) finalize(elevation int, e *util.ErrorLogger) {
 	if s.MaxHeadingDeviation == 0 {
 		s.MaxHeadingDeviation = defaultATPAHeadingDeviation
 	}
@@ -104,29 +118,31 @@ func (s *ATPAVolumeSettings) finalize(elevation int, e *util.ErrorLogger) {
 // shared by the approaches that fly it. A volume on the runway's own
 // centerline is named after the runway; any other is named after the
 // approach that defines it. Each approach records the volume it flies in.
-// A runway's volumes take their settings from the scenario's "atpa_volumes"
-// entry for it, if there is one.
+// A runway's volumes take their geometry from the scenario's "atpa" entry
+// for it; a runway that has volumes but no entry gets a default one.
 func (ap *Airport) finalizeATPAVolumes(icao ICAOAirportCode, db Database, nmPerLongitude, magneticVariation float32,
 	e *util.ErrorLogger) {
 	elevation := db.AirportElevation(icao)
-	for rwy, settings := range util.SortedMap(ap.ATPASettings) {
+	for rwy, r := range util.SortedMap(ap.ATPARunways) {
 		e.Push("ATPA " + rwy)
-		if r, ok := LookupRunway(db, icao, rwy); !ok || r.Id != rwy {
+		if dbr, ok := LookupRunway(db, icao, rwy); !ok || dbr.Id != rwy {
 			e.ErrorString("%q is not a runway; the settings are keyed by runway, one of %s", rwy, db.ValidRunways(icao))
 		} else if len(ap.ApproachesToRunway(rwy)) == 0 {
 			e.ErrorString("no approaches land on runway %q, so it has no ATPA volume", rwy)
 		}
-		settings.finalize(elevation, e)
+		r.finalize(elevation, e)
 		e.Pop()
 	}
 
+	if ap.ATPARunways == nil {
+		ap.ATPARunways = make(map[string]*ATPARunway)
+	}
 	ap.ATPAVolumes = make(map[string]*ATPAVolume)
 	for _, rwy := range db.AirportRunways(icao) {
-		var settings ATPAVolumeSettings
-		if s, ok := ap.ATPASettings[rwy.Id]; ok {
-			settings = *s
-		} else {
-			settings.finalize(elevation, e)
+		r, adapted := ap.ATPARunways[rwy.Id]
+		if !adapted {
+			r = &ATPARunway{}
+			r.finalize(elevation, e)
 		}
 
 		var volumes []*ATPAVolume
@@ -137,7 +153,7 @@ func (ap *Airport) finalizeATPAVolumes(icao ICAOAirportCode, db Database, nmPerL
 				if appr.Runway != rwy.Id || appr.Type.HasLocalizer() != localizer {
 					continue
 				}
-				path, ok := appr.atpaCourse(settings.Length, nmPerLongitude, magneticVariation)
+				path, ok := appr.atpaCourse(r.Length, nmPerLongitude, magneticVariation)
 				if !ok {
 					continue
 				}
@@ -163,7 +179,7 @@ func (ap *Airport) finalizeATPAVolumes(icao ICAOAirportCode, db Database, nmPerL
 					Runway:             rwy.Id,
 					Path:               path,
 					Threshold:          rwy.Threshold,
-					ATPAVolumeSettings: settings,
+					ATPAVolumeGeometry: r.ATPAVolumeGeometry,
 				}
 				vol.setOutline(nmPerLongitude)
 				if _, ok := ap.ATPAVolumes[vol.Id]; ok {
@@ -174,6 +190,9 @@ func (ap *Airport) finalizeATPAVolumes(icao ICAOAirportCode, db Database, nmPerL
 				volumes = append(volumes, vol)
 				appr.ATPAVolumeId = vol.Id
 			}
+		}
+		if len(volumes) > 0 && !adapted {
+			ap.ATPARunways[rwy.Id] = r
 		}
 	}
 }

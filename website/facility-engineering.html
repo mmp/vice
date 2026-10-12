@@ -4248,21 +4248,22 @@
                         See <a href="#fe-approaches">below for documentation about how approaches are specified</a>.</p></td>
                   </tr>
                   <tr>
-                    <td>"atpa_volumes"</td>
+                    <td>"atpa"</td>
                     <td>Object</td>
-                    <td><p>Each member is a string with a runway name and an associated object that configures the volumes of space
-                        where the STARS automated terminal proximity alert (ATPA) feature is active for the runway.</p>
+                    <td><p>Each member is a string with a runway name and an associated object that configures the STARS
+                        automated terminal proximity alert (ATPA) for the runway: how in-trail separation is monitored for the
+                        aircraft landing on it and the volumes of space where ATPA is active.</p>
                       <p>ATPA volumes are generated from the runway's approaches: one for each distinct final approach course,
                         following the course from the runway threshold out to the volume's length, so that an offset localizer or an
                         RNAV final that turns onto the runway is covered. Approaches that share a course share a volume. The volume
                         along the runway's own centerline is named after the runway; any other is named after the approach that
-                        defines it, as it is listed in "approaches". The settings given here apply to all of the runway's
+                        defines it, as it is listed in "approaches". The volume dimensions given here apply to all of the runway's
                         volumes. A runway that isn't listed gets volumes with default settings: 15nm long, 2000 feet either side of the
                         course, from 100 feet to 5000 feet above the airport.</p>
                     </td>
                   </tr>
                   <tr><td colspan="3">
-                      <details class="json-fields"><summary>"atpa_volumes" members</summary>
+                      <details class="json-fields"><summary>"atpa" members</summary>
                         <table class="table">
                           <thead>
                             <tr><th>Element</th><th>Type</th><th>Description</th></tr>
@@ -4270,19 +4271,9 @@
                           <tbody>
 
                             <tr>
-                              <td>"2.5nm_distance"</td>
-                              <td>Number</td>
-                              <td>Distance from runway threshold at which 2.5nm separation is allowed, if "enable_2.5nm" is true.</td>
-                            </tr>
-                            <tr>
                               <td>"ceiling"</td>
                               <td>Number</td>
                               <td>Top altitude of the volume, in feet.</td>
-                            </tr>
-                            <tr>
-                              <td>"enable_2.5nm"</td>
-                              <td>Boolean</td>
-                              <td>Indicates whether reduced 2.5nm separation is allowed on final approach.</td>
                             </tr>
                             <tr>
                               <td>"excluded_scratchpads"</td>
@@ -4320,6 +4311,12 @@
                               <td>Number</td>
                               <td>Maximum deviation between an aircraft's heading and the final approach course where the aircraft is
                                 allowed for an aircraft to be included in ATPA.</td>
+                            </tr>
+                            <tr>
+                              <td>"reduced_separation"</td>
+                              <td>Boolean</td>
+                              <td>Authorizes 2.5nm in-trail separation for aircraft established on the final approach course within
+                                10nm of the runway (7110.65 5-5-4.j).</td>
                             </tr>
                             <tr>
                               <td>"right_width"</td>

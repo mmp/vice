@@ -146,7 +146,7 @@ var starsErrorRemap = map[error]*Error{
 	sim.ErrFDAMNoRegions:                   ErrIllegalFunctionNoRegions,
 	sim.ErrFDAMProcessingOff:               ErrIllegalFunctionProcOff,
 	sim.ErrVolumeDisabled:                  ErrIllegalFunction,
-	sim.ErrVolumeNot25nm:                   ErrIllegalFunction,
+	sim.ErrRunwayNot25nm:                   ErrIllegalFunction,
 }
 
 func GetError(e error, lg *log.Logger) *Error {

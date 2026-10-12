@@ -250,10 +250,9 @@
     },
     "KBOS": {
       "omit_arrival_scratchpad": true,
-      "atpa_volumes": {
+      "atpa": {
         "4R": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "filtered_scratchpads": ["VA"],
           "excluded_scratchpads": ["4L", "R4L"]
         }

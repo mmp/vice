@@ -38,6 +38,7 @@ var (
 	ErrNoScratchpad                    = errors.New("No scratchpad")
 	ErrNoRecentCommand                 = errors.New("No recent command to roll back")
 	ErrNoVFRAircraftForFlightFollowing = errors.New("No VFR aircraft available for flight following")
+	ErrRunwayNot25nm                   = errors.New("ATPA runway not adapted for 2.5nm separation")
 	ErrTCPAlreadyConsolidated          = errors.New("TCP already consolidated - deconsolidate first")
 	ErrTCPNotConsolidated              = errors.New("TCP is not consolidated")
 	ErrTCWIsConsolidated               = errors.New("receiving TCW is a consolidated position")
@@ -55,5 +56,4 @@ var (
 	ErrVFRSimTookTooLong               = errors.New("VFR simulation took too long")
 	ErrViolatedAirspace                = errors.New("Violated B/C airspace")
 	ErrVolumeDisabled                  = errors.New("ATPA volume is disabled")
-	ErrVolumeNot25nm                   = errors.New("ATPA volume not adapted for 2.5nm separation")
 )

@@ -4186,28 +4186,24 @@
         "LURIC": "CLEEP"
       },
       "tower_list": 2,
-      "atpa_volumes": {
+      "atpa": {
         "4": {
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "22": {
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "13R": {
           "excluded_scratchpads": ["13L"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "31L": {
           "excluded_scratchpads": ["31R"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       }
     },
@@ -5933,52 +5929,44 @@
         "JCT": "RETYR8"
       },
       "tower_list": 1,
-      "atpa_volumes": {
+      "atpa": {
         "8L": {
           "excluded_scratchpads": ["I8R", "P8R", "G8R", "L8R", "8R", "I9", "P9", "G9", "L9", "9"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "8R": {
           "excluded_scratchpads": ["I8L", "P8L", "G8L", "L8L", "8L", "I9", "P9", "G9", "L9", "9"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "9": {
           "excluded_scratchpads": ["I8L", "P8L", "G8L", "L8L", "8L", "I8R", "P8R", "G8R", "L8R", "8R"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "26L": {
           "excluded_scratchpads": ["I6R", "P6R", "G6R", "L6R", "6R", "I27", "P27", "G27", "L27", "27"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "26R": {
           "excluded_scratchpads": ["I6L", "P6L", "G6L", "L6L", "6L", "I27", "P27", "G27", "L27", "27"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "27": {
           "excluded_scratchpads": ["I6L", "P6L", "G6L", "L6L", "6L", "I6R", "P6R", "G6R", "L6R", "26R"],
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "15R": {
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "33R": {
           "filtered_scratchpads": ["+W", "+V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       }
     },

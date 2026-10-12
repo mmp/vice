@@ -853,7 +853,7 @@ func (sd *dispatcher) DeconsolidateTCP(args *DeconsolidateTCPArgs, update *SimSt
 type ATPAConfigArgs struct {
 	ControllerToken string
 	Op              sim.ATPAConfigOp
-	VolumeId        string
+	Id              string // ATPA volume, or runway for the 2.5nm ops
 }
 
 type ATPAConfigResult struct {
@@ -868,7 +868,7 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 
 	return sd.runSimCommand(args.ControllerToken, &result.SimStateUpdate, ConfigureATPARPC, args, func(c *controllerContext) error {
 		var err error
-		result.Output, err = c.sim.ConfigureATPA(args.Op, args.VolumeId)
+		result.Output, err = c.sim.ConfigureATPA(args.Op, args.Id)
 		return err
 	})
 }

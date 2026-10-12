@@ -6,6 +6,7 @@ package sim
 
 import (
 	"log/slog"
+	"maps"
 	"slices"
 	"time"
 
@@ -184,7 +185,10 @@ const (
 	ATPADisableReduced25
 )
 
-func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (msg string, err error) {
+// ConfigureATPA applies a STARS ATPA supervisor command. id is an ATPA
+// volume for the volume ops and a runway for the 2.5nm reduced separation
+// ops.
+func (s *Sim) ConfigureATPA(op ATPAConfigOp, id string) (msg string, err error) {
 	defer func() {
 		if err == nil {
 			s.publish()
@@ -202,11 +206,15 @@ func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (msg string, err e
 		}
 
 		s.State.ATPAEnabled = true
-		// Reset all volume states to defaults
+		// Reset all volume and runway states to defaults
 		for _, airportState := range s.State.ATPAVolumeState {
 			for _, volState := range airportState {
 				volState.Disabled = false
-				volState.Reduced25Disabled = false
+			}
+		}
+		for _, airportState := range s.State.ATPARunwayState {
+			for _, rwyState := range airportState {
+				rwyState.ReducedSeparationDisabled = false
 			}
 		}
 		return "ATPA ENABLED", nil
@@ -218,58 +226,63 @@ func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (msg string, err e
 		return "ATPA INHIBITED", nil
 	}
 
-	// All other ops need ATPA enabled and a valid volume.
+	// All other ops need ATPA enabled.
 	if !s.State.ATPAEnabled {
 		return "", ErrATPADisabled
 	}
 
-	airport := s.State.FindAirportForATPAVolume(volumeId)
+	// 8.40: Enable/disable 2.5nm reduced separation for a runway
+	if op == ATPAEnableReduced25 || op == ATPADisableReduced25 {
+		icao, ok := util.SeqLookupFunc(slices.Values(util.SortedMapKeys(s.State.Airports)), func(icao av.ICAOAirportCode) bool {
+			r, ok := s.State.Airports[icao].ATPARunways[id]
+			return ok && r.ReducedSeparation
+		})
+		if !ok {
+			return "", ErrRunwayNot25nm
+		}
+		if !util.SeqContainsFunc(maps.Values(s.State.Airports[icao].ATPAVolumes), func(vol *av.ATPAVolume) bool {
+			return vol.Runway == id && !s.State.ATPAVolumeState[icao][vol.Id].Disabled
+		}) {
+			return "", ErrVolumeDisabled
+		}
+
+		rwyState := s.State.ATPARunwayState[icao][id]
+		if op == ATPAEnableReduced25 {
+			if !rwyState.ReducedSeparationDisabled {
+				return "NO CHANGE", nil
+			}
+			rwyState.ReducedSeparationDisabled = false
+			return id + " 2.5 ENABLED", nil
+		}
+		if rwyState.ReducedSeparationDisabled {
+			return "NO CHANGE", nil
+		}
+		rwyState.ReducedSeparationDisabled = true
+		return id + " 2.5 INHIBITED", nil
+	}
+
+	// 8.39: Enable/disable ATPA approach volume
+	airport := s.State.FindAirportForATPAVolume(id)
 	if airport == "" {
 		return "", ErrInvalidVolumeId
 	}
-	vol := s.State.Airports[airport].ATPAVolumes[volumeId]
-	volState := s.State.ATPAVolumeState[airport][volumeId]
+	vol := s.State.Airports[airport].ATPAVolumes[id]
+	volState := s.State.ATPAVolumeState[airport][id]
 
-	// 8.39: Enable/disable ATPA approach volume
 	if op == ATPAEnableVolume {
 		if !volState.Disabled {
 			return "NO CHANGE", nil
 		}
 		volState.Disabled = false
-		volState.Reduced25Disabled = false
-		return volumeId + " ENABLED", nil
-	} else if op == ATPADisableVolume {
-		if volState.Disabled {
-			return "NO CHANGE", nil
-		}
-		volState.Disabled = true
-		return volumeId + " INHIBITED", nil
-	}
-
-	// 8.40: Enable/disable 2.5nm reduced separation for volume
-	if !vol.Enable25nmApproach {
-		return "", ErrVolumeNot25nm
+		// Its runway's 2.5nm reduced separation returns to the adapted status.
+		s.State.ATPARunwayState[airport][vol.Runway].ReducedSeparationDisabled = false
+		return id + " ENABLED", nil
 	}
 	if volState.Disabled {
-		return "", ErrVolumeDisabled
+		return "NO CHANGE", nil
 	}
-
-	if op == ATPAEnableReduced25 {
-		if !volState.Reduced25Disabled {
-			return "NO CHANGE", nil
-		}
-		volState.Reduced25Disabled = false
-		return volumeId + " 2.5 ENABLED", nil
-	} else if op == ATPADisableReduced25 {
-		if volState.Reduced25Disabled {
-			return "NO CHANGE", nil
-		}
-		volState.Reduced25Disabled = true
-		return volumeId + " 2.5 INHIBITED", nil
-	}
-
-	// Should not get here...
-	return "", nil
+	volState.Disabled = true
+	return id + " INHIBITED", nil
 }
 
 type FDAMConfigOp int

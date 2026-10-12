@@ -118,40 +118,34 @@
       }
     },
     "KIND": {
-      "atpa_volumes": {
+      "atpa": {
         "5L": {
           "excluded_scratchpads": ["+5R"],
           "filtered_scratchpads": ["W", "V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "5R": {
           "excluded_scratchpads": ["+5L"],
           "filtered_scratchpads": ["W", "V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "23L": {
           "excluded_scratchpads": ["+23R"],
           "filtered_scratchpads": ["W", "V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "23R": {
           "excluded_scratchpads": ["+23L"],
           "filtered_scratchpads": ["W", "V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "14": {
           "filtered_scratchpads": ["W", "V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "32": {
           "filtered_scratchpads": ["W", "V"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       },
       "approaches": {

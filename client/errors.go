@@ -78,6 +78,7 @@ var errorStringToError = map[string]error{
 	sim.ErrNoRecentCommand.Error():                 sim.ErrNoRecentCommand,
 	sim.ErrNoScratchpad.Error():                    sim.ErrNoScratchpad,
 	sim.ErrNoVFRAircraftForFlightFollowing.Error(): sim.ErrNoVFRAircraftForFlightFollowing,
+	sim.ErrRunwayNot25nm.Error():                   sim.ErrRunwayNot25nm,
 	sim.ErrTCPAlreadyConsolidated.Error():          sim.ErrTCPAlreadyConsolidated,
 	sim.ErrTCPNotConsolidated.Error():              sim.ErrTCPNotConsolidated,
 	sim.ErrTCWIsConsolidated.Error():               sim.ErrTCWIsConsolidated,
@@ -94,7 +95,6 @@ var errorStringToError = map[string]error{
 	sim.ErrVFRSimTookTooLong.Error():               sim.ErrVFRSimTookTooLong,
 	sim.ErrViolatedAirspace.Error():                sim.ErrViolatedAirspace,
 	sim.ErrVolumeDisabled.Error():                  sim.ErrVolumeDisabled,
-	sim.ErrVolumeNot25nm.Error():                   sim.ErrVolumeNot25nm,
 
 	server.ErrControllerAlreadySignedIn.Error(): server.ErrControllerAlreadySignedIn,
 	server.ErrDuplicateSimName.Error():          server.ErrDuplicateSimName,

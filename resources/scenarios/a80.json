@@ -3238,56 +3238,46 @@
         "PLMMR": "East",
         "SMKEY": "North"
       },
-      "atpa_volumes": {
+      "atpa": {
         "26R": {
           "excluded_scratchpads": ["26L", "27R", "27L", "28"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "26L": {
           "excluded_scratchpads": ["26R", "27R", "27L", "28"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "27R": {
           "excluded_scratchpads": ["26R", "26L", "27L", "28"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "27L": {
           "excluded_scratchpads": ["26R", "26L", "27R", "28"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "28": {
           "excluded_scratchpads": ["26R", "26L", "27R", "27L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "8L": {
           "excluded_scratchpads": ["8R", "9L", "9R", "10"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "8R": {
           "excluded_scratchpads": ["8L", "9L", "9R", "10"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "9L": {
           "excluded_scratchpads": ["8R", "8L", "9R", "10"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "9R": {
           "excluded_scratchpads": ["8R", "8L", "9L", "10"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "10": {
           "excluded_scratchpads": ["8R", "8L", "9L", "9R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       },
       "tower_list": 5

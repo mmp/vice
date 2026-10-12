@@ -110,7 +110,7 @@ import (
 // 98: reworked TTS and pilot transmission flow
 // 100: published arrival spacing looks ahead along the flow: Sim.ArrivalLaunches holds each flow's last launch
 // 101: FDAM TCP-specific leader directions moved from FDAMLeaderLineEvent to FlightPlan.FDAMLeaderLineDirections
-// 102: reworked ATPA volume generation / matching
+// 102: reworked ATPA volume generation / matching; 2.5nm reduced separation is per runway
 const ViceSerializeVersion = 102
 
 const ViceServerAddress = "vice.pharr.org"

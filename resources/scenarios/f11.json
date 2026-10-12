@@ -190,10 +190,9 @@
     },
     "KMCO": {
       "omit_arrival_scratchpad": false,
-      "atpa_volumes": {
+      "atpa": {
         "17L": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GL",
             "GLV",
@@ -225,8 +224,7 @@
           "filtered_scratchpads": ["GEV", "IEV", "ME", "VEV", "VE"]
         },
         "17R": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GE",
             "GEV",
@@ -264,8 +262,7 @@
           "filtered_scratchpads": ["GRZ", "IZV", "MZ", "VZV", "VZ"]
         },
         "18L": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GE",
             "GEV",
@@ -289,8 +286,7 @@
           "filtered_scratchpads": ["GLV", "GRV", "IRV", "ML", "MR", "OLV", "ORV", "VLV", "VRV", "VR"]
         },
         "18R": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GE",
             "GEV",
@@ -314,8 +310,7 @@
           "filtered_scratchpads": ["GLV", "GRV", "IRV", "ML", "MR", "OLV", "ORV", "VLV", "VRV", "VR"]
         },
         "35L": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GE",
             "GEV",
@@ -346,8 +341,7 @@
           "filtered_scratchpads": ["ZV", "IZV", "MZ", "VZV", "VZ"]
         },
         "35R": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GL",
             "GLV",
@@ -375,8 +369,7 @@
           "filtered_scratchpads": ["GEV", "IEV", "ME", "MEV", "VE", "VEV"]
         },
         "36L": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GE",
             "GEV",
@@ -407,8 +400,7 @@
           "filtered_scratchpads": ["GLZ", "ML", "VLV", "VL"]
         },
         "36R": {
-          "2.5nm_distance": 10,
-          "enable_2.5nm": true,
+          "reduced_separation": true,
           "excluded_scratchpads": [
             "GE",
             "GEV",
@@ -5380,7 +5372,7 @@
           }
         ]
       },
-      "atpa_volumes": {
+      "atpa": {
         "7": {
           "excluded_scratchpads": [
             "F",
@@ -6740,10 +6732,8 @@
     },
     "KSFB": {
       "omit_arrival_scratchpad": false,
-      "atpa_volumes": {
+      "atpa": {
         "27L": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "F",
             "FG",
@@ -6859,8 +6849,6 @@
           "filtered_scratchpads": []
         },
         "27R": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "F",
             "FZ",
@@ -6974,8 +6962,6 @@
           "filtered_scratchpads": []
         },
         "9L": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "F",
             "FZ",
@@ -7090,8 +7076,6 @@
           "filtered_scratchpads": []
         },
         "9R": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "F",
             "FG",
@@ -8651,10 +8635,8 @@
     },
     "KISM": {
       "omit_arrival_scratchpad": false,
-      "atpa_volumes": {
+      "atpa": {
         "15": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "1E",
             "F",
@@ -8727,8 +8709,6 @@
           "filtered_scratchpads": []
         },
         "33": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "IE",
             "F",
@@ -8804,8 +8784,6 @@
           "filtered_scratchpads": []
         },
         "6": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "1E",
             "F",
@@ -9761,10 +9739,8 @@
     },
     "KTIX": {
       "omit_arrival_scratchpad": false,
-      "atpa_volumes": {
+      "atpa": {
         "18": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "AG",
             "AGG",
@@ -9926,8 +9902,6 @@
           "filtered_scratchpads": []
         },
         "36": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "AG",
             "AGG",
@@ -10100,8 +10074,6 @@
           "filtered_scratchpads": []
         },
         "9": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "AG",
             "AGG",
@@ -10700,10 +10672,8 @@
     },
     "KMLB": {
       "omit_arrival_scratchpad": false,
-      "atpa_volumes": {
+      "atpa": {
         "27L": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "A",
             "AZ",
@@ -10859,8 +10829,6 @@
           "filtered_scratchpads": []
         },
         "9R": {
-          "2.5nm_distance": 15,
-          "enable_2.5nm": false,
           "excluded_scratchpads": [
             "A",
             "AZ",

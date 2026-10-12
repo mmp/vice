@@ -69,6 +69,12 @@ func TestATPAVolumesShareStraightIn(t *testing.T) {
 	if vol.Runway != "35" || vol.Threshold != thr35 {
 		t.Errorf("volume for runway %q at %v, expected 35 at %v", vol.Runway, vol.Threshold, thr35)
 	}
+	if r, ok := ap.ATPARunways["35"]; !ok || r.ReducedSeparation || r.Length != defaultATPALength {
+		t.Errorf("expected a default ATPA entry for runway 35, got %+v", r)
+	}
+	if _, ok := ap.ATPARunways["17"]; ok {
+		t.Errorf("runway 17 has no volumes but has an ATPA entry")
+	}
 	if math.Abs(vol.Path.Length-defaultATPALength) > 0.01 {
 		t.Errorf("path length %.2f, expected %d", vol.Path.Length, defaultATPALength)
 	}
@@ -197,11 +203,11 @@ func TestATPAVolumesCurvedFinal(t *testing.T) {
 	}
 }
 
-func TestATPAVolumeSettings(t *testing.T) {
+func TestATPARunwaySettings(t *testing.T) {
 	ap, thr35, nmPerLongitude := atpaTestAirport(t, nil)
 	ap.Approaches = map[string]*Approach{"I35": atpaTestFinal(ILSApproach, thr35, 0, false)}
-	ap.ATPASettings = map[string]*ATPAVolumeSettings{
-		"35": {Length: 20, LeftWidth: 6000, Ceiling: 3000, Enable25nmApproach: true, Dist25nmApproach: 10},
+	ap.ATPARunways = map[string]*ATPARunway{
+		"35": {ReducedSeparation: true, ATPAVolumeGeometry: ATPAVolumeGeometry{Length: 20, LeftWidth: 6000, Ceiling: 3000}},
 	}
 	var e util.ErrorLogger
 	ap.finalizeATPAVolumes("KTST", testLocator{}, nmPerLongitude, -11, &e)
@@ -210,8 +216,11 @@ func TestATPAVolumeSettings(t *testing.T) {
 	}
 	vol := ap.ATPAVolumes["35"]
 	if math.Abs(vol.Path.Length-20) > 0.01 || vol.LeftWidth != 6000 || vol.RightWidth != defaultATPAWidth ||
-		vol.Floor != 100 || vol.Ceiling != 3000 || !vol.Enable25nmApproach || vol.MaxHeadingDeviation != defaultATPAHeadingDeviation {
-		t.Errorf("settings not applied: %+v", vol.ATPAVolumeSettings)
+		vol.Floor != 100 || vol.Ceiling != 3000 || vol.MaxHeadingDeviation != defaultATPAHeadingDeviation {
+		t.Errorf("settings not applied: %+v", vol.ATPAVolumeGeometry)
+	}
+	if !ap.ATPARunways["35"].ReducedSeparation {
+		t.Errorf("runway 35 lost its reduced separation authorization")
 	}
 	left := math.Offset2LL(math.Offset2LL(thr35, 180, 5, nmPerLongitude), 270, 0.8, nmPerLongitude)
 	right := math.Offset2LL(math.Offset2LL(thr35, 180, 5, nmPerLongitude), 90, 0.8, nmPerLongitude)
@@ -231,7 +240,7 @@ func TestATPAVolumeSettings(t *testing.T) {
 		{"no approaches", "17", "no approaches land"},
 		{"unknown runway", "9", "is not a runway"},
 	} {
-		ap.ATPASettings = map[string]*ATPAVolumeSettings{tc.key: {}}
+		ap.ATPARunways = map[string]*ATPARunway{tc.key: {}}
 		var e util.ErrorLogger
 		ap.finalizeATPAVolumes("KTST", testLocator{}, nmPerLongitude, -11, &e)
 		if !strings.Contains(e.String(), tc.err) {

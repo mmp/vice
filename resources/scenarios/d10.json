@@ -1477,72 +1477,59 @@
         "MRSSH": "ALL",
         "ZEMMA": "ALL"
       },
-      "atpa_volumes": {
+      "atpa": {
         "13R": {
           "excluded_scratchpads": ["I8R", "I8L", "I7L", "I7C", "I7R", "I3L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "18R": {
           "excluded_scratchpads": ["I3R", "I8L", "I7L", "I7C", "I7R", "I3L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "18L": {
           "excluded_scratchpads": ["I3R", "I8R", "I7L", "I7C", "I7R", "I3L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "17R": {
           "excluded_scratchpads": ["I3R", "I8R", "I8L", "I7L", "I7C", "I3L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "17C": {
           "excluded_scratchpads": ["I3R", "I8R", "I8L", "I7L", "I7R", "I3L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "17L": {
           "excluded_scratchpads": ["I3R", "I8R", "I8L", "I7C", "I7R", "I3L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "31L": {
           "excluded_scratchpads": ["I6L", "I6R", "I5L", "I5C", "I5R", "I1R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "36L": {
           "excluded_scratchpads": ["I1L", "I6R", "I5L", "I5C", "I5R", "I1R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "36R": {
           "excluded_scratchpads": ["I1L", "I6L", "I5L", "I5C", "I5R", "I1R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "35R": {
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5L", "I5C", "I1R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "35C": {
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5L", "I5R", "I1R"],
           "filtered_scratchpads": ["VE"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "35L": {
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5C", "I5R", "I1R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "31R": {
           "excluded_scratchpads": ["I1L", "I6L", "I6R", "I5L", "I5C", "I5R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       },
       "tower_list": 2,
@@ -2125,7 +2112,7 @@
           "route": "ZALEA SWB LSU AWDAD1"
         }
       ],
-      "atpa_volumes": {
+      "atpa": {
         "13L": {
           "excluded_scratchpads": ["E13", "W31", "E31"]
         },

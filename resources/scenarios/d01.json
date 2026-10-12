@@ -3074,50 +3074,42 @@
         "ZIMMR": "WEST"
       },
       "tower_list": 4,
-      "atpa_volumes": {
+      "atpa": {
         "16R": {
           "filtered_scratchpads": ["VS"],
-          "excluded_scratchpads": ["16L", "17R", "17L"],
-          "enable_2.5nm": false
+          "excluded_scratchpads": ["16L", "17R", "17L"]
         },
         "16L": {
           "filtered_scratchpads": ["VS"],
           "excluded_scratchpads": ["16R", "17R", "17L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "17R": {
           "filtered_scratchpads": ["VS"],
           "excluded_scratchpads": ["16R", "16L", "17L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "17L": {
           "filtered_scratchpads": ["VS"],
-          "excluded_scratchpads": ["16R", "16L", "17R"],
-          "enable_2.5nm": false
+          "excluded_scratchpads": ["16R", "16L", "17R"]
         },
         "34L": {
           "filtered_scratchpads": ["VS"],
-          "excluded_scratchpads": ["34R", "35L", "35R"],
-          "enable_2.5nm": false
+          "excluded_scratchpads": ["34R", "35L", "35R"]
         },
         "34R": {
           "filtered_scratchpads": ["VS"],
-          "excluded_scratchpads": ["34L", "35L", "35R"],
-          "enable_2.5nm": false
+          "excluded_scratchpads": ["34L", "35L", "35R"]
         },
         "35L": {
           "filtered_scratchpads": ["VS"],
           "excluded_scratchpads": ["34L", "34R", "35R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "35R": {
           "filtered_scratchpads": ["VS"],
           "excluded_scratchpads": ["34L", "34R", "35L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       }
     },

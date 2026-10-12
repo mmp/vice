@@ -1037,7 +1037,7 @@
           ]
         }
       },
-      "atpa_volumes": {
+      "atpa": {
         "30R": {
           "filtered_scratchpads": ["VVN"],
           "excluded_scratchpads": [

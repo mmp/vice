@@ -4290,7 +4290,7 @@
         "LEINY": "LEINY",
         "SMERF": "SMERF"
       },
-      "atpa_volumes": {
+      "atpa": {
         "30R": {
           "filtered_scratchpads": ["VVN"],
           "excluded_scratchpads": [
@@ -4392,8 +4392,7 @@
             "V22",
             "VV2"
           ],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "12L": {
           "filtered_scratchpads": ["VVN"],

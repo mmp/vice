@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"errors"
 	"slices"
 	"testing"
 	"time"
@@ -193,5 +194,53 @@ func TestDepartureStripPrintedAtTakeoffRoll(t *testing.T) {
 	s.launchNextDeparture(rwy9, "XTST", "9", now)
 	if fp.StripOwner != "125.0" {
 		t.Errorf("at the takeoff roll, the strip went to %q", fp.StripOwner)
+	}
+}
+
+func TestATPAReducedSeparationIsPerRunway(t *testing.T) {
+	s := NewTestSim(testLogger())
+	s.State.Airports["KTST"] = &av.Airport{
+		ATPARunways: map[string]*av.ATPARunway{"35": {ReducedSeparation: true}, "17": {}},
+		ATPAVolumes: map[string]*av.ATPAVolume{
+			"35":  {Id: "35", Runway: "35"},
+			"L35": {Id: "L35", Runway: "35"},
+			"17":  {Id: "17", Runway: "17"},
+		},
+	}
+	s.State.ATPAEnabled = true
+	s.State.ATPAVolumeState = initATPAVolumeState(s.State.Airports)
+	s.State.ATPARunwayState = initATPARunwayState(s.State.Airports)
+
+	configure := func(op ATPAConfigOp, id string, want error) {
+		t.Helper()
+		if _, err := s.ConfigureATPA(op, id); !errors.Is(err, want) {
+			t.Fatalf("op %d on %q: got error %v, want %v", op, id, err, want)
+		}
+	}
+	enabled := func() bool { return s.State.IsReducedSeparationEnabled("KTST", "35") }
+
+	configure(ATPADisableReduced25, "17", ErrRunwayNot25nm)
+	configure(ATPADisableReduced25, "L35", ErrRunwayNot25nm)
+
+	configure(ATPADisableReduced25, "35", nil)
+	if enabled() {
+		t.Errorf("2.5nm separation still enabled after it was inhibited")
+	}
+
+	configure(ATPADisableVolume, "L35", nil)
+	configure(ATPAEnableVolume, "L35", nil)
+	if !enabled() {
+		t.Errorf("enabling a volume should restore its runway's adapted 2.5nm status")
+	}
+
+	configure(ATPADisableVolume, "35", nil)
+	configure(ATPADisableReduced25, "35", nil)
+	configure(ATPADisableVolume, "L35", nil)
+	configure(ATPAEnableReduced25, "35", ErrVolumeDisabled)
+
+	configure(ATPADisable, "", nil)
+	configure(ATPAEnable, "", nil)
+	if !enabled() {
+		t.Errorf("enabling ATPA system-wide should restore 2.5nm separation")
 	}
 }

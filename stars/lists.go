@@ -648,18 +648,21 @@ func (sp *Scope) drawSSAList(ctx *scope.Context, pw [2]float32, listStyle render
 		var off, on, twoFive []string
 		for _, r := range ctx.Client.State.ArrivalRunways {
 			if ap, ok := ctx.Client.State.Airports[r.Airport]; ok {
+				rwy := r.Runway.Base()
+				rwyOn := false
 				for vol := range util.SortedMapValues(ap.ATPAVolumes) {
-					if vol.Runway != r.Runway.Base() {
+					if vol.Runway != rwy {
 						continue
 					}
 					if ctx.Client.State.IsATPAVolumeDisabled(vol.Id) {
 						off = append(off, vol.Id)
 					} else {
 						on = append(on, vol.Id)
-						if vol.Enable25nmApproach && ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) {
-							twoFive = append(twoFive, vol.Id)
-						}
+						rwyOn = true
 					}
+				}
+				if rwyOn && ctx.Client.State.IsReducedSeparationEnabled(r.Airport, rwy) {
+					twoFive = append(twoFive, rwy)
 				}
 			}
 		}

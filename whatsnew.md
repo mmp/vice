@@ -15,4 +15,5 @@
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - Fixed a few bugs with automatically generated ATPA volumes
-  - The `runway_threshold`, `heading`, and `id` fields of `atpa_volumes` have been removed.
+  - `atpa_volumes` is now `atpa`; its `runway_threshold`, `heading`, and `id` fields have been removed
+  - `reduced_separation` in `atpa` replaces `enable_2.5nm` and `2.5nm_distance`

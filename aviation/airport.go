@@ -45,8 +45,10 @@ type Airport struct {
 	CRDARegions map[string]*CRDARegion `json:"crda_regions"`
 	CRDAPairs   []CRDAPair             `json:"crda_pairs"`
 
-	ATPASettings map[string]*ATPAVolumeSettings `json:"atpa_volumes"`
-	ATPAVolumes  map[string]*ATPAVolume         // generated from approaches in Finalize()
+	// ATPARunways is keyed by runway; Finalize adds a default entry for
+	// every runway that has ATPA volumes but no entry.
+	ATPARunways map[string]*ATPARunway `json:"atpa"`
+	ATPAVolumes map[string]*ATPAVolume // generated from approaches in Finalize()
 
 	OmitArrivalScratchpad bool     `json:"omit_arrival_scratchpad"`
 	DepartureRunwaysAsOne []string `json:"departure_runways_as_one"`

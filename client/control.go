@@ -551,12 +551,12 @@ func (c *ControlClient) takePilotCall(p audio.Engine, pc *pilotCall) {
 	c.addCall(call)
 }
 
-func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, volumeId string, callback func(output string, err error)) {
+func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, id string, callback func(output string, err error)) {
 	var result server.ATPAConfigResult
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ConfigureATPARPC, &server.ATPAConfigArgs{
 		ControllerToken: c.controllerToken,
 		Op:              op,
-		VolumeId:        volumeId,
+		Id:              id,
 	}, &result, nil), &result.SimStateUpdate,
 		func(err error) {
 			if callback != nil {

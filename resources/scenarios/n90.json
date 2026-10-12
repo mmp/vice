@@ -1035,26 +1035,22 @@
         "GAYEL.P": "North"
       },
       "tower_list": 1,
-      "atpa_volumes": {
+      "atpa": {
         "4": {
           "filtered_scratchpads": ["VAP"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "13": {
           "filtered_scratchpads": ["VAP"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "22": {
           "filtered_scratchpads": ["VAP"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "31": {
           "filtered_scratchpads": ["VAP"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       }
     },
@@ -4066,7 +4062,7 @@
         "COATE.P": "North"
       },
       "tower_list": 1,
-      "atpa_volumes": {
+      "atpa": {
         "4R": {
           "max_heading_deviation": 50,
           "floor": 100,
@@ -4076,8 +4072,7 @@
           "right_width": 20000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I4L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "22L": {
           "max_heading_deviation": 50,
@@ -4088,8 +4083,7 @@
           "right_width": 20000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I2R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "29": {
           "max_heading_deviation": 130,
@@ -4100,8 +4094,7 @@
           "right_width": 20000,
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I2R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       }
     },
@@ -4771,7 +4764,7 @@
         "WHITE": "Southwest"
       },
       "tower_list": 6,
-      "atpa_volumes": {
+      "atpa": {
         "4L": {
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I4R", "R4R"]
@@ -4779,14 +4772,12 @@
         "4R": {
           "filtered_scratchpads": ["VAP"],
           "excluded_scratchpads": ["I2L", "R2L", "BVA"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "13L": {
           "filtered_scratchpads": ["VAP", "PVA"],
           "excluded_scratchpads": ["I3R", "R3R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "13R": {
           "filtered_scratchpads": ["VAP", "PVA"],
@@ -4795,8 +4786,7 @@
         "22L": {
           "filtered_scratchpads": ["VAP", "BVA"],
           "excluded_scratchpads": ["I2R", "R2R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "22R": {
           "filtered_scratchpads": ["VAP"],
@@ -6006,16 +5996,14 @@
         "FRG": "East"
       },
       "tower_list": 1,
-      "atpa_volumes": {
+      "atpa": {
         "1": {
           "max_heading_deviation": 100,
           "floor": 100,
           "ceiling": 5000,
           "length": 50,
           "left_width": 20000,
-          "right_width": 20000,
-          "enable_2.5nm": false,
-          "2.5nm_distance": 10
+          "right_width": 20000
         },
         "6": {
           "max_heading_deviation": 50,
@@ -6023,9 +6011,7 @@
           "ceiling": 5000,
           "length": 50,
           "left_width": 20000,
-          "right_width": 20000,
-          "enable_2.5nm": false,
-          "2.5nm_distance": 10
+          "right_width": 20000
         },
         "19": {
           "max_heading_deviation": 50,
@@ -6033,9 +6019,7 @@
           "ceiling": 5000,
           "length": 50,
           "left_width": 20000,
-          "right_width": 20000,
-          "enable_2.5nm": false,
-          "2.5nm_distance": 10
+          "right_width": 20000
         },
         "24": {
           "max_heading_deviation": 50,
@@ -6043,9 +6027,7 @@
           "ceiling": 5000,
           "length": 50,
           "left_width": 20000,
-          "right_width": 20000,
-          "enable_2.5nm": false,
-          "2.5nm_distance": 10
+          "right_width": 20000
         }
       },
       "hold_for_release": true

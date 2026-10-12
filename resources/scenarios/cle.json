@@ -656,7 +656,7 @@
           ]
         }
       },
-      "atpa_volumes": {
+      "atpa": {
         "6L": {
           "filtered_scratchpads": ["V6L"]
         }

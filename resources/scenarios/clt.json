@@ -23,42 +23,36 @@
           "cifp_id": "I36"
         }
       },
-      "atpa_volumes": {
+      "atpa": {
         "1R": {
           "filtered_scratchpads": ["V1R"],
           "excluded_scratchpads": ["IL", "IR"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "1L": {
           "filtered_scratchpads": ["V1L"],
           "excluded_scratchpads": ["IC", "IR"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "36": {
           "filtered_scratchpads": ["V36"],
           "excluded_scratchpads": ["IL", "IC"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "19L": {
           "filtered_scratchpads": ["V9L"],
           "excluded_scratchpads": ["IL", "IR"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "18": {
           "filtered_scratchpads": ["V18"],
           "excluded_scratchpads": ["IC", "IR"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "19R": {
           "filtered_scratchpads": ["V9R"],
           "excluded_scratchpads": ["IL", "IC"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       },
       "departure_routes": {

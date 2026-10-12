@@ -109,7 +109,7 @@ var eramErrorRemap = map[error]*Error{
 	sim.ErrFDAMNoRegions:                   ErrIllegalUserAction,
 	sim.ErrFDAMProcessingOff:               ErrIllegalUserAction,
 	sim.ErrVolumeDisabled:                  ErrIllegalUserAction,
-	sim.ErrVolumeNot25nm:                   ErrIllegalUserAction,
+	sim.ErrRunwayNot25nm:                   ErrIllegalUserAction,
 }
 
 func GetError(e error, lg *log.Logger) *Error {

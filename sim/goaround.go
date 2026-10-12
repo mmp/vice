@@ -192,6 +192,7 @@ func (s *Sim) checkFinalApproachSpacing() {
 
 	for _, aircraft := range util.SortedMap(aircraftByRunway) {
 		// Sort by distance to threshold (closest first)
+		airport, rwy := aircraft[0].ArrivalAirport, aircraft[0].Nav.Approach.Assigned.Runway
 		threshold := aircraft[0].Nav.Approach.Assigned.Threshold
 		slices.SortStableFunc(aircraft, func(a, b *Aircraft) int {
 			return cmp.Compare(math.NMDistance2LL(a.Position(), threshold),
@@ -203,9 +204,8 @@ func (s *Sim) checkFinalApproachSpacing() {
 			front, trailing := aircraft[i-1], aircraft[i]
 
 			// Get required separation
-			vol := trailing.ATPAVolume()
-			eligible25nm := vol != nil && vol.Enable25nmApproach &&
-				s.State.IsATPAVolume25nmEnabled(vol.Id) &&
+			eligible25nm := s.State.IsReducedSeparationEnabled(airport, rwy) &&
+				math.NMDistance2LL(trailing.Position(), threshold) < av.ReducedSeparationDistance &&
 				trailing.OnExtendedCenterline(0.2) && front.OnExtendedCenterline(0.2)
 			reqSep := av.CWTApproachSeparation(front.CWT(), trailing.CWT(), eligible25nm)
 

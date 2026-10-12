@@ -16,30 +16,26 @@
           "KSEA": [{ "route": "BUWZO KRATR3", "aircraft": "jet" }]
         }
       },
-      "atpa_volumes": {
+      "atpa": {
         "28L": {
           "filtered_scratchpads": ["CVR", "MVR"],
           "excluded_scratchpads": ["28R", "I8R", "Z8R", "X8R", "Y8R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "28R": {
           "filtered_scratchpads": ["CVR", "MVR"],
           "excluded_scratchpads": ["28L", "I8L", "Z8L", "X8L", "Y8L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "10L": {
           "filtered_scratchpads": ["CVR", "MVR"],
           "excluded_scratchpads": ["10R", "I0R", "Z0R", "Y0R"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "10R": {
           "filtered_scratchpads": ["CVL", "MVL"],
           "excluded_scratchpads": ["10L", "I0L", "Z0L", "Y0L"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       },
       "approaches": {

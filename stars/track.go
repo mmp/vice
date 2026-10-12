@@ -1308,6 +1308,7 @@ func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 				continue
 			}
 			vol := ss.Airports[icao].ATPAVolumes[id]
+			rwy := ss.Airports[icao].ATPARunways[vol.Runway]
 
 			// Get all aircraft on approach to this runway
 			runwayAircraft := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
@@ -1320,7 +1321,7 @@ func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 				}
 
 				// Excluded scratchpad -> aircraft doesn't participate in the party whatsoever.
-				if trk.FlightPlan.Scratchpad != "" && slices.Contains(vol.ExcludedScratchpads, trk.FlightPlan.Scratchpad) {
+				if trk.FlightPlan.Scratchpad != "" && slices.Contains(rwy.ExcludedScratchpads, trk.FlightPlan.Scratchpad) {
 					return false
 				}
 
@@ -1354,7 +1355,7 @@ func (sp *Scope) updateInTrailDistance(ctx *scope.Context) {
 				trailingState.IntrailDistance =
 					math.NMDistance2LL(leadingState.track.Location, trailingState.track.Location)
 				trailingState.DrawATPAGraphics = true
-				sp.checkInTrailCwtSeparation(ctx, trailing, leading)
+				sp.checkInTrailCwtSeparation(ctx, icao, vol, trailing, leading)
 			}
 		}
 	}
@@ -1417,17 +1418,17 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return math.Add2f(p, math.Scale2f(ma.v, gs))
 }
 
-func (sp *Scope) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.Track) {
+func (sp *Scope) checkInTrailCwtSeparation(ctx *scope.Context, icao av.ICAOAirportCode, vol *av.ATPAVolume,
+	back, front sim.Track) {
 	if front.IsUnassociated() || back.IsUnassociated() {
 		return
 	}
 
+	ss := ctx.Client.State
 	state := sp.TrackState[back.ADSBCallsign]
-	vol := back.ATPAVolume
 
-	eligible25nm := vol.Enable25nmApproach &&
-		ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) &&
-		math.NMDistance2LL(vol.Threshold, state.track.Location) < vol.Dist25nmApproach &&
+	eligible25nm := ss.IsReducedSeparationEnabled(icao, vol.Runway) &&
+		math.NMDistance2LL(vol.Threshold, state.track.Location) < av.ReducedSeparationDistance &&
 		back.OnExtendedCenterline && front.OnExtendedCenterline
 	cwtSeparation := av.CWTApproachSeparation(
 		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
@@ -1439,7 +1440,7 @@ func (sp *Scope) checkInTrailCwtSeparation(ctx *scope.Context, back, front sim.T
 	// If the aircraft's scratchpad is filtered, then it doesn't get
 	// warnings or alerts but is still here for the aircraft behind it.
 	if back.IsAssociated() && back.FlightPlan.Scratchpad != "" &&
-		slices.Contains(vol.FilteredScratchpads, back.FlightPlan.Scratchpad) {
+		slices.Contains(ss.Airports[icao].ATPARunways[vol.Runway].FilteredScratchpads, back.FlightPlan.Scratchpad) {
 		return
 	}
 

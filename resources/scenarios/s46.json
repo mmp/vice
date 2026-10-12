@@ -4,42 +4,36 @@
     "KSEA": {
       "print_departure_strips": false,
       "print_arrival_strips": false,
-      "atpa_volumes": {
+      "atpa": {
         "16L": {
           "filtered_scratchpads": ["VVL"],
           "excluded_scratchpads": ["16C", "16R", "Z6R", "M6R", "VAR", "VAC"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "16C": {
           "filtered_scratchpads": ["VVC"],
           "excluded_scratchpads": ["16L", "16R", "Z6R", "M6R", "VAR", "VAL"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "16R": {
           "filtered_scratchpads": ["VVR"],
           "excluded_scratchpads": ["16C", "16L", "VAL", "VAC"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "34L": {
           "filtered_scratchpads": ["VVL"],
           "excluded_scratchpads": ["34C", "34R", "Z6R", "M6R", "VAR", "VAC"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "34C": {
           "filtered_scratchpads": ["VVC"],
           "excluded_scratchpads": ["34L", "34R", "VAR", "VAL"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         },
         "34R": {
           "filtered_scratchpads": ["VVR"],
           "excluded_scratchpads": ["34C", "34L", "VAL", "VAC"],
-          "enable_2.5nm": true,
-          "2.5nm_distance": 10
+          "reduced_separation": true
         }
       },
       "crda_regions": {
@@ -966,7 +960,7 @@
       "print_departure_strips": true,
       "print_arrival_strips": true,
       "hold_for_release": true,
-      "atpa_volumes": {
+      "atpa": {
         "14R": {
           "excluded_scratchpads": [
             "16L",
