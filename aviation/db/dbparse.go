@@ -19,6 +19,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode"
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/vice/math"
@@ -624,23 +625,48 @@ type Pronunciations struct {
 
 // parsePronunciations reads the say*.json files; it is called as part of
 // loading the aviation database, so editing one of them takes effect on a
-// reload along with the rest of it.
+// reload along with the rest of it. Keys and values must be ASCII: a
+// lookalike letter from another script passes review unnoticed but breaks
+// both voice synthesis and speech recognition.
 func parsePronunciations() Pronunciations {
-	var say Pronunciations
-	load := func(file string, m any) {
+	unmarshal := func(file string, m any) {
 		if err := json.Unmarshal(util.LoadResourceBytes(file), m); err != nil {
 			panic(fmt.Sprintf("%s: %v", file, err))
 		}
 	}
+	checkASCII := func(file string, strs ...string) {
+		for _, s := range strs {
+			if strings.ContainsFunc(s, func(r rune) bool { return r > unicode.MaxASCII }) {
+				panic(fmt.Sprintf("%s: %q: only ASCII characters are allowed", file, s))
+			}
+		}
+	}
+	loadSpellings := func(file string) map[string]string {
+		var m map[string]string
+		unmarshal(file, &m)
+		for k, v := range m {
+			checkASCII(file, k, v)
+		}
+		return m
+	}
+	loadVariants := func(file string) map[string][]string {
+		var m map[string][]string
+		unmarshal(file, &m)
+		for k, v := range m {
+			checkASCII(file, k)
+			checkASCII(file, v...)
+		}
+		return m
+	}
 
-	load("sayactype.json", &say.ACTypes)
-	load("sayairport.json", &say.Airports)
-	load("sayairline.json", &say.Airlines)
-	load("sayfix.json", &say.Fixes)
-	load("saysid.json", &say.SIDs)
-	load("saystar.json", &say.STARs)
-
-	return say
+	return Pronunciations{
+		Airports: loadVariants("sayairport.json"),
+		ACTypes:  loadVariants("sayactype.json"),
+		Fixes:    loadSpellings("sayfix.json"),
+		Airlines: loadSpellings("sayairline.json"),
+		SIDs:     loadSpellings("saysid.json"),
+		STARs:    loadSpellings("saystar.json"),
+	}
 }
 
 // parseScrapedRoutes loads the scraped route database for route selection,
