@@ -145,7 +145,7 @@ type AltitudeIntent struct {
 	GoodRate          bool
 	RateThrough       *float32 // "through/to" altitude for expedite or good rate
 	AlreadyExpediting bool
-	ThenSpeed         *float32 // speed once we reach the altitude
+	ThenSpeed         *av.Airspeed // speed once we reach the altitude
 	ThenSpeedType     SpeedType
 }
 
@@ -214,11 +214,11 @@ func (a AltitudeIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	if a.ThenSpeed != nil {
 		switch a.ThenSpeedType {
 		case SpeedReduce:
-			rt.Add("[then we'll reduce to|then slow to|then speed] {spd}", *a.ThenSpeed)
+			rt.Add("[then we'll reduce to|then slow to|then speed] {airspeed}", *a.ThenSpeed)
 		case SpeedIncrease:
-			rt.Add("[then we'll increase to|then increase to|then speed] {spd}", *a.ThenSpeed)
+			rt.Add("[then we'll increase to|then increase to|then speed] {airspeed}", *a.ThenSpeed)
 		default:
-			rt.Add("[then speed|then maintain] {spd}", *a.ThenSpeed)
+			rt.Add("[then speed|then maintain] {airspeed}", *a.ThenSpeed)
 		}
 	}
 
@@ -255,12 +255,11 @@ type SpeedUntil struct {
 
 // SpeedIntent represents speed assignment commands
 type SpeedIntent struct {
-	Speed         float32
+	Speed         av.Airspeed
 	Type          SpeedType
 	AfterAltitude *float32    // speed change conditional on reaching this altitude
 	AfterFix      string      // speed change conditional on passing this fix
 	Until         *SpeedUntil // what the speed restriction is "until"
-	Mach          bool
 	// UntilFinalDirection is consulted only when Type == SpeedUntilFinal and
 	// Until == nil, so the readback can pick reduce/increase/assign-flavored
 	// phrasing. Expected values: SpeedReduce, SpeedIncrease, SpeedAssign.
@@ -268,11 +267,6 @@ type SpeedIntent struct {
 }
 
 func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
-	if s.Mach {
-		s.renderMach(rt, r)
-		return
-	}
-
 	switch s.Type {
 	case SpeedCancel:
 		rt.Add("cancel speed restrictions")
@@ -281,99 +275,70 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	case SpeedMaximumForward:
 		rt.Add("[maximum forward speed|maintaining maximum forward speed]")
 	case SpeedPresentSpeed:
-		rt.Add("[maintain present speed|present speed we'll keep it at {spd}|maintaining {spd}]", s.Speed)
+		rt.Add("[maintain present speed|present speed we'll keep it at {airspeed}|maintaining {airspeed}]", s.Speed)
 	case SpeedUntilFinal:
 		if s.Until != nil {
 			s.renderUntil(rt, "")
 		} else {
 			switch s.UntilFinalDirection {
 			case SpeedReduce:
-				rt.Add("[slow to {spd} for now|reduce to {spd} for now|back to {spd} on the speed]", s.Speed)
+				rt.Add("[slow to {airspeed} for now|reduce to {airspeed} for now|back to {airspeed} on the speed]", s.Speed)
 			case SpeedIncrease:
-				rt.Add("[increase to {spd} for now|speed up to {spd} for now|{spd} on the speed]", s.Speed)
+				rt.Add("[increase to {airspeed} for now|speed up to {airspeed} for now|{airspeed} on the speed]", s.Speed)
 			default:
-				rt.Add("[speed {spd} for now|maintaining {spd} for now]", s.Speed)
+				rt.Add("[speed {airspeed} for now|maintaining {airspeed} for now]", s.Speed)
 			}
 		}
 	case SpeedReduce:
 		if s.AfterFix != "" {
-			rt.Add("[after {fix} maintain {spd}|after {fix} {spd}]", s.AfterFix, s.Speed)
+			rt.Add("[after {fix} maintain {airspeed}|after {fix} {airspeed}]", s.AfterFix, s.Speed)
 		} else if s.AfterAltitude != nil {
-			rt.Add("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", *s.AfterAltitude, s.Speed)
+			rt.Add("[at {alt} maintain {airspeed}|at {alt} {airspeed}|{alt} then {airspeed}]", *s.AfterAltitude, s.Speed)
 		} else {
-			rt.Add("[reduce to {spd}|speed {spd}|slow to {spd}|{spd}]", s.Speed)
+			rt.Add("[reduce to {airspeed}|speed {airspeed}|slow to {airspeed}|{airspeed}]", s.Speed)
 		}
 	case SpeedIncrease:
 		if s.AfterFix != "" {
-			rt.Add("[after {fix} maintain {spd}|after {fix} {spd}]", s.AfterFix, s.Speed)
+			rt.Add("[after {fix} maintain {airspeed}|after {fix} {airspeed}]", s.AfterFix, s.Speed)
 		} else if s.AfterAltitude != nil {
-			rt.Add("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", *s.AfterAltitude, s.Speed)
+			rt.Add("[at {alt} maintain {airspeed}|at {alt} {airspeed}|{alt} then {airspeed}]", *s.AfterAltitude, s.Speed)
 		} else {
-			rt.Add("[increase to {spd}|speed {spd}|maintain {spd}|{spd}]", s.Speed)
+			rt.Add("[increase to {airspeed}|speed {airspeed}|maintain {airspeed}|{airspeed}]", s.Speed)
 		}
 	case SpeedAssign:
 		if s.AfterFix != "" {
-			rt.Add("[after {fix} maintain {spd}|after {fix} {spd}]", s.AfterFix, s.Speed)
+			rt.Add("[after {fix} maintain {airspeed}|after {fix} {airspeed}]", s.AfterFix, s.Speed)
 		} else if s.AfterAltitude != nil {
-			rt.Add("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", *s.AfterAltitude, s.Speed)
+			rt.Add("[at {alt} maintain {airspeed}|at {alt} {airspeed}|{alt} then {airspeed}]", *s.AfterAltitude, s.Speed)
 		} else {
-			rt.Add("[speed {spd}|maintain {spd}|{spd}]", s.Speed)
+			rt.Add("[speed {airspeed}|maintain {airspeed}|{airspeed}]", s.Speed)
 		}
 	case SpeedAtOrAbove:
 		if s.Until != nil {
 			s.renderUntil(rt, " or greater")
 		} else if s.AfterFix != "" {
-			rt.Add("[after {fix} maintain {spd} or greater|after {fix} {spd} or greater]", s.AfterFix, s.Speed)
+			rt.Add("[after {fix} maintain {airspeed} or greater|after {fix} {airspeed} or greater]", s.AfterFix, s.Speed)
 		} else {
-			rt.Add("[maintain {spd} or greater|{spd} or greater|{spd} or more]", s.Speed)
+			rt.Add("[maintain {airspeed} or greater|{airspeed} or greater|{airspeed} or more]", s.Speed)
 		}
 	case SpeedAtOrBelow:
 		if s.Until != nil {
 			s.renderUntil(rt, " or less")
 		} else if s.AfterFix != "" {
-			rt.Add("[after {fix} do not exceed {spd}|after {fix} {spd} or less]", s.AfterFix, s.Speed)
+			rt.Add("[after {fix} do not exceed {airspeed}|after {fix} {airspeed} or less]", s.AfterFix, s.Speed)
 		} else {
-			rt.Add("[do not exceed {spd}|not exceeding {spd}|{spd} or less]", s.Speed)
+			rt.Add("[do not exceed {airspeed}|not exceeding {airspeed}|{airspeed} or less]", s.Speed)
 		}
 	}
 }
 
 func (s SpeedIntent) renderUntil(rt *RadioTransmission, suffix string) {
 	if s.Until.Fix != "" {
-		rt.Add("{spd}"+suffix+" until {fix}", s.Speed, s.Until.Fix)
+		rt.Add("{airspeed}"+suffix+" until {fix}", s.Speed, s.Until.Fix)
 	} else if s.Until.DME > 0 {
-		rt.Add("{spd}"+suffix+" until {num} D M E", s.Speed, s.Until.DME)
+		rt.Add("{airspeed}"+suffix+" until {num} D M E", s.Speed, s.Until.DME)
 	} else if s.Until.MileFinal > 0 {
-		rt.Add("{spd}"+suffix+" until {num} mile final", s.Speed, s.Until.MileFinal)
-	}
-}
-
-func (s SpeedIntent) renderMach(rt *RadioTransmission, r *rand.Rand) {
-	switch s.Type {
-	case SpeedCancel:
-		rt.Add("cancel speed restrictions")
-	case SpeedReduce:
-		if s.AfterAltitude != nil {
-			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
-		} else {
-			rt.Add("[reduce to {mach}|{mach}|slow to {mach}]", s.Speed)
-		}
-	case SpeedIncrease:
-		if s.AfterAltitude != nil {
-			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
-		} else {
-			rt.Add("[increase to {mach}|{mach}|maintain {mach}]", s.Speed)
-		}
-	case SpeedAssign:
-		if s.AfterAltitude != nil {
-			rt.Add("[at {alt} {mach}|{alt} then {mach}]", *s.AfterAltitude, s.Speed)
-		} else {
-			rt.Add("[{mach}|maintain {mach}]", s.Speed)
-		}
-	case SpeedAtOrAbove:
-		rt.Add("[maintain {mach} or greater|{mach} or greater]", s.Speed)
-	case SpeedAtOrBelow:
-		rt.Add("[do not exceed {mach}|{mach} or less]", s.Speed)
+		rt.Add("{airspeed}"+suffix+" until {num} mile final", s.Speed, s.Until.MileFinal)
 	}
 }
 
@@ -391,14 +356,8 @@ type CompoundSpeedIntent struct {
 
 func (c CompoundSpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	for i, seg := range c.Segments {
-		speed, exact := seg.Speed.ExactValue()
-		if !exact {
-			speed = seg.Speed.Range[0]
-			if speed == 0 {
-				speed = seg.Speed.Range[1]
-			}
-		}
-
+		speed := seg.Speed.Speed()
+		_, exact := seg.Speed.ExactValue()
 		isAbove := !exact && seg.Speed.Range[0] > 0 && seg.Speed.Range[1] == av.MaxRestrictionSpeed
 		isBelow := !exact && seg.Speed.Range[0] == 0
 
@@ -411,15 +370,15 @@ func (c CompoundSpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 
 		if i == 0 {
 			if seg.UntilFix != "" {
-				rt.Add("[speed|] {spd}"+suffix+" until {fix}", speed, seg.UntilFix)
+				rt.Add("[speed|] {airspeed}"+suffix+" until {fix}", speed, seg.UntilFix)
 			} else {
-				rt.Add("[speed|] {spd}"+suffix, speed)
+				rt.Add("[speed|] {airspeed}"+suffix, speed)
 			}
 		} else {
 			if seg.UntilFix != "" {
-				rt.Add("[then|] {spd}"+suffix+" until {fix}", speed, seg.UntilFix)
+				rt.Add("[then|] {airspeed}"+suffix+" until {fix}", speed, seg.UntilFix)
 			} else {
-				rt.Add("[then|] {spd}"+suffix, speed)
+				rt.Add("[then|] {airspeed}"+suffix, speed)
 			}
 		}
 	}
@@ -835,30 +794,30 @@ func (p ProcedureIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 // exceptPhrase returns the speed as it is read back after "except maintain"
 // in a climb via SID or descend via STAR instruction.
 func (s SpeedIntent) exceptPhrase() string {
-	spd := util.Select(s.Mach, "{mach}", "{spd}")
 	switch s.Type {
 	case SpeedAtOrAbove:
-		return spd + " or greater"
+		return "{airspeed} or greater"
 	case SpeedAtOrBelow:
-		return spd + " or less"
+		return "{airspeed} or less"
 	default:
-		return spd
+		return "{airspeed}"
 	}
 }
 
 // SpeedRestrictionPhrase returns the phrase and its arguments for a speed
 // to cross a fix at: "at {spd}", "at {mach} or greater", and so forth.
 func SpeedRestrictionPhrase(sr av.SpeedRestriction) (string, []any) {
-	spd := util.Select(sr.IsMach, "{mach}", "{spd}")
+	lo := av.Airspeed{Value: sr.Range[0], IsMach: sr.IsMach}
+	hi := av.Airspeed{Value: sr.Range[1], IsMach: sr.IsMach}
 	switch {
-	case sr.Range[0] == sr.Range[1]:
-		return "at " + spd, []any{sr.Range[0]}
+	case lo == hi:
+		return "at {airspeed}", []any{lo}
 	case sr.Range[1] == av.MaxRestrictionSpeed:
-		return "at " + spd + " or greater", []any{sr.Range[0]}
+		return "at {airspeed} or greater", []any{lo}
 	case sr.Range[0] == 0:
-		return "at " + spd + " or less", []any{sr.Range[1]}
+		return "at {airspeed} or less", []any{hi}
 	default:
-		return "between " + spd + " and " + spd, []any{sr.Range[0], sr.Range[1]}
+		return "between {airspeed} and {airspeed}", []any{lo, hi}
 	}
 }
 

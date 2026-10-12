@@ -52,32 +52,32 @@ func TestSpeedRestrictionReadbackIncludesQualifier(t *testing.T) {
 	}{
 		{
 			name:       "bare or greater",
-			intent:     SpeedIntent{Speed: 250, Type: SpeedAtOrAbove},
+			intent:     SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedAtOrAbove},
 			qualifiers: []string{"or greater", "or more"},
 		},
 		{
 			name:       "bare or less",
-			intent:     SpeedIntent{Speed: 210, Type: SpeedAtOrBelow},
+			intent:     SpeedIntent{Speed: av.MakeIAS(210), Type: SpeedAtOrBelow},
 			qualifiers: []string{"or less", "do not exceed", "not exceeding"},
 		},
 		{
 			name:       "after fix or greater",
-			intent:     SpeedIntent{Speed: 250, Type: SpeedAtOrAbove, AfterFix: "ROSLY"},
+			intent:     SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedAtOrAbove, AfterFix: "ROSLY"},
 			qualifiers: []string{"or greater"},
 		},
 		{
 			name:       "after fix or less",
-			intent:     SpeedIntent{Speed: 210, Type: SpeedAtOrBelow, AfterFix: "ROSLY"},
+			intent:     SpeedIntent{Speed: av.MakeIAS(210), Type: SpeedAtOrBelow, AfterFix: "ROSLY"},
 			qualifiers: []string{"or less", "do not exceed"},
 		},
 		{
 			name:       "until fix or greater",
-			intent:     SpeedIntent{Speed: 250, Type: SpeedAtOrAbove, Until: &SpeedUntil{Fix: "ROSLY"}},
+			intent:     SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedAtOrAbove, Until: &SpeedUntil{Fix: "ROSLY"}},
 			qualifiers: []string{"or greater"},
 		},
 		{
 			name:       "until fix or less",
-			intent:     SpeedIntent{Speed: 210, Type: SpeedAtOrBelow, Until: &SpeedUntil{Fix: "ROSLY"}},
+			intent:     SpeedIntent{Speed: av.MakeIAS(210), Type: SpeedAtOrBelow, Until: &SpeedUntil{Fix: "ROSLY"}},
 			qualifiers: []string{"or less"},
 		},
 	} {
@@ -117,6 +117,26 @@ func TestAltitudeAfterSpeedReadback(t *testing.T) {
 	}
 }
 
+// TestThenMachReadback verifies that a Mach number to fly after reaching an
+// assigned altitude is read back as a Mach number.
+func TestThenMachReadback(t *testing.T) {
+	alt := float32(37000)
+	intents := []CommandIntent{AltitudeIntent{Altitude: alt, Direction: AltitudeClimb},
+		SpeedIntent{Speed: av.MakeMach(.78), AfterAltitude: &alt, Type: SpeedAssign}}
+	for seed := uint64(1); seed <= 10; seed++ {
+		r := rand.Make()
+		r.Seed(seed)
+		rd, err := RenderIntents(intents, r).Render(r)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(rd.Written, "then") || !strings.Contains(rd.Written, "mach .78") ||
+			strings.Contains(rd.Written, "knots") {
+			t.Fatalf("readback %q", rd.Written)
+		}
+	}
+}
+
 // TestCrossFixAtMachReadback verifies that a Mach crossing restriction is
 // read back with its qualifier.
 func TestCrossFixAtMachReadback(t *testing.T) {
@@ -147,14 +167,14 @@ func TestProcedureExceptReadback(t *testing.T) {
 		{
 			name: "climbing back with speed",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR, ExceptAltitude: &alt, CurrentAltitude: &current},
-				SpeedIntent{Speed: 250, Type: SpeedAssign}},
+				SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedAssign}},
 			want:     []string{"descend via the star, except maintain 10,000 and 250 knots", "okay, but we're", "at 8,000 currently"},
 			unwanted: "up at",
 		},
 		{
 			name: "descending back with speed",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureClimbViaSID, ExceptAltitude: &current, CurrentAltitude: &alt},
-				SpeedIntent{Speed: 250, Type: SpeedAssign}},
+				SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedAssign}},
 			want:     []string{"climb via the sid, except maintain 8,000 and 250 knots", "okay, but we're", "at 10,000 currently"},
 			unwanted: "down at",
 		},
@@ -166,31 +186,31 @@ func TestProcedureExceptReadback(t *testing.T) {
 		{
 			name: "speed",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
-				SpeedIntent{Speed: 250, Type: SpeedReduce}},
+				SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedReduce}},
 			want: []string{"descend via the star, except maintain 250 knots"},
 		},
 		{
 			name: "altitude and speed or greater",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureClimbViaSID, ExceptAltitude: &alt},
-				SpeedIntent{Speed: 250, Type: SpeedAtOrAbove}},
+				SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedAtOrAbove}},
 			want: []string{"climb via the sid, except maintain 10,000 and 250 knots or greater"},
 		},
 		{
 			name: "mach",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
-				SpeedIntent{Speed: 0.78, Type: SpeedAssign, Mach: true}},
+				SpeedIntent{Speed: av.MakeMach(0.78), Type: SpeedAssign}},
 			want: []string{"descend via the star, except maintain mach .78"},
 		},
 		{
 			name: "mach or greater",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
-				SpeedIntent{Speed: 0.78, Type: SpeedAtOrAbove, Mach: true}},
+				SpeedIntent{Speed: av.MakeMach(0.78), Type: SpeedAtOrAbove}},
 			want: []string{"descend via the star, except maintain mach .78 or greater"},
 		},
 		{
 			name: "speed after a fix stays separate",
 			intents: []CommandIntent{ProcedureIntent{Type: ProcedureDescendViaSTAR},
-				SpeedIntent{Speed: 250, Type: SpeedAssign, AfterFix: "ROSLY"}},
+				SpeedIntent{Speed: av.MakeIAS(250), Type: SpeedAssign, AfterFix: "ROSLY"}},
 			want:     []string{"descend via the star"},
 			unwanted: "except",
 		},
@@ -226,19 +246,19 @@ func TestSpeedUntilFinalDirection(t *testing.T) {
 	}{
 		{
 			name:        "reduce",
-			intent:      SpeedIntent{Speed: 190, Type: SpeedUntilFinal, UntilFinalDirection: SpeedReduce},
+			intent:      SpeedIntent{Speed: av.MakeIAS(190), Type: SpeedUntilFinal, UntilFinalDirection: SpeedReduce},
 			contains:    []string{"slow", "reduce", "back to"},
 			notContains: []string{"keep it at", "maintain"},
 		},
 		{
 			name:        "increase",
-			intent:      SpeedIntent{Speed: 230, Type: SpeedUntilFinal, UntilFinalDirection: SpeedIncrease},
+			intent:      SpeedIntent{Speed: av.MakeIAS(230), Type: SpeedUntilFinal, UntilFinalDirection: SpeedIncrease},
 			contains:    []string{"increase", "speed up", "on the speed"},
 			notContains: []string{"keep it at"},
 		},
 		{
 			name:        "assign",
-			intent:      SpeedIntent{Speed: 210, Type: SpeedUntilFinal, UntilFinalDirection: SpeedAssign},
+			intent:      SpeedIntent{Speed: av.MakeIAS(210), Type: SpeedUntilFinal, UntilFinalDirection: SpeedAssign},
 			contains:    []string{"for now"},
 			notContains: []string{"keep it at"},
 		},

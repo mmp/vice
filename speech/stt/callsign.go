@@ -7,6 +7,7 @@ package stt
 import (
 	"strings"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/sim"
 )
 
@@ -96,8 +97,7 @@ type Aircraft struct {
 	Speed                     int                          `json:",omitempty"` // Current groundspeed in knots (0 if unknown)
 	AssignedAltitude          int                          `json:",omitempty"` // Controller-assigned altitude in feet (0 if none)
 	AssignedHeading           int                          `json:",omitempty"` // Controller-assigned heading in degrees (0 if none)
-	AssignedSpeed             int                          `json:",omitempty"` // Controller-assigned speed in knots (0 if none, or if assigned in mach)
-	AssignedMach              int                          `json:",omitempty"` // Controller-assigned mach in hundredths, e.g. 78 for M0.78 (0 if none, or if assigned in knots)
+	AssignedSpeed             av.Airspeed                  `json:",omitzero"`  // Controller-assigned speed in knots or Mach (zero if none)
 	State                     string                       `json:",omitempty"` // "departure", "arrival", "cleared approach", "overflight", "vfr flight following"
 	ControllerFrequency       string                       `json:",omitempty"` // Current controller position the aircraft is tuned to
 	TrackingController        string                       `json:",omitempty"` // Controller tracking this aircraft (from flight plan)

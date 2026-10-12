@@ -17,13 +17,12 @@ import (
 // QS (line 4 heading, speed, and free text) commands and are only displayed:
 // none of them changes how the aircraft flies.
 type ERAMEntries struct {
-	AssignedAltitude int    `json:"assigned_altitude"`
-	InterimAltitude  int    `json:"interim_altitude"`
-	InterimType      string `json:"interim_type"`
-	Heading          int    `json:"heading"`
-	FreeText         string `json:"free_text"`
-	Speed            int    `json:"speed"`
-	Mach             int    `json:"mach"` // hundredths, so 78 is M.78
+	AssignedAltitude int      `json:"assigned_altitude"`
+	InterimAltitude  int      `json:"interim_altitude"`
+	InterimType      string   `json:"interim_type"`
+	Heading          int      `json:"heading"`
+	FreeText         string   `json:"free_text"`
+	Speed            Airspeed `json:"speed"`
 }
 
 // eramInterimTypes maps the "interim_type" values to the character ERAM shows
@@ -53,8 +52,8 @@ func (ee *ERAMEntries) CheckInbound(assignedAltitude float32, scratchpad, second
 	if (ee.Heading != 0 || ee.FreeText != "") && scratchpad != "" {
 		e.ErrorString(`"scratchpad" and the "eram" "heading"/"free_text" use the same data block field`)
 	}
-	if (ee.Speed != 0 || ee.Mach != 0 || ee.FreeText != "") && secondaryScratchpad != "" {
-		e.ErrorString(`"secondary_scratchpad" and the "eram" "speed"/"mach"/"free_text" use the same data block field`)
+	if (!ee.Speed.IsZero() || ee.FreeText != "") && secondaryScratchpad != "" {
+		e.ErrorString(`"secondary_scratchpad" and the "eram" "speed"/"free_text" use the same data block field`)
 	}
 }
 
@@ -89,8 +88,8 @@ func (ee *ERAMEntries) Check(e *util.ErrorLogger) {
 	if ee.Heading != 0 && ee.FreeText != "" {
 		e.ErrorString(`cannot specify both "heading" and "free_text"; ERAM shows one or the other`)
 	}
-	if (ee.Speed != 0 || ee.Mach != 0) && ee.FreeText != "" {
-		e.ErrorString(`cannot specify "speed" or "mach" with "free_text"; free text occupies the entire data block line`)
+	if !ee.Speed.IsZero() && ee.FreeText != "" {
+		e.ErrorString(`cannot specify "speed" with "free_text"; free text occupies the entire data block line`)
 	}
 	if ee.Heading < 0 || ee.Heading > 360 {
 		e.ErrorString(`"heading": must be between 1 and 360`)
@@ -105,13 +104,9 @@ func (ee *ERAMEntries) Check(e *util.ErrorLogger) {
 		e.ErrorString(`"free_text": must be A-Z, 0-9, or one of %s`, freeTextSymbols)
 	}
 
-	if ee.Speed != 0 && ee.Mach != 0 {
-		e.ErrorString(`cannot specify both "speed" and "mach"`)
-	}
-	if ee.Speed != 0 && (ee.Speed < 100 || ee.Speed > 999) {
+	if spd := ee.Speed; spd.IsMach && (spd.Value < .1 || spd.Value > .99) {
+		e.ErrorString(`"speed": a Mach number must be between M10 and M99`)
+	} else if !spd.IsMach && !spd.IsZero() && (spd.Value < 100 || spd.Value > 999) {
 		e.ErrorString(`"speed": must be between 100 and 999 knots`)
-	}
-	if ee.Mach != 0 && (ee.Mach < 10 || ee.Mach > 99) {
-		e.ErrorString(`"mach": must be given in hundredths, between 10 and 99`)
 	}
 }

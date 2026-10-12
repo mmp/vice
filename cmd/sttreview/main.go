@@ -763,10 +763,8 @@ func render(screen tcell.Screen, state *AppState) {
 						hdg += fmt.Sprintf(" (assigned %d)", ac.AssignedHeading)
 					}
 					spd := fmt.Sprintf("%d", ac.Speed)
-					if ac.AssignedSpeed != 0 {
-						spd += fmt.Sprintf(" (assigned %d)", ac.AssignedSpeed)
-					} else if ac.AssignedMach != 0 {
-						spd += fmt.Sprintf(" (assigned M.%02d)", ac.AssignedMach)
+					if !ac.AssignedSpeed.IsZero() {
+						spd += fmt.Sprintf(" (assigned %s)", ac.AssignedSpeed)
 					}
 					fs := fmt.Sprintf(" Heading: %s   Speed: %s", hdg, spd)
 					if ac.AssignedAltitude != 0 {

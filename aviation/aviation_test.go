@@ -115,6 +115,29 @@ func TestParseSpeedRestriction(t *testing.T) {
 	}
 }
 
+func TestSpeedRestrictionSpeed(t *testing.T) {
+	for _, test := range []struct {
+		s    string
+		want Airspeed
+	}{
+		{s: "210", want: MakeIAS(210)},
+		{s: "250+", want: MakeIAS(250)},
+		{s: "250-", want: MakeIAS(250)},
+		{s: "180-210", want: MakeIAS(180)},
+		{s: "M78", want: MakeMach(.78)},
+		{s: "M78+", want: MakeMach(.78)},
+		{s: "M78-", want: MakeMach(.78)},
+	} {
+		sr, err := ParseSpeedRestriction(test.s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if spd := sr.Speed(); spd != test.want {
+			t.Errorf("%s: got %s, want %s", test.s, spd, test.want)
+		}
+	}
+}
+
 func TestSpeedRestrictionIAS(t *testing.T) {
 	sr, _ := ParseSpeedRestriction("M78+")
 	ias := sr.IAS(35000)

@@ -317,7 +317,7 @@ func (nav *Nav) cruiseIAS(temp av.Temperature) float32 {
 // machTransition returns whether the aircraft's speed may be assigned as
 // a Mach number: 7110.65 5-7-2 allows it for turbojets at or above FL240.
 func (nav *Nav) machTransition() bool {
-	return nav.Perf.Engine.AircraftType == "J" && nav.FlightState.Altitude >= 24000
+	return nav.Perf.Engine.AircraftType == "J" && nav.FlightState.Altitude >= av.MachTransitionAltitude
 }
 
 // ETA returns the estimated time in seconds until the aircraft will arrive at `p`, assuming it is flying direct.

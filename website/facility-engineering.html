@@ -5597,9 +5597,9 @@
                   </tr>
                   <tr>
                     <td>"assigned_speed"</td>
-                    <td>Number</td>
+                    <td>Number or String</td>
                     <td>(<i>Optional</i>) If specified, gives a controller-assigned speed for the aircraft, in knots
-                      between 50 and 350.</td>
+                      between 50 and 350, or as a Mach number such as "M78" for an overflight at FL240 or above.</td>
                   </tr>
                   <tr>
                     <td>"cruise_altitude"</td>
@@ -5764,24 +5764,18 @@
                       "temp" (the default, shown as T), "procedure" (P), or "local" (L).</td>
                   </tr>
                   <tr>
-                    <td>"mach"</td>
-                    <td>Number</td>
-                    <td>(<i>Optional</i>) The assigned mach shown on data block line 4, in
-                      hundredths: 78 is M.78. It cannot be given with "speed".</td>
-                  </tr>
-                  <tr>
                     <td>"speed"</td>
-                    <td>Number</td>
-                    <td>(<i>Optional</i>) The assigned speed in knots shown on data block line 4,
-                      as entered with QS.</td>
+                    <td>Number or String</td>
+                    <td>(<i>Optional</i>) The assigned speed shown on data block line 4, as entered
+                      with QS: knots, or a Mach number such as "M78".</td>
                   </tr>
                 </tbody>
               </table>
               <p>
                 Line 4 holds one heading or free text and one speed, which is where the flight
                 plan's scratchpads are shown; "heading" and "free_text" therefore cannot be given
-                along with an arrival's or overflight's "scratchpad", nor "speed" and "mach" with
-                its "secondary_scratchpad". A departure route's entries take precedence over the
+                along with an arrival's or overflight's "scratchpad", nor "speed" with its
+                "secondary_scratchpad". A departure route's entries take precedence over the
                 scratchpads of the departures that fly it.
               </p>
               <p>

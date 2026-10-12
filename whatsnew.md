@@ -5,6 +5,7 @@
 - Aircraft told to climb or descend after reaching an assigned Mach number now do so
 - Aircraft given a crossing restriction in Mach no longer slow to their minimum speed
 - `M78+` and `M78-` assign Mach .78 "or greater" and "or less", including in crossing restrictions and by voice
+- Fixed bugs with Mach speeds: aircraft no longer speed up after descending below FL240 with a Mach number assigned, and pilots no longer read Mach numbers back as knots
 - STARS
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM
@@ -13,5 +14,6 @@
   - Conflict alert no longer assumes that an aircraft a TRACON owns will climb or descend to its data block altitude
   - Fixed bug where virtual TRACON controllers would set ERAM data block altitudes
 - Facility engineering
+  - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - Fixed a few bugs with automatically generated ATPA volumes
   - The `runway_threshold`, `heading`, and `id` fields of `atpa_volumes` have been removed.

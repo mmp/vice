@@ -431,8 +431,8 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, depAirport, 
 		if of.AssignedAltitude > 0 {
 			nav.setAssignedAltitude(of.AssignedAltitude)
 		}
-		if of.AssignedSpeed > 0 {
-			sr := av.MakeAtSpeedRestriction(of.AssignedSpeed)
+		if !of.AssignedSpeed.IsZero() {
+			sr := av.MakeAtAirspeedRestriction(of.AssignedSpeed)
 			nav.Speed.Assigned = &sr
 		}
 
@@ -1083,15 +1083,7 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 				int(*nfa.Depart.Heading)))
 		}
 		if nfa.Depart.Speed != nil {
-			sr := nfa.Depart.Speed
-			spd, exact := sr.ExactValue()
-			if exact {
-				lines = append(lines, fmt.Sprintf("After %s maintain %.0f kts", fix, spd))
-			} else if sr.Range[0] > 0 {
-				lines = append(lines, fmt.Sprintf("After %s maintain %.0f kts or greater", fix, sr.Range[0]))
-			} else {
-				lines = append(lines, fmt.Sprintf("After %s maintain %.0f kts or less", fix, sr.Range[1]))
-			}
+			lines = append(lines, fmt.Sprintf("After %s maintain %s", fix, nfa.Depart.Speed))
 		}
 		if nfa.Depart.Altitude != nil {
 			alt := *nfa.Depart.Altitude
@@ -1259,12 +1251,13 @@ func (nav *Nav) ContactMessage(star string, runway string, reportHeading bool,
 
 	// Speed assignment
 	if sr := nav.Speed.Assigned; sr != nil {
-		if spd, exact := sr.ExactValue(); exact {
-			resp.Add("[assigned {spd}|{spd} knots]", spd)
-		} else if sr.Range[0] > 0 && sr.Range[1] == av.MaxRestrictionSpeed {
-			resp.Add("[{spd} or greater|at or above {spd}]", sr.Range[0])
-		} else if sr.Range[0] == 0 && sr.Range[1] < av.MaxRestrictionSpeed {
-			resp.Add("[not exceeding {spd}|at or below {spd}]", sr.Range[1])
+		spd := sr.Speed()
+		if _, exact := sr.ExactValue(); exact {
+			resp.Add("[assigned {airspeed}|speed {airspeed}]", spd)
+		} else if sr.Range[1] == av.MaxRestrictionSpeed {
+			resp.Add("[{airspeed} or greater|at or above {airspeed}]", spd)
+		} else if sr.Range[0] == 0 {
+			resp.Add("[not exceeding {airspeed}|at or below {airspeed}]", spd)
 		}
 	}
 

@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -24,7 +25,7 @@ type Overflight struct {
 	CruiseAltitudes     util.SingleOrArray[int] `json:"cruise_altitude"`
 	AssignedAltitude    float32                 `json:"assigned_altitude"`
 	InitialSpeed        Airspeed                `json:"initial_speed"`
-	AssignedSpeed       float32                 `json:"assigned_speed"`
+	AssignedSpeed       Airspeed                `json:"assigned_speed"`
 	SpeedRestriction    SpeedRestriction        `json:"speed_restriction"`
 	InitialController   ControlPosition         `json:"initial_controller"`
 	Scratchpad          string                  `json:"scratchpad"`
@@ -99,8 +100,11 @@ func (of *Overflight) Finalize(db Database, nmPerLongitude float32, magneticVari
 		checkSpeed(e, `"initial_speed"`, of.InitialSpeed)
 	}
 
-	if of.AssignedSpeed != 0 {
-		checkSpeed(e, `"assigned_speed"`, MakeIAS(of.AssignedSpeed))
+	if !of.AssignedSpeed.IsZero() {
+		checkSpeed(e, `"assigned_speed"`, of.AssignedSpeed)
+		if of.AssignedSpeed.IsMach && slices.ContainsFunc(of.InitialAltitudes, func(alt int) bool { return alt < MachTransitionAltitude }) {
+			e.ErrorString(`"assigned_speed": a Mach number may only be assigned at FL240 and above`)
+		}
 	}
 
 	if !of.SpeedRestriction.IsZero() {

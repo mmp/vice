@@ -10,7 +10,6 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
 )
 
@@ -778,12 +777,12 @@ func TestMachRangeAssignment(t *testing.T) {
 		initial  float32
 		assigned string
 		want     float32
-		readback string
+		typ      speech.SpeedType
 	}{
-		{initial: .80, assigned: "M78+", want: .80, readback: "mach .78 or greater"},
-		{initial: .74, assigned: "M78+", want: .78, readback: "mach .78 or greater"},
-		{initial: .74, assigned: "M78-", want: .74},
-		{initial: .80, assigned: "M78-", want: .78},
+		{initial: .80, assigned: "M78+", want: .80, typ: speech.SpeedAtOrAbove},
+		{initial: .74, assigned: "M78+", want: .78, typ: speech.SpeedAtOrAbove},
+		{initial: .74, assigned: "M78-", want: .74, typ: speech.SpeedAtOrBelow},
+		{initial: .80, assigned: "M78-", want: .78, typ: speech.SpeedAtOrBelow},
 	} {
 		f := NewArrivalFlight(t, ArrivalConfig{
 			Waypoints:        "SAJUL DETGY HAUPT",
@@ -795,15 +794,8 @@ func TestMachRangeAssignment(t *testing.T) {
 			AssignedAltitude: 33000,
 		})
 		intent := f.AssignMach(test.assigned)
-		if si, ok := intent.(speech.SpeedIntent); !ok || !si.Mach {
-			t.Fatalf("%s: expected a Mach speed intent, got %T: %v", test.assigned, intent, intent)
-		}
-		if test.readback != "" {
-			r := rand.Make()
-			rd, err := speech.RenderIntents([]speech.CommandIntent{intent}, r).Render(r)
-			if err != nil || !strings.Contains(rd.Written, test.readback) {
-				t.Errorf("%s: readback %q, want %q (err %v)", test.assigned, rd.Written, test.readback, err)
-			}
+		if si, ok := intent.(speech.SpeedIntent); !ok || si.Speed != av.MakeMach(.78) || si.Type != test.typ {
+			t.Fatalf("%s: expected a Mach .78 range intent, got %T: %v", test.assigned, intent, intent)
 		}
 		f.AfterTicks(120, func(f *FlightTest) {
 			if m := f.nav.Mach(); math.Abs(m-test.want) > .005 {
@@ -811,5 +803,78 @@ func TestMachRangeAssignment(t *testing.T) {
 			}
 		})
 		f.Run()
+	}
+}
+
+// machFlight returns an A320 level at the given altitude and Mach number.
+func machFlight(t *testing.T, alt, mach float32) *FlightTest {
+	return NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  alt,
+		InitialSpeed:     av.MachToIAS(mach, alt),
+		AssignedAltitude: alt,
+	})
+}
+
+// TestMachEndsBelowMachTransition verifies that an aircraft descending
+// below FL240 with an assigned Mach number returns to its usual speeds
+// rather than flying the Mach number's much higher indicated airspeed.
+func TestMachEndsBelowMachTransition(t *testing.T) {
+	f := machFlight(t, 26000, .76)
+	f.AssignMach("M76")
+	f.AssignAltitude(8000)
+	f.StepUntil("descended to 8,000", func() bool { return f.nav.FlightState.Altitude == 8000 })
+	f.Step(120)
+	if f.nav.Speed.Assigned != nil {
+		t.Errorf("Mach assignment kept at 8,000: %v", f.nav.Speed.Assigned)
+	}
+	if ias := f.nav.FlightState.IAS; ias > 255 {
+		t.Errorf("flying %.0f knots at 8,000", ias)
+	}
+}
+
+// TestSpeedAfterAltitudeWithMachAssigned verifies that a speed to fly
+// after reaching an altitude takes effect when the aircraft is holding an
+// assigned Mach number.
+func TestSpeedAfterAltitudeWithMachAssigned(t *testing.T) {
+	f := machFlight(t, 33000, .78)
+	mach, after := av.MakeMachRestriction(.78), av.MakeAtSpeedRestriction(250)
+	alt := float32(35000)
+	f.nav.Speed = Speed{Assigned: &mach, AfterAltitude: &after, AfterAltitudeAltitude: &alt}
+	f.nav.setAssignedAltitude(alt)
+	f.StepUntil("climbed to FL350", func() bool { return f.nav.FlightState.Altitude == alt })
+	if f.nav.Speed.Assigned == nil || *f.nav.Speed.Assigned != after {
+		t.Errorf("expected 250 knots assigned at FL350, got %v", f.nav.Speed.Assigned)
+	}
+}
+
+// TestMachReadbacks verifies that Mach numbers are read back as Mach
+// numbers by the commands that accept one besides M.
+func TestMachReadbacks(t *testing.T) {
+	render := func(f *FlightTest, intent speech.CommandIntent) string {
+		t.Helper()
+		if u, ok := intent.(speech.UnableIntent); ok {
+			t.Fatalf("unexpected unable: %v", u)
+		}
+		return strings.ToLower(writtenForTest(t, speech.RenderIntents([]speech.CommandIntent{intent}, f.nav.Rand), f.nav.Rand))
+	}
+	m76 := av.MakeMachRestriction(.76)
+
+	f := machFlight(t, 33000, .78)
+	if rb := render(f, f.nav.AfterFixSpeed("HAUPT", &m76)); !strings.Contains(rb, "mach .76") {
+		t.Errorf("after fix: %q", rb)
+	}
+	if rb := render(f, f.nav.AssignSpeedUntil(&m76, &speech.SpeedUntil{Fix: "HAUPT"}, f.temp())); !strings.Contains(rb, "mach .76 until haupt") {
+		t.Errorf("until fix: %q", rb)
+	}
+
+	f = machFlight(t, 33000, .78)
+	f.AssignMach("M78")
+	written := strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
+	if !strings.Contains(written, "mach .78") || strings.Contains(written, "knots") {
+		t.Errorf("contact message: %q", written)
 	}
 }

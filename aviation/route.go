@@ -402,7 +402,7 @@ func checkSpeed(e *util.ErrorLogger, what string, speed Airspeed) {
 
 func checkSpeedRange(e *util.ErrorLogger, sr SpeedRestriction) {
 	if sr.IsMach {
-		checkSpeed(e, "speed restriction", MakeMach(util.Select(sr.Range[0] != 0, sr.Range[0], sr.Range[1])))
+		checkSpeed(e, "speed restriction", sr.Speed())
 		return
 	}
 	// A zero lower bound or a MaxRestrictionSpeed upper bound means unbounded

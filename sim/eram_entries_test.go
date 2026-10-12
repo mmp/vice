@@ -66,12 +66,12 @@ func TestApplyERAMEntries(t *testing.T) {
 		},
 		{
 			name:     "speed",
-			entries:  &av.ERAMEntries{Speed: 280},
+			entries:  &av.ERAMEntries{Speed: av.MakeIAS(280)},
 			expected: fields{assignedAltitude: 35000, secondaryScratchpad: "S280"},
 		},
 		{
 			name:     "mach",
-			entries:  &av.ERAMEntries{Mach: 78},
+			entries:  &av.ERAMEntries{Speed: av.MakeMach(.78)},
 			expected: fields{assignedAltitude: 35000, secondaryScratchpad: "M78"},
 		},
 	} {

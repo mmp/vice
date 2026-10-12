@@ -312,10 +312,10 @@ func (fp *FlightPlan) applyERAMEntries(ee *av.ERAMEntries) {
 	} else if ee.FreeText != "" {
 		fp.Scratchpad = QSFreeTextIndicator + ee.FreeText
 	}
-	if ee.Speed != 0 {
-		fp.SecondaryScratchpad = fmt.Sprintf("S%03d", ee.Speed)
-	} else if ee.Mach != 0 {
-		fp.SecondaryScratchpad = fmt.Sprintf("M%02d", ee.Mach)
+	if ee.Speed.IsMach {
+		fp.SecondaryScratchpad = ee.Speed.String()
+	} else if !ee.Speed.IsZero() {
+		fp.SecondaryScratchpad = fmt.Sprintf("S%03d", int(ee.Speed.Value))
 	}
 }
 

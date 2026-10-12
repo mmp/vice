@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -200,9 +201,15 @@ func MakeAtSpeedRestriction(speed float32) SpeedRestriction {
 }
 
 func MakeMachRestriction(mach float32) SpeedRestriction {
+	return MakeAtAirspeedRestriction(MakeMach(mach))
+}
+
+// MakeAtAirspeedRestriction returns an "at" restriction for the given speed,
+// in knots or Mach according to its units.
+func MakeAtAirspeedRestriction(a Airspeed) SpeedRestriction {
 	return SpeedRestriction{
-		NavigationRestriction: NavigationRestriction{Range: [2]float32{mach, mach}},
-		IsMach:                true,
+		NavigationRestriction: NavigationRestriction{Range: [2]float32{a.Value, a.Value}},
+		IsMach:                a.IsMach,
 	}
 }
 
@@ -286,6 +293,13 @@ func (s SpeedRestriction) String() string {
 func (s SpeedRestriction) ExactAirspeed() (Airspeed, bool) {
 	v, exact := s.ExactValue()
 	return Airspeed{Value: v, IsMach: s.IsMach}, exact
+}
+
+// Speed returns the speed the restriction is given as: its exact speed, the
+// floor of an at or above restriction or a band, or the ceiling of an at or
+// below restriction.
+func (s SpeedRestriction) Speed() Airspeed {
+	return Airspeed{Value: util.Select(s.Range[0] != 0, s.Range[0], s.Range[1]), IsMach: s.IsMach}
 }
 
 // IAS returns the restriction in indicated airspeed at the given altitude.

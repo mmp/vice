@@ -412,31 +412,6 @@ func TestFiledCruiseAltitude(t *testing.T) {
 	}
 }
 
-func TestAssignedSpeedForSTT(t *testing.T) {
-	sr := func(s av.SpeedRestriction) *av.SpeedRestriction { return &s }
-	tests := []struct {
-		name        string
-		sr          *av.SpeedRestriction
-		knots, mach int
-	}{
-		{"none", nil, 0, 0},
-		{"exact knots", sr(av.MakeAtSpeedRestriction(210)), 210, 0},
-		{"at-or-above", sr(av.MakeAtOrAboveSpeedRestriction(230)), 230, 0},
-		{"at-or-below", sr(av.MakeAtOrBelowSpeedRestriction(180)), 180, 0},
-		{"range", sr(av.MakeRangeSpeedRestriction(200, 250)), 200, 0},
-		{"mach", sr(av.MakeMachRestriction(0.78)), 0, 78},
-		{"mach rounds", sr(av.MakeMachRestriction(0.805)), 0, 81},
-	}
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			knots, mach := assignedSpeedForSTT(tc.sr)
-			if knots != tc.knots || mach != tc.mach {
-				t.Errorf("got (knots=%d, mach=%d), want (knots=%d, mach=%d)", knots, mach, tc.knots, tc.mach)
-			}
-		})
-	}
-}
-
 // TestClearApproachActionJoinsAtItsFix verifies that the sim hands a
 // /clearapp action the fix it fired at. nav drops that fix from the route
 // before the sim runs the action, so on an arrival that ends there it is all

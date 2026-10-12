@@ -611,7 +611,6 @@ func (p *Transcriber) BuildAircraftContext(
 			Speed:               int(trk.Groundspeed),
 			AssignedHeading:     trk.AssignedHeading,
 			AssignedSpeed:       trk.AssignedSpeed,
-			AssignedMach:        trk.AssignedMach,
 			ControllerFrequency: string(trk.ControllerFrequency),
 			Route:               trk.RouteFixes,
 			ExpectedDirectFix:   trk.ExpectedDirectFix,

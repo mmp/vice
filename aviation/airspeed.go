@@ -21,6 +21,10 @@ import (
 
 const seaLevelSpeedOfSound = 661.4788 // knots, ISA
 
+// MachTransitionAltitude is the altitude at and above which speeds may be
+// assigned as Mach numbers (7110.65 5-7-2 g).
+const MachTransitionAltitude = 24000
+
 // pressureRatio returns the ratio of the ISA static pressure at the given
 // altitude (in feet) to the sea level pressure.
 func pressureRatio(alt float32) float32 {

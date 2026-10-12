@@ -59,8 +59,8 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 	// Wrap altitude setting in a lambda so we can detect when we pass
 	// through an altitude for "at alt, reduce speed" sort of assignments.
 	setAltitude := func(next float32) {
-		if nav.Speed.AfterAltitude != nil &&
-			(nav.Speed.Assigned == nil || nav.Speed.Assigned.Satisfied(nav.FlightState.IAS)) {
+		if nav.Speed.AfterAltitude != nil && (nav.Speed.Assigned == nil ||
+			nav.Speed.Assigned.IAS(nav.FlightState.Altitude).Satisfied(nav.FlightState.IAS)) {
 			cur := nav.FlightState.Altitude
 			at := *nav.Speed.AfterAltitudeAltitude
 			if (cur > at && next <= at) || (cur < at && next >= at) {
@@ -71,6 +71,17 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 			}
 		}
 
+		// A Mach number is only flown at the altitudes it may be assigned
+		// at; below them, the aircraft returns to its usual speeds.
+		if next < av.MachTransitionAltitude {
+			if sr := nav.Speed.Assigned; sr != nil && sr.IsMach {
+				nav.Speed.Assigned = nil
+			}
+			if sr := nav.Speed.Restriction; sr != nil && sr.IsMach {
+				nav.Speed.Restriction = nil
+			}
+		}
+
 		if nav.FlightState.Altitude >= 10000 && next < 10000 {
 			// Descending through 10,000'
 			if sr := nav.Speed.Assigned; sr != nil {
@@ -78,21 +89,13 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 				// For "at or below 280" the floor is 0, so the pilot
 				// can comply at 250 — don't cancel.
 				// For "at or above 260", they can't comply at 250.
-				lo := sr.Range[0]
-				if lo == 0 {
-					lo = sr.Range[1]
-				}
-				if lo > 250 {
+				if sr.Speed().Value > 250 {
 					nav.Speed.Assigned = nil
 					next = 10000
 				}
 			}
 			if sr := nav.Speed.Restriction; sr != nil {
-				lo := sr.Range[0]
-				if lo == 0 {
-					lo = sr.Range[1]
-				}
-				if lo > 250 {
+				if sr.Speed().Value > 250 {
 					nav.Speed.Restriction = nil
 					next = 10000
 				}
