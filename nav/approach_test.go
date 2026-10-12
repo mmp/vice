@@ -823,49 +823,73 @@ func TestAtFixOnHeading(t *testing.T) {
 	}
 }
 
+// atFixClearanceMoments are the points in a localizer intercept at which
+// the at-fix clearance tests issue the clearance: on the intercept heading,
+// and in the turn onto the localizer, once the aircraft's assigned heading
+// is the course itself.
+var atFixClearanceMoments = []struct {
+	name    string
+	advance func(f *FlightTest)
+}{
+	{"intercept heading", func(f *FlightTest) {}},
+	{"capture turn", func(f *FlightTest) {
+		f.StepUntil("turning to join", func() bool { return f.nav.Approach.InterceptState == TurningToJoin })
+	}},
+}
+
 // TestAtFixClearedWhileIntercepting covers "fly heading 192, intercept the
 // localizer; at ROSLY cleared ILS 22L": the aircraft joins the localizer
 // at its altitude and descends only once the clearance takes effect at
 // ROSLY.
 func TestAtFixClearedWhileIntercepting(t *testing.T) {
-	f := localizerInterceptFlight(t, 20, -4, 192, "HAUPT/a6000 LEFER/a4000")
-	assertNotUnable(t, f.InterceptApproach())
-	assertNotUnable(t, f.AtFixCleared("ROSLY", "I22L", false))
+	for _, m := range atFixClearanceMoments {
+		t.Run(m.name, func(t *testing.T) {
+			f := localizerInterceptFlight(t, 20, -4, 192, "HAUPT/a6000 LEFER/a4000")
+			assertNotUnable(t, f.InterceptApproach())
+			m.advance(f)
+			assertNotUnable(t, f.AtFixCleared("ROSLY", "I22L", false))
 
-	f.BeforeFix("ROSLY", func(f *FlightTest) {
-		if f.nav.Approach.Cleared {
-			t.Fatalf("tick %d: cleared before ROSLY", f.tick)
-		}
-		if alt := f.nav.FlightState.Altitude; alt < 2950 {
-			t.Fatalf("tick %d: descended to %.0f before ROSLY", f.tick, alt)
-		}
-	})
-	f.AtFix("ROSLY", func(f *FlightTest) {
-		if !f.nav.Approach.Cleared {
-			t.Error("not cleared at ROSLY")
-		}
-		if len(f.nav.Waypoints) == 0 || f.nav.Waypoints[0].Fix != "ZALPO" {
-			t.Errorf("next waypoint = %v, want ZALPO", navRouteFixes(f.nav))
-		}
-	})
-	f.AtFix("ZALPO", func(f *FlightTest) {
-		f.AssertAltitudeBelow(2500)
-	})
-	f.Run()
+			f.BeforeFix("ROSLY", func(f *FlightTest) {
+				if f.nav.Approach.Cleared {
+					t.Fatalf("tick %d: cleared before ROSLY", f.tick)
+				}
+				if alt := f.nav.FlightState.Altitude; alt < 2950 {
+					t.Fatalf("tick %d: descended to %.0f before ROSLY", f.tick, alt)
+				}
+			})
+			f.AtFix("ROSLY", func(f *FlightTest) {
+				if !f.nav.Approach.Cleared {
+					t.Error("not cleared at ROSLY")
+				}
+				if len(f.nav.Waypoints) == 0 || f.nav.Waypoints[0].Fix != "ZALPO" {
+					t.Errorf("next waypoint = %v, want ZALPO", navRouteFixes(f.nav))
+				}
+			})
+			f.AtFix("ZALPO", func(f *FlightTest) {
+				f.AssertAltitudeBelow(2500)
+			})
+			f.Run()
+		})
+	}
 }
 
 // TestAtFixClearedBehindIntercept verifies that an aircraft intercepting
 // from a heading refuses "at FIX cleared" for a fix it will already be past
 // when it joins the localizer, and accepts it for one ahead of the join.
 func TestAtFixClearedBehindIntercept(t *testing.T) {
-	f := localizerInterceptFlight(t, 16, -4, 192, "HAUPT/a6000 LEFER/a4000")
-	assertNotUnable(t, f.InterceptApproach())
+	for _, m := range atFixClearanceMoments {
+		t.Run(m.name, func(t *testing.T) {
+			f := localizerInterceptFlight(t, 16, -4, 192, "HAUPT/a6000 LEFER/a4000")
+			assertNotUnable(t, f.InterceptApproach())
+			m.advance(f)
 
-	assertUnable(t, f.AtFixCleared("ROSLY", "I22L", false), "won't cross")
-	if f.nav.Approach.AtFixClearedRoute != nil {
-		t.Errorf("at-fix clearance armed after unable: %v", waypointFixes(f.nav.Approach.AtFixClearedRoute))
+			assertUnable(t, f.AtFixCleared("ROSLY", "I22L", false), "won't cross")
+			if f.nav.Approach.AtFixClearedRoute != nil {
+				t.Errorf("at-fix clearance armed after unable: %v", waypointFixes(f.nav.Approach.AtFixClearedRoute))
+			}
+			assertNotUnable(t, f.AtFixCleared("ZALPO", "I22L", false))
+		})
 	}
-	assertNotUnable(t, f.AtFixCleared("ZALPO", "I22L", false))
 }
 
 func TestAtFixInterceptSkipsRouteHeadingAtApproachFix(t *testing.T) {

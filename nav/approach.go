@@ -174,7 +174,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 }
 
 // localizerWaypointsAhead returns the approach's waypoints from the first
-// fix on the final approach course that is ahead of p, a point on the
+// fix on the final approach course that is ahead of p, measured along the
 // course, through the end of the approach.
 func (nav *Nav) localizerWaypointsAhead(ap *av.Approach, p math.Point2LL) av.WaypointArray {
 	apHeading := ap.FinalApproachCourse(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
@@ -229,21 +229,31 @@ func (nav *Nav) waypointsAfterIntercept(hdg math.MagneticHeading) []av.Waypoint 
 		return wps
 	}
 
-	line := ap.FinalApproachCourseLine(nmPerLong, magVar)
+	courseTrue := ap.FinalApproachCourse(nmPerLong, magVar)
 	pos := math.LL2NM(nav.FlightState.Position, nmPerLong)
-	dir := math.HeadingVector(hdgTrue)
-	p, ok := math.LineLineIntersect(pos, math.Add2f(pos, dir), math.LL2NM(line[0], nmPerLong),
-		math.LL2NM(line[1], nmPerLong))
-	if !ok || math.Dot(math.Sub2f(p, pos), dir) < 0 {
-		return nil
+	join := pos
+	// In its turn onto the localizer the aircraft is assigned the course
+	// itself as its heading, which never meets the course; it rolls out
+	// about abeam of where it is now.
+	inCaptureTurn := nav.Approach.InterceptState == TurningToJoin &&
+		math.HeadingDifference(hdgTrue, courseTrue) < 1
+	if !inCaptureTurn {
+		line := ap.FinalApproachCourseLine(nmPerLong, magVar)
+		dir := math.HeadingVector(hdgTrue)
+		p, ok := math.LineLineIntersect(pos, math.Add2f(pos, dir), math.LL2NM(line[0], nmPerLong),
+			math.LL2NM(line[1], nmPerLong))
+		if !ok || math.Dot(math.Sub2f(p, pos), dir) < 0 {
+			return nil
+		}
+		join = p
 	}
 	// The aircraft rolls out on the course somewhat past where its heading
-	// meets it; a fix within this distance of that point may be behind it
-	// by the time it captures the course.
+	// meets it or where it starts its turn onto it; a fix within this
+	// distance of that point may be behind it by the time it captures the
+	// course.
 	const rollOutMargin = 1 // nm
-	courseVec := math.HeadingVector(ap.FinalApproachCourse(nmPerLong, magVar))
-	p = math.Add2f(p, math.Scale2f(courseVec, rollOutMargin))
-	return nav.localizerWaypointsAhead(ap, math.NM2LL(p, nmPerLong))
+	join = math.Add2f(join, math.Scale2f(math.HeadingVector(courseTrue), rollOutMargin))
+	return nav.localizerWaypointsAhead(ap, math.NM2LL(join, nmPerLong))
 }
 
 // groundTrack returns the aircraft's present true course over the ground.
