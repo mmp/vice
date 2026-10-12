@@ -878,3 +878,75 @@ func TestMachReadbacks(t *testing.T) {
 		t.Errorf("contact message: %q", written)
 	}
 }
+
+// TestRangeSpeedAfterAltitude verifies that an "or greater" or "or less"
+// speed to fly after reaching an altitude waits for that altitude.
+func TestRangeSpeedAfterAltitude(t *testing.T) {
+	for _, test := range []struct {
+		name          string
+		flight        func(t *testing.T) *FlightTest
+		altitude      float32
+		speed         string
+		typ           speech.SpeedType
+		changedBefore func(f *FlightTest) bool // has the speed been flown early?
+	}{
+		{
+			name:     "M76- after FL350",
+			flight:   func(t *testing.T) *FlightTest { return machFlight(t, 33000, .78) },
+			altitude: 35000,
+			speed:    "M76-",
+			typ:      speech.SpeedAtOrBelow,
+			changedBefore: func(f *FlightTest) bool {
+				return f.nav.Mach() < .77
+			},
+		},
+		{
+			name: "250+ after 8,000",
+			flight: func(t *testing.T) *FlightTest {
+				return NewArrivalFlight(t, ArrivalConfig{
+					Waypoints:        "SAJUL DETGY HAUPT",
+					DepartureAirport: "KMCO",
+					ArrivalAirport:   "KJFK",
+					AircraftType:     "A320",
+					InitialAltitude:  12000,
+					InitialSpeed:     230,
+					AssignedAltitude: 12000,
+				})
+			},
+			altitude: 8000,
+			speed:    "250+",
+			typ:      speech.SpeedAtOrAbove,
+			changedBefore: func(f *FlightTest) bool {
+				return f.nav.FlightState.IAS > 240
+			},
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			f := test.flight(t)
+			f.AssignAltitude(test.altitude)
+			sr, err := av.ParseSpeedRestriction(test.speed)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			intent := f.nav.AssignSpeed(sr, true, f.temp())
+			if si, ok := intent.(speech.SpeedIntent); !ok || si.Type != test.typ ||
+				si.AfterAltitude == nil || *si.AfterAltitude != test.altitude {
+				t.Fatalf("expected %s after %.0f, got %T: %+v", test.speed, test.altitude, intent, intent)
+			}
+			if f.nav.Speed.Assigned != nil {
+				t.Fatalf("speed assigned before reaching the altitude: %v", f.nav.Speed.Assigned)
+			}
+
+			f.StepUntil("reached the altitude", func() bool {
+				if test.changedBefore(f) {
+					t.Fatalf("flew %s at %.0f, before reaching %.0f", test.speed, f.nav.FlightState.Altitude, test.altitude)
+				}
+				return f.nav.FlightState.Altitude == test.altitude
+			})
+			if f.nav.Speed.Assigned == nil || *f.nav.Speed.Assigned != *sr {
+				t.Errorf("expected %s assigned at %.0f, got %v", test.speed, test.altitude, f.nav.Speed.Assigned)
+			}
+		})
+	}
+}

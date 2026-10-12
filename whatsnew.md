@@ -6,6 +6,7 @@
 - Aircraft given a crossing restriction in Mach no longer slow to their minimum speed
 - `M78+` and `M78-` assign Mach .78 "or greater" and "or less", including in crossing restrictions and by voice
 - Fixed bugs with Mach speeds: aircraft no longer speed up after descending below FL240 with a Mach number assigned, and pilots no longer read Mach numbers back as knots
+- "Or greater" and "or less" speeds given to follow an altitude change (`TS250+`, `TM78-`) now wait until the aircraft reaches the altitude
 - STARS
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM

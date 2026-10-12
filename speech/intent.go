@@ -217,6 +217,10 @@ func (a AltitudeIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			rt.Add("[then we'll reduce to|then slow to|then speed] {airspeed}", *a.ThenSpeed)
 		case SpeedIncrease:
 			rt.Add("[then we'll increase to|then increase to|then speed] {airspeed}", *a.ThenSpeed)
+		case SpeedAtOrAbove:
+			rt.Add("[then maintain|then] {airspeed} or greater", *a.ThenSpeed)
+		case SpeedAtOrBelow:
+			rt.Add("[then do not exceed {airspeed}|then {airspeed} or less]", *a.ThenSpeed)
 		default:
 			rt.Add("[then speed|then maintain] {airspeed}", *a.ThenSpeed)
 		}
@@ -318,6 +322,8 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			s.renderUntil(rt, " or greater")
 		} else if s.AfterFix != "" {
 			rt.Add("[after {fix} maintain {airspeed} or greater|after {fix} {airspeed} or greater]", s.AfterFix, s.Speed)
+		} else if s.AfterAltitude != nil {
+			rt.Add("[at {alt} maintain {airspeed} or greater|{alt} then {airspeed} or greater]", *s.AfterAltitude, s.Speed)
 		} else {
 			rt.Add("[maintain {airspeed} or greater|{airspeed} or greater|{airspeed} or more]", s.Speed)
 		}
@@ -326,6 +332,8 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 			s.renderUntil(rt, " or less")
 		} else if s.AfterFix != "" {
 			rt.Add("[after {fix} do not exceed {airspeed}|after {fix} {airspeed} or less]", s.AfterFix, s.Speed)
+		} else if s.AfterAltitude != nil {
+			rt.Add("[at {alt} do not exceed {airspeed}|{alt} then {airspeed} or less]", *s.AfterAltitude, s.Speed)
 		} else {
 			rt.Add("[do not exceed {airspeed}|not exceeding {airspeed}|{airspeed} or less]", s.Speed)
 		}
@@ -1229,7 +1237,8 @@ func mergeAltitudeExpedite(alt AltitudeIntent, exp AltitudeIntent) ([]CommandInt
 
 // Altitude, then speed
 func mergeAltitudeSpeed(alt AltitudeIntent, spd SpeedIntent) ([]CommandIntent, bool) {
-	if spd.AfterAltitude != nil && (spd.Type == SpeedReduce || spd.Type == SpeedIncrease || spd.Type == SpeedAssign) {
+	if spd.AfterAltitude != nil && (spd.Type == SpeedReduce || spd.Type == SpeedIncrease || spd.Type == SpeedAssign ||
+		spd.Type == SpeedAtOrAbove || spd.Type == SpeedAtOrBelow) {
 		alt.ThenSpeed = &spd.Speed
 		alt.ThenSpeedType = spd.Type
 		return []CommandIntent{alt}, true

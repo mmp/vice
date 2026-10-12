@@ -137,6 +137,32 @@ func TestThenMachReadback(t *testing.T) {
 	}
 }
 
+// TestRangeSpeedAfterAltitudeReadback verifies that an "or greater" or "or
+// less" speed to fly after reaching an altitude is read back with it, both
+// on its own and following the altitude assignment.
+func TestRangeSpeedAfterAltitudeReadback(t *testing.T) {
+	alt := float32(35000)
+	spd := SpeedIntent{Speed: av.MakeMach(.76), Type: SpeedAtOrBelow, AfterAltitude: &alt}
+	for _, intents := range [][]CommandIntent{
+		{spd},
+		{AltitudeIntent{Altitude: alt, Direction: AltitudeClimb}, spd},
+	} {
+		for seed := uint64(1); seed <= 10; seed++ {
+			r := rand.Make()
+			r.Seed(seed)
+			rd, err := RenderIntents(intents, r).Render(r)
+			if err != nil {
+				t.Fatal(err)
+			}
+			readback := strings.ToLower(rd.Written)
+			if !strings.Contains(readback, "fl350") || !strings.Contains(readback, "mach .76") {
+				t.Fatalf("readback %q", readback)
+			}
+			assertContainsAny(t, readback, "or less", "do not exceed")
+		}
+	}
+}
+
 // TestCrossFixAtMachReadback verifies that a Mach crossing restriction is
 // read back with its qualifier.
 func TestCrossFixAtMachReadback(t *testing.T) {

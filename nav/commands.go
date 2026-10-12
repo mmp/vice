@@ -193,13 +193,8 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 		return intent
 	}
 
-	if _, exact := sr.ExactValue(); !exact {
-		// Range restriction: no afterAltitude deferral
-		nav.Speed = Speed{Assigned: sr}
-		return rangeSpeedIntent(sr)
-	}
-
-	if nav.Approach.Cleared {
+	_, exact := sr.ExactValue()
+	if nav.Approach.Cleared && exact {
 		nav.Speed = Speed{Assigned: sr}
 		return speech.SpeedIntent{Speed: spd, Type: speech.SpeedUntilFinal, UntilFinalDirection: nav.speedChangeType(spd)}
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
@@ -209,7 +204,15 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 			AfterAltitude:         sr,
 			AfterAltitudeAltitude: &alt,
 		}
-		return speech.SpeedIntent{Speed: spd, AfterAltitude: &alt, Type: speech.SpeedAssign}
+		intent := speech.SpeedIntent{Speed: spd, Type: speech.SpeedAssign}
+		if !exact {
+			intent = rangeSpeedIntent(sr)
+		}
+		intent.AfterAltitude = &alt
+		return intent
+	} else if !exact {
+		nav.Speed = Speed{Assigned: sr}
+		return rangeSpeedIntent(sr)
 	}
 
 	// If there's an active altitude change and the speed change is significant (>20kt), defer
