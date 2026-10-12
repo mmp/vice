@@ -2,6 +2,8 @@
 - Improved support for LDA approaches (don't just fly the extended centerline)
 - Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
 - An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
+- Aircraft told to climb or descend after reaching an assigned Mach number now do so
+- Aircraft given a crossing restriction in Mach no longer slow to their minimum speed
 - STARS
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM

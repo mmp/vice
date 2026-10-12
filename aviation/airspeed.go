@@ -103,11 +103,13 @@ func (a Airspeed) IAS(altitude float32) float32 {
 	return MachToIAS(a.Value, altitude)
 }
 
+// String returns the speed as it's written in scenario files for a Mach
+// number ("M78") and with its units for knots ("250 kts").
 func (a Airspeed) String() string {
 	if a.IsMach {
 		return fmt.Sprintf("M%02d", int(a.Value*100+.5))
 	}
-	return strconv.FormatFloat(float64(a.Value), 'f', -1, 32)
+	return strconv.FormatFloat(float64(a.Value), 'f', -1, 32) + " kts"
 }
 
 // MarshalJSON writes knots as a number and a Mach number as a string, the
@@ -139,11 +141,11 @@ func (a *Airspeed) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	v, exact := sr.ExactValue()
+	spd, exact := sr.ExactAirspeed()
 	if !exact {
 		return fmt.Errorf("%s: must be a single speed, not a range", str)
 	}
-	a.Value, a.IsMach = v, sr.IsMach
+	*a = spd
 	return nil
 }
 

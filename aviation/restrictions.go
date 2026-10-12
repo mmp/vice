@@ -264,6 +264,29 @@ func (s SpeedRestriction) Encoded() string {
 	return s.encoded(MaxRestrictionSpeed)
 }
 
+// ExactAirspeed returns the speed if this is an "at" restriction, or false
+// if it's a range.
+func (s SpeedRestriction) ExactAirspeed() (Airspeed, bool) {
+	v, exact := s.ExactValue()
+	return Airspeed{Value: v, IsMach: s.IsMach}, exact
+}
+
+// IAS returns the restriction in indicated airspeed at the given altitude.
+// A Mach restriction's bounds are converted; its open ends stay open.
+func (s SpeedRestriction) IAS(altitude float32) SpeedRestriction {
+	if !s.IsMach {
+		return s
+	}
+	ias := MakeRangeSpeedRestriction(0, MaxRestrictionSpeed)
+	if s.Range[0] != 0 {
+		ias.Range[0] = MachToIAS(s.Range[0], altitude)
+	}
+	if s.Range[1] != MaxRestrictionSpeed {
+		ias.Range[1] = MachToIAS(s.Range[1], altitude)
+	}
+	return ias
+}
+
 // CheckJSON implements util.JSONChecker so the JSON type checker accepts
 // plain numbers and strings in addition to the struct form.
 func (s SpeedRestriction) CheckJSON(json any) bool {

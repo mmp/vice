@@ -704,3 +704,65 @@ func TestMachAssignmentDefersClimb(t *testing.T) {
 	})
 	f.Run()
 }
+
+// TestAltitudeAfterMach verifies that an altitude assigned to follow an
+// assigned Mach number is flown once the aircraft reaches it, and right
+// away if the aircraft is already there.
+func TestAltitudeAfterMach(t *testing.T) {
+	flight := func(mach float32) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        "SAJUL DETGY HAUPT",
+			DepartureAirport: "KMCO",
+			ArrivalAirport:   "KJFK",
+			AircraftType:     "A320",
+			InitialAltitude:  33000,
+			InitialSpeed:     av.MachToIAS(mach, 33000),
+			AssignedAltitude: 33000,
+		})
+	}
+
+	f := flight(.74)
+	f.nav.AssignMach(.78, false, f.temp())
+	intent := f.nav.AssignAltitude(37000, true, f.simTime, 0)
+	if ai, ok := intent.(speech.AltitudeIntent); !ok || ai.AfterSpeed == nil || *ai.AfterSpeed != av.MakeMach(.78) {
+		t.Fatalf("expected a climb after reaching M0.78, got %T: %v", intent, intent)
+	}
+	f.AfterTicks(600, func(f *FlightTest) {
+		f.AssertAltitudeAbove(34000)
+	})
+	f.Run()
+
+	f = flight(.78)
+	f.nav.AssignMach(.78, false, f.temp())
+	f.nav.AssignAltitude(37000, true, f.simTime, 0)
+	if f.nav.Altitude.AfterSpeed != nil {
+		t.Error("climb deferred though the aircraft is already at the assigned Mach number")
+	}
+}
+
+// TestCrossFixAtMach verifies that a Mach crossing restriction is flown as
+// that Mach number rather than as an indicated airspeed.
+func TestCrossFixAtMach(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  33000,
+		InitialSpeed:     av.MachToIAS(.78, 33000),
+		AssignedAltitude: 33000,
+	})
+	sr := av.MakeMachRestriction(.76)
+	f.nav.CrossFixAt("HAUPT", nil, &sr, f.temp())
+	f.BeforeFix("HAUPT", func(f *FlightTest) {
+		if m := f.nav.Mach(); m < .755 {
+			t.Fatalf("tick %d: slowed to M%.3f before HAUPT", f.tick, m)
+		}
+	})
+	f.AfterTicks(400, func(f *FlightTest) {
+		if m := f.nav.Mach(); math.Abs(m-.76) > .005 {
+			t.Errorf("after HAUPT: got M%.3f, want M0.76", m)
+		}
+	})
+	f.Run()
+}

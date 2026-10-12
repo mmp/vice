@@ -59,7 +59,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 	}
 
 	if sr := nav.Speed.Assigned; afterSpeed && sr != nil {
-		if spd, exact := sr.ExactValue(); exact && spd != nav.FlightState.IAS {
+		if spd, exact := sr.ExactAirspeed(); exact && spd.IAS(nav.FlightState.Altitude) != nav.FlightState.IAS {
 			nav.Altitude = Altitude{
 				AfterSpeed:      &alt,
 				AfterSpeedSpeed: &spd,
@@ -157,13 +157,13 @@ func (nav *Nav) AssignMach(mach float32, afterAltitude bool, temp av.Temperature
 		nav.Speed = Speed{Assigned: &sr}
 		// If there's an active altitude change and this is a significant speed change, defer the
 		// altitude until after the Mach speed change completes.
-		targetIAS := av.MachToIAS(mach, nav.FlightState.Altitude)
+		spd := av.MakeMach(mach)
 		if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
-			math.Abs(targetIAS-nav.FlightState.IAS) >= 20 {
+			math.Abs(spd.IAS(nav.FlightState.Altitude)-nav.FlightState.IAS) >= 20 {
 			alt := *nav.Altitude.Assigned
 			nav.Altitude = Altitude{
 				AfterSpeed:      &alt,
-				AfterSpeedSpeed: &targetIAS,
+				AfterSpeedSpeed: &spd,
 				RateAfterSpeed:  nav.Altitude.Rate,
 			}
 		}
@@ -243,9 +243,10 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 		if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
 			speedDelta > 20 {
 			alt := *nav.Altitude.Assigned
+			spd := av.MakeIAS(speed)
 			nav.Altitude = Altitude{
 				AfterSpeed:      &alt,
-				AfterSpeedSpeed: &speed,
+				AfterSpeedSpeed: &spd,
 				RateAfterSpeed:  nav.Altitude.Rate,
 			}
 		}

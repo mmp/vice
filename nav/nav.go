@@ -210,7 +210,7 @@ type Altitude struct {
 	ActivateAt      Time     // non-zero while Assigned is pending activation
 	Cleared         *ClearedAltitude
 	AfterSpeed      *float32
-	AfterSpeedSpeed *float32
+	AfterSpeedSpeed *av.Airspeed
 	Rate            RateQualifier
 	RateThrough     *float32      // revert to RateNormal after passing this altitude; nil = all the way
 	RateAfterSpeed  RateQualifier // preserved across speed transitions
@@ -956,7 +956,7 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 		case RateExpedite:
 			rateSuffix = ", expediting"
 		}
-		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s"+rateSuffix,
+		lines = append(lines, fmt.Sprintf("At %s, %s to %s"+rateSuffix,
 			*nav.Altitude.AfterSpeedSpeed, dir, av.FormatAltitude(*nav.Altitude.AfterSpeed)))
 	} else if target, ok := nav.findAltitudeTarget(); ok {
 		alt := nav.limitAltitude(target.altitude)

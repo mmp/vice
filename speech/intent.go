@@ -139,8 +139,8 @@ const (
 type AltitudeIntent struct {
 	Altitude          float32
 	Direction         AltitudeDirection
-	AfterFix          string   // altitude change conditional on passing this fix
-	AfterSpeed        *float32 // changing altitude only after reaching a speed
+	AfterFix          string       // altitude change conditional on passing this fix
+	AfterSpeed        *av.Airspeed // changing altitude only after reaching a speed
 	Expedite          bool
 	GoodRate          bool
 	RateThrough       *float32 // "through/to" altitude for expedite or good rate
@@ -173,7 +173,7 @@ func (a AltitudeIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 
 	earlySpeed := r.Bool()
 	if earlySpeed && a.AfterSpeed != nil {
-		rt.Add("at {spd}", *a.AfterSpeed)
+		rt.Add("at {airspeed}", *a.AfterSpeed)
 	}
 
 	if a.Expedite {
@@ -223,7 +223,7 @@ func (a AltitudeIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	}
 
 	if !earlySpeed && a.AfterSpeed != nil {
-		rt.Add("[once we're|] at {spd}", *a.AfterSpeed)
+		rt.Add("[once we're|] at {airspeed}", *a.AfterSpeed)
 	}
 }
 

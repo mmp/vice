@@ -1438,7 +1438,7 @@ func TestAltitudeAfterSpeedDelaysAfterSpeedReached(t *testing.T) {
 	})
 	f.AssignSpeed(180)
 	intent := f.nav.AssignAltitude(3000, true, f.simTime, 0)
-	if altIntent, ok := intent.(speech.AltitudeIntent); !ok || altIntent.AfterSpeed == nil || *altIntent.AfterSpeed != 180 {
+	if altIntent, ok := intent.(speech.AltitudeIntent); !ok || altIntent.AfterSpeed == nil || *altIntent.AfterSpeed != av.MakeIAS(180) {
 		t.Fatalf("expected altitude after speed intent, got %T: %v", intent, intent)
 	}
 

@@ -26,7 +26,7 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bo
 		if nav.Altitude.AfterSpeed != nil &&
 			(nav.Altitude.Assigned == nil || *nav.Altitude.Assigned == nav.FlightState.Altitude) {
 			cur := nav.FlightState.IAS
-			at := *nav.Altitude.AfterSpeedSpeed
+			at := nav.Altitude.AfterSpeedSpeed.IAS(nav.FlightState.Altitude)
 			// Check if we've reached or are passing a speed assignment
 			// after which an altitude assignment should be followed.
 			if (cur > at && next <= at) || (cur < at && next >= at) {
@@ -148,14 +148,8 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, rules av.FlightRules, 
 		return nav.targetAltitudeIAS(temp)
 	}
 	if sr := nav.Speed.Assigned; sr != nil {
-		if sr.IsMach {
-			return av.MachToIAS(sr.Range[0], nav.FlightState.Altitude), MaximumRate
-		}
-		if _, exact := sr.ExactValue(); !exact {
-			return math.Clamp(nav.FlightState.IAS, sr.Range[0], sr.Range[1]), MaximumRate
-		}
-		naturalIAS, _ := nav.targetAltitudeIAS(temp)
-		return nav.restrictedSpeed(sr, naturalIAS), MaximumRate
+		// Hold the current speed if it's within an assigned range.
+		return sr.IAS(nav.FlightState.Altitude).Target(nav.FlightState.IAS), MaximumRate
 	}
 
 	if hold := nav.Heading.Hold; hold != nil && nav.ETA(hold.FixLocation) < 180 /* slow 3 minutes out */ {
@@ -336,7 +330,8 @@ func (nav *Nav) ETA(p math.Point2LL) float32 {
 // restriction, accounting for aircraft type. Heavy jets fly close to
 // limits for fuel efficiency; lighter aircraft have more margin.
 func (nav *Nav) restrictedSpeed(sr *av.SpeedRestriction, natural float32) float32 {
-	lo, hi := sr.Range[0], sr.Range[1]
+	ias := sr.IAS(nav.FlightState.Altitude)
+	lo, hi := ias.Range[0], ias.Range[1]
 
 	// "At" restriction: exact compliance required.
 	if lo == hi {

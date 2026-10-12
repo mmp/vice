@@ -277,6 +277,7 @@ var (
 		"actype":   &AircraftTypeSnippetFormatter{},
 		"airport":  &AirportSnippetFormatter{},
 		"airway":   &AirwaySnippetFormatter{},
+		"airspeed": &AirspeedSnippetFormatter{},
 		"alt":      &AltSnippetFormatter{},
 		"altrest":  &AltRestrictionSnippetFormatter{},
 		"appr":     &ApproachSnippetFormatter{},
@@ -828,7 +829,7 @@ func machIntArg(arg any) (int, error) {
 	case int:
 		return v, nil
 	case float32:
-		return int(v * 100), nil
+		return int(v*100 + 0.5), nil
 	default:
 		return 0, fmt.Errorf("expected int/float32 arg, got %T", arg)
 	}
@@ -858,6 +859,40 @@ func (SpeedSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
 		return sayDigits(spd, 0) + knots, nil
 	}
 	return groupForm(spd) + knots, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AirspeedSnippetFormatter
+
+// AirspeedSnippetFormatter formats an av.Airspeed as knots or as a Mach
+// number, according to its units.
+type AirspeedSnippetFormatter struct{}
+
+func airspeedFormatter(arg any) (SnippetFormatter, float32, error) {
+	a, ok := arg.(av.Airspeed)
+	if !ok {
+		return nil, 0, fmt.Errorf("expected av.Airspeed arg, got %T", arg)
+	}
+	if a.IsMach {
+		return MachSnippetFormatter{}, a.Value, nil
+	}
+	return SpeedSnippetFormatter{}, a.Value, nil
+}
+
+func (AirspeedSnippetFormatter) Written(arg any) (string, error) {
+	f, v, err := airspeedFormatter(arg)
+	if err != nil {
+		return "", err
+	}
+	return f.Written(v)
+}
+
+func (AirspeedSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
+	f, v, err := airspeedFormatter(arg)
+	if err != nil {
+		return "", err
+	}
+	return f.Spoken(r, v)
 }
 
 ///////////////////////////////////////////////////////////////////////////

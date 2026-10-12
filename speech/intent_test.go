@@ -96,6 +96,27 @@ func TestSpeedRestrictionReadbackIncludesQualifier(t *testing.T) {
 	}
 }
 
+// TestAltitudeAfterSpeedReadback verifies that the speed an altitude change
+// waits for is read back in its own units.
+func TestAltitudeAfterSpeedReadback(t *testing.T) {
+	for _, test := range []struct {
+		speed          av.Airspeed
+		want, unwanted string
+	}{
+		{speed: av.MakeIAS(180), want: "180 knots", unwanted: "mach"},
+		{speed: av.MakeMach(.78), want: "mach .78", unwanted: "knots"},
+		{speed: av.MakeMach(.59), want: "mach .59", unwanted: "knots"},
+	} {
+		intent := AltitudeIntent{Altitude: 37000, Direction: AltitudeClimb, AfterSpeed: &test.speed}
+		for seed := uint64(1); seed <= 10; seed++ {
+			readback := renderIntentForTest(t, intent, seed)
+			if !strings.Contains(readback, test.want) || strings.Contains(readback, test.unwanted) {
+				t.Fatalf("%s: readback %q", test.speed, readback)
+			}
+		}
+	}
+}
+
 // TestProcedureExceptReadback verifies that the altitude and speed excepted
 // from a climb via SID or descend via STAR are read back with it, including
 // a speed given as a separate command.
