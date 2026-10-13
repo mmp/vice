@@ -178,16 +178,15 @@ func tryParseWaypointNumbers(b []byte) (float32, int, bool) {
 			value *= 10
 			value += int(ch - '0')
 		}
+		scale := [4]float64{1, 60, 3600, 3600}[i]
 		if i == 3 {
-			// Treat the last set of digits as a decimal, so that
-			// Nxx.yy.zz.1 is handled like Nxx.yy.zz.100.
-			for j := end; j < 3; j++ {
-				value *= 10
+			// Treat the last set of digits as a decimal fraction of a
+			// second, so that Nxx.yy.zz.1 is handled like Nxx.yy.zz.100.
+			for range end {
+				scale *= 10
 			}
 		}
-
-		scales := [4]float64{1, 60, 3600, 3600000}
-		ll += float64(value) / scales[i]
+		ll += float64(value) / scale
 		n += end
 		b = b[end:]
 
@@ -269,9 +268,12 @@ func ParseLatLong(llstr []byte) (Point2LL, error) {
 			if err != nil {
 				return 0, err
 			}
-			sgn := Sign(float32(d))
-			d = Abs(d)
-			return sgn * (float32(d) + float32(m)/60 + float32(s)/3600 + float32(f)/3600000), nil
+			v := float32(Abs(d)) + float32(m)/60 + float32(s)/3600 + float32(f)/3600000
+			// Take the sign from the string since the degrees may be zero.
+			if deg[0] == '-' {
+				v = -v
+			}
+			return v, nil
 		}
 
 		var p Point2LL
