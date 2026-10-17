@@ -61,7 +61,7 @@ func (o *ogl) createdTexture(texid uint32, bytes int) {
 	o.createdTextures[texid] = bytes
 
 	reduce := func(id uint32, bytes int, total int) int { return total + bytes }
-	total := util.ReduceMap(o.createdTextures, reduce, 0)
+	total := util.ReduceMap(o.createdTextures, 0, reduce)
 	mb := float32(total) / (1024 * 1024)
 
 	if exists {

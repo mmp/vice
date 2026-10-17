@@ -228,7 +228,7 @@ func FirstSortedMapEntry[K cmp.Ordered, V any](m map[K]V) (K, V) {
 // starting with the provided initial value.  The update rule applied is
 // result=reduce( value, result), where the initial value of result is
 // given by the initial parameter.
-func ReduceSlice[V any, R any](s []V, reduce func(V, R) R, initial R) R {
+func ReduceSlice[V any, R any](s []V, initial R, reduce func(V, R) R) R {
 	result := initial
 	for _, v := range s {
 		result = reduce(v, result)
@@ -240,7 +240,7 @@ func ReduceSlice[V any, R any](s []V, reduce func(V, R) R, initial R) R {
 // starting with the provided initial value.  The update rule applied is
 // result=reduce(key, value, result), where the initial value of result is
 // given by the initial parameter.
-func ReduceMap[K comparable, V any, R any](m map[K]V, reduce func(K, V, R) R, initial R) R {
+func ReduceMap[K comparable, V any, R any](m map[K]V, initial R, reduce func(K, V, R) R) R {
 	result := initial
 	for k, v := range m {
 		result = reduce(k, v, result)

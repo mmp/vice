@@ -159,11 +159,11 @@ func TestFilterSliceInPlace(t *testing.T) {
 func TestReduceSlice(t *testing.T) {
 	v := []int{1, -2, 3, 4}
 
-	if r := ReduceSlice(v, func(v int, r int) int { return v + r }, 10); r != 16 {
+	if r := ReduceSlice(v, 10, func(v int, r int) int { return v + r }); r != 16 {
 		t.Errorf("ReduceSlice with + got %d, not 16 expected", r)
 	}
 
-	if r := ReduceSlice(v, func(v int, r int) int { return v * r }, 2); r != -48 {
+	if r := ReduceSlice(v, 2, func(v int, r int) int { return v * r }); r != -48 {
 		t.Errorf("ReduceSlice with * got %d, not -48 expected", r)
 	}
 }
@@ -180,7 +180,7 @@ func TestReduceMap(t *testing.T) {
 		return length + len(v)
 	}
 
-	length := ReduceMap[int, string, int](m, reduce, 5)
+	length := ReduceMap[int, string, int](m, 5, reduce)
 
 	if length != 5+5+6+6+1 {
 		t.Errorf("Expected %d from ReduceMap; got %d", 5+5+6+6+1, length)

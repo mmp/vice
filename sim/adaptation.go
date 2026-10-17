@@ -350,7 +350,9 @@ func (fa *FacilityAdaptation) CurrentDatablockClockPhase(now time.Time) int {
 	intervals := fa.Datablocks.ClockPhase.Intervals
 
 	// Total cycle duration in milliseconds.
-	totalMs := util.ReduceSlice(intervals, func(d float32, acc int64) int64 { return acc + int64(d*1000) }, int64(0))
+	totalMs := util.ReduceSlice(intervals, int64(0), func(d float32, acc int64) int64 {
+		return acc + int64(d*1000)
+	})
 	posMs := now.UnixMilli() % totalMs
 
 	var elapsed int64
