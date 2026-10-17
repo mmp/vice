@@ -23,7 +23,6 @@ import (
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/speech/tts"
 	"github.com/mmp/vice/stars"
-	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -62,7 +61,7 @@ type ConfigNoSim struct {
 	ShowFlightStrips bool
 
 	AskedDiscordOptIn      bool
-	InhibitDiscordActivity util.AtomicBool
+	InhibitDiscordActivity bool
 	NotifiedTargetGenMode  bool
 	DisableTextToSpeech    bool
 	TTSPlaybackSpeed       float32

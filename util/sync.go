@@ -5,7 +5,6 @@
 package util
 
 import (
-	"encoding/json"
 	"fmt"
 	"log/slog"
 	"maps"
@@ -14,36 +13,12 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/mmp/vice/log"
 
 	"github.com/shirou/gopsutil/cpu"
 )
-
-///////////////////////////////////////////////////////////////////////////
-// AtomicBool
-
-// AtomicBool is a simple wrapper around atomic.Bool that adds support for
-// JSON marshaling/unmarshaling.
-type AtomicBool struct {
-	atomic.Bool
-}
-
-func (a AtomicBool) MarshalJSON() ([]byte, error) {
-	b := a.Load()
-	return json.Marshal(b)
-}
-
-func (a *AtomicBool) UnmarshalJSON(data []byte) error {
-	var b bool
-	err := json.Unmarshal(data, &b)
-	if err == nil {
-		a.Store(b)
-	}
-	return err
-}
 
 ///////////////////////////////////////////////////////////////////////////
 // LoggingMutex

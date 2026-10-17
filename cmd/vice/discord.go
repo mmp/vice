@@ -35,6 +35,9 @@ var discord struct {
 	// discord?
 	statusChanged   bool
 	updaterLaunched bool
+	// Config.InhibitDiscordActivity, copied here because the UI changes
+	// it on the main thread while the updater goroutine reads it.
+	inhibited bool
 }
 
 func SetDiscordStatus(s DiscordStatus, config *Config, lg *log.Logger) {
@@ -51,16 +54,17 @@ func SetDiscordStatus(s DiscordStatus, config *Config, lg *log.Logger) {
 	// Record the current status even if we're not sending discord updates;
 	// they may be enabled later.
 	discord.status = s
+	discord.inhibited = config.InhibitDiscordActivity
 
 	// Don't even launch the update goroutine if the user has asked to not
 	// update their discord status.
-	if !discord.updaterLaunched && !config.InhibitDiscordActivity.Load() {
+	if !discord.updaterLaunched && !discord.inhibited {
 		discord.updaterLaunched = true
-		go updateDiscordStatus(config, lg)
+		go updateDiscordStatus(lg)
 	}
 }
 
-func updateDiscordStatus(config *Config, lg *log.Logger) {
+func updateDiscordStatus(lg *log.Logger) {
 	// Sign in to the Vice app on Discord
 	if err := discord_client.Login("1158289394717970473"); err != nil {
 		lg.Warn("Discord RPC Error", slog.String("error", err.Error()))
@@ -74,11 +78,12 @@ func updateDiscordStatus(config *Config, lg *log.Logger) {
 		discord.mu.Lock()
 		status := discord.status
 		changed := discord.statusChanged
+		inhibited := discord.inhibited
 		discord.statusChanged = false
 		discord.mu.Unlock()
 
 		// Skip updates if the user has disabled discord updates.
-		if changed && !config.InhibitDiscordActivity.Load() {
+		if changed && !inhibited {
 			// Common discord_client.Activity initialization regardless of
 			// whether we're connected or not.
 			activity := discord_client.Activity{

@@ -375,9 +375,9 @@ func (d *DiscordOptInModalClient) Draw() int {
 
 	imgui.Text("")
 
-	update := !d.config.InhibitDiscordActivity.Load()
+	update := !d.config.InhibitDiscordActivity
 	imgui.Checkbox("Update Discord activity status", &update)
-	d.config.InhibitDiscordActivity.Store(!update)
+	d.config.InhibitDiscordActivity = !update
 
 	return -1
 }

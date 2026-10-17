@@ -913,9 +913,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarSc
 		c.SetSimRate(c.State.SimRate)
 	}
 
-	update := !config.InhibitDiscordActivity.Load()
+	update := !config.InhibitDiscordActivity
 	imgui.Checkbox("Update Discord activity status", &update)
-	config.InhibitDiscordActivity.Store(!update)
+	config.InhibitDiscordActivity = !update
 
 	imgui.Checkbox("Do not show scenario briefs at the start of scenarios", &config.NoBriefAtScenarioStart)
 
