@@ -14,7 +14,7 @@ func TestOldPaneSettingsStillRead(t *testing.T) {
 	old := `{"Version":91,
 	  "MessagesPane":{"AudioAlertSelection":"Radio Static","ContactTransmissionsAlert":true},
 	  "FlightStripPane":{"FontSize":19,"DarkMode":true}}`
-	var c ConfigNoSim
+	var c Config
 	if err := json.Unmarshal([]byte(old), &c); err != nil {
 		t.Fatal(err)
 	}

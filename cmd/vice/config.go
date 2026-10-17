@@ -5,7 +5,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -27,18 +26,9 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-// Slightly convoluted, but the full Config definition is split into
-// the part with the Sim and the rest of it.  In this way, we can first
-// deserialize the non-Sim part and then only try to deserialize the Sim if
-// its version matches CurrentConfigVersion.  This saves us from displaying
-// errors about corrupt JSON in cases where fields in the Sim have changed
-// (and we're going to throw it away anyway...)
+// Config holds the user's settings and the sim that was running when vice
+// last exited, if any. It is saved as JSON in config.json.
 type Config struct {
-	ConfigNoSim
-	ConfigSim
-}
-
-type ConfigNoSim struct {
 	platform.Config
 
 	Version       int
@@ -100,9 +90,10 @@ type ConfigNoSim struct {
 	WhisperBenchmarkIndex int     // Benchmark generation; rebenchmark if code's value is higher
 	WhisperRealtimeFactor float64 // Ratio of transcription time to audio duration (for quality tuning)
 	WhisperGPUDisabled    bool    // Sticky: GPU init failed on a prior run; stay on CPU
-}
 
-type ConfigSim struct {
+	// Sim is decoded only by savedSim, after the version check on load. A
+	// sim saved by another version of vice may no longer decode, and it is
+	// discarded without being read.
 	Sim json.RawMessage
 }
 
@@ -136,9 +127,7 @@ func configFilePath(lg *log.Logger) string {
 }
 
 func (c *Config) Encode(w io.Writer) error {
-	enc := json.NewEncoder(w)
-	enc.SetIndent("", "    ")
-	return enc.Encode(c)
+	return json.NewEncoder(w).Encode(c)
 }
 
 func (c *Config) Save(lg *log.Logger) error {
@@ -233,21 +222,19 @@ func (c *Config) ActiveRadarScope(isSTARSSim bool) scope.Scope {
 
 func getDefaultConfig() *Config {
 	return &Config{
-		ConfigNoSim: ConfigNoSim{
-			Config: platform.Config{
-				InitialWindowPosition: [2]int{100, 100},
-			},
-			Version:               server.ViceSerializeVersion,
-			WhatsNewIndex:         len(whatsNew),
-			NotifiedTargetGenMode: true, // don't warn for new installs
-			UserPTTKey:            imgui.KeySemicolon,
-			STARSScope:            stars.NewScope(),
-			ERAMScope:             eram.NewScope(),
-			MessagesWindow:        NewMessagesWindow(),
-			FlightStripWindow:     NewFlightStripWindow(),
-			ShowMessages:          true,
-			ShowFlightStrips:      true,
+		Config: platform.Config{
+			InitialWindowPosition: [2]int{100, 100},
 		},
+		Version:               server.ViceSerializeVersion,
+		WhatsNewIndex:         len(whatsNew),
+		NotifiedTargetGenMode: true, // don't warn for new installs
+		UserPTTKey:            imgui.KeySemicolon,
+		STARSScope:            stars.NewScope(),
+		ERAMScope:             eram.NewScope(),
+		MessagesWindow:        NewMessagesWindow(),
+		FlightStripWindow:     NewFlightStripWindow(),
+		ShowMessages:          true,
+		ShowFlightStrips:      true,
 	}
 }
 
@@ -265,11 +252,8 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	}()
 
 	if contents, err := os.ReadFile(fn); err == nil {
-		r := bytes.NewReader(contents)
-		d := json.NewDecoder(r)
-
 		config = &Config{}
-		if err := d.Decode(&config.ConfigNoSim); err != nil {
+		if err := json.Unmarshal(contents, config); err != nil {
 			configErr = err
 			config = getDefaultConfig()
 		}
@@ -304,12 +288,8 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 			}
 		}
 
-		if config.Version == server.ViceSerializeVersion {
-			// Go ahead and deserialize the Sim
-			r.Seek(0, io.SeekStart)
-			if err := d.Decode(&config.ConfigSim); err != nil {
-				configErr = err
-			}
+		if config.Version != server.ViceSerializeVersion {
+			config.Sim = nil
 		}
 	}
 
