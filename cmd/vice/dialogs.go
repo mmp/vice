@@ -486,13 +486,19 @@ func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any)
 	lg.Errorf(s, args...)
 }
 
-func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {
+// ShowBlockingErrorDialog shows an error message and returns once the user
+// has dismissed it.
+func ShowBlockingErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any) {
 	if lg != nil {
 		lg.Errorf(s, args...)
 	}
 
 	d := gui.NewModalDialog(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 	gui.RunDialogEventLoop(p, ui.font, d, func() bool { return d.Closed() })
+}
+
+func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {
+	ShowBlockingErrorDialog(p, lg, s, args...)
 	os.Exit(1)
 }
 

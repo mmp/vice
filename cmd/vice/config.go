@@ -6,11 +6,11 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/eram"
@@ -126,25 +126,52 @@ func configFilePath(lg *log.Logger) string {
 	return filepath.Join(dir, "config.json")
 }
 
-func (c *Config) Encode(w io.Writer) error {
-	return json.NewEncoder(w).Encode(c)
+// configBackupFilePath returns the path where Save keeps the previous
+// version of the configuration file fn.
+func configBackupFilePath(fn string) string {
+	return fn + ".bak"
 }
 
+// Save writes the configuration file, keeping the previous one as a backup
+// for LoadOrMakeDefaultConfig to fall back on.
 func (c *Config) Save(lg *log.Logger) error {
 	fn := configFilePath(lg)
 	lg.Infof("Saving config to: %s", fn)
 
-	// Write to a temp file in the same directory, then rename to the
-	// target path. This avoids corrupting the config file if we crash
-	// mid-write.
-	dir := filepath.Dir(fn)
-	tmp, err := os.CreateTemp(dir, "config-*.json.tmp")
+	b, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+
+	// A damaged config.json must not replace a good backup.
+	if old, err := os.ReadFile(fn); err == nil && json.Valid(old) {
+		if err := writeFileAtomic(configBackupFilePath(fn), old); err != nil {
+			lg.Warnf("%s: unable to back up config: %v", fn, err)
+		}
+	}
+
+	return writeFileAtomic(fn, b)
+}
+
+// writeFileAtomic writes b to fn by way of a temporary file in the same
+// directory, so that fn holds either its previous contents or b even if
+// vice or the OS crashes partway through.
+func writeFileAtomic(fn string, b []byte) error {
+	tmp, err := os.CreateTemp(filepath.Dir(fn), filepath.Base(fn)+"-*.tmp")
 	if err != nil {
 		return err
 	}
 	tmpName := tmp.Name()
 
-	if err := c.Encode(tmp); err != nil {
+	if _, err := tmp.Write(b); err != nil {
+		tmp.Close()
+		os.Remove(tmpName)
+		return err
+	}
+	// Without the sync, a power loss or OS crash soon after the rename can
+	// leave an empty file: the rename may reach the disk before the file's
+	// contents do.
+	if err := tmp.Sync(); err != nil {
 		tmp.Close()
 		os.Remove(tmpName)
 		return err
@@ -157,8 +184,12 @@ func (c *Config) Save(lg *log.Logger) error {
 	return os.Rename(tmpName, fn)
 }
 
-func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
-	client *client.ControlClient, saveSim bool, lg *log.Logger) bool {
+// SaveAtExit records the window layout, imgui settings, and, if saveSim is
+// set, the running sim, then saves the configuration. Vice exits right
+// after, so a failure is shown in a dialog that the user dismisses before
+// this returns.
+func (c *Config) SaveAtExit(platform platform.Platform, client *client.ControlClient, saveSim bool,
+	lg *log.Logger) {
 	c.Sim = nil
 	c.UserWorkstation = ""
 	if saveSim {
@@ -174,27 +205,10 @@ func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pla
 	c.ImGuiSettings = imgui.SaveIniSettingsToMemory()
 	c.InitialWindowSize = platform.WindowSize()
 	c.InitialWindowPosition = platform.WindowPosition()
-	fn := configFilePath(lg)
-	onDisk, err := os.ReadFile(fn)
-	if err != nil {
-		lg.Warnf("%s: unable to read config file: %v", fn, err)
-	}
-
-	var b strings.Builder
-	if err = c.Encode(&b); err != nil {
-		lg.Errorf("%s: unable to encode config: %v", fn, err)
-		return false
-	}
-
-	if b.String() == string(onDisk) {
-		return false
-	}
 
 	if err := c.Save(lg); err != nil {
-		ShowErrorDialog(platform, lg, "Error saving configuration file: %v", err)
+		ShowBlockingErrorDialog(platform, lg, "Error saving configuration file: %v", err)
 	}
-
-	return true
 }
 
 // hasFacilityEngineeringFiles reports whether any override files are
@@ -238,6 +252,19 @@ func getDefaultConfig() *Config {
 	}
 }
 
+// readConfig reads and decodes the configuration file fn.
+func readConfig(fn string) (*Config, error) {
+	b, err := os.ReadFile(fn)
+	if err != nil {
+		return nil, err
+	}
+	c := &Config{}
+	if err := json.Unmarshal(b, c); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
 func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	fn := configFilePath(lg)
 	lg.Infof("Loading config from: %s", fn)
@@ -251,46 +278,51 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 		}
 	}()
 
-	if contents, err := os.ReadFile(fn); err == nil {
-		config = &Config{}
-		if err := json.Unmarshal(contents, config); err != nil {
-			configErr = err
-			config = getDefaultConfig()
+	if c, err := readConfig(fn); err == nil {
+		config = c
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		bak := configBackupFilePath(fn)
+		if c, bakErr := readConfig(bak); bakErr == nil {
+			config = c
+			configErr = fmt.Errorf("%w; restored the configuration from the previous save", err)
+		} else {
+			lg.Warnf("%s: %v", bak, bakErr)
+			configErr = fmt.Errorf("%w; using the default configuration", err)
 		}
+	}
 
-		if config.Version < 1 {
-			config.Version = 1
-		}
-		if config.Version < 5 {
-			config.UserWorkstation = ""
-		}
+	if config.Version < 1 {
+		config.Version = 1
+	}
+	if config.Version < 5 {
+		config.UserWorkstation = ""
+	}
 
-		// Ensure all scope and window instances are initialized
-		if config.STARSScope == nil {
-			config.STARSScope = stars.NewScope()
-		}
-		if config.ERAMScope == nil {
-			config.ERAMScope = eram.NewScope()
-		}
-		if config.MessagesWindow == nil {
-			config.MessagesWindow = NewMessagesWindow()
-		}
-		if config.FlightStripWindow == nil {
-			config.FlightStripWindow = NewFlightStripWindow()
-		}
+	// Ensure all scope and window instances are initialized
+	if config.STARSScope == nil {
+		config.STARSScope = stars.NewScope()
+	}
+	if config.ERAMScope == nil {
+		config.ERAMScope = eram.NewScope()
+	}
+	if config.MessagesWindow == nil {
+		config.MessagesWindow = NewMessagesWindow()
+	}
+	if config.FlightStripWindow == nil {
+		config.FlightStripWindow = NewFlightStripWindow()
+	}
 
-		if config.Version < server.ViceSerializeVersion {
-			// Upgrade scopes
-			for _, sc := range []any{config.STARSScope, config.ERAMScope} {
-				if up, ok := sc.(scope.Upgrader); ok && sc != nil {
-					up.Upgrade(config.Version, server.ViceSerializeVersion)
-				}
+	if config.Version < server.ViceSerializeVersion {
+		// Upgrade scopes
+		for _, sc := range []any{config.STARSScope, config.ERAMScope} {
+			if up, ok := sc.(scope.Upgrader); ok && sc != nil {
+				up.Upgrade(config.Version, server.ViceSerializeVersion)
 			}
 		}
+	}
 
-		if config.Version != server.ViceSerializeVersion {
-			config.Sim = nil
-		}
+	if config.Version != server.ViceSerializeVersion {
+		config.Sim = nil
 	}
 
 	if config.UnpinnedWindows == nil {

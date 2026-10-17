@@ -720,7 +720,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	// After we have plat and render
 	if configErr != nil {
-		ShowErrorDialog(plat, lg, "Saved configuration file is corrupt. Discarding. (%v)", configErr)
+		ShowErrorDialog(plat, lg, "Unable to load the saved configuration: %v", configErr)
 	}
 
 	config.Activate(render, plat, lg)
@@ -882,7 +882,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 			}
 
 			saveSim := mgr.ClientIsLocal() && fuzzController == nil // Don't save fuzz sims
-			config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
+			config.SaveAtExit(plat, controlClient, saveSim, lg)
 			mgr.Disconnect()
 			break
 		}
