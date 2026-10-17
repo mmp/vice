@@ -50,6 +50,7 @@ resources/version.txt
 rsrc_windows_*.syso
 scenario-test-*.txt
 /scraperoutes
+simlog/logs
 slog
 util/manifest.json
 vice-logs/
