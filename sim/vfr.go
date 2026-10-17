@@ -43,7 +43,9 @@ func (s *Sim) processInterfacilityVFR(now Time) {
 			s.LocalCodePool.Return(oldFP.AssignedSquawk)
 			s.STARSComputer.returnListIndex(oldFP.ListIndex)
 			if s.CIDAllocator != nil && oldFP.CID != "" {
-				s.CIDAllocator.Release(oldFP.CID)
+				if err := s.CIDAllocator.Release(oldFP.CID); err != nil {
+					s.lg.Warnf("%s: %v", oldFP.CID, err)
+				}
 			}
 			if oldFP.StripOwner != "" {
 				s.freeStripCID(oldFP.StripCID)

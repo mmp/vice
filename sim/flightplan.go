@@ -1067,7 +1067,9 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) (err error) {
 
 func (s *Sim) deleteFlightPlan(fp *FlightPlan) {
 	if s.CIDAllocator != nil && fp.CID != "" {
-		s.CIDAllocator.Release(fp.CID)
+		if err := s.CIDAllocator.Release(fp.CID); err != nil {
+			s.lg.Warnf("%s: %v", fp.CID, err)
+		}
 	}
 	if fp.StripOwner != "" {
 		s.freeStripCID(fp.StripCID)

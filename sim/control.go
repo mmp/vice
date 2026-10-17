@@ -187,15 +187,6 @@ func (r DeleteReason) String() string {
 func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
 	s.logDelete(ac, reason)
 
-	if s.CIDAllocator != nil {
-		if fp := ac.FlightPlan; fp != nil && fp.CID != "" {
-			s.CIDAllocator.Release(fp.CID)
-			fp.CID = ""
-		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
-			s.CIDAllocator.Release(fp.CID)
-			fp.CID = ""
-		}
-	}
 	s.clearAircraftSTTCommands(ac.ADSBCallsign)
 	delete(s.Aircraft, ac.ADSBCallsign)
 
