@@ -9,9 +9,8 @@
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM
   - `QZ` assigns VFR and VFR-on-top altitudes, which data blocks show as `VFR/` or `OTP/` and the reported altitude
-  - TRACON controllers no longer enter altitudes in ERAM data blocks, so departures reach the first ERAM controller showing their filed altitude
-  - Conflict alert no longer assumes that an aircraft a TRACON owns will climb or descend to its data block altitude
-  - Fixed bug where virtual TRACON controllers would set ERAM data block altitudes
+  - Virtual TRACON controllers no longer enter altitudes in ERAM data blocks
+  - Tunes up conflict alert to better handle virtual TRACON-controller-owned aircraft
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - Fixed a few bugs with automatically generated ATPA volumes
