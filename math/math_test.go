@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/util"
 )
 
 func TestParseLatLong(t *testing.T) {
@@ -564,10 +565,7 @@ func TestSplitSelfIntersectingPolygon(t *testing.T) {
 		}
 		// Total vertex count across all sub-polygons should exceed the
 		// original because the intersection point is added to both halves.
-		totalVerts := 0
-		for _, p := range result {
-			totalVerts += len(p)
-		}
+		totalVerts := util.ReduceSlice(result, 0, func(p []Point2LL, n int) int { return n + len(p) })
 		if totalVerts < len(poly)+1 {
 			t.Errorf("expected more total vertices than original (%d), got %d", len(poly), totalVerts)
 		}

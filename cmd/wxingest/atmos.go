@@ -1038,11 +1038,9 @@ func (sg *Grid) QueryCircle(center math.Point2LL, radiusNM float32) iter.Seq[Poi
 
 // PointCount returns the total number of points indexed in the grid.
 func (sg *Grid) PointCount() int {
-	total := 0
-	for _, points := range sg.Cells {
-		total += len(points)
-	}
-	return total
+	return util.ReduceMap(sg.Cells, 0, func(_ GridCell, points []PointRef, total int) int {
+		return total + len(points)
+	})
 }
 
 // buildGridFromGRIB2 constructs a grid index from a single GRIB2 record.

@@ -579,10 +579,7 @@ func (b *Brief) render(source string, p platform.Platform, baseFontSize int, sta
 					tableHeaderColumnIndex[n] = 0
 
 					// Calculate total content width
-					var totalWidth float32
-					for _, w := range columnWidths {
-						totalWidth += w
-					}
+					totalWidth := util.ReduceSlice(columnWidths, 0, func(w, total float32) float32 { return total + w })
 
 					// Store for caption centering
 					lastTableTotalWidth = totalWidth
@@ -1347,10 +1344,7 @@ func labelTopLeftAndSize(ann brief.MapAnnotation, latLonToScreen func(math.Point
 	if len(ann.Label) == 0 {
 		return imgui.Vec2{}, imgui.Vec2{}, false
 	}
-	var w float32
-	for _, line := range ann.Label {
-		w = max(w, imgui.CalcTextSize(line).X)
-	}
+	w := util.ReduceMax(slices.Values(ann.Label), 0, func(line string) float32 { return imgui.CalcTextSize(line).X })
 	size := imgui.Vec2{X: w, Y: float32(len(ann.Label)) * imgui.TextLineHeight()}
 
 	switch ann.Type {

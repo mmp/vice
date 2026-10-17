@@ -187,6 +187,27 @@ func TestReduceMap(t *testing.T) {
 	}
 }
 
+func TestReduceMinMax(t *testing.T) {
+	words := []string{"tower", "ground", "app"}
+	length := func(s string) int { return len(s) }
+
+	if r := ReduceMax(slices.Values(words), 0, length); r != 6 {
+		t.Errorf("ReduceMax got %d, expected 6", r)
+	}
+	if r := ReduceMax(slices.Values(words), 10, length); r != 10 {
+		t.Errorf("ReduceMax with larger initial value got %d, expected 10", r)
+	}
+	if r := ReduceMin(slices.Values(words), 10, length); r != 3 {
+		t.Errorf("ReduceMin got %d, expected 3", r)
+	}
+	if r := ReduceMin(slices.Values(words), 1, length); r != 1 {
+		t.Errorf("ReduceMin with smaller initial value got %d, expected 1", r)
+	}
+	if r := ReduceMax(slices.Values([]string(nil)), -1, length); r != -1 {
+		t.Errorf("ReduceMax of empty sequence got %d, expected -1", r)
+	}
+}
+
 func TestSingleOrArrayJSON(t *testing.T) {
 	type test struct {
 		json   string

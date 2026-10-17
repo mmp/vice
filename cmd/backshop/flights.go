@@ -305,10 +305,7 @@ func (t *trafficTab) drawSummary(a *app) {
 // drawUnflownReasons breaks the traffic the scenario won't fly down by reason,
 // which is what says whether an exit is missing or a whole airport is idle.
 func drawUnflownReasons(unflown map[string]int) {
-	total := 0
-	for _, n := range unflown {
-		total += n
-	}
+	total := util.ReduceMap(unflown, 0, func(_ string, n, total int) int { return total + n })
 	if total == 0 {
 		return
 	}

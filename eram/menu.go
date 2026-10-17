@@ -776,10 +776,7 @@ func (ep *Scope) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font 
 	bBorder := ps.Brightness.Border
 	bText := ps.Brightness.Text
 
-	var totalWeight float32
-	for _, c := range cells {
-		totalWeight += max(c.Weight, 1)
-	}
+	totalWeight := util.ReduceSlice(cells, 0, func(c MenuCell, w float32) float32 { return w + max(c.Weight, 1) })
 
 	*extent = math.Extent2D{
 		P0: [2]float32{cursor[0], cursor[1] - itemH},
@@ -880,10 +877,7 @@ func (ep *Scope) drawMenuGrid(cursor [2]float32, width, itemH float32, font *ren
 		row := grid.Rows[idx]
 		y := cursor[1] - float32(vi)*itemH
 
-		var totalWeight float32
-		for _, c := range row {
-			totalWeight += max(c.Weight, 1)
-		}
+		totalWeight := util.ReduceSlice(row, 0, func(c MenuGridCell, w float32) float32 { return w + max(c.Weight, 1) })
 
 		x := cursor[0]
 		for ci := range row {

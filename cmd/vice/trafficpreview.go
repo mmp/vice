@@ -228,11 +228,9 @@ func drawTrafficPlotLegend(color imgui.Vec4, label string, count int) {
 // sumTrafficCounts counts the operations over n minutes from offset, stopping
 // at the end of what the server sent rather than running off it.
 func sumTrafficCounts(counts []uint16, offset, n int) int {
-	total := 0
-	for _, count := range counts[offset:min(offset+n, len(counts))] {
-		total += int(count)
-	}
-	return total
+	return util.ReduceSlice(counts[offset:min(offset+n, len(counts))], 0, func(c uint16, total int) int {
+		return total + int(c)
+	})
 }
 
 // smoothTrafficCounts turns per-minute operation counts into the rate at each

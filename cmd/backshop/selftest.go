@@ -223,10 +223,9 @@ func selfTestRecording(a *app) error {
 	if p.empty() {
 		return fmt.Errorf("%s: nothing was recorded", flight.Callsign)
 	}
-	flown := time.Duration(0)
-	for _, f := range p.flights {
-		flown = max(flown, f.End().Sub(f.Start))
-	}
+	flown := util.ReduceMax(slices.Values(p.flights), 0, func(f recordedFlight) time.Duration {
+		return f.End().Sub(f.Start)
+	})
 	fmt.Printf("recorded %d flights, the longest %s, in %s\n", len(p.flights),
 		clockText(flown), time.Since(start).Round(time.Millisecond))
 	return nil

@@ -656,9 +656,7 @@ func (ap *Airport) ApproachesToRunway(rwy string) []*Approach {
 }
 
 func (ap Airport) VFRRateSum() float32 {
-	sum := ap.VFR.Randoms.Rate
-	for _, spec := range ap.VFR.Routes {
-		sum += spec.Rate
-	}
-	return sum
+	return util.ReduceSlice(ap.VFR.Routes, ap.VFR.Randoms.Rate, func(spec VFRRouteSpec, sum float32) float32 {
+		return sum + spec.Rate
+	})
 }

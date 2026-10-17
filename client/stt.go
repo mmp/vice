@@ -1094,10 +1094,7 @@ func makeWhisperPrompt(state SimState) string {
 		routeFixes = append(routeFixes, fixes)
 	}
 
-	var maxFixes int
-	for _, fixes := range routeFixes {
-		maxFixes = max(maxFixes, len(fixes))
-	}
+	maxFixes := util.ReduceMax(slices.Values(routeFixes), 0, func(fixes []string) int { return len(fixes) })
 	for rank := range maxFixes {
 		for _, fixes := range routeFixes {
 			if rank < len(fixes) {

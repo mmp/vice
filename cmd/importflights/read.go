@@ -21,6 +21,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/traffic"
+	"github.com/mmp/vice/util"
 	"github.com/parquet-go/parquet-go"
 )
 
@@ -546,10 +547,7 @@ func (imp *importer) report() {
 	}
 
 	if len(imp.repairedTypes) > 0 {
-		var repaired int64
-		for _, n := range imp.repairedTypes {
-			repaired += n
-		}
+		repaired := util.ReduceMap(imp.repairedTypes, 0, func(_ string, n, total int64) int64 { return total + n })
 		fmt.Printf("\nGave %s flights the type their callsign otherwise flies, "+
 			"taking them away from:\n", commas(repaired))
 		printCounts(imp.repairedTypes)
@@ -590,10 +588,7 @@ func printCounts(counts map[string]int64) {
 		fmt.Printf("  %-8s %s\n", k, commas(counts[k]))
 	}
 	if len(keys) > show {
-		var rest int64
-		for _, k := range keys[show:] {
-			rest += counts[k]
-		}
+		rest := util.ReduceSlice(keys[show:], 0, func(k string, total int64) int64 { return total + counts[k] })
 		fmt.Printf("  and %d more accounting for %s flights\n", len(keys)-show, commas(rest))
 	}
 }

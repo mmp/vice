@@ -118,11 +118,7 @@ func (s *IntRangeSet) Take(v int) error {
 
 func (s *IntRangeSet) Count() int {
 	// Count the number of set bits in the range
-	n := 0
-	for _, b := range s.AvailableBits {
-		n += bits.OnesCount64(b)
-	}
-	return n
+	return ReduceSlice(s.AvailableBits, 0, func(b uint64, n int) int { return n + bits.OnesCount64(b) })
 }
 
 func (s *IntRangeSet) Clone() *IntRangeSet {

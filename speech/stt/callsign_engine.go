@@ -9,6 +9,8 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/mmp/vice/util"
 )
 
 // patternMatch holds a match result with its pattern context.
@@ -268,12 +270,7 @@ func findFlightHintMatch(tokens []Token, candidates []callsignMatchResult) *call
 	}
 
 	// Find the best consumed position (where to start looking for flight hints)
-	maxConsumed := 0
-	for _, c := range candidates {
-		if c.Consumed > maxConsumed {
-			maxConsumed = c.Consumed
-		}
-	}
+	maxConsumed := util.ReduceMax(slices.Values(candidates), 0, func(c callsignMatchResult) int { return c.Consumed })
 
 	// Look for number tokens in the next few positions and collect them
 	var hintParts []string

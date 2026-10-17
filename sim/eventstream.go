@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/util"
 )
 
 type EventSubscriberId int
@@ -201,12 +202,9 @@ func (e *EventStream) Destroy() {
 // is called periodically so that EventStream memory usage doesn't grow
 // without bound.
 func (e *EventStream) compact() {
-	minOffset := len(e.events)
-	for sub := range e.subscriptions {
-		if sub.offset < minOffset {
-			minOffset = sub.offset
-		}
-	}
+	minOffset := util.ReduceMin(maps.Keys(e.subscriptions), len(e.events), func(sub *EventsSubscription) int {
+		return sub.offset
+	})
 
 	if minOffset > cap(e.events)/2 {
 		n := len(e.events) - minOffset

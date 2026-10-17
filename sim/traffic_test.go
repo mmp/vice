@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/traffic"
+	"github.com/mmp/vice/util"
 )
 
 // publishedProviderTestSim builds the minimal Sim the published-traffic provider needs:
@@ -271,11 +272,7 @@ func countsByMinute(counts []uint16) map[int]int {
 }
 
 func totalCount(counts []uint16) int {
-	total := 0
-	for _, count := range counts {
-		total += int(count)
-	}
-	return total
+	return util.ReduceSlice(counts, 0, func(c uint16, total int) int { return total + int(c) })
 }
 
 // lastCountedMinute is the last minute anything was counted in, or -1 if

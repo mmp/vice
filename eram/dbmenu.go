@@ -50,10 +50,7 @@ func (ep *Scope) openDatablockMenu(ctx *scope.Context, dbMain math.Extent2D, wid
 // dbMenuWidth returns a menu width fitting the given body labels, the arrow
 // column, and the title bar (callsign + X close button).
 func dbMenuWidth(font, titleFont *renderer.Font, title string, labels ...string) float32 {
-	var w float32
-	for _, l := range labels {
-		w = max(w, font.LayoutBounds(l, 0).Width())
-	}
+	w := util.ReduceMax(slices.Values(labels), 0, func(l string) float32 { return font.LayoutBounds(l, 0).Width() })
 	w += 16 + 16 // arrow column + padding
 	xW := titleFont.LayoutBounds("X", 0).Width()
 	titleW := titleFont.LayoutBounds(title, 0).Width() + 2*xW + 12

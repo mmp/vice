@@ -84,10 +84,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 			// Expand the hull by delta: hacky polygon dilation--
 			// compute the average point as a center and then offset
 			// each away from it.
-			var c [2]float32
-			for _, p := range hull {
-				c = math.Add2f(c, p)
-			}
+			c := util.ReduceSlice(hull, [2]float32{}, math.Add2f)
 			c = math.Scale2f(c, 1/float32(len(hull)))
 			for i := range hull {
 				v := math.Sub2f(hull[i], c)

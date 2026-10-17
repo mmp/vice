@@ -869,9 +869,7 @@ func approachCount(ss *client.SimState) int {
 }
 
 func overflightCount(ss *client.SimState) int {
-	n := 0
-	for _, flow := range ss.InboundFlows {
-		n += len(flow.Overflights)
-	}
-	return n
+	return util.ReduceMap(ss.InboundFlows, 0, func(_ string, flow *av.InboundFlow, n int) int {
+		return n + len(flow.Overflights)
+	})
 }

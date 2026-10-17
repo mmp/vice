@@ -435,10 +435,9 @@ func launchWorkers(resourcesDir string, manifest map[string]manifestEntry) (work
 		errorsCh:    make(chan error),
 	}
 
-	var totalSize int64
-	for _, entry := range manifest {
-		totalSize += entry.Size
-	}
+	totalSize := ReduceMap(manifest, 0, func(_ string, entry manifestEntry, total int64) int64 {
+		return total + entry.Size
+	})
 
 	var eg errgroup.Group
 	sem := make(chan struct{}, 8)

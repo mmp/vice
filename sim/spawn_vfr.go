@@ -527,10 +527,9 @@ func (s *Sim) vfrTerminalCeiling(ap db.Airport) (int, bool) {
 	// Arrivals maneuver at every altitude from the pattern up to the
 	// ceiling, so they stay under the airspace over where they fly rather
 	// than passing over it as a route may.
-	ceiling := maxVFRAltitude
-	for _, vol := range s.vfrArrivalAirspace(ap) {
-		ceiling = min(ceiling, underFloor(vol.Floor))
-	}
+	ceiling := util.ReduceMin(slices.Values(s.vfrArrivalAirspace(ap)), maxVFRAltitude, func(vol *av.AirspaceVolume) int {
+		return underFloor(vol.Floor)
+	})
 
 	if ceiling < ap.Elevation+vfrPatternMinRoom {
 		ceiling = 0

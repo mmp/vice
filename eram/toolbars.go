@@ -6,6 +6,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -600,10 +601,9 @@ func (ep *Scope) altitudeLimitsLayoutAt(anchor [2]float32) altitudeLimitsLayout 
 		}
 	}
 
-	var labelWidth float32
-	for _, row := range rows {
-		labelWidth = max(labelWidth, font.LayoutBounds(row.label, 0).Width())
-	}
+	labelWidth := util.ReduceMax(slices.Values(rows), 0, func(row altitudeLimitsRow) float32 {
+		return font.LayoutBounds(row.label, 0).Width()
+	})
 	valueWidth := font.LayoutBounds(formatAltitudeBlock(sim.UnrestrictedAltitudeLimits), 0).Width() + 2*altitudeLimitsPad
 
 	width := 3*altitudeLimitsPad + labelWidth + valueWidth

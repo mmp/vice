@@ -423,10 +423,7 @@ func writeAircraftTable(w io.Writer, aircraft []*loggedAircraft) {
 	for i := range widths {
 		widths[i] = max(len(rules[i]), len(flights[i]), len(strconv.Itoa(rows[0].counts[i])))
 	}
-	labelWidth := 0
-	for _, r := range rows {
-		labelWidth = max(labelWidth, len(r.label))
-	}
+	labelWidth := util.ReduceMax(slices.Values(rows), 0, func(r row) int { return len(r.label) })
 
 	line := func(label string, cells []string) {
 		var s strings.Builder

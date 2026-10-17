@@ -184,10 +184,9 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 		}
 
 		if lc.client.State.LaunchConfig.DepartureMode == sim.LaunchManual {
-			ndep := 0
-			for _, slot := range ifrSlots {
-				ndep += lc.launchCounts[departureSlotKey(slot)]
-			}
+			ndep := util.ReduceSlice(ifrSlots, 0, func(slot sim.DepartureLaunchSlot, n int) int {
+				return n + lc.launchCounts[departureSlotKey(slot)]
+			})
 			imgui.Text(fmt.Sprintf("Departures: %d total", ndep))
 
 			// The slots arrive sorted by airport, runway, and category.
@@ -289,10 +288,9 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 		}
 
 		if lc.client.State.LaunchConfig.DepartureMode == sim.LaunchManual {
-			ndep := 0
-			for _, slot := range vfrSlots {
-				ndep += lc.launchCounts[departureSlotKey(slot)]
-			}
+			ndep := util.ReduceSlice(vfrSlots, 0, func(slot sim.DepartureLaunchSlot, n int) int {
+				return n + lc.launchCounts[departureSlotKey(slot)]
+			})
 			imgui.Text(fmt.Sprintf("VFR Departures: %d total", ndep))
 
 			if !lc.client.State.LaunchConfig.HaveVFRReportingRegions {
@@ -399,10 +397,9 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 			arrivals := util.FilterSlice(lc.client.State.InboundLaunchSlots,
 				func(slot sim.InboundLaunchSlot) bool { return slot.Airport != "overflights" })
 
-			narr := 0
-			for _, slot := range arrivals {
-				narr += lc.launchCounts[inboundSlotKey(slot)]
-			}
+			narr := util.ReduceSlice(arrivals, 0, func(slot sim.InboundLaunchSlot, n int) int {
+				return n + lc.launchCounts[inboundSlotKey(slot)]
+			})
 			imgui.Text(fmt.Sprintf("Arrivals: %d total", narr))
 
 			slices.SortFunc(arrivals, func(a, b sim.InboundLaunchSlot) int {
@@ -500,10 +497,9 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 			overflights := util.FilterSlice(lc.client.State.InboundLaunchSlots,
 				func(slot sim.InboundLaunchSlot) bool { return slot.Airport == "overflights" })
 
-			nof := 0
-			for _, slot := range overflights {
-				nof += lc.launchCounts[inboundSlotKey(slot)]
-			}
+			nof := util.ReduceSlice(overflights, 0, func(slot sim.InboundLaunchSlot, n int) int {
+				return n + lc.launchCounts[inboundSlotKey(slot)]
+			})
 			imgui.Text(fmt.Sprintf("Overflights: %d total", nof))
 
 			if len(overflights) > 0 && imgui.BeginTableV("overflights", 7, flags, imgui.Vec2{tableScale * 400, 0}, 0.0) {

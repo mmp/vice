@@ -6,6 +6,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/util"
 )
 
 // DrawView renders ERAM floating windows (ALTIM SET, WX REPORT, MCA, RA, Clock,
@@ -870,12 +872,7 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 		cols[c].Rows = append(cols[c].Rows, r)
 	}
 
-	bodyHeight := float32(0)
-	for _, col := range cols {
-		if h := col.Measure(); h > bodyHeight {
-			bodyHeight = h
-		}
-	}
+	bodyHeight := util.ReduceMax(slices.Values(cols), 0, (*RowList).Measure)
 
 	// View width: columns side-by-side, optionally widened to fit the title
 	// bar with the columns centered (CODE).
@@ -1079,11 +1076,8 @@ func (l *RowList) Measure() float32 {
 		}
 	}
 
-	h := l.ListTopPad + l.ListBottomPad
-	for i := range l.visibleCount {
-		h += l.measured[i].height
-	}
-	return h
+	return util.ReduceSlice(l.measured[:l.visibleCount], l.ListTopPad+l.ListBottomPad,
+		func(m measuredRow, h float32) float32 { return h + m.height })
 }
 
 // iterRows walks the visible rows top-down, computing each row's full

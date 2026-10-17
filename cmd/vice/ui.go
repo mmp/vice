@@ -1088,11 +1088,10 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarSc
 					for offset := 0; offset < len(samples); offset += windowSize {
 						end := min(offset+windowSize, len(samples))
 						window := samples[offset:end]
-						var sumSq float64
-						for _, s := range window {
+						sumSq := util.ReduceSlice(window, 0, func(s int16, sum float64) float64 {
 							f := float64(s) / 32768.0
-							sumSq += f * f
-						}
+							return sum + f*f
+						})
 						rms := float32(gomath.Sqrt(sumSq / float64(len(window))))
 						ui.testPTTLevels[ui.testPTTLevelIdx%len(ui.testPTTLevels)] = rms
 						ui.testPTTLevelIdx++

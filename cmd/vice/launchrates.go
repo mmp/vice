@@ -5,6 +5,7 @@
 package main
 
 import (
+	"maps"
 	"runtime"
 
 	av "github.com/mmp/vice/aviation"
@@ -29,10 +30,7 @@ func drawPublishedDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (change
 		"%.1f", imgui.SliderFlagsNoInput)
 
 	airportDepartures := lc.WorkedDepartureCounts() // key is e.g. KJFK, then count of runways cross categories.
-	maxDepartureCategories := 0
-	for _, n := range airportDepartures {
-		maxDepartureCategories = max(n, maxDepartureCategories)
-	}
+	maxDepartureCategories := util.ReduceMax(maps.Values(airportDepartures), 0, func(n int) int { return n })
 	if maxDepartureCategories == 0 {
 		return
 	}
@@ -120,10 +118,7 @@ func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed 
 	if len(numAirportFlows) == 0 { // no arrivals
 		return
 	}
-	maxAirportFlows := 0
-	for _, n := range numAirportFlows {
-		maxAirportFlows = max(n, maxAirportFlows)
-	}
+	maxAirportFlows := util.ReduceMax(maps.Values(numAirportFlows), 0, func(n int) int { return n })
 
 	aarColumns := min(3, maxAirportFlows)
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
@@ -182,10 +177,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	if len(airportDepartures) == 0 {
 		return
 	}
-	maxDepartureCategories := 0
-	for _, n := range airportDepartures {
-		maxDepartureCategories = max(n, maxDepartureCategories)
-	}
+	maxDepartureCategories := util.ReduceMax(maps.Values(airportDepartures), 0, func(n int) int { return n })
 
 	// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
 	// from being here initially.
@@ -300,10 +292,7 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	if lc.TrafficSource != sim.TrafficSourceScenario {
 		return drawPublishedArrivalUI(lc, p)
 	}
-	maxAirportFlows := 0
-	for _, n := range numAirportFlows {
-		maxAirportFlows = max(n, maxAirportFlows)
-	}
+	maxAirportFlows := util.ReduceMax(maps.Values(numAirportFlows), 0, func(n int) int { return n })
 
 	changed = imgui.SliderFloatV("Arrival/overflight rate scale", &lc.InboundFlowRateScale, 0, 5, "%.1f", imgui.SliderFlagsNoInput) || changed
 

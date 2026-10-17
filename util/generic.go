@@ -224,10 +224,34 @@ func FirstSortedMapEntry[K cmp.Ordered, V any](m map[K]V) (K, V) {
 	return first, m[first]
 }
 
-// ReduceSlice applies the provided reduction function to the given slice,
-// starting with the provided initial value.  The update rule applied is
-// result=reduce( value, result), where the initial value of result is
-// given by the initial parameter.
+// ReduceSeq applies the provided reduction function to the given sequence, starting with the
+// provided initial value.  The update rule applied is result=reduce(value, result), where the
+// initial value of result is given by the initial parameter.
+func ReduceSeq[V any, R any](seq iter.Seq[V], initial R, reduce func(V, R) R) R {
+	result := initial
+	for v := range seq {
+		result = reduce(v, result)
+	}
+	return result
+}
+
+// ReduceSeq2 applies the provided reduction function to the given key/value sequence, starting with
+// the provided initial value.  The update rule applied is result=reduce(key, value, result), where
+// the initial value of result is given by the initial parameter.
+func ReduceSeq2[K any, V any, R any](seq iter.Seq2[K, V], initial R, reduce func(K, V, R) R) R {
+	result := initial
+	for k, v := range seq {
+		result = reduce(k, v, result)
+	}
+	return result
+}
+
+// ReduceSlice and ReduceMap loop directly rather than calling ReduceSeq and ReduceSeq2: wrapped
+// that way, they exceed the compiler's inlining budget and pay an indirect call per element.
+
+// ReduceSlice applies the provided reduction function to the given slice, starting with the
+// provided initial value.  The update rule applied is result=reduce(value, result), where the
+// initial value of result is given by the initial parameter.
 func ReduceSlice[V any, R any](s []V, initial R, reduce func(V, R) R) R {
 	result := initial
 	for _, v := range s {
@@ -236,14 +260,33 @@ func ReduceSlice[V any, R any](s []V, initial R, reduce func(V, R) R) R {
 	return result
 }
 
-// ReduceMap applies the provided reduction function to the given map,
-// starting with the provided initial value.  The update rule applied is
-// result=reduce(key, value, result), where the initial value of result is
-// given by the initial parameter.
+// ReduceMap applies the provided reduction function to the given map, starting with the provided
+// initial value.  The update rule applied is result=reduce(key, value, result), where the initial
+// value of result is given by the initial parameter.
 func ReduceMap[K comparable, V any, R any](m map[K]V, initial R, reduce func(K, V, R) R) R {
 	result := initial
 	for k, v := range m {
 		result = reduce(k, v, result)
+	}
+	return result
+}
+
+// ReduceMax returns the largest of initial and the values that value returns for the elements of
+// the sequence.
+func ReduceMax[V any, R cmp.Ordered](seq iter.Seq[V], initial R, value func(V) R) R {
+	result := initial
+	for v := range seq {
+		result = max(result, value(v))
+	}
+	return result
+}
+
+// ReduceMin returns the smallest of initial and the values that value returns for the elements of
+// the sequence.
+func ReduceMin[V any, R cmp.Ordered](seq iter.Seq[V], initial R, value func(V) R) R {
+	result := initial
+	for v := range seq {
+		result = min(result, value(v))
 	}
 	return result
 }
