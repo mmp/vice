@@ -699,8 +699,8 @@ func exitTooltip(ss *client.SimState, icao av.ICAOAirportCode, ap *av.Airport, d
 // from the airport, over all of its runways and departure categories.
 func departureRate(ss *client.SimState, icao av.ICAOAirportCode) float32 {
 	var rate float32
-	for _, categories := range ss.LaunchConfig.DepartureRates[icao] {
-		for _, r := range categories {
+	for categories := range util.SortedMapValues(ss.LaunchConfig.DepartureRates[icao]) {
+		for r := range util.SortedMapValues(categories) {
 			rate += r
 		}
 	}
@@ -710,11 +710,8 @@ func departureRate(ss *client.SimState, icao av.ICAOAirportCode) float32 {
 // arrivalRate is the rate at which the scenario's inbound flows bring traffic
 // to the airport.
 func arrivalRate(ss *client.SimState, icao av.ICAOAirportCode) float32 {
-	var rate float32
-	for _, airports := range ss.LaunchConfig.InboundFlowRates {
-		rate += airports[string(icao)]
-	}
-	return rate
+	return util.ReduceSeq(util.SortedMapValues(ss.LaunchConfig.InboundFlowRates), 0,
+		func(airports map[string]float32, rate float32) float32 { return rate + airports[string(icao)] })
 }
 
 func rateText(rate float32) string {

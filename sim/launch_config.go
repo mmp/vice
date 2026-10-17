@@ -184,46 +184,22 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vffRequestRat
 
 // TotalDepartureRate returns the total departure rate (aircraft per hour) for all airports and runways
 func (lc *LaunchConfig) TotalDepartureRate() float32 {
-	var sum float32
-	for _, runwayRates := range lc.DepartureRates {
-		sum += sumRateMap2(runwayRates, lc.DepartureRateScale)
-	}
-	return sum
+	return lc.departureRate(func(av.ICAOAirportCode, av.RunwayID, string) bool { return true })
 }
 
 // TotalInboundFlowRate returns the total inbound flow rate (aircraft per hour) for all flows
 func (lc *LaunchConfig) TotalInboundFlowRate() float32 {
-	var sum float32
-	for _, flowRates := range lc.InboundFlowRates {
-		for _, rate := range flowRates {
-			sum += scaleRate(rate, lc.InboundFlowRateScale)
-		}
-	}
-	return sum
+	return lc.inboundRate(func(string, string) bool { return true })
 }
 
 // TotalArrivalRate returns the total arrival rate (aircraft per hour) excluding overflights
 func (lc *LaunchConfig) TotalArrivalRate() float32 {
-	var sum float32
-	for _, flowRates := range lc.InboundFlowRates {
-		for ap, rate := range flowRates {
-			if ap != "overflights" {
-				sum += scaleRate(rate, lc.InboundFlowRateScale)
-			}
-		}
-	}
-	return sum
+	return lc.inboundRate(func(flow, airport string) bool { return airport != "overflights" })
 }
 
 // TotalOverflightRate returns the total overflight rate (aircraft per hour)
 func (lc *LaunchConfig) TotalOverflightRate() float32 {
-	var sum float32
-	for _, flowRates := range lc.InboundFlowRates {
-		if rate, ok := flowRates["overflights"]; ok {
-			sum += scaleRate(rate, lc.InboundFlowRateScale)
-		}
-	}
-	return sum
+	return lc.inboundRate(func(flow, airport string) bool { return airport == "overflights" })
 }
 
 // The Worked rates are the Total ones less the traffic no human ever works, and
@@ -233,17 +209,9 @@ func (lc *LaunchConfig) TotalOverflightRate() float32 {
 // generate, which is what the rate limits care about.
 
 func (lc *LaunchConfig) WorkedDepartureRate() float32 {
-	var sum float32
-	for airport, runwayRates := range lc.DepartureRates {
-		for runway, categoryRates := range runwayRates {
-			for category, rate := range categoryRates {
-				if !lc.DepartureIsBackground(airport, runway, category) {
-					sum += scaleRate(rate, lc.DepartureRateScale)
-				}
-			}
-		}
-	}
-	return sum
+	return lc.departureRate(func(airport av.ICAOAirportCode, runway av.RunwayID, category string) bool {
+		return !lc.DepartureIsBackground(airport, runway, category)
+	})
 }
 
 func (lc *LaunchConfig) WorkedArrivalRate() float32 {
@@ -255,11 +223,36 @@ func (lc *LaunchConfig) WorkedOverflightRate() float32 {
 }
 
 func (lc *LaunchConfig) workedInboundRate(overflights bool) float32 {
+	return lc.inboundRate(func(flow, airport string) bool {
+		return (airport == "overflights") == overflights && !lc.InboundFlowIsBackground(flow, airport)
+	})
+}
+
+// departureRate totals the scaled departure rates that include accepts. Like
+// sumRateMap, it takes the keys in sorted order so that the total is the same
+// from run to run; sharing it also keeps each Worked rate equal to its Total
+// one when no traffic is background.
+func (lc *LaunchConfig) departureRate(include func(av.ICAOAirportCode, av.RunwayID, string) bool) float32 {
 	var sum float32
-	for flow, flowRates := range lc.InboundFlowRates {
-		for airport, rate := range flowRates {
-			if (airport == "overflights") == overflights &&
-				!lc.InboundFlowIsBackground(flow, airport) {
+	for airport, runwayRates := range util.SortedMap(lc.DepartureRates) {
+		for runway, categoryRates := range util.SortedMap(runwayRates) {
+			for category, rate := range util.SortedMap(categoryRates) {
+				if include(airport, runway, category) {
+					sum += scaleRate(rate, lc.DepartureRateScale)
+				}
+			}
+		}
+	}
+	return sum
+}
+
+// inboundRate totals the scaled inbound flow rates that include accepts, in
+// sorted key order as departureRate does.
+func (lc *LaunchConfig) inboundRate(include func(flow, airport string) bool) float32 {
+	var sum float32
+	for flow, flowRates := range util.SortedMap(lc.InboundFlowRates) {
+		for airport, rate := range util.SortedMap(flowRates) {
+			if include(flow, airport) {
 				sum += scaleRate(rate, lc.InboundFlowRateScale)
 			}
 		}
@@ -273,17 +266,17 @@ func (lc *LaunchConfig) workedInboundRate(overflights bool) float32 {
 // included.
 func (lc *LaunchConfig) WorkedAirportRates() map[av.ICAOAirportCode]float32 {
 	rates := make(map[av.ICAOAirportCode]float32)
-	for airport, runwayRates := range lc.DepartureRates {
-		for runway, categoryRates := range runwayRates {
-			for category, rate := range categoryRates {
+	for airport, runwayRates := range util.SortedMap(lc.DepartureRates) {
+		for runway, categoryRates := range util.SortedMap(runwayRates) {
+			for category, rate := range util.SortedMap(categoryRates) {
 				if !lc.DepartureIsBackground(airport, runway, category) {
 					rates[airport] += scaleRate(rate, lc.DepartureRateScale)
 				}
 			}
 		}
 	}
-	for flow, flowRates := range lc.InboundFlowRates {
-		for airport, rate := range flowRates {
+	for flow, flowRates := range util.SortedMap(lc.InboundFlowRates) {
+		for airport, rate := range util.SortedMap(flowRates) {
 			if airport != "overflights" && !lc.InboundFlowIsBackground(flow, airport) {
 				rates[av.ICAOAirportCode(airport)] += scaleRate(rate, lc.InboundFlowRateScale)
 			}
@@ -499,22 +492,9 @@ func scaleRate(rate, scale float32) float32 {
 // gives a total whose last bits vary from run to run, and the spawn times
 // drawn from it vary with them.
 func sumRateMap(rates map[string]float32, scale float32) float32 {
-	var sum float32
-	for _, key := range util.SortedMapKeys(rates) {
-		sum += scaleRate(rates[key], scale)
-	}
-	return sum
-}
-
-// sumRateMap2 computes the total rate from a nested map structure
-func sumRateMap2(rates map[av.RunwayID]map[string]float32, scale float32) float32 {
-	var sum float32
-	for _, categoryRates := range rates {
-		for _, rate := range categoryRates {
-			sum += scaleRate(rate, scale)
-		}
-	}
-	return sum
+	return util.ReduceSeq(util.SortedMapValues(rates), 0, func(rate, sum float32) float32 {
+		return sum + scaleRate(rate, scale)
+	})
 }
 
 // SetLaunchConfig changes the sim's launch config. published is what

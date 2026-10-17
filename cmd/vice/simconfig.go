@@ -1217,13 +1217,9 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 
 	// VFR Departures remain independent of the IFR traffic source.
 	if len(lc.VFRAirportRates) > 0 {
-		var vfrRate float32
-		for _, rate := range lc.VFRAirportRates {
-			r := rate * lc.VFRDepartureRateScale
-			if r > 0 {
-				vfrRate += r
-			}
-		}
+		vfrRate := util.ReduceSeq(util.SortedMapValues(lc.VFRAirportRates), 0, func(rate, sum float32) float32 {
+			return sum + max(rate*lc.VFRDepartureRateScale, 0)
+		})
 		headerText := fmt.Sprintf(
 			"VFR Departures (%d/hr)###vfrdepartures",
 			int(vfrRate+0.5),
