@@ -11,6 +11,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/eram"
@@ -143,10 +144,12 @@ func (c *Config) Save(lg *log.Logger) error {
 		return err
 	}
 
-	// A damaged config.json must not replace a good backup.
-	if old, err := os.ReadFile(fn); err == nil && json.Valid(old) {
-		if err := writeFileAtomic(configBackupFilePath(fn), old); err != nil {
-			lg.Warnf("%s: unable to back up config: %v", fn, err)
+	// Only a config.json that loads may replace the backup.
+	if old, err := os.ReadFile(fn); err == nil {
+		if _, err := decodeConfig(old); err == nil {
+			if err := writeFileAtomic(configBackupFilePath(fn), old); err != nil {
+				lg.Warnf("%s: unable to back up config: %v", fn, err)
+			}
 		}
 	}
 
@@ -181,7 +184,21 @@ func writeFileAtomic(fn string, b []byte) error {
 		return err
 	}
 
-	return os.Rename(tmpName, fn)
+	if err := os.Rename(tmpName, fn); err != nil {
+		return err
+	}
+
+	// The rename also needs to reach disk. Windows does not support syncing
+	// directory handles.
+	if runtime.GOOS == "windows" {
+		return nil
+	}
+	dir, err := os.Open(filepath.Dir(fn))
+	if err != nil {
+		return err
+	}
+	defer dir.Close()
+	return dir.Sync()
 }
 
 // SaveAtExit records the window layout, imgui settings, and, if saveSim is
@@ -258,6 +275,11 @@ func readConfig(fn string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	return decodeConfig(b)
+}
+
+// decodeConfig decodes the contents of a configuration file.
+func decodeConfig(b []byte) (*Config, error) {
 	c := &Config{}
 	if err := json.Unmarshal(b, c); err != nil {
 		return nil, err
