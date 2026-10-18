@@ -341,3 +341,30 @@ func TestWXReportStations(t *testing.T) {
 		}
 	}
 }
+
+// AR puts a station in the first empty position of the ALTIM SET view and
+// removes one by emptying its position (4.2.1.1.2).
+func TestAltimSetStations(t *testing.T) {
+	db.InitDB()
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.METAR = map[av.ICAOAirportCode]wx.METAR{"KJFK": {}, "KBOS": {}, "KEWR": {}, "KLGA": {}}
+
+	for _, tc := range []struct {
+		cmd  string
+		want []av.ICAOAirportCode
+	}{
+		{"AR KJFK", []av.ICAOAirportCode{"KJFK"}},
+		{"AR BOS", []av.ICAOAirportCode{"KJFK", "KBOS"}},
+		{"AR KEWR", []av.ICAOAirportCode{"KJFK", "KBOS", "KEWR"}},
+		{"AR KJFK", []av.ICAOAirportCode{"", "KBOS", "KEWR"}},
+		{"AR KEWR", []av.ICAOAirportCode{"", "KBOS"}},
+		{"AR KLGA", []av.ICAOAirportCode{"KLGA", "KBOS"}},
+		{"AR KBOS", []av.ICAOAirportCode{"KLGA"}},
+	} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, tc.cmd, nil, nil); err != nil ||
+			!slices.Equal(h.ep.AltimSetAirports, tc.want) {
+			t.Errorf("%s: got %q, error %v; want %q", tc.cmd, h.ep.AltimSetAirports, err, tc.want)
+		}
+	}
+}

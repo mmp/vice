@@ -1247,17 +1247,11 @@ func handleAltimAdd(ep *Scope, ctx *scope.Context, airport string) (CommandStatu
 
 	// Toggle: if already in the list, remove it.
 	if i := slices.Index(ep.AltimSetAirports, icao); i >= 0 {
-		ep.AltimSetAirports = slices.Delete(ep.AltimSetAirports, i, i+1)
-		// Adjust scroll offset if needed after removal
-		ps := ep.currentPrefs()
-		maxOffset := max(len(ep.AltimSetAirports)-ps.AltimSet.Lines, 0)
-		if ep.altimSetScroll.Offset > maxOffset {
-			ep.altimSetScroll.Offset = maxOffset
-		}
+		ep.removeAltimSetEntry(i)
 		return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
 	}
 
-	ep.AltimSetAirports = slices.Insert(ep.AltimSetAirports, 0, icao)
+	ep.addAltimSetStation(icao)
 
 	// Make the window visible when the first airport is added.
 	ps := ep.currentPrefs()

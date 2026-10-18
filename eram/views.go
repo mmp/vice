@@ -37,7 +37,11 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 
 	var rows []Row
 	for _, icao := range ep.AltimSetAirports {
-		rows = append(rows, altimRow(ctx, icao, textColor, listFont, textWidth))
+		if icao == "" {
+			rows = append(rows, Row{})
+		} else {
+			rows = append(rows, altimRow(ctx, icao, textColor, listFont, textWidth))
+		}
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
@@ -62,11 +66,32 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 			ScrollState:           &ep.altimSetScroll,
 			EmptyKeepsColumnWidth: true,
 			SelectableState:       &ep.altimSetSelect,
-			OnRowDelete: func(idx int) {
-				ep.AltimSetAirports = slices.Delete(ep.AltimSetAirports, idx, idx+1)
-			},
+			OnRowDelete:           ep.removeAltimSetEntry,
 		},
 	})
+}
+
+// addAltimSetStation puts icao in the first empty position of the ALTIM SET
+// view, looking down each column from the left, or after the last entry if
+// there is none (4.2.1.1.2).
+func (ep *Scope) addAltimSetStation(icao av.ICAOAirportCode) {
+	if i := slices.Index(ep.AltimSetAirports, ""); i >= 0 {
+		ep.AltimSetAirports[i] = icao
+	} else {
+		ep.AltimSetAirports = append(ep.AltimSetAirports, icao)
+	}
+}
+
+// removeAltimSetEntry removes the idx'th entry of the ALTIM SET view. Its
+// position stays empty, so the entries after it don't move (4.2.1.1.2);
+// empty positions after the last entry are dropped so the view contracts.
+func (ep *Scope) removeAltimSetEntry(idx int) {
+	ep.AltimSetAirports[idx] = ""
+	n := len(ep.AltimSetAirports)
+	for n > 0 && ep.AltimSetAirports[n-1] == "" {
+		n--
+	}
+	ep.AltimSetAirports = ep.AltimSetAirports[:n]
 }
 
 // altimRow builds one ALTIM SET row from an airport's METAR (or a missing-data

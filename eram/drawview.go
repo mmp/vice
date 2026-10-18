@@ -271,6 +271,12 @@ type Row struct {
 	AfterDraw func(extent math.Extent2D, bodyOrigin [2]float32, b *ViewBuilders)
 }
 
+// empty reports whether the row has no text. An empty row holds a position
+// in the list: it has no badge and can't be selected.
+func (r Row) empty() bool {
+	return r.Label == "" && r.Body == ""
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Layout constants and small helpers
 
@@ -852,7 +858,7 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 		if r.Color == (renderer.RGB{}) {
 			r.Color = textColor
 		}
-		if badge != nil && r.Badge == nil && !r.Centered && r.SpacerHeight == 0 {
+		if badge != nil && r.Badge == nil && !r.Centered && !r.empty() {
 			r.Badge = badge
 		}
 		cols[c].Rows = append(cols[c].Rows, r)
@@ -922,6 +928,9 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 			for c, col := range cols {
 				colBase := startIdx + c*rs.VisibleRows
 				for i, e := range extentsFn(col, colExt(c, body)) {
+					if rs.Rows[colBase+i].empty() {
+						continue
+					}
 					items = append(items, ViewSelectableItem{
 						Extent: e,
 						Idx:    colBase + i,
