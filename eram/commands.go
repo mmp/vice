@@ -6,6 +6,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"unicode"
@@ -346,8 +347,65 @@ func (ep *Scope) pointOutTrack(ctx *scope.Context, trk *sim.Track, sector string
 	}
 }
 
+// acknowledgePointOuts acknowledges the track's point outs to the user from
+// the given sectors or, if none are given, its only one (5.1.5.11.2).
+func (ep *Scope) acknowledgePointOuts(ctx *scope.Context, trk *sim.Track, sectors []string) error {
+	from, err := ep.pointOutsToAcknowledge(ctx, trk, sectors)
+	if err != nil {
+		return err
+	}
+	for _, f := range from {
+		ep.acknowledgePointOut(ctx, trk, f)
+	}
+	return nil
+}
+
+// pointOutsToAcknowledge returns the initiating sectors of the track's point
+// outs to the user that QP A acknowledges: the given sectors or, if none are
+// given, the sector of its only point out to the user (5.1.5.11.2).
+func (ep *Scope) pointOutsToAcknowledge(ctx *scope.Context, trk *sim.Track, sectors []string) ([]sim.ControlPosition, error) {
+	if trk.IsUnassociated() {
+		return nil, ErrIllegalACID
+	}
+
+	fp := trk.FlightPlan
+	inbound := ctx.InboundPointOuts(fp)
+	if slices.ContainsFunc(inbound, func(po sim.PointOut) bool { return ctx.UserControlsPosition(po.FromController) }) {
+		return nil, NewError("REJECT - %s AMBIGUOUS PO", ctx.UserPrimaryPosition())
+	}
+	if len(sectors) == 0 {
+		switch len(inbound) {
+		case 0:
+			// An acknowledged point out moves from the flight plan's pending
+			// point outs to its point out history, which records only the
+			// receiver.
+			if slices.ContainsFunc(fp.PointOutHistory, ctx.UserControlsPosition) {
+				return nil, ErrNoUnacknowledgedPointOut
+			}
+			return nil, ErrPointOutNotFound
+		case 1:
+			return []sim.ControlPosition{inbound[0].FromController}, nil
+		default:
+			return nil, ErrSectorIDRequired
+		}
+	}
+
+	var from []sim.ControlPosition
+	for _, sector := range sectors {
+		ctrl, err := ep.lookupControllerForID(ctx, sector)
+		if err != nil {
+			return nil, err
+		}
+		if !slices.ContainsFunc(inbound, func(po sim.PointOut) bool { return po.FromController == ctrl.PositionId() }) {
+			return nil, ErrPointOutNotFound
+		}
+		from = append(from, ctrl.PositionId())
+	}
+	return from, nil
+}
+
 // acknowledgePointOut acknowledges the track's point out to the user from
-// the sector from, or all of them if from is empty.
+// the sector from.
 func (ep *Scope) acknowledgePointOut(ctx *scope.Context, trk *sim.Track, from sim.ControlPosition) error {
 	if trk.IsUnassociated() {
 		return ErrIllegalACID

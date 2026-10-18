@@ -39,6 +39,13 @@ var ( // TODO: Get actual error messages for this
 	ErrSectorNotActive       = NewError("SECTOR NOT ACTIVE")
 )
 
+// QP A rejects (5.1.5.11.2)
+var (
+	ErrNoUnacknowledgedPointOut = NewError("REJECT - NO UNACKNOWLEDGED PO")
+	ErrPointOutNotFound         = NewError("REJECT - POINT OUT NOT FOUND")
+	ErrSectorIDRequired         = NewError("REJECT - SECTOR ID REQUIRED")
+)
+
 var eramErrorRemap = map[error]*Error{
 	av.ErrBadPoolSpecifier:           ErrIllegalValue,
 	av.ErrInvalidAltitude:            ErrIllegalValue,
@@ -53,7 +60,7 @@ var eramErrorRemap = map[error]*Error{
 	av.ErrNoValidDepartureFound:      ErrIllegalUserAction,
 	av.ErrNotBeingHandedOffToMe:      ErrIllegalUserAction,
 	av.ErrNotPointedOutByMe:          ErrIllegalUserAction,
-	av.ErrNotPointedOutToMe:          ErrIllegalACID,
+	av.ErrNotPointedOutToMe:          ErrPointOutNotFound,
 	av.ErrOtherControllerHasTrack:    ErrIllegalUserAction,
 	av.ErrUnknownAirport:             ErrIllegalAirport,
 	av.ErrUnknownRunway:              ErrIllegalValue,

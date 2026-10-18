@@ -437,22 +437,23 @@ func isSectorID(field string) bool {
 func (h *sectorIDParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *sectorIDParser) AcceptsClick() bool   { return false }
 
-// sectorIDListParser parses one or more sector ids
+// sectorIDListParser parses one or more sector ids. A token that names a
+// track ends the list, since ACIDs such as AAL1 have the form of a sector
+// ID.
 type sectorIDListParser struct{}
 
 func (l *sectorIDListParser) Identifier() string { return "SECTOR_ID_LIST" }
 
 func (l *sectorIDListParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
-	tokens := strings.Fields(text)
 	var sectors []string
-	for i, tok := range tokens {
-		if isSectorID(tok) {
-			sectors = append(sectors, tok)
-		} else {
-			return sectors, strings.Join(tokens[i+1:], " "), len(sectors) > 0, nil
+	for {
+		field, rest := util.CutAtSpace(strings.TrimLeft(text, " "))
+		if !isSectorID(field) || trackFromFLID(ctx, field) != nil {
+			return sectors, text, len(sectors) > 0, nil
 		}
+		sectors = append(sectors, field)
+		text = rest
 	}
-	return sectors, "", true, nil
 }
 
 func (l *sectorIDListParser) GoType() reflect.Type { return reflect.TypeFor[[]string]() }

@@ -666,3 +666,68 @@ func TestTargetSymbols(t *testing.T) {
 		}
 	}
 }
+
+// QP A acknowledges a flight's only point out to the user, or those from
+// the sectors it names, and otherwise rejects as 5.1.5.11.2 describes.
+func TestPointOutsToAcknowledge(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{
+		"2B": {Position: "2B"}, "3C": {Position: "3C"}, "4D": {Position: "4D"},
+	}
+	trk := &sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1"},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", CID: "101"}}
+	h.addTrack(trk)
+
+	for _, tc := range []struct {
+		name      string
+		pointOuts []sim.PointOut
+		history   []sim.ControlPosition
+		sectors   []string
+		want      []sim.ControlPosition
+		err       error
+	}{
+		{name: "one", pointOuts: []sim.PointOut{{FromController: "2B", ToController: "1A"}},
+			want: []sim.ControlPosition{"2B"}},
+		{name: "several", pointOuts: []sim.PointOut{{FromController: "2B", ToController: "1A"},
+			{FromController: "3C", ToController: "1A"}}, err: ErrSectorIDRequired},
+		{name: "named", pointOuts: []sim.PointOut{{FromController: "2B", ToController: "1A"},
+			{FromController: "3C", ToController: "1A"}}, sectors: []string{"3C", "2B"},
+			want: []sim.ControlPosition{"3C", "2B"}},
+		{name: "named without one", pointOuts: []sim.PointOut{{FromController: "2B", ToController: "1A"}},
+			sectors: []string{"4D"}, err: ErrPointOutNotFound},
+		{name: "outbound only", pointOuts: []sim.PointOut{{FromController: "1A", ToController: "2B"}},
+			err: ErrPointOutNotFound},
+		{name: "acknowledged", history: []sim.ControlPosition{"1A"}, err: ErrNoUnacknowledgedPointOut},
+	} {
+		trk.FlightPlan.PointOuts, trk.FlightPlan.PointOutHistory = tc.pointOuts, tc.history
+		from, err := h.ep.pointOutsToAcknowledge(h.ctx, trk, tc.sectors)
+		if err != tc.err || !slices.Equal(from, tc.want) {
+			t.Errorf("%s: got %v, error %v; want %v, error %v", tc.name, from, err, tc.want, tc.err)
+		}
+	}
+
+	// With 1B consolidated to the user's TCW, the user is both the
+	// initiator and the receiver of 1B's point out to 1A.
+	h.ctx.Client.State.CurrentConsolidation["TCW1"].SecondaryTCPs = []sim.SecondaryTCP{{TCP: "1B"}}
+	trk.FlightPlan.PointOuts = []sim.PointOut{{FromController: "1B", ToController: "1A"}}
+	if _, err := h.ep.pointOutsToAcknowledge(h.ctx, trk, nil); err == nil || err.Error() != "REJECT - 1A AMBIGUOUS PO" {
+		t.Errorf("consolidated initiator and receiver: got error %v, want REJECT - 1A AMBIGUOUS PO", err)
+	}
+
+	// The sector list leaves the FLID, which has the form of a sector ID,
+	// for the track.
+	h.ctx.Client.State.CurrentConsolidation["TCW1"].SecondaryTCPs = nil
+	trk.FlightPlan.PointOutHistory = []sim.ControlPosition{"1A"}
+	trk.FlightPlan.PointOuts = []sim.PointOut{{FromController: "2B", ToController: "1A"},
+		{FromController: "3C", ToController: "1A"}}
+	for cmd, want := range map[string]error{
+		"QP A AAL1":       ErrSectorIDRequired,
+		"QP A 4D AAL1":    ErrPointOutNotFound,
+		"QP A 2B 4D /101": ErrPointOutNotFound,
+	} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil); err != want {
+			t.Errorf("%s: got error %v, want %v", cmd, err, want)
+		}
+	}
+}
