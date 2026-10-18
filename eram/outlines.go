@@ -319,11 +319,12 @@ func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 	// even when nothing is currently drawn there.
 	outlines.Fields[DBFieldVCI] = layout.FieldExtent(DatablockFieldSpec{Line: 2, Col: 0, Cols: 2})
 	setField(DBFieldAltitude, 2, 2, fdb.line2[:])
-	setField(DBFieldHSF, 2, 2+len(dbChopTrailing(fdb.line2[:])), fdb.hsf[:])
 	setField(DBFieldCID, 3, 2, fdb.fieldD[:])
 	// Line 3 draws field E immediately after the trailing-chopped CID, not
-	// at fieldD's maximum width.
-	setField(DBFieldSpeed, 3, 2+len(dbChopTrailing(fdb.fieldD[:])), fdb.fieldE[:])
+	// at fieldD's maximum width, and the HSF indicator right after field E.
+	fieldECol := 2 + len(dbChopTrailing(fdb.fieldD[:]))
+	setField(DBFieldSpeed, 3, fieldECol, fdb.fieldE[:])
+	setField(DBFieldHSF, 3, fieldECol+len(dbChopTrailing(fdb.fieldE[:])), fdb.hsf[:])
 	outlines.Fields[DBFieldHandoffSpeed] = outlines.Fields[DBFieldSpeed]
 	setField(DBFieldLine4, 4, 0, fdb.line4[:])
 	if _, ok := lineLengths[4]; !ok {
@@ -400,8 +401,8 @@ func (ep *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track) *fullData
 func fullDatablockLines(db *fullDatablock, out *[5]dbLine) {
 	out[0] = dbMakeLine(dbChopTrailing(db.line0[:]))
 	out[1] = dbMakeLine(dbChopTrailing(db.line1[:]))
-	out[2] = dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]), dbChopTrailing(db.hsf[:]))
-	out[3] = dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]))
+	out[2] = dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]))
+	out[3] = dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]), dbChopTrailing(db.hsf[:]))
 	out[4] = dbMakeLine(dbChopTrailing(db.line4[:]))
 }
 

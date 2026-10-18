@@ -150,3 +150,25 @@ func TestFieldEBlinking(t *testing.T) {
 		}
 	}
 }
+
+// The HSF indicator ends line 3, after Field E, rather than line 2.
+func TestHSFIndicatorPosition(t *testing.T) {
+	h := makeTrackTestHarness()
+	trk := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000, Groundspeed: 420},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", CID: "123", AssignedAltitude: 20000, Scratchpad: "250",
+			OwningTCW: "TCW1"},
+	}
+	h.addTrack(trk)
+	h.frame(0)
+	var lines [5]dbLine
+	fullDatablockLines(h.ep.getDatablock(h.ctx, *trk, FullDatablock, colors.yellow).(*fullDatablock), &lines)
+	text := func(l dbLine) string { return dbText(l.ch[:l.length]) }
+	if got, want := text(lines[2]), "  200C"; got != want {
+		t.Errorf("line 2: got %q, want %q", got, want)
+	}
+	if got, want := text(lines[3]), "  123 420"+hsfIndicator; got != want {
+		t.Errorf("line 3: got %q, want %q", got, want)
+	}
+}

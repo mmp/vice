@@ -229,11 +229,11 @@ type fullDatablock struct {
 	// line 2
 	vci   [2]dbChar
 	line2 [16]dbChar
-	hsf   [1]dbChar // drawn right after the altitude in line2
 	// line3
 	col1   [2]dbChar
 	fieldD [8]dbChar
 	fieldE [8]dbChar
+	hsf    [1]dbChar // drawn right after Field E
 	line4  [16]dbChar
 }
 
@@ -244,8 +244,8 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
-		dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]), dbChopTrailing(db.hsf[:])),
-		dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:])),
+		dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:])),
+		dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]), dbChopTrailing(db.hsf[:])),
 		dbMakeLine(dbChopTrailing(db.line4[:])),
 	}
 	pt[1] += float32(font.Size)
@@ -403,9 +403,6 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 
 		// Line 2
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
-		if hsfDataExists(trk.FlightPlan) {
-			dbWriteText(db.hsf[:], hsfIndicator, color, false)
-		}
 
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
@@ -456,6 +453,11 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 			}
 			gsText = fmt.Sprintf("%v%v", middle, int(state.Track.Groundspeed))
 			dbWriteText(db.fieldE[:], gsText, color, false)
+		}
+
+		// The HSF indicator follows Field E (5.1.5.20.1).
+		if hsfDataExists(trk.FlightPlan) {
+			dbWriteText(db.hsf[:], hsfIndicator, color, false)
 		}
 
 		// Get line 4 (if applicable)
