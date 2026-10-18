@@ -7755,8 +7755,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               and to TRACONs. Slewing a track that is being handed off to you accepts the handoff; slewing a track that
               you are handing off recalls the handoff.</p>
             <p>While a handoff is in progress, field E of the track's full data block alternates between its ground
-              speed and <code>H</code> followed by the receiving sector's ID. For 30 seconds after the handoff is
-              accepted, it alternates with <code>O</code> followed by the new owner's ID.</p>
+              speed and <code>H</code> followed by the receiving sector's ID. When the receiving sector accepts the
+              handoff, your FDB of the track stays up for 30 seconds, with field E alternating between the ground
+              speed and <code>O</code> followed by the new owner's ID.</p>
           </section>
 
           <section class="docs-section" id="eram-pointouts">
@@ -7789,10 +7790,17 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </tbody>
             </table>
             <p>When a point out is pending, a yellow <code>P</code> is drawn on line 0 of the FDB on both the originator's and
-              the receiver's scopes; the datablock is forced to FDB. Clicking the <code>P</code> opens a pop-up listing the
-              other sector(s); on the receiver's scope, clicking any entry acknowledges every inbound point out for the
-              aircraft. Once acknowledged the originator sees a white <code>A</code> indicator on line 0 that persists until
-              clicked away. The FDB stays forced after the point-out lifecycle ends &mdash; <code>QP [FLID]</code> is the only
+              the receiver's scopes; the datablock is forced to FDB. Clicking the <code>P</code> opens a pop-up that lists
+              the other sectors after a <code>P</code>.</p>
+            <ul>
+              <li>On the originator's scope, receiving sectors that have not acknowledged the point out are yellow and
+                boxed, and those that have are white; clicking a white one removes it. Once every receiving sector has
+                acknowledged, line 0 shows a white <code>A</code> until it is clicked.</li>
+              <li>On the receiver's scope, the originating sectors are cyan and boxed. Clicking one acknowledges its
+                point out and turns it white, and clicking it again removes it. The pop-up's <code>P</code> turns white
+                once all are acknowledged.</li>
+            </ul>
+            <p>The FDB stays forced after the point-out lifecycle ends &mdash; <code>QP [FLID]</code> is the only
               way to convert it back to a LDB.</p>
           </section>
 
@@ -7813,42 +7821,54 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>Line 2: the data block altitude, a character that describes it, and the reported altitude. The
                 character is <code>C</code> when the aircraft is at its assigned altitude (the reported altitude is then
                 omitted); <code>T</code>, <code>L</code>, or <code>P</code> for an interim, local interim, or procedure
-                altitude; &uarr; or &darr; while climbing or descending to it; <code>+</code> or <code>-</code> when the
-                aircraft has gone above or below it after reaching it; and <code>B</code> for a block altitude. For a
-                VFR or VFR-on-top altitude, the line shows <code>VFR/</code> or <code>OTP/</code> and the reported
-                altitude. The HSF
-                indicator (&#x21B4;) follows when the track has heading, speed, or free text data. Clicking the
-                indicator switches line 4 between that data and its default contents.</li>
+                altitude; &uarr; or &darr; while climbing or descending to it; and <code>B</code> for a block altitude.
+                A local interim altitude is shown in place of an interim or procedure altitude, which is shown again
+                when the local interim altitude is cleared. For a VFR or VFR-on-top altitude, the line shows
+                <code>VFR/</code> or <code>OTP/</code> and the reported altitude.</li>
               <li>Line 3: the CID and field E. Field E shows the ground speed, preceded by the letter the ARTCC assigns
                 to the destination airport, if any. It alternates with the handoff status described in
                 <a href="#eram-handoffs">Handoffs</a>. It shows <code>HIJK</code>, <code>RDOF</code>, <code>EMRG</code>,
                 <code>ADIZ</code>, <code>LLNK</code>, or <code>AFIO</code> when the aircraft squawks the corresponding
-                special code.</li>
-              <li>Line 4: the heading, speed, and free text entered with <code>QS</code> or the data block menus;
-                otherwise, the destination or the aircraft type if DEST or TYPE is selected in the DB FIELDS toolbar
-                menu.</li>
+                special code; <code>RDOF</code> and <code>EMRG</code> blink. The HSF indicator (&#x21B4;) follows
+                field E when the track has heading, speed, or free text data. Clicking the indicator switches line 4
+                between that data and its default contents. The data is shown again when a heading, speed, or free
+                text is entered or changed, or when the track is offered to you in a handoff.</li>
+              <li>Line 4: the heading and speed, or the free text, entered with <code>QS</code> or the data block
+                menus. Free text replaces the heading and speed, and a heading or speed replaces free text. Otherwise,
+                line 4 shows the destination, or the aircraft type and equipment suffix (such as
+                <code>B738/L</code>), if DEST or TYPE is selected in the DB FIELDS toolbar menu.</li>
             </ul>
-            <p>An LDB shows the aircraft's callsign and its reported altitude.</p>
-            <p>Entering a number 1&ndash;9 and slewing a track sets the direction of its FDB's leader line
-              (the digit corresponds to a position on the numeric keypad relative to the track; 5 is the default,
-              northeast). Prefixing the command with <code>/</code> instead sets the leader line length: <code>/0</code> hides the leader line (W/E datablock positions only),
+            <p>An LDB shows the aircraft ID and the reported altitude of a track with a flight plan. An LDB of a track
+              without one shows its beacon code instead. With BCAST FLID turned off in the DB FIELDS toolbar menu, it
+              shows the ADS-B callsign, unless the aircraft squawks 1200.</p>
+            <p>Entering a digit and slewing a track sets the direction of its FDB's leader line. The digit corresponds
+              to a position on the numeric keypad relative to the track, so 5 is not a direction; the default is
+              northeast. Prefixing the command with <code>/</code> instead sets the leader line length: <code>/0</code> hides the leader line (W/E datablock positions only),
               <code>/1</code> is normal, and <code>/2</code> and <code>/3</code> are 2&times; and 3&times;
-              respectively. Direction and length may be set together by entering <code>[1-9]/[0-3]</code> followed by
-              a slew or flight id.</p>
+              respectively. Direction and length may be set together by entering the direction digit, <code>/</code>,
+              and the length, as in <code>9/2</code>, followed by a slew or flight id.</p>
 
             <h3 id="eram-datablock-menus">Data Block Menus</h3>
             <p>Clicking fields of an FDB opens menus for editing its data. Selections in these menus have the same
               effect as the corresponding <code>QZ</code>, <code>QQ</code>, and <code>QS</code> commands.</p>
             <ul>
-              <li>Clicking line 2 opens the altitude menu. Clicking an altitude assigns it; clicking the <code>T</code>
-                next to it assigns it as an interim altitude. When LOCAL TALT or PROCEDURE is selected, clicking an
-                altitude assigns a local interim or procedure altitude instead. If the track has an interim altitude,
-                clicking the flight plan altitude at the top of the menu clears it.</li>
-              <li>Clicking the CID or the heading on line 4 opens the heading menu. LT and RT show left and right turn
-                headings, PH assigns present heading, and DELETE clears the heading.</li>
-              <li>Clicking the ground speed or the speed on line 4 opens the speed menu. KT/M switches between knots
-                and Mach, <code>+</code> and <code>-</code> assign an &ldquo;or greater&rdquo; or &ldquo;or less&rdquo;
-                speed, and DELETE clears the speed.</li>
+              <li>Clicking line 2 opens the altitude menu, which lists altitudes 1,000 feet apart up to FL410 and
+                2,000 feet apart above it. Clicking an altitude assigns it; clicking the <code>T</code> next to it
+                assigns it as an interim altitude. When LOCAL TALT or PROCEDURE is selected, clicking an altitude
+                assigns a local interim or procedure altitude instead. If the track has an interim, procedure, or local
+                interim altitude, or a block, VFR, or VFR-on-top altitude, the top of the menu shows the flight plan
+                altitude, such as <code>FP 350</code> or <code>FP 220B230</code>; clicking it clears the interim,
+                procedure, and local interim altitudes. When a local interim altitude is shown in place of an interim
+                or procedure altitude, the next row shows that altitude, such as <code>280T</code>; clicking it clears
+                just the local interim altitude.</li>
+              <li>Clicking the CID or the heading on line 4 opens the heading menu. LT and RT show left and right turns
+                of 5 to 55 degrees, PH assigns present heading, and DELETE clears the heading. The listed value
+                closest to the current heading or turn is highlighted.</li>
+              <li>Clicking the ground speed or the speed on line 4 opens the speed menu, which lists 400 to 70 knots
+                and Mach .99 to .61. It opens in the units of the assigned speed or, without one, in Mach if the data
+                block altitude, or the floor of a block altitude, is FL290 or above. KT/M switches between knots and
+                Mach, <code>+</code> and <code>-</code> assign an &ldquo;or greater&rdquo; or &ldquo;or less&rdquo;
+                speed, and DEL followed by the assigned speed clears it.</li>
               <li>Clicking elsewhere on line 4 opens the free text menu. Type the text and press <code>Enter</code> to
                 save it.</li>
             </ul>
@@ -7859,9 +7879,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <h3 id="eram-targets">Targets</h3>
             <p>Targets are drawn with the ERAM symbols for uncorrelated and correlated primary targets, code 1200 and
-              other uncorrelated beacon targets, identing targets, Mode C intruders, correlated beacon targets, and
-              reduced separation targets (correlated targets at or below FL230). Tracks with FDBs also have a track
-              position symbol, a leader line, and a velocity vector line.</p>
+              other uncorrelated beacon targets, identing targets, correlated beacon targets, and reduced separation
+              targets (correlated targets at or below FL230). Tracks with FDBs also have a track position symbol, a
+              leader line, and a velocity vector line. The PR TGT and UNP TGT buttons in the BRIGHT toolbar menu set
+              the brightness of paired and unpaired targets.</p>
             <p>The VECTOR toolbar button, or the <code>Page Up</code> and <code>Page Down</code> keys, set the velocity
               vector length to 0, 1, 2, 4, or 8 minutes. The HISTORY button in the RADAR FILTER toolbar menu sets the
               number of target history points shown, from 0 to 5.</p>
@@ -8070,12 +8091,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li><strong>BRIGHT</strong>
                 <ul>
-                  <li><strong>BCKGRD, TEXT, PR TGT, PR HST, UNP HST, LDB, NEXRAD, BUTTON, BORDER, TOOLBAR, TB BRDR, FDB,
-                      PORTAL, ON-FREQ, LINE 4, FENCE</strong> — implemented; PR TGT sets the brightness of all
-                    targets</li>
+                  <li><strong>BCKGRD, TEXT, PR TGT, UNP TGT, PR HST, UNP HST, LDB, NEXRAD, BUTTON, BORDER, TOOLBAR, TB
+                      BRDR, FDB, PORTAL, ON-FREQ, LINE 4, FENCE</strong> — implemented</li>
                   <li><strong>MAP BRIGHT</strong> — implemented: one brightness button for each of the map's brightness
                     control groups, up to 20</li>
-                  <li><strong>CPDLC, CURSOR, UNP TGT, SLDB, WX, BCKLGHT, AB BRDR, SATCOMM, DWELL, DBFEL, OUTAGE</strong>
+                  <li><strong>CPDLC, CURSOR, SLDB, WX, BCKLGHT, AB BRDR, SATCOMM, DWELL, DBFEL, OUTAGE</strong>
                     — not implemented</li>
                 </ul>
               </li>
@@ -8087,13 +8107,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li><strong>DB FIELDS</strong>
                 <ul>
-                  <li><strong>DEST, TYPE</strong> — implemented: show the destination or the aircraft type on FDB
-                    line 4</li>
+                  <li><strong>DEST, TYPE</strong> — implemented: show the destination, or the aircraft type and
+                    equipment suffix, on FDB line 4</li>
+                  <li><strong>BCAST FLID</strong> — implemented: when turned off, the LDBs of tracks without a flight
+                    plan show the ADS-B callsign rather than the beacon code (see
+                    <a href="#eram-datablocks">Data Blocks</a>)</li>
                   <li><strong>FDB LDR</strong> — implemented: sets the leader line length (0&ndash;3) of tracks that
                     appear after it is changed</li>
                   <li><strong>PORTAL FENCE</strong> — implemented</li>
-                  <li><strong>NON-RVSM, VRI, CODE, SPEED, BCAST FLID, NON-ADS-B, NONADSB 90, SAT COMM, TFM REROUTE,
-                      CRR RDB, STA RDB, DELAY RDB, DELAY FORMAT</strong> — not implemented</li>
+                  <li><strong>NON-RVSM, VRI, CODE, SPEED, NON-ADS-B, NONADSB 90, SAT COMM, TFM REROUTE, CRR RDB,
+                      STA RDB, DELAY RDB, DELAY FORMAT</strong> — not implemented</li>
                 </ul>
               </li>
               <li><strong>VECTOR</strong> — implemented: sets the velocity vector length to 0, 1, 2, 4, or 8
@@ -8139,9 +8162,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li><code>[SECTOR] [FLID]</code> — initiate a handoff</li>
                   <li><code>[FLID]</code> — accept a pending handoff, recall your handoff, or switch another sector's
                     track between an LDB and an FDB</li>
-                  <li><code>[1-9] [FLID]</code>, <code>/[0-3] [FLID]</code>, <code>[1-9]/[0-3] [FLID]</code> — set
-                    the data block position and leader line length</li>
-                  <li><code>// [FLID]</code> — toggle the on-frequency indicator (VCI)</li>
+                  <li><code>[DIR] [FLID]</code>, <code>/[0-3] [FLID]</code>, <code>[DIR]/[0-3] [FLID]</code> — set
+                    the data block position (a direction of 1&ndash;4 or 6&ndash;9) and leader line length</li>
+                  <li><code>// [FLID]</code> — toggle the on-frequency indicator (VCI); an LDB is expanded to an FDB,
+                    which shows it</li>
                   <li><code>QL [SECTOR ...]</code> — toggle quick look for the listed sectors; <code>QL</code> by
                     itself turns off quick look for all sectors</li>
                 </ul>
@@ -8159,15 +8183,18 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li><strong>Altitudes</strong>
                 <ul>
                   <li><code>QZ [ALT] [FLID]</code> — assign an altitude, given in hundreds of feet</li>
-                  <li><code>QZ [FLOOR]B[CEILING] [FLID]</code> — assign a block altitude. This only amends the flight
-                    plan; no instruction is issued to the pilot.</li>
+                  <li><code>QZ [FLOOR]B[CEILING] [FLID]</code> — assign a block altitude, with two or three digits
+                    for each limit, as in <code>QZ 90B110</code>. This only amends the flight plan; no instruction is
+                    issued to the pilot.</li>
                   <li><code>QZ VFR [FLID]</code>, <code>QZ VFR/[ALT] [FLID]</code>, <code>QZ OTP [FLID]</code>, and
-                    <code>QZ OTP/[ALT] [FLID]</code> — assign a VFR or VFR-on-top altitude. These also only amend the
-                    flight plan.</li>
+                    <code>QZ OTP/[ALT] [FLID]</code> — assign a VFR or VFR-on-top altitude, with a three-digit altitude
+                    if one is given. These also only amend the flight plan.</li>
                   <li><code>QQ [ALT] [FLID]</code> — assign an interim altitude. Prefixing the altitude with
                     <code>P</code> assigns a procedure altitude and <code>L</code> assigns a local interim
-                    altitude.</li>
-                  <li><code>QQ [FLID]</code> — clear the interim altitude</li>
+                    altitude. An interim and a procedure altitude replace each other. A local interim altitude is
+                    kept apart from them and is shown in their place.</li>
+                  <li><code>QQ [FLID]</code> — clear the interim or procedure altitude</li>
+                  <li><code>QQ L [FLID]</code> — clear the local interim altitude</li>
                 </ul>
               </li>
               <li><strong>Routes</strong>
@@ -8189,7 +8216,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li><code>QS [HEADING] [FLID]</code> — set the heading</li>
                   <li><code>QS /[SPEED] [FLID]</code> — set the speed in knots (<code>/250</code>) or Mach
                     (<code>/M75</code>), optionally followed by <code>+</code> or <code>-</code></li>
-                  <li><code>QS `[TEXT] [FLID]</code> — set free text</li>
+                  <li><code>QS `[TEXT] [FLID]</code> — set free text, which replaces the heading and speed</li>
                   <li><code>QS */ [FLID]</code>, <code>QS /* [FLID]</code>, <code>QS * [FLID]</code> — delete the
                     heading, the speed, or all HSF data</li>
                   <li><code>QS [FLID]</code> — toggle display of the HSF data</li>
@@ -8223,7 +8250,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li><code>WR [AIRPORT]</code> — add an airport to WX REPORT, or remove it</li>
                   <li><code>WR R [AIRPORT]</code> — show an airport's METAR in the RA</li>
                   <li><code>QB [CODE ...]</code> — add beacon codes to the CODE view, or remove them</li>
-                  <li><code>QD [LOW]B[HIGH]</code> — set the altitude limits filter</li>
+                  <li><code>QD [LOW]B[HIGH]</code> — set the altitude limits filter, with three digits for each
+                    limit</li>
                   <li><code>MR</code> — list the available GeoMaps; <code>MR [GEOMAP]</code> loads one</li>
                 </ul>
               </li>
@@ -8276,8 +8304,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li><strong>Tracks</strong>: <code>QT</code> starting a track, <code>QH</code> freezing a track, and free,
                 coast, and frozen tracks</li>
               <li><strong>Altitudes</strong>: <code>QR</code> and <code>QQ R</code> controller-entered reported
-                altitudes, and clearing just a local interim altitude with <code>QQ L [FLID]</code>. In <i>vice</i>, a
-                track can have only one interim altitude at a time, of any type.</li>
+                altitudes</li>
               <li><strong>Command options</strong>: <code>/OK</code> logic check overrides, including forcing a
                 handoff with <code>/OK [FLID]</code>, and <code>/TT</code> or <code>///</code> with <code>QQ</code>;
                 multiple FLIDs in one <code>QQ</code> or <code>QU</code> command; the <code>QN</code> and
@@ -8288,8 +8315,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <ul>
                   <li>Enhanced LDBs</li>
                   <li>Positioning LDBs; they are always drawn to the right of their targets</li>
-                  <li>Showing the beacon code in the LDBs of unassociated tracks; <i>vice</i> always shows the
-                    callsign</li>
                   <li>Line 2 characters <code>X</code> (no Mode C), <code>A</code> and <code>#</code>
                     (controller-entered reported altitude), and <code>N</code>
                     (no correlated target)</li>
