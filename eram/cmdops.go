@@ -973,8 +973,6 @@ func (ep *Scope) numberToLLDirection(cmd int) (math.CardinalOrdinalDirection, bo
 			return math.NorthEast, true
 		case 4:
 			return math.West, true
-		case 5:
-			return math.NorthEast, true
 		case 6:
 			return math.East, true
 		case 7:
@@ -997,8 +995,6 @@ func (ep *Scope) numberToLLDirection(cmd int) (math.CardinalOrdinalDirection, bo
 			return math.SouthEast, true
 		case 4:
 			return math.West, true
-		case 5:
-			return math.NorthEast, true
 		case 6:
 			return math.East, true
 		case 7:

@@ -32,7 +32,7 @@ func makeTrackTestHarness() *trackTestHarness {
 		CRRGroups:              make(map[string]*CRRGroup),
 		aircraftFixCoordinates: make(map[sim.ACID]aircraftFixCoordinates),
 	}
-	ctx := &scope.Context{Client: &client.ControlClient{}}
+	ctx := &scope.Context{Client: &client.ControlClient{}, UserTCW: "TCW1"}
 	ctx.Client.State.Tracks = make(map[av.ADSBCallsign]*sim.Track)
 	ctx.Client.State.UserTCW = "TCW1"
 	ctx.Client.State.CurrentConsolidation = map[sim.TCW]*sim.TCPConsolidation{
@@ -606,5 +606,31 @@ func TestPointOutPopupRow(t *testing.T) {
 	click(row, "2B")
 	if row = po.row(h.ep, h.ctx, inbound); len(row.Segments) != 1 || row.Segments[0].Text != "3C" {
 		t.Errorf("receiver: after removing 2B got %+v", segments(row))
+	}
+}
+
+// 5 is not a data block offset direction in either keypad layout.
+func TestKeypadFiveIsNoDirection(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000, Location: math.Point2LL{-73, 40}},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123", TrackingController: "1A", OwningTCW: "TCW1"},
+	})
+	h.frame(0)
+	for _, flip := range []bool{false, true} {
+		h.ep.FlipNumericKeypad = flip
+		for _, cmd := range []string{"5 AAL123", "5/2 AAL123"} {
+			if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil); err != ErrIllegalValue {
+				t.Errorf("%q, inverted keypad %v: got %v, want %v", cmd, flip, err, ErrIllegalValue)
+			}
+		}
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, "9 AAL123", nil, nil); err != nil {
+			t.Errorf("\"9 AAL123\", inverted keypad %v: %v", flip, err)
+		}
+	}
+	if h.ep.TrackState["AAL123"].LeaderLineDirection == nil {
+		t.Errorf("9 did not offset the data block")
 	}
 }
