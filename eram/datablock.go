@@ -422,7 +422,10 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 			0o7600: "RDOF", 0o7700: "EMRG", 0o7777: "AFIO",
 		}
 		if text, ok := flaggedCodes[state.Track.Squawk]; ok {
-			dbWriteText(db.fieldE[:], text, color, true)
+			// Of the special codes, 7600 and 7700 blink, as would the two
+			// adapted ones that vice has no adaptation for (5.1.5.7).
+			blink := state.Track.Squawk == 0o7600 || state.Track.Squawk == 0o7700
+			dbWriteText(db.fieldE[:], text, color, blink)
 		} else if trk.FlightPlan.HandoffController != "" {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
@@ -433,7 +436,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 			if len(controller) == 2 {
 				controller = "-" + controller
 			}
-			dbWriteText(db.fieldE[:], util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), gsText), color, true)
+			dbWriteText(db.fieldE[:], util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), gsText), color, false)
 		} else if ctx.InterpolatedSimTime.Before(state.OSectorEndTime) {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {

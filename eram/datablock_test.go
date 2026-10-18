@@ -104,3 +104,49 @@ func TestLine4AircraftData(t *testing.T) {
 		}
 	}
 }
+
+// In Field E, only the 7600 and 7700 special code texts blink; handoff
+// text time-shares with the ground speed without blinking.
+func TestFieldEBlinking(t *testing.T) {
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{"2B": {Position: "2B"}}
+	trk := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000, Groundspeed: 420},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", OwningTCW: "TCW1"},
+	}
+	h.addTrack(trk)
+
+	fieldE := func() (string, bool) {
+		h.frame(0)
+		fdb := h.ep.getDatablock(h.ctx, *trk, FullDatablock, colors.yellow).(*fullDatablock)
+		return dbText(fdb.fieldE[:]), fdb.fieldE[0].flashing
+	}
+	for _, c := range []struct {
+		squawk av.Squawk
+		text   string
+		blink  bool
+	}{
+		{0o7700, "EMRG", true},
+		{0o7600, "RDOF", true},
+		{0o7500, "HIJK", false},
+		{0o7400, "LLNK", false},
+	} {
+		trk.Squawk = c.squawk
+		h.ep.lastRadarUpdate = sim.Time{}
+		if text, blink := fieldE(); text != c.text || blink != c.blink {
+			t.Errorf("%s: got %q blinking %v, want %q blinking %v", c.squawk, text, blink, c.text, c.blink)
+		}
+	}
+
+	trk.Squawk = 0o2301
+	h.ep.lastRadarUpdate = sim.Time{}
+	trk.FlightPlan.HandoffController = "2B"
+	for alternate, want := range map[bool]string{true: "H-2B", false: " 420"} {
+		h.ep.dbAlternate = alternate
+		h.ep.dbLastAlternateTime = h.start
+		if text, blink := fieldE(); text != want || blink {
+			t.Errorf("handoff: got %q blinking %v, want %q steady", text, blink, want)
+		}
+	}
+}
