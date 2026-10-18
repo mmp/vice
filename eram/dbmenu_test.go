@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // The altitude menu's FP row shows the assigned altitude in the form it was
@@ -32,5 +33,19 @@ func TestAltitudeMenuFPLabel(t *testing.T) {
 		if ok != (tc.want != "") || label != tc.want {
 			t.Errorf("%s: got %q, %v; want %q", tc.name, label, ok, tc.want)
 		}
+	}
+}
+
+// The altitude menu lists altitudes 1,000 feet apart up to FL410 and 2,000
+// feet apart above it.
+func TestAltitudeMenuAlts(t *testing.T) {
+	for i := 1; i < len(altitudeMenuAlts); i++ {
+		hi, lo := altitudeMenuAlts[i-1], altitudeMenuAlts[i]
+		if step := util.Select(lo >= 410, 20, 10); hi-lo != step {
+			t.Errorf("%03d follows %03d; expected a step of %d", lo, hi, step)
+		}
+	}
+	if first, last := altitudeMenuAlts[0], altitudeMenuAlts[len(altitudeMenuAlts)-1]; first != 590 || last != 10 {
+		t.Errorf("list runs from %03d to %03d; expected 590 to 010", first, last)
 	}
 }

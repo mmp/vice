@@ -72,10 +72,14 @@ type altitudeMenuPopup struct {
 	initialized bool // scroll offset positioned on first draw
 }
 
-// altitudeMenuAlts is the pick list in hundreds of feet, descending.
+// altitudeMenuAlts is the pick list in hundreds of feet, descending: steps
+// of 1,000 feet up to FL410 and of 2,000 feet above it (8.6.1.2).
 var altitudeMenuAlts = func() []int {
 	var alts []int
-	for a := 600; a >= 10; a -= 10 {
+	for a := 590; a > 410; a -= 20 {
+		alts = append(alts, a)
+	}
+	for a := 410; a >= 10; a -= 10 {
 		alts = append(alts, a)
 	}
 	return alts
@@ -140,7 +144,7 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 			}
 		}
 		center = (center + 5) / 10 * 10
-		if idx := slices.Index(altitudeMenuAlts, center); idx >= 0 {
+		if idx := slices.IndexFunc(altitudeMenuAlts, func(a int) bool { return a <= center }); idx >= 0 {
 			p.offset = math.Clamp(idx-3, 0, max(len(altitudeMenuAlts)-7, 0))
 		}
 	}
