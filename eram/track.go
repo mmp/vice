@@ -17,8 +17,6 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// Gap ranges (in degrees) where reduced separation J rings should not be drawn.
-
 // eramUpdateInterval is how often all radar samples are refreshed: the
 // 12 second scan of the long-range radars that ERAM uses for most of its
 // coverage.
@@ -687,6 +685,7 @@ func (ep *Scope) drawJRings(ctx *scope.Context, tracks []sim.Track,
 	// Draw J-Rings for tracks that have them enabled.
 	jr := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(jr)
+	cb.LineWidth(2, ctx.DPIScale)
 
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
@@ -702,17 +701,21 @@ func (ep *Scope) drawJRings(ctx *scope.Context, tracks []sim.Track,
 		if state.DisplayReducedJRing {
 			pw := transforms.WindowFromLatLongP(pos)
 			reducedRadius := 3 / transforms.PixelDistanceNM(ctx.NmPerLongitude)
+			// 15 degree gaps centered on the cardinal headings (glossary:
+			// Distance Reference Indicator). With 48 segments of 7.5
+			// degrees, each gap falls exactly on segment boundaries.
 			reducedJRingGaps := [][2]float32{
-				{350, 10},
-				{80, 100},
-				{170, 190},
-				{260, 280},
+				{352.5, 7.5},
+				{82.5, 97.5},
+				{172.5, 187.5},
+				{262.5, 277.5},
 			}
 
-			jr.AddGappedCircle(pw, reducedRadius, 50, reducedJRingGaps, colors.yellow)
+			jr.AddGappedCircle(pw, reducedRadius, 48, reducedJRingGaps, colors.yellow)
 		}
 	}
 	jr.GenerateCommands(cb)
+	cb.LineWidth(1, ctx.DPIScale)
 }
 
 func (ep *Scope) drawQULines(ctx *scope.Context, transforms scope.Transformations,
