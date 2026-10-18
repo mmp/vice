@@ -98,6 +98,7 @@ func registerOpsCommands() {
 	//   QS `<text> [TRACK]      - set free text (backtick is clear-weather symbol)
 	//   QS <heading> [TRACK]    - set heading (1-4 chars; not validated)
 	//   QS /<speedSpec> [TRACK] - set speed or mach (see HSF_SPEED parser)
+	//   QS <heading>/<speedSpec> [TRACK] - set heading and speed or mach
 	//   QS */ [TRACK]           - delete heading
 	//   QS /* [TRACK]           - delete speed/mach
 	//   QS * [TRACK]            - delete all HSF data
@@ -105,6 +106,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "QS [HSF_TEXT] [TRACK]", handleQSFreeText)
 	registerCommand(CommandModeNone, "QS [HSF_SPEED] [TRACK]", handleQSSpeed)
 	registerCommand(CommandModeNone, "QS [HSF_HDG] [TRACK]", handleQSHeading)
+	registerCommand(CommandModeNone, "QS [HSF_HDG][HSF_SPEED] [TRACK]", handleQSHeadingSpeed)
 	registerCommand(CommandModeNone, "QS */ [TRACK]", handleQSDeleteHeading)
 	registerCommand(CommandModeNone, "QS /* [TRACK]", handleQSDeleteSpeed)
 	registerCommand(CommandModeNone, "QS * [TRACK]", handleQSDeleteAll)
@@ -1169,6 +1171,21 @@ func handleQSSpeed(ep *Scope, ctx *scope.Context, speed string, trk *sim.Track) 
 	if isQSFreeText(trk.FlightPlan.Scratchpad) {
 		fp.Scratchpad.Set("")
 	}
+	ep.modifyFlightPlan(ctx, trk, fp)
+
+	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
+}
+
+// handleQSHeadingSpeed enters a heading and a speed together, as in
+// QS 330/81 (Appendix B).
+func handleQSHeadingSpeed(ep *Scope, ctx *scope.Context, heading, speed string, trk *sim.Track) (CommandStatus, error) {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{}, ErrIllegalACID
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set(heading)
+	fp.SecondaryScratchpad.Set(speed)
 	ep.modifyFlightPlan(ctx, trk, fp)
 
 	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil

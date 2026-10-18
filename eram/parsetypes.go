@@ -849,17 +849,19 @@ func (h *hsfTextParser) GoType() reflect.Type { return reflect.TypeFor[string]()
 func (h *hsfTextParser) AcceptsClick() bool   { return false }
 
 // Headings don't have to be actual headings, just cannot be > 4 characters.
+// A heading ends at a slash, which starts the speed of a combined heading and
+// speed entry such as 330/81.
 type hsfHeadingParser struct{}
 
 func (h *hsfHeadingParser) Identifier() string { return "HSF_HDG" }
 
 func (h *hsfHeadingParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
-	field, remaining := util.CutAtSpace(text)
+	field, remaining, _ := util.CutFunc(text, func(ch rune) bool { return ch == ' ' || ch == '/' })
 	if field == "" {
 		return nil, text, false, nil
 	}
 	// Disallow other QS syntaxes from being interpreted as headings.
-	if strings.HasPrefix(field, "/") || strings.HasPrefix(field, "`") || strings.HasPrefix(field, "*") {
+	if strings.HasPrefix(field, "`") || strings.HasPrefix(field, "*") {
 		return nil, text, false, nil
 	}
 	if len(field) > 4 {
@@ -879,6 +881,7 @@ func (h *hsfHeadingParser) AcceptsClick() bool   { return false }
 //   - /75      => M75  (inferred, 2 digits => mach)
 //   - /S250    => S250 (explicit speed)
 //   - /M75     => M75  (explicit mach)
+//   - /M.75    => M75  (explicit mach; the decimal point is optional, 11.1.1.1)
 //
 // Modifiers:
 //   - Inferred: /250+, /75-, /M75- allowed
@@ -925,9 +928,9 @@ func (h *hsfSpeedParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 		return "S" + d, remaining, true, nil
 	}
 
-	// Explicit mach: /M75 or /M750. Can be 2-3 digits. + and - don't work when 3 digits.
+	// Explicit mach: /M75, /M.75, or /M750. Can be 2-3 digits. + and - don't work when 3 digits.
 	if strings.HasPrefix(upper, "M") {
-		d := rest[1:]
+		d := strings.TrimPrefix(rest[1:], ".")
 		if len(d) < 2 || len(d) > 3 || !allDigits(d) {
 			return nil, text, true, NewError("INVALID SPEED FORMAT")
 		}

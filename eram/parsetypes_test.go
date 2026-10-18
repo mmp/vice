@@ -121,3 +121,29 @@ func TestTrackParserSlashedFLID(t *testing.T) {
 		t.Errorf("QP J /123: got J ring %v, error %v", ep.TrackState["AAL123"].DisplayJRing, err)
 	}
 }
+
+// QS takes a Mach speed with or without its decimal point (11.1.1.1), and a
+// heading and a speed together, as in QS 330/81 (Appendix B).
+func TestQSHeadingAndSpeed(t *testing.T) {
+	var sp hsfSpeedParser
+	for _, text := range []string{"/M.61 AAL123", "/M61 AAL123"} {
+		if v, rest, ok, err := sp.Parse(nil, nil, &CommandInput{}, text); !ok || err != nil || v != "M61" || rest != " AAL123" {
+			t.Errorf("%q: got %v %q %v %v, want M61", text, v, rest, ok, err)
+		}
+	}
+
+	var hp hsfHeadingParser
+	for _, tc := range []struct {
+		text, heading, rest string
+	}{
+		{"330/81 AAL123", "330", "/81 AAL123"},
+		{"330 AAL123", "330", " AAL123"},
+		{"/330 AAL123", "", ""},
+		{"*/ AAL123", "", ""},
+	} {
+		v, rest, ok, err := hp.Parse(nil, nil, &CommandInput{}, tc.text)
+		if err != nil || ok != (tc.heading != "") || (ok && (v != tc.heading || rest != tc.rest)) {
+			t.Errorf("%q: got %v %q %v %v, want %q %q", tc.text, v, rest, ok, err, tc.heading, tc.rest)
+		}
+	}
+}
