@@ -5,6 +5,7 @@
 package eram
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/mmp/vice/sim"
@@ -48,5 +49,46 @@ func TestAltitudeMenuAlts(t *testing.T) {
 	}
 	if first, last := altitudeMenuAlts[0], altitudeMenuAlts[len(altitudeMenuAlts)-1]; first != 590 || last != 10 {
 		t.Errorf("list runs from %03d to %03d; expected 590 to 010", first, last)
+	}
+}
+
+// In turn mode the heading menu lists the eleven turns of 5 to 55 degrees,
+// two to a row as figures 16-2 and 16-3 show.
+func TestHeadingMenuTurnRows(t *testing.T) {
+	want := [][2]string{{"50L", "55L"}, {"40L", "45L"}, {"30L", "35L"}, {"20L", "25L"}, {"10L", "15L"}, {"", "5L"}}
+	if got := headingMenuRows(true, false); !slices.Equal(got, want) {
+		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+// A stored heading gives the closest listed value current value emphasis.
+func TestHeadingMenuCurrentValue(t *testing.T) {
+	for _, tc := range []struct {
+		heading string
+		lt, rt  bool
+		want    string
+	}{
+		{"245", false, false, "245"},
+		{"247", false, false, "245"},
+		{"248", false, false, "250"},
+		{"358", false, false, "360"},
+		{"002", false, false, "360"},
+		{"003", false, false, "005"},
+		{"000", false, false, ""},
+		{"361", false, false, ""},
+		{"45", false, false, ""},
+		{"PH", false, false, ""},
+		{"30L", false, false, ""},
+		{"30L", true, false, "30L"},
+		{"23L", true, false, "25L"},
+		{"22L", true, false, "20L"},
+		{"4L", true, false, ""},
+		{"75L", true, false, ""},
+		{"30R", true, false, ""},
+		{"53R", false, true, "55R"},
+	} {
+		if got := headingMenuCurrentValue(tc.heading, tc.lt, tc.rt); got != tc.want {
+			t.Errorf("%q (LT %v, RT %v): got %q, want %q", tc.heading, tc.lt, tc.rt, got, tc.want)
+		}
 	}
 }

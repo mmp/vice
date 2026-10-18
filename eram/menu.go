@@ -203,9 +203,9 @@ type MenuGridCell struct {
 	OnClick       func(clickType MenuClickType) bool // return true = close menu
 }
 
-// MenuGrid is a scrollable grid of value pick areas. A reserved arrow
-// column on the right scrolls by pages the way the ERAM altitude/heading/
-// speed menus do; the mouse wheel scrolls by rows.
+// MenuGrid is a scrollable grid of value pick areas. When the rows don't
+// all fit, a reserved arrow column on the right scrolls by pages the way the
+// ERAM altitude/heading/speed menus do; the mouse wheel scrolls by rows.
 type MenuGrid struct {
 	Rows        [][]MenuGridCell
 	VisibleRows int  // rows shown per page
@@ -866,7 +866,8 @@ func (ep *Scope) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font 
 }
 
 // drawMenuGrid renders a scrollable grid of value pick areas with a reserved
-// scroll-arrow column on the right. Cells handle their own clicks.
+// scroll-arrow column on the right if the rows don't all fit. Cells handle
+// their own clicks.
 func (ep *Scope) drawMenuGrid(cursor [2]float32, width, itemH float32, font *renderer.Font,
 	grid *MenuGrid, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
 	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
@@ -882,8 +883,8 @@ func (ep *Scope) drawMenuGrid(cursor [2]float32, width, itemH float32, font *ren
 	maxOffset := max(len(grid.Rows)-visRows, 0)
 	*grid.Offset = math.Clamp(*grid.Offset, 0, maxOffset)
 
-	const arrowW = float32(scrollBarTotalW + 2)
-	contentW := width - arrowW
+	scrolls := len(grid.Rows) > visRows
+	contentW := width - util.Select(scrolls, float32(scrollBarTotalW+2), 0)
 	sectionH := float32(visRows) * itemH
 
 	// Section background
@@ -953,6 +954,9 @@ func (ep *Scope) drawMenuGrid(cursor [2]float32, width, itemH float32, font *ren
 
 	if hovered != nil {
 		ld.AddLineLoop(brightColor, hovered.Corners())
+	}
+	if !scrolls {
+		return bgP3
 	}
 
 	// Scroll arrows (right column): boxed up/down buttons in the same style

@@ -11,6 +11,7 @@ package eram
 import (
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/mmp/vice/math"
@@ -294,12 +295,13 @@ func (ep *Scope) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math
 }
 
 // headingMenuRows builds the two-column pick list. In turn mode the values
-// are degrees of turn ("50L 55L" ...); otherwise absolute headings.
+// are the eleven turns of 5 to 55 degrees ("50L 55L" ...) (16.1.1.2);
+// otherwise absolute headings.
 func headingMenuRows(lt, rt bool) [][2]string {
 	var rows [][2]string
 	if lt || rt {
 		suffix := util.Select(lt, "L", "R")
-		for t := 170; t >= 10; t -= 10 {
+		for t := 50; t >= 10; t -= 10 {
 			rows = append(rows, [2]string{fmt.Sprintf("%d%s", t, suffix), fmt.Sprintf("%d%s", t+5, suffix)})
 		}
 		rows = append(rows, [2]string{"", "5" + suffix})
@@ -311,6 +313,35 @@ func headingMenuRows(lt, rt bool) [][2]string {
 		rows = append(rows, [2]string{"", "005"})
 	}
 	return rows
+}
+
+// headingMenuCurrentValue returns the pick list value that the stored
+// heading gives current value emphasis, or "" if none does. A compass
+// heading or a turn of 5 to 55 degrees that is not a multiple of 5
+// emphasizes the closest listed value (16.1.1.1, 16.1.1.2).
+func headingMenuCurrentValue(heading string, lt, rt bool) string {
+	digits, suffix := heading, ""
+	lo, hi := 1, 360
+	if lt || rt {
+		suffix = util.Select(lt, "L", "R")
+		var ok bool
+		if digits, ok = strings.CutSuffix(heading, suffix); !ok {
+			return ""
+		}
+		lo, hi = 5, 55
+	} else if len(heading) != 3 {
+		return ""
+	}
+
+	n, err := strconv.Atoi(digits)
+	if err != nil || !allDigits(digits) || n < lo || n > hi {
+		return ""
+	}
+	n = (n + 2) / 5 * 5
+	if suffix != "" {
+		return strconv.Itoa(n) + suffix
+	}
+	return fmt.Sprintf("%03d", util.Select(n == 0, 360, n))
 }
 
 func (p *headingMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
@@ -327,15 +358,13 @@ func (p *headingMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.
 	textC := colors.popup.text
 
 	valueRows := headingMenuRows(p.lt, p.rt)
+	current := headingMenuCurrentValue(fp.Scratchpad, p.lt, p.rt)
 
 	if !p.initialized {
 		p.initialized = true
-		p.offset = max(len(valueRows)-7, 0) // small turns page by default
-		if !p.lt && !p.rt {
-			p.offset = 0 // absolute mode: start at 360
-		}
+		p.offset = 0
 		for i, r := range valueRows {
-			if r[0] == fp.Scratchpad || r[1] == fp.Scratchpad {
+			if current != "" && (r[0] == current || r[1] == current) {
 				p.offset = math.Clamp(i-3, 0, max(len(valueRows)-7, 0))
 				break
 			}
@@ -373,7 +402,7 @@ func (p *headingMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.
 		for _, v := range vr {
 			cell := MenuGridCell{Label: v, Color: textC}
 			if v != "" {
-				if v == fp.Scratchpad {
+				if v == current {
 					cell.BgColor = colors.menu.currentValue
 				}
 				cell.OnClick = assignHeading(v)
