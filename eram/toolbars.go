@@ -386,17 +386,7 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	inertToggle("CPDLC\nHIST"),
 	inertToggle("CPDLC\nMSGOUT"),
 	inertToggle("CPDLC\nTOC SET"),
-	toggleButtonFunc("CRR",
-		func(ep *Scope) bool { return ep.currentPrefs().CRR.Visible },
-		func(ep *Scope, _ toolbarClick) error {
-			ep.closeViewPopup("crr")
-			ps := ep.currentPrefs()
-			ps.CRR.Visible = !ps.CRR.Visible
-			if ps.CRR.Visible {
-				ps.CRR.ListMode = true
-			}
-			return nil
-		}),
+	viewButton("CRR", "crr", func(ps *Preferences) *bool { return &ps.CRR.Visible }),
 }, {
 	inertToggle("DEPT\nLIST"),
 	inertToggle("FLIGHT\nEVENT"),

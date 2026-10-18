@@ -277,6 +277,38 @@ func makeIntMenuItem[T ~int](ep *Scope, v *T, label string, min, max, step int) 
 	}
 }
 
+// linesAll is the LINES setting, shown as "21+", at which a view grows to
+// show all of its entries.
+const linesAll = 21
+
+// makeLinesMenuItem builds the LINES row of a view whose setting runs from
+// minLines to 20 and then to 21+.
+func makeLinesMenuItem(ep *Scope, v *int, minLines int) MenuItem {
+	label := fmt.Sprintf("LINES %d", *v)
+	if *v >= linesAll {
+		label = "LINES 21+"
+	}
+	return MenuItem{
+		Label:   label,
+		BgColor: colors.popup.backgroundGreen,
+		Color:   colors.popup.text,
+		OnClick: func(click MenuClickType) bool {
+			*v = min(*v, linesAll)
+			adjustMenuValue(ep, v, click, minLines, linesAll, 1)
+			return false
+		},
+	}
+}
+
+// visibleLines returns the number of lines a view with the given LINES
+// setting shows before it scrolls when it has n entries.
+func visibleLines(lines, n int) int {
+	if lines >= linesAll {
+		return max(n, 1)
+	}
+	return lines
+}
+
 // makeWidthMenuItem builds the WIDTH row of a view that is either narrow or
 // wide characters across: TBP selects the narrow width and TBE the wide one.
 func makeWidthMenuItem(ep *Scope, v *int, narrow, wide int) MenuItem {

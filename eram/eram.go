@@ -290,6 +290,7 @@ type Scope struct {
 	crrFixRects      map[string]math.Extent2D
 	crrLabelRects    map[string]math.Extent2D
 	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D
+	crrScroll        ViewScrollState
 
 	// ALTIM SET state (session)
 	AltimSetAirports []av.ICAOAirportCode `json:"AltimSetAirports,omitempty"`
@@ -623,6 +624,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	clear(ep.posCheckToggled)
 	clear(ep.emergCheckToggled)
 	clear(ep.CRRGroups)
+	ep.crrScroll = ViewScrollState{}
 	ep.AltimSetAirports = nil
 	ep.altimSetScroll = ViewScrollState{}
 	ep.altimSetSelect = ViewSelectionState{Selected: -1}

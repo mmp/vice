@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"regexp"
 	"slices"
-	"strconv"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
@@ -81,6 +80,9 @@ func validCRRLabel(s string) bool {
 // CRR Command Helpers
 ///////////////////////////////////////////////////////////////////////////////
 
+// crrContentChars is the width of the CRR view's contents in characters.
+const crrContentChars = 18
+
 // drawCRRView renders the Continuous Range Readout view.
 func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
@@ -91,8 +93,9 @@ func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms 
 		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 
-	font := ep.ERAMFont(2)
-	const width = float32(260)
+	font := ep.ERAMFont(ps.CRR.Font)
+	// The same width as a list mode column.
+	width := float32(crrContentChars)*charWidth(font) + 2*titleBarButtonPad
 
 	trackPos := make(map[av.ADSBCallsign]math.Point2LL)
 	for _, trk := range tracks {
@@ -202,10 +205,10 @@ func (ep *Scope) buildCRRPanel(labels []string, font *renderer.Font) (float32, f
 }
 
 // buildCRRList constructs the list-mode RowSource: per-group header +
-// sorted aircraft rows separated by 2px spacers. A parallel metadata slice
-// lets the OnRowExtents callback populate crrLabelRects / crrAircraftRects
-// after the rows are drawn. Group-header rows set Color explicitly; aircraft
-// rows leave Color zero and let the View fill it.
+// sorted aircraft rows, with 2px spacers between groups. A parallel
+// metadata slice lets the OnRowExtents callback populate crrLabelRects /
+// crrAircraftRects after the rows are drawn. Group-header rows set Color
+// explicitly; aircraft rows leave Color zero and let the View fill it.
 func (ep *Scope) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math.Point2LL) *ViewRowSource {
 	ps := ep.currentPrefs()
 
@@ -222,6 +225,10 @@ func (ep *Scope) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math
 		g := ep.CRRGroups[label]
 		if g == nil {
 			continue
+		}
+		if len(rows) > 0 {
+			rows = append(rows, Row{SpacerHeight: 2})
+			metas = append(metas, rowMeta{spacer: true})
 		}
 		// Group header (centered, colored)
 		rows = append(rows, Row{
@@ -255,20 +262,16 @@ func (ep *Scope) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math
 			rows = append(rows, Row{Label: fmt.Sprintf("%s    %.1f", e.cs, e.d)})
 			metas = append(metas, rowMeta{label: label, callsign: e.cs})
 		}
-
-		rows = append(rows, Row{SpacerHeight: 2})
-		metas = append(metas, rowMeta{spacer: true})
 	}
 
-	// 18 ContentChars * font-2 space-width (14 px) = 252 px content,
-	// + 2*viewMPad side pad = the same 260 px total column width as panel mode.
 	return &ViewRowSource{
 		Rows:         rows,
-		FontIndex:    2,
-		ContentChars: 18,
+		FontIndex:    ps.CRR.Font,
+		ContentChars: crrContentChars,
 		MaxCols:      1,
-		VisibleRows:  ps.CRR.Lines,
+		VisibleRows:  visibleLines(ps.CRR.Lines, len(rows)),
 		RowSpacing:   RowSpacingCompact,
+		ScrollState:  &ep.crrScroll,
 		OnRowExtents: func(first int, extents []math.Extent2D) {
 			ep.crrLabelRects = make(map[string]math.Extent2D)
 			ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
@@ -303,19 +306,9 @@ func (c *crrPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 
 	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.CRR.Opaque, "O", "T"),
-		{Label: "BORDER", BgColor: colors.popup.backgroundGrey, Color: colors.popup.text, OnClick: func(_ MenuClickType) bool {
-			ps.CRR.ShowBorder = !ps.CRR.ShowBorder
-			return false
-		}},
-		makeIntMenuItem(ep, &ps.CRR.Lines, "LINES", 1, 100, 1),
-		{Label: "FONT " + strconv.Itoa(ps.CRR.Font), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text, OnClick: func(ct MenuClickType) bool {
-			if ct == MenuClickPrimary {
-				ps.CRR.Font = 1 + (ps.CRR.Font+2)%4
-			} else {
-				ps.CRR.Font = 1 + ps.CRR.Font%4
-			}
-			return false
-		}},
+		ep.makeToggleMenuItem(&ps.CRR.ShowBorder, "BORDER"),
+		makeLinesMenuItem(ep, &ps.CRR.Lines, 3),
+		makeIntMenuItem(ep, &ps.CRR.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.CRR.Bright, "BRIGHT", 0, 100, 1),
 		ep.makeToggleMenuItem(&ps.CRR.ListMode, "LIST"),
 		{Label: fmt.Sprintf("COLOR %d", ps.CRR.ColorBright[ps.CRR.SelectedColor]), BgColor: colors.popup.backgroundBlack,
@@ -542,7 +535,7 @@ func (ep *Scope) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transf
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	font := ep.ERAMFont(ps.FDBSize)
+	font := ep.ERAMFont(ps.RDBSize)
 
 	for _, trk := range tracks {
 		entry, ok := acCRR[trk.ADSBCallsign]
