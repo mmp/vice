@@ -197,19 +197,22 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "TG [ALL_TEXT][TRACK]", handleTargetGenClicked)
 	registerCommand(CommandModeNone, "TG[TRACK]", handleTargetGenEmptyClicked)
 
-	// Default commands (no prefix)
+	// Default commands, which are QN commands entered without the QN (2.15.1).
+	// Handoffs and data block offsets may also be entered with QN or QZ.
 	// [TRACK]: Accept handoff / recall handoff / toggle FDB
 	// [SECTOR_ID] [TRACK]: Initiate handoff
 	// [1-9] [TRACK]: Leader line direction
-	registerCommand(CommandModeNone, "[TRACK]", handleDefaultTrack)
-	registerCommand(CommandModeNone, "[SECTOR_ID] [TRACK]", handleInitiateHandoff)
-	registerCommand(CommandModeNone, "[#] [TRACK]", handleLeaderLinePosition)
+	registerCommand(CommandModeNone, "[TRACK]|QN [TRACK]", handleDefaultTrack)
+	registerCommand(CommandModeNone, "[SECTOR_ID] [TRACK]|QN [SECTOR_ID] [TRACK]|QZ [SECTOR_ID] [TRACK]",
+		handleInitiateHandoff)
+	registerCommand(CommandModeNone, "[#] [TRACK]|QN [#] [TRACK]|QZ [#] [TRACK]", handleLeaderLinePosition)
 
 	// Leader line length commands
 	// /[0-3] [TRACK]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
 	// [1-9]/[0-3] [TRACK]: Set leader line position and length
-	registerCommand(CommandModeNone, "/[NUM] [TRACK]", handleLeaderLineLength)
-	registerCommand(CommandModeNone, "[NUM]/[NUM] [TRACK]", handleLeaderLinePositionAndLength)
+	registerCommand(CommandModeNone, "/[NUM] [TRACK]|QN /[NUM] [TRACK]|QZ /[NUM] [TRACK]", handleLeaderLineLength)
+	registerCommand(CommandModeNone, "[NUM]/[NUM] [TRACK]|QN [NUM]/[NUM] [TRACK]|QZ [NUM]/[NUM] [TRACK]",
+		handleLeaderLinePositionAndLength)
 
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)

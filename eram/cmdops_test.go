@@ -146,6 +146,54 @@ func TestToggleVCIPrefixes(t *testing.T) {
 	}
 }
 
+// Handoffs and data block offsets may be entered with QN or QZ, and the
+// implied command with QN (2.15.1, Appendix B).
+func TestQNQZPrefixes(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123"},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123", TrackingController: "1A", OwningTCW: "TCW1"},
+	})
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "UAL456"},
+		FlightPlan: &sim.FlightPlan{ACID: "UAL456", CID: "456", TrackingController: "2B", OwningTCW: "TCW2"},
+	})
+	h.frame(0)
+	state := h.ep.TrackState["AAL123"]
+	state.LeaderLineLength = new(1)
+
+	for _, tc := range []struct {
+		cmd       string
+		direction math.CardinalOrdinalDirection
+		length    int
+	}{
+		{"QZ 8 AAL123", math.North, 1},
+		{"QN 2 /123", math.South, 1},
+		{"QZ /3 /123", math.South, 3},
+		{"QN 9/2 AAL123", math.NorthEast, 2},
+	} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, tc.cmd, nil, nil); err != nil {
+			t.Errorf("%s: %v", tc.cmd, err)
+		} else if *state.LeaderLineDirection != tc.direction || *state.LeaderLineLength != tc.length {
+			t.Errorf("%s: got direction %v length %d, want %v %d", tc.cmd, *state.LeaderLineDirection,
+				*state.LeaderLineLength, tc.direction, tc.length)
+		}
+	}
+
+	// A handoff to a sector that is not signed on is rejected by the
+	// handoff command.
+	for _, cmd := range []string{"QZ 9Z AAL123", "QN 9Z /123"} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil); err != ErrSectorNotActive {
+			t.Errorf("%s: got error %v, want %v", cmd, err, ErrSectorNotActive)
+		}
+	}
+
+	if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, "QN UAL456", nil, nil); err != nil || !h.ep.TrackState["UAL456"].EFDB {
+		t.Errorf("QN UAL456: got FDB %v, error %v; want an FDB", h.ep.TrackState["UAL456"].EFDB, err)
+	}
+}
+
 // QX is refused for another sector's track, naming the sector that has
 // control.
 func TestDropTrackOfAnotherSector(t *testing.T) {
