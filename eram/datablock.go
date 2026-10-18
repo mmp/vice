@@ -713,6 +713,15 @@ func datablockLeaderConnectOffset(dir math.CardinalOrdinalDirection, font *rende
 	}
 }
 
+// sectorDisplayID returns the ID the scope shows for the sector of position
+// p.
+func sectorDisplayID(ctx *scope.Context, p sim.ControlPosition) string {
+	if ctrl := ctx.GetResolvedController(p); ctrl != nil {
+		return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
+	}
+	return string(p)
+}
+
 // shortFieldERAMID returns the ERAM Field E sector identifier for a
 // given facility prefix and position. The format depends on the
 // facility's FieldEFormat, which determines which identifier and how

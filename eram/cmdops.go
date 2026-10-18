@@ -330,8 +330,11 @@ func handleDropTrack(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStat
 		return CommandStatus{}, ErrIllegalACID
 	}
 
-	if !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
-		return CommandStatus{}, ErrIllegalACID // TODO: proper "NO CONTROL" error
+	// Manual 6.1 lets a sector drop a track without track control, but in a
+	// shared sim that would take tracks from other controllers.
+	if !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) && !ctx.TCWIsPrivileged(ctx.UserTCW) {
+		return CommandStatus{}, NewError("SECTOR %s HAS CONTROL\nDROP TRACK %s",
+			sectorDisplayID(ctx, trk.FlightPlan.TrackingController), trk.ADSBCallsign)
 	}
 
 	ep.deleteFLightplan(ctx, *trk)

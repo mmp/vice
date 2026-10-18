@@ -146,6 +146,24 @@ func TestToggleVCIPrefixes(t *testing.T) {
 	}
 }
 
+// QX is refused for another sector's track, naming the sector that has
+// control.
+func TestDropTrackOfAnotherSector(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{"2B": {Position: "2B"}}
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123"},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123", TrackingController: "2B"},
+	})
+	h.frame(0)
+
+	_, err, _ := h.ep.tryExecuteUserCommand(h.ctx, "QX AAL123", nil, nil)
+	if want := "SECTOR 2B HAS CONTROL\nDROP TRACK AAL123"; err == nil || err.Error() != want {
+		t.Errorf("QX AAL123: got error %v, want %q", err, want)
+	}
+}
+
 // LB reports its function as RANGE/BEARING/FIX, which distinguishes it from
 // LA's RANGE/BEARING (3.12.2, figure 3-29).
 func TestRangeBearingFixFeedback(t *testing.T) {

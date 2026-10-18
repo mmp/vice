@@ -121,22 +121,16 @@ func (po *pointOutPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 // click on it removes it. The P turns white once all are acknowledged
 // (5.1.5.11.2).
 func (po *pointOutPopup) row(ep *Scope, ctx *scope.Context, trk *sim.Track) MenuItem {
-	label := func(p sim.ControlPosition) string {
-		if ctrl := ctx.GetResolvedController(p); ctrl != nil {
-			return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
-		}
-		return string(p)
-	}
-
 	row := MenuItem{Label: "P"}
 	if po.outbound {
 		row.Color = colors.yellow
 		for _, p := range ctx.OutboundPointOuts(trk.FlightPlan) {
-			row.Segments = append(row.Segments, MenuSegment{Text: label(p.ToController), Color: colors.yellow, Boxed: true})
+			row.Segments = append(row.Segments,
+				MenuSegment{Text: sectorDisplayID(ctx, p.ToController), Color: colors.yellow, Boxed: true})
 		}
 		for _, receiver := range ep.AckedPointOuts[po.acid] {
 			row.Segments = append(row.Segments, MenuSegment{
-				Text:  label(receiver),
+				Text:  sectorDisplayID(ctx, receiver),
 				Color: colors.pointOut.white,
 				OnClick: func(_ MenuClickType) bool {
 					ep.removeAckedPointOut(po.acid, receiver)
@@ -150,7 +144,7 @@ func (po *pointOutPopup) row(ep *Scope, ctx *scope.Context, trk *sim.Track) Menu
 	po.updateOriginators(ctx.InboundPointOuts(trk.FlightPlan))
 	row.Color = colors.pointOut.white
 	for i, o := range po.originators {
-		seg := MenuSegment{Text: label(o.pos), Color: colors.pointOut.white}
+		seg := MenuSegment{Text: sectorDisplayID(ctx, o.pos), Color: colors.pointOut.white}
 		if o.acked {
 			seg.OnClick = func(_ MenuClickType) bool {
 				po.originators = slices.Delete(po.originators, i, i+1)
