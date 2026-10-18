@@ -212,12 +212,12 @@ func FacilityTimeIntervals(facility string) []util.TimeInterval {
 func facilityTimeIntervals(atmos, precip *Manifest, facility string) []util.TimeInterval {
 	var intervals [][]util.TimeInterval
 	if atmos != nil {
-		if times, ok := atmos.decodeTimestamps(facility); ok {
+		if times, ok := atmos.GetTimestamps(facility); ok {
 			intervals = append(intervals, AtmosIntervals(facility, times))
 		}
 	}
 	if precip != nil {
-		if times, ok := precip.decodeTimestamps(facility); ok {
+		if times, ok := precip.GetTimestamps(facility); ok {
 			intervals = append(intervals, PrecipIntervals(times))
 		}
 	}

@@ -16,7 +16,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/golang-lru/v2/expirable"
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/vice/util"
 	"github.com/vmihailenco/msgpack/v5"
@@ -38,27 +37,17 @@ type RawManifest map[string][]byte
 type Manifest struct {
 	// data maps facility identifiers to compressed, delta-encoded int64 timestamps
 	data RawManifest
-
-	// cache stores decompressed timestamps for recently accessed facilities
-	// to avoid repeated decompression
-	cache *expirable.LRU[string, []time.Time]
 }
 
-// NewManifest creates an empty manifest with caching enabled
+// NewManifest creates an empty manifest
 func NewManifest() *Manifest {
-	return &Manifest{
-		data:  make(RawManifest),
-		cache: expirable.NewLRU[string, []time.Time](32, nil, 4*time.Hour),
-	}
+	return &Manifest{data: make(RawManifest)}
 }
 
 // MakeManifest creates a manifest from raw manifest data.
 // This is useful when loading data from storage systems.
 func MakeManifest(data RawManifest) *Manifest {
-	return &Manifest{
-		data:  data,
-		cache: expirable.NewLRU[string, []time.Time](32, nil, 4*time.Hour),
-	}
+	return &Manifest{data: data}
 }
 
 func MakeManifestFromMap(m map[string][]time.Time) (*Manifest, error) {
@@ -124,24 +113,8 @@ func (m *Manifest) Save(w io.Writer) error {
 }
 
 // GetTimestamps retrieves and decompresses the timestamps for a specific facility.
-// Results are cached to avoid repeated decompression.
 // Returns nil, false if the facility is not in the manifest.
 func (m *Manifest) GetTimestamps(identifier string) ([]time.Time, bool) {
-	// Check cache first
-	if times, ok := m.cache.Get(identifier); ok {
-		return times, true
-	}
-
-	times, ok := m.decodeTimestamps(identifier)
-	if ok {
-		m.cache.Add(identifier, times)
-	}
-	return times, ok
-}
-
-// decodeTimestamps is GetTimestamps without the cache, for callers that only
-// need the timestamps briefly; a facility's precip timestamps take a few MB.
-func (m *Manifest) decodeTimestamps(identifier string) ([]time.Time, bool) {
 	compressed, ok := m.data[identifier]
 	if !ok {
 		return nil, false
