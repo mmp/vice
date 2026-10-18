@@ -38,6 +38,28 @@ func TestAltitudeMenuFPLabel(t *testing.T) {
 	}
 }
 
+// The altitude menu's interim row shows the interim or procedure altitude
+// under a local interim altitude.
+func TestAltitudeMenuInterimLabel(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		fp   sim.FlightPlan
+		want string // "" when the row is not shown
+	}{
+		{"interim", sim.FlightPlan{AssignedAltitude: 35000, InterimAlt: 28000}, ""},
+		{"local interim", sim.FlightPlan{AssignedAltitude: 35000, LocalInterimAlt: 24000}, ""},
+		{"local interim over interim", sim.FlightPlan{AssignedAltitude: 35000, InterimAlt: 28000,
+			LocalInterimAlt: 24000}, "280T"},
+		{"local interim over procedure", sim.FlightPlan{InterimAlt: 18000, InterimType: sim.InterimProcedure,
+			LocalInterimAlt: 20000}, "180P"},
+	} {
+		label, ok := altitudeMenuInterimLabel(&tc.fp)
+		if ok != (tc.want != "") || label != tc.want {
+			t.Errorf("%s: got %q, %v; want %q", tc.name, label, ok, tc.want)
+		}
+	}
+}
+
 // The altitude menu lists altitudes 1,000 feet apart up to FL410 and 2,000
 // feet apart above it.
 func TestAltitudeMenuAlts(t *testing.T) {

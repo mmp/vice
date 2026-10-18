@@ -99,6 +99,17 @@ func altitudeMenuFPLabel(fp *sim.FlightPlan) (label string, ok bool) {
 	return "FP " + formatAssignedAltitude(fp), true
 }
 
+// altitudeMenuInterimLabel returns the label of the altitude menu's Flight
+// Plan Interim Altitude pick area, which shows the interim or procedure
+// altitude that a local interim altitude is displayed in place of
+// (8.6.1.2.d); ok is false when there are not both.
+func altitudeMenuInterimLabel(fp *sim.FlightPlan) (label string, ok bool) {
+	if fp.LocalInterimAlt == 0 || fp.InterimAlt == 0 {
+		return "", false
+	}
+	return fmt.Sprintf("%03d%s", fp.InterimAlt/100, fp.InterimType), true
+}
+
 func (ep *Scope) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
 	if trk.FlightPlan == nil {
 		return
@@ -112,6 +123,9 @@ func (ep *Scope) openAltitudeMenu(ctx *scope.Context, trk *sim.Track, dbMain mat
 
 	nRows := 3 // title + LOCAL TALT + PROCEDURE
 	if fpRow {
+		nRows++
+	}
+	if _, ok := altitudeMenuInterimLabel(trk.FlightPlan); ok {
 		nRows++
 	}
 	height := float32(nRows+7) * dbMenuItemH
@@ -167,6 +181,19 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 				spec.InterimType.Set(sim.InterimNormal)
 				spec.LocalInterimAlt.Set(0)
 				status, err := modifyInterimAltitude(ep, ctx, trk, spec)
+				ep.applyCommandStatus(ctx, status, err)
+				ep.popup = nil
+				return true
+			},
+		})
+	}
+	if label, ok := altitudeMenuInterimLabel(fp); ok {
+		// The Flight Plan Interim Altitude pick area removes the local
+		// interim altitude, which redisplays the interim altitude.
+		rows = append(rows, MenuItem{
+			Label: label, BgColor: grey, Color: textC, Centered: true,
+			OnClick: func(_ MenuClickType) bool {
+				status, err := handleClearLocalInterimAltitude(ep, ctx, trk)
 				ep.applyCommandStatus(ctx, status, err)
 				ep.popup = nil
 				return true
