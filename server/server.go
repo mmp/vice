@@ -112,7 +112,8 @@ import (
 // 101: FDAM TCP-specific leader directions moved from FDAMLeaderLineEvent to FlightPlan.FDAMLeaderLineDirections
 // 102: reworked ATPA volume generation / matching; 2.5nm reduced separation is per runway
 // 103: CIDAllocator tracks CIDs with per-set bit vectors
-const ViceSerializeVersion = 103
+// 104: ERAM FONT and CHECK LISTS menus reordered, changing toolbar button ids
+const ViceSerializeVersion = 104
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

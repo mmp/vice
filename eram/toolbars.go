@@ -296,13 +296,13 @@ func relativeFontSize(name string, v func(*Preferences) *int, min, max int) tool
 }
 
 var fontMenu = toolbarMenu{rows: [][]toolbarButton{{
-	relativeFontSize("LINE4", func(ps *Preferences) *int { return &ps.Line4Size }, -2, 0),
+	relativeFontSize("LINE 4", func(ps *Preferences) *int { return &ps.Line4Size }, -2, 0),
 	absoluteFontSize("FDB", func(ps *Preferences) *int { return &ps.FDBSize }, 1, 5),
 	relativeFontSize("PORTAL", func(ps *Preferences) *int { return &ps.PoralSize }, -2, 0),
 	absoluteFontSize("TOOLBAR", func(ps *Preferences) *int { return &ps.ToolbarSize }, 1, 2),
 }, {
-	absoluteFontSize("LDB", func(ps *Preferences) *int { return &ps.LDBSize }, 1, 5),
 	absoluteFontSize("RDB", func(ps *Preferences) *int { return &ps.RDBSize }, 1, 5),
+	absoluteFontSize("LDB", func(ps *Preferences) *int { return &ps.LDBSize }, 1, 5),
 	absoluteFontSize("OUTAGE", func(ps *Preferences) *int { return &ps.OutageSize }, 1, 3),
 }}}
 
@@ -415,8 +415,8 @@ func checkListButton(label string, list int) toolbarButton {
 }
 
 var checkListsMenu = toolbarMenu{rows: [][]toolbarButton{{
-	checkListButton("POS\nCHECK", checkListPos),
 	checkListButton("EMERG\nCHECK", checkListEmerg),
+	checkListButton("POS\nCHECK", checkListPos),
 }}}
 
 ///////////////////////////////////////////////////////////////////////////

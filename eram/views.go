@@ -170,7 +170,7 @@ func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tra
 			}},
 		makeIntMenuItem(ep, &ps.AltimSet.Col, "COL", 1, 4, 1),
 		makeIntMenuItem(ep, &ps.AltimSet.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.AltimSet.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.AltimSet.Bright, "BRIGHT", 0, 100, 2),
 		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text},
 	}
 
@@ -279,10 +279,10 @@ func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms sco
 	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.BeaconCodeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.ShowBorder, "BORDER"),
-		makeIntMenuItem(ep, &ps.BeaconCodeView.Lines, "LINES", 3, 24, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Lines, "LINES", 3, 20, 1),
 		makeIntMenuItem(ep, &ps.BeaconCodeView.Col, "COL", 1, 5, 1),
 		makeIntMenuItem(ep, &ps.BeaconCodeView.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 2),
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.SortManual, "SORT MAN"),
 	}
 
@@ -405,7 +405,7 @@ func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 2, 50, 1),
 		makeWidthMenuItem(ep, &ps.MCA.Width, 30, 50),
 		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 2),
 	}
 
 	cfg := MenuConfig{
@@ -480,7 +480,7 @@ func (r *raPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 	rows := []MenuItem{
 		makeWidthMenuItem(ep, &ps.RA.Width, 25, 50),
 		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 2),
 		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ MenuClickType) bool {
 			ep.responseArea = ""
 			return false
@@ -545,7 +545,7 @@ func (t *timeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tra
 		ep.makeBooleanMenuItem(&ps.TimeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.TimeView.ShowBorder, "BORDER"),
 		makeIntMenuItem(ep, &ps.TimeView.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.TimeView.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.TimeView.Bright, "BRIGHT", 0, 100, 2),
 	}
 
 	cfg := MenuConfig{
@@ -662,7 +662,7 @@ func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 				return false
 			}},
 		makeIntMenuItem(ep, &ps.WX.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.WX.Bright, "BRIGHT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.WX.Bright, "BRIGHT", 0, 100, 2),
 	}
 
 	cfg := MenuConfig{
@@ -694,7 +694,7 @@ var checkListItems = map[int][]string{
 		"EQUIPMENT/FREQUENCIES (NAVAID STATUS)",
 		"RESTRICTIONS/TMIS",
 		"WEATHER, PIREPS, DEVIATIONS",
-		"UNUSUAL SITAUTIONS (PAJA, NON-RVSM, ETC)",
+		"UNUSUAL SITUATIONS (PAJA, NON-RVSM, ETC)",
 		"CLEARANCES ISSUED OR PENDING",
 		"TRAFFIC",
 	},
@@ -726,7 +726,7 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 	case checkListPos:
 		title, id, toggled = "POS CHECK", "pos-check", ep.posCheckToggled
 	case checkListEmerg:
-		title, id, toggled = "EMERG CHECK", "emerg-check", ep.emergCheckToggled
+		title, id, toggled = "EMERG CK", "emerg-check", ep.emergCheckToggled
 	default:
 		return
 	}
@@ -757,7 +757,7 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 			FontIndex:      ps.CheckList.Font,
 			ContentChars:   maxLen,
 			MaxCols:        1,
-			VisibleRows:    ps.CheckList.Lines,
+			VisibleRows:    visibleLines(ps.CheckList.Lines, len(rows)),
 			RowSpacing:     RowSpacingCompact,
 			HighlightColor: ps.CheckList.Highlight.ScaleRGB(colors.popup.backgroundGrey),
 			OnRowToggle:    func(idx int) { toggled[idx] = !toggled[idx] },
@@ -775,10 +775,10 @@ func (c *checkListPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.CheckList.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.CheckList.ShowBorder, "BORDER"),
-		makeIntMenuItem(ep, &ps.CheckList.Lines, "LINES", 3, 24, 1),
+		makeLinesMenuItem(ep, &ps.CheckList.Lines, 3),
 		makeIntMenuItem(ep, &ps.CheckList.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.CheckList.Highlight, "HIGHLIGHT", 0, 100, 1),
-		makeIntMenuItem(ep, &ps.CheckList.Text, "TEXT", 0, 100, 1),
+		makeIntMenuItem(ep, &ps.CheckList.Highlight, "HIGHLIGHT", 0, 100, 2),
+		makeIntMenuItem(ep, &ps.CheckList.Text, "TEXT", 0, 100, 2),
 	}
 
 	cfg := MenuConfig{

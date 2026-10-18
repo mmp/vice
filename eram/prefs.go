@@ -400,7 +400,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.CheckList.Position = [2]float32{100, 900}
 	prefs.CheckList.Opaque = false
 	prefs.CheckList.ShowBorder = true
-	prefs.CheckList.Lines = 17
+	prefs.CheckList.Lines = linesAll
 	prefs.CheckList.Font = 2
 	prefs.CheckList.Highlight = 40
 	prefs.CheckList.Text = 76
@@ -528,6 +528,11 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 99 {
 		// Torn-off buttons are now keyed by their toolbar buttons' ids.
+		p.TornOffButtons = make(map[string][2]float32)
+	}
+	if from < 104 {
+		// Reordering the FONT and CHECK LISTS menus changed the ids of their
+		// buttons.
 		p.TornOffButtons = make(map[string][2]float32)
 	}
 }
