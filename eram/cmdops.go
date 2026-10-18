@@ -47,7 +47,7 @@ func registerOpsCommands() {
 
 	// QU - Direct to fix / Route display
 	// QU: Clear all route displays
-	// QU [TRACK]: Toggle 20-minute route display
+	// QU [TRACK]: Display 20 minutes of the route
 	// QU /M [TRACK]: Display full route
 	// QU [MINUTES] [TRACK] or QU [TRACK] [MINUTES]: Display route for specified minutes
 	// QU [FIXES_AND_TRACK]: Amend route for track
@@ -346,45 +346,12 @@ func handleClearRouteDisplay(ep *Scope) {
 	clear(ep.aircraftFixCoordinates)
 }
 
-// Either displays the route for 20 minutes ahead or clears the route display
-func handleDefaultRouteDisplay(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+// displayRoute requests the track's route display for the given number of
+// minutes, or for all of the route if minutes is -1. Requesting a displayed
+// route again redraws it (2.11).
+func displayRoute(ep *Scope, ctx *scope.Context, trk *sim.Track, minutes int) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
-	}
-
-	// Check if the route is currently displayed
-	if _, ok := ep.aircraftFixCoordinates[trk.FlightPlan.ACID]; ok {
-		delete(ep.aircraftFixCoordinates, trk.FlightPlan.ACID)
-		return CommandStatus{
-			feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID}, // TODO: Find correct message
-		}, nil
-	}
-	ep.getQULines(ctx, trk.FlightPlan.ACID, 20)
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}, nil
-}
-
-func handleMaxRouteDisplay(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrIllegalACID
-	}
-
-	ep.getQULines(ctx, trk.FlightPlan.ACID, -1)
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}, nil
-}
-
-// handleRouteDisplayMinutes displays the route for 1 to 99 minutes (2.11).
-func handleRouteDisplayMinutes(ep *Scope, ctx *scope.Context, minutes int, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrIllegalACID
-	}
-	if minutes < 1 || minutes > 99 {
-		return CommandStatus{}, ErrIllegalValue
 	}
 
 	ep.getQULines(ctx, trk.FlightPlan.ACID, minutes)
@@ -392,6 +359,22 @@ func handleRouteDisplayMinutes(ep *Scope, ctx *scope.Context, minutes int, trk *
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ROUTE DISPLAY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
 	}, nil
+}
+
+func handleDefaultRouteDisplay(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+	return displayRoute(ep, ctx, trk, 20)
+}
+
+func handleMaxRouteDisplay(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+	return displayRoute(ep, ctx, trk, -1)
+}
+
+// handleRouteDisplayMinutes displays the route for 1 to 99 minutes (2.11).
+func handleRouteDisplayMinutes(ep *Scope, ctx *scope.Context, minutes int, trk *sim.Track) (CommandStatus, error) {
+	if minutes < 1 || minutes > 99 {
+		return CommandStatus{}, ErrIllegalValue
+	}
+	return displayRoute(ep, ctx, trk, minutes)
 }
 
 func handleAmendRoute(ep *Scope, ctx *scope.Context, fixesAndTrack fixesAndTrack) error {
