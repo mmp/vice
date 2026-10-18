@@ -137,14 +137,14 @@ func TestSpeedMenuOpensInMach(t *testing.T) {
 	}
 }
 
-// The speed menu lists 380 to 70 knots and Mach .99 to .61.
+// The speed menu lists 400 to 70 knots and Mach .99 to .61.
 func TestSpeedMenuValues(t *testing.T) {
 	for _, tc := range []struct {
 		mach        bool
 		n           int
 		first, last speedValue
 	}{
-		{false, 32, speedValue{"S380", "380"}, speedValue{"S070", "70"}},
+		{false, 34, speedValue{"S400", "400"}, speedValue{"S070", "70"}},
 		{true, 39, speedValue{"M99", ".99"}, speedValue{"M61", ".61"}},
 	} {
 		v := speedMenuValues(tc.mach)

@@ -513,9 +513,10 @@ func speedMenuOpensInMach(fp *sim.FlightPlan) bool {
 // speedValue is a speed menu pick: the stored value and the label shown.
 type speedValue struct{ store, label string }
 
-// speedMenuValues returns the speed menu's pick list, fastest first: 380 to
-// 70 knots by 10 or Mach .99 to .61 by .01 (11.2.2.4). Knots are stored
-// with three digits, as QS stores them.
+// speedMenuValues returns the speed menu's pick list, fastest first: 400 to
+// 70 knots by 10 or Mach .99 to .61 by .01. 11.2.2.4 gives 380 knots as the
+// top of the list, but figures 11-2 and 11-11 show it at 400. Knots are
+// stored with three digits, as QS stores them.
 func speedMenuValues(mach bool) []speedValue {
 	var values []speedValue
 	if mach {
@@ -523,7 +524,7 @@ func speedMenuValues(mach bool) []speedValue {
 			values = append(values, speedValue{fmt.Sprintf("M%02d", m), fmt.Sprintf(".%02d", m)})
 		}
 	} else {
-		for kt := 380; kt >= 70; kt -= 10 {
+		for kt := 400; kt >= 70; kt -= 10 {
 			values = append(values, speedValue{fmt.Sprintf("S%03d", kt), fmt.Sprintf("%d", kt)})
 		}
 	}
