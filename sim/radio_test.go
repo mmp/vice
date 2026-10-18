@@ -403,6 +403,8 @@ func TestContactGoesStale(t *testing.T) {
 	intercepted := func(ac *Aircraft) { ac.Nav.Approach.InterceptState = nav.OnApproachCourse }
 	cleared := func(ac *Aircraft) { ac.Nav.Approach.Cleared = true }
 	sighted := func(ac *Aircraft) { ac.SightedReportingPoint = &av.ReportingPoint{Names: []string{"Bridge"}} }
+	airborne := func(ac *Aircraft) { ac.Nav.Perf.Speed.V2 = 80; ac.Nav.FlightState.IAS = 120 }
+	landing := func(s *Sim, ac *Aircraft) { ac.Nav.FlightState.IAS = 60 }
 
 	for _, tc := range []struct {
 		name  string
@@ -431,6 +433,8 @@ func TestContactGoesStale(t *testing.T) {
 		{"tower switch no longer cleared", PendingTransmissionRequestTowerSwitch, cleared,
 			func(s *Sim, ac *Aircraft) { ac.Nav.Approach.Cleared = false }},
 		{"reporting point cleared", PendingTransmissionSpontaneousReportingPointInSight, sighted, clear},
+		{"VFR request landing", PendingTransmissionFlightFollowingReq, airborne, landing},
+		{"flight following request landing", PendingTransmissionFlightFollowingFull, airborne, landing},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			s := NewTestSim(lg)

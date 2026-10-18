@@ -512,10 +512,16 @@ func stringArg(arg any) (string, error) {
 // AltSnippetFormatter
 
 // AltSnippetFormatter formats altitudes, which may be given as ints or float32s.
+// An aircraft below sea level, as at a few airports, reports zero.
 type AltSnippetFormatter struct{}
 
-func (a *AltSnippetFormatter) Written(arg any) (string, error) {
+func altitudeArg(arg any) (int, error) {
 	alt, err := intArg(arg)
+	return max(alt, 0), err
+}
+
+func (a *AltSnippetFormatter) Written(arg any) (string, error) {
+	alt, err := altitudeArg(arg)
 	if err != nil {
 		return "", err
 	}
@@ -523,7 +529,7 @@ func (a *AltSnippetFormatter) Written(arg any) (string, error) {
 }
 
 func (a *AltSnippetFormatter) Spoken(r *rand.Rand, arg any) (string, error) {
-	alt, err := intArg(arg)
+	alt, err := altitudeArg(arg)
 	if err != nil {
 		return "", err
 	}

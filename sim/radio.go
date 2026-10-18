@@ -212,12 +212,14 @@ func (s *Sim) contactApplies(pc PendingContact) bool {
 		// instruction.
 		return !ac.instructedSince(pc)
 
-	case PendingTransmissionTrafficInSight, PendingTransmissionFlightFollowingReq,
-		PendingTransmissionFlightFollowingFull, PendingTransmissionGoAround,
+	case PendingTransmissionTrafficInSight, PendingTransmissionGoAround,
 		PendingTransmissionEmergency, PendingTransmissionFieldInSight:
-		// Reports of what happened, requests for service, and reports the
-		// controller asked for.
+		// Reports of what happened and reports the controller asked for.
 		return true
+
+	case PendingTransmissionFlightFollowingReq, PendingTransmissionFlightFollowingFull:
+		// A request for flight following is moot once the aircraft is landing.
+		return ac.IsAirborne()
 
 	case PendingTransmissionRequestApproachClearance:
 		// Moot once the clearance came in or the aircraft is no longer

@@ -151,6 +151,20 @@ func TestRenderPicksOnePhrasing(t *testing.T) {
 	}
 }
 
+// An aircraft at an airport below sea level reports zero rather than a
+// negative altitude.
+func TestAltitudeBelowSeaLevel(t *testing.T) {
+	for _, alt := range []any{-5, float32(-114.6), -1200} {
+		rd, err := MakeContactTransmission("at {alt}", alt).Render(rand.Make())
+		if err != nil {
+			t.Fatalf("%v: %v", alt, err)
+		}
+		if rd.Written != "at 0" || rd.Spoken != "at zero hundred." {
+			t.Errorf("%v: written %q spoken %q, want \"at 0\" and \"at zero hundred.\"", alt, rd.Written, rd.Spoken)
+		}
+	}
+}
+
 // An empty alternative in the middle of a phrase leaves no double space
 // behind in either rendering.
 func TestRenderCollapsesEmptyAlternative(t *testing.T) {
