@@ -7712,10 +7712,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               Command output such as a flight plan readout is shown in the Response Area (RA). <code>Esc</code> clears
               the MCA.</p>
             <p>Commands that apply to an aircraft take its flight ID (FLID), which may be its callsign, its CID, or its
-              beacon code. Alternatively, the aircraft's track can be selected ("slewed") with the mouse. Left-clicking
-              a track or a location while entering a command adds it to the command. Middle-clicking a track or a
-              location adds it to the command and executes the command immediately. Commands that consist of just a
-              track, such as accepting a handoff, are entered by middle-clicking the track.</p>
+              beacon code, optionally preceded by a <code>/</code> (as in <code>QF /123</code>). Alternatively, the
+              aircraft's track can be selected ("slewed") with the mouse. Left-clicking a track or a location while
+              entering a command adds it to the command. Middle-clicking a track or a location adds it to the command
+              and executes the command immediately. Commands that consist of just a track, such as accepting a
+              handoff, are entered by middle-clicking the track.</p>
             <p>These keys enter ERAM's special symbols:</p>
             <table class="table table-bordered syntax w-auto">
               <thead>
@@ -7762,9 +7763,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
           <section class="docs-section" id="eram-pointouts">
             <h2 class="section-heading">Point Outs</h2>
-            <p>Point outs in ERAM are initiated and acknowledged with the <code>QP</code> command. They are restricted to other
-              ERAM sectors within the same ARTCC; point outs to a different ARTCC or to a STARS controller are rejected with
-              an <code>ILLEGAL POSITION</code> error.</p>
+            <p>Point outs in ERAM are initiated and acknowledged with the <code>QP</code> command. Point outs may be made to
+              other sectors in your ARTCC, to adjacent ARTCCs, and to TRACONs.</p>
             <table class="table table-bordered syntax">
               <thead>
                 <tr>
@@ -7779,13 +7779,20 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tr>
                 <tr>
                   <td><code>QP A [FLID]</code> or <code>QP A[SLEW]</code></td>
-                  <td>Acknowledges every inbound point out for this aircraft directed at any sector the user controls.</td>
+                  <td>Acknowledges the aircraft's point out to the user. If it has point outs to the user from more
+                    than one sector, the command is rejected with <code>SECTOR ID REQUIRED</code>. Without a pending
+                    point out, it is rejected with <code>NO UNACKNOWLEDGED PO</code> if the user has acknowledged one
+                    and <code>POINT OUT NOT FOUND</code> otherwise.</td>
+                </tr>
+                <tr>
+                  <td><code>QP A [SECTOR ...] [FLID]</code> or <code>QP A [SECTOR ...][SLEW]</code></td>
+                  <td>Acknowledges the aircraft's point outs to the user from each of the given sectors.</td>
                 </tr>
                 <tr>
                   <td><code>QP [FLID]</code> or <code>QP[SLEW]</code></td>
-                  <td>Clears the post-point-out FDB lock, returning the datablock to a LDB. The standard
-                    <code>[FLID]</code> Implied command will not unforce a FDB once an aircraft has been involved in a point
-                    out; only this command will. It is refused while a point out to the user is still pending.</td>
+                  <td>Switches another sector's track between an FDB and an LDB. It also returns the FDB that a point
+                    out to the user leaves to an LDB; the standard <code>[FLID]</code> implied command does not. It is
+                    refused while a point out to the user is still pending.</td>
                 </tr>
               </tbody>
             </table>
@@ -8164,14 +8171,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     track between an LDB and an FDB</li>
                   <li><code>[DIR] [FLID]</code>, <code>/[0-3] [FLID]</code>, <code>[DIR]/[0-3] [FLID]</code> — set
                     the data block position (a direction of 1&ndash;4 or 6&ndash;9) and leader line length</li>
-                  <li><code>// [FLID]</code> — toggle the on-frequency indicator (VCI); an LDB is expanded to an FDB,
-                    which shows it</li>
+                  <li><code>QN // [FLID]</code>, <code>QZ // [FLID]</code>, or <code>// [FLID]</code> — toggle the
+                    on-frequency indicator (VCI); an LDB is expanded to an FDB, which shows it</li>
                   <li><code>QL [SECTOR ...]</code> — toggle quick look for the listed sectors; <code>QL</code> by
                     itself turns off quick look for all sectors</li>
                 </ul>
               </li>
-              <li><strong>Point outs</strong> — <code>QP [SECTOR] [FLID]</code>, <code>QP A [FLID]</code>, and
-                <code>QP [FLID]</code> (see <a href="#eram-pointouts">Point Outs</a>)</li>
+              <li><strong>Point outs</strong> — <code>QP [SECTOR] [FLID]</code>, <code>QP A [FLID]</code>,
+                <code>QP A [SECTOR ...] [FLID]</code>, and <code>QP [FLID]</code> (see
+                <a href="#eram-pointouts">Point Outs</a>)</li>
               <li><strong>Tracks</strong>
                 <ul>
                   <li><code>QX [FLID]</code> — drop a track you own</li>
@@ -8199,10 +8207,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li><strong>Routes</strong>
                 <ul>
-                  <li><code>QU [FLID]</code> — display the next 20 minutes of the aircraft's route, or clear the
-                    display if it is already shown</li>
-                  <li><code>QU [MINUTES] [FLID]</code> — display the route for the given number of minutes;
-                    <code>QU /M [FLID]</code> displays the entire route</li>
+                  <li><code>QU [FLID]</code> — display the next 20 minutes of the aircraft's route. Route displays are
+                    removed after 15 seconds.</li>
+                  <li><code>QU [MINUTES] [FLID]</code> or <code>QU [FLID] [MINUTES]</code> — display the route for 1 to
+                    99 minutes; <code>QU /M [FLID]</code> displays the entire route</li>
                   <li><code>QU</code> — clear all route displays</li>
                   <li><code>QU [FIX ...] [FLID]</code> — amend the route direct to one or more fixes. The last fix
                     must be on the route; the route's fixes before it are removed and the other given fixes are
@@ -8215,7 +8223,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <ul>
                   <li><code>QS [HEADING] [FLID]</code> — set the heading</li>
                   <li><code>QS /[SPEED] [FLID]</code> — set the speed in knots (<code>/250</code>) or Mach
-                    (<code>/M75</code>), optionally followed by <code>+</code> or <code>-</code></li>
+                    (<code>/M75</code> or <code>/M.75</code>), optionally followed by <code>+</code> or
+                    <code>-</code></li>
+                  <li><code>QS [HEADING]/[SPEED] [FLID]</code> — set the heading and the speed, as in
+                    <code>QS 330/81</code></li>
                   <li><code>QS `[TEXT] [FLID]</code> — set free text, which replaces the heading and speed</li>
                   <li><code>QS */ [FLID]</code>, <code>QS /* [FLID]</code>, <code>QS * [FLID]</code> — delete the
                     heading, the speed, or all HSF data</li>
@@ -8224,15 +8235,18 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li><strong>Information</strong>
                 <ul>
-                  <li><code>QF [FLID]</code> — show the flight plan in the RA</li>
+                  <li><code>QF [FLID]</code> — show the flight plan in the RA. The route is shown in the NAS form:
+                    <code>..</code> joins fixes flown direct, <code>.</code> joins a fix to an airway or a procedure,
+                    and <code>./.</code> follows the departure airport of a route from the present position, as in
+                    <code>KATL./.ROA205050..ROA..HAR..KPIT</code>.</li>
                   <li><code>LA</code> — show the range and bearing between two clicked locations or tracks. If the
                     first is a track, its flying time to the second is shown as well. A trailing <code>/[SPEED]</code>
                     gives the flying time at that speed, and <code>T</code> or <code>T/[SPEED]</code> gives a true
                     rather than magnetic bearing.</li>
                   <li><code>LB [FIX] [LOCATION]</code> — show the range and bearing from a fix to a clicked location
                     or a track; <code>LB [FIX]/[SPEED] [FLID]</code> gives the track's flying time at that speed</li>
-                  <li><code>LC [FIX]/[HHMM] [FLID]</code> — show the speed the aircraft must fly to cross the fix at
-                    the given time</li>
+                  <li><code>LC [FIX]/[HHMM] [FLID]</code> — show how much the aircraft's ground speed must change for
+                    it to cross the fix at the given time, and its present ground speed</li>
                 </ul>
               </li>
               <li><strong>Continuous range readouts (CRR)</strong>
@@ -8247,7 +8261,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li><strong>Views and maps</strong>
                 <ul>
                   <li><code>AR [AIRPORT]</code> — add an airport to ALTIM SET, or remove it</li>
-                  <li><code>WR [AIRPORT]</code> — add an airport to WX REPORT, or remove it</li>
+                  <li><code>WR [AIRPORT ...]</code> — add up to three airports to WX REPORT, or remove them</li>
                   <li><code>WR R [AIRPORT]</code> — show an airport's METAR in the RA</li>
                   <li><code>QB [CODE ...]</code> — add beacon codes to the CODE view, or remove them</li>
                   <li><code>QD [LOW]B[HIGH]</code> — set the altitude limits filter, with three digits for each
@@ -8308,9 +8322,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li><strong>Command options</strong>: <code>/OK</code> logic check overrides, including forcing a
                 handoff with <code>/OK [FLID]</code>, and <code>/TT</code> or <code>///</code> with <code>QQ</code>;
                 multiple FLIDs in one <code>QQ</code> or <code>QU</code> command; the <code>QN</code> and
-                <code>QZ</code> prefixes for implied commands; and <code>QD [AIRPORT]</code></li>
-              <li><strong>Routes</strong>: clicked locations in <code>QU</code> route amendments, and removing route
-                displays automatically after 30 seconds</li>
+                <code>QZ</code> prefixes for handoffs and data block offsets; and <code>QD [AIRPORT]</code></li>
+              <li><strong>Routes</strong>: clicked locations in <code>QU</code> route amendments</li>
               <li><strong>Data blocks</strong>:
                 <ul>
                   <li>Enhanced LDBs</li>
