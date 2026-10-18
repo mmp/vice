@@ -12,6 +12,10 @@
   - `QZ` assigns VFR and VFR-on-top altitudes, which data blocks show as `VFR/` or `OTP/` and the reported altitude
   - Virtual TRACON controllers no longer enter altitudes in ERAM data blocks
   - Tunes up conflict alert to better handle virtual TRACON-controller-owned aircraft
+  - Local interim altitudes are kept separately from interim and procedure altitudes; `QQ L` clears them
+  - Unpaired LDBs show the beacon code; BCAST FLID switches them to the callsign
+  - Point outs are acknowledged one sector at a time in the point out pop-up
+  - Fixed the values offered by the altitude, heading, and speed menus
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - Fixed a few bugs with automatically generated ATPA volumes
