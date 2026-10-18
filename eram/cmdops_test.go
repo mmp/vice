@@ -39,6 +39,13 @@ func TestAltVFRParser(t *testing.T) {
 			t.Errorf("%q: got %v %q %v %v, want %v", tc.text, v, rest, ok, err, *tc.want)
 		}
 	}
+
+	// The altitude has exactly three digits.
+	for _, text := range []string{"VFR/95 AAL123", "OTP/1050 AAL123", "VFR/ AAL123"} {
+		if _, _, ok, err := p.Parse(nil, nil, &CommandInput{}, text); !ok || err == nil {
+			t.Errorf("%q: got ok %v, error %v; want a format error", text, ok, err)
+		}
+	}
 }
 
 // QF reads out the flight plan's aircraft data, with the number of aircraft

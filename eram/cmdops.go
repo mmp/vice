@@ -35,7 +35,7 @@ func registerOpsCommands() {
 
 	// QZ - Assigned altitude
 	// QZ [ALT] [TRACK]: Set assigned altitude
-	// QZ [FLOOR]B[CEILING] [TRACK]: Set block altitude
+	// QZ [FLOOR]B[CEILING] [TRACK]: Set block altitude, (d)ddB(d)dd
 	registerCommand(CommandModeNone, "QZ [ERAM_ALT_A] [TRACK]", handleAssignedAltitude)
 	registerCommand(CommandModeNone, "QZ [ALT_BLOCK] [TRACK]", handleAssignedAltitudeBlock)
 	// QZ VFR, VFR/[ALT], OTP, or OTP/[ALT] [TRACK]: Set VFR or VFR-on-top altitude
@@ -89,7 +89,7 @@ func registerOpsCommands() {
 
 	// QD - Altitude limits filters
 	// QD [LOW]B[HIGH]: set both the target and the LDB filter
-	registerCommand(CommandModeNone, "QD [ALT_BLOCK]", handleAltitudeLimitsFilter)
+	registerCommand(CommandModeNone, "QD [ALT_LIMITS]", handleAltitudeLimitsFilter)
 
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)

@@ -75,12 +75,12 @@ type altitudeEntry struct {
 }
 
 // parseAltitudeEntry parses a VFR or VFR-on-top altitude field: VFR,
-// VFR/(d)dd, OTP, or OTP/(d)dd, with the altitude given in hundreds of
+// VFR/ddd, OTP, or OTP/ddd (8.1.3), with the altitude given in hundreds of
 // feet. formatErr is the error for a value that is none of those.
 func parseAltitudeEntry(s string, formatErr string) (altitudeEntry, error) {
 	q, alt, found := strings.Cut(s, "/")
 	e := altitudeEntry{qualifier: map[string]sim.AltitudeQualifier{"VFR": sim.VFRAltitude, "OTP": sim.OTPAltitude}[q]}
-	if e.qualifier == sim.PlainAltitude || (found && ((len(alt) != 2 && len(alt) != 3) || !allDigits(alt))) {
+	if e.qualifier == sim.PlainAltitude || (found && (len(alt) != 3 || !allDigits(alt))) {
 		return e, errors.New(formatErr)
 	}
 	n, _ := strconv.Atoi(alt)

@@ -7,6 +7,7 @@ package eram
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
@@ -243,7 +244,7 @@ const (
 	NexradToolbarAll     = 123
 )
 
-// altitudeBlockLength is the number of characters in an altitude block
+// altitudeBlockLength is the number of characters in an altitude limits
 // entry such as "100B230".
 const altitudeBlockLength = 7
 
@@ -254,22 +255,22 @@ func formatAltitudeBlock(block [2]int) string {
 }
 
 // parseAltitudeBlock parses a <floor>B<ceiling> altitude entry in hundreds
-// of feet, such as "100B230", as given to QD for the altitude limits filters
-// and QZ for a block altitude. It only checks the format; the entry may still
-// fail validAltitudeBlock.
-func parseAltitudeBlock(s string) (block [2]int, ok bool) {
-	if len(s) != altitudeBlockLength || s[3] != 'B' {
+// of feet, such as "100B230", with minDigits to three digits on each side.
+// The altitude limits filters take exactly three (3.14) and a QZ block
+// altitude two or three, (d)ddB(d)dd (8.1.3). It only checks the format;
+// the entry may still fail validAltitudeBlock.
+func parseAltitudeBlock(s string, minDigits int) (block [2]int, ok bool) {
+	floor, ceiling, found := strings.Cut(s, "B")
+	if !found {
 		return [2]int{}, false
 	}
-	for i := range altitudeBlockLength {
-		if i != 3 && !isNum(s[i]) {
+	for i, d := range [2]string{floor, ceiling} {
+		if len(d) < minDigits || len(d) > 3 || !allDigits(d) {
 			return [2]int{}, false
 		}
+		block[i], _ = strconv.Atoi(d)
 	}
-
-	low, _ := strconv.Atoi(s[:3])
-	high, _ := strconv.Atoi(s[4:])
-	return [2]int{low, high}, true
+	return block, true
 }
 
 // validAltitudeBlock reports whether block spans a range: a floor equal to

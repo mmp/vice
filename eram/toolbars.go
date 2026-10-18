@@ -728,7 +728,7 @@ func (altitudeLimitsPanel) clickOutside(ep *Scope) {
 // finishAltitudeLimitsEntry ends keyboard entry into the sub-entry box,
 // keeping a complete and valid entry and silently discarding anything else.
 func (ep *Scope) finishAltitudeLimitsEntry() {
-	if limits, ok := parseAltitudeBlock(ep.altLimits.buf); ok && validAltitudeBlock(limits) {
+	if limits, ok := parseAltitudeBlock(ep.altLimits.buf, 3); ok && validAltitudeBlock(limits) {
 		ep.setAltitudeLimits(limits)
 	}
 	ep.altLimits.field = altitudeLimitsNone
@@ -775,7 +775,7 @@ func (ep *Scope) handleAltitudeLimitsKeyboard(ctx *scope.Context) bool {
 				ep.altLimits.invalid = false
 			}
 		case imgui.KeyEnter:
-			limits, ok := parseAltitudeBlock(ep.altLimits.buf)
+			limits, ok := parseAltitudeBlock(ep.altLimits.buf, 3)
 			ok = ok && validAltitudeBlock(limits)
 			if ok {
 				ep.setAltitudeLimits(limits)

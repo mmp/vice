@@ -13,7 +13,7 @@ import (
 
 func TestParseAltitudeBlock(t *testing.T) {
 	for _, s := range []string{"000B999", "100B230", "234B400", "050B050", "230B100"} {
-		block, ok := parseAltitudeBlock(s)
+		block, ok := parseAltitudeBlock(s, 3)
 		if !ok {
 			t.Errorf("%q: rejected", s)
 		} else if got := formatAltitudeBlock(block); got != s {
@@ -22,10 +22,22 @@ func TestParseAltitudeBlock(t *testing.T) {
 	}
 
 	// Malformed entries are rejected, so QD gives FORMAT.
-	for _, s := range []string{"", "100B23", "100B2300", "AAAAAAA", "100X230", "10BB230",
-		"1 0B230"} {
-		if _, ok := parseAltitudeBlock(s); ok {
+	for _, s := range []string{"", "100B23", "100B2300", "90B110", "AAAAAAA", "100X230", "10BB230",
+		"1 0B230", "100B", "B230"} {
+		if _, ok := parseAltitudeBlock(s, 3); ok {
 			t.Errorf("%q: accepted", s)
+		}
+	}
+
+	// A QZ block altitude may have two digits on either side, (d)ddB(d)dd.
+	for s, want := range map[string][2]int{"90B110": {90, 110}, "50B70": {50, 70}, "100B230": {100, 230}} {
+		if block, ok := parseAltitudeBlock(s, 2); !ok || block != want {
+			t.Errorf("%q: got %v, %v; want %v", s, block, ok, want)
+		}
+	}
+	for _, s := range []string{"5B70", "90B1100", "90B", "B110"} {
+		if _, ok := parseAltitudeBlock(s, 2); ok {
+			t.Errorf("%q: accepted as a QZ block", s)
 		}
 	}
 }

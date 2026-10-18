@@ -54,7 +54,8 @@ var typeParsers = []typeParser{
 	// Altitude parsers
 	&eramAltAParser{},
 	&eramAltIParser{},
-	&altBlockParser{},
+	&altBlockParser{id: "ALT_BLOCK", minDigits: 2},
+	&altBlockParser{id: "ALT_LIMITS", minDigits: 3},
 	&altVFRParser{},
 
 	// Controller/Sector
@@ -328,15 +329,20 @@ func (h *eramAltIParser) GoType() reflect.Type { return reflect.TypeFor[InterimA
 func (h *eramAltIParser) AcceptsClick() bool   { return false }
 
 // altBlockParser parses a <floor>B<ceiling> altitude range in hundreds of
-// feet (e.g., "100B230"). Handlers decide whether the range is valid, so
-// that a well-formed but inverted range gets their error rather than FORMAT.
-type altBlockParser struct{}
+// feet (e.g., "100B230") with minDigits to three digits on each side: two
+// for a QZ block altitude and three for the QD altitude limits. Handlers
+// decide whether the range is valid, so that a well-formed but inverted
+// range gets their error rather than FORMAT.
+type altBlockParser struct {
+	id        string
+	minDigits int
+}
 
-func (h *altBlockParser) Identifier() string { return "ALT_BLOCK" }
+func (h *altBlockParser) Identifier() string { return h.id }
 
 func (h *altBlockParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
-	block, ok := parseAltitudeBlock(field)
+	block, ok := parseAltitudeBlock(field, h.minDigits)
 	if !ok {
 		return nil, text, false, nil
 	}
