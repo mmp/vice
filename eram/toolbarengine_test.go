@@ -216,6 +216,34 @@ func TestAltitudeLimitsPanel(t *testing.T) {
 	}
 }
 
+// [Enter] in the altitude limits sub-entry box locks a valid entry, brings
+// the previous setting back when nothing was entered, and shows INVALID
+// for anything else (3.14).
+func TestAltitudeLimitsEnter(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ps := ep.currentPrefs()
+	enter := func(buf string) {
+		ep.altLimits.field, ep.altLimits.buf = altitudeLimitsCombined, buf
+		ctx.Keyboard.Pressed = map[imgui.Key]any{imgui.KeyEnter: nil}
+		ep.handleAltitudeLimitsKeyboard(ctx)
+	}
+	check := func(entry string, field altitudeLimitsField, invalid bool) {
+		t.Helper()
+		if ep.altLimits.field != field || ep.altLimits.invalid != invalid ||
+			ps.AltitudeLimits.Targets != [2]int{100, 230} || ps.AltitudeLimits.LDBs != [2]int{100, 230} {
+			t.Errorf("%q: got field %v, invalid %v, limits %+v", entry, ep.altLimits.field, ep.altLimits.invalid,
+				ps.AltitudeLimits)
+		}
+	}
+
+	enter("100B230")
+	check("100B230", altitudeLimitsNone, false)
+	enter("")
+	check("", altitudeLimitsNone, false)
+	enter("230B100")
+	check("230B100", altitudeLimitsCombined, true)
+}
+
 func TestPressRepeat(t *testing.T) {
 	var p pressRepeat
 	start := time.Now()

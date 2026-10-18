@@ -765,12 +765,14 @@ func (ep *Scope) handleAltitudeLimitsKeyboard(ctx *scope.Context) bool {
 				ep.altLimits.invalid = false
 			}
 		case imgui.KeyEnter:
+			// [Enter] locks a valid entry; with nothing entered, the
+			// previous setting returns (3.14).
 			limits, ok := parseAltitudeBlock(ep.altLimits.buf, 3)
-			ok = ok && validAltitudeBlock(limits)
-			if ok {
-				ep.setAltitudeLimits(limits)
+			if ep.altLimits.buf == "" || (ok && validAltitudeBlock(limits)) {
+				ep.finishAltitudeLimitsEntry()
+			} else {
+				ep.altLimits.invalid = true
 			}
-			ep.altLimits.invalid = !ok
 		case imgui.KeyEscape:
 			ep.altLimits.field = altitudeLimitsNone
 			ep.altLimits.buf = ""
