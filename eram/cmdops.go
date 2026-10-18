@@ -222,10 +222,6 @@ func handleInterimAltitude(ep *Scope, ctx *scope.Context, alt InterimAltitude, t
 	fp.InterimType.Set(alt.Type)
 
 	ep.modifyFlightPlan(ctx, trk, fp)
-	state := ep.TrackState[trk.ADSBCallsign]
-	if state != nil {
-		state.ReachedAltitude = false
-	}
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "INTERIM ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -242,10 +238,6 @@ func handleClearInterimAltitude(ep *Scope, ctx *scope.Context, trk *sim.Track) (
 	fp.InterimType.Set(sim.InterimNormal)
 
 	ep.modifyFlightPlan(ctx, trk, fp)
-	state := ep.TrackState[trk.ADSBCallsign]
-	if state != nil {
-		state.ReachedAltitude = false
-	}
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "INTERIM ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -264,10 +256,6 @@ func handleAssignedAltitude(ep *Scope, ctx *scope.Context, alt int, trk *sim.Tra
 	fp.AssignedAltitude.Set(alt)
 
 	ep.modifyFlightPlan(ctx, trk, fp)
-	state := ep.TrackState[trk.ADSBCallsign]
-	if state != nil {
-		state.ReachedAltitude = false
-	}
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "ASSIGNED ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},

@@ -54,11 +54,6 @@ type TrackState struct {
 
 	OSectorEndTime sim.Time
 
-	ReachedAltitude bool
-	// LastDataBlockAltitude is the altitude the data block showed when it was
-	// last checked, so that an amended altitude clears ReachedAltitude.
-	LastDataBlockAltitude int
-
 	HoverVCI bool // if the user is hovering over the VCI field
 
 	HSFHide bool
@@ -207,15 +202,7 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 
-		// The data block shows an amended altitude as soon as it is entered,
-		// whether by a controller here or by the virtual controller working the
-		// aircraft, so the climb/descent arrow must follow it just as promptly.
 		if trk.IsAssociated() {
-			if alt := trk.FlightPlan.DataBlockAltitude(); alt != state.LastDataBlockAltitude {
-				state.LastDataBlockAltitude = alt
-				state.ReachedAltitude = false
-			}
-
 			// Adding or changing a heading, speed, or free text redisplays
 			// suppressed HSF data; deleting one doesn't (5.1.5.20.3).
 			sps := [2]string{trk.FlightPlan.Scratchpad, trk.FlightPlan.SecondaryScratchpad}
@@ -245,14 +232,6 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 		idx := state.HistoryTrackIndex % len(state.HistoryTracks)
 		state.HistoryTracks[idx] = historyTrack{state.Track, ep.getTarget(*trk, state)}
 		state.HistoryTrackIndex++
-
-		// check to see if the a/c has reached the altitude
-		if trk.IsAssociated() {
-			qalt := func(alt float32) int { return int(alt+50) / 100 }
-			if qalt(state.Track.TransponderAltitude) == qalt(float32(trk.FlightPlan.DataBlockAltitude())) {
-				state.ReachedAltitude = true
-			}
-		}
 
 		// check if tracks with a reduced DRI are above FL230
 		if state.DisplayReducedJRing && state.Track.TransponderAltitude > 23000 {

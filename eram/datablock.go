@@ -599,11 +599,9 @@ func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 	case formatCurrent == formatDisplay:
 		return formatCurrent + "C"
 	case currentAltitude > float32(displayAlt) && displayAlt > -1: // TODO: Find actual font so that the up arrows draw
-		middle := util.Select(!state.ReachedAltitude, downArrow, "+")
-		return formatDisplay + middle + formatCurrent
+		return formatDisplay + downArrow + formatCurrent
 	case currentAltitude < float32(displayAlt):
-		middle := util.Select(!state.ReachedAltitude, upArrow, "-")
-		return formatDisplay + middle + formatCurrent
+		return formatDisplay + upArrow + formatCurrent
 	}
 	return "" // This shouldn't happen?
 }
