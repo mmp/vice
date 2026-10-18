@@ -6,12 +6,14 @@ package eram
 
 import (
 	"errors"
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // formatAircraftData formats flight plan field 03: the number of aircraft
@@ -46,6 +48,23 @@ func formatTypeAndSuffix(fp *sim.FlightPlan) string {
 func isHeavy(actype string) bool {
 	weightClass := db.DB.AircraftPerformance[actype].WeightClass
 	return weightClass == "H" || weightClass == "J"
+}
+
+// formatAssignedAltitude formats the flight plan's assigned altitude in
+// hundreds of feet: a single altitude such as 350, a block such as 220B230,
+// or a VFR or VFR-on-top altitude such as VFR or OTP/105. A flight
+// descending via a STAR has the altitude its previous controller assigned.
+func formatAssignedAltitude(fp *sim.FlightPlan) string {
+	if fp.HasAltitudeBlock() {
+		return formatAltitudeBlock([2]int{fp.AltitudeBlock[0] / 100, fp.AltitudeBlock[1] / 100})
+	}
+	if q := fp.AssignedAltitudeQualifier; q != sim.PlainAltitude {
+		if fp.AssignedAltitude == 0 {
+			return q.String()
+		}
+		return fmt.Sprintf("%s/%03d", q, fp.AssignedAltitude/100)
+	}
+	return fmt.Sprintf("%03d", util.Select(fp.AssignedAltitude != 0, fp.AssignedAltitude, fp.PerceivedAssigned)/100)
 }
 
 // altitudeEntry is an altitude field of a flight plan; see

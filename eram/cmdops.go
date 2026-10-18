@@ -488,20 +488,11 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 		The aircraft's flight plan remarks (not in FlightPlan so nothing for now)
 	*/
 	zTime := ctx.Client.State.SimTime.Format("1504")
-	alt := fmt.Sprint(fp.AssignedAltitude / 100)
-	if fp.HasAltitudeBlock() {
-		alt = formatAltitudeBlock([2]int{fp.AltitudeBlock[0] / 100, fp.AltitudeBlock[1] / 100})
-	} else if q := fp.AssignedAltitudeQualifier; q != sim.PlainAltitude {
-		alt = q.String()
-		if fp.AssignedAltitude != 0 {
-			alt += fmt.Sprintf("/%03d", fp.AssignedAltitude/100)
-		}
-	}
 	return CommandStatus{
 		responseArea: []string{
 			zTime,
 			fmt.Sprintf("%v %v(%v) %v %v %v %v %v", fp.CID, fp.ACID, fp.TrackingController,
-				formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, alt, formatRoute(fp)),
+				formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, formatAssignedAltitude(fp), formatRoute(fp)),
 		},
 	}, nil
 }
