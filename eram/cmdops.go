@@ -633,6 +633,8 @@ func handleLBFixSpeedTrk(ep *Scope, ctx *scope.Context, fix string, speed int, t
 ///////////////////////////////////////////////////////////////////////////
 // LC - Speed adjustment to arrive over a fix at a specified UTC time (HHMM)
 
+// handleLCFixTimeTrk reads out the change to the track's ground speed that
+// would put it over the fix at the given time (3.12.3).
 func handleLCFixTimeTrk(ep *Scope, ctx *scope.Context, fix string, hhmm int, trk *sim.Track) (CommandStatus, error) {
 	fixPos, ok := ctx.Client.State.Locate(fix)
 	if !ok {
@@ -656,12 +658,13 @@ func handleLCFixTimeTrk(ep *Scope, ctx *scope.Context, fix string, hhmm int, trk
 
 	rt := ep.TrackState[trk.ADSBCallsign].Track
 	dist := math.NMDistance2LL(rt.Location, fixPos)
-	reqGS := int(math.Round(dist / float32(dtHours)))
+	required := int(math.Round(dist / float32(dtHours)))
+	present := int(math.Round(rt.Groundspeed))
 
 	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
-		responseArea: []string{fmt.Sprintf("%s AT %02d%02dZ+%dK", fix, hh, mm, reqGS),
-			fmt.Sprintf("CURRENT SPEED %.0fK", rt.Groundspeed)},
+		feedbackArea: []string{"ACCEPT", "FIX/TIME"},
+		responseArea: []string{fmt.Sprintf("%s AT %02d%02dZ%+dK", fix, hh, mm, required-present),
+			fmt.Sprintf("PRESENT SPEED %d", present)},
 	}, nil
 }
 

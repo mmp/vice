@@ -119,3 +119,32 @@ func TestRangeBearingFixFeedback(t *testing.T) {
 		}
 	}
 }
+
+// LC reads out the change to the ground speed that puts the aircraft over
+// the fix at the given time, and its present ground speed (3.12.3, figure
+// 3-30).
+func TestFixTimeReadout(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.Fixes = map[string]math.Point2LL{"ABC": {-73, 41}}
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123", Location: math.Point2LL{-73, 40}, Groundspeed: 300},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123"},
+	})
+	h.frame(0)
+
+	// 60 nm to go in 15 minutes takes 240 knots.
+	for _, tc := range []struct {
+		cmd  string
+		want []string
+	}{
+		{"LC ABC/1215 AAL123", []string{"ABC AT 1215Z-60K", "PRESENT SPEED 300"}},
+		{"LC ABC/1210 AAL123", []string{"ABC AT 1210Z+60K", "PRESENT SPEED 300"}},
+	} {
+		status, err, _ := h.ep.tryExecuteUserCommand(h.ctx, tc.cmd, nil, nil)
+		if err != nil || !slices.Equal(status.responseArea, tc.want) ||
+			!slices.Equal(status.feedbackArea, []string{"ACCEPT", "FIX/TIME"}) {
+			t.Errorf("%s: got %q %q, error %v; want %q", tc.cmd, status.feedbackArea, status.responseArea, err, tc.want)
+		}
+	}
+}
