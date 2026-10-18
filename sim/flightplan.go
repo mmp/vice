@@ -443,25 +443,21 @@ func (fp *FlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) {
 		fp.PilotReportedAltitude = spec.PilotReportedAltitude.Get()
 	}
 	if spec.Scratchpad.IsSet {
-		if spec.Scratchpad.Get() == "" {
+		if sp := spec.Scratchpad.Get(); sp == "" {
 			fp.Scratchpad = ""
 			fp.PriorScratchpad = ""
-		} else if fp.Scratchpad == spec.Scratchpad.Get() {
-			fp.Scratchpad = fp.PriorScratchpad
-		} else {
+		} else if sp != fp.Scratchpad {
 			fp.PriorScratchpad = fp.Scratchpad
-			fp.Scratchpad = spec.Scratchpad.Get()
+			fp.Scratchpad = sp
 		}
 	}
 	if spec.SecondaryScratchpad.IsSet {
-		if spec.SecondaryScratchpad.Get() == "" {
+		if sp := spec.SecondaryScratchpad.Get(); sp == "" {
 			fp.SecondaryScratchpad = ""
 			fp.PriorSecondaryScratchpad = ""
-		} else if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
-			fp.SecondaryScratchpad = fp.PriorSecondaryScratchpad
-		} else {
+		} else if sp != fp.SecondaryScratchpad {
 			fp.PriorSecondaryScratchpad = fp.SecondaryScratchpad
-			fp.SecondaryScratchpad = spec.SecondaryScratchpad.Get()
+			fp.SecondaryScratchpad = sp
 		}
 	}
 	if spec.RNAV.IsSet {

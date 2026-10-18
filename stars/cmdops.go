@@ -1094,6 +1094,14 @@ func modifyFlightPlan(sp *Scope, ctx *scope.Context, acid sim.ACID, spec sim.Fli
 		spec.ACID.Set(acid)
 	}
 
+	// An undo that leaves the primary scratchpad empty is not a deletion,
+	// so it doesn't clear the scratchpad's alternate contents.
+	deletedScratchpad := spec.Scratchpad.IsSet && spec.Scratchpad.Get() == ""
+	if fp := ctx.Client.State.GetFlightPlanForACID(acid); fp != nil {
+		restorePriorScratchpad(&spec.Scratchpad, fp.Scratchpad, fp.PriorScratchpad)
+		restorePriorScratchpad(&spec.SecondaryScratchpad, fp.SecondaryScratchpad, fp.PriorSecondaryScratchpad)
+	}
+
 	ctx.Client.ModifyFlightPlan(acid, spec,
 		func(err error) {
 			if err == nil {
@@ -1103,7 +1111,7 @@ func modifyFlightPlan(sp *Scope, ctx *scope.Context, acid sim.ACID, spec sim.Fli
 						state.DisplayRequestedAltitude = &t
 					}
 				}
-				if spec.Scratchpad.IsSet && spec.Scratchpad.Get() == "" {
+				if deletedScratchpad {
 					if state, ok := sp.trackStateForACID(ctx, acid); ok {
 						state.ClearedScratchpadAlternate = true
 					}
@@ -1116,6 +1124,15 @@ func modifyFlightPlan(sp *Scope, ctx *scope.Context, acid sim.ACID, spec sim.Fli
 				sp.displayError(err, ctx, acid)
 			}
 		})
+}
+
+// restorePriorScratchpad turns an entry of a scratchpad's current text into
+// the text that it replaced, undoing the last modification (5.6.3, 5.6.10,
+// 5.6.11).
+func restorePriorScratchpad(entry *util.Optional[string], current, prior string) {
+	if entry.IsSet && entry.Get() != "" && entry.Get() == current {
+		entry.Set(prior)
+	}
 }
 
 // See STARS Operators Manual 5-184...

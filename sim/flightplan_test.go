@@ -113,3 +113,22 @@ func TestFlightPlanUpdateReplacesAssignedAltitude(t *testing.T) {
 		t.Errorf("block: got altitude %d, data block altitude %d", fp.AssignedAltitude, fp.DataBlockAltitude())
 	}
 }
+
+// An entry sets a scratchpad even to the text it already has, which an ERAM
+// entry of the current heading or speed does; only STARS undoes a re-entered
+// scratchpad, and its client does that.
+func TestFlightPlanUpdateSetsScratchpads(t *testing.T) {
+	s := NewTestSim(testLogger())
+	fp := &FlightPlan{Scratchpad: "240", SecondaryScratchpad: "S250"}
+
+	var spec FlightPlanSpecifier
+	spec.Scratchpad.Set("250")
+	spec.SecondaryScratchpad.Set("S250")
+	for range 2 {
+		fp.Update(spec, s)
+		if fp.Scratchpad != "250" || fp.PriorScratchpad != "240" || fp.SecondaryScratchpad != "S250" {
+			t.Errorf("got scratchpads %q (prior %q) and %q, want 250 (prior 240) and S250",
+				fp.Scratchpad, fp.PriorScratchpad, fp.SecondaryScratchpad)
+		}
+	}
+}
