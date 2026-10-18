@@ -477,3 +477,18 @@ func TestPositionUnpairedLDB(t *testing.T) {
 		t.Errorf("7: got %v, want %v", err, ErrIllegalValue)
 	}
 }
+
+// Paired targets take the PR TGT brightness and unpaired ones UNP TGT.
+func TestTargetColor(t *testing.T) {
+	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ps := ep.currentPrefs()
+	ps.Brightness.PRTGT, ps.Brightness.UNPTGT = 80, 30
+
+	paired := sim.Track{FlightPlan: &sim.FlightPlan{ACID: "AAL1"}}
+	if got, want := ep.targetColor(paired), ps.Brightness.PRTGT.ScaleRGB(colors.yellow); got != want {
+		t.Errorf("paired: got %v, want %v", got, want)
+	}
+	if got, want := ep.targetColor(sim.Track{}), ps.Brightness.UNPTGT.ScaleRGB(colors.yellow); got != want {
+		t.Errorf("unpaired: got %v, want %v", got, want)
+	}
+}

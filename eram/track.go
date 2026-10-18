@@ -286,7 +286,7 @@ func (ep *Scope) drawTarget(track sim.Track, state *TrackState, ctx *scope.Conte
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
 
-	color := ep.trackColor()
+	color := ep.targetColor(track)
 	td.AddTextCentered(position, pt, renderer.TextStyle{Font: ep.systemFont[5], Color: color})
 
 	// trackBuilder.GenerateCommands(cb)
@@ -315,7 +315,7 @@ func (ep *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
 	font := ep.systemFont[9]
 	td.AddTextCentered("\u0000", transforms.WindowFromLatLongP(pos),
-		renderer.TextStyle{Font: font, Color: ep.trackColor()})
+		renderer.TextStyle{Font: font, Color: ep.targetColor(trk)})
 }
 
 // getTarget returns the target symbol for the track's radar sample; only
@@ -351,9 +351,12 @@ func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
 	return symbol
 }
 
-func (ep *Scope) trackColor() renderer.RGB {
+// targetColor returns the color of a track's target and position symbols,
+// which the PR TGT and UNP TGT brightness controls set for paired and
+// unpaired targets (Table 3-3).
+func (ep *Scope) targetColor(trk sim.Track) renderer.RGB {
 	ps := ep.currentPrefs()
-	bright := ps.Brightness.PRTGT
+	bright := util.Select(trk.IsAssociated(), ps.Brightness.PRTGT, ps.Brightness.UNPTGT)
 	return bright.ScaleRGB(colors.yellow)
 }
 
