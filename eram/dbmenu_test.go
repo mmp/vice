@@ -92,3 +92,43 @@ func TestHeadingMenuCurrentValue(t *testing.T) {
 		}
 	}
 }
+
+// The speed menu opens in the units of the assigned speed or, with none, in
+// Mach at or above FL290.
+func TestSpeedMenuOpensInMach(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		fp   sim.FlightPlan
+		want bool
+	}{
+		{"FL350", sim.FlightPlan{AssignedAltitude: 35000}, true},
+		{"FL290", sim.FlightPlan{AssignedAltitude: 29000}, true},
+		{"FL280", sim.FlightPlan{AssignedAltitude: 28000}, false},
+		{"interim below FL290", sim.FlightPlan{AssignedAltitude: 35000, InterimAlt: 28000}, false},
+		{"block", sim.FlightPlan{AltitudeBlock: [2]int{30000, 34000}}, true},
+		{"assigned speed", sim.FlightPlan{AssignedAltitude: 35000, SecondaryScratchpad: "S250"}, false},
+		{"assigned Mach", sim.FlightPlan{AssignedAltitude: 28000, SecondaryScratchpad: "M78"}, true},
+	} {
+		if got := speedMenuOpensInMach(&tc.fp); got != tc.want {
+			t.Errorf("%s: got %v, want %v", tc.name, got, tc.want)
+		}
+	}
+}
+
+// The speed menu lists 380 to 70 knots and Mach .99 to .61.
+func TestSpeedMenuValues(t *testing.T) {
+	for _, tc := range []struct {
+		mach        bool
+		n           int
+		first, last speedValue
+	}{
+		{false, 32, speedValue{"S380", "380"}, speedValue{"S070", "70"}},
+		{true, 39, speedValue{"M99", ".99"}, speedValue{"M61", ".61"}},
+	} {
+		v := speedMenuValues(tc.mach)
+		if len(v) != tc.n || v[0] != tc.first || v[len(v)-1] != tc.last {
+			t.Errorf("Mach %v: got %d values from %v to %v; want %d from %v to %v", tc.mach, len(v), v[0],
+				v[len(v)-1], tc.n, tc.first, tc.last)
+		}
+	}
+}

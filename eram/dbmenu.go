@@ -454,19 +454,53 @@ func (ep *Scope) openSpeedMenu(ctx *scope.Context, trk *sim.Track, dbMain math.E
 	titleFont := ep.ERAMFont(2)
 	title := string(trk.FlightPlan.ACID)
 	width := dbMenuWidth(font, titleFont, title, "DEL M000", ".00+")
-	height := 10 * dbMenuItemH // title + KT/M row + 7 values + DEL
+	cur := trk.FlightPlan.SecondaryScratchpad
+	nRows := util.Select(cur != "", 10, 9) // title + KT/M row + 7 values + DEL if a speed is assigned
+	height := float32(nRows) * dbMenuItemH
 
-	p := &speedMenuPopup{
+	ep.popup = &speedMenuPopup{
 		dbMenuBase: dbMenuBase{
 			acid:   trk.FlightPlan.ACID,
 			origin: ep.openDatablockMenu(ctx, dbMain, width, height),
 		},
+		mach:  speedMenuOpensInMach(trk.FlightPlan),
+		plus:  strings.HasSuffix(cur, "+"),
+		minus: strings.HasSuffix(cur, "-"),
 	}
-	cur := trk.FlightPlan.SecondaryScratchpad
-	p.mach = strings.HasPrefix(cur, "M")
-	p.plus = strings.HasSuffix(cur, "+")
-	p.minus = strings.HasSuffix(cur, "-")
-	ep.popup = p
+}
+
+// speedMenuOpensInMach reports whether the speed menu opens with Mach
+// values: it does for an assigned Mach number and, with no speed assigned,
+// for a flight assigned FL290 or above (11.2.2.3, 11.2.2.4).
+func speedMenuOpensInMach(fp *sim.FlightPlan) bool {
+	if fp.SecondaryScratchpad != "" {
+		return strings.HasPrefix(fp.SecondaryScratchpad, "M")
+	}
+	alt := fp.DataBlockAltitude()
+	if alt == 0 && fp.HasAltitudeBlock() {
+		alt = fp.AltitudeBlock[0]
+	}
+	return alt >= 29000
+}
+
+// speedValue is a speed menu pick: the stored value and the label shown.
+type speedValue struct{ store, label string }
+
+// speedMenuValues returns the speed menu's pick list, fastest first: 380 to
+// 70 knots by 10 or Mach .99 to .61 by .01 (11.2.2.4). Knots are stored
+// with three digits, as QS stores them.
+func speedMenuValues(mach bool) []speedValue {
+	var values []speedValue
+	if mach {
+		for m := 99; m >= 61; m-- {
+			values = append(values, speedValue{fmt.Sprintf("M%02d", m), fmt.Sprintf(".%02d", m)})
+		}
+	} else {
+		for kt := 380; kt >= 70; kt -= 10 {
+			values = append(values, speedValue{fmt.Sprintf("S%03d", kt), fmt.Sprintf("%d", kt)})
+		}
+	}
+	return values
 }
 
 func (p *speedMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
@@ -485,18 +519,7 @@ func (p *speedMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 	// The stored value with any +/- modifier stripped, e.g. "M72" or "S250".
 	currentValue := strings.TrimRight(fp.SecondaryScratchpad, "+-")
 
-	// The pick list: (stored value, displayed label) pairs.
-	type speedValue struct{ store, label string }
-	var values []speedValue
-	if p.mach {
-		for m := 95; m >= 50; m-- {
-			values = append(values, speedValue{fmt.Sprintf("M%02d", m), fmt.Sprintf(".%02d", m)})
-		}
-	} else {
-		for kt := 450; kt >= 100; kt -= 10 {
-			values = append(values, speedValue{fmt.Sprintf("S%d", kt), fmt.Sprintf("%d", kt)})
-		}
-	}
+	values := speedMenuValues(p.mach)
 
 	if !p.initialized {
 		p.initialized = true
@@ -507,7 +530,7 @@ func (p *speedMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 		} else if !p.mach {
 			if state := ep.TrackState[trk.ADSBCallsign]; state != nil {
 				gs := (int(state.Track.Groundspeed) + 5) / 10 * 10
-				if idx := slices.IndexFunc(values, func(v speedValue) bool { return v.store == fmt.Sprintf("S%d", gs) }); idx >= 0 {
+				if idx := slices.IndexFunc(values, func(v speedValue) bool { return v.store == fmt.Sprintf("S%03d", gs) }); idx >= 0 {
 					center = idx
 				}
 			}
@@ -570,16 +593,19 @@ func (p *speedMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 	}
 	rows = append(rows, MenuItem{Grid: &MenuGrid{Rows: gridRows, VisibleRows: 7, Offset: &p.offset}})
 
-	rows = append(rows, MenuItem{
-		Label:    util.Select(fp.SecondaryScratchpad != "", "DEL "+fp.SecondaryScratchpad, "DELETE"),
-		Centered: true, BgColor: grey, Color: textC,
-		OnClick: func(_ MenuClickType) bool {
-			status, err := handleQSDeleteSpeed(ep, ctx, trk)
-			ep.applyCommandStatus(ctx, status, err)
-			ep.popup = nil
-			return true
-		},
-	})
+	// The Delete Speed pick area is shown only for an assigned speed (11.2.2.5).
+	if fp.SecondaryScratchpad != "" {
+		rows = append(rows, MenuItem{
+			Label:    "DEL " + fp.SecondaryScratchpad,
+			Centered: true, BgColor: grey, Color: textC,
+			OnClick: func(_ MenuClickType) bool {
+				status, err := handleQSDeleteSpeed(ep, ctx, trk)
+				ep.applyCommandStatus(ctx, status, err)
+				ep.popup = nil
+				return true
+			},
+		})
+	}
 
 	title := string(p.acid)
 	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
