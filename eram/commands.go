@@ -426,20 +426,26 @@ func (ep *Scope) acknowledgePointOut(ctx *scope.Context, trk *sim.Track, from si
 	return nil
 }
 
-func (ep *Scope) clearPointOutLock(ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
-	state := ep.TrackState[trk.ADSBCallsign]
+// requestSuppressDatablock switches another sector's track between an FDB
+// and an LDB (Appendix B, Table 2-7); the FDB a point out to the user leaves
+// is suppressed.
+func (ep *Scope) requestSuppressDatablock(ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
-	} else if !state.PointOutFDBLocked || len(ctx.InboundPointOuts(trk.FlightPlan)) > 0 {
-		// While a point out to the user is pending, the lock stays.
+	} else if ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
+		// The user's own tracks always have FDBs (5.1.5.2).
+		return CommandStatus{}, NewError("USER ACTION NOT ALLOWED ON A\nCONTROLLER FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
+	} else if len(ctx.InboundPointOuts(trk.FlightPlan)) > 0 {
+		// While a point out to the user is pending, its FDB stays.
 		return CommandStatus{}, ErrIllegalUserAction
-	} else {
-		state.PointOutFDBLocked = false
-		state.EFDB = false
-		return CommandStatus{
-			feedbackArea: []string{"ACCEPT", "FORCED DATA BLK", fmt.Sprintf("%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)},
-		}, nil
 	}
+
+	state := ep.TrackState[trk.ADSBCallsign]
+	state.EFDB = !state.EFDB && !state.PointOutFDBLocked
+	state.PointOutFDBLocked = false
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "FORCED DATA BLK", fmt.Sprintf("%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)},
+	}, nil
 }
 
 func (ep *Scope) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32, transforms scope.Transformations) (*sim.Track, float32) {

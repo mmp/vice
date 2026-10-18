@@ -375,7 +375,7 @@ func TestPointOutIndicator(t *testing.T) {
 	if g := glyph(outbound); g != 'P' {
 		t.Errorf("outbound point out: got indicator %q, want 'P'", g)
 	}
-	if _, err := h.ep.clearPointOutLock(h.ctx, inbound); err == nil {
+	if _, err := h.ep.requestSuppressDatablock(h.ctx, inbound); err == nil {
 		t.Errorf("QP cleared the FDB lock of a pending point out")
 	}
 
@@ -396,7 +396,7 @@ func TestPointOutIndicator(t *testing.T) {
 	if dt := h.ep.datablockType(h.ctx, *inbound); dt != FullDatablock {
 		t.Errorf("acknowledged inbound point out: got datablock type %v, want a full datablock", dt)
 	}
-	if _, err := h.ep.clearPointOutLock(h.ctx, inbound); err != nil {
+	if _, err := h.ep.requestSuppressDatablock(h.ctx, inbound); err != nil {
 		t.Errorf("QP of an acknowledged point out: %v", err)
 	}
 	if dt := h.ep.datablockType(h.ctx, *inbound); dt != LimitedDatablock {
@@ -406,6 +406,16 @@ func TestPointOutIndicator(t *testing.T) {
 	h.ep.handlePointOutIndicatorClick(h.ctx, *outbound, math.Extent2D{})
 	if h.ep.pointOutIndicatorActive(h.ctx, outbound) {
 		t.Errorf("dismissed acknowledgment is still shown")
+	}
+
+	// QP <FLID> requests the FDB again and then suppresses it.
+	for _, want := range []DatablockType{FullDatablock, LimitedDatablock} {
+		if _, err := h.ep.requestSuppressDatablock(h.ctx, inbound); err != nil {
+			t.Errorf("QP: %v", err)
+		}
+		if dt := h.ep.datablockType(h.ctx, *inbound); dt != want {
+			t.Errorf("after QP: got datablock type %v, want %v", dt, want)
+		}
 	}
 }
 

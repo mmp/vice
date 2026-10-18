@@ -61,7 +61,7 @@ type TrackState struct {
 	// HSF data, as of the last check, so that a new entry clears HSFHide.
 	LastScratchpads [2]string
 
-	// p/o receiver keeps a FDB until cleared by QP <FLID>.
+	// p/o receiver keeps a FDB until suppressed by QP <FLID>.
 	PointOutFDBLocked bool
 
 	// add more as we figure out what to do...

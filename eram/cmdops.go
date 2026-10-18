@@ -67,7 +67,7 @@ func registerOpsCommands() {
 	// QP [SECTOR_ID] [TRACK]: Initiate point out
 	// QP A [TRACK]: Acknowledge the track's one point out
 	// QP A [SECTOR_ID_LIST] [TRACK]: Acknowledge the point outs from the given sectors
-	// QP [TRACK]: Clear the post-point-out FDB lock (FDB -> LDB)
+	// QP [TRACK]: Request or suppress the FDB of another sector's track
 	registerCommand(CommandModeNone, "QP A [TRACK]",
 		func(ep *Scope, ctx *scope.Context, trk *sim.Track) error {
 			return ep.acknowledgePointOuts(ctx, trk, nil)
@@ -82,7 +82,7 @@ func registerOpsCommands() {
 		})
 	registerCommand(CommandModeNone, "QP [TRACK]",
 		func(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
-			return ep.clearPointOutLock(ctx, trk)
+			return ep.requestSuppressDatablock(ctx, trk)
 		})
 
 	// QL - Quicklook
