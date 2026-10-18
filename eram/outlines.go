@@ -80,7 +80,7 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 		if db.Fields[DBFieldVCI].Inside(mouse.Pos) {
 			state.HoverVCI = true
 			if ep.mousePrimaryClicked(mouse) {
-				status, err := handleToggleVCI(ep, &trk)
+				status, err := handleToggleVCI(ep, ctx, &trk)
 				ep.applyCommandStatus(ctx, status, err)
 			}
 		} else {

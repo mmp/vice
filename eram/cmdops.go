@@ -816,13 +816,17 @@ func handleCRREmpty() (CommandStatus, error) {
 ///////////////////////////////////////////////////////////////////////////
 // // - Toggle VCI Handler
 
-func handleToggleVCI(ep *Scope, trk *sim.Track) (CommandStatus, error) {
+func handleToggleVCI(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
 	state.DisplayVCI = !state.DisplayVCI
+	// The command expands a suppressed data block to an FDB (5.1.1.1).
+	if ep.datablockType(ctx, *trk) != FullDatablock {
+		state.EFDB = true
+	}
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "TOGGLE ON-FREQUENCY", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},

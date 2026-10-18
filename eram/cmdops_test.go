@@ -11,6 +11,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
@@ -64,5 +65,30 @@ func TestFlightPlanReadout(t *testing.T) {
 	want := []string{"0000", "123 AAL123(15) 2H/B744/L 2301 480 350 KBOS.SSOXS.SEY.PARCH4.KJFK"}
 	if err != nil || !slices.Equal(status.responseArea, want) {
 		t.Errorf("QF AAL123: got %q, error %v; want %q", status.responseArea, err, want)
+	}
+}
+
+// Toggling the on-frequency indicator of a flight shown as an LDB expands it
+// to an FDB, where the indicator is drawn.
+func TestToggleVCIExpandsLDB(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	trk := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000, Location: math.Point2LL{-73, 40}},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123", TrackingController: "2B", OwningTCW: "TCW2"},
+	}
+	h.addTrack(trk)
+	h.frame(0)
+	if dt := h.ep.datablockType(h.ctx, *trk); dt != LimitedDatablock {
+		t.Fatalf("got datablock type %v, want a limited datablock", dt)
+	}
+
+	if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, "//AAL123", nil, nil); err != nil {
+		t.Fatalf("//AAL123: %v", err)
+	}
+	if dt := h.ep.datablockType(h.ctx, *trk); dt != FullDatablock || !h.ep.TrackState["AAL123"].DisplayVCI {
+		t.Errorf("//AAL123: got datablock type %v and VCI %v, want a full datablock with the VCI", dt,
+			h.ep.TrackState["AAL123"].DisplayVCI)
 	}
 }
