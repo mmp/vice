@@ -30,11 +30,10 @@ const (
 	caLookaheadSeconds = 240
 	caSampleStep       = 5 // seconds between prediction samples
 
-	caLateralMinimum        = 5.0   // nm
-	caReducedLateralMinimum = 3.0   // nm; applies when both targets are in reduced separation airspace
-	caReducedSepCeiling     = 23000 // ft; reduced separation airspace is at or below FL230
-	caVerticalMinimum       = 1000  // ft
-	caVerticalSlop          = 5     // ft; keeps exactly-1000-ft-separated targets from alerting on float error
+	caLateralMinimum        = 5.0  // nm
+	caReducedLateralMinimum = 3.0  // nm; applies when both targets are in reduced separation airspace
+	caVerticalMinimum       = 1000 // ft
+	caVerticalSlop          = 5    // ft; keeps exactly-1000-ft-separated targets from alerting on float error
 
 	caLevelRateThreshold  = 300  // ft/min; below this the target is treated as level
 	caLevelDBAltTolerance = 200  // ft; DB altitude within this of current altitude = at assigned altitude
@@ -152,7 +151,7 @@ func caConflict(a, b caTarget) bool {
 		blo, bhi := caAltitudeEnvelope(b, t)
 
 		latMin := float32(caLateralMinimum)
-		if ahi <= caReducedSepCeiling && bhi <= caReducedSepCeiling {
+		if inReducedSeparationAirspace(ahi) && inReducedSeparationAirspace(bhi) {
 			latMin = caReducedLateralMinimum
 		}
 

@@ -418,7 +418,7 @@ func handleReducedJRing(ep *Scope, trk *sim.Track) (CommandStatus, error) {
 
 	state := ep.TrackState[trk.ADSBCallsign]
 
-	if state.Track.TransponderAltitude > 23000 {
+	if !inReducedSeparationAirspace(state.Track.TransponderAltitude) {
 		return CommandStatus{}, NewError("REJECT - %s NOT ELIGIBLE\nFOR REDUCED SEPARATION\nREQ/DELETE DRI %s", trk.FlightPlan.CID, trk.ADSBCallsign)
 	}
 

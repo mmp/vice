@@ -677,7 +677,8 @@ func TestKeypadFiveIsNoDirection(t *testing.T) {
 
 // Target symbols follow Table 2-3 at any altitude: a beacon target without a
 // flight plan is a slash, or a V for 1200, and paired or not, an identing
-// one shows the ident symbol.
+// one shows the ident symbol. A paired beacon target at or below FL230 shows
+// the reduced separation symbol.
 func TestTargetSymbols(t *testing.T) {
 	ep := &Scope{}
 	paired := &sim.FlightPlan{ACID: "AAL1"}
@@ -698,6 +699,10 @@ func TestTargetSymbols(t *testing.T) {
 		{"paired primary", paired, av.RadarTrack{Mode: av.TransponderModeStandby}, correlatedPrimaryTarget},
 		{"paired beacon", paired, av.RadarTrack{Mode: av.TransponderModeAltitude, TransponderAltitude: 35000},
 			correlatedBeaconTarget},
+		{"paired beacon above FL230", paired, av.RadarTrack{Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 23100}, correlatedBeaconTarget},
+		{"paired beacon at FL230", paired, av.RadarTrack{Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 23000}, reducedSeparationTarget},
 		{"paired ident", paired, av.RadarTrack{Mode: av.TransponderModeAltitude, Ident: true,
 			TransponderAltitude: 35000}, identingBeaconTarget},
 	} {

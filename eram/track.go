@@ -233,7 +233,7 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 
 		// A reduced halo reverts to the standard one when the track leaves
 		// reduced separation airspace (2.9.3).
-		if state.DisplayReducedJRing && state.Track.TransponderAltitude > 23000 {
+		if state.DisplayReducedJRing && !inReducedSeparationAirspace(state.Track.TransponderAltitude) {
 			state.DisplayReducedJRing = false
 			state.DisplayJRing = true
 		}
@@ -345,12 +345,21 @@ func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
 	case rt.Ident:
 		return identingBeaconTarget
 	case trk.IsAssociated():
-		return util.Select(rt.TransponderAltitude < 23000, reducedSeparationTarget, correlatedBeaconTarget)
+		return util.Select(inReducedSeparationAirspace(rt.TransponderAltitude), reducedSeparationTarget,
+			correlatedBeaconTarget)
 	case rt.Squawk == 0o1200:
 		return code1200Target
 	default:
 		return uncorrelatedBeaconTarget
 	}
+}
+
+// inReducedSeparationAirspace reports whether a track at the given altitude
+// gets the reduced separation target symbol, may have a 3 NM halo, and is
+// probed for conflicts at 3 NM. The manual leaves reduced separation airspace
+// to adaptation; vice takes it to be everything at or below FL230.
+func inReducedSeparationAirspace(alt float32) bool {
+	return alt <= 23000
 }
 
 // targetColor returns the color of a track's target and position symbols,
