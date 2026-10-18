@@ -492,3 +492,44 @@ func TestTargetColor(t *testing.T) {
 		t.Errorf("unpaired: got %v, want %v", got, want)
 	}
 }
+
+// Suppressed HSF data is redisplayed when a heading, speed, or free text is
+// added or changed, but not deleted, and when the user is offered a handoff.
+func TestHSFRedisplay(t *testing.T) {
+	h := makeTrackTestHarness()
+	fp := &sim.FlightPlan{ACID: "AAL1", Scratchpad: "250", OwningTCW: "TCW1"}
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000, Location: math.Point2LL{-73, 40}},
+		FlightPlan: fp,
+	})
+	h.frame(0)
+	state := h.ep.TrackState["AAL1"]
+
+	step := time.Duration(0)
+	check := func(what string, wantHidden bool, events ...sim.Event) {
+		t.Helper()
+		step += time.Second
+		h.frame(step, events...)
+		if state.HSFHide != wantHidden {
+			t.Errorf("%s: got HSFHide %v, want %v", what, state.HSFHide, wantHidden)
+		}
+		state.HSFHide = true
+	}
+
+	state.HSFHide = true
+	check("no change", true)
+	fp.SecondaryScratchpad = "S280"
+	check("speed added", false)
+	fp.Scratchpad = ""
+	check("heading deleted", true)
+	fp.SecondaryScratchpad = "S300"
+	check("speed changed", false)
+	fp.Scratchpad = sim.QSFreeTextIndicator + "EXPEDITE"
+	fp.SecondaryScratchpad = ""
+	check("free text added", false)
+	check("handoff offered to another sector", true,
+		sim.Event{Type: sim.OfferedHandoffEvent, ACID: "AAL1", FromController: "3C", ToController: "2B"})
+	check("handoff offered", false,
+		sim.Event{Type: sim.OfferedHandoffEvent, ACID: "AAL1", FromController: "2B", ToController: "1A"})
+}

@@ -136,6 +136,7 @@ func (s *Sim) HandoffTrack(tcw TCW, acid ACID, toTCP TCP) error {
 func (s *Sim) handoffTrack(fp *FlightPlan, toTCP TCP) {
 	s.eventStream.Post(Event{
 		Type:           OfferedHandoffEvent,
+		ACID:           fp.ACID,
 		FromController: fp.TrackingController,
 		ToController:   toTCP,
 	})

@@ -62,6 +62,9 @@ type TrackState struct {
 	HoverVCI bool // if the user is hovering over the VCI field
 
 	HSFHide bool
+	// LastScratchpads holds the flight plan's scratchpads, which hold its
+	// HSF data, as of the last check, so that a new entry clears HSFHide.
+	LastScratchpads [2]string
 
 	// p/o receiver keeps a FDB until cleared by QP <FLID>.
 	PointOutFDBLocked bool
@@ -148,6 +151,15 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 				state.OSectorEndTime = ctx.InterpolatedSimTime.Add(30 * time.Second)
 			}
 
+		case sim.OfferedHandoffEvent:
+			// Being offered a handoff redisplays suppressed HSF data
+			// (5.1.5.20.3).
+			if ctx.UserControlsPosition(event.ToController) {
+				if state, ok := ep.trackStateForACID(ctx, event.ACID); ok {
+					state.HSFHide = false
+				}
+			}
+
 		case sim.AcknowledgedPointOutEvent:
 			// Per sim/handoff.go, From/To are swapped in this event relative to the original p/o.
 			if ctx.UserControlsPosition(event.ToController) {
@@ -203,6 +215,16 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 				state.LastDataBlockAltitude = alt
 				state.ReachedAltitude = false
 			}
+
+			// Adding or changing a heading, speed, or free text redisplays
+			// suppressed HSF data; deleting one doesn't (5.1.5.20.3).
+			sps := [2]string{trk.FlightPlan.Scratchpad, trk.FlightPlan.SecondaryScratchpad}
+			for i, sp := range sps {
+				if sp != "" && sp != state.LastScratchpads[i] {
+					state.HSFHide = false
+				}
+			}
+			state.LastScratchpads = sps
 		}
 
 		if !updateAll {
