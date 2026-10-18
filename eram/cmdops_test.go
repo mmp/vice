@@ -125,6 +125,27 @@ func TestToggleVCIExpandsLDB(t *testing.T) {
 	}
 }
 
+// The on-frequency indicator is toggled by QN // and QZ //, and by // with
+// QN implied (5.1.1.1, 2.15.1).
+func TestToggleVCIPrefixes(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123"},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123"},
+	})
+	h.frame(0)
+
+	for i, cmd := range []string{"QN // AAL123", "QN //AAL123", "QZ // AAL123", "QZ //AAL123", "// AAL123"} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil); err != nil {
+			t.Errorf("%s: %v", cmd, err)
+		}
+		if got, want := h.ep.TrackState["AAL123"].DisplayVCI, i%2 == 0; got != want {
+			t.Errorf("%s: got VCI %v, want %v", cmd, got, want)
+		}
+	}
+}
+
 // LB reports its function as RANGE/BEARING/FIX, which distinguishes it from
 // LA's RANGE/BEARING (3.12.2, figure 3-29).
 func TestRangeBearingFixFeedback(t *testing.T) {

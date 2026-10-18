@@ -183,8 +183,10 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "WR [ALL_TEXT]", handleWXReportAdd)
 
 	// // - Toggle VCI (on-frequency indicator)
-	// //[TRACK] or // [TRACK]
+	// QN // [TRACK] or QZ // [TRACK], or // [TRACK] with QN implied; the space before
+	// the track is optional (5.1.1.1, 2.15.1).
 	registerCommand(CommandModeNone, "//[TRACK]|// [TRACK]", handleToggleVCI)
+	registerCommand(CommandModeNone, "QN //[TRACK]|QN // [TRACK]|QZ //[TRACK]|QZ // [TRACK]", handleToggleVCI)
 
 	// TG - Target gen commands
 	// TG P: Toggle pause
