@@ -103,7 +103,7 @@ type Preferences struct {
 	// MCA (Message Composition Area) preferences
 	MCA struct {
 		Position [2]float32       // top-left of the feedback box
-		PALines  int              // max number of preview/feedback area lines
+		PALines  int              // max number of preview area lines
 		Width    int              // chars per line: 30 or 50
 		Font     int              // 1-3
 		Bright   scope.Brightness // 0-100

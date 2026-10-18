@@ -274,11 +274,14 @@ func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms sco
 ///////////////////////////////////////////////////////////////////////////
 // MCA - Message Composition Area
 
-// drawMessageCompositionArea renders the MCA: a feedback box below an input
-// box (where inputH grows beyond 38px if wrapped input exceeds it). Both
-// boxes share black bg and a white border; the seam between them is drawn by
-// View as part of the outer border (and a separator line in the body). Width
-// fits ps.MCA.Width characters of the selected font plus 2px side padding.
+// drawMessageCompositionArea renders the MCA: the preview area, where
+// commands are typed, above the feedback area. The preview area starts at
+// two lines and grows with the input up to ps.MCA.PALines lines; the
+// feedback area starts at four lines and grows to fit its message (4.3.1.1,
+// 4.3.1.2). Both areas share black bg and a white border; the seam between
+// them is drawn by View as part of the outer border (and a separator line in
+// the body). Width fits ps.MCA.Width characters of the selected font plus
+// 2px side padding.
 func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
@@ -286,19 +289,22 @@ func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope
 	cols := ps.MCA.Width
 	width := float32(cols)*charWidth(font) + 4
 	lineSpacing := int(float32(font.Size) * 0.4)
-	feedbackH := font.LayoutBounds("0", lineSpacing).Height()*float32(ps.MCA.PALines) + 4
+	lineH := font.LayoutBounds("0", lineSpacing).Height()
 
-	// Compute input box height (grows with wrapped text).
-	input := ep.input.String() + "_"
-	inText, _ := util.WrapText(input, cols, 0, true, true)
-	h := font.LayoutBounds(inText, lineSpacing).Height()
-	inputH := max(float32(38), h+4)
+	// Input longer than the preview area shows its last lines, where the
+	// cursor is.
+	inText, _ := util.WrapText(ep.input.String()+"_", cols, 0, true, true)
+	inLines := strings.Split(inText, "\n")
+	inLines = inLines[max(0, len(inLines)-ps.MCA.PALines):]
+	inText = strings.Join(inLines, "\n")
+	inputH := float32(max(2, len(inLines)))*lineH + 4
 
 	// Feedback rendering: icon (success/error) in its own color, then the
 	// message in default text color. The wrap input includes the icon so the
 	// available width on the first line accounts for it.
 	var feedbackIcon, feedbackRest string
 	var feedbackIconColor renderer.RGB
+	feedbackLines := 0
 	if ep.feedbackArea.kind != feedbackNone {
 		switch ep.feedbackArea.kind {
 		case feedbackSuccess:
@@ -307,10 +313,17 @@ func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope
 			feedbackIcon, feedbackIconColor = xMark, colors.errorRed
 		}
 		wrapped, _ := util.WrapText(feedbackIcon+" "+ep.feedbackArea.msg, cols, 0, true, true)
+		// The feedback area holds up to 30 lines 50 characters wide or 34
+		// lines 30 characters wide.
+		lines := strings.Split(wrapped, "\n")
+		lines = lines[:min(len(lines), util.Select(cols >= 50, 30, 34))]
+		feedbackLines = len(lines)
+		wrapped = strings.Join(lines, "\n")
 		// wrapped starts with the icon char; the rest starts with the space
 		// that pushes the message past the icon's column on the first line.
 		feedbackRest = wrapped[len(feedbackIcon):]
 	}
+	feedbackH := float32(max(4, feedbackLines))*lineH + 4
 
 	// ps.MCA.Position is the top-left of the feedback box (prefs
 	// semantics). View sees the top-left of the whole envelope (input top).
@@ -364,7 +377,7 @@ func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
-		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 1, 50, 1),
+		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 2, 50, 1),
 		makeWidthMenuItem(ep, &ps.MCA.Width, 30, 50),
 		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 1),
