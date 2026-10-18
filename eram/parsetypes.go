@@ -171,7 +171,9 @@ func (h *trackParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, 
 }
 
 // General track lookup function that matches CID, ACID, ADSB callsign, and beacon code.
+// The FLID may be preceded by a slash, as in QF /123 (Appendix B).
 func trackFromFLID(ctx *scope.Context, id string) *sim.Track {
+	id = strings.TrimPrefix(id, "/")
 	if trk, ok := ctx.Client.State.GetTrackByCID(id); ok {
 		return trk
 	} else if trk, ok := ctx.Client.State.GetTrackByACID(sim.ACID(id)); ok {

@@ -86,3 +86,38 @@ func TestQSFreeText(t *testing.T) {
 		}
 	}
 }
+
+// A FLID may be preceded by a slash, as Appendix B shows for every command.
+func TestTrackParserSlashedFLID(t *testing.T) {
+	ctx := &scope.Context{Client: &client.ControlClient{}}
+	ctx.Client.State.Tracks = map[av.ADSBCallsign]*sim.Track{
+		"AAL123": {
+			RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123"},
+			FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123", AssignedSquawk: 0o2301},
+		},
+	}
+
+	var p trackParser
+	for _, tc := range []struct {
+		text string
+		ok   bool
+	}{
+		{"/123", true},
+		{"/AAL123", true},
+		{"123", true},
+		{"//123", false},
+		{"/124", false},
+	} {
+		v, _, ok, err := p.Parse(nil, ctx, &CommandInput{}, tc.text)
+		if err != nil || ok != tc.ok || (ok && v.(*sim.Track).ADSBCallsign != "AAL123") {
+			t.Errorf("%q: got %v %v %v, want matched %v", tc.text, v, ok, err, tc.ok)
+		}
+	}
+
+	InitCommands()
+	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()},
+		TrackState: map[av.ADSBCallsign]*TrackState{"AAL123": {}}}
+	if _, err, _ := ep.tryExecuteUserCommand(ctx, "QP J /123", nil, nil); err != nil || !ep.TrackState["AAL123"].DisplayJRing {
+		t.Errorf("QP J /123: got J ring %v, error %v", ep.TrackState["AAL123"].DisplayJRing, err)
+	}
+}
