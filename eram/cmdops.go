@@ -49,12 +49,12 @@ func registerOpsCommands() {
 	// QU: Clear all route displays
 	// QU [TRACK]: Toggle 20-minute route display
 	// QU /M [TRACK]: Display full route
-	// QU [MINUTES] [TRACK]: Display route for specified minutes
+	// QU [MINUTES] [TRACK] or QU [TRACK] [MINUTES]: Display route for specified minutes
 	// QU [FIXES_AND_TRACK]: Amend route for track
 	registerCommand(CommandModeNone, "QU", handleClearRouteDisplay)
 	registerCommand(CommandModeNone, "QU [TRACK]", handleDefaultRouteDisplay)
 	registerCommand(CommandModeNone, "QU /M [TRACK]", handleMaxRouteDisplay)
-	registerCommand(CommandModeNone, "QU [MINUTES] [TRACK]", handleRouteDisplayMinutes)
+	registerCommand(CommandModeNone, "QU [MINUTES] [TRACK]|QU [TRACK] [MINUTES]", handleRouteDisplayMinutes)
 	registerCommand(CommandModeNone, "QU [FIXES_AND_TRACK]", handleAmendRoute)
 
 	// QP - J rings
@@ -372,9 +372,13 @@ func handleMaxRouteDisplay(ep *Scope, ctx *scope.Context, trk *sim.Track) (Comma
 	}, nil
 }
 
+// handleRouteDisplayMinutes displays the route for 1 to 99 minutes (2.11).
 func handleRouteDisplayMinutes(ep *Scope, ctx *scope.Context, minutes int, trk *sim.Track) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
+	}
+	if minutes < 1 || minutes > 99 {
+		return CommandStatus{}, ErrIllegalValue
 	}
 
 	ep.getQULines(ctx, trk.FlightPlan.ACID, minutes)

@@ -163,3 +163,21 @@ func TestBeaconCodeViewFeedback(t *testing.T) {
 		}
 	}
 }
+
+// QU displays a route for 1 to 99 minutes (2.11), which may be given before
+// or after the FLID.
+func TestRouteDisplayMinutesRange(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123"},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123"},
+	})
+	h.frame(0)
+
+	for _, cmd := range []string{"QU 0 AAL123", "QU 100 AAL123", "QU 500 123", "QU AAL123 0", "QU 123 100"} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil); err != ErrIllegalValue {
+			t.Errorf("%s: got error %v, want %v", cmd, err, ErrIllegalValue)
+		}
+	}
+}
