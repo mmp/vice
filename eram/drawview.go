@@ -116,16 +116,11 @@ type View struct {
 	// Falls back to the title font when nil.
 	BodyFont *renderer.Font
 
+	// Opaque views have a black body that hides what is behind them;
+	// semi-transparent ones draw only their contents over the scope (4.1.5).
 	Opaque     bool
 	ShowBorder bool
 	Brightness scope.Brightness
-
-	// OpaqueOnlyBg controls how the body background reacts to Opaque. When
-	// false (default), the body background is always drawn black — used by
-	// every multi-row view. When true, the body background follows Opaque:
-	// grey (scaled by Brightness) when Opaque, not drawn at all when not
-	// Opaque. Clock uses this so the scope shows through in T mode.
-	OpaqueOnlyBg bool
 
 	OnMenu func(host math.Extent2D) popup
 
@@ -538,17 +533,8 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 
 	// Body background and window border (skip when body is empty).
 	if bodyH > 0 {
-		drawBodyBg := true
-		var bodyBg renderer.RGB
-		if v.OpaqueOnlyBg {
-			if v.Opaque {
-				bodyBg = v.Brightness.ScaleRGB(colors.view.opaqueBackground)
-			} else {
-				drawBodyBg = false
-			}
-		}
-		if drawBodyBg {
-			addQuad(trid, bodyOuter, bodyBg)
+		if v.Opaque {
+			addQuad(trid, bodyOuter, renderer.RGB{})
 		}
 		if v.ShowBorder {
 			ld.AddLineLoop(ep.currentPrefs().Brightness.Border.ScaleRGB(colors.view.border), outer.Corners())

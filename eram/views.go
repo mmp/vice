@@ -321,6 +321,7 @@ func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope
 		ID:         "mca",
 		Width:      width,
 		BodyHeight: inputH + feedbackH,
+		Opaque:     true,
 		ShowBorder: true,
 		Brightness: ps.Brightness.Border,
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "mca", 4,
@@ -401,6 +402,7 @@ func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transform
 		ID:         "ra",
 		Width:      width,
 		BodyHeight: height,
+		Opaque:     true,
 		ShowBorder: true,
 		Brightness: ps.RA.Bright,
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", 4,
@@ -461,14 +463,13 @@ func (ep *Scope) drawTimeView(ctx *scope.Context, transforms scope.Transformatio
 	height := ext.Height() + 8
 
 	v := View{
-		Position:     &ps.TimeView.Position,
-		ID:           "clock",
-		Width:        width,
-		BodyHeight:   height,
-		ShowBorder:   ps.TimeView.ShowBorder,
-		Opaque:       ps.TimeView.Opaque,
-		Brightness:   ps.TimeView.Bright,
-		OpaqueOnlyBg: true,
+		Position:   &ps.TimeView.Position,
+		ID:         "clock",
+		Width:      width,
+		BodyHeight: height,
+		ShowBorder: ps.TimeView.ShowBorder,
+		Opaque:     ps.TimeView.Opaque,
+		Brightness: ps.TimeView.Bright,
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "clock", 4,
 			func(pb popupBase) popup { return &timeViewPopup{popupBase: pb} }),
 		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
