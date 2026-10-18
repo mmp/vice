@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -95,9 +96,33 @@ func (e altitudeEntry) setAssigned(spec *sim.FlightPlanSpecifier) {
 }
 
 // formatRoute formats field 10 as a readout shows it, from the departure
-// airport to the destination, as in KBOS.SSOXS.SEY.PARCH4.KJFK.
-func formatRoute(fp *sim.FlightPlan) string {
-	route := slices.Concat([]string{string(fp.DepartureAirport)}, strings.Fields(strings.TrimPrefix(fp.Route, "/. ")),
-		[]string{string(fp.ArrivalAirport)})
-	return strings.Join(slices.DeleteFunc(route, func(s string) bool { return s == "" }), ".")
+// airport to the destination, in the form of figures 2-32 and 4-253: ".."
+// joins points flown direct, "." joins a point to an airway or a procedure,
+// and "./." follows the departure airport of a route that begins at the
+// aircraft's present position, as in KATL./.ROA205050..ROA..HAR..KPIT.
+// Some routes are already written partly in that form, so they are split
+// at dots as well as spaces.
+func formatRoute(fp *sim.FlightPlan, loc av.Locator) string {
+	route := strings.FieldsFunc(fp.Route, func(ch rune) bool { return ch == ' ' || ch == '.' })
+	route = slices.DeleteFunc(route, func(s string) bool { return s == "DCT" })
+	route = slices.Concat([]string{string(fp.DepartureAirport)}, route, []string{string(fp.ArrivalAirport)})
+	route = slices.Compact(slices.DeleteFunc(route, func(s string) bool { return s == "" }))
+
+	// The present position, "/", is not a point: like an airway or a
+	// procedure, it takes a single dot on either side.
+	isPoint := func(s string) bool {
+		if _, ok := loc.Airways(s); ok {
+			return false
+		}
+		_, ok := loc.Locate(s)
+		return ok
+	}
+	var b strings.Builder
+	for i, s := range route {
+		if i > 0 {
+			b.WriteString(util.Select(isPoint(route[i-1]) && isPoint(s), "..", "."))
+		}
+		b.WriteString(s)
+	}
+	return b.String()
 }

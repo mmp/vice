@@ -545,7 +545,7 @@ func TestFlightPlanDirect(t *testing.T) {
 		if got := routeFixes(ac); !slices.Equal(got, []string{"ALPHA", "THREE", "FOUR", "KJFK"}) {
 			t.Errorf("issueDirect %v: route is %v, want [ALPHA THREE FOUR KJFK]", issueDirect, got)
 		}
-		if route, want := ac.FlightPlan.Route, frd+" ALPHA THREE FOUR"; route != want {
+		if route, want := ac.FlightPlan.Route, "/. "+frd+" ALPHA THREE FOUR"; route != want {
 			t.Errorf("issueDirect %v: flight plan route is %q, want %q", issueDirect, route, want)
 		}
 		spoke := slices.ContainsFunc(events, func(e Event) bool {
@@ -607,7 +607,7 @@ func TestFlightPlanDirectToLocation(t *testing.T) {
 	} else if d := math.NMDistance2LL(wp.Location, s.State.Fixes["ALPHA"]); math.Abs(d-30) > 0.3 {
 		t.Errorf("ALPHA090030 is %.1fnm from ALPHA", d)
 	}
-	if route, want := ac.FlightPlan.Route, frd+" ALPHA090030 FOUR"; route != want {
+	if route, want := ac.FlightPlan.Route, "/. "+frd+" ALPHA090030 FOUR"; route != want {
 		t.Errorf("flight plan route is %q, want %q", route, want)
 	}
 }

@@ -765,7 +765,8 @@ func (s *Sim) FlightPlanDirect(tcw TCW, acid ACID, fixes []string, issueDirect b
 	if n := len(route); n > 0 && route[n-1].Fix == string(fp.ArrivalAirport) {
 		route = route[:n-1]
 	}
-	fp.Route = strings.TrimSpace(frd + " " + route.RouteString())
+	// "/." marks a route that begins at the present position.
+	fp.Route = "/. " + strings.TrimSpace(frd+" "+route.RouteString())
 
 	// DirectFix fails if the controller isn't talking to the aircraft; the
 	// amendment stands regardless.

@@ -513,7 +513,8 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 		responseArea: []string{
 			zTime,
 			fmt.Sprintf("%v %v(%v) %v %v %v %v %v", fp.CID, fp.ACID, fp.TrackingController,
-				formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, formatAssignedAltitude(fp), formatRoute(fp)),
+				formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, formatAssignedAltitude(fp),
+				formatRoute(fp, &ctx.Client.State)),
 		},
 	}, nil
 }

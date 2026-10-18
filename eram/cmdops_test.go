@@ -70,9 +70,33 @@ func TestFlightPlanReadout(t *testing.T) {
 	}
 
 	status, err, _ := ep.tryExecuteUserCommand(ctx, "QF AAL123", nil, nil)
-	want := []string{"0000", "123 AAL123(15) 2H/B744/L 2301 480 350 KBOS.SSOXS.SEY.PARCH4.KJFK"}
+	want := []string{"0000", "123 AAL123(15) 2H/B744/L 2301 480 350 KBOS..SSOXS..SEY.PARCH4.KJFK"}
 	if err != nil || !slices.Equal(status.responseArea, want) {
 		t.Errorf("QF AAL123: got %q, error %v; want %q", status.responseArea, err, want)
+	}
+}
+
+// Readouts show routes in the NAS form: ".." between points flown direct,
+// "." on either side of an airway or a procedure, and "./." after the
+// departure airport of a route from present position (figures 2-32 and
+// 4-253).
+func TestFormatRoute(t *testing.T) {
+	db.InitDB()
+	ctx := &scope.Context{Client: &client.ControlClient{}}
+	for _, tc := range []struct {
+		dep, route, arr, want string
+	}{
+		{"KPHL", "PTW PTW320 SARAA J64 HLC J80 OAL MOD3", "KSFO", "KPHL..PTW.PTW320.SARAA.J64.HLC.J80.OAL.MOD3.KSFO"},
+		{"KATL", "/. ROA205050 ROA HAR", "KPIT", "KATL./.ROA205050..ROA..HAR..KPIT"},
+		{"KJFK", "DEEZZ5 CANDR J60 PSB", "KORD", "KJFK.DEEZZ5.CANDR.J60.PSB..KORD"},
+		{"KORD", "./.CVG.V70.VHP", "KIND", "KORD./.CVG.V70.VHP..KIND"},
+		{"KMSP", "CSHEL DCT KMSP", "KMSP", "KMSP..CSHEL..KMSP"},
+	} {
+		fp := sim.FlightPlan{DepartureAirport: av.ICAOAirportCode(tc.dep), Route: tc.route,
+			ArrivalAirport: av.ICAOAirportCode(tc.arr)}
+		if got := formatRoute(&fp, &ctx.Client.State); got != tc.want {
+			t.Errorf("%q: got %s, want %s", tc.route, got, tc.want)
+		}
 	}
 }
 
