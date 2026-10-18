@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/wx"
 )
 
 // QZ takes the VFR and VFR-on-top altitude forms.
@@ -201,6 +202,31 @@ func TestStationIDLength(t *testing.T) {
 	} {
 		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, tc.cmd, nil, nil); err == nil || err.Error() != tc.want {
 			t.Errorf("%s: got error %v, want %s", tc.cmd, err, tc.want)
+		}
+	}
+}
+
+// WR adds up to three stations at once, or removes them (4.2.20.2).
+func TestWXReportStations(t *testing.T) {
+	db.InitDB()
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.METAR = map[av.ICAOAirportCode]wx.METAR{"KJFK": {}, "KBOS": {}, "KEWR": {}}
+
+	for _, tc := range []struct {
+		cmd  string
+		err  error
+		want []av.ICAOAirportCode
+	}{
+		{"WR KJFK BOS KEWR", nil, []av.ICAOAirportCode{"KJFK", "KBOS", "KEWR"}},
+		{"WR KBOS", nil, []av.ICAOAirportCode{"KJFK", "KEWR"}},
+		{"WR KJFK QQQQQ", NewError("REJECT - WR - UNKNOWN AIRPORT"), []av.ICAOAirportCode{"KJFK", "KEWR"}},
+		{"WR KJFK KBOS KEWR KJFK", ErrMessageTooLong, []av.ICAOAirportCode{"KJFK", "KEWR"}},
+	} {
+		_, err, _ := h.ep.tryExecuteUserCommand(h.ctx, tc.cmd, nil, nil)
+		if (err == nil) != (tc.err == nil) || (err != nil && err.Error() != tc.err.Error()) ||
+			!slices.Equal(h.ep.WXReportStations, tc.want) {
+			t.Errorf("%s: got %v, error %v; want %v, error %v", tc.cmd, h.ep.WXReportStations, err, tc.want, tc.err)
 		}
 	}
 }

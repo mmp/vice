@@ -171,10 +171,11 @@ func registerOpsCommands() {
 	// WR - Weather report commands
 	// WR [ICAO]: Add 4-letter ICAO code to WX REPORT list (e.g., WR KMCO)
 	// WR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., WR MCO → KMCO)
+	// WR [STATION] [STATION] [STATION]: Add or remove up to three stations at once
 	// WR R [ICAO]: Display station's weather report in Response Area (e.g., WR R KMCO)
 	// WR R [IATA]: Display with 3-letter IATA code (e.g., WR R MCO → KMCO)
 	registerCommand(CommandModeNone, "WR R [FIELD]", handleWXReportDisplay)
-	registerCommand(CommandModeNone, "WR [FIELD]", handleWXReportAdd)
+	registerCommand(CommandModeNone, "WR [ALL_TEXT]", handleWXReportAdd)
 
 	// // - Toggle VCI (on-frequency indicator)
 	// //[TRACK] or // [TRACK]
@@ -1272,20 +1273,37 @@ func handleAltimAdd(ep *Scope, ctx *scope.Context, airport string) (CommandStatu
 
 // WR - WX REPORT Add Airport Handler
 
-func handleWXReportAdd(ep *Scope, ctx *scope.Context, airport string) (CommandStatus, error) {
-	airport = strings.ToUpper(strings.TrimSpace(airport))
-	if len(airport) == 0 {
-		return CommandStatus{}, NewError("REJECT - WR - MISSING AIRPORT")
-	}
-	if !isStationID(airport) {
-		return CommandStatus{}, NewError("REJECT - WR - INVALID AIRPORT CODE")
+// handleWXReportAdd adds up to three stations to the WX REPORT view, or
+// removes those already in it (4.2.20.2).
+func handleWXReportAdd(ep *Scope, ctx *scope.Context, stations string) (CommandStatus, error) {
+	ids := strings.Fields(strings.ToUpper(stations))
+	if len(ids) > 3 {
+		return CommandStatus{}, ErrMessageTooLong
 	}
 
-	// Confirm airport exists in the database
-	icao, ok := lookupCommandAirport(airport)
-	if !ok {
-		return CommandStatus{}, NewError("REJECT - WR - UNKNOWN AIRPORT")
+	var icaos []av.ICAOAirportCode
+	for _, id := range ids {
+		if !isStationID(id) {
+			return CommandStatus{}, NewError("REJECT - WR - INVALID AIRPORT CODE")
+		}
+		icao, ok := lookupCommandAirport(id)
+		if !ok {
+			return CommandStatus{}, NewError("REJECT - WR - UNKNOWN AIRPORT")
+		}
+		icaos = append(icaos, icao)
 	}
+
+	// Added stations go to the top of the list in the order given.
+	for _, icao := range slices.Backward(icaos) {
+		toggleWXReportStation(ep, ctx, icao)
+	}
+
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
+}
+
+// toggleWXReportStation adds the station to the top of the WX REPORT view,
+// or removes it if it is already there.
+func toggleWXReportStation(ep *Scope, ctx *scope.Context, icao av.ICAOAirportCode) {
 	if i := slices.Index(ep.WXReportStations, icao); i >= 0 {
 		ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
 		// Adjust scroll offset if needed after removal
@@ -1294,7 +1312,7 @@ func handleWXReportAdd(ep *Scope, ctx *scope.Context, airport string) (CommandSt
 		if ep.wxScroll.Offset > maxOffset {
 			ep.wxScroll.Offset = maxOffset
 		}
-		return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
+		return
 	}
 
 	ep.WXReportStations = slices.Insert(ep.WXReportStations, 0, icao)
@@ -1304,8 +1322,6 @@ func handleWXReportAdd(ep *Scope, ctx *scope.Context, airport string) (CommandSt
 	ps.WX.Visible = true
 
 	requestMETARIfMissing(ctx, icao)
-
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
 }
 
 // requestMETARIfMissing asks the server to start supplying METAR for icao
