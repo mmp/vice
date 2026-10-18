@@ -499,10 +499,10 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 	}
 
 	// Clamp position on every frame so a saved off-screen position can't
-	// produce negative scissor boxes. Write the clamped value back so the
-	// caller's storage tracks the constrained position.
-	*v.Position = ep.clampViewPos(ctx, *v.Position, width, totalH)
-	pos := *v.Position // view top-left in pane coords (y up).
+	// produce negative scissor boxes. The clamped position isn't stored, so
+	// a view that grows past the edge of the pane moves back once it
+	// shrinks again.
+	pos := ep.clampViewPos(ctx, *v.Position, width, totalH) // view top-left in pane coords (y up).
 
 	outer := math.Extent2D{
 		P0: [2]float32{pos[0], pos[1] - totalH},

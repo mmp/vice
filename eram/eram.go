@@ -231,6 +231,11 @@ type Scope struct {
 	feedbackArea feedbackMessage
 	input        inputText
 
+	// raScroll is how far the RA has been scrolled through raScrolledText,
+	// the response it was scrolled in; a new response starts at the top.
+	raScroll       ViewScrollState
+	raScrolledText string
+
 	toolbarVisible bool
 
 	toolbar    toolbarState

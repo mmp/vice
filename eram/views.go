@@ -382,26 +382,38 @@ func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 ///////////////////////////////////////////////////////////////////////////
 // RA: Response Area
 
-// drawResponseArea renders the RA: a single box with the wrapped
-// response-area text. Width fits ps.RA.Width characters of the selected font
-// plus 2px side padding.
+// drawResponseArea renders the RA, which shows one response at a time. It
+// is four lines tall and grows with the response to ten lines, past which
+// it scrolls; responses are cut off after 300 lines (4.3.2). Width fits
+// ps.RA.Width characters of the selected font plus 2px side padding.
 func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 
-	const height = 77
 	font := ep.ERAMFont(ps.RA.Font)
 	cols := ps.RA.Width
 	width := float32(cols)*charWidth(font) + 4
 	lineSpacing := int(float32(font.Size) * 0.4)
+	lineH := font.LayoutBounds("0", lineSpacing).Height()
 
 	wrapped, _ := util.WrapText(ep.responseArea, cols, 0, true, false)
+	lines := strings.Split(wrapped, "\n")
+	lines = lines[:min(len(lines), 300)]
+	visible := math.Clamp(len(lines), 4, 10)
+
+	if ep.raScrolledText != ep.responseArea {
+		ep.raScroll, ep.raScrolledText = ViewScrollState{}, ep.responseArea
+	}
+	maxOffset := max(0, len(lines)-visible)
+	ep.raScroll.Offset = math.Clamp(ep.raScroll.Offset, 0, maxOffset)
+	shown := strings.Join(lines[ep.raScroll.Offset:min(len(lines), ep.raScroll.Offset+visible)], "\n")
 	textColor := ps.RA.Bright.ScaleRGB(colors.toolbar.text)
 
 	v := View{
 		Position:   &ps.RA.Position,
 		ID:         "ra",
 		Width:      width,
-		BodyHeight: height,
+		BodyHeight: float32(visible)*lineH + 4,
+		BodyFont:   font,
 		Opaque:     true,
 		ShowBorder: true,
 		Brightness: ps.RA.Bright,
@@ -409,9 +421,12 @@ func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transform
 			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
 		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			topLeft := [2]float32{body.P0[0], body.P1[1]}
-			b.Td.AddText(wrapped, [2]float32{topLeft[0] + 2, topLeft[1] - 2},
+			b.Td.AddText(shown, [2]float32{topLeft[0] + 2, topLeft[1] - 2},
 				renderer.TextStyle{Font: font, Color: textColor, LineSpacing: lineSpacing})
 		},
+	}
+	if maxOffset > 0 {
+		v.scroll = &ViewScrollConfig{State: &ep.raScroll, MaxOffset: maxOffset}
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 }
