@@ -315,8 +315,12 @@ func (ep *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 	// TODO: free tracks, frozen tracks, and coast tracks
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
 	font := ep.systemFont[9]
+	color := ep.targetColor(trk)
+	if ep.caDimmed(trk.ADSBCallsign) {
+		color = color.Scale(caDimFactor)
+	}
 	td.AddTextCentered("\u0000", transforms.WindowFromLatLongP(pos),
-		renderer.TextStyle{Font: font, Color: ep.targetColor(trk)})
+		renderer.TextStyle{Font: font, Color: color})
 }
 
 // Target symbols, at their code points in the EramTargets font (Table 2-3).
@@ -534,6 +538,9 @@ func (ep *Scope) drawLeaderLines(ctx *scope.Context, tracks []sim.Track, dbs map
 		}
 		dbType := ep.datablockType(ctx, trk)
 		color := ep.trackDatablockColor(ctx, trk)
+		if ep.caDimmed(trk.ADSBCallsign) {
+			color = color.Scale(caDimFactor)
+		}
 		state := ep.TrackState[trk.ADSBCallsign]
 		if state == nil {
 			continue
@@ -595,6 +602,9 @@ func (ep *Scope) drawPTLs(ctx *scope.Context, tracks []sim.Track, transforms sco
 		p0 := transforms.WindowFromLatLongP(pos)
 		p1 := transforms.WindowFromLatLongP(ptlEnd)
 		color := ep.trackDatablockColor(ctx, trk)
+		if ep.caDimmed(trk.ADSBCallsign) {
+			color = color.Scale(caDimFactor)
+		}
 		ld.AddLine(p0, p1, color)
 	}
 	transforms.LoadWindowViewingMatrices(cb)

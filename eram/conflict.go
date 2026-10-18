@@ -40,7 +40,7 @@ const (
 	caLevelDBAltTolerance = 200  // ft; DB altitude within this of current altitude = at assigned altitude
 	caMaxVerticalRate     = 2500 // ft/min; fastest a level target is assumed to head for its data block altitude
 
-	caDimFactor = 0.5 // datablock brightness scale during the dim phase of the flash cycle
+	caDimFactor = 0.5 // FDB brightness scale during the dim phase of the blink
 )
 
 // caTarget is a snapshot of one aircraft's state for conflict prediction,
@@ -195,6 +195,13 @@ func (ep *Scope) inConflictAlert(callsign av.ADSBCallsign) bool {
 	return slices.ContainsFunc(ep.caPairs, func(p CAPair) bool {
 		return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
 	})
+}
+
+// caDimmed reports whether the track is in conflict alert and its FDB is in
+// the dim half of the bright/dim blink. The text, leader line, vector, and
+// track position symbol blink together (5.1.5.7).
+func (ep *Scope) caDimmed(callsign av.ADSBCallsign) bool {
+	return ep.inConflictAlert(callsign) && time.Now().UnixMilli()/500%2 == 1
 }
 
 // updateConflictAlerts runs an STCA detection pass every caUpdateInterval

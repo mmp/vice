@@ -361,7 +361,6 @@ func (ep *Scope) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()
 
-	halfSeconds := time.Now().UnixMilli() / 500
 	dbs := make(map[av.ADSBCallsign]datablock)
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
@@ -374,10 +373,7 @@ func (ep *Scope) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av
 		brite := util.Select(dbType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
 		color := brite.ScaleRGB(colors.yellow)
 		db := ep.getDatablock(ctx, trk, dbType, color)
-		if db != nil && ep.inConflictAlert(trk.ADSBCallsign) && halfSeconds&1 == 1 {
-			// Conflict alert flash: the datablock dims and returns to
-			// normal brightness on a half-second cycle (it never
-			// disappears entirely).
+		if db != nil && ep.caDimmed(trk.ADSBCallsign) {
 			db.dim(caDimFactor)
 		}
 		dbs[trk.ADSBCallsign] = db
