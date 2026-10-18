@@ -24,6 +24,7 @@
   - `LC` shows the change in ground speed needed to cross the fix at the given time
   - `QS` takes a heading and speed together, as in `QS 330/81`, and Mach speeds such as `M.75`
   - `WR` takes up to three stations
+  - Fixed a number of bugs in the views and their menus
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - Fixed a few bugs with automatically generated ATPA volumes
