@@ -277,15 +277,40 @@ func makeIntMenuItem[T ~int](ep *Scope, v *T, label string, min, max, step int) 
 	}
 }
 
+// makeWidthMenuItem builds the WIDTH row of a view that is either narrow or
+// wide characters across: TBP selects the narrow width and TBE the wide one.
+func makeWidthMenuItem(ep *Scope, v *int, narrow, wide int) MenuItem {
+	return MenuItem{
+		Label:   fmt.Sprintf("WIDTH %d", *v),
+		BgColor: colors.popup.backgroundGreen,
+		Color:   colors.popup.text,
+		OnClick: func(click MenuClickType) bool {
+			w := util.Select(click == MenuClickTertiary, wide, narrow)
+			if *v == w {
+				ep.reportClickAtLimit(menuToolbarClick(click))
+			}
+			*v = w
+			return false
+		},
+	}
+}
+
 // adjustMenuValue lowers or raises a menu row's value as a click on an
 // increment/decrement toolbar button would, flashing the invalid cursor
 // past the value's limits.
 func adjustMenuValue[T ~int](ep *Scope, v *T, click MenuClickType, min, max, step int) {
-	var c toolbarClick
-	c.clicked[util.Select(click == MenuClickTertiary, platform.MouseButtonTertiary, platform.MouseButtonPrimary)] = true
+	c := menuToolbarClick(click)
 	if err := adjust(v, c, min, max, step); err != nil {
 		ep.reportClickAtLimit(c)
 	}
+}
+
+// menuToolbarClick returns the toolbar button click that a click on a menu
+// row corresponds to.
+func menuToolbarClick(click MenuClickType) toolbarClick {
+	var c toolbarClick
+	c.clicked[util.Select(click == MenuClickTertiary, platform.MouseButtonTertiary, platform.MouseButtonPrimary)] = true
+	return c
 }
 
 // closeViewPopup closes the popup menu opened from the given view, if it

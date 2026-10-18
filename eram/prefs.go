@@ -104,7 +104,7 @@ type Preferences struct {
 	MCA struct {
 		Position [2]float32       // top-left of the feedback box
 		PALines  int              // max number of preview/feedback area lines
-		Width    int              // chars per line
+		Width    int              // chars per line: 30 or 50
 		Font     int              // 1-3
 		Bright   scope.Brightness // 0-100
 	}
@@ -112,7 +112,7 @@ type Preferences struct {
 	// RA (Response Area) preferences
 	RA struct {
 		Position [2]float32
-		Width    int              // chars per line
+		Width    int              // chars per line: 25 or 50
 		Font     int              // 1-3
 		Bright   scope.Brightness // 0-100
 	}
@@ -407,12 +407,12 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.MCA.Position = [2]float32{2, 80}
 	prefs.MCA.PALines = 6
-	prefs.MCA.Width = 32
+	prefs.MCA.Width = 30
 	prefs.MCA.Font = 2
 	prefs.MCA.Bright = 100
 
 	prefs.RA.Position = [2]float32{392, 80}
-	prefs.RA.Width = 27
+	prefs.RA.Width = 25
 	prefs.RA.Font = 2
 	prefs.RA.Bright = 100
 
@@ -446,10 +446,10 @@ func (p *Preferences) Upgrade(from, to int) {
 		// have zero values that would render as invisible/broken widgets.
 		// These values match makeDefaultPreferences().
 		p.MCA.PALines = 6
-		p.MCA.Width = 32
+		p.MCA.Width = 30
 		p.MCA.Font = 2
 		p.MCA.Bright = 100
-		p.RA.Width = 27
+		p.RA.Width = 25
 		p.RA.Font = 2
 		p.RA.Bright = 100
 		p.TimeView.ShowBorder = true

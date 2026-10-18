@@ -364,7 +364,7 @@ func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 
 	rows := []MenuItem{
 		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 1, 50, 1),
-		makeIntMenuItem(ep, &ps.MCA.Width, "WIDTH", 30, 50, 20),
+		makeWidthMenuItem(ep, &ps.MCA.Width, 30, 50),
 		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 1),
 	}
@@ -423,7 +423,7 @@ func (r *raPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 	ps := ep.currentPrefs()
 
 	rows := []MenuItem{
-		makeIntMenuItem(ep, &ps.RA.Width, "WIDTH", 25, 50, 25),
+		makeWidthMenuItem(ep, &ps.RA.Width, 25, 50),
 		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 1),
 		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ MenuClickType) bool {
