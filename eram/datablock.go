@@ -469,7 +469,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 			}
 
 			sp := trk.FlightPlan.Scratchpad
-			if isQSFreeTextScratchpad(sp) {
+			if isQSFreeText(sp) {
 				// Free text overrides. The clear-weather circle is only an indicator; do not render it.
 				dbWriteText(db.line4[headingStart:], stripQSFreeTextIndicator(sp), line4Color, false)
 			} else {
@@ -526,18 +526,17 @@ func hsfDataExists(fp *sim.FlightPlan) bool {
 	return fp.Scratchpad != "" || fp.SecondaryScratchpad != ""
 }
 
-func isQSFreeTextScratchpad(s string) bool {
-	return strings.HasPrefix(s, sim.QSFreeTextIndicator) || strings.HasPrefix(s, circleClear)
+// isQSFreeText reports whether a flight plan's primary scratchpad holds
+// fourth-line free text rather than a heading.
+func isQSFreeText(s string) bool {
+	return strings.HasPrefix(s, sim.QSFreeTextIndicator)
 }
 
+// stripQSFreeTextIndicator returns the free text that a scratchpad holds, or
+// "" if it holds none.
 func stripQSFreeTextIndicator(s string) string {
-	if len(s) == 0 {
-		return ""
-	}
-	if isQSFreeTextScratchpad(s) && len(s) > 1 {
-		return s[1:]
-	}
-	return ""
+	text, ok := strings.CutPrefix(s, sim.QSFreeTextIndicator)
+	return util.Select(ok, text, "")
 }
 
 // speedStartFromGroundspeedLine4 returns the column in line4 where the 'S'/'M' should start.

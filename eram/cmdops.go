@@ -1185,15 +1185,11 @@ func handleQSFreeText(ep *Scope, ctx *scope.Context, freeText string, trk *sim.T
 	}
 
 	var fp sim.FlightPlanSpecifier
-	fp.Scratchpad.Set(freeText)
+	fp.Scratchpad.Set(sim.QSFreeTextIndicator + freeText)
 	fp.SecondaryScratchpad.Set("")
 	ep.modifyFlightPlan(ctx, trk, fp)
 
 	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
-}
-
-func isQSFreeText(s string) bool {
-	return strings.HasPrefix(s, circleClear)
 }
 
 func lookupCommandAirport(airport string) (av.ICAOAirportCode, bool) {

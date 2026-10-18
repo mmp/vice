@@ -270,7 +270,7 @@ func (ep *Scope) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math
 		},
 	}
 	// Start in turn mode if a turn heading is currently assigned.
-	if sp := trk.FlightPlan.Scratchpad; !isQSFreeTextScratchpad(sp) && len(sp) >= 2 {
+	if sp := trk.FlightPlan.Scratchpad; !isQSFreeText(sp) && len(sp) >= 2 {
 		switch sp[len(sp)-1] {
 		case 'L':
 			p.lt = true
@@ -602,7 +602,7 @@ func (p *freeTextMenuPopup) handleKeyboard(ep *Scope, ctx *scope.Context) bool {
 		case imgui.KeyEnter:
 			if p.buf != "" {
 				if trk := p.resolveTrack(ep, ctx); trk != nil {
-					status, err := handleQSFreeText(ep, ctx, circleClear+p.buf, trk)
+					status, err := handleQSFreeText(ep, ctx, p.buf, trk)
 					ep.applyCommandStatus(ctx, status, err)
 				}
 			}

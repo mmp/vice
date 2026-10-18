@@ -812,6 +812,8 @@ func (h *minutesParser) AcceptsClick() bool   { return false }
 ///////////////////////////////////////////////////////////////////////////
 // QS HSF parsers
 
+// hsfTextParser parses a QS free text entry, which starts with the
+// clear-weather symbol, and returns the text after it.
 type hsfTextParser struct{}
 
 func (h *hsfTextParser) Identifier() string { return "HSF_TEXT" }
@@ -832,7 +834,7 @@ func (h *hsfTextParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput
 	if len(field)-1 > 8 {
 		return nil, text, true, NewError("INVALID TEXT FORMAT")
 	}
-	return field, remaining, true, nil
+	return field[1:], remaining, true, nil
 }
 
 func (h *hsfTextParser) GoType() reflect.Type { return reflect.TypeFor[string]() }

@@ -63,3 +63,26 @@ func TestFixesAndTrackParser(t *testing.T) {
 		}
 	}
 }
+
+// Free text has one form whether a scenario entered it or the controller
+// typed it, so that heading and speed entries recognize it to replace it.
+func TestQSFreeText(t *testing.T) {
+	var p hsfTextParser
+	v, rest, ok, err := p.Parse(nil, nil, &CommandInput{}, formatInput("`EXPEDITE AAL123"))
+	if !ok || err != nil || v != "EXPEDITE" || rest != " AAL123" {
+		t.Errorf("`EXPEDITE AAL123: got %v %q %v %v, want EXPEDITE", v, rest, ok, err)
+	}
+
+	for _, c := range []struct {
+		scratchpad, text string
+	}{
+		{sim.QSFreeTextIndicator + "EXPEDITE", "EXPEDITE"},
+		{"250", ""},
+		{"", ""},
+	} {
+		if isQSFreeText(c.scratchpad) != (c.text != "") || stripQSFreeTextIndicator(c.scratchpad) != c.text {
+			t.Errorf("%q: got free text %v %q, want %q", c.scratchpad, isQSFreeText(c.scratchpad),
+				stripQSFreeTextIndicator(c.scratchpad), c.text)
+		}
+	}
+}

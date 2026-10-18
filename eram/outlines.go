@@ -340,7 +340,7 @@ func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 	// two is assigned. Free-form text opens its menu via DBFieldLine4.
 	outlines.Fields[DBFieldLine4Heading] = math.EmptyExtent2D()
 	outlines.Fields[DBFieldLine4Speed] = math.EmptyExtent2D()
-	if fp := trk.FlightPlan; fp != nil && hsfDataExists(fp) && !isQSFreeTextScratchpad(fp.Scratchpad) {
+	if fp := trk.FlightPlan; fp != nil && hsfDataExists(fp) && !isQSFreeText(fp.Scratchpad) {
 		if state := ep.TrackState[trk.ADSBCallsign]; state != nil && !state.HSFHide {
 			runExtent := func(r [2]int) math.Extent2D {
 				return layout.FieldExtent(DatablockFieldSpec{Line: 4, Col: r[0], Cols: r[1]})
