@@ -599,11 +599,10 @@ func handleLBFixLoc(ep *Scope, ctx *scope.Context, fix string, from math.Point2L
 		return CommandStatus{}, ErrIllegalValue
 	}
 	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING/FIX"},
 		responseArea: formatRangeBearing(from, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
 			false, 0, "FROM TB TO FIX "+fix),
 	}, nil
-
 }
 
 func handleLBFixTrk(ep *Scope, ctx *scope.Context, fix string, trk *sim.Track) (CommandStatus, error) {
@@ -613,7 +612,7 @@ func handleLBFixTrk(ep *Scope, ctx *scope.Context, fix string, trk *sim.Track) (
 	}
 	rt := ep.TrackState[trk.ADSBCallsign].Track
 	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING/FIX"},
 		responseArea: formatRangeBearing(rt.Location, fixPos, ctx.NmPerLongitude, ctx.MagneticVariation,
 			false, rt.Groundspeed, "FROM TB TO FIX "+fix),
 	}, nil
@@ -625,7 +624,7 @@ func handleLBFixSpeedTrk(ep *Scope, ctx *scope.Context, fix string, speed int, t
 		return CommandStatus{}, ErrIllegalValue
 	}
 	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "RANGE/BEARING"},
+		feedbackArea: []string{"ACCEPT", "RANGE/BEARING/FIX"},
 		responseArea: formatRangeBearing(ep.TrackState[trk.ADSBCallsign].Track.Location, fixPos,
 			ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed), "FROM TB TO FIX "+fix),
 	}, nil

@@ -99,3 +99,23 @@ func TestToggleVCIExpandsLDB(t *testing.T) {
 			h.ep.TrackState["AAL123"].DisplayVCI)
 	}
 }
+
+// LB reports its function as RANGE/BEARING/FIX, which distinguishes it from
+// LA's RANGE/BEARING (3.12.2, figure 3-29).
+func TestRangeBearingFixFeedback(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.Fixes = map[string]math.Point2LL{"ABC": {-72, 40}}
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123", Location: math.Point2LL{-73, 40}, Groundspeed: 300},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123"},
+	})
+	h.frame(0)
+
+	for _, cmd := range []string{"LB ABC AAL123", "LB ABC/250 AAL123"} {
+		status, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil)
+		if want := []string{"ACCEPT", "RANGE/BEARING/FIX"}; err != nil || !slices.Equal(status.feedbackArea, want) {
+			t.Errorf("%s: got %q, error %v; want %q", cmd, status.feedbackArea, err, want)
+		}
+	}
+}
