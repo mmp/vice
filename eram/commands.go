@@ -329,9 +329,6 @@ func (ep *Scope) pointOutTrack(ctx *scope.Context, trk *sim.Track, sector string
 		return ErrIllegalACID
 	} else if control, err := ep.lookupControllerForID(ctx, sector); err != nil {
 		return err
-	} else if !control.ERAMFacility || control.FacilityIdentifier != ctx.UserController().FacilityIdentifier {
-		// Can only point out to controllers in the same facility (just ERAM?)
-		return ErrIllegalPosition
 	} else {
 		acid := trk.FlightPlan.ACID
 		ctx.Client.PointOut(acid, control.PositionId(),
