@@ -1208,9 +1208,15 @@ func handleQSFreeText(ep *Scope, ctx *scope.Context, freeText string, trk *sim.T
 	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
 }
 
+// isStationID reports whether s has the two to five characters of an
+// altimeter or weather station identifier (4.2.1.1.2, 4.2.20.1).
+func isStationID(s string) bool {
+	return len(s) >= 2 && len(s) <= 5
+}
+
 func lookupCommandAirport(airport string) (av.ICAOAirportCode, bool) {
 	airport = strings.ToUpper(strings.TrimSpace(airport))
-	if airport == "" || (len(airport) != 3 && len(airport) != 4) {
+	if !isStationID(airport) {
 		return "", false
 	}
 	// Users type an airport's FAA id or, less often, its full ICAO id.
@@ -1231,7 +1237,7 @@ func handleAltimAdd(ep *Scope, ctx *scope.Context, airport string) (CommandStatu
 	if len(airport) == 0 {
 		return CommandStatus{}, NewError("REJECT - AR - MISSING AIRPORT")
 	}
-	if len(airport) != 3 && len(airport) != 4 {
+	if !isStationID(airport) {
 		return CommandStatus{}, NewError("REJECT - AR - INVALID AIRPORT CODE")
 	}
 
@@ -1271,7 +1277,7 @@ func handleWXReportAdd(ep *Scope, ctx *scope.Context, airport string) (CommandSt
 	if len(airport) == 0 {
 		return CommandStatus{}, NewError("REJECT - WR - MISSING AIRPORT")
 	}
-	if len(airport) != 3 && len(airport) != 4 {
+	if !isStationID(airport) {
 		return CommandStatus{}, NewError("REJECT - WR - INVALID AIRPORT CODE")
 	}
 
@@ -1320,7 +1326,7 @@ func handleWXReportDisplay(ep *Scope, ctx *scope.Context, airport string) (Comma
 	if len(airport) == 0 {
 		return CommandStatus{}, NewError("REJECT - WR R - MISSING AIRPORT")
 	}
-	if len(airport) != 3 && len(airport) != 4 {
+	if !isStationID(airport) {
 		return CommandStatus{}, NewError("REJECT - WR R - INVALID AIRPORT CODE")
 	}
 

@@ -181,3 +181,26 @@ func TestRouteDisplayMinutesRange(t *testing.T) {
 		}
 	}
 }
+
+// AR and WR take station identifiers of two to five characters (4.2.1.1.2,
+// 4.2.20.1); those that are not in the database are unknown rather than
+// invalid.
+func TestStationIDLength(t *testing.T) {
+	db.InitDB()
+	InitCommands()
+	h := makeTrackTestHarness()
+	for _, tc := range []struct {
+		cmd, want string
+	}{
+		{"AR Q", "REJECT - AR - INVALID AIRPORT CODE"},
+		{"AR QQ", "REJECT - AR - UNKNOWN AIRPORT"},
+		{"AR QQQQQ", "REJECT - AR - UNKNOWN AIRPORT"},
+		{"AR QQQQQQ", "REJECT - AR - INVALID AIRPORT CODE"},
+		{"WR QQQQQ", "REJECT - WR - UNKNOWN AIRPORT"},
+		{"WR R QQ", "REJECT - WR R - UNKNOWN AIRPORT"},
+	} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, tc.cmd, nil, nil); err == nil || err.Error() != tc.want {
+			t.Errorf("%s: got error %v, want %s", tc.cmd, err, tc.want)
+		}
+	}
+}
