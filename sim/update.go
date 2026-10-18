@@ -385,22 +385,23 @@ func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *FlightPlan, fix s
 // to reflect an altitude a virtual controller has just assigned, as if they
 // had made the corresponding keyboard entry: a climb that stops short of the
 // hard altitude is an interim altitude and anything else amends the hard
-// altitude. STARS leaves both to the controller, so this is only done at
-// ERAM facilities. Only ERAM controllers can make the entries, so altitudes
-// a TRACON controller assigns leave them as they are.
+// altitude. Either replaces the interim altitudes the data block showed,
+// a local interim altitude included. STARS leaves both to the controller,
+// so this is only done at ERAM facilities. Only ERAM controllers can make
+// the entries, so altitudes a TRACON controller assigns leave them as they
+// are.
 func (s *Sim) recordVirtualAltitudeEntry(sfp *FlightPlan, issuer ControlPosition, alt int, climb bool) {
 	ctrl, ok := s.State.Controllers[issuer]
 	if sfp == nil || !db.DB.IsARTCC(s.State.Facility) || !ok || !ctrl.ERAMFacility {
 		return
 	}
 
+	sfp.clearInterimAltitudes()
 	if climb && sfp.AssignedAltitude != 0 && alt < sfp.AssignedAltitude {
-		sfp.InterimAlt, sfp.InterimType = alt, InterimNormal
+		sfp.InterimAlt = alt
 		return
 	}
-
 	sfp.assignAltitude(alt)
-	sfp.InterimAlt, sfp.InterimType = 0, InterimNormal
 }
 
 // Step advances the simulation by the given elapsed time duration.

@@ -22,6 +22,7 @@ func TestAltitudeMenuFPLabel(t *testing.T) {
 	}{
 		{"single altitude", sim.FlightPlan{AssignedAltitude: 35000}, ""},
 		{"interim", sim.FlightPlan{AssignedAltitude: 35000, InterimAlt: 24000}, "FP 350"},
+		{"local interim", sim.FlightPlan{AssignedAltitude: 35000, LocalInterimAlt: 24000}, "FP 350"},
 		{"descending via a STAR", sim.FlightPlan{PerceivedAssigned: 9000, InterimAlt: 11000}, "FP 090"},
 		{"block", sim.FlightPlan{AltitudeBlock: [2]int{22000, 23000}}, "FP 220B230"},
 		{"block and interim", sim.FlightPlan{AltitudeBlock: [2]int{22000, 23000}, InterimAlt: 21000}, "FP 220B230"},

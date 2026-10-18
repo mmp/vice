@@ -509,8 +509,7 @@ func (s *Sim) processFutureOnCourse() {
 					// actions govern the aircraft's altitude and it isn't
 					// climbing to cruise.
 					if ac.FlightPlan != nil && !ac.Nav.RouteAltitudeActions {
-						ac.FlightPlan.InterimAlt = 0
-						ac.FlightPlan.InterimType = InterimNormal
+						ac.FlightPlan.clearInterimAltitudes()
 					}
 					ac.DepartOnCourse(s.State.SimTime, s.lg)
 				}

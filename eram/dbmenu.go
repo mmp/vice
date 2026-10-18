@@ -87,11 +87,12 @@ var altitudeMenuAlts = func() []int {
 
 // altitudeMenuFPLabel returns the label of the altitude menu's Flight Plan
 // Assigned Altitude pick area, which is shown when the flight has an
-// interim altitude or is assigned other than a single altitude (8.6.1.1.1);
-// ok is false when it is not shown.
+// interim, procedure, or local interim altitude or is assigned other than
+// a single altitude (8.6.1.1.1, 8.6.1.2.c); ok is false when it is not
+// shown.
 func altitudeMenuFPLabel(fp *sim.FlightPlan) (label string, ok bool) {
 	single := !fp.HasAltitudeBlock() && fp.AssignedAltitudeQualifier == sim.PlainAltitude
-	if single && fp.InterimAlt == 0 {
+	if interim, _ := fp.DisplayedInterimAltitude(); single && interim == 0 {
 		return "", false
 	}
 	return "FP " + formatAssignedAltitude(fp), true
@@ -133,7 +134,7 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 	titleFont := ep.ERAMFont(2)
 
 	current := fp.DataBlockAltitude() / 100 // hundreds of feet; 0 if none
-	interimLetter := getInterimAltitudeType(*trk)
+	interimAlt, interimType := fp.DisplayedInterimAltitude()
 
 	if !p.initialized {
 		p.initialized = true
@@ -155,12 +156,16 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 	var rows []MenuItem
 	fpLabel, fpRow := altitudeMenuFPLabel(fp)
 	if fpRow {
-		// The Flight Plan Assigned Altitude pick area removes the interim
-		// altitude (8.6.1.1.3).
+		// The Flight Plan Assigned Altitude pick area removes the interim or
+		// procedure altitude and the local interim altitude (8.6.1.2.c).
 		rows = append(rows, MenuItem{
 			Label: fpLabel, BgColor: grey, Color: textC, Centered: true,
 			OnClick: func(_ MenuClickType) bool {
-				status, err := handleClearInterimAltitude(ep, ctx, trk)
+				var spec sim.FlightPlanSpecifier
+				spec.InterimAlt.Set(0)
+				spec.InterimType.Set(sim.InterimNormal)
+				spec.LocalInterimAlt.Set(0)
+				status, err := modifyInterimAltitude(ep, ctx, trk, spec)
 				ep.applyCommandStatus(ctx, status, err)
 				ep.popup = nil
 				return true
@@ -214,8 +219,8 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 		row := []MenuGridCell{altCell}
 		if showInterim {
 			letter := "T"
-			if isCurrent && fp.InterimAlt > 0 {
-				letter = interimLetter
+			if isCurrent && interimAlt > 0 {
+				letter = interimType.String()
 			}
 			letterCell := MenuGridCell{
 				// Assigning an interim altitude acts on the altitude to the

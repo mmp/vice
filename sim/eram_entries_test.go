@@ -15,11 +15,12 @@ import (
 func TestApplyERAMEntries(t *testing.T) {
 	// The data block fields the entries fill in.
 	type fields struct {
-		assignedAltitude    int
-		interimAltitude     int
-		interimType         InterimAltType
-		scratchpad          string
-		secondaryScratchpad string
+		assignedAltitude     int
+		interimAltitude      int
+		interimType          InterimAltType
+		localInterimAltitude int
+		scratchpad           string
+		secondaryScratchpad  string
 	}
 
 	for _, tc := range []struct {
@@ -49,10 +50,9 @@ func TestApplyERAMEntries(t *testing.T) {
 				interimType: InterimProcedure},
 		},
 		{
-			name:    "local interim altitude",
-			entries: &av.ERAMEntries{InterimAltitude: 17000, InterimType: "local"},
-			expected: fields{assignedAltitude: 35000, interimAltitude: 17000,
-				interimType: InterimLocal},
+			name:     "local interim altitude",
+			entries:  &av.ERAMEntries{InterimAltitude: 17000, InterimType: "local"},
+			expected: fields{assignedAltitude: 35000, localInterimAltitude: 17000},
 		},
 		{
 			name:     "heading",
@@ -79,8 +79,8 @@ func TestApplyERAMEntries(t *testing.T) {
 			fp := FlightPlan{AssignedAltitude: 35000}
 			fp.applyERAMEntries(tc.entries)
 
-			got := fields{fp.AssignedAltitude, fp.InterimAlt, fp.InterimType, fp.Scratchpad,
-				fp.SecondaryScratchpad}
+			got := fields{fp.AssignedAltitude, fp.InterimAlt, fp.InterimType, fp.LocalInterimAlt,
+				fp.Scratchpad, fp.SecondaryScratchpad}
 			if got != tc.expected {
 				t.Errorf("got %+v, expected %+v", got, tc.expected)
 			}

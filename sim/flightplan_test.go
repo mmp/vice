@@ -114,6 +114,43 @@ func TestFlightPlanUpdateReplacesAssignedAltitude(t *testing.T) {
 	}
 }
 
+// A local interim altitude coexists with an interim or procedure altitude
+// and is displayed in place of it; the interim and procedure altitudes
+// replace each other.
+func TestFlightPlanUpdateLocalInterimAltitude(t *testing.T) {
+	s := NewTestSim(testLogger())
+	fp := &FlightPlan{AssignedAltitude: 30000}
+	check := func(entry string, alt int, typ InterimAltType) {
+		t.Helper()
+		if a, ty := fp.DisplayedInterimAltitude(); a != alt || ty != typ || fp.DataBlockAltitude() != alt {
+			t.Errorf("%s: displayed %d%s, data block altitude %d; want %d%s", entry, a, ty,
+				fp.DataBlockAltitude(), alt, typ)
+		}
+	}
+
+	var local FlightPlanSpecifier
+	local.LocalInterimAlt.Set(20000)
+	fp.Update(local, s)
+	check("L200", 20000, InterimLocal)
+
+	var procedure FlightPlanSpecifier
+	procedure.InterimAlt.Set(18000)
+	procedure.InterimType.Set(InterimProcedure)
+	fp.Update(procedure, s)
+	check("P180 over L200", 20000, InterimLocal)
+
+	var deleteLocal FlightPlanSpecifier
+	deleteLocal.LocalInterimAlt.Set(0)
+	fp.Update(deleteLocal, s)
+	check("delete L", 18000, InterimProcedure)
+
+	var interim FlightPlanSpecifier
+	interim.InterimAlt.Set(19000)
+	interim.InterimType.Set(InterimNormal)
+	fp.Update(interim, s)
+	check("190 over P180", 19000, InterimNormal)
+}
+
 // An entry sets a scratchpad even to the text it already has, which an ERAM
 // entry of the current heading or speed does; only STARS undoes a re-entered
 // scratchpad, and its client does that.

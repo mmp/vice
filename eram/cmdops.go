@@ -26,9 +26,11 @@ import (
 
 func registerOpsCommands() {
 	// QQ - Interim altitude
-	// QQ [ALT] [TRACK]: Set interim altitude
-	// QQ [TRACK]: Clear interim altitude
+	// QQ [ALT] [TRACK]: Set interim, procedure (P), or local interim (L) altitude
+	// QQ L [TRACK]: Clear local interim altitude
+	// QQ [TRACK]: Clear interim or procedure altitude
 	registerCommand(CommandModeNone, "QQ [ERAM_ALT_I] [TRACK]", handleInterimAltitude)
+	registerCommand(CommandModeNone, "QQ L [TRACK]", handleClearLocalInterimAltitude)
 	registerCommand(CommandModeNone, "QQ [TRACK]", handleClearInterimAltitude)
 
 	// QZ - Assigned altitude
@@ -212,32 +214,44 @@ func registerOpsCommands() {
 ///////////////////////////////////////////////////////////////////////////
 // QQ - Interim Altitude Handlers
 
+// handleInterimAltitude enters an interim, procedure, or local interim
+// altitude. An interim and a procedure altitude replace each other, and
+// neither replaces a local interim altitude (8.4).
 func handleInterimAltitude(ep *Scope, ctx *scope.Context, alt InterimAltitude, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil {
-		return CommandStatus{}, ErrIllegalACID
+	var spec sim.FlightPlanSpecifier
+	if alt.Type == sim.InterimLocal {
+		spec.LocalInterimAlt.Set(alt.Altitude)
+	} else {
+		spec.InterimAlt.Set(alt.Altitude)
+		spec.InterimType.Set(alt.Type)
 	}
-
-	fp := sim.FlightPlanSpecifier{}
-	fp.InterimAlt.Set(alt.Altitude)
-	fp.InterimType.Set(alt.Type)
-
-	ep.modifyFlightPlan(ctx, trk, fp)
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "INTERIM ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}, nil
+	return modifyInterimAltitude(ep, ctx, trk, spec)
 }
 
+// handleClearInterimAltitude removes the interim or procedure altitude,
+// leaving any local interim altitude.
 func handleClearInterimAltitude(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+	var spec sim.FlightPlanSpecifier
+	spec.InterimAlt.Set(0)
+	spec.InterimType.Set(sim.InterimNormal)
+	return modifyInterimAltitude(ep, ctx, trk, spec)
+}
+
+// handleClearLocalInterimAltitude removes the local interim altitude, so
+// that the data block again shows any interim or procedure altitude (8.4).
+func handleClearLocalInterimAltitude(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+	var spec sim.FlightPlanSpecifier
+	spec.LocalInterimAlt.Set(0)
+	return modifyInterimAltitude(ep, ctx, trk, spec)
+}
+
+// modifyInterimAltitude makes a QQ entry's change to the flight plan.
+func modifyInterimAltitude(ep *Scope, ctx *scope.Context, trk *sim.Track, spec sim.FlightPlanSpecifier) (CommandStatus, error) {
 	if trk.FlightPlan == nil {
 		return CommandStatus{}, ErrIllegalACID
 	}
 
-	fp := sim.FlightPlanSpecifier{}
-	fp.InterimAlt.Set(0)
-	fp.InterimType.Set(sim.InterimNormal)
-
-	ep.modifyFlightPlan(ctx, trk, fp)
+	ep.modifyFlightPlan(ctx, trk, spec)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "INTERIM ALT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},

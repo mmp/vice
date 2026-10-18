@@ -34,6 +34,8 @@ func TestAltitudeFormatFieldB(t *testing.T) {
 		{"climbing", sim.FlightPlan{AssignedAltitude: 30000}, 25300, "300" + upArrow + "253"},
 		{"descending", sim.FlightPlan{AssignedAltitude: 23000}, 25300, "230" + downArrow + "253"},
 		{"interim", sim.FlightPlan{AssignedAltitude: 30000, InterimAlt: 10000}, 25300, "100T253"},
+		{"local interim over procedure", sim.FlightPlan{AssignedAltitude: 30000, InterimAlt: 18000,
+			InterimType: sim.InterimProcedure, LocalInterimAlt: 20000}, 25300, "200L253"},
 		{"above block", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 35300, "200B353"},
 		{"within block", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 22100, "200B250"},
 		{"block ceiling", sim.FlightPlan{AltitudeBlock: [2]int{20000, 25000}}, 25040, "200B250"},

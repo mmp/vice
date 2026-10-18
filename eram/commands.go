@@ -226,7 +226,8 @@ func (ep *Scope) modifyFlightPlan(ctx *scope.Context, trk *sim.Track, spec sim.F
 	if ep.DisableERAMtoRadio {
 		return
 	}
-	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set
+	// Only one of the altitudes will be set.
+	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value + spec.LocalInterimAlt.Value; alt > 0 {
 		var cmd string
 		state := ep.TrackState[trk.ADSBCallsign]
 		if alt > int(state.Track.TransponderAltitude) {

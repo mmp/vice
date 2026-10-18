@@ -125,8 +125,11 @@ type FlightPlan struct {
 	AssignedAltitude  int
 	PerceivedAssigned int // what the previous controller would put into the hard alt, even though the aircraft is descending via a STAR.
 	InterimAlt        int
-	InterimType       InterimAltType
-	AltitudeBlock     [2]int // floor and ceiling in feet; zero when none is assigned
+	InterimType       InterimAltType // InterimNormal or InterimProcedure
+	// LocalInterimAlt is an ERAM local interim altitude. It coexists with
+	// an interim or procedure altitude and is displayed in place of it.
+	LocalInterimAlt int
+	AltitudeBlock   [2]int // floor and ceiling in feet; zero when none is assigned
 	// AssignedAltitudeQualifier makes the assigned altitude a VFR or
 	// VFR-on-top altitude. AssignedAltitude is zero for VFR and VFR-on-top
 	// without an altitude.
@@ -232,15 +235,26 @@ func (fp *FlightPlan) AddPointOutHistory(tcp TCP) {
 	fp.PointOutHistory = append([]TCP{tcp}, fp.PointOutHistory...)
 }
 
+// DisplayedInterimAltitude returns the interim altitude that the ERAM data
+// block shows and its type: the local interim altitude if there is one and
+// otherwise the interim or procedure altitude, following the precedence of
+// the ERAM glossary's cleared altitude. The altitude is 0 if there is none.
+func (fp *FlightPlan) DisplayedInterimAltitude() (int, InterimAltType) {
+	if fp.LocalInterimAlt > 0 {
+		return fp.LocalInterimAlt, InterimLocal
+	}
+	return fp.InterimAlt, fp.InterimType
+}
+
 // DataBlockAltitude returns the altitude shown in the ERAM data block — the
 // "hard altitude or interim altitude" referenced in ERAM conflict alert and
-// other altitude-cap logic. Priority: InterimAlt (TODO: confirm interim really
-// wins) > AssignedAltitude > PerceivedAssigned. Returns 0 if none are set or
-// if the flight is assigned a block, VFR, or VFR-on-top altitude, which the
-// data block shows no single altitude for.
+// other altitude-cap logic. Priority: DisplayedInterimAltitude >
+// AssignedAltitude > PerceivedAssigned. Returns 0 if none are set or if the
+// flight is assigned a block, VFR, or VFR-on-top altitude, which the data
+// block shows no single altitude for.
 func (fp *FlightPlan) DataBlockAltitude() int {
-	if fp.InterimAlt > 0 {
-		return fp.InterimAlt
+	if alt, _ := fp.DisplayedInterimAltitude(); alt > 0 {
+		return alt
 	}
 	if fp.HasAltitudeBlock() || fp.AssignedAltitudeQualifier == VFRAltitude ||
 		fp.AssignedAltitudeQualifier == OTPAltitude {
@@ -250,6 +264,12 @@ func (fp *FlightPlan) DataBlockAltitude() int {
 		return fp.AssignedAltitude
 	}
 	return fp.PerceivedAssigned
+}
+
+// clearInterimAltitudes removes the interim, procedure, and local interim
+// altitudes.
+func (fp *FlightPlan) clearInterimAltitudes() {
+	fp.InterimAlt, fp.InterimType, fp.LocalInterimAlt = 0, InterimNormal, 0
 }
 
 // assignAltitude assigns the hard altitude alt in place of whatever kind of
@@ -302,9 +322,12 @@ func (fp *FlightPlan) applyERAMEntries(ee *av.ERAMEntries) {
 		fp.AssignedAltitude = ee.AssignedAltitude
 	}
 	if ee.InterimAltitude != 0 {
-		fp.InterimAlt = ee.InterimAltitude
 		// ParseInterimAltType reports the default type, InterimNormal, for "T".
-		fp.InterimType, _ = ParseInterimAltType(ee.InterimTypeIndicator())
+		if t, _ := ParseInterimAltType(ee.InterimTypeIndicator()); t == InterimLocal {
+			fp.LocalInterimAlt = ee.InterimAltitude
+		} else {
+			fp.InterimAlt, fp.InterimType = ee.InterimAltitude, t
+		}
 	}
 
 	if ee.Heading != 0 {
@@ -408,6 +431,9 @@ func (fp *FlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) {
 	}
 	if spec.InterimType.IsSet {
 		fp.InterimType = spec.InterimType.Get()
+	}
+	if spec.LocalInterimAlt.IsSet {
+		fp.LocalInterimAlt = spec.LocalInterimAlt.Get()
 	}
 
 	if spec.AircraftType.IsSet {
@@ -543,6 +569,7 @@ type FlightPlanSpecifier struct {
 	AssignedAltitude          util.Optional[int]
 	InterimAlt                util.Optional[int]
 	InterimType               util.Optional[InterimAltType]
+	LocalInterimAlt           util.Optional[int]
 	AltitudeBlock             util.Optional[[2]int]
 	AssignedAltitudeQualifier util.Optional[AltitudeQualifier]
 	ControllerReportedAlt     util.Optional[int]

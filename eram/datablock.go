@@ -578,9 +578,8 @@ func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 	}
 	formatCurrent := formatScopeAltitude(int(currentAltitude))
 	formatDisplay := formatScopeAltitude(displayAlt)
-	if fp.InterimAlt > 0 {
-		intType := getInterimAltitudeType(track)
-		return formatDisplay + intType + formatCurrent
+	if alt, t := fp.DisplayedInterimAltitude(); alt > 0 {
+		return formatDisplay + t.String() + formatCurrent
 	}
 	if fp.HasAltitudeBlock() {
 		// Inside the block, the floor and ceiling; outside it, the floor
@@ -604,13 +603,6 @@ func (ep *Scope) getAltitudeFormat(track sim.Track) string {
 		return formatDisplay + upArrow + formatCurrent
 	}
 	return "" // This shouldn't happen?
-}
-
-func getInterimAltitudeType(track sim.Track) string {
-	if track.FlightPlan.InterimAlt == -1 {
-		return ""
-	}
-	return track.FlightPlan.InterimType.String()
 }
 
 func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
