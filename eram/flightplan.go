@@ -25,14 +25,20 @@ func formatAircraftData(fp *sim.FlightPlan) string {
 	if isHeavy(fp.AircraftType) {
 		prefix += "H"
 	}
-	s := fp.AircraftType
+	s := formatTypeAndSuffix(fp)
 	if prefix != "" {
 		s = prefix + "/" + s
 	}
-	if fp.EquipmentSuffix != "" {
-		s += "/" + fp.EquipmentSuffix
-	}
 	return s
+}
+
+// formatTypeAndSuffix formats the aircraft type and the equipment suffix,
+// as in B738/L.
+func formatTypeAndSuffix(fp *sim.FlightPlan) string {
+	if fp.EquipmentSuffix == "" {
+		return fp.AircraftType
+	}
+	return fp.AircraftType + "/" + fp.EquipmentSuffix
 }
 
 // isHeavy reports whether the aircraft type is a heavy or a super, which

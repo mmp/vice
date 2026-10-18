@@ -84,3 +84,23 @@ func TestUnpairedLDBIdentifier(t *testing.T) {
 		t.Errorf("paired: got %q, want LIFEGUARD1", got)
 	}
 }
+
+// With TYPE selected, line 4 shows the aircraft type and equipment suffix.
+func TestLine4AircraftData(t *testing.T) {
+	h := makeTrackTestHarness()
+	h.ep.currentPrefs().Line4Type = Line4Type
+	trk := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 20000},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", AircraftType: "B738", OwningTCW: "TCW1"},
+	}
+	h.addTrack(trk)
+	h.frame(0)
+	for suffix, want := range map[string]string{"L": "B738/L", "": "B738"} {
+		trk.FlightPlan.EquipmentSuffix = suffix
+		fdb := h.ep.getDatablock(h.ctx, *trk, FullDatablock, colors.yellow).(*fullDatablock)
+		if got := dbText(fdb.line4[:]); got != want {
+			t.Errorf("suffix %q: got line 4 %q, want %q", suffix, got, want)
+		}
+	}
+}
