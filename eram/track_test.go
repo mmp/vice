@@ -291,17 +291,42 @@ func TestConflictAlertsSkipVirtualPairs(t *testing.T) {
 	}
 }
 
-func TestAcceptedHandoffUsesACID(t *testing.T) {
+// Once a handoff is accepted, the transferring sector keeps the FDB and its
+// Field E shows the accepting sector for 30 seconds; the accepting sector
+// sees nothing of the kind. The flight is found by its ACID, which may
+// differ from its callsign.
+func TestAcceptedHandoffIndicator(t *testing.T) {
 	h := makeTrackTestHarness()
-	h.addTrack(&sim.Track{
+	trk := &sim.Track{
 		RadarTrack: av.RadarTrack{ADSBCallsign: "N123AB", Mode: av.TransponderModeAltitude,
 			TransponderAltitude: 8000, Location: math.Point2LL{-73, 40}},
-		FlightPlan: &sim.FlightPlan{ACID: "LIFEGUARD1"},
-	})
+		FlightPlan: &sim.FlightPlan{ACID: "LIFEGUARD1", TrackingController: "2B", OwningTCW: "TCW2"},
+	}
+	h.addTrack(trk)
+	h.frame(0, sim.Event{Type: sim.AcceptedHandoffEvent, ACID: "LIFEGUARD1",
+		FromController: "1A", ToController: "2B"})
+	state := h.ep.TrackState["N123AB"]
+	if dt := h.ep.datablockType(h.ctx, *trk); dt != FullDatablock {
+		t.Errorf("transferring sector: got datablock type %v, want a full datablock", dt)
+	}
+	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{"2B": {Position: "2B"}}
+	h.ep.dbAlternate = true
+	fdb := h.ep.getDatablock(h.ctx, *trk, FullDatablock, colors.yellow).(*fullDatablock)
+	if got := dbText(fdb.fieldE[:]); got != "O-2B" {
+		t.Errorf("transferring sector: got Field E %q, want O-2B", got)
+	}
+	h.frame(31 * time.Second)
+	if h.ctx.InterpolatedSimTime.Before(state.OSectorEndTime) {
+		t.Errorf("transferring sector: accepted handoff indicator still shown after 30 seconds")
+	}
+
+	h = makeTrackTestHarness()
+	trk.FlightPlan.TrackingController, trk.FlightPlan.OwningTCW = "1A", "TCW1"
+	h.addTrack(trk)
 	h.frame(0, sim.Event{Type: sim.AcceptedHandoffEvent, ACID: "LIFEGUARD1",
 		FromController: "2B", ToController: "1A"})
-	if !h.ep.TrackState["N123AB"].EFDB {
-		t.Errorf("accepted handoff did not force a full datablock for an ACID that differs from the callsign")
+	if state := h.ep.TrackState["N123AB"]; !state.OSectorEndTime.IsZero() {
+		t.Errorf("accepting sector: shows the accepted handoff indicator")
 	}
 }
 

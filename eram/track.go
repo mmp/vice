@@ -137,8 +137,10 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 	for _, event := range ctx.Events {
 		switch event.Type {
 		case sim.AcceptedHandoffEvent:
-			thisCtrl := !ctx.UserControlsPosition(event.FromController) && ctx.UserControlsPosition(event.ToController)
-			if !thisCtrl {
+			// The transferring sector keeps its FDB, where Field E shows the
+			// accepting sector for a while (Table 5-4, O-dd).
+			outbound := ctx.UserControlsPosition(event.FromController) && !ctx.UserControlsPosition(event.ToController)
+			if !outbound {
 				continue
 			}
 			if state, ok := ep.trackStateForACID(ctx, event.ACID); ok {

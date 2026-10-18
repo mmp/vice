@@ -5,11 +5,23 @@
 package eram
 
 import (
+	"strings"
 	"testing"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
+
+// dbText returns the characters of a datablock field, with unset ones as
+// spaces and trailing ones removed.
+func dbText(f []dbChar) string {
+	var sb strings.Builder
+	for _, ch := range dbChopTrailing(f) {
+		sb.WriteRune(util.Select(ch.ch == 0, ' ', ch.ch))
+	}
+	return sb.String()
+}
 
 func TestAltitudeFormatFieldB(t *testing.T) {
 	for _, c := range []struct {
