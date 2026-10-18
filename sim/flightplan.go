@@ -965,10 +965,11 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 			return nil
 		},
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			// Either the flight plan was passed in or fp was initialized  in the validation function.
+			// The validation function made the flight plan from spec, so
+			// only its owner is left to set; applying spec to it again would
+			// draw a second beacon code from a pool.
 			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
-
-			fp.Update(spec, s)
+			fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 
 			ac.AssociateFlightPlan(fp)
 

@@ -132,3 +132,44 @@ func TestFlightPlanUpdateSetsScratchpads(t *testing.T) {
 		}
 	}
 }
+
+// Associating a new flight plan with a track applies the entry once: the
+// scratchpads stay as entered, one beacon code leaves the pool, and the
+// tracking controller's workstation owns the track.
+func TestAssociateFlightPlanAppliesSpecOnce(t *testing.T) {
+	s := NewTestSim(testLogger())
+	s.STARSComputer = makeSTARSComputer("TEST")
+	s.LocalCodePool = av.MakeLocalSquawkCodePool(av.LocalSquawkCodePoolSpecifier{})
+	s.ERAMComputer = &ERAMComputer{SquawkCodePool: av.MakeEnrouteSquawkCodePool(s.LocalCodePool)}
+	s.State.Controllers = map[ControlPosition]*av.Controller{"125.0": {Position: "125.0"}}
+	ac := MakeTestAircraft("N123AB", "13L")
+	s.Aircraft[ac.ADSBCallsign] = ac
+
+	var spec FlightPlanSpecifier
+	spec.ACID.Set("N123AB")
+	spec.Scratchpad.Set("ABC")
+	spec.SecondaryScratchpad.Set("22L")
+	spec.TypeOfFlight.Set(av.FlightTypeArrival)
+	spec.TrackingController.Set("125.0")
+	spec.SquawkAssignment.Set("+")
+	if err := s.AssociateFlightPlan("TEST", ac.ADSBCallsign, spec); err != nil {
+		t.Fatalf("AssociateFlightPlan: %v", err)
+	}
+
+	fp := ac.FlightPlan
+	if fp.Scratchpad != "ABC" || fp.SecondaryScratchpad != "22L" {
+		t.Errorf("got scratchpads %q and %q, want ABC and 22L", fp.Scratchpad, fp.SecondaryScratchpad)
+	}
+	if fp.OwningTCW != "TEST" {
+		t.Errorf("got owner %q, want TEST", fp.OwningTCW)
+	}
+	var assigned []av.Squawk
+	for sq := av.Squawk(0); sq <= 0o7777; sq++ {
+		if s.LocalCodePool.IsAssigned(sq) {
+			assigned = append(assigned, sq)
+		}
+	}
+	if len(assigned) != 1 || assigned[0] != fp.AssignedSquawk {
+		t.Errorf("codes taken from the pool: %v, want only the flight plan's %s", assigned, fp.AssignedSquawk)
+	}
+}
