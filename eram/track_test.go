@@ -634,3 +634,35 @@ func TestKeypadFiveIsNoDirection(t *testing.T) {
 		t.Errorf("9 did not offset the data block")
 	}
 }
+
+// Target symbols follow Table 2-3 at any altitude: a beacon target without a
+// flight plan is a slash, or a V for 1200, and paired or not, an identing
+// one shows the ident symbol.
+func TestTargetSymbols(t *testing.T) {
+	ep := &Scope{}
+	paired := &sim.FlightPlan{ACID: "AAL1"}
+	for _, c := range []struct {
+		name string
+		fp   *sim.FlightPlan
+		rt   av.RadarTrack
+		want string
+	}{
+		{"unpaired primary", nil, av.RadarTrack{Mode: av.TransponderModeStandby}, uncorrelatedPrimaryTarget},
+		{"unpaired beacon", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o4721,
+			TransponderAltitude: 12000}, uncorrelatedBeaconTarget},
+		{"unpaired 1200", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o1200,
+			TransponderAltitude: 4500}, code1200Target},
+		{"unpaired Mode A", nil, av.RadarTrack{Mode: av.TransponderModeOn, Squawk: 0o1200}, code1200Target},
+		{"unpaired ident", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o1200, Ident: true,
+			TransponderAltitude: 4500}, identingBeaconTarget},
+		{"paired primary", paired, av.RadarTrack{Mode: av.TransponderModeStandby}, correlatedPrimaryTarget},
+		{"paired beacon", paired, av.RadarTrack{Mode: av.TransponderModeAltitude, TransponderAltitude: 35000},
+			correlatedBeaconTarget},
+		{"paired ident", paired, av.RadarTrack{Mode: av.TransponderModeAltitude, Ident: true,
+			TransponderAltitude: 35000}, identingBeaconTarget},
+	} {
+		if got := ep.getTarget(sim.Track{FlightPlan: c.fp}, &TrackState{Track: c.rt}); got != c.want {
+			t.Errorf("%s: got %q, want %q", c.name, got, c.want)
+		}
+	}
+}

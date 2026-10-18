@@ -319,37 +319,34 @@ func (ep *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 		renderer.TextStyle{Font: font, Color: ep.targetColor(trk)})
 }
 
-// getTarget returns the target symbol for the track's radar sample; only
-// whether it is associated with a flight plan comes from the live track.
+// Target symbols, at their code points in the EramTargets font (Table 2-3).
+const (
+	uncorrelatedPrimaryTarget = "\u0000" // +
+	correlatedPrimaryTarget   = "\u0002" // X
+	uncorrelatedBeaconTarget  = "\u0003" // /
+	correlatedBeaconTarget    = "\u0004" // \
+	reducedSeparationTarget   = "\u0005" // filled circle
+	identingBeaconTarget      = "\u0006" // three bars
+	code1200Target            = "\u0008" // V
+)
+
+// getTarget returns the target symbol for the track's radar sample (Table
+// 2-3); only whether it is associated with a flight plan comes from the live
+// track.
 func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
 	rt := state.Track
-	symbol := "\u0001"
-	if trk.IsUnassociated() {
-		switch rt.Mode {
-		case av.TransponderModeStandby:
-			symbol = "\u0000"
-		case av.TransponderModeAltitude:
-			switch {
-			case rt.Ident:
-				symbol = "\u0006"
-			case rt.Squawk == 0o1200 && rt.TransponderAltitude < 1000:
-				symbol = "\u0008"
-			case rt.Squawk != 0o1200 && rt.TransponderAltitude < 1000:
-				symbol = "\u0003"
-			case rt.TransponderAltitude >= 1000:
-				symbol = "\u0007"
-			}
-		}
-	} else {
-		if rt.Mode == av.TransponderModeStandby {
-			symbol = "\u0002"
-		} else if rt.TransponderAltitude < 23000 {
-			symbol = "\u0005"
-		} else {
-			symbol = "\u0004"
-		}
+	switch {
+	case rt.Mode == av.TransponderModeStandby:
+		return util.Select(trk.IsAssociated(), correlatedPrimaryTarget, uncorrelatedPrimaryTarget)
+	case rt.Ident:
+		return identingBeaconTarget
+	case trk.IsAssociated():
+		return util.Select(rt.TransponderAltitude < 23000, reducedSeparationTarget, correlatedBeaconTarget)
+	case rt.Squawk == 0o1200:
+		return code1200Target
+	default:
+		return uncorrelatedBeaconTarget
 	}
-	return symbol
 }
 
 // targetColor returns the color of a track's target and position symbols,
