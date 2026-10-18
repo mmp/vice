@@ -16,6 +16,14 @@
   - Unpaired LDBs show the beacon code; BCAST FLID switches them to the callsign
   - Point outs are acknowledged one sector at a time in the point out pop-up
   - Fixed the values offered by the altitude, heading, and speed menus
+  - Point outs may be made to other facilities
+  - `QP A` acknowledges a single point out, or those from the sectors given, as in `QP A 2B 3C AAL123`
+  - `QP <FLID>` switches another sector's track between an FDB and an LDB
+  - `QU <FLID>` no longer toggles the route display off
+  - `QF` shows routes in the NAS form, as in `KATL./.ROA205050..ROA..HAR..KPIT`
+  - `LC` shows the change in ground speed needed to cross the fix at the given time
+  - `QS` takes a heading and speed together, as in `QS 330/81`, and Mach speeds such as `M.75`
+  - `WR` takes up to three stations
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - Fixed a few bugs with automatically generated ATPA volumes
