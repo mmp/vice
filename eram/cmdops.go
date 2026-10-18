@@ -447,7 +447,7 @@ func handleDisableAllQuicklook(ep *Scope) {
 ///////////////////////////////////////////////////////////////////////////
 // QB - beacon code view lists
 
-func handleBeaconCodeViewList(ep *Scope, codes []av.Squawk) error {
+func handleBeaconCodeViewList(ep *Scope, codes []av.Squawk) CommandStatus {
 	for _, c := range codes {
 		if idx := slices.Index(ep.AddedBeaconCodes, c); idx != -1 {
 			ep.AddedBeaconCodes = slices.Delete(ep.AddedBeaconCodes, idx, idx+1)
@@ -458,7 +458,7 @@ func handleBeaconCodeViewList(ep *Scope, codes []av.Squawk) error {
 
 	// TODO: should there be an error if any of the codes are not owned by us?
 
-	return nil
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "BC LIST UPDATE"}}
 }
 
 ///////////////////////////////////////////////////////////////////////////

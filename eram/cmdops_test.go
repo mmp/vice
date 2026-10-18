@@ -148,3 +148,18 @@ func TestFixTimeReadout(t *testing.T) {
 		}
 	}
 }
+
+// QB adds a code to the CODE view or removes it, and says so (4.2.4.2,
+// figure 4-31).
+func TestBeaconCodeViewFeedback(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	for _, want := range [][]av.Squawk{{0o1200}, nil} {
+		status, err, _ := h.ep.tryExecuteUserCommand(h.ctx, "QB 1200", nil, nil)
+		if err != nil || !slices.Equal(status.feedbackArea, []string{"ACCEPT", "BC LIST UPDATE"}) ||
+			!slices.Equal(h.ep.AddedBeaconCodes, want) {
+			t.Errorf("QB 1200: got %q and codes %v, error %v; want ACCEPT / BC LIST UPDATE and %v",
+				status.feedbackArea, h.ep.AddedBeaconCodes, err, want)
+		}
+	}
+}
