@@ -157,6 +157,36 @@ func TestTrackStateRemoval(t *testing.T) {
 	}
 }
 
+// A reduced halo reverts to the standard one when its track climbs out of
+// reduced separation airspace, and is not restored when it descends again
+// (2.9.3).
+func TestReducedHaloReverts(t *testing.T) {
+	h := makeTrackTestHarness()
+	trk := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 22000, Location: math.Point2LL{-73, 40}},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1"},
+	}
+	h.addTrack(trk)
+	h.frame(0)
+	state := h.ep.TrackState["AAL1"]
+	state.DisplayReducedJRing = true
+
+	trk.TransponderAltitude = 24000
+	h.frame(eramUpdateInterval)
+	if state.DisplayReducedJRing || !state.DisplayJRing {
+		t.Errorf("above FL230: reduced %v, standard %v; want the standard halo",
+			state.DisplayReducedJRing, state.DisplayJRing)
+	}
+
+	trk.TransponderAltitude = 22000
+	h.frame(2 * eramUpdateInterval)
+	if state.DisplayReducedJRing || !state.DisplayJRing {
+		t.Errorf("back below FL230: reduced %v, standard %v; want the standard halo",
+			state.DisplayReducedJRing, state.DisplayJRing)
+	}
+}
+
 func TestRadarSamplesSynchronized(t *testing.T) {
 	h := makeTrackTestHarness()
 	a := &sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Location: math.Point2LL{-73, 40}, TransponderAltitude: 30000}}

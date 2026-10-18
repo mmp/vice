@@ -233,9 +233,11 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 		state.HistoryTracks[idx] = historyTrack{state.Track, ep.getTarget(*trk, state)}
 		state.HistoryTrackIndex++
 
-		// check if tracks with a reduced DRI are above FL230
+		// A reduced halo reverts to the standard one when the track leaves
+		// reduced separation airspace (2.9.3).
 		if state.DisplayReducedJRing && state.Track.TransponderAltitude > 23000 {
 			state.DisplayReducedJRing = false
+			state.DisplayJRing = true
 		}
 
 		// TODO: check unreasonable C
