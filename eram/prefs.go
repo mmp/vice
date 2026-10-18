@@ -208,6 +208,11 @@ type CommonPreferences struct {
 	// line 0 and column 0 from the rest of the datablock.
 	PortalFence bool
 
+	// UnpairedLDBCallsigns shows unpaired LDBs in Enhanced format, with the
+	// ADS-B callsign rather than the beacon code (5.1.3). The BCAST FLID
+	// filter button is lit while it is off.
+	UnpairedLDBCallsigns bool
+
 	// NexradLevel encodes which NEXRAD precipitation levels are displayed,
 	// using the digits the NX LVL toolbar button shows: 0=OFF, 3=Extreme,
 	// 23=Heavy+Extreme, 123=Moderate+Heavy+Extreme.

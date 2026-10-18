@@ -497,16 +497,26 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	case LimitedDatablock:
 		db := ep.ldbArena.AllocClear()
 		state := ep.TrackState[trk.ADSBCallsign]
-		id := trk.ADSBCallsign.String()
-		if trk.IsAssociated() {
-			id = string(trk.FlightPlan.ACID)
-		}
-		dbWriteText(db.line0[:], id, color, false)
+		dbWriteText(db.line0[:], ep.limitedDatablockID(trk, state), color, false)
 		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.Track.TransponderAltitude+50)/100), color, false)
 		return db
 	default:
 		return nil // should not happen
 	}
+}
+
+// limitedDatablockID returns the first line of a track's LDB: the ACID if
+// it is paired and otherwise the beacon code. With the BCAST FLID filter
+// off, an unpaired target that isn't squawking 1200 shows its ADS-B
+// callsign instead (5.1.2, 5.1.3).
+func (ep *Scope) limitedDatablockID(trk sim.Track, state *TrackState) string {
+	if trk.IsAssociated() {
+		return string(trk.FlightPlan.ACID)
+	}
+	if ep.currentPrefs().UnpairedLDBCallsigns && state.Track.Squawk != 0o1200 {
+		return trk.ADSBCallsign.String()
+	}
+	return state.Track.Squawk.String()
 }
 
 func hsfDataExists(fp *sim.FlightPlan) bool {

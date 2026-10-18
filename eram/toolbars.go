@@ -29,12 +29,6 @@ func inertMenu(label string) toolbarButton   { return toolbarButton{label: label
 func inertToggle(label string) toolbarButton { return toolbarButton{label: label} }
 func inertIncDec(label string) toolbarButton { return toolbarButton{label: label, kind: buttonIncDec} }
 
-// inertToggleOn is an inert toggle drawn on, for a feature that is always
-// active.
-func inertToggleOn(label string) toolbarButton {
-	return toggleButtonFunc(label, func(*Scope) bool { return true }, nil)
-}
-
 func menuButton(label string, m *toolbarMenu) toolbarButton {
 	return toolbarButton{label: label, kind: buttonMenu, submenu: m}
 }
@@ -348,7 +342,13 @@ var dbFieldsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	line4Button("DEST", Line4Destination),
 	line4Button("TYPE", Line4Type),
 	incDecButtonFunc("FDB LDR", func(ep *Scope) string { return fmt.Sprint(ep.currentPrefs().FDBLdrLength) }, clickFDBLeader),
-	inertToggleOn("BCAST\nFLID"),
+	toggleButtonFunc("BCAST\nFLID",
+		func(ep *Scope) bool { return !ep.currentPrefs().UnpairedLDBCallsigns },
+		func(ep *Scope, _ toolbarClick) error {
+			ps := ep.currentPrefs()
+			ps.UnpairedLDBCallsigns = !ps.UnpairedLDBCallsigns
+			return nil
+		}),
 	toggleButton("PORTAL\nFENCE", func(ps *Preferences) *bool { return &ps.PortalFence }),
 }, {
 	inertToggle("NON-\nADS-B"),
