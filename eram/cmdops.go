@@ -67,7 +67,7 @@ func registerOpsCommands() {
 	// QP [TRACK]: Clear the post-point-out FDB lock (FDB -> LDB)
 	registerCommand(CommandModeNone, "QP A [TRACK]",
 		func(ep *Scope, ctx *scope.Context, trk *sim.Track) error {
-			return ep.acknowledgePointOut(ctx, trk)
+			return ep.acknowledgePointOut(ctx, trk, "")
 		})
 	registerCommand(CommandModeNone, "QP [SECTOR_ID] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, sector string, trk *sim.Track) error {

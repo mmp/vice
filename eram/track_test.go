@@ -5,14 +5,17 @@
 package eram
 
 import (
+	"slices"
 	"testing"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 type trackTestHarness struct {
@@ -354,12 +357,17 @@ func TestPointOutIndicator(t *testing.T) {
 	h.frame(0)
 
 	glyph := func(trk *sim.Track) rune {
-		ch, _, _ := h.ep.pointOutIndicatorGlyph(h.ctx, trk, 100)
+		ch, _, _ := h.ep.pointOutIndicatorGlyph(h.ctx, trk)
 		return ch
 	}
 
 	if g := glyph(inbound); g != 'P' {
 		t.Errorf("inbound point out: got indicator %q, want 'P'", g)
+	}
+	ps := h.ep.currentPrefs()
+	ps.Brightness.FDB, ps.Brightness.Text = 90, 40
+	if _, c, _ := h.ep.pointOutIndicatorGlyph(h.ctx, inbound); c != ps.Brightness.Text.ScaleRGB(colors.yellow) {
+		t.Errorf("inbound point out: indicator color %v is not at the TEXT brightness", c)
 	}
 	if dt := h.ep.datablockType(h.ctx, *inbound); dt != FullDatablock {
 		t.Errorf("inbound point out: got datablock type %v, want a full datablock", dt)
@@ -532,4 +540,71 @@ func TestHSFRedisplay(t *testing.T) {
 		sim.Event{Type: sim.OfferedHandoffEvent, ACID: "AAL1", FromController: "3C", ToController: "2B"})
 	check("handoff offered", false,
 		sim.Event{Type: sim.OfferedHandoffEvent, ACID: "AAL1", FromController: "2B", ToController: "1A"})
+}
+
+// The point out pop-up lists the other sectors in one row. The originator's
+// shows unacknowledged receivers yellow and boxed and acknowledged ones white,
+// which a click removes. The receiver's shows the originators cyan and boxed
+// until acknowledged, then white until removed, and its P turns white once
+// all are acknowledged.
+func TestPointOutPopupRow(t *testing.T) {
+	h := makeTrackTestHarness()
+	type seg struct {
+		text  string
+		color renderer.RGB
+		boxed bool
+	}
+	segments := func(row MenuItem) []seg {
+		return util.MapSlice(row.Segments, func(s MenuSegment) seg { return seg{s.Text, s.Color, s.Boxed} })
+	}
+	click := func(row MenuItem, text string) {
+		i := slices.IndexFunc(row.Segments, func(s MenuSegment) bool { return s.Text == text })
+		if i == -1 || row.Segments[i].OnClick == nil {
+			t.Fatalf("no clickable %s in %+v", text, segments(row))
+		}
+		row.Segments[i].OnClick(MenuClickPrimary)
+	}
+
+	outbound := &sim.Track{FlightPlan: &sim.FlightPlan{ACID: "UAL2",
+		PointOuts: []sim.PointOut{{FromController: "1A", ToController: "2B"}}}}
+	h.ep.AckedPointOuts["UAL2"] = []sim.ControlPosition{"3C"}
+	po := &pointOutPopup{acid: "UAL2", outbound: true}
+	row := po.row(h.ep, h.ctx, outbound)
+	want := []seg{{"2B", colors.yellow, true}, {"3C", colors.pointOut.white, false}}
+	if row.Color != colors.yellow || !slices.Equal(segments(row), want) {
+		t.Errorf("originator: got P %v and %+v, want yellow and %+v", row.Color, segments(row), want)
+	}
+	click(row, "3C")
+	if len(h.ep.AckedPointOuts["UAL2"]) != 0 {
+		t.Errorf("originator: acknowledged sector not removed")
+	}
+
+	inbound := &sim.Track{FlightPlan: &sim.FlightPlan{ACID: "AAL1", PointOuts: []sim.PointOut{
+		{FromController: "2B", ToController: "1A"}, {FromController: "3C", ToController: "1A"}}}}
+	po = &pointOutPopup{acid: "AAL1"}
+	row = po.row(h.ep, h.ctx, inbound)
+	want = []seg{{"2B", colors.pointOut.cyan, true}, {"3C", colors.pointOut.cyan, true}}
+	if row.Color != colors.pointOut.cyan || !slices.Equal(segments(row), want) {
+		t.Errorf("receiver: got P %v and %+v, want cyan and %+v", row.Color, segments(row), want)
+	}
+
+	// Acknowledging 2B takes it off the flight plan's pending point outs.
+	po.originators[0].acked = true
+	inbound.FlightPlan.PointOuts = inbound.FlightPlan.PointOuts[1:]
+	row = po.row(h.ep, h.ctx, inbound)
+	want = []seg{{"2B", colors.pointOut.white, false}, {"3C", colors.pointOut.cyan, true}}
+	if row.Color != colors.pointOut.cyan || !slices.Equal(segments(row), want) {
+		t.Errorf("receiver, 2B acknowledged: got P %v and %+v, want cyan and %+v", row.Color, segments(row), want)
+	}
+
+	po.originators[1].acked = true
+	inbound.FlightPlan.PointOuts = nil
+	row = po.row(h.ep, h.ctx, inbound)
+	if row.Color != colors.pointOut.white || len(row.Segments) != 2 {
+		t.Errorf("receiver, all acknowledged: got P %v and %+v, want white and two sectors", row.Color, segments(row))
+	}
+	click(row, "2B")
+	if row = po.row(h.ep, h.ctx, inbound); len(row.Segments) != 1 || row.Segments[0].Text != "3C" {
+		t.Errorf("receiver: after removing 2B got %+v", segments(row))
+	}
 }

@@ -348,13 +348,15 @@ func (ep *Scope) pointOutTrack(ctx *scope.Context, trk *sim.Track, sector string
 	}
 }
 
-func (ep *Scope) acknowledgePointOut(ctx *scope.Context, trk *sim.Track) error {
+// acknowledgePointOut acknowledges the track's point out to the user from
+// the sector from, or all of them if from is empty.
+func (ep *Scope) acknowledgePointOut(ctx *scope.Context, trk *sim.Track, from sim.ControlPosition) error {
 	if trk.IsUnassociated() {
 		return ErrIllegalACID
 	}
 
 	acid := trk.FlightPlan.ACID
-	ctx.Client.AcknowledgePointOut(acid,
+	ctx.Client.AcknowledgePointOut(acid, from,
 		func(err error) {
 			if err == nil {
 				if trk, _ := ctx.Client.State.GetTrackByACID(acid); trk != nil {

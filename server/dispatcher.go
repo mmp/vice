@@ -421,6 +421,9 @@ type PointOutArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
 	ToPosition      sim.ControlPosition
+	// FromPosition is the originator of the point out to acknowledge; all
+	// are acknowledged if it is empty.
+	FromPosition sim.ControlPosition
 }
 
 type ForceQLArgs struct {
@@ -473,7 +476,7 @@ func (sd *dispatcher) AcknowledgePointOut(po *PointOutArgs, update *SimStateUpda
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	return sd.runSimCommand(po.ControllerToken, update, AcknowledgePointOutRPC, po, func(c *controllerContext) error {
-		return c.sim.AcknowledgePointOut(c.tcw, po.ACID)
+		return c.sim.AcknowledgePointOut(c.tcw, po.ACID, po.FromPosition)
 	})
 }
 

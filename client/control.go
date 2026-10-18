@@ -229,11 +229,14 @@ func (c *ControlClient) PointOut(acid sim.ACID, to sim.ControlPosition, callback
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) AcknowledgePointOut(acid sim.ACID, callback func(error)) {
+// AcknowledgePointOut acknowledges the flight's point out to the user from
+// the position from, or all of its point outs to the user if from is empty.
+func (c *ControlClient) AcknowledgePointOut(acid sim.ACID, from sim.ControlPosition, callback func(error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.AcknowledgePointOutRPC, &server.PointOutArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
+		FromPosition:    from,
 	}, &update, nil), &update, callback))
 }
 

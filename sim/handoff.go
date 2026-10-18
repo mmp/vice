@@ -544,18 +544,22 @@ func (s *Sim) findInboundPointOut(fp *FlightPlan, tcw TCW) (PointOut, bool) {
 	return PointOut{}, false
 }
 
-func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
-	toTCW := func(po PointOut) bool { return s.State.TCWControlsPosition(tcw, po.ToController) }
+// AcknowledgePointOut acknowledges the flight's point outs to tcw from the
+// position from, or all of its point outs to tcw if from is empty.
+func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID, from ControlPosition) error {
+	acknowledged := func(po PointOut) bool {
+		return s.State.TCWControlsPosition(tcw, po.ToController) && (from == "" || po.FromController == from)
+	}
 
 	if _, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *FlightPlan, ac *Aircraft) error {
-			if !slices.ContainsFunc(fp.PointOuts, toTCW) {
+			if !slices.ContainsFunc(fp.PointOuts, acknowledged) {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
 		func(tcw TCW, fp *FlightPlan, ac *Aircraft) speech.CommandIntent {
-			for _, po := range util.FilterSlice(fp.PointOuts, toTCW) {
+			for _, po := range util.FilterSlice(fp.PointOuts, acknowledged) {
 				// As with auto accepts, "to" and "from" are swapped in
 				// the event since they are w.r.t. the original point out.
 				s.eventStream.Post(Event{
@@ -567,7 +571,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 				fp.AddPointOutHistory(po.ToController)
 			}
 
-			fp.PointOuts = slices.DeleteFunc(fp.PointOuts, toTCW)
+			fp.PointOuts = slices.DeleteFunc(fp.PointOuts, acknowledged)
 
 			return nil
 		}); err != nil {

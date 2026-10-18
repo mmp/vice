@@ -53,7 +53,7 @@ func registerSlewCommands() {
 				if len(ctx.InboundPointOuts(fp)) > 0 {
 					// 6.12.2 Accept intrafacility pointout (implied)
 					// 6.12.8 Accept interfacility pointout (implied)
-					ctx.Client.AcknowledgePointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
+					ctx.Client.AcknowledgePointOut(fp.ACID, "", func(err error) { sp.displayError(err, ctx, "") })
 					return CommandStatus{}
 				} else if len(ctx.OutboundPointOuts(fp)) > 0 {
 					// 6.12.4 Recall intrafacility pointout

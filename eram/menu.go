@@ -132,8 +132,9 @@ type MenuItem struct {
 	Centered bool
 	OnClick  func(clickType MenuClickType) bool // return true = close menu
 
-	// If non-empty, drawn after Label inside an outlined box (Color is used for both the text and the box).
-	BoxedSuffix string
+	// Segments are drawn after Label, left to right, and take their own
+	// clicks.
+	Segments []MenuSegment
 
 	// If SubRows is non-nil, this row renders as a scrollable list instead of a single text row.
 	SubRows     []ScrollItem
@@ -152,6 +153,32 @@ type MenuItem struct {
 	// If Input is non-nil, this row renders as a text input area. Keyboard
 	// handling is the popup's responsibility (see keyboardPopup).
 	Input *MenuInput
+}
+
+// MenuSegment is a separately clickable run of text in a menu row, drawn in
+// an outlined box of its color if Boxed.
+type MenuSegment struct {
+	Text    string
+	Color   renderer.RGB
+	Boxed   bool
+	OnClick func(clickType MenuClickType) bool // return true = close menu
+}
+
+// Spacing of menu row segments: the gap before each one and the padding
+// inside its box.
+const (
+	menuSegmentGap = 4
+	menuSegmentPad = 2
+)
+
+// menuRowWidth returns the width that a left-justified static row needs for
+// its label and segments.
+func menuRowWidth(font *renderer.Font, item MenuItem) float32 {
+	w := 4 + font.LayoutBounds(item.Label, 0).Width()
+	for _, seg := range item.Segments {
+		w += menuSegmentGap + font.InkBounds(seg.Text, 0).Width() + 2*menuSegmentPad
+	}
+	return w + 4
 }
 
 // MenuCell is one pick area of a multi-cell row.
@@ -541,18 +568,28 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 				textY := rp0[1] - itemH/2 + th/2
 				td.AddText(item.Label, [2]float32{rp0[0] + 4, textY}, style)
 
-				if item.BoxedSuffix != "" {
-					sext := font.InkBounds(item.BoxedSuffix, 0)
-					boxPad := float32(2)
-					boxX0 := rp0[0] + 4 + labelW + 4
-					boxX1 := boxX0 + sext.Width() + 2*boxPad
-					boxY0 := rp0[1] - itemH + 2
-					boxY1 := rp0[1] - 2
-					ld.AddLineLoop(bBorder.ScaleRGB(item.Color), [][2]float32{
-						{boxX0, boxY0}, {boxX1, boxY0}, {boxX1, boxY1}, {boxX0, boxY1},
-					})
-					td.AddText(item.BoxedSuffix,
-						[2]float32{boxX0 + boxPad - sext.P0[0], textY}, style)
+				clicked := ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)
+				clickType := util.Select(ep.mouseTertiaryClicked(mouse), MenuClickTertiary, MenuClickPrimary)
+				x := rp0[0] + 4 + labelW
+				for _, seg := range item.Segments {
+					sext := font.InkBounds(seg.Text, 0)
+					x0 := x + menuSegmentGap
+					x1 := x0 + sext.Width() + 2*menuSegmentPad
+					segColor := bText.ScaleRGB(seg.Color)
+					if seg.Boxed {
+						ld.AddLineLoop(segColor, [][2]float32{
+							{x0, rp0[1] - itemH + 2}, {x1, rp0[1] - itemH + 2}, {x1, rp0[1] - 2}, {x0, rp0[1] - 2},
+						})
+					}
+					td.AddText(seg.Text, [2]float32{x0 + menuSegmentPad - sext.P0[0], textY},
+						renderer.TextStyle{Font: font, Color: segColor})
+
+					segExt := math.Extent2D{P0: [2]float32{x0, rp0[1] - itemH}, P1: [2]float32{x1, rp0[1]}}
+					if clicked && seg.OnClick != nil && segExt.Inside(mouse.Pos) && seg.OnClick(clickType) {
+						ep.popup = nil
+						result.Dismissed = true
+					}
+					x = x1
 				}
 			}
 

@@ -27,15 +27,17 @@ func (ep *Scope) pointOutIndicatorActive(ctx *scope.Context, trk *sim.Track) boo
 // pointOutIndicatorGlyph returns the indicator character (P or A) and color for the line-0
 // indicator, or zero rune if nothing should be drawn. Yellow "P" is shown if any inbound or
 // outbound point out is pending; white "A" if all that remain are the user's acknowledged ones.
-func (ep *Scope) pointOutIndicatorGlyph(ctx *scope.Context, trk *sim.Track, fdbBrightness scope.Brightness) (rune, renderer.RGB, bool) {
+// The TEXT brightness control sets the indicator's brightness (5.1.5.11.2).
+func (ep *Scope) pointOutIndicatorGlyph(ctx *scope.Context, trk *sim.Track) (rune, renderer.RGB, bool) {
 	if trk.FlightPlan == nil {
 		return 0, renderer.RGB{}, false
 	}
 	fp := trk.FlightPlan
+	bright := ep.currentPrefs().Brightness.Text
 	if len(ctx.InboundPointOuts(fp)) > 0 || len(ctx.OutboundPointOuts(fp)) > 0 {
-		return 'P', fdbBrightness.ScaleRGB(colors.yellow), true
+		return 'P', bright.ScaleRGB(colors.yellow), true
 	} else if len(ep.AckedPointOuts[fp.ACID]) > 0 {
-		return 'A', fdbBrightness.ScaleRGB(colors.pointOut.white), true
+		return 'A', bright.ScaleRGB(colors.pointOut.white), true
 	}
 	return 0, renderer.RGB{}, false
 }
@@ -68,66 +70,25 @@ type pointOutPopup struct {
 	acid     sim.ACID
 	outbound bool
 	origin   [2]float32
+	// originators lists the sectors in a receiver's pop-up; those the user
+	// acknowledges stay listed until removed.
+	originators []pointOutOriginator
 }
 
-// draw renders the menu. The receiver view lists each originator (cyan boxed)
-// and a click acknowledges every inbound p/o at once. The originator view
-// lists each receiver, yellow-boxed for not-yet-acked and white-plain for
-// already-acked; click on an acked row dismisses it locally.
+type pointOutOriginator struct {
+	pos   sim.ControlPosition
+	acked bool
+}
+
+// draw renders the menu, whose one row row returns.
 func (po *pointOutPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	acid := po.acid
-
-	label := func(p sim.ControlPosition) string {
-		if ctrl := ctx.GetResolvedController(p); ctrl != nil {
-			return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
-		}
-		return string(p)
-	}
-
-	trk, ok := ctx.Client.State.GetTrackByACID(acid)
+	trk, ok := ctx.Client.State.GetTrackByACID(po.acid)
 	if !ok {
 		ep.popup = nil
 		return
 	}
-
-	var rows []MenuItem
-	if po.outbound {
-		pending := ctx.OutboundPointOuts(trk.FlightPlan)
-		for _, p := range pending {
-			rows = append(rows, MenuItem{
-				Label:       "P",
-				BoxedSuffix: label(p.ToController),
-				Color:       colors.yellow, // todo: scale by some brightness?
-				// Originator can't ack their own p/o; the click is a no-op but still closes the
-				// menu.
-				OnClick: func(_ MenuClickType) bool { return false },
-			})
-		}
-		for _, receiver := range ep.AckedPointOuts[acid] {
-			rows = append(rows, MenuItem{
-				Label:       "A",
-				BoxedSuffix: label(receiver),
-				Color:       colors.pointOut.white, // TODO brightness???
-				OnClick: func(_ MenuClickType) bool {
-					ep.removeAckedPointOut(acid, receiver)
-					return len(pending) == 0 && len(ep.AckedPointOuts[acid]) == 0
-				},
-			})
-		}
-	} else {
-		for _, p := range ctx.InboundPointOuts(trk.FlightPlan) {
-			rows = append(rows, MenuItem{
-				Label:       "P",
-				BoxedSuffix: label(p.FromController),
-				Color:       colors.pointOut.cyan,
-				OnClick: func(_ MenuClickType) bool {
-					ep.acknowledgePointOut(ctx, trk)
-					return true
-				},
-			})
-		}
-	}
-	if len(rows) == 0 {
+	row := po.row(ep, ctx, trk)
+	if len(row.Segments) == 0 {
 		ep.popup = nil
 		return
 	}
@@ -135,21 +96,95 @@ func (po *pointOutPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 	ps := ep.currentPrefs()
 	rowFont := ep.ERAMFont(ps.FDBSize)
 	titleFont := ep.ERAMFont(2)
-	titleW := titleFont.LayoutBounds(string(acid), 0).Width()
+	titleW := titleFont.LayoutBounds(string(po.acid), 0).Width()
 	xW := titleFont.LayoutBounds("X", 0).Width()
 	// Left pad (4) + title + gap (xW) + X button (xW + 2*xPad) + right pad (2).
-	width := titleW + 2*xW + 12
+	width := max(titleW+2*xW+12, menuRowWidth(rowFont, row))
 
 	cfg := MenuConfig{
-		Title:              string(acid),
+		Title:              string(po.acid),
 		TitleLeftJustified: true,
 		Width:              width,
 		Font:               rowFont,
 		TitleFont:          titleFont,
-		Rows:               rows,
+		Rows:               []MenuItem{row},
 	}
 
 	ep.DrawERAMMenu(ctx, transforms, cb, po.origin, cfg)
+}
+
+// row returns the pop-up's row: a P followed by the other sectors of the
+// point outs. In the originator's view, receivers that have not acknowledged
+// are yellow and boxed and those that have are white; a click on one of
+// those removes it (5.1.5.11.1). In the receiver's view, originators are
+// cyan and boxed; a click acknowledges one, turning it white, and another
+// click on it removes it. The P turns white once all are acknowledged
+// (5.1.5.11.2).
+func (po *pointOutPopup) row(ep *Scope, ctx *scope.Context, trk *sim.Track) MenuItem {
+	label := func(p sim.ControlPosition) string {
+		if ctrl := ctx.GetResolvedController(p); ctrl != nil {
+			return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
+		}
+		return string(p)
+	}
+
+	row := MenuItem{Label: "P"}
+	if po.outbound {
+		row.Color = colors.yellow
+		for _, p := range ctx.OutboundPointOuts(trk.FlightPlan) {
+			row.Segments = append(row.Segments, MenuSegment{Text: label(p.ToController), Color: colors.yellow, Boxed: true})
+		}
+		for _, receiver := range ep.AckedPointOuts[po.acid] {
+			row.Segments = append(row.Segments, MenuSegment{
+				Text:  label(receiver),
+				Color: colors.pointOut.white,
+				OnClick: func(_ MenuClickType) bool {
+					ep.removeAckedPointOut(po.acid, receiver)
+					return false
+				},
+			})
+		}
+		return row
+	}
+
+	po.updateOriginators(ctx.InboundPointOuts(trk.FlightPlan))
+	row.Color = colors.pointOut.white
+	for i, o := range po.originators {
+		seg := MenuSegment{Text: label(o.pos), Color: colors.pointOut.white}
+		if o.acked {
+			seg.OnClick = func(_ MenuClickType) bool {
+				po.originators = slices.Delete(po.originators, i, i+1)
+				return false
+			}
+		} else {
+			row.Color = colors.pointOut.cyan
+			seg.Color, seg.Boxed = colors.pointOut.cyan, true
+			seg.OnClick = func(_ MenuClickType) bool {
+				po.originators[i].acked = true
+				ep.acknowledgePointOut(ctx, trk, o.pos)
+				return false
+			}
+		}
+		row.Segments = append(row.Segments, seg)
+	}
+	return row
+}
+
+// updateOriginators brings a receiver's list of originating sectors up to
+// date with the pending point outs: new ones join it, and unacknowledged ones
+// that are no longer pending, having been recalled, leave it.
+func (po *pointOutPopup) updateOriginators(pending []sim.PointOut) {
+	isPending := func(p sim.ControlPosition) bool {
+		return slices.ContainsFunc(pending, func(o sim.PointOut) bool { return o.FromController == p })
+	}
+	po.originators = slices.DeleteFunc(po.originators, func(o pointOutOriginator) bool {
+		return !o.acked && !isPending(o.pos)
+	})
+	for _, p := range pending {
+		if !slices.ContainsFunc(po.originators, func(o pointOutOriginator) bool { return o.pos == p.FromController }) {
+			po.originators = append(po.originators, pointOutOriginator{pos: p.FromController})
+		}
+	}
 }
 
 // removeAckedPointOut dismisses receiver's acknowledgment of the user's point

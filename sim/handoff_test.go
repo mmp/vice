@@ -439,6 +439,45 @@ func TestVirtualControllerPointOuts(t *testing.T) {
 	}
 }
 
+// A receiver acknowledges point outs from multiple sectors one at a time, or
+// all at once.
+func TestAcknowledgePointOutFromSector(t *testing.T) {
+	s := NewTestSim(testLogger())
+	ac := MakeTestAircraft("AAL123", "13L")
+	ac.AssociateFlightPlan(&FlightPlan{ACID: "AAL123", TrackingController: "14", PointOuts: []PointOut{
+		{FromController: "14", ToController: "125.0"},
+		{FromController: "15", ToController: "125.0"},
+	}})
+	s.Aircraft[ac.ADSBCallsign] = ac
+	fp := ac.FlightPlan
+
+	sub := s.eventStream.Subscribe()
+	defer sub.Unsubscribe()
+
+	if err := s.AcknowledgePointOut("TEST", "AAL123", "14"); err != nil {
+		t.Fatalf("acknowledge 14: %v", err)
+	}
+	if len(fp.PointOuts) != 1 || fp.PointOuts[0].FromController != "15" {
+		t.Errorf("after acknowledging 14: got point outs %+v, want only the one from 15", fp.PointOuts)
+	}
+	if !slices.ContainsFunc(sub.Get(), func(e Event) bool {
+		return e.Type == AcknowledgedPointOutEvent && e.FromController == "125.0" && e.ToController == "14"
+	}) {
+		t.Errorf("no acknowledgment of the point out from 14 was posted")
+	}
+	if err := s.AcknowledgePointOut("TEST", "AAL123", "14"); err != av.ErrNotPointedOutToMe {
+		t.Errorf("acknowledge 14 again: got %v, want %v", err, av.ErrNotPointedOutToMe)
+	}
+
+	fp.PointOuts = append(fp.PointOuts, PointOut{FromController: "16", ToController: "125.0"})
+	if err := s.AcknowledgePointOut("TEST", "AAL123", ""); err != nil {
+		t.Fatalf("acknowledge all: %v", err)
+	}
+	if len(fp.PointOuts) != 0 {
+		t.Errorf("after acknowledging all: got point outs %+v", fp.PointOuts)
+	}
+}
+
 // flightPlanDirectOrigin is where ONE is in makeFlightPlanDirectSim: an FRD
 // needs the magnetic variation where its fix is, which vice only has for
 // North America.
