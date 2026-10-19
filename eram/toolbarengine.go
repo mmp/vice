@@ -897,6 +897,12 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 		quad(pb.tab, color, hovered && tb.hover.tab)
 	}
 	quad(pb.face, ep.toolbarButtonColor(pb), hovered && !tb.hover.tab)
+	if _, picked := tb.selected[pb.button.id]; picked && toolbarTearoffHandle(pb) {
+		// A torn-off button picked for deletion is covered by an X (2.5.1.2).
+		f, x := pb.face, ps.Brightness.Text.ScaleRGB(colors.toolbar.deletionMark)
+		ld.AddLine(f.P0, f.P1, x)
+		ld.AddLine([2]float32{f.P0[0], f.P1[1]}, [2]float32{f.P1[0], f.P0[1]}, x)
+	}
 
 	style := renderer.TextStyle{Font: ep.ERAMToolbarFont(), Color: ps.Brightness.Text.ScaleRGB(colors.toolbar.text)}
 	drawToolbarText(td, pb.button.text(ep), pb.face, style)
@@ -908,14 +914,9 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 
 // toolbarButtonColor returns a button's color, which its kind and whether
 // it is active determine. A button is also drawn active while it is
-// pressed, and a torn-off button picked for deletion is drawn in the
-// DELETE TEAROFF button's active color.
+// pressed.
 func (ep *Scope) toolbarButtonColor(pb *placedButton) renderer.RGB {
 	tb := &ep.toolbar
-	if _, selected := tb.selected[pb.button.id]; selected && toolbarTearoffHandle(pb) {
-		return colors.toolbar.commandActive
-	}
-
 	b := pb.button
 	active := toolbarMenuOpen(pb) || (b.active != nil && b.active(ep)) ||
 		(tb.press.inside && tb.press.instance == pb.instance.id && tb.press.button == b.id)

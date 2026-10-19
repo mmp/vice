@@ -63,6 +63,7 @@ type (
 		commandButton, commandActive  renderer.RGB
 		tearoffBar, tearoffBarTorn    renderer.RGB
 		text, outline, hoveredOutline renderer.RGB
+		deletionMark                  renderer.RGB
 	}
 	badgePalette struct {
 		fill, border renderer.RGB
@@ -167,6 +168,7 @@ var colors = struct {
 		text:              renderer.RGB{R: .953, G: .953, B: .953},
 		outline:           renderer.RGB{R: .38, G: .38, B: .38},
 		hoveredOutline:    renderer.RGB{R: .953, G: .953, B: .953},
+		deletionMark:      renderer.RGB{R: .953, G: .953, B: .953},
 	},
 	badge: badgePalette{
 		fill:   renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0},
