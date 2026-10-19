@@ -623,6 +623,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 
 	// handleCapture
 	// updateAudio
+	ep.drawBacklight(ctx, cb)
 	ep.drawPauseOverlay(ctx, cb)
 }
 
@@ -1047,6 +1048,26 @@ func (ep *Scope) drawPausedAircraftState(ctx *scope.Context, transforms scope.Tr
 	}
 	pw := transforms.WindowFromLatLongP(ep.TrackState[trk.ADSBCallsign].Track.Location)
 	scope.DrawPausedAircraftState(ctx, trk, pw, style, transforms, cb)
+}
+
+// drawBacklight dims everything drawn according to BRIGHT's BCKLGHT, the
+// display's master brightness (table 3-3).
+func (ep *Scope) drawBacklight(ctx *scope.Context, cb *renderer.CommandBuffer) {
+	b := ep.currentPrefs().Brightness.Backlight
+	if b >= 100 {
+		return
+	}
+	tb := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(tb)
+	w, h := ctx.DrawExtent.Width(), ctx.DrawExtent.Height()
+	tb.AddQuad([2]float32{0, 0}, [2]float32{w, 0}, [2]float32{w, h}, [2]float32{0, h})
+
+	transforms := scope.GetTransformations(ctx.DrawExtent, 0, [2]float32{}, 0, 0)
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.Blend()
+	cb.SetRGBA(renderer.RGBA{A: 1 - float32(b)/100})
+	tb.GenerateCommands(cb)
+	cb.DisableBlend()
 }
 
 func (ep *Scope) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {

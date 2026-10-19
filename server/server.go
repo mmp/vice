@@ -117,7 +117,8 @@ import (
 // 106: ERAM alarm volume in preference sets
 // 107: ERAM Range View settings in preference sets
 // 108: ERAM saved preference sets are a list of up to 20 rather than ten slots
-const ViceSerializeVersion = 108
+// 109: ERAM BCKLGHT dims the display, and its default is now 100
+const ViceSerializeVersion = 109
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

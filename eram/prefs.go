@@ -330,7 +330,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.Brightness.SLDB = 5
 	prefs.Brightness.WX = 50
 	prefs.Brightness.NEXRAD = 50
-	prefs.Brightness.Backlight = 90
+	prefs.Brightness.Backlight = 100
 	prefs.Brightness.Button = 80
 	prefs.Brightness.Border = 56
 	prefs.Brightness.Toolbar = 40
@@ -557,6 +557,11 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 107 {
 		p.RangeView = makeDefaultPreferences().RangeView
+	}
+	if from < 109 {
+		// BCKLGHT now dims the display; it was 90 by default when it did
+		// nothing.
+		p.Brightness.Backlight = makeDefaultPreferences().Brightness.Backlight
 	}
 }
 
