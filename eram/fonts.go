@@ -30,8 +30,10 @@ func (ep *Scope) ERAMFont(size int) *renderer.Font {
 	return ep.systemFont[size-1]
 }
 
+// ERAMToolbarFont returns the font of the toolbars' buttons and panels, in
+// the size that FONT's TOOLBAR sets: 1 or 2.
 func (ep *Scope) ERAMToolbarFont() *renderer.Font {
-	return ep.systemFont[0]
+	return ep.systemFont[ep.currentPrefs().ToolbarSize-1]
 }
 
 func (ep *Scope) ERAMInputFont() *renderer.Font {
