@@ -100,7 +100,7 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 	menuButton("BRIGHT", &brightMenu),
 	menuButton("FONT", &fontMenu),
 	menuButton("DB\nFIELDS", &dbFieldsMenu),
-	incDecButtonFunc("VECTOR", func(ep *Scope) string { return fmt.Sprint(ep.VelocityTime) }, clickVelocityVector),
+	vectorButton(),
 }, {
 	menuButton("VIEWS", &viewsMenu),
 	menuButton("CHECK\nLISTS", &checkListsMenu),
@@ -120,6 +120,14 @@ func rangeLabel(ep *Scope) string {
 		return fmt.Sprintf("RANGE\n%d", int(r))
 	}
 	return fmt.Sprintf("RANGE\n%.2f", r)
+}
+
+// vectorButton makes the VECTOR button. There is only one of it: its
+// tear-off bar moves it rather than tearing off a copy (3.9).
+func vectorButton() toolbarButton {
+	b := incDecButtonFunc("VECTOR", func(ep *Scope) string { return fmt.Sprint(ep.VelocityTime) }, clickVelocityVector)
+	b.moveOnly = true
+	return b
 }
 
 // clickVelocityVector sets the velocity vector length, which doubles from

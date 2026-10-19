@@ -408,17 +408,16 @@ func clickToolbarAt(ep *Scope, ctx *scope.Context, p [2]float32, button imgui.Mo
 	ctx.Mouse = nil
 }
 
-// tornOffFace returns the face of the torn-off button with the given text.
-func tornOffFace(t *testing.T, ep *Scope, text string) math.Extent2D {
+// tornOffButton returns the torn-off button with the given text.
+func tornOffButton(t *testing.T, ep *Scope, text string) placedButton {
 	t.Helper()
-	for i := range ep.toolbar.layout.tornOff {
-		pi := &ep.toolbar.layout.tornOff[i]
-		if pi.levels[0].buttons[0].button.text(ep) == text {
-			return pi.levels[0].buttons[0].face
+	for _, pi := range ep.toolbar.layout.tornOff {
+		if pb := pi.levels[0].buttons[0]; pb.button.text(ep) == text {
+			return pb
 		}
 	}
 	t.Fatalf("no torn-off button %q", text)
-	return math.Extent2D{}
+	return placedButton{}
 }
 
 // DELETE TEAROFF deletes the torn-off button that is middle-clicked along
@@ -446,13 +445,62 @@ func TestDeleteTearoff(t *testing.T) {
 	}
 
 	clickToolbarAt(ep, ctx, deleteTearoff, platform.MouseButtonPrimary)
-	clickToolbarAt(ep, ctx, tornOffFace(t, ep, "FONT").Center(), platform.MouseButtonTertiary)
+	clickToolbarAt(ep, ctx, tornOffButton(t, ep, "FONT").face.Center(), platform.MouseButtonTertiary)
 	check("middle click on FONT", false, bright, cursor)
 
 	clickToolbarAt(ep, ctx, deleteTearoff, platform.MouseButtonPrimary)
-	clickToolbarAt(ep, ctx, tornOffFace(t, ep, "BRIGHT").Center(), platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, tornOffButton(t, ep, "BRIGHT").face.Center(), platform.MouseButtonPrimary)
 	clickToolbarAt(ep, ctx, [2]float32{800, 200}, platform.MouseButtonTertiary)
 	check("middle click away from the torn-off buttons", true, bright, cursor)
-	clickToolbarAt(ep, ctx, tornOffFace(t, ep, "CURSOR").Center(), platform.MouseButtonTertiary)
+	clickToolbarAt(ep, ctx, tornOffButton(t, ep, "CURSOR").face.Center(), platform.MouseButtonTertiary)
 	check("BRIGHT picked and middle click on CURSOR", false)
+}
+
+// captureMousePlatform stands in for the platform, which captures the
+// mouse while a button is torn off or moved.
+type captureMousePlatform struct{ platform.Platform }
+
+func (captureMousePlatform) StartCaptureMouse(math.Extent2D) {}
+func (captureMousePlatform) EndCaptureMouse()                {}
+
+// VECTOR's tear-off bar moves the one VECTOR button out of the main
+// toolbar rather than tearing off a copy, and dropping it on the main
+// toolbar puts it back (2.5.1, 3.9). DELETE TEAROFF doesn't delete it.
+func TestVectorMoves(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ctx.Platform = captureMousePlatform{}
+	ps := ep.currentPrefs()
+	vector := vectorButton()
+	text := vector.text(ep)
+	id := toolbarButtonID(t, ep, text)
+	inMain := func() bool {
+		return slices.ContainsFunc(ep.toolbar.layout.main.levels[0].buttons,
+			func(pb placedButton) bool { return pb.button.id == id })
+	}
+	ep.handleToolbarInput(ctx)
+	tab := ep.toolbar.layout.main.levels[0].find(id).tab
+
+	clickToolbarAt(ep, ctx, tab.Center(), platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, [2]float32{300, 400}, platform.MouseButtonPrimary)
+	ep.handleToolbarInput(ctx)
+	if _, ok := ps.TornOffButtons[id]; !ok || inMain() {
+		t.Fatalf("VECTOR wasn't moved out of the main toolbar: torn off %v, in the toolbar %v", ps.TornOffButtons, inMain())
+	}
+	moved := tornOffButton(t, ep, text)
+
+	clickToolbarAt(ep, ctx, placedButtonFace(t, ep, ep.toolbar.layout.main, "DELETE\nTEAROFF").Center(),
+		platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, moved.face.Center(), platform.MouseButtonTertiary)
+	if _, ok := ps.TornOffButtons[id]; !ok {
+		t.Error("DELETE TEAROFF deleted VECTOR")
+	}
+	ep.endDeleteTearoffs()
+
+	clickToolbarAt(ep, ctx, moved.tab.Center(), platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, [2]float32{1500, 860}, platform.MouseButtonPrimary)
+	ep.handleToolbarInput(ctx)
+	if _, ok := ps.TornOffButtons[id]; ok || !inMain() {
+		t.Errorf("VECTOR dropped on the main toolbar wasn't put back: torn off %v, in the toolbar %v",
+			ps.TornOffButtons, inMain())
+	}
 }
