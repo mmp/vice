@@ -556,3 +556,12 @@ func TestTearoffBars(t *testing.T) {
 			bright["BCKLGHT"], bright["BUTTON"], bright["BCKGRD"])
 	}
 }
+
+// The LINE 4 brightness keeps its sign at zero (figure 3-17).
+func TestLine4BrightnessLabel(t *testing.T) {
+	ep, _ := makeToolbarTestScope()
+	ep.currentPrefs().Brightness.Line4 = 0
+	toolbarButtonID(t, ep, "LINE 4\n-0")
+	ep.currentPrefs().Brightness.Line4 = 6
+	toolbarButtonID(t, ep, "LINE 4\n-6")
+}

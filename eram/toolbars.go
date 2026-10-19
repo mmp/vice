@@ -205,7 +205,7 @@ func brightness(name string, v func(*Preferences) *scope.Brightness) toolbarButt
 }
 
 // brightnessRange is brightness with the value's range and how it is shown
-// given: the brightnesses relative to another show "=" at zero. The
+// given: most of the brightnesses relative to another show "=" at zero. The
 // brightness buttons have no tear-off bars.
 func brightnessRange(name string, v func(*Preferences) *scope.Brightness, min, max, step int,
 	show func(scope.Brightness) string) toolbarButton {
@@ -226,8 +226,10 @@ func showSigned(b scope.Brightness) string {
 	return util.Select(b != 0, fmt.Sprint(int(b)), "=")
 }
 
+// showNegated shows a brightness that is only ever below another's; it
+// keeps its sign at zero, as LINE 4 does in figure 3-17.
 func showNegated(b scope.Brightness) string {
-	return util.Select(b > 0, fmt.Sprint(-int(b)), "=")
+	return fmt.Sprintf("-%d", int(b))
 }
 
 var brightMenu = toolbarMenu{rows: [][]toolbarButton{{
