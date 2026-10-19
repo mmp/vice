@@ -7944,7 +7944,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li><b>CRR</b> (VIEWS menu): the continuous range readout groups created with <code>LF</code>, with each
                 aircraft's distance to its group's location.</li>
               <li><b>EMERG CHECK</b> and <b>POS CHECK</b> (CHECK LISTS menu): the emergency and position relief check
-                lists. Clicking an item highlights it.</li>
+                lists, each in its own view. Clicking an item highlights it.</li>
             </ul>
             <p>To move one of these views, click its title and then click where it should go; <code>Esc</code> cancels
               the move. The <code>-</code> button in the title bar hides the view, and the <code>M</code> button opens
@@ -8070,8 +8070,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               the other RAISE buttons are not implemented.</p>
             <p>Most toolbar buttons can be torn off. Left- or middle-click the tear-off bar at a button's left edge,
               then click where the torn-off button should go; a torn-off button is moved the same way. Torn-off
-              buttons remain visible when their menu is closed, and their positions are saved. To delete torn-off
-              buttons, click DELETE TEAROFF, left-click the buttons to delete, then middle-click to delete them.</p>
+              buttons remain visible when their menu is closed, and their positions are saved. To delete a torn-off
+              button, click DELETE TEAROFF and then middle-click it. To delete several, left-click all but the last,
+              which are marked with an X, and then middle-click the last.</p>
+            <p>There is only one VECTOR button: its tear-off bar moves it out of the master toolbar rather than tearing
+              off a copy. Moving it back onto the master toolbar returns it to its place there.</p>
 
             <h3 id="eram-master-toolbar">Master Toolbar</h3>
 
@@ -8151,12 +8154,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li><strong>RADAR FILTER</strong>
                 <ul>
                   <li><strong>HISTORY</strong> — implemented: sets the number of target history points (0&ndash;5)</li>
-                  <li><strong>ALL LDBS, PR LDB, UNP LDB, ALL PRIM, MODE MODE-C, SELECT BEACON, PERM ECHO, STROBE
+                  <li><strong>ALL LDBS, PR LDB, UNP LDB, ALL PRIM, NON MODE-C, SELECT BEACON, PERM ECHO, STROBE
                       LINES</strong> — not implemented</li>
                 </ul>
               </li>
-              <li><strong>PREFSET</strong> — not implemented; preference sets are saved and loaded in the ERAM
-                settings (see <a href="#eram-settings">Settings</a>)</li>
+              <li><strong>PREFSET</strong> — shows your initials; its menu is not implemented, and preference sets
+                are saved and loaded in the ERAM settings (see <a href="#eram-settings">Settings</a>)</li>
               <li><strong>DELETE TEAROFF</strong> — implemented</li>
             </ul>
           </section>
