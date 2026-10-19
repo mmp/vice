@@ -235,21 +235,22 @@ type fullDatablock struct {
 	fieldE [8]dbChar
 	hsf    [1]dbChar // drawn right after Field E
 	line4  [16]dbChar
+	// line4Font is line 4's font, which FONT's LINE 4 may make smaller
+	// than the others' (3.7).
+	line4Font *renderer.Font
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 
-	lines := []dbLine{
-		dbMakeLine(dbChopTrailing(db.line0[:])),
-		dbMakeLine(dbChopTrailing(db.line1[:])),
-		dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:])),
-		dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]), dbChopTrailing(db.hsf[:])),
-		dbMakeLine(dbChopTrailing(db.line4[:])),
-	}
+	var lines [5]dbLine
+	fullDatablockLines(&db, &lines)
 	pt[1] += float32(font.Size)
-	dbDrawLines(lines, td, pt, font, sb, brightness, dir, halfSeconds)
+	dbDrawLines(lines[:dbLine4], td, pt, font, sb, brightness, dir, halfSeconds)
+	pt[1] -= dbLine4 * dbLinePitch(font)
+	sb.Reset()
+	dbDrawLine(lines[dbLine4], td, pt, db.line4Font, sb, brightness, halfSeconds)
 }
 
 func (db *fullDatablock) ownershipSymbolCol() (int, bool) {
@@ -277,14 +278,14 @@ func (db *fullDatablock) mainWidth(font *renderer.Font) float32 {
 	var lines [5]dbLine
 	fullDatablockLines(db, &lines)
 	cols := 0
-	for i := range lines {
+	for i := range lines[:dbLine4] {
 		n := lines[i].Len()
 		if i == dbVCILine || i == dbCIDLine {
 			n -= dbLeadFieldChars
 		}
 		cols = max(cols, n)
 	}
-	return dbTextWidth(cols, font)
+	return max(dbTextWidth(cols, font), dbTextWidth(lines[dbLine4].Len(), db.line4Font))
 }
 
 // dbTextWidth returns the width of the ink of a line of n characters.
@@ -387,6 +388,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	switch dbType {
 	case FullDatablock:
 		db := ep.fdbArena.AllocClear()
+		db.line4Font = ep.fdbLine4Font()
 		// Line 0: point-out indicator.
 		if ch, glyphColor, ok := ep.pointOutIndicatorGlyph(ctx, &trk); ok {
 			dbWriteText(db.line0[2:], string(ch), glyphColor, false)
@@ -653,7 +655,7 @@ func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]data
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
 			if ps.PortalFence && db.portalFenceVisible() {
-				drawPortalFence(ld, makeDatablockLayout(end, font), fenceColor)
+				drawPortalFence(ld, makeDatablockLayout(end, font, ep.fdbLine4Font()), fenceColor)
 			}
 		}
 	}

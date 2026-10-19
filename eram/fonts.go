@@ -13,11 +13,15 @@ import (
 	"github.com/mmp/vice/scope"
 )
 
+// maxERAMFontSize is the largest size ERAMFont has; larger ones are drawn in
+// it.
+const maxERAMFontSize = 4
+
 func (ep *Scope) ERAMFont(size int) *renderer.Font {
 	// Clamp before indexing: a view whose Font preference was never
 	// initialized passes 0, which would otherwise index off the front of
 	// systemFont.
-	size = math.Clamp(size, 1, 4)
+	size = math.Clamp(size, 1, maxERAMFontSize)
 	if runtime.GOOS == "darwin" {
 		if size == 1 {
 			return ep.systemFont[10] // Smaller size for macOS
@@ -28,6 +32,13 @@ func (ep *Scope) ERAMFont(size int) *renderer.Font {
 		size = 3 // Missing one font, so skip it for now
 	}
 	return ep.systemFont[size-1]
+}
+
+// fdbLine4Font returns the font of FDB line 4, which FONT's LINE 4 makes up
+// to two sizes smaller than the FDB font.
+func (ep *Scope) fdbLine4Font() *renderer.Font {
+	ps := ep.currentPrefs()
+	return ep.ERAMFont(min(ps.FDBSize, maxERAMFontSize) + ps.Line4Size)
 }
 
 // ERAMToolbarFont returns the font of the toolbars' buttons and panels, in

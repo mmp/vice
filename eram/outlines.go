@@ -38,11 +38,14 @@ type DatablockFieldSpec struct {
 }
 
 // DatablockLayout captures the layout metrics for a rendered datablock.
+// Line 4's characters may be smaller than the others'.
 type DatablockLayout struct {
-	Anchor     [2]float32
-	CharWidth  float32
-	LineHeight float32
-	LinePitch  float32
+	Anchor         [2]float32
+	CharWidth      float32
+	LineHeight     float32
+	LinePitch      float32
+	Line4CharWidth float32
+	Line4Height    float32
 }
 
 func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
@@ -140,20 +143,24 @@ func (ep *Scope) drawOutlineRectangle(ld *renderer.ColoredLinesDrawBuilder, exte
 
 // LineExtent returns the outline for a full line of the specified width.
 func (l DatablockLayout) LineExtent(line, cols int) math.Extent2D {
-	top := l.lineTop(line)
-	x0 := l.Anchor[0] + l.lineShift(line, 0)
-	x1 := x0 + l.CharWidth*float32(cols)
-	y0 := top - l.LineHeight
-	return math.Extent2D{P0: [2]float32{x0, y0}, P1: [2]float32{x1, top}}
+	return l.FieldExtent(DatablockFieldSpec{Line: line, Cols: cols})
 }
 
 // FieldExtent returns the outline for the specified field.
 func (l DatablockLayout) FieldExtent(spec DatablockFieldSpec) math.Extent2D {
+	cw, h := l.cellSize(spec.Line)
 	top := l.lineTop(spec.Line)
-	x0 := l.Anchor[0] + l.lineShift(spec.Line, spec.Col) + l.CharWidth*float32(spec.Col)
-	x1 := x0 + l.CharWidth*float32(spec.Cols)
-	y0 := top - l.LineHeight
-	return math.Extent2D{P0: [2]float32{x0, y0}, P1: [2]float32{x1, top}}
+	x0 := l.Anchor[0] + l.lineShift(spec.Line, spec.Col) + cw*float32(spec.Col)
+	x1 := x0 + cw*float32(spec.Cols)
+	return math.Extent2D{P0: [2]float32{x0, top - h}, P1: [2]float32{x1, top}}
+}
+
+// cellSize returns the width and height of a line's character cells.
+func (l DatablockLayout) cellSize(line int) (float32, float32) {
+	if line == dbLine4 {
+		return l.Line4CharWidth, l.Line4Height
+	}
+	return l.CharWidth, l.LineHeight
 }
 
 func (l DatablockLayout) lineTop(line int) float32 {
@@ -177,13 +184,15 @@ func (l DatablockLayout) lineShift(line, col int) float32 {
 }
 
 // makeDatablockLayout returns the layout metrics of a datablock drawn with
-// the given font at the given anchor.
-func makeDatablockLayout(anchor [2]float32, font *renderer.Font) DatablockLayout {
+// the given fonts at the given anchor.
+func makeDatablockLayout(anchor [2]float32, font, line4Font *renderer.Font) DatablockLayout {
 	return DatablockLayout{
-		Anchor:     [2]float32{anchor[0], anchor[1] + dbOutlineYOffset},
-		CharWidth:  dbCharWidth(font),
-		LineHeight: float32(font.Size),
-		LinePitch:  dbLinePitch(font),
+		Anchor:         [2]float32{anchor[0], anchor[1] + dbOutlineYOffset},
+		CharWidth:      dbCharWidth(font),
+		LineHeight:     float32(font.Size),
+		LinePitch:      dbLinePitch(font),
+		Line4CharWidth: dbCharWidth(line4Font),
+		Line4Height:    float32(line4Font.Size),
 	}
 }
 
@@ -203,6 +212,7 @@ const (
 	dbCallsignLine   = 1
 	dbVCILine        = 2
 	dbCIDLine        = 3
+	dbLine4          = 4
 	dbLeadFieldChars = 2
 
 	dbLeadFieldGap    = 1.0 / 3.0
@@ -288,7 +298,7 @@ func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 		return DatablockOutlines{}, false
 	}
 
-	layout := makeDatablockLayout(anchor, font)
+	layout := makeDatablockLayout(anchor, font, fdb.line4Font)
 
 	outlines := DatablockOutlines{
 		Layout: layout,
