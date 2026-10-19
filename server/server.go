@@ -113,7 +113,8 @@ import (
 // 102: reworked ATPA volume generation / matching; 2.5nm reduced separation is per runway
 // 103: CIDAllocator tracks CIDs with per-set bit vectors
 // 104: ERAM FONT and CHECK LISTS menus reordered, changing toolbar button ids
-const ViceSerializeVersion = 104
+// 105: ERAM EMERG CHECK and POS CHECK each have a view of their own, with their own settings
+const ViceSerializeVersion = 105
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

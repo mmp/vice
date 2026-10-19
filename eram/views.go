@@ -678,16 +678,22 @@ func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 ///////////////////////////////////////////////////////////////////////////
 // CHECK LISTS (POS CHECK / EMERG CHECK)
 
-// Preferences.CheckList.Visible enum. Only one of POS CHECK / EMERG CHECK can
-// be visible at a time; the enum makes the mutual exclusion structural.
-const (
-	checkListHidden = iota
-	checkListPos
-	checkListEmerg
-)
+// checkList is one of the check lists, each of which is displayed in a
+// view of its own (4.3.6, 4.3.7).
+type checkList struct {
+	viewID    string
+	title     string
+	menuTitle string
+	items     []string
+	prefs     func(*Preferences) *CheckListPreferences
+	toggled   func(*Scope) []bool
+}
 
-var checkListItems = map[int][]string{
-	checkListPos: {
+var posCheckList = checkList{
+	viewID:    "pos-check",
+	title:     "POS CHECK",
+	menuTitle: "POS CHK",
+	items: []string{
 		"AIRSPACE STATUS",
 		"NOTAMS",
 		"AIRPORT CONDITIONS (RWY, ATIS, ETC)",
@@ -698,7 +704,15 @@ var checkListItems = map[int][]string{
 		"CLEARANCES ISSUED OR PENDING",
 		"TRAFFIC",
 	},
-	checkListEmerg: {
+	prefs:   func(ps *Preferences) *CheckListPreferences { return &ps.PosCheck },
+	toggled: func(ep *Scope) []bool { return ep.posCheckToggled },
+}
+
+var emergCheckList = checkList{
+	viewID:    "emerg-check",
+	title:     "EMERG CK",
+	menuTitle: "EMRG CHK",
+	items: []string{
 		"AIRCRAFT ID AND TYPE",
 		"NATURE OF EMERGENCY",
 		"PILOT'S DESIRES",
@@ -709,33 +723,25 @@ var checkListItems = map[int][]string{
 		"NUMBER OF PEOPLE ON BOARD",
 		"HAZMAT ON BOARD",
 	},
+	prefs:   func(ps *Preferences) *CheckListPreferences { return &ps.EmergCheck },
+	toggled: func(ep *Scope) []bool { return ep.emergCheckToggled },
 }
 
-// drawCheckListView renders the active check list (POS CHECK or EMERG CHECK).
-// Rows are click-toggleable; the toggled state lives on Scope and persists
-// across switches between the two lists.
-func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-	if ps.CheckList.Visible == checkListHidden {
+// drawCheckListView renders a check list's view if it is displayed. Rows
+// are click-toggleable; the toggled state lives on Scope and persists while
+// the view is hidden.
+func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer,
+	cl *checkList) {
+	cps := cl.prefs(ep.currentPrefs())
+	if !cps.Visible {
 		return
 	}
 
-	var title, id string
-	var toggled []bool
-	switch ps.CheckList.Visible {
-	case checkListPos:
-		title, id, toggled = "POS CHECK", "pos-check", ep.posCheckToggled
-	case checkListEmerg:
-		title, id, toggled = "EMERG CK", "emerg-check", ep.emergCheckToggled
-	default:
-		return
-	}
-
-	items := checkListItems[ps.CheckList.Visible]
-	textColor := ps.CheckList.Text.ScaleRGB(colors.view.text)
-	rows := make([]Row, len(items))
+	toggled := cl.toggled(ep)
+	textColor := cps.Text.ScaleRGB(colors.view.text)
+	rows := make([]Row, len(cl.items))
 	maxLen := 0
-	for i, s := range items {
+	for i, s := range cl.items {
 		rows[i] = Row{Body: s, Color: textColor, Toggled: toggled[i]}
 		if len(s) > maxLen {
 			maxLen = len(s)
@@ -743,23 +749,23 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.CheckList.Position,
-		ID:         id,
-		Title:      title,
-		Opaque:     ps.CheckList.Opaque,
-		ShowBorder: ps.CheckList.ShowBorder,
-		Brightness: ps.CheckList.Text,
-		OnMenu: ep.makeViewMenu(ctx, id, 6,
-			func(pb popupBase) popup { return &checkListPopup{popupBase: pb} }),
-		OnMinimize: func() { ps.CheckList.Visible = checkListHidden },
+		Position:   &cps.Position,
+		ID:         cl.viewID,
+		Title:      cl.title,
+		Opaque:     cps.Opaque,
+		ShowBorder: cps.ShowBorder,
+		Brightness: cps.Text,
+		OnMenu: ep.makeViewMenu(ctx, cl.viewID, 6,
+			func(pb popupBase) popup { return &checkListPopup{popupBase: pb, list: cl} }),
+		OnMinimize: func() { cps.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:           rows,
-			FontIndex:      ps.CheckList.Font,
+			FontIndex:      cps.Font,
 			ContentChars:   maxLen,
 			MaxCols:        1,
-			VisibleRows:    visibleLines(ps.CheckList.Lines, len(rows)),
+			VisibleRows:    visibleLines(cps.Lines, len(rows)),
 			RowSpacing:     RowSpacingCompact,
-			HighlightColor: ps.CheckList.Highlight.ScaleRGB(colors.popup.backgroundGrey),
+			HighlightColor: cps.Highlight.ScaleRGB(colors.popup.backgroundGrey),
 			OnRowToggle:    func(idx int) { toggled[idx] = !toggled[idx] },
 		},
 	})
@@ -767,22 +773,23 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 
 type checkListPopup struct {
 	popupBase
+	list *checkList
 }
 
 func (c *checkListPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
+	cps := c.list.prefs(ep.currentPrefs())
 
 	rows := []MenuItem{
-		ep.makeBooleanMenuItem(&ps.CheckList.Opaque, "O", "T"),
-		ep.makeToggleMenuItem(&ps.CheckList.ShowBorder, "BORDER"),
-		makeLinesMenuItem(ep, &ps.CheckList.Lines, 3),
-		makeIntMenuItem(ep, &ps.CheckList.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.CheckList.Highlight, "HIGHLIGHT", 0, 100, 2),
-		makeIntMenuItem(ep, &ps.CheckList.Text, "TEXT", 0, 100, 2),
+		ep.makeBooleanMenuItem(&cps.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&cps.ShowBorder, "BORDER"),
+		makeLinesMenuItem(ep, &cps.Lines, 3),
+		makeIntMenuItem(ep, &cps.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &cps.Highlight, "HIGHLIGHT", 0, 100, 2),
+		makeIntMenuItem(ep, &cps.Text, "TEXT", 0, 100, 2),
 	}
 
 	cfg := MenuConfig{
-		Title: util.Select(ps.CheckList.Visible == checkListEmerg, "EMRG CHK", "POS CHK"),
+		Title: c.list.menuTitle,
 		Width: viewPopupWidth,
 		Font:  ep.ERAMFont(2),
 		Rows:  rows,

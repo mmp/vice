@@ -138,18 +138,31 @@ type Preferences struct {
 		SortManual bool
 	}
 
-	// Check list views (POS CHECK / EMERG CHECK). Only one is visible at a
-	// time; Visible is an enum (checkListHidden/checkListPos/checkListEmerg)
-	// rather than two booleans so the mutual exclusion is structural.
-	CheckList struct {
-		Visible    int
-		Position   [2]float32
-		Opaque     bool
-		ShowBorder bool
-		Lines      int
-		Font       int
-		Highlight  scope.Brightness
-		Text       scope.Brightness
+	EmergCheck CheckListPreferences
+	PosCheck   CheckListPreferences
+}
+
+// CheckListPreferences are the settings of a check list view; each check
+// list is displayed in a view of its own with its own settings (3.11.1).
+type CheckListPreferences struct {
+	Visible    bool
+	Position   [2]float32
+	Opaque     bool
+	ShowBorder bool
+	Lines      int
+	Font       int
+	Highlight  scope.Brightness
+	Text       scope.Brightness
+}
+
+func makeDefaultCheckListPreferences() CheckListPreferences {
+	return CheckListPreferences{
+		Position:   [2]float32{100, 900},
+		ShowBorder: true,
+		Lines:      linesAll,
+		Font:       2,
+		Highlight:  40,
+		Text:       76,
 	}
 }
 
@@ -396,14 +409,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.BeaconCodeView.Font = 2
 	prefs.BeaconCodeView.Bright = 100
 
-	prefs.CheckList.Visible = checkListHidden
-	prefs.CheckList.Position = [2]float32{100, 900}
-	prefs.CheckList.Opaque = false
-	prefs.CheckList.ShowBorder = true
-	prefs.CheckList.Lines = linesAll
-	prefs.CheckList.Font = 2
-	prefs.CheckList.Highlight = 40
-	prefs.CheckList.Text = 76
+	prefs.EmergCheck = makeDefaultCheckListPreferences()
+	prefs.PosCheck = makeDefaultCheckListPreferences()
 
 	prefs.MCA.Position = [2]float32{2, 80}
 	prefs.MCA.PALines = 6
@@ -479,27 +486,17 @@ func (p *Preferences) Upgrade(from, to int) {
 		}
 	}
 	if from < 76 {
-		// BeaconCodeView and CheckList were each added without bumping the
-		// serialize version, so saves from 74/75 can have these structs zero-
-		// valued — and VisibleRows=0 then divides by zero in applyRowSource.
-		// Backfill defaults only when Lines is the uninitialized zero so we
-		// don't stomp on anyone who configured these views before the bump.
+		// BeaconCodeView was added without bumping the serialize version,
+		// so saves from 74/75 can have it zero-valued — and VisibleRows=0
+		// then divides by zero in applyRowSource. Backfill defaults only
+		// when Lines is the uninitialized zero so we don't stomp on anyone
+		// who configured the view before the bump.
 		if p.BeaconCodeView.Lines == 0 {
 			p.BeaconCodeView.ShowBorder = true
 			p.BeaconCodeView.Lines = 11
 			p.BeaconCodeView.Col = 5
 			p.BeaconCodeView.Font = 2
 			p.BeaconCodeView.Bright = 100
-		}
-		if p.CheckList.Lines == 0 {
-			p.CheckList.Visible = checkListHidden
-			p.CheckList.Position = [2]float32{100, 900}
-			p.CheckList.Opaque = false
-			p.CheckList.ShowBorder = true
-			p.CheckList.Lines = 17
-			p.CheckList.Font = 2
-			p.CheckList.Highlight = 40
-			p.CheckList.Text = 76
 		}
 	}
 	if from < 79 {
@@ -534,6 +531,11 @@ func (p *Preferences) Upgrade(from, to int) {
 		// Reordering the FONT and CHECK LISTS menus changed the ids of their
 		// buttons.
 		p.TornOffButtons = make(map[string][2]float32)
+	}
+	if from < 105 {
+		// The two check lists' shared view became a view for each.
+		p.EmergCheck = makeDefaultCheckListPreferences()
+		p.PosCheck = makeDefaultCheckListPreferences()
 	}
 }
 

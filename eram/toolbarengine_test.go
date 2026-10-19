@@ -340,20 +340,30 @@ func TestSubmenuReplacesColumns(t *testing.T) {
 	}
 }
 
-// Switching check lists closes the popup menu of the list being replaced.
-func TestCheckListSwitchClosesPopup(t *testing.T) {
+// The check lists are separate views (4.3.6, 4.3.7): displaying one
+// leaves the other and its popup menu displayed, and hiding one closes its
+// popup menu.
+func TestCheckListsAreSeparateViews(t *testing.T) {
 	ep, _ := makeToolbarTestScope()
-	ep.popup = &checkListPopup{popupBase: popupBase{viewID: "pos-check"}}
-	ep.currentPrefs().CheckList.Visible = checkListPos
-	emerg := ep.toolbarButtonByID(toolbarButtonID(t, ep, "EMERG\nCHECK"))
-	if err := emerg.click(ep, toolbarClick{}); err != nil {
-		t.Fatal(err)
+	ps := ep.currentPrefs()
+	click := func(text string) {
+		t.Helper()
+		if err := ep.toolbarButtonByID(toolbarButtonID(t, ep, text)).click(ep, toolbarClick{}); err != nil {
+			t.Fatal(err)
+		}
 	}
-	if ep.popup != nil {
-		t.Error("the POS CHECK popup is still displayed")
+
+	click("POS\nCHECK")
+	ep.popup = &checkListPopup{popupBase: popupBase{viewID: posCheckList.viewID}, list: &posCheckList}
+	click("EMERG\nCHECK")
+	if !ps.PosCheck.Visible || !ps.EmergCheck.Visible || ep.popup == nil {
+		t.Errorf("after EMERG CHECK: POS CHECK displayed %v, EMERG CHECK displayed %v, POS CHECK popup %v; want all",
+			ps.PosCheck.Visible, ps.EmergCheck.Visible, ep.popup != nil)
 	}
-	if v := ep.currentPrefs().CheckList.Visible; v != checkListEmerg {
-		t.Errorf("check list %v displayed, want EMERG CHECK", v)
+	click("POS\nCHECK")
+	if ps.PosCheck.Visible || !ps.EmergCheck.Visible || ep.popup != nil {
+		t.Errorf("after POS CHECK again: POS CHECK displayed %v, EMERG CHECK displayed %v, POS CHECK popup %v; want only EMERG CHECK",
+			ps.PosCheck.Visible, ps.EmergCheck.Visible, ep.popup != nil)
 	}
 }
 

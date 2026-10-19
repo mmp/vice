@@ -307,8 +307,8 @@ type Scope struct {
 	wxScroll         ViewScrollState
 	wxSelect         ViewSelectionState
 
-	// Check list view toggle state (session). Each slice is parallel to
-	// checkListItems[…], with true = row is highlighted ("checked off").
+	// Check list view toggle state (session). Each slice is parallel to its
+	// check list's items, with true = row is highlighted ("checked off").
 	posCheckToggled   []bool
 	emergCheckToggled []bool
 
@@ -359,10 +359,10 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
 	}
 	if ep.posCheckToggled == nil {
-		ep.posCheckToggled = make([]bool, len(checkListItems[checkListPos]))
+		ep.posCheckToggled = make([]bool, len(posCheckList.items))
 	}
 	if ep.emergCheckToggled == nil {
-		ep.emergCheckToggled = make([]bool, len(checkListItems[checkListEmerg]))
+		ep.emergCheckToggled = make([]bool, len(emergCheckList.items))
 	}
 	// ViewSelectionState's zero-value Selected is 0 (i.e. "row 0 selected").
 	// Initialize to -1 so no row is selected at startup.
@@ -561,7 +561,8 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawWXView(ctx, transforms, cb)
 	ep.drawBeaconCodeView(ctx, transforms, cb)
 	ep.drawTimeView(ctx, transforms, cb)
-	ep.drawCheckListView(ctx, transforms, cb)
+	ep.drawCheckListView(ctx, transforms, cb, &emergCheckList)
+	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
 	ep.drawCRRView(ctx, tracks, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
@@ -729,17 +730,6 @@ func (ep *Scope) ensurePrefSetForSim(ss client.SimState) {
 		ep.prefSet.Current.WX.Lines = def.WX.Lines
 		ep.prefSet.Current.WX.Font = def.WX.Font
 		ep.prefSet.Current.WX.Bright = def.WX.Bright
-	}
-
-	// Fill in CheckList defaults if this preference set was created before
-	// the check list view existed (Position zero is the marker).
-	if ep.prefSet.Current.CheckList.Position == ([2]float32{}) {
-		ep.prefSet.Current.CheckList.Position = def.CheckList.Position
-		ep.prefSet.Current.CheckList.ShowBorder = def.CheckList.ShowBorder
-		ep.prefSet.Current.CheckList.Lines = def.CheckList.Lines
-		ep.prefSet.Current.CheckList.Font = def.CheckList.Font
-		ep.prefSet.Current.CheckList.Highlight = def.CheckList.Highlight
-		ep.prefSet.Current.CheckList.Text = def.CheckList.Text
 	}
 	// Preference sets that predate the NX LVL field unmarshal NexradLevel as 0;
 	// 0 is reserved as the "uninitialized" sentinel and gets the default here.

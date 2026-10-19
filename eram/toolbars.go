@@ -422,24 +422,9 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	viewButton("WX\nREPORT", "wx", func(ps *Preferences) *bool { return &ps.WX.Visible }),
 }}}
 
-// checkListButton makes a toggle for one of the check lists. Only one is
-// shown at a time, in a view the two share, so either list's popup menu
-// closes.
-func checkListButton(label string, list int) toolbarButton {
-	return toggleButtonFunc(label,
-		func(ep *Scope) bool { return ep.currentPrefs().CheckList.Visible == list },
-		func(ep *Scope, _ toolbarClick) error {
-			ep.closeViewPopup("pos-check")
-			ep.closeViewPopup("emerg-check")
-			ps := ep.currentPrefs()
-			ps.CheckList.Visible = util.Select(ps.CheckList.Visible == list, checkListHidden, list)
-			return nil
-		})
-}
-
 var checkListsMenu = toolbarMenu{rows: [][]toolbarButton{{
-	checkListButton("EMERG\nCHECK", checkListEmerg),
-	checkListButton("POS\nCHECK", checkListPos),
+	viewButton("EMERG\nCHECK", "emerg-check", func(ps *Preferences) *bool { return &ps.EmergCheck.Visible }),
+	viewButton("POS\nCHECK", "pos-check", func(ps *Preferences) *bool { return &ps.PosCheck.Visible }),
 }}}
 
 ///////////////////////////////////////////////////////////////////////////
