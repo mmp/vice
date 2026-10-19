@@ -116,7 +116,8 @@ import (
 // 105: ERAM EMERG CHECK and POS CHECK each have a view of their own, with their own settings
 // 106: ERAM alarm volume in preference sets
 // 107: ERAM Range View settings in preference sets
-const ViceSerializeVersion = 107
+// 108: ERAM saved preference sets are a list of up to 20 rather than ten slots
+const ViceSerializeVersion = 108
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

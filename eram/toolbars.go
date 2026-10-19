@@ -96,12 +96,6 @@ func withTearoffBar(b toolbarButton) toolbarButton {
 	return b
 }
 
-// readoutButton makes a button that only shows a value; it is drawn as a
-// toggle.
-func readoutButton(labelFunc func(ep *Scope) string) toolbarButton {
-	return toolbarButton{labelFunc: labelFunc}
-}
-
 // panelButton makes a toggle that displays a panel beside itself.
 func panelButton(labelFunc func(ep *Scope) string, panel toolbarPanel) toolbarButton {
 	return toolbarButton{labelFunc: labelFunc, submenu: &toolbarMenu{panel: panel}}
@@ -127,8 +121,8 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 	menuButtonFunc(func(ep *Scope) string { return ep.videoMapLabel }, &geoMapMenu),
 	panelButton(altitudeLimitsButtonLabel, altitudeLimitsPanel{}),
 	menuButton("RADAR\nFILTER", &radarFilterMenu),
-	// PREFSET only shows the initials of the controller signed in (3.16).
-	readoutButton(func(ep *Scope) string { return "PREFSET\n" + ep.initials }),
+	// PREFSET shows the initials of the controller signed in (3.16).
+	panelButton(func(ep *Scope) string { return "PREFSET\n" + ep.initials }, prefSetPanel{}),
 	commandButton("DELETE\nTEAROFF",
 		func(ep *Scope) bool { return ep.toolbar.deleting },
 		func(ep *Scope, _ toolbarClick) error { ep.toggleDeleteTearoffs(); return nil }),
@@ -693,7 +687,7 @@ func (altitudeLimitsPanel) draw(ep *Scope, ctx *scope.Context, cb *renderer.Comm
 // click handles a click in the sub-entry box: on a text box to start
 // entering a new filter, or on a label to split the combined filter into
 // separate ones or to rejoin them.
-func (altitudeLimitsPanel) click(ep *Scope, anchor, p [2]float32) {
+func (altitudeLimitsPanel) click(ep *Scope, _ *scope.Context, anchor, p [2]float32) {
 	ps := ep.currentPrefs()
 	for _, row := range ep.altitudeLimitsLayoutAt(anchor).rows {
 		if row.valueExtent.Inside(p) {
@@ -719,7 +713,7 @@ func (altitudeLimitsPanel) click(ep *Scope, anchor, p [2]float32) {
 
 // clickOutside finishes an entry under way; the click itself is left alone
 // so that it still does what it otherwise would.
-func (altitudeLimitsPanel) clickOutside(ep *Scope) {
+func (altitudeLimitsPanel) clickOutside(ep *Scope, _ toolbarHit) {
 	ep.finishAltitudeLimitsEntry()
 }
 

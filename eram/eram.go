@@ -64,6 +64,7 @@ type (
 		tearoffBar, tearoffBarTorn    renderer.RGB
 		text, outline, hoveredOutline renderer.RGB
 		deletionMark                  renderer.RGB
+		prefSetCommand                renderer.RGB // SAVE and DELETE in the PREFSET menu
 	}
 	badgePalette struct {
 		fill, border renderer.RGB
@@ -169,6 +170,7 @@ var colors = struct {
 		outline:           renderer.RGB{R: .38, G: .38, B: .38},
 		hoveredOutline:    renderer.RGB{R: .953, G: .953, B: .953},
 		deletionMark:      renderer.RGB{R: .953, G: .953, B: .953},
+		prefSetCommand:    renderer.RGB{R: .173, G: .467, B: .475},
 	},
 	badge: badgePalette{
 		fill:   renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0},
@@ -198,7 +200,6 @@ var colors = struct {
 type Scope struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet `json:"PreferenceSets,omitempty"`
 	prefSet            *PrefrenceSet
-	tempSavedNames     [numSavedPreferenceSets]string
 	TrackState         map[av.ADSBCallsign]*TrackState `json:"TrackState,omitempty"`
 
 	DisableERAMtoRadio bool
@@ -243,11 +244,12 @@ type Scope struct {
 
 	toolbarVisible bool
 
-	toolbar    toolbarState
-	holdRepeat pressRepeat // paces held toolbar buttons and popup menu rows
-	alarm      alarm
-	altLimits  altitudeLimitsEntry
-	rangeView  rangeViewState
+	toolbar     toolbarState
+	holdRepeat  pressRepeat // paces held toolbar buttons and popup menu rows
+	alarm       alarm
+	altLimits   altitudeLimitsEntry
+	rangeView   rangeViewState
+	prefSetMenu prefSetMenuState
 	// viewExtents collects the views drawn in the frame, for the toolbar
 	// engine to yield to the next frame.
 	viewExtents []math.Extent2D
@@ -623,6 +625,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.feedbackArea.Clear()
 	ep.popup = nil
 	ep.rangeView = rangeViewState{}
+	ep.prefSetMenu = prefSetMenuState{}
 
 	// Everything about the previous sim's aircraft, sectors, and airports
 	// goes with it. Track state in particular must not carry over: a
@@ -860,9 +863,9 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 		}
 	}
 	// Likewise a clicked altitude limits text box takes them; the sub-entry
-	// box merely being displayed does not. So does a Range View field
-	// clicked for entry.
-	if ep.handleAltitudeLimitsKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) {
+	// box merely being displayed does not. So do a Range View field clicked
+	// for entry and the PREFSET menu taking a name to save under.
+	if ep.handleAltitudeLimitsKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) || ep.handlePrefSetKeyboard(ctx) {
 		return
 	}
 	ps := ep.currentPrefs()

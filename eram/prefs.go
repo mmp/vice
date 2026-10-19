@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 type Preferences struct {
@@ -176,14 +177,11 @@ func makeDefaultCheckListPreferences() CheckListPreferences {
 	}
 }
 
-const numSavedPreferenceSets = 10
-
 type PrefrenceSet struct {
-	Current  Preferences
-	Selected *int
-	// Saved preference slots (10). Some slots may be nil. Each stored
-	// Preferences includes ARTCC and VideoMapGroup so we can filter rows.
-	Saved [numSavedPreferenceSets]*Preferences
+	Current Preferences
+	// Saved holds the named sets saved from the PREFSET menu, in the order
+	// they were first saved; each one's Name is its name.
+	Saved []Preferences
 }
 
 type CommonPreferences struct {
@@ -448,10 +446,12 @@ func makeDefaultPreferences() *Preferences {
 
 func (p *PrefrenceSet) Upgrade(from, to int) {
 	p.Current.Upgrade(from, to)
-	for _, sp := range p.Saved {
-		if sp != nil {
-			sp.Upgrade(from, to)
-		}
+	if from < 108 {
+		// Saved was ten slots, the empty ones null.
+		p.Saved = util.FilterSlice(p.Saved, func(s Preferences) bool { return s.Name != "" })
+	}
+	for i := range p.Saved {
+		p.Saved[i].Upgrade(from, to)
 	}
 }
 

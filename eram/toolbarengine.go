@@ -97,10 +97,10 @@ const toolbarMenuRows = 2 // displayed at a time
 type toolbarPanel interface {
 	extent(ep *Scope, anchor [2]float32) math.Extent2D
 	draw(ep *Scope, ctx *scope.Context, cb *renderer.CommandBuffer, anchor [2]float32)
-	click(ep *Scope, anchor, p [2]float32)
+	click(ep *Scope, ctx *scope.Context, anchor, p [2]float32)
 	// clickOutside is called for a click anywhere else while the panel is
-	// displayed.
-	clickOutside(ep *Scope)
+	// displayed, with what is under it.
+	clickOutside(ep *Scope, hit toolbarHit)
 }
 
 // adjust lowers or raises *v by step, as a click on an increment/decrement
@@ -615,12 +615,12 @@ func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
 	}
 
 	if panel := tb.hover.panel; panel != nil {
-		panel.panel.click(ep, panel.anchor, mouse.Pos)
+		panel.panel.click(ep, ctx, panel.anchor, mouse.Pos)
 		ep.consumeMouseClick(mouse)
 		return
 	}
 	for _, panel := range tb.layout.panels() {
-		panel.panel.clickOutside(ep)
+		panel.panel.clickOutside(ep, tb.hover)
 	}
 	if tb.deleting && ep.clickWhileDeletingTearoffs(ctx, tb.hover, c) {
 		ep.consumeMouseClick(mouse)
@@ -687,6 +687,24 @@ func (ep *Scope) toggleToolbarMenu(pb *placedButton) {
 	if i := slices.Index(tb.tornOff, inst); i >= 0 {
 		tb.tornOff = append(slices.Delete(tb.tornOff, i, i+1), inst)
 	}
+}
+
+// closeToolbarPanel closes the menus that display the given panel.
+func (ep *Scope) closeToolbarPanel(p toolbarPanel) {
+	for _, inst := range ep.toolbar.instances() {
+		for _, id := range inst.open {
+			if b := ep.toolbarButtonByID(id); b != nil && b.submenu != nil && b.submenu.panel == p {
+				inst.closeMenu(id)
+				break
+			}
+		}
+	}
+}
+
+// opensPanel reports whether a placed button is one that displays the given
+// panel.
+func opensPanel(pb *placedButton, p toolbarPanel) bool {
+	return pb != nil && pb.button.submenu != nil && pb.button.submenu.panel == p
 }
 
 // toolbarMenuOpen reports whether a placed menu button's menu is displayed.
