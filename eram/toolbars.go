@@ -114,8 +114,7 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 	inertMenu("DRAW"),
 	menuButton("ATC\nTOOLS", &atcToolsMenu),
 	inertMenu("AB\nSETTING"),
-	// RANGE only shows the range, which the scroll wheel sets.
-	readoutButton(rangeLabel),
+	rangeButton(),
 	menuButton("CURSOR", &cursorMenu),
 	menuButton("BRIGHT", &brightMenu),
 	menuButton("FONT", &fontMenu),
@@ -135,12 +134,12 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 		func(ep *Scope, _ toolbarClick) error { ep.toggleDeleteTearoffs(); return nil }),
 }}}
 
-func rangeLabel(ep *Scope) string {
-	r := ep.currentPrefs().Range / 2
-	if r >= 2 {
-		return fmt.Sprintf("RANGE\n%d", int(r))
-	}
-	return fmt.Sprintf("RANGE\n%.2f", r)
+// rangeButton makes the RANGE button, which shows the range and displays
+// and suppresses the Range View (3.4).
+func rangeButton() toolbarButton {
+	b := viewButton("", "range", func(ps *Preferences) *bool { return &ps.RangeView.Visible })
+	b.labelFunc = rangeLabel
+	return b
 }
 
 // vectorButton makes the VECTOR button. There is only one of it: its

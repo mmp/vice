@@ -247,6 +247,7 @@ type Scope struct {
 	holdRepeat pressRepeat // paces held toolbar buttons and popup menu rows
 	alarm      alarm
 	altLimits  altitudeLimitsEntry
+	rangeView  rangeViewState
 	// viewExtents collects the views drawn in the frame, for the toolbar
 	// engine to yield to the next frame.
 	viewExtents []math.Extent2D
@@ -563,6 +564,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawWXView(ctx, transforms, cb)
 	ep.drawBeaconCodeView(ctx, transforms, cb)
 	ep.drawTimeView(ctx, transforms, cb)
+	ep.drawRangeView(ctx, transforms, cb)
 	ep.drawCheckListView(ctx, transforms, cb, &emergCheckList)
 	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
 	ep.drawCRRView(ctx, tracks, transforms, cb)
@@ -620,6 +622,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.responseArea = ""
 	ep.feedbackArea.Clear()
 	ep.popup = nil
+	ep.rangeView = rangeViewState{}
 
 	// Everything about the previous sim's aircraft, sectors, and airports
 	// goes with it. Track state in particular must not carry over: a
@@ -857,8 +860,9 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 		}
 	}
 	// Likewise a clicked altitude limits text box takes them; the sub-entry
-	// box merely being displayed does not.
-	if ep.handleAltitudeLimitsKeyboard(ctx) {
+	// box merely being displayed does not. So does a Range View field
+	// clicked for entry.
+	if ep.handleAltitudeLimitsKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) {
 		return
 	}
 	ps := ep.currentPrefs()

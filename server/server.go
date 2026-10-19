@@ -115,7 +115,8 @@ import (
 // 104: ERAM FONT and CHECK LISTS menus reordered, changing toolbar button ids
 // 105: ERAM EMERG CHECK and POS CHECK each have a view of their own, with their own settings
 // 106: ERAM alarm volume in preference sets
-const ViceSerializeVersion = 106
+// 107: ERAM Range View settings in preference sets
+const ViceSerializeVersion = 107
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

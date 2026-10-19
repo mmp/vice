@@ -3,7 +3,8 @@
 // SPDX: GPL-3.0-only
 
 // Implementations of all Views (main view display and menu popups) are in this file, except
-// for CRR, which is complex enough to get its own file: crr.go
+// for CRR and the Range View, which are complex enough to get their own files: crr.go and
+// rangeview.go
 
 package eram
 

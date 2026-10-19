@@ -143,6 +143,13 @@ type Preferences struct {
 
 	EmergCheck CheckListPreferences
 	PosCheck   CheckListPreferences
+
+	RangeView struct {
+		Visible  bool
+		Position [2]float32
+		Bright   scope.Brightness
+		Presets  [2]int
+	}
 }
 
 // CheckListPreferences are the settings of a check list view; each check
@@ -416,6 +423,10 @@ func makeDefaultPreferences() *Preferences {
 	prefs.EmergCheck = makeDefaultCheckListPreferences()
 	prefs.PosCheck = makeDefaultCheckListPreferences()
 
+	prefs.RangeView.Position = [2]float32{300, 900}
+	prefs.RangeView.Bright = 90
+	prefs.RangeView.Presets = [2]int{100, 150}
+
 	prefs.MCA.Position = [2]float32{2, 80}
 	prefs.MCA.PALines = 6
 	prefs.MCA.Width = 30
@@ -543,6 +554,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 106 {
 		p.AlarmVolume = makeDefaultPreferences().AlarmVolume
+	}
+	if from < 107 {
+		p.RangeView = makeDefaultPreferences().RangeView
 	}
 }
 
