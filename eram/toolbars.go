@@ -193,7 +193,8 @@ var wxMenu = toolbarMenu{rows: [][]toolbarButton{{
 var cursorMenu = toolbarMenu{rows: [][]toolbarButton{{
 	withoutTearoffBar(inertIncDec("SPEED\n1")),
 	withoutTearoffBar(incDecButton("SIZE", func(ps *Preferences) *int { return &ps.CursorSize }, 1, 5, 1)),
-	withoutTearoffBar(inertIncDec("VOLUME\n5")),
+	withoutTearoffBar(incDecButtonFunc("VOLUME",
+		func(ep *Scope) string { return fmt.Sprint(ep.currentPrefs().AlarmVolume) }, clickAlarmVolume)),
 }}}
 
 ///////////////////////////////////////////////////////////////////////////

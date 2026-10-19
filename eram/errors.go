@@ -139,6 +139,7 @@ func GetError(e error, lg *log.Logger) *Error {
 func (ep *Scope) displayError(err error, ctx *scope.Context) {
 	if err != nil {
 		ep.feedbackArea.Error(GetError(err, ctx.Lg))
+		ep.soundAlarm()
 	}
 }
 

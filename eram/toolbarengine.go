@@ -656,10 +656,11 @@ func (ep *Scope) clickToolbarButton(pb *placedButton, c toolbarClick) {
 	}
 }
 
-// reportClickAtLimit flashes the invalid cursor for an increment/decrement
-// click past the value's limit.
+// reportClickAtLimit flashes the invalid cursor and sounds the alarm for an
+// increment/decrement click past the value's limit.
 func (ep *Scope) reportClickAtLimit(c toolbarClick) {
 	ep.SetTemporaryCursor(util.Select(c.clicked[platform.MouseButtonTertiary], "EramInvalidEnter", "EramInvalidSelect"), 0.5, "")
+	ep.soundAlarm()
 }
 
 // toggleToolbarMenu displays a menu button's menu, or closes it and any

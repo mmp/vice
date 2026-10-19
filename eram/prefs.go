@@ -54,6 +54,9 @@ type Preferences struct {
 	LDBSize     int
 	OutageSize  int
 	CursorSize  int
+	// AlarmVolume is the volume of the audible alarm, from 0 (muted) to
+	// maxAlarmVolume.
+	AlarmVolume int
 
 	VideoMapBrightness map[string]scope.Brightness
 	HistoryLength      int
@@ -352,6 +355,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.LDBSize = 1
 	prefs.OutageSize = 1
 	prefs.CursorSize = 1
+	prefs.AlarmVolume = 3
 
 	prefs.FDBLdrLength = 1 // Default to normal mode
 	prefs.PortalFence = true
@@ -536,6 +540,9 @@ func (p *Preferences) Upgrade(from, to int) {
 		// The two check lists' shared view became a view for each.
 		p.EmergCheck = makeDefaultCheckListPreferences()
 		p.PosCheck = makeDefaultCheckListPreferences()
+	}
+	if from < 106 {
+		p.AlarmVolume = makeDefaultPreferences().AlarmVolume
 	}
 }
 

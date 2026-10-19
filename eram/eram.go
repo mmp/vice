@@ -245,6 +245,7 @@ type Scope struct {
 
 	toolbar    toolbarState
 	holdRepeat pressRepeat // paces held toolbar buttons and popup menu rows
+	alarm      alarm
 	altLimits  altitudeLimitsEntry
 	// viewExtents collects the views drawn in the frame, for the toolbar
 	// engine to yield to the next frame.
@@ -372,6 +373,7 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	// TODO: initialize fonts and audio
 	ep.initializeFonts(r, pl)
 	ep.loadCursors(pl)
+	ep.loadAlarm(pl, log)
 
 	// Activate weather radar, events
 	if ep.prefSet == nil {
