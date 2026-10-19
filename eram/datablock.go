@@ -107,20 +107,9 @@ func dbChopTrailing(f []dbChar) []dbChar {
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-	glyph := font.LookupGlyph(' ')
-	fontWidth := glyph.AdvanceX * dbLineOffsetScale
-
-	for i, line := range lines {
+	for _, line := range lines {
 		sb.Reset()
-		if i == dbVCILine || i == dbCIDLine {
-			lead, rest := dbSplitLine(line, dbLeadFieldChars)
-			dbDrawLine(lead, td, math.Add2f(pt, [2]float32{-fontWidth - dbLeadFieldGap*glyph.AdvanceX, 0}),
-				font, sb, brightness, halfSeconds)
-			sb.Reset()
-			dbDrawLine(rest, td, pt, font, sb, brightness, halfSeconds)
-		} else {
-			dbDrawLine(line, td, pt, font, sb, brightness, halfSeconds)
-		}
+		dbDrawLine(line, td, pt, font, sb, brightness, halfSeconds)
 		pt[1] -= dbLinePitch(font)
 	}
 }
@@ -235,9 +224,10 @@ type fullDatablock struct {
 	fieldE [8]dbChar
 	hsf    [1]dbChar // drawn right after Field E
 	line4  [16]dbChar
-	// line4Font is line 4's font, which FONT's LINE 4 may make smaller
-	// than the others' (3.7).
-	line4Font *renderer.Font
+	// FONT's PORTAL and LINE 4 may make the fonts of the fields outside the
+	// portal fence, line 0 and column 0, and of line 4 smaller than the
+	// others' (3.7).
+	portalFont, line4Font *renderer.Font
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
@@ -247,10 +237,26 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	var lines [5]dbLine
 	fullDatablockLines(&db, &lines)
 	pt[1] += float32(font.Size)
-	dbDrawLines(lines[:dbLine4], td, pt, font, sb, brightness, dir, halfSeconds)
-	pt[1] -= dbLine4 * dbLinePitch(font)
-	sb.Reset()
-	dbDrawLine(lines[dbLine4], td, pt, db.line4Font, sb, brightness, halfSeconds)
+	at := func(line int, dx, dy float32) [2]float32 {
+		return [2]float32{pt[0] + dx, pt[1] - float32(line)*dbLinePitch(font) - dy}
+	}
+	drawLine := func(line dbLine, p [2]float32, f *renderer.Font) {
+		sb.Reset()
+		dbDrawLine(line, td, p, f, sb, brightness, halfSeconds)
+	}
+
+	// The fields outside the portal fence sit on their lines' bottoms, and
+	// those of column 0 end at the fence.
+	portalY := float32(font.Size - db.portalFont.Size)
+	drawLine(lines[0], at(0, 0, portalY), db.portalFont)
+	drawLine(lines[dbCallsignLine], at(dbCallsignLine, 0, 0), font)
+	leadX := -dbLeadFieldGap*dbCharWidth(font) - dbLeadFieldChars*dbCharWidth(db.portalFont)
+	for _, i := range []int{dbVCILine, dbCIDLine} {
+		lead, rest := dbSplitLine(lines[i], dbLeadFieldChars)
+		drawLine(lead, at(i, leadX, portalY), db.portalFont)
+		drawLine(rest, at(i, 0, 0), font)
+	}
+	drawLine(lines[dbLine4], at(dbLine4, 0, 0), db.line4Font)
 }
 
 func (db *fullDatablock) ownershipSymbolCol() (int, bool) {
@@ -262,14 +268,12 @@ func (db *fullDatablock) ownershipSymbolCol() (int, bool) {
 	return 0, false
 }
 
-func dbOwnershipOverhang(font *renderer.Font, col int) float32 {
-	w := font.LookupGlyph(' ').AdvanceX
-	return w*(dbLineOffsetScale-float32(col)) + w*dbLeadFieldGap
-}
-
+// leadOverhang returns how far left of the datablock's anchor the
+// ownership symbol starts, if it is drawn; it is in column 0, drawn in the
+// portal font.
 func (db *fullDatablock) leadOverhang(font *renderer.Font) float32 {
 	if col, drawn := db.ownershipSymbolCol(); drawn {
-		return dbOwnershipOverhang(font, col)
+		return dbCharWidth(db.portalFont)*float32(dbLeadFieldChars-col) + dbCharWidth(font)*dbLeadFieldGap
 	}
 	return 0
 }
@@ -303,7 +307,7 @@ func (db *fullDatablock) xOffset(dir math.CardinalOrdinalDirection, font *render
 		return -(db.mainWidth(font) + clearance)
 	case math.North, math.South:
 		if over := db.leadOverhang(font); over > 0 {
-			return over - font.LookupGlyph('0').Width()/2
+			return over - db.portalFont.LookupGlyph('0').Width()/2
 		}
 		return clearance
 	default:
@@ -388,7 +392,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	switch dbType {
 	case FullDatablock:
 		db := ep.fdbArena.AllocClear()
-		db.line4Font = ep.fdbLine4Font()
+		db.portalFont, db.line4Font = ep.fdbPortalFont(), ep.fdbLine4Font()
 		// Line 0: point-out indicator.
 		if ch, glyphColor, ok := ep.pointOutIndicatorGlyph(ctx, &trk); ok {
 			dbWriteText(db.line0[2:], string(ch), glyphColor, false)
@@ -655,7 +659,7 @@ func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]data
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
 			if ps.PortalFence && db.portalFenceVisible() {
-				drawPortalFence(ld, makeDatablockLayout(end, font, ep.fdbLine4Font()), fenceColor)
+				drawPortalFence(ld, makeDatablockLayout(end, font, ep.fdbPortalFont(), ep.fdbLine4Font()), fenceColor)
 			}
 		}
 	}

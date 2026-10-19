@@ -41,6 +41,14 @@ func (ep *Scope) fdbLine4Font() *renderer.Font {
 	return ep.ERAMFont(min(ps.FDBSize, maxERAMFontSize) + ps.Line4Size)
 }
 
+// fdbPortalFont returns the font of the FDB fields outside the portal
+// fence, which FONT's PORTAL makes up to two sizes smaller than the FDB
+// font.
+func (ep *Scope) fdbPortalFont() *renderer.Font {
+	ps := ep.currentPrefs()
+	return ep.ERAMFont(min(ps.FDBSize, maxERAMFontSize) + ps.PortalSize)
+}
+
 // ERAMToolbarFont returns the font of the toolbars' buttons and panels, in
 // the size that FONT's TOOLBAR sets: 1 or 2.
 func (ep *Scope) ERAMToolbarFont() *renderer.Font {

@@ -49,7 +49,7 @@ type Preferences struct {
 
 	Line4Size   int
 	FDBSize     int
-	PoralSize   int
+	PortalSize  int
 	ToolbarSize int
 	RDBSize     int // CRR datablocks
 	LDBSize     int
@@ -354,7 +354,7 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.Line4Size = 0
 	prefs.FDBSize = 1
-	prefs.PoralSize = 0
+	prefs.PortalSize = 0
 	prefs.ToolbarSize = 1
 	prefs.RDBSize = 1
 	prefs.LDBSize = 1

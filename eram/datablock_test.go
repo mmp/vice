@@ -173,27 +173,37 @@ func TestHSFIndicatorPosition(t *testing.T) {
 	}
 }
 
-// LINE 4 sets line 4's font up to two sizes smaller than the FDB font, the
-// largest size standing for the larger FDB sizes (3.7), and line 4's
-// outlines follow its font.
-func TestLine4FontSize(t *testing.T) {
+// PORTAL and LINE 4 set the fonts of the fields outside the portal fence
+// and of line 4 up to two sizes smaller than the FDB font, the largest size
+// standing for the larger FDB sizes (3.7). Their outlines follow their
+// fonts, next to the rest of the datablock.
+func TestFDBFontSizes(t *testing.T) {
 	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
 	for i := range ep.systemFont {
 		ep.systemFont[i] = &renderer.Font{Size: 10 + i}
 	}
 	ps := ep.currentPrefs()
-	for _, tc := range []struct{ fdb, line4, want int }{{3, 0, 3}, {3, -1, 2}, {2, -2, 1}, {5, -1, 3}} {
-		ps.FDBSize, ps.Line4Size = tc.fdb, tc.line4
+	for _, tc := range []struct{ fdb, relative, want int }{{3, 0, 3}, {3, -1, 2}, {2, -2, 1}, {5, -1, 3}} {
+		ps.FDBSize, ps.PortalSize, ps.Line4Size = tc.fdb, tc.relative, tc.relative
+		if f := ep.fdbPortalFont(); f != ep.ERAMFont(tc.want) {
+			t.Errorf("FDB %d PORTAL %d: size %d font, want size %d", tc.fdb, tc.relative, f.Size, tc.want)
+		}
 		if f := ep.fdbLine4Font(); f != ep.ERAMFont(tc.want) {
-			t.Errorf("FDB %d LINE 4 %d: line 4 has size %d font, want size %d", tc.fdb, tc.line4, f.Size, tc.want)
+			t.Errorf("FDB %d LINE 4 %d: size %d font, want size %d", tc.fdb, tc.relative, f.Size, tc.want)
 		}
 	}
 
-	l := DatablockLayout{CharWidth: 10, LineHeight: 16, LinePitch: 22, Line4CharWidth: 8, Line4Height: 12}
+	l := DatablockLayout{CharWidth: 10, LineHeight: 16, LinePitch: 22, Line0CharWidth: 7, Line0Height: 10,
+		Line4CharWidth: 8, Line4Height: 12}
 	cid := l.FieldExtent(DatablockFieldSpec{Line: dbCIDLine, Col: 2, Cols: 3})
+	pointOut := l.FieldExtent(DatablockFieldSpec{Line: 0, Col: 2, Cols: 1})
 	speed := l.FieldExtent(DatablockFieldSpec{Line: dbLine4, Col: 1, Cols: 3})
 	if cid.Width() != 30 || cid.Height() != 16 {
 		t.Errorf("CID field is %v", cid)
+	}
+	if pointOut.P0[0] != 14 || pointOut.Width() != 7 || pointOut.Height() != 10 ||
+		pointOut.P0[1] != l.lineTop(0)-l.LineHeight {
+		t.Errorf("line 0 field is %v", pointOut)
 	}
 	if speed.P0[0] != 8 || speed.Width() != 24 || speed.Height() != 12 || speed.P1[1] != l.lineTop(dbLine4) {
 		t.Errorf("line 4 field is %v", speed)
