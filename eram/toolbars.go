@@ -490,7 +490,7 @@ var radarFilterMenu = toolbarMenu{rows: [][]toolbarButton{{
 	inertToggle("PR\nLDB"),
 	inertToggle("UNP\nLDB"),
 	inertToggle("ALL\nPRIM"),
-	inertToggle("NON\nMODE C"),
+	inertToggle("NON\nMODE-C"),
 }, {
 	inertToggle("SELECT\nBEACON"),
 	inertToggle("PERM\nECHO"),
