@@ -382,7 +382,9 @@ func (ep *Scope) layoutToolbars(ctx *scope.Context) {
 // layoutInstance places an instance's buttons: the given rows at origin,
 // then the menus displayed from them. In the main toolbar, for which bar is
 // set, a displayed menu replaces all of the buttons but its own, and a
-// button that has been moved out of it leaves its place empty.
+// button that has been moved out of it leaves its place empty. A menu
+// displayed from another menu replaces that menu's buttons in the columns
+// past its own button's (figures 2-22, 3-12, and 3-19).
 func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows [][]toolbarButton,
 	origin [2]float32, bar bool) placedInstance {
 	pi := placedInstance{instance: inst}
@@ -400,10 +402,18 @@ func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows 
 	pi.levels = append(pi.levels, level)
 
 	for depth, id := range inst.open {
-		opener := pi.levels[depth].find(id)
-		if opener == nil || opener.button.submenu == nil {
+		parent := &pi.levels[depth]
+		pb := parent.find(id)
+		if pb == nil || pb.button.submenu == nil {
 			inst.open = inst.open[:depth]
 			break
+		}
+		opener := *pb
+		if depth > 0 {
+			parent.buttons = util.FilterSlice(parent.buttons, func(b placedButton) bool {
+				return b.face.P0[0] <= opener.face.P0[0]
+			})
+			parent.fitExtent()
 		}
 		submenu := opener.button.submenu
 		at := [2]float32{opener.face.P1[0] + toolbarButtonGap, opener.face.P1[1]}
@@ -428,16 +438,23 @@ func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows 
 			at[1] += float32(row-max(0, min(row, toolbarMenuRows-len(menu)))) * toolbarRowPitch
 		}
 		sub := placeToolbarRows(inst, depth+1, menu, at)
-		for _, pb := range sub.buttons {
-			sub.extent = math.Union(math.Union(sub.extent, pb.face.P0), pb.face.P1)
-			if !pb.tab.IsEmpty() {
-				sub.extent = math.Union(sub.extent, pb.tab.P0)
-			}
-		}
-		sub.extent.P1[0] += toolbarMenuMargin
+		sub.fitExtent()
 		pi.levels = append(pi.levels, sub)
 	}
 	return pi
+}
+
+// fitExtent fits a menu's background to its buttons and their tear-off
+// bars.
+func (pl *placedLevel) fitExtent() {
+	pl.extent = math.EmptyExtent2D()
+	for _, pb := range pl.buttons {
+		pl.extent = math.Union(math.Union(pl.extent, pb.face.P0), pb.face.P1)
+		if !pb.tab.IsEmpty() {
+			pl.extent = math.Union(pl.extent, pb.tab.P0)
+		}
+	}
+	pl.extent.P1[0] += toolbarMenuMargin
 }
 
 // placeToolbarRows places rows of buttons with the first row's top left at

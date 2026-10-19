@@ -7,6 +7,7 @@ package eram
 import (
 	"fmt"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -296,9 +297,19 @@ func TestTornOffFilterFromSecondPage(t *testing.T) {
 	placedButtonFace(t, ep, &ep.toolbar.layout.tornOff[0], "F\n22")
 }
 
-// A menu's background takes the clicks that land on it where it has no
-// button, so that they don't reach the menu under it.
-func TestMenuBackgroundBlocksClicks(t *testing.T) {
+// labelFirstLines returns the first line of each button's text.
+func labelFirstLines(ep *Scope, buttons []placedButton) []string {
+	var lines []string
+	for _, pb := range buttons {
+		lines = append(lines, strings.SplitN(pb.button.text(ep), "\n", 2)[0])
+	}
+	return lines
+}
+
+// A menu displayed from another menu replaces that menu's buttons in the
+// columns past its own button's (figures 2-22, 3-12, and 3-19), and its
+// background takes the clicks that land on it where it has no button.
+func TestSubmenuReplacesColumns(t *testing.T) {
 	ep, ctx := makeToolbarTestScope()
 	ep.bcgNames = []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"}
 	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "BRIGHT"), toolbarButtonID(t, ep, "MAP\nBRIGHT")}
@@ -308,22 +319,24 @@ func TestMenuBackgroundBlocksClicks(t *testing.T) {
 		t.Fatalf("expected BRIGHT and MAP BRIGHT displayed, got %d levels", len(main.levels))
 	}
 	bright, mapBright := &main.levels[1], &main.levels[2]
-	covered := 0
-	for _, pb := range bright.buttons {
-		center := pb.face.Center()
-		if !mapBright.extent.Inside(center) {
-			continue
-		}
-		if slices.ContainsFunc(mapBright.buttons, func(over placedButton) bool { return over.face.Inside(center) }) {
-			continue
-		}
-		covered++
-		if hit, _ := main.hit(center); hit.button != nil || hit.menu != mapBright {
-			t.Errorf("click at %v reached %q under the MAP BRIGHT background", center, pb.button.text(ep))
-		}
+	if got := labelFirstLines(ep, bright.buttons); !slices.Equal(got, []string{"MAP", "BCKLGHT"}) {
+		t.Errorf("BRIGHT menu shows %q with MAP BRIGHT's menu displayed, want MAP BRIGHT and BCKLGHT", got)
 	}
-	if covered == 0 {
-		t.Fatal("no BRIGHT button under the MAP BRIGHT background's empty second row")
+	if bright.extent.P1[0] > mapBright.extent.P0[0] {
+		t.Errorf("BRIGHT menu background %v reaches under MAP BRIGHT's %v", bright.extent, mapBright.extent)
+	}
+	// MAP BRIGHT's second row has only K; under E is its empty background.
+	empty := mapBright.buttons[4].face.Center()
+	empty[1] -= toolbarRowPitch
+	if hit, _ := main.hit(empty); hit.button != nil || hit.menu != mapBright {
+		t.Errorf("click on MAP BRIGHT's background at %v hit %+v", empty, hit)
+	}
+
+	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "ATC\nTOOLS"), toolbarButtonID(t, ep, "WX")}
+	ep.handleToolbarInput(ctx)
+	atcTools := ep.toolbar.layout.main.levels[1]
+	if got := labelFirstLines(ep, atcTools.buttons); !slices.Equal(got, []string{"CRR", "SPEED", "WX"}) {
+		t.Errorf("ATC TOOLS menu shows %q with the WX menu displayed, want all three of its buttons", got)
 	}
 }
 
