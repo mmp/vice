@@ -69,6 +69,10 @@ type toolbarButton struct {
 	// tear-off bar moves it out of its toolbar rather than tearing off a
 	// copy (2.5.1).
 	moveOnly bool
+	// override is the data block override that a press on a press-and-hold
+	// button keeps in effect until it is released. Such a button is drawn
+	// with a cut corner (5.1.5.5).
+	override dbOverride
 }
 
 func (b *toolbarButton) text(ep *Scope) string {
@@ -125,6 +129,9 @@ const (
 	toolbarRowPitch   float32 = toolbarFaceHeight + 3
 	toolbarBandHeight float32 = 82 // the main toolbar's background: two rows of buttons
 	toolbarMenuMargin float32 = 2  // a menu's background past its last button
+	// toolbarCutCorner is the length of the sides of a press-and-hold
+	// button's cut corner.
+	toolbarCutCorner float32 = toolbarFaceWidth / 8
 	// The main toolbar's buttons are inset from the window's top left
 	// corner by these fractions of a button's size.
 	toolbarInsetX float32 = toolbarTabWidth / 0.701
@@ -255,6 +262,7 @@ type toolbarPress struct {
 	down             bool
 	inside           bool // the mouse is still over the button
 	click            toolbarClick
+	override         dbOverride // kept in effect while the press is held
 }
 
 // toolbarDrag is a button being torn off or a torn-off button being moved.
@@ -594,7 +602,7 @@ func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
 		return
 	}
 	if ep.mousePrimaryReleased(mouse) || ep.mouseTertiaryReleased(mouse) {
-		tb.press = toolbarPress{}
+		ep.endToolbarPress(ctx)
 		ep.holdRepeat.release()
 	}
 	tb.hover = ep.toolbarHitAt(mouse.Pos)
@@ -611,6 +619,12 @@ func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
 		if tb.press.inside && pb.button.repeat && ep.holdRepeat.fire(now) {
 			ep.clickToolbarButton(pb, tb.press.click)
 		}
+		return
+	}
+	if tb.press.down && tb.press.override != noDBOverride {
+		// Pressing another trackball button ends an override (5.1.5.5).
+		ep.endToolbarPress(ctx)
+		ep.consumeMouseClick(mouse)
 		return
 	}
 
@@ -637,11 +651,41 @@ func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
 	if tb.hover.tab {
 		ep.startToolbarDrag(ctx, pb)
 	} else {
-		tb.press = toolbarPress{instance: pb.instance.id, button: pb.button.id, down: true, inside: true, click: c}
+		tb.press = toolbarPress{instance: pb.instance.id, button: pb.button.id, down: true, inside: true, click: c,
+			override: pb.button.override}
+		if pb.button.override != noDBOverride {
+			// The cursor is locked on the button while it is held.
+			lockCursor(ctx, pb.face)
+		}
 		ep.holdRepeat.fire(now)
 		ep.clickToolbarButton(pb, c)
 	}
 	ep.consumeMouseClick(mouse)
+}
+
+// endToolbarPress ends the press on a toolbar button, along with the
+// override it held in effect and the cursor lock that came with it.
+func (ep *Scope) endToolbarPress(ctx *scope.Context) {
+	if ep.toolbar.press.override != noDBOverride {
+		ctx.Platform.EndCaptureMouse()
+	}
+	ep.toolbar.press = toolbarPress{}
+}
+
+// dbOverrideHeld reports whether a press-and-hold button is keeping the
+// given override in effect.
+func (ep *Scope) dbOverrideHeld(o dbOverride) bool {
+	p := &ep.toolbar.press
+	return p.down && p.override == o
+}
+
+// lockCursor keeps the cursor within e. The platform takes the extent in
+// window coordinates, which run down from the top of the window, above
+// the menu bar.
+func lockCursor(ctx *scope.Context, e math.Extent2D) {
+	h := ctx.DrawExtent.Height() + ctx.MenuBarHeight
+	e.P0[1], e.P1[1] = h-e.P1[1], h-e.P0[1]
+	ctx.Platform.StartCaptureMouse(e)
 }
 
 func (ep *Scope) clickToolbarButton(pb *placedButton, c toolbarClick) {
@@ -771,10 +815,15 @@ func (ep *Scope) placeToolbarDrag(ctx *scope.Context) {
 	ctx.Platform.EndCaptureMouse()
 }
 
-// cancelToolbarGesture cancels a button being torn off or moved and the
-// DELETE TEAROFF function, reporting whether either was under way.
+// cancelToolbarGesture cancels a button being torn off or moved, the
+// DELETE TEAROFF function, and an override held by a press-and-hold
+// button, reporting whether any was under way.
 func (ep *Scope) cancelToolbarGesture(ctx *scope.Context) bool {
 	tb := &ep.toolbar
+	if tb.press.down && tb.press.override != noDBOverride {
+		ep.endToolbarPress(ctx)
+		return true
+	}
 	if tb.drag == nil && !tb.deleting {
 		return false
 	}
@@ -959,6 +1008,14 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 		quad(pb.tab, color, hovered && tb.hover.tab)
 	}
 	quad(pb.face, ep.toolbarButtonColor(pb), hovered && !tb.hover.tab)
+	if pb.button.override != noDBOverride {
+		// The cut corner is the other color of the button's two: gray
+		// while it is black, and black while it is held and gray (5.1.5.5).
+		f, n := pb.face, toolbarCutCorner
+		held := ep.dbOverrideHeld(pb.button.override)
+		trid.AddTriangle([2]float32{f.P1[0] - n, f.P1[1]}, f.P1, [2]float32{f.P1[0], f.P1[1] - n},
+			ps.Brightness.Button.ScaleRGB(util.Select(held, colors.toolbar.toggleButton, colors.toolbar.toggleOn)))
+	}
 	if _, picked := tb.selected[pb.button.id]; picked && toolbarTearoffHandle(pb) {
 		// A torn-off button picked for deletion is covered by an X (2.5.1.2).
 		f, x := pb.face, ps.Brightness.Text.ScaleRGB(colors.toolbar.deletionMark)
@@ -981,7 +1038,8 @@ func (ep *Scope) toolbarButtonColor(pb *placedButton) renderer.RGB {
 	tb := &ep.toolbar
 	b := pb.button
 	active := toolbarMenuOpen(pb) || (b.active != nil && b.active(ep)) ||
-		(tb.press.inside && tb.press.instance == pb.instance.id && tb.press.button == b.id)
+		(tb.press.inside && tb.press.instance == pb.instance.id && tb.press.button == b.id) ||
+		(b.override != noDBOverride && ep.dbOverrideHeld(b.override))
 	switch b.kind {
 	case buttonMenu:
 		return util.Select(active, colors.toolbar.menuOpen, colors.toolbar.menuButton)

@@ -582,3 +582,67 @@ func TestPrefsetInitials(t *testing.T) {
 	ep.initials = "PC"
 	toolbarButtonID(t, ep, "PREFSET\nPC")
 }
+
+// lockingPlatform records the extent the cursor is locked in.
+type lockingPlatform struct {
+	platform.Platform
+	locked *math.Extent2D
+}
+
+func (p lockingPlatform) StartCaptureMouse(e math.Extent2D) { *p.locked = e }
+func (p lockingPlatform) EndCaptureMouse()                  { *p.locked = math.Extent2D{} }
+
+// A press on CODE keeps its override in effect, with the cursor locked on
+// the button, until the press is released, another trackball button is
+// pressed, or the Clear key is pressed (5.1.5.5).
+func TestHoldButton(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	var locked math.Extent2D
+	ctx.Platform = lockingPlatform{locked: &locked}
+	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "DB\nFIELDS")}
+	ep.handleToolbarInput(ctx)
+	code := placedButtonFace(t, ep, ep.toolbar.layout.main, "CODE")
+
+	press := func(p [2]float32, button imgui.MouseButton) {
+		ctx.Mouse = &platform.MouseState{Pos: p}
+		ctx.Mouse.Clicked[button] = true
+		ep.handleToolbarInput(ctx)
+	}
+	hold := func(p [2]float32) {
+		ctx.Mouse = &platform.MouseState{Pos: p}
+		ep.handleToolbarInput(ctx)
+	}
+	check := func(when string, held bool) {
+		t.Helper()
+		if ep.dbOverrideHeld(overrideCode) != held || locked.IsEmpty() == held {
+			t.Errorf("%s: override held %v with the cursor locked in %v, want held %v",
+				when, ep.dbOverrideHeld(overrideCode), locked, held)
+		}
+	}
+
+	press(code.Center(), platform.MouseButtonPrimary)
+	check("pressed", true)
+	if h := ctx.DrawExtent.Height(); locked.P0[0] != code.P0[0] || locked.P0[1] != h-code.P1[1] {
+		t.Errorf("cursor locked in %v, want CODE's face %v in window coordinates", locked, code)
+	}
+	hold([2]float32{800, 400})
+	check("held off the button", true)
+	if ep.dbOverrideHeld(overrideSpeed) || ep.dbOverrideHeld(overrideVRI) {
+		t.Error("holding CODE holds another override")
+	}
+	ctx.Mouse = &platform.MouseState{Pos: code.Center()}
+	ctx.Mouse.Released[platform.MouseButtonPrimary] = true
+	ep.handleToolbarInput(ctx)
+	check("released", false)
+
+	press(code.Center(), platform.MouseButtonTertiary)
+	check("pressed with TBE", true)
+	press(code.Center(), platform.MouseButtonPrimary)
+	check("TBP pressed too", false)
+
+	press(code.Center(), platform.MouseButtonPrimary)
+	if !ep.cancelToolbarGesture(ctx) {
+		t.Error("Clear didn't report the override")
+	}
+	check("Clear pressed", false)
+}

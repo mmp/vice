@@ -505,7 +505,7 @@ func (ep *Scope) datablockType(ctx *scope.Context, trk sim.Track) DatablockType 
 		if len(ctx.InboundPointOuts(fp)) > 0 {
 			return FullDatablock
 		}
-		if _, ok := ep.QuickLookSectors[string(ctx.PrimaryTCPForTCW(fp.OwningTCW))]; ok {
+		if ep.quickLooked(ctx, fp) {
 			return FullDatablock
 		}
 		if state == nil {
@@ -523,6 +523,13 @@ func (ep *Scope) datablockType(ctx *scope.Context, trk sim.Track) DatablockType 
 		}
 	}
 	return LimitedDatablock
+}
+
+// quickLooked reports whether the user has quick looked the sector that
+// owns a flight plan.
+func (ep *Scope) quickLooked(ctx *scope.Context, fp *sim.FlightPlan) bool {
+	_, ok := ep.QuickLookSectors[string(ctx.PrimaryTCPForTCW(fp.OwningTCW))]
+	return ok
 }
 
 // trackDatablockColorBrightness returns the track color and datablock brightness. Design.

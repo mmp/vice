@@ -209,3 +209,61 @@ func TestFDBFontSizes(t *testing.T) {
 		t.Errorf("line 4 field is %v", speed)
 	}
 }
+
+// While VRI is held, FDBs show the vertical rate after the altitude, in
+// hundreds of feet per minute (5.1.5.13). While CODE is held, Field E and
+// LDB line 3 show the beacon code, the latter only where line 1 doesn't
+// (5.1.5.5); while SPEED is held, Field E shows the ground speed (5.1.5.6).
+func TestDatablockOverrides(t *testing.T) {
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{"2B": {Position: "2B"}}
+	trk := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude, Squawk: 0o4521,
+			TransponderAltitude: 20000, Groundspeed: 420},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", CID: "123", AssignedAltitude: 30000, OwningTCW: "TCW1",
+			HandoffController: "2B"},
+	}
+	unpaired := &sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: "N12", Mode: av.TransponderModeAltitude,
+		Squawk: 0o1200, TransponderAltitude: 5500}}
+	h.addTrack(trk)
+	h.addTrack(unpaired)
+	h.frame(0)
+	trk.TransponderAltitude = 20300
+	h.frame(eramUpdateInterval)
+	h.ep.dbAlternate = true
+	hold := func(o dbOverride) { h.ep.toolbar.press = toolbarPress{down: true, override: o} }
+	fdb := func() *fullDatablock {
+		return h.ep.getDatablock(h.ctx, *trk, FullDatablock, colors.yellow).(*fullDatablock)
+	}
+	ldb := func(trk *sim.Track) *limitedDatablock {
+		return h.ep.getDatablock(h.ctx, *trk, LimitedDatablock, colors.yellow).(*limitedDatablock)
+	}
+
+	if got := dbText(fdb().line2[:]); got != "300"+upArrow+"203" {
+		t.Errorf("line 2 without VRI held: %q", got)
+	}
+	hold(overrideVRI)
+	if got := dbText(fdb().line2[:]); got != "300"+upArrow+"203 +15" {
+		t.Errorf("line 2 with VRI held: %q", got)
+	}
+
+	hold(overrideCode)
+	if got := dbText(fdb().fieldE[:]); got != "4521" {
+		t.Errorf("Field E with CODE held: %q", got)
+	}
+	if got := dbText(ldb(trk).line2[:]); got != "4521" {
+		t.Errorf("paired LDB line 3 with CODE held: %q", got)
+	}
+	if got := dbText(ldb(unpaired).line2[:]); got != "" {
+		t.Errorf("unpaired LDB showing its code on line 1 has line 3 %q with CODE held", got)
+	}
+
+	hold(overrideSpeed)
+	if got := dbText(fdb().fieldE[:]); got != " 420" {
+		t.Errorf("Field E with SPEED held during a handoff: %q", got)
+	}
+	hold(noDBOverride)
+	if got := dbText(fdb().fieldE[:]); got != "H-2B" {
+		t.Errorf("Field E with nothing held during a handoff: %q", got)
+	}
+}

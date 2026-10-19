@@ -403,8 +403,15 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 		vciColor := (ps.Brightness.ONFREQ + ps.Brightness.Portal).ScaleRGB(colors.vciGreen)
 		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
 
-		// Line 2
-		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
+		// Line 2. The VRI is drawn at line 4's brightness, and not in quick
+		// look FDBs (5.1.5.13).
+		line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(colors.yellow)
+		alt := ep.getAltitudeFormat(trk)
+		dbWriteText(db.line2[:], alt, color, false)
+		quickLook := !ctx.UserOwnsFlightPlan(trk.FlightPlan) && ep.quickLooked(ctx, trk.FlightPlan)
+		if ep.dbOverrideHeld(overrideVRI) && !quickLook {
+			dbWriteText(db.line2[len(alt)+1:], verticalRateText(state), line4Color, false)
+		}
 
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
@@ -416,15 +423,19 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 		shortERAMID := func(ctrl *av.Controller) string {
 			return shortFieldERAMID(ctrl.FacilityIdentifier, ctrl.Position, ctx.Client.State.HandoffIDs)
 		}
-		flaggedCodes := map[av.Squawk]string{
-			0o1276: "ADIZ", 0o7400: "LLNK", 0o7500: "HIJK",
-			0o7600: "RDOF", 0o7700: "EMRG", 0o7777: "AFIO",
-		}
-		if text, ok := flaggedCodes[state.Track.Squawk]; ok {
-			// Of the special codes, 7600 and 7700 blink, as would the two
-			// adapted ones that vice has no adaptation for (5.1.5.7).
-			blink := state.Track.Squawk == 0o7600 || state.Track.Squawk == 0o7700
-			dbWriteText(db.fieldE[:], text, color, blink)
+		specialText, special := specialCodeText[state.Track.Squawk]
+		// Of the special codes, 7600 and 7700 blink, as would the two
+		// adapted ones that vice has no adaptation for (5.1.5.7).
+		blink := special && (state.Track.Squawk == 0o7600 || state.Track.Squawk == 0o7700)
+		if ep.dbOverrideHeld(overrideCode) {
+			// The code takes the place of everything else, without time
+			// sharing; with no code, Field E is blank (5.1.5.5).
+			dbWriteText(db.fieldE[:], util.Select(state.Track.Mode == av.TransponderModeStandby, "    ",
+				reportedCodeText(state.Track)), color, blink)
+		} else if ep.dbOverrideHeld(overrideSpeed) {
+			dbWriteText(db.fieldE[:], gsText, color, false)
+		} else if special {
+			dbWriteText(db.fieldE[:], specialText, color, blink)
 		} else if trk.FlightPlan.HandoffController != "" {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
@@ -463,7 +474,6 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 		}
 
 		// Get line 4 (if applicable)
-		line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(colors.yellow)
 		if state != nil && !state.HSFHide && hsfDataExists(trk.FlightPlan) {
 			clear(db.line4[:])
 
@@ -504,11 +514,53 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	case LimitedDatablock:
 		db := ep.ldbArena.AllocClear()
 		state := ep.TrackState[trk.ADSBCallsign]
-		dbWriteText(db.line0[:], ep.limitedDatablockID(trk, state), color, false)
+		id := ep.limitedDatablockID(trk, state)
+		dbWriteText(db.line0[:], id, color, false)
 		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.Track.TransponderAltitude+50)/100), color, false)
+		// The code goes on line 3 unless line 1 already shows it (5.1.5.5).
+		if ep.dbOverrideHeld(overrideCode) && state.Track.Mode != av.TransponderModeStandby &&
+			id != state.Track.Squawk.String() {
+			dbWriteText(db.line2[:], reportedCodeText(state.Track), color, false)
+		}
 		return db
 	default:
 		return nil // should not happen
+	}
+}
+
+// specialCodeText holds the text that data blocks show in place of the
+// special beacon codes (Table 5-4).
+var specialCodeText = map[av.Squawk]string{
+	0o1276: "ADIZ", 0o7400: "LLNK", 0o7500: "HIJK",
+	0o7600: "RDOF", 0o7700: "EMRG", 0o7777: "AFIO",
+}
+
+// reportedCodeText returns the beacon code of a radar sample as the CODE
+// override shows it: a special code as its text (5.1.5.5).
+func reportedCodeText(rt av.RadarTrack) string {
+	if text, ok := specialCodeText[rt.Squawk]; ok {
+		return text
+	}
+	return rt.Squawk.String()
+}
+
+// verticalRateText returns a track's vertical rate between its last two
+// radar samples as the VRI shows it, in hundreds of feet per minute with
+// its sign; a rate under 100 feet per minute isn't shown (5.1.5.13).
+func verticalRateText(state *TrackState) string {
+	minutes := state.TrackTime.Sub(state.PreviousTrackTime).Minutes()
+	if state.PreviousTrackTime.IsZero() || minutes <= 0 || state.Track.Mode != av.TransponderModeAltitude ||
+		state.PreviousTrack.Mode != av.TransponderModeAltitude {
+		return ""
+	}
+	rate := int(float64(state.Track.TransponderAltitude-state.PreviousTrack.TransponderAltitude) / minutes / 100)
+	switch {
+	case rate > 0:
+		return fmt.Sprintf("+%d", rate)
+	case rate < 0:
+		return fmt.Sprint(rate)
+	default:
+		return ""
 	}
 }
 

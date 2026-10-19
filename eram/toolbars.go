@@ -326,6 +326,21 @@ var fontMenu = toolbarMenu{rows: [][]toolbarButton{{
 ///////////////////////////////////////////////////////////////////////////
 // DB FIELDS
 
+// dbOverride is a temporary change to the data blocks that a
+// press-and-hold button keeps in effect while it is held.
+type dbOverride int
+
+const (
+	noDBOverride  dbOverride = iota
+	overrideVRI              // vertical rates on line 2 of FDBs (5.1.5.13)
+	overrideCode             // beacon codes in Field E and on LDB line 3 (5.1.5.5)
+	overrideSpeed            // ground speeds in Field E (5.1.5.6)
+)
+
+func holdButton(label string, o dbOverride) toolbarButton {
+	return toolbarButton{label: label, override: o}
+}
+
 // line4Button makes a toggle for showing one of the FDB fourth-line fields;
 // only one is shown at a time.
 func line4Button(label string, field int) toolbarButton {
@@ -353,9 +368,9 @@ func clickFDBLeader(ep *Scope, c toolbarClick) error {
 
 var dbFieldsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	inertToggle("NON-\nRVSM"),
-	inertToggle("VRI"),
-	inertToggle("CODE"),
-	inertToggle("SPEED"),
+	holdButton("VRI", overrideVRI),
+	holdButton("CODE", overrideCode),
+	holdButton("SPEED", overrideSpeed),
 	line4Button("DEST", Line4Destination),
 	line4Button("TYPE", Line4Type),
 	incDecButtonFunc("FDB LDR", func(ep *Scope) string { return fmt.Sprint(ep.currentPrefs().FDBLdrLength) }, clickFDBLeader),
