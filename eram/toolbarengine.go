@@ -736,7 +736,8 @@ func (ep *Scope) cancelToolbarGesture(ctx *scope.Context) bool {
 
 // toggleDeleteTearoffs starts the DELETE TEAROFF function, or ends it if
 // it is active. While it is active, a left click picks or unpicks a
-// torn-off button and a middle click deletes the picked ones.
+// torn-off button and a middle click deletes a torn-off button along with
+// the picked ones (2.5.1.2).
 func (ep *Scope) toggleDeleteTearoffs() {
 	tb := &ep.toolbar
 	if tb.deleting {
@@ -756,11 +757,18 @@ func (ep *Scope) endDeleteTearoffs() {
 }
 
 // clickWhileDeletingTearoffs handles a click while DELETE TEAROFF is
-// active, reporting whether it took the click.
+// active, reporting whether it took the click. Only clicks on torn-off
+// buttons are taken.
 func (ep *Scope) clickWhileDeletingTearoffs(ctx *scope.Context, hit toolbarHit, c toolbarClick) bool {
+	pb := hit.button
+	if pb == nil || !toolbarTearoffHandle(pb) || pb.instance.id == toolbarControlID {
+		return false
+	}
 	tb := &ep.toolbar
+	id := pb.button.id
 	if c.clicked[platform.MouseButtonTertiary] {
 		ps := ep.currentPrefs()
+		delete(ps.TornOffButtons, id)
 		for id := range tb.selected {
 			delete(ps.TornOffButtons, id)
 		}
@@ -770,14 +778,10 @@ func (ep *Scope) clickWhileDeletingTearoffs(ctx *scope.Context, hit toolbarHit, 
 		tb.hover = toolbarHit{}
 		return true
 	}
-	pb := hit.button
-	if pb == nil || !toolbarTearoffHandle(pb) || pb.instance.id == toolbarControlID {
-		return false
-	}
-	if _, ok := tb.selected[pb.button.id]; ok {
-		delete(tb.selected, pb.button.id)
+	if _, ok := tb.selected[id]; ok {
+		delete(tb.selected, id)
 	} else {
-		tb.selected[pb.button.id] = struct{}{}
+		tb.selected[id] = struct{}{}
 	}
 	return true
 }

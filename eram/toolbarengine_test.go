@@ -396,3 +396,63 @@ func TestMasterRaise(t *testing.T) {
 		t.Errorf("raised: BRIGHT isn't over the torn-off FONT and the view: %+v", hit)
 	}
 }
+
+// clickToolbarAt clicks and releases the given logical mouse button at p.
+func clickToolbarAt(ep *Scope, ctx *scope.Context, p [2]float32, button imgui.MouseButton) {
+	ctx.Mouse = &platform.MouseState{Pos: p}
+	ctx.Mouse.Clicked[button] = true
+	ep.handleToolbarInput(ctx)
+	ctx.Mouse = &platform.MouseState{Pos: p}
+	ctx.Mouse.Released[button] = true
+	ep.handleToolbarInput(ctx)
+	ctx.Mouse = nil
+}
+
+// tornOffFace returns the face of the torn-off button with the given text.
+func tornOffFace(t *testing.T, ep *Scope, text string) math.Extent2D {
+	t.Helper()
+	for i := range ep.toolbar.layout.tornOff {
+		pi := &ep.toolbar.layout.tornOff[i]
+		if pi.levels[0].buttons[0].button.text(ep) == text {
+			return pi.levels[0].buttons[0].face
+		}
+	}
+	t.Fatalf("no torn-off button %q", text)
+	return math.Extent2D{}
+}
+
+// DELETE TEAROFF deletes the torn-off button that is middle-clicked along
+// with those picked with left clicks (2.5.1.2).
+func TestDeleteTearoff(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ps := ep.currentPrefs()
+	font, bright, cursor := toolbarButtonID(t, ep, "FONT"), toolbarButtonID(t, ep, "BRIGHT"), toolbarButtonID(t, ep, "CURSOR")
+	ps.TornOffButtons = map[string][2]float32{font: {100, 600}, bright: {100, 500}, cursor: {100, 400}}
+	ep.handleToolbarInput(ctx)
+	deleteTearoff := placedButtonFace(t, ep, ep.toolbar.layout.main, "DELETE\nTEAROFF").Center()
+	check := func(when string, deleting bool, torn ...string) {
+		t.Helper()
+		if ep.toolbar.deleting != deleting {
+			t.Errorf("%s: DELETE TEAROFF active %v, want %v", when, ep.toolbar.deleting, deleting)
+		}
+		if len(ps.TornOffButtons) != len(torn) {
+			t.Errorf("%s: torn off %v, want %v", when, ps.TornOffButtons, torn)
+		}
+		for _, id := range torn {
+			if _, ok := ps.TornOffButtons[id]; !ok {
+				t.Errorf("%s: %q was deleted", when, id)
+			}
+		}
+	}
+
+	clickToolbarAt(ep, ctx, deleteTearoff, platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, tornOffFace(t, ep, "FONT").Center(), platform.MouseButtonTertiary)
+	check("middle click on FONT", false, bright, cursor)
+
+	clickToolbarAt(ep, ctx, deleteTearoff, platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, tornOffFace(t, ep, "BRIGHT").Center(), platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, [2]float32{800, 200}, platform.MouseButtonTertiary)
+	check("middle click away from the torn-off buttons", true, bright, cursor)
+	clickToolbarAt(ep, ctx, tornOffFace(t, ep, "CURSOR").Center(), platform.MouseButtonTertiary)
+	check("BRIGHT picked and middle click on CURSOR", false)
+}
