@@ -76,6 +76,26 @@ func commandButton(label string, active func(ep *Scope) bool, click func(ep *Sco
 	return toolbarButton{label: label, kind: buttonCommand, active: active, click: click}
 }
 
+// tearoffSpace gives a button without a tear-off bar the space for one, so
+// that it lines up with the buttons that have them.
+func tearoffSpace(b toolbarButton) toolbarButton {
+	b.noTab, b.noTearoff = false, true
+	return b
+}
+
+// withoutTearoffBar removes a button's tear-off bar along with the space
+// for one.
+func withoutTearoffBar(b toolbarButton) toolbarButton {
+	b.noTab = true
+	return b
+}
+
+// withTearoffBar gives a tear-off bar to a button made without one.
+func withTearoffBar(b toolbarButton) toolbarButton {
+	b.noTab, b.noTearoff = false, false
+	return b
+}
+
 // readoutButton makes a button that only shows a value; it is drawn as a
 // toggle.
 func readoutButton(labelFunc func(ep *Scope) string) toolbarButton {
@@ -160,19 +180,19 @@ var atcToolsMenu = toolbarMenu{rows: [][]toolbarButton{{
 }}}
 
 var wxMenu = toolbarMenu{rows: [][]toolbarButton{{
-	inertIncDec("NX 000\n600"),
-	incDecButtonFunc("NX LVL", func(ep *Scope) string { return nexradLevelLabel(ep.currentPrefs().NexradLevel) },
-		clickNexradLevel),
+	withoutTearoffBar(inertIncDec("NX 000\n600")),
+	withoutTearoffBar(incDecButtonFunc("NX LVL",
+		func(ep *Scope) string { return nexradLevelLabel(ep.currentPrefs().NexradLevel) }, clickNexradLevel)),
 }, {
-	inertToggle("WX1"),
-	inertToggle("WX2"),
-	inertToggle("WX3"),
+	withoutTearoffBar(inertToggle("WX1")),
+	withoutTearoffBar(inertToggle("WX2")),
+	withoutTearoffBar(inertToggle("WX3")),
 }}}
 
 var cursorMenu = toolbarMenu{rows: [][]toolbarButton{{
-	inertIncDec("SPEED\n1"),
-	incDecButton("SIZE", func(ps *Preferences) *int { return &ps.CursorSize }, 1, 5, 1),
-	inertIncDec("VOLUME\n5"),
+	withoutTearoffBar(inertIncDec("SPEED\n1")),
+	withoutTearoffBar(incDecButton("SIZE", func(ps *Preferences) *int { return &ps.CursorSize }, 1, 5, 1)),
+	withoutTearoffBar(inertIncDec("VOLUME\n5")),
 }}}
 
 ///////////////////////////////////////////////////////////////////////////
@@ -185,22 +205,13 @@ func brightness(name string, v func(*Preferences) *scope.Brightness) toolbarButt
 }
 
 // brightnessRange is brightness with the value's range and how it is shown
-// given: the brightnesses relative to another show "=" at zero. None of
-// the BRIGHT buttons has a tear-off bar.
+// given: the brightnesses relative to another show "=" at zero. The
+// brightness buttons have no tear-off bars.
 func brightnessRange(name string, v func(*Preferences) *scope.Brightness, min, max, step int,
 	show func(scope.Brightness) string) toolbarButton {
-	b := incDecButtonFunc(name,
+	return withoutTearoffBar(incDecButtonFunc(name,
 		func(ep *Scope) string { return show(*v(ep.currentPrefs())) },
-		func(ep *Scope, c toolbarClick) error { return adjust(v(ep.currentPrefs()), c, min, max, step) })
-	b.noTab = true
-	return b
-}
-
-// tearoffSpace gives a button without a tear-off bar the space for one, so
-// that it lines up with the buttons that have them.
-func tearoffSpace(b toolbarButton) toolbarButton {
-	b.noTab, b.noTearoff = false, true
-	return b
+		func(ep *Scope, c toolbarClick) error { return adjust(v(ep.currentPrefs()), c, min, max, step) }))
 }
 
 func showBrightness(b scope.Brightness) string {
@@ -234,7 +245,10 @@ var brightMenu = toolbarMenu{rows: [][]toolbarButton{{
 	brightness("WX", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.WX }),
 	brightness("NEXRAD", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.NEXRAD }),
 }, {
-	tearoffSpace(brightness("BCKLGHT", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.Backlight })),
+	// BCKLGHT has a tear-off bar in figures 2-22, 3-17, and 3-19. BUTTON
+	// only has the space for one: the gray the figures show there is the
+	// menu's background.
+	withTearoffBar(brightness("BCKLGHT", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.Backlight })),
 	tearoffSpace(brightness("BUTTON", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.Button })),
 	brightness("BORDER", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.Border }),
 	brightness("TOOLBAR", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.Toolbar }),
@@ -272,7 +286,7 @@ func (ep *Scope) bcgBrightnessRows() [][]toolbarButton {
 }
 
 func bcgBrightnessButton(name string) toolbarButton {
-	b := incDecButtonFunc(name,
+	return withoutTearoffBar(incDecButtonFunc(name,
 		func(ep *Scope) string { return fmt.Sprint(int(ep.currentPrefs().VideoMapBrightness[name])) },
 		func(ep *Scope, c toolbarClick) error {
 			ps := ep.currentPrefs()
@@ -280,9 +294,7 @@ func bcgBrightnessButton(name string) toolbarButton {
 			err := adjust(&b, c, 0, 100, 2)
 			ps.VideoMapBrightness[name] = b
 			return err
-		})
-	b.noTab = true
-	return b
+		}))
 }
 
 ///////////////////////////////////////////////////////////////////////////

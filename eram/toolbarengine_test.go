@@ -517,3 +517,42 @@ func TestVectorMoves(t *testing.T) {
 			ps.TornOffButtons, inMain())
 	}
 }
+
+// Tear-off bars are as in the figures: none on the CURSOR menu's buttons
+// (figure 3-16) or the WX menu's (figures 2-24 and 3-12), and one on
+// BCKLGHT but not BUTTON (figures 2-22, 3-17, and 3-19).
+func TestTearoffBars(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	// tabs opens the menus with the given buttons and returns which of the
+	// last one's buttons have tear-off bars, by their labels' first lines.
+	tabs := func(open ...string) map[string]bool {
+		ep.toolbar.main.open = nil
+		for _, text := range open {
+			ep.toolbar.main.open = append(ep.toolbar.main.open, toolbarButtonID(t, ep, text))
+		}
+		ep.handleToolbarInput(ctx)
+		levels := ep.toolbar.layout.main.levels
+		buttons := levels[len(levels)-1].buttons
+		m := make(map[string]bool)
+		for i, line := range labelFirstLines(ep, buttons) {
+			m[line] = !buttons[i].tab.IsEmpty()
+		}
+		return m
+	}
+
+	for name, tab := range tabs("CURSOR") {
+		if tab {
+			t.Errorf("CURSOR menu's %s has a tear-off bar", name)
+		}
+	}
+	for name, tab := range tabs("ATC\nTOOLS", "WX") {
+		if tab {
+			t.Errorf("WX menu's %s has a tear-off bar", name)
+		}
+	}
+	bright := tabs("BRIGHT")
+	if !bright["BCKLGHT"] || bright["BUTTON"] || bright["BCKGRD"] {
+		t.Errorf("BRIGHT menu tear-off bars: BCKLGHT %v, BUTTON %v, BCKGRD %v; want only BCKLGHT's",
+			bright["BCKLGHT"], bright["BUTTON"], bright["BCKGRD"])
+	}
+}
