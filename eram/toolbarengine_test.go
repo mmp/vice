@@ -565,3 +565,10 @@ func TestLine4BrightnessLabel(t *testing.T) {
 	ep.currentPrefs().Brightness.Line4 = 6
 	toolbarButtonID(t, ep, "LINE 4\n-6")
 }
+
+// PREFSET shows the initials of the controller signed in (3.16).
+func TestPrefsetInitials(t *testing.T) {
+	ep, _ := makeToolbarTestScope()
+	ep.initials = "PC"
+	toolbarButtonID(t, ep, "PREFSET\nPC")
+}

@@ -128,7 +128,8 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 	menuButtonFunc(func(ep *Scope) string { return ep.videoMapLabel }, &geoMapMenu),
 	panelButton(altitudeLimitsButtonLabel, altitudeLimitsPanel{}),
 	menuButton("RADAR\nFILTER", &radarFilterMenu),
-	inertToggle("PREFSET"),
+	// PREFSET only shows the initials of the controller signed in (3.16).
+	readoutButton(func(ep *Scope) string { return "PREFSET\n" + ep.initials }),
 	commandButton("DELETE\nTEAROFF",
 		func(ep *Scope) bool { return ep.toolbar.deleting },
 		func(ep *Scope, _ toolbarClick) error { ep.toggleDeleteTearoffs(); return nil }),

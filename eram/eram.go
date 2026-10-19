@@ -213,6 +213,9 @@ type Scope struct {
 	baseVideoMap    videomaps.ERAMMap
 	currentFacility string
 
+	// initials are the operating initials of the controller signed in.
+	initials string
+
 	eramCursors map[string]platform.Cursor // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
 
 	cursorOverrideSelection string
@@ -590,6 +593,7 @@ func (ep *Scope) Upgrade(from, to int) {
 func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
+	ep.initials = client.SessionStats.Initials
 	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}
@@ -598,6 +602,7 @@ func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, l
 func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.resetPrefsForNewSim(client.State)
 	ep.makeMaps(client, lg)
+	ep.initials = client.SessionStats.Initials
 	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}
