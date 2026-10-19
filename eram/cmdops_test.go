@@ -261,6 +261,46 @@ func TestFixTimeReadout(t *testing.T) {
 	}
 }
 
+// LD reads out the time at each fix of the route through the given one,
+// and LE the change to the ground speed that reaches the fix at the given
+// time; both fly the route from the track's position (3.12.4, 3.12.5).
+func TestRouteFixTimeReadouts(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	h.ctx.Client.State.Fixes = map[string]math.Point2LL{"ABC": {-73, 41}, "DEF": {-73, 40.5}, "GHI": {-73, 42}}
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123", Location: math.Point2LL{-73, 40}, Groundspeed: 300},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123"},
+		RouteFixes: []string{"ABC", "DEF", "GHI"},
+	})
+	h.frame(0)
+
+	// The route doubles back: ABC is 60 nm north and DEF 30 nm back south
+	// of it, 12 and 18 minutes away at 300 knots. The 90 nm to DEF in 30
+	// minutes take 180 knots.
+	for _, tc := range []struct {
+		cmd      string
+		feedback string
+		want     []string
+	}{
+		{"LD DEF AAL123", "RTE FIX/TME RO", []string{"ABC AT 1212Z", "DEF AT 1218Z"}},
+		{"LE DEF/1230 AAL123", "RTE SPEED ADJ", []string{"DEF AT 1230Z-120K", "PRESENT SPEED 300"}},
+	} {
+		status, err, _ := h.ep.tryExecuteUserCommand(h.ctx, tc.cmd, nil, nil)
+		if err != nil || !slices.Equal(status.responseArea, tc.want) ||
+			!slices.Equal(status.feedbackArea, []string{"ACCEPT", tc.feedback}) {
+			t.Errorf("%s: got %q %q, error %v; want %q %q", tc.cmd, status.feedbackArea, status.responseArea, err,
+				tc.feedback, tc.want)
+		}
+	}
+
+	for _, cmd := range []string{"LD XYZ AAL123", "LE XYZ/1230 AAL123"} {
+		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil); err != ErrIllegalValue {
+			t.Errorf("%s: got error %v, want %v for a fix not on the route", cmd, err, ErrIllegalValue)
+		}
+	}
+}
+
 // QB adds a code to the CODE view or removes it, and says so (4.2.4.2,
 // figure 4-31).
 func TestBeaconCodeViewFeedback(t *testing.T) {

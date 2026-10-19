@@ -151,6 +151,12 @@ func registerOpsCommands() {
 	// LC - speed adjustment to position a track over a fix at a specified UTC time
 	registerCommand(CommandModeNone, "LC [FIX]/[NUM] [TRACK]", handleLCFixTimeTrk)
 
+	// LD - times at the fixes of a track's route through a fix
+	registerCommand(CommandModeNone, "LD [FIX] [TRACK]", handleLDFixTrk)
+
+	// LE - speed adjustment to reach a fix on a track's route at a specified UTC time
+	registerCommand(CommandModeNone, "LE [FIX]/[NUM] [TRACK]", handleLEFixTimeTrk)
+
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
 	// LF //FIX [LABEL] [AIRCRAFT...]: Create new CRR group with up to 4 aircraft
@@ -644,7 +650,15 @@ func handleLCFixTimeTrk(ep *Scope, ctx *scope.Context, fix string, hhmm int, trk
 	if !ok {
 		return CommandStatus{}, ErrIllegalValue
 	}
+	rt := ep.TrackState[trk.ADSBCallsign].Track
+	return speedAdjustmentReadout(ctx, "FIX/TIME", fix, math.NMDistance2LL(rt.Location, fixPos), hhmm, rt.Groundspeed)
+}
 
+// speedAdjustmentReadout reads out the change to a track's ground speed
+// that would have it fly dist nm to fix by the UTC time hhmm, and its
+// present ground speed; function names the command in the feedback.
+func speedAdjustmentReadout(ctx *scope.Context, function, fix string, dist float32, hhmm int,
+	groundspeed float32) (CommandStatus, error) {
 	hh, mm := hhmm/100, hhmm%100
 	if hh < 0 || hh > 23 || mm < 0 || mm > 59 {
 		return CommandStatus{}, ErrIllegalValue
@@ -660,16 +674,79 @@ func handleLCFixTimeTrk(ep *Scope, ctx *scope.Context, fix string, hhmm int, trk
 		return CommandStatus{}, ErrIllegalValue
 	}
 
-	rt := ep.TrackState[trk.ADSBCallsign].Track
-	dist := math.NMDistance2LL(rt.Location, fixPos)
 	required := int(math.Round(dist / float32(dtHours)))
-	present := int(math.Round(rt.Groundspeed))
+	present := int(math.Round(groundspeed))
 
 	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "FIX/TIME"},
+		feedbackArea: []string{"ACCEPT", function},
 		responseArea: []string{fmt.Sprintf("%s AT %02d%02dZ%+dK", fix, hh, mm, required-present),
 			fmt.Sprintf("PRESENT SPEED %d", present)},
 	}, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LD and LE - Fix/time readouts along the route of flight
+
+// routeDistances returns the fixes of a track's route from from, its
+// present position, through fix, with the distance flown along the route
+// to each of them.
+func routeDistances(ctx *scope.Context, trk *sim.Track, from math.Point2LL, fix string) ([]string, []float32, error) {
+	if trk.FlightPlan == nil {
+		return nil, nil, ErrIllegalACID
+	}
+	n := slices.Index(trk.RouteFixes, fix)
+	if n == -1 {
+		return nil, nil, ErrIllegalValue
+	}
+
+	fixes := trk.RouteFixes[:n+1]
+	dists := make([]float32, len(fixes))
+	p, d := from, float32(0)
+	for i, f := range fixes {
+		loc, ok := ctx.Client.State.Locate(f)
+		if !ok {
+			return nil, nil, ErrIllegalValue
+		}
+		d += math.NMDistance2LL(p, loc)
+		dists[i], p = d, loc
+	}
+	return fixes, dists, nil
+}
+
+// handleLDFixTrk reads out the time at which the track reaches each fix of
+// its route through the given fix, flying the route at its ground speed
+// (3.12.4).
+func handleLDFixTrk(ep *Scope, ctx *scope.Context, fix string, trk *sim.Track) (CommandStatus, error) {
+	rt := ep.TrackState[trk.ADSBCallsign].Track
+	fixes, dists, err := routeDistances(ctx, trk, rt.Location, fix)
+	if err != nil {
+		return CommandStatus{}, err
+	}
+	if rt.Groundspeed < 1 {
+		return CommandStatus{}, ErrIllegalValue
+	}
+
+	now := ctx.Client.State.SimTime.UTC().Time()
+	var times []string
+	for i, f := range fixes {
+		eta := now.Add(time.Duration(float64(dists[i]/rt.Groundspeed) * float64(time.Hour)))
+		times = append(times, fmt.Sprintf("%s AT %sZ", f, eta.Round(time.Minute).Format("1504")))
+	}
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "RTE FIX/TME RO"},
+		responseArea: times,
+	}, nil
+}
+
+// handleLEFixTimeTrk reads out the change to the track's ground speed that
+// would have it reach the fix at the given time flying its route (3.12.5).
+func handleLEFixTimeTrk(ep *Scope, ctx *scope.Context, fix string, hhmm int, trk *sim.Track) (CommandStatus, error) {
+	rt := ep.TrackState[trk.ADSBCallsign].Track
+	_, dists, err := routeDistances(ctx, trk, rt.Location, fix)
+	if err != nil {
+		return CommandStatus{}, err
+	}
+	return speedAdjustmentReadout(ctx, "RTE SPEED ADJ", fix, dists[len(dists)-1], hhmm, rt.Groundspeed)
 }
 
 ///////////////////////////////////////////////////////////////////////////
