@@ -6,6 +6,7 @@ package eram
 
 import (
 	"fmt"
+	"image"
 	"io/fs"
 	"path/filepath"
 	"slices"
@@ -217,7 +218,11 @@ type Scope struct {
 	// initials are the operating initials of the controller signed in.
 	initials string
 
-	eramCursors map[string]platform.Cursor // loaded once in Activate; keyed by base name ("Eram1", "EramDeletion", ...)
+	// eramCursors are made from cursorImages at cursorBrightness; both are
+	// keyed by base name ("Eram1", "EramDeletion", ...).
+	eramCursors      map[string]platform.Cursor
+	cursorImages     map[string]cursorImage
+	cursorBrightness scope.Brightness
 
 	cursorOverrideSelection string
 	cursorOverrideUntil     time.Time
@@ -408,12 +413,19 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 
 func (ep *Scope) CanTakeKeyboardFocus() bool { return true }
 
+// cursorImage is a decoded ERAM cursor, kept so that the cursor can be made
+// again at another brightness.
+type cursorImage struct {
+	img     *image.RGBA
+	hotspot [2]int
+}
+
 // loadCursors loads all .cur files from the eram-cursors resource directory
-// into ep.eramCursors, keyed by base name (e.g. "Eram1", "EramDeletion").
-// Panics on any failure -- a missing or malformed cursor is a build/install
-// problem, not something the user can recover from.
+// and makes the cursors from them at full brightness. Panics on any failure
+// -- a missing or malformed cursor is a build/install problem, not
+// something the user can recover from.
 func (ep *Scope) loadCursors(pl platform.Platform) {
-	ep.eramCursors = make(map[string]platform.Cursor)
+	ep.cursorImages = make(map[string]cursorImage)
 	cursorSize := int(32*pl.DPIScale() + 0.5)
 	if cursorSize <= 0 {
 		cursorSize = 32
@@ -429,16 +441,38 @@ func (ep *Scope) loadCursors(pl platform.Platform) {
 		if err != nil {
 			panic(fmt.Sprintf("%s: %v", path, err))
 		}
-		cursor, err := pl.CreateCursorFromImage(img, hotspot[0], hotspot[1])
-		if err != nil {
-			panic(fmt.Sprintf("%s: %v", path, err))
-		}
-		ep.eramCursors[strings.TrimSuffix(d.Name(), ".cur")] = cursor
+		ep.cursorImages[strings.TrimSuffix(d.Name(), ".cur")] = cursorImage{img: img, hotspot: hotspot}
 		return nil
 	})
 	if err != nil {
 		panic(err)
 	}
+	ep.makeCursors(pl, 100)
+}
+
+// makeCursors makes the cursors at the given brightness, which the BRIGHT
+// menu's CURSOR sets, replacing those made before.
+func (ep *Scope) makeCursors(pl platform.Platform, b scope.Brightness) {
+	for _, c := range ep.eramCursors {
+		c.Destroy()
+	}
+	ep.eramCursors = make(map[string]platform.Cursor)
+	for name, ci := range ep.cursorImages {
+		// The pixels' alpha is premultiplied, so scaling the colors alone
+		// dims them.
+		img := &image.RGBA{Pix: slices.Clone(ci.img.Pix), Stride: ci.img.Stride, Rect: ci.img.Rect}
+		for i := 0; i < len(img.Pix); i += 4 {
+			for c := range 3 {
+				img.Pix[i+c] = uint8(int(img.Pix[i+c]) * int(b) / 100)
+			}
+		}
+		cursor, err := pl.CreateCursorFromImage(img, ci.hotspot[0], ci.hotspot[1])
+		if err != nil {
+			panic(fmt.Sprintf("%s: %v", name, err))
+		}
+		ep.eramCursors[name] = cursor
+	}
+	ep.cursorBrightness = b
 }
 
 // updateCursorOverride applies the current ERAM cursor to the platform.
@@ -448,6 +482,9 @@ func (ep *Scope) loadCursors(pl platform.Platform) {
 func (ep *Scope) updateCursorOverride(ctx *scope.Context) {
 	if ep.prefSet == nil || ctx.Mouse == nil {
 		return
+	}
+	if b := ep.currentPrefs().Brightness.Cursor; b != ep.cursorBrightness {
+		ep.makeCursors(ctx.Platform, b)
 	}
 
 	if ep.cursorOverrideSelection != "" && !ep.cursorOverrideUntil.IsZero() &&
