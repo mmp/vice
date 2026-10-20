@@ -121,7 +121,8 @@ import (
 // 110: ERAM non-ADS-B indicator display filter and brightness in preference sets
 // 111: ERAM CRR RDB display filter in preference sets
 // 112: ERAM RADAR FILTER display filters in preference sets
-const ViceSerializeVersion = 112
+// 113: ERAM Conflict Alert view settings in preference sets
+const ViceSerializeVersion = 113
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

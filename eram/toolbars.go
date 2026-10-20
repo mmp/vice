@@ -413,7 +413,7 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	inertToggle("AUTO HO\nINHIB"),
 	inertToggle("CFR"),
 	viewButton("CODE", "beacon", func(ps *Preferences) *bool { return &ps.BeaconCodeView.Visible }),
-	inertToggle("CONFLCT\nALERT"),
+	conflictAlertButton(),
 	inertToggle("CPDLC\nADV"),
 	inertToggle("CPDLC\nHIST"),
 	inertToggle("CPDLC\nMSGOUT"),
@@ -430,6 +430,22 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	inertToggle("UA"),
 	viewButton("WX\nREPORT", "wx", func(ps *Preferences) *bool { return &ps.WX.Visible }),
 }}}
+
+// conflictAlertButton makes the CONFLCT ALERT button, which displays and
+// suppresses the Conflict Alert view; the view can only be suppressed while
+// it is empty (4.2.5).
+func conflictAlertButton() toolbarButton {
+	visible := func(ps *Preferences) *bool { return &ps.ConflictAlert.Visible }
+	b := viewButton("CONFLCT\nALERT", "conflict-alert", visible)
+	toggle := b.click
+	b.click = func(ep *Scope, c toolbarClick) error {
+		if *visible(ep.currentPrefs()) && len(ep.caPairs) > 0 {
+			return nil
+		}
+		return toggle(ep, c)
+	}
+	return b
+}
 
 var checkListsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	viewButton("EMERG\nCHECK", "emerg-check", func(ps *Preferences) *bool { return &ps.EmergCheck.Visible }),

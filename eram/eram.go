@@ -611,6 +611,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawCheckListView(ctx, transforms, cb, &emergCheckList)
 	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
 	ep.drawCRRView(ctx, tracks, transforms, cb)
+	ep.drawConflictAlertView(ctx, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
 		ep.popup.draw(ep, ctx, transforms, cb)

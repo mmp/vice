@@ -159,6 +159,15 @@ type Preferences struct {
 	EmergCheck CheckListPreferences
 	PosCheck   CheckListPreferences
 
+	ConflictAlert struct {
+		Visible    bool
+		Position   [2]float32
+		Opaque     bool
+		ShowBorder bool
+		Font       int
+		Bright     scope.Brightness
+	}
+
 	RangeView struct {
 		Visible  bool
 		Position [2]float32
@@ -449,6 +458,11 @@ func makeDefaultPreferences() *Preferences {
 	prefs.EmergCheck = makeDefaultCheckListPreferences()
 	prefs.PosCheck = makeDefaultCheckListPreferences()
 
+	prefs.ConflictAlert.Position = [2]float32{100, 900}
+	prefs.ConflictAlert.ShowBorder = true
+	prefs.ConflictAlert.Font = 2
+	prefs.ConflictAlert.Bright = 90
+
 	prefs.RangeView.Position = [2]float32{300, 900}
 	prefs.RangeView.Bright = 90
 	prefs.RangeView.Presets = [2]int{100, 150}
@@ -601,6 +615,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 112 {
 		p.RadarFilter = makeDefaultPreferences().RadarFilter
+	}
+	if from < 113 {
+		p.ConflictAlert = makeDefaultPreferences().ConflictAlert
 	}
 }
 

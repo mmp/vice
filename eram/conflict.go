@@ -5,13 +5,16 @@
 package eram
 
 import (
+	"fmt"
 	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // ERAM Short-Term Conflict Alert (STCA). Every caUpdateInterval of sim time
@@ -168,6 +171,13 @@ func caConflict(a, b caTarget) bool {
 type CAPair struct {
 	ADSBCallsigns [2]av.ADSBCallsign
 	Start         sim.Time
+	// Suppressed is set from the Conflict Alert view; the pair's data
+	// blocks don't blink while it is (4.2.5).
+	Suppressed bool
+}
+
+func (p CAPair) has(callsign av.ADSBCallsign) bool {
+	return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
 }
 
 // mergeCAPairs reconciles the previous alert list with the pairs detected
@@ -191,16 +201,20 @@ func mergeCAPairs(prev []CAPair, detected [][2]av.ADSBCallsign, now sim.Time) []
 // inConflictAlert reports whether the callsign is a member of any active
 // conflict alert pair.
 func (ep *Scope) inConflictAlert(callsign av.ADSBCallsign) bool {
-	return slices.ContainsFunc(ep.caPairs, func(p CAPair) bool {
-		return p.ADSBCallsigns[0] == callsign || p.ADSBCallsigns[1] == callsign
-	})
+	return slices.ContainsFunc(ep.caPairs, func(p CAPair) bool { return p.has(callsign) })
 }
 
-// caDimmed reports whether the track is in conflict alert and its FDB is in
-// the dim half of the bright/dim blink. The text, leader line, vector, and
-// track position symbol blink together (5.1.5.7).
+// caAlerting reports whether the callsign is a member of an unsuppressed
+// conflict alert pair, whose data blocks blink.
+func (ep *Scope) caAlerting(callsign av.ADSBCallsign) bool {
+	return slices.ContainsFunc(ep.caPairs, func(p CAPair) bool { return !p.Suppressed && p.has(callsign) })
+}
+
+// caDimmed reports whether the track is in an unsuppressed conflict alert
+// and its FDB is in the dim half of the bright/dim blink. The text, leader
+// line, vector, and track position symbol blink together (5.1.5.7).
 func (ep *Scope) caDimmed(callsign av.ADSBCallsign) bool {
-	return ep.inConflictAlert(callsign) && time.Now().UnixMilli()/500%2 == 1
+	return ep.caAlerting(callsign) && time.Now().UnixMilli()/500%2 == 1
 }
 
 // updateConflictAlerts runs an STCA detection pass every caUpdateInterval
@@ -293,4 +307,101 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 	}
 
 	ep.caPairs = mergeCAPairs(ep.caPairs, detected, now)
+	// A new entry displays the Conflict Alert view (4.2.5).
+	if slices.ContainsFunc(ep.caPairs, func(p CAPair) bool { return p.Start.Equal(now) }) {
+		ep.currentPrefs().ConflictAlert.Visible = true
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Conflict Alert view
+
+// conflictAlertChars is the width of a Conflict Alert view entry: the
+// suppression indicator and two ACIDs, each with its sector.
+const conflictAlertChars = 28
+
+// drawConflictAlertView draws the Conflict Alert view, which lists the
+// conflict alert pairs. A TBE on an entry suppresses its pair, and one on
+// the suppression indicator before it unsuppresses it (4.2.5).
+func (ep *Scope) drawConflictAlertView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	if !ps.ConflictAlert.Visible {
+		return
+	}
+
+	rows := util.MapSlice(ep.caPairs, func(p CAPair) Row { return Row{Label: ep.conflictAlertEntry(ctx, p)} })
+	var extents []math.Extent2D
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.ConflictAlert.Position,
+		ID:         "conflict-alert",
+		Title:      "CONFLICT ALERT",
+		Opaque:     ps.ConflictAlert.Opaque,
+		ShowBorder: ps.ConflictAlert.ShowBorder,
+		Brightness: ps.ConflictAlert.Bright,
+		OnMenu: ep.makeViewMenu(ctx, "conflict-alert", 4,
+			func(pb popupBase) popup { return &conflictAlertPopup{popupBase: pb} }),
+		// The view can only be suppressed while it is empty.
+		OnMinimize: func() { ps.ConflictAlert.Visible = len(ep.caPairs) > 0 },
+		RowSource: &ViewRowSource{
+			Rows:                  rows,
+			FontIndex:             ps.ConflictAlert.Font,
+			ContentChars:          conflictAlertChars,
+			MaxCols:               1,
+			VisibleRows:           max(1, len(rows)),
+			RowSpacing:            RowSpacingCompact,
+			EmptyKeepsColumnWidth: true,
+			OnRowExtents: func(_ int, e []math.Extent2D) {
+				extents = e
+			},
+		},
+	})
+
+	mouse := ctx.Mouse
+	if !ep.mouseTertiaryClicked(mouse) {
+		return
+	}
+	indicatorWidth := titleBarButtonPad + 2*charWidth(ep.ERAMFont(ps.ConflictAlert.Font))
+	for i, e := range extents {
+		if e.Inside(mouse.Pos) {
+			ep.caPairs[i].Suppressed = mouse.Pos[0] > e.P0[0]+indicatorWidth
+			ep.clearMouseTertiaryConsumed(mouse)
+			return
+		}
+	}
+}
+
+// conflictAlertEntry returns a pair's entry in the Conflict Alert view:
+// the suppression indicator, then each ACID, followed by the sector that
+// owns it if the user doesn't.
+func (ep *Scope) conflictAlertEntry(ctx *scope.Context, p CAPair) string {
+	var acids [2]string
+	for i, cs := range p.ADSBCallsigns {
+		acids[i] = string(cs)
+		if trk, ok := ctx.GetTrackByCallsign(cs); ok && trk.IsAssociated() {
+			acids[i] = string(trk.FlightPlan.ACID)
+			if !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
+				acids[i] += "(" + sectorDisplayID(ctx, trk.FlightPlan.TrackingController) + ")"
+			}
+		}
+	}
+	return fmt.Sprintf("%s %-12s %s", util.Select(p.Suppressed, "X", " "), acids[0], acids[1])
+}
+
+type conflictAlertPopup struct {
+	popupBase
+}
+
+func (c *conflictAlertPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	ep.DrawERAMMenu(ctx, transforms, cb, c.origin, MenuConfig{
+		Title: "CA",
+		Width: viewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows: []MenuItem{
+			ep.makeBooleanMenuItem(&ps.ConflictAlert.Opaque, "O", "T"),
+			ep.makeToggleMenuItem(&ps.ConflictAlert.ShowBorder, "BORDER"),
+			makeIntMenuItem(ep, &ps.ConflictAlert.Font, "FONT", 1, 3, 1),
+			makeIntMenuItem(ep, &ps.ConflictAlert.Bright, "BRIGHT", 0, 100, 2),
+		},
+	})
 }

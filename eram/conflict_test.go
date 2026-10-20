@@ -5,6 +5,7 @@
 package eram
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -253,5 +254,56 @@ func TestCATRACONDataBlockAltitude(t *testing.T) {
 				t.Errorf("conflict alert: got %v, expected %v", got, tc.alert)
 			}
 		})
+	}
+}
+
+// A new conflict pair displays the Conflict Alert view, which lists each
+// pair with the sector owning each track the user doesn't. A suppressed
+// pair's data blocks stop blinking, and the view can't be suppressed while
+// it has entries (4.2.5).
+func TestConflictAlertView(t *testing.T) {
+	h := makeTrackTestHarness()
+	h.ctx.NmPerLongitude = 45.7
+	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{
+		"1A": {Position: "1A", ERAMFacility: true},
+		"2B": {Position: "2B", ERAMFacility: true},
+	}
+	// Head on at 19,000, 2 miles apart.
+	west := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 19000, Location: math.Point2LL{-73.1, 40}, Groundspeed: 400},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1", TrackingController: "1A", OwningTCW: "TCW1", AssignedAltitude: 19000},
+	}
+	east := &sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "DAL2", Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 19000, Location: math.Point2LL{-73, 40}, Groundspeed: 400},
+		FlightPlan: &sim.FlightPlan{ACID: "DAL2", TrackingController: "2B", OwningTCW: "TCW2", AssignedAltitude: 19000},
+	}
+	h.addTrack(west)
+	h.addTrack(east)
+	h.frame(0)
+	west.Location[0] += 0.01
+	east.Location[0] -= 0.01
+	h.frame(eramUpdateInterval)
+	ps := h.ep.currentPrefs()
+	h.ep.updateConflictAlerts(h.ctx, h.ep.visibleTracks)
+	if len(h.ep.caPairs) != 1 || !ps.ConflictAlert.Visible {
+		t.Fatalf("pairs %+v, view displayed %v; want one pair displayed", h.ep.caPairs, ps.ConflictAlert.Visible)
+	}
+	if got, want := h.ep.conflictAlertEntry(h.ctx, h.ep.caPairs[0]), "  AAL1         DAL2(2B)"; got != want {
+		t.Errorf("entry %q, want %q", got, want)
+	}
+
+	if err := conflictAlertButton().click(h.ep, toolbarClick{}); err != nil || !ps.ConflictAlert.Visible {
+		t.Errorf("CONFLCT ALERT suppressed the view with an entry in it: %v", err)
+	}
+
+	h.ep.caPairs[0].Suppressed = true
+	if got := h.ep.conflictAlertEntry(h.ctx, h.ep.caPairs[0]); !strings.HasPrefix(got, "X AAL1") {
+		t.Errorf("suppressed entry %q has no suppression indicator", got)
+	}
+	if h.ep.caAlerting("AAL1") || !h.ep.inConflictAlert("AAL1") {
+		t.Errorf("a suppressed pair's track: blinking %v, in conflict alert %v; want only the latter",
+			h.ep.caAlerting("AAL1"), h.ep.inConflictAlert("AAL1"))
 	}
 }
