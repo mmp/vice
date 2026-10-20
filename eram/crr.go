@@ -80,8 +80,9 @@ func validCRRLabel(s string) bool {
 // CRR Command Helpers
 ///////////////////////////////////////////////////////////////////////////////
 
-// crrContentChars is the width of the CRR view's contents in characters.
-const crrContentChars = 18
+// crrContentChars is the width of the CRR view's contents in characters:
+// an entry's non-ADS-B indicator column, ACID, and distance.
+const crrContentChars = 20
 
 // drawCRRView renders the Continuous Range Readout view.
 func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
@@ -259,7 +260,12 @@ func (ep *Scope) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math
 			return 0
 		})
 		for _, e := range entries {
-			rows = append(rows, Row{Label: fmt.Sprintf("%s    %.1f", e.cs, e.d)})
+			// Entries start with a column for the non-ADS-B indicator.
+			row := Row{Label: fmt.Sprintf("  %s    %.1f", e.cs, e.d)}
+			if state := ep.TrackState[e.cs]; ps.NonADSBIndicator && state != nil && nonADSB(state.Track) {
+				row.AfterDraw = ep.nonADSBRowMark(ep.ERAMFont(ps.CRR.Font))
+			}
+			rows = append(rows, row)
 			metas = append(metas, rowMeta{label: label, callsign: e.cs})
 		}
 	}

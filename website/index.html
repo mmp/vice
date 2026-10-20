@@ -8247,7 +8247,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <li><code>QF [FLID]</code> — show the flight plan in the RA. The route is shown in the NAS form:
                     <code>..</code> joins fixes flown direct, <code>.</code> joins a fix to an airway or a procedure,
                     and <code>./.</code> follows the departure airport of a route from the present position, as in
-                    <code>KATL./.ROA205050..ROA..HAR..KPIT</code>.</li>
+                    <code>KATL./.ROA205050..ROA..HAR..KPIT</code>. A coral <code>A</code> before the readout marks a
+                    flight that isn't reporting ADS-B; vice takes these to be the flights whose transponders aren't
+                    reporting altitude.</li>
                   <li><code>LA</code> — show the range and bearing between two clicked locations or tracks. If the
                     first is a track, its flying time to the second is shown as well. A trailing <code>/[SPEED]</code>
                     gives the flying time at that speed, and <code>T</code> or <code>T/[SPEED]</code> gives a true

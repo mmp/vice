@@ -511,14 +511,19 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 		The aircraft's flight plan remarks (not in FlightPlan so nothing for now)
 	*/
 	zTime := ctx.Client.State.SimTime.Format("1504")
-	return CommandStatus{
-		responseArea: []string{
-			zTime,
-			fmt.Sprintf("%v %v(%v) %v %v %v %v %v", fp.CID, fp.ACID, fp.TrackingController,
-				formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, formatAssignedAltitude(fp),
-				formatRoute(fp, &ctx.Client.State)),
-		},
-	}, nil
+	readout := fmt.Sprintf("%v %v(%v) %v %v %v %v %v", fp.CID, fp.ACID, fp.TrackingController,
+		formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, formatAssignedAltitude(fp),
+		formatRoute(fp, &ctx.Client.State))
+	// The readout of an active flight always shows the non-ADS-B indicator
+	// (2.13).
+	rt := trk.RadarTrack
+	if state, ok := ep.TrackState[trk.ADSBCallsign]; ok && !state.TrackTime.IsZero() {
+		rt = state.Track
+	}
+	if nonADSB(rt) {
+		readout = nonADSBMark + " " + readout
+	}
+	return CommandStatus{responseArea: []string{zTime, readout}}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

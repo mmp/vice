@@ -51,7 +51,8 @@ func TestAltVFRParser(t *testing.T) {
 
 // QF reads out the flight plan's aircraft data, with the number of aircraft
 // and the heavy indicator, and its route from the departure airport to the
-// destination.
+// destination. A flight not reporting ADS-B gets the non-ADS-B indicator
+// (2.13).
 func TestFlightPlanReadout(t *testing.T) {
 	db.InitDB()
 	InitCommands()
@@ -62,7 +63,7 @@ func TestFlightPlanReadout(t *testing.T) {
 	ctx := &scope.Context{Client: &client.ControlClient{}}
 	ctx.Client.State.Tracks = map[av.ADSBCallsign]*sim.Track{
 		"AAL123": {
-			RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123"},
+			RadarTrack: av.RadarTrack{ADSBCallsign: "AAL123", Mode: av.TransponderModeAltitude},
 			FlightPlan: &sim.FlightPlan{ACID: "AAL123", CID: "123", TrackingController: "15", AircraftType: "B744",
 				AircraftCount: 2, EquipmentSuffix: "L", AssignedSquawk: 0o2301, CruiseSpeed: 480,
 				AssignedAltitude: 35000, DepartureAirport: "KBOS", Route: "SSOXS SEY PARCH4", ArrivalAirport: "KJFK"},
@@ -73,6 +74,13 @@ func TestFlightPlanReadout(t *testing.T) {
 	want := []string{"0000", "123 AAL123(15) 2H/B744/L 2301 480 350 KBOS..SSOXS..SEY.PARCH4.KJFK"}
 	if err != nil || !slices.Equal(status.responseArea, want) {
 		t.Errorf("QF AAL123: got %q, error %v; want %q", status.responseArea, err, want)
+	}
+
+	ctx.Client.State.Tracks["AAL123"].Mode = av.TransponderModeOn
+	status, err, _ = ep.tryExecuteUserCommand(ctx, "QF AAL123", nil, nil)
+	want[1] = nonADSBMark + " " + want[1]
+	if err != nil || !slices.Equal(status.responseArea, want) {
+		t.Errorf("QF AAL123 without Mode C: got %q, error %v; want %q", status.responseArea, err, want)
 	}
 }
 

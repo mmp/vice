@@ -383,8 +383,8 @@ var dbFieldsMenu = toolbarMenu{rows: [][]toolbarButton{{
 		}),
 	toggleButton("PORTAL\nFENCE", func(ps *Preferences) *bool { return &ps.PortalFence }),
 }, {
-	inertToggle("NON-\nADS-B"),
-	inertIncDec("NONADSB\n90"),
+	toggleButton("NON-\nADS-B", func(ps *Preferences) *bool { return &ps.NonADSBIndicator }),
+	incDecButton("NONADSB", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.NonADSB }, 0, 100, 2),
 	inertToggle("SAT\nCOMM"),
 	inertToggle("TFM\nREROUTE"),
 	inertToggle("CRR\nRDB"),

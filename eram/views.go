@@ -421,6 +421,10 @@ func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 ///////////////////////////////////////////////////////////////////////////
 // RA: Response Area
 
+// nonADSBMark stands for the non-ADS-B indicator in the RA's text; the RA
+// draws it as a coral A (4.3.2).
+const nonADSBMark = "\x01"
+
 // drawResponseArea renders the RA, which shows one response at a time. It
 // is four lines tall and grows with the response to ten lines, past which
 // it scrolls; responses are cut off after 300 lines (4.3.2). Width fits
@@ -444,8 +448,10 @@ func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transform
 	}
 	maxOffset := max(0, len(lines)-visible)
 	ep.raScroll.Offset = math.Clamp(ep.raScroll.Offset, 0, maxOffset)
-	shown := strings.Join(lines[ep.raScroll.Offset:min(len(lines), ep.raScroll.Offset+visible)], "\n")
+	shownLines := lines[ep.raScroll.Offset:min(len(lines), ep.raScroll.Offset+visible)]
+	shown := strings.ReplaceAll(strings.Join(shownLines, "\n"), nonADSBMark, " ")
 	textColor := ps.RA.Bright.ScaleRGB(colors.toolbar.text)
+	markStyle := renderer.TextStyle{Font: font, Color: ps.Brightness.NonADSB.ScaleRGB(colors.coral)}
 
 	v := View{
 		Position:   &ps.RA.Position,
@@ -459,9 +465,15 @@ func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transform
 		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", 4,
 			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
 		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
-			topLeft := [2]float32{body.P0[0], body.P1[1]}
-			b.Td.AddText(shown, [2]float32{topLeft[0] + 2, topLeft[1] - 2},
+			topLeft := [2]float32{body.P0[0] + 2, body.P1[1] - 2}
+			b.Td.AddText(shown, topLeft,
 				renderer.TextStyle{Font: font, Color: textColor, LineSpacing: lineSpacing})
+			for i, line := range shownLines {
+				if j := strings.Index(line, nonADSBMark); j >= 0 {
+					b.Td.AddText("A", [2]float32{topLeft[0] + float32(j)*charWidth(font), topLeft[1] - float32(i)*lineH},
+						markStyle)
+				}
+			}
 		},
 	}
 	if maxOffset > 0 {

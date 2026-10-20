@@ -221,6 +221,7 @@ type CommonPreferences struct {
 		Fence      scope.Brightness
 		DBFEL      scope.Brightness
 		Outage     scope.Brightness
+		NonADSB    scope.Brightness
 	}
 
 	Line4Type    int
@@ -229,6 +230,10 @@ type CommonPreferences struct {
 	// PortalFence controls display of the FDB portal fence, which separates
 	// line 0 and column 0 from the rest of the datablock.
 	PortalFence bool
+
+	// NonADSBIndicator displays the non-ADS-B indicator in the views that
+	// filter it (2.13).
+	NonADSBIndicator bool
 
 	// UnpairedLDBCallsigns shows unpaired LDBs in Enhanced format, with the
 	// ADS-B callsign rather than the beacon code (5.1.3). The BCAST FLID
@@ -345,6 +350,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.Brightness.Fence = 90
 	prefs.Brightness.DBFEL = 80
 	prefs.Brightness.Outage = 80
+	prefs.Brightness.NonADSB = 90
 
 	prefs.AltitudeLimits.Targets = sim.UnrestrictedAltitudeLimits
 	prefs.AltitudeLimits.LDBs = sim.UnrestrictedAltitudeLimits
@@ -364,6 +370,7 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.FDBLdrLength = 1 // Default to normal mode
 	prefs.PortalFence = true
+	prefs.NonADSBIndicator = true
 
 	prefs.VideoMapVisible = make(map[string]any)
 	prefs.VideoMapBrightness = make(map[string]scope.Brightness)
@@ -562,6 +569,11 @@ func (p *Preferences) Upgrade(from, to int) {
 		// BCKLGHT now dims the display; it was 90 by default when it did
 		// nothing.
 		p.Brightness.Backlight = makeDefaultPreferences().Brightness.Backlight
+	}
+	if from < 110 {
+		def := makeDefaultPreferences()
+		p.NonADSBIndicator = def.NonADSBIndicator
+		p.Brightness.NonADSB = def.Brightness.NonADSB
 	}
 }
 

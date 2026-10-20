@@ -6,6 +6,7 @@ package eram
 
 import (
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -774,5 +775,36 @@ func TestPointOutsToAcknowledge(t *testing.T) {
 		if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, nil, nil); err != want {
 			t.Errorf("%s: got error %v, want %v", cmd, err, want)
 		}
+	}
+}
+
+// CRR entries for flights not reporting ADS-B get the non-ADS-B indicator
+// while the NON-ADS-B filter is on (2.13).
+func TestCRRNonADSBIndicator(t *testing.T) {
+	h := makeTrackTestHarness()
+	for cs, mode := range map[av.ADSBCallsign]av.TransponderMode{"AAL1": av.TransponderModeAltitude,
+		"N12": av.TransponderModeOn} {
+		h.addTrack(&sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: cs, Mode: mode, TransponderAltitude: 5000,
+			Location: math.Point2LL{-73, 40}}})
+	}
+	h.frame(0)
+	h.ep.CRRGroups["A"] = &CRRGroup{Label: "A", Aircraft: map[av.ADSBCallsign]struct{}{"AAL1": {}, "N12": {}}}
+	pos := map[av.ADSBCallsign]math.Point2LL{"AAL1": {-73, 40}, "N12": {-73, 40}}
+
+	marked := func() []string {
+		var cs []string
+		for _, r := range h.ep.buildCRRList([]string{"A"}, pos).Rows {
+			if r.AfterDraw != nil {
+				cs = append(cs, strings.Fields(r.Label)[0])
+			}
+		}
+		return cs
+	}
+	if got := marked(); !slices.Equal(got, []string{"N12"}) {
+		t.Errorf("filter on: entries %v marked, want N12", got)
+	}
+	h.ep.currentPrefs().NonADSBIndicator = false
+	if got := marked(); len(got) != 0 {
+		t.Errorf("filter off: entries %v marked, want none", got)
 	}
 }

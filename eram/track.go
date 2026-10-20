@@ -362,6 +362,23 @@ func inReducedSeparationAirspace(alt float32) bool {
 	return alt <= 23000
 }
 
+// nonADSB reports whether a radar sample gets the non-ADS-B indicator, as
+// one from a flight that isn't both ADS-B equipped and reporting (2.13).
+// ADS-B reports carry pressure altitude, so vice takes every transponder
+// reporting Mode C to be broadcasting ADS-B and no other.
+func nonADSB(rt av.RadarTrack) bool {
+	return rt.Mode != av.TransponderModeAltitude
+}
+
+// nonADSBRowMark returns a Row.AfterDraw that draws the non-ADS-B
+// indicator at the start of a row, in the column its label leaves for it.
+func (ep *Scope) nonADSBRowMark(font *renderer.Font) func(math.Extent2D, [2]float32, *ViewBuilders) {
+	style := renderer.TextStyle{Font: font, Color: ep.currentPrefs().Brightness.NonADSB.ScaleRGB(colors.coral)}
+	return func(row math.Extent2D, origin [2]float32, b *ViewBuilders) {
+		b.Td.AddText("A", [2]float32{row.P0[0] + titleBarButtonPad, origin[1]}, style)
+	}
+}
+
 // targetColor returns the color of a track's target and position symbols,
 // which the PR TGT and UNP TGT brightness controls set for paired and
 // unpaired targets (Table 3-3).

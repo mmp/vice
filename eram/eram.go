@@ -87,6 +87,9 @@ var colors = struct {
 	// point-out indicator, and outline rectangles.
 	yellow renderer.RGB
 
+	// The non-ADS-B indicator's coral.
+	coral renderer.RGB
+
 	// Input-area status indicators.
 	// TODO: Find the actual ERAM red and green values for these.
 	errorRed, successGreen renderer.RGB
@@ -114,6 +117,7 @@ var colors = struct {
 	pauseOverlay pauseOverlayPalette
 }{
 	yellow:          renderer.RGB{R: .894, G: .894},
+	coral:           renderer.RGBFromHex(0xFF99CC),
 	errorRed:        renderer.RGB{R: 1, G: 0, B: 0},
 	successGreen:    renderer.RGB{R: 0, G: 1, B: 0},
 	scopeBackground: renderer.RGB{R: 0, G: 0, B: .506},
