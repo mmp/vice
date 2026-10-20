@@ -127,7 +127,8 @@ import (
 // 116: ERAM FLIGHT EVENT view settings in preference sets
 // 117: ERAM support toolbars in preference sets
 // 118: ERAM Status and Outage view settings in preference sets
-const ViceSerializeVersion = 118
+// 119: ERAM Departure List view settings in preference sets
+const ViceSerializeVersion = 119
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

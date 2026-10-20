@@ -210,6 +210,23 @@ type Preferences struct {
 		Bright     scope.Brightness
 	}
 
+	// DeptList holds the Departure List view's settings (4.2.12).
+	// ShowIndicators is its TEAROFF setting.
+	DeptList struct {
+		Visible        bool
+		Position       [2]float32
+		Opaque         bool
+		ShowBorder     bool
+		ShowIndicators bool
+		Lines          int
+		Font           int
+		Bright         scope.Brightness
+		// SublistOrder is the order the sublists were sorted in by hand;
+		// it is empty when they are in fix name order.
+		SublistOrder       []string
+		SuppressedSublists []string
+	}
+
 	// StatusView's text is drawn at the MCA's brightness (4.3.4.2).
 	StatusView struct {
 		Visible  bool
@@ -565,6 +582,13 @@ func makeDefaultPreferences() *Preferences {
 	prefs.FlightEvent.Font = 2
 	prefs.FlightEvent.Bright = 90
 
+	prefs.DeptList.Position = [2]float32{100, 900}
+	prefs.DeptList.ShowBorder = true
+	prefs.DeptList.ShowIndicators = true
+	prefs.DeptList.Lines = 15
+	prefs.DeptList.Font = 2
+	prefs.DeptList.Bright = 90
+
 	prefs.StatusView.Position = [2]float32{100, 900}
 	prefs.StatusView.Font = 2
 	prefs.OutageView.Position = [2]float32{100, 900}
@@ -745,6 +769,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	if from < 118 {
 		def := makeDefaultPreferences()
 		p.StatusView, p.OutageView = def.StatusView, def.OutageView
+	}
+	if from < 119 {
+		p.DeptList = makeDefaultPreferences().DeptList
 	}
 }
 

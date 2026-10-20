@@ -338,6 +338,11 @@ type Scope struct {
 	felScroll     ViewScrollState
 	felSelect     ViewSelectionState
 
+	// DEPT LIST state: the flights the user deleted from the view and the
+	// view's scroll.
+	deptDeleted map[sim.ACID]struct{}
+	deptScroll  ViewScrollState
+
 	// CRR state (session)
 	CRRGroups        map[string]*CRRGroup `json:"CRRGroups,omitempty"`
 	crrFixRects      map[string]math.Extent2D
@@ -649,6 +654,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawCFRView(ctx, transforms, cb)
 	ep.drawSAAFilterView(ctx, transforms, cb)
 	ep.drawFlightEventView(ctx, transforms, cb)
+	ep.drawDeptListView(ctx, transforms, cb)
 	ep.drawConflictAlertView(ctx, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
@@ -733,6 +739,8 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.felEntryCount = 0
 	ep.felScroll = ViewScrollState{}
 	ep.felSelect = ViewSelectionState{Selected: -1}
+	clear(ep.deptDeleted)
+	ep.deptScroll = ViewScrollState{}
 	ep.AltimSetAirports = nil
 	ep.altimSetScroll = ViewScrollState{}
 	ep.altimSetSelect = ViewSelectionState{Selected: -1}

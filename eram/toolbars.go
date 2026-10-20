@@ -443,7 +443,7 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	inertToggle("CPDLC\nTOC SET"),
 	viewButton("CRR", "crr", func(ps *Preferences) *bool { return &ps.CRR.Visible }),
 }, {
-	inertToggle("DEPT\nLIST"),
+	viewButton("DEPT\nLIST", "dept-list", func(ps *Preferences) *bool { return &ps.DeptList.Visible }),
 	viewButton("FLIGHT\nEVENT", "flight-event", func(ps *Preferences) *bool { return &ps.FlightEvent.Visible }),
 	inertToggle("GROUP\nSUP"),
 	inertToggle("HOLD\nLIST"),
