@@ -512,11 +512,17 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
 	case LimitedDatablock:
-		db := ep.ldbArena.AllocClear()
 		state := ep.TrackState[trk.ADSBCallsign]
+		if trk.IsUnassociated() && state.Track.Mode == av.TransponderModeStandby {
+			// A primary target has no beacon data for an LDB.
+			return nil
+		}
+		db := ep.ldbArena.AllocClear()
 		id := ep.limitedDatablockID(trk, state)
 		dbWriteText(db.line0[:], id, color, false)
-		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.Track.TransponderAltitude+50)/100), color, false)
+		if state.Track.Mode == av.TransponderModeAltitude {
+			dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.Track.TransponderAltitude+50)/100), color, false)
+		}
 		// The code goes on line 3 unless line 1 already shows it (5.1.5.5).
 		if ep.dbOverrideHeld(overrideCode) && state.Track.Mode != av.TransponderModeStandby &&
 			id != state.Track.Squawk.String() {

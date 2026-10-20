@@ -394,7 +394,8 @@ func (ep *Scope) updateVisibleTracks(ctx *scope.Context) { // When radar holes a
 	for _, trk := range ctx.Client.State.Tracks {
 		// Radar wholes neeeded for this. For now, return true
 		state := ep.TrackState[trk.ADSBCallsign]
-		if state == nil || state.TrackTime.IsZero() || state.Track.TransponderAltitude <= 49 {
+		if state == nil || state.TrackTime.IsZero() || trk.IsUnsupportedDB() ||
+			(state.Track.Mode == av.TransponderModeAltitude && state.Track.TransponderAltitude <= 49) {
 			continue
 		}
 		ep.visibleTracks = append(ep.visibleTracks, *trk)
@@ -492,14 +493,45 @@ func (ep *Scope) passesAltitudeLimits(ctx *scope.Context, trk sim.Track, limits 
 // targetVisible reports whether a track's target symbol, and with it its
 // history trail, is drawn.
 func (ep *Scope) targetVisible(ctx *scope.Context, trk sim.Track) bool {
-	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.Targets)
+	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.Targets) &&
+		ep.radarFilterShowsTarget(ctx, trk)
+}
+
+// radarFilterShowsTarget reports whether the RADAR FILTER menu's filters
+// display a track's target (3.15). Those filters are for targets without
+// Mode C: the others, and those of paired tracks, are always displayed.
+func (ep *Scope) radarFilterShowsTarget(ctx *scope.Context, trk sim.Track) bool {
+	rf := &ep.currentPrefs().RadarFilter
+	rt := ep.TrackState[trk.ADSBCallsign].Track
+	switch {
+	case trk.IsAssociated() || rt.Mode == av.TransponderModeAltitude:
+		return true
+	case rt.Mode == av.TransponderModeStandby:
+		return rf.AllPrimary
+	default:
+		return rf.NonModeC || rf.AllPrimary || (rf.SelectBeacon && ep.onBeaconCodeList(ctx, rt.Squawk))
+	}
 }
 
 // datablockVisible reports whether a datablock should be drawn. The LDB
-// altitude limits filter is independent of the target one, so a datablock may
-// be drawn for a track whose target is filtered out.
+// filters are independent of the target ones, so a datablock may be drawn
+// for a track whose target is filtered out.
 func (ep *Scope) datablockVisible(ctx *scope.Context, trk sim.Track) bool {
-	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.LDBs)
+	return ep.passesAltitudeLimits(ctx, trk, ep.currentPrefs().AltitudeLimits.LDBs) &&
+		(ep.datablockType(ctx, trk) == FullDatablock || ep.radarFilterShowsLDB(ctx, trk))
+}
+
+// radarFilterShowsLDB reports whether the RADAR FILTER menu's filters
+// display a track's LDB: ALL LDBS displays them all, and otherwise PR LDB
+// and UNP LDB display the paired and unpaired ones with codes on the
+// beacon code list (3.15).
+func (ep *Scope) radarFilterShowsLDB(ctx *scope.Context, trk sim.Track) bool {
+	rf := &ep.currentPrefs().RadarFilter
+	if rf.AllLDBs {
+		return true
+	}
+	return util.Select(trk.IsAssociated(), rf.PairedLDBs, rf.UnpairedLDBs) &&
+		ep.onBeaconCodeList(ctx, ep.TrackState[trk.ADSBCallsign].Track.Squawk)
 }
 
 // datablockType chooses which datablock format to display. Design.

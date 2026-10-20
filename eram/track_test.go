@@ -808,3 +808,75 @@ func TestCRRNonADSBIndicator(t *testing.T) {
 		t.Errorf("filter off: entries %v marked, want none", got)
 	}
 }
+
+// The RADAR FILTER menu's target filters display the targets without Mode
+// C: ALL PRIM those of primary returns and beacons, NON MODE-C those of
+// beacons, and SELECT BEACON those whose codes are on the beacon code list.
+// Its LDB filters display every LDB, or the paired or unpaired ones whose
+// codes are on the list (3.15).
+func TestRadarFilter(t *testing.T) {
+	h := makeTrackTestHarness()
+	tracks := map[av.ADSBCallsign]*sim.Track{
+		"MODEC":   {RadarTrack: av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o1200, TransponderAltitude: 5000}},
+		"MODEA":   {RadarTrack: av.RadarTrack{Mode: av.TransponderModeOn, Squawk: 0o4321}},
+		"PRIMARY": {RadarTrack: av.RadarTrack{Mode: av.TransponderModeStandby}},
+		"PAIRED": {RadarTrack: av.RadarTrack{Mode: av.TransponderModeOn, Squawk: 0o2345},
+			FlightPlan: &sim.FlightPlan{ACID: "PAIRED", OwningTCW: "TCW2"}},
+	}
+	for cs, trk := range tracks {
+		trk.ADSBCallsign, trk.Location = cs, math.Point2LL{-73, 40}
+		h.addTrack(trk)
+	}
+	h.addTrack(&sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: "__UNSUPPORTED", Location: math.Point2LL{-73, 40}},
+		FlightPlan: &sim.FlightPlan{ACID: "UNSUPPORTED", Location: math.Point2LL{-73, 40}}})
+	h.frame(0)
+	if len(h.ep.visibleTracks) != len(tracks) {
+		t.Errorf("visible tracks %d, want the %d radar tracks", len(h.ep.visibleTracks), len(tracks))
+	}
+
+	rf := &h.ep.currentPrefs().RadarFilter
+	shown := func(visible func(*scope.Context, sim.Track) bool) []string {
+		var cs []string
+		for _, trk := range h.ep.visibleTracks {
+			if visible(h.ctx, trk) {
+				cs = append(cs, string(trk.ADSBCallsign))
+			}
+		}
+		slices.Sort(cs)
+		return cs
+	}
+	check := func(what string, visible func(*scope.Context, sim.Track) bool, want ...string) {
+		t.Helper()
+		if got := shown(visible); !slices.Equal(got, want) {
+			t.Errorf("%s: %v displayed, want %v", what, got, want)
+		}
+	}
+
+	check("targets, all filters on", h.ep.targetVisible, "MODEA", "MODEC", "PAIRED", "PRIMARY")
+	rf.AllPrimary = false
+	check("targets without ALL PRIM", h.ep.targetVisible, "MODEA", "MODEC", "PAIRED")
+	rf.NonModeC = false
+	check("targets without NON MODE-C", h.ep.targetVisible, "MODEC", "PAIRED")
+	h.ep.AddedBeaconCodes = []av.Squawk{0o4321}
+	check("targets with 4321 on the list", h.ep.targetVisible, "MODEA", "MODEC", "PAIRED")
+	rf.SelectBeacon = false
+	check("targets without SELECT BEACON", h.ep.targetVisible, "MODEC", "PAIRED")
+
+	check("LDBs, all filters on", h.ep.datablockVisible, "MODEA", "MODEC", "PAIRED", "PRIMARY")
+	rf.AllLDBs = false
+	check("LDBs without ALL LDBS", h.ep.datablockVisible, "MODEA")
+	h.ep.AddedBeaconCodes = append(h.ep.AddedBeaconCodes, 0o2345)
+	check("LDBs with 2345 on the list", h.ep.datablockVisible, "MODEA", "PAIRED")
+	rf.UnpairedLDBs = false
+	check("LDBs without UNP LDB", h.ep.datablockVisible, "PAIRED")
+	rf.PairedLDBs = false
+	check("LDBs without PR LDB", h.ep.datablockVisible)
+
+	if db := h.ep.getDatablock(h.ctx, *tracks["PRIMARY"], LimitedDatablock, colors.yellow); db != nil {
+		t.Errorf("primary target has an LDB: %+v", db)
+	}
+	ldb := h.ep.getDatablock(h.ctx, *tracks["MODEA"], LimitedDatablock, colors.yellow).(*limitedDatablock)
+	if line0, line1 := dbText(ldb.line0[:]), dbText(ldb.line1[:]); line0 != "4321" || line1 != "" {
+		t.Errorf("LDB of a target without Mode C: %q / %q, want its code and no altitude", line0, line1)
+	}
+}

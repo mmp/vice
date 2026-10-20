@@ -120,7 +120,8 @@ import (
 // 109: ERAM BCKLGHT dims the display, and its default is now 100
 // 110: ERAM non-ADS-B indicator display filter and brightness in preference sets
 // 111: ERAM CRR RDB display filter in preference sets
-const ViceSerializeVersion = 111
+// 112: ERAM RADAR FILTER display filters in preference sets
+const ViceSerializeVersion = 112
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

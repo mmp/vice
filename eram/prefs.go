@@ -62,6 +62,17 @@ type Preferences struct {
 	VideoMapBrightness map[string]scope.Brightness
 	HistoryLength      int
 
+	// RadarFilter holds the RADAR FILTER menu's display filters (3.15).
+	// The beacon code list is that of the CODE view.
+	RadarFilter struct {
+		AllLDBs      bool // every LDB
+		PairedLDBs   bool // paired LDBs with codes on the beacon code list
+		UnpairedLDBs bool // unpaired LDBs with codes on the beacon code list
+		AllPrimary   bool // primary targets and beacon targets without Mode C
+		NonModeC     bool // beacon targets without Mode C
+		SelectBeacon bool // targets with codes on the beacon code list
+	}
+
 	UseRightClick bool
 
 	// CRR view preferences and configuration
@@ -400,6 +411,12 @@ func makeDefaultPreferences() *Preferences {
 	prefs.CRR.RDBs = true
 
 	prefs.HistoryLength = 5
+	prefs.RadarFilter.AllLDBs = true
+	prefs.RadarFilter.PairedLDBs = true
+	prefs.RadarFilter.UnpairedLDBs = true
+	prefs.RadarFilter.AllPrimary = true
+	prefs.RadarFilter.NonModeC = true
+	prefs.RadarFilter.SelectBeacon = true
 
 	prefs.AltimSet.Visible = false
 	prefs.AltimSet.Position = [2]float32{100, 900}
@@ -581,6 +598,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 111 {
 		p.CRR.RDBs = makeDefaultPreferences().CRR.RDBs
+	}
+	if from < 112 {
+		p.RadarFilter = makeDefaultPreferences().RadarFilter
 	}
 }
 

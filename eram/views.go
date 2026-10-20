@@ -10,6 +10,7 @@ package eram
 
 import (
 	"fmt"
+	"iter"
 	"slices"
 	"strings"
 
@@ -225,13 +226,7 @@ func (ep *Scope) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transfo
 // tracks we own, in the order dictated by SortManual. Row.Color is left zero
 // — the View fills in the default text color.
 func beaconCodeRows(ctx *scope.Context, ep *Scope, ps *Preferences) []Row {
-	// Codes of aircraft whose tracks we own.
-	var owned []av.Squawk
-	for _, trk := range ctx.Client.State.Tracks {
-		if trk.IsAssociated() && ctx.UserOwnsFlightPlan(trk.FlightPlan) {
-			owned = append(owned, ep.TrackState[trk.ADSBCallsign].Track.Squawk)
-		}
-	}
+	owned := slices.Collect(ep.ownedBeaconCodes(ctx))
 
 	makeRow := func(code av.Squawk) Row {
 		s := code.String()
@@ -268,6 +263,24 @@ func beaconCodeRows(ctx *scope.Context, ep *Scope, ps *Preferences) []Row {
 		}
 	}
 	return rows
+}
+
+// ownedBeaconCodes returns the codes of the aircraft whose tracks the user
+// owns, which are on the beacon code list along with those added to it.
+func (ep *Scope) ownedBeaconCodes(ctx *scope.Context) iter.Seq[av.Squawk] {
+	return func(yield func(av.Squawk) bool) {
+		for _, trk := range ctx.Client.State.Tracks {
+			if trk.IsAssociated() && ctx.UserOwnsFlightPlan(trk.FlightPlan) &&
+				!yield(ep.TrackState[trk.ADSBCallsign].Track.Squawk) {
+				return
+			}
+		}
+	}
+}
+
+// onBeaconCodeList reports whether a code is on the beacon code list.
+func (ep *Scope) onBeaconCodeList(ctx *scope.Context, code av.Squawk) bool {
+	return slices.Contains(ep.AddedBeaconCodes, code) || util.SeqContains(ep.ownedBeaconCodes(ctx), code)
 }
 
 type beaconCodeViewPopup struct {

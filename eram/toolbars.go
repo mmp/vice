@@ -481,14 +481,15 @@ func videoMapFilterButton(vm videomaps.ERAMMap) toolbarButton {
 }
 
 var radarFilterMenu = toolbarMenu{rows: [][]toolbarButton{{
-	inertToggle("ALL\nLDBS"),
-	inertToggle("PR\nLDB"),
-	inertToggle("UNP\nLDB"),
-	inertToggle("ALL\nPRIM"),
-	inertToggle("NON\nMODE-C"),
+	toggleButton("ALL\nLDBS", func(ps *Preferences) *bool { return &ps.RadarFilter.AllLDBs }),
+	toggleButton("PR\nLDB", func(ps *Preferences) *bool { return &ps.RadarFilter.PairedLDBs }),
+	toggleButton("UNP\nLDB", func(ps *Preferences) *bool { return &ps.RadarFilter.UnpairedLDBs }),
+	toggleButton("ALL\nPRIM", func(ps *Preferences) *bool { return &ps.RadarFilter.AllPrimary }),
+	toggleButton("NON\nMODE-C", func(ps *Preferences) *bool { return &ps.RadarFilter.NonModeC }),
 }, {
-	inertToggle("SELECT\nBEACON"),
+	toggleButton("SELECT\nBEACON", func(ps *Preferences) *bool { return &ps.RadarFilter.SelectBeacon }),
 	inertToggle("PERM\nECHO"),
+	// vice has no strobes to display.
 	inertToggle("STROBE\nLINES"),
 	incDecButton("HISTORY", func(ps *Preferences) *int { return &ps.HistoryLength }, 0, 5, 1),
 }}}
