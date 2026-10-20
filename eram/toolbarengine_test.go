@@ -775,12 +775,110 @@ func TestMasterToolbarArrows(t *testing.T) {
 		t.Errorf("at the bottom: arrows %v, want only up", got)
 	}
 	draw := placedButtonFace(t, ep, ep.toolbar.layout.main, "DRAW")
-	if band := ep.toolbar.layout.bands[masterDock]; band.P0[1] != 0 || !band.Inside(draw.Center()) {
+	if band := ep.toolbar.layout.regions[masterDock]; band.P0[1] != 0 || !band.Inside(draw.Center()) {
 		t.Errorf("master toolbar band %v with DRAW at %v, want them at the bottom of the window", band, draw)
 	}
 	clickToolbarAt(ep, ctx, ep.toolbar.layout.arrows[0].extent.Center(), platform.MouseButtonPrimary)
 	ep.handleToolbarInput(ctx)
-	if band := ep.toolbar.layout.bands[masterDock]; band.P1[1] != ctx.DrawExtent.Height()-1 {
+	if band := ep.toolbar.layout.regions[masterDock]; band.P1[1] != ctx.DrawExtent.Height()-1 {
 		t.Errorf("master toolbar band %v after moving up, want it at the top of the window", band)
+	}
+}
+
+// The support toolbars hold buttons torn off the master toolbar: the
+// horizontal one in a band below the master toolbar, its menus displayed
+// horizontally, and the left and right ones down the window's edges, their
+// menus displayed vertically. More than one of their menus may be
+// displayed. A suppressed toolbar's buttons aren't displayed, and a
+// raised one is over the views (2.3.4, 2.3.5).
+func TestSupportToolbars(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ctx.Platform = captureMousePlatform{}
+	ps := ep.currentPrefs()
+	click := func(text string) {
+		t.Helper()
+		if err := ep.toolbarButtonByID(toolbarButtonID(t, ep, text)).click(ep, toolbarClick{}); err != nil {
+			t.Fatal(err)
+		}
+		ep.handleToolbarInput(ctx)
+	}
+	click("HORIZ\nTOOLBAR")
+	click("LEFT\nTOOLBAR")
+	click("RIGHT\nTOOLBAR")
+	l := &ep.toolbar.layout
+	master, horiz, left := l.regions[masterDock], l.regions[horizDock], l.regions[leftDock]
+	if horiz.P1[1] != master.P0[1] || left.P1[1] != horiz.P0[1] || left.P0[0] != 0 {
+		t.Fatalf("master %v, horizontal %v, left %v: want the horizontal toolbar below the master and the left one below both",
+			master, horiz, left)
+	}
+
+	// drop drags the main toolbar's button with the given text by its
+	// tear-off bar to p.
+	drop := func(text string, p [2]float32) {
+		t.Helper()
+		ep.handleToolbarInput(ctx)
+		clickToolbarAt(ep, ctx, ep.toolbar.layout.main.levels[0].find(toolbarButtonID(t, ep, text)).tab.Center(),
+			platform.MouseButtonPrimary)
+		clickToolbarAt(ep, ctx, p, platform.MouseButtonPrimary)
+		ep.handleToolbarInput(ctx)
+	}
+	drop("BRIGHT", ep.toolbarSlots(ctx, horizDock)[0].Center())
+	// FONT dropped further along the band goes after BRIGHT.
+	drop("FONT", [2]float32{800, horiz.Center()[1]})
+	drop("DB\nFIELDS", ep.toolbarSlots(ctx, leftDock)[0].Center())
+	drop("CURSOR", ep.toolbarSlots(ctx, rightDock)[0].Center())
+	bright, font, dbFields := toolbarButtonID(t, ep, "BRIGHT"), toolbarButtonID(t, ep, "FONT"), toolbarButtonID(t, ep, "DB\nFIELDS")
+	if got := ps.DockedButtons[horizDock]; !slices.Equal(got, []string{bright, font}) {
+		t.Errorf("horizontal toolbar holds %v, want BRIGHT and FONT", got)
+	}
+
+	for _, inst := range ep.toolbar.tornOff {
+		inst.open = []string{inst.id}
+	}
+	ep.handleToolbarInput(ctx)
+	placed := func(id string) *placedInstance {
+		for i := range ep.toolbar.layout.tornOff {
+			if pi := &ep.toolbar.layout.tornOff[i]; pi.instance.id == id {
+				return pi
+			}
+		}
+		t.Fatalf("%s isn't displayed", id)
+		return nil
+	}
+	if pi := placed(font); len(pi.levels) != 2 {
+		t.Errorf("FONT's menu isn't displayed beside BRIGHT's")
+	}
+	if menu, tab := placed(bright).extent(), placed(font).levels[0].buttons[0].tab; tab.P0[0] <= menu.P1[0] {
+		t.Errorf("FONT at %v isn't past BRIGHT's menu, which ends at %v", tab, menu.P1[0])
+	}
+	db := placed(dbFields)
+	button := db.levels[0].buttons[0].face
+	nonRVSM := placedButtonFace(t, ep, db, "NON-\nRVSM")
+	nonADSB := placedButtonFace(t, ep, db, "NON-\nADS-B")
+	if nonRVSM.P0[0] != button.P0[0] || nonRVSM.P1[1] != button.P1[1]-toolbarRowPitch ||
+		nonADSB.P1[1] != nonRVSM.P1[1] || nonADSB.P0[0] <= nonRVSM.P1[0] {
+		t.Errorf("DB FIELDS at %v displays its menu with NON-RVSM at %v and NON-ADS-B at %v, want it vertically below",
+			button, nonRVSM, nonADSB)
+	}
+	cursor := placed(toolbarButtonID(t, ep, "CURSOR"))
+	if e := cursor.levels[1].extent; e.P1[0] > ctx.DrawExtent.Width() {
+		t.Errorf("the right toolbar's CURSOR menu %v runs off the window", e)
+	}
+
+	ep.viewExtents = []math.Extent2D{{P0: button.P0, P1: button.P1}}
+	ep.handleToolbarInput(ctx)
+	if hit := ep.toolbarHitAt(button.Center()); hit.button != nil {
+		t.Errorf("lowered: a view over DB FIELDS doesn't cover it: %+v", hit)
+	}
+	click("LEFT\nRAISE")
+	ep.viewExtents = []math.Extent2D{{P0: button.P0, P1: button.P1}}
+	ep.handleToolbarInput(ctx)
+	if hit := ep.toolbarHitAt(button.Center()); hit.button == nil || hit.button.button.id != dbFields {
+		t.Errorf("raised: DB FIELDS isn't over the view: %+v", hit)
+	}
+
+	click("LEFT\nTOOLBAR")
+	if slices.ContainsFunc(ep.toolbar.layout.tornOff, func(pi placedInstance) bool { return pi.instance.id == dbFields }) {
+		t.Error("DB FIELDS is displayed with the left toolbar suppressed")
 	}
 }

@@ -517,29 +517,31 @@ var radarFilterMenu = toolbarMenu{rows: [][]toolbarButton{{
 // the toolbar control menu. Its tear-off bar moves it.
 var toolbarControl = menuButton("TOOLBAR", &toolbarControlMenu)
 
-// masterRaiseButton makes the toggle that raises the main toolbar over the
-// torn-off buttons and the views; it reads MASTER LOWER while it is raised.
-func masterRaiseButton() toolbarButton {
-	raised := func(ps *Preferences) *bool { return &ps.MasterToolbarRaised }
+// raiseButton makes the toggle that raises a toolbar over the torn-off
+// buttons and the views; it reads LOWER rather than RAISE while the
+// toolbar is raised (2.3.5.3).
+func raiseButton(name string, raised func(*Preferences) *bool) toolbarButton {
 	b := toggleButton("", raised)
 	b.labelFunc = func(ep *Scope) string {
-		return util.Select(*raised(ep.currentPrefs()), "MASTER\nLOWER", "MASTER\nRAISE")
+		return name + util.Select(*raised(ep.currentPrefs()), "\nLOWER", "\nRAISE")
 	}
 	return b
 }
 
+// The MCA toolbar is inert: it holds the RECORD button, and vice has no
+// macros.
 var toolbarControlMenu = toolbarMenu{rows: [][]toolbarButton{{
 	toggleButton("MASTER\nTOOLBAR", func(ps *Preferences) *bool { return &ps.DisplayToolbar }),
 	inertToggle("MCA\nTOOLBAR"),
-	inertToggle("HORIZ\nTOOLBAR"),
-	inertToggle("LEFT\nTOOLBAR"),
-	inertToggle("RIGHT\nTOOLBAR"),
+	toggleButton("HORIZ\nTOOLBAR", func(ps *Preferences) *bool { return &ps.HorizToolbar.Displayed }),
+	toggleButton("LEFT\nTOOLBAR", func(ps *Preferences) *bool { return &ps.LeftToolbar.Displayed }),
+	toggleButton("RIGHT\nTOOLBAR", func(ps *Preferences) *bool { return &ps.RightToolbar.Displayed }),
 }, {
-	masterRaiseButton(),
+	raiseButton("MASTER", func(ps *Preferences) *bool { return &ps.MasterToolbarRaised }),
 	inertToggle("MCA\nRAISE"),
-	inertToggle("HORIZ\nRAISE"),
-	inertToggle("LEFT\nRAISE"),
-	inertToggle("RIGHT\nRAISE"),
+	raiseButton("HORIZ", func(ps *Preferences) *bool { return &ps.HorizToolbar.Raised }),
+	raiseButton("LEFT", func(ps *Preferences) *bool { return &ps.LeftToolbar.Raised }),
+	raiseButton("RIGHT", func(ps *Preferences) *bool { return &ps.RightToolbar.Raised }),
 }}}
 
 ///////////////////////////////////////////////////////////////////////////

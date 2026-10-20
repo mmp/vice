@@ -332,6 +332,16 @@ type CommonPreferences struct {
 	// 0 and 1 are at the top of the window, top first, and 2 and 3 at the
 	// bottom, bottom last (2.3.5.2).
 	MasterToolbarContainer int
+
+	HorizToolbar, LeftToolbar, RightToolbar SupportToolbar
+}
+
+// SupportToolbar is the state of one of the support toolbars, which hold
+// only buttons torn off the master toolbar (2.3.4): whether it is
+// displayed and raised, and, for the horizontal one, its container.
+type SupportToolbar struct {
+	Displayed, Raised bool
+	Container         int
 }
 
 const (
@@ -453,6 +463,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.FDBLdrLength = 1 // Default to normal mode
 	prefs.PortalFence = true
 	prefs.NonADSBIndicator = true
+	prefs.HorizToolbar.Container = 1
 
 	prefs.VideoMapVisible = make(map[string]any)
 	prefs.VideoMapBrightness = make(map[string]scope.Brightness)
@@ -711,6 +722,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 116 {
 		p.FlightEvent = makeDefaultPreferences().FlightEvent
+	}
+	if from < 117 {
+		p.HorizToolbar = makeDefaultPreferences().HorizToolbar
 	}
 }
 
