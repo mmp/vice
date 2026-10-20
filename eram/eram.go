@@ -80,6 +80,11 @@ type (
 	pauseOverlayPalette struct {
 		background, text renderer.RGB
 	}
+	// saaPalette colors the special activity airspace by its status
+	// (4.2.18.1).
+	saaPalette struct {
+		hot, cold renderer.RGB
+	}
 )
 
 var colors = struct {
@@ -115,6 +120,7 @@ var colors = struct {
 	crr          crrPalette
 	pointOut     pointOutPalette
 	pauseOverlay pauseOverlayPalette
+	saa          saaPalette
 }{
 	yellow:          renderer.RGB{R: .894, G: .894},
 	coral:           renderer.RGBFromHex(0xFF99CC),
@@ -199,6 +205,10 @@ var colors = struct {
 	pauseOverlay: pauseOverlayPalette{
 		background: renderer.RGB{R: 1, G: 0, B: 0},
 		text:       renderer.RGB{R: 1, G: 1, B: 1},
+	},
+	saa: saaPalette{
+		hot:  renderer.RGB{R: 1, G: .57, B: .3},
+		cold: renderer.RGB{R: 1, G: 1, B: 1},
 	},
 }
 
@@ -308,6 +318,14 @@ type Scope struct {
 	CFREntries    []sim.ACID `json:"CFREntries,omitempty"`
 	cfrAdded      map[sim.ACID]time.Time
 	cfrShowFields bool
+
+	// SAA state: the special activity airspace of the sim's ARTCC, the
+	// one whose label is being torn off, the torn-off labels' extents as
+	// drawn, and the SAA FILTER view's page.
+	saas          []saa
+	saaTearingOff string
+	saaTearOffs   map[string]math.Extent2D
+	saaScroll     ViewScrollState
 
 	// CRR state (session)
 	CRRGroups        map[string]*CRRGroup `json:"CRRGroups,omitempty"`
@@ -580,6 +598,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	// Draw weather
 	ep.drawWeatherRadar(ctx, transforms, cb)
 	ep.drawVideoMaps(ctx, transforms, cb)
+	ep.drawSAAs(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
 	ep.handleToolbarInput(ctx)
@@ -618,6 +637,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
 	ep.drawCRRView(ctx, tracks, transforms, cb)
 	ep.drawCFRView(ctx, transforms, cb)
+	ep.drawSAAFilterView(ctx, transforms, cb)
 	ep.drawConflictAlertView(ctx, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
@@ -626,6 +646,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 
 	ep.drawTearoffs(ctx, transforms, cb)
 	if ctx.Mouse != nil {
+		ep.handleSAAMouse(ctx, transforms)
 		mouseOverToolbar := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.DrawExtent.P0))
 		if !mouseOverToolbar || !ep.toolbarVisible {
 			ep.consumeMouseEvents(ctx, transforms)
@@ -650,6 +671,7 @@ func (ep *Scope) Upgrade(from, to int) {
 func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
+	ep.makeSAAs(client.State)
 	ep.initials = client.SessionStats.Initials
 	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
@@ -659,6 +681,7 @@ func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, l
 func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.resetPrefsForNewSim(client.State)
 	ep.makeMaps(client, lg)
+	ep.makeSAAs(client.State)
 	ep.initials = client.SessionStats.Initials
 	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
@@ -694,6 +717,8 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.CFREntries = nil
 	clear(ep.cfrAdded)
 	ep.cfrShowFields = false
+	ep.saaTearingOff = ""
+	ep.saaScroll = ViewScrollState{}
 	ep.AltimSetAirports = nil
 	ep.altimSetScroll = ViewScrollState{}
 	ep.altimSetSelect = ViewSelectionState{Selected: -1}
@@ -967,6 +992,10 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 				break
 			}
 			if ep.cancelToolbarGesture(ctx) {
+				break
+			}
+			if ep.saaTearingOff != "" {
+				ep.saaTearingOff = ""
 				break
 			}
 			// Cancel any in-progress drag.

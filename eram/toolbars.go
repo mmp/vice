@@ -426,7 +426,7 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	inertToggle("HOLD\nLIST"),
 	inertToggle("INBND\nLIST"),
 	inertToggle("MRP\nLIST"),
-	inertToggle("SAA\nFILTER"),
+	viewButton("SAA\nFILTER", "saa-filter", func(ps *Preferences) *bool { return &ps.SAAFilter.Visible }),
 	inertToggle("UA"),
 	viewButton("WX\nREPORT", "wx", func(ps *Preferences) *bool { return &ps.WX.Visible }),
 }}}

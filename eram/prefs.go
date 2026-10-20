@@ -181,6 +181,25 @@ type Preferences struct {
 		ShowType       bool
 	}
 
+	// SAAFilter holds the SAA FILTER view's settings (4.2.18.4); Color is
+	// the brightness of the HOT filter settings' text, and Hot and Cold
+	// are those of the active and inactive SAAs.
+	SAAFilter struct {
+		Visible    bool
+		Position   [2]float32
+		Opaque     bool
+		ShowBorder bool
+		Lines      int
+		Font       int
+		Bright     scope.Brightness
+		Color      scope.Brightness
+		Hot        scope.Brightness
+		Cold       scope.Brightness
+	}
+	// SAAs holds the SAAs' display filter settings by SAA id; an SAA that
+	// isn't here has the default ones.
+	SAAs map[string]SAASettings
+
 	ConflictAlert struct {
 		Visible    bool
 		Position   [2]float32
@@ -490,6 +509,15 @@ func makeDefaultPreferences() *Preferences {
 		*f.shown(&prefs) = true
 	}
 
+	prefs.SAAFilter.Position = [2]float32{100, 900}
+	prefs.SAAFilter.ShowBorder = true
+	prefs.SAAFilter.Lines = 10
+	prefs.SAAFilter.Font = 2
+	prefs.SAAFilter.Bright = 90
+	prefs.SAAFilter.Color = 90
+	prefs.SAAFilter.Hot = 90
+	prefs.SAAFilter.Cold = 90
+
 	prefs.ConflictAlert.Position = [2]float32{100, 900}
 	prefs.ConflictAlert.ShowBorder = true
 	prefs.ConflictAlert.Font = 2
@@ -653,6 +681,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 114 {
 		p.CFR = makeDefaultPreferences().CFR
+	}
+	if from < 115 {
+		p.SAAFilter = makeDefaultPreferences().SAAFilter
 	}
 }
 

@@ -123,7 +123,8 @@ import (
 // 112: ERAM RADAR FILTER display filters in preference sets
 // 113: ERAM Conflict Alert view settings in preference sets
 // 114: ERAM CFR view settings in preference sets
-const ViceSerializeVersion = 114
+// 115: ERAM SAA FILTER view and SAA display filter settings in preference sets
+const ViceSerializeVersion = 115
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion
