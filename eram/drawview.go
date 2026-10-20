@@ -670,7 +670,7 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 			}
 		}
 		if state := v.selectable.State; state != nil && state.Selected >= 0 {
-			if dp, ok := ep.popup.(*deleteEntryPopup); !ok || dp.owner != state {
+			if dp, ok := ep.popup.(*pickAreaPopup); !ok || dp.owner != state {
 				state.Selected = -1
 			}
 		}
@@ -1338,44 +1338,56 @@ func wrapWords(text string, firstChars, contChars int) []string {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// deleteEntryPopup — the "DELETE <label>" confirmation popup opened when the
-// user clicks a selectable row in a View.
+// pickAreaPopup
 
-// deleteEntryPopup's owner is the selection state of the view that opened
-// it — DrawView checks identity to know when to clear the row highlight
-// after dismissal.
-type deleteEntryPopup struct {
-	origin   [2]float32
-	width    float32
-	height   float32
-	label    string // user-visible name shown as "DELETE <label>"
-	idx      int    // row index passed to onDelete on confirm
-	owner    *ViewSelectionState
-	font     *renderer.Font
-	onDelete func(idx int)
+// pickAreaPopup is a pop-up pick area: a single pick area displayed beside
+// what was clicked, such as the DELETE pop-up beside a view's entry, which
+// performs its function when it is picked. Any click closes it. Its owner
+// is the selection state of the view that opened it, if any; DrawView
+// checks identity to know when to clear the row highlight after dismissal.
+type pickAreaPopup struct {
+	origin [2]float32
+	width  float32
+	height float32
+	text   string
+	owner  *ViewSelectionState
+	font   *renderer.Font
+	onPick func()
 }
 
-// openDeleteEntryPopup positions a deleteEntryPopup adjacent to the clicked
-// row, flipping left if it would otherwise overflow the pane, and warps the
-// cursor to its center so the user can confirm without moving the mouse.
+// openDeleteEntryPopup opens the DELETE pop-up beside a view's selectable
+// row.
 func (ep *Scope) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem,
-	sel *ViewSelectable, font *renderer.Font) *deleteEntryPopup {
-
+	sel *ViewSelectable, font *renderer.Font) *pickAreaPopup {
 	label := ""
 	if sel.Label != nil {
 		label = sel.Label(item.Idx)
 	}
-	text := "DELETE " + label
+	p := ep.openPickAreaPopup(ctx, item.Extent, "DELETE "+label, font, func() {
+		if sel.OnDelete != nil {
+			sel.OnDelete(item.Idx)
+		}
+	})
+	p.owner = sel.State
+	return p
+}
+
+// openPickAreaPopup positions a pickAreaPopup beside the extent of what was
+// clicked, flipping left if it would otherwise overflow the pane, and warps
+// the cursor to its center so the user can pick it without moving the
+// mouse.
+func (ep *Scope) openPickAreaPopup(ctx *scope.Context, beside math.Extent2D, text string,
+	font *renderer.Font, onPick func()) *pickAreaPopup {
 	pad := float32(8)
 	width := float32(len(text))*charWidth(font) + 2*pad
 	height := cellHeight(font) + pad
 
 	pe := ctx.DrawExtent
 	gap := float32(4)
-	rowCenterY := (item.Extent.P0[1] + item.Extent.P1[1]) / 2
-	origin := [2]float32{item.Extent.P1[0] + gap, rowCenterY + height/2}
+	rowCenterY := (beside.P0[1] + beside.P1[1]) / 2
+	origin := [2]float32{beside.P1[0] + gap, rowCenterY + height/2}
 	if origin[0]+width > pe.P1[0] {
-		origin[0] = item.Extent.P0[0] - gap - width
+		origin[0] = beside.P0[0] - gap - width
 	}
 	origin[0] = max(origin[0], pe.P0[0])
 	if origin[1]-height < pe.P0[1] {
@@ -1385,19 +1397,17 @@ func (ep *Scope) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableIte
 
 	ctx.SetMousePosition([2]float32{origin[0] + width/2, origin[1] - height/2})
 
-	return &deleteEntryPopup{
-		origin:   origin,
-		width:    width,
-		height:   height,
-		label:    label,
-		idx:      item.Idx,
-		owner:    sel.State,
-		font:     font,
-		onDelete: sel.OnDelete,
+	return &pickAreaPopup{
+		origin: origin,
+		width:  width,
+		height: height,
+		text:   text,
+		font:   font,
+		onPick: onPick,
 	}
 }
 
-func (d *deleteEntryPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (d *pickAreaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	mouse := ctx.Mouse
 	ps := ep.currentPrefs()
 
@@ -1423,7 +1433,7 @@ func (d *deleteEntryPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.
 	}
 	ld.AddLineLoop(ps.Brightness.Border.ScaleRGB(outlineColor), extent.Corners())
 
-	td.AddTextCentered("DELETE "+d.label, extent.Center(),
+	td.AddTextCentered(d.text, extent.Center(),
 		renderer.TextStyle{Font: d.font, Color: ps.Brightness.Text.ScaleRGB(colors.popup.text)})
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -1432,8 +1442,8 @@ func (d *deleteEntryPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.
 	td.GenerateCommands(cb)
 
 	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-		if hovered && d.onDelete != nil {
-			d.onDelete(d.idx)
+		if hovered {
+			d.onPick()
 		}
 		ep.popup = nil
 		ep.clearMousePrimaryConsumed(mouse)

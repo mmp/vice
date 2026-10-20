@@ -962,7 +962,7 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 			ep.input.Clear()
 			ep.applyCommandStatus(ctx, status, err)
 		case imgui.KeyEscape:
-			if _, ok := ep.popup.(*deleteEntryPopup); ok {
+			if _, ok := ep.popup.(*pickAreaPopup); ok {
 				ep.popup = nil
 				break
 			}
