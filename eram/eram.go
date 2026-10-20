@@ -280,6 +280,9 @@ type Scope struct {
 	caPairs            []CAPair
 	lastConflictUpdate time.Time
 	lastRadarUpdate    sim.Time
+	// SuppressionGroups are the conflict alert suppression groups, in ID
+	// order.
+	SuppressionGroups []SuppressionGroup `json:"SuppressionGroups,omitempty"`
 
 	fdbArena util.ObjectArena[fullDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
@@ -598,6 +601,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.updateRadarTracks(ctx)
 	ep.updateVisibleTracks(ctx)
 	tracks := ep.visibleTracks
+	ep.pruneSuppressionGroups(ctx)
 	ep.updateConflictAlerts(ctx, tracks)
 
 	// draw the ERAM pane
@@ -655,6 +659,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawSAAFilterView(ctx, transforms, cb)
 	ep.drawFlightEventView(ctx, transforms, cb)
 	ep.drawDeptListView(ctx, transforms, cb)
+	ep.drawGroupSupView(ctx, transforms, cb)
 	ep.drawConflictAlertView(ctx, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
@@ -702,6 +707,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}
+	ep.SuppressionGroups = nil
 
 	ep.scopeDraw.Clear()
 

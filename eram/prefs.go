@@ -210,6 +210,17 @@ type Preferences struct {
 		Bright     scope.Brightness
 	}
 
+	// GroupSup holds the Group Suppression view's settings (4.2.14).
+	GroupSup struct {
+		Visible    bool
+		Position   [2]float32
+		Opaque     bool
+		ShowBorder bool
+		Lines      int
+		Font       int
+		Bright     scope.Brightness
+	}
+
 	// DeptList holds the Departure List view's settings (4.2.12).
 	// ShowIndicators is its TEAROFF setting.
 	DeptList struct {
@@ -582,6 +593,12 @@ func makeDefaultPreferences() *Preferences {
 	prefs.FlightEvent.Font = 2
 	prefs.FlightEvent.Bright = 90
 
+	prefs.GroupSup.Position = [2]float32{100, 900}
+	prefs.GroupSup.ShowBorder = true
+	prefs.GroupSup.Lines = 5
+	prefs.GroupSup.Font = 2
+	prefs.GroupSup.Bright = 90
+
 	prefs.DeptList.Position = [2]float32{100, 900}
 	prefs.DeptList.ShowBorder = true
 	prefs.DeptList.ShowIndicators = true
@@ -772,6 +789,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 119 {
 		p.DeptList = makeDefaultPreferences().DeptList
+	}
+	if from < 120 {
+		p.GroupSup = makeDefaultPreferences().GroupSup
 	}
 }
 

@@ -445,7 +445,7 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 }, {
 	viewButton("DEPT\nLIST", "dept-list", func(ps *Preferences) *bool { return &ps.DeptList.Visible }),
 	viewButton("FLIGHT\nEVENT", "flight-event", func(ps *Preferences) *bool { return &ps.FlightEvent.Visible }),
-	inertToggle("GROUP\nSUP"),
+	groupSupButton(),
 	inertToggle("HOLD\nLIST"),
 	inertToggle("INBND\nLIST"),
 	inertToggle("MRP\nLIST"),
@@ -458,11 +458,27 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 // suppresses the Conflict Alert view; the view can only be suppressed while
 // it is empty (4.2.5).
 func conflictAlertButton() toolbarButton {
-	visible := func(ps *Preferences) *bool { return &ps.ConflictAlert.Visible }
-	b := viewButton("CONFLCT\nALERT", "conflict-alert", visible)
+	return stickyViewButton("CONFLCT\nALERT", "conflict-alert",
+		func(ps *Preferences) *bool { return &ps.ConflictAlert.Visible },
+		func(ep *Scope) bool { return len(ep.caPairs) > 0 })
+}
+
+// groupSupButton makes the GROUP SUP button, which displays and suppresses
+// the Group Suppression view; the view can't be suppressed while the
+// sector subscribes to a group (4.2.14.2).
+func groupSupButton() toolbarButton {
+	return stickyViewButton("GROUP\nSUP", "group-sup",
+		func(ps *Preferences) *bool { return &ps.GroupSup.Visible },
+		func(ep *Scope) bool { return len(ep.SuppressionGroups) > 0 })
+}
+
+// stickyViewButton makes a toggle for a view's visibility that doesn't
+// suppress the view while pinned reports that it must stay displayed.
+func stickyViewButton(label, viewID string, visible func(*Preferences) *bool, pinned func(*Scope) bool) toolbarButton {
+	b := viewButton(label, viewID, visible)
 	toggle := b.click
 	b.click = func(ep *Scope, c toolbarClick) error {
-		if *visible(ep.currentPrefs()) && len(ep.caPairs) > 0 {
+		if *visible(ep.currentPrefs()) && pinned(ep) {
 			return nil
 		}
 		return toggle(ep, c)

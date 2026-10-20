@@ -128,7 +128,8 @@ import (
 // 117: ERAM support toolbars in preference sets
 // 118: ERAM Status and Outage view settings in preference sets
 // 119: ERAM Departure List view settings in preference sets
-const ViceSerializeVersion = 119
+// 120: ERAM Group Suppression view settings in preference sets
+const ViceSerializeVersion = 120
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

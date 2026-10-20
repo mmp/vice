@@ -224,7 +224,8 @@ func (ep *Scope) caDimmed(callsign av.ADSBCallsign) bool {
 // vertical rate; at least one target of a pair must be owned by a
 // controller in this ERAM facility, and at least one must be worked by a
 // human: virtual controllers can't maneuver the background traffic they
-// work, so alerting on it is only a distraction. The data block altitude of
+// work, so alerting on it is only a distraction. Pairs in a suppression
+// group are left out (4.2.14). The data block altitude of
 // a track a TRACON owns is ignored: TRACON controllers can't make data block
 // entries, so it doesn't say where the aircraft will level off.
 // Note: the caller passes ep.visibleTracks; today that is effectively all
@@ -239,6 +240,7 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 
 	type caCandidate struct {
 		callsign av.ADSBCallsign
+		acid     sim.ACID
 		target   caTarget
 		owned    bool // owned by a controller in this ERAM facility
 		virtual  bool // tracked by a virtual controller
@@ -277,6 +279,7 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 
 		candidates = append(candidates, caCandidate{
 			callsign: trk.ADSBCallsign,
+			acid:     trk.FlightPlan.ACID,
 			target: caTarget{
 				pos:   p1,
 				vel:   vel,
@@ -293,7 +296,7 @@ func (ep *Scope) updateConflictAlerts(ctx *scope.Context, tracks []sim.Track) {
 	var detected [][2]av.ADSBCallsign
 	for i, ca := range candidates {
 		for _, cb := range candidates[i+1:] {
-			if (!ca.owned && !cb.owned) || (ca.virtual && cb.virtual) {
+			if (!ca.owned && !cb.owned) || (ca.virtual && cb.virtual) || ep.groupSuppressed(ca.acid, cb.acid) {
 				continue
 			}
 			if caConflict(ca.target, cb.target) {

@@ -39,6 +39,12 @@ var ( // TODO: Get actual error messages for this
 	ErrSectorNotActive       = NewError("SECTOR NOT ACTIVE")
 )
 
+// SG rejects (4.2.14)
+var (
+	ErrSuppressionGroupNotFound    = NewError("REJECT - GROUP NOT FOUND")
+	ErrNoSuppressionGroupAvailable = NewError("REJECT - NO GROUP ID AVAILABLE")
+)
+
 // QP A rejects (5.1.5.11.2)
 var (
 	ErrNoUnacknowledgedPointOut = NewError("REJECT - NO UNACKNOWLEDGED PO")

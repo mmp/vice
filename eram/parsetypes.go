@@ -62,6 +62,9 @@ var typeParsers = []typeParser{
 	&sectorIDParser{},
 	&sectorIDListParser{},
 
+	// Conflict alert suppression groups
+	&suppressionGroupParser{},
+
 	// Navigation
 	&fixParser{},
 	&fixesAndTrackParser{},
@@ -436,6 +439,28 @@ func isSectorID(field string) bool {
 
 func (h *sectorIDParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *sectorIDParser) AcceptsClick() bool   { return false }
+
+// suppressionGroupParser matches the two-digit ID of a conflict alert
+// suppression group. An ID with no group is an error, so that SG reports
+// it rather than reading the ID as an illegal flight of a flight list.
+type suppressionGroupParser struct{}
+
+func (h *suppressionGroupParser) Identifier() string { return "SUPP_GROUP" }
+
+func (h *suppressionGroupParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if len(field) != 2 || !allDigits(field) {
+		return nil, text, false, nil
+	}
+	id, _ := strconv.Atoi(field)
+	if ep.suppressionGroup(id) == nil {
+		return nil, text, true, ErrSuppressionGroupNotFound
+	}
+	return id, remaining, true, nil
+}
+
+func (h *suppressionGroupParser) GoType() reflect.Type { return reflect.TypeFor[int]() }
+func (h *suppressionGroupParser) AcceptsClick() bool   { return false }
 
 // sectorIDListParser parses one or more sector ids. A token that names a
 // track ends the list, since ACIDs such as AAL1 have the form of a sector

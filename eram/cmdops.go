@@ -85,6 +85,39 @@ func registerOpsCommands() {
 			return ep.requestSuppressDatablock(ctx, trk)
 		})
 
+	// SG - Conflict alert suppression groups (4.2.14)
+	// SG [A|D] [SUPP_GROUP] [TRACK]: Add the flight to the group or delete
+	//   it; without A or D, delete it if it's in the group and otherwise
+	//   add it
+	// SG [SUPP_GROUP]: Display the group
+	// SG A|D [SUPP_GROUP]: Subscribe to or unsubscribe from the group
+	// SG [A] [TRACK_LIST]: Add a group of the flights; without A, a group
+	//   that already has exactly those flights is deleted
+	// The group forms come first so that an ID with no group is reported
+	// as such rather than as an illegal flight of a flight list.
+	registerCommand(CommandModeNone, "SG [SUPP_GROUP] [TRACK]",
+		func(ep *Scope, ctx *scope.Context, id int, trk *sim.Track) (CommandStatus, error) {
+			return ep.enterGroupFlight(ctx, id, trk, toggleGroupFlight)
+		})
+	registerCommand(CommandModeNone, "SG A [SUPP_GROUP] [TRACK]",
+		func(ep *Scope, ctx *scope.Context, id int, trk *sim.Track) (CommandStatus, error) {
+			return ep.enterGroupFlight(ctx, id, trk, addGroupFlight)
+		})
+	registerCommand(CommandModeNone, "SG D [SUPP_GROUP] [TRACK]",
+		func(ep *Scope, ctx *scope.Context, id int, trk *sim.Track) (CommandStatus, error) {
+			return ep.enterGroupFlight(ctx, id, trk, deleteGroupFlight)
+		})
+	registerCommand(CommandModeNone, "SG [SUPP_GROUP]|SG A [SUPP_GROUP]", (*Scope).displaySuppressionGroup)
+	registerCommand(CommandModeNone, "SG D [SUPP_GROUP]", (*Scope).unsubscribeSuppressionGroup)
+	registerCommand(CommandModeNone, "SG [TRACK_LIST]",
+		func(ep *Scope, tracks []*sim.Track) (CommandStatus, error) {
+			return ep.enterSuppressionGroup(tracks, false)
+		})
+	registerCommand(CommandModeNone, "SG A [TRACK_LIST]",
+		func(ep *Scope, tracks []*sim.Track) (CommandStatus, error) {
+			return ep.enterSuppressionGroup(tracks, true)
+		})
+
 	// QL - Quicklook
 	registerCommand(CommandModeNone, "QL [SECTOR_ID_LIST]", handleToggleQuicklook)
 	registerCommand(CommandModeNone, "QL", handleDisableAllQuicklook)
