@@ -328,6 +328,10 @@ type CommonPreferences struct {
 	// DockedButtons holds the buttons torn off onto each toolbar, by the
 	// toolbar's name, in the order of its slots.
 	DockedButtons map[string][]string
+	// MasterToolbarContainer is the container the master toolbar is in:
+	// 0 and 1 are at the top of the window, top first, and 2 and 3 at the
+	// bottom, bottom last (2.3.5.2).
+	MasterToolbarContainer int
 }
 
 const (

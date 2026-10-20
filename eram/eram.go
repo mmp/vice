@@ -264,8 +264,6 @@ type Scope struct {
 	raScroll       ViewScrollState
 	raScrolledText string
 
-	toolbarVisible bool
-
 	toolbar     toolbarState
 	holdRepeat  pressRepeat // paces held toolbar buttons and popup menu rows
 	alarm       alarm
@@ -614,11 +612,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
 	ep.handleToolbarInput(ctx)
-	scopeExtent := ctx.DrawExtent
-	if ps.DisplayToolbar {
-		scopeExtent.P1[1] -= toolbarFaceHeight
-	}
-	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	cb.SetScissorBounds(ctx.DrawExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
@@ -660,11 +654,8 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawTearoffs(ctx, transforms, cb)
 	if ctx.Mouse != nil {
 		ep.handleSAAMouse(ctx, transforms)
-		mouseOverToolbar := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.DrawExtent.P0))
-		if !mouseOverToolbar || !ep.toolbarVisible {
-			ep.consumeMouseEvents(ctx, transforms)
-			ep.drawPausedAircraftState(ctx, transforms, cb)
-		}
+		ep.consumeMouseEvents(ctx, transforms)
+		ep.drawPausedAircraftState(ctx, transforms, cb)
 	}
 
 	// handleCapture

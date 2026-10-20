@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/videomaps"
 )
 
@@ -691,7 +692,8 @@ func TestDockInMasterToolbar(t *testing.T) {
 	ctx.Platform = captureMousePlatform{}
 	ps := ep.currentPrefs()
 	dest, typ, font := toolbarButtonID(t, ep, "DEST"), toolbarButtonID(t, ep, "TYPE"), toolbarButtonID(t, ep, "FONT")
-	slots := masterSlots(ctx, mainToolbarOrigin(ctx))
+	ep.handleToolbarInput(ctx)
+	slots := masterSlots(ctx, ep.mainToolbarOrigin())
 
 	// tearOff opens DB FIELDS, tears the button with the given text off by
 	// its bar, and drops it at p.
@@ -754,5 +756,31 @@ func TestDockInMasterToolbar(t *testing.T) {
 	clickToolbarAt(ep, ctx, typeCopy.Center(), platform.MouseButtonTertiary)
 	if !slices.Equal(docked(), []string{dest}) {
 		t.Errorf("after deleting TYPE: docked %v, want DEST", docked())
+	}
+}
+
+// The arrow in the master toolbar's left margin moves it between the
+// containers at the top and bottom of the window (2.3.5.2).
+func TestMasterToolbarArrows(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	arrows := func() []int {
+		ep.handleToolbarInput(ctx)
+		return util.MapSlice(ep.toolbar.layout.arrows, func(a toolbarArrow) int { return a.dir })
+	}
+	if got := arrows(); !slices.Equal(got, []int{1}) {
+		t.Fatalf("at the top: arrows %v, want only down", got)
+	}
+	clickToolbarAt(ep, ctx, ep.toolbar.layout.arrows[0].extent.Center(), platform.MouseButtonPrimary)
+	if got := arrows(); !slices.Equal(got, []int{-1}) {
+		t.Errorf("at the bottom: arrows %v, want only up", got)
+	}
+	draw := placedButtonFace(t, ep, ep.toolbar.layout.main, "DRAW")
+	if band := ep.toolbar.layout.bands[masterDock]; band.P0[1] != 0 || !band.Inside(draw.Center()) {
+		t.Errorf("master toolbar band %v with DRAW at %v, want them at the bottom of the window", band, draw)
+	}
+	clickToolbarAt(ep, ctx, ep.toolbar.layout.arrows[0].extent.Center(), platform.MouseButtonPrimary)
+	ep.handleToolbarInput(ctx)
+	if band := ep.toolbar.layout.bands[masterDock]; band.P1[1] != ctx.DrawExtent.Height()-1 {
+		t.Errorf("master toolbar band %v after moving up, want it at the top of the window", band)
 	}
 }

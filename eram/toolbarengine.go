@@ -7,6 +7,7 @@ package eram
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -308,15 +309,27 @@ type toolbarLayout struct {
 	main    *placedInstance // nil while the main toolbar is hidden
 	tornOff []placedInstance
 	control placedInstance
+	bands   map[string]math.Extent2D // the displayed horizontal toolbars'
+	arrows  []toolbarArrow
+}
+
+// toolbarArrow is a pick area in a horizontal toolbar's left margin that
+// moves it up or down to another container (2.3.5.2).
+type toolbarArrow struct {
+	extent  math.Extent2D
+	toolbar string
+	dir     int // -1 up, 1 down
 }
 
 // toolbarHit is what is under a point: a button's face or tear-off bar, a
-// menu's panel, a menu's background with no button there, or nothing.
+// menu's panel, a menu's background with no button there, a toolbar's
+// arrow, or nothing.
 type toolbarHit struct {
 	button *placedButton
 	tab    bool
 	panel  *placedLevel
 	menu   *placedLevel
+	arrow  *toolbarArrow
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -376,9 +389,28 @@ func (ep *Scope) layoutToolbars(ctx *scope.Context) {
 	tb := &ep.toolbar
 	tb.layout = toolbarLayout{}
 
+	tb.layout.bands = layoutToolbarBands(ctx, ep.toolbarContainers())
 	if ps.DisplayToolbar {
-		pi := ep.layoutInstance(ctx, &tb.main, mainToolbar.rows, mainToolbarOrigin(ctx), true)
+		pi := ep.layoutInstance(ctx, &tb.main, mainToolbar.rows, ep.mainToolbarOrigin(), true)
 		tb.layout.main = &pi
+	}
+	for _, t := range horizontalToolbars {
+		band, ok := tb.layout.bands[t.name]
+		if !ok {
+			continue
+		}
+		top := band.P1[1] + 1 - toolbarInsetY
+		bottom := top - float32(t.rows-1)*toolbarRowPitch - toolbarFaceHeight
+		arrow := func(top float32) math.Extent2D {
+			return math.Extent2D{P0: [2]float32{2, top - toolbarFaceHeight}, P1: [2]float32{toolbarInsetX - 3, top}}
+		}
+		if _, ok := ep.toolbarMove(ctx, t.name, -1); ok {
+			tb.layout.arrows = append(tb.layout.arrows, toolbarArrow{extent: arrow(top), toolbar: t.name, dir: -1})
+		}
+		if _, ok := ep.toolbarMove(ctx, t.name, 1); ok {
+			tb.layout.arrows = append(tb.layout.arrows,
+				toolbarArrow{extent: arrow(bottom + toolbarFaceHeight), toolbar: t.name, dir: 1})
+		}
 	}
 	for _, inst := range tb.tornOff {
 		b := ep.toolbarButtonByID(inst.id)
@@ -593,8 +625,8 @@ func (ep *Scope) toolbarHitAt(p [2]float32) toolbarHit {
 		return h
 	}
 	raised := ep.currentPrefs().MasterToolbarRaised
-	if raised && l.main != nil {
-		if h, ok := l.main.hit(p); ok {
+	if raised {
+		if h, ok := l.mainHit(p); ok {
 			return h
 		}
 	}
@@ -603,12 +635,29 @@ func (ep *Scope) toolbarHitAt(p [2]float32) toolbarHit {
 			return h
 		}
 	}
-	if !raised && l.main != nil && !ep.viewCovers(p) {
-		if h, ok := l.main.hit(p); ok {
+	if !raised && !ep.viewCovers(p) {
+		if h, ok := l.mainHit(p); ok {
 			return h
 		}
 	}
 	return toolbarHit{}
+}
+
+// mainHit returns what of the main toolbar is under p: one of its buttons
+// or menus, or one of its arrows.
+func (l *toolbarLayout) mainHit(p [2]float32) (toolbarHit, bool) {
+	if l.main == nil {
+		return toolbarHit{}, false
+	}
+	if h, ok := l.main.hit(p); ok {
+		return h, true
+	}
+	for i, a := range l.arrows {
+		if a.toolbar == masterDock && a.extent.Inside(p) {
+			return toolbarHit{arrow: &l.arrows[i]}, true
+		}
+	}
+	return toolbarHit{}, false
 }
 
 // viewCovers reports whether a view or a popup menu was drawn over p.
@@ -723,6 +772,13 @@ func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
 		panel.panel.clickOutside(ep, tb.hover)
 	}
 	if tb.deleting && ep.clickWhileDeletingTearoffs(ctx, tb.hover, c) {
+		ep.consumeMouseClick(mouse)
+		return
+	}
+	if a := tb.hover.arrow; a != nil {
+		if containers, ok := ep.toolbarMove(ctx, a.toolbar, a.dir); ok {
+			ep.setToolbarContainers(containers)
+		}
 		ep.consumeMouseClick(mouse)
 		return
 	}
@@ -898,10 +954,10 @@ func inMainToolbar(id string) bool {
 // takes no more. The slots past the last docked button are taken in order.
 func (ep *Scope) masterDockSlot(ctx *scope.Context, id string, p [2]float32) (int, bool) {
 	ps := ep.currentPrefs()
-	if !ps.DisplayToolbar || !mainToolbarBand(ctx).Inside(p) || inMainToolbar(id) {
+	if !ep.toolbar.layout.bands[masterDock].Inside(p) || inMainToolbar(id) {
 		return 0, false
 	}
-	slots := masterSlots(ctx, mainToolbarOrigin(ctx))
+	slots := masterSlots(ctx, ep.mainToolbarOrigin())
 	docked := util.FilterSlice(ps.DockedButtons[masterDock], func(d string) bool { return d != id })
 	if len(docked) >= len(slots) {
 		return 0, false
@@ -945,7 +1001,7 @@ func (ep *Scope) placeToolbarDrag(ctx *scope.Context) {
 			ps.DockedButtons = make(map[string][]string)
 		}
 		ps.DockedButtons[masterDock] = slices.Insert(ps.DockedButtons[masterDock], slot, d.id)
-	case inMainToolbar(d.id) && ps.DisplayToolbar && mainToolbarBand(ctx).Inside(mouse.Pos):
+	case inMainToolbar(d.id) && ep.toolbar.layout.bands[masterDock].Inside(mouse.Pos):
 		ep.removeTearoff(d.id)
 	default:
 		ep.removeTearoff(d.id)
@@ -1072,27 +1128,133 @@ func (ep *Scope) drawMainToolbar(ctx *scope.Context, cb *renderer.CommandBuffer)
 	if pi == nil {
 		return
 	}
+	ep.drawToolbarBand(ctx, cb, masterDock)
+	ep.drawPlacedInstance(ctx, cb, pi)
+}
+
+// drawToolbarBand draws a horizontal toolbar's background and its arrows,
+// gray pick areas with white arrows (figure 2-10).
+func (ep *Scope) drawToolbarBand(ctx *scope.Context, cb *renderer.CommandBuffer, name string) {
+	ps := ep.currentPrefs()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	e := mainToolbarBand(ctx)
-	trid.AddQuad([2]float32{e.P0[0], e.P1[1]}, e.P1, [2]float32{e.P1[0], e.P0[1]}, e.P0,
-		ep.currentPrefs().Brightness.Toolbar.ScaleRGB(colors.toolbar.background))
-	trid.GenerateCommands(cb)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
-	ep.drawPlacedInstance(ctx, cb, pi)
+	l := &ep.toolbar.layout
+	addQuad(trid, l.bands[name], ps.Brightness.Toolbar.ScaleRGB(colors.toolbar.background))
+	for i, a := range l.arrows {
+		if a.toolbar != name {
+			continue
+		}
+		e := a.extent
+		addQuad(trid, e, ps.Brightness.Button.ScaleRGB(colors.toolbar.tearoffBarTorn))
+		outline := util.Select(ep.toolbar.hover.arrow == &l.arrows[i], colors.toolbar.hoveredOutline,
+			colors.toolbar.outline)
+		ld.AddLineLoop(ps.Brightness.Border.ScaleRGB(outline), e.Corners())
+		c, w := e.Center(), e.Width()/3
+		tip := [2]float32{c[0], c[1] - float32(a.dir)*e.Height()/3}
+		tail := [2]float32{c[0], c[1] + float32(a.dir)*e.Height()/3}
+		text := ps.Brightness.Text.ScaleRGB(colors.toolbar.text)
+		ld.AddLine(tail, tip, text)
+		ld.AddLine(tip, [2]float32{tip[0] - w, tip[1] + float32(a.dir)*w}, text)
+		ld.AddLine(tip, [2]float32{tip[0] + w, tip[1] + float32(a.dir)*w}, text)
+	}
+	trid.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
 }
 
 // mainToolbarOrigin returns the top left of the main toolbar's first
 // button's tear-off bar.
-func mainToolbarOrigin(ctx *scope.Context) [2]float32 {
-	return [2]float32{toolbarInsetX, ctx.DrawExtent.Height() - toolbarInsetY}
+func (ep *Scope) mainToolbarOrigin() [2]float32 {
+	return [2]float32{toolbarInsetX, ep.toolbar.layout.bands[masterDock].P1[1] + 1 - toolbarInsetY}
 }
 
-// mainToolbarBand returns the main toolbar's background, which spans the
-// top of the window.
-func mainToolbarBand(ctx *scope.Context) math.Extent2D {
-	w, top := ctx.DrawExtent.Width(), ctx.DrawExtent.Height()-1
-	return math.Extent2D{P0: [2]float32{0, top - toolbarBandHeight}, P1: [2]float32{w, top}}
+///////////////////////////////////////////////////////////////////////////
+// Horizontal toolbar containers
+
+// horizontalToolbar is a toolbar that the horizontal containers hold.
+type horizontalToolbar struct {
+	name      string
+	rows      int
+	displayed func(*Preferences) bool
+	container func(*Preferences) *int
+}
+
+var horizontalToolbars = []horizontalToolbar{{
+	name:      masterDock,
+	rows:      len(mainToolbar.rows),
+	displayed: func(ps *Preferences) bool { return ps.DisplayToolbar },
+	container: func(ps *Preferences) *int { return &ps.MasterToolbarContainer },
+}}
+
+// toolbarContainers returns the containers of the displayed horizontal
+// toolbars, by name.
+func (ep *Scope) toolbarContainers() map[string]int {
+	ps := ep.currentPrefs()
+	containers := make(map[string]int)
+	for _, t := range horizontalToolbars {
+		if t.displayed(ps) {
+			containers[t.name] = *t.container(ps)
+		}
+	}
+	return containers
+}
+
+func (ep *Scope) setToolbarContainers(containers map[string]int) {
+	ps := ep.currentPrefs()
+	for _, t := range horizontalToolbars {
+		if c, ok := containers[t.name]; ok {
+			*t.container(ps) = c
+		}
+	}
+}
+
+// layoutToolbarBands returns the bands of the horizontal toolbars in the
+// given containers, which span the window. Those in the top two containers
+// stack down from the window's top and those in the bottom two up from its
+// bottom (2.3.5.2).
+func layoutToolbarBands(ctx *scope.Context, containers map[string]int) map[string]math.Extent2D {
+	bands := make(map[string]math.Extent2D)
+	w, top, bottom := ctx.DrawExtent.Width(), ctx.DrawExtent.Height()-1, float32(0)
+	for _, c := range []int{0, 1, 3, 2} {
+		for _, t := range horizontalToolbars {
+			if tc, ok := containers[t.name]; !ok || tc != c {
+				continue
+			}
+			h := float32(t.rows) * toolbarBandHeight / 2
+			if c < 2 {
+				bands[t.name] = math.Extent2D{P0: [2]float32{0, top - h}, P1: [2]float32{w, top}}
+				top -= h
+			} else {
+				bands[t.name] = math.Extent2D{P0: [2]float32{0, bottom}, P1: [2]float32{w, bottom + h}}
+				bottom += h
+			}
+		}
+	}
+	return bands
+}
+
+// toolbarMove returns the containers after a horizontal toolbar's up or
+// down arrow moves it: to the next container that way where it is
+// displayed elsewhere, trading places with a toolbar already there. It
+// returns false if the toolbar can't move that way.
+func (ep *Scope) toolbarMove(ctx *scope.Context, name string, dir int) (map[string]int, bool) {
+	cur := ep.toolbarContainers()
+	band := layoutToolbarBands(ctx, cur)[name]
+	for c := cur[name] + dir; c >= 0 && c < 4; c += dir {
+		next := maps.Clone(cur)
+		for n, nc := range next {
+			if nc == c {
+				next[n] = cur[name]
+			}
+		}
+		next[name] = c
+		if layoutToolbarBands(ctx, next)[name] != band {
+			return next, true
+		}
+	}
+	return nil, false
 }
 
 func (ep *Scope) drawPlacedInstance(ctx *scope.Context, cb *renderer.CommandBuffer, pi *placedInstance) {
@@ -1228,7 +1390,7 @@ func (ep *Scope) drawToolbarDragPreview(ctx *scope.Context, cb *renderer.Command
 
 	if slot, ok := ep.masterDockSlot(ctx, d.id, ctx.Mouse.Pos); ok {
 		docked := util.FilterSlice(ep.currentPrefs().DockedButtons[masterDock], func(id string) bool { return id != d.id })
-		for i, s := range masterSlots(ctx, mainToolbarOrigin(ctx))[:len(docked)+1] {
+		for i, s := range masterSlots(ctx, ep.mainToolbarOrigin())[:len(docked)+1] {
 			ld.AddLineLoop(util.Select(i == slot, colors.toolbar.dockTarget, colors.toolbar.dockGrid), s.Corners())
 		}
 	}
