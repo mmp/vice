@@ -127,6 +127,7 @@ const (
 	toolbarTabGap     float32 = 1 // between a tear-off bar and its button's face
 	toolbarButtonGap  float32 = 3 // between one button and the next
 	toolbarRowPitch   float32 = toolbarFaceHeight + 3
+	toolbarSlotWidth  float32 = toolbarTabWidth + toolbarTabGap + toolbarFaceWidth + toolbarButtonGap
 	toolbarBandHeight float32 = 82 // the main toolbar's background: two rows of buttons
 	toolbarMenuMargin float32 = 2  // a menu's background past its last button
 	// toolbarCutCorner is the length of the sides of a press-and-hold
@@ -225,6 +226,10 @@ type toolbarInstance struct {
 	// outermost first. A torn-off button's own id comes first when its
 	// menu is displayed.
 	open []string
+	// vertical displays the instance's menus vertically, the transpose of
+	// how they are displayed horizontally: each of a menu's rows is a
+	// column, and a menu hangs below its button (2.3.1).
+	vertical bool
 }
 
 // closeMenu closes the given menu button's menu, if it is displayed, along
@@ -396,7 +401,7 @@ func (ep *Scope) layoutToolbars(ctx *scope.Context) {
 func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows [][]toolbarButton,
 	origin [2]float32, bar bool) placedInstance {
 	pi := placedInstance{instance: inst}
-	level := placeToolbarRows(inst, 0, rows, origin)
+	level := placeToolbarRows(inst, 0, rows, origin, false)
 	if bar {
 		torn := ep.currentPrefs().TornOffButtons
 		level.buttons = util.FilterSlice(level.buttons, func(pb placedButton) bool {
@@ -419,12 +424,18 @@ func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows 
 		opener := *pb
 		if depth > 0 {
 			parent.buttons = util.FilterSlice(parent.buttons, func(b placedButton) bool {
+				if inst.vertical {
+					return b.face.P1[1] >= opener.face.P1[1]
+				}
 				return b.face.P0[0] <= opener.face.P0[0]
 			})
 			parent.fitExtent()
 		}
 		submenu := opener.button.submenu
 		at := [2]float32{opener.face.P1[0] + toolbarButtonGap, opener.face.P1[1]}
+		if inst.vertical {
+			at = [2]float32{opener.face.P0[0] - toolbarTabWidth - toolbarTabGap, opener.face.P1[1] - toolbarRowPitch}
+		}
 		if submenu.panel != nil {
 			pi.levels = append(pi.levels, placedLevel{extent: submenu.panel.extent(ep, at), panel: submenu.panel, anchor: at})
 			continue
@@ -445,8 +456,13 @@ func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows 
 			row := int(math.Round((origin[1] - opener.face.P1[1]) / toolbarRowPitch))
 			at[1] += float32(row-max(0, min(row, toolbarMenuRows-len(menu)))) * toolbarRowPitch
 		}
-		sub := placeToolbarRows(inst, depth+1, menu, at)
+		sub := placeToolbarRows(inst, depth+1, menu, at, inst.vertical)
 		sub.fitExtent()
+		// A vertical menu's columns run right, so one that would go past
+		// the window's right edge is moved left of it.
+		if over := sub.extent.P1[0] - ctx.DrawExtent.Width(); inst.vertical && over > 0 {
+			sub.shift(-over)
+		}
 		pi.levels = append(pi.levels, sub)
 	}
 	return pi
@@ -467,16 +483,21 @@ func (pl *placedLevel) fitExtent() {
 
 // placeToolbarRows places rows of buttons with the first row's top left at
 // origin. A button's tear-off bar, or the space for one, comes before its
-// face.
-func placeToolbarRows(inst *toolbarInstance, level int, rows [][]toolbarButton, origin [2]float32) placedLevel {
+// face. Placed vertically, each row is a column instead, and the faces of
+// a column line up whether or not they have tear-off bars.
+func placeToolbarRows(inst *toolbarInstance, level int, rows [][]toolbarButton, origin [2]float32,
+	vertical bool) placedLevel {
 	pl := placedLevel{extent: math.EmptyExtent2D()}
 	for r := range rows {
 		x, top := origin[0], origin[1]-float32(r)*toolbarRowPitch
 		for i := range rows[r] {
+			if vertical {
+				x, top = origin[0]+float32(r)*toolbarSlotWidth, origin[1]-float32(i)*toolbarRowPitch
+			}
 			b := &rows[r][i]
 			pb := placedButton{button: b, instance: inst, level: level}
-			if !b.noTab {
-				if !b.noTearoff {
+			if !b.noTab || vertical {
+				if !b.noTab && !b.noTearoff {
 					pb.tab = math.Extent2D{P0: [2]float32{x, top - toolbarFaceHeight}, P1: [2]float32{x + toolbarTabWidth, top}}
 				}
 				x += toolbarTabWidth + toolbarTabGap
@@ -487,6 +508,21 @@ func placeToolbarRows(inst *toolbarInstance, level int, rows [][]toolbarButton, 
 		}
 	}
 	return pl
+}
+
+// shift moves a menu's buttons and background dx to the right.
+func (pl *placedLevel) shift(dx float32) {
+	move := func(e *math.Extent2D) {
+		if !e.IsEmpty() {
+			e.P0[0] += dx
+			e.P1[0] += dx
+		}
+	}
+	move(&pl.extent)
+	for i := range pl.buttons {
+		move(&pl.buttons[i].face)
+		move(&pl.buttons[i].tab)
+	}
 }
 
 func (pl *placedLevel) find(id string) *placedButton {
@@ -692,6 +728,11 @@ func (ep *Scope) clickToolbarButton(pb *placedButton, c toolbarClick) {
 	b := pb.button
 	switch {
 	case b.submenu != nil:
+		// TBE on the toolbar control button displays its menu vertically
+		// and TBP horizontally (2.3.1).
+		if pb.instance == &ep.toolbar.control && pb.level == 0 && !toolbarMenuOpen(pb) {
+			pb.instance.vertical = c.clicked[platform.MouseButtonTertiary]
+		}
 		ep.toggleToolbarMenu(pb)
 	case b.click != nil:
 		if err := b.click(ep, c); err != nil {

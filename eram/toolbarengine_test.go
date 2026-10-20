@@ -646,3 +646,36 @@ func TestHoldButton(t *testing.T) {
 	}
 	check("Clear pressed", false)
 }
+
+// TBP on TOOLBAR displays its menu horizontally, to its right, and TBE
+// vertically: hanging below it, each row a column (2.3.1).
+func TestToolbarControlMenuVertical(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ep.currentPrefs().MasterToolbarPosition = [2]float32{200, 600}
+	ep.handleToolbarInput(ctx)
+	toolbar := ep.toolbar.layout.control.levels[0].buttons[0].face
+
+	clickToolbarAt(ep, ctx, toolbar.Center(), platform.MouseButtonTertiary)
+	ep.handleToolbarInput(ctx)
+	control := &ep.toolbar.layout.control
+	master := placedButtonFace(t, ep, control, "MASTER\nTOOLBAR")
+	mca := placedButtonFace(t, ep, control, "MCA\nTOOLBAR")
+	raise := placedButtonFace(t, ep, control, "MASTER\nRAISE")
+	if master.P0[0] != toolbar.P0[0] || master.P1[1] != toolbar.P1[1]-toolbarRowPitch {
+		t.Errorf("vertical: MASTER TOOLBAR at %v, want it below TOOLBAR at %v", master, toolbar)
+	}
+	if mca.P0[0] != master.P0[0] || mca.P1[1] != master.P1[1]-toolbarRowPitch {
+		t.Errorf("vertical: MCA TOOLBAR at %v, want it below MASTER TOOLBAR at %v", mca, master)
+	}
+	if raise.P1[1] != master.P1[1] || raise.P0[0] != master.P0[0]+toolbarSlotWidth {
+		t.Errorf("vertical: MASTER RAISE at %v, want it right of MASTER TOOLBAR at %v", raise, master)
+	}
+
+	clickToolbarAt(ep, ctx, toolbar.Center(), platform.MouseButtonTertiary)
+	clickToolbarAt(ep, ctx, toolbar.Center(), platform.MouseButtonPrimary)
+	ep.handleToolbarInput(ctx)
+	master = placedButtonFace(t, ep, &ep.toolbar.layout.control, "MASTER\nTOOLBAR")
+	if master.P1[1] != toolbar.P1[1] || master.P0[0] <= toolbar.P1[0] {
+		t.Errorf("horizontal: MASTER TOOLBAR at %v, want it right of TOOLBAR at %v", master, toolbar)
+	}
+}
