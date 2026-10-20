@@ -27,7 +27,7 @@ func (ep *Scope) DrawUI(p platform.Platform, config *platform.Config) {
 		return
 	}
 	ps := ep.currentPrefs()
-	imgui.Checkbox("Use right click for primary button", &ps.UseRightClick)
+	imgui.Checkbox("Right button acts as left button, left as middle", &ps.UseRightClick)
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
