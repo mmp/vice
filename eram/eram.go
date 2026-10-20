@@ -67,6 +67,7 @@ type (
 		deletionMark                  renderer.RGB
 		prefSetCommand                renderer.RGB // SAVE and DELETE in the PREFSET menu
 		dockGrid, dockTarget          renderer.RGB // a toolbar's slots while a button is dragged over it
+		disabledText                  renderer.RGB
 	}
 	badgePalette struct {
 		fill, border renderer.RGB
@@ -122,6 +123,11 @@ var colors = struct {
 	pointOut     pointOutPalette
 	pauseOverlay pauseOverlayPalette
 	saa          saaPalette
+
+	// The annotation colors, and the white of an annotation being created
+	// or edited (3.1).
+	annotation      [numAnnotationColors]renderer.RGB
+	annotationFrame renderer.RGB
 }{
 	yellow:          renderer.RGB{R: .894, G: .894},
 	coral:           renderer.RGBFromHex(0xFF99CC),
@@ -185,6 +191,7 @@ var colors = struct {
 		prefSetCommand:    renderer.RGB{R: .173, G: .467, B: .475},
 		dockGrid:          renderer.RGB{R: 0, G: .5, B: 0},
 		dockTarget:        renderer.RGB{R: 0, G: 1, B: 0},
+		disabledText:      renderer.RGB{R: .5, G: .5, B: .5},
 	},
 	badge: badgePalette{
 		fill:   renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0},
@@ -213,6 +220,13 @@ var colors = struct {
 		hot:  renderer.RGB{R: 1, G: .57, B: .3},
 		cold: renderer.RGB{R: 1, G: 1, B: 1},
 	},
+	annotation: [numAnnotationColors]renderer.RGB{
+		AnnotationGreen:  {R: .1, G: .9, B: .1},
+		AnnotationCoral:  renderer.RGBFromHex(0xFF99CC),
+		AnnotationWhite:  {R: .9, G: .9, B: .9},
+		AnnotationYellow: {R: .894, G: .894},
+	},
+	annotationFrame: renderer.RGB{R: 1, G: 1, B: 1},
 }
 
 type Scope struct {
@@ -283,6 +297,11 @@ type Scope struct {
 	// SuppressionGroups are the conflict alert suppression groups, in ID
 	// order.
 	SuppressionGroups []SuppressionGroup `json:"SuppressionGroups,omitempty"`
+
+	// Annotations are the graphic annotations drawn with the DRAW menu,
+	// oldest first.
+	Annotations []Annotation `json:"Annotations,omitempty"`
+	annotations annotationState
 
 	fdbArena util.ObjectArena[fullDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
@@ -622,8 +641,13 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawSAAs(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
+	// The Circle Location Text Box is over the toolbar, so it takes its
+	// clicks first; the annotations are under it.
+	ep.handleCircleLocationMouse(ctx)
 	ep.handleToolbarInput(ctx)
+	ep.handleAnnotationMouse(ctx, transforms)
 	cb.SetScissorBounds(ctx.DrawExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	ep.drawAnnotations(ctx, transforms, cb)
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
@@ -667,6 +691,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	}
 
 	ep.drawTearoffs(ctx, transforms, cb)
+	ep.drawCircleLocationBox(ctx, transforms, cb)
 	if ctx.Mouse != nil {
 		ep.handleSAAMouse(ctx, transforms)
 		ep.consumeMouseEvents(ctx, transforms)
@@ -708,6 +733,8 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}
 	ep.SuppressionGroups = nil
+	ep.Annotations = nil
+	ep.cancelAnnotationFunction()
 
 	ep.scopeDraw.Clear()
 
@@ -970,8 +997,10 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 	}
 	// Likewise a clicked altitude limits text box takes them; the sub-entry
 	// box merely being displayed does not. So do a Range View field clicked
-	// for entry and the PREFSET menu taking a name to save under.
-	if ep.handleAltitudeLimitsKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) || ep.handlePrefSetKeyboard(ctx) {
+	// for entry, the PREFSET menu taking a name to save under, and the DRAW
+	// menu taking text or a circle's location.
+	if ep.handleAltitudeLimitsKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) || ep.handlePrefSetKeyboard(ctx) ||
+		ep.handleAnnotationKeyboard(ctx) {
 		return
 	}
 	ps := ep.currentPrefs()

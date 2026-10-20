@@ -39,9 +39,13 @@ const (
 )
 
 // toolbarClick is a click on a toolbar button: which of the logical mouse
-// buttons were clicked, as mousePrimaryClicked and friends define them.
+// buttons were clicked, as mousePrimaryClicked and friends define them,
+// where, and on which placed button. A click on a view menu's row has
+// neither of the last two.
 type toolbarClick struct {
 	clicked [platform.MouseButtonCount]bool
+	pos     [2]float32
+	button  *placedButton
 }
 
 // errToolbarLimit reports an increment/decrement click past the end of the
@@ -77,6 +81,26 @@ type toolbarButton struct {
 	// brightness, if set, gives the brightness of the button's face in
 	// place of BRIGHT's BUTTON.
 	brightness func(*Preferences) scope.Brightness
+	// enabled, if set, reports whether the button can be used; a disabled
+	// button's text is dimmed and clicks on it do nothing.
+	enabled func(ep *Scope) bool
+	// drawFace, if set, draws what is on the button's face in place of its
+	// text.
+	drawFace func(ep *Scope, f toolbarFace)
+}
+
+// toolbarFace is a button's face being drawn: its extent, the builders to
+// draw on it with, and the style of its text.
+type toolbarFace struct {
+	extent math.Extent2D
+	ld     *renderer.ColoredLinesDrawBuilder
+	trid   *renderer.ColoredTrianglesDrawBuilder
+	td     *renderer.TextDrawBuilder
+	style  renderer.TextStyle
+}
+
+func (b *toolbarButton) usable(ep *Scope) bool {
+	return b.enabled == nil || b.enabled(ep)
 }
 
 func (b *toolbarButton) text(ep *Scope) string {
@@ -707,6 +731,11 @@ func (ep *Scope) toolbarsHit(p [2]float32, raised bool) (toolbarHit, bool) {
 	return toolbarHit{}, false
 }
 
+// toolbarCovers reports whether p is over a displayed toolbar's background.
+func (ep *Scope) toolbarCovers(p [2]float32) bool {
+	return util.SeqContainsFunc(maps.Values(ep.toolbar.layout.regions), func(e math.Extent2D) bool { return e.Inside(p) })
+}
+
 // viewCovers reports whether a view or a popup menu was drawn over p.
 func (ep *Scope) viewCovers(p [2]float32) bool {
 	if ep.popup != nil && ep.popupExtent.Inside(p) {
@@ -742,17 +771,24 @@ func (pi *placedInstance) hit(p [2]float32) (toolbarHit, bool) {
 	return toolbarHit{}, false
 }
 
-// panels returns every displayed panel.
-func (l *toolbarLayout) panels() []*placedLevel {
-	var panels []*placedLevel
-	instances := append([]*placedInstance{&l.control}, l.main)
+// placedInstances returns the instances placed: the toolbar control
+// button's, the main toolbar's if it is displayed, and the torn-off
+// buttons'.
+func (l *toolbarLayout) placedInstances() []*placedInstance {
+	instances := []*placedInstance{&l.control}
+	if l.main != nil {
+		instances = append(instances, l.main)
+	}
 	for i := range l.tornOff {
 		instances = append(instances, &l.tornOff[i])
 	}
-	for _, pi := range instances {
-		if pi == nil {
-			continue
-		}
+	return instances
+}
+
+// panels returns every displayed panel.
+func (l *toolbarLayout) panels() []*placedLevel {
+	var panels []*placedLevel
+	for _, pi := range l.placedInstances() {
 		for i := range pi.levels {
 			if pi.levels[i].panel != nil {
 				panels = append(panels, &pi.levels[i])
@@ -760,6 +796,23 @@ func (l *toolbarLayout) panels() []*placedLevel {
 		}
 	}
 	return panels
+}
+
+// findPlaced returns where the button with the given id is displayed in the
+// given instance, or in any instance if inst is nil; it returns nil if it
+// isn't displayed.
+func (l *toolbarLayout) findPlaced(inst *toolbarInstance, id string) *placedButton {
+	for _, pi := range l.placedInstances() {
+		if inst != nil && pi.instance != inst {
+			continue
+		}
+		for i := range pi.levels {
+			if pb := pi.levels[i].find(id); pb != nil {
+				return pb
+			}
+		}
+	}
+	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -793,7 +846,8 @@ func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
 	var c toolbarClick
 	c.clicked[platform.MouseButtonPrimary] = ep.mousePrimaryClicked(mouse)
 	c.clicked[platform.MouseButtonTertiary] = ep.mouseTertiaryClicked(mouse)
-	if c == (toolbarClick{}) {
+	c.pos = mouse.Pos
+	if c.clicked == ([platform.MouseButtonCount]bool{}) {
 		// A held button keeps firing if it repeats.
 		pb := tb.hover.button
 		tb.press.inside = tb.press.down && pb != nil && !tb.hover.tab &&
@@ -839,7 +893,7 @@ func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
 	}
 	if tb.hover.tab {
 		ep.startToolbarDrag(ctx, pb)
-	} else {
+	} else if pb.button.usable(ep) {
 		tb.press = toolbarPress{instance: pb.instance.id, button: pb.button.id, down: true, inside: true, click: c,
 			override: pb.button.override}
 		if pb.button.override != noDBOverride {
@@ -879,6 +933,7 @@ func lockCursor(ctx *scope.Context, e math.Extent2D) {
 
 func (ep *Scope) clickToolbarButton(pb *placedButton, c toolbarClick) {
 	b := pb.button
+	c.button = pb
 	switch {
 	case b.submenu != nil:
 		// TBE on the toolbar control button displays its menu vertically
@@ -894,10 +949,17 @@ func (ep *Scope) clickToolbarButton(pb *placedButton, c toolbarClick) {
 	}
 }
 
-// reportClickAtLimit flashes the invalid cursor and sounds the alarm for an
-// increment/decrement click past the value's limit.
+// reportClickAtLimit reports an increment/decrement click past the value's
+// limit as an invalid click.
 func (ep *Scope) reportClickAtLimit(c toolbarClick) {
-	ep.SetTemporaryCursor(util.Select(c.clicked[platform.MouseButtonTertiary], "EramInvalidEnter", "EramInvalidSelect"), 0.5, "")
+	ep.reportInvalidClick(c.clicked[platform.MouseButtonTertiary])
+}
+
+// reportInvalidClick flashes the invalid cursor for the trackball button
+// clicked, TBE's if tertiary is set and TBP's otherwise, and sounds the
+// alarm.
+func (ep *Scope) reportInvalidClick(tertiary bool) {
+	ep.SetTemporaryCursor(util.Select(tertiary, "EramInvalidEnter", "EramInvalidSelect"), 0.5, "")
 	ep.soundAlarm()
 }
 
@@ -1408,8 +1470,13 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 		ld.AddLine([2]float32{f.P0[0], f.P1[1]}, [2]float32{f.P1[0], f.P0[1]}, x)
 	}
 
-	style := renderer.TextStyle{Font: ep.ERAMToolbarFont(), Color: ps.Brightness.Text.ScaleRGB(colors.toolbar.text)}
-	drawToolbarText(td, pb.button.text(ep), pb.face, style)
+	text := util.Select(pb.button.usable(ep), colors.toolbar.text, colors.toolbar.disabledText)
+	style := renderer.TextStyle{Font: ep.ERAMToolbarFont(), Color: ps.Brightness.Text.ScaleRGB(text)}
+	if pb.button.drawFace != nil {
+		pb.button.drawFace(ep, toolbarFace{extent: pb.face, ld: ld, trid: trid, td: td, style: style})
+	} else {
+		drawToolbarText(td, pb.button.text(ep), pb.face, style)
+	}
 
 	trid.GenerateCommands(cb)
 	ld.GenerateCommands(cb)

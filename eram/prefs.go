@@ -265,6 +265,19 @@ type Preferences struct {
 		Bright   scope.Brightness
 		Presets  [2]int
 	}
+
+	// Draw holds the DRAW menu's settings (3.1): the color of new
+	// annotations, the brightness of each color, the size of new text,
+	// whether new annotations are anchored to the map rather than the
+	// display, and the radius of new circles anchored to the map, in
+	// nautical miles.
+	Draw struct {
+		Color        AnnotationColor
+		ColorBright  [numAnnotationColors]scope.Brightness
+		Font         int
+		MapAnchor    bool
+		CircleRadius int
+	}
 }
 
 // CheckListPreferences are the settings of a check list view; each check
@@ -619,6 +632,14 @@ func makeDefaultPreferences() *Preferences {
 	prefs.RangeView.Bright = 90
 	prefs.RangeView.Presets = [2]int{100, 150}
 
+	prefs.Draw.Color = AnnotationYellow
+	for c := range numAnnotationColors {
+		prefs.Draw.ColorBright[c] = 60
+	}
+	prefs.Draw.Font = 2
+	prefs.Draw.MapAnchor = true
+	prefs.Draw.CircleRadius = 5
+
 	prefs.MCA.Position = [2]float32{2, 80}
 	prefs.MCA.PALines = 6
 	prefs.MCA.Width = 30
@@ -792,6 +813,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 120 {
 		p.GroupSup = makeDefaultPreferences().GroupSup
+	}
+	if from < 121 {
+		p.Draw = makeDefaultPreferences().Draw
 	}
 }
 

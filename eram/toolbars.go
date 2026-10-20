@@ -105,7 +105,7 @@ func panelButton(labelFunc func(ep *Scope) string, panel toolbarPanel) toolbarBu
 // The main toolbar
 
 var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
-	inertMenu("DRAW"),
+	menuButton("DRAW", &drawMenu),
 	menuButton("ATC\nTOOLS", &atcToolsMenu),
 	inertMenu("AB\nSETTING"),
 	rangeButton(),
@@ -185,6 +185,167 @@ func clickVelocityVector(ep *Scope, c toolbarClick) error {
 	}
 	ep.VelocityTime = v
 	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// DRAW
+
+var drawMenu = toolbarMenu{rows: [][]toolbarButton{{
+	annotationShapeButton(createRectangle, drawRectangleIcon),
+	annotationShapeButton(createCircle, drawCircleIcon),
+	circleSizeButton(),
+	annotationShapeButton(createLine, drawLineIcon),
+	annotationFunctionButton("A", createText),
+	annotationColorButton(),
+	colorSelectionButton(),
+}, {
+	disabledWithoutAnnotations(annotationFunctionButton("FONT", applyAnnotationFont)),
+	withoutTearoffBar(incDecButton("A FONT", func(ps *Preferences) *int { return &ps.Draw.Font }, 1, 8, 1)),
+	annotationAnchorButton(),
+	disabledWithoutAnnotations(annotationFunctionButton("DEL", deleteAnnotation)),
+	disabledWithoutAnnotations(annotationFunctionButton("DEL\nALL", deleteAllAnnotations)),
+}}}
+
+// annotationFunctionButton makes a DRAW menu button that activates one of
+// its functions. It is drawn active while the function is.
+func annotationFunctionButton(label string, f annotationFunction) toolbarButton {
+	return withoutTearoffBar(commandButton(label,
+		func(ep *Scope) bool { return ep.annotations.function == f },
+		func(ep *Scope, c toolbarClick) error {
+			ep.clickAnnotationFunction(f, c)
+			return nil
+		}))
+}
+
+// annotationShapeButton makes the button for a shape's function, which
+// shows the shape rather than text.
+func annotationShapeButton(f annotationFunction, draw func(f toolbarFace)) toolbarButton {
+	b := annotationFunctionButton("", f)
+	b.drawFace = func(_ *Scope, face toolbarFace) { draw(face) }
+	return b
+}
+
+func drawRectangleIcon(f toolbarFace) {
+	e, c := f.extent, f.extent.Center()
+	w, h := e.Width()*.4, e.Height()*.25
+	f.ld.AddLineLoop(f.style.Color, math.Extent2D{P0: [2]float32{c[0] - w, c[1] - h}, P1: [2]float32{c[0] + w, c[1] + h}}.Corners())
+}
+
+func drawCircleIcon(f toolbarFace) {
+	f.ld.AddCircle(f.extent.Center(), f.extent.Height()*.25, 32, f.style.Color)
+}
+
+func drawLineIcon(f toolbarFace) {
+	e := f.extent
+	f.ld.AddLine(e.Lerp([2]float32{.1, .7}), e.Lerp([2]float32{.9, .3}), f.style.Color)
+}
+
+// circleSizeButton makes the O SIZE button, which sets the radius of new
+// circles anchored to the map. It is disabled and crossed out while new
+// annotations are anchored to the display (3.1.2.2).
+func circleSizeButton() toolbarButton {
+	b := withoutTearoffBar(incDecButton("SIZE", func(ps *Preferences) *int { return &ps.Draw.CircleRadius }, 5, 50, 5))
+	b.enabled = func(ep *Scope) bool { return ep.currentPrefs().Draw.MapAnchor }
+	b.drawFace = func(ep *Scope, f toolbarFace) {
+		// The "o" of "o SIZE" is a small circle. The lines are placed as
+		// drawToolbarText places them.
+		font, e := f.style.Font, f.extent
+		cw, y := charWidth(font), e.P1[1]-1
+		x := e.P0[0] + max(1, (e.Width()-6*cw)/2)
+		ink := font.InkBounds("S", 0)
+		f.ld.AddCircle([2]float32{x + cw/2, y + ink.Center()[1]}, ink.Height()*.4, 16, f.style.Color)
+		f.td.AddText("SIZE", [2]float32{x + 2*cw, y}, f.style)
+		value := fmt.Sprint(ep.currentPrefs().Draw.CircleRadius)
+		x = e.P0[0] + max(1, (e.Width()-float32(len(value))*cw)/2)
+		f.td.AddText(value, [2]float32{x, y - font.LayoutBounds("SIZE", 0).Height()*1.2}, f.style)
+		if !ep.currentPrefs().Draw.MapAnchor {
+			f.ld.AddLine(e.P0, e.P1, f.style.Color)
+			f.ld.AddLine([2]float32{e.P0[0], e.P1[1]}, [2]float32{e.P1[0], e.P0[1]}, f.style.Color)
+		}
+	}
+	return b
+}
+
+// annotationColorButton makes the COLOR button, which sets the brightness
+// of the selected color. It is black with its text in that color.
+func annotationColorButton() toolbarButton {
+	bright := func(ep *Scope) *scope.Brightness {
+		ps := ep.currentPrefs()
+		return &ps.Draw.ColorBright[ps.Draw.Color]
+	}
+	b := withoutTearoffBar(incDecButtonFunc("COLOR",
+		func(ep *Scope) string { return fmt.Sprint(int(*bright(ep))) },
+		func(ep *Scope, c toolbarClick) error { return adjust(bright(ep), c, 0, 100, 2) }))
+	b.drawFace = func(ep *Scope, f toolbarFace) {
+		addQuad(f.trid, f.extent, colors.toolbar.toggleButton)
+		f.style.Color = ep.annotationRGB(ep.currentPrefs().Draw.Color)
+		drawToolbarText(f.td, "COLOR\n"+fmt.Sprint(int(*bright(ep))), f.extent, f.style)
+	}
+	return b
+}
+
+// colorSelectionButton makes the Color Selection button: a swatch of each
+// annotation color, the selected one outlined, of which a click selects
+// the one clicked.
+func colorSelectionButton() toolbarButton {
+	return withoutTearoffBar(toolbarButton{
+		kind: buttonToggle,
+		click: func(ep *Scope, c toolbarClick) error {
+			if c.button == nil {
+				return nil
+			}
+			for color := range numAnnotationColors {
+				if colorSwatch(c.button.face, color).Expand(1).Inside(c.pos) {
+					ep.currentPrefs().Draw.Color = color
+				}
+			}
+			return nil
+		},
+		drawFace: func(ep *Scope, f toolbarFace) {
+			ps := ep.currentPrefs()
+			addQuad(f.trid, f.extent, ps.Brightness.Button.ScaleRGB(colors.toolbar.toggleOn))
+			for color := range numAnnotationColors {
+				s := colorSwatch(f.extent, color)
+				addQuad(f.trid, s, ps.Brightness.Button.ScaleRGB(colors.annotation[color]))
+				if color == ps.Draw.Color {
+					f.ld.AddLineLoop(f.style.Color, s.Expand(1).Corners())
+				}
+			}
+		},
+	})
+}
+
+// colorSwatch returns the extent of a color's swatch on the Color Selection
+// button's face: a two by two grid.
+func colorSwatch(face math.Extent2D, c AnnotationColor) math.Extent2D {
+	const pad = 3
+	w, h := (face.Width()-3*pad)/2, (face.Height()-3*pad)/2
+	col, row := float32(c%2), float32(c/2)
+	x, y := face.P0[0]+pad+col*(w+pad), face.P1[1]-pad-row*(h+pad)
+	return math.Extent2D{P0: [2]float32{x, y - h}, P1: [2]float32{x + w, y}}
+}
+
+// annotationAnchorButton makes the button that anchors new annotations to
+// the map or the display. It reads MAP or DISP and is gray either way
+// (figures 3-2 and 3-4).
+func annotationAnchorButton() toolbarButton {
+	b := withoutTearoffBar(toggleButtonFunc("",
+		func(*Scope) bool { return true },
+		func(ep *Scope, _ toolbarClick) error {
+			ps := ep.currentPrefs()
+			ps.Draw.MapAnchor = !ps.Draw.MapAnchor
+			return nil
+		}))
+	b.labelFunc = func(ep *Scope) string { return util.Select(ep.currentPrefs().Draw.MapAnchor, "MAP", "DISP") }
+	return b
+}
+
+// disabledWithoutAnnotations disables a button while there are no
+// annotations for it to act on, as FONT, DEL, and DEL ALL are in figure
+// 3-2.
+func disabledWithoutAnnotations(b toolbarButton) toolbarButton {
+	b.enabled = func(ep *Scope) bool { return len(ep.Annotations) > 0 }
+	return b
 }
 
 ///////////////////////////////////////////////////////////////////////////
