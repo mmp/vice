@@ -421,7 +421,7 @@ var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	viewButton("CRR", "crr", func(ps *Preferences) *bool { return &ps.CRR.Visible }),
 }, {
 	inertToggle("DEPT\nLIST"),
-	inertToggle("FLIGHT\nEVENT"),
+	viewButton("FLIGHT\nEVENT", "flight-event", func(ps *Preferences) *bool { return &ps.FlightEvent.Visible }),
 	inertToggle("GROUP\nSUP"),
 	inertToggle("HOLD\nLIST"),
 	inertToggle("INBND\nLIST"),

@@ -200,6 +200,16 @@ type Preferences struct {
 	// isn't here has the default ones.
 	SAAs map[string]SAASettings
 
+	FlightEvent struct {
+		Visible    bool
+		Position   [2]float32
+		Opaque     bool
+		ShowBorder bool
+		Lines      int
+		Font       int
+		Bright     scope.Brightness
+	}
+
 	ConflictAlert struct {
 		Visible    bool
 		Position   [2]float32
@@ -518,6 +528,12 @@ func makeDefaultPreferences() *Preferences {
 	prefs.SAAFilter.Hot = 90
 	prefs.SAAFilter.Cold = 90
 
+	prefs.FlightEvent.Position = [2]float32{100, 900}
+	prefs.FlightEvent.ShowBorder = true
+	prefs.FlightEvent.Lines = 10
+	prefs.FlightEvent.Font = 2
+	prefs.FlightEvent.Bright = 90
+
 	prefs.ConflictAlert.Position = [2]float32{100, 900}
 	prefs.ConflictAlert.ShowBorder = true
 	prefs.ConflictAlert.Font = 2
@@ -684,6 +700,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 115 {
 		p.SAAFilter = makeDefaultPreferences().SAAFilter
+	}
+	if from < 116 {
+		p.FlightEvent = makeDefaultPreferences().FlightEvent
 	}
 }
 

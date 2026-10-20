@@ -971,7 +971,8 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 			for c, col := range cols {
 				colBase := startIdx + c*rs.VisibleRows
 				for i, e := range extentsFn(col, colExt(c, body)) {
-					if rs.Rows[colBase+i].empty() {
+					// Headers and empty rows can't be selected.
+					if r := rs.Rows[colBase+i]; r.empty() || r.Centered {
 						continue
 					}
 					items = append(items, ViewSelectableItem{

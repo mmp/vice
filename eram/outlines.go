@@ -28,6 +28,7 @@ const (
 	DBFieldLine4Heading DatablockFieldID = "line4_heading"
 	DBFieldLine4Speed   DatablockFieldID = "line4_speed"
 	DBFieldPointOut     DatablockFieldID = "pointout"
+	DBFieldFEL          DatablockFieldID = "fel"
 )
 
 // DatablockFieldSpec describes a field location in line/column space (0-based).
@@ -119,6 +120,8 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 				ep.openSpeedMenu(ctx, &trk, db.Fields[DBFieldMain])
 			case db.Fields[DBFieldLine4].Inside(mouse.Pos):
 				ep.openFreeTextMenu(ctx, &trk, db.Fields[DBFieldMain])
+			case db.Fields[DBFieldFEL].Inside(mouse.Pos):
+				ep.currentPrefs().FlightEvent.Visible = true
 			default:
 				opened = false
 			}
@@ -348,7 +351,8 @@ func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 	// at fieldD's maximum width, and the HSF indicator right after field E.
 	fieldECol := 2 + len(dbChopTrailing(fdb.fieldD[:]))
 	setField(DBFieldSpeed, 3, fieldECol, fdb.fieldE[:])
-	setField(DBFieldHSF, 3, fieldECol+len(dbChopTrailing(fdb.fieldE[:])), fdb.hsf[:])
+	outlines.Fields[DBFieldFEL] = fdb.felExtent(layout)
+	setField(DBFieldHSF, 3, fieldECol+len(dbChopTrailing(fdb.fieldE[:]))+len(dbChopTrailing(fdb.fel[:])), fdb.hsf[:])
 	outlines.Fields[DBFieldHandoffSpeed] = outlines.Fields[DBFieldSpeed]
 	setField(DBFieldLine4, 4, 0, fdb.line4[:])
 	if _, ok := lineLengths[4]; !ok {
@@ -426,7 +430,8 @@ func fullDatablockLines(db *fullDatablock, out *[5]dbLine) {
 	out[0] = dbMakeLine(dbChopTrailing(db.line0[:]))
 	out[1] = dbMakeLine(dbChopTrailing(db.line1[:]))
 	out[2] = dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:]))
-	out[3] = dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]), dbChopTrailing(db.hsf[:]))
+	out[3] = dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:]),
+		dbChopTrailing(db.fel[:]), dbChopTrailing(db.hsf[:]))
 	out[4] = dbMakeLine(dbChopTrailing(db.line4[:]))
 }
 

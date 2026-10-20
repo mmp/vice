@@ -50,6 +50,9 @@ type datablock interface {
 	// portalFenceVisible reports whether the datablock has data in line 0 or
 	// column 0, the fields that sit outside of the portal fence.
 	portalFenceVisible() bool
+	// felExtent returns the extent of the datablock's FEL indicator in the
+	// given layout, or an empty one if it has none.
+	felExtent(l DatablockLayout) math.Extent2D
 }
 
 // dbChar represents a single character in a datablock along with its colour and
@@ -222,7 +225,8 @@ type fullDatablock struct {
 	col1   [2]dbChar
 	fieldD [8]dbChar
 	fieldE [8]dbChar
-	hsf    [1]dbChar // drawn right after Field E
+	fel    [3]dbChar // spaces left for the FEL indicator after Field E
+	hsf    [1]dbChar // drawn after Field E and the FEL indicator
 	line4  [16]dbChar
 	// FONT's PORTAL and LINE 4 may make the fonts of the fields outside the
 	// portal fence, line 0 and column 0, and of line 4 smaller than the
@@ -351,6 +355,20 @@ func (db *fullDatablock) portalFenceVisible() bool {
 
 func (db *limitedDatablock) portalFenceVisible() bool { return false }
 
+// felExtent returns the extent of the FEL indicator, which follows Field E
+// after a space.
+func (db *fullDatablock) felExtent(l DatablockLayout) math.Extent2D {
+	if fieldEmpty(db.fel[:]) {
+		return math.EmptyExtent2D()
+	}
+	col := 2 + len(dbChopTrailing(db.fieldD[:])) + len(dbChopTrailing(db.fieldE[:])) + 1
+	return l.FieldExtent(DatablockFieldSpec{Line: dbCIDLine, Col: col, Cols: len(db.fel) - 1})
+}
+
+// felExtent returns an empty extent: the tracks with FEL entries are those
+// the user owns or is being offered, which have FDBs.
+func (db *limitedDatablock) felExtent(DatablockLayout) math.Extent2D { return math.EmptyExtent2D() }
+
 // drawPortalFence draws the datablock's portal fence: a horizontal segment
 // in the gap between lines 0 and 1 and a vertical segment down the left side
 // of lines 1 through 3, separating line 0 and column 0 from the rest of the
@@ -468,7 +486,10 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 			dbWriteText(db.fieldE[:], gsText, color, false)
 		}
 
-		// The HSF indicator follows Field E (5.1.5.20.1).
+		// The FEL indicator and the HSF indicator follow Field E (5.1.5.19).
+		if ep.felListed(ctx, &trk) {
+			dbWriteText(db.fel[:], strings.Repeat(" ", len(db.fel)), color, false)
+		}
 		if hsfDataExists(trk.FlightPlan) {
 			dbWriteText(db.hsf[:], hsfIndicator, color, false)
 		}
@@ -671,6 +692,8 @@ func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]data
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 
 	ep.ldbIdx = ep.ldbIdx[:0]
 	ep.eldbIdx = ep.eldbIdx[:0]
@@ -716,8 +739,12 @@ func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]data
 			end, dir := ep.datablockAnchor(ctx, *trk, db, dbType, transforms)
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
+			layout := makeDatablockLayout(end, font, ep.fdbPortalFont(), ep.fdbLine4Font())
 			if ps.PortalFence && db.portalFenceVisible() {
-				drawPortalFence(ld, makeDatablockLayout(end, font, ep.fdbPortalFont(), ep.fdbLine4Font()), fenceColor)
+				drawPortalFence(ld, layout, fenceColor)
+			}
+			if e := db.felExtent(layout); !e.IsEmpty() {
+				drawFELIndicator(trid, ld, e, ps)
 			}
 		}
 	}
@@ -728,6 +755,7 @@ func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]data
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
+	trid.GenerateCommands(cb)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }

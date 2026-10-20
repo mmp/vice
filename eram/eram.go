@@ -327,6 +327,14 @@ type Scope struct {
 	saaTearOffs   map[string]math.Extent2D
 	saaScroll     ViewScrollState
 
+	// FLIGHT EVENT state: the entries the user deleted, with the ACIDs
+	// they had, the number of entries last frame, and the view's scroll
+	// and selection.
+	felDeleted    map[av.ADSBCallsign]sim.ACID
+	felEntryCount int
+	felScroll     ViewScrollState
+	felSelect     ViewSelectionState
+
 	// CRR state (session)
 	CRRGroups        map[string]*CRRGroup `json:"CRRGroups,omitempty"`
 	crrFixRects      map[string]math.Extent2D
@@ -405,6 +413,7 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	// Initialize to -1 so no row is selected at startup.
 	ep.altimSetSelect.Selected = -1
 	ep.wxSelect.Selected = -1
+	ep.felSelect.Selected = -1
 
 	// TODO: initialize fonts and audio
 	ep.initializeFonts(r, pl)
@@ -638,6 +647,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawCRRView(ctx, tracks, transforms, cb)
 	ep.drawCFRView(ctx, transforms, cb)
 	ep.drawSAAFilterView(ctx, transforms, cb)
+	ep.drawFlightEventView(ctx, transforms, cb)
 	ep.drawConflictAlertView(ctx, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
@@ -719,6 +729,10 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.cfrShowFields = false
 	ep.saaTearingOff = ""
 	ep.saaScroll = ViewScrollState{}
+	clear(ep.felDeleted)
+	ep.felEntryCount = 0
+	ep.felScroll = ViewScrollState{}
+	ep.felSelect = ViewSelectionState{Selected: -1}
 	ep.AltimSetAirports = nil
 	ep.altimSetScroll = ViewScrollState{}
 	ep.altimSetSelect = ViewSelectionState{Selected: -1}
