@@ -127,6 +127,7 @@ func (ep *Scope) processEvents(ctx *scope.Context) {
 			})
 		}
 	}
+	ep.CFREntries = util.FilterSlice(ep.CFREntries, trackExists)
 
 	// Events may refer to aircraft that no longer exist, so track state
 	// lookups must be checked.
@@ -360,6 +361,15 @@ func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
 // to adaptation; vice takes it to be everything at or below FL230.
 func inReducedSeparationAirspace(alt float32) bool {
 	return alt <= 23000
+}
+
+// radarSample returns the radar sample of a track that the scope displays,
+// or the track's own until one has been taken.
+func (ep *Scope) radarSample(trk *sim.Track) av.RadarTrack {
+	if state, ok := ep.TrackState[trk.ADSBCallsign]; ok && !state.TrackTime.IsZero() {
+		return state.Track
+	}
+	return trk.RadarTrack
 }
 
 // nonADSB reports whether a radar sample gets the non-ADS-B indicator, as

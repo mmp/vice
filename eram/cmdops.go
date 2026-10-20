@@ -97,6 +97,7 @@ func registerOpsCommands() {
 	registerCommand(CommandModeNone, "QD [ALT_LIMITS]", handleAltitudeLimitsFilter)
 
 	// QF - Flight Plan Display
+	registerCommand(CommandModeNone, "QF R [TRACK]", handleFlightPlanReadoutRA)
 	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)
 
 	// QS - HSF (Heading / Speed-Mach / Free-text) scratchpad handling
@@ -489,7 +490,21 @@ func handleAltitudeLimitsFilter(ep *Scope, limits [2]int) error {
 ///////////////////////////////////////////////////////////////////////////
 // QF - Flight Plan Readout Handlers
 
+// handleFlightPlanReadout shows a flight plan readout in the CFR view if it
+// is displayed and in the RA otherwise (2.10).
 func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil || !ep.currentPrefs().CFR.Visible {
+		return handleFlightPlanReadoutRA(ep, ctx, trk)
+	}
+	ep.addCFREntry(trk.FlightPlan.ACID)
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", "FLIGHT PLAN READOUT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
+	}, nil
+}
+
+// handleFlightPlanReadoutRA shows a flight plan readout in the RA, whether
+// or not the CFR view is displayed (4.2.3).
+func handleFlightPlanReadoutRA(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 	fp := trk.FlightPlan
 	if fp == nil {
 		// TODO: find the correct error message
@@ -516,11 +531,7 @@ func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (Com
 		formatRoute(fp, &ctx.Client.State))
 	// The readout of an active flight always shows the non-ADS-B indicator
 	// (2.13).
-	rt := trk.RadarTrack
-	if state, ok := ep.TrackState[trk.ADSBCallsign]; ok && !state.TrackTime.IsZero() {
-		rt = state.Track
-	}
-	if nonADSB(rt) {
+	if nonADSB(ep.radarSample(trk)) {
 		readout = nonADSBMark + " " + readout
 	}
 	return CommandStatus{responseArea: []string{zTime, readout}}, nil

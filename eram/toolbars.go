@@ -411,7 +411,7 @@ func viewButton(label, viewID string, visible func(*Preferences) *bool) toolbarB
 var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	viewButton("ALTIM\nSET", "altim-set", func(ps *Preferences) *bool { return &ps.AltimSet.Visible }),
 	inertToggle("AUTO HO\nINHIB"),
-	inertToggle("CFR"),
+	viewButton("CFR", "cfr", func(ps *Preferences) *bool { return &ps.CFR.Visible }),
 	viewButton("CODE", "beacon", func(ps *Preferences) *bool { return &ps.BeaconCodeView.Visible }),
 	conflictAlertButton(),
 	inertToggle("CPDLC\nADV"),

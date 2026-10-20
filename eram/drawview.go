@@ -131,6 +131,10 @@ type View struct {
 
 	OnBodyTertiaryMenu func(host math.Extent2D) popup
 
+	// TitleButtons are more buttons in the title bar, laid out right to
+	// left before the "-" button.
+	TitleButtons []ViewTitleButton
+
 	DrawBody func(extent math.Extent2D, b *ViewBuilders)
 
 	// RowSource, when set, supplies a column-major list-of-rows body.
@@ -143,6 +147,14 @@ type View struct {
 	// for non-RowSource views, which don't use them).
 	scroll     *ViewScrollConfig
 	selectable *ViewSelectable
+}
+
+// ViewTitleButton is a labeled button in a view's title bar, such as the
+// CFR view's DEL ALL.
+type ViewTitleButton struct {
+	Label    string
+	Disabled bool // grayed out, and clicks on it do nothing
+	OnClick  func()
 }
 
 // ViewRowSource declaratively describes a column-major list-of-rows body for
@@ -342,11 +354,12 @@ func viewTitleHeight(titleFont *renderer.Font) float32 {
 }
 
 // titleBarMinWidth is the minimum width the title bar needs to fit the M
-// button on the left, the centered Title text, and the "-" button on the
-// right without overlap.
-func titleBarMinWidth(titleFont *renderer.Font, title string) float32 {
+// button on the left, the centered Title text, and the "-" button and any
+// others on the right without overlap.
+func titleBarMinWidth(titleFont *renderer.Font, title string, buttons []ViewTitleButton) float32 {
 	cw := charWidth(titleFont)
-	return float32(len(title))*cw + 2*(cw+2*titleBarButtonPad)
+	return util.ReduceSlice(buttons, float32(len(title))*cw+2*(cw+2*titleBarButtonPad),
+		func(b ViewTitleButton, w float32) float32 { return w + float32(len(b.Label))*cw + 2*titleBarButtonPad })
 }
 
 // defaultBadge builds the standard row badge: width and height matched to
@@ -391,9 +404,11 @@ type titleButton struct {
 	label   string // "" for the title region (drawn separately, centered on full bar)
 }
 
-// titleBarLayout splits titleExt into the M / title / "-" regions and fills
-// in hover flags. Returned in left-to-right order: [M, title, "-"].
-func titleBarLayout(titleExt math.Extent2D, v View, titleFont *renderer.Font, mouse *platform.MouseState) [3]titleButton {
+// titleBarLayout splits titleExt into the M / title / "-" regions and the
+// regions of the view's TitleButtons, and fills in hover flags. The first
+// are returned in left-to-right order: [M, title, "-"]; the TitleButtons'
+// are in their order.
+func titleBarLayout(titleExt math.Extent2D, v View, titleFont *renderer.Font, mouse *platform.MouseState) ([3]titleButton, []titleButton) {
 	titleH := titleExt.Height()
 	var btns [3]titleButton
 
@@ -420,6 +435,15 @@ func titleBarLayout(titleExt math.Extent2D, v View, titleFont *renderer.Font, mo
 	if btns[2].present {
 		rightEdge = btns[2].rect.P0[0]
 	}
+	extras := make([]titleButton, len(v.TitleButtons))
+	for i, b := range v.TitleButtons {
+		w := float32(len(b.Label))*charWidth(titleFont) + 2*titleBarButtonPad
+		extras[i] = titleButton{present: true, label: b.Label, rect: math.Extent2D{
+			P0: [2]float32{rightEdge - w, titleExt.P0[1]},
+			P1: [2]float32{rightEdge, titleExt.P1[1]},
+		}}
+		rightEdge -= w
+	}
 	btns[1].rect = math.Extent2D{
 		P0: [2]float32{leftEdge, titleExt.P0[1]},
 		P1: [2]float32{rightEdge, titleExt.P1[1]},
@@ -430,7 +454,10 @@ func titleBarLayout(titleExt math.Extent2D, v View, titleFont *renderer.Font, mo
 			btns[i].hovered = btns[i].rect.Inside(mouse.Pos)
 		}
 	}
-	return btns
+	for i := range extras {
+		extras[i].hovered = mouse != nil && !v.TitleButtons[i].Disabled && extras[i].rect.Inside(mouse.Pos)
+	}
+	return btns, extras
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -549,6 +576,7 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 
 	// Title bar.
 	var tb [3]titleButton
+	var tbExtras []titleButton
 	if hasTitle {
 		titleDim := v.Brightness.ScaleRGB(colors.view.text)
 		bright := colors.view.hoveredOutline
@@ -560,15 +588,16 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 		}
 		addQuad(trid, titleExt, titleBg)
 
-		tb = titleBarLayout(titleExt, v, titleFont, mouse)
+		tb, tbExtras = titleBarLayout(titleExt, v, titleFont, mouse)
 
 		// Title text is centered on the full title-bar width so it stays
-		// visually centered regardless of which side buttons are present.
+		// visually centered regardless of which side buttons are present,
+		// unless there are TitleButtons, which it would run into.
 		titleColor := titleDim
 		if tb[1].hovered {
 			titleColor = bright
 		}
-		td.AddTextCentered(v.Title, titleExt.Center(),
+		td.AddTextCentered(v.Title, util.Select(len(tbExtras) > 0, tb[1].rect, titleExt).Center(),
 			renderer.TextStyle{Font: titleFont, Color: titleColor})
 
 		// M / "-" labels centered in their own rects.
@@ -597,10 +626,19 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 			x := tb[2].rect.P0[0]
 			ld.AddLine([2]float32{x, titleExt.P0[1]}, [2]float32{x, titleExt.P1[1]}, dim)
 		}
+		for i, b := range tbExtras {
+			c := util.Select(b.hovered, bright, titleDim)
+			if v.TitleButtons[i].Disabled {
+				c = c.Scale(0.5)
+			}
+			td.AddTextCentered(b.label, b.rect.Center(), renderer.TextStyle{Font: titleFont, Color: c})
+			x := b.rect.P0[0]
+			ld.AddLine([2]float32{x, titleExt.P0[1]}, [2]float32{x, titleExt.P1[1]}, dim)
+		}
 		// Bright box around the hovered button. Overdraws the dim separators
 		// (and the outer view border, where they coincide) so the hovered
 		// cell reads as fully outlined.
-		for _, b := range tb {
+		for _, b := range append(tb[:], tbExtras...) {
 			if b.present && b.hovered {
 				ld.AddLineLoop(bright, b.rect.Corners())
 			}
@@ -644,6 +682,7 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 	// to the popup, not the view underneath.
 	primaryClicked := ep.mousePrimaryClicked(mouse)
 	tertiaryClicked := ep.mouseTertiaryClicked(mouse)
+	hoveredExtra := slices.IndexFunc(tbExtras, func(b titleButton) bool { return b.hovered })
 	popupClick := ep.popup != nil && mouse != nil && ep.popupExtent.Inside(mouse.Pos)
 	if mouse != nil && (primaryClicked || tertiaryClicked) && !popupClick {
 		// Starting a drag dismisses any open pop-up: the user is moving the
@@ -674,6 +713,10 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 
 		case hasTitle && v.OnMinimize != nil && tb[2].hovered:
 			v.OnMinimize()
+			ep.consumeMouseClick(mouse)
+
+		case hoveredExtra >= 0:
+			v.TitleButtons[hoveredExtra].OnClick()
 			ep.consumeMouseClick(mouse)
 
 		case hasTitle && tb[1].hovered && ep.viewRepo.activeID == "":
@@ -872,7 +915,7 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 	width := colsTotalW
 	colsStart := float32(0)
 	if rs.CenterColumnsInTitleBar {
-		minW := titleBarMinWidth(titleFont, v.Title)
+		minW := titleBarMinWidth(titleFont, v.Title, v.TitleButtons)
 		width = max(minW, colsTotalW)
 		colsStart = (width - colsTotalW) / 2
 	}

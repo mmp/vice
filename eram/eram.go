@@ -303,6 +303,12 @@ type Scope struct {
 	// the click. Valid only while popup != nil.
 	popupExtent math.Extent2D
 
+	// CFR state (session): the flights whose readouts are in the view,
+	// oldest first, when each was added, and whether SHOW FIELDS is on.
+	CFREntries    []sim.ACID `json:"CFREntries,omitempty"`
+	cfrAdded      map[sim.ACID]time.Time
+	cfrShowFields bool
+
 	// CRR state (session)
 	CRRGroups        map[string]*CRRGroup `json:"CRRGroups,omitempty"`
 	crrFixRects      map[string]math.Extent2D
@@ -611,6 +617,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawCheckListView(ctx, transforms, cb, &emergCheckList)
 	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
 	ep.drawCRRView(ctx, tracks, transforms, cb)
+	ep.drawCFRView(ctx, transforms, cb)
 	ep.drawConflictAlertView(ctx, transforms, cb)
 	// Draw the active floating pop-up (if any) on top of its host view.
 	if ep.popup != nil {
@@ -684,6 +691,9 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	clear(ep.emergCheckToggled)
 	clear(ep.CRRGroups)
 	ep.crrScroll = ViewScrollState{}
+	ep.CFREntries = nil
+	clear(ep.cfrAdded)
+	ep.cfrShowFields = false
 	ep.AltimSetAirports = nil
 	ep.altimSetScroll = ViewScrollState{}
 	ep.altimSetSelect = ViewSelectionState{Selected: -1}

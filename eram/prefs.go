@@ -159,6 +159,28 @@ type Preferences struct {
 	EmergCheck CheckListPreferences
 	PosCheck   CheckListPreferences
 
+	// CFR view preferences (4.2.3). The Show fields are the FILTERS menu's
+	// toggles (Table 4-3).
+	CFR struct {
+		Visible        bool
+		Position       [2]float32
+		Opaque         bool
+		ShowBorder     bool
+		Entries        int // 1-10
+		Font           int
+		Bright         scope.Brightness
+		RouteChars     int // 30-100
+		ShowAltitude   bool
+		ShowBeaconCode bool
+		ShowCID        bool
+		ShowFix        bool
+		ShowLabels     bool
+		ShowRoute      bool
+		ShowSpeed      bool
+		ShowTime       bool
+		ShowType       bool
+	}
+
 	ConflictAlert struct {
 		Visible    bool
 		Position   [2]float32
@@ -458,6 +480,16 @@ func makeDefaultPreferences() *Preferences {
 	prefs.EmergCheck = makeDefaultCheckListPreferences()
 	prefs.PosCheck = makeDefaultCheckListPreferences()
 
+	prefs.CFR.Position = [2]float32{100, 900}
+	prefs.CFR.ShowBorder = true
+	prefs.CFR.Entries = 10
+	prefs.CFR.Font = 2
+	prefs.CFR.Bright = 90
+	prefs.CFR.RouteChars = 50
+	for _, f := range cfrFilters {
+		*f.shown(&prefs) = true
+	}
+
 	prefs.ConflictAlert.Position = [2]float32{100, 900}
 	prefs.ConflictAlert.ShowBorder = true
 	prefs.ConflictAlert.Font = 2
@@ -618,6 +650,9 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 113 {
 		p.ConflictAlert = makeDefaultPreferences().ConflictAlert
+	}
+	if from < 114 {
+		p.CFR = makeDefaultPreferences().CFR
 	}
 }
 
