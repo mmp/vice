@@ -150,6 +150,8 @@ const (
 const (
 	toolbarMainID    = ""        // the main toolbar instance
 	toolbarControlID = "control" // the toolbar control button, and its instance
+	// masterDock is the master toolbar's name in Preferences.DockedButtons.
+	masterDock = "MASTER"
 )
 
 // Button ids come from the buttons' places in the tree: a button's row and
@@ -272,10 +274,9 @@ type toolbarPress struct {
 
 // toolbarDrag is a button being torn off or a torn-off button being moved.
 type toolbarDrag struct {
-	id       string
-	moveOnly bool
-	origin   [2]float32 // the tear-off bar's top left when the drag started
-	offset   [2]float32 // from there to the mouse
+	id     string
+	origin [2]float32 // the tear-off bar's top left when the drag started
+	offset [2]float32 // from there to the mouse
 }
 
 type placedButton struct {
@@ -284,6 +285,9 @@ type placedButton struct {
 	level    int // depth in the instance's menus; the main toolbar's buttons are at 0
 	face     math.Extent2D
 	tab      math.Extent2D // the tear-off bar; empty for a button without one
+	// handle is set for a torn-off button and the toolbar control button,
+	// whose tear-off bars move them rather than tearing off a copy.
+	handle bool
 }
 
 // placedLevel is one displayed menu: its buttons, or its panel and where
@@ -373,8 +377,7 @@ func (ep *Scope) layoutToolbars(ctx *scope.Context) {
 	tb.layout = toolbarLayout{}
 
 	if ps.DisplayToolbar {
-		origin := [2]float32{toolbarInsetX, ctx.DrawExtent.Height() - toolbarInsetY}
-		pi := ep.layoutInstance(ctx, &tb.main, mainToolbar.rows, origin, true)
+		pi := ep.layoutInstance(ctx, &tb.main, mainToolbar.rows, mainToolbarOrigin(ctx), true)
 		tb.layout.main = &pi
 	}
 	for _, inst := range tb.tornOff {
@@ -403,14 +406,19 @@ func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows 
 	pi := placedInstance{instance: inst}
 	level := placeToolbarRows(inst, 0, rows, origin, false)
 	if bar {
-		torn := ep.currentPrefs().TornOffButtons
+		// The main toolbar holds the buttons docked in it after its own.
+		docked := ep.placeDockedButtons(inst, ep.currentPrefs().DockedButtons[masterDock], masterSlots(ctx, origin))
+		level.buttons = append(level.buttons, docked...)
 		level.buttons = util.FilterSlice(level.buttons, func(pb placedButton) bool {
 			if len(inst.open) > 0 {
 				return pb.button.id == inst.open[0]
 			}
-			_, moved := torn[pb.button.id]
-			return !moved || !pb.button.moveOnly
+			return pb.handle || !pb.button.moveOnly || !ep.isTornOff(pb.button.id)
 		})
+	} else {
+		for i := range level.buttons {
+			level.buttons[i].handle = true
+		}
 	}
 	pi.levels = append(pi.levels, level)
 
@@ -466,6 +474,48 @@ func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows 
 		pi.levels = append(pi.levels, sub)
 	}
 	return pi
+}
+
+// placeDockedButtons places the buttons with the given ids in the given
+// slots of a toolbar, in order, as torn-off copies.
+func (ep *Scope) placeDockedButtons(inst *toolbarInstance, ids []string, slots []math.Extent2D) []placedButton {
+	var pbs []placedButton
+	for i, id := range ids[:min(len(ids), len(slots))] {
+		b := ep.toolbarButtonByID(id)
+		if b == nil {
+			continue
+		}
+		s := slots[i]
+		pbs = append(pbs, placedButton{button: b, instance: inst, handle: true,
+			tab:  math.Extent2D{P0: s.P0, P1: [2]float32{s.P0[0] + toolbarTabWidth, s.P1[1]}},
+			face: math.Extent2D{P0: [2]float32{s.P1[0] - toolbarFaceWidth, s.P0[1]}, P1: s.P1}})
+	}
+	return pbs
+}
+
+// masterSlots returns the master toolbar's slots for torn-off buttons in
+// order: the end of its shorter row, then the columns past its longer one,
+// top then bottom, as far as the window is wide (2.3.2). Each spans a
+// button's tear-off bar and face.
+func masterSlots(ctx *scope.Context, origin [2]float32) []math.Extent2D {
+	slot := func(r, c int) math.Extent2D {
+		x, top := origin[0]+float32(c)*toolbarSlotWidth, origin[1]-float32(r)*toolbarRowPitch
+		return math.Extent2D{P0: [2]float32{x, top - toolbarFaceHeight},
+			P1: [2]float32{x + toolbarSlotWidth - toolbarButtonGap, top}}
+	}
+	n := util.ReduceSlice(mainToolbar.rows, 0, func(row []toolbarButton, n int) int { return max(n, len(row)) })
+	var slots []math.Extent2D
+	for r, row := range mainToolbar.rows {
+		for c := len(row); c < n; c++ {
+			slots = append(slots, slot(r, c))
+		}
+	}
+	for c := n; origin[0]+float32(c+1)*toolbarSlotWidth <= ctx.DrawExtent.Width(); c++ {
+		for r := range mainToolbar.rows {
+			slots = append(slots, slot(r, c))
+		}
+	}
+	return slots
 }
 
 // fitExtent fits a menu's background to its buttons and their tear-off
@@ -803,22 +853,66 @@ func toolbarMenuOpen(pb *placedButton) bool {
 // disabled.
 func (ep *Scope) startToolbarDrag(ctx *scope.Context, pb *placedButton) {
 	id := pb.button.id
-	if !toolbarTearoffHandle(pb) {
-		if _, torn := ep.currentPrefs().TornOffButtons[id]; torn {
-			return
-		}
+	if !pb.handle && ep.isTornOff(id) {
+		return
 	}
 	origin := [2]float32{pb.tab.P0[0], pb.tab.P1[1]}
-	ep.toolbar.drag = &toolbarDrag{id: id, moveOnly: pb.button.moveOnly, origin: origin,
-		offset: math.Sub2f(ctx.Mouse.Pos, origin)}
+	ep.toolbar.drag = &toolbarDrag{id: id, origin: origin, offset: math.Sub2f(ctx.Mouse.Pos, origin)}
 	ctx.Platform.StartCaptureMouse(ctx.DrawExtent)
 }
 
-// toolbarTearoffHandle reports whether a placed button's tear-off bar is
-// the handle of a torn-off button or of the toolbar control button, which
-// moves it, rather than a bar that tears the button off.
-func toolbarTearoffHandle(pb *placedButton) bool {
-	return pb.level == 0 && pb.instance.id != toolbarMainID
+// isTornOff reports whether a button has been torn off, onto the scope or
+// a toolbar.
+func (ep *Scope) isTornOff(id string) bool {
+	ps := ep.currentPrefs()
+	if _, torn := ps.TornOffButtons[id]; torn {
+		return true
+	}
+	for _, ids := range ps.DockedButtons {
+		if slices.Contains(ids, id) {
+			return true
+		}
+	}
+	return false
+}
+
+// removeTearoff deletes a button's tear-off, wherever it is.
+func (ep *Scope) removeTearoff(id string) {
+	ps := ep.currentPrefs()
+	delete(ps.TornOffButtons, id)
+	for dock, ids := range ps.DockedButtons {
+		ps.DockedButtons[dock] = slices.DeleteFunc(ids, func(d string) bool { return d == id })
+	}
+}
+
+// inMainToolbar reports whether a button is one of the main toolbar's own.
+func inMainToolbar(id string) bool {
+	return slices.ContainsFunc(mainToolbar.rows, func(row []toolbarButton) bool {
+		return slices.ContainsFunc(row, func(b toolbarButton) bool { return b.id == id })
+	})
+}
+
+// masterDockSlot returns the slot of the master toolbar's that a button
+// dropped at p goes in, and false if the button doesn't go in one: one of
+// the toolbar's own buttons goes back to its place, and a full toolbar
+// takes no more. The slots past the last docked button are taken in order.
+func (ep *Scope) masterDockSlot(ctx *scope.Context, id string, p [2]float32) (int, bool) {
+	ps := ep.currentPrefs()
+	if !ps.DisplayToolbar || !mainToolbarBand(ctx).Inside(p) || inMainToolbar(id) {
+		return 0, false
+	}
+	slots := masterSlots(ctx, mainToolbarOrigin(ctx))
+	docked := util.FilterSlice(ps.DockedButtons[masterDock], func(d string) bool { return d != id })
+	if len(docked) >= len(slots) {
+		return 0, false
+	}
+	nearest := 0
+	for i, s := range slots {
+		if math.Distance2f(s.Center(), p) < math.Distance2f(slots[nearest].Center(), p) {
+			nearest = i
+		}
+	}
+	return min(nearest, len(docked)), true
 }
 
 // placeToolbarDrag places the button being torn off or moved. The drag
@@ -841,12 +935,20 @@ func (ep *Scope) placeToolbarDrag(ctx *scope.Context) {
 	}
 
 	ps := ep.currentPrefs()
+	slot, dock := ep.masterDockSlot(ctx, d.id, mouse.Pos)
 	switch {
 	case d.id == toolbarControlID:
 		ps.MasterToolbarPosition = pos
-	case d.moveOnly && ps.DisplayToolbar && mainToolbarBand(ctx).Inside(mouse.Pos):
-		delete(ps.TornOffButtons, d.id)
+	case dock:
+		ep.removeTearoff(d.id)
+		if ps.DockedButtons == nil {
+			ps.DockedButtons = make(map[string][]string)
+		}
+		ps.DockedButtons[masterDock] = slices.Insert(ps.DockedButtons[masterDock], slot, d.id)
+	case inMainToolbar(d.id) && ps.DisplayToolbar && mainToolbarBand(ctx).Inside(mouse.Pos):
+		ep.removeTearoff(d.id)
 	default:
+		ep.removeTearoff(d.id)
 		if ps.TornOffButtons == nil {
 			ps.TornOffButtons = make(map[string][2]float32)
 		}
@@ -906,16 +1008,15 @@ func (ep *Scope) endDeleteTearoffs() {
 // be deleted.
 func (ep *Scope) clickWhileDeletingTearoffs(ctx *scope.Context, hit toolbarHit, c toolbarClick) bool {
 	pb := hit.button
-	if pb == nil || !toolbarTearoffHandle(pb) || pb.instance.id == toolbarControlID || pb.button.moveOnly {
+	if pb == nil || !pb.handle || pb.instance.id == toolbarControlID || pb.button.moveOnly {
 		return false
 	}
 	tb := &ep.toolbar
 	id := pb.button.id
 	if c.clicked[platform.MouseButtonTertiary] {
-		ps := ep.currentPrefs()
-		delete(ps.TornOffButtons, id)
+		ep.removeTearoff(id)
 		for id := range tb.selected {
-			delete(ps.TornOffButtons, id)
+			ep.removeTearoff(id)
 		}
 		ep.endDeleteTearoffs()
 		ep.syncTornOff()
@@ -981,6 +1082,12 @@ func (ep *Scope) drawMainToolbar(ctx *scope.Context, cb *renderer.CommandBuffer)
 	ep.drawPlacedInstance(ctx, cb, pi)
 }
 
+// mainToolbarOrigin returns the top left of the main toolbar's first
+// button's tear-off bar.
+func mainToolbarOrigin(ctx *scope.Context) [2]float32 {
+	return [2]float32{toolbarInsetX, ctx.DrawExtent.Height() - toolbarInsetY}
+}
+
 // mainToolbarBand returns the main toolbar's background, which spans the
 // top of the window.
 func mainToolbarBand(ctx *scope.Context) math.Extent2D {
@@ -1043,7 +1150,7 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 
 	if !pb.tab.IsEmpty() {
 		color := colors.toolbar.tearoffBar
-		if _, torn := ps.TornOffButtons[pb.button.id]; torn && !toolbarTearoffHandle(pb) {
+		if !pb.handle && ep.isTornOff(pb.button.id) {
 			color = colors.toolbar.tearoffBarTorn
 		}
 		quad(pb.tab, color, hovered && tb.hover.tab)
@@ -1057,7 +1164,7 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 		trid.AddTriangle([2]float32{f.P1[0] - n, f.P1[1]}, f.P1, [2]float32{f.P1[0], f.P1[1] - n},
 			ps.Brightness.Button.ScaleRGB(util.Select(held, colors.toolbar.toggleButton, colors.toolbar.toggleOn)))
 	}
-	if _, picked := tb.selected[pb.button.id]; picked && toolbarTearoffHandle(pb) {
+	if _, picked := tb.selected[pb.button.id]; picked && pb.handle {
 		// A torn-off button picked for deletion is covered by an X (2.5.1.2).
 		f, x := pb.face, ps.Brightness.Text.ScaleRGB(colors.toolbar.deletionMark)
 		ld.AddLine(f.P0, f.P1, x)
@@ -1108,7 +1215,9 @@ func drawToolbarText(td *renderer.TextDrawBuilder, text string, face math.Extent
 }
 
 // drawToolbarDragPreview draws the outline of the button being torn off or
-// moved where it would be placed.
+// moved where it would be placed. Over a toolbar that would take it, a
+// green grid shows the toolbar's slots that it could go in, the one it
+// would go in brightest (2.5.1.1).
 func (ep *Scope) drawToolbarDragPreview(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	d := ep.toolbar.drag
 	if d == nil || ctx.Mouse == nil {
@@ -1116,6 +1225,13 @@ func (ep *Scope) drawToolbarDragPreview(ctx *scope.Context, cb *renderer.Command
 	}
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+
+	if slot, ok := ep.masterDockSlot(ctx, d.id, ctx.Mouse.Pos); ok {
+		docked := util.FilterSlice(ep.currentPrefs().DockedButtons[masterDock], func(id string) bool { return id != d.id })
+		for i, s := range masterSlots(ctx, mainToolbarOrigin(ctx))[:len(docked)+1] {
+			ld.AddLineLoop(util.Select(i == slot, colors.toolbar.dockTarget, colors.toolbar.dockGrid), s.Corners())
+		}
+	}
 
 	p0 := math.Sub2f(ctx.Mouse.Pos, d.offset)
 	w := toolbarTabWidth + toolbarTabGap + toolbarFaceWidth

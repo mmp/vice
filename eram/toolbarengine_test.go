@@ -679,3 +679,80 @@ func TestToolbarControlMenuVertical(t *testing.T) {
 		t.Errorf("horizontal: MASTER TOOLBAR at %v, want it right of TOOLBAR at %v", master, toolbar)
 	}
 }
+
+// A tear-off dropped on the master toolbar docks in its slots past its own
+// buttons, taking the slot it is dropped on and moving those after it along;
+// a tear-off of one of the master toolbar's own buttons dropped on it goes
+// away. While a docked button's menu is displayed, the master's other
+// buttons are hidden, and DELETE TEAROFF deletes docked buttons (2.3.2,
+// 2.5.1).
+func TestDockInMasterToolbar(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ctx.Platform = captureMousePlatform{}
+	ps := ep.currentPrefs()
+	dest, typ, font := toolbarButtonID(t, ep, "DEST"), toolbarButtonID(t, ep, "TYPE"), toolbarButtonID(t, ep, "FONT")
+	slots := masterSlots(ctx, mainToolbarOrigin(ctx))
+
+	// tearOff opens DB FIELDS, tears the button with the given text off by
+	// its bar, and drops it at p.
+	tearOff := func(text string, p [2]float32) {
+		t.Helper()
+		ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "DB\nFIELDS")}
+		ep.handleToolbarInput(ctx)
+		var tab math.Extent2D
+		for _, level := range ep.toolbar.layout.main.levels {
+			if pb := level.find(toolbarButtonID(t, ep, text)); pb != nil && !pb.handle {
+				tab = pb.tab
+			}
+		}
+		clickToolbarAt(ep, ctx, tab.Center(), platform.MouseButtonPrimary)
+		ep.toolbar.main.open = nil
+		clickToolbarAt(ep, ctx, p, platform.MouseButtonPrimary)
+		ep.handleToolbarInput(ctx)
+	}
+	docked := func() []string { return ps.DockedButtons[masterDock] }
+
+	tearOff("DEST", slots[3].Center())
+	if !slices.Equal(docked(), []string{dest}) {
+		t.Fatalf("dropped past the end: docked %v, want DEST", docked())
+	}
+	copyFace := placedButtonFace(t, ep, ep.toolbar.layout.main, "DEST")
+	if copyFace.P1[0] != slots[0].P1[0] || copyFace.P1[1] != slots[0].P1[1] {
+		t.Errorf("docked DEST at %v, want it in the first slot %v", copyFace, slots[0])
+	}
+	tearOff("TYPE", slots[0].Center())
+	if !slices.Equal(docked(), []string{typ, dest}) {
+		t.Errorf("dropped on DEST: docked %v, want TYPE then DEST", docked())
+	}
+
+	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "VIEWS")}
+	ep.handleToolbarInput(ctx)
+	if slices.ContainsFunc(ep.toolbar.layout.main.levels[0].buttons, func(pb placedButton) bool { return pb.handle }) {
+		t.Error("docked buttons are displayed while the VIEWS menu is")
+	}
+	ep.toolbar.main.open = nil
+	ep.handleToolbarInput(ctx)
+
+	// FONT torn off and dropped back on the master toolbar goes away.
+	ps.TornOffButtons = map[string][2]float32{font: {100, 500}}
+	ep.handleToolbarInput(ctx)
+	clickToolbarAt(ep, ctx, tornOffButton(t, ep, "FONT").tab.Center(), platform.MouseButtonPrimary)
+	clickToolbarAt(ep, ctx, slots[5].Center(), platform.MouseButtonPrimary)
+	if ep.isTornOff(font) || len(docked()) != 2 {
+		t.Errorf("FONT dropped on the master toolbar: torn off %v, docked %v", ep.isTornOff(font), docked())
+	}
+
+	ep.handleToolbarInput(ctx)
+	clickToolbarAt(ep, ctx, placedButtonFace(t, ep, ep.toolbar.layout.main, "DELETE\nTEAROFF").Center(),
+		platform.MouseButtonPrimary)
+	var typeCopy math.Extent2D
+	for _, pb := range ep.toolbar.layout.main.levels[0].buttons {
+		if pb.handle && pb.button.id == typ {
+			typeCopy = pb.face
+		}
+	}
+	clickToolbarAt(ep, ctx, typeCopy.Center(), platform.MouseButtonTertiary)
+	if !slices.Equal(docked(), []string{dest}) {
+		t.Errorf("after deleting TYPE: docked %v, want DEST", docked())
+	}
+}

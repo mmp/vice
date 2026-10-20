@@ -324,6 +324,10 @@ type CommonPreferences struct {
 	// MasterToolbarRaised displays the main toolbar over the torn-off
 	// buttons and the views rather than under them.
 	MasterToolbarRaised bool
+
+	// DockedButtons holds the buttons torn off onto each toolbar, by the
+	// toolbar's name, in the order of its slots.
+	DockedButtons map[string][]string
 }
 
 const (

@@ -66,6 +66,7 @@ type (
 		text, outline, hoveredOutline renderer.RGB
 		deletionMark                  renderer.RGB
 		prefSetCommand                renderer.RGB // SAVE and DELETE in the PREFSET menu
+		dockGrid, dockTarget          renderer.RGB // a toolbar's slots while a button is dragged over it
 	}
 	badgePalette struct {
 		fill, border renderer.RGB
@@ -182,6 +183,8 @@ var colors = struct {
 		hoveredOutline:    renderer.RGB{R: .953, G: .953, B: .953},
 		deletionMark:      renderer.RGB{R: .953, G: .953, B: .953},
 		prefSetCommand:    renderer.RGB{R: .173, G: .467, B: .475},
+		dockGrid:          renderer.RGB{R: 0, G: .5, B: 0},
+		dockTarget:        renderer.RGB{R: 0, G: 1, B: 0},
 	},
 	badge: badgePalette{
 		fill:   renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0},
