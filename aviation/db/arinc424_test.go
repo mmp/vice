@@ -1104,11 +1104,12 @@ func TestParseARINC424ClassAirspace(t *testing.T) {
 }
 
 // R-5402 is a rhumb line closed by a clockwise arc, with its controlling
-// agency in a continuation record between them; the Gap A Low MOA starts
-// with a counterclockwise arc. Both floors are above ground level.
+// agency in a continuation record between them, and is active continuously;
+// the Gap A Low MOA starts with a counterclockwise arc. Both floors are
+// above ground level.
 func TestParseARINC424SpecialUseAirspace(t *testing.T) {
 	lines := []string{
-		"SUSAURK3R5402      A00101L    H N47450000W098471900                              00500A09999MR-5402                        827911703",
+		"SUSAURK3R5402      A00101LC   H N47450000W098471900                              00500A09999MR-5402                        827911703",
 		"SUSAURK3R5402      A00102C                                                                         FAA MINNEAPOLIS ARTCC   827921703",
 		"SUSAURK3R5402      A00200L    REN47450000W098312500N47403100W09839220000700501                                             827931703",
 		"SUSAURK1MGAP A L   A00101L    L N45575900W105592300N46225600W10557127002501835   00500A11999MGAP A LOW MOA                 715501703",
@@ -1128,9 +1129,13 @@ func TestParseARINC424SpecialUseAirspace(t *testing.T) {
 		t.Fatalf("unexpected airspaces %+v and %+v", r5402, moa)
 	}
 	v := r5402.Volumes[0]
-	if v.Description != "R-5402" || v.Floor != 500 || !v.FloorAGL || v.Ceiling != 9999 || v.CeilingAGL {
-		t.Errorf("unexpected R-5402 volume %s %d-%d agl %v/%v", v.Description, v.Floor, v.Ceiling, v.FloorAGL,
-			v.CeilingAGL)
+	if v.Description != "R-5402" || v.Floor != 500 || !v.FloorAGL || v.Ceiling != 9999 || v.CeilingAGL ||
+		!v.ActiveContinuously {
+		t.Errorf("unexpected R-5402 volume %s %d-%d agl %v/%v continuous %v", v.Description, v.Floor, v.Ceiling,
+			v.FloorAGL, v.CeilingAGL, v.ActiveContinuously)
+	}
+	if moa.Volumes[0].ActiveContinuously {
+		t.Error("the Gap A Low MOA is active continuously")
 	}
 
 	// R-5402's southern boundary is the arc, 7nm from its origin; its

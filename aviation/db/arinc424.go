@@ -123,10 +123,13 @@ type SpecialUseAirspace struct {
 // SpecialUseAirspaceVolume is one sector of a special use airspace; its
 // Description is the sector's name. Its floor and ceiling are above ground
 // level where FloorAGL and CeilingAGL say so, and an unlimited ceiling is
-// UnlimitedCeiling.
+// UnlimitedCeiling. ActiveContinuously is set for a sector whose time code
+// (5.131) says that it is always active; the CIFP gives no times for the
+// others.
 type SpecialUseAirspaceVolume struct {
 	av.AirspaceVolume
 	FloorAGL, CeilingAGL bool
+	ActiveContinuously   bool
 }
 
 // UnlimitedCeiling is the ceiling of airspace with no upper limit.
@@ -1969,8 +1972,9 @@ func (r *ARINC424Result) addSpecialUseAirspaceSector(recs [][]byte) {
 			Vertices:      vertices,
 			PolygonBounds: &bounds,
 		},
-		FloorAGL:   floorAGL,
-		CeilingAGL: ceilingAGL,
+		FloorAGL:           floorAGL,
+		CeilingAGL:         ceilingAGL,
+		ActiveContinuously: first[26] == 'C',
 	})
 }
 
