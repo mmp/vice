@@ -260,8 +260,10 @@ func (ep *Scope) buildCRRList(labels []string, trackPos map[av.ADSBCallsign]math
 			return 0
 		})
 		for _, e := range entries {
-			// Entries start with a column for the non-ADS-B indicator.
-			row := Row{Label: fmt.Sprintf("  %s    %.1f", e.cs, e.d)}
+			// Entries start with a column for the non-ADS-B indicator. The
+			// distances are right-aligned so that their decimal points line
+			// up (figure 4-174).
+			row := Row{Label: fmt.Sprintf("  %-8s%*.1f", e.cs, crrContentChars-10, e.d)}
 			if state := ep.TrackState[e.cs]; ps.NonADSBIndicator && state != nil && nonADSB(state.Track) {
 				row.AfterDraw = ep.nonADSBRowMark(ep.ERAMFont(ps.CRR.Font))
 			}

@@ -809,6 +809,32 @@ func TestCRRNonADSBIndicator(t *testing.T) {
 	}
 }
 
+// The distances of a CRR group's entries are right-aligned within the view,
+// so their decimal points line up whatever the lengths of the callsigns and
+// the distances (figure 4-174).
+func TestCRRListAlignment(t *testing.T) {
+	h := makeTrackTestHarness()
+	pos := map[av.ADSBCallsign]math.Point2LL{"N1": {-73.1, 40}, "SWA1233": {-75, 40}, "AAL321": {-73, 41}}
+	for cs, p := range pos {
+		h.addTrack(&sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: cs, Mode: av.TransponderModeAltitude,
+			TransponderAltitude: 5000, Location: p}})
+	}
+	h.frame(0)
+	h.ep.CRRGroups["A"] = &CRRGroup{Label: "A", Location: math.Point2LL{-73, 40},
+		Aircraft: map[av.ADSBCallsign]struct{}{"N1": {}, "SWA1233": {}, "AAL321": {}}}
+
+	var dots []int
+	for _, r := range h.ep.buildCRRList([]string{"A"}, pos).Rows[1:] {
+		if len(r.Label) != crrContentChars {
+			t.Errorf("%q: %d characters, want %d", r.Label, len(r.Label), crrContentChars)
+		}
+		dots = append(dots, strings.Index(r.Label, "."))
+	}
+	if len(dots) != 3 || dots[0] != dots[1] || dots[1] != dots[2] {
+		t.Errorf("decimal points at %v, want them all in one column", dots)
+	}
+}
+
 // The RADAR FILTER menu's target filters display the targets without Mode
 // C: ALL PRIM those of primary returns and beacons, NON MODE-C those of
 // beacons, and SELECT BEACON those whose codes are on the beacon code list.
