@@ -882,3 +882,33 @@ func TestSupportToolbars(t *testing.T) {
 		t.Error("DB FIELDS is displayed with the left toolbar suppressed")
 	}
 }
+
+// STATUS and OUTAGE end the master toolbar's second row: STATUS shows the
+// channel's mode and OUTAGE the user's sector, each displays and
+// suppresses its view, and each is moved rather than torn off (2.5.1,
+// 4.3.4, 4.3.5).
+func TestStatusAndOutageButtons(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ep.position = "15"
+	ps := ep.currentPrefs()
+	ep.handleToolbarInput(ctx)
+	row := labelFirstLines(ep, util.FilterSlice(ep.toolbar.layout.main.levels[0].buttons,
+		func(pb placedButton) bool { return pb.face.P1[1] < ep.mainToolbarOrigin()[1] }))
+	if n := len(row); n < 2 || row[n-2] != "STATUS" || row[n-1] != "OUTAGE" {
+		t.Errorf("second row %v, want it to end with STATUS and OUTAGE", row)
+	}
+	for _, c := range []struct {
+		text    string
+		visible *bool
+	}{{"STATUS\nACTIVE", &ps.StatusView.Visible}, {"OUTAGE\n15", &ps.OutageView.Visible}} {
+		b := ep.toolbarButtonByID(toolbarButtonID(t, ep, c.text))
+		if !b.moveOnly {
+			t.Errorf("%q can be torn off", c.text)
+		}
+		for _, want := range []bool{true, false} {
+			if err := b.click(ep, toolbarClick{}); err != nil || *c.visible != want {
+				t.Errorf("%q: view displayed %v, want %v", c.text, *c.visible, want)
+			}
+		}
+	}
+}

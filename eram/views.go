@@ -523,6 +523,83 @@ func (r *raPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Status and Outage
+
+// drawStatusView draws the Status view, which shows the state of the
+// position's channels and its outages and settings (4.3.4). vice has one
+// channel, which is always active, and no outages.
+func (ep *Scope) drawStatusView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	if !ps.StatusView.Visible {
+		return
+	}
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.StatusView.Position,
+		ID:         "status",
+		Title:      "STATUS",
+		Opaque:     true,
+		ShowBorder: true,
+		Brightness: ps.MCA.Bright,
+		OnMenu: ep.makeViewMenu(ctx, "status", 1,
+			func(pb popupBase) popup { return &statusViewPopup{popupBase: pb} }),
+		OnMinimize: func() { ps.StatusView.Visible = false },
+		RowSource: &ViewRowSource{
+			Rows:                    []Row{{Label: "CH: A - ACTIVE"}},
+			FontIndex:               ps.StatusView.Font,
+			ContentChars:            len("CH: A - ACTIVE"),
+			MaxCols:                 1,
+			VisibleRows:             1,
+			RowSpacing:              RowSpacingCompact,
+			CenterColumnsInTitleBar: true,
+		},
+	})
+}
+
+// statusViewPopup is the Status view's menu, which has only FONT
+// (figure 4-262).
+type statusViewPopup struct {
+	popupBase
+}
+
+func (p *statusViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
+		Title: "STATUS",
+		Width: viewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  []MenuItem{makeIntMenuItem(ep, &ps.StatusView.Font, "FONT", 1, 3, 1)},
+	})
+}
+
+// drawOutageView draws the Outage view, which lists the system's outages
+// (4.3.5); vice has none, so it is empty. FONT's OUTAGE sets its font.
+func (ep *Scope) drawOutageView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	if !ps.OutageView.Visible {
+		return
+	}
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.OutageView.Position,
+		ID:         "outage",
+		Title:      "OUTAGE",
+		Opaque:     true,
+		ShowBorder: true,
+		Brightness: ps.Brightness.Outage,
+		OnMinimize: func() { ps.OutageView.Visible = false },
+		RowSource: &ViewRowSource{
+			FontIndex: ps.OutageSize,
+			// As wide as its widest entry would be (Table 4-18).
+			ContentChars:            len("ALTIMETER SETTINGS DOWN"),
+			MaxCols:                 1,
+			VisibleRows:             1,
+			RowSpacing:              RowSpacingCompact,
+			CenterColumnsInTitleBar: true,
+			EmptyKeepsColumnWidth:   true,
+		},
+	})
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Time
 
 func (ep *Scope) drawTimeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {

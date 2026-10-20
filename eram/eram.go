@@ -232,8 +232,10 @@ type Scope struct {
 	baseVideoMap    videomaps.ERAMMap
 	currentFacility string
 
-	// initials are the operating initials of the controller signed in.
+	// initials are the operating initials of the controller signed in, and
+	// position the position they are signed in to.
 	initials string
+	position string
 
 	// eramCursors are made from cursorImages at cursorBrightness; both are
 	// keyed by base name ("Eram1", "EramDeletion", ...).
@@ -638,6 +640,8 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawWXView(ctx, transforms, cb)
 	ep.drawBeaconCodeView(ctx, transforms, cb)
 	ep.drawTimeView(ctx, transforms, cb)
+	ep.drawStatusView(ctx, transforms, cb)
+	ep.drawOutageView(ctx, transforms, cb)
 	ep.drawRangeView(ctx, transforms, cb)
 	ep.drawCheckListView(ctx, transforms, cb, &emergCheckList)
 	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
@@ -677,6 +681,7 @@ func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, l
 	ep.makeMaps(client, lg)
 	ep.makeSAAs(client.State)
 	ep.initials = client.SessionStats.Initials
+	ep.position = string(client.State.PrimaryPositionForTCW(client.State.UserTCW))
 	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}
@@ -687,6 +692,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.makeMaps(client, lg)
 	ep.makeSAAs(client.State)
 	ep.initials = client.SessionStats.Initials
+	ep.position = string(client.State.PrimaryPositionForTCW(client.State.UserTCW))
 	ep.caPairs = nil
 	ep.lastConflictUpdate = time.Time{}
 	ep.lastRadarUpdate = sim.Time{}

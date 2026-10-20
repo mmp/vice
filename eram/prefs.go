@@ -210,6 +210,18 @@ type Preferences struct {
 		Bright     scope.Brightness
 	}
 
+	// StatusView's text is drawn at the MCA's brightness (4.3.4.2).
+	StatusView struct {
+		Visible  bool
+		Position [2]float32
+		Font     int
+	}
+	// OutageView's font is FONT's OUTAGE (4.3.5.3.3).
+	OutageView struct {
+		Visible  bool
+		Position [2]float32
+	}
+
 	ConflictAlert struct {
 		Visible    bool
 		Position   [2]float32
@@ -553,6 +565,10 @@ func makeDefaultPreferences() *Preferences {
 	prefs.FlightEvent.Font = 2
 	prefs.FlightEvent.Bright = 90
 
+	prefs.StatusView.Position = [2]float32{100, 900}
+	prefs.StatusView.Font = 2
+	prefs.OutageView.Position = [2]float32{100, 900}
+
 	prefs.ConflictAlert.Position = [2]float32{100, 900}
 	prefs.ConflictAlert.ShowBorder = true
 	prefs.ConflictAlert.Font = 2
@@ -725,6 +741,10 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 117 {
 		p.HorizToolbar = makeDefaultPreferences().HorizToolbar
+	}
+	if from < 118 {
+		def := makeDefaultPreferences()
+		p.StatusView, p.OutageView = def.StatusView, def.OutageView
 	}
 }
 

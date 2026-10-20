@@ -126,7 +126,30 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 	commandButton("DELETE\nTEAROFF",
 		func(ep *Scope) bool { return ep.toolbar.deleting },
 		func(ep *Scope, _ toolbarClick) error { ep.toggleDeleteTearoffs(); return nil }),
+	statusButton(),
+	outageButton(),
 }}}
+
+// statusButton makes the STATUS button, which shows the mode of the
+// channel, always active, and displays and suppresses the Status view
+// (4.3.4.1). It and the OUTAGE button are drawn at BRIGHT's OUTAGE
+// brightness, and like VECTOR, each is moved rather than torn off (2.5.1).
+func statusButton() toolbarButton {
+	b := viewButton("STATUS\nACTIVE", "status", func(ps *Preferences) *bool { return &ps.StatusView.Visible })
+	b.moveOnly = true
+	b.brightness = func(ps *Preferences) scope.Brightness { return ps.Brightness.Outage }
+	return b
+}
+
+// outageButton makes the OUTAGE button, which shows the user's sector and
+// displays and suppresses the Outage view (4.3.5.1).
+func outageButton() toolbarButton {
+	b := viewButton("", "outage", func(ps *Preferences) *bool { return &ps.OutageView.Visible })
+	b.labelFunc = func(ep *Scope) string { return "OUTAGE\n" + ep.position }
+	b.moveOnly = true
+	b.brightness = func(ps *Preferences) scope.Brightness { return ps.Brightness.Outage }
+	return b
+}
 
 // rangeButton makes the RANGE button, which shows the range and displays
 // and suppresses the Range View (3.4).

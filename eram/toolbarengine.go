@@ -74,6 +74,9 @@ type toolbarButton struct {
 	// button keeps in effect until it is released. Such a button is drawn
 	// with a cut corner (5.1.5.5).
 	override dbOverride
+	// brightness, if set, gives the brightness of the button's face in
+	// place of BRIGHT's BUTTON.
+	brightness func(*Preferences) scope.Brightness
 }
 
 func (b *toolbarButton) text(ep *Scope) string {
@@ -1371,9 +1374,13 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 	ps := ep.currentPrefs()
 	tb := &ep.toolbar
 	hovered := tb.hover.button == pb
+	bright := ps.Brightness.Button
+	if pb.button.brightness != nil {
+		bright = pb.button.brightness(ps)
+	}
 	quad := func(e math.Extent2D, color renderer.RGB, hovered bool) {
 		corners := [][2]float32{{e.P0[0], e.P1[1]}, e.P1, {e.P1[0], e.P0[1]}, e.P0}
-		trid.AddQuad(corners[0], corners[1], corners[2], corners[3], ps.Brightness.Button.ScaleRGB(color))
+		trid.AddQuad(corners[0], corners[1], corners[2], corners[3], bright.ScaleRGB(color))
 		outline := util.Select(hovered, colors.toolbar.hoveredOutline, colors.toolbar.outline)
 		ld.AddLineLoop(ps.Brightness.Border.ScaleRGB(outline), corners)
 	}
