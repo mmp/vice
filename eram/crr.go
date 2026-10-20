@@ -509,10 +509,11 @@ func (ep *Scope) drawCRRFixes(ctx *scope.Context, transforms scope.Transformatio
 
 // drawCRRDistances draws CRR distance values next to aircraft tags for aircraft
 // that are members of CRR groups. The distance is displayed in the color of the
-// CRR group the aircraft belongs to.
+// CRR group the aircraft belongs to. These are the range data blocks, which
+// CRR RDB displays and suppresses (4.2.11.6.1).
 func (ep *Scope) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	if len(ep.CRRGroups) == 0 {
+	if len(ep.CRRGroups) == 0 || !ps.CRR.RDBs {
 		return
 	}
 

@@ -77,6 +77,9 @@ type Preferences struct {
 		ColorBright   map[CRRColor]scope.Brightness
 		Position      [2]float32
 		DisplayFixes  bool // ATC TOOLS overlay of CRR fixes
+		// RDBs displays the range data blocks of the aircraft in the
+		// view (4.2.11.6).
+		RDBs bool
 	}
 
 	// ALTIM SET view preferences
@@ -394,6 +397,7 @@ func makeDefaultPreferences() *Preferences {
 	}
 	prefs.CRR.Position = [2]float32{100, 900}
 	prefs.CRR.DisplayFixes = false
+	prefs.CRR.RDBs = true
 
 	prefs.HistoryLength = 5
 
@@ -574,6 +578,9 @@ func (p *Preferences) Upgrade(from, to int) {
 		def := makeDefaultPreferences()
 		p.NonADSBIndicator = def.NonADSBIndicator
 		p.Brightness.NonADSB = def.Brightness.NonADSB
+	}
+	if from < 111 {
+		p.CRR.RDBs = makeDefaultPreferences().CRR.RDBs
 	}
 }
 

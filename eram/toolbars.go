@@ -387,7 +387,7 @@ var dbFieldsMenu = toolbarMenu{rows: [][]toolbarButton{{
 	incDecButton("NONADSB", func(ps *Preferences) *scope.Brightness { return &ps.Brightness.NonADSB }, 0, 100, 2),
 	inertToggle("SAT\nCOMM"),
 	inertToggle("TFM\nREROUTE"),
-	inertToggle("CRR\nRDB"),
+	toggleButton("CRR\nRDB", func(ps *Preferences) *bool { return &ps.CRR.RDBs }),
 	inertToggle("STA\nRDB"),
 	inertToggle("DELAY\nRDB"),
 	inertToggle("DELAY\nFORMAT"),

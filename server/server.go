@@ -119,7 +119,8 @@ import (
 // 108: ERAM saved preference sets are a list of up to 20 rather than ten slots
 // 109: ERAM BCKLGHT dims the display, and its default is now 100
 // 110: ERAM non-ADS-B indicator display filter and brightness in preference sets
-const ViceSerializeVersion = 110
+// 111: ERAM CRR RDB display filter in preference sets
+const ViceSerializeVersion = 111
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion
