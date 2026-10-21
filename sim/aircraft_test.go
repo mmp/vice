@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/util"
 )
 
 // 1 degree of latitude is ~60 NM, so waypoints are placed along the meridian
@@ -408,6 +409,25 @@ func TestFiledCruiseAltitude(t *testing.T) {
 		if len(seen) != len(tc.want) {
 			t.Errorf("%s-%s %s: filed %d of the %d altitudes in %v", tc.from, tc.to, tc.acType,
 				len(seen), len(tc.want), tc.want)
+		}
+	}
+}
+
+// TestVFRCruiseUnderCeiling checks that a VFR flight whose route asks for
+// more than it can climb to cruises no higher than its ceiling, even with the
+// 500' VFR cruising altitudes add, eastbound and westbound alike.
+func TestVFRCruiseUnderCeiling(t *testing.T) {
+	db.InitDB()
+	r := rand.Make()
+	for acType, perf := range util.SortedMap(db.DB.AircraftPerformance) {
+		for _, trip := range [][2]av.ICAOAirportCode{{"KDEN", "KASE"}, {"KASE", "KDEN"}} {
+			ac := &Aircraft{FlightRules: av.FlightRulesVFR, AircraftType: acType,
+				DepartureAirport: trip[0], ArrivalAirport: trip[1]}
+			for range 10 {
+				if alt := ac.FiledCruiseAltitude(perf, CruiseLimits{Floor: 30000}, 52, 8, r); float32(alt) > perf.Ceiling || alt > maxVFRAltitude {
+					t.Fatalf("%s %s-%s: filed %d with a ceiling of %.0f", acType, trip[0], trip[1], alt, perf.Ceiling)
+				}
+			}
 		}
 	}
 }

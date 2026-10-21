@@ -1190,7 +1190,9 @@ func (ac *Aircraft) FiledCruiseAltitude(perf av.AircraftPerformance, limits Crui
 	nmPerLongitude float32, magneticVariation float32, r *rand.Rand) int {
 	ceiling := int(perf.Ceiling)
 	if ac.FlightRules == av.FlightRulesVFR {
-		ceiling = min(ceiling, 17000) // VFRs stay out of class A airspace
+		// VFRs stay out of class A airspace, and they cruise 500' above
+		// the thousand picked below.
+		ceiling = min(ceiling, maxVFRAltitude) - 500
 	}
 	// What the aircraft can do bounds everything that follows: nothing below
 	// narrows the range without also staying inside it.
