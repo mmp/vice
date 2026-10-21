@@ -251,9 +251,22 @@ func (prefSetPanel) clickOutside(ep *Scope, hit toolbarHit) {
 	}
 }
 
+// prefSetCloseKeys are the CLEAR key and the hard labeled function keys.
+var prefSetCloseKeys = []imgui.Key{imgui.KeyEscape, imgui.KeyF1, imgui.KeyF2, imgui.KeyF3,
+	imgui.KeyF4, imgui.KeyF5, imgui.KeyF6, imgui.KeyF7, imgui.KeyF8, imgui.KeyF9}
+
 // handlePrefSetKeyboard takes the keystrokes for the name to save a
-// preference set under, returning true if it took them.
+// preference set under, returning true if it took them. The CLEAR key and
+// the function keys close the menu (3.16.5) and are left to do what they
+// otherwise do.
 func (ep *Scope) handlePrefSetKeyboard(ctx *scope.Context) bool {
+	closes := func(k imgui.Key, _ any) bool { return slices.Contains(prefSetCloseKeys, k) }
+	if util.MapContains(ctx.Keyboard.Pressed, closes) {
+		ep.prefSetMenu = prefSetMenuState{}
+		ep.closeToolbarPanel(prefSetPanel{})
+		return false
+	}
+
 	m := &ep.prefSetMenu
 	if m.mode != prefSetSave {
 		return false
@@ -279,8 +292,6 @@ func (ep *Scope) handlePrefSetKeyboard(ctx *scope.Context) bool {
 				m.invalid = true
 				ep.soundAlarm()
 			}
-		case imgui.KeyEscape:
-			*m = prefSetMenuState{}
 		}
 	}
 	return true

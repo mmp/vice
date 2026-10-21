@@ -143,3 +143,23 @@ func TestPrefSetMenu(t *testing.T) {
 		t.Errorf("deleting left mode %v and feedback %q", ep.prefSetMenu.mode, ep.feedbackArea.msg)
 	}
 }
+
+// The CLEAR key and the function keys close the menu, whatever it is doing
+// (3.16.5).
+func TestPrefSetMenuClose(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ep.initials = "MP"
+	id := toolbarButtonID(t, ep, "PREFSET\nMP")
+	for _, key := range []imgui.Key{imgui.KeyEscape, imgui.KeyF1} {
+		for _, mode := range []prefSetMode{prefSetInvoke, prefSetSave, prefSetDelete} {
+			ep.toolbar.main.open = []string{id}
+			ep.prefSetMenu = prefSetMenuState{mode: mode, name: "AB"}
+			ctx.Keyboard.Pressed = map[imgui.Key]any{key: nil}
+			ep.handlePrefSetKeyboard(ctx)
+			if len(ep.toolbar.main.open) != 0 || ep.prefSetMenu.mode != prefSetInvoke || ep.prefSetMenu.name != "" {
+				t.Errorf("key %v in mode %v: open %q, mode %v, name %q", key, mode,
+					ep.toolbar.main.open, ep.prefSetMenu.mode, ep.prefSetMenu.name)
+			}
+		}
+	}
+}
