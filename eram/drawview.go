@@ -163,7 +163,8 @@ type ViewTitleButton struct {
 // the per-column content width, and a handful of high-level flags.
 type ViewRowSource struct {
 	// Rows is the flat slice in display order. Distributed column-major
-	// (first VisibleRows fill column 0, next VisibleRows fill column 1, …).
+	// (first VisibleRows fill column 0, next VisibleRows fill column 1, …),
+	// with the last column taking the rest up to its VisibleRows lines.
 	// Row.Color is filled with the View's default text color where the row
 	// leaves it zero.
 	Rows []Row
@@ -175,7 +176,9 @@ type ViewRowSource struct {
 	// the selected (fixed-width) font.
 	ContentChars int
 
-	MaxCols     int
+	MaxCols int
+	// VisibleRows is the number of lines a column shows. A row whose Body
+	// wraps takes more than one.
 	VisibleRows int
 
 	// ReserveBadgeColumn reserves the leftmost badge column matching the
@@ -189,8 +192,10 @@ type ViewRowSource struct {
 
 	RowSpacing RowSpacing
 
-	// ScrollState, when non-nil, enables the scroll bar. MaxOffset is
-	// computed as max(0, len(Rows) - VisibleRows*MaxCols).
+	// ScrollState, when non-nil, enables the scroll bar. Its Offset counts
+	// lines, so that every line of a row that wraps can be scrolled into
+	// view (4.2.20); MaxOffset is the number of lines past
+	// VisibleRows*MaxCols.
 	ScrollState *ViewScrollState
 
 	// CenterColumnsInTitleBar widens the view to at least the title bar's
@@ -860,51 +865,60 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 		proto.BottomGap = lineH / 2
 	}
 
-	// Clamp the persisted scroll offset to the current row count.
-	maxPerPage := rs.VisibleRows * rs.MaxCols
-	maxOffset := max(0, len(rs.Rows)-maxPerPage)
-	startIdx := 0
-	if rs.ScrollState != nil {
-		rs.ScrollState.Offset = math.Clamp(rs.ScrollState.Offset, 0, maxOffset)
-		startIdx = rs.ScrollState.Offset
-	}
-
-	// Allocate only as many columns as we'll actually populate.
-	remaining := len(rs.Rows) - startIdx
-	actualCols := 1
-	if remaining > 0 {
-		actualCols = math.Clamp((remaining+rs.VisibleRows-1)/rs.VisibleRows, 1, rs.MaxCols)
-	}
-	cols := make([]*RowList, actualCols)
-	selectedIdx := -1
-	if rs.SelectableState != nil {
-		selectedIdx = rs.SelectableState.Selected
-	}
-	for c := range cols {
-		rl := proto
-		// Translate the global selected index into this column's local row
-		// index, or leave -1 if the selection is in a different column.
-		colBase := startIdx + c*rs.VisibleRows
-		if selectedIdx >= colBase && selectedIdx < colBase+rs.VisibleRows {
-			rl.SelectedRow = selectedIdx - colBase
-		}
-		cols[c] = &rl
-	}
-	for i := range remaining {
-		c := i / rs.VisibleRows
-		if c >= actualCols {
-			break
-		}
-		r := rs.Rows[startIdx+i]
-		// Default the row's text color and badge so simple callers can
-		// leave these zero on Row.
+	// Default the rows' text color and badge so simple callers can leave
+	// these zero on Row. This comes before counting the rows' lines, since
+	// the badge narrows the body that wraps.
+	rows := slices.Clone(rs.Rows)
+	for i := range rows {
+		r := &rows[i]
 		if r.Color == (renderer.RGB{}) {
 			r.Color = textColor
 		}
 		if badge != nil && r.Badge == nil && !r.Centered && !r.empty() {
 			r.Badge = badge
 		}
-		cols[c].Rows = append(cols[c].Rows, r)
+	}
+
+	// Clamp the persisted scroll offset to the current line count, then
+	// skip the rows scrolled off the top. The first row shown may have its
+	// first lines scrolled off.
+	lines := util.MapSlice(rows, proto.lineCount)
+	totalLines := util.ReduceSlice(lines, 0, func(n, sum int) int { return n + sum })
+	maxOffset := max(0, totalLines-rs.VisibleRows*rs.MaxCols)
+	startIdx, skipLines := 0, 0
+	if rs.ScrollState != nil {
+		rs.ScrollState.Offset = math.Clamp(rs.ScrollState.Offset, 0, maxOffset)
+		skipLines = rs.ScrollState.Offset
+		for skipLines > 0 && skipLines >= lines[startIdx] {
+			skipLines -= lines[startIdx]
+			startIdx++
+		}
+	}
+
+	// Allocate only as many columns as we'll actually populate.
+	remaining := len(rows) - startIdx
+	actualCols := 1
+	if remaining > 0 {
+		actualCols = math.Clamp((remaining+rs.VisibleRows-1)/rs.VisibleRows, 1, rs.MaxCols)
+	}
+	cols := make([]*RowList, actualCols)
+	for c := range cols {
+		rl := proto
+		cols[c] = &rl
+	}
+	cols[0].SkipLines = skipLines
+	selectedIdx := -1
+	if rs.SelectableState != nil {
+		selectedIdx = rs.SelectableState.Selected
+	}
+	for i, r := range rows[startIdx:] {
+		col := cols[min(i/rs.VisibleRows, actualCols-1)]
+		// Translate the global selected index into this column's local
+		// row index.
+		if startIdx+i == selectedIdx {
+			col.SelectedRow = len(col.Rows)
+		}
+		col.Rows = append(col.Rows, r)
 	}
 
 	bodyHeight := util.ReduceMax(slices.Values(cols), 0, (*RowList).Measure)
@@ -1023,6 +1037,11 @@ type RowList struct {
 	// 0 = unlimited.
 	MaxLines int
 
+	// SkipLines is the number of the first row's wrapped body lines that
+	// are scrolled off the top. The row's badge, label, and AfterDraw
+	// belong to its first line and go with it.
+	SkipLines int
+
 	// SelectedRow is the index *within this column's Rows* of the
 	// currently selected row, or -1 for none. applyRowSource computes
 	// this per-column from the global ViewSelectionState.Selected (a
@@ -1040,8 +1059,9 @@ type RowList struct {
 }
 
 type measuredRow struct {
-	lines  []string // wrapped body; empty if Centered or no Body
-	height float32
+	lines     []string // wrapped body; empty if Centered or no Body
+	height    float32
+	continued bool // the row's first line is scrolled off
 }
 
 // labelGapChars is the gap between a row's label and the start of its body
@@ -1065,9 +1085,30 @@ func (l *RowList) bodyAvailChars(r Row) (firstChars, contChars int) {
 	return
 }
 
+// wrap returns r's body word-wrapped to fit Width, or nil if r is Centered
+// or has no Body.
+func (l *RowList) wrap(r Row) []string {
+	if r.Centered || r.Body == "" {
+		return nil
+	}
+	firstChars, contChars := l.bodyAvailChars(r)
+	if lines := wrapWords(r.Body, firstChars, contChars); len(lines) > 0 {
+		return lines
+	}
+	return []string{r.Body}
+}
+
+// lineCount returns the number of lines r takes; a spacer takes none.
+func (l *RowList) lineCount(r Row) int {
+	if r.SpacerHeight > 0 {
+		return 0
+	}
+	return max(len(l.wrap(r)), 1)
+}
+
 // Measure pre-wraps each row's body to fit Width and returns the height of
-// the visible portion (after MaxLines truncation). Must be called before
-// Draw / TextExtents.
+// the visible portion (after SkipLines and MaxLines truncation). Must be
+// called before Draw / TextExtents.
 func (l *RowList) Measure() float32 {
 	l.measured = make([]measuredRow, len(l.Rows))
 	for i, r := range l.Rows {
@@ -1075,17 +1116,13 @@ func (l *RowList) Measure() float32 {
 			l.measured[i].height = r.SpacerHeight
 			continue
 		}
-		nLines := 1
-		if !r.Centered && r.Body != "" {
-			firstChars, contChars := l.bodyAvailChars(r)
-			lines := wrapWords(r.Body, firstChars, contChars)
-			if len(lines) == 0 {
-				lines = []string{r.Body}
-			}
-			l.measured[i].lines = lines
-			nLines = len(lines)
+		lines := l.wrap(r)
+		if i == 0 && l.SkipLines > 0 {
+			lines = lines[l.SkipLines:]
+			l.measured[i].continued = true
 		}
-		l.measured[i].height = l.TopPad + float32(nLines)*l.LineHeight + l.BottomGap
+		l.measured[i].lines = lines
+		l.measured[i].height = l.TopPad + float32(max(len(lines), 1))*l.LineHeight + l.BottomGap
 	}
 
 	// Truncate at MaxLines wrapped body lines (spacers are free).
@@ -1154,12 +1191,12 @@ func (l *RowList) rowContentLayout(r Row, body math.Extent2D) (labelX, bodyX flo
 // forBodyTextBits invokes fn(string, position) for each rendered text span
 // (label + each wrapped body line) in row r.
 func (l *RowList) forBodyTextBits(r Row, m measuredRow, labelX, bodyX, baseY float32, fn func(s string, pos [2]float32)) {
-	if r.Label != "" {
+	if r.Label != "" && !m.continued {
 		fn(r.Label, [2]float32{labelX, baseY})
 	}
 	for j, line := range m.lines {
 		lx := bodyX
-		if j > 0 {
+		if j > 0 || m.continued {
 			lx = labelX
 		}
 		fn(line, [2]float32{lx, baseY - float32(j)*l.LineHeight})
@@ -1263,7 +1300,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		}
 
 		baseY := contentTop - lineSlack
-		if r.Badge != nil {
+		if r.Badge != nil && !m.continued {
 			drawBadge(b, r.Badge, body.P0[0], baseY+badgeYOffset)
 		}
 		labelX, bodyX := l.rowContentLayout(r, body)
@@ -1287,7 +1324,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		l.forBodyTextBits(r, m, labelX, bodyX, baseY, func(s string, pos [2]float32) {
 			b.Td.AddText(s, pos, style)
 		})
-		if r.AfterDraw != nil {
+		if r.AfterDraw != nil && !m.continued {
 			r.AfterDraw(rowExt, [2]float32{bodyX, baseY}, b)
 		}
 	})

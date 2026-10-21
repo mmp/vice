@@ -1423,12 +1423,6 @@ func handleWXReportAdd(ep *Scope, ctx *scope.Context, stations string) (CommandS
 func toggleWXReportStation(ep *Scope, ctx *scope.Context, icao av.ICAOAirportCode) {
 	if i := slices.Index(ep.WXReportStations, icao); i >= 0 {
 		ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
-		// Adjust scroll offset if needed after removal
-		ps := ep.currentPrefs()
-		maxOffset := max(len(ep.WXReportStations)-ps.WX.Lines, 0)
-		if ep.wxScroll.Offset > maxOffset {
-			ep.wxScroll.Offset = maxOffset
-		}
 		return
 	}
 

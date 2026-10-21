@@ -759,13 +759,7 @@ func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 		ep.makeBooleanMenuItem(&ps.WX.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.WX.ShowBorder, "BORDER"),
 		ep.makeToggleMenuItem(&ps.WX.ShowIndicators, "TEAROFF"),
-		{Label: fmt.Sprintf("LINES %d", ps.WX.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
-			OnClick: func(click MenuClickType) bool {
-				adjustMenuValue(ep, &ps.WX.Lines, click, 3, 24, 1)
-				maxOffset := max(0, len(ep.WXReportStations)-ps.WX.Lines)
-				ep.wxScroll.Offset = math.Clamp(ep.wxScroll.Offset, 0, maxOffset)
-				return false
-			}},
+		makeIntMenuItem(ep, &ps.WX.Lines, "LINES", 3, 24, 1),
 		makeIntMenuItem(ep, &ps.WX.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.WX.Bright, "BRIGHT", 0, 100, 2),
 	}
