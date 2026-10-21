@@ -1,3 +1,4 @@
 resources/traffic/flights/*.flt filter=lfs diff=lfs merge=lfs -text
 resources/wx/** filter=lfs diff=lfs merge=lfs -text
 resources/videomaps/** filter=lfs diff=lfs merge=lfs -text
+resources/terrain-gmted2010.zip filter=lfs diff=lfs merge=lfs -text

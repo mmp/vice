@@ -42,6 +42,7 @@ type StaticDatabase struct {
 	TRACONs             map[string]TRACON
 	ATCTs               map[string]ATCT
 	MVAs                map[string][]MVA // TRACON -> MVAs
+	Terrain             *Terrain
 	AirportPairRoutes   map[AirportPair][]AirportPairRoute
 	ScrapedRoutes       map[AirportPair][]av.ScrapedRoute
 	BravoAirspace       map[string][]av.AirspaceVolume
@@ -450,6 +451,7 @@ func doInitDB() {
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
+	wg.Go(func() { db.Terrain = parseTerrain() })
 	wg.Go(func() { db.Say = parsePronunciations() })
 	wg.Go(func() { db.AirportPairRoutes = parseAirportPairRoutes() })
 	wg.Go(func() { db.ScrapedRoutes = parseScrapedRoutes() })
