@@ -53,9 +53,7 @@ type DatablockLayout struct {
 	Line4Height    float32
 }
 
-func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations) {
 	mouse := ctx.Mouse
 	if mouse == nil {
 		return
@@ -67,17 +65,22 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 	}
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
+		// Picking Field A of an FDB or paired LDB locks or releases its
+		// dwell emphasis (5.1.5.9). While a command is being entered, the
+		// pick is left for it: an LDB's Field A is close enough to its
+		// target to slew the track.
+		if len(ep.input) == 0 && ep.mousePrimaryClicked(mouse) {
+			if db, l, ok := ep.emphasizableDatablock(ctx, trk, transforms); ok && db.fieldAExtent(l).Inside(mouse.Pos) {
+				state.UserEmphasis = !state.UserEmphasis
+				ep.clearMousePrimaryConsumed(mouse)
+			}
+		}
 		if ep.datablockType(ctx, trk) != FullDatablock {
 			continue
 		}
 		db, ok := ep.FullDatablockOutlines(ctx, trk, transforms)
 		if !ok {
 			continue
-		}
-		// Outline the hovered main box (yellow) so its hit region is
-		// visible for verification.
-		if ext := db.Fields[DBFieldMain]; ext.Inside(mouse.Pos) {
-			ep.drawOutlineRectangle(ld, ext, colors.yellow)
 		}
 		// Middle-clicking the callsign runs the QF flight plan readout for the track.
 		if db.Fields[DBFieldCallsign].Inside(mouse.Pos) && ep.mouseTertiaryClicked(mouse) {
@@ -129,28 +132,23 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 				mouse.Clicked = [platform.MouseButtonCount]bool{}
 			}
 		}
-		if db.Fields[DBFieldMain].Inside(mouse.Pos) {
-			// remove
-		}
 	}
-	ld.GenerateCommands(cb)
-}
-
-// p0 -> top left, p2 -> bottom right
-func (ep *Scope) drawOutlineRectangle(ld *renderer.ColoredLinesDrawBuilder, extent math.Extent2D, color renderer.RGB) {
-	p0 := extent.P0
-	p2 := extent.P1
-	p1 := math.Add2f(p0, [2]float32{extent.Width(), 0})
-	p3 := math.Add2f(p2, [2]float32{-extent.Width(), 0})
-	ld.AddLine(p0, p1, color)
-	ld.AddLine(p1, p2, color)
-	ld.AddLine(p2, p3, color)
-	ld.AddLine(p3, p0, color)
 }
 
 // LineExtent returns the outline for a full line of the specified width.
 func (l DatablockLayout) LineExtent(line, cols int) math.Extent2D {
 	return l.FieldExtent(DatablockFieldSpec{Line: line, Cols: cols})
+}
+
+// charsExtent returns the outline of the visible characters of field f,
+// which starts at the given line and column, or an empty extent if it has
+// none.
+func (l DatablockLayout) charsExtent(line, col int, f []dbChar) math.Extent2D {
+	start, n, ok := dbFieldSpan(f)
+	if !ok {
+		return math.EmptyExtent2D()
+	}
+	return l.FieldExtent(DatablockFieldSpec{Line: line, Col: col + start, Cols: n})
 }
 
 // FieldExtent returns the outline for the specified field.
@@ -334,14 +332,10 @@ func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 	}
 
 	setField := func(id DatablockFieldID, line, col int, f []dbChar) {
-		if start, n, ok := dbFieldSpan(f); ok {
-			outlines.Fields[id] = layout.FieldExtent(DatablockFieldSpec{Line: line, Col: col + start, Cols: n})
-		} else {
-			outlines.Fields[id] = math.EmptyExtent2D()
-		}
+		outlines.Fields[id] = layout.charsExtent(line, col, f)
 	}
 	setField(DBFieldPointOut, 0, 0, fdb.line0[:])
-	setField(DBFieldCallsign, 1, 0, fdb.line1[:])
+	outlines.Fields[DBFieldCallsign] = fdb.fieldAExtent(layout)
 	// The VCI cell is a fixed hover-to-reveal zone, so it needs an extent
 	// even when nothing is currently drawn there.
 	outlines.Fields[DBFieldVCI] = layout.FieldExtent(DatablockFieldSpec{Line: 2, Col: 0, Cols: 2})
@@ -388,23 +382,62 @@ func (ep *Scope) FullDatablockOutlines(ctx *scope.Context, trk sim.Track,
 		}
 	}
 
-	main := math.EmptyExtent2D()
-	line1Len, line2Len, line3Len, line4Len := fullDatablockMainLengths(lineLengths)
-	if line1Len > 0 {
-		main = extentUnion(main, layout.FieldExtent(DatablockFieldSpec{Line: 1, Col: 0, Cols: line1Len}))
-	}
-	if line2Len > 0 {
-		main = extentUnion(main, layout.FieldExtent(DatablockFieldSpec{Line: 2, Col: 2, Cols: line2Len}))
-	}
-	if line3Len > 0 {
-		main = extentUnion(main, layout.FieldExtent(DatablockFieldSpec{Line: 3, Col: 2, Cols: line3Len}))
-	}
-	if line4Len > 0 {
-		main = extentUnion(main, layout.FieldExtent(DatablockFieldSpec{Line: 4, Col: 0, Cols: line4Len}))
-	}
-	outlines.Fields[DBFieldMain] = padExtent(main, dbOutlinePadding)
+	outlines.Fields[DBFieldMain] = fdb.textExtent(layout)
 
 	return outlines, true
+}
+
+// textExtent returns the extent of the FDB's text right of the portal
+// fence, lines 1 through 4.
+func (db *fullDatablock) textExtent(l DatablockLayout) math.Extent2D {
+	var lines [5]dbLine
+	fullDatablockLines(db, &lines)
+	e := math.EmptyExtent2D()
+	for i := dbCallsignLine; i <= dbLine4; i++ {
+		col, n := 0, lines[i].Len()
+		if i == dbVCILine || i == dbCIDLine {
+			col, n = dbLeadFieldChars, n-dbLeadFieldChars
+		}
+		if n > 0 {
+			e = extentUnion(e, l.FieldExtent(DatablockFieldSpec{Line: i, Col: col, Cols: n}))
+		}
+	}
+	return padExtent(e, dbOutlinePadding)
+}
+
+// fieldAExtent returns the extent of the FDB's Field A, the aircraft ID on
+// line 1.
+func (db *fullDatablock) fieldAExtent(l DatablockLayout) math.Extent2D {
+	return l.charsExtent(dbCallsignLine, 0, db.line1[:])
+}
+
+// textExtent returns the extent of the LDB's text.
+func (db *limitedDatablock) textExtent(l DatablockLayout) math.Extent2D {
+	return padExtent(ldbLinesExtent(l, db.line0[:], db.line1[:], db.line2[:]), dbOutlinePadding)
+}
+
+// fieldAExtent returns the extent of the LDB's Field A, its first line.
+func (db *limitedDatablock) fieldAExtent(l DatablockLayout) math.Extent2D {
+	return ldbLinesExtent(l, db.line0[:])
+}
+
+// ldbLinesExtent returns the extent of the given LDB lines, the first of
+// which is line 0. All of an LDB's lines are in the layout's main font,
+// and none of them is shifted for column 0 as FDB lines 2 and 3 are.
+func ldbLinesExtent(l DatablockLayout, lines ...[]dbChar) math.Extent2D {
+	cols, last := 0, -1
+	for i, line := range lines {
+		if n := len(dbChopTrailing(line)); n > 0 {
+			cols, last = max(cols, n), i
+		}
+	}
+	if last == -1 {
+		return math.EmptyExtent2D()
+	}
+	return math.Extent2D{
+		P0: [2]float32{l.Anchor[0], l.lineTop(last) - l.LineHeight},
+		P1: [2]float32{l.Anchor[0] + l.CharWidth*float32(cols), l.lineTop(0)},
+	}
 }
 
 func (ep *Scope) fullDatablockAnchor(ctx *scope.Context, trk sim.Track, db *fullDatablock,
@@ -419,9 +452,7 @@ func (ep *Scope) fullDatablockAnchor(ctx *scope.Context, trk sim.Track, db *full
 // buildFullDatablock formats the track's full datablock so extents can be
 // derived from its actual contents.
 func (ep *Scope) buildFullDatablock(ctx *scope.Context, trk sim.Track) *fullDatablock {
-	ps := ep.currentPrefs()
-	color := ps.Brightness.FDB.ScaleRGB(colors.yellow)
-	db := ep.getDatablock(ctx, trk, FullDatablock, color)
+	db := ep.getDatablock(ctx, trk, FullDatablock)
 	fdb, _ := db.(*fullDatablock)
 	return fdb
 }

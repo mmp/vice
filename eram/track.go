@@ -36,8 +36,6 @@ type TrackState struct {
 	HistoryTracks     [6]historyTrack
 	HistoryTrackIndex int
 
-	DatablockType DatablockType
-
 	LeaderLineDirection *math.CardinalOrdinalDirection
 	// LeaderLineLength is set by the /<0-3> command; nil follows FDB LDR.
 	LeaderLineLength *int // 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
@@ -61,6 +59,10 @@ type TrackState struct {
 
 	// p/o receiver keeps a FDB until suppressed by QP <FLID>.
 	PointOutFDBLocked bool
+
+	// UserEmphasis locks dwell emphasis on the track's data block; picking
+	// its Field A toggles it (5.1.5.9).
+	UserEmphasis bool
 
 	// add more as we figure out what to do...
 }
@@ -316,13 +318,26 @@ func (ep *Scope) drawTrack(trk sim.Track, state *TrackState, ctx *scope.Context,
 	// TODO: free tracks, frozen tracks, and coast tracks
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
 	font := ep.systemFont[9]
-	color := ep.targetColor(trk)
+	// Only paired tracks have FDBs, and so track position symbols.
+	color := (ep.currentPrefs().Brightness.PRTGT + ep.dwellBrightness(trk)).ScaleRGB(colors.yellow)
 	if ep.caDimmed(trk.ADSBCallsign) {
 		color = color.Scale(caDimFactor)
 	}
-	td.AddTextCentered("\u0000", transforms.WindowFromLatLongP(pos),
+	td.AddTextCentered(trackPositionSymbol, transforms.WindowFromLatLongP(pos),
 		renderer.TextStyle{Font: font, Color: color})
 }
+
+// trackSymbolExtent returns the extent of a track position symbol drawn
+// at the window position p.
+func (ep *Scope) trackSymbolExtent(p [2]float32) math.Extent2D {
+	ink := ep.systemFont[9].InkBounds(trackPositionSymbol, 0)
+	half := [2]float32{ink.Width() / 2, ink.Height() / 2}
+	return math.Extent2D{P0: math.Sub2f(p, half), P1: math.Add2f(p, half)}
+}
+
+// trackPositionSymbol is the track position symbol, at its code point in
+// the EramTracks font.
+const trackPositionSymbol = "\u0000"
 
 // Target symbols, at their code points in the EramTargets font (Table 2-3).
 const (
@@ -412,14 +427,11 @@ func (ep *Scope) updateVisibleTracks(ctx *scope.Context) { // When radar holes a
 	}
 }
 
-// datablockBrightness returns the configured brightness for the given track's
-// datablock type.
-func (ep *Scope) datablockBrightness(state *TrackState) scope.Brightness {
+// datablockBrightness returns the brightness of a track's data block: FDB's
+// or LDB's.
+func (ep *Scope) datablockBrightness(ctx *scope.Context, trk sim.Track) scope.Brightness {
 	ps := ep.currentPrefs()
-	if state.DatablockType == FullDatablock {
-		return ps.Brightness.FDB
-	}
-	return ps.Brightness.LDB
+	return util.Select(ep.datablockType(ctx, trk) == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
 }
 
 // datablockDirection returns the position of a track's datablock relative to
@@ -591,12 +603,11 @@ func (ep *Scope) quickLooked(ctx *scope.Context, fp *sim.FlightPlan) bool {
 	return ok
 }
 
-// trackDatablockColorBrightness returns the track color and datablock brightness. Design.
+// trackDatablockColor returns the color of a track's leader line and
+// vector line: that of its data block, which dwell emphasis brightens
+// (5.1.5.8).
 func (ep *Scope) trackDatablockColor(ctx *scope.Context, trk sim.Track) renderer.RGB {
-	dType := ep.datablockType(ctx, trk)
-	ps := ep.currentPrefs()
-	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-	return brite.ScaleRGB(colors.yellow)
+	return (ep.datablockBrightness(ctx, trk) + ep.dwellBrightness(trk)).ScaleRGB(colors.yellow)
 }
 
 // drawLeaderLines draws leader lines for visible datablocks.
@@ -807,7 +818,7 @@ func (ep *Scope) drawQULines(ctx *scope.Context, transforms scope.Transformation
 		if state == nil {
 			continue
 		}
-		color := ep.trackDatablockColor(ctx, *trk)
+		color := ep.datablockBrightness(ctx, *trk).ScaleRGB(colors.yellow)
 
 		// Convert aircraft position to window coordinates
 		acWindowPos := transforms.WindowFromLatLongP(state.Track.Location)

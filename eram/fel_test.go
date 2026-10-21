@@ -39,7 +39,7 @@ func TestFlightEventList(t *testing.T) {
 	if len(entries) != 1 || entries[0] != mismatch {
 		t.Fatalf("FEL entries %v, want N123AB's", entries)
 	}
-	fdb := h.ep.getDatablock(h.ctx, *mismatch, FullDatablock, colors.yellow).(*fullDatablock)
+	fdb := h.ep.getDatablock(h.ctx, *mismatch, FullDatablock).(*fullDatablock)
 	var lines [5]dbLine
 	fullDatablockLines(fdb, &lines)
 	if got, want := dbText(lines[3].ch[:lines[3].length]), "  101 120   "+hsfIndicator; got != want {

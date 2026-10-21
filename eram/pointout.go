@@ -27,13 +27,14 @@ func (ep *Scope) pointOutIndicatorActive(ctx *scope.Context, trk *sim.Track) boo
 // pointOutIndicatorGlyph returns the indicator character (P or A) and color for the line-0
 // indicator, or zero rune if nothing should be drawn. Yellow "P" is shown if any inbound or
 // outbound point out is pending; white "A" if all that remain are the user's acknowledged ones.
-// The TEXT brightness control sets the indicator's brightness (5.1.5.11.2).
+// The TEXT brightness control sets the indicator's brightness (5.1.5.11.2),
+// and dwell emphasis adds to it (5.1.5.8).
 func (ep *Scope) pointOutIndicatorGlyph(ctx *scope.Context, trk *sim.Track) (rune, renderer.RGB, bool) {
 	if trk.FlightPlan == nil {
 		return 0, renderer.RGB{}, false
 	}
 	fp := trk.FlightPlan
-	bright := ep.currentPrefs().Brightness.Text
+	bright := ep.currentPrefs().Brightness.Text + ep.dwellBrightness(*trk)
 	if len(ctx.InboundPointOuts(fp)) > 0 || len(ctx.OutboundPointOuts(fp)) > 0 {
 		return 'P', bright.ScaleRGB(colors.yellow), true
 	} else if len(ep.AckedPointOuts[fp.ACID]) > 0 {

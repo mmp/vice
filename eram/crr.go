@@ -572,7 +572,7 @@ func (ep *Scope) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transf
 		}
 
 		// Use the CRR group color
-		color := entry.group.Color.BrightRGB(ps.CRR.ColorBright[entry.group.Color])
+		color := entry.group.Color.BrightRGB(ps.CRR.ColorBright[entry.group.Color] + ep.dwellBrightness(trk))
 
 		td.AddText(distStr, pos, renderer.TextStyle{
 			Font:        font,

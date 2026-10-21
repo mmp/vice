@@ -7853,7 +7853,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 drawn when either has something in it and can be turned off with <b>PORTAL FENCE</b> in the
                 <a href="#eram-db-fields"><b>DB FIELDS</b></a> menu.</li>
               <li>Line 1: the aircraft ID from the flight plan. Middle-clicking it shows the aircraft's flight
-                plan, as <code>QF</code> does.</li>
+                plan, as <code>QF</code> does. Left-clicking it locks <a href="#eram-dwell">dwell emphasis</a>
+                on the FDB.</li>
               <li>Line 2: the data block altitude, a character that describes it, and the reported altitude. The
                 character is <code>C</code> when the aircraft is at its assigned altitude (the reported altitude is
                 then omitted); <code>T</code>, <code>L</code>, or <code>P</code> for an interim, local interim, or
@@ -7896,9 +7897,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <figcaption class="small">Under the cursor</figcaption>
               </figure>
             </div>
-            <p>A box is drawn around the FDB under the cursor. The <a href="#eram-font"><b>FONT</b></a> menu sets the
-              size of FDBs, and the size of line 4 and of the fields outside the portal fence relative to it. The
-              <a href="#eram-bright"><b>BRIGHT</b></a> menu sets the brightness of FDBs and of their parts.</p>
+            <p>The FDB under the cursor is shown with <a href="#eram-dwell">dwell emphasis</a>. The
+              <a href="#eram-font"><b>FONT</b></a> menu sets the size of FDBs, and the size of line 4 and of the
+              fields outside the portal fence relative to it. The <a href="#eram-bright"><b>BRIGHT</b></a> menu sets
+              the brightness of FDBs and of their parts.</p>
 
             <h3 id="eram-ldb">Limited Data Blocks</h3>
             <div class="d-flex flex-wrap justify-content-center align-items-end gap-4 text-center mb-4">
@@ -7917,6 +7919,17 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               omitted for a track that isn't reporting one, and primary targets have no LDB. LDBs have no leader
               line or velocity vector. The <a href="#eram-altitude-limits">altitude limits filter</a> and the
               <a href="#eram-radar-filter"><b>RADAR FILTER</b></a> menu can hide them.</p>
+
+            <h3 id="eram-dwell">Dwell Emphasis</h3>
+            <p>Resting the cursor on an FDB, on its track position symbol, or on the LDB of a paired track gives the
+              data block dwell emphasis. The data block is drawn brighter, with a box around it. Its leader line,
+              track position symbol, velocity vector, and <a href="#eram-crr">CRR</a> range data block are drawn
+              brighter as well. The <b>DWELL</b> button in the <a href="#eram-bright"><b>BRIGHT</b></a> menu sets
+              how much brighter. The emphasis stays with the data block until the cursor moves off it. Pressing a
+              mouse button removes it until the cursor moves again. LDBs of unpaired tracks are not emphasized.</p>
+            <p>Left-clicking the aircraft ID of an FDB or paired LDB locks dwell emphasis on the data block, wherever
+              the cursor goes, until the aircraft ID is clicked again. While a command is being entered, the click
+              goes to the command instead.</p>
 
             <h3 id="eram-datablock-position">Positioning Data Blocks</h3>
             <p>Entering a digit and slewing a track sets the direction of its data block. The digit corresponds to a
@@ -8313,12 +8326,13 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <code>R</code>.</li>
               <li><b>ON-FREQ</b>: the on-frequency indicator.</li>
               <li><b>LINE 4</b>: line 4 of FDBs, as an amount less than the FDB brightness.</li>
+              <li><b>DWELL</b>: how much brighter <a href="#eram-dwell">dwell emphasis</a> makes data blocks.</li>
               <li><b>FENCE</b>: the portal fence.</li>
               <li><b>DBFEL</b>: the FEL indicator.</li>
               <li><b>NEXRAD</b>: weather.</li>
               <li><b>BCKLGHT</b>: dims the entire display.</li>
               <li><b>OUTAGE</b>: the <b>STATUS</b> and <b>OUTAGE</b> buttons and the OUTAGE view.</li>
-              <li><b>CPDLC</b>, <b>SLDB</b>, <b>WX</b>, <b>AB BRDR</b>, <b>SATCOMM</b>, and <b>DWELL</b>: not
+              <li><b>CPDLC</b>, <b>SLDB</b>, <b>WX</b>, <b>AB BRDR</b>, and <b>SATCOMM</b>: not
                 implemented.</li>
             </ul>
             <p>Clicking <b>MAP BRIGHT</b> displays the map brightness menu in place of the rest of the <b>BRIGHT</b>
@@ -9084,9 +9098,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     received beacon code when it differs from the assigned one</li>
                   <li>The non-RVSM, SatComm, and auto handoff inhibit indicators</li>
                   <li>LDBs for special codes, which show the code's name and blink</li>
-                  <li>Most of dwell emphasis: <i>vice</i> only outlines the FDB under the cursor. Dwell emphasis of
-                    LDBs, CDBs, and track position symbols, and user emphasis, which a left click on field A locks
-                    in place, are not implemented.</li>
                   <li>Range data blocks other than CRR distances</li>
                 </ul>
               </li>

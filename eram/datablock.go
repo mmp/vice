@@ -39,8 +39,7 @@ const (
 // leader line.
 type datablock interface {
 	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
-		sb *strings.Builder, brightness scope.Brightness,
-		dir math.CardinalOrdinalDirection, halfSeconds int64)
+		sb *strings.Builder, dir math.CardinalOrdinalDirection, halfSeconds int64)
 	// xOffset returns the horizontal offset from the end of the leader line
 	// to the datablock's text anchor when it is positioned in direction dir.
 	xOffset(dir math.CardinalOrdinalDirection, font *renderer.Font) float32
@@ -53,6 +52,13 @@ type datablock interface {
 	// felExtent returns the extent of the datablock's FEL indicator in the
 	// given layout, or an empty one if it has none.
 	felExtent(l DatablockLayout) math.Extent2D
+	// textExtent returns the extent of the datablock's text in the given
+	// layout: where the cursor dwells on it and the box that dwell
+	// emphasis draws around it (5.1.5.8).
+	textExtent(l DatablockLayout) math.Extent2D
+	// fieldAExtent returns the extent of the datablock's Field A, its
+	// aircraft ID, in the given layout.
+	fieldAExtent(l DatablockLayout) math.Extent2D
 }
 
 // dbChar represents a single character in a datablock along with its colour and
@@ -108,11 +114,10 @@ func dbChopTrailing(f []dbChar) []dbChar {
 // dbDrawLines renders the given datablock lines.  The leader line direction is
 // used only to determine justification.
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
-	dir math.CardinalOrdinalDirection, halfSeconds int64) {
+	font *renderer.Font, sb *strings.Builder, dir math.CardinalOrdinalDirection, halfSeconds int64) {
 	for _, line := range lines {
 		sb.Reset()
-		dbDrawLine(line, td, pt, font, sb, brightness, halfSeconds)
+		dbDrawLine(line, td, pt, font, sb, halfSeconds)
 		pt[1] -= dbLinePitch(font)
 	}
 }
@@ -133,8 +138,7 @@ func dbSplitLine(l dbLine, n int) (dbLine, dbLine) {
 
 // dbDrawLine renders a single datablock line.
 func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
-	halfSeconds int64) {
+	font *renderer.Font, sb *strings.Builder, halfSeconds int64) {
 
 	style := renderer.TextStyle{Font: font}
 
@@ -196,15 +200,14 @@ type limitedDatablock struct {
 }
 
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
-	dir math.CardinalOrdinalDirection, halfSeconds int64) {
+	font *renderer.Font, sb *strings.Builder, dir math.CardinalOrdinalDirection, halfSeconds int64) {
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
 		dbMakeLine(dbChopTrailing(db.line2[:])),
 	}
 	pt[1] += float32(font.Size)
-	dbDrawLines(lines, td, pt, font, sb, brightness, dir, halfSeconds)
+	dbDrawLines(lines, td, pt, font, sb, dir, halfSeconds)
 }
 
 func (db *limitedDatablock) xOffset(dir math.CardinalOrdinalDirection, font *renderer.Font) float32 {
@@ -235,8 +238,7 @@ type fullDatablock struct {
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness scope.Brightness,
-	dir math.CardinalOrdinalDirection, halfSeconds int64) {
+	font *renderer.Font, sb *strings.Builder, dir math.CardinalOrdinalDirection, halfSeconds int64) {
 
 	var lines [5]dbLine
 	fullDatablockLines(&db, &lines)
@@ -246,7 +248,7 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	}
 	drawLine := func(line dbLine, p [2]float32, f *renderer.Font) {
 		sb.Reset()
-		dbDrawLine(line, td, p, f, sb, brightness, halfSeconds)
+		dbDrawLine(line, td, p, f, sb, halfSeconds)
 	}
 
 	// The fields outside the portal fence sit on their lines' bottoms, and
@@ -321,8 +323,8 @@ func (db *fullDatablock) xOffset(dir math.CardinalOrdinalDirection, font *render
 
 // dimChars scales the color of every populated character in the field.
 // Datablock char colors are final once built (dbDrawLine renders them
-// as-is, ignoring its brightness parameter), so scaling here is the only
-// point where the conflict-alert dim can be applied.
+// as-is), so scaling here is the only point where the conflict-alert dim
+// can be applied.
 func dimChars(chars []dbChar, factor float32) {
 	for i := range chars {
 		if chars[i].ch != 0 {
@@ -391,11 +393,7 @@ func (ep *Scope) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av
 			continue
 		}
 
-		dbType := ep.datablockType(ctx, trk)
-		ps := ep.currentPrefs()
-		brite := util.Select(dbType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-		color := brite.ScaleRGB(colors.yellow)
-		db := ep.getDatablock(ctx, trk, dbType, color)
+		db := ep.getDatablock(ctx, trk, ep.datablockType(ctx, trk))
 		if db != nil && ep.caDimmed(trk.ADSBCallsign) {
 			db.dim(caDimFactor)
 		}
@@ -404,11 +402,101 @@ func (ep *Scope) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av
 	return dbs
 }
 
-func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
+// updateDwell finds the data block with dwell emphasis: the FDB or paired
+// LDB whose text the cursor rests on, or the FDB whose track position
+// symbol it rests on. The emphasis stays with a data block until the
+// cursor moves off it; pressing a trackball button removes it until the
+// cursor moves again (5.1.5.8).
+func (ep *Scope) updateDwell(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations) {
+	mouse := ctx.Mouse
+	if mouse == nil || (ep.popup != nil && ep.popupExtent.Inside(mouse.Pos)) {
+		ep.dwellTrack = ""
+		return
+	}
+	if slices.Contains(mouse.Down[:], true) {
+		ep.dwellPressed, ep.dwellPressPos = true, mouse.Pos
+	}
+	if ep.dwellPressed && mouse.Pos == ep.dwellPressPos {
+		ep.dwellTrack = ""
+		return
+	}
+	ep.dwellPressed = false
+
+	dwellsOn := func(trk sim.Track) bool { return ep.cursorDwellsOn(ctx, trk, mouse.Pos, transforms) }
+	cur := slices.IndexFunc(tracks, func(trk sim.Track) bool { return trk.ADSBCallsign == ep.dwellTrack })
+	if cur != -1 && dwellsOn(tracks[cur]) {
+		return
+	}
+	ep.dwellTrack = ""
+	for _, trk := range tracks {
+		if dwellsOn(trk) {
+			ep.dwellTrack = trk.ADSBCallsign
+			if ep.datablockType(ctx, trk) == FullDatablock {
+				return // FDBs are drawn over LDBs
+			}
+		}
+	}
+}
+
+// cursorDwellsOn reports whether the cursor at p rests on a track's FDB or
+// paired LDB, or on its FDB's track position symbol (5.1.5.8).
+func (ep *Scope) cursorDwellsOn(ctx *scope.Context, trk sim.Track, p [2]float32, transforms scope.Transformations) bool {
+	db, l, ok := ep.emphasizableDatablock(ctx, trk, transforms)
+	if !ok {
+		return false
+	}
+	if db.textExtent(l).Inside(p) {
+		return true
+	}
+	pos := transforms.WindowFromLatLongP(ep.TrackState[trk.ADSBCallsign].Track.Location)
+	return ep.datablockType(ctx, trk) == FullDatablock && ep.trackSymbolExtent(pos).Inside(p)
+}
+
+// emphasizableDatablock returns a track's data block and its layout as it
+// is drawn, if dwell emphasis applies to it: if it is an FDB or a
+// displayed paired LDB (5.1.5.8).
+func (ep *Scope) emphasizableDatablock(ctx *scope.Context, trk sim.Track,
+	transforms scope.Transformations) (datablock, DatablockLayout, bool) {
+	dbType := ep.datablockType(ctx, trk)
+	drawn := dbType == FullDatablock || (dbType == LimitedDatablock && ep.datablockVisible(ctx, trk))
+	if !trk.IsAssociated() || !drawn {
+		return nil, DatablockLayout{}, false
+	}
+	db := ep.getDatablock(ctx, trk, dbType)
+	anchor, _ := ep.datablockAnchor(ctx, trk, db, dbType, transforms)
+	ps := ep.currentPrefs()
+	font := ep.ERAMFont(util.Select(dbType == FullDatablock, ps.FDBSize, ps.LDBSize))
+	return db, makeDatablockLayout(anchor, font, ep.fdbPortalFont(), ep.fdbLine4Font()), true
+}
+
+// emphasized reports whether a track's data block has dwell emphasis:
+// whether the cursor dwells on it or the user has locked it on (5.1.5.8,
+// 5.1.5.9).
+func (ep *Scope) emphasized(trk sim.Track) bool {
+	if !trk.IsAssociated() {
+		return false
+	}
+	state := ep.TrackState[trk.ADSBCallsign]
+	return trk.ADSBCallsign == ep.dwellTrack || (state != nil && state.UserEmphasis)
+}
+
+// dwellBrightness returns the brightness that dwell emphasis adds to a
+// track's data block and to the leader line, track position symbol,
+// vector line, and RDB that go with it: DWELL's (5.1.5.8).
+func (ep *Scope) dwellBrightness(trk sim.Track) scope.Brightness {
+	return util.Select(ep.emphasized(trk), ep.currentPrefs().Brightness.Dwell, 0)
+}
+
+// getDatablock formats a track's data block of the given type. Dwell
+// emphasis adds DWELL's brightness to all of its text (5.1.5.8).
+func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType DatablockType) datablock {
 	state := ep.TrackState[trk.ADSBCallsign]
 	ps := ep.currentPrefs()
+	dwell := ep.dwellBrightness(trk)
 	switch dbType {
 	case FullDatablock:
+		fdbBright := ps.Brightness.FDB + dwell
+		color := fdbBright.ScaleRGB(colors.yellow)
 		db := ep.fdbArena.AllocClear()
 		db.portalFont, db.line4Font = ep.fdbPortalFont(), ep.fdbLine4Font()
 		// Line 0: point-out indicator.
@@ -418,12 +506,12 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 
 		// Line 1
 		dbWriteText(db.line1[:], string(trk.FlightPlan.ACID), color, false) // also * if satcom
-		vciColor := (ps.Brightness.ONFREQ + ps.Brightness.Portal).ScaleRGB(colors.vciGreen)
+		vciColor := (ps.Brightness.ONFREQ + ps.Brightness.Portal + dwell).ScaleRGB(colors.vciGreen)
 		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
 
 		// Line 2. The VRI is drawn at line 4's brightness, and not in quick
 		// look FDBs (5.1.5.13).
-		line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(colors.yellow)
+		line4Color := (fdbBright - ps.Brightness.Line4).ScaleRGB(colors.yellow)
 		alt := ep.getAltitudeFormat(trk)
 		dbWriteText(db.line2[:], alt, color, false)
 		quickLook := !ctx.UserOwnsFlightPlan(trk.FlightPlan) && ep.quickLooked(ctx, trk.FlightPlan)
@@ -433,7 +521,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
-		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(colors.yellow)
+		colColor := (fdbBright + ps.Brightness.Portal).ScaleRGB(colors.yellow)
 		dbWriteText(db.col1[:], util.Select(ctx.UserOwnsFlightPlan(trk.FlightPlan), "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 
@@ -538,6 +626,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 			// A primary target has no beacon data for an LDB.
 			return nil
 		}
+		color := (ps.Brightness.LDB + dwell).ScaleRGB(colors.yellow)
 		db := ep.ldbArena.AllocClear()
 		id := ep.limitedDatablockID(trk, state)
 		dbWriteText(db.line0[:], id, color, false)
@@ -737,14 +826,22 @@ func (ep *Scope) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]data
 			}
 			font := ep.ERAMFont(sz)
 			end, dir := ep.datablockAnchor(ctx, *trk, db, dbType, transforms)
-			brightness := ep.datablockBrightness(state)
-			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
+			db.draw(td, end, font, &sb, dir, halfSeconds)
 			layout := makeDatablockLayout(end, font, ep.fdbPortalFont(), ep.fdbLine4Font())
 			if ps.PortalFence && db.portalFenceVisible() {
 				drawPortalFence(ld, layout, fenceColor)
 			}
 			if e := db.felExtent(layout); !e.IsEmpty() {
 				drawFELIndicator(trid, ld, e, ps)
+			}
+			// Dwell emphasis boxes the data block in its color, as the UHD
+			// monitor does (5.1.5.8).
+			if ep.emphasized(*trk) {
+				color := ep.trackDatablockColor(ctx, *trk)
+				if ep.caDimmed(trk.ADSBCallsign) {
+					color = color.Scale(caDimFactor)
+				}
+				ld.AddLineLoop(color, db.textExtent(layout).Corners())
 			}
 		}
 	}

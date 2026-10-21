@@ -306,6 +306,14 @@ type Scope struct {
 	fdbArena util.ObjectArena[fullDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
 
+	// dwellTrack is the track whose data block the cursor dwells on, if
+	// any. dwellPressPos is where the cursor was when a trackball button
+	// was last pressed, if dwellPressed: dwell emphasis returns once the
+	// cursor moves from there (5.1.5.8).
+	dwellTrack    av.ADSBCallsign
+	dwellPressed  bool
+	dwellPressPos [2]float32
+
 	// Scope-wide drag-to-reposition state. Only one view can be repositioned
 	// at a time; the active view is identified by its View.ID.
 	viewRepo ViewRepoState
@@ -649,13 +657,14 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	cb.SetScissorBounds(ctx.DrawExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawAnnotations(ctx, transforms, cb)
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
+	ep.updateDwell(ctx, tracks, transforms)
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
 	ep.drawPTLs(ctx, tracks, transforms, cb)
 	ep.drawTargets(ctx, tracks, transforms, cb)
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
-	ep.datablockInteractions(ctx, tracks, transforms, cb)
+	ep.datablockInteractions(ctx, tracks, transforms)
 	ep.drawCRRFixes(ctx, transforms, cb)
 	ep.drawCRRDistances(ctx, tracks, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)

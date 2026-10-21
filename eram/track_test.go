@@ -345,7 +345,7 @@ func TestAcceptedHandoffIndicator(t *testing.T) {
 	}
 	h.ctx.Client.State.Controllers = map[sim.ControlPosition]*av.Controller{"2B": {Position: "2B"}}
 	h.ep.dbAlternate = true
-	fdb := h.ep.getDatablock(h.ctx, *trk, FullDatablock, colors.yellow).(*fullDatablock)
+	fdb := h.ep.getDatablock(h.ctx, *trk, FullDatablock).(*fullDatablock)
 	if got := dbText(fdb.fieldE[:]); got != "O-2B" {
 		t.Errorf("transferring sector: got Field E %q, want O-2B", got)
 	}
@@ -898,10 +898,10 @@ func TestRadarFilter(t *testing.T) {
 	rf.PairedLDBs = false
 	check("LDBs without PR LDB", h.ep.datablockVisible)
 
-	if db := h.ep.getDatablock(h.ctx, *tracks["PRIMARY"], LimitedDatablock, colors.yellow); db != nil {
+	if db := h.ep.getDatablock(h.ctx, *tracks["PRIMARY"], LimitedDatablock); db != nil {
 		t.Errorf("primary target has an LDB: %+v", db)
 	}
-	ldb := h.ep.getDatablock(h.ctx, *tracks["MODEA"], LimitedDatablock, colors.yellow).(*limitedDatablock)
+	ldb := h.ep.getDatablock(h.ctx, *tracks["MODEA"], LimitedDatablock).(*limitedDatablock)
 	if line0, line1 := dbText(ldb.line0[:]), dbText(ldb.line1[:]); line0 != "4321" || line1 != "" {
 		t.Errorf("LDB of a target without Mode C: %q / %q, want its code and no altitude", line0, line1)
 	}
