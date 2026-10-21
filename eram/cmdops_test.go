@@ -241,6 +241,25 @@ func TestRangeBearingFixFeedback(t *testing.T) {
 	}
 }
 
+// A CRR group may be located at an airport given by its FAA identifier,
+// which also labels the group (4.2.11.4.1).
+func TestCRRAtAirport(t *testing.T) {
+	db.InitDB()
+	InitCommands()
+	h := makeTrackTestHarness()
+
+	if _, err, _ := h.ep.tryExecuteUserCommand(h.ctx, "LF //IAD", nil, nil); err != nil {
+		t.Fatalf("LF //IAD: %v", err)
+	}
+	g, ok := h.ep.CRRGroups["IAD"]
+	if !ok {
+		t.Fatalf("LF //IAD: no IAD group in %v", h.ep.CRRGroups)
+	}
+	if want := db.DB.Airports["KIAD"].Location; g.Location != want {
+		t.Errorf("LF //IAD: group at %v; want %v", g.Location, want)
+	}
+}
+
 // LC reads out the change to the ground speed that puts the aircraft over
 // the fix at the given time, and its present ground speed (3.12.3, figure
 // 3-30).

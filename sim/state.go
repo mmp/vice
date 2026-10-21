@@ -465,6 +465,8 @@ func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 		return n.Location, ok
 	} else if ap, ok := db.DB.Airports[av.ICAOAirportCode(s)]; ok {
 		return ap.Location, ok
+	} else if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(s)); ok {
+		return ap.Location, ok
 	} else if f, ok := db.DB.Fixes[s]; ok {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
