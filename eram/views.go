@@ -135,8 +135,10 @@ func altimRow(ctx *scope.Context, icao av.ICAOAirportCode, color renderer.RGB,
 // altimMetarForDisplay returns the formatted METAR data for display, extracting
 // the observation time (HHMM) and 3-digit altimeter setting from a wx.METAR object.
 func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw int) {
-	// Extract HHMM from the METAR observation time
-	timeStr = fmt.Sprintf("%02d%02d", metar.Time.Hour(), metar.Time.Minute())
+	// Extract HHMM from the METAR observation time. Times decoded from the
+	// server are in the local time zone.
+	t := metar.Time.UTC()
+	timeStr = fmt.Sprintf("%02d%02d", t.Hour(), t.Minute())
 
 	// Convert altimeter from inHg to 4-digit A-setting format
 	// A-setting is always 4 digits (e.g., 2992, 3012)

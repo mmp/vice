@@ -7,6 +7,7 @@ package eram
 import (
 	"slices"
 	"testing"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
@@ -414,5 +415,15 @@ func TestAltimSetStations(t *testing.T) {
 			!slices.Equal(h.ep.AltimSetAirports, tc.want) {
 			t.Errorf("%s: got %q, error %v; want %q", tc.cmd, h.ep.AltimSetAirports, err, tc.want)
 		}
+	}
+}
+
+// The ALTIM SET view gives the observation time in UTC, whatever zone the
+// METAR's time was decoded in.
+func TestAltimSetTimeIsUTC(t *testing.T) {
+	obs := time.Date(2026, 10, 20, 22, 37, 0, 0, time.UTC)
+	metar := wx.METAR{Time: obs.In(time.FixedZone("EDT", -4*60*60))}
+	if ts, _, _ := altimMetarForDisplay(metar); ts != "2237" {
+		t.Errorf("got time %q; want %q", ts, "2237")
 	}
 }
