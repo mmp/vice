@@ -72,7 +72,11 @@ func SyncResources(ui SyncUI) error {
 	// overwritten by writeManifestFile at the end of a successful sync.
 	var oldManifest map[string]manifestEntry
 	if oldData, err := os.ReadFile(manifestPath); err == nil {
-		json.Unmarshal(oldData, &oldManifest) // ignore errors; treat as nil
+		if err := json.Unmarshal(oldData, &oldManifest); err != nil {
+			// A manifest in an older format decodes with empty hashes, which
+			// would make every changed file look locally modified.
+			oldManifest = nil
+		}
 	}
 
 	if oldManifest != nil {
@@ -269,12 +273,16 @@ func backupModifiedFiles(resourcesDir string, files []string) (string, error) {
 	return backupDir, nil
 }
 
-// removeStaleResourcesFiles removes resource files that are no longer needed.
-// When oldManifest is non-nil, only files that were in the old manifest but not
-// the new one are deleted — user-added files (not in either manifest) are left
-// alone. When oldManifest is nil (first install), all files not in newManifest
-// are deleted (original behavior).
+// removeStaleResourcesFiles removes files that the new manifest no longer
+// lists. Files listed in the old manifest are removed outright. Any others
+// may be files the user added, or leftovers that an older manifest listed in
+// a form this version can't read, so they are removed only if the resource
+// server holds their contents.
 func removeStaleResourcesFiles(resourcesDir string, newManifest, oldManifest map[string]manifestEntry) {
+	var eg errgroup.Group
+	eg.SetLimit(8)
+	defer eg.Wait()
+
 	filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
 			return nil
@@ -297,18 +305,38 @@ func removeStaleResourcesFiles(resourcesDir string, newManifest, oldManifest map
 			return nil // still needed
 		}
 
-		if oldManifest != nil {
-			// Only delete files that were in the old manifest (i.e. managed by vice).
-			// User-added files (not in either manifest) are preserved.
-			if _, inOld := oldManifest[slashPath]; !inOld {
-				return nil
-			}
+		if _, inOld := oldManifest[slashPath]; inOld {
+			os.Remove(path)
+			return nil
 		}
 
-		os.Remove(path)
-
+		eg.Go(func() error {
+			if isShippedResource(path) {
+				os.Remove(path)
+			}
+			return nil
+		})
 		return nil
 	})
+}
+
+// isShippedResource reports whether the file's contents are those of a
+// resource file that some version of vice shipped; the resource server stores
+// each one under its SHA256 hash. Any error is taken to mean it isn't, so
+// that the file is kept.
+func isShippedResource(path string) bool {
+	hash, err := calculateSHA256(path)
+	if err != nil {
+		return false
+	}
+
+	resp, err := http.Head(resourcesBaseURL + "/" + hash)
+	if err != nil {
+		return false
+	}
+	resp.Body.Close()
+
+	return resp.StatusCode == http.StatusOK
 }
 
 func writeManifestFile(manifestPath string) error {
