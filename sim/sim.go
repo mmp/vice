@@ -177,8 +177,9 @@ type Sim struct {
 	// Built from the static database by Activate rather than serialized.
 	bravoAirspace   *db.AirspaceGrid
 	vfrAirspace     *db.AirspaceGrid // Class B and C and the special use airspace VFR flights avoid
-	mvaGrid         *db.MVAGrid
+	terrain         *db.TerrainGrid
 	vfrTerminalAlts map[av.ICAOAirportCode]int
+	vfrTakeoffs     map[av.ICAOAirportCode][2]math.Point2LL
 
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
 	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands

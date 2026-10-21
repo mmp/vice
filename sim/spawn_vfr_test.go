@@ -12,6 +12,8 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+
+	"github.com/klauspost/compress/zstd"
 )
 
 // TestAdjustRouteForShelves checks the restrictions a VFR route is given
@@ -22,26 +24,10 @@ import (
 // cruise altitude. A route passes over airspace whose ceiling is below its
 // cruise altitude. Routes with no room under the shelf are rejected.
 func TestAdjustRouteForShelves(t *testing.T) {
+	db.InitDB()
 	const cruise = 6500
-	origin := math.Point2LL{0, 0}
-	along := func(nm float32) math.Point2LL { return math.Offset2LL(origin, 90, nm, testNmPerLongitude) }
-	distance := func(p math.Point2LL) float32 { return math.NMDistance2LL(origin, p) }
-
-	// The route sim builds: waypoints every 10nm, at or above cruise for the
-	// first half and at or below it for the second.
-	route := func() []av.Waypoint {
-		var wps []av.Waypoint
-		for i, fix := range []string{"A", "B", "C", "D"} {
-			wp := av.Waypoint{Fix: fix, Location: along(float32(10 * i))}
-			if i < 2 {
-				wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(cruise))
-			} else {
-				wp.SetAltitudeRestriction(av.MakeAtOrBelowAltitudeRestriction(cruise))
-			}
-			wps = append(wps, wp)
-		}
-		return wps
-	}
+	along := func(nm float32) math.Point2LL { return testAlong(nm) }
+	distance := func(p math.Point2LL) float32 { return math.NMDistance2LL(testAlong(0), p) }
 
 	// shelf returns a grid holding one volume with the given floor over the
 	// stretch of the route from west to east nm.
@@ -62,31 +48,10 @@ func TestAdjustRouteForShelves(t *testing.T) {
 		}})
 	}
 
-	// mva returns a grid with one MVA of the given altitude over the same stretch.
-	mva := func(west, east float32, alt int) *db.MVAGrid {
-		ring := [][2]float32{
-			math.Offset2LL(along(west), 0, 3, testNmPerLongitude),
-			math.Offset2LL(along(east), 0, 3, testNmPerLongitude),
-			math.Offset2LL(along(east), 180, 3, testNmPerLongitude),
-			math.Offset2LL(along(west), 180, 3, testNmPerLongitude),
-		}
-		return db.MakeMVAGrid([]db.MVA{{
-			MinimumLimit: alt,
-			Bounds:       math.Extent2DFromPoints(ring),
-			ExteriorRing: ring,
-		}})
-	}
-
-	describe := func(wps []av.Waypoint) string {
-		return strings.Join(util.MapSlice(wps, func(wp av.Waypoint) string {
-			return wp.Fix + "/" + wp.AltitudeRestriction().Encoded()
-		}), " ")
-	}
-
 	for _, tc := range []struct {
 		name         string
 		bravo        *db.AirspaceGrid
-		mva          *db.MVAGrid
+		terrain      func(nm float32) int
 		depElevation int
 		want         string // "" means the route is rejected
 		entry, exit  float32
@@ -130,29 +95,45 @@ func TestAdjustRouteForShelves(t *testing.T) {
 			depElevation: 600,
 		},
 		{
-			name:  "MVA above the shelf altitude",
-			bravo: shelf(9, 19, 3000),
-			mva:   mva(9, 19, 4000),
+			name:    "terrain too close below the shelf",
+			bravo:   shelf(9, 19, 3000),
+			terrain: func(nm float32) int { return util.Select(nm > 9 && nm < 19, 1600, 0) },
+		},
+		{
+			// Under a shelf too low to keep vfrTerrainClearance, the flight
+			// keeps vfrShelfClearance.
+			name:    "reduced clearance under the shelf",
+			bravo:   shelf(9, 19, 1200),
+			terrain: func(nm float32) int { return util.Select(nm > 9 && nm < 19, 500, 0) },
+			want:    "A/6500+ _shelf1@1000/1000 B/1000 _shelf2@1000/1000 C/6500- D/6500-",
+			entry:   9, exit: 19,
+		},
+		{
+			name:    "terrain too close below the shelf for the reduced clearance",
+			bravo:   shelf(9, 19, 1200),
+			terrain: func(nm float32) int { return util.Select(nm > 9 && nm < 19, 600, 0) },
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			s := NewTestSim(testLogger())
+			s.State.NmPerLongitude = testNmPerLongitude
+			s.vfrTakeoffs = make(map[av.ICAOAirportCode][2]math.Point2LL)
 			s.vfrAirspace = tc.bravo
-			s.mvaGrid = util.Select(tc.mva != nil, tc.mva, db.MakeMVAGrid(nil))
+			s.terrain = testTerrain(util.Select(tc.terrain != nil, tc.terrain, func(float32) int { return 0 }))
 			dep := db.Airport{Location: along(0), Elevation: tc.depElevation}
 			arr := db.Airport{Location: along(30)}
 
-			wps, ok := s.adjustRouteForShelves(route(), cruise, dep, arr)
+			wps, ok := s.adjustRouteForShelves(testRoute(cruise), cruise, dep, arr)
 			if tc.want == "" {
 				if ok {
-					t.Fatalf("expected the route to be rejected, got %s", describe(wps))
+					t.Fatalf("expected the route to be rejected, got %s", describeRestrictions(wps))
 				}
 				return
 			}
 			if !ok {
 				t.Fatal("route unexpectedly rejected")
 			}
-			if got := describe(wps); got != tc.want {
+			if got := describeRestrictions(wps); got != tc.want {
 				t.Fatalf("got  %s\nwant %s", got, tc.want)
 			}
 
@@ -170,6 +151,117 @@ func TestAdjustRouteForShelves(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// testAlong returns the point nm east of the origin along the equator, where
+// the routes in the VFR route tests run.
+func testAlong(nm float32) math.Point2LL {
+	return math.Offset2LL(math.Point2LL{0, 0}, 90, nm, testNmPerLongitude)
+}
+
+// testRoute returns a route like the ones sim builds: waypoints every 10nm,
+// at or above cruise for the first half and at or below it for the second.
+func testRoute(cruise float32) []av.Waypoint {
+	var wps []av.Waypoint
+	for i, fix := range []string{"A", "B", "C", "D"} {
+		wp := av.Waypoint{Fix: fix, Location: testAlong(float32(10 * i))}
+		if i < 2 {
+			wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(cruise))
+		} else {
+			wp.SetAltitudeRestriction(av.MakeAtOrBelowAltitudeRestriction(cruise))
+		}
+		wps = append(wps, wp)
+	}
+	return wps
+}
+
+// testTerrain returns terrain under the routes of the VFR route tests, which
+// is alt(nm) feet high nm east of the origin.
+func testTerrain(alt func(nm float32) int) *db.TerrainGrid {
+	const n = db.TerrainTileSize
+	tile := make([]byte, n*n)
+	for c := range n {
+		// A 15" column of cells is 0.25nm wide at the equator.
+		v := byte(alt((float32(c)+0.5)/4) / 100)
+		for r := range n {
+			tile[r*n+c] = v
+		}
+	}
+	enc, err := zstd.NewWriter(nil)
+	if err != nil {
+		panic(err)
+	}
+	z := enc.EncodeAll(tile, nil)
+	// The routes run along the equator, so they may be in either of the
+	// tiles on its sides.
+	return (&db.Terrain{Tiles: map[db.TerrainTileKey][]byte{{Latitude: 0, Longitude: 0}: z, {Latitude: -1, Longitude: 0}: z}}).MakeGrid()
+}
+
+func describeRestrictions(wps []av.Waypoint) string {
+	return strings.Join(util.MapSlice(wps, func(wp av.Waypoint) string {
+		return wp.Fix + "/" + wp.AltitudeRestriction().Encoded()
+	}), " ")
+}
+
+// TestAdjustRouteForTerrain checks the restrictions a VFR route is given to
+// keep it above the terrain. Over flat ground the flight keeps the clearance
+// above it from 3nm after departure to 5nm before the arrival, and needs
+// waypoints only where that starts and ends. Ahead of a ridge it has to
+// climb, at no more than vfrClimbGradient, to be above the ridge's floor
+// before it gets there, and it stays up until it is past the ridge.
+func TestAdjustRouteForTerrain(t *testing.T) {
+	db.InitDB()
+	const cruise = 6500
+	dep, arr := db.Airport{Location: testAlong(0)}, db.Airport{Location: testAlong(30)}
+	flat := func(float32) int { return 0 }
+	ridge := func(nm float32) int { return util.Select(nm > 14 && nm < 16, 4000, 0) }
+	adjust := func(terrain func(float32) int) []av.Waypoint {
+		s := NewTestSim(testLogger())
+		s.State.NmPerLongitude = testNmPerLongitude
+		s.vfrTakeoffs = make(map[av.ICAOAirportCode][2]math.Point2LL)
+		s.vfrAirspace = db.MakeAirspaceGrid(nil)
+		s.terrain = testTerrain(terrain)
+		return s.adjustRouteForTerrain(testRoute(cruise), dep, arr)
+	}
+
+	for _, tc := range []struct {
+		name    string
+		terrain func(nm float32) int
+		want    string
+	}{
+		{
+			name:    "flat",
+			terrain: flat,
+			want:    "A/6500+ _terrain1@1500/1500+ B/6500+ C/1500-6500 _terrain2@1500/1500+ D/6500-",
+		},
+		{
+			name:    "ridge",
+			terrain: ridge,
+			want: "A/6500+ _terrain1@2000/2000+ _terrain2@2500/2500+ _terrain3@3000/3000+ _terrain4@3500/3500+ " +
+				"_terrain5@4000/4000+ _terrain6@4500/4500+ B/6500+ _terrain7@5000/5000+ _terrain8@5500/5500+ " +
+				"_terrain9@5500/5500+ C/1500-6500 _terrain10@1500/1500+ D/6500-",
+		},
+	} {
+		if got := describeRestrictions(adjust(tc.terrain)); got != tc.want {
+			t.Errorf("%s:\ngot  %s\nwant %s", tc.name, got, tc.want)
+		}
+	}
+
+	// The ridge's 5000' floor and the margin over it make 5500'. The flight
+	// is asked to be up to that before the ridge and to stay there until it
+	// is past it. Ahead of the ridge, each waypoint asks for at least enough
+	// to climb the rest of the way at vfrClimbGradient.
+	for _, wp := range adjust(ridge) {
+		alt, d := wp.AltRestriction.Range[0], math.NMDistance2LL(dep.Location, wp.Location)
+		switch {
+		case wp.Fix == "_terrain8@5500" && d > 14:
+			t.Errorf("up to 5500' at %.2fnm, past the start of the ridge", d)
+		case wp.Fix == "_terrain9@5500" && d < 16:
+			t.Errorf("down from 5500' at %.2fnm, before the end of the ridge", d)
+		case strings.HasPrefix(wp.Fix, "_terrain") && d < 14 && alt < 5500-vfrClimbGradient*(14-d):
+			t.Errorf("%s: %.0f' at %.2fnm is too low to climb above the ridge", wp.Fix, alt, d)
+		}
 	}
 }
 

@@ -21,15 +21,85 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// How low below the MVA a VFR can be
-const vfrMVABuffer = 1000
+// vfrTerrainClearance is how far above the highest nearby terrain a VFR
+// flight stays en route. It is applied here rather than built into the
+// terrain data, which holds only the highest terrain within 0.5 nm, so that
+// it can be tuned without rebuilding the data. Towers and antennas are not in
+// that data, so the clearance has to cover them too; a real obstacle database
+// would be the fix.
+const vfrTerrainClearance = 1000
 
-// vfrMVAApplies reports whether the MVA limits a VFR flight dDep nm from its
-// departure airport and dArr nm from its arrival airport. It doesn't near
-// either field, where the flight is below the MVA climbing out or descending
-// to land.
-func vfrMVAApplies(dDep, dArr float32) bool {
+// Where airspace a VFR flight stays out of has its floor too low to keep
+// vfrTerrainClearance under it, the flight keeps vfrShelfClearance above the
+// terrain instead: about the least the regulations allow away from congested
+// areas (14 CFR 91.119(c)). That applies within vfrShelfReach nm of the
+// airspace, where the flight may be held down for it.
+const (
+	vfrShelfClearance = 500
+	vfrShelfReach     = 1
+)
+
+// vfrDepartureClimbout is how far in nm from its departure runway a VFR
+// flight may still be climbing away from it. The terrain data next to a
+// runway can be a couple hundred feet above the field: it is rounded up, and
+// the source data includes trees and buildings.
+const vfrDepartureClimbout = 1
+
+// vfrClearanceApplies reports whether a VFR flight dDep nm from its departure
+// airport and dArr nm from its arrival airport keeps vfrTerrainClearance
+// above the terrain. It doesn't near either field, where the flight is
+// climbing out or descending to land.
+func vfrClearanceApplies(dDep, dArr float32) bool {
 	return dDep > 3 && dArr > 5
+}
+
+// vfrFloor returns the lowest altitude a VFR flight from depap to arrap may
+// be at p. It returns false on the departure runway and within
+// vfrDepartureClimbout of it, where the flight is still taking off or
+// climbing out and nothing is required. Out to the distances in
+// vfrClearanceApplies the flight must only be above the terrain; beyond them
+// it keeps the clearance vfrClearance gives. Near the fields, nothing keeps
+// it clear of towers and antennas, which aren't in the terrain data.
+func (s *Sim) vfrFloor(p math.Point2LL, depap, arrap db.Airport) (int, bool) {
+	takeoff, nmPerLongitude := s.vfrTakeoff(depap), s.State.NmPerLongitude
+	if math.PointSegmentDistance(math.LL2NM(p, nmPerLongitude), math.LL2NM(takeoff[0], nmPerLongitude),
+		math.LL2NM(takeoff[1], nmPerLongitude)) < vfrDepartureClimbout {
+		return 0, false
+	}
+	terrain := s.terrain.HighestTerrain(p)
+	if vfrClearanceApplies(math.NMDistance2LL(p, depap.Location), math.NMDistance2LL(p, arrap.Location)) {
+		return terrain + s.vfrClearance(p, terrain), true
+	}
+	return terrain, true
+}
+
+// vfrClearance returns how far above the terrain at p a VFR flight stays en
+// route: vfrShelfClearance near a shelf of airspace whose floor is above the
+// terrain but too low for vfrTerrainClearance, and vfrTerrainClearance
+// elsewhere.
+func (s *Sim) vfrClearance(p math.Point2LL, terrain int) int {
+	if s.vfrAirspace.AnyNear(p, vfrShelfReach, func(v *av.AirspaceVolume) bool {
+		return v.Floor > terrain && v.Floor-vfrShelfBuffer < terrain+vfrTerrainClearance
+	}) {
+		return vfrShelfClearance
+	}
+	return vfrTerrainClearance
+}
+
+// vfrTakeoff returns the runway VFR flights take off from at ap, from the
+// start of the takeoff roll to its far end, or ap's location at both ends if
+// there is none. Like the runway, it doesn't change during the sim, so it is
+// worked out once per airport.
+func (s *Sim) vfrTakeoff(ap db.Airport) [2]math.Point2LL {
+	if t, ok := s.vfrTakeoffs[ap.Id]; ok {
+		return t
+	}
+	t := [2]math.Point2LL{ap.Location, ap.Location}
+	if rwy, opp, ok := s.vfrRunway(ap.Id); ok {
+		t = [2]math.Point2LL{rwy.Start, opp.Start}
+	}
+	s.vfrTakeoffs[ap.Id] = t
+	return t
 }
 
 // A VFR flight under airspace it avoids stays vfrShelfBuffer below its
@@ -329,7 +399,16 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		wps = append(wps, rg.Waypoint("_dep_downwind3", -2*k, side*vfrDownwindOffset))
 	}
 
-	ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, CruiseLimits{}, s.State.NmPerLongitude,
+	// Cruise above the terrain on the way, as far as the route is known yet.
+	planned := []av.Waypoint{{Location: depap.Location}}
+	if len(routeWps) > 0 {
+		planned = append(planned, routeWps...)
+	} else {
+		planned = append(planned, av.Waypoint{Location: mid})
+	}
+	planned = append(planned, av.Waypoint{Location: arrap.Location})
+	limits := CruiseLimits{Floor: slices.Max(s.vfrFloors(sampleRoute(planned), depap, arrap))}
+	ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, limits, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.Rand)
 
 	var randomizeAltitudeRange bool
@@ -413,19 +492,22 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 
 	// Only now is the route the one the aircraft will fly: building the Nav
 	// scatters the waypoints within their radii. Detours around airspace
-	// start from that route, and the shelf and MVA legs have to be sampled
-	// along it rather than the one they were planned on, both so the
+	// start from that route, and the terrain and shelf legs have to be
+	// sampled along it rather than the one they were planned on, both so the
 	// airspace and terrain they clear are what is overflown and so they land
 	// on the legs they divide rather than off to one side of them.
 	ac.Nav.Waypoints, ok = s.detourAroundAirspace(ac.Nav.Waypoints, ac.CruiseAltitude, depap, arrap)
 	if !ok {
 		return nil, ErrViolatedAirspace
 	}
+	// Where the terrain and a shelf meet, the shelf wins, which
+	// adjustRouteForShelves only allows if it leaves the flight above the
+	// terrain's floor.
+	ac.Nav.Waypoints = s.adjustRouteForTerrain(ac.Nav.Waypoints, depap, arrap)
 	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.CruiseAltitude, depap, arrap)
 	if !ok {
 		return nil, ErrViolatedAirspace
 	}
-	ac.Nav.Waypoints = s.adjustRouteForMVA(string(ac.ADSBCallsign), ac.Nav.Waypoints)
 
 	// Deep-copy only Nav (not the full Aircraft) to avoid copying
 	// maps, pointers, and fields unused during route validation.
@@ -471,6 +553,16 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				endWp.MergeActions(av.WaypointActions{Delete: true})
 				descentWps = append(descentWps, endWp)
 
+				// It stays as high as the terrain asks, but it never climbs:
+				// the flight is already under the airspace it has to stay
+				// out of.
+				start := av.Waypoint{Fix: "_descent_start", Location: pos}
+				descentWps = s.adjustRouteForTerrain(append([]av.Waypoint{start}, descentWps...), depap, arrap)[1:]
+				for i := range descentWps {
+					if ar := descentWps[i].AltitudeRestriction(); ar != nil {
+						ar.Range[0] = min(ar.Range[0], alt)
+					}
+				}
 				simNav.Waypoints = descentWps
 				simNav.Heading = nav.Heading{}
 				continue
@@ -485,20 +577,16 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		if s.vfrAirspace.Inside(pos, alt) || s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
 			return nil, ErrViolatedAirspace
 		}
-		// Check MVA violation: aircraft must stay at or above MVA - 1000'.
-		distFromDeparture := math.NMDistance2LL(pos, simNav.FlightState.DepartureAirportLocation)
-		distToArrival := math.NMDistance2LL(pos, simNav.FlightState.ArrivalAirportLocation)
-		if vfrMVAApplies(distFromDeparture, distToArrival) {
-			if mva := s.mvaGrid.GetMVA(pos); mva > 0 && simNav.FlightState.Altitude < float32(mva-vfrMVABuffer) {
-				var wpName string
-				if len(simNav.Waypoints) > 0 {
-					wpName = simNav.Waypoints[0].Fix
-				}
-				nav.NavLog(string(ac.ADSBCallsign), simTime.NavTime(), "state",
-					"rejected at %.0f' (MVA %d, need %d) heading to %q, pos %v, %.1fnm from dep, %.1fnm from arr",
-					simNav.FlightState.Altitude, mva, mva-vfrMVABuffer, wpName, pos, distFromDeparture, distToArrival)
-				return nil, ErrVFRBelowMVA
+		if floor, ok := s.vfrFloor(pos, depap, arrap); ok && simNav.FlightState.Altitude < float32(floor) {
+			var wpName string
+			if len(simNav.Waypoints) > 0 {
+				wpName = simNav.Waypoints[0].Fix
 			}
+			nav.NavLog(string(ac.ADSBCallsign), simTime.NavTime(), "state",
+				"rejected at %.0f' (terrain %d', need %d') heading to %q, pos %v, %.1fnm from dep, %.1fnm from arr",
+				simNav.FlightState.Altitude, s.terrain.HighestTerrain(pos), floor, wpName, pos,
+				math.NMDistance2LL(pos, depap.Location), math.NMDistance2LL(pos, arrap.Location))
+			return nil, ErrVFRBelowTerrain
 		}
 	}
 
@@ -620,10 +708,12 @@ func clearAltitude(vols []*av.AirspaceVolume, alt int, passOver func(*av.Airspac
 	return alt
 }
 
-// vfrClimbGradient is how many feet a VFR flight is assumed to be above a
-// field for each nm away from it, up to its cruise altitude. It is a low
-// estimate, used to decide whether a flight near its departure or destination
-// is high enough to pass over airspace.
+// vfrClimbGradient is how many feet a VFR flight is assumed to climb in each
+// nm. It is a low estimate, below what light aircraft manage (about 550 for a
+// C172), so that slow climbers can do what is asked of them. It is used to
+// decide whether a flight near its departure or destination is high enough to
+// pass over airspace, and how far ahead of rising terrain a flight has to
+// start climbing.
 const vfrClimbGradient = 300
 
 // vfrPassOver returns a function that reports whether a VFR flight between
@@ -640,6 +730,25 @@ func vfrPassOver(depap, arrap db.Airport, cruise int) func(*av.AirspaceVolume) b
 		low := int(min(float32(cruise), lowest(depap), lowest(arrap)))
 		return low-vfrShelfBuffer >= v.Ceiling
 	}
+}
+
+// routePoint is a point along a VFR route.
+type routePoint struct {
+	loc math.Point2LL
+	wp  int // index in the route's waypoints, or -1 for a point sampled along a leg
+}
+
+// sampleRoute returns the waypoints of a route, with points about a mile
+// apart along the legs between them.
+func sampleRoute(wps []av.Waypoint) []routePoint {
+	pts := []routePoint{{wps[0].Location, 0}}
+	for i := 1; i < len(wps); i++ {
+		for p := range legSamples(wps[i-1].Location, wps[i].Location) {
+			pts = append(pts, routePoint{p, -1})
+		}
+		pts = append(pts, routePoint{wps[i].Location, i})
+	}
+	return pts
 }
 
 // legSamples yields points about a mile apart along the leg from a to b,
@@ -894,24 +1003,10 @@ func (d detourPolygon) around(a, b [2]float32) [][2]float32 {
 // under it. Everywhere else the route keeps its cruise altitude, so a shelf
 // near one end of the route doesn't hold the whole flight under it. It
 // reports false where there is no room to fly under a shelf at all: the
-// ground is too close or the MVA is above it, so the flight has to go
-// somewhere else. The MVA is left out near either field, as it is
-// during the route's validation flight, since an aircraft is below it on
-// departure and arrival.
+// field is too close below it, or it is below the floor that vfrFloor keeps
+// the flight above, so the flight has to go somewhere else.
 func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap db.Airport) ([]av.Waypoint, bool) {
-	// Sample the route about a mile apart, keeping track of which points
-	// are its waypoints.
-	type routePoint struct {
-		loc math.Point2LL
-		wp  int // index in wps, or -1 for a point sampled along a leg
-	}
-	pts := []routePoint{{wps[0].Location, 0}}
-	for i := 1; i < len(wps); i++ {
-		for p := range legSamples(wps[i-1].Location, wps[i].Location) {
-			pts = append(pts, routePoint{p, -1})
-		}
-		pts = append(pts, routePoint{wps[i].Location, i})
-	}
+	pts := sampleRoute(wps)
 
 	// The altitude to fly at each point: the cruise altitude, or over or
 	// under the airspace there.
@@ -941,13 +1036,9 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 		}
 		dDep, dArr := math.NMDistance2LL(p.loc, depap.Location), math.NMDistance2LL(p.loc, arrap.Location)
 		nearer := util.Select(dDep < dArr, depap, arrap)
-		if held[i] < nearer.Elevation+minVFRShelfRoom {
+		floor, ok := s.vfrFloor(p.loc, depap, arrap)
+		if held[i] < nearer.Elevation+minVFRShelfRoom || (ok && held[i] < floor) {
 			return nil, false
-		}
-		if vfrMVAApplies(dDep, dArr) {
-			if mva := s.mvaGrid.GetMVA(p.loc); mva > 0 && held[i] < mva-vfrMVABuffer {
-				return nil, false
-			}
 		}
 	}
 
@@ -988,68 +1079,90 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 	return result, true
 }
 
-// adjustRouteForMVA modifies the waypoint altitude restrictions to ensure
-// the aircraft stays above MVA - vfrMVABuffer along the route.
-func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoint {
-	if len(wps) < 2 {
-		return wps
+// vfrFloors returns vfrFloor at each of the points of a route between depap
+// and arrap, or zero where there is none.
+func (s *Sim) vfrFloors(pts []routePoint, depap, arrap db.Airport) []int {
+	return util.MapSlice(pts, func(p routePoint) int {
+		f, _ := s.vfrFloor(p.loc, depap, arrap)
+		return f
+	})
+}
+
+// vfrTerrainIncrement is the step between the altitudes of the restrictions
+// adjustRouteForTerrain gives a route.
+const vfrTerrainIncrement = 500
+
+// adjustRouteForTerrain gives a VFR route the altitude restrictions that keep
+// it above vfrFloor. The terrain under a point sampled along the route
+// reaches toward its neighbors, so at each point the flight has to be above
+// the floor there and at the points on either side: at the next
+// vfrTerrainIncrement above it, which leaves room for a flight that settles
+// a little below a restriction it is holding. It may have to be higher still
+// to climb at vfrClimbGradient to what is needed further on. The route's
+// waypoints are restricted to at or above that altitude, rounded up to
+// vfrTerrainIncrement. Between them, a waypoint is added where the rounded
+// altitude goes up, which the flight has to be up to by then, and where it
+// goes down, which the flight has to stay up for until then. The restrictions
+// are at or above rather than at, so that a flight above them stays where it
+// is; whether a flight can climb to them in time is for the route's
+// validation flight to find out.
+func (s *Sim) adjustRouteForTerrain(wps []av.Waypoint, depap, arrap db.Airport) []av.Waypoint {
+	pts := sampleRoute(wps)
+	floor := s.vfrFloors(pts, depap, arrap)
+
+	// Work back from the end of the route to find the altitude needed at
+	// each point.
+	need := make([]int, len(pts))
+	for i := len(pts) - 1; i >= 0; i-- {
+		if f := slices.Max(floor[max(i-1, 0):min(i+2, len(pts))]); f > 0 {
+			need[i] = (f/vfrTerrainIncrement + 1) * vfrTerrainIncrement
+		}
+		if i+1 < len(pts) {
+			climb := int(vfrClimbGradient * math.NMDistance2LL(pts[i].loc, pts[i+1].loc))
+			need[i] = max(need[i], need[i+1]-climb)
+		}
 	}
+	alt := util.MapSlice(need, func(n int) int {
+		return min((n+vfrTerrainIncrement-1)/vfrTerrainIncrement*vfrTerrainIncrement, maxVFRAltitude)
+	})
 
-	result := make([]av.Waypoint, 0, len(wps)*2)
-	mvaWpNum := 0
-
-	for i, wp := range wps {
-		if i > 0 {
-			// Sample between previous waypoint and this one to look for MVA transitions.
-			prevWp := wps[i-1]
-			prevMVA := s.mvaGrid.GetMVA(prevWp.Location)
-			prevPos := prevWp.Location
-
-			for pos := range legSamples(prevWp.Location, wp.Location) {
-				mva := s.mvaGrid.GetMVA(pos)
-
-				if mva != prevMVA && mva > 0 && prevMVA > 0 {
-					// MVA changed - insert a waypoint
-					// Higher MVA: insert a new waypoint with an altitude restriction at the
-					// previous sample position so that we can record "at or above" there with the
-					// hopes that the aircraft will be able to reach it.
-					// Lower MVA: insert at the current position to indicate that a descent may be
-					// possible.
-					pNew := util.Select(mva > prevMVA, prevPos, pos)
-
-					minAlt := min(float32(mva-vfrMVABuffer), maxVFRAltitude)
-					mvaWpNum++
-					mvaWp := av.Waypoint{
-						Fix:      fmt.Sprintf("_mva%d@%.0f", mvaWpNum, minAlt),
-						Location: pNew,
-					}
-					mvaWp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(minAlt))
-					result = append(result, mvaWp)
-				}
-
-				prevMVA = mva
-				prevPos = pos
+	result := make([]av.Waypoint, 0, len(wps)+8)
+	terrainWpNum := 0
+	for i, p := range pts {
+		if p.wp != -1 {
+			wp := wps[p.wp]
+			if alt[i] > 0 {
+				raiseAltitudeRestriction(&wp, float32(alt[i]))
 			}
+			result = append(result, wp)
+			continue
 		}
-
-		// Apply MVA constraints to this waypoint and add it
-		if mva := s.mvaGrid.GetMVA(wp.Location); mva > 0 {
-			minAlt := min(float32(mva-vfrMVABuffer), maxVFRAltitude)
-			if wp.AltitudeRestriction() == nil {
-				wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(minAlt))
-			} else {
-				if wp.AltRestriction.Range[0] < minAlt {
-					wp.AltRestriction.Range[0] = minAlt
-				}
-				if wp.AltRestriction.Range[1] != av.MaxAltitude && wp.AltRestriction.Range[1] < wp.AltRestriction.Range[0] {
-					wp.AltRestriction.Range[1] = wp.AltRestriction.Range[0] + 1000
-				}
-			}
+		if alt[i] <= alt[i-1] && alt[i] <= alt[i+1] {
+			continue
 		}
+		terrainWpNum++
+		wp := av.Waypoint{
+			Fix:      fmt.Sprintf("_terrain%d@%d", terrainWpNum, alt[i]),
+			Location: p.loc,
+		}
+		wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(float32(alt[i])))
 		result = append(result, wp)
 	}
-
 	return result
+}
+
+// raiseAltitudeRestriction makes wp's altitude restriction at least alt,
+// keeping a range at least 1000' wide if it has to raise its top.
+func raiseAltitudeRestriction(wp *av.Waypoint, alt float32) {
+	ar := wp.AltitudeRestriction()
+	if ar == nil {
+		wp.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(alt))
+		return
+	}
+	ar.Range[0] = max(ar.Range[0], alt)
+	if ar.Range[1] != av.MaxAltitude && ar.Range[1] < ar.Range[0] {
+		ar.Range[1] = ar.Range[0] + 1000
+	}
 }
 
 // vfrAvoids reports whether VFR traffic stays out of the volume vol of the
@@ -1099,6 +1212,7 @@ func vfrAvoidedSpecialUseAirspace() []*av.AirspaceVolume {
 
 func (s *Sim) initializeAirspaceGrids() {
 	s.vfrTerminalAlts = make(map[av.ICAOAirportCode]int)
+	s.vfrTakeoffs = make(map[av.ICAOAirportCode][2]math.Point2LL)
 	volumes := func(a map[string][]av.AirspaceVolume) []*av.AirspaceVolume {
 		var vols []*av.AirspaceVolume
 		for _, volslice := range util.SortedMap(a) {
@@ -1111,5 +1225,5 @@ func (s *Sim) initializeAirspaceGrids() {
 	bravo := volumes(db.DB.BravoAirspace)
 	s.bravoAirspace = db.MakeAirspaceGrid(bravo)
 	s.vfrAirspace = db.MakeAirspaceGrid(slices.Concat(bravo, volumes(db.DB.CharlieAirspace), vfrAvoidedSpecialUseAirspace()))
-	s.mvaGrid = db.MakeMVAGrid(db.DB.MVAs[s.State.Facility])
+	s.terrain = db.DB.Terrain.MakeGrid()
 }

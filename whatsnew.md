@@ -5,6 +5,7 @@
 - An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
 - Fixed a number of bugs related to handling Mach speeds in instructions
 - VFR aircraft routes now avoid special use airspace
+- VFR aircraft keep 1,000' above the terrain en route (500' under low Class B and C shelves), now also in facilities without MVA charts
 - Settings are restored from a backup if the saved configuration file is damaged
 - STARS
   - ATPA volumes now follow each final approach course rather than the runway's extended centerline.

@@ -127,6 +127,13 @@ func (g *AirspaceGrid) Near(p math.Point2LL, r float32) []*av.AirspaceVolume {
 	return util.FilterSlice(g.getEntries(airspaceCell(p)), func(vol *av.AirspaceVolume) bool { return vol.Near(p, r) })
 }
 
+// AnyNear reports whether one of the volumes that Near would return
+// satisfies f. It tests f first, so a cheap f saves working out where the
+// volumes are.
+func (g *AirspaceGrid) AnyNear(p math.Point2LL, r float32, f func(*av.AirspaceVolume) bool) bool {
+	return slices.ContainsFunc(g.getEntries(airspaceCell(p)), func(vol *av.AirspaceVolume) bool { return f(vol) && vol.Near(p, r) })
+}
+
 // MVAGrid organizes MVA definitions and provides efficient lookups via a
 // grid in lat-long space that records which MVAs overlap grid cells. Grid
 // cells are initialized on demand rather than upfront.
