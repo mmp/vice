@@ -914,7 +914,7 @@ func (h *hsfHeadingParser) AcceptsClick() bool   { return false }
 //
 // Restrictions:
 //   - /S250+ invalid
-//   - explicit mach with 3 digits (e.g. /M750) cannot have +/- (e.g. /M750+ invalid)
+//   - Mach has two digits (11.1.1.1), so /M750 is invalid
 type hsfSpeedParser struct{}
 
 func (h *hsfSpeedParser) Identifier() string { return "HSF_SPEED" }
@@ -954,17 +954,13 @@ func (h *hsfSpeedParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 		return "S" + d, remaining, true, nil
 	}
 
-	// Explicit mach: /M75, /M.75, or /M750. Can be 2-3 digits. + and - don't work when 3 digits.
+	// Explicit mach: /M75 or /M.75.
 	if strings.HasPrefix(upper, "M") {
 		d := strings.TrimPrefix(rest[1:], ".")
-		if len(d) < 2 || len(d) > 3 || !allDigits(d) {
+		if len(d) != 2 || !allDigits(d) {
 			return nil, text, true, NewError("INVALID SPEED FORMAT")
 		}
-
-		if v, _ := strconv.Atoi(d); v < 10 || v > 999 { // 2-3 digits restriction
-			return nil, text, true, NewError("INVALID SPEED FORMAT")
-		}
-		if len(d) == 3 && mod != 0 { // 3 digits +/- restriction
+		if v, _ := strconv.Atoi(d); v < 10 {
 			return nil, text, true, NewError("INVALID SPEED FORMAT")
 		}
 		out := "M" + d

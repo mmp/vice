@@ -132,6 +132,26 @@ func TestQSHeadingAndSpeed(t *testing.T) {
 		}
 	}
 
+	// Speeds are stored in the form of the speed commands, which take + and
+	// -; Mach has two digits.
+	for _, tc := range []struct{ text, want string }{
+		{"/250+ AAL123", "S250+"},
+		{"/250- AAL123", "S250-"},
+		{"/78+ AAL123", "M78+"},
+		{"/M78- AAL123", "M78-"},
+		{"/M750 AAL123", ""},
+		{"/M.750 AAL123", ""},
+	} {
+		v, _, ok, err := sp.Parse(nil, nil, &CommandInput{}, tc.text)
+		if tc.want == "" {
+			if !ok || err == nil {
+				t.Errorf("%q: got %v %v %v, want an error", tc.text, v, ok, err)
+			}
+		} else if !ok || err != nil || v != tc.want {
+			t.Errorf("%q: got %v %v %v, want %s", tc.text, v, ok, err, tc.want)
+		}
+	}
+
 	var hp hsfHeadingParser
 	for _, tc := range []struct {
 		text, heading, rest string

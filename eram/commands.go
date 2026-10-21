@@ -7,7 +7,6 @@ package eram
 import (
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 	"unicode"
 
@@ -238,10 +237,9 @@ func (ep *Scope) modifyFlightPlan(ctx *scope.Context, trk *sim.Track, spec sim.F
 		}
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 	}
-	if spec.SecondaryScratchpad.IsSet && len(spec.SecondaryScratchpad.Value) > 0 {
-		if _, err := strconv.Atoi(spec.SecondaryScratchpad.Value[1:]); err == nil {
-			ep.runAircraftCommands(ctx, trk.ADSBCallsign, spec.SecondaryScratchpad.Value)
-		}
+	// QS speeds are stored in the form of the speed commands.
+	if spec.SecondaryScratchpad.IsSet && spec.SecondaryScratchpad.Value != "" {
+		ep.runAircraftCommands(ctx, trk.ADSBCallsign, spec.SecondaryScratchpad.Value)
 	}
 }
 
