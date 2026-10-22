@@ -903,6 +903,7 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 	}
 
 	s.Center.Resolve(sg, "center", e)
+	sim.ValidateAltitudeRange(s.AltitudeRange, e)
 
 	for _, dm := range s.DefaultMaps {
 		if !mapSpec.HasMap(dm) {

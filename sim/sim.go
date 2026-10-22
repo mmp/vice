@@ -247,6 +247,7 @@ type NewSimConfiguration struct {
 	ScenarioCenter         math.Point2LL
 	ScenarioRange          float32
 	ScenarioAltitudeLimits AltitudeLimits
+	ScenarioAltitudeRange  [2]int
 	DefaultMaps            []string
 	DefaultMapGroup        string
 	Airspace               av.Airspace

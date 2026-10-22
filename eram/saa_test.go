@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
@@ -44,22 +45,35 @@ func TestSAAs(t *testing.T) {
 
 // Inactive SAAs are displayed per their COLD filter setting and active ones
 // per their HOT one, except that DISPLAY shows the boundary and altitudes of
-// an active one whose HOT setting is blank (4.2.18.1, 4.2.18.2).
+// an active one whose HOT setting is blank (4.2.18.1, 4.2.18.2). An active
+// SAA below the user's airspace is not displayed unless DISPLAY is on
+// (4.2.18).
 func TestSAAFilter(t *testing.T) {
-	hot, cold := &saa{hot: true}, &saa{}
+	volume := func(floor, ceiling int) []db.SpecialUseAirspaceVolume {
+		return []db.SpecialUseAirspaceVolume{{AirspaceVolume: av.AirspaceVolume{Floor: floor, Ceiling: ceiling}}}
+	}
+	hot, cold := &saa{hot: true, volumes: volume(0, 17999)}, &saa{volumes: volume(0, 17999)}
+	lowHot, lowCold := &saa{hot: true, volumes: volume(0, 5000)}, &saa{volumes: volume(0, 5000)}
 	for _, c := range []struct {
+		what string
 		a    *saa
 		s    SAASettings
 		want string
 	}{
-		{cold, defaultSAASettings, ""},
-		{hot, defaultSAASettings, "BAL"},
-		{cold, SAASettings{Cold: "BL", Hot: "B"}, "BL"},
-		{hot, SAASettings{Display: true}, "BA"},
-		{hot, SAASettings{Hot: "B", Display: true}, "B"},
+		{"cold", cold, defaultSAASettings, ""},
+		{"hot", hot, defaultSAASettings, "BAL"},
+		{"cold", cold, SAASettings{Cold: "BL", Hot: "B"}, "BL"},
+		{"hot", hot, SAASettings{Display: true}, "BA"},
+		{"hot", hot, SAASettings{Hot: "B", Display: true}, "B"},
+		{"low hot", lowHot, defaultSAASettings, ""},
+		{"low hot", lowHot, SAASettings{Hot: "BAL", Display: true}, "BAL"},
+		{"low hot", lowHot, SAASettings{Display: true}, "BA"},
+		{"low cold", lowCold, SAASettings{Cold: "B"}, "B"},
+		{"hot to the floor", &saa{hot: true, volumes: volume(0, 10000)}, defaultSAASettings, ""},
+		{"hot from the ceiling", &saa{hot: true, volumes: volume(60000, 99900)}, defaultSAASettings, ""},
 	} {
-		if got := c.a.filter(c.s); got != c.want {
-			t.Errorf("hot %v with %+v: %q, want %q", c.a.hot, c.s, got, c.want)
+		if got := c.a.filter(c.s, [2]int{10000, 60000}); got != c.want {
+			t.Errorf("%s with %+v: %q, want %q", c.what, c.s, got, c.want)
 		}
 	}
 	for f, next := range map[string]string{"": "B", "B": "BL", "BL": ""} {

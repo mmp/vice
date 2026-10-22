@@ -50,8 +50,9 @@ type Scenario struct {
 	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
 
-	Center av.ScenarioPoint2LL `json:"center"`
-	Range  float32             `json:"range"`
+	Center        av.ScenarioPoint2LL `json:"center"`
+	Range         float32             `json:"range"`
+	AltitudeRange [2]int              `json:"altitude_range"`
 	sim.AltitudeLimits
 	DefaultMaps     []string `json:"default_maps"`
 	DefaultMapGroup string   `json:"default_map_group"`

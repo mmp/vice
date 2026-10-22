@@ -63,6 +63,7 @@ func (sg *Group) NewSimConfiguration(scenarioName string, lc sim.LaunchConfig) (
 		ScenarioCenter:             sc.Center.Point2LL,
 		ScenarioRange:              sc.Range,
 		ScenarioAltitudeLimits:     sc.AltitudeLimits,
+		ScenarioAltitudeRange:      sc.AltitudeRange,
 		DefaultMaps:                sc.DefaultMaps,
 		DefaultMapGroup:            sc.DefaultMapGroup,
 		HistoricalScenario:         sg.HistoricalScenario,

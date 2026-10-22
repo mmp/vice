@@ -7,6 +7,7 @@ package client
 import (
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/sim"
 )
 
@@ -54,5 +55,50 @@ func TestGetInitialAltitudeLimits(t *testing.T) {
 	ss.ScenarioAltitudeLimits = sim.AltitudeLimits{LDBs: [2]int{50, 180}}
 	if targets, ldbs := ss.GetInitialAltitudeLimits(); targets != unrestricted || ldbs != [2]int{50, 180} {
 		t.Errorf("unadapted position: got targets %v, LDBs %v", targets, ldbs)
+	}
+}
+
+// A position's altitude range follows the same precedence as the scope's
+// center; a TCW that owns several positions gets the union of their ranges.
+func TestGetAltitudeRange(t *testing.T) {
+	makeState := func(position, scenario, area, facility [2]int) SimState {
+		var ss SimState
+		ss.UserTCW = "08"
+		ss.ScenarioAltitudeRange = scenario
+		ss.Controllers = map[sim.ControlPosition]*av.Controller{"08": {Area: "1"}}
+		ss.FacilityAdaptation.AltitudeRange = facility
+		ss.FacilityAdaptation.Areas = map[string]*sim.AreaAdaptation{"1": {AltitudeRange: area}}
+		ss.FacilityAdaptation.Positions = map[sim.ControlPosition]*sim.PositionAdaptation{
+			"08": {AltitudeRange: position},
+		}
+		return ss
+	}
+
+	none := [2]int{}
+	low, mid, high, top := [2]int{0, 10000}, [2]int{11000, 23000}, [2]int{24000, 33000}, [2]int{34000, 60000}
+	for _, c := range []struct {
+		what                               string
+		position, scenario, area, facility [2]int
+		want                               [2]int
+	}{
+		{"nothing adapted", none, none, none, none, sim.DefaultAltitudeRange},
+		{"facility", none, none, none, low, low},
+		{"area over facility", none, none, mid, low, mid},
+		{"scenario over area", none, high, mid, low, high},
+		{"controller over scenario", top, high, mid, low, top},
+	} {
+		ss := makeState(c.position, c.scenario, c.area, c.facility)
+		if got := ss.GetAltitudeRange(); got != c.want {
+			t.Errorf("%s: got %v, expected %v", c.what, got, c.want)
+		}
+	}
+
+	ss := makeState(top, none, none, none)
+	ss.FacilityAdaptation.Positions["09"] = &sim.PositionAdaptation{AltitudeRange: mid}
+	ss.CurrentConsolidation = map[sim.TCW]*sim.TCPConsolidation{
+		"08": {PrimaryTCP: "08", SecondaryTCPs: []sim.SecondaryTCP{{TCP: "09"}}},
+	}
+	if got := ss.GetAltitudeRange(); got != [2]int{11000, 60000} {
+		t.Errorf("consolidated: got %v, expected [11000 60000]", got)
 	}
 }

@@ -22,8 +22,8 @@ import (
 // from the CIFP within the ARTCC, as the extent of its airports
 // approximates it. The CIFP gives no schedules, so the areas
 // it marks as always active are hot and the others are cold; none is ever
-// pending. vice has no sector altitude ranges, so every SAA is altitude
-// eligible.
+// pending. Nor does it give the adaptation that forces an SAA to the
+// display, so every SAA is "Not Forced".
 
 // saa is a special activity airspace.
 type saa struct {
@@ -37,8 +37,8 @@ type saa struct {
 
 // SAASettings are an SAA's display filters (4.2.18.2): which of its
 // boundary (B), altitudes (A), and label (L) are displayed while it is
-// inactive and while it is active; whether DISPLAY is on; and where its
-// label has been torn off to, if it has been.
+// inactive and while it is active; whether DISPLAY, the altitude override,
+// is on; and where its label has been torn off to, if it has been.
 type SAASettings struct {
 	Cold, Hot string
 	Display   bool
@@ -69,18 +69,28 @@ func (p *Preferences) setSAASettings(id string, s SAASettings) {
 }
 
 // filter returns which parts of the SAA are displayed: those of its cold
-// or hot filter setting, as it is inactive or active. DISPLAY displays the
+// or hot filter setting, as it is inactive or active. An active SAA is
+// displayed only if it is altitude eligible, overlapping the altitude range
+// of the user's airspace, unless DISPLAY is on. DISPLAY also displays the
 // boundary and altitudes of an active SAA whose hot setting displays
 // nothing.
-func (a *saa) filter(s SAASettings) string {
+func (a *saa) filter(s SAASettings, altitudeRange [2]int) string {
 	switch {
 	case !a.hot:
 		return s.Cold
 	case s.Hot == "" && s.Display:
 		return "BA"
-	default:
+	case s.Display || a.altitudeEligible(altitudeRange):
 		return s.Hot
+	default:
+		return ""
 	}
+}
+
+func (a *saa) altitudeEligible(altitudeRange [2]int) bool {
+	return slices.ContainsFunc(a.volumes, func(v db.SpecialUseAirspaceVolume) bool {
+		return v.Floor < altitudeRange[1] && v.Ceiling > altitudeRange[0]
+	})
 }
 
 // makeSAAs finds the SAAs: the special use airspace within the extent of
@@ -187,10 +197,11 @@ func (ep *Scope) drawSAAs(ctx *scope.Context, transforms scope.Transformations, 
 	if ep.saaTearOffs == nil {
 		ep.saaTearOffs = make(map[string]math.Extent2D)
 	}
+	altitudeRange := ctx.Client.State.GetAltitudeRange()
 	for i := range ep.saas {
 		a := &ep.saas[i]
 		s := ps.saaSettings(a.id)
-		filter, color := a.filter(s), ep.saaColor(a)
+		filter, color := a.filter(s, altitudeRange), ep.saaColor(a)
 		tearingOff := ep.saaTearingOff == a.id
 		if strings.Contains(filter, "B") || tearingOff {
 			for _, v := range a.volumes {

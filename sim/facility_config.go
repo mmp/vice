@@ -305,10 +305,20 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 			e.Error(err)
 		}
 	}
+	ValidateAltitudeRange(fa.AltitudeRange, e)
+	for areaNum, ac := range fa.Areas {
+		e.Push(fmt.Sprintf("areas[%s]", areaNum))
+		ValidateAltitudeRange(ac.AltitudeRange, e)
+		e.Pop()
+	}
 	for tcp, config := range fa.Positions {
 		if _, ok := fc.ControlPositions[TCP(tcp)]; !ok {
 			e.ErrorString(`Control position %q in "controllers" not defined in "control_positions"`, tcp)
 		}
+
+		e.Push(fmt.Sprintf("controllers[%s]", tcp))
+		ValidateAltitudeRange(config.AltitudeRange, e)
+		e.Pop()
 
 		for i := range config.FlightFollowingAirspace {
 			if config.FlightFollowingAirspace[i].Id == "" {

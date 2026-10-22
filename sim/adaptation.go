@@ -60,6 +60,7 @@ type FacilityAdaptation struct {
 	Center            av.ScenarioPoint2LL                     `json:"center"`
 	MaxDistance       float32                                 `json:"max_distance"` // Distance from center where aircraft get culled from (default 200nm STARS, 400nm ERAM)
 	Range             float32                                 `json:"range"`
+	AltitudeRange     [2]int                                  `json:"altitude_range"`
 	Scratchpads       map[string]string                       `json:"scratchpads"`
 	SignificantPoints map[string]SignificantPoint             `json:"significant_points"`
 
@@ -249,6 +250,7 @@ type PositionAdaptation struct {
 	DefaultMaps   []string            `json:"default_maps"`
 	Center        av.ScenarioPoint2LL `json:"center"`
 	Range         float32             `json:"range"`
+	AltitudeRange [2]int              `json:"altitude_range"`
 	AltitudeLimits
 	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
@@ -266,6 +268,7 @@ type AreaAdaptation struct {
 	DefaultMaps                     []string            `json:"default_maps,omitempty"`
 	Center                          av.ScenarioPoint2LL `json:"center"`
 	Range                           float32             `json:"range,omitempty"`
+	AltitudeRange                   [2]int              `json:"altitude_range,omitempty"`
 	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks,omitempty"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
 	Altimeters                      []av.ICAOAirportCode `json:"altimeters,omitempty"`
@@ -274,6 +277,18 @@ type AreaAdaptation struct {
 	SystemAltimeter   av.ICAOAirportCode  `json:"system_altimeter,omitempty"`
 	Scratchpads       map[string]string   `json:"scratchpads,omitempty"`
 	AirspaceAwareness []AirspaceAwareness `json:"airspace_awareness,omitempty"`
+}
+
+// DefaultAltitudeRange is the altitude range, in feet, of the airspace of a
+// position for which no "altitude_range" is adapted.
+var DefaultAltitudeRange = [2]int{10000, 60000}
+
+// ValidateAltitudeRange reports an adapted "altitude_range" that is not a
+// [low, high] range of altitudes in feet.
+func ValidateAltitudeRange(r [2]int, e *util.ErrorLogger) {
+	if r != [2]int{} && (r[0] < 0 || r[0] >= r[1]) {
+		e.ErrorString(`"altitude_range" %v must be [low, high] in feet with low < high`, r)
+	}
 }
 
 // UnrestrictedAltitudeLimits is the ERAM altitude limits filter range, in

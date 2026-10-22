@@ -1524,6 +1524,17 @@
                   <tbody>
 
                     <tr>
+                      <td>"altitude_range"</td>
+                      <td>Array of two numbers</td>
+                      <td>(<i>Optional</i>) The altitude range of the facility's airspace, given as [low, high] in feet.
+                        It is currently used only by ERAM, which displays an active special use airspace only if one of
+                        its volumes overlaps the range; the DISPLAY button in the SAA FILTER view overrides this for
+                        an individual area. A controller who covers several positions gets the union of their
+                        ranges. If unspecified, the default is [10000, 60000].
+                        The order of precedence is "controllers", then the scenario's "altitude_range",
+                        then "areas", then this.</td>
+                    </tr>
+                    <tr>
                       <td>"areas"</td>
                       <td>Object</td>
                       <td><p>Defines per-area configuration for TRACON areas.
@@ -1556,6 +1567,14 @@
                                   for controllers in this area. Overridden by per-controller
                                   <code>"altimeters"</code> and overrides the facility-level
                                   <code>"facility_adaptations"."lists"."ssa"."altimeters"</code> setting.</td>
+                              </tr>
+                              <tr>
+                                <td>"altitude_range"</td>
+                                <td>Array of two numbers</td>
+                                <td>The altitude range of the airspace of controllers in this area, given as [low, high]
+                                  in feet; see the top-level <a href="#fe-config-common">"altitude_range"</a>.
+                                  The order of precedence is "controllers", then the scenario's "altitude_range",
+                                  then this, then the top-level "altitude_range" in the facility configuration.</td>
                               </tr>
                               <tr>
                                 <td>"system_altimeter"</td>
@@ -1761,6 +1780,14 @@
                                   A controller that specifies any of the three takes both of its filters from its own
                                   settings, ignoring the ones in <a href="#fe-scenarios">"scenarios"</a>; a filter that
                                   is not specified lets everything through.</td>
+                              </tr>
+                              <tr>
+                                <td>"altitude_range"</td>
+                                <td>Array of two numbers</td>
+                                <td>The altitude range of the controller's airspace, given as [low, high] in feet; see
+                                  the top-level <a href="#fe-config-common">"altitude_range"</a>.
+                                  This takes highest priority, overriding the scenario's "altitude_range",
+                                  the "areas" altitude range, and the top-level altitude range.</td>
                               </tr>
                               <tr>
                                 <td>"beacon_code_blocks"</td>
@@ -6150,6 +6177,14 @@
                       <code>"ldb_altitude_limits"</code>. A filter that is not specified lets everything through.
                       These are overridden entirely by any of the three specified for the controller in
                       <a href="#fe-config-common">"controllers"</a>.</td>
+                  </tr>
+                  <tr>
+                    <td>"altitude_range"</td>
+                    <td>Array of two numbers</td>
+                    <td>(<i>Optional</i>) The altitude range of the controllers' airspace in this scenario, given as
+                      [low, high] in feet; see the top-level <a href="#fe-config-common">"altitude_range"</a> in the
+                      facility configuration. This overrides the "areas" altitude range and the top-level one, but is
+                      itself overridden by any altitude range specified in <a href="#fe-config-common">"controllers"</a>.</td>
                   </tr>
                   <tr>
                     <td>"arrival_runways"</td>
