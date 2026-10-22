@@ -109,11 +109,13 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 	return regions
 }
 
-// pruneAirportFilters removes the filter regions for airports the scenario
-// doesn't use. A facility's adaptation covers all of its airports but a
-// scenario generally uses only a few of them; the rest are just clutter in
-// the processing areas list. A region that doesn't cover any of the
-// facility's airports (e.g. a facility-wide suppression area) is always kept.
+// pruneAirportFilters removes the default filter regions vice drew around
+// airports the scenario doesn't use. Every airport the adaptation leaves
+// uncovered gets them but a scenario generally uses only a few; the rest
+// are just clutter in the processing areas list. Adapted regions are
+// always kept. The airports an adapted region covers don't tell which
+// airport it serves: a suppression area along a final may start beyond the
+// field and take in some other airport farther out.
 //
 // Which airports count depends on what the filter does. Alerting and
 // acquisition are only of interest where the scenario has IFR traffic.
@@ -141,6 +143,9 @@ func pruneAirportFilters(fa *sim.FacilityAdaptation, airports []av.ICAOAirportCo
 
 	prune := func(regions *sim.FilterRegions, active map[av.ICAOAirportCode]bool) {
 		*regions = util.FilterSlice(*regions, func(r sim.FilterRegion) bool {
+			if !r.Default {
+				return true
+			}
 			covered := false
 			for _, name := range airports {
 				ap, ok := db.DB.Airports[name]
