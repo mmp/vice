@@ -205,11 +205,12 @@ func describeRestrictions(wps []av.Waypoint) string {
 }
 
 // TestAdjustRouteForTerrain checks the restrictions a VFR route is given to
-// keep it above the terrain. Over flat ground the flight keeps the clearance
-// above it from 3nm after departure to 5nm before the arrival, and needs
-// waypoints only where that starts and ends. Ahead of a ridge it has to
-// climb, at no more than vfrClimbGradient, to be above the ridge's floor
-// before it gets there, and it stays up until it is past the ridge.
+// keep it above the terrain. Over flat ground the flight keeps the full
+// clearance above it from 3nm after departure, needing a waypoint only where
+// that starts, and steps down through the shrinking clearance over the last
+// 5nm before the arrival. Ahead of a ridge it has to climb, at no more than
+// vfrClimbGradient, to be above the ridge's floor before it gets there, and
+// it stays up until it is past the ridge.
 func TestAdjustRouteForTerrain(t *testing.T) {
 	db.InitDB()
 	const cruise = 6500
@@ -233,14 +234,14 @@ func TestAdjustRouteForTerrain(t *testing.T) {
 		{
 			name:    "flat",
 			terrain: flat,
-			want:    "A/6500+ _terrain1@1500/1500+ B/6500+ C/1500-6500 _terrain2@1500/1500+ D/6500-",
+			want:    "A/6500+ _terrain1@1500/1500+ B/6500+ C/1500-6500 _terrain2@1500/1500+ _terrain3@1000/1000+ _terrain4@500/500+ D/6500-",
 		},
 		{
 			name:    "ridge",
 			terrain: ridge,
 			want: "A/6500+ _terrain1@2000/2000+ _terrain2@2500/2500+ _terrain3@3000/3000+ _terrain4@3500/3500+ " +
 				"_terrain5@4000/4000+ _terrain6@4500/4500+ B/6500+ _terrain7@5000/5000+ _terrain8@5500/5500+ " +
-				"_terrain9@5500/5500+ C/1500-6500 _terrain10@1500/1500+ D/6500-",
+				"_terrain9@5500/5500+ C/1500-6500 _terrain10@1500/1500+ _terrain11@1000/1000+ _terrain12@500/500+ D/6500-",
 		},
 	} {
 		if got := describeRestrictions(adjust(tc.terrain)); got != tc.want {

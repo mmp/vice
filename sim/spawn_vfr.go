@@ -45,21 +45,40 @@ const (
 // the source data includes trees and buildings.
 const vfrDepartureClimbout = 1
 
-// vfrClearanceApplies reports whether a VFR flight dDep nm from its departure
-// airport and dArr nm from its arrival airport keeps vfrTerrainClearance
-// above the terrain. It doesn't near either field, where the flight is
-// climbing out or descending to land.
-func vfrClearanceApplies(dDep, dArr float32) bool {
-	return dDep > 3 && dArr > 5
+// Near its fields a VFR flight is climbing out or descending to land and
+// keeps less than the full clearance above the terrain: none out to
+// vfrDepartureExempt nm from its departure airport or vfrArrivalExempt nm
+// from its arrival airport, then more in proportion to the distance, up to
+// the full clearance at vfrDepartureRamp and vfrArrivalRamp nm.
+const (
+	vfrDepartureExempt = 3
+	vfrDepartureRamp   = 3
+	vfrArrivalExempt   = 1.5
+	vfrArrivalRamp     = 5
+)
+
+// vfrClearanceScale returns the share of the full clearance above the terrain
+// that a VFR flight keeps dDep nm from its departure airport and dArr nm from
+// its arrival airport.
+func vfrClearanceScale(dDep, dArr float32) float32 {
+	ramp := func(d, exempt, full float32) float32 {
+		if d <= exempt {
+			return 0
+		} else if d >= full {
+			return 1
+		}
+		return (d - exempt) / (full - exempt)
+	}
+	return min(ramp(dDep, vfrDepartureExempt, vfrDepartureRamp), ramp(dArr, vfrArrivalExempt, vfrArrivalRamp))
 }
 
 // vfrFloor returns the lowest altitude a VFR flight from depap to arrap may
 // be at p. It returns false on the departure runway and within
 // vfrDepartureClimbout of it, where the flight is still taking off or
-// climbing out and nothing is required. Out to the distances in
-// vfrClearanceApplies the flight must only be above the terrain; beyond them
-// it keeps the clearance vfrClearance gives. Near the fields, nothing keeps
-// it clear of towers and antennas, which aren't in the terrain data.
+// climbing out and nothing is required. Elsewhere it keeps the share of the
+// clearance vfrClearance gives that vfrClearanceScale allows. Near the
+// fields, nothing keeps it clear of towers and antennas, which aren't in the
+// terrain data.
 func (s *Sim) vfrFloor(p math.Point2LL, depap, arrap db.Airport) (int, bool) {
 	takeoff, nmPerLongitude := s.vfrTakeoff(depap), s.State.NmPerLongitude
 	if math.PointSegmentDistance(math.LL2NM(p, nmPerLongitude), math.LL2NM(takeoff[0], nmPerLongitude),
@@ -67,10 +86,11 @@ func (s *Sim) vfrFloor(p math.Point2LL, depap, arrap db.Airport) (int, bool) {
 		return 0, false
 	}
 	terrain := s.terrain.HighestTerrain(p)
-	if vfrClearanceApplies(math.NMDistance2LL(p, depap.Location), math.NMDistance2LL(p, arrap.Location)) {
-		return terrain + s.vfrClearance(p, terrain), true
+	scale := vfrClearanceScale(math.NMDistance2LL(p, depap.Location), math.NMDistance2LL(p, arrap.Location))
+	if scale == 0 {
+		return terrain, true
 	}
-	return terrain, true
+	return terrain + int(scale*float32(s.vfrClearance(p, terrain))), true
 }
 
 // vfrClearance returns how far above the terrain at p a VFR flight stays en
