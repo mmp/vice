@@ -29,6 +29,7 @@
   - EMERG CHECK and POS CHECK each have their own view, so both can be displayed
   - Fixed a number of differences between the toolbars and the manual
   - Dwell emphasis brightens and boxes the FDB or paired LDB under the cursor by the DWELL setting; clicking the aircraft ID locks it on
+  - ALTIM SET and WX REPORT entries and DEPT LIST sublists can be torn off onto the scope by their gold bars
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - Fixed a few bugs with automatically generated ATPA volumes

@@ -287,9 +287,11 @@ type toolbarState struct {
 	press   toolbarPress
 	drag    *toolbarDrag
 	// deleting is set while the DELETE TEAROFF function is active, with
-	// the torn-off buttons picked for deletion in selected.
-	deleting bool
-	selected map[string]struct{}
+	// the torn-off buttons and view entries picked for deletion in
+	// selected and selectedEntries.
+	deleting        bool
+	selected        map[string]struct{}
+	selectedEntries map[viewEntry]struct{}
 }
 
 func (tb *toolbarState) instances() []*toolbarInstance {
@@ -1130,20 +1132,20 @@ func (ep *Scope) placeToolbarDrag(ctx *scope.Context) {
 	ctx.Platform.EndCaptureMouse()
 }
 
-// cancelToolbarGesture cancels a button being torn off or moved, the
-// DELETE TEAROFF function, and an override held by a press-and-hold
-// button, reporting whether any was under way.
+// cancelToolbarGesture cancels a button or view entry being torn off or
+// moved, the DELETE TEAROFF function, and an override held by a
+// press-and-hold button, reporting whether any was under way.
 func (ep *Scope) cancelToolbarGesture(ctx *scope.Context) bool {
 	tb := &ep.toolbar
 	if tb.press.down && tb.press.override != noDBOverride {
 		ep.endToolbarPress(ctx)
 		return true
 	}
-	if tb.drag == nil && !tb.deleting {
+	if tb.drag == nil && ep.entryDrag == nil && !tb.deleting {
 		return false
 	}
-	if tb.drag != nil {
-		tb.drag = nil
+	if tb.drag != nil || ep.entryDrag != nil {
+		tb.drag, ep.entryDrag = nil, nil
 		ctx.Platform.EndCaptureMouse()
 	}
 	if tb.deleting {
@@ -1154,8 +1156,8 @@ func (ep *Scope) cancelToolbarGesture(ctx *scope.Context) bool {
 
 // toggleDeleteTearoffs starts the DELETE TEAROFF function, or ends it if
 // it is active. While it is active, a left click picks or unpicks a
-// torn-off button and a middle click deletes a torn-off button along with
-// the picked ones (2.5.1.2).
+// tear-off and a middle click deletes a tear-off along with the picked
+// ones (2.5.1.2, 2.5.2.2).
 func (ep *Scope) toggleDeleteTearoffs() {
 	tb := &ep.toolbar
 	if tb.deleting {
@@ -1164,6 +1166,7 @@ func (ep *Scope) toggleDeleteTearoffs() {
 	}
 	tb.deleting = true
 	tb.selected = make(map[string]struct{})
+	tb.selectedEntries = make(map[viewEntry]struct{})
 	ep.SetTemporaryCursor("EramDeletion", -1, "")
 }
 
@@ -1171,7 +1174,21 @@ func (ep *Scope) endDeleteTearoffs() {
 	tb := &ep.toolbar
 	tb.deleting = false
 	tb.selected = nil
+	tb.selectedEntries = nil
 	ep.ClearTemporaryCursor()
+}
+
+// deleteSelectedTearoffs deletes the tear-offs picked for deletion and
+// ends the DELETE TEAROFF function.
+func (ep *Scope) deleteSelectedTearoffs() {
+	tb := &ep.toolbar
+	for id := range tb.selected {
+		ep.removeTearoff(id)
+	}
+	for e := range tb.selectedEntries {
+		e.removeTearOff(ep)
+	}
+	ep.endDeleteTearoffs()
 }
 
 // clickWhileDeletingTearoffs handles a click while DELETE TEAROFF is
@@ -1187,10 +1204,7 @@ func (ep *Scope) clickWhileDeletingTearoffs(ctx *scope.Context, hit toolbarHit, 
 	id := pb.button.id
 	if c.clicked[platform.MouseButtonTertiary] {
 		ep.removeTearoff(id)
-		for id := range tb.selected {
-			ep.removeTearoff(id)
-		}
-		ep.endDeleteTearoffs()
+		ep.deleteSelectedTearoffs()
 		ep.syncTornOff()
 		ep.layoutToolbars(ctx)
 		tb.hover = toolbarHit{}
@@ -1217,8 +1231,8 @@ func (ep *Scope) drawToolbar(ctx *scope.Context, transforms scope.Transformation
 }
 
 // drawTearoffs draws the torn-off buttons on the scope, the raised
-// toolbars over them, a button being torn off or moved, and the toolbar
-// control button over everything.
+// toolbars over them, a button or view entry being torn off or moved, and
+// the toolbar control button over everything.
 func (ep *Scope) drawTearoffs(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.SetScissorBounds(ctx.DrawExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
@@ -1232,6 +1246,7 @@ func (ep *Scope) drawTearoffs(ctx *scope.Context, transforms scope.Transformatio
 	}
 	ep.drawToolbars(ctx, cb, true)
 	ep.drawToolbarDragPreview(ctx, cb)
+	ep.drawEntryDragPreview(ctx, cb)
 	ep.drawPlacedInstance(ctx, cb, &l.control)
 	cb.ResetState()
 }

@@ -104,6 +104,9 @@ type Preferences struct {
 		Col            int              // 1-4 columns
 		Font           int              // 1-3
 		Bright         scope.Brightness // 0-100
+		// TearOffs holds where entries have been torn off to, by ICAO
+		// code.
+		TearOffs map[string]math.Point2LL
 	}
 
 	// WX view preferences
@@ -116,6 +119,9 @@ type Preferences struct {
 		Lines          int
 		Font           int              // 1-3
 		Bright         scope.Brightness // 0-100
+		// TearOffs holds where entries have been torn off to, by ICAO
+		// code.
+		TearOffs map[string]math.Point2LL
 	}
 
 	// MCA (Message Composition Area) preferences
@@ -236,6 +242,8 @@ type Preferences struct {
 		// it is empty when they are in fix name order.
 		SublistOrder       []string
 		SuppressedSublists []string
+		// TearOffs holds where sublists have been torn off to, by name.
+		TearOffs map[string]math.Point2LL
 	}
 
 	// StatusView's text is drawn at the MCA's brightness (4.3.4.2).

@@ -70,7 +70,7 @@ type (
 		disabledText                  renderer.RGB
 	}
 	badgePalette struct {
-		fill, border renderer.RGB
+		fill, torn, border renderer.RGB
 	}
 	crrPalette struct {
 		panelButtonBackground, panelBorder, swatchHighlight renderer.RGB
@@ -195,6 +195,7 @@ var colors = struct {
 	},
 	badge: badgePalette{
 		fill:   renderer.RGB{R: 159.0 / 255.0, G: 163.0 / 255.0, B: 9.0 / 255.0},
+		torn:   renderer.RGB{R: 132.0 / 255.0, G: 132.0 / 255.0, B: 132.0 / 255.0},
 		border: renderer.RGB{R: .5, G: .5, B: .5},
 	},
 	crr: crrPalette{
@@ -389,6 +390,11 @@ type Scope struct {
 	WXReportStations []av.ICAOAirportCode `json:"WXReportStations,omitempty"`
 	wxScroll         ViewScrollState
 	wxSelect         ViewSelectionState
+
+	// The view entries torn off onto the scope, as drawn this frame, and
+	// the one being torn off or moved.
+	placedTearOffs []placedTearOff
+	entryDrag      *entryDrag
 
 	// Check list view toggle state (session). Each slice is parallel to its
 	// check list's items, with true = row is highlighted ("checked off").
@@ -649,8 +655,10 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawSAAs(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
-	// The Circle Location Text Box is over the toolbar, so it takes its
-	// clicks first; the annotations are under it.
+	// An entry being torn off takes the click that places it. The Circle
+	// Location Text Box is over the toolbar, so it takes its clicks next;
+	// the annotations are under it.
+	ep.placeEntryDrag(ctx, transforms)
 	ep.handleCircleLocationMouse(ctx)
 	ep.handleToolbarInput(ctx)
 	ep.handleAnnotationMouse(ctx, transforms)
@@ -673,6 +681,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	// Draw toolbar and menus on top of the scope
 	cb.SetScissorBounds(ctx.DrawExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawToolbar(ctx, transforms, cb)
+	ep.drawEntryTearOffs(ctx, transforms, cb)
 
 	// Draw floating windows after toolbar so they render on top and appear in the same
 	// frame the toolbar button is clicked (toolbar sets Visible=true before this runs).
@@ -702,6 +711,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawTearoffs(ctx, transforms, cb)
 	ep.drawCircleLocationBox(ctx, transforms, cb)
 	if ctx.Mouse != nil {
+		ep.handleEntryTearOffMouse(ctx)
 		ep.handleSAAMouse(ctx, transforms)
 		ep.consumeMouseEvents(ctx, transforms)
 		ep.drawPausedAircraftState(ctx, transforms, cb)
@@ -783,10 +793,12 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.felSelect = ViewSelectionState{Selected: -1}
 	clear(ep.deptDeleted)
 	ep.deptScroll = ViewScrollState{}
-	ep.AltimSetAirports = nil
+	// The stations' tear-offs go with them.
+	ps := ep.currentPrefs()
+	ep.AltimSetAirports, ps.AltimSet.TearOffs = nil, nil
 	ep.altimSetScroll = ViewScrollState{}
 	ep.altimSetSelect = ViewSelectionState{Selected: -1}
-	ep.WXReportStations = nil
+	ep.WXReportStations, ps.WX.TearOffs = nil, nil
 	ep.wxScroll = ViewScrollState{}
 	ep.wxSelect = ViewSelectionState{Selected: -1}
 

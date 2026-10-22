@@ -143,10 +143,20 @@ type View struct {
 	// BodyHeight, or DrawBody when RowSource is set.
 	RowSource *ViewRowSource
 
-	// scroll / selectable are populated by applyRowSource (or left nil
-	// for non-RowSource views, which don't use them).
-	scroll     *ViewScrollConfig
-	selectable *ViewSelectable
+	// scroll / selectable / tearOffBars are populated by applyRowSource
+	// (or left nil for non-RowSource views, which don't use them).
+	scroll      *ViewScrollConfig
+	selectable  *ViewSelectable
+	tearOffBars func(body math.Extent2D) []tearOffBar
+}
+
+// tearOffBar is a gold tear-off bar in a view, a pick on which starts
+// tearing its entry off. origin is the top left of the entry's tear-off
+// when it lies over the entry.
+type tearOffBar struct {
+	entry  viewEntry
+	extent math.Extent2D
+	origin [2]float32
 }
 
 // ViewTitleButton is a labeled button in a view's title bar, such as the
@@ -182,13 +192,15 @@ type ViewRowSource struct {
 	VisibleRows int
 
 	// ReserveBadgeColumn reserves the leftmost badge column matching the
-	// title-bar M button; this doesn't need to be set if ShowBadges is true,
-	// only if we want to reserve badge space but not fill it.
+	// title-bar M button.
 	ReserveBadgeColumn bool
 
-	// ShowBadges draws the standard yellow fill in the badge column, scaled
-	// by Brightness. Implies ReserveBadgeColumn.
-	ShowBadges bool
+	// TearOffs are the tear-offs of the view's entries. While
+	// ShowTearOffBars is set, each row with a TearOff ID carries its
+	// entry's tear-off bar: gold while the entry can be torn off and gray
+	// once it has been (2.5.2).
+	TearOffs        *entryTearOffs
+	ShowTearOffBars bool
 
 	RowSpacing RowSpacing
 
@@ -255,8 +267,8 @@ type Badge struct {
 //	[ Badge ][ Label ]  [ Body... wraps to multiple lines if needed ]
 //	                    [ ...continuation aligned with Label start ]
 //
-// If Centered is true, Label is centered across the row width and Badge/Body
-// are ignored (used for group-header rows).
+// If Centered is true, Label is centered across the row width and Body is
+// ignored (used for group-header rows).
 // If Body is empty, the row has just Badge + Label.
 // If SpacerHeight > 0, the row renders nothing and just takes up that much
 // vertical space (used for inter-group gaps in CRR list mode).
@@ -279,7 +291,15 @@ type Row struct {
 	// row. Used by check list views for click-to-toggle highlighting.
 	Toggled bool
 
+	// Selected, when true, draws the row's text dark on a gray box, as a
+	// picked entry is drawn.
+	Selected bool
+
 	SpacerHeight float32
+
+	// TearOff is the ID of the list entry or sublist whose tear-off bar
+	// the row carries; it is empty for the entry's other rows.
+	TearOff string
 
 	// AfterDraw is called after the row content is drawn, with the row's
 	// full extent and the baseline position where the body text starts.
@@ -367,13 +387,14 @@ func titleBarMinWidth(titleFont *renderer.Font, title string, buttons []ViewTitl
 		func(b ViewTitleButton, w float32) float32 { return w + float32(len(b.Label))*cw + 2*titleBarButtonPad })
 }
 
-// defaultBadge builds the standard row badge: width and height matched to
-// the title-bar M button, with the given fill and the default border color.
-func defaultBadge(titleFont *renderer.Font, fill renderer.RGB) *Badge {
+// tearOffBadge builds a tear-off bar, sized to match the title-bar M
+// button: gold if its entry can be torn off and gray if it has been
+// (2.5.2).
+func tearOffBadge(titleFont *renderer.Font, b scope.Brightness, torn bool) *Badge {
 	return &Badge{
 		Width:  charWidth(titleFont),
 		Height: viewTitleHeight(titleFont),
-		Fill:   fill,
+		Fill:   b.ScaleRGB(util.Select(torn, colors.badge.torn, colors.badge.fill)),
 		Border: colors.badge.border,
 	}
 }
@@ -499,9 +520,10 @@ func drawScrollArrow(ld *renderer.ColoredLinesDrawBuilder, centerX, tipY float32
 // DrawView
 
 // DrawView renders a View, processing chrome and clicks in this order:
-// scroll bar → title-bar buttons → title-bar drag → body-tertiary menu →
-// body-primary drag → finalize in-progress drag. Each handler consumes its
-// click so Body sees only fall-through events.
+// scroll bar → title-bar buttons → title-bar drag → tear-off bars →
+// selectable rows → body-tertiary menu → body-primary drag → finalize
+// in-progress drag. Each handler consumes its click so Body sees only
+// fall-through events.
 func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer, v View) {
 	mouse := ctx.Mouse
 
@@ -681,6 +703,15 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 		}
 	}
 
+	var bars []tearOffBar
+	hoveredBar := -1
+	if v.tearOffBars != nil && bodyH > 0 {
+		bars = v.tearOffBars(bodyExtent)
+		if mouse != nil {
+			hoveredBar = slices.IndexFunc(bars, func(b tearOffBar) bool { return b.extent.Inside(mouse.Pos) })
+		}
+	}
+
 	// Click handling. Each branch consumes its click so Body sees only
 	// fall-through events. Pop-ups always win clicks within their extent —
 	// the popup is rendered on top, so a click in the overlap region belongs
@@ -726,6 +757,10 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 
 		case hasTitle && tb[1].hovered && ep.viewRepo.activeID == "":
 			startDrag()
+			ep.consumeMouseClick(mouse)
+
+		case hoveredBar >= 0 && ep.viewRepo.activeID == "":
+			ep.startEntryDrag(ctx, bars[hoveredBar].entry, bars[hoveredBar].origin)
 			ep.consumeMouseClick(mouse)
 
 		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
@@ -786,6 +821,9 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 			ld.AddLineLoop(colors.view.hoveredOutline, hovered.Extent.Expand(1).Corners())
 		}
 	}
+	if hoveredBar >= 0 {
+		ld.AddLineLoop(colors.view.hoveredOutline, bars[hoveredBar].extent.Expand(1).Corners())
+	}
 
 	// Scroll-bar visual (drawn after Body so it sits on top of body content).
 	if scrollVisible {
@@ -825,59 +863,20 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 			v.ID, rs.VisibleRows, rs.MaxCols))
 	}
 
-	font := ep.ERAMFont(rs.FontIndex)
-	lineH := lineHeight(font)
-	textColor := v.Brightness.ScaleRGB(colors.view.text)
-
-	// Reserve a badge column on the left when requested (ShowBadges implies
-	// ReserveBadgeColumn). The badge sits flush with body.P0 so it lines up
-	// with the title-bar M button.
-	badgeColumn := rs.ReserveBadgeColumn || rs.ShowBadges
-	leftChrome := float32(titleBarButtonPad)
-	if badgeColumn {
-		leftChrome = viewMButtonWidth(titleFont)
-	}
-	colWidth := leftChrome + float32(rs.ContentChars)*charWidth(font) + titleBarButtonPad
-
-	// Standard yellow badge, built once and shared by every row.
-	var badge *Badge
-	if rs.ShowBadges {
-		badge = defaultBadge(titleFont, v.Brightness.ScaleRGB(colors.badge.fill))
-	}
-
 	// Prototype RowList copied per column (each column needs its own Rows
-	// slice and SelectedRow). All other fields are shared.
-	proto := RowList{
-		Font:           font,
-		LineHeight:     lineH,
-		Width:          colWidth,
-		MaxLines:       rs.VisibleRows,
-		HighlightColor: rs.HighlightColor,
-		SelectedRow:    -1,
-	}
-	switch rs.RowSpacing {
-	case RowSpacingCompact:
-		proto.ListTopPad = lineH / 4
-		proto.ListBottomPad = lineH / 4
-		proto.BottomGap = lineH / 4
-	case RowSpacingAiry:
-		proto.TopPad = lineH / 2
-		proto.BottomGap = lineH / 2
-	}
+	// slice). All other fields are shared.
+	proto := ep.rowColumn(rs, titleFont)
+	colWidth := proto.Width
 
-	// Default the rows' text color and badge so simple callers can leave
-	// these zero on Row. This comes before counting the rows' lines, since
-	// the badge narrows the body that wraps.
-	rows := slices.Clone(rs.Rows)
-	for i := range rows {
-		r := &rows[i]
-		if r.Color == (renderer.RGB{}) {
-			r.Color = textColor
-		}
-		if badge != nil && r.Badge == nil && !r.Centered && !r.empty() {
-			r.Badge = badge
-		}
+	// Default the rows' text color and tear-off bars so simple callers can
+	// leave these zero on Row. This comes before counting the rows' lines,
+	// since the bar narrows the body that wraps.
+	var bar func(id string) *Badge
+	if rs.ShowTearOffBars && rs.TearOffs != nil {
+		gold, gray := tearOffBadge(titleFont, v.Brightness, false), tearOffBadge(titleFont, v.Brightness, true)
+		bar = func(id string) *Badge { return util.Select(viewEntry{rs.TearOffs, id}.tornOff(ep), gray, gold) }
 	}
+	rows := styleRows(rs.Rows, v.Brightness.ScaleRGB(colors.view.text), bar)
 
 	// Clamp the persisted scroll offset to the current line count, then
 	// skip the rows scrolled off the top. The first row shown may have its
@@ -913,11 +912,7 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 	}
 	for i, r := range rows[startIdx:] {
 		col := cols[min(i/rs.VisibleRows, actualCols-1)]
-		// Translate the global selected index into this column's local
-		// row index.
-		if startIdx+i == selectedIdx {
-			col.SelectedRow = len(col.Rows)
-		}
+		r.Selected = startIdx+i == selectedIdx
 		col.Rows = append(col.Rows, r)
 	}
 
@@ -941,7 +936,7 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 	v.Width = width
 	v.BodyHeight = bodyHeight
 	if v.BodyFont == nil {
-		v.BodyFont = font
+		v.BodyFont = proto.Font
 	}
 
 	colExt := func(c int, body math.Extent2D) math.Extent2D {
@@ -1005,6 +1000,72 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 			OnToggle: rs.OnRowToggle,
 		}
 	}
+
+	if bar != nil {
+		v.tearOffBars = func(body math.Extent2D) []tearOffBar {
+			var bars []tearOffBar
+			for c, col := range cols {
+				col.iterRows(colExt(c, body), func(i int, m measuredRow, rowExt math.Extent2D) {
+					r := col.Rows[i]
+					e := viewEntry{rs.TearOffs, r.TearOff}
+					if r.TearOff == "" || m.continued || e.tornOff(ep) {
+						return
+					}
+					// The tear-off's first row lies over this one.
+					bars = append(bars, tearOffBar{entry: e, extent: col.badgeExtent(r.Badge, rowExt),
+						origin: [2]float32{rowExt.P0[0], rowExt.P1[1] + col.ListTopPad}})
+				})
+			}
+			return bars
+		}
+	}
+}
+
+// rowColumn returns a RowList, without rows, that lays out a column of
+// rs's rows.
+func (ep *Scope) rowColumn(rs *ViewRowSource, titleFont *renderer.Font) RowList {
+	font := ep.ERAMFont(rs.FontIndex)
+	lineH := lineHeight(font)
+	// A badge column sits flush with the body's left edge so it lines up
+	// with the title-bar M button.
+	leftChrome := float32(titleBarButtonPad)
+	if rs.ReserveBadgeColumn {
+		leftChrome = viewMButtonWidth(titleFont)
+	}
+	l := RowList{
+		Font:           font,
+		LineHeight:     lineH,
+		Width:          leftChrome + float32(rs.ContentChars)*charWidth(font) + titleBarButtonPad,
+		MaxLines:       rs.VisibleRows,
+		HighlightColor: rs.HighlightColor,
+	}
+	switch rs.RowSpacing {
+	case RowSpacingCompact:
+		l.ListTopPad = lineH / 4
+		l.ListBottomPad = lineH / 4
+		l.BottomGap = lineH / 4
+	case RowSpacingAiry:
+		l.TopPad = lineH / 2
+		l.BottomGap = lineH / 2
+	}
+	return l
+}
+
+// styleRows returns a copy of rows, given color where they have none and,
+// if bar is non-nil, the tear-off bar it returns for each with a TearOff
+// ID.
+func styleRows(rows []Row, color renderer.RGB, bar func(id string) *Badge) []Row {
+	rows = slices.Clone(rows)
+	for i := range rows {
+		r := &rows[i]
+		if r.Color == (renderer.RGB{}) {
+			r.Color = color
+		}
+		if r.TearOff != "" && bar != nil {
+			r.Badge = bar(r.TearOff)
+		}
+	}
+	return rows
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1042,15 +1103,9 @@ type RowList struct {
 	// belong to its first line and go with it.
 	SkipLines int
 
-	// SelectedRow is the index *within this column's Rows* of the
-	// currently selected row, or -1 for none. applyRowSource computes
-	// this per-column from the global ViewSelectionState.Selected (a
-	// flat-Rows index).
-	SelectedRow int
-
 	// HighlightColor is the fill drawn behind rows with Row.Toggled=true
 	// (multi-row toggle highlight, e.g. check list views). Independent of
-	// SelectedRow/selection.
+	// Row.Selected.
 	HighlightColor renderer.RGB
 
 	// Populated by Measure.
@@ -1272,11 +1327,6 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 	// lineSlack centers each text line in its line cell so the rendered
 	// text has equal slack above and below.
 	lineSlack := (l.LineHeight - by) / 2
-	// Badge vertical offset from baseY to the "0" glyph's ink center —
-	// at larger fonts the layout cell has noticeably more space below the
-	// glyph than the badge does, so we align to the ink rather than the cell.
-	inkExt := l.Font.InkBounds("0", 0)
-	badgeYOffset := (inkExt.P0[1] + inkExt.P1[1]) / 2
 	extents := make([]math.Extent2D, l.visibleCount)
 
 	l.iterRows(body, func(i int, m measuredRow, rowExt math.Extent2D) {
@@ -1284,6 +1334,11 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		r := l.Rows[i]
 		if r.SpacerHeight > 0 {
 			return
+		}
+		if r.Badge != nil && !m.continued {
+			e := l.badgeExtent(r.Badge, rowExt)
+			addQuad(b.Trid, e, r.Badge.Border)
+			addQuad(b.Trid, e.Expand(-1), r.Badge.Fill)
 		}
 		contentTop := rowExt.P1[1] - l.TopPad
 		style := renderer.TextStyle{Font: l.Font, Color: r.Color}
@@ -1300,9 +1355,6 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 		}
 
 		baseY := contentTop - lineSlack
-		if r.Badge != nil && !m.continued {
-			drawBadge(b, r.Badge, body.P0[0], baseY+badgeYOffset)
-		}
 		labelX, bodyX := l.rowContentLayout(r, body)
 
 		// Toggle highlight: a clean bar across the full row extent, drawn
@@ -1313,7 +1365,7 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 
 		// Selection highlight is drawn behind the text, so compute the
 		// tight ink box first and recolor style before the draw pass.
-		if i == l.SelectedRow {
+		if r.Selected {
 			ink := l.inkUnionOf(r, m, labelX, bodyX, baseY)
 			if !ink.IsEmpty() {
 				addQuad(b.Trid, ink.Expand(1), colors.popup.backgroundGrey)
@@ -1331,16 +1383,19 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 	return extents
 }
 
-// drawBadge renders the badge starting at startX, centered vertically on
-// yCenter, with a 1 px-inset fill quad inside the border.
-func drawBadge(b *ViewBuilders, badge *Badge, startX, yCenter float32) {
-	x0 := startX + titleBarButtonPad
-	border := math.Extent2D{
-		P0: [2]float32{x0, yCenter - badge.Height/2},
-		P1: [2]float32{x0 + badge.Width, yCenter + badge.Height/2},
+// badgeExtent returns where a badge goes on the row with extent rowExt:
+// at its left, centered vertically on its first line's "0" glyph ink. At
+// larger fonts the layout cell has noticeably more space below the glyph
+// than the badge does, so it is aligned to the ink rather than the cell.
+func (l *RowList) badgeExtent(badge *Badge, rowExt math.Extent2D) math.Extent2D {
+	lineSlack := (l.LineHeight - cellHeight(l.Font)) / 2
+	ink := l.Font.InkBounds("0", 0)
+	y := rowExt.P1[1] - l.TopPad - lineSlack + (ink.P0[1]+ink.P1[1])/2
+	x := rowExt.P0[0] + titleBarButtonPad
+	return math.Extent2D{
+		P0: [2]float32{x, y - badge.Height/2},
+		P1: [2]float32{x + badge.Width, y + badge.Height/2},
 	}
-	addQuad(b.Trid, border, badge.Border)
-	addQuad(b.Trid, border.Expand(-1), badge.Fill)
 }
 
 // wrapWords word-wraps text so the first line fits firstChars and continuation

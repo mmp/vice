@@ -93,6 +93,44 @@ func formatFiledAltitude(fp *sim.FlightPlan) string {
 	return strconv.Itoa(fp.RequestedAltitude / 100)
 }
 
+// deptFlightRow returns a flight's row in its sublist: its AID and filed
+// altitude.
+func deptFlightRow(fp *sim.FlightPlan) Row {
+	return Row{Label: fmt.Sprintf("%-7s %3s", fp.ACID, formatFiledAltitude(fp))}
+}
+
+// labelChars returns the length of the longest of the rows' labels.
+func labelChars(rows []Row) int {
+	return util.ReduceSlice(rows, 0, func(r Row, n int) int { return max(n, len(r.Label)) })
+}
+
+// deptListTearOffs are the tear-offs of the DEPT LIST view's sublists, by
+// sublist name. A torn-off sublist is headed by its name and the view's
+// title after its bar (figures 2-19, 13-55). It stays on the scope while
+// its airport has no proposed departures and so no sublist in the view.
+var deptListTearOffs = entryTearOffs{
+	locations: func(ep *Scope) *map[string]math.Point2LL { return &ep.currentPrefs().DeptList.TearOffs },
+	tearOff: func(ep *Scope, ctx *scope.Context, name string) (entryTearOff, bool) {
+		dl := &ep.currentPrefs().DeptList
+		rows := []Row{{Label: name + " DEPT", TearOff: name}}
+		sublists := ep.deptSublists(ctx)
+		if i := slices.IndexFunc(sublists, func(s deptSublist) bool { return s.name == name }); i >= 0 {
+			rows = append(rows, util.MapSlice(sublists[i].flights, deptFlightRow)...)
+		}
+		return entryTearOff{
+			ViewRowSource: ViewRowSource{
+				Rows:               rows,
+				FontIndex:          dl.Font,
+				ContentChars:       labelChars(rows),
+				ReserveBadgeColumn: true,
+				RowSpacing:         RowSpacingCompact,
+			},
+			brightness: dl.Bright,
+			border:     dl.ShowBorder,
+		}, true
+	},
+}
+
 // drawDeptListView draws the Departure List view: each displayed sublist's
 // heading, with its tear-off bar if TEAROFF is on, above its flights'
 // AIDs and filed altitudes. A pick on a heading suppresses its sublist.
@@ -110,13 +148,6 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 		return !slices.ContainsFunc(flights, func(fp *sim.FlightPlan) bool { return fp.ACID == acid })
 	})
 
-	font := ep.ERAMFont(dl.Font)
-	ink := font.InkBounds("0", 0)
-	badge := defaultBadge(ep.ERAMFont(2), dl.Bright.ScaleRGB(colors.badge.fill))
-	drawTearoffBar := func(row math.Extent2D, origin [2]float32, b *ViewBuilders) {
-		drawBadge(b, badge, row.P0[0], origin[1]+(ink.P0[1]+ink.P1[1])/2)
-	}
-
 	var rows []Row
 	// headings parallels rows, with the name of the sublist that each
 	// heading row heads.
@@ -125,14 +156,10 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 		if i > 0 {
 			rows, headings = append(rows, Row{}), append(headings, "")
 		}
-		heading := Row{Label: s.name, Centered: true}
-		if dl.ShowIndicators {
-			heading.AfterDraw = drawTearoffBar
-		}
-		rows, headings = append(rows, heading), append(headings, s.name)
+		rows = append(rows, Row{Label: s.name, Centered: true, TearOff: s.name})
+		headings = append(headings, s.name)
 		for _, fp := range s.flights {
-			rows = append(rows, Row{Label: fmt.Sprintf("%-7s %3s", fp.ACID, formatFiledAltitude(fp))})
-			headings = append(headings, "")
+			rows, headings = append(rows, deptFlightRow(fp)), append(headings, "")
 		}
 	}
 
@@ -151,9 +178,11 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 		RowSource: &ViewRowSource{
 			Rows:                    rows,
 			FontIndex:               dl.Font,
-			ContentChars:            util.ReduceSlice(rows, 0, func(r Row, n int) int { return max(n, len(r.Label)) }),
+			ContentChars:            labelChars(rows),
 			MaxCols:                 1,
 			VisibleRows:             visibleLines(dl.Lines, len(rows)),
+			TearOffs:                &deptListTearOffs,
+			ShowTearOffBars:         dl.ShowIndicators,
 			RowSpacing:              RowSpacingCompact,
 			ScrollState:             &ep.deptScroll,
 			CenterColumnsInTitleBar: true,

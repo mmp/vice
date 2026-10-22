@@ -33,16 +33,12 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 		return
 	}
 
-	listFont := ep.ERAMFont(ps.AltimSet.Font)
-	textWidth := func(s string) float32 { return listFont.LayoutBounds(s, 0).Width() }
-	textColor := ep.viewTextColor(ps.AltimSet.Bright)
-
 	var rows []Row
 	for _, icao := range ep.AltimSetAirports {
 		if icao == "" {
 			rows = append(rows, Row{})
 		} else {
-			rows = append(rows, altimRow(ctx, icao, textColor, listFont, textWidth))
+			rows = append(rows, ep.altimRow(ctx, icao))
 		}
 	}
 
@@ -59,11 +55,12 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 		RowSource: &ViewRowSource{
 			Rows:                  rows,
 			FontIndex:             ps.AltimSet.Font,
-			ContentChars:          len("MMMM   1353 999  "),
+			ContentChars:          altimSetEntryChars,
 			MaxCols:               ps.AltimSet.Col,
 			VisibleRows:           ps.AltimSet.Lines,
 			ReserveBadgeColumn:    true,
-			ShowBadges:            ps.AltimSet.ShowIndicators,
+			TearOffs:              &altimSetTearOffs,
+			ShowTearOffBars:       ps.AltimSet.ShowIndicators,
 			RowSpacing:            RowSpacingCompact,
 			ScrollState:           &ep.altimSetScroll,
 			EmptyKeepsColumnWidth: true,
@@ -84,10 +81,39 @@ func (ep *Scope) addAltimSetStation(icao av.ICAOAirportCode) {
 	}
 }
 
-// removeAltimSetEntry removes the idx'th entry of the ALTIM SET view. Its
-// position stays empty, so the entries after it don't move (4.2.1.1.2);
-// empty positions after the last entry are dropped so the view contracts.
+// altimSetEntryChars is the width of an ALTIM SET entry.
+const altimSetEntryChars = len("MMMM   1353 999  ")
+
+// altimSetTearOffs are the tear-offs of the ALTIM SET view's entries, by
+// ICAO code.
+var altimSetTearOffs = entryTearOffs{
+	locations: func(ep *Scope) *map[string]math.Point2LL { return &ep.currentPrefs().AltimSet.TearOffs },
+	tearOff: func(ep *Scope, ctx *scope.Context, id string) (entryTearOff, bool) {
+		icao := av.ICAOAirportCode(id)
+		if !slices.Contains(ep.AltimSetAirports, icao) {
+			return entryTearOff{}, false
+		}
+		ps := ep.currentPrefs()
+		return entryTearOff{
+			ViewRowSource: ViewRowSource{
+				Rows:               []Row{ep.altimRow(ctx, icao)},
+				FontIndex:          ps.AltimSet.Font,
+				ContentChars:       altimSetEntryChars,
+				ReserveBadgeColumn: true,
+				RowSpacing:         RowSpacingCompact,
+			},
+			brightness: ps.AltimSet.Bright,
+			border:     ps.AltimSet.ShowBorder,
+		}, true
+	},
+}
+
+// removeAltimSetEntry removes the idx'th entry of the ALTIM SET view and
+// its tear-off. Its position stays empty, so the entries after it don't
+// move (4.2.1.1.2); empty positions after the last entry are dropped so
+// the view contracts.
 func (ep *Scope) removeAltimSetEntry(idx int) {
+	delete(ep.currentPrefs().AltimSet.TearOffs, string(ep.AltimSetAirports[idx]))
 	ep.AltimSetAirports[idx] = ""
 	n := len(ep.AltimSetAirports)
 	for n > 0 && ep.AltimSetAirports[n-1] == "" {
@@ -98,16 +124,19 @@ func (ep *Scope) removeAltimSetEntry(idx int) {
 
 // altimRow builds one ALTIM SET row from an airport's METAR (or a missing-data
 // placeholder). The altimeter portion is underlined via AfterDraw when below
-// the standard 29.92 inHg. The badge column and row color are filled in by
+// the standard 29.92 inHg. The tear-off bar and row color are filled in by
 // the View; this function just constructs the row text and the AfterDraw
-// underline (which captures `color` for the line).
-func altimRow(ctx *scope.Context, icao av.ICAOAirportCode, color renderer.RGB,
-	font *renderer.Font, textWidth func(string) float32) Row {
+// underline.
+func (ep *Scope) altimRow(ctx *scope.Context, icao av.ICAOAirportCode) Row {
+	ps := ep.currentPrefs()
+	font := ep.ERAMFont(ps.AltimSet.Font)
+	textWidth := func(s string) float32 { return font.LayoutBounds(s, 0).Width() }
+	color := ep.viewTextColor(ps.AltimSet.Bright)
 
 	displayID := db.AirportDisplayId(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
-		return Row{ID: string(icao), Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
+		return Row{ID: string(icao), TearOff: string(icao), Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
 	}
 	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
 	prefix := fmt.Sprintf("%-4s  ", displayID)
@@ -116,7 +145,7 @@ func altimRow(ctx *scope.Context, icao av.ICAOAirportCode, color renderer.RGB,
 	altField := fmt.Sprintf("%3s", altStr)
 	line := prefix + timeField + mid + altField + "  "
 
-	row := Row{ID: string(icao), Body: line}
+	row := Row{ID: string(icao), TearOff: string(icao), Body: line}
 	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)
@@ -672,10 +701,7 @@ func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations
 		return
 	}
 
-	var rows []Row
-	for _, icao := range ep.WXReportStations {
-		rows = append(rows, Row{ID: string(icao), Label: db.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)})
-	}
+	rows := util.MapSlice(ep.WXReportStations, func(icao av.ICAOAirportCode) Row { return wxRow(ctx, icao) })
 
 	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.WX.Position,
@@ -690,19 +716,59 @@ func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations
 		RowSource: &ViewRowSource{
 			Rows:               rows,
 			FontIndex:          ps.WX.Font,
-			ContentChars:       24,
+			ContentChars:       wxEntryChars,
 			MaxCols:            1,
 			VisibleRows:        ps.WX.Lines,
 			ReserveBadgeColumn: true,
-			ShowBadges:         ps.WX.ShowIndicators,
+			TearOffs:           &wxTearOffs,
+			ShowTearOffBars:    ps.WX.ShowIndicators,
 			RowSpacing:         RowSpacingAiry,
 			ScrollState:        &ep.wxScroll,
 			SelectableState:    &ep.wxSelect,
-			OnRowDelete: func(idx int) {
-				ep.WXReportStations = slices.Delete(ep.WXReportStations, idx, idx+1)
-			},
+			OnRowDelete:        ep.removeWXReportStation,
 		},
 	})
+}
+
+// wxEntryChars is the width of a WX REPORT entry; its observation wraps
+// to fit.
+const wxEntryChars = 24
+
+// wxTearOffs are the tear-offs of the WX REPORT view's entries, by ICAO
+// code. A torn-off entry stays displayed while the view is suppressed
+// (4.2.20.2).
+var wxTearOffs = entryTearOffs{
+	locations: func(ep *Scope) *map[string]math.Point2LL { return &ep.currentPrefs().WX.TearOffs },
+	tearOff: func(ep *Scope, ctx *scope.Context, id string) (entryTearOff, bool) {
+		icao := av.ICAOAirportCode(id)
+		if !slices.Contains(ep.WXReportStations, icao) {
+			return entryTearOff{}, false
+		}
+		ps := ep.currentPrefs()
+		return entryTearOff{
+			ViewRowSource: ViewRowSource{
+				Rows:               []Row{wxRow(ctx, icao)},
+				FontIndex:          ps.WX.Font,
+				ContentChars:       wxEntryChars,
+				ReserveBadgeColumn: true,
+				RowSpacing:         RowSpacingAiry,
+			},
+			brightness: ps.WX.Bright,
+			border:     ps.WX.ShowBorder,
+		}, true
+	},
+}
+
+// removeWXReportStation removes the idx'th station of the WX REPORT view
+// and its tear-off.
+func (ep *Scope) removeWXReportStation(idx int) {
+	delete(ep.currentPrefs().WX.TearOffs, string(ep.WXReportStations[idx]))
+	ep.WXReportStations = slices.Delete(ep.WXReportStations, idx, idx+1)
+}
+
+// wxRow returns a station's entry in the WX REPORT view.
+func wxRow(ctx *scope.Context, icao av.ICAOAirportCode) Row {
+	return Row{ID: string(icao), TearOff: string(icao), Label: db.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)}
 }
 
 // wxMetarBody returns the row body text for a station: the wrappable METAR

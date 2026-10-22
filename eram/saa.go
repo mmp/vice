@@ -269,8 +269,9 @@ func (ep *Scope) drawSAATearOff(trid *renderer.ColoredTrianglesDrawBuilder, td *
 
 // handleSAAMouse places a label being torn off at the next click, and
 // takes clicks on torn-off labels: with DELETE TEAROFF active, a click
-// deletes the tear-off, and otherwise one offers SUPPRESS LABEL/ALT, which
-// sets the SAA's current filter to its boundary alone (4.2.18.3).
+// deletes the tear-off, and a middle click the picked tear-offs along
+// with it; otherwise one offers SUPPRESS LABEL/ALT, which sets the SAA's
+// current filter to its boundary alone (4.2.18.3).
 func (ep *Scope) handleSAAMouse(ctx *scope.Context, transforms scope.Transformations) {
 	mouse := ctx.Mouse
 	primary, tertiary := ep.mousePrimaryClicked(mouse), ep.mouseTertiaryClicked(mouse)
@@ -295,7 +296,7 @@ func (ep *Scope) handleSAAMouse(ctx *scope.Context, transforms scope.Transformat
 			s.TearOff = math.Point2LL{}
 			ps.setSAASettings(id, s)
 			if tertiary {
-				ep.endDeleteTearoffs()
+				ep.deleteSelectedTearoffs()
 			}
 		} else {
 			hot := ep.saas[slices.IndexFunc(ep.saas, func(a saa) bool { return a.id == id })].hot

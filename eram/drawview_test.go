@@ -47,7 +47,7 @@ func TestRowListSkipLines(t *testing.T) {
 	font := ep.ERAMFont(2)
 	rows := wrappingRows(2)
 	l := RowList{Font: font, LineHeight: lineHeight(font), Width: float32(26) * charWidth(font),
-		Rows: rows, MaxLines: 4, SkipLines: 1, SelectedRow: -1}
+		Rows: rows, MaxLines: 4, SkipLines: 1}
 	l.Measure()
 
 	first, second := l.wrap(rows[0]), l.wrap(rows[1])

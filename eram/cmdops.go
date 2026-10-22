@@ -1422,7 +1422,7 @@ func handleWXReportAdd(ep *Scope, ctx *scope.Context, stations string) (CommandS
 // or removes it if it is already there.
 func toggleWXReportStation(ep *Scope, ctx *scope.Context, icao av.ICAOAirportCode) {
 	if i := slices.Index(ep.WXReportStations, icao); i >= 0 {
-		ep.WXReportStations = slices.Delete(ep.WXReportStations, i, i+1)
+		ep.removeWXReportStation(i)
 		return
 	}
 
