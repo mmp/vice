@@ -16,6 +16,7 @@
   - Point outs may be made to other facilities
   - Fixed a number of differences between the toolbars and the manual
   - Added support for dwell emphasis
+  - Data block menus open with the cursor on the FP pick area, the current value, or DELETE, and the AS view menu on TEMPLATE
   - `LC` shows the change in ground speed needed to cross the fix at the given time
   - `QF` shows routes in the NAS form, as in `KATL./.ROA205050..ROA..HAR..KPIT`
   - `QP <FLID>` switches another sector's track between an FDB and an LDB

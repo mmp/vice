@@ -8,6 +8,11 @@ import (
 	"slices"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
@@ -152,5 +157,65 @@ func TestSpeedMenuValues(t *testing.T) {
 			t.Errorf("Mach %v: got %d values from %v to %v; want %d from %v to %v", tc.mach, len(v), v[0],
 				v[len(v)-1], tc.n, tc.first, tc.last)
 		}
+	}
+}
+
+// A menu starts the cursor on the pick area the manual gives (4.2.1.3.1,
+// 16.1.1, 16.3), on the FP pick area or current value of the altitude and
+// speed menus, or else on the close button, and the held click that opened
+// the menu doesn't select that pick area.
+func TestMenuOpeningCursor(t *testing.T) {
+	type open func(ep *Scope, ctx *scope.Context, trk *sim.Track, host math.Extent2D)
+	openAltimSetMenu := func(ep *Scope, ctx *scope.Context, _ *sim.Track, host math.Extent2D) {
+		ep.popup = ep.makeViewMenu(ctx, "altim-set", 8,
+			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} })(host)
+	}
+	for _, tc := range []struct {
+		name string
+		open open
+		fp   sim.FlightPlan
+		row  int // 18-pixel menu row of the cursor; the title bar is row 0
+		left bool
+	}{
+		{"altitude FP", (*Scope).openAltitudeMenu, sim.FlightPlan{AssignedAltitude: 37000, InterimAlt: 29000}, 1, false},
+		// The pick list centers the current altitude on its fourth row.
+		{"altitude current", (*Scope).openAltitudeMenu, sim.FlightPlan{AssignedAltitude: 23000}, 6, true},
+		{"altitude none", (*Scope).openAltitudeMenu, sim.FlightPlan{}, 0, false},
+		{"heading current", (*Scope).openHeadingMenu, sim.FlightPlan{Scratchpad: "245"}, 5, false},
+		{"heading 30L", (*Scope).openHeadingMenu, sim.FlightPlan{Scratchpad: "60L"}, 4, true},
+		{"heading none", (*Scope).openHeadingMenu, sim.FlightPlan{}, 0, false},
+		{"free text", (*Scope).openFreeTextMenu, sim.FlightPlan{Scratchpad: "HELLO"}, 2, false},
+		{"speed current", (*Scope).openSpeedMenu, sim.FlightPlan{AssignedAltitude: 23000, SecondaryScratchpad: "S250"},
+			5, true},
+		{"speed none", (*Scope).openSpeedMenu, sim.FlightPlan{AssignedAltitude: 23000}, 0, false},
+		{"ALTIM SET", openAltimSetMenu, sim.FlightPlan{}, 8, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			ep := makeRowTestScope()
+			ctx := makeTrackTestHarness().ctx
+			ctx.DrawExtent = math.Extent2D{P1: [2]float32{1600, 900}}
+			ctx.Platform = warpingPlatform{}
+			fp := tc.fp
+			fp.ACID = "SWA3736"
+			trk := &sim.Track{RadarTrack: av.RadarTrack{ADSBCallsign: "SWA3736"}, FlightPlan: &fp}
+			ctx.Client.State.Tracks[trk.ADSBCallsign] = trk
+
+			host := math.Extent2D{P0: [2]float32{400, 400}, P1: [2]float32{460, 440}}
+			ctx.Mouse = &platform.MouseState{Pos: host.Center()}
+			ctx.Mouse.Down[platform.MouseButtonPrimary] = true
+			tc.open(ep, ctx, trk, host)
+			var cb renderer.CommandBuffer
+			ep.popup.draw(ep, ctx, scope.GetTransformations(ctx.DrawExtent, 45, math.Point2LL{-73, 40}, 100, 0), &cb)
+			if ep.popup == nil {
+				t.Fatal("the held opening click selected a pick area")
+			}
+
+			e, p := ep.popupExtent, ctx.Mouse.Pos
+			row, left := int((e.P1[1]-p[1])/18), p[0] < e.Center()[0]
+			if !e.Inside(p) || row != tc.row || left != tc.left {
+				t.Errorf("cursor at %v in menu %v: row %d, left %v; want row %d, left %v", p, e, row, left,
+					tc.row, tc.left)
+			}
+		})
 	}
 }

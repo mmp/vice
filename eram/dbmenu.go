@@ -26,6 +26,7 @@ import (
 // dbMenuBase carries the state shared by all datablock menus: which flight
 // the menu is for and where it is drawn.
 type dbMenuBase struct {
+	cursorPlacement
 	acid   sim.ACID
 	origin [2]float32
 }
@@ -67,10 +68,9 @@ const dbMenuItemH = float32(18)
 // altitudeMenuPopup is the FDB Altitude Menu, opened from Field B/C (line 2).
 type altitudeMenuPopup struct {
 	dbMenuBase
-	offset      int
-	local       bool // assign local interim altitude on selection
-	procedure   bool // assign procedure altitude on selection
-	initialized bool // scroll offset positioned on first draw
+	offset    int
+	local     bool // assign local interim altitude on selection
+	procedure bool // assign procedure altitude on selection
 }
 
 // altitudeMenuAlts is the pick list in hundreds of feet, descending: steps
@@ -151,8 +151,8 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 	current := fp.DataBlockAltitude() / 100 // hundreds of feet; 0 if none
 	interimAlt, interimType := fp.DisplayedInterimAltitude()
 
-	if !p.initialized {
-		p.initialized = true
+	first := p.firstDraw()
+	if first {
 		center := current
 		if center == 0 {
 			if state := ep.TrackState[trk.ADSBCallsign]; state != nil {
@@ -173,8 +173,9 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 	if fpRow {
 		// The Flight Plan Assigned Altitude pick area removes the interim or
 		// procedure altitude and the local interim altitude (8.6.1.2.c).
+		// The cursor starts on it, or else on the current altitude value.
 		rows = append(rows, MenuItem{
-			Label: fpLabel, BgColor: grey, Color: textC, Centered: true,
+			Label: fpLabel, BgColor: grey, Color: textC, Centered: true, PlaceCursor: first,
 			OnClick: func(_ MenuClickType) bool {
 				var spec sim.FlightPlanSpecifier
 				spec.InterimAlt.Set(0)
@@ -239,6 +240,7 @@ func (p *altitudeMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 
 		altCell := MenuGridCell{
 			Label: fmt.Sprintf("%03d", alt), Color: textC, Weight: 3, OnClick: assignAlt,
+			PlaceCursor: first && !fpRow && isCurrent,
 		}
 		if isCurrent {
 			altCell.BgColor = colors.menu.currentValue
@@ -289,7 +291,7 @@ type headingMenuPopup struct {
 	dbMenuBase
 	offset      int
 	lt, rt      bool // display left/right turn values
-	initialized bool
+	initialized bool // scroll offset positioned for the current turn mode
 }
 
 func (ep *Scope) openHeadingMenu(ctx *scope.Context, trk *sim.Track, dbMain math.Extent2D) {
@@ -387,6 +389,16 @@ func (p *headingMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.
 	valueRows := headingMenuRows(p.lt, p.rt)
 	current := headingMenuCurrentValue(fp.Scratchpad, p.lt, p.rt)
 
+	// The cursor starts on the current value or, for turns without one, on
+	// the 30 degree turn (16.1.1.1, 16.1.1.2).
+	var cursorValue string
+	if p.firstDraw() {
+		cursorValue = current
+		if cursorValue == "" && (p.lt || p.rt) {
+			cursorValue = "30" + util.Select(p.lt, "L", "R")
+		}
+	}
+
 	if !p.initialized {
 		p.initialized = true
 		p.offset = 0
@@ -432,6 +444,7 @@ func (p *headingMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.
 				if v == current {
 					cell.BgColor = colors.menu.currentValue
 				}
+				cell.PlaceCursor = v == cursorValue
 				cell.OnClick = assignHeading(v)
 			}
 			row = append(row, cell)
@@ -546,6 +559,7 @@ func (p *speedMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 
 	// The stored value with any +/- modifier stripped, e.g. "M72" or "S250".
 	currentValue := strings.TrimRight(fp.SecondaryScratchpad, "+-")
+	first := p.firstDraw()
 
 	values := speedMenuValues(p.mach)
 
@@ -606,8 +620,10 @@ func (p *speedMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 			label += mod
 			store += mod
 		}
+		// As in the altitude menu, the cursor starts on the current value.
 		cell := MenuGridCell{
 			Label: label, Color: textC,
+			PlaceCursor: first && isCurrent,
 			OnClick: func(_ MenuClickType) bool {
 				status, err := handleQSSpeed(ep, ctx, store, trk)
 				ep.applyCommandStatus(ctx, status, err)
@@ -721,7 +737,9 @@ func (p *freeTextMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope
 	rows := []MenuItem{
 		{Input: &MenuInput{Buf: &p.buf}},
 		{
+			// The cursor starts on the Free Form Delete pick area (16.3).
 			Label: "DELETE", Centered: true, BgColor: colors.popup.backgroundGrey, Color: colors.popup.text,
+			PlaceCursor: p.firstDraw(),
 			OnClick: func(_ MenuClickType) bool {
 				status, err := handleQSDeleteAll(ep, ctx, trk)
 				ep.applyCommandStatus(ctx, status, err)

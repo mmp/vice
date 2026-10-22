@@ -185,6 +185,7 @@ func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw
 // the view width depends on dynamic state (column count).
 type altimSetPopup struct {
 	popupBase
+	cursorPlacement
 }
 
 func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
@@ -204,7 +205,9 @@ func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tra
 		makeIntMenuItem(ep, &ps.AltimSet.Col, "COL", 1, 4, 1),
 		makeIntMenuItem(ep, &ps.AltimSet.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.AltimSet.Bright, "BRIGHT", 0, 100, 2),
-		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text},
+		// The cursor starts on TEMPLATE (4.2.1.3.1).
+		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text,
+			PlaceCursor: a.firstDraw()},
 	}
 
 	cfg := MenuConfig{

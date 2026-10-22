@@ -99,6 +99,20 @@ func (p popupBase) viewAnchor() (string, popupAnchorSide, float32) {
 	return p.viewID, p.anchor, p.pinX
 }
 
+// cursorPlacement records whether a menu has been drawn, so that it places
+// the cursor on the pick area it starts on (MenuItem.PlaceCursor) only on
+// its first draw.
+type cursorPlacement struct {
+	drawn bool
+}
+
+// firstDraw reports whether the menu is being drawn for the first time.
+func (c *cursorPlacement) firstDraw() bool {
+	first := !c.drawn
+	c.drawn = true
+	return first
+}
+
 // viewAnchoredPopup is implemented by pop-ups that pin a host view's edge.
 // DrawView checks for this on ep.popup to decide whether to override the
 // view's horizontal position.
@@ -153,6 +167,11 @@ type MenuItem struct {
 	// If Input is non-nil, this row renders as a text input area. Keyboard
 	// handling is the popup's responsibility (see keyboardPopup).
 	Input *MenuInput
+
+	// PlaceCursor moves the cursor onto a static row when it is drawn.
+	// Menus set it on their first draw to start the cursor on a pick area
+	// other than the close button that OpenPopupAt places it on.
+	PlaceCursor bool
 }
 
 // MenuSegment is a separately clickable run of text in a menu row, drawn in
@@ -200,6 +219,7 @@ type MenuGridCell struct {
 	// width (e.g. the altitude menu's interim T pick area, whose action
 	// includes the altitude to its left).
 	HoverSpansRow bool
+	PlaceCursor   bool                               // as MenuItem.PlaceCursor
 	OnClick       func(clickType MenuClickType) bool // return true = close menu
 }
 
@@ -379,7 +399,8 @@ type MenuConfig struct {
 // OpenPopupAt clamps originGuess so a menu with the given dimensions stays on
 // screen — preferring to flip to the left of hostExtent when the popup would
 // extend past the right edge of the pane — and warps the cursor to the center
-// of the title-bar close (X) button. The returned placement carries the
+// of the title-bar close (X) button, unless the menu then places it on a pick
+// area (MenuItem.PlaceCursor). The returned placement carries the
 // clamped origin plus the anchor side and pinned X that DrawView uses to
 // keep the host view's pinned edge flush with the pop-up as the view
 // resizes.
@@ -591,6 +612,7 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 	// Rows (static rows and scroll sections)
 	isFirstRow := true
 	result.RowExtents = make([]math.Extent2D, len(cfg.Rows))
+	var cursorTarget util.Optional[[2]float32]
 
 	for i, item := range cfg.Rows {
 		if item.SubRows != nil {
@@ -601,7 +623,7 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 			cursor = ep.drawMenuCellsRow(cursor, width, itemH, font, item.Cells, trid, ld, td, mouse, &result.RowExtents[i])
 		} else if item.Grid != nil {
 			// Scrollable value grid
-			cursor = ep.drawMenuGrid(cursor, width, itemH, font, item.Grid, trid, ld, td, mouse, &result.RowExtents[i])
+			cursor = ep.drawMenuGrid(cursor, width, itemH, font, item.Grid, trid, ld, td, mouse, &result.RowExtents[i], &cursorTarget)
 		} else if item.Input != nil {
 			// Text input row
 			cursor = ep.drawMenuInputRow(cursor, width, itemH, font, item.Input, trid, td, &result.RowExtents[i])
@@ -653,6 +675,9 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 			cursor = rp3
 			extent := math.Extent2D{P0: rp3, P1: rp1}
 			result.RowExtents[i] = extent
+			if item.PlaceCursor {
+				cursorTarget.Set(extent.Center())
+			}
 
 			// Row hover outlines
 			dimColor := bBorder.ScaleRGB(colors.menu.rowDimOutline)
@@ -672,6 +697,9 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 			}
 		}
 		isFirstRow = false
+	}
+	if cursorTarget.IsSet {
+		ctx.SetMousePosition(cursorTarget.Value)
 	}
 
 	// Custom content
@@ -707,11 +735,14 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 	// Row click handling (skip scroll rows - they handle their own clicks).
 	// Fires on initial press and then on hold-repeat once a row has been
 	// pressed continuously, mirroring the toolbar button behavior so that
-	// holding a BRIGHT-style row keeps incrementing.
+	// holding a BRIGHT-style row keeps incrementing. A press that began
+	// elsewhere doesn't fire: the click that opened the menu may still be
+	// held when the cursor is placed on a row.
 	if mouse != nil {
 		primaryDown := ep.mousePrimaryDown(mouse)
 		tertiaryDown := ep.mouseTertiaryDown(mouse)
-		if primaryDown || tertiaryDown {
+		clicked := ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)
+		if (primaryDown || tertiaryDown) && (clicked || ep.holdRepeat.fired) {
 			hitRow := -1
 			for i, ext := range result.RowExtents {
 				if cfg.Rows[i].SubRows != nil || cfg.Rows[i].Cells != nil ||
@@ -924,10 +955,12 @@ func (ep *Scope) drawMenuCellsRow(cursor [2]float32, width, itemH float32, font 
 
 // drawMenuGrid renders a scrollable grid of value pick areas with a reserved
 // scroll-arrow column on the right if the rows don't all fit. Cells handle
-// their own clicks.
+// their own clicks. The center of a visible cell with PlaceCursor set is
+// returned in cursorTarget.
 func (ep *Scope) drawMenuGrid(cursor [2]float32, width, itemH float32, font *renderer.Font,
 	grid *MenuGrid, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
-	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
+	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D,
+	cursorTarget *util.Optional[[2]float32]) [2]float32 {
 
 	ps := ep.currentPrefs()
 	bButton := ps.Brightness.Button
@@ -981,6 +1014,9 @@ func (ep *Scope) drawMenuGrid(cursor [2]float32, width, itemH float32, font *ren
 			cellExt := math.Extent2D{
 				P0: [2]float32{x, y - itemH},
 				P1: [2]float32{x + w, y},
+			}
+			if c.PlaceCursor {
+				cursorTarget.Set(cellExt.Center())
 			}
 
 			if c.BgColor != (renderer.RGB{}) {
