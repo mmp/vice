@@ -6,33 +6,25 @@
 - Fixed a number of bugs related to handling Mach speeds in instructions
 - VFR aircraft routes now avoid special use airspace
 - VFR aircraft keep 1,000' above the terrain en route (500' under low Class B and C shelves), now also in facilities without MVA charts
-- Settings are restored from a backup if the saved configuration file is damaged
 - STARS
-  - ATPA volumes now follow each final approach course rather than the runway's extended centerline.
+  - Default ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM
-  - `QZ` assigns VFR and VFR-on-top altitudes, which data blocks show as `VFR/` or `OTP/` and the reported altitude
   - Virtual TRACON controllers no longer enter altitudes in ERAM data blocks
-  - Tunes up conflict alert to better handle virtual TRACON-controller-owned aircraft
   - Local interim altitudes are kept separately from interim and procedure altitudes; `QQ L` clears them
   - Unpaired LDBs show the beacon code; BCAST FLID switches them to the callsign
   - Point outs are acknowledged one sector at a time in the point out pop-up
-  - Fixed the values offered by the altitude, heading, and speed menus
   - Point outs may be made to other facilities
-  - `QP A` acknowledges a single point out, or those from the sectors given, as in `QP A 2B 3C AAL123`
-  - `QP <FLID>` switches another sector's track between an FDB and an LDB
-  - `QU <FLID>` no longer toggles the route display off
-  - `QF` shows routes in the NAS form, as in `KATL./.ROA205050..ROA..HAR..KPIT`
-  - `LC` shows the change in ground speed needed to cross the fix at the given time
-  - `QS` takes a heading and speed together, as in `QS 330/81`, and Mach speeds such as `M.75`
-  - `WR` takes up to three stations
-  - Fixed a number of bugs in the views and their menus
-  - EMERG CHECK and POS CHECK each have their own view, so both can be displayed
   - Fixed a number of differences between the toolbars and the manual
-  - Dwell emphasis brightens and boxes the FDB or paired LDB under the cursor by the DWELL setting; clicking the aircraft ID locks it on
-  - ALTIM SET and WX REPORT entries and DEPT LIST sublists can be torn off onto the scope by their gold bars
+  - Added support for dwell emphasis
+  - `LC` shows the change in ground speed needed to cross the fix at the given time
+  - `QF` shows routes in the NAS form, as in `KATL./.ROA205050..ROA..HAR..KPIT`
+  - `QP <FLID>` switches another sector's track between an FDB and an LDB
+  - `QP A` acknowledges a single point out, or those from the sectors given, as in `QP A 2B 3C AAL123`
+  - `QS` takes a heading and speed together, as in `QS 330/81`, and Mach speeds such as `M.75`
+  - `QZ` assigns VFR and VFR-on-top altitudes
+  - `WR` takes up to three stations
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
-  - Fixed a few bugs with automatically generated ATPA volumes
-  - `atpa_volumes` is now `atpa`; its `runway_threshold`, `heading`, and `id` fields have been removed
-  - `reduced_separation` in `atpa` replaces `enable_2.5nm` and `2.5nm_distance`
-  - `altitude_range` gives the altitudes of a controller's airspace (default 10,000-60,000'); ERAM displays only the active special use airspace that overlaps it
+  - `"atpa_volumes"` is now `"atpa"`; its `"runway_threshold"`, `"heading"`, and `"id"` fields have been removed
+  - `"reduced_separation"` in `"atpa"` replaces `"enable_2.5nm"` and `"2.5nm_distance"`
+  - `"altitude_range"` gives the altitudes of a controller's airspace (default 10,000-60,000'); ERAM displays only the active special use airspace that overlaps it
