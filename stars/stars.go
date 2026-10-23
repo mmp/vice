@@ -638,8 +638,6 @@ func (sp *Scope) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 }
 
-func (sp *Scope) CanTakeKeyboardFocus() bool { return true }
-
 func (sp *Scope) Upgrade(from, to int) {
 	for _, prefs := range sp.TRACONPreferenceSets {
 		prefs.Upgrade(from, to)

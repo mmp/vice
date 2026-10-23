@@ -491,8 +491,6 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	}
 }
 
-func (ep *Scope) CanTakeKeyboardFocus() bool { return true }
-
 // cursorImage is a decoded ERAM cursor, kept so that the cursor can be made
 // again at another brightness.
 type cursorImage struct {

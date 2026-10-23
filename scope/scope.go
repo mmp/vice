@@ -32,7 +32,6 @@ type Scope interface {
 	// ResetSim is called when a brand new Sim is launched
 	ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
 
-	CanTakeKeyboardFocus() bool
 	Draw(ctx *Context, cb *renderer.CommandBuffer)
 }
 
@@ -95,11 +94,7 @@ func DrawScope(sc Scope, p platform.Platform, r renderer.Renderer,
 		return r.RenderCommandBuffer(commandBuffer)
 	}
 
-	if wm.focus.Current() == nil || wm.focus.Current() != sc {
-		if sc.CanTakeKeyboardFocus() {
-			wm.focus.Take(sc)
-		}
-	}
+	wm.focus.Take(sc)
 
 	fbSize := p.FramebufferSize()
 	displaySize := p.DisplaySize()
