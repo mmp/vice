@@ -31,7 +31,7 @@ func (ep *Scope) felListed(ctx *scope.Context, trk *sim.Track) bool {
 	if !ctx.UserOwnsFlightPlan(trk.FlightPlan) && !ctx.IsHandoffToUser(trk) {
 		return false
 	}
-	acid, deleted := ep.felDeleted[trk.ADSBCallsign]
+	acid, deleted := ep.FELDeleted[trk.ADSBCallsign]
 	return !deleted || acid != trk.FlightPlan.ACID
 }
 
@@ -65,10 +65,10 @@ func drawFELIndicator(trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.C
 func (ep *Scope) drawFlightEventView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	entries := ep.felEntries(ctx)
-	if len(entries) == 0 && ep.felEntryCount > 0 {
+	if len(entries) == 0 && ep.felHadEntries {
 		ps.FlightEvent.Visible = false
 	}
-	ep.felEntryCount = len(entries)
+	ep.felHadEntries = len(entries) > 0
 	if !ps.FlightEvent.Visible {
 		return
 	}
@@ -120,10 +120,10 @@ func (ep *Scope) drawFlightEventView(ctx *scope.Context, transforms scope.Transf
 // deleteFELEntry deletes a track's entry; it comes back if the track's
 // ACID changes and still doesn't match.
 func (ep *Scope) deleteFELEntry(trk *sim.Track) {
-	if ep.felDeleted == nil {
-		ep.felDeleted = make(map[av.ADSBCallsign]sim.ACID)
+	if ep.FELDeleted == nil {
+		ep.FELDeleted = make(map[av.ADSBCallsign]sim.ACID)
 	}
-	ep.felDeleted[trk.ADSBCallsign] = trk.FlightPlan.ACID
+	ep.FELDeleted[trk.ADSBCallsign] = trk.FlightPlan.ACID
 }
 
 type flightEventPopup struct {

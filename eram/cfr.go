@@ -114,7 +114,7 @@ type cfrLayout struct {
 // columns and whole routes.
 func (ep *Scope) layoutCFR(ctx *scope.Context) cfrLayout {
 	ps := ep.currentPrefs()
-	shown := func(f func(*Preferences) *bool) bool { return ep.cfrShowFields || *f(ps) }
+	shown := func(f func(*Preferences) *bool) bool { return ep.CFRShowFields || *f(ps) }
 
 	l := cfrLayout{columns: util.FilterSlice(cfrColumns, func(c cfrColumn) bool { return shown(c.shown) })}
 	l.widths = make([]int, 1+len(l.columns))
@@ -145,7 +145,7 @@ func (ep *Scope) layoutCFR(ctx *scope.Context) cfrLayout {
 		}
 		if shown(func(ps *Preferences) *bool { return &ps.CFR.ShowRoute }) {
 			e.route = formatRoute(fp, &ctx.Client.State)
-			if !ep.cfrShowFields && len(e.route) > ps.CFR.RouteChars {
+			if !ep.CFRShowFields && len(e.route) > ps.CFR.RouteChars {
 				e.route, e.truncated = e.route[:ps.CFR.RouteChars], true
 			}
 		}
@@ -198,8 +198,8 @@ func (ep *Scope) drawCFRView(ctx *scope.Context, transforms scope.Transformation
 	newStyle := renderer.TextStyle{Font: font, Color: ps.CFR.Bright.ScaleRGB(colors.successGreen)}
 
 	var rows []Row
-	if ep.cfrShowFields || ps.CFR.ShowLabels {
-		rows = append(rows, Row{Label: l.labels(ep.cfrShowFields || ps.CFR.ShowRoute)})
+	if ep.CFRShowFields || ps.CFR.ShowLabels {
+		rows = append(rows, Row{Label: l.labels(ep.CFRShowFields || ps.CFR.ShowRoute)})
 	}
 	labelRows := len(rows)
 	for _, e := range l.entries {
@@ -237,9 +237,9 @@ func (ep *Scope) drawCFRView(ctx *scope.Context, transforms scope.Transformation
 		TitleButtons: []ViewTitleButton{{
 			Label: "SHOW FIELDS",
 			// It is grayed out with nothing more to show.
-			Disabled: len(l.entries) == 0 || !ep.cfrShowFields &&
+			Disabled: len(l.entries) == 0 || !ep.CFRShowFields &&
 				!slices.ContainsFunc(cfrFilters, func(f cfrFilter) bool { return !*f.shown(ps) }),
-			OnClick: func() { ep.cfrShowFields = !ep.cfrShowFields },
+			OnClick: func() { ep.CFRShowFields = !ep.CFRShowFields },
 		}, {
 			Label:   "DEL ALL",
 			OnClick: func() { ep.CFREntries = nil },

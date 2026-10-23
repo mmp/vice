@@ -210,7 +210,7 @@ var drawMenu = toolbarMenu{rows: [][]toolbarButton{{
 // its functions. It is drawn active while the function is.
 func annotationFunctionButton(label string, f annotationFunction) toolbarButton {
 	return withoutTearoffBar(commandButton(label,
-		func(ep *Scope) bool { return ep.annotations.function == f },
+		func(ep *Scope) bool { return ep.drawMenu.function == f },
 		func(ep *Scope, c toolbarClick) error {
 			ep.clickAnnotationFunction(f, c)
 			return nil

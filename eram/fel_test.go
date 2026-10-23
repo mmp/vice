@@ -52,7 +52,7 @@ func TestFlightEventList(t *testing.T) {
 
 	ps := h.ep.currentPrefs()
 	ps.FlightEvent.Visible = true
-	h.ep.felEntryCount = 1
+	h.ep.felHadEntries = true
 	h.ep.deleteFELEntry(mismatch)
 	if h.ep.felListed(h.ctx, mismatch) {
 		t.Error("a deleted entry is listed")

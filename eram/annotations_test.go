@@ -105,21 +105,21 @@ func TestAnnotationRectangle(t *testing.T) {
 
 	a.activate(createRectangle)
 	a.enter([2]float32{500, 600})
-	if a.ep.annotations.mode != noFrame || a.ep.annotations.function != createRectangle {
-		t.Fatalf("a TBE for the first corner started %v", a.ep.annotations.mode)
+	if a.ep.drawMenu.mode != noFrame || a.ep.drawMenu.function != createRectangle {
+		t.Fatalf("a TBE for the first corner started %v", a.ep.drawMenu.mode)
 	}
 	a.pick([2]float32{500, 600})
 	a.move([2]float32{700, 500})
 	cursor := a.pick([2]float32{700, 500})
-	if a.ep.annotations.mode != movingFrame || !near(cursor, [2]float32{500, 600}) {
+	if a.ep.drawMenu.mode != movingFrame || !near(cursor, [2]float32{500, 600}) {
 		t.Fatalf("after the size was picked: mode %v, cursor at %v, want moving with it at the top left",
-			a.ep.annotations.mode, cursor)
+			a.ep.drawMenu.mode, cursor)
 	}
 	a.move([2]float32{520, 620})
 	a.enter([2]float32{520, 620})
 
-	if len(a.ep.Annotations) != 1 || a.ep.annotations.function != noAnnotationFunction {
-		t.Fatalf("%d annotations, function %v after the TBE", len(a.ep.Annotations), a.ep.annotations.function)
+	if len(a.ep.Annotations) != 1 || a.ep.drawMenu.function != noAnnotationFunction {
+		t.Fatalf("%d annotations, function %v after the TBE", len(a.ep.Annotations), a.ep.drawMenu.function)
 	}
 	if r := a.ep.Annotations[0]; r.Shape != AnnotationRectangle || r.Color != AnnotationGreen || !r.Map {
 		t.Errorf("anchored %+v, want a green rectangle anchored to the map", r)
@@ -147,12 +147,12 @@ func TestAnnotationRectangleResize(t *testing.T) {
 	checkBounds(t, "rectangle", a.bounds(0), [2]float32{500, 500}, [2]float32{700, 600})
 
 	cursor := a.pick(a.handle(0))
-	if a.ep.annotations.mode != movingFrame || !near(cursor, [2]float32{500, 600}) {
-		t.Fatalf("TBP on the handle: mode %v, cursor at %v", a.ep.annotations.mode, cursor)
+	if a.ep.drawMenu.mode != movingFrame || !near(cursor, [2]float32{500, 600}) {
+		t.Fatalf("TBP on the handle: mode %v, cursor at %v", a.ep.drawMenu.mode, cursor)
 	}
 	cursor = a.pick(cursor)
-	if a.ep.annotations.mode != sizingFrame || !near(cursor, [2]float32{700, 500}) {
-		t.Fatalf("TBP while moving: mode %v, cursor at %v, want sizing at the bottom right", a.ep.annotations.mode, cursor)
+	if a.ep.drawMenu.mode != sizingFrame || !near(cursor, [2]float32{700, 500}) {
+		t.Fatalf("TBP while moving: mode %v, cursor at %v, want sizing at the bottom right", a.ep.drawMenu.mode, cursor)
 	}
 	a.move([2]float32{750, 450})
 	a.enter([2]float32{750, 450})
@@ -172,7 +172,7 @@ func TestAnnotationCircle(t *testing.T) {
 	a.activate(createCircle)
 	center := [2]float32{800, 450}
 	cursor := a.pick(center)
-	f := &a.ep.annotations.frame
+	f := &a.ep.drawMenu.frame
 	if f.Radius != 10 || math.Abs(cursor[1]-center[1]) > 1 || cursor[0] <= center[0] {
 		t.Fatalf("circle frame radius %v, cursor at %v, want 10 nm with it right of the center", f.Radius, cursor)
 	}
@@ -186,13 +186,13 @@ func TestAnnotationCircle(t *testing.T) {
 	ps.Draw.MapAnchor = false
 	a.activate(createCircle)
 	a.pick(center)
-	if r := a.ep.annotations.frame.Radius; r != 0 {
+	if r := a.ep.drawMenu.frame.Radius; r != 0 {
 		t.Errorf("circle anchored to the display starts with radius %v", r)
 	}
 	// An empty circle can't be anchored.
 	a.enter(center)
-	if len(a.ep.Annotations) != 1 || a.ep.annotations.mode != sizingFrame {
-		t.Errorf("TBE on an empty circle: %d annotations, mode %v", len(a.ep.Annotations), a.ep.annotations.mode)
+	if len(a.ep.Annotations) != 1 || a.ep.drawMenu.mode != sizingFrame {
+		t.Errorf("TBE on an empty circle: %d annotations, mode %v", len(a.ep.Annotations), a.ep.drawMenu.mode)
 	}
 	a.move([2]float32{center[0] + 30, center[1]})
 	a.enter([2]float32{center[0] + 30, center[1]})
@@ -240,8 +240,8 @@ func TestAnnotationText(t *testing.T) {
 
 	a.activate(createText)
 	a.pick([2]float32{400, 400})
-	if a.ep.annotations.mode != composingText {
-		t.Fatalf("TBP with A active: mode %v", a.ep.annotations.mode)
+	if a.ep.drawMenu.mode != composingText {
+		t.Fatalf("TBP with A active: mode %v", a.ep.drawMenu.mode)
 	}
 	a.typeText("bull dog d moa hot sector")
 	a.typeText("", imgui.KeyEnter)
@@ -252,13 +252,13 @@ func TestAnnotationText(t *testing.T) {
 	a.activate(createText)
 	a.pick([2]float32{400, 200})
 	a.typeText(strings.Repeat("X", 200))
-	if got := wrapAnnotationText(a.ep.annotations.text); len(got) != annotationTextLines ||
-		len(a.ep.annotations.text) != annotationTextLines*annotationTextChars {
+	if got := wrapAnnotationText(a.ep.drawMenu.text); len(got) != annotationTextLines ||
+		len(a.ep.drawMenu.text) != annotationTextLines*annotationTextChars {
 		t.Errorf("composed %q, want 5 full lines", got)
 	}
 	a.typeText("", imgui.KeyEscape)
-	if len(a.ep.Annotations) != 1 || a.ep.annotations.function != noAnnotationFunction {
-		t.Errorf("CLEAR while composing: %d annotations, function %v", len(a.ep.Annotations), a.ep.annotations.function)
+	if len(a.ep.Annotations) != 1 || a.ep.drawMenu.function != noAnnotationFunction {
+		t.Errorf("CLEAR while composing: %d annotations, function %v", len(a.ep.Annotations), a.ep.drawMenu.function)
 	}
 }
 
@@ -311,8 +311,8 @@ func TestAnnotationHandles(t *testing.T) {
 	ps.Draw.Font = 6
 	a.activate(applyAnnotationFont)
 	a.enter(a.handle(0))
-	if f := a.ep.Annotations[0].Font; f != 6 || a.ep.annotations.function != noAnnotationFunction {
-		t.Errorf("FONT then TBE on the text: font %d, function %v", f, a.ep.annotations.function)
+	if f := a.ep.Annotations[0].Font; f != 6 || a.ep.drawMenu.function != noAnnotationFunction {
+		t.Errorf("FONT then TBE on the text: font %d, function %v", f, a.ep.drawMenu.function)
 	}
 
 	cursor := a.pick(a.handle(1))
@@ -340,7 +340,7 @@ func TestAnnotationHandles(t *testing.T) {
 	}
 	a.activate(createRectangle)
 	a.move([2]float32{10, 10})
-	if a.ep.annotations.function != noAnnotationFunction {
+	if a.ep.drawMenu.function != noAnnotationFunction {
 		t.Error("the rectangle function stayed active with the DRAW menu closed")
 	}
 }
@@ -354,8 +354,8 @@ func TestAnnotationDeleteAll(t *testing.T) {
 		t.Fatal("the first click on DEL ALL deleted the annotations")
 	}
 	a.activate(deleteAllAnnotations)
-	if len(a.ep.Annotations) != 0 || a.ep.annotations.function != noAnnotationFunction {
-		t.Errorf("after the second click: %d annotations, function %v", len(a.ep.Annotations), a.ep.annotations.function)
+	if len(a.ep.Annotations) != 0 || a.ep.drawMenu.function != noAnnotationFunction {
+		t.Errorf("after the second click: %d annotations, function %v", len(a.ep.Annotations), a.ep.drawMenu.function)
 	}
 }
 
@@ -365,7 +365,7 @@ func TestAnnotationLimit(t *testing.T) {
 	a.ep.Annotations = make([]Annotation, maxAnnotations)
 	a.activate(createText)
 	a.pick([2]float32{400, 400})
-	if a.ep.annotations.mode != noFrame {
+	if a.ep.drawMenu.mode != noFrame {
 		t.Errorf("started annotation %d", maxAnnotations+1)
 	}
 }
@@ -412,17 +412,17 @@ func TestCircleLocationBox(t *testing.T) {
 	a.ctx.Mouse = &platform.MouseState{Pos: pb.face.Center()}
 	a.ctx.Mouse.Clicked[platform.MouseButtonPrimary] = true
 	a.ep.handleToolbarInput(a.ctx)
-	if a.ep.annotations.function != createCircle {
-		t.Fatalf("clicking CIRCLE activated %v", a.ep.annotations.function)
+	if a.ep.drawMenu.function != createCircle {
+		t.Fatalf("clicking CIRCLE activated %v", a.ep.drawMenu.function)
 	}
 
 	a.typeText("ott")
 	anchor, ok := a.ep.circleLocationBoxAnchor()
-	if box := a.ep.annotations.circleBox; box == nil || box.input != "OTT" || !ok || anchor != pb.face.P0 {
+	if box := a.ep.drawMenu.circleBox; box == nil || box.input != "OTT" || !ok || anchor != pb.face.P0 {
 		t.Errorf("box %+v at %v, want OTT below the CIRCLE button at %v", box, anchor, pb.face.P0)
 	}
 	a.typeText("", imgui.KeyBackspace)
-	if box := a.ep.annotations.circleBox; box.input != "OT" {
+	if box := a.ep.drawMenu.circleBox; box.input != "OT" {
 		t.Errorf("after a backspace: %q", box.input)
 	}
 }

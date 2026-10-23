@@ -108,7 +108,7 @@ func TestCFRLayout(t *testing.T) {
 		t.Errorf("filtered entry %q truncated %v, want %q truncated", got, e.truncated, want)
 	}
 
-	h.ep.cfrShowFields = true
+	h.ep.CFRShowFields = true
 	l = h.ep.layoutCFR(h.ctx)
 	if e = l.entries[0]; len(l.columns) != len(cfrColumns) || e.truncated || !strings.HasPrefix(e.flid, "001 ") {
 		t.Errorf("SHOW FIELDS: %d columns, truncated %v, FLID %q", len(l.columns), e.truncated, e.flid)

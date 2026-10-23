@@ -507,7 +507,7 @@ func (ep *Scope) getDatablock(ctx *scope.Context, trk sim.Track, dbType Databloc
 		// Line 1
 		dbWriteText(db.line1[:], string(trk.FlightPlan.ACID), color, false) // also * if satcom
 		vciColor := (ps.Brightness.ONFREQ + ps.Brightness.Portal + dwell).ScaleRGB(colors.vciGreen)
-		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
+		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.hoverVCI, vci, ""), vciColor, false)
 
 		// Line 2. The VRI is drawn at line 4's brightness, and not in quick
 		// look FDBs (5.1.5.13).

@@ -183,8 +183,8 @@ const (
 	composingText
 )
 
-// annotationState is the state of the DRAW menu's functions.
-type annotationState struct {
+// drawMenuState is the state of the DRAW menu's functions.
+type drawMenuState struct {
 	function annotationFunction
 	// openerInstance and openerID are the instance and the id of the
 	// button that activated the function; the Circle Location Text Box
@@ -224,7 +224,7 @@ var (
 // one, or ends it if it is active. DEL ALL deletes the annotations when it
 // is clicked while active (3.1.4.3).
 func (ep *Scope) clickAnnotationFunction(f annotationFunction, c toolbarClick) {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	if as.function != f {
 		ep.cancelAnnotationFunction()
 		as.function = f
@@ -242,7 +242,7 @@ func (ep *Scope) clickAnnotationFunction(f annotationFunction, c toolbarClick) {
 // cancelAnnotationFunction ends the active DRAW menu function and the
 // creation or edit of an annotation, as CLEAR does.
 func (ep *Scope) cancelAnnotationFunction() {
-	ep.annotations = annotationState{}
+	ep.drawMenu = drawMenuState{}
 }
 
 // drawMenuDisplayed reports whether the DRAW menu is displayed anywhere.
@@ -258,7 +258,7 @@ func (ep *Scope) drawMenuDisplayed() bool {
 // displayed: not while an annotation is being created or edited, nor while
 // there is text in the MCA (3.1.4.5).
 func (ep *Scope) annotationHandlesDisplayed() bool {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	_, creating := as.function.shape()
 	return ep.drawMenuDisplayed() && !creating && as.mode == noFrame && len(ep.input) == 0
 }
@@ -280,7 +280,7 @@ func (ep *Scope) handleAnnotationMouse(ctx *scope.Context, transforms scope.Tran
 	if mouse == nil {
 		return
 	}
-	as := &ep.annotations
+	as := &ep.drawMenu
 	t := &transforms
 	ep.followAnnotationFrame(ctx, t, mouse.Pos)
 
@@ -322,7 +322,7 @@ func (ep *Scope) handleAnnotationMouse(ctx *scope.Context, transforms scope.Tran
 // followAnnotationFrame moves the frame of the annotation being created or
 // edited with the cursor.
 func (ep *Scope) followAnnotationFrame(ctx *scope.Context, t *scope.Transformations, p [2]float32) {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	f := &as.frame
 	switch as.mode {
 	case sizingFrame:
@@ -348,7 +348,7 @@ func (ep *Scope) startAnnotation(ctx *scope.Context, t *scope.Transformations, p
 		ep.reportInvalidClick(false)
 		return
 	}
-	as := &ep.annotations
+	as := &ep.drawMenu
 	ps := ep.currentPrefs()
 	shape, _ := as.function.shape()
 	f := Annotation{Shape: shape, Color: ps.Draw.Color, Map: ps.Draw.MapAnchor}
@@ -394,7 +394,7 @@ func annotationSizeRef(ctx *scope.Context, t *scope.Transformations, a *Annotati
 // sizing and moving, adds a point to a line, and places the text
 // composition box.
 func (ep *Scope) clickAnnotationFrame(ctx *scope.Context, t *scope.Transformations, p [2]float32, tertiary bool) {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	f := &as.frame
 	if tertiary {
 		if as.mode == composingText {
@@ -437,7 +437,7 @@ func (ep *Scope) clickAnnotationFrame(ctx *scope.Context, t *scope.Transformatio
 // replacing the one edited, and ends the DRAW menu function. An empty
 // rectangle or circle or a line without a segment can't be anchored.
 func (ep *Scope) anchorAnnotationFrame() {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	f := as.frame.clone()
 	if f.Shape == AnnotationLine && as.mode == drawingLine {
 		if n := len(f.Points); f.Points[n-1] == f.Points[n-2] {
@@ -470,7 +470,7 @@ func (ep *Scope) anchorAnnotationFrame() {
 // or with FONT active applies the A FONT size to text, and with DEL active
 // deletes it (3.1.2.3, 3.1.4.2, 3.1.4.3).
 func (ep *Scope) clickAnnotationHandle(ctx *scope.Context, t *scope.Transformations, i int, tertiary bool) {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	ps := ep.currentPrefs()
 	a := &ep.Annotations[i]
 	switch {
@@ -500,7 +500,7 @@ func (ep *Scope) clickAnnotationHandle(ctx *scope.Context, t *scope.Transformati
 // Location Text Box, which typing displays. CLEAR ends the active DRAW
 // menu function. It reports whether it took the keystrokes.
 func (ep *Scope) handleAnnotationKeyboard(ctx *scope.Context) bool {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	if as.function == noAnnotationFunction && as.mode == noFrame {
 		return false
 	}
@@ -522,7 +522,7 @@ func (ep *Scope) handleAnnotationKeyboard(ctx *scope.Context) bool {
 // composeAnnotationText adds the keystrokes to the text being composed;
 // [Enter] anchors it.
 func (ep *Scope) composeAnnotationText(ctx *scope.Context) {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	for _, r := range strings.ToUpper(ctx.Keyboard.Input) {
 		if r < ' ' || r > '~' {
 			continue
@@ -548,7 +548,7 @@ func (ep *Scope) composeAnnotationText(ctx *scope.Context) {
 // anchorAnnotationText anchors the text being composed; with none, the text
 // function just ends.
 func (ep *Scope) anchorAnnotationText() {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	if strings.TrimSpace(as.text) == "" {
 		ep.cancelAnnotationFunction()
 		return
@@ -576,7 +576,7 @@ func wrapAnnotationText(text string) []string {
 // typeCircleLocation adds the keystrokes to the Circle Location Text Box;
 // [Enter] creates the circle at the location entered.
 func (ep *Scope) typeCircleLocation(ctx *scope.Context) {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	if as.circleBox == nil {
 		as.circleBox = &circleLocationBox{}
 	}
@@ -604,7 +604,7 @@ func (ep *Scope) typeCircleLocation(ctx *scope.Context) {
 // in the Circle Location Text Box, with the O SIZE radius and the selected
 // color, or displays the entry's error.
 func (ep *Scope) enterCircleLocation(ctx *scope.Context) {
-	box := ep.annotations.circleBox
+	box := ep.drawMenu.circleBox
 	p, err := locateCircle(box.input, ctx.Client.State.Locate)
 	if err == nil && len(ep.Annotations) >= maxAnnotations {
 		err = errCircleInvalid
@@ -687,7 +687,7 @@ func (ep *Scope) annotationHandle(ctx *scope.Context, t *scope.Transformations, 
 // drawAnnotations draws the annotations, their handles while they are
 // displayed, and the annotation being created or edited.
 func (ep *Scope) drawAnnotations(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	as := &ep.annotations
+	as := &ep.drawMenu
 	if len(ep.Annotations) == 0 && as.mode == noFrame {
 		return
 	}
@@ -783,7 +783,7 @@ func (ep *Scope) addTextCompositionBox(ld *renderer.ColoredLinesDrawBuilder, td 
 // same button in another DRAW menu if that one's is no longer displayed
 // (figure 3-7).
 func (ep *Scope) circleLocationBoxAnchor() ([2]float32, bool) {
-	as, l := &ep.annotations, &ep.toolbar.layout
+	as, l := &ep.drawMenu, &ep.toolbar.layout
 	pb := l.findPlaced(as.openerInstance, as.openerID)
 	if pb == nil {
 		pb = l.findPlaced(nil, as.openerID)
@@ -798,7 +798,7 @@ func (ep *Scope) circleLocationBoxAnchor() ([2]float32, bool) {
 // its exit pick area closes it and ends the circle function. It runs
 // before the toolbars take their clicks, since the box is drawn over them.
 func (ep *Scope) handleCircleLocationMouse(ctx *scope.Context) {
-	box, mouse := ep.annotations.circleBox, ctx.Mouse
+	box, mouse := ep.drawMenu.circleBox, ctx.Mouse
 	if box == nil || mouse == nil || (!ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse)) {
 		return
 	}
@@ -814,7 +814,7 @@ func (ep *Scope) handleCircleLocationMouse(ctx *scope.Context) {
 // exit pick area, what has been typed, and the error of an entry that was
 // rejected (figures 3-8 and 3-9).
 func (ep *Scope) drawCircleLocationBox(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	box := ep.annotations.circleBox
+	box := ep.drawMenu.circleBox
 	if box == nil {
 		return
 	}

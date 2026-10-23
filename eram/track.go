@@ -50,7 +50,7 @@ type TrackState struct {
 
 	OSectorEndTime sim.Time
 
-	HoverVCI bool // if the user is hovering over the VCI field
+	hoverVCI bool // if the user is hovering over the VCI field
 
 	HSFHide bool
 	// LastScratchpads holds the flight plan's scratchpads, which hold its

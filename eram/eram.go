@@ -244,16 +244,17 @@ type Scope struct {
 	bcgNames      []string // current group's bcgMenu; index-stable, may include empty slots
 	videoMapLabel string
 	// baseVideoMap is the current group's own always-displayed geometry.
-	baseVideoMap    videomaps.ERAMMap
-	currentFacility string
+	baseVideoMap videomaps.ERAMMap
 
 	// initials are the operating initials of the controller signed in, and
 	// position the position they are signed in to.
 	initials string
 	position string
 
-	// eramCursors are made from cursorImages at cursorBrightness; both are
-	// keyed by base name ("Eram1", "EramDeletion", ...).
+	// eramCursors are made from cursorImages; both are keyed by base name
+	// ("Eram1", "EramDeletion", ...). cursorBrightness is the BRIGHT menu's
+	// CURSOR setting they were made at, so that they are made again when
+	// it changes.
 	eramCursors      map[string]platform.Cursor
 	cursorImages     map[string]cursorImage
 	cursorBrightness scope.Brightness
@@ -302,7 +303,7 @@ type Scope struct {
 	// Annotations are the graphic annotations drawn with the DRAW menu,
 	// oldest first.
 	Annotations []Annotation `json:"Annotations,omitempty"`
-	annotations annotationState
+	drawMenu    drawMenuState
 
 	fdbArena util.ObjectArena[fullDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
@@ -348,10 +349,10 @@ type Scope struct {
 	popupExtent math.Extent2D
 
 	// CFR state (session): the flights whose readouts are in the view,
-	// oldest first, when each was added, and whether SHOW FIELDS is on.
+	// oldest first, whether SHOW FIELDS is on, and when each was added.
 	CFREntries    []sim.ACID `json:"CFREntries,omitempty"`
+	CFRShowFields bool       `json:"CFRShowFields,omitempty"`
 	cfrAdded      map[sim.ACID]time.Time
-	cfrShowFields bool
 
 	// SAA state: the special activity airspace of the sim's ARTCC, the
 	// one whose label is being torn off, the torn-off labels' extents as
@@ -362,17 +363,17 @@ type Scope struct {
 	saaScroll     ViewScrollState
 
 	// FLIGHT EVENT state: the entries the user deleted, with the ACIDs
-	// they had, the number of entries last frame, and the view's scroll
+	// they had, whether it had entries last frame, and the view's scroll
 	// and selection.
-	felDeleted    map[av.ADSBCallsign]sim.ACID
-	felEntryCount int
+	FELDeleted    map[av.ADSBCallsign]sim.ACID `json:"FELDeleted,omitempty"`
+	felHadEntries bool
 	felScroll     ViewScrollState
 	felSelect     ViewSelectionState
 
 	// DEPT LIST state: the flights the user deleted from the view and the
 	// view's scroll.
-	deptDeleted map[sim.ACID]struct{}
-	deptScroll  ViewScrollState
+	DeptListDeleted map[sim.ACID]struct{} `json:"DeptListDeleted,omitempty"`
+	deptScroll      ViewScrollState
 
 	// CRR state (session)
 	CRRGroups        map[string]*CRRGroup `json:"CRRGroups,omitempty"`
@@ -396,10 +397,10 @@ type Scope struct {
 	placedTearOffs []placedTearOff
 	entryDrag      *entryDrag
 
-	// Check list view toggle state (session). Each slice is parallel to its
-	// check list's items, with true = row is highlighted ("checked off").
-	posCheckToggled   []bool
-	emergCheckToggled []bool
+	// Check list view toggle state (session): the check lists' items that
+	// are highlighted ("checked off"), by their text.
+	PosCheckToggled   map[string]bool `json:"PosCheckToggled,omitempty"`
+	EmergCheckToggled map[string]bool `json:"EmergCheckToggled,omitempty"`
 
 	weatherRadar scope.WeatherRadar
 	nexrad       nexradCBs
@@ -447,11 +448,11 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	if ep.crrAircraftRects == nil {
 		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
 	}
-	if ep.posCheckToggled == nil {
-		ep.posCheckToggled = make([]bool, len(posCheckList.items))
+	if ep.PosCheckToggled == nil {
+		ep.PosCheckToggled = make(map[string]bool)
 	}
-	if ep.emergCheckToggled == nil {
-		ep.emergCheckToggled = make([]bool, len(emergCheckList.items))
+	if ep.EmergCheckToggled == nil {
+		ep.EmergCheckToggled = make(map[string]bool)
 	}
 	// ViewSelectionState's zero-value Selected is 0 (i.e. "row 0 selected").
 	// Initialize to -1 so no row is selected at startup.
@@ -778,20 +779,20 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.AddedBeaconCodes = nil
 	clear(ep.aircraftFixCoordinates)
 	ep.targetGenLastCallsign = ""
-	clear(ep.posCheckToggled)
-	clear(ep.emergCheckToggled)
+	clear(ep.PosCheckToggled)
+	clear(ep.EmergCheckToggled)
 	clear(ep.CRRGroups)
 	ep.crrScroll = ViewScrollState{}
 	ep.CFREntries = nil
 	clear(ep.cfrAdded)
-	ep.cfrShowFields = false
+	ep.CFRShowFields = false
 	ep.saaTearingOff = ""
 	ep.saaScroll = ViewScrollState{}
-	clear(ep.felDeleted)
-	ep.felEntryCount = 0
+	clear(ep.FELDeleted)
+	ep.felHadEntries = false
 	ep.felScroll = ViewScrollState{}
 	ep.felSelect = ViewSelectionState{Selected: -1}
-	clear(ep.deptDeleted)
+	clear(ep.DeptListDeleted)
 	ep.deptScroll = ViewScrollState{}
 	// The stations' tear-offs go with them.
 	ps := ep.currentPrefs()
@@ -817,7 +818,6 @@ func (ep *Scope) ensurePrefSetForSim(ss client.SimState) {
 	}
 
 	key := ss.Facility
-	ep.currentFacility = key
 
 	// Retrieve or create the preference set for this facility
 	if ps, ok := ep.ERAMPreferenceSets[key]; ok && ps != nil {

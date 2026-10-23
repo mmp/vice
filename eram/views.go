@@ -854,7 +854,7 @@ type checkList struct {
 	menuTitle string
 	items     []string
 	prefs     func(*Preferences) *CheckListPreferences
-	toggled   func(*Scope) []bool
+	toggled   func(*Scope) map[string]bool
 }
 
 var posCheckList = checkList{
@@ -873,7 +873,7 @@ var posCheckList = checkList{
 		"TRAFFIC",
 	},
 	prefs:   func(ps *Preferences) *CheckListPreferences { return &ps.PosCheck },
-	toggled: func(ep *Scope) []bool { return ep.posCheckToggled },
+	toggled: func(ep *Scope) map[string]bool { return ep.PosCheckToggled },
 }
 
 var emergCheckList = checkList{
@@ -892,7 +892,7 @@ var emergCheckList = checkList{
 		"HAZMAT ON BOARD",
 	},
 	prefs:   func(ps *Preferences) *CheckListPreferences { return &ps.EmergCheck },
-	toggled: func(ep *Scope) []bool { return ep.emergCheckToggled },
+	toggled: func(ep *Scope) map[string]bool { return ep.EmergCheckToggled },
 }
 
 // drawCheckListView renders a check list's view if it is displayed. Rows
@@ -910,7 +910,7 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 	rows := make([]Row, len(cl.items))
 	maxLen := 0
 	for i, s := range cl.items {
-		rows[i] = Row{Body: s, Color: textColor, Toggled: toggled[i]}
+		rows[i] = Row{Body: s, Color: textColor, Toggled: toggled[s]}
 		if len(s) > maxLen {
 			maxLen = len(s)
 		}
@@ -934,7 +934,7 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 			VisibleRows:    visibleLines(cps.Lines, len(rows)),
 			RowSpacing:     RowSpacingCompact,
 			HighlightColor: cps.Highlight.ScaleRGB(colors.popup.backgroundGrey),
-			OnRowToggle:    func(idx int) { toggled[idx] = !toggled[idx] },
+			OnRowToggle:    func(idx int) { toggled[cl.items[idx]] = !toggled[cl.items[idx]] },
 		},
 	})
 }

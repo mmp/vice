@@ -89,13 +89,13 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 			ep.clearMouseTertiaryConsumed(mouse)
 		}
 		if db.Fields[DBFieldVCI].Inside(mouse.Pos) {
-			state.HoverVCI = true
+			state.hoverVCI = true
 			if ep.mousePrimaryClicked(mouse) {
 				status, err := handleToggleVCI(ep, ctx, &trk)
 				ep.applyCommandStatus(ctx, status, err)
 			}
 		} else {
-			state.HoverVCI = false
+			state.hoverVCI = false
 		}
 		if db.Fields[DBFieldPointOut].Inside(mouse.Pos) {
 			if ep.pointOutIndicatorActive(ctx, &trk) {

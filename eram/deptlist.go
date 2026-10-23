@@ -50,7 +50,7 @@ type deptSublist struct {
 func (ep *Scope) deptSublists(ctx *scope.Context) []deptSublist {
 	byName := make(map[string][]*sim.FlightPlan)
 	for _, fp := range deptListFlights(ctx) {
-		if _, ok := ep.deptDeleted[fp.ACID]; !ok {
+		if _, ok := ep.DeptListDeleted[fp.ACID]; !ok {
 			name := db.AirportDisplayId(fp.DepartureAirport)
 			byName[name] = append(byName[name], fp)
 		}
@@ -144,7 +144,7 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 	// Deleted flights that are no longer proposed are forgotten, so that a
 	// later flight with the same ACID is listed.
 	flights := deptListFlights(ctx)
-	maps.DeleteFunc(ep.deptDeleted, func(acid sim.ACID, _ struct{}) bool {
+	maps.DeleteFunc(ep.DeptListDeleted, func(acid sim.ACID, _ struct{}) bool {
 		return !slices.ContainsFunc(flights, func(fp *sim.FlightPlan) bool { return fp.ACID == acid })
 	})
 
@@ -221,13 +221,13 @@ func (ep *Scope) sortDeptSublists(ctx *scope.Context, picked []string) {
 // deleteDeptSublists removes the picked sublists and their flights from
 // the view; flights proposed later bring a sublist back.
 func (ep *Scope) deleteDeptSublists(ctx *scope.Context, picked []string) {
-	if ep.deptDeleted == nil {
-		ep.deptDeleted = make(map[sim.ACID]struct{})
+	if ep.DeptListDeleted == nil {
+		ep.DeptListDeleted = make(map[sim.ACID]struct{})
 	}
 	for _, s := range ep.deptSublists(ctx) {
 		if slices.Contains(picked, s.name) {
 			for _, fp := range s.flights {
-				ep.deptDeleted[fp.ACID] = struct{}{}
+				ep.DeptListDeleted[fp.ACID] = struct{}{}
 			}
 		}
 	}
