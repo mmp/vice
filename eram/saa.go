@@ -328,26 +328,32 @@ type saaRow struct {
 	label              [2]float32
 }
 
-// saaRowAt lays out the entry whose row has its top at y.
+// saaRowAt lays out the entry whose row has its top left at (x0, y). From
+// left to right, it has the COLD and HOT filter settings' boxes, the
+// DISPLAY button, the tear-off pick area, and the label, each one padded
+// from the one before it and centered vertically in the row.
 func saaRowAt(x0, y, rowH float32, font *renderer.Font) saaRow {
-	cw := charWidth(font)
 	pad := float32(titleBarButtonPad)
-	boxW := 4*cw + 2*pad
-	box := func(x float32) math.Extent2D {
-		return math.Extent2D{P0: [2]float32{x, y - rowH + 2}, P1: [2]float32{x + boxW, y - 2}}
+	midY := y - rowH/2
+	// centered returns the extent of something w wide and h high that has
+	// its left edge at x and is centered vertically in the row.
+	centered := func(x, w, h float32) math.Extent2D {
+		return math.Extent2D{P0: [2]float32{x, midY - h/2}, P1: [2]float32{x + w, midY + h/2}}
 	}
+
 	var r saaRow
-	x := x0 + pad
-	r.cold = box(x)
-	x += boxW + pad
-	r.hot = box(x)
-	x += boxW + 2*pad
+	// The filter settings' boxes fit four characters and leave 2 pixels
+	// above and below them.
+	boxW, boxH := 4*charWidth(font)+2*pad, rowH-4
+	r.cold = centered(x0+pad, boxW, boxH)
+	r.hot = centered(r.cold.P1[0]+pad, boxW, boxH)
+	// The DISPLAY button's circle leaves 3 pixels above and below it.
 	r.displayRadius = (rowH - 6) / 2
-	r.display = [2]float32{x + r.displayRadius, y - rowH/2}
-	x += 2*r.displayRadius + 2*pad
+	r.display = [2]float32{r.hot.P1[0] + 2*pad + r.displayRadius, midY}
 	sq := cellHeight(font) * 0.6
-	r.tearOff = math.Extent2D{P0: [2]float32{x, y - rowH/2 - sq/2}, P1: [2]float32{x + sq, y - rowH/2 + sq/2}}
-	r.label = [2]float32{r.tearOff.P1[0] + pad, y - (rowH-cellHeight(font))/2}
+	r.tearOff = centered(r.display[0]+r.displayRadius+2*pad, sq, sq)
+	// label is the top left of the label's text.
+	r.label = [2]float32{r.tearOff.P1[0] + pad, midY + cellHeight(font)/2}
 	return r
 }
 
