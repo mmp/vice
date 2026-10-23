@@ -505,9 +505,6 @@ type cursorImage struct {
 func (ep *Scope) loadCursors(pl platform.Platform) {
 	ep.cursorImages = make(map[string]cursorImage)
 	cursorSize := int(32*pl.DPIScale() + 0.5)
-	if cursorSize <= 0 {
-		cursorSize = 32
-	}
 	err := util.WalkResources("eram-cursors", func(path string, d fs.DirEntry, _ fs.FS, err error) error {
 		if err != nil {
 			panic(err)
