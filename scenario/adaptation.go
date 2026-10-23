@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
@@ -513,13 +514,25 @@ func validateCoordinationFixes(ec *enroute.Coordination, fa *sim.FacilityAdaptat
 	}
 }
 
-// loadFacilityConfig loads and unmarshals a facility configuration file.
-// Results are cached so that a facility several scenario groups share is only
-// loaded once. Call Finalize separately for semantic validation.
-func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
-	facilityConfigCacheMu.Lock()
-	fc, ok := facilityConfigCache[path]
-	facilityConfigCacheMu.Unlock()
+// facilityConfigCache holds the facility configs that one Load has read, by
+// path, so that a facility several scenario groups share is only read once.
+// It lasts only as long as the Load so that a reload sees the files as they
+// are on disk now. It is safe for concurrent use.
+type facilityConfigCache struct {
+	mu      sync.Mutex
+	configs map[string]*sim.FacilityConfig
+}
+
+func makeFacilityConfigCache() *facilityConfigCache {
+	return &facilityConfigCache{configs: make(map[string]*sim.FacilityConfig)}
+}
+
+// load returns the facility config at path, reading and unmarshaling it if it
+// hasn't been already. Call Finalize separately for semantic validation.
+func (c *facilityConfigCache) load(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
+	c.mu.Lock()
+	fc, ok := c.configs[path]
+	c.mu.Unlock()
 	if ok {
 		return fc
 	}
@@ -530,7 +543,7 @@ func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim
 	if fc = parseFacilityConfig(filesystem, path, e); fc == nil {
 		return nil
 	}
-	return cacheFacilityConfig(path, fc)
+	return c.add(path, fc)
 }
 
 // parseFacilityConfig reads and unmarshals a facility configuration file,
@@ -566,25 +579,25 @@ func parseFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *si
 	return fc
 }
 
-// cacheFacilityConfig records fc as the facility config for path and returns
-// the config that ends up cached; one stored by another goroutine in the
-// interim wins so that all callers share a single instance.
-func cacheFacilityConfig(path string, fc *sim.FacilityConfig) *sim.FacilityConfig {
-	facilityConfigCacheMu.Lock()
-	defer facilityConfigCacheMu.Unlock()
-	if existing, ok := facilityConfigCache[path]; ok {
+// add records fc as the facility config for path and returns the config that
+// ends up cached; one stored by another goroutine in the interim wins so that
+// all callers share a single instance.
+func (c *facilityConfigCache) add(path string, fc *sim.FacilityConfig) *sim.FacilityConfig {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if existing, ok := c.configs[path]; ok {
 		return existing
 	}
-	facilityConfigCache[path] = fc
+	c.configs[path] = fc
 	return fc
 }
 
-// loadFacilityConfigOverride installs the given file in place of the facility
+// loadOverride installs the given file in place of the facility
 // configuration in resources/configurations with the same filename, for
 // testing changes to a facility's adaptation. Errors are reported in e, in
 // which case nothing is installed and the file from resources is used as
 // usual.
-func loadFacilityConfigOverride(filename string, e *util.ErrorLogger) {
+func (c *facilityConfigCache) loadOverride(filename string, e *util.ErrorLogger) {
 	e.Push("Facility config override " + filename)
 	defer e.Pop()
 
@@ -611,7 +624,7 @@ func loadFacilityConfigOverride(filename string, e *util.ErrorLogger) {
 	// facility and whether it is an ARTCC from the path.
 	fc.Finalize(path, e)
 	if !e.HaveErrors() {
-		cacheFacilityConfig(path, fc)
+		c.add(path, fc)
 	}
 }
 

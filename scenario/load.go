@@ -15,7 +15,6 @@ import (
 	"runtime"
 	"slices"
 	"strings"
-	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -117,15 +116,6 @@ func scenarioBriefPath(facility string) string {
 	return "briefs/" + artcc + "/" + facility + ".md"
 }
 
-// facilityConfigCache caches loaded facility configs so that multiple
-// scenario groups referencing the same facility (e.g., N90) share one load.
-// Protected by facilityConfigCacheMu since loadFacilityConfig is called
-// from parallel goroutines during scenario loading.
-var (
-	facilityConfigCache   = make(map[string]*sim.FacilityConfig)
-	facilityConfigCacheMu sync.Mutex
-)
-
 // loadNeighborControllers loads controllers from a neighboring facility's
 // config file and adds them to the scenario group's ControlPositions.
 // The neighbor is identified by facility code (e.g., "ABE", "PHL", "ZDC").
@@ -151,7 +141,7 @@ func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 	return ""
 }
 
-func loadNeighborControllers(filesystem fs.FS, sg *Group, neighbor string,
+func loadNeighborControllers(configs *facilityConfigCache, filesystem fs.FS, sg *Group, neighbor string,
 	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
 	prefix := neighborPrefix(neighbor, handoffIDs)
 	if prefix == "" {
@@ -175,7 +165,7 @@ func loadNeighborControllers(filesystem fs.FS, sg *Group, neighbor string,
 		return // Neighbor config doesn't exist — not an error.
 	}
 
-	fc := loadFacilityConfig(filesystem, path, e)
+	fc := configs.load(filesystem, path, e)
 	if fc == nil {
 		return
 	}
@@ -237,9 +227,10 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 	// Install the facility config overrides before anything else so that
 	// every load of the files they replace picks them up.
+	configs := makeFacilityConfigCache()
 	for _, fc := range overrides.FacilityConfigs {
 		var oe util.ErrorLogger
-		loadFacilityConfigOverride(fc, &oe)
+		configs.loadOverride(fc, &oe)
 		if oe.HaveErrors() {
 			addOverrideErrors(oe.String())
 			lg.Warnf("Facility config override has errors and will not be loaded: %s", fc)
@@ -326,7 +317,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 			// Load and validate facility config for the extra scenario.
 			extraResourcesFS := util.GetResourcesFS()
-			fc := loadFacilityConfig(extraResourcesFS, facilityConfigPath(s), &extraE)
+			fc := configs.load(extraResourcesFS, facilityConfigPath(s), &extraE)
 			if fc != nil {
 				fc.Finalize(facilityConfigPath(s), &extraE)
 			}
@@ -335,7 +326,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 				for _, neighbor := range fc.HandoffIDs {
 					neighbor := string(neighbor.ID)
-					loadNeighborControllers(extraResourcesFS, s, neighbor, fc.HandoffIDs, &extraE)
+					loadNeighborControllers(configs, extraResourcesFS, s, neighbor, fc.HandoffIDs, &extraE)
 				}
 			}
 
@@ -493,7 +484,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	eg.SetLimit(runtime.NumCPU())
 	for i, it := range configItems {
 		eg.Go(func() error {
-			fc := loadFacilityConfig(it.filesystem, it.path, &configErrs[i])
+			fc := configs.load(it.filesystem, it.path, &configErrs[i])
 			if fc != nil {
 				fc.Finalize(it.path, &configErrs[i])
 			}
@@ -553,7 +544,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	coordinationChecked := make(map[string]bool)
 	for _, tracon := range scenarioGroups {
 		for name, sg := range tracon {
-			fc := loadFacilityConfig(resourcesFS, facilityConfigPath(sg), e)
+			fc := configs.load(resourcesFS, facilityConfigPath(sg), e)
 			if fc == nil {
 				delete(tracon, name)
 				continue
@@ -605,7 +596,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 			// Load controllers from neighboring facilities.
 			for _, neighborFac := range fc.HandoffIDs {
 				neighbor := string(neighborFac.ID)
-				loadNeighborControllers(resourcesFS, sg, neighbor, fc.HandoffIDs, e)
+				loadNeighborControllers(configs, resourcesFS, sg, neighbor, fc.HandoffIDs, e)
 			}
 		}
 	}

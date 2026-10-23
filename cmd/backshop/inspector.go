@@ -195,7 +195,7 @@ func (in *inspector) drawScenarioTab(a *app) {
 
 	imgui.Separator()
 
-	if imgui.Button("Reload scenarios") {
+	if imgui.Button("Reload resources") {
 		a.reloadScenarios()
 	}
 	imgui.SameLine()

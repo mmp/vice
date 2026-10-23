@@ -5,9 +5,12 @@
 package scenario
 
 import (
+	"encoding/json"
 	"io"
+	"io/fs"
 	"log/slog"
 	"maps"
+	"os"
 	"path/filepath"
 	"reflect"
 	"slices"
@@ -408,5 +411,54 @@ func TestLoadMissingVideoMapOverride(t *testing.T) {
 	}
 	if !strings.Contains(overrideErrors, missing) {
 		t.Errorf("override errors %q don't mention %s", overrideErrors, missing)
+	}
+}
+
+// TestLoadRereadsFacilityConfigs checks that every Load reads the facility
+// configurations afresh, so that a reload picks up an override that was added
+// or removed since the last one just as it does an edited file.
+func TestLoadRereadsFacilityConfigs(t *testing.T) {
+	db.InitDB()
+	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
+
+	installed, err := fs.ReadFile(util.GetResourcesFS(), "configurations/ZNY/ABE.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var config map[string]json.RawMessage
+	if err := json.Unmarshal(installed, &config); err != nil {
+		t.Fatal(err)
+	}
+	config["disable_tfr_restriction_areas"] = json.RawMessage("true")
+	contents, err := json.Marshal(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	override := filepath.Join(t.TempDir(), "ABE.json")
+	if err := os.WriteFile(override, contents, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	tfrAreasDisabled := func(overrides OverrideFiles) bool {
+		var e util.ErrorLogger
+		tables, overrideErrors := Load(overrides, &e, lg)
+		if e.HaveErrors() || overrideErrors != "" {
+			t.Fatalf("unexpected errors: %s%s", e.String(), overrideErrors)
+		}
+		for _, sg := range tables.Groups["ABE"] {
+			return sg.FacilityConfig.DisableTFRRestrictionAreas
+		}
+		t.Fatal("no ABE scenario groups")
+		return false
+	}
+
+	if tfrAreasDisabled(OverrideFiles{}) {
+		t.Fatal("the installed ABE configuration already disables TFR restriction areas")
+	}
+	if !tfrAreasDisabled(OverrideFiles{FacilityConfigs: []string{override}}) {
+		t.Error("an override added after a load wasn't used")
+	}
+	if tfrAreasDisabled(OverrideFiles{}) {
+		t.Error("an override was still used after it was removed")
 	}
 }

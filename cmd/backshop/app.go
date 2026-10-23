@@ -284,9 +284,10 @@ func (a *app) update() {
 	}
 }
 
-// reloadScenarios re-reads the scenario JSON from disk and restarts the sim
-// on the reloaded scenario, which is the whole point of the tool: the edit
-// loop shouldn't include relaunching.
+// reloadScenarios re-reads the aviation database, scenarios, facility
+// configurations, briefs, and video maps from disk and restarts the sim on
+// the reloaded scenario, which is the whole point of the tool: the edit loop
+// shouldn't include relaunching.
 func (a *app) reloadScenarios() {
 	if a.reload != nil || a.mgr.LocalServer == nil {
 		return
@@ -341,7 +342,7 @@ func (a *app) drawMenuBar() {
 	}
 
 	if imgui.BeginMenu("File") {
-		if imgui.MenuItemBoolV("Reload scenarios", reloadShortcut, false, a.reload == nil) {
+		if imgui.MenuItemBoolV("Reload resources", reloadShortcut, false, a.reload == nil) {
 			a.reloadScenarios()
 		}
 		imgui.EndMenu()
