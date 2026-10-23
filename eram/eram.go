@@ -636,7 +636,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.updateConflictAlerts(ctx, tracks)
 
 	// draw the ERAM pane
-	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(colors.scopeBackground)) // Scale this eventually
+	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(colors.scopeBackground))
 	ep.processKeyboardInput(ctx)
 	// ctr := UserCenter
 	// ps.Range is the vertical extent of the scope in NM (matching the
