@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/eram"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
@@ -69,6 +70,8 @@ type Config struct {
 	// DisplaySimLogs enables logging of basic information about a Sim's execution (notably, things
 	// likely to be useful for facility engineering) in the MessagesWindow.
 	DisplaySimLogs bool
+
+	PilotDelays nav.PilotDelays
 
 	NoBriefAtScenarioStart bool
 
@@ -266,6 +269,7 @@ func getDefaultConfig() *Config {
 		FlightStripWindow:     NewFlightStripWindow(),
 		ShowMessages:          true,
 		ShowFlightStrips:      true,
+		PilotDelays:           nav.DefaultPilotDelays,
 	}
 }
 
@@ -280,7 +284,10 @@ func readConfig(fn string) (*Config, error) {
 
 // decodeConfig decodes the contents of a configuration file.
 func decodeConfig(b []byte) (*Config, error) {
-	c := &Config{}
+	// A config saved before the pilot delays were stored gets the defaults.
+	// Zero delays are valid, so they can't be filled in after decoding the
+	// way zero values of other settings are.
+	c := &Config{PilotDelays: nav.DefaultPilotDelays}
 	if err := json.Unmarshal(b, c); err != nil {
 		return nil, err
 	}

@@ -49,8 +49,6 @@ var (
 
 		launchControlWindow *LaunchControlWindow
 
-		pilotDelays nav.PilotDelays
-
 		// Scenario routes to draw on the scope
 		showSettings      bool
 		showScenarioInfo  bool
@@ -125,8 +123,6 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Lo
 	ui.fixedFont = gui.GetFont(gui.Fonts.RobotoMono, gui.FixedFontSize(config.UIFontSize))
 	ui.aboutFont = gui.GetFont(gui.Fonts.RobotoRegular, 18)
 	ui.aboutFontSmall = gui.GetFont(gui.Fonts.RobotoRegular, 14)
-
-	ui.pilotDelays = nav.DefaultPilotDelays
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
 		lg.Errorf("Unable to decode icon PNG: %v", err)
@@ -1210,7 +1206,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarSc
 		}
 
 		imgui.Separator()
-		drawPilotDelayEditor(c)
+		drawPilotDelayEditor(c, config)
 	}
 
 	imgui.End()
@@ -1219,10 +1215,10 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarSc
 // drawPilotDelayEditor draws min and max sliders for each range of pilot
 // delays. It sends the server the delays when an edit is finished rather
 // than on every frame of a drag.
-func drawPilotDelayEditor(c *client.ControlClient) {
+func drawPilotDelayEditor(c *client.ControlClient, config *Config) {
 	imgui.Text("Pilot delays (Ctrl-click a slider to type a value)")
 
-	d := &ui.pilotDelays
+	d := &config.PilotDelays
 	ranges := []struct {
 		label string
 		r     *nav.DelayRange
