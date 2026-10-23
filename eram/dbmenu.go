@@ -363,7 +363,7 @@ func headingMenuCurrentValue(heading string, lt, rt bool) string {
 	}
 
 	n, err := strconv.Atoi(digits)
-	if err != nil || !allDigits(digits) || n < lo || n > hi {
+	if err != nil || !util.IsAllNumbers(digits) || n < lo || n > hi {
 		return ""
 	}
 	n = (n + 2) / 5 * 5

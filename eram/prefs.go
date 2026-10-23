@@ -444,7 +444,7 @@ func parseAltitudeBlock(s string, minDigits int) (block [2]int, ok bool) {
 		return [2]int{}, false
 	}
 	for i, d := range [2]string{floor, ceiling} {
-		if len(d) < minDigits || len(d) > 3 || !allDigits(d) {
+		if len(d) < minDigits || len(d) > 3 || !util.IsAllNumbers(d) {
 			return [2]int{}, false
 		}
 		block[i], _ = strconv.Atoi(d)

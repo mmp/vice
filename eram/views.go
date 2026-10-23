@@ -814,23 +814,9 @@ func wxMetarBody(ctx *scope.Context, icao av.ICAOAirportCode) string {
 	// Find the time-group token: digits followed by 'Z'. (Plain strings.Index
 	// would match the 'Z' inside station IDs like "CYYZ".)
 	rawFields := strings.Fields(metar.Raw)
-	timeField := -1
-	for j, f := range rawFields {
-		if len(f) < 5 || f[len(f)-1] != 'Z' {
-			continue
-		}
-		allDigits := true
-		for _, c := range f[:len(f)-1] {
-			if c < '0' || c > '9' {
-				allDigits = false
-				break
-			}
-		}
-		if allDigits {
-			timeField = j
-			break
-		}
-	}
+	timeField := slices.IndexFunc(rawFields, func(f string) bool {
+		return len(f) >= 5 && f[len(f)-1] == 'Z' && util.IsAllNumbers(f[:len(f)-1])
+	})
 	if timeField == -1 {
 		return "-M-"
 	}

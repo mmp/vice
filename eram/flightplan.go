@@ -81,7 +81,7 @@ type altitudeEntry struct {
 func parseAltitudeEntry(s string, formatErr string) (altitudeEntry, error) {
 	q, alt, found := strings.Cut(s, "/")
 	e := altitudeEntry{qualifier: map[string]sim.AltitudeQualifier{"VFR": sim.VFRAltitude, "OTP": sim.OTPAltitude}[q]}
-	if e.qualifier == sim.PlainAltitude || (found && (len(alt) != 3 || !allDigits(alt))) {
+	if e.qualifier == sim.PlainAltitude || (found && (len(alt) != 3 || !util.IsAllNumbers(alt))) {
 		return e, errors.New(formatErr)
 	}
 	n, _ := strconv.Atoi(alt)

@@ -264,15 +264,8 @@ func (h *eramAltAParser) Identifier() string { return "ERAM_ALT_A" }
 
 func (h *eramAltAParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
-	if len(field) != 3 {
+	if len(field) != 3 || !util.IsAllNumbers(field) {
 		return nil, text, false, nil
-	}
-
-	// All 3 characters must be digits
-	for i := range 3 {
-		if !isNum(field[i]) {
-			return nil, text, false, nil
-		}
 	}
 
 	alt, err := strconv.Atoi(field)
@@ -307,15 +300,8 @@ func (h *eramAltIParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 		altStr = field[1:]
 	}
 
-	if len(altStr) != 3 {
+	if len(altStr) != 3 || !util.IsAllNumbers(altStr) {
 		return nil, text, false, nil
-	}
-
-	// All 3 characters must be digits
-	for i := range 3 {
-		if !isNum(altStr[i]) {
-			return nil, text, false, nil
-		}
 	}
 
 	alt, err := strconv.Atoi(altStr)
@@ -446,7 +432,7 @@ func (h *suppressionGroupParser) Identifier() string { return "SUPP_GROUP" }
 
 func (h *suppressionGroupParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
 	field, remaining := util.CutAtSpace(text)
-	if len(field) != 2 || !allDigits(field) {
+	if len(field) != 2 || !util.IsAllNumbers(field) {
 		return nil, text, false, nil
 	}
 	id, _ := strconv.Atoi(field)
@@ -572,11 +558,8 @@ func (h *numberParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput,
 			return nil, text, false, nil
 		}
 		num, remainder = text[:h.digits], text[h.digits:]
-		// Verify all digits
-		for i := 0; i < h.digits; i++ {
-			if !isNum(num[i]) {
-				return nil, text, false, nil
-			}
+		if !util.IsAllNumbers(num) {
+			return nil, text, false, nil
 		}
 	} else {
 		num, remainder, _ = util.CutFunc(text, func(ch rune) bool { return !isNum(byte(ch)) })
@@ -727,8 +710,8 @@ func (h *crrLabelParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 	}
 
 	// Validate all characters are alphanumeric
-	for i := 0; i < len(field); i++ {
-		if !isAlpha(field[i]) && !isNum(field[i]) {
+	for i := range len(field) {
+		if !isAlphaNum(field[i]) {
 			return nil, text, false, nil
 		}
 	}
@@ -928,7 +911,7 @@ func (h *hsfSpeedParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 			return nil, text, true, NewError("INVALID SPEED FORMAT")
 		}
 		d := rest[1:]
-		if len(d) != 3 || !allDigits(d) {
+		if len(d) != 3 || !util.IsAllNumbers(d) {
 			return nil, text, true, NewError("INVALID SPEED FORMAT")
 		}
 		return "S" + d, remaining, true, nil
@@ -937,7 +920,7 @@ func (h *hsfSpeedParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 	// Explicit mach: /M75 or /M.75.
 	if strings.HasPrefix(upper, "M") {
 		d := strings.TrimPrefix(rest[1:], ".")
-		if len(d) != 2 || !allDigits(d) {
+		if len(d) != 2 || !util.IsAllNumbers(d) {
 			return nil, text, true, NewError("INVALID SPEED FORMAT")
 		}
 		if v, _ := strconv.Atoi(d); v < 10 {
@@ -951,7 +934,7 @@ func (h *hsfSpeedParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 	}
 
 	// Inferred: digits only. 2 -> mach; 3 -> speed
-	if !allDigits(rest) {
+	if !util.IsAllNumbers(rest) {
 		return nil, text, true, NewError("INVALID SPEED FORMAT")
 	}
 	switch len(rest) {
@@ -979,12 +962,3 @@ func (h *hsfSpeedParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInpu
 
 func (h *hsfSpeedParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *hsfSpeedParser) AcceptsClick() bool   { return false }
-
-func allDigits(s string) bool {
-	for i := 0; i < len(s); i++ {
-		if !isNum(s[i]) {
-			return false
-		}
-	}
-	return true
-}
