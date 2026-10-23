@@ -405,9 +405,10 @@ type Scope struct {
 	weatherRadar scope.WeatherRadar
 	nexrad       nexradCBs
 
-	commandMode       CommandMode
-	drawRouteAircraft av.ADSBCallsign
-	drawRoutePoints   []math.Point2LL
+	// drawingRoute is set while .DRAWROUTE takes clicks as the points of
+	// drawRoutePoints.
+	drawingRoute    bool
+	drawRoutePoints []math.Point2LL
 
 	// Per-frame scratch buffers, reused across Draw calls to avoid
 	// allocations.
@@ -715,9 +716,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 
 	ep.scopeDraw.Clear()
 
-	ep.commandMode = CommandModeNone
-	ep.drawRoutePoints = nil
-	ep.drawRouteAircraft = ""
+	ep.drawingRoute, ep.drawRoutePoints = false, nil
 
 	ep.input.Clear()
 	ep.responseArea = ""
@@ -995,19 +994,9 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 				ps.RA.Position = [2]float32{big[0] + 390, big[1]}
 			}
 		case imgui.KeyBackspace:
-			if ep.commandMode == CommandModeDrawRoute {
+			if ep.drawingRoute {
 				if n := len(ep.drawRoutePoints); n > 0 {
-					ep.drawRoutePoints = ep.drawRoutePoints[:n-1]
-					if len(ep.drawRoutePoints) > 0 {
-						var cb []string
-						for _, p := range ep.drawRoutePoints {
-							cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
-						}
-						ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
-						ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
-					} else {
-						ep.responseArea = "DRAWROUTE"
-					}
+					ep.setDrawRoutePoints(ctx, ep.drawRoutePoints[:n-1])
 				}
 			} else if len(ep.input) > 0 {
 				ep.input = ep.input[:len(ep.input)-1]
@@ -1039,9 +1028,8 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 				ep.viewRepo.Cancel()
 			}
 			if !anyActive {
-				if ep.commandMode == CommandModeDrawRoute {
-					ep.commandMode = CommandModeNone
-					ep.drawRoutePoints = nil
+				if ep.drawingRoute {
+					ep.drawingRoute, ep.drawRoutePoints = false, nil
 					ep.responseArea = ""
 				}
 				ep.input.Clear()

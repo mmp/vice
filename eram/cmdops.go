@@ -29,21 +29,21 @@ func registerOpsCommands() {
 	// QQ [ALT] [TRACK]: Set interim, procedure (P), or local interim (L) altitude
 	// QQ L [TRACK]: Clear local interim altitude
 	// QQ [TRACK]: Clear interim or procedure altitude
-	registerCommand(CommandModeNone, "QQ [ERAM_ALT_I] [TRACK]", handleInterimAltitude)
-	registerCommand(CommandModeNone, "QQ L [TRACK]", handleClearLocalInterimAltitude)
-	registerCommand(CommandModeNone, "QQ [TRACK]", handleClearInterimAltitude)
+	registerCommand("QQ [ERAM_ALT_I] [TRACK]", handleInterimAltitude)
+	registerCommand("QQ L [TRACK]", handleClearLocalInterimAltitude)
+	registerCommand("QQ [TRACK]", handleClearInterimAltitude)
 
 	// QZ - Assigned altitude
 	// QZ [ALT] [TRACK]: Set assigned altitude
 	// QZ [FLOOR]B[CEILING] [TRACK]: Set block altitude, (d)ddB(d)dd
-	registerCommand(CommandModeNone, "QZ [ERAM_ALT_A] [TRACK]", handleAssignedAltitude)
-	registerCommand(CommandModeNone, "QZ [ALT_BLOCK] [TRACK]", handleAssignedAltitudeBlock)
+	registerCommand("QZ [ERAM_ALT_A] [TRACK]", handleAssignedAltitude)
+	registerCommand("QZ [ALT_BLOCK] [TRACK]", handleAssignedAltitudeBlock)
 	// QZ VFR, VFR/[ALT], OTP, or OTP/[ALT] [TRACK]: Set VFR or VFR-on-top altitude
-	registerCommand(CommandModeNone, "QZ [ALT_VFR] [TRACK]", handleAssignedVFRAltitude)
+	registerCommand("QZ [ALT_VFR] [TRACK]", handleAssignedVFRAltitude)
 
 	// QX - Drop track
 	// QX [TRACK]
-	registerCommand(CommandModeNone, "QX [TRACK]", handleDropTrack)
+	registerCommand("QX [TRACK]", handleDropTrack)
 
 	// QU - Direct to fix / Route display
 	// QU: Clear all route displays
@@ -51,36 +51,36 @@ func registerOpsCommands() {
 	// QU /M [TRACK]: Display full route
 	// QU [MINUTES] [TRACK] or QU [TRACK] [MINUTES]: Display route for specified minutes
 	// QU [FIXES_AND_TRACK]: Amend route for track
-	registerCommand(CommandModeNone, "QU", handleClearRouteDisplay)
-	registerCommand(CommandModeNone, "QU [TRACK]", handleDefaultRouteDisplay)
-	registerCommand(CommandModeNone, "QU /M [TRACK]", handleMaxRouteDisplay)
-	registerCommand(CommandModeNone, "QU [MINUTES] [TRACK]|QU [TRACK] [MINUTES]", handleRouteDisplayMinutes)
-	registerCommand(CommandModeNone, "QU [FIXES_AND_TRACK]", handleAmendRoute)
+	registerCommand("QU", handleClearRouteDisplay)
+	registerCommand("QU [TRACK]", handleDefaultRouteDisplay)
+	registerCommand("QU /M [TRACK]", handleMaxRouteDisplay)
+	registerCommand("QU [MINUTES] [TRACK]|QU [TRACK] [MINUTES]", handleRouteDisplayMinutes)
+	registerCommand("QU [FIXES_AND_TRACK]", handleAmendRoute)
 
 	// QP - J rings
 	// QP J [TRACK]: Toggle J ring
 	// QP T [TRACK]: Toggle reduced J ring
-	registerCommand(CommandModeNone, "QP J [TRACK]", handleJRing)
-	registerCommand(CommandModeNone, "QP T [TRACK]", handleReducedJRing)
+	registerCommand("QP J [TRACK]", handleJRing)
+	registerCommand("QP T [TRACK]", handleReducedJRing)
 
 	// QP - Point outs
 	// QP [SECTOR_ID] [TRACK]: Initiate point out
 	// QP A [TRACK]: Acknowledge the track's one point out
 	// QP A [SECTOR_ID_LIST] [TRACK]: Acknowledge the point outs from the given sectors
 	// QP [TRACK]: Request or suppress the FDB of another sector's track
-	registerCommand(CommandModeNone, "QP A [TRACK]",
+	registerCommand("QP A [TRACK]",
 		func(ep *Scope, ctx *scope.Context, trk *sim.Track) error {
 			return ep.acknowledgePointOuts(ctx, trk, nil)
 		})
-	registerCommand(CommandModeNone, "QP A [SECTOR_ID_LIST] [TRACK]",
+	registerCommand("QP A [SECTOR_ID_LIST] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, sectors []string, trk *sim.Track) error {
 			return ep.acknowledgePointOuts(ctx, trk, sectors)
 		})
-	registerCommand(CommandModeNone, "QP [SECTOR_ID] [TRACK]",
+	registerCommand("QP [SECTOR_ID] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, sector string, trk *sim.Track) error {
 			return ep.pointOutTrack(ctx, trk, sector)
 		})
-	registerCommand(CommandModeNone, "QP [TRACK]",
+	registerCommand("QP [TRACK]",
 		func(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
 			return ep.requestSuppressDatablock(ctx, trk)
 		})
@@ -95,43 +95,43 @@ func registerOpsCommands() {
 	//   that already has exactly those flights is deleted
 	// The group forms come first so that an ID with no group is reported
 	// as such rather than as an illegal flight of a flight list.
-	registerCommand(CommandModeNone, "SG [SUPP_GROUP] [TRACK]",
+	registerCommand("SG [SUPP_GROUP] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, id int, trk *sim.Track) (CommandStatus, error) {
 			return ep.enterGroupFlight(ctx, id, trk, toggleGroupFlight)
 		})
-	registerCommand(CommandModeNone, "SG A [SUPP_GROUP] [TRACK]",
+	registerCommand("SG A [SUPP_GROUP] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, id int, trk *sim.Track) (CommandStatus, error) {
 			return ep.enterGroupFlight(ctx, id, trk, addGroupFlight)
 		})
-	registerCommand(CommandModeNone, "SG D [SUPP_GROUP] [TRACK]",
+	registerCommand("SG D [SUPP_GROUP] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, id int, trk *sim.Track) (CommandStatus, error) {
 			return ep.enterGroupFlight(ctx, id, trk, deleteGroupFlight)
 		})
-	registerCommand(CommandModeNone, "SG [SUPP_GROUP]|SG A [SUPP_GROUP]", (*Scope).displaySuppressionGroup)
-	registerCommand(CommandModeNone, "SG D [SUPP_GROUP]", (*Scope).unsubscribeSuppressionGroup)
-	registerCommand(CommandModeNone, "SG [TRACK_LIST]",
+	registerCommand("SG [SUPP_GROUP]|SG A [SUPP_GROUP]", (*Scope).displaySuppressionGroup)
+	registerCommand("SG D [SUPP_GROUP]", (*Scope).unsubscribeSuppressionGroup)
+	registerCommand("SG [TRACK_LIST]",
 		func(ep *Scope, tracks []*sim.Track) (CommandStatus, error) {
 			return ep.enterSuppressionGroup(tracks, false)
 		})
-	registerCommand(CommandModeNone, "SG A [TRACK_LIST]",
+	registerCommand("SG A [TRACK_LIST]",
 		func(ep *Scope, tracks []*sim.Track) (CommandStatus, error) {
 			return ep.enterSuppressionGroup(tracks, true)
 		})
 
 	// QL - Quicklook
-	registerCommand(CommandModeNone, "QL [SECTOR_ID_LIST]", handleToggleQuicklook)
-	registerCommand(CommandModeNone, "QL", handleDisableAllQuicklook)
+	registerCommand("QL [SECTOR_ID_LIST]", handleToggleQuicklook)
+	registerCommand("QL", handleDisableAllQuicklook)
 
 	// QB - beacon code view codes
-	registerCommand(CommandModeNone, "QB [BCN_LIST]", handleBeaconCodeViewList)
+	registerCommand("QB [BCN_LIST]", handleBeaconCodeViewList)
 
 	// QD - Altitude limits filters
 	// QD [LOW]B[HIGH]: set both the target and the LDB filter
-	registerCommand(CommandModeNone, "QD [ALT_LIMITS]", handleAltitudeLimitsFilter)
+	registerCommand("QD [ALT_LIMITS]", handleAltitudeLimitsFilter)
 
 	// QF - Flight Plan Display
-	registerCommand(CommandModeNone, "QF R [TRACK]", handleFlightPlanReadoutRA)
-	registerCommand(CommandModeNone, "QF [TRACK]", handleFlightPlanReadout)
+	registerCommand("QF R [TRACK]", handleFlightPlanReadoutRA)
+	registerCommand("QF [TRACK]", handleFlightPlanReadout)
 
 	// QS - HSF (Heading / Speed-Mach / Free-text) scratchpad handling
 	//   QS `<text> [TRACK]      - set free text (backtick is clear-weather symbol)
@@ -142,54 +142,54 @@ func registerOpsCommands() {
 	//   QS /* [TRACK]           - delete speed/mach
 	//   QS * [TRACK]            - delete all HSF data
 	//   QS [TRACK]              - toggle display of HSF data
-	registerCommand(CommandModeNone, "QS [HSF_TEXT] [TRACK]", handleQSFreeText)
-	registerCommand(CommandModeNone, "QS [HSF_SPEED] [TRACK]", handleQSSpeed)
-	registerCommand(CommandModeNone, "QS [HSF_HDG] [TRACK]", handleQSHeading)
-	registerCommand(CommandModeNone, "QS [HSF_HDG][HSF_SPEED] [TRACK]", handleQSHeadingSpeed)
-	registerCommand(CommandModeNone, "QS */ [TRACK]", handleQSDeleteHeading)
-	registerCommand(CommandModeNone, "QS /* [TRACK]", handleQSDeleteSpeed)
-	registerCommand(CommandModeNone, "QS * [TRACK]", handleQSDeleteAll)
-	registerCommand(CommandModeNone, "QS [TRACK]", handleQSToggleHSF)
+	registerCommand("QS [HSF_TEXT] [TRACK]", handleQSFreeText)
+	registerCommand("QS [HSF_SPEED] [TRACK]", handleQSSpeed)
+	registerCommand("QS [HSF_HDG] [TRACK]", handleQSHeading)
+	registerCommand("QS [HSF_HDG][HSF_SPEED] [TRACK]", handleQSHeadingSpeed)
+	registerCommand("QS */ [TRACK]", handleQSDeleteHeading)
+	registerCommand("QS /* [TRACK]", handleQSDeleteSpeed)
+	registerCommand("QS * [TRACK]", handleQSDeleteAll)
+	registerCommand("QS [TRACK]", handleQSToggleHSF)
 
 	// MR - Map request (keyboard only)
 	// MR: List available map groups
 	// MR [GROUP]: Load map group
-	registerCommand(CommandModeNone, "MR", handleMapRequestList)
-	registerCommand(CommandModeNone, "MR [FIELD]", handleMapRequestLoad)
+	registerCommand("MR", handleMapRequestList)
+	registerCommand("MR [FIELD]", handleMapRequestLoad)
 
 	// LA - track range - distance between points
-	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM]",
+	registerCommand("LA [LOC_SYM] [LOC_SYM]",
 		func(ep *Scope, ctx *scope.Context, from math.Point2LL, to math.Point2LL) CommandStatus {
 			return handleLALocLoc(ep, ctx, from, to, laOptions{})
 		})
-	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM]",
+	registerCommand("LA [TRACK] [LOC_SYM]",
 		func(ep *Scope, ctx *scope.Context, trk *sim.Track, to math.Point2LL) CommandStatus {
 			return handleLATrkLoc(ep, ctx, trk, to, laOptions{})
 		})
-	registerCommand(CommandModeNone, "LA [TRACK] [TRACK]",
+	registerCommand("LA [TRACK] [TRACK]",
 		func(ep *Scope, ctx *scope.Context, trk1, trk2 *sim.Track) CommandStatus {
 			return handleLATrkLoc(ep, ctx, trk1, ep.TrackState[trk2.ADSBCallsign].Track.Location, laOptions{})
 		})
-	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] [LA_OPTS]", handleLALocLoc)
-	registerCommand(CommandModeNone, "LA [TRACK] [LOC_SYM] [LA_OPTS]", handleLATrkLoc)
-	registerCommand(CommandModeNone, "LA [TRACK] [TRACK] [LA_OPTS]",
+	registerCommand("LA [LOC_SYM] [LOC_SYM] [LA_OPTS]", handleLALocLoc)
+	registerCommand("LA [TRACK] [LOC_SYM] [LA_OPTS]", handleLATrkLoc)
+	registerCommand("LA [TRACK] [TRACK] [LA_OPTS]",
 		func(ep *Scope, ctx *scope.Context, trk1, trk2 *sim.Track, opts laOptions) CommandStatus {
 			return handleLATrkLoc(ep, ctx, trk1, ep.TrackState[trk2.ADSBCallsign].Track.Location, opts)
 		})
 
 	// LB - track range - distance between fix and track/location
-	registerCommand(CommandModeNone, "LB [FIX] [LOC_SYM]", handleLBFixLoc)
-	registerCommand(CommandModeNone, "LB [FIX] [TRACK]", handleLBFixTrk)
-	registerCommand(CommandModeNone, "LB [FIX]/[NUM] [TRACK]", handleLBFixSpeedTrk)
+	registerCommand("LB [FIX] [LOC_SYM]", handleLBFixLoc)
+	registerCommand("LB [FIX] [TRACK]", handleLBFixTrk)
+	registerCommand("LB [FIX]/[NUM] [TRACK]", handleLBFixSpeedTrk)
 
 	// LC - speed adjustment to position a track over a fix at a specified UTC time
-	registerCommand(CommandModeNone, "LC [FIX]/[NUM] [TRACK]", handleLCFixTimeTrk)
+	registerCommand("LC [FIX]/[NUM] [TRACK]", handleLCFixTimeTrk)
 
 	// LD - times at the fixes of a track's route through a fix
-	registerCommand(CommandModeNone, "LD [FIX] [TRACK]", handleLDFixTrk)
+	registerCommand("LD [FIX] [TRACK]", handleLDFixTrk)
 
 	// LE - speed adjustment to reach a fix on a track's route at a specified UTC time
-	registerCommand(CommandModeNone, "LE [FIX]/[NUM] [TRACK]", handleLEFixTimeTrk)
+	registerCommand("LE [FIX]/[NUM] [TRACK]", handleLEFixTimeTrk)
 
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
@@ -198,20 +198,20 @@ func registerOpsCommands() {
 	// LF [LABEL] [AIRCRAFT...]: Toggle membership for up to 4 aircraft
 	// Aircraft tokens may be CIDs, ADSB callsigns, or beacon codes separated by
 	// '/' and/or spaces, and/or clicks on tracks.
-	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL] [TRACK_LIST]", handleCRRCreateWithAircraft)
-	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
-	registerCommand(CommandModeNone, "LF [CRR_LOC]", handleCRRCreateAutoLabel)
-	registerCommand(CommandModeNone, "LF [LOC_SYM] [CRR_LABEL]", handleCRRAddClicked) // LF {pos} LABEL - valid order
-	registerCommand(CommandModeNone, "LF [CRR_LABEL] [LOC_SYM]", handleCRRWrongOrder) // LF LABEL {pos} - wrong order
-	registerCommand(CommandModeNone, "LF [CRR_LABEL] [TRACK_LIST]", handleCRRToggleMembership)
+	registerCommand("LF [CRR_LOC] [CRR_LABEL] [TRACK_LIST]", handleCRRCreateWithAircraft)
+	registerCommand("LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
+	registerCommand("LF [CRR_LOC]", handleCRRCreateAutoLabel)
+	registerCommand("LF [LOC_SYM] [CRR_LABEL]", handleCRRAddClicked) // LF {pos} LABEL - valid order
+	registerCommand("LF [CRR_LABEL] [LOC_SYM]", handleCRRWrongOrder) // LF LABEL {pos} - wrong order
+	registerCommand("LF [CRR_LABEL] [TRACK_LIST]", handleCRRToggleMembership)
 	// Error handlers for incomplete LF commands
-	registerCommand(CommandModeNone, "LF [CRR_LABEL]", handleCRRLabelOnly) // LF LABEL without click or aircraft
-	registerCommand(CommandModeNone, "LF", handleCRREmpty)                 // LF alone
+	registerCommand("LF [CRR_LABEL]", handleCRRLabelOnly) // LF LABEL without click or aircraft
+	registerCommand("LF", handleCRREmpty)                 // LF alone
 
 	// AR - Add airport to ALTIM SET list
 	// AR [ICAO]: Add 4-letter ICAO code (e.g., AR KMCO)
 	// AR [IATA]: Add 3-letter IATA code, auto-prepends K (e.g., AR MCO → KMCO)
-	registerCommand(CommandModeNone, "AR [FIELD]", handleAltimAdd)
+	registerCommand("AR [FIELD]", handleAltimAdd)
 
 	// WR - Weather report commands
 	// WR [ICAO]: Add 4-letter ICAO code to WX REPORT list (e.g., WR KMCO)
@@ -219,49 +219,46 @@ func registerOpsCommands() {
 	// WR [STATION] [STATION] [STATION]: Add or remove up to three stations at once
 	// WR R [ICAO]: Display station's weather report in Response Area (e.g., WR R KMCO)
 	// WR R [IATA]: Display with 3-letter IATA code (e.g., WR R MCO → KMCO)
-	registerCommand(CommandModeNone, "WR R [FIELD]", handleWXReportDisplay)
-	registerCommand(CommandModeNone, "WR [ALL_TEXT]", handleWXReportAdd)
+	registerCommand("WR R [FIELD]", handleWXReportDisplay)
+	registerCommand("WR [ALL_TEXT]", handleWXReportAdd)
 
 	// // - Toggle VCI (on-frequency indicator)
 	// QN // [TRACK] or QZ // [TRACK], or // [TRACK] with QN implied; the space before
 	// the track is optional (5.1.1.1, 2.15.1).
-	registerCommand(CommandModeNone, "//[TRACK]|// [TRACK]", handleToggleVCI)
-	registerCommand(CommandModeNone, "QN //[TRACK]|QN // [TRACK]|QZ //[TRACK]|QZ // [TRACK]", handleToggleVCI)
+	registerCommand("//[TRACK]|// [TRACK]", handleToggleVCI)
+	registerCommand("QN //[TRACK]|QN // [TRACK]|QZ //[TRACK]|QZ // [TRACK]", handleToggleVCI)
 
 	// TG - Target gen commands
 	// TG P: Toggle pause
 	// TG [cmds]: Run commands on last used aircraft
 	// TG [cmds][TRACK]: Run commands on clicked track
-	registerCommand(CommandModeNone, "TG P", handleTogglePause)
-	registerCommand(CommandModeNone, "TG [ALL_TEXT]", handleTargetGen)
-	registerCommand(CommandModeNone, "TG [ALL_TEXT][TRACK]", handleTargetGenClicked)
-	registerCommand(CommandModeNone, "TG[TRACK]", handleTargetGenEmptyClicked)
+	registerCommand("TG P", handleTogglePause)
+	registerCommand("TG [ALL_TEXT]", handleTargetGen)
+	registerCommand("TG [ALL_TEXT][TRACK]", handleTargetGenClicked)
+	registerCommand("TG[TRACK]", handleTargetGenEmptyClicked)
 
 	// Default commands, which are QN commands entered without the QN (2.15.1).
 	// Handoffs and data block offsets may also be entered with QN or QZ.
 	// [TRACK]: Accept handoff / recall handoff / toggle FDB
 	// [SECTOR_ID] [TRACK]: Initiate handoff
 	// [1-9] [TRACK]: Leader line direction
-	registerCommand(CommandModeNone, "[TRACK]|QN [TRACK]", handleDefaultTrack)
-	registerCommand(CommandModeNone, "[SECTOR_ID] [TRACK]|QN [SECTOR_ID] [TRACK]|QZ [SECTOR_ID] [TRACK]",
+	registerCommand("[TRACK]|QN [TRACK]", handleDefaultTrack)
+	registerCommand("[SECTOR_ID] [TRACK]|QN [SECTOR_ID] [TRACK]|QZ [SECTOR_ID] [TRACK]",
 		handleInitiateHandoff)
-	registerCommand(CommandModeNone, "[#] [TRACK]|QN [#] [TRACK]|QZ [#] [TRACK]", handleLeaderLinePosition)
+	registerCommand("[#] [TRACK]|QN [#] [TRACK]|QZ [#] [TRACK]", handleLeaderLinePosition)
 
 	// Leader line length commands
 	// /[0-3] [TRACK]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
 	// [1-9]/[0-3] [TRACK]: Set leader line position and length
-	registerCommand(CommandModeNone, "/[NUM] [TRACK]|QN /[NUM] [TRACK]|QZ /[NUM] [TRACK]", handleLeaderLineLength)
-	registerCommand(CommandModeNone, "[NUM]/[NUM] [TRACK]|QN [NUM]/[NUM] [TRACK]|QZ [NUM]/[NUM] [TRACK]",
+	registerCommand("/[NUM] [TRACK]|QN /[NUM] [TRACK]|QZ /[NUM] [TRACK]", handleLeaderLineLength)
+	registerCommand("[NUM]/[NUM] [TRACK]|QN [NUM]/[NUM] [TRACK]|QZ [NUM]/[NUM] [TRACK]",
 		handleLeaderLinePositionAndLength)
 
 	// .DRAWROUTE - Custom command for drawing routes
-	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
+	registerCommand(".DRAWROUTE", handleDrawRouteMode)
 
 	// ? - Custom command to print aircraft state to stdout and copy it to the clipboard
-	registerCommand(CommandModeNone, "?[TRACK]|? [TRACK]", handlePrintAircraftState)
-
-	// Commands available in draw route mode
-	registerCommand(CommandModeDrawRoute, "[POS]", handleDrawRoutePoint)
+	registerCommand("?[TRACK]|? [TRACK]", handlePrintAircraftState)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1187,25 +1184,26 @@ func handleLeaderLinePositionAndLength(ep *Scope, ctx *scope.Context, dir, lengt
 ///////////////////////////////////////////////////////////////////////////
 // .DRAWROUTE - Custom command
 
+// handleDrawRouteMode starts drawing a route: until Escape, clicks add
+// points to it and Backspace removes the last one.
 func handleDrawRouteMode(ep *Scope, ctx *scope.Context) CommandStatus {
-	ep.commandMode = CommandModeDrawRoute
-	ep.drawRoutePoints = nil
-	ep.responseArea = "DRAWROUTE"
+	ep.drawingRoute = true
+	ep.setDrawRoutePoints(ctx, nil)
 	return CommandStatus{}
 }
 
-func handleDrawRoutePoint(ep *Scope, ctx *scope.Context, pos math.Point2LL) CommandStatus {
-	ep.drawRoutePoints = append(ep.drawRoutePoints, pos)
-
-	var cb []string
-	for _, p := range ep.drawRoutePoints {
-		cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
+// setDrawRoutePoints sets the points of the route being drawn and copies
+// them to the clipboard.
+func (ep *Scope) setDrawRoutePoints(ctx *scope.Context, pts []math.Point2LL) {
+	ep.drawRoutePoints = pts
+	if len(pts) == 0 {
+		ep.responseArea = "DRAWROUTE"
+		return
 	}
-	ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
-
-	ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
-
-	return CommandStatus{}
+	ctx.Platform.GetClipboard().SetClipboard(strings.Join(util.MapSlice(pts, func(p math.Point2LL) string {
+		return strings.ReplaceAll(p.DMSString(), " ", "")
+	}), " "))
+	ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(pts))
 }
 
 ///////////////////////////////////////////////////////////////////////////

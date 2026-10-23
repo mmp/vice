@@ -90,11 +90,11 @@ func makeUserCommand(c string, f any) userCommand {
 	return uc
 }
 
-// Command registry - maps command mode to list of commands
-var userCommands = make(map[CommandMode][]userCommand)
+// Command registry
+var userCommands []userCommand
 
 // Track registered command strings to detect duplicates
-var registeredCommands = make(map[CommandMode]map[string]bool)
+var registeredCommands = make(map[string]bool)
 
 var initCommandsOnce sync.Once
 
@@ -106,17 +106,13 @@ func InitCommands() {
 
 // registerCommand is used to register all of the supported ERAM commands at startup time via
 // the register*Commands() functions in the cmd*.go files.
-func registerCommand(m CommandMode, c string, f any) {
-	if registeredCommands[m] == nil {
-		registeredCommands[m] = make(map[string]bool)
-	}
-
+func registerCommand(c string, f any) {
 	for cmd := range splitCommands(c) {
-		if registeredCommands[m][cmd] {
-			panic(fmt.Sprintf("Duplicate command registration in mode %v: %s (from %s)", m, cmd, c))
+		if registeredCommands[cmd] {
+			panic(fmt.Sprintf("Duplicate command registration: %s (from %s)", cmd, c))
 		}
-		userCommands[m] = append(userCommands[m], makeUserCommand(cmd, f))
-		registeredCommands[m][cmd] = true
+		userCommands = append(userCommands, makeUserCommand(cmd, f))
+		registeredCommands[cmd] = true
 	}
 }
 
@@ -204,23 +200,16 @@ func (c matchCandidate) advance(m matcher, r matchResult) matchCandidate {
 	return next
 }
 
-// tryExecuteUserCommand attempts to execute a command using the registered commands
-// for the current command mode.
+// tryExecuteUserCommand attempts to execute a command using the registered commands.
 func (ep *Scope) tryExecuteUserCommand(ctx *scope.Context, cmd string, mousePositions []math.Point2LL,
 	trackCallsigns []av.ADSBCallsign) (CommandStatus, error, bool) {
-	// Get commands for current mode
-	cmds, ok := userCommands[ep.commandMode]
-	if !ok || len(cmds) == 0 {
-		return CommandStatus{}, nil, false
-	}
-
 	input := &CommandInput{
 		text:           cmd,
 		mousePositions: mousePositions,
 		trackCallsigns: trackCallsigns,
 	}
 
-	return ep.dispatchCommand(ctx, cmds, input)
+	return ep.dispatchCommand(ctx, userCommands, input)
 }
 
 // dispatchCommand is the main command dispatch function using greedy matching.

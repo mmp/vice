@@ -33,13 +33,6 @@ func toUpper(s string) string {
 	return b.String()
 }
 
-type CommandMode int
-
-const (
-	CommandModeNone CommandMode = iota
-	CommandModeDrawRoute
-)
-
 func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transformations) {
 	mouse := ctx.Mouse
 	if mouse == nil {
@@ -86,15 +79,8 @@ func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transfo
 	}
 
 	if ep.mousePrimaryClicked(mouse) {
-		if ep.commandMode == CommandModeDrawRoute {
-			pos := transforms.LatLongFromWindowP(mouse.Pos)
-			ep.drawRoutePoints = append(ep.drawRoutePoints, pos)
-			var cb []string
-			for _, p := range ep.drawRoutePoints {
-				cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
-			}
-			ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
-			ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints))
+		if ep.drawingRoute {
+			ep.setDrawRoutePoints(ctx, append(ep.drawRoutePoints, transforms.LatLongFromWindowP(mouse.Pos)))
 		} else if ep.input.String() != "" {
 			pos := transforms.LatLongFromWindowP(mouse.Pos)
 			var callsign av.ADSBCallsign

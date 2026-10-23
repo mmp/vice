@@ -6,6 +6,7 @@ package eram
 
 import (
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -13,9 +14,12 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/wx"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 // QZ takes the VFR and VFR-on-top altitude forms.
@@ -444,5 +448,60 @@ func TestAltimSetTimeIsUTC(t *testing.T) {
 	metar := wx.METAR{Time: obs.In(time.FixedZone("EDT", -4*60*60))}
 	if ts, _, _ := altimMetarForDisplay(metar); ts != "2237" {
 		t.Errorf("got time %q; want %q", ts, "2237")
+	}
+}
+
+type fakeClipboard struct{ text string }
+
+func (c *fakeClipboard) GetClipboard() string  { return c.text }
+func (c *fakeClipboard) SetClipboard(s string) { c.text = s }
+
+// clipboardPlatform stands in for the platform, whose clipboard .DRAWROUTE
+// copies the route's points to.
+type clipboardPlatform struct {
+	platform.Platform
+	clipboard fakeClipboard
+}
+
+func (p *clipboardPlatform) GetClipboard() imgui.ClipboardHandler { return &p.clipboard }
+
+// .DRAWROUTE takes clicks as the points of a route, which it copies to the
+// clipboard, until Escape; Backspace removes the last point.
+func TestDrawRoute(t *testing.T) {
+	InitCommands()
+	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	pl := &clipboardPlatform{}
+	ctx := &scope.Context{DrawExtent: math.Extent2D{P1: [2]float32{1600, 900}}, Platform: pl,
+		Client: &client.ControlClient{}, HaveFocus: true}
+	transforms := scope.GetTransformations(ctx.DrawExtent, 45, math.Point2LL{-77, 39}, 100, 0)
+	click := func(p [2]float32) {
+		ctx.Mouse, ctx.Keyboard = &platform.MouseState{Pos: p}, nil
+		ctx.Mouse.Clicked[platform.MouseButtonPrimary] = true
+		ep.consumeMouseEvents(ctx, transforms)
+	}
+	press := func(k imgui.Key) {
+		ctx.Mouse, ctx.Keyboard = nil, &platform.KeyboardState{Pressed: map[imgui.Key]any{k: nil}}
+		ep.processKeyboardInput(ctx)
+	}
+
+	status, err, _ := ep.tryExecuteUserCommand(ctx, ".DRAWROUTE", nil, nil)
+	ep.applyCommandStatus(ctx, status, err)
+	click([2]float32{800, 450})
+	click([2]float32{900, 500})
+	if n := len(strings.Fields(pl.clipboard.text)); len(ep.drawRoutePoints) != 2 || n != 2 ||
+		ep.responseArea != "DRAWROUTE: 2 POINTS" {
+		t.Fatalf("after two clicks: %d points, %d on the clipboard, RA %q", len(ep.drawRoutePoints), n, ep.responseArea)
+	}
+
+	press(imgui.KeyBackspace)
+	if n := len(strings.Fields(pl.clipboard.text)); len(ep.drawRoutePoints) != 1 || n != 1 {
+		t.Errorf("after Backspace: %d points, %d on the clipboard", len(ep.drawRoutePoints), n)
+	}
+
+	press(imgui.KeyEscape)
+	click([2]float32{800, 450})
+	if ep.drawingRoute || len(ep.drawRoutePoints) != 0 || ep.responseArea != "" {
+		t.Errorf("after Escape and a click: drawing %v, %d points, RA %q", ep.drawingRoute, len(ep.drawRoutePoints),
+			ep.responseArea)
 	}
 }

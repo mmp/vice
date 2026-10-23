@@ -86,9 +86,6 @@ var typeParsers = []typeParser{
 	&fieldParser{},
 	&allTextParser{},
 
-	// Mouse click consumers
-	&posParser{},
-
 	// QU minutes
 	&minutesParser{},
 }
@@ -635,23 +632,6 @@ func (h *allTextParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput
 
 func (h *allTextParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *allTextParser) AcceptsClick() bool   { return false }
-
-// posParser handles click position as lat/long (for commands that need position without a track)
-type posParser struct{}
-
-func (h *posParser) Identifier() string { return "POS" }
-
-func (h *posParser) Parse(ep *Scope, ctx *scope.Context, input *CommandInput, text string) (any, string, bool, error) {
-	// Only match clicks on empty space, not on tracks. Use TRACK for track clicks.
-	if len(input.mousePositions) == 0 || input.trackCallsigns[0] != "" {
-		return nil, text, false, nil
-	}
-
-	return input.mousePositions[0], text, true, nil
-}
-
-func (h *posParser) GoType() reflect.Type { return reflect.TypeFor[math.Point2LL]() }
-func (h *posParser) AcceptsClick() bool   { return true }
 
 ///////////////////////////////////////////////////////////////////////////
 // Additional ERAM-specific parsers
