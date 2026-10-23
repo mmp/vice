@@ -6024,6 +6024,8 @@
                 It keeps doing this until it finds a valid route, but eventually it will give up if it's not being successful.
                 Thus, feel free to define routes that are close to the boundaries of such airspace, but give <i>vice</i>
                 some space to work with via <code>/radius</code> and altitude ranges so that it has a chance of finding a valid route.
+                Random routes are also kept clear of the terrain; routes given in "routes" are not, so their altitudes
+                must clear it themselves.
               </p>
               <p>Two other useful tools when working on VFR: in the STARS scope, if you type <code>.VFR</code> and
                 press enter, <i>vice</i> will show all of the VFR departure airports by drawing a circle around their location

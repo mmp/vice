@@ -22,7 +22,8 @@ import (
 // so that the aircraft is down before it and one just past the far edge so
 // that it stays down until clear, and the rest of the route keeps its
 // cruise altitude. A route passes over airspace whose ceiling is below its
-// cruise altitude. Routes with no room under the shelf are rejected.
+// cruise altitude. Routes with no room under the shelf are rejected, though
+// the terrain below it doesn't limit a scenario's route.
 func TestAdjustRouteForShelves(t *testing.T) {
 	db.InitDB()
 	const cruise = 6500
@@ -49,12 +50,13 @@ func TestAdjustRouteForShelves(t *testing.T) {
 	}
 
 	for _, tc := range []struct {
-		name         string
-		bravo        *db.AirspaceGrid
-		terrain      func(nm float32) int
-		depElevation int
-		want         string // "" means the route is rejected
-		entry, exit  float32
+		name          string
+		bravo         *db.AirspaceGrid
+		terrain       func(nm float32) int
+		depElevation  int
+		ignoreTerrain bool
+		want          string // "" means the route is rejected
+		entry, exit   float32
 	}{
 		{
 			name:  "shelf mid-route",
@@ -100,6 +102,14 @@ func TestAdjustRouteForShelves(t *testing.T) {
 			terrain: func(nm float32) int { return util.Select(nm > 9 && nm < 19, 1600, 0) },
 		},
 		{
+			name:          "scenario route with terrain too close below the shelf",
+			bravo:         shelf(9, 19, 3000),
+			terrain:       func(nm float32) int { return util.Select(nm > 9 && nm < 19, 1600, 0) },
+			ignoreTerrain: true,
+			want:          "A/6500+ _shelf1@2500/2500 B/2500 _shelf2@2500/2500 C/6500- D/6500-",
+			entry:         9, exit: 19,
+		},
+		{
 			// Under a shelf too low to keep vfrTerrainClearance, the flight
 			// keeps vfrShelfClearance.
 			name:    "reduced clearance under the shelf",
@@ -123,7 +133,7 @@ func TestAdjustRouteForShelves(t *testing.T) {
 			dep := db.Airport{Location: along(0), Elevation: tc.depElevation}
 			arr := db.Airport{Location: along(30)}
 
-			wps, ok := s.adjustRouteForShelves(testRoute(cruise), cruise, dep, arr)
+			wps, ok := s.adjustRouteForShelves(testRoute(cruise), cruise, dep, arr, !tc.ignoreTerrain)
 			if tc.want == "" {
 				if ok {
 					t.Fatalf("expected the route to be rejected, got %s", describeRestrictions(wps))

@@ -419,15 +419,16 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		wps = append(wps, rg.Waypoint("_dep_downwind3", -2*k, side*vfrDownwindOffset))
 	}
 
+	// The terrain floor shapes the routes made up here; a scenario's route is
+	// flown as its author wrote it.
+	checkTerrain := len(routeWps) == 0
+
 	// Cruise above the terrain on the way, as far as the route is known yet.
-	planned := []av.Waypoint{{Location: depap.Location}}
-	if len(routeWps) > 0 {
-		planned = append(planned, routeWps...)
-	} else {
-		planned = append(planned, av.Waypoint{Location: mid})
+	var limits CruiseLimits
+	if checkTerrain {
+		planned := []av.Waypoint{{Location: depap.Location}, {Location: mid}, {Location: arrap.Location}}
+		limits.Floor = slices.Max(s.vfrFloors(sampleRoute(planned), depap, arrap))
 	}
-	planned = append(planned, av.Waypoint{Location: arrap.Location})
-	limits := CruiseLimits{Floor: slices.Max(s.vfrFloors(sampleRoute(planned), depap, arrap))}
 	ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, limits, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.Rand)
 
@@ -523,8 +524,10 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	// Where the terrain and a shelf meet, the shelf wins, which
 	// adjustRouteForShelves only allows if it leaves the flight above the
 	// terrain's floor.
-	ac.Nav.Waypoints = s.adjustRouteForTerrain(ac.Nav.Waypoints, depap, arrap)
-	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.CruiseAltitude, depap, arrap)
+	if checkTerrain {
+		ac.Nav.Waypoints = s.adjustRouteForTerrain(ac.Nav.Waypoints, depap, arrap)
+	}
+	ac.Nav.Waypoints, ok = s.adjustRouteForShelves(ac.Nav.Waypoints, ac.CruiseAltitude, depap, arrap, checkTerrain)
 	if !ok {
 		return nil, ErrViolatedAirspace
 	}
@@ -573,14 +576,16 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				endWp.MergeActions(av.WaypointActions{Delete: true})
 				descentWps = append(descentWps, endWp)
 
-				// It stays as high as the terrain asks, but it never climbs:
-				// the flight is already under the airspace it has to stay
-				// out of.
-				start := av.Waypoint{Fix: "_descent_start", Location: pos}
-				descentWps = s.adjustRouteForTerrain(append([]av.Waypoint{start}, descentWps...), depap, arrap)[1:]
-				for i := range descentWps {
-					if ar := descentWps[i].AltitudeRestriction(); ar != nil {
-						ar.Range[0] = min(ar.Range[0], alt)
+				if checkTerrain {
+					// It stays as high as the terrain asks, but it never
+					// climbs: the flight is already under the airspace it has
+					// to stay out of.
+					start := av.Waypoint{Fix: "_descent_start", Location: pos}
+					descentWps = s.adjustRouteForTerrain(append([]av.Waypoint{start}, descentWps...), depap, arrap)[1:]
+					for i := range descentWps {
+						if ar := descentWps[i].AltitudeRestriction(); ar != nil {
+							ar.Range[0] = min(ar.Range[0], alt)
+						}
 					}
 				}
 				simNav.Waypoints = descentWps
@@ -596,6 +601,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		alt := int(simNav.FlightState.Altitude)
 		if s.vfrAirspace.Inside(pos, alt) || s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
 			return nil, ErrViolatedAirspace
+		}
+		if !checkTerrain {
+			continue
 		}
 		if floor, ok := s.vfrFloor(pos, depap, arrap); ok && simNav.FlightState.Altitude < float32(floor) {
 			var wpName string
@@ -1023,9 +1031,11 @@ func (d detourPolygon) around(a, b [2]float32) [][2]float32 {
 // under it. Everywhere else the route keeps its cruise altitude, so a shelf
 // near one end of the route doesn't hold the whole flight under it. It
 // reports false where there is no room to fly under a shelf at all: the
-// field is too close below it, or it is below the floor that vfrFloor keeps
-// the flight above, so the flight has to go somewhere else.
-func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap db.Airport) ([]av.Waypoint, bool) {
+// field is too close below it, or, if checkTerrain is set, it is below the
+// floor that vfrFloor keeps the flight above, so the flight has to go
+// somewhere else.
+func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap db.Airport,
+	checkTerrain bool) ([]av.Waypoint, bool) {
 	pts := sampleRoute(wps)
 
 	// The altitude to fly at each point: the cruise altitude, or over or
@@ -1056,8 +1066,13 @@ func (s *Sim) adjustRouteForShelves(wps []av.Waypoint, cruise int, depap, arrap 
 		}
 		dDep, dArr := math.NMDistance2LL(p.loc, depap.Location), math.NMDistance2LL(p.loc, arrap.Location)
 		nearer := util.Select(dDep < dArr, depap, arrap)
-		floor, ok := s.vfrFloor(p.loc, depap, arrap)
-		if held[i] < nearer.Elevation+minVFRShelfRoom || (ok && held[i] < floor) {
+		if held[i] < nearer.Elevation+minVFRShelfRoom {
+			return nil, false
+		}
+		if !checkTerrain {
+			continue
+		}
+		if floor, ok := s.vfrFloor(p.loc, depap, arrap); ok && held[i] < floor {
 			return nil, false
 		}
 	}

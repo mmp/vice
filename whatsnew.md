@@ -29,3 +29,4 @@
   - `"atpa_volumes"` is now `"atpa"`; its `"runway_threshold"`, `"heading"`, and `"id"` fields have been removed
   - `"reduced_separation"` in `"atpa"` replaces `"enable_2.5nm"` and `"2.5nm_distance"`
   - `"altitude_range"` gives the altitudes of a controller's airspace (default 10,000-60,000'); ERAM displays only the active special use airspace that overlaps it
+  - VFR `"routes"` are flown as written; they are no longer checked against the terrain
