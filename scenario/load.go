@@ -392,10 +392,11 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 
 	// Load the video map specified on the command line, if any.
 	if overrides.VideoMap != "" {
-		mapSpecs[overrides.VideoMap], err = videomaps.LoadLibrarySpec(overrides.VideoMap)
-		if err != nil {
-			e.ErrorString("%s: %v", overrides.VideoMap, err)
-			return nil, overrideErrors
+		if spec, err := videomaps.LoadLibrarySpec(overrides.VideoMap); err != nil {
+			addOverrideErrors(fmt.Sprintf("%s: %v", overrides.VideoMap, err))
+			lg.Warnf("Extra video map file has errors and will not be loaded: %s", overrides.VideoMap)
+		} else {
+			mapSpecs[overrides.VideoMap] = spec
 		}
 	}
 

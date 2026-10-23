@@ -5,7 +5,10 @@
 package scenario
 
 import (
+	"io"
+	"log/slog"
 	"maps"
+	"path/filepath"
 	"reflect"
 	"slices"
 	"strings"
@@ -14,6 +17,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/enroute"
+	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/traffic"
@@ -382,5 +386,27 @@ func TestCheckLocationsSuggestsNearbyFixes(t *testing.T) {
 	CheckLocations(sg, &e)
 	if errs := e.String(); !strings.Contains(errs, `"PAOLA"`) || !strings.Contains(errs, "Did you mean: PAOLE") {
 		t.Errorf("expected PAOLA to be reported with PAOLE suggested, got %q", errs)
+	}
+}
+
+// TestLoadMissingVideoMapOverride checks that an override video map that
+// can't be read is reported with the other override errors and skipped, as
+// the other override files are, rather than keeping the built-in scenarios
+// from loading.
+func TestLoadMissingVideoMapOverride(t *testing.T) {
+	db.InitDB()
+	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
+
+	missing := filepath.Join(t.TempDir(), "missing.mappack")
+	var e util.ErrorLogger
+	tables, overrideErrors := Load(OverrideFiles{VideoMap: missing}, &e, lg)
+	if e.HaveErrors() {
+		t.Fatalf("unexpected errors: %s", e.String())
+	}
+	if tables == nil || len(tables.Groups) == 0 {
+		t.Error("the built-in scenarios didn't load")
+	}
+	if !strings.Contains(overrideErrors, missing) {
+		t.Errorf("override errors %q don't mention %s", overrideErrors, missing)
 	}
 }
