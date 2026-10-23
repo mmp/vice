@@ -9,6 +9,7 @@ import (
 
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -123,5 +124,46 @@ func (wn *whatsNewDialog) Draw() int {
 	for i := wn.config.WhatsNewIndex; i < len(whatsNew); i++ {
 		imgui.Text(gui.Icons.Square + " " + whatsNew[i])
 	}
+	return -1
+}
+
+// startupErrorDialog reports an error that keeps backshop from starting.
+// Without it the window would just close: nobody sees stderr when backshop
+// is launched from the Finder or Explorer. config is set when the
+// additional files may be the cause; the dialog then offers to clear them,
+// since the Scenario tab where that is done can't be reached.
+type startupErrorDialog struct {
+	message string
+	plat    platform.Platform
+	config  *Config
+}
+
+func (se *startupErrorDialog) Title() string { return "backshop is unable to start" }
+
+func (se *startupErrorDialog) Opening() {}
+
+func (se *startupErrorDialog) Buttons() []gui.DialogButton {
+	b := []gui.DialogButton{{
+		Text: "Copy",
+		Action: func() bool {
+			se.plat.GetClipboard().SetClipboard(se.message)
+			return false
+		},
+	}}
+	if se.config != nil && se.config.hasOverrideFiles() {
+		b = append(b, gui.DialogButton{
+			Text: "Clear additional files and quit",
+			Action: func() bool {
+				se.config.clearOverrideFiles()
+				return true
+			},
+		})
+	}
+	return append(b, gui.DialogButton{Text: "Quit"})
+}
+
+func (se *startupErrorDialog) Draw() int {
+	text, _ := util.TextWrapConfig{ColumnLimit: 80, WrapAll: true}.Wrap(se.message)
+	imgui.Text(text)
 	return -1
 }

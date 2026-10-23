@@ -57,6 +57,16 @@ func (c *Config) overrideFiles() scenario.OverrideFiles {
 	}
 }
 
+func (c *Config) hasOverrideFiles() bool {
+	return c.ScenarioFile != "" || c.VideoMapFile != "" || c.ScenarioBriefFile != "" ||
+		len(c.FacilityConfigFiles) > 0
+}
+
+func (c *Config) clearOverrideFiles() {
+	c.ScenarioFile, c.VideoMapFile, c.ScenarioBriefFile = "", "", ""
+	c.FacilityConfigFiles = nil
+}
+
 func configFilePath(lg *log.Logger) string {
 	dir, err := os.UserConfigDir()
 	if err != nil {

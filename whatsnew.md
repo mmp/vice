@@ -30,3 +30,4 @@
   - `"reduced_separation"` in `"atpa"` replaces `"enable_2.5nm"` and `"2.5nm_distance"`
   - `"altitude_range"` gives the altitudes of a controller's airspace (default 10,000-60,000'); ERAM displays only the active special use airspace that overlaps it
   - VFR `"routes"` are flown as written; they are no longer checked against the terrain
+  - A video map override that can't be read is reported and skipped rather than stopping startup; backshop shows startup errors instead of closing

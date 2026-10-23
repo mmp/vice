@@ -144,11 +144,13 @@ func run(config *Config, lg *log.Logger) error {
 			// resource files they had modified.
 			return nil
 		}
+		showStartupError(plat, uiFont, err, nil, lg)
 		return err
 	}
 
 	app, err := newApp(config, plat, render, uploadDone, lg)
 	if err != nil {
+		showStartupError(plat, uiFont, err, config, lg)
 		return err
 	}
 
@@ -175,6 +177,18 @@ func run(config *Config, lg *log.Logger) error {
 	app.shutdown()
 	config.save(plat, lg)
 	return nil
+}
+
+// showStartupError puts err up in the window and waits for the user to
+// dismiss it. config is non-nil when the additional files may be the cause,
+// so that the dialog can offer to clear them.
+func showStartupError(plat platform.Platform, font *gui.Font, err error, config *Config, lg *log.Logger) {
+	se := &startupErrorDialog{message: err.Error(), plat: plat, config: config}
+	d := gui.NewModalDialog(se, plat)
+	gui.RunDialogEventLoop(plat, font, d, d.Closed)
+	if config != nil {
+		config.save(plat, lg)
+	}
 }
 
 // initResources brings the resource files up to date and loads the aviation
