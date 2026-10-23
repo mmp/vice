@@ -635,24 +635,15 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.pruneSuppressionGroups(ctx)
 	ep.updateConflictAlerts(ctx, tracks)
 
-	// draw the ERAM pane
 	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(colors.scopeBackground))
 	ep.processKeyboardInput(ctx)
-	// ctr := UserCenter
 	// ps.Range is the vertical extent of the scope in NM (matching the
 	// real-ERAM RANGE label); GetTransformations wants the half-height.
 	// ERAM scopes are always true north up, hence no rotation.
 	transforms := scope.GetTransformations(ctx.DrawExtent, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range)/2, 0)
 
-	// Following are the draw functions. They are listed in the best of my ability
-
-	// Draw weather
-	ep.drawWeatherRadar(ctx, transforms, cb)
-	ep.drawVideoMaps(ctx, transforms, cb)
-	ep.drawSAAs(ctx, transforms, cb)
-	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
-	ep.drawPlotPoints(ctx, transforms, cb)
+	ep.drawMaps(ctx, transforms, cb)
 	// An entry being torn off takes the click that places it. The Circle
 	// Location Text Box is over the toolbar, so it takes its clicks next;
 	// the annotations are under it.
@@ -662,15 +653,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.handleAnnotationMouse(ctx, transforms)
 	cb.SetScissorBounds(ctx.DrawExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawAnnotations(ctx, transforms, cb)
-	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
-	ep.updateDwell(ctx, tracks, transforms)
-	dbs := ep.getAllDatablocks(ctx, tracks)
-	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
-	ep.drawPTLs(ctx, tracks, transforms, cb)
-	ep.drawTargets(ctx, tracks, transforms, cb)
-	ep.drawTracks(ctx, tracks, transforms, cb)
-	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
-	ep.datablockInteractions(ctx, tracks, transforms)
+	ep.drawTracksAndDatablocks(ctx, tracks, transforms, cb)
 	ep.drawCRRFixes(ctx, transforms, cb)
 	ep.drawCRRDistances(ctx, tracks, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
@@ -683,28 +666,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 
 	// Draw floating windows after toolbar so they render on top and appear in the same
 	// frame the toolbar button is clicked (toolbar sets Visible=true before this runs).
-	ep.drawResponseArea(ctx, transforms, cb)
-	ep.drawMessageCompositionArea(ctx, transforms, cb)
-	ep.drawAltimSetView(ctx, transforms, cb)
-	ep.drawWXView(ctx, transforms, cb)
-	ep.drawBeaconCodeView(ctx, transforms, cb)
-	ep.drawTimeView(ctx, transforms, cb)
-	ep.drawStatusView(ctx, transforms, cb)
-	ep.drawOutageView(ctx, transforms, cb)
-	ep.drawRangeView(ctx, transforms, cb)
-	ep.drawCheckListView(ctx, transforms, cb, &emergCheckList)
-	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
-	ep.drawCRRView(ctx, tracks, transforms, cb)
-	ep.drawCFRView(ctx, transforms, cb)
-	ep.drawSAAFilterView(ctx, transforms, cb)
-	ep.drawFlightEventView(ctx, transforms, cb)
-	ep.drawDeptListView(ctx, transforms, cb)
-	ep.drawGroupSupView(ctx, transforms, cb)
-	ep.drawConflictAlertView(ctx, transforms, cb)
-	// Draw the active floating pop-up (if any) on top of its host view.
-	if ep.popup != nil {
-		ep.popup.draw(ep, ctx, transforms, cb)
-	}
+	ep.drawViews(ctx, tracks, transforms, cb)
 
 	ep.drawTearoffs(ctx, transforms, cb)
 	ep.drawCircleLocationBox(ctx, transforms, cb)
@@ -715,8 +677,6 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 		ep.drawPausedAircraftState(ctx, transforms, cb)
 	}
 
-	// handleCapture
-	// updateAudio
 	ep.drawBacklight(ctx, cb)
 	ep.drawPauseOverlay(ctx, cb)
 }
@@ -1230,6 +1190,17 @@ func (ep *Scope) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
+}
+
+// drawMaps draws what is under the annotations and tracks: the weather,
+// the video maps, the SAAs, the scenario's routes, and the points of a
+// .DRAWROUTE route.
+func (ep *Scope) drawMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ep.drawWeatherRadar(ctx, transforms, cb)
+	ep.drawVideoMaps(ctx, transforms, cb)
+	ep.drawSAAs(ctx, transforms, cb)
+	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
+	ep.drawPlotPoints(ctx, transforms, cb)
 }
 
 func (ep *Scope) drawVideoMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {

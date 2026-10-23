@@ -382,6 +382,22 @@ func drawPortalFence(ld *renderer.ColoredLinesDrawBuilder, l DatablockLayout, co
 	ld.AddLine([2]float32{x, top}, [2]float32{x, bottom}, color)
 }
 
+// drawTracksAndDatablocks draws the tracks' history trails, leader lines,
+// vector lines, targets, position symbols, and data blocks, and handles
+// picks on the data blocks.
+func (ep *Scope) drawTracksAndDatablocks(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
+	cb *renderer.CommandBuffer) {
+	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
+	ep.updateDwell(ctx, tracks, transforms)
+	dbs := ep.getAllDatablocks(ctx, tracks)
+	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
+	ep.drawPTLs(ctx, tracks, transforms, cb)
+	ep.drawTargets(ctx, tracks, transforms, cb)
+	ep.drawTracks(ctx, tracks, transforms, cb)
+	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
+	ep.datablockInteractions(ctx, tracks, transforms)
+}
+
 func (ep *Scope) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()

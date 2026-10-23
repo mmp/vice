@@ -19,9 +19,37 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
+
+// drawViews draws the views that are displayed and then the pop-up menu,
+// if one is open, over the view it belongs to.
+func (ep *Scope) drawViews(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
+	cb *renderer.CommandBuffer) {
+	ep.drawResponseArea(ctx, transforms, cb)
+	ep.drawMessageCompositionArea(ctx, transforms, cb)
+	ep.drawAltimSetView(ctx, transforms, cb)
+	ep.drawWXView(ctx, transforms, cb)
+	ep.drawBeaconCodeView(ctx, transforms, cb)
+	ep.drawTimeView(ctx, transforms, cb)
+	ep.drawStatusView(ctx, transforms, cb)
+	ep.drawOutageView(ctx, transforms, cb)
+	ep.drawRangeView(ctx, transforms, cb)
+	ep.drawCheckListView(ctx, transforms, cb, &emergCheckList)
+	ep.drawCheckListView(ctx, transforms, cb, &posCheckList)
+	ep.drawCRRView(ctx, tracks, transforms, cb)
+	ep.drawCFRView(ctx, transforms, cb)
+	ep.drawSAAFilterView(ctx, transforms, cb)
+	ep.drawFlightEventView(ctx, transforms, cb)
+	ep.drawDeptListView(ctx, transforms, cb)
+	ep.drawGroupSupView(ctx, transforms, cb)
+	ep.drawConflictAlertView(ctx, transforms, cb)
+	if ep.popup != nil {
+		ep.popup.draw(ep, ctx, transforms, cb)
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // ALTIM SET
