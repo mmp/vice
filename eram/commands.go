@@ -277,22 +277,6 @@ func (ep *Scope) flightPlanDirect(ctx *scope.Context, trk *sim.Track, fixes []st
 	return nil
 }
 
-// closestTrackToLL returns the closest track to the given lat/long within maxNm.
-// Returns nil if no track is within that distance.
-func (ep *Scope) closestTrackToLL(loc math.Point2LL, maxNm float32) *sim.Track {
-	var best *sim.Track
-	bestDist := maxNm
-	for i := range ep.visibleTracks {
-		t := &ep.visibleTracks[i]
-		d := math.NMDistance2LL(ep.TrackState[t.ADSBCallsign].Track.Location, loc)
-		if d <= bestDist {
-			bestDist = d
-			best = t
-		}
-	}
-	return best
-}
-
 func (ep *Scope) handoffTrack(ctx *scope.Context, acid sim.ACID, controller string) error {
 	control, err := ep.lookupControllerForID(ctx, controller)
 	if err != nil {

@@ -264,6 +264,46 @@ func TestCRRAtAirport(t *testing.T) {
 	}
 }
 
+// LF with a picked point and a label creates a group there, with the
+// flights that follow; it rejects the label of an existing group rather
+// than adding a picked flight to the group (4.2.11.4.1, 4.2.11.4.2).
+func TestCRRAtPoint(t *testing.T) {
+	InitCommands()
+	h := makeTrackTestHarness()
+	trackAt := math.Point2LL{-73, 40}
+	h.addTrack(&sim.Track{
+		RadarTrack: av.RadarTrack{ADSBCallsign: "AAL1", Location: trackAt},
+		FlightPlan: &sim.FlightPlan{ACID: "AAL1"},
+	})
+	point := math.Point2LL{-73.1, 40.1}
+	lf := func(cmd string, clicks []math.Point2LL, tracks []av.ADSBCallsign) error {
+		_, err, _ := h.ep.tryExecuteUserCommand(h.ctx, cmd, clicks, tracks)
+		return err
+	}
+
+	if err := lf("LF w ABC", []math.Point2LL{point}, []av.ADSBCallsign{""}); err != nil {
+		t.Fatalf("LF {point} ABC: %v", err)
+	}
+	if g := h.ep.CRRGroups["ABC"]; g == nil || g.Location != point || len(g.Aircraft) != 0 {
+		t.Fatalf("LF {point} ABC: group %+v", g)
+	}
+
+	err := lf("LF w ABC", []math.Point2LL{trackAt}, []av.ADSBCallsign{"AAL1"})
+	if err == nil || !strings.Contains(err.Error(), "ALREADY EXISTS") {
+		t.Errorf("LF {AAL1} ABC with ABC existing: error %v", err)
+	}
+	if g := h.ep.CRRGroups["ABC"]; len(g.Aircraft) != 0 {
+		t.Errorf("LF {AAL1} ABC with ABC existing: aircraft %v", g.Aircraft)
+	}
+
+	if err := lf("LF w DEF w", []math.Point2LL{point, trackAt}, []av.ADSBCallsign{"", "AAL1"}); err != nil {
+		t.Fatalf("LF {point} DEF {AAL1}: %v", err)
+	}
+	if g := h.ep.CRRGroups["DEF"]; g == nil || g.Location != point || len(g.Aircraft) != 1 {
+		t.Errorf("LF {point} DEF {AAL1}: group %+v", g)
+	}
+}
+
 // LC reads out the change to the ground speed that puts the aircraft over
 // the fix at the given time, and its present ground speed (3.12.3, figure
 // 3-30).

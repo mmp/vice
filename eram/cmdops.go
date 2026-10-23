@@ -195,13 +195,18 @@ func registerOpsCommands() {
 	// LF //FIX [LABEL]: Create new CRR group at fix location
 	// LF //FIX [LABEL] [AIRCRAFT...]: Create new CRR group with up to 4 aircraft
 	// LF {pos} [LABEL]: Create group at clicked position (click first, then label)
+	// LF {pos} [LABEL] [AIRCRAFT...]: Create group at clicked position with up to 4 aircraft
 	// LF [LABEL] [AIRCRAFT...]: Toggle membership for up to 4 aircraft
 	// Aircraft tokens may be CIDs, ADSB callsigns, or beacon codes separated by
 	// '/' and/or spaces, and/or clicks on tracks.
 	registerCommand("LF [CRR_LOC] [CRR_LABEL] [TRACK_LIST]", handleCRRCreateWithAircraft)
 	registerCommand("LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
 	registerCommand("LF [CRR_LOC]", handleCRRCreateAutoLabel)
-	registerCommand("LF [LOC_SYM] [CRR_LABEL]", handleCRRAddClicked) // LF {pos} LABEL - valid order
+	registerCommand("LF [LOC_SYM] [CRR_LABEL] [TRACK_LIST]", handleCRRCreateClicked)
+	registerCommand("LF [LOC_SYM] [CRR_LABEL]",
+		func(ep *Scope, ctx *scope.Context, loc math.Point2LL, label string) (CommandStatus, error) {
+			return handleCRRCreateClicked(ep, ctx, loc, label, nil)
+		})
 	registerCommand("LF [CRR_LABEL] [LOC_SYM]", handleCRRWrongOrder) // LF LABEL {pos} - wrong order
 	registerCommand("LF [CRR_LABEL] [TRACK_LIST]", handleCRRToggleMembership)
 	// Error handlers for incomplete LF commands
@@ -850,44 +855,12 @@ func handleCRRCreateAutoLabel(ep *Scope, ctx *scope.Context, loc CRRLocation) (C
 	return CommandStatus{}, NewError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF //%s", loc.Token)
 }
 
-// handleCRRAddClicked handles LF {pos} LABEL - position comes first, then label
-func handleCRRAddClicked(ep *Scope, ctx *scope.Context, loc math.Point2LL, label string) (CommandStatus, error) {
-	// Validate label
-	if !validCRRLabel(label) {
-		return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
-	}
-
-	// Check if group exists
-	g := ep.CRRGroups[label]
-	if g == nil {
-		// Create new group at clicked position
-		if ep.CRRGroups == nil {
-			ep.CRRGroups = make(map[string]*CRRGroup)
-		}
-		g = &CRRGroup{
-			Label:    label,
-			Location: loc,
-			Color:    ep.currentPrefs().CRR.SelectedColor,
-			Aircraft: make(map[av.ADSBCallsign]struct{}),
-		}
-		ep.CRRGroups[label] = g
-
-		return CommandStatus{
-			feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR GROUP %s CREATED", label)},
-		}, nil
-	}
-
-	// Group exists - find nearest track and add to group
-	nearest := ep.closestTrackToLL(loc, 5)
-	if nearest == nil {
-		return CommandStatus{}, NewError("REJECT - NO TB FLIGHT ID\nCAPTURE\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
-	}
-
-	g.Aircraft[nearest.ADSBCallsign] = struct{}{}
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR UPDATED %s", g.Label)},
-	}, nil
+// handleCRRCreateClicked creates a group at the picked point, with up to
+// four flights in it; it takes a label, since a point has no fix name to
+// label it with (4.2.11.4.1, 4.2.11.4.2).
+func handleCRRCreateClicked(ep *Scope, ctx *scope.Context, loc math.Point2LL, label string,
+	tracks []*sim.Track) (CommandStatus, error) {
+	return handleCRRCreateWithAircraft(ep, ctx, CRRLocation{Location: loc, Token: locationSymbol}, label, tracks)
 }
 
 // handleCRRWrongOrder handles LF LABEL {pos} - wrong order error
