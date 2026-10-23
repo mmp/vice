@@ -134,7 +134,7 @@ func TestTerrainUnderMVAs(t *testing.T) {
 		mg := MakeMVAGrid(mvas)
 		bounds := mvas[0].Bounds
 		for _, m := range mvas {
-			bounds = math.Union(math.Union(bounds, m.Bounds.P0), m.Bounds.P1)
+			bounds = bounds.Union(m.Bounds)
 		}
 		failures := 0
 		for lat := bounds.P0[1]; lat < bounds.P1[1]; lat += step {

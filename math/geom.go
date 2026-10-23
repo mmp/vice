@@ -124,6 +124,15 @@ func Union(e Extent2D, p [2]float32) Extent2D {
 	return e
 }
 
+// Union returns the extent that bounds both e and b. The union with
+// EmptyExtent2D is the other extent.
+func (e Extent2D) Union(b Extent2D) Extent2D {
+	return Extent2D{
+		P0: [2]float32{min(e.P0[0], b.P0[0]), min(e.P0[1], b.P0[1])},
+		P1: [2]float32{max(e.P1[0], b.P1[0]), max(e.P1[1], b.P1[1])},
+	}
+}
+
 // ClosestPointInBox returns the closest point to p that is inside the
 // Extent2D.  (If p is already inside it, then it is returned.)
 func (e Extent2D) ClosestPointInBox(p [2]float32) [2]float32 {

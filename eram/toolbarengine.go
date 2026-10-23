@@ -621,7 +621,7 @@ func masterSlots(ctx *scope.Context, origin [2]float32) []math.Extent2D {
 func (pl *placedLevel) fitExtent() {
 	pl.extent = math.EmptyExtent2D()
 	for _, pb := range pl.buttons {
-		pl.extent = math.Union(math.Union(pl.extent, pb.face.P0), pb.face.P1)
+		pl.extent = pl.extent.Union(pb.face)
 		if !pb.tab.IsEmpty() {
 			pl.extent = math.Union(pl.extent, pb.tab.P0)
 		}
@@ -1680,7 +1680,7 @@ func (pi *placedInstance) extent() math.Extent2D {
 	e := math.EmptyExtent2D()
 	add := func(x math.Extent2D) {
 		if !x.IsEmpty() {
-			e = math.Union(math.Union(e, x.P0), x.P1)
+			e = e.Union(x)
 		}
 	}
 	for _, level := range pi.levels {

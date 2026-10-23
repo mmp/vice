@@ -399,10 +399,10 @@ func (db *fullDatablock) textExtent(l DatablockLayout) math.Extent2D {
 			col, n = dbLeadFieldChars, n-dbLeadFieldChars
 		}
 		if n > 0 {
-			e = extentUnion(e, l.FieldExtent(DatablockFieldSpec{Line: i, Col: col, Cols: n}))
+			e = e.Union(l.FieldExtent(DatablockFieldSpec{Line: i, Col: col, Cols: n}))
 		}
 	}
-	return padExtent(e, dbOutlinePadding)
+	return e.Expand(dbOutlinePadding)
 }
 
 // fieldAExtent returns the extent of the FDB's Field A, the aircraft ID on
@@ -413,7 +413,7 @@ func (db *fullDatablock) fieldAExtent(l DatablockLayout) math.Extent2D {
 
 // textExtent returns the extent of the LDB's text.
 func (db *limitedDatablock) textExtent(l DatablockLayout) math.Extent2D {
-	return padExtent(ldbLinesExtent(l, db.line0[:], db.line1[:], db.line2[:]), dbOutlinePadding)
+	return ldbLinesExtent(l, db.line0[:], db.line1[:], db.line2[:]).Expand(dbOutlinePadding)
 }
 
 // fieldAExtent returns the extent of the LDB's Field A, its first line.
@@ -483,21 +483,4 @@ func dbCharWidth(font *renderer.Font) float32 {
 		return 0
 	}
 	return glyph.AdvanceX
-}
-
-func extentUnion(a, b math.Extent2D) math.Extent2D {
-	a = math.Union(a, b.P0)
-	a = math.Union(a, b.P1)
-	return a
-}
-
-func padExtent(ext math.Extent2D, padding float32) math.Extent2D {
-	if ext.P0[0] > ext.P1[0] || ext.P0[1] > ext.P1[1] {
-		return ext
-	}
-	ext.P0[0] -= padding
-	ext.P0[1] -= padding
-	ext.P1[0] += padding
-	ext.P1[1] += padding
-	return ext
 }

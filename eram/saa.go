@@ -146,7 +146,7 @@ func makeSAA(sua db.SpecialUseAirspace) saa {
 	slices.SortStableFunc(vols, func(a, b db.SpecialUseAirspaceVolume) int { return cmp.Compare(b.Floor, a.Floor) })
 	for _, v := range vols {
 		if v.PolygonBounds != nil {
-			bounds = math.Union(math.Union(bounds, v.PolygonBounds.P0), v.PolygonBounds.P1)
+			bounds = bounds.Union(*v.PolygonBounds)
 		}
 		alt := formatAltitudeBlock([2]int{v.Floor / 100, min(v.Ceiling/100, 999)})
 		if !slices.Contains(a.altitudes, alt) {

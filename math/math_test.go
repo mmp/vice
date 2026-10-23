@@ -611,6 +611,21 @@ func TestExtent2DIntersect(t *testing.T) {
 	}
 }
 
+func TestExtent2DUnion(t *testing.T) {
+	a := Extent2D{P0: [2]float32{0, 5}, P1: [2]float32{10, 10}}
+	b := Extent2D{P0: [2]float32{5, 0}, P1: [2]float32{15, 8}}
+	want := Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{15, 10}}
+	if got := a.Union(b); got != want {
+		t.Errorf("got %+v, want %+v", got, want)
+	}
+	if got := EmptyExtent2D().Union(a); got != a {
+		t.Errorf("with an empty extent: got %+v, want %+v", got, a)
+	}
+	if got := a.Union(EmptyExtent2D()); got != a {
+		t.Errorf("with an empty extent: got %+v, want %+v", got, a)
+	}
+}
+
 func TestRayCircleIntersect(t *testing.T) {
 	// Origin inside the circle: one root behind, one ahead.
 	t0, t1, ok := RayCircleIntersect([2]float32{-1, 0}, [2]float32{1, 0}, [2]float32{0, 0}, 3)

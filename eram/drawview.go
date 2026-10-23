@@ -1267,8 +1267,7 @@ func (l *RowList) inkUnionOf(r Row, m measuredRow, labelX, bodyX, baseY float32)
 		if ink.IsEmpty() {
 			return
 		}
-		inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P0))
-		inkUnion = math.Union(inkUnion, math.Add2f(pos, ink.P1))
+		inkUnion = inkUnion.Union(ink.Offset(pos))
 	})
 	return inkUnion
 }
