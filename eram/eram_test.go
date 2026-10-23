@@ -5,6 +5,7 @@
 package eram
 
 import (
+	"errors"
 	"image"
 	"testing"
 
@@ -19,13 +20,17 @@ type fakeCursor struct {
 func (c *fakeCursor) SetOverride() {}
 func (c *fakeCursor) Destroy()     { c.destroyed = true }
 
-// cursorPlatform records the cursors made with it.
+// cursorPlatform records the cursors made with it, or fails to make them.
 type cursorPlatform struct {
 	platform.Platform
 	cursors []*fakeCursor
+	fail    bool
 }
 
 func (p *cursorPlatform) CreateCursorFromImage(img *image.RGBA, _, _ int) (platform.Cursor, error) {
+	if p.fail {
+		return nil, errors.New("no cursor")
+	}
 	c := &fakeCursor{img: img}
 	p.cursors = append(p.cursors, c)
 	return c, nil
@@ -39,8 +44,8 @@ func TestCursorBrightness(t *testing.T) {
 	ep := &Scope{cursorImages: map[string]cursorImage{"Eram1": {img: src}}}
 	pl := &cursorPlatform{}
 
-	ep.makeCursors(pl, 100)
-	ep.makeCursors(pl, 50)
+	ep.makeCursors(pl, 100, nil)
+	ep.makeCursors(pl, 50, nil)
 
 	if got := pl.cursors[1].img.Pix; [4]uint8(got) != [4]uint8{100, 50, 25, 255} {
 		t.Errorf("cursor at brightness 50 is %v", got)
@@ -50,5 +55,19 @@ func TestCursorBrightness(t *testing.T) {
 	}
 	if !pl.cursors[0].destroyed || ep.cursorBrightness != 50 {
 		t.Errorf("the cursor it replaced wasn't destroyed, or the brightness %v wasn't recorded", ep.cursorBrightness)
+	}
+}
+
+// A cursor that can't be made at a new brightness keeps the one made
+// before.
+func TestCursorCreationFailure(t *testing.T) {
+	ep := &Scope{cursorImages: map[string]cursorImage{"Eram1": {img: image.NewRGBA(image.Rect(0, 0, 1, 1))}}}
+	pl := &cursorPlatform{}
+	ep.makeCursors(pl, 100, nil)
+	pl.fail = true
+	ep.makeCursors(pl, 50, nil)
+
+	if c := ep.eramCursors["Eram1"]; c != pl.cursors[0] || pl.cursors[0].destroyed {
+		t.Errorf("after a failure the cursor is %v, destroyed %v; want the one made before", c, pl.cursors[0].destroyed)
 	}
 }

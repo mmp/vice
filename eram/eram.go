@@ -461,7 +461,7 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	ep.felSelect.Selected = -1
 
 	ep.initializeFonts(r, pl)
-	ep.loadCursors(pl)
+	ep.loadCursors(pl, log)
 	ep.loadAlarm(pl, log)
 
 	if ep.prefSet == nil {
@@ -499,10 +499,10 @@ type cursorImage struct {
 }
 
 // loadCursors loads all .cur files from the eram-cursors resource directory
-// and makes the cursors from them at full brightness. Panics on any failure
-// -- a missing or malformed cursor is a build/install problem, not
+// and makes the cursors from them at full brightness. Panics if a cursor
+// file is missing or malformed: that is a build/install problem, not
 // something the user can recover from.
-func (ep *Scope) loadCursors(pl platform.Platform) {
+func (ep *Scope) loadCursors(pl platform.Platform, lg *log.Logger) {
 	ep.cursorImages = make(map[string]cursorImage)
 	cursorSize := int(32*pl.DPIScale() + 0.5)
 	err := util.WalkResources("eram-cursors", func(path string, d fs.DirEntry, _ fs.FS, err error) error {
@@ -522,16 +522,16 @@ func (ep *Scope) loadCursors(pl platform.Platform) {
 	if err != nil {
 		panic(err)
 	}
-	ep.makeCursors(pl, 100)
+	ep.makeCursors(pl, 100, lg)
 }
 
 // makeCursors makes the cursors at the given brightness, which the BRIGHT
-// menu's CURSOR sets, replacing those made before.
-func (ep *Scope) makeCursors(pl platform.Platform, b scope.Brightness) {
-	for _, c := range ep.eramCursors {
-		c.Destroy()
+// menu's CURSOR sets, replacing those made before. A cursor that can't be
+// made keeps its previous one, if there is one.
+func (ep *Scope) makeCursors(pl platform.Platform, b scope.Brightness, lg *log.Logger) {
+	if ep.eramCursors == nil {
+		ep.eramCursors = make(map[string]platform.Cursor)
 	}
-	ep.eramCursors = make(map[string]platform.Cursor)
 	for name, ci := range ep.cursorImages {
 		// The pixels' alpha is premultiplied, so scaling the colors alone
 		// dims them.
@@ -543,7 +543,11 @@ func (ep *Scope) makeCursors(pl platform.Platform, b scope.Brightness) {
 		}
 		cursor, err := pl.CreateCursorFromImage(img, ci.hotspot[0], ci.hotspot[1])
 		if err != nil {
-			panic(fmt.Sprintf("%s: %v", name, err))
+			lg.Warnf("%s: %v", name, err)
+			continue
+		}
+		if old := ep.eramCursors[name]; old != nil {
+			old.Destroy()
 		}
 		ep.eramCursors[name] = cursor
 	}
@@ -559,7 +563,7 @@ func (ep *Scope) updateCursorOverride(ctx *scope.Context) {
 		return
 	}
 	if b := ep.currentPrefs().Brightness.Cursor; b != ep.cursorBrightness {
-		ep.makeCursors(ctx.Platform, b)
+		ep.makeCursors(ctx.Platform, b, ctx.Lg)
 	}
 
 	if ep.cursorOverrideSelection != "" && !ep.cursorOverrideUntil.IsZero() &&
