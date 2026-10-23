@@ -460,12 +460,10 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	ep.wxSelect.Selected = -1
 	ep.felSelect.Selected = -1
 
-	// TODO: initialize fonts and audio
 	ep.initializeFonts(r, pl)
 	ep.loadCursors(pl)
 	ep.loadAlarm(pl, log)
 
-	// Activate weather radar, events
 	if ep.prefSet == nil {
 		ep.prefSet = &PrefrenceSet{}
 	}
