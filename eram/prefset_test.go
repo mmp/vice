@@ -5,6 +5,7 @@
 package eram
 
 import (
+	"encoding/json"
 	"fmt"
 	"slices"
 	"testing"
@@ -92,6 +93,44 @@ func TestPrefSetApply(t *testing.T) {
 	}
 }
 
+// A set holds the menus displayed in the toolbars and the direction the
+// toolbar control button displays its menus in, which invoking it restores
+// (Table A-2); the current settings keep them when vice is restarted.
+func TestPrefSetToolbarMenus(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ps := ep.currentPrefs()
+	views := []string{toolbarButtonID(t, ep, "VIEWS")}
+	ep.setOpenMenus(&ep.toolbar.main, views)
+	ep.setOpenMenus(&ep.toolbar.control, []string{toolbarControlID})
+	ps.ToolbarControlVertical = true
+	ep.savePrefSet("AB")
+
+	ep.setOpenMenus(&ep.toolbar.main, nil)
+	ep.setOpenMenus(&ep.toolbar.control, nil)
+	ps.ToolbarControlVertical = false
+	ep.applyPrefSet(0)
+	ep.handleToolbarInput(ctx)
+	if open := ep.openMenus(&ep.toolbar.main); !slices.Equal(open, views) {
+		t.Errorf("after invoking the set, the main toolbar displays %q, want %q", open, views)
+	}
+	if open := ep.openMenus(&ep.toolbar.control); !slices.Equal(open, []string{toolbarControlID}) ||
+		!ep.toolbar.control.vertical {
+		t.Errorf("after invoking the set, TOOLBAR displays %q, vertically %v", open, ep.toolbar.control.vertical)
+	}
+
+	b, err := json.Marshal(ep.prefSet)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var restored PrefrenceSet
+	if err := json.Unmarshal(b, &restored); err != nil {
+		t.Fatal(err)
+	}
+	if r := restored.Current; !slices.Equal(r.OpenToolbarMenus[toolbarMainID], views) || !r.ToolbarControlVertical {
+		t.Errorf("restored menus %q, TOOLBAR vertical %v", r.OpenToolbarMenus, r.ToolbarControlVertical)
+	}
+}
+
 // SAVE takes a typed name, or the name of a set clicked; DELETE picks sets
 // with TBP and deletes them with TBE on the last one (3.16).
 func TestPrefSetMenu(t *testing.T) {
@@ -152,13 +191,13 @@ func TestPrefSetMenuClose(t *testing.T) {
 	id := toolbarButtonID(t, ep, "PREFSET\nMP")
 	for _, key := range []imgui.Key{imgui.KeyEscape, imgui.KeyF1} {
 		for _, mode := range []prefSetMode{prefSetInvoke, prefSetSave, prefSetDelete} {
-			ep.toolbar.main.open = []string{id}
+			ep.setOpenMenus(&ep.toolbar.main, []string{id})
 			ep.prefSetMenu = prefSetMenuState{mode: mode, name: "AB"}
 			ctx.Keyboard.Pressed = map[imgui.Key]any{key: nil}
 			ep.handlePrefSetKeyboard(ctx)
-			if len(ep.toolbar.main.open) != 0 || ep.prefSetMenu.mode != prefSetInvoke || ep.prefSetMenu.name != "" {
+			if len(ep.openMenus(&ep.toolbar.main)) != 0 || ep.prefSetMenu.mode != prefSetInvoke || ep.prefSetMenu.name != "" {
 				t.Errorf("key %v in mode %v: open %q, mode %v, name %q", key, mode,
-					ep.toolbar.main.open, ep.prefSetMenu.mode, ep.prefSetMenu.name)
+					ep.openMenus(&ep.toolbar.main), ep.prefSetMenu.mode, ep.prefSetMenu.name)
 			}
 		}
 	}

@@ -460,6 +460,7 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	ep.altimSetSelect.Selected = -1
 	ep.wxSelect.Selected = -1
 	ep.felSelect.Selected = -1
+	ep.toolbar.control.id = toolbarControlID
 
 	ep.initializeFonts(r, pl)
 	ep.loadCursors(pl, log)

@@ -250,7 +250,7 @@ func (ep *Scope) cancelAnnotationFunction() {
 // functions stay active only while it is.
 func (ep *Scope) drawMenuDisplayed() bool {
 	return slices.ContainsFunc(ep.toolbar.instances(), func(inst *toolbarInstance) bool {
-		return slices.Contains(inst.open, drawMenu.id)
+		return slices.Contains(ep.openMenus(inst), drawMenu.id)
 	})
 }
 

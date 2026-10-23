@@ -32,7 +32,7 @@ func makeAnnotationTest(t *testing.T) *annotationTest {
 	}
 	ctx.Platform = warpingPlatform{}
 	ctx.NmPerLongitude = 45
-	ep.toolbar.main.open = []string{drawMenu.id}
+	ep.setOpenMenus(&ep.toolbar.main, []string{drawMenu.id})
 	return &annotationTest{t: t, ep: ep, ctx: ctx,
 		transforms: scope.GetTransformations(ctx.DrawExtent, 45, math.Point2LL{-77, 39}, 100, 0)}
 }
@@ -334,7 +334,7 @@ func TestAnnotationHandles(t *testing.T) {
 		t.Errorf("after DEL and a TBE on the text: %+v", a.ep.Annotations)
 	}
 
-	a.ep.toolbar.main.open = nil
+	a.ep.setOpenMenus(&a.ep.toolbar.main, nil)
 	if a.ep.annotationHandlesDisplayed() {
 		t.Error("handles displayed without the DRAW menu")
 	}

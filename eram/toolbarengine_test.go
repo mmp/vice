@@ -23,6 +23,7 @@ import (
 func makeToolbarTestScope() (*Scope, *scope.Context) {
 	imgui.CreateContext()
 	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep.toolbar.control.id = toolbarControlID
 	ep.systemFont[0] = &renderer.Font{Size: 12}
 	ep.videoMapLabel = "ZBW\nMAP"
 	ep.allVideoMaps = []videomaps.ERAMMap{{LabelLine1: "MIA", LabelLine2: "1"}, {LabelLine1: "MVA", LabelLine2: "2"}}
@@ -118,7 +119,7 @@ func TestToolbarMenuRows(t *testing.T) {
 		t.Fatalf("VIEWS at %v is not one row below BRIGHT at %v", views, bright)
 	}
 
-	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "VIEWS")}
+	ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "VIEWS")})
 	ep.handleToolbarInput(ctx)
 	main = ep.toolbar.layout.main
 	if len(main.levels[0].buttons) != 1 {
@@ -135,7 +136,7 @@ func TestToolbarMenuRows(t *testing.T) {
 	}
 
 	// A one-row menu stays on its button's row.
-	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "CHECK\nLISTS")}
+	ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "CHECK\nLISTS")})
 	ep.handleToolbarInput(ctx)
 	pos := placedButtonFace(t, ep, ep.toolbar.layout.main, "POS\nCHECK")
 	if pos.P1[1] != views.P1[1] {
@@ -157,7 +158,7 @@ func TestTornOffMenu(t *testing.T) {
 	}
 	for _, inst := range ep.toolbar.tornOff {
 		if inst.id == geoMap {
-			inst.open = []string{geoMap}
+			ep.setOpenMenus(inst, []string{geoMap})
 		}
 	}
 	ep.handleToolbarInput(ctx)
@@ -210,7 +211,7 @@ func TestAltitudeLimitsPanel(t *testing.T) {
 		t.Fatal("the panel isn't displayed in the toolbar")
 	}
 	open(ep.toolbar.tornOff[0])
-	if len(ep.toolbar.main.open) != 0 {
+	if len(ep.openMenus(&ep.toolbar.main)) != 0 {
 		t.Error("opening the torn-off button's panel left the toolbar's displayed")
 	}
 	if torn := ep.toolbar.layout.tornOff[0]; len(torn.levels) != 2 || torn.levels[1].panel == nil {
@@ -313,7 +314,7 @@ func labelFirstLines(ep *Scope, buttons []placedButton) []string {
 func TestSubmenuReplacesColumns(t *testing.T) {
 	ep, ctx := makeToolbarTestScope()
 	ep.bcgNames = []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"}
-	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "BRIGHT"), toolbarButtonID(t, ep, "MAP\nBRIGHT")}
+	ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "BRIGHT"), toolbarButtonID(t, ep, "MAP\nBRIGHT")})
 	ep.handleToolbarInput(ctx)
 	main := ep.toolbar.layout.main
 	if len(main.levels) != 3 {
@@ -333,7 +334,7 @@ func TestSubmenuReplacesColumns(t *testing.T) {
 		t.Errorf("click on MAP BRIGHT's background at %v hit %+v", empty, hit)
 	}
 
-	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "ATC\nTOOLS"), toolbarButtonID(t, ep, "WX")}
+	ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "ATC\nTOOLS"), toolbarButtonID(t, ep, "WX")})
 	ep.handleToolbarInput(ctx)
 	atcTools := ep.toolbar.layout.main.levels[1]
 	if got := labelFirstLines(ep, atcTools.buttons); !slices.Equal(got, []string{"CRR", "SPEED", "WX"}) {
@@ -487,6 +488,36 @@ type captureMousePlatform struct{ platform.Platform }
 func (captureMousePlatform) StartCaptureMouse(math.Extent2D) {}
 func (captureMousePlatform) EndCaptureMouse()                {}
 
+// A torn-off button's menus are forgotten when it is no longer torn off,
+// so that it displays none when it is torn off again.
+func TestTornOffMenusForgotten(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ps := ep.currentPrefs()
+	bright := toolbarButtonID(t, ep, "BRIGHT")
+	ps.TornOffButtons = map[string][2]float32{bright: {100, 600}}
+	ep.handleToolbarInput(ctx)
+	ep.setOpenMenus(ep.toolbar.tornOff[0], []string{bright})
+	ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "VIEWS")})
+
+	delete(ps.TornOffButtons, bright)
+	ep.handleToolbarInput(ctx)
+	if _, ok := ps.OpenToolbarMenus[bright]; ok || len(ps.OpenToolbarMenus[toolbarMainID]) != 1 {
+		t.Errorf("menus displayed after BRIGHT's tear-off went: %q", ps.OpenToolbarMenus)
+	}
+}
+
+// DELETE TEAROFF doesn't pick the toolbar control button, which is moved
+// rather than torn off.
+func TestDeleteTearoffSkipsToolbarControl(t *testing.T) {
+	ep, ctx := makeToolbarTestScope()
+	ep.handleToolbarInput(ctx)
+	ep.toggleDeleteTearoffs()
+	control := &ep.toolbar.layout.control.levels[0].buttons[0]
+	if ep.clickWhileDeletingTearoffs(ctx, toolbarHit{button: control}, toolbarClick{}) || len(ep.toolbar.selected) != 0 {
+		t.Errorf("DELETE TEAROFF took a click on TOOLBAR; picked %v", ep.toolbar.selected)
+	}
+}
+
 // VECTOR's tear-off bar moves the one VECTOR button out of the main
 // toolbar rather than tearing off a copy, and dropping it on the main
 // toolbar puts it back (2.5.1, 3.9). DELETE TEAROFF doesn't delete it.
@@ -537,9 +568,9 @@ func TestTearoffBars(t *testing.T) {
 	// tabs opens the menus with the given buttons and returns which of the
 	// last one's buttons have tear-off bars, by their labels' first lines.
 	tabs := func(open ...string) map[string]bool {
-		ep.toolbar.main.open = nil
+		ep.setOpenMenus(&ep.toolbar.main, nil)
 		for _, text := range open {
-			ep.toolbar.main.open = append(ep.toolbar.main.open, toolbarButtonID(t, ep, text))
+			ep.setOpenMenus(&ep.toolbar.main, append(ep.openMenus(&ep.toolbar.main), toolbarButtonID(t, ep, text)))
 		}
 		ep.handleToolbarInput(ctx)
 		levels := ep.toolbar.layout.main.levels
@@ -600,7 +631,7 @@ func TestHoldButton(t *testing.T) {
 	ep, ctx := makeToolbarTestScope()
 	var locked math.Extent2D
 	ctx.Platform = lockingPlatform{locked: &locked}
-	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "DB\nFIELDS")}
+	ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "DB\nFIELDS")})
 	ep.handleToolbarInput(ctx)
 	code := placedButtonFace(t, ep, ep.toolbar.layout.main, "CODE")
 
@@ -699,7 +730,7 @@ func TestDockInMasterToolbar(t *testing.T) {
 	// its bar, and drops it at p.
 	tearOff := func(text string, p [2]float32) {
 		t.Helper()
-		ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "DB\nFIELDS")}
+		ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "DB\nFIELDS")})
 		ep.handleToolbarInput(ctx)
 		var tab math.Extent2D
 		for _, level := range ep.toolbar.layout.main.levels {
@@ -708,7 +739,7 @@ func TestDockInMasterToolbar(t *testing.T) {
 			}
 		}
 		clickToolbarAt(ep, ctx, tab.Center(), platform.MouseButtonPrimary)
-		ep.toolbar.main.open = nil
+		ep.setOpenMenus(&ep.toolbar.main, nil)
 		clickToolbarAt(ep, ctx, p, platform.MouseButtonPrimary)
 		ep.handleToolbarInput(ctx)
 	}
@@ -727,12 +758,12 @@ func TestDockInMasterToolbar(t *testing.T) {
 		t.Errorf("dropped on DEST: docked %v, want TYPE then DEST", docked())
 	}
 
-	ep.toolbar.main.open = []string{toolbarButtonID(t, ep, "VIEWS")}
+	ep.setOpenMenus(&ep.toolbar.main, []string{toolbarButtonID(t, ep, "VIEWS")})
 	ep.handleToolbarInput(ctx)
 	if slices.ContainsFunc(ep.toolbar.layout.main.levels[0].buttons, func(pb placedButton) bool { return pb.handle }) {
 		t.Error("docked buttons are displayed while the VIEWS menu is")
 	}
-	ep.toolbar.main.open = nil
+	ep.setOpenMenus(&ep.toolbar.main, nil)
 	ep.handleToolbarInput(ctx)
 
 	// FONT torn off and dropped back on the master toolbar goes away.
@@ -833,7 +864,7 @@ func TestSupportToolbars(t *testing.T) {
 	}
 
 	for _, inst := range ep.toolbar.tornOff {
-		inst.open = []string{inst.id}
+		ep.setOpenMenus(inst, []string{inst.id})
 	}
 	ep.handleToolbarInput(ctx)
 	placed := func(id string) *placedInstance {

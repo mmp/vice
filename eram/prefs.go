@@ -385,6 +385,12 @@ type CommonPreferences struct {
 	// MasterToolbarRaised displays the main toolbar over the torn-off
 	// buttons and the views rather than under them.
 	MasterToolbarRaised bool
+	// OpenToolbarMenus holds the menus displayed from each place a toolbar
+	// is displayed, by its toolbarInstance id (Table A-2).
+	// ToolbarControlVertical displays the toolbar control button's menus
+	// vertically.
+	OpenToolbarMenus       map[string][]string
+	ToolbarControlVertical bool
 
 	// DockedButtons holds the buttons torn off onto each toolbar, by the
 	// toolbar's name, in the order of its slots.

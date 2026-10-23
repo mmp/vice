@@ -187,8 +187,9 @@ const (
 
 // Button ids come from the buttons' places in the tree: a button's row and
 // column in its menu, under the id of the menu's own button. They key the
-// torn-off buttons in the preferences, so moving a button in the tree calls
-// for bumping the serialization version to discard saved tear-offs.
+// torn-off buttons and the displayed menus in the preferences, so moving a
+// button in the tree calls for bumping the serialization version to discard
+// saved tear-offs.
 func init() {
 	assignToolbarIDs(&mainToolbar, "")
 	toolbarControl.id = toolbarControlID
@@ -252,13 +253,9 @@ func (p *pressRepeat) release() {
 
 // toolbarInstance is one place a toolbar is displayed: the main toolbar,
 // the floating toolbar control button, or a torn-off button. Each has its
-// own menus displayed.
+// own menus displayed, which the preferences hold by its id.
 type toolbarInstance struct {
 	id string // the torn-off button's id, toolbarMainID, or toolbarControlID
-	// open holds the ids of the menu buttons whose menus are displayed,
-	// outermost first. A torn-off button's own id comes first when its
-	// menu is displayed.
-	open []string
 	// vertical displays the instance's menus vertically, the transpose of
 	// how they are displayed horizontally: each of a menu's rows is a
 	// column, and a menu hangs below its button (2.3.1).
@@ -267,16 +264,36 @@ type toolbarInstance struct {
 	dock string
 }
 
-// closeMenu closes the given menu button's menu, if it is displayed, along
-// with any menu opened from it.
-func (inst *toolbarInstance) closeMenu(id string) {
-	if i := slices.Index(inst.open, id); i >= 0 {
-		inst.open = inst.open[:i]
+// openMenus returns the ids of the menu buttons whose menus an instance
+// displays, outermost first. A torn-off button's own id comes first when
+// its menu is displayed.
+func (ep *Scope) openMenus(inst *toolbarInstance) []string {
+	return ep.currentPrefs().OpenToolbarMenus[inst.id]
+}
+
+func (ep *Scope) setOpenMenus(inst *toolbarInstance, ids []string) {
+	ps := ep.currentPrefs()
+	if len(ids) == 0 {
+		delete(ps.OpenToolbarMenus, inst.id)
+		return
+	}
+	if ps.OpenToolbarMenus == nil {
+		ps.OpenToolbarMenus = make(map[string][]string)
+	}
+	ps.OpenToolbarMenus[inst.id] = ids
+}
+
+// closeToolbarMenu closes the given menu button's menu in an instance, if it
+// is displayed, along with any menu opened from it.
+func (ep *Scope) closeToolbarMenu(inst *toolbarInstance, id string) {
+	open := ep.openMenus(inst)
+	if i := slices.Index(open, id); i >= 0 {
+		ep.setOpenMenus(inst, open[:i])
 	}
 }
 
-// toolbarState is the transient state of the toolbars: which menus are
-// displayed where, this frame's layout, and the mouse gesture under way.
+// toolbarState is the transient state of the toolbars: the places they are
+// displayed, this frame's layout, and the mouse gesture under way.
 type toolbarState struct {
 	main    toolbarInstance
 	control toolbarInstance
@@ -406,11 +423,13 @@ func (ep *Scope) findToolbarButton(m *toolbarMenu, id string) *toolbarButton {
 	return nil
 }
 
-// syncTornOff matches the torn-off instances to the preferences, which
-// hold the buttons torn off onto the scope, with their positions, and those
-// in the support toolbars. A button in a vertical support toolbar displays
-// its menus vertically.
-func (ep *Scope) syncTornOff() {
+// syncToolbarInstances matches the instances to the preferences, which hold
+// the buttons torn off onto the scope, with their positions, those in the
+// support toolbars, and how the toolbar control button displays its menus.
+// A button in a vertical support toolbar displays its menus vertically. The
+// menus of a button no longer torn off are forgotten, so that it displays
+// none when it is torn off again.
+func (ep *Scope) syncToolbarInstances() {
 	tb := &ep.toolbar
 	ps := ep.currentPrefs()
 	docks := make(map[string]string) // id -> its support toolbar, or "" for the scope
@@ -435,6 +454,11 @@ func (ep *Scope) syncTornOff() {
 		inst.dock = docks[inst.id]
 		inst.vertical = inst.dock == leftDock || inst.dock == rightDock
 	}
+	tb.control.vertical = ps.ToolbarControlVertical
+	maps.DeleteFunc(ps.OpenToolbarMenus, func(id string, _ []string) bool {
+		_, ok := docks[id]
+		return !ok && id != toolbarMainID && id != toolbarControlID
+	})
 }
 
 // layoutToolbars places every displayed button for the frame.
@@ -502,14 +526,15 @@ func (ep *Scope) layoutToolbars(ctx *scope.Context) {
 func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows [][]toolbarButton,
 	origin [2]float32, bar bool) placedInstance {
 	pi := placedInstance{instance: inst}
+	open := ep.openMenus(inst)
 	level := placeToolbarRows(inst, 0, rows, origin, false)
 	if bar {
 		// The main toolbar holds the buttons docked in it after its own.
 		docked := ep.placeDockedButtons(inst, ep.currentPrefs().DockedButtons[masterDock], masterSlots(ctx, origin))
 		level.buttons = append(level.buttons, docked...)
 		level.buttons = util.FilterSlice(level.buttons, func(pb placedButton) bool {
-			if len(inst.open) > 0 {
-				return pb.button.id == inst.open[0]
+			if len(open) > 0 {
+				return pb.button.id == open[0]
 			}
 			return pb.handle || !pb.button.moveOnly || !ep.isTornOff(pb.button.id)
 		})
@@ -520,11 +545,11 @@ func (ep *Scope) layoutInstance(ctx *scope.Context, inst *toolbarInstance, rows 
 	}
 	pi.levels = append(pi.levels, level)
 
-	for depth, id := range inst.open {
+	for depth, id := range open {
 		parent := &pi.levels[depth]
 		pb := parent.find(id)
 		if pb == nil || pb.button.submenu == nil {
-			inst.open = inst.open[:depth]
+			ep.setOpenMenus(inst, open[:depth])
 			break
 		}
 		opener := *pb
@@ -824,7 +849,7 @@ func (l *toolbarLayout) findPlaced(inst *toolbarInstance, id string) *placedButt
 // mouse over them. It runs before anything else on the scope takes clicks,
 // since torn-off buttons float over everything else.
 func (ep *Scope) handleToolbarInput(ctx *scope.Context) {
-	ep.syncTornOff()
+	ep.syncToolbarInstances()
 	ep.layoutToolbars(ctx)
 
 	tb := &ep.toolbar
@@ -940,8 +965,8 @@ func (ep *Scope) clickToolbarButton(pb *placedButton, c toolbarClick) {
 	case b.submenu != nil:
 		// TBE on the toolbar control button displays its menu vertically
 		// and TBP horizontally (2.3.1).
-		if pb.instance == &ep.toolbar.control && pb.level == 0 && !toolbarMenuOpen(pb) {
-			pb.instance.vertical = c.clicked[platform.MouseButtonTertiary]
+		if pb.instance == &ep.toolbar.control && pb.level == 0 && !ep.toolbarMenuOpen(pb) {
+			ep.currentPrefs().ToolbarControlVertical = c.clicked[platform.MouseButtonTertiary]
 		}
 		ep.toggleToolbarMenu(pb)
 	case b.click != nil:
@@ -969,11 +994,12 @@ func (ep *Scope) reportInvalidClick(tertiary bool) {
 // menu opened from it.
 func (ep *Scope) toggleToolbarMenu(pb *placedButton) {
 	inst, b := pb.instance, pb.button
-	if toolbarMenuOpen(pb) {
-		inst.open = inst.open[:pb.level]
+	open := ep.openMenus(inst)
+	if ep.toolbarMenuOpen(pb) {
+		ep.setOpenMenus(inst, open[:pb.level])
 		return
 	}
-	inst.open = append(inst.open[:pb.level], b.id)
+	ep.setOpenMenus(inst, append(open[:pb.level], b.id))
 
 	tb := &ep.toolbar
 	if b.submenu.panel != nil {
@@ -981,7 +1007,7 @@ func (ep *Scope) toggleToolbarMenu(pb *placedButton) {
 		// clicked most recently, whether in the toolbar or torn off.
 		for _, other := range tb.instances() {
 			if other != inst {
-				other.closeMenu(b.id)
+				ep.closeToolbarMenu(other, b.id)
 			}
 		}
 	}
@@ -994,9 +1020,9 @@ func (ep *Scope) toggleToolbarMenu(pb *placedButton) {
 // closeToolbarPanel closes the menus that display the given panel.
 func (ep *Scope) closeToolbarPanel(p toolbarPanel) {
 	for _, inst := range ep.toolbar.instances() {
-		for _, id := range inst.open {
+		for _, id := range ep.openMenus(inst) {
 			if b := ep.toolbarButtonByID(id); b != nil && b.submenu != nil && b.submenu.panel == p {
-				inst.closeMenu(id)
+				ep.closeToolbarMenu(inst, id)
 				break
 			}
 		}
@@ -1010,8 +1036,9 @@ func opensPanel(pb *placedButton, p toolbarPanel) bool {
 }
 
 // toolbarMenuOpen reports whether a placed menu button's menu is displayed.
-func toolbarMenuOpen(pb *placedButton) bool {
-	return pb.level < len(pb.instance.open) && pb.instance.open[pb.level] == pb.button.id
+func (ep *Scope) toolbarMenuOpen(pb *placedButton) bool {
+	open := ep.openMenus(pb.instance)
+	return pb.level < len(open) && open[pb.level] == pb.button.id
 }
 
 // startToolbarDrag starts tearing a button off by its tear-off bar, or
@@ -1205,7 +1232,7 @@ func (ep *Scope) clickWhileDeletingTearoffs(ctx *scope.Context, hit toolbarHit, 
 	if c.clicked[platform.MouseButtonTertiary] {
 		ep.removeTearoff(id)
 		ep.deleteSelectedTearoffs()
-		ep.syncTornOff()
+		ep.syncToolbarInstances()
 		ep.layoutToolbars(ctx)
 		tb.hover = toolbarHit{}
 		return true
@@ -1504,7 +1531,7 @@ func (ep *Scope) drawPlacedButton(ctx *scope.Context, cb *renderer.CommandBuffer
 func (ep *Scope) toolbarButtonColor(pb *placedButton) renderer.RGB {
 	tb := &ep.toolbar
 	b := pb.button
-	active := toolbarMenuOpen(pb) || (b.active != nil && b.active(ep)) ||
+	active := ep.toolbarMenuOpen(pb) || (b.active != nil && b.active(ep)) ||
 		(tb.press.inside && tb.press.instance == pb.instance.id && tb.press.button == b.id) ||
 		(b.override != noDBOverride && ep.dbOverrideHeld(b.override))
 	switch b.kind {
