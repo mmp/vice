@@ -468,7 +468,7 @@ func TestAnnotationsSaved(t *testing.T) {
 // Preference sets from before the DRAW menu get its defaults.
 func TestDrawPreferencesUpgrade(t *testing.T) {
 	var p Preferences
-	p.Upgrade(120, 121)
+	p.Upgrade(103, 104)
 	if p.Draw != makeDefaultPreferences().Draw {
 		t.Errorf("upgraded DRAW settings %+v", p.Draw)
 	}

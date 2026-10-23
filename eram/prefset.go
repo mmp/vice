@@ -37,7 +37,7 @@ type PreferenceSet struct {
 
 func (p *PreferenceSet) Upgrade(from, to int) {
 	p.Current.Upgrade(from, to)
-	if from < 108 {
+	if from < 104 {
 		// Saved was ten slots, the empty ones null.
 		p.Saved = util.FilterSlice(p.Saved, func(s Preferences) bool { return s.Name != "" })
 	}

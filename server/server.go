@@ -112,26 +112,8 @@ import (
 // 101: FDAM TCP-specific leader directions moved from FDAMLeaderLineEvent to FlightPlan.FDAMLeaderLineDirections
 // 102: reworked ATPA volume generation / matching; 2.5nm reduced separation is per runway
 // 103: CIDAllocator tracks CIDs with per-set bit vectors
-// 104: ERAM FONT and CHECK LISTS menus reordered, changing toolbar button ids
-// 105: ERAM EMERG CHECK and POS CHECK each have a view of their own, with their own settings
-// 106: ERAM alarm volume in preference sets
-// 107: ERAM Range View settings in preference sets
-// 108: ERAM saved preference sets are a list of up to 20 rather than ten slots
-// 109: ERAM BCKLGHT dims the display, and its default is now 100
-// 110: ERAM non-ADS-B indicator display filter and brightness in preference sets
-// 111: ERAM CRR RDB display filter in preference sets
-// 112: ERAM RADAR FILTER display filters in preference sets
-// 113: ERAM Conflict Alert view settings in preference sets
-// 114: ERAM CFR view settings in preference sets
-// 115: ERAM SAA FILTER view and SAA display filter settings in preference sets
-// 116: ERAM FLIGHT EVENT view settings in preference sets
-// 117: ERAM support toolbars in preference sets
-// 118: ERAM Status and Outage view settings in preference sets
-// 119: ERAM Departure List view settings in preference sets
-// 120: ERAM Group Suppression view settings in preference sets
-// 121: ERAM DRAW menu settings in preference sets
-// 122: ERAM check list views' TEXT brightness is their Bright; SAA tear-off locations moved
-const ViceSerializeVersion = 122
+// 104: ERAM assorted additions
+const ViceSerializeVersion = 104
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

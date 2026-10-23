@@ -669,67 +669,29 @@ func (p *Preferences) Upgrade(from, to int) {
 		// Reordering the FONT and CHECK LISTS menus changed the ids of their
 		// buttons.
 		p.TornOffButtons = make(map[string][2]float32)
-	}
-	if from < 105 {
-		// The two check lists' shared view became a view for each.
-		p.EmergCheck = makeDefaultCheckListPreferences()
-		p.PosCheck = makeDefaultCheckListPreferences()
-	}
-	if from < 106 {
-		p.AlarmVolume = makeDefaultPreferences().AlarmVolume
-	}
-	if from < 107 {
-		p.RangeView = makeDefaultPreferences().RangeView
-	}
-	if from < 109 {
+
+		def := makeDefaultPreferences()
 		// BCKLGHT now dims the display; it was 90 by default when it did
 		// nothing.
-		p.Brightness.Backlight = makeDefaultPreferences().Brightness.Backlight
-	}
-	if from < 110 {
-		def := makeDefaultPreferences()
+		p.Brightness.Backlight = def.Brightness.Backlight
+		// The two check lists' shared view became a view for each.
+		p.EmergCheck, p.PosCheck = def.EmergCheck, def.PosCheck
+
+		p.AlarmVolume = def.AlarmVolume
+		p.RangeView = def.RangeView
 		p.NonADSBIndicator = def.NonADSBIndicator
 		p.Brightness.NonADSB = def.Brightness.NonADSB
-	}
-	if from < 111 {
-		p.CRR.RDBs = makeDefaultPreferences().CRR.RDBs
-	}
-	if from < 112 {
-		p.RadarFilter = makeDefaultPreferences().RadarFilter
-	}
-	if from < 113 {
-		p.ConflictAlert = makeDefaultPreferences().ConflictAlert
-	}
-	if from < 114 {
-		p.CFR = makeDefaultPreferences().CFR
-	}
-	if from < 115 {
-		p.SAAFilter = makeDefaultPreferences().SAAFilter
-	}
-	if from < 116 {
-		p.FlightEvent = makeDefaultPreferences().FlightEvent
-	}
-	if from < 117 {
-		p.HorizToolbar = makeDefaultPreferences().HorizToolbar
-	}
-	if from < 118 {
-		def := makeDefaultPreferences()
+		p.CRR.RDBs = def.CRR.RDBs
+		p.RadarFilter = def.RadarFilter
+		p.ConflictAlert = def.ConflictAlert
+		p.CFR = def.CFR
+		p.SAAFilter = def.SAAFilter
+		p.FlightEvent = def.FlightEvent
+		p.HorizToolbar = def.HorizToolbar
 		p.StatusView, p.OutageView = def.StatusView, def.OutageView
-	}
-	if from < 119 {
-		p.DeptList = makeDefaultPreferences().DeptList
-	}
-	if from < 120 {
-		p.GroupSup = makeDefaultPreferences().GroupSup
-	}
-	if from < 121 {
-		p.Draw = makeDefaultPreferences().Draw
-	}
-	if from < 122 {
-		// The check lists' TEXT brightness became their views' Bright, and
-		// the SAAs' tear-off locations moved out of their settings.
-		p.EmergCheck = makeDefaultCheckListPreferences()
-		p.PosCheck = makeDefaultCheckListPreferences()
+		p.DeptList = def.DeptList
+		p.GroupSup = def.GroupSup
+		p.Draw = def.Draw
 	}
 }
 
