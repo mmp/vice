@@ -42,7 +42,7 @@ import (
 // 1. Initial Arguments (optional, any order):
 //   - *Scope: The ERAM scope instance
 //   - *scope.Context: The rendering/input context
-//   - *PrefrenceSet: Current ERAM user preferences (via ep.currentPrefs())
+//   - *PreferenceSet: Current ERAM user preferences (via ep.currentPrefs())
 //
 // 2. Typed Arguments (must match command spec types, any order):
 //   - Arguments corresponding to [TYPE] matchers in the command specifier
@@ -50,7 +50,7 @@ import (
 //
 // Best practices:
 //   - Only include initial arguments that are actually used in the function
-//   - If a function only needs *PrefrenceSet, pass it directly rather than taking
+//   - If a function only needs *PreferenceSet, pass it directly rather than taking
 //     *Scope and calling currentPrefs(). (Saves a line of code)
 //
 // The following return value types are allowed:

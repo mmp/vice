@@ -9,13 +9,10 @@ package eram
 import (
 	"fmt"
 	"log/slog"
-	"maps"
 	"slices"
 	"strings"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
@@ -382,7 +379,7 @@ func handleDropTrack(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStat
 			sectorDisplayID(ctx, trk.FlightPlan.TrackingController), trk.ADSBCallsign)
 	}
 
-	ep.deleteFLightplan(ctx, *trk)
+	ep.deleteFlightPlan(ctx, *trk)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "DROP TRACK", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
@@ -490,23 +487,6 @@ func handleDisableAllQuicklook(ep *Scope) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// QB - beacon code view lists
-
-func handleBeaconCodeViewList(ep *Scope, codes []av.Squawk) CommandStatus {
-	for _, c := range codes {
-		if idx := slices.Index(ep.AddedBeaconCodes, c); idx != -1 {
-			ep.AddedBeaconCodes = slices.Delete(ep.AddedBeaconCodes, idx, idx+1)
-		} else {
-			ep.AddedBeaconCodes = append(ep.AddedBeaconCodes, c)
-		}
-	}
-
-	// TODO: should there be an error if any of the codes are not owned by us?
-
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "BC LIST UPDATE"}}
-}
-
-///////////////////////////////////////////////////////////////////////////
 // QD - Altitude Limits Filter Handlers
 
 // handleAltitudeLimitsFilter sets both the target and the LDB altitude limits
@@ -520,93 +500,6 @@ func handleAltitudeLimitsFilter(ep *Scope, limits [2]int) error {
 	ps.AltitudeLimits.Targets = limits
 	ps.AltitudeLimits.LDBs = limits
 	return nil
-}
-
-///////////////////////////////////////////////////////////////////////////
-// QF - Flight Plan Readout Handlers
-
-// handleFlightPlanReadout shows a flight plan readout in the CFR view if it
-// is displayed and in the RA otherwise (2.10).
-func handleFlightPlanReadout(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
-	if trk.FlightPlan == nil || !ep.currentPrefs().CFR.Visible {
-		return handleFlightPlanReadoutRA(ep, ctx, trk)
-	}
-	ep.addCFREntry(trk.FlightPlan.ACID)
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "FLIGHT PLAN READOUT", string(trk.ADSBCallsign) + "/" + trk.FlightPlan.CID},
-	}, nil
-}
-
-// handleFlightPlanReadoutRA shows a flight plan readout in the RA, whether
-// or not the CFR view is displayed (4.2.3).
-func handleFlightPlanReadoutRA(ep *Scope, ctx *scope.Context, trk *sim.Track) (CommandStatus, error) {
-	fp := trk.FlightPlan
-	if fp == nil {
-		// TODO: find the correct error message
-		return CommandStatus{}, fmt.Errorf("REJECT - NO FLIGHT PLAN\nFLIGHT PLAN READOUT\n%s", trk.ADSBCallsign)
-	}
-
-	/*
-		The flight plan readout contains the following elements:
-
-		The Zulu time
-		The aircraft's CID
-		The aircraft's ID
-		The track's owning sector ID (in parentheses)
-		The aircraft's type and equipment suffix
-		The aircraft's assigned beacon code
-		The aircraft's filed cruise speed
-		The aircraft's assigned altitude (in 100s of feet)
-		The aircraft's route
-		The aircraft's flight plan remarks (not in FlightPlan so nothing for now)
-	*/
-	zTime := ctx.Client.State.SimTime.Format("1504")
-	readout := fmt.Sprintf("%v %v(%v) %v %v %v %v %v", fp.CID, fp.ACID, fp.TrackingController,
-		formatAircraftData(fp), fp.AssignedSquawk, fp.CruiseSpeed, formatAssignedAltitude(fp),
-		formatRoute(fp, &ctx.Client.State))
-	// The readout of an active flight always shows the non-ADS-B indicator
-	// (2.13).
-	if nonADSB(ep.radarSample(trk)) {
-		readout = nonADSBMark + " " + readout
-	}
-	return CommandStatus{responseArea: []string{zTime, readout}}, nil
-}
-
-///////////////////////////////////////////////////////////////////////////
-// MR - Map Request Handlers
-
-func handleMapRequestList(ep *Scope, ctx *scope.Context) (CommandStatus, error) {
-	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
-	if err != nil {
-		return CommandStatus{}, err
-	}
-
-	visibleNames := slices.Collect(maps.Keys(vmf.ERAMMapGroups))
-	return CommandStatus{
-		responseArea: []string{fmt.Sprintf("AVAILABLE GEOMAPS: %s", strings.Join(visibleNames, " "))},
-	}, nil
-}
-
-func handleMapRequestLoad(ep *Scope, ctx *scope.Context, groupName string) (CommandStatus, error) {
-	vmf, err := ctx.Client.LoadVideoMapLibrary(ctx.Client.State.ControllerVideoMapFile)
-	if err != nil {
-		return CommandStatus{}, err
-	}
-
-	if _, ok := vmf.ERAMMapGroups[groupName]; !ok {
-		return CommandStatus{}, ErrMapUnavailable
-	}
-
-	ps := ep.currentPrefs()
-
-	// Get rid of all visible maps
-	ps.VideoMapVisible = make(map[string]any)
-
-	ep.setVideoMapGroup(vmf, groupName)
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", "MAP REQUEST", ps.VideoMapGroup},
-	}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -798,114 +691,6 @@ func handleLEFixTimeTrk(ep *Scope, ctx *scope.Context, fix string, hhmm int, trk
 		return CommandStatus{}, err
 	}
 	return speedAdjustmentReadout(ctx, "RTE SPEED ADJ", fix, dists[len(dists)-1], hhmm, rt.Groundspeed)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// LF - CRR (Continuous Range Readout) Handlers
-
-func handleCRRCreateWithAircraft(ep *Scope, ctx *scope.Context, loc CRRLocation, label string, tracks []*sim.Track) (CommandStatus, error) {
-	if !validCRRLabel(label) {
-		return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", loc.Token, label)
-	}
-
-	// Check if group already exists
-	if ep.CRRGroups == nil {
-		ep.CRRGroups = make(map[string]*CRRGroup)
-	}
-	if _, ok := ep.CRRGroups[label]; ok {
-		return CommandStatus{}, NewError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\nLF %s %s", loc.Token, label)
-	}
-
-	// All tracks must be associated
-	for _, trk := range tracks {
-		if !trk.IsAssociated() {
-			return CommandStatus{}, ErrIllegalACID
-		}
-	}
-
-	// Create group
-	g := &CRRGroup{
-		Label:    label,
-		Location: loc.Location,
-		Color:    ep.currentPrefs().CRR.SelectedColor,
-		Aircraft: make(map[av.ADSBCallsign]struct{}),
-	}
-	ep.CRRGroups[label] = g
-
-	for _, trk := range tracks {
-		g.Aircraft[trk.ADSBCallsign] = struct{}{}
-	}
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR GROUP %s CREATED", label)},
-	}, nil
-}
-
-func handleCRRCreate(ep *Scope, ctx *scope.Context, loc CRRLocation, label string) (CommandStatus, error) {
-	return handleCRRCreateWithAircraft(ep, ctx, loc, label, nil)
-}
-
-func handleCRRCreateAutoLabel(ep *Scope, ctx *scope.Context, loc CRRLocation) (CommandStatus, error) {
-	// Auto-derive label from fix name if it's a valid fix
-	label := loc.Token
-	// Check if it's a valid fix name that can be used as a label
-	if _, ok := ctx.Client.State.Locate(label); ok && validCRRLabel(label) {
-		return handleCRRCreate(ep, ctx, loc, label)
-	}
-	return CommandStatus{}, NewError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF //%s", loc.Token)
-}
-
-// handleCRRCreateClicked creates a group at the picked point, with up to
-// four flights in it; it takes a label, since a point has no fix name to
-// label it with (4.2.11.4.1, 4.2.11.4.2).
-func handleCRRCreateClicked(ep *Scope, ctx *scope.Context, loc math.Point2LL, label string,
-	tracks []*sim.Track) (CommandStatus, error) {
-	return handleCRRCreateWithAircraft(ep, ctx, CRRLocation{Location: loc, Token: locationSymbol}, label, tracks)
-}
-
-// handleCRRWrongOrder handles LF LABEL {pos} - wrong order error
-func handleCRRWrongOrder(label string, pos math.Point2LL) (CommandStatus, error) {
-	return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", strings.ToUpper(label), locationSymbol)
-}
-
-func handleCRRToggleMembership(ep *Scope, label string, tracks []*sim.Track) (CommandStatus, error) {
-	if !validCRRLabel(label) {
-		return CommandStatus{}, ErrCommandFormat
-	}
-
-	// Find existing group
-	g := ep.CRRGroups[label]
-	if g == nil {
-		return CommandStatus{}, ErrCommandFormat
-	}
-
-	// Toggle membership for each aircraft
-	for _, trk := range tracks {
-		if !trk.IsAssociated() {
-			return CommandStatus{}, ErrIllegalACID
-		}
-
-		cs := trk.ADSBCallsign
-		if _, ok := g.Aircraft[cs]; ok {
-			delete(g.Aircraft, cs)
-		} else {
-			g.Aircraft[cs] = struct{}{}
-		}
-	}
-
-	return CommandStatus{
-		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR UPDATED %s", g.Label)},
-	}, nil
-}
-
-func handleCRRLabelOnly(label string) (CommandStatus, error) {
-	// LF LABEL without click or aircraft - group not found
-	return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s", strings.ToUpper(label))
-}
-
-func handleCRREmpty() (CommandStatus, error) {
-	// LF alone - message too short
-	return CommandStatus{}, NewError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF")
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1155,31 +940,6 @@ func handleLeaderLinePositionAndLength(ep *Scope, ctx *scope.Context, dir, lengt
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// .DRAWROUTE - Custom command
-
-// handleDrawRouteMode starts drawing a route: until Escape, clicks add
-// points to it and Backspace removes the last one.
-func handleDrawRouteMode(ep *Scope, ctx *scope.Context) CommandStatus {
-	ep.drawingRoute = true
-	ep.setDrawRoutePoints(ctx, nil)
-	return CommandStatus{}
-}
-
-// setDrawRoutePoints sets the points of the route being drawn and copies
-// them to the clipboard.
-func (ep *Scope) setDrawRoutePoints(ctx *scope.Context, pts []math.Point2LL) {
-	ep.drawRoutePoints = pts
-	if len(pts) == 0 {
-		ep.responseArea = "DRAWROUTE"
-		return
-	}
-	ctx.Platform.GetClipboard().SetClipboard(strings.Join(util.MapSlice(pts, func(p math.Point2LL) string {
-		return strings.ReplaceAll(p.DMSString(), " ", "")
-	}), " "))
-	ep.responseArea = fmt.Sprintf("DRAWROUTE: %d POINTS", len(pts))
-}
-
-///////////////////////////////////////////////////////////////////////////
 // ? - Custom command
 
 func handlePrintAircraftState(ep *Scope, ctx *scope.Context, trk *sim.Track) {
@@ -1301,151 +1061,4 @@ func handleQSFreeText(ep *Scope, ctx *scope.Context, freeText string, trk *sim.T
 	ep.modifyFlightPlan(ctx, trk, fp)
 
 	return CommandStatus{feedbackArea: qsFDBDataAcceptMsg(trk)}, nil
-}
-
-// isStationID reports whether s has the two to five characters of an
-// altimeter or weather station identifier (4.2.1.1.2, 4.2.20.1).
-func isStationID(s string) bool {
-	return len(s) >= 2 && len(s) <= 5
-}
-
-func lookupCommandAirport(airport string) (av.ICAOAirportCode, bool) {
-	airport = strings.ToUpper(strings.TrimSpace(airport))
-	if !isStationID(airport) {
-		return "", false
-	}
-	// Users type an airport's FAA id or, less often, its full ICAO id.
-	if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(airport)); ok {
-		return ap.Id, true
-	}
-	if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(airport)); ok {
-		return ap.Id, true
-	}
-	return "", false
-}
-
-///////////////////////////////////////////////////////////////////////////
-// AR - ALTIM SET Add Airport Handler
-
-func handleAltimAdd(ep *Scope, ctx *scope.Context, airport string) (CommandStatus, error) {
-	airport = strings.ToUpper(strings.TrimSpace(airport))
-	if len(airport) == 0 {
-		return CommandStatus{}, NewError("REJECT - AR - MISSING AIRPORT")
-	}
-	if !isStationID(airport) {
-		return CommandStatus{}, NewError("REJECT - AR - INVALID AIRPORT CODE")
-	}
-
-	// Confirm airport exists in the database
-	icao, ok := lookupCommandAirport(airport)
-	if !ok {
-		return CommandStatus{}, NewError("REJECT - AR - UNKNOWN AIRPORT")
-	}
-
-	// Toggle: if already in the list, remove it.
-	if i := slices.Index(ep.AltimSetAirports, icao); i >= 0 {
-		ep.removeAltimSetEntry(i)
-		return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
-	}
-
-	ep.addAltimSetStation(icao)
-
-	// Make the window visible when the first airport is added.
-	ps := ep.currentPrefs()
-	ps.AltimSet.Visible = true
-
-	requestMETARIfMissing(ctx, icao)
-
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "ALTIMETER REQ"}}, nil
-}
-
-// WR - WX REPORT Add Airport Handler
-
-// handleWXReportAdd adds up to three stations to the WX REPORT view, or
-// removes those already in it (4.2.20.2).
-func handleWXReportAdd(ep *Scope, ctx *scope.Context, stations string) (CommandStatus, error) {
-	ids := strings.Fields(strings.ToUpper(stations))
-	if len(ids) > 3 {
-		return CommandStatus{}, ErrMessageTooLong
-	}
-
-	var icaos []av.ICAOAirportCode
-	for _, id := range ids {
-		if !isStationID(id) {
-			return CommandStatus{}, NewError("REJECT - WR - INVALID AIRPORT CODE")
-		}
-		icao, ok := lookupCommandAirport(id)
-		if !ok {
-			return CommandStatus{}, NewError("REJECT - WR - UNKNOWN AIRPORT")
-		}
-		icaos = append(icaos, icao)
-	}
-
-	// Added stations go to the top of the list in the order given.
-	for _, icao := range slices.Backward(icaos) {
-		toggleWXReportStation(ep, ctx, icao)
-	}
-
-	return CommandStatus{feedbackArea: []string{"ACCEPT", "WEATHER STAT REQ"}}, nil
-}
-
-// toggleWXReportStation adds the station to the top of the WX REPORT view,
-// or removes it if it is already there.
-func toggleWXReportStation(ep *Scope, ctx *scope.Context, icao av.ICAOAirportCode) {
-	if i := slices.Index(ep.WXReportStations, icao); i >= 0 {
-		ep.removeWXReportStation(i)
-		return
-	}
-
-	ep.WXReportStations = slices.Insert(ep.WXReportStations, 0, icao)
-
-	// Make the window visible when the first airport is added.
-	ps := ep.currentPrefs()
-	ps.WX.Visible = true
-
-	requestMETARIfMissing(ctx, icao)
-}
-
-// requestMETARIfMissing asks the server to start supplying METAR for icao
-// when the client has not yet seen any METAR for that airport. The RPC
-// is fire-and-forget: if the server rejects the airport the row keeps
-// showing "-M-", matching the behavior for known airports without
-// bundled data.
-func requestMETARIfMissing(ctx *scope.Context, icao av.ICAOAirportCode) {
-	if _, ok := ctx.Client.State.METAR[icao]; !ok {
-		ctx.Client.AddMETARAirport(icao)
-	}
-}
-
-// WR R - WX REPORT Display (show METAR in Response Area)
-
-func handleWXReportDisplay(ep *Scope, ctx *scope.Context, airport string) (CommandStatus, error) {
-	airport = strings.ToUpper(strings.TrimSpace(airport))
-	if len(airport) == 0 {
-		return CommandStatus{}, NewError("REJECT - WR R - MISSING AIRPORT")
-	}
-	if !isStationID(airport) {
-		return CommandStatus{}, NewError("REJECT - WR R - INVALID AIRPORT CODE")
-	}
-
-	// Confirm airport exists in the database
-	icao, ok := lookupCommandAirport(airport)
-	if !ok {
-		return CommandStatus{}, NewError("REJECT - WR R - UNKNOWN AIRPORT")
-	}
-
-	// Get METAR from the pre-populated wx system
-	metar, hasMetar := ctx.Client.State.METAR[icao]
-
-	// Determine what to display
-	var displayText string
-	if hasMetar && metar.Raw != "" {
-		displayText = metar.Raw
-	} else {
-		displayText = fmt.Sprintf("NO DATA\n%s", icao)
-	}
-
-	ep.responseArea = formatInput(displayText)
-
-	return CommandStatus{}, nil
 }

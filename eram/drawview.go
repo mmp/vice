@@ -17,11 +17,11 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// DrawView renders ERAM floating windows (ALTIM SET, WX REPORT, MCA, RA, Clock,
-// CRR) from a declarative View spec. It owns the common chrome — title bar
-// with M / "-" buttons and hover outlines, window border, body background,
-// scroll bar, drag-to-reposition, and click-consumption ordering — so callers
-// only specify dimensions, decorations, and contents.
+// DrawView renders the ERAM views from a declarative View spec. It owns the
+// common chrome — title bar with M / "-" buttons and hover outlines, window
+// border, body background, scroll bar, drag-to-reposition, and
+// click-consumption ordering — so callers only specify dimensions,
+// decorations, and contents.
 
 ///////////////////////////////////////////////////////////////////////////
 // Public types

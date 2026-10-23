@@ -144,7 +144,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 
 	flush := func() {
 		if sb.Len() > 0 {
-			pt = td.AddText(rewriteDelta(sb.String()), pt, style)
+			pt = td.AddText(sb.String(), pt, style)
 			sb.Reset()
 		}
 	}
@@ -190,8 +190,6 @@ func dbWriteText(dst []dbChar, s string, c renderer.RGB, flashing bool) {
 		dst[i] = dbChar{ch: ch, color: c, flashing: flashing}
 	}
 }
-
-func rewriteDelta(s string) string { return s }
 
 type limitedDatablock struct {
 	line0 [8]dbChar

@@ -62,7 +62,7 @@ func TestFlightPlanReadout(t *testing.T) {
 	db.InitDB()
 	InitCommands()
 	ep := &Scope{
-		prefSet:    &PrefrenceSet{Current: *makeDefaultPreferences()},
+		prefSet:    &PreferenceSet{Current: *makeDefaultPreferences()},
 		TrackState: map[av.ADSBCallsign]*TrackState{"AAL123": {}},
 	}
 	ctx := &scope.Context{Client: &client.ControlClient{}}
@@ -509,7 +509,7 @@ func (p *clipboardPlatform) GetClipboard() imgui.ClipboardHandler { return &p.cl
 // clipboard, until Escape; Backspace removes the last point.
 func TestDrawRoute(t *testing.T) {
 	InitCommands()
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
 	pl := &clipboardPlatform{}
 	ctx := &scope.Context{DrawExtent: math.Extent2D{P1: [2]float32{1600, 900}}, Platform: pl,
 		Client: &client.ControlClient{}}

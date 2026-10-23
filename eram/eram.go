@@ -5,15 +5,7 @@
 package eram
 
 import (
-	"fmt"
-	"image"
-	"io/fs"
-	"path/filepath"
-	"slices"
-	"strconv"
-	"strings"
 	"time"
-	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
@@ -110,9 +102,6 @@ var colors = struct {
 	// Data block VCI (Voice Channel Indicator) green.
 	vciGreen renderer.RGB
 
-	// Debug overlay for the draw-route command.
-	drawRoute renderer.RGB
-
 	popup        popupPalette
 	menu         menuPalette
 	view         viewPalette
@@ -136,7 +125,6 @@ var colors = struct {
 	scopeBackground: renderer.RGB{R: 0, G: 0, B: .506},
 	videoMapBase:    renderer.RGB{R: .953, G: .953, B: .953},
 	vciGreen:        renderer.RGB{R: 0.01, G: 1, B: 0.05},
-	drawRoute:       renderer.RGB{R: 1, G: .3, B: .3},
 
 	popup: popupPalette{
 		backgroundBlack: renderer.RGB{R: 0, G: 0, B: 0},
@@ -231,8 +219,8 @@ var colors = struct {
 }
 
 type Scope struct {
-	ERAMPreferenceSets map[string]*PrefrenceSet `json:"PreferenceSets,omitempty"`
-	prefSet            *PrefrenceSet
+	ERAMPreferenceSets map[string]*PreferenceSet `json:"PreferenceSets,omitempty"`
+	prefSet            *PreferenceSet
 	TrackState         map[av.ADSBCallsign]*TrackState `json:"TrackState,omitempty"`
 
 	DisableERAMtoRadio bool
@@ -329,15 +317,8 @@ type Scope struct {
 
 	aircraftFixCoordinates map[sim.ACID]aircraftFixCoordinates
 
-	scopeDraw scope.RouteDrawer
-
-	IFPHelpers struct {
-		ArrivalsColor    *[3]float32
-		ApproachesColor  *[3]float32
-		DeparturesColor  *[3]float32
-		OverflightsColor *[3]float32
-		AirspaceColor    *[3]float32
-	}
+	// ScenarioRoutes draws the scenario's routes chosen in the info window.
+	ScenarioRoutes scope.RouteDrawer
 
 	// At most one floating pop-up menu is open at a time; nil = none open.
 	popup popup
@@ -467,162 +448,12 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	ep.loadAlarm(pl, log)
 
 	if ep.prefSet == nil {
-		ep.prefSet = &PrefrenceSet{}
+		ep.prefSet = &PreferenceSet{}
 	}
 	if ep.ERAMPreferenceSets == nil {
-		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
+		ep.ERAMPreferenceSets = make(map[string]*PreferenceSet)
 	}
-	if ep.IFPHelpers.ApproachesColor == nil {
-		ep.IFPHelpers.ApproachesColor = &[3]float32{.1, .9, .1}
-	}
-
-	if ep.IFPHelpers.ArrivalsColor == nil {
-		ep.IFPHelpers.ArrivalsColor = &[3]float32{.1, .9, .1}
-	}
-
-	if ep.IFPHelpers.DeparturesColor == nil {
-		ep.IFPHelpers.DeparturesColor = &[3]float32{.1, .9, .1}
-	}
-
-	if ep.IFPHelpers.OverflightsColor == nil {
-		ep.IFPHelpers.OverflightsColor = &[3]float32{.1, .9, .1}
-	}
-
-	if ep.IFPHelpers.AirspaceColor == nil {
-		ep.IFPHelpers.AirspaceColor = &[3]float32{.1, .9, .1}
-	}
-}
-
-// cursorImage is a decoded ERAM cursor, kept so that the cursor can be made
-// again at another brightness.
-type cursorImage struct {
-	img     *image.RGBA
-	hotspot [2]int
-}
-
-// loadCursors loads all .cur files from the eram-cursors resource directory
-// and makes the cursors from them at full brightness. Panics if a cursor
-// file is missing or malformed: that is a build/install problem, not
-// something the user can recover from.
-func (ep *Scope) loadCursors(pl platform.Platform, lg *log.Logger) {
-	ep.cursorImages = make(map[string]cursorImage)
-	cursorSize := int(32*pl.DPIScale() + 0.5)
-	err := util.WalkResources("eram-cursors", func(path string, d fs.DirEntry, _ fs.FS, err error) error {
-		if err != nil {
-			panic(err)
-		}
-		if d.IsDir() || filepath.Ext(path) != ".cur" {
-			return nil
-		}
-		img, hotspot, err := platform.DecodeCUR(util.LoadResourceBytes(path), cursorSize)
-		if err != nil {
-			panic(fmt.Sprintf("%s: %v", path, err))
-		}
-		ep.cursorImages[strings.TrimSuffix(d.Name(), ".cur")] = cursorImage{img: img, hotspot: hotspot}
-		return nil
-	})
-	if err != nil {
-		panic(err)
-	}
-	ep.makeCursors(pl, 100, lg)
-}
-
-// makeCursors makes the cursors at the given brightness, which the BRIGHT
-// menu's CURSOR sets, replacing those made before. A cursor that can't be
-// made keeps its previous one, if there is one.
-func (ep *Scope) makeCursors(pl platform.Platform, b scope.Brightness, lg *log.Logger) {
-	if ep.eramCursors == nil {
-		ep.eramCursors = make(map[string]platform.Cursor)
-	}
-	for name, ci := range ep.cursorImages {
-		// The pixels' alpha is premultiplied, so scaling the colors alone
-		// dims them.
-		img := &image.RGBA{Pix: slices.Clone(ci.img.Pix), Stride: ci.img.Stride, Rect: ci.img.Rect}
-		for i := 0; i < len(img.Pix); i += 4 {
-			for c := range 3 {
-				img.Pix[i+c] = uint8(int(img.Pix[i+c]) * int(b) / 100)
-			}
-		}
-		cursor, err := pl.CreateCursorFromImage(img, ci.hotspot[0], ci.hotspot[1])
-		if err != nil {
-			lg.Warnf("%s: %v", name, err)
-			continue
-		}
-		if old := ep.eramCursors[name]; old != nil {
-			old.Destroy()
-		}
-		ep.eramCursors[name] = cursor
-	}
-	ep.cursorBrightness = b
-}
-
-// updateCursorOverride applies the current ERAM cursor to the platform.
-// The cursor is the temporary override (if any), else the base cursor chosen
-// in the CURSOR menu. When a timed override expires, the rollback cursor (if
-// set) becomes the new override; otherwise we fall back to the base cursor.
-func (ep *Scope) updateCursorOverride(ctx *scope.Context) {
-	if ep.prefSet == nil || ctx.Mouse == nil {
-		return
-	}
-	if b := ep.currentPrefs().Brightness.Cursor; b != ep.cursorBrightness {
-		ep.makeCursors(ctx.Platform, b, ctx.Lg)
-	}
-
-	if ep.cursorOverrideSelection != "" && !ep.cursorOverrideUntil.IsZero() &&
-		time.Now().After(ep.cursorOverrideUntil) {
-		ep.cursorOverrideSelection = ep.cursorRollbackSelection
-		ep.cursorOverrideUntil = time.Time{}
-		ep.cursorRollbackSelection = ""
-	}
-
-	name := ep.cursorOverrideSelection
-	if name == "" {
-		if sz := ep.currentPrefs().CursorSize; sz > 0 {
-			name = fmt.Sprintf("Eram%d", sz)
-		}
-	}
-
-	if c := ep.eramCursors[name]; c != nil {
-		c.SetOverride()
-	} else {
-		ctx.Platform.ClearCursorOverride()
-	}
-}
-
-// SetTemporaryCursor displays a cursor type for the given number of seconds.
-func (ep *Scope) SetTemporaryCursor(cursorType string, seconds float64, rollbackCursor string) {
-	cursorType = strings.TrimSpace(cursorType)
-	if cursorType == "" || seconds == 0 || seconds < -1 {
-		ep.ClearTemporaryCursor()
-		return
-	}
-
-	if size, err := strconv.Atoi(cursorType); err == nil {
-		cursorType = fmt.Sprintf("Eram%d", size)
-	}
-
-	ep.cursorOverrideSelection = cursorType
-	rollback := strings.TrimSpace(rollbackCursor)
-	if rollback != "" {
-		if size, err := strconv.Atoi(rollback); err == nil {
-			rollback = fmt.Sprintf("Eram%d", size)
-		}
-		ep.cursorRollbackSelection = rollback
-	} else {
-		ep.cursorRollbackSelection = ""
-	}
-	if seconds == -1 {
-		ep.cursorOverrideUntil = time.Time{}
-	} else {
-		ep.cursorOverrideUntil = time.Now().Add(time.Duration(seconds * float64(time.Second)))
-	}
-}
-
-// ClearTemporaryCursor removes any temporary cursor override and rollback cursor.
-func (ep *Scope) ClearTemporaryCursor() {
-	ep.cursorOverrideSelection = ""
-	ep.cursorOverrideUntil = time.Time{}
-	ep.cursorRollbackSelection = ""
+	ep.ScenarioRoutes.Activate()
 }
 
 func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
@@ -680,7 +511,7 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	}
 
 	ep.drawBacklight(ctx, cb)
-	ep.drawPauseOverlay(ctx, cb)
+	scope.DrawPauseOverlay(ctx, cb, ep.systemFont[3], colors.pauseOverlay.background, colors.pauseOverlay.text)
 }
 
 func (ep *Scope) Upgrade(from, to int) {
@@ -715,7 +546,7 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.Annotations = nil
 	ep.cancelAnnotationFunction()
 
-	ep.scopeDraw.Clear()
+	ep.ScenarioRoutes.Clear()
 
 	ep.drawingRoute, ep.drawRoutePoints = false, nil
 
@@ -763,338 +594,26 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.weatherRadar.Reset(lg)
 }
 
-// ensurePrefSetForSim initializes the ERAM preference set if needed and fills
-// in whatever sim-dependent fields a saved one is still missing, so that
-// preferences are ready before use. A new sim goes on through
-// resetPrefsForNewSim, which applies the scenario's settings over the top;
-// resuming a saved sim stops here so that the scope comes back as it was left.
-func (ep *Scope) ensurePrefSetForSim(ss client.SimState) {
-	// Ensure map of saved preference sets exists
-	if ep.ERAMPreferenceSets == nil {
-		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
-	}
+var _ scope.UIDrawer = (*Scope)(nil)
 
-	key := ss.Facility
+func (ep *Scope) DisplayName() string { return "ERAM" }
 
-	// Retrieve or create the preference set for this facility
-	if ps, ok := ep.ERAMPreferenceSets[key]; ok && ps != nil {
-		ep.prefSet = ps
-	} else {
-		ep.prefSet = &PrefrenceSet{Current: *ep.initPrefsForLoadedSim(ss)}
-		ep.ERAMPreferenceSets[key] = ep.prefSet
-	}
-
-	// Ensure map fields exist
-	if ep.prefSet.Current.VideoMapVisible == nil {
-		ep.prefSet.Current.VideoMapVisible = make(map[string]any)
-	}
-	if ep.prefSet.Current.VideoMapBrightness == nil {
-		ep.prefSet.Current.VideoMapBrightness = make(map[string]scope.Brightness)
-	}
-
-	// Update sim-dependent fields if they aren't set
-	if ep.prefSet.Current.CurrentCenter.IsZero() {
-		ep.prefSet.Current.Center = ss.GetInitialCenter()
-		ep.prefSet.Current.CurrentCenter = ep.prefSet.Current.Center
-	}
-	if ep.prefSet.Current.VideoMapGroup == "" {
-		ep.prefSet.Current.VideoMapGroup = ss.ScenarioDefaultVideoGroup
-	}
-	if ep.prefSet.Current.ARTCC == "" {
-		ep.prefSet.Current.ARTCC = ss.Facility
-	}
-	if ep.prefSet.Current.Range == 0 {
-		ep.prefSet.Current.Range = initialERAMRange(ss)
-	}
-
-	def := makeDefaultPreferences()
-	if ep.prefSet.Current.MCA.Position == ([2]float32{}) {
-		ep.prefSet.Current.MCA.Position = def.MCA.Position
-	}
-	if ep.prefSet.Current.RA.Position == ([2]float32{}) {
-		ep.prefSet.Current.RA.Position = def.RA.Position
-	}
-
-	if ep.prefSet.Current.CursorSize == 0 {
-		ep.prefSet.Current.CursorSize = def.CursorSize
-	}
-
-	// Fill in CRR defaults if this preference set was created before CRR existed
-	if ep.prefSet.Current.CRR.ColorBright == nil {
-		ep.prefSet.Current.CRR.ColorBright = def.CRR.ColorBright
-		ep.prefSet.Current.CRR.Font = def.CRR.Font
-		ep.prefSet.Current.CRR.Lines = def.CRR.Lines
-		ep.prefSet.Current.CRR.Bright = def.CRR.Bright
-		ep.prefSet.Current.CRR.Position = def.CRR.Position
-		ep.prefSet.Current.CRR.Visible = def.CRR.Visible
-	}
-
-	// Fill in ALTIM SET defaults if this preference set was created before ALTIM SET existed
-	needsAltimSetDefaults := ep.prefSet.Current.AltimSet.Position == ([2]float32{})
-	if needsAltimSetDefaults {
-		ep.prefSet.Current.AltimSet.Position = def.AltimSet.Position
-		ep.prefSet.Current.AltimSet.ShowBorder = def.AltimSet.ShowBorder
-		ep.prefSet.Current.AltimSet.ShowIndicators = def.AltimSet.ShowIndicators
-		ep.prefSet.Current.AltimSet.Lines = def.AltimSet.Lines
-		ep.prefSet.Current.AltimSet.Col = def.AltimSet.Col
-		ep.prefSet.Current.AltimSet.Font = def.AltimSet.Font
-		ep.prefSet.Current.AltimSet.Bright = def.AltimSet.Bright
-	}
-
-	// Fill in WX defaults if this preference set was created before WX existed
-	needsWXDefaults := ep.prefSet.Current.WX.Position == ([2]float32{})
-	if needsWXDefaults {
-		ep.prefSet.Current.WX.Position = def.WX.Position
-		ep.prefSet.Current.WX.ShowBorder = def.WX.ShowBorder
-		ep.prefSet.Current.WX.Lines = def.WX.Lines
-		ep.prefSet.Current.WX.Font = def.WX.Font
-		ep.prefSet.Current.WX.Bright = def.WX.Bright
-	}
-	// Preference sets that predate the NX LVL field unmarshal NexradLevel as 0;
-	// 0 is reserved as the "uninitialized" sentinel and gets the default here.
-	if ep.prefSet.Current.NexradLevel == 0 {
-		ep.prefSet.Current.NexradLevel = NexradToolbarAll
-	}
-}
-
-// Custom text characters. Some of these are not for all fonts. Size 11 has everything.
-const checkMark string = "r"
-const xMark string = "s"
-const upArrow string = "t"
-const downArrow string = "u"
-const hsfIndicator string = "v"
-const locationSymbol string = "w"
-const vci string = " x"
-const circleClear string = "y"
-const circleFilled string = "z"
-
-type inputChar struct {
-	char          rune
-	location      math.Point2LL
-	trackCallsign av.ADSBCallsign // set on 'locationSymbol' chars added by AddLocation when the click landed on a track
-}
-
-type inputText []inputChar
-
-func (inp *inputText) Set(str string) {
-	inp.Clear()
-	for _, char := range formatInput(str) {
-		*inp = append(*inp, inputChar{char: char})
-	}
-}
-
-func (inp *inputText) AddLocation(location math.Point2LL, callsign av.ADSBCallsign) {
-	// Trim trailing whitespace inputChars in place so prior chars (and the
-	// click locations they carry) are preserved.
-	for len(*inp) > 0 && unicode.IsSpace((*inp)[len(*inp)-1].char) {
-		*inp = (*inp)[:len(*inp)-1]
-	}
-	for _, char := range formatInput(" " + locationSymbol + " ") {
-		*inp = append(*inp, inputChar{char: char, location: location, trackCallsign: callsign})
-	}
-}
-
-// No formatting needed
-func (inp *inputText) AddBasic(str string) {
-	for _, char := range formatInput(str) {
-		*inp = append(*inp, inputChar{char: char})
-	}
-}
-
-func formatInput(str string) string {
-	output := strings.ReplaceAll(str, "`", circleClear)
-	output = strings.ReplaceAll(output, "~", circleFilled)
-	output = strings.ReplaceAll(output, "[", upArrow)
-	output = strings.ReplaceAll(output, "]", downArrow)
-	return output
-}
-
-func (inp *inputText) DeleteOne() {
-	if len(*inp) > 0 {
-		*inp = (*inp)[:len(*inp)-1]
-	}
-}
-
-func (inp *inputText) Clear() {
-	*inp = (*inp)[:0]
-}
-
-func (inp inputText) String() string {
-	var sb strings.Builder
-	for _, ic := range inp {
-		sb.WriteString(string(ic.char))
-	}
-	return sb.String()
-}
-
-// feedbackMessage is the MCA feedback area's content: either nothing, a
-// success message (green check + text), or an error message (red x + text).
-// The text is stored with formatInput already applied so render-time work is
-// just wrapping + drawing.
-type feedbackMessage struct {
-	kind feedbackKind
-	msg  string
-}
-
-type feedbackKind int
-
-const (
-	feedbackNone feedbackKind = iota
-	feedbackSuccess
-	feedbackError
-)
-
-func (m *feedbackMessage) Success(str string) {
-	m.kind = feedbackSuccess
-	m.msg = formatInput(str)
-}
-
-func (m *feedbackMessage) Error(err error) {
-	if err == nil {
-		return
-	}
-	m.kind = feedbackError
-	m.msg = formatInput(toUpper(err.Error()))
-}
-
-func (m *feedbackMessage) Clear() {
-	*m = feedbackMessage{}
-}
-
-// AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
-func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
-	if ctx.Keyboard == nil {
-		return
-	}
-	// An open keyboard-taking popup (e.g. the free-form text menu) gets the
-	// keystrokes instead of the command input.
-	if kp, ok := ep.popup.(keyboardPopup); ok {
-		if kp.handleKeyboard(ep, ctx) {
-			return
-		}
-	}
-	// Likewise a clicked altitude limits text box takes them; the sub-entry
-	// box merely being displayed does not. So do a Range View field clicked
-	// for entry, the PREFSET menu taking a name to save under, and the DRAW
-	// menu taking text or a circle's location.
-	if ep.handleAltitudeLimitsKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) || ep.handlePrefSetKeyboard(ctx) ||
-		ep.handleAnnotationKeyboard(ctx) {
+func (ep *Scope) DrawUI(p platform.Platform, config *platform.Config) {
+	imgui.Checkbox("Disable ERAM to Radio Commands", &ep.DisableERAMtoRadio)
+	imgui.Checkbox("Invert numeric keypad", &ep.FlipNumericKeypad)
+	if ep.prefSet == nil {
 		return
 	}
 	ps := ep.currentPrefs()
-	keyboardInput := strings.ToUpper(ctx.Keyboard.Input)
-	ep.input.AddBasic(keyboardInput)
-	input := ep.input.String()
-	for key := range ctx.Keyboard.Pressed {
-		switch key {
-		case imgui.KeyG: // debugging
-			if ctx.Keyboard.KeyControl() && ctx.Keyboard.KeyShift() && ctx.Mouse != nil {
-				big := ctx.Mouse.Pos
-				big[1] -= 38
-				ps.MCA.Position = big
-				ps.RA.Position = [2]float32{big[0] + 390, big[1]}
-			}
-		case imgui.KeyBackspace:
-			if ep.drawingRoute {
-				if n := len(ep.drawRoutePoints); n > 0 {
-					ep.setDrawRoutePoints(ctx, ep.drawRoutePoints[:n-1])
-				}
-			} else if len(ep.input) > 0 {
-				ep.input = ep.input[:len(ep.input)-1]
-			}
-		case imgui.KeyEnter:
-			// Cancel any in-progress view drag so an incidental click in the
-			// MCA body doesn't leave the drag preview following the cursor
-			// after the command completes.
-			ep.viewRepo.Cancel()
-			// Process the command
-			status, err := ep.executeERAMCommand(ctx, ep.input)
-			ep.input.Clear()
-			ep.applyCommandStatus(ctx, status, err)
-		case imgui.KeyEscape:
-			if _, ok := ep.popup.(*pickAreaPopup); ok {
-				ep.popup = nil
-				break
-			}
-			if ep.cancelToolbarGesture(ctx) {
-				break
-			}
-			if ep.saaTearingOff != "" {
-				ep.saaTearingOff = ""
-				break
-			}
-			// Cancel any in-progress drag.
-			anyActive := ep.viewRepo.activeID != ""
-			if anyActive {
-				ep.viewRepo.Cancel()
-			}
-			if !anyActive {
-				if ep.drawingRoute {
-					ep.drawingRoute, ep.drawRoutePoints = false, nil
-					ep.responseArea = ""
-				}
-				ep.input.Clear()
-				ep.feedbackArea.Clear()
-			}
-		case imgui.KeyTab:
-			if input == "" {
-				ep.input.Set("TG ")
-			}
-		case imgui.KeyPageUp: // velocity vector *2
-			if ep.VelocityTime == 0 {
-				ep.VelocityTime = 1
-			} else if ep.VelocityTime < 8 {
-				ep.VelocityTime *= 2
-			}
-		case imgui.KeyPageDown: // velocity vector /2
-			if ep.VelocityTime > 0 {
-				ep.VelocityTime /= 2
-			} else {
-				ep.VelocityTime = 0
-			}
-		case imgui.KeyF1:
-			if ctx.Keyboard.KeyShift() {
-				ep.input.Set("DM ")
-			} else {
-				ep.input.Set("QF ")
-			}
-		case imgui.KeyF2:
-			if ctx.Keyboard.KeyShift() {
-				ep.input.Set("QD ")
-			} else {
-				ep.input.Set("QP ")
-			}
-		case imgui.KeyF3:
-			ep.input.Set("QT ")
-		case imgui.KeyF4:
-			ep.input.Set("QX ")
-		case imgui.KeyF5:
-			ep.input.Set("QZ ")
-		case imgui.KeyF6:
-			ep.input.Set("QU ")
-		case imgui.KeyF7:
-			if ctx.Keyboard.KeyShift() {
-				ep.input.Set("WR ")
-			} else {
-				ep.input.Set("QL ")
-			}
-		case imgui.KeyF8:
-			if ctx.Keyboard.KeyShift() {
-				ep.input.Set("QR ")
-			} else {
-				ep.input.Set("QQ ")
-			}
-		case imgui.KeyF9:
-			ep.input.Set("QB ")
-		}
-	}
+	imgui.Checkbox("Right button acts as left button, left as middle", &ps.UseRightClick)
+}
 
-	if (keyboardInput != "" || len(ctx.Keyboard.Pressed) > 0) && !ctx.TCWIsPrivileged(ctx.UserTCW) &&
-		strings.HasPrefix(ep.input.String(), "TG") {
-		// An aircraft control instruction is being entered; as with STARS'
-		// TGT GEN mode, hold radio transmissions for the coming few seconds.
-		ctx.Client.HoldRadioTransmissions()
-	}
+func (ep *Scope) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+	ep.ScenarioRoutes.DrawUI(c, lg)
+	scope.DrawTowerListsUI(c)
+	scope.DrawAirspaceAwarenessUI(c)
+	ps := ep.currentPrefs()
+	ep.ScenarioRoutes.DrawHoldsUI(ps.CurrentCenter, ps.Range)
 }
 
 // drawPausedAircraftState shows the sim's state for the aircraft under the
@@ -1136,251 +655,4 @@ func (ep *Scope) drawBacklight(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	cb.SetRGBA(renderer.RGBA{A: 1 - float32(b)/100})
 	tb.GenerateCommands(cb)
 	cb.DisableBlend()
-}
-
-func (ep *Scope) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
-	if !ctx.Client.State.Paused {
-		return
-	}
-
-	text := "SIMULATION PAUSED"
-	font := ep.systemFont[3] // better font pls
-
-	// Get pane width
-	width := ctx.DrawExtent.Width()
-	height := ctx.DrawExtent.Height()
-
-	// Fixed position from top
-	topOffset := height - 140
-	textY := topOffset + 30      // Text will be 30px below top (in middle of background quad)
-	quadTop := topOffset + 45    // Background extends 15px above text
-	quadBottom := topOffset + 15 // Background extends 15px below text
-
-	// Draw background quad (fixed width of 360px centered horizontally)
-	quad := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(quad)
-	quad.AddQuad(
-		[2]float32{width/2 - 180, quadTop},    // Left-top
-		[2]float32{width/2 + 180, quadTop},    // Right-top
-		[2]float32{width/2 + 180, quadBottom}, // Right-bottom
-		[2]float32{width/2 - 180, quadBottom}, // Left-bottom
-		colors.pauseOverlay.background)
-
-	// Draw text
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-	td.AddTextCentered(text, [2]float32{width / 2, textY}, renderer.TextStyle{
-		Font:  font,
-		Color: colors.pauseOverlay.text,
-	})
-
-	// Apply transformations and draw
-	transforms := scope.GetTransformations(ctx.DrawExtent, 0, [2]float32{}, 0, 0)
-	transforms.LoadWindowViewingMatrices(cb)
-	quad.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-}
-
-// drawMaps draws what is under the annotations and tracks: the weather,
-// the video maps, the SAAs, the scenario's routes, and the points of a
-// .DRAWROUTE route.
-func (ep *Scope) drawMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ep.drawWeatherRadar(ctx, transforms, cb)
-	ep.drawVideoMaps(ctx, transforms, cb)
-	ep.drawSAAs(ctx, transforms, cb)
-	ep.drawScenarioRoutes(ctx, transforms, ep.ERAMFont(1), cb)
-	ep.drawPlotPoints(ctx, transforms, cb)
-}
-
-func (ep *Scope) drawVideoMaps(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	// Precompute a BCGIndex → RGB lookup table once per frame so the hot
-	// path becomes an array index. The 0 slot and any out-of-range or
-	// empty-named slot stay at the zero value (black/invisible), matching
-	// the previous defensive bcgColor closure.
-	var bcgRGB [256]renderer.RGB
-	base := colors.videoMapBase
-	for i, name := range ep.bcgNames {
-		if name == "" {
-			continue
-		}
-		bcgRGB[i+1] = ps.VideoMapBrightness[name].ScaleRGB(base)
-	}
-
-	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DPIScale)
-
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-	var solidLineBuf [][2]float32 // reuse across all lines/maps
-
-	// The current group's base map is always drawn; it has no filter-menu
-	// button for the controller to turn off.
-	bm := ep.baseVideoMap
-	scope.DrawMapFeatures(bm.Lines, bm.Symbols, bm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
-
-	for _, vm := range ep.allVideoMaps {
-		if _, ok := ps.VideoMapVisible[vm.Label()]; !ok {
-			continue
-		}
-		scope.DrawMapFeatures(vm.Lines, vm.Symbols, vm.Labels, &bcgRGB, ep, transforms, ld, td, &solidLineBuf)
-	}
-
-	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-}
-
-func (ep *Scope) makeMaps(client *client.ControlClient, lg *log.Logger) {
-	ss := client.State
-	ps := ep.currentPrefs()
-	vmf, err := client.LoadVideoMapLibrary(ss.ControllerVideoMapFile)
-	if err != nil {
-		lg.Errorf("%v", err)
-		return
-	}
-
-	ep.setVideoMapGroup(vmf, ps.VideoMapGroup)
-
-	for _, name := range ss.ControllerDefaultVideoMaps {
-		if slices.ContainsFunc(ep.allVideoMaps, func(v videomaps.ERAMMap) bool { return v.Label() == name }) {
-			ps.VideoMapVisible[name] = nil
-		}
-	}
-}
-
-// setVideoMapGroup makes the named geomap group the current one: it fills in
-// the filter menu and gives any BCG that doesn't have a brightness yet the
-// default one.
-func (ep *Scope) setVideoMapGroup(vmf *videomaps.Library, group string) {
-	ps := ep.currentPrefs()
-	maps := vmf.ERAMMapGroups[group]
-
-	ps.VideoMapGroup = group
-	if ps.VideoMapVisible == nil {
-		ps.VideoMapVisible = make(map[string]any)
-	}
-
-	ep.allVideoMaps = maps.Maps
-	ep.baseVideoMap = maps.BaseMap
-	ep.bcgNames = maps.BCGNames
-	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2, "\n")
-
-	for _, name := range maps.BCGNames {
-		if name == "" { // empty placeholder slot
-			continue
-		}
-		if _, ok := ps.VideoMapBrightness[name]; !ok { // only set default if missing
-			ps.VideoMapBrightness[name] = 12
-		}
-	}
-}
-
-func combine(x, y, sep string) string {
-	x = strings.TrimSpace(x)
-	y = strings.TrimSpace(y)
-
-	if x == "" {
-		return y
-	}
-	if y == "" {
-		return x
-	}
-	return x + sep + y
-}
-
-// Mouse button helpers:
-// When UseRightClick is set, logical primary = physical right button click, logical tertiary = physical left button click.
-func (ep *Scope) mousePrimaryClicked(m *platform.MouseState) bool {
-	if m == nil {
-		return false
-	}
-	if ep.currentPrefs().UseRightClick {
-		return m.Clicked[platform.MouseButtonSecondary]
-	}
-	return m.Clicked[platform.MouseButtonPrimary]
-}
-
-func (ep *Scope) mousePrimaryDown(m *platform.MouseState) bool {
-	if m == nil {
-		return false
-	}
-	if ep.currentPrefs().UseRightClick {
-		return m.Down[platform.MouseButtonSecondary]
-	}
-	return m.Down[platform.MouseButtonPrimary]
-}
-
-func (ep *Scope) mousePrimaryReleased(m *platform.MouseState) bool {
-	if m == nil {
-		return false
-	}
-	if ep.currentPrefs().UseRightClick {
-		return m.Released[platform.MouseButtonSecondary]
-	}
-	return m.Released[platform.MouseButtonPrimary]
-}
-
-func (ep *Scope) mouseTertiaryClicked(m *platform.MouseState) bool {
-	if m == nil {
-		return false
-	}
-	if ep.currentPrefs().UseRightClick {
-		return m.Clicked[platform.MouseButtonPrimary]
-	}
-	return m.Clicked[platform.MouseButtonTertiary]
-}
-
-func (ep *Scope) mouseTertiaryDown(m *platform.MouseState) bool {
-	if m == nil {
-		return false
-	}
-	if ep.currentPrefs().UseRightClick {
-		return m.Down[platform.MouseButtonPrimary]
-	}
-	return m.Down[platform.MouseButtonTertiary]
-}
-
-func (ep *Scope) mouseTertiaryReleased(m *platform.MouseState) bool {
-	if m == nil {
-		return false
-	}
-	if ep.currentPrefs().UseRightClick {
-		return m.Released[platform.MouseButtonPrimary]
-	}
-	return m.Released[platform.MouseButtonTertiary]
-}
-
-// clearMousePrimaryConsumed clears the physical button used for logical primary so the click is not processed again.
-func (ep *Scope) clearMousePrimaryConsumed(m *platform.MouseState) {
-	if m == nil {
-		return
-	}
-	if ep.currentPrefs().UseRightClick {
-		m.Clicked[platform.MouseButtonSecondary] = false
-	} else {
-		m.Clicked[platform.MouseButtonPrimary] = false
-	}
-}
-
-// clearMouseTertiaryConsumed clears the physical button used for logical tertiary.
-func (ep *Scope) clearMouseTertiaryConsumed(m *platform.MouseState) {
-	if m == nil {
-		return
-	}
-	if ep.currentPrefs().UseRightClick {
-		m.Clicked[platform.MouseButtonPrimary] = false
-	} else {
-		m.Clicked[platform.MouseButtonTertiary] = false
-	}
-}
-
-// consumeMouseClick clears BOTH primary and tertiary consumed flags. Most
-// View click handlers want this: the click should not fall through to any
-// later handler whether it was logically primary or tertiary.
-func (ep *Scope) consumeMouseClick(m *platform.MouseState) {
-	ep.clearMousePrimaryConsumed(m)
-	ep.clearMouseTertiaryConsumed(m)
 }

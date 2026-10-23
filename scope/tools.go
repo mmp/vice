@@ -116,64 +116,6 @@ func (st *Transformations) PixelDistanceNM(nmPerLongitude float32) float32 {
 	return math.NMLength2LL(ll, nmPerLongitude)
 }
 
-// Other
-
-// pt should return nm-based coordinates
-func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
-	prev, pok := pt(-1)
-	cur, _ := pt(0)
-	next, nok := pt(1)
-
-	vecAngle := func(p0, p1 [2]float32) float32 {
-		v := math.Normalize2f(math.Sub2f(p1, p0))
-		return math.Atan2(v[0], v[1])
-	}
-
-	const Pi = 3.1415926535
-	angle := float32(0)
-	if !pok {
-		if !nok {
-			// wtf?
-		}
-		// first point
-		angle = vecAngle(cur, next)
-	} else if !nok {
-		// last point
-		angle = vecAngle(prev, cur)
-	} else {
-		// have both prev and next
-		angle = (vecAngle(prev, cur) + vecAngle(cur, next)) / 2 // ??
-	}
-
-	if angle < 0 {
-		angle -= Pi / 2
-	} else {
-		angle += Pi / 2
-	}
-
-	offset := math.Scale2f(math.SinCos(angle), 8)
-
-	h := math.NormalizeHeading(math.Degrees(angle))
-	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
-		// Center(ish) the text if the line is more or less horizontal.
-		offset[0] -= 2.5 * float32(font.Size)
-	}
-	return offset
-}
-
-func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms Transformations, dpiScale float32,
-	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(1, dpiScale)
-	ld.GenerateCommands(cb)
-
-	transforms.LoadWindowViewingMatrices(cb)
-	pd.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-	cb.LineWidth(1, dpiScale)
-	ldr.GenerateCommands(cb)
-}
-
 // Cache the aircraft state we show when paused but periodically fetch it
 var pausedDisplayStates = util.NewTransientMap[av.ADSBCallsign, sim.AircraftDisplayState]()
 
@@ -258,5 +200,66 @@ func DrawPausedAircraftState(ctx *Context, trk *sim.Track, pw [2]float32, style 
 	cb.Blend()
 	trid.GenerateCommands(cb)
 	cb.DisableBlend()
+	td.GenerateCommands(cb)
+}
+
+// DrawRoutePoints draws the points of a route being drawn with the scope's
+// route drawing debugging command, joined in order.
+func DrawRoutePoints(ctx *Context, transforms Transformations, cb *renderer.CommandBuffer, points []math.Point2LL) {
+	if len(points) == 0 {
+		return
+	}
+
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	for i, pt := range points {
+		pwin := transforms.WindowFromLatLongP(pt)
+		ld.AddCircle(pwin, 10, 30)
+		if i+1 < len(points) {
+			ld.AddLine(pwin, transforms.WindowFromLatLongP(points[i+1]))
+		}
+	}
+	cb.LineWidth(1, ctx.DPIScale)
+	cb.SetRGB(renderer.RGB{R: 1, G: .3, B: .3})
+	transforms.LoadWindowViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+}
+
+// DrawPauseOverlay draws the SIMULATION PAUSED banner near the top of the
+// scope while the sim is paused.
+func DrawPauseOverlay(ctx *Context, cb *renderer.CommandBuffer, font *renderer.Font, background, text renderer.RGB) {
+	if !ctx.Client.State.Paused {
+		return
+	}
+
+	// Fixed position from top
+	width := ctx.DrawExtent.Width()
+	height := ctx.DrawExtent.Height()
+	topOffset := height - 140
+	textY := topOffset + 30      // Text will be 30px below top (in middle of background quad)
+	quadTop := topOffset + 45    // Background extends 15px above text
+	quadBottom := topOffset + 15 // Background extends 15px below text
+
+	// Draw background quad (fixed width of 360px centered horizontally)
+	quad := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(quad)
+	quad.AddQuad(
+		[2]float32{width/2 - 180, quadTop},    // Left-top
+		[2]float32{width/2 + 180, quadTop},    // Right-top
+		[2]float32{width/2 + 180, quadBottom}, // Right-bottom
+		[2]float32{width/2 - 180, quadBottom}, // Left-bottom
+		background)
+
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	td.AddTextCentered("SIMULATION PAUSED", [2]float32{width / 2, textY}, renderer.TextStyle{
+		Font:  font,
+		Color: text,
+	})
+
+	transforms := GetTransformations(ctx.DrawExtent, 0, [2]float32{}, 0, 0)
+	transforms.LoadWindowViewingMatrices(cb)
+	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }

@@ -1,4 +1,4 @@
-// eram/outlines.go
+// eram/dbfields.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -11,6 +11,9 @@ import (
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
+
+// The fields of the data blocks: where each is laid out, the outlines drawn
+// around them, and what a click on one does.
 
 // DatablockFieldID identifies a datablock field for outline lookup.
 type DatablockFieldID string

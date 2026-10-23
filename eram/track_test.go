@@ -27,7 +27,7 @@ type trackTestHarness struct {
 
 func makeTrackTestHarness() *trackTestHarness {
 	ep := &Scope{
-		prefSet:                &PrefrenceSet{Current: *makeDefaultPreferences()},
+		prefSet:                &PreferenceSet{Current: *makeDefaultPreferences()},
 		TrackState:             make(map[av.ADSBCallsign]*TrackState),
 		AckedPointOuts:         make(map[sim.ACID][]sim.ControlPosition),
 		CRRGroups:              make(map[string]*CRRGroup),
@@ -451,7 +451,7 @@ func TestPointOutIndicator(t *testing.T) {
 }
 
 func TestDatablockDirection(t *testing.T) {
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
 	pos := func(d math.CardinalOrdinalDirection) *math.CardinalOrdinalDirection { return &d }
 	noLeader := 0
 
@@ -483,7 +483,7 @@ func TestDatablockDirection(t *testing.T) {
 func TestFDBLeaderLengthAppliesToAllTracks(t *testing.T) {
 	individual := 3
 	ep := &Scope{
-		prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()},
+		prefSet: &PreferenceSet{Current: *makeDefaultPreferences()},
 		TrackState: map[av.ADSBCallsign]*TrackState{
 			"AAL1": {},
 			"UAL2": {LeaderLineLength: &individual},
@@ -504,7 +504,7 @@ func TestFDBLeaderLengthAppliesToAllTracks(t *testing.T) {
 func TestPositionUnpairedLDB(t *testing.T) {
 	InitCommands()
 	ep := &Scope{
-		prefSet:    &PrefrenceSet{Current: *makeDefaultPreferences()},
+		prefSet:    &PreferenceSet{Current: *makeDefaultPreferences()},
 		TrackState: map[av.ADSBCallsign]*TrackState{"N810FR": {}},
 	}
 	ctx := &scope.Context{Client: &client.ControlClient{}}
@@ -529,7 +529,7 @@ func TestPositionUnpairedLDB(t *testing.T) {
 
 // Paired targets take the PR TGT brightness and unpaired ones UNP TGT.
 func TestTargetColor(t *testing.T) {
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
 	ps := ep.currentPrefs()
 	ps.Brightness.PRTGT, ps.Brightness.UNPTGT = 80, 30
 

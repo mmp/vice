@@ -22,7 +22,7 @@ import (
 
 func makeToolbarTestScope() (*Scope, *scope.Context) {
 	imgui.CreateContext()
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
 	ep.toolbar.control.id = toolbarControlID
 	ep.systemFont[0] = &renderer.Font{Size: 12}
 	ep.videoMapLabel = "ZBW\nMAP"

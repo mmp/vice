@@ -1,4 +1,4 @@
-// eram/deptlist.go
+// eram/lists.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -7,6 +7,7 @@ package eram
 import (
 	"cmp"
 	"fmt"
+	"iter"
 	"maps"
 	"slices"
 	"strconv"
@@ -19,6 +20,12 @@ import (
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
+
+// The views that list flights and codes: DEPT LIST, FLIGHT EVENT, and
+// BEACON CODE.
+
+///////////////////////////////////////////////////////////////////////////
+// DEPT LIST
 
 // The DEPT LIST (Departure List) view lists the proposed departures in a
 // sublist for each departure airport, with their filed altitudes
@@ -325,4 +332,276 @@ func (p *deptListPopup) pickSublist(ep *Scope, ctx *scope.Context, name string, 
 		ep.sortDeptSublists(ctx, p.picked)
 	}
 	p.picked = nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// FLIGHT EVENT
+
+// The FLIGHT EVENT (Flight Event List) view and the FEL indicator in data
+// blocks (4.2.13, 5.1.5.19). Of the view's conditions, vice has only call
+// sign mismatches, where a flight plan's ACID differs from the ADS-B call
+// sign of the track it is paired with: there are no 24-bit addresses or
+// second surveillance sources.
+
+// felListed reports whether the view lists a track's call sign mismatch,
+// as it does those of the tracks the user owns or is being offered but for
+// the entries the user has deleted. Its FDB then shows the FEL indicator.
+func (ep *Scope) felListed(ctx *scope.Context, trk *sim.Track) bool {
+	if trk.IsUnassociated() || trk.IsUnsupportedDB() || sim.ACID(trk.ADSBCallsign) == trk.FlightPlan.ACID {
+		return false
+	}
+	if !ctx.UserOwnsFlightPlan(trk.FlightPlan) && !ctx.IsHandoffToUser(trk) {
+		return false
+	}
+	acid, deleted := ep.FELDeleted[trk.ADSBCallsign]
+	return !deleted || acid != trk.FlightPlan.ACID
+}
+
+// felEntries returns the tracks whose call sign mismatches the view lists,
+// by CID.
+func (ep *Scope) felEntries(ctx *scope.Context) []*sim.Track {
+	var entries []*sim.Track
+	for _, trk := range ctx.Client.State.Tracks {
+		if ep.felListed(ctx, trk) {
+			entries = append(entries, trk)
+		}
+	}
+	slices.SortFunc(entries, func(a, b *sim.Track) int { return cmp.Compare(a.FlightPlan.CID, b.FlightPlan.CID) })
+	return entries
+}
+
+// drawFELIndicator draws the FEL indicator, a box with a gray band across
+// its top (figure 5-41), in e.
+func drawFELIndicator(trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+	e math.Extent2D, ps *Preferences) {
+	band := e
+	band.P0[1] = e.P1[1] - e.Height()/3
+	addQuad(trid, e, renderer.RGB{})
+	addQuad(trid, band, ps.Brightness.DBFEL.ScaleRGB(colors.popup.backgroundGrey))
+	ld.AddLineLoop(ps.Brightness.DBFEL.ScaleRGB(colors.view.border), e.Corners())
+}
+
+// drawFlightEventView draws the FLIGHT EVENT view. A pick on an entry
+// selects it and offers to delete it. The view is suppressed when its last
+// entry goes (4.2.13).
+func (ep *Scope) drawFlightEventView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	entries := ep.felEntries(ctx)
+	if len(entries) == 0 && ep.felHadEntries {
+		ps.FlightEvent.Visible = false
+	}
+	ep.felHadEntries = len(entries) > 0
+	if !ps.FlightEvent.Visible {
+		return
+	}
+
+	font := ep.ERAMFont(ps.FlightEvent.Font)
+	var rows []Row
+	if len(entries) > 0 {
+		// The header is underlined, as in figure 4-186.
+		rows = append(rows, Row{Label: "CALLSIGN MISMATCH", Centered: true,
+			AfterDraw: func(_ math.Extent2D, p [2]float32, b *ViewBuilders) {
+				y := p[1] - cellHeight(font) - 2
+				b.Ld.AddLine([2]float32{p[0], y}, [2]float32{p[0] + float32(len("CALLSIGN MISMATCH"))*charWidth(font), y},
+					ps.FlightEvent.Bright.ScaleRGB(colors.view.text))
+			}})
+	}
+	for _, trk := range entries {
+		rows = append(rows, Row{
+			Label: trk.FlightPlan.CID + " " + string(trk.FlightPlan.ACID) + " " + string(trk.ADSBCallsign) + " (ADSB)",
+			ID:    string(trk.FlightPlan.ACID) + " " + string(trk.ADSBCallsign),
+		})
+	}
+
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.FlightEvent.Position,
+		ID:         "flight-event",
+		Title:      "FLIGHT EVENT",
+		Opaque:     ps.FlightEvent.Opaque,
+		ShowBorder: ps.FlightEvent.ShowBorder,
+		Brightness: ps.FlightEvent.Bright,
+		OnMenu: ep.makeViewMenu(ctx, "flight-event", 5,
+			func(pb popupBase) popup { return &flightEventPopup{popupBase: pb} }),
+		OnMinimize: func() { ps.FlightEvent.Visible = false },
+		RowSource: &ViewRowSource{
+			Rows:                    rows,
+			FontIndex:               ps.FlightEvent.Font,
+			ContentChars:            40,
+			MaxCols:                 1,
+			VisibleRows:             visibleLines(ps.FlightEvent.Lines, len(rows)),
+			RowSpacing:              RowSpacingCompact,
+			ScrollState:             &ep.felScroll,
+			CenterColumnsInTitleBar: true,
+			SelectableState:         &ep.felSelect,
+			// The header is the first row.
+			OnRowDelete: func(idx int) { ep.deleteFELEntry(entries[idx-1]) },
+		},
+	})
+}
+
+// deleteFELEntry deletes a track's entry; it comes back if the track's
+// ACID changes and still doesn't match.
+func (ep *Scope) deleteFELEntry(trk *sim.Track) {
+	if ep.FELDeleted == nil {
+		ep.FELDeleted = make(map[av.ADSBCallsign]sim.ACID)
+	}
+	ep.FELDeleted[trk.ADSBCallsign] = trk.FlightPlan.ACID
+}
+
+type flightEventPopup struct {
+	popupBase
+}
+
+func (p *flightEventPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
+		Title: "FEL",
+		Width: viewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows: []MenuItem{
+			ep.makeBooleanMenuItem(&ps.FlightEvent.Opaque, "O", "T"),
+			ep.makeToggleMenuItem(&ps.FlightEvent.ShowBorder, "BORDER"),
+			makeLinesMenuItem(ep, &ps.FlightEvent.Lines, 3),
+			makeIntMenuItem(ep, &ps.FlightEvent.Font, "FONT", 1, 3, 1),
+			makeIntMenuItem(ep, &ps.FlightEvent.Bright, "BRIGHT", 0, 100, 2),
+		},
+	})
+}
+
+///////////////////////////////////////////////////////////////////////////
+// BEACON CODE
+
+func (ep *Scope) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	if !ps.BeaconCodeView.Visible {
+		return
+	}
+
+	// 4-digit beacon code plus a trailing "." for manually-added entries —
+	// space for the dot is reserved on every cell so columns line up.
+	const cellChars = 5
+
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.BeaconCodeView.Position,
+		ID:         "beacon",
+		Title:      "CODE",
+		Opaque:     ps.BeaconCodeView.Opaque,
+		ShowBorder: ps.BeaconCodeView.ShowBorder,
+		Brightness: ps.BeaconCodeView.Bright,
+		OnMenu: ep.makeViewMenu(ctx, "beacon", 7,
+			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
+		OnMinimize: func() { ps.BeaconCodeView.Visible = false },
+		RowSource: &ViewRowSource{
+			Rows:                    beaconCodeRows(ctx, ep, ps),
+			FontIndex:               ps.BeaconCodeView.Font,
+			ContentChars:            cellChars,
+			MaxCols:                 ps.BeaconCodeView.Col,
+			VisibleRows:             ps.BeaconCodeView.Lines,
+			RowSpacing:              RowSpacingCompact,
+			CenterColumnsInTitleBar: true,
+		},
+	})
+}
+
+// beaconCodeRows returns the flat row list shown by drawBeaconCodeView:
+// manually-added codes (with trailing ".") plus the codes of aircraft whose
+// tracks we own, in the order dictated by SortManual. Row.Color is left zero
+// — the View fills in the default text color.
+func beaconCodeRows(ctx *scope.Context, ep *Scope, ps *Preferences) []Row {
+	owned := slices.Collect(ep.ownedBeaconCodes(ctx))
+
+	makeRow := func(code av.Squawk) Row {
+		s := code.String()
+		if slices.Contains(ep.AddedBeaconCodes, code) {
+			s += "."
+		}
+		return Row{ID: code.String(), Body: s}
+	}
+
+	var rows []Row
+	if ps.BeaconCodeView.SortManual {
+		// First the (sorted) manually added codes, then the sorted owned codes
+		// that aren't also manually added.
+		added := slices.Clone(ep.AddedBeaconCodes)
+		slices.Sort(added)
+		for _, code := range added {
+			rows = append(rows, makeRow(code))
+		}
+		ownedOnly := slices.Clone(owned)
+		ownedOnly = slices.DeleteFunc(ownedOnly, func(c av.Squawk) bool {
+			return slices.Contains(ep.AddedBeaconCodes, c)
+		})
+		slices.Sort(ownedOnly)
+		for _, code := range ownedOnly {
+			rows = append(rows, makeRow(code))
+		}
+	} else {
+		// All codes (added + owned) merged and sorted; manual ones keep their ".".
+		all := append(slices.Clone(ep.AddedBeaconCodes), owned...)
+		slices.Sort(all)
+		all = slices.Compact(all)
+		for _, code := range all {
+			rows = append(rows, makeRow(code))
+		}
+	}
+	return rows
+}
+
+// ownedBeaconCodes returns the codes of the aircraft whose tracks the user
+// owns, which are on the beacon code list along with those added to it.
+func (ep *Scope) ownedBeaconCodes(ctx *scope.Context) iter.Seq[av.Squawk] {
+	return func(yield func(av.Squawk) bool) {
+		for _, trk := range ctx.Client.State.Tracks {
+			if trk.IsAssociated() && ctx.UserOwnsFlightPlan(trk.FlightPlan) &&
+				!yield(ep.TrackState[trk.ADSBCallsign].Track.Squawk) {
+				return
+			}
+		}
+	}
+}
+
+// onBeaconCodeList reports whether a code is on the beacon code list.
+func (ep *Scope) onBeaconCodeList(ctx *scope.Context, code av.Squawk) bool {
+	return slices.Contains(ep.AddedBeaconCodes, code) || util.SeqContains(ep.ownedBeaconCodes(ctx), code)
+}
+
+type beaconCodeViewPopup struct {
+	popupBase
+}
+
+func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+
+	rows := []MenuItem{
+		ep.makeBooleanMenuItem(&ps.BeaconCodeView.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.BeaconCodeView.ShowBorder, "BORDER"),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Lines, "LINES", 3, 20, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Col, "COL", 1, 5, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 2),
+		ep.makeToggleMenuItem(&ps.BeaconCodeView.SortManual, "SORT MAN"),
+	}
+
+	cfg := MenuConfig{
+		Title: "CODE",
+		Width: viewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
+	}
+
+	ep.DrawERAMMenu(ctx, transforms, cb, b.origin, cfg)
+}
+
+func handleBeaconCodeViewList(ep *Scope, codes []av.Squawk) CommandStatus {
+	for _, c := range codes {
+		if idx := slices.Index(ep.AddedBeaconCodes, c); idx != -1 {
+			ep.AddedBeaconCodes = slices.Delete(ep.AddedBeaconCodes, idx, idx+1)
+		} else {
+			ep.AddedBeaconCodes = append(ep.AddedBeaconCodes, c)
+		}
+	}
+
+	// TODO: should there be an error if any of the codes are not owned by us?
+
+	return CommandStatus{feedbackArea: []string{"ACCEPT", "BC LIST UPDATE"}}
 }

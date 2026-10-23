@@ -43,7 +43,7 @@ func TestParseAltitudeBlock(t *testing.T) {
 }
 
 func TestAltitudeLimitsFilterRange(t *testing.T) {
-	ep := &Scope{prefSet: &PrefrenceSet{}}
+	ep := &Scope{prefSet: &PreferenceSet{}}
 	for _, limits := range [][2]int{{0, 999}, {100, 230}, {234, 400}} {
 		if err := handleAltitudeLimitsFilter(ep, limits); err != nil {
 			t.Errorf("%v: %v", limits, err)

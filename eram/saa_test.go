@@ -22,7 +22,7 @@ import (
 // ones first; the CIFP marks P-56 active continuously, so it is hot.
 func TestSAAs(t *testing.T) {
 	db.InitDB()
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
 	var ss client.SimState
 	ss.Facility = "ZDC"
 	ep.makeSAAs(ss)
@@ -96,7 +96,7 @@ func (warpingPlatform) SetMousePosition([2]float32) {}
 // SUPPRESS LABEL/ALT, which leaves the SAA's boundary alone displayed, and
 // with DELETE TEAROFF active one deletes the tear-off (4.2.18.3).
 func TestSAATearOff(t *testing.T) {
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()},
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()},
 		saas: []saa{{id: "P56", label: "P-56", hot: true}}}
 	ep.systemFont[1] = &renderer.Font{Size: 13}
 	ctx := &scope.Context{DrawExtent: math.Extent2D{P1: [2]float32{1600, 900}}, Platform: warpingPlatform{}}

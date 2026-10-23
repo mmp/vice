@@ -115,7 +115,7 @@ func TestTrackParserSlashedFLID(t *testing.T) {
 	}
 
 	InitCommands()
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()},
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()},
 		TrackState: map[av.ADSBCallsign]*TrackState{"AAL123": {}}}
 	if _, err, _ := ep.tryExecuteUserCommand(ctx, "QP J /123", nil, nil); err != nil || !ep.TrackState["AAL123"].DisplayJRing {
 		t.Errorf("QP J /123: got J ring %v, error %v", ep.TrackState["AAL123"].DisplayJRing, err)

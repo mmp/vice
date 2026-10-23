@@ -62,7 +62,7 @@ func TestAltitudeFormatFieldB(t *testing.T) {
 // An unpaired LDB shows the beacon code; with the BCAST FLID filter off it
 // shows the ADS-B callsign instead, unless the code is 1200.
 func TestUnpairedLDBIdentifier(t *testing.T) {
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
 	for _, c := range []struct {
 		name      string
 		squawk    av.Squawk
@@ -181,7 +181,7 @@ func TestHSFIndicatorPosition(t *testing.T) {
 // standing for the larger FDB sizes (3.7). Their outlines follow their
 // fonts, next to the rest of the datablock.
 func TestFDBFontSizes(t *testing.T) {
-	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
+	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
 	for i := range ep.systemFont {
 		ep.systemFont[i] = &renderer.Font{Size: 10 + i}
 	}

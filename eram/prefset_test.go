@@ -122,7 +122,7 @@ func TestPrefSetToolbarMenus(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var restored PrefrenceSet
+	var restored PreferenceSet
 	if err := json.Unmarshal(b, &restored); err != nil {
 		t.Fatal(err)
 	}

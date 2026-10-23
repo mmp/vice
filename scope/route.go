@@ -1379,3 +1379,62 @@ func procedureTurnLegLength(pt *av.ProcedureTurn, appr av.ApproachType, gs float
 		return 4
 	}
 }
+
+// pt should return nm-based coordinates
+func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
+	prev, pok := pt(-1)
+	cur, _ := pt(0)
+	next, nok := pt(1)
+
+	vecAngle := func(p0, p1 [2]float32) float32 {
+		v := math.Normalize2f(math.Sub2f(p1, p0))
+		return math.Atan2(v[0], v[1])
+	}
+
+	const Pi = 3.1415926535
+	angle := float32(0)
+	if !pok {
+		if !nok {
+			// wtf?
+		}
+		// first point
+		angle = vecAngle(cur, next)
+	} else if !nok {
+		// last point
+		angle = vecAngle(prev, cur)
+	} else {
+		// have both prev and next
+		angle = (vecAngle(prev, cur) + vecAngle(cur, next)) / 2 // ??
+	}
+
+	if angle < 0 {
+		angle -= Pi / 2
+	} else {
+		angle += Pi / 2
+	}
+
+	offset := math.Scale2f(math.SinCos(angle), 8)
+
+	h := math.NormalizeHeading(math.Degrees(angle))
+	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
+		// Center(ish) the text if the line is more or less horizontal.
+		offset[0] -= 2.5 * float32(font.Size)
+	}
+	return offset
+}
+
+// GenerateRouteDrawingCommands adds the commands to draw what the route
+// drawing builders hold: the lines in latitude-longitude coordinates and
+// the circles, labels, and restrictions in window coordinates.
+func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms Transformations, dpiScale float32,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
+	transforms.LoadLatLongViewingMatrices(cb)
+	cb.LineWidth(1, dpiScale)
+	ld.GenerateCommands(cb)
+
+	transforms.LoadWindowViewingMatrices(cb)
+	pd.GenerateCommands(cb)
+	td.GenerateCommands(cb)
+	cb.LineWidth(1, dpiScale)
+	ldr.GenerateCommands(cb)
+}

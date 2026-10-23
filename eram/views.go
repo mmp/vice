@@ -2,30 +2,27 @@
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-// Implementations of all Views (main view display and menu popups) are in this file, except
-// for CRR and the Range View, which are complex enough to get their own files: crr.go and
-// rangeview.go
-
 package eram
 
 import (
 	"fmt"
-	"iter"
 	"slices"
-	"strings"
+	"strconv"
 
-	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
-	"github.com/mmp/vice/wx"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-// drawViews draws the views that are displayed and then the pop-up menu,
-// if one is open, over the view it belongs to.
+// drawViews, and the views with little state of their own: the Range View,
+// TIME, STATUS, OUTAGE, and the CHECK LISTs. The other views are in files
+// of their own or with the commands that fill them.
+
 func (ep *Scope) drawViews(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
 	ep.drawResponseArea(ctx, transforms, cb)
@@ -52,536 +49,411 @@ func (ep *Scope) drawViews(ctx *scope.Context, tracks []sim.Track, transforms sc
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// ALTIM SET
+// Range View
 
-// drawAltimSetView renders the ALTIM SET floating window.
-func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+// The Range View sets the range: in steps of 25 NM, with its slider, from
+// either of two preset ranges, by typing one in, or back to the range
+// before the last change (3.4). Its ranges are those the RANGE button
+// shows, half of the scope's vertical extent.
+
+const (
+	minViewRange = 1
+	// maxViewRange is the scroll wheel's limit as well.
+	maxViewRange         = 1300
+	rangeViewStep        = 25
+	rangeViewTroughStep  = 10
+	rangeViewEntryChars  = 4
+	rangeViewSliderChars = 5
+)
+
+// rangeViewField is a Range View field that takes typed entry.
+type rangeViewField int
+
+const (
+	rangeFieldNone rangeViewField = iota
+	rangeFieldValue
+	rangeFieldPreset1
+	rangeFieldPreset2
+)
+
+var rangePresetFields = [2]rangeViewField{rangeFieldPreset1, rangeFieldPreset2}
+
+// preset returns the index of the preset that the field is, if it is one.
+func (f rangeViewField) preset() (int, bool) {
+	i := slices.Index(rangePresetFields[:], f)
+	return i, i >= 0
+}
+
+// rangeViewState is the Range View's transient state.
+type rangeViewState struct {
+	previous float32 // the range RETURN goes back to; 0 if there is none
+	// sliding is set while the slider is being dragged; slideRange is the
+	// range at its position, which replaces the range only when the slider
+	// is dropped with TBE.
+	sliding    bool
+	slideRange float32
+	entry      rangeViewField
+	buf        string
+}
+
+// viewRange returns the range as the RANGE button and the Range View show
+// it, which is half of the vertical extent Preferences.Range holds.
+func (ep *Scope) viewRange() float32 {
+	return ep.currentPrefs().Range / 2
+}
+
+func formatRange(r float32) string {
+	if r >= 2 {
+		return fmt.Sprint(int(r))
+	}
+	return fmt.Sprintf("%.2f", r)
+}
+
+func rangeLabel(ep *Scope) string {
+	return "RANGE\n" + formatRange(ep.viewRange())
+}
+
+// setViewRange sets the range and remembers the one it replaces for RETURN.
+func (ep *Scope) setViewRange(r float32) {
 	ps := ep.currentPrefs()
-	if !ps.AltimSet.Visible {
+	ep.rangeView.previous = ps.Range / 2
+	ps.Range = 2 * r
+}
+
+// nudgeRange changes the range by delta, stopping at the view's limits.
+func (ep *Scope) nudgeRange(delta float32) error {
+	r := ep.viewRange()
+	if (delta < 0 && r <= minViewRange) || (delta > 0 && r >= maxViewRange) {
+		return errToolbarLimit
+	}
+	ep.setViewRange(math.Clamp(r+delta, minViewRange, maxViewRange))
+	return nil
+}
+
+// returnRange goes back to the range before the last change; the range it
+// leaves becomes the one that RETURN goes back to.
+func (ep *Scope) returnRange() error {
+	if ep.rangeView.previous == 0 {
+		return errToolbarLimit
+	}
+	ep.setViewRange(ep.rangeView.previous)
+	return nil
+}
+
+// rangePresetSelected reports whether a preset is the current range; it is
+// then shown selected.
+func (ep *Scope) rangePresetSelected(i int) bool {
+	return float32(ep.currentPrefs().RangeView.Presets[i]) == ep.viewRange()
+}
+
+func (ep *Scope) selectRangePreset(i int) {
+	if !ep.rangePresetSelected(i) {
+		ep.setViewRange(float32(ep.currentPrefs().RangeView.Presets[i]))
+	}
+}
+
+// startRangeEntry starts typed entry into a field. A selected preset can't
+// be changed.
+func (ep *Scope) startRangeEntry(f rangeViewField) error {
+	if i, ok := f.preset(); ok && ep.rangePresetSelected(i) {
+		return errToolbarLimit
+	}
+	ep.rangeView.entry, ep.rangeView.buf = f, ""
+	return nil
+}
+
+// enterRange applies a typed entry, a whole number of NM within the view's
+// limits, and reports whether it was valid.
+func (ep *Scope) enterRange() bool {
+	rv := &ep.rangeView
+	n, err := strconv.Atoi(rv.buf)
+	if err != nil || n < minViewRange || n > maxViewRange {
+		return false
+	}
+	if i, ok := rv.entry.preset(); ok {
+		ep.currentPrefs().RangeView.Presets[i] = n
+	} else {
+		ep.setViewRange(float32(n))
+	}
+	rv.entry, rv.buf = rangeFieldNone, ""
+	return true
+}
+
+// rangeViewLayout is the Range View's geometry: the cells of its header,
+// the row that shows the range, and the slider's trough.
+type rangeViewLayout struct {
+	menu, title, step, ret, close math.Extent2D
+	presets                       [2]math.Extent2D
+	cells                         []math.Extent2D // all of the header's, including the empty ones
+	header, value, trough         math.Extent2D
+	sliderWidth                   float32
+}
+
+func layoutRangeView(font *renderer.Font, topLeft [2]float32) rangeViewLayout {
+	var l rangeViewLayout
+	cw, rowH := charWidth(font), viewTitleHeight(font)
+	x, top := topLeft[0], topLeft[1]
+	cell := func(chars int) math.Extent2D {
+		e := math.Extent2D{P0: [2]float32{x, top - rowH},
+			P1: [2]float32{x + float32(chars)*cw + 2*titleBarButtonPad, top}}
+		x = e.P1[0]
+		l.cells = append(l.cells, e)
+		return e
+	}
+
+	l.menu = cell(1)
+	l.title = cell(len("RANGE"))
+	l.step = cell(len("-/+"))
+	l.ret = cell(len("RETURN"))
+	cell(3)
+	l.presets[0] = cell(rangeViewEntryChars)
+	l.presets[1] = cell(rangeViewEntryChars)
+	cell(7)
+	l.close = cell(1)
+
+	l.header = math.Extent2D{P0: [2]float32{topLeft[0], top - rowH}, P1: [2]float32{x, top}}
+	l.value = l.header.Offset([2]float32{0, -rowH})
+	l.trough = l.value.Offset([2]float32{0, -rowH})
+	l.sliderWidth = rangeViewSliderChars*cw + 2*titleBarButtonPad
+	return l
+}
+
+func (l rangeViewLayout) extent() math.Extent2D {
+	return math.Extent2D{P0: l.trough.P0, P1: l.header.P1}
+}
+
+// slider returns the slider's extent at the given range; the trough spans
+// the view's limits.
+func (l rangeViewLayout) slider(r float32) math.Extent2D {
+	t := (math.Clamp(r, minViewRange, maxViewRange) - minViewRange) / (maxViewRange - minViewRange)
+	x := l.trough.P0[0] + t*(l.trough.Width()-l.sliderWidth)
+	return math.Extent2D{P0: [2]float32{x, l.trough.P0[1]}, P1: [2]float32{x + l.sliderWidth, l.trough.P1[1]}}
+}
+
+// sliderRange returns the range, to the whole NM, for the slider centered
+// at x.
+func (l rangeViewLayout) sliderRange(x float32) float32 {
+	t := math.Clamp((x-l.sliderWidth/2-l.trough.P0[0])/(l.trough.Width()-l.sliderWidth), 0, 1)
+	return math.Round(minViewRange + t*(maxViewRange-minViewRange))
+}
+
+// shownRange returns the range the view shows: the slider's while it is
+// being dragged and otherwise the scope's.
+func (ep *Scope) shownRange() float32 {
+	return util.Select(ep.rangeView.sliding, ep.rangeView.slideRange, ep.viewRange())
+}
+
+func (ep *Scope) drawRangeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	if !ps.RangeView.Visible {
+		ep.rangeView.sliding = false
+		ep.rangeView.entry, ep.rangeView.buf = rangeFieldNone, ""
 		return
 	}
 
-	var rows []Row
-	for _, icao := range ep.AltimSetAirports {
-		if icao == "" {
-			rows = append(rows, Row{})
+	font := ep.ERAMFont(2)
+	size := layoutRangeView(font, [2]float32{}).extent()
+	topLeft := ep.clampViewPos(ctx, ps.RangeView.Position, size.Width(), size.Height())
+	l := layoutRangeView(font, topLeft)
+
+	if ep.rangeView.sliding && ctx.Mouse != nil {
+		ep.rangeView.slideRange = l.sliderRange(ctx.Mouse.Pos[0])
+	}
+	ep.clickRangeView(ctx, l)
+	if !ps.RangeView.Visible {
+		return
+	}
+
+	ep.DrawView(ctx, transforms, cb, View{
+		Position:   &ps.RangeView.Position,
+		ID:         "range",
+		Width:      size.Width(),
+		BodyHeight: size.Height(),
+		Opaque:     true,
+		ShowBorder: true,
+		Brightness: ps.RangeView.Bright,
+		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
+			ep.drawRangeViewBody(ctx, layoutRangeView(font, [2]float32{body.P0[0], body.P1[1]}), font, b)
+		},
+	})
+}
+
+// clickRangeView handles a click on the Range View. The clicks that it
+// leaves alone, on its title and its empty cells, move the view.
+func (ep *Scope) clickRangeView(ctx *scope.Context, l rangeViewLayout) {
+	mouse := ctx.Mouse
+	if mouse == nil || ep.viewRepo.activeID != "" || (ep.popup != nil && ep.popupExtent.Inside(mouse.Pos)) {
+		return
+	}
+	var c toolbarClick
+	c.clicked[platform.MouseButtonPrimary] = ep.mousePrimaryClicked(mouse)
+	c.clicked[platform.MouseButtonTertiary] = ep.mouseTertiaryClicked(mouse)
+	if c == (toolbarClick{}) {
+		return
+	}
+	tertiary := c.clicked[platform.MouseButtonTertiary]
+	rv := &ep.rangeView
+
+	// While the slider is dragged, TBE anywhere replaces the range with the
+	// slider's and TBP cancels.
+	if rv.sliding {
+		if tertiary {
+			ep.setViewRange(rv.slideRange)
+		}
+		rv.sliding = false
+		ep.consumeMouseClick(mouse)
+		return
+	}
+
+	p := mouse.Pos
+	if rv.entry != rangeFieldNone {
+		rv.entry, rv.buf = rangeFieldNone, ""
+	}
+	if !l.extent().Inside(p) {
+		return
+	}
+
+	ps := ep.currentPrefs()
+	var err error
+	switch {
+	case l.menu.Inside(p):
+		ep.popup = ep.makeViewMenu(ctx, "range", 1,
+			func(pb popupBase) popup { return &rangeViewPopup{popupBase: pb} })(l.extent())
+	case l.step.Inside(p):
+		err = ep.nudgeRange(util.Select(tertiary, float32(rangeViewStep), -rangeViewStep))
+	case l.ret.Inside(p):
+		err = ep.returnRange()
+	case l.presets[0].Inside(p), l.presets[1].Inside(p):
+		i := util.Select(l.presets[0].Inside(p), 0, 1)
+		if tertiary {
+			ep.selectRangePreset(i)
 		} else {
-			rows = append(rows, ep.altimRow(ctx, icao))
+			err = ep.startRangeEntry(rangePresetFields[i])
 		}
-	}
-
-	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.AltimSet.Position,
-		ID:         "altim-set",
-		Title:      "ALTIM SET",
-		Opaque:     ps.AltimSet.Opaque,
-		ShowBorder: ps.AltimSet.ShowBorder,
-		Brightness: ps.AltimSet.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "altim-set", 8,
-			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} }),
-		OnMinimize: func() { ps.AltimSet.Visible = false },
-		RowSource: &ViewRowSource{
-			Rows:                  rows,
-			FontIndex:             ps.AltimSet.Font,
-			ContentChars:          altimSetEntryChars,
-			MaxCols:               ps.AltimSet.Col,
-			VisibleRows:           ps.AltimSet.Lines,
-			ReserveBadgeColumn:    true,
-			TearOffs:              &altimSetTearOffs,
-			ShowTearOffBars:       ps.AltimSet.ShowIndicators,
-			RowSpacing:            RowSpacingCompact,
-			ScrollState:           &ep.altimSetScroll,
-			EmptyKeepsColumnWidth: true,
-			SelectableState:       &ep.altimSetSelect,
-			OnRowDelete:           ep.removeAltimSetEntry,
-		},
-	})
-}
-
-// addAltimSetStation puts icao in the first empty position of the ALTIM SET
-// view, looking down each column from the left, or after the last entry if
-// there is none (4.2.1.1.2).
-func (ep *Scope) addAltimSetStation(icao av.ICAOAirportCode) {
-	if i := slices.Index(ep.AltimSetAirports, ""); i >= 0 {
-		ep.AltimSetAirports[i] = icao
-	} else {
-		ep.AltimSetAirports = append(ep.AltimSetAirports, icao)
-	}
-}
-
-// altimSetEntryChars is the width of an ALTIM SET entry.
-const altimSetEntryChars = len("MMMM   1353 999  ")
-
-// altimSetTearOffs are the tear-offs of the ALTIM SET view's entries, by
-// ICAO code.
-var altimSetTearOffs = entryTearOffs{
-	locations: func(ep *Scope) *map[string]math.Point2LL { return &ep.currentPrefs().AltimSet.TearOffs },
-	tearOff: func(ep *Scope, ctx *scope.Context, id string) (entryTearOff, bool) {
-		icao := av.ICAOAirportCode(id)
-		if !slices.Contains(ep.AltimSetAirports, icao) {
-			return entryTearOff{}, false
+	case l.close.Inside(p):
+		ps.RangeView.Visible = false
+		ep.closeViewPopup("range")
+	case l.value.Inside(p):
+		if !tertiary {
+			err = ep.startRangeEntry(rangeFieldValue)
 		}
-		ps := ep.currentPrefs()
-		return entryTearOff{
-			ViewRowSource: ViewRowSource{
-				Rows:               []Row{ep.altimRow(ctx, icao)},
-				FontIndex:          ps.AltimSet.Font,
-				ContentChars:       altimSetEntryChars,
-				ReserveBadgeColumn: true,
-				RowSpacing:         RowSpacingCompact,
-			},
-			brightness: ps.AltimSet.Bright,
-			border:     ps.AltimSet.ShowBorder,
-		}, true
-	},
-}
-
-// removeAltimSetEntry removes the idx'th entry of the ALTIM SET view and
-// its tear-off. Its position stays empty, so the entries after it don't
-// move (4.2.1.1.2); empty positions after the last entry are dropped so
-// the view contracts.
-func (ep *Scope) removeAltimSetEntry(idx int) {
-	delete(ep.currentPrefs().AltimSet.TearOffs, string(ep.AltimSetAirports[idx]))
-	ep.AltimSetAirports[idx] = ""
-	n := len(ep.AltimSetAirports)
-	for n > 0 && ep.AltimSetAirports[n-1] == "" {
-		n--
-	}
-	ep.AltimSetAirports = ep.AltimSetAirports[:n]
-}
-
-// altimRow builds one ALTIM SET row from an airport's METAR (or a missing-data
-// placeholder). The altimeter portion is underlined via AfterDraw when below
-// the standard 29.92 inHg. The tear-off bar and row color are filled in by
-// the View; this function just constructs the row text and the AfterDraw
-// underline.
-func (ep *Scope) altimRow(ctx *scope.Context, icao av.ICAOAirportCode) Row {
-	ps := ep.currentPrefs()
-	font := ep.ERAMFont(ps.AltimSet.Font)
-	textWidth := func(s string) float32 { return font.LayoutBounds(s, 0).Width() }
-	color := ep.viewTextColor(ps.AltimSet.Bright)
-
-	displayID := db.AirportDisplayId(icao)
-	metar, hasMetar := ctx.Client.State.METAR[icao]
-	if !hasMetar {
-		return Row{ID: string(icao), TearOff: string(icao), Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
-	}
-	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
-	prefix := fmt.Sprintf("%-4s  ", displayID)
-	timeField := fmt.Sprintf("%4s", timeStr)
-	mid := " "
-	altField := fmt.Sprintf("%3s", altStr)
-	line := prefix + timeField + mid + altField + "  "
-
-	row := Row{ID: string(icao), TearOff: string(icao), Body: line}
-	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
-		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
-		fieldW := textWidth(altField)
-		// Position the underline 2px below the ink bottom of the digits so it
-		// tracks the actual glyph descent across font sizes.
-		inkBottom := font.InkBounds(altField, 0).P0[1]
-		row.AfterDraw = func(_ math.Extent2D, bodyOrigin [2]float32, b *ViewBuilders) {
-			uy := bodyOrigin[1] + inkBottom - 2
-			ux := bodyOrigin[0] + offsetX
-			b.Ld.AddLine([2]float32{ux, uy}, [2]float32{ux + fieldW, uy}, color)
-		}
-	}
-	return row
-}
-
-// altimMetarForDisplay returns the formatted METAR data for display, extracting
-// the observation time (HHMM) and 3-digit altimeter setting from a wx.METAR object.
-func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw int) {
-	// Extract HHMM from the METAR observation time. Times decoded from the
-	// server are in the local time zone.
-	t := metar.Time.UTC()
-	timeStr = fmt.Sprintf("%02d%02d", t.Hour(), t.Minute())
-
-	// Convert altimeter from inHg to 4-digit A-setting format
-	// A-setting is always 4 digits (e.g., 2992, 3012)
-	altRaw = int(math.Round(metar.Altimeter_inHg() * 100))
-	if altRaw > 0 {
-		// Last 3 digits of the 4-digit A-setting
-		altStr = fmt.Sprintf("%03d", altRaw%1000)
-	}
-
-	return
-}
-
-// altimSetPopup is the popup-interface impl for the ALTIM SET configuration menu.
-// The origin is captured at open time from the view's current geometry, since
-// the view width depends on dynamic state (column count).
-type altimSetPopup struct {
-	popupBase
-	cursorPlacement
-}
-
-func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
-		ep.makeBooleanMenuItem(&ps.AltimSet.Opaque, "O", "T"),
-		ep.makeToggleMenuItem(&ps.AltimSet.ShowBorder, "BORDER"),
-		ep.makeToggleMenuItem(&ps.AltimSet.ShowIndicators, "TEAROFF"),
-		{Label: fmt.Sprintf("LINES %d", ps.AltimSet.Lines), BgColor: colors.popup.backgroundGreen, Color: colors.popup.text,
-			OnClick: func(click MenuClickType) bool {
-				adjustMenuValue(ep, &ps.AltimSet.Lines, click, 3, 24, 1)
-				maxOffset := max(0, len(ep.AltimSetAirports)-ps.AltimSet.Lines)
-				ep.altimSetScroll.Offset = math.Clamp(ep.altimSetScroll.Offset, 0, maxOffset)
-				return false
-			}},
-		makeIntMenuItem(ep, &ps.AltimSet.Col, "COL", 1, 4, 1),
-		makeIntMenuItem(ep, &ps.AltimSet.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.AltimSet.Bright, "BRIGHT", 0, 100, 2),
-		// The cursor starts on TEMPLATE (4.2.1.3.1).
-		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text,
-			PlaceCursor: a.firstDraw()},
-	}
-
-	cfg := MenuConfig{
-		Title: "AS",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2), // Menu always uses FONT 2, not affected by FONT setting
-		Rows:  rows,
-	}
-
-	ep.DrawERAMMenu(ctx, transforms, cb, a.origin, cfg)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// CODE
-
-func (ep *Scope) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-	if !ps.BeaconCodeView.Visible {
+	case l.slider(ep.viewRange()).Inside(p):
+		rv.sliding, rv.slideRange = true, ep.viewRange()
+	case l.trough.Inside(p):
+		left := p[0] < l.slider(ep.viewRange()).P0[0]
+		err = ep.nudgeRange(util.Select(left, float32(-rangeViewTroughStep), rangeViewTroughStep))
+	default:
 		return
 	}
+	if err != nil {
+		ep.reportClickAtLimit(c)
+	}
+	ep.consumeMouseClick(mouse)
+}
 
-	// 4-digit beacon code plus a trailing "." for manually-added entries —
-	// space for the dot is reserved on every cell so columns line up.
-	const cellChars = 5
+func (ep *Scope) drawRangeViewBody(ctx *scope.Context, l rangeViewLayout, font *renderer.Font, b *ViewBuilders) {
+	ps := ep.currentPrefs()
+	rv := &ep.rangeView
+	text := ps.RangeView.Bright.ScaleRGB(colors.view.text)
+	style := renderer.TextStyle{Font: font, Color: text}
+	label := func(e math.Extent2D, s string) {
+		b.Td.AddTextCentered(s, e.Center(), style)
+	}
+	entryText := func(f rangeViewField, s string) string {
+		return util.Select(rv.entry == f, rv.buf, s)
+	}
 
-	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.BeaconCodeView.Position,
-		ID:         "beacon",
-		Title:      "CODE",
-		Opaque:     ps.BeaconCodeView.Opaque,
-		ShowBorder: ps.BeaconCodeView.ShowBorder,
-		Brightness: ps.BeaconCodeView.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "beacon", 7,
-			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
-		OnMinimize: func() { ps.BeaconCodeView.Visible = false },
-		RowSource: &ViewRowSource{
-			Rows:                    beaconCodeRows(ctx, ep, ps),
-			FontIndex:               ps.BeaconCodeView.Font,
-			ContentChars:            cellChars,
-			MaxCols:                 ps.BeaconCodeView.Col,
-			VisibleRows:             ps.BeaconCodeView.Lines,
-			RowSpacing:              RowSpacingCompact,
-			CenterColumnsInTitleBar: true,
-		},
+	addQuad(b.Trid, l.header, renderer.RGB{})
+	addQuad(b.Trid, math.Extent2D{P0: l.menu.P0, P1: l.title.P1}, colors.view.opaqueBackground)
+	addQuad(b.Trid, l.step, colors.popup.backgroundGreen)
+	for i, e := range l.presets {
+		if ep.rangePresetSelected(i) {
+			addQuad(b.Trid, e, colors.popup.backgroundGrey)
+		}
+	}
+	addQuad(b.Trid, math.Extent2D{P0: l.trough.P0, P1: l.value.P1}, colors.view.opaqueBackground)
+
+	label(l.menu, "M")
+	label(l.title, "RANGE")
+	label(l.step, "-/+")
+	label(l.ret, "RETURN")
+	for i, e := range l.presets {
+		label(e, entryText(rangePresetFields[i], fmt.Sprint(ps.RangeView.Presets[i])))
+	}
+	label(l.close, "-")
+
+	// The range is shown over the slider.
+	slider := l.slider(ep.shownRange())
+	value := math.Extent2D{P0: [2]float32{slider.P0[0], l.value.P0[1]}, P1: [2]float32{slider.P1[0], l.value.P1[1]}}
+	label(value, entryText(rangeFieldValue, formatRange(ep.shownRange())))
+
+	for _, e := range l.cells {
+		b.Ld.AddLine([2]float32{e.P1[0], e.P0[1]}, e.P1, colors.view.buttonOutline)
+	}
+	b.Ld.AddLine(l.value.P1, [2]float32{l.value.P0[0], l.value.P1[1]}, colors.view.buttonOutline)
+	b.Ld.AddLine(l.trough.P1, [2]float32{l.trough.P0[0], l.trough.P1[1]}, colors.view.buttonOutline)
+	b.Ld.AddLineLoop(colors.view.buttonOutline, slider.Corners())
+
+	if ctx.Mouse != nil && !rv.sliding {
+		for _, e := range []math.Extent2D{l.menu, l.step, l.ret, l.presets[0], l.presets[1], l.close, value, slider} {
+			if e.Inside(ctx.Mouse.Pos) {
+				b.Ld.AddLineLoop(colors.view.hoveredOutline, e.Corners())
+			}
+		}
+	}
+}
+
+// handleRangeViewKeyboard takes the keystrokes for typed entry into the
+// Range View, and Escape while its slider is dragged, returning true if it
+// took them.
+func (ep *Scope) handleRangeViewKeyboard(ctx *scope.Context) bool {
+	rv := &ep.rangeView
+	if rv.sliding {
+		if _, ok := ctx.Keyboard.Pressed[imgui.KeyEscape]; ok {
+			rv.sliding = false
+			return true
+		}
+		return false
+	}
+	if rv.entry == rangeFieldNone {
+		return false
+	}
+
+	for _, r := range ctx.Keyboard.Input {
+		if r >= '0' && r <= '9' && len(rv.buf) < rangeViewEntryChars {
+			rv.buf += string(r)
+		}
+	}
+	for key := range ctx.Keyboard.Pressed {
+		switch key {
+		case imgui.KeyBackspace:
+			if n := len(rv.buf); n > 0 {
+				rv.buf = rv.buf[:n-1]
+			}
+		case imgui.KeyEnter:
+			if !ep.enterRange() {
+				ep.soundAlarm()
+			}
+		case imgui.KeyEscape:
+			rv.entry, rv.buf = rangeFieldNone, ""
+		}
+	}
+	return true
+}
+
+// rangeViewPopup is the Range View's menu.
+type rangeViewPopup struct {
+	popupBase
+}
+
+func (r *rangeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
+	ep.DrawERAMMenu(ctx, transforms, cb, r.origin, MenuConfig{
+		Title: "RANGE",
+		Width: viewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  []MenuItem{makeIntMenuItem(ep, &ps.RangeView.Bright, "BRIGHT", 0, 100, 2)},
 	})
-}
-
-// beaconCodeRows returns the flat row list shown by drawBeaconCodeView:
-// manually-added codes (with trailing ".") plus the codes of aircraft whose
-// tracks we own, in the order dictated by SortManual. Row.Color is left zero
-// — the View fills in the default text color.
-func beaconCodeRows(ctx *scope.Context, ep *Scope, ps *Preferences) []Row {
-	owned := slices.Collect(ep.ownedBeaconCodes(ctx))
-
-	makeRow := func(code av.Squawk) Row {
-		s := code.String()
-		if slices.Contains(ep.AddedBeaconCodes, code) {
-			s += "."
-		}
-		return Row{ID: code.String(), Body: s}
-	}
-
-	var rows []Row
-	if ps.BeaconCodeView.SortManual {
-		// First the (sorted) manually added codes, then the sorted owned codes
-		// that aren't also manually added.
-		added := slices.Clone(ep.AddedBeaconCodes)
-		slices.Sort(added)
-		for _, code := range added {
-			rows = append(rows, makeRow(code))
-		}
-		ownedOnly := slices.Clone(owned)
-		ownedOnly = slices.DeleteFunc(ownedOnly, func(c av.Squawk) bool {
-			return slices.Contains(ep.AddedBeaconCodes, c)
-		})
-		slices.Sort(ownedOnly)
-		for _, code := range ownedOnly {
-			rows = append(rows, makeRow(code))
-		}
-	} else {
-		// All codes (added + owned) merged and sorted; manual ones keep their ".".
-		all := append(slices.Clone(ep.AddedBeaconCodes), owned...)
-		slices.Sort(all)
-		all = slices.Compact(all)
-		for _, code := range all {
-			rows = append(rows, makeRow(code))
-		}
-	}
-	return rows
-}
-
-// ownedBeaconCodes returns the codes of the aircraft whose tracks the user
-// owns, which are on the beacon code list along with those added to it.
-func (ep *Scope) ownedBeaconCodes(ctx *scope.Context) iter.Seq[av.Squawk] {
-	return func(yield func(av.Squawk) bool) {
-		for _, trk := range ctx.Client.State.Tracks {
-			if trk.IsAssociated() && ctx.UserOwnsFlightPlan(trk.FlightPlan) &&
-				!yield(ep.TrackState[trk.ADSBCallsign].Track.Squawk) {
-				return
-			}
-		}
-	}
-}
-
-// onBeaconCodeList reports whether a code is on the beacon code list.
-func (ep *Scope) onBeaconCodeList(ctx *scope.Context, code av.Squawk) bool {
-	return slices.Contains(ep.AddedBeaconCodes, code) || util.SeqContains(ep.ownedBeaconCodes(ctx), code)
-}
-
-type beaconCodeViewPopup struct {
-	popupBase
-}
-
-func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
-		ep.makeBooleanMenuItem(&ps.BeaconCodeView.Opaque, "O", "T"),
-		ep.makeToggleMenuItem(&ps.BeaconCodeView.ShowBorder, "BORDER"),
-		makeIntMenuItem(ep, &ps.BeaconCodeView.Lines, "LINES", 3, 20, 1),
-		makeIntMenuItem(ep, &ps.BeaconCodeView.Col, "COL", 1, 5, 1),
-		makeIntMenuItem(ep, &ps.BeaconCodeView.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 2),
-		ep.makeToggleMenuItem(&ps.BeaconCodeView.SortManual, "SORT MAN"),
-	}
-
-	cfg := MenuConfig{
-		Title: "CODE",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-
-	ep.DrawERAMMenu(ctx, transforms, cb, b.origin, cfg)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// MCA - Message Composition Area
-
-// drawMessageCompositionArea renders the MCA: the preview area, where
-// commands are typed, above the feedback area. The preview area starts at
-// two lines and grows with the input up to ps.MCA.PALines lines; the
-// feedback area starts at four lines and grows to fit its message (4.3.1.1,
-// 4.3.1.2). Both areas share black bg and a white border; the seam between
-// them is drawn by View as part of the outer border (and a separator line in
-// the body). Width fits ps.MCA.Width characters of the selected font plus
-// 2px side padding.
-func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	font := ep.ERAMFont(ps.MCA.Font)
-	cols := ps.MCA.Width
-	width := float32(cols)*charWidth(font) + 4
-	lineSpacing := int(float32(font.Size) * 0.4)
-	lineH := font.LayoutBounds("0", lineSpacing).Height()
-
-	// Input longer than the preview area shows its last lines, where the
-	// cursor is.
-	inText, _ := util.WrapText(ep.input.String()+"_", cols, 0, true, true)
-	inLines := strings.Split(inText, "\n")
-	inLines = inLines[max(0, len(inLines)-ps.MCA.PALines):]
-	inText = strings.Join(inLines, "\n")
-	inputH := float32(max(2, len(inLines)))*lineH + 4
-
-	// Feedback rendering: icon (success/error) in its own color, then the
-	// message in default text color. The wrap input includes the icon so the
-	// available width on the first line accounts for it.
-	var feedbackIcon, feedbackRest string
-	var feedbackIconColor renderer.RGB
-	feedbackLines := 0
-	if ep.feedbackArea.kind != feedbackNone {
-		switch ep.feedbackArea.kind {
-		case feedbackSuccess:
-			feedbackIcon, feedbackIconColor = checkMark, colors.successGreen
-		case feedbackError:
-			feedbackIcon, feedbackIconColor = xMark, colors.errorRed
-		}
-		wrapped, _ := util.WrapText(feedbackIcon+" "+ep.feedbackArea.msg, cols, 0, true, true)
-		// The feedback area holds up to 30 lines 50 characters wide or 34
-		// lines 30 characters wide.
-		lines := strings.Split(wrapped, "\n")
-		lines = lines[:min(len(lines), util.Select(cols >= 50, 30, 34))]
-		feedbackLines = len(lines)
-		wrapped = strings.Join(lines, "\n")
-		// wrapped starts with the icon char; the rest starts with the space
-		// that pushes the message past the icon's column on the first line.
-		feedbackRest = wrapped[len(feedbackIcon):]
-	}
-	feedbackH := float32(max(4, feedbackLines))*lineH + 4
-
-	// ps.MCA.Position is the top-left of the feedback box (prefs
-	// semantics). View sees the top-left of the whole envelope (input top).
-	viewPos := [2]float32{ps.MCA.Position[0], ps.MCA.Position[1] + inputH}
-
-	v := View{
-		Position:   &viewPos,
-		ID:         "mca",
-		Width:      width,
-		BodyHeight: inputH + feedbackH,
-		Opaque:     true,
-		ShowBorder: true,
-		Brightness: ps.Brightness.Border,
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "mca", 4,
-			func(pb popupBase) popup { return &mcaPopup{popupBase: pb} }),
-		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
-			// body.P1 = top-right (top of input); body.P0 = bottom-left (bottom of feedback).
-			seamY := body.P1[1] - inputH
-
-			// Seam line between input and feedback.
-			borderColor := ps.Brightness.Border.ScaleRGB(colors.view.border)
-			b.Ld.AddLine([2]float32{body.P0[0], seamY}, [2]float32{body.P1[0], seamY}, borderColor)
-
-			inputTopLeft := [2]float32{body.P0[0], body.P1[1]}
-			feedbackTopLeft := [2]float32{body.P0[0], seamY}
-			textStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(colors.toolbar.text), LineSpacing: lineSpacing}
-
-			// Input text (top box).
-			b.Td.AddText(inText, [2]float32{inputTopLeft[0] + 2, inputTopLeft[1] - 2}, textStyle)
-
-			// Feedback text (bottom box). Two AddText calls share the same
-			// origin so newline resets in `feedbackRest` land at column 0.
-			loc := [2]float32{feedbackTopLeft[0] + 2, feedbackTopLeft[1] - 2}
-			iconStyle := renderer.TextStyle{Font: font, Color: ps.MCA.Bright.ScaleRGB(feedbackIconColor), LineSpacing: lineSpacing}
-			b.Td.AddText(feedbackIcon, loc, iconStyle)
-			b.Td.AddText(feedbackRest, loc, textStyle)
-		},
-	}
-	ep.DrawView(ctx, transforms, cb, v)
-
-	// View may have updated viewPos via drag; translate back to prefs semantics.
-	ps.MCA.Position = [2]float32{viewPos[0], viewPos[1] - inputH}
-}
-
-// mcaPopup is the configuration menu for the Message Composition Area.
-type mcaPopup struct {
-	popupBase
-}
-
-func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
-		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 2, 50, 1),
-		makeWidthMenuItem(ep, &ps.MCA.Width, 30, 50),
-		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 2),
-	}
-
-	cfg := MenuConfig{
-		Title: "MCA",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-	ep.DrawERAMMenu(ctx, transforms, cb, m.origin, cfg)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// RA: Response Area
-
-// nonADSBMark stands for the non-ADS-B indicator in the RA's text; the RA
-// draws it as a coral A (4.3.2).
-const nonADSBMark = "\x01"
-
-// drawResponseArea renders the RA, which shows one response at a time. It
-// is four lines tall and grows with the response to ten lines, past which
-// it scrolls; responses are cut off after 300 lines (4.3.2). Width fits
-// ps.RA.Width characters of the selected font plus 2px side padding.
-func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	font := ep.ERAMFont(ps.RA.Font)
-	cols := ps.RA.Width
-	width := float32(cols)*charWidth(font) + 4
-	lineSpacing := int(float32(font.Size) * 0.4)
-	lineH := font.LayoutBounds("0", lineSpacing).Height()
-
-	wrapped, _ := util.WrapText(ep.responseArea, cols, 0, true, false)
-	lines := strings.Split(wrapped, "\n")
-	lines = lines[:min(len(lines), 300)]
-	visible := math.Clamp(len(lines), 4, 10)
-
-	if ep.raScrolledText != ep.responseArea {
-		ep.raScroll, ep.raScrolledText = ViewScrollState{}, ep.responseArea
-	}
-	maxOffset := max(0, len(lines)-visible)
-	ep.raScroll.Offset = math.Clamp(ep.raScroll.Offset, 0, maxOffset)
-	shownLines := lines[ep.raScroll.Offset:min(len(lines), ep.raScroll.Offset+visible)]
-	shown := strings.ReplaceAll(strings.Join(shownLines, "\n"), nonADSBMark, " ")
-	textColor := ps.RA.Bright.ScaleRGB(colors.toolbar.text)
-	markStyle := renderer.TextStyle{Font: font, Color: ps.Brightness.NonADSB.ScaleRGB(colors.coral)}
-
-	v := View{
-		Position:   &ps.RA.Position,
-		ID:         "ra",
-		Width:      width,
-		BodyHeight: float32(visible)*lineH + 4,
-		BodyFont:   font,
-		Opaque:     true,
-		ShowBorder: true,
-		Brightness: ps.RA.Bright,
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", 4,
-			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
-		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
-			topLeft := [2]float32{body.P0[0] + 2, body.P1[1] - 2}
-			b.Td.AddText(shown, topLeft,
-				renderer.TextStyle{Font: font, Color: textColor, LineSpacing: lineSpacing})
-			for i, line := range shownLines {
-				if j := strings.Index(line, nonADSBMark); j >= 0 {
-					b.Td.AddText("A", [2]float32{topLeft[0] + float32(j)*charWidth(font), topLeft[1] - float32(i)*lineH},
-						markStyle)
-				}
-			}
-		},
-	}
-	if maxOffset > 0 {
-		v.scroll = &ViewScrollConfig{State: &ep.raScroll, MaxOffset: maxOffset}
-	}
-	ep.DrawView(ctx, transforms, cb, v)
-}
-
-// raPopup is the configuration menu for the Response Area.
-type raPopup struct {
-	popupBase
-}
-
-func (r *raPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
-		makeWidthMenuItem(ep, &ps.RA.Width, 25, 50),
-		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 2),
-		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ MenuClickType) bool {
-			ep.responseArea = ""
-			return false
-		}},
-	}
-
-	cfg := MenuConfig{
-		Title: "RA",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-	ep.DrawERAMMenu(ctx, transforms, cb, r.origin, cfg)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -720,141 +592,6 @@ func (t *timeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tra
 		Rows:  rows,
 	}
 	ep.DrawERAMMenu(ctx, transforms, cb, t.origin, cfg)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// WX View
-
-// drawWXView renders the WX floating window.
-func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-	if !ps.WX.Visible {
-		return
-	}
-
-	rows := util.MapSlice(ep.WXReportStations, func(icao av.ICAOAirportCode) Row { return wxRow(ctx, icao) })
-
-	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.WX.Position,
-		ID:         "wx",
-		Title:      "WX",
-		Opaque:     ps.WX.Opaque,
-		ShowBorder: ps.WX.ShowBorder,
-		Brightness: ps.WX.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "wx", 6,
-			func(pb popupBase) popup { return &wxPopup{popupBase: pb} }),
-		OnMinimize: func() { ps.WX.Visible = false },
-		RowSource: &ViewRowSource{
-			Rows:               rows,
-			FontIndex:          ps.WX.Font,
-			ContentChars:       wxEntryChars,
-			MaxCols:            1,
-			VisibleRows:        ps.WX.Lines,
-			ReserveBadgeColumn: true,
-			TearOffs:           &wxTearOffs,
-			ShowTearOffBars:    ps.WX.ShowIndicators,
-			RowSpacing:         RowSpacingAiry,
-			ScrollState:        &ep.wxScroll,
-			SelectableState:    &ep.wxSelect,
-			OnRowDelete:        ep.removeWXReportStation,
-		},
-	})
-}
-
-// wxEntryChars is the width of a WX REPORT entry; its observation wraps
-// to fit.
-const wxEntryChars = 24
-
-// wxTearOffs are the tear-offs of the WX REPORT view's entries, by ICAO
-// code. A torn-off entry stays displayed while the view is suppressed
-// (4.2.20.2).
-var wxTearOffs = entryTearOffs{
-	locations: func(ep *Scope) *map[string]math.Point2LL { return &ep.currentPrefs().WX.TearOffs },
-	tearOff: func(ep *Scope, ctx *scope.Context, id string) (entryTearOff, bool) {
-		icao := av.ICAOAirportCode(id)
-		if !slices.Contains(ep.WXReportStations, icao) {
-			return entryTearOff{}, false
-		}
-		ps := ep.currentPrefs()
-		return entryTearOff{
-			ViewRowSource: ViewRowSource{
-				Rows:               []Row{wxRow(ctx, icao)},
-				FontIndex:          ps.WX.Font,
-				ContentChars:       wxEntryChars,
-				ReserveBadgeColumn: true,
-				RowSpacing:         RowSpacingAiry,
-			},
-			brightness: ps.WX.Bright,
-			border:     ps.WX.ShowBorder,
-		}, true
-	},
-}
-
-// removeWXReportStation removes the idx'th station of the WX REPORT view
-// and its tear-off.
-func (ep *Scope) removeWXReportStation(idx int) {
-	delete(ep.currentPrefs().WX.TearOffs, string(ep.WXReportStations[idx]))
-	ep.WXReportStations = slices.Delete(ep.WXReportStations, idx, idx+1)
-}
-
-// wxRow returns a station's entry in the WX REPORT view.
-func wxRow(ctx *scope.Context, icao av.ICAOAirportCode) Row {
-	return Row{ID: string(icao), TearOff: string(icao), Label: db.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)}
-}
-
-// wxMetarBody returns the row body text for a station: the wrappable METAR
-// text (HHMM + remaining fields) when METAR data is available, or "-M-" as
-// a status placeholder otherwise.
-func wxMetarBody(ctx *scope.Context, icao av.ICAOAirportCode) string {
-	metar, ok := ctx.Client.State.METAR[icao]
-	if !ok || metar.Raw == "" {
-		return "-M-"
-	}
-
-	// Find the time-group token: digits followed by 'Z'. (Plain strings.Index
-	// would match the 'Z' inside station IDs like "CYYZ".)
-	rawFields := strings.Fields(metar.Raw)
-	timeField := slices.IndexFunc(rawFields, func(f string) bool {
-		return len(f) >= 5 && f[len(f)-1] == 'Z' && util.IsAllNumbers(f[:len(f)-1])
-	})
-	if timeField == -1 {
-		return "-M-"
-	}
-
-	tok := rawFields[timeField]
-	body := tok[len(tok)-5 : len(tok)-1]
-	if timeField+1 < len(rawFields) {
-		body += " " + strings.Join(rawFields[timeField+1:], " ")
-	}
-	return body
-}
-
-// wxPopup is the popup-interface impl for the WX REPORT configuration menu.
-// The origin is captured at open time from the view's current geometry.
-type wxPopup struct {
-	popupBase
-}
-
-func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
-		ep.makeBooleanMenuItem(&ps.WX.Opaque, "O", "T"),
-		ep.makeToggleMenuItem(&ps.WX.ShowBorder, "BORDER"),
-		ep.makeToggleMenuItem(&ps.WX.ShowIndicators, "TEAROFF"),
-		makeIntMenuItem(ep, &ps.WX.Lines, "LINES", 3, 24, 1),
-		makeIntMenuItem(ep, &ps.WX.Font, "FONT", 1, 3, 1),
-		makeIntMenuItem(ep, &ps.WX.Bright, "BRIGHT", 0, 100, 2),
-	}
-
-	cfg := MenuConfig{
-		Title: "WX",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-
-	ep.DrawERAMMenu(ctx, transforms, cb, w.origin, cfg)
 }
 
 ///////////////////////////////////////////////////////////////////////////

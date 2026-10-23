@@ -228,21 +228,8 @@ type Scope struct {
 
 	showVFRAirports    bool
 	showTRACONBoundary bool
-	scopeDraw          struct {
-		scope.RouteDrawer
-		holds    map[string]av.Hold // fix name -> Hold
-		allHolds bool
-	}
-
-	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
-	IFPHelpers struct {
-		ArrivalsColor    *[3]float32
-		ApproachesColor  *[3]float32
-		DeparturesColor  *[3]float32
-		OverflightsColor *[3]float32
-		AirspaceColor    *[3]float32
-		HoldsColor       *[3]float32
-	}
+	// ScenarioRoutes draws the scenario's routes chosen in the info window.
+	ScenarioRoutes scope.RouteDrawer
 
 	atmosGrid             *wx.AtmosGrid
 	windDrawAltitudeIndex int
@@ -428,29 +415,7 @@ func (sp *Scope) Activate(r renderer.Renderer, p platform.Platform, lg *log.Logg
 	sp.Colors = monitorColorSets["legacy"]
 	sp.Monitor = "legacy"
 
-	if sp.IFPHelpers.ApproachesColor == nil {
-		sp.IFPHelpers.ApproachesColor = &[3]float32{.1, .9, .1}
-	}
-
-	if sp.IFPHelpers.ArrivalsColor == nil {
-		sp.IFPHelpers.ArrivalsColor = &[3]float32{.1, .9, .1}
-	}
-
-	if sp.IFPHelpers.DeparturesColor == nil {
-		sp.IFPHelpers.DeparturesColor = &[3]float32{.1, .9, .1}
-	}
-
-	if sp.IFPHelpers.OverflightsColor == nil {
-		sp.IFPHelpers.OverflightsColor = &[3]float32{.1, .9, .1}
-	}
-
-	if sp.IFPHelpers.AirspaceColor == nil {
-		sp.IFPHelpers.AirspaceColor = &[3]float32{.1, .9, .1}
-	}
-
-	if sp.IFPHelpers.HoldsColor == nil {
-		sp.IFPHelpers.HoldsColor = &[3]float32{.9, .9, .1} // Yellow
-	}
+	sp.ScenarioRoutes.Activate()
 
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
@@ -547,8 +512,7 @@ func (sp *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 
 	// nil these out rather than clearing them so that they are rebuilt
 	// from scratch.
-	sp.scopeDraw.Clear()
-	sp.scopeDraw.holds = nil
+	sp.ScenarioRoutes.Clear()
 }
 
 func (sp *Scope) makeMaps(client *client.ControlClient, lg *log.Logger) {
@@ -689,11 +653,12 @@ func (sp *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawVideoMaps(ctx, transforms, cb)
 
-	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools), cb)
+	toolsFont := sp.systemFont(ctx, ps.CharSize.Tools)
+	sp.ScenarioRoutes.Draw(ctx, transforms, toolsFont, toolsFont, cb)
 
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)
-	sp.drawPlotPoints(ctx, transforms, cb)
+	scope.DrawRoutePoints(ctx, transforms, cb, sp.drawRoutePoints)
 	sp.drawWind(ctx, transforms, cb)
 
 	sp.drawCompass(ctx, scopeExtent, transforms, cb)
@@ -746,48 +711,5 @@ func (sp *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 		sp.discardTracks = false
 	}
 
-	sp.drawPauseOverlay(ctx, cb)
-}
-
-func (sp *Scope) drawPauseOverlay(ctx *scope.Context, cb *renderer.CommandBuffer) {
-	if !ctx.Client.State.Paused {
-		return
-	}
-
-	text := "SIMULATION PAUSED"
-	font := sp.systemFontA[3] // Largest font
-
-	// Get pane width
-	width := ctx.DrawExtent.Width()
-	height := ctx.DrawExtent.Height()
-
-	// Fixed position from top
-	topOffset := height - 140
-	textY := topOffset + 30      // Text will be 30px below top (in middle of background quad)
-	quadTop := topOffset + 45    // Background extends 15px above text
-	quadBottom := topOffset + 15 // Background extends 15px below text
-
-	// Draw background quad (fixed width of 360px centered horizontally)
-	quad := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(quad)
-	quad.AddQuad(
-		[2]float32{width/2 - 180, quadTop},    // Left-top
-		[2]float32{width/2 + 180, quadTop},    // Right-top
-		[2]float32{width/2 + 180, quadBottom}, // Right-bottom
-		[2]float32{width/2 - 180, quadBottom}, // Left-bottom
-		sp.Colors.TextAlert)
-
-	// Draw text
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-	td.AddTextCentered(text, [2]float32{width / 2, textY}, renderer.TextStyle{
-		Font:  font,
-		Color: renderer.RGB{R: 1, G: 1, B: 1},
-	})
-
-	// Apply transformations and draw
-	transforms := scope.GetTransformations(ctx.DrawExtent, 0, [2]float32{}, 0, 0)
-	transforms.LoadWindowViewingMatrices(cb)
-	quad.GenerateCommands(cb)
-	td.GenerateCommands(cb)
+	scope.DrawPauseOverlay(ctx, cb, sp.systemFontA[3], sp.Colors.TextAlert, renderer.RGB{R: 1, G: 1, B: 1})
 }

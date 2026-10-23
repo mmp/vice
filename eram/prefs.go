@@ -312,13 +312,6 @@ func makeDefaultCheckListPreferences() CheckListPreferences {
 	}
 }
 
-type PrefrenceSet struct {
-	Current Preferences
-	// Saved holds the named sets saved from the PREFSET menu, in the order
-	// they were first saved; each one's Name is its name.
-	Saved []Preferences
-}
-
 type CommonPreferences struct {
 	CharSize struct {
 		Line4   int // Find out what this is
@@ -673,17 +666,6 @@ func makeDefaultPreferences() *Preferences {
 	return &prefs
 }
 
-func (p *PrefrenceSet) Upgrade(from, to int) {
-	p.Current.Upgrade(from, to)
-	if from < 108 {
-		// Saved was ten slots, the empty ones null.
-		p.Saved = util.FilterSlice(p.Saved, func(s Preferences) bool { return s.Name != "" })
-	}
-	for i := range p.Saved {
-		p.Saved[i].Upgrade(from, to)
-	}
-}
-
 func (p *Preferences) Upgrade(from, to int) {
 	if from < 72 {
 		// ERAM Range now represents the vertical extent of the scope in NM
@@ -856,23 +838,4 @@ func (p *Preferences) Reset(ss client.SimState) {
 	// Adapting the target and LDB filters separately brings the sub-entry box
 	// up split, showing the two of them.
 	p.AltitudeLimits.Split = p.AltitudeLimits.Targets != p.AltitudeLimits.LDBs
-}
-
-func (ep *Scope) initPrefsForLoadedSim(ss client.SimState) *Preferences {
-	// TODO: Add saving prefs with different ARTCCS/ sectors
-
-	p := makeDefaultPreferences()
-	p.ARTCC = ss.Facility
-	p.Reset(ss)
-	return p
-}
-
-// resetPrefsForNewSim is called when a new Sim is started from scratch.
-func (ep *Scope) resetPrefsForNewSim(ss client.SimState) {
-	ep.ensurePrefSetForSim(ss)
-	ep.prefSet.Current.Reset(ss)
-}
-
-func (ep *Scope) currentPrefs() *Preferences {
-	return &ep.prefSet.Current
 }

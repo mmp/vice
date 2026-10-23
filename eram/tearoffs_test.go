@@ -1,4 +1,4 @@
-// eram/entrytearoff_test.go
+// eram/tearoffs_test.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -8,7 +8,6 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/AllenDang/cimgui-go/imgui"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
@@ -18,6 +17,8 @@ import (
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 type tearOffTestHarness struct {

@@ -8,12 +8,14 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/AllenDang/cimgui-go/imgui"
-	"github.com/brunoga/deep"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/brunoga/deep"
 )
 
 // The PREFSET menu saves the display settings as a named preference set,
@@ -25,6 +27,134 @@ const (
 	minPrefSetNameChars = 2
 	maxPrefSetNameChars = 10
 )
+
+type PreferenceSet struct {
+	Current Preferences
+	// Saved holds the named sets saved from the PREFSET menu, in the order
+	// they were first saved; each one's Name is its name.
+	Saved []Preferences
+}
+
+func (p *PreferenceSet) Upgrade(from, to int) {
+	p.Current.Upgrade(from, to)
+	if from < 108 {
+		// Saved was ten slots, the empty ones null.
+		p.Saved = util.FilterSlice(p.Saved, func(s Preferences) bool { return s.Name != "" })
+	}
+	for i := range p.Saved {
+		p.Saved[i].Upgrade(from, to)
+	}
+}
+
+func (ep *Scope) initPrefsForLoadedSim(ss client.SimState) *Preferences {
+	// TODO: Add saving prefs with different ARTCCS/ sectors
+
+	p := makeDefaultPreferences()
+	p.ARTCC = ss.Facility
+	p.Reset(ss)
+	return p
+}
+
+// resetPrefsForNewSim is called when a new Sim is started from scratch.
+func (ep *Scope) resetPrefsForNewSim(ss client.SimState) {
+	ep.ensurePrefSetForSim(ss)
+	ep.prefSet.Current.Reset(ss)
+}
+
+func (ep *Scope) currentPrefs() *Preferences {
+	return &ep.prefSet.Current
+}
+
+// ensurePrefSetForSim initializes the ERAM preference set if needed and fills
+// in whatever sim-dependent fields a saved one is still missing, so that
+// preferences are ready before use. A new sim goes on through
+// resetPrefsForNewSim, which applies the scenario's settings over the top;
+// resuming a saved sim stops here so that the scope comes back as it was left.
+func (ep *Scope) ensurePrefSetForSim(ss client.SimState) {
+	// Ensure map of saved preference sets exists
+	if ep.ERAMPreferenceSets == nil {
+		ep.ERAMPreferenceSets = make(map[string]*PreferenceSet)
+	}
+
+	key := ss.Facility
+
+	// Retrieve or create the preference set for this facility
+	if ps, ok := ep.ERAMPreferenceSets[key]; ok && ps != nil {
+		ep.prefSet = ps
+	} else {
+		ep.prefSet = &PreferenceSet{Current: *ep.initPrefsForLoadedSim(ss)}
+		ep.ERAMPreferenceSets[key] = ep.prefSet
+	}
+
+	// Ensure map fields exist
+	if ep.prefSet.Current.VideoMapVisible == nil {
+		ep.prefSet.Current.VideoMapVisible = make(map[string]any)
+	}
+	if ep.prefSet.Current.VideoMapBrightness == nil {
+		ep.prefSet.Current.VideoMapBrightness = make(map[string]scope.Brightness)
+	}
+
+	// Update sim-dependent fields if they aren't set
+	if ep.prefSet.Current.CurrentCenter.IsZero() {
+		ep.prefSet.Current.Center = ss.GetInitialCenter()
+		ep.prefSet.Current.CurrentCenter = ep.prefSet.Current.Center
+	}
+	if ep.prefSet.Current.VideoMapGroup == "" {
+		ep.prefSet.Current.VideoMapGroup = ss.ScenarioDefaultVideoGroup
+	}
+	if ep.prefSet.Current.ARTCC == "" {
+		ep.prefSet.Current.ARTCC = ss.Facility
+	}
+	if ep.prefSet.Current.Range == 0 {
+		ep.prefSet.Current.Range = initialERAMRange(ss)
+	}
+
+	def := makeDefaultPreferences()
+
+	if ep.prefSet.Current.CursorSize == 0 {
+		ep.prefSet.Current.CursorSize = def.CursorSize
+	}
+
+	// Fill in CRR defaults if this preference set was created before CRR existed
+	if ep.prefSet.Current.CRR.ColorBright == nil {
+		ep.prefSet.Current.CRR.ColorBright = def.CRR.ColorBright
+		ep.prefSet.Current.CRR.Font = def.CRR.Font
+		ep.prefSet.Current.CRR.Lines = def.CRR.Lines
+		ep.prefSet.Current.CRR.Bright = def.CRR.Bright
+		ep.prefSet.Current.CRR.Position = def.CRR.Position
+		ep.prefSet.Current.CRR.Visible = def.CRR.Visible
+	}
+
+	// Fill in ALTIM SET defaults if this preference set was created before ALTIM SET existed
+	needsAltimSetDefaults := ep.prefSet.Current.AltimSet.Position == ([2]float32{})
+	if needsAltimSetDefaults {
+		ep.prefSet.Current.AltimSet.Position = def.AltimSet.Position
+		ep.prefSet.Current.AltimSet.ShowBorder = def.AltimSet.ShowBorder
+		ep.prefSet.Current.AltimSet.ShowIndicators = def.AltimSet.ShowIndicators
+		ep.prefSet.Current.AltimSet.Lines = def.AltimSet.Lines
+		ep.prefSet.Current.AltimSet.Col = def.AltimSet.Col
+		ep.prefSet.Current.AltimSet.Font = def.AltimSet.Font
+		ep.prefSet.Current.AltimSet.Bright = def.AltimSet.Bright
+	}
+
+	// Fill in WX defaults if this preference set was created before WX existed
+	needsWXDefaults := ep.prefSet.Current.WX.Position == ([2]float32{})
+	if needsWXDefaults {
+		ep.prefSet.Current.WX.Position = def.WX.Position
+		ep.prefSet.Current.WX.ShowBorder = def.WX.ShowBorder
+		ep.prefSet.Current.WX.Lines = def.WX.Lines
+		ep.prefSet.Current.WX.Font = def.WX.Font
+		ep.prefSet.Current.WX.Bright = def.WX.Bright
+	}
+	// Preference sets that predate the NX LVL field unmarshal NexradLevel as 0;
+	// 0 is reserved as the "uninitialized" sentinel and gets the default here.
+	if ep.prefSet.Current.NexradLevel == 0 {
+		ep.prefSet.Current.NexradLevel = NexradToolbarAll
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// PREFSET menu
 
 // prefSetMode is what a click on a preference set in the PREFSET menu does.
 type prefSetMode int

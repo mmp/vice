@@ -584,3 +584,111 @@ func (ep *Scope) drawCRRDistances(ctx *scope.Context, tracks []sim.Track, transf
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// LF - CRR (Continuous Range Readout) Handlers
+
+func handleCRRCreateWithAircraft(ep *Scope, ctx *scope.Context, loc CRRLocation, label string, tracks []*sim.Track) (CommandStatus, error) {
+	if !validCRRLabel(label) {
+		return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", loc.Token, label)
+	}
+
+	// Check if group already exists
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
+	}
+	if _, ok := ep.CRRGroups[label]; ok {
+		return CommandStatus{}, NewError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\nLF %s %s", loc.Token, label)
+	}
+
+	// All tracks must be associated
+	for _, trk := range tracks {
+		if !trk.IsAssociated() {
+			return CommandStatus{}, ErrIllegalACID
+		}
+	}
+
+	// Create group
+	g := &CRRGroup{
+		Label:    label,
+		Location: loc.Location,
+		Color:    ep.currentPrefs().CRR.SelectedColor,
+		Aircraft: make(map[av.ADSBCallsign]struct{}),
+	}
+	ep.CRRGroups[label] = g
+
+	for _, trk := range tracks {
+		g.Aircraft[trk.ADSBCallsign] = struct{}{}
+	}
+
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR GROUP %s CREATED", label)},
+	}, nil
+}
+
+func handleCRRCreate(ep *Scope, ctx *scope.Context, loc CRRLocation, label string) (CommandStatus, error) {
+	return handleCRRCreateWithAircraft(ep, ctx, loc, label, nil)
+}
+
+func handleCRRCreateAutoLabel(ep *Scope, ctx *scope.Context, loc CRRLocation) (CommandStatus, error) {
+	// Auto-derive label from fix name if it's a valid fix
+	label := loc.Token
+	// Check if it's a valid fix name that can be used as a label
+	if _, ok := ctx.Client.State.Locate(label); ok && validCRRLabel(label) {
+		return handleCRRCreate(ep, ctx, loc, label)
+	}
+	return CommandStatus{}, NewError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF //%s", loc.Token)
+}
+
+// handleCRRCreateClicked creates a group at the picked point, with up to
+// four flights in it; it takes a label, since a point has no fix name to
+// label it with (4.2.11.4.1, 4.2.11.4.2).
+func handleCRRCreateClicked(ep *Scope, ctx *scope.Context, loc math.Point2LL, label string,
+	tracks []*sim.Track) (CommandStatus, error) {
+	return handleCRRCreateWithAircraft(ep, ctx, CRRLocation{Location: loc, Token: locationSymbol}, label, tracks)
+}
+
+// handleCRRWrongOrder handles LF LABEL {pos} - wrong order error
+func handleCRRWrongOrder(label string, pos math.Point2LL) (CommandStatus, error) {
+	return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", strings.ToUpper(label), locationSymbol)
+}
+
+func handleCRRToggleMembership(ep *Scope, label string, tracks []*sim.Track) (CommandStatus, error) {
+	if !validCRRLabel(label) {
+		return CommandStatus{}, ErrCommandFormat
+	}
+
+	// Find existing group
+	g := ep.CRRGroups[label]
+	if g == nil {
+		return CommandStatus{}, ErrCommandFormat
+	}
+
+	// Toggle membership for each aircraft
+	for _, trk := range tracks {
+		if !trk.IsAssociated() {
+			return CommandStatus{}, ErrIllegalACID
+		}
+
+		cs := trk.ADSBCallsign
+		if _, ok := g.Aircraft[cs]; ok {
+			delete(g.Aircraft, cs)
+		} else {
+			g.Aircraft[cs] = struct{}{}
+		}
+	}
+
+	return CommandStatus{
+		feedbackArea: []string{"ACCEPT", fmt.Sprintf("CRR UPDATED %s", g.Label)},
+	}, nil
+}
+
+func handleCRRLabelOnly(label string) (CommandStatus, error) {
+	// LF LABEL without click or aircraft - group not found
+	return CommandStatus{}, NewError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s", strings.ToUpper(label))
+}
+
+func handleCRREmpty() (CommandStatus, error) {
+	// LF alone - message too short
+	return CommandStatus{}, NewError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF")
+}

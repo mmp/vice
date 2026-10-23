@@ -6,160 +6,22 @@ package eram
 
 import (
 	"fmt"
+	"net/rpc"
 	"slices"
-	"strings"
-	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/sim"
 )
 
-// toUpper uppercases the input but preserves the lowercase
-// location symbol (w) so clicked locations display correctly in errors.
-func toUpper(s string) string {
-	s = strings.TrimSpace(s)
-	var b strings.Builder
-	for _, r := range s {
-		if string(r) == locationSymbol {
-			b.WriteRune(r)
-		} else {
-			b.WriteRune(unicode.ToUpper(r))
-		}
-	}
-	return b.String()
-}
+// What the commands do to flight plans and tracks: the calls they make on
+// the client, and the ERAM errors their failures are reported as.
 
-func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transformations) {
-	mouse := ctx.Mouse
-	if mouse == nil {
-		return
-	}
-	ps := ep.currentPrefs()
-	if ep.mousePrimaryReleased(mouse) {
-		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
-			mouseLatLong := transforms.LatLongFromWindowP(mouse.Pos)
-			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
-
-		}
-	}
-	if ep.mouseTertiaryReleased(mouse) {
-		// A middle-click is treated as "left-click + [Enter] at this position"; append the click to
-		// the input and execute.
-		pos := transforms.LatLongFromWindowP(mouse.Pos)
-		var callsign av.ADSBCallsign
-		if trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms); trk != nil {
-			callsign = trk.ADSBCallsign
-		}
-		// Skip an empty middle-click on empty space: nothing to dispatch.
-		if callsign != "" || ep.input.String() != "" {
-			ep.input.AddLocation(pos, callsign)
-			status, err := ep.executeERAMCommand(ctx, ep.input)
-			ep.input.Clear()
-			ep.applyCommandStatus(ctx, status, err)
-		}
-	}
-	// try get closest track
-
-	// pan
-
-	if mouse.Dragging[platform.MouseButtonSecondary] {
-		delta := mouse.DragDelta
-		if delta[0] != 0 || delta[1] != 0 {
-			deltaLL := transforms.LatLongFromWindowV(delta)
-			ps.CurrentCenter = math.Sub2f(ps.CurrentCenter, deltaLL)
-		}
-	}
-
-	if ep.mousePrimaryClicked(mouse) {
-		if ep.drawingRoute {
-			ep.setDrawRoutePoints(ctx, append(ep.drawRoutePoints, transforms.LatLongFromWindowP(mouse.Pos)))
-		} else if ep.input.String() != "" {
-			pos := transforms.LatLongFromWindowP(mouse.Pos)
-			var callsign av.ADSBCallsign
-			if trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms); trk != nil {
-				callsign = trk.ADSBCallsign
-			}
-			ep.input.AddLocation(pos, callsign)
-		}
-	}
-
-	// zoom
-	if z := mouse.Wheel[1]; z != 0 {
-		r := ps.Range
-		ps.Range += func() float32 {
-			var amt float32 = 20
-
-			if r < 4 {
-				amt = .5
-			} else if r == 4 {
-				if z > 0 {
-					amt = 2
-				} else {
-					amt = .5
-				}
-			} else if r < 20 {
-				amt = 2
-			} else if r == 20 {
-				if z > 0 {
-					amt = 20
-				} else {
-					amt = 2
-				}
-			}
-			return amt * z / 10
-		}()
-		ps.Range = math.Clamp(ps.Range, .5, 2600)
-
-		// We want to zoom in centered at the mouse position; this affects
-		// the scope center after the zoom, so we'll find the
-		// transformation that gives the new center position.
-		mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
-		scale := ps.Range / r
-		centerTransform := math.Identity3x3().
-			Translate(mouseLL[0], mouseLL[1]).
-			Scale(scale, scale).
-			Translate(-mouseLL[0], -mouseLL[1])
-
-		ps.CurrentCenter = centerTransform.TransformPoint(ps.CurrentCenter)
-	}
-}
-
-type CommandStatus struct {
-	responseArea []string
-	feedbackArea []string
-}
-
-func (ep *Scope) executeERAMCommand(ctx *scope.Context, cmdLine inputText) (CommandStatus, error) {
-	original := strings.TrimSpace(cmdLine.String())
-
-	// Extract all embedded locations from clicking while typing, along with
-	// the callsigns (if any) of tracks under each click resolved at click time.
-	var mousePositions []math.Point2LL
-	var trackCallsigns []av.ADSBCallsign
-	for _, ic := range cmdLine {
-		if string(ic.char) == locationSymbol {
-			mousePositions = append(mousePositions, ic.location)
-			trackCallsigns = append(trackCallsigns, ic.trackCallsign)
-		}
-	}
-
-	if status, err, handled := ep.tryExecuteUserCommand(ctx, original, mousePositions, trackCallsigns); handled {
-		return status, err
-	}
-
-	// No registered command matched the input; surface a generic syntax error so the user gets
-	// feedback instead of silent no-op (e.g. "QP <FLID> <SECTOR>" with the args swapped).
-	if original != "" {
-		return CommandStatus{}, ErrCommandFormat
-	}
-	return CommandStatus{}, nil
-}
-
-func (ep *Scope) deleteFLightplan(ctx *scope.Context, trk sim.Track) {
+func (ep *Scope) deleteFlightPlan(ctx *scope.Context, trk sim.Track) {
 	ctx.Client.DeleteFlightPlan(trk.FlightPlan.ACID, func(err error) {
 		if err != nil {
 			ep.displayError(err, ctx)
@@ -484,4 +346,132 @@ func (ep *Scope) lookupControllerForID(ctx *scope.Context, controller string) (*
 		}
 	}
 	return nil, ErrSectorNotActive
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Errors
+
+type Error struct {
+	error
+}
+
+func NewError(msg string, args ...any) *Error {
+	return &Error{fmt.Errorf(msg, args...)}
+}
+
+var ( // TODO: Get actual error messages for this
+	ErrCommandFormat         = NewError("FORMAT")
+	ErrAmbiguousACID         = NewError("AMB ACID")
+	ErrIllegalACID           = NewError("ILL CID")
+	ErrIllegalPosition       = NewError("ILLEGAL POSITION")
+	ErrIllegalValue          = NewError("ILLEGAL VALUE")
+	ErrIllegalAirport        = NewError("ILLEGAL AIRPORT")
+	ErrIllegalUserAction     = NewError("ILLEGAL USER ACTION")
+	ErrInvalidAltitudeLimits = NewError("INVALID ALTITUDE LIMITS")
+	ErrMapUnavailable        = NewError("MAP UNAVAILABLE")
+	ErrMessageTooLong        = NewError("MESSAGE TOO LONG")
+	ErrSectorNotActive       = NewError("SECTOR NOT ACTIVE")
+)
+
+// SG rejects (4.2.14)
+var (
+	ErrSuppressionGroupNotFound    = NewError("REJECT - GROUP NOT FOUND")
+	ErrNoSuppressionGroupAvailable = NewError("REJECT - NO GROUP ID AVAILABLE")
+)
+
+// QP A rejects (5.1.5.11.2)
+var (
+	ErrNoUnacknowledgedPointOut = NewError("REJECT - NO UNACKNOWLEDGED PO")
+	ErrPointOutNotFound         = NewError("REJECT - POINT OUT NOT FOUND")
+	ErrSectorIDRequired         = NewError("REJECT - SECTOR ID REQUIRED")
+)
+
+var eramErrorRemap = map[error]*Error{
+	av.ErrBadPoolSpecifier:           ErrIllegalValue,
+	av.ErrInvalidAltitude:            ErrIllegalValue,
+	av.ErrInvalidController:          ErrIllegalPosition,
+	av.ErrInvalidFacility:            ErrIllegalACID,
+	av.ErrInvalidHeading:             ErrIllegalValue,
+	av.ErrNoAircraftForCallsign:      ErrIllegalACID,
+	av.ErrNoController:               ErrSectorNotActive,
+	av.ErrNoFlightPlan:               ErrIllegalACID,
+	av.ErrNoMatchingFix:              ErrIllegalValue,
+	av.ErrNoMoreAvailableSquawkCodes: ErrIllegalValue,
+	av.ErrNoValidDepartureFound:      ErrIllegalUserAction,
+	av.ErrNotBeingHandedOffToMe:      ErrIllegalUserAction,
+	av.ErrNotPointedOutByMe:          ErrIllegalUserAction,
+	av.ErrNotPointedOutToMe:          ErrPointOutNotFound,
+	av.ErrOtherControllerHasTrack:    ErrIllegalUserAction,
+	av.ErrUnknownAirport:             ErrIllegalAirport,
+	av.ErrUnknownRunway:              ErrIllegalValue,
+
+	nav.ErrClearedForUnexpectedApproach: ErrIllegalValue,
+	nav.ErrFixIsTooFarAway:              ErrIllegalValue,
+	nav.ErrFixNotInRoute:                ErrIllegalValue,
+	nav.ErrInvalidApproach:              ErrIllegalValue,
+	nav.ErrInvalidFix:                   ErrIllegalValue,
+	nav.ErrNotClearedForApproach:        ErrIllegalValue,
+	nav.ErrNotFlyingRoute:               ErrIllegalValue,
+	nav.ErrUnableCommand:                ErrIllegalValue,
+	nav.ErrUnknownApproach:              ErrIllegalValue,
+
+	sim.ErrATPADisabled:                    ErrIllegalUserAction,
+	sim.ErrAircraftAlreadyReleased:         ErrIllegalUserAction,
+	sim.ErrBeaconMismatch:                  ErrIllegalValue,
+	sim.ErrDuplicateACID:                   ErrIllegalACID,
+	sim.ErrDuplicateBeacon:                 ErrIllegalValue,
+	sim.ErrIllegalACID:                     ErrIllegalACID,
+	sim.ErrIllegalACType:                   ErrIllegalValue,
+	sim.ErrIllegalATIS:                     ErrIllegalValue,
+	sim.ErrIllegalBeaconCode:               ErrIllegalValue,
+	sim.ErrIllegalFunction:                 ErrIllegalUserAction,
+	sim.ErrIllegalLine:                     ErrIllegalValue,
+	sim.ErrIllegalPosition:                 ErrIllegalPosition,
+	sim.ErrIllegalScratchpad:               ErrIllegalValue,
+	sim.ErrInvalidAbbreviatedFP:            ErrCommandFormat,
+	sim.ErrInvalidCommandSyntax:            ErrCommandFormat,
+	sim.ErrInvalidDepartureController:      ErrIllegalUserAction,
+	sim.ErrInvalidRestrictionAreaIndex:     ErrIllegalValue,
+	sim.ErrInvalidVolumeId:                 ErrIllegalUserAction,
+	sim.ErrNoACType:                        ErrIllegalValue,
+	sim.ErrNoMatchingFlight:                ErrIllegalACID,
+	sim.ErrNoMatchingFlightPlan:            ErrIllegalACID,
+	sim.ErrNoRecentCommand:                 ErrIllegalUserAction,
+	sim.ErrNoScratchpad:                    ErrIllegalValue,
+	sim.ErrNoVFRAircraftForFlightFollowing: ErrIllegalACID,
+	sim.ErrTCPAlreadyConsolidated:          ErrIllegalUserAction,
+	sim.ErrTCPNotConsolidated:              ErrIllegalUserAction,
+	sim.ErrTCWIsConsolidated:               ErrIllegalPosition,
+	sim.ErrTCWNotFound:                     ErrIllegalPosition,
+	sim.ErrTCWNotVacant:                    ErrIllegalPosition,
+	sim.ErrTooManyRestrictionAreas:         ErrIllegalUserAction,
+	sim.ErrTrackIsActive:                   ErrIllegalUserAction,
+	sim.ErrIllegalTrackLocalFP:             ErrIllegalUserAction,
+	sim.ErrTrackIsBeingHandedOff:           ErrIllegalUserAction,
+	sim.ErrTrackIsNotActive:                ErrIllegalACID,
+	sim.ErrUnknownAircraftType:             ErrIllegalValue,
+	sim.ErrUnknownController:               ErrIllegalPosition,
+	sim.ErrUnknownControllerFacility:       ErrIllegalPosition,
+	sim.ErrFDAMIllegalArea:                 ErrIllegalUserAction,
+	sim.ErrFDAMNoRegions:                   ErrIllegalUserAction,
+	sim.ErrFDAMProcessingOff:               ErrIllegalUserAction,
+	sim.ErrVolumeDisabled:                  ErrIllegalUserAction,
+	sim.ErrRunwayNot25nm:                   ErrIllegalUserAction,
+}
+
+func GetError(e error, lg *log.Logger) *Error {
+	if se, ok := e.(*Error); ok {
+		return se
+	}
+
+	if _, ok := e.(rpc.ServerError); ok {
+		e = client.TryDecodeError(e)
+	}
+
+	if se, ok := eramErrorRemap[e]; ok {
+		return se
+	}
+
+	lg.Errorf("%v: unexpected error passed to GetError", e)
+	return ErrCommandFormat
 }
