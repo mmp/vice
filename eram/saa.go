@@ -37,12 +37,11 @@ type saa struct {
 
 // SAASettings are an SAA's display filters (4.2.18.2): which of its
 // boundary (B), altitudes (A), and label (L) are displayed while it is
-// inactive and while it is active; whether DISPLAY, the altitude override,
-// is on; and where its label has been torn off to, if it has been.
+// inactive and while it is active, and whether DISPLAY, the altitude
+// override, is on.
 type SAASettings struct {
 	Cold, Hot string
 	Display   bool
-	TearOff   math.Point2LL
 }
 
 var defaultSAASettings = SAASettings{Hot: "BAL"}
@@ -181,42 +180,27 @@ func saaText(a *saa, filter string) []string {
 // The SAAs on the scope
 
 // drawSAAs draws the SAAs' boundaries, labels, and altitudes as their
-// filters select, and the boundary of one being torn off along with its
-// label at the cursor.
+// filters select, and the boundary of one whose label is being torn off
+// (4.2.18.3). A torn-off label is drawn by its tear-off instead.
 func (ep *Scope) drawSAAs(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	font := ep.ERAMFont(1)
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	trid := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	clear(ep.saaTearOffs)
-	if ep.saaTearOffs == nil {
-		ep.saaTearOffs = make(map[string]math.Extent2D)
-	}
 	altitudeRange := ctx.Client.State.GetAltitudeRange()
+	tearingOff, _ := ep.saaBeingTornOff()
 	for i := range ep.saas {
 		a := &ep.saas[i]
-		s := ps.saaSettings(a.id)
-		filter, color := a.filter(s, altitudeRange), ep.saaColor(a)
-		tearingOff := ep.saaTearingOff == a.id
-		if strings.Contains(filter, "B") || tearingOff {
+		filter, color := a.filter(ps.saaSettings(a.id), altitudeRange), ep.saaColor(a)
+		if strings.Contains(filter, "B") || a.id == tearingOff {
 			for _, v := range a.volumes {
 				addDashedLoop(ld, util.MapSlice(v.Vertices, transforms.WindowFromLatLongP), color)
 			}
 		}
-
-		lines := saaText(a, filter)
-		switch {
-		case tearingOff && ctx.Mouse != nil:
-			ep.drawSAATearOff(trid, td, ctx.Mouse.Pos, lines, font, color)
-		case !s.TearOff.IsZero():
-			p := transforms.WindowFromLatLongP(s.TearOff)
-			ep.saaTearOffs[a.id] = ep.drawSAATearOff(trid, td, p, lines, font, color)
-		case len(lines) > 0:
+		if lines := saaText(a, filter); len(lines) > 0 && !(viewEntry{&saaTearOffs, a.id}).tornOff(ep) {
 			td.AddText(strings.Join(lines, "\n"), transforms.WindowFromLatLongP(a.labelAt),
 				renderer.TextStyle{Font: font, Color: color})
 		}
@@ -225,8 +209,72 @@ func (ep *Scope) drawSAAs(ctx *scope.Context, transforms scope.Transformations, 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
-	trid.GenerateCommands(cb)
 	td.GenerateCommands(cb)
+}
+
+// saaBeingTornOff returns the id of the SAA whose label is being torn off
+// or moved, if there is one.
+func (ep *Scope) saaBeingTornOff() (string, bool) {
+	if d := ep.entryDrag; d != nil && d.entry.tearOffs == &saaTearOffs {
+		return d.entry.id, true
+	}
+	return "", false
+}
+
+// saaTearOffs are the tear-offs of the SAAs' labels, by SAA id. One shows
+// the label and altitudes that its SAA's filter displays, in the SAA's
+// color and without a border, as the label on the map does (4.2.18.1.1); a
+// click on it offers SUPPRESS LABEL/ALT, which sets the SAA's current
+// filter to its boundary alone (4.2.18.3.1).
+var saaTearOffs = entryTearOffs{
+	locations: func(ep *Scope) *map[string]math.Point2LL { return &ep.currentPrefs().SAAFilter.TearOffs },
+	tearOff: func(ep *Scope, ctx *scope.Context, id string) (entryTearOff, bool) {
+		a, ok := ep.saaByID(id)
+		if !ok {
+			return entryTearOff{}, false
+		}
+		ps := ep.currentPrefs()
+		lines := saaText(a, a.filter(ps.saaSettings(id), ctx.Client.State.GetAltitudeRange()))
+		rows := util.MapSlice(lines, func(l string) Row { return Row{Label: l, Color: ep.saaColor(a)} })
+		if len(rows) == 0 {
+			// A suppressed label's tear-off is its bar alone.
+			rows = []Row{{}}
+		}
+		rows[0].TearOff = id
+		return entryTearOff{
+			ViewRowSource: ViewRowSource{
+				Rows:               rows,
+				FontIndex:          1,
+				ContentChars:       util.ReduceSlice(lines, 0, func(l string, n int) int { return max(n, len(l)) }),
+				ReserveBadgeColumn: true,
+				RowSpacing:         RowSpacingCompact,
+			},
+			brightness: ps.SAAFilter.Bright,
+		}, true
+	},
+	click: func(ep *Scope, ctx *scope.Context, id string, extent math.Extent2D) {
+		a, ok := ep.saaByID(id)
+		if !ok {
+			return
+		}
+		ps := ep.currentPrefs()
+		ep.openPickAreaPopup(ctx, extent, "SUPPRESS LABEL/ALT", func() {
+			s := ps.saaSettings(id)
+			if a.hot {
+				s.Hot = "B"
+			} else {
+				s.Cold = "B"
+			}
+			ps.setSAASettings(id, s)
+		})
+	},
+}
+
+func (ep *Scope) saaByID(id string) (*saa, bool) {
+	if i := slices.IndexFunc(ep.saas, func(a saa) bool { return a.id == id }); i >= 0 {
+		return &ep.saas[i], true
+	}
+	return nil, false
 }
 
 // addDashedLoop outlines a polygon with dashes (figure 4-229) that continue
@@ -250,68 +298,6 @@ func addDashedLoop(ld *renderer.ColoredLinesDrawBuilder, pts [][2]float32, color
 				d = 0
 			}
 		}
-	}
-}
-
-// drawSAATearOff draws a torn-off SAA label at p: its tear-off square
-// followed by its lines. It returns the extent that takes clicks on it.
-func (ep *Scope) drawSAATearOff(trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
-	p [2]float32, lines []string, font *renderer.Font, color renderer.RGB) math.Extent2D {
-	h := cellHeight(font)
-	square := math.Extent2D{P0: [2]float32{p[0], p[1] - h}, P1: [2]float32{p[0] + h*0.6, p[1]}}
-	addQuad(trid, square, ep.currentPrefs().Brightness.Button.ScaleRGB(colors.toolbar.tearoffBar))
-	textAt := [2]float32{square.P1[0] + 2, p[1]}
-	td.AddText(strings.Join(lines, "\n"), textAt, renderer.TextStyle{Font: font, Color: color})
-	width := float32(util.ReduceSlice(lines, 0, func(l string, n int) int { return max(n, len(l)) })) * charWidth(font)
-	return math.Extent2D{P0: [2]float32{p[0], p[1] - float32(max(1, len(lines)))*float32(font.Size)},
-		P1: [2]float32{textAt[0] + width, p[1]}}
-}
-
-// handleSAAMouse places a label being torn off at the next click, and
-// takes clicks on torn-off labels: with DELETE TEAROFF active, a click
-// deletes the tear-off, and a middle click the picked tear-offs along
-// with it; otherwise one offers SUPPRESS LABEL/ALT, which sets the SAA's
-// current filter to its boundary alone (4.2.18.3).
-func (ep *Scope) handleSAAMouse(ctx *scope.Context, transforms scope.Transformations) {
-	mouse := ctx.Mouse
-	primary, tertiary := ep.mousePrimaryClicked(mouse), ep.mouseTertiaryClicked(mouse)
-	if !primary && !tertiary {
-		return
-	}
-	ps := ep.currentPrefs()
-	if id := ep.saaTearingOff; id != "" {
-		s := ps.saaSettings(id)
-		s.TearOff = transforms.LatLongFromWindowP(mouse.Pos)
-		ps.setSAASettings(id, s)
-		ep.saaTearingOff = ""
-		ep.consumeMouseClick(mouse)
-		return
-	}
-	for id, e := range util.SortedMap(ep.saaTearOffs) {
-		if !e.Inside(mouse.Pos) {
-			continue
-		}
-		s := ps.saaSettings(id)
-		if ep.toolbar.deleting {
-			s.TearOff = math.Point2LL{}
-			ps.setSAASettings(id, s)
-			if tertiary {
-				ep.deleteSelectedTearoffs()
-			}
-		} else {
-			hot := ep.saas[slices.IndexFunc(ep.saas, func(a saa) bool { return a.id == id })].hot
-			ep.openPickAreaPopup(ctx, e, "SUPPRESS LABEL/ALT", func() {
-				s := ps.saaSettings(id)
-				if hot {
-					s.Hot = "B"
-				} else {
-					s.Cold = "B"
-				}
-				ps.setSAASettings(id, s)
-			})
-		}
-		ep.consumeMouseClick(mouse)
-		return
 	}
 }
 
@@ -361,6 +347,7 @@ func saaRowAt(x0, y, rowH float32, font *renderer.Font) saaRow {
 // at a time; picks on an entry's COLD and HOT settings cycle through them,
 // one on its DISPLAY button toggles it, and one on its tear-off pick area
 // starts tearing off its label, which the next click places (4.2.18).
+// Settings can't be changed while a label is being torn off (4.2.18.3).
 func (ep *Scope) drawSAAFilterView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
 	if !ps.SAAFilter.Visible {
@@ -398,15 +385,15 @@ func (ep *Scope) drawSAAFilterView(ctx *scope.Context, transforms scope.Transfor
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 
-	// SAA settings can't be changed while a label is being torn off.
 	mouse := ctx.Mouse
-	if ep.saaTearingOff != "" || (!ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse)) ||
-		ep.popupCovers(mouse.Pos) {
+	if _, tearingOff := ep.saaBeingTornOff(); tearingOff ||
+		(!ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse)) || ep.popupCovers(mouse.Pos) {
 		return
 	}
 	for i, a := range shown {
 		r := saaRowAt(body.P0[0], body.P1[1]-float32(i+1)*rowH, rowH, font)
 		s := ps.saaSettings(a.id)
+		entry := viewEntry{&saaTearOffs, a.id}
 		switch {
 		case r.cold.Inside(mouse.Pos):
 			s.Cold = nextSAAFilter(saaColdFilters, s.Cold)
@@ -414,8 +401,8 @@ func (ep *Scope) drawSAAFilterView(ctx *scope.Context, transforms scope.Transfor
 			s.Hot = nextSAAFilter(saaHotFilters, s.Hot)
 		case math.Distance2f(mouse.Pos, r.display) <= r.displayRadius:
 			s.Display = !s.Display
-		case r.tearOff.Expand(2).Inside(mouse.Pos) && s.TearOff.IsZero():
-			ep.saaTearingOff = a.id
+		case r.tearOff.Expand(2).Inside(mouse.Pos) && !entry.tornOff(ep):
+			ep.startEntryDrag(ctx, entry, [2]float32{r.tearOff.P0[0], r.tearOff.P1[1]})
 		default:
 			continue
 		}
@@ -463,8 +450,8 @@ func (ep *Scope) drawSAAFilterBody(body math.Extent2D, b *ViewBuilders, shown []
 			b.Trid.AddCircle(r.display, r.displayRadius, 24, button(colors.popup.backgroundGrey))
 		}
 		b.Ld.AddCircle(r.display, r.displayRadius, 24, outline)
-		addQuad(b.Trid, r.tearOff, button(util.Select(s.TearOff.IsZero(), colors.toolbar.tearoffBar,
-			colors.toolbar.tearoffBarTorn)))
+		torn := (viewEntry{&saaTearOffs, a.id}).tornOff(ep)
+		addQuad(b.Trid, r.tearOff, button(util.Select(torn, colors.toolbar.tearoffBarTorn, colors.toolbar.tearoffBar)))
 		b.Td.AddText(a.label, r.label, renderer.TextStyle{Font: font, Color: ep.saaColor(a)})
 	}
 }

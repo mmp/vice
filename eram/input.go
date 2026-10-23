@@ -261,10 +261,6 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 			if ep.cancelToolbarGesture(ctx) {
 				break
 			}
-			if ep.saaTearingOff != "" {
-				ep.saaTearingOff = ""
-				break
-			}
 			// Cancel any in-progress drag.
 			anyActive := ep.viewRepo.activeID != ""
 			if anyActive {

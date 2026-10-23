@@ -943,13 +943,16 @@ func (ep *Scope) rowColumn(rs *ViewRowSource, titleFont *renderer.Font) RowList 
 	// A badge column sits flush with the body's left edge so it lines up
 	// with the title-bar M button.
 	leftChrome := float32(titleBarButtonPad)
+	var badgeColumn float32
 	if rs.ReserveBadgeColumn {
-		leftChrome = viewMButtonWidth(titleFont)
+		badgeColumn = viewMButtonWidth(titleFont)
+		leftChrome = badgeColumn
 	}
 	l := RowList{
 		Font:           font,
 		LineHeight:     lineH,
 		Width:          leftChrome + float32(rs.ContentChars)*charWidth(font) + titleBarButtonPad,
+		BadgeColumn:    badgeColumn,
 		MaxLines:       rs.VisibleRows,
 		HighlightColor: rs.HighlightColor,
 	}
@@ -1005,6 +1008,11 @@ type RowList struct {
 	// to match this value.
 	Width float32
 
+	// BadgeColumn is the width of the badge column at the left of the
+	// list, if it reserves one: the rows' text starts after it whether or
+	// not they have badges.
+	BadgeColumn float32
+
 	Rows []Row
 
 	// MaxLines caps the total wrapped body lines rendered. The last visible
@@ -1042,7 +1050,7 @@ const labelGapChars = 3
 // only).
 func (l *RowList) bodyAvailChars(r Row) (firstChars, contChars int) {
 	cw := charWidth(l.Font)
-	leadingPx := float32(titleBarButtonPad)
+	leadingPx := max(float32(titleBarButtonPad), l.BadgeColumn)
 	if r.Badge != nil {
 		leadingPx = r.Badge.Width + rowBadgeGap
 	}
@@ -1141,13 +1149,16 @@ func (l *RowList) iterRows(body math.Extent2D, fn func(i int, m measuredRow, ext
 }
 
 // rowContentLayout returns the x positions for a non-Centered, non-Spacer
-// row: labelX is where the label / continuation body lines start; bodyX is
-// where the first wrapped body line starts (after the label and label-gap,
-// if any).
+// row: labelX is where the label / continuation body lines start, after
+// the row's badge or the list's badge column; bodyX is where the first
+// wrapped body line starts (after the label and label-gap, if any).
 func (l *RowList) rowContentLayout(r Row, body math.Extent2D) (labelX, bodyX float32) {
-	if r.Badge != nil {
+	switch {
+	case r.Badge != nil:
 		labelX = body.P0[0] + r.Badge.Width + 2*titleBarButtonPad
-	} else {
+	case l.BadgeColumn > 0:
+		labelX = body.P0[0] + l.BadgeColumn
+	default:
 		labelX = body.P0[0] + titleBarButtonPad
 	}
 	bodyX = labelX

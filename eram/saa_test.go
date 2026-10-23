@@ -8,14 +8,11 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/AllenDang/cimgui-go/imgui"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/client"
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/scope"
+	"github.com/mmp/vice/util"
 )
 
 // The SAAs of an ARTCC are the special use airspace near it, the active
@@ -92,42 +89,69 @@ type warpingPlatform struct{ captureMousePlatform }
 
 func (warpingPlatform) SetMousePosition([2]float32) {}
 
-// A click places a label being torn off; a click on a torn-off label offers
-// SUPPRESS LABEL/ALT, which leaves the SAA's boundary alone displayed, and
-// with DELETE TEAROFF active one deletes the tear-off (4.2.18.3).
+// A click places a label being torn off, which shows the label and
+// altitudes in the SAA's color and takes the label's place on the map
+// (4.2.18.3). A click on the torn-off label offers SUPPRESS LABEL/ALT,
+// which leaves the SAA's boundary alone displayed and the tear-off its bar
+// alone; its bar moves it, and with DELETE TEAROFF active a TBE on it
+// deletes it (4.2.18.3.1, 4.2.18.3.2).
 func TestSAATearOff(t *testing.T) {
-	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()},
-		saas: []saa{{id: "P56", label: "P-56", hot: true}}}
-	ep.systemFont[1] = &renderer.Font{Size: 13}
-	ctx := &scope.Context{DrawExtent: math.Extent2D{P1: [2]float32{1600, 900}}, Platform: warpingPlatform{}}
-	transforms := scope.GetTransformations(ctx.DrawExtent, 45, math.Point2LL{-77, 39}, 100, 0)
-	ps := ep.currentPrefs()
-	click := func(p [2]float32, button imgui.MouseButton) {
-		ctx.Mouse = &platform.MouseState{Pos: p}
-		ctx.Mouse.Clicked[button] = true
-		ep.handleSAAMouse(ctx, transforms)
+	h := makeTearOffTestHarness(t)
+	ep, ps := h.ep, h.ep.currentPrefs()
+	ep.saas = []saa{{id: "P56", label: "P-56", hot: true, altitudes: []string{"000B180"}}}
+	ps.setSAASettings("P56", SAASettings{Hot: "BAL", Display: true})
+	p56 := viewEntry{&saaTearOffs, "P56"}
+
+	h.ctx.Mouse = &platform.MouseState{Pos: [2]float32{100, 500}}
+	ep.startEntryDrag(h.ctx, p56, h.ctx.Mouse.Pos)
+	if id, ok := ep.saaBeingTornOff(); !ok || id != "P56" {
+		t.Fatalf("tearing off %q, %v", id, ok)
+	}
+	drop := [2]float32{800, 450}
+	h.click(drop, platform.MouseButtonPrimary)
+	if _, ok := ps.SAAFilter.TearOffs["P56"]; !ok || ep.entryDrag != nil {
+		t.Fatalf("after a click away: torn off %v, still dragging %v", ps.SAAFilter.TearOffs, ep.entryDrag != nil)
+	}
+	h.frame(nil)
+	pt, ok := h.placed(p56)
+	if !ok {
+		t.Fatal("no tear-off of P-56's label")
+	}
+	labels := func(pt placedTearOff) []string {
+		return util.MapSlice(pt.rows.Rows, func(r Row) string { return r.Label })
+	}
+	if got, want := labels(pt), []string{"P-56", "000B180"}; !slices.Equal(got, want) || pt.border ||
+		pt.rows.Rows[0].Color != ep.saaColor(&ep.saas[0]) {
+		t.Errorf("tear-off %q, border %v, color %v; want %q, no border, the SAA's color %v",
+			got, pt.border, pt.rows.Rows[0].Color, want, ep.saaColor(&ep.saas[0]))
 	}
 
-	ep.saaTearingOff = "P56"
-	click([2]float32{800, 450}, platform.MouseButtonPrimary)
-	if s := ps.saaSettings("P56"); ep.saaTearingOff != "" || s.TearOff.IsZero() || s.Hot != "BAL" {
-		t.Fatalf("after placing the tear-off: tearing off %q, settings %+v", ep.saaTearingOff, s)
-	}
-
-	ep.saaTearOffs = map[string]math.Extent2D{"P56": {P0: [2]float32{800, 440}, P1: [2]float32{850, 450}}}
-	click([2]float32{810, 445}, platform.MouseButtonPrimary)
+	h.click([2]float32{pt.bar.P1[0] + 10, pt.extent.Center()[1]}, platform.MouseButtonPrimary)
 	suppress, ok := ep.popup.(*pickAreaPopup)
 	if !ok || suppress.text != "SUPPRESS LABEL/ALT" {
 		t.Fatalf("click on the torn-off label opened %+v", ep.popup)
 	}
 	suppress.onPick()
-	if s := ps.saaSettings("P56"); s.Hot != "B" || s.TearOff.IsZero() {
-		t.Errorf("after SUPPRESS LABEL/ALT: %+v, want the boundary alone, still torn off", s)
+	ep.popup = nil
+	h.frame(nil)
+	pt, _ = h.placed(p56)
+	if s := ps.saaSettings("P56"); s.Hot != "B" || !p56.tornOff(ep) || !slices.Equal(labels(pt), []string{""}) {
+		t.Errorf("after SUPPRESS LABEL/ALT: settings %+v, torn off %v, tear-off %q; want the boundary alone, still torn off, the bar alone",
+			s, p56.tornOff(ep), labels(pt))
 	}
 
-	ep.toolbar.deleting = true
-	click([2]float32{810, 445}, platform.MouseButtonTertiary)
-	if s := ps.saaSettings("P56"); !s.TearOff.IsZero() || ep.toolbar.deleting {
-		t.Errorf("after a TBE on it with DELETE TEAROFF active: %+v, DELETE TEAROFF active %v", s, ep.toolbar.deleting)
+	moved := [2]float32{500, 200}
+	h.drag(pt.bar, moved)
+	h.frame(nil)
+	if pt, ok := h.placed(p56); !ok || !near(pt.bar.Center(), moved) {
+		t.Errorf("moved tear-off %+v; want its bar at %v", pt, moved)
+	}
+
+	ep.toggleDeleteTearoffs()
+	pt, _ = h.placed(p56)
+	h.click(pt.extent.Center(), platform.MouseButtonTertiary)
+	if p56.tornOff(ep) || ep.toolbar.deleting {
+		t.Errorf("after a TBE on it with DELETE TEAROFF active: torn off %v, DELETE TEAROFF active %v",
+			p56.tornOff(ep), ep.toolbar.deleting)
 	}
 }

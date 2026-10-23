@@ -25,6 +25,7 @@
   - `QZ` assigns VFR and VFR-on-top altitudes
   - `WR` takes up to three stations
   - Suppressing a view closes its menu; a view's pick areas are outlined under the cursor, and picks on them no longer reach the MCA
+  - Torn-off SAA labels are moved by their bars and picked for deletion like the other tear-offs
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - `"atpa_volumes"` is now `"atpa"`; its `"runway_threshold"`, `"heading"`, and `"id"` fields have been removed

@@ -161,12 +161,14 @@ type Preferences struct {
 
 	// SAAFilter holds the SAA FILTER view's settings (4.2.18.4); Color is
 	// the brightness of the HOT filter settings' text, and Hot and Cold
-	// are those of the active and inactive SAAs.
+	// are those of the active and inactive SAAs. TearOffs holds where the
+	// SAAs' labels have been torn off to, by SAA id.
 	SAAFilter struct {
 		ViewPreferences
-		Color scope.Brightness
-		Hot   scope.Brightness
-		Cold  scope.Brightness
+		Color    scope.Brightness
+		Hot      scope.Brightness
+		Cold     scope.Brightness
+		TearOffs map[string]math.Point2LL
 	}
 	// SAAs holds the SAAs' display filter settings by SAA id; an SAA that
 	// isn't here has the default ones.
@@ -724,7 +726,8 @@ func (p *Preferences) Upgrade(from, to int) {
 		p.Draw = makeDefaultPreferences().Draw
 	}
 	if from < 122 {
-		// The check lists' TEXT brightness became their views' Bright.
+		// The check lists' TEXT brightness became their views' Bright, and
+		// the SAAs' tear-off locations moved out of their settings.
 		p.EmergCheck = makeDefaultCheckListPreferences()
 		p.PosCheck = makeDefaultCheckListPreferences()
 	}

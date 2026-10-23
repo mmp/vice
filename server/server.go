@@ -130,7 +130,7 @@ import (
 // 119: ERAM Departure List view settings in preference sets
 // 120: ERAM Group Suppression view settings in preference sets
 // 121: ERAM DRAW menu settings in preference sets
-// 122: ERAM check list views' TEXT brightness is their Bright
+// 122: ERAM check list views' TEXT brightness is their Bright; SAA tear-off locations moved
 const ViceSerializeVersion = 122
 
 const ViceServerAddress = "vice.pharr.org"

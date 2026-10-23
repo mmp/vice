@@ -254,13 +254,14 @@ func (ep *Scope) drawToolbarDragPreview(ctx *scope.Context, cb *renderer.Command
 ///////////////////////////////////////////////////////////////////////////
 // View entries
 
-// The entries of the ALTIM SET and WX REPORT views and the sublists of the
-// DEPT LIST view can be torn off and placed on the scope, anchored to map
-// coordinates (2.5.2). A tear-off shows its entry as the view does, kept
-// up to date, but semi-transparent, and its gold bar moves it. It is
-// displayed whether or not its view is and whether or not the view shows
-// its tear-off bars. An entry has one tear-off at most; its bar in the
-// view is gray while it has one.
+// The entries of the ALTIM SET and WX REPORT views, the sublists of the
+// DEPT LIST view, and the labels of the SAA FILTER view's SAAs can be torn
+// off and placed on the scope, anchored to map coordinates (2.5.2,
+// 4.2.18.3). A tear-off shows its entry as the view does, kept up to date,
+// but semi-transparent, and its gold bar moves it. It is displayed whether
+// or not its view is and whether or not the view shows its tear-off bars.
+// An entry has one tear-off at most; its bar in the view is gray while it
+// has one.
 
 // entryTearOffs are the tear-offs of a view's entries.
 type entryTearOffs struct {
@@ -269,9 +270,12 @@ type entryTearOffs struct {
 	// tearOff returns what the tear-off of the entry with the given ID
 	// shows, or false if the view no longer has the entry.
 	tearOff func(*Scope, *scope.Context, string) (entryTearOff, bool)
+	// click, if set, takes a click on a tear-off off its bar, with the
+	// tear-off's extent.
+	click func(*Scope, *scope.Context, string, math.Extent2D)
 }
 
-var allEntryTearOffs = []*entryTearOffs{&altimSetTearOffs, &wxTearOffs, &deptListTearOffs}
+var allEntryTearOffs = []*entryTearOffs{&altimSetTearOffs, &wxTearOffs, &deptListTearOffs, &saaTearOffs}
 
 // entryTearOff is what a tear-off shows: its entry's rows, laid out as its
 // view lays out a column, with its view's brightness and border.
@@ -444,7 +448,8 @@ func (ep *Scope) placeEntryDrag(ctx *scope.Context, transforms scope.Transformat
 // handleEntryTearOffMouse takes clicks on the tear-offs. While DELETE
 // TEAROFF is active, a TBP on one's bar picks it for deletion or unpicks
 // it and a TBE on one deletes it along with the picked tear-offs (2.5.2.1,
-// 2.5.2.2); otherwise, a pick on one's bar starts moving it.
+// 2.5.2.2); otherwise, a pick on one's bar starts moving it, and one
+// elsewhere on it goes to its entries' click, if they have one.
 func (ep *Scope) handleEntryTearOffMouse(ctx *scope.Context) {
 	mouse := ctx.Mouse
 	primary, tertiary := ep.mousePrimaryClicked(mouse), ep.mouseTertiaryClicked(mouse)
@@ -466,6 +471,8 @@ func (ep *Scope) handleEntryTearOffMouse(ctx *scope.Context) {
 			}
 		case !tb.deleting && pt.bar.Inside(mouse.Pos):
 			ep.startEntryDrag(ctx, pt.entry, [2]float32{pt.extent.P0[0], pt.extent.P1[1]})
+		case !tb.deleting && pt.entry.tearOffs.click != nil && pt.extent.Inside(mouse.Pos):
+			pt.entry.tearOffs.click(ep, ctx, pt.entry.id, pt.extent)
 		default:
 			continue
 		}

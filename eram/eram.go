@@ -337,13 +337,10 @@ type Scope struct {
 	CFRShowFields bool       `json:"CFRShowFields,omitempty"`
 	cfrAdded      map[sim.ACID]time.Time
 
-	// SAA state: the special activity airspace of the sim's ARTCC, the
-	// one whose label is being torn off, the torn-off labels' extents as
-	// drawn, and the SAA FILTER view's page.
-	saas          []saa
-	saaTearingOff string
-	saaTearOffs   map[string]math.Extent2D
-	saaScroll     ViewScrollState
+	// SAA state: the special activity airspace of the sim's ARTCC and the
+	// SAA FILTER view's page.
+	saas      []saa
+	saaScroll ViewScrollState
 
 	// FLIGHT EVENT state: the entries the user deleted, with the ACIDs
 	// they had, whether it had entries last frame, and the view's scroll.
@@ -495,7 +492,6 @@ func (ep *Scope) Draw(ctx *scope.Context, cb *renderer.CommandBuffer) {
 	ep.drawCircleLocationBox(ctx, transforms, cb)
 	if ctx.Mouse != nil {
 		ep.handleEntryTearOffMouse(ctx)
-		ep.handleSAAMouse(ctx, transforms)
 		ep.consumeMouseEvents(ctx, transforms)
 		ep.drawPausedAircraftState(ctx, transforms, cb)
 	}
@@ -564,7 +560,6 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	ep.CFREntries = nil
 	clear(ep.cfrAdded)
 	ep.CFRShowFields = false
-	ep.saaTearingOff = ""
 	ep.saaScroll = ViewScrollState{}
 	clear(ep.FELDeleted)
 	ep.felHadEntries = false
