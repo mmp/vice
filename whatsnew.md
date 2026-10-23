@@ -1,11 +1,12 @@
 - Scenario updates: HNL (Mike Fries), CLT (anguse), S56 (Elliott B), P50 (Ketan K)
 - Fixed multiple bugs with flight strip ownership
-- Improved support for LDA approaches (don't just fly the extended centerline)
-- Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
-- An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
-- Fixed a number of bugs related to handling Mach speeds in instructions
-- VFR aircraft routes now avoid special use airspace
-- Improved VFR aircraft terrain avoidance to use more accurate terrain data than MVAs
+- Flight Model / Control
+  - Improved support for LDA approaches (don't just fly the extended centerline)
+  - An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
+  - Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"
+  - Fixed a number of bugs related to handling Mach speeds in instructions
+  - VFR aircraft routes now avoid special use airspace
+  - Improved VFR aircraft terrain avoidance to use more accurate terrain data than MVAs
 - STARS
   - Default ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM
@@ -35,7 +36,7 @@
   - `WR` takes up to three stations
   - Suppressing a view closes its menu; a view's pick areas are outlined under the cursor, and picks on them no longer reach the MCA
   - Torn-off SAA labels are moved by their bars and picked for deletion like the other tear-offs
-- Facility engineering
+- Facility Engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - `"atpa_volumes"` is now `"atpa"`; its `"runway_threshold"`, `"heading"`, and `"id"` fields have been removed
   - `"reduced_separation"` in `"atpa"` replaces `"enable_2.5nm"` and `"2.5nm_distance"`
