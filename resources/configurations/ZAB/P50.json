@@ -73,19 +73,75 @@
   },
   "facility_adaptations": {
     "configurations": {
-      "50X": {
+      "CF1": {
         "inbound_assignments": {
-          "BRUSR1.E": "1A",
+          "ARLIN4 (NORTH SAT)": "1B",
+          "BRUSR1.W": "1A",
+          "COYOT5": "1A",
           "DSERT2": "1B",
-          "EAGUL6.E": "1A",
-          "HUUTY1": "1W",
-          "HYDRR1.E": "1Q",
-          "PINNG1.E": "1Q"
+          "EAGUL6.W": "1A",
+          "HUUTY1/PTA ARR.EAST": "1W",
+          "SAT ARR.EAST": "1W",
+          "V16 BXK ARR": "1Q",
+          "HYDRR1.W/BLH5/ARLIN4 (SOUTH SAT)": "1Q",
+          "SUNSS8": "1Q",
+          "PINNG1.W": "1Q",
+          "PTA ARR.NORTH": "1B",
+          "PTA ARR.NORTHWEST": "1B"
         },
         "departure_assignments": {
           "KIWA": "1W",
-          "KPHX": "1S",
-          "KSDL": "1B"
+          "KPHX/BROAK1": "1S",
+          "KPHX/ECLPS1": "1S",
+          "KPHX/FORPE1": "1N",
+          "KPHX/FYRBD1": "1S",
+          "KPHX/KEENS3": "1S",
+          "KPHX/MRBIL1": "1N",
+          "KPHX/QUAKY1": "1N",
+          "KPHX/STRRM1": "1S",
+          "KPHX/ZEPER2": "1N",
+          "KSDL": "1B",
+          "KDVT": "1B",
+          "KFFZ": "1V"
+        },
+        "default_consolidation": {
+          "1A": ["1F", "1N", "1Q"],
+          "1B": ["1P"],
+          "1F": ["1V"],
+          "1N": ["1B", "1S"],
+          "1P": ["1W"]
+        }
+      },
+      "CF2": {
+        "inbound_assignments": {
+          "ARLIN4 (NORTH SAT)": "1B",
+          "BRUSR1.E": "1A",
+          "COYOT5": "1A",
+          "DSERT2": "1B",
+          "EAGUL6.E": "1A",
+          "HUUTY1/PTA ARR.EAST": "1W",
+          "SAT ARR.EAST": "1W",
+          "V16 BXK ARR": "1Q",
+          "HYDRR1.E/BLH5/ARLIN4 (SOUTH SAT)": "1Q",
+          "SUNSS8": "1Q",
+          "PINNG1.E": "1Q",
+          "PTA ARR.NORTH": "1B",
+          "PTA ARR.NORTHWEST": "1B"
+        },
+        "departure_assignments": {
+          "KIWA": "1W",
+          "KPHX/BROAK1": "1S",
+          "KPHX/ECLPS1": "1S",
+          "KPHX/FORPE1": "1N",
+          "KPHX/FYRBD1": "1S",
+          "KPHX/KEENS3": "1S",
+          "KPHX/MRBIL1": "1N",
+          "KPHX/QUAKY1": "1N",
+          "KPHX/STRRM1": "1S",
+          "KPHX/ZEPER2": "1N",
+          "KSDL": "1B",
+          "KDVT": "1B",
+          "KFFZ": "1S"
         },
         "default_consolidation": {
           "1A": ["1F", "1N", "1Q"],
@@ -109,28 +165,6 @@
         "default_consolidation": {
           "1J": ["1K"],
           "1K": ["1R"]
-        }
-      },
-      "P51": {
-        "inbound_assignments": {
-          "BRUSR1.W": "1A",
-          "DSERT2": "1B",
-          "EAGUL6.W": "1A",
-          "HUUTY1": "1W",
-          "HYDRR1.W": "1Q",
-          "PINNG1.W": "1Q"
-        },
-        "departure_assignments": {
-          "KIWA": "1W",
-          "KPHX": "1S",
-          "KSDL": "1B"
-        },
-        "default_consolidation": {
-          "1A": ["1F", "1N", "1Q"],
-          "1B": ["1P"],
-          "1F": ["1V"],
-          "1N": ["1B", "1S"],
-          "1P": ["1W"]
         }
       },
       "PHX": {
@@ -433,47 +467,439 @@
       ]
     },
     "range": 45,
-    "scratchpads": {
-      "BROAK": "BRK",
-      "FORPE": "FOR",
-      "ECLPS": "ECL",
-      "FYRBD": "FYR",
-      "IZZZO": "KEE",
-      "QUAKY": "QUA",
-      "MRBIL": "MRB",
-      "BNYRD": "BNY",
-      "ZEPER": "ZEP"
+    "scratchpads": {},
+    "airports": {
+      "PHX": {},
+      "SDL": {},
+      "DVT": {},
+      "FFZ": {},
+      "CHD": {},
+      "IWA": {},
+      "GEU": {},
+      "BXK": {},
+      "GYR": {},
+      "SEZ": {},
+      "FLG": {},
+      "PRC": {}
     },
+    "automatic_scratchpad_assignment": [
+      {
+        "config_plan": "*",
+        "entry_fix": "RBR",
+        "exit_fix": "PHX",
+        "altitude": "*",
+        "scratchpad1": "RBR",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "REA",
+        "exit_fix": "PHX",
+        "altitude": "*",
+        "scratchpad1": "REA",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RPI",
+        "exit_fix": "PHX",
+        "altitude": "*",
+        "scratchpad1": "RPI",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "RHY",
+        "exit_fix": "PHX",
+        "altitude": "*",
+        "scratchpad1": "RHY",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "PHX",
+        "altitude": "*",
+        "scratchpad1": "PHX",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "SDL",
+        "altitude": "*",
+        "scratchpad1": "SDL",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "IWA",
+        "altitude": "*",
+        "scratchpad1": "IWA",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "DVT",
+        "altitude": "*",
+        "scratchpad1": "DVT",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "CHD",
+        "altitude": "*",
+        "scratchpad1": "CHD",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "*",
+        "exit_fix": "FFZ",
+        "altitude": "*",
+        "scratchpad1": "FFZ",
+        "flight_type": "A"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "KEE",
+        "altitude": "*",
+        "scratchpad1": "KEE",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "FYR",
+        "altitude": "*",
+        "scratchpad1": "FYR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "BNY",
+        "altitude": "*",
+        "scratchpad1": "BNY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "ECL",
+        "altitude": "*",
+        "scratchpad1": "ECL",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "BRK",
+        "altitude": "*",
+        "scratchpad1": "BRK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "FOR",
+        "altitude": "*",
+        "scratchpad1": "FOR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "MRB",
+        "altitude": "*",
+        "scratchpad1": "MRB",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "QUA",
+        "altitude": "*",
+        "scratchpad1": "QUA",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "PHX",
+        "exit_fix": "ZEP",
+        "altitude": "*",
+        "scratchpad1": "ZEP",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "KEE",
+        "altitude": "*",
+        "scratchpad1": "KEE",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "FYR",
+        "altitude": "*",
+        "scratchpad1": "FYR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "BNY",
+        "altitude": "*",
+        "scratchpad1": "BNY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "ECL",
+        "altitude": "*",
+        "scratchpad1": "ECL",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "BRK",
+        "altitude": "*",
+        "scratchpad1": "BRK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "FOR",
+        "altitude": "*",
+        "scratchpad1": "FOR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "MRB",
+        "altitude": "*",
+        "scratchpad1": "MRB",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "QUA",
+        "altitude": "*",
+        "scratchpad1": "QUA",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "SDL",
+        "exit_fix": "ZEP",
+        "altitude": "*",
+        "scratchpad1": "ZEP",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "KEE",
+        "altitude": "*",
+        "scratchpad1": "KEE",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "FYR",
+        "altitude": "*",
+        "scratchpad1": "FYR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "BNY",
+        "altitude": "*",
+        "scratchpad1": "BNY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "ECL",
+        "altitude": "*",
+        "scratchpad1": "ECL",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "BRK",
+        "altitude": "*",
+        "scratchpad1": "BRK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "FOR",
+        "altitude": "*",
+        "scratchpad1": "FOR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "MRB",
+        "altitude": "*",
+        "scratchpad1": "MRB",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "QUA",
+        "altitude": "*",
+        "scratchpad1": "QUA",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "DVT",
+        "exit_fix": "ZEP",
+        "altitude": "*",
+        "scratchpad1": "ZEP",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "KEE",
+        "altitude": "*",
+        "scratchpad1": "KEE",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "FYR",
+        "altitude": "*",
+        "scratchpad1": "FYR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "BNY",
+        "altitude": "*",
+        "scratchpad1": "BNY",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "ECL",
+        "altitude": "*",
+        "scratchpad1": "ECL",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "BRK",
+        "altitude": "*",
+        "scratchpad1": "BRK",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "FOR",
+        "altitude": "*",
+        "scratchpad1": "FOR",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "MRB",
+        "altitude": "*",
+        "scratchpad1": "MRB",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "QUA",
+        "altitude": "*",
+        "scratchpad1": "QUA",
+        "flight_type": "P"
+      },
+      {
+        "config_plan": "*",
+        "entry_fix": "IWA",
+        "exit_fix": "ZEP",
+        "altitude": "*",
+        "scratchpad1": "ZEP",
+        "flight_type": "P"
+      }
+    ],
     "significant_points": {
+      "BNYRD": {
+        "short_name": "BNY"
+      },
       "BROAK": {
         "short_name": "BRK"
       },
-      "FORPE": {
-        "short_name": "FOR"
+      "BRUSR": {
+        "short_name": "RBR"
+      },
+      "DSERT": {
+        "short_name": "RDS"
+      },
+      "EAGUL": {
+        "short_name": "REA"
       },
       "ECLPS": {
         "short_name": "ECL"
       },
+      "FORPE": {
+        "short_name": "FOR"
+      },
       "FYRBD": {
         "short_name": "FYR"
       },
-      "IZZZO": {
-        "short_name": "KEE"
+      "HUUTY": {
+        "short_name": "RHU"
       },
-      "QUAKY": {
-        "short_name": "QUA"
+      "HYDRR": {
+        "short_name": "RHY"
+      },
+      "KEENS": {
+        "short_name": "KEE"
       },
       "MRBIL": {
         "short_name": "MRB"
       },
+      "PINNG": {
+        "short_name": "RPI"
+      },
+      "QUAKY": {
+        "short_name": "QUA"
+      },
       "ZEPER": {
         "short_name": "ZEP"
-      },
-      "BNYRD": {
-        "short_name": "BNY"
       }
     },
-    "video_map_file": "videomaps/ZAB-stars.mappack",
+    "video_map_file": "videomaps/ZAB-P50.mappack",
     "airspace_awareness": [
       {
         "fixes": ["ZEPER"],
@@ -579,13 +1005,23 @@
           "airports": ["KSDL"]
         },
         {
+          "name": "DVT",
+          "id": "V",
+          "airports": ["KDVT"]
+        },
+        {
+          "name": "FFZ",
+          "id": "F",
+          "airports": ["KFFZ"]
+        },
+        {
           "name": "IWA",
           "id": "W",
           "airports": ["KIWA"]
         },
         {
           "name": "FLG",
-          "id": "F",
+          "id": "G",
           "airports": ["KFLG"]
         },
         {
