@@ -5,10 +5,11 @@
 - An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
 - Fixed a number of bugs related to handling Mach speeds in instructions
 - VFR aircraft routes now avoid special use airspace
-- VFR aircraft keep 1,000' above the terrain en route (500' under low Class B and C shelves), now also in facilities without MVA charts
+- Improved VFR aircraft terrain avoidance to use more accurate terrain data than MVAs
 - STARS
   - Default ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM
+  - Documentation is much more complete: https://pharr.org/vice/#section-eram
   - Virtual TRACON controllers no longer enter altitudes in ERAM data blocks
   - Local interim altitudes are kept separately from interim and procedure altitudes; `QQ L` clears them
   - Unpaired LDBs show the beacon code; BCAST FLID switches them to the callsign
@@ -16,13 +17,21 @@
   - Point outs may be made to other facilities
   - Fixed a number of differences between the toolbars and the manual
   - Added support for dwell emphasis
-  - Data block menus open with the cursor on the FP pick area, the current value, or DELETE, and the AS view menu on TEMPLATE
+  - Added the CFR, Conflict Alert, DEPT LIST, FLIGHT EVENT, SAA FILTER, Range, STATUS, and OUTAGE views
+  - Added the DRAW menu for rectangle, circle, line, and text annotations
+  - Preference sets are saved, invoked, and deleted from the PREFSET menu rather than the settings window
+  - Added the horizontal, left, and right support toolbars
+  - Data block menus open with the cursor on the current value (when appropriate)
   - `LC` shows the change in ground speed needed to cross the fix at the given time
+  - `LD` reads out when an aircraft reaches each fix on its route through a given fix; `LE` reads out the speed change to cross a fix at a given time
+  - `LF` with a picked point creates a CRR group there
   - `QF` shows routes in the NAS form, as in `KATL./.ROA205050..ROA..HAR..KPIT`
+  - `QN` and `QZ` prefixes are accepted on handoffs, data block offsets, and `//`
   - `QP <FLID>` switches another sector's track between an FDB and an LDB
   - `QP A` acknowledges a single point out, or those from the sectors given, as in `QP A 2B 3C AAL123`
   - `QS` takes a heading and speed together, as in `QS 330/81`, and Mach speeds such as `M.75`
   - `QZ` assigns VFR and VFR-on-top altitudes
+  - `SG` creates and edits conflict alert suppression groups, which the GROUP SUP view lists
   - `WR` takes up to three stations
   - Suppressing a view closes its menu; a view's pick areas are outlined under the cursor, and picks on them no longer reach the MCA
   - Torn-off SAA labels are moved by their bars and picked for deletion like the other tear-offs
@@ -32,4 +41,3 @@
   - `"reduced_separation"` in `"atpa"` replaces `"enable_2.5nm"` and `"2.5nm_distance"`
   - `"altitude_range"` gives the altitudes of a controller's airspace (default 10,000-60,000'); ERAM displays only the active special use airspace that overlaps it
   - VFR `"routes"` are flown as written; they are no longer checked against the terrain
-  - A video map override that can't be read is reported and skipped rather than stopping startup; backshop shows startup errors instead of closing
