@@ -65,11 +65,10 @@ type toolbarButton struct {
 	active func(ep *Scope) bool
 	// click handles a click on the button. Its error reports an
 	// increment/decrement click past the limit of the value.
-	click     func(ep *Scope, c toolbarClick) error
-	submenu   *toolbarMenu
-	repeat    bool // keeps firing click while held
-	noTearoff bool // has no tear-off bar but keeps the space for one
-	noTab     bool // has neither a tear-off bar nor the space for one
+	click   func(ep *Scope, c toolbarClick) error
+	submenu *toolbarMenu
+	repeat  bool // keeps firing click while held
+	bar     tearoffBar
 	// moveOnly is set for a button that has only one instance: its
 	// tear-off bar moves it out of its toolbar rather than tearing off a
 	// copy (2.5.1).
@@ -88,6 +87,17 @@ type toolbarButton struct {
 	// text.
 	drawFace func(ep *Scope, f toolbarFace)
 }
+
+// tearoffBar is what comes before a button's face: its tear-off bar, the
+// space for one, so that its face lines up with those of the buttons that
+// have them, or nothing.
+type tearoffBar int
+
+const (
+	tearoffBarShown tearoffBar = iota
+	tearoffBarSpace
+	tearoffBarNone
+)
 
 // toolbarFace is a button's face being drawn: its extent, the builders to
 // draw on it with, and the style of its text.
@@ -124,8 +134,8 @@ type toolbarMenu struct {
 const toolbarMenuRows = 2 // displayed at a time
 
 // toolbarPanel is a menu's content when it isn't buttons. The engine gives
-// it the anchor for its top left corner, beside the menu's button, and the
-// clicks inside its extent.
+// it the anchor for its top left corner, beside the menu's button, the
+// clicks inside its extent, and the keystrokes while it is displayed.
 type toolbarPanel interface {
 	extent(ep *Scope, anchor [2]float32) math.Extent2D
 	draw(ep *Scope, ctx *scope.Context, cb *renderer.CommandBuffer, anchor [2]float32)
@@ -133,6 +143,23 @@ type toolbarPanel interface {
 	// clickOutside is called for a click anywhere else while the panel is
 	// displayed, with what is under it.
 	clickOutside(ep *Scope, hit toolbarHit)
+	// keyboard takes the keystrokes while the panel is displayed, returning
+	// true if it took them.
+	keyboard(ep *Scope, ctx *scope.Context) bool
+}
+
+// handleToolbarPanelKeyboard gives the keystrokes to the displayed panels,
+// returning true if one took them.
+func (ep *Scope) handleToolbarPanelKeyboard(ctx *scope.Context) bool {
+	for _, inst := range ep.toolbar.instances() {
+		for _, id := range ep.openMenus(inst) {
+			if b := ep.toolbarButtonByID(id); b != nil && b.submenu != nil && b.submenu.panel != nil &&
+				b.submenu.panel.keyboard(ep, ctx) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // adjust lowers or raises *v by step, as a click on an increment/decrement
@@ -669,10 +696,10 @@ func placeToolbarRows(inst *toolbarInstance, level int, rows [][]toolbarButton, 
 			}
 			b := &rows[r][i]
 			pb := placedButton{button: b, instance: inst, level: level}
-			if !b.noTab || vertical {
-				if !b.noTab && !b.noTearoff {
-					pb.tab = math.Extent2D{P0: [2]float32{x, top - toolbarFaceHeight}, P1: [2]float32{x + toolbarTabWidth, top}}
-				}
+			if b.bar == tearoffBarShown {
+				pb.tab = math.Extent2D{P0: [2]float32{x, top - toolbarFaceHeight}, P1: [2]float32{x + toolbarTabWidth, top}}
+			}
+			if b.bar != tearoffBarNone || vertical {
 				x += toolbarTabWidth + toolbarTabGap
 			}
 			pb.face = math.Extent2D{P0: [2]float32{x, top - toolbarFaceHeight}, P1: [2]float32{x + toolbarFaceWidth, top}}
@@ -765,10 +792,7 @@ func (ep *Scope) toolbarCovers(p [2]float32) bool {
 
 // viewCovers reports whether a view or a popup menu was drawn over p.
 func (ep *Scope) viewCovers(p [2]float32) bool {
-	if ep.popup != nil && ep.popupExtent.Inside(p) {
-		return true
-	}
-	return slices.ContainsFunc(ep.toolbar.views, func(e math.Extent2D) bool { return e.Inside(p) })
+	return ep.popupCovers(p) || slices.ContainsFunc(ep.toolbar.views, func(e math.Extent2D) bool { return e.Inside(p) })
 }
 
 // hit returns what is under p in the instance, with a deeper menu over the

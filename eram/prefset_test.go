@@ -149,7 +149,7 @@ func TestPrefSetMenu(t *testing.T) {
 	typed := func(s string, key imgui.Key) {
 		ctx.Keyboard.Input = s
 		ctx.Keyboard.Pressed = map[imgui.Key]any{key: nil}
-		ep.handlePrefSetKeyboard(ctx)
+		prefSetPanel{}.keyboard(ep, ctx)
 		ctx.Keyboard.Input, ctx.Keyboard.Pressed = "", nil
 	}
 
@@ -194,7 +194,7 @@ func TestPrefSetMenuClose(t *testing.T) {
 			ep.setOpenMenus(&ep.toolbar.main, []string{id})
 			ep.prefSetMenu = prefSetMenuState{mode: mode, name: "AB"}
 			ctx.Keyboard.Pressed = map[imgui.Key]any{key: nil}
-			ep.handlePrefSetKeyboard(ctx)
+			prefSetPanel{}.keyboard(ep, ctx)
 			if len(ep.openMenus(&ep.toolbar.main)) != 0 || ep.prefSetMenu.mode != prefSetInvoke || ep.prefSetMenu.name != "" {
 				t.Errorf("key %v in mode %v: open %q, mode %v, name %q", key, mode,
 					ep.openMenus(&ep.toolbar.main), ep.prefSetMenu.mode, ep.prefSetMenu.name)

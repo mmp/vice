@@ -79,20 +79,20 @@ func commandButton(label string, active func(ep *Scope) bool, click func(ep *Sco
 // tearoffSpace gives a button without a tear-off bar the space for one, so
 // that it lines up with the buttons that have them.
 func tearoffSpace(b toolbarButton) toolbarButton {
-	b.noTab, b.noTearoff = false, true
+	b.bar = tearoffBarSpace
 	return b
 }
 
 // withoutTearoffBar removes a button's tear-off bar along with the space
 // for one.
 func withoutTearoffBar(b toolbarButton) toolbarButton {
-	b.noTab = true
+	b.bar = tearoffBarNone
 	return b
 }
 
 // withTearoffBar gives a tear-off bar to a button made without one.
 func withTearoffBar(b toolbarButton) toolbarButton {
-	b.noTab, b.noTearoff = false, false
+	b.bar = tearoffBarShown
 	return b
 }
 
@@ -666,9 +666,7 @@ func (ep *Scope) videoMapFilterRows() [][]toolbarButton {
 func videoMapFilterButton(vm videomaps.ERAMMap) toolbarButton {
 	key := vm.Label()
 	if key == "" {
-		b := inertToggle("")
-		b.noTearoff = true
-		return b
+		return tearoffSpace(inertToggle(""))
 	}
 	return toggleButtonFunc(vm.LabelLine1+"\n"+vm.LabelLine2,
 		func(ep *Scope) bool {
@@ -761,7 +759,9 @@ type altitudeLimitsEntry struct {
 	invalid bool // the entry was rejected by [Enter]; INVALID is displayed
 }
 
-const altitudeLimitsInvalid = "INVALID"
+// invalidEntry is displayed beside an entry that Enter rejected, in the
+// sub-entry box and in the PREFSET menu.
+const invalidEntry = "INVALID"
 
 // altitudeLimitsPad separates the edges of the sub-entry box, its labels, and
 // its text boxes.
@@ -824,10 +824,10 @@ func (ep *Scope) altitudeLimitsLayoutAt(anchor [2]float32) altitudeLimitsLayout 
 
 	width := 3*altitudeLimitsPad + labelWidth + valueWidth
 	if ep.altLimits.invalid {
-		width += altitudeLimitsPad + font.LayoutBounds(altitudeLimitsInvalid, 0).Width()
+		width += altitudeLimitsPad + font.LayoutBounds(invalidEntry, 0).Width()
 	}
 
-	rowHeight := font.LayoutBounds(altitudeLimitsInvalid, 0).Height() + 2*altitudeLimitsPad
+	rowHeight := font.LayoutBounds(invalidEntry, 0).Height() + 2*altitudeLimitsPad
 	rowsHeight := float32(len(rows)) * rowHeight
 	// The box is at least as tall as the button it hangs off of; any extra
 	// rows grow it downwards past the bottom of the toolbar.
@@ -897,7 +897,7 @@ func (altitudeLimitsPanel) draw(ep *Scope, ctx *scope.Context, cb *renderer.Comm
 		td.AddText(text, [2]float32{value.P0[0] + altitudeLimitsPad, row.textY}, style)
 
 		if row.field == ep.altLimits.field && ep.altLimits.invalid {
-			td.AddText(altitudeLimitsInvalid, [2]float32{value.P1[0] + altitudeLimitsPad, row.textY},
+			td.AddText(invalidEntry, [2]float32{value.P1[0] + altitudeLimitsPad, row.textY},
 				renderer.TextStyle{Font: font, Color: ps.Brightness.Text.ScaleRGB(colors.yellow)})
 		}
 	}
@@ -967,10 +967,10 @@ func (ep *Scope) setAltitudeLimits(limits [2]int) {
 	}
 }
 
-// handleAltitudeLimitsKeyboard routes keystrokes to the sub-entry box while
-// one of its text boxes has been clicked, returning true if it took them.
-// Characters past a full entry are ignored rather than rejected.
-func (ep *Scope) handleAltitudeLimitsKeyboard(ctx *scope.Context) bool {
+// keyboard routes keystrokes to the sub-entry box while one of its text
+// boxes has been clicked, returning true if it took them. Characters past
+// a full entry are ignored rather than rejected.
+func (altitudeLimitsPanel) keyboard(ep *Scope, ctx *scope.Context) bool {
 	if ep.altLimits.field == altitudeLimitsNone {
 		return false
 	}

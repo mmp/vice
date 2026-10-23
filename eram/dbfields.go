@@ -63,7 +63,7 @@ func (ep *Scope) datablockInteractions(ctx *scope.Context, tracks []sim.Track, t
 	}
 	// While a popup is open, clicks and hovers inside it belong to the
 	// popup, not to any datablock beneath it.
-	if ep.popup != nil && ep.popupExtent.Inside(mouse.Pos) {
+	if ep.popupCovers(mouse.Pos) {
 		return
 	}
 	for _, trk := range tracks {

@@ -228,7 +228,7 @@ func TestAltitudeLimitsEnter(t *testing.T) {
 	enter := func(buf string) {
 		ep.altLimits.field, ep.altLimits.buf = altitudeLimitsCombined, buf
 		ctx.Keyboard.Pressed = map[imgui.Key]any{imgui.KeyEnter: nil}
-		ep.handleAltitudeLimitsKeyboard(ctx)
+		altitudeLimitsPanel{}.keyboard(ep, ctx)
 	}
 	check := func(entry string, field altitudeLimitsField, invalid bool) {
 		t.Helper()
@@ -343,7 +343,8 @@ func TestSubmenuReplacesColumns(t *testing.T) {
 }
 
 // The check lists are separate views (4.3.6, 4.3.7): displaying one
-// leaves the other displayed.
+// leaves the other and its popup menu displayed, and hiding one closes its
+// popup menu.
 func TestCheckListsAreSeparateViews(t *testing.T) {
 	ep, _ := makeToolbarTestScope()
 	ps := ep.currentPrefs()

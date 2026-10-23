@@ -423,7 +423,7 @@ func (ep *Scope) getAllDatablocks(ctx *scope.Context, tracks []sim.Track) map[av
 // cursor moves again (5.1.5.8).
 func (ep *Scope) updateDwell(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations) {
 	mouse := ctx.Mouse
-	if mouse == nil || (ep.popup != nil && ep.popupExtent.Inside(mouse.Pos)) {
+	if mouse == nil || ep.popupCovers(mouse.Pos) {
 		ep.dwellTrack = ""
 		return
 	}

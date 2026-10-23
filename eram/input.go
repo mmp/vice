@@ -215,12 +215,10 @@ func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
 			return
 		}
 	}
-	// Likewise a clicked altitude limits text box takes them; the sub-entry
-	// box merely being displayed does not. So do a Range View field clicked
-	// for entry, the PREFSET menu taking a name to save under, and the DRAW
-	// menu taking text or a circle's location.
-	if ep.handleAltitudeLimitsKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) || ep.handlePrefSetKeyboard(ctx) ||
-		ep.handleAnnotationKeyboard(ctx) {
+	// Likewise a displayed toolbar panel taking entry, a Range View field
+	// clicked for entry, and the DRAW menu taking text or a circle's
+	// location.
+	if ep.handleToolbarPanelKeyboard(ctx) || ep.handleRangeViewKeyboard(ctx) || ep.handleAnnotationKeyboard(ctx) {
 		return
 	}
 	ps := ep.currentPrefs()

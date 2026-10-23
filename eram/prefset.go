@@ -258,7 +258,7 @@ func (ep *Scope) prefSetMenuLayoutAt(anchor [2]float32) prefSetMenuLayout {
 	width := max(1.5*toolbarFaceWidth, maxPrefSetNameChars*charWidth(font)+2*prefSetMenuPad)
 	invalidX := anchor[0] + width
 	if ep.prefSetMenu.invalid {
-		width += font.LayoutBounds(altitudeLimitsInvalid, 0).Width() + prefSetMenuPad
+		width += font.LayoutBounds(invalidEntry, 0).Width() + prefSetMenuPad
 	}
 	row := func(i int) math.Extent2D {
 		top := anchor[1] - float32(i)*rowH
@@ -303,7 +303,7 @@ func (prefSetPanel) draw(ep *Scope, ctx *scope.Context, cb *renderer.CommandBuff
 		row(l.save, renderer.RGB{}, m.name, text)
 		ld.AddLineLoop(colors.toolbar.hoveredOutline, l.save.Corners())
 		if m.invalid {
-			td.AddText(altitudeLimitsInvalid, [2]float32{l.invalidX, l.save.Center()[1] - inkCenter},
+			td.AddText(invalidEntry, [2]float32{l.invalidX, l.save.Center()[1] - inkCenter},
 				renderer.TextStyle{Font: font, Color: ps.Brightness.Text.ScaleRGB(colors.yellow)})
 		}
 	} else {
@@ -385,11 +385,10 @@ func (prefSetPanel) clickOutside(ep *Scope, hit toolbarHit) {
 var prefSetCloseKeys = []imgui.Key{imgui.KeyEscape, imgui.KeyF1, imgui.KeyF2, imgui.KeyF3,
 	imgui.KeyF4, imgui.KeyF5, imgui.KeyF6, imgui.KeyF7, imgui.KeyF8, imgui.KeyF9}
 
-// handlePrefSetKeyboard takes the keystrokes for the name to save a
-// preference set under, returning true if it took them. The CLEAR key and
-// the function keys close the menu (3.16.5) and are left to do what they
-// otherwise do.
-func (ep *Scope) handlePrefSetKeyboard(ctx *scope.Context) bool {
+// keyboard takes the keystrokes for the name to save a preference set
+// under, returning true if it took them. The CLEAR key and the function
+// keys close the menu (3.16.5) and are left to do what they otherwise do.
+func (prefSetPanel) keyboard(ep *Scope, ctx *scope.Context) bool {
 	closes := func(k imgui.Key, _ any) bool { return slices.Contains(prefSetCloseKeys, k) }
 	if util.MapContains(ctx.Keyboard.Pressed, closes) {
 		ep.prefSetMenu = prefSetMenuState{}
