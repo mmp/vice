@@ -343,8 +343,7 @@ func TestSubmenuReplacesColumns(t *testing.T) {
 }
 
 // The check lists are separate views (4.3.6, 4.3.7): displaying one
-// leaves the other and its popup menu displayed, and hiding one closes its
-// popup menu.
+// leaves the other displayed.
 func TestCheckListsAreSeparateViews(t *testing.T) {
 	ep, _ := makeToolbarTestScope()
 	ps := ep.currentPrefs()
@@ -356,16 +355,15 @@ func TestCheckListsAreSeparateViews(t *testing.T) {
 	}
 
 	click("POS\nCHECK")
-	ep.popup = &checkListPopup{popupBase: popupBase{viewID: posCheckList.viewID}, list: &posCheckList}
 	click("EMERG\nCHECK")
-	if !ps.PosCheck.Visible || !ps.EmergCheck.Visible || ep.popup == nil {
-		t.Errorf("after EMERG CHECK: POS CHECK displayed %v, EMERG CHECK displayed %v, POS CHECK popup %v; want all",
-			ps.PosCheck.Visible, ps.EmergCheck.Visible, ep.popup != nil)
+	if !ps.PosCheck.Visible || !ps.EmergCheck.Visible {
+		t.Errorf("after EMERG CHECK: POS CHECK displayed %v, EMERG CHECK displayed %v; want both",
+			ps.PosCheck.Visible, ps.EmergCheck.Visible)
 	}
 	click("POS\nCHECK")
-	if ps.PosCheck.Visible || !ps.EmergCheck.Visible || ep.popup != nil {
-		t.Errorf("after POS CHECK again: POS CHECK displayed %v, EMERG CHECK displayed %v, POS CHECK popup %v; want only EMERG CHECK",
-			ps.PosCheck.Visible, ps.EmergCheck.Visible, ep.popup != nil)
+	if ps.PosCheck.Visible || !ps.EmergCheck.Visible {
+		t.Errorf("after POS CHECK again: POS CHECK displayed %v, EMERG CHECK displayed %v; want only EMERG CHECK",
+			ps.PosCheck.Visible, ps.EmergCheck.Visible)
 	}
 }
 

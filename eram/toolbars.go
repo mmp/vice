@@ -135,7 +135,7 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 // (4.3.4.1). It and the OUTAGE button are drawn at BRIGHT's OUTAGE
 // brightness, and like VECTOR, each is moved rather than torn off (2.5.1).
 func statusButton() toolbarButton {
-	b := viewButton("STATUS\nACTIVE", "status", func(ps *Preferences) *bool { return &ps.StatusView.Visible })
+	b := viewButton("STATUS\nACTIVE", func(ps *Preferences) *bool { return &ps.StatusView.Visible })
 	b.moveOnly = true
 	b.brightness = func(ps *Preferences) scope.Brightness { return ps.Brightness.Outage }
 	return b
@@ -144,7 +144,7 @@ func statusButton() toolbarButton {
 // outageButton makes the OUTAGE button, which shows the user's sector and
 // displays and suppresses the Outage view (4.3.5.1).
 func outageButton() toolbarButton {
-	b := viewButton("", "outage", func(ps *Preferences) *bool { return &ps.OutageView.Visible })
+	b := viewButton("", func(ps *Preferences) *bool { return &ps.OutageView.Visible })
 	b.labelFunc = func(ep *Scope) string { return "OUTAGE\n" + ep.position }
 	b.moveOnly = true
 	b.brightness = func(ps *Preferences) scope.Brightness { return ps.Brightness.Outage }
@@ -154,7 +154,7 @@ func outageButton() toolbarButton {
 // rangeButton makes the RANGE button, which shows the range and displays
 // and suppresses the Range View (3.4).
 func rangeButton() toolbarButton {
-	b := viewButton("", "range", func(ps *Preferences) *bool { return &ps.RangeView.Visible })
+	b := viewButton("", func(ps *Preferences) *bool { return &ps.RangeView.Visible })
 	b.labelFunc = rangeLabel
 	return b
 }
@@ -580,63 +580,58 @@ var dbFieldsMenu = toolbarMenu{rows: [][]toolbarButton{{
 ///////////////////////////////////////////////////////////////////////////
 // VIEWS and CHECK LISTS
 
-// viewButton makes a toggle for a view's visibility. Toggling it also
-// closes the view's popup menu, which lives on the view.
-func viewButton(label, viewID string, visible func(*Preferences) *bool) toolbarButton {
-	b := toggleButton(label, visible)
-	toggle := b.click
-	b.click = func(ep *Scope, c toolbarClick) error {
-		ep.closeViewPopup(viewID)
-		return toggle(ep, c)
-	}
-	return b
+// viewButton makes a toggle for a view's visibility.
+func viewButton(label string, visible func(*Preferences) *bool) toolbarButton {
+	return toggleButton(label, visible)
 }
 
 var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
-	viewButton("ALTIM\nSET", "altim-set", func(ps *Preferences) *bool { return &ps.AltimSet.Visible }),
+	viewButton("ALTIM\nSET", func(ps *Preferences) *bool { return &ps.AltimSet.Visible }),
 	inertToggle("AUTO HO\nINHIB"),
-	viewButton("CFR", "cfr", func(ps *Preferences) *bool { return &ps.CFR.Visible }),
-	viewButton("CODE", "beacon", func(ps *Preferences) *bool { return &ps.BeaconCodeView.Visible }),
+	viewButton("CFR", func(ps *Preferences) *bool { return &ps.CFR.Visible }),
+	viewButton("CODE", func(ps *Preferences) *bool { return &ps.BeaconCodeView.Visible }),
 	conflictAlertButton(),
 	inertToggle("CPDLC\nADV"),
 	inertToggle("CPDLC\nHIST"),
 	inertToggle("CPDLC\nMSGOUT"),
 	inertToggle("CPDLC\nTOC SET"),
-	viewButton("CRR", "crr", func(ps *Preferences) *bool { return &ps.CRR.Visible }),
+	viewButton("CRR", func(ps *Preferences) *bool { return &ps.CRR.Visible }),
 }, {
-	viewButton("DEPT\nLIST", "dept-list", func(ps *Preferences) *bool { return &ps.DeptList.Visible }),
-	viewButton("FLIGHT\nEVENT", "flight-event", func(ps *Preferences) *bool { return &ps.FlightEvent.Visible }),
+	viewButton("DEPT\nLIST", func(ps *Preferences) *bool { return &ps.DeptList.Visible }),
+	viewButton("FLIGHT\nEVENT", func(ps *Preferences) *bool { return &ps.FlightEvent.Visible }),
 	groupSupButton(),
 	inertToggle("HOLD\nLIST"),
 	inertToggle("INBND\nLIST"),
 	inertToggle("MRP\nLIST"),
-	viewButton("SAA\nFILTER", "saa-filter", func(ps *Preferences) *bool { return &ps.SAAFilter.Visible }),
+	viewButton("SAA\nFILTER", func(ps *Preferences) *bool { return &ps.SAAFilter.Visible }),
 	inertToggle("UA"),
-	viewButton("WX\nREPORT", "wx", func(ps *Preferences) *bool { return &ps.WX.Visible }),
+	viewButton("WX\nREPORT", func(ps *Preferences) *bool { return &ps.WX.Visible }),
 }}}
 
 // conflictAlertButton makes the CONFLCT ALERT button, which displays and
 // suppresses the Conflict Alert view; the view can only be suppressed while
 // it is empty (4.2.5).
 func conflictAlertButton() toolbarButton {
-	return stickyViewButton("CONFLCT\nALERT", "conflict-alert",
+	return stickyViewButton("CONFLCT\nALERT",
 		func(ps *Preferences) *bool { return &ps.ConflictAlert.Visible },
 		func(ep *Scope) bool { return len(ep.caPairs) > 0 })
+
 }
 
 // groupSupButton makes the GROUP SUP button, which displays and suppresses
 // the Group Suppression view; the view can't be suppressed while the
 // sector subscribes to a group (4.2.14.2).
 func groupSupButton() toolbarButton {
-	return stickyViewButton("GROUP\nSUP", "group-sup",
+	return stickyViewButton("GROUP\nSUP",
 		func(ps *Preferences) *bool { return &ps.GroupSup.Visible },
 		func(ep *Scope) bool { return len(ep.SuppressionGroups) > 0 })
+
 }
 
 // stickyViewButton makes a toggle for a view's visibility that doesn't
 // suppress the view while pinned reports that it must stay displayed.
-func stickyViewButton(label, viewID string, visible func(*Preferences) *bool, pinned func(*Scope) bool) toolbarButton {
-	b := viewButton(label, viewID, visible)
+func stickyViewButton(label string, visible func(*Preferences) *bool, pinned func(*Scope) bool) toolbarButton {
+	b := viewButton(label, visible)
 	toggle := b.click
 	b.click = func(ep *Scope, c toolbarClick) error {
 		if *visible(ep.currentPrefs()) && pinned(ep) {
@@ -648,8 +643,8 @@ func stickyViewButton(label, viewID string, visible func(*Preferences) *bool, pi
 }
 
 var checkListsMenu = toolbarMenu{rows: [][]toolbarButton{{
-	viewButton("EMERG\nCHECK", "emerg-check", func(ps *Preferences) *bool { return &ps.EmergCheck.Visible }),
-	viewButton("POS\nCHECK", "pos-check", func(ps *Preferences) *bool { return &ps.PosCheck.Visible }),
+	viewButton("EMERG\nCHECK", func(ps *Preferences) *bool { return &ps.EmergCheck.Visible }),
+	viewButton("POS\nCHECK", func(ps *Preferences) *bool { return &ps.PosCheck.Visible }),
 }}}
 
 ///////////////////////////////////////////////////////////////////////////

@@ -531,6 +531,7 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 	if v.RowSource != nil {
 		ep.applyRowSource(&v, titleFont)
 	}
+	ep.drawnViews = append(ep.drawnViews, v.ID)
 
 	// Total width includes the scroll-bar reserve on the right when scrolling.
 	scrollReserveW := scrollReserveWidth(v, titleFont)

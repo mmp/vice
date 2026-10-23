@@ -277,8 +277,10 @@ type Scope struct {
 	rangeView   rangeViewState
 	prefSetMenu prefSetMenuState
 	// viewExtents collects the views drawn in the frame, for the toolbar
-	// engine to yield to the next frame.
+	// engine to yield to the next frame, and drawnViews their IDs, so that
+	// the menu of a view that is no longer drawn goes with it.
 	viewExtents []math.Extent2D
+	drawnViews  []string
 
 	// Short-term conflict alert state; recomputed every caUpdateInterval.
 	caPairs            []CAPair

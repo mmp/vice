@@ -365,16 +365,6 @@ func menuToolbarClick(click MenuClickType) toolbarClick {
 	return c
 }
 
-// closeViewPopup closes the popup menu opened from the given view, if it
-// is the one displayed.
-func (ep *Scope) closeViewPopup(viewID string) {
-	if vap, ok := ep.popup.(viewAnchoredPopup); ok {
-		if id, _, _ := vap.viewAnchor(); id == viewID {
-			ep.popup = nil
-		}
-	}
-}
-
 // MenuConfig holds the full configuration for a menu drawn by DrawERAMMenu.
 type MenuConfig struct {
 	Title              string

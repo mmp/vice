@@ -5,10 +5,78 @@
 package eram
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/scope"
 )
+
+// A view's menu goes with the view: suppressing the view with its "-"
+// button or with its toolbar button closes the menu.
+func TestSuppressedViewClosesMenu(t *testing.T) {
+	ep := makeRowTestScope()
+	ctx := makeTrackTestHarness().ctx
+	ctx.DrawExtent = math.Extent2D{P1: [2]float32{1600, 900}}
+	ctx.Keyboard = &platform.KeyboardState{}
+	ctx.Platform = warpingPlatform{}
+	transforms := scope.GetTransformations(ctx.DrawExtent, 45, math.Point2LL{-73, 40}, 100, 0)
+	ps := ep.currentPrefs()
+	pos := [2]float32{200, 700}
+	ps.BeaconCodeView.Visible, ps.BeaconCodeView.Position = true, pos
+
+	var cb renderer.CommandBuffer
+	frame := func(mouse *platform.MouseState) {
+		ctx.Mouse = mouse
+		ep.viewExtents = nil
+		ep.drawViews(ctx, nil, transforms, &cb)
+	}
+	click := func(p [2]float32) {
+		m := &platform.MouseState{Pos: p}
+		m.Clicked[platform.MouseButtonPrimary] = true
+		frame(m)
+	}
+	menuDisplayed := func() bool {
+		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
+			id, _, _ := vap.viewAnchor()
+			return id == "beacon"
+		}
+		return false
+	}
+	frame(nil)
+	i := slices.IndexFunc(ep.viewExtents, func(e math.Extent2D) bool { return e.P0[0] == pos[0] && e.P1[1] == pos[1] })
+	if i < 0 {
+		t.Fatalf("CODE view not drawn at %v: %v", pos, ep.viewExtents)
+	}
+	outer := ep.viewExtents[i]
+	titleH := viewTitleHeight(ep.ERAMFont(2))
+	menuButton := [2]float32{outer.P0[0] + 4, outer.P1[1] - titleH/2}
+	minimizeButton := [2]float32{outer.P1[0] - 4, outer.P1[1] - titleH/2}
+
+	click(menuButton)
+	if !menuDisplayed() {
+		t.Fatalf("M click displayed %+v", ep.popup)
+	}
+	click(minimizeButton)
+	frame(nil)
+	if ps.BeaconCodeView.Visible || ep.popup != nil {
+		t.Errorf("after '-': displayed %v, popup %+v; want neither", ps.BeaconCodeView.Visible, ep.popup)
+	}
+
+	ps.BeaconCodeView.Visible = true
+	frame(nil)
+	click(menuButton)
+	if !menuDisplayed() {
+		t.Fatalf("M click displayed %+v", ep.popup)
+	}
+	ep.toolbarButtonByID(toolbarButtonID(t, ep, "CODE")).click(ep, toolbarClick{})
+	frame(nil)
+	if ps.BeaconCodeView.Visible || ep.popup != nil {
+		t.Errorf("after the CODE button: displayed %v, popup %+v; want neither", ps.BeaconCodeView.Visible, ep.popup)
+	}
+}
 
 // -/+ and the trough step the range, stopping at the view's limits, and
 // RETURN goes back and forth between the last two ranges.

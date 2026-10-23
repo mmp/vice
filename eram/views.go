@@ -25,6 +25,7 @@ import (
 
 func (ep *Scope) drawViews(ctx *scope.Context, tracks []sim.Track, transforms scope.Transformations,
 	cb *renderer.CommandBuffer) {
+	ep.drawnViews = ep.drawnViews[:0]
 	ep.drawResponseArea(ctx, transforms, cb)
 	ep.drawMessageCompositionArea(ctx, transforms, cb)
 	ep.drawAltimSetView(ctx, transforms, cb)
@@ -43,6 +44,12 @@ func (ep *Scope) drawViews(ctx *scope.Context, tracks []sim.Track, transforms sc
 	ep.drawDeptListView(ctx, transforms, cb)
 	ep.drawGroupSupView(ctx, transforms, cb)
 	ep.drawConflictAlertView(ctx, transforms, cb)
+	// A view's menu goes with the view when the view is suppressed.
+	if vap, ok := ep.popup.(viewAnchoredPopup); ok {
+		if id, _, _ := vap.viewAnchor(); !slices.Contains(ep.drawnViews, id) {
+			ep.popup = nil
+		}
+	}
 	if ep.popup != nil {
 		ep.popup.draw(ep, ctx, transforms, cb)
 	}
@@ -332,7 +339,6 @@ func (ep *Scope) clickRangeView(ctx *scope.Context, l rangeViewLayout) {
 		}
 	case l.close.Inside(p):
 		ps.RangeView.Visible = false
-		ep.closeViewPopup("range")
 	case l.value.Inside(p):
 		if !tertiary {
 			err = ep.startRangeEntry(rangeFieldValue)

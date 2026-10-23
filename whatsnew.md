@@ -24,6 +24,7 @@
   - `QS` takes a heading and speed together, as in `QS 330/81`, and Mach speeds such as `M.75`
   - `QZ` assigns VFR and VFR-on-top altitudes
   - `WR` takes up to three stations
+  - Suppressing a view closes its menu
 - Facility engineering
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
   - `"atpa_volumes"` is now `"atpa"`; its `"runway_threshold"`, `"heading"`, and `"id"` fields have been removed
