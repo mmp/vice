@@ -39,10 +39,6 @@ func (ep *Scope) consumeMouseEvents(ctx *scope.Context, transforms scope.Transfo
 		return
 	}
 	ps := ep.currentPrefs()
-	if (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonSecondary] ||
-		ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
-		ctx.KeyboardFocus.Take(ep)
-	}
 	if ep.mousePrimaryReleased(mouse) {
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
 			mouseLatLong := transforms.LatLongFromWindowP(mouse.Pos)

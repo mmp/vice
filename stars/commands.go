@@ -197,7 +197,7 @@ type CommandStatus struct {
 }
 
 func (sp *Scope) processKeyboardInput(ctx *scope.Context) {
-	if !ctx.HaveFocus || ctx.Keyboard == nil {
+	if ctx.Keyboard == nil {
 		return
 	}
 
@@ -599,11 +599,6 @@ func (sp *Scope) consumeMouseEvents(ctx *scope.Context, ghosts []*av.GhostTrack,
 
 	mouse := ctx.Mouse
 	ps := sp.currentPrefs()
-
-	if (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonSecondary] ||
-		ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
-		ctx.KeyboardFocus.Take(sp)
-	}
 
 	if sp.activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center

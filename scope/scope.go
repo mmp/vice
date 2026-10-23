@@ -61,26 +61,8 @@ var (
 		// received the click keeps getting events until the mouse button
 		// is released.  mouseConsumerOverride records such a scope.
 		mouseConsumerOverride Scope
-
-		focus KeyboardFocus
 	}
 )
-
-type KeyboardFocus struct {
-	current any
-}
-
-func (f *KeyboardFocus) Take(p any) {
-	f.current = p
-}
-
-func (f *KeyboardFocus) Release() {
-	f.current = nil
-}
-
-func (f *KeyboardFocus) Current() any {
-	return f.current
-}
 
 // DrawScope renders the radar scope, which fills the entire display area
 // below the menu bar. Messages and flight strips are drawn separately, in
@@ -93,8 +75,6 @@ func DrawScope(sc Scope, p platform.Platform, r renderer.Renderer,
 		commandBuffer.ClearRGB(renderer.RGB{})
 		return r.RenderCommandBuffer(commandBuffer)
 	}
-
-	wm.focus.Take(sc)
 
 	fbSize := p.FramebufferSize()
 	displaySize := p.DisplaySize()
@@ -142,7 +122,6 @@ func DrawScope(sc Scope, p platform.Platform, r renderer.Renderer,
 		keyboard = p.GetKeyboard()
 	}
 
-	haveFocus := sc == wm.focus.Current() && !imgui.CurrentIO().WantCaptureKeyboard()
 	ctx := Context{
 		DrawExtent:          scopeDisplayExtent,
 		ParentDrawExtent:    scopeDisplayExtent,
@@ -152,12 +131,10 @@ func DrawScope(sc Scope, p platform.Platform, r renderer.Renderer,
 		DPIScale:            p.DPIScale(),
 		Renderer:            r,
 		Keyboard:            keyboard,
-		HaveFocus:           haveFocus,
 		InterpolatedSimTime: controlClient.InterpolatedSimTime(),
 		Events:              events,
 		Lg:                  lg,
 		MenuBarHeight:       menuBarHeight,
-		KeyboardFocus:       &wm.focus,
 		Client:              controlClient,
 		UserTCW:             controlClient.State.UserTCW,
 		NmPerLongitude:      controlClient.State.NmPerLongitude,

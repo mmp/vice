@@ -512,7 +512,7 @@ func TestDrawRoute(t *testing.T) {
 	ep := &Scope{prefSet: &PrefrenceSet{Current: *makeDefaultPreferences()}}
 	pl := &clipboardPlatform{}
 	ctx := &scope.Context{DrawExtent: math.Extent2D{P1: [2]float32{1600, 900}}, Platform: pl,
-		Client: &client.ControlClient{}, HaveFocus: true}
+		Client: &client.ControlClient{}}
 	transforms := scope.GetTransformations(ctx.DrawExtent, 45, math.Point2LL{-77, 39}, 100, 0)
 	click := func(p [2]float32) {
 		ctx.Mouse, ctx.Keyboard = &platform.MouseState{Pos: p}, nil

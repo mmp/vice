@@ -41,14 +41,11 @@ type Context struct {
 	Renderer            renderer.Renderer
 	Mouse               *platform.MouseState
 	Keyboard            *platform.KeyboardState
-	HaveFocus           bool
 	InterpolatedSimTime sim.Time
 	Events              []sim.Event
 	Lg                  *log.Logger
 
 	MenuBarHeight float32
-
-	KeyboardFocus *KeyboardFocus
 
 	Client *client.ControlClient
 
@@ -84,7 +81,6 @@ func NewFuzzContext(p platform.Platform, r renderer.Renderer, c *client.ControlC
 		PixelsPerInch:       72,
 		DPIScale:            p.DPIScale(),
 		Renderer:            r,
-		HaveFocus:           true,
 		InterpolatedSimTime: c.InterpolatedSimTime(),
 		Lg:                  lg,
 		Client:              c,

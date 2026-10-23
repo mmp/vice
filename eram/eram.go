@@ -962,7 +962,7 @@ func (m *feedbackMessage) Clear() {
 
 // AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
 func (ep *Scope) processKeyboardInput(ctx *scope.Context) {
-	if !ctx.HaveFocus || ctx.Keyboard == nil {
+	if ctx.Keyboard == nil {
 		return
 	}
 	// An open keyboard-taking popup (e.g. the free-form text menu) gets the
