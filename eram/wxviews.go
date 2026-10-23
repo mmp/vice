@@ -47,14 +47,10 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.AltimSet.Position,
-		ID:         "altim-set",
-		Title:      "ALTIM SET",
-		Opaque:     ps.AltimSet.Opaque,
-		ShowBorder: ps.AltimSet.ShowBorder,
-		Brightness: ps.AltimSet.Bright,
-		Menu:       altimSetMenu{},
-		OnMinimize: func() { ps.AltimSet.Visible = false },
+		Prefs: &ps.AltimSet.ViewPreferences,
+		ID:    "altim-set",
+		Title: "ALTIM SET",
+		Menu:  altimSetMenu{},
 		RowSource: &ViewRowSource{
 			Rows:                  rows,
 			FontIndex:             ps.AltimSet.Font,
@@ -230,14 +226,10 @@ func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.WX.Position,
-		ID:         "wx",
-		Title:      "WX",
-		Opaque:     ps.WX.Opaque,
-		ShowBorder: ps.WX.ShowBorder,
-		Brightness: ps.WX.Bright,
-		Menu:       wxReportMenu{},
-		OnMinimize: func() { ps.WX.Visible = false },
+		Prefs: &ps.WX.ViewPreferences,
+		ID:    "wx",
+		Title: "WX",
+		Menu:  wxReportMenu{},
 		RowSource: &ViewRowSource{
 			Rows:               rows,
 			FontIndex:          ps.WX.Font,

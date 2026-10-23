@@ -77,48 +77,30 @@ type Preferences struct {
 
 	// CRR view preferences and configuration
 	CRR struct {
-		Visible       bool
+		ViewPreferences
 		ListMode      bool // true: list, false: panel
-		Opaque        bool
-		ShowBorder    bool
-		Lines         int
-		Font          int
-		Bright        scope.Brightness
 		SelectedColor CRRColor
 		ColorBright   map[CRRColor]scope.Brightness
-		Position      [2]float32
 		DisplayFixes  bool // ATC TOOLS overlay of CRR fixes
 		// RDBs displays the range data blocks of the aircraft in the
 		// view (4.2.11.6).
 		RDBs bool
 	}
 
-	// ALTIM SET view preferences
+	// ALTIM SET view preferences. ShowIndicators is its TEAROFF setting.
 	AltimSet struct {
-		Visible        bool
-		Position       [2]float32
-		Opaque         bool
-		ShowBorder     bool
+		ViewPreferences
 		ShowIndicators bool
-		Lines          int
-		Col            int              // 1-4 columns
-		Font           int              // 1-3
-		Bright         scope.Brightness // 0-100
+		Col            int // 1-4 columns
 		// TearOffs holds where entries have been torn off to, by ICAO
 		// code.
 		TearOffs map[string]math.Point2LL
 	}
 
-	// WX view preferences
+	// WX view preferences. ShowIndicators is its TEAROFF setting.
 	WX struct {
-		Visible        bool
-		Position       [2]float32
-		Opaque         bool
-		ShowBorder     bool
+		ViewPreferences
 		ShowIndicators bool
-		Lines          int
-		Font           int              // 1-3
-		Bright         scope.Brightness // 0-100
 		// TearOffs holds where entries have been torn off to, by ICAO
 		// code.
 		TearOffs map[string]math.Point2LL
@@ -151,30 +133,20 @@ type Preferences struct {
 	}
 
 	BeaconCodeView struct {
-		Visible    bool
-		Position   [2]float32
-		Opaque     bool
-		ShowBorder bool
-		Lines      int
+		ViewPreferences
 		Col        int
-		Font       int
-		Bright     scope.Brightness
 		SortManual bool
 	}
 
 	EmergCheck CheckListPreferences
 	PosCheck   CheckListPreferences
 
-	// CFR view preferences (4.2.3). The Show fields are the FILTERS menu's
-	// toggles (Table 4-3).
+	// CFR view preferences (4.2.3). The view has ENTRIES, the number of
+	// readouts it holds, in place of LINES. The Show fields are the
+	// FILTERS menu's toggles (Table 4-3).
 	CFR struct {
-		Visible        bool
-		Position       [2]float32
-		Opaque         bool
-		ShowBorder     bool
+		ViewPreferences
 		Entries        int // 1-10
-		Font           int
-		Bright         scope.Brightness
 		RouteChars     int // 30-100
 		ShowAltitude   bool
 		ShowBeaconCode bool
@@ -191,53 +163,25 @@ type Preferences struct {
 	// the brightness of the HOT filter settings' text, and Hot and Cold
 	// are those of the active and inactive SAAs.
 	SAAFilter struct {
-		Visible    bool
-		Position   [2]float32
-		Opaque     bool
-		ShowBorder bool
-		Lines      int
-		Font       int
-		Bright     scope.Brightness
-		Color      scope.Brightness
-		Hot        scope.Brightness
-		Cold       scope.Brightness
+		ViewPreferences
+		Color scope.Brightness
+		Hot   scope.Brightness
+		Cold  scope.Brightness
 	}
 	// SAAs holds the SAAs' display filter settings by SAA id; an SAA that
 	// isn't here has the default ones.
 	SAAs map[string]SAASettings
 
-	FlightEvent struct {
-		Visible    bool
-		Position   [2]float32
-		Opaque     bool
-		ShowBorder bool
-		Lines      int
-		Font       int
-		Bright     scope.Brightness
-	}
+	FlightEvent ViewPreferences
 
 	// GroupSup holds the Group Suppression view's settings (4.2.14).
-	GroupSup struct {
-		Visible    bool
-		Position   [2]float32
-		Opaque     bool
-		ShowBorder bool
-		Lines      int
-		Font       int
-		Bright     scope.Brightness
-	}
+	GroupSup ViewPreferences
 
 	// DeptList holds the Departure List view's settings (4.2.12).
 	// ShowIndicators is its TEAROFF setting.
 	DeptList struct {
-		Visible        bool
-		Position       [2]float32
-		Opaque         bool
-		ShowBorder     bool
+		ViewPreferences
 		ShowIndicators bool
-		Lines          int
-		Font           int
-		Bright         scope.Brightness
 		// SublistOrder is the order the sublists were sorted in by hand;
 		// it is empty when they are in fix name order.
 		SublistOrder       []string
@@ -258,14 +202,9 @@ type Preferences struct {
 		Position [2]float32
 	}
 
-	ConflictAlert struct {
-		Visible    bool
-		Position   [2]float32
-		Opaque     bool
-		ShowBorder bool
-		Font       int
-		Bright     scope.Brightness
-	}
+	// ConflictAlert holds the Conflict Alert view's settings; the view
+	// expands to show every entry and has no LINES.
+	ConflictAlert ViewPreferences
 
 	RangeView struct {
 		Visible  bool
@@ -288,27 +227,45 @@ type Preferences struct {
 	}
 }
 
-// CheckListPreferences are the settings of a check list view; each check
-// list is displayed in a view of its own with its own settings (3.11.1).
-type CheckListPreferences struct {
+// ViewPreferences are the settings of a view that every view's menu has
+// (4.2.18.4): whether it is displayed and where, whether it is opaque or
+// semi-transparent, its border, its LINES, its font, and its brightness.
+// A view that expands to show every entry has no LINES.
+type ViewPreferences struct {
 	Visible    bool
 	Position   [2]float32
 	Opaque     bool
 	ShowBorder bool
 	Lines      int
-	Font       int
-	Highlight  scope.Brightness
-	Text       scope.Brightness
+	Font       int              // 1-3
+	Bright     scope.Brightness // 0-100
+}
+
+// makeDefaultViewPreferences returns a view's default settings, with the
+// given LINES and brightness: not displayed, at the default position,
+// semi-transparent with a border, in font 2.
+func makeDefaultViewPreferences(lines int, bright scope.Brightness) ViewPreferences {
+	return ViewPreferences{
+		Position:   [2]float32{100, 900},
+		ShowBorder: true,
+		Lines:      lines,
+		Font:       2,
+		Bright:     bright,
+	}
+}
+
+// CheckListPreferences are the settings of a check list view; each check
+// list is displayed in a view of its own with its own settings (3.11.1).
+// Its menu's TEXT is the view's brightness.
+type CheckListPreferences struct {
+	ViewPreferences
+	Highlight scope.Brightness
 }
 
 func makeDefaultCheckListPreferences() CheckListPreferences {
 	return CheckListPreferences{
-		Position:   [2]float32{100, 900},
-		ShowBorder: true,
-		Lines:      linesAll,
-		Font:       2,
-		Highlight:  40,
-		Text:       76,
+		ViewPreferences: makeDefaultViewPreferences(linesAll, 76),
+		Highlight:       40,
 	}
 }
 
@@ -528,14 +485,9 @@ func makeDefaultPreferences() *Preferences {
 	prefs.VideoMapVisible = make(map[string]any)
 	prefs.VideoMapBrightness = make(map[string]scope.Brightness)
 
-	// CRR defaults
+	prefs.CRR.ViewPreferences = makeDefaultViewPreferences(13, 90)
 	prefs.CRR.Visible = true
 	prefs.CRR.ListMode = true
-	prefs.CRR.Opaque = false
-	prefs.CRR.ShowBorder = true
-	prefs.CRR.Lines = 13
-	prefs.CRR.Font = 2
-	prefs.CRR.Bright = 90
 	prefs.CRR.SelectedColor = CRRGreen
 	prefs.CRR.ColorBright = map[CRRColor]scope.Brightness{
 		CRRGreen:   90,
@@ -545,7 +497,6 @@ func makeDefaultPreferences() *Preferences {
 		CRRWhite:   90,
 		CRRAmber:   90,
 	}
-	prefs.CRR.Position = [2]float32{100, 900}
 	prefs.CRR.DisplayFixes = false
 	prefs.CRR.RDBs = true
 
@@ -557,83 +508,42 @@ func makeDefaultPreferences() *Preferences {
 	prefs.RadarFilter.NonModeC = true
 	prefs.RadarFilter.SelectBeacon = true
 
-	prefs.AltimSet.Visible = false
-	prefs.AltimSet.Position = [2]float32{100, 900}
-	prefs.AltimSet.Opaque = false
-	prefs.AltimSet.ShowBorder = true
+	prefs.AltimSet.ViewPreferences = makeDefaultViewPreferences(5, 80)
 	prefs.AltimSet.ShowIndicators = true
-	prefs.AltimSet.Lines = 5
 	prefs.AltimSet.Col = 1
-	prefs.AltimSet.Font = 2
-	prefs.AltimSet.Bright = 80
 
-	prefs.WX.Visible = false
-	prefs.WX.Position = [2]float32{100, 900}
-	prefs.WX.Opaque = false
-	prefs.WX.ShowBorder = true
+	prefs.WX.ViewPreferences = makeDefaultViewPreferences(5, 80)
 	prefs.WX.ShowIndicators = true
-	prefs.WX.Lines = 5
-	prefs.WX.Font = 2
-	prefs.WX.Bright = 80
 
-	prefs.BeaconCodeView.Visible = false
-	prefs.BeaconCodeView.Position = [2]float32{100, 900}
-	prefs.BeaconCodeView.Opaque = false
-	prefs.BeaconCodeView.ShowBorder = true
-	prefs.BeaconCodeView.Lines = 11
+	prefs.BeaconCodeView.ViewPreferences = makeDefaultViewPreferences(11, 100)
 	prefs.BeaconCodeView.Col = 5
-	prefs.BeaconCodeView.Font = 2
-	prefs.BeaconCodeView.Bright = 100
 
 	prefs.EmergCheck = makeDefaultCheckListPreferences()
 	prefs.PosCheck = makeDefaultCheckListPreferences()
 
-	prefs.CFR.Position = [2]float32{100, 900}
-	prefs.CFR.ShowBorder = true
+	prefs.CFR.ViewPreferences = makeDefaultViewPreferences(0, 90)
 	prefs.CFR.Entries = 10
-	prefs.CFR.Font = 2
-	prefs.CFR.Bright = 90
 	prefs.CFR.RouteChars = 50
 	for _, f := range cfrFilters {
 		*f.shown(&prefs) = true
 	}
 
-	prefs.SAAFilter.Position = [2]float32{100, 900}
-	prefs.SAAFilter.ShowBorder = true
-	prefs.SAAFilter.Lines = 10
-	prefs.SAAFilter.Font = 2
-	prefs.SAAFilter.Bright = 90
+	prefs.SAAFilter.ViewPreferences = makeDefaultViewPreferences(10, 90)
 	prefs.SAAFilter.Color = 90
 	prefs.SAAFilter.Hot = 90
 	prefs.SAAFilter.Cold = 90
 
-	prefs.FlightEvent.Position = [2]float32{100, 900}
-	prefs.FlightEvent.ShowBorder = true
-	prefs.FlightEvent.Lines = 10
-	prefs.FlightEvent.Font = 2
-	prefs.FlightEvent.Bright = 90
+	prefs.FlightEvent = makeDefaultViewPreferences(10, 90)
+	prefs.GroupSup = makeDefaultViewPreferences(5, 90)
 
-	prefs.GroupSup.Position = [2]float32{100, 900}
-	prefs.GroupSup.ShowBorder = true
-	prefs.GroupSup.Lines = 5
-	prefs.GroupSup.Font = 2
-	prefs.GroupSup.Bright = 90
-
-	prefs.DeptList.Position = [2]float32{100, 900}
-	prefs.DeptList.ShowBorder = true
+	prefs.DeptList.ViewPreferences = makeDefaultViewPreferences(15, 90)
 	prefs.DeptList.ShowIndicators = true
-	prefs.DeptList.Lines = 15
-	prefs.DeptList.Font = 2
-	prefs.DeptList.Bright = 90
 
 	prefs.StatusView.Position = [2]float32{100, 900}
 	prefs.StatusView.Font = 2
 	prefs.OutageView.Position = [2]float32{100, 900}
 
-	prefs.ConflictAlert.Position = [2]float32{100, 900}
-	prefs.ConflictAlert.ShowBorder = true
-	prefs.ConflictAlert.Font = 2
-	prefs.ConflictAlert.Bright = 90
+	prefs.ConflictAlert = makeDefaultViewPreferences(0, 90)
 
 	prefs.RangeView.Position = [2]float32{300, 900}
 	prefs.RangeView.Bright = 90
@@ -812,6 +722,11 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 121 {
 		p.Draw = makeDefaultPreferences().Draw
+	}
+	if from < 122 {
+		// The check lists' TEXT brightness became their views' Bright.
+		p.EmergCheck = makeDefaultCheckListPreferences()
+		p.PosCheck = makeDefaultCheckListPreferences()
 	}
 }
 

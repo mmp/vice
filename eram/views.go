@@ -641,7 +641,7 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 	}
 
 	toggled := cl.toggled(ep)
-	textColor := cps.Text.ScaleRGB(colors.view.text)
+	textColor := cps.Bright.ScaleRGB(colors.view.text)
 	rows := make([]Row, len(cl.items))
 	maxLen := 0
 	for i, s := range cl.items {
@@ -653,14 +653,10 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &cps.Position,
-		ID:         cl.viewID,
-		Title:      cl.title,
-		Opaque:     cps.Opaque,
-		ShowBorder: cps.ShowBorder,
-		Brightness: cps.Text,
-		Menu:       checkListMenu{list: cl},
-		OnMinimize: func() { cps.Visible = false },
+		Prefs: &cps.ViewPreferences,
+		ID:    cl.viewID,
+		Title: cl.title,
+		Menu:  checkListMenu{list: cl},
 		RowSource: &ViewRowSource{
 			Rows:           rows,
 			FontIndex:      cps.Font,
@@ -688,6 +684,6 @@ func (m checkListMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 		makeLinesMenuItem(ep, &cps.Lines, 3),
 		makeIntMenuItem(ep, &cps.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &cps.Highlight, "HIGHLIGHT", 0, 100, 2),
-		makeIntMenuItem(ep, &cps.Text, "TEXT", 0, 100, 2),
+		makeIntMenuItem(ep, &cps.Bright, "TEXT", 0, 100, 2),
 	}
 }

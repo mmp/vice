@@ -106,15 +106,11 @@ func (ep *Scope) drawCRRView(ctx *scope.Context, tracks []sim.Track, transforms 
 	labels := util.SortedMapKeys(ep.CRRGroups)
 
 	v := View{
-		Position:   &ps.CRR.Position,
-		ID:         "crr",
-		Width:      width,
-		Title:      "CRR",
-		Opaque:     ps.CRR.Opaque,
-		ShowBorder: ps.CRR.ShowBorder,
-		Brightness: ps.CRR.Bright,
-		Menu:       crrMenu{},
-		OnMinimize: func() { ps.CRR.Visible = false },
+		Prefs: &ps.CRR.ViewPreferences,
+		ID:    "crr",
+		Width: width,
+		Title: "CRR",
+		Menu:  crrMenu{},
 	}
 	switch {
 	case len(labels) == 0:

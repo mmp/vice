@@ -135,7 +135,7 @@ var mainToolbar = toolbarMenu{rows: [][]toolbarButton{{
 // (4.3.4.1). It and the OUTAGE button are drawn at BRIGHT's OUTAGE
 // brightness, and like VECTOR, each is moved rather than torn off (2.5.1).
 func statusButton() toolbarButton {
-	b := viewButton("STATUS\nACTIVE", func(ps *Preferences) *bool { return &ps.StatusView.Visible })
+	b := toggleButton("STATUS\nACTIVE", func(ps *Preferences) *bool { return &ps.StatusView.Visible })
 	b.moveOnly = true
 	b.brightness = func(ps *Preferences) scope.Brightness { return ps.Brightness.Outage }
 	return b
@@ -144,7 +144,7 @@ func statusButton() toolbarButton {
 // outageButton makes the OUTAGE button, which shows the user's sector and
 // displays and suppresses the Outage view (4.3.5.1).
 func outageButton() toolbarButton {
-	b := viewButton("", func(ps *Preferences) *bool { return &ps.OutageView.Visible })
+	b := toggleButton("", func(ps *Preferences) *bool { return &ps.OutageView.Visible })
 	b.labelFunc = func(ep *Scope) string { return "OUTAGE\n" + ep.position }
 	b.moveOnly = true
 	b.brightness = func(ps *Preferences) scope.Brightness { return ps.Brightness.Outage }
@@ -154,7 +154,7 @@ func outageButton() toolbarButton {
 // rangeButton makes the RANGE button, which shows the range and displays
 // and suppresses the Range View (3.4).
 func rangeButton() toolbarButton {
-	b := viewButton("", func(ps *Preferences) *bool { return &ps.RangeView.Visible })
+	b := toggleButton("", func(ps *Preferences) *bool { return &ps.RangeView.Visible })
 	b.labelFunc = rangeLabel
 	return b
 }
@@ -580,32 +580,27 @@ var dbFieldsMenu = toolbarMenu{rows: [][]toolbarButton{{
 ///////////////////////////////////////////////////////////////////////////
 // VIEWS and CHECK LISTS
 
-// viewButton makes a toggle for a view's visibility.
-func viewButton(label string, visible func(*Preferences) *bool) toolbarButton {
-	return toggleButton(label, visible)
-}
-
 var viewsMenu = toolbarMenu{rows: [][]toolbarButton{{
-	viewButton("ALTIM\nSET", func(ps *Preferences) *bool { return &ps.AltimSet.Visible }),
+	toggleButton("ALTIM\nSET", func(ps *Preferences) *bool { return &ps.AltimSet.Visible }),
 	inertToggle("AUTO HO\nINHIB"),
-	viewButton("CFR", func(ps *Preferences) *bool { return &ps.CFR.Visible }),
-	viewButton("CODE", func(ps *Preferences) *bool { return &ps.BeaconCodeView.Visible }),
+	toggleButton("CFR", func(ps *Preferences) *bool { return &ps.CFR.Visible }),
+	toggleButton("CODE", func(ps *Preferences) *bool { return &ps.BeaconCodeView.Visible }),
 	conflictAlertButton(),
 	inertToggle("CPDLC\nADV"),
 	inertToggle("CPDLC\nHIST"),
 	inertToggle("CPDLC\nMSGOUT"),
 	inertToggle("CPDLC\nTOC SET"),
-	viewButton("CRR", func(ps *Preferences) *bool { return &ps.CRR.Visible }),
+	toggleButton("CRR", func(ps *Preferences) *bool { return &ps.CRR.Visible }),
 }, {
-	viewButton("DEPT\nLIST", func(ps *Preferences) *bool { return &ps.DeptList.Visible }),
-	viewButton("FLIGHT\nEVENT", func(ps *Preferences) *bool { return &ps.FlightEvent.Visible }),
+	toggleButton("DEPT\nLIST", func(ps *Preferences) *bool { return &ps.DeptList.Visible }),
+	toggleButton("FLIGHT\nEVENT", func(ps *Preferences) *bool { return &ps.FlightEvent.Visible }),
 	groupSupButton(),
 	inertToggle("HOLD\nLIST"),
 	inertToggle("INBND\nLIST"),
 	inertToggle("MRP\nLIST"),
-	viewButton("SAA\nFILTER", func(ps *Preferences) *bool { return &ps.SAAFilter.Visible }),
+	toggleButton("SAA\nFILTER", func(ps *Preferences) *bool { return &ps.SAAFilter.Visible }),
 	inertToggle("UA"),
-	viewButton("WX\nREPORT", func(ps *Preferences) *bool { return &ps.WX.Visible }),
+	toggleButton("WX\nREPORT", func(ps *Preferences) *bool { return &ps.WX.Visible }),
 }}}
 
 // conflictAlertButton makes the CONFLCT ALERT button, which displays and
@@ -631,7 +626,7 @@ func groupSupButton() toolbarButton {
 // stickyViewButton makes a toggle for a view's visibility that doesn't
 // suppress the view while pinned reports that it must stay displayed.
 func stickyViewButton(label string, visible func(*Preferences) *bool, pinned func(*Scope) bool) toolbarButton {
-	b := viewButton(label, visible)
+	b := toggleButton(label, visible)
 	toggle := b.click
 	b.click = func(ep *Scope, c toolbarClick) error {
 		if *visible(ep.currentPrefs()) && pinned(ep) {
@@ -643,8 +638,8 @@ func stickyViewButton(label string, visible func(*Preferences) *bool, pinned fun
 }
 
 var checkListsMenu = toolbarMenu{rows: [][]toolbarButton{{
-	viewButton("EMERG\nCHECK", func(ps *Preferences) *bool { return &ps.EmergCheck.Visible }),
-	viewButton("POS\nCHECK", func(ps *Preferences) *bool { return &ps.PosCheck.Visible }),
+	toggleButton("EMERG\nCHECK", func(ps *Preferences) *bool { return &ps.EmergCheck.Visible }),
+	toggleButton("POS\nCHECK", func(ps *Preferences) *bool { return &ps.PosCheck.Visible }),
 }}}
 
 ///////////////////////////////////////////////////////////////////////////

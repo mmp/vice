@@ -345,13 +345,10 @@ func (ep *Scope) drawConflictAlertView(ctx *scope.Context, transforms scope.Tran
 		}})
 	}
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.ConflictAlert.Position,
-		ID:         "conflict-alert",
-		Title:      "CONFLICT ALERT",
-		Opaque:     ps.ConflictAlert.Opaque,
-		ShowBorder: ps.ConflictAlert.ShowBorder,
-		Brightness: ps.ConflictAlert.Bright,
-		Menu:       conflictAlertMenu{},
+		Prefs: &ps.ConflictAlert,
+		ID:    "conflict-alert",
+		Title: "CONFLICT ALERT",
+		Menu:  conflictAlertMenu{},
 		// The view can only be suppressed while it is empty.
 		OnMinimize: func() { ps.ConflictAlert.Visible = len(ep.caPairs) > 0 },
 		RowSource: &ViewRowSource{
@@ -610,13 +607,12 @@ func (ep *Scope) drawGroupSupView(ctx *scope.Context, transforms scope.Transform
 	contentChars := util.ReduceSlice(rows, len(title)+4, func(r Row, n int) int { return max(n, len(r.Label)) })
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &gs.Position,
-		ID:         "group-sup",
-		Title:      title,
-		Opaque:     gs.Opaque,
-		ShowBorder: gs.ShowBorder,
-		Brightness: gs.Bright,
-		Menu:       &groupSupMenu{},
+		Prefs: gs,
+		ID:    "group-sup",
+		Title: title,
+		Menu:  &groupSupMenu{},
+		// The view can't be suppressed while the sector subscribes to a
+		// group.
 		OnMinimize: func() { gs.Visible = len(ep.SuppressionGroups) > 0 },
 		RowSource: &ViewRowSource{
 			Rows:                    rows,

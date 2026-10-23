@@ -410,14 +410,10 @@ func (ep *Scope) drawCFRView(ctx *scope.Context, transforms scope.Transformation
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.CFR.Position,
-		ID:         "cfr",
-		Title:      "CFR",
-		Opaque:     ps.CFR.Opaque,
-		ShowBorder: ps.CFR.ShowBorder,
-		Brightness: ps.CFR.Bright,
-		Menu:       &cfrMenu{},
-		OnMinimize: func() { ps.CFR.Visible = false },
+		Prefs: &ps.CFR.ViewPreferences,
+		ID:    "cfr",
+		Title: "CFR",
+		Menu:  &cfrMenu{},
 		TitleButtons: []ViewTitleButton{{
 			Label: "SHOW FIELDS",
 			// It is grayed out with nothing more to show.

@@ -381,17 +381,13 @@ func (ep *Scope) drawSAAFilterView(ctx *scope.Context, transforms scope.Transfor
 
 	var body math.Extent2D
 	v := View{
-		Position:   &ps.SAAFilter.Position,
+		Prefs:      &ps.SAAFilter.ViewPreferences,
 		ID:         "saa-filter",
 		Width:      width,
 		BodyHeight: float32(1+lines) * rowH,
 		BodyFont:   font,
 		Title:      "SAA FILTER",
-		Opaque:     ps.SAAFilter.Opaque,
-		ShowBorder: ps.SAAFilter.ShowBorder,
-		Brightness: ps.SAAFilter.Bright,
 		Menu:       saaFilterMenu{},
-		OnMinimize: func() { ps.SAAFilter.Visible = false },
 		DrawBody: func(e math.Extent2D, b *ViewBuilders) {
 			body = e
 			ep.drawSAAFilterBody(e, b, shown, font, rowH)

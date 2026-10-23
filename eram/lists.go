@@ -168,14 +168,10 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &dl.Position,
-		ID:         "dept-list",
-		Title:      "DEPT",
-		Opaque:     dl.Opaque,
-		ShowBorder: dl.ShowBorder,
-		Brightness: dl.Bright,
-		Menu:       &deptListMenu{},
-		OnMinimize: func() { dl.Visible = false },
+		Prefs: &dl.ViewPreferences,
+		ID:    "dept-list",
+		Title: "DEPT",
+		Menu:  &deptListMenu{},
 		RowSource: &ViewRowSource{
 			Rows:                    rows,
 			FontIndex:               dl.Font,
@@ -388,14 +384,10 @@ func (ep *Scope) drawFlightEventView(ctx *scope.Context, transforms scope.Transf
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.FlightEvent.Position,
-		ID:         "flight-event",
-		Title:      "FLIGHT EVENT",
-		Opaque:     ps.FlightEvent.Opaque,
-		ShowBorder: ps.FlightEvent.ShowBorder,
-		Brightness: ps.FlightEvent.Bright,
-		Menu:       flightEventMenu{},
-		OnMinimize: func() { ps.FlightEvent.Visible = false },
+		Prefs: &ps.FlightEvent,
+		ID:    "flight-event",
+		Title: "FLIGHT EVENT",
+		Menu:  flightEventMenu{},
 		RowSource: &ViewRowSource{
 			Rows:                    rows,
 			FontIndex:               ps.FlightEvent.Font,
@@ -448,14 +440,10 @@ func (ep *Scope) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transfo
 	const cellChars = 5
 
 	ep.DrawView(ctx, transforms, cb, View{
-		Position:   &ps.BeaconCodeView.Position,
-		ID:         "beacon",
-		Title:      "CODE",
-		Opaque:     ps.BeaconCodeView.Opaque,
-		ShowBorder: ps.BeaconCodeView.ShowBorder,
-		Brightness: ps.BeaconCodeView.Bright,
-		Menu:       beaconCodeViewMenu{},
-		OnMinimize: func() { ps.BeaconCodeView.Visible = false },
+		Prefs: &ps.BeaconCodeView.ViewPreferences,
+		ID:    "beacon",
+		Title: "CODE",
+		Menu:  beaconCodeViewMenu{},
 		RowSource: &ViewRowSource{
 			Rows:                    beaconCodeRows(ctx, ep, ps),
 			FontIndex:               ps.BeaconCodeView.Font,

@@ -71,6 +71,12 @@ type RowClick struct {
 
 // View is the declarative spec. See package overview above.
 type View struct {
+	// Prefs, if set, are the view's settings: DrawView takes its position,
+	// opacity, border, and brightness from them, and the "-" button
+	// suppresses the view unless OnMinimize is set. The views without the
+	// standard settings set those fields themselves.
+	Prefs *ViewPreferences
+
 	Position *[2]float32
 
 	// ID identifies this view for the pane-wide drag state (ep.viewRepo).
@@ -487,6 +493,13 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 	titleFont := ep.ERAMFont(2)
 	if v.RowSource != nil {
 		ep.applyRowSource(&v, titleFont)
+	}
+	if prefs := v.Prefs; prefs != nil {
+		v.Position = &prefs.Position
+		v.Opaque, v.ShowBorder, v.Brightness = prefs.Opaque, prefs.ShowBorder, prefs.Bright
+		if v.OnMinimize == nil {
+			v.OnMinimize = func() { prefs.Visible = false }
+		}
 	}
 	ep.drawnViews = append(ep.drawnViews, v.ID)
 
