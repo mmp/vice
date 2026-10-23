@@ -167,8 +167,7 @@ func TestSpeedMenuValues(t *testing.T) {
 func TestMenuOpeningCursor(t *testing.T) {
 	type open func(ep *Scope, ctx *scope.Context, trk *sim.Track, host math.Extent2D)
 	openAltimSetMenu := func(ep *Scope, ctx *scope.Context, _ *sim.Track, host math.Extent2D) {
-		ep.popup = ep.makeViewMenu(ctx, "altim-set", 8,
-			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} })(host)
+		ep.openViewMenu(ctx, "altim-set", altimSetMenu{}, host)
 	}
 	for _, tc := range []struct {
 		name string

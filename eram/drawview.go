@@ -60,39 +60,13 @@ type ViewScrollState struct {
 	Offset int
 }
 
-// ViewSelectionState is caller-owned selection tracking for the
-// click-to-delete affordance. Selected is the index of the currently chosen
-// row (into the flat ViewRowSource.Rows slice), or -1 for none. DrawView
-// clears Selected automatically whenever the delete-confirmation popup is
-// no longer the active popup, so dismissal via Escape, click-outside, or
-// popup replacement all do the right thing. Callers must initialize new
-// instances with Selected: -1 (zero value 0 would highlight row 0).
-type ViewSelectionState struct {
-	Selected int
-}
-
-// ViewSelectableItem is one selectable row inside the View body. Extent is
-// the pane-coord hit-test rectangle; Idx is the row's index into the flat
-// ViewRowSource.Rows slice (passed to OnDelete/OnToggle, and resolved
-// through ViewSelectable.Label for the "DELETE <X>" popup display).
-type ViewSelectableItem struct {
-	Extent math.Extent2D
-	Idx    int
-}
-
-// ViewSelectable enables hover outlines and click-to-* on body rows. Either
-// OnDelete (delete-confirmation popup, single selection) or OnToggle
-// (multi-row toggle, no popup) is set, never both. Items is invoked once per
-// frame with the body extent so the caller can derive row extents from their
-// RowList without duplicating geometry math. Label resolves an index to the
-// user-visible string shown in the "DELETE <X>" popup; required when
-// OnDelete is set.
-type ViewSelectable struct {
-	State    *ViewSelectionState
-	Items    func(body math.Extent2D) []ViewSelectableItem
-	Label    func(idx int) string
-	OnDelete func(idx int)
-	OnToggle func(idx int)
+// RowClick is a click on a row of a view, given to the row's OnClick.
+type RowClick struct {
+	View     string // the view's ID
+	Idx      int    // the row's index into ViewRowSource.Rows
+	Extent   math.Extent2D
+	Pos      [2]float32
+	Tertiary bool
 }
 
 // View is the declarative spec. See package overview above.
@@ -122,14 +96,14 @@ type View struct {
 	ShowBorder bool
 	Brightness scope.Brightness
 
-	OnMenu func(host math.Extent2D) popup
+	// Menu is the view's menu, which the title bar's M button displays, or
+	// a TBE in the body of a view without a title bar.
+	Menu viewMenu
 
 	// OnMinimize enables the title-bar "-" button: when non-nil, clicking
 	// "-" invokes the callback. Callers typically set a "Visible" pref to
 	// false (or to a hidden-sentinel value for enum-style visibility).
 	OnMinimize func()
-
-	OnBodyTertiaryMenu func(host math.Extent2D) popup
 
 	// TitleButtons are more buttons in the title bar, laid out right to
 	// left before the "-" button.
@@ -137,17 +111,27 @@ type View struct {
 
 	DrawBody func(extent math.Extent2D, b *ViewBuilders)
 
+	// Scroll, when set, gives the body a scroll bar. applyRowSource sets it
+	// for a RowSource view with a ScrollState.
+	Scroll *ViewScrollConfig
+
 	// RowSource, when set, supplies a column-major list-of-rows body.
 	// DrawView builds per-column layouts, computes Width / BodyHeight, and
-	// wires scroll / selectable. Callers must NOT also set Width,
-	// BodyHeight, or DrawBody when RowSource is set.
+	// wires scroll and the rows' pick areas. Callers must NOT also set
+	// Width, BodyHeight, or DrawBody when RowSource is set.
 	RowSource *ViewRowSource
 
-	// scroll / selectable / tearOffBars are populated by applyRowSource
-	// (or left nil for non-RowSource views, which don't use them).
-	scroll      *ViewScrollConfig
-	selectable  *ViewSelectable
+	// pickRows and tearOffBars are populated by applyRowSource (or left nil
+	// for non-RowSource views, which don't use them).
+	pickRows    func(body math.Extent2D) []rowPickArea
 	tearOffBars func(body math.Extent2D) []tearOffBar
+}
+
+// rowPickArea is a row with an OnClick, as laid out in the body.
+type rowPickArea struct {
+	idx    int // into ViewRowSource.Rows
+	extent math.Extent2D
+	row    Row
 }
 
 // tearOffBar is a gold tear-off bar in a view, a pick on which starts
@@ -219,27 +203,8 @@ type ViewRowSource struct {
 	// bar still renders at a reasonable size.
 	EmptyKeepsColumnWidth bool
 
-	// SelectableState / OnRowDelete wire click-to-delete by row index.
-	// The selection highlight tracks SelectableState.Selected (an index
-	// into Rows). OnRowDelete is called with the row's index; callers
-	// typically use slices.Delete to remove it from a parallel slice.
-	SelectableState *ViewSelectionState
-	OnRowDelete     func(idx int)
-
-	// OnRowToggle, when non-nil, makes rows clickable and invokes the
-	// callback with the row's index into Rows. The caller flips its own
-	// per-row state (typically a []bool) and re-sets Row.Toggled on the
-	// next frame. Mutually exclusive with SelectableState.
-	OnRowToggle func(idx int)
-
 	// HighlightColor is the fill drawn behind rows with Row.Toggled=true.
 	HighlightColor renderer.RGB
-
-	// OnRowExtents, if non-nil, is called after each column's Draw with the
-	// visible-row extents flattened in display order (col 0 rows, then col 1
-	// rows, …) and the row index of the first visible row. Used by CRR
-	// list mode to populate its own click-tracking maps.
-	OnRowExtents func(firstVisible int, extents []math.Extent2D)
 }
 
 // RowSpacing selects the vertical padding rule for a ViewRowSource.
@@ -279,12 +244,6 @@ type Row struct {
 
 	Centered bool
 
-	// ID is the user-visible name used in the "DELETE <ID>" confirmation
-	// popup, resolved per index via ViewSelectable.Label. Independent of
-	// Label so rows whose visible text lives entirely in Body still get a
-	// useful delete-popup string.
-	ID string
-
 	Color renderer.RGB
 
 	// Toggled, when true, renders a RowList.HighlightColor fill behind the
@@ -301,17 +260,15 @@ type Row struct {
 	// the row carries; it is empty for the entry's other rows.
 	TearOff string
 
+	// OnClick, if set, makes the row a pick area: it takes the clicks on
+	// the row, which is outlined while the cursor is over it.
+	OnClick func(c RowClick)
+
 	// AfterDraw is called after the row content is drawn, with the row's
 	// full extent and the baseline position where the body text starts.
 	// Used by callers to add per-row decorations (e.g. AltimSet's altimeter
 	// underline).
 	AfterDraw func(extent math.Extent2D, bodyOrigin [2]float32, b *ViewBuilders)
-}
-
-// empty reports whether the row has no text. An empty row holds a position
-// in the list: it has no badge and can't be selected.
-func (r Row) empty() bool {
-	return r.Label == "" && r.Body == ""
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -403,7 +360,7 @@ func tearOffBadge(titleFont *renderer.Font, b scope.Brightness, torn bool) *Badg
 // bar when Scroll is configured: 2 BodyFont spaces, but at least
 // scrollBarTotalW.
 func scrollReserveWidth(v View, titleFont *renderer.Font) float32 {
-	if v.scroll == nil {
+	if v.Scroll == nil {
 		return 0
 	}
 	font := v.BodyFont
@@ -439,7 +396,7 @@ func titleBarLayout(titleExt math.Extent2D, v View, titleFont *renderer.Font, mo
 	var btns [3]titleButton
 
 	btns[0].label = "M"
-	btns[0].present = v.OnMenu != nil
+	btns[0].present = v.Menu != nil
 	btns[0].rect = math.Extent2D{
 		P0: titleExt.P0,
 		P1: [2]float32{titleExt.P0[0] + viewMButtonWidth(titleFont), titleExt.P1[1]},
@@ -520,8 +477,8 @@ func drawScrollArrow(ld *renderer.ColoredLinesDrawBuilder, centerX, tipY float32
 // DrawView
 
 // DrawView renders a View, processing chrome and clicks in this order:
-// scroll bar → title-bar buttons → title-bar drag → tear-off bars →
-// selectable rows → body-tertiary menu → body-primary drag → finalize
+// scroll bar → title-bar buttons → title-bar drag → tear-off bars → rows
+// with pick areas → body-tertiary menu → body-primary drag → finalize
 // in-progress drag. Each handler consumes its click so Body sees only
 // fall-through events.
 func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer, v View) {
@@ -674,36 +631,22 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 	}
 
 	// Scroll-bar geometry up front so click handling and rendering agree.
-	scrollVisible := v.scroll != nil && v.scroll.MaxOffset > 0 && bodyH > 0
+	scrollVisible := v.Scroll != nil && v.Scroll.MaxOffset > 0 && bodyH > 0
 	var scrollUpRect, scrollDownRect math.Extent2D
 	if scrollVisible {
 		scrollUpRect, scrollDownRect = scrollBarLayout(bodyOuter)
 	}
 
-	// Selectable rows: compute extents up front so click handling and the
-	// hover-outline pass agree. Also forget any stale selection if the
-	// delete popup is no longer the active popup (Escape, click-outside, or
-	// another popup replacing it).
-	var selItems []ViewSelectableItem
-	hoveredSelIdx := -1
-	selectableActive := v.selectable != nil && v.selectable.Items != nil && bodyH > 0
-	if selectableActive {
-		selItems = v.selectable.Items(bodyExtent)
+	// The rows' pick areas and the tear-off bars, laid out up front so that
+	// click handling and the hover outlines agree.
+	var picks []rowPickArea
+	hoveredPick := -1
+	if v.pickRows != nil && bodyH > 0 {
+		picks = v.pickRows(bodyExtent)
 		if mouse != nil {
-			for i, it := range selItems {
-				if it.Extent.Inside(mouse.Pos) {
-					hoveredSelIdx = i
-					break
-				}
-			}
-		}
-		if state := v.selectable.State; state != nil && state.Selected >= 0 {
-			if dp, ok := ep.popup.(*pickAreaPopup); !ok || dp.owner != state {
-				state.Selected = -1
-			}
+			hoveredPick = slices.IndexFunc(picks, func(a rowPickArea) bool { return a.extent.Inside(mouse.Pos) })
 		}
 	}
-
 	var bars []tearOffBar
 	hoveredBar := -1
 	if v.tearOffBars != nil && bodyH > 0 {
@@ -720,8 +663,7 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 	primaryClicked := ep.mousePrimaryClicked(mouse)
 	tertiaryClicked := ep.mouseTertiaryClicked(mouse)
 	hoveredExtra := slices.IndexFunc(tbExtras, func(b titleButton) bool { return b.hovered })
-	popupClick := ep.popup != nil && mouse != nil && ep.popupExtent.Inside(mouse.Pos)
-	if mouse != nil && (primaryClicked || tertiaryClicked) && !popupClick {
+	if mouse != nil && (primaryClicked || tertiaryClicked) && !ep.popupCovers(mouse.Pos) {
 		// Starting a drag dismisses any open pop-up: the user is moving the
 		// view, so the pop-up should no longer pin it (and our re-pinning
 		// would otherwise snap it back to its old X on the next frame).
@@ -733,19 +675,19 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 		}
 		switch {
 		case scrollVisible && scrollUpRect.Inside(mouse.Pos):
-			if v.scroll.State.Offset > 0 {
-				v.scroll.State.Offset--
+			if v.Scroll.State.Offset > 0 {
+				v.Scroll.State.Offset--
 			}
 			ep.consumeMouseClick(mouse)
 
 		case scrollVisible && scrollDownRect.Inside(mouse.Pos):
-			if v.scroll.State.Offset < v.scroll.MaxOffset {
-				v.scroll.State.Offset++
+			if v.Scroll.State.Offset < v.Scroll.MaxOffset {
+				v.Scroll.State.Offset++
 			}
 			ep.consumeMouseClick(mouse)
 
-		case hasTitle && v.OnMenu != nil && tb[0].hovered:
-			ep.popup = v.OnMenu(outer)
+		case hasTitle && v.Menu != nil && tb[0].hovered:
+			ep.openViewMenu(ctx, v.ID, v.Menu, outer)
 			ep.consumeMouseClick(mouse)
 
 		case hasTitle && v.OnMinimize != nil && tb[2].hovered:
@@ -764,19 +706,14 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 			ep.startEntryDrag(ctx, bars[hoveredBar].entry, bars[hoveredBar].origin)
 			ep.consumeMouseClick(mouse)
 
-		case selectableActive && primaryClicked && hoveredSelIdx >= 0:
-			item := selItems[hoveredSelIdx]
-			if v.selectable.OnToggle != nil {
-				v.selectable.OnToggle(item.Idx)
-			} else {
-				v.selectable.State.Selected = item.Idx
-				ep.popup = ep.openDeleteEntryPopup(ctx, item, v.selectable, titleFont)
-			}
-			ep.clearMousePrimaryConsumed(mouse)
+		case hoveredPick >= 0:
+			a := picks[hoveredPick]
+			a.row.OnClick(RowClick{View: v.ID, Idx: a.idx, Extent: a.extent, Pos: mouse.Pos, Tertiary: tertiaryClicked})
+			ep.consumeMouseClick(mouse)
 
-		case !hasTitle && v.OnBodyTertiaryMenu != nil && tertiaryClicked &&
+		case !hasTitle && v.Menu != nil && tertiaryClicked &&
 			ep.viewRepo.activeID == "" && bodyExtent.Inside(mouse.Pos):
-			ep.popup = v.OnBodyTertiaryMenu(outer)
+			ep.openViewMenu(ctx, v.ID, v.Menu, outer)
 			ep.clearMouseTertiaryConsumed(mouse)
 
 		case !hasTitle && primaryClicked && bodyExtent.Inside(mouse.Pos) && ep.viewRepo.activeID == "":
@@ -814,13 +751,8 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 		v.DrawBody(bodyExtent, &ViewBuilders{Trid: trid, Ld: ld, Td: td})
 	}
 
-	// Hover outline for selectable rows. Skip when the row is also selected
-	// — its highlight fill carries the visual instead.
-	if selectableActive && hoveredSelIdx >= 0 {
-		hovered := selItems[hoveredSelIdx]
-		if state := v.selectable.State; state == nil || hovered.Idx != state.Selected {
-			ld.AddLineLoop(colors.view.hoveredOutline, hovered.Extent.Expand(1).Corners())
-		}
+	if hoveredPick >= 0 {
+		ld.AddLineLoop(colors.view.hoveredOutline, picks[hoveredPick].extent.Expand(1).Corners())
 	}
 	if hoveredBar >= 0 {
 		ld.AddLineLoop(colors.view.hoveredOutline, bars[hoveredBar].extent.Expand(1).Corners())
@@ -849,15 +781,12 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 ///////////////////////////////////////////////////////////////////////////
 // RowSource expansion
 
-// applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, scroll, and
-// selectable on v from v.RowSource so the rest of DrawView can treat the
-// view as if the caller had wired those fields up directly.
+// applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, Scroll, and
+// the rows' pick areas on v from v.RowSource so the rest of DrawView can
+// treat the view as if the caller had wired those fields up directly.
 func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 	rs := v.RowSource
 
-	if rs.SelectableState != nil && rs.OnRowToggle != nil {
-		panic("ViewRowSource: SelectableState and OnRowToggle are mutually exclusive")
-	}
 	if rs.VisibleRows < 1 || rs.MaxCols < 1 {
 		panic(fmt.Sprintf("ViewRowSource %q: VisibleRows (%d) and MaxCols (%d) must both be at least 1; "+
 			"a zero here usually means the view's preferences were never initialized",
@@ -907,9 +836,10 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 		cols[c] = &rl
 	}
 	cols[0].SkipLines = skipLines
+	// The row whose pop-up pick area is displayed is drawn selected.
 	selectedIdx := -1
-	if rs.SelectableState != nil {
-		selectedIdx = rs.SelectableState.Selected
+	if picked, ok := ep.pickedRow(); ok && picked.View == v.ID {
+		selectedIdx = picked.Idx
 	}
 	for i, r := range rows[startIdx:] {
 		col := cols[min(i/rs.VisibleRows, actualCols-1)]
@@ -949,57 +879,27 @@ func (ep *Scope) applyRowSource(v *View, titleFont *renderer.Font) {
 	}
 
 	v.DrawBody = func(body math.Extent2D, b *ViewBuilders) {
-		var allExtents []math.Extent2D
 		for c, col := range cols {
-			ext := col.Draw(colExt(c, body), b)
-			if rs.OnRowExtents != nil {
-				allExtents = append(allExtents, ext...)
-			}
-		}
-		if rs.OnRowExtents != nil {
-			rs.OnRowExtents(startIdx, allExtents)
+			col.Draw(colExt(c, body), b)
 		}
 	}
 
 	if rs.ScrollState != nil {
-		v.scroll = &ViewScrollConfig{State: rs.ScrollState, MaxOffset: maxOffset}
+		v.Scroll = &ViewScrollConfig{State: rs.ScrollState, MaxOffset: maxOffset}
 	}
 
-	if rs.SelectableState != nil || rs.OnRowToggle != nil {
-		// For toggle (full-width highlight bar), hit-test the full row so the
-		// hover outline matches the fill. For delete-confirm, hit-test tight
-		// ink bounds since the highlight is a tight inverted-text box.
-		extentsFn := (*RowList).TextExtents
-		if rs.OnRowToggle != nil {
-			extentsFn = (*RowList).RowExtents
-		}
-		// Rows in column c are rs.Rows[startIdx + c*VisibleRows + i] — the
-		// closure rebuilds that absolute index so callbacks can index a flat
-		// per-row state slice directly.
-		items := func(body math.Extent2D) []ViewSelectableItem {
-			var items []ViewSelectableItem
-			for c, col := range cols {
-				colBase := startIdx + c*rs.VisibleRows
-				for i, e := range extentsFn(col, colExt(c, body)) {
-					// Headers and empty rows can't be selected.
-					if r := rs.Rows[colBase+i]; r.empty() || r.Centered {
-						continue
-					}
-					items = append(items, ViewSelectableItem{
-						Extent: e,
-						Idx:    colBase + i,
-					})
+	// The rows in column c are rs.Rows[startIdx + c*VisibleRows + i].
+	v.pickRows = func(body math.Extent2D) []rowPickArea {
+		var picks []rowPickArea
+		for c, col := range cols {
+			colBase := startIdx + c*rs.VisibleRows
+			col.iterRows(colExt(c, body), func(i int, _ measuredRow, rowExt math.Extent2D) {
+				if r := col.Rows[i]; r.OnClick != nil {
+					picks = append(picks, rowPickArea{idx: colBase + i, extent: rowExt, row: r})
 				}
-			}
-			return items
+			})
 		}
-		v.selectable = &ViewSelectable{
-			State:    rs.SelectableState,
-			Items:    items,
-			Label:    func(idx int) string { return rs.Rows[idx].ID },
-			OnDelete: rs.OnRowDelete,
-			OnToggle: rs.OnRowToggle,
-		}
+		return picks
 	}
 
 	if bar != nil {
@@ -1273,53 +1173,9 @@ func (l *RowList) inkUnionOf(r Row, m measuredRow, labelX, bodyX, baseY float32)
 	return inkUnion
 }
 
-// RowExtents returns one Extent2D per visible row: the full row rectangle
-// (full body width × row height). Used by full-width row affordances (e.g.
-// check list toggle) where the hit-test and hover outline should match the
-// full-width highlight bar drawn behind toggled rows.
-func (l *RowList) RowExtents(body math.Extent2D) []math.Extent2D {
-	if l.measured == nil {
-		panic("RowList.RowExtents: Measure must be called first")
-	}
-	extents := make([]math.Extent2D, l.visibleCount)
-	l.iterRows(body, func(i int, _ measuredRow, ext math.Extent2D) {
-		extents[i] = ext
-	})
-	return extents
-}
-
-// TextExtents returns one Extent2D per visible row: a tight box around the
-// rendered text (expanded by 1 px) for normal rows, or the full row extent
-// for spacers and centered headers. Used for selection / hover hit-testing.
-func (l *RowList) TextExtents(body math.Extent2D) []math.Extent2D {
-	if l.measured == nil {
-		panic("RowList.TextExtents: Measure must be called first")
-	}
-	by := cellHeight(l.Font)
-	lineSlack := (l.LineHeight - by) / 2
-	extents := make([]math.Extent2D, l.visibleCount)
-	l.iterRows(body, func(i int, m measuredRow, fullExt math.Extent2D) {
-		r := l.Rows[i]
-		if r.SpacerHeight > 0 || r.Centered {
-			extents[i] = fullExt
-			return
-		}
-		labelX, bodyX := l.rowContentLayout(r, body)
-		baseY := fullExt.P1[1] - l.TopPad - lineSlack
-		ink := l.inkUnionOf(r, m, labelX, bodyX, baseY)
-		if ink.IsEmpty() {
-			extents[i] = fullExt
-		} else {
-			extents[i] = ink.Expand(1)
-		}
-	})
-	return extents
-}
-
-// Draw renders the visible rows into body and returns per-rendered-row
-// extents (P0 = bottom-left, P1 = top-right) for click hit-testing.
-// Measure must have been called first.
-func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
+// Draw renders the visible rows into body. Measure must have been called
+// first.
+func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) {
 	if l.measured == nil {
 		panic("RowList.Draw: Measure must be called first")
 	}
@@ -1327,10 +1183,8 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 	// lineSlack centers each text line in its line cell so the rendered
 	// text has equal slack above and below.
 	lineSlack := (l.LineHeight - by) / 2
-	extents := make([]math.Extent2D, l.visibleCount)
 
 	l.iterRows(body, func(i int, m measuredRow, rowExt math.Extent2D) {
-		extents[i] = rowExt
 		r := l.Rows[i]
 		if r.SpacerHeight > 0 {
 			return
@@ -1380,7 +1234,6 @@ func (l *RowList) Draw(body math.Extent2D, b *ViewBuilders) []math.Extent2D {
 			r.AfterDraw(rowExt, [2]float32{bodyX, baseY}, b)
 		}
 	})
-	return extents
 }
 
 // badgeExtent returns where a badge goes on the row with extent rowExt:
@@ -1435,42 +1288,54 @@ func wrapWords(text string, firstChars, contChars int) []string {
 
 // pickAreaPopup is a pop-up pick area: a single pick area displayed beside
 // what was clicked, such as the DELETE pop-up beside a view's entry, which
-// performs its function when it is picked. Any click closes it. Its owner
-// is the selection state of the view that opened it, if any; DrawView
-// checks identity to know when to clear the row highlight after dismissal.
+// performs its function when it is picked. Any click closes it. picked is
+// the view's row it was opened from, if it was, which is drawn selected
+// while it is displayed.
 type pickAreaPopup struct {
 	origin [2]float32
 	width  float32
 	height float32
 	text   string
-	owner  *ViewSelectionState
+	picked *RowClick
 	font   *renderer.Font
 	onPick func()
 }
 
-// openDeleteEntryPopup opens the DELETE pop-up beside a view's selectable
-// row.
-func (ep *Scope) openDeleteEntryPopup(ctx *scope.Context, item ViewSelectableItem,
-	sel *ViewSelectable, font *renderer.Font) *pickAreaPopup {
-	label := ""
-	if sel.Label != nil {
-		label = sel.Label(item.Idx)
-	}
-	p := ep.openPickAreaPopup(ctx, item.Extent, "DELETE "+label, font, func() {
-		if sel.OnDelete != nil {
-			sel.OnDelete(item.Idx)
-		}
-	})
-	p.owner = sel.State
-	return p
+// rowPicker is a pop-up that may have been opened from a view's row, which
+// it reports.
+type rowPicker interface {
+	pickedRow() (RowClick, bool)
 }
 
-// openPickAreaPopup positions a pickAreaPopup beside the extent of what was
-// clicked, flipping left if it would otherwise overflow the pane, and warps
-// the cursor to its center so the user can pick it without moving the
+func (d *pickAreaPopup) pickedRow() (RowClick, bool) {
+	if d.picked == nil {
+		return RowClick{}, false
+	}
+	return *d.picked, true
+}
+
+// pickedRow returns the view's row that the displayed pop-up was opened
+// from, if it was opened from one.
+func (ep *Scope) pickedRow() (RowClick, bool) {
+	if rp, ok := ep.popup.(rowPicker); ok {
+		return rp.pickedRow()
+	}
+	return RowClick{}, false
+}
+
+// openRowPickArea displays a pop-up pick area beside a view's row, which
+// is drawn selected while the pop-up is displayed.
+func (ep *Scope) openRowPickArea(ctx *scope.Context, c RowClick, text string, onPick func()) {
+	p := ep.openPickAreaPopup(ctx, c.Extent, text, onPick)
+	p.picked = &c
+}
+
+// openPickAreaPopup displays a pop-up pick area beside the extent of what
+// was clicked, flipping left if it would otherwise overflow the pane, and
+// warps the cursor to its center so the user can pick it without moving the
 // mouse.
-func (ep *Scope) openPickAreaPopup(ctx *scope.Context, beside math.Extent2D, text string,
-	font *renderer.Font, onPick func()) *pickAreaPopup {
+func (ep *Scope) openPickAreaPopup(ctx *scope.Context, beside math.Extent2D, text string, onPick func()) *pickAreaPopup {
+	font := ep.ERAMFont(2)
 	pad := float32(8)
 	width := float32(len(text))*charWidth(font) + 2*pad
 	height := cellHeight(font) + pad
@@ -1490,7 +1355,7 @@ func (ep *Scope) openPickAreaPopup(ctx *scope.Context, beside math.Extent2D, tex
 
 	ctx.SetMousePosition([2]float32{origin[0] + width/2, origin[1] - height/2})
 
-	return &pickAreaPopup{
+	p := &pickAreaPopup{
 		origin: origin,
 		width:  width,
 		height: height,
@@ -1498,6 +1363,8 @@ func (ep *Scope) openPickAreaPopup(ctx *scope.Context, beside math.Extent2D, tex
 		font:   font,
 		onPick: onPick,
 	}
+	ep.popup = p
+	return p
 }
 
 func (d *pickAreaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {

@@ -335,8 +335,15 @@ func (ep *Scope) drawConflictAlertView(ctx *scope.Context, transforms scope.Tran
 		return
 	}
 
-	rows := util.MapSlice(ep.caPairs, func(p CAPair) Row { return Row{Label: ep.conflictAlertEntry(ctx, p)} })
-	var extents []math.Extent2D
+	indicatorWidth := titleBarButtonPad + 2*charWidth(ep.ERAMFont(ps.ConflictAlert.Font))
+	var rows []Row
+	for i, p := range ep.caPairs {
+		rows = append(rows, Row{Label: ep.conflictAlertEntry(ctx, p), OnClick: func(c RowClick) {
+			if c.Tertiary {
+				ep.caPairs[i].Suppressed = c.Pos[0] > c.Extent.P0[0]+indicatorWidth
+			}
+		}})
+	}
 	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.ConflictAlert.Position,
 		ID:         "conflict-alert",
@@ -344,8 +351,7 @@ func (ep *Scope) drawConflictAlertView(ctx *scope.Context, transforms scope.Tran
 		Opaque:     ps.ConflictAlert.Opaque,
 		ShowBorder: ps.ConflictAlert.ShowBorder,
 		Brightness: ps.ConflictAlert.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "conflict-alert", 4,
-			func(pb popupBase) popup { return &conflictAlertPopup{popupBase: pb} }),
+		Menu:       conflictAlertMenu{},
 		// The view can only be suppressed while it is empty.
 		OnMinimize: func() { ps.ConflictAlert.Visible = len(ep.caPairs) > 0 },
 		RowSource: &ViewRowSource{
@@ -356,24 +362,8 @@ func (ep *Scope) drawConflictAlertView(ctx *scope.Context, transforms scope.Tran
 			VisibleRows:           max(1, len(rows)),
 			RowSpacing:            RowSpacingCompact,
 			EmptyKeepsColumnWidth: true,
-			OnRowExtents: func(_ int, e []math.Extent2D) {
-				extents = e
-			},
 		},
 	})
-
-	mouse := ctx.Mouse
-	if !ep.mouseTertiaryClicked(mouse) {
-		return
-	}
-	indicatorWidth := titleBarButtonPad + 2*charWidth(ep.ERAMFont(ps.ConflictAlert.Font))
-	for i, e := range extents {
-		if e.Inside(mouse.Pos) {
-			ep.caPairs[i].Suppressed = mouse.Pos[0] > e.P0[0]+indicatorWidth
-			ep.clearMouseTertiaryConsumed(mouse)
-			return
-		}
-	}
 }
 
 // conflictAlertEntry returns a pair's entry in the Conflict Alert view:
@@ -393,23 +383,19 @@ func (ep *Scope) conflictAlertEntry(ctx *scope.Context, p CAPair) string {
 	return fmt.Sprintf("%s %-12s %s", util.Select(p.Suppressed, "X", " "), acids[0], acids[1])
 }
 
-type conflictAlertPopup struct {
-	popupBase
-}
+// conflictAlertMenu is the Conflict Alert view's menu.
+type conflictAlertMenu struct{}
 
-func (c *conflictAlertPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (conflictAlertMenu) title() string { return "CA" }
+
+func (conflictAlertMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-	ep.DrawERAMMenu(ctx, transforms, cb, c.origin, MenuConfig{
-		Title: "CA",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows: []MenuItem{
-			ep.makeBooleanMenuItem(&ps.ConflictAlert.Opaque, "O", "T"),
-			ep.makeToggleMenuItem(&ps.ConflictAlert.ShowBorder, "BORDER"),
-			makeIntMenuItem(ep, &ps.ConflictAlert.Font, "FONT", 1, 3, 1),
-			makeIntMenuItem(ep, &ps.ConflictAlert.Bright, "BRIGHT", 0, 100, 2),
-		},
-	})
+	return []MenuItem{
+		ep.makeBooleanMenuItem(&ps.ConflictAlert.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.ConflictAlert.ShowBorder, "BORDER"),
+		makeIntMenuItem(ep, &ps.ConflictAlert.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.ConflictAlert.Bright, "BRIGHT", 0, 100, 2),
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -594,27 +580,28 @@ func (ep *Scope) drawGroupSupView(ctx *scope.Context, transforms scope.Transform
 		return
 	}
 
-	// entry is the group and, for a flight's row, the flight that each row
-	// shows.
-	type entry struct {
-		group int
-		acid  sim.ACID
-	}
 	sector := sectorDisplayID(ctx, ctx.UserPrimaryPosition())
 	var rows []Row
-	var entries []entry
 	for _, g := range ep.SuppressionGroups {
-		rows = append(rows, Row{Label: fmt.Sprintf("%02d/%s", g.ID, sector)})
-		entries = append(entries, entry{group: g.ID})
+		rows = append(rows, Row{Label: fmt.Sprintf("%02d/%s", g.ID, sector), OnClick: func(c RowClick) {
+			if c.Tertiary {
+				ep.openRowPickArea(ctx, c, "DELETE", func() { ep.unsubscribeSuppressionGroup(g.ID) })
+			} else if sg := ep.suppressionGroup(g.ID); sg != nil {
+				sg.ShowFlights = !sg.ShowFlights
+			}
+		}})
 		if g.ShowFlights {
 			for _, acid := range g.Flights {
-				rows = append(rows, Row{Label: "   " + string(acid)})
-				entries = append(entries, entry{group: g.ID, acid: acid})
+				rows = append(rows, Row{Label: "   " + string(acid), OnClick: func(c RowClick) {
+					ep.openRowPickArea(ctx, c, "DELETE "+string(acid), func() {
+						ep.applyCommandStatus(ctx, CommandStatus{}, ep.deleteGroupFlight(ctx, g.ID, acid))
+					})
+				}})
 			}
 		}
 	}
 	for len(rows) > 0 && len(rows) < gs.Lines {
-		rows, entries = append(rows, Row{}), append(entries, entry{})
+		rows = append(rows, Row{})
 	}
 
 	// The entries are at least as wide as the title bar, so that they
@@ -622,7 +609,6 @@ func (ep *Scope) drawGroupSupView(ctx *scope.Context, transforms scope.Transform
 	const title = "GROUP SUP"
 	contentChars := util.ReduceSlice(rows, len(title)+4, func(r Row, n int) int { return max(n, len(r.Label)) })
 
-	var extents []math.Extent2D
 	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &gs.Position,
 		ID:         "group-sup",
@@ -630,8 +616,7 @@ func (ep *Scope) drawGroupSupView(ctx *scope.Context, transforms scope.Transform
 		Opaque:     gs.Opaque,
 		ShowBorder: gs.ShowBorder,
 		Brightness: gs.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "group-sup", 5,
-			func(pb popupBase) popup { return &groupSupPopup{popupBase: pb} }),
+		Menu:       &groupSupMenu{},
 		OnMinimize: func() { gs.Visible = len(ep.SuppressionGroups) > 0 },
 		RowSource: &ViewRowSource{
 			Rows:                    rows,
@@ -641,47 +626,21 @@ func (ep *Scope) drawGroupSupView(ctx *scope.Context, transforms scope.Transform
 			VisibleRows:             max(1, len(rows)),
 			RowSpacing:              RowSpacingCompact,
 			CenterColumnsInTitleBar: true,
-			OnRowExtents:            func(_ int, e []math.Extent2D) { extents = e },
 		},
 	})
-
-	mouse := ctx.Mouse
-	primary, tertiary := ep.mousePrimaryClicked(mouse), ep.mouseTertiaryClicked(mouse)
-	if (!primary && !tertiary) || (ep.popup != nil && ep.popupExtent.Inside(mouse.Pos)) {
-		return
-	}
-	font := ep.ERAMFont(2)
-	for i, e := range extents {
-		en := entries[i]
-		if en.group == 0 || !e.Inside(mouse.Pos) {
-			continue
-		}
-		switch {
-		case en.acid != "":
-			ep.popup = ep.openPickAreaPopup(ctx, e, "DELETE "+string(en.acid), font, func() {
-				ep.applyCommandStatus(ctx, CommandStatus{}, ep.deleteGroupFlight(ctx, en.group, en.acid))
-			})
-		case tertiary:
-			ep.popup = ep.openPickAreaPopup(ctx, e, "DELETE", font, func() { ep.unsubscribeSuppressionGroup(en.group) })
-		default:
-			g := ep.suppressionGroup(en.group)
-			g.ShowFlights = !g.ShowFlights
-		}
-		ep.consumeMouseClick(mouse)
-		return
-	}
 }
 
-// groupSupPopup is the view's menu (figure 4-187). Typing while it is
+// groupSupMenu is the view's menu (figure 4-187). Typing while it is
 // displayed replaces it with the Group Suppression Input Box, whose
 // message is that of an SG command without the SG (figure 4-188).
-type groupSupPopup struct {
-	popupBase
+type groupSupMenu struct {
 	typing bool
 	buf    string
 }
 
-func (p *groupSupPopup) handleKeyboard(ep *Scope, ctx *scope.Context) bool {
+func (*groupSupMenu) title() string { return "GS" }
+
+func (p *groupSupMenu) handleKeyboard(ep *Scope, ctx *scope.Context) bool {
 	for _, r := range strings.ToUpper(ctx.Keyboard.Input) {
 		if r >= ' ' && r <= '~' {
 			p.typing = true
@@ -710,22 +669,16 @@ func (p *groupSupPopup) handleKeyboard(ep *Scope, ctx *scope.Context) bool {
 	return true
 }
 
-func (p *groupSupPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (p *groupSupMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	gs := &ep.currentPrefs().GroupSup
-	rows := []MenuItem{{Input: &MenuInput{Buf: &p.buf}}}
-	if !p.typing {
-		rows = []MenuItem{
-			ep.makeBooleanMenuItem(&gs.Opaque, "O", "T"),
-			ep.makeToggleMenuItem(&gs.ShowBorder, "BORDER"),
-			makeIntMenuItem(ep, &gs.Lines, "LINES", 3, 20, 1),
-			makeIntMenuItem(ep, &gs.Font, "FONT", 1, 3, 1),
-			makeIntMenuItem(ep, &gs.Bright, "BRIGHT", 0, 100, 2),
-		}
+	if p.typing {
+		return []MenuItem{{Input: &MenuInput{Buf: &p.buf}}}
 	}
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
-		Title: "GS",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	})
+	return []MenuItem{
+		ep.makeBooleanMenuItem(&gs.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&gs.ShowBorder, "BORDER"),
+		makeIntMenuItem(ep, &gs.Lines, "LINES", 3, 20, 1),
+		makeIntMenuItem(ep, &gs.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &gs.Bright, "BRIGHT", 0, 100, 2),
+	}
 }

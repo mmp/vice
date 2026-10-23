@@ -595,8 +595,7 @@ func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope
 		Opaque:     true,
 		ShowBorder: true,
 		Brightness: ps.Brightness.Border,
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "mca", 4,
-			func(pb popupBase) popup { return &mcaPopup{popupBase: pb} }),
+		Menu:       mcaMenu{},
 		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			// body.P1 = top-right (top of input); body.P0 = bottom-left (bottom of feedback).
 			seamY := body.P1[1] - inputH
@@ -626,28 +625,19 @@ func (ep *Scope) drawMessageCompositionArea(ctx *scope.Context, transforms scope
 	ps.MCA.Position = [2]float32{viewPos[0], viewPos[1] - inputH}
 }
 
-// mcaPopup is the configuration menu for the Message Composition Area.
-type mcaPopup struct {
-	popupBase
-}
+// mcaMenu is the Message Composition Area's menu.
+type mcaMenu struct{}
 
-func (m *mcaPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (mcaMenu) title() string { return "MCA" }
+
+func (mcaMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
+	return []MenuItem{
 		makeIntMenuItem(ep, &ps.MCA.PALines, "PA LINES", 2, 50, 1),
 		makeWidthMenuItem(ep, &ps.MCA.Width, 30, 50),
 		makeIntMenuItem(ep, &ps.MCA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.MCA.Bright, "BRIGHT", 0, 100, 2),
 	}
-
-	cfg := MenuConfig{
-		Title: "MCA",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-	ep.DrawERAMMenu(ctx, transforms, cb, m.origin, cfg)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -694,8 +684,7 @@ func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transform
 		Opaque:     true,
 		ShowBorder: true,
 		Brightness: ps.RA.Bright,
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "ra", 4,
-			func(pb popupBase) popup { return &raPopup{popupBase: pb} }),
+		Menu:       raMenu{},
 		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			topLeft := [2]float32{body.P0[0] + 2, body.P1[1] - 2}
 			b.Td.AddText(shown, topLeft,
@@ -709,34 +698,22 @@ func (ep *Scope) drawResponseArea(ctx *scope.Context, transforms scope.Transform
 		},
 	}
 	if maxOffset > 0 {
-		v.scroll = &ViewScrollConfig{State: &ep.raScroll, MaxOffset: maxOffset}
+		v.Scroll = &ViewScrollConfig{State: &ep.raScroll, MaxOffset: maxOffset}
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 }
 
-// raPopup is the configuration menu for the Response Area.
-type raPopup struct {
-	popupBase
-}
+// raMenu is the Response Area's menu.
+type raMenu struct{}
 
-func (r *raPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (raMenu) title() string { return "RA" }
+
+func (raMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
+	return []MenuItem{
 		makeWidthMenuItem(ep, &ps.RA.Width, 25, 50),
 		makeIntMenuItem(ep, &ps.RA.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.RA.Bright, "BRIGHT", 0, 100, 2),
-		{Label: "CLEAR", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text, OnClick: func(_ MenuClickType) bool {
-			ep.responseArea = ""
-			return false
-		}},
+		makeActionMenuItem("CLEAR", func(MenuClickType) { ep.responseArea = "" }),
 	}
-
-	cfg := MenuConfig{
-		Title: "RA",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-	ep.DrawERAMMenu(ctx, transforms, cb, r.origin, cfg)
 }

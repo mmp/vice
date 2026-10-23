@@ -45,58 +45,89 @@ type viewPopupPlacement struct {
 	PinX   float32
 }
 
-// toPopupBase fills a popupBase from this placement plus the host view's ID.
-// Removes the identical 4-field struct literal that every popup constructor
-// used to write inline.
-func (pl viewPopupPlacement) toPopupBase(viewID string) popupBase {
-	return popupBase{
-		origin: pl.Origin,
-		viewID: viewID,
-		anchor: pl.Anchor,
-		pinX:   pl.PinX,
-	}
-}
-
 // viewPopupWidth and viewPopupItemH are the canonical dimensions of every
 // view-spawned configuration menu: a fixed 150 px width and a 18 px row
-// height. Both DrawERAMMenu and makeViewMenu use these; callers don't pick
+// height. Both DrawERAMMenu and openViewMenu use these; callers don't pick
 // either value.
 const (
 	viewPopupWidth = float32(150)
 	viewPopupItemH = float32(18)
 )
 
-// makeViewMenu builds the standard View.OnMenu closure: don't open a new
-// popup if one is already open for this view, otherwise place a new one
-// using OpenPopupAt and wrap its placement into a typed popup. rowCount is
-// the number of content rows below the title bar — the helper adds 1 for
-// the title bar and multiplies by viewPopupItemH to get the popup height.
-func (ep *Scope) makeViewMenu(ctx *scope.Context, viewID string, rowCount int, wrap func(popupBase) popup) func(host math.Extent2D) popup {
-	return func(host math.Extent2D) popup {
-		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
-			if id, _, _ := vap.viewAnchor(); id == viewID {
-				return nil
-			}
-		}
-		popupH := float32(rowCount+1) * viewPopupItemH
-		pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]},
-			viewPopupWidth, popupH, ep.ERAMFont(2), host)
-		return wrap(pl.toPopupBase(viewID))
-	}
+// viewMenu is a view's menu: its title and its rows, which are built again
+// each frame. A menu that takes keystrokes also implements keyboardMenu.
+type viewMenu interface {
+	title() string
+	rows(ep *Scope, ctx *scope.Context) []MenuItem
 }
 
-// popupBase is embedded by every view-spawned pop-up. It carries the
-// placement info needed by DrawView to keep the host view's pinned edge
-// flush with the pop-up as the view resizes.
-type popupBase struct {
+// keyboardMenu is a view menu that takes keyboard input while it is
+// displayed, as the Group Suppression view's does; handleKeyboard returns
+// true if it took the input.
+type keyboardMenu interface {
+	handleKeyboard(ep *Scope, ctx *scope.Context) bool
+}
+
+// viewMenuPopup displays a view's menu beside the view. It carries the
+// placement that DrawView uses to keep the view's pinned edge flush with
+// the menu as the view resizes.
+type viewMenuPopup struct {
+	menu   viewMenu
 	origin [2]float32
 	viewID string
 	anchor popupAnchorSide
 	pinX   float32
+	drawn  bool
 }
 
-func (p popupBase) viewAnchor() (string, popupAnchorSide, float32) {
+// openViewMenu displays a view's menu beside the view, or closes it if it
+// is displayed already.
+func (ep *Scope) openViewMenu(ctx *scope.Context, viewID string, menu viewMenu, host math.Extent2D) {
+	if ep.viewMenuDisplayed(viewID) {
+		ep.popup = nil
+		return
+	}
+	popupH := float32(len(menu.rows(ep, ctx))+1) * viewPopupItemH
+	pl := ep.OpenPopupAt(ctx, [2]float32{host.P1[0], host.P1[1]}, viewPopupWidth, popupH, ep.ERAMFont(2), host)
+	ep.popup = &viewMenuPopup{menu: menu, origin: pl.Origin, viewID: viewID, anchor: pl.Anchor, pinX: pl.PinX}
+}
+
+// viewMenuDisplayed reports whether the given view's menu is displayed.
+func (ep *Scope) viewMenuDisplayed(viewID string) bool {
+	if vap, ok := ep.popup.(viewAnchoredPopup); ok {
+		id, _, _ := vap.viewAnchor()
+		return id == viewID
+	}
+	return false
+}
+
+func (p *viewMenuPopup) viewAnchor() (string, popupAnchorSide, float32) {
 	return p.viewID, p.anchor, p.pinX
+}
+
+// draw draws the menu. A row places the cursor on itself
+// (MenuItem.PlaceCursor) only on the menu's first draw.
+func (p *viewMenuPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+	rows := p.menu.rows(ep, ctx)
+	if p.drawn {
+		for i := range rows {
+			rows[i].PlaceCursor = false
+		}
+	}
+	p.drawn = true
+	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
+		Title: p.menu.title(),
+		Width: viewPopupWidth,
+		Font:  ep.ERAMFont(2),
+		Rows:  rows,
+	})
+}
+
+func (p *viewMenuPopup) handleKeyboard(ep *Scope, ctx *scope.Context) bool {
+	if m, ok := p.menu.(keyboardMenu); ok {
+		return m.handleKeyboard(ep, ctx)
+	}
+	return false
 }
 
 // cursorPlacement records whether a menu has been drawn, so that it places
@@ -128,6 +159,11 @@ type viewAnchoredPopup interface {
 type keyboardPopup interface {
 	popup
 	handleKeyboard(ep *Scope, ctx *scope.Context) bool
+}
+
+// popupCovers reports whether the displayed pop-up, if any, is over p.
+func (ep *Scope) popupCovers(p [2]float32) bool {
+	return ep.popup != nil && ep.popupExtent.Inside(p)
 }
 
 // MenuClickType distinguishes primary from tertiary clicks.
@@ -167,6 +203,10 @@ type MenuItem struct {
 	// If Input is non-nil, this row renders as a text input area. Keyboard
 	// handling is the popup's responsibility (see keyboardPopup).
 	Input *MenuInput
+
+	// If Custom is non-nil, this row draws its own content (e.g. the CRR
+	// menu's color swatches) and takes its own clicks.
+	Custom *MenuCustomRow
 
 	// PlaceCursor moves the cursor onto a static row when it is drawn.
 	// Menus set it on their first draw to start the cursor on a pick area
@@ -236,6 +276,12 @@ type MenuGrid struct {
 // it from keyboard input.
 type MenuInput struct {
 	Buf *string
+}
+
+// MenuCustomRow is a row of custom content. Draw draws it with its top left
+// at cursor and the menu's width, taking any click, and returns its height.
+type MenuCustomRow struct {
+	Draw func(cursor [2]float32, width float32, b *ViewBuilders, mouse *platform.MouseState) float32
 }
 
 // ScrollState is caller-owned persistent state for a scrollable list.
@@ -365,6 +411,20 @@ func menuToolbarClick(click MenuClickType) toolbarClick {
 	return c
 }
 
+// makeActionMenuItem builds a black row that performs an action when it is
+// clicked.
+func makeActionMenuItem(label string, onClick func(MenuClickType)) MenuItem {
+	return MenuItem{
+		Label:   label,
+		BgColor: colors.popup.backgroundBlack,
+		Color:   colors.popup.text,
+		OnClick: func(click MenuClickType) bool {
+			onClick(click)
+			return false
+		},
+	}
+}
+
 // MenuConfig holds the full configuration for a menu drawn by DrawERAMMenu.
 type MenuConfig struct {
 	Title              string
@@ -376,14 +436,6 @@ type MenuConfig struct {
 	TitleFont          *renderer.Font // title bar font; nil = same as Font
 	ItemHeight         float32        // 0 = default 18px
 	Rows               []MenuItem
-
-	// Escape hatch for custom drawn content (e.g. CRR color swatches).
-	// Returns the new cursor position after drawing.
-	CustomContent func(cursor [2]float32, width float32,
-		trid *renderer.ColoredTrianglesDrawBuilder,
-		ld *renderer.ColoredLinesDrawBuilder,
-		td *renderer.TextDrawBuilder,
-		mouse *platform.MouseState) [2]float32
 }
 
 // OpenPopupAt clamps originGuess so a menu with the given dimensions stays on
@@ -617,6 +669,10 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 		} else if item.Input != nil {
 			// Text input row
 			cursor = ep.drawMenuInputRow(cursor, width, itemH, font, item.Input, trid, td, &result.RowExtents[i])
+		} else if item.Custom != nil {
+			h := item.Custom.Draw(cursor, width, &ViewBuilders{Trid: trid, Ld: ld, Td: td}, mouse)
+			result.RowExtents[i] = math.Extent2D{P0: [2]float32{cursor[0], cursor[1] - h}, P1: [2]float32{cursor[0] + width, cursor[1]}}
+			cursor[1] -= h
 		} else {
 			// Normal static row
 			rp0 := cursor
@@ -692,11 +748,6 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 		ctx.SetMousePosition(cursorTarget.Value)
 	}
 
-	// Custom content
-	if cfg.CustomContent != nil {
-		cursor = cfg.CustomContent(cursor, width, trid, ld, td, mouse)
-	}
-
 	// Border
 	menuP0 := origin
 	menuP1 := [2]float32{origin[0] + width, origin[1]}
@@ -736,7 +787,7 @@ func (ep *Scope) DrawERAMMenu(ctx *scope.Context, transforms scope.Transformatio
 			hitRow := -1
 			for i, ext := range result.RowExtents {
 				if cfg.Rows[i].SubRows != nil || cfg.Rows[i].Cells != nil ||
-					cfg.Rows[i].Grid != nil || cfg.Rows[i].Input != nil {
+					cfg.Rows[i].Grid != nil || cfg.Rows[i].Input != nil || cfg.Rows[i].Custom != nil {
 					continue // these row types handle their own clicks (or take none)
 				}
 				if ext.Inside(mouse.Pos) {

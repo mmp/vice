@@ -289,7 +289,7 @@ func (ep *Scope) drawRangeView(ctx *scope.Context, transforms scope.Transformati
 // leaves alone, on its title and its empty cells, move the view.
 func (ep *Scope) clickRangeView(ctx *scope.Context, l rangeViewLayout) {
 	mouse := ctx.Mouse
-	if mouse == nil || ep.viewRepo.activeID != "" || (ep.popup != nil && ep.popupExtent.Inside(mouse.Pos)) {
+	if mouse == nil || ep.viewRepo.activeID != "" || ep.popupCovers(mouse.Pos) {
 		return
 	}
 	var c toolbarClick
@@ -324,8 +324,7 @@ func (ep *Scope) clickRangeView(ctx *scope.Context, l rangeViewLayout) {
 	var err error
 	switch {
 	case l.menu.Inside(p):
-		ep.popup = ep.makeViewMenu(ctx, "range", 1,
-			func(pb popupBase) popup { return &rangeViewPopup{popupBase: pb} })(l.extent())
+		ep.openViewMenu(ctx, "range", rangeViewMenu{}, l.extent())
 	case l.step.Inside(p):
 		err = ep.nudgeRange(util.Select(tertiary, float32(rangeViewStep), -rangeViewStep))
 	case l.ret.Inside(p):
@@ -447,19 +446,14 @@ func (ep *Scope) handleRangeViewKeyboard(ctx *scope.Context) bool {
 	return true
 }
 
-// rangeViewPopup is the Range View's menu.
-type rangeViewPopup struct {
-	popupBase
-}
+// rangeViewMenu is the Range View's menu.
+type rangeViewMenu struct{}
 
-func (r *rangeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (rangeViewMenu) title() string { return "RANGE" }
+
+func (rangeViewMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-	ep.DrawERAMMenu(ctx, transforms, cb, r.origin, MenuConfig{
-		Title: "RANGE",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  []MenuItem{makeIntMenuItem(ep, &ps.RangeView.Bright, "BRIGHT", 0, 100, 2)},
-	})
+	return []MenuItem{makeIntMenuItem(ep, &ps.RangeView.Bright, "BRIGHT", 0, 100, 2)}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -480,8 +474,7 @@ func (ep *Scope) drawStatusView(ctx *scope.Context, transforms scope.Transformat
 		Opaque:     true,
 		ShowBorder: true,
 		Brightness: ps.MCA.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "status", 1,
-			func(pb popupBase) popup { return &statusViewPopup{popupBase: pb} }),
+		Menu:       statusViewMenu{},
 		OnMinimize: func() { ps.StatusView.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:                    []Row{{Label: "CH: A - ACTIVE"}},
@@ -495,20 +488,15 @@ func (ep *Scope) drawStatusView(ctx *scope.Context, transforms scope.Transformat
 	})
 }
 
-// statusViewPopup is the Status view's menu, which has only FONT
-// (figure 4-262).
-type statusViewPopup struct {
-	popupBase
-}
+// statusViewMenu is the Status view's menu, which has only FONT (figure
+// 4-262).
+type statusViewMenu struct{}
 
-func (p *statusViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (statusViewMenu) title() string { return "STATUS" }
+
+func (statusViewMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
-		Title: "STATUS",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  []MenuItem{makeIntMenuItem(ep, &ps.StatusView.Font, "FONT", 1, 3, 1)},
-	})
+	return []MenuItem{makeIntMenuItem(ep, &ps.StatusView.Font, "FONT", 1, 3, 1)}
 }
 
 // drawOutageView draws the Outage view, which lists the system's outages
@@ -566,8 +554,7 @@ func (ep *Scope) drawTimeView(ctx *scope.Context, transforms scope.Transformatio
 		ShowBorder: ps.TimeView.ShowBorder,
 		Opaque:     ps.TimeView.Opaque,
 		Brightness: ps.TimeView.Bright,
-		OnBodyTertiaryMenu: ep.makeViewMenu(ctx, "clock", 4,
-			func(pb popupBase) popup { return &timeViewPopup{popupBase: pb} }),
+		Menu:       timeViewMenu{},
 		DrawBody: func(body math.Extent2D, b *ViewBuilders) {
 			center := [2]float32{(body.P0[0] + body.P1[0]) / 2, (body.P0[1] + body.P1[1]) / 2}
 			b.Td.AddTextCentered(timeStr, center, renderer.TextStyle{Font: font, Color: textColor})
@@ -576,28 +563,19 @@ func (ep *Scope) drawTimeView(ctx *scope.Context, transforms scope.Transformatio
 	ep.DrawView(ctx, transforms, cb, v)
 }
 
-// timeViewPopup is the configuration menu for the Time View (clock).
-type timeViewPopup struct {
-	popupBase
-}
+// timeViewMenu is the Time View's menu.
+type timeViewMenu struct{}
 
-func (t *timeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (timeViewMenu) title() string { return "TIME" }
+
+func (timeViewMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
+	return []MenuItem{
 		ep.makeBooleanMenuItem(&ps.TimeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.TimeView.ShowBorder, "BORDER"),
 		makeIntMenuItem(ep, &ps.TimeView.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.TimeView.Bright, "BRIGHT", 0, 100, 2),
 	}
-
-	cfg := MenuConfig{
-		Title: "TIME",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-	ep.DrawERAMMenu(ctx, transforms, cb, t.origin, cfg)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -652,8 +630,8 @@ var emergCheckList = checkList{
 	toggled: func(ep *Scope) map[string]bool { return ep.EmergCheckToggled },
 }
 
-// drawCheckListView renders a check list's view if it is displayed. Rows
-// are click-toggleable; the toggled state lives on Scope and persists while
+// drawCheckListView renders a check list's view if it is displayed. A pick
+// on a row toggles it; the toggled state lives on Scope and persists while
 // the view is hidden.
 func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer,
 	cl *checkList) {
@@ -667,7 +645,8 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 	rows := make([]Row, len(cl.items))
 	maxLen := 0
 	for i, s := range cl.items {
-		rows[i] = Row{Body: s, Color: textColor, Toggled: toggled[s]}
+		rows[i] = Row{Body: s, Color: textColor, Toggled: toggled[s],
+			OnClick: func(RowClick) { toggled[s] = !toggled[s] }}
 		if len(s) > maxLen {
 			maxLen = len(s)
 		}
@@ -680,8 +659,7 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 		Opaque:     cps.Opaque,
 		ShowBorder: cps.ShowBorder,
 		Brightness: cps.Text,
-		OnMenu: ep.makeViewMenu(ctx, cl.viewID, 6,
-			func(pb popupBase) popup { return &checkListPopup{popupBase: pb, list: cl} }),
+		Menu:       checkListMenu{list: cl},
 		OnMinimize: func() { cps.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:           rows,
@@ -691,20 +669,20 @@ func (ep *Scope) drawCheckListView(ctx *scope.Context, transforms scope.Transfor
 			VisibleRows:    visibleLines(cps.Lines, len(rows)),
 			RowSpacing:     RowSpacingCompact,
 			HighlightColor: cps.Highlight.ScaleRGB(colors.popup.backgroundGrey),
-			OnRowToggle:    func(idx int) { toggled[cl.items[idx]] = !toggled[cl.items[idx]] },
 		},
 	})
 }
 
-type checkListPopup struct {
-	popupBase
+// checkListMenu is a check list view's menu.
+type checkListMenu struct {
 	list *checkList
 }
 
-func (c *checkListPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
-	cps := c.list.prefs(ep.currentPrefs())
+func (m checkListMenu) title() string { return m.list.menuTitle }
 
-	rows := []MenuItem{
+func (m checkListMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
+	cps := m.list.prefs(ep.currentPrefs())
+	return []MenuItem{
 		ep.makeBooleanMenuItem(&cps.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&cps.ShowBorder, "BORDER"),
 		makeLinesMenuItem(ep, &cps.Lines, 3),
@@ -712,13 +690,4 @@ func (c *checkListPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tr
 		makeIntMenuItem(ep, &cps.Highlight, "HIGHLIGHT", 0, 100, 2),
 		makeIntMenuItem(ep, &cps.Text, "TEXT", 0, 100, 2),
 	}
-
-	cfg := MenuConfig{
-		Title: c.list.menuTitle,
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-
-	ep.DrawERAMMenu(ctx, transforms, cb, c.origin, cfg)
 }

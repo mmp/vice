@@ -26,7 +26,7 @@ func wrappingRows(n int) []Row {
 	var rows []Row
 	for i := range n {
 		w := strings.Repeat(string(rune('A'+i)), 11)
-		rows = append(rows, Row{ID: w, Body: strings.Repeat(w+" ", 6)})
+		rows = append(rows, Row{Body: strings.Repeat(w+" ", 6)})
 	}
 	return rows
 }
@@ -65,17 +65,21 @@ func TestRowListSkipLines(t *testing.T) {
 // scrolls to the end of the last row (4.2.20).
 func TestViewRowSourceScrollsByLine(t *testing.T) {
 	ep := makeRowTestScope()
-	scroll, sel := ViewScrollState{}, ViewSelectionState{Selected: -1}
+	var scroll ViewScrollState
 	shown := func(offset int) (maxOffset int, idx []int) {
 		scroll.Offset = offset
-		v := View{ID: "wx", RowSource: &ViewRowSource{Rows: wrappingRows(3), FontIndex: 2, ContentChars: 24,
-			MaxCols: 1, VisibleRows: 5, RowSpacing: RowSpacingAiry, ScrollState: &scroll, SelectableState: &sel}}
+		rows := wrappingRows(3)
+		for i := range rows {
+			rows[i].OnClick = func(RowClick) {}
+		}
+		v := View{ID: "wx", RowSource: &ViewRowSource{Rows: rows, FontIndex: 2, ContentChars: 24,
+			MaxCols: 1, VisibleRows: 5, RowSpacing: RowSpacingAiry, ScrollState: &scroll}}
 		ep.applyRowSource(&v, ep.ERAMFont(2))
 		body := math.Extent2D{P1: [2]float32{v.Width, v.BodyHeight}}
-		for _, it := range v.selectable.Items(body) {
-			idx = append(idx, it.Idx)
+		for _, a := range v.pickRows(body) {
+			idx = append(idx, a.idx)
 		}
-		return v.scroll.MaxOffset, idx
+		return v.Scroll.MaxOffset, idx
 	}
 
 	// Nine lines, five shown.

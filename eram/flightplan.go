@@ -371,38 +371,52 @@ func (ep *Scope) drawCFRView(ctx *scope.Context, transforms scope.Transformation
 	if ep.CFRShowFields || ps.CFR.ShowLabels {
 		rows = append(rows, Row{Label: l.labels(ep.CFRShowFields || ps.CFR.ShowRoute)})
 	}
-	labelRows := len(rows)
 	for _, e := range l.entries {
 		// The indicator and FLID are drawn over the spaces left for them.
 		label := l.line(strings.Repeat(" ", cfrIndicatorChars+len(e.flid)), e.columns, e.route)
 		if e.truncated {
 			label += "  "
 		}
-		rows = append(rows, Row{Label: label, AfterDraw: func(row math.Extent2D, origin [2]float32, b *ViewBuilders) {
-			x := row.P0[0] + titleBarButtonPad
-			if e.nonADSB {
-				b.Td.AddText("A", [2]float32{x, origin[1]}, indicatorStyle)
-			}
-			style := util.Select(e.newlyAdded, newStyle, renderer.TextStyle{Font: font, Color: textColor})
-			b.Td.AddText(e.flid, [2]float32{x + cfrIndicatorChars*cw, origin[1]}, style)
-			if e.truncated {
-				box := cfrRouteIndicator(row, label, cw)
-				b.Td.AddTextCentered("*", box.Center(), renderer.TextStyle{Font: font, Color: textColor})
-				b.Ld.AddLineLoop(textColor, box.Corners())
-			}
-		}})
+		flidExtent := func(row math.Extent2D) math.Extent2D {
+			x0 := row.P0[0] + titleBarButtonPad + cfrIndicatorChars*cw
+			return math.Extent2D{P0: [2]float32{x0, row.P0[1]}, P1: [2]float32{x0 + float32(len(e.flid))*cw, row.P1[1]}}
+		}
+		rows = append(rows, Row{Label: label,
+			AfterDraw: func(row math.Extent2D, origin [2]float32, b *ViewBuilders) {
+				x := row.P0[0] + titleBarButtonPad
+				if e.nonADSB {
+					b.Td.AddText("A", [2]float32{x, origin[1]}, indicatorStyle)
+				}
+				style := util.Select(e.newlyAdded, newStyle, renderer.TextStyle{Font: font, Color: textColor})
+				b.Td.AddText(e.flid, [2]float32{x + cfrIndicatorChars*cw, origin[1]}, style)
+				if e.truncated {
+					box := cfrRouteIndicator(row, label, cw)
+					b.Td.AddTextCentered("*", box.Center(), renderer.TextStyle{Font: font, Color: textColor})
+					b.Ld.AddLineLoop(textColor, box.Corners())
+				}
+			},
+			OnClick: func(c RowClick) {
+				switch {
+				case c.Tertiary && flidExtent(c.Extent).Inside(c.Pos):
+					ep.openPickAreaPopup(ctx, flidExtent(c.Extent), "DELETE "+string(e.acid), func() { ep.deleteCFREntry(e.acid) })
+				case e.truncated && cfrRouteIndicator(c.Extent, label, cw).Inside(c.Pos):
+					if trk, ok := ctx.Client.State.GetTrackByACID(e.acid); ok {
+						status, err := handleFlightPlanReadoutRA(ep, ctx, trk)
+						ep.applyCommandStatus(ctx, status, err)
+					}
+				}
+			},
+		})
 	}
 
-	var extents []math.Extent2D
-	v := View{
+	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.CFR.Position,
 		ID:         "cfr",
 		Title:      "CFR",
 		Opaque:     ps.CFR.Opaque,
 		ShowBorder: ps.CFR.ShowBorder,
 		Brightness: ps.CFR.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "cfr", 7+len(cfrFilters),
-			func(pb popupBase) popup { return &cfrPopup{popupBase: pb} }),
+		Menu:       &cfrMenu{},
 		OnMinimize: func() { ps.CFR.Visible = false },
 		TitleButtons: []ViewTitleButton{{
 			Label: "SHOW FIELDS",
@@ -422,40 +436,8 @@ func (ep *Scope) drawCFRView(ctx *scope.Context, transforms scope.Transformation
 			VisibleRows:             max(1, len(rows)),
 			RowSpacing:              RowSpacingCompact,
 			CenterColumnsInTitleBar: true,
-			OnRowExtents:            func(_ int, e []math.Extent2D) { extents = e },
 		},
-	}
-	ep.DrawView(ctx, transforms, cb, v)
-
-	mouse := ctx.Mouse
-	primary, tertiary := ep.mousePrimaryClicked(mouse), ep.mouseTertiaryClicked(mouse)
-	if !primary && !tertiary {
-		return
-	}
-	for i, e := range l.entries {
-		if labelRows+i >= len(extents) {
-			break
-		}
-		row := extents[labelRows+i]
-		x0 := row.P0[0] + titleBarButtonPad + cfrIndicatorChars*cw
-		flid := math.Extent2D{P0: [2]float32{x0, row.P0[1]}, P1: [2]float32{x0 + float32(len(e.flid))*cw, row.P1[1]}}
-		switch {
-		case tertiary && flid.Inside(mouse.Pos):
-			ep.popup = ep.openDeleteEntryPopup(ctx, ViewSelectableItem{Extent: flid}, &ViewSelectable{
-				Label:    func(int) string { return string(e.acid) },
-				OnDelete: func(int) { ep.deleteCFREntry(e.acid) },
-			}, ep.ERAMFont(2))
-		case e.truncated && cfrRouteIndicator(row, rows[labelRows+i].Label, cw).Inside(mouse.Pos):
-			if trk, ok := ctx.Client.State.GetTrackByACID(e.acid); ok {
-				status, err := handleFlightPlanReadoutRA(ep, ctx, trk)
-				ep.applyCommandStatus(ctx, status, err)
-			}
-		default:
-			continue
-		}
-		ep.consumeMouseClick(mouse)
-		return
-	}
+	})
 }
 
 // cfrRouteIndicator returns the extent of the additional route indicator
@@ -469,14 +451,15 @@ func (ep *Scope) deleteCFREntry(acid sim.ACID) {
 	ep.CFREntries = slices.DeleteFunc(ep.CFREntries, func(a sim.ACID) bool { return a == acid })
 }
 
-// cfrPopup is the CFR view's menu (figure 4-20). FILTERS shows the filter
+// cfrMenu is the CFR view's menu (figure 4-20). FILTERS shows the filter
 // toggles below it.
-type cfrPopup struct {
-	popupBase
+type cfrMenu struct {
 	filters bool
 }
 
-func (c *cfrPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (*cfrMenu) title() string { return "CFR" }
+
+func (c *cfrMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
 	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&ps.CFR.Opaque, "O", "T"),
@@ -492,10 +475,5 @@ func (c *cfrPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transfor
 			rows = append(rows, ep.makeToggleMenuItem(f.shown(ps), f.label))
 		}
 	}
-	ep.DrawERAMMenu(ctx, transforms, cb, c.origin, MenuConfig{
-		Title: "CFR",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	})
+	return rows
 }

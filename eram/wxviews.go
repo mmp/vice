@@ -32,13 +32,18 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 		return
 	}
 
+	// A pick on an entry offers to delete it (4.2.1.1.2).
 	var rows []Row
-	for _, icao := range ep.AltimSetAirports {
+	for i, icao := range ep.AltimSetAirports {
 		if icao == "" {
 			rows = append(rows, Row{})
-		} else {
-			rows = append(rows, ep.altimRow(ctx, icao))
+			continue
 		}
+		row := ep.altimRow(ctx, icao)
+		row.OnClick = func(c RowClick) {
+			ep.openRowPickArea(ctx, c, "DELETE "+string(icao), func() { ep.removeAltimSetEntry(i) })
+		}
+		rows = append(rows, row)
 	}
 
 	ep.DrawView(ctx, transforms, cb, View{
@@ -48,8 +53,7 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 		Opaque:     ps.AltimSet.Opaque,
 		ShowBorder: ps.AltimSet.ShowBorder,
 		Brightness: ps.AltimSet.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "altim-set", 8,
-			func(pb popupBase) popup { return &altimSetPopup{popupBase: pb} }),
+		Menu:       altimSetMenu{},
 		OnMinimize: func() { ps.AltimSet.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:                  rows,
@@ -63,8 +67,6 @@ func (ep *Scope) drawAltimSetView(ctx *scope.Context, transforms scope.Transform
 			RowSpacing:            RowSpacingCompact,
 			ScrollState:           &ep.altimSetScroll,
 			EmptyKeepsColumnWidth: true,
-			SelectableState:       &ep.altimSetSelect,
-			OnRowDelete:           ep.removeAltimSetEntry,
 		},
 	})
 }
@@ -135,7 +137,7 @@ func (ep *Scope) altimRow(ctx *scope.Context, icao av.ICAOAirportCode) Row {
 	displayID := db.AirportDisplayId(icao)
 	metar, hasMetar := ctx.Client.State.METAR[icao]
 	if !hasMetar {
-		return Row{ID: string(icao), TearOff: string(icao), Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
+		return Row{TearOff: string(icao), Body: fmt.Sprintf("%-4s   -M-  ", displayID)}
 	}
 	timeStr, altStr, altRaw := altimMetarForDisplay(metar)
 	prefix := fmt.Sprintf("%-4s  ", displayID)
@@ -144,7 +146,7 @@ func (ep *Scope) altimRow(ctx *scope.Context, icao av.ICAOAirportCode) Row {
 	altField := fmt.Sprintf("%3s", altStr)
 	line := prefix + timeField + mid + altField + "  "
 
-	row := Row{ID: string(icao), TearOff: string(icao), Body: line}
+	row := Row{TearOff: string(icao), Body: line}
 	if altRaw > 0 && altRaw < 2992 && altStr != "..." {
 		offsetX := textWidth(prefix) + textWidth(timeField) + textWidth(mid)
 		fieldW := textWidth(altField)
@@ -179,18 +181,17 @@ func altimMetarForDisplay(metar wx.METAR) (timeStr string, altStr string, altRaw
 	return
 }
 
-// altimSetPopup is the popup-interface impl for the ALTIM SET configuration menu.
-// The origin is captured at open time from the view's current geometry, since
-// the view width depends on dynamic state (column count).
-type altimSetPopup struct {
-	popupBase
-	cursorPlacement
-}
+// altimSetMenu is the ALTIM SET view's menu (figure 4-10).
+type altimSetMenu struct{}
 
-func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (altimSetMenu) title() string { return "AS" }
+
+func (altimSetMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
+	template := makeActionMenuItem("TEMPLATE", func(MenuClickType) {})
+	// The cursor starts on TEMPLATE (4.2.1.3.1).
+	template.PlaceCursor = true
+	return []MenuItem{
 		ep.makeBooleanMenuItem(&ps.AltimSet.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.AltimSet.ShowBorder, "BORDER"),
 		ep.makeToggleMenuItem(&ps.AltimSet.ShowIndicators, "TEAROFF"),
@@ -204,19 +205,8 @@ func (a *altimSetPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tra
 		makeIntMenuItem(ep, &ps.AltimSet.Col, "COL", 1, 4, 1),
 		makeIntMenuItem(ep, &ps.AltimSet.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.AltimSet.Bright, "BRIGHT", 0, 100, 2),
-		// The cursor starts on TEMPLATE (4.2.1.3.1).
-		{Label: "TEMPLATE", BgColor: colors.popup.backgroundBlack, Color: colors.popup.text,
-			PlaceCursor: a.firstDraw()},
+		template,
 	}
-
-	cfg := MenuConfig{
-		Title: "AS",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2), // Menu always uses FONT 2, not affected by FONT setting
-		Rows:  rows,
-	}
-
-	ep.DrawERAMMenu(ctx, transforms, cb, a.origin, cfg)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -229,7 +219,15 @@ func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations
 		return
 	}
 
-	rows := util.MapSlice(ep.WXReportStations, func(icao av.ICAOAirportCode) Row { return wxRow(ctx, icao) })
+	// A pick on an entry offers to delete it (4.2.20.2).
+	var rows []Row
+	for i, icao := range ep.WXReportStations {
+		row := wxRow(ctx, icao)
+		row.OnClick = func(c RowClick) {
+			ep.openRowPickArea(ctx, c, "DELETE "+string(icao), func() { ep.removeWXReportStation(i) })
+		}
+		rows = append(rows, row)
+	}
 
 	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &ps.WX.Position,
@@ -238,8 +236,7 @@ func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations
 		Opaque:     ps.WX.Opaque,
 		ShowBorder: ps.WX.ShowBorder,
 		Brightness: ps.WX.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "wx", 6,
-			func(pb popupBase) popup { return &wxPopup{popupBase: pb} }),
+		Menu:       wxReportMenu{},
 		OnMinimize: func() { ps.WX.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:               rows,
@@ -252,8 +249,6 @@ func (ep *Scope) drawWXView(ctx *scope.Context, transforms scope.Transformations
 			ShowTearOffBars:    ps.WX.ShowIndicators,
 			RowSpacing:         RowSpacingAiry,
 			ScrollState:        &ep.wxScroll,
-			SelectableState:    &ep.wxSelect,
-			OnRowDelete:        ep.removeWXReportStation,
 		},
 	})
 }
@@ -296,7 +291,7 @@ func (ep *Scope) removeWXReportStation(idx int) {
 
 // wxRow returns a station's entry in the WX REPORT view.
 func wxRow(ctx *scope.Context, icao av.ICAOAirportCode) Row {
-	return Row{ID: string(icao), TearOff: string(icao), Label: db.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)}
+	return Row{TearOff: string(icao), Label: db.AirportDisplayId(icao), Body: wxMetarBody(ctx, icao)}
 }
 
 // wxMetarBody returns the row body text for a station: the wrappable METAR
@@ -326,16 +321,14 @@ func wxMetarBody(ctx *scope.Context, icao av.ICAOAirportCode) string {
 	return body
 }
 
-// wxPopup is the popup-interface impl for the WX REPORT configuration menu.
-// The origin is captured at open time from the view's current geometry.
-type wxPopup struct {
-	popupBase
-}
+// wxReportMenu is the WX REPORT view's menu.
+type wxReportMenu struct{}
 
-func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (wxReportMenu) title() string { return "WX" }
+
+func (wxReportMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
+	return []MenuItem{
 		ep.makeBooleanMenuItem(&ps.WX.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.WX.ShowBorder, "BORDER"),
 		ep.makeToggleMenuItem(&ps.WX.ShowIndicators, "TEAROFF"),
@@ -343,15 +336,6 @@ func (w *wxPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transform
 		makeIntMenuItem(ep, &ps.WX.Font, "FONT", 1, 3, 1),
 		makeIntMenuItem(ep, &ps.WX.Bright, "BRIGHT", 0, 100, 2),
 	}
-
-	cfg := MenuConfig{
-		Title: "WX",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-
-	ep.DrawERAMMenu(ctx, transforms, cb, w.origin, cfg)
 }
 
 ///////////////////////////////////////////////////////////////////////////

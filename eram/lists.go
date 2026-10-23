@@ -156,22 +156,17 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 	})
 
 	var rows []Row
-	// headings parallels rows, with the name of the sublist that each
-	// heading row heads.
-	var headings []string
 	for i, s := range ep.displayedDeptSublists(ctx) {
 		if i > 0 {
-			rows, headings = append(rows, Row{}), append(headings, "")
+			rows = append(rows, Row{})
 		}
-		rows = append(rows, Row{Label: s.name, Centered: true, TearOff: s.name})
-		headings = append(headings, s.name)
+		rows = append(rows, Row{Label: s.name, Centered: true, TearOff: s.name,
+			OnClick: func(RowClick) { dl.SuppressedSublists = append(dl.SuppressedSublists, s.name) }})
 		for _, fp := range s.flights {
-			rows, headings = append(rows, deptFlightRow(fp)), append(headings, "")
+			rows = append(rows, deptFlightRow(fp))
 		}
 	}
 
-	var extents []math.Extent2D
-	first := 0
 	ep.DrawView(ctx, transforms, cb, View{
 		Position:   &dl.Position,
 		ID:         "dept-list",
@@ -179,8 +174,7 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 		Opaque:     dl.Opaque,
 		ShowBorder: dl.ShowBorder,
 		Brightness: dl.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "dept-list", 7+len(dl.SuppressedSublists),
-			func(pb popupBase) popup { return &deptListPopup{popupBase: pb} }),
+		Menu:       &deptListMenu{},
 		OnMinimize: func() { dl.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:                    rows,
@@ -193,24 +187,8 @@ func (ep *Scope) drawDeptListView(ctx *scope.Context, transforms scope.Transform
 			RowSpacing:              RowSpacingCompact,
 			ScrollState:             &ep.deptScroll,
 			CenterColumnsInTitleBar: true,
-			OnRowExtents: func(firstVisible int, e []math.Extent2D) {
-				first, extents = firstVisible, e
-			},
 		},
 	})
-
-	mouse := ctx.Mouse
-	if (!ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse)) ||
-		(ep.popup != nil && ep.popupExtent.Inside(mouse.Pos)) {
-		return
-	}
-	for i, e := range extents {
-		if name := headings[first+i]; name != "" && e.Inside(mouse.Pos) {
-			dl.SuppressedSublists = append(dl.SuppressedSublists, name)
-			ep.consumeMouseClick(mouse)
-			return
-		}
-	}
 }
 
 // sortDeptSublists sorts the picked sublists to the top of the view in
@@ -240,20 +218,20 @@ func (ep *Scope) deleteDeptSublists(ctx *scope.Context, picked []string) {
 	}
 }
 
-// deptListPopup is the view's menu (figure 4-185). The suppressed
-// sublists follow SORT; a pick on one redisplays it. SORT shows the Sort
-// Pop-Up Box's items at the bottom: FIX NAME, DELETE, and the displayed
-// sublists. TBPs on sublists pick them in order and a TBE picks the last
-// one, which sorts them to the top of the view or, after DELETE, deletes
-// them.
-type deptListPopup struct {
-	popupBase
+// deptListMenu is the view's menu (figure 4-185). The suppressed sublists
+// follow SORT; a pick on one redisplays it. SORT shows the Sort Pop-Up
+// Box's items at the bottom: FIX NAME, DELETE, and the displayed sublists.
+// TBPs on sublists pick them in order and a TBE picks the last one, which
+// sorts them to the top of the view or, after DELETE, deletes them.
+type deptListMenu struct {
 	sort     bool
 	deleting bool
 	picked   []string
 }
 
-func (p *deptListPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (*deptListMenu) title() string { return "DEPT" }
+
+func (p *deptListMenu) rows(ep *Scope, ctx *scope.Context) []MenuItem {
 	dl := &ep.currentPrefs().DeptList
 	rows := []MenuItem{
 		ep.makeBooleanMenuItem(&dl.Opaque, "O", "T"),
@@ -265,26 +243,19 @@ func (p *deptListPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Tra
 		ep.makeToggleMenuItem(&p.sort, "SORT"),
 	}
 	for _, name := range dl.SuppressedSublists {
-		rows = append(rows, MenuItem{Label: name, BgColor: colors.popup.backgroundBlack, Color: colors.popup.text,
-			OnClick: func(MenuClickType) bool {
-				dl.SuppressedSublists = slices.DeleteFunc(dl.SuppressedSublists, func(s string) bool { return s == name })
-				return false
-			}})
+		rows = append(rows, makeActionMenuItem(name, func(MenuClickType) {
+			dl.SuppressedSublists = slices.DeleteFunc(dl.SuppressedSublists, func(s string) bool { return s == name })
+		}))
 	}
 	if p.sort {
 		rows = append(rows, p.sortRows(ep, ctx)...)
 	}
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
-		Title: "DEPT",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	})
+	return rows
 }
 
 // sortRows returns the Sort Pop-Up Box's items. FIX NAME is lit while the
 // sublists are in fix name order and DELETE while picks delete them.
-func (p *deptListPopup) sortRows(ep *Scope, ctx *scope.Context) []MenuItem {
+func (p *deptListMenu) sortRows(ep *Scope, ctx *scope.Context) []MenuItem {
 	dl := &ep.currentPrefs().DeptList
 	rows := []MenuItem{{
 		Label:   "FIX NAME",
@@ -318,7 +289,7 @@ func (p *deptListPopup) sortRows(ep *Scope, ctx *scope.Context) []MenuItem {
 	return rows
 }
 
-func (p *deptListPopup) pickSublist(ep *Scope, ctx *scope.Context, name string, click MenuClickType) {
+func (p *deptListMenu) pickSublist(ep *Scope, ctx *scope.Context, name string, click MenuClickType) {
 	if !slices.Contains(p.picked, name) {
 		p.picked = append(p.picked, name)
 	}
@@ -409,7 +380,10 @@ func (ep *Scope) drawFlightEventView(ctx *scope.Context, transforms scope.Transf
 	for _, trk := range entries {
 		rows = append(rows, Row{
 			Label: trk.FlightPlan.CID + " " + string(trk.FlightPlan.ACID) + " " + string(trk.ADSBCallsign) + " (ADSB)",
-			ID:    string(trk.FlightPlan.ACID) + " " + string(trk.ADSBCallsign),
+			OnClick: func(c RowClick) {
+				ep.openRowPickArea(ctx, c, "DELETE "+string(trk.FlightPlan.ACID)+" "+string(trk.ADSBCallsign),
+					func() { ep.deleteFELEntry(trk) })
+			},
 		})
 	}
 
@@ -420,8 +394,7 @@ func (ep *Scope) drawFlightEventView(ctx *scope.Context, transforms scope.Transf
 		Opaque:     ps.FlightEvent.Opaque,
 		ShowBorder: ps.FlightEvent.ShowBorder,
 		Brightness: ps.FlightEvent.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "flight-event", 5,
-			func(pb popupBase) popup { return &flightEventPopup{popupBase: pb} }),
+		Menu:       flightEventMenu{},
 		OnMinimize: func() { ps.FlightEvent.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:                    rows,
@@ -432,9 +405,6 @@ func (ep *Scope) drawFlightEventView(ctx *scope.Context, transforms scope.Transf
 			RowSpacing:              RowSpacingCompact,
 			ScrollState:             &ep.felScroll,
 			CenterColumnsInTitleBar: true,
-			SelectableState:         &ep.felSelect,
-			// The header is the first row.
-			OnRowDelete: func(idx int) { ep.deleteFELEntry(entries[idx-1]) },
 		},
 	})
 }
@@ -448,24 +418,20 @@ func (ep *Scope) deleteFELEntry(trk *sim.Track) {
 	ep.FELDeleted[trk.ADSBCallsign] = trk.FlightPlan.ACID
 }
 
-type flightEventPopup struct {
-	popupBase
-}
+// flightEventMenu is the FLIGHT EVENT view's menu.
+type flightEventMenu struct{}
 
-func (p *flightEventPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (flightEventMenu) title() string { return "FEL" }
+
+func (flightEventMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
-		Title: "FEL",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows: []MenuItem{
-			ep.makeBooleanMenuItem(&ps.FlightEvent.Opaque, "O", "T"),
-			ep.makeToggleMenuItem(&ps.FlightEvent.ShowBorder, "BORDER"),
-			makeLinesMenuItem(ep, &ps.FlightEvent.Lines, 3),
-			makeIntMenuItem(ep, &ps.FlightEvent.Font, "FONT", 1, 3, 1),
-			makeIntMenuItem(ep, &ps.FlightEvent.Bright, "BRIGHT", 0, 100, 2),
-		},
-	})
+	return []MenuItem{
+		ep.makeBooleanMenuItem(&ps.FlightEvent.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.FlightEvent.ShowBorder, "BORDER"),
+		makeLinesMenuItem(ep, &ps.FlightEvent.Lines, 3),
+		makeIntMenuItem(ep, &ps.FlightEvent.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.FlightEvent.Bright, "BRIGHT", 0, 100, 2),
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -488,8 +454,7 @@ func (ep *Scope) drawBeaconCodeView(ctx *scope.Context, transforms scope.Transfo
 		Opaque:     ps.BeaconCodeView.Opaque,
 		ShowBorder: ps.BeaconCodeView.ShowBorder,
 		Brightness: ps.BeaconCodeView.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "beacon", 7,
-			func(pb popupBase) popup { return &beaconCodeViewPopup{popupBase: pb} }),
+		Menu:       beaconCodeViewMenu{},
 		OnMinimize: func() { ps.BeaconCodeView.Visible = false },
 		RowSource: &ViewRowSource{
 			Rows:                    beaconCodeRows(ctx, ep, ps),
@@ -515,7 +480,7 @@ func beaconCodeRows(ctx *scope.Context, ep *Scope, ps *Preferences) []Row {
 		if slices.Contains(ep.AddedBeaconCodes, code) {
 			s += "."
 		}
-		return Row{ID: code.String(), Body: s}
+		return Row{Body: s}
 	}
 
 	var rows []Row
@@ -565,14 +530,14 @@ func (ep *Scope) onBeaconCodeList(ctx *scope.Context, code av.Squawk) bool {
 	return slices.Contains(ep.AddedBeaconCodes, code) || util.SeqContains(ep.ownedBeaconCodes(ctx), code)
 }
 
-type beaconCodeViewPopup struct {
-	popupBase
-}
+// beaconCodeViewMenu is the CODE view's menu.
+type beaconCodeViewMenu struct{}
 
-func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (beaconCodeViewMenu) title() string { return "CODE" }
+
+func (beaconCodeViewMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-
-	rows := []MenuItem{
+	return []MenuItem{
 		ep.makeBooleanMenuItem(&ps.BeaconCodeView.Opaque, "O", "T"),
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.ShowBorder, "BORDER"),
 		makeIntMenuItem(ep, &ps.BeaconCodeView.Lines, "LINES", 3, 20, 1),
@@ -581,15 +546,6 @@ func (b *beaconCodeViewPopup) draw(ep *Scope, ctx *scope.Context, transforms sco
 		makeIntMenuItem(ep, &ps.BeaconCodeView.Bright, "BRIGHT", 0, 100, 2),
 		ep.makeToggleMenuItem(&ps.BeaconCodeView.SortManual, "SORT MAN"),
 	}
-
-	cfg := MenuConfig{
-		Title: "CODE",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows:  rows,
-	}
-
-	ep.DrawERAMMenu(ctx, transforms, cb, b.origin, cfg)
 }
 
 func handleBeaconCodeViewList(ep *Scope, codes []av.Squawk) CommandStatus {

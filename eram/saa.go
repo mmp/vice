@@ -300,7 +300,7 @@ func (ep *Scope) handleSAAMouse(ctx *scope.Context, transforms scope.Transformat
 			}
 		} else {
 			hot := ep.saas[slices.IndexFunc(ep.saas, func(a saa) bool { return a.id == id })].hot
-			ep.popup = ep.openPickAreaPopup(ctx, e, "SUPPRESS LABEL/ALT", ep.ERAMFont(2), func() {
+			ep.openPickAreaPopup(ctx, e, "SUPPRESS LABEL/ALT", func() {
 				s := ps.saaSettings(id)
 				if hot {
 					s.Hot = "B"
@@ -390,8 +390,7 @@ func (ep *Scope) drawSAAFilterView(ctx *scope.Context, transforms scope.Transfor
 		Opaque:     ps.SAAFilter.Opaque,
 		ShowBorder: ps.SAAFilter.ShowBorder,
 		Brightness: ps.SAAFilter.Bright,
-		OnMenu: ep.makeViewMenu(ctx, "saa-filter", 8,
-			func(pb popupBase) popup { return &saaFilterPopup{popupBase: pb} }),
+		Menu:       saaFilterMenu{},
 		OnMinimize: func() { ps.SAAFilter.Visible = false },
 		DrawBody: func(e math.Extent2D, b *ViewBuilders) {
 			body = e
@@ -399,13 +398,14 @@ func (ep *Scope) drawSAAFilterView(ctx *scope.Context, transforms scope.Transfor
 		},
 	}
 	if pages > 1 {
-		v.scroll = &ViewScrollConfig{State: &ep.saaScroll, MaxOffset: pages - 1}
+		v.Scroll = &ViewScrollConfig{State: &ep.saaScroll, MaxOffset: pages - 1}
 	}
 	ep.DrawView(ctx, transforms, cb, v)
 
 	// SAA settings can't be changed while a label is being torn off.
 	mouse := ctx.Mouse
-	if ep.saaTearingOff != "" || (!ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse)) {
+	if ep.saaTearingOff != "" || (!ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse)) ||
+		ep.popupCovers(mouse.Pos) {
 		return
 	}
 	for i, a := range shown {
@@ -473,27 +473,22 @@ func (ep *Scope) drawSAAFilterBody(body math.Extent2D, b *ViewBuilders, shown []
 	}
 }
 
-// saaFilterPopup is the SAA FILTER view's menu (4.2.18.4). It has no PEND
+// saaFilterMenu is the SAA FILTER view's menu (4.2.18.4). It has no PEND
 // FONT or PEND brightness, since no SAA is ever pending.
-type saaFilterPopup struct {
-	popupBase
-}
+type saaFilterMenu struct{}
 
-func (p *saaFilterPopup) draw(ep *Scope, ctx *scope.Context, transforms scope.Transformations, cb *renderer.CommandBuffer) {
+func (saaFilterMenu) title() string { return "SAA FIL" }
+
+func (saaFilterMenu) rows(ep *Scope, _ *scope.Context) []MenuItem {
 	ps := ep.currentPrefs()
-	ep.DrawERAMMenu(ctx, transforms, cb, p.origin, MenuConfig{
-		Title: "SAA FIL",
-		Width: viewPopupWidth,
-		Font:  ep.ERAMFont(2),
-		Rows: []MenuItem{
-			ep.makeBooleanMenuItem(&ps.SAAFilter.Opaque, "O", "T"),
-			ep.makeToggleMenuItem(&ps.SAAFilter.ShowBorder, "BORDER"),
-			makeLinesMenuItem(ep, &ps.SAAFilter.Lines, 1),
-			makeIntMenuItem(ep, &ps.SAAFilter.Font, "FONT", 1, 3, 1),
-			makeIntMenuItem(ep, &ps.SAAFilter.Bright, "BRIGHT", 0, 100, 2),
-			makeIntMenuItem(ep, &ps.SAAFilter.Color, "COLOR", 0, 100, 2),
-			makeIntMenuItem(ep, &ps.SAAFilter.Hot, "HOT", 0, 100, 2),
-			makeIntMenuItem(ep, &ps.SAAFilter.Cold, "COLD", 0, 100, 2),
-		},
-	})
+	return []MenuItem{
+		ep.makeBooleanMenuItem(&ps.SAAFilter.Opaque, "O", "T"),
+		ep.makeToggleMenuItem(&ps.SAAFilter.ShowBorder, "BORDER"),
+		makeLinesMenuItem(ep, &ps.SAAFilter.Lines, 1),
+		makeIntMenuItem(ep, &ps.SAAFilter.Font, "FONT", 1, 3, 1),
+		makeIntMenuItem(ep, &ps.SAAFilter.Bright, "BRIGHT", 0, 100, 2),
+		makeIntMenuItem(ep, &ps.SAAFilter.Color, "COLOR", 0, 100, 2),
+		makeIntMenuItem(ep, &ps.SAAFilter.Hot, "HOT", 0, 100, 2),
+		makeIntMenuItem(ep, &ps.SAAFilter.Cold, "COLD", 0, 100, 2),
+	}
 }

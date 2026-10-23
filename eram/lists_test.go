@@ -58,7 +58,7 @@ func TestDeptListSublists(t *testing.T) {
 	}
 
 	// TBPs on PHL and LGA and a TBE on LGA sort them to the top.
-	p := &deptListPopup{}
+	p := &deptListMenu{}
 	p.pickSublist(h.ep, h.ctx, phl, MenuClickPrimary)
 	p.pickSublist(h.ep, h.ctx, lga, MenuClickTertiary)
 	names, _ = deptListNames(h.ep.deptSublists(h.ctx))

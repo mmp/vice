@@ -429,11 +429,12 @@ func TestSuppressionGroups(t *testing.T) {
 // Input Box, whose message is entered as an SG command's (4.2.14.5).
 func TestGroupSupInputBox(t *testing.T) {
 	h := makeGroupSupTestHarness(t)
-	p := &groupSupPopup{}
+	m := &groupSupMenu{}
+	p := &viewMenuPopup{menu: m, viewID: "group-sup"}
 	h.ep.popup = p
 	h.ctx.Keyboard = &platform.KeyboardState{Input: "101/102"}
-	if !p.handleKeyboard(h.ep, h.ctx) || !p.typing || p.buf != "101/102" {
-		t.Fatalf("after typing: typing %v, buffer %q", p.typing, p.buf)
+	if !p.handleKeyboard(h.ep, h.ctx) || !m.typing || m.buf != "101/102" {
+		t.Fatalf("after typing: typing %v, buffer %q", m.typing, m.buf)
 	}
 	h.ctx.Keyboard = &platform.KeyboardState{Pressed: map[imgui.Key]any{imgui.KeyEnter: nil}}
 	p.handleKeyboard(h.ep, h.ctx)

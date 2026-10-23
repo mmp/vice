@@ -346,34 +346,30 @@ type Scope struct {
 	saaScroll     ViewScrollState
 
 	// FLIGHT EVENT state: the entries the user deleted, with the ACIDs
-	// they had, whether it had entries last frame, and the view's scroll
-	// and selection.
+	// they had, whether it had entries last frame, and the view's scroll.
 	FELDeleted    map[av.ADSBCallsign]sim.ACID `json:"FELDeleted,omitempty"`
 	felHadEntries bool
 	felScroll     ViewScrollState
-	felSelect     ViewSelectionState
 
 	// DEPT LIST state: the flights the user deleted from the view and the
 	// view's scroll.
 	DeptListDeleted map[sim.ACID]struct{} `json:"DeptListDeleted,omitempty"`
 	deptScroll      ViewScrollState
 
-	// CRR state (session)
-	CRRGroups        map[string]*CRRGroup `json:"CRRGroups,omitempty"`
-	crrFixRects      map[string]math.Extent2D
-	crrLabelRects    map[string]math.Extent2D
-	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D
-	crrScroll        ViewScrollState
+	// CRR state (session): the groups, the extents of the fixes and of the
+	// Location Group Panel's labels as drawn, and the view's scroll.
+	CRRGroups     map[string]*CRRGroup `json:"CRRGroups,omitempty"`
+	crrFixRects   map[string]math.Extent2D
+	crrLabelRects map[string]math.Extent2D
+	crrScroll     ViewScrollState
 
 	// ALTIM SET state (session)
 	AltimSetAirports []av.ICAOAirportCode `json:"AltimSetAirports,omitempty"`
 	altimSetScroll   ViewScrollState
-	altimSetSelect   ViewSelectionState
 
 	// WX window state (session)
 	WXReportStations []av.ICAOAirportCode `json:"WXReportStations,omitempty"`
 	wxScroll         ViewScrollState
-	wxSelect         ViewSelectionState
 
 	// The view entries torn off onto the scope, as drawn this frame, and
 	// the one being torn off or moved.
@@ -429,20 +425,12 @@ func (ep *Scope) Activate(r renderer.Renderer, pl platform.Platform, log *log.Lo
 	if ep.crrLabelRects == nil {
 		ep.crrLabelRects = make(map[string]math.Extent2D)
 	}
-	if ep.crrAircraftRects == nil {
-		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
-	}
 	if ep.PosCheckToggled == nil {
 		ep.PosCheckToggled = make(map[string]bool)
 	}
 	if ep.EmergCheckToggled == nil {
 		ep.EmergCheckToggled = make(map[string]bool)
 	}
-	// ViewSelectionState's zero-value Selected is 0 (i.e. "row 0 selected").
-	// Initialize to -1 so no row is selected at startup.
-	ep.altimSetSelect.Selected = -1
-	ep.wxSelect.Selected = -1
-	ep.felSelect.Selected = -1
 	ep.toolbar.control.id = toolbarControlID
 
 	ep.initializeFonts(r, pl)
@@ -581,17 +569,14 @@ func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg
 	clear(ep.FELDeleted)
 	ep.felHadEntries = false
 	ep.felScroll = ViewScrollState{}
-	ep.felSelect = ViewSelectionState{Selected: -1}
 	clear(ep.DeptListDeleted)
 	ep.deptScroll = ViewScrollState{}
 	// The stations' tear-offs go with them.
 	ps := ep.currentPrefs()
 	ep.AltimSetAirports, ps.AltimSet.TearOffs = nil, nil
 	ep.altimSetScroll = ViewScrollState{}
-	ep.altimSetSelect = ViewSelectionState{Selected: -1}
 	ep.WXReportStations, ps.WX.TearOffs = nil, nil
 	ep.wxScroll = ViewScrollState{}
-	ep.wxSelect = ViewSelectionState{Selected: -1}
 
 	ep.weatherRadar.Reset(lg)
 }

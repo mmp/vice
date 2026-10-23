@@ -38,13 +38,6 @@ func TestSuppressedViewClosesMenu(t *testing.T) {
 		m.Clicked[platform.MouseButtonPrimary] = true
 		frame(m)
 	}
-	menuDisplayed := func() bool {
-		if vap, ok := ep.popup.(viewAnchoredPopup); ok {
-			id, _, _ := vap.viewAnchor()
-			return id == "beacon"
-		}
-		return false
-	}
 	frame(nil)
 	i := slices.IndexFunc(ep.viewExtents, func(e math.Extent2D) bool { return e.P0[0] == pos[0] && e.P1[1] == pos[1] })
 	if i < 0 {
@@ -56,7 +49,7 @@ func TestSuppressedViewClosesMenu(t *testing.T) {
 	minimizeButton := [2]float32{outer.P1[0] - 4, outer.P1[1] - titleH/2}
 
 	click(menuButton)
-	if !menuDisplayed() {
+	if !ep.viewMenuDisplayed("beacon") {
 		t.Fatalf("M click displayed %+v", ep.popup)
 	}
 	click(minimizeButton)
@@ -68,7 +61,7 @@ func TestSuppressedViewClosesMenu(t *testing.T) {
 	ps.BeaconCodeView.Visible = true
 	frame(nil)
 	click(menuButton)
-	if !menuDisplayed() {
+	if !ep.viewMenuDisplayed("beacon") {
 		t.Fatalf("M click displayed %+v", ep.popup)
 	}
 	ep.toolbarButtonByID(toolbarButtonID(t, ep, "CODE")).click(ep, toolbarClick{})
