@@ -7,6 +7,7 @@ package scenario
 import (
 	"fmt"
 
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -85,7 +86,8 @@ func (sg *Group) NewSimConfiguration(scenarioName string, lc sim.LaunchConfig) (
 }
 
 // NewSimConfigurationForScenario builds the configuration for a scenario run
-// without a server: it is flown with the scenario's own default traffic.
+// without a server: it is flown with the scenario's own default traffic and
+// the brief pilot delays.
 func (t *Tables) NewSimConfigurationForScenario(facility, scenarioName string) (*sim.NewSimConfiguration, error) {
 	catalog, group, err := t.Lookup(facility, scenarioName)
 	if err != nil {
@@ -102,6 +104,7 @@ func (t *Tables) NewSimConfigurationForScenario(facility, scenarioName string) (
 	}
 	nsc.Description = scenarioName
 	nsc.Emergencies = t.Emergencies
+	nsc.PilotDelays = nav.BriefPilotDelays
 
 	return nsc, nil
 }

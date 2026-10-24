@@ -516,7 +516,6 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 	if *waypointCommands != "" {
 		c.SetWaypointCommands(*waypointCommands)
 	}
-	c.SetPilotDelays(config.PilotDelays)
 
 	return c, activeRadarScope
 }
@@ -561,12 +560,10 @@ func selectRandomScenario(srv *client.Server) (server.NewSimRequest, error) {
 	spec := *choice.spec
 	spec.LaunchConfig.ClampRates()
 
-	return server.NewSimRequest{
-		Facility:     choice.tracon,
-		GroupName:    choice.groupName,
-		ScenarioName: choice.scenarioName,
-		ScenarioSpec: &spec,
-	}, nil
+	req := server.MakeNewSimRequest()
+	req.Facility, req.GroupName, req.ScenarioName = choice.tracon, choice.groupName, choice.scenarioName
+	req.ScenarioSpec = &spec
+	return req, nil
 }
 
 // setupFuzzTesting connects to a server, picks a random scenario, and
@@ -678,12 +675,6 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 					// Apply waypoint commands if specified via command line (only for new clients)
 					if *waypointCommands != "" {
 						c.SetWaypointCommands(*waypointCommands)
-					}
-
-					// The delays apply to all of a server's sims, so a
-					// shared server doesn't get the user's saved ones.
-					if mgr.ClientIsLocal() {
-						c.SetPilotDelays(config.PilotDelays)
 					}
 
 					// Set crash report RPC client - prefer remote server so crashes

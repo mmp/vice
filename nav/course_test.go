@@ -341,7 +341,7 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 		t.Fatalf("no performance for %s", acType)
 	}
 	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
-	n := MakeDepartureNav("TEST001", icao, icao, 8000, perf, 0, 5000, wps, false, nmPerLongitude,
+	n := MakeDepartureNav("TEST001", icao, icao, 8000, perf, BriefPilotDelays, 0, 5000, wps, false, nmPerLongitude,
 		magneticVariation, nil, simTime, rand.New(42), nil)
 	if n == nil {
 		t.Fatal("no nav")
@@ -445,7 +445,7 @@ func makeCenterlineDeparture(t *testing.T, groups []av.WaypointActionGroup) cent
 		t.Fatalf("no performance for %s", acType)
 	}
 	simTime := NewTime(time.Date(2025, 1, 1, 12, 0, 0, 0, time.UTC))
-	n := MakeDepartureNav("TEST001", icao, icao, 8000, perf, 0, 5000, wps, false, nmPerLongitude,
+	n := MakeDepartureNav("TEST001", icao, icao, 8000, perf, BriefPilotDelays, 0, 5000, wps, false, nmPerLongitude,
 		magneticVariation, nil, simTime, rand.New(42), nil)
 	if n == nil {
 		t.Fatal("no nav")

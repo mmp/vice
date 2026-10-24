@@ -153,6 +153,7 @@ func NewArrivalFlight(t testing.TB, cfg ArrivalConfig) *FlightTest {
 		Perf:           perf,
 		FinalAltitude:  cfg.InitialAltitude,
 		FixAssignments: make(map[string]FixAssignment),
+		Delays:         BriefPilotDelays,
 		Rand:           rng,
 		Waypoints:      navWps,
 		FlightState: FlightState{

@@ -774,7 +774,7 @@ func (ac *Aircraft) InterceptApproachAtPassedFix(fix string) speech.CommandInten
 }
 
 func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise CruiseLimits,
-	nmPerLongitude float32, magneticVariation float32,
+	delays nav.PilotDelays, nmPerLongitude float32, magneticVariation float32,
 	model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.ArrivalAirport]
@@ -794,7 +794,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 
 	randomizeAltitudeRange := ac.FlightRules == av.FlightRulesVFR
 	nav := nav.MakeArrivalNav(ac.ADSBCallsign, arr, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
-		perf, randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
+		perf, delays, randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -812,7 +812,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 }
 
 func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAOAirportCode, dep *av.Departure,
-	exitRoute av.ExitRoute, cruise CruiseLimits, nmPerLongitude float32,
+	exitRoute av.ExitRoute, cruise CruiseLimits, delays nav.PilotDelays, nmPerLongitude float32,
 	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	wp := av.SpliceRoutes(exitRoute.Waypoints, dep.RouteWaypoints)
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
@@ -837,7 +837,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 
 	randomizeAltitudeRange := ac.FlightRules == av.FlightRulesVFR
 	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
-		perf, exitRoute.AssignedAltitude, exitRoute.ClearedAltitude, wp, randomizeAltitudeRange,
+		perf, delays, exitRoute.AssignedAltitude, exitRoute.ClearedAltitude, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
@@ -849,7 +849,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 	return nil
 }
 
-func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
+func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray, delays nav.PilotDelays,
 	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
 	simTime Time, r *rand.Rand, lg *log.Logger) error {
 	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
@@ -861,7 +861,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 	ac.TypeOfFlight = av.FlightTypeDeparture
 
 	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
-		perf, 0 /* assigned alt */, ac.CruiseAltitude /* cleared alt */, wps,
+		perf, delays, 0 /* assigned alt */, ac.CruiseAltitude /* cleared alt */, wps,
 		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
@@ -872,7 +872,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 	return nil
 }
 
-func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float32,
+func (ac *Aircraft) InitializeOverflight(of *av.Overflight, delays nav.PilotDelays, nmPerLongitude float32,
 	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
 	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
@@ -890,7 +890,7 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 
 	randomizeAltitudeRange := ac.FlightRules == av.FlightRulesVFR
 	nav := nav.MakeOverflightNav(ac.ADSBCallsign, of, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
-		perf, randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
+		perf, delays, randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}

@@ -258,7 +258,7 @@ func (s *Sim) spawnPatternAircraft() {
 		wps := generatePatternLap(rwy, opp, faaAP.Elevation, patternCeiling, s.State.NmPerLongitude,
 			s.State.MagneticVariation)
 
-		err := ac.InitializeVFRDeparture(ap, wps, false, s.State.NmPerLongitude,
+		err := ac.InitializeVFRDeparture(ap, wps, s.PilotDelays, false, s.State.NmPerLongitude,
 			s.State.MagneticVariation, s.wxModel, now, s.Rand, s.lg)
 		if err != nil {
 			s.lg.Warn("failed to initialize pattern aircraft", slog.Any("error", err))

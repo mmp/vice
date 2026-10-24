@@ -10,7 +10,6 @@ import (
 	"log/slog"
 	"slices"
 	"strings"
-	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -83,7 +82,8 @@ type Nav struct {
 
 	PendingWaypointActionEvents []av.WaypointActionEvent
 
-	Rand *rand.Rand
+	Delays PilotDelays
+	Rand   *rand.Rand
 }
 
 type UpdateResult struct {
@@ -369,10 +369,11 @@ const (
 )
 
 func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, depAirport, arrAirport av.ICAOAirportCode,
-	cruiseAlt int, perf av.AircraftPerformance, randomizeAltitudeRange bool, nmPerLongitude float32,
-	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) *Nav {
-	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, arr.Waypoints, randomizeAltitudeRange,
-		nmPerLongitude, magneticVariation, r, lg); nav != nil {
+	cruiseAlt int, perf av.AircraftPerformance, delays PilotDelays, randomizeAltitudeRange bool,
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
+	lg *log.Logger) *Nav {
+	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, delays, arr.Waypoints,
+		randomizeAltitudeRange, nmPerLongitude, magneticVariation, r, lg); nav != nil {
 		if !arr.SpeedRestriction.IsZero() {
 			sr := arr.SpeedRestriction
 			nav.Speed.Restriction = &sr
@@ -402,10 +403,10 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, depAirport, arrAi
 }
 
 func MakeDepartureNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAirportCode, cruiseAlt int,
-	perf av.AircraftPerformance, assignedAlt, clearedAlt int, wp av.WaypointArray, randomizeAltitudeRange bool,
-	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
-	lg *log.Logger) *Nav {
-	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, wp, randomizeAltitudeRange,
+	perf av.AircraftPerformance, delays PilotDelays, assignedAlt, clearedAlt int, wp av.WaypointArray,
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time,
+	r *rand.Rand, lg *log.Logger) *Nav {
+	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, delays, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, r, lg); nav != nil {
 		if assignedAlt != 0 {
 			nav.setAssignedAltitude(float32(min(assignedAlt, cruiseAlt)))
@@ -420,10 +421,11 @@ func MakeDepartureNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAi
 }
 
 func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, depAirport, arrAirport av.ICAOAirportCode,
-	cruiseAlt int, perf av.AircraftPerformance, randomizeAltitudeRange bool, nmPerLongitude float32,
-	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) *Nav {
-	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, of.Waypoints, randomizeAltitudeRange,
-		nmPerLongitude, magneticVariation, r, lg); nav != nil {
+	cruiseAlt int, perf av.AircraftPerformance, delays PilotDelays, randomizeAltitudeRange bool,
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand,
+	lg *log.Logger) *Nav {
+	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, delays, of.Waypoints,
+		randomizeAltitudeRange, nmPerLongitude, magneticVariation, r, lg); nav != nil {
 		if !of.SpeedRestriction.IsZero() {
 			sr := of.SpeedRestriction
 			nav.Speed.Restriction = &sr
@@ -453,12 +455,13 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, depAirport, 
 // makeNav seeds the aircraft's random number generator from r, so that a
 // sim's aircraft draw repeatable numbers when its own generator is seeded.
 func makeNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAirportCode, cruiseAlt int,
-	perf av.AircraftPerformance, wp av.WaypointArray, randomizeAltitudeRange bool, nmPerLongitude float32,
-	magneticVariation float32, r *rand.Rand, lg *log.Logger) *Nav {
+	perf av.AircraftPerformance, delays PilotDelays, wp av.WaypointArray, randomizeAltitudeRange bool,
+	nmPerLongitude float32, magneticVariation float32, r *rand.Rand, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(cruiseAlt),
 		FixAssignments: make(map[string]FixAssignment),
+		Delays:         delays,
 		Rand:           rand.New(r.Uint64()),
 	}
 
@@ -680,40 +683,36 @@ type PilotDelays struct {
 	PendingApproachCleared DelayRange
 }
 
-// DefaultPilotDelays are the pilot delays used unless SetPilotDelays
-// installs others.
-var DefaultPilotDelays = PilotDelays{
-	Altitude:               DelayRange{2 * time.Second, 4 * time.Second},
-	AltitudeAfterSpeed:     DelayRange{2 * time.Second, 4 * time.Second},
-	HeadingApproachCleared: DelayRange{1 * time.Second, 2 * time.Second},
-	HeadingFromHeading:     DelayRange{1 * time.Second, 2 * time.Second},
-	HeadingFromLNAV:        DelayRange{2 * time.Second, 4 * time.Second},
-	DirectExpected:         DelayRange{2 * time.Second, 4 * time.Second},
-	DirectFromLNAV:         DelayRange{4 * time.Second, 7 * time.Second},
-	DirectFromHeading:      DelayRange{8 * time.Second, 13 * time.Second},
-	OnCourse:               DelayRange{8 * time.Second, 13 * time.Second},
-	PendingApproachCleared: DelayRange{1 * time.Second, 3 * time.Second},
-}
-
-// The pilot delays are shared by all sims in the process so that they can
-// be tuned from the settings window while a sim runs.
+// BriefPilotDelays and RealisticPilotDelays are the two sets of pilot delays
+// offered when a sim is created: short ones that keep traffic moving, and
+// longer ones meant to match how long real pilots take to respond.
 var (
-	pilotDelaysMu sync.Mutex
-	pilotDelays   = DefaultPilotDelays
+	BriefPilotDelays = PilotDelays{
+		Altitude:               DelayRange{3 * time.Second, 4 * time.Second},
+		AltitudeAfterSpeed:     DelayRange{3 * time.Second, 4 * time.Second},
+		HeadingApproachCleared: DelayRange{2 * time.Second, 3 * time.Second},
+		HeadingFromHeading:     DelayRange{2 * time.Second, 3 * time.Second},
+		HeadingFromLNAV:        DelayRange{3 * time.Second, 4 * time.Second},
+		DirectExpected:         DelayRange{3 * time.Second, 4 * time.Second},
+		DirectFromLNAV:         DelayRange{4 * time.Second, 7 * time.Second},
+		DirectFromHeading:      DelayRange{8 * time.Second, 13 * time.Second},
+		OnCourse:               DelayRange{8 * time.Second, 13 * time.Second},
+		PendingApproachCleared: DelayRange{1 * time.Second, 3 * time.Second},
+	}
+
+	RealisticPilotDelays = PilotDelays{
+		Altitude:               DelayRange{9500 * time.Millisecond, 11500 * time.Millisecond},
+		AltitudeAfterSpeed:     DelayRange{3 * time.Second, 6 * time.Second},
+		HeadingApproachCleared: DelayRange{10 * time.Second, 12 * time.Second},
+		HeadingFromHeading:     DelayRange{9 * time.Second, 11 * time.Second},
+		HeadingFromLNAV:        DelayRange{10 * time.Second, 12 * time.Second},
+		DirectExpected:         DelayRange{9 * time.Second, 12 * time.Second},
+		DirectFromLNAV:         DelayRange{9 * time.Second, 12 * time.Second},
+		DirectFromHeading:      DelayRange{10 * time.Second, 12 * time.Second},
+		OnCourse:               DelayRange{9 * time.Second, 11 * time.Second},
+		PendingApproachCleared: DelayRange{8500 * time.Millisecond, 10500 * time.Millisecond},
+	}
 )
-
-// SetPilotDelays installs the pilot delays that all aircraft use from now on.
-func SetPilotDelays(d PilotDelays) {
-	pilotDelaysMu.Lock()
-	defer pilotDelaysMu.Unlock()
-	pilotDelays = d
-}
-
-func currentPilotDelays() PilotDelays {
-	pilotDelaysMu.Lock()
-	defer pilotDelaysMu.Unlock()
-	return pilotDelays
-}
 
 func (nav *Nav) drawDelay(r DelayRange) time.Duration {
 	return nav.Rand.DurationRange(r.Min, r.Max)
@@ -740,17 +739,16 @@ func (nav *Nav) onHeading() bool {
 // since the pilot heard the instruction, is subtracted from the
 // pilot-reaction delay (floored at zero).
 func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, approachCleared bool, simTime Time, delayReduction time.Duration) {
-	delays := currentPilotDelays()
 	var d time.Duration
 	if approachCleared {
 		// Minimal delay if the aircraft has been cleared for an approach.
-		d = nav.drawDelay(delays.HeadingApproachCleared)
+		d = nav.drawDelay(nav.Delays.HeadingApproachCleared)
 	} else if nav.onHeading() && nav.DeferredNavHeading == nil {
 		// Already flying a heading; minimal delay.
-		d = nav.drawDelay(delays.HeadingFromHeading)
+		d = nav.drawDelay(nav.Delays.HeadingFromHeading)
 	} else {
 		// LNAV -> heading mode
-		d = nav.drawDelay(delays.HeadingFromLNAV)
+		d = nav.drawDelay(nav.Delays.HeadingFromLNAV)
 	}
 
 	if d > delayReduction {
@@ -807,18 +805,17 @@ func (nav *Nav) AmendRoute(wps []av.Waypoint, fix string) bool {
 }
 
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
-	delays := currentPilotDelays()
 	var d time.Duration
 	if len(wps) > 0 && nav.ExpectedDirectFix == wps[0].Fix {
 		// Pilot was told to expect this fix; shorter delay
-		d = nav.drawDelay(delays.DirectExpected)
+		d = nav.drawDelay(nav.Delays.DirectExpected)
 		nav.ExpectedDirectFix = ""
 	} else if nav.Heading.Assigned == nil && nav.DeferredNavHeading == nil {
 		// Already in LNAV mode; have less of a delay
-		d = nav.drawDelay(delays.DirectFromLNAV)
+		d = nav.drawDelay(nav.Delays.DirectFromLNAV)
 	} else {
 		// heading->LNAV--longer delay
-		d = nav.drawDelay(delays.DirectFromHeading)
+		d = nav.drawDelay(nav.Delays.DirectFromHeading)
 	}
 
 	if d > delayReduction {
@@ -837,7 +834,7 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTi
 }
 
 func (nav *Nav) EnqueueOnCourse(simTime Time, delayReduction time.Duration) {
-	d := max(nav.drawDelay(currentPilotDelays().OnCourse)-delayReduction, 0)
+	d := max(nav.drawDelay(nav.Delays.OnCourse)-delayReduction, 0)
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time: simTime.Add(d),
 	}

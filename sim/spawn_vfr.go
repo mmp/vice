@@ -506,7 +506,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 
 	wps[len(wps)-1].SetSequenceVFRLanding(true)
 
-	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
+	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, s.PilotDelays, randomizeAltitudeRange,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, simTime, s.Rand, s.lg); err != nil {
 		return nil, err
 	}

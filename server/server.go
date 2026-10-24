@@ -113,7 +113,8 @@ import (
 // 102: reworked ATPA volume generation / matching; 2.5nm reduced separation is per runway
 // 103: CIDAllocator tracks CIDs with per-set bit vectors
 // 104: ERAM assorted additions
-const ViceSerializeVersion = 104
+// 105: pilot delays are chosen per sim: NewSimRequest.PilotDelays, Sim.PilotDelays, and nav.Nav.Delays
+const ViceSerializeVersion = 105
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

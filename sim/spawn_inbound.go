@@ -37,7 +37,7 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 		return nil, err
 	}
 
-	if err := ac.InitializeArrival(s.State.Airports[e.ArrivalAirport], arr, e.Cruise,
+	if err := ac.InitializeArrival(s.State.Airports[e.ArrivalAirport], arr, e.Cruise, s.PilotDelays,
 		s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.wxModel, s.State.SimTime, s.Rand, s.lg); err != nil {
 		return nil, err
@@ -199,7 +199,7 @@ func (s *Sim) createScheduledOverflight(e ScheduledOverflight) (*Aircraft, error
 		return nil, err
 	}
 
-	if err := ac.InitializeOverflight(of, s.State.NmPerLongitude, s.State.MagneticVariation,
+	if err := ac.InitializeOverflight(of, s.PilotDelays, s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.wxModel, s.State.SimTime, s.Rand, s.lg); err != nil {
 		return nil, err
 	}

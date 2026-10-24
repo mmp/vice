@@ -210,8 +210,8 @@ func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirp
 	runway av.RunwayID, dep *av.Departure, cruise CruiseLimits,
 	exitRoutes map[av.ExitID]*av.ExitRoute) error {
 	exitRoute := exitRoutes[dep.Exit]
-	err := ac.InitializeDeparture(ap, departureAirport, dep, *exitRoute, cruise, s.State.NmPerLongitude,
-		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.Rand, s.lg)
+	err := ac.InitializeDeparture(ap, departureAirport, dep, *exitRoute, cruise, s.PilotDelays,
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.Rand, s.lg)
 	if err != nil {
 		return err
 	}

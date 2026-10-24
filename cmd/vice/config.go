@@ -71,7 +71,10 @@ type Config struct {
 	// likely to be useful for facility engineering) in the MessagesWindow.
 	DisplaySimLogs bool
 
-	PilotDelays nav.PilotDelays
+	// The pilot delays last chosen in the new sim dialog; it offers them
+	// again the next time.
+	PilotDelayChoice  pilotDelayChoice
+	CustomPilotDelays nav.PilotDelays
 
 	NoBriefAtScenarioStart bool
 
@@ -254,6 +257,26 @@ func (c *Config) ActiveRadarScope(isSTARSSim bool) scope.Scope {
 	return c.ERAMScope
 }
 
+type pilotDelayChoice int
+
+const (
+	pilotDelaysBrief pilotDelayChoice = iota
+	pilotDelaysRealistic
+	pilotDelaysCustom
+)
+
+// pilotDelays returns the pilot delays that the user has chosen for new sims.
+func (c *Config) pilotDelays() nav.PilotDelays {
+	switch c.PilotDelayChoice {
+	case pilotDelaysRealistic:
+		return nav.RealisticPilotDelays
+	case pilotDelaysCustom:
+		return c.CustomPilotDelays
+	default:
+		return nav.BriefPilotDelays
+	}
+}
+
 func getDefaultConfig() *Config {
 	return &Config{
 		Config: platform.Config{
@@ -269,7 +292,7 @@ func getDefaultConfig() *Config {
 		FlightStripWindow:     NewFlightStripWindow(),
 		ShowMessages:          true,
 		ShowFlightStrips:      true,
-		PilotDelays:           nav.DefaultPilotDelays,
+		CustomPilotDelays:     nav.BriefPilotDelays,
 	}
 }
 
@@ -284,10 +307,10 @@ func readConfig(fn string) (*Config, error) {
 
 // decodeConfig decodes the contents of a configuration file.
 func decodeConfig(b []byte) (*Config, error) {
-	// A config saved before the pilot delays were stored gets the defaults.
-	// Zero delays are valid, so they can't be filled in after decoding the
-	// way zero values of other settings are.
-	c := &Config{PilotDelays: nav.DefaultPilotDelays}
+	// A config saved before custom pilot delays were stored starts them at
+	// the brief ones. Zero delays are valid, so they can't be filled in after
+	// decoding the way zero values of other settings are.
+	c := &Config{CustomPilotDelays: nav.BriefPilotDelays}
 	if err := json.Unmarshal(b, c); err != nil {
 		return nil, err
 	}

@@ -21,6 +21,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
@@ -105,6 +106,7 @@ type NewSimRequest struct {
 	EnforceUniqueCallsignSuffix bool
 
 	PilotErrorInterval float32
+	PilotDelays        nav.PilotDelays
 
 	Initials   string // Controller initials (e.g., "XX")
 	Privileged bool
@@ -114,6 +116,7 @@ func MakeNewSimRequest() NewSimRequest {
 	return NewSimRequest{
 		NewSimName:         rand.Make().AdjectiveNoun(),
 		PilotErrorInterval: 0,
+		PilotDelays:        nav.BriefPilotDelays,
 	}
 }
 
@@ -212,6 +215,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) (
 	nsc.Brief = briefMarkdown
 	nsc.EnforceUniqueCallsignSuffix = req.EnforceUniqueCallsignSuffix
 	nsc.PilotErrorInterval = req.PilotErrorInterval
+	nsc.PilotDelays = req.PilotDelays
 	nsc.WXProvider = sm.wxProvider
 	nsc.Emergencies = tables.Emergencies
 	nsc.StartTime = req.StartTime

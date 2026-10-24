@@ -103,6 +103,7 @@ type Sim struct {
 
 	PilotErrorInterval time.Duration
 	LastPilotError     Time
+	PilotDelays        nav.PilotDelays
 
 	lastSimUpdate     Time
 	updateTimeSlop    time.Duration
@@ -253,6 +254,7 @@ type NewSimConfiguration struct {
 	Airspace               av.Airspace
 
 	PilotErrorInterval float32
+	PilotDelays        nav.PilotDelays
 
 	WXProvider *wx.Provider
 
@@ -298,6 +300,7 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 
 		PilotErrorInterval: time.Duration(config.PilotErrorInterval * float32(time.Minute)),
 		LastPilotError:     NewSimTime(config.StartTime),
+		PilotDelays:        config.PilotDelays,
 
 		FutureFieldChecks:   make(map[av.ADSBCallsign]*FutureFieldCheck),
 		FutureTrafficChecks: make(map[av.ADSBCallsign]*FutureTrafficCheck),

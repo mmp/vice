@@ -20,6 +20,7 @@ import (
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/scenario"
@@ -1140,6 +1141,26 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	imgui.SetNextItemWidth(200)
 	imgui.SliderFloatV("##errorInterval", &c.PilotErrorInterval, 0, 30,
 		util.Select(c.PilotErrorInterval == 0, "never", "%.1f min"), imgui.SliderFlagsNone)
+
+	imgui.Text("Pilot delays:")
+	for _, ch := range []struct {
+		label  string
+		choice pilotDelayChoice
+	}{
+		{"Brief", pilotDelaysBrief},
+		{"Realistic", pilotDelaysRealistic},
+		{"Custom", pilotDelaysCustom},
+	} {
+		imgui.SameLine()
+		if imgui.RadioButtonBool(ch.label+"##pilotDelays", config.PilotDelayChoice == ch.choice) {
+			config.PilotDelayChoice = ch.choice
+		}
+	}
+	if config.PilotDelayChoice == pilotDelaysCustom {
+		imgui.Indent()
+		drawPilotDelayEditor(&config.CustomPilotDelays)
+		imgui.Unindent()
+	}
 	imgui.Spacing()
 
 	// WEATHER & TIME section
@@ -1251,6 +1272,56 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	return false
 }
 
+// drawPilotDelayEditor draws min and max sliders for each range of pilot
+// delays.
+func drawPilotDelayEditor(d *nav.PilotDelays) {
+	imgui.Text("Ctrl-click a slider to type a value")
+
+	ranges := []struct {
+		label string
+		r     *nav.DelayRange
+	}{
+		{"Climb/descend", &d.Altitude},
+		{"Climb/descend once at speed", &d.AltitudeAfterSpeed},
+		{"Heading, when cleared for approach", &d.HeadingApproachCleared},
+		{"Heading, when on a heading", &d.HeadingFromHeading},
+		{"Heading, when on LNAV", &d.HeadingFromLNAV},
+		{"Direct, to an expected fix", &d.DirectExpected},
+		{"Direct, when on LNAV", &d.DirectFromLNAV},
+		{"Direct, when on a heading", &d.DirectFromHeading},
+		{"On course (depart on course, climb/descend via)", &d.OnCourse},
+		{"Pending heading/direct, once cleared for approach", &d.PendingApproachCleared},
+	}
+	width := 8 * imgui.FontSize()
+	for _, r := range ranges {
+		imgui.PushIDStr(r.label)
+		lo, hi := float32(r.r.Min.Seconds()), float32(r.r.Max.Seconds())
+		changed := false
+
+		imgui.SetNextItemWidth(width)
+		if imgui.SliderFloatV("##min", &lo, 0, 15, "min %.1f s", imgui.SliderFlagsAlwaysClamp) {
+			hi = max(hi, lo)
+			changed = true
+		}
+
+		imgui.SameLine()
+		imgui.SetNextItemWidth(width)
+		if imgui.SliderFloatV("##max", &hi, 0, 15, "max %.1f s", imgui.SliderFlagsAlwaysClamp) {
+			lo = min(lo, hi)
+			changed = true
+		}
+
+		imgui.SameLine()
+		imgui.Text(r.label)
+		imgui.PopID()
+
+		if changed {
+			r.r.Min = time.Duration(lo * float32(time.Second))
+			r.r.Max = time.Duration(hi * float32(time.Second))
+		}
+	}
+}
+
 func (c *NewSimConfiguration) Start(config *Config) error {
 	c.ScenarioSpec.LaunchConfig.EnableTowerGoArounds = config.EnableTowerGoArounds
 
@@ -1285,6 +1356,7 @@ func (c *NewSimConfiguration) Start(config *Config) error {
 	} else {
 		// Create sim configuration for new sim
 		c.NewSimRequest.Initials = config.ControllerInitials
+		c.NewSimRequest.PilotDelays = config.pilotDelays()
 		if err := c.mgr.CreateNewSim(c.NewSimRequest, config.ControllerInitials, c.selectedServer, c.lg); err != nil {
 			c.lg.Errorf("CreateNewSim failed: %v", err)
 			return err

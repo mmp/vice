@@ -1,6 +1,7 @@
 - Scenario updates: HNL (Mike Fries), CLT (anguse), S56 (Elliott B), P50 (Ketan K)
 - Fixed multiple bugs with flight strip ownership
 - Flight Model / Control
+  - Pilot response delays can be set to "Brief", "Realistic" (longer), or custom values when creating a sim
   - Improved support for LDA approaches (don't just fly the extended centerline)
   - An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course
   - Aircraft ignore frequency change instructions if earlier instructions were "unable" or "say again"

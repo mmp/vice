@@ -42,18 +42,20 @@ func TestOldPaneSettingsStillRead(t *testing.T) {
 	}
 }
 
-// Configs saved before the pilot delays were stored get the defaults, while
-// saved delays are read back as they were, zeros included.
-func TestPilotDelaysRead(t *testing.T) {
-	c, err := decodeConfig([]byte(`{"Version":91}`))
+// Configs saved before custom pilot delays were stored start them at the
+// brief ones, while saved delays are read back as they were, zeros included.
+func TestCustomPilotDelaysRead(t *testing.T) {
+	c, err := decodeConfig([]byte(`{"Version":104}`))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c.PilotDelays != nav.DefaultPilotDelays {
-		t.Errorf("config without pilot delays got %+v, not the defaults", c.PilotDelays)
+	if c.PilotDelayChoice != pilotDelaysBrief || c.CustomPilotDelays != nav.BriefPilotDelays {
+		t.Errorf("config without pilot delays got choice %d and custom delays %+v",
+			c.PilotDelayChoice, c.CustomPilotDelays)
 	}
 
-	c.PilotDelays = nav.PilotDelays{OnCourse: nav.DelayRange{Max: 5 * time.Second}}
+	c.PilotDelayChoice = pilotDelaysCustom
+	c.CustomPilotDelays = nav.PilotDelays{OnCourse: nav.DelayRange{Max: 5 * time.Second}}
 	b, err := json.Marshal(c)
 	if err != nil {
 		t.Fatal(err)
@@ -62,7 +64,8 @@ func TestPilotDelaysRead(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if back.PilotDelays != c.PilotDelays {
-		t.Errorf("saved pilot delays %+v read back as %+v", c.PilotDelays, back.PilotDelays)
+	if back.PilotDelayChoice != pilotDelaysCustom || back.CustomPilotDelays != c.CustomPilotDelays {
+		t.Errorf("saved custom pilot delays %+v read back as choice %d with %+v",
+			c.CustomPilotDelays, back.PilotDelayChoice, back.CustomPilotDelays)
 	}
 }

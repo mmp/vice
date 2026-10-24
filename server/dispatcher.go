@@ -13,7 +13,6 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/speech/stt"
 	"github.com/mmp/vice/traffic"
@@ -699,25 +698,6 @@ func (sd *dispatcher) SetWaypointCommands(args *SetWaypointCommandsArgs, _ *stru
 		return ErrNoSimForControllerToken
 	}
 	return c.session.apply(c.tcw, SetWaypointCommandsRPC, args, func() error { return c.sim.SetWaypointCommands(c.tcw, args.Commands) })
-}
-
-type SetPilotDelaysArgs struct {
-	ControllerToken string
-	Delays          nav.PilotDelays
-}
-
-const SetPilotDelaysRPC = "Sim.SetPilotDelays"
-
-// SetPilotDelays installs new pilot delays. They apply to all of the
-// server's sims, not only the one the controller is signed in to.
-func (sd *dispatcher) SetPilotDelays(args *SetPilotDelaysArgs, _ *struct{}) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	if sd.sm.LookupController(args.ControllerToken) == nil {
-		return ErrNoSimForControllerToken
-	}
-	nav.SetPilotDelays(args.Delays)
-	return nil
 }
 
 type LaunchAircraftArgs struct {

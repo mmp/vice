@@ -103,13 +103,13 @@ func (nav *Nav) setAssignedAltitude(alt float32) {
 }
 
 func (nav *Nav) enqueueAssignedAltitude(alt float32, simTime Time, delayReduction time.Duration) {
-	d := max(nav.drawDelay(currentPilotDelays().Altitude)-delayReduction, 0)
+	d := max(nav.drawDelay(nav.Delays.Altitude)-delayReduction, 0)
 	nav.enqueueAltitude(alt, RateNormal, simTime.Add(d))
 }
 
 func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
 	nav.enqueueAltitude(*nav.Altitude.AfterSpeed, nav.Altitude.RateAfterSpeed,
-		simTime.Add(nav.drawDelay(currentPilotDelays().AltitudeAfterSpeed)))
+		simTime.Add(nav.drawDelay(nav.Delays.AltitudeAfterSpeed)))
 }
 
 // enqueueAltitude assigns alt, to be flown at rate once the pilot reacts at

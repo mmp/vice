@@ -19,7 +19,6 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/gui"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/platform/audio"
 	"github.com/mmp/vice/renderer"
@@ -1204,75 +1203,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarSc
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Show details about the current sim run in the Messages window")
 		}
-
-		imgui.Separator()
-		drawPilotDelayEditor(c, config)
 	}
 
 	imgui.End()
-}
-
-// drawPilotDelayEditor draws min and max sliders for each range of pilot
-// delays. It sends the server the delays when an edit is finished rather
-// than on every frame of a drag.
-func drawPilotDelayEditor(c *client.ControlClient, config *Config) {
-	imgui.Text("Pilot delays (Ctrl-click a slider to type a value)")
-
-	d := &config.PilotDelays
-	ranges := []struct {
-		label string
-		r     *nav.DelayRange
-	}{
-		{"Climb/descend", &d.Altitude},
-		{"Climb/descend once at speed", &d.AltitudeAfterSpeed},
-		{"Heading, when cleared for approach", &d.HeadingApproachCleared},
-		{"Heading, when on a heading", &d.HeadingFromHeading},
-		{"Heading, when on LNAV", &d.HeadingFromLNAV},
-		{"Direct, to an expected fix", &d.DirectExpected},
-		{"Direct, when on LNAV", &d.DirectFromLNAV},
-		{"Direct, when on a heading", &d.DirectFromHeading},
-		{"On course (depart on course, climb/descend via)", &d.OnCourse},
-		{"Pending heading/direct, once cleared for approach", &d.PendingApproachCleared},
-	}
-	width := 8 * imgui.FontSize()
-	edited := false
-	for _, r := range ranges {
-		imgui.PushIDStr(r.label)
-		lo, hi := float32(r.r.Min.Seconds()), float32(r.r.Max.Seconds())
-		changed := false
-
-		imgui.SetNextItemWidth(width)
-		if imgui.SliderFloatV("##min", &lo, 0, 15, "min %.1f s", imgui.SliderFlagsAlwaysClamp) {
-			hi = max(hi, lo)
-			changed = true
-		}
-		edited = edited || imgui.IsItemDeactivatedAfterEdit()
-
-		imgui.SameLine()
-		imgui.SetNextItemWidth(width)
-		if imgui.SliderFloatV("##max", &hi, 0, 15, "max %.1f s", imgui.SliderFlagsAlwaysClamp) {
-			lo = min(lo, hi)
-			changed = true
-		}
-		edited = edited || imgui.IsItemDeactivatedAfterEdit()
-
-		imgui.SameLine()
-		imgui.Text(r.label)
-		imgui.PopID()
-
-		if changed {
-			r.r.Min = time.Duration(lo * float32(time.Second))
-			r.r.Max = time.Duration(hi * float32(time.Second))
-		}
-	}
-
-	if imgui.Button("Restore default pilot delays") {
-		*d = nav.DefaultPilotDelays
-		edited = true
-	}
-	if edited {
-		c.SetPilotDelays(*d)
-	}
 }
 
 // pttSpeechGraceWindow lets the controller key up at the very tail of a
