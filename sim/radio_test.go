@@ -518,6 +518,61 @@ func TestContactWaitsForFrequencySwitch(t *testing.T) {
 	}
 }
 
+// TestRedirectedVFRRepeatsRequest verifies that a VFR sent to another
+// controller before anyone tracks it repeats its flight following request
+// there, as it first made it, and says nothing more to a virtual controller.
+func TestRedirectedVFRRepeatsRequest(t *testing.T) {
+	for _, tc := range []struct {
+		name    string
+		to      TCP
+		goAhead bool
+		want    *PendingTransmissionType
+	}{
+		{"VFR request", "2B", true, new(PendingTransmissionFlightFollowingReq)},
+		{"full request", "2B", false, new(PendingTransmissionFlightFollowingFull)},
+		{"virtual controller", "14", true, nil},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := newStripTestSim()
+			s.State.Controllers[tc.to] = &av.Controller{Position: string(tc.to), RadioName: "NorCal Approach",
+				Frequency: 125350}
+
+			ac := MakeTestAircraft("N671", "13L")
+			ac.FlightRules = av.FlightRulesVFR
+			ac.RequestedFlightFollowing = true
+			ac.WaitingForGoAhead = tc.goAhead
+			ac.ControllerFrequency = "2A"
+			s.Aircraft[ac.ADSBCallsign] = ac
+
+			res := s.RunAircraftControlCommands("A", ac.ADSBCallsign, "CT"+string(tc.to), 0, 0, "")
+			if res.Error != nil {
+				t.Fatalf("CT%s: %v", tc.to, res.Error)
+			}
+			if !strings.Contains(strings.ToLower(res.ReadbackSpokenText), "approach on") {
+				t.Errorf("readback %q doesn't repeat the contact instruction", res.ReadbackSpokenText)
+			}
+
+			s.State.SimTime = s.State.SimTime.Add(15 * time.Second)
+			s.processFutureFrequencyChanges()
+			s.processVirtualControllerContacts()
+
+			if ac.ControllerFrequency != ControlPosition(tc.to) {
+				t.Errorf("expected the pilot on %s, got %q", tc.to, ac.ControllerFrequency)
+			}
+			pc := sayNextContact(s, []TCP{tc.to})
+			if tc.want == nil {
+				if pc != nil {
+					t.Errorf("expected nothing said to the virtual controller, got type %v", pc.Type)
+				}
+			} else if pc == nil {
+				t.Error("expected the pilot to call the new controller")
+			} else if pc.Type != *tc.want {
+				t.Errorf("expected type %v, got %v", *tc.want, pc.Type)
+			}
+		})
+	}
+}
+
 // TestStaleContactIsCulled verifies that a contact that has gone moot is
 // neither offered to the controller nor kept in the queue.
 func TestStaleContactIsCulled(t *testing.T) {

@@ -159,9 +159,9 @@ func TestStripGoesAlongWithFrequencyChange(t *testing.T) {
 
 func TestFrequencyChangeDoesNotPrintStrip(t *testing.T) {
 	s := newStripTestSim()
-	_, fp := addStripTestDeparture(t, s, "2A")
+	ac, fp := addStripTestDeparture(t, s, "2A")
 
-	if _, err := s.ContactController("A", fp.ACID, "2B", 0); err != nil {
+	if _, err := s.ContactController("A", ac.ADSBCallsign, "2B", 0); err != nil {
 		t.Fatalf("ContactController: %v", err)
 	}
 	if fp.StripOwner != "" {

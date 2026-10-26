@@ -20,6 +20,7 @@ import (
 // that command authority follows the aircraft's frequency.
 func makeCorrectionSim() *Sim {
 	s := NewTestSim(&log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))})
+	s.STARSComputer = makeSTARSComputer("TEST")
 	clear(s.PrivilegedTCWs)
 	s.State.CurrentConsolidation["OTHER"] = &TCPConsolidation{PrimaryTCP: "126.0"}
 	for _, cs := range []av.ADSBCallsign{"UAL123", "DAL456", "N123AB"} {
@@ -122,7 +123,7 @@ func TestCorrectionFrequencyTransfer(t *testing.T) {
 			runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "L010 D20")
 			switch transfer {
 			case "controller":
-				s.contactController("125.0", &FlightPlan{}, ac, "126.0", 0)
+				s.contactController("125.0", ac, "126.0", 0)
 			case "tower":
 				ac.Nav.Approach.Cleared = true
 				runCorrectionCommand(t, s, E2ETCW(), ac.ADSBCallsign, "TO")

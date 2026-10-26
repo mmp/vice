@@ -186,32 +186,25 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID, delayReduction time.
 			return nil
 		},
 		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) speech.CommandIntent {
-			return s.contactController(tcw, sfp, ac, sfp.TrackingController, delayReduction)
+			return s.contactController(tcw, ac, sfp.TrackingController, delayReduction)
 		})
 }
 
-func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP, delayReduction time.Duration) (speech.CommandIntent, error) {
-	return s.dispatchFlightPlanCommand(tcw, acid,
-		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) error {
-			if ac == nil {
-				return av.ErrNoAircraftForCallsign
-			}
-			if !s.TCWCanCommandAircraft(tcw, ac) {
-				return av.ErrOtherControllerHasTrack
-			}
-			return nil
-		},
-		func(tcw TCW, sfp *FlightPlan, ac *Aircraft) speech.CommandIntent {
+// ContactController sends the aircraft to toTCP's frequency. It needs no
+// track, so a controller can redirect a VFR that called for flight following
+// before anyone tracks it.
+func (s *Sim) ContactController(tcw TCW, callsign av.ADSBCallsign, toTCP TCP, delayReduction time.Duration) (speech.CommandIntent, error) {
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
 			if s.State.TCWControlsPosition(tcw, toTCP) {
 				return speech.MakeUnableIntent("Unable, we are already on your frequency")
 			} else {
-				return s.contactController(tcw, sfp, ac, toTCP, delayReduction)
+				return s.contactController(tcw, ac, toTCP, delayReduction)
 			}
 		})
 }
 
-func (s *Sim) contactController(tcw TCW, sfp *FlightPlan, ac *Aircraft, toTCP TCP,
-	delayReduction time.Duration) speech.CommandIntent {
+func (s *Sim) contactController(tcw TCW, ac *Aircraft, toTCP TCP, delayReduction time.Duration) speech.CommandIntent {
 	fromTCP := s.State.PrimaryPositionForTCW(tcw)
 
 	// Immediately respond to the current controller that we're
@@ -235,8 +228,8 @@ func (s *Sim) contactController(tcw TCW, sfp *FlightPlan, ac *Aircraft, toTCP TC
 
 	// The strip goes along with the aircraft unless the controller has
 	// already pushed it somewhere.
-	if s.State.TCWControlsPosition(tcw, sfp.StripOwner) {
-		sfp.StripOwner = toTCP
+	if fp := s.aircraftFlightPlan(ac); fp != nil && s.State.TCWControlsPosition(tcw, fp.StripOwner) {
+		fp.StripOwner = toTCP
 	}
 
 	// Cancel any in-progress frequency switch and take away the

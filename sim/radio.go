@@ -502,9 +502,24 @@ func (s *Sim) enqueueControllerContact(ac *Aircraft, tcp TCP, fromPos ControlPos
 		ADSBCallsign: ac.ADSBCallsign,
 		TCP:          tcp,
 		ReadyTime:    s.State.SimTime.Add(max(switchDelay+listenDelay-delayReduction, 0)),
-		Type:         util.Select(ac.IsDeparture(), PendingTransmissionDeparture, PendingTransmissionArrival),
+		Type:         ac.checkInTransmissionType(),
 		ATIS:         s.atisToReport(ac, tcp, fromPos),
 	})
+}
+
+// checkInTransmissionType returns what the pilot says on calling a new
+// controller. A VFR whose flight following request hasn't been taken up yet
+// makes the same request again.
+func (ac *Aircraft) checkInTransmissionType() PendingTransmissionType {
+	switch {
+	case ac.RequestedFlightFollowing && !ac.IsAssociated():
+		return util.Select(ac.WaitingForGoAhead, PendingTransmissionFlightFollowingReq,
+			PendingTransmissionFlightFollowingFull)
+	case ac.IsDeparture():
+		return PendingTransmissionDeparture
+	default:
+		return PendingTransmissionArrival
+	}
 }
 
 // atisToReport returns the ATIS letter an arrival checking in with tcp will

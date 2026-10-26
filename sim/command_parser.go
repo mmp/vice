@@ -705,7 +705,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			// Only treat as contact command if the TCP exists as a valid controller;
 			// otherwise treat as cleared approach (e.g., "CTTL" -> cleared for TTL approach)
 			if _, ok := s.State.Controllers[TCP(tcp)]; ok {
-				return s.ContactController(tcw, ACID(callsign), TCP(tcp), delayReduction)
+				return s.ContactController(tcw, callsign, TCP(tcp), delayReduction)
 			}
 			return s.ClearedApproach(tcw, callsign, command[1:], false, delayReduction)
 		} else {
