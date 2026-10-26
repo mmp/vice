@@ -59,7 +59,7 @@
           ],
           "destination": "KDTW",
           "exit": "FLO",
-          "route": "FLO GSO BKW SUBWY HTROD2"
+          "waypoints": "FLO GSO BKW SUBWY HTROD2"
         },
         {
           "airlines": [
@@ -70,7 +70,7 @@
           ],
           "destination": "KEWR",
           "exit": "CRE",
-          "route": "CRE WYLMS AARNN QUART PHLBO4"
+          "waypoints": "CRE WYLMS AARNN QUART PHLBO4"
         },
         {
           "airlines": [
@@ -81,7 +81,7 @@
           ],
           "destination": "KEWR",
           "exit": "CRE",
-          "route": "CRE ZORDO Q107 HURTS PROUD2"
+          "waypoints": "CRE ZORDO Q107 HURTS PROUD2"
         },
         {
           "airlines": [
@@ -92,7 +92,7 @@
           ],
           "destination": "KEWR",
           "exit": "OKNEE",
-          "route": "OKNEE MLLET6"
+          "waypoints": "OKNEE MLLET6"
         },
         {
           "airlines": [
@@ -103,7 +103,7 @@
           ],
           "destination": "KEWR",
           "exit": "OKNEE",
-          "route": "OKNEE MLLET6"
+          "waypoints": "OKNEE MLLET6"
         },
         {
           "airlines": [
@@ -114,7 +114,7 @@
           ],
           "destination": "KEWR",
           "exit": "CAE",
-          "route": "CAE SKWKR SITTH2"
+          "waypoints": "CAE SKWKR SITTH2"
         },
         {
           "airlines": [
@@ -125,7 +125,7 @@
           ],
           "destination": "KDAB",
           "exit": "CHS",
-          "route": "CHS LPERD TTHOR3"
+          "waypoints": "CHS LPERD TTHOR3"
         },
         {
           "airlines": [
@@ -136,7 +136,7 @@
           ],
           "destination": "KMCO",
           "exit": "CHS",
-          "route": "CHS LPERD SNFLD3"
+          "waypoints": "CHS LPERD SNFLD3"
         },
         {
           "airlines": [
@@ -146,7 +146,7 @@
           ],
           "destination": "KILM",
           "exit": "CRE",
-          "route": "CRE ILM"
+          "waypoints": "CRE ILM"
         },
         {
           "airlines": [
@@ -156,7 +156,7 @@
           ],
           "destination": "KCHS",
           "exit": "CHS",
-          "route": "CHS KCHS"
+          "waypoints": "CHS KCHS"
         },
         {
           "airlines": [
@@ -166,7 +166,7 @@
           ],
           "destination": "KSSC",
           "exit": "CAE",
-          "route": "CAE SSC"
+          "waypoints": "CAE SSC"
         },
         {
           "airlines": [
@@ -176,7 +176,7 @@
           ],
           "destination": "KFAY",
           "exit": "CRE",
-          "route": "CRE FAY"
+          "waypoints": "CRE FAY"
         },
         {
           "airlines": [
@@ -186,7 +186,7 @@
           ],
           "destination": "KFLO",
           "exit": "CRE",
-          "route": "CRE FLO"
+          "waypoints": "CRE FLO"
         }
       ],
       "tower_list": 1,
@@ -253,7 +253,7 @@
           ],
           "destination": "KDAB",
           "exit": "CHS",
-          "route": "CHS LPERD TTHOR3"
+          "waypoints": "CHS LPERD TTHOR3"
         },
         {
           "airlines": [
@@ -263,7 +263,7 @@
           ],
           "destination": "KORL",
           "exit": "CHS",
-          "route": "CHS ORL"
+          "waypoints": "CHS ORL"
         },
         {
           "airlines": [
@@ -273,7 +273,7 @@
           ],
           "destination": "KILM",
           "exit": "CRE",
-          "route": "CRE ILM"
+          "waypoints": "CRE ILM"
         },
         {
           "airlines": [
@@ -283,7 +283,7 @@
           ],
           "destination": "KCHS",
           "exit": "CHS",
-          "route": "CHS KCHS"
+          "waypoints": "CHS KCHS"
         },
         {
           "airlines": [
@@ -293,7 +293,7 @@
           ],
           "destination": "KSSC",
           "exit": "CAE",
-          "route": "CAE SSC"
+          "waypoints": "CAE SSC"
         },
         {
           "airlines": [
@@ -303,7 +303,7 @@
           ],
           "destination": "KFAY",
           "exit": "CRE",
-          "route": "CRE FAY"
+          "waypoints": "CRE FAY"
         },
         {
           "airlines": [
@@ -313,7 +313,7 @@
           ],
           "destination": "KFLO",
           "exit": "CRE",
-          "route": "CRE FLO"
+          "waypoints": "CRE FLO"
         }
       ],
       "tower_list": 2,
@@ -428,7 +428,7 @@
           "altitude": 7000,
           "destination": "KILM",
           "exit": "CRE",
-          "route": "CRE ILM"
+          "waypoints": "CRE ILM"
         },
         {
           "airlines": [
@@ -440,7 +440,7 @@
           "altitude": 7000,
           "destination": "KFAY",
           "exit": "FAY",
-          "route": "FAY"
+          "waypoints": "FAY"
         },
         {
           "airlines": [
@@ -452,7 +452,7 @@
           "altitude": 6000,
           "destination": "KFLO",
           "exit": "FLO",
-          "route": "FLO"
+          "waypoints": "FLO"
         },
         {
           "airlines": [
@@ -470,7 +470,7 @@
           "altitude": 9000,
           "destination": "KCLT",
           "exit": "CAE",
-          "route": "CAE"
+          "waypoints": "CAE"
         },
         {
           "airlines": [
@@ -488,7 +488,7 @@
           "altitude": 9000,
           "destination": "KCHS",
           "exit": "CHS",
-          "route": "CHS"
+          "waypoints": "CHS"
         }
       ]
     },
@@ -591,7 +591,7 @@
           "altitude": 7000,
           "destination": "KCHS",
           "exit": "CHS",
-          "route": "CHS"
+          "waypoints": "CHS"
         },
         {
           "airlines": [
@@ -603,7 +603,7 @@
           "altitude": 6000,
           "destination": "KFLO",
           "exit": "FLO",
-          "route": "FLO"
+          "waypoints": "FLO"
         },
         {
           "airlines": [
@@ -615,7 +615,7 @@
           "altitude": 7000,
           "destination": "KILM",
           "exit": "CRE",
-          "route": "CRE ILM"
+          "waypoints": "CRE ILM"
         },
         {
           "airlines": [
@@ -633,7 +633,7 @@
           "altitude": 9000,
           "destination": "KCLT",
           "exit": "CAE",
-          "route": "CAE"
+          "waypoints": "CAE"
         },
         {
           "airlines": [
@@ -651,7 +651,7 @@
           "altitude": 9000,
           "destination": "KRDU",
           "exit": "FAY",
-          "route": "FAY"
+          "waypoints": "FAY"
         }
       ]
     },
@@ -743,7 +743,7 @@
           "altitude": 6000,
           "destination": "KCHS",
           "exit": "CHS",
-          "route": "CHS"
+          "waypoints": "CHS"
         },
         {
           "airlines": [
@@ -755,7 +755,7 @@
           "altitude": 5000,
           "destination": "KFLO",
           "exit": "FLO",
-          "route": "FLO"
+          "waypoints": "FLO"
         },
         {
           "airlines": [
@@ -767,7 +767,7 @@
           "altitude": 7000,
           "destination": "KCAE",
           "exit": "CAE",
-          "route": "CAE"
+          "waypoints": "CAE"
         },
         {
           "airlines": [
@@ -779,7 +779,7 @@
           "altitude": 7000,
           "destination": "KILM",
           "exit": "CRE",
-          "route": "CRE ILM"
+          "waypoints": "CRE ILM"
         }
       ]
     },
@@ -895,7 +895,7 @@
           "altitude": 5000,
           "destination": "KFLO",
           "exit": "FLO",
-          "route": "FLO"
+          "waypoints": "FLO"
         },
         {
           "airlines": [
@@ -907,7 +907,7 @@
           "altitude": 7000,
           "destination": "KCHS",
           "exit": "CHS",
-          "route": "CHS"
+          "waypoints": "CHS"
         },
         {
           "airlines": [
@@ -919,7 +919,7 @@
           "altitude": 7000,
           "destination": "KCAE",
           "exit": "CAE",
-          "route": "CAE"
+          "waypoints": "CAE"
         },
         {
           "airlines": [
@@ -931,7 +931,7 @@
           "altitude": 8000,
           "destination": "KILM",
           "exit": "CRE",
-          "route": "CRE ILM"
+          "waypoints": "CRE ILM"
         }
       ]
     },
@@ -1029,7 +1029,7 @@
           "altitude": 6000,
           "destination": "KILM",
           "exit": "ILM",
-          "route": "ILM"
+          "waypoints": "ILM"
         },
         {
           "airlines": [
@@ -1041,7 +1041,7 @@
           "altitude": 7000,
           "destination": "KFAY",
           "exit": "FAY",
-          "route": "FAY"
+          "waypoints": "FAY"
         },
         {
           "airlines": [
@@ -1059,7 +1059,7 @@
           "altitude": 9000,
           "destination": "KCLT",
           "exit": "CAE",
-          "route": "CAE"
+          "waypoints": "CAE"
         },
         {
           "airlines": [
@@ -1071,7 +1071,7 @@
           "altitude": 7000,
           "destination": "KFLO",
           "exit": "FLO",
-          "route": "FLO"
+          "waypoints": "FLO"
         },
         {
           "airlines": [
@@ -1089,7 +1089,7 @@
           "altitude": 9000,
           "destination": "KCHS",
           "exit": "CHS",
-          "route": "CHS"
+          "waypoints": "CHS"
         }
       ],
       "vfr": {
@@ -1104,7 +1104,7 @@
       "arrivals": [
         {
           "waypoints": "CAE N033.47.49.697,W079.52.45.398/ho KMYR",
-          "route": "CAE",
+          "flight_strip_route": "CAE",
           "initial_controller": "C71",
           "initial_altitude": 22000,
           "assigned_altitude": 11000,
@@ -1173,7 +1173,7 @@
       "arrivals": [
         {
           "waypoints": "CAE N033.47.49.697,W079.52.45.398/ho KMYR",
-          "route": "CAE",
+          "flight_strip_route": "CAE",
           "initial_controller": "C71",
           "initial_altitude": 11000,
           "initial_speed": 200,
@@ -1236,7 +1236,7 @@
       "arrivals": [
         {
           "waypoints": "ILM N034.00.14.865,W078.22.10.093/ho KMYR",
-          "route": "ILM",
+          "flight_strip_route": "ILM",
           "initial_controller": "W32",
           "initial_altitude": 22000,
           "assigned_altitude": 11000,
@@ -1301,7 +1301,7 @@
         },
         {
           "waypoints": "N034.35.16.571,W078.14.08.419 N034.00.14.865,W078.22.10.093/ho KMYR",
-          "route": "ILM",
+          "flight_strip_route": "ILM",
           "initial_controller": "W32",
           "initial_altitude": 22000,
           "description": "jet - descend to MYR APP boundary 11000",
@@ -1336,7 +1336,7 @@
         },
         {
           "waypoints": "N034.35.16.571,W078.14.08.419 N034.00.14.865,W078.22.10.093/ho KMYR",
-          "route": "ILM",
+          "flight_strip_route": "ILM",
           "initial_controller": "W32",
           "initial_altitude": 11000,
           "description": "prop - MYR APP boundary 11000",
@@ -1364,7 +1364,7 @@
       "arrivals": [
         {
           "waypoints": "N034.35.16.571,W078.14.08.419 N034.00.14.865,W078.22.10.093/ho KMYR",
-          "route": "ILM",
+          "flight_strip_route": "ILM",
           "initial_controller": "W32",
           "initial_altitude": 11000,
           "description": "prop - MYR APP boundary 11000",
@@ -1413,7 +1413,7 @@
       "arrivals": [
         {
           "waypoints": "UNJAM N033.53.01.906,W079.37.40.452/ho KMYR",
-          "route": "UNJAM",
+          "flight_strip_route": "UNJAM",
           "initial_controller": "C71",
           "initial_altitude": 22000,
           "assigned_altitude": 11000,
@@ -1445,7 +1445,7 @@
       "arrivals": [
         {
           "waypoints": "FLO N033.57.50.268,W079.22.24.130/ho KMYR",
-          "route": "FLO",
+          "flight_strip_route": "FLO",
           "initial_controller": "C71",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -1483,7 +1483,7 @@
       "arrivals": [
         {
           "waypoints": "FLO N033.57.50.268,W079.22.24.130/ho KMYR",
-          "route": "FLO",
+          "flight_strip_route": "FLO",
           "initial_controller": "C71",
           "initial_altitude": 11000,
           "initial_speed": 200,
@@ -1539,7 +1539,7 @@
       "arrivals": [
         {
           "waypoints": "CHS N033.15.47.257,W079.31.32.754/ho KMYR",
-          "route": "CHS",
+          "flight_strip_route": "CHS",
           "initial_controller": "C74",
           "initial_altitude": 22000,
           "assigned_altitude": 11000,
@@ -1598,7 +1598,7 @@
       "arrivals": [
         {
           "waypoints": "CHS N033.15.47.257,W079.31.32.754/ho KMYR",
-          "route": "CHS",
+          "flight_strip_route": "CHS",
           "initial_controller": "C74",
           "initial_altitude": 11000,
           "initial_speed": 200,
@@ -1647,7 +1647,7 @@
       "arrivals": [
         {
           "waypoints": "FAY N034.23.44.159,W078.54.08.214/ho KMYR",
-          "route": "FAY",
+          "flight_strip_route": "FAY",
           "initial_controller": "W32",
           "initial_altitude": 11000,
           "initial_speed": 200,

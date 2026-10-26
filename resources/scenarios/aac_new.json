@@ -96,7 +96,7 @@
       },
       "departures": [
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -110,7 +110,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -126,7 +126,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -140,7 +140,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -156,7 +156,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -180,7 +180,7 @@
           "altitude": 35000,
           "destination": "KORD",
           "exit": "COLIN.RNAV",
-          "route": "COLIN MKC"
+          "waypoints": "COLIN MKC"
         },
         {
           "airlines": [
@@ -192,7 +192,7 @@
           "altitude": 35000,
           "destination": "KCLT",
           "exit": "MAYES.RNAV",
-          "route": "MAYES FSM"
+          "waypoints": "MAYES FSM"
         },
         {
           "airlines": [
@@ -204,10 +204,10 @@
           "altitude": 35000,
           "destination": "KORD",
           "exit": "NOBLE.RNAV",
-          "route": "NOBLE MLC"
+          "waypoints": "NOBLE MLC"
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -221,7 +221,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -235,7 +235,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -249,7 +249,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -263,7 +263,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -277,7 +277,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -291,7 +291,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.P",
           "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
           "destination": "KMCI",
@@ -322,7 +322,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KMEM",
@@ -353,7 +353,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KLIT",
@@ -384,7 +384,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000],
           "destination": "KGCK",
@@ -415,7 +415,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KAMA",
@@ -446,7 +446,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KOKC",
@@ -477,7 +477,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KDAL",
@@ -508,7 +508,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KGGG",
@@ -539,7 +539,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KMLC",
@@ -570,7 +570,7 @@
           ]
         },
         {
-          "route": "MARCI SGF",
+          "waypoints": "MARCI SGF",
           "exit": "SGF.P",
           "altitude": [7000],
           "destination": "KSGF",
@@ -601,7 +601,7 @@
           ]
         },
         {
-          "route": "TUL V4 SGF",
+          "waypoints": "TUL V4 SGF",
           "exit": "SGF.P",
           "altitude": [5000],
           "destination": "KSGF",
@@ -694,7 +694,7 @@
       },
       "departures": [
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -712,7 +712,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -732,7 +732,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             9000, 11000, 13000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 32000, 33000, 34000,
@@ -751,7 +751,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             9000, 11000, 13000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 32000, 33000, 34000,
@@ -770,7 +770,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.J",
           "altitude": [
             9000, 11000, 13000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 32000, 33000, 34000,
@@ -789,7 +789,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -808,7 +808,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -827,7 +827,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -846,7 +846,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -865,7 +865,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -884,7 +884,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -903,7 +903,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.P",
           "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
           "destination": "KMCI",
@@ -915,7 +915,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KMEM",
@@ -927,7 +927,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KLIT",
@@ -939,7 +939,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000],
           "destination": "KGCK",
@@ -951,7 +951,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KAMA",
@@ -963,7 +963,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KOKC",
@@ -975,7 +975,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KDAL",
@@ -987,7 +987,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KGGG",
@@ -999,7 +999,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KMLC",
@@ -1059,7 +1059,7 @@
       },
       "departures": [
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -1137,7 +1137,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -1217,7 +1217,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -1295,7 +1295,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -1375,7 +1375,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -1455,7 +1455,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -1534,7 +1534,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -1613,7 +1613,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -1692,7 +1692,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -1771,7 +1771,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -1850,7 +1850,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -1929,7 +1929,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.P",
           "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
           "destination": "KMCI",
@@ -1941,7 +1941,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KMEM",
@@ -1953,7 +1953,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KLIT",
@@ -1965,7 +1965,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000],
           "destination": "KGCK",
@@ -1977,7 +1977,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KAMA",
@@ -1989,7 +1989,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KOKC",
@@ -2001,7 +2001,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KDAL",
@@ -2013,7 +2013,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KGGG",
@@ -2025,7 +2025,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KMLC",
@@ -2073,7 +2073,7 @@
       },
       "departures": [
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -2087,7 +2087,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -2103,7 +2103,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -2117,7 +2117,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -2133,7 +2133,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -2149,7 +2149,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2163,7 +2163,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2177,7 +2177,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2191,7 +2191,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2205,7 +2205,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -2219,7 +2219,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -2233,7 +2233,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.P",
           "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
           "destination": "KMCI",
@@ -2245,7 +2245,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KMEM",
@@ -2257,7 +2257,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KLIT",
@@ -2269,7 +2269,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000],
           "destination": "KGCK",
@@ -2281,7 +2281,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KAMA",
@@ -2293,7 +2293,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KOKC",
@@ -2305,7 +2305,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KDAL",
@@ -2317,7 +2317,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KGGG",
@@ -2329,7 +2329,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KMLC",
@@ -2375,7 +2375,7 @@
       },
       "departures": [
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000, 24000, 25000, 26000, 27000,
@@ -2413,7 +2413,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -2451,7 +2451,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             31000, 32000, 33000, 34000, 35000, 36000, 37000, 38000, 39000, 40000, 41000, 43000, 45000, 47000
@@ -2487,7 +2487,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -2525,7 +2525,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.J",
           "altitude": [
             9000, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000, 21000, 22000, 23000,
@@ -2563,7 +2563,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2600,7 +2600,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2637,7 +2637,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2674,7 +2674,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.J",
           "altitude": [
             10000, 12000, 14000, 16000, 18000, 20000, 22000, 24000, 26000, 28000, 30000, 32000, 34000, 36000, 38000,
@@ -2711,7 +2711,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -2748,7 +2748,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.J",
           "altitude": [
             9000, 11000, 15000, 17000, 19000, 21000, 23000, 25000, 27000, 29000, 31000, 33000, 35000, 37000, 39000,
@@ -2785,7 +2785,7 @@
           ]
         },
         {
-          "route": "COLIN MKC",
+          "waypoints": "COLIN MKC",
           "exit": "COLIN.P",
           "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
           "destination": "KMCI",
@@ -2797,7 +2797,7 @@
           ]
         },
         {
-          "route": "MAYES FSM",
+          "waypoints": "MAYES FSM",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KMEM",
@@ -2809,7 +2809,7 @@
           ]
         },
         {
-          "route": "MAYES LIT",
+          "waypoints": "MAYES LIT",
           "exit": "MAYES.P",
           "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
           "destination": "KLIT",
@@ -2821,7 +2821,7 @@
           ]
         },
         {
-          "route": "SHAWN GCK",
+          "waypoints": "SHAWN GCK",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000],
           "destination": "KGCK",
@@ -2833,7 +2833,7 @@
           ]
         },
         {
-          "route": "SHAWN AMA",
+          "waypoints": "SHAWN AMA",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KAMA",
@@ -2845,7 +2845,7 @@
           ]
         },
         {
-          "route": "SHAWN OKC",
+          "waypoints": "SHAWN OKC",
           "exit": "SHAWN.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KOKC",
@@ -2857,7 +2857,7 @@
           ]
         },
         {
-          "route": "NOBLE DAL",
+          "waypoints": "NOBLE DAL",
           "exit": "NOBLE.P",
           "altitude": [4000, 6000, 8000, 10000, 12000, 14000, 16000],
           "destination": "KDAL",
@@ -2869,7 +2869,7 @@
           ]
         },
         {
-          "route": "NOBLE PRX",
+          "waypoints": "NOBLE PRX",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KGGG",
@@ -2881,7 +2881,7 @@
           ]
         },
         {
-          "route": "NOBLE MLC",
+          "waypoints": "NOBLE MLC",
           "exit": "NOBLE.P",
           "altitude": [5000, 7000, 9000, 11000, 15000],
           "destination": "KMLC",
@@ -2910,7 +2910,7 @@
     "REELI": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "initial_altitude": 14000,
           "initial_speed": 260,
           "initial_controller": "C51",
@@ -2974,7 +2974,7 @@
         },
         {
           "description": "REELI Satellite",
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 9000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -3013,7 +3013,7 @@
       "arrivals": [
         {
           "description": "SGF V4",
-          "route": "V4 PRIOR",
+          "flight_strip_route": "V4 PRIOR",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "11E",
@@ -3041,7 +3041,7 @@
       "arrivals": [
         {
           "description": "SGF V4",
-          "route": "V4 PRIOR",
+          "flight_strip_route": "V4 PRIOR",
           "initial_altitude": 6000,
           "initial_speed": 250,
           "initial_controller": "11E",
@@ -3091,7 +3091,7 @@
       "arrivals": [
         {
           "description": "SGF V4",
-          "route": "V4 PRIOR",
+          "flight_strip_route": "V4 PRIOR",
           "initial_altitude": 4000,
           "initial_speed": 250,
           "initial_controller": "11E",
@@ -3130,7 +3130,7 @@
     "MAYES": {
       "arrivals": [
         {
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -3197,7 +3197,7 @@
     "KILLR": {
       "arrivals": [
         {
-          "route": "/. TUL4",
+          "flight_strip_route": "/. TUL4",
           "initial_altitude": 13000,
           "initial_speed": 260,
           "initial_controller": "C51",
@@ -3260,7 +3260,7 @@
           }
         },
         {
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "description": "9k Arrivals KILLR",
           "initial_altitude": 9000,
           "initial_speed": 280,
@@ -3282,7 +3282,7 @@
     "KILLR_LO": {
       "arrivals": [
         {
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "description": "5k Arrivals KILLR",
           "initial_altitude": 5000,
           "initial_speed": 280,
@@ -3316,7 +3316,7 @@
     "ATOKA": {
       "arrivals": [
         {
-          "route": "/. TUL4",
+          "flight_strip_route": "/. TUL4",
           "initial_altitude": 15000,
           "initial_speed": 260,
           "speed_restriction": 260,
@@ -3385,7 +3385,7 @@
     "ATOKA_LO": {
       "arrivals": [
         {
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 9000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -3429,7 +3429,7 @@
           }
         },
         {
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 6000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -3478,7 +3478,7 @@
     "BARTS": {
       "arrivals": [
         {
-          "route": "/. TUL4",
+          "flight_strip_route": "/. TUL4",
           "initial_altitude": 16000,
           "initial_speed": 260,
           "speed_restriction": 260,
@@ -3547,7 +3547,7 @@
     "BARTS_LO": {
       "arrivals": [
         {
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 9000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -3594,7 +3594,7 @@
           }
         },
         {
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 6000,
           "initial_speed": 150,
           "initial_controller": "C51",
@@ -3646,7 +3646,7 @@
     "BARTS_FINAL": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1N",
@@ -3837,7 +3837,7 @@
     "ATOKA_FINAL": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "5NM South Downwind",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -4025,7 +4025,7 @@
           }
         },
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "6NM South Downwind",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -4217,7 +4217,7 @@
     "ATOKA_FINAL_6NM": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 250,
           "initial_controller": "1S",
@@ -4397,7 +4397,7 @@
     "REELI_FINAL": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "initial_altitude": 11000,
           "cleared_altitude": 6000,
           "initial_speed": 250,
@@ -4434,7 +4434,7 @@
       "arrivals": [
         {
           "description": "CWT A",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4495,7 +4495,7 @@
         },
         {
           "description": "CWT C",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4556,7 +4556,7 @@
         },
         {
           "description": "CWT D",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4617,7 +4617,7 @@
         },
         {
           "description": "CWT E, F & G",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4678,7 +4678,7 @@
         },
         {
           "description": "CWT H & I",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4743,7 +4743,7 @@
       "arrivals": [
         {
           "description": "CWT B",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4813,7 +4813,7 @@
       "arrivals": [
         {
           "description": "CWT C",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4872,7 +4872,7 @@
       "arrivals": [
         {
           "description": "CWT D",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -4922,7 +4922,7 @@
       "arrivals": [
         {
           "description": "CWT E,F & G",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -5002,7 +5002,7 @@
       "arrivals": [
         {
           "description": "CWT D",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -5053,7 +5053,7 @@
     "BARTS_CWT_A": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "CWT A",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -5115,7 +5115,7 @@
         },
         {
           "description": "CWT C",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -5176,7 +5176,7 @@
         },
         {
           "description": "CWT D",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -5237,7 +5237,7 @@
         },
         {
           "description": "CWT E, F & G",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -5298,7 +5298,7 @@
         },
         {
           "description": "CWT H & I",
-          "route": "MAYES",
+          "flight_strip_route": "MAYES",
           "initial_altitude": 8000,
           "initial_speed": 250,
           "initial_controller": "C51",
@@ -5362,7 +5362,7 @@
     "BARTS_CWT_B": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "CWT B",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -5432,7 +5432,7 @@
     "BARTS_CWT_C": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "CWT C",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -5491,7 +5491,7 @@
     "BARTS_CWT_D": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "CWT D",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -5541,7 +5541,7 @@
     "BARTS_CWT_E_F_G": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "CWT E,F & G",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -5621,7 +5621,7 @@
     "BARTS_CWT_H_I": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "CWT D",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -5673,7 +5673,7 @@
     "ATOKA_STAGGER": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "RY28L Automatic Arrivals",
           "initial_altitude": 10000,
           "initial_speed": 210,
@@ -5853,7 +5853,7 @@
     "BARTS_STAGGER": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "initial_altitude": 10000,
           "initial_speed": 210,
           "initial_controller": "1N",
@@ -6032,7 +6032,7 @@
     "MAYES_STAGGER": {
       "arrivals": [
         {
-          "route": "/. TULSA4",
+          "flight_strip_route": "/. TULSA4",
           "description": "RY28L Automatic Arrivals",
           "initial_altitude": 8000,
           "assigned_altitude": 6000,
@@ -6214,7 +6214,7 @@
       "arrivals": [
         {
           "description": "AAC Arrival from BRT",
-          "route": "WOODY",
+          "flight_strip_route": "WOODY",
           "initial_altitude": 1000,
           "initial_speed": 130,
           "speed_restriction": 250,
@@ -6237,7 +6237,7 @@
         },
         {
           "description": "AAC Arrival from 4Y3",
-          "route": "WOODY",
+          "flight_strip_route": "WOODY",
           "initial_altitude": 1000,
           "initial_speed": 130,
           "speed_restriction": 250,
@@ -6260,7 +6260,7 @@
         },
         {
           "description": "AAC Arrival from JKE",
-          "route": "WOODY",
+          "flight_strip_route": "WOODY",
           "initial_altitude": 1000,
           "initial_speed": 130,
           "speed_restriction": 250,
@@ -6287,7 +6287,7 @@
       "arrivals": [
         {
           "description": "AAC North Downwind",
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 8000,
           "initial_speed": 210,
           "initial_controller": "1N",
@@ -6307,7 +6307,7 @@
         },
         {
           "description": "AAC South Downwind",
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 8000,
           "initial_speed": 210,
           "speed_restriction": 210,
@@ -6328,7 +6328,7 @@
         },
         {
           "description": "JKE South Downwind",
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 5000,
           "initial_speed": 210,
           "speed_restriction": 210,
@@ -6349,7 +6349,7 @@
         },
         {
           "description": "4Y3 Downwind",
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 4000,
           "initial_speed": 210,
           "speed_restriction": 210,
@@ -6370,7 +6370,7 @@
         },
         {
           "description": "BRT South Downwind",
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 4000,
           "initial_speed": 210,
           "speed_restriction": 210,
@@ -6391,7 +6391,7 @@
         },
         {
           "description": "BRT North Downwind",
-          "route": "DIRECT",
+          "flight_strip_route": "DIRECT",
           "initial_altitude": 4000,
           "initial_speed": 210,
           "speed_restriction": 210,

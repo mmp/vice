@@ -399,7 +399,7 @@
           "waypoints": "DRRTH GRAZN/ho LITTR BEAVV/a16000+/s290 HOBRK/a21000-/s280 TAMMY/a14000-16000/s280 MADDN JAMEA/a10000-12000/s250 TWIKL/a9000-11000/delete",
           "cruise_altitude": 33000,
           "star": "HOBRK4",
-          "route": "/. HOBRK4",
+          "flight_strip_route": "/. HOBRK4",
           "initial_controller": "F51",
           "initial_altitude": 35000,
           "assigned_altitude": 33000,

@@ -71,140 +71,140 @@
           "destination": "KATL",
           "exit": "CSHEL",
           "scratchpad": "CSH",
-          "route": "CSHEL DCT"
+          "waypoints": "CSHEL DCT"
         },
         {
           "airlines": [{ "icao": "AAL" }],
           "destination": "KDFW",
           "exit": "MOOKY",
           "scratchpad": "MOO",
-          "route": "MOOKY DCT"
+          "waypoints": "MOOKY DCT"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "destination": "KHOU",
           "exit": "MOOKY",
           "scratchpad": "MOO",
-          "route": "MOOKY DCT"
+          "waypoints": "MOOKY DCT"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "destination": "KMSY",
           "exit": "MOOKY",
           "scratchpad": "MOO",
-          "route": "MOOKY DCT"
+          "waypoints": "MOOKY DCT"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "destination": "KSTL",
           "exit": "MOOKY",
           "scratchpad": "MOO",
-          "route": "MOOKY DCT"
+          "waypoints": "MOOKY DCT"
         },
         {
           "airlines": [{ "icao": "AAL" }],
           "destination": "KMCO",
           "exit": "CSHEL",
           "scratchpad": "CSH",
-          "route": "CSHEL JOKRS5"
+          "waypoints": "CSHEL JOKRS5"
         },
         {
           "airlines": [{ "icao": "JBU" }, { "icao": "DAL" }],
           "destination": "KJFK",
           "exit": "CHARO",
           "scratchpad": "CHA",
-          "route": "CHARO DCT"
+          "waypoints": "CHARO DCT"
         },
         {
           "airlines": [{ "icao": "JBU" }, { "icao": "UAL" }],
           "destination": "KEWR",
           "exit": "CHARO",
           "scratchpad": "CHA",
-          "route": "CHARO DCT"
+          "waypoints": "CHARO DCT"
         },
         {
           "airlines": [{ "icao": "DAL" }],
           "destination": "KBOS",
           "exit": "ROGAN",
           "scratchpad": "ROG",
-          "route": "ROGAN DCT"
+          "waypoints": "ROGAN DCT"
         },
         {
           "airlines": [{ "icao": "AAL" }],
           "destination": "KPHL",
           "exit": "ROGAN",
           "scratchpad": "ROG",
-          "route": "ROGAN DCT"
+          "waypoints": "ROGAN DCT"
         },
         {
           "airlines": [{ "icao": "DAL" }],
           "destination": "KDTW",
           "exit": "DYLYN",
           "scratchpad": "DYL",
-          "route": "DYLYN DCT"
+          "waypoints": "DYLYN DCT"
         },
         {
           "airlines": [{ "icao": "UAL" }],
           "destination": "KORD",
           "exit": "LUCYS",
           "scratchpad": "LUC",
-          "route": "LUCYS DCT"
+          "waypoints": "LUCYS DCT"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "destination": "KBWI",
           "exit": "RACNO",
           "scratchpad": "RAC",
-          "route": "RACNO DCT"
+          "waypoints": "RACNO DCT"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "destination": "KMDW",
           "exit": "DIDDY",
           "scratchpad": "DID",
-          "route": "DIDDY DCT"
+          "waypoints": "DIDDY DCT"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "destination": "KACY",
           "exit": "CSHEL",
           "scratchpad": "CSH",
-          "route": "CSHEL DCT"
+          "waypoints": "CSHEL DCT"
         },
         {
           "airlines": [{ "icao": "AAL" }],
           "destination": "KMIA",
           "exit": "AABER",
           "scratchpad": "MIA",
-          "route": "AABER FROGZ FROGZ"
+          "waypoints": "AABER FROGZ FROGZ"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "destination": "KFLL",
           "exit": "AABER",
           "scratchpad": "FLL",
-          "route": "AABER TEEKY TEEKY"
+          "waypoints": "AABER TEEKY TEEKY"
         },
         {
           "airlines": [{ "icao": "EJA" }],
           "destination": "KEYW",
           "exit": "GOODY",
           "scratchpad": "EYW",
-          "route": "GOODY KARTR"
+          "waypoints": "GOODY KARTR"
         },
         {
           "airlines": [{ "icao": "AAL" }],
           "destination": "MUHA",
           "exit": "GOODY",
           "scratchpad": "HAV",
-          "route": "GOODY KARTR EYW CANOA ENTRY5"
+          "waypoints": "GOODY KARTR EYW CANOA ENTRY5"
         },
         {
           "airlines": [{ "icao": "AAL" }],
           "destination": "TNCM",
           "exit": "FEMID",
           "scratchpad": "SXM",
-          "route": "FEMID Y290 HAGIT Y290 SLUGO"
+          "waypoints": "FEMID Y290 HAGIT Y290 SLUGO"
         }
       ],
       "exit_categories": {
@@ -230,7 +230,7 @@
         {
           "spawn": "BUNGE",
           "waypoint_actions": { "BUNGE": "ho" },
-          "route": "DCT",
+          "flight_strip_route": "DCT",
           "star": "SHFTY6",
           "cruise_altitude": 30000,
           "initial_controller": "C47",
@@ -261,7 +261,7 @@
               "24": "TYNEE/h150"
             }
           },
-          "route": "DCT",
+          "flight_strip_route": "DCT",
           "star": "PUMPP2",
           "cruise_altitude": 12000,
           "initial_controller": "C07",
@@ -289,7 +289,7 @@
               "24": "TYNEE PASTR LLMER SPNKE COOPR/a4000+/flyover/t058"
             }
           },
-          "route": "DCT",
+          "flight_strip_route": "DCT",
           "star": "TYNEE4",
           "cruise_altitude": 22000,
           "initial_controller": "C07",

@@ -57,7 +57,7 @@
           ],
           "destination": "KATL",
           "exit": "JHW",
-          "route": "JHW HVQ HLRRY ONDRE1"
+          "waypoints": "JHW HVQ HLRRY ONDRE1"
         },
         {
           "airlines": [
@@ -71,7 +71,7 @@
           ],
           "destination": "KCLT",
           "exit": "JHW",
-          "route": "JHW HVQ LNDIZ PARQR3"
+          "waypoints": "JHW HVQ LNDIZ PARQR3"
         },
         {
           "airlines": [
@@ -82,7 +82,7 @@
           ],
           "destination": "KDTW",
           "exit": "DONEO",
-          "route": "DONEO CUUGR2"
+          "waypoints": "DONEO CUUGR2"
         },
         {
           "airlines": [
@@ -96,7 +96,7 @@
           ],
           "destination": "KEWR",
           "exit": "GEE",
-          "route": "GEE BEEPS Q140 KODEY HNK FLOSI4"
+          "waypoints": "GEE BEEPS Q140 KODEY HNK FLOSI4"
         },
         {
           "airlines": [
@@ -109,7 +109,7 @@
           ],
           "destination": "KJFK",
           "exit": "GEE",
-          "route": "GEE BEEPS HNK IGN IGN1"
+          "waypoints": "GEE BEEPS HNK IGN IGN1"
         },
         {
           "airlines": [
@@ -119,7 +119,7 @@
           ],
           "destination": "KLAS",
           "exit": "DAVVK",
-          "route": "DAVVK YARRK FNT MELRR DABJU BAE MCW J148 CYS EKR HVE GGAPP CHOWW2"
+          "waypoints": "DAVVK YARRK FNT MELRR DABJU BAE MCW J148 CYS EKR HVE GGAPP CHOWW2"
         },
         {
           "airlines": [
@@ -129,7 +129,7 @@
           ],
           "destination": "KDCA",
           "exit": "VAIRS",
-          "route": "VAIRS PSB SKILS5"
+          "waypoints": "VAIRS PSB SKILS5"
         },
         {
           "airlines": [
@@ -139,7 +139,7 @@
           ],
           "destination": "KTPA",
           "exit": "JHW",
-          "route": "JHW PSB J61 EMI Q119 SCOOB EARZZ SKARP SLOJO Q75 TEUFL BAAMF DADES1"
+          "waypoints": "JHW PSB J61 EMI Q119 SCOOB EARZZ SKARP SLOJO Q75 TEUFL BAAMF DADES1"
         },
         {
           "airlines": [
@@ -152,7 +152,7 @@
           ],
           "destination": "KORD",
           "exit": "DAVVK",
-          "route": "DAVVK FARGN CHAAP Q436 EMMMA WYNDE2"
+          "waypoints": "DAVVK FARGN CHAAP Q436 EMMMA WYNDE2"
         },
         {
           "airlines": [
@@ -163,7 +163,7 @@
           ],
           "destination": "KMEM",
           "exit": "JHW",
-          "route": "JHW ROD PXV RRUSH HYTHR3"
+          "waypoints": "JHW ROD PXV RRUSH HYTHR3"
         },
         {
           "airlines": [
@@ -176,7 +176,7 @@
           ],
           "destination": "KSDF",
           "exit": "JHW",
-          "route": "JHW UKATS DLAMP6"
+          "waypoints": "JHW UKATS DLAMP6"
         },
         {
           "airlines": [
@@ -186,7 +186,7 @@
           ],
           "destination": "KDEN",
           "exit": "DAVVK",
-          "route": "DAVVK YARRK OBK CID OGALE BRWRY LAWGR3"
+          "waypoints": "DAVVK YARRK OBK CID OGALE BRWRY LAWGR3"
         },
         {
           "airlines": [
@@ -197,7 +197,7 @@
           ],
           "destination": "KDFW",
           "exit": "DAVVK",
-          "route": "DAVVK CRL FWA ENL FAM RZC FSM RRNET BRDJE4"
+          "waypoints": "DAVVK CRL FWA ENL FAM RZC FSM RRNET BRDJE4"
         }
       ],
       "exit_categories": {
@@ -277,7 +277,7 @@
           ],
           "destination": "KSFB",
           "exit": "JHW",
-          "route": "JHW RICCS Q103 SLOJO Q83 ROYCO Q85 LPERD TTHOR3"
+          "waypoints": "JHW RICCS Q103 SLOJO Q83 ROYCO Q85 LPERD TTHOR3"
         },
         {
           "airlines": [
@@ -288,7 +288,7 @@
           ],
           "destination": "KPGD",
           "exit": "JHW",
-          "route": "JHW RICCS Q103 PUPYY KYYUU LUBBR3"
+          "waypoints": "JHW RICCS Q103 PUPYY KYYUU LUBBR3"
         },
         {
           "airlines": [
@@ -299,7 +299,7 @@
           ],
           "destination": "KMKY",
           "exit": "JHW",
-          "route": "JHW HVQ CYNTA SHFTY SHFTY5"
+          "waypoints": "JHW HVQ CYNTA SHFTY SHFTY5"
         }
       ],
       "exit_categories": {
@@ -348,7 +348,7 @@
         {
           "waypoints": "AIRCO_HO/ho AIRCO",
           "cruise_altitude": 6000,
-          "route": "/. AIRCO",
+          "flight_strip_route": "/. AIRCO",
           "initial_controller": "C66",
           "initial_altitude": 6000,
           "assigned_altitude": 6000,
@@ -372,7 +372,7 @@
         {
           "waypoints": "BENEE_HO/ho BENEE",
           "cruise_altitude": 26000,
-          "route": "/. BENEE",
+          "flight_strip_route": "/. BENEE",
           "initial_controller": "C66",
           "initial_altitude": 20000,
           "assigned_altitude": 11000,
@@ -403,7 +403,7 @@
         {
           "waypoints": "BUF_HO/ho BUF",
           "cruise_altitude": 24000,
-          "route": "/. BUF",
+          "flight_strip_route": "/. BUF",
           "initial_controller": "C66",
           "initial_altitude": 19000,
           "assigned_altitude": 11000,
@@ -430,7 +430,7 @@
         {
           "waypoints": "DKK_SE_HO/ho DKK BUF",
           "cruise_altitude": 35000,
-          "route": "/. DKK",
+          "flight_strip_route": "/. DKK",
           "initial_controller": "C66",
           "initial_altitude": 20000,
           "assigned_altitude": 11000,
@@ -475,7 +475,7 @@
         {
           "waypoints": "DKK_W_HO/ho DKK",
           "cruise_altitude": 29000,
-          "route": "/. DKK",
+          "flight_strip_route": "/. DKK",
           "initial_controller": "C66",
           "initial_altitude": 20000,
           "assigned_altitude": 11000,
@@ -508,7 +508,7 @@
         {
           "waypoints": "ROC/ho EHMAN",
           "cruise_altitude": 29000,
-          "route": "/. EHMAN",
+          "flight_strip_route": "/. EHMAN",
           "initial_controller": "C66",
           "initial_altitude": 18000,
           "assigned_altitude": 11000,
@@ -531,7 +531,7 @@
         {
           "waypoints": "JHW_HO/ho JHW",
           "cruise_altitude": 8500,
-          "route": "/. JHW",
+          "flight_strip_route": "/. JHW",
           "initial_controller": "C66",
           "initial_altitude": 8500,
           "assigned_altitude": 8500,
@@ -555,7 +555,7 @@
         {
           "waypoints": "JHW_HO/ho JHW",
           "cruise_altitude": 37000,
-          "route": "/. JHW",
+          "flight_strip_route": "/. JHW",
           "initial_controller": "C66",
           "initial_altitude": 20000,
           "assigned_altitude": 11000,
@@ -595,7 +595,7 @@
         {
           "waypoints": "WOZEE_HO/ho WOZEE",
           "cruise_altitude": 9000,
-          "route": "/. WOZEE",
+          "flight_strip_route": "/. WOZEE",
           "initial_controller": "B46",
           "initial_altitude": 9000,
           "assigned_altitude": 9000,

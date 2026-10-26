@@ -119,8 +119,8 @@ func TestResolvePublishedDepartureScenarioRoute(t *testing.T) {
 	if placement.dep.Exit != "NORTH" {
 		t.Errorf("exit = %q, want NORTH from the scenario route", placement.dep.Exit)
 	}
-	if placement.dep.Route != "NORTH J111 KTGT" {
-		t.Errorf("route = %q, want the scenario route", placement.dep.Route)
+	if placement.dep.WaypointsString != "NORTH J111 KTGT" {
+		t.Errorf("route = %q, want the scenario route", placement.dep.WaypointsString)
 	}
 	if placement.how != "scenario route via NORTH" {
 		t.Errorf("how = %q, want the scenario route to decide", placement.how)
@@ -163,7 +163,7 @@ func TestResolvePublishedDepartureTakesScenarioScratchpad(t *testing.T) {
 	seedTestExits(t)
 	s := publishedDepartureSim()
 	s.State.Airports["KORG"].Departures = []av.Departure{
-		{Exit: "NORTH.J", Destination: "KTGT", Scratchpad: "NTG", Altitudes: []int{7000}, Route: "NORTH KTGT"},
+		{Exit: "NORTH.J", Destination: "KTGT", Scratchpad: "NTG", Altitudes: []int{7000}, WaypointsString: "NORTH KTGT"},
 	}
 	s.State.Airports["KORG"].TrafficRoutes = av.TrafficRoutes{
 		Departures: map[av.ICAOAirportCode]av.TrafficRouteSet{
@@ -179,9 +179,9 @@ func TestResolvePublishedDepartureTakesScenarioScratchpad(t *testing.T) {
 	if placement.dep.Scratchpad != "NTG" {
 		t.Errorf("scratchpad = %q, want the scenario departure's NTG", placement.dep.Scratchpad)
 	}
-	if placement.dep.Route != "NORTH J111 KTGT" || len(placement.dep.Altitudes) > 0 {
+	if placement.dep.WaypointsString != "NORTH J111 KTGT" || len(placement.dep.Altitudes) > 0 {
 		t.Errorf("route %q altitudes %v, want the traffic route and no altitude from the scenario",
-			placement.dep.Route, placement.dep.Altitudes)
+			placement.dep.WaypointsString, placement.dep.Altitudes)
 	}
 }
 
@@ -204,8 +204,8 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	if placement.dep.Exit != "NORTH" {
 		t.Errorf("exit = %q, want NORTH from the route database", placement.dep.Exit)
 	}
-	if placement.dep.Route != "NORTH J111 KTGT" {
-		t.Errorf("route = %q, want the database route from the exit fix on", placement.dep.Route)
+	if placement.dep.WaypointsString != "NORTH J111 KTGT" {
+		t.Errorf("route = %q, want the database route from the exit fix on", placement.dep.WaypointsString)
 	}
 
 	// A CDR names its departure fix explicitly even when the route string
@@ -218,9 +218,9 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
-	if placement.dep.Exit != "NORTH" || placement.dep.Route != "NORTH ZZZZZ J111 KTGT" {
+	if placement.dep.Exit != "NORTH" || placement.dep.WaypointsString != "NORTH ZZZZZ J111 KTGT" {
 		t.Errorf("got exit %q route %q, want NORTH leading the CDR's route",
-			placement.dep.Exit, placement.dep.Route)
+			placement.dep.Exit, placement.dep.WaypointsString)
 	}
 
 	// If every real route leaves through an exit the scenario doesn't model,
@@ -238,8 +238,8 @@ func TestResolvePublishedDepartureUsesRouteDatabase(t *testing.T) {
 	if placement.dep.Exit != "EAST" {
 		t.Errorf("exit = %q, want the directional fallback EAST", placement.dep.Exit)
 	}
-	if placement.dep.Route != "EAST" {
-		t.Errorf("route = %q, want the exit fix alone, with no database route", placement.dep.Route)
+	if placement.dep.WaypointsString != "EAST" {
+		t.Errorf("route = %q, want the exit fix alone, with no database route", placement.dep.WaypointsString)
 	}
 }
 
@@ -262,9 +262,9 @@ func TestResolvePublishedDepartureScrapedRoutesReplaceFAARoutes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture: %v", err)
 	}
-	if placement.dep.Exit != "EAST" || placement.dep.Route != "EAST" {
+	if placement.dep.Exit != "EAST" || placement.dep.WaypointsString != "EAST" {
 		t.Errorf("got exit %q route %q, want the directional fallback out EAST, not the FAA route via NORTH",
-			placement.dep.Exit, placement.dep.Route)
+			placement.dep.Exit, placement.dep.WaypointsString)
 	}
 }
 
@@ -284,9 +284,9 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture for a jet: %v", err)
 	}
-	if placement.dep.Exit != "NORTH" || placement.dep.Route != "NORTH J111 KTGT" {
+	if placement.dep.Exit != "NORTH" || placement.dep.WaypointsString != "NORTH J111 KTGT" {
 		t.Errorf("jet got exit %q route %q, want the RNAV database route via NORTH",
-			placement.dep.Exit, placement.dep.Route)
+			placement.dep.Exit, placement.dep.WaypointsString)
 	}
 
 	placement, err = s.State.resolvePublishedDeparture("KORG", "30L",
@@ -294,9 +294,9 @@ func TestResolvePublishedDepartureRNAVGating(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolvePublishedDeparture for a piston: %v", err)
 	}
-	if placement.dep.Exit != "EAST" || placement.dep.Route != "EAST" {
+	if placement.dep.Exit != "EAST" || placement.dep.WaypointsString != "EAST" {
 		t.Errorf("piston got exit %q route %q, want the directional fallback out EAST",
-			placement.dep.Exit, placement.dep.Route)
+			placement.dep.Exit, placement.dep.WaypointsString)
 	}
 }
 
@@ -430,9 +430,9 @@ func TestResolvePublishedDepartureByExitDirection(t *testing.T) {
 		if placement.dep.Exit != tc.exit {
 			t.Errorf("departure to %s got exit %q, want %q", tc.destination, placement.dep.Exit, tc.exit)
 		}
-		if placement.dep.Route != string(tc.exit) {
+		if placement.dep.WaypointsString != string(tc.exit) {
 			t.Errorf("departure to %s got route %q, want the exit fix alone",
-				tc.destination, placement.dep.Route)
+				tc.destination, placement.dep.WaypointsString)
 		}
 	}
 
@@ -568,14 +568,14 @@ func TestResolvePublishedDepartureSubstitutesANearbyDestination(t *testing.T) {
 	if placement.dep.Exit != "WAVEY" {
 		t.Errorf("left through %q, expected WAVEY", placement.dep.Exit)
 	}
-	fields := strings.Fields(placement.dep.Route)
+	fields := strings.Fields(placement.dep.WaypointsString)
 	if len(fields) < 2 || fields[0] != "WAVEY" {
-		t.Errorf("route = %q, want the borrowed route from WAVEY on", placement.dep.Route)
+		t.Errorf("route = %q, want the borrowed route from WAVEY on", placement.dep.WaypointsString)
 	}
 	if last := fields[len(fields)-1]; last[0] == 'K' && len(last) == 4 ||
 		last[len(last)-1] >= '0' && last[len(last)-1] <= '9' {
 		t.Errorf("route = %q, want the neighbor's airport and STAR stripped from its tail",
-			placement.dep.Route)
+			placement.dep.WaypointsString)
 	}
 }
 
@@ -613,17 +613,17 @@ func TestResolvePublishedDepartureLocatesRouteWaypoints(t *testing.T) {
 	if placement.dep.Exit != "NORTH" {
 		t.Errorf("exit = %q, want the NORTH exit the real route uses", placement.dep.Exit)
 	}
-	if placement.dep.Route != "NORTH J1 KTGT" {
-		t.Errorf("route = %q, want the real route from the exit fix on", placement.dep.Route)
+	if placement.dep.WaypointsString != "NORTH J1 KTGT" {
+		t.Errorf("route = %q, want the real route from the exit fix on", placement.dep.WaypointsString)
 	}
 	// Without waypoints for it, the route is only something to display: the
 	// aircraft would fly the scenario's vector off the runway and then head
 	// straight for its destination, never crossing its exit.
-	if len(placement.dep.RouteWaypoints) == 0 || placement.dep.RouteWaypoints[0].Fix != "NORTH" {
+	if len(placement.dep.Waypoints) == 0 || placement.dep.Waypoints[0].Fix != "NORTH" {
 		t.Errorf("route waypoints = %v, want them to start at the exit fix",
-			placement.dep.RouteWaypoints)
+			placement.dep.Waypoints)
 	}
-	for _, wp := range placement.dep.RouteWaypoints {
+	for _, wp := range placement.dep.Waypoints {
 		if wp.Location.IsZero() {
 			t.Errorf("route waypoint %q has no location", wp.Fix)
 		}

@@ -218,7 +218,7 @@
           ],
           "altitude": 9000,
           "destination": "KCSM",
-          "route": "BFV",
+          "waypoints": "BFV",
           "exit": "BFV"
         },
         {
@@ -242,7 +242,7 @@
           ],
           "altitude": 15000,
           "destination": "KTIK",
-          "route": "ROCKN BROMA CCASH1",
+          "waypoints": "ROCKN BROMA CCASH1",
           "exit": "ROCKN"
         },
         {
@@ -258,7 +258,7 @@
           ],
           "altitude": 33000,
           "destination": "KWRB",
-          "route": "SPS BYP SQS LGC",
+          "waypoints": "SPS BYP SQS LGC",
           "exit": "SPS"
         },
         {
@@ -290,7 +290,7 @@
           ],
           "altitude": 5000,
           "destination": "KLTS",
-          "route": "LTS",
+          "waypoints": "LTS",
           "exit": "LTS"
         },
         {
@@ -314,7 +314,7 @@
           ],
           "altitude": 24000,
           "destination": "KLTS",
-          "route": "CDS ARIP",
+          "waypoints": "CDS ARIP",
           "exit": "CDS"
         }
       ],

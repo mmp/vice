@@ -99,28 +99,28 @@
           "altitude": 35000,
           "destination": "KJAX",
           "exit": "VRSTY",
-          "route": "VRSTY NOKIE DUCHY/delete OHDEA2"
+          "waypoints": "VRSTY NOKIE DUCHY/delete OHDEA2"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "AAL" }, { "icao": "AAY" }, { "icao": "SWA" }],
           "altitude": 33000,
           "destination": "KTPA",
           "exit": "BANNG",
-          "route": "BANNG LUCKK HONID/delete MAATY6"
+          "waypoints": "BANNG LUCKK HONID/delete MAATY6"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "AAL" }, { "icao": "SWA" }],
           "altitude": 35000,
           "destination": "KMCO",
           "exit": "SMLTZ",
-          "route": "SMLTZ WALET ZJAYX/delete GRNCH5"
+          "waypoints": "SMLTZ WALET ZJAYX/delete GRNCH5"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "DAL" }],
           "altitude": 29000,
           "destination": "KTLH",
           "exit": "BANNG",
-          "route": "BANNG LUCKK SZW/delete"
+          "waypoints": "BANNG LUCKK SZW/delete"
         },
         {
           "airlines": [
@@ -133,7 +133,7 @@
           "altitude": 37000,
           "destination": "KMIA",
           "exit": "BANNG",
-          "route": "BANNG LUCKK HONID/delete FROGZ5"
+          "waypoints": "BANNG LUCKK HONID/delete FROGZ5"
         }
       ]
     }
@@ -766,7 +766,7 @@
           "waypoints": "TYFTR N033.17.52.814,W082.39.27.086/ho NEWHP DTSTR/a14000/s280 WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII GRHAM/delete",
           "cruise_altitude": 35000,
           "star": "JJEDI4",
-          "route": "/. JJEDI4",
+          "flight_strip_route": "/. JJEDI4",
           "initial_controller": "J30",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
@@ -806,7 +806,7 @@
           "waypoints": "EEWOK N032.33.23.288,W083.00.58.529/ho LAYUH FLKNN/a14000/s280 CHWEE/a11000/s250 JJEDI/a10000/s250 DAFII GRHAM/delete",
           "cruise_altitude": 31000,
           "star": "JJEDI4",
-          "route": "/. JJEDI4",
+          "flight_strip_route": "/. JJEDI4",
           "initial_controller": "J30",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
@@ -842,7 +842,7 @@
           "waypoints": "N031.54.27.196,W082.27.01.939/ho LARZZ NEWHP DTSTR/a14000/s280 WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII GRHAM/delete",
           "cruise_altitude": 35000,
           "star": "JJEDI4",
-          "route": "/. JJEDI4",
+          "flight_strip_route": "/. JJEDI4",
           "initial_controller": "J30",
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
@@ -882,7 +882,7 @@
           "waypoints": "N032.21.36.908,W081.56.00.882/ho TYFTR NEWHP DTSTR/a14000/s280 WOKIE/a11000/s250 JJEDI/a10000/s250 DAFII GRHAM/delete",
           "cruise_altitude": 35000,
           "star": "JJEDI4",
-          "route": "/. JJEDI4",
+          "flight_strip_route": "/. JJEDI4",
           "initial_controller": "J30",
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
@@ -918,7 +918,7 @@
           "waypoints": "N033.38.55.404,W081.38.05.815/ho SKWKR LAYUH FLKNN/a14000/s280 CHWEE/a11000/s250 JJEDI/a10000/s250 DAFII GRHAM/delete",
           "cruise_altitude": 31000,
           "star": "JJEDI4",
-          "route": "/. JJEDI4",
+          "flight_strip_route": "/. JJEDI4",
           "initial_controller": "J30",
           "initial_altitude": 31000,
           "assigned_altitude": 31000,
@@ -954,7 +954,7 @@
           "waypoints": "N033.15.40.676,W081.42.01.966/ho EEWOK LAYUH FLKNN/a14000/s280 CHWEE/a11000/s250 JJEDI/a10000/s250 DAFII GRHAM/delete",
           "cruise_altitude": 29000,
           "star": "JJEDI4",
-          "route": "/. JJEDI4",
+          "flight_strip_route": "/. JJEDI4",
           "initial_controller": "J30",
           "initial_altitude": 29000,
           "assigned_altitude": 29000,
@@ -990,7 +990,7 @@
         {
           "waypoints": "N034.42.29.816,W082.56.26.398 N033.49.20.018,W083.43.03.737/ho GRANT GIMLY/delete",
           "cruise_altitude": 34000,
-          "route": "/. CHOPZ",
+          "flight_strip_route": "/. CHOPZ",
           "initial_controller": "42",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
@@ -1023,7 +1023,7 @@
         {
           "waypoints": "SPA N033.35.17.697,W083.41.23.294/ho GRANT GIMLY/delete",
           "cruise_altitude": 34000,
-          "route": "/. SPA",
+          "flight_strip_route": "/. SPA",
           "initial_controller": "32",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,

@@ -67,7 +67,7 @@
           ],
           "destination": "KCLT",
           "exit": "SOTHH",
-          "route": "SOTHH BANKR BANKR4"
+          "waypoints": "SOTHH BANKR BANKR4"
         },
         {
           "airlines": [
@@ -78,7 +78,7 @@
           ],
           "destination": "KDFW",
           "exit": "HRS",
-          "route": "HRS GQO MEM J66 LIT FEWWW BRDJE4"
+          "waypoints": "HRS GQO MEM J66 LIT FEWWW BRDJE4"
         },
         {
           "airlines": [
@@ -93,7 +93,7 @@
           ],
           "destination": "KATL",
           "exit": "DGESS",
-          "route": "DGESS OZZZI1"
+          "waypoints": "DGESS OZZZI1"
         },
         {
           "airlines": [
@@ -103,7 +103,7 @@
           ],
           "destination": "KSDF",
           "exit": "JLENA",
-          "route": "JLENA LAFOX MAUDD6"
+          "waypoints": "JLENA LAFOX MAUDD6"
         },
         {
           "airlines": [
@@ -114,7 +114,7 @@
           ],
           "destination": "EDFH",
           "exit": "DRIVN",
-          "route": "DRIVN GULFY BARMY BATTA RDU LVL RIC SIE DRIFT HTO BRADD N197A NICSO NATZ ELSOX LESLU OXLOW M142 ROKKE M140 DVR UL9 KONAN UL607 REMBA SOPOK Y863 ROPUV ROPUV4R"
+          "waypoints": "DRIVN GULFY BARMY BATTA RDU LVL RIC SIE DRIFT HTO BRADD N197A NICSO NATZ ELSOX LESLU OXLOW M142 ROKKE M140 DVR UL9 KONAN UL607 REMBA SOPOK Y863 ROPUV ROPUV4R"
         },
         {
           "airlines": [
@@ -124,7 +124,7 @@
           ],
           "destination": "KGSO",
           "exit": "SPA",
-          "route": "SPA V605 GENOD BROOK BROOK4"
+          "waypoints": "SPA V605 GENOD BROOK BROOK4"
         },
         {
           "airlines": [
@@ -135,7 +135,7 @@
           ],
           "destination": "KMEM",
           "exit": "HRS",
-          "route": "HRS GQO TALLO VANZE3"
+          "waypoints": "HRS GQO TALLO VANZE3"
         },
         {
           "airlines": [
@@ -145,7 +145,7 @@
           ],
           "destination": "KDCA",
           "exit": "DRIVN",
-          "route": "DRIVN JOOLI Q56 KIWII WAVES CAPSS3"
+          "waypoints": "DRIVN JOOLI Q56 KIWII WAVES CAPSS3"
         },
         {
           "airlines": [
@@ -158,7 +158,7 @@
           ],
           "destination": "KLGA",
           "exit": "DRIVN",
-          "route": "DRIVN EVING Q60 HURTS HUBBS PXT KORRY4"
+          "waypoints": "DRIVN EVING Q60 HURTS HUBBS PXT KORRY4"
         },
         {
           "airlines": [
@@ -168,7 +168,7 @@
           ],
           "destination": "KEWR",
           "exit": "DRIVN",
-          "route": "DRIVN KIDDO Q22 UMBRE QUART PHLBO4"
+          "waypoints": "DRIVN KIDDO Q22 UMBRE QUART PHLBO4"
         },
         {
           "airlines": [
@@ -179,7 +179,7 @@
           ],
           "destination": "KTTA",
           "exit": "DRIVN",
-          "route": "DRIVN"
+          "waypoints": "DRIVN"
         }
       ],
       "exit_categories": {
@@ -250,7 +250,7 @@
         {
           "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264",
           "cruise_altitude": 34000,
-          "route": "/. SPA",
+          "flight_strip_route": "/. SPA",
           "star": "JUNNR4",
           "initial_controller": "C43",
           "initial_altitude": 11000,
@@ -285,7 +285,7 @@
         {
           "waypoints": "PROVN/ho MCHLN/a11000 TYRES/h4",
           "cruise_altitude": 34000,
-          "route": "/. TYRES",
+          "flight_strip_route": "/. TYRES",
           "star": "MCHLN2",
           "initial_controller": "C43",
           "initial_altitude": 11000,
@@ -316,7 +316,7 @@
         {
           "waypoints": "LUVTT/a11000/s250/ho RCTOR/a7000 UNMAN/h181",
           "cruise_altitude": 34000,
-          "route": "/. UNMAN",
+          "flight_strip_route": "/. UNMAN",
           "star": "RCTOR3",
           "initial_controller": "C43",
           "initial_altitude": 11000,
@@ -354,7 +354,7 @@
         {
           "waypoints": "WORXS TUSDE/ho ANGRI/a11000 TDAAY/h43",
           "cruise_altitude": 34000,
-          "route": "/. TDAAY",
+          "flight_strip_route": "/. TDAAY",
           "star": "WORXS2",
           "initial_controller": "C43",
           "initial_altitude": 14000,

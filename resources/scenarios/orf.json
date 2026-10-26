@@ -106,7 +106,7 @@
           "exit": "SKARP",
           "destination": "KMIA",
           "altitude": 22000,
-          "route": "SWOPE1 SKARP Y313 HOAGG BNFSH3",
+          "waypoints": "SWOPE1 SKARP Y313 HOAGG BNFSH3",
           "airlines": [
             {
               "icao": "AAL",
@@ -118,7 +118,7 @@
           "exit": "KALDA",
           "destination": "KPHL",
           "altitude": 20000,
-          "route": "HOLND1 KALDA ZJAAY JIIMS4",
+          "waypoints": "HOLND1 KALDA ZJAAY JIIMS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -130,7 +130,7 @@
           "exit": "THHMP",
           "destination": "KDCA",
           "altitude": 18000,
-          "route": "NUTIY1 THHMP CAPSS4",
+          "waypoints": "NUTIY1 THHMP CAPSS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -142,7 +142,7 @@
           "exit": "NUTIY",
           "destination": "KCLT",
           "altitude": 18000,
-          "route": " NUTIY1 NUTIY COUPN CHSLY7",
+          "waypoints": " NUTIY1 NUTIY COUPN CHSLY7",
           "airlines": [
             {
               "icao": "AAL",
@@ -154,7 +154,7 @@
           "exit": "KALDA",
           "destination": "KJFK",
           "altitude": 24000,
-          "route": "HOLND1 KALDA Q108 SIE CAMRN5",
+          "waypoints": "HOLND1 KALDA Q108 SIE CAMRN5",
           "airlines": [
             {
               "icao": "DAL",
@@ -170,7 +170,7 @@
           "exit": "HYTRA",
           "destination": "KLGA",
           "altitude": 24000,
-          "route": "NUTIY1 HYTRA PROUD2",
+          "waypoints": "NUTIY1 HYTRA PROUD2",
           "airlines": [
             {
               "icao": "AAL",
@@ -182,7 +182,7 @@
           "exit": "RDU",
           "destination": "KCLT",
           "altitude": 18000,
-          "route": "NUTIY1 RDU LIB MAJIC4",
+          "waypoints": "NUTIY1 RDU LIB MAJIC4",
           "airlines": [
             {
               "icao": "AAL",
@@ -194,7 +194,7 @@
           "exit": "KALDA",
           "destination": "KBOS",
           "altitude": 26000,
-          "route": "HOLND1 KALDA CONFR Q133 JFK ROBUC3",
+          "waypoints": "HOLND1 KALDA CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "DAL",
@@ -210,7 +210,7 @@
           "exit": "EYOBI",
           "destination": "KATL",
           "altitude": 18000,
-          "route": "NUTIY1 EYOBI CEELY Q172 YUTEE SKWKR SITTH3",
+          "waypoints": "NUTIY1 EYOBI CEELY Q172 YUTEE SKWKR SITTH3",
           "airlines": [
             {
               "icao": "DAL",
@@ -226,7 +226,7 @@
           "exit": "KELLE",
           "destination": "KMSP",
           "altitude": 26000,
-          "route": "NUTIY1 KELLE MOL J24 HVQ FWA GIJ KAMMA KKILR4",
+          "waypoints": "NUTIY1 KELLE MOL J24 HVQ FWA GIJ KAMMA KKILR4",
           "airlines": [
             {
               "icao": "DAL",
@@ -238,7 +238,7 @@
           "exit": "KELLE",
           "destination": "KDTW",
           "altitude": 26000,
-          "route": "NUTIY1 KELLE MOL TARCI JAMOX BONZZ2",
+          "waypoints": "NUTIY1 KELLE MOL TARCI JAMOX BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -250,7 +250,7 @@
           "exit": "THHMP",
           "destination": "KBWI",
           "altitude": 18000,
-          "route": "THHMP RAVNN9",
+          "waypoints": "THHMP RAVNN9",
           "airlines": [
             {
               "icao": "SWA",
@@ -262,7 +262,7 @@
           "exit": "KELLE",
           "destination": "KMDW",
           "altitude": 28000,
-          "route": "KELLE MOL GEFFS J149 FWA PANGG7",
+          "waypoints": "KELLE MOL GEFFS J149 FWA PANGG7",
           "airlines": [
             {
               "icao": "SWA",
@@ -274,7 +274,7 @@
           "exit": "RDU",
           "destination": "KDAL",
           "altitude": 28000,
-          "route": "RDU SHPRD AWYAT Q52 CHOPZ THRSR VLKNN Q30 IZAAC PUDJE REDDN4 ",
+          "waypoints": "RDU SHPRD AWYAT Q52 CHOPZ THRSR VLKNN Q30 IZAAC PUDJE REDDN4 ",
           "airlines": [
             {
               "icao": "SWA",
@@ -286,7 +286,7 @@
           "exit": "KELLE",
           "destination": "KDEN",
           "altitude": 26000,
-          "route": "KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
+          "waypoints": "KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
           "airlines": [
             {
               "icao": "SWA",
@@ -298,7 +298,7 @@
           "exit": "PRONI",
           "destination": "KMCO",
           "altitude": 26000,
-          "route": "PRONI WAALT Y289 BAHAA HIBAC ALYNA4",
+          "waypoints": "PRONI WAALT Y289 BAHAA HIBAC ALYNA4",
           "airlines": [
             {
               "icao": "SWA",
@@ -314,7 +314,7 @@
           "exit": "KELLE",
           "destination": "KORD",
           "altitude": 26000,
-          "route": "KELLE MOL GEFFS J149 ROD WATSN4",
+          "waypoints": "KELLE MOL GEFFS J149 ROD WATSN4",
           "airlines": [
             {
               "icao": "UAL",
@@ -326,7 +326,7 @@
           "exit": "KELLE",
           "destination": "KDEN",
           "altitude": 28000,
-          "route": "KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
+          "waypoints": "KELLE MOL J24 FLM GBEES Q176 STL J24 OATHE CLASH5",
           "airlines": [
             {
               "icao": "UAL",
@@ -342,7 +342,7 @@
           "exit": "HYTRA",
           "destination": "KEWR",
           "altitude": 24000,
-          "route": "HYTRA PHLBO4",
+          "waypoints": "HYTRA PHLBO4",
           "airlines": [
             {
               "icao": "UAL",
@@ -354,7 +354,7 @@
           "exit": "THHMP",
           "destination": "KIAD",
           "altitude": 18000,
-          "route": "THHMP CAVLR7",
+          "waypoints": "THHMP CAVLR7",
           "airlines": [
             {
               "icao": "UAL",
@@ -366,7 +366,7 @@
           "exit": "ELLDE",
           "destination": "KFLL",
           "altitude": 26000,
-          "route": "ELLDE Q97 PRMUS CUUDA3",
+          "waypoints": "ELLDE Q97 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "UAL",
@@ -378,7 +378,7 @@
           "exit": "DEEEZ",
           "destination": "KTPA",
           "altitude": 26000,
-          "route": "DEEEZ Q409 PUPYY BAAMF DADES2",
+          "waypoints": "DEEEZ Q409 PUPYY BAAMF DADES2",
           "airlines": [
             {
               "icao": "FFT",
@@ -503,7 +503,7 @@
           "exit": "COUPN",
           "destination": "KATL",
           "altitude": 22000,
-          "route": "COUPN BEETN JIMAR EYOBI CEELY Q172 YUTEE SKWKR SITTH3",
+          "waypoints": "COUPN BEETN JIMAR EYOBI CEELY Q172 YUTEE SKWKR SITTH3",
           "airlines": [
             {
               "icao": "AAL",
@@ -515,7 +515,7 @@
           "exit": "COUPN",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "COUPN CHSLY7",
+          "waypoints": "COUPN CHSLY7",
           "airlines": [
             {
               "icao": "AAL",
@@ -527,7 +527,7 @@
           "exit": "HOUKY",
           "destination": "KPHL",
           "altitude": 20000,
-          "route": "HOUKY TAPPA HYTRA PAATS4",
+          "waypoints": "HOUKY TAPPA HYTRA PAATS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -539,7 +539,7 @@
           "exit": "HCM",
           "destination": "KRIC",
           "altitude": 12000,
-          "route": "HENRY4 HCM HOUKY",
+          "waypoints": "HENRY4 HCM HOUKY",
           "airlines": [
             {
               "icao": "N",
@@ -559,7 +559,7 @@
           "exit": "HCM",
           "destination": "KILG",
           "altitude": 17000,
-          "route": "HCM COLIN T224 ENO T447 APEER",
+          "waypoints": "HCM COLIN T224 ENO T447 APEER",
           "airlines": [
             {
               "icao": "EJA",
@@ -575,7 +575,7 @@
           "exit": "SUNNS",
           "destination": "KILM",
           "altitude": 18000,
-          "route": "SUNNS T307 PEARS CHVIS BEULA",
+          "waypoints": "SUNNS T307 PEARS CHVIS BEULA",
           "airlines": [
             {
               "icao": "N",
@@ -591,7 +591,7 @@
           "exit": "COUPN",
           "destination": "KRDU",
           "altitude": 16000,
-          "route": "COUPN",
+          "waypoints": "COUPN",
           "airlines": [
             {
               "icao": "AAL",
@@ -713,7 +713,7 @@
           "exit": "MCARY",
           "destination": "KNQX",
           "altitude": 26000,
-          "route": "MCARY V139 SUWHT V472 ISO V1 CRG V267 ORL V533 LAL V7 RSW V225 STING",
+          "waypoints": "MCARY V139 SUWHT V472 ISO V1 CRG V267 ORL V533 LAL V7 RSW V225 STING",
           "airlines": [
             {
               "icao": "VV",
@@ -729,7 +729,7 @@
           "exit": "MCARY",
           "destination": "KCHS",
           "altitude": 24000,
-          "route": "MCARY V139 SUWHT V472 ISO V1 WANDO",
+          "waypoints": "MCARY V139 SUWHT V472 ISO V1 WANDO",
           "airlines": [
             {
               "icao": "VV",
@@ -745,7 +745,7 @@
           "exit": "HPW",
           "destination": "KBLV",
           "altitude": 28000,
-          "route": "HPW V260 FAK LYH V470 PSK V45 BLF V178 HYK V4 ENL V44 DUTMY",
+          "waypoints": "HPW V260 FAK LYH V470 PSK V45 BLF V178 HYK V4 ENL V44 DUTMY",
           "airlines": [
             {
               "icao": "VV",
@@ -1052,7 +1052,7 @@
       "arrivals": [
         {
           "waypoints": "JDUBB BNTLY WAIKS/ho",
-          "route": "BNTLY WAIKS",
+          "flight_strip_route": "BNTLY WAIKS",
           "initial_controller": "C54",
           "initial_altitude": 12000,
           "initial_speed": 250,

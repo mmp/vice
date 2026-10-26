@@ -207,7 +207,7 @@
           ],
           "altitude": 36000,
           "destination": "VHHH",
-          "route": "TED NODLE R220 IXE Y88 NAKTU Y12 KOHWA Y54 TURFY Y24 KOSHI Y50 IGMON A1 BULAN A1 ELATO V522 ABBEY",
+          "waypoints": "TED NODLE R220 IXE Y88 NAKTU Y12 KOHWA Y54 TURFY Y24 KOSHI Y50 IGMON A1 BULAN A1 ELATO V522 ABBEY",
           "exit": "TED"
         },
         {
@@ -225,7 +225,7 @@
           ],
           "altitude": 36000,
           "destination": "ZSPD",
-          "route": "TED NODLE R220 NODAN R217 GTC Y142 SAMON Y14 DGC Y28 ISAKY Y60 FUE A593 LAMEN A593 DUMET",
+          "waypoints": "TED NODLE R220 NODAN R217 GTC Y142 SAMON Y14 DGC Y28 ISAKY Y60 FUE A593 LAMEN A593 DUMET",
           "exit": "TED"
         },
         {
@@ -254,7 +254,7 @@
           ],
           "altitude": 36000,
           "destination": "RJAA",
-          "route": "TED NODLE R220 NIPPI R220 NANAC Y810 OLDIV Y809 SUPOK",
+          "waypoints": "TED NODLE R220 NIPPI R220 NANAC Y810 OLDIV Y809 SUPOK",
           "exit": "TED"
         },
         {
@@ -317,7 +317,7 @@
           ],
           "altitude": 33000,
           "destination": "KORD",
-          "route": "TED YESKA NCA11 GOROV YXJ 52N110W MOT RWF HSTIN Q156 ZZIPR FYTTE7",
+          "waypoints": "TED YESKA NCA11 GOROV YXJ 52N110W MOT RWF HSTIN Q156 ZZIPR FYTTE7",
           "exit": "TED"
         },
         {
@@ -380,7 +380,7 @@
           ],
           "altitude": 33000,
           "destination": "KORD",
-          "route": "TED JOH 59N140W RIBIT 54N120W BORIX 50N105W MOT HSTIN Q156 ZZIPR FYTTE7",
+          "waypoints": "TED JOH 59N140W RIBIT 54N120W BORIX 50N105W MOT HSTIN Q156 ZZIPR FYTTE7",
           "exit": "TED"
         },
         {
@@ -396,7 +396,7 @@
           ],
           "altitude": 37000,
           "destination": "PAJN",
-          "route": "TED CUSHI",
+          "waypoints": "TED CUSHI",
           "exit": "TED"
         },
         {
@@ -412,7 +412,7 @@
           ],
           "altitude": 37000,
           "destination": "PAJN",
-          "route": "NOEND4 NOEND CUSHI BARLO",
+          "waypoints": "NOEND4 NOEND CUSHI BARLO",
           "exit": "NOEND"
         },
         {
@@ -427,7 +427,7 @@
           ],
           "altitude": 27000,
           "destination": "PACV",
-          "route": "TED JOH",
+          "waypoints": "TED JOH",
           "exit": "TED"
         },
         {
@@ -442,7 +442,7 @@
           ],
           "altitude": 27000,
           "destination": "PACV",
-          "route": "NOEND4 NOEND JOH",
+          "waypoints": "NOEND4 NOEND JOH",
           "exit": "NOEND"
         },
         {
@@ -458,7 +458,7 @@
           ],
           "altitude": 36000,
           "destination": "PADQ",
-          "route": "TED SHUYA V438 ODK ADQ",
+          "waypoints": "TED SHUYA V438 ODK ADQ",
           "exit": "TED"
         },
         {
@@ -474,7 +474,7 @@
           ],
           "altitude": 36000,
           "destination": "PADK",
-          "route": "TED ENA DLG CAMBO SIYNY",
+          "waypoints": "TED ENA DLG CAMBO SIYNY",
           "exit": "TED"
         },
         {
@@ -490,7 +490,7 @@
           ],
           "altitude": 38000,
           "destination": "PAOT",
-          "route": "TED J133 GAL BALIN OTZ",
+          "waypoints": "TED J133 GAL BALIN OTZ",
           "exit": "TED"
         },
         {
@@ -506,7 +506,7 @@
           ],
           "altitude": 28000,
           "destination": "PAFA",
-          "route": "TED CAWIN LIBER5",
+          "waypoints": "TED CAWIN LIBER5",
           "exit": "TED"
         },
         {
@@ -518,7 +518,7 @@
           ],
           "altitude": 36000,
           "destination": "PABR",
-          "route": "TED KUTDE BRONX CHIPS LEDHO",
+          "waypoints": "TED KUTDE BRONX CHIPS LEDHO",
           "exit": "TED"
         },
         {
@@ -530,7 +530,7 @@
           ],
           "altitude": 36000,
           "destination": "PASC",
-          "route": "TED CAWIN BIXER ARCON",
+          "waypoints": "TED CAWIN BIXER ARCON",
           "exit": "TED"
         },
         {
@@ -545,7 +545,7 @@
           ],
           "altitude": 37000,
           "destination": "KSFO",
-          "route": "TED MDO B453 BOXER AMAKR BDEGA4",
+          "waypoints": "TED MDO B453 BOXER AMAKR BDEGA4",
           "exit": "TED"
         },
         {
@@ -563,7 +563,7 @@
           ],
           "altitude": 35000,
           "destination": "KSFO",
-          "route": "TED LAIRE BKA DUGGS Q902 VIXOR MARNR8",
+          "waypoints": "TED LAIRE BKA DUGGS Q902 VIXOR MARNR8",
           "exit": "TED"
         },
         {
@@ -574,7 +574,7 @@
           ],
           "altitude": 37000,
           "destination": "KPHX",
-          "route": "TED JOH LAIRE BKA DUGGS ARRIE IMB Q35 CORKR TENTS BRUSR1",
+          "waypoints": "TED JOH LAIRE BKA DUGGS ARRIE IMB Q35 CORKR TENTS BRUSR1",
           "exit": "TED"
         },
         {
@@ -586,7 +586,7 @@
           ],
           "altitude": 31000,
           "destination": "KMSP",
-          "route": "TED JOH HOLIE SSR 5700N/13000W 5400N/12000W 5100N/11000W 5000N/10600W MOT TTAIL BAINY3",
+          "waypoints": "TED JOH HOLIE SSR 5700N/13000W 5400N/12000W 5100N/11000W 5000N/10600W MOT TTAIL BAINY3",
           "exit": "TED"
         }
       ],

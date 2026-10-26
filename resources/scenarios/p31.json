@@ -50,7 +50,7 @@
           "exit": "PENSI",
           "destination": "KMCI",
           "altitude": 38000,
-          "route": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
+          "waypoints": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
           "airlines": [
             {
               "icao": "SWA",
@@ -62,7 +62,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CEW OTK SAV JROSS FLLGG STOCR7",
+          "waypoints": "CEW OTK SAV JROSS FLLGG STOCR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -74,7 +74,7 @@
           "exit": "ORRTH",
           "destination": "KEWR",
           "altitude": 37000,
-          "route": "LURIC8 ORRTH CRAMM HITMN Q34 GVE PHLBO4",
+          "waypoints": "LURIC8 ORRTH CRAMM HITMN Q34 GVE PHLBO4",
           "airlines": [
             {
               "icao": "UAL",
@@ -86,7 +86,7 @@
           "exit": "CEW",
           "destination": "KMCO",
           "altitude": 33000,
-          "route": "CEW DEFUN GRNCH5",
+          "waypoints": "CEW DEFUN GRNCH5",
           "airlines": [
             {
               "icao": "NKS",
@@ -98,7 +98,7 @@
           "exit": "TCATE",
           "destination": "KHOU",
           "altitude": 39000,
-          "route": "FRITR3 TCATE IPL J2 ELP J2 FST LLO KIDDZ4",
+          "waypoints": "FRITR3 TCATE IPL J2 ELP J2 FST LLO KIDDZ4",
           "airlines": [
             {
               "icao": "SWA",
@@ -110,7 +110,7 @@
           "exit": "SJI",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "SJI AEX PNUTS BEREE2",
+          "waypoints": "SJI AEX PNUTS BEREE2",
           "airlines": [
             {
               "icao": "AAL",
@@ -122,7 +122,7 @@
           "exit": "PENSI",
           "destination": "KDFW",
           "altitude": 38000,
-          "route": "PENSI LOXLY SJI AEX PNUTS BEREE2",
+          "waypoints": "PENSI LOXLY SJI AEX PNUTS BEREE2",
           "airlines": [
             {
               "icao": "NKS",
@@ -134,7 +134,7 @@
           "exit": "SARGE",
           "destination": "KATL",
           "altitude": 26000,
-          "route": "HAALO3 SARGE DARED CEW PENSI",
+          "waypoints": "HAALO3 SARGE DARED CEW PENSI",
           "airlines": [
             {
               "icao": "DAL",
@@ -146,7 +146,7 @@
           "exit": "VOAXA",
           "destination": "KSFO",
           "altitude": 38000,
-          "route": "COORZ7 VOAXA Q136 CRLES Q136 RUMPS INYOE DYAMD5",
+          "waypoints": "COORZ7 VOAXA Q136 CRLES Q136 RUMPS INYOE DYAMD5",
           "airlines": [
             {
               "icao": "SWA",
@@ -158,7 +158,7 @@
           "exit": "ROMMY",
           "destination": "KIAH",
           "altitude": 30000,
-          "route": "ROMMY HRV NNCEE2",
+          "waypoints": "ROMMY HRV NNCEE2",
           "airlines": [
             {
               "icao": "UCA",
@@ -170,7 +170,7 @@
           "exit": "CEW",
           "destination": "KATL",
           "altitude": 29000,
-          "route": "CEW ENNTT HOBTT2",
+          "waypoints": "CEW ENNTT HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -182,7 +182,7 @@
           "exit": "PENSI",
           "destination": "KMCI",
           "altitude": 38000,
-          "route": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
+          "waypoints": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
           "airlines": [
             {
               "icao": "SWA",
@@ -194,7 +194,7 @@
           "exit": "PENCL",
           "destination": "KBNA",
           "altitude": 28000,
-          "route": "PENCL2 PENCL JAGIR SWFFT2",
+          "waypoints": "PENCL2 PENCL JAGIR SWFFT2",
           "airlines": [
             {
               "icao": "SWA",
@@ -206,7 +206,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CEW OTK SAV JROSS FLLGG STOCR7",
+          "waypoints": "CEW OTK SAV JROSS FLLGG STOCR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -218,7 +218,7 @@
           "exit": "PENSI",
           "destination": "KIAH",
           "altitude": 32000,
-          "route": "PENSI V198 LOXLY ROMMY HRV NNCEE2",
+          "waypoints": "PENSI V198 LOXLY ROMMY HRV NNCEE2",
           "airlines": [
             {
               "icao": "UCA",
@@ -230,7 +230,7 @@
           "exit": "CEW",
           "destination": "KDCA",
           "altitude": 29000,
-          "route": "CEW MGM KELLN Q56 KIWII WAVES CAPSS3",
+          "waypoints": "CEW MGM KELLN Q56 KIWII WAVES CAPSS3",
           "airlines": [
             {
               "icao": "JIA",
@@ -242,7 +242,7 @@
           "exit": "CEW",
           "destination": "KATL",
           "altitude": 29000,
-          "route": "CEW ENNTT HOBTT2",
+          "waypoints": "CEW ENNTT HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -254,7 +254,7 @@
           "exit": "CEW",
           "destination": "KPHL",
           "altitude": 35000,
-          "route": "CEW MCN IRQ GSO CREWE BBDOL PAATS4",
+          "waypoints": "CEW MCN IRQ GSO CREWE BBDOL PAATS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -266,7 +266,7 @@
           "exit": "PENSI",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "PENSI V198 LOXLY SJI AEX PNUTS BEREE2",
+          "waypoints": "PENSI V198 LOXLY SJI AEX PNUTS BEREE2",
           "airlines": [
             {
               "icao": "JIA",
@@ -278,7 +278,7 @@
           "exit": "CEW",
           "destination": "KDCA",
           "altitude": 35000,
-          "route": "CEW MAI AMG RAYVO Q113 AARNN WAVES CAPSS3",
+          "waypoints": "CEW MAI AMG RAYVO Q113 AARNN WAVES CAPSS3",
           "airlines": [
             {
               "icao": "JIA",
@@ -290,7 +290,7 @@
           "exit": "BDOCK",
           "destination": "KBWI",
           "altitude": 35000,
-          "route": "MAREO1 BDOCK APE NUSMM ANTHM3",
+          "waypoints": "MAREO1 BDOCK APE NUSMM ANTHM3",
           "airlines": [
             {
               "icao": "SWA",
@@ -302,7 +302,7 @@
           "exit": "CEW",
           "destination": "KMIA",
           "altitude": 31000,
-          "route": "CEW J2 DEFUN FROGZ4",
+          "waypoints": "CEW J2 DEFUN FROGZ4",
           "airlines": [
             {
               "icao": "ENY",
@@ -314,7 +314,7 @@
           "exit": "CEW",
           "destination": "KATL",
           "altitude": 29000,
-          "route": "CEW ENNTT HOBTT2",
+          "waypoints": "CEW ENNTT HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -326,7 +326,7 @@
           "exit": "AEX",
           "destination": "KDAL",
           "altitude": 38000,
-          "route": "AEX PNUTS REDDN4",
+          "waypoints": "AEX PNUTS REDDN4",
           "airlines": [
             {
               "icao": "SWA",
@@ -338,7 +338,7 @@
           "exit": "PENSI",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "PENSI V198 LOXLY SJI AEX PNUTS BEREE2",
+          "waypoints": "PENSI V198 LOXLY SJI AEX PNUTS BEREE2",
           "airlines": [
             {
               "icao": "JIA",
@@ -350,7 +350,7 @@
           "exit": "CEW",
           "destination": "KATL",
           "altitude": 29000,
-          "route": "CEW ENNTT HOBTT2",
+          "waypoints": "CEW ENNTT HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -362,7 +362,7 @@
           "exit": "CEW",
           "destination": "KCVG",
           "altitude": 37000,
-          "route": "CEW GONDR ARTUR JAKIE6",
+          "waypoints": "CEW GONDR ARTUR JAKIE6",
           "airlines": [
             {
               "icao": "FFT",
@@ -374,7 +374,7 @@
           "exit": "BRATT",
           "destination": "KBNA",
           "altitude": 32000,
-          "route": "BRATT MEI IGB HRTUN CHSNE2",
+          "waypoints": "BRATT MEI IGB HRTUN CHSNE2",
           "airlines": [
             {
               "icao": "SWA",
@@ -386,7 +386,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "CEW MCN PONZE BANKR8",
+          "waypoints": "CEW MCN PONZE BANKR8",
           "airlines": [
             {
               "icao": "JIA",
@@ -398,7 +398,7 @@
           "exit": "ORRTH",
           "destination": "KEWR",
           "altitude": 37000,
-          "route": "LURIC8 ORRTH CRAMM HITMN Q34 GVE PHLBO4",
+          "waypoints": "LURIC8 ORRTH CRAMM HITMN Q34 GVE PHLBO4",
           "airlines": [
             {
               "icao": "UAL",
@@ -410,7 +410,7 @@
           "exit": "CEW",
           "destination": "KATL",
           "altitude": 27000,
-          "route": "CEW ENNTT GNDLF2",
+          "waypoints": "CEW ENNTT GNDLF2",
           "airlines": [
             {
               "icao": "DAL",
@@ -422,7 +422,7 @@
           "exit": "JAYDI",
           "destination": "KMIA",
           "altitude": 35000,
-          "route": "JAYDI NICKI Q81 ENDEW SRQ RSW MARCI FROGZ4",
+          "waypoints": "JAYDI NICKI Q81 ENDEW SRQ RSW MARCI FROGZ4",
           "airlines": [
             {
               "icao": "ENY",
@@ -434,7 +434,7 @@
           "exit": "CEW",
           "destination": "KATL",
           "altitude": 29000,
-          "route": "CEW ENNTT HOBTT2",
+          "waypoints": "CEW ENNTT HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -446,7 +446,7 @@
           "exit": "ROMMY",
           "destination": "KHOU",
           "altitude": 38000,
-          "route": "ROMMY HRV KCEEE BAYYY5",
+          "waypoints": "ROMMY HRV KCEEE BAYYY5",
           "airlines": [
             {
               "icao": "SWA",
@@ -458,7 +458,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "CEW MCN PONZE BANKR8",
+          "waypoints": "CEW MCN PONZE BANKR8",
           "airlines": [
             {
               "icao": "JIA",
@@ -470,7 +470,7 @@
           "exit": "JAYDI",
           "destination": "KMIA",
           "altitude": 35000,
-          "route": "JAYDI NICKI Q81 ENDEW SRQ RSW MARCI FROGZ4",
+          "waypoints": "JAYDI NICKI Q81 ENDEW SRQ RSW MARCI FROGZ4",
           "airlines": [
             {
               "icao": "ENY",
@@ -482,7 +482,7 @@
           "exit": "ROMMY",
           "destination": "KHOU",
           "altitude": 40000,
-          "route": "ROMMY HRV KCEEE BAYYY5",
+          "waypoints": "ROMMY HRV KCEEE BAYYY5",
           "airlines": [
             {
               "icao": "SWA",
@@ -494,7 +494,7 @@
           "exit": "SJI",
           "destination": "KDFW",
           "altitude": 24000,
-          "route": "SJI AEX PNUTS BEREE2",
+          "waypoints": "SJI AEX PNUTS BEREE2",
           "airlines": [
             {
               "icao": "AAL",
@@ -506,7 +506,7 @@
           "exit": "PENSI",
           "destination": "KSTL",
           "altitude": 38000,
-          "route": "PENSI V198 LOXLY CBM VISQA BOOSH3",
+          "waypoints": "PENSI V198 LOXLY CBM VISQA BOOSH3",
           "airlines": [
             {
               "icao": "SWA",
@@ -518,7 +518,7 @@
           "exit": "AEX",
           "destination": "KDAL",
           "altitude": 38000,
-          "route": "AEX PNUTS REDDN4",
+          "waypoints": "AEX PNUTS REDDN4",
           "airlines": [
             {
               "icao": "SWA",
@@ -530,7 +530,7 @@
           "exit": "IPTAY",
           "destination": "KCLT",
           "altitude": 34000,
-          "route": "ESTRR8 IPTAY CHOPZ MGM CEW PENSI",
+          "waypoints": "ESTRR8 IPTAY CHOPZ MGM CEW PENSI",
           "airlines": [
             {
               "icao": "AAL",
@@ -542,7 +542,7 @@
           "exit": "PENSI",
           "destination": "KDFW",
           "altitude": 38000,
-          "route": "PENSI LOXLY SJI AEX PNUTS BEREE2",
+          "waypoints": "PENSI LOXLY SJI AEX PNUTS BEREE2",
           "airlines": [
             {
               "icao": "NKS",
@@ -554,7 +554,7 @@
           "exit": "SARGE",
           "destination": "KATL",
           "altitude": 26000,
-          "route": "HAALO3 SARGE DARED CEW PENSI",
+          "waypoints": "HAALO3 SARGE DARED CEW PENSI",
           "airlines": [
             {
               "icao": "DAL",
@@ -566,7 +566,7 @@
           "exit": "ROMMY",
           "destination": "KIAH",
           "altitude": 30000,
-          "route": "ROMMY HRV NNCEE2",
+          "waypoints": "ROMMY HRV NNCEE2",
           "airlines": [
             {
               "icao": "UCA",
@@ -578,7 +578,7 @@
           "exit": "CEW",
           "destination": "KATL",
           "altitude": 29000,
-          "route": "CEW ENNTT HOBTT2",
+          "waypoints": "CEW ENNTT HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -590,7 +590,7 @@
           "exit": "CEW",
           "destination": "KPHL",
           "altitude": 25000,
-          "route": "CEW MGMRY TWOUP Q22 BEARI BBDOL PAATS4",
+          "waypoints": "CEW MGMRY TWOUP Q22 BEARI BBDOL PAATS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -602,7 +602,7 @@
           "exit": "COLIN",
           "destination": "KORF",
           "altitude": 14000,
-          "route": "CONLE4 COLIN T291 FAGED V286 STEIN",
+          "waypoints": "CONLE4 COLIN T291 FAGED V286 STEIN",
           "airlines": [
             {
               "icao": "SWA",
@@ -614,7 +614,7 @@
           "exit": "PENSI",
           "destination": "KMCI",
           "altitude": 38000,
-          "route": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
+          "waypoints": "PENSI V198 LOXLY KH06M KM21K KM36I KRTNY MHOMS3",
           "airlines": [
             {
               "icao": "SWA",
@@ -626,7 +626,7 @@
           "exit": "CEW",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CEW OTK SAV JROSS FLLGG STOCR7",
+          "waypoints": "CEW OTK SAV JROSS FLLGG STOCR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -638,7 +638,7 @@
           "exit": "CEW",
           "destination": "KLGA",
           "altitude": 33000,
-          "route": "CEW MGMRY TWOUP Q22 BURGG Q60 HURTS PROUD2",
+          "waypoints": "CEW MGMRY TWOUP Q22 BURGG Q60 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -672,7 +672,7 @@
       "arrivals": [
         {
           "waypoints": "KOBRA CEW/ho PENSI",
-          "route": "CEW PENSI",
+          "flight_strip_route": "CEW PENSI",
           "initial_controller": "C10",
           "initial_altitude": 14000,
           "assigned_altitude": 11000,
@@ -734,7 +734,7 @@
       "arrivals": [
         {
           "waypoints": "ZUGTI LOXLY/ho PENSI",
-          "route": "LOXLY PENSI",
+          "flight_strip_route": "LOXLY PENSI",
           "initial_controller": "H25",
           "initial_altitude": 13000,
           "assigned_altitude": 11000,
@@ -788,7 +788,7 @@
       "arrivals": [
         {
           "waypoints": "APCHE SJI/ho PENSI",
-          "route": "SJI PENSI",
+          "flight_strip_route": "SJI PENSI",
           "initial_controller": "H25",
           "initial_altitude": 13000,
           "assigned_altitude": 11000,

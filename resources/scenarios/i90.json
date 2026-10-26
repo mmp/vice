@@ -898,7 +898,7 @@
         {
           "exit": "LLA",
           "destination": "KTLH",
-          "route": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
+          "waypoints": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
           "airlines": [
             {
               "icao": "EJA"
@@ -908,7 +908,7 @@
         {
           "exit": "LLA",
           "destination": "KMSY",
-          "route": "MMALT7 LLA AWDAD AWDAD1",
+          "waypoints": "MMALT7 LLA AWDAD AWDAD1",
           "airlines": [
             {
               "icao": "N",
@@ -919,7 +919,7 @@
         {
           "exit": "LCH",
           "destination": "KBTR",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "N",
@@ -934,7 +934,7 @@
         {
           "exit": "DPATY",
           "destination": "KTEB",
-          "route": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
+          "waypoints": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
           "airlines": [
             {
               "icao": "N",
@@ -948,7 +948,7 @@
         {
           "exit": "WAILN",
           "destination": "KSAT",
-          "route": "BORRN6 WAILN QERVO3",
+          "waypoints": "BORRN6 WAILN QERVO3",
           "airlines": [
             {
               "icao": "N",
@@ -966,7 +966,7 @@
         {
           "exit": "MNURE",
           "destination": "KAUS",
-          "route": "BORRN6 MNURE WLEEE7",
+          "waypoints": "BORRN6 MNURE WLEEE7",
           "airlines": [
             {
               "icao": "N",
@@ -981,7 +981,7 @@
         {
           "exit": "JCT",
           "destination": "KVNY",
-          "route": "BORRN6 JCT",
+          "waypoints": "BORRN6 JCT",
           "airlines": [
             {
               "icao": "EJA"
@@ -995,7 +995,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDDN4",
+          "waypoints": "WYLSN8 MAJKK REDDN4",
           "airlines": [
             {
               "icao": "EJA",
@@ -1245,7 +1245,7 @@
         {
           "exit": "LLA",
           "destination": "KTLH",
-          "route": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
+          "waypoints": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
           "airlines": [
             {
               "icao": "EJA"
@@ -1255,7 +1255,7 @@
         {
           "exit": "LLA",
           "destination": "KMSY",
-          "route": "MMALT7 LLA AWDAD AWDAD1",
+          "waypoints": "MMALT7 LLA AWDAD AWDAD1",
           "airlines": [
             {
               "icao": "N",
@@ -1266,7 +1266,7 @@
         {
           "exit": "LCH",
           "destination": "KBTR",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "N",
@@ -1281,7 +1281,7 @@
         {
           "exit": "DPATY",
           "destination": "KTEB",
-          "route": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
+          "waypoints": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
           "airlines": [
             {
               "icao": "N",
@@ -1295,7 +1295,7 @@
         {
           "exit": "WAILN",
           "destination": "KSAT",
-          "route": "BORRN6 WAILN QERVO3",
+          "waypoints": "BORRN6 WAILN QERVO3",
           "airlines": [
             {
               "icao": "N",
@@ -1313,7 +1313,7 @@
         {
           "exit": "MNURE",
           "destination": "KAUS",
-          "route": "BORRN6 MNURE WLEEE7",
+          "waypoints": "BORRN6 MNURE WLEEE7",
           "airlines": [
             {
               "icao": "N",
@@ -1328,7 +1328,7 @@
         {
           "exit": "JCT",
           "destination": "KVNY",
-          "route": "BORRN6 JCT",
+          "waypoints": "BORRN6 JCT",
           "airlines": [
             {
               "icao": "EJA"
@@ -1342,7 +1342,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDDN4",
+          "waypoints": "WYLSN8 MAJKK REDDN4",
           "airlines": [
             {
               "icao": "EJA",
@@ -1823,7 +1823,7 @@
         {
           "exit": "LLA",
           "destination": "KTLH",
-          "route": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
+          "waypoints": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
           "airlines": [
             {
               "icao": "EJA"
@@ -1833,7 +1833,7 @@
         {
           "exit": "LLA",
           "destination": "KMSY",
-          "route": "MMALT7 LLA AWDAD AWDAD1",
+          "waypoints": "MMALT7 LLA AWDAD AWDAD1",
           "airlines": [
             {
               "icao": "N",
@@ -1844,7 +1844,7 @@
         {
           "exit": "LCH",
           "destination": "KBTR",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "N",
@@ -1859,7 +1859,7 @@
         {
           "exit": "DPATY",
           "destination": "KTEB",
-          "route": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
+          "waypoints": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
           "airlines": [
             {
               "icao": "N",
@@ -1873,7 +1873,7 @@
         {
           "exit": "WAILN",
           "destination": "KSAT",
-          "route": "BORRN6 WAILN QERVO3",
+          "waypoints": "BORRN6 WAILN QERVO3",
           "airlines": [
             {
               "icao": "N",
@@ -1891,7 +1891,7 @@
         {
           "exit": "MNURE",
           "destination": "KAUS",
-          "route": "BORRN6 MNURE WLEEE7",
+          "waypoints": "BORRN6 MNURE WLEEE7",
           "airlines": [
             {
               "icao": "N",
@@ -1906,7 +1906,7 @@
         {
           "exit": "JCT",
           "destination": "KVNY",
-          "route": "BORRN6 JCT",
+          "waypoints": "BORRN6 JCT",
           "airlines": [
             {
               "icao": "EJA"
@@ -1920,7 +1920,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDDN4",
+          "waypoints": "WYLSN8 MAJKK REDDN4",
           "airlines": [
             {
               "icao": "EJA",
@@ -2406,7 +2406,7 @@
         {
           "exit": "LLA",
           "destination": "KTLH",
-          "route": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
+          "waypoints": "MMALT7 LLA HRV SJI J2 DEFUN SZW",
           "airlines": [
             {
               "icao": "EJA"
@@ -2416,7 +2416,7 @@
         {
           "exit": "LLA",
           "destination": "KMSY",
-          "route": "MMALT7 LLA AWDAD AWDAD1",
+          "waypoints": "MMALT7 LLA AWDAD AWDAD1",
           "airlines": [
             {
               "icao": "N",
@@ -2427,7 +2427,7 @@
         {
           "exit": "LCH",
           "destination": "KBTR",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "N",
@@ -2442,7 +2442,7 @@
         {
           "exit": "DPATY",
           "destination": "KTEB",
-          "route": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
+          "waypoints": "STRYA8 DPATY SITTR Q34 GVE JAIKE4",
           "airlines": [
             {
               "icao": "N",
@@ -2456,7 +2456,7 @@
         {
           "exit": "WAILN",
           "destination": "KSAT",
-          "route": "BORRN6 WAILN QERVO3",
+          "waypoints": "BORRN6 WAILN QERVO3",
           "airlines": [
             {
               "icao": "N",
@@ -2474,7 +2474,7 @@
         {
           "exit": "MNURE",
           "destination": "KAUS",
-          "route": "BORRN6 MNURE WLEEE7",
+          "waypoints": "BORRN6 MNURE WLEEE7",
           "airlines": [
             {
               "icao": "N",
@@ -2489,7 +2489,7 @@
         {
           "exit": "JCT",
           "destination": "KVNY",
-          "route": "BORRN6 JCT",
+          "waypoints": "BORRN6 JCT",
           "airlines": [
             {
               "icao": "EJA"
@@ -2503,7 +2503,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDDN4",
+          "waypoints": "WYLSN8 MAJKK REDDN4",
           "airlines": [
             {
               "icao": "EJA",
@@ -3574,7 +3574,7 @@
         {
           "exit": "TPAKK",
           "destination": "KSTL",
-          "route": "INDIE8 TPAKK LIT ARG BOOSH3",
+          "waypoints": "INDIE8 TPAKK LIT ARG BOOSH3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3587,7 +3587,7 @@
         {
           "exit": "TPAKK",
           "destination": "KMDW",
-          "route": "INDIE8 TPAKK LIT J101 STL SPI PHEEB ENDEE8",
+          "waypoints": "INDIE8 TPAKK LIT J101 STL SPI PHEEB ENDEE8",
           "airlines": [
             {
               "icao": "SWA"
@@ -3606,7 +3606,7 @@
         {
           "exit": "TPAKK",
           "destination": "KMDW",
-          "route": "INDIE8 TPAKK LIT J101 STL SPI PHEEB ENDEE8",
+          "waypoints": "INDIE8 TPAKK LIT J101 STL SPI PHEEB ENDEE8",
           "airlines": [
             {
               "icao": "SWA"
@@ -3625,7 +3625,7 @@
         {
           "exit": "DOLEY",
           "destination": "KOKC",
-          "route": "STYCK8 DOLEY ADM TSDEL TSDEL3",
+          "waypoints": "STYCK8 DOLEY ADM TSDEL TSDEL3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3638,7 +3638,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDDN4",
+          "waypoints": "WYLSN8 MAJKK REDDN4",
           "airlines": [
             {
               "icao": "SWA"
@@ -3660,7 +3660,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDDN4",
+          "waypoints": "WYLSN8 MAJKK REDDN4",
           "airlines": [
             {
               "icao": "SWA"
@@ -3682,7 +3682,7 @@
         {
           "exit": "LLA",
           "destination": "KLGA",
-          "route": "ELOCO6 LLA HRV Q56 CATLN Q22 BURGG Q60 HURTS PROUD2",
+          "waypoints": "ELOCO6 LLA HRV Q56 CATLN Q22 BURGG Q60 HURTS PROUD2",
           "airlines": [
             {
               "icao": "SWA"
@@ -3692,7 +3692,7 @@
         {
           "exit": "HAWES",
           "destination": "KLGA",
-          "route": "LURIC8 HAWES SUTTN J29 CARIN MEMFS Q29 WWSHR TEESY J146 ETG MIP4",
+          "waypoints": "LURIC8 HAWES SUTTN J29 CARIN MEMFS Q29 WWSHR TEESY J146 ETG MIP4",
           "airlines": [
             {
               "icao": "SWA"
@@ -3708,7 +3708,7 @@
         {
           "exit": "JCT",
           "destination": "KELP",
-          "route": "RETYR8 JCT TXSAS BEAHR3",
+          "waypoints": "RETYR8 JCT TXSAS BEAHR3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3724,7 +3724,7 @@
         {
           "exit": "JCT",
           "destination": "KLAX",
-          "route": "RETYR8 JCT KH06Y KA09W EWM DMN Q180 WOBUG BXK J4 WLVRN ESTWD HLYWD1",
+          "waypoints": "RETYR8 JCT KH06Y KA09W EWM DMN Q180 WOBUG BXK J4 WLVRN ESTWD HLYWD1",
           "airlines": [
             {
               "icao": "SWA"
@@ -3740,7 +3740,7 @@
         {
           "exit": "JCT",
           "destination": "KSAN",
-          "route": "RETYR8 JCT TXSAS ELP J50 SSO GBN J2 HOGGZ LUCKI1",
+          "waypoints": "RETYR8 JCT TXSAS ELP J50 SSO GBN J2 HOGGZ LUCKI1",
           "airlines": [
             {
               "icao": "SWA"
@@ -3756,7 +3756,7 @@
         {
           "exit": "JCT",
           "destination": "KLGB",
-          "route": "RETYR8 JCT FUSCO LINZY EWM DMN Q180 WOBUG BXK EMLLD DSNEE6",
+          "waypoints": "RETYR8 JCT FUSCO LINZY EWM DMN Q180 WOBUG BXK EMLLD DSNEE6",
           "airlines": [
             {
               "icao": "SWA"
@@ -3772,7 +3772,7 @@
         {
           "exit": "MNURE",
           "destination": "KAUS",
-          "route": "RETYR8 MNURE WLEEE7",
+          "waypoints": "RETYR8 MNURE WLEEE7",
           "airlines": [
             {
               "icao": "SWA"
@@ -3788,7 +3788,7 @@
         {
           "exit": "LURIC",
           "destination": "KMEM",
-          "route": "LURIC ELD HOBRK4",
+          "waypoints": "LURIC ELD HOBRK4",
           "airlines": [
             {
               "icao": "SWA"
@@ -3798,7 +3798,7 @@
         {
           "exit": "CRIED",
           "destination": "KDFW",
-          "route": "BLTWY7 CRIED BEREE2",
+          "waypoints": "BLTWY7 CRIED BEREE2",
           "airlines": [
             {
               "icao": "ENY"
@@ -3817,7 +3817,7 @@
         {
           "exit": "DOLEY",
           "destination": "KDEN",
-          "route": "STYCK8 DOLEY MRMAC ROLLS TOTOE HALEN NIIXX4",
+          "waypoints": "STYCK8 DOLEY MRMAC ROLLS TOTOE HALEN NIIXX4",
           "airlines": [
             {
               "icao": "SWA"
@@ -3833,7 +3833,7 @@
         {
           "exit": "DOLEY",
           "destination": "KOAK",
-          "route": "STYCK8 DOLEY FUZ MQP KATZZ FLATT DEBRA CNX ZUN BLD BTY KENNO RUSME OAKES3",
+          "waypoints": "STYCK8 DOLEY FUZ MQP KATZZ FLATT DEBRA CNX ZUN BLD BTY KENNO RUSME OAKES3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3846,7 +3846,7 @@
         {
           "exit": "WTSON",
           "destination": "KMCI",
-          "route": "STYCK8 WTSON BYP TUL STASN WUTNG3",
+          "waypoints": "STYCK8 WTSON BYP TUL STASN WUTNG3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3859,7 +3859,7 @@
         {
           "exit": "TPAKK",
           "destination": "KPIT",
-          "route": "INDIE8 TPAKK LIT J131 PXV APE CTW FEWGA7",
+          "waypoints": "INDIE8 TPAKK LIT J131 PXV APE CTW FEWGA7",
           "airlines": [
             {
               "icao": "SWA"
@@ -3869,7 +3869,7 @@
         {
           "exit": "HAWES",
           "destination": "KBNA",
-          "route": "LURIC8 HAWES SUTTN J29 CARIN MEMFS CHSNE3",
+          "waypoints": "LURIC8 HAWES SUTTN J29 CARIN MEMFS CHSNE3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3885,7 +3885,7 @@
         {
           "exit": "DPATY",
           "destination": "KBWI",
-          "route": "STRYA8 DPATY KM21M DAREE LUMAY Q58 PEETT THHMP RAVNN8",
+          "waypoints": "STRYA8 DPATY KM21M DAREE LUMAY Q58 PEETT THHMP RAVNN8",
           "airlines": [
             {
               "icao": "SWA"
@@ -3901,7 +3901,7 @@
         {
           "exit": "LLA",
           "destination": "KATL",
-          "route": "ELOCO6 LLA HRV PAYTN SHYRE HOBTT3",
+          "waypoints": "ELOCO6 LLA HRV PAYTN SHYRE HOBTT3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3917,7 +3917,7 @@
         {
           "exit": "LLA",
           "destination": "KATL",
-          "route": "ELOCO6 LLA HRV PAYTN SHYRE HOBTT3",
+          "waypoints": "ELOCO6 LLA HRV PAYTN SHYRE HOBTT3",
           "airlines": [
             {
               "icao": "SWA"
@@ -3933,7 +3933,7 @@
         {
           "exit": "LLA",
           "destination": "KMSY",
-          "route": "ELOCO6 LLA AWDAD AWDAD1",
+          "waypoints": "ELOCO6 LLA AWDAD AWDAD1",
           "airlines": [
             {
               "icao": "SWA"
@@ -3949,7 +3949,7 @@
         {
           "exit": "MNURE",
           "destination": "KAUS",
-          "route": "RETYR8 MNURE WLEEE7",
+          "waypoints": "RETYR8 MNURE WLEEE7",
           "airlines": [
             {
               "icao": "SWA"
@@ -3965,7 +3965,7 @@
         {
           "exit": "JCT",
           "destination": "KABQ",
-          "route": "RETYR8 JCT SJT RECKN COLTR4",
+          "waypoints": "RETYR8 JCT SJT RECKN COLTR4",
           "airlines": [
             {
               "icao": "SWA"
@@ -3978,7 +3978,7 @@
         {
           "exit": "JCT",
           "destination": "KLAX",
-          "route": "RETYR8 JCT LINZY EWM DMN Q180 WOBUG BXK J4 WLVRN ESTWD HLYWD1",
+          "waypoints": "RETYR8 JCT LINZY EWM DMN Q180 WOBUG BXK J4 WLVRN ESTWD HLYWD1",
           "airlines": [
             {
               "icao": "SWA"
@@ -3988,7 +3988,7 @@
         {
           "exit": "JCT",
           "destination": "KPHX",
-          "route": "RETYR8 JCT J86 FST ELP J50 ALIBY DRRVR PINNG1",
+          "waypoints": "RETYR8 JCT J86 FST ELP J50 ALIBY DRRVR PINNG1",
           "airlines": [
             {
               "icao": "SWA"
@@ -4007,7 +4007,7 @@
         {
           "exit": "JCT",
           "destination": "KLAS",
-          "route": "RETYR8 JCT LINZY EWM KA15S KA21Q DRK ELLDA RKSTR4",
+          "waypoints": "RETYR8 JCT LINZY EWM KA15S KA21Q DRK ELLDA RKSTR4",
           "airlines": [
             {
               "icao": "SWA"
@@ -4026,7 +4026,7 @@
         {
           "exit": "JCT",
           "destination": "KLAS",
-          "route": "RETYR8 JCT LINZY EWM KA15S KA21Q DRK ELLDA RKSTR4",
+          "waypoints": "RETYR8 JCT LINZY EWM KA15S KA21Q DRK ELLDA RKSTR4",
           "airlines": [
             {
               "icao": "SWA"
@@ -4045,7 +4045,7 @@
         {
           "exit": "KELPP",
           "destination": "MMUN",
-          "route": "PEECE6 KELPP A766 KEHLI UL209 BETAS VOMAR",
+          "waypoints": "PEECE6 KELPP A766 KEHLI UL209 BETAS VOMAR",
           "airlines": [
             {
               "icao": "SWA"
@@ -4058,7 +4058,7 @@
         {
           "exit": "CRP",
           "destination": "MMSD",
-          "route": "PTRON9 CRP DEVOE SLW UT71 TENAY TENAY1B",
+          "waypoints": "PTRON9 CRP DEVOE SLW UT71 TENAY TENAY1B",
           "airlines": [
             {
               "icao": "SWA"
@@ -4071,7 +4071,7 @@
         {
           "exit": "CRP",
           "destination": "MMPR",
-          "route": "PTRON9 CRP DEVOE MTY OTEKA UT1 KEDMA KEDMA1B",
+          "waypoints": "PTRON9 CRP DEVOE MTY OTEKA UT1 KEDMA KEDMA1B",
           "airlines": [
             {
               "icao": "SWA"
@@ -4081,7 +4081,7 @@
         {
           "exit": "ANKRR",
           "destination": "MROC",
-          "route": "PEECE6 ANKRR L208 DUTNA UL208 MID UB753 TUGET PIKRO UB753 BZE UZ512 LIB BARRA3L",
+          "waypoints": "PEECE6 ANKRR L208 DUTNA UL208 MID UB753 TUGET PIKRO UB753 BZE UZ512 LIB BARRA3L",
           "airlines": [
             {
               "icao": "SWA"
@@ -4091,7 +4091,7 @@
         {
           "exit": "ANKRR",
           "destination": "MZBZ",
-          "route": "PEECE6 ANKRR L208 DUTNA UL208 MID UB753 DUSLO TUGET B753 MEBUM MEBUM1A",
+          "waypoints": "PEECE6 ANKRR L208 DUTNA UL208 MID UB753 DUSLO TUGET B753 MEBUM MEBUM1A",
           "airlines": [
             {
               "icao": "SWA"
@@ -4101,7 +4101,7 @@
         {
           "exit": "LLA",
           "destination": "KMCO",
-          "route": "ELOCO6 LLA LEV Y280 CHRGE PRICY4",
+          "waypoints": "ELOCO6 LLA LEV Y280 CHRGE PRICY4",
           "airlines": [
             {
               "icao": "SWA"
@@ -4120,7 +4120,7 @@
         {
           "exit": "LLA",
           "destination": "KJAX",
-          "route": "ELOCO6 LLA HRV Q56 SJI J2 DEFUN CABLO ZOOSS MARQO3",
+          "waypoints": "ELOCO6 LLA HRV Q56 SJI J2 DEFUN CABLO ZOOSS MARQO3",
           "airlines": [
             {
               "icao": "SWA"
@@ -4130,7 +4130,7 @@
         {
           "exit": "LLA",
           "destination": "KFLL",
-          "route": "ELOCO6 LLA LEV Y290 BLVNS Y290 OCHHO VNECK TEEKY3",
+          "waypoints": "ELOCO6 LLA LEV Y290 BLVNS Y290 OCHHO VNECK TEEKY3",
           "airlines": [
             {
               "icao": "SWA"
@@ -4146,7 +4146,7 @@
         {
           "exit": "LLA",
           "destination": "KTPA",
-          "route": "ELOCO6 LLA LEV Y280 CHRGE RAYZZ3",
+          "waypoints": "ELOCO6 LLA LEV Y280 CHRGE RAYZZ3",
           "airlines": [
             {
               "icao": "SWA"
@@ -5493,7 +5493,7 @@
           "exit": "CRP",
           "destination": "KLRD",
           "altitude": 16000,
-          "route": "RITAA7 CRP LRD",
+          "waypoints": "RITAA7 CRP LRD",
           "airlines": [
             {
               "icao": "UCA",
@@ -5505,7 +5505,7 @@
           "exit": "CRGER",
           "destination": "KLAX",
           "altitude": 36000,
-          "route": "BNDTO6 CRGER JCT Q20 FUSCO J15 INK J4 WLVRN ESTWD HLYWD1",
+          "waypoints": "BNDTO6 CRGER JCT Q20 FUSCO J15 INK J4 WLVRN ESTWD HLYWD1",
           "airlines": [
             {
               "icao": "NKS",
@@ -5517,7 +5517,7 @@
           "exit": "PSTUR",
           "destination": "KLAX",
           "altitude": 36000,
-          "route": "PITZZ5 PSTUR JCT Q20 FUSCO J15 INK J4 WLVRN ESTWD HLYWD1",
+          "waypoints": "PITZZ5 PSTUR JCT Q20 FUSCO J15 INK J4 WLVRN ESTWD HLYWD1",
           "airlines": [
             {
               "icao": "NKS",
@@ -5529,7 +5529,7 @@
           "exit": "WWREN",
           "destination": "MMMX",
           "altitude": 36000,
-          "route": "RITAA7 WWREN BRO MAM UJ19 TAM UT100 SELIR UT100 ENAGA ENAGA2A",
+          "waypoints": "RITAA7 WWREN BRO MAM UJ19 TAM UT100 SELIR UT100 ENAGA ENAGA2A",
           "airlines": [
             {
               "icao": "VOI",
@@ -5541,7 +5541,7 @@
           "exit": "CRGER",
           "destination": "KSNA",
           "altitude": 32000,
-          "route": "BNDTO6 CRGER EWM Q2 ITUCO BXK EMLLD DSNEE5",
+          "waypoints": "BNDTO6 CRGER EWM Q2 ITUCO BXK EMLLD DSNEE5",
           "airlines": [
             {
               "icao": "UAL",
@@ -5553,7 +5553,7 @@
           "exit": "GUSTI",
           "destination": "KJAX",
           "altitude": 29000,
-          "route": "GUMBY3 GUSTI AWDAD SJI J2 DEFUN CABLO CAPPS MARQO2",
+          "waypoints": "GUMBY3 GUSTI AWDAD SJI J2 DEFUN CABLO CAPPS MARQO2",
           "airlines": [
             {
               "icao": "UAL",
@@ -5565,7 +5565,7 @@
           "exit": "SPINY",
           "destination": "KJAX",
           "altitude": 29000,
-          "route": "MMUGS4 SPINY AWDAD SJI J2 DEFUN CABLO CAPPS MARQO2",
+          "waypoints": "MMUGS4 SPINY AWDAD SJI J2 DEFUN CABLO CAPPS MARQO2",
           "airlines": [
             {
               "icao": "UAL",
@@ -5577,7 +5577,7 @@
           "exit": "CRP",
           "destination": "MMMY",
           "altitude": 28000,
-          "route": "RITAA7 CRP REX UJ13 ITPIS",
+          "waypoints": "RITAA7 CRP REX UJ13 ITPIS",
           "airlines": [
             {
               "icao": "UAL",
@@ -5589,7 +5589,7 @@
           "exit": "TPAKK",
           "destination": "KSGF",
           "altitude": 29000,
-          "route": "INDIE8 TPAKK TXK ZALDA SGF",
+          "waypoints": "INDIE8 TPAKK TXK ZALDA SGF",
           "airlines": [
             {
               "icao": "UCA",
@@ -5600,7 +5600,7 @@
         {
           "exit": "NGP",
           "destination": "KMFE",
-          "route": "RITAA7 NGP",
+          "waypoints": "RITAA7 NGP",
           "airlines": [
             {
               "icao": "UAL",
@@ -5612,7 +5612,7 @@
           "exit": "LLA",
           "destination": "KMCO",
           "altitude": 35000,
-          "route": "GUMBY3 LLA LEV Y280 CHRGE PRICY3",
+          "waypoints": "GUMBY3 LLA LEV Y280 CHRGE PRICY3",
           "airlines": [
             {
               "icao": "UAL",
@@ -5624,7 +5624,7 @@
           "exit": "SBI",
           "destination": "KMCO",
           "altitude": 35000,
-          "route": "MMUGS4 SBI LEV Y280 CHRGE PRICY3",
+          "waypoints": "MMUGS4 SBI LEV Y280 CHRGE PRICY3",
           "airlines": [
             {
               "icao": "UAL",
@@ -5636,7 +5636,7 @@
           "exit": "PSTUR",
           "destination": "KELP",
           "altitude": 34000,
-          "route": "PITZZ5 PSTUR CRGER TXSAS BEAHR3",
+          "waypoints": "PITZZ5 PSTUR CRGER TXSAS BEAHR3",
           "airlines": [
             {
               "icao": "ASH",
@@ -5648,7 +5648,7 @@
           "exit": "WAILN",
           "destination": "KSAT",
           "altitude": 22000,
-          "route": "BNDTO6 WAILN QERVO1",
+          "waypoints": "BNDTO6 WAILN QERVO1",
           "airlines": [
             {
               "icao": "UAL",
@@ -5660,7 +5660,7 @@
           "exit": "WEEED",
           "destination": "KSAT",
           "altitude": 22000,
-          "route": "PITZZ5 WEEED WAILN QERVO1",
+          "waypoints": "PITZZ5 WEEED WAILN QERVO1",
           "airlines": [
             {
               "icao": "UAL",
@@ -5672,7 +5672,7 @@
           "exit": "LLA",
           "destination": "KFLL",
           "altitude": 33000,
-          "route": "GUMBY3 LLA LEV Y290 OCHHO VNECK TEEKY3",
+          "waypoints": "GUMBY3 LLA LEV Y290 OCHHO VNECK TEEKY3",
           "airlines": [
             {
               "icao": "UAL",
@@ -5684,7 +5684,7 @@
           "exit": "SBI",
           "destination": "KFLL",
           "altitude": 33000,
-          "route": "MMUGS4 SBI LEV Y290 OCHHO VNECK TEEKY3",
+          "waypoints": "MMUGS4 SBI LEV Y290 OCHHO VNECK TEEKY3",
           "airlines": [
             {
               "icao": "UAL",
@@ -5696,7 +5696,7 @@
           "exit": "LCH",
           "destination": "KATL",
           "altitude": 35000,
-          "route": "GUMBY3 LCH COOUP HOBTT2",
+          "waypoints": "GUMBY3 LCH COOUP HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -5708,7 +5708,7 @@
           "exit": "BLING",
           "destination": "KATL",
           "altitude": 35000,
-          "route": "MMUGS4 BLING COOUP HOBTT2",
+          "waypoints": "MMUGS4 BLING COOUP HOBTT2",
           "airlines": [
             {
               "icao": "DAL",
@@ -5720,7 +5720,7 @@
           "exit": "GUSTI",
           "destination": "KLGA",
           "altitude": 37000,
-          "route": "GUMBY3 GUSTI Q22 BURGG Q60 HURTS PROUD2",
+          "waypoints": "GUMBY3 GUSTI Q22 BURGG Q60 HURTS PROUD2",
           "airlines": [
             {
               "icao": "UAL",
@@ -5732,7 +5732,7 @@
           "exit": "SPINY",
           "destination": "KLGA",
           "altitude": 37000,
-          "route": "MMUGS4 SPINY Q22 BURGG Q60 HURTS PROUD2",
+          "waypoints": "MMUGS4 SPINY Q22 BURGG Q60 HURTS PROUD2",
           "airlines": [
             {
               "icao": "UAL",
@@ -5744,7 +5744,7 @@
           "exit": "HAWES",
           "destination": "KHSV",
           "altitude": 33000,
-          "route": "LURIC8 HAWES SQS",
+          "waypoints": "LURIC8 HAWES SQS",
           "airlines": [
             {
               "icao": "UCA",
@@ -5756,7 +5756,7 @@
           "exit": "CRGER",
           "destination": "KSJC",
           "altitude": 32000,
-          "route": "PITZZ5 CRGER ELP BXK J212 DECAS PMD AVE MAKRS TROXX SILCN6",
+          "waypoints": "PITZZ5 CRGER ELP BXK J212 DECAS PMD AVE MAKRS TROXX SILCN6",
           "airlines": [
             {
               "icao": "UAL",
@@ -5768,7 +5768,7 @@
           "exit": "DPATY",
           "destination": "KORD",
           "altitude": 30000,
-          "route": "STRYA8 DPATY FAM J137 LIT J180 SWB ZEEKK3",
+          "waypoints": "STRYA8 DPATY FAM J137 LIT J180 SWB ZEEKK3",
           "airlines": [
             {
               "icao": "ENY",
@@ -5780,7 +5780,7 @@
           "exit": "DOLEY",
           "destination": "KDEN",
           "altitude": 40000,
-          "route": "STYCK8 DOLEY ADM ROLLS KK36A HALEN NIIXX3",
+          "waypoints": "STYCK8 DOLEY ADM ROLLS KK36A HALEN NIIXX3",
           "airlines": [
             {
               "icao": "SWA",
@@ -5792,7 +5792,7 @@
           "exit": "CRGER",
           "destination": "KPHX",
           "altitude": 32000,
-          "route": "PITZZ5 CRGER ELP DRRVR PINNG1",
+          "waypoints": "PITZZ5 CRGER ELP DRRVR PINNG1",
           "airlines": [
             {
               "icao": "UAL",
@@ -5804,7 +5804,7 @@
           "exit": "DOLEY",
           "destination": "KSEA",
           "altitude": 34000,
-          "route": "STYCK8 DOLEY FUZ KK36A LBL SNIPR GLL KU75S KOVRY PDT CHINS5",
+          "waypoints": "STYCK8 DOLEY FUZ KK36A LBL SNIPR GLL KU75S KOVRY PDT CHINS5",
           "airlines": [
             {
               "icao": "ASA",
@@ -5816,7 +5816,7 @@
           "exit": "GUSTI",
           "destination": "KPHL",
           "altitude": 33000,
-          "route": "GUMBY3 GUSTI Q22 BEARI BBDOL PAATS4",
+          "waypoints": "GUMBY3 GUSTI Q22 BEARI BBDOL PAATS4",
           "airlines": [
             {
               "icao": "UAL",
@@ -5828,7 +5828,7 @@
           "exit": "CRGER",
           "destination": "KSFO",
           "altitude": 36000,
-          "route": "PITZZ5 CRGER ELP BXK J212 DECAS PMD AVE MAKRS SERFR SERFR4",
+          "waypoints": "PITZZ5 CRGER ELP BXK J212 DECAS PMD AVE MAKRS SERFR SERFR4",
           "airlines": [
             {
               "icao": "UAL",
@@ -5840,7 +5840,7 @@
           "exit": "CRIED",
           "destination": "KSEA",
           "altitude": 36000,
-          "route": "BLTWY7 CRIED",
+          "waypoints": "BLTWY7 CRIED",
           "airlines": [
             {
               "icao": "ASA",
@@ -5852,7 +5852,7 @@
           "exit": "SAT",
           "destination": "MMCU",
           "altitude": 36000,
-          "route": "BNDTO6 SAT",
+          "waypoints": "BNDTO6 SAT",
           "airlines": [
             {
               "icao": "AAL",
@@ -5864,7 +5864,7 @@
           "exit": "MNURE",
           "destination": "MMCU",
           "altitude": 36000,
-          "route": "PITZZ5 MNURE",
+          "waypoints": "PITZZ5 MNURE",
           "airlines": [
             {
               "icao": "AAL",
@@ -5876,7 +5876,7 @@
           "exit": "MUSYL",
           "destination": "MMUN",
           "altitude": 35000,
-          "route": "FLYZA5 MUSYL",
+          "waypoints": "FLYZA5 MUSYL",
           "airlines": [
             {
               "icao": "AAL",
@@ -5888,7 +5888,7 @@
           "exit": "MAJKK",
           "destination": "KORD",
           "altitude": 35000,
-          "route": "WYLSN8 MAJKK",
+          "waypoints": "WYLSN8 MAJKK",
           "airlines": [
             {
               "icao": "UAL",
@@ -6191,7 +6191,7 @@
         {
           "exit": "LCH",
           "destination": "KSFB",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "LXJ"
@@ -6201,7 +6201,7 @@
         {
           "exit": "LLA",
           "destination": "KMSY",
-          "route": "MMALT7 LLA AWDAD AWDAD1",
+          "waypoints": "MMALT7 LLA AWDAD AWDAD1",
           "airlines": [
             {
               "icao": "N",
@@ -6212,7 +6212,7 @@
         {
           "exit": "LCH",
           "destination": "KBTR",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "N",
@@ -6226,7 +6226,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDNN4",
+          "waypoints": "WYLSN8 MAJKK REDNN4",
           "airlines": [
             {
               "icao": "N",
@@ -6243,7 +6243,7 @@
         {
           "exit": "CRIED",
           "destination": "KFTW",
-          "route": "BLTWY7 CRIED REEKO3",
+          "waypoints": "BLTWY7 CRIED REEKO3",
           "airlines": [
             {
               "icao": "N",
@@ -6260,7 +6260,7 @@
         {
           "exit": "WAILN",
           "destination": "KSAT",
-          "route": "BORRN6 WAILN QERVO3",
+          "waypoints": "BORRN6 WAILN QERVO3",
           "airlines": [
             {
               "icao": "N",
@@ -6278,7 +6278,7 @@
         {
           "exit": "DPATY",
           "destination": "KTYS",
-          "route": "STRYA8 DPATY CBM GQO",
+          "waypoints": "STRYA8 DPATY CBM GQO",
           "airlines": [
             {
               "icao": "N",
@@ -6295,7 +6295,7 @@
         {
           "exit": "MNURE",
           "destination": "KEDC",
-          "route": "BORRN6 MNURE POTRR2",
+          "waypoints": "BORRN6 MNURE POTRR2",
           "airlines": [
             {
               "icao": "N",
@@ -6313,7 +6313,7 @@
         {
           "exit": "JCT",
           "destination": "KVNY",
-          "route": "BORRN6 JCT",
+          "waypoints": "BORRN6 JCT",
           "airlines": [
             {
               "icao": "EJA"
@@ -6652,7 +6652,7 @@
         {
           "exit": "LCH",
           "destination": "KSFB",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "LXJ"
@@ -6662,7 +6662,7 @@
         {
           "exit": "LLA",
           "destination": "KMSY",
-          "route": "MMALT7 LLA AWDAD AWDAD1",
+          "waypoints": "MMALT7 LLA AWDAD AWDAD1",
           "airlines": [
             {
               "icao": "N",
@@ -6673,7 +6673,7 @@
         {
           "exit": "LCH",
           "destination": "KBTR",
-          "route": "MMALT7 LCH",
+          "waypoints": "MMALT7 LCH",
           "airlines": [
             {
               "icao": "N",
@@ -6687,7 +6687,7 @@
         {
           "exit": "MAJKK",
           "destination": "KDAL",
-          "route": "WYLSN8 MAJKK REDNN4",
+          "waypoints": "WYLSN8 MAJKK REDNN4",
           "airlines": [
             {
               "icao": "N",
@@ -6704,7 +6704,7 @@
         {
           "exit": "CRIED",
           "destination": "KFTW",
-          "route": "BLTWY7 CRIED REEKO3",
+          "waypoints": "BLTWY7 CRIED REEKO3",
           "airlines": [
             {
               "icao": "N",
@@ -6721,7 +6721,7 @@
         {
           "exit": "WAILN",
           "destination": "KSAT",
-          "route": "BORRN6 WAILN QERVO3",
+          "waypoints": "BORRN6 WAILN QERVO3",
           "airlines": [
             {
               "icao": "N",
@@ -6739,7 +6739,7 @@
         {
           "exit": "DPATY",
           "destination": "KTYS",
-          "route": "STRYA8 DPATY CBM GQO",
+          "waypoints": "STRYA8 DPATY CBM GQO",
           "airlines": [
             {
               "icao": "N",
@@ -6756,7 +6756,7 @@
         {
           "exit": "MNURE",
           "destination": "KEDC",
-          "route": "BORRN6 MNURE POTRR2",
+          "waypoints": "BORRN6 MNURE POTRR2",
           "airlines": [
             {
               "icao": "N",
@@ -6774,7 +6774,7 @@
         {
           "exit": "JCT",
           "destination": "KVNY",
-          "route": "BORRN6 JCT",
+          "waypoints": "BORRN6 JCT",
           "airlines": [
             {
               "icao": "EJA"

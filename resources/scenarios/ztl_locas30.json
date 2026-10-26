@@ -94,7 +94,7 @@
           "altitude": [36000],
           "destination": "KMIA",
           "exit": "ICONS",
-          "route": "ICONS NOOKS WURFL/c36000 Q83 JEVED Q97 DEBRL/delete CSTAL3"
+          "waypoints": "ICONS NOOKS WURFL/c36000 Q83 JEVED Q97 DEBRL/delete CSTAL3"
         },
         {
           "airlines": [
@@ -108,7 +108,7 @@
           "altitude": [38000],
           "destination": "KMIA",
           "exit": "ICONS",
-          "route": "ICONS NOOKS WURFL/c38000 Q83 JEVED Q97 DEBRL/delete CSTAL3"
+          "waypoints": "ICONS NOOKS WURFL/c38000 Q83 JEVED Q97 DEBRL/delete CSTAL3"
         },
         {
           "airlines": [
@@ -119,7 +119,7 @@
           "altitude": [23000],
           "destination": "KMYR",
           "exit": "KWEEN",
-          "route": "KWEEN UNJAM/c23000 KMYR/delete"
+          "waypoints": "KWEEN UNJAM/c23000 KMYR/delete"
         },
         {
           "airlines": [
@@ -133,7 +133,7 @@
           "altitude": [37000],
           "destination": "KMIA",
           "exit": "KWEEN",
-          "route": "KWEEN PITRW/c37000 Y436 OGGRE DUUNK Y313 HOAGG/delete BNFSH3"
+          "waypoints": "KWEEN PITRW/c37000 Y436 OGGRE DUUNK Y313 HOAGG/delete BNFSH3"
         },
         {
           "airlines": [
@@ -144,7 +144,7 @@
           "altitude": [36000],
           "destination": "KMSY",
           "exit": "BEAVY",
-          "route": "BEAVY JENDO/c36000 MAVRC ALLMA CEW J2 SJI/delete MNSTR2"
+          "waypoints": "BEAVY JENDO/c36000 MAVRC ALLMA CEW J2 SJI/delete MNSTR2"
         },
         {
           "airlines": [
@@ -158,7 +158,7 @@
           "altitude": [35000],
           "destination": "KJFK",
           "exit": "BARMY",
-          "route": "BARMY TYI/c35000 Q64 SAWED Q108 SIE/delete CAMRN5"
+          "waypoints": "BARMY TYI/c35000 Q64 SAWED Q108 SIE/delete CAMRN5"
         },
         {
           "airlines": [
@@ -175,7 +175,7 @@
           "altitude": [33000],
           "destination": "KBWI",
           "exit": "BARMY",
-          "route": "BARMY RDU/c33000 THHMP/delete RAVNN9"
+          "waypoints": "BARMY RDU/c33000 THHMP/delete RAVNN9"
         },
         {
           "airlines": [
@@ -189,7 +189,7 @@
           "altitude": [31000],
           "destination": "KDCA",
           "exit": "KILNS",
-          "route": "KILNS AUDII/c31000 WAVES/delete CAPSS4"
+          "waypoints": "KILNS AUDII/c31000 WAVES/delete CAPSS4"
         },
         {
           "airlines": [
@@ -200,7 +200,7 @@
           "altitude": [13000],
           "destination": "KFAY",
           "exit": "LILLS",
-          "route": "LILLS V296 FAY/delete"
+          "waypoints": "LILLS V296 FAY/delete"
         }
       ]
     }

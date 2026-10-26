@@ -428,7 +428,7 @@
           "destination": "KSBA",
           "altitude": [10000],
           "exit": "KWANG",
-          "route": "KWANG"
+          "waypoints": "KWANG"
         },
         {
           "airlines": [
@@ -440,7 +440,7 @@
           "destination": "KSBA",
           "altitude": [20000, 22000],
           "exit": "RZS.V",
-          "route": "RZS MQO"
+          "waypoints": "RZS MQO"
         },
         {
           "airlines": [
@@ -478,7 +478,7 @@
           ],
           "destination": "KSFO",
           "exit": "STOKD",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -503,7 +503,7 @@
           ],
           "destination": "KSJC",
           "exit": "SCTRR",
-          "route": "SCTRR TROXX SILCN6"
+          "waypoints": "SCTRR TROXX SILCN6"
         },
         {
           "airlines": [
@@ -528,7 +528,7 @@
           ],
           "destination": "KSEA",
           "exit": "SCTRR",
-          "route": "SCTRR TROXX SILCN6"
+          "waypoints": "SCTRR TROXX SILCN6"
         },
         {
           "airlines": [
@@ -571,7 +571,7 @@
           ],
           "destination": "PHNL",
           "exit": "DINTY",
-          "route": "DINTY R576 DENNS INOYI1"
+          "waypoints": "DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -594,7 +594,7 @@
           ],
           "destination": "PHOG",
           "exit": "DINTY",
-          "route": "DINTY R576 DENNS"
+          "waypoints": "DINTY R576 DENNS"
         },
         {
           "airlines": [
@@ -613,7 +613,7 @@
           ],
           "destination": "PHKO",
           "exit": "DINTY",
-          "route": "DINTY R576 DENNS"
+          "waypoints": "DINTY R576 DENNS"
         },
         {
           "airlines": [
@@ -624,7 +624,7 @@
           ],
           "destination": "NFFN",
           "exit": "FICKY",
-          "route": "FICKY B581 NN"
+          "waypoints": "FICKY B581 NN"
         },
         {
           "airlines": [
@@ -639,7 +639,7 @@
           ],
           "destination": "NZAA",
           "exit": "FICKY",
-          "route": "FICKY 3000N/12500W 2700N/13000W"
+          "waypoints": "FICKY 3000N/12500W 2700N/13000W"
         },
         {
           "airlines": [
@@ -654,7 +654,7 @@
           ],
           "destination": "NTAA",
           "exit": "FICKY",
-          "route": " FICKY B577 AHNDO BENTS"
+          "waypoints": " FICKY B577 AHNDO BENTS"
         },
         {
           "airlines": [
@@ -677,7 +677,7 @@
           ],
           "destination": "YSSY",
           "exit": "FICKY",
-          "route": "FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
+          "waypoints": "FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
         },
         {
           "airlines": [
@@ -688,7 +688,7 @@
           ],
           "destination": "RJBB",
           "exit": "MCKEY",
-          "route": "SUMMR2 MCKEY LIBBO BRINY BOARS BOXER B453 KYLLE B453 KANUA B453 KATCH"
+          "waypoints": "SUMMR2 MCKEY LIBBO BRINY BOARS BOXER B453 KYLLE B453 KANUA B453 KATCH"
         },
         {
           "airlines": [
@@ -699,7 +699,7 @@
           ],
           "destination": "WSSS",
           "exit": "MCKEY",
-          "route": "MCKEY LIBBO BRINY ALCOA"
+          "waypoints": "MCKEY LIBBO BRINY ALCOA"
         },
         {
           "airlines": [
@@ -726,7 +726,7 @@
           ],
           "destination": "RJAA",
           "exit": "MCKEY",
-          "route": "MCKEY LIBBO BRINY BOARS BOXER B453 KYLLE B453 KANUA B453 KATCH"
+          "waypoints": "MCKEY LIBBO BRINY BOARS BOXER B453 KYLLE B453 KANUA B453 KATCH"
         },
         {
           "airlines": [
@@ -737,7 +737,7 @@
           ],
           "destination": "KSMF",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO NURAY SUUTR4"
+          "waypoints": "LADYJ4 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -747,7 +747,7 @@
           ],
           "destination": "KSMF",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO NURAY SUUTR4"
+          "waypoints": "LADYJ4 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -757,7 +757,7 @@
           ],
           "destination": "KSMF",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO NURAY SUUTR4"
+          "waypoints": "LADYJ4 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -767,7 +767,7 @@
           ],
           "destination": "KSEA",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -777,7 +777,7 @@
           ],
           "destination": "KSEA",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -787,7 +787,7 @@
           ],
           "destination": "KSEA",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -797,7 +797,7 @@
           ],
           "destination": "KSEA",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -808,7 +808,7 @@
           ],
           "destination": "KSEA",
           "exit": "CSTRO",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -818,7 +818,7 @@
           ],
           "destination": "KOAK",
           "exit": "COREZ",
-          "route": "LADYJ4 COREZ RGOOD EMZOH3"
+          "waypoints": "LADYJ4 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -829,7 +829,7 @@
           ],
           "destination": "KOAK",
           "exit": "COREZ",
-          "route": "LADYJ4 COREZ RGOOD EMZOH3"
+          "waypoints": "LADYJ4 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -840,7 +840,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -850,7 +850,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -860,7 +860,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -870,7 +870,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -880,7 +880,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -890,7 +890,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS J146 DICEE BUMMP SSKII3"
+          "waypoints": "LAS J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -900,7 +900,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS J146 DICEE BUMMP SSKII3"
+          "waypoints": "LAS J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -910,7 +910,7 @@
           ],
           "destination": "KDEN",
           "exit": "LAS",
-          "route": "LAS J146 DICEE BUMMP SSKII3"
+          "waypoints": "LAS J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -920,7 +920,7 @@
           ],
           "destination": "KEWR",
           "exit": "LAS",
-          "route": "LAS J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
+          "waypoints": "LAS J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -930,7 +930,7 @@
           ],
           "destination": "KIAD",
           "exit": "BEALE",
-          "route": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -940,7 +940,7 @@
           ],
           "destination": "KIAD",
           "exit": "BEALE",
-          "route": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -951,7 +951,7 @@
           ],
           "destination": "KORD",
           "exit": "BEALE",
-          "route": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -962,7 +962,7 @@
           ],
           "destination": "KORD",
           "exit": "BEALE",
-          "route": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -973,7 +973,7 @@
           ],
           "destination": "EGLL",
           "exit": "BEALE",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -984,7 +984,7 @@
           ],
           "destination": "EGLL",
           "exit": "BEALE",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -994,7 +994,7 @@
           ],
           "destination": "ENGM",
           "exit": "BEALE",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1005,7 +1005,7 @@
           ],
           "destination": "EHAM",
           "exit": "BEALE",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1016,7 +1016,7 @@
           ],
           "destination": "KORD",
           "exit": "CLEEE",
-          "route": "CLEEE PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
+          "waypoints": "CLEEE PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
         },
         {
           "airlines": [
@@ -1027,7 +1027,7 @@
           ],
           "destination": "KBWI",
           "exit": "CLEEE",
-          "route": "CLEEE PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
+          "waypoints": "CLEEE PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
         },
         {
           "airlines": [
@@ -1037,7 +1037,7 @@
           ],
           "destination": "KPHX",
           "exit": "CNERY",
-          "route": "CNERY BLH HYDRR1"
+          "waypoints": "CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1047,7 +1047,7 @@
           ],
           "destination": "KORD",
           "exit": "CLEEE",
-          "route": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
+          "waypoints": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -1057,7 +1057,7 @@
           ],
           "destination": "KORD",
           "exit": "CLEEE",
-          "route": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
+          "waypoints": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -1067,7 +1067,7 @@
           ],
           "destination": "KPHX",
           "exit": "CNERY",
-          "route": "CNERY BLH HYDRR1"
+          "waypoints": "CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1077,7 +1077,7 @@
           ],
           "destination": "KDFW",
           "exit": "CNERY",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1087,7 +1087,7 @@
           ],
           "destination": "KDFW",
           "exit": "CNERY",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1097,7 +1097,7 @@
           ],
           "destination": "KDFW",
           "exit": "CNERY",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1107,7 +1107,7 @@
           ],
           "destination": "KDFW",
           "exit": "CNERY",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1117,7 +1117,7 @@
           ],
           "destination": "KPHX",
           "exit": "CNERY",
-          "route": "CNERY BLH HYDRR1"
+          "waypoints": "CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1127,7 +1127,7 @@
           ],
           "destination": "MMPR",
           "exit": "OTAYY",
-          "route": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1138,7 +1138,7 @@
           ],
           "destination": "MMPR",
           "exit": "OTAYY",
-          "route": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1149,7 +1149,7 @@
           ],
           "destination": "MMPR",
           "exit": "OTAYY",
-          "route": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1159,7 +1159,7 @@
           ],
           "destination": "MMMX",
           "exit": "TCATE",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1170,7 +1170,7 @@
           ],
           "destination": "MMMX",
           "exit": "TCATE",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1181,7 +1181,7 @@
           ],
           "destination": "MMMX",
           "exit": "TCATE",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1191,7 +1191,7 @@
           ],
           "destination": "MMMX",
           "exit": "TCATE",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1201,7 +1201,7 @@
           ],
           "destination": "MMMX",
           "exit": "TCATE",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         }
       ]
     }
@@ -1212,7 +1212,7 @@
         {
           "spawn": "GLESN",
           "waypoint_actions": { "ANJLL": "ho" },
-          "route": "ANJLL4",
+          "flight_strip_route": "ANJLL4",
           "star": "ANJLL4",
           "initial_controller": "C37",
           "initial_altitude": 25000,
@@ -1386,7 +1386,7 @@
         {
           "spawn": "BOYEL",
           "waypoint_actions": { "CRCUS": "ho/clearapp" },
-          "route": "ANJLL4",
+          "flight_strip_route": "ANJLL4",
           "star": "ANJLL4",
           "initial_controller": "2F",
           "initial_altitude": 16000,
@@ -1557,7 +1557,7 @@
         {
           "spawn": "NEILE",
           "waypoint_actions": { "SEAVU": "ho/clearapp" },
-          "route": "HLYWD1",
+          "flight_strip_route": "HLYWD1",
           "star": "HLYWD1",
           "initial_controller": "2F",
           "initial_altitude": 16000,

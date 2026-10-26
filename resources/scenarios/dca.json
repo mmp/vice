@@ -89,7 +89,7 @@
           ],
           "destination": "KBHM",
           "exit": "MAULS",
-          "route": "MAULS Q40 BFOLO"
+          "waypoints": "MAULS Q40 BFOLO"
         },
         {
           "airlines": [
@@ -99,7 +99,7 @@
           ],
           "destination": "KFLV",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 SUMET SPI BQS8"
+          "waypoints": "RAMAY Q72 HACKS J149 SUMET SPI BQS8"
         },
         {
           "airlines": [
@@ -109,7 +109,7 @@
           ],
           "destination": "KSLN",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 HNN HICKI J24 BIGXX ROCKY SAAGS J80 MCI"
+          "waypoints": "OTTTO Q176 HNN HICKI J24 BIGXX ROCKY SAAGS J80 MCI"
         },
         {
           "airlines": [
@@ -119,7 +119,7 @@
           ],
           "destination": "KLSV",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 STL J110 GCK V10 PUB V244 HVE V8 MMM LSV"
+          "waypoints": "OTTTO Q176 STL J110 GCK V10 PUB V244 HVE V8 MMM LSV"
         },
         {
           "airlines": [
@@ -129,7 +129,7 @@
           ],
           "destination": "KVPS",
           "exit": "GLANC",
-          "route": "GLANC COLZI Q52 CHOPZ MGM CEW"
+          "waypoints": "GLANC COLZI Q52 CHOPZ MGM CEW"
         },
         {
           "airlines": [
@@ -139,7 +139,7 @@
           ],
           "destination": "KCOS",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 STL J24 MCI J80 GLD OZZZY5"
+          "waypoints": "OTTTO Q176 STL J24 MCI J80 GLD OZZZY5"
         },
         {
           "airlines": [
@@ -149,7 +149,7 @@
           ],
           "destination": "KMIA",
           "exit": "RRSIN",
-          "route": "RRSIN GSO Q83 JEVED Q97 DEBRL CSTAL3"
+          "waypoints": "RRSIN GSO Q83 JEVED Q97 DEBRL CSTAL3"
         },
         {
           "airlines": [
@@ -159,7 +159,7 @@
           ],
           "destination": "MUGM",
           "exit": "MELTN",
-          "route": "MELTN RDU GARIC AR3 NUCAR Y374 RUMFO Y298 KNSLY BYGON SOUTP7"
+          "waypoints": "MELTN RDU GARIC AR3 NUCAR Y374 RUMFO Y298 KNSLY BYGON SOUTP7"
         },
         {
           "airlines": [
@@ -169,7 +169,7 @@
           ],
           "destination": "KSNA",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 STL KAYLA WRIGL Q176 CIM J134 GUP J8 EED DSNEE6"
+          "waypoints": "OTTTO Q176 STL KAYLA WRIGL Q176 CIM J134 GUP J8 EED DSNEE6"
         },
         {
           "airlines": [
@@ -182,7 +182,7 @@
           ],
           "destination": "ETAR",
           "exit": "PALEO",
-          "route": "PALEO BROSS Q419 RBV Q430 RIFLE Q220 LARIE BRADD N351C JOOPY"
+          "waypoints": "PALEO BROSS Q419 RBV Q430 RIFLE Q220 LARIE BRADD N351C JOOPY"
         },
         {
           "airlines": [
@@ -195,7 +195,7 @@
           ],
           "destination": "EGUN",
           "exit": "PALEO",
-          "route": "PALEO OOD RBV KANNI PORTI"
+          "waypoints": "PALEO OOD RBV KANNI PORTI"
         },
         {
           "airlines": [
@@ -208,7 +208,7 @@
           ],
           "destination": "EBBR",
           "exit": "VAALI",
-          "route": "VAALI TUNDR AGARD T287 DONIL GRONC WHALE"
+          "waypoints": "VAALI TUNDR AGARD T287 DONIL GRONC WHALE"
         },
         {
           "airlines": [
@@ -224,7 +224,7 @@
           ],
           "destination": "KWRI",
           "exit": "PALEO",
-          "route": "PALEO AGARD T287 WNSTN WAALK WAALK2"
+          "waypoints": "PALEO AGARD T287 WNSTN WAALK WAALK2"
         },
         {
           "airlines": [
@@ -237,7 +237,7 @@
           ],
           "destination": "KBED",
           "exit": "VAALI",
-          "route": "VAALI TUNDR BROSS Q419 RBV DPK MAD HFD DREEM3"
+          "waypoints": "VAALI TUNDR BROSS Q419 RBV DPK MAD HFD DREEM3"
         },
         {
           "airlines": [
@@ -250,7 +250,7 @@
           ],
           "destination": "KGON",
           "exit": "PALEO",
-          "route": "PALEO AGARD DONIL SIE WAALK SARDI1"
+          "waypoints": "PALEO AGARD DONIL SIE WAALK SARDI1"
         },
         {
           "airlines": [
@@ -263,7 +263,7 @@
           ],
           "destination": "KNIP",
           "exit": "AMEEE",
-          "route": "AMEEE COLIN SCOOB GUILD Q409 SESUE basle hotar1"
+          "waypoints": "AMEEE COLIN SCOOB GUILD Q409 SESUE basle hotar1"
         }
       ],
       "exit_categories": {},
@@ -310,7 +310,7 @@
           ],
           "destination": "KIND",
           "exit": "AML",
-          "route": "AML J149 HACKS PLASH SNKPT2",
+          "waypoints": "AML J149 HACKS PLASH SNKPT2",
           "altitude": 20000,
           "scratchpad": "J49"
         },
@@ -322,7 +322,7 @@
           ],
           "destination": "KPIA",
           "exit": "CSN",
-          "route": "CSN OTTTO EYTEE J149 GEFFS CMI PIA",
+          "waypoints": "CSN OTTTO EYTEE J149 GEFFS CMI PIA",
           "altitude": 24000,
           "scratchpad": "CSN"
         },
@@ -334,7 +334,7 @@
           ],
           "destination": "KFTK",
           "exit": "CSN",
-          "route": "CSN MOL J24 HVQ J8 IIU",
+          "waypoints": "CSN MOL J24 HVQ J8 IIU",
           "altitude": 24000,
           "scratchpad": "CSN"
         },
@@ -346,7 +346,7 @@
           ],
           "destination": "KBNA",
           "exit": "CSN",
-          "route": "CSN MOL",
+          "waypoints": "CSN MOL",
           "altitude": 24000,
           "scratchpad": "CSN"
         },
@@ -358,7 +358,7 @@
           ],
           "destination": "KPOB",
           "exit": "CSN",
-          "route": "CSN MOL SBV RDU",
+          "waypoints": "CSN MOL SBV RDU",
           "altitude": 22000,
           "scratchpad": "CSN"
         },
@@ -370,7 +370,7 @@
           ],
           "destination": "KMRB",
           "exit": "CSN",
-          "route": "CSN LDN MRB",
+          "waypoints": "CSN LDN MRB",
           "altitude": 8000,
           "scratchpad": "C53"
         },
@@ -382,7 +382,7 @@
           ],
           "destination": "KCAE",
           "exit": "CSN",
-          "route": "CSN MOL CAE",
+          "waypoints": "CSN MOL CAE",
           "altitude": 8000,
           "scratchpad": "CSN"
         },
@@ -394,7 +394,7 @@
           ],
           "destination": "KBED",
           "exit": "JERES",
-          "route": "JERES Q221 BIGEO J49 HNK PONCT EEGUL ZELKA2",
+          "waypoints": "JERES Q221 BIGEO J49 HNK PONCT EEGUL ZELKA2",
           "altitude": 23000,
           "scratchpad": "Q21"
         }
@@ -710,7 +710,7 @@
           ],
           "destination": "KBOS",
           "exit": "SWANN",
-          "route": "SWANN BROSS Q419 JFK ROBUC3"
+          "waypoints": "SWANN BROSS Q419 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -730,7 +730,7 @@
           ],
           "destination": "KATL",
           "exit": "FLASK",
-          "route": "FLASK OZZZI1"
+          "waypoints": "FLASK OZZZI1"
         },
         {
           "airlines": [
@@ -745,7 +745,7 @@
           ],
           "destination": "KORD",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 ROD WATSN4"
+          "waypoints": "RAMAY Q72 HACKS J149 ROD WATSN4"
         },
         {
           "airlines": [
@@ -765,7 +765,7 @@
           ],
           "destination": "KLGA",
           "exit": "AGARD",
-          "route": "AGARD SPEAK PROUD2"
+          "waypoints": "AGARD SPEAK PROUD2"
         },
         {
           "airlines": [
@@ -785,7 +785,7 @@
           ],
           "destination": "KLGA",
           "exit": "AGARD",
-          "route": "AGARD SPEAK PROUD2"
+          "waypoints": "AGARD SPEAK PROUD2"
         },
         {
           "airlines": [
@@ -806,7 +806,7 @@
           ],
           "destination": "KMCO",
           "exit": "SCOOB",
-          "route": "SCOOB MOXXY Q85 LPERD GTOUT1"
+          "waypoints": "SCOOB MOXXY Q85 LPERD GTOUT1"
         },
         {
           "airlines": [
@@ -822,7 +822,7 @@
           ],
           "destination": "KBNA",
           "exit": "OTTTO",
-          "route": "OTTTO Q80 DEWAK GROAT PASLY4"
+          "waypoints": "OTTTO Q80 DEWAK GROAT PASLY4"
         },
         {
           "airlines": [
@@ -836,7 +836,7 @@
           ],
           "destination": "KSEA",
           "exit": "BUFFR",
-          "route": "BUFFR Q178 DJB J34 RWF MLS LWT MLP GLASR3"
+          "waypoints": "BUFFR Q178 DJB J34 RWF MLS LWT MLP GLASR3"
         },
         {
           "airlines": [
@@ -850,7 +850,7 @@
           ],
           "destination": "KSFO",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 STEVY ROD KK60G COVUT KP63C BRWRY KD63W EKR LOOLO DTA RUMPS OAL INYOE DYAMD5"
+          "waypoints": "OTTTO Q176 STEVY ROD KK60G COVUT KP63C BRWRY KD63W EKR LOOLO DTA RUMPS OAL INYOE DYAMD5"
         },
         {
           "airlines": [
@@ -864,7 +864,7 @@
           ],
           "destination": "KSFO",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 STL J110 PEABO J110 GCK J28 MLF KATTS INYOE DYAMD5"
+          "waypoints": "OTTTO Q176 STL J110 PEABO J110 GCK J28 MLF KATTS INYOE DYAMD5"
         },
         {
           "airlines": [
@@ -875,7 +875,7 @@
           ],
           "destination": "KMIA",
           "exit": "SCOOB",
-          "route": "SCOOB EARZZ SKARP Y313 HOAGG BNFSH2"
+          "waypoints": "SCOOB EARZZ SKARP Y313 HOAGG BNFSH2"
         },
         {
           "airlines": [
@@ -894,7 +894,7 @@
           ],
           "destination": "KEWR",
           "exit": "SWANN",
-          "route": "SWANN PHLBO4"
+          "waypoints": "SWANN PHLBO4"
         },
         {
           "airlines": [
@@ -908,7 +908,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC LYH CHSLY5"
+          "waypoints": "GLANC LYH CHSLY5"
         },
         {
           "airlines": [
@@ -924,7 +924,7 @@
           ],
           "destination": "KCVG",
           "exit": "OTTTO",
-          "route": "OTTTO COLNS GAVNN7"
+          "waypoints": "OTTTO COLNS GAVNN7"
         },
         {
           "airlines": [
@@ -935,7 +935,7 @@
           ],
           "destination": "KDFW",
           "exit": "OTTTO",
-          "route": "OTTTO Q80 FAREV RAMRD Q68 LITTR FEWWW BRDJE4"
+          "waypoints": "OTTTO Q80 FAREV RAMRD Q68 LITTR FEWWW BRDJE4"
         },
         {
           "airlines": [
@@ -948,7 +948,7 @@
           ],
           "destination": "KMCI",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 STL EUING RUDDH3"
+          "waypoints": "OTTTO Q176 STL EUING RUDDH3"
         },
         {
           "airlines": [
@@ -968,7 +968,7 @@
           ],
           "destination": "KRDU",
           "exit": "MELTN",
-          "route": "MELTN ALDAN3"
+          "waypoints": "MELTN ALDAN3"
         },
         {
           "airlines": [
@@ -985,7 +985,7 @@
           ],
           "destination": "KDTW",
           "exit": "BUFFR",
-          "route": "BUFFR Q178 KOZAR KLYNK3"
+          "waypoints": "BUFFR Q178 KOZAR KLYNK3"
         },
         {
           "airlines": [
@@ -999,7 +999,7 @@
           ],
           "destination": "KJFK",
           "exit": "AGARD",
-          "route": "AGARD DONIL T315 PANZE V44 CAMRN"
+          "waypoints": "AGARD DONIL T315 PANZE V44 CAMRN"
         },
         {
           "airlines": [
@@ -1013,7 +1013,7 @@
           ],
           "destination": "KJFK",
           "exit": "AGARD",
-          "route": "AGARD DONIL T315 PANZE V44 CAMRN"
+          "waypoints": "AGARD DONIL T315 PANZE V44 CAMRN"
         },
         {
           "airlines": [
@@ -1030,7 +1030,7 @@
           ],
           "destination": "KMSP",
           "exit": "BUFFR",
-          "route": "BUFFR Q178 DJB J34 VIO KAMMA KKILR3"
+          "waypoints": "BUFFR Q178 DJB J34 VIO KAMMA KKILR3"
         },
         {
           "airlines": [
@@ -1046,7 +1046,7 @@
           ],
           "destination": "KRSW",
           "exit": "RRSIN",
-          "route": "RRSIN GSO Q75 SLOJO Q103 CYNTA SHFTY6"
+          "waypoints": "RRSIN GSO Q75 SLOJO Q103 CYNTA SHFTY6"
         },
         {
           "airlines": [
@@ -1063,7 +1063,7 @@
           ],
           "destination": "KFLL",
           "exit": "SCOOB",
-          "route": "SCOOB EARZZ CHIEZ Y291 MAJIK CUUDA2"
+          "waypoints": "SCOOB EARZZ CHIEZ Y291 MAJIK CUUDA2"
         },
         {
           "airlines": [
@@ -1080,7 +1080,7 @@
           ],
           "destination": "KSTL",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 EMPTY J80 VHP AARCH2"
+          "waypoints": "RAMAY Q72 HACKS J149 EMPTY J80 VHP AARCH2"
         },
         {
           "airlines": [
@@ -1093,7 +1093,7 @@
           ],
           "destination": "KPVD",
           "exit": "SWANN",
-          "route": "SWANN BROSS Q419 RBV Q430 CREEL ORCHA JORDN JORDN2"
+          "waypoints": "SWANN BROSS Q419 RBV Q430 CREEL ORCHA JORDN JORDN2"
         },
         {
           "airlines": [
@@ -1103,7 +1103,7 @@
           ],
           "destination": "KMDW",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 FWA PANGG5"
+          "waypoints": "RAMAY Q72 HACKS J149 FWA PANGG5"
         },
         {
           "airlines": [
@@ -1117,7 +1117,7 @@
           ],
           "destination": "KTPA",
           "exit": "RRSIN",
-          "route": "RRSIN GSO Q75 TEUFL BAAMF DADES1"
+          "waypoints": "RRSIN GSO Q75 TEUFL BAAMF DADES1"
         },
         {
           "airlines": [
@@ -1131,7 +1131,7 @@
           ],
           "destination": "CYYZ",
           "exit": "JERES",
-          "route": "JERES J220 SFK WOZEE LINNG3"
+          "waypoints": "JERES J220 SFK WOZEE LINNG3"
         },
         {
           "airlines": [
@@ -1142,7 +1142,7 @@
           ],
           "destination": "CYOW",
           "exit": "JERES",
-          "route": "JERES Q221 VALLO Q227 STUBN SYR ART DEANS4"
+          "waypoints": "JERES Q221 VALLO Q227 STUBN SYR ART DEANS4"
         },
         {
           "airlines": [
@@ -1152,7 +1152,7 @@
           ],
           "destination": "KROC",
           "exit": "JERES",
-          "route": "JERES Q227 STUBN GIBBE"
+          "waypoints": "JERES Q227 STUBN GIBBE"
         },
         {
           "airlines": [
@@ -1166,7 +1166,7 @@
           ],
           "destination": "KSYR",
           "exit": "JERES",
-          "route": "JERES Q221 MICAH CFB"
+          "waypoints": "JERES Q221 MICAH CFB"
         },
         {
           "airlines": [
@@ -1179,7 +1179,7 @@
           ],
           "destination": "KBUF",
           "exit": "JERES",
-          "route": "JERES Q221 WUNDR Q221 DLMAR BENEE"
+          "waypoints": "JERES Q221 WUNDR Q221 DLMAR BENEE"
         },
         {
           "airlines": [
@@ -1190,7 +1190,7 @@
           ],
           "destination": "KIAH",
           "exit": "MAULS",
-          "route": "MAULS Q40 AEX DOOBI2"
+          "waypoints": "MAULS Q40 AEX DOOBI2"
         },
         {
           "airlines": [
@@ -1203,7 +1203,7 @@
           ],
           "destination": "KBDL",
           "exit": "SWANN",
-          "route": "SWANN BROSS Q419 DPK DPK3"
+          "waypoints": "SWANN BROSS Q419 DPK DPK3"
         },
         {
           "airlines": [
@@ -1216,7 +1216,7 @@
           ],
           "destination": "KCMH",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS SCRLT SCRLT1"
+          "waypoints": "RAMAY Q72 HACKS SCRLT SCRLT1"
         },
         {
           "airlines": [
@@ -1230,7 +1230,7 @@
           ],
           "destination": "KCVG",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 COLNS GAVNN6"
+          "waypoints": "OTTTO Q176 COLNS GAVNN6"
         }
       ],
       "exit_categories": {
@@ -7009,7 +7009,7 @@
       "arrivals": [
         {
           "waypoints": "N037.56.22.951,W076.56.18.103 N037.58.31.601,W076.57.19.682/ho ZUNAR OJAAY V376 IRONS",
-          "route": "ZUNAR OJAAY V376 IRONS",
+          "flight_strip_route": "ZUNAR OJAAY V376 IRONS",
           "initial_controller": "2P",
           "initial_altitude": 6000,
           "initial_speed": 250,
@@ -7031,7 +7031,7 @@
       "arrivals": [
         {
           "waypoints": "N037.56.10.797,W077.03.25.773 N037.57.55.758,W077.03.06.135/ho ZUNAR OJAAY",
-          "route": "ZUNAR OJAAY",
+          "flight_strip_route": "ZUNAR OJAAY",
           "initial_controller": "2P",
           "initial_altitude": 4000,
           "initial_speed": 250,
@@ -7053,7 +7053,7 @@
       "arrivals": [
         {
           "waypoints": "N038.20.23.780,W077.37.17.832 N038.20.52.001,W077.33.33.903/ho/h090",
-          "route": "BRV",
+          "flight_strip_route": "BRV",
           "initial_controller": "3B",
           "initial_altitude": 5000,
           "initial_speed": 250,
@@ -7075,7 +7075,7 @@
       "arrivals": [
         {
           "waypoints": "N038.45.04.243,W076.08.11.940 N038.44.32.232,W076.15.35.101/ho CAPKO",
-          "route": "BILIT CAPKO",
+          "flight_strip_route": "BILIT CAPKO",
           "initial_controller": "1G",
           "initial_altitude": 4000,
           "initial_speed": 250,

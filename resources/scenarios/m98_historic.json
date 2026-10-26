@@ -6146,7 +6146,7 @@
       "arrivals": [
         {
           "waypoints": "N044.16.44.122,W092.04.47.484/ho KMSP",
-          "route": "DCT KMSP",
+          "flight_strip_route": "DCT KMSP",
           "initial_controller": "C05",
           "initial_altitude": 5000,
           "initial_speed": 250,
@@ -6160,7 +6160,7 @@
       "arrivals": [
         {
           "waypoints": "N044.16.44.122,W092.04.47.484/ho KMSP",
-          "route": "DCT KMSP",
+          "flight_strip_route": "DCT KMSP",
           "initial_controller": "C05",
           "initial_altitude": 4000,
           "initial_speed": 250,
@@ -6174,7 +6174,7 @@
       "arrivals": [
         {
           "waypoints": "N045.22.18.684,W091.55.26.605 N045.16.47.899,W092.10.12.844/ho KMSP",
-          "route": "DCT KMSP",
+          "flight_strip_route": "DCT KMSP",
           "initial_controller": "C05",
           "initial_altitude": 4000,
           "initial_speed": 195,

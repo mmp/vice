@@ -143,7 +143,7 @@
           "exit": "GREAS",
           "destination": "KRFD",
           "altitude": 10000,
-          "route": "GREAS KRFD",
+          "waypoints": "GREAS KRFD",
           "airlines": [
             {
               "icao": "SKW",
@@ -171,7 +171,7 @@
           "exit": "HAWKN",
           "destination": "KGRB",
           "altitude": 10000,
-          "route": "HAWKN KGRB",
+          "waypoints": "HAWKN KGRB",
           "airlines": [
             {
               "icao": "SKW",
@@ -199,7 +199,7 @@
           "exit": "SQUIB",
           "destination": "KGRB",
           "altitude": 10000,
-          "route": "SQUIB KAZO",
+          "waypoints": "SQUIB KAZO",
           "airlines": [
             {
               "icao": "SKW",
@@ -227,7 +227,7 @@
           "exit": "GREAS",
           "destination": "KMSN",
           "altitude": 10000,
-          "route": "GREAS KMSN",
+          "waypoints": "GREAS KMSN",
           "airlines": [
             {
               "icao": "SKW",
@@ -255,7 +255,7 @@
           "exit": "LYNNI",
           "destination": "KORD",
           "altitude": 10000,
-          "route": "LYNNI ERNNY",
+          "waypoints": "LYNNI ERNNY",
           "airlines": [
             {
               "icao": "SKW",
@@ -267,7 +267,7 @@
           "exit": "GREAS",
           "destination": "KDEN",
           "altitude": 38000,
-          "route": "GREAS JAYEX MCW RAP MBW HIPEE FLATI4",
+          "waypoints": "GREAS JAYEX MCW RAP MBW HIPEE FLATI4",
           "airlines": [
             {
               "icao": "SWA",
@@ -279,7 +279,7 @@
           "exit": "GREAS",
           "destination": "KGPT",
           "altitude": 38000,
-          "route": "GREAS JAYEX DBQ IGB GCV",
+          "waypoints": "GREAS JAYEX DBQ IGB GCV",
           "airlines": [
             {
               "icao": "SCX",
@@ -291,7 +291,7 @@
           "exit": "SQUIB",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "SQUIB SMUUV FWA SKYWA FILPZ7",
+          "waypoints": "SQUIB SMUUV FWA SKYWA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",
@@ -303,7 +303,7 @@
           "exit": "GREAS",
           "destination": "KPHX",
           "altitude": 36000,
-          "route": "GREAS JAYEX DSM KP60C HLC LAA GUP EAGUL6",
+          "waypoints": "GREAS JAYEX DSM KP60C HLC LAA GUP EAGUL6",
           "airlines": [
             {
               "icao": "SWA",
@@ -315,7 +315,7 @@
           "exit": "GREAS",
           "destination": "KLAS",
           "altitude": 38000,
-          "route": "GREAS JAYEX IRK J96 SLN KD48Y RSK J64 TBC HAHAA RKSTR3",
+          "waypoints": "GREAS JAYEX IRK J96 SLN KD48Y RSK J64 TBC HAHAA RKSTR3",
           "airlines": [
             {
               "icao": "SWA",
@@ -327,7 +327,7 @@
           "exit": "LYNNI",
           "destination": "KORD",
           "altitude": 10000,
-          "route": "LYNNI ERNNY",
+          "waypoints": "LYNNI ERNNY",
           "airlines": [
             {
               "icao": "SKW",
@@ -339,7 +339,7 @@
           "exit": "SQUIB",
           "destination": "KDTW",
           "altitude": 23000,
-          "route": "SQUIB DUUDA KKISS2",
+          "waypoints": "SQUIB DUUDA KKISS2",
           "airlines": [
             {
               "icao": "DAL",
@@ -351,7 +351,7 @@
           "exit": "HAWKN",
           "destination": "KMSP",
           "altitude": 34000,
-          "route": "HAWKN ROBBY KBULL KKILR3",
+          "waypoints": "HAWKN ROBBY KBULL KKILR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -363,7 +363,7 @@
           "exit": "SQUIB",
           "destination": "KATL",
           "altitude": 37000,
-          "route": "SQUIB SMUUV FWA HITMN NEWBB IHAVE MTHEW CHPPR1",
+          "waypoints": "SQUIB SMUUV FWA HITMN NEWBB IHAVE MTHEW CHPPR1",
           "airlines": [
             {
               "icao": "DAL",
@@ -375,7 +375,7 @@
           "exit": "SQUIB",
           "destination": "KATL",
           "altitude": 39000,
-          "route": "SQUIB SMUUV FWA HITMN NEWBB IHAVE MTHEW CHPPR1",
+          "waypoints": "SQUIB SMUUV FWA HITMN NEWBB IHAVE MTHEW CHPPR1",
           "airlines": [
             {
               "icao": "DAL",
@@ -387,7 +387,7 @@
           "exit": "GREAS",
           "destination": "KPHX",
           "altitude": 28000,
-          "route": "GREAS JAYEX MZV J18 CHASY J18 STJ J18 FTI J244 ZUN EAGUL6",
+          "waypoints": "GREAS JAYEX MZV J18 CHASY J18 STJ J18 FTI J244 ZUN EAGUL6",
           "airlines": [
             {
               "icao": "AAL",
@@ -451,7 +451,7 @@
           "exit": "GREAS",
           "destination": "KAPA",
           "altitude": 43000,
-          "route": "GREAS QUAIL QUAIL1",
+          "waypoints": "GREAS QUAIL QUAIL1",
           "airlines": [
             {
               "icao": "EJA",
@@ -463,7 +463,7 @@
           "exit": "BRAVE",
           "destination": "KFTY",
           "altitude": 43000,
-          "route": "BRAVE SHRKS SHRLT WRGNZ3",
+          "waypoints": "BRAVE SHRKS SHRLT WRGNZ3",
           "airlines": [
             {
               "icao": "LXJ",
@@ -475,7 +475,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "route": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",
@@ -537,7 +537,7 @@
           "exit": "GREAS",
           "destination": "KAPA",
           "altitude": 43000,
-          "route": "GREAS QUAIL QUAIL1",
+          "waypoints": "GREAS QUAIL QUAIL1",
           "airlines": [
             {
               "icao": "EJA",
@@ -549,7 +549,7 @@
           "exit": "BRAVE",
           "destination": "KFTY",
           "altitude": 43000,
-          "route": "BRAVE SHRKS SHRLT WRGNZ3",
+          "waypoints": "BRAVE SHRKS SHRLT WRGNZ3",
           "airlines": [
             {
               "icao": "LXJ",
@@ -561,7 +561,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "route": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",
@@ -633,7 +633,7 @@
           "exit": "GREAS",
           "destination": "KAPA",
           "altitude": 43000,
-          "route": "GREAS QUAIL QUAIL1",
+          "waypoints": "GREAS QUAIL QUAIL1",
           "airlines": [
             {
               "icao": "EJA",
@@ -645,7 +645,7 @@
           "exit": "BRAVE",
           "destination": "KFTY",
           "altitude": 43000,
-          "route": "BRAVE SHRKS SHRLT WRGNZ3",
+          "waypoints": "BRAVE SHRKS SHRLT WRGNZ3",
           "airlines": [
             {
               "icao": "LXJ",
@@ -657,7 +657,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "route": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",
@@ -743,7 +743,7 @@
           "exit": "GREAS",
           "destination": "KAPA",
           "altitude": 43000,
-          "route": "GREAS QUAIL QUAIL1",
+          "waypoints": "GREAS QUAIL QUAIL1",
           "airlines": [
             {
               "icao": "EJA",
@@ -755,7 +755,7 @@
           "exit": "BRAVE",
           "destination": "KFTY",
           "altitude": 43000,
-          "route": "BRAVE SHRKS SHRLT WRGNZ3",
+          "waypoints": "BRAVE SHRKS SHRLT WRGNZ3",
           "airlines": [
             {
               "icao": "LXJ",
@@ -767,7 +767,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "route": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",
@@ -1208,7 +1208,7 @@
           "initial_altitude": 14000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "route": "LYSTR SUDDS",
+          "flight_strip_route": "LYSTR SUDDS",
           "waypoints": "N043.09.34.530,W086.39.47.274 N043.09.20.110,W086.47.26.118/ho N043.09.22.046,W086.48.29.399 LYSTR SUDDS/h240"
         }
       ]
@@ -1325,7 +1325,7 @@
           "initial_altitude": 10000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "route": "BRAVE EXARR",
+          "flight_strip_route": "BRAVE EXARR",
           "waypoints": "N042.32.28.342,W087.11.57.572 N042.35.20.869,W087.14.39.840/ho BRAVE EXARR/h280"
         }
       ]
@@ -1361,7 +1361,7 @@
           "initial_altitude": 10000,
           "initial_controller": "C81",
           "initial_speed": 250,
-          "route": "BAE",
+          "flight_strip_route": "BAE",
           "waypoints": "N043.14.55.948,W088.51.11.420 N043.13.02.460,W088.44.07.924/ho BAE/h120"
         }
       ]
@@ -1468,7 +1468,7 @@
           "initial_altitude": 7000,
           "initial_controller": "11Z",
           "initial_speed": 250,
-          "route": "RAYNR BRTMN TAAYZ",
+          "flight_strip_route": "RAYNR BRTMN TAAYZ",
           "waypoints": "N042.14.04.395,W087.49.32.213 RAYNR/ho BRTMN TAAYZ/h360"
         }
       ]
@@ -1499,7 +1499,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "route": "BRAVE EXARR",
+          "flight_strip_route": "BRAVE EXARR",
           "expect_approach": "I9R",
           "waypoints": "N042.45.48.655,W087.45.21.752 N042.48.19.291,W087.44.46.953/ho N042.49.33.381,W087.44.30.721/h010"
         }
@@ -1568,7 +1568,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "route": "BAE",
+          "flight_strip_route": "BAE",
           "expect_approach": "I9R",
           "waypoints": "N043.08.00.363,W088.22.38.157 BAE/h070/ho"
         }
@@ -1605,7 +1605,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "route": "LYSTR SUDDS",
+          "flight_strip_route": "LYSTR SUDDS",
           "expect_approach": "I9R",
           "waypoints": "N043.09.17.267,W087.14.42.366 SUDDS/h280/ho"
         }
@@ -1637,7 +1637,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "route": "LYSTR SUDDS",
+          "flight_strip_route": "LYSTR SUDDS",
           "expect_approach": "I1L",
           "waypoints": "N043.05.45.932,W087.38.02.601 N043.02.57.058,W087.39.56.475/ho N042.57.15.864,W087.43.39.195"
         }
@@ -1669,7 +1669,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "route": "BAE",
+          "flight_strip_route": "BAE",
           "expect_approach": "I1L",
           "waypoints": "BAE N043.04.28.931,W088.12.18.006/ho N043.01.13.210,W088.03.40.495"
         }
@@ -1707,7 +1707,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "route": "GOPAC3",
+          "flight_strip_route": "GOPAC3",
           "expect_approach": "I1L",
           "waypoints": "N042.48.05.325,W088.29.49.096 N042.46.55.617,W088.24.22.280/h110/ho"
         }
@@ -1744,7 +1744,7 @@
           "initial_altitude": 7000,
           "initial_controller": "1E",
           "initial_speed": 250,
-          "route": "BRAVE EXARR",
+          "flight_strip_route": "BRAVE EXARR",
           "expect_approach": "I1L",
           "waypoints": "N042.43.27.508,W087.31.12.454/ho N042.43.27.838,W087.32.46.360/h280"
         }
@@ -1781,7 +1781,7 @@
           "initial_altitude": 7000,
           "initial_controller": "11Z",
           "initial_speed": 250,
-          "route": "RAYNR BRTMN TAAYZ",
+          "flight_strip_route": "RAYNR BRTMN TAAYZ",
           "waypoints": "RAYNR/ho BRTMN TAAYZ/h350"
         }
       ]

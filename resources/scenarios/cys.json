@@ -58,7 +58,7 @@
           ],
           "altitude": 11000,
           "destination": "KDEN",
-          "route": "DEN",
+          "waypoints": "DEN",
           "exit": "DEN"
         },
         {
@@ -73,7 +73,7 @@
           ],
           "altitude": 11000,
           "destination": "KDEN",
-          "route": "BENNE KGXY",
+          "waypoints": "BENNE KGXY",
           "exit": "BENNE"
         },
         {
@@ -88,7 +88,7 @@
           ],
           "altitude": 20000,
           "destination": "KBZN",
-          "route": "CYS POGTE",
+          "waypoints": "CYS POGTE",
           "exit": "POGTE"
         },
         {
@@ -99,7 +99,7 @@
           ],
           "altitude": 24000,
           "destination": "KSEA",
-          "route": "MILKY CKW",
+          "waypoints": "MILKY CKW",
           "exit": "MILKY"
         },
         {
@@ -110,7 +110,7 @@
           ],
           "altitude": 23000,
           "destination": "KSAT",
-          "route": "EGBER LAA",
+          "waypoints": "EGBER LAA",
           "exit": "EGBER"
         },
         {
@@ -121,7 +121,7 @@
           ],
           "altitude": 23000,
           "destination": "KOMA",
-          "route": "SNY LBF",
+          "waypoints": "SNY LBF",
           "exit": "SNY"
         }
       ],
@@ -178,7 +178,7 @@
           "description": "",
           "initial_controller": "1D",
           "initial_speed": 170,
-          "route": "DVV CYS",
+          "flight_strip_route": "DVV CYS",
           "waypoints": "N040.35.21.116,W104.40.28.363 N040.42.33.469,W104.41.22.113/ho CYS"
         }
       ]
@@ -200,7 +200,7 @@
           "description": "",
           "initial_controller": "C21",
           "initial_speed": 210,
-          "route": "KBZN CYS",
+          "flight_strip_route": "KBZN CYS",
           "waypoints": "N041.32.11.410,W105.08.03.096 N041.28.59.135,W105.01.56.290/ho CYS"
         }
       ]
@@ -235,7 +235,7 @@
           "description": "",
           "initial_controller": "C21",
           "initial_speed": 210,
-          "route": "KOMA CYS",
+          "flight_strip_route": "KOMA CYS",
           "waypoints": "N041.18.10.434,W103.54.45.241/s210 N041.16.44.891,W104.05.57.192/ho CYS"
         }
       ]
@@ -266,7 +266,7 @@
           "description": "",
           "initial_controller": "C21",
           "initial_speed": 210,
-          "route": "KSEA CYS",
+          "flight_strip_route": "KSEA CYS",
           "waypoints": "N041.17.17.782,W105.20.14.730/s210 N041.16.40.964,W105.12.14.738/ho CYS"
         }
       ]

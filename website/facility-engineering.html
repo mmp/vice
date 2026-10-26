@@ -5055,7 +5055,7 @@
                 When "waypoints" isn't given, the route comes from the CIFP's coding of the SID: the SID's transition for
                 the departure runway, followed by the enroute transition that leads to the exit fix, ending at the exit.
                 If no enroute transition includes the exit, the route follows the SID's common route to its end
-                and the aircraft then proceeds along the departure's "route" from there. It is an error to omit
+                and the aircraft then proceeds along the departure's "waypoints" from there. It is an error to omit
                 "waypoints" if the SID isn't in the CIFP for the airport or if the CIFP gives no runway transition
                 for the departure runway (unless "initial_heading" or a "climbout_actions" heading is given;
                 see below).
@@ -5157,8 +5157,8 @@
   ],
   "destination": "LPFG",
   "exit": "HAPIE",
-  "route": "HAPIE YAHOO WHALE N251A JOOPY NATZ MALOT NATZ GISTI LESLU M142 LND N160 NAKID M25 ANNET UM25 UVSUV UM25 INGOR UM25 LUKIP LUKIP9E",
   "scratchpad": "HAP",
+  "waypoints": "HAPIE YAHOO WHALE N251A JOOPY NATZ MALOT NATZ GISTI LESLU M142 LND N160 NAKID M25 ANNET UM25 UVSUV UM25 INGOR UM25 LUKIP LUKIP9E",
   },
   ...
               </pre>
@@ -5196,16 +5196,6 @@
                       route leaving the airport using "departure_routes".</td>
                   </tr>
                   <tr>
-                    <td>"route"</td>
-                    <td>String</td>
-                    <td>The aircraft's route to the destination. This is mostly used so that flight strips have plausible routes, though
-                      <i>vice</i> does its best to have the aircraft follow the given route after it reaches the exit fix.
-                      It is an error for the route to spell out the exit's SID fixes between the exit and where the route
-                      leaves the SID: real-world filings name such fixes with the SID and a transition rather than spelling
-                      them out, so they would be lost for real-traffic flights. The exit belongs at the last of the SID's
-                      fixes the route follows, with "sid" flying the aircraft there as the CIFP charts it.</td>
-                  </tr>
-                  <tr>
                     <td>"scratchpad"</td>
                     <td>String</td>
                     <td>(<i>Optional</i>) If specified, this gives the aircraft's initial scratchpad. Otherwise, the scratchpad
@@ -5216,6 +5206,16 @@
                     <td>"secondary_scratchpad"</td>
                     <td>String</td>
                     <td>(<i>Optional</i>) If specified, this gives the aircraft's initial secondary scratchpad.</td>
+                  </tr>
+                  <tr>
+                    <td>"waypoints"</td>
+                    <td>String</td>
+                    <td>The aircraft's route from the exit fix to the destination. The aircraft flies it after reaching
+                      the exit fix, and it is the route shown on the flight strip.
+                      It is an error for it to spell out the exit's SID fixes between the exit and where the route
+                      leaves the SID: real-world filings name such fixes with the SID and a transition rather than spelling
+                      them out, so they would be lost for real-traffic flights. The exit belongs at the last of the SID's
+                      fixes the route follows, with "sid" flying the aircraft there as the CIFP charts it.</td>
                   </tr>
                 </tbody>
               </table>
@@ -5388,6 +5388,14 @@
                     </td>
                   </tr>
                   <tr>
+                    <td>"flight_strip_route"</td>
+                    <td>String</td>
+                    <td>(<i>Optional</i>) The aircraft's remaining route as shown on its flight strip and in its
+                      flight plan. <b>It does not affect navigation, which follows "waypoints" or the "star".</b>
+                      Without it the flight plan shows the "star",
+                      and an arrival that gives neither shows no route at all.</td>
+                  </tr>
+                  <tr>
                     <td>"initial_altitude"</td>
                     <td>Number or array of numbers</td>
                     <td>The altitude aircraft will have when first spawned.
@@ -5411,14 +5419,6 @@
                     <td>"is_rnav"</td>
                     <td>Boolean</td>
                     <td>(<i>Optional</i>) If true, aircraft on this arrival will have the RNAV flag set in their flight plan.</td>
-                  </tr>
-                  <tr>
-                    <td>"route"</td>
-                    <td>String</td>
-                    <td>(<i>Optional</i>) The aircraft's remaining route. <b>This is only used for displaying the
-                        aircraft's flight plan, e.g. in flight strips; it does not affect navigation.</b>
-                      Without it the flight plan shows the "star",
-                      and an arrival that gives neither shows no route at all.</td>
                   </tr>
                   <tr>
                     <td>"scratchpad"</td>

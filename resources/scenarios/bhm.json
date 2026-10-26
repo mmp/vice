@@ -58,7 +58,7 @@
           ],
           "destination": "KATL",
           "exit": "GUMMP",
-          "route": "GUMMP DRSDN GNDLF2"
+          "waypoints": "GUMMP DRSDN GNDLF2"
         },
         {
           "airlines": [
@@ -72,7 +72,7 @@
           ],
           "destination": "KCLT",
           "exit": "CHEHA",
-          "route": "CHEHA BESTT JONZE4"
+          "waypoints": "CHEHA BESTT JONZE4"
         },
         {
           "airlines": [
@@ -86,7 +86,7 @@
           ],
           "destination": "KMSY",
           "exit": "DAYVS",
-          "route": "DAYVS KWANE MERDN TRSSH2"
+          "waypoints": "DAYVS KWANE MERDN TRSSH2"
         },
         {
           "airlines": [
@@ -100,7 +100,7 @@
           ],
           "destination": "KGSO",
           "exit": "MRICA",
-          "route": "MRICA GAD SPA TRAKS3"
+          "waypoints": "MRICA GAD SPA TRAKS3"
         },
         {
           "airlines": [
@@ -114,7 +114,7 @@
           ],
           "destination": "KTYS",
           "exit": "MRICA",
-          "route": "MRICA GAD"
+          "waypoints": "MRICA GAD"
         },
         {
           "airlines": [
@@ -128,7 +128,7 @@
           ],
           "destination": "KCHA",
           "exit": "MRICA",
-          "route": "MRICA"
+          "waypoints": "MRICA"
         },
         {
           "airlines": [
@@ -142,7 +142,7 @@
           ],
           "destination": "KDCA",
           "exit": "CHEHA",
-          "route": "CHEHA KBLER Q56 KIWII WAVES CAPSS3"
+          "waypoints": "CHEHA KBLER Q56 KIWII WAVES CAPSS3"
         },
         {
           "airlines": [
@@ -156,7 +156,7 @@
           ],
           "destination": "KJFK",
           "exit": "MRICA",
-          "route": "MRICA GAD RMG FIGEY Q64 SAWED Q97 DLAAY RADDS SIE CAMRN4"
+          "waypoints": "MRICA GAD RMG FIGEY Q64 SAWED Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
           "airlines": [
@@ -169,7 +169,7 @@
           ],
           "destination": "KRDU",
           "exit": "CHEHA",
-          "route": "CHEHA THRSR IRQ PYRES DMSTR1"
+          "waypoints": "CHEHA THRSR IRQ PYRES DMSTR1"
         },
         {
           "airlines": [
@@ -180,7 +180,7 @@
           ],
           "destination": "KBWI",
           "exit": "CHEHA",
-          "route": "CHEHA KBLER KELLN Q58 PEETT THHMP RAVNN6"
+          "waypoints": "CHEHA KBLER KELLN Q58 PEETT THHMP RAVNN6"
         },
         {
           "airlines": [
@@ -194,7 +194,7 @@
           ],
           "destination": "KDFW",
           "exit": "JOEYE",
-          "route": "JOEYE IGB MLU YUYUN WHINY4"
+          "waypoints": "JOEYE IGB MLU YUYUN WHINY4"
         },
         {
           "airlines": [
@@ -204,7 +204,7 @@
           ],
           "destination": "KIAH",
           "exit": "DAYVS",
-          "route": "DAYVS KWANE MEI AEX SKNRD4"
+          "waypoints": "DAYVS KWANE MEI AEX SKNRD4"
         },
         {
           "airlines": [
@@ -214,7 +214,7 @@
           ],
           "destination": "KDEN",
           "exit": "JOEYE",
-          "route": "JOEYE IGB LIT TUL GCK KIISS CLASH4"
+          "waypoints": "JOEYE IGB LIT TUL GCK KIISS CLASH4"
         }
       ],
       "exit_categories": {
@@ -267,7 +267,7 @@
         {
           "waypoints": "CIVMA/ho DIODE/s250/h211",
           "cruise_altitude": 36000,
-          "route": "/. DIODE",
+          "flight_strip_route": "/. DIODE",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -294,7 +294,7 @@
         {
           "waypoints": "CIVMA/ho DIODE/s250/h211",
           "cruise_altitude": 36000,
-          "route": "/. DIODE",
+          "flight_strip_route": "/. DIODE",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -321,7 +321,7 @@
         {
           "waypoints": "IXUSE/ho HERKO/s250/h13",
           "cruise_altitude": 36000,
-          "route": "/. HERKO",
+          "flight_strip_route": "/. HERKO",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -348,7 +348,7 @@
         {
           "waypoints": "IXUSE/ho HERKO/s250/h13",
           "cruise_altitude": 36000,
-          "route": "/. HERKO",
+          "flight_strip_route": "/. HERKO",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -375,7 +375,7 @@
         {
           "waypoints": "KOCEY/ho KIOSK/s250/h272",
           "cruise_altitude": 36000,
-          "route": "/. KIOSK",
+          "flight_strip_route": "/. KIOSK",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -409,7 +409,7 @@
         {
           "waypoints": "KOCEY/ho KIOSK/h272",
           "cruise_altitude": 36000,
-          "route": "/. KIOSK",
+          "flight_strip_route": "/. KIOSK",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -448,7 +448,7 @@
         {
           "waypoints": "LBY MEI BOYDD/ho LYMPH/s250/h71",
           "cruise_altitude": 34000,
-          "route": "/. LYMPH",
+          "flight_strip_route": "/. LYMPH",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -477,7 +477,7 @@
         {
           "waypoints": "LBY MEI BOYDD/ho LYMPH/s250/h71",
           "cruise_altitude": 34000,
-          "route": "/. LYMPH",
+          "flight_strip_route": "/. LYMPH",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -506,7 +506,7 @@
         {
           "waypoints": "BESOM/ho NESTS/s250/h99",
           "cruise_altitude": 36000,
-          "route": "/. NESTS",
+          "flight_strip_route": "/. NESTS",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -533,7 +533,7 @@
         {
           "waypoints": "BESOM/ho NESTS/s250/h99",
           "cruise_altitude": 36000,
-          "route": "/. NESTS",
+          "flight_strip_route": "/. NESTS",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -560,7 +560,7 @@
         {
           "waypoints": "QECKE/ho NULLS/s250/h166",
           "cruise_altitude": 36000,
-          "route": "/. NULLS",
+          "flight_strip_route": "/. NULLS",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -593,7 +593,7 @@
         {
           "waypoints": "QECKE/ho NULLS/s250/h166",
           "cruise_altitude": 36000,
-          "route": "/. NULLS",
+          "flight_strip_route": "/. NULLS",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -626,7 +626,7 @@
         {
           "waypoints": "EXIST/ho SHIMS/h122",
           "cruise_altitude": 36000,
-          "route": "/. EXIST SHIMS",
+          "flight_strip_route": "/. EXIST SHIMS",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,
@@ -657,7 +657,7 @@
         {
           "waypoints": "FAYEZ/ho WANDS/h326",
           "cruise_altitude": 36000,
-          "route": "/. WANDS",
+          "flight_strip_route": "/. WANDS",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "assigned_altitude": 11000,

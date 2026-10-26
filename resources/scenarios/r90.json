@@ -528,7 +528,7 @@
           ],
           "destination": "KATL",
           "exit": "LMN",
-          "route": "LMN KK57I BLANS NEWBB IHAVE MTHEW CHPPR1"
+          "waypoints": "LMN KK57I BLANS NEWBB IHAVE MTHEW CHPPR1"
         },
         {
           "airlines": [
@@ -538,7 +538,7 @@
           ],
           "destination": "KMKE",
           "exit": "OGECA",
-          "route": "OVR OGECA GOPAC3"
+          "waypoints": "OVR OGECA GOPAC3"
         },
         {
           "airlines": [
@@ -551,7 +551,7 @@
           ],
           "destination": "KMEM",
           "exit": "KIDER",
-          "route": "OVR KIDER WHOLL BRBBQ3"
+          "waypoints": "OVR KIDER WHOLL BRBBQ3"
         },
         {
           "airlines": [
@@ -567,7 +567,7 @@
           ],
           "destination": "KLAS",
           "exit": "LNK",
-          "route": "LNK J146 DICEE TYEGR CHOWW2"
+          "waypoints": "LNK J146 DICEE TYEGR CHOWW2"
         },
         {
           "airlines": [
@@ -583,7 +583,7 @@
           ],
           "destination": "KSDF",
           "exit": "STL",
-          "route": "OVR STL DAAVE DAMEN5"
+          "waypoints": "OVR STL DAAVE DAMEN5"
         },
         {
           "airlines": [
@@ -596,7 +596,7 @@
           ],
           "destination": "KIAH",
           "exit": "PWE",
-          "route": "PWE TUL CVE GUSHR3"
+          "waypoints": "PWE TUL CVE GUSHR3"
         },
         {
           "airlines": [
@@ -615,7 +615,7 @@
           ],
           "destination": "KORD",
           "exit": "FOD",
-          "route": "FOD MYRRS FYTTE7"
+          "waypoints": "FOD MYRRS FYTTE7"
         },
         {
           "airlines": [
@@ -625,7 +625,7 @@
           ],
           "destination": "KCLT",
           "exit": "LMN",
-          "route": "LMN IRK J151 STL J45 BNA TAZZA FILPZ3"
+          "waypoints": "LMN IRK J151 STL J45 BNA TAZZA FILPZ3"
         },
         {
           "airlines": [
@@ -638,7 +638,7 @@
           ],
           "destination": "KPHX",
           "exit": "LNK",
-          "route": "LNK J146 GLD PUB ALS J102 GUP EAGUL6"
+          "waypoints": "LNK J146 GLD PUB ALS J102 GUP EAGUL6"
         },
         {
           "airlines": [
@@ -651,7 +651,7 @@
           ],
           "destination": "KDFW",
           "exit": "PWE",
-          "route": "OVR PWE ICT IRW IBAKE VKTRY2"
+          "waypoints": "OVR PWE ICT IRW IBAKE VKTRY2"
         },
         {
           "airlines": [
@@ -661,7 +661,7 @@
           ],
           "destination": "KMDW",
           "exit": "JALAP",
-          "route": "JALAP ENDEE6"
+          "waypoints": "JALAP ENDEE6"
         },
         {
           "airlines": [
@@ -671,7 +671,7 @@
           ],
           "destination": "KMCO",
           "exit": "LMN",
-          "route": "OVR LMN FAM J151 VUZ DEEDA GRNCH5"
+          "waypoints": "OVR LMN FAM J151 VUZ DEEDA GRNCH5"
         },
         {
           "airlines": [
@@ -684,7 +684,7 @@
           ],
           "destination": "KHOU",
           "exit": "EMP",
-          "route": "OVR EMP CVE ELLVR NNEAL KIDDZ4"
+          "waypoints": "OVR EMP CVE ELLVR NNEAL KIDDZ4"
         },
         {
           "airlines": [
@@ -703,7 +703,7 @@
           ],
           "destination": "KDEN",
           "exit": "OBH",
-          "route": "OBH BRWRY LAWGR3"
+          "waypoints": "OBH BRWRY LAWGR3"
         },
         {
           "airlines": [
@@ -713,7 +713,7 @@
           ],
           "destination": "KSEA",
           "exit": "ONL",
-          "route": "ONL GUDDY LINGE MLP GLASR3"
+          "waypoints": "ONL GUDDY LINGE MLP GLASR3"
         },
         {
           "airlines": [
@@ -735,7 +735,7 @@
           ],
           "destination": "KMSP",
           "exit": "ROKKK",
-          "route": "ROKKK NITZR3"
+          "waypoints": "ROKKK NITZR3"
         },
         {
           "airlines": [
@@ -748,7 +748,7 @@
           ],
           "destination": "KDCA",
           "exit": "DSM",
-          "route": "DSM JOT J30 BUCKO FRDMM5"
+          "waypoints": "DSM JOT J30 BUCKO FRDMM5"
         },
         {
           "airlines": [
@@ -758,7 +758,7 @@
           ],
           "destination": "KDTW",
           "exit": "DSM",
-          "route": "DSM J144 DBQ PORZL KKISS2"
+          "waypoints": "DSM J144 DBQ PORZL KKISS2"
         },
         {
           "airlines": [
@@ -768,7 +768,7 @@
           ],
           "destination": "KSLC",
           "exit": "OBH",
-          "route": "OBH BFF MBW OCS NORDK6"
+          "waypoints": "OBH BFF MBW OCS NORDK6"
         }
       ],
       "exit_categories": {
@@ -918,7 +918,7 @@
           ],
           "destination": "KDEN",
           "exit": "DRABS",
-          "route": "DRABS BRWRY LAWGR3"
+          "waypoints": "DRABS BRWRY LAWGR3"
         },
         {
           "airlines": [
@@ -928,7 +928,7 @@
           ],
           "destination": "KIAH",
           "exit": "SLN",
-          "route": "SLN WMICO IRW J21 ADM CVE DRLLR5"
+          "waypoints": "SLN WMICO IRW J21 ADM CVE DRLLR5"
         },
         {
           "airlines": [
@@ -938,7 +938,7 @@
           ],
           "destination": "KAIZ",
           "exit": "NOSCE",
-          "route": "NOSCE"
+          "waypoints": "NOSCE"
         },
         {
           "airlines": [
@@ -951,7 +951,7 @@
           ],
           "destination": "KSDL",
           "exit": "LJAYY",
-          "route": "LJAYY DSERT2"
+          "waypoints": "LJAYY DSERT2"
         },
         {
           "airlines": [
@@ -961,7 +961,7 @@
           ],
           "destination": "KORD",
           "exit": "FOD",
-          "route": "FOD MYRRS FYTTE7"
+          "waypoints": "FOD MYRRS FYTTE7"
         },
         {
           "airlines": [
@@ -971,7 +971,7 @@
           ],
           "destination": "KJLN",
           "exit": "TOP",
-          "route": "TOP"
+          "waypoints": "TOP"
         }
       ],
       "exit_categories": {
@@ -1123,7 +1123,7 @@
           ],
           "destination": "KOFF",
           "exit": "LMN",
-          "route": "LMN"
+          "waypoints": "LMN"
         },
         {
           "airlines": [
@@ -1154,7 +1154,7 @@
           ],
           "destination": "KOFF",
           "exit": "DSM",
-          "route": "DSM"
+          "waypoints": "DSM"
         },
         {
           "airlines": [
@@ -1185,7 +1185,7 @@
           ],
           "destination": "KOFF",
           "exit": "FOD",
-          "route": "FOD"
+          "waypoints": "FOD"
         },
         {
           "airlines": [
@@ -1216,7 +1216,7 @@
           ],
           "destination": "KOFF",
           "exit": "OFK",
-          "route": "OFK"
+          "waypoints": "OFK"
         },
         {
           "airlines": [
@@ -1247,7 +1247,7 @@
           ],
           "destination": "KOFF",
           "exit": "OBH",
-          "route": "OBH"
+          "waypoints": "OBH"
         },
         {
           "airlines": [
@@ -1278,7 +1278,7 @@
           ],
           "destination": "KOFF",
           "exit": "GRI",
-          "route": "GRI"
+          "waypoints": "GRI"
         },
         {
           "airlines": [
@@ -1309,7 +1309,7 @@
           ],
           "destination": "KOFF",
           "exit": "PWE",
-          "route": "PWE"
+          "waypoints": "PWE"
         },
         {
           "airlines": [
@@ -1340,7 +1340,7 @@
           ],
           "destination": "KOFF",
           "exit": "ONL",
-          "route": "ONL"
+          "waypoints": "ONL"
         },
         {
           "airlines": [
@@ -1371,7 +1371,7 @@
           ],
           "destination": "KOFF",
           "exit": "SUX",
-          "route": "SUX"
+          "waypoints": "SUX"
         },
         {
           "airlines": [
@@ -1402,7 +1402,7 @@
           ],
           "destination": "KOFF",
           "exit": "TKO",
-          "route": "TKO"
+          "waypoints": "TKO"
         },
         {
           "airlines": [
@@ -1433,7 +1433,7 @@
           ],
           "destination": "KOFF",
           "exit": "HSI",
-          "route": "HSI"
+          "waypoints": "HSI"
         }
       ],
       "exit_categories": {
@@ -1683,7 +1683,7 @@
     "LNK.KAIZ": {
       "arrivals": [
         {
-          "route": "/. LNK.KAIZ",
+          "flight_strip_route": "/. LNK.KAIZ",
           "waypoints": "N039.50.32.720,W095.24.53.041 N040.16.59.091,W095.57.26.136/ho KLNK",
           "initial_controller": "C26",
           "initial_altitude": 11000,
@@ -1704,7 +1704,7 @@
     "LNK.KDEN": {
       "arrivals": [
         {
-          "route": "/. LNK.KDEN",
+          "flight_strip_route": "/. LNK.KDEN",
           "waypoints": "DRABS N040.49.07.329,W097.46.32.065/ho KLNK",
           "initial_controller": "C26",
           "initial_altitude": 11000,
@@ -1729,7 +1729,7 @@
     "LNK.KIAH": {
       "arrivals": [
         {
-          "route": "/. LNK.KIAH",
+          "flight_strip_route": "/. LNK.KIAH",
           "waypoints": "N039.36.07.478,W096.14.55.852 LEFAM/ho KLNK",
           "initial_controller": "C26",
           "initial_altitude": 11000,
@@ -1750,7 +1750,7 @@
     "LNK.KJLN": {
       "arrivals": [
         {
-          "route": "/. LNK.KJLN",
+          "flight_strip_route": "/. LNK.KJLN",
           "waypoints": "N039.37.55.598,W095.59.03.392 N040.11.16.771,W096.18.40.632/ho KLNK",
           "initial_controller": "C26",
           "initial_altitude": 11000,
@@ -1771,7 +1771,7 @@
     "LNK.KORD": {
       "arrivals": [
         {
-          "route": "/. LNK.KORD",
+          "flight_strip_route": "/. LNK.KORD",
           "waypoints": "N041.14.48.011,W094.32.02.991 N041.11.47.876,W094.52.37.196/ho KLNK",
           "initial_controller": "C27",
           "initial_altitude": 11000,
@@ -1792,7 +1792,7 @@
     "LNK.KSDL": {
       "arrivals": [
         {
-          "route": "/. LNK.KSDL",
+          "flight_strip_route": "/. LNK.KSDL",
           "waypoints": "N040.15.32.464,W098.07.53.043 N040.31.21.614,W097.34.50.780/ho KLNK",
           "initial_controller": "C26",
           "initial_altitude": 11000,
@@ -1939,7 +1939,7 @@
     "OFF.DSM": {
       "arrivals": [
         {
-          "route": "/. OFF.DSM",
+          "flight_strip_route": "/. OFF.DSM",
           "waypoints": "N041.19.28.821,W094.26.43.729 N041.16.21.477,W094.48.29.317/a16000/ho KOFF/a16000",
           "initial_controller": "C27",
           "initial_altitude": 16000,
@@ -1988,7 +1988,7 @@
     "OFF.FOD": {
       "arrivals": [
         {
-          "route": "/. OFF.FOD",
+          "flight_strip_route": "/. OFF.FOD",
           "waypoints": "N042.01.02.127,W094.56.14.285 N041.47.35.758,W095.10.52.972/a16000/ho KOFF/a16000",
           "initial_controller": "C27",
           "initial_altitude": 16000,
@@ -2037,7 +2037,7 @@
     "OFF.GRI": {
       "arrivals": [
         {
-          "route": "/. OFF.GRI",
+          "flight_strip_route": "/. OFF.GRI",
           "waypoints": "N041.01.22.795,W097.36.43.747 N041.03.03.444,W097.05.45.986/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,
@@ -2086,7 +2086,7 @@
     "OFF.HSI": {
       "arrivals": [
         {
-          "route": "/. OFF.HSI",
+          "flight_strip_route": "/. OFF.HSI",
           "waypoints": "N040.40.19.999,W098.05.38.708 N040.51.14.359,W097.11.59.796/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,
@@ -2135,7 +2135,7 @@
     "OFF.LMN": {
       "arrivals": [
         {
-          "route": "/. OFF.LMN",
+          "flight_strip_route": "/. OFF.LMN",
           "waypoints": "N040.44.48.230,W094.31.28.604 N040.49.13.262,W094.48.19.291/a16000/ho KOFF/a16000",
           "initial_controller": "C27",
           "initial_altitude": 16000,
@@ -2184,7 +2184,7 @@
     "OFF.OBH": {
       "arrivals": [
         {
-          "route": "/. OFF.OBH",
+          "flight_strip_route": "/. OFF.OBH",
           "waypoints": "N041.18.29.220,W097.42.05.949 N041.14.56.333,W097.08.32.374/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,
@@ -2233,7 +2233,7 @@
     "OFF.OFK": {
       "arrivals": [
         {
-          "route": "/. OFF.OFK",
+          "flight_strip_route": "/. OFF.OFK",
           "waypoints": "N041.49.32.817,W097.09.03.411 N041.41.06.430,W096.54.08.657/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,
@@ -2282,7 +2282,7 @@
     "OFF.ONL": {
       "arrivals": [
         {
-          "route": "/. OFF.ONL",
+          "flight_strip_route": "/. OFF.ONL",
           "waypoints": "N041.49.14.965,W097.21.09.635 N041.38.24.725,W096.58.44.853/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,
@@ -2331,7 +2331,7 @@
     "OFF.PWE": {
       "arrivals": [
         {
-          "route": "/. OFF.PWE",
+          "flight_strip_route": "/. OFF.PWE",
           "waypoints": "N039.45.52.088,W096.22.05.637 PWE/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,
@@ -2380,7 +2380,7 @@
     "OFF.SUX": {
       "arrivals": [
         {
-          "route": "/. OFF.SUX",
+          "flight_strip_route": "/. OFF.SUX",
           "waypoints": "SUX N041.59.23.690,W096.12.12.870/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,
@@ -2429,7 +2429,7 @@
     "OFF.TKO": {
       "arrivals": [
         {
-          "route": "/. OFF.TKO",
+          "flight_strip_route": "/. OFF.TKO",
           "waypoints": "N040.08.35.780,W097.39.16.814 N040.32.19.375,W096.56.54.028/a16000/ho KOFF/a16000",
           "initial_controller": "C26",
           "initial_altitude": 16000,

@@ -53,7 +53,7 @@
           ],
           "destination": "KBED",
           "exit": "ENE",
-          "route": "ENE BOS BED",
+          "waypoints": "ENE BOS BED",
           "scratchpad": "ENE"
         },
         {
@@ -64,7 +64,7 @@
           ],
           "destination": "EINN",
           "exit": "TOPPS",
-          "route": "TOPPS N322A ELSIR NATR BEXET ERABI ERAB2E",
+          "waypoints": "TOPPS N322A ELSIR NATR BEXET ERABI ERAB2E",
           "scratchpad": "TOP"
         },
         {
@@ -75,7 +75,7 @@
           ],
           "destination": "KPWM",
           "exit": "CEDAP",
-          "route": "CEDAP PWM",
+          "waypoints": "CEDAP PWM",
           "scratchpad": "PWM"
         }
       ]
@@ -138,7 +138,7 @@
           ],
           "destination": "KBED",
           "exit": "ENE",
-          "route": "ENE BOS BED",
+          "waypoints": "ENE BOS BED",
           "scratchpad": "ENE"
         },
         {
@@ -149,7 +149,7 @@
           ],
           "destination": "KMVY",
           "exit": "LFV",
-          "route": "LFV NVY",
+          "waypoints": "LFV NVY",
           "scratchpad": "LFV"
         },
         {
@@ -160,7 +160,7 @@
           ],
           "destination": "KLGA",
           "exit": "ALB",
-          "route": "ALB HAARP4",
+          "waypoints": "ALB HAARP4",
           "scratchpad": "ALB"
         },
         {
@@ -171,7 +171,7 @@
           ],
           "destination": "KEWR",
           "exit": "HANAA",
-          "route": "HANAA FLOSI4",
+          "waypoints": "HANAA FLOSI4",
           "scratchpad": "HAN"
         }
       ],
@@ -183,7 +183,7 @@
       "arrivals": [
         {
           "waypoints": "43.908167,-69.644500 N044.08.25.851,W069.26.42.658/ho BGR",
-          "route": "./ BGR",
+          "flight_strip_route": "./ BGR",
           "initial_controller": "C17",
           "initial_altitude": 11000,
           "initial_speed": 270,
@@ -216,7 +216,7 @@
       "arrivals": [
         {
           "waypoints": "43.941500,-71.048000/ho BGR",
-          "route": "./ BGR",
+          "flight_strip_route": "./ BGR",
           "initial_controller": "C02",
           "initial_altitude": 11000,
           "initial_speed": 270,
@@ -241,7 +241,7 @@
       "arrivals": [
         {
           "waypoints": "ENE T295 BRNNS/ho",
-          "route": "./ ENE T295 BRNNS ",
+          "flight_strip_route": "./ ENE T295 BRNNS ",
           "initial_controller": "C17",
           "initial_altitude": 9000,
           "initial_speed": 270,
@@ -272,7 +272,7 @@
       "arrivals": [
         {
           "waypoints": "HUL/ho BGR",
-          "route": "./ HUL BGR",
+          "flight_strip_route": "./ HUL BGR",
           "initial_controller": "C01",
           "initial_altitude": 11000,
           "initial_speed": 270,

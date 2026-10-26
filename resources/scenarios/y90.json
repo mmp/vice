@@ -101,7 +101,7 @@
           ],
           "destination": "KBOS",
           "exit": "PVD",
-          "route": "PVD WOONS ROBUC3"
+          "waypoints": "PVD WOONS ROBUC3"
         },
         {
           "airlines": [
@@ -112,7 +112,7 @@
           ],
           "destination": "KSJC",
           "exit": "VEERS",
-          "route": "VEERS PWL IGN Q480 AIR J80 ILC KNGRY RAZRR4"
+          "waypoints": "VEERS PWL IGN Q480 AIR J80 ILC KNGRY RAZRR4"
         },
         {
           "airlines": [
@@ -123,7 +123,7 @@
           ],
           "destination": "KPHX",
           "exit": "VEERS",
-          "route": "VEERS PWL IGN Q480 AIR J110 STL BUM ICT LBL FTI J244 ZUN EAGUL6"
+          "waypoints": "VEERS PWL IGN Q480 AIR J110 STL BUM ICT LBL FTI J244 ZUN EAGUL6"
         },
         {
           "airlines": [
@@ -134,7 +134,7 @@
           ],
           "destination": "KSEA",
           "exit": "CTR",
-          "route": "CTR CAM ARNII NOVON KENPA COLDD TTAIL Q140 LEWIT MLP GLASR1"
+          "waypoints": "CTR CAM ARNII NOVON KENPA COLDD TTAIL Q140 LEWIT MLP GLASR1"
         },
         {
           "airlines": [
@@ -144,7 +144,7 @@
           ],
           "destination": "KJFK",
           "exit": "MAD",
-          "route": "MAD V1 DPK"
+          "waypoints": "MAD V1 DPK"
         },
         {
           "airlines": [
@@ -154,7 +154,7 @@
           ],
           "destination": "KSFO",
           "exit": "CTR",
-          "route": "CTR CAM Q822 GONZZ ROC KELTI Q812 AGDOX Q816 HOCKE MONEE DABJU SUDDS BAE J16 SIBER VIKNG ROKKK MAASI SAUGI NUXRO HAAND CYS J148 MTU GAROT CNT TATOO INYOE DYAMD5"
+          "waypoints": "CTR CAM Q822 GONZZ ROC KELTI Q812 AGDOX Q816 HOCKE MONEE DABJU SUDDS BAE J16 SIBER VIKNG ROKKK MAASI SAUGI NUXRO HAAND CYS J148 MTU GAROT CNT TATOO INYOE DYAMD5"
         },
         {
           "airlines": [
@@ -164,7 +164,7 @@
           ],
           "destination": "KLAS",
           "exit": "CTR",
-          "route": "CTR HNK WOZEE DAYYY GRB KP87I SCHEP KP84E KP81C KD78A KEEFF BFF EKR KU54Q PROMT Q88 HAKMN ANJLL4"
+          "waypoints": "CTR HNK WOZEE DAYYY GRB KP87I SCHEP KP84E KP81C KD78A KEEFF BFF EKR KU54Q PROMT Q88 HAKMN ANJLL4"
         },
         {
           "airlines": [
@@ -174,7 +174,7 @@
           ],
           "destination": "KOAK",
           "exit": "CTR",
-          "route": "CTR CAM ARNII Q816 HOCKE Q935 MONEE BAE J16 MCW J148 ONL J94 BFF J157 MTU J148 DTA TATOO MONOH OAKES2"
+          "waypoints": "CTR CAM ARNII Q816 HOCKE Q935 MONEE BAE J16 MCW J148 ONL J94 BFF J157 MTU J148 DTA TATOO MONOH OAKES2"
         },
         {
           "airlines": [
@@ -184,7 +184,7 @@
           ],
           "destination": "KSLC",
           "exit": "CTR",
-          "route": "CTR HNK CFB RAAKK GETCH DABJU KG81M HILRO EMORE CUDET FSD KP81C GUDDY KD78W DDY NORDK6"
+          "waypoints": "CTR HNK CFB RAAKK GETCH DABJU KG81M HILRO EMORE CUDET FSD KP81C GUDDY KD78W DDY NORDK6"
         },
         {
           "airlines": [
@@ -194,7 +194,7 @@
           ],
           "destination": "KEUG",
           "exit": "CTR",
-          "route": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
+          "waypoints": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
         },
         {
           "airlines": [
@@ -204,7 +204,7 @@
           ],
           "destination": "KRDM",
           "exit": "CTR",
-          "route": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
+          "waypoints": "CTR CAM ARNII Q816 AGDOX NOSIK TVC KP90M STC KP06A LEM BIL KU03O BKE"
         },
         {
           "airlines": [
@@ -214,7 +214,7 @@
           ],
           "destination": "KSLE",
           "exit": "CTR",
-          "route": "CTR ALB SYR Q812 AHPAH Q140 LEWIT PDT J16 KOTAA TIMEE"
+          "waypoints": "CTR ALB SYR Q812 AHPAH Q140 LEWIT PDT J16 KOTAA TIMEE"
         }
       ],
       "exit_categories": {
@@ -270,7 +270,7 @@
           ],
           "destination": "KJFK",
           "exit": "CCC",
-          "route": "CCC PARCH4"
+          "waypoints": "CCC PARCH4"
         }
       ]
     },
@@ -343,7 +343,7 @@
           ],
           "destination": "KISP",
           "exit": "THUMB",
-          "route": "THUMB BELLT CCC"
+          "waypoints": "THUMB BELLT CCC"
         }
       ]
     },
@@ -405,7 +405,7 @@
           ],
           "destination": "KHFD",
           "exit": "THUMB",
-          "route": "THUMB"
+          "waypoints": "THUMB"
         }
       ]
     },
@@ -476,7 +476,7 @@
           ],
           "destination": "KHFD",
           "exit": "GOETS",
-          "route": "GOETS"
+          "waypoints": "GOETS"
         }
       ]
     }
@@ -1008,7 +1008,7 @@
       "arrivals": [
         {
           "waypoints": "EEGOR N041.19.13.303,W073.02.03.870/ho",
-          "route": "EEGOR N041.19.13.303,W073.02.03.870",
+          "flight_strip_route": "EEGOR N041.19.13.303,W073.02.03.870",
           "cruise_altitude": 7000,
           "initial_controller": "N56",
           "initial_altitude": 7000,
@@ -1149,7 +1149,7 @@
       "arrivals": [
         {
           "waypoints": "KEYNN/ho BDL",
-          "route": "KEYNN BDL",
+          "flight_strip_route": "KEYNN BDL",
           "cruise_altitude": 14000,
           "initial_controller": "C37",
           "initial_altitude": 10000,

@@ -147,7 +147,7 @@
           "destination": "KFLL",
           "exit": "SABEE",
           "scratchpad": "GAN",
-          "route": "SABEE TEEKY"
+          "waypoints": "SABEE TEEKY"
         },
         {
           "airlines": [
@@ -177,7 +177,7 @@
           "destination": "KMIA",
           "exit": "SABEE",
           "scratchpad": "GAN",
-          "route": "SABEE FROGZ"
+          "waypoints": "SABEE FROGZ"
         },
         {
           "airlines": [
@@ -195,7 +195,7 @@
           "destination": "MYNN",
           "exit": "SABEE",
           "scratchpad": "GAN",
-          "route": "SABEE RSW VKZ BR53V RAJAY"
+          "waypoints": "SABEE RSW VKZ BR53V RAJAY"
         },
         {
           "airlines": [
@@ -225,7 +225,7 @@
           "destination": "KCLT",
           "exit": "CAMJO",
           "scratchpad": "BAY",
-          "route": "CAMJO TWINS PONZE"
+          "waypoints": "CAMJO TWINS PONZE"
         },
         {
           "airlines": [
@@ -252,7 +252,7 @@
           "destination": "KPHL",
           "exit": "CAMJO",
           "scratchpad": "BAY",
-          "route": "CAMJO Q99 PEETT BBDOL"
+          "waypoints": "CAMJO Q99 PEETT BBDOL"
         },
         {
           "airlines": [
@@ -267,7 +267,7 @@
           "destination": "KSEA",
           "exit": "FROOT",
           "scratchpad": "DOR",
-          "route": "FROOT REMIS Q100 REDFN DELTE MCB"
+          "waypoints": "FROOT REMIS Q100 REDFN DELTE MCB"
         },
         {
           "airlines": [
@@ -291,7 +291,7 @@
           "destination": "KATL",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN AMORY Q110 DAWWN BEORN"
+          "waypoints": "LACEN AMORY Q110 DAWWN BEORN"
         },
         {
           "airlines": [
@@ -315,7 +315,7 @@
           "destination": "KMSY",
           "exit": "FROOT",
           "scratchpad": "DOR",
-          "route": "FROOT ROZZI Q100 REDFN Q105 HRV"
+          "waypoints": "FROOT ROZZI Q100 REDFN Q105 HRV"
         },
         {
           "airlines": [
@@ -327,7 +327,7 @@
           "destination": "KMEM",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN PATOY Q116 GOOGY WASER VANZE3"
+          "waypoints": "LACEN PATOY Q116 GOOGY WASER VANZE3"
         },
         {
           "airlines": [
@@ -354,7 +354,7 @@
           "destination": "KLGA",
           "exit": "HALLR",
           "scratchpad": "CRO",
-          "route": "HALLR MZULO HESTA LENDS GRUBR"
+          "waypoints": "HALLR MZULO HESTA LENDS GRUBR"
         },
         {
           "airlines": [
@@ -372,7 +372,7 @@
           "destination": "KMDW",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN BRUTS Q118 THRSR Q79 IIU DROSE"
+          "waypoints": "LACEN BRUTS Q118 THRSR Q79 IIU DROSE"
         },
         {
           "airlines": [
@@ -390,7 +390,7 @@
           "destination": "KJFK",
           "exit": "CAMJO",
           "scratchpad": "BAY",
-          "route": "CAMJO Q109 DFENC SAWED Q97 DLAAY RADDS SIE CAMRN4"
+          "waypoints": "CAMJO Q109 DFENC SAWED Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
           "airlines": [
@@ -414,7 +414,7 @@
           "destination": "KBNA",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN BRUTS Q118 JOHNN Q118 THRSR WESSN JAGIR"
+          "waypoints": "LACEN BRUTS Q118 JOHNN Q118 THRSR WESSN JAGIR"
         },
         {
           "airlines": [
@@ -444,7 +444,7 @@
           "destination": "CYYZ",
           "exit": "CAMJO",
           "scratchpad": "BAY",
-          "route": "CAMJO Q99 BLAAN Q69 RICCS OXMAN"
+          "waypoints": "CAMJO Q99 BLAAN Q69 RICCS OXMAN"
         },
         {
           "airlines": [
@@ -459,7 +459,7 @@
           "destination": "KDFW",
           "exit": "FROOT",
           "scratchpad": "DOR",
-          "route": "FROOT ROZZI Y280 REDFN Q105 HRV J58 AEX PNUTS"
+          "waypoints": "FROOT ROZZI Y280 REDFN Q105 HRV J58 AEX PNUTS"
         },
         {
           "airlines": [
@@ -480,7 +480,7 @@
           "destination": "MUHA",
           "exit": "SABEE",
           "scratchpad": "GAN",
-          "route": "SABEE FIPES Q81 KARTR Q81 TUNSL Y262 LULLS Y196 CANOA"
+          "waypoints": "SABEE FIPES Q81 KARTR Q81 TUNSL Y262 LULLS Y196 CANOA"
         },
         {
           "airlines": [
@@ -501,7 +501,7 @@
           "destination": "KHOU",
           "exit": "FROOT",
           "scratchpad": "DOR",
-          "route": "FROOT ROZZI Y280 LEV"
+          "waypoints": "FROOT ROZZI Y280 LEV"
         },
         {
           "airlines": [
@@ -528,7 +528,7 @@
           "destination": "KAUS",
           "exit": "FROOT",
           "scratchpad": "DOR",
-          "route": "FROOT ROZZI Y280 LEV DBOYS"
+          "waypoints": "FROOT ROZZI Y280 LEV DBOYS"
         },
         {
           "airlines": [
@@ -544,7 +544,7 @@
           "destination": "KVRB",
           "exit": "HALLR",
           "scratchpad": "CRO",
-          "route": "HALLR YEHAW VALKA"
+          "waypoints": "HALLR YEHAW VALKA"
         }
       ],
       "exit_categories": {
@@ -626,7 +626,7 @@
           "destination": "KABE",
           "exit": "CAMJO",
           "scratchpad": "BAY",
-          "route": "CAMJO HEPAR Q99 BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE T299 DUMMR"
+          "waypoints": "CAMJO HEPAR Q99 BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE T299 DUMMR"
         },
         {
           "airlines": [
@@ -656,7 +656,7 @@
           "destination": "KATL",
           "exit": "CAMJO",
           "scratchpad": "TID",
-          "route": "CAMJO LAIRI LARZZ"
+          "waypoints": "CAMJO LAIRI LARZZ"
         },
         {
           "airlines": [
@@ -689,7 +689,7 @@
           "destination": "KBOS",
           "exit": "CAMJO",
           "scratchpad": "TID",
-          "route": "CAMJO HEPAR Q99 POLYY DADDS Q87 GEARS BBOBO Q22 RBV Q419 JFK"
+          "waypoints": "CAMJO HEPAR Q99 POLYY DADDS Q87 GEARS BBOBO Q22 RBV Q419 JFK"
         },
         {
           "airlines": [
@@ -719,7 +719,7 @@
           "destination": "KCLT",
           "exit": "CAMJO",
           "scratchpad": "TID",
-          "route": "CAMJO TWINS PONZE"
+          "waypoints": "CAMJO TWINS PONZE"
         },
         {
           "airlines": [
@@ -746,7 +746,7 @@
           "destination": "KLGA",
           "exit": "CAMJO",
           "scratchpad": "TID",
-          "route": "CAMJO HEPAR Q99 POLYY DADDS Q87 HURTS"
+          "waypoints": "CAMJO HEPAR Q99 POLYY DADDS Q87 HURTS"
         },
         {
           "airlines": [
@@ -779,7 +779,7 @@
           "destination": "KBNA",
           "exit": "MOMIE",
           "scratchpad": "TID",
-          "route": "MOMIE BRUTS Q118 THRSR WESSN JAGIR"
+          "waypoints": "MOMIE BRUTS Q118 THRSR WESSN JAGIR"
         },
         {
           "airlines": [
@@ -809,7 +809,7 @@
           "destination": "KORD",
           "exit": "MOMIE",
           "scratchpad": "TID",
-          "route": "MOMIE BRUTS Q118 BONNT"
+          "waypoints": "MOMIE BRUTS Q118 BONNT"
         },
         {
           "airlines": [
@@ -836,7 +836,7 @@
           "destination": "KDEN",
           "exit": "MOMIE",
           "scratchpad": "TID",
-          "route": "MOMIE PATOY Q116 JAWJA MGMRY MEMFS PER GCK KIISS"
+          "waypoints": "MOMIE PATOY Q116 JAWJA MGMRY MEMFS PER GCK KIISS"
         },
         {
           "airlines": [
@@ -866,7 +866,7 @@
           "destination": "KATW",
           "exit": "MOMIE",
           "scratchpad": "TID",
-          "route": "MOMIE BRUTS Q118 THRSR Q79 IIU J89 BAE"
+          "waypoints": "MOMIE BRUTS Q118 THRSR Q79 IIU J89 BAE"
         }
       ],
       "exit_categories": {
@@ -953,7 +953,7 @@
           "destination": "KBNA",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN BRUTS Q118 THRSR WESSN JAGIR SWFFT2"
+          "waypoints": "LACEN BRUTS Q118 THRSR WESSN JAGIR SWFFT2"
         },
         {
           "airlines": [
@@ -965,7 +965,7 @@
           "destination": "KXNA",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN PATOY Q116 DEEDA Q116 VLKNN MEM RZC"
+          "waypoints": "LACEN PATOY Q116 DEEDA Q116 VLKNN MEM RZC"
         },
         {
           "airlines": [
@@ -977,7 +977,7 @@
           "destination": "KORF",
           "exit": "CAMJO.LLRGO1",
           "scratchpad": "LLR",
-          "route": "CAMJO Q99 HEPAR TWINS IRQ HRTWL BURGG GLOVR RDU DRONE2"
+          "waypoints": "CAMJO Q99 HEPAR TWINS IRQ HRTWL BURGG GLOVR RDU DRONE2"
         },
         {
           "airlines": [
@@ -989,7 +989,7 @@
           "destination": "KCHA",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN BRUTS Q118 KAILL GQO"
+          "waypoints": "LACEN BRUTS Q118 KAILL GQO"
         },
         {
           "airlines": [
@@ -1001,7 +1001,7 @@
           "destination": "KTYS",
           "exit": "CAMJO",
           "scratchpad": "BAY",
-          "route": "CAMJO Q99 HEPAR KERLY ODF"
+          "waypoints": "CAMJO Q99 HEPAR KERLY ODF"
         },
         {
           "airlines": [
@@ -1013,7 +1013,7 @@
           "destination": "KGPT",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI"
+          "waypoints": "LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI"
         },
         {
           "airlines": [
@@ -1025,7 +1025,7 @@
           "destination": "KMDW",
           "exit": "LACEN.LLRGO1",
           "scratchpad": "LLR",
-          "route": "LACEN PATOY Q116 JAWJA TERES CLRRK RADME OPROE DROSE FISSK6"
+          "waypoints": "LACEN PATOY Q116 JAWJA TERES CLRRK RADME OPROE DROSE FISSK6"
         },
         {
           "airlines": [
@@ -1037,7 +1037,7 @@
           "destination": "KCVG",
           "exit": "LACEN",
           "scratchpad": "END",
-          "route": "LACEN BRUTS Q118 THRSR VXV JAKIE6"
+          "waypoints": "LACEN BRUTS Q118 THRSR VXV JAKIE6"
         }
       ],
       "exit_categories": {
@@ -1115,7 +1115,7 @@
           "altitude": 7000,
           "destination": "KOCF",
           "exit": "OCF",
-          "route": "OCF"
+          "waypoints": "OCF"
         },
         {
           "airlines": [
@@ -1129,7 +1129,7 @@
           "altitude": 23000,
           "destination": "KJAX",
           "exit": "WILON",
-          "route": "WILON HILIS TEBOW"
+          "waypoints": "WILON HILIS TEBOW"
         },
         {
           "airlines": [
@@ -1144,7 +1144,7 @@
           "altitude": 5000,
           "destination": "KTPA",
           "exit": "TPA",
-          "route": "TPA"
+          "waypoints": "TPA"
         },
         {
           "airlines": [
@@ -1159,7 +1159,7 @@
           "altitude": 6000,
           "destination": "KSRQ",
           "exit": "SRQ",
-          "route": "SRQ"
+          "waypoints": "SRQ"
         }
       ],
       "exit_categories": {
@@ -1227,7 +1227,7 @@
           "altitude": 9000,
           "destination": "KISM",
           "exit": "LAL",
-          "route": "LAL MINEE"
+          "waypoints": "LAL MINEE"
         },
         {
           "airlines": [
@@ -1239,7 +1239,7 @@
           "altitude": 5000,
           "destination": "KISM",
           "exit": "PRICY",
-          "route": "PRICY MINEE"
+          "waypoints": "PRICY MINEE"
         },
         {
           "airlines": [
@@ -1254,7 +1254,7 @@
           "altitude": 9000,
           "destination": "KMCO",
           "exit": "MINEE",
-          "route": "MINEE"
+          "waypoints": "MINEE"
         },
         {
           "airlines": [
@@ -1269,7 +1269,7 @@
           "altitude": 7000,
           "destination": "KOCF",
           "exit": "OCF",
-          "route": "OCF"
+          "waypoints": "OCF"
         },
         {
           "airlines": [
@@ -1284,7 +1284,7 @@
           "altitude": 9000,
           "destination": "KAPF",
           "exit": "CEXAN",
-          "route": "CEXAN"
+          "waypoints": "CEXAN"
         }
       ],
       "exit_categories": {
@@ -1345,7 +1345,7 @@
           "altitude": 9000,
           "destination": "KISM",
           "exit": "LAL",
-          "route": "LAL"
+          "waypoints": "LAL"
         },
         {
           "airlines": [
@@ -1360,7 +1360,7 @@
           "altitude": 11000,
           "destination": "KOCF",
           "exit": "OCF",
-          "route": "OCF"
+          "waypoints": "OCF"
         }
       ],
       "exit_categories": {
@@ -1447,7 +1447,7 @@
           "altitude": 7000,
           "destination": "KOCF",
           "exit": "OCF",
-          "route": "OCF"
+          "waypoints": "OCF"
         },
         {
           "airlines": [
@@ -1461,7 +1461,7 @@
           "altitude": 10000,
           "destination": "KJAX",
           "exit": "WILON",
-          "route": "WILON"
+          "waypoints": "WILON"
         },
         {
           "airlines": [
@@ -1476,7 +1476,7 @@
           "altitude": 5000,
           "destination": "KTPA",
           "exit": "TPA",
-          "route": "TPA"
+          "waypoints": "TPA"
         },
         {
           "airlines": [
@@ -1491,7 +1491,7 @@
           "altitude": 6000,
           "destination": "KSRQ",
           "exit": "SRQ",
-          "route": "SRQ"
+          "waypoints": "SRQ"
         }
       ],
       "exit_categories": {
@@ -1570,7 +1570,7 @@
           "altitude": 4000,
           "destination": "KPIE",
           "exit": "PIE",
-          "route": "PIE"
+          "waypoints": "PIE"
         },
         {
           "airlines": [
@@ -1588,7 +1588,7 @@
           "altitude": 11000,
           "destination": "KOCF",
           "exit": "OCF",
-          "route": "OCF"
+          "waypoints": "OCF"
         },
         {
           "airlines": [
@@ -1602,7 +1602,7 @@
           "altitude": 13000,
           "destination": "KGNV",
           "exit": "WILON",
-          "route": "WILON"
+          "waypoints": "WILON"
         },
         {
           "airlines": [
@@ -1617,7 +1617,7 @@
           "altitude": 9000,
           "destination": "KAPF",
           "exit": "CEXAN",
-          "route": "CEXAN"
+          "waypoints": "CEXAN"
         }
       ],
       "exit_categories": {
@@ -1686,7 +1686,7 @@
           "altitude": 23000,
           "destination": "KNIP",
           "exit": "PMPNO",
-          "route": "PMPNO T492 WEZER T210 KIZER HAINY QUBEN2"
+          "waypoints": "PMPNO T492 WEZER T210 KIZER HAINY QUBEN2"
         },
         {
           "airlines": [
@@ -1700,7 +1700,7 @@
           "altitude": 35000,
           "destination": "KNTU",
           "exit": "PMPNO",
-          "route": "PMPNO ORL ZERBO Q87 JROSS Q135 RAPZZ TABUE"
+          "waypoints": "PMPNO ORL ZERBO Q87 JROSS Q135 RAPZZ TABUE"
         },
         {
           "airlines": [
@@ -1714,7 +1714,7 @@
           "altitude": 35000,
           "destination": "KNGU",
           "exit": "PMPNO",
-          "route": "PMPNO ORL ZERBO Q87 JROSS Q135 RAPZZ TABUE"
+          "waypoints": "PMPNO ORL ZERBO Q87 JROSS Q135 RAPZZ TABUE"
         },
         {
           "airlines": [
@@ -1728,7 +1728,7 @@
           "altitude": 37000,
           "destination": "KADW",
           "exit": "FINKI",
-          "route": "FINKI WILON CAMJO Q99 OGRAE THHMP VUDOO2"
+          "waypoints": "FINKI WILON CAMJO Q99 OGRAE THHMP VUDOO2"
         },
         {
           "airlines": [
@@ -1739,7 +1739,7 @@
           "altitude": 23000,
           "destination": "KHST",
           "exit": "SCURF",
-          "route": "SCURF FROGZ5"
+          "waypoints": "SCURF FROGZ5"
         },
         {
           "airlines": [
@@ -1750,7 +1750,7 @@
           "altitude": 11000,
           "destination": "KHST",
           "exit": "SRQ",
-          "route": "SRQ PALMZ2"
+          "waypoints": "SRQ PALMZ2"
         }
       ],
       "exit_categories": {
@@ -1804,7 +1804,7 @@
           "altitude": 3000,
           "destination": "KPIE",
           "exit": "PIE",
-          "route": "PIE"
+          "waypoints": "PIE"
         },
         {
           "airlines": [
@@ -1819,7 +1819,7 @@
           "altitude": 6000,
           "destination": "KSRQ",
           "exit": "SRQ",
-          "route": "PIE SRQ"
+          "waypoints": "PIE SRQ"
         },
         {
           "airlines": [
@@ -1834,7 +1834,7 @@
           "altitude": 7000,
           "destination": "KOCF",
           "exit": "LACEN",
-          "route": "LACEN OCF"
+          "waypoints": "LACEN OCF"
         },
         {
           "airlines": [
@@ -1849,7 +1849,7 @@
           "altitude": 10000,
           "destination": "KJAX",
           "exit": "WILON",
-          "route": "WILON HILIS TEBOW"
+          "waypoints": "WILON HILIS TEBOW"
         }
       ],
       "exit_categories": {
@@ -1920,7 +1920,7 @@
           "altitude": 4000,
           "destination": "KPIE",
           "exit": "PIE",
-          "route": "PIE"
+          "waypoints": "PIE"
         },
         {
           "airlines": [
@@ -1935,7 +1935,7 @@
           "altitude": 6000,
           "destination": "KSRQ",
           "exit": "SRQ",
-          "route": "SRQ"
+          "waypoints": "SRQ"
         },
         {
           "airlines": [
@@ -1950,7 +1950,7 @@
           "altitude": 7000,
           "destination": "KOCF",
           "exit": "LAL",
-          "route": "LAL OCF"
+          "waypoints": "LAL OCF"
         },
         {
           "airlines": [
@@ -1968,7 +1968,7 @@
           "altitude": 11000,
           "destination": "KJAX",
           "exit": "CROWD",
-          "route": "CROWD WILON HILIS TEBOW"
+          "waypoints": "CROWD WILON HILIS TEBOW"
         }
       ],
       "exit_categories": {
@@ -2063,7 +2063,7 @@
           "altitude": 4000,
           "destination": "KPIE",
           "exit": "PIE",
-          "route": "PIE"
+          "waypoints": "PIE"
         },
         {
           "airlines": [
@@ -2078,7 +2078,7 @@
           "altitude": 6000,
           "destination": "KSRQ",
           "exit": "SRQ",
-          "route": "SRQ"
+          "waypoints": "SRQ"
         },
         {
           "airlines": [
@@ -2093,7 +2093,7 @@
           "altitude": 7000,
           "destination": "KPGD",
           "exit": "CEXAN",
-          "route": "CEXAN"
+          "waypoints": "CEXAN"
         },
         {
           "airlines": [
@@ -2108,7 +2108,7 @@
           "altitude": 9000,
           "destination": "KRSW",
           "exit": "CEXAN",
-          "route": "CEXAN"
+          "waypoints": "CEXAN"
         }
       ],
       "exit_categories": {
@@ -2186,7 +2186,7 @@
           "altitude": 7000,
           "destination": "KOCF",
           "exit": "LAL",
-          "route": "LAL OCF"
+          "waypoints": "LAL OCF"
         },
         {
           "airlines": [
@@ -2201,7 +2201,7 @@
           "altitude": 7000,
           "destination": "KMCO",
           "exit": "LAL",
-          "route": "LAL MINEE"
+          "waypoints": "LAL MINEE"
         },
         {
           "airlines": [
@@ -2219,7 +2219,7 @@
           "altitude": 10000,
           "destination": "KJAX",
           "exit": "WILON",
-          "route": "WILON HILIS TEBOW"
+          "waypoints": "WILON HILIS TEBOW"
         }
       ],
       "exit_categories": {
@@ -3922,7 +3922,7 @@
           "initial_controller": "C66",
           "initial_speed": 220,
           "coordination_fix": "LAL",
-          "route": "LAL",
+          "flight_strip_route": "LAL",
           "description": "BKV via LAL, turbojet delivery at 10000"
         },
         {
@@ -3947,7 +3947,7 @@
           "initial_controller": "C66",
           "initial_speed": 180,
           "coordination_fix": "LAL",
-          "route": "LAL",
+          "flight_strip_route": "LAL",
           "description": "BKV via LAL, non-turbojet delivery at 6000 or 8000"
         }
       ]
@@ -3974,7 +3974,7 @@
           "initial_controller": "C66",
           "initial_speed": 180,
           "coordination_fix": "LAL",
-          "route": "LAL",
+          "flight_strip_route": "LAL",
           "description": "BOW via LAL, delivery at 3000"
         }
       ]
@@ -4001,7 +4001,7 @@
           "initial_controller": "C66",
           "initial_speed": 180,
           "coordination_fix": "LAL",
-          "route": "LAL",
+          "flight_strip_route": "LAL",
           "description": "PCM via LAL, delivery at 4000"
         }
       ]
@@ -4063,7 +4063,7 @@
           "initial_controller": "C07",
           "initial_speed": 180,
           "coordination_fix": "VNC",
-          "route": "VNC",
+          "flight_strip_route": "VNC",
           "description": "Direct VNC delivery at 4000"
         }
       ]
@@ -4093,7 +4093,7 @@
           "initial_speed": 190,
           "is_rnav": false,
           "coordination_fix": "RAYZZ",
-          "route": "RAYZZ SRQ VNC",
+          "flight_strip_route": "RAYZZ SRQ VNC",
           "description": "Non-RNAV VNC arrival from the west via RAYZZ..SRQ..VNC, RAYZZ at 10000"
         }
       ]
@@ -4299,7 +4299,7 @@
           "initial_controller": "C66",
           "initial_speed": 180,
           "coordination_fix": "LAL",
-          "route": "LAL",
+          "flight_strip_route": "LAL",
           "description": "ZPH via LAL, delivery at 4000"
         }
       ]

@@ -196,7 +196,7 @@
           ],
           "altitude": 25000,
           "destination": "KMEM",
-          "route": "WHOLL BRBBQ3",
+          "waypoints": "WHOLL BRBBQ3",
           "exit": "WHOLL"
         },
         {
@@ -208,7 +208,7 @@
           ],
           "altitude": 32000,
           "destination": "KDEN",
-          "route": "CNU KIISS CLASH4",
+          "waypoints": "CNU KIISS CLASH4",
           "exit": "CNU"
         },
         {
@@ -224,7 +224,7 @@
           ],
           "altitude": 28000,
           "destination": "KDFW",
-          "route": "FSM RRNET BRDJE5",
+          "waypoints": "FSM RRNET BRDJE5",
           "exit": "FSM"
         },
         {
@@ -240,7 +240,7 @@
           ],
           "altitude": 35000,
           "destination": "KCLT",
-          "route": "SGF V159 DGD BNA VXV COMDY FILPZ7",
+          "waypoints": "SGF V159 DGD BNA VXV COMDY FILPZ7",
           "exit": "SGF"
         },
         {
@@ -256,7 +256,7 @@
           ],
           "altitude": 31000,
           "destination": "KORD",
-          "route": "SGF WELTS TRTLL6",
+          "waypoints": "SGF WELTS TRTLL6",
           "exit": "SGF"
         },
         {
@@ -268,7 +268,7 @@
           ],
           "altitude": 35000,
           "destination": "KATL",
-          "route": "MEMFS HUTCC KNSAW RUSSA GLAVN1",
+          "waypoints": "MEMFS HUTCC KNSAW RUSSA GLAVN1",
           "exit": "MEMFS"
         },
         {
@@ -280,7 +280,7 @@
           ],
           "altitude": 37000,
           "destination": "KSFB",
-          "route": "ZAVEL J41 MEM MGM ACORI Q104 CABLO BLUZI BITTE SHREK2",
+          "waypoints": "ZAVEL J41 MEM MGM ACORI Q104 CABLO BLUZI BITTE SHREK2",
           "exit": "ZAVEL"
         },
         {
@@ -296,7 +296,7 @@
           ],
           "altitude": 28000,
           "destination": "KIAH",
-          "route": "EOS TUL J87 CVE GUSHR3",
+          "waypoints": "EOS TUL J87 CVE GUSHR3",
           "exit": "EOS"
         },
         {
@@ -308,7 +308,7 @@
           ],
           "altitude": 35000,
           "destination": "KPIE",
-          "route": "ZAVEL J41 MEM MGM ACORI BANGZ1",
+          "waypoints": "ZAVEL J41 MEM MGM ACORI BANGZ1",
           "exit": "ZAVEL"
         },
         {
@@ -323,7 +323,7 @@
           ],
           "altitude": 7000,
           "destination": "KCOU",
-          "route": "YATGU",
+          "waypoints": "YATGU",
           "exit": "YATGU"
         }
       ],
@@ -384,7 +384,7 @@
           ],
           "altitude": 7000,
           "destination": "KCOU",
-          "route": "CATIL",
+          "waypoints": "CATIL",
           "exit": "CATIL"
         },
         {
@@ -396,7 +396,7 @@
           ],
           "altitude": 4000,
           "destination": "KSGF",
-          "route": "SGF",
+          "waypoints": "SGF",
           "exit": "SGF"
         }
       ],
@@ -413,7 +413,7 @@
         {
           "waypoints": "N037.49.34.232,W094.40.03.176 N037.45.04.064,W094.27.18.665/ho SGF",
           "cruise_altitude": 33000,
-          "route": "EXTAN7 SHAYK KK54C SGF",
+          "flight_strip_route": "EXTAN7 SHAYK KK54C SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,
@@ -435,7 +435,7 @@
         {
           "waypoints": "N037.58.39.346,W092.27.21.906 N037.56.28.623,W092.30.05.822/ho WIKGI",
           "cruise_altitude": 7000,
-          "route": "WIKGI",
+          "flight_strip_route": "WIKGI",
           "initial_controller": "C94",
           "initial_altitude": 4000,
           "initial_speed": 160,
@@ -457,7 +457,7 @@
         {
           "waypoints": "N037.54.04.400,W092.17.46.387 N037.51.01.573,W092.23.30.205/ho SGF",
           "cruise_altitude": 32000,
-          "route": "ACITO ADELL ARLYN STL SGF",
+          "flight_strip_route": "ACITO ADELL ARLYN STL SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,
@@ -483,7 +483,7 @@
         {
           "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF",
           "cruise_altitude": 34000,
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA MGMRY MEMFS SGF",
+          "flight_strip_route": "ENDED2 LACEN PATOY Q116 JAWJA MGMRY MEMFS SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,
@@ -505,7 +505,7 @@
         {
           "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF",
           "cruise_altitude": 34000,
-          "route": "CUTTN2 HANKO MEMFS SGF",
+          "flight_strip_route": "CUTTN2 HANKO MEMFS SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,
@@ -523,7 +523,7 @@
         {
           "waypoints": "N036.20.13.783,W092.18.25.279 N036.30.51.429,W092.29.15.560/ho SGF",
           "cruise_altitude": 32000,
-          "route": "BOBZY8 BNA J46 ARG SGF",
+          "flight_strip_route": "BOBZY8 BNA J46 ARG SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,
@@ -549,7 +549,7 @@
         {
           "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF",
           "cruise_altitude": 33000,
-          "route": "INDIE8 INDIE TXK ZALDA SGF",
+          "flight_strip_route": "INDIE8 INDIE TXK ZALDA SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,
@@ -571,7 +571,7 @@
         {
           "waypoints": "ZALDA N036.14.25.406,W093.35.29.287/ho SGF",
           "cruise_altitude": 27000,
-          "route": "AKUNA9 MLC RZC BILIE SGF",
+          "flight_strip_route": "AKUNA9 MLC RZC BILIE SGF",
           "initial_controller": "C94",
           "initial_altitude": 16000,
           "initial_speed": 250,

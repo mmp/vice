@@ -85,84 +85,84 @@
           "altitude": 33000,
           "destination": "KCLT",
           "exit": "CEW",
-          "route": "PENSI CEW MCN PONZE BANKR8"
+          "waypoints": "PENSI CEW MCN PONZE BANKR8"
         },
         {
           "airlines": [{ "icao": "RPA" }],
           "altitude": 33000,
           "destination": "KORD",
           "exit": "YORUP",
-          "route": "PENSI V198 LOXLY YORUP V454 MVC MGM BNA BWG VHP MACES WATSN WATSN4"
+          "waypoints": "PENSI V198 LOXLY YORUP V454 MVC MGM BNA BWG VHP MACES WATSN WATSN4"
         },
         {
           "airlines": [{ "icao": "JRE" }],
           "altitude": 41000,
           "destination": "KPHL",
           "exit": "MGM",
-          "route": "PENSI MGM TWOUP Q22 BEARI BBDOL PAATS4"
+          "waypoints": "PENSI MGM TWOUP Q22 BEARI BBDOL PAATS4"
         },
         {
           "airlines": [{ "icao": "ENY" }, { "icao": "UPS" }],
           "altitude": 31000,
           "destination": "KMIA",
           "exit": "CEW",
-          "route": "PENSI CEW DEFUN CABLO BULZI SNAPY NICKI BROMO/delete"
+          "waypoints": "PENSI CEW DEFUN CABLO BULZI SNAPY NICKI BROMO/delete"
         },
         {
           "airlines": [{ "icao": "JIA" }],
           "altitude": 33000,
           "destination": "KDCA",
           "exit": "CEW",
-          "route": "PENSI CEW MGM KELLN Q56 KIWII WAVES CAPSS3"
+          "waypoints": "PENSI CEW MGM KELLN Q56 KIWII WAVES CAPSS3"
         },
         {
           "airlines": [{ "icao": "EDV" }],
           "altitude": 35000,
           "destination": "KLGA",
           "exit": "CEW",
-          "route": "PENSI CEW MGMRY TWOUP Q22 BURGG Q60 HURTS PROUD2"
+          "waypoints": "PENSI CEW MGMRY TWOUP Q22 BURGG Q60 HURTS PROUD2"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": 36000,
           "destination": "KXNA",
           "exit": "LOXLY",
-          "route": "PENSI V198 LOXLY SJI LIT RZC"
+          "waypoints": "PENSI V198 LOXLY SJI LIT RZC"
         },
         {
           "airlines": [{ "icao": "MXY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": 36000,
           "destination": "KMEM",
           "exit": "CEW",
-          "route": "PENSI CEW STNGA WASER VANZE3"
+          "waypoints": "PENSI CEW STNGA WASER VANZE3"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": 35000,
           "destination": "KRDU",
           "exit": "CEW",
-          "route": "PENSI CEW MCN PYRES DMSTR2"
+          "waypoints": "PENSI CEW MCN PYRES DMSTR2"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": 27000,
           "destination": "KTPA",
           "exit": "CEW",
-          "route": "PENSI CEW DEFUN CABLO THRTL HEVVN LEGGT GOJOE AAHOY MAATY ROOKR/delete"
+          "waypoints": "PENSI CEW DEFUN CABLO THRTL HEVVN LEGGT GOJOE AAHOY MAATY ROOKR/delete"
         },
         {
           "airlines": [{ "icao": "DAL" }],
           "altitude": 27000,
           "destination": "KATL",
           "exit": "CEW",
-          "route": "PENSI CEW ENNTT GNDLF3"
+          "waypoints": "PENSI CEW ENNTT GNDLF3"
         },
         {
           "airlines": [{ "icao": "FFT" }, { "icao": "SWA" }],
           "altitude": 34000,
           "destination": "KDEN",
           "exit": "LOXLY",
-          "route": "PENSI V198 LOXLY ZYDCO KAMEN JABDO KIISS CLASH5"
+          "waypoints": "PENSI V198 LOXLY ZYDCO KAMEN JABDO KIISS CLASH5"
         },
         {
           "airlines": [
@@ -175,28 +175,28 @@
           "altitude": 33000,
           "destination": "KMCO",
           "exit": "CEW",
-          "route": "PENSI CEW DEFUN LEEVP ISSZZ ELITE/delete"
+          "waypoints": "PENSI CEW DEFUN LEEVP ISSZZ ELITE/delete"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": 37000,
           "destination": "KBNA",
           "exit": "CEW",
-          "route": "PENSI CEW MGMRY RKMRT SWFFT3"
+          "waypoints": "PENSI CEW MGMRY RKMRT SWFFT3"
         },
         {
           "airlines": [{ "icao": "NKS" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": 35000,
           "destination": "KFLL",
           "exit": "CEW",
-          "route": "PENSI CEW DEFUN CABLO BULZI SNAPY NICKI CLEOO/delete"
+          "waypoints": "PENSI CEW DEFUN CABLO BULZI SNAPY NICKI CLEOO/delete"
         },
         {
           "airlines": [{ "icao": "UAL" }, { "icao": "UCA" }],
           "altitude": 34000,
           "destination": "KIAH",
           "exit": "LOXLY",
-          "route": "PENSI V198 LOXLY ROMMY HRV LINKK1"
+          "waypoints": "PENSI V198 LOXLY ROMMY HRV LINKK1"
         }
       ]
     },
@@ -249,49 +249,49 @@
           "altitude": 32000,
           "destination": "KDFW",
           "exit": "DEFUN",
-          "route": "DEFUN CEW FOSIN PNUTS WHINY4"
+          "waypoints": "DEFUN CEW FOSIN PNUTS WHINY4"
         },
         {
           "airlines": [{ "icao": "DAL" }],
           "altitude": 25000,
           "destination": "KATL",
           "exit": "RRS",
-          "route": "RRS GOLLM GNDLF3"
+          "waypoints": "RRS GOLLM GNDLF3"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "N", "fleet": "fastGA" }, { "icao": "EJA" }],
           "altitude": 36000,
           "destination": "KBNA",
           "exit": "MGMRY",
-          "route": "MGMRY RKMRT SWFFT3"
+          "waypoints": "MGMRY RKMRT SWFFT3"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "N", "fleet": "fastGA" }, { "icao": "EJA" }, { "icao": "JSX" }],
           "altitude": 36000,
           "destination": "KDAL",
           "exit": "DEFUN",
-          "route": "DEFUN CEW J50 MCB PNUTS MNNDO4"
+          "waypoints": "DEFUN CEW J50 MCB PNUTS MNNDO4"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "SKW" }, { "icao": "LXJ" }],
           "altitude": 38000,
           "destination": "KAUS",
           "exit": "DEFUN",
-          "route": "DEFUN CEW J2 IAH LUKKN WLEEE7"
+          "waypoints": "DEFUN CEW J2 IAH LUKKN WLEEE7"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": 36000,
           "destination": "KHOU",
           "exit": "DEFUN",
-          "route": "DEFUN CEW PENSI SJI PUCKS4"
+          "waypoints": "DEFUN CEW PENSI SJI PUCKS4"
         },
         {
           "airlines": [{ "icao": "ASH" }, { "icao": "SKW" }],
           "altitude": 32000,
           "destination": "KIAH",
           "exit": "DEFUN",
-          "route": "DEFUN CEW J2 SJI LINKK1"
+          "waypoints": "DEFUN CEW J2 SJI LINKK1"
         }
       ]
     },
@@ -370,91 +370,91 @@
           "altitude": 36000,
           "destination": "KBLV",
           "exit": "CEW",
-          "route": "CEW PIGON VUZ BETIE ENL ENL2"
+          "waypoints": "CEW PIGON VUZ BETIE ENL ENL2"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": 37000,
           "destination": "KCVG",
           "exit": "CEW",
-          "route": "CEW PIGON MGM VXV JAKIE7"
+          "waypoints": "CEW PIGON MGM VXV JAKIE7"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": 38000,
           "destination": "KXNA",
           "exit": "CEW",
-          "route": "CEW PIGON MEI SQS LIT RZC"
+          "waypoints": "CEW PIGON MEI SQS LIT RZC"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": 35000,
           "destination": "KFNT",
           "exit": "CEW",
-          "route": "CEW PIGON MGM IIU TORRR HAZIT VHICL CITYE"
+          "waypoints": "CEW PIGON MGM IIU TORRR HAZIT VHICL CITYE"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": 37000,
           "destination": "KBNA",
           "exit": "MGMRY",
-          "route": "MGMRY RKMRT SWFFT3"
+          "waypoints": "MGMRY RKMRT SWFFT3"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "JIA" }],
           "altitude": 35000,
           "destination": "KCLT",
           "exit": "CORKY",
-          "route": "CORKY ACORI CSG BESTT JONZE8"
+          "waypoints": "CORKY ACORI CSG BESTT JONZE8"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "JIA" }],
           "altitude": 30000,
           "destination": "KDFW",
           "exit": "CEW",
-          "route": "CEW V198 LOXLY BFM GCV AEX PNUTS WHINY4"
+          "waypoints": "CEW V198 LOXLY BFM GCV AEX PNUTS WHINY4"
         },
         {
           "airlines": [{ "icao": "ENY" }],
           "altitude": 35000,
           "destination": "KORD",
           "exit": "MGM",
-          "route": "MGM DRSDN EMAHH IIU MIE BONNT VEECK5"
+          "waypoints": "MGM DRSDN EMAHH IIU MIE BONNT VEECK5"
         },
         {
           "airlines": [{ "icao": "RPA" }],
           "altitude": 35000,
           "destination": "KDCA",
           "exit": "CEW",
-          "route": "CEW KBLER Q56 KIWII WAVES CAPSS3"
+          "waypoints": "CEW KBLER Q56 KIWII WAVES CAPSS3"
         },
         {
           "airlines": [{ "icao": "ENY" }],
           "altitude": 29000,
           "destination": "KMIA",
           "exit": "CORKY",
-          "route": "CORKY DEFUN CABLO BULZI SNAPY NICKI BROMO/delete"
+          "waypoints": "CORKY DEFUN CABLO BULZI SNAPY NICKI BROMO/delete"
         },
         {
           "airlines": [{ "icao": "DAL" }],
           "altitude": 25000,
           "destination": "KATL",
           "exit": "CEW",
-          "route": "CEW ENNTT GNDLF3"
+          "waypoints": "CEW ENNTT GNDLF3"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "SCX" }],
           "altitude": 38000,
           "destination": "KMSP",
           "exit": "CEW",
-          "route": "CEW VLKNN KM39M KK57K MNOSO BLEUM4"
+          "waypoints": "CEW VLKNN KM39M KK57K MNOSO BLEUM4"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": 38000,
           "destination": "KDAL",
           "exit": "CEW",
-          "route": "CEW J50 MCB PNUTS MNNDO4"
+          "waypoints": "CEW J50 MCB PNUTS MNNDO4"
         }
       ]
     },
@@ -496,7 +496,7 @@
           "altitude": 28000,
           "destination": "KDFW",
           "exit": "DEFUN",
-          "route": "DEFUN CEW J50 AEX PNUTS WHINY4"
+          "waypoints": "DEFUN CEW J50 AEX PNUTS WHINY4"
         }
       ]
     },
@@ -1039,7 +1039,7 @@
         {
           "waypoints": "DARED/ho CEW PENSI/delete",
           "cruise_altitude": 34000,
-          "route": "DARED CEW PENSI",
+          "flight_strip_route": "DARED CEW PENSI",
           "initial_controller": "T11",
           "initial_altitude": 33000,
           "initial_speed": "M85",
@@ -1061,7 +1061,7 @@
         {
           "waypoints": "PIGON/ho CEW PENSI/delete",
           "cruise_altitude": 35000,
-          "route": "PIGON CEW PENSI",
+          "flight_strip_route": "PIGON CEW PENSI",
           "initial_altitude": 35000,
           "initial_controller": "T11",
           "initial_speed": "M85",
@@ -1077,7 +1077,7 @@
         {
           "waypoints": "PIGON/ho CEW KVPS/delete",
           "cruise_altitude": 31000,
-          "route": "PIGON CEW",
+          "flight_strip_route": "PIGON CEW",
           "initial_controller": "T11",
           "initial_altitude": 31000,
           "initial_speed": "M85",
@@ -1089,7 +1089,7 @@
         {
           "waypoints": "CANUE/ho CEW MAI KTLH/delete",
           "cruise_altitude": 33000,
-          "route": "CANUE CEW MAI",
+          "flight_strip_route": "CANUE CEW MAI",
           "initial_controller": "H63",
           "initial_altitude": 33000,
           "initial_speed": "M85",
@@ -1105,7 +1105,7 @@
         {
           "waypoints": "LOXLY/ho V241 PENSI/delete",
           "cruise_altitude": 37000,
-          "route": "LOXLY V241 PENSI",
+          "flight_strip_route": "LOXLY V241 PENSI",
           "initial_controller": "H37",
           "initial_altitude": 37000,
           "initial_speed": "M85",
@@ -1132,7 +1132,7 @@
         {
           "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN PENSI KPNS/delete",
           "cruise_altitude": 30000,
-          "route": "CABLO DEFUN PENSI",
+          "flight_strip_route": "CABLO DEFUN PENSI",
           "initial_controller": "17",
           "initial_altitude": 24000,
           "initial_speed": 260,
@@ -1151,7 +1151,7 @@
         {
           "waypoints": "CABLO N030.47.11.197,W085.13.33.867/ho DEFUN CORKY KVPS/delete",
           "cruise_altitude": 36000,
-          "route": "CABLO DEFUN CORKY",
+          "flight_strip_route": "CABLO DEFUN CORKY",
           "initial_altitude": 36000,
           "initial_speed": "M85",
           "initial_controller": "17",
@@ -1167,7 +1167,7 @@
         {
           "waypoints": "SJI MUURY/ho J2 DEFUN CUGAR KECP/delete",
           "cruise_altitude": 33000,
-          "route": "SJI J2 DEFUN CUGAR",
+          "flight_strip_route": "SJI J2 DEFUN CUGAR",
           "initial_controller": "H63",
           "initial_altitude": 33000,
           "initial_speed": "M85",

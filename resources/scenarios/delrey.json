@@ -60,7 +60,7 @@
           "destination": "KCRQ",
           "exit": "LIMBO",
           "scratchpad": "CRQ",
-          "route": "LIMBO V64 WOKRO V363 DANAH V23 OCN"
+          "waypoints": "LIMBO V64 WOKRO V363 DANAH V23 OCN"
         }
       ]
     },
@@ -388,7 +388,7 @@
           "destination": "KSBA",
           "exit": "KWANG",
           "scratchpad": "MLR",
-          "route": "MUELR4 KWANG"
+          "waypoints": "MUELR4 KWANG"
         },
         {
           "airlines": [
@@ -400,7 +400,7 @@
           "destination": "KSAN",
           "exit": "MZB",
           "scratchpad": "MZB",
-          "route": "LAXX1 MZB"
+          "waypoints": "LAXX1 MZB"
         },
         {
           "airlines": [
@@ -412,7 +412,7 @@
           "destination": "KSAN",
           "exit": "MZB",
           "scratchpad": "MZB",
-          "route": "LAXX1 MZB"
+          "waypoints": "LAXX1 MZB"
         },
         {
           "airlines": [
@@ -424,7 +424,7 @@
           "destination": "KSMF",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO NURAY SUUTR4"
+          "waypoints": "LADYJ4 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -435,7 +435,7 @@
           "destination": "KSMF",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO NURAY SUUTR4"
+          "waypoints": "LADYJ4 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -446,7 +446,7 @@
           "destination": "KSMF",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO NURAY SUUTR4"
+          "waypoints": "LADYJ4 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -457,7 +457,7 @@
           "destination": "KSEA",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -468,7 +468,7 @@
           "destination": "KSEA",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -479,7 +479,7 @@
           "destination": "KSEA",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -490,7 +490,7 @@
           "destination": "KSEA",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -502,7 +502,7 @@
           "destination": "KSEA",
           "exit": "CSTRO",
           "scratchpad": "LDH",
-          "route": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "LADYJ4 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -513,7 +513,7 @@
           "destination": "KOAK",
           "exit": "COREZ",
           "scratchpad": "LDB",
-          "route": "LADYJ4 COREZ RGOOD EMZOH3"
+          "waypoints": "LADYJ4 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -525,7 +525,7 @@
           "destination": "KOAK",
           "exit": "COREZ",
           "scratchpad": "LDB",
-          "route": "LADYJ4 COREZ RGOOD EMZOH3"
+          "waypoints": "LADYJ4 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -610,7 +610,7 @@
           "destination": "KLAS",
           "exit": "MISEN",
           "scratchpad": "CLP",
-          "route": "MISEN RNDRZ4"
+          "waypoints": "MISEN RNDRZ4"
         },
         {
           "airlines": [
@@ -695,7 +695,7 @@
           "destination": "KLAS",
           "exit": "MISEN",
           "scratchpad": "CLP",
-          "route": "MISEN RNDRZ4"
+          "waypoints": "MISEN RNDRZ4"
         },
         {
           "airlines": [
@@ -707,7 +707,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -718,7 +718,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -729,7 +729,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -740,7 +740,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -751,7 +751,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS SSKII3"
+          "waypoints": "LAS SSKII3"
         },
         {
           "airlines": [
@@ -762,7 +762,7 @@
           "destination": "KPDX",
           "exit": "SCTRR",
           "scratchpad": "SMR",
-          "route": "SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -773,7 +773,7 @@
           "destination": "KPDX",
           "exit": "SCTRR",
           "scratchpad": "SMR",
-          "route": "SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -784,7 +784,7 @@
           "destination": "KPDX",
           "exit": "SCTRR",
           "scratchpad": "SMR",
-          "route": "SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -795,7 +795,7 @@
           "destination": "PHNL",
           "exit": "DINTY",
           "scratchpad": "SMR",
-          "route": "DINTY R576 DENNS INOYI1"
+          "waypoints": "DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -807,7 +807,7 @@
           "destination": "PHNL",
           "exit": "DINTY",
           "scratchpad": "SMR",
-          "route": "DINTY R576 DENNS INOYI1"
+          "waypoints": "DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -818,7 +818,7 @@
           "destination": "PHOG",
           "exit": "DINTY",
           "scratchpad": "SMR",
-          "route": "DINTY R576 DENNS"
+          "waypoints": "DINTY R576 DENNS"
         },
         {
           "airlines": [
@@ -830,7 +830,7 @@
           "destination": "PHOG",
           "exit": "DINTY",
           "scratchpad": "SMR",
-          "route": "DINTY R576 DENNS INOYI1"
+          "waypoints": "DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -842,7 +842,7 @@
           "destination": "YSSY",
           "exit": "FICKY",
           "scratchpad": "SMR",
-          "route": "FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
+          "waypoints": "FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
         },
         {
           "airlines": [
@@ -854,7 +854,7 @@
           "destination": "KSFO",
           "exit": "STOKD",
           "scratchpad": "SMR",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -865,7 +865,7 @@
           "destination": "KSFO",
           "exit": "STOKD",
           "scratchpad": "SMR",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -876,7 +876,7 @@
           "destination": "KSFO",
           "exit": "STOKD",
           "scratchpad": "SMR",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -887,7 +887,7 @@
           "destination": "KSFO",
           "exit": "STOKD",
           "scratchpad": "SMR",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -899,7 +899,7 @@
           "destination": "RJBB",
           "exit": "MCKEY",
           "scratchpad": "SMR",
-          "route": "SUMMR2 MCKEY LIBBO BRINY ALCOA"
+          "waypoints": "SUMMR2 MCKEY LIBBO BRINY ALCOA"
         },
         {
           "airlines": [
@@ -911,7 +911,7 @@
           "destination": "WSSS",
           "exit": "MCKEY",
           "scratchpad": "SMR",
-          "route": "MCKEY LIBBO BRINY ALCOA"
+          "waypoints": "MCKEY LIBBO BRINY ALCOA"
         },
         {
           "airlines": [
@@ -923,7 +923,7 @@
           "destination": "RJAA",
           "exit": "MCKEY",
           "scratchpad": "SMR",
-          "route": "MCKEY LIBBO BRINY BOARS"
+          "waypoints": "MCKEY LIBBO BRINY BOARS"
         },
         {
           "airlines": [
@@ -934,7 +934,7 @@
           "destination": "KSFO",
           "exit": "STOKD",
           "scratchpad": "SMR",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -945,7 +945,7 @@
           "destination": "KSFO",
           "exit": "STOKD",
           "scratchpad": "SMR",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -956,7 +956,7 @@
           "destination": "KSFO",
           "exit": "STOKD",
           "scratchpad": "SMR",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -967,7 +967,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS J146 DICEE BUMMP SSKII3"
+          "waypoints": "LAS J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -978,7 +978,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS J146 DICEE BUMMP SSKII3"
+          "waypoints": "LAS J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -989,7 +989,7 @@
           "destination": "KDEN",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS J146 DICEE BUMMP SSKII3"
+          "waypoints": "LAS J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1000,7 +1000,7 @@
           "destination": "KEWR",
           "exit": "LAS",
           "scratchpad": "CLP",
-          "route": "LAS J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
+          "waypoints": "LAS J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -1011,7 +1011,7 @@
           "destination": "KIAD",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -1022,7 +1022,7 @@
           "destination": "KIAD",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -1034,7 +1034,7 @@
           "destination": "KORD",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -1046,7 +1046,7 @@
           "destination": "KORD",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "OSHNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -1058,7 +1058,7 @@
           "destination": "EGLL",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1070,7 +1070,7 @@
           "destination": "EGLL",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1081,7 +1081,7 @@
           "destination": "ENGM",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1093,7 +1093,7 @@
           "destination": "EHAM",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1105,7 +1105,7 @@
           "destination": "KORD",
           "exit": "CLEEE",
           "scratchpad": "DOT",
-          "route": "CLEEE PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
+          "waypoints": "CLEEE PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
         },
         {
           "airlines": [
@@ -1117,7 +1117,7 @@
           "destination": "KBWI",
           "exit": "CLEEE",
           "scratchpad": "DOT",
-          "route": "CLEEE PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
+          "waypoints": "CLEEE PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
         },
         {
           "airlines": [
@@ -1128,7 +1128,7 @@
           "destination": "KPHX",
           "exit": "CNERY",
           "scratchpad": "DOT",
-          "route": "CNERY BLH HYDRR1"
+          "waypoints": "CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1139,7 +1139,7 @@
           "destination": "KORD",
           "exit": "CLEEE",
           "scratchpad": "DOT",
-          "route": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
+          "waypoints": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -1150,7 +1150,7 @@
           "destination": "KORD",
           "exit": "CLEEE",
           "scratchpad": "DOT",
-          "route": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
+          "waypoints": "DOTSS2 CLEEE PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -1161,7 +1161,7 @@
           "destination": "KPHX",
           "exit": "CNERY",
           "scratchpad": "DOT",
-          "route": "CNERY BLH HYDRR1"
+          "waypoints": "CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1172,7 +1172,7 @@
           "destination": "KDFW",
           "exit": "CNERY",
           "scratchpad": "DOT",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1183,7 +1183,7 @@
           "destination": "KDFW",
           "exit": "CNERY",
           "scratchpad": "DOT",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1194,7 +1194,7 @@
           "destination": "KDFW",
           "exit": "CNERY",
           "scratchpad": "DOT",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1205,7 +1205,7 @@
           "destination": "KDFW",
           "exit": "CNERY",
           "scratchpad": "DOT",
-          "route": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1216,7 +1216,7 @@
           "destination": "KPHX",
           "exit": "CNERY",
           "scratchpad": "DOT",
-          "route": "CNERY BLH HYDRR1"
+          "waypoints": "CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1227,7 +1227,7 @@
           "destination": "MMPR",
           "exit": "OTAYY",
           "scratchpad": "PND",
-          "route": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1239,7 +1239,7 @@
           "destination": "MMPR",
           "exit": "OTAYY",
           "scratchpad": "PND",
-          "route": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1251,7 +1251,7 @@
           "destination": "MMPR",
           "exit": "OTAYY",
           "scratchpad": "PND",
-          "route": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "PNDAH2 OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1262,7 +1262,7 @@
           "destination": "MMMX",
           "exit": "TCATE",
           "scratchpad": "PND",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1274,7 +1274,7 @@
           "destination": "MMMX",
           "exit": "TCATE",
           "scratchpad": "PND",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1286,7 +1286,7 @@
           "destination": "MMMX",
           "exit": "TCATE",
           "scratchpad": "PND",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1297,7 +1297,7 @@
           "destination": "MMMX",
           "exit": "TCATE",
           "scratchpad": "PND",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1308,7 +1308,7 @@
           "destination": "MMMX",
           "exit": "TCATE",
           "scratchpad": "PND",
-          "route": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "PNDAH2 TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1320,7 +1320,7 @@
           "destination": "KSMF",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO NURAY SUUTR4"
+          "waypoints": "WNNDY3 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -1331,7 +1331,7 @@
           "destination": "KSMF",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO NURAY SUUTR4"
+          "waypoints": "WNNDY3 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -1342,7 +1342,7 @@
           "destination": "KSMF",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO NURAY SUUTR4"
+          "waypoints": "WNNDY3 CSTRO NURAY SUUTR4"
         },
         {
           "airlines": [
@@ -1353,7 +1353,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1364,7 +1364,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1375,7 +1375,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1386,7 +1386,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1398,7 +1398,7 @@
           "destination": "KSEA",
           "exit": "CSTRO.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
+          "waypoints": "WNNDY3 CSTRO SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1409,7 +1409,7 @@
           "destination": "KOAK",
           "exit": "COREZ.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 COREZ RGOOD EMZOH3"
+          "waypoints": "WNNDY3 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -1421,7 +1421,7 @@
           "destination": "KOAK",
           "exit": "COREZ.E",
           "scratchpad": "WDY",
-          "route": "WNNDY3 COREZ RGOOD EMZOH3"
+          "waypoints": "WNNDY3 COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -1433,7 +1433,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1444,7 +1444,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1455,7 +1455,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1466,7 +1466,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1477,7 +1477,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1488,7 +1488,7 @@
           "destination": "KPDX",
           "exit": "SCTRR.E",
           "scratchpad": "RTN",
-          "route": "SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -1499,7 +1499,7 @@
           "destination": "KPDX",
           "exit": "SCTRR.E",
           "scratchpad": "RTN",
-          "route": "SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -1510,7 +1510,7 @@
           "destination": "KPDX",
           "exit": "SCTRR.E",
           "scratchpad": "RTN",
-          "route": "SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -1521,7 +1521,7 @@
           "destination": "PHNL",
           "exit": "DINTY.E",
           "scratchpad": "RTN",
-          "route": "DINTY R576 DENNS INOYI1"
+          "waypoints": "DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -1533,7 +1533,7 @@
           "destination": "PHNL",
           "exit": "DINTY.E",
           "scratchpad": "RTN",
-          "route": "DINTY R576 DENNS INOYI1"
+          "waypoints": "DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -1544,7 +1544,7 @@
           "destination": "PHOG",
           "exit": "DINTY.E",
           "scratchpad": "RTN",
-          "route": "DINTY R576 DENNS"
+          "waypoints": "DINTY R576 DENNS"
         },
         {
           "airlines": [
@@ -1556,7 +1556,7 @@
           "destination": "PHOG",
           "exit": "DINTY.E",
           "scratchpad": "RTN",
-          "route": "DINTY R576 DENNS INOYI1"
+          "waypoints": "DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -1568,7 +1568,7 @@
           "destination": "YSSY",
           "exit": "FICKY.E",
           "scratchpad": "RTN",
-          "route": "FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
+          "waypoints": "FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
         },
         {
           "airlines": [
@@ -1580,7 +1580,7 @@
           "destination": "KSFO",
           "exit": "STOKD.E",
           "scratchpad": "RTN",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -1591,7 +1591,7 @@
           "destination": "KSFO",
           "exit": "STOKD.E",
           "scratchpad": "RTN",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -1602,7 +1602,7 @@
           "destination": "KSFO",
           "exit": "STOKD.E",
           "scratchpad": "RTN",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -1613,7 +1613,7 @@
           "destination": "KSFO",
           "exit": "STOKD.E",
           "scratchpad": "RTN",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -1625,7 +1625,7 @@
           "destination": "WSSS",
           "exit": "MCKEY.E",
           "scratchpad": "RTN",
-          "route": "MCKEY LIBBO BRINY ALCOA"
+          "waypoints": "MCKEY LIBBO BRINY ALCOA"
         },
         {
           "airlines": [
@@ -1637,7 +1637,7 @@
           "destination": "RJAA",
           "exit": "MCKEY.E",
           "scratchpad": "RTN",
-          "route": "MCKEY LIBBO BRINY BOARS"
+          "waypoints": "MCKEY LIBBO BRINY BOARS"
         },
         {
           "airlines": [
@@ -1648,7 +1648,7 @@
           "destination": "KSFO",
           "exit": "STOKD.E",
           "scratchpad": "RTN",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -1659,7 +1659,7 @@
           "destination": "KSFO",
           "exit": "STOKD.E",
           "scratchpad": "RTN",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -1670,7 +1670,7 @@
           "destination": "KSFO",
           "exit": "STOKD.E",
           "scratchpad": "RTN",
-          "route": "STOKD SERFR SERFR4"
+          "waypoints": "STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -1681,7 +1681,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1692,7 +1692,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1704,7 +1704,7 @@
           "destination": "KDEN",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1715,7 +1715,7 @@
           "destination": "KEWR",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
+          "waypoints": "BEALE J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -1726,7 +1726,7 @@
           "destination": "KIAD",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -1737,7 +1737,7 @@
           "destination": "KIAD",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -1749,7 +1749,7 @@
           "destination": "KORD",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "GRDNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "GRDNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -1761,7 +1761,7 @@
           "destination": "KORD",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "GRDNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "GRDNN1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -1773,7 +1773,7 @@
           "destination": "EGLL",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1785,7 +1785,7 @@
           "destination": "EGLL",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1796,7 +1796,7 @@
           "destination": "ENGM",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1808,7 +1808,7 @@
           "destination": "EHAM",
           "exit": "BEALE.E",
           "scratchpad": "GRD",
-          "route": "BEALE J146 DVC"
+          "waypoints": "BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -1820,7 +1820,7 @@
           "destination": "KORD",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
+          "waypoints": "TRM PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
         },
         {
           "airlines": [
@@ -1832,7 +1832,7 @@
           "destination": "KBWI",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
+          "waypoints": "TRM PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
         },
         {
           "airlines": [
@@ -1843,7 +1843,7 @@
           "destination": "KPHX",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM BLH HYDRR1"
+          "waypoints": "TRM BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1854,7 +1854,7 @@
           "destination": "KORD",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "LAXX1 TRM PKE J96 IRK BENKY6"
+          "waypoints": "LAXX1 TRM PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -1865,7 +1865,7 @@
           "destination": "KORD",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "LAXX1 TRM PKE J96 IRK BENKY6"
+          "waypoints": "LAXX1 TRM PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -1876,7 +1876,7 @@
           "destination": "KPHX",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM BLH HYDRR1"
+          "waypoints": "TRM BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1887,7 +1887,7 @@
           "destination": "KDFW",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1898,7 +1898,7 @@
           "destination": "KDFW",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1909,7 +1909,7 @@
           "destination": "KDFW",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1920,7 +1920,7 @@
           "destination": "KDFW",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "TRM BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -1931,7 +1931,7 @@
           "destination": "KPHX",
           "exit": "TRM",
           "scratchpad": "TRM",
-          "route": "TRM BLH HYDRR1"
+          "waypoints": "TRM BLH HYDRR1"
         },
         {
           "airlines": [
@@ -1942,7 +1942,7 @@
           "destination": "MMPR",
           "exit": "OTAYY.E",
           "scratchpad": "MZB",
-          "route": "LAXX1 MZB OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "LAXX1 MZB OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1954,7 +1954,7 @@
           "destination": "MMPR",
           "exit": "OTAYY.E",
           "scratchpad": "MZB",
-          "route": "LAXX1 MZB OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "LAXX1 MZB OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1966,7 +1966,7 @@
           "destination": "MMPR",
           "exit": "OTAYY.E",
           "scratchpad": "MZB",
-          "route": "LAXX1 MZB OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
+          "waypoints": "LAXX1 MZB OTAYY TIJ UT4 LMM UJ3 MZT J141 OBRUG OBRU1B"
         },
         {
           "airlines": [
@@ -1977,7 +1977,7 @@
           "destination": "MMMX",
           "exit": "TCATE.E",
           "scratchpad": "OCN",
-          "route": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1989,7 +1989,7 @@
           "destination": "MMMX",
           "exit": "TCATE.E",
           "scratchpad": "OCN",
-          "route": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -2001,7 +2001,7 @@
           "destination": "MMMX",
           "exit": "TCATE.E",
           "scratchpad": "OCN",
-          "route": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -2012,7 +2012,7 @@
           "destination": "MMMX",
           "exit": "TCATE.E",
           "scratchpad": "OCN",
-          "route": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -2023,7 +2023,7 @@
           "destination": "MMMX",
           "exit": "TCATE.E",
           "scratchpad": "OCN",
-          "route": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
+          "waypoints": "LAXX1 OCN TCATE PPE UJ7 HMO UT18 NABAS UT49 DGO UJ5 ZCL UT130 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -2035,7 +2035,7 @@
           "destination": "KDEN",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2046,7 +2046,7 @@
           "destination": "KDEN",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2057,7 +2057,7 @@
           "destination": "KDEN",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2068,7 +2068,7 @@
           "destination": "KDEN",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2079,7 +2079,7 @@
           "destination": "KDEN",
           "exit": "BEALE",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2090,7 +2090,7 @@
           "destination": "KPDX",
           "exit": "SCTRR.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "KYLOW1 SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -2101,7 +2101,7 @@
           "destination": "KPDX",
           "exit": "SCTRR.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "KYLOW1 SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -2112,7 +2112,7 @@
           "destination": "KPDX",
           "exit": "SCTRR.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 SCTRR SNS SPNSR TMBRS2"
+          "waypoints": "KYLOW1 SCTRR SNS SPNSR TMBRS2"
         },
         {
           "airlines": [
@@ -2123,7 +2123,7 @@
           "destination": "PHNL",
           "exit": "DINTY.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 DINTY R576 DENNS INOYI1"
+          "waypoints": "KYLOW1 DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -2135,7 +2135,7 @@
           "destination": "PHNL",
           "exit": "DINTY.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 DINTY R576 DENNS INOYI1"
+          "waypoints": "KYLOW1 DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -2146,7 +2146,7 @@
           "destination": "PHOG",
           "exit": "DINTY.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 DINTY R576 DENNS"
+          "waypoints": "KYLOW1 DINTY R576 DENNS"
         },
         {
           "airlines": [
@@ -2158,7 +2158,7 @@
           "destination": "PHOG",
           "exit": "DINTY.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 DINTY R576 DENNS INOYI1"
+          "waypoints": "KYLOW1 DINTY R576 DENNS INOYI1"
         },
         {
           "airlines": [
@@ -2170,7 +2170,7 @@
           "destination": "YSSY",
           "exit": "FICKY.O",
           "scratchpad": "KYL",
-          "route": "KYLOW1 FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
+          "waypoints": "KYLOW1 FICKY WEDES B581 WOSLU B581 BAXIL B581 NN B599 LTO B578 TEBUR B578 ISTEM LAPIP GOMOL Q16 APAGI H91 IGDAM H652 BOREE"
         },
         {
           "airlines": [
@@ -2182,7 +2182,7 @@
           "destination": "KSFO",
           "exit": "STOKD.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 STOKD SERFR SERFR4"
+          "waypoints": "KYLOW1 STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -2193,7 +2193,7 @@
           "destination": "KSFO",
           "exit": "STOKD.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 STOKD SERFR SERFR4"
+          "waypoints": "KYLOW1 STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -2205,7 +2205,7 @@
           "destination": "RJBB",
           "exit": "MCKEY.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 MCKEY LIBBO BRINY ALCOA"
+          "waypoints": "KYLOW1 MCKEY LIBBO BRINY ALCOA"
         },
         {
           "airlines": [
@@ -2217,7 +2217,7 @@
           "destination": "WSSS",
           "exit": "MCKEY.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 MCKEY LIBBO BRINY ALCOA"
+          "waypoints": "KYLOW1 MCKEY LIBBO BRINY ALCOA"
         },
         {
           "airlines": [
@@ -2229,7 +2229,7 @@
           "destination": "RJAA",
           "exit": "MCKEY.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 MCKEY LIBBO BRINY BOARS"
+          "waypoints": "KYLOW1 MCKEY LIBBO BRINY BOARS"
         },
         {
           "airlines": [
@@ -2240,7 +2240,7 @@
           "destination": "KSFO",
           "exit": "STOKD.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 STOKD SERFR SERFR4"
+          "waypoints": "KYLOW1 STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -2251,7 +2251,7 @@
           "destination": "KSFO",
           "exit": "STOKD.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 STOKD SERFR SERFR4"
+          "waypoints": "KYLOW1 STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -2262,7 +2262,7 @@
           "destination": "KSFO",
           "exit": "STOKD.O",
           "scratchpad": "KYO",
-          "route": "KYLOW1 STOKD SERFR SERFR4"
+          "waypoints": "KYLOW1 STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -2273,7 +2273,7 @@
           "destination": "KDEN",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2284,7 +2284,7 @@
           "destination": "KDEN",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2295,7 +2295,7 @@
           "destination": "KDEN",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
+          "waypoints": "STHBY1 BEALE J146 DICEE BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -2306,7 +2306,7 @@
           "destination": "KEWR",
           "exit": "BEALE.O",
           "scratchpad": "CLP",
-          "route": "STHBY1 BEALE J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
+          "waypoints": "STHBY1 BEALE J146 DICEE J146 DVC GLD KD60A OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -2317,7 +2317,7 @@
           "destination": "KIAD",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "STHBY1 BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -2328,7 +2328,7 @@
           "destination": "KIAD",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
+          "waypoints": "STHBY1 BEALE J146 DVC HLC STJ SPI J80 VHP APE MGW GIBBZ4"
         },
         {
           "airlines": [
@@ -2340,7 +2340,7 @@
           "destination": "KORD",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "STHBY1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -2352,7 +2352,7 @@
           "destination": "KORD",
           "exit": "BEALE",
           "scratchpad": "OSH",
-          "route": "STHBY1 BEALE J146 DVC PUB HYS IRK BENKY6"
+          "waypoints": "STHBY1 BEALE J146 DVC PUB HYS IRK BENKY6"
         },
         {
           "airlines": [
@@ -2364,7 +2364,7 @@
           "destination": "EGLL",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DVC"
+          "waypoints": "STHBY1 BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -2376,7 +2376,7 @@
           "destination": "EGLL",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DVC"
+          "waypoints": "STHBY1 BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -2387,7 +2387,7 @@
           "destination": "ENGM",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DVC"
+          "waypoints": "STHBY1 BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -2398,7 +2398,7 @@
           "destination": "EHAM",
           "exit": "BEALE.O",
           "scratchpad": "SCH",
-          "route": "STHBY1 BEALE J146 DVC"
+          "waypoints": "STHBY1 BEALE J146 DVC"
         },
         {
           "airlines": [
@@ -2410,7 +2410,7 @@
           "destination": "KORD",
           "exit": "CLEEE.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CLEEE PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
+          "waypoints": "STHBY1 CLEEE PKE J96 LANCY ABQ BVO KK45G SHIRE KK51K SCOTO KI60Q KI63S SLT FQM3"
         },
         {
           "airlines": [
@@ -2422,7 +2422,7 @@
           "destination": "KBWI",
           "exit": "CLEEE.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CLEEE PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
+          "waypoints": "STHBY1 CLEEE PKE J96 LANCY ABQ BVO SGF FAM PXV J78 HVQ CACYE RAVNN7"
         },
         {
           "airlines": [
@@ -2433,7 +2433,7 @@
           "destination": "KPHX",
           "exit": "CNERY.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CNERY BLH HYDRR1"
+          "waypoints": "STHBY1 CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -2444,7 +2444,7 @@
           "destination": "KORD",
           "exit": "CLEEE.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CLEEE PKE J96 IRK BENKY6"
+          "waypoints": "STHBY1 CLEEE PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -2455,7 +2455,7 @@
           "destination": "KORD",
           "exit": "CLEEE.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CLEEE PKE J96 IRK BENKY6"
+          "waypoints": "STHBY1 CLEEE PKE J96 IRK BENKY6"
         },
         {
           "airlines": [
@@ -2466,7 +2466,7 @@
           "destination": "KPHX",
           "exit": "CNERY.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CNERY BLH HYDRR1"
+          "waypoints": "STHBY1 CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -2477,7 +2477,7 @@
           "destination": "KDFW",
           "exit": "CNERY.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -2488,7 +2488,7 @@
           "destination": "KDFW",
           "exit": "CNERY.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -2499,7 +2499,7 @@
           "destination": "KDFW",
           "exit": "CNERY.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -2510,7 +2510,7 @@
           "destination": "KDFW",
           "exit": "CNERY.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
+          "waypoints": "STHBY1 CNERY BLH J169 TFD J50 SSO J4 INK GEEKY SOCKK4"
         },
         {
           "airlines": [
@@ -2521,7 +2521,7 @@
           "destination": "KPHX",
           "exit": "CNERY.O",
           "scratchpad": "SDT",
-          "route": "STHBY1 CNERY BLH HYDRR1"
+          "waypoints": "STHBY1 CNERY BLH HYDRR1"
         }
       ],
       "exit_categories": {
@@ -2567,7 +2567,7 @@
           "destination": "KHOU",
           "exit": "SPACX",
           "scratchpad": "V64",
-          "route": "SPACX2 SPACX LIMBO WILMA SLI TUSTI COREL NIKKL PERIS HEMET BALDI CORLA TRM SCOLE SSO EWM WEMAR BELLR6"
+          "waypoints": "SPACX2 SPACX LIMBO WILMA SLI TUSTI COREL NIKKL PERIS HEMET BALDI CORLA TRM SCOLE SSO EWM WEMAR BELLR6"
         },
         {
           "airlines": [
@@ -2578,7 +2578,7 @@
           "destination": "KMMH",
           "exit": "SPACX",
           "scratchpad": "V23",
-          "route": "SPACX2 SPACX LIMBO LAX CHATY TWINE V23 EHF CANDA JASAT"
+          "waypoints": "SPACX2 SPACX LIMBO LAX CHATY TWINE V23 EHF CANDA JASAT"
         }
       ],
       "exit_categories": {
@@ -2771,7 +2771,7 @@
           "destination": "KOAK",
           "exit": "COREZ",
           "scratchpad": "TPO",
-          "route": "COREZ RGOOD EMZOH3"
+          "waypoints": "COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -2782,7 +2782,7 @@
           "destination": "KSMF",
           "exit": "CSTRO",
           "scratchpad": "TPO",
-          "route": "CSTRO RGOOD SUUTR4"
+          "waypoints": "CSTRO RGOOD SUUTR4"
         },
         {
           "airlines": [
@@ -2793,7 +2793,7 @@
           "destination": "KRNO",
           "exit": "CSTRO",
           "scratchpad": "TPO",
-          "route": "CSTRO SHERF DNGLE1"
+          "waypoints": "CSTRO SHERF DNGLE1"
         },
         {
           "airlines": [
@@ -2805,7 +2805,7 @@
           "destination": "PHOG",
           "exit": "SXC",
           "scratchpad": "FIC",
-          "route": "SXC C1177 FICKY R578 FAPIS"
+          "waypoints": "SXC C1177 FICKY R578 FAPIS"
         },
         {
           "airlines": [
@@ -2816,7 +2816,7 @@
           "destination": "PHNL",
           "exit": "SXC",
           "scratchpad": "FIC",
-          "route": "SXC C1177 FICKY R578 FAPIS R578 DEREC V21 LNY JULLE5"
+          "waypoints": "SXC C1177 FICKY R578 FAPIS R578 DEREC V21 LNY JULLE5"
         },
         {
           "airlines": [
@@ -2828,7 +2828,7 @@
           "destination": "PHOG",
           "exit": "VTU",
           "scratchpad": "VTU",
-          "route": "VTU DINTY R576 DUSAC R576 DENNS LNDHY1"
+          "waypoints": "VTU DINTY R576 DUSAC R576 DENNS LNDHY1"
         },
         {
           "airlines": [
@@ -2839,7 +2839,7 @@
           "destination": "PHNL",
           "exit": "VTU",
           "scratchpad": "VTU",
-          "route": "VTU DINTY R576 DENNS MAGGI3"
+          "waypoints": "VTU DINTY R576 DENNS MAGGI3"
         },
         {
           "airlines": [
@@ -2851,7 +2851,7 @@
           "destination": "PHOG",
           "exit": "SXC",
           "scratchpad": "FIC",
-          "route": "SXC C1177 FICKY R578 FITES LAVAS1"
+          "waypoints": "SXC C1177 FICKY R578 FITES LAVAS1"
         },
         {
           "airlines": [
@@ -2862,7 +2862,7 @@
           "destination": "KSJC",
           "exit": "VTU",
           "scratchpad": "VTU",
-          "route": "VTU RZS SCTRR TROXX SILCN6"
+          "waypoints": "VTU RZS SCTRR TROXX SILCN6"
         },
         {
           "airlines": [
@@ -2879,7 +2879,7 @@
           "destination": "KPHX",
           "exit": "CNERY",
           "scratchpad": "FRT",
-          "route": "CNERY BLH HYDRR1"
+          "waypoints": "CNERY BLH HYDRR1"
         },
         {
           "airlines": [
@@ -2896,7 +2896,7 @@
           "destination": "KDEN",
           "exit": "AVRRY",
           "scratchpad": "FRT",
-          "route": "AVRRY EED J236 TBC SHNPS TBARR4"
+          "waypoints": "AVRRY EED J236 TBC SHNPS TBARR4"
         },
         {
           "airlines": [
@@ -2913,7 +2913,7 @@
           "destination": "KABQ",
           "exit": "AVRRY",
           "scratchpad": "FRT",
-          "route": "AVRRY LANCY DRK KA27Q SJN BRRTO BRRTO1"
+          "waypoints": "AVRRY LANCY DRK KA27Q SJN BRRTO BRRTO1"
         },
         {
           "airlines": [
@@ -2933,7 +2933,7 @@
           "destination": "KLAS",
           "exit": "MISEN",
           "scratchpad": "ZMM",
-          "route": "MISEN RNDRZ3"
+          "waypoints": "MISEN RNDRZ3"
         },
         {
           "airlines": [
@@ -2953,7 +2953,7 @@
           "destination": "KLAS",
           "exit": "MISEN",
           "scratchpad": "ZMM",
-          "route": "MISEN RNDRZ3"
+          "waypoints": "MISEN RNDRZ3"
         },
         {
           "airlines": [
@@ -2964,7 +2964,7 @@
           "destination": "KMDW",
           "exit": "BEALE",
           "scratchpad": "ZMM",
-          "route": "BEALE J146 DICEE KD48S GLD KP60C PWE JALAP ENDEE6"
+          "waypoints": "BEALE J146 DICEE KD48S GLD KP60C PWE JALAP ENDEE6"
         },
         {
           "airlines": [
@@ -2986,7 +2986,7 @@
           "destination": "KSLC",
           "exit": "BEALE",
           "scratchpad": "ZMM",
-          "route": "BEALE Q842 WINEN MLF PITTT2"
+          "waypoints": "BEALE Q842 WINEN MLF PITTT2"
         },
         {
           "airlines": [
@@ -3000,7 +3000,7 @@
           "destination": "KDEN",
           "exit": "BEALE",
           "scratchpad": "ZMM",
-          "route": "BEALE J146 DICEE BUMMP SSKII4"
+          "waypoints": "BEALE J146 DICEE BUMMP SSKII4"
         },
         {
           "airlines": [
@@ -3011,7 +3011,7 @@
           "destination": "KBZN",
           "exit": "BEALE",
           "scratchpad": "ZMM",
-          "route": "BEALE Q842 PICHO Q842 PROXI SABAT LOSST1"
+          "waypoints": "BEALE Q842 PICHO Q842 PROXI SABAT LOSST1"
         },
         {
           "airlines": [
@@ -3028,7 +3028,7 @@
           "destination": "KBNA",
           "exit": "AVRRY",
           "scratchpad": "FRT",
-          "route": "AVRRY LANCY DRK KA30Q FLYBY J8 FTI MIRME ZETIB EYMUV TUL RZC PLIED J46 LUKKY LOPPY CHSNE3"
+          "waypoints": "AVRRY LANCY DRK KA30Q FLYBY J8 FTI MIRME ZETIB EYMUV TUL RZC PLIED J46 LUKKY LOPPY CHSNE3"
         },
         {
           "airlines": [
@@ -3045,7 +3045,7 @@
           "destination": "KDAL",
           "exit": "AVRRY",
           "scratchpad": "FRT",
-          "route": "AVRRY LANCY DRK ZUN ACOMA CRTTR TXO J72 TURKI JFRYE5"
+          "waypoints": "AVRRY LANCY DRK ZUN ACOMA CRTTR TXO J72 TURKI JFRYE5"
         },
         {
           "airlines": [
@@ -3062,7 +3062,7 @@
           "destination": "KAUS",
           "exit": "CNERY",
           "scratchpad": "FRT",
-          "route": "CNERY BLH WOBUG EWM LINZY FUSCO Q4 DILLO LAIKS4"
+          "waypoints": "CNERY BLH WOBUG EWM LINZY FUSCO Q4 DILLO LAIKS4"
         },
         {
           "airlines": [
@@ -3073,7 +3073,7 @@
           "destination": "KHOU",
           "exit": "CNERY",
           "scratchpad": "FRT",
-          "route": "CNERY BLH J169 KOFFA J169 TFD J50 SSO ELP J2 FST J138 SAT BELLR5"
+          "waypoints": "CNERY BLH J169 KOFFA J169 TFD J50 SSO ELP J2 FST J138 SAT BELLR5"
         }
       ],
       "exit_categories": {
@@ -3190,7 +3190,7 @@
           "destination": "KLAS",
           "exit": "MISEN",
           "scratchpad": "FIN",
-          "route": "FINZZ3 MISEN RNDRZ4"
+          "waypoints": "FINZZ3 MISEN RNDRZ4"
         },
         {
           "airlines": [
@@ -3208,7 +3208,7 @@
           "destination": "KLAS",
           "exit": "MISEN.N",
           "scratchpad": "HOB",
-          "route": "HOBOW3 MISEN RNDRZ4"
+          "waypoints": "HOBOW3 MISEN RNDRZ4"
         },
         {
           "airlines": [
@@ -3224,7 +3224,7 @@
           "destination": "KORD",
           "exit": "BEALE.N",
           "scratchpad": "HOB",
-          "route": "HOBOW3 BEALE J146 DICEE HGO AGENT IRK BENKY6"
+          "waypoints": "HOBOW3 BEALE J146 DICEE HGO AGENT IRK BENKY6"
         },
         {
           "airlines": [
@@ -3241,7 +3241,7 @@
           "destination": "KOAK",
           "exit": "HHERO",
           "scratchpad": "MIK",
-          "route": "MIKAA1 HHERO CMINO RIDDL TWINE OROSZ COREZ RGOOD EMZOH3"
+          "waypoints": "MIKAA1 HHERO CMINO RIDDL TWINE OROSZ COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -3264,7 +3264,7 @@
           "destination": "KSFO",
           "exit": "HHERO",
           "scratchpad": "MIK",
-          "route": "MIKAA1 HHERO FAYHE IKAYE RIZIN SPLNT STOKD SERFR SERFR4"
+          "waypoints": "MIKAA1 HHERO FAYHE IKAYE RIZIN SPLNT STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -3287,7 +3287,7 @@
           "destination": "KSEA",
           "exit": "HHERO",
           "scratchpad": "MIK",
-          "route": "MIKAA1 HHERO CMINO RIDDL LANDO EHF SHIMR LKV HAWKZ8"
+          "waypoints": "MIKAA1 HHERO CMINO RIDDL LANDO EHF SHIMR LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -3303,7 +3303,7 @@
           "destination": "KORD",
           "exit": "BEALE",
           "scratchpad": "FIN",
-          "route": "FINZZ3 BEALE J146 DICEE HGO AGENT IRK BENKY6"
+          "waypoints": "FINZZ3 BEALE J146 DICEE HGO AGENT IRK BENKY6"
         },
         {
           "airlines": [
@@ -3320,7 +3320,7 @@
           "destination": "KOAK",
           "exit": "OROSZ",
           "scratchpad": "HRC",
-          "route": "HHERO3 OROSZ COREZ RGOOD EMZOH3"
+          "waypoints": "HHERO3 OROSZ COREZ RGOOD EMZOH3"
         },
         {
           "airlines": [
@@ -3343,7 +3343,7 @@
           "destination": "KSFO",
           "exit": "IKAYE",
           "scratchpad": "HRY",
-          "route": "HHERO3 IKAYE RIZIN SPLNT STOKD SERFR SERFR4"
+          "waypoints": "HHERO3 IKAYE RIZIN SPLNT STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -3366,7 +3366,7 @@
           "destination": "KSEA",
           "exit": "EHF",
           "scratchpad": "HRC",
-          "route": "HHERO3 EHF SHIMR LKV HAWKZ8"
+          "waypoints": "HHERO3 EHF SHIMR LKV HAWKZ8"
         }
       ],
       "exit_categories": {
@@ -3450,7 +3450,7 @@
           "destination": "KSQL",
           "exit": "STOKD",
           "scratchpad": "CTD",
-          "route": "CTRUS4 STOKD SERFR SERFR4"
+          "waypoints": "CTRUS4 STOKD SERFR SERFR4"
         },
         {
           "airlines": [
@@ -3462,7 +3462,7 @@
           "destination": "KEGE",
           "exit": "LAS",
           "scratchpad": "CTS",
-          "route": "CTRUS4 LAS J146 DICEE IBSKI BUGGG EKR RLG"
+          "waypoints": "CTRUS4 LAS J146 DICEE IBSKI BUGGG EKR RLG"
         },
         {
           "airlines": [
@@ -3473,7 +3473,7 @@
           "destination": "KBFI",
           "exit": "CSTRO",
           "scratchpad": "CTO",
-          "route": "CTRUS4 CSTRO HNW LMT BTG OLM2"
+          "waypoints": "CTRUS4 CSTRO HNW LMT BTG OLM2"
         },
         {
           "airlines": [
@@ -3484,7 +3484,7 @@
           "destination": "KSJC",
           "exit": "SCTRR",
           "scratchpad": "CTD",
-          "route": "CTRUS4 SCTRR TROXX SILCN6"
+          "waypoints": "CTRUS4 SCTRR TROXX SILCN6"
         },
         {
           "airlines": [
@@ -3495,7 +3495,7 @@
           "destination": "KHDN",
           "exit": "LAS",
           "scratchpad": "CTS",
-          "route": "CTRUS4 LAS BAWER LARVE EKR CHE"
+          "waypoints": "CTRUS4 LAS BAWER LARVE EKR CHE"
         },
         {
           "airlines": [
@@ -3506,7 +3506,7 @@
           "destination": "KSDL",
           "exit": "CNERY",
           "scratchpad": "PDT",
-          "route": "PEVEE6 CNERY BLH ARLIN4"
+          "waypoints": "PEVEE6 CNERY BLH ARLIN4"
         },
         {
           "airlines": [
@@ -3517,7 +3517,7 @@
           "destination": "MMSD",
           "exit": "OTAYY",
           "scratchpad": "PDT",
-          "route": "PEVEE6 OTAYY TIJ J1 SQN UL312 SJD"
+          "waypoints": "PEVEE6 OTAYY TIJ J1 SQN UL312 SJD"
         },
         {
           "airlines": [
@@ -3533,7 +3533,7 @@
           "destination": "KCMA",
           "exit": "SMO",
           "scratchpad": "CMA",
-          "route": "SMO GINNA"
+          "waypoints": "SMO GINNA"
         },
         {
           "airlines": [
@@ -3549,7 +3549,7 @@
           "destination": "KOXR",
           "exit": "SMO",
           "scratchpad": "OXR",
-          "route": "SMO GINNA"
+          "waypoints": "SMO GINNA"
         }
       ],
       "exit_categories": {
@@ -5499,7 +5499,7 @@
       "arrivals": [
         {
           "waypoints": "MUPTT/a23000-27000/s280 MDOTS/a20000-24000 GRIPR/a19000-23000 BIKNG/a16000-20000 RUNNN/a14000-17000/ho2Z IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210/ho2U/d2600 DAHJR/a6000/s210 GADDO/a6000 N034.02.44.039,W118.10.50.857 N033.59.57.267,W118.10.19.876 N033.58.16.275,W118.12.48.933 KOBEE/a2200/clearapp",
-          "route": "IRNMN2",
+          "flight_strip_route": "IRNMN2",
           "star": "IRNMN2",
           "initial_controller": "C13",
           "initial_altitude": 26000,

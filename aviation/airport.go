@@ -430,7 +430,7 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 			e.ErrorString("%s: invalid secondary scratchpad", dep.SecondaryScratchpad)
 		}
 
-		wp, err := parseWaypoints(dep.Route)
+		wp, err := parseWaypoints(dep.WaypointsString)
 		if err != nil {
 			e.Error(err)
 		}
@@ -438,9 +438,9 @@ func (ap *Airport) Finalize(icao ICAOAirportCode, db Database, nmPerLongitude fl
 		_, intraFacility := facilityAirports[dep.Destination]
 		allowSlop := !intraFacility // Make sure that the full route is valid for intra-facility.
 		wp = wp.InitializeLocations(db, nmPerLongitude, magneticVariation, allowSlop, e)
-		ap.Departures[i].RouteWaypoints = wp
+		ap.Departures[i].Waypoints = wp
 
-		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
+		if !slices.ContainsFunc(ap.Departures[i].Waypoints,
 			func(wp Waypoint) bool { return wp.Fix == depExit }) {
 			e.ErrorString("exit %q not found in departure route", depExit)
 		}

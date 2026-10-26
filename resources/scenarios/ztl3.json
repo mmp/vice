@@ -79,28 +79,28 @@
           "altitude": 33000,
           "destination": "KRDU",
           "exit": "GAIRY",
-          "route": "GAIRY IRQ PYRES/delete DMSTR2"
+          "waypoints": "GAIRY IRQ PYRES/delete DMSTR2"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "AAL" }, { "icao": "RPA" }],
           "altitude": 35000,
           "destination": "KDCA",
           "exit": "JACCC",
-          "route": "JACCC KELLN Q56 KIWII WAVES/delete CAPSS4"
+          "waypoints": "JACCC KELLN Q56 KIWII WAVES/delete CAPSS4"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "AAL" }, { "icao": "RPA" }],
           "altitude": 37000,
           "destination": "KPHL",
           "exit": "PLMMR",
-          "route": "PLMMR BURGG Q22 BEARI BBDOL/delete PAATS4"
+          "waypoints": "PLMMR BURGG Q22 BEARI BBDOL/delete PAATS4"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "DAL" }],
           "altitude": 35000,
           "destination": "KORF",
           "exit": "PHIIL",
-          "route": "PHIIL HRTWL Q54 NUTZE/delete KOHLS1"
+          "waypoints": "PHIIL HRTWL Q54 NUTZE/delete KOHLS1"
         },
         {
           "airlines": [
@@ -113,7 +113,7 @@
           "altitude": 37000,
           "destination": "KIAD",
           "exit": "JACCC",
-          "route": "JACCC KELLN BYJAC Q60 JAXSN DORRN/delete CAVLR7"
+          "waypoints": "JACCC KELLN BYJAC Q60 JAXSN DORRN/delete CAVLR7"
         }
       ]
     }
@@ -216,7 +216,7 @@
           "waypoints": "ROA YEOLD SCHUL/ho TEDGE GBAKE WINNG OZZZI/a14000/s250 HAARY POSEY/a8000/delete/delete",
           "cruise_altitude": 34000,
           "star": "OZZZI2",
-          "route": "/. OZZZI2",
+          "flight_strip_route": "/. OZZZI2",
           "initial_controller": "42",
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
@@ -259,7 +259,7 @@
           "waypoints": "N037.08.11.143,W082.25.55.773 PUPDG/ho ALADY WEALL KNOWW STRWY ONDRE/a13000/s250 ANVAl/a9000 POSEY/a8000/delete",
           "cruise_altitude": 34000,
           "star": "ONDRE1",
-          "route": "/. ONDRE1",
+          "flight_strip_route": "/. ONDRE1",
           "initial_controller": "42",
           "initial_altitude": 34000,
           "assigned_altitude": 34000,

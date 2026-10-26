@@ -85,7 +85,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 33000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -97,7 +97,7 @@
           "exit": "FILLI",
           "destination": "KDCA",
           "altitude": 31000,
-          "route": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
+          "waypoints": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
           "airlines": [
             {
               "icao": "JIA",
@@ -109,7 +109,7 @@
           "exit": "VANNC",
           "destination": "KMDW",
           "altitude": 40000,
-          "route": "MLTRE3 VANNC BURGG IIU DROSE FISSK6",
+          "waypoints": "MLTRE3 VANNC BURGG IIU DROSE FISSK6",
           "airlines": [
             {
               "icao": "SWA",
@@ -121,7 +121,7 @@
           "exit": "FILLI",
           "destination": "KIAD",
           "altitude": 27000,
-          "route": "SWPFX3 FILLI FLO RDU BZNGA DORRN CAVLR5",
+          "waypoints": "SWPFX3 FILLI FLO RDU BZNGA DORRN CAVLR5",
           "airlines": [
             {
               "icao": "RPA",
@@ -133,7 +133,7 @@
           "exit": "VANNC",
           "destination": "KMSP",
           "altitude": 40000,
-          "route": "MLTRE3 VANNC SPA FLM KAMMA KKILR3",
+          "waypoints": "MLTRE3 VANNC SPA FLM KAMMA KKILR3",
           "airlines": [
             {
               "icao": "SCX",
@@ -145,7 +145,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 37000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "DAL",
@@ -157,7 +157,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -169,7 +169,7 @@
           "exit": "VANNC",
           "destination": "KMDW",
           "altitude": 38000,
-          "route": "MLTRE3 VANNC BURGG IIU DROSE FISSK6",
+          "waypoints": "MLTRE3 VANNC BURGG IIU DROSE FISSK6",
           "airlines": [
             {
               "icao": "SWA",
@@ -181,7 +181,7 @@
           "exit": "VANNC",
           "destination": "KORD",
           "altitude": 34000,
-          "route": "MLTRE3 VANNC QUIWE BENBY DOOGE Q93 HEVAN BONNT VEECK5",
+          "waypoints": "MLTRE3 VANNC QUIWE BENBY DOOGE Q93 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "RPA",
@@ -193,7 +193,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 33000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -205,7 +205,7 @@
           "exit": "JYMSE",
           "destination": "KMSP",
           "altitude": 34000,
-          "route": "MLTRE3 JYMSE BURGG FLM OBK MSN DLL KBULL JERMN MUSCL3",
+          "waypoints": "MLTRE3 JYMSE BURGG FLM OBK MSN DLL KBULL JERMN MUSCL3",
           "airlines": [
             {
               "icao": "DAL",
@@ -217,7 +217,7 @@
           "exit": "FILLI",
           "destination": "KIAD",
           "altitude": 27000,
-          "route": "SWPFX3 FILLI FLO RDU BZNGA DORRN CAVLR5",
+          "waypoints": "SWPFX3 FILLI FLO RDU BZNGA DORRN CAVLR5",
           "airlines": [
             {
               "icao": "RPA",
@@ -229,7 +229,7 @@
           "exit": "FILLI",
           "destination": "KDCA",
           "altitude": 31000,
-          "route": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
+          "waypoints": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
           "airlines": [
             {
               "icao": "JIA",
@@ -241,7 +241,7 @@
           "exit": "ALD",
           "destination": "KAUS",
           "altitude": 40000,
-          "route": "STUNO1 ALD LOTTS MGMRY MERDN AEX WEEED WLEEE7",
+          "waypoints": "STUNO1 ALD LOTTS MGMRY MERDN AEX WEEED WLEEE7",
           "airlines": [
             {
               "icao": "SWA",
@@ -253,7 +253,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -265,7 +265,7 @@
           "exit": "CRE",
           "destination": "KBOS",
           "altitude": 39000,
-          "route": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "NKS",
@@ -277,7 +277,7 @@
           "exit": "CRE",
           "destination": "KBOS",
           "altitude": 35000,
-          "route": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "JBU",
@@ -289,7 +289,7 @@
           "exit": "FILLI",
           "destination": "KBWI",
           "altitude": 37000,
-          "route": "SWPFX3 FILLI SARKY Q113 AARNN THHMP RAVNN6",
+          "waypoints": "SWPFX3 FILLI SARKY Q113 AARNN THHMP RAVNN6",
           "airlines": [
             {
               "icao": "SWA",
@@ -301,7 +301,7 @@
           "exit": "DBN",
           "destination": "KDFW",
           "altitude": 38000,
-          "route": "STUNO1 DBN MGM MHZ YUYUN WHINY4",
+          "waypoints": "STUNO1 DBN MGM MHZ YUYUN WHINY4",
           "airlines": [
             {
               "icao": "AAL",
@@ -313,7 +313,7 @@
           "exit": "CRE",
           "destination": "KPHL",
           "altitude": 35000,
-          "route": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
+          "waypoints": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -325,7 +325,7 @@
           "exit": "JYMSE",
           "destination": "KDTW",
           "altitude": 34000,
-          "route": "MLTRE3 JYMSE SCAMS BKW JAMOX BONZZ2",
+          "waypoints": "MLTRE3 JYMSE SCAMS BKW JAMOX BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -337,7 +337,7 @@
           "exit": "CRE",
           "destination": "KHPN",
           "altitude": 35000,
-          "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+          "waypoints": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
           "airlines": [
             {
               "icao": "JBU",
@@ -349,7 +349,7 @@
           "exit": "GIPPL",
           "destination": "KFLL",
           "altitude": 38000,
-          "route": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
+          "waypoints": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "NKS",
@@ -361,7 +361,7 @@
           "exit": "JYMSE",
           "destination": "KCLT",
           "altitude": 26000,
-          "route": "MLTRE3 JYMSE FLLGG STOCR7",
+          "waypoints": "MLTRE3 JYMSE FLLGG STOCR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -373,7 +373,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -385,7 +385,7 @@
           "exit": "VANNC",
           "destination": "KORD",
           "altitude": 28000,
-          "route": "MLTRE3 VANNC QUIWE Q93 HEVAN BONNT VEECK5",
+          "waypoints": "MLTRE3 VANNC QUIWE Q93 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "ENY",
@@ -397,7 +397,7 @@
           "exit": "CRE",
           "destination": "KBOS",
           "altitude": 35000,
-          "route": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "DAL",
@@ -409,7 +409,7 @@
           "exit": "JYMSE",
           "destination": "KORD",
           "altitude": 36000,
-          "route": "MLTRE3 JYMSE BENBY Q93 HEVAN BONNT VEECK5",
+          "waypoints": "MLTRE3 JYMSE BENBY Q93 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "UAL",
@@ -421,7 +421,7 @@
           "exit": "FILLI",
           "destination": "KDCA",
           "altitude": 35000,
-          "route": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
+          "waypoints": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
           "airlines": [
             {
               "icao": "AAL",
@@ -433,7 +433,7 @@
           "exit": "VANNC",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "MLTRE3 VANNC QUIWE KT24S ODF CORCE T414 MACEY KT24Q WINNG OZZZI1",
+          "waypoints": "MLTRE3 VANNC QUIWE KT24S ODF CORCE T414 MACEY KT24Q WINNG OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -445,7 +445,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR7",
+          "waypoints": "SWPFX3 FILLI FLLGG STOCR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -457,7 +457,7 @@
           "exit": "CRE",
           "destination": "KJFK",
           "altitude": 35000,
-          "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+          "waypoints": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
           "airlines": [
             {
               "icao": "EDV",
@@ -469,7 +469,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 35000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -481,7 +481,7 @@
           "exit": "CRE",
           "destination": "KPHL",
           "altitude": 35000,
-          "route": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
+          "waypoints": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -493,7 +493,7 @@
           "exit": "FILLI",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "SWPFX3 FILLI LCAPE Q87 ALWZZ OGRAE BZNGA DORRN CAVLR5",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 ALWZZ OGRAE BZNGA DORRN CAVLR5",
           "airlines": [
             {
               "icao": "UAL",
@@ -505,7 +505,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR7",
+          "waypoints": "SWPFX3 FILLI FLLGG STOCR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -517,7 +517,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -529,7 +529,7 @@
           "exit": "FILLI",
           "destination": "KGSO",
           "altitude": 23000,
-          "route": "SWPFX3 FILLI SDZ BLOCC BLOCC2",
+          "waypoints": "SWPFX3 FILLI SDZ BLOCC BLOCC2",
           "airlines": [
             {
               "icao": "FDX",
@@ -541,7 +541,7 @@
           "exit": "CRE",
           "destination": "KPHL",
           "altitude": 33000,
-          "route": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
+          "waypoints": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -553,7 +553,7 @@
           "exit": "IRQ",
           "destination": "KDFW",
           "altitude": 28000,
-          "route": "STUNO1 IRQ RMG J66 MEM J66 MEEOW FEWWW SEEVR4",
+          "waypoints": "STUNO1 IRQ RMG J66 MEM J66 MEEOW FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -565,7 +565,7 @@
           "exit": "FILLI",
           "destination": "KEWR",
           "altitude": 33000,
-          "route": "SWPFX3 FILLI LCAPE ALWZZ OGRAE Q99 QUART PHLBO4",
+          "waypoints": "SWPFX3 FILLI LCAPE ALWZZ OGRAE Q99 QUART PHLBO4",
           "airlines": [
             {
               "icao": "NKS",
@@ -577,7 +577,7 @@
           "exit": "CRE",
           "destination": "KJFK",
           "altitude": 33000,
-          "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+          "waypoints": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
           "airlines": [
             {
               "icao": "EDV",
@@ -589,7 +589,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -601,7 +601,7 @@
           "exit": "GIPPL",
           "destination": "KFLL",
           "altitude": 36000,
-          "route": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
+          "waypoints": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "JBU",
@@ -613,7 +613,7 @@
           "exit": "IRQ",
           "destination": "KHOU",
           "altitude": 40000,
-          "route": "STUNO1 IRQ THRSR VLKNN SKNRR IZAAC MLU SWB WAPPL6",
+          "waypoints": "STUNO1 IRQ THRSR VLKNN SKNRR IZAAC MLU SWB WAPPL6",
           "airlines": [
             {
               "icao": "SWA",
@@ -625,7 +625,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 37000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "DAL",
@@ -637,7 +637,7 @@
           "exit": "GIPPL",
           "destination": "KMIA",
           "altitude": 36000,
-          "route": "LGRHD3 GIPPL Q93 DEBRL CSTAL2",
+          "waypoints": "LGRHD3 GIPPL Q93 DEBRL CSTAL2",
           "airlines": [
             {
               "icao": "ENY",
@@ -649,7 +649,7 @@
           "exit": "IRQ",
           "destination": "KDEN",
           "altitude": 38000,
-          "route": "STUNO1 IRQ AHN RMG J66 DEVAC MEM KM36G PER GCK KIISS CLASH4",
+          "waypoints": "STUNO1 IRQ AHN RMG J66 DEVAC MEM KM36G PER GCK KIISS CLASH4",
           "airlines": [
             {
               "icao": "SWA",
@@ -661,7 +661,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -673,7 +673,7 @@
           "exit": "JYMSE",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "MLTRE3 JYMSE FLLGG STOCR7",
+          "waypoints": "MLTRE3 JYMSE FLLGG STOCR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -685,7 +685,7 @@
           "exit": "IRQ",
           "destination": "KBNA",
           "altitude": 38000,
-          "route": "STUNO1 IRQ JAGIR SWFFT2",
+          "waypoints": "STUNO1 IRQ JAGIR SWFFT2",
           "airlines": [
             {
               "icao": "SWA",
@@ -697,7 +697,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 35000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "NKS",
@@ -709,7 +709,7 @@
           "exit": "GIPPL",
           "destination": "KFLL",
           "altitude": 38000,
-          "route": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
+          "waypoints": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "JBU",
@@ -721,7 +721,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -733,7 +733,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 35000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -745,7 +745,7 @@
           "exit": "VANNC",
           "destination": "KORD",
           "altitude": 34000,
-          "route": "MLTRE3 VANNC QUIWE BENBY DOOGE Q93 HEVAN BONNT VEECK5",
+          "waypoints": "MLTRE3 VANNC QUIWE BENBY DOOGE Q93 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "RPA",
@@ -757,7 +757,7 @@
           "exit": "VANNC",
           "destination": "KMDW",
           "altitude": 38000,
-          "route": "MLTRE3 VANNC BURGG IIU DROSE FISSK6",
+          "waypoints": "MLTRE3 VANNC BURGG IIU DROSE FISSK6",
           "airlines": [
             {
               "icao": "SWA",
@@ -769,7 +769,7 @@
           "exit": "FILLI",
           "destination": "KLGA",
           "altitude": 33000,
-          "route": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -781,7 +781,7 @@
           "exit": "FILLI",
           "destination": "KIAD",
           "altitude": 27000,
-          "route": "SWPFX3 FILLI FLO RDU BZNGA DORRN CAVLR5",
+          "waypoints": "SWPFX3 FILLI FLO RDU BZNGA DORRN CAVLR5",
           "airlines": [
             {
               "icao": "RPA",
@@ -793,7 +793,7 @@
           "exit": "ALD",
           "destination": "KAUS",
           "altitude": 40000,
-          "route": "STUNO1 ALD LOTTS MGMRY MERDN AEX WEEED WLEEE7",
+          "waypoints": "STUNO1 ALD LOTTS MGMRY MERDN AEX WEEED WLEEE7",
           "airlines": [
             {
               "icao": "SWA",
@@ -805,7 +805,7 @@
           "exit": "FILLI",
           "destination": "KDCA",
           "altitude": 31000,
-          "route": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
+          "waypoints": "SWPFX3 FILLI SARKY Q113 AARNN WAVES CAPSS3",
           "airlines": [
             {
               "icao": "JIA",
@@ -817,7 +817,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -829,7 +829,7 @@
           "exit": "CRE",
           "destination": "KBOS",
           "altitude": 39000,
-          "route": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "NKS",
@@ -841,7 +841,7 @@
           "exit": "CRE",
           "destination": "KBOS",
           "altitude": 37000,
-          "route": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "JBU",
@@ -853,7 +853,7 @@
           "exit": "GIPPL",
           "destination": "KFLL",
           "altitude": 36000,
-          "route": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
+          "waypoints": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "JBU",
@@ -865,7 +865,7 @@
           "exit": "FILLI",
           "destination": "KBWI",
           "altitude": 37000,
-          "route": "SWPFX3 FILLI SARKY Q113 AARNN THHMP RAVNN6",
+          "waypoints": "SWPFX3 FILLI SARKY Q113 AARNN THHMP RAVNN6",
           "airlines": [
             {
               "icao": "SWA",
@@ -877,7 +877,7 @@
           "exit": "JYMSE",
           "destination": "KDTW",
           "altitude": 34000,
-          "route": "MLTRE3 JYMSE SCAMS BKW JAMOX BONZZ2",
+          "waypoints": "MLTRE3 JYMSE SCAMS BKW JAMOX BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -889,7 +889,7 @@
           "exit": "CRE",
           "destination": "KHPN",
           "altitude": 35000,
-          "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+          "waypoints": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
           "airlines": [
             {
               "icao": "JBU",
@@ -901,7 +901,7 @@
           "exit": "GIPPL",
           "destination": "KFLL",
           "altitude": 38000,
-          "route": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
+          "waypoints": "LGRHD3 GIPPL Q93 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "NKS",
@@ -913,7 +913,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -925,7 +925,7 @@
           "exit": "CRE",
           "destination": "KBOS",
           "altitude": 35000,
-          "route": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "PLMTO3 CRE ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "DAL",
@@ -937,7 +937,7 @@
           "exit": "JYMSE",
           "destination": "KORD",
           "altitude": 36000,
-          "route": "MLTRE3 JYMSE BENBY Q93 HEVAN BONNT VEECK5",
+          "waypoints": "MLTRE3 JYMSE BENBY Q93 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "UAL",
@@ -949,7 +949,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR7",
+          "waypoints": "SWPFX3 FILLI FLLGG STOCR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -961,7 +961,7 @@
           "exit": "VANNC",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "MLTRE3 VANNC QUIWE KT24S ODF CORCE T414 MACEY KT24Q WINNG OZZZI1",
+          "waypoints": "MLTRE3 VANNC QUIWE KT24S ODF CORCE T414 MACEY KT24Q WINNG OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -973,7 +973,7 @@
           "exit": "CRE",
           "destination": "KJFK",
           "altitude": 35000,
-          "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+          "waypoints": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
           "airlines": [
             {
               "icao": "EDV",
@@ -985,7 +985,7 @@
           "exit": "CRE",
           "destination": "KPHL",
           "altitude": 35000,
-          "route": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
+          "waypoints": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -997,7 +997,7 @@
           "exit": "FILLI",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "SWPFX3 FILLI LCAPE Q87 ALWZZ OGRAE BZNGA DORRN CAVLR5",
+          "waypoints": "SWPFX3 FILLI LCAPE Q87 ALWZZ OGRAE BZNGA DORRN CAVLR5",
           "airlines": [
             {
               "icao": "UAL",
@@ -1009,7 +1009,7 @@
           "exit": "FILLI",
           "destination": "KCLT",
           "altitude": 20000,
-          "route": "SWPFX3 FILLI FLLGG STOCR7",
+          "waypoints": "SWPFX3 FILLI FLLGG STOCR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -1021,7 +1021,7 @@
           "exit": "ALD",
           "destination": "KATL",
           "altitude": 24000,
-          "route": "STUNO1 ALD EEWOK JJEDI3",
+          "waypoints": "STUNO1 ALD EEWOK JJEDI3",
           "airlines": [
             {
               "icao": "DAL",
@@ -1033,7 +1033,7 @@
           "exit": "FILLI",
           "destination": "KGSO",
           "altitude": 23000,
-          "route": "SWPFX3 FILLI SDZ BLOCC BLOCC2",
+          "waypoints": "SWPFX3 FILLI SDZ BLOCC BLOCC2",
           "airlines": [
             {
               "icao": "FDX",
@@ -1045,7 +1045,7 @@
           "exit": "CRE",
           "destination": "KPHL",
           "altitude": 33000,
-          "route": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
+          "waypoints": "PLMTO3 CRE RAPZZ Q135 CUDLE Q117 SAWED Q97 ZJAAY JIIMS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1057,7 +1057,7 @@
           "exit": "CRE",
           "destination": "KJFK",
           "altitude": 33000,
-          "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+          "waypoints": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
           "airlines": [
             {
               "icao": "EDV",
@@ -1069,7 +1069,7 @@
           "exit": "IRQ",
           "destination": "KDFW",
           "altitude": 28000,
-          "route": "STUNO1 IRQ RMG J66 MEM J66 MEEOW FEWWW SEEVR4",
+          "waypoints": "STUNO1 IRQ RMG J66 MEM J66 MEEOW FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1151,7 +1151,7 @@
           "exit": "IRQ",
           "destination": "KPDK",
           "altitude": 22000,
-          "route": "EXTVE1 IRQ AHN",
+          "waypoints": "EXTVE1 IRQ AHN",
           "airlines": [
             {
               "icao": "EJA"
@@ -1169,7 +1169,7 @@
           "exit": "GIPPL",
           "destination": "KTPA",
           "altitude": 36000,
-          "route": "KIAWA2 GIPPL Q85 BEEGE EDISN DADES1",
+          "waypoints": "KIAWA2 GIPPL Q85 BEEGE EDISN DADES1",
           "airlines": [
             {
               "icao": "EJA"
@@ -1187,7 +1187,7 @@
           "exit": "ASHEL",
           "destination": "CYYR",
           "altitude": 45000,
-          "route": "KMBEE2 KMBEE ASHEL Q87 HURTS RBV Q223 LLUND CEF FRIAR Q439 PQI OMPOG",
+          "waypoints": "KMBEE2 KMBEE ASHEL Q87 HURTS RBV Q223 LLUND CEF FRIAR Q439 PQI OMPOG",
           "airlines": [
             {
               "icao": "TWY"
@@ -1202,7 +1202,7 @@
           "exit": "CRE",
           "destination": "KHPN",
           "altitude": 33000,
-          "route": "KMBEE2 KMBEE CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+          "waypoints": "KMBEE2 KMBEE CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
           "airlines": [
             {
               "icao": "TWY"
@@ -1220,7 +1220,7 @@
           "exit": "FLO",
           "destination": "KCLT",
           "altitude": 31000,
-          "route": "KMBEE2 KMBEE FLO RASLN1",
+          "waypoints": "KMBEE2 KMBEE FLO RASLN1",
           "airlines": [
             {
               "icao": "TWY"

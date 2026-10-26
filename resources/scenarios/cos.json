@@ -79,7 +79,7 @@
           ],
           "altitude": 39000,
           "destination": "KSAT",
-          "route": "BRK BRESH TBE",
+          "waypoints": "BRK BRESH TBE",
           "exit": "BRESH"
         },
         {
@@ -97,7 +97,7 @@
           ],
           "altitude": 39000,
           "destination": "KDFW",
-          "route": "BRK BRESH EZEEE",
+          "waypoints": "BRK BRESH EZEEE",
           "exit": "BRESH"
         },
         {
@@ -109,7 +109,7 @@
           ],
           "altitude": 12000,
           "destination": "KAPA",
-          "route": "ADANE BYEBI DUNNN5",
+          "waypoints": "ADANE BYEBI DUNNN5",
           "exit": "BYEBI"
         },
         {
@@ -121,7 +121,7 @@
           ],
           "altitude": 28000,
           "destination": "KBZN",
-          "route": "BRK FQF DEN YAMMI",
+          "waypoints": "BRK FQF DEN YAMMI",
           "exit": "FQF"
         },
         {
@@ -135,7 +135,7 @@
           ],
           "altitude": 13000,
           "destination": "KDEN",
-          "route": "ADANE LUFSE JEFEL FQF",
+          "waypoints": "ADANE LUFSE JEFEL FQF",
           "exit": "LUFSE"
         },
         {
@@ -156,7 +156,7 @@
           ],
           "altitude": 32000,
           "destination": "KLAX",
-          "route": "DRAKE V83 PUB",
+          "waypoints": "DRAKE V83 PUB",
           "exit": "DRAKE",
           "secondary_scratchpad": "PUB"
         },
@@ -178,7 +178,7 @@
           ],
           "altitude": 33000,
           "destination": "KOMA",
-          "route": "BRK JEWLS GLD",
+          "waypoints": "BRK JEWLS GLD",
           "exit": "JEWLS"
         },
         {
@@ -192,7 +192,7 @@
           ],
           "altitude": 32000,
           "destination": "KPHX",
-          "route": "DRAKE V83 PUB GUP EAGUL6",
+          "waypoints": "DRAKE V83 PUB GUP EAGUL6",
           "exit": "DRAKE",
           "secondary_scratchpad": "PUB"
         }
@@ -246,7 +246,7 @@
           ],
           "altitude": 10000,
           "destination": "KAPA",
-          "route": "BRK FQF",
+          "waypoints": "BRK FQF",
           "exit": "FQF"
         },
         {
@@ -258,7 +258,7 @@
           ],
           "altitude": 12000,
           "destination": "KAPA",
-          "route": "ADANE BYEBI XBGIN XLENT XPATH XWILL XHOME XMAAK/h353",
+          "waypoints": "ADANE BYEBI XBGIN XLENT XPATH XWILL XHOME XMAAK/h353",
           "exit": "BYEBI"
         },
         {
@@ -270,7 +270,7 @@
           ],
           "altitude": 10000,
           "destination": "KBJC",
-          "route": "BRK FQF",
+          "waypoints": "BRK FQF",
           "exit": "FQF"
         }
       ],
@@ -390,7 +390,7 @@
           "description": "",
           "initial_controller": "C29",
           "initial_speed": 270,
-          "route": "HGO OZZZY5",
+          "flight_strip_route": "HGO OZZZY5",
           "star": "OZZZY5",
           "waypoints": "HGO/a17000 N038.51.21.568,W103.55.28.472/ho OZZZY/a14000/s250 ADANE"
         }
@@ -447,7 +447,7 @@
           "description": "",
           "initial_controller": "11P",
           "initial_speed": 210,
-          "route": "OPSHN FSHER BRK",
+          "flight_strip_route": "OPSHN FSHER BRK",
           "star": "DBRY5",
           "waypoints": "OPSHN/s250 FSHER/s250/ho BRK"
         }
@@ -500,7 +500,7 @@
           "description": "",
           "initial_controller": "11A",
           "initial_speed": 160,
-          "route": "LUFSE V389 ADANE BRK",
+          "flight_strip_route": "LUFSE V389 ADANE BRK",
           "waypoints": "N039.19.52.813,W104.24.24.065 LUFSE/ho ADANE BRK"
         }
       ]
@@ -530,7 +530,7 @@
           "description": "",
           "initial_controller": "11A",
           "initial_speed": 160,
-          "route": "ADANE BRK",
+          "flight_strip_route": "ADANE BRK",
           "waypoints": "N039.17.29.606,W104.42.09.739 N039.13.10.370,W104.35.00.860/ho ADANE BRK"
         }
       ]

@@ -151,7 +151,7 @@
           "altitude": 38000,
           "destination": "KPIE",
           "exit": "ETX",
-          "route": "ETX LRP EMI GVE Q75 TEUFL BAAMF DADES1"
+          "waypoints": "ETX LRP EMI GVE Q75 TEUFL BAAMF DADES1"
         },
         {
           "airlines": [
@@ -162,7 +162,7 @@
           "altitude": 34000,
           "destination": "KILN",
           "exit": "ETX",
-          "route": "ETX V30 PSB APE LIMPS"
+          "waypoints": "ETX V30 PSB APE LIMPS"
         },
         {
           "airlines": [
@@ -173,7 +173,7 @@
           "altitude": 38000,
           "destination": "KMCO",
           "exit": "ETX",
-          "route": "ETX LRP EMI CHS JAWSS OMN BITHO7"
+          "waypoints": "ETX LRP EMI CHS JAWSS OMN BITHO7"
         },
         {
           "airlines": [
@@ -184,7 +184,7 @@
           "altitude": 38000,
           "destination": "KORD",
           "exit": "ETX",
-          "route": "ETX RAV Q62 WATSN WATSN4"
+          "waypoints": "ETX RAV Q62 WATSN WATSN4"
         },
         {
           "airlines": [
@@ -195,7 +195,7 @@
           "altitude": 38000,
           "destination": "KCLT",
           "exit": "ETX",
-          "route": "ETX LRP EMI J48 MOL LYH CHSLY5"
+          "waypoints": "ETX LRP EMI J48 MOL LYH CHSLY5"
         },
         {
           "airlines": [
@@ -206,7 +206,7 @@
           "altitude": 39000,
           "destination": "KBOS",
           "exit": "FJC",
-          "route": "FJC T221 LAAYK HNK PONCT JFUND2"
+          "waypoints": "FJC T221 LAAYK HNK PONCT JFUND2"
         },
         {
           "airlines": [
@@ -218,7 +218,7 @@
           "altitude": 5000,
           "destination": "KJFK",
           "exit": "FJC",
-          "route": "FJC V6 SBJ V232 COL"
+          "waypoints": "FJC V6 SBJ V232 COL"
         },
         {
           "airlines": [
@@ -230,7 +230,7 @@
           "destination": "KPHL",
           "altitude": 5000,
           "exit": "PTW",
-          "route": "BUSKY PTW PHL"
+          "waypoints": "BUSKY PTW PHL"
         },
         {
           "airlines": [
@@ -242,7 +242,7 @@
           "altitude": 5000,
           "destination": "KPNE",
           "exit": "FJC",
-          "route": "FJC ARD PNE"
+          "waypoints": "FJC ARD PNE"
         },
         {
           "airlines": [
@@ -254,7 +254,7 @@
           "altitude": 5000,
           "destination": "KTEB",
           "exit": "FJC",
-          "route": "FJC STW TEB"
+          "waypoints": "FJC STW TEB"
         },
         {
           "airlines": [
@@ -265,7 +265,7 @@
           "destination": "KDCA",
           "altitude": 14000,
           "exit": "PTW",
-          "route": "PTW MXE BAL DCA"
+          "waypoints": "PTW MXE BAL DCA"
         },
         {
           "airlines": [
@@ -276,7 +276,7 @@
           "altitude": 14000,
           "destination": "KBWI",
           "exit": "PTW",
-          "route": "PTW MXE BAL DCA"
+          "waypoints": "PTW MXE BAL DCA"
         },
         {
           "airlines": [
@@ -287,7 +287,7 @@
           "altitude": 7000,
           "destination": "KCDW",
           "exit": "SAX",
-          "route": "SAX KCDW"
+          "waypoints": "SAX KCDW"
         },
         {
           "airlines": [
@@ -298,7 +298,7 @@
           "altitude": 6000,
           "destination": "KMDT",
           "exit": "ETX",
-          "route": "ETX V162 HWANG"
+          "waypoints": "ETX V162 HWANG"
         },
         {
           "airlines": [
@@ -309,7 +309,7 @@
           "altitude": 8000,
           "destination": "KAVP",
           "exit": "FJC",
-          "route": "FJC T221 RITTY"
+          "waypoints": "FJC T221 RITTY"
         }
       ],
       "exit_categories": {
@@ -329,7 +329,7 @@
         {
           "waypoints": "N040.34.21.392,W074.40.37.976 SBJ/ho FJC",
           "cruise_altitude": 10000,
-          "route": "/. FJC",
+          "flight_strip_route": "/. FJC",
           "initial_controller": "24P",
           "initial_altitude": 6000,
           "assigned_altitude": 6000,
@@ -349,7 +349,7 @@
         {
           "waypoints": "N040.48.51.729,W074.41.06.897 BWZ/ho FJC",
           "cruise_altitude": 8000,
-          "route": "/. FJC",
+          "flight_strip_route": "/. FJC",
           "initial_controller": "24P",
           "initial_altitude": 4000,
           "assigned_altitude": 4000,
@@ -370,7 +370,7 @@
         {
           "waypoints": "HUO N041.20.10.803,W074.41.14.423/ho N041.03.09.610,W075.02.14.170 FJC",
           "cruise_altitude": 18000,
-          "route": "/. FJC",
+          "flight_strip_route": "/. FJC",
           "initial_controller": "24P",
           "initial_altitude": 4000,
           "assigned_altitude": 4000,
@@ -400,7 +400,7 @@
             }
           },
           "cruise_altitude": 9000,
-          "route": "/. KRAZE FJC",
+          "flight_strip_route": "/. KRAZE FJC",
           "initial_controller": "1L",
           "initial_altitude": 7000,
           "assigned_altitude": 7000,
@@ -421,7 +421,7 @@
         {
           "waypoints": "KRDG N040.23.52.301,W075.55.26.797/ho ETX",
           "cruise_altitude": 4000,
-          "route": "/. ETX",
+          "flight_strip_route": "/. ETX",
           "initial_controller": "1L",
           "initial_altitude": 300,
           "assigned_altitude": 4000,
@@ -446,7 +446,7 @@
         {
           "waypoints": "N040.13.33.015,W075.17.45.151 N040.20.16.955,W075.20.02.838/ho FJC",
           "cruise_altitude": 4000,
-          "route": "/. FJC",
+          "flight_strip_route": "/. FJC",
           "initial_controller": "31N",
           "initial_altitude": 4000,
           "assigned_altitude": 4000,
@@ -484,7 +484,7 @@
             }
           },
           "cruise_altitude": 27000,
-          "route": "/. KRAZE",
+          "flight_strip_route": "/. KRAZE",
           "initial_controller": "C72",
           "initial_altitude": 10000,
           "assigned_altitude": 9000,
@@ -518,7 +518,7 @@
             }
           },
           "cruise_altitude": 33000,
-          "route": "/. SLATT",
+          "flight_strip_route": "/. SLATT",
           "initial_controller": "C72",
           "initial_altitude": 10000,
           "assigned_altitude": 9000,
@@ -552,7 +552,7 @@
             }
           },
           "cruise_altitude": 22000,
-          "route": "/. SLATT",
+          "flight_strip_route": "/. SLATT",
           "initial_controller": "C72",
           "initial_altitude": 10000,
           "assigned_altitude": 9000,
@@ -591,7 +591,7 @@
             }
           },
           "cruise_altitude": 35000,
-          "route": "/. DUMMR",
+          "flight_strip_route": "/. DUMMR",
           "initial_controller": "C72",
           "initial_altitude": 10000,
           "assigned_altitude": 9000,
@@ -621,7 +621,7 @@
             }
           },
           "cruise_altitude": 12000,
-          "route": "/. DUMMR",
+          "flight_strip_route": "/. DUMMR",
           "initial_controller": "C72",
           "initial_altitude": 10000,
           "assigned_altitude": 9000,

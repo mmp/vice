@@ -129,7 +129,7 @@
           ],
           "altitude": 36000,
           "destination": "KDEN",
-          "route": "ATOMK3 ATOMK GNDLA TBARR3",
+          "waypoints": "ATOMK3 ATOMK GNDLA TBARR3",
           "exit": "ATOMK"
         },
         {
@@ -144,7 +144,7 @@
           ],
           "altitude": 36000,
           "destination": "KDEN",
-          "route": "JEMEZ3 JEMEZ GNDLA TBARR3",
+          "waypoints": "JEMEZ3 JEMEZ GNDLA TBARR3",
           "exit": "JEMEZ"
         },
         {
@@ -155,7 +155,7 @@
           ],
           "altitude": 34000,
           "destination": "KSEA",
-          "route": "GUP WINEN YANKU ROOHZ PDT CHINS5",
+          "waypoints": "GUP WINEN YANKU ROOHZ PDT CHINS5",
           "exit": "GUP"
         },
         {
@@ -173,7 +173,7 @@
           ],
           "altitude": 35000,
           "destination": "KORD",
-          "route": "FTI J18 KENTO J18 GCK J96 IRK BENKY6",
+          "waypoints": "FTI J18 KENTO J18 GCK J96 IRK BENKY6",
           "exit": "FTI"
         },
         {
@@ -191,7 +191,7 @@
           ],
           "altitude": 35000,
           "destination": "KORD",
-          "route": "FLAVA KENTO J18 GCK J96 IRK BENKY6",
+          "waypoints": "FLAVA KENTO J18 GCK J96 IRK BENKY6",
           "exit": "FLAVA"
         },
         {
@@ -203,7 +203,7 @@
           ],
           "altitude": 33000,
           "destination": "KDFW",
-          "route": "TXO TURKI JOVEM6",
+          "waypoints": "TXO TURKI JOVEM6",
           "exit": "TXO"
         },
         {
@@ -218,7 +218,7 @@
           ],
           "altitude": 33000,
           "destination": "KIAH",
-          "route": "CME SJT DIESL DRLLR5",
+          "waypoints": "CME SJT DIESL DRLLR5",
           "exit": "CME"
         },
         {
@@ -237,7 +237,7 @@
           ],
           "altitude": 30000,
           "destination": "KPHX",
-          "route": "ZUN EAGUL6",
+          "waypoints": "ZUN EAGUL6",
           "exit": "ZUN"
         },
         {
@@ -248,7 +248,7 @@
           ],
           "altitude": 36000,
           "destination": "KLGB",
-          "route": "ZUN J6 DRK HIMDU DSNEE6",
+          "waypoints": "ZUN J6 DRK HIMDU DSNEE6",
           "exit": "ZUN"
         },
         {
@@ -259,7 +259,7 @@
           ],
           "altitude": 36000,
           "destination": "KBUR",
-          "route": "ZUN J6 DRK EED JANNY5",
+          "waypoints": "ZUN J6 DRK EED JANNY5",
           "exit": "ZUN"
         },
         {
@@ -273,7 +273,7 @@
           ],
           "altitude": 36000,
           "destination": "KLAS",
-          "route": "GUP HAHAA RKSTR4",
+          "waypoints": "GUP HAHAA RKSTR4",
           "exit": "GUP"
         },
         {
@@ -288,7 +288,7 @@
           ],
           "altitude": 36000,
           "destination": "KLAX",
-          "route": "ZUN J6 DRK J231 HIPPI GABBL HLYWD1",
+          "waypoints": "ZUN J6 DRK J231 HIPPI GABBL HLYWD1",
           "exit": "ZUN"
         }
       ],
@@ -510,7 +510,7 @@
           "description": "",
           "initial_controller": "C16",
           "initial_speed": 270,
-          "route": "BRRTO1",
+          "flight_strip_route": "BRRTO1",
           "star": "BRRTO1",
           "spawn": "BRRTO",
           "waypoint_actions": { "ELRRA": "ho" }
@@ -543,7 +543,7 @@
           "description": "",
           "initial_controller": "C16",
           "initial_speed": 270,
-          "route": "COLTR4",
+          "flight_strip_route": "COLTR4",
           "star": "COLTR4",
           "spawn": "COLTR",
           "waypoint_actions": { "COLTR": "ho" }
@@ -585,7 +585,7 @@
           "description": "",
           "initial_controller": "C16",
           "initial_speed": 270,
-          "route": "LOWBO3",
+          "flight_strip_route": "LOWBO3",
           "star": "LOWBO3",
           "spawn": "LOWBO",
           "waypoint_actions": { "LOWBO": "ho" }
@@ -609,7 +609,7 @@
           "description": "",
           "initial_controller": "C16",
           "initial_speed": 270,
-          "route": "LZZRD4",
+          "flight_strip_route": "LZZRD4",
           "star": "LZZRD4",
           "spawn": "HAKOR",
           "waypoint_actions": { "LZZRD": "ho" }
@@ -652,7 +652,7 @@
           "description": "",
           "initial_controller": "C16",
           "initial_speed": 270,
-          "route": "SNDIA4",
+          "flight_strip_route": "SNDIA4",
           "star": "SNDIA4",
           "spawn": "SNDIA",
           "waypoint_actions": { "VLCNO": "ho" }

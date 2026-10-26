@@ -249,7 +249,7 @@
           ],
           "altitude": 20000,
           "destination": "KBAB",
-          "route": "BAB ",
+          "waypoints": "BAB ",
           "scratchpad": "MAX",
           "exit": "BAB.275"
         },
@@ -267,7 +267,7 @@
           ],
           "altitude": 20000,
           "destination": "KBAB",
-          "route": "BAB ",
+          "waypoints": "BAB ",
           "scratchpad": "WHI",
           "exit": "BAB.335"
         },
@@ -285,7 +285,7 @@
           ],
           "altitude": 20000,
           "destination": "KBAB",
-          "route": "BAB ",
+          "waypoints": "BAB ",
           "scratchpad": "CHI",
           "exit": "BAB.355"
         }
@@ -461,7 +461,7 @@
           ],
           "altitude": 31000,
           "destination": "KLAS",
-          "route": "ALPYN1 YERIN TQILA COKTL4",
+          "waypoints": "ALPYN1 YERIN TQILA COKTL4",
           "exit": "YERIN"
         },
         {
@@ -482,7 +482,7 @@
           ],
           "altitude": 31000,
           "destination": "KSEA",
-          "route": "HALLE WNDEL LKV HAWKZ8",
+          "waypoints": "HALLE WNDEL LKV HAWKZ8",
           "exit": "HALLE"
         },
         {
@@ -503,7 +503,7 @@
           ],
           "altitude": 31000,
           "destination": "KSEA",
-          "route": "BLKJK WNDEL LKV HAWKZ8",
+          "waypoints": "BLKJK WNDEL LKV HAWKZ8",
           "exit": "BLKJK"
         },
         {
@@ -524,7 +524,7 @@
           ],
           "altitude": 35000,
           "destination": "KORD",
-          "route": "PYGOW LLC LCU Q122 ONL Q122 VIGGR MYRRS FYTTE7 ",
+          "waypoints": "PYGOW LLC LCU Q122 ONL Q122 VIGGR MYRRS FYTTE7 ",
           "exit": "PYGOW"
         },
         {
@@ -548,7 +548,7 @@
           ],
           "altitude": 31000,
           "destination": "KPDX",
-          "route": "HALLE WNDEL J92 LMT GALLO TMBRS3",
+          "waypoints": "HALLE WNDEL J92 LMT GALLO TMBRS3",
           "exit": "HALLE"
         },
         {
@@ -572,7 +572,7 @@
           ],
           "altitude": 31000,
           "destination": "KPDX",
-          "route": "BLKJK WNDEL J92 LMT GALLO TMBRS3",
+          "waypoints": "BLKJK WNDEL J92 LMT GALLO TMBRS3",
           "exit": "BLKJK"
         },
         {
@@ -586,7 +586,7 @@
           ],
           "altitude": 34000,
           "destination": "KSAN",
-          "route": "DARBI EHF HUULK COMIX2",
+          "waypoints": "DARBI EHF HUULK COMIX2",
           "exit": "DARBI"
         },
         {
@@ -604,7 +604,7 @@
           ],
           "altitude": 28000,
           "destination": "KSFO",
-          "route": "MRLET LEGGS",
+          "waypoints": "MRLET LEGGS",
           "exit": "MRLET"
         },
         {
@@ -622,7 +622,7 @@
           ],
           "altitude": 28000,
           "destination": "KSFO",
-          "route": "CRDDZ LEGGS",
+          "waypoints": "CRDDZ LEGGS",
           "exit": "CRDDZ"
         },
         {
@@ -643,7 +643,7 @@
           ],
           "altitude": 35000,
           "destination": "KORD",
-          "route": "BLKJK LLC LCU Q122 ONL Q122 VIGGR MYRRS FYTTE7",
+          "waypoints": "BLKJK LLC LCU Q122 ONL Q122 VIGGR MYRRS FYTTE7",
           "exit": "BLKJK"
         },
         {
@@ -667,7 +667,7 @@
           ],
           "altitude": 35000,
           "destination": "KPHX",
-          "route": "PESKE LIDAT J92 BLD WOTRO",
+          "waypoints": "PESKE LIDAT J92 BLD WOTRO",
           "exit": "PESKE"
         },
         {
@@ -691,7 +691,7 @@
           ],
           "altitude": 29000,
           "destination": "KLAX",
-          "route": "DARBI FRA REBRG IRNMN2",
+          "waypoints": "DARBI FRA REBRG IRNMN2",
           "exit": "DARBI"
         },
         {
@@ -702,7 +702,7 @@
           ],
           "altitude": 27000,
           "destination": "KSJC",
-          "route": "DARBI STUBL",
+          "waypoints": "DARBI STUBL",
           "exit": "DARBI"
         }
       ],
@@ -933,7 +933,7 @@
           ],
           "altitude": 35000,
           "destination": "KLAX",
-          "route": "FTHIL FRA REBRG IRNMN2",
+          "waypoints": "FTHIL FRA REBRG IRNMN2",
           "exit": "FTHIL"
         },
         {
@@ -948,7 +948,7 @@
           ],
           "altitude": 15000,
           "destination": "KSFO",
-          "route": "THORN ALWYS CEDES ARCHI",
+          "waypoints": "THORN ALWYS CEDES ARCHI",
           "exit": "THORN"
         },
         {
@@ -962,7 +962,7 @@
           ],
           "altitude": 35000,
           "destination": "KSNA",
-          "route": "FTHIL FRA REBRG OHSEA3",
+          "waypoints": "FTHIL FRA REBRG OHSEA3",
           "exit": "FTHIL"
         },
         {
@@ -976,7 +976,7 @@
           ],
           "altitude": 35000,
           "destination": "KLGB",
-          "route": "FTHIL FRA REBRG PCFIC3",
+          "waypoints": "FTHIL FRA REBRG PCFIC3",
           "exit": "FTHIL"
         },
         {
@@ -993,7 +993,7 @@
           ],
           "altitude": 35000,
           "destination": "KSAN",
-          "route": "FTHIL FRA EHF HUULK COMIX2",
+          "waypoints": "FTHIL FRA EHF HUULK COMIX2",
           "exit": "FTHIL"
         },
         {
@@ -1007,7 +1007,7 @@
           ],
           "altitude": 35000,
           "destination": "KONT",
-          "route": "FTHIL FRA EHF ZIGGY8",
+          "waypoints": "FTHIL FRA EHF ZIGGY8",
           "exit": "FTHIL"
         },
         {
@@ -1023,7 +1023,7 @@
           ],
           "altitude": 23000,
           "destination": "KBOI",
-          "route": "DUDES FMG PRNCS SADYL4",
+          "waypoints": "DUDES FMG PRNCS SADYL4",
           "exit": "DUDES"
         },
         {
@@ -1040,7 +1040,7 @@
           ],
           "altitude": 35000,
           "destination": "KBOI",
-          "route": "MACUS NEERO SADYL4",
+          "waypoints": "MACUS NEERO SADYL4",
           "exit": "MACUS"
         },
         {
@@ -1052,7 +1052,7 @@
           ],
           "altitude": 23000,
           "destination": "KTPH",
-          "route": "OAL KTPH",
+          "waypoints": "OAL KTPH",
           "exit": "OAL"
         },
         {
@@ -1064,7 +1064,7 @@
           ],
           "altitude": 23000,
           "destination": "KRNO",
-          "route": "FMG KRNO",
+          "waypoints": "FMG KRNO",
           "exit": "FMG"
         },
         {
@@ -1079,7 +1079,7 @@
           ],
           "altitude": 8000,
           "destination": "KUKI",
-          "route": "ILA V200 ENI",
+          "waypoints": "ILA V200 ENI",
           "exit": "ILA"
         },
         {
@@ -1091,7 +1091,7 @@
           ],
           "altitude": 23000,
           "destination": "KTRK",
-          "route": "SWR KTRK",
+          "waypoints": "SWR KTRK",
           "exit": "SWR"
         },
         {
@@ -1103,7 +1103,7 @@
           ],
           "altitude": 13000,
           "destination": "KMOD",
-          "route": "LIN KMOD",
+          "waypoints": "LIN KMOD",
           "exit": "LIN"
         },
         {
@@ -1123,7 +1123,7 @@
           ],
           "altitude": 31000,
           "destination": "KLAS",
-          "route": "SHUFL TQILA COKTL4",
+          "waypoints": "SHUFL TQILA COKTL4",
           "exit": "SHUFL"
         },
         {
@@ -1141,7 +1141,7 @@
           ],
           "altitude": 31000,
           "destination": "KPHX",
-          "route": "SHUFL Q13 WOTRO BRUSR1",
+          "waypoints": "SHUFL Q13 WOTRO BRUSR1",
           "exit": "SHUFL"
         },
         {
@@ -1159,7 +1159,7 @@
           ],
           "altitude": 31000,
           "destination": "KSEA",
-          "route": "RBL LMT HAWKZ8",
+          "waypoints": "RBL LMT HAWKZ8",
           "exit": "RBL"
         },
         {
@@ -1180,7 +1180,7 @@
           ],
           "altitude": 31000,
           "destination": "KPDX",
-          "route": "RBL MACHU TMBRS3",
+          "waypoints": "RBL MACHU TMBRS3",
           "exit": "RBL"
         },
         {
@@ -1191,7 +1191,7 @@
           ],
           "altitude": 31000,
           "destination": "KEUG",
-          "route": "RBL OED SAGIN",
+          "waypoints": "RBL OED SAGIN",
           "exit": "RBL"
         },
         {
@@ -1206,7 +1206,7 @@
           ],
           "altitude": 35000,
           "destination": "KORD",
-          "route": "MACUS Q122 LCU Q122 KURSE Q122 VIGGR MYRRS FYTTE7",
+          "waypoints": "MACUS Q122 LCU Q122 KURSE Q122 VIGGR MYRRS FYTTE7",
           "exit": "MACUS"
         },
         {
@@ -1231,7 +1231,7 @@
           ],
           "altitude": 37000,
           "destination": "KDEN",
-          "route": "RALEY JSICA LUDOH BUMMP SSKII3",
+          "waypoints": "RALEY JSICA LUDOH BUMMP SSKII3",
           "exit": "RALEY"
         },
         {
@@ -1250,7 +1250,7 @@
           ],
           "altitude": 36000,
           "destination": "PHNL",
-          "route": "PYE BEBOP R464 BAART R464 MAGGI MAGGI3",
+          "waypoints": "PYE BEBOP R464 BAART R464 MAGGI MAGGI3",
           "exit": "PYE"
         },
         {
@@ -1266,7 +1266,7 @@
           ],
           "altitude": 34000,
           "destination": "PHOG",
-          "route": "PYE BEBOP R464 BAART R464 BITTA LNDHY1",
+          "waypoints": "PYE BEBOP R464 BAART R464 BITTA LNDHY1",
           "exit": "PYE"
         },
         {
@@ -1278,7 +1278,7 @@
           ],
           "altitude": 32000,
           "destination": "PHLI",
-          "route": "PYE BEBOP R464 BAART R464 BITTA MAGGI V12 KEOLA V16 NAPUA",
+          "waypoints": "PYE BEBOP R464 BAART R464 BITTA MAGGI V12 KEOLA V16 NAPUA",
           "exit": "PYE"
         }
       ],
@@ -1349,7 +1349,7 @@
           ],
           "altitude": 23000,
           "destination": "KHND",
-          "route": "SAC OAL J92 BTY",
+          "waypoints": "SAC OAL J92 BTY",
           "scratchpad": "OAL",
           "exit": "SAC.H"
         },
@@ -1361,7 +1361,7 @@
           ],
           "altitude": 27000,
           "destination": "KONT",
-          "route": "FROGO FRA AMONT POM",
+          "waypoints": "FROGO FRA AMONT POM",
           "exit": "FROGO"
         },
         {
@@ -1376,7 +1376,7 @@
           ],
           "altitude": 27000,
           "destination": "KPSP",
-          "route": "FROGO FRA OYVEY",
+          "waypoints": "FROGO FRA OYVEY",
           "exit": "FROGO"
         },
         {
@@ -1391,7 +1391,7 @@
             }
           ],
           "destination": "KCRQ",
-          "route": "SAC LODDI PATYY V113 PXN LHS V459 SLI V23 OCN",
+          "waypoints": "SAC LODDI PATYY V113 PXN LHS V459 SLI V23 OCN",
           "scratchpad": "PXN",
           "exit": "SAC.L"
         },
@@ -1407,7 +1407,7 @@
             }
           ],
           "destination": "KCRQ",
-          "route": "SAC LODDI PATYY V113 PXN LHS V459 SLI V23 OCN",
+          "waypoints": "SAC LODDI PATYY V113 PXN LHS V459 SLI V23 OCN",
           "scratchpad": "PXN",
           "exit": "SAC.L"
         },
@@ -1423,7 +1423,7 @@
           ],
           "altitude": 27000,
           "destination": "KSBA",
-          "route": "SAC GVO",
+          "waypoints": "SAC GVO",
           "exit": "SAC.H"
         },
         {
@@ -1440,7 +1440,7 @@
             }
           ],
           "destination": "KTEB",
-          "route": "GALTS TIPRE Q126 TTOES Q126 BASNN EKR J84 SNY J114 YANKI MAASI ALO JVL PMM J70 JHW LVZ5",
+          "waypoints": "GALTS TIPRE Q126 TTOES Q126 BASNN EKR J84 SNY J114 YANKI MAASI ALO JVL PMM J70 JHW LVZ5",
           "exit": "TIPRE"
         }
       ],
@@ -1519,7 +1519,7 @@
           ],
           "altitude": 31000,
           "destination": "KSDF",
-          "route": "DUDES MVA ILC KD48Q KD48U LAA KK51A BUM IMOUT MBELL5",
+          "waypoints": "DUDES MVA ILC KD48Q KD48U LAA KK51A BUM IMOUT MBELL5",
           "exit": "DUDES"
         },
         {
@@ -1535,7 +1535,7 @@
           ],
           "altitude": 21000,
           "destination": "KRNO",
-          "route": "ORRCA HOBOA/a16000+",
+          "waypoints": "ORRCA HOBOA/a16000+",
           "exit": "ORRCA"
         },
         {
@@ -1551,7 +1551,7 @@
           ],
           "altitude": 29000,
           "destination": "KONT",
-          "route": "FROGO FRA EHF ZIGGY8",
+          "waypoints": "FROGO FRA EHF ZIGGY8",
           "exit": "FROGO"
         },
         {
@@ -1566,7 +1566,7 @@
           ],
           "altitude": 29000,
           "destination": "KCMA",
-          "route": "FROGO FRA EHF",
+          "waypoints": "FROGO FRA EHF",
           "exit": "FROGO"
         },
         {
@@ -1581,7 +1581,7 @@
           ],
           "altitude": 35000,
           "destination": "KCRQ",
-          "route": "FROGO FRA EHF LHS V459 SLI V23 OCN",
+          "waypoints": "FROGO FRA EHF LHS V459 SLI V23 OCN",
           "exit": "FROGO"
         },
         {
@@ -1592,7 +1592,7 @@
           ],
           "altitude": 10000,
           "destination": "KACV",
-          "route": "RBL YAGER",
+          "waypoints": "RBL YAGER",
           "exit": "RBL.T"
         },
         {
@@ -1603,7 +1603,7 @@
           ],
           "altitude": 10000,
           "destination": "KEKA",
-          "route": "RBL YAGER",
+          "waypoints": "RBL YAGER",
           "exit": "RBL.T"
         },
         {
@@ -1614,7 +1614,7 @@
           ],
           "altitude": 10000,
           "destination": "KRDD",
-          "route": "RBL",
+          "waypoints": "RBL",
           "exit": "RBL.T"
         },
         {
@@ -1625,7 +1625,7 @@
           ],
           "altitude": 5000,
           "destination": "KFAT",
-          "route": "SAC V23 EBTUW NTELL",
+          "waypoints": "SAC V23 EBTUW NTELL",
           "exit": "SAC"
         },
         {
@@ -1637,7 +1637,7 @@
           "altitude": 5000,
           "scratchpad": "MOD",
           "destination": "KMOD",
-          "route": "SAC MOD",
+          "waypoints": "SAC MOD",
           "exit": "SAC"
         },
         {
@@ -1648,7 +1648,7 @@
           ],
           "altitude": 36000,
           "destination": "KCVO",
-          "route": "RBL KNUTT EUG",
+          "waypoints": "RBL KNUTT EUG",
           "exit": "RBL.J"
         }
       ],
@@ -1857,7 +1857,7 @@
         {
           "waypoints": "N038.02.19.581,W122.01.53.790 FEVTA N038.11.25.382,W121.55.26.412/d7000 N038.14.06.235,W121.52.35.026/ho ISYOH ELKOE/h340",
           "cruise_altitude": 10000,
-          "route": "TRUKN FEVTA FEVTA1",
+          "flight_strip_route": "TRUKN FEVTA FEVTA1",
           "scratchpad": "SM2",
           "initial_controller": "11S",
           "initial_altitude": 10000,
@@ -2189,7 +2189,7 @@
       "arrivals": [
         {
           "waypoints": "PYE/d11000 N038.12.52.586,W122.35.16.873/ho11S N038.23.07.724,W122.14.00.783/h030/d5000/@d14.0/h030/ho",
-          "route": "PYE KSMF",
+          "flight_strip_route": "PYE KSMF",
           "initial_controller": "C41",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -2232,7 +2232,7 @@
       "arrivals": [
         {
           "waypoints": "N037.58.17.552,W122.46.38.437/d11000 N038.03.32.118,W122.37.58.289/ho11S N038.15.08.322,W122.18.59.529/h060/d5000/@d10.0/h060/ho",
-          "route": "PYE KSMF",
+          "flight_strip_route": "PYE KSMF",
           "initial_controller": "C41",
           "initial_altitude": 16000,
           "initial_speed": 280,
@@ -2275,7 +2275,7 @@
       "arrivals": [
         {
           "waypoints": "TURLO N037.47.28.081,W120.42.51.707/ho LIN",
-          "route": "TURLO LIN",
+          "flight_strip_route": "TURLO LIN",
           "initial_controller": "3S",
           "initial_altitude": 12000,
           "initial_speed": 280,
@@ -2309,7 +2309,7 @@
         {
           "waypoints": "N037.25.39.060,W120.26.01.926 N037.37.29.203,W120.36.25.427/ho3S N037.53.07.188,W120.50.16.790/ho LIN",
           "cruise_altitude": 28000,
-          "route": "TURLO LIN",
+          "flight_strip_route": "TURLO LIN",
           "initial_controller": "C34",
           "initial_altitude": 28000,
           "initial_speed": 300,
@@ -2627,7 +2627,7 @@
           "waypoint_actions": { "FOOLZ": "ho3S", "GLDDD": "ho" },
           "cruise_altitude": 32000,
           "star": "SUUTR4",
-          "route": "/. NURAY SUUTR4",
+          "flight_strip_route": "/. NURAY SUUTR4",
           "initial_controller": "C22",
           "initial_altitude": 24000,
           "initial_speed": 300,
@@ -2747,7 +2747,7 @@
           "waypoint_actions": { "FOOLZ": "ho3S", "GLDDD": "ho" },
           "cruise_altitude": 32000,
           "star": "SUUTR4",
-          "route": "/. NURAY SUUTR4",
+          "flight_strip_route": "/. NURAY SUUTR4",
           "initial_controller": "C22",
           "initial_altitude": 24000,
           "initial_speed": 300,
@@ -2865,7 +2865,7 @@
         {
           "spawn": "ORRCA@0.5",
           "waypoint_actions": { "ORRCA@0.7": "ho" },
-          "route": "ORRCA TARVR2",
+          "flight_strip_route": "ORRCA TARVR2",
           "star": "TARVR2",
           "initial_controller": "C44",
           "initial_altitude": 20000,
@@ -2908,7 +2908,7 @@
         {
           "spawn": "SLEAT",
           "waypoint_actions": { "SLEAT@0.7": "ho" },
-          "route": "SHERF TARVR2",
+          "flight_strip_route": "SHERF TARVR2",
           "star": "TARVR2",
           "initial_controller": "C44",
           "initial_altitude": 24000,
@@ -2974,7 +2974,7 @@
         {
           "spawn": "RUSME@0.8",
           "waypoint_actions": { "PEONS": "ho" },
-          "route": "KENNO TARVR2",
+          "flight_strip_route": "KENNO TARVR2",
           "star": "TARVR2",
           "initial_controller": "C44",
           "initial_altitude": 30000,
@@ -3048,7 +3048,7 @@
           "spawn": "MVA@0.5",
           "waypoint_actions": { "MVA@0.7": "ho" },
           "star": "TARVR2",
-          "route": "MVA TARVR2",
+          "flight_strip_route": "MVA TARVR2",
           "initial_controller": "C44",
           "initial_altitude": 27000,
           "initial_speed": 280,

@@ -306,7 +306,7 @@
           ],
           "destination": "KDCA",
           "exit": "MUNNY",
-          "route": "CHADM5 MUNNY TONIO Q34 SITTR TRUPS6"
+          "waypoints": "CHADM5 MUNNY TONIO Q34 SITTR TRUPS6"
         },
         {
           "airlines": [
@@ -326,7 +326,7 @@
           ],
           "destination": "KLGA",
           "exit": "OLSIE",
-          "route": "KRSTA4 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4"
+          "waypoints": "KRSTA4 OLSIE IIU Q139 CREEP Q29 WWSHR TEESY J146 ETG MIP4"
         },
         {
           "airlines": [
@@ -342,7 +342,7 @@
           ],
           "destination": "KMCO",
           "exit": "DENST",
-          "route": "TIPPN5 DENST THRSR ZJAYX GRNCH5"
+          "waypoints": "TIPPN5 DENST THRSR ZJAYX GRNCH5"
         },
         {
           "airlines": [
@@ -362,7 +362,7 @@
           ],
           "destination": "KDEN",
           "exit": "NAKIY",
-          "route": "PARDN5 NAKIY HYS J24 OATHE CLASH5"
+          "waypoints": "PARDN5 NAKIY HYS J24 OATHE CLASH5"
         },
         {
           "airlines": [
@@ -376,7 +376,7 @@
           ],
           "destination": "KATL",
           "exit": "DENST",
-          "route": "TIPPN5 DENST CHPPR CHPPR1"
+          "waypoints": "TIPPN5 DENST CHPPR CHPPR1"
         },
         {
           "airlines": [
@@ -392,7 +392,7 @@
           ],
           "destination": "KORD",
           "exit": "OLSIE",
-          "route": "KRSTA4 OLSIE IIU HEVAN BONNT VEECK5"
+          "waypoints": "KRSTA4 OLSIE IIU HEVAN BONNT VEECK5"
         },
         {
           "airlines": [
@@ -405,7 +405,7 @@
           ],
           "destination": "KAUS",
           "exit": "JALAR",
-          "route": "DRURY5 JALAR LFK WEEED WLEEE7"
+          "waypoints": "DRURY5 JALAR LFK WEEED WLEEE7"
         },
         {
           "airlines": [
@@ -422,7 +422,7 @@
           ],
           "destination": "KCLT",
           "exit": "BURME",
-          "route": "TAZMO5 BURME VXV COMDY FILPZ7"
+          "waypoints": "TAZMO5 BURME VXV COMDY FILPZ7"
         },
         {
           "airlines": [
@@ -441,7 +441,7 @@
           ],
           "destination": "KDAL",
           "exit": "HODJS",
-          "route": "PARDN5 HODJS CIVKI Q66 LITTR DIRRK HIBIL3"
+          "waypoints": "PARDN5 HODJS CIVKI Q66 LITTR DIRRK HIBIL3"
         },
         {
           "airlines": [
@@ -455,7 +455,7 @@
           ],
           "destination": "KPHX",
           "exit": "HODJS",
-          "route": "PARDN5 HODJS RZC YARNS ROLLS NOSEW ZUN EAGUL6"
+          "waypoints": "PARDN5 HODJS RZC YARNS ROLLS NOSEW ZUN EAGUL6"
         },
         {
           "airlines": [
@@ -474,7 +474,7 @@
           ],
           "destination": "KRDU",
           "exit": "BURME",
-          "route": "TAZMO5 BURME VXV KPASS ALDAN4"
+          "waypoints": "TAZMO5 BURME VXV KPASS ALDAN4"
         },
         {
           "airlines": [
@@ -490,7 +490,7 @@
           ],
           "destination": "KTPA",
           "exit": "TIPPN",
-          "route": "TIPPN5 TIPPN RMG SOONE HEPAR BAAMF DADES2"
+          "waypoints": "TIPPN5 TIPPN RMG SOONE HEPAR BAAMF DADES2"
         },
         {
           "airlines": [
@@ -510,7 +510,7 @@
           ],
           "destination": "KPHL",
           "exit": "OLSIE",
-          "route": "OLSIE IIU Q139 CREEEP BLISS J152 JST BOJID4"
+          "waypoints": "OLSIE IIU Q139 CREEEP BLISS J152 JST BOJID4"
         },
         {
           "airlines": [
@@ -524,7 +524,7 @@
           ],
           "destination": "KDFW",
           "exit": "HODJS",
-          "route": "HODJS CIVKI Q66 LITTR MEEOW FEWWW SEEVR4"
+          "waypoints": "HODJS CIVKI Q66 LITTR MEEOW FEWWW SEEVR4"
         },
         {
           "airlines": [
@@ -537,7 +537,7 @@
           ],
           "destination": "KLAS",
           "exit": "HODJS",
-          "route": "PARDN5 HODJS IGLOO IRW J78 CRUSR GUP HAHAA RKSTR4"
+          "waypoints": "PARDN5 HODJS IGLOO IRW J78 CRUSR GUP HAHAA RKSTR4"
         },
         {
           "airlines": [
@@ -554,7 +554,7 @@
           ],
           "destination": "KMIA",
           "exit": "GENDE",
-          "route": "FLAME5 GENDE ACORI FROGZ4"
+          "waypoints": "FLAME5 GENDE ACORI FROGZ4"
         },
         {
           "airlines": [
@@ -570,7 +570,7 @@
           ],
           "destination": "KBOS",
           "exit": "CHADM",
-          "route": "CHADM5 CHADM ALEAN Q40 MAULS Q34 DUALY Q34 RBV Q419 JFK ROBUC3"
+          "waypoints": "CHADM5 CHADM ALEAN Q40 MAULS Q34 DUALY Q34 RBV Q419 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -583,7 +583,7 @@
           ],
           "destination": "KHOU",
           "exit": "DRURY",
-          "route": "DRURY5 DRURY MHZ AEX WAPPL7"
+          "waypoints": "DRURY5 DRURY MHZ AEX WAPPL7"
         },
         {
           "airlines": [
@@ -599,7 +599,7 @@
           ],
           "destination": "KJFK",
           "exit": "BURME",
-          "route": "TAZMO5 BURME VXV IDDAA Q64 SAWED Q108 SIE CAMRN5"
+          "waypoints": "TAZMO5 BURME VXV IDDAA Q64 SAWED Q108 SIE CAMRN5"
         },
         {
           "airlines": [
@@ -617,7 +617,7 @@
           ],
           "destination": "KLAX",
           "exit": "HODJS",
-          "route": "PARDN5 HODJS FAM PENUT KD51Y PUB DAAYE WOHCI NAVJO Q90 DNERO ANJLL4"
+          "waypoints": "PARDN5 HODJS FAM PENUT KD51Y PUB DAAYE WOHCI NAVJO Q90 DNERO ANJLL4"
         },
         {
           "airlines": [
@@ -631,7 +631,7 @@
           ],
           "destination": "KDTW",
           "exit": "FAPER",
-          "route": "GDOGG4 FAPER IMPEL WWODD HANBL3"
+          "waypoints": "GDOGG4 FAPER IMPEL WWODD HANBL3"
         },
         {
           "airlines": [
@@ -641,7 +641,7 @@
           ],
           "destination": "KMDW",
           "exit": "OLSIE",
-          "route": "KRSTA4 OLSIE IIU DROSE FISSK7"
+          "waypoints": "KRSTA4 OLSIE IIU DROSE FISSK7"
         },
         {
           "airlines": [
@@ -651,7 +651,7 @@
           ],
           "destination": "KMSY",
           "exit": "JALAR",
-          "route": "DRURY5 JALAR MERDN TRSSH2"
+          "waypoints": "DRURY5 JALAR MERDN TRSSH2"
         },
         {
           "airlines": [
@@ -664,7 +664,7 @@
           ],
           "destination": "KMCI",
           "exit": "NAKIY",
-          "route": "PARDN5 NAKIY KRTNY NELVY MHOMS3"
+          "waypoints": "PARDN5 NAKIY KRTNY NELVY MHOMS3"
         },
         {
           "airlines": [
@@ -674,7 +674,7 @@
           ],
           "destination": "KSTL",
           "exit": "HODJS",
-          "route": "PARDN5 HODJS VISQA BOOSH3"
+          "waypoints": "PARDN5 HODJS VISQA BOOSH3"
         },
         {
           "airlines": [
@@ -691,7 +691,7 @@
           ],
           "destination": "KMSP",
           "exit": "NAKIY",
-          "route": "PARDN5 NAKIY DENNI ENL IOW MNOSO BLUEM4"
+          "waypoints": "PARDN5 NAKIY DENNI ENL IOW MNOSO BLUEM4"
         },
         {
           "airlines": [
@@ -704,7 +704,7 @@
           ],
           "destination": "KJAX",
           "exit": "DENST",
-          "route": "TIPPN5 DENST LGC DUCHY OHDEA2"
+          "waypoints": "TIPPN5 DENST LGC DUCHY OHDEA2"
         },
         {
           "airlines": [
@@ -718,7 +718,7 @@
           ],
           "destination": "KIAH",
           "exit": "DANLS",
-          "route": "DANL4 DANLS UJM Q31 DHART Q33 SWEUP ZEEKK3"
+          "waypoints": "DANL4 DANLS UJM Q31 DHART Q33 SWEUP ZEEKK3"
         },
         {
           "airlines": [
@@ -734,7 +734,7 @@
           ],
           "destination": "KCLE",
           "exit": "OLSIE",
-          "route": "KRSTA4 OLSIE IIU DRUGA ROKNN4"
+          "waypoints": "KRSTA4 OLSIE IIU DRUGA ROKNN4"
         },
         {
           "airlines": [
@@ -744,7 +744,7 @@
           ],
           "destination": "KMKE",
           "exit": "KRSTA",
-          "route": "KRSTA4 KRSTA BWG TTH DNV JOT LEEDN GOPAC3"
+          "waypoints": "KRSTA4 KRSTA BWG TTH DNV JOT LEEDN GOPAC3"
         },
         {
           "airlines": [
@@ -754,7 +754,7 @@
           ],
           "destination": "KSAN",
           "exit": "HODJS",
-          "route": "PARDN5 HODJS HUMBO PROWL OLLII GATTY WILSY PENUT DUUZE KD45S NAVJO TBC PLNDL Q86 TTRUE LUCKI1"
+          "waypoints": "PARDN5 HODJS HUMBO PROWL OLLII GATTY WILSY PENUT DUUZE KD45S NAVJO TBC PLNDL Q86 TTRUE LUCKI1"
         },
         {
           "airlines": [
@@ -768,7 +768,7 @@
           ],
           "destination": "CYYZ",
           "exit": "OLSIE",
-          "route": "KRSTA4 OLSIE IIU Q139 RINTE QWERI NUBER6"
+          "waypoints": "KRSTA4 OLSIE IIU Q139 RINTE QWERI NUBER6"
         },
         {
           "airlines": [
@@ -778,7 +778,7 @@
           ],
           "destination": "MMUN",
           "exit": "DRURY",
-          "route": "DRURY5 DRURY MEI HRV LEV L214 IRDOV UL214 NUDIS UT38 LEVAT ITLOM VOMAR"
+          "waypoints": "DRURY5 DRURY MEI HRV LEV L214 IRDOV UL214 NUDIS UT38 LEVAT ITLOM VOMAR"
         },
         {
           "airlines": [
@@ -789,7 +789,7 @@
           ],
           "destination": "EGLL",
           "exit": "OLSIE",
-          "route": "KRSTA4 OLSIE IIU AIR PSB HNK MIILS N371B JOOPY NATS 4900N/05000W NATS DOGAL NATS BEXET ENJEX AVZAC INFEC JETZI AMFUL ORZEB P2 SIRIC SIRIC1H"
+          "waypoints": "KRSTA4 OLSIE IIU AIR PSB HNK MIILS N371B JOOPY NATS 4900N/05000W NATS DOGAL NATS BEXET ENJEX AVZAC INFEC JETZI AMFUL ORZEB P2 SIRIC SIRIC1H"
         },
         {
           "airlines": [
@@ -799,7 +799,7 @@
           ],
           "destination": "CYUL",
           "exit": "BURME",
-          "route": "TAZMO5 BURME ECB CKB ELZ MIGLO HABBS7"
+          "waypoints": "TAZMO5 BURME ECB CKB ELZ MIGLO HABBS7"
         },
         {
           "airlines": [
@@ -810,7 +810,7 @@
           ],
           "destination": "EIDW",
           "exit": "MUNNY",
-          "route": "CHADM5 MUNNY TONIO HVQ SLT SYR SSENA CEFOU N445B ELSIR NATR RESNO NATR NETKI OLAPO OLAPO4L"
+          "waypoints": "CHADM5 MUNNY TONIO HVQ SLT SYR SSENA CEFOU N445B ELSIR NATR RESNO NATR NETKI OLAPO OLAPO4L"
         },
         {
           "airlines": [
@@ -820,7 +820,7 @@
           ],
           "destination": "KPIE",
           "exit": "DENST",
-          "route": "TIPPN5 DENST LGC HONID BANGZ2"
+          "waypoints": "TIPPN5 DENST LGC HONID BANGZ2"
         },
         {
           "airlines": [
@@ -830,7 +830,7 @@
           ],
           "destination": "KSFB",
           "exit": "DENST",
-          "route": "TIPPN5 DENST THRSR Q79 ZPLEN BIGDE SHREK2"
+          "waypoints": "TIPPN5 DENST THRSR Q79 ZPLEN BIGDE SHREK2"
         }
       ],
       "exit_categories": {

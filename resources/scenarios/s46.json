@@ -323,7 +323,7 @@
           ],
           "destination": "CYVR",
           "exit": "PAE",
-          "route": "PAE GRIZZ1"
+          "waypoints": "PAE GRIZZ1"
         },
         {
           "airlines": [
@@ -334,7 +334,7 @@
           ],
           "destination": "KPSC",
           "exit": "BANDR",
-          "route": "BANDR ELN FEBUS NIALS"
+          "waypoints": "BANDR ELN FEBUS NIALS"
         },
         {
           "airlines": [
@@ -349,7 +349,7 @@
           ],
           "destination": "KGEG",
           "exit": "ZELAK",
-          "route": "ZELAK ZIRAN ZOOMR ZOOMR2"
+          "waypoints": "ZELAK ZIRAN ZOOMR ZOOMR2"
         },
         {
           "airlines": [
@@ -360,7 +360,7 @@
           ],
           "destination": "KMSY",
           "exit": "STEVS",
-          "route": "STEVS Q150 LEZLE DBS ALPOE KK42A KF24E AEX LSU AWDAD1"
+          "waypoints": "STEVS Q150 LEZLE DBS ALPOE KK42A KF24E AEX LSU AWDAD1"
         },
         {
           "airlines": [
@@ -371,7 +371,7 @@
           ],
           "destination": "KBIL",
           "exit": "NORMY",
-          "route": "NORMY J90 HLN LOKOW CRAZI4"
+          "waypoints": "NORMY J90 HLN LOKOW CRAZI4"
         },
         {
           "airlines": [
@@ -382,7 +382,7 @@
           ],
           "destination": "EHAM",
           "exit": "ALPSE",
-          "route": "ALPSE YDC YXC HAYDN"
+          "waypoints": "ALPSE YDC YXC HAYDN"
         },
         {
           "airlines": [
@@ -393,7 +393,7 @@
           ],
           "destination": "EIDW",
           "exit": "ALPSE",
-          "route": "ALPSE IWACK JELCO"
+          "waypoints": "ALPSE IWACK JELCO"
         },
         {
           "airlines": [
@@ -408,7 +408,7 @@
           ],
           "destination": "KSLC",
           "exit": "SUMMA",
-          "route": "SUMMA WANTA Q154 BYI SKEES5"
+          "waypoints": "SUMMA WANTA Q154 BYI SKEES5"
         },
         {
           "airlines": [
@@ -419,7 +419,7 @@
           ],
           "destination": "KPDX",
           "exit": "BUWZO",
-          "route": "BUWZO KRATR3",
+          "waypoints": "BUWZO KRATR3",
           "altitude": 17000
         },
         {
@@ -431,7 +431,7 @@
           ],
           "destination": "KSFO",
           "exit": "ERAVE",
-          "route": "ERAVE Q1 ETCHY MLBEC BDEGA4"
+          "waypoints": "ERAVE Q1 ETCHY MLBEC BDEGA4"
         },
         {
           "airlines": [
@@ -450,7 +450,7 @@
           ],
           "destination": "KBOS",
           "exit": "ZELAK",
-          "route": "ZELAK ZIRAN ZOOMR MLP J36 GTF COKEE WILTN Q140 TTAIL SNARG RUBKI Q140 AHPAH GONZZ PONCT JFUND2"
+          "waypoints": "ZELAK ZIRAN ZOOMR MLP J36 GTF COKEE WILTN Q140 TTAIL SNARG RUBKI Q140 AHPAH GONZZ PONCT JFUND2"
         },
         {
           "airlines": [
@@ -469,7 +469,7 @@
           ],
           "destination": "PANC",
           "exit": "ARRIE",
-          "route": "ARRIE FOCHE PRYCE BKA LAIRE JOH WITTI4"
+          "waypoints": "ARRIE FOCHE PRYCE BKA LAIRE JOH WITTI4"
         },
         {
           "airlines": [
@@ -484,7 +484,7 @@
           ],
           "destination": "PAFA",
           "exit": "ARRIE",
-          "route": "ARRIE YJQ DOOZI SSR AYZOL ORT RDFLG HRDNG4"
+          "waypoints": "ARRIE YJQ DOOZI SSR AYZOL ORT RDFLG HRDNG4"
         },
         {
           "airlines": [
@@ -495,7 +495,7 @@
           ],
           "destination": "PAJN",
           "exit": "PANGL",
-          "route": "PANGL KEVNA LVD R1055 STVNS"
+          "waypoints": "PANGL KEVNA LVD R1055 STVNS"
         },
         {
           "airlines": [
@@ -506,7 +506,7 @@
           ],
           "destination": "KCLT",
           "exit": "NORMY.NITE",
-          "route": "NORMY J90 MWH KU09M LVM RAP GUDDY KP78C IOW ARLYN GVR TAFTT PARQR7"
+          "waypoints": "NORMY J90 MWH KU09M LVM RAP GUDDY KP78C IOW ARLYN GVR TAFTT PARQR7"
         },
         {
           "airlines": [
@@ -517,7 +517,7 @@
           ],
           "destination": "KRDM",
           "exit": "SUMMA.NITE",
-          "route": "SUMMA DSD"
+          "waypoints": "SUMMA DSD"
         }
       ],
       "exit_categories": {
@@ -696,7 +696,7 @@
           "destination": "KUAO",
           "altitude": [7000, 9000],
           "exit": "OLM",
-          "route": "OLM V165 UBG"
+          "waypoints": "OLM V165 UBG"
         },
         {
           "airlines": [
@@ -708,7 +708,7 @@
           "destination": "KTTD",
           "altitude": [7000, 9000],
           "exit": "MCKEN",
-          "route": "MCKEN V23 CANBY"
+          "waypoints": "MCKEN V23 CANBY"
         },
         {
           "airlines": [
@@ -720,7 +720,7 @@
           "destination": "KVUO",
           "altitude": [7000, 9000],
           "exit": "MCKEN",
-          "route": "MCKEN V23 BTG"
+          "waypoints": "MCKEN V23 BTG"
         },
         {
           "airlines": [
@@ -731,7 +731,7 @@
           ],
           "destination": "KTRK",
           "exit": "TAOMA",
-          "route": "TAOMA J5 LKV"
+          "waypoints": "TAOMA J5 LKV"
         },
         {
           "airlines": [
@@ -742,7 +742,7 @@
           ],
           "destination": "KBUR",
           "exit": "SUMMA",
-          "route": "SUMMA Q9 REBRG ROKKR3"
+          "waypoints": "SUMMA Q9 REBRG ROKKR3"
         }
       ],
       "departure_routes": {
@@ -807,7 +807,7 @@
           "destination": "KLAX",
           "altitude": [37000, 35000],
           "exit": "SUMMA",
-          "route": "SUMMA BURGL"
+          "waypoints": "SUMMA BURGL"
         }
       ],
       "traffic_routes": {
@@ -1089,7 +1089,7 @@
           "destination": "KUAO",
           "altitude": [7000, 9000],
           "exit": "OLM",
-          "route": "OLM V165 UBG"
+          "waypoints": "OLM V165 UBG"
         },
         {
           "airlines": [
@@ -1101,7 +1101,7 @@
           "destination": "KTTD",
           "altitude": [7000, 9000],
           "exit": "MCKEN",
-          "route": "MCKEN V23 CANBY"
+          "waypoints": "MCKEN V23 CANBY"
         },
         {
           "airlines": [
@@ -1113,7 +1113,7 @@
           "destination": "KVUO",
           "altitude": [7000, 9000],
           "exit": "MCKEN",
-          "route": "MCKEN V23 BTG"
+          "waypoints": "MCKEN V23 BTG"
         },
         {
           "airlines": [
@@ -1124,7 +1124,7 @@
           ],
           "destination": "KTRK",
           "exit": "TAOMA",
-          "route": "TAOMA J5 LKV"
+          "waypoints": "TAOMA J5 LKV"
         },
         {
           "airlines": [
@@ -1135,7 +1135,7 @@
           ],
           "destination": "PANC",
           "exit": "ARRIE",
-          "route": "PERLL ARRIE LAIRE JOH"
+          "waypoints": "PERLL ARRIE LAIRE JOH"
         },
         {
           "airlines": [
@@ -1146,7 +1146,7 @@
           ],
           "destination": "KBUR",
           "exit": "SUMMA",
-          "route": "SUMMA Q9 REBRG ROKKR3"
+          "waypoints": "SUMMA Q9 REBRG ROKKR3"
         }
       ],
       "tower_list": 2
@@ -3093,7 +3093,7 @@
           "waypoints": "KCLM WATTR/ho JAWBN KSEA",
           "airports": ["KSEA"],
           "cruise_altitude": 5000,
-          "route": "CVV",
+          "flight_strip_route": "CVV",
           "initial_controller": "S03",
           "initial_altitude": 800,
           "assigned_altitude": 5000,
@@ -3118,7 +3118,7 @@
           "waypoints": "KBLI KLSHN/ho CVV KSEA",
           "airports": ["KSEA"],
           "cruise_altitude": 5000,
-          "route": "CVV",
+          "flight_strip_route": "CVV",
           "initial_controller": "S03",
           "initial_altitude": 800,
           "assigned_altitude": 5000,
@@ -3139,7 +3139,7 @@
           "waypoints": "KBVS-11 N048.17.57.017,W122.39.21.593/ho CVV KSEA",
           "airports": ["KSEA"],
           "cruise_altitude": 5000,
-          "route": "CVV",
+          "flight_strip_route": "CVV",
           "initial_controller": "S03",
           "initial_altitude": 800,
           "assigned_altitude": 5000,
@@ -3164,7 +3164,7 @@
           "star": "DEVYN2",
           "spawn": "FRZBY",
           "cruise_altitude": 34000,
-          "route": "/. RADDY",
+          "flight_strip_route": "/. RADDY",
           "initial_controller": "S31",
           "initial_altitude": 18000,
           "initial_speed": 300,
@@ -3188,7 +3188,7 @@
           "airports": ["KPAE"],
           "star": "CHINS5",
           "cruise_altitude": 34000,
-          "route": "/. RADDY",
+          "flight_strip_route": "/. RADDY",
           "initial_controller": "S01",
           "initial_altitude": 18000,
           "initial_speed": 300,
@@ -3208,7 +3208,7 @@
           "airports": ["KBFI"],
           "star": "CHINS5",
           "cruise_altitude": 34000,
-          "route": "/. RADDY",
+          "flight_strip_route": "/. RADDY",
           "initial_controller": "S01",
           "initial_altitude": 18000,
           "initial_speed": 300,
@@ -3228,7 +3228,7 @@
           "airports": ["KSEA"],
           "star": "CHINS5",
           "cruise_altitude": 34000,
-          "route": "/. RADDY",
+          "flight_strip_route": "/. RADDY",
           "initial_controller": "S01",
           "initial_altitude": 18000,
           "initial_speed": 300,
@@ -3283,7 +3283,7 @@
           "star": "CHINS5",
           "airports": ["KRNT", "KPAE", "KSEA", "KBFI"],
           "cruise_altitude": 22000,
-          "route": "/. RADDY",
+          "flight_strip_route": "/. RADDY",
           "initial_controller": "S01",
           "initial_altitude": 22000,
           "initial_speed": 220,
@@ -3325,7 +3325,7 @@
           "star": "CHINS5",
           "airports": ["KRNT"],
           "cruise_altitude": 34000,
-          "route": "/. RADDY",
+          "flight_strip_route": "/. RADDY",
           "initial_controller": "S01",
           "initial_altitude": 27000,
           "initial_speed": 330,
@@ -3346,7 +3346,7 @@
           "star": "CHINS5",
           "airports": ["KSEA", "KBFI", "KPAE"],
           "cruise_altitude": 34000,
-          "route": "/. RADDY",
+          "flight_strip_route": "/. RADDY",
           "initial_controller": "S01",
           "initial_altitude": 27000,
           "initial_speed": 330,
@@ -3431,7 +3431,7 @@
           "waypoints": "N047.28.56.732,W120.19.56.878 ZARLO/s250 N047.44.54.863,W120.53.37.922/ho GLASR/s300 JAKSN/s270 WOODI/d12000 HETHR/s250/h163",
           "cruise_altitude": 14000,
           "airports": ["KSEA"],
-          "route": "/. GLASR",
+          "flight_strip_route": "/. GLASR",
           "initial_controller": "S31",
           "initial_altitude": 1700,
           "assigned_altitude": 14000,
@@ -3451,7 +3451,7 @@
           "waypoints": "WITRO ODAHL/ho GLASR JAKSN/a16000+/s270 WOODI/a14000- HETHR/a12000/s250/h163",
           "cruise_altitude": 34000,
           "airports": ["KSEA", "KBFI"],
-          "route": "/. GLASR",
+          "flight_strip_route": "/. GLASR",
           "initial_controller": "S31",
           "initial_altitude": 33000,
           "initial_speed": 320,
@@ -3539,7 +3539,7 @@
           "waypoints": "WITRO ODAHL/ho GLASR JAKSN/a11000/s250 WOODI HETHR/h250",
           "cruise_altitude": 14000,
           "airports": ["KBFI"],
-          "route": "/. GLASR",
+          "flight_strip_route": "/. GLASR",
           "initial_controller": "S31",
           "initial_altitude": 30000,
           "initial_speed": 300,
@@ -3558,7 +3558,7 @@
           "waypoints": "N047.28.56.732,W120.19.56.878 ZARLO/s250 N047.44.54.863,W120.53.37.922/ho GLASR/d12000/s300 JAKSN/s270 WOODI HETHR/s250/h163",
           "cruise_altitude": 14000,
           "airports": ["KSEA"],
-          "route": "/. GLASR",
+          "flight_strip_route": "/. GLASR",
           "initial_controller": "S31",
           "initial_altitude": 1700,
           "assigned_altitude": 14000,
@@ -3578,7 +3578,7 @@
           "waypoints": "WITRO ODAHL/ho GLASR JAKSN/a12000/s250 WOODI HETHR/h250",
           "cruise_altitude": 34000,
           "airports": ["KSEA"],
-          "route": "/. GLASR",
+          "flight_strip_route": "/. GLASR",
           "initial_controller": "S31",
           "initial_altitude": 31000,
           "initial_speed": 320,
@@ -3681,7 +3681,7 @@
           "waypoints": "COUGA/s280 OLM/a13000/s250/ho LACEE ARVAD FOURT/h70",
           "cruise_altitude": 34000,
           "airports": ["KBFI", "KPAE"],
-          "route": "/. OLM",
+          "flight_strip_route": "/. OLM",
           "star": "OLM2",
           "initial_controller": "S04",
           "initial_altitude": 30000,
@@ -3715,7 +3715,7 @@
           "star": "HAWKZ8",
           "is_rnav": true,
           "airports": ["KSEA"],
-          "route": "/. KRIEG",
+          "flight_strip_route": "/. KRIEG",
           "initial_controller": "S04",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -3800,7 +3800,7 @@
           "star": "HAWKZ8",
           "is_rnav": true,
           "airports": ["KSEA"],
-          "route": "/. KRIEG",
+          "flight_strip_route": "/. KRIEG",
           "initial_controller": "S04",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -4167,7 +4167,7 @@
           "waypoints": "COUGA/s300 OLM/a17000+/s270/ho LACEE ARVAD/a13000/s250 FOURT/h343",
           "cruise_altitude": 34000,
           "airports": ["KBFI", "KPAE"],
-          "route": "/. OLM",
+          "flight_strip_route": "/. OLM",
           "star": "OLM2",
           "initial_controller": "S04",
           "initial_altitude": 34000,
@@ -4201,7 +4201,7 @@
           "star": "HAWKZ8",
           "is_rnav": true,
           "airports": ["KSEA"],
-          "route": "/. KRIEG",
+          "flight_strip_route": "/. KRIEG",
           "initial_controller": "S04",
           "initial_altitude": 30000,
           "initial_speed": 280,
@@ -4284,7 +4284,7 @@
           "waypoints": "PTERA KRIEG/ho HAWKZ/a12000+/s270 LIINE PIKEZ/a12000-15000/s250 COFAY BREVE/a10000-11000/s250 NETTZ/a8000+/s230 KWEST/a7000+ VASHN/a6000/s210/t344",
           "cruise_altitude": 34000,
           "airports": ["KSEA"],
-          "route": "/. KRIEG",
+          "flight_strip_route": "/. KRIEG",
           "star": "HAWKZ8",
           "is_rnav": true,
           "initial_controller": "S04",
@@ -4584,7 +4584,7 @@
           "waypoints": "TOU JAWBN/a16000+/s270/ho DIGGN ALKIA/a12000/s250/h163",
           "cruise_altitude": 35000,
           "airports": ["KBFI"],
-          "route": "/. JAWBN",
+          "flight_strip_route": "/. JAWBN",
           "initial_controller": "S03",
           "initial_altitude": 35000,
           "initial_speed": 320,
@@ -4606,7 +4606,7 @@
           "is_rnav": true,
           "description": "VIXOR Transition",
           "airports": ["KSEA"],
-          "route": "/. MARNR",
+          "flight_strip_route": "/. MARNR",
           "initial_controller": "S03",
           "initial_altitude": 30000,
           "initial_speed": 280,
@@ -4693,7 +4693,7 @@
           "is_rnav": true,
           "description": "TOU Transition",
           "airports": ["KSEA"],
-          "route": "/. MARNR",
+          "flight_strip_route": "/. MARNR",
           "initial_controller": "S03",
           "initial_altitude": 30000,
           "initial_speed": 280,
@@ -4789,7 +4789,7 @@
           "is_rnav": true,
           "description": "ROESH Transition",
           "airports": ["KSEA"],
-          "route": "/. MARNR",
+          "flight_strip_route": "/. MARNR",
           "initial_controller": "S03",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -4816,7 +4816,7 @@
           "waypoints": "TOU JAWBN/a11000/s250/ho DIGGN ALKIA/h70",
           "cruise_altitude": 34000,
           "airports": ["KBFI"],
-          "route": "/. JAWBN",
+          "flight_strip_route": "/. JAWBN",
           "initial_controller": "S03",
           "initial_altitude": 31000,
           "initial_speed": 300,
@@ -4838,7 +4838,7 @@
           "is_rnav": true,
           "description": "VIXOR Transition",
           "airports": ["KSEA"],
-          "route": "/. MARNR",
+          "flight_strip_route": "/. MARNR",
           "initial_controller": "S03",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -4925,7 +4925,7 @@
           "is_rnav": true,
           "description": "TOU Transition",
           "airports": ["KSEA"],
-          "route": "/. MARNR",
+          "flight_strip_route": "/. MARNR",
           "initial_controller": "S03",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -5021,7 +5021,7 @@
           "is_rnav": true,
           "description": "ROESH Transition",
           "airports": ["KSEA"],
-          "route": "/. MARNR",
+          "flight_strip_route": "/. MARNR",
           "initial_controller": "S03",
           "initial_altitude": 15000,
           "initial_speed": 280,

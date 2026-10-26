@@ -608,7 +608,7 @@ func (in *inspector) drawAirportDestinations(a *app, ap *av.Airport) {
 		imgui.TableNextColumn()
 		imgui.Text(strings.Join(util.MapSlice(dep.Altitudes, func(alt int) string { return fmt.Sprint(alt) }), ", "))
 		imgui.TableNextColumn()
-		in.routeCell(a, "route", dep.Route)
+		in.routeCell(a, "route", dep.WaypointsString)
 		imgui.PopID()
 	}
 }

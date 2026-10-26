@@ -65,7 +65,7 @@
           ],
           "destination": "KJAX",
           "exit": "EMI",
-          "route": "VINNY EMI GVE Q75 SLOJO Q83 WURFL ESENT LUNNI1"
+          "waypoints": "VINNY EMI GVE Q75 SLOJO Q83 WURFL ESENT LUNNI1"
         },
         {
           "airlines": [
@@ -76,7 +76,7 @@
           ],
           "destination": "KSFB",
           "exit": "EMI",
-          "route": "VINNY EMI GVE Q75 SLOJO Q83 LPERD TTHOR3"
+          "waypoints": "VINNY EMI GVE Q75 SLOJO Q83 LPERD TTHOR3"
         },
         {
           "airlines": [
@@ -87,7 +87,7 @@
           ],
           "destination": "KPGD",
           "exit": "EMI",
-          "route": "VINNY EMI EVE Q75 SLOJO Q103 PUPYY KYYUU LUBBR3"
+          "waypoints": "VINNY EMI EVE Q75 SLOJO Q103 PUPYY KYYUU LUBBR3"
         },
         {
           "airlines": [
@@ -98,7 +98,7 @@
           ],
           "destination": "KSRQ",
           "exit": "EMI",
-          "route": "VINNY EMI GVE Q75 SLOJO Q103 PUPPY KYYUU LUBBR3"
+          "waypoints": "VINNY EMI GVE Q75 SLOJO Q103 PUPPY KYYUU LUBBR3"
         },
         {
           "airlines": [
@@ -109,7 +109,7 @@
           ],
           "destination": "KPIE",
           "exit": "EMI",
-          "route": "VINNY EMI GVE Q75 TUEFL BAAMF DADES1"
+          "waypoints": "VINNY EMI GVE Q75 TUEFL BAAMF DADES1"
         },
         {
           "airlines": [
@@ -120,7 +120,7 @@
           ],
           "destination": "KMYR",
           "exit": "EMI",
-          "route": "VINNY EMI Q119 SCOOB ILM WYLMS"
+          "waypoints": "VINNY EMI Q119 SCOOB ILM WYLMS"
         },
         {
           "airlines": [
@@ -130,7 +130,7 @@
           ],
           "destination": "KBNA",
           "exit": "HAR",
-          "route": "HAR V377 HGR EYTEE J6 HVQ GROAT PASLY4"
+          "waypoints": "HAR V377 HGR EYTEE J6 HVQ GROAT PASLY4"
         },
         {
           "airlines": [
@@ -148,7 +148,7 @@
           ],
           "destination": "KCLT",
           "exit": "EMI",
-          "route": "VINNY EMI GVE AIROW CHSLY9"
+          "waypoints": "VINNY EMI GVE AIROW CHSLY9"
         },
         {
           "airlines": [
@@ -159,7 +159,7 @@
           ],
           "destination": "KDFW",
           "exit": "SCAPE",
-          "route": "SCAPE HGR MRB J6 HVQ Q68 RAMRD IZAAC YUYUN WHINY4"
+          "waypoints": "SCAPE HGR MRB J6 HVQ Q68 RAMRD IZAAC YUYUN WHINY4"
         },
         {
           "airlines": [
@@ -169,7 +169,7 @@
           ],
           "destination": "KBOS",
           "exit": "KIACK",
-          "route": "GAAPP KIACK HNK PONCT JFUND2"
+          "waypoints": "GAAPP KIACK HNK PONCT JFUND2"
         },
         {
           "airlines": [
@@ -190,7 +190,7 @@
           ],
           "destination": "KORD",
           "exit": "MCMAN",
-          "route": "MCMAN J64 EWC WEEVR Q62 WATSN WATSN4"
+          "waypoints": "MCMAN J64 EWC WEEVR Q62 WATSN WATSN4"
         },
         {
           "airlines": [
@@ -201,7 +201,7 @@
           "altitude": 10000,
           "destination": "KPHL",
           "exit": "LRP",
-          "route": "LRP BOJID4"
+          "waypoints": "LRP BOJID4"
         },
         {
           "airlines": [
@@ -212,7 +212,7 @@
           ],
           "destination": "KATL",
           "exit": "EMI",
-          "route": "GRAMO VINNY EMI J48 MOL FLASK OZZI1"
+          "waypoints": "GRAMO VINNY EMI J48 MOL FLASK OZZI1"
         },
         {
           "airlines": [
@@ -227,7 +227,7 @@
           ],
           "destination": "KDTW",
           "exit": "VINSE",
-          "route": "VINSE LEJOY ROZAR BONZZ2"
+          "waypoints": "VINSE LEJOY ROZAR BONZZ2"
         },
         {
           "airlines": [
@@ -238,7 +238,7 @@
           "altitude": 16000,
           "destination": "KIAD",
           "exit": "WILSS",
-          "route": "WILSS WAYNZ2"
+          "waypoints": "WILSS WAYNZ2"
         },
         {
           "airlines": [
@@ -249,7 +249,7 @@
           "altitude": 7000,
           "destination": "KABE",
           "exit": "LRP",
-          "route": "LRP V39 ETX"
+          "waypoints": "LRP V39 ETX"
         },
         {
           "airlines": [
@@ -260,7 +260,7 @@
           ],
           "destination": "KIND",
           "exit": "HAR",
-          "route": "HAR BRNAN Q42 BUBAA Q42 HIDON RINTE SNKPT2"
+          "waypoints": "HAR BRNAN Q42 BUBAA Q42 HIDON RINTE SNKPT2"
         },
         {
           "airlines": [
@@ -271,7 +271,7 @@
           ],
           "destination": "KMEM",
           "exit": "EMI",
-          "route": "EMI UNCKL Q68 RAMRD BLUZZ5"
+          "waypoints": "EMI UNCKL Q68 RAMRD BLUZZ5"
         },
         {
           "airlines": [
@@ -282,7 +282,7 @@
           ],
           "destination": "KRFD",
           "exit": "MCMAN",
-          "route": "MCMAN J64 BURNI J64 EWC GIJ OBK HIGUH EMMAS1"
+          "waypoints": "MCMAN J64 BURNI J64 EWC GIJ OBK HIGUH EMMAS1"
         },
         {
           "airlines": [
@@ -293,7 +293,7 @@
           ],
           "destination": "KSDF",
           "exit": "HAR",
-          "route": "HAR HVQ Q68 YOCKY LEDDL1"
+          "waypoints": "HAR HVQ Q68 YOCKY LEDDL1"
         },
         {
           "airlines": [
@@ -304,7 +304,7 @@
           ],
           "destination": "KBKW",
           "exit": "THS",
-          "route": "THS EKN"
+          "waypoints": "THS EKN"
         },
         {
           "airlines": [
@@ -315,7 +315,7 @@
           ],
           "destination": "KOKC",
           "exit": "MCMAN",
-          "route": "MCMAN J64 EWC SGF TUL GULLI3"
+          "waypoints": "MCMAN J64 EWC SGF TUL GULLI3"
         },
         {
           "airlines": [
@@ -326,7 +326,7 @@
           ],
           "destination": "CYXU",
           "exit": "PSB",
-          "route": "PSB"
+          "waypoints": "PSB"
         },
         {
           "airlines": [
@@ -337,7 +337,7 @@
           ],
           "destination": "KBHM",
           "exit": "EMI",
-          "route": "GRAMO VINNY EMI J48 CSN FANPO Q40 NIOLA DIODE"
+          "waypoints": "GRAMO VINNY EMI J48 CSN FANPO Q40 NIOLA DIODE"
         },
         {
           "airlines": [
@@ -348,7 +348,7 @@
           ],
           "destination": "KBKL",
           "exit": "PSB",
-          "route": "PSB UPPRR TRYBE4"
+          "waypoints": "PSB UPPRR TRYBE4"
         },
         {
           "airlines": [
@@ -359,7 +359,7 @@
           ],
           "destination": "KCLE",
           "exit": "PSB",
-          "route": "PSB UPPRR TRYBE4"
+          "waypoints": "PSB UPPRR TRYBE4"
         },
         {
           "airlines": [
@@ -369,7 +369,7 @@
           ],
           "destination": "KDAL",
           "exit": "SCAPE",
-          "route": "SCAPE HGR MRB J6 PERKS TOMCA Q68 LITTR DIRRK CRIKT1"
+          "waypoints": "SCAPE HGR MRB J6 PERKS TOMCA Q68 LITTR DIRRK CRIKT1"
         },
         {
           "airlines": [
@@ -381,7 +381,7 @@
           "altitude": 15000,
           "destination": "KHPN",
           "exit": "KIACK",
-          "route": "GAAPP KIACK LAAYK T216 IGN V157 HAARP"
+          "waypoints": "GAAPP KIACK LAAYK T216 IGN V157 HAARP"
         },
         {
           "airlines": [
@@ -392,7 +392,7 @@
           ],
           "destination": "KMCO",
           "exit": "GRAMO",
-          "route": "GRAMO T291 VINNY EMI GVE Q75 SLOJO Q83 EFFAY Q83 ROYCO Q85 LPERD SNFLD3"
+          "waypoints": "GRAMO T291 VINNY EMI GVE Q75 SLOJO Q83 EFFAY Q83 ROYCO Q85 LPERD SNFLD3"
         },
         {
           "airlines": [
@@ -402,7 +402,7 @@
           ],
           "destination": "KPWA",
           "exit": "HAR",
-          "route": "HAR BURGS RGERS JUDDI FAM J78 TUL T422 SEARS AWLIV JUDDG2"
+          "waypoints": "HAR BURGS RGERS JUDDI FAM J78 TUL T422 SEARS AWLIV JUDDG2"
         },
         {
           "airlines": [
@@ -412,7 +412,7 @@
           ],
           "destination": "KSDL",
           "exit": "VINSE",
-          "route": "VINSE J110 BUM J134 ROKNE Q176 CIM FORUN INW DSERT2"
+          "waypoints": "VINSE J110 BUM J134 ROKNE Q176 CIM FORUN INW DSERT2"
         },
         {
           "airlines": [
@@ -423,7 +423,7 @@
           ],
           "destination": "KSTP",
           "exit": "PSB",
-          "route": "PSB J60 DJB J34 BAE AGUDE5"
+          "waypoints": "PSB J60 DJB J34 BAE AGUDE5"
         },
         {
           "airlines": [
@@ -433,7 +433,7 @@
           ],
           "destination": "KMIA",
           "exit": "GRAMO",
-          "route": "GRAMO BAL SCOOB EARZZ SKARP Y313 HOAGG BNFSH2"
+          "waypoints": "GRAMO BAL SCOOB EARZZ SKARP Y313 HOAGG BNFSH2"
         }
       ],
       "exit_categories": {
@@ -498,7 +498,7 @@
           ],
           "destination": "KXLL",
           "exit": "HWANG",
-          "route": "HWANG V162 ETX"
+          "waypoints": "HWANG V162 ETX"
         },
         {
           "airlines": [
@@ -509,7 +509,7 @@
           ],
           "destination": "KCMH",
           "exit": "VINSE",
-          "route": "VINSE J110 AIR CLIPPR2"
+          "waypoints": "VINSE J110 AIR CLIPPR2"
         },
         {
           "airlines": [
@@ -520,7 +520,7 @@
           ],
           "destination": "KTEB",
           "exit": "KIACK",
-          "route": "KIACK T212 LVZ V226 MUGZY"
+          "waypoints": "KIACK T212 LVZ V226 MUGZY"
         },
         {
           "airlines": [
@@ -530,7 +530,7 @@
           ],
           "destination": "KOWD",
           "exit": "ETX",
-          "route": "ETX V162 HUO PWL HFD"
+          "waypoints": "ETX V162 HUO PWL HFD"
         },
         {
           "airlines": [
@@ -540,7 +540,7 @@
           ],
           "destination": "KPIT",
           "exit": "VINSE",
-          "route": "VINSE DEMME5"
+          "waypoints": "VINSE DEMME5"
         },
         {
           "airlines": [
@@ -551,7 +551,7 @@
           "altitude": 6000,
           "destination": "KRDG",
           "exit": "HAR",
-          "route": "HAR V12 BOYER"
+          "waypoints": "HAR V12 BOYER"
         },
         {
           "airlines": [
@@ -565,7 +565,7 @@
           "altitude": 28000,
           "destination": "KERI",
           "exit": "PSB",
-          "route": "PSB"
+          "waypoints": "PSB"
         },
         {
           "airlines": [
@@ -576,7 +576,7 @@
           ],
           "destination": "KCFO",
           "exit": "HAR",
-          "route": "HAR AVERE SNY LANDR3"
+          "waypoints": "HAR AVERE SNY LANDR3"
         },
         {
           "airlines": [
@@ -587,7 +587,7 @@
           ],
           "destination": "KGNV",
           "exit": "EMI",
-          "route": "VINNY EMI Q75 SLOJO Q103 CYNTA"
+          "waypoints": "VINNY EMI Q75 SLOJO Q103 CYNTA"
         },
         {
           "airlines": [
@@ -597,7 +597,7 @@
           ],
           "destination": "KBKL",
           "exit": "HAR",
-          "route": "HAR YNG"
+          "waypoints": "HAR YNG"
         },
         {
           "airlines": [
@@ -608,7 +608,7 @@
           ],
           "destination": "KTMB",
           "exit": "GRAMO",
-          "route": "GRAMO BAL OTT HUBBS ILM OSTNN HIBAC TARPN3"
+          "waypoints": "GRAMO BAL OTT HUBBS ILM OSTNN HIBAC TARPN3"
         },
         {
           "airlines": [
@@ -619,7 +619,7 @@
           "altitude": 5000,
           "destination": "KPNE",
           "exit": "LRP",
-          "route": "LRP V210 BUNTS"
+          "waypoints": "LRP V210 BUNTS"
         },
         {
           "airlines": [
@@ -630,7 +630,7 @@
           ],
           "destination": "KOXC",
           "exit": "ETX",
-          "route": "ETX SLYNG NYACK"
+          "waypoints": "ETX SLYNG NYACK"
         },
         {
           "airlines": [
@@ -640,7 +640,7 @@
           ],
           "destination": "KBTP",
           "exit": "HAR",
-          "route": "HAR REC"
+          "waypoints": "HAR REC"
         },
         {
           "airlines": [
@@ -651,7 +651,7 @@
           ],
           "destination": "KAGC",
           "exit": "VINSE",
-          "route": "VINSE "
+          "waypoints": "VINSE "
         },
         {
           "airlines": [
@@ -662,7 +662,7 @@
           ],
           "destination": "KUNV",
           "exit": "HAR",
-          "route": "HAR"
+          "waypoints": "HAR"
         },
         {
           "airlines": [
@@ -673,7 +673,7 @@
           ],
           "destination": "KBED",
           "exit": "GAAPP",
-          "route": "GAAPP KIACK HNK EEGUL ZELKA2"
+          "waypoints": "GAAPP KIACK HNK EEGUL ZELKA2"
         },
         {
           "airlines": [
@@ -684,7 +684,7 @@
           ],
           "destination": "KLCI",
           "exit": "GAAPP",
-          "route": "GAAPP LAAYK EEN"
+          "waypoints": "GAAPP LAAYK EEN"
         },
         {
           "airlines": [
@@ -695,7 +695,7 @@
           ],
           "destination": "KOXB",
           "exit": "DQO",
-          "route": "DQO ENO"
+          "waypoints": "DQO ENO"
         },
         {
           "airlines": [
@@ -706,7 +706,7 @@
           ],
           "destination": "KPSB",
           "exit": "PSB",
-          "route": "PSB"
+          "waypoints": "PSB"
         },
         {
           "airlines": [
@@ -716,7 +716,7 @@
           ],
           "destination": "KPVD",
           "exit": "GAAPP",
-          "route": "GAAPP LAAYK T216 HFD PVD"
+          "waypoints": "GAAPP LAAYK T216 HFD PVD"
         },
         {
           "airlines": [
@@ -727,7 +727,7 @@
           ],
           "destination": "KSUS",
           "exit": "HAR",
-          "route": "HAR V469 GRAHM J110 AIR AGNUS STL"
+          "waypoints": "HAR V469 GRAHM J110 AIR AGNUS STL"
         }
       ],
       "tower_list": 2,
@@ -789,7 +789,7 @@
           "altitude": 15000,
           "destination": "KHPN",
           "exit": "HAR",
-          "route": "HAR KIACK LAAYK T216 IGN V157 HAARP"
+          "waypoints": "HAR KIACK LAAYK T216 IGN V157 HAARP"
         },
         {
           "airlines": [
@@ -801,7 +801,7 @@
           "altitude": 6000,
           "destination": "KHEF",
           "exit": "LRP",
-          "route": "LRP T295 TUNDR VAALI"
+          "waypoints": "LRP T295 TUNDR VAALI"
         },
         {
           "airlines": [
@@ -811,7 +811,7 @@
           ],
           "destination": "KPIT",
           "exit": "HAR",
-          "route": "HAR NESTO"
+          "waypoints": "HAR NESTO"
         },
         {
           "airlines": [
@@ -821,7 +821,7 @@
           ],
           "destination": "KIAD",
           "exit": "LRP",
-          "route": "LRP DELRO LIRCH HYPER1"
+          "waypoints": "LRP DELRO LIRCH HYPER1"
         },
         {
           "airlines": [
@@ -831,7 +831,7 @@
           ],
           "destination": "KMCO",
           "exit": "LRP",
-          "route": "LRP V457 EMI GVE Q75 SLOJO Q83 ROYCO Q85 LPERD SNFLD3"
+          "waypoints": "LRP V457 EMI GVE Q75 SLOJO Q83 ROYCO Q85 LPERD SNFLD3"
         },
         {
           "airlines": [
@@ -842,7 +842,7 @@
           ],
           "destination": "KLUK",
           "exit": "VINSE",
-          "route": "VINSE J110 AIR BOWRR JARSO ZAVUM"
+          "waypoints": "VINSE J110 AIR BOWRR JARSO ZAVUM"
         },
         {
           "airlines": [
@@ -853,7 +853,7 @@
           ],
           "destination": "KAVL",
           "exit": "EMI",
-          "route": "EMI CSN MOL"
+          "waypoints": "EMI CSN MOL"
         },
         {
           "airlines": [
@@ -864,7 +864,7 @@
           ],
           "destination": "CYPQ",
           "exit": "SEG",
-          "route": "SEG AHPAH"
+          "waypoints": "SEG AHPAH"
         },
         {
           "airlines": [
@@ -875,7 +875,7 @@
           ],
           "destination": "KDAY",
           "exit": "HAR",
-          "route": "HAR AIR ZZV"
+          "waypoints": "HAR AIR ZZV"
         },
         {
           "airlines": [
@@ -886,7 +886,7 @@
           ],
           "destination": "KIPT",
           "exit": "GAAPP",
-          "route": "GAAPP"
+          "waypoints": "GAAPP"
         },
         {
           "airlines": [
@@ -897,7 +897,7 @@
           ],
           "destination": "KPGV",
           "exit": "LRP",
-          "route": "LRP T295 SHLBK T291 HCM"
+          "waypoints": "LRP T295 SHLBK T291 HCM"
         },
         {
           "airlines": [
@@ -908,7 +908,7 @@
           ],
           "destination": "KSLK",
           "exit": "LRP",
-          "route": "LRP V93 LAAYK DNY"
+          "waypoints": "LRP V93 LAAYK DNY"
         },
         {
           "airlines": [
@@ -919,7 +919,7 @@
           ],
           "destination": "KSUA",
           "exit": "LRP",
-          "route": "LRP AML SAV TUXXI"
+          "waypoints": "LRP AML SAV TUXXI"
         },
         {
           "airlines": [
@@ -930,7 +930,7 @@
           ],
           "destination": "KTEB",
           "exit": "LRP",
-          "route": "LRP V93 LVZ V226 MUGZY"
+          "waypoints": "LRP V93 LVZ V226 MUGZY"
         }
       ],
       "tower_list": 3,
@@ -1088,7 +1088,7 @@
           "initial_altitude": 23000,
           "initial_controller": "N27",
           "initial_speed": 280,
-          "route": "/. V377 HAR",
+          "flight_strip_route": "/. V377 HAR",
           "scratchpad": "HAR",
           "waypoints": "KUTSE HGR SCAPE N040.08.24.945,W077.16.56.400/a9000/ho HAR"
         },
@@ -1202,7 +1202,7 @@
           "initial_altitude": 19000,
           "initial_controller": "N27",
           "initial_speed": 280,
-          "route": "/. T299 HAR",
+          "flight_strip_route": "/. T299 HAR",
           "scratchpad": "HAR",
           "waypoints": "N039.36.49.735,W078.04.45.919 REEES/a15000 SCAPE N040.08.24.945,W077.16.56.400/a9000/ho HAR"
         },
@@ -1226,7 +1226,7 @@
           "initial_altitude": 20000,
           "initial_controller": "N27",
           "initial_speed": 280,
-          "route": "/. REC HAR",
+          "flight_strip_route": "/. REC HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.29.35.582,W078.20.48.925 N040.24.07.792,W077.43.17.552/a11000 N040.21.06.723,W077.23.47.865/a9000/ho HAR"
         },
@@ -1263,7 +1263,7 @@
           "initial_altitude": 19000,
           "initial_controller": "N27",
           "initial_speed": 280,
-          "route": "/. EWC HAR",
+          "flight_strip_route": "/. EWC HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.33.20.582,W078.33.22.835 N040.28.15.643,W078.03.03.966/a11000 N040.20.24.440,W077.17.26.804/a9000/ho HAR"
         },
@@ -1282,7 +1282,7 @@
           "initial_altitude": 18000,
           "initial_controller": "N27",
           "initial_speed": 250,
-          "route": "/. COFAX HAR",
+          "flight_strip_route": "/. COFAX HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.12.18.377,W078.23.58.659 COFAX N040.17.38.985,W077.43.20.216/a11000 N040.18.28.108,W077.17.43.421/a9000/ho HAR"
         },
@@ -1306,7 +1306,7 @@
           "initial_altitude": 21000,
           "initial_controller": "N27",
           "initial_speed": 250,
-          "route": "/. J152 HAR",
+          "flight_strip_route": "/. J152 HAR",
           "scratchpad": "HAR",
           "waypoints": "MIROY J152 JUNEY/a9000/ho HAR"
         },
@@ -1331,7 +1331,7 @@
           "initial_altitude": 7000,
           "initial_controller": "C66",
           "initial_speed": 145,
-          "route": "/. HAR",
+          "flight_strip_route": "/. HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.23.11.020,W078.19.41.497/ho HAR"
         },
@@ -1349,7 +1349,7 @@
           "initial_altitude": 5000,
           "initial_controller": "61L",
           "initial_speed": 145,
-          "route": "/. T299 HAR",
+          "flight_strip_route": "/. T299 HAR",
           "scratchpad": "HAR",
           "waypoints": "N039.36.49.735,W078.04.45.919/ho REEES T299 HAR"
         },
@@ -1368,7 +1368,7 @@
           "initial_altitude": 7000,
           "initial_controller": "C66",
           "initial_speed": 250,
-          "route": "/. HAR",
+          "flight_strip_route": "/. HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.09.01.818,W078.05.31.759/ho HAR"
         },
@@ -1387,7 +1387,7 @@
           "initial_altitude": 7000,
           "initial_controller": "61L",
           "initial_speed": 150,
-          "route": "/. T291 HAR",
+          "flight_strip_route": "/. T291 HAR",
           "scratchpad": "HAR",
           "waypoints": "BAABS T291 VINNY/ho T291 HAR"
         },
@@ -1406,7 +1406,7 @@
           "initial_altitude": 5000,
           "initial_controller": "63M",
           "initial_speed": 120,
-          "route": "/. V143 LRP",
+          "flight_strip_route": "/. V143 LRP",
           "scratchpad": "LRP",
           "waypoints": "HYPER/ho V143 LRP"
         },
@@ -1425,7 +1425,7 @@
           "initial_altitude": 7000,
           "initial_controller": "N91",
           "initial_speed": 100,
-          "route": "/. HAR",
+          "flight_strip_route": "/. HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.33.12.411,W077.30.15.847/ho HAR"
         },
@@ -1444,7 +1444,7 @@
           "initial_altitude": 7000,
           "initial_controller": "N91",
           "initial_speed": 250,
-          "route": "/. RAV",
+          "flight_strip_route": "/. RAV",
           "scratchpad": "RAV",
           "waypoints": "N041.03.30.552,W076.49.52.373/ho RAV"
         },
@@ -1462,7 +1462,7 @@
           "initial_altitude": 17000,
           "initial_controller": "N27",
           "initial_speed": 280,
-          "route": "/. SCAPE HAR",
+          "flight_strip_route": "/. SCAPE HAR",
           "scratchpad": "HAR",
           "waypoints": "N039.40.38.635,W078.04.50.423 SCAPE N040.07.36.234,W077.17.39.219/a9000/ho HAR"
         },
@@ -1481,7 +1481,7 @@
           "initial_altitude": 17000,
           "initial_controller": "N27",
           "initial_speed": 280,
-          "route": "/. SCAPE V377 HAR",
+          "flight_strip_route": "/. SCAPE V377 HAR",
           "scratchpad": "HAR",
           "waypoints": "N039.40.50.321,W077.58.08.735 SCAPE N040.06.47.592,W077.18.54.997/a9000/ho HAR"
         },
@@ -1500,7 +1500,7 @@
           "initial_altitude": 11000,
           "initial_controller": "N27",
           "initial_speed": 190,
-          "route": "/. PSB",
+          "flight_strip_route": "/. PSB",
           "scratchpad": "PSB",
           "waypoints": "N040.34.00.065,W077.23.02.794 N040.19.16.118,W076.58.23.814/a9000/ho"
         },
@@ -1519,7 +1519,7 @@
           "initial_altitude": 9000,
           "initial_controller": "N27",
           "initial_speed": 170,
-          "route": "/. HAR",
+          "flight_strip_route": "/. HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.34.31.595,W077.26.41.806 N040.25.03.424,W077.13.28.731/a9000/ho HAR"
         },
@@ -1537,7 +1537,7 @@
           "initial_altitude": 9000,
           "initial_controller": "N27",
           "initial_speed": 280,
-          "route": "/. EMI",
+          "flight_strip_route": "/. EMI",
           "scratchpad": "EMI",
           "waypoints": "EMI N039.31.19.898,W076.58.19.777/a9000/ho"
         }
@@ -1605,7 +1605,7 @@
           "initial_altitude": 16000,
           "initial_controller": "N92",
           "initial_speed": 250,
-          "route": "/. HUO HAR",
+          "flight_strip_route": "/. HUO HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.52.36.317,W075.47.24.689 N040.34.42.609,W076.27.22.318/a9000/ho HAR"
         },
@@ -1624,7 +1624,7 @@
           "initial_altitude": 4000,
           "initial_controller": "21D",
           "initial_speed": 100,
-          "route": "/. HUO HAR",
+          "flight_strip_route": "/. HUO HAR",
           "scratchpad": "HAR",
           "waypoints": "N040.52.36.317,W075.47.24.689/ho HAR"
         },
@@ -1644,7 +1644,7 @@
           "assigned_altitude": 6000,
           "initial_controller": "21D",
           "initial_speed": 60,
-          "route": "ETX V162 HAR",
+          "flight_strip_route": "ETX V162 HAR",
           "scratchpad": "HAR",
           "waypoints": "KABE-6 ETX DUMMR/ho HWANG BOBSS HAR"
         },
@@ -1684,7 +1684,7 @@
           "initial_altitude": 14000,
           "initial_controller": "N26",
           "initial_speed": 280,
-          "route": "/. V162 HWANG",
+          "flight_strip_route": "/. V162 HWANG",
           "scratchpad": "HWG",
           "waypoints": "LYTEL V93 DUMMR/a9000/ho V162 HWANG/a8000"
         },
@@ -1704,7 +1704,7 @@
           "assigned_altitude": 6000,
           "initial_controller": "21D",
           "initial_speed": 100,
-          "route": "/. V162 HWANG",
+          "flight_strip_route": "/. V162 HWANG",
           "scratchpad": "ETX",
           "waypoints": "KXLL-25 ETX DUMMR/ho HWANG"
         },
@@ -1723,7 +1723,7 @@
           "initial_altitude": 9000,
           "initial_controller": "N26",
           "initial_speed": 250,
-          "route": "/. LVZ",
+          "flight_strip_route": "/. LVZ",
           "scratchpad": "LVZ",
           "waypoints": "N040.55.47.602,W075.52.17.475 N040.27.57.598,W076.07.03.358/ho"
         },
@@ -1742,7 +1742,7 @@
           "initial_altitude": 5000,
           "initial_controller": "N91",
           "initial_speed": 145,
-          "route": "/. SEG RAV",
+          "flight_strip_route": "/. SEG RAV",
           "scratchpad": "SEG",
           "waypoints": "N040.57.50.169,W077.08.33.858/ho SEG RAV"
         },
@@ -1761,7 +1761,7 @@
           "initial_altitude": 17000,
           "initial_controller": "N91",
           "initial_speed": 280,
-          "route": "/. RAV",
+          "flight_strip_route": "/. RAV",
           "scratchpad": "RAV",
           "waypoints": "N041.02.15.681,W076.50.08.468 RAV/a9000/ho"
         }
@@ -1800,7 +1800,7 @@
           "initial_altitude": 5000,
           "initial_controller": "63M",
           "initial_speed": 120,
-          "route": "/. V143 LRP",
+          "flight_strip_route": "/. V143 LRP",
           "scratchpad": "LRP",
           "waypoints": "HYPER/ho V143 LRP"
         },
@@ -1819,7 +1819,7 @@
           "initial_altitude": 8000,
           "initial_controller": "21D",
           "initial_speed": 250,
-          "route": "/. V457 WEPNA",
+          "flight_strip_route": "/. V457 WEPNA",
           "scratchpad": "WPA",
           "waypoints": "TOWIN BUSKY KATVE/ho HOUTN WEPNA"
         },
@@ -1837,7 +1837,7 @@
           "initial_altitude": 10000,
           "initial_controller": "N26",
           "initial_speed": 250,
-          "route": "/. MXE DELRO",
+          "flight_strip_route": "/. MXE DELRO",
           "scratchpad": "DLR",
           "waypoints": "MXE N039.56.42.163,W076.13.13.048/a10000/ho N039.56.54.701,W076.14.12.539/a9000 DELRO"
         },
@@ -1855,7 +1855,7 @@
           "initial_altitude": 12000,
           "initial_controller": "N26",
           "initial_speed": 250,
-          "route": "/. T456 DELRO",
+          "flight_strip_route": "/. T456 DELRO",
           "scratchpad": "DLR",
           "waypoints": "MXE T456 RICKF/a9000/ho T456 DELRO"
         }

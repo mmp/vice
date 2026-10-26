@@ -551,9 +551,9 @@ func TestDepartureRouteAlongSID(t *testing.T) {
 			route: "TONCE HUGIR", want: ""},
 	} {
 		var e util.ErrorLogger
-		dep := Departure{Exit: tc.exit, Route: tc.route}
+		dep := Departure{Exit: tc.exit, WaypointsString: tc.route}
 		var err error
-		if dep.RouteWaypoints, err = parseWaypoints(tc.route); err != nil {
+		if dep.Waypoints, err = parseWaypoints(tc.route); err != nil {
 			t.Fatalf("%s: %v", tc.route, err)
 		}
 		ap.checkDepartureRouteAlongSID(testLocator{}, "KXXX", &dep, &e)

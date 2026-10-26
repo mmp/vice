@@ -249,7 +249,7 @@
           ],
           "altitude": [37000, 39000],
           "destination": "KFLL",
-          "route": "BBKNG7 KERMI MGM ACORI TEEKY4",
+          "waypoints": "BBKNG7 KERMI MGM ACORI TEEKY4",
           "exit": "KERMI"
         },
         {
@@ -264,7 +264,7 @@
           ],
           "altitude": [25000, 27000, 29000],
           "destination": "KTYS",
-          "route": "GOETZ7 DIYAB SYI",
+          "waypoints": "GOETZ7 DIYAB SYI",
           "exit": "DIYAB"
         },
         {
@@ -284,7 +284,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "KLAS",
-          "route": "DUCKZ5 HELAR KLUBB TCC GUP HAHAA RKSTR4",
+          "waypoints": "DUCKZ5 HELAR KLUBB TCC GUP HAHAA RKSTR4",
           "exit": "HELAR"
         },
         {
@@ -295,7 +295,7 @@
           ],
           "altitude": [37000],
           "destination": "KSFB",
-          "route": "BBKNG7 KERMI VUZ ACORI CABLO BULZI BITTE SHREK2",
+          "waypoints": "BBKNG7 KERMI VUZ ACORI CABLO BULZI BITTE SHREK2",
           "exit": "KERMI"
         },
         {
@@ -309,7 +309,7 @@
           ],
           "altitude": [37000, 39000, 41000],
           "destination": "KPIE",
-          "route": "BBKNG7 KERMI MGM ACORI BANGZ2",
+          "waypoints": "BBKNG7 KERMI MGM ACORI BANGZ2",
           "exit": "KERMI"
         },
         {
@@ -329,7 +329,7 @@
           ],
           "altitude": [25000, 27000, 29000, 31000, 33000, 35000, 37000],
           "destination": "KCLT",
-          "route": "GOETZ7 DIYAB BNA TAZZA FILPZ7",
+          "waypoints": "GOETZ7 DIYAB BNA TAZZA FILPZ7",
           "exit": "DIYAB"
         },
         {
@@ -349,7 +349,7 @@
           ],
           "altitude": [26000, 28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "KDFW",
-          "route": "CHLDR5 ANSWA LITTR MEEOW FEWWW SEEVR4",
+          "waypoints": "CHLDR5 ANSWA LITTR MEEOW FEWWW SEEVR4",
           "exit": "ANSWA"
         },
         {
@@ -366,7 +366,7 @@
           ],
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KMIA",
-          "route": "BBKNG7 KERMI MGMRY ACORI FROGZ5",
+          "waypoints": "BBKNG7 KERMI MGMRY ACORI FROGZ5",
           "exit": "KERMI"
         },
         {
@@ -386,7 +386,7 @@
           ],
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KPHX",
-          "route": "ZUMIT5 FOXOM FSM IRW J6 ZUN EAGUL6",
+          "waypoints": "ZUMIT5 FOXOM FSM IRW J6 ZUN EAGUL6",
           "exit": "FOXOM"
         },
         {
@@ -415,7 +415,7 @@
           ],
           "altitude": [26000, 28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "KORD",
-          "route": "JTEEE5 ODATE FTZ TRTLL6",
+          "waypoints": "JTEEE5 ODATE FTZ TRTLL6",
           "exit": "ODATE"
         },
         {
@@ -429,7 +429,7 @@
           ],
           "altitude": [35000],
           "destination": "KLGA",
-          "route": "CRSON7 HUMMS PXV CREEP Q29 WWSHR TEESY Q186 WEVEL ETG MIP4",
+          "waypoints": "CRSON7 HUMMS PXV CREEP Q29 WWSHR TEESY Q186 WEVEL ETG MIP4",
           "exit": "HUMMS"
         },
         {
@@ -446,7 +446,7 @@
           ],
           "altitude": [25000, 27000, 29000, 31000, 33000, 35000, 37000],
           "destination": "KPHL",
-          "route": "GOETZ7 DIYAB WAKOL Q34 GVE PAATS4",
+          "waypoints": "GOETZ7 DIYAB WAKOL Q34 GVE PAATS4",
           "exit": "DIYAB"
         },
         {
@@ -463,7 +463,7 @@
           ],
           "altitude": [27000, 29000, 31000, 33000, 35000],
           "destination": "KDCA",
-          "route": "GOETZ7 DIYAB WAKOL Q34 SITTR TRUPS6",
+          "waypoints": "GOETZ7 DIYAB WAKOL Q34 SITTR TRUPS6",
           "exit": "DIYAB"
         },
         {
@@ -474,7 +474,7 @@
           ],
           "altitude": [33000],
           "destination": "KPNS",
-          "route": "PIEPE6 IBUFY SJI",
+          "waypoints": "PIEPE6 IBUFY SJI",
           "exit": "IBUFY"
         },
         {
@@ -491,7 +491,7 @@
           ],
           "altitude": [33000, 35000, 41000],
           "destination": "KRDU",
-          "route": "GOETZ7 DIYAB VXV KPASS ALDAN4",
+          "waypoints": "GOETZ7 DIYAB VXV KPASS ALDAN4",
           "exit": "DIYAB"
         },
         {
@@ -505,7 +505,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "KSAT",
-          "route": "CHLDR5 ANSWA TXK ANNGY QERVO3",
+          "waypoints": "CHLDR5 ANSWA TXK ANNGY QERVO3",
           "exit": "ANSWA"
         },
         {
@@ -526,7 +526,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KTPA",
-          "route": "BBKNG7 KERMI VLKNN ACORI MAATY6",
+          "waypoints": "BBKNG7 KERMI VLKNN ACORI MAATY6",
           "exit": "KERMI"
         },
         {
@@ -543,7 +543,7 @@
           ],
           "altitude": [25000, 29000, 31000, 33000],
           "destination": "KATL",
-          "route": "BBKNG7 KERMI HUTCC KNSAW RUSSA GLAVN2",
+          "waypoints": "BBKNG7 KERMI HUTCC KNSAW RUSSA GLAVN2",
           "exit": "KERMI"
         },
         {
@@ -560,7 +560,7 @@
           ],
           "altitude": [35000, 37000, 39000],
           "destination": "KDTW",
-          "route": "CRSON7 HUMMS TINGS PXV WWOOD HANBL3",
+          "waypoints": "CRSON7 HUMMS TINGS PXV WWOOD HANBL3",
           "exit": "HUMMS"
         },
         {
@@ -574,7 +574,7 @@
           ],
           "altitude": [34000],
           "destination": "KLAX",
-          "route": "ZUMIT5 FOXOM FSM IRW J6 DRK GABBL HLYWD1",
+          "waypoints": "ZUMIT5 FOXOM FSM IRW J6 DRK GABBL HLYWD1",
           "exit": "FOXOM"
         },
         {
@@ -588,7 +588,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "KSLC",
-          "route": "ZUMIT5 FOXOM KM33G KK36E KK39C KK42A KK45Y FLOOD KD54S HERSH HELPR JAZZZ1",
+          "waypoints": "ZUMIT5 FOXOM KM33G KK36E KK39C KK42A KK45Y FLOOD KD54S HERSH HELPR JAZZZ1",
           "exit": "FOXOM"
         },
         {
@@ -609,7 +609,7 @@
           ],
           "altitude": [32000, 34000, 36000],
           "destination": "KMSP",
-          "route": "JTEEE5 ODATE FTZ MNOSO BLUEM5",
+          "waypoints": "JTEEE5 ODATE FTZ MNOSO BLUEM5",
           "exit": "ODATE"
         },
         {
@@ -623,7 +623,7 @@
           ],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KAUS",
-          "route": "CHLDR5 ANSWA LITTR BROBB WINDU SEWZY6",
+          "waypoints": "CHLDR5 ANSWA LITTR BROBB WINDU SEWZY6",
           "exit": "ANSWA"
         },
         {
@@ -637,7 +637,7 @@
           ],
           "altitude": [33000, 35000, 37000],
           "destination": "KBOS",
-          "route": "GOETZ7 DIYAB YOCKY JST FQM PONCT JFUND2",
+          "waypoints": "GOETZ7 DIYAB YOCKY JST FQM PONCT JFUND2",
           "exit": "DIYAB"
         },
         {
@@ -648,7 +648,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KJFK",
-          "route": "GOETZ7 DIYAB HITMN Q34 MAULS QUART HURTS SAWED Q108 SIE CARMN5",
+          "waypoints": "GOETZ7 DIYAB HITMN Q34 MAULS QUART HURTS SAWED Q108 SIE CARMN5",
           "exit": "DIYAB"
         },
         {
@@ -668,7 +668,7 @@
           ],
           "altitude": [32000, 34000, 36000, 38000, 4000],
           "destination": "KDEN",
-          "route": "ZUMIT5 FOXOM RZC PER GCK KIISS CLASH5",
+          "waypoints": "ZUMIT5 FOXOM RZC PER GCK KIISS CLASH5",
           "exit": "FOXOM"
         },
         {
@@ -682,7 +682,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KBWI",
-          "route": "GOETZ7 DIYAB HITMN Q34 NEALS CJAAE RAVNN9",
+          "waypoints": "GOETZ7 DIYAB HITMN Q34 NEALS CJAAE RAVNN9",
           "exit": "DIYAB"
         },
         {
@@ -693,7 +693,7 @@
           ],
           "altitude": [33000, 37000, 39000, 41000],
           "destination": "KMDW",
-          "route": "SELPH7 OHULO CRELL J71 ENL PHEEB ENDEE8",
+          "waypoints": "SELPH7 OHULO CRELL J71 ENL PHEEB ENDEE8",
           "exit": "OHULO"
         },
         {
@@ -707,7 +707,7 @@
           ],
           "altitude": [30000, 36000, 38000, 40000],
           "destination": "KDAL",
-          "route": "CHLDR5 ANSWA LITTR DIRRK HIBIL3",
+          "waypoints": "CHLDR5 ANSWA LITTR DIRRK HIBIL3",
           "exit": "ANSWA"
         },
         {
@@ -718,7 +718,7 @@
           ],
           "altitude": [32000, 34000, 36000, 38000, 40000],
           "destination": "KHOU",
-          "route": "PIEPE6 IBUFY IZAAC MLU SWEUP WAPPL7",
+          "waypoints": "PIEPE6 IBUFY IZAAC MLU SWEUP WAPPL7",
           "exit": "IBUFY"
         },
         {
@@ -739,7 +739,7 @@
           ],
           "altitude": [21000, 25000, 27000, 29000, 31000, 33000],
           "destination": "KBNA",
-          "route": "GOETZ7 DIYAB CHSNE CHSNE3",
+          "waypoints": "GOETZ7 DIYAB CHSNE CHSNE3",
           "exit": "DIYAB"
         },
         {
@@ -756,7 +756,7 @@
           ],
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KMCO",
-          "route": "BBKNG7 KERMI VLKNN Q116 DEEDA GRNCH5",
+          "waypoints": "BBKNG7 KERMI VLKNN Q116 DEEDA GRNCH5",
           "exit": "KERMI"
         },
         {
@@ -779,7 +779,7 @@
           ],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KIAH",
-          "route": "CHLDR5 ANSWA LITTR Q33 SWEUP ZEEKK3",
+          "waypoints": "CHLDR5 ANSWA LITTR Q33 SWEUP ZEEKK3",
           "exit": "ANSWA"
         },
         {
@@ -790,7 +790,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KEWR",
-          "route": "GOETZ7 DIYAB HITMN Q34 GVE PHLBO4",
+          "waypoints": "GOETZ7 DIYAB HITMN Q34 GVE PHLBO4",
           "exit": "DIYAB"
         },
         {
@@ -801,7 +801,7 @@
           ],
           "altitude": [27000, 31000, 33000, 35000],
           "destination": "KRFD",
-          "route": "JTEEE5 ODATE MAW ENL HAAYQ QUOTE1",
+          "waypoints": "JTEEE5 ODATE MAW ENL HAAYQ QUOTE1",
           "exit": "ODATE"
         },
         {
@@ -815,7 +815,7 @@
           ],
           "altitude": [27000, 29000, 31000, 33000],
           "destination": "KSDF",
-          "route": "SELPH7 OHULO BUMPY MBELL5",
+          "waypoints": "SELPH7 OHULO BUMPY MBELL5",
           "exit": "OHULO"
         },
         {
@@ -826,7 +826,7 @@
           ],
           "altitude": [21000, 23000, 25000, 27000, 29000],
           "destination": "KBHM",
-          "route": "BBKNG7 KERMI VLKNN",
+          "waypoints": "BBKNG7 KERMI VLKNN",
           "exit": "KERMI"
         },
         {
@@ -841,7 +841,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KCHS",
-          "route": "BBKNG7 KERMI GAD IRQ OSPRI7",
+          "waypoints": "BBKNG7 KERMI GAD IRQ OSPRI7",
           "exit": "KERMI"
         },
         {
@@ -852,7 +852,7 @@
           ],
           "altitude": [33000, 35000, 37000],
           "destination": "TJBQ",
-          "route": "BBKNG7 KERMI VLKNN OTK OMN ATTIK BEERD Y185 VENDS Y306 HAGIT Y421 HARBG AQABA ODEZZ",
+          "waypoints": "BBKNG7 KERMI VLKNN OTK OMN ATTIK BEERD Y185 VENDS Y306 HAGIT Y421 HARBG AQABA ODEZZ",
           "exit": "KERMI"
         },
         {
@@ -863,7 +863,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KALB",
-          "route": "GOETZ7 DIYAB YRK AHTIY PSB ALB",
+          "waypoints": "GOETZ7 DIYAB YRK AHTIY PSB ALB",
           "exit": "DIYAB"
         },
         {
@@ -877,7 +877,7 @@
           ],
           "altitude": [34000, 36000, 43000],
           "destination": "KABQ",
-          "route": "ZUMIT5 FOXOM IRW KF33A PNH J78 TCC KIIDD COLTR4",
+          "waypoints": "ZUMIT5 FOXOM IRW KF33A PNH J78 TCC KIIDD COLTR4",
           "exit": "FOXOM"
         },
         {
@@ -888,7 +888,7 @@
           ],
           "altitude": [35000, 37000, 39000],
           "destination": "KABE",
-          "route": "GOETZ7 DIYAB YOCKY MGW BRNAN Q42 HOTEE ETX",
+          "waypoints": "GOETZ7 DIYAB YOCKY MGW BRNAN Q42 HOTEE ETX",
           "exit": "DIYAB"
         },
         {
@@ -899,7 +899,7 @@
           ],
           "altitude": [36000, 38000],
           "destination": "PANC",
-          "route": "JTEEE5 ODATE IRK VIGGR KP03G GGULL KOBID 5200N/10100W POLLE PETMA TULAG 5900N/11400W 6000N/12000W 6100N/12800W 6100N/13600W JAGIT NCA13 TMSON WITTI5",
+          "waypoints": "JTEEE5 ODATE IRK VIGGR KP03G GGULL KOBID 5200N/10100W POLLE PETMA TULAG 5900N/11400W 6000N/12000W 6100N/12800W 6100N/13600W JAGIT NCA13 TMSON WITTI5",
           "exit": "ODATE"
         },
         {
@@ -910,7 +910,7 @@
           ],
           "altitude": [33000, 37000, 39000],
           "destination": "KATW",
-          "route": "JTEEE5 ODATE CRELL J71 OBK J89 BAE",
+          "waypoints": "JTEEE5 ODATE CRELL J71 OBK J89 BAE",
           "exit": "ODATE"
         },
         {
@@ -925,7 +925,7 @@
           ],
           "altitude": [31000, 33000, 35000],
           "destination": "KBMI",
-          "route": "JTEEE5 ODATE ENL",
+          "waypoints": "JTEEE5 ODATE ENL",
           "exit": "ODATE"
         },
         {
@@ -936,7 +936,7 @@
           ],
           "altitude": [34000],
           "destination": "KBOI",
-          "route": "ZUMIT5 FOXOM KM36G KK39C KK42A KK45Y PUB KD60S KU66Q KU75O PIH REAPS KOURT4",
+          "waypoints": "ZUMIT5 FOXOM KM36G KK39C KK42A KK45Y PUB KD60S KU66Q KU75O PIH REAPS KOURT4",
           "exit": "FOXOM"
         },
         {
@@ -947,7 +947,7 @@
           ],
           "altitude": [35000, 37000, 39000],
           "destination": "KBUF",
-          "route": "CRSON7 HUMMS IIU APE DKK",
+          "waypoints": "CRSON7 HUMMS IIU APE DKK",
           "exit": "HUMMS"
         },
         {
@@ -958,7 +958,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "KBUR",
-          "route": "ZUMIT5 FOXOM FSM IRW J6 EED JANNY5",
+          "waypoints": "ZUMIT5 FOXOM FSM IRW J6 EED JANNY5",
           "exit": "FOXOM"
         },
         {
@@ -969,7 +969,7 @@
           ],
           "altitude": [32000, 34000, 36000],
           "destination": "CYYC",
-          "route": "JTEEE5 ODATE KK42I SCAWT KK57E SYTHH KD72A KD81Y KD90W KU09U COKEE KU21S PEMDU Q832 EBGAL EBGAL7",
+          "waypoints": "JTEEE5 ODATE KK42I SCAWT KK57E SYTHH KD72A KD81Y KD90W KU09U COKEE KU21S PEMDU Q832 EBGAL EBGAL7",
           "exit": "ODATE"
         },
         {
@@ -980,7 +980,7 @@
           ],
           "altitude": [31000, 33000],
           "destination": "SBKP",
-          "route": "PIEPE6 IBUFY MGM OMN ATTIK BEERD Y185 VENDS Y306 HAGIT Y421 MEEGL L466 GEECE UL776 UBKOS UZ38 MULUV UZ2 ENTIT ENTIT1A",
+          "waypoints": "PIEPE6 IBUFY MGM OMN ATTIK BEERD Y185 VENDS Y306 HAGIT Y421 MEEGL L466 GEECE UL776 UBKOS UZ38 MULUV UZ2 ENTIT ENTIT1A",
           "exit": "IBUFY"
         },
         {
@@ -991,7 +991,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "KCPR",
-          "route": "ZUMIT5 FOXOM KK42G KD60A DDY",
+          "waypoints": "ZUMIT5 FOXOM KK42G KD60A DDY",
           "exit": "FOXOM"
         },
         {
@@ -1002,7 +1002,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "KCID",
-          "route": "JTEEE5 ODATE BSIDE RIVRS IOW",
+          "waypoints": "JTEEE5 ODATE BSIDE RIVRS IOW",
           "exit": "ODATE"
         },
         {
@@ -1013,7 +1013,7 @@
           ],
           "altitude": [23000],
           "destination": "KCHA",
-          "route": "BBKNG7 KERMI",
+          "waypoints": "BBKNG7 KERMI",
           "exit": "KERMI"
         },
         {
@@ -1024,7 +1024,7 @@
           ],
           "altitude": [25000, 33000],
           "destination": "KCVG",
-          "route": "CRSON7 HUMMS TERGE SARGO5",
+          "waypoints": "CRSON7 HUMMS TERGE SARGO5",
           "exit": "HUMMS"
         },
         {
@@ -1035,7 +1035,7 @@
           ],
           "altitude": [33000, 35000, 37000, 39000],
           "destination": "KCLE",
-          "route": "CRSON7 HUMMS TINGS DRUGA ROKNN4",
+          "waypoints": "CRSON7 HUMMS TINGS DRUGA ROKNN4",
           "exit": "HUMMS"
         },
         {
@@ -1046,7 +1046,7 @@
           ],
           "altitude": [33000],
           "destination": "EDDK",
-          "route": "GOETZ7 DIYAB HITMN Q34 RBV Q430 ACK WHALE N251B NICSO 4800N/05000W 5000N/04000W 5100N/03000W 5100N/02000W SOMAX ATSUR ARKIL OXLOW KONAN UL607 SPI T857 DENOV T861 ERUKI T856 DEPOK DEPOK2V",
+          "waypoints": "GOETZ7 DIYAB HITMN Q34 RBV Q430 ACK WHALE N251B NICSO 4800N/05000W 5000N/04000W 5100N/03000W 5100N/02000W SOMAX ATSUR ARKIL OXLOW KONAN UL607 SPI T857 DENOV T861 ERUKI T856 DEPOK DEPOK2V",
           "exit": "DIYAB"
         },
         {
@@ -1061,7 +1061,7 @@
           ],
           "altitude": [32000, 36000, 38000, 40000],
           "destination": "KCOS",
-          "route": "ZUMIT5 FOXOM RZC ICT HGO OZZZY5",
+          "waypoints": "ZUMIT5 FOXOM RZC ICT HGO OZZZY5",
           "exit": "FOXOM"
         },
         {
@@ -1072,7 +1072,7 @@
           ],
           "altitude": [33000, 35000],
           "destination": "KCAE",
-          "route": "BBKNG7 KERMI WODDY CALCO QUIWE",
+          "waypoints": "BBKNG7 KERMI WODDY CALCO QUIWE",
           "exit": "KERMI"
         },
         {
@@ -1083,7 +1083,7 @@
           ],
           "altitude": [33000, 35000],
           "destination": "KLCK",
-          "route": "CRSON7 HUMMS GETTA JAKTZ2",
+          "waypoints": "CRSON7 HUMMS GETTA JAKTZ2",
           "exit": "HUMMS"
         },
         {
@@ -1094,7 +1094,7 @@
           ],
           "altitude": [35000],
           "destination": "KDAY",
-          "route": "CRSON7 HUMMS PXV OOM SHB RID",
+          "waypoints": "CRSON7 HUMMS PXV OOM SHB RID",
           "exit": "HUMMS"
         },
         {
@@ -1109,7 +1109,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "KDSM",
-          "route": "JTEEE5 ODATE TWRAY HLV",
+          "waypoints": "JTEEE5 ODATE TWRAY HLV",
           "exit": "ODATE"
         },
         {
@@ -1120,7 +1120,7 @@
           ],
           "altitude": [30000, 34000],
           "destination": "CYEG",
-          "route": "JTEEE5 ODATE PROWL KK54G LEFAM KP66C KD72A KD81Y KD90W KU09U COKEE KU21S PEMDU Q909 NOSIV MIREK Q995 OILRS OILRS2",
+          "waypoints": "JTEEE5 ODATE PROWL KK54G LEFAM KP66C KD72A KD81Y KD90W KU09U COKEE KU21S PEMDU Q909 NOSIV MIREK Q995 OILRS OILRS2",
           "exit": "ODATE"
         },
         {
@@ -1131,7 +1131,7 @@
           ],
           "altitude": [32000, 34000, 36000],
           "destination": "KELP",
-          "route": "CHLDR5 ANSWA BYP BGS LIFFT SAMMR3",
+          "waypoints": "CHLDR5 ANSWA BYP BGS LIFFT SAMMR3",
           "exit": "ANSWA"
         },
         {
@@ -1145,7 +1145,7 @@
           ],
           "altitude": [30000, 32000, 34000, 38000, 43000],
           "destination": "KFAR",
-          "route": "JTEEE5 ODATE HESTN JAVAS RWF FAR",
+          "waypoints": "JTEEE5 ODATE HESTN JAVAS RWF FAR",
           "exit": "ODATE"
         },
         {
@@ -1156,7 +1156,7 @@
           ],
           "altitude": [37000, 41000],
           "destination": "KFNT",
-          "route": "SELPH7 OHULO ESTEE VHP FWA JXN",
+          "waypoints": "SELPH7 OHULO ESTEE VHP FWA JXN",
           "exit": "OHULO"
         },
         {
@@ -1167,7 +1167,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KRSW",
-          "route": "PIEPE6 IBUFY MGMRY ACORI CABLO HEVVN LEGGT PLYER TYNEE4",
+          "waypoints": "PIEPE6 IBUFY MGMRY ACORI CABLO HEVVN LEGGT PLYER TYNEE4",
           "exit": "IBUFY"
         },
         {
@@ -1178,7 +1178,7 @@
           ],
           "altitude": [35000, 37000, 39000, 41000],
           "destination": "KFWA",
-          "route": "CRSON7 HUMMS PXV VHP",
+          "waypoints": "CRSON7 HUMMS PXV VHP",
           "exit": "HUMMS"
         },
         {
@@ -1189,7 +1189,7 @@
           ],
           "altitude": [32000],
           "destination": "KAFW",
-          "route": "CHLDR5 ANSWA LIT PONYY TRUUK3",
+          "waypoints": "CHLDR5 ANSWA LIT PONYY TRUUK3",
           "exit": "ANSWA"
         },
         {
@@ -1200,7 +1200,7 @@
           ],
           "altitude": [33000, 35000],
           "destination": "KGRR",
-          "route": "SELPH7 OHULO ESTEE GSH",
+          "waypoints": "SELPH7 OHULO ESTEE GSH",
           "exit": "OHULO"
         },
         {
@@ -1211,7 +1211,7 @@
           ],
           "altitude": [38000],
           "destination": "KGTF",
-          "route": "JTEEE5 ODATE LUKKY KM39I KK45G DOSOA KP60C KUTCH KD75Y WUVUT KU06S LWT GTF",
+          "waypoints": "JTEEE5 ODATE LUKKY KM39I KK45G DOSOA KP60C KUTCH KD75Y WUVUT KU06S LWT GTF",
           "exit": "ODATE"
         },
         {
@@ -1222,7 +1222,7 @@
           ],
           "altitude": [35000],
           "destination": "KGSO",
-          "route": "GOETZ7 DIYAB VXV TRAKS TRAKS4",
+          "waypoints": "GOETZ7 DIYAB VXV TRAKS TRAKS4",
           "exit": "DIYAB"
         },
         {
@@ -1233,7 +1233,7 @@
           ],
           "altitude": [33000, 35000],
           "destination": "KGSP",
-          "route": "AZONE7 PITEW GOSEY SYI VXV DAJPI RCTOR3",
+          "waypoints": "AZONE7 PITEW GOSEY SYI VXV DAJPI RCTOR3",
           "exit": "PITEW"
         },
         {
@@ -1244,7 +1244,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "MMGL",
-          "route": "CHLDR5 ANSWA ELD J29 MTY UJ11 MEZCA MEZCA1B",
+          "waypoints": "CHLDR5 ANSWA ELD J29 MTY UJ11 MEZCA MEZCA1B",
           "exit": "ANSWA"
         },
         {
@@ -1255,7 +1255,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "KHRL",
-          "route": "PIEPE6 IBUFY KF18I KH06G KH81E",
+          "waypoints": "PIEPE6 IBUFY KF18I KH06G KH81E",
           "exit": "IBUFY"
         },
         {
@@ -1266,7 +1266,7 @@
           ],
           "altitude": [33000, 35000],
           "destination": "KMDT",
-          "route": "CRSON7 HUMMS YOCKY RICCS COURG BAMMY T299 HAR",
+          "waypoints": "CRSON7 HUMMS YOCKY RICCS COURG BAMMY T299 HAR",
           "exit": "HUMMS"
         },
         {
@@ -1277,7 +1277,7 @@
           ],
           "altitude": [34000],
           "destination": "PHNL",
-          "route": "CHLDR5 ANSWA UKW INK KEYLO HMO GRN 2600N/12000W 2400N/13000W 2200N/14000W 2100N/15000W FITES LNY JULLE5",
+          "waypoints": "CHLDR5 ANSWA UKW INK KEYLO HMO GRN 2600N/12000W 2400N/13000W 2200N/14000W 2100N/15000W FITES LNY JULLE5",
           "exit": "ANSWA"
         },
         {
@@ -1288,7 +1288,7 @@
           ],
           "altitude": [29000, 33000, 35000],
           "destination": "KHTS",
-          "route": "GOETZ7 DIYAB YOCKY ECB",
+          "waypoints": "GOETZ7 DIYAB YOCKY ECB",
           "exit": "DIYAB"
         },
         {
@@ -1299,7 +1299,7 @@
           ],
           "altitude": [27000, 31000, 33000, 35000],
           "destination": "KIND",
-          "route": "CRSON7 HUMMS PXV EMBRR SMUKE3",
+          "waypoints": "CRSON7 HUMMS PXV EMBRR SMUKE3",
           "exit": "HUMMS"
         },
         {
@@ -1310,7 +1310,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KJAX",
-          "route": "BBKNG7 KERMI VLKNN JYROD DUCHY OHDEA2",
+          "waypoints": "BBKNG7 KERMI VLKNN JYROD DUCHY OHDEA2",
           "exit": "KERMI"
         },
         {
@@ -1321,7 +1321,7 @@
           ],
           "altitude": [34000],
           "destination": "KMCI",
-          "route": "BBKNG7 KERMI KM39I NELVY MHOMS3",
+          "waypoints": "BBKNG7 KERMI KM39I NELVY MHOMS3",
           "exit": "KERMI"
         },
         {
@@ -1332,7 +1332,7 @@
           ],
           "altitude": [28000, 30000],
           "destination": "KLFT",
-          "route": "PIEPE6 IBUFY BEDDY",
+          "waypoints": "PIEPE6 IBUFY BEDDY",
           "exit": "IBUFY"
         },
         {
@@ -1343,7 +1343,7 @@
           ],
           "altitude": [36000],
           "destination": "KLRD",
-          "route": "PIEPE6 IBUFY MLU SWB DAS IAH J29 CRP J22 LRD",
+          "waypoints": "PIEPE6 IBUFY MLU SWB DAS IAH J29 CRP J22 LRD",
           "exit": "IBUFY"
         },
         {
@@ -1354,7 +1354,7 @@
           ],
           "altitude": [35000],
           "destination": "EBLG",
-          "route": "GOETZ7 DIYAB VXV KIDDO Q22 BESSI Q22 RBV Q430 ACK WHALE N167B PORTI NATX 5200N/02000W NATX XETBO ENJEX CESQA KONAN UL607 KOK KOK1X",
+          "waypoints": "GOETZ7 DIYAB VXV KIDDO Q22 BESSI Q22 RBV Q430 ACK WHALE N167B PORTI NATX 5200N/02000W NATX XETBO ENJEX CESQA KONAN UL607 KOK KOK1X",
           "exit": "DIYAB"
         },
         {
@@ -1365,7 +1365,7 @@
           ],
           "altitude": [31000],
           "destination": "EGSS",
-          "route": "CRSON7 HUMMS PXV ROD WWSHR SYR CABCI DANOL N437B ELSIR 5000N/05000W 5100N/04000W 5100N/03000W 5100N/02000W DINIM ELSOX ENJEX AVZAC ICOSA RUHUN YORQI CAWZE P2 SIRIC SIRIC1L",
+          "waypoints": "CRSON7 HUMMS PXV ROD WWSHR SYR CABCI DANOL N437B ELSIR 5000N/05000W 5100N/04000W 5100N/03000W 5100N/02000W DINIM ELSOX ENJEX AVZAC ICOSA RUHUN YORQI CAWZE P2 SIRIC SIRIC1L",
           "exit": "HUMMS"
         },
         {
@@ -1376,7 +1376,7 @@
           ],
           "altitude": [34000],
           "destination": "KLAX",
-          "route": "ZUMIT5 FOXOM FSM IRW J6 DRK GABBL HLYWD1",
+          "waypoints": "ZUMIT5 FOXOM FSM IRW J6 DRK GABBL HLYWD1",
           "exit": "FOXOM"
         },
         {
@@ -1387,7 +1387,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "KLBB",
-          "route": "CHLDR5 ANSWA LIT ADM GTH",
+          "waypoints": "CHLDR5 ANSWA LIT ADM GTH",
           "exit": "ANSWA"
         },
         {
@@ -1398,7 +1398,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KMSN",
-          "route": "JTEEE5 ODATE SPI BDF",
+          "waypoints": "JTEEE5 ODATE SPI BDF",
           "exit": "ODATE"
         },
         {
@@ -1409,7 +1409,7 @@
           ],
           "altitude": [37000],
           "destination": "KMHT",
-          "route": "GOETZ7 DIYAB YOCKY LUISE PSB HNK SMYTH ROZZE2",
+          "waypoints": "GOETZ7 DIYAB YOCKY LUISE PSB HNK SMYTH ROZZE2",
           "exit": "DIYAB"
         },
         {
@@ -1423,7 +1423,7 @@
           ],
           "altitude": [35000, 37000, 45000],
           "destination": "KMKE",
-          "route": "JTEEE5 ODATE ENL JOT LEEDN GOPAC3",
+          "waypoints": "JTEEE5 ODATE ENL JOT LEEDN GOPAC3",
           "exit": "ODATE"
         },
         {
@@ -1438,7 +1438,7 @@
           ],
           "altitude": [29000, 31000],
           "destination": "KBFM",
-          "route": "PIEPE6 IBUFY",
+          "waypoints": "PIEPE6 IBUFY",
           "exit": "IBUFY"
         },
         {
@@ -1449,7 +1449,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "MMMY",
-          "route": "PIEPE6 IBUFY KAMEN DAS CRP CAMUI ITPIS ITPIS1A",
+          "waypoints": "PIEPE6 IBUFY KAMEN DAS CRP CAMUI ITPIS ITPIS1A",
           "exit": "IBUFY"
         },
         {
@@ -1460,7 +1460,7 @@
           ],
           "altitude": [31000, 35000, 37000, 39000],
           "destination": "CYMX",
-          "route": "CRSON7 HUMMS TINGS J29 PXV KLYNE Q29 WWSHR ROC MIGLO Q955 MITIG",
+          "waypoints": "CRSON7 HUMMS TINGS J29 PXV KLYNE Q29 WWSHR ROC MIGLO Q955 MITIG",
           "exit": "HUMMS"
         },
         {
@@ -1474,7 +1474,7 @@
           ],
           "altitude": [28000, 30000, 34000],
           "destination": "KMSY",
-          "route": "PIEPE6 IBUFY MCB TRSSH2",
+          "waypoints": "PIEPE6 IBUFY MCB TRSSH2",
           "exit": "IBUFY"
         },
         {
@@ -1485,7 +1485,7 @@
           ],
           "altitude": [33000, 35000],
           "destination": "KSWF",
-          "route": "CRSON7 HUMMS BWG FLM AIR PSB J49 HNK DANZI T634 FILPS",
+          "waypoints": "CRSON7 HUMMS BWG FLM AIR PSB J49 HNK DANZI T634 FILPS",
           "exit": "HUMMS"
         },
         {
@@ -1496,7 +1496,7 @@
           ],
           "altitude": [35000],
           "destination": "KORF",
-          "route": "GOETZ7 DIYAB HITMN Q34 MAULS OUTLA1",
+          "waypoints": "GOETZ7 DIYAB HITMN Q34 MAULS OUTLA1",
           "exit": "DIYAB"
         },
         {
@@ -1507,7 +1507,7 @@
           ],
           "altitude": [36000],
           "destination": "KOAK",
-          "route": "ZUMIT5 FOXOM TUL KK39C KK39A KENTO KD42U KD45Q HASSL Q130 ROCCY Q164 KITTN JSICA RPARK OAKES3",
+          "waypoints": "ZUMIT5 FOXOM TUL KK39C KK39A KENTO KD42U KD45Q HASSL Q130 ROCCY Q164 KITTN JSICA RPARK OAKES3",
           "exit": "FOXOM"
         },
         {
@@ -1518,7 +1518,7 @@
           ],
           "altitude": [32000, 34000, 36000],
           "destination": "KOKC",
-          "route": "DUCKZ5 HELAR KOMMA KLUBB DWINE RIFFL3",
+          "waypoints": "DUCKZ5 HELAR KOMMA KLUBB DWINE RIFFL3",
           "exit": "HELAR"
         },
         {
@@ -1529,7 +1529,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "KOMA",
-          "route": "ZUMIT5 FOXOM KK51G STJ MARWI4",
+          "waypoints": "ZUMIT5 FOXOM KK51G STJ MARWI4",
           "exit": "FOXOM"
         },
         {
@@ -1540,7 +1540,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "KONT",
-          "route": "ZUMIT5 FOXOM FSM IRW J6 DRK DAFNY SCBBY2",
+          "waypoints": "ZUMIT5 FOXOM FSM IRW J6 DRK DAFNY SCBBY2",
           "exit": "FOXOM"
         },
         {
@@ -1551,7 +1551,7 @@
           ],
           "altitude": [36000],
           "destination": "RJBB",
-          "route": "JTEEE5 ODATE FAM KK63I CNOTA VIGGR KP03G ALBNG Q834 OTLUR Q906 KENRU RIDOK 5900N/11000W YHY J521 YFS 6200N/13000W GAHAM NCA14 GKN J124 BGQ NODLE R220 IXE Y88 NAKTU Y12 KEC Y43 KISEI Y46 EVERT",
+          "waypoints": "JTEEE5 ODATE FAM KK63I CNOTA VIGGR KP03G ALBNG Q834 OTLUR Q906 KENRU RIDOK 5900N/11000W YHY J521 YFS 6200N/13000W GAHAM NCA14 GKN J124 BGQ NODLE R220 IXE Y88 NAKTU Y12 KEC Y43 KISEI Y46 EVERT",
           "exit": "ODATE"
         },
         {
@@ -1562,7 +1562,7 @@
           ],
           "altitude": [31000, 33000, 35000],
           "destination": "CYOW",
-          "route": "CRSON7 HUMMS PXV VHP MZZ FWA SVM Q951 SIKBO Q905 BOMET MIVOK CAPTL5",
+          "waypoints": "CRSON7 HUMMS PXV VHP MZZ FWA SVM Q951 SIKBO Q905 BOMET MIVOK CAPTL5",
           "exit": "HUMMS"
         },
         {
@@ -1573,7 +1573,7 @@
           ],
           "altitude": [32000],
           "destination": "MPTO",
-          "route": "PIEPE6 IBUFY MCB J35 LEV L214 CUN UM782 OMIRO UN420 MORLI OSUPA2",
+          "waypoints": "PIEPE6 IBUFY MCB J35 LEV L214 CUN UM782 OMIRO UN420 MORLI OSUPA2",
           "exit": "IBUFY"
         },
         {
@@ -1584,7 +1584,7 @@
           ],
           "altitude": [33000],
           "destination": "LFPG",
-          "route": "GOETZ7 DIYAB BNA Q36 SWAPP Q34 KONGO Q71 PSB J49 HNK BOS BRADD N499B ALLRY 5100N/05000W 5300N/04000W 5400N/03000W 5400N/02000W MALOT GISTI DOLIP LULOX NAKID ANNET UM25 INGOR UM25 LUKIP LUKIP9E",
+          "waypoints": "GOETZ7 DIYAB BNA Q36 SWAPP Q34 KONGO Q71 PSB J49 HNK BOS BRADD N499B ALLRY 5100N/05000W 5300N/04000W 5400N/03000W 5400N/02000W MALOT GISTI DOLIP LULOX NAKID ANNET UM25 INGOR UM25 LUKIP LUKIP9E",
           "exit": "DIYAB"
         },
         {
@@ -1595,7 +1595,7 @@
           ],
           "altitude": [35000, 37000, 39000],
           "destination": "KPIT",
-          "route": "GOETZ7 DIYAB YOCKY HNN FEWGA7",
+          "waypoints": "GOETZ7 DIYAB YOCKY HNN FEWGA7",
           "exit": "DIYAB"
         },
         {
@@ -1606,7 +1606,7 @@
           ],
           "altitude": [37000],
           "destination": "KPWM",
-          "route": "GOETZ7 DIYAB BWG HYK AIR PSB DNY CAM CDOGG4",
+          "waypoints": "GOETZ7 DIYAB BWG HYK AIR PSB DNY CAM CDOGG4",
           "exit": "DIYAB"
         },
         {
@@ -1617,7 +1617,7 @@
           ],
           "altitude": [34000],
           "destination": "KPDX",
-          "route": "ZUMIT5 FOXOM KK42E KD57Y KU75Q KU84M JKNOX HHOOD6",
+          "waypoints": "ZUMIT5 FOXOM KK42E KD57Y KU75Q KU84M JKNOX HHOOD6",
           "exit": "FOXOM"
         },
         {
@@ -1628,7 +1628,7 @@
           ],
           "altitude": [37000],
           "destination": "KPVD",
-          "route": "GOETZ7 DIYAB YOCKY SINDE PTW HTO JORDN2",
+          "waypoints": "GOETZ7 DIYAB YOCKY SINDE PTW HTO JORDN2",
           "exit": "DIYAB"
         },
         {
@@ -1639,7 +1639,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "MMQT",
-          "route": "CHLDR5 ANSWA ELD CRP MFE REX OTITI OTRUD QET",
+          "waypoints": "CHLDR5 ANSWA ELD CRP MFE REX OTITI OTRUD QET",
           "exit": "ANSWA"
         },
         {
@@ -1656,7 +1656,7 @@
           ],
           "altitude": [33000, 35000, 41000],
           "destination": "KRDU",
-          "route": "GOETZ7 DIYAB VXV KPASS ALDAN4",
+          "waypoints": "GOETZ7 DIYAB VXV KPASS ALDAN4",
           "exit": "DIYAB"
         },
         {
@@ -1667,7 +1667,7 @@
           ],
           "altitude": [34000, 36000, 38000],
           "destination": "KRNO",
-          "route": "ZUMIT5 FOXOM RZC TOTOE KD48W KD54S LBATO KU63O WAATS Q124 BVL MAGPY Q132 MYBAD WINRZ1",
+          "waypoints": "ZUMIT5 FOXOM RZC TOTOE KD48W KD54S LBATO KU63O WAATS Q124 BVL MAGPY Q132 MYBAD WINRZ1",
           "exit": "FOXOM"
         },
         {
@@ -1678,7 +1678,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "KRIC",
-          "route": "GOETZ7 DIYAB TROVE Q66 ALEAN LYH POWTN5",
+          "waypoints": "GOETZ7 DIYAB TROVE Q66 ALEAN LYH POWTN5",
           "exit": "DIYAB"
         },
         {
@@ -1689,7 +1689,7 @@
           ],
           "altitude": [37000],
           "destination": "KROA",
-          "route": "GOETZ7 DIYAB GZG PSK",
+          "waypoints": "GOETZ7 DIYAB GZG PSK",
           "exit": "DIYAB"
         },
         {
@@ -1700,7 +1700,7 @@
           ],
           "altitude": [31000, 33000, 35000],
           "destination": "KROC",
-          "route": "CRSON7 HUMMS IIU YNG DKK CLUNG",
+          "waypoints": "CRSON7 HUMMS IIU YNG DKK CLUNG",
           "exit": "HUMMS"
         },
         {
@@ -1714,7 +1714,7 @@
           ],
           "altitude": [36000, 38000, 4000],
           "destination": "KRST",
-          "route": "JTEEE5 ODATE FTZ IOW",
+          "waypoints": "JTEEE5 ODATE FTZ IOW",
           "exit": "ODATE"
         },
         {
@@ -1725,7 +1725,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "KSMF",
-          "route": "ZUMIT5 FOXOM TUL KK39C KK39A KENTO KD42U KD45Q HASSL Q130 ROCCY ILC CRASY SLMMR5",
+          "waypoints": "ZUMIT5 FOXOM TUL KK39C KK39A KENTO KD42U KD45Q HASSL Q130 ROCCY ILC CRASY SLMMR5",
           "exit": "FOXOM"
         },
         {
@@ -1736,7 +1736,7 @@
           ],
           "altitude": [34000],
           "destination": "KSAN",
-          "route": "CHLDR5 ANSWA MLC TXO ONM MOHAK J18 IPL TOPGN2",
+          "waypoints": "CHLDR5 ANSWA MLC TXO ONM MOHAK J18 IPL TOPGN2",
           "exit": "ANSWA"
         },
         {
@@ -1751,7 +1751,7 @@
           ],
           "altitude": [32000, 34000, 36000, 43000],
           "destination": "KSFO",
-          "route": "ZUMIT5 FOXOM TUL KK39C KK39A KENTO KD42U KD45Q HASSL 130 ROCCY Q164 KATTS INYOE DYAMD5",
+          "waypoints": "ZUMIT5 FOXOM TUL KK39C KK39A KENTO KD42U KD45Q HASSL 130 ROCCY Q164 KATTS INYOE DYAMD5",
           "exit": "FOXOM"
         },
         {
@@ -1762,7 +1762,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "TJSJ",
-          "route": "BBKNG7 KERMI VLKNN OTK OMN ATTIK BEERD Y185 RENAH Y355 PLING RTE7 SAALR",
+          "waypoints": "BBKNG7 KERMI VLKNN OTK OMN ATTIK BEERD Y185 RENAH Y355 PLING RTE7 SAALR",
           "exit": "KERMI"
         },
         {
@@ -1773,7 +1773,7 @@
           ],
           "altitude": [37000, 39000],
           "destination": "KSAV",
-          "route": "BBKNG7 KERMI VLKNN MCN SAV",
+          "waypoints": "BBKNG7 KERMI VLKNN MCN SAV",
           "exit": "KERMI"
         },
         {
@@ -1784,7 +1784,7 @@
           ],
           "altitude": [32000, 34000, 36000],
           "destination": "KSEA",
-          "route": "ZUMIT5 FOXOM KK42E KD57Y KU75Q KU84M PDT CHINS5",
+          "waypoints": "ZUMIT5 FOXOM KK42E KD57Y KU75Q KU84M PDT CHINS5",
           "exit": "FOXOM"
         },
         {
@@ -1795,7 +1795,7 @@
           ],
           "altitude": [30000, 32000],
           "destination": "RKSI",
-          "route": "JTEEE5 ODATE FTZ IOW GEP OTLUR Q906 KENRU LITGO IKLIX YZF 6400N/12000W 6600N/13000W GOATS BTT NCA30 OME R338 NATES R220 NODAN R217 GTC Y142 SAMON Y14 SUGNO Y16 SAPRA Y685 GUKDO GUKDO2E",
+          "waypoints": "JTEEE5 ODATE FTZ IOW GEP OTLUR Q906 KENRU LITGO IKLIX YZF 6400N/12000W 6600N/13000W GOATS BTT NCA30 OME R338 NATES R220 NODAN R217 GTC Y142 SAMON Y14 SUGNO Y16 SAPRA Y685 GUKDO GUKDO2E",
           "exit": "ODATE"
         },
         {
@@ -1806,7 +1806,7 @@
           ],
           "altitude": [28000],
           "destination": "KSHV",
-          "route": "CHLDR5 ANSWA",
+          "waypoints": "CHLDR5 ANSWA",
           "exit": "ANSWA"
         },
         {
@@ -1817,7 +1817,7 @@
           ],
           "altitude": [32000, 34000, 38000],
           "destination": "KGEG",
-          "route": "DUCKZ5 HELAR KK45E KD63Y KU87Q HILIE HILIE3",
+          "waypoints": "DUCKZ5 HELAR KK45E KD63Y KU87Q HILIE HILIE3",
           "exit": "HELAR"
         },
         {
@@ -1835,7 +1835,7 @@
           ],
           "altitude": [22000, 28000],
           "destination": "KSGF",
-          "route": "JTEEE5 ODATE HILTY",
+          "waypoints": "JTEEE5 ODATE HILTY",
           "exit": "ODATE"
         },
         {
@@ -1849,7 +1849,7 @@
           ],
           "altitude": [29000, 31000, 33000],
           "destination": "KSTL",
-          "route": "JTEEE5 ODATE BOOSH BOOSH3",
+          "waypoints": "JTEEE5 ODATE BOOSH BOOSH3",
           "exit": "ODATE"
         },
         {
@@ -1860,7 +1860,7 @@
           ],
           "altitude": [37000, 39000],
           "destination": "KSYR",
-          "route": "CRSON7 HUMMS PXV CREEP Q29 JHW NABOR",
+          "waypoints": "CRSON7 HUMMS PXV CREEP Q29 JHW NABOR",
           "exit": "HUMMS"
         },
         {
@@ -1871,7 +1871,7 @@
           ],
           "altitude": [31000, 37000, 39000],
           "destination": "KTLH",
-          "route": "PIEPE6 IBUFY MGMRY ACORI CABLO CONPA",
+          "waypoints": "PIEPE6 IBUFY MGMRY ACORI CABLO CONPA",
           "exit": "IBUFY"
         },
         {
@@ -1882,7 +1882,7 @@
           ],
           "altitude": [28000, 30000, 32000],
           "destination": "RJAA",
-          "route": "ZUMIT5 FOXOM EOS HCT CZI BIL YQL YRM YQU 5700N/12500W MITOM DEEJA NCA10 YAK J501 JOH NICHO R220 NANAC Y810 OLDIV Y809 SUPOK",
+          "waypoints": "ZUMIT5 FOXOM EOS HCT CZI BIL YQL YRM YQU 5700N/12500W MITOM DEEJA NCA10 YAK J501 JOH NICHO R220 NANAC Y810 OLDIV Y809 SUPOK",
           "exit": "FOXOM"
         },
         {
@@ -1893,7 +1893,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "MMTO",
-          "route": "CRSON7 HUMMS ELD CRP REX TALPU ITLAS ITLAS2A",
+          "waypoints": "CRSON7 HUMMS ELD CRP REX TALPU ITLAS ITLAS2A",
           "exit": "HUMMS"
         },
         {
@@ -1904,7 +1904,7 @@
           ],
           "altitude": [27000, 31000, 33000, 35000],
           "destination": "CYYZ",
-          "route": "CRSON7 HUMMS PXV MAYZE QWERI NUBER6",
+          "waypoints": "CRSON7 HUMMS PXV MAYZE QWERI NUBER6",
           "exit": "HUMMS"
         },
         {
@@ -1915,7 +1915,7 @@
           ],
           "altitude": [34000, 36000],
           "destination": "KTUS",
-          "route": "CHLDR5 ANSWA LITTR KF24G KF21E KF18C KF15A KF12Y KA12W EWM ZONNA2",
+          "waypoints": "CHLDR5 ANSWA LITTR KF24G KF21E KF18C KF15A KF12Y KA12W EWM ZONNA2",
           "exit": "ANSWA"
         },
         {
@@ -1926,7 +1926,7 @@
           ],
           "altitude": [32000, 34000],
           "destination": "KTUL",
-          "route": "ZUMIT5 FOXOM TUL",
+          "waypoints": "ZUMIT5 FOXOM TUL",
           "exit": "FOXOM"
         },
         {
@@ -1937,7 +1937,7 @@
           ],
           "altitude": [32000, 34000],
           "destination": "CYVR",
-          "route": "ZUMIT5 FOXOM RZC KK42E KK45C VARNR KD54Y BRAFF KU72S LAMON KU87O WEDAK MLP Q142 METOW GRIZZ9",
+          "waypoints": "ZUMIT5 FOXOM RZC KK42E KK45C VARNR KD54Y BRAFF KU72S LAMON KU87O WEDAK MLP Q142 METOW GRIZZ9",
           "exit": "FOXOM"
         },
         {
@@ -1948,7 +1948,7 @@
           ],
           "altitude": [33000, 35000, 37000],
           "destination": "KIAD",
-          "route": "GOETZ7 DIYAB HITMN Q34 SITTR GIBBZ6",
+          "waypoints": "GOETZ7 DIYAB HITMN Q34 SITTR GIBBZ6",
           "exit": "DIYAB"
         },
         {
@@ -1963,7 +1963,7 @@
           ],
           "altitude": [35000, 45000],
           "destination": "KDJT",
-          "route": "PIEPE6 IBUFY STEIT IVLUH EDN MAI MICES WILON ZALEK QUAZR YEHAW VUUDU VUUDU2",
+          "waypoints": "PIEPE6 IBUFY STEIT IVLUH EDN MAI MICES WILON ZALEK QUAZR YEHAW VUUDU VUUDU2",
           "exit": "IBUFY"
         },
         {
@@ -1974,7 +1974,7 @@
           ],
           "altitude": [30000, 34000, 36000],
           "destination": "KICT",
-          "route": "ZUMIT5 FOXOM HUSKA",
+          "waypoints": "ZUMIT5 FOXOM HUSKA",
           "exit": "FOXOM"
         },
         {
@@ -1985,7 +1985,7 @@
           ],
           "altitude": [28000, 32000, 34000],
           "destination": "CYWG",
-          "route": "JTEEE5 ODATE FTZ CID RST KP09G BIPKU NORAK6",
+          "waypoints": "JTEEE5 ODATE FTZ CID RST KP09G BIPKU NORAK6",
           "exit": "ODATE"
         }
       ],
@@ -2080,7 +2080,7 @@
           ],
           "altitude": [31000],
           "destination": "KMRC",
-          "route": "GOINS T398 SULLY JOVNA",
+          "waypoints": "GOINS T398 SULLY JOVNA",
           "exit": "GOINS"
         },
         {
@@ -2091,7 +2091,7 @@
           ],
           "altitude": [31000],
           "destination": "KSAV",
-          "route": "RQZ MCN",
+          "waypoints": "RQZ MCN",
           "exit": "RQZ"
         },
         {
@@ -2102,7 +2102,7 @@
           ],
           "altitude": [8000],
           "destination": "KLNK",
-          "route": "MUPIE MCI RBA",
+          "waypoints": "MUPIE MCI RBA",
           "exit": "MUPIE"
         }
       ]
@@ -2200,7 +2200,7 @@
         {
           "waypoints": "SPKER BLUZZ/ho LTOWN/a14000-16000 DAPLE DASAC/a9000-11000 CLARK/a8000-10000/s210 DIGLE/a6000-8000 DINKE/a3000/ph",
           "cruise_altitude": 34000,
-          "route": "/. BLUZZ5",
+          "flight_strip_route": "/. BLUZZ5",
           "star": "BLUZZ5",
           "initial_controller": "C32",
           "initial_altitude": 14000,
@@ -2235,7 +2235,7 @@
         {
           "waypoints": "SPKER BLUZZ/ho COPEN/a10000/s230/ph",
           "cruise_altitude": 34000,
-          "route": "/. BLUZZ5",
+          "flight_strip_route": "/. BLUZZ5",
           "star": "BLUZZ5",
           "initial_controller": "C32",
           "initial_altitude": 14000,
@@ -2270,7 +2270,7 @@
         {
           "waypoints": "BRBBQ/s280/ho FNCHR/a14000-16000/s280 RDEEE JESTI BEERT/a10000-12000/s250 BOWEN/a8000-10000/s210 JIMGA/a6000-8000 JAYWA/a4000",
           "cruise_altitude": 35000,
-          "route": "/. BRBBQ3",
+          "flight_strip_route": "/. BRBBQ3",
           "star": "BRBBQ3",
           "initial_controller": "C32",
           "initial_altitude": 21000,
@@ -2309,7 +2309,7 @@
         {
           "waypoints": "BRBBQ/s280/ho JAMLA/a10000/s230",
           "cruise_altitude": 35000,
-          "route": "/. BRBBQ3",
+          "flight_strip_route": "/. BRBBQ3",
           "star": "BRBBQ3",
           "initial_controller": "C32",
           "initial_altitude": 13000,
@@ -2348,7 +2348,7 @@
         {
           "waypoints": "EVLYN/ho CONDR/a10000-/s250 JFRED/a6000/s210/ph",
           "cruise_altitude": 35000,
-          "route": "/. CONDR4",
+          "flight_strip_route": "/. CONDR4",
           "star": "CONDR4",
           "initial_controller": "C32",
           "initial_altitude": 13000,
@@ -2371,7 +2371,7 @@
         {
           "waypoints": "DAWGG/s280/ho FNCHR/a14000-16000 GQE JESTI BEERT/a10000-12000/s250 LOONR/a9000-11000 BOWEN/a8000/s210/h180",
           "cruise_altitude": 35000,
-          "route": "/. DAWGG2",
+          "flight_strip_route": "/. DAWGG2",
           "star": "DAWGG2",
           "initial_controller": "C32",
           "initial_altitude": 17000,
@@ -2417,7 +2417,7 @@
         {
           "waypoints": "DAWGG/s280/ho FNCHR/a10000/s230/h112",
           "cruise_altitude": 35000,
-          "route": "/. DAWGG2",
+          "flight_strip_route": "/. DAWGG2",
           "star": "DAWGG2",
           "initial_controller": "C32",
           "initial_altitude": 13000,
@@ -2463,7 +2463,7 @@
         {
           "waypoints": "HOBRK/ho/s280 TAMMY/a14000-16000/s250 TWIKL/a9000-11000 SINBE/a8000-10000/s210 BOWEN/a6000-8000 SKEEZ/a4000/ph",
           "cruise_altitude": 35000,
-          "route": "/. HOBRK4",
+          "flight_strip_route": "/. HOBRK4",
           "star": "HOBRK4",
           "initial_controller": "C32",
           "initial_altitude": 19000,
@@ -2506,7 +2506,7 @@
         {
           "waypoints": "HOBRK/ho/s280 ROCAB/a10000/s230/ph",
           "cruise_altitude": 35000,
-          "route": "/. HOBRK4",
+          "flight_strip_route": "/. HOBRK4",
           "star": "HOBRK4",
           "initial_controller": "C32",
           "initial_altitude": 17000,
@@ -2549,7 +2549,7 @@
         {
           "waypoints": "N035.49.04.006,W089.47.51.386/ho ROBYE/a10000/s250 ASSUR/ph",
           "cruise_altitude": 35000,
-          "route": "/. HYTHR3",
+          "flight_strip_route": "/. HYTHR3",
           "star": "HYTHR3",
           "initial_controller": "C32",
           "initial_altitude": 13000,
@@ -2595,7 +2595,7 @@
         {
           "waypoints": "UJM/ho TAMMY/h055/a10000/s230",
           "cruise_altitude": 35000,
-          "route": "/. UJM6",
+          "flight_strip_route": "/. UJM6",
           "initial_controller": "C32",
           "initial_altitude": 12000,
           "initial_speed": 280,
@@ -2640,7 +2640,7 @@
         {
           "waypoints": "UJM/ho TAMMY/a14000-16000 MADDN JAMEA/a10000-12000/s250 TWIKL/a8000-11000/s210/h335",
           "cruise_altitude": 35000,
-          "route": "/. UJM6",
+          "flight_strip_route": "/. UJM6",
           "star": "HOBRK4",
           "initial_controller": "C32",
           "initial_altitude": 17000,
@@ -2687,7 +2687,7 @@
           "spawn": "LOHNI",
           "waypoint_actions": { "LOHNI": "ho" },
           "cruise_altitude": 35000,
-          "route": "/. MONAA4",
+          "flight_strip_route": "/. MONAA4",
           "star": "MONAA4",
           "initial_controller": "C32",
           "initial_altitude": 8000,
@@ -2718,7 +2718,7 @@
         {
           "waypoints": "VANZE/a23000-/s280/ho CHLMR/a10000/s230/h284",
           "cruise_altitude": 35000,
-          "route": "/. VANZE3",
+          "flight_strip_route": "/. VANZE3",
           "star": "VANZE3",
           "initial_controller": "C32",
           "initial_altitude": 14000,
@@ -2764,7 +2764,7 @@
         {
           "waypoints": "VANZE/a23000-/s280/ho MASHH/a14000-16000/s280 HLI LARUE/a10000-12000/s250 FLOND/a9000-11000 SUUZE MEBEE/a8000-10000/s210 HADSO/a6000-8000 HEXIN/a3000/h360",
           "cruise_altitude": 35000,
-          "route": "/. VANZE3",
+          "flight_strip_route": "/. VANZE3",
           "star": "VANZE3",
           "initial_controller": "C32",
           "initial_altitude": 14000,
@@ -2810,7 +2810,7 @@
         {
           "waypoints": "WLDER/ho LTOWN/a14000-16000 DAPLE MRCEL/a10000-12000/s250 DASAC/a9000-11000 CLARK/a8000+/s210/h180",
           "cruise_altitude": 35000,
-          "route": "/. WLDER1",
+          "flight_strip_route": "/. WLDER1",
           "star": "WLDER1",
           "initial_controller": "C32",
           "initial_altitude": 14000,
@@ -2856,7 +2856,7 @@
         {
           "waypoints": "WLDER/ho LTOWN/a10000/s230/h245",
           "cruise_altitude": 35000,
-          "route": "/. WLDER1",
+          "flight_strip_route": "/. WLDER1",
           "star": "WLDER1",
           "initial_controller": "C32",
           "initial_altitude": 12000,
@@ -2902,7 +2902,7 @@
         {
           "waypoints": "N034.36.34.601,W090.43.51.417/ho KOLV",
           "cruise_altitude": 35000,
-          "route": "KOLV",
+          "flight_strip_route": "KOLV",
           "initial_controller": "C32",
           "initial_altitude": 4000,
           "initial_speed": 280,
@@ -2924,7 +2924,7 @@
         {
           "waypoints": "N034.43.41.282,W089.12.02.598/ho KOLV",
           "cruise_altitude": 35000,
-          "route": "KOLV",
+          "flight_strip_route": "KOLV",
           "initial_controller": "C32",
           "initial_altitude": 3000,
           "initial_speed": 210,

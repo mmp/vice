@@ -617,7 +617,7 @@
           ],
           "destination": "KBZN",
           "exit": "FRNCK",
-          "route": "FRNCK WINEN Q842 PROXI LOSST GARNT"
+          "waypoints": "FRNCK WINEN Q842 PROXI LOSST GARNT"
         },
         {
           "airlines": [
@@ -648,7 +648,7 @@
           ],
           "destination": "KSLC",
           "exit": "FRNCK",
-          "route": "FRNCK MLF QWEEN5"
+          "waypoints": "FRNCK MLF QWEEN5"
         },
         {
           "airlines": [
@@ -658,7 +658,7 @@
           ],
           "destination": "KBZN",
           "exit": "FRNCK.8",
-          "route": "FRNCK WINEN Q842 PROXI LOSST GARNT"
+          "waypoints": "FRNCK WINEN Q842 PROXI LOSST GARNT"
         },
         {
           "airlines": [
@@ -689,7 +689,7 @@
           ],
           "destination": "KSLC",
           "exit": "FRNCK.8",
-          "route": "FRNCK MLF QWENN7"
+          "waypoints": "FRNCK MLF QWENN7"
         },
         {
           "airlines": [
@@ -700,7 +700,7 @@
           ],
           "destination": "KIAH",
           "exit": "SSKEE",
-          "route": "SSKEE GUP CNX SJT DIESL GUSHR3"
+          "waypoints": "SSKEE GUP CNX SJT DIESL GUSHR3"
         },
         {
           "airlines": [
@@ -728,7 +728,7 @@
           ],
           "destination": "KSAN",
           "exit": "LVELL",
-          "route": "LVELL LUCKI1"
+          "waypoints": "LVELL LUCKI1"
         },
         {
           "airlines": [
@@ -785,7 +785,7 @@
           ],
           "destination": "KLAX",
           "exit": "BLAQQ",
-          "route": "BLAQQ SHTNR ANJLL4"
+          "waypoints": "BLAQQ SHTNR ANJLL4"
         },
         {
           "airlines": [
@@ -804,7 +804,7 @@
           ],
           "destination": "KONT",
           "exit": "SLVRR",
-          "route": "SLVRR FEYLA JCKIE2"
+          "waypoints": "SLVRR FEYLA JCKIE2"
         },
         {
           "airlines": [
@@ -830,7 +830,7 @@
           ],
           "destination": "KPHX",
           "exit": "ZAYNE",
-          "route": "ZAYNE WOTRO BRUSR1"
+          "waypoints": "ZAYNE WOTRO BRUSR1"
         },
         {
           "airlines": [
@@ -841,7 +841,7 @@
           ],
           "destination": "KOKC",
           "exit": "SSKEE",
-          "route": "SSKEE GUP J8 FTI PNH RUSTS GHOST3"
+          "waypoints": "SSKEE GUP J8 FTI PNH RUSTS GHOST3"
         },
         {
           "airlines": [
@@ -852,7 +852,7 @@
           ],
           "destination": "KMCI",
           "exit": "HOCEE",
-          "route": "HOCEE CIM LBL ZOURA WUTNG3"
+          "waypoints": "HOCEE CIM LBL ZOURA WUTNG3"
         },
         {
           "airlines": [
@@ -863,7 +863,7 @@
           ],
           "destination": "KHOU",
           "exit": "SSKEE",
-          "route": "SSKEE GUP CNX BGS LLO KIDDZ4"
+          "waypoints": "SSKEE GUP CNX BGS LLO KIDDZ4"
         },
         {
           "airlines": [
@@ -873,7 +873,7 @@
           ],
           "destination": "KICT",
           "exit": "TUKRR",
-          "route": "TUKRR DVC PUB LAA GCK KYLER"
+          "waypoints": "TUKRR DVC PUB LAA GCK KYLER"
         },
         {
           "airlines": [
@@ -883,7 +883,7 @@
           ],
           "destination": "KCMH",
           "exit": "SSKEE",
-          "route": "SSKEE GUP J8 FTI ICT VHP JADUB DUBLN1"
+          "waypoints": "SSKEE GUP J8 FTI ICT VHP JADUB DUBLN1"
         },
         {
           "airlines": [
@@ -894,7 +894,7 @@
           ],
           "destination": "KCLT",
           "exit": "HOCEE",
-          "route": "HOCEE COCAN J64 RSK LBL EOS BNA METWO COMDY FLIPZ3"
+          "waypoints": "HOCEE COCAN J64 RSK LBL EOS BNA METWO COMDY FLIPZ3"
         },
         {
           "airlines": [
@@ -929,7 +929,7 @@
           ],
           "destination": "KSFO",
           "exit": "KENNO",
-          "route": "KENNO RUSME DYAMD5"
+          "waypoints": "KENNO RUSME DYAMD5"
         },
         {
           "airlines": [
@@ -949,7 +949,7 @@
           ],
           "destination": "KSMF",
           "exit": "KENNO",
-          "route": "KENNO DONNR SLMMR5"
+          "waypoints": "KENNO DONNR SLMMR5"
         },
         {
           "airlines": [
@@ -960,7 +960,7 @@
           ],
           "destination": "KSBP",
           "exit": "HEC",
-          "route": "RADYR2 HEC PMD MQO"
+          "waypoints": "RADYR2 HEC PMD MQO"
         },
         {
           "airlines": [
@@ -983,7 +983,7 @@
           ],
           "destination": "KRNO",
           "exit": "KENNO",
-          "route": "KENNO SCOLA1"
+          "waypoints": "KENNO SCOLA1"
         },
         {
           "airlines": [
@@ -1006,7 +1006,7 @@
           ],
           "destination": "KOAK",
           "exit": "KENNO",
-          "route": "KENNO RUSME OAKES2"
+          "waypoints": "KENNO RUSME OAKES2"
         },
         {
           "airlines": [
@@ -1025,7 +1025,7 @@
           ],
           "destination": "KOAK",
           "exit": "KENNO",
-          "route": "KENNO RUSME RAZRR5"
+          "waypoints": "KENNO RUSME RAZRR5"
         },
         {
           "airlines": [
@@ -1048,7 +1048,7 @@
           ],
           "destination": "KPDX",
           "exit": "KENNO",
-          "route": "KENNO OAL YERIN MOXEE TMBRS3"
+          "waypoints": "KENNO OAL YERIN MOXEE TMBRS3"
         },
         {
           "airlines": [
@@ -1071,7 +1071,7 @@
           ],
           "destination": "KSEA",
           "exit": "KENNO",
-          "route": "KENNO OAL LOMIA LKV HAWKZ8"
+          "waypoints": "KENNO OAL LOMIA LKV HAWKZ8"
         },
         {
           "airlines": [
@@ -1089,7 +1089,7 @@
           ],
           "destination": "CYVR",
           "exit": "KENNO",
-          "route": "KENNO OAL J92 FMG J5 SUMMA PAE GRIZZ7"
+          "waypoints": "KENNO OAL J92 FMG J5 SUMMA PAE GRIZZ7"
         },
         {
           "airlines": [
@@ -1110,7 +1110,7 @@
           ],
           "destination": "KDFW",
           "exit": "SSKEE",
-          "route": "SSKEE GUP J72 ABQ J15 CME BGS GEEKY BOOVE7"
+          "waypoints": "SSKEE GUP J72 ABQ J15 CME BGS GEEKY BOOVE7"
         },
         {
           "airlines": [
@@ -1123,7 +1123,7 @@
           ],
           "destination": "KDAL",
           "exit": "SSKEE",
-          "route": "SSKEE GUP J72 ABQ J15 CME BGS BGTOE BACHR4"
+          "waypoints": "SSKEE GUP J72 ABQ J15 CME BGS BGTOE BACHR4"
         },
         {
           "airlines": [
@@ -1144,7 +1144,7 @@
           ],
           "destination": "KDEN",
           "exit": "TUKRR",
-          "route": "TUKRR BUMMP SSKII3"
+          "waypoints": "TUKRR BUMMP SSKII3"
         },
         {
           "airlines": [
@@ -1166,7 +1166,7 @@
           ],
           "destination": "KJFK",
           "exit": "TUKRR",
-          "route": "TUKRR PGA KD45Q MTJ FQF OBH OBK POSTS SVM J70 LVZ LENDY8"
+          "waypoints": "TUKRR PGA KD45Q MTJ FQF OBH OBK POSTS SVM J70 LVZ LENDY8"
         },
         {
           "airlines": [
@@ -1177,7 +1177,7 @@
           ],
           "destination": "CYYC",
           "exit": "VERKN",
-          "route": "VERKN MLF J9 FFU BZN COUTS EBGAL EBGAL7"
+          "waypoints": "VERKN MLF J9 FFU BZN COUTS EBGAL EBGAL7"
         },
         {
           "airlines": [
@@ -1202,7 +1202,7 @@
           ],
           "destination": "KORD",
           "exit": "VERKN",
-          "route": "VERKN PROMT Q88 CHESZ DBL LBF FOD MYRRS FYTTE7"
+          "waypoints": "VERKN PROMT Q88 CHESZ DBL LBF FOD MYRRS FYTTE7"
         },
         {
           "airlines": [
@@ -1215,7 +1215,7 @@
           ],
           "destination": "KORD",
           "exit": "TUKRR",
-          "route": "TUKRR PUB OATHE KK57C IRK ENDEE6"
+          "waypoints": "TUKRR PUB OATHE KK57C IRK ENDEE6"
         },
         {
           "airlines": [
@@ -1233,7 +1233,7 @@
           ],
           "destination": "KEWR",
           "exit": "TUKRR",
-          "route": "TUKRR DVV J60 HCT OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
+          "waypoints": "TUKRR DVV J60 HCT OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -1246,7 +1246,7 @@
           ],
           "destination": "KTPA",
           "exit": "ZAYNE",
-          "route": "ZAYNE DRK Q13 ELP FST JCT CWK IAH J86 LEV Y280 CHRGE RAYZZ3"
+          "waypoints": "ZAYNE DRK Q13 ELP FST JCT CWK IAH J86 LEV Y280 CHRGE RAYZZ3"
         },
         {
           "airlines": [
@@ -1274,7 +1274,7 @@
           ],
           "destination": "KATL",
           "exit": "SSKEE",
-          "route": "SSKEE ABQ J72 TXO KVLIP FUZ MLU MHZ ORRKK GNDLF2"
+          "waypoints": "SSKEE ABQ J72 TXO KVLIP FUZ MLU MHZ ORRKK GNDLF2"
         },
         {
           "airlines": [
@@ -1289,7 +1289,7 @@
           ],
           "destination": "EGLL",
           "exit": "TUKRR",
-          "route": "TUKRR DVC FQF J10 LBF ONL FSD DLH YSP VETRO JOVIE CUDDY 5800N/05000W 5900N/04000W 5900N/03000W 5900N/02000W GOMUP GINGA KELLY L10 WAL UY53 NUGRA"
+          "waypoints": "TUKRR DVC FQF J10 LBF ONL FSD DLH YSP VETRO JOVIE CUDDY 5800N/05000W 5900N/04000W 5900N/03000W 5900N/02000W GOMUP GINGA KELLY L10 WAL UY53 NUGRA"
         },
         {
           "airlines": [
@@ -1300,7 +1300,7 @@
           ],
           "destination": "EHAM",
           "exit": "VERKN",
-          "route": "VERKN MLF KU57O KU84S KU18W XOVON 5600N/09000W 5830N/08000W TUNNI RODBO PIDSO 6000N/05000W 6000N/04000W 6000N/03000W 5930N/02000W"
+          "waypoints": "VERKN MLF KU57O KU84S KU18W XOVON 5600N/09000W 5830N/08000W TUNNI RODBO PIDSO 6000N/05000W 6000N/04000W 6000N/03000W 5930N/02000W"
         },
         {
           "airlines": [
@@ -1319,7 +1319,7 @@
           ],
           "destination": "CYYZ",
           "exit": "TUKRR",
-          "route": "TUKRR HBU J128 FQF OBH DBQ MONEE NUBER6"
+          "waypoints": "TUKRR HBU J128 FQF OBH DBQ MONEE NUBER6"
         },
         {
           "airlines": [
@@ -1336,7 +1336,7 @@
           ],
           "destination": "MMMX",
           "exit": "ZAYNE",
-          "route": "ZAYNE DRK Q13 VERNO J86 RUTER CJS UJ47 VOKOM UQ102 SLP UT131 DARAN DARAN3A"
+          "waypoints": "ZAYNE DRK Q13 VERNO J86 RUTER CJS UJ47 VOKOM UQ102 SLP UT131 DARAN DARAN3A"
         },
         {
           "airlines": [
@@ -1349,7 +1349,7 @@
           ],
           "destination": "MMGL",
           "exit": "ZAYNE",
-          "route": "ZAYNE DRK J11 TUS J92 VYLLA UT12 CUL UJ7 AMULA AMULA1B"
+          "waypoints": "ZAYNE DRK J11 TUS J92 VYLLA UT12 CUL UJ7 AMULA AMULA1B"
         },
         {
           "airlines": [
@@ -1360,7 +1360,7 @@
           ],
           "destination": "KTPH",
           "exit": "JAYSN",
-          "route": "JAYSN EXITT"
+          "waypoints": "JAYSN EXITT"
         }
       ],
       "exit_categories": {
@@ -1463,7 +1463,7 @@
           ],
           "altitude": 20000,
           "destination": "KVNY",
-          "route": "SLVRR TOPAC WNCHL JANNY5",
+          "waypoints": "SLVRR TOPAC WNCHL JANNY5",
           "exit": "SLVRR"
         },
         {
@@ -1475,7 +1475,7 @@
           ],
           "altitude": 32000,
           "destination": "KSFO",
-          "route": "KENNO RUSME DYAMD5",
+          "waypoints": "KENNO RUSME DYAMD5",
           "exit": "KENNO"
         },
         {
@@ -1487,7 +1487,7 @@
           ],
           "altitude": 33000,
           "destination": "KTEB",
-          "route": "TUKRR",
+          "waypoints": "TUKRR",
           "exit": "TUKRR"
         },
         {
@@ -1499,7 +1499,7 @@
           ],
           "altitude": 33000,
           "destination": "KFLL",
-          "route": "SSKEE",
+          "waypoints": "SSKEE",
           "exit": "SSKEE"
         },
         {
@@ -1511,7 +1511,7 @@
           ],
           "altitude": 32000,
           "destination": "KSDL",
-          "route": "ZAYNE WOTRO",
+          "waypoints": "ZAYNE WOTRO",
           "exit": "ZAYNE"
         }
       ],
@@ -1613,7 +1613,7 @@
           ],
           "altitude": 35000,
           "destination": "KSLC",
-          "route": "NOTWN5 LAS J9 NORRA FRNCK FFU",
+          "waypoints": "NOTWN5 LAS J9 NORRA FRNCK FFU",
           "exit": "LAS"
         },
         {
@@ -1625,7 +1625,7 @@
           ],
           "altitude": 23000,
           "destination": "KSDL",
-          "route": "NOTWN5 LAS RASLR ROHCK ZAYNE KIDDR DSERT2",
+          "waypoints": "NOTWN5 LAS RASLR ROHCK ZAYNE KIDDR DSERT2",
           "exit": "LAS"
         },
         {
@@ -1637,7 +1637,7 @@
           ],
           "altitude": 37000,
           "destination": "KPWA",
-          "route": "NOTWN5 LAS NIITZ HOCEE TBC J76 TANER MIRME ROLLS DAWKS1",
+          "waypoints": "NOTWN5 LAS NIITZ HOCEE TBC J76 TANER MIRME ROLLS DAWKS1",
           "exit": "LAS"
         },
         {
@@ -1649,7 +1649,7 @@
           ],
           "altitude": 34000,
           "destination": "KBOI",
-          "route": "NOTWN5 LAS J9 NORRA FRNCK BERYL ELY BROPH",
+          "waypoints": "NOTWN5 LAS J9 NORRA FRNCK BERYL ELY BROPH",
           "exit": "LAS"
         },
         {
@@ -1661,7 +1661,7 @@
           ],
           "altitude": 32000,
           "destination": "KVNY",
-          "route": "NOTWN5 LAS RADYR SLVRR KREME JANNY5",
+          "waypoints": "NOTWN5 LAS RADYR SLVRR KREME JANNY5",
           "exit": "LAS"
         }
       ],

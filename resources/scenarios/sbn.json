@@ -56,7 +56,7 @@
           "exit": "STL",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "STL FSM RRNET SEEVR4",
+          "waypoints": "STL FSM RRNET SEEVR4",
           "airlines": [
             {
               "icao": "SKW",
@@ -68,7 +68,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -80,7 +80,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -92,7 +92,7 @@
           "exit": "IIU",
           "destination": "KATL",
           "altitude": 37000,
-          "route": "IIU BNA NEWBB IHAVE MTHEW CHPPR1",
+          "waypoints": "IIU BNA NEWBB IHAVE MTHEW CHPPR1",
           "airlines": [
             {
               "icao": "SKW",
@@ -104,7 +104,7 @@
           "exit": "STL",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "STL FSM RRNET SEEVR4",
+          "waypoints": "STL FSM RRNET SEEVR4",
           "airlines": [
             {
               "icao": "SKW",
@@ -116,7 +116,7 @@
           "exit": "GSH",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "GSH FWA FLM LNDIZ PARQR7",
+          "waypoints": "GSH FWA FLM LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -128,7 +128,7 @@
           "exit": "VHP",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "VHP JARLO GIBBZ6",
+          "waypoints": "VHP JARLO GIBBZ6",
           "airlines": [
             {
               "icao": "RPA",
@@ -140,7 +140,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -152,7 +152,7 @@
           "exit": "NEWEL",
           "destination": "KMDW",
           "altitude": 43000,
-          "route": "NEWEL J60 DJB BAGEL PANGG5",
+          "waypoints": "NEWEL J60 DJB BAGEL PANGG5",
           "airlines": [
             {
               "icao": "LXJ",
@@ -164,7 +164,7 @@
           "exit": "GIJ",
           "destination": "KDTW",
           "altitude": 19000,
-          "route": "GIJ KI60O SUBWY CRAKN2",
+          "waypoints": "GIJ KI60O SUBWY CRAKN2",
           "airlines": [
             {
               "icao": "SKW",
@@ -176,7 +176,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -188,7 +188,7 @@
           "exit": "KAMMA",
           "destination": "KMSP",
           "altitude": 34000,
-          "route": "KAMMA KKILR3",
+          "waypoints": "KAMMA KKILR3",
           "airlines": [
             {
               "icao": "SKW",
@@ -200,7 +200,7 @@
           "exit": "GSH",
           "destination": "KATL",
           "altitude": 35000,
-          "route": "GSH EMPTY OHIOS KTRYN ONDRE1",
+          "waypoints": "GSH EMPTY OHIOS KTRYN ONDRE1",
           "airlines": [
             {
               "icao": "SKW",
@@ -212,7 +212,7 @@
           "exit": "VHP",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "VHP PXV FSM RRNET SEEVR4",
+          "waypoints": "VHP PXV FSM RRNET SEEVR4",
           "airlines": [
             {
               "icao": "SKW",
@@ -224,7 +224,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 6000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -236,7 +236,7 @@
           "exit": "VHP",
           "destination": "KMEM",
           "altitude": 38000,
-          "route": "VHP PXV BLUZZ5",
+          "waypoints": "VHP PXV BLUZZ5",
           "airlines": [
             {
               "icao": "FDX",
@@ -248,7 +248,7 @@
           "exit": "GIJ",
           "destination": "KSDF",
           "altitude": 24000,
-          "route": "GIJ BVT SHARE JMONY2",
+          "waypoints": "GIJ BVT SHARE JMONY2",
           "airlines": [
             {
               "icao": "UPS",
@@ -260,7 +260,7 @@
           "exit": "BDF",
           "destination": "KIWA",
           "altitude": 36000,
-          "route": "BDF J26 IRK J96 CIM ZUN HUUTY1",
+          "waypoints": "BDF J26 IRK J96 CIM ZUN HUUTY1",
           "airlines": [
             {
               "icao": "AAY",
@@ -272,7 +272,7 @@
           "exit": "GOTNE",
           "destination": "KPGD",
           "altitude": 37000,
-          "route": "GOTNE IIU SWAPP GQO HONID Q81 NICKI PLYER PIKKR7",
+          "waypoints": "GOTNE IIU SWAPP GQO HONID Q81 NICKI PLYER PIKKR7",
           "airlines": [
             {
               "icao": "AAY",
@@ -284,7 +284,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -296,7 +296,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -308,7 +308,7 @@
           "exit": "GSH",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "GSH FWA FLM LNDIZ PARQR7",
+          "waypoints": "GSH FWA FLM LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -320,7 +320,7 @@
           "exit": "IIU",
           "destination": "KATL",
           "altitude": 37000,
-          "route": "IIU BNA NEWBB IHAVE MTHEW CHPPR1",
+          "waypoints": "IIU BNA NEWBB IHAVE MTHEW CHPPR1",
           "airlines": [
             {
               "icao": "SKW",
@@ -332,7 +332,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -344,7 +344,7 @@
           "exit": "STL",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "STL FSM RRNET SEEVR4",
+          "waypoints": "STL FSM RRNET SEEVR4",
           "airlines": [
             {
               "icao": "SKW",
@@ -356,7 +356,7 @@
           "exit": "REVSS",
           "destination": "KTEB",
           "altitude": 20000,
-          "route": "REVSS BAF MOBBS T295 SAGES V489 COATE",
+          "waypoints": "REVSS BAF MOBBS T295 SAGES V489 COATE",
           "airlines": [
             {
               "icao": "WUP",
@@ -368,7 +368,7 @@
           "exit": "PIA",
           "destination": "KSRQ",
           "altitude": 39000,
-          "route": "PIA SPI PXV J73 LGC HONID BANGZ1",
+          "waypoints": "PIA SPI PXV J73 LGC HONID BANGZ1",
           "airlines": [
             {
               "icao": "AAY",
@@ -380,7 +380,7 @@
           "exit": "DVV",
           "destination": "KOAK",
           "altitude": 43000,
-          "route": "DVV EKR J199 DTA TATOO MONOH OAKES2",
+          "waypoints": "DVV EKR J199 DTA TATOO MONOH OAKES2",
           "airlines": [
             {
               "icao": "EJA",
@@ -392,7 +392,7 @@
           "exit": "VHP",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "VHP JARLO GIBBZ6",
+          "waypoints": "VHP JARLO GIBBZ6",
           "airlines": [
             {
               "icao": "RPA",
@@ -404,7 +404,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -416,7 +416,7 @@
           "exit": "OTENS",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "OTENS RDBUV HVQ LNDIZ PARQR7",
+          "waypoints": "OTENS RDBUV HVQ LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -428,7 +428,7 @@
           "exit": "GIJ",
           "destination": "KDTW",
           "altitude": 19000,
-          "route": "GIJ KI60O SUBWY CRAKN2",
+          "waypoints": "GIJ KI60O SUBWY CRAKN2",
           "airlines": [
             {
               "icao": "SKW",
@@ -440,7 +440,7 @@
           "exit": "GSH",
           "destination": "KRDU",
           "altitude": 33000,
-          "route": "GSH FWA J149 ROD HVQ MOL MELTN ALDAN4",
+          "waypoints": "GSH FWA J149 ROD HVQ MOL MELTN ALDAN4",
           "airlines": [
             {
               "icao": "AWI",
@@ -452,7 +452,7 @@
           "exit": "KAMMA",
           "destination": "KMSP",
           "altitude": 34000,
-          "route": "KAMMA KKILR3",
+          "waypoints": "KAMMA KKILR3",
           "airlines": [
             {
               "icao": "SKW",
@@ -464,7 +464,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -476,7 +476,7 @@
           "exit": "VHP",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "VHP PXV FSM RRNET SEEVR4",
+          "waypoints": "VHP PXV FSM RRNET SEEVR4",
           "airlines": [
             {
               "icao": "SKW",
@@ -488,7 +488,7 @@
           "exit": "GSH",
           "destination": "KATL",
           "altitude": 35000,
-          "route": "GSH EMPTY OHIOS KTRYN ONDRE1",
+          "waypoints": "GSH EMPTY OHIOS KTRYN ONDRE1",
           "airlines": [
             {
               "icao": "SKW",
@@ -500,7 +500,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 6000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -512,7 +512,7 @@
           "exit": "STL",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "STL FSM RRNET BRDJE5",
+          "waypoints": "STL FSM RRNET BRDJE5",
           "airlines": [
             {
               "icao": "SKW",
@@ -524,7 +524,7 @@
           "exit": "APE",
           "destination": "KPGD",
           "altitude": 35000,
-          "route": "APE J83 SPA KYYUU LUBBR3",
+          "waypoints": "APE J83 SPA KYYUU LUBBR3",
           "airlines": [
             {
               "icao": "AAY",
@@ -536,7 +536,7 @@
           "exit": "OXI",
           "destination": "KLAS",
           "altitude": 34000,
-          "route": "OXI BDF LMN PWE HBU DVC TYEGR CHOWW3",
+          "waypoints": "OXI BDF LMN PWE HBU DVC TYEGR CHOWW3",
           "airlines": [
             {
               "icao": "AAY",
@@ -548,7 +548,7 @@
           "exit": "DAYVS",
           "destination": "KHDC",
           "altitude": 43000,
-          "route": "DAYVS SOSOE ZYDCO",
+          "waypoints": "DAYVS SOSOE ZYDCO",
           "airlines": [
             {
               "icao": "LXJ",
@@ -560,7 +560,7 @@
           "exit": "MLP",
           "destination": "KDEN",
           "altitude": 33000,
-          "route": "MLP DNW TOFUU FLATI4",
+          "waypoints": "MLP DNW TOFUU FLATI4",
           "airlines": [
             {
               "icao": "SKW",
@@ -572,7 +572,7 @@
           "exit": "GLANC",
           "destination": "KMOB",
           "altitude": 43000,
-          "route": "SCRAM6 GLANC COLZI Q52 CHOPZ MGM SJI",
+          "waypoints": "SCRAM6 GLANC COLZI Q52 CHOPZ MGM SJI",
           "airlines": [
             {
               "icao": "EJA",
@@ -584,7 +584,7 @@
           "exit": "GSH",
           "destination": "KCLT",
           "altitude": 29000,
-          "route": "GSH FWA FLM LNDIZ PARQR7",
+          "waypoints": "GSH FWA FLM LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "JIA",
@@ -596,7 +596,7 @@
           "exit": "PRADY",
           "destination": "KORD",
           "altitude": 8000,
-          "route": "PRADY ERNNY8",
+          "waypoints": "PRADY ERNNY8",
           "airlines": [
             {
               "icao": "SKW",
@@ -853,7 +853,7 @@
           "initial_altitude": 22000,
           "assigned_altitude": 11000,
           "description": "",
-          "route": "FWA KSBN",
+          "flight_strip_route": "FWA KSBN",
           "initial_controller": "C35",
           "initial_speed": 270,
           "waypoints": "N040.34.46.853,W085.02.47.651 N040.59.40.746,W085.26.46.448/a20000 N041.17.21.036,W085.44.15.532/ho KSBN"
@@ -878,7 +878,7 @@
           },
           "initial_altitude": 8000,
           "description": "ORD -> SBN",
-          "route": "KORD MOBLE GIJ KSBN",
+          "flight_strip_route": "KORD MOBLE GIJ KSBN",
           "initial_controller": "1Z",
           "initial_speed": 210,
           "waypoints": "KORD N041.57.19.352,W087.18.01.356/ho MOBLE GIJ"
@@ -932,7 +932,7 @@
           "initial_altitude": 22000,
           "assigned_altitude": 11000,
           "description": "MSP -> SBN",
-          "route": " DLL GIJ KSBN",
+          "flight_strip_route": " DLL GIJ KSBN",
           "initial_controller": "C81",
           "initial_speed": 270,
           "waypoints": "N042.35.46.769,W087.55.50.610 N042.15.41.500,W087.16.06.906/ho GIJ"
@@ -978,7 +978,7 @@
           "initial_altitude": 22000,
           "assigned_altitude": 11000,
           "description": "MSP -> SBN",
-          "route": "ZACHH4 BSKAT LIT J131 PXV TTH KSBN",
+          "flight_strip_route": "ZACHH4 BSKAT LIT J131 PXV TTH KSBN",
           "initial_controller": "C35",
           "initial_speed": 270,
           "waypoints": "N040.08.43.690,W087.35.23.052 N041.05.13.330,W087.03.49.751/ho KSBN"

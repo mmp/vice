@@ -103,7 +103,7 @@
           ],
           "destination": "KEUG",
           "exit": "ZEMAM",
-          "route": "ZEMAM",
+          "waypoints": "ZEMAM",
           "altitude": 3000
         },
         {
@@ -115,7 +115,7 @@
           ],
           "destination": "77S",
           "exit": "ZEMAM",
-          "route": "ZEMAM",
+          "waypoints": "ZEMAM",
           "altitude": 3000
         },
         {
@@ -127,7 +127,7 @@
           ],
           "destination": "KCVO",
           "exit": "CVO.4",
-          "route": "CVO",
+          "waypoints": "CVO",
           "altitude": 4000
         },
         {
@@ -139,7 +139,7 @@
           ],
           "destination": "KHIO",
           "exit": "UBG.4",
-          "route": "UBG",
+          "waypoints": "UBG",
           "altitude": 4000
         },
         {
@@ -151,7 +151,7 @@
           ],
           "destination": "KVUO",
           "exit": "UBG.6",
-          "route": "UBG",
+          "waypoints": "UBG",
           "altitude": 6000
         },
         {
@@ -163,7 +163,7 @@
           ],
           "destination": "KUAO",
           "exit": "UBG.8",
-          "route": "UBG",
+          "waypoints": "UBG",
           "altitude": 8000
         },
         {
@@ -175,7 +175,7 @@
           ],
           "destination": "KTUS",
           "exit": "YERIN",
-          "route": "YERIN BTY EED PXR DINGO6"
+          "waypoints": "YERIN BTY EED PXR DINGO6"
         },
         {
           "airlines": [
@@ -186,7 +186,7 @@
           ],
           "destination": "KCCR",
           "exit": "RBG",
-          "route": "RBG"
+          "waypoints": "RBG"
         },
         {
           "airlines": [
@@ -201,7 +201,7 @@
           ],
           "destination": "KTRM",
           "exit": "RBG",
-          "route": "RBG OYVEY SIZLR4"
+          "waypoints": "RBG OYVEY SIZLR4"
         },
         {
           "airlines": [
@@ -212,7 +212,7 @@
           ],
           "destination": "KSUN",
           "exit": "DSD.J",
-          "route": "DSD BOI PRESN"
+          "waypoints": "DSD BOI PRESN"
         },
         {
           "airlines": [
@@ -228,7 +228,7 @@
           "destination": "KOTH",
           "exit": "OTH.7",
           "altitude": 7000,
-          "route": "OTH"
+          "waypoints": "OTH"
         },
         {
           "airlines": [
@@ -240,7 +240,7 @@
           "destination": "KLMT",
           "exit": "LMT.T",
           "altitude": 15000,
-          "route": "LMT"
+          "waypoints": "LMT"
         },
         {
           "airlines": [
@@ -252,7 +252,7 @@
           "destination": "KLMT",
           "exit": "LMT.J",
           "altitude": 15000,
-          "route": "LMT"
+          "waypoints": "LMT"
         },
         {
           "airlines": [
@@ -268,7 +268,7 @@
           "destination": "KONP",
           "exit": "ONP.6",
           "altitude": 6000,
-          "route": "ONP"
+          "waypoints": "ONP"
         },
         {
           "airlines": [
@@ -280,7 +280,7 @@
           "destination": "KSTS",
           "exit": "OTH.7",
           "altitude": 7000,
-          "route": "OTH V27 ENI FREES ROZZA"
+          "waypoints": "OTH V27 ENI FREES ROZZA"
         },
         {
           "airlines": [
@@ -291,7 +291,7 @@
           ],
           "destination": "KSPB",
           "exit": "UBG.6",
-          "route": "UBG",
+          "waypoints": "UBG",
           "altitude": 6000
         },
         {
@@ -303,7 +303,7 @@
           ],
           "destination": "KPHX",
           "exit": "CHEEZ",
-          "route": "CHEEZ V452 MANSN LMT SUNBE LOMIA KENNO BTY WOTRO BRUSR1"
+          "waypoints": "CHEEZ V452 MANSN LMT SUNBE LOMIA KENNO BTY WOTRO BRUSR1"
         },
         {
           "airlines": [
@@ -322,7 +322,7 @@
           ],
           "destination": "KSAN",
           "exit": "RBG",
-          "route": "RBG OED J126 SAC AVE J1 LAX COMIX2"
+          "waypoints": "RBG OED J126 SAC AVE J1 LAX COMIX2"
         },
         {
           "airlines": [
@@ -337,7 +337,7 @@
           ],
           "destination": "KOAK",
           "exit": "RBG",
-          "route": "RBG HUPTU SPAMY WNDSR2"
+          "waypoints": "RBG HUPTU SPAMY WNDSR2"
         },
         {
           "airlines": [
@@ -356,7 +356,7 @@
           ],
           "destination": "KPDX",
           "exit": "CITYY",
-          "route": "CITYY"
+          "waypoints": "CITYY"
         },
         {
           "airlines": [
@@ -375,7 +375,7 @@
           ],
           "destination": "KSEA",
           "exit": "CITYY",
-          "route": "CITYY"
+          "waypoints": "CITYY"
         },
         {
           "airlines": [
@@ -386,7 +386,7 @@
           ],
           "destination": "KIWA",
           "exit": "LMT.J",
-          "route": "LMT J92 KADDY J92 PRFUM KIDDR DSERT2"
+          "waypoints": "LMT J92 KADDY J92 PRFUM KIDDR DSERT2"
         },
         {
           "airlines": [
@@ -401,7 +401,7 @@
           ],
           "destination": "KLAS",
           "exit": "LMT.J",
-          "route": "LMT YERIN TQILA COKTL4"
+          "waypoints": "LMT YERIN TQILA COKTL4"
         },
         {
           "airlines": [
@@ -424,7 +424,7 @@
           ],
           "destination": "KLAX",
           "exit": "RBG",
-          "route": "RBG OED J126 RBL J126 SAC BURGL IRNMN2"
+          "waypoints": "RBG OED J126 RBL J126 SAC BURGL IRNMN2"
         },
         {
           "airlines": [
@@ -447,7 +447,7 @@
           ],
           "destination": "KSJC",
           "exit": "RBG",
-          "route": "RBG HUPTU FRLON FRLON2"
+          "waypoints": "RBG HUPTU FRLON FRLON2"
         },
         {
           "airlines": [
@@ -462,7 +462,7 @@
           ],
           "destination": "KBOI",
           "exit": "DSD.J",
-          "route": "DSD DEVLE KYAAN4"
+          "waypoints": "DSD DEVLE KYAAN4"
         },
         {
           "airlines": [
@@ -473,7 +473,7 @@
           ],
           "destination": "KBDN",
           "exit": "SNOKY",
-          "route": "SNOKY"
+          "waypoints": "SNOKY"
         },
         {
           "airlines": [
@@ -484,7 +484,7 @@
           ],
           "destination": "KBDN",
           "exit": "DSD.T",
-          "route": "DSD"
+          "waypoints": "DSD"
         },
         {
           "airlines": [
@@ -495,7 +495,7 @@
           ],
           "destination": "KBZN",
           "exit": "DSD.T",
-          "route": "DSD IMB BKE HIA"
+          "waypoints": "DSD IMB BKE HIA"
         },
         {
           "airlines": [
@@ -510,7 +510,7 @@
           ],
           "destination": "KDEN",
           "exit": "DSD.J",
-          "route": "DSD BOI LYONS TCH KAMPR LONGZ4"
+          "waypoints": "DSD BOI LYONS TCH KAMPR LONGZ4"
         },
         {
           "airlines": [
@@ -521,7 +521,7 @@
           ],
           "destination": "KBUR",
           "exit": "RBG",
-          "route": "RBG OED SAC RDHOT ROKKR3"
+          "waypoints": "RBG OED SAC RDHOT ROKKR3"
         },
         {
           "airlines": [
@@ -532,7 +532,7 @@
           ],
           "destination": "KSFO",
           "exit": "RBG",
-          "route": "RBG MLBEC BDEGA4"
+          "waypoints": "RBG MLBEC BDEGA4"
         },
         {
           "airlines": [
@@ -547,7 +547,7 @@
           ],
           "destination": "KSNA",
           "exit": "RBG",
-          "route": "RBG OED J126 SAC REBRG OHSEA3"
+          "waypoints": "RBG OED J126 SAC REBRG OHSEA3"
         },
         {
           "airlines": [
@@ -562,7 +562,7 @@
           ],
           "destination": "KSMF",
           "exit": "RBG",
-          "route": "RBG OED RBL TUDOR2"
+          "waypoints": "RBG OED RBL TUDOR2"
         },
         {
           "airlines": [
@@ -577,7 +577,7 @@
           ],
           "destination": "KPDX",
           "exit": "UBG.6",
-          "route": "UBG"
+          "waypoints": "UBG"
         },
         {
           "airlines": [
@@ -588,7 +588,7 @@
           ],
           "destination": "KSLC",
           "exit": "BALDY",
-          "route": "BALDY ALKAL BYI SKEES6"
+          "waypoints": "BALDY ALKAL BYI SKEES6"
         }
       ],
       "exit_categories": {
@@ -664,7 +664,7 @@
           ],
           "destination": "KPDX",
           "exit": "SHEDD",
-          "route": "SHEDD UBG",
+          "waypoints": "SHEDD UBG",
           "altitude": 6000
         },
         {
@@ -676,7 +676,7 @@
           ],
           "destination": "KVUO",
           "exit": "SHEDD",
-          "route": "SHEDD UBG",
+          "waypoints": "SHEDD UBG",
           "altitude": 6000
         },
         {
@@ -688,7 +688,7 @@
           ],
           "destination": "KUAO",
           "exit": "SHEDD",
-          "route": "SHEDD UBG",
+          "waypoints": "SHEDD UBG",
           "altitude": 8000
         }
       ],
@@ -722,7 +722,7 @@
           ],
           "destination": "KRDD",
           "exit": "CVO",
-          "route": "CVO RBG RBL"
+          "waypoints": "CVO RBG RBL"
         }
       ]
     },
@@ -811,7 +811,7 @@
         {
           "waypoints": "DSD JAIME/clearapp",
           "initial_controller": "S06",
-          "route": "KSLE",
+          "flight_strip_route": "KSLE",
           "initial_altitude": 20000,
           "assigned_altitude": 5000,
           "expect_approach": "I31",
@@ -834,7 +834,7 @@
         {
           "waypoints": "RBG/ho CVO",
           "initial_controller": "S36",
-          "route": "CVO",
+          "flight_strip_route": "CVO",
           "initial_altitude": 6000,
           "assigned_altitude": 6000,
           "initial_speed": 150,
@@ -856,7 +856,7 @@
         {
           "waypoints": "N043.22.21.993,W121.58.25.297 N043.35.08.139,W122.19.40.563/ho EUG",
           "initial_controller": "S36",
-          "route": "LKV EUG",
+          "flight_strip_route": "LKV EUG",
           "initial_altitude": 24200,
           "assigned_altitude": 10000,
           "initial_speed": 300,
@@ -878,7 +878,7 @@
         {
           "waypoints": "DSD N044.12.15.699,W121.59.56.374/ho EUG",
           "initial_controller": "S06",
-          "route": "DSD EUG",
+          "flight_strip_route": "DSD EUG",
           "initial_altitude": 14000,
           "assigned_altitude": 10000,
           "initial_speed": 230,
@@ -905,7 +905,7 @@
         {
           "waypoints": "DSD N044.12.15.699,W121.59.56.374/ho EUG",
           "initial_controller": "S06",
-          "route": "DSD EUG",
+          "flight_strip_route": "DSD EUG",
           "initial_altitude": 26600,
           "assigned_altitude": 10000,
           "initial_speed": 300,
@@ -945,7 +945,7 @@
         {
           "waypoints": "MOURN N043.13.04.025,W123.03.01.961/ho CURTI SAGIN",
           "initial_controller": "S36",
-          "route": "MOURN V23 SAGIN",
+          "flight_strip_route": "MOURN V23 SAGIN",
           "initial_altitude": 21000,
           "assigned_altitude": 10000,
           "initial_speed": 300,
@@ -1005,7 +1005,7 @@
         {
           "waypoints": "MOURN N043.13.04.025,W123.03.01.961/ho CURTI SAGIN",
           "initial_controller": "S36",
-          "route": "MOURN V23 SAGIN",
+          "flight_strip_route": "MOURN V23 SAGIN",
           "initial_altitude": 23000,
           "assigned_altitude": 10000,
           "initial_speed": 300,
@@ -1042,7 +1042,7 @@
         {
           "waypoints": "N043.10.44.554,W123.37.51.615 N043.22.33.680,W123.32.48.228/ho N043.38.56.682,W123.25.37.838/a10000 EUG",
           "initial_controller": "S06",
-          "route": "CEC",
+          "flight_strip_route": "CEC",
           "initial_altitude": 16000,
           "initial_speed": 250,
           "airports": ["KEUG"],
@@ -1063,7 +1063,7 @@
         {
           "waypoints": "N043.59.37.285,W121.38.04.854 N044.02.13.140,W122.10.50.994/ho EUG",
           "initial_controller": "S06",
-          "route": "BOI",
+          "flight_strip_route": "BOI",
           "initial_altitude": 25000,
           "assigned_altitude": 10000,
           "initial_speed": 300,
@@ -1090,7 +1090,7 @@
         {
           "waypoints": "N043.05.44.503,W122.26.35.462 N043.21.45.848,W122.38.45.888/ho EUG",
           "initial_controller": "S36",
-          "route": "LMT EUG",
+          "flight_strip_route": "LMT EUG",
           "initial_altitude": 27000,
           "assigned_altitude": 10000,
           "initial_speed": 300,
@@ -1122,7 +1122,7 @@
         {
           "waypoints": "N043.05.44.503,W122.26.35.462 N043.21.45.848,W122.38.45.888/ho EUG",
           "initial_controller": "S36",
-          "route": "LMT EUG",
+          "flight_strip_route": "LMT EUG",
           "initial_altitude": 25000,
           "assigned_altitude": 10000,
           "initial_speed": 300,
@@ -1144,7 +1144,7 @@
         {
           "waypoints": "BTG N044.51.13.905,W122.56.18.790/ho N044.36.31.497,W123.02.00.492/a10000 EUG",
           "initial_controller": "S06",
-          "route": "EUG",
+          "flight_strip_route": "EUG",
           "initial_altitude": 18000,
           "initial_speed": 290,
           "airports": ["KEUG"],
@@ -1170,7 +1170,7 @@
         {
           "waypoints": "BTG N044.51.13.905,W122.56.18.790/ho EUG",
           "initial_controller": "S06",
-          "route": "EUG",
+          "flight_strip_route": "EUG",
           "initial_altitude": 7000,
           "assigned_altitude": 7000,
           "initial_speed": 230,
@@ -1202,7 +1202,7 @@
         {
           "waypoints": "OED N043.24.05.237,W123.12.57.447/ho DRAIN/a10000-13000 EUG/a10000",
           "initial_controller": "S36",
-          "route": "EUG",
+          "flight_strip_route": "EUG",
           "initial_altitude": 29000,
           "initial_speed": 300,
           "airports": ["KEUG"],
@@ -1228,7 +1228,7 @@
         {
           "waypoints": "OED N043.24.05.237,W123.12.57.447/ho N043.37.36.880,W123.17.27.216/a10000 DRAIN EUG",
           "initial_controller": "S36",
-          "route": "EUG",
+          "flight_strip_route": "EUG",
           "initial_altitude": 29000,
           "initial_speed": 300,
           "airports": ["KEUG"],
@@ -1272,7 +1272,7 @@
         {
           "waypoints": "N043.23.07.257,W124.12.19.709 OTH/ho",
           "initial_controller": "S36",
-          "route": "OTH",
+          "flight_strip_route": "OTH",
           "initial_altitude": 8000,
           "assigned_altitude": 8000,
           "initial_speed": 240,
@@ -1301,7 +1301,7 @@
         {
           "waypoints": "BTG N044.51.13.905,W122.56.18.790/ho EUG",
           "initial_controller": "S06",
-          "route": "EUG",
+          "flight_strip_route": "EUG",
           "initial_altitude": 7000,
           "assigned_altitude": 5000,
           "initial_speed": 160,
@@ -1357,7 +1357,7 @@
         {
           "waypoints": "UBG/ho V495 CVO",
           "initial_controller": "S06",
-          "route": "CVO",
+          "flight_strip_route": "CVO",
           "initial_altitude": 7000,
           "assigned_altitude": 5000,
           "initial_speed": 160,
@@ -1393,7 +1393,7 @@
         {
           "waypoints": "N045.27.07.857,W123.15.55.673 N045.01.11.740,W123.16.37.531/ho N044.37.17.736,W123.17.22.547/a10000 CVO",
           "initial_controller": "S06",
-          "route": "CVO",
+          "flight_strip_route": "CVO",
           "initial_altitude": 15000,
           "initial_speed": 290,
           "airports": ["KEUG"],

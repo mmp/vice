@@ -484,7 +484,7 @@
           ],
           "destination": "KCLT",
           "exit": "CRG",
-          "route": "CRG VIYAP CHECR STOCR7"
+          "waypoints": "CRG VIYAP CHECR STOCR7"
         },
         {
           "airlines": [
@@ -505,7 +505,7 @@
           ],
           "destination": "KOMN",
           "exit": "KOMN",
-          "route": "KOMN"
+          "waypoints": "KOMN"
         },
         {
           "airlines": [
@@ -526,7 +526,7 @@
           ],
           "destination": "KFIN",
           "exit": "KFIN",
-          "route": "KFIN"
+          "waypoints": "KFIN"
         },
         {
           "airlines": [
@@ -547,7 +547,7 @@
           ],
           "destination": "KDED",
           "exit": "KDED",
-          "route": "KDED"
+          "waypoints": "KDED"
         },
         {
           "airlines": [
@@ -568,7 +568,7 @@
           ],
           "destination": "KEVB",
           "exit": "KEVB",
-          "route": "KEVB"
+          "waypoints": "KEVB"
         },
         {
           "airlines": [
@@ -579,7 +579,7 @@
           ],
           "destination": "KATL",
           "exit": "CRG",
-          "route": "CRG SHRKS LAIRI LARZZ JJEDI4"
+          "waypoints": "CRG SHRKS LAIRI LARZZ JJEDI4"
         },
         {
           "airlines": [
@@ -599,7 +599,7 @@
           ],
           "destination": "KSSI",
           "exit": "ASTOR.J",
-          "route": "ASTOR SSI"
+          "waypoints": "ASTOR SSI"
         },
         {
           "airlines": [
@@ -620,7 +620,7 @@
           ],
           "destination": "KCRG",
           "exit": "ASTOR.P",
-          "route": "ASTOR CRG"
+          "waypoints": "ASTOR CRG"
         },
         {
           "airlines": [
@@ -641,7 +641,7 @@
           ],
           "destination": "KGNV",
           "exit": "MMKAY",
-          "route": "MMKAY GNV"
+          "waypoints": "MMKAY GNV"
         },
         {
           "airlines": [
@@ -661,7 +661,7 @@
           ],
           "destination": "KSRQ",
           "exit": "KIZER.J",
-          "route": "KIZER V267 PUNQU"
+          "waypoints": "KIZER V267 PUNQU"
         },
         {
           "airlines": [
@@ -682,7 +682,7 @@
           ],
           "destination": "KPIE",
           "exit": "KIZER.P",
-          "route": "KIZER V267 PUNQU"
+          "waypoints": "KIZER V267 PUNQU"
         },
         {
           "airlines": [
@@ -703,7 +703,7 @@
           ],
           "destination": "KMLB",
           "exit": "SMYRA.P",
-          "route": "SMYRA MALET INDIA MLB"
+          "waypoints": "SMYRA MALET INDIA MLB"
         },
         {
           "airlines": [
@@ -724,7 +724,7 @@
           ],
           "destination": "KSFB",
           "exit": "GTOUT",
-          "route": "GTOUT"
+          "waypoints": "GTOUT"
         },
         {
           "airlines": [
@@ -744,7 +744,7 @@
           ],
           "destination": "MYNN",
           "exit": "ILIND",
-          "route": "ILIND HANKX"
+          "waypoints": "ILIND HANKX"
         },
         {
           "airlines": [
@@ -767,7 +767,7 @@
           ],
           "destination": "KFMY",
           "exit": "SMYRA.J",
-          "route": "SMYRA MALET FSHUN SHFTY SHFTY6"
+          "waypoints": "SMYRA MALET FSHUN SHFTY SHFTY6"
         },
         {
           "airlines": [
@@ -778,7 +778,7 @@
           ],
           "destination": "KJFK",
           "exit": "CRG",
-          "route": "CRG VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5"
+          "waypoints": "CRG VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5"
         },
         {
           "airlines": [
@@ -789,7 +789,7 @@
           ],
           "destination": "KBNA",
           "exit": "CRG",
-          "route": "CRG SHRKS JAGIR SWFFT3"
+          "waypoints": "CRG SHRKS JAGIR SWFFT3"
         },
         {
           "airlines": [
@@ -799,7 +799,7 @@
           ],
           "destination": "KCAK",
           "exit": "CRG",
-          "route": "CRG SHRKS Q77 WIGVO IRQ SPA J85 HVQ JPU ZZIPS1"
+          "waypoints": "CRG SHRKS Q77 WIGVO IRQ SPA J85 HVQ JPU ZZIPS1"
         },
         {
           "airlines": [
@@ -810,7 +810,7 @@
           ],
           "destination": "KBOS",
           "exit": "CRG",
-          "route": "CRG VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3"
+          "waypoints": "CRG VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -823,7 +823,7 @@
           ],
           "destination": "KHPN",
           "exit": "CRG",
-          "route": "CRG VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE BOUNO5"
+          "waypoints": "CRG VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE BOUNO5"
         },
         {
           "airlines": [
@@ -833,7 +833,7 @@
           ],
           "destination": "KBDL",
           "exit": "CRG",
-          "route": "CRG VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q481 DPK DPK3"
+          "waypoints": "CRG VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q481 DPK DPK3"
         },
         {
           "airlines": [
@@ -843,7 +843,7 @@
           ],
           "destination": "KRDU",
           "exit": "CRG",
-          "route": "CRG VIYAP Q69 GURGE PETTO DMSTR2"
+          "waypoints": "CRG VIYAP Q69 GURGE PETTO DMSTR2"
         },
         {
           "airlines": [
@@ -853,7 +853,7 @@
           ],
           "destination": "KPVD",
           "exit": "CRG",
-          "route": "CRG VIYAP Q87 RAYVO Q109 DFENC SAWED Q97 ZJAAY Q167 ORCHA JORDN JORDN2"
+          "waypoints": "CRG VIYAP Q87 RAYVO Q109 DFENC SAWED Q97 ZJAAY Q167 ORCHA JORDN JORDN2"
         },
         {
           "airlines": [
@@ -863,7 +863,7 @@
           ],
           "destination": "KILG",
           "exit": "CRG",
-          "route": "CRG VIYAP Q87 ASHEL Q87 NOWAE THHMP ARLFT2"
+          "waypoints": "CRG VIYAP Q87 ASHEL Q87 NOWAE THHMP ARLFT2"
         },
         {
           "airlines": [
@@ -884,7 +884,7 @@
           ],
           "destination": "KOMN",
           "exit": "KOMN",
-          "route": "KOMN"
+          "waypoints": "KOMN"
         },
         {
           "airlines": [
@@ -905,7 +905,7 @@
           ],
           "destination": "KDED",
           "exit": "KDED",
-          "route": "KDED"
+          "waypoints": "KDED"
         },
         {
           "airlines": [
@@ -926,7 +926,7 @@
           ],
           "destination": "KEVB",
           "exit": "KEVB",
-          "route": "KEVB"
+          "waypoints": "KEVB"
         },
         {
           "airlines": [
@@ -947,7 +947,7 @@
           ],
           "destination": "KFIN",
           "exit": "KFIN",
-          "route": "KFIN"
+          "waypoints": "KFIN"
         }
       ],
       "exit_categories": {
@@ -1123,7 +1123,7 @@
           ],
           "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN4"
+          "waypoints": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -1134,7 +1134,7 @@
           ],
           "destination": "KMLB",
           "exit": "SMYRA.P",
-          "route": "SMYRA INDIA V3 MLB"
+          "waypoints": "SMYRA INDIA V3 MLB"
         },
         {
           "airlines": [
@@ -1151,7 +1151,7 @@
           ],
           "destination": "KDAB",
           "exit": "KDAB",
-          "route": "KDAB"
+          "waypoints": "KDAB"
         },
         {
           "airlines": [
@@ -1162,7 +1162,7 @@
           ],
           "destination": "KSFB",
           "exit": "GTOUT",
-          "route": "GTOUT"
+          "waypoints": "GTOUT"
         },
         {
           "airlines": [
@@ -1179,7 +1179,7 @@
           ],
           "destination": "MYNN",
           "exit": "ILIND",
-          "route": "ILIND HANKX"
+          "waypoints": "ILIND HANKX"
         },
         {
           "airlines": [
@@ -1196,7 +1196,7 @@
           ],
           "destination": "KRSW",
           "exit": "KIZER.J",
-          "route": "KIZER T353 PUNQU T336 YOJIX FEBRO"
+          "waypoints": "KIZER T353 PUNQU T336 YOJIX FEBRO"
         },
         {
           "airlines": [
@@ -1207,7 +1207,7 @@
           ],
           "destination": "KPIE",
           "exit": "KIZER.P",
-          "route": "KIZER V267 PUNQU"
+          "waypoints": "KIZER V267 PUNQU"
         },
         {
           "airlines": [
@@ -1218,7 +1218,7 @@
           ],
           "destination": "KGNV",
           "exit": "MMKAY",
-          "route": "MMKAY GNV"
+          "waypoints": "MMKAY GNV"
         },
         {
           "airlines": [
@@ -1235,7 +1235,7 @@
           ],
           "destination": "KSSI",
           "exit": "ASTOR.J",
-          "route": "ASTOR SSI"
+          "waypoints": "ASTOR SSI"
         },
         {
           "airlines": [
@@ -1246,7 +1246,7 @@
           ],
           "destination": "KCRG",
           "exit": "ASTOR.P",
-          "route": "ASTOR CRG"
+          "waypoints": "ASTOR CRG"
         }
       ],
       "exit_categories": {
@@ -1362,7 +1362,7 @@
           ],
           "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN4"
+          "waypoints": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -1373,7 +1373,7 @@
           ],
           "destination": "KMLB",
           "exit": "SMYRA.P",
-          "route": "SMYRA INDIA V3 MLB"
+          "waypoints": "SMYRA INDIA V3 MLB"
         },
         {
           "airlines": [
@@ -1384,7 +1384,7 @@
           ],
           "destination": "KSFB",
           "exit": "GTOUT",
-          "route": "GTOUT"
+          "waypoints": "GTOUT"
         },
         {
           "airlines": [
@@ -1401,7 +1401,7 @@
           ],
           "destination": "MYNN",
           "exit": "ILIND",
-          "route": "ILIND HANKX"
+          "waypoints": "ILIND HANKX"
         },
         {
           "airlines": [
@@ -1418,7 +1418,7 @@
           ],
           "destination": "KRSW",
           "exit": "KIZER.J",
-          "route": "KIZER T353 PUNQU T336 YOJIX FEBRO"
+          "waypoints": "KIZER T353 PUNQU T336 YOJIX FEBRO"
         },
         {
           "airlines": [
@@ -1429,7 +1429,7 @@
           ],
           "destination": "KPIE",
           "exit": "KIZER.P",
-          "route": "KIZER V267 PUNQU"
+          "waypoints": "KIZER V267 PUNQU"
         },
         {
           "airlines": [
@@ -1440,7 +1440,7 @@
           ],
           "destination": "KGNV",
           "exit": "MMKAY",
-          "route": "MMKAY GNV"
+          "waypoints": "MMKAY GNV"
         },
         {
           "airlines": [
@@ -1457,7 +1457,7 @@
           ],
           "destination": "KSSI",
           "exit": "ASTOR.J",
-          "route": "ASTOR SSI"
+          "waypoints": "ASTOR SSI"
         },
         {
           "airlines": [
@@ -1468,7 +1468,7 @@
           ],
           "destination": "KCRG",
           "exit": "ASTOR.P",
-          "route": "ASTOR CRG"
+          "waypoints": "ASTOR CRG"
         },
         {
           "airlines": [
@@ -1489,7 +1489,7 @@
           ],
           "destination": "KDAB",
           "exit": "KDAB",
-          "route": "KDAB"
+          "waypoints": "KDAB"
         }
       ],
       "exit_categories": {
@@ -1605,7 +1605,7 @@
           ],
           "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN4"
+          "waypoints": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -1616,7 +1616,7 @@
           ],
           "destination": "KMLB",
           "exit": "SMYRA.P",
-          "route": "SMYRA INDIA V3 MLB"
+          "waypoints": "SMYRA INDIA V3 MLB"
         },
         {
           "airlines": [
@@ -1627,7 +1627,7 @@
           ],
           "destination": "KSFB",
           "exit": "GTOUT",
-          "route": "GTOUT"
+          "waypoints": "GTOUT"
         },
         {
           "airlines": [
@@ -1644,7 +1644,7 @@
           ],
           "destination": "MYNN",
           "exit": "ILIND",
-          "route": "ILIND HANKX"
+          "waypoints": "ILIND HANKX"
         },
         {
           "airlines": [
@@ -1661,7 +1661,7 @@
           ],
           "destination": "KRSW",
           "exit": "KIZER.J",
-          "route": "KIZER T353 PUNQU T336 YOJIX FEBRO"
+          "waypoints": "KIZER T353 PUNQU T336 YOJIX FEBRO"
         },
         {
           "airlines": [
@@ -1672,7 +1672,7 @@
           ],
           "destination": "KPIE",
           "exit": "KIZER.P",
-          "route": "KIZER V267 PUNQU"
+          "waypoints": "KIZER V267 PUNQU"
         },
         {
           "airlines": [
@@ -1693,7 +1693,7 @@
           ],
           "destination": "KDAB",
           "exit": "KDAB",
-          "route": "KDAB"
+          "waypoints": "KDAB"
         },
         {
           "airlines": [
@@ -1704,7 +1704,7 @@
           ],
           "destination": "KGNV",
           "exit": "MMKAY",
-          "route": "MMKAY GNV"
+          "waypoints": "MMKAY GNV"
         },
         {
           "airlines": [
@@ -1721,7 +1721,7 @@
           ],
           "destination": "KSSI",
           "exit": "ASTOR.J",
-          "route": "ASTOR SSI"
+          "waypoints": "ASTOR SSI"
         },
         {
           "airlines": [
@@ -1732,7 +1732,7 @@
           ],
           "destination": "KCRG",
           "exit": "ASTOR.P",
-          "route": "ASTOR CRG"
+          "waypoints": "ASTOR CRG"
         }
       ],
       "exit_categories": {
@@ -1848,7 +1848,7 @@
           ],
           "destination": "KDJT",
           "exit": "SMYRA.J",
-          "route": "SMYRA MLB CPTAN CPTAN4"
+          "waypoints": "SMYRA MLB CPTAN CPTAN4"
         },
         {
           "airlines": [
@@ -1859,7 +1859,7 @@
           ],
           "destination": "KMLB",
           "exit": "SMYRA.P",
-          "route": "SMYRA INDIA V3 MLB"
+          "waypoints": "SMYRA INDIA V3 MLB"
         },
         {
           "airlines": [
@@ -1880,7 +1880,7 @@
           ],
           "destination": "KDAB",
           "exit": "KDAB",
-          "route": "KDAB"
+          "waypoints": "KDAB"
         },
         {
           "airlines": [
@@ -1891,7 +1891,7 @@
           ],
           "destination": "KSFB",
           "exit": "GTOUT",
-          "route": "GTOUT"
+          "waypoints": "GTOUT"
         },
         {
           "airlines": [
@@ -1908,7 +1908,7 @@
           ],
           "destination": "MYNN",
           "exit": "ILIND",
-          "route": "ILIND HANKX"
+          "waypoints": "ILIND HANKX"
         },
         {
           "airlines": [
@@ -1925,7 +1925,7 @@
           ],
           "destination": "KRSW",
           "exit": "KIZER.J",
-          "route": "KIZER T353 PUNQU T336 YOJIX FEBRO"
+          "waypoints": "KIZER T353 PUNQU T336 YOJIX FEBRO"
         },
         {
           "airlines": [
@@ -1936,7 +1936,7 @@
           ],
           "destination": "KPIE",
           "exit": "KIZER.P",
-          "route": "KIZER V267 PUNQU"
+          "waypoints": "KIZER V267 PUNQU"
         },
         {
           "airlines": [
@@ -1947,7 +1947,7 @@
           ],
           "destination": "KGNV",
           "exit": "MMKAY",
-          "route": "MMKAY GNV"
+          "waypoints": "MMKAY GNV"
         },
         {
           "airlines": [
@@ -1964,7 +1964,7 @@
           ],
           "destination": "KSSI",
           "exit": "ASTOR.J",
-          "route": "ASTOR SSI"
+          "waypoints": "ASTOR SSI"
         },
         {
           "airlines": [
@@ -1975,7 +1975,7 @@
           ],
           "destination": "KCRG",
           "exit": "ASTOR.P",
-          "route": "ASTOR CRG"
+          "waypoints": "ASTOR CRG"
         }
       ],
       "exit_categories": {
@@ -2132,7 +2132,7 @@
           "waypoints": "CRG V267 GUANO",
           "cruise_altitude": 4000,
           "initial_controller": "1S",
-          "route": "CRG V267 GUANO",
+          "flight_strip_route": "CRG V267 GUANO",
           "initial_altitude": 4000,
           "initial_speed": 110,
           "expect_approach": null,
@@ -2225,7 +2225,7 @@
           "waypoints": "EMSEE/ho KIZER/a3000 GUANO",
           "cruise_altitude": 5000,
           "initial_controller": "21N",
-          "route": "PUNQU T210 KIZER GUANO",
+          "flight_strip_route": "PUNQU T210 KIZER GUANO",
           "initial_altitude": 3000,
           "initial_speed": 110,
           "expect_approach": null,
@@ -2288,7 +2288,7 @@
           "waypoints": "BUNDE/ho V51 OMN",
           "cruise_altitude": 4000,
           "initial_controller": "21N",
-          "route": "PUNQU T210 KIZER GUANO",
+          "flight_strip_route": "PUNQU T210 KIZER GUANO",
           "initial_altitude": 4000,
           "initial_speed": 110,
           "expect_approach": null,
@@ -2344,7 +2344,7 @@
           "waypoints": "MALET/ho T208 SMYRA",
           "cruise_altitude": 5000,
           "initial_controller": "21N",
-          "route": "MALET T208 SMYRA",
+          "flight_strip_route": "MALET T208 SMYRA",
           "initial_altitude": 3000,
           "initial_speed": 110,
           "expect_approach": null,
@@ -2407,7 +2407,7 @@
           "waypoints": "N029.45.31.386,W081.48.07.097/ho MMKAY KDAB",
           "cruise_altitude": 5000,
           "initial_controller": "11V",
-          "route": "WALEE MMKAY",
+          "flight_strip_route": "WALEE MMKAY",
           "initial_altitude": 5000,
           "initial_speed": 105,
           "expect_approach": null,

@@ -426,7 +426,7 @@ func (sg *Group) rewriteControllers(e *util.ErrorLogger) {
 			}
 		}
 		for _, dep := range ap.Departures {
-			rewriteWaypoints(dep.RouteWaypoints)
+			rewriteWaypoints(dep.Waypoints)
 		}
 	}
 

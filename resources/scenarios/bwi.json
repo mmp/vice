@@ -198,7 +198,7 @@
           ],
           "destination": "CYYZ",
           "exit": "JERES",
-          "route": "JERES J220 SFK WOZEE LINNG3"
+          "waypoints": "JERES J220 SFK WOZEE LINNG3"
         },
         {
           "airlines": [
@@ -208,7 +208,7 @@
           ],
           "destination": "CYOW",
           "exit": "JERES",
-          "route": "JERES Q221 VALLO Q227 STUBN SYR ART DEANS4"
+          "waypoints": "JERES Q221 VALLO Q227 STUBN SYR ART DEANS4"
         },
         {
           "airlines": [
@@ -218,7 +218,7 @@
           ],
           "destination": "KROC",
           "exit": "JERES",
-          "route": "JERES Q227 STUBN GIBBE"
+          "waypoints": "JERES Q227 STUBN GIBBE"
         },
         {
           "airlines": [
@@ -231,7 +231,7 @@
           ],
           "destination": "KBUF",
           "exit": "JERES",
-          "route": "JERES Q221 WUNDR Q221 DLMAR BENEE"
+          "waypoints": "JERES Q221 WUNDR Q221 DLMAR BENEE"
         },
         {
           "airlines": [
@@ -245,7 +245,7 @@
           ],
           "destination": "KSYR",
           "exit": "JERES",
-          "route": "JERES Q221 MICAH CFB"
+          "waypoints": "JERES Q221 MICAH CFB"
         },
         {
           "airlines": [
@@ -259,7 +259,7 @@
           ],
           "destination": "KSEA",
           "exit": "BUFFR",
-          "route": "BUFFR Q178 DJB J34 RWF MLS LWT MLP GLASR3"
+          "waypoints": "BUFFR Q178 DJB J34 RWF MLS LWT MLP GLASR3"
         },
         {
           "airlines": [
@@ -276,7 +276,7 @@
           ],
           "destination": "KDTW",
           "exit": "BUFFR",
-          "route": "BUFFR Q178 KOZAR KLYNK3"
+          "waypoints": "BUFFR Q178 KOZAR KLYNK3"
         },
         {
           "airlines": [
@@ -293,7 +293,7 @@
           ],
           "destination": "KMSP",
           "exit": "BUFFR",
-          "route": "BUFFR Q178 DJB J34 VIO KAMMA KKILR3"
+          "waypoints": "BUFFR Q178 DJB J34 VIO KAMMA KKILR3"
         },
         {
           "airlines": [
@@ -308,7 +308,7 @@
           "exit": "DQO",
           "scratchpad": "PHL",
           "altitude": 11000,
-          "route": "DOCTR DQO"
+          "waypoints": "DOCTR DQO"
         }
       ],
       "exit_categories": {
@@ -475,7 +475,7 @@
           ],
           "destination": "KDEN",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 EMPTY BDF DSM OBH BRWRY LAWGR3",
+          "waypoints": "RAMAY Q72 HACKS J149 EMPTY BDF DSM OBH BRWRY LAWGR3",
           "scratchpad": "FXR"
         },
         {
@@ -497,7 +497,7 @@
           ],
           "destination": "KORD",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 ROD WATSN4",
+          "waypoints": "RAMAY Q72 HACKS J149 ROD WATSN4",
           "scratchpad": "FXR"
         },
         {
@@ -511,7 +511,7 @@
           ],
           "destination": "KLAS",
           "exit": "OTTTO",
-          "route": " OTTTO Q176 COLNS FLM J134 STL SLN PUB DVC TYEGR CHOWW3",
+          "waypoints": " OTTTO Q176 COLNS FLM J134 STL SLN PUB DVC TYEGR CHOWW3",
           "scratchpad": "FXO"
         },
         {
@@ -529,7 +529,7 @@
           ],
           "destination": "KDFW",
           "exit": "OTTTO",
-          "route": " OTTTO Q80 FAREV RAMRD Q68 LITTR FEWWW SEEVR4",
+          "waypoints": " OTTTO Q80 FAREV RAMRD Q68 LITTR FEWWW SEEVR4",
           "scratchpad": "FXO"
         },
         {
@@ -543,7 +543,7 @@
           ],
           "destination": "KPHX",
           "exit": "OTTTO",
-          "route": "OTTTO Q80 FAREV FXRRD Q68 LAJUG KM39K EDUGE KK39E KK39C MMB FTI ZUN EAGUL6",
+          "waypoints": "OTTTO Q80 FAREV FXRRD Q68 LAJUG KM39K EDUGE KK39E KK39C MMB FTI ZUN EAGUL6",
           "scratchpad": "FXO"
         },
         {
@@ -563,7 +563,7 @@
           ],
           "destination": "KMDW",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 FWA PANGG5",
+          "waypoints": "RAMAY Q72 HACKS J149 FWA PANGG5",
           "scratchpad": "FXR"
         },
         {
@@ -594,7 +594,7 @@
           ],
           "destination": "KATL",
           "exit": "FLASK",
-          "route": "FLASK OZZZI1",
+          "waypoints": "FLASK OZZZI1",
           "scratchpad": "TCL"
         },
         {
@@ -611,7 +611,7 @@
           ],
           "destination": "KFLL",
           "exit": "RRSIN",
-          "route": "RRSIN GSO Q83 JEVED Q97 PRMUS CUUDA3",
+          "waypoints": "RRSIN GSO Q83 JEVED Q97 PRMUS CUUDA3",
           "scratchpad": "TJD"
         },
         {
@@ -628,7 +628,7 @@
           ],
           "destination": "KFLL",
           "exit": "SCOOB",
-          "route": "SCOOB EARZZ CHIEZ Y291 MAJIK CUUDA3",
+          "waypoints": "SCOOB EARZZ CHIEZ Y291 MAJIK CUUDA3",
           "scratchpad": "AME"
         },
         {
@@ -661,7 +661,7 @@
           ],
           "destination": "KMIA",
           "exit": "RRSIN",
-          "route": "RRSIN GSO Q83 JEVED Q97 DEBRL CSTAL2",
+          "waypoints": "RRSIN GSO Q83 JEVED Q97 DEBRL CSTAL2",
           "scratchpad": "TJD"
         },
         {
@@ -675,7 +675,7 @@
           ],
           "destination": "KRDU",
           "exit": "COLIN",
-          "route": "COLIN TAPPA HOUKY TAQLE2",
+          "waypoints": "COLIN TAPPA HOUKY TAQLE2",
           "scratchpad": "AME"
         },
         {
@@ -686,7 +686,7 @@
           ],
           "destination": "KCHS",
           "exit": "RRSIN",
-          "route": "RRSIN GSO OBNEE OSPRI7",
+          "waypoints": "RRSIN GSO OBNEE OSPRI7",
           "scratchpad": "TJD"
         },
         {
@@ -700,7 +700,7 @@
           ],
           "destination": "KSAV",
           "exit": "RRSIN",
-          "route": "RRSIN GSO CTF CANTR PLZZZ",
+          "waypoints": "RRSIN GSO CTF CANTR PLZZZ",
           "scratchpad": "TJD"
         },
         {
@@ -726,7 +726,7 @@
           ],
           "destination": "KMCO",
           "exit": "RRSIN",
-          "route": "RRSIN GSO Q75 SLOJO Q103 EMCET Q69 ISUZO Q93 GIPPL Q85 LPERD GTOUT1",
+          "waypoints": "RRSIN GSO Q75 SLOJO Q103 EMCET Q69 ISUZO Q93 GIPPL Q85 LPERD GTOUT1",
           "scratchpad": "TJD"
         },
         {
@@ -759,7 +759,7 @@
           ],
           "destination": "KMIA",
           "exit": "SCOOB",
-          "route": "SCOOB EARZZ SKARP Y313 HOAGG BNFSH2",
+          "waypoints": "SCOOB EARZZ SKARP Y313 HOAGG BNFSH2",
           "scratchpad": "AME"
         },
         {
@@ -773,7 +773,7 @@
           ],
           "destination": "TNCA",
           "exit": "SCOOB",
-          "route": "SCOOB KEMPR ECG AR8 OXANA L452 LNHOM L452 CAROX SEKAR UL450 BEROX",
+          "waypoints": "SCOOB KEMPR ECG AR8 OXANA L452 LNHOM L452 CAROX SEKAR UL450 BEROX",
           "scratchpad": "AME"
         },
         {
@@ -793,7 +793,7 @@
           ],
           "destination": "TJSJ",
           "exit": "DONIL",
-          "route": "DONIL SIE B24 WEBBB ROLLE ATUGI L454 MNDEZ FIPEK Y355 PLING RTE7 SAALR",
+          "waypoints": "DONIL SIE B24 WEBBB ROLLE ATUGI L454 MNDEZ FIPEK Y355 PLING RTE7 SAALR",
           "scratchpad": "DCR"
         },
         {
@@ -804,7 +804,7 @@
           ],
           "destination": "KROC",
           "exit": "JERES",
-          "route": "JERES Q227 STUBN GIBBE",
+          "waypoints": "JERES Q227 STUBN GIBBE",
           "scratchpad": "JS2"
         },
         {
@@ -818,7 +818,7 @@
           ],
           "destination": "KBUF",
           "exit": "JERES",
-          "route": "JERES Q221 DLMAR BENEE",
+          "waypoints": "JERES Q221 DLMAR BENEE",
           "scratchpad": "JS2"
         },
         {
@@ -832,7 +832,7 @@
           ],
           "destination": "KALB",
           "exit": "BROSS",
-          "route": "BROSS Q419 RBV Q22 LLUND TRUDE V487 CANAN",
+          "waypoints": "BROSS Q419 RBV Q22 LLUND TRUDE V487 CANAN",
           "scratchpad": "DKB"
         },
         {
@@ -850,7 +850,7 @@
           ],
           "destination": "KPHL",
           "exit": "BYEDN",
-          "route": "BYEDN",
+          "waypoints": "BYEDN",
           "altitude": 9000,
           "scratchpad": "PHL"
         },
@@ -865,7 +865,7 @@
           ],
           "destination": "KBDL",
           "exit": "BROSS",
-          "route": "BROSS Q149 DPK DPK3",
+          "waypoints": "BROSS Q149 DPK DPK3",
           "scratchpad": "DKB"
         },
         {
@@ -885,7 +885,7 @@
           ],
           "destination": "KBOS",
           "exit": "BROSS",
-          "route": "BROSS Q419 JFK ROBUC3",
+          "waypoints": "BROSS Q419 JFK ROBUC3",
           "scratchpad": "DKB"
         },
         {
@@ -896,7 +896,7 @@
           ],
           "destination": "KCLE",
           "exit": "JERES",
-          "route": "JERES J211 JST UPPRR TRYBE4",
+          "waypoints": "JERES J211 JST UPPRR TRYBE4",
           "scratchpad": "JS1"
         },
         {
@@ -924,7 +924,7 @@
           ],
           "destination": "KIAH",
           "exit": "MAULS",
-          "route": "MAULS Q40 AEX GESNR1",
+          "waypoints": "MAULS Q40 AEX GESNR1",
           "scratchpad": "TCL"
         },
         {
@@ -944,7 +944,7 @@
           ],
           "destination": "KAUS",
           "exit": "OTTTO",
-          "route": "OTTTO Q80 FAREV FXRRD Q68 LITTR BROBB WINDU SEWZY6",
+          "waypoints": "OTTTO Q80 FAREV FXRRD Q68 LITTR BROBB WINDU SEWZY6",
           "scratchpad": "FXO"
         },
         {
@@ -955,7 +955,7 @@
           ],
           "destination": "KAUS",
           "exit": "MAULS",
-          "route": "MAULS Q40 AEX IAH LUKKN WLEEE7",
+          "waypoints": "MAULS Q40 AEX IAH LUKKN WLEEE7",
           "scratchpad": "TCL"
         },
         {
@@ -973,7 +973,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY9",
+          "waypoints": "GLANC AIROW CHSLY9",
           "scratchpad": "TSC"
         },
         {
@@ -991,7 +991,7 @@
           ],
           "destination": "KCLT",
           "exit": "GLANC",
-          "route": "GLANC AIROW CHSLY9",
+          "waypoints": "GLANC AIROW CHSLY9",
           "scratchpad": "TSC"
         },
         {
@@ -1005,7 +1005,7 @@
           ],
           "destination": "KMSY",
           "exit": "GLANC",
-          "route": "GLANC COLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR2",
+          "waypoints": "GLANC COLZI Q52 CHOPZ MGMRY CATLN Q56 SJI MNSTR2",
           "scratchpad": "TSC"
         },
         {
@@ -1017,7 +1017,7 @@
           ],
           "destination": "KSFO",
           "exit": "OTTTO",
-          "route": "OTTTO Q176 STL MCI GLD VOAXA Q136 RUMPS OAL INYOE DYAMD5",
+          "waypoints": "OTTTO Q176 STL MCI GLD VOAXA Q136 RUMPS OAL INYOE DYAMD5",
           "scratchpad": "FXO"
         },
         {
@@ -1029,7 +1029,7 @@
           ],
           "destination": "KSFO",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS SHB KK60I KP60C FQF KU54O KROST INYOE DYAMD5",
+          "waypoints": "RAMAY Q72 HACKS SHB KK60I KP60C FQF KU54O KROST INYOE DYAMD5",
           "scratchpad": "FXR"
         },
         {
@@ -1041,7 +1041,7 @@
           ],
           "destination": "KSFO",
           "exit": "MCRAY",
-          "route": "MCRAY Q178 DJB BAE FSD DDY MLD MYBAD Q132 ANAHO LEGGS BDEGA4",
+          "waypoints": "MCRAY Q178 DJB BAE FSD DDY MLD MYBAD Q132 ANAHO LEGGS BDEGA4",
           "scratchpad": "L78"
         },
         {
@@ -1052,7 +1052,7 @@
           ],
           "destination": "KSEA",
           "exit": "MCRAY",
-          "route": "MCRAY Q178 AVERE Q178 KOZAR FNT IMT COTMO WIEDS KP21A KATEN MLP",
+          "waypoints": "MCRAY Q178 AVERE Q178 KOZAR FNT IMT COTMO WIEDS KP21A KATEN MLP",
           "scratchpad": "L78"
         },
         {
@@ -1070,7 +1070,7 @@
           ],
           "destination": "KLAX",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 ROD JOT IOW PWE PUB JASSE Q90 DNERO ANJLL4",
+          "waypoints": "RAMAY Q72 HACKS J149 ROD JOT IOW PWE PUB JASSE Q90 DNERO ANJLL4",
           "scratchpad": "FXR"
         },
         {
@@ -1088,7 +1088,7 @@
           ],
           "destination": "KLAX",
           "exit": "MAULS",
-          "route": "MAULS KI45S ARG OKM CIM TBC JASSE Q90 DNERO ANJLL4",
+          "waypoints": "MAULS KI45S ARG OKM CIM TBC JASSE Q90 DNERO ANJLL4",
           "scratchpad": "TCL"
         },
         {
@@ -1099,7 +1099,7 @@
           ],
           "destination": "KSAN",
           "exit": "RAMAY",
-          "route": "RAMAY Q72 HACKS J149 FWA WHETT PWE HLC J64 TBC PLNDL Q86 TTRUE LUCKI1",
+          "waypoints": "RAMAY Q72 HACKS J149 FWA WHETT PWE HLC J64 TBC PLNDL Q86 TTRUE LUCKI1",
           "scratchpad": "FXR"
         },
         {
@@ -1110,7 +1110,7 @@
           ],
           "destination": "KSAN",
           "exit": "MAULS",
-          "route": "MAULS Q40 BFOLO FIBER MEI MHZ EIC J4 ABI EWM J4 SSO J50 GBN J2 HOGGZ LUCKI1",
+          "waypoints": "MAULS Q40 BFOLO FIBER MEI MHZ EIC J4 ABI EWM J4 SSO J50 GBN J2 HOGGZ LUCKI1",
           "scratchpad": "TCL"
         },
         {
@@ -1132,7 +1132,7 @@
           ],
           "destination": "KMSP",
           "exit": "MCRAY",
-          "route": "MCRAY Q178 LEJOY DJB J34 VIO KAMMA KKILR3",
+          "waypoints": "MCRAY Q178 LEJOY DJB J34 VIO KAMMA KKILR3",
           "scratchpad": "L78"
         },
         {
@@ -1154,7 +1154,7 @@
           ],
           "destination": "KDTW",
           "exit": "MCRAY",
-          "route": "MCRAY Q178 KOZAR BONZZ2",
+          "waypoints": "MCRAY Q178 KOZAR BONZZ2",
           "scratchpad": "L78"
         },
         {
@@ -1166,7 +1166,7 @@
           ],
           "destination": "EGLL",
           "exit": "BROSS",
-          "route": "BROSS Q419 BSERK Q419 RBV YAHOO KANNI SUPRY 4650N 4940N 5230N 5320N MALOT GISTI LONDU ENJEX AVZAC INFEC JETZI AMFUL OCTIZ P2 SIRIC",
+          "waypoints": "BROSS Q419 BSERK Q419 RBV YAHOO KANNI SUPRY 4650N 4940N 5230N 5320N MALOT GISTI LONDU ENJEX AVZAC INFEC JETZI AMFUL OCTIZ P2 SIRIC",
           "scratchpad": "DKB"
         },
         {
@@ -1180,7 +1180,7 @@
           ],
           "destination": "BIKF",
           "exit": "BROSS",
-          "route": "BROSS Q419 RBV HTO LFV TUSKY CADIL PELTU 5550N 6040N 6330N EPENI ELDIS",
+          "waypoints": "BROSS Q419 RBV HTO LFV TUSKY CADIL PELTU 5550N 6040N 6330N EPENI ELDIS",
           "scratchpad": "DKB"
         },
         {
@@ -1200,7 +1200,7 @@
           ],
           "destination": "MDPC",
           "exit": "SCOOB",
-          "route": "SCOOB EARZZ SKARP IDOLS CANIT NUCAR Y355 RENAH HAGIT POKEG BEREL",
+          "waypoints": "SCOOB EARZZ SKARP IDOLS CANIT NUCAR Y355 RENAH HAGIT POKEG BEREL",
           "scratchpad": "AME"
         },
         {
@@ -1220,7 +1220,7 @@
           ],
           "destination": "MMUN",
           "exit": "RRSIN",
-          "route": " RRSIN GSO Q75 ENEME EVANZ Q109 KNOST M219 NAVVL L465 SHARQ UM463 WALKY UB879 NOSAT",
+          "waypoints": " RRSIN GSO Q75 ENEME EVANZ Q109 KNOST M219 NAVVL L465 SHARQ UM463 WALKY UB879 NOSAT",
           "scratchpad": "TJD"
         },
         {
@@ -1231,7 +1231,7 @@
           ],
           "destination": "TXKF",
           "exit": "DONIL",
-          "route": "DONIL SIE B24 WEBBB DARUX DASER",
+          "waypoints": "DONIL SIE B24 WEBBB DARUX DASER",
           "scratchpad": "DKA"
         }
       ],
@@ -2979,7 +2979,7 @@
       "arrivals": [
         {
           "waypoints": "SHLBK N038.27.14.957,W076.22.43.952/ho LOUIE TUNDR GRACO",
-          "route": "TAPPA T495 GRACO",
+          "flight_strip_route": "TAPPA T495 GRACO",
           "initial_controller": "2M",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -3007,7 +3007,7 @@
         },
         {
           "waypoints": "SHLBK N038.27.14.957,W076.22.43.952/ho LOUIE TUNDR GRACO",
-          "route": "TAPPA T495 GRACO",
+          "flight_strip_route": "TAPPA T495 GRACO",
           "initial_controller": "2M",
           "initial_altitude": 5000,
           "initial_speed": 250,
@@ -3052,7 +3052,7 @@
       "arrivals": [
         {
           "waypoints": "SHLBK N038.27.14.957,W076.22.43.952/ho LOUIE TUNDR GRACO",
-          "route": "TAPPA T495 GRACO",
+          "flight_strip_route": "TAPPA T495 GRACO",
           "initial_controller": "2M",
           "initial_altitude": 9000,
           "initial_speed": 250,

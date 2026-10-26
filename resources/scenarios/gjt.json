@@ -71,7 +71,7 @@
           "altitude": [25000, 23000, 25000],
           "destination": "KDEN",
           "exit": "HAQHY",
-          "route": "HAQHY SSKII3"
+          "waypoints": "HAQHY SSKII3"
         },
         {
           "airlines": [
@@ -83,7 +83,7 @@
           "altitude": [17000, 19000, 21000],
           "destination": "KTEX",
           "exit": "ETL",
-          "route": "ETL KTEX"
+          "waypoints": "ETL KTEX"
         },
         {
           "airlines": [
@@ -94,7 +94,7 @@
           "altitude": [15000, 17000],
           "destination": "KTEX",
           "exit": "ETL",
-          "route": "ETL KTEX"
+          "waypoints": "ETL KTEX"
         },
         {
           "airlines": [
@@ -106,7 +106,7 @@
           "altitude": [29000, 27000, 25000, 23000],
           "destination": "KCOS",
           "exit": "JNC",
-          "route": "JNC HBU DBRY5"
+          "waypoints": "JNC HBU DBRY5"
         },
         {
           "airlines": [
@@ -118,7 +118,7 @@
           "altitude": [24000, 22000],
           "destination": "KSLC",
           "exit": "JNC",
-          "route": "JNC J12 HELPR LEEHY5"
+          "waypoints": "JNC J12 HELPR LEEHY5"
         },
         {
           "airlines": [
@@ -130,7 +130,7 @@
           "altitude": [33000, 31000, 29000],
           "destination": "KRAP",
           "exit": "CKW",
-          "route": "CKW DDY"
+          "waypoints": "CKW DDY"
         }
       ],
       "exit_categories": {
@@ -184,7 +184,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 140,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho"
         },
         {
@@ -211,7 +211,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 250,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho"
         }
       ]
@@ -239,7 +239,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 140,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho"
         },
         {
@@ -266,7 +266,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 250,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho"
         }
       ]
@@ -294,7 +294,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C12",
           "initial_speed": 140,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho"
         },
         {
@@ -321,7 +321,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C12",
           "initial_speed": 250,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho"
         }
       ]
@@ -349,7 +349,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 140,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho"
         },
         {
@@ -376,7 +376,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 250,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho"
         }
       ]
@@ -404,7 +404,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 140,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho"
         },
         {
@@ -431,7 +431,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 250,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho"
         }
       ]
@@ -459,7 +459,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 140,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho"
         },
         {
@@ -486,7 +486,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 250,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho"
         }
       ]
@@ -514,7 +514,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 140,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho"
         },
         {
@@ -541,7 +541,7 @@
           "initial_altitude": 15000,
           "initial_controller": "C11",
           "initial_speed": 250,
-          "route": "KGJT",
+          "flight_strip_route": "KGJT",
           "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho"
         }
       ]

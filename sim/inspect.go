@@ -353,7 +353,7 @@ func (ss *CommonState) reportDeparture(pf *PublishedFlight, routed routedPairs) 
 	}
 	placement := ss.placement(choice, pf.From, pf.To)
 	pf.Runway, pf.Exit = runway, placement.dep.Exit
-	pf.Route, pf.How = placement.dep.Route, placement.how
+	pf.Route, pf.How = placement.dep.WaypointsString, placement.how
 }
 
 // reportArrival fills in the flow and arrival a published arrival would come in

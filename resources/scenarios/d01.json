@@ -599,7 +599,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "CYVR",
           "exit": "DDRTH",
-          "route": "DDRTH DBS LKT"
+          "waypoints": "DDRTH DBS LKT"
         },
         {
           "airlines": [
@@ -618,7 +618,7 @@
           "altitude": [32000, 34000, 36000, 38000, 40000],
           "destination": "KBZN",
           "exit": "DDRTH",
-          "route": "DDRTH TOCUD LOSST1"
+          "waypoints": "DDRTH TOCUD LOSST1"
         },
         {
           "airlines": [
@@ -636,7 +636,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KGEG",
           "exit": "DDRTH",
-          "route": "DDRTH DLN GEG"
+          "waypoints": "DDRTH DLN GEG"
         },
         {
           "airlines": [
@@ -652,7 +652,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KGPI",
           "exit": "DDRTH",
-          "route": "DDRTH SKOTT"
+          "waypoints": "DDRTH SKOTT"
         },
         {
           "airlines": [
@@ -671,7 +671,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KJAC",
           "exit": "DDRTH",
-          "route": "DDRTH CKW DNW"
+          "waypoints": "DDRTH CKW DNW"
         },
         {
           "airlines": [
@@ -690,7 +690,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KMSO",
           "exit": "DDRTH",
-          "route": "DDRTH WEDAK"
+          "waypoints": "DDRTH WEDAK"
         },
         {
           "airlines": [
@@ -706,7 +706,7 @@
           "altitude": [32000, 34000],
           "destination": "KPSC",
           "exit": "DDRTH",
-          "route": "DDRTH PIH DNJ ALW CITYS"
+          "waypoints": "DDRTH PIH DNJ ALW CITYS"
         },
         {
           "airlines": [
@@ -717,7 +717,7 @@
           "altitude": [24000, 26000, 28000, 30000, 32000],
           "destination": "KWYS",
           "exit": "DDRTH",
-          "route": "DDRTH BPI PIINE SABAT TARGY"
+          "waypoints": "DDRTH BPI PIINE SABAT TARGY"
         },
         {
           "airlines": [
@@ -732,7 +732,7 @@
           "altitude": [32000, 34000, 36000],
           "destination": "PANC",
           "exit": "DDRTH",
-          "route": "DDRTH BOY BZN TWIGY YWL YYD LVD LAIRE JOH WITTI5"
+          "waypoints": "DDRTH BOY BZN TWIGY YWL YYD LVD LAIRE JOH WITTI5"
         },
         {
           "airlines": [
@@ -744,7 +744,7 @@
           "altitude": [34000, 36000],
           "destination": "RJAA",
           "exit": "DDRTH",
-          "route": "DDRTH BOY HLN"
+          "waypoints": "DDRTH BOY HLN"
         },
         {
           "airlines": [
@@ -760,7 +760,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "CYYC",
           "exit": "XXWNG",
-          "route": "XXWNG BIL TOVUM"
+          "waypoints": "XXWNG BIL TOVUM"
         },
         {
           "airlines": [
@@ -776,7 +776,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KBIL",
           "exit": "XXWNG",
-          "route": "XXWNG BGHRN BGHRN3"
+          "waypoints": "XXWNG BGHRN BGHRN3"
         },
         {
           "airlines": [
@@ -788,7 +788,7 @@
           "altitude": 32000,
           "destination": "KGCC",
           "exit": "XXWNG",
-          "route": "XXWNG GCC"
+          "waypoints": "XXWNG GCC"
         },
         {
           "airlines": [
@@ -800,7 +800,7 @@
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KGTF",
           "exit": "XXWNG",
-          "route": "XXWNG GTF"
+          "waypoints": "XXWNG GTF"
         },
         {
           "airlines": [
@@ -812,7 +812,7 @@
           "altitude": [30000, 32000],
           "destination": "KHLN",
           "exit": "XXWNG",
-          "route": "XXWNG BOY NNORA HLN"
+          "waypoints": "XXWNG BOY NNORA HLN"
         },
         {
           "airlines": [
@@ -826,7 +826,7 @@
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KIDA",
           "exit": "XXWNG",
-          "route": "XXWNG IDA"
+          "waypoints": "XXWNG IDA"
         },
         {
           "airlines": [
@@ -838,7 +838,7 @@
           "altitude": 35000,
           "destination": "BIKF",
           "exit": "JOBBA",
-          "route": "JOBBA KD81Y"
+          "waypoints": "JOBBA KD81Y"
         },
         {
           "airlines": [
@@ -850,7 +850,7 @@
           "altitude": [35000, 37000],
           "destination": "CYWG",
           "exit": "JOBBA",
-          "route": "JOBBA LINTN"
+          "waypoints": "JOBBA LINTN"
         },
         {
           "airlines": [
@@ -861,7 +861,7 @@
           "altitude": 21000,
           "destination": "KBFF",
           "exit": "JOBBA",
-          "route": "JOBBA"
+          "waypoints": "JOBBA"
         },
         {
           "airlines": [
@@ -872,7 +872,7 @@
           "altitude": [31000, 33000],
           "destination": "BIKF",
           "exit": "SAABR",
-          "route": "SAABR DPR"
+          "waypoints": "SAABR DPR"
         },
         {
           "airlines": [
@@ -883,7 +883,7 @@
           "altitude": 33000,
           "destination": "KDIK",
           "exit": "SAABR",
-          "route": "SAABR DPR"
+          "waypoints": "SAABR DPR"
         },
         {
           "airlines": [
@@ -902,7 +902,7 @@
           "altitude": [27000, 29000, 31000, 33000, 35000, 37000],
           "destination": "KFAR",
           "exit": "JOBBA",
-          "route": "JOBBA ABR FAR"
+          "waypoints": "JOBBA ABR FAR"
         },
         {
           "airlines": [
@@ -918,7 +918,7 @@
           "altitude": [27000, 29000],
           "destination": "KRAP",
           "exit": "SAABR",
-          "route": "SAABR RAP"
+          "waypoints": "SAABR RAP"
         },
         {
           "airlines": [
@@ -930,7 +930,7 @@
           "altitude": [35000, 37000],
           "destination": "LIRF",
           "exit": "JOBBA",
-          "route": "JOBBA ABR FAR VBI KEMSA LOPVI IRBIM"
+          "waypoints": "JOBBA ABR FAR VBI KEMSA LOPVI IRBIM"
         },
         {
           "airlines": [
@@ -946,7 +946,7 @@
           "altitude": [35000, 39000],
           "destination": "EDDF",
           "exit": "CHUWY",
-          "route": "CHUWY Q88 VIVID"
+          "waypoints": "CHUWY Q88 VIVID"
         },
         {
           "airlines": [
@@ -962,7 +962,7 @@
           "altitude": [35000, 37000],
           "destination": "EDDM",
           "exit": "CHUWY",
-          "route": "CHUWY KP78G ODI KP87K"
+          "waypoints": "CHUWY KP78G ODI KP87K"
         },
         {
           "airlines": [
@@ -978,7 +978,7 @@
           "altitude": [35000, 37000],
           "destination": "EGLL",
           "exit": "CHUWY",
-          "route": "CHUWY Q88 KEEFF Q88 VIVID"
+          "waypoints": "CHUWY Q88 KEEFF Q88 VIVID"
         },
         {
           "airlines": [
@@ -996,7 +996,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KFSD",
           "exit": "CHUWY",
-          "route": "CHUWY PUKIC FSD"
+          "waypoints": "CHUWY PUKIC FSD"
         },
         {
           "airlines": [
@@ -1008,7 +1008,7 @@
           "altitude": [33000, 35000],
           "destination": "KMOT",
           "exit": "CHUWY",
-          "route": "CHUWY DPR MOT"
+          "waypoints": "CHUWY DPR MOT"
         },
         {
           "airlines": [
@@ -1037,7 +1037,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000],
           "destination": "KMSP",
           "exit": "CHUWY",
-          "route": "CHUWY LLUKY SSWAN TORGY3"
+          "waypoints": "CHUWY LLUKY SSWAN TORGY3"
         },
         {
           "airlines": [
@@ -1049,7 +1049,7 @@
           "altitude": 37000,
           "destination": "LFPG",
           "exit": "CHUWY",
-          "route": "CHUWY KP81A KP90C TADIS"
+          "waypoints": "CHUWY KP81A KP90C TADIS"
         },
         {
           "airlines": [
@@ -1061,7 +1061,7 @@
           "altitude": 35000,
           "destination": "LTFM",
           "exit": "CHUWY",
-          "route": "CHUWY ABR HML YRL KELMU TEFFO KAGLY"
+          "waypoints": "CHUWY ABR HML YRL KELMU TEFFO KAGLY"
         },
         {
           "airlines": [
@@ -1077,7 +1077,7 @@
           "altitude": [31000, 33000, 35000],
           "destination": "CYYZ",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -1088,7 +1088,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KALB",
           "exit": "WYNDM",
-          "route": "WYNDM EAR OVR OGALE IOW"
+          "waypoints": "WYNDM EAR OVR OGALE IOW"
         },
         {
           "airlines": [
@@ -1103,7 +1103,7 @@
           "altitude": [35000, 37000],
           "destination": "KBDL",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK J60 JOT J146 GIJ J554 BENJO"
+          "waypoints": "WYNDM HCT LNK J60 JOT J146 GIJ J554 BENJO"
         },
         {
           "airlines": [
@@ -1126,7 +1126,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KBOS",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK J60 JOT J146 GIJ J554 JHW Q82 PONCT JFUND2"
+          "waypoints": "WYNDM HCT LNK J60 JOT J146 GIJ J554 JHW Q82 PONCT JFUND2"
         },
         {
           "airlines": [
@@ -1145,7 +1145,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "destination": "KCID",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK CID"
+          "waypoints": "WYNDM HCT LNK CID"
         },
         {
           "airlines": [
@@ -1167,7 +1167,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KCLE",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK J60 JOT ZIINE BENJO BRWNZ4"
+          "waypoints": "WYNDM HCT LNK J60 JOT ZIINE BENJO BRWNZ4"
         },
         {
           "airlines": [
@@ -1188,7 +1188,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000],
           "destination": "KDSM",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -1210,7 +1210,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KDTW",
           "exit": "WYNDM",
-          "route": "WYNDM OBH BAE PORZL RKCTY2"
+          "waypoints": "WYNDM OBH BAE PORZL RKCTY2"
         },
         {
           "airlines": [
@@ -1221,7 +1221,7 @@
           "altitude": [25000, 27000, 29000],
           "destination": "KEAR",
           "exit": "WYNDM",
-          "route": "WYNDM EAR"
+          "waypoints": "WYNDM EAR"
         },
         {
           "airlines": [
@@ -1233,7 +1233,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KEWR",
           "exit": "WYNDM",
-          "route": "WYNDM OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
+          "waypoints": "WYNDM OVR DSM EVOTE NELLS KEEHO J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -1249,7 +1249,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KJFK",
           "exit": "WYNDM",
-          "route": "WYNDM SAUGI KATES DBQ KG75M DAFLU J70 LVZ LENDY8"
+          "waypoints": "WYNDM SAUGI KATES DBQ KG75M DAFLU J70 LVZ LENDY8"
         },
         {
           "airlines": [
@@ -1261,7 +1261,7 @@
           "altitude": 25000,
           "destination": "KLBF",
           "exit": "WYNDM",
-          "route": "WYNDM LBF"
+          "waypoints": "WYNDM LBF"
         },
         {
           "airlines": [
@@ -1284,7 +1284,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KLGA",
           "exit": "WYNDM",
-          "route": "WYNDM HCT DSM GERBS J146 ETG MIP4"
+          "waypoints": "WYNDM HCT DSM GERBS J146 ETG MIP4"
         },
         {
           "airlines": [
@@ -1296,7 +1296,7 @@
           "altitude": 33000,
           "destination": "KLNK",
           "exit": "WYNDM",
-          "route": "WYNDM DRABS LNK"
+          "waypoints": "WYNDM DRABS LNK"
         },
         {
           "airlines": [
@@ -1319,7 +1319,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "KMKE",
           "exit": "WYNDM",
-          "route": "WYNDM OLU OGECA GOPAC3"
+          "waypoints": "WYNDM OLU OGECA GOPAC3"
         },
         {
           "airlines": [
@@ -1331,7 +1331,7 @@
           "altitude": 35000,
           "destination": "KMLI",
           "exit": "WYNDM",
-          "route": "WYNDM KP66C MZV"
+          "waypoints": "WYNDM KP66C MZV"
         },
         {
           "airlines": [
@@ -1350,7 +1350,7 @@
           "altitude": [35000, 37000],
           "destination": "KMSN",
           "exit": "WYNDM",
-          "route": "WYNDM OBH ALO MSN"
+          "waypoints": "WYNDM OBH ALO MSN"
         },
         {
           "airlines": [
@@ -1372,7 +1372,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KOMA",
           "exit": "WYNDM",
-          "route": "WYNDM HCT GRI HOWRY3"
+          "waypoints": "WYNDM HCT GRI HOWRY3"
         },
         {
           "airlines": [
@@ -1395,7 +1395,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000],
           "destination": "KORD",
           "exit": "WYNDM",
-          "route": "WYNDM OBH FOD MYRRS FYTTE7"
+          "waypoints": "WYNDM OBH FOD MYRRS FYTTE7"
         },
         {
           "airlines": [
@@ -1413,7 +1413,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KBUF",
           "exit": "ZIRKL",
-          "route": "ZIRKL OVR GIJ DKK BUF"
+          "waypoints": "ZIRKL OVR GIJ DKK BUF"
         },
         {
           "airlines": [
@@ -1431,7 +1431,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "KCMH",
           "exit": "ZIRKL",
-          "route": "ZIRKL Q136 DIYAP BDF J64 FWA BRYEN DUBLN1"
+          "waypoints": "ZIRKL Q136 DIYAP BDF J64 FWA BRYEN DUBLN1"
         },
         {
           "airlines": [
@@ -1443,7 +1443,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KDAY",
           "exit": "ZIRKL",
-          "route": "ZIRKL LEFAM SPI J80 VHP DQN"
+          "waypoints": "ZIRKL LEFAM SPI J80 VHP DQN"
         },
         {
           "airlines": [
@@ -1458,7 +1458,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KDCA",
           "exit": "ZIRKL",
-          "route": "ZIRKL LEFAM Q90 WELKY JAVAS J64 WHETT J30 BUCKO FRDMM7"
+          "waypoints": "ZIRKL LEFAM Q90 WELKY JAVAS J64 WHETT J30 BUCKO FRDMM7"
         },
         {
           "airlines": [
@@ -1476,7 +1476,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KGRR",
           "exit": "ZIRKL",
-          "route": "ZIRKL KD63A DSM DBQ ADALE"
+          "waypoints": "ZIRKL KD63A DSM DBQ ADALE"
         },
         {
           "airlines": [
@@ -1491,7 +1491,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KIAD",
           "exit": "ZIRKL",
-          "route": "ZIRKL LMN BDF ROD APE MGW GIBBZ6"
+          "waypoints": "ZIRKL LMN BDF ROD APE MGW GIBBZ6"
         },
         {
           "airlines": [
@@ -1513,7 +1513,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KIND",
           "exit": "ZIRKL",
-          "route": "ZIRKL LEFAM USIRE KOLTS2"
+          "waypoints": "ZIRKL LEFAM USIRE KOLTS2"
         },
         {
           "airlines": [
@@ -1532,7 +1532,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KMCI",
           "exit": "ZIRKL",
-          "route": "ZIRKL DPEAK JSONN4"
+          "waypoints": "ZIRKL DPEAK JSONN4"
         },
         {
           "airlines": [
@@ -1546,7 +1546,7 @@
           "altitude": [33000, 35000, 37000, 39000, 41000],
           "destination": "KMDW",
           "exit": "ZIRKL",
-          "route": "ZIRKL JALAP ENDEE7"
+          "waypoints": "ZIRKL JALAP ENDEE7"
         },
         {
           "airlines": [
@@ -1569,7 +1569,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "destination": "KPHL",
           "exit": "ZIRKL",
-          "route": "ZIRKL Q136 DIYAP BDF J64 FWA JST BOJID4"
+          "waypoints": "ZIRKL Q136 DIYAP BDF J64 FWA JST BOJID4"
         },
         {
           "airlines": [
@@ -1588,7 +1588,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KPIT",
           "exit": "ZIRKL",
-          "route": "ZIRKL PWE IRK SPI J80 EMPTY CTW FEWGA7"
+          "waypoints": "ZIRKL PWE IRK SPI J80 EMPTY CTW FEWGA7"
         },
         {
           "airlines": [
@@ -1603,7 +1603,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "KPVD",
           "exit": "ZIRKL",
-          "route": "ZIRKL LNK DSM KG72M CRL J554 JHW Q82 MEMMS HINGZ WIPOR3"
+          "waypoints": "ZIRKL LNK DSM KG72M CRL J554 JHW Q82 MEMMS HINGZ WIPOR3"
         },
         {
           "airlines": [
@@ -1626,7 +1626,7 @@
           "altitude": [35000, 37000],
           "destination": "KATL",
           "exit": "GAETR",
-          "route": "GAETR KIRKE LUKKY HUTCC KNSAW"
+          "waypoints": "GAETR KIRKE LUKKY HUTCC KNSAW"
         },
         {
           "airlines": [
@@ -1641,7 +1641,7 @@
           "altitude": [31000, 33000, 35000],
           "destination": "KFLL",
           "exit": "DUUZE",
-          "route": "DUUZE ICT RZC KM27K ACORI TEEKY3"
+          "waypoints": "DUUZE ICT RZC KM27K ACORI TEEKY3"
         },
         {
           "airlines": [
@@ -1660,7 +1660,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KICT",
           "exit": "GAETR",
-          "route": "GAETR ICT"
+          "waypoints": "GAETR ICT"
         },
         {
           "airlines": [
@@ -1675,7 +1675,7 @@
           "altitude": [31000, 33000, 35000],
           "destination": "KJAX",
           "exit": "DUUZE",
-          "route": "DUUZE WRIGL MEMFS VLKNN DUCHY OHDEA2"
+          "waypoints": "DUUZE WRIGL MEMFS VLKNN DUCHY OHDEA2"
         },
         {
           "airlines": [
@@ -1694,7 +1694,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "KLIT",
           "exit": "DUUZE",
-          "route": "DUUZE BURDN RZC"
+          "waypoints": "DUUZE BURDN RZC"
         },
         {
           "airlines": [
@@ -1713,7 +1713,7 @@
           "altitude": [33000, 35000, 37000, 39000],
           "destination": "KMCO",
           "exit": "DUUZE",
-          "route": "DUUZE ICT MUDHO Q128 JILLS DEEDA GRNCH5"
+          "waypoints": "DUUZE ICT MUDHO Q128 JILLS DEEDA GRNCH5"
         },
         {
           "airlines": [
@@ -1736,7 +1736,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "KMEM",
           "exit": "DUUZE",
-          "route": "DUUZE ICT RZC BRBBQ"
+          "waypoints": "DUUZE ICT RZC BRBBQ"
         },
         {
           "airlines": [
@@ -1759,7 +1759,7 @@
           "altitude": [31000, 33000, 35000],
           "destination": "KMIA",
           "exit": "DUUZE",
-          "route": "DUUZE ICT LIT MEI ACORI FROGZ4"
+          "waypoints": "DUUZE ICT LIT MEI ACORI FROGZ4"
         },
         {
           "airlines": [
@@ -1778,7 +1778,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KMSY",
           "exit": "DUUZE",
-          "route": "DUUZE GCK IRW J20 EIC AEX LSU AWDAD1"
+          "waypoints": "DUUZE GCK IRW J20 EIC AEX LSU AWDAD1"
         },
         {
           "airlines": [
@@ -1793,7 +1793,7 @@
           "altitude": [31000, 33000, 35000],
           "destination": "KRSW",
           "exit": "DUUZE",
-          "route": "DUUZE ICT RZC KM27K MGMRY ACORI BULZI Q81 NICKI"
+          "waypoints": "DUUZE ICT RZC KM27K MGMRY ACORI BULZI Q81 NICKI"
         },
         {
           "airlines": [
@@ -1808,7 +1808,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KSAV",
           "exit": "DUUZE",
-          "route": "DUUZE ICT RZC VLKNN MCN DBN LOTTS SAV"
+          "waypoints": "DUUZE ICT RZC VLKNN MCN DBN LOTTS SAV"
         },
         {
           "airlines": [
@@ -1827,7 +1827,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "KTUL",
           "exit": "GAETR",
-          "route": "GAETR KK51A TUL"
+          "waypoints": "GAETR KK51A TUL"
         },
         {
           "airlines": [
@@ -1843,7 +1843,7 @@
           "altitude": [33000, 35000, 37000, 39000],
           "destination": "KBHM",
           "exit": "SHAYK",
-          "route": "SHAYK HYS EOS MEMFS VUZ"
+          "waypoints": "SHAYK HYS EOS MEMFS VUZ"
         },
         {
           "airlines": [
@@ -1862,7 +1862,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KBNA",
           "exit": "SHAYK",
-          "route": "SHAYK SLN BUM YACKS RYYMN2"
+          "waypoints": "SHAYK SLN BUM YACKS RYYMN2"
         },
         {
           "airlines": [
@@ -1880,7 +1880,7 @@
           "altitude": [33000, 35000, 37000, 39000],
           "destination": "KBWI",
           "exit": "SHAYK",
-          "route": "SHAYK MCI STL J134 FLM HVQ CACYE RAVNN9"
+          "waypoints": "SHAYK MCI STL J134 FLM HVQ CACYE RAVNN9"
         },
         {
           "airlines": [
@@ -1899,7 +1899,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KCLT",
           "exit": "SHAYK",
-          "route": "SHAYK ANX KOOOP JHAUN  ESTEE GUMMA SKYWA FILPZ7"
+          "waypoints": "SHAYK ANX KOOOP JHAUN  ESTEE GUMMA SKYWA FILPZ7"
         },
         {
           "airlines": [
@@ -1926,7 +1926,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KCVG",
           "exit": "SHAYK",
-          "route": "SHAYK MCI DAAVE SARGO4"
+          "waypoints": "SHAYK MCI DAAVE SARGO4"
         },
         {
           "airlines": [
@@ -1938,7 +1938,7 @@
           "altitude": [33000, 35000],
           "destination": "KGSO",
           "exit": "SHAYK",
-          "route": "SHAYK MCI STL IIU GZG BROOK4"
+          "waypoints": "SHAYK MCI STL IIU GZG BROOK4"
         },
         {
           "airlines": [
@@ -1950,7 +1950,7 @@
           "altitude": [29000, 31000],
           "destination": "KHYS",
           "exit": "SHAYK",
-          "route": "SHAYK HYS"
+          "waypoints": "SHAYK HYS"
         },
         {
           "airlines": [
@@ -1973,7 +1973,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KRDU",
           "exit": "SHAYK",
-          "route": "SHAYK SLN PXV FRIKY ALDAN4"
+          "waypoints": "SHAYK SLN PXV FRIKY ALDAN4"
         },
         {
           "airlines": [
@@ -1988,7 +1988,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KRIC",
           "exit": "SHAYK",
-          "route": "SHAYK SLN STL FLM J24 TUKEY J24 MOL SPIDR5"
+          "waypoints": "SHAYK SLN STL FLM J24 TUKEY J24 MOL SPIDR5"
         },
         {
           "airlines": [
@@ -2007,7 +2007,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KSDF",
           "exit": "SHAYK",
-          "route": "SHAYK SLN IMOUT MBELL5"
+          "waypoints": "SHAYK SLN IMOUT MBELL5"
         },
         {
           "airlines": [
@@ -2019,7 +2019,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KSGF",
           "exit": "SHAYK",
-          "route": "SHAYK KK54C SGF"
+          "waypoints": "SHAYK KK54C SGF"
         },
         {
           "airlines": [
@@ -2031,7 +2031,7 @@
           "altitude": [27000, 29000],
           "destination": "KSLN",
           "exit": "SHAYK",
-          "route": "SHAYK SLN"
+          "waypoints": "SHAYK SLN"
         },
         {
           "airlines": [
@@ -2050,7 +2050,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000],
           "destination": "KSTL",
           "exit": "SHAYK",
-          "route": "SHAYK ANX KAYLA3"
+          "waypoints": "SHAYK ANX KAYLA3"
         },
         {
           "airlines": [
@@ -2074,7 +2074,7 @@
           "altitude": [31000, 33000, 35000],
           "destination": "KTYS",
           "exit": "SHAYK",
-          "route": "SHAYK SLN SGF HITMN"
+          "waypoints": "SHAYK SLN SGF HITMN"
         },
         {
           "airlines": [
@@ -2094,7 +2094,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KXNA",
           "exit": "SHAYK",
-          "route": "SHAYK ICT HUNTO"
+          "waypoints": "SHAYK ICT HUNTO"
         },
         {
           "airlines": [
@@ -2106,7 +2106,7 @@
           "altitude": [31000, 33000],
           "destination": "KAMA",
           "exit": "SLEEK",
-          "route": "SLEEK DHT PNH"
+          "waypoints": "SLEEK DHT PNH"
         },
         {
           "airlines": [
@@ -2125,7 +2125,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KAUS",
           "exit": "SLEEK",
-          "route": "SLEEK PNH J17 ABI DILLO LAIKS4"
+          "waypoints": "SLEEK PNH J17 ABI DILLO LAIKS4"
         },
         {
           "airlines": [
@@ -2139,7 +2139,7 @@
           "altitude": [35000, 37000, 39000, 41000],
           "destination": "KDAL",
           "exit": "SLEEK",
-          "route": "SLEEK KA39Y STNLI JFRYE5"
+          "waypoints": "SLEEK KA39Y STNLI JFRYE5"
         },
         {
           "airlines": [
@@ -2163,7 +2163,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KDFW",
           "exit": "SLEEK",
-          "route": "SLEEK EZEEE MDANO VKTRY2"
+          "waypoints": "SLEEK EZEEE MDANO VKTRY2"
         },
         {
           "airlines": [
@@ -2174,7 +2174,7 @@
           "altitude": [33000, 35000, 37000, 39000, 41000],
           "destination": "KHOU",
           "exit": "SLEEK",
-          "route": "SLEEK KA39Y HEATR MEGGA MQP NNEAL KIDDZ5"
+          "waypoints": "SLEEK KA39Y HEATR MEGGA MQP NNEAL KIDDZ5"
         },
         {
           "airlines": [
@@ -2190,7 +2190,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KIAH",
           "exit": "SLEEK",
-          "route": "SLEEK NOSEW MQP GUSHR3"
+          "waypoints": "SLEEK NOSEW MQP GUSHR3"
         },
         {
           "airlines": [
@@ -2206,7 +2206,7 @@
           "altitude": 33000,
           "destination": "KLBB",
           "exit": "SLEEK",
-          "route": "SLEEK KENTO VEGGE"
+          "waypoints": "SLEEK KENTO VEGGE"
         },
         {
           "airlines": [
@@ -2217,7 +2217,7 @@
           "altitude": 37000,
           "destination": "MMMY",
           "exit": "SLEEK",
-          "route": "SLEEK TBE TXO BGS DOGEY"
+          "waypoints": "SLEEK TBE TXO BGS DOGEY"
         },
         {
           "airlines": [
@@ -2236,7 +2236,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "MMUN",
           "exit": "SLEEK",
-          "route": "SLEEK NOSEW MQP SBI"
+          "waypoints": "SLEEK NOSEW MQP SBI"
         },
         {
           "airlines": [
@@ -2252,7 +2252,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KMAF",
           "exit": "JOPLN",
-          "route": "JOPLN LBB V81 MAF"
+          "waypoints": "JOPLN LBB V81 MAF"
         },
         {
           "airlines": [
@@ -2268,7 +2268,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "MMMX",
           "exit": "VRONI",
-          "route": "VRONI KENTO LBB"
+          "waypoints": "VRONI KENTO LBB"
         },
         {
           "airlines": [
@@ -2291,7 +2291,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KELP",
           "exit": "SUDDZ",
-          "route": "SUDDZ"
+          "waypoints": "SUDDZ"
         },
         {
           "airlines": [
@@ -2303,7 +2303,7 @@
           "altitude": [30000, 32000, 34000],
           "destination": "KSAF",
           "exit": "SUDDZ",
-          "route": "SUDDZ SAF"
+          "waypoints": "SUDDZ SAF"
         },
         {
           "airlines": [
@@ -2315,7 +2315,7 @@
           "altitude": [36000, 38000],
           "destination": "MMCU",
           "exit": "SUDDZ",
-          "route": "SUDDZ TAS DNIDE ONM J57 TCS"
+          "waypoints": "SUDDZ TAS DNIDE ONM J57 TCS"
         },
         {
           "airlines": [
@@ -2334,7 +2334,7 @@
           "altitude": [34000, 36000, 38000],
           "destination": "MMSD",
           "exit": "SUDDZ",
-          "route": "SUDDZ ABQ TCS"
+          "waypoints": "SUDDZ ABQ TCS"
         },
         {
           "airlines": [
@@ -2353,7 +2353,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "KABQ",
           "exit": "DAAYE",
-          "route": "DAAYE DATME SNDIA4"
+          "waypoints": "DAAYE DATME SNDIA4"
         },
         {
           "airlines": [
@@ -2365,7 +2365,7 @@
           "altitude": 28000,
           "destination": "KFMN",
           "exit": "DAAYE",
-          "route": "DAAYE RSK"
+          "waypoints": "DAAYE RSK"
         },
         {
           "airlines": [
@@ -2390,7 +2390,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KPHX",
           "exit": "DAAYE",
-          "route": "DAAYE GUP EAGUL6"
+          "waypoints": "DAAYE GUP EAGUL6"
         },
         {
           "airlines": [
@@ -2413,7 +2413,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KTUS",
           "exit": "DAAYE",
-          "route": "DAAYE TCS SSO ZONNA2"
+          "waypoints": "DAAYE TCS SSO ZONNA2"
         },
         {
           "airlines": [
@@ -2425,7 +2425,7 @@
           "altitude": [34000, 36000],
           "destination": "KBFL",
           "exit": "TEHRU",
-          "route": "TEHRU DVC J146 FREDD HEC"
+          "waypoints": "TEHRU DVC J146 FREDD HEC"
         },
         {
           "airlines": [
@@ -2445,7 +2445,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KBUR",
           "exit": "TEHRU",
-          "route": "TEHRU ROOLL Q94 WELUM JANNY5"
+          "waypoints": "TEHRU ROOLL Q94 WELUM JANNY5"
         },
         {
           "airlines": [
@@ -2464,7 +2464,7 @@
           "altitude": [22000, 24000, 26000],
           "destination": "KCEZ",
           "exit": "HBU",
-          "route": "HBU CEZ"
+          "waypoints": "HBU CEZ"
         },
         {
           "airlines": [
@@ -2476,7 +2476,7 @@
           "altitude": [20000, 22000],
           "destination": "KGUC",
           "exit": "HBU",
-          "route": "HBU"
+          "waypoints": "HBU"
         },
         {
           "airlines": [
@@ -2495,7 +2495,7 @@
           "altitude": [22000, 24000, 26000, 28000],
           "destination": "KMTJ",
           "exit": "TEHRU",
-          "route": "TEHRU DIRDY"
+          "waypoints": "TEHRU DIRDY"
         },
         {
           "airlines": [
@@ -2518,7 +2518,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KPSP",
           "exit": "TEHRU",
-          "route": "TEHRU PLNDL Q86 YORRK RDBUL1"
+          "waypoints": "TEHRU PLNDL Q86 YORRK RDBUL1"
         },
         {
           "airlines": [
@@ -2536,7 +2536,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KSAN",
           "exit": "TEHRU",
-          "route": "TEHRU PLNDL Q86 TTRUE LUCKI1"
+          "waypoints": "TEHRU PLNDL Q86 TTRUE LUCKI1"
         },
         {
           "airlines": [
@@ -2548,7 +2548,7 @@
           "altitude": [32000, 34000, 36000],
           "destination": "KSGU",
           "exit": "TEHRU",
-          "route": "TEHRU KU51Q PIETZ"
+          "waypoints": "TEHRU KU51Q PIETZ"
         },
         {
           "airlines": [
@@ -2567,7 +2567,7 @@
           "altitude": [20000, 22000, 24000],
           "destination": "KASE",
           "exit": "CONNR",
-          "route": "CONNR MMARY MMARY1"
+          "waypoints": "CONNR MMARY MMARY1"
         },
         {
           "airlines": [
@@ -2582,7 +2582,7 @@
           "altitude": [22000, 24000, 26000, 28000],
           "destination": "KGJT",
           "exit": "WERNR",
-          "route": "WERNR ZAKRY"
+          "waypoints": "WERNR ZAKRY"
         },
         {
           "airlines": [
@@ -2600,7 +2600,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KLAS",
           "exit": "WERNR",
-          "route": "WERNR ZAKRY CHESZ GGAPP CHOWW2"
+          "waypoints": "WERNR ZAKRY CHESZ GGAPP CHOWW2"
         },
         {
           "airlines": [
@@ -2626,7 +2626,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KLAX",
           "exit": "WERNR",
-          "route": "WERNR ZAKRY CHESZ Q88 HAKMN ANJLL4"
+          "waypoints": "WERNR ZAKRY CHESZ Q88 HAKMN ANJLL4"
         },
         {
           "airlines": [
@@ -2648,7 +2648,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KONT",
           "exit": "WERNR",
-          "route": "WERNR ZAKRY BUGGG Q114 NATEE JCKIE2"
+          "waypoints": "WERNR ZAKRY BUGGG Q114 NATEE JCKIE2"
         },
         {
           "airlines": [
@@ -2663,7 +2663,7 @@
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KSBA",
           "exit": "WERNR",
-          "route": "WERNR ZAKRY BUGGG Q114 NATEE HEC PITBL1"
+          "waypoints": "WERNR ZAKRY BUGGG Q114 NATEE HEC PITBL1"
         },
         {
           "airlines": [
@@ -2682,7 +2682,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KSNA",
           "exit": "WERNR",
-          "route": "WERNR ZAKRY BUGGG Q114 NATEE DSNEE6"
+          "waypoints": "WERNR ZAKRY BUGGG Q114 NATEE DSNEE6"
         },
         {
           "airlines": [
@@ -2702,7 +2702,7 @@
           "altitude": [32000, 34000, 36000],
           "destination": "KFAT",
           "exit": "VOAXA",
-          "route": "VOAXA KU54O KROST OAL FRA"
+          "waypoints": "VOAXA KU54O KROST OAL FRA"
         },
         {
           "airlines": [
@@ -2713,7 +2713,7 @@
           "altitude": [34000, 36000, 38000, 40000],
           "destination": "KOAK",
           "exit": "VOAXA",
-          "route": "VOAXA Q134 TATOO RPARK OAKES3"
+          "waypoints": "VOAXA Q134 TATOO RPARK OAKES3"
         },
         {
           "airlines": [
@@ -2732,7 +2732,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KSFO",
           "exit": "VOAXA",
-          "route": "VOAXA Q136 OAL INYOE DYAMD5"
+          "waypoints": "VOAXA Q136 OAL INYOE DYAMD5"
         },
         {
           "airlines": [
@@ -2747,7 +2747,7 @@
           "altitude": [34000, 36000, 38000, 40000],
           "destination": "KSJC",
           "exit": "VOAXA",
-          "route": "VOAXA Q136 RUMPS KNGRY RAZRR5"
+          "waypoints": "VOAXA Q136 RUMPS KNGRY RAZRR5"
         },
         {
           "airlines": [
@@ -2762,7 +2762,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KSMF",
           "exit": "VOAXA",
-          "route": "VOAXA DTA CRASY SLMMR5"
+          "waypoints": "VOAXA DTA CRASY SLMMR5"
         },
         {
           "airlines": [
@@ -2774,7 +2774,7 @@
           "altitude": [34000, 36000],
           "destination": "PHKO",
           "exit": "VOAXA",
-          "route": "VOAXA Q134 HERSH Q134 JULIK JSICA Q130 SYRAH OAK ALANN GITLE DIALO R576 DENNS UPP VECKI9"
+          "waypoints": "VOAXA Q134 HERSH Q134 JULIK JSICA Q130 SYRAH OAK ALANN GITLE DIALO R576 DENNS UPP VECKI9"
         },
         {
           "airlines": [
@@ -2786,7 +2786,7 @@
           "altitude": [30000, 32000, 34000],
           "destination": "PHNL",
           "exit": "VOAXA",
-          "route": "VOAXA Q134 HERSH Q134 JULIK JSICA Q130 SYRAH OAK ALANN GITLE DIALO R576 DENNS MAGGI3"
+          "waypoints": "VOAXA Q134 HERSH Q134 JULIK JSICA Q130 SYRAH OAK ALANN GITLE DIALO R576 DENNS MAGGI3"
         },
         {
           "airlines": [
@@ -2809,7 +2809,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KBOI",
           "exit": "CHNGY",
-          "route": "CHNGY REAPS KOURT4"
+          "waypoints": "CHNGY REAPS KOURT4"
         },
         {
           "airlines": [
@@ -2828,7 +2828,7 @@
           "altitude": [20000, 22000, 24000],
           "destination": "KEGE",
           "exit": "ZIMMR",
-          "route": "ZIMMR CULCH"
+          "waypoints": "ZIMMR CULCH"
         },
         {
           "airlines": [
@@ -2847,7 +2847,7 @@
           "altitude": [28000, 30000, 32000, 34000],
           "destination": "KEUG",
           "exit": "CHNGY",
-          "route": "CHNGY BOI EUG"
+          "waypoints": "CHNGY BOI EUG"
         },
         {
           "airlines": [
@@ -2870,7 +2870,7 @@
           "altitude": [20000, 22000, 24000],
           "destination": "KHDN",
           "exit": "CHNGY",
-          "route": "CHNGY"
+          "waypoints": "CHNGY"
         },
         {
           "airlines": [
@@ -2882,7 +2882,7 @@
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KMFR",
           "exit": "CHNGY",
-          "route": "CHNGY WAATS Q124 BVL LOKEY OED"
+          "waypoints": "CHNGY WAATS Q124 BVL LOKEY OED"
         },
         {
           "airlines": [
@@ -2904,7 +2904,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KPDX",
           "exit": "CHNGY",
-          "route": "CHNGY BOI JOTBA HHOOD5"
+          "waypoints": "CHNGY BOI JOTBA HHOOD5"
         },
         {
           "airlines": [
@@ -2916,7 +2916,7 @@
           "altitude": [30000, 32000, 34000],
           "destination": "KRDM",
           "exit": "CHNGY",
-          "route": "CHNGY BOI DSD"
+          "waypoints": "CHNGY BOI DSD"
         },
         {
           "airlines": [
@@ -2928,7 +2928,7 @@
           "altitude": [24000, 26000, 28000, 30000, 32000],
           "destination": "KRKS",
           "exit": "CHNGY",
-          "route": "CHNGY"
+          "waypoints": "CHNGY"
         },
         {
           "airlines": [
@@ -2947,7 +2947,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KRNO",
           "exit": "CHNGY",
-          "route": "CHNGY WAATS Q124 FASTE MYBAD WADOL4"
+          "waypoints": "CHNGY WAATS Q124 FASTE MYBAD WADOL4"
         },
         {
           "airlines": [
@@ -2978,7 +2978,7 @@
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KSEA",
           "exit": "CHNGY",
-          "route": "CHNGY PIH PDT CHINS5"
+          "waypoints": "CHNGY PIH PDT CHINS5"
         },
         {
           "airlines": [
@@ -3009,7 +3009,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "KSLC",
           "exit": "CHNGY",
-          "route": "CHNGY EKR PITTT1"
+          "waypoints": "CHNGY EKR PITTT1"
         },
         {
           "airlines": [
@@ -3028,7 +3028,7 @@
           "altitude": 11000,
           "destination": "KCOS",
           "exit": "LUFSE",
-          "route": "LUFSE V389 ADANE BRK"
+          "waypoints": "LUFSE V389 ADANE BRK"
         },
         {
           "airlines": [
@@ -3040,7 +3040,7 @@
           "altitude": 12000,
           "destination": "KCYS",
           "exit": "GLL",
-          "route": "GLL V89 CYS"
+          "waypoints": "GLL V89 CYS"
         }
       ],
       "exit_categories": {
@@ -3390,7 +3390,7 @@
           "altitude": 37000,
           "destination": "KDSM",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -3401,7 +3401,7 @@
           "altitude": 37000,
           "destination": "KABQ",
           "exit": "SUDDZ",
-          "route": "SUDDZ DATME SNDIA4"
+          "waypoints": "SUDDZ DATME SNDIA4"
         },
         {
           "airlines": [
@@ -3413,7 +3413,7 @@
           "altitude": 37000,
           "destination": "KTEX",
           "exit": "TEHRU",
-          "route": "TEHRU HERRM ETL"
+          "waypoints": "TEHRU HERRM ETL"
         },
         {
           "airlines": [
@@ -3425,7 +3425,7 @@
           "altitude": 37000,
           "destination": "KRAP",
           "exit": "SAABR",
-          "route": "SAABR RAP"
+          "waypoints": "SAABR RAP"
         },
         {
           "airlines": [
@@ -3437,7 +3437,7 @@
           "altitude": 22000,
           "destination": "KASE",
           "exit": "WERNR",
-          "route": "WERNR DBL"
+          "waypoints": "WERNR DBL"
         },
         {
           "airlines": [
@@ -3448,7 +3448,7 @@
           "altitude": 40000,
           "destination": "KSNA",
           "exit": "TEHRU",
-          "route": "TEHRU TOADD Q78 MARUE DSNEE5"
+          "waypoints": "TEHRU TOADD Q78 MARUE DSNEE5"
         },
         {
           "airlines": [
@@ -3459,7 +3459,7 @@
           "altitude": 41000,
           "destination": "KICT",
           "exit": "DUUZE",
-          "route": "DUUZE ICT"
+          "waypoints": "DUUZE ICT"
         },
         {
           "airlines": [
@@ -3471,7 +3471,7 @@
           "altitude": 41000,
           "destination": "KBIL",
           "exit": "XXWNG",
-          "route": "XXWNG BIL"
+          "waypoints": "XXWNG BIL"
         },
         {
           "airlines": [
@@ -3482,7 +3482,7 @@
           "altitude": 41000,
           "destination": "KDAL",
           "exit": "SLEEK",
-          "route": "SLEEK HBR HYDES GREGS1"
+          "waypoints": "SLEEK HBR HYDES GREGS1"
         }
       ],
       "exit_categories": {
@@ -3867,7 +3867,7 @@
           "altitude": 37000,
           "destination": "KDSM",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -3878,7 +3878,7 @@
           "altitude": 37000,
           "destination": "KABQ",
           "exit": "SUDDZ",
-          "route": "SUDDZ DATME SNDIA4"
+          "waypoints": "SUDDZ DATME SNDIA4"
         },
         {
           "airlines": [
@@ -3890,7 +3890,7 @@
           "altitude": 37000,
           "destination": "KTEX",
           "exit": "TEHRU",
-          "route": "TEHRU HERRM ETL"
+          "waypoints": "TEHRU HERRM ETL"
         },
         {
           "airlines": [
@@ -3902,7 +3902,7 @@
           "altitude": 37000,
           "destination": "KRAP",
           "exit": "SAABR",
-          "route": "SAABR RAP"
+          "waypoints": "SAABR RAP"
         }
       ],
       "exit_categories": {
@@ -4292,7 +4292,7 @@
           "altitude": 37000,
           "destination": "KDSM",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -4303,7 +4303,7 @@
           "altitude": 37000,
           "destination": "KABQ",
           "exit": "SUDDZ",
-          "route": "SUDDZ DATME SNDIA4"
+          "waypoints": "SUDDZ DATME SNDIA4"
         },
         {
           "airlines": [
@@ -4315,7 +4315,7 @@
           "altitude": 37000,
           "destination": "KTEX",
           "exit": "TEHRU",
-          "route": "TEHRU HERRM ETL"
+          "waypoints": "TEHRU HERRM ETL"
         },
         {
           "airlines": [
@@ -4327,7 +4327,7 @@
           "altitude": 37000,
           "destination": "KRAP",
           "exit": "SAABR",
-          "route": "SAABR RAP"
+          "waypoints": "SAABR RAP"
         }
       ],
       "exit_categories": {
@@ -5026,7 +5026,7 @@
           "altitude": 37000,
           "destination": "KDSM",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -5037,7 +5037,7 @@
           "altitude": 37000,
           "destination": "KABQ",
           "exit": "SUDDZ",
-          "route": "SUDDZ DATME SNDIA4"
+          "waypoints": "SUDDZ DATME SNDIA4"
         },
         {
           "airlines": [
@@ -5049,7 +5049,7 @@
           "altitude": 37000,
           "destination": "KTEX",
           "exit": "TEHRU",
-          "route": "TEHRU HERRM ETL"
+          "waypoints": "TEHRU HERRM ETL"
         },
         {
           "airlines": [
@@ -5061,7 +5061,7 @@
           "altitude": 37000,
           "destination": "KRAP",
           "exit": "SAABR",
-          "route": "SAABR RAP"
+          "waypoints": "SAABR RAP"
         }
       ],
       "exit_categories": {
@@ -5351,7 +5351,7 @@
           "altitude": 37000,
           "destination": "KDSM",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -5362,7 +5362,7 @@
           "altitude": 37000,
           "destination": "KABQ",
           "exit": "SUDDZ",
-          "route": "SUDDZ DATME SNDIA4"
+          "waypoints": "SUDDZ DATME SNDIA4"
         },
         {
           "airlines": [
@@ -5374,7 +5374,7 @@
           "altitude": 37000,
           "destination": "KTEX",
           "exit": "TEHRU",
-          "route": "TEHRU HERRM ETL"
+          "waypoints": "TEHRU HERRM ETL"
         },
         {
           "airlines": [
@@ -5386,7 +5386,7 @@
           "altitude": 37000,
           "destination": "KRAP",
           "exit": "SAABR",
-          "route": "SAABR RAP"
+          "waypoints": "SAABR RAP"
         }
       ],
       "exit_categories": {
@@ -5772,7 +5772,7 @@
           "altitude": 37000,
           "destination": "KDSM",
           "exit": "WYNDM",
-          "route": "WYNDM HCT LNK DSM"
+          "waypoints": "WYNDM HCT LNK DSM"
         },
         {
           "airlines": [
@@ -5783,7 +5783,7 @@
           "altitude": 37000,
           "destination": "KABQ",
           "exit": "SUDDZ",
-          "route": "SUDDZ DATME SNDIA4"
+          "waypoints": "SUDDZ DATME SNDIA4"
         },
         {
           "airlines": [
@@ -5795,7 +5795,7 @@
           "altitude": 37000,
           "destination": "KTEX",
           "exit": "TEHRU",
-          "route": "TEHRU HERRM ETL"
+          "waypoints": "TEHRU HERRM ETL"
         },
         {
           "airlines": [
@@ -5807,7 +5807,7 @@
           "altitude": 37000,
           "destination": "KRAP",
           "exit": "SAABR",
-          "route": "SAABR RAP"
+          "waypoints": "SAABR RAP"
         }
       ],
       "exit_categories": {
@@ -8449,7 +8449,7 @@
           "initial_altitude": 15000,
           "initial_controller": "1H",
           "initial_speed": 250,
-          "route": "FLATI5",
+          "flight_strip_route": "FLATI5",
           "scratchpad": "34R",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
@@ -8501,7 +8501,7 @@
           "initial_altitude": 15000,
           "initial_controller": "1H",
           "initial_speed": 250,
-          "route": "LONGZ4",
+          "flight_strip_route": "LONGZ4",
           "scratchpad": "34R",
           "secondary_scratchpad": "ILS",
           "star": "LONGZ4",
@@ -8571,7 +8571,7 @@
           "initial_altitude": 16000,
           "initial_controller": "1G",
           "initial_speed": 250,
-          "route": "AALLE4",
+          "flight_strip_route": "AALLE4",
           "scratchpad": "35R",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
@@ -8675,7 +8675,7 @@
           "initial_altitude": 16000,
           "initial_controller": "1G",
           "initial_speed": 250,
-          "route": "LAWGR4",
+          "flight_strip_route": "LAWGR4",
           "scratchpad": "35R",
           "secondary_scratchpad": "ILS",
           "star": "LAWGR4",
@@ -8775,7 +8775,7 @@
           "initial_altitude": 20600,
           "initial_controller": "1X",
           "initial_speed": 280,
-          "route": "CLASH5",
+          "flight_strip_route": "CLASH5",
           "scratchpad": "35R",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
@@ -8849,7 +8849,7 @@
           "initial_altitude": 20000,
           "initial_controller": "1X",
           "initial_speed": 280,
-          "route": "NIIXX4",
+          "flight_strip_route": "NIIXX4",
           "scratchpad": "35L",
           "secondary_scratchpad": "ILS",
           "star": "NIIXX4",
@@ -8929,7 +8929,7 @@
           "initial_altitude": 21000,
           "initial_controller": "1I",
           "initial_speed": 280,
-          "route": "SSKII4",
+          "flight_strip_route": "SSKII4",
           "scratchpad": "34R",
           "secondary_scratchpad": "ILS",
           "star": "SSKII4",
@@ -9009,7 +9009,7 @@
           "initial_altitude": 21000,
           "initial_controller": "1I",
           "initial_speed": 280,
-          "route": "TBARR4",
+          "flight_strip_route": "TBARR4",
           "scratchpad": "35L",
           "secondary_scratchpad": "ILS",
           "star": "TBARR4",
@@ -9088,7 +9088,7 @@
           "initial_altitude": 16000,
           "initial_controller": "1I",
           "initial_speed": 250,
-          "route": "SSKII4",
+          "flight_strip_route": "SSKII4",
           "scratchpad": "16R",
           "secondary_scratchpad": "RNY",
           "star": "SSKII4",
@@ -9164,7 +9164,7 @@
           "initial_altitude": 16000,
           "initial_controller": "1I",
           "initial_speed": 250,
-          "route": "TBARR4",
+          "flight_strip_route": "TBARR4",
           "scratchpad": "16R",
           "secondary_scratchpad": "RNY",
           "star": "SSKII4",
@@ -9264,7 +9264,7 @@
           "initial_altitude": 16000,
           "initial_controller": "1X",
           "initial_speed": 250,
-          "route": "CLASH5",
+          "flight_strip_route": "CLASH5",
           "scratchpad": "17R",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
@@ -9334,7 +9334,7 @@
           "initial_altitude": 16000,
           "initial_controller": "1X",
           "initial_speed": 250,
-          "route": "NIIXX4",
+          "flight_strip_route": "NIIXX4",
           "scratchpad": "17R",
           "secondary_scratchpad": "ILS",
           "star": "NIIXX4",
@@ -9404,7 +9404,7 @@
           "initial_altitude": 20000,
           "initial_controller": "1G",
           "initial_speed": 280,
-          "route": "AALLE4",
+          "flight_strip_route": "AALLE4",
           "scratchpad": "16L",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
@@ -9512,7 +9512,7 @@
           "initial_altitude": 20000,
           "initial_controller": "1G",
           "initial_speed": 280,
-          "route": "LAWGR4",
+          "flight_strip_route": "LAWGR4",
           "scratchpad": "17R",
           "secondary_scratchpad": "ILS",
           "star": "LAWGR4",
@@ -9591,7 +9591,7 @@
           "initial_altitude": 22000,
           "initial_controller": "1H",
           "initial_speed": 270,
-          "route": "FLATI5",
+          "flight_strip_route": "FLATI5",
           "scratchpad": "16L",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
@@ -9653,7 +9653,7 @@
           "initial_altitude": 20000,
           "initial_controller": "1H",
           "initial_speed": 270,
-          "route": "LONGZ4",
+          "flight_strip_route": "LONGZ4",
           "scratchpad": "16R",
           "secondary_scratchpad": "RNY",
           "star": "LONGZ4",
@@ -9732,7 +9732,7 @@
           "initial_altitude": 21000,
           "initial_controller": "1H",
           "initial_speed": 270,
-          "route": "FLATI5",
+          "flight_strip_route": "FLATI5",
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
@@ -9814,7 +9814,7 @@
           "initial_altitude": 21000,
           "initial_controller": "1I",
           "initial_speed": 263,
-          "route": "SSKII4",
+          "flight_strip_route": "SSKII4",
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "SSKII4",
@@ -9886,7 +9886,7 @@
           "initial_altitude": 19000,
           "initial_controller": "1G",
           "initial_speed": 250,
-          "route": "AALLE4",
+          "flight_strip_route": "AALLE4",
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
@@ -9988,7 +9988,7 @@
           "initial_altitude": 19000,
           "initial_controller": "1X",
           "initial_speed": 263,
-          "route": "CLASH5",
+          "flight_strip_route": "CLASH5",
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
@@ -10098,7 +10098,7 @@
           "initial_altitude": 21000,
           "initial_controller": "1G",
           "initial_speed": 263,
-          "route": "LAWGR4",
+          "flight_strip_route": "LAWGR4",
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "LAWGR4",
@@ -10173,7 +10173,7 @@
           "initial_altitude": 21000,
           "initial_controller": "1X",
           "initial_speed": 280,
-          "route": "NIIXX4",
+          "flight_strip_route": "NIIXX4",
           "scratchpad": "26",
           "secondary_scratchpad": "ILS",
           "star": "NIIXX4",
@@ -10275,7 +10275,7 @@
           "initial_altitude": 19000,
           "initial_controller": "1X",
           "initial_speed": 263,
-          "route": "CLASH5",
+          "flight_strip_route": "CLASH5",
           "scratchpad": "R07",
           "secondary_scratchpad": "ILS",
           "star": "CLASH5",
@@ -10347,7 +10347,7 @@
           "initial_altitude": 19000,
           "initial_controller": "1G",
           "initial_speed": 250,
-          "route": "AALLE4",
+          "flight_strip_route": "AALLE4",
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "AALLE4",
@@ -10427,7 +10427,7 @@
           "initial_altitude": 19000,
           "initial_controller": "1H",
           "initial_speed": 250,
-          "route": "FLATI5",
+          "flight_strip_route": "FLATI5",
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "FLATI5",
@@ -10490,7 +10490,7 @@
           "initial_altitude": 18000,
           "initial_controller": "1H",
           "initial_speed": 250,
-          "route": "LONGZ4",
+          "flight_strip_route": "LONGZ4",
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "LONGZ4",
@@ -10572,7 +10572,7 @@
           "initial_altitude": 19000,
           "initial_controller": "1I",
           "initial_speed": 250,
-          "route": "SSKII4",
+          "flight_strip_route": "SSKII4",
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "SSKII4",
@@ -10653,7 +10653,7 @@
           "initial_altitude": 19000,
           "initial_controller": "1I",
           "initial_speed": 250,
-          "route": "TBARR4",
+          "flight_strip_route": "TBARR4",
           "scratchpad": "I07",
           "secondary_scratchpad": "ILS",
           "star": "TBARR4",
@@ -10689,7 +10689,7 @@
           "initial_altitude": 13000,
           "initial_controller": "11A",
           "initial_speed": 245,
-          "route": "V389 LUFSE JEFEL",
+          "flight_strip_route": "V389 LUFSE JEFEL",
           "waypoints": "ADANE N039.01.43.656,W104.23.31.441/ho LUFSE JEFEL"
         }
       ],
@@ -10760,7 +10760,7 @@
           "initial_altitude": 11000,
           "initial_controller": "6A",
           "initial_speed": 245,
-          "route": "CYS DEN",
+          "flight_strip_route": "CYS DEN",
           "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho DEN"
         },
         {
@@ -10800,7 +10800,7 @@
           "initial_altitude": 11000,
           "initial_controller": "6A",
           "initial_speed": 245,
-          "route": "CYS",
+          "flight_strip_route": "CYS",
           "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC"
         },
         {
@@ -10868,7 +10868,7 @@
           "initial_altitude": 11000,
           "initial_controller": "6A",
           "initial_speed": 245,
-          "route": "CYS",
+          "flight_strip_route": "CYS",
           "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC"
         }
       ]

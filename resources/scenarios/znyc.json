@@ -68,56 +68,56 @@
           ],
           "altitude": [24000, 26000, 28000, 30000, 32000, 34000],
           "destination": "CYYZ",
-          "route": "GAYEL Q818 WOZEE LINNG3",
+          "waypoints": "GAYEL Q818 WOZEE LINNG3",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "AAL", "types": ["B38M"] }],
           "altitude": [38000],
           "destination": "KBZN",
-          "route": "COATE Q436 RAAKK DKK ICHOL TWIGS Q438 RUBYY KG81M KP90E KEKPE SCOFY RECAP SUBKY LVM",
+          "waypoints": "COATE Q436 RAAKK DKK ICHOL TWIGS Q438 RUBYY KG81M KP90E KEKPE SCOFY RECAP SUBKY LVM",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "AAL", "types": ["B738"] }],
           "altitude": [34000],
           "destination": "CYYC",
-          "route": "COATE Q436 RAAKK DERLO HHIPP KP87O KP09I KP21A PETBO RUDVI PEMDU BEVEL VESDO EBGAL EBGAL7",
+          "waypoints": "COATE Q436 RAAKK DERLO HHIPP KP87O KP09I KP21A PETBO RUDVI PEMDU BEVEL VESDO EBGAL EBGAL7",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "AAL", "types": ["B38M"] }],
           "altitude": [36000],
           "destination": "KGPI",
-          "route": "COATE Q436 RAAKK Q438 RUBYY KG81M GEP KP06E GGW KU18S KU18O FCA",
+          "waypoints": "COATE Q436 RAAKK Q438 RUBYY KG81M GEP KP06E GGW KU18S KU18O FCA",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "EDV" }, { "icao": "RPA" }],
           "altitude": [20000, 24000, 26000, 28000, 30000],
           "destination": "KBUF",
-          "route": "NEION Q232 STUBN BENEE",
+          "waypoints": "NEION Q232 STUBN BENEE",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "RPA" }, { "icao": "EDV" }],
           "altitude": [20000, 22000, 24000, 28000],
           "destination": "KROC",
-          "route": "NEION Q232 STUBN GIBBE",
+          "waypoints": "NEION Q232 STUBN GIBBE",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "RPA" }, { "icao": "EDV" }],
           "altitude": [18000],
           "destination": "KSYR",
-          "route": "NEION Q232 CORDS CFB T335 CORTA",
+          "waypoints": "NEION Q232 CORDS CFB T335 CORTA",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A321"] }, { "icao": "RPA" }, { "icao": "EDV" }],
           "altitude": [34000],
           "destination": "KTVC",
-          "route": "GAYEL J95 CFB Q818 WOZEE NOSIK TVC",
+          "waypoints": "GAYEL J95 CFB Q818 WOZEE NOSIK TVC",
           "exit": "GAYEL"
         },
         {
@@ -128,7 +128,7 @@
           ],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KORD",
-          "route": "COATE Q436 KAYYS WYNDE3",
+          "waypoints": "COATE Q436 KAYYS WYNDE3",
           "exit": "COATE"
         }
       ],
@@ -218,7 +218,7 @@
           "airlines": [{ "icao": "ACA", "types": ["B38M"] }],
           "altitude": [30000, 32000, 34000],
           "destination": "CYYC",
-          "route": "GAYEL Q818 WOZEE NOSIK DLH MOT YQL",
+          "waypoints": "GAYEL Q818 WOZEE NOSIK DLH MOT YQL",
           "exit": "GAYEL"
         },
         {
@@ -230,7 +230,7 @@
           ],
           "altitude": [26000, 28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "CYYZ",
-          "route": "GAYEL Q818 WOZEE LINNG3",
+          "waypoints": "GAYEL Q818 WOZEE LINNG3",
           "exit": "GAYEL"
         },
         {
@@ -240,14 +240,14 @@
           ],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "CYVR",
-          "route": "COATE Q436 RAAKK Q438 TWIGS RUBYY KG84M FALEN KP03G LOCKR KP12A ISN WLLES YXC BOOTH CANUC7",
+          "waypoints": "COATE Q436 RAAKK Q438 TWIGS RUBYY KG84M FALEN KP03G LOCKR KP12A ISN WLLES YXC BOOTH CANUC7",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "APZ" }],
           "altitude": [32000, 34000],
           "destination": "RKSI",
-          "route": "GAYEL Q812 SYR RAKAM YUY/delete",
+          "waypoints": "GAYEL Q812 SYR RAKAM YUY/delete",
           "exit": "GAYEL"
         },
         {
@@ -258,7 +258,7 @@
           ],
           "altitude": [32000, 34000],
           "destination": "KLAX",
-          "route": "COATE Q436 RAAKK Q438 RUBYY PMM OBK IOW J60 HVE PROMT Q88 HAKMN ANJLL4",
+          "waypoints": "COATE Q436 RAAKK Q438 RUBYY PMM OBK IOW J60 HVE PROMT Q88 HAKMN ANJLL4",
           "exit": "COATE"
         },
         {
@@ -268,7 +268,7 @@
           ],
           "altitude": [32000, 34000],
           "destination": "KPDX",
-          "route": "COATE Q436 RAAKK Q440 IDIOM CESNA KP06G KP12Y KU12U HLN JKNOX HHOOD6",
+          "waypoints": "COATE Q436 RAAKK Q440 IDIOM CESNA KP06G KP12Y KU12U HLN JKNOX HHOOD6",
           "exit": "COATE"
         },
         {
@@ -278,21 +278,21 @@
           ],
           "altitude": [30000, 32000, 34000],
           "destination": "KSEA",
-          "route": "COATE Q436 RAAKK Q438 RUBYY DABJU J36 BAE MCW J16 BIL J136 MLP GLASR3",
+          "waypoints": "COATE Q436 RAAKK Q438 RUBYY DABJU J36 BAE MCW J16 BIL J136 MLP GLASR3",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [32000],
           "destination": "KATW",
-          "route": "COATE Q436 RAAKK Q440 IDIOM",
+          "waypoints": "COATE Q436 RAAKK Q440 IDIOM",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "RPA" }],
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KGRR",
-          "route": "COATE Q436 RAAKK Q438 RUBYY",
+          "waypoints": "COATE Q436 RAAKK Q438 RUBYY",
           "exit": "COATE"
         },
         {
@@ -302,7 +302,7 @@
           ],
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KORD",
-          "route": "COATE Q436 KAYYS WYNDE3",
+          "waypoints": "COATE Q436 KAYYS WYNDE3",
           "exit": "COATE"
         },
         {
@@ -313,7 +313,7 @@
           ],
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "destination": "KDTW",
-          "route": "GAYEL J95 CFB TRAAD JACCI FERRL2",
+          "waypoints": "GAYEL J95 CFB TRAAD JACCI FERRL2",
           "exit": "GAYEL"
         },
         {
@@ -325,91 +325,91 @@
           ],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KMSP",
-          "route": "COATE Q436 RAAKK Q440 IDIOM MUSCL4",
+          "waypoints": "COATE Q436 RAAKK Q440 IDIOM MUSCL4",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["B38M"] }],
           "altitude": [30000, 34000, 36000],
           "destination": "KBZN",
-          "route": "COATE Q436 RAAKK Q440 IDIOM HUFFR ABR CREKK POWDA2",
+          "waypoints": "COATE Q436 RAAKK Q440 IDIOM HUFFR ABR CREKK POWDA2",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["A21N", "B739", "B39M", "B752"] }],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KDEN",
-          "route": "COATE Q436 RAAKK Q438 RUBYY BAE HELLO SAUGI PORDR AALLE4",
+          "waypoints": "COATE Q436 RAAKK Q438 RUBYY BAE HELLO SAUGI PORDR AALLE4",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["B739", "B38M", "B39M"] }],
           "altitude": [28000, 30000, 32000, 34000],
           "destination": "KSMF",
-          "route": "COATE Q436 RAAKK Q438 RUBYY BAE KG78K IANNA KP72E AKO KD57Q DTA CRASY SLMMR5",
+          "waypoints": "COATE Q436 RAAKK Q438 RUBYY BAE KG78K IANNA KP72E AKO KD57Q DTA CRASY SLMMR5",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["B772"] }],
           "altitude": [28000, 30000],
           "destination": "RJTT",
-          "route": "GAYEL Q812 SYR/delete",
+          "waypoints": "GAYEL Q812 SYR/delete",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["B77W"] }],
           "altitude": [28000, 30000],
           "destination": "RJAA",
-          "route": "GAYEL Q812 SYR/delete",
+          "waypoints": "GAYEL Q812 SYR/delete",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["B38M"] }],
           "altitude": [28000, 32000, 34000],
           "destination": "PANC",
-          "route": "GAYEL Q812 ARRKK Q812 SYR/delete",
+          "waypoints": "GAYEL Q812 ARRKK Q812 SYR/delete",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "RPA" }, { "icao": "GJS" }],
           "altitude": [22000, 24000, 26000, 28000],
           "destination": "KBUF",
-          "route": "NEION Q232 CORDS STUBN BENEE",
+          "waypoints": "NEION Q232 CORDS STUBN BENEE",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["B38M"] }],
           "altitude": [30000],
           "destination": "KGPI",
-          "route": "COATE Q436 YYOST Q436 REBBL Q436 REXXY Q436 RAAKK Q440 IDIOM KP90K CESNA KP09G TAMMR KP15A BOWIS KU18S KU18Q FCA",
+          "waypoints": "COATE Q436 YYOST Q436 REBBL Q436 REXXY Q436 RAAKK Q440 IDIOM KP90K CESNA KP09G TAMMR KP15A BOWIS KU18S KU18Q FCA",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "UAL", "types": ["B737"] }],
           "altitude": [34000, 36000],
           "destination": "KJAC",
-          "route": "COATE Q436 REBBL Q436 RAAKK Q438 RUBYY FOD WAXER KD78W JYMBO DNW",
+          "waypoints": "COATE Q436 REBBL Q436 RAAKK Q438 RUBYY FOD WAXER KD78W JYMBO DNW",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "EJA", "types": ["C700"] }, { "icao": "RPA" }, { "icao": "GJS" }],
           "altitude": [20000, 22000, 24000],
           "destination": "KROC",
-          "route": "NEION Q232 CORDS STUBN GIBEE",
+          "waypoints": "NEION Q232 CORDS STUBN GIBEE",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "RPA" }],
           "altitude": [30000, 32000, 34000],
           "destination": "KTVC",
-          "route": "COATE Q436 RAAKK DERLO RAKAP TVC",
+          "waypoints": "COATE Q436 RAAKK DERLO RAKAP TVC",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "UPS", "types": ["A306", "B752"] }],
           "altitude": [28000, 30000, 32000, 34000, 38000],
           "destination": "KRFD",
-          "route": "COATE Q436 RAAKK Q438 JAAJA WEBOR HIGUH EMMAS1",
+          "waypoints": "COATE Q436 RAAKK Q438 JAAJA WEBOR HIGUH EMMAS1",
           "exit": "COATE"
         }
       ],
@@ -455,7 +455,7 @@
           "airlines": [{ "icao": "CCA", "types": ["B748"] }],
           "altitude": [30000],
           "destination": "ZBAA",
-          "route": "GAYEL Q812 SYR TULEG YYB",
+          "waypoints": "GAYEL Q812 SYR TULEG YYB",
           "exit": "GAYEL"
         },
         {
@@ -465,7 +465,7 @@
           ],
           "altitude": [32000, 34000],
           "destination": "KPDX",
-          "route": "COATE Q436 DGRAF Q436 RAAKK Q438 RUBYY KP03E KP06A MLS KU09Q JORAD HHOOD6",
+          "waypoints": "COATE Q436 DGRAF Q436 RAAKK Q438 RUBYY KP03E KP06A MLS KU09Q JORAD HHOOD6",
           "exit": "COATE"
         },
         {
@@ -475,7 +475,7 @@
           ],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KSEA",
-          "route": "COATE Q436 RAAKK Q438 RUBYY DABJU J36 BAE MCW J16 BIL J136 MLP GLASR3",
+          "waypoints": "COATE Q436 RAAKK Q438 RUBYY DABJU J36 BAE MCW J16 BIL J136 MLP GLASR3",
           "exit": "COATE"
         },
         {
@@ -490,7 +490,7 @@
           ],
           "altitude": [34000, 36000, 38000, 40000],
           "destination": "PANC",
-          "route": "GAYEL Q818 WOZEE Q917 SSM FERNO/delete",
+          "waypoints": "GAYEL Q818 WOZEE Q917 SSM FERNO/delete",
           "exit": "GAYEL"
         },
         {
@@ -501,7 +501,7 @@
           ],
           "altitude": [28000, 30000, 32000, 34000],
           "destination": "RJTT",
-          "route": "GAYEL Q812 SYR TULEG IGSUB MOGAG/delete",
+          "waypoints": "GAYEL Q812 SYR TULEG IGSUB MOGAG/delete",
           "exit": "GAYEL"
         },
         {
@@ -515,21 +515,21 @@
           ],
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KORD",
-          "route": "COATE Q436 KAYYS WYNDE3",
+          "waypoints": "COATE Q436 KAYYS WYNDE3",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "AAL", "types": ["A319"] }],
           "altitude": [34000, 36000],
           "destination": "KJAC",
-          "route": "COATE Q436 RAAKK ICHOL HAGGA TWIGS FNT KC78Q KG78K KP78E KD81W RICCO KU84Q",
+          "waypoints": "COATE Q436 RAAKK ICHOL HAGGA TWIGS FNT KC78Q KG78K KP78E KD81W RICCO KU84Q",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "EDV" }, { "icao": "JBU" }, { "icao": "RPA" }, { "icao": "ERY" }, { "icao": "LXJ" }],
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KCLE",
-          "route": "DEEZZ6 CANDR J60 PSB UPPRR TRYBE4",
+          "waypoints": "DEEZZ6 CANDR J60 PSB UPPRR TRYBE4",
           "exit": "CANDR"
         },
         {
@@ -540,14 +540,14 @@
           ],
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "RKSI",
-          "route": "GAYEL Q812 SYR RAKAM/delete",
+          "waypoints": "GAYEL Q812 SYR RAKAM/delete",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "CPA", "types": ["A359", "A35K", "B744", "B77L", "B77W"] }],
           "altitude": [30000, 32000, 34000],
           "destination": "VHHH",
-          "route": "GAYEL Q812 SYR ROSVO/delete",
+          "waypoints": "GAYEL Q812 SYR ROSVO/delete",
           "exit": "GAYEL"
         },
         {
@@ -557,7 +557,7 @@
           ],
           "altitude": [28000, 30000],
           "destination": "RCTP",
-          "route": "GAYEL Q812 SYR OTONA/delete",
+          "waypoints": "GAYEL Q812 SYR OTONA/delete",
           "exit": "GAYEL"
         },
         {
@@ -568,70 +568,70 @@
           ],
           "altitude": [34000, 36000, 38000, 40000],
           "destination": "KMSP",
-          "route": "COATE Q436 RAAKK Q440 IDIOM MUSCL4",
+          "waypoints": "COATE Q436 RAAKK Q440 IDIOM MUSCL4",
           "exit": "COATE"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A319", "B739"] }, { "icao": "EDV" }, { "icao": "JBU" }],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KDTW",
-          "route": "GAYEL J95 CFB TRAAD JACCI FERRL2",
+          "waypoints": "GAYEL J95 CFB TRAAD JACCI FERRL2",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "EDV" }, { "icao": "VJA" }],
           "altitude": [16000, 18000, 20000],
           "destination": "KITH",
-          "route": "NEION Q232 CORDS CFB",
+          "waypoints": "NEION Q232 CORDS CFB",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "EDV" }],
           "altitude": [34000],
           "destination": "KMKE",
-          "route": "DEEZZ6 CANDR J60 DJB CRL PEGEE GETCH LYSTR SUDDS",
+          "waypoints": "DEEZZ6 CANDR J60 DJB CRL PEGEE GETCH LYSTR SUDDS",
           "exit": "CANDR"
         },
         {
           "airlines": [{ "icao": "EDV" }, { "icao": "JBU", "types": ["A320"] }, { "icao": "JKR" }],
           "altitude": [20000, 22000, 24000],
           "destination": "KROC",
-          "route": "NEION Q232 STUBN GIBBE",
+          "waypoints": "NEION Q232 STUBN GIBBE",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "EDV" }, { "icao": "JBU", "types": ["BCS3"] }],
           "altitude": [18000, 20000, 22000],
           "destination": "KSYR",
-          "route": "NEION Q232 CORDS CFB T335 SYR",
+          "waypoints": "NEION Q232 CORDS CFB T335 SYR",
           "exit": "NEION"
         },
         {
           "airlines": [{ "icao": "EDV" }],
           "altitude": [28000, 30000, 32000, 34000],
           "destination": "CYYZ",
-          "route": "GAYEL Q818 WOZEE LINNG3",
+          "waypoints": "GAYEL Q818 WOZEE LINNG3",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "JBU", "types": ["A321"] }],
           "altitude": [32000, 34000],
           "destination": "CYVR",
-          "route": "GAYEL Q818 WOZEE HOCKE SLLAP KG81O KP87I KP90A DPR KU06S MLP Q142 METOW EGRET",
+          "waypoints": "GAYEL Q818 WOZEE HOCKE SLLAP KG81O KP87I KP90A DPR KU06S MLP Q142 METOW EGRET",
           "exit": "GAYEL"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A319"] }, { "icao": "JBU" }],
           "altitude": [34000, 36000],
           "destination": "KBZN",
-          "route": "DEEZZ6 CANDR J60 DJB GERBS OBK J90 VIKNG FNX KP84C DPR KU06U CREKK POWDA2",
+          "waypoints": "DEEZZ6 CANDR J60 DJB GERBS OBK J90 VIKNG FNX KP84C DPR KU06U CREKK POWDA2",
           "exit": "CANDR"
         },
         {
           "airlines": [{ "icao": "PAL", "types": ["A35K"] }],
           "altitude": [32000, 34000],
           "destination": "RPLL",
-          "route": "GAYEL Q812 SYR NOVON YXI YUY YMO/delete",
+          "waypoints": "GAYEL Q812 SYR NOVON YXI YUY YMO/delete",
           "exit": "GAYEL"
         },
         {
@@ -641,7 +641,7 @@
           ],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KRFD",
-          "route": "COATE Q436 RAAKK Q438 BERYS FNT WEBOR HIGUH EMMAS1",
+          "waypoints": "COATE Q436 RAAKK Q438 BERYS FNT WEBOR HIGUH EMMAS1",
           "exit": "COATE"
         }
       ],
@@ -705,7 +705,7 @@
           "waypoints": "DNY/ho51 HARVA CORLE LVZ SLATT/delete",
           "cruise_altitude": 35000,
           "star": "SPUDS7",
-          "route": "/. DNY HARVA CORLE LVZ SLATT",
+          "flight_strip_route": "/. DNY HARVA CORLE LVZ SLATT",
           "initial_controller": "B10",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -732,7 +732,7 @@
           "waypoints": "CFB/ho51 LECOR LVZ SLATT/delete",
           "cruise_altitude": 35000,
           "star": "SPUDS7",
-          "route": "/. CFB LECOR LVZ SLATT",
+          "flight_strip_route": "/. CFB LECOR LVZ SLATT",
           "initial_controller": "34",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -759,7 +759,7 @@
           "waypoints": "YODAA/a23000/ho36 FUUEL/a20000 DOORE PUCKY",
           "cruise_altitude": 35000,
           "star": "PUCKY1",
-          "route": "/. PUCKY1",
+          "flight_strip_route": "/. PUCKY1",
           "initial_controller": "B20",
           "initial_altitude": 23000,
           "initial_speed": 300,
@@ -1019,7 +1019,7 @@
           "waypoints": "HOXIE/ho49 Q476 WLKES PUCKY VADDR JFK/delete",
           "cruise_altitude": 35000,
           "star": "PUCKY1",
-          "route": "/. HOXIE Q476 WLKES PUCKY VADDR JFK",
+          "flight_strip_route": "/. HOXIE Q476 WLKES PUCKY VADDR JFK",
           "initial_controller": "C38",
           "initial_altitude": 35000,
           "assigned_altitude": 35000,
@@ -1424,7 +1424,7 @@
           "waypoints": "N042.06.08.893,W074.55.59.234/ho34 HNK KONJE SLT/delete",
           "cruise_altitude": 34000,
           "star": null,
-          "route": "/. HNK KONJE SLT",
+          "flight_strip_route": "/. HNK KONJE SLT",
           "initial_controller": "B10",
           "initial_altitude": 28000,
           "assigned_altitude": 28000,
@@ -1456,7 +1456,7 @@
           "waypoint_actions": { "HOXIE": "ho49", "STW": "delete" },
           "cruise_altitude": 35000,
           "star": "LVZ5",
-          "route": "/. HOXIE DMACK STENT LVZ HARTY MUGZY STW",
+          "flight_strip_route": "/. HOXIE DMACK STENT LVZ HARTY MUGZY STW",
           "initial_controller": "C38",
           "initial_altitude": 33000,
           "assigned_altitude": 33000,
@@ -1886,7 +1886,7 @@
           "waypoints": "N042.06.08.893,W074.55.59.234/ho50 HNK KONJE SLT/delete",
           "cruise_altitude": 22000,
           "star": null,
-          "route": "/. HNK KONJE SLT",
+          "flight_strip_route": "/. HNK KONJE SLT",
           "initial_controller": "B10",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
@@ -1917,7 +1917,7 @@
           "waypoints": "N041.30.02.210,W076.26.17.966/ho51 LVZ HARTY MUGZY STW TEB/delete",
           "cruise_altitude": 35000,
           "star": "LVZ5",
-          "route": "/. LVZ HARTY MUGZY STW TEB",
+          "flight_strip_route": "/. LVZ HARTY MUGZY STW TEB",
           "initial_controller": "34",
           "initial_altitude": 20000,
           "assigned_altitude": 19000,
@@ -1959,7 +1959,7 @@
           "waypoints": "N041.12.05.138,W077.16.27.725/ho50 STUBN KITH/delete",
           "cruise_altitude": 19000,
           "star": null,
-          "route": "/. STUBN ITH",
+          "flight_strip_route": "/. STUBN ITH",
           "initial_controller": "93",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
@@ -1982,7 +1982,7 @@
           "waypoints": "CORDS/ho50 Q232 STUBN KITH/delete",
           "cruise_altitude": 18000,
           "star": null,
-          "route": "/. CORDS Q232 STUBN ITH",
+          "flight_strip_route": "/. CORDS Q232 STUBN ITH",
           "initial_controller": "51",
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
@@ -2005,7 +2005,7 @@
           "waypoints": "N041.18.20.706,W075.40.58.740/ho36 JENNO/a23000 HARTY NWTON PUCKY",
           "cruise_altitude": 35000,
           "star": "PUCKY1",
-          "route": "/. PUCKY1",
+          "flight_strip_route": "/. PUCKY1",
           "initial_controller": "49",
           "initial_altitude": 23000,
           "initial_speed": 300,

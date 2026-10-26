@@ -223,9 +223,9 @@ func (s *Sim) initializeIFRDeparture(ac *Aircraft, ap *av.Airport, departureAirp
 	isTRACON := db.DB.IsTRACON(s.State.Facility)
 	nasFp := s.initFlightPlan(ac, av.FlightTypeDeparture)
 	if exitRoute.SID != "" {
-		nasFp.Route = exitRoute.SID + " " + dep.Route
+		nasFp.Route = exitRoute.SID + " " + dep.WaypointsString
 	} else {
-		nasFp.Route = dep.Route
+		nasFp.Route = dep.WaypointsString
 	}
 	nasFp.EntryFix = db.AirportDisplayId(ac.DepartureAirport)
 	// The flight plan carries the exit's 3-character fix id when one is

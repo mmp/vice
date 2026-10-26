@@ -45,7 +45,7 @@
           "exit": "PAINN",
           "destination": "KATL",
           "altitude": 35000,
-          "route": "PAINN SHRKS LAIRI LARZZ JJEDI3",
+          "waypoints": "PAINN SHRKS LAIRI LARZZ JJEDI3",
           "airlines": [
             {
               "icao": "NKS",
@@ -57,7 +57,7 @@
           "exit": "PAINN",
           "destination": "KATL",
           "altitude": 35000,
-          "route": "PAINN SHRKS LAIRI LARZZ JJEDI3",
+          "waypoints": "PAINN SHRKS LAIRI LARZZ JJEDI3",
           "airlines": [
             {
               "icao": "NKS",
@@ -69,7 +69,7 @@
           "exit": "VIYAP",
           "destination": "KJFK",
           "altitude": 35000,
-          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "waypoints": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
           "airlines": [
             {
               "icao": "JBU",
@@ -81,7 +81,7 @@
           "exit": "VIYAP",
           "destination": "KJFK",
           "altitude": 37000,
-          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "waypoints": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
           "airlines": [
             {
               "icao": "JBU",
@@ -93,7 +93,7 @@
           "exit": "VIYAP",
           "destination": "KJFK",
           "altitude": 35000,
-          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "waypoints": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
           "airlines": [
             {
               "icao": "DAL",
@@ -105,7 +105,7 @@
           "exit": "VIYAP",
           "destination": "KJFK",
           "altitude": 37000,
-          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "waypoints": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
           "airlines": [
             {
               "icao": "DAL",
@@ -117,7 +117,7 @@
           "exit": "VIYAP",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "VIYAP Q87 JROSS FLO RDU BZNGA DORRN CAVLR7",
+          "waypoints": "VIYAP Q87 JROSS FLO RDU BZNGA DORRN CAVLR7",
           "airlines": [
             {
               "icao": "FFT",
@@ -129,7 +129,7 @@
           "exit": "VIYAP",
           "destination": "KIAD",
           "altitude": 37000,
-          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR7",
+          "waypoints": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR7",
           "airlines": [
             {
               "icao": "UAL",
@@ -141,7 +141,7 @@
           "exit": "VIYAP",
           "destination": "KIAD",
           "altitude": 35000,
-          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR7",
+          "waypoints": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR7",
           "airlines": [
             {
               "icao": "UAL",
@@ -153,7 +153,7 @@
           "exit": "VIYAP",
           "destination": "KBOS",
           "altitude": 35000,
-          "route": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3",
+          "waypoints": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "JBU",
@@ -165,7 +165,7 @@
           "exit": "VIYAP",
           "destination": "KBOS",
           "altitude": 37000,
-          "route": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "DAL",
@@ -177,7 +177,7 @@
           "exit": "VIYAP",
           "destination": "KRDU",
           "altitude": 37000,
-          "route": "VIYAP BROUN SAV PETTO DMSTR2",
+          "waypoints": "VIYAP BROUN SAV PETTO DMSTR2",
           "airlines": [
             {
               "icao": "SWA",
@@ -189,7 +189,7 @@
           "exit": "VIYAP",
           "destination": "KRDU",
           "altitude": 31000,
-          "route": "VIYAP BROUN SAV PETTO DMSTR2",
+          "waypoints": "VIYAP BROUN SAV PETTO DMSTR2",
           "airlines": [
             {
               "icao": "MXY",
@@ -201,7 +201,7 @@
           "exit": "PAINN",
           "destination": "KBNA",
           "altitude": 36000,
-          "route": "PAINN SHRKS YANTI THRSR SWFFT3",
+          "waypoints": "PAINN SHRKS YANTI THRSR SWFFT3",
           "airlines": [
             {
               "icao": "NKS",
@@ -213,7 +213,7 @@
           "exit": "PAINN",
           "destination": "KDTW",
           "altitude": 36000,
-          "route": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
+          "waypoints": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
           "airlines": [
             {
               "icao": "NKS",
@@ -225,7 +225,7 @@
           "exit": "PAINN",
           "destination": "KDTW",
           "altitude": 34000,
-          "route": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
+          "waypoints": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
           "airlines": [
             {
               "icao": "FFT",
@@ -237,7 +237,7 @@
           "exit": "PAINN",
           "destination": "KDTW",
           "altitude": 30000,
-          "route": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
+          "waypoints": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
           "airlines": [
             {
               "icao": "DAL",
@@ -249,7 +249,7 @@
           "exit": "PAINN",
           "destination": "KORD",
           "altitude": 38000,
-          "route": "PAINN SHRKS YANTI THRSR Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5",
+          "waypoints": "PAINN SHRKS YANTI THRSR Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "SWA",
@@ -261,7 +261,7 @@
           "exit": "PAINN",
           "destination": "KSTL",
           "altitude": 38000,
-          "route": "PAINN SHRKS YANTI VLKNN GETME J151 VISQA BOOSH3",
+          "waypoints": "PAINN SHRKS YANTI VLKNN GETME J151 VISQA BOOSH3",
           "airlines": [
             {
               "icao": "SWA",
@@ -292,7 +292,7 @@
           "exit": "WORMS",
           "destination": "KABE",
           "altitude": 35000,
-          "route": "WORMS GUANO BKENI VIYAP Q87 ALWZZ OGRAE Q99 SHIRY THEOO COURG BAMMY T299 SCAPE T299 DUMMR",
+          "waypoints": "WORMS GUANO BKENI VIYAP Q87 ALWZZ OGRAE Q99 SHIRY THEOO COURG BAMMY T299 SCAPE T299 DUMMR",
           "airlines": [
             {
               "icao": "AAY",
@@ -304,7 +304,7 @@
           "exit": "WORMS",
           "destination": "KBGR",
           "altitude": 35000,
-          "route": "WORMS GUANO BKENI VIYAP Q87 GEARS BBOBO Q22 FOXWD BOS",
+          "waypoints": "WORMS GUANO BKENI VIYAP Q87 GEARS BBOBO Q22 FOXWD BOS",
           "airlines": [
             {
               "icao": "AAY",
@@ -316,7 +316,7 @@
           "exit": "WORMS",
           "destination": "KAVL",
           "altitude": 38000,
-          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL TWINS PLYRR",
+          "waypoints": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL TWINS PLYRR",
           "airlines": [
             {
               "icao": "AAY",
@@ -328,7 +328,7 @@
           "exit": "WORMS",
           "destination": "KTYS",
           "altitude": 36000,
-          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL ODF",
+          "waypoints": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL ODF",
           "airlines": [
             {
               "icao": "AAY",
@@ -340,7 +340,7 @@
           "exit": "WORMS",
           "destination": "KFWA",
           "altitude": 38000,
-          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL IRQ J99 VXV J43 FLM RID",
+          "waypoints": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL IRQ J99 VXV J43 FLM RID",
           "airlines": [
             {
               "icao": "AAY",
@@ -352,7 +352,7 @@
           "exit": "WORMS",
           "destination": "KMDT",
           "altitude": 33000,
-          "route": " WORMS GUANO BKENI VIYAP Q69 GURGE BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE T299 HAR",
+          "waypoints": " WORMS GUANO BKENI VIYAP Q69 GURGE BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE T299 HAR",
           "airlines": [
             {
               "icao": "AAY",
@@ -379,7 +379,7 @@
           "exit": "CRG",
           "destination": "KILG",
           "altitude": 35000,
-          "route": "CRG VIYAP Q87 ASHEL Q87 NOWAE THHMP ARLFT2",
+          "waypoints": "CRG VIYAP Q87 ASHEL Q87 NOWAE THHMP ARLFT2",
           "airlines": [
             {
               "icao": "VXP",
@@ -391,7 +391,7 @@
           "exit": "CRG",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "CRG VIYAP CHECR STOCR7",
+          "waypoints": "CRG VIYAP CHECR STOCR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -403,7 +403,7 @@
           "exit": "CRG",
           "destination": "KCAK",
           "altitude": 31000,
-          "route": "CRG VIYAP Q69 GURGE PETTO DMSTR2",
+          "waypoints": "CRG VIYAP Q69 GURGE PETTO DMSTR2",
           "airlines": [
             {
               "icao": "MXY",
@@ -440,7 +440,7 @@
           "exit": "OMN",
           "destination": "KMIA",
           "altitude": 34000,
-          "route": "OMN DEBRL CSTAL3",
+          "waypoints": "OMN DEBRL CSTAL3",
           "airlines": [
             {
               "icao": "NKS",
@@ -468,7 +468,7 @@
           "exit": "OMN",
           "destination": "KFLL",
           "altitude": 34000,
-          "route": "OMN DEBRL CUUDA3",
+          "waypoints": "OMN DEBRL CUUDA3",
           "airlines": [
             {
               "icao": "NKS",
@@ -496,7 +496,7 @@
           "exit": "OMN",
           "destination": "KDJT",
           "altitude": 28000,
-          "route": "OMN DEBRL CPTAN4",
+          "waypoints": "OMN DEBRL CPTAN4",
           "airlines": [
             {
               "icao": "NKS",
@@ -529,7 +529,7 @@
         {
           "waypoints": "GIPPL/ho LPERD/a30000-34000 NOOMN/a23000+ FORYU/a13000+ NICCK/a12000+ SNFLD GTOUT/a12000-16000 TUGLE HIGGZ/a10000-12000/s250 VOSSS/s230/a8000+ SUNDE/a6000+ CUBAL/a5000/s210 N028.18.51.042,W081.12.31.794/a3000 HEWES KMCO-35R/a50/delete",
           "star": "SNFLD3",
-          "route": "/. SNFLD3",
+          "flight_strip_route": "/. SNFLD3",
           "initial_controller": "68",
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
@@ -572,7 +572,7 @@
         {
           "waypoints": "KYLEG/ho JAGGZ/a24000+ WEEEK/a16000+ TTHOR/a12000 BIKEZ N029.12.14.504,W081.22.16.184/a2000 KDAB/a0/delete",
           "star": "TTHOR3",
-          "route": "/. TTHOR3",
+          "flight_strip_route": "/. TTHOR3",
           "initial_controller": "75",
           "initial_altitude": 24000,
           "initial_speed": 280,
@@ -600,7 +600,7 @@
         {
           "waypoints": "STYMY/ho75 HAINY/a24000+ MISCL MEAAT/hoJ1S BASSS POGIE/a13000 QUBEN/d2000 N030.25.54.936,W082.00.39.523 KJAX-8/delete",
           "star": "QUBEN2",
-          "route": "/. QUBEN2",
+          "flight_strip_route": "/. QUBEN2",
           "initial_controller": "R02",
           "initial_altitude": 31000,
           "initial_speed": 290,

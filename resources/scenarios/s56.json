@@ -81,7 +81,7 @@
           ],
           "destination": "KDEN",
           "exit": "PERTY",
-          "route": "PERTY KAMPR LONGZ2",
+          "waypoints": "PERTY KAMPR LONGZ2",
           "scratchpad": "RHE"
         },
         {
@@ -100,7 +100,7 @@
           ],
           "destination": "KORD",
           "exit": "OCS",
-          "route": "OCS KURSE Q122 VIGGR MYRRS FYTTE7",
+          "waypoints": "OCS KURSE Q122 VIGGR MYRRS FYTTE7",
           "scratchpad": "RSP"
         },
         {
@@ -112,7 +112,7 @@
           ],
           "destination": "KATL",
           "exit": "OCS",
-          "route": "OCS KURSE Q122 VIGGR JACCC JACCC1",
+          "waypoints": "OCS KURSE Q122 VIGGR JACCC JACCC1",
           "scratchpad": "RSP"
         },
         {
@@ -124,7 +124,7 @@
           ],
           "destination": "KLAS",
           "exit": "MLF",
-          "route": "MLF STEWW CHOWW2"
+          "waypoints": "MLF STEWW CHOWW2"
         },
         {
           "airlines": [
@@ -134,7 +134,7 @@
           ],
           "destination": "KPSC",
           "exit": "TWF",
-          "route": "TWF J15 BOI",
+          "waypoints": "TWF J15 BOI",
           "scratchpad": "COR"
         },
         {
@@ -145,7 +145,7 @@
           ],
           "destination": "KSEA",
           "exit": "TWF",
-          "route": "TWF PDT CHINS5",
+          "waypoints": "TWF PDT CHINS5",
           "scratchpad": "COR"
         },
         {
@@ -157,7 +157,7 @@
           ],
           "destination": "KGEG",
           "exit": "TWF",
-          "route": "TWF J12 DNJ GEG",
+          "waypoints": "TWF J12 DNJ GEG",
           "scratchpad": "COR"
         },
         {
@@ -169,7 +169,7 @@
           ],
           "destination": "KBOI",
           "exit": "TWF",
-          "route": "TWF BROPH SPUUD4",
+          "waypoints": "TWF BROPH SPUUD4",
           "scratchpad": "COR"
         },
         {
@@ -181,7 +181,7 @@
           ],
           "destination": "PHNL",
           "exit": "DEZRT",
-          "route": "DEZRT BAM FMG PYE BEBOP R464 BITTA MAGGI3",
+          "waypoints": "DEZRT BAM FMG PYE BEBOP R464 BITTA MAGGI3",
           "scratchpad": "DUR"
         }
       ],

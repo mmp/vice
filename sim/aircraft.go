@@ -814,7 +814,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, cruise Cr
 func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAOAirportCode, dep *av.Departure,
 	exitRoute av.ExitRoute, cruise CruiseLimits, delays nav.PilotDelays, nmPerLongitude float32,
 	magneticVariation float32, model *wx.Model, simTime Time, r *rand.Rand, lg *log.Logger) error {
-	wp := av.SpliceRoutes(exitRoute.Waypoints, dep.RouteWaypoints)
+	wp := av.SpliceRoutes(exitRoute.Waypoints, dep.Waypoints)
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
 	ac.SID = exitRoute.SID

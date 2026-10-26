@@ -78,9 +78,9 @@ type Arrival struct {
 	// flown STARs in that case.
 	STARFeeds []string `json:"star_feeds"`
 
-	// Note: this is *only* used for flight strips displayed to the user; it should not in any way
-	// be referenced for an aircraft's route: Waypoints should always be used for that.
-	FlightStripDisplayRoute string `json:"route"`
+	// FlightStripDisplayRoute is shown on flight strips and nowhere else; the
+	// aircraft flies Waypoints.
+	FlightStripDisplayRoute string `json:"flight_strip_route"`
 
 	InitialController   ControlPosition         `json:"initial_controller"`
 	InitialAltitudes    util.SingleOrArray[int] `json:"initial_altitude"`
@@ -630,7 +630,7 @@ func (ar *Arrival) Finalize(db Database, nmPerLongitude float32, magneticVariati
 		r := strings.TrimPrefix(strings.TrimPrefix(ar.FlightStripDisplayRoute, "/."), "./")
 		for word := range strings.FieldsSeq(r) {
 			if strings.Contains(word, "/") {
-				e.ErrorString(`"route" word %q contains a slash; did you mean "waypoints"? (confusingly, "waypoints" specifies the route flown, "route" is only used for flight strips)`, word)
+				e.ErrorString(`"flight_strip_route" word %q contains a slash; did you mean "waypoints"?`, word)
 			}
 		}
 	}

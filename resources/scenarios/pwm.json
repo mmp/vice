@@ -74,7 +74,7 @@
           ],
           "destination": "KBED",
           "exit": "NELIE",
-          "route": "GORHM NUBLE RBELA JJIMY NELIE",
+          "waypoints": "GORHM NUBLE RBELA JJIMY NELIE",
           "scratchpad": "NEL"
         },
         {
@@ -85,7 +85,7 @@
           ],
           "destination": "KJFK",
           "exit": "NELIE",
-          "route": "GORHM NUBLE RBELA JJIMY NELIE",
+          "waypoints": "GORHM NUBLE RBELA JJIMY NELIE",
           "scratchpad": "NEL"
         },
         {
@@ -96,7 +96,7 @@
           ],
           "destination": "KJFK",
           "exit": "CCC",
-          "route": "RBELA1 CCC PARCH4",
+          "waypoints": "RBELA1 CCC PARCH4",
           "scratchpad": "CCC"
         },
         {
@@ -107,7 +107,7 @@
           ],
           "destination": "KBNA",
           "exit": "CAM",
-          "route": "HSKEL4 CAM ALB J49 PSB Q71 GEFFS HVQ YOCKY GROAT PASLY4",
+          "waypoints": "HSKEL4 CAM ALB J49 PSB Q71 GEFFS HVQ YOCKY GROAT PASLY4",
           "scratchpad": "CAM"
         }
       ],
@@ -119,7 +119,7 @@
       "arrivals": [
         {
           "waypoints": "CCC FOSTY BILJE BUOYY/ho SHAUN CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
-          "route": "SCOGS4",
+          "flight_strip_route": "SCOGS4",
           "star": "SCOGS4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
@@ -157,7 +157,7 @@
         },
         {
           "waypoints": "CAM CDOGG/ho KAYCC ARARR BUXTO",
-          "route": "CDOGG4",
+          "flight_strip_route": "CDOGG4",
           "star": "CDOGG4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
@@ -191,7 +191,7 @@
       "arrivals": [
         {
           "waypoints": "BUOYY SHAUN/ho CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
-          "route": "SCOGS4",
+          "flight_strip_route": "SCOGS4",
           "star": "SCOGS4",
           "initial_controller": "C17",
           "initial_altitude": 9000,
@@ -221,7 +221,7 @@
         },
         {
           "waypoints": "CAM CDOGG/ho KAYCC YOMON YAAKK SAPPE/a3000",
-          "route": "CDOGG4",
+          "flight_strip_route": "CDOGG4",
           "star": "CDOGG4",
           "initial_controller": "C17",
           "initial_altitude": 9000,

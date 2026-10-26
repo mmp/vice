@@ -356,7 +356,7 @@
           ],
           "destination": "KIAH",
           "exit": "SINKR",
-          "route": "SINKR TIIDE Q31 DHART SWB ZEEKK2"
+          "waypoints": "SINKR TIIDE Q31 DHART SWB ZEEKK2"
         },
         {
           "airlines": [
@@ -369,7 +369,7 @@
           ],
           "destination": "KDFW",
           "exit": "BGHRT",
-          "route": "BGHRT STL RZC FSM RRNET SEEVR4"
+          "waypoints": "BGHRT STL RZC FSM RRNET SEEVR4"
         },
         {
           "airlines": [
@@ -385,7 +385,7 @@
           ],
           "destination": "KJFK",
           "exit": "MRDOC",
-          "route": "MRDOC HOXIE J70 LVZ LENDY8"
+          "waypoints": "MRDOC HOXIE J70 LVZ LENDY8"
         },
         {
           "airlines": [
@@ -398,7 +398,7 @@
           ],
           "destination": "KDCA",
           "exit": "GRIVY",
-          "route": "GRIVY BUCKO FRDMM5"
+          "waypoints": "GRIVY BUCKO FRDMM5"
         },
         {
           "airlines": [
@@ -411,7 +411,7 @@
           ],
           "destination": "KMSP",
           "exit": "MONEE",
-          "route": "MONEE SLLAP Q440 IDIOM MUSCL3"
+          "waypoints": "MONEE SLLAP Q440 IDIOM MUSCL3"
         },
         {
           "airlines": [
@@ -422,7 +422,7 @@
           ],
           "destination": "EHAM",
           "exit": "LNCON",
-          "route": "LNCON JHW SYR KB03E PQI TAFFY N681A JANJO 56N050W 56N040W 56N030W 55N020W RESNO NETKI REVNU BOFUM Q37 MALUD UL975 WAL M16 DOLAS L603 LAMSO LAMS2A"
+          "waypoints": "LNCON JHW SYR KB03E PQI TAFFY N681A JANJO 56N050W 56N040W 56N030W 55N020W RESNO NETKI REVNU BOFUM Q37 MALUD UL975 WAL M16 DOLAS L603 LAMSO LAMS2A"
         },
         {
           "airlines": [
@@ -437,7 +437,7 @@
           ],
           "destination": "LFPG",
           "exit": "LNCON",
-          "route": "LNCON JHW KB78A MIILS N155A PORTI NATU XETBO ARKIL ANNET UM25 LUKIP LUKI9W"
+          "waypoints": "LNCON JHW KB78A MIILS N155A PORTI NATU XETBO ARKIL ANNET UM25 LUKIP LUKI9W"
         },
         {
           "airlines": [
@@ -450,7 +450,7 @@
           ],
           "destination": "KLAX",
           "exit": "SMUUV",
-          "route": "SMUUV OBK DSM LNK J60 DBL CHESZ Q88 HAKMN ANJLL4"
+          "waypoints": "SMUUV OBK DSM LNK J60 DBL CHESZ Q88 HAKMN ANJLL4"
         },
         {
           "airlines": [
@@ -460,7 +460,7 @@
           ],
           "destination": "PANC",
           "exit": "GNZOE",
-          "route": "GNZOE SSM 50N087W 52N090W 56N100W 58N110W 60N120W 62N130W 62N141W TIEKL WITTI4"
+          "waypoints": "GNZOE SSM 50N087W 52N090W 56N100W 58N110W 60N120W 62N130W 62N141W TIEKL WITTI4"
         },
         {
           "airlines": [
@@ -476,7 +476,7 @@
           ],
           "destination": "KATL",
           "exit": "STAZE",
-          "route": "STAZE KTRYN ONDRE1"
+          "waypoints": "STAZE KTRYN ONDRE1"
         },
         {
           "airlines": [
@@ -487,7 +487,7 @@
           ],
           "destination": "EGLL",
           "exit": "ZETTR",
-          "route": "ZETTR YOW PQI MIILS N269A JOOPY 49N050W 50N040W 52N030W 53N020W MALOT GISTI EVRIN INFEC JETZI AMFUL P2 SIRIC SIRI1H"
+          "waypoints": "ZETTR YOW PQI MIILS N269A JOOPY 49N050W 50N040W 52N030W 53N020W MALOT GISTI EVRIN INFEC JETZI AMFUL P2 SIRIC SIRI1H"
         },
         {
           "airlines": [
@@ -497,7 +497,7 @@
           ],
           "destination": "KMCI",
           "exit": "ZEGBI",
-          "route": "ZEGBI BDF BULET RUDDH3"
+          "waypoints": "ZEGBI BDF BULET RUDDH3"
         }
       ],
       "exit_categories": {
@@ -658,7 +658,7 @@
           ],
           "destination": "KMDW",
           "exit": "SNDRS",
-          "route": "SNDRS BAGEL PANGG5"
+          "waypoints": "SNDRS BAGEL PANGG5"
         },
         {
           "airlines": [
@@ -669,7 +669,7 @@
           ],
           "destination": "KMDW",
           "exit": "KAYLN",
-          "route": "KAYLN SMUUV JOT BQS BQS8"
+          "waypoints": "KAYLN SMUUV JOT BQS BQS8"
         },
         {
           "airlines": [
@@ -680,7 +680,7 @@
           ],
           "destination": "KLRD",
           "exit": "DUNKS",
-          "route": "DUNKS J70 PMM JOT IOW OVR SLN SPS SAT"
+          "waypoints": "DUNKS J70 PMM JOT IOW OVR SLN SPS SAT"
         },
         {
           "airlines": [
@@ -691,7 +691,7 @@
           ],
           "destination": "KATW",
           "exit": "SLLAP",
-          "route": "SLLAP"
+          "waypoints": "SLLAP"
         },
         {
           "airlines": [
@@ -701,7 +701,7 @@
           ],
           "destination": "KCLT",
           "exit": "STAZE",
-          "route": "STAZE TAFTT PARQR7"
+          "waypoints": "STAZE TAFTT PARQR7"
         }
       ],
       "exit_categories": {
@@ -894,7 +894,7 @@
           ],
           "destination": "KMDW",
           "exit": "SNDRS",
-          "route": "SNDRS BAGEL PANGG5"
+          "waypoints": "SNDRS BAGEL PANGG5"
         },
         {
           "airlines": [
@@ -904,7 +904,7 @@
           ],
           "destination": "KCGF",
           "exit": "WINNZ",
-          "route": "WINNZ BRWNZ4"
+          "waypoints": "WINNZ BRWNZ4"
         },
         {
           "airlines": [
@@ -914,7 +914,7 @@
           ],
           "destination": "KAPA",
           "exit": "BGHRT",
-          "route": "BGHRT KEOKK J26 LOAMY LEFAM Q90 ATIJA FRAAY DUNNN5"
+          "waypoints": "BGHRT KEOKK J26 LOAMY LEFAM Q90 ATIJA FRAAY DUNNN5"
         },
         {
           "airlines": [
@@ -924,7 +924,7 @@
           ],
           "destination": "KPWK",
           "exit": "SMUUV",
-          "route": "SMUUV FIYER OBK"
+          "waypoints": "SMUUV FIYER OBK"
         }
       ],
       "exit_categories": {
@@ -1093,7 +1093,7 @@
           ],
           "destination": "KMDW",
           "exit": "KAYLN",
-          "route": "KAYLN BAGEL PANGG5"
+          "waypoints": "KAYLN BAGEL PANGG5"
         },
         {
           "airlines": [
@@ -1103,7 +1103,7 @@
           ],
           "destination": "KTYQ",
           "exit": "TORRR",
-          "route": "TORRR"
+          "waypoints": "TORRR"
         },
         {
           "airlines": [
@@ -1113,7 +1113,7 @@
           ],
           "destination": "KAPF",
           "exit": "CLVIN",
-          "route": "CLVIN CYNTA SHFTY5"
+          "waypoints": "CLVIN CYNTA SHFTY5"
         },
         {
           "airlines": [
@@ -1123,7 +1123,7 @@
           ],
           "destination": "KFWA",
           "exit": "SNDRS",
-          "route": "SNDRS"
+          "waypoints": "SNDRS"
         },
         {
           "airlines": [
@@ -1133,7 +1133,7 @@
           ],
           "destination": "KHOU",
           "exit": "SINKR",
-          "route": "SINKR PXV J131 LIT J180 SWB WAPPL6"
+          "waypoints": "SINKR PXV J131 LIT J180 SWB WAPPL6"
         }
       ],
       "exit_categories": {

@@ -100,7 +100,7 @@
           ],
           "destination": "KIND",
           "exit": "BAWDS",
-          "route": "BAWDS"
+          "waypoints": "BAWDS"
         },
         {
           "airlines": [
@@ -115,7 +115,7 @@
           ],
           "destination": "KMEM",
           "exit": "CARWN",
-          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+          "waypoints": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
         },
         {
           "airlines": [
@@ -129,7 +129,7 @@
           ],
           "destination": "KCLT",
           "exit": "CHSLY",
-          "route": "CHSLY CHSLY9"
+          "waypoints": "CHSLY CHSLY9"
         },
         {
           "airlines": [
@@ -142,7 +142,7 @@
           ],
           "destination": "KLGA",
           "exit": "SBV",
-          "route": "SBV"
+          "waypoints": "SBV"
         },
         {
           "airlines": [
@@ -156,7 +156,7 @@
           ],
           "destination": "KORD",
           "exit": "BAWDS",
-          "route": "BAWDS"
+          "waypoints": "BAWDS"
         },
         {
           "airlines": [
@@ -169,7 +169,7 @@
           ],
           "destination": "KPHL",
           "exit": "SBV",
-          "route": "SBV BBDOL PAATS4"
+          "waypoints": "SBV BBDOL PAATS4"
         },
         {
           "airlines": [
@@ -183,7 +183,7 @@
           ],
           "destination": "KATL",
           "exit": "CARWN",
-          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+          "waypoints": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
         },
         {
           "airlines": [
@@ -197,7 +197,7 @@
           ],
           "destination": "KEWR",
           "exit": "SBV",
-          "route": "SBV"
+          "waypoints": "SBV"
         },
         {
           "airlines": [
@@ -211,7 +211,7 @@
           ],
           "destination": "KDTW",
           "exit": "BAWDS",
-          "route": "BAWDS VXV FOUNT CVG VHP WWODD HANBL3"
+          "waypoints": "BAWDS VXV FOUNT CVG VHP WWODD HANBL3"
         },
         {
           "airlines": [
@@ -222,7 +222,7 @@
           ],
           "destination": "KBWI",
           "exit": "SBV",
-          "route": "SBV"
+          "waypoints": "SBV"
         },
         {
           "airlines": [
@@ -236,7 +236,7 @@
           ],
           "destination": "KMIA",
           "exit": "CARWN",
-          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+          "waypoints": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
         },
         {
           "airlines": [
@@ -246,7 +246,7 @@
           ],
           "destination": "KIAH",
           "exit": "CARWN",
-          "route": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
+          "waypoints": "CARWN SLOJO TASTY WOPNR COBOK DEBRL CSTAL2"
         },
         {
           "airlines": [
@@ -256,7 +256,7 @@
           ],
           "destination": "KDEN",
           "exit": "BAWDS",
-          "route": "TRSHA BAWDS"
+          "waypoints": "TRSHA BAWDS"
         }
       ],
       "exit_categories": {
@@ -345,7 +345,7 @@
           "altitude": 23000,
           "destination": "KILM",
           "exit": "CARWN",
-          "route": "CARWN FAY HOMKU"
+          "waypoints": "CARWN FAY HOMKU"
         },
         {
           "airlines": [
@@ -356,7 +356,7 @@
           "altitude": 25000,
           "destination": "KFLL",
           "exit": "BAWDS",
-          "route": "BAWDS VAN KENLL JIPOD"
+          "waypoints": "BAWDS VAN KENLL JIPOD"
         }
       ],
       "exit_categories": {
@@ -449,7 +449,7 @@
       "arrivals": [
         {
           "waypoints": "RENZI GANTS/s250/h20",
-          "route": "/. GANTS",
+          "flight_strip_route": "/. GANTS",
           "initial_controller": "1S",
           "initial_altitude": 9000,
           "initial_speed": 250,

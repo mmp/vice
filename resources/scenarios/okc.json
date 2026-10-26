@@ -237,7 +237,7 @@
           "exit": "DRLER",
           "destination": "KMDW",
           "altitude": 39000,
-          "route": "TRUPR3 DRLER MAGOO ENDEE6",
+          "waypoints": "TRUPR3 DRLER MAGOO ENDEE6",
           "airlines": [
             {
               "icao": "SWA",
@@ -249,7 +249,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 15000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "ENY",
@@ -261,7 +261,7 @@
           "exit": "MOOSE",
           "destination": "KAUS",
           "altitude": 35000,
-          "route": "MUDDE3 MOOSE BROBB WINDU SEWZY6",
+          "waypoints": "MUDDE3 MOOSE BROBB WINDU SEWZY6",
           "airlines": [
             {
               "icao": "SWA",
@@ -273,7 +273,7 @@
           "exit": "ZEEWE",
           "destination": "KDEN",
           "altitude": 36000,
-          "route": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
+          "waypoints": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
           "airlines": [
             {
               "icao": "SWA",
@@ -285,7 +285,7 @@
           "exit": "TRUPR",
           "destination": "KORD",
           "altitude": 29000,
-          "route": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
+          "waypoints": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
           "airlines": [
             {
               "icao": "ENY",
@@ -297,7 +297,7 @@
           "exit": "ZEEWE",
           "destination": "KSEA",
           "altitude": 34000,
-          "route": "STPHN3 ZEEWE ROLLS TOTOE KD54W BQZ KU84M PDT CHINS5",
+          "waypoints": "STPHN3 ZEEWE ROLLS TOTOE KD54W BQZ KU84M PDT CHINS5",
           "airlines": [
             {
               "icao": "ASA",
@@ -309,7 +309,7 @@
           "exit": "YOUSE",
           "destination": "KAMA",
           "altitude": 30000,
-          "route": "OLGUY3 YOUSE PNH",
+          "waypoints": "OLGUY3 YOUSE PNH",
           "airlines": [
             {
               "icao": "SKW",
@@ -321,7 +321,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 15000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "ENY",
@@ -333,7 +333,7 @@
           "exit": "TRUPR",
           "destination": "KORD",
           "altitude": 29000,
-          "route": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
+          "waypoints": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
           "airlines": [
             {
               "icao": "ENY",
@@ -345,7 +345,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 23000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "AAL",
@@ -357,7 +357,7 @@
           "exit": "MOOSE",
           "destination": "KAUS",
           "altitude": 35000,
-          "route": "MUDDE3 MOOSE BROBB WINDU SEWZY6",
+          "waypoints": "MUDDE3 MOOSE BROBB WINDU SEWZY6",
           "airlines": [
             {
               "icao": "SWA",
@@ -369,7 +369,7 @@
           "exit": "ZEEWE",
           "destination": "KDEN",
           "altitude": 36000,
-          "route": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
+          "waypoints": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
           "airlines": [
             {
               "icao": "SWA",
@@ -381,7 +381,7 @@
           "exit": "PHARA",
           "destination": "KBNA",
           "altitude": 39000,
-          "route": "FUNNL3 PHARA KM33G LOPPY CHSNE2",
+          "waypoints": "FUNNL3 PHARA KM33G LOPPY CHSNE2",
           "airlines": [
             {
               "icao": "SWA",
@@ -393,7 +393,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
+          "waypoints": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",
@@ -405,7 +405,7 @@
           "exit": "MOOSE",
           "destination": "KSAT",
           "altitude": 35000,
-          "route": "MUDDE3 MOOSE WINDU QERVO1",
+          "waypoints": "MUDDE3 MOOSE WINDU QERVO1",
           "airlines": [
             {
               "icao": "SWA",
@@ -417,7 +417,7 @@
           "exit": "ZEEWE",
           "destination": "KDEN",
           "altitude": 34000,
-          "route": "STPHN3 ZEEWE KK36A HALEN NIIXX3",
+          "waypoints": "STPHN3 ZEEWE KK36A HALEN NIIXX3",
           "airlines": [
             {
               "icao": "FFT",
@@ -429,7 +429,7 @@
           "exit": "DRLER",
           "destination": "KDCA",
           "altitude": 39000,
-          "route": "TRUPR3 DRLER FAM J78 HVQ TRUPS6",
+          "waypoints": "TRUPR3 DRLER FAM J78 HVQ TRUPS6",
           "airlines": [
             {
               "icao": "SWA",
@@ -441,7 +441,7 @@
           "exit": "YOUSE",
           "destination": "KLAS",
           "altitude": 40000,
-          "route": "OLGUY3 YOUSE PNH GUP HAHAA RKSTR3",
+          "waypoints": "OLGUY3 YOUSE PNH GUP HAHAA RKSTR3",
           "airlines": [
             {
               "icao": "SWA",
@@ -453,7 +453,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 21000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "ENY",
@@ -465,7 +465,7 @@
           "exit": "ZEEWE",
           "destination": "KDEN",
           "altitude": 32000,
-          "route": "STPHN3 ZEEWE KK36A HALEN NIIXX3",
+          "waypoints": "STPHN3 ZEEWE KK36A HALEN NIIXX3",
           "airlines": [
             {
               "icao": "SKW",
@@ -477,7 +477,7 @@
           "exit": "HOLLE",
           "destination": "KMCO",
           "altitude": 37000,
-          "route": "RDHWK3 HOLLE MEEOW MERDN DEFUN GRNCH5",
+          "waypoints": "RDHWK3 HOLLE MEEOW MERDN DEFUN GRNCH5",
           "airlines": [
             {
               "icao": "SWA",
@@ -489,7 +489,7 @@
           "exit": "TRUPR",
           "destination": "KORD",
           "altitude": 37000,
-          "route": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
+          "waypoints": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
           "airlines": [
             {
               "icao": "ENY",
@@ -501,7 +501,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 21000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "AAL",
@@ -513,7 +513,7 @@
           "exit": "OLFRD",
           "destination": "KHOU",
           "altitude": 35000,
-          "route": "MUDDE3 OLFRD CVE ELLVR NNEAL KIDDZ4",
+          "waypoints": "MUDDE3 OLFRD CVE ELLVR NNEAL KIDDZ4",
           "airlines": [
             {
               "icao": "SWA",
@@ -525,7 +525,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 21000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "AAL",
@@ -537,7 +537,7 @@
           "exit": "YOUSE",
           "destination": "KPHX",
           "altitude": 36000,
-          "route": "OLGUY3 YOUSE PNH ZUN EAGUL6",
+          "waypoints": "OLGUY3 YOUSE PNH ZUN EAGUL6",
           "airlines": [
             {
               "icao": "SWA",
@@ -549,7 +549,7 @@
           "exit": "PHARA",
           "destination": "KATL",
           "altitude": 37000,
-          "route": "FUNNL3 PHARA FSM MEMFS HUTCC KNSAW RUSSA GLAVN1",
+          "waypoints": "FUNNL3 PHARA FSM MEMFS HUTCC KNSAW RUSSA GLAVN1",
           "airlines": [
             {
               "icao": "DAL",
@@ -561,7 +561,7 @@
           "exit": "YOUSE",
           "destination": "KLAS",
           "altitude": 36000,
-          "route": "OLGUY3 YOUSE PNH GUP HAHAA RKSTR3",
+          "waypoints": "OLGUY3 YOUSE PNH GUP HAHAA RKSTR3",
           "airlines": [
             {
               "icao": "SWA",
@@ -573,7 +573,7 @@
           "exit": "HOLLE",
           "destination": "KMIA",
           "altitude": 33000,
-          "route": "RDHWK3 HOLLE PONYY JODOX WINAP MEI MVC DEFUN BAGGS Y290 THMPR MARCI FROGZ4",
+          "waypoints": "RDHWK3 HOLLE PONYY JODOX WINAP MEI MVC DEFUN BAGGS Y290 THMPR MARCI FROGZ4",
           "airlines": [
             {
               "icao": "ENY",
@@ -585,7 +585,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
+          "waypoints": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",
@@ -597,7 +597,7 @@
           "exit": "ZEEWE",
           "destination": "KDEN",
           "altitude": 36000,
-          "route": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
+          "waypoints": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
           "airlines": [
             {
               "icao": "SWA",
@@ -609,7 +609,7 @@
           "exit": "DRLER",
           "destination": "KMDW",
           "altitude": 37000,
-          "route": "TRUPR3 DRLER MAGOO ENDEE6",
+          "waypoints": "TRUPR3 DRLER MAGOO ENDEE6",
           "airlines": [
             {
               "icao": "SWA",
@@ -621,7 +621,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 23000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "AAL",
@@ -633,7 +633,7 @@
           "exit": "DRLER",
           "destination": "KSTL",
           "altitude": 37000,
-          "route": "TRUPR3 DRLER SGF KAYLA3",
+          "waypoints": "TRUPR3 DRLER SGF KAYLA3",
           "airlines": [
             {
               "icao": "SWA",
@@ -645,7 +645,7 @@
           "exit": "GTYER",
           "destination": "KORD",
           "altitude": 37000,
-          "route": "TRUPR3 GTYER WELTS TRTLL6",
+          "waypoints": "TRUPR3 GTYER WELTS TRTLL6",
           "airlines": [
             {
               "icao": "SKW",
@@ -657,7 +657,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 23000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "AAL",
@@ -669,7 +669,7 @@
           "exit": "OLFRD",
           "destination": "KHOU",
           "altitude": 39000,
-          "route": "MUDDE3 OLFRD CVE ELLVR NNEAL KIDDZ4",
+          "waypoints": "MUDDE3 OLFRD CVE ELLVR NNEAL KIDDZ4",
           "airlines": [
             {
               "icao": "SWA",
@@ -681,7 +681,7 @@
           "exit": "YOUSE",
           "destination": "KPHX",
           "altitude": 40000,
-          "route": "OLGUY3 YOUSE PNH ZUN EAGUL6",
+          "waypoints": "OLGUY3 YOUSE PNH ZUN EAGUL6",
           "airlines": [
             {
               "icao": "SWA",
@@ -693,7 +693,7 @@
           "exit": "PHARA",
           "destination": "KMEM",
           "altitude": 31000,
-          "route": "FUNNL3 PHARA LIT HOBRK3",
+          "waypoints": "FUNNL3 PHARA LIT HOBRK3",
           "airlines": [
             {
               "icao": "FDX",
@@ -705,7 +705,7 @@
           "exit": "DRLER",
           "destination": "KSDF",
           "altitude": 35000,
-          "route": "TRUPR3 DRLER RZC FAM J112 PLESS ALENN DAMEN5",
+          "waypoints": "TRUPR3 DRLER RZC FAM J112 PLESS ALENN DAMEN5",
           "airlines": [
             {
               "icao": "UPS",
@@ -717,7 +717,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 23000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "SKW",
@@ -729,7 +729,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 21000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "ENY",
@@ -741,7 +741,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 15000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "ENY",
@@ -753,7 +753,7 @@
           "exit": "MOOSE",
           "destination": "KAUS",
           "altitude": 35000,
-          "route": "MUDDE3 MOOSE BROBB WINDU SEWZY6",
+          "waypoints": "MUDDE3 MOOSE BROBB WINDU SEWZY6",
           "airlines": [
             {
               "icao": "SWA",
@@ -765,7 +765,7 @@
           "exit": "YOUSE",
           "destination": "KPHX",
           "altitude": 34000,
-          "route": "OLGUY3 YOUSE PNH ZUN EAGUL6",
+          "waypoints": "OLGUY3 YOUSE PNH ZUN EAGUL6",
           "airlines": [
             {
               "icao": "ENY",
@@ -777,7 +777,7 @@
           "exit": "ZEEWE",
           "destination": "KDEN",
           "altitude": 36000,
-          "route": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
+          "waypoints": "STPHN3 ZEEWE ROLLS HALEN NIIXX3",
           "airlines": [
             {
               "icao": "SWA",
@@ -789,7 +789,7 @@
           "exit": "PHARA",
           "destination": "KCLT",
           "altitude": 33000,
-          "route": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
+          "waypoints": "FUNNL3 PHARA ARG BNA TAZZA FILPZ7",
           "airlines": [
             {
               "icao": "AAL",
@@ -801,7 +801,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 21000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "ENY",
@@ -813,7 +813,7 @@
           "exit": "PHARA",
           "destination": "KBNA",
           "altitude": 39000,
-          "route": "FUNNL3 PHARA KM33G LOPPY CHSNE2",
+          "waypoints": "FUNNL3 PHARA KM33G LOPPY CHSNE2",
           "airlines": [
             {
               "icao": "SWA",
@@ -825,7 +825,7 @@
           "exit": "HOLLE",
           "destination": "KMCO",
           "altitude": 37000,
-          "route": "RDHWK3 HOLLE MEEOW MERDN DEFUN GRNCH5",
+          "waypoints": "RDHWK3 HOLLE MEEOW MERDN DEFUN GRNCH5",
           "airlines": [
             {
               "icao": "SWA",
@@ -837,7 +837,7 @@
           "exit": "ZEEWE",
           "destination": "KDEN",
           "altitude": 32000,
-          "route": "STPHN3 ZEEWE KK36A HALEN NIIXX3",
+          "waypoints": "STPHN3 ZEEWE KK36A HALEN NIIXX3",
           "airlines": [
             {
               "icao": "SKW",
@@ -849,7 +849,7 @@
           "exit": "MUDDE",
           "destination": "KDFW",
           "altitude": 21000,
-          "route": "MUDDE3 MUDDE RBUKL VKTRY2",
+          "waypoints": "MUDDE3 MUDDE RBUKL VKTRY2",
           "airlines": [
             {
               "icao": "AAL",
@@ -861,7 +861,7 @@
           "exit": "TRUPR",
           "destination": "KORD",
           "altitude": 37000,
-          "route": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
+          "waypoints": "TRUPR3 TRUPR TUL EOS WELTS TRTLL6",
           "airlines": [
             {
               "icao": "ENY",
@@ -1207,7 +1207,7 @@
     "ENDOKC38": {
       "arrivals": [
         {
-          "route": "ALCEM..IRW",
+          "flight_strip_route": "ALCEM..IRW",
           "initial_controller": "21W",
           "initial_altitude": 13000,
           "initial_speed": 300,

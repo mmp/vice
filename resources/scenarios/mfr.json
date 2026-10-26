@@ -70,7 +70,7 @@
           "destination": "KSFO",
           "exit": "MLBEC.JKSN",
           "altitude": 31000,
-          "route": "OED MLBEC BDEGA4"
+          "waypoints": "OED MLBEC BDEGA4"
         },
         {
           "airlines": [
@@ -82,7 +82,7 @@
           "destination": "KSNA",
           "exit": "RBL.JKSN",
           "altitude": 35000,
-          "route": "OED LANKS RBL J126 SAC RDHOT OHSEA3"
+          "waypoints": "OED LANKS RBL J126 SAC RDHOT OHSEA3"
         },
         {
           "airlines": [
@@ -94,7 +94,7 @@
           "destination": "KLAS",
           "altitude": 39000,
           "exit": "FMG.JKSN",
-          "route": "OED LANKS FMG J92 OAL TQILA COKTL4"
+          "waypoints": "OED LANKS FMG J92 OAL TQILA COKTL4"
         },
         {
           "airlines": [
@@ -106,7 +106,7 @@
           "destination": "KSEA",
           "exit": "CUTTR.JKSN",
           "altitude": 30000,
-          "route": "OED V595 CUTTR BTG HAWKZ8"
+          "waypoints": "OED V595 CUTTR BTG HAWKZ8"
         },
         {
           "airlines": [
@@ -118,7 +118,7 @@
           "destination": "KPDX",
           "exit": "CUTTR.JKSN",
           "altitude": 24000,
-          "route": "OED V595 CUTTR MOXEE TMBRS3"
+          "waypoints": "OED V595 CUTTR MOXEE TMBRS3"
         },
         {
           "airlines": [
@@ -134,7 +134,7 @@
           "destination": "KDEN",
           "exit": "LOKEY.JKSN",
           "altitude": 35000,
-          "route": "OED LOKEY BVL TCH KAMPR LONGZ4"
+          "waypoints": "OED LOKEY BVL TCH KAMPR LONGZ4"
         },
         {
           "airlines": [
@@ -146,7 +146,7 @@
           "destination": "KLAX",
           "exit": "RBL.JKSN",
           "altitude": 33000,
-          "route": "OED V595 CUTTR RBL J126 SAC BURGL IRNMN2"
+          "waypoints": "OED V595 CUTTR RBL J126 SAC BURGL IRNMN2"
         },
         {
           "airlines": [
@@ -158,7 +158,7 @@
           "destination": "KPDX",
           "exit": "EUG.JKSNP",
           "altitude": 10000,
-          "route": "OED V23 EUG V481 CVO V495 UBG"
+          "waypoints": "OED V23 EUG V481 CVO V495 UBG"
         },
         {
           "airlines": [
@@ -170,7 +170,7 @@
           "destination": "KOTH",
           "exit": "OTH.JKSNP",
           "altitude": 8000,
-          "route": "OED V287 OTH"
+          "waypoints": "OED V287 OTH"
         },
         {
           "airlines": [
@@ -182,7 +182,7 @@
           "destination": "KPDX",
           "exit": "MOXEE.JKSN",
           "altitude": 20000,
-          "route": "OED MOXEE OCITY3"
+          "waypoints": "OED MOXEE OCITY3"
         },
         {
           "airlines": [
@@ -198,7 +198,7 @@
           "destination": "KLMT",
           "exit": "LMT.JKSNP",
           "altitude": 9000,
-          "route": "OED V122 LMT"
+          "waypoints": "OED V122 LMT"
         },
         {
           "airlines": [
@@ -210,7 +210,7 @@
           "destination": "KSLC",
           "exit": "LMT.MFR",
           "altitude": 37000,
-          "route": "LMT SUNBE BVL YUTES2"
+          "waypoints": "LMT SUNBE BVL YUTES2"
         },
         {
           "airlines": [
@@ -226,7 +226,7 @@
           "destination": "KPHX",
           "exit": "LMT.MFR",
           "altitude": 33000,
-          "route": "LMT OAL CENIT JEDNA LAS BLD WOTRO BRUSR1"
+          "waypoints": "LMT OAL CENIT JEDNA LAS BLD WOTRO BRUSR1"
         }
       ],
       "exit_categories": {
@@ -266,7 +266,7 @@
           ],
           "destination": "KVUO",
           "exit": "RBG",
-          "route": "RBG V495 UBG",
+          "waypoints": "RBG V495 UBG",
           "altitude": 8000
         },
         {
@@ -278,7 +278,7 @@
           ],
           "destination": "KUAO",
           "exit": "RBG",
-          "route": "RBG UBG",
+          "waypoints": "RBG UBG",
           "altitude": 16000
         }
       ],
@@ -357,7 +357,7 @@
         {
           "waypoints": "EUG V23 CURTI V23HO/ho MOURN/a12000-14000 OED KMFR",
           "cruise_altitude": 25000,
-          "route": "/. OED",
+          "flight_strip_route": "/. OED",
           "initial_controller": "S36",
           "initial_altitude": 25000,
           "assigned_altitude": 12000,
@@ -381,7 +381,7 @@
         {
           "waypoints": "PDXSPWN PDXHO/ho OED KMFR",
           "cruise_altitude": 25000,
-          "route": "/. OED",
+          "flight_strip_route": "/. OED",
           "initial_controller": "S36",
           "initial_altitude": 17000,
           "assigned_altitude": 12000,
@@ -402,7 +402,7 @@
         {
           "waypoints": "EUG V23 CURTI V23HO/ho OED KMFR",
           "cruise_altitude": 9000,
-          "route": "/. OED",
+          "flight_strip_route": "/. OED",
           "initial_controller": "S36",
           "initial_altitude": 9000,
           "assigned_altitude": 9000,
@@ -423,7 +423,7 @@
         {
           "waypoints": "FEPOTSPWN FEPOTHO/ho SAMIE KMFR",
           "cruise_altitude": 33000,
-          "route": "/. SAMIE",
+          "flight_strip_route": "/. SAMIE",
           "initial_controller": "S36",
           "initial_altitude": 27000,
           "assigned_altitude": 12000,
@@ -451,7 +451,7 @@
         {
           "waypoints": "GRTFLOEDSPWN GRTFLOEDHO/ho OED KMFR",
           "cruise_altitude": 32000,
-          "route": "/. OED",
+          "flight_strip_route": "/. OED",
           "initial_controller": "S30",
           "initial_altitude": 30000,
           "assigned_altitude": 12000,
@@ -472,7 +472,7 @@
         {
           "waypoints": "NTELLSPWN NTELLHO/ho OED KMFR",
           "cruise_altitude": 36000,
-          "route": "/. OED",
+          "flight_strip_route": "/. OED",
           "initial_controller": "S30",
           "initial_altitude": 32000,
           "assigned_altitude": 12000,
@@ -492,7 +492,7 @@
         {
           "waypoints": "NTELLSPWN NTELLHO/ho SAMIE KMFR",
           "cruise_altitude": 33000,
-          "route": "/. SAMIE",
+          "flight_strip_route": "/. SAMIE",
           "initial_controller": "S36",
           "initial_altitude": 27000,
           "assigned_altitude": 12000,
@@ -512,7 +512,7 @@
         {
           "waypoints": "GRTFLSAMSPWN GRTFLSAMHO/ho SAMIE KMFR",
           "cruise_altitude": 32000,
-          "route": "/. OED",
+          "flight_strip_route": "/. OED",
           "initial_controller": "S30",
           "initial_altitude": 30000,
           "assigned_altitude": 12000,
@@ -536,7 +536,7 @@
         {
           "waypoints": "LOKEYSPWN LOKEYHO/ho SAMIE KMFR",
           "cruise_altitude": 34000,
-          "route": "/. SAMIE",
+          "flight_strip_route": "/. SAMIE",
           "initial_controller": "S36",
           "initial_altitude": 28000,
           "assigned_altitude": 12000,

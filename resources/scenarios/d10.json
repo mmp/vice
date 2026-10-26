@@ -517,7 +517,7 @@
           "exit": "ZEMMA",
           "destination": "KMHK",
           "altitude": 32000,
-          "route": "BLECO8 ZEMMA PER",
+          "waypoints": "BLECO8 ZEMMA PER",
           "airlines": [
             {
               "icao": "ENY",
@@ -529,7 +529,7 @@
           "exit": "MRSSH",
           "destination": "KJAN",
           "altitude": 31000,
-          "route": "MRSSH3 MRSSH MHZ",
+          "waypoints": "MRSSH3 MRSSH MHZ",
           "airlines": [
             {
               "icao": "JIA",
@@ -545,7 +545,7 @@
           "exit": "MLC",
           "destination": "KMKE",
           "altitude": 33000,
-          "route": "AKUNA9 MLC RZC KOOOP FARMR LEEDN GOPAC3",
+          "waypoints": "AKUNA9 MLC RZC KOOOP FARMR LEEDN GOPAC3",
           "airlines": [
             {
               "icao": "AAL",
@@ -557,7 +557,7 @@
           "exit": "HOARY",
           "destination": "KBRO",
           "altitude": 33000,
-          "route": "NELYN6 HOARY CRP J25 BRO",
+          "waypoints": "NELYN6 HOARY CRP J25 BRO",
           "airlines": [
             {
               "icao": "SKW",
@@ -573,7 +573,7 @@
           "exit": "ZALEA",
           "destination": "KBTR",
           "altitude": 27000,
-          "route": "MRSSH3 ZALEA",
+          "waypoints": "MRSSH3 ZALEA",
           "airlines": [
             {
               "icao": "ENY",
@@ -593,7 +593,7 @@
           "exit": "CIKAN",
           "destination": "KLAX",
           "altitude": 28000,
-          "route": "WSTEX2 CIKAN EWM SSO J50 TFD ESTWD HLYWD1",
+          "waypoints": "WSTEX2 CIKAN EWM SSO J50 TFD ESTWD HLYWD1",
           "airlines": [
             {
               "icao": "AAL",
@@ -613,7 +613,7 @@
           "exit": "MLC",
           "destination": "KDTW",
           "altitude": 33000,
-          "route": "AKUNA9 MLC ZALDA PROWL DAAVE VHP MZZ SWAYD LECTR3",
+          "waypoints": "AKUNA9 MLC ZALDA PROWL DAAVE VHP MZZ SWAYD LECTR3",
           "airlines": [
             {
               "icao": "AAL",
@@ -637,7 +637,7 @@
           "exit": "HUDAD",
           "destination": "KDRO",
           "altitude": 34000,
-          "route": "HUDAD3 HUDAD YACUL DRO",
+          "waypoints": "HUDAD3 HUDAD YACUL DRO",
           "airlines": [
             {
               "icao": "SKW",
@@ -649,7 +649,7 @@
           "exit": "MRSSH",
           "destination": "KSHV",
           "altitude": 21000,
-          "route": "MRSSH3 MRSSH",
+          "waypoints": "MRSSH3 MRSSH",
           "airlines": [
             {
               "icao": "ENY",
@@ -669,7 +669,7 @@
           "exit": "DOSXX",
           "destination": "MMCU",
           "altitude": 28000,
-          "route": "WSTEX2 DOSXX FST ALKEM KIPAL",
+          "waypoints": "WSTEX2 DOSXX FST ALKEM KIPAL",
           "airlines": [
             {
               "icao": "ENY",
@@ -681,7 +681,7 @@
           "exit": "ZEMMA",
           "destination": "KOKC",
           "altitude": 22000,
-          "route": "BLECO8 ZEMMA TSDEL3",
+          "waypoints": "BLECO8 ZEMMA TSDEL3",
           "airlines": [
             {
               "icao": "AAL",
@@ -697,7 +697,7 @@
           "exit": "ZALEA",
           "destination": "KMCO",
           "altitude": 35000,
-          "route": "MRSSH3 ZALEA SWB AEX FATSO Q105 REDFN Y280 CHRGE PRICY4",
+          "waypoints": "MRSSH3 ZALEA SWB AEX FATSO Q105 REDFN Y280 CHRGE PRICY4",
           "airlines": [
             {
               "icao": "UPS",
@@ -721,7 +721,7 @@
           "exit": "BSKAT",
           "destination": "KLIT",
           "altitude": 31000,
-          "route": "ZACHH4 BSKAT LIT",
+          "waypoints": "ZACHH4 BSKAT LIT",
           "airlines": [
             {
               "icao": "AAL",
@@ -741,7 +741,7 @@
           "exit": "DOSXX",
           "destination": "KMAF",
           "altitude": 26000,
-          "route": "WSTEX2 DOSXX",
+          "waypoints": "WSTEX2 DOSXX",
           "airlines": [
             {
               "icao": "ENY",
@@ -757,7 +757,7 @@
           "exit": "ZEMMA",
           "destination": "KFSD",
           "altitude": 30000,
-          "route": "BLECO8 ZEMMA PER FSD",
+          "waypoints": "BLECO8 ZEMMA PER FSD",
           "airlines": [
             {
               "icao": "AAL",
@@ -773,7 +773,7 @@
           "exit": "TUL",
           "destination": "KMCI",
           "altitude": 37000,
-          "route": "BLECO8 TUL STASN WUTNG3",
+          "waypoints": "BLECO8 TUL STASN WUTNG3",
           "airlines": [
             {
               "icao": "AAL",
@@ -793,7 +793,7 @@
           "exit": "LOOSE",
           "destination": "KRDU",
           "altitude": 37000,
-          "route": "TRYTN4 LOOSE MEM VXV KPASS ALDAN4",
+          "waypoints": "TRYTN4 LOOSE MEM VXV KPASS ALDAN4",
           "airlines": [
             {
               "icao": "AAL",
@@ -809,7 +809,7 @@
           "exit": "ROLLS",
           "destination": "KCOS",
           "altitude": 30000,
-          "route": "LOWGN8 ROLLS TOTOE LAA OZZZY5",
+          "waypoints": "LOWGN8 ROLLS TOTOE LAA OZZZY5",
           "airlines": [
             {
               "icao": "AAL",
@@ -821,7 +821,7 @@
           "exit": "LOOSE",
           "destination": "KPHL",
           "altitude": 31000,
-          "route": "TRYTN4 LOOSE MEMFS Q29 CREEP BLISS J152 JST BOJID4",
+          "waypoints": "TRYTN4 LOOSE MEMFS Q29 CREEP BLISS J152 JST BOJID4",
           "airlines": [
             {
               "icao": "AAL",
@@ -833,7 +833,7 @@
           "exit": "MLC",
           "destination": "KORD",
           "altitude": 31000,
-          "route": "AKUNA9 MLC SGF WELTS TRTLL6",
+          "waypoints": "AKUNA9 MLC SGF WELTS TRTLL6",
           "airlines": [
             {
               "icao": "AAL",
@@ -845,7 +845,7 @@
           "exit": "FORCK",
           "destination": "KMEM",
           "altitude": 33000,
-          "route": "FORCK ELD HOBRK3",
+          "waypoints": "FORCK ELD HOBRK3",
           "airlines": [
             {
               "icao": "AAL",
@@ -857,7 +857,7 @@
           "exit": "MLC",
           "destination": "KPHL",
           "altitude": 37000,
-          "route": "AKUNA9 MLC RZC STL VHP ROD J152 JST BOJID4",
+          "waypoints": "AKUNA9 MLC RZC STL VHP ROD J152 JST BOJID4",
           "airlines": [
             {
               "icao": "UPS",
@@ -869,7 +869,7 @@
           "exit": "MLC",
           "destination": "LTFM",
           "altitude": 37000,
-          "route": "AKUNA9 MLC RZC ARG PXV ROD CXR JHW ART YBC JANJO 5600N/05000W 5800N/04000W 5800N/03000W 5800N/02000W GOMUP GINGA TLA N97 NATEB M981 GODOS AMGOD TIVUN ESAMA OSBIT TENLO LAMSI SASAL BABIT RAVAK NISVA DEDIN AYTEK",
+          "waypoints": "AKUNA9 MLC RZC ARG PXV ROD CXR JHW ART YBC JANJO 5600N/05000W 5800N/04000W 5800N/03000W 5800N/02000W GOMUP GINGA TLA N97 NATEB M981 GODOS AMGOD TIVUN ESAMA OSBIT TENLO LAMSI SASAL BABIT RAVAK NISVA DEDIN AYTEK",
           "airlines": [
             {
               "icao": "THY",
@@ -881,7 +881,7 @@
           "exit": "LOOSE",
           "destination": "KDCA",
           "altitude": 35000,
-          "route": "TRYTN4 LOOSE Q34 SITTR TRUPS6",
+          "waypoints": "TRYTN4 LOOSE Q34 SITTR TRUPS6",
           "airlines": [
             {
               "icao": "AAL",
@@ -893,7 +893,7 @@
           "exit": "MLC",
           "destination": "KIND",
           "altitude": 35000,
-          "route": "AKUNA9 MLC RZC SLVER WIDAM SMUKE3",
+          "waypoints": "AKUNA9 MLC RZC SLVER WIDAM SMUKE3",
           "airlines": [
             {
               "icao": "AAL",
@@ -905,7 +905,7 @@
           "exit": "ADM",
           "destination": "PANC",
           "altitude": 40000,
-          "route": "LOWGN8 ADM IFI HLC RAP MLS GGW YEGGA YQU MITOM NCA10 YAK J501 JOH WITTI WITTI4",
+          "waypoints": "LOWGN8 ADM IFI HLC RAP MLS GGW YEGGA YQU MITOM NCA10 YAK J501 JOH WITTI WITTI4",
           "airlines": [
             {
               "icao": "CAL",
@@ -917,7 +917,7 @@
           "exit": "MLC",
           "destination": "KJFK",
           "altitude": 35000,
-          "route": "AKUNA9 MLC RZC STL VHP ROD KLYNE Q29 JHW J70 LVZ LENDY8",
+          "waypoints": "AKUNA9 MLC RZC STL VHP ROD KLYNE Q29 JHW J70 LVZ LENDY8",
           "airlines": [
             {
               "icao": "AAL",
@@ -929,7 +929,7 @@
           "exit": "HUDAD",
           "destination": "KASE",
           "altitude": 36000,
-          "route": "HUDAD3 HUDAD KA30Y CIM KANON HAREI DBL",
+          "waypoints": "HUDAD3 HUDAD KA30Y CIM KANON HAREI DBL",
           "airlines": [
             {
               "icao": "SKW",
@@ -941,7 +941,7 @@
           "exit": "LOOSE",
           "destination": "KCHA",
           "altitude": 35000,
-          "route": "TRYTN4 LOOSE MEM GQO",
+          "waypoints": "TRYTN4 LOOSE MEM GQO",
           "airlines": [
             {
               "icao": "ENY",
@@ -953,7 +953,7 @@
           "exit": "HULZE",
           "destination": "KLAS",
           "altitude": 32000,
-          "route": "HRPER4 HULZE TXO J72 GUP HAHAA RKSTR3",
+          "waypoints": "HRPER4 HULZE TXO J72 GUP HAHAA RKSTR3",
           "airlines": [
             {
               "icao": "AAL",
@@ -965,7 +965,7 @@
           "exit": "FORCK",
           "destination": "KBHM",
           "altitude": 37000,
-          "route": "FORCK ELD IGB NESTS",
+          "waypoints": "FORCK ELD IGB NESTS",
           "airlines": [
             {
               "icao": "SKW",
@@ -977,7 +977,7 @@
           "exit": "HUDAD",
           "destination": "KSEA",
           "altitude": 36000,
-          "route": "HUDAD3 HUDAD PNH TBE EKR PIH PDT CHINS5",
+          "waypoints": "HUDAD3 HUDAD PNH TBE EKR PIH PDT CHINS5",
           "airlines": [
             {
               "icao": "ASA",
@@ -989,7 +989,7 @@
           "exit": "FORCK",
           "destination": "KEWR",
           "altitude": 37000,
-          "route": "FORCK ELD IZAAC Q30 VLKNN THRSR TWOUP Q22 MASHI Q22 UMBRE QUART PHLBO4",
+          "waypoints": "FORCK ELD IZAAC Q30 VLKNN THRSR TWOUP Q22 MASHI Q22 UMBRE QUART PHLBO4",
           "airlines": [
             {
               "icao": "UPS",
@@ -1001,7 +1001,7 @@
           "exit": "EAKER",
           "destination": "KTUL",
           "altitude": 25000,
-          "route": "GRABE8 EAKER TUL",
+          "waypoints": "GRABE8 EAKER TUL",
           "airlines": [
             {
               "icao": "ENY",
@@ -1013,7 +1013,7 @@
           "exit": "ELLVR",
           "destination": "KHOU",
           "altitude": 25000,
-          "route": "ARDIA7 ELLVR NNEAL KIDDZ4",
+          "waypoints": "ARDIA7 ELLVR NNEAL KIDDZ4",
           "airlines": [
             {
               "icao": "ENY",
@@ -1025,7 +1025,7 @@
           "exit": "MLC",
           "destination": "KSGF",
           "altitude": 27000,
-          "route": "AKUNA9 MLC RZC BILIE",
+          "waypoints": "AKUNA9 MLC RZC BILIE",
           "airlines": [
             {
               "icao": "ENY",
@@ -1037,7 +1037,7 @@
           "exit": "BSKAT",
           "destination": "KEWR",
           "altitude": 33000,
-          "route": "ZACHH4 BSKAT LIT J131 PXV ROD DORET J584 FQM FQM3",
+          "waypoints": "ZACHH4 BSKAT LIT J131 PXV ROD DORET J584 FQM FQM3",
           "airlines": [
             {
               "icao": "AAL",
@@ -1049,7 +1049,7 @@
           "exit": "IRW",
           "destination": "RJTT",
           "altitude": 32000,
-          "route": "BLECO8 IRW HYS LBF RAP GGW DAPOP YEGGA 5600N/12000W 5900N/13000W GOROV NCA11 YESKA NICHO R220 NULUK EDWAL CHIPT 4900N/17300E 4700N/17000E 4500N/16300E NUBDA R220 NANAC Y810 AKRIT Y807 POLIX",
+          "waypoints": "BLECO8 IRW HYS LBF RAP GGW DAPOP YEGGA 5600N/12000W 5900N/13000W GOROV NCA11 YESKA NICHO R220 NULUK EDWAL CHIPT 4900N/17300E 4700N/17000E 4500N/16300E NUBDA R220 NANAC Y810 AKRIT Y807 POLIX",
           "airlines": [
             {
               "icao": "JAL",
@@ -1065,7 +1065,7 @@
           "exit": "BSKAT",
           "destination": "EDDF",
           "altitude": 35000,
-          "route": "ZACHH4 BSKAT RICKX BNA SWAPP Q34 GHATS ASBUR CSN AGARD BRIGS Q439 DRIFT Y497 OWENZ DOVEY NATX 4400N/05000W NATX NASBA RATKA LARLA OTOFE UN491 TABOV UN858 RANUX UN858 VALEK UM163 LUTAX DIK T856 NIVNU T847 IMCOM IMCOM1B",
+          "waypoints": "ZACHH4 BSKAT RICKX BNA SWAPP Q34 GHATS ASBUR CSN AGARD BRIGS Q439 DRIFT Y497 OWENZ DOVEY NATX 4400N/05000W NATX NASBA RATKA LARLA OTOFE UN491 TABOV UN858 RANUX UN858 VALEK UM163 LUTAX DIK T856 NIVNU T847 IMCOM IMCOM1B",
           "airlines": [
             {
               "icao": "AAL",
@@ -1077,7 +1077,7 @@
           "exit": "FORCK",
           "destination": "LEMD",
           "altitude": 35000,
-          "route": "FORCK SUTTN BAKRE HRTUN ZANZA GQO SUG LIB ORF AR9 ZIBUT LARGE JOBOC 4100N/06000W 4300N/05000W 4400N/04000W 4400N/03000W 4300N/02000W ARMED EPOPO ADORO ZMR",
+          "waypoints": "FORCK SUTTN BAKRE HRTUN ZANZA GQO SUG LIB ORF AR9 ZIBUT LARGE JOBOC 4100N/06000W 4300N/05000W 4400N/04000W 4400N/03000W 4300N/02000W ARMED EPOPO ADORO ZMR",
           "airlines": [
             {
               "icao": "AAL",
@@ -1089,7 +1089,7 @@
           "exit": "MLC",
           "destination": "EFHK",
           "altitude": 41000,
-          "route": "AKUNA9 MLC FSM KK45K KI57O KC66S SYR CABCI TAFFY N559A NEEKO 5400N/05000W 5630N/04000W 5830N/03000W 6000N/02000W RATSU ERSER XELVI OTKIL Y368 LAKUT",
+          "waypoints": "AKUNA9 MLC FSM KK45K KI57O KC66S SYR CABCI TAFFY N559A NEEKO 5400N/05000W 5630N/04000W 5830N/03000W 6000N/02000W RATSU ERSER XELVI OTKIL Y368 LAKUT",
           "airlines": [
             {
               "icao": "FIN",
@@ -1101,7 +1101,7 @@
           "exit": "CIKAN",
           "destination": "NFFN",
           "altitude": 41000,
-          "route": "WSTEX2 CIKAN BGS J66 EWM J4 SSO J50 GBN J18 MZB J1 OCN SXC C1177 FICKY 2900N/13000W 2600N/13700W 2000N/14500W 1600N/15000W 1200N/15500W 0700N/16000W EBEBE 0000N/16700W 0300S/17000W 0500S/17145W 1000S/17615W KAMAP A579 NN",
+          "waypoints": "WSTEX2 CIKAN BGS J66 EWM J4 SSO J50 GBN J18 MZB J1 OCN SXC C1177 FICKY 2900N/13000W 2600N/13700W 2000N/14500W 1600N/15000W 1200N/15500W 0700N/16000W EBEBE 0000N/16700W 0300S/17000W 0500S/17145W 1000S/17615W KAMAP A579 NN",
           "airlines": [
             {
               "icao": "FJI",
@@ -1113,7 +1113,7 @@
           "exit": "BSKAT",
           "destination": "OMDB",
           "altitude": 31000,
-          "route": "ZACHH4 BSKAT LIT RINTE CXR JHW Q29 HANKK SYR HULTN SAXAN 5300N/05000W 5430N/04000W 5430N/03000W 5400N/02000W MALOT GISTI BAKUR OKSAW KONAN KOK REMBA MATUG BOMBI TENLO DEXIT ADLET PESAT TEGRI ARTAT UP975 ERGUN UL124 EVSAS UM688 RATVO UM688 VAXEN UM688 SIDAD P975 SESRU M677 RABAP M677 SOGAN M677 MURUB M677 DEGSO M677 OBNET M677 ITBUL M677 VUTEB",
+          "waypoints": "ZACHH4 BSKAT LIT RINTE CXR JHW Q29 HANKK SYR HULTN SAXAN 5300N/05000W 5430N/04000W 5430N/03000W 5400N/02000W MALOT GISTI BAKUR OKSAW KONAN KOK REMBA MATUG BOMBI TENLO DEXIT ADLET PESAT TEGRI ARTAT UP975 ERGUN UL124 EVSAS UM688 RATVO UM688 VAXEN UM688 SIDAD P975 SESRU M677 RABAP M677 SOGAN M677 MURUB M677 DEGSO M677 OBNET M677 ITBUL M677 VUTEB",
           "airlines": [
             {
               "icao": "UAE",
@@ -1125,7 +1125,7 @@
           "exit": "LOOSE",
           "destination": "EDDF",
           "altitude": 33000,
-          "route": "TRYTN4 LOOSE Q34 MEMFS Q34 HITMN BKW JASEN EMI COPES Q430 RIFLE YAHOO VITOL N45D NANSO N45D RAFIN NATW 4900N/03000W NATW ATSUR ARKIL OXLOW KONAN UL607 SPI T180 NIVNU T847 IMCOM IMCOM1A",
+          "waypoints": "TRYTN4 LOOSE Q34 MEMFS Q34 HITMN BKW JASEN EMI COPES Q430 RIFLE YAHOO VITOL N45D NANSO N45D RAFIN NATW 4900N/03000W NATW ATSUR ARKIL OXLOW KONAN UL607 SPI T180 NIVNU T847 IMCOM IMCOM1A",
           "airlines": [
             {
               "icao": "DLH",
@@ -1137,7 +1137,7 @@
           "exit": "BSKAT",
           "destination": "EGLL",
           "altitude": 33000,
-          "route": "ZACHH4 BSKAT JBR IIU FLM JST YYOST EEGUL ENE Q822 ALLEX N263A JOOPY 4900N/05000W 5100N/04000W 5300N/03000W 5400N/02000W DOGAL BEXET DEVOL LIFFY UL975 MALUD Q38 NUGRA",
+          "waypoints": "ZACHH4 BSKAT JBR IIU FLM JST YYOST EEGUL ENE Q822 ALLEX N263A JOOPY 4900N/05000W 5100N/04000W 5300N/03000W 5400N/02000W DOGAL BEXET DEVOL LIFFY UL975 MALUD Q38 NUGRA",
           "airlines": [
             {
               "icao": "AAL",
@@ -1149,7 +1149,7 @@
           "exit": "BSKAT",
           "destination": "OTHH",
           "altitude": 33000,
-          "route": "ZACHH4 BSKAT LITTR Q68 UNCKL HVQ AML BAL ACY MANTA DOVEY 4300N/05000W 4400N/04000W 4330N/03000W 4230N/02000W BANAL RIVRO BARDI M191 DIPOL M871 NVS NANDO FENXE MABUX RETBA MOPIR LASPO LUXUR UM134 PAGRE UM134 ANB UA411 MORJA SONAK DINUX ARLOS SALUN N705 BOPIX N710 TAKRI M720 FYM M872 WEJ L604 MUSRI L604 TABTA L604 KFA M691 LADNA N318 GEXIM N318 HAYYA",
+          "waypoints": "ZACHH4 BSKAT LITTR Q68 UNCKL HVQ AML BAL ACY MANTA DOVEY 4300N/05000W 4400N/04000W 4330N/03000W 4230N/02000W BANAL RIVRO BARDI M191 DIPOL M871 NVS NANDO FENXE MABUX RETBA MOPIR LASPO LUXUR UM134 PAGRE UM134 ANB UA411 MORJA SONAK DINUX ARLOS SALUN N705 BOPIX N710 TAKRI M720 FYM M872 WEJ L604 MUSRI L604 TABTA L604 KFA M691 LADNA N318 GEXIM N318 HAYYA",
           "airlines": [
             {
               "icao": "QTR",
@@ -1161,7 +1161,7 @@
           "exit": "ACT",
           "destination": "YMML",
           "altitude": 34000,
-          "route": "NELYN6 ACT PNG NAPDA MZT 2030N/10948W 2015N/11009W 1824N/11308W 1607N/11715W 1517N/11857W 1448N/12000W 1310N/12327W 1103N/12803W 0951N/13026W 0821N/13300W 0705N/13500W 0413N/13929W 0330N/14034W 0125N/14342W 0014S/14610W 0333S/15038W 0506S/15240W 0756S/15636W 0811S/15700W 0912S/15834W 1049S/16127W 1320S/16633W 1604S/17150W 1824S/17530W 2003S/17740W 2138S/17948W 2438S/17628E 2500S/17550E 2642S/17251E 2900S/16800E 3038S/16300E 3100S/16146E 3312S/15547E 3453S/15221E URBOB NABBA Q29 LIZZI",
+          "waypoints": "NELYN6 ACT PNG NAPDA MZT 2030N/10948W 2015N/11009W 1824N/11308W 1607N/11715W 1517N/11857W 1448N/12000W 1310N/12327W 1103N/12803W 0951N/13026W 0821N/13300W 0705N/13500W 0413N/13929W 0330N/14034W 0125N/14342W 0014S/14610W 0333S/15038W 0506S/15240W 0756S/15636W 0811S/15700W 0912S/15834W 1049S/16127W 1320S/16633W 1604S/17150W 1824S/17530W 2003S/17740W 2138S/17948W 2438S/17628E 2500S/17550E 2642S/17251E 2900S/16800E 3038S/16300E 3100S/16146E 3312S/15547E 3453S/15221E URBOB NABBA Q29 LIZZI",
           "airlines": [
             {
               "icao": "QFA",
@@ -1173,7 +1173,7 @@
           "exit": "ACT",
           "destination": "YSSY",
           "altitude": 34000,
-          "route": "NELYN6 ACT PNG NAPDA 2510N/10459W 2027N/10945W 1913N/11122W 1645N/11536W 1430N/12000W 1411N/12037W 1221N/12443W 1119N/12653W 0841N/13159W 0535N/13709W 0330N/14024W 0239N/14143W 0022S/14621W 0350S/15102W 0623S/15427W 0800S/15700W 0927S/15918W 1153S/16405W 1240S/16550W 1457S/17101W 1734S/17540W 1825S/17655W 2009S/17934W 2321S/17619E 2500S/17332E 2509S/17317E 2607S/17104E 2653S/16918E 2807S/16618E 2924S/16300E 2931S/16242E 3054S/15918E ABARB RIKNI N774 MARLN",
+          "waypoints": "NELYN6 ACT PNG NAPDA 2510N/10459W 2027N/10945W 1913N/11122W 1645N/11536W 1430N/12000W 1411N/12037W 1221N/12443W 1119N/12653W 0841N/13159W 0535N/13709W 0330N/14024W 0239N/14143W 0022S/14621W 0350S/15102W 0623S/15427W 0800S/15700W 0927S/15918W 1153S/16405W 1240S/16550W 1457S/17101W 1734S/17540W 1825S/17655W 2009S/17934W 2321S/17619E 2500S/17332E 2509S/17317E 2607S/17104E 2653S/16918E 2807S/16618E 2924S/16300E 2931S/16242E 3054S/15918E ABARB RIKNI N774 MARLN",
           "airlines": [
             {
               "icao": "QFA",
@@ -1185,7 +1185,7 @@
           "exit": "ZALEA",
           "destination": "KTLH",
           "altitude": 35000,
-          "route": "MRSSH3 ZALEA SWB MCB J50 CEW MAI",
+          "waypoints": "MRSSH3 ZALEA SWB MCB J50 CEW MAI",
           "airlines": [
             {
               "icao": "JIA",
@@ -1197,7 +1197,7 @@
           "exit": "SAT",
           "destination": "MMMX",
           "altitude": 38000,
-          "route": "JPOOL8 SAT REX UJ53 TAM UT100 ENAGA ENAGA3A",
+          "waypoints": "JPOOL8 SAT REX UJ53 TAM UT100 ENAGA ENAGA3A",
           "airlines": [
             {
               "icao": "AAL",
@@ -1217,7 +1217,7 @@
           "exit": "MLC",
           "destination": "KFSM",
           "altitude": 23000,
-          "route": "AKUNA9 MLC",
+          "waypoints": "AKUNA9 MLC",
           "airlines": [
             {
               "icao": "ENY",
@@ -1229,7 +1229,7 @@
           "exit": "HUDAD",
           "destination": "KSEA",
           "altitude": 34000,
-          "route": "HUDAD3 HUDAD KENTO RADIO FLOOD EKR BETRE ODYSY PDT CHINS5",
+          "waypoints": "HUDAD3 HUDAD KENTO RADIO FLOOD EKR BETRE ODYSY PDT CHINS5",
           "airlines": [
             {
               "icao": "AAL",
@@ -1249,7 +1249,7 @@
           "exit": "FORCK",
           "destination": "KHSV",
           "altitude": 37000,
-          "route": "FORCK ELD SQS DCU",
+          "waypoints": "FORCK ELD SQS DCU",
           "airlines": [
             {
               "icao": "SKW",
@@ -1261,7 +1261,7 @@
           "exit": "BSKAT",
           "destination": "KSDF",
           "altitude": 35000,
-          "route": "ZACHH4 BSKAT LIT MOOCH MBELL5",
+          "waypoints": "ZACHH4 BSKAT LIT MOOCH MBELL5",
           "airlines": [
             {
               "icao": "AAL",
@@ -1273,7 +1273,7 @@
           "exit": "HULZE",
           "destination": "KABQ",
           "altitude": 38000,
-          "route": "HRPER4 HULZE RECKN COLTR4",
+          "waypoints": "HRPER4 HULZE RECKN COLTR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1289,7 +1289,7 @@
           "exit": "HUDAD",
           "destination": "KGJT",
           "altitude": 32000,
-          "route": "HUDAD3 HUDAD PNH ALS JNC",
+          "waypoints": "HUDAD3 HUDAD PNH ALS JNC",
           "airlines": [
             {
               "icao": "ENY",
@@ -1301,7 +1301,7 @@
           "exit": "WINDU",
           "destination": "KSAT",
           "altitude": 30000,
-          "route": "JASPA7 WINDU QERVO1",
+          "waypoints": "JASPA7 WINDU QERVO1",
           "airlines": [
             {
               "icao": "AAL",
@@ -1313,7 +1313,7 @@
           "exit": "IRW",
           "destination": "KRAP",
           "altitude": 30000,
-          "route": "BLECO8 IRW CUKTO HLC HCT KEEFF RAP",
+          "waypoints": "BLECO8 IRW CUKTO HLC HCT KEEFF RAP",
           "airlines": [
             {
               "icao": "ENY",
@@ -1325,7 +1325,7 @@
           "exit": "FORCK",
           "destination": "KCLT",
           "altitude": 35000,
-          "route": "FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE8",
+          "waypoints": "FORCK IZAAC Q30 VLKNN THRSR BESTT JONZE8",
           "airlines": [
             {
               "icao": "AAL",
@@ -1337,7 +1337,7 @@
           "exit": "SAT",
           "destination": "KCRP",
           "altitude": 31000,
-          "route": "NELYN6 SAT THX V163 SKIDS",
+          "waypoints": "NELYN6 SAT THX V163 SKIDS",
           "airlines": [
             {
               "icao": "ENY",
@@ -1349,7 +1349,7 @@
           "exit": "MLC",
           "destination": "KMSN",
           "altitude": 37000,
-          "route": "AKUNA9 MLC EOS CVA",
+          "waypoints": "AKUNA9 MLC EOS CVA",
           "airlines": [
             {
               "icao": "AAL",
@@ -1361,7 +1361,7 @@
           "exit": "BSKAT",
           "destination": "LFPG",
           "altitude": 39000,
-          "route": "ZACHH4 BSKAT RICKX BNA SWAPP Q34 GHATS ASBUR CSN AGARD BRIGS Q439 DRIFT Y497 OWENZ DOVEY NATX NASBA TAKAS ALUTA KORER UN482 GODAN UN482 ANG UN741 KEPER",
+          "waypoints": "ZACHH4 BSKAT RICKX BNA SWAPP Q34 GHATS ASBUR CSN AGARD BRIGS Q439 DRIFT Y497 OWENZ DOVEY NATX NASBA TAKAS ALUTA KORER UN482 GODAN UN482 ANG UN741 KEPER",
           "airlines": [
             {
               "icao": "AAL",
@@ -1373,7 +1373,7 @@
           "exit": "BSKAT",
           "destination": "LFPG",
           "altitude": 37000,
-          "route": "ZACHH4 BSKAT MEM VXV ORF AR9 ATLIC AR9 ZIBUT LARGE JOBOC NATY 4500N/04000W NATY GUNSO RATKA LARLA GANTO JSY UY111 INGOR UM25 LUKIP LUKIP9W",
+          "waypoints": "ZACHH4 BSKAT MEM VXV ORF AR9 ATLIC AR9 ZIBUT LARGE JOBOC NATY 4500N/04000W NATY GUNSO RATKA LARLA GANTO JSY UY111 INGOR UM25 LUKIP LUKIP9W",
           "airlines": [
             {
               "icao": "AFR",
@@ -1385,7 +1385,7 @@
           "exit": "BSKAT",
           "destination": "CYYZ",
           "altitude": 39000,
-          "route": "ZACHH4 BSKAT BIBBS ECIGE PLESS VHP NOLNN CRL QWERI NUBER6",
+          "waypoints": "ZACHH4 BSKAT BIBBS ECIGE PLESS VHP NOLNN CRL QWERI NUBER6",
           "airlines": [
             {
               "icao": "AAL",
@@ -1405,7 +1405,7 @@
           "exit": "HUDAD",
           "destination": "KPDX",
           "altitude": 34000,
-          "route": "HUDAD3 HUDAD PNH KD48U KU75M JOTBA HHOOD5",
+          "waypoints": "HUDAD3 HUDAD PNH KD48U KU75M JOTBA HHOOD5",
           "airlines": [
             {
               "icao": "ASA",
@@ -1425,7 +1425,7 @@
           "exit": "LOOSE",
           "destination": "KATL",
           "altitude": 35000,
-          "route": "TRYTN4 LOOSE MEMFS HUTCC KNSAW RUSSA GLAVN1",
+          "waypoints": "TRYTN4 LOOSE MEMFS HUTCC KNSAW RUSSA GLAVN1",
           "airlines": [
             {
               "icao": "AAL",
@@ -1965,7 +1965,7 @@
           "destination": "KATL",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK ELD MERDN DUUCK ORRKK HOBTT2"
+          "waypoints": "FORCK ELD MERDN DUUCK ORRKK HOBTT2"
         },
         {
           "airlines": [
@@ -1975,7 +1975,7 @@
           ],
           "destination": "KHOU",
           "exit": "ELLVR",
-          "route": "ELLVR NNEAL KIDDZ4"
+          "waypoints": "ELLVR NNEAL KIDDZ4"
         },
         {
           "airlines": [
@@ -1985,7 +1985,7 @@
           ],
           "destination": "KDEN",
           "exit": "ROLLS",
-          "route": "ROLLS DRAWL HALEN NIIXX3"
+          "waypoints": "ROLLS DRAWL HALEN NIIXX3"
         },
         {
           "airlines": [
@@ -1995,7 +1995,7 @@
           ],
           "destination": "KLAS",
           "exit": "HULZE",
-          "route": "HULZE TXO KA30U KA33Q HAHAA RKSTR3"
+          "waypoints": "HULZE TXO KA30U KA33Q HAHAA RKSTR3"
         },
         {
           "airlines": [
@@ -2009,7 +2009,7 @@
           ],
           "destination": "KLAX",
           "exit": "BRHMA",
-          "route": "BRHMA CNX J74 NABOB GABBL HLYWD1"
+          "waypoints": "BRHMA CNX J74 NABOB GABBL HLYWD1"
         },
         {
           "airlines": [
@@ -2019,7 +2019,7 @@
           ],
           "destination": "KPHX",
           "exit": "HULZE",
-          "route": "HULZE TXO J72 ABQ J78 ZUN EAGUL6"
+          "waypoints": "HULZE TXO J72 ABQ J78 ZUN EAGUL6"
         },
         {
           "airlines": [
@@ -2029,7 +2029,7 @@
           ],
           "destination": "KAUS",
           "exit": "WINDU",
-          "route": "WINDU SEWZY6"
+          "waypoints": "WINDU SEWZY6"
         },
         {
           "airlines": [
@@ -2039,7 +2039,7 @@
           ],
           "destination": "KORD",
           "exit": "MLC",
-          "route": "MLC SGF MAGOO ENDEE6"
+          "waypoints": "MLC SGF MAGOO ENDEE6"
         },
         {
           "airlines": [
@@ -2049,7 +2049,7 @@
           ],
           "destination": "KSTL",
           "exit": "MLC",
-          "route": "MLC SGF KAYLA3"
+          "waypoints": "MLC SGF KAYLA3"
         },
         {
           "airlines": [
@@ -2059,7 +2059,7 @@
           ],
           "destination": "KMCO",
           "exit": "ZALEA",
-          "route": "ZALEA HRV Q105 REDFN Y280 CHRGE PRICY3"
+          "waypoints": "ZALEA HRV Q105 REDFN Y280 CHRGE PRICY3"
         },
         {
           "airlines": [
@@ -2069,7 +2069,7 @@
           ],
           "destination": "KFLL",
           "exit": "ZALEA",
-          "route": "ZALEA HRV Q105 BLVNS Y290 OCHHO VNECK TEEKY3"
+          "waypoints": "ZALEA HRV Q105 BLVNS Y290 OCHHO VNECK TEEKY3"
         },
         {
           "airlines": [
@@ -2079,7 +2079,7 @@
           ],
           "destination": "KMSP",
           "exit": "TUL",
-          "route": "TUL STJ ROKKK NITZR3"
+          "waypoints": "TUL STJ ROKKK NITZR3"
         },
         {
           "airlines": [
@@ -2089,7 +2089,7 @@
           ],
           "destination": "KPDX",
           "exit": "HUDAD",
-          "route": "HUDAD KA39W KD48U KU63Q KU69O KU81K JOTBA HHOOD4"
+          "waypoints": "HUDAD KA39W KD48U KU63Q KU69O KU81K JOTBA HHOOD4"
         },
         {
           "airlines": [
@@ -2099,7 +2099,7 @@
           ],
           "destination": "KOAK",
           "exit": "HULZE",
-          "route": "HULZE FTI J58 RSK BCE ILC KITTN KATTS TATOO MONOH OAKES2"
+          "waypoints": "HULZE FTI J58 RSK BCE ILC KITTN KATTS TATOO MONOH OAKES2"
         },
         {
           "airlines": [
@@ -2109,7 +2109,7 @@
           ],
           "destination": "KMSY",
           "exit": "ZALEA",
-          "route": "ZALEA SWB LSU AWDAD1"
+          "waypoints": "ZALEA SWB LSU AWDAD1"
         }
       ],
       "atpa": {
@@ -2281,7 +2281,7 @@
           "destination": "KONT",
           "exit": "TYGGR",
           "scratchpad": "TGR",
-          "route": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -2298,7 +2298,7 @@
           "destination": "KONT",
           "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -2312,7 +2312,7 @@
           "destination": "KLAS",
           "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "HUDAD TXO ABQ J72 GUP LAS"
+          "waypoints": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -2326,7 +2326,7 @@
           "destination": "KLAS",
           "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "ALIAN TXO ABQ J72 GUP LAS"
+          "waypoints": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -2337,7 +2337,7 @@
           "destination": "KCVG",
           "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "BSKAT LIT"
+          "waypoints": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -2351,7 +2351,7 @@
           "destination": "KCLT",
           "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "LOOSE CLT"
+          "waypoints": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -2362,7 +2362,7 @@
           "destination": "KCLT",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK CLT"
+          "waypoints": "FORCK CLT"
         },
         {
           "airlines": [
@@ -2376,7 +2376,7 @@
           "destination": "KIAH",
           "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "ZALEA IAH"
+          "waypoints": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -2387,7 +2387,7 @@
           "destination": "KMSP",
           "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "ROLLS MSP"
+          "waypoints": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -2398,7 +2398,7 @@
           "destination": "KDEN",
           "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "IRW DEN"
+          "waypoints": "IRW DEN"
         },
         {
           "airlines": [
@@ -2409,7 +2409,7 @@
           "destination": "KORD",
           "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "OKM ORD"
+          "waypoints": "OKM ORD"
         },
         {
           "airlines": [
@@ -2420,7 +2420,7 @@
           "destination": "KPHL",
           "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "MLC PHL"
+          "waypoints": "MLC PHL"
         },
         {
           "airlines": [
@@ -2434,7 +2434,7 @@
           "destination": "KSAT",
           "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "SAT"
+          "waypoints": "SAT"
         },
         {
           "airlines": [
@@ -2448,7 +2448,7 @@
           "destination": "MMMX",
           "exit": "JASPA",
           "scratchpad": "JAS",
-          "route": "TTT JASPA WINDU CWK MMMX"
+          "waypoints": "TTT JASPA WINDU CWK MMMX"
         },
         {
           "airlines": [
@@ -2459,7 +2459,7 @@
           "destination": "KIAH",
           "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "CLL IAH"
+          "waypoints": "CLL IAH"
         },
         {
           "airlines": [
@@ -2470,7 +2470,7 @@
           "destination": "KMSY",
           "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TORNN BILEE TNV MSY"
+          "waypoints": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -2480,7 +2480,7 @@
             }
           ],
           "destination": "KGVT",
-          "route": "NOBLY KGVT",
+          "waypoints": "NOBLY KGVT",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 7000, 9000]
@@ -2493,7 +2493,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
@@ -2506,7 +2506,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "CLARE POTEN KGGG",
+          "waypoints": "CLARE POTEN KGGG",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 7000, 9000]
@@ -2519,7 +2519,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "NELYN ACT KACT",
+          "waypoints": "NELYN ACT KACT",
           "exit": "NELYN.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2532,7 +2532,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA WINDU CWK KACT",
+          "waypoints": "JASPA WINDU CWK KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2545,7 +2545,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA ELLVR KACT",
+          "waypoints": "ARDIA ELLVR KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 10000]
@@ -2558,7 +2558,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN CLL KCLL",
+          "waypoints": "DARTZ BRDEN CLL KCLL",
           "exit": "DARTZ.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2571,7 +2571,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2584,7 +2584,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO ADM KADM",
+          "waypoints": "CUZNO NANDR BLECO ADM KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2597,7 +2597,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR GRABE ADM KADM",
+          "waypoints": "CUZNO NANDR GRABE ADM KADM",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -2610,7 +2610,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 8500]
@@ -2623,7 +2623,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2782,7 +2782,7 @@
             }
           ],
           "destination": "KLIT",
-          "route": "NOBLY LIT KLIT",
+          "waypoints": "NOBLY LIT KLIT",
           "exit": "NOBLY",
           "scratchpad": "LIT"
         },
@@ -2794,7 +2794,7 @@
             }
           ],
           "destination": "KGVT",
-          "route": "NOBLY KGVT",
+          "waypoints": "NOBLY KGVT",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 7000, 9000]
@@ -2807,7 +2807,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
@@ -2822,7 +2822,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "TRISS SHERO KSHV",
+          "waypoints": "TRISS SHERO KSHV",
           "exit": "TRISS",
           "scratchpad": "TXK"
         },
@@ -2834,7 +2834,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "CLARE POTEN KGGG",
+          "waypoints": "CLARE POTEN KGGG",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 7000, 9000]
@@ -2853,7 +2853,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "CLARE POTEN KSHV",
+          "waypoints": "CLARE POTEN KSHV",
           "exit": "CLARE",
           "scratchpad": "EIC"
         },
@@ -2867,7 +2867,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "ZACHH",
+          "waypoints": "ZACHH",
           "exit": "ZACHH",
           "scratchpad": "ZER"
         },
@@ -2881,7 +2881,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "LOOSE",
+          "waypoints": "LOOSE",
           "exit": "LOOSE",
           "scratchpad": "TCH"
         },
@@ -2895,7 +2895,7 @@
             }
           ],
           "destination": "KCLT",
-          "route": "FORCK",
+          "waypoints": "FORCK",
           "exit": "FORCK",
           "scratchpad": "HAN"
         },
@@ -2909,7 +2909,7 @@
             }
           ],
           "destination": "KFLL",
-          "route": "ZALEA",
+          "waypoints": "ZALEA",
           "exit": "ZALEA",
           "scratchpad": "THO"
         },
@@ -2923,7 +2923,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "SAT KSAT",
+          "waypoints": "SAT KSAT",
           "exit": "SAT",
           "scratchpad": "NEL"
         },
@@ -2935,7 +2935,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "NELYN ACT KACT",
+          "waypoints": "NELYN ACT KACT",
           "exit": "NELYN.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2950,7 +2950,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "JASPA WINDU CWK KSAT",
+          "waypoints": "JASPA WINDU CWK KSAT",
           "exit": "JASPA",
           "scratchpad": "JAS"
         },
@@ -2962,7 +2962,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA WINDU CWK KACT",
+          "waypoints": "JASPA WINDU CWK KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -2977,7 +2977,7 @@
             }
           ],
           "destination": "KIAH",
-          "route": "CLL KIAH",
+          "waypoints": "CLL KIAH",
           "exit": "CLL",
           "scratchpad": "RDA"
         },
@@ -2989,7 +2989,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA ELLVR KACT",
+          "waypoints": "ARDIA ELLVR KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 10000]
@@ -3004,7 +3004,7 @@
             }
           ],
           "destination": "KIAH",
-          "route": "TORNN BILEE TNV KIAH",
+          "waypoints": "TORNN BILEE TNV KIAH",
           "exit": "TORNN",
           "scratchpad": "DAR"
         },
@@ -3016,7 +3016,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN CLL KCLL",
+          "waypoints": "DARTZ BRDEN CLL KCLL",
           "exit": "DARTZ.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -3029,7 +3029,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -3044,7 +3044,7 @@
             }
           ],
           "destination": "KTUL",
-          "route": "IRW TUL KTUL",
+          "waypoints": "IRW TUL KTUL",
           "exit": "IRW",
           "scratchpad": "BLE"
         },
@@ -3056,7 +3056,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO ADM KADM",
+          "waypoints": "CUZNO NANDR BLECO ADM KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -3071,7 +3071,7 @@
             }
           ],
           "destination": "KMCI",
-          "route": "OKM KMCI",
+          "waypoints": "OKM KMCI",
           "exit": "OKM",
           "scratchpad": "GRA"
         },
@@ -3083,7 +3083,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR GRABE ADM KADM",
+          "waypoints": "CUZNO NANDR GRABE ADM KADM",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -3098,7 +3098,7 @@
             }
           ],
           "destination": "KSTL",
-          "route": "MLC KSTL",
+          "waypoints": "MLC KSTL",
           "exit": "MLC",
           "scratchpad": "AKU"
         },
@@ -3110,7 +3110,7 @@
             }
           ],
           "destination": "KGYI",
-          "route": "CUZNO NANDR AKUNA KGYI",
+          "waypoints": "CUZNO NANDR AKUNA KGYI",
           "exit": "AKUNA.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -3125,7 +3125,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "BOTCH SWABR PGLET MUTEE HUDAD KDEN",
+          "waypoints": "BOTCH SWABR PGLET MUTEE HUDAD KDEN",
           "exit": "PGLET",
           "scratchpad": "PGL"
         },
@@ -3139,7 +3139,7 @@
             }
           ],
           "destination": "KSLC",
-          "route": "BOTCH SWABR TYGGR DBLSS HRPER HULZE KSLC",
+          "waypoints": "BOTCH SWABR TYGGR DBLSS HRPER HULZE KSLC",
           "exit": "TYGGR",
           "scratchpad": "TGR"
         },
@@ -3153,7 +3153,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "BOTCH SWABR ROOOO RUFFS KATZZ BRHMA KLAX",
+          "waypoints": "BOTCH SWABR ROOOO RUFFS KATZZ BRHMA KLAX",
           "exit": "ROOOO",
           "scratchpad": "ROO"
         },
@@ -3167,7 +3167,7 @@
             }
           ],
           "destination": "KSAN",
-          "route": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
+          "waypoints": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
           "exit": "RBBIT",
           "scratchpad": "RBT"
         },
@@ -3179,7 +3179,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 8500]
@@ -3192,7 +3192,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -3333,7 +3333,7 @@
             }
           ],
           "destination": "KLIT",
-          "route": "NOBLY LIT KLIT",
+          "waypoints": "NOBLY LIT KLIT",
           "exit": "NOBLY",
           "scratchpad": "LIT"
         },
@@ -3345,7 +3345,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "NOBLY KTXK",
+          "waypoints": "NOBLY KTXK",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 5500, 7000, 7500]
@@ -3358,7 +3358,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 5500, 7000, 7500, 9000]
@@ -3370,7 +3370,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK",
           "scratchpad": "TXK"
         },
@@ -3382,7 +3382,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "CLARE POTEN KSHV",
+          "waypoints": "CLARE POTEN KSHV",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 5500, 7000, 7500, 9000]
@@ -3398,7 +3398,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "CLARE POTEN KSHV",
+          "waypoints": "CLARE POTEN KSHV",
           "exit": "CLARE",
           "scratchpad": "EIC"
         },
@@ -3409,7 +3409,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "ZACHH",
+          "waypoints": "ZACHH",
           "exit": "ZACHH",
           "scratchpad": "ZER"
         },
@@ -3420,7 +3420,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "LOOSE",
+          "waypoints": "LOOSE",
           "exit": "LOOSE",
           "scratchpad": "TCH"
         },
@@ -3431,7 +3431,7 @@
             }
           ],
           "destination": "KCLT",
-          "route": "FORCK",
+          "waypoints": "FORCK",
           "exit": "FORCK",
           "scratchpad": "HAN"
         },
@@ -3442,7 +3442,7 @@
             }
           ],
           "destination": "KFLL",
-          "route": "ZALEA",
+          "waypoints": "ZALEA",
           "exit": "ZALEA",
           "scratchpad": "THO"
         },
@@ -3453,7 +3453,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "SAT KSAT",
+          "waypoints": "SAT KSAT",
           "exit": "SAT",
           "scratchpad": "NEL"
         },
@@ -3465,7 +3465,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "SAT KSAT",
+          "waypoints": "SAT KSAT",
           "exit": "SAT.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 6000, 8000, 10000]
@@ -3477,7 +3477,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "JASPA WINDU CWK KSAT",
+          "waypoints": "JASPA WINDU CWK KSAT",
           "exit": "JASPA",
           "scratchpad": "JAS"
         },
@@ -3489,7 +3489,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA KACT",
+          "waypoints": "JASPA KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 6000, 8000]
@@ -3502,7 +3502,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA KACT",
+          "waypoints": "ARDIA KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000, 10000]
@@ -3515,7 +3515,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "CLL KCLL",
+          "waypoints": "CLL KCLL",
           "exit": "CLL.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000]
@@ -3527,7 +3527,7 @@
             }
           ],
           "destination": "KIAH",
-          "route": "TORNN BILEE TNV KIAH",
+          "waypoints": "TORNN BILEE TNV KIAH",
           "exit": "TORNN",
           "scratchpad": "DAR"
         },
@@ -3539,7 +3539,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "TORNN KCLL",
+          "waypoints": "TORNN KCLL",
           "exit": "TORNN.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 6000, 8000]
@@ -3551,7 +3551,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "ROLLS KDEN",
+          "waypoints": "ROLLS KDEN",
           "exit": "ROLLS",
           "scratchpad": "LOW"
         },
@@ -3563,7 +3563,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [3500, 5000, 5500, 7000, 7500, 9000]
@@ -3575,7 +3575,7 @@
             }
           ],
           "destination": "KTUL",
-          "route": "IRW TUL KTUL",
+          "waypoints": "IRW TUL KTUL",
           "exit": "IRW",
           "scratchpad": "BLE"
         },
@@ -3587,7 +3587,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO KADM",
+          "waypoints": "CUZNO NANDR BLECO KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [5000, 7000]
@@ -3599,7 +3599,7 @@
             }
           ],
           "destination": "KMCI",
-          "route": "OKM KMCI",
+          "waypoints": "OKM KMCI",
           "exit": "OKM",
           "scratchpad": "GRA"
         },
@@ -3611,7 +3611,7 @@
             }
           ],
           "destination": "KGYI",
-          "route": "CUZNO NANDR GRABE KGYI",
+          "waypoints": "CUZNO NANDR GRABE KGYI",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [5000, 7000]
@@ -3623,7 +3623,7 @@
             }
           ],
           "destination": "KSTL",
-          "route": "MLC KSTL",
+          "waypoints": "MLC KSTL",
           "exit": "MLC",
           "scratchpad": "AKU"
         },
@@ -3634,7 +3634,7 @@
             }
           ],
           "destination": "KGYI",
-          "route": "CUZNO NANDR AKUNA KGYI",
+          "waypoints": "CUZNO NANDR AKUNA KGYI",
           "exit": "AKUNA.PROP",
           "scratchpad": "OKP",
           "altitude": [5000, 7000]
@@ -3646,7 +3646,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "BOTCH SWABR PGLET MUTEE HUDAD KDEN",
+          "waypoints": "BOTCH SWABR PGLET MUTEE HUDAD KDEN",
           "exit": "PGLET",
           "scratchpad": "PGL"
         },
@@ -3657,7 +3657,7 @@
             }
           ],
           "destination": "KSLC",
-          "route": "BOTCH SWABR TYGGR DBLSS HRPER HULZE KSLC",
+          "waypoints": "BOTCH SWABR TYGGR DBLSS HRPER HULZE KSLC",
           "exit": "TYGGR",
           "scratchpad": "TGR"
         },
@@ -3668,7 +3668,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "BOTCH SWABR ROOOO RUFFS KATZZ BRHMA KLAX",
+          "waypoints": "BOTCH SWABR ROOOO RUFFS KATZZ BRHMA KLAX",
           "exit": "ROOOO",
           "scratchpad": "ROO"
         },
@@ -3679,7 +3679,7 @@
             }
           ],
           "destination": "KSAN",
-          "route": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
+          "waypoints": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
           "exit": "RBBIT",
           "scratchpad": "RBT"
         },
@@ -3691,7 +3691,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 6000, 8000]
@@ -3704,7 +3704,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 6000, 8000]
@@ -3811,7 +3811,7 @@
             }
           ],
           "destination": "KLIT",
-          "route": "NOBLY LIT KLIT",
+          "waypoints": "NOBLY LIT KLIT",
           "exit": "NOBLY",
           "scratchpad": "LIT"
         },
@@ -3823,7 +3823,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "NOBLY KTXK",
+          "waypoints": "NOBLY KTXK",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 5500, 7000, 7500]
@@ -3836,7 +3836,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 5500, 7000, 7500, 9000]
@@ -3848,7 +3848,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK",
           "scratchpad": "TXK"
         },
@@ -3860,7 +3860,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "CLARE POTEN KSHV",
+          "waypoints": "CLARE POTEN KSHV",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [3000, 5000, 5500, 7000, 7500, 9000]
@@ -3876,7 +3876,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "CLARE POTEN KSHV",
+          "waypoints": "CLARE POTEN KSHV",
           "exit": "CLARE",
           "scratchpad": "EIC"
         },
@@ -3887,7 +3887,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "ZACHH",
+          "waypoints": "ZACHH",
           "exit": "ZACHH",
           "scratchpad": "ZER"
         },
@@ -3898,7 +3898,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "LOOSE",
+          "waypoints": "LOOSE",
           "exit": "LOOSE",
           "scratchpad": "TCH"
         },
@@ -3909,7 +3909,7 @@
             }
           ],
           "destination": "KCLT",
-          "route": "FORCK",
+          "waypoints": "FORCK",
           "exit": "FORCK",
           "scratchpad": "HAN"
         },
@@ -3920,7 +3920,7 @@
             }
           ],
           "destination": "KFLL",
-          "route": "ZALEA",
+          "waypoints": "ZALEA",
           "exit": "ZALEA",
           "scratchpad": "THO"
         },
@@ -3931,7 +3931,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "SAT KSAT",
+          "waypoints": "SAT KSAT",
           "exit": "SAT",
           "scratchpad": "NEL"
         },
@@ -3943,7 +3943,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "SAT KSAT",
+          "waypoints": "SAT KSAT",
           "exit": "SAT.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 6000, 8000, 10000]
@@ -3955,7 +3955,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "JASPA WINDU CWK KSAT",
+          "waypoints": "JASPA WINDU CWK KSAT",
           "exit": "JASPA",
           "scratchpad": "JAS"
         },
@@ -3967,7 +3967,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA KACT",
+          "waypoints": "JASPA KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 6000, 8000]
@@ -3980,7 +3980,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA KACT",
+          "waypoints": "ARDIA KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000, 10000]
@@ -3993,7 +3993,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "CLL KCLL",
+          "waypoints": "CLL KCLL",
           "exit": "CLL.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000]
@@ -4005,7 +4005,7 @@
             }
           ],
           "destination": "KIAH",
-          "route": "TORNN BILEE TNV KIAH",
+          "waypoints": "TORNN BILEE TNV KIAH",
           "exit": "TORNN",
           "scratchpad": "DAR"
         },
@@ -4017,7 +4017,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "TORNN KCLL",
+          "waypoints": "TORNN KCLL",
           "exit": "TORNN.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 6000, 8000]
@@ -4029,7 +4029,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "ROLLS KDEN",
+          "waypoints": "ROLLS KDEN",
           "exit": "ROLLS",
           "scratchpad": "LOW"
         },
@@ -4041,7 +4041,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [3500, 5000, 5500, 7000, 7500, 9000]
@@ -4053,7 +4053,7 @@
             }
           ],
           "destination": "KTUL",
-          "route": "IRW TUL KTUL",
+          "waypoints": "IRW TUL KTUL",
           "exit": "IRW",
           "scratchpad": "BLE"
         },
@@ -4065,7 +4065,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO KADM",
+          "waypoints": "CUZNO NANDR BLECO KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [5000, 7000]
@@ -4077,7 +4077,7 @@
             }
           ],
           "destination": "KMCI",
-          "route": "OKM KMCI",
+          "waypoints": "OKM KMCI",
           "exit": "OKM",
           "scratchpad": "GRA"
         },
@@ -4089,7 +4089,7 @@
             }
           ],
           "destination": "KGYI",
-          "route": "CUZNO NANDR GRABE KGYI",
+          "waypoints": "CUZNO NANDR GRABE KGYI",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [5000, 7000]
@@ -4101,7 +4101,7 @@
             }
           ],
           "destination": "KSTL",
-          "route": "MLC KSTL",
+          "waypoints": "MLC KSTL",
           "exit": "MLC",
           "scratchpad": "AKU"
         },
@@ -4112,7 +4112,7 @@
             }
           ],
           "destination": "KGYI",
-          "route": "CUZNO NANDR AKUNA KGYI",
+          "waypoints": "CUZNO NANDR AKUNA KGYI",
           "exit": "AKUNA.PROP",
           "scratchpad": "OKP",
           "altitude": [5000, 7000]
@@ -4124,7 +4124,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "HUDAD KDEN",
+          "waypoints": "HUDAD KDEN",
           "exit": "HUDAD",
           "scratchpad": "PGL"
         },
@@ -4135,7 +4135,7 @@
             }
           ],
           "destination": "KSLC",
-          "route": "HULZE KSLC",
+          "waypoints": "HULZE KSLC",
           "exit": "HULZE",
           "scratchpad": "TGR"
         },
@@ -4146,7 +4146,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "BRHMA KLAX",
+          "waypoints": "BRHMA KLAX",
           "exit": "BRHMA",
           "scratchpad": "ROO"
         },
@@ -4157,7 +4157,7 @@
             }
           ],
           "destination": "KSAN",
-          "route": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
+          "waypoints": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
           "exit": "RBBIT",
           "scratchpad": "RBT"
         },
@@ -4169,7 +4169,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 6000, 8000]
@@ -4182,7 +4182,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 6000, 8000]
@@ -4411,7 +4411,7 @@
           "destination": "KONT",
           "exit": "TYGGR",
           "scratchpad": "TGR",
-          "route": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -4423,7 +4423,7 @@
           "destination": "KONT",
           "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -4435,7 +4435,7 @@
           "destination": "KLAS",
           "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "HUDAD TXO ABQ J72 GUP LAS"
+          "waypoints": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -4447,7 +4447,7 @@
           "destination": "KLAS",
           "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "ALIAN TXO ABQ J72 GUP LAS"
+          "waypoints": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -4459,7 +4459,7 @@
           "destination": "KCVG",
           "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "BSKAT LIT"
+          "waypoints": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -4471,7 +4471,7 @@
           "destination": "KCLT",
           "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "LOOSE CLT"
+          "waypoints": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -4483,7 +4483,7 @@
           "destination": "KCLT",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK CLT"
+          "waypoints": "FORCK CLT"
         },
         {
           "airlines": [
@@ -4495,7 +4495,7 @@
           "destination": "KIAH",
           "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "ZALEA IAH"
+          "waypoints": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -4507,7 +4507,7 @@
           "destination": "KMSP",
           "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "ROLLS MSP"
+          "waypoints": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -4519,7 +4519,7 @@
           "destination": "KDEN",
           "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "IRW DEN"
+          "waypoints": "IRW DEN"
         },
         {
           "airlines": [
@@ -4531,7 +4531,7 @@
           "destination": "KORD",
           "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "OKM ORD"
+          "waypoints": "OKM ORD"
         },
         {
           "airlines": [
@@ -4543,7 +4543,7 @@
           "destination": "KPHL",
           "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "MLC PHL"
+          "waypoints": "MLC PHL"
         },
         {
           "airlines": [
@@ -4555,7 +4555,7 @@
           "destination": "KSAT",
           "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "SAT"
+          "waypoints": "SAT"
         },
         {
           "airlines": [
@@ -4567,7 +4567,7 @@
           "destination": "MMMX",
           "exit": "JASPA",
           "scratchpad": "JAS",
-          "route": "TTT JASPA WINDU CWK MMMX"
+          "waypoints": "TTT JASPA WINDU CWK MMMX"
         },
         {
           "airlines": [
@@ -4579,7 +4579,7 @@
           "destination": "KIAH",
           "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "CLL IAH"
+          "waypoints": "CLL IAH"
         },
         {
           "airlines": [
@@ -4591,7 +4591,7 @@
           "destination": "KMSY",
           "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TORNN BILEE TNV MSY"
+          "waypoints": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -4601,7 +4601,7 @@
             }
           ],
           "destination": "KGVT",
-          "route": "NOBLY KGVT",
+          "waypoints": "NOBLY KGVT",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 7000, 9000]
@@ -4614,7 +4614,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
@@ -4627,7 +4627,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "CLARE POTEN KGGG",
+          "waypoints": "CLARE POTEN KGGG",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 7000, 9000]
@@ -4640,7 +4640,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "NELYN ACT KACT",
+          "waypoints": "NELYN ACT KACT",
           "exit": "NELYN.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -4653,7 +4653,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA WINDU CWK KACT",
+          "waypoints": "JASPA WINDU CWK KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -4666,7 +4666,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA ELLVR KACT",
+          "waypoints": "ARDIA ELLVR KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 10000]
@@ -4679,7 +4679,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN CLL KCLL",
+          "waypoints": "DARTZ BRDEN CLL KCLL",
           "exit": "DARTZ.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -4692,7 +4692,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -4705,7 +4705,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO ADM KADM",
+          "waypoints": "CUZNO NANDR BLECO ADM KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -4718,7 +4718,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR GRABE ADM KADM",
+          "waypoints": "CUZNO NANDR GRABE ADM KADM",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -4731,7 +4731,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 8500]
@@ -4744,7 +4744,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -4889,7 +4889,7 @@
           "destination": "KONT",
           "exit": "TYGGR",
           "scratchpad": "TGR",
-          "route": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -4901,7 +4901,7 @@
           "destination": "KONT",
           "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -4913,7 +4913,7 @@
           "destination": "KLAS",
           "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "HUDAD TXO ABQ J72 GUP LAS"
+          "waypoints": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -4925,7 +4925,7 @@
           "destination": "KLAS",
           "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "ALIAN TXO ABQ J72 GUP LAS"
+          "waypoints": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -4937,7 +4937,7 @@
           "destination": "KCVG",
           "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "BSKAT LIT"
+          "waypoints": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -4949,7 +4949,7 @@
           "destination": "KCLT",
           "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "LOOSE CLT"
+          "waypoints": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -4961,7 +4961,7 @@
           "destination": "KCLT",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK CLT"
+          "waypoints": "FORCK CLT"
         },
         {
           "airlines": [
@@ -4973,7 +4973,7 @@
           "destination": "KIAH",
           "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "ZALEA IAH"
+          "waypoints": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -4985,7 +4985,7 @@
           "destination": "KMSP",
           "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "ROLLS MSP"
+          "waypoints": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -4997,7 +4997,7 @@
           "destination": "KDEN",
           "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "IRW DEN"
+          "waypoints": "IRW DEN"
         },
         {
           "airlines": [
@@ -5009,7 +5009,7 @@
           "destination": "KORD",
           "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "OKM ORD"
+          "waypoints": "OKM ORD"
         },
         {
           "airlines": [
@@ -5021,7 +5021,7 @@
           "destination": "KPHL",
           "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "MLC PHL"
+          "waypoints": "MLC PHL"
         },
         {
           "airlines": [
@@ -5033,7 +5033,7 @@
           "destination": "KSAT",
           "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "SAT"
+          "waypoints": "SAT"
         },
         {
           "airlines": [
@@ -5045,7 +5045,7 @@
           "destination": "MMMX",
           "exit": "JASPA",
           "scratchpad": "JAS",
-          "route": "TTT JASPA WINDU CWK MMMX"
+          "waypoints": "TTT JASPA WINDU CWK MMMX"
         },
         {
           "airlines": [
@@ -5057,7 +5057,7 @@
           "destination": "KIAH",
           "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "CLL IAH"
+          "waypoints": "CLL IAH"
         },
         {
           "airlines": [
@@ -5069,7 +5069,7 @@
           "destination": "KMSY",
           "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TORNN BILEE TNV MSY"
+          "waypoints": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -5079,7 +5079,7 @@
             }
           ],
           "destination": "KGVT",
-          "route": "NOBLY KGVT",
+          "waypoints": "NOBLY KGVT",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 7000, 9000]
@@ -5092,7 +5092,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
@@ -5105,7 +5105,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "CLARE POTEN KGGG",
+          "waypoints": "CLARE POTEN KGGG",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 7000, 9000]
@@ -5118,7 +5118,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "NELYN ACT KACT",
+          "waypoints": "NELYN ACT KACT",
           "exit": "NELYN.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -5131,7 +5131,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA WINDU CWK KACT",
+          "waypoints": "JASPA WINDU CWK KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -5144,7 +5144,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA ELLVR KACT",
+          "waypoints": "ARDIA ELLVR KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 10000]
@@ -5157,7 +5157,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN CLL KCLL",
+          "waypoints": "DARTZ BRDEN CLL KCLL",
           "exit": "DARTZ.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -5170,7 +5170,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -5183,7 +5183,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO ADM KADM",
+          "waypoints": "CUZNO NANDR BLECO ADM KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -5196,7 +5196,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR GRABE ADM KADM",
+          "waypoints": "CUZNO NANDR GRABE ADM KADM",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -5209,7 +5209,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 8500]
@@ -5222,7 +5222,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -5280,7 +5280,7 @@
             }
           ],
           "destination": "KLIT",
-          "route": "NOBLY LIT KLIT",
+          "waypoints": "NOBLY LIT KLIT",
           "exit": "NOBLY",
           "scratchpad": "LIT"
         },
@@ -5292,7 +5292,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "NOBLY KTXK",
+          "waypoints": "NOBLY KTXK",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 5500, 7000, 7500]
@@ -5305,7 +5305,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 5500, 7000, 7500, 9000]
@@ -5317,7 +5317,7 @@
             }
           ],
           "destination": "KTXK",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK",
           "scratchpad": "TXK"
         },
@@ -5329,7 +5329,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "CLARE POTEN KSHV",
+          "waypoints": "CLARE POTEN KSHV",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [3000, 5000, 5500, 7000, 7500, 9000]
@@ -5345,7 +5345,7 @@
             }
           ],
           "destination": "KSHV",
-          "route": "CLARE POTEN KSHV",
+          "waypoints": "CLARE POTEN KSHV",
           "exit": "CLARE",
           "scratchpad": "EIC"
         },
@@ -5356,7 +5356,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "ZACHH",
+          "waypoints": "ZACHH",
           "exit": "ZACHH",
           "scratchpad": "ZER"
         },
@@ -5367,7 +5367,7 @@
             }
           ],
           "destination": "KIND",
-          "route": "LOOSE",
+          "waypoints": "LOOSE",
           "exit": "LOOSE",
           "scratchpad": "TCH"
         },
@@ -5378,7 +5378,7 @@
             }
           ],
           "destination": "KCLT",
-          "route": "FORCK",
+          "waypoints": "FORCK",
           "exit": "FORCK",
           "scratchpad": "HAN"
         },
@@ -5389,7 +5389,7 @@
             }
           ],
           "destination": "KFLL",
-          "route": "ZALEA",
+          "waypoints": "ZALEA",
           "exit": "ZALEA",
           "scratchpad": "THO"
         },
@@ -5400,7 +5400,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "SAT KSAT",
+          "waypoints": "SAT KSAT",
           "exit": "SAT",
           "scratchpad": "NEL"
         },
@@ -5412,7 +5412,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "SAT KSAT",
+          "waypoints": "SAT KSAT",
           "exit": "SAT.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 6000, 8000, 10000]
@@ -5424,7 +5424,7 @@
             }
           ],
           "destination": "KSAT",
-          "route": "JASPA WINDU CWK KSAT",
+          "waypoints": "JASPA WINDU CWK KSAT",
           "exit": "JASPA",
           "scratchpad": "JAS"
         },
@@ -5436,7 +5436,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA KACT",
+          "waypoints": "JASPA KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 6000, 8000]
@@ -5449,7 +5449,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA KACT",
+          "waypoints": "ARDIA KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000, 10000]
@@ -5462,7 +5462,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "CLL KCLL",
+          "waypoints": "CLL KCLL",
           "exit": "CLL.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 6000]
@@ -5474,7 +5474,7 @@
             }
           ],
           "destination": "KIAH",
-          "route": "TORNN BILEE TNV KIAH",
+          "waypoints": "TORNN BILEE TNV KIAH",
           "exit": "TORNN",
           "scratchpad": "DAR"
         },
@@ -5486,7 +5486,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "TORNN KCLL",
+          "waypoints": "TORNN KCLL",
           "exit": "TORNN.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 6000, 8000]
@@ -5498,7 +5498,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "ROLLS KDEN",
+          "waypoints": "ROLLS KDEN",
           "exit": "ROLLS",
           "scratchpad": "LOW"
         },
@@ -5510,7 +5510,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [3500, 5000, 5500, 7000, 7500, 9000]
@@ -5522,7 +5522,7 @@
             }
           ],
           "destination": "KTUL",
-          "route": "IRW TUL KTUL",
+          "waypoints": "IRW TUL KTUL",
           "exit": "IRW",
           "scratchpad": "BLE"
         },
@@ -5534,7 +5534,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO KADM",
+          "waypoints": "CUZNO NANDR BLECO KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [5000, 7000]
@@ -5546,7 +5546,7 @@
             }
           ],
           "destination": "KMCI",
-          "route": "OKM KMCI",
+          "waypoints": "OKM KMCI",
           "exit": "OKM",
           "scratchpad": "GRA"
         },
@@ -5558,7 +5558,7 @@
             }
           ],
           "destination": "KGYI",
-          "route": "CUZNO NANDR GRABE KGYI",
+          "waypoints": "CUZNO NANDR GRABE KGYI",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [5000, 7000]
@@ -5570,7 +5570,7 @@
             }
           ],
           "destination": "KSTL",
-          "route": "MLC KSTL",
+          "waypoints": "MLC KSTL",
           "exit": "MLC",
           "scratchpad": "AKU"
         },
@@ -5581,7 +5581,7 @@
             }
           ],
           "destination": "KGYI",
-          "route": "CUZNO NANDR AKUNA KGYI",
+          "waypoints": "CUZNO NANDR AKUNA KGYI",
           "exit": "AKUNA.PROP",
           "scratchpad": "OKP",
           "altitude": [5000, 7000]
@@ -5593,7 +5593,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "BOTCH SWABR PGLET MUTEE HUDAD KDEN",
+          "waypoints": "BOTCH SWABR PGLET MUTEE HUDAD KDEN",
           "exit": "PGLET",
           "scratchpad": "PGL"
         },
@@ -5604,7 +5604,7 @@
             }
           ],
           "destination": "KSLC",
-          "route": "BOTCH SWABR TYGGR DBLSS HRPER HULZE KSLC",
+          "waypoints": "BOTCH SWABR TYGGR DBLSS HRPER HULZE KSLC",
           "exit": "TYGGR",
           "scratchpad": "TGR"
         },
@@ -5615,7 +5615,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "BOTCH SWABR ROOOO RUFFS KATZZ BRHMA KLAX",
+          "waypoints": "BOTCH SWABR ROOOO RUFFS KATZZ BRHMA KLAX",
           "exit": "ROOOO",
           "scratchpad": "ROO"
         },
@@ -5626,7 +5626,7 @@
             }
           ],
           "destination": "KSAN",
-          "route": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
+          "waypoints": "BOTCH SWABR RBBIT LYNDE FUMED ALLAN WSTEX CIKAN DOSXX KSAN",
           "exit": "RBBIT",
           "scratchpad": "RBT"
         },
@@ -5638,7 +5638,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 6000, 8000]
@@ -5651,7 +5651,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 6000, 8000]
@@ -5957,7 +5957,7 @@
           "destination": "KONT",
           "exit": "TYGGR",
           "scratchpad": "TGR",
-          "route": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -5969,7 +5969,7 @@
           "destination": "KONT",
           "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -5981,7 +5981,7 @@
           "destination": "KLAS",
           "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "HUDAD TXO ABQ J72 GUP LAS"
+          "waypoints": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -5993,7 +5993,7 @@
           "destination": "KLAS",
           "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "ALIAN TXO ABQ J72 GUP LAS"
+          "waypoints": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6005,7 +6005,7 @@
           "destination": "KCVG",
           "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "BSKAT LIT"
+          "waypoints": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -6017,7 +6017,7 @@
           "destination": "KCLT",
           "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "LOOSE CLT"
+          "waypoints": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -6029,7 +6029,7 @@
           "destination": "KCLT",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK CLT"
+          "waypoints": "FORCK CLT"
         },
         {
           "airlines": [
@@ -6041,7 +6041,7 @@
           "destination": "KIAH",
           "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "ZALEA IAH"
+          "waypoints": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -6053,7 +6053,7 @@
           "destination": "KMSP",
           "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "ROLLS MSP"
+          "waypoints": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -6065,7 +6065,7 @@
           "destination": "KDEN",
           "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "IRW DEN"
+          "waypoints": "IRW DEN"
         },
         {
           "airlines": [
@@ -6077,7 +6077,7 @@
           "destination": "KORD",
           "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "OKM ORD"
+          "waypoints": "OKM ORD"
         },
         {
           "airlines": [
@@ -6089,7 +6089,7 @@
           "destination": "KPHL",
           "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "MLC PHL"
+          "waypoints": "MLC PHL"
         },
         {
           "airlines": [
@@ -6101,7 +6101,7 @@
           "destination": "KSAT",
           "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "SAT"
+          "waypoints": "SAT"
         },
         {
           "airlines": [
@@ -6113,7 +6113,7 @@
           "destination": "MMMX",
           "exit": "JASPA",
           "scratchpad": "JAS",
-          "route": "TTT JASPA WINDU CWK MMMX"
+          "waypoints": "TTT JASPA WINDU CWK MMMX"
         },
         {
           "airlines": [
@@ -6125,7 +6125,7 @@
           "destination": "KIAH",
           "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "CLL IAH"
+          "waypoints": "CLL IAH"
         },
         {
           "airlines": [
@@ -6137,7 +6137,7 @@
           "destination": "KMSY",
           "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TORNN BILEE TNV MSY"
+          "waypoints": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -6147,7 +6147,7 @@
             }
           ],
           "destination": "KGVT",
-          "route": "NOBLY KGVT",
+          "waypoints": "NOBLY KGVT",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 7000, 9000]
@@ -6160,7 +6160,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
@@ -6173,7 +6173,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "CLARE POTEN KGGG",
+          "waypoints": "CLARE POTEN KGGG",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 7000, 9000]
@@ -6186,7 +6186,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "NELYN ACT KACT",
+          "waypoints": "NELYN ACT KACT",
           "exit": "NELYN.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6199,7 +6199,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA WINDU CWK KACT",
+          "waypoints": "JASPA WINDU CWK KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6212,7 +6212,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA ELLVR KACT",
+          "waypoints": "ARDIA ELLVR KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 10000]
@@ -6225,7 +6225,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN CLL KCLL",
+          "waypoints": "DARTZ BRDEN CLL KCLL",
           "exit": "DARTZ.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6238,7 +6238,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6251,7 +6251,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO ADM KADM",
+          "waypoints": "CUZNO NANDR BLECO ADM KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6264,7 +6264,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR GRABE ADM KADM",
+          "waypoints": "CUZNO NANDR GRABE ADM KADM",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -6277,7 +6277,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 8500]
@@ -6290,7 +6290,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6423,7 +6423,7 @@
           "destination": "KONT",
           "exit": "TYGGR",
           "scratchpad": "TGR",
-          "route": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -6435,7 +6435,7 @@
           "destination": "KONT",
           "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -6447,7 +6447,7 @@
           "destination": "KLAS",
           "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "HUDAD TXO ABQ J72 GUP LAS"
+          "waypoints": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6459,7 +6459,7 @@
           "destination": "KLAS",
           "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "ALIAN TXO ABQ J72 GUP LAS"
+          "waypoints": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6471,7 +6471,7 @@
           "destination": "KCVG",
           "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "BSKAT LIT"
+          "waypoints": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -6483,7 +6483,7 @@
           "destination": "KCLT",
           "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "LOOSE CLT"
+          "waypoints": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -6495,7 +6495,7 @@
           "destination": "KCLT",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK CLT"
+          "waypoints": "FORCK CLT"
         },
         {
           "airlines": [
@@ -6507,7 +6507,7 @@
           "destination": "KIAH",
           "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "ZALEA IAH"
+          "waypoints": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -6519,7 +6519,7 @@
           "destination": "KMSP",
           "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "ROLLS MSP"
+          "waypoints": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -6531,7 +6531,7 @@
           "destination": "KDEN",
           "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "IRW DEN"
+          "waypoints": "IRW DEN"
         },
         {
           "airlines": [
@@ -6543,7 +6543,7 @@
           "destination": "KORD",
           "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "OKM ORD"
+          "waypoints": "OKM ORD"
         },
         {
           "airlines": [
@@ -6555,7 +6555,7 @@
           "destination": "KPHL",
           "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "MLC PHL"
+          "waypoints": "MLC PHL"
         },
         {
           "airlines": [
@@ -6567,7 +6567,7 @@
           "destination": "KSAT",
           "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "SAT"
+          "waypoints": "SAT"
         },
         {
           "airlines": [
@@ -6579,7 +6579,7 @@
           "destination": "MMMX",
           "exit": "JASPA",
           "scratchpad": "JAS",
-          "route": "TTT JASPA WINDU CWK MMMX"
+          "waypoints": "TTT JASPA WINDU CWK MMMX"
         },
         {
           "airlines": [
@@ -6591,7 +6591,7 @@
           "destination": "KIAH",
           "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "CLL IAH"
+          "waypoints": "CLL IAH"
         },
         {
           "airlines": [
@@ -6603,7 +6603,7 @@
           "destination": "KMSY",
           "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TORNN BILEE TNV MSY"
+          "waypoints": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -6613,7 +6613,7 @@
             }
           ],
           "destination": "KGVT",
-          "route": "NOBLY KGVT",
+          "waypoints": "NOBLY KGVT",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 7000, 9000]
@@ -6626,7 +6626,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
@@ -6639,7 +6639,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "CLARE POTEN KGGG",
+          "waypoints": "CLARE POTEN KGGG",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 7000, 9000]
@@ -6652,7 +6652,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "NELYN ACT KACT",
+          "waypoints": "NELYN ACT KACT",
           "exit": "NELYN.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6665,7 +6665,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA WINDU CWK KACT",
+          "waypoints": "JASPA WINDU CWK KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6678,7 +6678,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA ELLVR KACT",
+          "waypoints": "ARDIA ELLVR KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 10000]
@@ -6691,7 +6691,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN CLL KCLL",
+          "waypoints": "DARTZ BRDEN CLL KCLL",
           "exit": "DARTZ.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6704,7 +6704,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6717,7 +6717,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO ADM KADM",
+          "waypoints": "CUZNO NANDR BLECO ADM KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6730,7 +6730,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR GRABE ADM KADM",
+          "waypoints": "CUZNO NANDR GRABE ADM KADM",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -6743,7 +6743,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 8500]
@@ -6756,7 +6756,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -6824,7 +6824,7 @@
           "destination": "KONT",
           "exit": "TYGGR",
           "scratchpad": "TGR",
-          "route": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -6836,7 +6836,7 @@
           "destination": "KONT",
           "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -6848,7 +6848,7 @@
           "destination": "KLAS",
           "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "HUDAD TXO ABQ J72 GUP LAS"
+          "waypoints": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6860,7 +6860,7 @@
           "destination": "KLAS",
           "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "ALIAN TXO ABQ J72 GUP LAS"
+          "waypoints": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -6872,7 +6872,7 @@
           "destination": "KCVG",
           "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "BSKAT LIT"
+          "waypoints": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -6884,7 +6884,7 @@
           "destination": "KCLT",
           "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "LOOSE CLT"
+          "waypoints": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -6896,7 +6896,7 @@
           "destination": "KCLT",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK CLT"
+          "waypoints": "FORCK CLT"
         },
         {
           "airlines": [
@@ -6908,7 +6908,7 @@
           "destination": "KIAH",
           "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "ZALEA IAH"
+          "waypoints": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -6920,7 +6920,7 @@
           "destination": "KMSP",
           "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "ROLLS MSP"
+          "waypoints": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -6932,7 +6932,7 @@
           "destination": "KDEN",
           "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "IRW DEN"
+          "waypoints": "IRW DEN"
         },
         {
           "airlines": [
@@ -6944,7 +6944,7 @@
           "destination": "KORD",
           "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "OKM ORD"
+          "waypoints": "OKM ORD"
         },
         {
           "airlines": [
@@ -6956,7 +6956,7 @@
           "destination": "KPHL",
           "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "MLC PHL"
+          "waypoints": "MLC PHL"
         },
         {
           "airlines": [
@@ -6968,7 +6968,7 @@
           "destination": "KSAT",
           "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "SAT"
+          "waypoints": "SAT"
         },
         {
           "airlines": [
@@ -6980,7 +6980,7 @@
           "destination": "MMMX",
           "exit": "JASPA",
           "scratchpad": "JAS",
-          "route": "TTT JASPA WINDU CWK MMMX"
+          "waypoints": "TTT JASPA WINDU CWK MMMX"
         },
         {
           "airlines": [
@@ -6992,7 +6992,7 @@
           "destination": "KIAH",
           "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "CLL IAH"
+          "waypoints": "CLL IAH"
         },
         {
           "airlines": [
@@ -7004,7 +7004,7 @@
           "destination": "KMSY",
           "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TORNN BILEE TNV MSY"
+          "waypoints": "TORNN BILEE TNV MSY"
         },
         {
           "airlines": [
@@ -7014,7 +7014,7 @@
             }
           ],
           "destination": "KGVT",
-          "route": "NOBLY KGVT",
+          "waypoints": "NOBLY KGVT",
           "exit": "NOBLY.PROP",
           "scratchpad": "LIP",
           "altitude": [5000, 7000, 9000]
@@ -7027,7 +7027,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "TXK KTXK",
+          "waypoints": "TXK KTXK",
           "exit": "TXK.PROP",
           "scratchpad": "TXP",
           "altitude": [5000, 7000, 9000]
@@ -7040,7 +7040,7 @@
             }
           ],
           "destination": "KGGG",
-          "route": "CLARE POTEN KGGG",
+          "waypoints": "CLARE POTEN KGGG",
           "exit": "CLARE.PROP",
           "scratchpad": "EIC",
           "altitude": [5000, 7000, 9000]
@@ -7053,7 +7053,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "NELYN ACT KACT",
+          "waypoints": "NELYN ACT KACT",
           "exit": "NELYN.PROP",
           "scratchpad": "ACP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -7066,7 +7066,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "JASPA WINDU CWK KACT",
+          "waypoints": "JASPA WINDU CWK KACT",
           "exit": "JASPA.PROP",
           "scratchpad": "SAP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -7079,7 +7079,7 @@
             }
           ],
           "destination": "KACT",
-          "route": "ARDIA ELLVR KACT",
+          "waypoints": "ARDIA ELLVR KACT",
           "exit": "ARDIA.PROP",
           "scratchpad": "CLP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 10000]
@@ -7092,7 +7092,7 @@
             }
           ],
           "destination": "KCLL",
-          "route": "DARTZ BRDEN CLL KCLL",
+          "waypoints": "DARTZ BRDEN CLL KCLL",
           "exit": "DARTZ.PROP",
           "scratchpad": "TNP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -7105,7 +7105,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR LOWGN ADM KADM",
+          "waypoints": "CUZNO NANDR LOWGN ADM KADM",
           "exit": "LOWGN.PROP",
           "scratchpad": "ADP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -7118,7 +7118,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR BLECO ADM KADM",
+          "waypoints": "CUZNO NANDR BLECO ADM KADM",
           "exit": "BLECO.PROP",
           "scratchpad": "ZIP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -7131,7 +7131,7 @@
             }
           ],
           "destination": "KADM",
-          "route": "CUZNO NANDR GRABE ADM KADM",
+          "waypoints": "CUZNO NANDR GRABE ADM KADM",
           "exit": "GRABE.PROP",
           "scratchpad": "OKP",
           "altitude": [3000, 3500, 5000, 5500, 7000]
@@ -7144,7 +7144,7 @@
             }
           ],
           "destination": "KSPS",
-          "route": "FERRA MUZZO KSPS",
+          "waypoints": "FERRA MUZZO KSPS",
           "exit": "FERRA.PROP",
           "scratchpad": "PNP",
           "altitude": [4000, 4500, 6000, 6500, 8000, 8500]
@@ -7157,7 +7157,7 @@
             }
           ],
           "destination": "KABI",
-          "route": "ABI KABI",
+          "waypoints": "ABI KABI",
           "exit": "ABI.PROP",
           "scratchpad": "ABP",
           "altitude": [4000, 4500, 6000, 6500, 8000]
@@ -7303,7 +7303,7 @@
           "destination": "KONT",
           "exit": "TYGGR",
           "scratchpad": "TGR",
-          "route": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "DEMII/a5000+ BOTCH/a13000- TYGGR DBLSS HRPERHULZE TXO ABQ J78 DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -7314,7 +7314,7 @@
           "destination": "KONT",
           "exit": "BRHMA",
           "scratchpad": "ROO",
-          "route": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
+          "waypoints": "BRHMA DRK J231 HIPPI DAFNY SCBBY2"
         },
         {
           "airlines": [
@@ -7325,7 +7325,7 @@
           "destination": "KLAS",
           "exit": "HUDAD",
           "scratchpad": "PGL",
-          "route": "HUDAD TXO ABQ J72 GUP LAS"
+          "waypoints": "HUDAD TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -7336,7 +7336,7 @@
           "destination": "KLAS",
           "exit": "ALIAN",
           "scratchpad": "RBT",
-          "route": "ALIAN TXO ABQ J72 GUP LAS"
+          "waypoints": "ALIAN TXO ABQ J72 GUP LAS"
         },
         {
           "airlines": [
@@ -7347,7 +7347,7 @@
           "destination": "KCVG",
           "exit": "BSKAT",
           "scratchpad": "ZER",
-          "route": "BSKAT LIT"
+          "waypoints": "BSKAT LIT"
         },
         {
           "airlines": [
@@ -7358,7 +7358,7 @@
           "destination": "KCLT",
           "exit": "LOOSE",
           "scratchpad": "TCH",
-          "route": "LOOSE CLT"
+          "waypoints": "LOOSE CLT"
         },
         {
           "airlines": [
@@ -7369,7 +7369,7 @@
           "destination": "KCLT",
           "exit": "FORCK",
           "scratchpad": "HAN",
-          "route": "FORCK CLT"
+          "waypoints": "FORCK CLT"
         },
         {
           "airlines": [
@@ -7380,7 +7380,7 @@
           "destination": "KIAH",
           "exit": "ZALEA",
           "scratchpad": "THO",
-          "route": "ZALEA IAH"
+          "waypoints": "ZALEA IAH"
         },
         {
           "airlines": [
@@ -7391,7 +7391,7 @@
           "destination": "KMSP",
           "exit": "ROLLS",
           "scratchpad": "LOW",
-          "route": "ROLLS MSP"
+          "waypoints": "ROLLS MSP"
         },
         {
           "airlines": [
@@ -7402,7 +7402,7 @@
           "destination": "KDEN",
           "exit": "IRW",
           "scratchpad": "BLE",
-          "route": "IRW DEN"
+          "waypoints": "IRW DEN"
         },
         {
           "airlines": [
@@ -7413,7 +7413,7 @@
           "destination": "KORD",
           "exit": "OKM",
           "scratchpad": "GRA",
-          "route": "OKM ORD"
+          "waypoints": "OKM ORD"
         },
         {
           "airlines": [
@@ -7424,7 +7424,7 @@
           "destination": "KPHL",
           "exit": "MLC",
           "scratchpad": "AKU",
-          "route": "MLC PHL"
+          "waypoints": "MLC PHL"
         },
         {
           "airlines": [
@@ -7435,7 +7435,7 @@
           "destination": "KSAT",
           "exit": "SAT",
           "scratchpad": "NEL",
-          "route": "SAT"
+          "waypoints": "SAT"
         },
         {
           "airlines": [
@@ -7446,7 +7446,7 @@
           "destination": "MMMX",
           "exit": "JASPA",
           "scratchpad": "JAS",
-          "route": "TTT JASPA WINDU CWK MMMX"
+          "waypoints": "TTT JASPA WINDU CWK MMMX"
         },
         {
           "airlines": [
@@ -7457,7 +7457,7 @@
           "destination": "KIAH",
           "exit": "CLL",
           "scratchpad": "RDA",
-          "route": "CLL IAH"
+          "waypoints": "CLL IAH"
         },
         {
           "airlines": [
@@ -7468,7 +7468,7 @@
           "destination": "KMSY",
           "exit": "TORNN",
           "scratchpad": "DAR",
-          "route": "TORNN BILEE TNV MSY"
+          "waypoints": "TORNN BILEE TNV MSY"
         }
       ],
       "departure_routes": {

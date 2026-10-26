@@ -261,7 +261,7 @@
           ],
           "destination": "KCLT",
           "exit": "SHIPR",
-          "route": "SHIPR TAFTT PARQR3"
+          "waypoints": "SHIPR TAFTT PARQR3"
         },
         {
           "airlines": [
@@ -278,7 +278,7 @@
           ],
           "destination": "KDFW",
           "exit": "APALO",
-          "route": "APALO PXV J131 LIT MEEOW FEWWW SEEVR4"
+          "waypoints": "APALO PXV J131 LIT MEEOW FEWWW SEEVR4"
         },
         {
           "airlines": [
@@ -291,7 +291,7 @@
           ],
           "destination": "KLGA",
           "exit": "STREP",
-          "route": "STREP KLYNE WWSHR TEESY J146 ETG MIP4"
+          "waypoints": "STREP KLYNE WWSHR TEESY J146 ETG MIP4"
         },
         {
           "airlines": [
@@ -304,7 +304,7 @@
           ],
           "destination": "KDCA",
           "exit": "SHIPR",
-          "route": "SHIPR BKW TRUPS4"
+          "waypoints": "SHIPR BKW TRUPS4"
         },
         {
           "airlines": [
@@ -317,7 +317,7 @@
           ],
           "destination": "KBOS",
           "exit": "SHIPR",
-          "route": "SHIPR HNN GVE GRACO BROSS Q419 JFK ROBUC3"
+          "waypoints": "SHIPR HNN GVE GRACO BROSS Q419 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -337,7 +337,7 @@
           ],
           "destination": "KDEN",
           "exit": "APALO",
-          "route": "APALO BUM HYS J24 OATHE CLASH4"
+          "waypoints": "APALO BUM HYS J24 OATHE CLASH4"
         },
         {
           "airlines": [
@@ -350,7 +350,7 @@
           ],
           "destination": "KBWI",
           "exit": "SHIPR",
-          "route": "SHIPR BKW RAVNN6"
+          "waypoints": "SHIPR BKW RAVNN6"
         },
         {
           "airlines": [
@@ -363,7 +363,7 @@
           ],
           "destination": "KDTW",
           "exit": "STREP",
-          "route": "STREP DQN TORRR LECTR3"
+          "waypoints": "STREP DQN TORRR LECTR3"
         },
         {
           "airlines": [
@@ -376,7 +376,7 @@
           ],
           "destination": "KEWR",
           "exit": "STREP",
-          "route": "STREP KYLNE WWSHR Q29 DORET J584 SLT FQM3"
+          "waypoints": "STREP KYLNE WWSHR Q29 DORET J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -389,7 +389,7 @@
           ],
           "destination": "KIAH",
           "exit": "CRRGO",
-          "route": "CRRGO DHART SWB ZEEKK2"
+          "waypoints": "CRRGO DHART SWB ZEEKK2"
         }
       ],
       "exit_categories": {

@@ -52,7 +52,7 @@
           "airlines": [{ "icao": "LXJ", "types": ["GA5C"] }],
           "altitude": [45000],
           "destination": "TJSJ",
-          "route": "SHIPP Y487 KINGG KINER L461 BOVIC L461 GECAL L458 TALSU L458 CHEDR L458 THANK L456 FRATT SJU",
+          "waypoints": "SHIPP Y487 KINGG KINER L461 BOVIC L461 GECAL L458 TALSU L458 CHEDR L458 THANK L456 FRATT SJU",
           "exit": "SHIPP"
         }
       ],
@@ -131,14 +131,14 @@
           ],
           "altitude": [35000, 37000, 39000],
           "destination": "TXKF",
-          "route": "SHIPP Y487 KINGG KINER L461 BOVIC MOMOM1",
+          "waypoints": "SHIPP Y487 KINGG KINER L461 BOVIC MOMOM1",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "AAL", "types": ["B77W"] }],
           "altitude": [29000, 31000],
           "destination": "SAEZ",
-          "route": "SHIPP Y487 KINGG KINER L461 PJM L329 ZPATA UL329 KORTO REMOB SUMVA XOLOK ITATU UMLEB ISKOL UGINA UBKAB UM402 SIDAK UM402 VAS UP526 REPAM UZ103 DALAB UL793 GUA PAGON PAGON7V",
+          "waypoints": "SHIPP Y487 KINGG KINER L461 PJM L329 ZPATA UL329 KORTO REMOB SUMVA XOLOK ITATU UMLEB ISKOL UGINA UBKAB UM402 SIDAK UM402 VAS UP526 REPAM UZ103 DALAB UL793 GUA PAGON PAGON7V",
           "exit": "SHIPP"
         },
         {
@@ -149,21 +149,21 @@
           ],
           "altitude": [33000, 35000, 37000],
           "destination": "SYCJ",
-          "route": "SHIPP Y492 SQUAD DARUX L456 THANK PJM L329 ZPATA UL329 KORTO UG449 LEPOD UA312 LOKIT A312 MEXEN",
+          "waypoints": "SHIPP Y492 SQUAD DARUX L456 THANK PJM L329 ZPATA UL329 KORTO UG449 LEPOD UA312 LOKIT A312 MEXEN",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A21N"] }, { "icao": "JBU" }],
           "altitude": [28000, 30000, 32000, 34000],
           "destination": "MKJS",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU ULDAR TILUP LENAR7",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU ULDAR TILUP LENAR7",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A21N"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "MDPC",
-          "route": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ POKEG POKEG1W",
+          "waypoints": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ POKEG POKEG1W",
           "exit": "SHIPP"
         },
         {
@@ -173,7 +173,7 @@
           ],
           "altitude": [35000, 37000],
           "destination": "TIST",
-          "route": "SHIPP Y489 BEHHR Y489 RESQU SKPPR L455 KINCH L455 LENNT JETSS",
+          "waypoints": "SHIPP Y489 BEHHR Y489 RESQU SKPPR L455 KINCH L455 LENNT JETSS",
           "exit": "SHIPP"
         },
         {
@@ -184,168 +184,168 @@
           ],
           "altitude": [35000, 37000, 39000],
           "destination": "SBGR",
-          "route": "SHIPP Y492 SQUAD DARUX L459 KEEKA L329 ZPATA UL329 KORTO ETATA UP535 MOMSO UZ24 MULUV UZ38 VUNOX VUNOX1A",
+          "waypoints": "SHIPP Y492 SQUAD DARUX L459 KEEKA L329 ZPATA UL329 KORTO ETATA UP535 MOMSO UZ24 MULUV UZ38 VUNOX VUNOX1A",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "AAL", "types": ["B38M"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000, 37000],
           "destination": "TBPB",
-          "route": "SHIPP Y492 SQUAD DARUX L456 THANK COY LEEOO L454 ILURI UA555 BGI",
+          "waypoints": "SHIPP Y492 SQUAD DARUX L456 THANK COY LEEOO L454 ILURI UA555 BGI",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [32000, 34000],
           "destination": "MRLB",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA Q131 WAALT Y289 BAHAA AR17 VKZ MCLAW Y442 FUNDI UM335 ALVEK UM328 MGA OVADO OVADO1S",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA Q131 WAALT Y289 BAHAA AR17 VKZ MCLAW Y442 FUNDI UM335 ALVEK UM328 MGA OVADO OVADO1S",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["B739"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "MBPV",
-          "route": "SHIPP Y488 HERCC Y488 SAUCR L453 LAMER L453 RODRK PRRDO",
+          "waypoints": "SHIPP Y488 HERCC Y488 SAUCR L453 LAMER L453 RODRK PRRDO",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "TKPK",
-          "route": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ FIPEK Y355 SLUGO PJM L329 ZPATA",
+          "waypoints": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ FIPEK Y355 SLUGO PJM L329 ZPATA",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [33000, 35000, 37000],
           "destination": "TLPL",
-          "route": "SHIPP Y492 SQUAD DARUX L456 THANK ELOPO UB520 ANU UA312 FOF SLU",
+          "waypoints": "SHIPP Y492 SQUAD DARUX L456 THANK ELOPO UB520 ANU UA312 FOF SLU",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["B752"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000, 37000],
           "destination": "TNCM",
-          "route": "SHIPP Y488 HERCC Y488 SAUCR L453 ONGOT L453 ALOBI L453 LAMER L453 RODRK FIPEK Y355 SLUGO",
+          "waypoints": "SHIPP Y488 HERCC Y488 SAUCR L453 ONGOT L453 ALOBI L453 LAMER L453 RODRK FIPEK Y355 SLUGO",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "BWA", "types": ["B38M"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000, 37000],
           "destination": "TVSA",
-          "route": "SHIPP Y488 SAUCR L453 RODRK FIPEK Y355 PLING",
+          "waypoints": "SHIPP Y488 SAUCR L453 RODRK FIPEK Y355 PLING",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["B739"] }, { "icao": "EDV" }, { "icao": "RPA" }, { "icao": "JBU" }],
           "altitude": [26000, 28000, 30000, 32000, 34000, 36000],
           "destination": "KRDU",
-          "route": "WAVEY EMJAY Q167 ZJAAY TAQLE3",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY TAQLE3",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "AVA", "types": ["A320", "A20N", "B788"] }],
           "altitude": [34000, 36000, 38000],
           "destination": "SKBO",
-          "route": "WAVEY EMJAY Q167 CAANO Q167 ZJAAY KALDA Q161 PYSTN ",
+          "waypoints": "WAVEY EMJAY Q167 CAANO Q167 ZJAAY KALDA Q161 PYSTN ",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "AVA", "types": ["A320"] }],
           "altitude": [34000],
           "destination": "SKRG",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 BRATZ AR24 ZFP AR24 URSUS UP406 AKPEK AKPE4C",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 BRATZ AR24 ZFP AR24 URSUS UP406 AKPEK AKPE4C",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "AVA", "types": ["A320"] }],
           "altitude": [30000, 32000, 36000],
           "destination": "SKCL",
-          "route": "WAVEY EMJAY Q167 PAJET Q167 ZJAAY KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 CARPX Y307 CASPR NUCAR AR3 HANKX Y307 ENAMO UR625 NEFTU UP525 EMABU UA301 MLY UL347 HANCK UP406 UBSUX UQ101 ULQ ULQ4E",
+          "waypoints": "WAVEY EMJAY Q167 PAJET Q167 ZJAAY KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 CARPX Y307 CASPR NUCAR AR3 HANKX Y307 ENAMO UR625 NEFTU UP525 EMABU UA301 MLY UL347 HANCK UP406 UBSUX UQ101 ULQ ULQ4E",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [32000, 34000],
           "destination": "SKCG",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS JAZZI Y319 URSUS UP406 UBSUX VARON VARO2B",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS JAZZI Y319 URSUS UP406 UBSUX VARON VARO2B",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "AVA", "types": ["A320", "A20N"] }],
           "altitude": [34000, 36000],
           "destination": "SKPE",
-          "route": "WAVEY EMJAY Q167 PAJET Q167 ZJAAY KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 BRATZ AR24 ZFP AR24 URSUS UP406 AKPEK UP121 RNG W3 MATRO MATR1G",
+          "waypoints": "WAVEY EMJAY Q167 PAJET Q167 ZJAAY KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 BRATZ AR24 ZFP AR24 URSUS UP406 AKPEK UP121 RNG W3 MATRO MATR1G",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [32000, 34000],
           "destination": "MROC",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA Q131 WAALT AR17 VKZ MNATE Y442 FUNDI UM335 ALVEK UM328 SELEK UZ403 BONOS UZ403 PIRAS BARRA3P",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA Q131 WAALT AR17 VKZ MNATE Y442 FUNDI UM335 ALVEK UM328 SELEK UZ403 BONOS UZ403 PIRAS BARRA3P",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "GLG", "types": ["A20N"] }, { "icao": "LNE" }, { "icao": "JBU" }],
           "altitude": [32000, 34000, 36000],
           "destination": "SEGU",
-          "route": "WAVEY EMJAY Q167 KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 BRATZ AR24 ZFP AR24 URSUS UL780 UGUPI UGUPI3",
+          "waypoints": "WAVEY EMJAY Q167 KALDA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 BRATZ AR24 ZFP AR24 URSUS UL780 UGUPI UGUPI3",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "GLG", "types": ["A20N"] }],
           "altitude": [32000, 34000, 36000],
           "destination": "SEQM",
-          "route": "WAVEY EMJAY Q167 CAANO Q167 KADLA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 OHLAA ZFP AR23 URSUS UL780 DAGUD UL780 TBG UM674 TOKUT ENSOL UM674 QIT",
+          "waypoints": "WAVEY EMJAY Q167 CAANO Q167 KADLA Q161 PYSTN BGBRD Q101 SKARP AR22 IDOLS DIZNY AR3 JAZZI AR24 OHLAA ZFP AR23 URSUS UL780 DAGUD UL780 TBG UM674 TOKUT ENSOL UM674 QIT",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "LRC" }],
           "altitude": [32000, 34000],
           "destination": "MGGT",
-          "route": "WAVEY EMJAY Q167 KALDA Q64 GUILD Q409 ENEME CTY KNOST CIGAR M215 SNOMN M215 PISAD UM215 MID UA770 AXIMA UA770 UKORO UA770 MAVAL MAVAL2C",
+          "waypoints": "WAVEY EMJAY Q167 KALDA Q64 GUILD Q409 ENEME CTY KNOST CIGAR M215 SNOMN M215 PISAD UM215 MID UA770 AXIMA UA770 UKORO UA770 MAVAL MAVAL2C",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "AVA", "types": ["A20N"] }, { "icao": "TAI" }, { "icao": "LRC" }],
           "altitude": [32000, 34000, 38000],
           "destination": "MSLP",
-          "route": "WAVEY EMJAY Q167 KALDA Q64 GUILD Q409 ENEME CTY KNOST CIGAR M219 CULLY M219 NAVVL L465 SHARQ UM463 WALKY UB764 MORAM MORAM2M",
+          "waypoints": "WAVEY EMJAY Q167 KALDA Q64 GUILD Q409 ENEME CTY KNOST CIGAR M219 CULLY M219 NAVVL L465 SHARQ UM463 WALKY UB764 MORAM MORAM2M",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "BWA", "types": ["B38M"] }, { "icao": "JBU" }],
           "altitude": [32000, 34000, 36000],
           "destination": "MKJP",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS RROOO Y323 CARPX Y307 ENAMO NEFTU UP525 EMABU UA301 IMADI SAVEM",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "BWA", "types": ["B38M"] }, { "icao": "JBU" }],
           "altitude": [35000, 37000],
           "destination": "TTPP",
-          "route": "SHIPP Y492 SQUAD DARUX L456 HANCY L456 THANK ANADA UG449 PERGA ITRAK NAPKO LEXOR TALUS",
+          "waypoints": "SHIPP Y492 SQUAD DARUX L456 HANCY L456 THANK ANADA UG449 PERGA ITRAK NAPKO LEXOR TALUS",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "CAY", "types": ["B38M"] }, { "icao": "JBU" }],
           "altitude": [34000, 36000],
           "destination": "MWCR",
-          "route": "WAVEY EMJAY Q167 KALDA Q131 WAALT Y289 OGGRE COACH Y319 URSUS UL780 ULBAS UM330 KANEX ALONA MOBIX SASER",
+          "waypoints": "WAVEY EMJAY Q167 KALDA Q131 WAALT Y289 OGGRE COACH Y319 URSUS UL780 ULBAS UM330 KANEX ALONA MOBIX SASER",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "CMP", "types": ["B738", "B38M"] }],
           "altitude": [32000, 34000],
           "destination": "MPTO",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA Q101 SKARP JRDAN AR3 JAZZI Y319 ZFP Y319 URSUS UL780 DAGUD VUNIB OSUPA2",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA Q101 SKARP JRDAN AR3 JAZZI Y319 ZFP Y319 URSUS UL780 DAGUD VUNIB OSUPA2",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A21N"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "TNCA",
-          "route": "SHIPP Y488 HERCC Y488 SAUCR L453 LAMER L453 RODRK POKEG UT17 CDO UT19 BEROX BEROX2A",
+          "waypoints": "SHIPP Y488 HERCC Y488 SAUCR L453 LAMER L453 RODRK POKEG UT17 CDO UT19 BEROX BEROX2A",
           "exit": "SHIPP"
         },
         {
@@ -355,126 +355,126 @@
           ],
           "altitude": [37000, 39000],
           "destination": "LPPT",
-          "route": "SHIPP Y487 ISLES JENYY JOBOC/delete",
+          "waypoints": "SHIPP Y487 ISLES JENYY JOBOC/delete",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["B739"] }, { "icao": "JBU" }],
           "altitude": [34000, 36000, 38000],
           "destination": "MYNN",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS RROOO Y323 CARPX Y307 HANKX",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA TUGGR Q101 SKARP IDOLS RROOO Y323 CARPX Y307 HANKX",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A21N"] }, { "icao": "JBU" }],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KMCO",
-          "route": "WAVEY EMJAY Q167 ZJAAY Q97 SAWED MOXXY Q85 LPERD GTOUT1",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY Q97 SAWED MOXXY Q85 LPERD GTOUT1",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A21N"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "TJSJ",
-          "route": "SHIPP Y489 RESQU SKPPR L455 LENNT M423 PLING RTE7 SAALR",
+          "waypoints": "SHIPP Y489 RESQU SKPPR L455 LENNT M423 PLING RTE7 SAALR",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A21N"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "MDST",
-          "route": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ SEKAR SEKAR2P",
+          "waypoints": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ SEKAR SEKAR2P",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A21N"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "MDSD",
-          "route": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ POKEG UT17 KOBET KOBET4H",
+          "waypoints": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ POKEG UT17 KOBET KOBET4H",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "AAL", "types": ["B38M"] }, { "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "TAPA",
-          "route": "SHIPP Y492 SQUAD DARUX L456 THANK ELOPO",
+          "waypoints": "SHIPP Y492 SQUAD DARUX L456 THANK ELOPO",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["A333", "A339"] }],
           "altitude": [33000, 35000],
           "destination": "DGAA",
-          "route": "SHIPP Y487 ISLES JENYY JOBOC/delete",
+          "waypoints": "SHIPP Y487 ISLES JENYY JOBOC/delete",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "DAL", "types": ["B763"] }],
           "altitude": [33000, 35000],
           "destination": "LIEO",
-          "route": "SHIPP Y487 ISLES JENYY DOVEY NATX DINIM NATX ELSOX TAKAS ALUKA KORER LEMKA BEBIX VALKU LERGA TOZOT OTROT RETNO KOLON LOKDU M623 PELOS IPROM MINKA MINK4L",
+          "waypoints": "SHIPP Y487 ISLES JENYY DOVEY NATX DINIM NATX ELSOX TAKAS ALUKA KORER LEMKA BEBIX VALKU LERGA TOZOT OTROT RETNO KOLON LOKDU M623 PELOS IPROM MINKA MINK4L",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "ETH", "types": ["B788", "B789"] }],
           "altitude": [35000, 37000],
           "destination": "DIAP",
-          "route": "SHIPP Y487 ISLES SLATN/delete",
+          "waypoints": "SHIPP Y487 ISLES SLATN/delete",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "TJBQ",
-          "route": "SHIPP Y489 RESQU SKPPR L455 LENNT M423 PLING RTE5 BQN",
+          "waypoints": "SHIPP Y489 RESQU SKPPR L455 LENNT M423 PLING RTE5 BQN",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [35000],
           "destination": "TNCC",
-          "route": "SHIPP Y490 ROLLE ATUGI L454 MNDEZ BEROX BEROX1B",
+          "waypoints": "SHIPP Y490 ROLLE ATUGI L454 MNDEZ BEROX BEROX1B",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "TGPY",
-          "route": "SHIPP Y492 SQUAD DARUX L456 THANK GEECE UL776 VIBSI BETIN",
+          "waypoints": "SHIPP Y492 SQUAD DARUX L456 THANK GEECE UL776 VIBSI BETIN",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU" }],
           "altitude": [33000, 35000],
           "destination": "MDPP",
-          "route": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ SEKAR SEKAR3S",
+          "waypoints": "SHIPP Y490 ROLLE ATUGI L454 LUCTI L454 MNDEZ SEKAR SEKAR3S",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "JBU", "types": ["BCS3"] }, { "icao": "EDV" }],
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KSAV",
-          "route": "WAVEY EMJAY Q167 ZJAAY Q97 SAWED GUILD Q409 SESUE SOOOP",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY Q97 SAWED GUILD Q409 SESUE SOOOP",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "KQA", "types": ["B788"] }],
           "altitude": [35000, 37000],
           "destination": "HKJK",
-          "route": "SHIPP Y487 ISLES KAYYT/delete",
+          "waypoints": "SHIPP Y487 ISLES KAYYT/delete",
           "exit": "SHIPP"
         },
         {
           "airlines": [{ "icao": "LAN", "types": ["B788", "B789"] }],
           "altitude": [36000, 38000],
           "destination": "SCEL",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA Q161 CHIEZ AR19 JRDAN OGGRE AR17 VKZ EONNS A509 URSUS UL780 SORTA UL780 SULNA UT315 TOY UL302 SIMOK SIMOK7B",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA Q161 CHIEZ AR19 JRDAN OGGRE AR17 VKZ EONNS A509 URSUS UL780 SORTA UL780 SULNA UT315 TOY UL302 SIMOK SIMOK7B",
           "exit": "WAVEY"
         },
         {
           "airlines": [{ "icao": "LPE", "types": ["B763"] }],
           "altitude": [34000, 36000],
           "destination": "SPJC",
-          "route": "WAVEY EMJAY Q167 ZJAAY KALDA Q161 CHIEZ AR19 JRDAN AR3 JAZZI AR24 ZFP AR24 URSUS UL780 ISREN UL308 ATATU ATATU4",
+          "waypoints": "WAVEY EMJAY Q167 ZJAAY KALDA Q161 CHIEZ AR19 JRDAN AR3 JAZZI AR24 ZFP AR24 URSUS UL780 ISREN UL308 ATATU ATATU4",
           "exit": "WAVEY"
         }
       ],
@@ -564,7 +564,7 @@
           "waypoints": "N039.41.03.299,W072.30.40.347/ho66 OWENZ CAMRN JFK/delete",
           "cruise_altitude": 35000,
           "star": null,
-          "route": "/. OWENZ CAMRN JFK",
+          "flight_strip_route": "/. OWENZ CAMRN JFK",
           "initial_controller": "86",
           "initial_altitude": 14000,
           "assigned_altitude": 14000,
@@ -621,7 +621,7 @@
           "waypoints": "OWENZ/ho66 Y497 SUBBS CYN GXU RBV V249 METRO EWR/delete",
           "cruise_altitude": 35000,
           "star": null,
-          "route": "/. OWENZ Y497 SUBBS CYN GXU RBV V249 METRO EWR",
+          "flight_strip_route": "/. OWENZ Y497 SUBBS CYN GXU RBV V249 METRO EWR",
           "initial_controller": "86",
           "initial_altitude": 10000,
           "assigned_altitude": 10000,
@@ -652,7 +652,7 @@
           "waypoints": "JENGA/ho66 RAINN BRIGS HARBO DRIFT MANTA PLUME SHERL DUNEE KOPPY SARDI CCC/delete",
           "cruise_altitude": 35000,
           "star": "SARDI1",
-          "route": "/. JENGA RAINN BRIGS HARBO DRIFT MANTA PLUME SHERL DUNEE KOPPY SARDI CCC",
+          "flight_strip_route": "/. JENGA RAINN BRIGS HARBO DRIFT MANTA PLUME SHERL DUNEE KOPPY SARDI CCC",
           "initial_controller": "W59",
           "initial_altitude": 21000,
           "assigned_altitude": 21000,
@@ -738,7 +738,7 @@
           "waypoints": "SIE/ho66 BECKR KKONG ANTMN BOUNO DPK SOUND GWENY ZAHNN EILEN WESTO BDR ALIXX RYMES KHPN/delete",
           "cruise_altitude": 35000,
           "star": "BOUNO5",
-          "route": "/. SIE BECKR KKONG ANTMN BOUNO DPK SOUND GWENY ZAHNN EILEN WESTO BDR ALIXX RYMES KHPN",
+          "flight_strip_route": "/. SIE BECKR KKONG ANTMN BOUNO DPK SOUND GWENY ZAHNN EILEN WESTO BDR ALIXX RYMES KHPN",
           "initial_controller": "W59",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
@@ -769,7 +769,7 @@
           "waypoints": "KAYYT/ho65 Y578 JENYY FERNZ/delete",
           "cruise_altitude": 35000,
           "star": null,
-          "route": "/. KAYYT Y578 JENYY FERNZ",
+          "flight_strip_route": "/. KAYYT Y578 JENYY FERNZ",
           "initial_controller": "80",
           "initial_altitude": 36000,
           "assigned_altitude": 36000,
@@ -792,7 +792,7 @@
           "waypoints": "SARDI/ho66 Q439 BRIGS IROKT JIIMS ZMRMN/delete",
           "cruise_altitude": 35000,
           "star": "JIIMS4",
-          "route": "/. SARDI Q439 BRIGS IROKT JIIMS ZMRMN",
+          "flight_strip_route": "/. SARDI Q439 BRIGS IROKT JIIMS ZMRMN",
           "initial_controller": "B31",
           "initial_altitude": 20000,
           "assigned_altitude": 20000,

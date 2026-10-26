@@ -37,7 +37,7 @@
           "exit": "SOT",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "SOT REWET LORNN MGRIF MEM J66 LIT FEWWW SEEVR4",
+          "waypoints": "SOT REWET LORNN MGRIF MEM J66 LIT FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -49,7 +49,7 @@
           "exit": "IRQ",
           "destination": "KMIA",
           "altitude": 32000,
-          "route": "IRQ FISHO TEEEM BULZI Q81 ENDEW BROMO FROGZ4",
+          "waypoints": "IRQ FISHO TEEEM BULZI Q81 ENDEW BROMO FROGZ4",
           "airlines": [
             {
               "icao": "ENY",
@@ -61,7 +61,7 @@
           "exit": "MHONY",
           "destination": "KATL",
           "altitude": 22000,
-          "route": "MHONY WINNG OZZZI1",
+          "waypoints": "MHONY WINNG OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -73,7 +73,7 @@
           "exit": "SPA",
           "destination": "KFLL",
           "altitude": 35000,
-          "route": "SPA QUIWE Q93 WOPNR Q93 PRMUS CUUDA3",
+          "waypoints": "SPA QUIWE Q93 WOPNR Q93 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "AAY",
@@ -85,7 +85,7 @@
           "exit": "JJENY",
           "destination": "KCLT",
           "altitude": 11000,
-          "route": "JJENY FILPZ7",
+          "waypoints": "JJENY FILPZ7",
           "airlines": [
             {
               "icao": "JIA",
@@ -97,7 +97,7 @@
           "exit": "BZM",
           "destination": "KLGA",
           "altitude": 31000,
-          "route": "BZM Q60 JAXSN HURTS PROUD2",
+          "waypoints": "BZM Q60 JAXSN HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -109,7 +109,7 @@
           "exit": "SOT",
           "destination": "KORD",
           "altitude": 35000,
-          "route": "SOT CEMEX HEVAN Q118 BONNT VEECK5",
+          "waypoints": "SOT CEMEX HEVAN Q118 BONNT VEECK5",
           "airlines": [
             {
               "icao": "ENY",
@@ -121,7 +121,7 @@
           "exit": "MHONY",
           "destination": "KATL",
           "altitude": 22000,
-          "route": "MHONY WINNG OZZZI1",
+          "waypoints": "MHONY WINNG OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -133,7 +133,7 @@
           "exit": "BZM",
           "destination": "KDCA",
           "altitude": 33000,
-          "route": "BZM JOOLI Q56 KIWII WAVES CAPSS3",
+          "waypoints": "BZM JOOLI Q56 KIWII WAVES CAPSS3",
           "airlines": [
             {
               "icao": "JIA",
@@ -145,7 +145,7 @@
           "exit": "SOT",
           "destination": "KORD",
           "altitude": 38000,
-          "route": "SOT Q93 HEVAN BONNT VEECK5",
+          "waypoints": "SOT Q93 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "GJS",
@@ -157,7 +157,7 @@
           "exit": "SPA",
           "destination": "KSFB",
           "altitude": 37000,
-          "route": "SPA QUIWE Q93 GIPPL Q85 BEEGE Q85 LPERD TTHOR3",
+          "waypoints": "SPA QUIWE Q93 GIPPL Q85 BEEGE Q85 LPERD TTHOR3",
           "airlines": [
             {
               "icao": "AAY",
@@ -169,7 +169,7 @@
           "exit": "JJENY",
           "destination": "KCLT",
           "altitude": 11000,
-          "route": "JJENY FILPZ7",
+          "waypoints": "JJENY FILPZ7",
           "airlines": [
             {
               "icao": "PDT",
@@ -181,7 +181,7 @@
           "exit": "SPA",
           "destination": "KFLL",
           "altitude": 35000,
-          "route": "SPA SPA QUIWE Q93 FISHO Q93 WOPNR Q93 PRMUS CUUDA3",
+          "waypoints": "SPA SPA QUIWE Q93 FISHO Q93 WOPNR Q93 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "AAY",
@@ -193,7 +193,7 @@
           "exit": "BZM",
           "destination": "KEWR",
           "altitude": 35000,
-          "route": "BZM KIDDO Q22 OMENS Q22 UMBRE QUART PHLBO4",
+          "waypoints": "BZM KIDDO Q22 OMENS Q22 UMBRE QUART PHLBO4",
           "airlines": [
             {
               "icao": "AAY",
@@ -205,7 +205,7 @@
           "exit": "VXV",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "VXV YUYUN BEREE2",
+          "waypoints": "VXV YUYUN BEREE2",
           "airlines": [
             {
               "icao": "ENY",
@@ -217,7 +217,7 @@
           "exit": "MHONY",
           "destination": "KATL",
           "altitude": 22000,
-          "route": "MHONY WINNG OZZZI1",
+          "waypoints": "MHONY WINNG OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -229,7 +229,7 @@
           "exit": "MHONY",
           "destination": "KATL",
           "altitude": 22000,
-          "route": "MHONY WINNG OZZZI1",
+          "waypoints": "MHONY WINNG OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -241,7 +241,7 @@
           "exit": "SOT",
           "destination": "KORD",
           "altitude": 34000,
-          "route": "SOT IBATE HEVAN Q118 BONNT VEECK5",
+          "waypoints": "SOT IBATE HEVAN Q118 BONNT VEECK5",
           "airlines": [
             {
               "icao": "ENY",
@@ -253,7 +253,7 @@
           "exit": "MHONY",
           "destination": "KATL",
           "altitude": 22000,
-          "route": "MHONY WINNG OZZZI1",
+          "waypoints": "MHONY WINNG OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -333,7 +333,7 @@
       "arrivals": [
         {
           "waypoints": "AFTEN BARRD/s250/ho/h173",
-          "route": "/. BARRD",
+          "flight_strip_route": "/. BARRD",
           "initial_controller": "C43",
           "initial_altitude": 11000,
           "initial_speed": 290,
@@ -379,7 +379,7 @@
         {
           "waypoints": "KOKRE LEAVI/a11000/ho/h343",
           "cruise_altitude": 35000,
-          "route": "/. LEAVI",
+          "flight_strip_route": "/. LEAVI",
           "initial_controller": "C43",
           "initial_altitude": 12000,
           "initial_speed": 250,
@@ -408,7 +408,7 @@
       "arrivals": [
         {
           "waypoints": "SPA CARTT OBURY/a11000/s250/ho/h308",
-          "route": "/. OBURY",
+          "flight_strip_route": "/. OBURY",
           "initial_controller": "C43",
           "initial_altitude": 16000,
           "initial_speed": 290,
@@ -454,7 +454,7 @@
       "arrivals": [
         {
           "waypoints": "BLAYQ/ho PUPDG/a11000/s250/h135",
-          "route": "/. PUPDG",
+          "flight_strip_route": "/. PUPDG",
           "initial_controller": "1W",
           "initial_altitude": 11000,
           "initial_speed": 290,
@@ -480,7 +480,7 @@
       "arrivals": [
         {
           "waypoints": "BZM WOGAG/ho TUSRE/a11000/s250/h243",
-          "route": "/. TUSRE",
+          "flight_strip_route": "/. TUSRE",
           "initial_controller": "C43",
           "initial_altitude": 18000,
           "initial_speed": 250,

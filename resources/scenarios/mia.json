@@ -284,7 +284,7 @@
           "destination": "KATL",
           "exit": "STYMY",
           "scratchpad": "FLM",
-          "route": "STYMY Q77 MJAMS Q77 SHRKS LAIRI LARZZ SITTH2"
+          "waypoints": "STYMY Q77 MJAMS Q77 SHRKS LAIRI LARZZ SITTH2"
         },
         {
           "airlines": [
@@ -307,7 +307,7 @@
           "destination": "KLGA",
           "exit": "DUCEN",
           "scratchpad": "ALT",
-          "route": "DUCEN Q87 HURTS PROUD2"
+          "waypoints": "DUCEN Q87 HURTS PROUD2"
         },
         {
           "airlines": [
@@ -327,7 +327,7 @@
           "destination": "KJFK",
           "exit": "ALYRA",
           "scratchpad": "FOL",
-          "route": "ALYRA ROWSY Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
+          "waypoints": "ALYRA ROWSY Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
           "airlines": [
@@ -350,7 +350,7 @@
           "destination": "KDFW",
           "exit": "DOLIE",
           "scratchpad": "BNG",
-          "route": "DOLIE CIGAR Y290 BLVNS REDFN Q105 HRV PNUTS BEREE2"
+          "waypoints": "DOLIE CIGAR Y290 BLVNS REDFN Q105 HRV PNUTS BEREE2"
         },
         {
           "airlines": [
@@ -370,7 +370,7 @@
           "destination": "SYCJ",
           "exit": "BITAC",
           "scratchpad": "KLA",
-          "route": "BITAC Y290 HAGIT Y421 MEEGL L466 GEECE UL776 KORTO UG449 LEPOD UA312 TIM"
+          "waypoints": "BITAC Y290 HAGIT Y421 MEEGL L466 GEECE UL776 KORTO UG449 LEPOD UA312 TIM"
         },
         {
           "airlines": [
@@ -386,7 +386,7 @@
           "destination": "TTPP",
           "exit": "BITAC",
           "scratchpad": "KLA",
-          "route": "BITAC Y290 HAGIT Y308 ACONY Y185 ILURI UA555 FOF UA324 BNE ITRAK"
+          "waypoints": "BITAC Y290 HAGIT Y308 ACONY Y185 ILURI UA555 FOF UA324 BNE ITRAK"
         },
         {
           "airlines": [
@@ -406,7 +406,7 @@
           "destination": "SBGR",
           "exit": "URSUS",
           "scratchpad": "GWA",
-          "route": "URSUS UMIMI UL210 GELOG UL795 SUBMA UL795 VUMPI BINAS ISIPA PUKUT MIPAD UZ87 OBLUG UZ42 ZARES EVRAL1A"
+          "waypoints": "URSUS UMIMI UL210 GELOG UL795 SUBMA UL795 VUMPI BINAS ISIPA PUKUT MIPAD UZ87 OBLUG UZ42 ZARES EVRAL1A"
         },
         {
           "airlines": [
@@ -425,7 +425,7 @@
           "destination": "SAEZ",
           "exit": "URSUS",
           "scratchpad": "GWA",
-          "route": "URSUS UL780 TRU UV1 ATATU ATATU3"
+          "waypoints": "URSUS UL780 TRU UV1 ATATU ATATU3"
         },
         {
           "airlines": [
@@ -442,7 +442,7 @@
           "destination": "SPJC",
           "exit": "URSUS",
           "scratchpad": "GWA",
-          "route": "URSUS UL780 TRU UV1 ATATU ATATU3"
+          "waypoints": "URSUS UL780 TRU UV1 ATATU ATATU3"
         },
         {
           "airlines": [
@@ -461,7 +461,7 @@
           "destination": "SKBO",
           "exit": "URSUS",
           "scratchpad": "GWA",
-          "route": "URSUS UP406 BILSI UP406 AKPEK UQ121 ISVAT ISVA4E"
+          "waypoints": "URSUS UP406 BILSI UP406 AKPEK UQ121 ISVAT ISVA4E"
         },
         {
           "airlines": [
@@ -478,7 +478,7 @@
           "destination": "MMMX",
           "exit": "SHAQQ",
           "scratchpad": "GLA",
-          "route": "SHAQQ M580 CCUDA M580 IRDOV UM580 TADET UT154 LIDED UT154 ENAGA ENAGA2A"
+          "waypoints": "SHAQQ M580 CCUDA M580 IRDOV UM580 TADET UT154 LIDED UT154 ENAGA ENAGA2A"
         },
         {
           "airlines": [
@@ -498,7 +498,7 @@
           "destination": "EGLL",
           "exit": "SUMRS",
           "scratchpad": "FOL",
-          "route": "SUMRS M204 SOORY NATZ 4500N/04000W NATZ GUNSO GAPLI SIDDI DAWLY ELRIP OTMET OTMET1H"
+          "waypoints": "SUMRS M204 SOORY NATZ 4500N/04000W NATZ GUNSO GAPLI SIDDI DAWLY ELRIP OTMET OTMET1H"
         },
         {
           "airlines": [
@@ -515,7 +515,7 @@
           "destination": "LFPG",
           "exit": "SUMRS",
           "scratchpad": "FOL",
-          "route": "SUMRS M327 JIMAC BALOO 4000N/05000W 4500N/04000W 4800N/03000W 4900N/02000W BEDRA NASBA RATKA LARLA GANTO JSY UY111 INGOR UM25 LUKIP LUKIP9W"
+          "waypoints": "SUMRS M327 JIMAC BALOO 4000N/05000W 4500N/04000W 4800N/03000W 4900N/02000W BEDRA NASBA RATKA LARLA GANTO JSY UY111 INGOR UM25 LUKIP LUKIP9W"
         },
         {
           "airlines": [
@@ -528,7 +528,7 @@
           "destination": "EHAM",
           "exit": "SUMRS",
           "scratchpad": "FOL",
-          "route": "SUMRS M204 SOORY 4400N/05000W 4800N/04000W 5000N/03000W 5200N/02000W LIMRI XETBO LAPMO LIFFY UL975 WAL M16 DOLAS L603 LAMSO"
+          "waypoints": "SUMRS M204 SOORY 4400N/05000W 4800N/04000W 5000N/03000W 5200N/02000W LIMRI XETBO LAPMO LIFFY UL975 WAL M16 DOLAS L603 LAMSO"
         },
         {
           "airlines": [
@@ -548,7 +548,7 @@
           "destination": "LEMD",
           "exit": "SUMRS",
           "scratchpad": "FOL",
-          "route": "SUMRS M327 JIMAC 3700N/06000W 4000N/05000W 4100N/04000W 4200N/03000W 4300N/02000W ARMED EPOPO ADORO ZMR"
+          "waypoints": "SUMRS M327 JIMAC 3700N/06000W 4000N/05000W 4100N/04000W 4200N/03000W 4300N/02000W ARMED EPOPO ADORO ZMR"
         },
         {
           "airlines": [
@@ -567,7 +567,7 @@
           "destination": "KMSP",
           "exit": "SMELZ",
           "scratchpad": "HUR",
-          "route": "SMELZ Q116 VLKNN GETME J151 STL IOW MNOSO BLUEM4"
+          "waypoints": "SMELZ Q116 VLKNN GETME J151 STL IOW MNOSO BLUEM4"
         },
         {
           "airlines": [
@@ -587,7 +587,7 @@
           "destination": "KORD",
           "exit": "KPASA",
           "scratchpad": "HUR",
-          "route": "KPASA Q118 ROYYZ Q118 HEVAN BONNT VEECK5"
+          "waypoints": "KPASA Q118 ROYYZ Q118 HEVAN BONNT VEECK5"
         },
         {
           "airlines": [
@@ -606,7 +606,7 @@
           "destination": "KDTW",
           "exit": "DUCEN",
           "scratchpad": "ALT",
-          "route": "DUCEN Q87 VIYAP Q69 GURGE Q93 QUIWE HNN JAMOX BONZZ2"
+          "waypoints": "DUCEN Q87 VIYAP Q69 GURGE Q93 QUIWE HNN JAMOX BONZZ2"
         },
         {
           "airlines": [
@@ -622,7 +622,7 @@
           "destination": "KCLT",
           "exit": "DUCEN",
           "scratchpad": "ALT",
-          "route": "DUCEN Q87 VIYAP CHECR STOCR3"
+          "waypoints": "DUCEN Q87 VIYAP CHECR STOCR3"
         },
         {
           "airlines": [
@@ -638,7 +638,7 @@
           "destination": "MYNN",
           "exit": "RAJAY",
           "scratchpad": "KLA",
-          "route": "RAJAY"
+          "waypoints": "RAJAY"
         },
         {
           "airlines": [
@@ -650,7 +650,7 @@
           "destination": "KEYW",
           "exit": "MAYNR",
           "scratchpad": "M14",
-          "route": "MAYNR GUCEL"
+          "waypoints": "MAYNR GUCEL"
         },
         {
           "airlines": [
@@ -670,7 +670,7 @@
           "destination": "KLAX",
           "exit": "DOLIE",
           "scratchpad": "BNG",
-          "route": "DOLIE Y280 REMIS ROZZI Y280 LEV J86 IAH J86 ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
+          "waypoints": "DOLIE Y280 REMIS ROZZI Y280 LEV J86 IAH J86 ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
         },
         {
           "airlines": [
@@ -686,7 +686,7 @@
           "destination": "KSEA",
           "exit": "SMELZ",
           "scratchpad": "HUR",
-          "route": "SMELZ Q116 VLKNN GETME J151 VISQA J151 RAP J151 BIL EPH"
+          "waypoints": "SMELZ Q116 VLKNN GETME J151 VISQA J151 RAP J151 BIL EPH"
         },
         {
           "airlines": [
@@ -702,7 +702,7 @@
           "destination": "KLAS",
           "exit": "DOLIE",
           "scratchpad": "BNG",
-          "route": "DOLIE CIGAR Y290 BLVNS REDFN Y280 LEV"
+          "waypoints": "DOLIE CIGAR Y290 BLVNS REDFN Y280 LEV"
         },
         {
           "airlines": [
@@ -714,7 +714,7 @@
           "destination": "KLAS",
           "exit": "STYMY",
           "scratchpad": "FLM",
-          "route": "STYMY CIGAR Y290 BLVNS REDFN Y280 LEV"
+          "waypoints": "STYMY CIGAR Y290 BLVNS REDFN Y280 LEV"
         },
         {
           "airlines": [
@@ -735,7 +735,7 @@
           "destination": "KMCO",
           "exit": "WAPOM",
           "scratchpad": "FLM",
-          "route": "WAPOM RIDES"
+          "waypoints": "WAPOM RIDES"
         },
         {
           "airlines": [
@@ -763,7 +763,7 @@
           "destination": "MNMG",
           "exit": "FUNDI",
           "scratchpad": "MAY",
-          "route": "FUNDI JABIR UM335 ALVEK"
+          "waypoints": "FUNDI JABIR UM335 ALVEK"
         },
         {
           "airlines": [
@@ -780,7 +780,7 @@
           "destination": "MMMX",
           "exit": "LULLS",
           "scratchpad": "GLA",
-          "route": "LULLS Y196 CANOA UB646 XOPGI"
+          "waypoints": "LULLS Y196 CANOA UB646 XOPGI"
         },
         {
           "airlines": [
@@ -793,7 +793,7 @@
           "destination": "MMUN",
           "exit": "LULLS",
           "scratchpad": "GLA",
-          "route": "LULLS Y196 CANOA B879 MUPKI"
+          "waypoints": "LULLS Y196 CANOA B879 MUPKI"
         }
       ],
       "exit_categories": {
@@ -960,7 +960,7 @@
           "destination": "KMCO",
           "exit": "WAPOM",
           "scratchpad": "FRS",
-          "route": "WAPOM RIDES2"
+          "waypoints": "WAPOM RIDES2"
         },
         {
           "airlines": [
@@ -979,7 +979,7 @@
           "destination": "KATL",
           "exit": "STYMY",
           "scratchpad": "FRS",
-          "route": "STYMY Q77 SHRKS LAIRI LARZZ JJEDI3"
+          "waypoints": "STYMY Q77 SHRKS LAIRI LARZZ JJEDI3"
         },
         {
           "airlines": [
@@ -998,7 +998,7 @@
           "destination": "KORD",
           "exit": "KPASA",
           "scratchpad": "HRO",
-          "route": "KPASA Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5"
+          "waypoints": "KPASA Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5"
         },
         {
           "airlines": [
@@ -1016,7 +1016,7 @@
           "destination": "MYNN",
           "exit": "RAJAY",
           "scratchpad": "SNA",
-          "route": "RAJAY"
+          "waypoints": "RAJAY"
         },
         {
           "airlines": [
@@ -1034,7 +1034,7 @@
           "destination": "TJSJ",
           "exit": "SUMAC",
           "scratchpad": "SNA",
-          "route": "SUMAC Y421 HAGIT Y290 BEANO"
+          "waypoints": "SUMAC Y421 HAGIT Y290 BEANO"
         },
         {
           "airlines": [
@@ -1052,7 +1052,7 @@
           "destination": "MKJS",
           "exit": "URSUS",
           "scratchpad": "REG",
-          "route": "URSUS UL780 TASNO Um221 NIBEO ADSEL LENAR7"
+          "waypoints": "URSUS UL780 TASNO Um221 NIBEO ADSEL LENAR7"
         },
         {
           "airlines": [
@@ -1068,7 +1068,7 @@
           "destination": "KDEN",
           "exit": "SMELZ",
           "scratchpad": "HRO",
-          "route": "SMELZ Q116 JAWJA CABLO DEFUN CEW MHZ KIISS CLASH4"
+          "waypoints": "SMELZ Q116 JAWJA CABLO DEFUN CEW MHZ KIISS CLASH4"
         },
         {
           "airlines": [
@@ -1089,7 +1089,7 @@
           "destination": "KLAX",
           "exit": "DOLIE",
           "scratchpad": "BNI",
-          "route": "DOLIE Y280 LEV FUSCO EWM DMN WOBUG SATRN BXK ESTWD HLYWD1"
+          "waypoints": "DOLIE Y280 LEV FUSCO EWM DMN WOBUG SATRN BXK ESTWD HLYWD1"
         },
         {
           "airlines": [
@@ -1104,7 +1104,7 @@
           "destination": "KCLT",
           "exit": "DUCEN",
           "scratchpad": "AGE",
-          "route": "DUCEN Q87 VIYAP CHECR"
+          "waypoints": "DUCEN Q87 VIYAP CHECR"
         },
         {
           "airlines": [
@@ -1123,7 +1123,7 @@
           "destination": "SEGU",
           "exit": "URSUS",
           "scratchpad": "REG",
-          "route": "URSUS UL780 TASNO"
+          "waypoints": "URSUS UL780 TASNO"
         },
         {
           "airlines": [
@@ -1141,7 +1141,7 @@
           "destination": "KDFW",
           "exit": "SMELZ",
           "scratchpad": "HRO",
-          "route": "SMELZ Q116 JAWJA CABLO"
+          "waypoints": "SMELZ Q116 JAWJA CABLO"
         },
         {
           "airlines": [
@@ -1159,7 +1159,7 @@
           "destination": "KTPA",
           "exit": "COREA",
           "scratchpad": "BNI",
-          "route": "COREA BLFRG"
+          "waypoints": "COREA BLFRG"
         },
         {
           "airlines": [
@@ -1175,7 +1175,7 @@
           "destination": "KSLC",
           "exit": "SMELZ",
           "scratchpad": "HRO",
-          "route": "SMELZ Q116 JAWJA Q116 DEEDA"
+          "waypoints": "SMELZ Q116 JAWJA Q116 DEEDA"
         },
         {
           "airlines": [
@@ -1193,7 +1193,7 @@
           "destination": "KMSY",
           "exit": "DOLIE",
           "scratchpad": "BNI",
-          "route": "DOLIE Y280 REDFN Q105 HRV"
+          "waypoints": "DOLIE Y280 REDFN Q105 HRV"
         },
         {
           "airlines": [
@@ -1220,7 +1220,7 @@
           "destination": "KBNA",
           "exit": "KPASA",
           "scratchpad": "HRO",
-          "route": "KPASA Q118 BRUTS Q118 THRSR WESSN JAGIR"
+          "waypoints": "KPASA Q118 BRUTS Q118 THRSR WESSN JAGIR"
         },
         {
           "airlines": [
@@ -1235,7 +1235,7 @@
           "destination": "KHOU",
           "exit": "DOLIE",
           "scratchpad": "BNI",
-          "route": "DOLIE Y280 LEV"
+          "waypoints": "DOLIE Y280 LEV"
         },
         {
           "airlines": [
@@ -1254,7 +1254,7 @@
           "destination": "KEWR",
           "exit": "ETECK",
           "scratchpad": "FEA",
-          "route": "ETECK GRUBR Y299 SEELO"
+          "waypoints": "ETECK GRUBR Y299 SEELO"
         },
         {
           "airlines": [
@@ -1272,7 +1272,7 @@
           "destination": "KLGA",
           "exit": "ETECK",
           "scratchpad": "FEA",
-          "route": "ETECK GRUBR Y299 SEELO"
+          "waypoints": "ETECK GRUBR Y299 SEELO"
         },
         {
           "airlines": [
@@ -1291,7 +1291,7 @@
           "destination": "KMYR",
           "exit": "DUCEN",
           "scratchpad": "AGE",
-          "route": "DUCEN Q87 JROSS"
+          "waypoints": "DUCEN Q87 JROSS"
         },
         {
           "airlines": [
@@ -1310,7 +1310,7 @@
           "destination": "KDCA",
           "exit": "ETECK",
           "scratchpad": "FEA",
-          "route": "ETECK GRUBR Y299 SEELO"
+          "waypoints": "ETECK GRUBR Y299 SEELO"
         },
         {
           "airlines": [
@@ -1326,7 +1326,7 @@
           "destination": "KJFK",
           "exit": "ETECK",
           "scratchpad": "FEA",
-          "route": "ETECK ROWSY Y309 FLRDA"
+          "waypoints": "ETECK ROWSY Y309 FLRDA"
         },
         {
           "airlines": [
@@ -1339,7 +1339,7 @@
           "destination": "MPTO",
           "exit": "FUNDI",
           "scratchpad": "MAY",
-          "route": "FUNDI JABIR UM335 ARNAL"
+          "waypoints": "FUNDI JABIR UM335 ARNAL"
         },
         {
           "airlines": [
@@ -1351,7 +1351,7 @@
           "destination": "KHVN",
           "exit": "ETECK",
           "scratchpad": "FEA",
-          "route": "ETECK PELCN Y309 FLRDA"
+          "waypoints": "ETECK PELCN Y309 FLRDA"
         },
         {
           "airlines": [
@@ -1371,7 +1371,7 @@
           "destination": "MMUN",
           "exit": "GLADZ",
           "scratchpad": "GLA",
-          "route": "GLADZ LULLS Y196 CANOA UB879 NOSAT"
+          "waypoints": "GLADZ LULLS Y196 CANOA UB879 NOSAT"
         }
       ],
       "exit_categories": {
@@ -1668,7 +1668,7 @@
           "destination": "KORL",
           "exit": "WAPOM",
           "scratchpad": "F29",
-          "route": "WAPOM RIDES2"
+          "waypoints": "WAPOM RIDES2"
         },
         {
           "airlines": [
@@ -1683,7 +1683,7 @@
           "destination": "MMUN",
           "exit": "CANOA",
           "scratchpad": "M34",
-          "route": "CANOA DUNOG NOSAT CUN"
+          "waypoints": "CANOA DUNOG NOSAT CUN"
         },
         {
           "airlines": [
@@ -1698,7 +1698,7 @@
           "destination": "MYNN",
           "exit": "GLAMS",
           "scratchpad": "M21",
-          "route": "GLAMS RAJAY"
+          "waypoints": "GLAMS RAJAY"
         },
         {
           "airlines": [
@@ -1713,7 +1713,7 @@
           "destination": "KJFK",
           "exit": "ALYRA",
           "scratchpad": "F37",
-          "route": "ALYRA PELCN Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
+          "waypoints": "ALYRA PELCN Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
           "airlines": [
@@ -1728,7 +1728,7 @@
           "destination": "KMDW",
           "exit": "KPASA",
           "scratchpad": "H36",
-          "route": "KPASA Q99 CAMJO VXV ROYYZ Q118 BONNT VEECK5"
+          "waypoints": "KPASA Q99 CAMJO VXV ROYYZ Q118 BONNT VEECK5"
         },
         {
           "airlines": [
@@ -1743,7 +1743,7 @@
           "destination": "KLAX",
           "exit": "SMELZ",
           "scratchpad": "H34",
-          "route": "SMELZ Q116 JAWJA SWB DOLEY LYMPY CIKAN TCS NABOB GABBL HLYWD1"
+          "waypoints": "SMELZ Q116 JAWJA SWB DOLEY LYMPY CIKAN TCS NABOB GABBL HLYWD1"
         }
       ],
       "exit_categories": {
@@ -2061,7 +2061,7 @@
           "destination": "KMSY",
           "exit": "BAGGS",
           "scratchpad": "G38",
-          "route": "BAGGS Y290 LEV"
+          "waypoints": "BAGGS Y290 LEV"
         },
         {
           "airlines": [
@@ -2073,7 +2073,7 @@
           "destination": "KORL",
           "exit": "WAPOM",
           "scratchpad": "F29",
-          "route": "WAPOM RIDES2"
+          "waypoints": "WAPOM RIDES2"
         },
         {
           "airlines": [
@@ -2088,7 +2088,7 @@
           "destination": "MMUN",
           "exit": "CANOA",
           "scratchpad": "M34",
-          "route": "CANOA DUNOG NOSAT CUN"
+          "waypoints": "CANOA DUNOG NOSAT CUN"
         },
         {
           "airlines": [
@@ -2103,7 +2103,7 @@
           "destination": "KJFK",
           "exit": "ALYRA",
           "scratchpad": "F37",
-          "route": "ALYRA PELCN Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
+          "waypoints": "ALYRA PELCN Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
           "airlines": [
@@ -2118,7 +2118,7 @@
           "destination": "KMDW",
           "exit": "KPASA",
           "scratchpad": "H36",
-          "route": "KPASA Q99 CAMJO VXV ROYYZ Q118 BONNT VEECK5"
+          "waypoints": "KPASA Q99 CAMJO VXV ROYYZ Q118 BONNT VEECK5"
         },
         {
           "airlines": [
@@ -2133,7 +2133,7 @@
           "destination": "KLAX",
           "exit": "SMELZ",
           "scratchpad": "H34",
-          "route": "SMELZ Q116 JAWJA SWB DOLEY LYMPY CIKAN TCS NABOB GABBL HLYWD1"
+          "waypoints": "SMELZ Q116 JAWJA SWB DOLEY LYMPY CIKAN TCS NABOB GABBL HLYWD1"
         }
       ],
       "exit_categories": {
@@ -2408,7 +2408,7 @@
           "destination": "KMDW",
           "exit": "STYMY",
           "scratchpad": "F34",
-          "route": "STYMY Q77 SHRKS TEUFL Q77 WIGVO ODF IIU DROSE FISSK6"
+          "waypoints": "STYMY Q77 SHRKS TEUFL Q77 WIGVO ODF IIU DROSE FISSK6"
         },
         {
           "airlines": [
@@ -2420,7 +2420,7 @@
           "destination": "KORL",
           "exit": "WAPOM",
           "scratchpad": "F29",
-          "route": "WAPOM RIDES2"
+          "waypoints": "WAPOM RIDES2"
         },
         {
           "airlines": [
@@ -2435,7 +2435,7 @@
           "destination": "MMUN",
           "exit": "CANOA",
           "scratchpad": "M34",
-          "route": "CANOA DUNOG NOSAT CUN"
+          "waypoints": "CANOA DUNOG NOSAT CUN"
         },
         {
           "airlines": [
@@ -2450,7 +2450,7 @@
           "destination": "KJFK",
           "exit": "ALYRA",
           "scratchpad": "F37",
-          "route": "ALYRA PELCN Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
+          "waypoints": "ALYRA PELCN Y309 FLRDA SAGGY CHIEZ Q133 KALDA Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
           "airlines": [
@@ -2465,7 +2465,7 @@
           "destination": "KMDW",
           "exit": "KPASA",
           "scratchpad": "H36",
-          "route": "KPASA Q99 CAMJO VXV ROYYZ Q118 BONNT VEECK5"
+          "waypoints": "KPASA Q99 CAMJO VXV ROYYZ Q118 BONNT VEECK5"
         },
         {
           "airlines": [
@@ -2480,7 +2480,7 @@
           "destination": "KLAX",
           "exit": "SMELZ",
           "scratchpad": "H34",
-          "route": "SMELZ Q116 JAWJA SWB DOLEY LYMPY CIKAN TCS NABOB GABBL HLYWD1"
+          "waypoints": "SMELZ Q116 JAWJA SWB DOLEY LYMPY CIKAN TCS NABOB GABBL HLYWD1"
         }
       ],
       "exit_categories": {

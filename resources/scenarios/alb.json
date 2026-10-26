@@ -85,7 +85,7 @@
           ],
           "destination": "KCLT",
           "exit": "PWL",
-          "route": "PWL BIZEX Q75 GVE AIROW CHSLY9",
+          "waypoints": "PWL BIZEX Q75 GVE AIROW CHSLY9",
           "scratchpad": "PWL"
         },
         {
@@ -96,7 +96,7 @@
           ],
           "destination": "KDTW",
           "exit": "PAYGE",
-          "route": "PAYGE Q822 GONZZ DONEO TPGUN2",
+          "waypoints": "PAYGE Q822 GONZZ DONEO TPGUN2",
           "scratchpad": "PAY"
         },
         {
@@ -107,7 +107,7 @@
           ],
           "destination": "KATL",
           "exit": "ACOVE",
-          "route": "ACOVE DBABE Q448 PTW J48 MOL FLASK OZZZI1",
+          "waypoints": "ACOVE DBABE Q448 PTW J48 MOL FLASK OZZZI1",
           "scratchpad": "ACO"
         },
         {
@@ -118,7 +118,7 @@
           ],
           "destination": "KMCO",
           "exit": "PWL",
-          "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
+          "waypoints": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
           "scratchpad": "PWL"
         },
         {
@@ -129,7 +129,7 @@
           ],
           "destination": "KDCA",
           "exit": "PWL",
-          "route": "PWL BIZEX Q75 MXE CLIPR3",
+          "waypoints": "PWL BIZEX Q75 MXE CLIPR3",
           "scratchpad": "PWL"
         },
         {
@@ -140,7 +140,7 @@
           ],
           "destination": "KORD",
           "exit": "PAYGE",
-          "route": "PAYGE Q822 FNT WYNDE2",
+          "waypoints": "PAYGE Q822 FNT WYNDE2",
           "scratchpad": "PAY"
         },
         {
@@ -151,7 +151,7 @@
           ],
           "destination": "KMCO",
           "exit": "PWL",
-          "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
+          "waypoints": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
           "scratchpad": "PWL"
         },
         {
@@ -162,7 +162,7 @@
           ],
           "destination": "KPHL",
           "exit": "CEDOR",
-          "route": " CEDOR DNY LAAYK WLKES T455 FJC PTW",
+          "waypoints": " CEDOR DNY LAAYK WLKES T455 FJC PTW",
           "scratchpad": "CED"
         },
         {
@@ -173,7 +173,7 @@
           ],
           "destination": "KBWI",
           "exit": "PWL",
-          "route": "PWL BIZEX Q75 MXE V378 NUGGY TRISH4",
+          "waypoints": "PWL BIZEX Q75 MXE V378 NUGGY TRISH4",
           "scratchpad": "PWL"
         },
         {
@@ -184,7 +184,7 @@
           ],
           "destination": "KLGA",
           "exit": "IGN",
-          "route": "IGN V157 HAARP",
+          "waypoints": "IGN V157 HAARP",
           "scratchpad": "IGN"
         },
         {
@@ -195,7 +195,7 @@
           ],
           "destination": "KMCO",
           "exit": "PWL",
-          "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
+          "waypoints": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
           "scratchpad": "PWL"
         },
         {
@@ -206,7 +206,7 @@
           ],
           "destination": "KBOS",
           "exit": "GDM",
-          "route": "GDM T608 REVER",
+          "waypoints": "GDM T608 REVER",
           "scratchpad": "GDM"
         }
       ],
@@ -250,7 +250,7 @@
           ],
           "destination": "KPSM",
           "exit": "CAM",
-          "route": "CAM CON PSM",
+          "waypoints": "CAM CON PSM",
           "scratchpad": "CAM"
         },
         {
@@ -262,7 +262,7 @@
           ],
           "destination": "KRME",
           "exit": "MARIA",
-          "route": "MARIA RME",
+          "waypoints": "MARIA RME",
           "scratchpad": "MAR"
         }
       ]
@@ -273,7 +273,7 @@
       "arrivals": [
         {
           "waypoints": "SYR CASIL/ho",
-          "route": "./ SYR CASIL",
+          "flight_strip_route": "./ SYR CASIL",
           "initial_controller": "C22",
           "initial_altitude": 11000,
           "initial_speed": 270,
@@ -330,7 +330,7 @@
       "arrivals": [
         {
           "waypoints": "BOWAN/ho CANAN ALB",
-          "route": "./ BOWAN CANAN ALB",
+          "flight_strip_route": "./ BOWAN CANAN ALB",
           "initial_controller": "C22",
           "initial_altitude": 11000,
           "initial_speed": 270,
@@ -427,7 +427,7 @@
       "arrivals": [
         {
           "waypoints": "BOWAN CANAN/a4000 N42.29.46.3,W73.30.42.1/ho CIRRU",
-          "route": "./ BOWAN CANAN CIRRU",
+          "flight_strip_route": "./ BOWAN CANAN CIRRU",
           "initial_controller": "1E",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -524,7 +524,7 @@
       "arrivals": [
         {
           "waypoints": "SYR CASIL SHAHE/ho/h190/a4000",
-          "route": "./ SYR CASIL SHAHE",
+          "flight_strip_route": "./ SYR CASIL SHAHE",
           "initial_controller": "1W",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -581,7 +581,7 @@
       "arrivals": [
         {
           "waypoints": "BOWAN CANAN/a4000 CIRRU/ho/h010",
-          "route": "./ BOWAN CANAN CIRRU",
+          "flight_strip_route": "./ BOWAN CANAN CIRRU",
           "initial_controller": "1E",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -678,7 +678,7 @@
       "arrivals": [
         {
           "waypoints": "SYR CASIL SHAHE/ho/h010/a4000",
-          "route": "./ SYR CASIL SHAHE",
+          "flight_strip_route": "./ SYR CASIL SHAHE",
           "initial_controller": "1W",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -735,7 +735,7 @@
       "arrivals": [
         {
           "waypoints": "BOWAN CANAN/a4000 CIRRU/ho/h280",
-          "route": "./ BOWAN CANAN CIRRU",
+          "flight_strip_route": "./ BOWAN CANAN CIRRU",
           "initial_controller": "1E",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -832,7 +832,7 @@
       "arrivals": [
         {
           "waypoints": "SYR CASIL/ho/a4000",
-          "route": "./ SYR CASIL",
+          "flight_strip_route": "./ SYR CASIL",
           "initial_controller": "1W",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -889,7 +889,7 @@
       "arrivals": [
         {
           "waypoints": "BOWAN CANAN/a4000 CIRRU GROUP/ho/h100",
-          "route": "./ BOWAN CANAN CIRRU GROUP",
+          "flight_strip_route": "./ BOWAN CANAN CIRRU GROUP",
           "initial_controller": "1E",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -986,7 +986,7 @@
       "arrivals": [
         {
           "waypoints": "SYR CASIL OTOLE/ho/h100/a4000",
-          "route": "./ SYR CASIL OTOLE",
+          "flight_strip_route": "./ SYR CASIL OTOLE",
           "initial_controller": "1W",
           "initial_altitude": 11000,
           "initial_speed": 250,
@@ -1043,7 +1043,7 @@
       "arrivals": [
         {
           "waypoints": "GFALS HANAA/ho",
-          "route": "./ GFALS HANAA",
+          "flight_strip_route": "./ GFALS HANAA",
           "initial_controller": "C22",
           "initial_altitude": 11000,
           "initial_speed": 250,

@@ -39,7 +39,7 @@
           ],
           "destination": "KMLS",
           "exit": "LAYLY",
-          "route": "LAYLY",
+          "waypoints": "LAYLY",
           "scratchpad": "LAY"
         },
         {
@@ -50,7 +50,7 @@
           ],
           "destination": "KGDV",
           "exit": "ANJLA",
-          "route": "ANJLA",
+          "waypoints": "ANJLA",
           "scratchpad": "ANJ"
         },
         {
@@ -61,7 +61,7 @@
           ],
           "destination": "KSDY",
           "exit": "LAYLY",
-          "route": "LAYLY",
+          "waypoints": "LAYLY",
           "scratchpad": "LAY"
         },
         {
@@ -72,7 +72,7 @@
           ],
           "destination": "K4U6",
           "exit": "LAYLY",
-          "route": "LAYLY",
+          "waypoints": "LAYLY",
           "scratchpad": "LAY"
         },
         {
@@ -83,7 +83,7 @@
           ],
           "destination": "KSLC",
           "exit": "NELKS",
-          "route": "NELKS SYMPL JAC NORDK6",
+          "waypoints": "NELKS SYMPL JAC NORDK6",
           "scratchpad": "NEL"
         },
         {
@@ -94,7 +94,7 @@
           ],
           "destination": "KDEN",
           "exit": "BOY",
-          "route": "BOY TOFUU FLATI3",
+          "waypoints": "BOY TOFUU FLATI3",
           "scratchpad": "BOY"
         },
         {
@@ -105,7 +105,7 @@
           ],
           "destination": "KPDX",
           "exit": "ARMTY",
-          "route": "BIL ARMTY ASHUW HIA J16 PDT JKNOX HHOOD4",
+          "waypoints": "BIL ARMTY ASHUW HIA J16 PDT JKNOX HHOOD4",
           "scratchpad": "ARM"
         },
         {
@@ -116,7 +116,7 @@
           ],
           "destination": "KSEA",
           "exit": "ARMTY",
-          "route": "BIL ARMTY ASHUW HLN J136 MLP GLASR3",
+          "waypoints": "BIL ARMTY ASHUW HLN J136 MLP GLASR3",
           "scratchpad": "ARM"
         },
         {
@@ -127,7 +127,7 @@
           ],
           "destination": "KDEN",
           "exit": "GAITZ",
-          "route": "BIL GAITZ GRYNS TOFUU FLATI3",
+          "waypoints": "BIL GAITZ GRYNS TOFUU FLATI3",
           "scratchpad": "GAI"
         }
       ],

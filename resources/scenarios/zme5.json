@@ -40,28 +40,28 @@
           "altitude": 33000,
           "destination": "KRDU",
           "exit": "CHADM",
-          "route": "CHADM MUNNY TONIO Q34 SITTR/delete TRUPS6"
+          "waypoints": "CHADM MUNNY TONIO Q34 SITTR/delete TRUPS6"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "AAL" }, { "icao": "UAL" }],
           "altitude": 35000,
           "destination": "KORD",
           "exit": "KRSTA",
-          "route": "KRSTA OLSIE IIU HEVAN BONNT/delete VEECK5"
+          "waypoints": "KRSTA OLSIE IIU HEVAN BONNT/delete VEECK5"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "AAL" }, { "icao": "SWA" }],
           "altitude": 35000,
           "destination": "KMKE",
           "exit": "GDOGG",
-          "route": "GDOGG FAPER BVT VINNE BRAVE/delete EXARR"
+          "waypoints": "GDOGG FAPER BVT VINNE BRAVE/delete EXARR"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "DAL" }],
           "altitude": 35000,
           "destination": "KBOS",
           "exit": "CHADM",
-          "route": "CHADM MUNNY TONIO Q34 RBV Q419 JFK/delete ROBUC3"
+          "waypoints": "CHADM MUNNY TONIO Q34 RBV Q419 JFK/delete ROBUC3"
         },
         {
           "airlines": [
@@ -74,7 +74,7 @@
           "altitude": 37000,
           "destination": "KDTW",
           "exit": "GDOGG",
-          "route": "GDOGG FAPER IMPEL WWODD/delete LECTR3"
+          "waypoints": "GDOGG FAPER IMPEL WWODD/delete LECTR3"
         }
       ]
     },
@@ -291,7 +291,7 @@
           "waypoints": "CUTRR GROAT/ho PASLY/a15000-19000/s280 CARAP/a12000+ RDNEK/a6000/s210/delete",
           "cruise_altitude": 34000,
           "star": "PASLY5",
-          "route": "/. PASLY5",
+          "flight_strip_route": "/. PASLY5",
           "initial_controller": "I83",
           "initial_altitude": 28000,
           "assigned_altitude": 24000,
@@ -334,7 +334,7 @@
           "waypoints": "EDDDY BAMMA/ho SWFFT/a15000-19000/s280 HIMAT/a12000+ PFOWL/a10000+/s250 HOTTE/a9000/s230 CHKKN/a8000/s210/delete",
           "cruise_altitude": 34000,
           "star": "SWFFT3",
-          "route": "/. SWFFT3",
+          "flight_strip_route": "/. SWFFT3",
           "initial_controller": "31",
           "initial_altitude": 28000,
           "assigned_altitude": 24000,
@@ -377,7 +377,7 @@
           "waypoints": "THRSR WESSN JAGIR N035.04.19.730,W085.20.23.574/ho LENSE/a24000-28000 SWFFT/a15000-19000/s280 HIMAT/a12000+ PFOWL/a10000+/s250 HOTTE/a9000/s230 CHKKN/a8000/s210/delete",
           "cruise_altitude": 34000,
           "star": "SWFFT3",
-          "route": "/. SWFFT3",
+          "flight_strip_route": "/. SWFFT3",
           "initial_controller": "31",
           "initial_altitude": 28000,
           "assigned_altitude": 24000,
@@ -420,7 +420,7 @@
           "waypoints": "RKMRT JAGIR N035.04.19.730,W085.20.23.574/ho LENSE/a24000-28000 SWFFT/a15000-19000/s280 HIMAT/a12000+ PFOWL/a10000+/s250 HOTTE/a9000/s230 CHKKN/a8000/s210/delete",
           "cruise_altitude": 34000,
           "star": "SWFFT3",
-          "route": "/. SWFFT3",
+          "flight_strip_route": "/. SWFFT3",
           "initial_controller": "31",
           "initial_altitude": 28000,
           "assigned_altitude": 24000,
@@ -463,7 +463,7 @@
           "waypoints": "NMANN SOKOL N037.15.36.625,W088.05.01.245/ho RANTS/a24000+ RYYMN/a15000-19000/s280 PEKIE/a12000 WILEE/a9000/s210 DRUMZ/a9000/s210/delete",
           "cruise_altitude": 34000,
           "star": "RYYMN4",
-          "route": "/. RYYMN4",
+          "flight_strip_route": "/. RYYMN4",
           "initial_controller": "63",
           "initial_altitude": 28000,
           "assigned_altitude": 24000,
@@ -506,7 +506,7 @@
           "waypoints": "TONES ULTRA/a23000-/ho RYYMN/a15000-19000/s280 PEKIE/a12000 WILEE/a9000/s210 DRUMZ/a9000/s210/delete",
           "cruise_altitude": 34000,
           "star": "RYYMN4",
-          "route": "/. RYYMN4",
+          "flight_strip_route": "/. RYYMN4",
           "initial_controller": "63",
           "initial_altitude": 28000,
           "assigned_altitude": 23000,
@@ -549,7 +549,7 @@
           "waypoints": "LOONE ULTRA/a23000-/ho RYYMN/a15000-19000/s280 PEKIE/a12000 WILEE/a9000/s210 DRUMZ/a9000/s210/delete",
           "cruise_altitude": 34000,
           "star": "RYYMN4",
-          "route": "/. RYYMN4",
+          "flight_strip_route": "/. RYYMN4",
           "initial_controller": "63",
           "initial_altitude": 28000,
           "assigned_altitude": 23000,

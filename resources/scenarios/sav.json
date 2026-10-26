@@ -46,7 +46,7 @@
           ],
           "destination": "KATL",
           "exit": "SMALZ",
-          "route": "SMALZ TYFTR JJEDI4"
+          "waypoints": "SMALZ TYFTR JJEDI4"
         },
         {
           "airlines": [
@@ -66,7 +66,7 @@
           ],
           "destination": "KCLT",
           "exit": "JROSS",
-          "route": "JROSS FLLGG STOCR7"
+          "waypoints": "JROSS FLLGG STOCR7"
         },
         {
           "airlines": [
@@ -82,7 +82,7 @@
           ],
           "destination": "KJFK",
           "exit": "JROSS",
-          "route": "JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN4"
+          "waypoints": "JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN4"
         },
         {
           "airlines": [
@@ -102,7 +102,7 @@
           ],
           "destination": "KEWR",
           "exit": "JROSS",
-          "route": "JROSS Q87 ALWZZ OGRAE Q99 QUART PHLBO4"
+          "waypoints": "JROSS Q87 ALWZZ OGRAE Q99 QUART PHLBO4"
         },
         {
           "airlines": [
@@ -116,7 +116,7 @@
           ],
           "destination": "KORD",
           "exit": "SMALZ",
-          "route": "SMALZ MILEN QUIWE Q93 HEVAN Q118 BONNT VEECK5"
+          "waypoints": "SMALZ MILEN QUIWE Q93 HEVAN Q118 BONNT VEECK5"
         },
         {
           "airlines": [
@@ -127,7 +127,7 @@
           ],
           "destination": "KDFW",
           "exit": "SMALZ",
-          "route": "SMALZ WIGVO DBN MGMRY YUYUN BEREE3"
+          "waypoints": "SMALZ WIGVO DBN MGMRY YUYUN BEREE3"
         },
         {
           "airlines": [
@@ -140,7 +140,7 @@
           ],
           "destination": "KIAD",
           "exit": "JROSS",
-          "route": "JROSS FLO RDU BZNGA DORRN CAVLR7"
+          "waypoints": "JROSS FLO RDU BZNGA DORRN CAVLR7"
         },
         {
           "airlines": [
@@ -150,7 +150,7 @@
           ],
           "destination": "KLGA",
           "exit": "JROSS",
-          "route": "JROSS Q87 HURTS PROUD2"
+          "waypoints": "JROSS Q87 HURTS PROUD2"
         },
         {
           "airlines": [
@@ -160,7 +160,7 @@
           ],
           "destination": "KPHL",
           "exit": "JROSS",
-          "route": "JROSS RAPZZ Q135 RREGG Q117 SAWED Q97 ZJAAY JIIMS4"
+          "waypoints": "JROSS RAPZZ Q135 RREGG Q117 SAWED Q97 ZJAAY JIIMS4"
         },
         {
           "airlines": [
@@ -170,7 +170,7 @@
           ],
           "destination": "KBWI",
           "exit": "JROSS",
-          "route": "JROSS Q87 RAYVO Q113 AARNN THHMP RAVNN9"
+          "waypoints": "JROSS Q87 RAYVO Q113 AARNN THHMP RAVNN9"
         },
         {
           "airlines": [
@@ -180,7 +180,7 @@
           ],
           "destination": "KDCA",
           "exit": "JROSS",
-          "route": "JROSS Q87 RAYVO Q113 AARNN WAVES CAPSS3"
+          "waypoints": "JROSS Q87 RAYVO Q113 AARNN WAVES CAPSS3"
         },
         {
           "airlines": [
@@ -190,7 +190,7 @@
           ],
           "destination": "KIAH",
           "exit": "SMALZ",
-          "route": "SMALZ BYYOU AMG CEW J2 SJI LINKK1"
+          "waypoints": "SMALZ BYYOU AMG CEW J2 SJI LINKK1"
         },
         {
           "airlines": [
@@ -200,7 +200,7 @@
           ],
           "destination": "KMIA",
           "exit": "GIPPL",
-          "route": "GIPPL WOPNR KENLL Q93 DEBRL CSTAL3"
+          "waypoints": "GIPPL WOPNR KENLL Q93 DEBRL CSTAL3"
         },
         {
           "airlines": [
@@ -213,7 +213,7 @@
           ],
           "destination": "KMDW",
           "exit": "SMALZ",
-          "route": "SMALZ IRQ MHONY COMDY ENGRA VOSTK HEVAN DROSE FISSK7"
+          "waypoints": "SMALZ IRQ MHONY COMDY ENGRA VOSTK HEVAN DROSE FISSK7"
         },
         {
           "airlines": [
@@ -226,7 +226,7 @@
           ],
           "destination": "KBOS",
           "exit": "JROSS",
-          "route": "JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3"
+          "waypoints": "JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -236,7 +236,7 @@
           ],
           "destination": "KBNA",
           "exit": "SMALZ",
-          "route": "SMALZ IRQ JAGIR SWFFT3"
+          "waypoints": "SMALZ IRQ JAGIR SWFFT3"
         },
         {
           "airlines": [
@@ -247,7 +247,7 @@
           ],
           "destination": "KDTW",
           "exit": "SMALZ",
-          "route": "SMALZ MILEN QUIWE SPA HMV SUBWY HTROD2"
+          "waypoints": "SMALZ MILEN QUIWE SPA HMV SUBWY HTROD2"
         },
         {
           "airlines": [
@@ -257,7 +257,7 @@
           ],
           "destination": "KDAL",
           "exit": "SMALZ",
-          "route": "SMALZ WIGVO LUCKK FRDDO ARRNY Q184 MERDN MHZ MLU PUDJE MNNDO4"
+          "waypoints": "SMALZ WIGVO LUCKK FRDDO ARRNY Q184 MERDN MHZ MLU PUDJE MNNDO4"
         },
         {
           "airlines": [
@@ -267,7 +267,7 @@
           ],
           "destination": "KCVG",
           "exit": "SMALZ",
-          "route": "SMALZ IRQ VXV JAKIE6"
+          "waypoints": "SMALZ IRQ VXV JAKIE6"
         },
         {
           "airlines": [
@@ -277,7 +277,7 @@
           ],
           "destination": "KFLL",
           "exit": "GIPPL",
-          "route": "GIPPL WOPNR Q93 PRMUS CUUDA3"
+          "waypoints": "GIPPL WOPNR Q93 PRMUS CUUDA3"
         },
         {
           "airlines": [
@@ -291,7 +291,7 @@
           ],
           "destination": "KMSP",
           "exit": "SMALZ",
-          "route": "SMALZ IRQ SOT FLM RID GIJ KAMMA KKILR3"
+          "waypoints": "SMALZ IRQ SOT FLM RID GIJ KAMMA KKILR3"
         },
         {
           "airlines": [
@@ -301,7 +301,7 @@
           ],
           "destination": "KTPA",
           "exit": "GIPPL",
-          "route": "GIPPL WOPNR"
+          "waypoints": "GIPPL WOPNR"
         },
         {
           "airlines": [
@@ -311,7 +311,7 @@
           ],
           "destination": "KHVN",
           "exit": "JROSS",
-          "route": "JROSS ELLDE Q97 KALDA SARDI1"
+          "waypoints": "JROSS ELLDE Q97 KALDA SARDI1"
         },
         {
           "airlines": [
@@ -321,7 +321,7 @@
           ],
           "destination": "KLCK",
           "exit": "SMALZ",
-          "route": "SMALZ IRQ SPA J85 NEALS MCGNS SCRLT2"
+          "waypoints": "SMALZ IRQ SPA J85 NEALS MCGNS SCRLT2"
         },
         {
           "airlines": [
@@ -331,7 +331,7 @@
           ],
           "destination": "KPIT",
           "exit": "SMALZ",
-          "route": "SMALZ MILEN QUIWE RYCKI Q69 EWESS Q69 RICCS LEJOY DEMME5"
+          "waypoints": "SMALZ MILEN QUIWE RYCKI Q69 EWESS Q69 RICCS LEJOY DEMME5"
         },
         {
           "airlines": [
@@ -341,7 +341,7 @@
           ],
           "destination": "KCAK",
           "exit": "SMALZ",
-          "route": "SMALZ MILEN QUIWE SPA J85 HVQ JPU ZZIPS1"
+          "waypoints": "SMALZ MILEN QUIWE SPA J85 HVQ JPU ZZIPS1"
         },
         {
           "airlines": [
@@ -351,7 +351,7 @@
           ],
           "destination": "KBDL",
           "exit": "JROSS",
-          "route": "JROSS ELLDE Q97 PAACK JAMIE CONFR Q481 DPK DPK3"
+          "waypoints": "JROSS ELLDE Q97 PAACK JAMIE CONFR Q481 DPK DPK3"
         },
         {
           "airlines": [
@@ -361,7 +361,7 @@
           ],
           "destination": "KMSY",
           "exit": "SMALZ",
-          "route": "SMALZ BYYOU AMG CEW SJI MNSTR2"
+          "waypoints": "SMALZ BYYOU AMG CEW SJI MNSTR2"
         }
       ],
       "exit_categories": {
@@ -409,7 +409,7 @@
           ],
           "destination": "KCLT",
           "exit": "CHS",
-          "route": "CHS STOCR7"
+          "waypoints": "CHS STOCR7"
         },
         {
           "airlines": [
@@ -419,7 +419,7 @@
           ],
           "destination": "KDCA",
           "exit": "JROSS",
-          "route": "JROSS CEELY Q113 AARNN WAVES CAPSS3"
+          "waypoints": "JROSS CEELY Q113 AARNN WAVES CAPSS3"
         },
         {
           "airlines": [
@@ -429,7 +429,7 @@
           ],
           "destination": "KATL",
           "exit": "SMALZ",
-          "route": "SMALZ TYFTR JJEDI4"
+          "waypoints": "SMALZ TYFTR JJEDI4"
         },
         {
           "airlines": [
@@ -439,7 +439,7 @@
           ],
           "destination": "KBOS",
           "exit": "LCAPE",
-          "route": "LCAPE Q87 GEARS BBOBO Q22 LLUND MERIT ROBUC3"
+          "waypoints": "LCAPE Q87 GEARS BBOBO Q22 LLUND MERIT ROBUC3"
         },
         {
           "airlines": [
@@ -452,7 +452,7 @@
           ],
           "destination": "KORD",
           "exit": "TILLS",
-          "route": "TILLS T437 WIXON V37 ALD CAE BENBY DOOGE Q93 HEVAN BONNT VEECK5"
+          "waypoints": "TILLS T437 WIXON V37 ALD CAE BENBY DOOGE Q93 HEVAN BONNT VEECK5"
         },
         {
           "airlines": [
@@ -462,7 +462,7 @@
           ],
           "destination": "KPHL",
           "exit": "CHS",
-          "route": "CHS CRE RAPZZ Q135 RREGG Q117 SAWED Q97 ZJAAY JIIMS4"
+          "waypoints": "CHS CRE RAPZZ Q135 RREGG Q117 SAWED Q97 ZJAAY JIIMS4"
         },
         {
           "airlines": [
@@ -472,7 +472,7 @@
           ],
           "destination": "KLGA",
           "exit": "LCAPE",
-          "route": "LCAPE Q87 HURTS PROUD2"
+          "waypoints": "LCAPE Q87 HURTS PROUD2"
         },
         {
           "airlines": [
@@ -482,7 +482,7 @@
           ],
           "destination": "KEWR",
           "exit": "JROSS",
-          "route": "JROSS Q87 ALWZZ OGRAE Q99 QUART PHLBO4"
+          "waypoints": "JROSS Q87 ALWZZ OGRAE Q99 QUART PHLBO4"
         },
         {
           "airlines": [
@@ -497,7 +497,7 @@
           ],
           "destination": "KOPF",
           "exit": "GIPPL",
-          "route": "GIPPL WOPNR Q97 KENLL OMN"
+          "waypoints": "GIPPL WOPNR Q97 KENLL OMN"
         },
         {
           "airlines": [
@@ -508,7 +508,7 @@
           ],
           "destination": "KLUK",
           "exit": "TERLY",
-          "route": "TERLY V437 CHS V53 SPA V605 HMV V310 LOZ V517 CODEL"
+          "waypoints": "TERLY V437 CHS V53 SPA V605 HMV V310 LOZ V517 CODEL"
         },
         {
           "airlines": [
@@ -519,7 +519,7 @@
           ],
           "destination": "KSSI",
           "exit": "RIYSA",
-          "route": "RIYSA"
+          "waypoints": "RIYSA"
         },
         {
           "airlines": [
@@ -530,7 +530,7 @@
           ],
           "destination": "KLBE",
           "exit": "BAGGY",
-          "route": "BAGGY V437 FLO V3 SDZ V373 GSO V45 PSK V37 EKN V469 OTOWN"
+          "waypoints": "BAGGY V437 FLO V3 SDZ V373 GSO V45 PSK V37 EKN V469 OTOWN"
         },
         {
           "airlines": [
@@ -541,7 +541,7 @@
           ],
           "destination": "KFXE",
           "exit": "TYBEE",
-          "route": "TYBEE V1 STARY V437 OMN V3 MORGA"
+          "waypoints": "TYBEE V1 STARY V437 OMN V3 MORGA"
         }
       ],
       "hold_for_release": true,
@@ -590,7 +590,7 @@
           ],
           "destination": "KARW",
           "exit": "MAYAR",
-          "route": "MAYAR V154 SAV V437 YUHVY"
+          "waypoints": "MAYAR V154 SAV V437 YUHVY"
         },
         {
           "airlines": [
@@ -601,7 +601,7 @@
           ],
           "destination": "KCHS",
           "exit": "MILEN",
-          "route": "MILEN V70 ALD V417 CUBER"
+          "waypoints": "MILEN V70 ALD V417 CUBER"
         },
         {
           "airlines": [
@@ -612,7 +612,7 @@
           ],
           "destination": "KMRN",
           "exit": "MILEN",
-          "route": "MILEN V70 ALD V37 CAE V53 SPA V605 GENOD"
+          "waypoints": "MILEN V70 ALD V37 CAE V53 SPA V605 GENOD"
         },
         {
           "airlines": [
@@ -623,7 +623,7 @@
           ],
           "destination": "KCNI",
           "exit": "WRGNZ",
-          "route": "WRGNZ WRGNZ3"
+          "waypoints": "WRGNZ WRGNZ3"
         },
         {
           "airlines": [
@@ -634,7 +634,7 @@
           ],
           "destination": "KPDK",
           "exit": "WRGNZ",
-          "route": "WRGNZ WRGNZ3"
+          "waypoints": "WRGNZ WRGNZ3"
         },
         {
           "airlines": [
@@ -645,7 +645,7 @@
           ],
           "destination": "KPNS",
           "exit": "KLICK",
-          "route": "KLICK V70 EUF V241 CEW"
+          "waypoints": "KLICK V70 EUF V241 CEW"
         },
         {
           "airlines": [
@@ -656,7 +656,7 @@
           ],
           "destination": "KVLD",
           "exit": "KLICK",
-          "route": "KLICK V70 MAYBE V157 AYS"
+          "waypoints": "KLICK V70 MAYBE V157 AYS"
         },
         {
           "airlines": [
@@ -667,7 +667,7 @@
           ],
           "destination": "KSHD",
           "exit": "EZETY",
-          "route": "EZETY GSO ALD"
+          "waypoints": "EZETY GSO ALD"
         }
       ],
       "hold_for_release": true,
@@ -929,7 +929,7 @@
         {
           "waypoints": "EHEJO JAMEB/ho LOTTS/h115",
           "cruise_altitude": 33000,
-          "route": "/. LOTTS",
+          "flight_strip_route": "/. LOTTS",
           "initial_controller": "C73",
           "initial_altitude": 10000,
           "assigned_altitude": 10000,
@@ -1006,7 +1006,7 @@
         {
           "waypoints": "LUCNE PLZZZ/ho/h184",
           "cruise_altitude": 36000,
-          "route": "/. PLZZZ",
+          "flight_strip_route": "/. PLZZZ",
           "initial_controller": "C73",
           "initial_altitude": 10000,
           "assigned_altitude": 10000,
@@ -1119,7 +1119,7 @@
         {
           "waypoints": "MEECH/ho SOOOP/h252",
           "cruise_altitude": 38000,
-          "route": "/. SOOOP",
+          "flight_strip_route": "/. SOOOP",
           "initial_controller": "C73",
           "initial_altitude": 12000,
           "assigned_altitude": 10000,
@@ -1240,7 +1240,7 @@
         {
           "waypoints": "HUDES VIYAP/ho/h18",
           "cruise_altitude": 31000,
-          "route": "/. VIYAP",
+          "flight_strip_route": "/. VIYAP",
           "initial_controller": "C54",
           "initial_altitude": 11000,
           "assigned_altitude": 10000,

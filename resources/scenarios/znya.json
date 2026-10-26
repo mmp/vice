@@ -149,7 +149,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 32000,
-          "route": "MXE PENSY J110 AIR UKATS DLAMP8",
+          "waypoints": "MXE PENSY J110 AIR UKATS DLAMP8",
           "airlines": [
             {
               "icao": "UPS",
@@ -161,7 +161,7 @@
           "exit": "MXE",
           "destination": "KLAX",
           "altitude": 32000,
-          "route": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
+          "waypoints": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
           "airlines": [
             {
               "icao": "AAL",
@@ -173,7 +173,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 38000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "AAL",
@@ -185,7 +185,7 @@
           "exit": "MXE",
           "destination": "KMCO",
           "altitude": 38000,
-          "route": "MXE PENSY J110 AIR HNN BZM SHRIL Q75 ENEME",
+          "waypoints": "MXE PENSY J110 AIR HNN BZM SHRIL Q75 ENEME",
           "airlines": [
             {
               "icao": "FFT",
@@ -197,7 +197,7 @@
           "exit": "MXE",
           "destination": "KMIA",
           "altitude": 36000,
-          "route": "MXE PENSY J110 AIR HNN BZM SHRIL Q75 ENEME",
+          "waypoints": "MXE PENSY J110 AIR HNN BZM SHRIL Q75 ENEME",
           "airlines": [
             {
               "icao": "AAL",
@@ -209,7 +209,7 @@
           "exit": "MXE",
           "destination": "KSFO",
           "altitude": 32000,
-          "route": "MXE PENSY J110 AIR BVT KG63M KG63K KP63C HCT EKR BASNN DTA DOTME KROST RUMPS OAL INYOE DYAMD5",
+          "waypoints": "MXE PENSY J110 AIR BVT KG63M KG63K KP63C HCT EKR BASNN DTA DOTME KROST RUMPS OAL INYOE DYAMD5",
           "airlines": [
             {
               "icao": "AAL",
@@ -221,7 +221,7 @@
           "exit": "STOEN",
           "destination": "KJAX",
           "altitude": 38000,
-          "route": "STOEN Q75 GSO Q83 WURFL ESENT LUNNI2",
+          "waypoints": "STOEN Q75 GSO Q83 WURFL ESENT LUNNI2",
           "airlines": [
             {
               "icao": "AAL",
@@ -233,7 +233,7 @@
           "exit": "MXE",
           "destination": "KBNA",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
           "airlines": [
             {
               "icao": "AAL",
@@ -245,7 +245,7 @@
           "exit": "MXE",
           "destination": "KORD",
           "altitude": 36000,
-          "route": "MXE T456 VINSE IHD MGW FWA BEARZ",
+          "waypoints": "MXE T456 VINSE IHD MGW FWA BEARZ",
           "airlines": [
             {
               "icao": "AAL",
@@ -257,7 +257,7 @@
           "exit": "MXE",
           "destination": "KCVG",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 COLNS GAVNN7",
+          "waypoints": "MXE PENSY J110 FLIRT J6 COLNS GAVNN7",
           "airlines": [
             {
               "icao": "PDT",
@@ -269,7 +269,7 @@
           "exit": "MXE",
           "destination": "KJAX",
           "altitude": 30000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ J85 SPA IRQ FINNE OHDEA2",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ J85 SPA IRQ FINNE OHDEA2",
           "airlines": [
             {
               "icao": "JIA",
@@ -281,7 +281,7 @@
           "exit": "MXE",
           "destination": "KMIA",
           "altitude": 40000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ J85 SPA ALLMA BULZI Q81 ENDEW BROMO FROGZ4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ J85 SPA ALLMA BULZI Q81 ENDEW BROMO FROGZ4",
           "airlines": [
             {
               "icao": "AAL",
@@ -293,7 +293,7 @@
           "exit": "MXE",
           "destination": "KSTL",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 COLNS Q176 HNN FLM PXV BOOSH3",
+          "waypoints": "MXE PENSY J110 FLIRT J6 COLNS Q176 HNN FLM PXV BOOSH3",
           "airlines": [
             {
               "icao": "AAL",
@@ -305,7 +305,7 @@
           "exit": "MXE",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 LITTR FEWWW SEEVR4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 LITTR FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -317,7 +317,7 @@
           "exit": "MXE",
           "destination": "KMIA",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ J85 SPA ALLMA BULZI Q81 ENDEW BROMO FROGZ4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ J85 SPA ALLMA BULZI Q81 ENDEW BROMO FROGZ4",
           "airlines": [
             {
               "icao": "NKS",
@@ -329,7 +329,7 @@
           "exit": "MXE",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR7",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ LNDIZ PARQR7",
           "airlines": [
             {
               "icao": "AAL",
@@ -341,7 +341,7 @@
           "exit": "MXE",
           "destination": "KBNA",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
           "airlines": [
             {
               "icao": "AAL",
@@ -353,7 +353,7 @@
           "exit": "MXE",
           "destination": "KBNA",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 MRB J6 HVQ Q68 YOCKY GROAT PASLY4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 MRB J6 HVQ Q68 YOCKY GROAT PASLY4",
           "airlines": [
             {
               "icao": "NKS",
@@ -365,7 +365,7 @@
           "exit": "STOEN",
           "destination": "KDJT",
           "altitude": 32000,
-          "route": "STOEN Q75 ENEME VUUDU2",
+          "waypoints": "STOEN Q75 ENEME VUUDU2",
           "airlines": [
             {
               "icao": "AAL",
@@ -377,7 +377,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 38000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ",
           "airlines": [
             {
               "icao": "UPS",
@@ -389,7 +389,7 @@
           "exit": "MXE",
           "destination": "KPHX",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
           "airlines": [
             {
               "icao": "AAL",
@@ -401,7 +401,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
           "airlines": [
             {
               "icao": "PDT",
@@ -413,7 +413,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY9",
+          "waypoints": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -425,7 +425,7 @@
           "exit": "STOEN",
           "destination": "KMIA",
           "altitude": 40000,
-          "route": "STOEN Q75 TEEEM BULZI Q81 ENDEW BROMO FROGZ4",
+          "waypoints": "STOEN Q75 TEEEM BULZI Q81 ENDEW BROMO FROGZ4",
           "airlines": [
             {
               "icao": "AAL",
@@ -437,7 +437,7 @@
           "exit": "MXE",
           "destination": "KPIT",
           "altitude": 22000,
-          "route": "MXE PENSY J110 VINSE DEMME5",
+          "waypoints": "MXE PENSY J110 VINSE DEMME5",
           "airlines": [
             {
               "icao": "FFT",
@@ -449,7 +449,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "AAL",
@@ -461,7 +461,7 @@
           "exit": "MXE",
           "destination": "KLAX",
           "altitude": 32000,
-          "route": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
+          "waypoints": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
           "airlines": [
             {
               "icao": "AAL",
@@ -473,7 +473,7 @@
           "exit": "STOEN",
           "destination": "KJAX",
           "altitude": 36000,
-          "route": "STOEN Q75 GSO Q83 WURFL ESENT LUNNI2",
+          "waypoints": "STOEN Q75 GSO Q83 WURFL ESENT LUNNI2",
           "airlines": [
             {
               "icao": "FFT",
@@ -485,7 +485,7 @@
           "exit": "MXE",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 LAJUG Q68 LITTR FEWWW SEEVR4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 LAJUG Q68 LITTR FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -497,7 +497,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -509,7 +509,7 @@
           "exit": "MXE",
           "destination": "KDTW",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
+          "waypoints": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -521,7 +521,7 @@
           "exit": "STOEN",
           "destination": "KROA",
           "altitude": 26000,
-          "route": "STOEN REEFI EMI J48 MOL",
+          "waypoints": "STOEN REEFI EMI J48 MOL",
           "airlines": [
             {
               "icao": "PDT",
@@ -533,7 +533,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "NKS",
@@ -545,7 +545,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY9",
+          "waypoints": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -557,7 +557,7 @@
           "exit": "STOEN",
           "destination": "KMIA",
           "altitude": 34000,
-          "route": "STOEN REEFI EMI J48 CSN FANPO Q40 MAULS FEEDS THRSR HONID FROGZ4",
+          "waypoints": "STOEN REEFI EMI J48 CSN FANPO Q40 MAULS FEEDS THRSR HONID FROGZ4",
           "airlines": [
             {
               "icao": "AAL",
@@ -569,7 +569,7 @@
           "exit": "STOEN",
           "destination": "KFLL",
           "altitude": 34000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK GOWBE BURGG ENEME TEEKY3",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK GOWBE BURGG ENEME TEEKY3",
           "airlines": [
             {
               "icao": "AAL",
@@ -581,7 +581,7 @@
           "exit": "MXE",
           "destination": "KAUS",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ JEDER Q80 FAREV UJM Q31 JODOX JIGAM WINDU SEWZY6",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ JEDER Q80 FAREV UJM Q31 JODOX JIGAM WINDU SEWZY6",
           "airlines": [
             {
               "icao": "AAL",
@@ -593,7 +593,7 @@
           "exit": "MXE",
           "destination": "KLAS",
           "altitude": 36000,
-          "route": "MXE PENSY J110 AIR J80 SPI KK57C KD54W HBU GGAPP CHOWW3",
+          "waypoints": "MXE PENSY J110 AIR J80 SPI KK57C KD54W HBU GGAPP CHOWW3",
           "airlines": [
             {
               "icao": "NKS",
@@ -605,7 +605,7 @@
           "exit": "MXE",
           "destination": "KBNA",
           "altitude": 30000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
           "airlines": [
             {
               "icao": "FFT",
@@ -617,7 +617,7 @@
           "exit": "STOEN",
           "destination": "KECP",
           "altitude": 30000,
-          "route": "STOEN Q75 TEEEM CABLO",
+          "waypoints": "STOEN Q75 TEEEM CABLO",
           "airlines": [
             {
               "icao": "JIA",
@@ -629,7 +629,7 @@
           "exit": "STOEN",
           "destination": "KBHM",
           "altitude": 30000,
-          "route": "STOEN REEFI EMI J48 CSN FANPO Q40 NIOLA DIODE",
+          "waypoints": "STOEN REEFI EMI J48 CSN FANPO Q40 NIOLA DIODE",
           "airlines": [
             {
               "icao": "JIA",
@@ -641,7 +641,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 34000,
-          "route": "STOEN Q75 GVE AIROW CHSLY9",
+          "waypoints": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -653,7 +653,7 @@
           "exit": "MXE",
           "destination": "KDFW",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 MRB J6 HVQ Q68 LITTR FEWWW SEEVR4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 MRB J6 HVQ Q68 LITTR FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -665,7 +665,7 @@
           "exit": "MXE",
           "destination": "KLAX",
           "altitude": 32000,
-          "route": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
+          "waypoints": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
           "airlines": [
             {
               "icao": "AAL",
@@ -677,7 +677,7 @@
           "exit": "MXE",
           "destination": "KPHX",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
           "airlines": [
             {
               "icao": "AAL",
@@ -689,7 +689,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -701,7 +701,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE AIROW CHSLY9",
+          "waypoints": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "AAL",
@@ -713,7 +713,7 @@
           "exit": "MXE",
           "destination": "KBNA",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
           "airlines": [
             {
               "icao": "AAL",
@@ -725,7 +725,7 @@
           "exit": "STOEN",
           "destination": "MMMX",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE LYH COLZI AWYAT IPTAY CHOPZ MGM SJI TBD M575 KENGS M345 AXEXO UM345 PAZ UT154 ENAGA ENAGA3A",
+          "waypoints": "STOEN Q75 GVE LYH COLZI AWYAT IPTAY CHOPZ MGM SJI TBD M575 KENGS M345 AXEXO UM345 PAZ UT154 ENAGA ENAGA3A",
           "airlines": [
             {
               "icao": "AMX",
@@ -737,7 +737,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
           "airlines": [
             {
               "icao": "UPS",
@@ -749,7 +749,7 @@
           "exit": "MXE",
           "destination": "KPHX",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
           "airlines": [
             {
               "icao": "AAL",
@@ -761,7 +761,7 @@
           "exit": "MXE",
           "destination": "KONT",
           "altitude": 38000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ PXV FAM CIM PGS MARUE JCKIE2",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ PXV FAM CIM PGS MARUE JCKIE2",
           "airlines": [
             {
               "icao": "UPS",
@@ -773,7 +773,7 @@
           "exit": "MXE",
           "destination": "KRFD",
           "altitude": 30000,
-          "route": "MXE PENSY J110 KIPPI J110 AIR APE J178 FWA CPONE QUOTE1",
+          "waypoints": "MXE PENSY J110 KIPPI J110 AIR APE J178 FWA CPONE QUOTE1",
           "airlines": [
             {
               "icao": "UPS",
@@ -785,7 +785,7 @@
           "exit": "STOEN",
           "destination": "KTYS",
           "altitude": 34000,
-          "route": "STOEN REEFI EMI J48 CSN FANPO Q40 ALEAN VXV",
+          "waypoints": "STOEN REEFI EMI J48 CSN FANPO Q40 ALEAN VXV",
           "airlines": [
             {
               "icao": "PDT",
@@ -797,7 +797,7 @@
           "exit": "MXE",
           "destination": "KAUS",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ JEDER Q80 FAREV UJM Q31 JODOX JIGAM WINDU SEWZY6",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ JEDER Q80 FAREV UJM Q31 JODOX JIGAM WINDU SEWZY6",
           "airlines": [
             {
               "icao": "AAL",
@@ -809,7 +809,7 @@
           "exit": "MXE",
           "destination": "KDTW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
+          "waypoints": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -821,7 +821,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
           "airlines": [
             {
               "icao": "UPS",
@@ -833,7 +833,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HYPER J6 HVQ Q68 YOCKY LEDDL1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HYPER J6 HVQ Q68 YOCKY LEDDL1",
           "airlines": [
             {
               "icao": "UPS",
@@ -845,7 +845,7 @@
           "exit": "MXE",
           "destination": "KLAS",
           "altitude": 34000,
-          "route": "MXE PENSY J110 AIR SPI KD54A SELLS J24 HGO KD48S TYEGR CHOWW3",
+          "waypoints": "MXE PENSY J110 AIR SPI KD54A SELLS J24 HGO KD48S TYEGR CHOWW3",
           "airlines": [
             {
               "icao": "AAL",
@@ -857,7 +857,7 @@
           "exit": "STOEN",
           "destination": "KAVL",
           "altitude": 36000,
-          "route": "STOEN Q75 GVE SUG",
+          "waypoints": "STOEN Q75 GVE SUG",
           "airlines": [
             {
               "icao": "PDT",
@@ -869,7 +869,7 @@
           "exit": "MXE",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 LITTR FEWWW SEEVR4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 LITTR FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -881,7 +881,7 @@
           "exit": "STOEN",
           "destination": "MMUN",
           "altitude": 34000,
-          "route": "STOEN Q75 ENEME EVANZ Q109 KNOST CIGAR M219 NAVVL L465 SHARQ UM463 WALKY UB879 NOSAT CUN",
+          "waypoints": "STOEN Q75 ENEME EVANZ Q109 KNOST CIGAR M219 NAVVL L465 SHARQ UM463 WALKY UB879 NOSAT CUN",
           "airlines": [
             {
               "icao": "AAL",
@@ -893,7 +893,7 @@
           "exit": "MXE",
           "destination": "KSAN",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI INW LANCY J96 PKE LUCKI1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI INW LANCY J96 PKE LUCKI1",
           "airlines": [
             {
               "icao": "AAL",
@@ -905,7 +905,7 @@
           "exit": "MXE",
           "destination": "KLAX",
           "altitude": 32000,
-          "route": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
+          "waypoints": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
           "airlines": [
             {
               "icao": "AAL",
@@ -917,7 +917,7 @@
           "exit": "MXE",
           "destination": "KSFO",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT BRNAN Q42 LEWRP PWE MCK VOAXA Q136 MANRD Q136 RUMPS OAL INYOE DYAMD5",
+          "waypoints": "MXE PENSY J110 FLIRT BRNAN Q42 LEWRP PWE MCK VOAXA Q136 MANRD Q136 RUMPS OAL INYOE DYAMD5",
           "airlines": [
             {
               "icao": "AAL",
@@ -929,7 +929,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 34000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "JIA",
@@ -941,7 +941,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -953,7 +953,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
           "airlines": [
             {
               "icao": "PDT",
@@ -965,7 +965,7 @@
           "exit": "MXE",
           "destination": "KBNA",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
           "airlines": [
             {
               "icao": "AAL",
@@ -977,7 +977,7 @@
           "exit": "MXE",
           "destination": "KDEN",
           "altitude": 34000,
-          "route": "MXE PENSY J110 VHP J80 MCI J24 OATHE CLASH5",
+          "waypoints": "MXE PENSY J110 VHP J80 MCI J24 OATHE CLASH5",
           "airlines": [
             {
               "icao": "UAL",
@@ -989,7 +989,7 @@
           "exit": "STOEN",
           "destination": "MMUN",
           "altitude": 34000,
-          "route": "STOEN Q75 ENEME EVANZ Q109 KNOST CIGAR M219 NAVVL L465 SHARQ UM463 TELCO UM463 WALKY UB879 NOSAT CUN",
+          "waypoints": "STOEN Q75 ENEME EVANZ Q109 KNOST CIGAR M219 NAVVL L465 SHARQ UM463 TELCO UM463 WALKY UB879 NOSAT CUN",
           "airlines": [
             {
               "icao": "AAL",
@@ -1001,7 +1001,7 @@
           "exit": "MXE",
           "destination": "KPHX",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ FAM SGF FTI ZUN EAGUL6",
           "airlines": [
             {
               "icao": "AAL",
@@ -1013,7 +1013,7 @@
           "exit": "MXE",
           "destination": "KMEM",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 RAMRD BLUZZ5",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 RAMRD BLUZZ5",
           "airlines": [
             {
               "icao": "FDX",
@@ -1025,7 +1025,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 38000,
-          "route": "STOEN Q75 GVE AIROW CHSLY9",
+          "waypoints": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "FFT",
@@ -1037,7 +1037,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 28000,
-          "route": "STOEN REEFI EMI MRB MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI MRB MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "JIA",
@@ -1049,7 +1049,7 @@
           "exit": "MXE",
           "destination": "KSLC",
           "altitude": 34000,
-          "route": "MXE PENSY J110 AIR CVG BIB STL HYS GLD LAR CKW CARTR1",
+          "waypoints": "MXE PENSY J110 AIR CVG BIB STL HYS GLD LAR CKW CARTR1",
           "airlines": [
             {
               "icao": "DAL",
@@ -1061,7 +1061,7 @@
           "exit": "MXE",
           "destination": "KSTL",
           "altitude": 40000,
-          "route": "MXE PENSY J110 VHP AARCH2",
+          "waypoints": "MXE PENSY J110 VHP AARCH2",
           "airlines": [
             {
               "icao": "SWA",
@@ -1073,7 +1073,7 @@
           "exit": "MXE",
           "destination": "KDTW",
           "altitude": 38000,
-          "route": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
+          "waypoints": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
           "airlines": [
             {
               "icao": "NKS",
@@ -1085,7 +1085,7 @@
           "exit": "MXE",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 LITTR FEWWW SEEVR4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 LITTR FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1097,7 +1097,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -1109,7 +1109,7 @@
           "exit": "MXE",
           "destination": "KDEN",
           "altitude": 36000,
-          "route": "MXE PENSY J110 AIR J80 MCI J24 OATHE CLASH5",
+          "waypoints": "MXE PENSY J110 AIR J80 MCI J24 OATHE CLASH5",
           "airlines": [
             {
               "icao": "FFT",
@@ -1121,7 +1121,7 @@
           "exit": "STOEN",
           "destination": "KTPA",
           "altitude": 38000,
-          "route": "STOEN Q75 TEUFL BAAMF DADES2",
+          "waypoints": "STOEN Q75 TEUFL BAAMF DADES2",
           "airlines": [
             {
               "icao": "AAL",
@@ -1133,7 +1133,7 @@
           "exit": "MXE",
           "destination": "KLAX",
           "altitude": 34000,
-          "route": "MXE PENSY J110 AIR OTMAN TTH HLV GCK ALS LRAIN TOADD DNERO ANJLL4",
+          "waypoints": "MXE PENSY J110 AIR OTMAN TTH HLV GCK ALS LRAIN TOADD DNERO ANJLL4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1145,7 +1145,7 @@
           "exit": "MXE",
           "destination": "KDTW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
+          "waypoints": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -1157,7 +1157,7 @@
           "exit": "MXE",
           "destination": "KDTW",
           "altitude": 38000,
-          "route": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
+          "waypoints": "MXE PENSY J110 FLIRT BRNAN Q42 PSYKO KOZAR BONZZ2",
           "airlines": [
             {
               "icao": "FFT",
@@ -1169,7 +1169,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -1181,7 +1181,7 @@
           "exit": "MXE",
           "destination": "KBNA",
           "altitude": 38000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY GROAT PASLY4",
           "airlines": [
             {
               "icao": "SWA",
@@ -1193,7 +1193,7 @@
           "exit": "MXE",
           "destination": "KDEN",
           "altitude": 38000,
-          "route": "MXE PENSY J110 AIR APE ROD BVT KG63M KG63K SKBOZ LMN HSI BRWRY LAWGR4",
+          "waypoints": "MXE PENSY J110 AIR APE ROD BVT KG63M KG63K SKBOZ LMN HSI BRWRY LAWGR4",
           "airlines": [
             {
               "icao": "SWA",
@@ -1205,7 +1205,7 @@
           "exit": "MXE",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 RAMRD Q68 LITTR FEWWW SEEVR4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 RAMRD Q68 LITTR FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1217,7 +1217,7 @@
           "exit": "MXE",
           "destination": "KPIT",
           "altitude": 26000,
-          "route": "MXE PENSY J110 VINSE DEMME5",
+          "waypoints": "MXE PENSY J110 VINSE DEMME5",
           "airlines": [
             {
               "icao": "UPS",
@@ -1229,7 +1229,7 @@
           "exit": "STOEN",
           "destination": "KCLT",
           "altitude": 30000,
-          "route": "STOEN Q75 GVE AIROW CHSLY9",
+          "waypoints": "STOEN Q75 GVE AIROW CHSLY9",
           "airlines": [
             {
               "icao": "UPS",
@@ -1241,7 +1241,7 @@
           "exit": "STOEN",
           "destination": "KCAE",
           "altitude": 34000,
-          "route": "STOEN Q75 TOOBN Q75 GSO CAE",
+          "waypoints": "STOEN Q75 TOOBN Q75 GSO CAE",
           "airlines": [
             {
               "icao": "UPS",
@@ -1253,7 +1253,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 32000,
-          "route": "MXE PENSY J110 AIR UKATS DLAMP8",
+          "waypoints": "MXE PENSY J110 AIR UKATS DLAMP8",
           "airlines": [
             {
               "icao": "UPS",
@@ -1265,7 +1265,7 @@
           "exit": "MXE",
           "destination": "KPIT",
           "altitude": 34000,
-          "route": "MXE PENSY J110 VINSE DEMME5",
+          "waypoints": "MXE PENSY J110 VINSE DEMME5",
           "airlines": [
             {
               "icao": "AAL",
@@ -1277,7 +1277,7 @@
           "exit": "MXE",
           "destination": "KMEM",
           "altitude": 38000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ BNA ZOKER MONAA4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ BNA ZOKER MONAA4",
           "airlines": [
             {
               "icao": "FDX",
@@ -1289,7 +1289,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 34000,
-          "route": "MXE PENSY J110 AIR",
+          "waypoints": "MXE PENSY J110 AIR",
           "airlines": [
             {
               "icao": "UPS",
@@ -1301,7 +1301,7 @@
           "exit": "MXE",
           "destination": "KRFD",
           "altitude": 40000,
-          "route": "MXE PENSY J110 AIR APE J178 FWA CPONE QUOTE1",
+          "waypoints": "MXE PENSY J110 AIR APE J178 FWA CPONE QUOTE1",
           "airlines": [
             {
               "icao": "UPS",
@@ -1313,7 +1313,7 @@
           "exit": "MXE",
           "destination": "KOMA",
           "altitude": 34000,
-          "route": "MXE PENSY J110 AIR J80 SPI IOW DSM LANTK2",
+          "waypoints": "MXE PENSY J110 AIR J80 SPI IOW DSM LANTK2",
           "airlines": [
             {
               "icao": "JIA",
@@ -1325,7 +1325,7 @@
           "exit": "MXE",
           "destination": "KIND",
           "altitude": 36000,
-          "route": "MXE PENSY J110 AIR RINTE SNKPT2",
+          "waypoints": "MXE PENSY J110 AIR RINTE SNKPT2",
           "airlines": [
             {
               "icao": "FDX",
@@ -1337,7 +1337,7 @@
           "exit": "MXE",
           "destination": "KLAX",
           "altitude": 32000,
-          "route": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
+          "waypoints": "MXE PENSY J110 STL J134 ICT TOTOE CIM J134 DRK J231 HIPPI GABBL HLYWD1",
           "airlines": [
             {
               "icao": "AAL",
@@ -1349,7 +1349,7 @@
           "exit": "MXE",
           "destination": "KIND",
           "altitude": 38000,
-          "route": "MXE PENSY J110 AIR APE RINTE SNKPT2",
+          "waypoints": "MXE PENSY J110 AIR APE RINTE SNKPT2",
           "airlines": [
             {
               "icao": "AAL",
@@ -1361,7 +1361,7 @@
           "exit": "MXE",
           "destination": "KRDU",
           "altitude": 31000,
-          "route": "MXE PENSY J110 AIR JPU FLASK",
+          "waypoints": "MXE PENSY J110 AIR JPU FLASK",
           "airlines": [
             {
               "icao": "AAL",
@@ -1373,7 +1373,7 @@
           "exit": "MXE",
           "destination": "KMEM",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ J78 PXV BLUZZ5",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ J78 PXV BLUZZ5",
           "airlines": [
             {
               "icao": "FDX",
@@ -1385,7 +1385,7 @@
           "exit": "STOEN",
           "destination": "KGSP",
           "altitude": 34000,
-          "route": "STOEN Q75 GVE FUBLL JUNNR4",
+          "waypoints": "STOEN Q75 GVE FUBLL JUNNR4",
           "airlines": [
             {
               "icao": "JIA",
@@ -1397,7 +1397,7 @@
           "exit": "MXE",
           "destination": "KSTL",
           "altitude": 36000,
-          "route": "MXE PENSY J110 AIR J110 VHP AARCH2",
+          "waypoints": "MXE PENSY J110 AIR J110 VHP AARCH2",
           "airlines": [
             {
               "icao": "AAL",
@@ -1409,7 +1409,7 @@
           "exit": "STOEN",
           "destination": "KBHM",
           "altitude": 34000,
-          "route": "STOEN REEFI EMI J48 CSN FANPO Q40 NIOLA DIODE",
+          "waypoints": "STOEN REEFI EMI J48 CSN FANPO Q40 NIOLA DIODE",
           "airlines": [
             {
               "icao": "JIA",
@@ -1421,7 +1421,7 @@
           "exit": "MXE",
           "destination": "KGSO",
           "altitude": 8000,
-          "route": "MXE T456 SCAPE REEES MRB T358 GSO",
+          "waypoints": "MXE T456 SCAPE REEES MRB T358 GSO",
           "airlines": [
             {
               "icao": "PDT",
@@ -1433,7 +1433,7 @@
           "exit": "STOEN",
           "destination": "KDSM",
           "altitude": 34000,
-          "route": "STOEN REEFI EMI J48 MOL PSK IIU SPI",
+          "waypoints": "STOEN REEFI EMI J48 MOL PSK IIU SPI",
           "airlines": [
             {
               "icao": "JIA",
@@ -1445,7 +1445,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 36000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
           "airlines": [
             {
               "icao": "UPS",
@@ -1457,7 +1457,7 @@
           "exit": "STOEN",
           "destination": "KAUS",
           "altitude": 36000,
-          "route": "STOEN REEFI EMI J48 CSN FANPO Q40 AEX LFK WEEED WLEEE7",
+          "waypoints": "STOEN REEFI EMI J48 CSN FANPO Q40 AEX LFK WEEED WLEEE7",
           "airlines": [
             {
               "icao": "AAL",
@@ -1469,7 +1469,7 @@
           "exit": "STOEN",
           "destination": "KRFD",
           "altitude": 38000,
-          "route": "STOEN REEFI EMI J48 MOL PSK IIU TTH",
+          "waypoints": "STOEN REEFI EMI J48 MOL PSK IIU TTH",
           "airlines": [
             {
               "icao": "UPS",
@@ -1481,7 +1481,7 @@
           "exit": "MXE",
           "destination": "KPIT",
           "altitude": 34000,
-          "route": "MXE PENSY J110 VINSE DEMME5",
+          "waypoints": "MXE PENSY J110 VINSE DEMME5",
           "airlines": [
             {
               "icao": "AAL",
@@ -1493,7 +1493,7 @@
           "exit": "STOEN",
           "destination": "KMCO",
           "altitude": 34000,
-          "route": "STOEN Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
+          "waypoints": "STOEN Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
           "airlines": [
             {
               "icao": "AAL",
@@ -1505,7 +1505,7 @@
           "exit": "MXE",
           "destination": "KSDF",
           "altitude": 32000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 YOCKY LEDDL1",
           "airlines": [
             {
               "icao": "PDT",
@@ -1517,7 +1517,7 @@
           "exit": "STOEN",
           "destination": "KTPA",
           "altitude": 32000,
-          "route": "STOEN Q75 TEUFL BAAMF DADES2",
+          "waypoints": "STOEN Q75 TEUFL BAAMF DADES2",
           "airlines": [
             {
               "icao": "AAL",
@@ -1529,7 +1529,7 @@
           "exit": "MXE",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ Q68 SOPIE Q68 LITTR FEWWW SEEVR4",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ Q68 SOPIE Q68 LITTR FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1541,7 +1541,7 @@
           "exit": "MXE",
           "destination": "KSEA",
           "altitude": 32000,
-          "route": "MXE PENSY J110 AIR J80 MCI HCT BFF BOY DNW LKT PDT CHINS5",
+          "waypoints": "MXE PENSY J110 AIR J80 MCI HCT BFF BOY DNW LKT PDT CHINS5",
           "airlines": [
             {
               "icao": "AAL",
@@ -1553,7 +1553,7 @@
           "exit": "MXE",
           "destination": "KSAV",
           "altitude": 34000,
-          "route": "MXE PENSY J110 AIR HNN SPA",
+          "waypoints": "MXE PENSY J110 AIR HNN SPA",
           "airlines": [
             {
               "icao": "JIA",
@@ -1565,7 +1565,7 @@
           "exit": "STOEN",
           "destination": "KATL",
           "altitude": 38000,
-          "route": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
+          "waypoints": "STOEN REEFI EMI J48 MOL FLASK OZZZI1",
           "airlines": [
             {
               "icao": "AAL",
@@ -1577,7 +1577,7 @@
           "exit": "MXE",
           "destination": "KCVG",
           "altitude": 34000,
-          "route": "MXE T456 VINSE LEJOY AIR SAVVI TIGRR4",
+          "waypoints": "MXE T456 VINSE LEJOY AIR SAVVI TIGRR4",
           "airlines": [
             {
               "icao": "JIA",
@@ -1589,7 +1589,7 @@
           "exit": "MXE",
           "destination": "KSLC",
           "altitude": 34000,
-          "route": "MXE PENSY J110 FLIRT J6 HVQ J8 DACOS PXV SLVER KK48I ULMAN ICT ALS LOPEC JNC HELPR JAZZZ1",
+          "waypoints": "MXE PENSY J110 FLIRT J6 HVQ J8 DACOS PXV SLVER KK48I ULMAN ICT ALS LOPEC JNC HELPR JAZZZ1",
           "airlines": [
             {
               "icao": "AAL",
@@ -1601,7 +1601,7 @@
           "exit": "MXE",
           "destination": "KSFO",
           "altitude": 32000,
-          "route": "MXE PENSY J110 AIR BVT KG63M KG63K KP63C HCT EKR BASNN DTA DOTME KROST RUMPS OAL INYOE DYAMD5",
+          "waypoints": "MXE PENSY J110 AIR BVT KG63M KG63K KP63C HCT EKR BASNN DTA DOTME KROST RUMPS OAL INYOE DYAMD5",
           "airlines": [
             {
               "icao": "AAL",
@@ -1619,7 +1619,7 @@
           "waypoints": "HAR/ho LRP TRAGG BUNTS SCOOL BOJID/delete",
           "cruise_altitude": 35000,
           "star": "BOJID4",
-          "route": "/. HAR LRP TRAGG BUNTS SCOOL BOJID",
+          "flight_strip_route": "/. HAR LRP TRAGG BUNTS SCOOL BOJID",
           "initial_controller": "10",
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
@@ -1710,7 +1710,7 @@
           "waypoints": "MIROY/ho27 COFAX LOMON HAR LRP TRAGG BUNTS SCOOL BOJID/delete",
           "cruise_altitude": 35000,
           "star": "BOJID4",
-          "route": "/. MIROY COFAX LOMON HAR LRP TRAGG BUNTS SCOOL BOJID",
+          "flight_strip_route": "/. MIROY COFAX LOMON HAR LRP TRAGG BUNTS SCOOL BOJID",
           "initial_controller": "C53",
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
@@ -1801,7 +1801,7 @@
           "waypoints": "PSB/ho27 HAR LRP TRAGG BUNTS SCOOL BOJID/delete",
           "cruise_altitude": 35000,
           "star": "BOJID4",
-          "route": "/. PSB HAR LRP TRAGG BUNTS SCOOL BOJID",
+          "flight_strip_route": "/. PSB HAR LRP TRAGG BUNTS SCOOL BOJID",
           "initial_controller": "73",
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
@@ -1892,7 +1892,7 @@
           "waypoints": "PSB/ho27 SHILO SKILS BAL EYESS BRUNC FELTY HITEK CAVDI/delete",
           "cruise_altitude": 35000,
           "star": "SKILS5",
-          "route": "/. PSB SHILO SKILS BAL EYESS BRUNC FELTY HITEK CAVDI",
+          "flight_strip_route": "/. PSB SHILO SKILS BAL EYESS BRUNC FELTY HITEK CAVDI",
           "initial_controller": "73",
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
@@ -1947,7 +1947,7 @@
           "waypoints": "HAR/ho TRAGG BUNTS/delete",
           "cruise_altitude": 35000,
           "star": "BOJID4",
-          "route": "/. HAR LRP TRAGG BUNTS",
+          "flight_strip_route": "/. HAR LRP TRAGG BUNTS",
           "initial_controller": "10",
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
@@ -2054,7 +2054,7 @@
           "waypoints": "BAMMY/ho27 T299 HAR KMDT/delete",
           "cruise_altitude": 35000,
           "star": null,
-          "route": "/. BAMMY T299 HAR KMDT",
+          "flight_strip_route": "/. BAMMY T299 HAR KMDT",
           "initial_controller": "W05",
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
@@ -2085,7 +2085,7 @@
           "waypoints": "SARAA/ho26 LRP JOANE DELRO LIRCH CRAIN/delete",
           "cruise_altitude": 35000,
           "star": "HYPER1",
-          "route": "/. SARAA LRP JOANE DELRO LIRCH CRAIN",
+          "flight_strip_route": "/. SARAA LRP JOANE DELRO LIRCH CRAIN",
           "initial_controller": "39",
           "initial_altitude": 20000,
           "assigned_altitude": 20000,
@@ -2108,7 +2108,7 @@
           "waypoints": "HIKES/ho26 LRP JOANE DELRO LIRCH CRAIN/delete",
           "cruise_altitude": 35000,
           "star": "HYPER1",
-          "route": "/. HIKES LRP JOANE DELRO LIRCH CRAIN",
+          "flight_strip_route": "/. HIKES LRP JOANE DELRO LIRCH CRAIN",
           "initial_controller": "39",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
@@ -2131,7 +2131,7 @@
           "waypoints": "N040.40.11.347,W077.54.11.760/ho27 JARAF/a18000 PRIVO DAFIX OVIEE MAPEL TWEAK/delete",
           "cruise_altitude": 35000,
           "star": "PRIVO3",
-          "route": "/. JARAF PRIVO DAFIX OVIEE MAPEL TWEAK",
+          "flight_strip_route": "/. JARAF PRIVO DAFIX OVIEE MAPEL TWEAK",
           "initial_controller": "73",
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
@@ -2187,7 +2187,7 @@
           "waypoint_actions": { "CYN": "delete", "HAR": "ho26" },
           "cruise_altitude": 35000,
           "star": "HAR5",
-          "route": "/. HAR LRP TRAGG BUNTS RELNY NAGGS CYN",
+          "flight_strip_route": "/. HAR LRP TRAGG BUNTS RELNY NAGGS CYN",
           "initial_controller": "27",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
@@ -2210,7 +2210,7 @@
           "waypoints": "BLINK/ho27 HAR LRP TRAGG BUNTS RELNY NAGGS CYN/delete",
           "cruise_altitude": 35000,
           "star": "HAR5",
-          "route": "/. BLINK HAR LRP TRAGG BUNTS RELNY NAGGS CYN",
+          "flight_strip_route": "/. BLINK HAR LRP TRAGG BUNTS RELNY NAGGS CYN",
           "initial_controller": "C53",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,
@@ -2233,7 +2233,7 @@
           "waypoints": "LEGGO/ho26 DRRES RAUKY TRISH/a9000 WUUDI FINNZ/delete",
           "cruise_altitude": 35000,
           "star": "TRISH4",
-          "route": "/. LEGGO DRRES RAUKY TRISH WUUDI FINNZ",
+          "flight_strip_route": "/. LEGGO DRRES RAUKY TRISH WUUDI FINNZ",
           "initial_controller": "27",
           "initial_altitude": 16000,
           "assigned_altitude": 16000,
@@ -2296,7 +2296,7 @@
           "waypoints": "IZZEE/ho27 LEGGO/a16000 DRRES RAUKY TRISH/a9000 WUUDI FINNZ/delete",
           "cruise_altitude": 35000,
           "star": "TRISH4",
-          "route": "/. IZZEE LEGGO DRRES RAUKY TRISH WUUDI FINNZ",
+          "flight_strip_route": "/. IZZEE LEGGO DRRES RAUKY TRISH WUUDI FINNZ",
           "initial_controller": "73",
           "initial_altitude": 27000,
           "assigned_altitude": 16000,
@@ -2359,7 +2359,7 @@
           "waypoints": "COPES/ho25 Q75 STOEN NUGGY TROYZ FREEE TRISH WUUDI FINNZ/delete",
           "cruise_altitude": 35000,
           "star": "TRISH4",
-          "route": "/. COPES Q75 STOEN NUGGY TROYZ FREEE TRISH WUUDI FINNZ",
+          "flight_strip_route": "/. COPES Q75 STOEN NUGGY TROYZ FREEE TRISH WUUDI FINNZ",
           "initial_controller": "55",
           "initial_altitude": 20000,
           "assigned_altitude": 20000,
@@ -2414,7 +2414,7 @@
           "waypoints": "COPES/ho25 MXE NUGGY TROYZ BELAY TRISH CLIPR BAL EYESS BRUNC FELTY/delete",
           "cruise_altitude": 34000,
           "star": "CLIPR3",
-          "route": "/. COPES MXE NUGGY TROYZ BELAY TRISH CLIPR BAL EYESS BRUNC FELTY",
+          "flight_strip_route": "/. COPES MXE NUGGY TROYZ BELAY TRISH CLIPR BAL EYESS BRUNC FELTY",
           "initial_controller": "55",
           "initial_altitude": 22000,
           "assigned_altitude": 22000,

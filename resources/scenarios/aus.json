@@ -171,7 +171,7 @@
           ],
           "destination": "KELP",
           "exit": "MUCKY",
-          "route": "MUCKY JCT TXSAS BEAHR3"
+          "waypoints": "MUCKY JCT TXSAS BEAHR3"
         },
         {
           "airlines": [
@@ -181,7 +181,7 @@
           ],
           "destination": "KSAN",
           "exit": "MUCKY",
-          "route": "MUCKY JCT J2 ELP J50 SSO J50 GBN J2 HOGGZ LUCKI1"
+          "waypoints": "MUCKY JCT J2 ELP J50 SSO J50 GBN J2 HOGGZ LUCKI1"
         },
         {
           "airlines": [
@@ -191,7 +191,7 @@
           ],
           "destination": "KATL",
           "exit": "ZENZI",
-          "route": "ZENZI TNV MERDN DUUCK ORRKK HOBTT2"
+          "waypoints": "ZENZI TNV MERDN DUUCK ORRKK HOBTT2"
         },
         {
           "airlines": [
@@ -201,7 +201,7 @@
           ],
           "destination": "KDAL",
           "exit": "SAYBR",
-          "route": "SAYBR CHEVE REDDN4"
+          "waypoints": "SAYBR CHEVE REDDN4"
         },
         {
           "airlines": [
@@ -211,7 +211,7 @@
           ],
           "destination": "KDRT",
           "exit": "BNDIA",
-          "route": "BNDIA DLF"
+          "waypoints": "BNDIA DLF"
         },
         {
           "airlines": [
@@ -221,7 +221,7 @@
           ],
           "destination": "KDEN",
           "exit": "KLNGR",
-          "route": "KLNGR PUB"
+          "waypoints": "KLNGR PUB"
         },
         {
           "airlines": [
@@ -231,7 +231,7 @@
           ],
           "destination": "KSLC",
           "exit": "ABI",
-          "route": "ABI HVE"
+          "waypoints": "ABI HVE"
         },
         {
           "airlines": [
@@ -241,7 +241,7 @@
           ],
           "destination": "KLAX",
           "exit": "SJT",
-          "route": "SJT CME J15 CNX MAXXO SJN NABOB GABBL HLYWD1"
+          "waypoints": "SJT CME J15 CNX MAXXO SJN NABOB GABBL HLYWD1"
         },
         {
           "airlines": [
@@ -251,7 +251,7 @@
           ],
           "destination": "KABQ",
           "exit": "SJT",
-          "route": "SJT FANGZ LZZRD4"
+          "waypoints": "SJT FANGZ LZZRD4"
         },
         {
           "airlines": [
@@ -261,7 +261,7 @@
           ],
           "destination": "KDAL",
           "exit": "SAYBR",
-          "route": "SAYBR CHEVE MNNDO4"
+          "waypoints": "SAYBR CHEVE MNNDO4"
         },
         {
           "airlines": [
@@ -271,7 +271,7 @@
           ],
           "destination": "KDEN",
           "exit": "ABI",
-          "route": "ABI PNH ZIGEE NIIXX3"
+          "waypoints": "ABI PNH ZIGEE NIIXX3"
         },
         {
           "airlines": [
@@ -281,7 +281,7 @@
           ],
           "destination": "KLAS",
           "exit": "SJT",
-          "route": "SJT MAF CME J15 HONDS Q20 CNX J15 ABQ J72 GUP HAHAA RKSTR3"
+          "waypoints": "SJT MAF CME J15 HONDS Q20 CNX J15 ABQ J72 GUP HAHAA RKSTR3"
         },
         {
           "airlines": [
@@ -291,7 +291,7 @@
           ],
           "destination": "KSFO",
           "exit": "SJT",
-          "route": "SJT CNX J15 ABQ HASSL Q130 ROCCY Q164 KATTS Q136 RUMPS OAL INYOE DYAMD5"
+          "waypoints": "SJT CNX J15 ABQ HASSL Q130 ROCCY Q164 KATTS Q136 RUMPS OAL INYOE DYAMD5"
         },
         {
           "airlines": [
@@ -302,7 +302,7 @@
           ],
           "destination": "EGLL",
           "exit": "ZENZI",
-          "route": "ZENZI LFK SUTTN J29 MEM IIU EWC SYR CABCI MIILS N329B ELSIR NATU DOGAL NATU BEXET ENJEX AVZAC INFEC JETZI AMFUL OCTIZ P2 SIRIC SIRIC1H"
+          "waypoints": "ZENZI LFK SUTTN J29 MEM IIU EWC SYR CABCI MIILS N329B ELSIR NATU DOGAL NATU BEXET ENJEX AVZAC INFEC JETZI AMFUL OCTIZ P2 SIRIC SIRIC1H"
         },
         {
           "airlines": [
@@ -313,7 +313,7 @@
           ],
           "destination": "KOKC",
           "exit": "KLNGR",
-          "route": "KLNGR MQP YUCKS YUCKS3"
+          "waypoints": "KLNGR MQP YUCKS YUCKS3"
         }
       ],
       "exit_categories": {
@@ -426,7 +426,7 @@
           ],
           "destination": "KABY",
           "exit": "ZENZI",
-          "route": "ZENZI LCH Q24 IRUBE EDN"
+          "waypoints": "ZENZI LCH Q24 IRUBE EDN"
         },
         {
           "airlines": [
@@ -437,7 +437,7 @@
           ],
           "destination": "KHPN",
           "exit": "SAYBR",
-          "route": "SAYBR SLT HNK DNY VALRE5"
+          "waypoints": "SAYBR SLT HNK DNY VALRE5"
         },
         {
           "airlines": [
@@ -447,7 +447,7 @@
           ],
           "destination": "KSAT",
           "exit": "KHYI",
-          "route": "KHYI KSAT"
+          "waypoints": "KHYI KSAT"
         },
         {
           "airlines": [
@@ -457,7 +457,7 @@
           ],
           "destination": "KSGR",
           "exit": "KHYI",
-          "route": "KHYI KSGR"
+          "waypoints": "KHYI KSGR"
         },
         {
           "airlines": [
@@ -467,7 +467,7 @@
           ],
           "destination": "KCLL",
           "exit": "KHYI",
-          "route": "KHYI KCLL"
+          "waypoints": "KHYI KCLL"
         },
         {
           "airlines": [
@@ -478,7 +478,7 @@
           ],
           "destination": "KGLS",
           "exit": "ZENZI",
-          "route": "ZENZI CLL SNIFY1"
+          "waypoints": "ZENZI CLL SNIFY1"
         }
       ],
       "exit_categories": {
@@ -540,7 +540,7 @@
           ],
           "destination": "KJCT",
           "exit": "AMUSE",
-          "route": "AMUSE"
+          "waypoints": "AMUSE"
         },
         {
           "airlines": [
@@ -550,7 +550,7 @@
           ],
           "destination": "KSJT",
           "exit": "AMUSE",
-          "route": "AMUSE"
+          "waypoints": "AMUSE"
         },
         {
           "airlines": [
@@ -560,7 +560,7 @@
           ],
           "destination": "KCLL",
           "exit": "CLL",
-          "route": "CLL"
+          "waypoints": "CLL"
         },
         {
           "airlines": [
@@ -570,7 +570,7 @@
           ],
           "destination": "KLFK",
           "exit": "CLL",
-          "route": "CLL V565 LFK"
+          "waypoints": "CLL V565 LFK"
         }
       ],
       "exit_categories": {
@@ -1037,7 +1037,7 @@
         {
           "waypoints": "CLL TOAMY/a4000/ho/h265",
           "cruise_altitude": 4000,
-          "route": "/. TOAMY",
+          "flight_strip_route": "/. TOAMY",
           "initial_controller": "31U",
           "initial_altitude": 4000,
           "initial_speed": 280,

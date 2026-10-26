@@ -171,7 +171,7 @@
           "altitude": [31000, 33000],
           "destination": "KAMA",
           "exit": "SLEEK",
-          "route": "SLEEK DHT PNH"
+          "waypoints": "SLEEK DHT PNH"
         },
         {
           "airlines": [
@@ -190,7 +190,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KAUS",
           "exit": "SLEEK",
-          "route": "SLEEK PNH J17 ABI DILLO LAIKS4"
+          "waypoints": "SLEEK PNH J17 ABI DILLO LAIKS4"
         },
         {
           "airlines": [
@@ -204,7 +204,7 @@
           "altitude": [35000, 37000, 39000, 41000],
           "destination": "KDAL",
           "exit": "SLEEK",
-          "route": "SLEEK KA39Y STNLI JFRYE5"
+          "waypoints": "SLEEK KA39Y STNLI JFRYE5"
         },
         {
           "airlines": [
@@ -228,7 +228,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KDFW",
           "exit": "SLEEK",
-          "route": "SLEEK EZEEE MDANO VKTRY2"
+          "waypoints": "SLEEK EZEEE MDANO VKTRY2"
         },
         {
           "airlines": [
@@ -239,7 +239,7 @@
           "altitude": [33000, 35000, 37000, 39000, 41000],
           "destination": "KHOU",
           "exit": "SLEEK",
-          "route": "SLEEK KA39Y HEATR MEGGA MQP NNEAL KIDDZ5"
+          "waypoints": "SLEEK KA39Y HEATR MEGGA MQP NNEAL KIDDZ5"
         },
         {
           "airlines": [
@@ -255,7 +255,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KIAH",
           "exit": "SLEEK",
-          "route": "SLEEK NOSEW MQP GUSHR3"
+          "waypoints": "SLEEK NOSEW MQP GUSHR3"
         },
         {
           "airlines": [
@@ -271,7 +271,7 @@
           "altitude": 33000,
           "destination": "KLBB",
           "exit": "SLEEK",
-          "route": "SLEEK KENTO VEGGE"
+          "waypoints": "SLEEK KENTO VEGGE"
         },
         {
           "airlines": [
@@ -282,7 +282,7 @@
           "altitude": 37000,
           "destination": "MMMY",
           "exit": "SLEEK",
-          "route": "SLEEK TBE TXO BGS DOGEY"
+          "waypoints": "SLEEK TBE TXO BGS DOGEY"
         },
         {
           "airlines": [
@@ -301,7 +301,7 @@
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "MMUN",
           "exit": "SLEEK",
-          "route": "SLEEK NOSEW MQP SBI"
+          "waypoints": "SLEEK NOSEW MQP SBI"
         },
         {
           "airlines": [
@@ -317,7 +317,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KMAF",
           "exit": "JOPLN",
-          "route": "JOPLN LBB V81 MAF"
+          "waypoints": "JOPLN LBB V81 MAF"
         },
         {
           "airlines": [
@@ -333,7 +333,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "MMMX",
           "exit": "VRONI",
-          "route": "VRONI KENTO LBB"
+          "waypoints": "VRONI KENTO LBB"
         },
         {
           "airlines": [
@@ -356,7 +356,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KELP",
           "exit": "SUDDZ",
-          "route": "SUDDZ"
+          "waypoints": "SUDDZ"
         },
         {
           "airlines": [
@@ -368,7 +368,7 @@
           "altitude": [30000, 32000, 34000],
           "destination": "KSAF",
           "exit": "SUDDZ",
-          "route": "SUDDZ SAF"
+          "waypoints": "SUDDZ SAF"
         },
         {
           "airlines": [
@@ -380,7 +380,7 @@
           "altitude": [36000, 38000],
           "destination": "MMCU",
           "exit": "SUDDZ",
-          "route": "SUDDZ TAS DNIDE ONM J57 TCS"
+          "waypoints": "SUDDZ TAS DNIDE ONM J57 TCS"
         },
         {
           "airlines": [
@@ -399,7 +399,7 @@
           "altitude": [34000, 36000, 38000],
           "destination": "MMSD",
           "exit": "SUDDZ",
-          "route": "SUDDZ ABQ TCS"
+          "waypoints": "SUDDZ ABQ TCS"
         },
         {
           "airlines": [
@@ -418,7 +418,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "KABQ",
           "exit": "DAAYE",
-          "route": "DAAYE DATME SNDIA4"
+          "waypoints": "DAAYE DATME SNDIA4"
         },
         {
           "airlines": [
@@ -430,7 +430,7 @@
           "altitude": 28000,
           "destination": "KFMN",
           "exit": "DAAYE",
-          "route": "DAAYE RSK"
+          "waypoints": "DAAYE RSK"
         },
         {
           "airlines": [
@@ -455,7 +455,7 @@
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KPHX",
           "exit": "DAAYE",
-          "route": "DAAYE GUP EAGUL6"
+          "waypoints": "DAAYE GUP EAGUL6"
         },
         {
           "airlines": [
@@ -478,7 +478,7 @@
           "altitude": [30000, 32000, 34000, 36000, 38000, 40000],
           "destination": "KTUS",
           "exit": "DAAYE",
-          "route": "DAAYE TCS SSO ZONNA2"
+          "waypoints": "DAAYE TCS SSO ZONNA2"
         }
       ],
       "exit_categories": {
@@ -557,7 +557,7 @@
           "altitude": 39000,
           "destination": "KMDW",
           "exit": "JEWLS",
-          "route": "JEWLS HGO SLN BUM MAGOO ENDEE8"
+          "waypoints": "JEWLS HGO SLN BUM MAGOO ENDEE8"
         },
         {
           "airlines": [
@@ -569,7 +569,7 @@
           "altitude": 33000,
           "destination": "KDAL",
           "exit": "JEWLS",
-          "route": "JEWLS GCK MMB FILGO HYDES JFRYE5"
+          "waypoints": "JEWLS GCK MMB FILGO HYDES JFRYE5"
         },
         {
           "airlines": [
@@ -587,7 +587,7 @@
           "altitude": 37000,
           "destination": "KDFW",
           "exit": "BRESH",
-          "route": "BRESH EZEEE MDANO VKTRY2"
+          "waypoints": "BRESH EZEEE MDANO VKTRY2"
         },
         {
           "airlines": [
@@ -599,7 +599,7 @@
           "altitude": 37000,
           "destination": "KMSP",
           "exit": "JEWLS",
-          "route": "JEWLS GLD ONL SSWAN TORGY3"
+          "waypoints": "JEWLS GLD ONL SSWAN TORGY3"
         },
         {
           "airlines": [
@@ -611,7 +611,7 @@
           "altitude": 38000,
           "destination": "KPHX",
           "exit": "PUB",
-          "route": "PUB RGINA J102 GUP EAGUL6"
+          "waypoints": "PUB RGINA J102 GUP EAGUL6"
         },
         {
           "airlines": [
@@ -623,7 +623,7 @@
           "altitude": 31000,
           "destination": "KORD",
           "exit": "JEWLS",
-          "route": "JEWLS FOD MYRRS FYTTE7"
+          "waypoints": "JEWLS FOD MYRRS FYTTE7"
         },
         {
           "airlines": [
@@ -635,7 +635,7 @@
           "altitude": 37000,
           "destination": "KATL",
           "exit": "JEWLS",
-          "route": "JEWLS GCK BVO RZC MEMFS HUTCC KNSAW RUSSA GLAVN1"
+          "waypoints": "JEWLS GCK BVO RZC MEMFS HUTCC KNSAW RUSSA GLAVN1"
         },
         {
           "airlines": [
@@ -647,7 +647,7 @@
           "altitude": 36000,
           "destination": "KLAS",
           "exit": "PUB",
-          "route": "PUB TYEGR CHOWW3"
+          "waypoints": "PUB TYEGR CHOWW3"
         },
         {
           "airlines": [
@@ -667,7 +667,7 @@
           ],
           "altitude": 39000,
           "destination": "KSAT",
-          "route": "BRK BRESH TBE",
+          "waypoints": "BRK BRESH TBE",
           "exit": "BRESH"
         },
         {
@@ -688,7 +688,7 @@
           ],
           "altitude": 33000,
           "destination": "KOMA",
-          "route": "BRK JEWLS GLD",
+          "waypoints": "BRK JEWLS GLD",
           "exit": "JEWLS"
         }
       ]

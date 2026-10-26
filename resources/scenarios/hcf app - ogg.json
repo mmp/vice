@@ -172,7 +172,7 @@
           ],
           "destination": "PHMK",
           "scratchpad": "MKK",
-          "route": "OGG V6 BLUSH V8 MKK",
+          "waypoints": "OGG V6 BLUSH V8 MKK",
           "exit": "OGG.V6"
         },
         {
@@ -186,7 +186,7 @@
           ],
           "destination": "PHMU",
           "scratchpad": "HNM",
-          "route": "BARBY V11 UPP TAMMI",
+          "waypoints": "BARBY V11 UPP TAMMI",
           "exit": "BARBY"
         },
         {
@@ -200,7 +200,7 @@
           ],
           "destination": "PHNY",
           "scratchpad": "LNY",
-          "route": "OGG V1 HARPO V2 LNY",
+          "waypoints": "OGG V1 HARPO V2 LNY",
           "exit": "OGG.V1"
         },
         {
@@ -223,7 +223,7 @@
             }
           ],
           "destination": "PHLI",
-          "route": "LNY V16 NAPUA LIH",
+          "waypoints": "LNY V16 NAPUA LIH",
           "exit": "LNY"
         },
         {
@@ -262,7 +262,7 @@
             }
           ],
           "destination": "PHNL",
-          "route": "LNY JULLE5",
+          "waypoints": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -301,7 +301,7 @@
             }
           ],
           "destination": "PHNL",
-          "route": "LNY JULLE5",
+          "waypoints": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -340,7 +340,7 @@
             }
           ],
           "destination": "PHNL",
-          "route": "LNY JULLE5",
+          "waypoints": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -379,7 +379,7 @@
             }
           ],
           "destination": "PHNL",
-          "route": "LNY JULLE5",
+          "waypoints": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -418,7 +418,7 @@
             }
           ],
           "destination": "PHNL",
-          "route": "LNY JULLE5",
+          "waypoints": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -457,7 +457,7 @@
             }
           ],
           "destination": "PHNL",
-          "route": "LNY JULLE5",
+          "waypoints": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -496,7 +496,7 @@
             }
           ],
           "destination": "PHNL",
-          "route": "LNY JULLE5",
+          "waypoints": "LNY JULLE5",
           "exit": "LNY"
         },
         {
@@ -527,7 +527,7 @@
             }
           ],
           "destination": "PHKO",
-          "route": "ONOHI WANSI TAMMI KAYAK KOA",
+          "waypoints": "ONOHI WANSI TAMMI KAYAK KOA",
           "exit": "ONOHI"
         },
         {
@@ -558,7 +558,7 @@
             }
           ],
           "destination": "PHKO",
-          "route": "HARPO MAKEN V5 KOA",
+          "waypoints": "HARPO MAKEN V5 KOA",
           "exit": "HARPO"
         },
         {
@@ -569,7 +569,7 @@
             }
           ],
           "destination": "PHTO",
-          "route": "BARBY PARIS V15 ITO",
+          "waypoints": "BARBY PARIS V15 ITO",
           "exit": "BARBY"
         },
         {
@@ -580,7 +580,7 @@
             }
           ],
           "destination": "PHTO",
-          "route": "HARPO V21 PUMIC V15 ITO",
+          "waypoints": "HARPO V21 PUMIC V15 ITO",
           "exit": "HARPO"
         },
         {
@@ -591,7 +591,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "APACK R463 AUNTI A332 HALLI A332 HELOP 3600N/14000W 3900N/13000W FATMO RBL BVL J154 TCH KAMPR LONGZ4",
+          "waypoints": "APACK R463 AUNTI A332 HALLI A332 HELOP 3600N/14000W 3900N/13000W FATMO RBL BVL J154 TCH KAMPR LONGZ4",
           "exit": "APACK"
         },
         {
@@ -602,7 +602,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "EBBER R577 EDSEL ELKEY KL21G GBNEY KL36M DICEE BUMMP SSKII4",
+          "waypoints": "EBBER R577 EDSEL ELKEY KL21G GBNEY KL36M DICEE BUMMP SSKII4",
           "exit": "EBBER"
         },
         {
@@ -644,7 +644,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "CLUTS R465 CIVIT R585 AUDIA SNAXX RYDRR2",
+          "waypoints": "CLUTS R465 CIVIT R585 AUDIA SNAXX RYDRR2",
           "exit": "CLUTS"
         },
         {
@@ -679,7 +679,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "EBBER R577 ELOYI R577 ELKEY RYDRR2",
+          "waypoints": "EBBER R577 ELOYI R577 ELKEY RYDRR2",
           "exit": "EBBER"
         },
         {
@@ -710,7 +710,7 @@
             }
           ],
           "destination": "KSFO",
-          "route": "CLUTS R465 CREAN R465 CINNY PIRAT3",
+          "waypoints": "CLUTS R465 CREAN R465 CINNY PIRAT3",
           "exit": "CLUTS"
         },
         {
@@ -721,7 +721,7 @@
             }
           ],
           "destination": "KSLC",
-          "route": "APACK AUNTI R463 AXELE R463 ALCOA PYE FMG J32 LLC SLOWN FLECC YUTES1",
+          "waypoints": "APACK AUNTI R463 AXELE R463 ALCOA PYE FMG J32 LLC SLOWN FLECC YUTES1",
           "exit": "APACK"
         },
         {
@@ -732,7 +732,7 @@
             }
           ],
           "destination": "KSJC",
-          "route": "EBBER R577 ETNIC GITLE ALANN CINNY TPCAT HEPAP",
+          "waypoints": "EBBER R577 ETNIC GITLE ALANN CINNY TPCAT HEPAP",
           "exit": "EBBER"
         },
         {
@@ -747,7 +747,7 @@
             }
           ],
           "destination": "KOAK",
-          "route": "CLUTS R465 CEBEN R465 CREAN R465 CINNY PIRAT3",
+          "waypoints": "CLUTS R465 CEBEN R465 CREAN R465 CINNY PIRAT3",
           "exit": "CLUTS"
         },
         {
@@ -758,7 +758,7 @@
             }
           ],
           "destination": "KSMF",
-          "route": "CLUTS R465 CORTT R465 CREAN R465 CINNY PYE",
+          "waypoints": "CLUTS R465 CORTT R465 CREAN R465 CINNY PYE",
           "exit": "CLUTS"
         },
         {
@@ -769,7 +769,7 @@
             }
           ],
           "destination": "KPDX",
-          "route": "APACK R463 AUNTI ADOPE AXELE ADTIL 4000N/13000W HEMLO ONP LARSN UBG",
+          "waypoints": "APACK R463 AUNTI ADOPE AXELE ADTIL 4000N/13000W HEMLO ONP LARSN UBG",
           "exit": "APACK"
         },
         {
@@ -784,7 +784,7 @@
             }
           ],
           "destination": "KPHX",
-          "route": "EBBER R577 ELOYI R577 ELKEY SXC CNERY BLH HYDRR1",
+          "waypoints": "EBBER R577 ELOYI R577 ELKEY SXC CNERY BLH HYDRR1",
           "exit": "EBBER"
         },
         {
@@ -795,7 +795,7 @@
             }
           ],
           "destination": "KDFW",
-          "route": "EBBER R577 ELOYI R577 ELKEY SXC TRM CURIV GIREY CHEAR J74 SJN MAXXO TURKI VKTRY2",
+          "waypoints": "EBBER R577 ELOYI R577 ELKEY SXC TRM CURIV GIREY CHEAR J74 SJN MAXXO TURKI VKTRY2",
           "exit": "EBBER"
         },
         {
@@ -806,7 +806,7 @@
             }
           ],
           "destination": "KORD",
-          "route": "CLUTS R465 CREAN R465 CINNY MOD MVA SPRUZ TCH BFF FOD MYRRS FYTTE7",
+          "waypoints": "CLUTS R465 CREAN R465 CINNY MOD MVA SPRUZ TCH BFF FOD MYRRS FYTTE7",
           "exit": "CLUTS"
         },
         {
@@ -821,7 +821,7 @@
             }
           ],
           "destination": "KLAS",
-          "route": "FITES R578 FAPIS R578 FICKY C1177 SXC POM DAG MISEN RNDRZ4",
+          "waypoints": "FITES R578 FAPIS R578 FICKY C1177 SXC POM DAG MISEN RNDRZ4",
           "exit": "FITES"
         },
         {
@@ -832,7 +832,7 @@
             }
           ],
           "destination": "KONT",
-          "route": "FITES R578 FICKY KARLB3",
+          "waypoints": "FITES R578 FICKY KARLB3",
           "exit": "FITES"
         },
         {
@@ -843,7 +843,7 @@
             }
           ],
           "destination": "KSAN",
-          "route": "EBBER R577 ELOYI R577 ETNIC R577 ETECO FOOTS R578 FICKY C1177 SXC COMIX2",
+          "waypoints": "EBBER R577 ELOYI R577 ETNIC R577 ETECO FOOTS R578 FICKY C1177 SXC COMIX2",
           "exit": "EBBER"
         },
         {
@@ -866,7 +866,7 @@
             }
           ],
           "destination": "KSEA",
-          "route": "APACK ZOULU A331 SEDAR LATAY HAWKZ8",
+          "waypoints": "APACK ZOULU A331 SEDAR LATAY HAWKZ8",
           "exit": "APACK"
         },
         {
@@ -881,7 +881,7 @@
             }
           ],
           "destination": "CYVR",
-          "route": "APACK R463 AUNTI A332 HALLI 3400N/14500W 3800N/14000W ZAGER 4300N/13500W SHARI PEKAA RAGIT7",
+          "waypoints": "APACK R463 AUNTI A332 HALLI 3400N/14500W 3800N/14000W ZAGER 4300N/13500W SHARI PEKAA RAGIT7",
           "exit": "APACK"
         },
         {
@@ -892,7 +892,7 @@
             }
           ],
           "destination": "CYYC",
-          "route": "APACK R463 AUNTI A332 HALLI A332 HEMLO C1419 ONP LOCAN MENBO Q983 NORET IGVEP7",
+          "waypoints": "APACK R463 AUNTI A332 HALLI A332 HEMLO C1419 ONP LOCAN MENBO Q983 NORET IGVEP7",
           "exit": "APACK"
         }
       ],
@@ -1382,7 +1382,7 @@
         {
           "waypoints": "N021.42.11.263,W156.21.10.458 N021.29.32.595,W156.20.53.540/ho WEPTU",
           "cruise_altitude": 30000,
-          "route": "ZOULU WEPTU OGG",
+          "flight_strip_route": "ZOULU WEPTU OGG",
           "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
@@ -1432,7 +1432,7 @@
         },
         {
           "waypoints": "N021.40.45.227,W156.08.51.079 N021.29.27.700,W156.12.09.052/ho WEPTU",
-          "route": "AUNTI WEPTU OGG",
+          "flight_strip_route": "AUNTI WEPTU OGG",
           "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
@@ -1482,7 +1482,7 @@
         },
         {
           "waypoints": "N021.39.09.755,W155.56.06.979 N021.24.50.487,W156.05.13.934/ho WEPTU",
-          "route": "BOARD WEPTU OGG",
+          "flight_strip_route": "BOARD WEPTU OGG",
           "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
@@ -1638,7 +1638,7 @@
         {
           "waypoints": "N021.24.02.855,W155.37.22.419 N021.15.07.944,W155.54.07.229/ho WEPTU",
           "cruise_altitude": 30000,
-          "route": "DRAYK WEPTU OGG",
+          "flight_strip_route": "DRAYK WEPTU OGG",
           "initial_controller": "C03",
           "initial_altitude": 20000,
           "assigned_altitude": 4000,
@@ -1788,7 +1788,7 @@
         },
         {
           "waypoints": "N021.03.44.375,W155.18.39.781 N021.01.15.627,W155.38.24.492/ho SWEEP POCGI",
-          "route": "FAPIS WEPTU OGG",
+          "flight_strip_route": "FAPIS WEPTU OGG",
           "initial_controller": "C03",
           "initial_altitude": 28000,
           "assigned_altitude": 9000,

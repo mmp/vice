@@ -86,7 +86,7 @@
           ],
           "destination": "KBWI",
           "exit": "NELIE",
-          "route": "NELIE Q75 MXE V378 NUGGY TRISH3"
+          "waypoints": "NELIE Q75 MXE V378 NUGGY TRISH3"
         },
         {
           "airlines": [
@@ -96,7 +96,7 @@
           ],
           "destination": "KDCA",
           "exit": "NELIE",
-          "route": "NELIE Q75 MXE CLIPR3"
+          "waypoints": "NELIE Q75 MXE CLIPR3"
         },
         {
           "airlines": [
@@ -110,7 +110,7 @@
           ],
           "destination": "KCLT",
           "exit": "NELIE",
-          "route": "NELIE Q75 GVE AIROW CHSLY9"
+          "waypoints": "NELIE Q75 GVE AIROW CHSLY9"
         },
         {
           "airlines": [
@@ -123,7 +123,7 @@
           ],
           "destination": "KPHL",
           "exit": "CCC",
-          "route": "CCC MANTA Q439 BRIGS JIIMS4"
+          "waypoints": "CCC MANTA Q439 BRIGS JIIMS4"
         },
         {
           "airlines": [
@@ -133,7 +133,7 @@
           ],
           "destination": "KMEM",
           "exit": "BAF",
-          "route": "BAF Q406 BWZ J6 HVQ Q68 RAMRD BLUZZ4"
+          "waypoints": "BAF Q406 BWZ J6 HVQ Q68 RAMRD BLUZZ4"
         },
         {
           "airlines": [
@@ -143,7 +143,7 @@
           ],
           "destination": "KSDF",
           "exit": "CAM",
-          "route": "CAM Q822 GONZZ Q29 JHW UKATS DLAMP7"
+          "waypoints": "CAM Q822 GONZZ Q29 JHW UKATS DLAMP7"
         },
         {
           "airlines": [
@@ -153,7 +153,7 @@
           ],
           "destination": "KMCO",
           "exit": "CCC",
-          "route": "CCC Q97 SAWED MOXXY Q85 LPERD GTOUT1"
+          "waypoints": "CCC Q97 SAWED MOXXY Q85 LPERD GTOUT1"
         },
         {
           "airlines": [
@@ -163,7 +163,7 @@
           ],
           "destination": "KEWR",
           "exit": "HANNA",
-          "route": "HANNA FLOSI4"
+          "waypoints": "HANNA FLOSI4"
         },
         {
           "airlines": [
@@ -173,7 +173,7 @@
           ],
           "destination": "KMDW",
           "exit": "CAM",
-          "route": "CAM Q822 GONZZ Q29 JHW DJB J60 ASHEN BAGEL PANGG5"
+          "waypoints": "CAM Q822 GONZZ Q29 JHW DJB J60 ASHEN BAGEL PANGG5"
         },
         {
           "airlines": [
@@ -183,7 +183,7 @@
           ],
           "destination": "KRDU",
           "exit": "CCC",
-          "route": "CCC Q97 ZJAAY TAQLE2"
+          "waypoints": "CCC Q97 ZJAAY TAQLE2"
         },
         {
           "airlines": [
@@ -193,7 +193,7 @@
           ],
           "destination": "KORD",
           "exit": "CAM",
-          "route": "CAM Q822 GONZZ DTW"
+          "waypoints": "CAM Q822 GONZZ DTW"
         },
         {
           "airlines": [
@@ -203,7 +203,7 @@
           ],
           "destination": "KORH",
           "exit": "CLOWW",
-          "route": "CLOWW SPENO"
+          "waypoints": "CLOWW SPENO"
         },
         {
           "airlines": [
@@ -213,7 +213,7 @@
           ],
           "destination": "KLEW",
           "exit": "PEASE",
-          "route": "PEASE ENE"
+          "waypoints": "PEASE ENE"
         },
         {
           "airlines": [
@@ -223,7 +223,7 @@
           ],
           "destination": "KPWM",
           "exit": "PEASE",
-          "route": "PEASE ENE"
+          "waypoints": "PEASE ENE"
         },
         {
           "airlines": [
@@ -233,7 +233,7 @@
           ],
           "destination": "KWVL",
           "exit": "PEASE",
-          "route": "PEASE ENE"
+          "waypoints": "PEASE ENE"
         },
         {
           "airlines": [
@@ -243,7 +243,7 @@
           ],
           "destination": "KRKD",
           "exit": "PEASE",
-          "route": "PEASE ENE"
+          "waypoints": "PEASE ENE"
         },
         {
           "airlines": [
@@ -254,7 +254,7 @@
           "destination": "KHYA",
           "exit": "MANCH",
           "altitude": 7000,
-          "route": "MANCH BOS V141 DUNKK"
+          "waypoints": "MANCH BOS V141 DUNKK"
         },
         {
           "airlines": [
@@ -264,7 +264,7 @@
           ],
           "destination": "KPQI",
           "exit": "ENE",
-          "route": "ENE MLT"
+          "waypoints": "ENE MLT"
         },
         {
           "airlines": [
@@ -274,7 +274,7 @@
           ],
           "destination": "KBTV",
           "exit": "CAM",
-          "route": "CAM"
+          "waypoints": "CAM"
         },
         {
           "airlines": [
@@ -284,7 +284,7 @@
           ],
           "destination": "KBGR",
           "exit": "ENE",
-          "route": "ENE T295 BGR"
+          "waypoints": "ENE T295 BGR"
         },
         {
           "airlines": [
@@ -294,7 +294,7 @@
           ],
           "destination": "KIAD",
           "exit": "BAF",
-          "route": "BAF HYPER1"
+          "waypoints": "BAF HYPER1"
         },
         {
           "airlines": [
@@ -304,7 +304,7 @@
           ],
           "destination": "KHPN",
           "exit": "CAM",
-          "route": "CAM ALB VALRE5"
+          "waypoints": "CAM ALB VALRE5"
         },
         {
           "airlines": [
@@ -314,7 +314,7 @@
           ],
           "destination": "KHIE",
           "exit": "CON",
-          "route": "CON ZAMIM"
+          "waypoints": "CON ZAMIM"
         },
         {
           "airlines": [
@@ -324,7 +324,7 @@
           ],
           "destination": "KAFW",
           "exit": "CAM",
-          "route": "CAM ALB J190 CFB EWC ROD VHP FAM FSM RRNET TRUUK2"
+          "waypoints": "CAM ALB J190 CFB EWC ROD VHP FAM FSM RRNET TRUUK2"
         },
         {
           "airlines": [
@@ -334,7 +334,7 @@
           ],
           "destination": "KCVG",
           "exit": "CAM",
-          "route": "CAM GONZZ JOSSY MAULL KODIE SAVVI TIGRR4"
+          "waypoints": "CAM GONZZ JOSSY MAULL KODIE SAVVI TIGRR4"
         }
       ],
       "exit_categories": {
@@ -388,7 +388,7 @@
           ],
           "destination": "KAEX",
           "exit": "CON",
-          "route": "CON ALB DBABE Q448 PTW J48 CSN FANPO Q40 AEX"
+          "waypoints": "CON ALB DBABE Q448 PTW J48 CSN FANPO Q40 AEX"
         },
         {
           "airlines": [
@@ -398,7 +398,7 @@
           ],
           "destination": "KBOS",
           "exit": "STEVO",
-          "route": "STEVO LWRNC"
+          "waypoints": "STEVO LWRNC"
         },
         {
           "airlines": [
@@ -408,7 +408,7 @@
           ],
           "destination": "KPIE",
           "exit": "CON",
-          "route": "CON CAM ALB BIZEX Q75 TEUFL BAAMF DADES1"
+          "waypoints": "CON CAM ALB BIZEX Q75 TEUFL BAAMF DADES1"
         },
         {
           "airlines": [
@@ -421,7 +421,7 @@
           ],
           "destination": "KHEF",
           "exit": "CON",
-          "route": "CON EEN DNY LAAYK V93 LRP V39 MRB"
+          "waypoints": "CON EEN DNY LAAYK V93 LRP V39 MRB"
         },
         {
           "airlines": [
@@ -431,7 +431,7 @@
           ],
           "destination": "KSFB",
           "exit": "WEEZE",
-          "route": "WEEZE SCUPP FOXBO RIFLE HEADI Q97 KALDA MOXXY Q85 LPERD TTHOR3"
+          "waypoints": "WEEZE SCUPP FOXBO RIFLE HEADI Q97 KALDA MOXXY Q85 LPERD TTHOR3"
         },
         {
           "airlines": [
@@ -442,7 +442,7 @@
           ],
           "destination": "KHOU",
           "exit": "CON",
-          "route": "CON BAF Q448 PTW J48 CSN FANPO Q40 AEX"
+          "waypoints": "CON BAF Q448 PTW J48 CSN FANPO Q40 AEX"
         },
         {
           "airlines": [
@@ -455,7 +455,7 @@
           ],
           "destination": "KIWI",
           "exit": "PEASE",
-          "route": "PEASE ENE"
+          "waypoints": "PEASE ENE"
         }
       ],
       "exit_categories": {
@@ -484,7 +484,7 @@
               "34": "CAMTN CON/h123"
             }
           },
-          "route": "KJOHN CAMTN CON",
+          "flight_strip_route": "KJOHN CAMTN CON",
           "initial_controller": "C37",
           "initial_altitude": 11000,
           "initial_speed": 280,
@@ -555,7 +555,7 @@
               "34": "SCARB/ho ENE/h212"
             }
           },
-          "route": "BTSEE SCARB ENE",
+          "flight_strip_route": "BTSEE SCARB ENE",
           "initial_controller": "C37",
           "initial_altitude": 7000,
           "initial_speed": 250,
@@ -626,7 +626,7 @@
               "34": "PUDGY/ho GDM/h74"
             }
           },
-          "route": "BAF PUDGY GDM",
+          "flight_strip_route": "BAF PUDGY GDM",
           "initial_controller": "C37",
           "initial_altitude": 9000,
           "initial_speed": 250,

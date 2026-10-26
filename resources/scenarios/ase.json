@@ -98,7 +98,7 @@
           ],
           "altitude": 23000,
           "destination": "KDEN",
-          "route": "LINDZ IDENE JNETT HAMIC SSKII/a20000-22000 BGDEE/a17000-21000/s250/delete",
+          "waypoints": "LINDZ IDENE JNETT HAMIC SSKII/a20000-22000 BGDEE/a17000-21000/s250/delete",
           "exit": "LINDZ"
         },
         {
@@ -110,7 +110,7 @@
           ],
           "altitude": 23000,
           "destination": "KCYS",
-          "route": "RLG KGXY/delete",
+          "waypoints": "RLG KGXY/delete",
           "exit": "RLG"
         },
         {
@@ -122,7 +122,7 @@
           ],
           "altitude": 18000,
           "destination": "KCOS",
-          "route": "LINDZ KEEPP CLIMN MROON HBU/delete",
+          "waypoints": "LINDZ KEEPP CLIMN MROON HBU/delete",
           "exit": "LINDZ"
         },
         {
@@ -137,7 +137,7 @@
           ],
           "altitude": 28000,
           "destination": "KSLC",
-          "route": "RIL HELPR/delete",
+          "waypoints": "RIL HELPR/delete",
           "exit": "RIL"
         },
         {
@@ -149,7 +149,7 @@
           ],
           "altitude": 23000,
           "destination": "KPUB",
-          "route": "LINDZ KEEPP CLIMN MROON HBU PUB/delete",
+          "waypoints": "LINDZ KEEPP CLIMN MROON HBU PUB/delete",
           "exit": "LINDZ"
         }
       ],
@@ -254,7 +254,7 @@
           "description": "Northeast (D01)",
           "initial_controller": "C11",
           "initial_speed": 300,
-          "route": "WERNR ZAKOR DBL KASE",
+          "flight_strip_route": "WERNR ZAKOR DBL KASE",
           "waypoints": "N039.37.27.994,W106.08.45.942 N039.36.38.652,W106.14.29.403/ho WERNR ZAKOR DBL"
         },
         {
@@ -279,7 +279,7 @@
           "description": "Northeast (D01 Sats)",
           "initial_controller": "C11",
           "initial_speed": 310,
-          "route": "DBL KASE",
+          "flight_strip_route": "DBL KASE",
           "waypoints": "N039.35.22.311,W106.09.15.633 N039.34.38.901,W106.12.39.704/ho DBL"
         }
       ]
@@ -311,7 +311,7 @@
           "description": "Southeast",
           "initial_controller": "C11",
           "initial_speed": 300,
-          "route": "DBL KASE",
+          "flight_strip_route": "DBL KASE",
           "waypoints": "N038.48.47.993,W106.20.40.521 N038.54.37.880,W106.25.46.847/ho DBL"
         }
       ]
@@ -346,7 +346,7 @@
           "description": "Southwest",
           "initial_controller": "C11",
           "initial_speed": 340,
-          "route": "KASE",
+          "flight_strip_route": "KASE",
           "waypoints": "N039.04.40.165,W107.42.49.949 N039.06.02.150,W107.37.57.301/ho LOYYD SKIER DBL KASE"
         }
       ]

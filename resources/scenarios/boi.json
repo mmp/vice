@@ -120,7 +120,7 @@
           ],
           "destination": "KBUR",
           "exit": "HYVAL",
-          "route": "HYVAL REO J7 FMG FRA REBRG ROKKR2",
+          "waypoints": "HYVAL REO J7 FMG FRA REBRG ROKKR2",
           "scratchpad": "HYV"
         },
         {
@@ -131,7 +131,7 @@
           ],
           "destination": "KDEN",
           "exit": "ROARR",
-          "route": "ROARR PIH MJANE FLATI4",
+          "waypoints": "ROARR PIH MJANE FLATI4",
           "scratchpad": "ROA"
         },
         {
@@ -143,7 +143,7 @@
           ],
           "destination": "KSDY",
           "exit": "FETHR",
-          "route": "FETHR DBS J82 RAP FOD MYRRS FYTTE7",
+          "waypoints": "FETHR DBS J82 RAP FOD MYRRS FYTTE7",
           "scratchpad": "FET"
         },
         {
@@ -155,7 +155,7 @@
           ],
           "destination": "KDFW",
           "exit": "ROARR",
-          "route": "ROARR LYONS TWF J15 JNC ALS PNH MDANO VKTRY2",
+          "waypoints": "ROARR LYONS TWF J15 JNC ALS PNH MDANO VKTRY2",
           "scratchpad": "ROA"
         },
         {
@@ -166,7 +166,7 @@
           ],
           "destination": "KPHX",
           "exit": "ROARR",
-          "route": "ROARR LYONS CRITO WINEN Q35 CORKR TENTS BRUSR1",
+          "waypoints": "ROARR LYONS CRITO WINEN Q35 CORKR TENTS BRUSR1",
           "scratchpad": "ROA"
         },
         {
@@ -181,7 +181,7 @@
           ],
           "destination": "KSEA",
           "exit": "OLAAH",
-          "route": "OLAAH PREIS PDT CHINS5",
+          "waypoints": "OLAAH PREIS PDT CHINS5",
           "scratchpad": "OLA"
         },
         {
@@ -192,7 +192,7 @@
           ],
           "destination": "KSLC",
           "exit": "ROARR",
-          "route": "ROARR BYI SKEES5",
+          "waypoints": "ROARR BYI SKEES5",
           "scratchpad": "ROA"
         }
       ],

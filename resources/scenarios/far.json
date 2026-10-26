@@ -261,7 +261,7 @@
           ],
           "altitude": 8000,
           "destination": "KMOT",
-          "route": "MOT",
+          "waypoints": "MOT",
           "exit": "MOT"
         },
         {
@@ -281,7 +281,7 @@
           ],
           "altitude": 8000,
           "destination": "KXWA",
-          "route": "MOT XWA",
+          "waypoints": "MOT XWA",
           "exit": "MOT"
         },
         {
@@ -305,7 +305,7 @@
           ],
           "altitude": 14000,
           "destination": "KMOT",
-          "route": "MOT",
+          "waypoints": "MOT",
           "exit": "MOT"
         },
         {
@@ -329,7 +329,7 @@
           ],
           "altitude": 14000,
           "destination": "KXWA",
-          "route": "MOT XWA",
+          "waypoints": "MOT XWA",
           "exit": "MOT"
         },
         {
@@ -345,7 +345,7 @@
           ],
           "altitude": 6000,
           "destination": "KGFK",
-          "route": "PAWSS V181 GFK",
+          "waypoints": "PAWSS V181 GFK",
           "exit": "PAWSS"
         },
         {
@@ -357,7 +357,7 @@
           ],
           "altitude": 10000,
           "destination": "KGFK",
-          "route": "PAWSS V181 GFK",
+          "waypoints": "PAWSS V181 GFK",
           "exit": "PAWSS"
         },
         {
@@ -377,7 +377,7 @@
           ],
           "altitude": 7000,
           "destination": "KTVF",
-          "route": "TVF",
+          "waypoints": "TVF",
           "exit": "TVF"
         },
         {
@@ -393,7 +393,7 @@
           ],
           "altitude": 7000,
           "destination": "KDLH",
-          "route": "BJI DLH",
+          "waypoints": "BJI DLH",
           "exit": "BJI"
         },
         {
@@ -413,7 +413,7 @@
           ],
           "altitude": 5000,
           "destination": "KBJI",
-          "route": "BJI",
+          "waypoints": "BJI",
           "exit": "BJI"
         },
         {
@@ -433,7 +433,7 @@
           ],
           "altitude": 15000,
           "destination": "KDLH",
-          "route": "BJI DLH",
+          "waypoints": "BJI DLH",
           "exit": "BJI"
         },
         {
@@ -445,7 +445,7 @@
           ],
           "altitude": 37000,
           "destination": "KMEM",
-          "route": "RWF SAAGS WHOLL BRBBQ3",
+          "waypoints": "RWF SAAGS WHOLL BRBBQ3",
           "exit": "RWF"
         },
         {
@@ -457,7 +457,7 @@
           ],
           "altitude": 35000,
           "destination": "KSFB",
-          "route": "RWF DSM IRK FAM J151 VUZ KYLEG TTHOR3",
+          "waypoints": "RWF DSM IRK FAM J151 VUZ KYLEG TTHOR3",
           "exit": "RWF"
         },
         {
@@ -469,7 +469,7 @@
           ],
           "altitude": 35000,
           "destination": "KSDF",
-          "route": "RST DBQ BDF SHARE JMONY2",
+          "waypoints": "RST DBQ BDF SHARE JMONY2",
           "exit": "RST"
         },
         {
@@ -485,7 +485,7 @@
           ],
           "altitude": 7000,
           "destination": "KSTP",
-          "route": "GOLLF GEP1",
+          "waypoints": "GOLLF GEP1",
           "exit": "GOLLF"
         },
         {
@@ -501,7 +501,7 @@
           ],
           "altitude": 7000,
           "destination": "KFCM",
-          "route": "GOLLF GEP1",
+          "waypoints": "GOLLF GEP1",
           "exit": "GOLLF"
         },
         {
@@ -521,7 +521,7 @@
           ],
           "altitude": 21000,
           "destination": "KSTP",
-          "route": "GOLLF GEP1",
+          "waypoints": "GOLLF GEP1",
           "exit": "GOLLF"
         },
         {
@@ -541,7 +541,7 @@
           ],
           "altitude": 21000,
           "destination": "KFCM",
-          "route": "GOLLF GEP1",
+          "waypoints": "GOLLF GEP1",
           "exit": "GOLLF"
         },
         {
@@ -557,7 +557,7 @@
           ],
           "altitude": 21000,
           "destination": "KMSP",
-          "route": "WINDD BAINY3",
+          "waypoints": "WINDD BAINY3",
           "exit": "WINDD"
         },
         {
@@ -573,7 +573,7 @@
           ],
           "altitude": 33000,
           "destination": "KORD",
-          "route": "HSTIN Q156 ZZIPR FYTTE7",
+          "waypoints": "HSTIN Q156 ZZIPR FYTTE7",
           "exit": "HSTIN"
         },
         {
@@ -589,7 +589,7 @@
           ],
           "altitude": 7000,
           "destination": "KFSD",
-          "route": "FSD",
+          "waypoints": "FSD",
           "exit": "FSD"
         },
         {
@@ -609,7 +609,7 @@
           ],
           "altitude": 25000,
           "destination": "KFSD",
-          "route": "FSD",
+          "waypoints": "FSD",
           "exit": "FSD"
         },
         {
@@ -621,7 +621,7 @@
           ],
           "altitude": 33000,
           "destination": "KDFW",
-          "route": "FSD MCI RRNET SEEVR4",
+          "waypoints": "FSD MCI RRNET SEEVR4",
           "exit": "FSD"
         },
         {
@@ -637,7 +637,7 @@
           ],
           "altitude": 6000,
           "destination": "KABR",
-          "route": "ABR",
+          "waypoints": "ABR",
           "exit": "ABR"
         },
         {
@@ -653,7 +653,7 @@
           ],
           "altitude": 8000,
           "destination": "KRAP",
-          "route": "ABR RAP",
+          "waypoints": "ABR RAP",
           "exit": "ABR"
         },
         {
@@ -665,7 +665,7 @@
           ],
           "altitude": 12000,
           "destination": "KABR",
-          "route": "ABR",
+          "waypoints": "ABR",
           "exit": "ABR"
         },
         {
@@ -677,7 +677,7 @@
           ],
           "altitude": 16000,
           "destination": "KRAP",
-          "route": "ABR RAP",
+          "waypoints": "ABR RAP",
           "exit": "ABR"
         },
         {
@@ -701,7 +701,7 @@
           ],
           "altitude": 34000,
           "destination": "KDEN",
-          "route": "ABR NYTRO AALLE4",
+          "waypoints": "ABR NYTRO AALLE4",
           "exit": "ABR"
         },
         {
@@ -721,7 +721,7 @@
           ],
           "altitude": 36000,
           "destination": "KLAS",
-          "route": "ABR KD87W KU72S KU63Q STEWW CHOWW4",
+          "waypoints": "ABR KD87W KU72S KU63Q STEWW CHOWW4",
           "exit": "ABR"
         },
         {
@@ -741,7 +741,7 @@
           ],
           "altitude": 8000,
           "destination": "KBIS",
-          "route": "JMS",
+          "waypoints": "JMS",
           "exit": "JMS"
         },
         {
@@ -761,7 +761,7 @@
           ],
           "altitude": 8000,
           "destination": "KDIK",
-          "route": "JMS DIK",
+          "waypoints": "JMS DIK",
           "exit": "JMS"
         },
         {
@@ -785,7 +785,7 @@
           ],
           "altitude": 12000,
           "destination": "KBIS",
-          "route": "JMS",
+          "waypoints": "JMS",
           "exit": "JMS"
         },
         {
@@ -809,7 +809,7 @@
           ],
           "altitude": 16000,
           "destination": "KDIK",
-          "route": "JMS DIK",
+          "waypoints": "JMS DIK",
           "exit": "JMS"
         }
       ],

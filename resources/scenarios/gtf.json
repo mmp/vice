@@ -29,7 +29,7 @@
           ],
           "destination": "KSLC",
           "exit": "GTF",
-          "route": "GTF DBS NORDK6",
+          "waypoints": "GTF DBS NORDK6",
           "scratchpad": "GTF"
         },
         {
@@ -40,7 +40,7 @@
           ],
           "destination": "KDEN",
           "exit": "GTF",
-          "route": "GTF TOFUU FLATI3",
+          "waypoints": "GTF TOFUU FLATI3",
           "scratchpad": "GTF"
         },
         {
@@ -51,7 +51,7 @@
           ],
           "destination": "KPDX",
           "exit": "GTF",
-          "route": "GTF J36 MLP JORAD HHOOD4",
+          "waypoints": "GTF J36 MLP JORAD HHOOD4",
           "scratchpad": "GTF"
         },
         {
@@ -62,7 +62,7 @@
           ],
           "destination": "KSEA",
           "exit": "GTF",
-          "route": "GTF MLP GLASR3",
+          "waypoints": "GTF MLP GLASR3",
           "scratchpad": "GTF"
         }
       ],
@@ -74,7 +74,7 @@
       "arrivals": [
         {
           "waypoints": "N048.02.18.441,W111.44.31.655/ho gtf",
-          "route": "N048.02.18.441,W111.44.31.655 GTF",
+          "flight_strip_route": "N048.02.18.441,W111.44.31.655 GTF",
           "initial_controller": "C03",
           "initial_altitude": 13000,
           "initial_speed": 270,
@@ -107,7 +107,7 @@
       "arrivals": [
         {
           "waypoints": "N046.51.34.683,W111.16.52.966/ho gtf",
-          "route": "N046.51.34.683,W111.16.52.9665 GTF",
+          "flight_strip_route": "N046.51.34.683,W111.16.52.9665 GTF",
           "initial_controller": "C03",
           "initial_altitude": 13000,
           "initial_speed": 270,

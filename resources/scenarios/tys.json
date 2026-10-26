@@ -47,217 +47,217 @@
           "altitude": 40000,
           "destination": "KAUS",
           "exit": "GGG",
-          "route": "GGG WINDU SEWZY6"
+          "waypoints": "GGG WINDU SEWZY6"
         },
         {
           "airlines": [{ "icao": "SKW" }, { "icao": "UAL" }, { "icao": "FFT" }],
           "altitude": [28000, 30000, 32000, 34000],
           "destination": "KDEN",
           "exit": "VXV",
-          "route": "VXV BWG FAM BUM HYS J24 OATHE CLASH5"
+          "waypoints": "VXV BWG FAM BUM HYS J24 OATHE CLASH5"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [38000],
           "destination": "KVPS",
           "exit": "RMG",
-          "route": "RMG MGM CORKY"
+          "waypoints": "RMG MGM CORKY"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [35000, 37000, 39000],
           "destination": "KFLL",
           "exit": "QUIWE",
-          "route": "QUIWE Q93 PRMUS CUUDA3"
+          "waypoints": "QUIWE Q93 PRMUS CUUDA3"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [31000, 33000, 35000],
           "destination": "KJAX",
           "exit": "VXV",
-          "route": "VXV AHN FINNE OHDEA2"
+          "waypoints": "VXV AHN FINNE OHDEA2"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "WUP" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [34000, 36000, 40000],
           "destination": "KEYW",
           "exit": "VXV",
-          "route": "VXV THRSR HONID Q81 BULZI KRAKN1"
+          "waypoints": "VXV THRSR HONID Q81 BULZI KRAKN1"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [32000, 34000],
           "destination": "KLAS",
           "exit": "SYI",
-          "route": "SYI MEM KOMMA IRW J6 TCC GUP HAHAA RKSTR4"
+          "waypoints": "SYI MEM KOMMA IRW J6 TCC GUP HAHAA RKSTR4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [35000],
           "destination": "KEWR",
           "exit": "SITTR",
-          "route": "SITTR Q34 GVE PHLBO4"
+          "waypoints": "SITTR Q34 GVE PHLBO4"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "SWA" }, { "icao": "EJA" }],
           "altitude": [35000, 37000, 39000],
           "destination": "KMCO",
           "exit": "DAREE",
-          "route": "DAREE Q65 KERLY WHYYT GRNCH5"
+          "waypoints": "DAREE Q65 KERLY WHYYT GRNCH5"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "LXJ" }, { "icao": "EJM" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [33000, 35000, 37000, 39000, 41000],
           "destination": "KSFB",
           "exit": "DAREE",
-          "route": "DAREE Q65 KERLY KYLEG TTHOR3"
+          "waypoints": "DAREE Q65 KERLY KYLEG TTHOR3"
         },
         {
           "airlines": [{ "icao": "PDT" }],
           "altitude": [31000],
           "destination": "KPHL",
           "exit": "VXV",
-          "route": "VXV BKW SITTR Q34 GVE PAATS4"
+          "waypoints": "VXV BKW SITTR Q34 GVE PAATS4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000],
           "destination": "KPHX",
           "exit": "BNA",
-          "route": "BNA J46 ARG DWINE IRW J78 ZUN EAGUL6"
+          "waypoints": "BNA J46 ARG DWINE IRW J78 ZUN EAGUL6"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [35000, 37000],
           "destination": "KPGD",
           "exit": "ODF",
-          "route": "ODF WIGVO KYYUU LUBBR3"
+          "waypoints": "ODF WIGVO KYYUU LUBBR3"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [37000],
           "destination": "KSRQ",
           "exit": "THRSR",
-          "route": "THRSR HONID BANGZ2"
+          "waypoints": "THRSR HONID BANGZ2"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [35000, 37000, 39000],
           "destination": "KPIE",
           "exit": "DAREE",
-          "route": "DAREE Q65 KERLY BAAMF DADES2"
+          "waypoints": "DAREE Q65 KERLY BAAMF DADES2"
         },
         {
           "airlines": [{ "icao": "UCA" }, { "icao": "AAY" }, { "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [29000, 31000, 33000, 35000, 37000, 39000, 41000],
           "destination": "KIAD",
           "exit": "GZG",
-          "route": "GZG SITTR GIBBZ6"
+          "waypoints": "GZG SITTR GIBBZ6"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "LXJ" }],
           "altitude": [37000, 45000],
           "destination": "KBOS",
           "exit": "VXV",
-          "route": "VXV SITTR Q34 RBV Q419 JFK ROBUC3"
+          "waypoints": "VXV SITTR Q34 RBV Q419 JFK ROBUC3"
         },
         {
           "airlines": [{ "icao": "LXJ" }],
           "altitude": [43000],
           "destination": "KMDW",
           "exit": "VXV",
-          "route": "VXV IIU DROSE FISSK7"
+          "waypoints": "VXV IIU DROSE FISSK7"
         },
         {
           "airlines": [{ "icao": "ENY" }, { "icao": "AAL" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "destination": "KDFW",
           "exit": "SWELL",
-          "route": "SWELL V136 HCH SYI MEM LITTR FEWWW SEEVR4"
+          "waypoints": "SWELL V136 HCH SYI MEM LITTR FEWWW SEEVR4"
         },
         {
           "airlines": [{ "icao": "PDT" }, { "icao": "JIA" }, { "icao": "AAL" }],
           "altitude": [21000, 23000, 25000, 27000],
           "destination": "KCLT",
           "exit": "COMDY",
-          "route": "COMDY FILPZ7"
+          "waypoints": "COMDY FILPZ7"
         },
         {
           "airlines": [{ "icao": "ENY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [30000, 32000, 34000, 41000],
           "destination": "KMIA",
           "exit": "LORNN",
-          "route": "LORNN THRSR HONID FROGZ4"
+          "waypoints": "LORNN THRSR HONID FROGZ4"
         },
         {
           "airlines": [{ "icao": "GJS" }, { "icao": "JIA" }, { "icao": "UAL" }, { "icao": "LXJ" }, { "icao": "SKW" }],
           "altitude": [28000, 30000, 32000, 34000, 36000, 43000],
           "destination": "KORD",
           "exit": "VXV",
-          "route": "VXV HEVAN BONNT VEECK5"
+          "waypoints": "VXV HEVAN BONNT VEECK5"
         },
         {
           "airlines": [{ "icao": "JIA" }],
           "altitude": [25000, 27000, 29000, 31000],
           "destination": "KDCA",
           "exit": "VXV",
-          "route": "VXV SITTR TRUPS6"
+          "waypoints": "VXV SITTR TRUPS6"
         },
         {
           "airlines": [{ "icao": "EDV" }, { "icao": "DAL" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [13000, 15000, 22000],
           "destination": "KATL",
           "exit": "HIGGI",
-          "route": "HIGGI ONDRE1"
+          "waypoints": "HIGGI ONDRE1"
         },
         {
           "airlines": [{ "icao": "EDV" }],
           "altitude": [27000, 31000, 33000, 35000],
           "destination": "KDTW",
           "exit": "TONIO",
-          "route": "TONIO Q67 HNN SUBWY HTROD2"
+          "waypoints": "TONIO Q67 HNN SUBWY HTROD2"
         },
         {
           "airlines": [{ "icao": "EDV" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KMSP",
           "exit": "VXV",
-          "route": "VXV J99 IIU J89 BGOSH SHEAY MUSCL3"
+          "waypoints": "VXV J99 IIU J89 BGOSH SHEAY MUSCL3"
         },
         {
           "airlines": [{ "icao": "EDV" }],
           "altitude": [27000, 31000, 33000, 35000],
           "destination": "KLGA",
           "exit": "SITTR",
-          "route": "SITTR Q34 GVE PROUD2"
+          "waypoints": "SITTR Q34 GVE PROUD2"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [37000, 39000, 41000],
           "destination": "KBWI",
           "exit": "LUMAY",
-          "route": "LUMAY Q58 PEETT THHMP RAVVN8"
+          "waypoints": "LUMAY Q58 PEETT THHMP RAVVN8"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "EJA" }, { "icao": "VXP" }],
           "altitude": [38000, 40000, 43000],
           "destination": "KDAL",
           "exit": "SMTTH",
-          "route": "SMTTH METWO Q66 LITTR DIRRK HIBIL3"
+          "waypoints": "SMTTH METWO Q66 LITTR DIRRK HIBIL3"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "EJA" }, { "icao": "LXJ" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [20000, 22000, 24000, 28000],
           "destination": "KBNA",
           "exit": "EDDDY",
-          "route": "EDDDY SWFFT3"
+          "waypoints": "EDDDY SWFFT3"
         },
         {
           "airlines": [{ "icao": "UCA" }],
           "altitude": [26000, 28000, 30000, 32000, 34000, 36000],
           "destination": "KIAH",
           "exit": "GQO",
-          "route": "GQO VUZ MEI AEX DOOBI3"
+          "waypoints": "GQO VUZ MEI AEX DOOBI3"
         }
       ]
     },
@@ -313,7 +313,7 @@
       "arrivals": [
         {
           "waypoints": "N036.03.17.561,W084.39.07.338/ho VXV",
-          "route": "/. VXV",
+          "flight_strip_route": "/. VXV",
           "initial_controller": "C41",
           "initial_altitude": 10000,
           "assigned_altitude": 8000,
@@ -356,7 +356,7 @@
       "arrivals": [
         {
           "waypoints": "N036.04.17.148,W083.02.10.023/ho BOBBD",
-          "route": "/. BOBBD",
+          "flight_strip_route": "/. BOBBD",
           "initial_controller": "C45",
           "initial_altitude": 10000,
           "assigned_altitude": 8000,
@@ -390,7 +390,7 @@
       "arrivals": [
         {
           "waypoints": "N035.17.40.166,W084.21.28.394/ho TALLA",
-          "route": "/. TALLA",
+          "flight_strip_route": "/. TALLA",
           "initial_controller": "C38",
           "initial_altitude": 10000,
           "assigned_altitude": 8000,

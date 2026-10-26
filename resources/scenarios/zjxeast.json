@@ -25,7 +25,7 @@
           "exit": "ALLMA",
           "destination": "KBNA",
           "altitude": 40000,
-          "route": "ALLMA THRSR SWFFT3",
+          "waypoints": "ALLMA THRSR SWFFT3",
           "airlines": [
             {
               "icao": "SWA",
@@ -41,7 +41,7 @@
           "exit": "BAXLY",
           "destination": "KIND",
           "altitude": 36000,
-          "route": "BAXLY AHN SWAPP HAGAL GIIBS4",
+          "waypoints": "BAXLY AHN SWAPP HAGAL GIIBS4",
           "airlines": [
             {
               "icao": "FDX",
@@ -53,7 +53,7 @@
           "exit": "ALLMA",
           "destination": "KORD",
           "altitude": 36000,
-          "route": "ALLMA THRSR Q118 HEVAN Q118 BONNT VEECK5",
+          "waypoints": "ALLMA THRSR Q118 HEVAN Q118 BONNT VEECK5",
           "airlines": [
             {
               "icao": "FDX",
@@ -65,7 +65,7 @@
           "exit": "ALLMA",
           "destination": "KDEN",
           "altitude": 36000,
-          "route": "ALLMA LGC FASON NTWOO ARG ICT KK51A OATHE CLASH5",
+          "waypoints": "ALLMA LGC FASON NTWOO ARG ICT KK51A OATHE CLASH5",
           "airlines": [
             {
               "icao": "UAL",
@@ -81,7 +81,7 @@
           "exit": "ALLMA",
           "destination": "KDEN",
           "altitude": 36000,
-          "route": "ALLMA YANTI HANKO GENDE VISQA BOOSH3",
+          "waypoints": "ALLMA YANTI HANKO GENDE VISQA BOOSH3",
           "airlines": [
             {
               "icao": "SWA",
@@ -93,7 +93,7 @@
           "exit": "BAXLY",
           "destination": "KMSP",
           "altitude": 34000,
-          "route": "BAXLY AHN VXV RYANS IIU VHP DELHI OBK KAMMA KKILR3",
+          "waypoints": "BAXLY AHN VXV RYANS IIU VHP DELHI OBK KAMMA KKILR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -160,7 +160,7 @@
           "exit": "BYYOU",
           "destination": "KIAH",
           "altitude": 34000,
-          "route": "BYYOU AMG CEW J2 SJI LINKK1",
+          "waypoints": "BYYOU AMG CEW J2 SJI LINKK1",
           "airlines": [
             {
               "icao": "ASH",
@@ -185,7 +185,7 @@
         {
           "waypoints": "N032.19.07.563,W083.17.36.088/ho DUCHY/a24000/d12000 ILTAC/a23000- FORMB OHDEA/a12000/d2000 N030.26.23.198,W082.03.30.800 KJAX-8/delete",
           "star": "OHDEA2",
-          "route": "/. OHDEA2",
+          "flight_strip_route": "/. OHDEA2",
           "initial_controller": "T22",
           "initial_altitude": 24000,
           "assigned_altitude": 24000,
@@ -233,7 +233,7 @@
         {
           "waypoints": "N032.53.39.873,W082.16.29.071/ho WHYYT ADLYN ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete",
           "star": "GRNCH5",
-          "route": "/. GRNCH5",
+          "flight_strip_route": "/. GRNCH5",
           "initial_controller": "T22",
           "initial_altitude": 36000,
           "assigned_altitude": 36000,
@@ -529,7 +529,7 @@
         {
           "waypoints": "N032.14.08.336,W083.13.11.262/ho KYLEG JAGGZ WEEEK/delete",
           "star": "TTHOR3",
-          "route": "/. TTHOR3",
+          "flight_strip_route": "/. TTHOR3",
           "initial_controller": "T22",
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
@@ -577,7 +577,7 @@
         {
           "waypoints": "FISHO/ho Q75 TEUFL BAAMF CORYY/d27000 CAPOH/delete",
           "star": "DADES2",
-          "route": "/. DADES2",
+          "flight_strip_route": "/. DADES2",
           "initial_controller": "66",
           "initial_altitude": 34000,
           "assigned_altitude": 34000,
@@ -621,7 +621,7 @@
         {
           "waypoints": "N033.06.49.693,W082.25.03.094/ho BAAMF CORYY/d27000 CAPOH/delete",
           "star": "DADES2",
-          "route": "/. DADES2",
+          "flight_strip_route": "/. DADES2",
           "initial_controller": "66",
           "initial_altitude": 34000,
           "initial_speed": 300,
@@ -971,7 +971,7 @@
         {
           "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d27000 SSPAZ/delete",
           "star": "LUBBR4",
-          "route": "/. LUBBR4",
+          "flight_strip_route": "/. LUBBR4",
           "initial_controller": "66",
           "initial_altitude": 34000,
           "initial_speed": 300,
@@ -1018,7 +1018,7 @@
         {
           "waypoints": "N031.03.56.940,W083.24.46.697/ho SAV DREWE/a11000 BAGGY/a7000+ DDENA KCHS-3/delete",
           "star": "BAGGY3",
-          "route": "/. BAGGY3",
+          "flight_strip_route": "/. BAGGY3",
           "initial_controller": "33",
           "initial_altitude": 31000,
           "assigned_altitude": 31000,

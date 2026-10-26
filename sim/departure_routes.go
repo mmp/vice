@@ -167,12 +167,12 @@ func (ss *CommonState) placement(choice departureChoice, departureAirport, desti
 
 	exitRoute := c.exitRoutes[c.dep.Exit]
 	if choice.route != "" {
-		p.dep.Route = departureRoute(choice.route, departureAirport, c.dep.Exit, exitRoute)
-		p.dep.RouteWaypoints = dropFlownPrefix(ss.departureRouteWaypoints(p.dep.Route),
+		p.dep.WaypointsString = departureRoute(choice.route, departureAirport, c.dep.Exit, exitRoute)
+		p.dep.Waypoints = dropFlownPrefix(ss.departureRouteWaypoints(p.dep.WaypointsString),
 			exitRoute.Waypoints)
 	} else {
-		p.dep.Route = string(c.dep.Exit.Base())
-		p.dep.RouteWaypoints = ss.departureRouteWaypoints(p.dep.Route)
+		p.dep.WaypointsString = string(c.dep.Exit.Base())
+		p.dep.Waypoints = ss.departureRouteWaypoints(p.dep.WaypointsString)
 	}
 	return p
 }

@@ -168,7 +168,7 @@
           "exit": "GLANC",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "GLANC COLZI Q52 CHOPZ THRSR VLKNN Q30 IZAAC YUYUN",
+          "waypoints": "GLANC COLZI Q52 CHOPZ THRSR VLKNN Q30 IZAAC YUYUN",
           "airlines": [
             {
               "icao": "AAL",
@@ -180,7 +180,7 @@
           "exit": "GLANC",
           "destination": "KIAH",
           "altitude": 34000,
-          "route": "GLANC COLZI Q52 CHOPZ THRSR JAMMR MERDN AEX DOOBI3",
+          "waypoints": "GLANC COLZI Q52 CHOPZ THRSR JAMMR MERDN AEX DOOBI3",
           "airlines": [
             {
               "icao": "UAL",
@@ -192,7 +192,7 @@
           "exit": "FLASK",
           "destination": "KATL",
           "altitude": 32000,
-          "route": "FLASK YEOLD OZZZI2",
+          "waypoints": "FLASK YEOLD OZZZI2",
           "airlines": [
             {
               "icao": "DAL",
@@ -208,7 +208,7 @@
           "exit": "FLASK",
           "destination": "KAUS",
           "altitude": 36000,
-          "route": "FLASK ALEAN VXV SQS SWEUP LUKKN WLEEE7",
+          "waypoints": "FLASK ALEAN VXV SQS SWEUP LUKKN WLEEE7",
           "airlines": [
             {
               "icao": "SWA",
@@ -220,7 +220,7 @@
           "exit": "MAULS",
           "destination": "KMSY",
           "altitude": 38000,
-          "route": "MAULS Q40 NIOLA MERDN TRSSH2",
+          "waypoints": "MAULS Q40 NIOLA MERDN TRSSH2",
           "airlines": [
             {
               "icao": "SWA",
@@ -232,7 +232,7 @@
           "exit": "MAULS",
           "destination": "KMEM",
           "altitude": 34000,
-          "route": "MAULS FAREV RAMRD BLUZZ5",
+          "waypoints": "MAULS FAREV RAMRD BLUZZ5",
           "airlines": [
             {
               "icao": "DAL",
@@ -244,7 +244,7 @@
           "exit": "RRSIN",
           "destination": "KJAX",
           "altitude": 40000,
-          "route": "RRSIN SESUE ESENT LUNNI2",
+          "waypoints": "RRSIN SESUE ESENT LUNNI2",
           "airlines": [
             {
               "icao": "SWA",
@@ -256,7 +256,7 @@
           "exit": "RRSIN",
           "destination": "KFLL",
           "altitude": 38000,
-          "route": "RRSIN PRMUS CUUDA3",
+          "waypoints": "RRSIN PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "SWA",
@@ -312,7 +312,7 @@
           "exit": "GLANC",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "GLANC COLZI Q52 CHOPZ THRSR VLKNN Q30 IZAAC YUYUN",
+          "waypoints": "GLANC COLZI Q52 CHOPZ THRSR VLKNN Q30 IZAAC YUYUN",
           "airlines": [
             {
               "icao": "AAL",
@@ -324,7 +324,7 @@
           "exit": "GLANC",
           "destination": "KIAH",
           "altitude": 34000,
-          "route": "GLANC COLZI Q52 CHOPZ THRSR JAMMR MERDN AEX DOOBI3",
+          "waypoints": "GLANC COLZI Q52 CHOPZ THRSR JAMMR MERDN AEX DOOBI3",
           "airlines": [
             {
               "icao": "UAL",
@@ -336,7 +336,7 @@
           "exit": "FLASK",
           "destination": "KATL",
           "altitude": 32000,
-          "route": "FLASK YEOLD OZZZI2",
+          "waypoints": "FLASK YEOLD OZZZI2",
           "airlines": [
             {
               "icao": "DAL",
@@ -352,7 +352,7 @@
           "exit": "FLASK",
           "destination": "KAUS",
           "altitude": 36000,
-          "route": "FLASK ALEAN VXV SQS SWEUP LUKKN WLEEE7",
+          "waypoints": "FLASK ALEAN VXV SQS SWEUP LUKKN WLEEE7",
           "airlines": [
             {
               "icao": "SWA",
@@ -364,7 +364,7 @@
           "exit": "MAULS",
           "destination": "KMSY",
           "altitude": 38000,
-          "route": "MAULS Q40 NIOLA MERDN TRSSH2",
+          "waypoints": "MAULS Q40 NIOLA MERDN TRSSH2",
           "airlines": [
             {
               "icao": "SWA",
@@ -376,7 +376,7 @@
           "exit": "MAULS",
           "destination": "KMEM",
           "altitude": 34000,
-          "route": "MAULS FAREV RAMRD BLUZZ5",
+          "waypoints": "MAULS FAREV RAMRD BLUZZ5",
           "airlines": [
             {
               "icao": "DAL",
@@ -388,7 +388,7 @@
           "exit": "RRSIN",
           "destination": "KJAX",
           "altitude": 40000,
-          "route": "RRSIN SESUE ESENT LUNNI2",
+          "waypoints": "RRSIN SESUE ESENT LUNNI2",
           "airlines": [
             {
               "icao": "SWA",
@@ -400,7 +400,7 @@
           "exit": "RRSIN",
           "destination": "KFLL",
           "altitude": 38000,
-          "route": "RRSIN PRMUS CUUDA3",
+          "waypoints": "RRSIN PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "SWA",
@@ -456,7 +456,7 @@
           "exit": "GLANC",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "GLANC COLZI Q52 CHOPZ THRSR VLKNN Q30 IZAAC YUYUN",
+          "waypoints": "GLANC COLZI Q52 CHOPZ THRSR VLKNN Q30 IZAAC YUYUN",
           "airlines": [
             {
               "icao": "AAL",
@@ -468,7 +468,7 @@
           "exit": "GLANC",
           "destination": "KIAH",
           "altitude": 34000,
-          "route": "GLANC COLZI Q52 CHOPZ THRSR JAMMR MERDN AEX DOOBI3",
+          "waypoints": "GLANC COLZI Q52 CHOPZ THRSR JAMMR MERDN AEX DOOBI3",
           "airlines": [
             {
               "icao": "UAL",
@@ -480,7 +480,7 @@
           "exit": "FLASK",
           "destination": "KATL",
           "altitude": 32000,
-          "route": "FLASK YEOLD OZZZI2",
+          "waypoints": "FLASK YEOLD OZZZI2",
           "airlines": [
             {
               "icao": "DAL",
@@ -496,7 +496,7 @@
           "exit": "FLASK",
           "destination": "KAUS",
           "altitude": 36000,
-          "route": "FLASK ALEAN VXV SQS SWEUP LUKKN WLEEE7",
+          "waypoints": "FLASK ALEAN VXV SQS SWEUP LUKKN WLEEE7",
           "airlines": [
             {
               "icao": "SWA",
@@ -508,7 +508,7 @@
           "exit": "MAULS",
           "destination": "KMSY",
           "altitude": 38000,
-          "route": "MAULS Q40 NIOLA MERDN TRSSH2",
+          "waypoints": "MAULS Q40 NIOLA MERDN TRSSH2",
           "airlines": [
             {
               "icao": "SWA",
@@ -520,7 +520,7 @@
           "exit": "MAULS",
           "destination": "KMEM",
           "altitude": 34000,
-          "route": "MAULS FAREV RAMRD BLUZZ5",
+          "waypoints": "MAULS FAREV RAMRD BLUZZ5",
           "airlines": [
             {
               "icao": "DAL",
@@ -532,7 +532,7 @@
           "exit": "RRSIN",
           "destination": "KJAX",
           "altitude": 40000,
-          "route": "RRSIN SESUE ESENT LUNNI2",
+          "waypoints": "RRSIN SESUE ESENT LUNNI2",
           "airlines": [
             {
               "icao": "SWA",
@@ -544,7 +544,7 @@
           "exit": "RRSIN",
           "destination": "KFLL",
           "altitude": 38000,
-          "route": "RRSIN PRMUS CUUDA3",
+          "waypoints": "RRSIN PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "SWA",
@@ -562,7 +562,7 @@
           "waypoints": "CCHIP JUDGG/ho32 JOANZ BBILL BETEE WIGOL KIAD/delete",
           "cruise_altitude": 27000,
           "star": "WIGOL3",
-          "route": "/. CCHIP WIGOL3",
+          "flight_strip_route": "/. CCHIP WIGOL3",
           "initial_controller": "52",
           "initial_altitude": 13000,
           "assigned_altitude": 13000,
@@ -617,7 +617,7 @@
           "waypoints": "BKW ASBUR/ho52 CCHIP JUDGG JOANZ BBILL BETEE/delete",
           "cruise_altitude": 27000,
           "star": "WIGOL3",
-          "route": "/. CCHIP WIGOL3",
+          "flight_strip_route": "/. CCHIP WIGOL3",
           "initial_controller": "37",
           "initial_altitude": 21000,
           "assigned_altitude": 18000,
@@ -672,7 +672,7 @@
           "waypoints": "UKF MWK/ho32 DORRN PERKN/delete",
           "cruise_altitude": 35000,
           "star": "CAVLR7",
-          "route": "/. UKF MWK DORRN CAVLR7",
+          "flight_strip_route": "/. UKF MWK DORRN CAVLR7",
           "initial_controller": "T33",
           "initial_altitude": 29000,
           "initial_speed": 300,
@@ -742,7 +742,7 @@
           "waypoints": "UKF MWK/ho32 FAK NABBS COATT/delete",
           "cruise_altitude": 27000,
           "star": "COATT5",
-          "route": "/. UKF MWK FAK COATT5",
+          "flight_strip_route": "/. UKF MWK FAK COATT5",
           "initial_controller": "T33",
           "initial_altitude": 29000,
           "initial_speed": 300,
@@ -812,7 +812,7 @@
           "waypoints": "PSK FRIKY/ho32 LYH WLOCK GRUTO HONTA/a13000+ VETEC/a12000- AHONE/a11000/s280 POWTN DUCXS/delete",
           "cruise_altitude": 29000,
           "star": "POWTN5",
-          "route": "/. LYH POWTN5",
+          "flight_strip_route": "/. LYH POWTN5",
           "initial_controller": "52",
           "initial_altitude": 18000,
           "assigned_altitude": 18000,
@@ -879,7 +879,7 @@
           "waypoints": "ALEAN PSK/ho52 FRIKY LYH WLOCK GRUTO HONTA/a13000+/delete",
           "cruise_altitude": 29000,
           "star": "POWTN5",
-          "route": "/. FRIKY LYH POWTN5",
+          "flight_strip_route": "/. FRIKY LYH POWTN5",
           "initial_controller": "T43",
           "initial_altitude": 29000,
           "assigned_altitude": 29000,
@@ -946,7 +946,7 @@
           "waypoints": "DILNN MOL/ho32/a21000 ZUMAT DXOON REDNG/a13000/s280 HEMME/a11000-12000 SPIDR/a8000 DUCXS/a4000/delete",
           "cruise_altitude": 33000,
           "star": "SPIDR5",
-          "route": "/. MOL SPIDR5",
+          "flight_strip_route": "/. MOL SPIDR5",
           "initial_controller": "52",
           "initial_altitude": 21000,
           "assigned_altitude": 21000,
@@ -1013,7 +1013,7 @@
           "waypoints": "RONZZ DILNN N038.05.08.496,W079.25.20.068/ho52 MOL/a21000 ZUMAT DXOON REDNG/a13000/s280 HEMME/a11000-12000/delete",
           "cruise_altitude": 33000,
           "star": "SPIDR5",
-          "route": "/. DILNN MOL SPIDR5",
+          "flight_strip_route": "/. DILNN MOL SPIDR5",
           "initial_controller": "37",
           "initial_altitude": 21000,
           "assigned_altitude": 21000,
@@ -1080,7 +1080,7 @@
           "waypoints": "BURGG Q60 EVING/ho32 JAXSN KELCE THINA DUCXS/delete",
           "cruise_altitude": 33000,
           "star": "DUCXS5",
-          "route": "/. BURGG Q60 JAXSN KELCE DUCXS5",
+          "flight_strip_route": "/. BURGG Q60 JAXSN KELCE DUCXS5",
           "initial_controller": "T33",
           "initial_altitude": 29000,
           "initial_speed": 300,
@@ -1146,7 +1146,7 @@
           "waypoints": "MAULS/ho32 ANDNN FAK RUSSL/delete",
           "cruise_altitude": 33000,
           "star": "OUTLA1",
-          "route": "/. MAULS OUTLA1",
+          "flight_strip_route": "/. MAULS OUTLA1",
           "initial_controller": "52",
           "initial_altitude": 25000,
           "initial_speed": 300,
@@ -1204,7 +1204,7 @@
           "waypoints": "SITTR ASBUR DENNY/ho52 MAULS ANDNN FAK RUSSL/delete",
           "cruise_altitude": 33000,
           "star": "OUTLA1",
-          "route": "/. MAULS OUTLA1",
+          "flight_strip_route": "/. MAULS OUTLA1",
           "initial_controller": "37",
           "initial_altitude": 25000,
           "initial_speed": 300,
@@ -1262,7 +1262,7 @@
           "waypoints": "OTTTO SUPRT/ho32 CLTCH MELTN MCDON/a17000- FAVKO/a12000- ALDAN/a9000-12000/s250 BILLA/a9000+/s250 BLNKR/a8000+/s220 GABLR/a7000+/delete",
           "cruise_altitude": 35000,
           "star": "ALDAN4",
-          "route": "/. MELTN ALDAN4",
+          "flight_strip_route": "/. MELTN ALDAN4",
           "initial_controller": "05",
           "initial_altitude": 31000,
           "assigned_altitude": 31000,
@@ -1325,7 +1325,7 @@
           "waypoints": "KPASS ROBLS TABER/ho32 MCDON/a17000- FAVKO/a12000- ALDAN/a9000-12000/s250 BILLA/a9000+/s250 BLNKR/a8000+/s220 GABLR/a7000+/delete",
           "cruise_altitude": 35000,
           "star": "ALDAN4",
-          "route": "/. KPASS ALDAN4",
+          "flight_strip_route": "/. KPASS ALDAN4",
           "initial_controller": "52",
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
@@ -1388,7 +1388,7 @@
           "waypoints": "KPASS ROBLS/ho52 TABER MCDON/a17000- FAVKO/a12000- ALDAN/a9000-12000/s250 BILLA/a9000+/s250 BLNKR/a8000+/s220 GABLR/a7000+/delete",
           "cruise_altitude": 35000,
           "star": "ALDAN4",
-          "route": "/. KPASS ALDAN4",
+          "flight_strip_route": "/. KPASS ALDAN4",
           "initial_controller": "T43",
           "initial_altitude": 27000,
           "assigned_altitude": 25000,
@@ -1451,7 +1451,7 @@
           "waypoints": "FRIKY/ho32 MCDON/a17000- FAVKO/a12000- ALDAN/a9000-12000/s250 BILLA/a9000+/s250 BLNKR/a8000+/s220 GABLR/a7000+/delete",
           "cruise_altitude": 35000,
           "star": "ALDAN4",
-          "route": "/. FRIKY ALDAN4",
+          "flight_strip_route": "/. FRIKY ALDAN4",
           "initial_controller": "52",
           "initial_altitude": 25000,
           "assigned_altitude": 25000,
@@ -1514,7 +1514,7 @@
           "waypoints": "HVQ BKW N037.40.37.399,W080.52.35.136/ho52 ROA FRIKY MCDON/a17000- FAVKO/a12000- ALDAN/a9000-12000/s250 BILLA/a9000+/s250 BLNKR/a8000+/s220 GABLR/a7000+/delete",
           "cruise_altitude": 35000,
           "star": "ALDAN4",
-          "route": "/. BKW ROA FRIKY ALDAN4",
+          "flight_strip_route": "/. BKW ROA FRIKY ALDAN4",
           "initial_controller": "I86",
           "initial_altitude": 29000,
           "initial_speed": 300,
@@ -1577,7 +1577,7 @@
           "waypoints": "MURPH Q75 HAMMZ/ho32 Q75 GVE AIROW BEMOH WRLLD BLUEJ/a27000+ BURRZ/a24000-27000/s280 SKLES/a22000+/s280 DENTT/a16000+/s270 BOOTS/a13000-23000 CHSLY/a13000-22000/s250/delete",
           "cruise_altitude": 33000,
           "star": "CHSLY9",
-          "route": "/. AIROW CHSLY9",
+          "flight_strip_route": "/. AIROW CHSLY9",
           "initial_controller": "05",
           "initial_altitude": 33000,
           "assigned_altitude": 33000,
@@ -1644,7 +1644,7 @@
           "waypoints": "ZIEBR Q108 MAULS N037.56.00.319,W078.51.00.653/ho32 GVE BOOYA BUKYY/delete",
           "cruise_altitude": 31000,
           "star": "PAATS4",
-          "route": "/. MAULS Q34 GVE PAATS",
+          "flight_strip_route": "/. MAULS Q34 GVE PAATS",
           "initial_controller": "T43",
           "initial_altitude": 31000,
           "initial_speed": 300,
@@ -1710,7 +1710,7 @@
           "waypoints": "ZIEBR Q108 DENNY/ho52 MAULS Q34 GVE BOOYA BUKYY/delete",
           "cruise_altitude": 31000,
           "star": "PAATS4",
-          "route": "/. MAULS GVE PAATS4",
+          "flight_strip_route": "/. MAULS GVE PAATS4",
           "initial_controller": "T43",
           "initial_altitude": 31000,
           "initial_speed": 300,

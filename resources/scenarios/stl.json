@@ -729,7 +729,7 @@
           "exit": "MAP",
           "destination": "KAUS",
           "altitude": 22000,
-          "route": "JAHNY6 MAP PGO BROBB WINDU SEWZY6",
+          "waypoints": "JAHNY6 MAP PGO BROBB WINDU SEWZY6",
           "airlines": [
             {
               "icao": "UAL",
@@ -745,7 +745,7 @@
           "exit": "BNA",
           "destination": "KBCT",
           "altitude": 31000,
-          "route": "DRUSE5 BNA ACORI VUUDU2",
+          "waypoints": "DRUSE5 BNA ACORI VUUDU2",
           "airlines": [
             {
               "icao": "wup",
@@ -761,7 +761,7 @@
           "exit": "ROD",
           "destination": "KBOS",
           "altitude": 31000,
-          "route": "GATWY1 ROD KLYNE Q29 JHW Q82 PONCT JFUND2",
+          "waypoints": "GATWY1 ROD KLYNE Q29 JHW Q82 PONCT JFUND2",
           "airlines": [
             {
               "icao": "DAL",
@@ -777,7 +777,7 @@
           "exit": "IIU",
           "destination": "KBWI",
           "altitude": 29000,
-          "route": "TEDDD5 IIU ZIEBR SITTR CJAAE RAVNN9",
+          "waypoints": "TEDDD5 IIU ZIEBR SITTR CJAAE RAVNN9",
           "airlines": [
             {
               "icao": "AAL",
@@ -797,7 +797,7 @@
           "exit": "DOBLR",
           "destination": "KCLE",
           "altitude": 27000,
-          "route": "JHART7 DOBLR CAROL J134 MOSEY DRUGA ROKNN4",
+          "waypoints": "JHART7 DOBLR CAROL J134 MOSEY DRUGA ROKNN4",
           "airlines": [
             {
               "icao": "SWA",
@@ -813,7 +813,7 @@
           "exit": "ROD",
           "destination": "KCMH",
           "altitude": 23000,
-          "route": "GATWY1 ROD IKALE",
+          "waypoints": "GATWY1 ROD IKALE",
           "airlines": [
             {
               "icao": "SWA",
@@ -833,7 +833,7 @@
           "exit": "IIU",
           "destination": "KCLE",
           "altitude": 29000,
-          "route": "TEDDD5 IIU Q108 SITTR TRUPS6",
+          "waypoints": "TEDDD5 IIU Q108 SITTR TRUPS6",
           "airlines": [
             {
               "icao": "SWA",
@@ -853,7 +853,7 @@
           "exit": "MAP",
           "destination": "KDFW",
           "altitude": 26000,
-          "route": "JAHNY6 MAP RZC FSM RRNET SEEVR4",
+          "waypoints": "JAHNY6 MAP RZC FSM RRNET SEEVR4",
           "airlines": [
             {
               "icao": "SWA",
@@ -873,7 +873,7 @@
           "exit": "BNA",
           "destination": "KFLL",
           "altitude": 31000,
-          "route": "DRUSE5 BNA ACORI TEEKY4",
+          "waypoints": "DRUSE5 BNA ACORI TEEKY4",
           "airlines": [
             {
               "icao": "FFT",
@@ -893,7 +893,7 @@
           "exit": "MYERZ",
           "destination": "KFMY",
           "altitude": 31000,
-          "route": "CHUUC6 MYERZ VLKNN GOONS BULZI Q81 NICKI PLYER TYNEE4",
+          "waypoints": "CHUUC6 MYERZ VLKNN GOONS BULZI Q81 NICKI PLYER TYNEE4",
           "airlines": [
             {
               "icao": "VTE",
@@ -913,7 +913,7 @@
           "exit": "LITTR",
           "destination": "KHOU",
           "altitude": 26000,
-          "route": "BERYY6 LITTR Q33 SWEUP WAPPL7",
+          "waypoints": "BERYY6 LITTR Q33 SWEUP WAPPL7",
           "airlines": [
             {
               "icao": "SWA",
@@ -933,7 +933,7 @@
           "exit": "IIU",
           "destination": "KIAD",
           "altitude": 31000,
-          "route": "TEDDD5 IIU Q108 SITTR GIBBZ6",
+          "waypoints": "TEDDD5 IIU Q108 SITTR GIBBZ6",
           "airlines": [
             {
               "icao": "UAL",
@@ -949,7 +949,7 @@
           "exit": "LITTR",
           "destination": "KIAH",
           "altitude": 28000,
-          "route": "BERYY6 LITTR Q33 SWEUP GESNR2",
+          "waypoints": "BERYY6 LITTR Q33 SWEUP GESNR2",
           "airlines": [
             {
               "icao": "UAL",
@@ -965,7 +965,7 @@
           "exit": "ROD",
           "destination": "KIND",
           "altitude": 23000,
-          "route": "GATWY1 ROD WIDAM SMUKE3",
+          "waypoints": "GATWY1 ROD WIDAM SMUKE3",
           "airlines": [
             {
               "icao": "FDX",
@@ -981,7 +981,7 @@
           "exit": "ROD",
           "destination": "KLGA",
           "altitude": 29000,
-          "route": "GATWY1 ROD KLYNE Q29 WWSHR TEESY Q186 WEVEL ETG MIP4",
+          "waypoints": "GATWY1 ROD KLYNE Q29 WWSHR TEESY Q186 WEVEL ETG MIP4",
           "airlines": [
             {
               "icao": "DAL",
@@ -1005,7 +1005,7 @@
           "exit": "MCM",
           "destination": "KMCI",
           "altitude": 23000,
-          "route": "WHRLI7 MCM EUING RUDDH3",
+          "waypoints": "WHRLI7 MCM EUING RUDDH3",
           "airlines": [
             {
               "icao": "SWA",
@@ -1021,7 +1021,7 @@
           "exit": "BNA",
           "destination": "KMCO",
           "altitude": 29000,
-          "route": "DRUSE5 BNA THRSR ZJAYX GRNCH5",
+          "waypoints": "DRUSE5 BNA THRSR ZJAYX GRNCH5",
           "airlines": [
             {
               "icao": "SWA",
@@ -1037,7 +1037,7 @@
           "exit": "SPI",
           "destination": "KMDW",
           "altitude": 25000,
-          "route": "NATCA5 SPI PHEEB ENDEE8",
+          "waypoints": "NATCA5 SPI PHEEB ENDEE8",
           "airlines": [
             {
               "icao": "SWA",
@@ -1049,7 +1049,7 @@
           "exit": "BNA",
           "destination": "KMIA",
           "altitude": 29000,
-          "route": "DRUSE5 BNA ACORI FROGZ5",
+          "waypoints": "DRUSE5 BNA ACORI FROGZ5",
           "airlines": [
             {
               "icao": "ENY",
@@ -1069,7 +1069,7 @@
           "exit": "MCM",
           "destination": "KMKC",
           "altitude": 24000,
-          "route": "WHRLI7 MCM BQS BQS8",
+          "waypoints": "WHRLI7 MCM BQS BQS8",
           "airlines": [
             {
               "icao": "EJA",
@@ -1081,7 +1081,7 @@
           "exit": "LEBOY",
           "destination": "KORD",
           "altitude": 23000,
-          "route": "KSHEE5 LEBOY CASHN SHAIN2",
+          "waypoints": "KSHEE5 LEBOY CASHN SHAIN2",
           "airlines": [
             {
               "icao": "GJS",
@@ -1113,7 +1113,7 @@
           "exit": "BNA",
           "destination": "KORL",
           "altitude": 29000,
-          "route": "DRUSE5 BNA LGC WYATT MJKAL JAFAR3",
+          "waypoints": "DRUSE5 BNA LGC WYATT MJKAL JAFAR3",
           "airlines": [
             {
               "icao": "EJA",
@@ -1129,7 +1129,7 @@
           "exit": "BNA",
           "destination": "KDJT",
           "altitude": 31000,
-          "route": "DRUSE5 BNA ACORI VUUDU2",
+          "waypoints": "DRUSE5 BNA ACORI VUUDU2",
           "airlines": [
             {
               "icao": "HPJ",
@@ -1169,7 +1169,7 @@
           "exit": "MYERZ",
           "destination": "KTPA",
           "altitude": 31000,
-          "route": "CHUUC6 MYERZ MEMFS DEFUN MAATY6",
+          "waypoints": "CHUUC6 MYERZ MEMFS DEFUN MAATY6",
           "airlines": [
             {
               "icao": "SWA",
@@ -1185,7 +1185,7 @@
           "exit": "HLV",
           "destination": "KLAS",
           "altitude": 26000,
-          "route": "BRAKK5 HLV V4 SLN V244 HVE V8 MMM V394 LAS",
+          "waypoints": "BRAKK5 HLV V4 SLN V244 HVE V8 MMM V394 LAS",
           "airlines": [
             {
               "icao": "FFT",
@@ -1201,7 +1201,7 @@
           "exit": "BIB",
           "destination": "KOSU",
           "altitude": 19000,
-          "route": "GATWY1 BIB V12 SHB",
+          "waypoints": "GATWY1 BIB V12 SHB",
           "airlines": [
             {
               "icao": "SKU",
@@ -1217,7 +1217,7 @@
           "exit": "IIU",
           "destination": "KRDU",
           "altitude": 27000,
-          "route": "TEDDD5 IIU V310 CHAPL",
+          "waypoints": "TEDDD5 IIU V310 CHAPL",
           "airlines": [
             {
               "icao": "SWA",
@@ -1229,7 +1229,7 @@
           "exit": "HLV",
           "destination": "KBUR",
           "altitude": 29000,
-          "route": "BRAKK5 HLV V4 SLN V244 LAA V210 HEC V442 APLES V210 PIRRO V186 DARTS",
+          "waypoints": "BRAKK5 HLV V4 SLN V244 LAA V210 HEC V442 APLES V210 PIRRO V186 DARTS",
           "airlines": [
             {
               "icao": "EJA",
@@ -1257,7 +1257,7 @@
           "exit": "HLV",
           "destination": "KPHX",
           "altitude": 22000,
-          "route": "BRAKK5 HLV V4 MCI V502 EMP  EMP V502 HUT V280 MMB V190 PXR",
+          "waypoints": "BRAKK5 HLV V4 MCI V502 EMP  EMP V502 HUT V280 MMB V190 PXR",
           "airlines": [
             {
               "icao": "SWA",
@@ -1273,7 +1273,7 @@
           "exit": "SEXTN",
           "destination": "KMKE",
           "altitude": 21000,
-          "route": "KSHEE5 SEXTN PIA BOJAK V191 WIPED",
+          "waypoints": "KSHEE5 SEXTN PIA BOJAK V191 WIPED",
           "airlines": [
             {
               "icao": "SWA",
@@ -1570,7 +1570,7 @@
           "exit": "STL",
           "destination": "KSTP",
           "altitude": 22000,
-          "route": "STL V580 BRL V67 CID V503 RST V161 FGT",
+          "waypoints": "STL V580 BRL V67 CID V503 RST V161 FGT",
           "airlines": [
             {
               "icao": "PTI",
@@ -1587,7 +1587,7 @@
           "exit": "STL",
           "destination": "KFCM",
           "altitude": 22000,
-          "route": " STL V580 BRL V67 CID V503 RST V161 FGT",
+          "waypoints": " STL V580 BRL V67 CID V503 RST V161 FGT",
           "airlines": [
             {
               "icao": "EJA",
@@ -1603,7 +1603,7 @@
           "exit": "ARG",
           "destination": "KOLV",
           "altitude": 21000,
-          "route": "LINDY9 ARG V159 KUMGE",
+          "waypoints": "LINDY9 ARG V159 KUMGE",
           "airlines": [
             {
               "icao": "EJA",
@@ -1619,7 +1619,7 @@
           "exit": "HLV",
           "destination": "KCOU",
           "altitude": 14000,
-          "route": "HLV",
+          "waypoints": "HLV",
           "airlines": [
             {
               "icao": "WUP",
@@ -1639,7 +1639,7 @@
           "exit": "VIH",
           "destination": "KSAT",
           "altitude": 22000,
-          "route": "LINDY9 VIH V289 FSM V13 PGO V315 PRX V278 BYP V15 ACT V17 SHEPE",
+          "waypoints": "LINDY9 VIH V289 FSM V13 PGO V315 PRX V278 BYP V15 ACT V17 SHEPE",
           "airlines": [
             {
               "icao": "EJA",
@@ -1651,7 +1651,7 @@
           "exit": "VIH",
           "destination": "KJKA",
           "altitude": 23000,
-          "route": "LINDY9 VIH V289 FSM V13 PGO V315 PRX V278 BYP V15 ACT V17 SHEPE",
+          "waypoints": "LINDY9 VIH V289 FSM V13 PGO V315 PRX V278 BYP V15 ACT V17 SHEPE",
           "airlines": [
             {
               "icao": "PTI",
@@ -1671,7 +1671,7 @@
           "exit": "VHP",
           "destination": "KMWO",
           "altitude": 18000,
-          "route": "VHP V50 MOTTS",
+          "waypoints": "VHP V50 MOTTS",
           "airlines": [
             {
               "icao": "WUP",
@@ -1687,7 +1687,7 @@
           "exit": "HLV",
           "destination": "KCYS",
           "altitude": 18000,
-          "route": "HLV GLD V132 HAMER",
+          "waypoints": "HLV GLD V132 HAMER",
           "airlines": [
             {
               "icao": "WUP",
@@ -1699,7 +1699,7 @@
           "exit": "HLV",
           "destination": "KMCI",
           "altitude": 18000,
-          "route": "OZARK8 HLV V4 LYMES",
+          "waypoints": "OZARK8 HLV V4 LYMES",
           "airlines": [
             {
               "icao": "LXJ",
@@ -1715,7 +1715,7 @@
           "exit": "HLV",
           "destination": "KOMA",
           "altitude": 16000,
-          "route": "OZARK8 HLV LMN MARWI4",
+          "waypoints": "OZARK8 HLV LMN MARWI4",
           "airlines": [
             {
               "icao": "PTI",
@@ -1731,7 +1731,7 @@
           "exit": "HLV",
           "destination": "KTOP",
           "altitude": 14000,
-          "route": "OZARK8 HLV LMN MARWI4",
+          "waypoints": "OZARK8 HLV LMN MARWI4",
           "airlines": [
             {
               "icao": "EJA",
@@ -1751,7 +1751,7 @@
           "exit": "VIH",
           "destination": "KCDS",
           "altitude": 16000,
-          "route": "VIH V88 TUL V14 JAMMZ",
+          "waypoints": "VIH V88 TUL V14 JAMMZ",
           "airlines": [
             {
               "icao": "EJA",
@@ -2161,7 +2161,7 @@
           "exit": "JIGSY",
           "destination": "KMDW",
           "altitude": 18000,
-          "route": "GATWY1 JIGSY PHEEB ENDEE8",
+          "waypoints": "GATWY1 JIGSY PHEEB ENDEE8",
           "airlines": [
             {
               "icao": "EJA",
@@ -2177,7 +2177,7 @@
           "exit": "STL",
           "destination": "KORD",
           "altitude": 18000,
-          "route": "STL PHEEB ENDEE8",
+          "waypoints": "STL PHEEB ENDEE8",
           "airlines": [
             {
               "icao": "EJA",
@@ -2193,7 +2193,7 @@
           "exit": "ARG",
           "destination": "KAEX",
           "altitude": 19000,
-          "route": "LINDY9 ARG V305 ELD V407 EMG V94 LUCEN V566 COVEX",
+          "waypoints": "LINDY9 ARG V305 ELD V407 EMG V94 LUCEN V566 COVEX",
           "airlines": [
             {
               "icao": "N",
@@ -2209,7 +2209,7 @@
           "exit": "HLV",
           "destination": "KFNB",
           "altitude": 15000,
-          "route": "HLV V4 LYMES V159 STJ",
+          "waypoints": "HLV V4 LYMES V159 STJ",
           "airlines": [
             {
               "icao": "N",
@@ -2225,7 +2225,7 @@
           "exit": "BNA",
           "destination": "KCVC",
           "altitude": 18000,
-          "route": "BNA HCH V311 AWSON",
+          "waypoints": "BNA HCH V311 AWSON",
           "airlines": [
             {
               "icao": "EJA",
@@ -2241,7 +2241,7 @@
           "exit": "BNA",
           "destination": "KALX",
           "altitude": 18000,
-          "route": "BNA MARZZ T439 WALTY",
+          "waypoints": "BNA MARZZ T439 WALTY",
           "airlines": [
             {
               "icao": "EJA",
@@ -2257,7 +2257,7 @@
           "exit": "HLV",
           "destination": "KFSD",
           "altitude": 19000,
-          "route": "HLV T397 DSM T465 IOWWA",
+          "waypoints": "HLV T397 DSM T465 IOWWA",
           "airlines": [
             {
               "icao": "EJA",
@@ -2548,7 +2548,7 @@
           "exit": "HLV",
           "destination": "KSZL",
           "altitude": 17000,
-          "route": "HLV YOJCO",
+          "waypoints": "HLV YOJCO",
           "airlines": [
             {
               "icao": "N",
@@ -2560,7 +2560,7 @@
           "exit": "BIB",
           "destination": "KHLB",
           "altitude": 16000,
-          "route": "BIB V12 SHB",
+          "waypoints": "BIB V12 SHB",
           "airlines": [
             {
               "icao": "N",
@@ -2572,7 +2572,7 @@
           "exit": "HLV",
           "destination": "KRDK",
           "altitude": 17000,
-          "route": "HLV T397 LEWRP IRK V181 CETUB",
+          "waypoints": "HLV T397 LEWRP IRK V181 CETUB",
           "airlines": [
             {
               "icao": "N",
@@ -2584,7 +2584,7 @@
           "exit": "HLV",
           "destination": "KMKC",
           "altitude": 15000,
-          "route": "HLV V4 MCI",
+          "waypoints": "HLV V4 MCI",
           "airlines": [
             {
               "icao": "N",
@@ -2596,7 +2596,7 @@
           "exit": "DENNI",
           "destination": "KHOP",
           "altitude": 12000,
-          "route": "DENNI T354 MESSR",
+          "waypoints": "DENNI T354 MESSR",
           "airlines": [
             {
               "icao": "N",
@@ -2608,7 +2608,7 @@
           "exit": "VIH",
           "destination": "KAMA",
           "altitude": 15000,
-          "route": "VIH V88 TUL T422 PNH",
+          "waypoints": "VIH V88 TUL T422 PNH",
           "airlines": [
             {
               "icao": "N",
@@ -2925,7 +2925,7 @@
           "exit": "BNA",
           "destination": "KFLL",
           "altitude": 24000,
-          "route": "BNA HITMN T439 LEACH  FEWER V325 GAD V321 PZD PCANN T489 CCITY PIE FORTL9",
+          "waypoints": "BNA HITMN T439 LEACH  FEWER V325 GAD V321 PZD PCANN T489 CCITY PIE FORTL9",
           "airlines": [
             {
               "icao": "AAY",
@@ -2937,7 +2937,7 @@
           "exit": "BNA",
           "destination": "KPIE",
           "altitude": 24000,
-          "route": "BNA HITMN T439 LEACH FEWER V325 GAD V321 PZD PCANN T489 CCITY PIE",
+          "waypoints": "BNA HITMN T439 LEACH FEWER V325 GAD V321 PZD PCANN T489 CCITY PIE",
           "airlines": [
             {
               "icao": "AAY",
@@ -2949,7 +2949,7 @@
           "exit": "HLV",
           "destination": "KLAS",
           "altitude": 25000,
-          "route": "HLV V4 SLN V244 HVE",
+          "waypoints": "HLV V4 SLN V244 HVE",
           "airlines": [
             {
               "icao": "AAY",
@@ -2961,7 +2961,7 @@
           "exit": "BIB",
           "destination": "KDAY",
           "altitude": 18000,
-          "route": "BIB V12 SHB",
+          "waypoints": "BIB V12 SHB",
           "airlines": [
             {
               "icao": "EJA",
@@ -2977,7 +2977,7 @@
           "exit": "LIT",
           "destination": "KSAT",
           "altitude": 26000,
-          "route": "LIT V54 TXK V289 GGG V94 CQY V15 ACT V17 CWK",
+          "waypoints": "LIT V54 TXK V289 GGG V94 CQY V15 ACT V17 CWK",
           "airlines": [
             {
               "icao": "AAY",
@@ -2989,7 +2989,7 @@
           "exit": "HLV",
           "destination": "KSLN",
           "altitude": 14000,
-          "route": "HLV V4 TOP",
+          "waypoints": "HLV V4 TOP",
           "airlines": [
             {
               "icao": "N",
@@ -3001,7 +3001,7 @@
           "exit": "BNA",
           "destination": "KPGD",
           "altitude": 19000,
-          "route": "BNA HITMN T439 LEACH FEWER V325 GAD V321 PZD PCANN T489 CCITY PIE",
+          "waypoints": "BNA HITMN T439 LEACH FEWER V325 GAD V321 PZD PCANN T489 CCITY PIE",
           "airlines": [
             {
               "icao": "N",
@@ -3013,7 +3013,7 @@
           "exit": "BNA",
           "destination": "KVPS",
           "altitude": 22000,
-          "route": "BNA HITMN T439 LEACH T439 PIGON CEW",
+          "waypoints": "BNA HITMN T439 LEACH T439 PIGON CEW",
           "airlines": [
             {
               "icao": "N",
@@ -3025,7 +3025,7 @@
           "exit": "BIB",
           "destination": "KADW",
           "altitude": 28000,
-          "route": "BIB V12 OZMOE T315 JARLO HVQ V4 ESL V166 MRB V8 DCA",
+          "waypoints": "BIB V12 OZMOE T315 JARLO HVQ V4 ESL V166 MRB V8 DCA",
           "airlines": [
             {
               "icao": "DECOY",

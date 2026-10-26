@@ -154,7 +154,7 @@
           ],
           "altitude": 33000,
           "destination": "KDEN",
-          "route": "MISHN5 NNAVY",
+          "waypoints": "MISHN5 NNAVY",
           "exit": "NNAVY"
         },
         {
@@ -169,7 +169,7 @@
           ],
           "altitude": 11000,
           "destination": "KDEN",
-          "route": "MISHN5 NNAVY",
+          "waypoints": "MISHN5 NNAVY",
           "exit": "NNAVY"
         },
         {
@@ -184,7 +184,7 @@
           ],
           "altitude": 20000,
           "destination": "KSFO",
-          "route": "SPLNT SPLNT STOKD SERFR SERFR4",
+          "waypoints": "SPLNT SPLNT STOKD SERFR SERFR4",
           "exit": "SPLNT"
         },
         {
@@ -195,7 +195,7 @@
           ],
           "altitude": 24000,
           "destination": "KSEA",
-          "route": "SPLNT STOKD SERFR SERFR4",
+          "waypoints": "SPLNT STOKD SERFR SERFR4",
           "exit": "SPLNT"
         },
         {
@@ -206,7 +206,7 @@
           ],
           "altitude": 23000,
           "destination": "KPHX",
-          "route": "BOILE",
+          "waypoints": "BOILE",
           "exit": "BOILE"
         },
         {
@@ -217,7 +217,7 @@
           ],
           "altitude": 23000,
           "destination": "KSFO",
-          "route": "MQO CLMNS LIBBO NRRLI SERFR",
+          "waypoints": "MQO CLMNS LIBBO NRRLI SERFR",
           "exit": "MQO"
         }
       ],
@@ -294,7 +294,7 @@
           ],
           "altitude": 33000,
           "destination": "KDEN",
-          "route": "PRB CABAB KROST BUMMP SSKII3",
+          "waypoints": "PRB CABAB KROST BUMMP SSKII3",
           "exit": "PRB"
         },
         {
@@ -305,7 +305,7 @@
           ],
           "altitude": 22000,
           "destination": "KSFO",
-          "route": "MQO CLMNS LIBBO NRRLI SERFR4",
+          "waypoints": "MQO CLMNS LIBBO NRRLI SERFR4",
           "exit": "MQO"
         },
         {
@@ -316,7 +316,7 @@
           ],
           "altitude": 36000,
           "destination": "KSEA",
-          "route": "MQO CLMNS LIBBO RBL LMT HAWKZ8",
+          "waypoints": "MQO CLMNS LIBBO RBL LMT HAWKZ8",
           "exit": "MQO"
         },
         {
@@ -327,7 +327,7 @@
           ],
           "altitude": 3000,
           "destination": "KSMX",
-          "route": "WINCH",
+          "waypoints": "WINCH",
           "exit": "WINCH"
         }
       ],
@@ -421,7 +421,7 @@
           ],
           "altitude": 13000,
           "destination": "KBUR",
-          "route": "RZS FIM",
+          "waypoints": "RZS FIM",
           "exit": "RZS"
         },
         {
@@ -433,7 +433,7 @@
           ],
           "altitude": 12000,
           "destination": "KMRY",
-          "route": "MQO PRB WIGGL",
+          "waypoints": "MQO PRB WIGGL",
           "exit": "MQO"
         },
         {
@@ -445,7 +445,7 @@
           ],
           "altitude": 26000,
           "destination": "KWVI",
-          "route": "MQO PRB WIGGL",
+          "waypoints": "MQO PRB WIGGL",
           "exit": "MQO"
         },
         {
@@ -456,7 +456,7 @@
           ],
           "altitude": 9000,
           "destination": "KONT",
-          "route": "RZS CMA VNY V186 ITSME PDZ",
+          "waypoints": "RZS CMA VNY V186 ITSME PDZ",
           "exit": "RZS"
         }
       ],
@@ -515,7 +515,7 @@
     "NORTHWEST SBA ARR": {
       "arrivals": [
         {
-          "route": "/. NORTHWEST SBA ARR",
+          "flight_strip_route": "/. NORTHWEST SBA ARR",
           "waypoints": "YYUNG N034.51.59.265,W120.25.25.506/ho GVO HABUT",
           "cruise_altitude": 31000,
           "initial_controller": "C25",
@@ -547,7 +547,7 @@
     "NORTH SBA ARR": {
       "arrivals": [
         {
-          "route": "/. NORTH SBA ARR",
+          "flight_strip_route": "/. NORTH SBA ARR",
           "waypoints": "AVE N035.00.49.287,W120.02.32.682/ho GVO HABUT",
           "cruise_altitude": 37000,
           "initial_controller": "C25",
@@ -582,7 +582,7 @@
     "NORTH SBP ARR": {
       "arrivals": [
         {
-          "route": "/. NORTH SBP ARR",
+          "flight_strip_route": "/. NORTH SBP ARR",
           "waypoints": "N035.49.47.855,W120.37.41.398 PRB/ho CREPE",
           "cruise_altitude": 34000,
           "initial_controller": "O10",
@@ -609,7 +609,7 @@
     "SOUTH SBP ARR": {
       "arrivals": [
         {
-          "route": "/. SOUTH SBP ARR",
+          "flight_strip_route": "/. SOUTH SBP ARR",
           "waypoints": "CNDOR/ho CADAB",
           "cruise_altitude": 36000,
           "initial_controller": "C14",
@@ -636,7 +636,7 @@
     "NORTHWEST SBP ARR": {
       "arrivals": [
         {
-          "route": "/. NORTHWEST SBP ARR",
+          "flight_strip_route": "/. NORTHWEST SBP ARR",
           "waypoints": "N035.45.06.111,W121.26.18.186 N035.34.38.201,W121.09.53.536/ho YYUNG MQO",
           "cruise_altitude": 27000,
           "initial_controller": "O10",
@@ -664,7 +664,7 @@
     "EAST SBP ARR": {
       "arrivals": [
         {
-          "route": "/. EAST SBP ARR",
+          "flight_strip_route": "/. EAST SBP ARR",
           "waypoints": "N035.51.11.955,W120.24.37.276 PRB/ho CREPE",
           "cruise_altitude": 36000,
           "initial_controller": "O10",
@@ -688,7 +688,7 @@
     "EAST SMX ARR": {
       "arrivals": [
         {
-          "route": "/. EAST SMX ARR",
+          "flight_strip_route": "/. EAST SMX ARR",
           "waypoints": "N034.33.51.591,W118.59.27.425 N034.32.32.050,W119.19.13.179/ho RZS",
           "cruise_altitude": 16000,
           "initial_controller": "C14",
@@ -716,7 +716,7 @@
     "NORTH SMX ARR": {
       "arrivals": [
         {
-          "route": "/. NORTH SMX ARR",
+          "flight_strip_route": "/. NORTH SMX ARR",
           "waypoints": "N035.45.32.244,W121.08.04.661 N035.35.29.177,W121.00.40.457/ho MQO",
           "cruise_altitude": 20000,
           "initial_controller": "O10",

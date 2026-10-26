@@ -120,7 +120,7 @@
           "exit": "EWC",
           "destination": "KBOS",
           "altitude": 37000,
-          "route": "EWC WOMBT PIGGZ PONCT JFUND2",
+          "waypoints": "EWC WOMBT PIGGZ PONCT JFUND2",
           "airlines": [
             {
               "icao": "JBU",
@@ -136,7 +136,7 @@
           "exit": "CKB",
           "destination": "KMCO",
           "altitude": 38000,
-          "route": "CKB COBBE DANCO Q103 SLOJO Q83 ROYCO Q85 LPERD GTOUT1",
+          "waypoints": "CKB COBBE DANCO Q103 SLOJO Q83 ROYCO Q85 LPERD GTOUT1",
           "airlines": [
             {
               "icao": "NKS",
@@ -156,7 +156,7 @@
           "exit": "BSV",
           "destination": "KSFO",
           "altitude": 34000,
-          "route": "BSV BBARB CRL GRB GEP J70 ABR J32 BAM J32 LLC LEGGS BDEGA3",
+          "waypoints": "BSV BBARB CRL GRB GEP J70 ABR J32 BAM J32 LLC LEGGS BDEGA3",
           "airlines": [
             {
               "icao": "UAL",
@@ -168,7 +168,7 @@
           "exit": "DILNE",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "DILNE TVTRN CVG PXV KM39I FSM KOMMA RRNET SEEVR4",
+          "waypoints": "DILNE TVTRN CVG PXV KM39I FSM KOMMA RRNET SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -180,7 +180,7 @@
           "exit": "DILNE",
           "destination": "KAFW",
           "altitude": 38000,
-          "route": "DILNE TVTRN APE PXV DYR LIT PONYY TRUUK2",
+          "waypoints": "DILNE TVTRN APE PXV DYR LIT PONYY TRUUK2",
           "airlines": [
             {
               "icao": "SCX",
@@ -192,7 +192,7 @@
           "exit": "AIR",
           "destination": "KLAS",
           "altitude": 34000,
-          "route": "AIR OOM FAM ICT J28 PUB DVC TYEGR CHOWW2",
+          "waypoints": "AIR OOM FAM ICT J28 PUB DVC TYEGR CHOWW2",
           "airlines": [
             {
               "icao": "NKS",
@@ -208,7 +208,7 @@
           "exit": "CKB",
           "destination": "MMUN",
           "altitude": 34000,
-          "route": "CKB COBBE DANCO SLOJO Q75 SHRIL Q75 ENEME KNOST M215 PISAD UM215 NUDIS UT38 LEVAT UM782 VOMAR",
+          "waypoints": "CKB COBBE DANCO SLOJO Q75 SHRIL Q75 ENEME KNOST M215 PISAD UM215 NUDIS UT38 LEVAT UM782 VOMAR",
           "airlines": [
             {
               "icao": "AAY",
@@ -224,7 +224,7 @@
           "exit": "MGW",
           "destination": "MDPC",
           "altitude": 33000,
-          "route": "MGW BUCKO RDU GARIC CLOWR JAINS L451 LETON L451 IORIO POKEG DCY W28 PNA",
+          "waypoints": "MGW BUCKO RDU GARIC CLOWR JAINS L451 LETON L451 IORIO POKEG DCY W28 PNA",
           "airlines": [
             {
               "icao": "AAY",
@@ -236,7 +236,7 @@
           "exit": "CKB",
           "destination": "KMYR",
           "altitude": 37000,
-          "route": "CKB ROA SBV RDU",
+          "waypoints": "CKB ROA SBV RDU",
           "airlines": [
             {
               "icao": "NKS",
@@ -248,7 +248,7 @@
           "exit": "PARKE",
           "destination": "KADS",
           "altitude": 43000,
-          "route": "PARKE J6 HVQ Q68 LITTR DIRRK SLANT3",
+          "waypoints": "PARKE J6 HVQ Q68 LITTR DIRRK SLANT3",
           "airlines": [
             {
               "icao": "LXJ",
@@ -260,7 +260,7 @@
           "exit": "CKB",
           "destination": "KMYR",
           "altitude": 36000,
-          "route": "CKB ROA SBV RDU ILM WYLMS",
+          "waypoints": "CKB ROA SBV RDU ILM WYLMS",
           "airlines": [
             {
               "icao": "AAY",
@@ -272,7 +272,7 @@
           "exit": "TYROO",
           "destination": "KLGA",
           "altitude": 23000,
-          "route": "TYROO PSB MIP4",
+          "waypoints": "TYROO PSB MIP4",
           "airlines": [
             {
               "icao": "AAL",
@@ -284,7 +284,7 @@
           "exit": "HAR",
           "destination": "KLNS",
           "altitude": 9000,
-          "route": "HAR",
+          "waypoints": "HAR",
           "airlines": [
             {
               "icao": "FDY",
@@ -296,7 +296,7 @@
           "exit": "JST",
           "destination": "KPHL",
           "altitude": 21000,
-          "route": "JST BOJID4",
+          "waypoints": "JST BOJID4",
           "airlines": [
             {
               "icao": "AAL",
@@ -308,7 +308,7 @@
           "exit": "EWC",
           "destination": "KBOS",
           "altitude": 29000,
-          "route": "EWC WOMBT PIGGZ PONCT JFUND2",
+          "waypoints": "EWC WOMBT PIGGZ PONCT JFUND2",
           "airlines": [
             {
               "icao": "JBU",
@@ -320,7 +320,7 @@
           "exit": "CKB",
           "destination": "KFLL",
           "altitude": 36000,
-          "route": "CKB COBBE DANCO Q103 SLOJO Q83 EFFAY Q83 JEVED Q97 PRMUS CUUDA3",
+          "waypoints": "CKB COBBE DANCO Q103 SLOJO Q83 EFFAY Q83 JEVED Q97 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "SWA",
@@ -332,7 +332,7 @@
           "exit": "CKB",
           "destination": "KMCO",
           "altitude": 32000,
-          "route": "CKB COBBE DANCO Q103 SLOJO Q83 ROYCO Q85 LPERD GTOUT1",
+          "waypoints": "CKB COBBE DANCO Q103 SLOJO Q83 ROYCO Q85 LPERD GTOUT1",
           "airlines": [
             {
               "icao": "SWA",
@@ -344,7 +344,7 @@
           "exit": "AHTIY",
           "destination": "KATL",
           "altitude": 34000,
-          "route": "AHTIY BURGS RANDE HVQ HLRRY ONDRE1",
+          "waypoints": "AHTIY BURGS RANDE HVQ HLRRY ONDRE1",
           "airlines": [
             {
               "icao": "DAL",
@@ -356,7 +356,7 @@
           "exit": "EWC",
           "destination": "KJFK",
           "altitude": 29000,
-          "route": "EWC ZORBO BFD HOXIE J70 LVZ LENDY8",
+          "waypoints": "EWC ZORBO BFD HOXIE J70 LVZ LENDY8",
           "airlines": [
             {
               "icao": "EDV",
@@ -368,7 +368,7 @@
           "exit": "EWC",
           "destination": "CYYZ",
           "altitude": 27000,
-          "route": "EWC OXMAN LINNG3",
+          "waypoints": "EWC OXMAN LINNG3",
           "airlines": [
             {
               "icao": "JZA",
@@ -380,7 +380,7 @@
           "exit": "EWC",
           "destination": "KBFD",
           "altitude": 8000,
-          "route": "EWC PEREA ",
+          "waypoints": "EWC PEREA ",
           "airlines": [
             {
               "icao": "FDY",
@@ -392,7 +392,7 @@
           "exit": "EWC",
           "destination": "KDUJ",
           "altitude": 11000,
-          "route": "EWC EEYES ",
+          "waypoints": "EWC EEYES ",
           "airlines": [
             {
               "icao": "FDY",
@@ -404,7 +404,7 @@
           "exit": "DILNE",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "DILNE TVTRN FLM RAMRD Q68 LITTR MEEOW FEWWW SEEVR4",
+          "waypoints": "DILNE TVTRN FLM RAMRD Q68 LITTR MEEOW FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -461,7 +461,7 @@
           "exit": "BSV",
           "destination": "KORD",
           "altitude": 41000,
-          "route": "BSV WEEVR Q62 WATSN WATSN4",
+          "waypoints": "BSV WEEVR Q62 WATSN WATSN4",
           "airlines": [
             {
               "icao": "EJA",
@@ -473,7 +473,7 @@
           "exit": "AHTIY",
           "destination": "KBNA",
           "altitude": 41000,
-          "route": "AHTIY BURGS JAYKB ENGRA GROAT PASLY4",
+          "waypoints": "AHTIY BURGS JAYKB ENGRA GROAT PASLY4",
           "airlines": [
             {
               "icao": "EJA",
@@ -485,7 +485,7 @@
           "exit": "DILNE",
           "destination": "KCMH",
           "altitude": 29000,
-          "route": "DILNE TVTRN ",
+          "waypoints": "DILNE TVTRN ",
           "airlines": [
             {
               "icao": "N",
@@ -497,7 +497,7 @@
           "exit": "TYROO",
           "destination": "KPWM",
           "altitude": 41000,
-          "route": "TYROO PSB CAM CDOGG4",
+          "waypoints": "TYROO PSB CAM CDOGG4",
           "airlines": [
             {
               "icao": "N",
@@ -509,7 +509,7 @@
           "exit": "CKB",
           "destination": "KGSO",
           "altitude": 20000,
-          "route": "CKB ROA  HENBY3",
+          "waypoints": "CKB ROA  HENBY3",
           "airlines": [
             {
               "icao": "N",
@@ -521,7 +521,7 @@
           "exit": "PSB",
           "destination": "KTEB",
           "altitude": 27000,
-          "route": "PSB MAGIO LVZ LVZ4",
+          "waypoints": "PSB MAGIO LVZ LVZ4",
           "airlines": [
             {
               "icao": "N",
@@ -757,7 +757,7 @@
         {
           "waypoints": "ETG/ho HOMEE",
           "cruise_altitude": 18000,
-          "route": "ETG HOMEE",
+          "flight_strip_route": "ETG HOMEE",
           "initial_controller": "C55",
           "initial_altitude": 18000,
           "assigned_altitude": 15000,
@@ -831,7 +831,7 @@
         {
           "waypoints": "LEJOY/ho NESTO",
           "cruise_altitude": 18000,
-          "route": "LEJOY NESTO",
+          "flight_strip_route": "LEJOY NESTO",
           "initial_controller": "C55",
           "initial_altitude": 18000,
           "assigned_altitude": 15000,
@@ -862,7 +862,7 @@
         {
           "waypoints": "AIR/ho WISKE",
           "cruise_altitude": 27000,
-          "route": "/. AIR WISKE",
+          "flight_strip_route": "/. AIR WISKE",
           "initial_controller": "C55",
           "initial_altitude": 17000,
           "assigned_altitude": 15000,

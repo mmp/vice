@@ -42,7 +42,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KTEB",
           "exit": "LAMMS",
-          "route": "LAMMS DNY"
+          "waypoints": "LAMMS DNY"
         },
         {
           "airlines": [
@@ -54,7 +54,7 @@
           "altitude": [4000, 6000, 8000, 10000],
           "destination": "KART",
           "exit": "FLOOR",
-          "route": "FLOOR ART"
+          "waypoints": "FLOOR ART"
         },
         {
           "airlines": [
@@ -66,7 +66,7 @@
           "altitude": [6000, 8000, 10000],
           "destination": "KIAG",
           "exit": "SYR",
-          "route": "SYR ROC"
+          "waypoints": "SYR ROC"
         },
         {
           "airlines": [
@@ -78,7 +78,7 @@
           "altitude": [4000, 6000, 8000, 10000],
           "destination": "KROC",
           "exit": "SYR",
-          "route": "SYR KROC"
+          "waypoints": "SYR KROC"
         },
         {
           "airlines": [
@@ -90,7 +90,7 @@
           "altitude": [6000, 8000, 10000],
           "destination": "KERI",
           "exit": "SYR",
-          "route": "SYR DKK"
+          "waypoints": "SYR DKK"
         },
         {
           "airlines": [
@@ -102,7 +102,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KEEN",
           "exit": "NORSE",
-          "route": "NORSE ALB"
+          "waypoints": "NORSE ALB"
         },
         {
           "airlines": [
@@ -114,7 +114,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KBED",
           "exit": "NORSE",
-          "route": "NORSE ALB"
+          "waypoints": "NORSE ALB"
         },
         {
           "airlines": [
@@ -126,7 +126,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KPWM",
           "exit": "ROOMS",
-          "route": "ROOMS CAM"
+          "waypoints": "ROOMS CAM"
         },
         {
           "airlines": [
@@ -138,7 +138,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KPBG",
           "exit": "BECKS",
-          "route": "BECKS SLK"
+          "waypoints": "BECKS SLK"
         },
         {
           "airlines": [
@@ -150,7 +150,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KBTV",
           "exit": "BECKS",
-          "route": "BECKS SLK"
+          "waypoints": "BECKS SLK"
         },
         {
           "airlines": [
@@ -162,7 +162,7 @@
           "altitude": [4000, 6000, 8000],
           "destination": "KELM",
           "exit": "GGT",
-          "route": "GGT KELM"
+          "waypoints": "GGT KELM"
         },
         {
           "airlines": [
@@ -174,7 +174,7 @@
           "altitude": [4000, 6000, 8000],
           "destination": "KITH",
           "exit": "GGT",
-          "route": "GGT KITH"
+          "waypoints": "GGT KITH"
         },
         {
           "airlines": [
@@ -186,7 +186,7 @@
           "altitude": [6000, 8000, 10000],
           "destination": "KAGC",
           "exit": "GGT",
-          "route": "GGT PSB"
+          "waypoints": "GGT PSB"
         },
         {
           "airlines": [
@@ -198,7 +198,7 @@
           "altitude": [30000, 34000, 38000],
           "destination": "KUGN",
           "exit": "SYR",
-          "route": "SYR BUF FNT"
+          "waypoints": "SYR BUF FNT"
         },
         {
           "airlines": [
@@ -210,7 +210,7 @@
           "altitude": [30000, 34000, 38000],
           "destination": "KPDK",
           "exit": "GGT",
-          "route": "GGT PSB"
+          "waypoints": "GGT PSB"
         }
       ],
       "exit_categories": {
@@ -373,7 +373,7 @@
           "altitude": [17000, 19000, 21000],
           "destination": "KBED",
           "exit": "NORSE",
-          "route": "NORSE ALB"
+          "waypoints": "NORSE ALB"
         },
         {
           "airlines": [
@@ -385,7 +385,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KLWM",
           "exit": "NORSE",
-          "route": "NORSE ALB"
+          "waypoints": "NORSE ALB"
         },
         {
           "airlines": [
@@ -397,7 +397,7 @@
           "altitude": [17000, 19000, 21000],
           "destination": "KBOS",
           "exit": "NORSE",
-          "route": "NORSE ALB"
+          "waypoints": "NORSE ALB"
         },
         {
           "airlines": [
@@ -409,7 +409,7 @@
           "altitude": [5000, 7000, 9000],
           "destination": "KOWD",
           "exit": "NORSE",
-          "route": "NORSE ALB"
+          "waypoints": "NORSE ALB"
         },
         {
           "airlines": [
@@ -421,7 +421,7 @@
           "altitude": [13000, 15000, 17000],
           "destination": "KHPN",
           "exit": "POMPY",
-          "route": "POMPY T391 RKA DNY"
+          "waypoints": "POMPY T391 RKA DNY"
         },
         {
           "airlines": [
@@ -433,7 +433,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KMMU",
           "exit": "POMPY",
-          "route": "POMPY T391 RKA DNY"
+          "waypoints": "POMPY T391 RKA DNY"
         },
         {
           "airlines": [
@@ -445,7 +445,7 @@
           "altitude": [13000, 15000, 17000],
           "destination": "KFOK",
           "exit": "POMPY",
-          "route": "POMPY T391 RKA DNY"
+          "waypoints": "POMPY T391 RKA DNY"
         },
         {
           "airlines": [
@@ -457,7 +457,7 @@
           "altitude": [7000, 9000, 11000],
           "destination": "KCDW",
           "exit": "POMPY",
-          "route": "POMPY T391 RKA DNY"
+          "waypoints": "POMPY T391 RKA DNY"
         },
         {
           "airlines": [
@@ -469,7 +469,7 @@
           "altitude": [30000, 34000, 38000],
           "destination": "KFCM",
           "exit": "DINES",
-          "route": "DINES BUF"
+          "waypoints": "DINES BUF"
         },
         {
           "airlines": [
@@ -481,7 +481,7 @@
           "altitude": [4000, 6000, 8000, 10000],
           "destination": "KBUF",
           "exit": "ROC",
-          "route": "ROC BUF"
+          "waypoints": "ROC BUF"
         },
         {
           "airlines": [
@@ -493,7 +493,7 @@
           "altitude": [8000, 10000],
           "destination": "KROC",
           "exit": "ROC",
-          "route": "ROC KROC"
+          "waypoints": "ROC KROC"
         },
         {
           "airlines": [
@@ -505,7 +505,7 @@
           "altitude": [4000, 6000, 8000],
           "destination": "KITH",
           "exit": "ITH",
-          "route": "ITH KITH"
+          "waypoints": "ITH KITH"
         },
         {
           "airlines": [
@@ -517,7 +517,7 @@
           "altitude": [30000, 32000, 36000, 38000],
           "destination": "KJQF",
           "exit": "PTAKI",
-          "route": "PTAKI ULW PSB"
+          "waypoints": "PTAKI ULW PSB"
         },
         {
           "airlines": [
@@ -529,7 +529,7 @@
           "altitude": [30000, 32000, 36000, 38000],
           "destination": "KROA",
           "exit": "PTAKI",
-          "route": "PTAKI ULW PSB"
+          "waypoints": "PTAKI ULW PSB"
         },
         {
           "airlines": [
@@ -540,7 +540,7 @@
           ],
           "destination": "KPIE",
           "exit": "PTAKI",
-          "route": "PTAKI ULW PSB"
+          "waypoints": "PTAKI ULW PSB"
         },
         {
           "airlines": [
@@ -551,7 +551,7 @@
           ],
           "destination": "KSFB",
           "exit": "PTAKI",
-          "route": "PTAKI ULW PSB"
+          "waypoints": "PTAKI ULW PSB"
         },
         {
           "airlines": [
@@ -562,7 +562,7 @@
           ],
           "destination": "KATL",
           "exit": "PTAKI",
-          "route": "PTAKI ULW PSB"
+          "waypoints": "PTAKI ULW PSB"
         },
         {
           "airlines": [
@@ -573,7 +573,7 @@
           ],
           "destination": "KCLT",
           "exit": "PTAKI",
-          "route": "PTAKI ULW PSB"
+          "waypoints": "PTAKI ULW PSB"
         },
         {
           "airlines": [
@@ -584,7 +584,7 @@
           ],
           "destination": "KMEM",
           "exit": "PTAKI",
-          "route": "PTAKI ULW PSB"
+          "waypoints": "PTAKI ULW PSB"
         },
         {
           "airlines": [
@@ -595,7 +595,7 @@
           ],
           "destination": "KORD",
           "exit": "DINES",
-          "route": "DINES BUF"
+          "waypoints": "DINES BUF"
         },
         {
           "airlines": [
@@ -606,7 +606,7 @@
           ],
           "destination": "KORD",
           "exit": "DINES",
-          "route": "DINES BUF"
+          "waypoints": "DINES BUF"
         },
         {
           "airlines": [
@@ -617,7 +617,7 @@
           ],
           "destination": "KSDF",
           "exit": "DINES",
-          "route": "DINES BUF"
+          "waypoints": "DINES BUF"
         },
         {
           "airlines": [
@@ -629,7 +629,7 @@
           "altitude": [24000, 26000, 28000, 30000],
           "destination": "KDTW",
           "exit": "DINES",
-          "route": "DINES BUF"
+          "waypoints": "DINES BUF"
         },
         {
           "airlines": [
@@ -641,7 +641,7 @@
           "altitude": [13000, 15000, 17000],
           "destination": "KEWR",
           "exit": "POMPY",
-          "route": "POMPY T391 RKA HNK"
+          "waypoints": "POMPY T391 RKA HNK"
         }
       ],
       "exit_categories": {
@@ -680,7 +680,7 @@
           "initial_altitude": 17000,
           "initial_controller": "C50",
           "initial_speed": 290,
-          "route": "/. PSB KRME",
+          "flight_strip_route": "/. PSB KRME",
           "waypoints": "PSB049100 PSB049130/ho PSB049140/a11000 KRME"
         }
       ]
@@ -712,7 +712,7 @@
           "initial_altitude": 17000,
           "initial_controller": "C50",
           "initial_speed": 290,
-          "route": "/. HNK KRME",
+          "flight_strip_route": "/. HNK KRME",
           "waypoints": "HNK008020 HNK008040/ho HNK008060/a11000 KRME"
         }
       ]
@@ -744,7 +744,7 @@
           "initial_altitude": 23000,
           "initial_controller": "C27",
           "initial_speed": 290,
-          "route": "/. ROC KRME",
+          "flight_strip_route": "/. ROC KRME",
           "waypoints": "ROC096020 ROC096040/ho ROC096060/a11000 KRME"
         }
       ]
@@ -776,7 +776,7 @@
           "initial_altitude": 19000,
           "initial_controller": "C23",
           "initial_speed": 290,
-          "route": "/. CTR",
+          "flight_strip_route": "/. CTR",
           "waypoints": "CTR311040 CTR311060/ho CTR311070/a11000 KRME"
         }
       ]
@@ -808,7 +808,7 @@
           "initial_altitude": 20000,
           "initial_controller": "C23",
           "initial_speed": 290,
-          "route": "/. CON KRME",
+          "flight_strip_route": "/. CON KRME",
           "waypoints": "CON287040 CON287060/ho CON287070/a11000 KRME"
         }
       ]
@@ -840,7 +840,7 @@
           "initial_altitude": 20000,
           "initial_controller": "C08",
           "initial_speed": 290,
-          "route": "/. BTV KRME",
+          "flight_strip_route": "/. BTV KRME",
           "waypoints": "BTV250040 BTV250060/ho BTV250070/a11000 KRME"
         }
       ]
@@ -882,7 +882,7 @@
           "initial_altitude": 21000,
           "initial_controller": "C27",
           "initial_speed": 290,
-          "route": "/. BUF SYR KSYR",
+          "flight_strip_route": "/. BUF SYR KSYR",
           "waypoints": "BUF092060 BUF092080/ho BUF092090/a11000 SYR KSYR"
         }
       ]
@@ -934,7 +934,7 @@
           "initial_altitude": 19000,
           "initial_controller": "C27",
           "initial_speed": 290,
-          "route": "/. DKK SYR KSYR",
+          "flight_strip_route": "/. DKK SYR KSYR",
           "waypoints": "DKK083090 DKK083100/ho DKK083110/a11000 SYR KSYR"
         }
       ]
@@ -996,7 +996,7 @@
           "initial_altitude": 21000,
           "initial_controller": "C27",
           "initial_speed": 290,
-          "route": "/. ELZ NABOR SYR KSYR",
+          "flight_strip_route": "/. ELZ NABOR SYR KSYR",
           "waypoints": "ELZ056035 ELZ056065/ho NABOR/a11000 SYR KSYR"
         }
       ]
@@ -1058,7 +1058,7 @@
           "initial_altitude": 17000,
           "initial_controller": "C50",
           "initial_speed": 290,
-          "route": "/. CFB T335 SYR SYR",
+          "flight_strip_route": "/. CFB T335 SYR SYR",
           "waypoints": "CFB015015 CFB015025/ho CORTA/a11000 SYR KSYR"
         }
       ]
@@ -1085,7 +1085,7 @@
           "initial_altitude": 6000,
           "initial_controller": "C23",
           "initial_speed": 140,
-          "route": "/. DNY V483 SYR KSYR",
+          "flight_strip_route": "/. DNY V483 SYR KSYR",
           "waypoints": "RKA N042.35.59.403,W075.22.10.361/ho SHERB EATEN DINNO TEBOR STODA SYR KSYR"
         }
       ]
@@ -1112,7 +1112,7 @@
           "initial_altitude": 7000,
           "initial_controller": "C23",
           "initial_speed": 140,
-          "route": "/. CODDI T705 LAMMS KRME",
+          "flight_strip_route": "/. CODDI T705 LAMMS KRME",
           "waypoints": "CODDI MILID/ho T705 LAMMS KRME"
         }
       ]
@@ -1139,7 +1139,7 @@
           "initial_altitude": 8000,
           "initial_controller": "21E",
           "initial_speed": 140,
-          "route": "/. GALWA T316 LAMMS KRME",
+          "flight_strip_route": "/. GALWA T316 LAMMS KRME",
           "waypoints": "GALWA PAYGE/ho T316 LAMMS KRME"
         }
       ]
@@ -1166,7 +1166,7 @@
           "initial_altitude": 6000,
           "initial_controller": "21E",
           "initial_speed": 140,
-          "route": "/. ALB T608 LAMMS KRME",
+          "flight_strip_route": "/. ALB T608 LAMMS KRME",
           "waypoints": "ALB MARIA/ho T608 LAMMS KRME"
         }
       ]
@@ -1193,7 +1193,7 @@
           "initial_altitude": 7000,
           "initial_controller": "31G",
           "initial_speed": 140,
-          "route": "/. CFB T335 SYR KSYR",
+          "flight_strip_route": "/. CFB T335 SYR KSYR",
           "waypoints": "CFB N042.22.59.168,W076.06.37.045/ho CORTA VESPE TUMPS SYR KSYR"
         }
       ],
@@ -1267,7 +1267,7 @@
           "initial_altitude": 5000,
           "initial_controller": "41E",
           "initial_speed": 140,
-          "route": "/. XUCCO T307 SYR KSYR",
+          "flight_strip_route": "/. XUCCO T307 SYR KSYR",
           "waypoints": "XUCCO VAFKU/ho PTAKI SCIPO SYR KSYR"
         }
       ],
@@ -1341,7 +1341,7 @@
           "initial_altitude": 7000,
           "initial_controller": "51E",
           "initial_speed": 130,
-          "route": "/. GEE SYR KSYR",
+          "flight_strip_route": "/. GEE SYR KSYR",
           "waypoints": "N042.54.09.549,W077.24.38.155 N042.57.49.647,W077.07.05.802/ho SYR KSYR"
         }
       ],
@@ -1415,7 +1415,7 @@
           "initial_altitude": 6000,
           "initial_controller": "1A",
           "initial_speed": 130,
-          "route": "/. ART T391 SYR KSYR",
+          "flight_strip_route": "/. ART T391 SYR KSYR",
           "waypoints": "ART N043.47.05.024,W076.05.39.807/ho BRUIN PAGER SYR KSYR"
         }
       ],
@@ -1494,7 +1494,7 @@
           "initial_altitude": 20000,
           "initial_controller": "C23",
           "initial_speed": 290,
-          "route": "/. CAM SYR KSYR",
+          "flight_strip_route": "/. CAM SYR KSYR",
           "waypoints": "CAM290030 CAM290050/ho CAM290060/a11000 SYR KSYR"
         }
       ]
@@ -1521,7 +1521,7 @@
           "initial_altitude": 10000,
           "initial_controller": "21E",
           "initial_speed": 140,
-          "route": "/. GALWA T316 LAMMS T608 SYR KSYR",
+          "flight_strip_route": "/. GALWA T316 LAMMS T608 SYR KSYR",
           "waypoints": "GALWA PAYGE/ho ROOMS LAMMS VASTS STODA SYR KSYR"
         }
       ],
@@ -1585,7 +1585,7 @@
           "initial_altitude": 16000,
           "initial_controller": "C23",
           "initial_speed": 290,
-          "route": "/. ALB SYR KSYR",
+          "flight_strip_route": "/. ALB SYR KSYR",
           "waypoints": "ALB297030 ALB297040/ho ALB297050/a11000 SYR KSYR"
         }
       ]
@@ -1612,7 +1612,7 @@
           "initial_altitude": 8000,
           "initial_controller": "21E",
           "initial_speed": 130,
-          "route": "/. ALB T608 SYR KSYR",
+          "flight_strip_route": "/. ALB T608 SYR KSYR",
           "waypoints": "ALB MARIA/ho NORSE LAMMS VASTS STODA SYR KSYR"
         }
       ],
@@ -1676,7 +1676,7 @@
           "initial_altitude": 16000,
           "initial_controller": "C08",
           "initial_speed": 290,
-          "route": "/. SLK SYR KSYR",
+          "flight_strip_route": "/. SLK SYR KSYR",
           "waypoints": "SLK244050 SLK244070/ho SLK244080/a11000 SYR KSYR"
         }
       ]
@@ -1703,7 +1703,7 @@
           "initial_altitude": 8000,
           "initial_controller": "C08",
           "initial_speed": 140,
-          "route": "/. SLK BECKS SYR KSYR",
+          "flight_strip_route": "/. SLK BECKS SYR KSYR",
           "waypoints": "SMAIR N043.49.14.566,W074.36.25.565/ho BECKS SYR KSYR"
         }
       ],

@@ -168,7 +168,7 @@
           ],
           "destination": "KHOU",
           "exit": "WHAEL",
-          "route": "WHAEL BELLR5"
+          "waypoints": "WHAEL BELLR5"
         },
         {
           "airlines": [
@@ -178,7 +178,7 @@
           ],
           "destination": "KDAL",
           "exit": "YODUH",
-          "route": "YODUH DITSY BACHR4"
+          "waypoints": "YODUH DITSY BACHR4"
         },
         {
           "airlines": [
@@ -188,7 +188,7 @@
           ],
           "destination": "MMMX",
           "exit": "KAHAN",
-          "route": "KAHAN LRD NLD UJ11 MTY UJ81 KERGA UT132 DARAN DARA2A"
+          "waypoints": "KAHAN LRD NLD UJ11 MTY UJ81 KERGA UT132 DARAN DARA2A"
         },
         {
           "airlines": [
@@ -198,7 +198,7 @@
           ],
           "destination": "KSFO",
           "exit": "ALISS",
-          "route": "ALISS FST J86 ELP ITUCO BXK J212 DECAS PMD AVE MAKRS SERFR SERFR4"
+          "waypoints": "ALISS FST J86 ELP ITUCO BXK J212 DECAS PMD AVE MAKRS SERFR SERFR4"
         },
         {
           "airlines": [
@@ -208,7 +208,7 @@
           ],
           "destination": "KATL",
           "exit": "MOLLR",
-          "route": "MOLLR Q24 PAYTN SHYRE HOBTT2"
+          "waypoints": "MOLLR Q24 PAYTN SHYRE HOBTT2"
         },
         {
           "airlines": [
@@ -218,7 +218,7 @@
           ],
           "destination": "KBNA",
           "exit": "WHAEL",
-          "route": "WHAEL IAH J29 MEM CHSNE2"
+          "waypoints": "WHAEL IAH J29 MEM CHSNE2"
         },
         {
           "airlines": [
@@ -229,7 +229,7 @@
           ],
           "destination": "KOKC",
           "exit": "KLNGR",
-          "route": "KLNGR MQP YUCKS YUCKS3"
+          "waypoints": "KLNGR MQP YUCKS YUCKS3"
         },
         {
           "airlines": [
@@ -239,7 +239,7 @@
           ],
           "destination": "KPHX",
           "exit": "ALISS",
-          "route": "ALISS FST ELP DRRVR PINNG1"
+          "waypoints": "ALISS FST ELP DRRVR PINNG1"
         },
         {
           "airlines": [
@@ -249,7 +249,7 @@
           ],
           "destination": "KDTW",
           "exit": "KLNGR",
-          "route": "KLNGR CVE LIT J131 PXV WWODD HANBL3"
+          "waypoints": "KLNGR CVE LIT J131 PXV WWODD HANBL3"
         },
         {
           "airlines": [
@@ -259,7 +259,7 @@
           ],
           "destination": "KLAX",
           "exit": "ALISS",
-          "route": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
+          "waypoints": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
         },
         {
           "airlines": [
@@ -269,7 +269,7 @@
           ],
           "destination": "KLAX",
           "exit": "ALISS",
-          "route": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
+          "waypoints": "ALISS FST ELP J50 SSO J4 WLVRN ESTWD HLYWD1"
         },
         {
           "airlines": [
@@ -279,7 +279,7 @@
           ],
           "destination": "KHRL",
           "exit": "CRP",
-          "route": "CRP"
+          "waypoints": "CRP"
         },
         {
           "airlines": [
@@ -289,7 +289,7 @@
           ],
           "destination": "KDFW",
           "exit": "YODUH",
-          "route": "YODUH GUTZZ BOOVE7"
+          "waypoints": "YODUH GUTZZ BOOVE7"
         },
         {
           "airlines": [
@@ -300,7 +300,7 @@
           ],
           "destination": "KGLS",
           "exit": "BRENI",
-          "route": "BRENI"
+          "waypoints": "BRENI"
         },
         {
           "airlines": [
@@ -311,7 +311,7 @@
           ],
           "destination": "KLRD",
           "exit": "KAHAN",
-          "route": "KAHAN"
+          "waypoints": "KAHAN"
         }
       ],
       "exit_categories": {
@@ -474,7 +474,7 @@
           ],
           "destination": "KCRP",
           "exit": "YENNS",
-          "route": "YENNS V163 CRP"
+          "waypoints": "YENNS V163 CRP"
         },
         {
           "airlines": [
@@ -485,7 +485,7 @@
           ],
           "destination": "KAXH",
           "exit": "CHURN",
-          "route": "CHURN T256 LDRET"
+          "waypoints": "CHURN T256 LDRET"
         }
       ],
       "exit_categories": {
@@ -580,7 +580,7 @@
           ],
           "destination": "KHYI",
           "exit": "KHYI",
-          "route": "KHYI"
+          "waypoints": "KHYI"
         },
         {
           "airlines": [
@@ -591,7 +591,7 @@
           ],
           "destination": "KSLC",
           "exit": "TATAR",
-          "route": "TATAR LEJON JCT SJT TXO ALS LOPEC JNC J12 HELPR JAZZZ1"
+          "waypoints": "TATAR LEJON JCT SJT TXO ALS LOPEC JNC J12 HELPR JAZZZ1"
         },
         {
           "airlines": [
@@ -602,7 +602,7 @@
           ],
           "destination": "KTKI",
           "exit": "GOBBY",
-          "route": "GOBBY AGJ DITSY SWVAY4"
+          "waypoints": "GOBBY AGJ DITSY SWVAY4"
         },
         {
           "airlines": [
@@ -613,7 +613,7 @@
           ],
           "destination": "KSLG",
           "exit": "GOBBY",
-          "route": "GOBBY KLNGR FUZ"
+          "waypoints": "GOBBY KLNGR FUZ"
         },
         {
           "airlines": [
@@ -624,7 +624,7 @@
           ],
           "destination": "KJEF",
           "exit": "KLNGR",
-          "route": "KLNGR",
+          "waypoints": "KLNGR",
           "altitude": [37000, 39000, 41000]
         }
       ],
@@ -670,7 +670,7 @@
           ],
           "destination": "KBRD",
           "exit": "YODUH",
-          "route": "YODUH DITSY SWVAY4"
+          "waypoints": "YODUH DITSY SWVAY4"
         },
         {
           "airlines": [
@@ -680,7 +680,7 @@
           ],
           "destination": "KGBD",
           "exit": "LEJON",
-          "route": "LEJON HBR"
+          "waypoints": "LEJON HBR"
         },
         {
           "airlines": [
@@ -690,7 +690,7 @@
           ],
           "destination": "KDTO",
           "exit": "JUMBO",
-          "route": "JUMBO TTT"
+          "waypoints": "JUMBO TTT"
         }
       ]
     },

@@ -42,224 +42,224 @@
           "altitude": [34000, 36000],
           "destination": "KATW",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR GQO EMAHH OLSIE VHP BVT BAE CORIR"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR GQO EMAHH OLSIE VHP BVT BAE CORIR"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [30000, 36000],
           "destination": "KBLV",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 DEEDA IGB GQE FAM DELMA DELMA4"
+          "waypoints": "ENDED2 LACEN PATOY Q116 DEEDA IGB GQE FAM DELMA DELMA4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": 36000,
           "destination": "KBMI",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL BNA J73 PXV AXC"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL BNA J73 PXV AXC"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KCID",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 VLKNN GETME J151 STL IOW"
+          "waypoints": "ENDED2 LACEN PATOY Q116 VLKNN GETME J151 STL IOW"
         },
         {
           "airlines": [{ "icao": "N", "fleet": "fastGA" }],
           "altitude": 39000,
           "destination": "KJQF",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO HEPAR WANSA JOOLS4"
+          "waypoints": "LLRGO1 CAMJO HEPAR WANSA JOOLS4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [32000, 38000],
           "destination": "KCHA",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL GQO"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL GQO"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KCVG",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR VXV JAKIE7"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR VXV JAKIE7"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [36000, 38000],
           "destination": "KCOS",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA MGM SQS LIT FSM TUL PER GCK LAA OZZZY5"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA MGM SQS LIT FSM TUL PER GCK LAA OZZZY5"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": 38000,
           "destination": "KDAY",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 VOSTK HICKS FIITZ"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 VOSTK HICKS FIITZ"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [36000, 38000],
           "destination": "KDSM",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 VLKNN GETME J151 FAM IRK DSM"
+          "waypoints": "ENDED2 LACEN PATOY Q116 VLKNN GETME J151 FAM IRK DSM"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [32000, 34000],
           "destination": "KFNT",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 VOSTK DQN TORRR HAZIT VHICL CITYE"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 VOSTK DQN TORRR HAZIT VHICL CITYE"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [36000, 38000],
           "destination": "KFWA",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 VOSTK"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 VOSTK"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KGRR",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL IIU AZO VIQ"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL IIU AZO VIQ"
         },
         {
           "airlines": [{ "icao": "N", "fleet": "fastGA" }],
           "altitude": 37000,
           "destination": "KGSO",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO HEPAR Q99 TEEEM CAE BLOCC2"
+          "waypoints": "LLRGO1 CAMJO HEPAR Q99 TEEEM CAE BLOCC2"
         },
         {
           "airlines": [{ "icao": "N", "fleet": "fastGA" }],
           "altitude": 41000,
           "destination": "KGSP",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO HEPAR TWINS IRQ PROVN MCHLN2"
+          "waypoints": "LLRGO1 CAMJO HEPAR TWINS IRQ PROVN MCHLN2"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 38000],
           "destination": "KHSV",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 DEEDA WAMPM"
+          "waypoints": "ENDED2 LACEN PATOY Q116 DEEDA WAMPM"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KIND",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL IIU HAGAL GIIBS4"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL IIU HAGAL GIIBS4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KMCI",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 DEEDA MGM MEM J41 ZAVEL KRTNY MHOMS3"
+          "waypoints": "ENDED2 LACEN PATOY Q116 DEEDA MGM MEM J41 ZAVEL KRTNY MHOMS3"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KTYS",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KLEX",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [36000, 38000],
           "destination": "KSDF",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN AMORY Q110 JYROD NIOLA GLAZR LEDDL1"
+          "waypoints": "ENDED2 LACEN AMORY Q110 JYROD NIOLA GLAZR LEDDL1"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KMEM",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 VLKNN WASER VANZE3"
+          "waypoints": "ENDED2 LACEN PATOY Q116 VLKNN WASER VANZE3"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KMLI",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL GQO BWG MTO BDF"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL GQO BWG MTO BDF"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KBNA",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR SWFFT3"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR SWFFT3"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": 36000,
           "destination": "KPIA",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL BNA J73 PXV AXC"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL BNA J73 PXV AXC"
         },
         {
           "airlines": [{ "icao": "N", "fleet": "fastGA" }],
           "altitude": 41000,
           "destination": "KPIT",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO Q99 BLAAN Q69 RICCS LEJOY DEMME5"
+          "waypoints": "LLRGO1 CAMJO Q99 BLAAN Q69 RICCS LEJOY DEMME5"
         },
         {
           "airlines": [{ "icao": "N", "fleet": "fastGA" }],
           "altitude": 39000,
           "destination": "KROA",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO HEPAR IRQ SPA PSK"
+          "waypoints": "LLRGO1 CAMJO HEPAR IRQ SPA PSK"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KSBN",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 KAILL GLAZR HEVAN Q118 BONNT GSH"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 KAILL GLAZR HEVAN Q118 BONNT GSH"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [30000, 38000],
           "destination": "KTVC",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR IIU FWA VIQ"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR IIU FWA VIQ"
         },
         {
           "airlines": [{ "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [37000, 41000],
           "destination": "KTTN",
           "exit": "CAMJO",
-          "route": "LLRGO1 CAMJO HEPAR Q99 PEETT BBDOL PAATS4"
+          "waypoints": "LLRGO1 CAMJO HEPAR Q99 PEETT BBDOL PAATS4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KFAR",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 JAMIZ VAD CVC BNA FTZ IRK RWF FAR"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 JAMIZ VAD CVC BNA FTZ IRK RWF FAR"
         },
         {
           "airlines": [{ "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": 17000,
           "destination": "KGNV",
           "exit": "OCF",
-          "route": "OCF"
+          "waypoints": "OCF"
         }
       ]
     },
@@ -335,182 +335,182 @@
           "altitude": [34000, 36000, 38000],
           "destination": "KORD",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 HEVAN BONNT VEECK5"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 HEVAN BONNT VEECK5"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "FFT" }, { "icao": "UPS" }, { "icao": "EJA" }],
           "altitude": [32000, 34000, 36000, 38000, 40000],
           "destination": "KDFW",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA CABLO DEFUN J2 CEW J50 AEX PNUTS BEREE3"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA CABLO DEFUN J2 CEW J50 AEX PNUTS BEREE3"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "SWA" }, { "icao": "EJM" }],
           "altitude": [32000, 34000, 36000],
           "destination": "KPHX",
           "exit": "ENDED",
-          "route": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 IAH J86 ELP DRRVR PINNG1"
+          "waypoints": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 IAH J86 ELP DRRVR PINNG1"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "ENY" }],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KBNA",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR SWFFT3"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR SWFFT3"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": 36000,
           "destination": "KXNA",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA IVLUH LIT RZC"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA IVLUH LIT RZC"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": 32000,
           "destination": "KGPT",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA SZW MAI CEW SJI"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA SZW MAI CEW SJI"
         },
         {
           "airlines": [{ "icao": "MXY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [32000, 34000, 40000],
           "destination": "KHSV",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 VLKNN"
+          "waypoints": "ENDED2 LACEN PATOY Q116 VLKNN"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": [34000, 36000],
           "destination": "KMSN",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR BNA ENL JVL"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR BNA ENL JVL"
         },
         {
           "airlines": [{ "icao": "FDX" }, { "icao": "MXY" }, { "icao": "SWA" }],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KMEM",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 GOOGY WASER VANZE3"
+          "waypoints": "ENDED2 LACEN PATOY Q116 GOOGY WASER VANZE3"
         },
         {
           "airlines": [{ "icao": "FDX" }],
           "altitude": [32000, 34000, 36000],
           "destination": "KMSY",
           "exit": "ENDED",
-          "route": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI MNSTR2"
+          "waypoints": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI MNSTR2"
         },
         {
           "airlines": [{ "icao": "MXY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [28000, 30000, 32000],
           "destination": "KPNS",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA MAI CEW PENSI"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA MAI CEW PENSI"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "UPS" }, { "icao": "AAL" }],
           "altitude": [36000, 38000, 40000],
           "destination": "KSDF",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR Q79 RESPE GLAZR LEDDL1"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR Q79 RESPE GLAZR LEDDL1"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "SWA" }, { "icao": "FDX" }, { "icao": "FFT" }],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KATL",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN AMORY Q110 DAWWN BEORN GNDLF3"
+          "waypoints": "ENDED2 LACEN AMORY Q110 DAWWN BEORN GNDLF3"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "FFT" }, { "icao": "ABX" }],
           "altitude": [30000, 34000, 36000, 38000],
           "destination": "KCVG",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR VXV JAKIE7"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR VXV JAKIE7"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "NKS" }, { "icao": "FFT" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KDTW",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR SMTTH Q67 HNN SUBWY HTROD2"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR SMTTH Q67 HNN SUBWY HTROD2"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "SCX" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KMSP",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 DEEDA VLKNN MSL STL MNOSO BLUEM4"
+          "waypoints": "ENDED2 LACEN PATOY Q116 DEEDA VLKNN MSL STL MNOSO BLUEM4"
         },
         {
           "airlines": [{ "icao": "LXJ" }],
           "altitude": 47000,
           "destination": "KSLC",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA SZW MERDN ELD IRW ROLLS KA39Y GOSIP JNC HELPER PITTT1"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA SZW MERDN ELD IRW ROLLS KA39Y GOSIP JNC HELPER PITTT1"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "FFT" }, { "icao": "UAL" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KDEN",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA CABLO KWANE KF33E TOTOE HALEN NIIXX4"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA CABLO KWANE KF33E TOTOE HALEN NIIXX4"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "FFT" }],
           "altitude": [36000, 38000],
           "destination": "KMCI",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 JAWJA MGMRY JILLS RICKX HILTY KRTNY MHOMS3"
+          "waypoints": "ENDED2 LACEN PATOY Q116 JAWJA MGMRY JILLS RICKX HILTY KRTNY MHOMS3"
         },
         {
           "airlines": [{ "icao": "FFT" }, { "icao": "SWA" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KSTL",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 VLKNN GETME J151 BEATS VISQA BOOSH3"
+          "waypoints": "ENDED2 LACEN PATOY Q116 VLKNN GETME J151 BEATS VISQA BOOSH3"
         },
         {
           "airlines": [{ "icao": "FFT" }, { "icao": "SWA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [36000, 43000],
           "destination": "KGRR",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 VOSTK SJAAY AZO"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 VOSTK SJAAY AZO"
         },
         {
           "airlines": [{ "icao": "UAL" }, { "icao": "FFT" }, { "icao": "NKS" }, { "icao": "AAL" }],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KIAH",
           "exit": "ENDED",
-          "route": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI NNCEE2"
+          "waypoints": "ENDED2 ENDED LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI NNCEE2"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "FFT" }],
           "altitude": 38000,
           "destination": "KMKE",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR JAGIR OLSIE SCOTO BVT VINNE BRAVE EXARR"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR JAGIR OLSIE SCOTO BVT VINNE BRAVE EXARR"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "MXY" }],
           "altitude": [32000, 34000, 36000],
           "destination": "KBHM",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN PATOY Q116 DEEDA WANDS"
+          "waypoints": "ENDED2 LACEN PATOY Q116 DEEDA WANDS"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": [34000, 36000, 38000],
           "destination": "KMDW",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR Q79 IIU DROSE FISSK7"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR Q79 IIU DROSE FISSK7"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "UAL" }, { "icao": "FDX" }, { "icao": "EJA" }],
           "altitude": [36000, 38000, 43000],
           "destination": "KIND",
           "exit": "LACEN",
-          "route": "ENDED2 LACEN BRUTS Q118 THRSR Q79 SWAPP HAGAL GIIBS4"
+          "waypoints": "ENDED2 LACEN BRUTS Q118 THRSR Q79 SWAPP HAGAL GIIBS4"
         }
       ]
     },
@@ -556,147 +556,147 @@
           "altitude": [33000, 35000, 39000, 41000, 45000],
           "destination": "KCAK",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO IRQ SPA J85 HVQ JPU ZZIPS1"
+          "waypoints": "TIDES1 CAMJO IRQ SPA J85 HVQ JPU ZZIPS1"
         },
         {
           "airlines": [{ "icao": "ACA" }],
           "altitude": 37000,
           "destination": "CYYZ",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 BLAAN Q69 RICCS OXMAN LINNG3"
+          "waypoints": "TIDES1 CAMJO Q99 BLAAN Q69 RICCS OXMAN LINNG3"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [37000, 45000],
           "destination": "KALB",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 LLUND TRUDE V487 CANAN"
+          "waypoints": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 LLUND TRUDE V487 CANAN"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [35000, 39000],
           "destination": "KABE",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO HEPAR IRQ BENBY HVQ BAMMY T299 DUMMR"
+          "waypoints": "TIDES1 CAMJO HEPAR IRQ BENBY HVQ BAMMY T299 DUMMR"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [35000, 37000, 41000],
           "destination": "KAVL",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO HEPAR TWINS PLYRR"
+          "waypoints": "TIDES1 CAMJO HEPAR TWINS PLYRR"
         },
         {
           "airlines": [{ "icao": "JBU" }, { "icao": "RPA" }, { "icao": "AAY" }],
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "destination": "KBOS",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 RBV Q419 JFK ROBUC3"
+          "waypoints": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 RBV Q419 JFK ROBUC3"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KRFD",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 KAILL BWG MACES QUOTE1"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 KAILL BWG MACES QUOTE1"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KCVG",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR VXV JAKIE7"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR VXV JAKIE7"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "N", "fleet": "fastGA" }, { "icao": "WUP" }, { "icao": "EJA" }],
           "altitude": [35000, 37000, 39000, 41000, 45000],
           "destination": "KCMH",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 BURGG HMV KONGO MCGNS SCRLT2"
+          "waypoints": "TIDES1 CAMJO Q99 BURGG HMV KONGO MCGNS SCRLT2"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [31000, 33000, 41000],
           "destination": "KFNT",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 VOSTK DQN TORRR HAZIT VHICL CITYE"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 VOSTK DQN TORRR HAZIT VHICL CITYE"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": 36000,
           "destination": "KFWA",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 KAILL FLM RID"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 KAILL FLM RID"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KGRR",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR Q79 IIU VIQ"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR Q79 IIU VIQ"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [35000, 39000],
           "destination": "KGSP",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO TYFTR PROVN MCHLN2"
+          "waypoints": "TIDES1 CAMJO TYFTR PROVN MCHLN2"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [35000, 37000, 39000],
           "destination": "KMDT",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO HEPAR Q99 BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE HAR"
+          "waypoints": "TIDES1 CAMJO HEPAR Q99 BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE HAR"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "SWA" }, { "icao": "EJA" }],
           "altitude": [34000, 36000, 38000, 40000],
           "destination": "KIND",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR HAGAL GIIBS4"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR HAGAL GIIBS4"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "LXJ" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [36000, 38000, 40000],
           "destination": "KTYS",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR VXV"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR VXV"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [38000, 40000],
           "destination": "KLEX",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 KAILL"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 KAILL"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "SCX" }],
           "altitude": [32000, 34000, 36000],
           "destination": "KMSP",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE AMORY Q110 BLANS KK54K MNOSO BLEUM4"
+          "waypoints": "TIDES1 MOMIE AMORY Q110 BLANS KK54K MNOSO BLEUM4"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [34000, 36000, 38000, 40000, 43000],
           "destination": "KBNA",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR SWFFT3"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR SWFFT3"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "SWA" }],
           "altitude": [35000, 37000, 39000, 41000],
           "destination": "KPIT",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 BLAAN Q69 RICCS LEJOY DEMME5"
+          "waypoints": "TIDES1 CAMJO Q99 BLAAN Q69 RICCS LEJOY DEMME5"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "EJA" }],
           "altitude": [37000, 41000],
           "destination": "KROA",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO HEPAR IRQ SPA PSK"
+          "waypoints": "TIDES1 CAMJO HEPAR IRQ SPA PSK"
         },
         {
           "airlines": [
@@ -709,294 +709,294 @@
           "altitude": [35000, 41000, 45000],
           "destination": "KIAD",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO HEPAR Q99 OGRAE BZNGA DORRN CAVLR7"
+          "waypoints": "TIDES1 CAMJO HEPAR Q99 OGRAE BZNGA DORRN CAVLR7"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KATW",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR Q79 IIU J89 BAE CORIR"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR Q79 IIU J89 BAE CORIR"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KBLV",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 KAILL BNA ENL ENL2"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 KAILL BNA ENL ENL2"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KCID",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE AMORY Q110 BLANS MAGGO IOW"
+          "waypoints": "TIDES1 MOMIE AMORY Q110 BLANS MAGGO IOW"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KDSM",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE PATOY Q116 VLKNN GETME J151 FAM IRK DSM"
+          "waypoints": "TIDES1 MOMIE PATOY Q116 VLKNN GETME J151 FAM IRK DSM"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [36000, 43000],
           "destination": "KSDF",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR GLAZR LEDDL1"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR GLAZR LEDDL1"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KOMA",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE PATOY Q116 VLKNN GETME J151 FAM LMN MARWI4"
+          "waypoints": "TIDES1 MOMIE PATOY Q116 VLKNN GETME J151 FAM LMN MARWI4"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [34000, 36000],
           "destination": "KPIA",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR BNA J73 PXV AXC"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR BNA J73 PXV AXC"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [35000, 37000, 39000],
           "destination": "KROC",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO HEPAR Q99 TEEEM RYCKI Q69 RICCS JHW GEE"
+          "waypoints": "TIDES1 CAMJO HEPAR Q99 TEEEM RYCKI Q69 RICCS JHW GEE"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [34000, 36000, 40000],
           "destination": "KSBN",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 BONNT GIJ"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 BONNT GIJ"
         },
         {
           "airlines": [{ "icao": "AAY" }],
           "altitude": [35000, 37000],
           "destination": "KSYR",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO SPA NEALS AIR EWC AGDOX RAGIX TALEB RAKAM"
+          "waypoints": "TIDES1 CAMJO SPA NEALS AIR EWC AGDOX RAGIX TALEB RAKAM"
         },
         {
           "airlines": [{ "icao": "AAY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [31000, 41000],
           "destination": "KTOL",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 JOHNN HESPI LORNN Q65 RINTE"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 JOHNN HESPI LORNN Q65 RINTE"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "ENY" }, { "icao": "EJA" }],
           "altitude": [27000, 29000, 31000, 33000, 35000, 37000, 41000],
           "destination": "KCLT",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO TWINS PONZE BANKR8"
+          "waypoints": "TIDES1 CAMJO TWINS PONZE BANKR8"
         },
         {
           "airlines": [{ "icao": "AAL" }],
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KDFW",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE Q116 JAWJA CABLO DEFUN J2 CEW J50 MCB AEX PNUTS BEREE3"
+          "waypoints": "TIDES1 MOMIE Q116 JAWJA CABLO DEFUN J2 CEW J50 MCB AEX PNUTS BEREE3"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "FFT" }],
           "altitude": [33000, 35000, 37000],
           "destination": "KPHL",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 PEETT BBDOL PAATS4"
+          "waypoints": "TIDES1 CAMJO Q99 PEETT BBDOL PAATS4"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "UAL" }, { "icao": "RPA" }],
           "altitude": [30000, 32000, 34000, 36000, 38000],
           "destination": "KORD",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 BONNT VEECK5"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 BONNT VEECK5"
         },
         {
           "airlines": [{ "icao": "AAL" }, { "icao": "RPA" }, { "icao": "JIA" }],
           "altitude": [27000, 29000, 33000, 35000, 37000, 39000],
           "destination": "KDCA",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 OGRAE FUUFF WAVES CAPPS3"
+          "waypoints": "TIDES1 CAMJO Q99 OGRAE FUUFF WAVES CAPPS3"
         },
         {
           "airlines": [{ "icao": "VXP" }],
           "altitude": [37000, 39000],
           "destination": "KHVN",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q109 DFENC SAWED Q97 KALDA SARDI1"
+          "waypoints": "TIDES1 CAMJO Q109 DFENC SAWED Q97 KALDA SARDI1"
         },
         {
           "airlines": [{ "icao": "N", "fleet": "fastGA" }],
           "altitude": [21000, 27000, 31000],
           "destination": "KILM",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO PELIE ILM"
+          "waypoints": "TIDES1 CAMJO PELIE ILM"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": [31000, 35000, 37000],
           "destination": "KBDL",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 RBV Q419 DPK DPK3"
+          "waypoints": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 RBV Q419 DPK DPK3"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": [33000, 37000, 39000],
           "destination": "KPVD",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q109 DFENC SAWED Q97 ZJAAY Q167 ORCHA JORDN JORDN2"
+          "waypoints": "TIDES1 CAMJO Q109 DFENC SAWED Q97 ZJAAY Q167 ORCHA JORDN JORDN2"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": 35000,
           "destination": "KISP",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q109 DFENC SAWED Q97 KALDA SARDI1"
+          "waypoints": "TIDES1 CAMJO Q109 DFENC SAWED Q97 KALDA SARDI1"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": [35000, 39000],
           "destination": "KPWM",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 LLUND BDR SCOGS4"
+          "waypoints": "TIDES1 CAMJO Q99 POLYY DADDS Q87 GEARS BBOBO Q22 LLUND BDR SCOGS4"
         },
         {
           "airlines": [{ "icao": "MXY" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [33000, 37000, 41000],
           "destination": "KRDU",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 TEEEM PETTO DMSTR2"
+          "waypoints": "TIDES1 CAMJO Q99 TEEEM PETTO DMSTR2"
         },
         {
           "airlines": [{ "icao": "MXY" }],
           "altitude": [31000, 35000],
           "destination": "KRIC",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 POLYY DADDS NOWAE NEAVL DUCXS5"
+          "waypoints": "TIDES1 CAMJO Q99 POLYY DADDS NOWAE NEAVL DUCXS5"
         },
         {
           "airlines": [{ "icao": "MXY" }, { "icao": "EJA" }],
           "altitude": [35000, 39000, 41000],
           "destination": "KHPN",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO POLYY RDU BBOBO Q22 BESSI CYN BOUNO5"
+          "waypoints": "TIDES1 CAMJO POLYY RDU BBOBO Q22 BESSI CYN BOUNO5"
         },
         {
           "airlines": [{ "icao": "DAL" }, { "icao": "EJA" }],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KATL",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO LAIRI LARZZ JJEDI4"
+          "waypoints": "TIDES1 CAMJO LAIRI LARZZ JJEDI4"
         },
         {
           "airlines": [{ "icao": "DAL" }],
           "altitude": [35000, 37000],
           "destination": "KLGA",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 POLYY DADDS Q87 HURTS PROUD2"
+          "waypoints": "TIDES1 CAMJO Q99 POLYY DADDS Q87 HURTS PROUD2"
         },
         {
           "airlines": [{ "icao": "DAL" }],
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KDTW",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR SMTTH Q67 HNH SUBWY HTROD2"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR SMTTH Q67 HNH SUBWY HTROD2"
         },
         {
           "airlines": [{ "icao": "JBU" }, { "icao": "DAL" }],
           "altitude": [35000, 37000],
           "destination": "KJFK",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q109 DFENC SAWED Q108 SIE CAMRN5"
+          "waypoints": "TIDES1 CAMJO Q109 DFENC SAWED Q108 SIE CAMRN5"
         },
         {
           "airlines": [{ "icao": "FFT" }, { "icao": "SWA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [37000, 41000, 45000],
           "destination": "KCLE",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO SPA J85 HVQ JANYS ROLLN2"
+          "waypoints": "TIDES1 CAMJO SPA J85 HVQ JANYS ROLLN2"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "EJA" }],
           "altitude": [35000, 37000, 39000, 41000],
           "destination": "KBWI",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 OGRAE GOOOB THHMP RAVNN9"
+          "waypoints": "TIDES1 CAMJO Q99 OGRAE GOOOB THHMP RAVNN9"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": [36000, 38000],
           "destination": "KMDW",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR Q79 IIU DROSE FISSK7"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR Q79 IIU DROSE FISSK7"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": 39000,
           "destination": "KSTL",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE PATOY Q116 VLKNN GETME J151 BEATS VISQA BOOSH3"
+          "waypoints": "TIDES1 MOMIE PATOY Q116 VLKNN GETME J151 BEATS VISQA BOOSH3"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [37000, 41000],
           "destination": "KBUF",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q109 TEEEM Q75 ILBEE RYCKI Q69 RICCS Q103 AIRRA DKK"
+          "waypoints": "TIDES1 CAMJO Q109 TEEEM Q75 ILBEE RYCKI Q69 RICCS Q103 AIRRA DKK"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "EJM" }, { "icao": "LXJ" }],
           "altitude": [34000, 36000, 38000, 40000],
           "destination": "KDAL",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE PATOY Q116 JAWJA CABLO DEFUN CEW MCB PNUTS MNNDO4"
+          "waypoints": "TIDES1 MOMIE PATOY Q116 JAWJA CABLO DEFUN CEW MCB PNUTS MNNDO4"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "UAL" }],
           "altitude": [32000, 34000, 36000, 38000],
           "destination": "KDEN",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE PATOY Q116 MEMFS RZC TOTOE HALEN NIIXX4"
+          "waypoints": "TIDES1 MOMIE PATOY Q116 MEMFS RZC TOTOE HALEN NIIXX4"
         },
         {
           "airlines": [{ "icao": "EJA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": 43000,
           "destination": "KHOU",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE PATOY Q116 JAWJA CABLO DEFUN J2 SJI PUCKS4"
+          "waypoints": "TIDES1 MOMIE PATOY Q116 JAWJA CABLO DEFUN J2 SJI PUCKS4"
         },
         {
           "airlines": [{ "icao": "SWA" }],
           "altitude": 38000,
           "destination": "KMCI",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 THRSR IIU J8 ELIOE MCM EUING RUDDH3"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 THRSR IIU J8 ELIOE MCM EUING RUDDH3"
         },
         {
           "airlines": [{ "icao": "SWA" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [36000, 40000, 43000],
           "destination": "KMKE",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE BRUTS Q118 JAMIZ WALET VARNM EWO MACES VINNE BRAVE EXARR"
+          "waypoints": "TIDES1 MOMIE BRUTS Q118 JAMIZ WALET VARNM EWO MACES VINNE BRAVE EXARR"
         },
         {
           "airlines": [{ "icao": "UAL" }],
           "altitude": [35000, 37000],
           "destination": "KEWR",
           "exit": "CAMJO",
-          "route": "TIDES1 CAMJO Q99 QUART PHLBO4"
+          "waypoints": "TIDES1 CAMJO Q99 QUART PHLBO4"
         },
         {
           "airlines": [{ "icao": "SKW" }, { "icao": "ASH" }, { "icao": "N", "fleet": "fastGA" }],
           "altitude": [30000, 32000, 34000, 36000, 43000],
           "destination": "KIAH",
           "exit": "MOMIE",
-          "route": "TIDES1 MOMIE PATOY Q116 JAWJA CABLO DEFUN J2 SJI LINKK1"
+          "waypoints": "TIDES1 MOMIE PATOY Q116 JAWJA CABLO DEFUN J2 SJI LINKK1"
         }
       ]
     },
@@ -1034,7 +1034,7 @@
           "altitude": [34000, 36000],
           "destination": "KONT",
           "exit": "NITTS",
-          "route": "NITTS PATOY Q116 JAWJA MGM IGB LIT TUL CIM TBC J128 PGS MARUE JCKIE2"
+          "waypoints": "NITTS PATOY Q116 JAWJA MGM IGB LIT TUL CIM TBC J128 PGS MARUE JCKIE2"
         }
       ]
     }
@@ -1102,7 +1102,7 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "HEVVN/ho LEGGT GOJOE AAHOY MAATY ROOKR SCLOP/delete",
-          "route": "MAATY6",
+          "flight_strip_route": "MAATY6",
           "star": "MAATY6"
         },
         {
@@ -1121,7 +1121,7 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "HEVVN/ho LEGGT GOJOE AAHOY MAATY GOOFS/delete",
-          "route": "MAATY6",
+          "flight_strip_route": "MAATY6",
           "star": "MAATY6"
         }
       ]
@@ -1173,7 +1173,7 @@
           "initial_speed": 350,
           "spawn": "HEVVN",
           "waypoint_actions": { "BOLTS": "t090/delete", "HEVVN": "ho" },
-          "route": "BANGZ2",
+          "flight_strip_route": "BANGZ2",
           "star": "BANGZ2"
         },
         {
@@ -1244,7 +1244,7 @@
           "initial_controller": "17",
           "initial_speed": 350,
           "waypoints": "CLAMP/ho LALAA CORRL BANGZ KIDLE ALROE MAHAR PASOE/delete",
-          "route": "BANGZ2",
+          "flight_strip_route": "BANGZ2",
           "star": "BANGZ2"
         }
       ]
@@ -1287,7 +1287,7 @@
           "initial_speed": 350,
           "spawn": "PLYER",
           "waypoint_actions": { "GUSEC": "h118/delete", "PLYER": "ho" },
-          "route": "PLYER PIKKR7",
+          "flight_strip_route": "PLYER PIKKR7",
           "star": "PIKKR7"
         }
       ]

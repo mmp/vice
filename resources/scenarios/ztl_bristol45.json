@@ -33,7 +33,7 @@
           "altitude": [18000, 20000, 22000],
           "destination": "KATL",
           "exit": "PUPDG",
-          "route": "PUPDG ONDRE1"
+          "waypoints": "PUPDG ONDRE1"
         }
       ]
     },
@@ -119,7 +119,7 @@
           "assigned_altitude": 24000,
           "cruise_altitude": 34000,
           "initial_speed": 290,
-          "route": "VXV DAJPI LUVTT RCTOR UNMAN",
+          "flight_strip_route": "VXV DAJPI LUVTT RCTOR UNMAN",
           "star": "RCTOR3",
           "is_rnav": true,
           "waypoints": "VXV/ho DAJPI LUVTT RCTOR UNMAN/delete",
@@ -152,7 +152,7 @@
           "assigned_altitude": 17000,
           "cruise_altitude": 21000,
           "initial_speed": 250,
-          "route": "SMKEY HUCHH SOT HMV",
+          "flight_strip_route": "SMKEY HUCHH SOT HMV",
           "waypoints": "N035.35.30.000,W083.38.00.000/ho SOT HMV KTRI/delete"
         }
       ]
@@ -183,7 +183,7 @@
           "assigned_altitude": 11000,
           "cruise_altitude": 17000,
           "initial_speed": 240,
-          "route": "KRITR FILDS KROA",
+          "flight_strip_route": "KRITR FILDS KROA",
           "waypoints": "KRITR N036.25.30.000,W080.48.30.000/ho FILDS KROA/delete"
         }
       ]

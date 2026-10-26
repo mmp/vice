@@ -177,7 +177,7 @@ func commonPrefixLen(a, b []string) int {
 // leaves the SID: these hinder matching up routes from real-world flights.
 func (ap *Airport) checkDepartureRouteAlongSID(db Database, icao ICAOAirportCode, dep *Departure, e *util.ErrorLogger) {
 	exit := dep.Exit.Base()
-	fixes := util.MapSlice(dep.RouteWaypoints, func(wp Waypoint) string { return wp.Fix })
+	fixes := util.MapSlice(dep.Waypoints, func(wp Waypoint) string { return wp.Fix })
 	exitIdx := slices.Index(fixes, exit)
 	if exitIdx == -1 || exitIdx+1 == len(fixes) {
 		return
@@ -637,10 +637,10 @@ func (er ExitRoute) FinalHeading() int {
 type Departure struct {
 	Exit ExitID `json:"exit"`
 
-	Destination    ICAOAirportCode         `json:"destination"`
-	Altitudes      util.SingleOrArray[int] `json:"altitude,omitempty"`
-	Route          string                  `json:"route"`
-	RouteWaypoints WaypointArray           // not specified in user JSON
+	Destination     ICAOAirportCode         `json:"destination"`
+	Altitudes       util.SingleOrArray[int] `json:"altitude,omitempty"`
+	WaypointsString string                  `json:"waypoints"`
+	Waypoints       WaypointArray           // parsed from WaypointsString
 	// Airlines is optional: without it the scenario can't generate its own
 	// departures here, but published traffic still flies the exit and route.
 	Airlines            []DepartureAirline `json:"airlines"`

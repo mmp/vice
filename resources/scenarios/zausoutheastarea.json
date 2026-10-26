@@ -72,7 +72,7 @@
           "destination": "KDFW",
           "altitude": [28000, 30000, 32000, 34000, 36000, 38000],
           "exit": "ACITO",
-          "route": "ACITO ADELL ARLYN STL RZC FSM RRNET SEEVR4"
+          "waypoints": "ACITO ADELL ARLYN STL RZC FSM RRNET SEEVR4"
         },
         {
           "airlines": [
@@ -86,7 +86,7 @@
           "destination": "KMEM",
           "altitude": [28000, 30000, 32000, 34000, 36000],
           "exit": "BACEN",
-          "route": "BACEN BLOKR BEKKI FAM WHOLL BRBBQ3"
+          "waypoints": "BACEN BLOKR BEKKI FAM WHOLL BRBBQ3"
         },
         {
           "airlines": [
@@ -97,7 +97,7 @@
           "destination": "KCLT",
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "exit": "EARND.E",
-          "route": "EARND ELANR EMMLY ETAME EMEGE FLM TAFTT PARQR7"
+          "waypoints": "EARND ELANR EMMLY ETAME EMEGE FLM TAFTT PARQR7"
         },
         {
           "airlines": [
@@ -108,7 +108,7 @@
           "destination": "KTPA",
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "exit": "DENNT.E",
-          "route": "DENNT DARCY DREGS DUMGE SCOTO SWAPP LUCKK HONID MAATY6"
+          "waypoints": "DENNT DARCY DREGS DUMGE SCOTO SWAPP LUCKK HONID MAATY6"
         },
         {
           "airlines": [
@@ -122,7 +122,7 @@
           "destination": "KATL",
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "exit": "CMSKY",
-          "route": "CMSKY CARYN CYBIL PXV HITMN NEWBB IHAVE MTHEW CHPPR1"
+          "waypoints": "CMSKY CARYN CYBIL PXV HITMN NEWBB IHAVE MTHEW CHPPR1"
         },
         {
           "airlines": [
@@ -133,7 +133,7 @@
           "destination": "KFLL",
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "exit": "CMSKY",
-          "route": "CMSKY CARYN CYBIL PXV HITMN ACORI TEEKY4"
+          "waypoints": "CMSKY CARYN CYBIL PXV HITMN ACORI TEEKY4"
         }
       ],
       "exit_categories": {
@@ -160,7 +160,7 @@
         {
           "waypoints": "RST/ho ZZIPR WELCM TEEOO MITEE BHAWK/a21000-26000 STNLE/a17000-21000/s280 CUUPP CHMPN CLSBY/a13000-15000/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
           "star": "FYTTE7",
-          "route": "/. FYTTE7",
+          "flight_strip_route": "/. FYTTE7",
           "initial_controller": "P11",
           "initial_altitude": 35000,
           "assigned_altitude": 31000,
@@ -185,7 +185,7 @@
         {
           "waypoints": "FOD/ho MYRRS SAAYY BENNR JBAGS BHAWK/a21000-26000 STNLE/a17000-21000/s280 CUUPP CHMPN CLSBY/a13000-15000/s270 FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
           "star": "FYTTE7",
-          "route": "/. FYTTE7",
+          "flight_strip_route": "/. FYTTE7",
           "initial_controller": "P11",
           "initial_altitude": 35000,
           "assigned_altitude": 31000,
@@ -214,7 +214,7 @@
         {
           "waypoints": "N044.58.43.576,W088.20.17.175 SHIKY BOWNN/a24000+ HYYDE/a17000-22000/ho JAKSA/a15000/s280 MOOPS/a14000+ FYTTE/a11000/s250 MOTRR COGSS MADII SOOLU/delete",
           "star": "FYTTE7",
-          "route": "/. FYTTE7.N",
+          "flight_strip_route": "/. FYTTE7.N",
           "initial_controller": "64",
           "initial_altitude": 31000,
           "assigned_altitude": 15000,
@@ -243,7 +243,7 @@
         {
           "waypoints": "IIU N039.20.56.176,W085.53.53.825/ho DROSE TROLY GOTNE FISSK/a11000 VEECK OZZEY AZUMO/delete",
           "star": "FISSK7",
-          "route": "/. FISSK7",
+          "flight_strip_route": "/. FISSK7",
           "initial_controller": "I83",
           "initial_altitude": 28000,
           "assigned_altitude": 24000,
@@ -272,7 +272,7 @@
         {
           "waypoints": "N040.07.49.253,W083.49.28.560/ho FWA MAKKI/a24000 BAGEL PANGG MEGGZ/a11000 AWSUM/a10000 IROCK/delete",
           "star": "PANGG7",
-          "route": "/. PANGG7",
+          "flight_strip_route": "/. PANGG7",
           "initial_controller": "I83",
           "initial_altitude": 30000,
           "assigned_altitude": 28000,
@@ -297,7 +297,7 @@
         {
           "waypoints": "N041.28.11.729,W083.43.19.172/ho ASHEN FNLYY/a24000 BAGEL PANGG MEGGZ/a11000 AWSUM/a10000 IROCK/delete",
           "star": "PANGG7",
-          "route": "/. PANGG7",
+          "flight_strip_route": "/. PANGG7",
           "initial_controller": "C48",
           "initial_altitude": 30000,
           "assigned_altitude": 30000,
@@ -327,7 +327,7 @@
         {
           "waypoints": "HEVAN/ho BONNT FRIDG WATSN HAUPO MKITA PRISE HULLS STYLE DWEEB CENAK NCHLS/a9000/delete",
           "star": "WATSN4",
-          "route": "/. WATSN4",
+          "flight_strip_route": "/. WATSN4",
           "initial_controller": "I83",
           "initial_altitude": 28000,
           "assigned_altitude": 28000,
@@ -350,7 +350,7 @@
         {
           "waypoints": "ELEOT/ho NOLNN DAIFE WATSN HAUPO MKITA PRISE HULLS STYLE DWEEB CENAK NCHLS/a9000/delete",
           "star": "WATSN4",
-          "route": "/. WATSN4",
+          "flight_strip_route": "/. WATSN4",
           "initial_controller": "C48",
           "initial_altitude": 32000,
           "assigned_altitude": 32000,
@@ -376,7 +376,7 @@
         {
           "waypoints": "ROD/ho FWA PRONK WATSN HAUPO MKITA PRISE HULLS STYLE DWEEB CENAK NCHLS/a9000/delete",
           "star": "WATSN4",
-          "route": "/. WATSN4",
+          "flight_strip_route": "/. WATSN4",
           "initial_controller": "I83",
           "initial_altitude": 30000,
           "assigned_altitude": 30000,

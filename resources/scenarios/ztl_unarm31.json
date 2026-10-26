@@ -68,7 +68,7 @@
           "altitude": [33000, 35000],
           "destination": "KIAH",
           "exit": "ESTRR",
-          "route": "ESTRR IPTAY CHOPZ THRSR SARKK AEX DOOBI3"
+          "waypoints": "ESTRR IPTAY CHOPZ THRSR SARKK AEX DOOBI3"
         },
         {
           "airlines": [
@@ -82,7 +82,7 @@
           "altitude": [33000, 35000],
           "destination": "KHOU",
           "exit": "ESTRR",
-          "route": "ESTRR IPTAY CHOPZ TWOUP Q22 CATLN Q56 SJI"
+          "waypoints": "ESTRR IPTAY CHOPZ TWOUP Q22 CATLN Q56 SJI"
         },
         {
           "airlines": [
@@ -93,7 +93,7 @@
           "altitude": [32000, 34000],
           "destination": "KDFW",
           "exit": "ESTRR",
-          "route": "ESTRR IPTAY CHOPZ"
+          "waypoints": "ESTRR IPTAY CHOPZ"
         },
         {
           "airlines": [
@@ -107,7 +107,7 @@
           "altitude": [22000, 24000],
           "destination": "KATL",
           "exit": "BOBZY",
-          "route": "BOBZY TNSLY LEAVI OZZZI2"
+          "waypoints": "BOBZY TNSLY LEAVI OZZZI2"
         },
         {
           "airlines": [
@@ -121,7 +121,7 @@
           "altitude": [32000, 34000],
           "destination": "KSLC",
           "exit": "BOBZY",
-          "route": "BOBZY TNSLY"
+          "waypoints": "BOBZY TNSLY"
         }
       ]
     },
@@ -166,7 +166,7 @@
           "altitude": [33000, 35000],
           "destination": "KDCA",
           "exit": "DRIVN",
-          "route": "DRIVN JOOLI Q56 KIWII WAVES"
+          "waypoints": "DRIVN JOOLI Q56 KIWII WAVES"
         },
         {
           "airlines": [
@@ -180,7 +180,7 @@
           "altitude": [33000, 35000],
           "destination": "KLGA",
           "exit": "DRIVN",
-          "route": "DRIVN EVING Q60 HURTS HUBBS"
+          "waypoints": "DRIVN EVING Q60 HURTS HUBBS"
         },
         {
           "airlines": [
@@ -194,7 +194,7 @@
           "altitude": [32000, 34000],
           "destination": "KSDF",
           "exit": "JLENA",
-          "route": "JLENA LAFOX"
+          "waypoints": "JLENA LAFOX"
         }
       ]
     }
@@ -323,7 +323,7 @@
           "waypoints": "PROVN/ho MCHLN/a11000 TYRES/d4000 KGSP/delete",
           "cruise_altitude": [17000, 19000, 21000],
           "star": "MCHLN2",
-          "route": "/. MCHLN2",
+          "flight_strip_route": "/. MCHLN2",
           "initial_controller": "24",
           "initial_altitude": 17000,
           "assigned_altitude": 11000,
@@ -513,7 +513,7 @@
         {
           "cruise_altitude": 29000,
           "star": "BANKR8",
-          "route": "/. BANKR8",
+          "flight_strip_route": "/. BANKR8",
           "initial_controller": "32",
           "initial_altitude": 24000,
           "initial_speed": 270,
@@ -562,7 +562,7 @@
         {
           "cruise_altitude": 29000,
           "star": "JONZE8",
-          "route": "/. JONZE8",
+          "flight_strip_route": "/. JONZE8",
           "initial_controller": "32",
           "initial_altitude": 24000,
           "initial_speed": 270,

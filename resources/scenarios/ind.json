@@ -673,7 +673,7 @@
           ],
           "destination": "KLGA",
           "exit": "KLYNE",
-          "route": "MAREO1 KLYNE WWSHR TEESY Q186 WEVEL ETG MIP4"
+          "waypoints": "MAREO1 KLYNE WWSHR TEESY Q186 WEVEL ETG MIP4"
         },
         {
           "airlines": [
@@ -686,7 +686,7 @@
           ],
           "destination": "KATL",
           "exit": "MYS",
-          "route": "DAWNN1 MYS HITMN NEWBB IHAVE MTHEW CHPPR1"
+          "waypoints": "DAWNN1 MYS HITMN NEWBB IHAVE MTHEW CHPPR1"
         },
         {
           "airlines": [
@@ -702,7 +702,7 @@
           ],
           "destination": "KDEN",
           "exit": "SPI",
-          "route": "ROCKY1 SPI PWE BRWRY LAWGR4"
+          "waypoints": "ROCKY1 SPI PWE BRWRY LAWGR4"
         },
         {
           "airlines": [
@@ -715,7 +715,7 @@
           ],
           "destination": "KDCA",
           "exit": "MAREO",
-          "route": "MAREO1 MAREO APE J30 LUISE FRDMM7"
+          "waypoints": "MAREO1 MAREO APE J30 LUISE FRDMM7"
         },
         {
           "airlines": [
@@ -731,7 +731,7 @@
           ],
           "destination": "KJFK",
           "exit": "KLYNE",
-          "route": "MAREO1 KLYNE Q29 JHW Q476 WLKES PUCKY1"
+          "waypoints": "MAREO1 KLYNE Q29 JHW Q476 WLKES PUCKY1"
         },
         {
           "airlines": [
@@ -744,7 +744,7 @@
           ],
           "destination": "KMCO",
           "exit": "IIU",
-          "route": "DAWNN1 IIU Q79 THRSR ZJAYX GRNCH5"
+          "waypoints": "DAWNN1 IIU Q79 THRSR ZJAYX GRNCH5"
         },
         {
           "airlines": [
@@ -760,7 +760,7 @@
           ],
           "destination": "KORD",
           "exit": "BRATN",
-          "route": "MEARZ7 BRATN BONNT VEECK5"
+          "waypoints": "MEARZ7 BRATN BONNT VEECK5"
         },
         {
           "airlines": [
@@ -770,7 +770,7 @@
           ],
           "destination": "KMDW",
           "exit": "CLLRK",
-          "route": "MEARZ7 MEARZ CLLRK DROSE FISSK7"
+          "waypoints": "MEARZ7 MEARZ CLLRK DROSE FISSK7"
         },
         {
           "airlines": [
@@ -783,7 +783,7 @@
           ],
           "destination": "KCLT",
           "exit": "IIU",
-          "route": "DAWNN1 IIU TAFTT PARQR7"
+          "waypoints": "DAWNN1 IIU TAFTT PARQR7"
         },
         {
           "airlines": [
@@ -793,7 +793,7 @@
           ],
           "destination": "KDFW",
           "exit": "PXV",
-          "route": "OOM5 PXV J131 LIT FEWWW SEEVR4"
+          "waypoints": "OOM5 PXV J131 LIT FEWWW SEEVR4"
         },
         {
           "airlines": [
@@ -809,7 +809,7 @@
           ],
           "destination": "KBOS",
           "exit": "KLYNE",
-          "route": "MAREO1 KLYNE Q29 JHW Q82 PONCT JFUND2"
+          "waypoints": "MAREO1 KLYNE Q29 JHW Q82 PONCT JFUND2"
         },
         {
           "airlines": [
@@ -822,7 +822,7 @@
           ],
           "destination": "KPHX",
           "exit": "STL",
-          "route": "ROCKY1 STL LBL KA39W ZUN EAGUL6"
+          "waypoints": "ROCKY1 STL LBL KA39W ZUN EAGUL6"
         },
         {
           "airlines": [
@@ -835,7 +835,7 @@
           ],
           "destination": "KEWR",
           "exit": "BDOCK",
-          "route": "MAREO1 BDOCK DJB DORET J584 SLT FQM3"
+          "waypoints": "MAREO1 BDOCK DJB DORET J584 SLT FQM3"
         },
         {
           "airlines": [
@@ -845,7 +845,7 @@
           ],
           "destination": "KAUS",
           "exit": "PXV",
-          "route": "OOM5 PXV J131 LIT BROBB WINDU SEWZY6"
+          "waypoints": "OOM5 PXV J131 LIT BROBB WINDU SEWZY6"
         },
         {
           "airlines": [
@@ -855,7 +855,7 @@
           ],
           "destination": "KHOU",
           "exit": "PXV",
-          "route": "OOM5 PXV J29 VISQA MUDHO BAKRE Q29 HARES SWEUP WAPPL7"
+          "waypoints": "OOM5 PXV J29 VISQA MUDHO BAKRE Q29 HARES SWEUP WAPPL7"
         },
         {
           "airlines": [
@@ -871,7 +871,7 @@
           ],
           "destination": "KDTW",
           "exit": "CLLRK",
-          "route": "MEARZ7 MEARZ CLLRK DROSE SWAYD HANBL3"
+          "waypoints": "MEARZ7 MEARZ CLLRK DROSE SWAYD HANBL3"
         }
       ],
       "exit_categories": {
@@ -1049,7 +1049,7 @@
           "airports": ["KIND"],
           "description": "Lower (8k-) arrivals from the CVG TRACON.",
           "waypoints": "CVG N039.18.54.764,W085.19.40.398/ho1S VHP",
-          "route": "./.CVG.VHP",
+          "flight_strip_route": "./.CVG.VHP",
           "aircraft": ["prop"],
           "initial_controller": "21W",
           "initial_altitude": [6000, 8000],
@@ -1084,7 +1084,7 @@
           "airports": ["KIND"],
           "description": "Higher aircraft (9k+) arrivals from the CVG TRACON.",
           "waypoints": "CVG GEENY/ho1D T315 VHP",
-          "route": "./.CVG.T315.VHP",
+          "flight_strip_route": "./.CVG.T315.VHP",
           "aircraft": ["turboprop"],
           "initial_controller": "21W",
           "initial_altitude": [10000, 12000],
@@ -1119,7 +1119,7 @@
           "airports": ["KIND"],
           "description": "Non-Turbojet arrivals from CMH TRACON",
           "waypoints": "DQN MOTTS/a8000-/ho1S V50 VHP",
-          "route": "./.DQN.V70.VHP",
+          "flight_strip_route": "./.DQN.V70.VHP",
           "aircraft": ["prop", "turboprop"],
           "initial_controller": "11U",
           "initial_altitude": [6000, 8000, 10000, 12000],
@@ -1159,7 +1159,7 @@
           "airports": ["KIND"],
           "description": "Non-Turbojet arrivals from FWA TRACON",
           "waypoints": "FWA DEEKS/a4000/ho1S V11 WELDO KIND",
-          "route": "./.FWA.V11.WELDO",
+          "flight_strip_route": "./.FWA.V11.WELDO",
           "aircraft": ["prop", "turboprop"],
           "initial_controller": "51F",
           "initial_altitude": [6000, 8000, 10000],
@@ -1199,7 +1199,7 @@
           "airports": ["KIND"],
           "description": "Non-Turbojet arrivals from GUS TRACON",
           "waypoints": "BVT N040.13.51.074,W086.54.32.827/ho1W JAKKS/a9000- V399 VHP",
-          "route": "./.BVT.V399.VHP",
+          "flight_strip_route": "./.BVT.V399.VHP",
           "aircraft": ["prop", "turboprop"],
           "initial_controller": "41W",
           "initial_altitude": [5000, 7000, 9000, 11000],
@@ -1244,7 +1244,7 @@
           "airports": ["KIND"],
           "description": "Non-Turbojet arrivals from SDF TRACON",
           "waypoints": "N038.40.50.624,W085.38.43.114 N038.55.44.252,W085.48.38.545/a9000-/ho1S KIND",
-          "route": "./.KIND",
+          "flight_strip_route": "./.KIND",
           "aircraft": ["prop", "turboprop"],
           "initial_controller": "64D",
           "initial_altitude": [6000, 8000, 10000, 12000],
@@ -1289,7 +1289,7 @@
           "airports": ["KIND"],
           "description": "Non-Turbojet arrivals from HUF TRACON",
           "waypoints": "TTH N039.31.36.350,W087.05.26.321/ho1W KIND",
-          "route": "./.TTH..KIND",
+          "flight_strip_route": "./.TTH..KIND",
           "aircraft": ["prop", "turboprop"],
           "initial_controller": "31H",
           "initial_altitude": [3000, 5000, 7000, 9000],
@@ -1324,7 +1324,7 @@
           "airports": ["KIND"],
           "description": "Non-Turbojet arrivals from NE",
           "waypoints": "HIGLA SNKPT CLANG KIND",
-          "route": "./.TTH..KIND",
+          "flight_strip_route": "./.TTH..KIND",
           "aircraft": ["prop", "turboprop"],
           "initial_controller": "11U",
           "initial_altitude": [4000, 6000, 8000, 10000],
@@ -1365,7 +1365,7 @@
           "star": "RACYR6",
           "spawn": "PXV@0.9",
           "waypoint_actions": { "RACYR": "ho1B" },
-          "route": "./.PXV.RACYR6",
+          "flight_strip_route": "./.PXV.RACYR6",
           "aircraft": ["prop", "turboprop"],
           "initial_controller": "31G",
           "initial_altitude": [5000, 7000, 9000, 11000],
@@ -1403,7 +1403,7 @@
       "arrivals": [
         {
           "spawn": "GLNCH@0.1",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1435,7 +1435,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D GIIBS/sssp5R BUPTE JOCKE/a12000-16000 FAMIL/a10000+/ho1F MOSLY/a7000+ KNIGT/a6000/s210 DOCEY/a6000/s210/flyover/t230",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1467,7 +1467,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D GIIBS/sssp5R BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/ho1F KNIGT/a6000/s210/d3000 DOCEY/s210/flyover N039.32.33.890,W086.21.59.979 N039.34.37.926,W086.24.40.462/rd BGTEN/clearapp",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1499,7 +1499,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D GIIBS/sssp23L BUPTE JOCKE/a12000-16000 FAMIL/a10000+/ho1F MOSLY/a7000+ KNIGT/a6000/s210 RAMEY/a6000/s210/flyover/t050",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1531,7 +1531,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D GIIBS/sssp23L BUPTE JOCKE/a12000-16000 FAMIL/a10000+ MOSLY/a7000+/ho1F KNIGT/a6000/s210/d4000 RAMEY/s210/flyover N039.48.30.786,W086.01.06.110 N039.50.33.558,W086.04.05.077/ld BBIRD/clearapp",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1563,7 +1563,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D GIIBS/sssp14 BUPTE JOCKE/a12000-16000 OPEVE/a10000+ PDIDY ROGIE/a7000+/s230/ho1F PNFLD/a6000/s210 WONOK/a6000/s210/flyover/t320",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1595,7 +1595,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D GIIBS/sssp14 BUPTE JOCKE/a12000-16000 OPEVE/a10000+ PDIDY ROGIE/a7000+/s230/ho1F PNFLD/a6000/s210 WONOK/a6000/s210/flyover/t320",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1627,7 +1627,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D/s250 GIIBS/sssp32 BUPTE/ho1F SADLE/a7000+/s230 OZMOE/a4500/s210",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1659,7 +1659,7 @@
       "arrivals": [
         {
           "waypoints": "GLNCH EASEL/a14000-19000/ho1D/s250 GIIBS/sssp32 BUPTE/ho1F SADLE/a7000+/s230 OZMOE/a4500/s210",
-          "route": "/. HAGAL.GIIBS4",
+          "flight_strip_route": "/. HAGAL.GIIBS4",
           "star": "GIIBS4",
           "aircraft": ["jet"],
           "initial_controller": "C83",
@@ -1691,7 +1691,7 @@
       "arrivals": [
         {
           "spawn": "EMMLY@0.0",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1719,7 +1719,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B OPPIE/a11000-16000/sssp5L ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230/ho1F PETYN/a6000/s210 WANOB/flyover/t229",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1747,7 +1747,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B OPPIE/a11000-16000/sssp5L ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230/ho1F PETYN/a6000/s210/d4000 WANOB/flyover N039.37.29.835,W086.34.32.021 N039.34.44.120,W086.31.15.805/ld FTBLL/clearapp",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1775,7 +1775,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B OPPIE/a11000-16000/sssp23R ATILE/a13000- BBACK/a10000+/ho1F CIBOV/a7000+/s230 PETYN/a6000/s210 ZOSAR/flyover/t050",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1803,7 +1803,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B OPPIE/a11000-16000/sssp23R ATILE/a13000- BBACK/a10000+ CIBOV/a7000+/s230/ho1F PETYN/a6000/s210/d5000 ZOSAR/flyover N039.57.24.145,W086.08.29.902 N039.55.31.851,W086.05.17.202/rd RACEN/clearapp",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1831,7 +1831,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B/s250 OPPIE/a11000-16000/sssp14 ATILE/a13000-/ho1F AADIE KEADY/a4000/s210",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1863,7 +1863,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B/s250 OPPIE/a11000-16000/sssp14 ATILE/a13000-/ho1F AADIE KEADY/a4000/s210",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1895,7 +1895,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B OPPIE/a11000-16000/sssp32 ATILE/a13000- BBACK/a10000+ EBEDE/a7000+/s230/ho1F PNFLD/a6000/s210 ZASNI/flyover/t140",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1927,7 +1927,7 @@
       "arrivals": [
         {
           "waypoints": "EMMLY JAKKS/ho1B OPPIE/a11000-16000/sssp32 ATILE/a13000- BBACK/a10000+ EBEDE/a7000+/s230/ho1F PNFLD/a6000/s210 ZASNI/flyover/t140",
-          "route": "/. ELANR.JAKKS2",
+          "flight_strip_route": "/. ELANR.JAKKS2",
           "star": "JAKKS2",
           "initial_controller": "G51",
           "initial_altitude": 27000,
@@ -1959,7 +1959,7 @@
       "arrivals": [
         {
           "spawn": "GARTE@0.0",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -1987,7 +1987,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000/sssp5L GAZPA/a7000+/s230/ho1F PETYN/a6000/s210 WANOB/flyover/t229",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2015,7 +2015,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000/sssp5L GAZPA/a7000+/s230/ho1F PETYN/a6000/s210/d4000 WANOB/flyover N039.37.29.835,W086.34.32.021 N039.34.44.120,W086.31.15.805/ld FTBLL/clearapp",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2043,7 +2043,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000+/sssp23R MRRRK/a7000+/s230/ho1F PETYN/a6000/s210 ZOSAR/a6000/s210/flyover/t050",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2071,7 +2071,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000+/sssp23R MRRRK/a7000+/s230/ho1F PETYN/a6000/s210/d5000 ZOSAR/flyover N039.57.24.145,W086.08.29.902 N039.55.31.851,W086.05.17.202/rd RACEN/clearapp",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2099,7 +2099,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000/s250/sssp14/h090/d7000/ho1F",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2127,7 +2127,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000/s250/sssp14/h090/d7000/ho1F",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2155,7 +2155,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000+/sssp32 FRENY/a7000+/s230/ho1F PNFLD/a6000/s210 ZASNI/flyover/t140",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2183,7 +2183,7 @@
       "arrivals": [
         {
           "waypoints": "GARTE CIRGO/a11000+/ho1B EKEKE/a10000+/sssp32/ho1F FRENY/a7000+/s230 PNFLD/a6000/s210 ZASNI/flyover/t140",
-          "route": "/. KOLTS.KOLTS2",
+          "flight_strip_route": "/. KOLTS.KOLTS2",
           "star": "KOLTS2",
           "initial_controller": "C35",
           "initial_altitude": 21000,
@@ -2214,7 +2214,7 @@
           "waypoint_actions": {
             "RACYR": "ho"
           },
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 23000,
@@ -2245,7 +2245,7 @@
           "waypoint_actions": {
             "RACYR": "ho"
           },
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 24000,
@@ -2277,7 +2277,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B/sssp5L SMUKE/ho1F FIIRE WESLE/a6000+ WAAYN/a5000/s210",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2309,7 +2309,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B SMUKE/sssp5L/ho1F FIIRE WESLE/a6000+ WAAYN/a5000/s210/clearapp",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2341,7 +2341,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B SMUKE/sssp23R FIIRE WOTSN/a11000+ DUBBX/a10000+/ho1F BLSTR/a7000+/s230 PETYN/a6000/s210 ZOSAR/a6000/s210/flyover/t050",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2373,7 +2373,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B SMUKE/sssp23R FIIRE WOTSN/a11000+ DUBBX/a10000+ BLSTR/a7000+/s230/ho1F PETYN/a6000/s210/d5000 ZOSAR/flyover N039.57.24.145,W086.08.29.902 N039.55.31.851,W086.05.17.202/rd RACEN/clearapp",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2405,7 +2405,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B SMUKE/sssp14 FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+/s230/ho1F PNFLD/a6000/s210 WONOK/a6000/s210/flyover/t320",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2437,7 +2437,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B SMUKE/sssp14 FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+/s230/ho1F PNFLD/a6000/s210 WONOK/a6000/s210/flyover/t320",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2469,7 +2469,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B SMUKE/sssp32 FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+/s230/ho1F PNFLD/a6000/s210 ZASNI/a6000/s210/flyover/t140",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2501,7 +2501,7 @@
       "arrivals": [
         {
           "waypoints": "GAMLE/a15000-19000 RACYR/a12000-19000/ho1B SMUKE/sssp32 FIIRE EDIIE/a11000+ COCOO/a10000+ CIRAM/a7000+/s230/ho1F PNFLD/a6000/s210 ZASNI/a6000/s210/flyover/t140",
-          "route": "/. RACYR.SMUKE3",
+          "flight_strip_route": "/. RACYR.SMUKE3",
           "star": "SMUKE3",
           "initial_controller": "C34",
           "initial_altitude": 17000,
@@ -2533,7 +2533,7 @@
       "arrivals": [
         {
           "spawn": "JEEDR@0.0",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 24000,
@@ -2581,7 +2581,7 @@
         },
         {
           "spawn": "SRGNT@0.0",
-          "route": "/. SRGNT.SNKPT2",
+          "flight_strip_route": "/. SRGNT.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 24000,
@@ -2612,7 +2612,7 @@
           "waypoint_actions": {
             "ARCAB": "ho"
           },
-          "route": "/. SJAYY.SNKPT2",
+          "flight_strip_route": "/. SJAYY.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "G35",
           "initial_altitude": 23000,
@@ -2636,7 +2636,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D BABNE/a11500-15000/sssp5R CCUUK LOVNS/a10000-11000/s250/ho1F NADEE/a7000+/s230 KNIGT/a6000/s210 DOCEY/flyover/t230",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,
@@ -2688,7 +2688,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D BABNE/a11500-15000/sssp5R CCUUK LOVNS/a10000-11000/s250 NADEE/a7000+/s230/ho1F KNIGT/a6000/s210/d3000 DOCEY/flyover N039.32.33.890,W086.21.59.979 N039.34.37.926,W086.24.40.462/rd BGTEN/clearapp",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,
@@ -2740,7 +2740,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D/sssp23L BABNE/a11500-15000/ho1F CCUUK FEMGO/a8000-9000 LLARY/a5000/s210",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,
@@ -2792,7 +2792,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D/sssp23L BABNE/a11500-15000/ho1F CCUUK FEMGO/a8000-9000 LLARY/a5000/s210/clearapp",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,
@@ -2844,7 +2844,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D/sssp14 BABNE/a11500-15000 CCUUK ARTJR/a10000+ WEIER/a7000+/s230/ho1F CRCLE/a6000/s210 ORIKE/flyover/t320",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,
@@ -2896,7 +2896,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D/sssp14 BABNE/a11500-15000 CCUUK ARTJR/a10000+ WEIER/a7000+/s230/ho1F CRCLE/a6000/s210 ORIKE/flyover/t320",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,
@@ -2948,7 +2948,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D/sssp32 BABNE/a11500-15000 CCUUK ARTJR/a10000+ WEIER/a7000+/s230/ho1F CRCLE/a6000/s210 ZESIT/flyover/t140",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,
@@ -3000,7 +3000,7 @@
       "arrivals": [
         {
           "waypoints": "DOTKE/a23000- SNKPT/a14000-19000/ho1D/sssp32 BABNE/a11500-15000 CCUUK ARTJR/a10000+ WEIER/a7000+/s230/ho1F CRCLE/a6000/s210 ZESIT/flyover/t140",
-          "route": "/. RINTE.SNKPT2",
+          "flight_strip_route": "/. RINTE.SNKPT2",
           "star": "SNKPT2",
           "initial_controller": "C33",
           "initial_altitude": 23000,

@@ -249,7 +249,7 @@
           "exit": "WAGUN",
           "destination": "KIAH",
           "altitude": [33000, 35000],
-          "route": "WAGUN ABI DIESL DRLLR5",
+          "waypoints": "WAGUN ABI DIESL DRLLR5",
           "airlines": [
             {
               "icao": "SKW",
@@ -267,7 +267,7 @@
           "exit": "ABI",
           "destination": "KIAH",
           "altitude": 33000,
-          "route": "ABI DIESL DRLLR5",
+          "waypoints": "ABI DIESL DRLLR5",
           "airlines": [
             {
               "icao": "SKW",
@@ -285,7 +285,7 @@
           "exit": "HNKER.JOVEM",
           "destination": "KDFW",
           "altitude": [25000, 27000],
-          "route": "HNKER JOVEM6",
+          "waypoints": "HNKER JOVEM6",
           "airlines": [
             {
               "icao": "JIA",
@@ -309,7 +309,7 @@
           "exit": "HNKER.VKTRY",
           "destination": "KDFW",
           "altitude": [25000, 27000],
-          "route": "HNKER VKTRY2",
+          "waypoints": "HNKER VKTRY2",
           "airlines": [
             {
               "icao": "JIA",
@@ -333,7 +333,7 @@
           "exit": "HNKER.HERBZ",
           "destination": "KDAL",
           "altitude": [31000, 33000, 35000, 37000],
-          "route": "HNKER HERBZ2",
+          "waypoints": "HNKER HERBZ2",
           "airlines": [
             {
               "icao": "SWA"
@@ -344,7 +344,7 @@
           "exit": "HNKER.JFRYE",
           "destination": "KDAL",
           "altitude": [27000, 33000, 35000, 37000],
-          "route": "HNKER JFRYE5",
+          "waypoints": "HNKER JFRYE5",
           "airlines": [
             {
               "icao": "SWA"
@@ -355,7 +355,7 @@
           "exit": "GEEKY",
           "destination": "KDFW",
           "altitude": [25000, 27000],
-          "route": "GEEKY SOCKK4",
+          "waypoints": "GEEKY SOCKK4",
           "airlines": [
             {
               "icao": "UPS",
@@ -367,7 +367,7 @@
           "exit": "CDS",
           "destination": "KSDF",
           "altitude": [25000, 27000],
-          "route": "CDS IRW RZC MOOCH MBELL5",
+          "waypoints": "CDS IRW RZC MOOCH MBELL5",
           "airlines": [
             {
               "icao": "UPS",
@@ -379,7 +379,7 @@
           "exit": "SPADE",
           "destination": "KPHX",
           "altitude": 34000,
-          "route": "SPADE LORAT ZUN EAGUL6",
+          "waypoints": "SPADE LORAT ZUN EAGUL6",
           "airlines": [
             {
               "icao": "ENY",
@@ -391,7 +391,7 @@
           "exit": "OLLEY",
           "destination": "KPHX",
           "altitude": [28000, 30000, 32000],
-          "route": "OLLEY ELP DRRVR PINNG1",
+          "waypoints": "OLLEY ELP DRRVR PINNG1",
           "airlines": [
             {
               "icao": "ENY",
@@ -403,7 +403,7 @@
           "exit": "CDS",
           "destination": "KAFW",
           "altitude": 21000,
-          "route": "CDS SPS MOTZA1",
+          "waypoints": "CDS SPS MOTZA1",
           "airlines": [
             {
               "icao": "CFS",
@@ -415,7 +415,7 @@
           "exit": "SPS",
           "destination": "KMEM",
           "altitude": [35000, 37000],
-          "route": "SPS GRAZN LITTR HOBRK4",
+          "waypoints": "SPS GRAZN LITTR HOBRK4",
           "airlines": [
             {
               "icao": "FDX",
@@ -427,7 +427,7 @@
           "exit": "DHT",
           "destination": "KDEN",
           "altitude": [36000],
-          "route": "DHT ZIGEE NIIXX4",
+          "waypoints": "DHT ZIGEE NIIXX4",
           "airlines": [
             {
               "icao": "SKW",
@@ -439,7 +439,7 @@
           "exit": "TXO",
           "destination": "KLAS",
           "altitude": [30000, 36000, 40000],
-          "route": "TXO J72 ABQ HAHAA RKSTR4",
+          "waypoints": "TXO J72 ABQ HAHAA RKSTR4",
           "airlines": [
             {
               "icao": "SWA"
@@ -450,7 +450,7 @@
           "exit": "TXO",
           "destination": "KABQ",
           "altitude": [28000, 30000],
-          "route": "TXO RECKN COLTR4",
+          "waypoints": "TXO RECKN COLTR4",
           "airlines": [
             {
               "icao": "FDX",
@@ -462,7 +462,7 @@
           "exit": "TURKI",
           "destination": "KDFW",
           "altitude": [23000, 25000, 27000],
-          "route": "TURKI VKTRY2",
+          "waypoints": "TURKI VKTRY2",
           "airlines": [
             {
               "icao": "JIA",
@@ -599,7 +599,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 17000,
           "initial_controller": "C64",
-          "route": "KATZZ BRHMA",
+          "flight_strip_route": "KATZZ BRHMA",
           "waypoints": "KATZZ N033.27.23.389,W100.44.44.564/ho BRHMA"
         }
       ]
@@ -622,7 +622,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 17000,
           "initial_controller": "C64",
-          "route": "OWUPO LBB",
+          "flight_strip_route": "OWUPO LBB",
           "waypoints": "N035.04.12.369,W102.28.44.826 N034.30.39.399,W102.14.52.227/ho LBB"
         }
       ]
@@ -653,7 +653,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 17000,
           "initial_controller": "C64",
-          "route": "SJT KLBB",
+          "flight_strip_route": "SJT KLBB",
           "waypoints": "N032.32.42.240,W101.09.07.229 N032.50.41.358,W101.19.52.098/ho N033.05.02.645,W101.28.18.101"
         }
       ]
@@ -681,7 +681,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 17000,
           "initial_controller": "C64",
-          "route": "GTH KLBB",
+          "flight_strip_route": "GTH KLBB",
           "waypoints": "GTH N033.44.59.409,W100.43.16.151/ho N033.43.26.863,W101.03.23.082"
         }
       ]
@@ -704,7 +704,7 @@
           "initial_altitude": 25000,
           "assigned_altitude": 17000,
           "initial_controller": "C64",
-          "route": "DEBRA FLATT",
+          "flight_strip_route": "DEBRA FLATT",
           "waypoints": "DEBRA N033.44.22.248,W102.54.59.935/ho FLATT"
         }
       ]
@@ -727,7 +727,7 @@
           "initial_altitude": 20000,
           "assigned_altitude": 17000,
           "initial_controller": "C64",
-          "route": "ABI LBB",
+          "flight_strip_route": "ABI LBB",
           "waypoints": "ABI N033.07.15.717,W100.56.07.391/ho N033.16.01.798,W101.10.43.222"
         }
       ]

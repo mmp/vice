@@ -49,7 +49,7 @@
           "altitude": [29000, 31000, 33000, 35000, 37000],
           "destination": "KBWI",
           "exit": "KRITR",
-          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+          "waypoints": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
         },
         {
           "airlines": [
@@ -60,7 +60,7 @@
           "altitude": [29000, 31000, 33000],
           "destination": "KPIT",
           "exit": "KRITR",
-          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+          "waypoints": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
         },
         {
           "airlines": [
@@ -71,7 +71,7 @@
           "altitude": [29000, 31000, 33000],
           "destination": "KABE",
           "exit": "KRITR",
-          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+          "waypoints": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
         },
         {
           "airlines": [
@@ -82,7 +82,7 @@
           "altitude": [35000, 37000, 39000],
           "destination": "EDDM",
           "exit": "KRITR",
-          "route": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
+          "waypoints": "KRITR FILDS N036.47.15.000,W080.43.30.000/delete"
         },
         {
           "airlines": [
@@ -96,7 +96,7 @@
           "altitude": [32000, 34000],
           "destination": "KSLC",
           "exit": "CLAWD",
-          "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
+          "waypoints": "CLAWD N036.52.30.000,W081.11.30.000/delete"
         },
         {
           "airlines": [
@@ -110,7 +110,7 @@
           "altitude": [33000, 35000, 37000],
           "destination": "KJFK",
           "exit": "CLAWD",
-          "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
+          "waypoints": "CLAWD N036.52.30.000,W081.11.30.000/delete"
         },
         {
           "airlines": [
@@ -121,7 +121,7 @@
           "altitude": [34000, 36000],
           "destination": "KMSY",
           "exit": "CLAWD",
-          "route": "CLAWD N036.52.30.000,W081.11.30.000/delete"
+          "waypoints": "CLAWD N036.52.30.000,W081.11.30.000/delete"
         }
       ],
       "approaches": {
@@ -173,7 +173,7 @@
           "initial_speed": 270,
           "cruise_altitude": 33000,
           "star": "PARQR7",
-          "route": "/. PARQR7",
+          "flight_strip_route": "/. PARQR7",
           "is_rnav": true,
           "cleared_altitude": 11000,
           "waypoints": "WILUM/a24000+/ho SUZNN/a17000+ PARQR/a20000-/s250 NCOMA/a11000 BOATN CAMPR/delete"
@@ -204,7 +204,7 @@
           "initial_speed": 270,
           "cruise_altitude": 33000,
           "star": "PARQR7",
-          "route": "/. PARQR7",
+          "flight_strip_route": "/. PARQR7",
           "is_rnav": true,
           "cleared_altitude": 12000,
           "waypoints": "WILUM/a24000+/ho SUZNN/a17000+ PARQR/a20000-/s250 PAYKN/a12000-15000 THACK/a12000 BBQEE CEDOX VALLL/delete"
@@ -232,7 +232,7 @@
           "assigned_altitude": 17000,
           "initial_speed": 290,
           "cruise_altitude": 23000,
-          "route": "GMONY WAMUR JUNNR OPENS YELKS KWOOD TANCE BURGG",
+          "flight_strip_route": "GMONY WAMUR JUNNR OPENS YELKS KWOOD TANCE BURGG",
           "star": "JUNNR4",
           "waypoints": "GMONY WAMUR/ho JUNNR OPENS/a17000 YELKS KWOOD TANCE BURGG/delete"
         }
@@ -262,7 +262,7 @@
           "initial_altitude": 21000,
           "initial_speed": 290,
           "cruise_altitude": 21000,
-          "route": "BURGG MURKY KHAOS TRAKS DEMNZ",
+          "flight_strip_route": "BURGG MURKY KHAOS TRAKS DEMNZ",
           "star": "TRAKS4",
           "waypoints": "BURGG MURKY/ho KHAOS TRAKS DEMNZ/delete"
         }

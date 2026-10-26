@@ -278,7 +278,7 @@
           "exit": "SHPRD",
           "destination": "KLAX",
           "altitude": 38000,
-          "route": "SHPRD4 SHPRD BURGG MEMFS FSM IRW J78 DRK J231 HIPPI GABBL HLYWD1",
+          "waypoints": "SHPRD4 SHPRD BURGG MEMFS FSM IRW J78 DRK J231 HIPPI GABBL HLYWD1",
           "airlines": [
             {
               "icao": "AAL",
@@ -290,7 +290,7 @@
           "exit": "SHPRD",
           "destination": "KLAX",
           "altitude": 32000,
-          "route": "SHPRD4 SHPRD VXV HITMN ARG KF33E IRW J78 ABQ INW DRK GABBL HLYWD1",
+          "waypoints": "SHPRD4 SHPRD VXV HITMN ARG KF33E IRW J78 ABQ INW DRK GABBL HLYWD1",
           "airlines": [
             {
               "icao": "DAL",
@@ -302,7 +302,7 @@
           "exit": "ROZBO",
           "destination": "KMIA",
           "altitude": 38000,
-          "route": "ROZBO5 ROZBO SLITT SMPRR ELMSZ Q97 DEBRL CSTAL2",
+          "waypoints": "ROZBO5 ROZBO SLITT SMPRR ELMSZ Q97 DEBRL CSTAL2",
           "airlines": [
             {
               "icao": "DAL",
@@ -314,7 +314,7 @@
           "exit": "BOUSY",
           "destination": "KBOS",
           "altitude": 33000,
-          "route": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
+          "waypoints": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
           "airlines": [
             {
               "icao": "JBU",
@@ -326,7 +326,7 @@
           "exit": "FEBEL",
           "destination": "KBOS",
           "altitude": 37000,
-          "route": "HURIC4 FEBEL GUILD JAMIE CONFR Q133 JFK ROBUC3",
+          "waypoints": "HURIC4 FEBEL GUILD JAMIE CONFR Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "FFT",
@@ -338,7 +338,7 @@
           "exit": "SHPRD",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD IPTAY CHOPZ THRSR VLKNN Q30 IZAAC YUYUN BEREE2",
+          "waypoints": "SHPRD4 SHPRD IPTAY CHOPZ THRSR VLKNN Q30 IZAAC YUYUN BEREE2",
           "airlines": [
             {
               "icao": "AAL",
@@ -350,7 +350,7 @@
           "exit": "SHPRD",
           "destination": "KATL",
           "altitude": 28000,
-          "route": "SHPRD4 SHPRD LEAVI OZZZI1",
+          "waypoints": "SHPRD4 SHPRD LEAVI OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -362,7 +362,7 @@
           "exit": "SHPRD",
           "destination": "KLAS",
           "altitude": 32000,
-          "route": "SHPRD4 SHPRD VXV HITMN LOPPY KM33G IRW NOSEW KA33Y GUP HAHAA RKSTR3",
+          "waypoints": "SHPRD4 SHPRD VXV HITMN LOPPY KM33G IRW NOSEW KA33Y GUP HAHAA RKSTR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -374,7 +374,7 @@
           "exit": "SHPRD",
           "destination": "KPHX",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD VXV J46 BNA Q36 RZC TUL EZEEE FTI J244 ZUN EAGUL6",
+          "waypoints": "SHPRD4 SHPRD VXV J46 BNA Q36 RZC TUL EZEEE FTI J244 ZUN EAGUL6",
           "airlines": [
             {
               "icao": "AAL",
@@ -386,7 +386,7 @@
           "exit": "CARML",
           "destination": "KEWR",
           "altitude": 35000,
-          "route": "OXFRD5 CARML QUART PHLBO4",
+          "waypoints": "OXFRD5 CARML QUART PHLBO4",
           "airlines": [
             {
               "icao": "EDV",
@@ -398,7 +398,7 @@
           "exit": "SHPRD",
           "destination": "KORD",
           "altitude": 36000,
-          "route": "SHPRD4 SHPRD HVQ FWA WATSN4",
+          "waypoints": "SHPRD4 SHPRD HVQ FWA WATSN4",
           "airlines": [
             {
               "icao": "AAL",
@@ -410,7 +410,7 @@
           "exit": "SHPRD",
           "destination": "KBNA",
           "altitude": 28000,
-          "route": "SHPRD4 SHPRD VXV SWFFT2",
+          "waypoints": "SHPRD4 SHPRD VXV SWFFT2",
           "airlines": [
             {
               "icao": "EDV",
@@ -422,7 +422,7 @@
           "exit": "SHPRD",
           "destination": "KSLC",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD HMV LOZ BWG CODED MUPIE FRACA WENIL EKR LEEHY5",
+          "waypoints": "SHPRD4 SHPRD HMV LOZ BWG CODED MUPIE FRACA WENIL EKR LEEHY5",
           "airlines": [
             {
               "icao": "DAL",
@@ -434,7 +434,7 @@
           "exit": "CARML",
           "destination": "KEWR",
           "altitude": 35000,
-          "route": "OXFRD5 CARML QUART PHLBO4",
+          "waypoints": "OXFRD5 CARML QUART PHLBO4",
           "airlines": [
             {
               "icao": "UAL",
@@ -446,7 +446,7 @@
           "exit": "ROZBO",
           "destination": "KFLL",
           "altitude": 36000,
-          "route": "ROZBO5 ROZBO CAKET Q97 PRMUS CUUDA3",
+          "waypoints": "ROZBO5 ROZBO CAKET Q97 PRMUS CUUDA3",
           "airlines": [
             {
               "icao": "JBU",
@@ -458,7 +458,7 @@
           "exit": "ROZBO",
           "destination": "KMCO",
           "altitude": 36000,
-          "route": "ROZBO5 ROZBO SLITT SMPRR Q85 LPERD GTOUT1",
+          "waypoints": "ROZBO5 ROZBO SLITT SMPRR Q85 LPERD GTOUT1",
           "airlines": [
             {
               "icao": "DAL",
@@ -470,7 +470,7 @@
           "exit": "BOUSY",
           "destination": "KLGA",
           "altitude": 35000,
-          "route": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
+          "waypoints": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "AAL",
@@ -482,7 +482,7 @@
           "exit": "SHPRD",
           "destination": "KSTL",
           "altitude": 40000,
-          "route": "SHPRD4 SHPRD VXV BNA BOOSH3",
+          "waypoints": "SHPRD4 SHPRD VXV BNA BOOSH3",
           "airlines": [
             {
               "icao": "SWA",
@@ -494,7 +494,7 @@
           "exit": "BOUSY",
           "destination": "KBOS",
           "altitude": 33000,
-          "route": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
+          "waypoints": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
           "airlines": [
             {
               "icao": "DAL",
@@ -506,7 +506,7 @@
           "exit": "ROZBO",
           "destination": "KMIA",
           "altitude": 36000,
-          "route": "ROZBO5 ROZBO SLITT SMPRR ELMSZ Q97 DEBRL CSTAL2",
+          "waypoints": "ROZBO5 ROZBO SLITT SMPRR ELMSZ Q97 DEBRL CSTAL2",
           "airlines": [
             {
               "icao": "AAL",
@@ -518,7 +518,7 @@
           "exit": "SHPRD",
           "destination": "KIAH",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD BURGG MERDN AEX GESNR1",
+          "waypoints": "SHPRD4 SHPRD BURGG MERDN AEX GESNR1",
           "airlines": [
             {
               "icao": "UAL",
@@ -530,7 +530,7 @@
           "exit": "SHPRD",
           "destination": "KORD",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD DOOGE Q93 HEVAN BONNT VEECK5",
+          "waypoints": "SHPRD4 SHPRD DOOGE Q93 HEVAN BONNT VEECK5",
           "airlines": [
             {
               "icao": "UAL",
@@ -542,7 +542,7 @@
           "exit": "DAWTS",
           "destination": "KTPA",
           "altitude": 32000,
-          "route": "HOOKZ5 DAWTS MRPIT Q409 PUPYY BAAMF DADES1",
+          "waypoints": "HOOKZ5 DAWTS MRPIT Q409 PUPYY BAAMF DADES1",
           "airlines": [
             {
               "icao": "DAL",
@@ -554,7 +554,7 @@
           "exit": "SHPRD",
           "destination": "KSEA",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD HMV FLM VHP MACES DNV PIA BURKK KG66I OGALE KP69G ONL Q152 IKFOM SYMPL KU06O KU12M MLP GLASR3",
+          "waypoints": "SHPRD4 SHPRD HMV FLM VHP MACES DNV PIA BURKK KG66I OGALE KP69G ONL Q152 IKFOM SYMPL KU06O KU12M MLP GLASR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -566,7 +566,7 @@
           "exit": "DAWTS",
           "destination": "KTPA",
           "altitude": 32000,
-          "route": "HOOKZ5 DAWTS MRPIT Q409 PUPYY BAAMF DADES1",
+          "waypoints": "HOOKZ5 DAWTS MRPIT Q409 PUPYY BAAMF DADES1",
           "airlines": [
             {
               "icao": "DAL",
@@ -578,7 +578,7 @@
           "exit": "SHPRD",
           "destination": "KATL",
           "altitude": 28000,
-          "route": "SHPRD4 SHPRD LEAVI OZZZI1",
+          "waypoints": "SHPRD4 SHPRD LEAVI OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -590,7 +590,7 @@
           "exit": "ROZBO",
           "destination": "KMCO",
           "altitude": 36000,
-          "route": "ROZBO5 ROZBO GARIC OSTNN Y289 BAHAA HIBAC ALYNA4",
+          "waypoints": "ROZBO5 ROZBO GARIC OSTNN Y289 BAHAA HIBAC ALYNA4",
           "airlines": [
             {
               "icao": "SWA",
@@ -602,7 +602,7 @@
           "exit": "SHPRD",
           "destination": "KSEA",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD HMV FLM VHP MACES DNV PIA BURKK KG66I OGALE KP69G ONL Q152 IKFOM SYMPL KU06O KU12M MLP GLASR3",
+          "waypoints": "SHPRD4 SHPRD HMV FLM VHP MACES DNV PIA BURKK KG66I OGALE KP69G ONL Q152 IKFOM SYMPL KU06O KU12M MLP GLASR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -614,7 +614,7 @@
           "exit": "FEBEL",
           "destination": "KJFK",
           "altitude": 33000,
-          "route": "HURIC4 FEBEL GUILD SAWED Q97 BYSEL RADDS SIE CAMRN4",
+          "waypoints": "HURIC4 FEBEL GUILD SAWED Q97 BYSEL RADDS SIE CAMRN4",
           "airlines": [
             {
               "icao": "EDV",
@@ -626,7 +626,7 @@
           "exit": "SHPRD",
           "destination": "KBNA",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD VXV SWFFT2",
+          "waypoints": "SHPRD4 SHPRD VXV SWFFT2",
           "airlines": [
             {
               "icao": "SWA",
@@ -638,7 +638,7 @@
           "exit": "BOUSY",
           "destination": "KLGA",
           "altitude": 33000,
-          "route": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
+          "waypoints": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -650,7 +650,7 @@
           "exit": "CARML",
           "destination": "KPHL",
           "altitude": 31000,
-          "route": "OXFRD5 CARML BBDOL PAATS4",
+          "waypoints": "OXFRD5 CARML BBDOL PAATS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -662,7 +662,7 @@
           "exit": "SHPRD",
           "destination": "KCVG",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD HMV CUBIM JAKIE6",
+          "waypoints": "SHPRD4 SHPRD HMV CUBIM JAKIE6",
           "airlines": [
             {
               "icao": "EDV",
@@ -674,7 +674,7 @@
           "exit": "DANCO",
           "destination": "KMSP",
           "altitude": 34000,
-          "route": "LWOOD5 DANCO HVQ FWA GIJ KAMMA KKILR3",
+          "waypoints": "LWOOD5 DANCO HVQ FWA GIJ KAMMA KKILR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -686,7 +686,7 @@
           "exit": "CARML",
           "destination": "CYYZ",
           "altitude": 37000,
-          "route": "OXFRD5 CARML LDN PYTON WOZEE LINNG3",
+          "waypoints": "OXFRD5 CARML LDN PYTON WOZEE LINNG3",
           "airlines": [
             {
               "icao": "JZA",
@@ -698,7 +698,7 @@
           "exit": "DANCO",
           "destination": "KDTW",
           "altitude": 36000,
-          "route": "LWOOD5 DANCO BKW JAMOX BONZZ2",
+          "waypoints": "LWOOD5 DANCO BKW JAMOX BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -710,7 +710,7 @@
           "exit": "BOUSY",
           "destination": "KDCA",
           "altitude": 19000,
-          "route": "BEXGO5 BOUSY WAVES CAPSS3",
+          "waypoints": "BEXGO5 BOUSY WAVES CAPSS3",
           "airlines": [
             {
               "icao": "EDV",
@@ -722,7 +722,7 @@
           "exit": "CARML",
           "destination": "KIAD",
           "altitude": 23000,
-          "route": "OXFRD5 CARML DORRN CAVLR5",
+          "waypoints": "OXFRD5 CARML DORRN CAVLR5",
           "airlines": [
             {
               "icao": "UAL",
@@ -734,7 +734,7 @@
           "exit": "BOUSY",
           "destination": "KBWI",
           "altitude": 25000,
-          "route": "BEXGO5 BOUSY THHMP RAVNN6",
+          "waypoints": "BEXGO5 BOUSY THHMP RAVNN6",
           "airlines": [
             {
               "icao": "SWA",
@@ -746,7 +746,7 @@
           "exit": "BOUSY",
           "destination": "KBOS",
           "altitude": 35000,
-          "route": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
+          "waypoints": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
           "airlines": [
             {
               "icao": "JBU",
@@ -758,7 +758,7 @@
           "exit": "DANCO",
           "destination": "KMDW",
           "altitude": 36000,
-          "route": "LWOOD5 DANCO HVQ FWA PANGG5",
+          "waypoints": "LWOOD5 DANCO HVQ FWA PANGG5",
           "airlines": [
             {
               "icao": "SWA",
@@ -770,7 +770,7 @@
           "exit": "SHPRD",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "SHPRD4 SHPRD BURGG MEMFS LIT MEEOW FEWWW SEEVR4",
+          "waypoints": "SHPRD4 SHPRD BURGG MEMFS LIT MEEOW FEWWW SEEVR4",
           "airlines": [
             {
               "icao": "AAL",
@@ -782,7 +782,7 @@
           "exit": "SHPRD",
           "destination": "KDEN",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD LVT CNG SGF ICT OATHE CLASH4",
+          "waypoints": "SHPRD4 SHPRD LVT CNG SGF ICT OATHE CLASH4",
           "airlines": [
             {
               "icao": "SWA",
@@ -794,7 +794,7 @@
           "exit": "SHPRD",
           "destination": "KMEM",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD GQO MATCN MONAA4",
+          "waypoints": "SHPRD4 SHPRD GQO MATCN MONAA4",
           "airlines": [
             {
               "icao": "FDX",
@@ -806,7 +806,7 @@
           "exit": "DANCO",
           "destination": "KDTW",
           "altitude": 38000,
-          "route": "LWOOD5 DANCO BKW JAMOX BONZZ2",
+          "waypoints": "LWOOD5 DANCO BKW JAMOX BONZZ2",
           "airlines": [
             {
               "icao": "FFT",
@@ -818,7 +818,7 @@
           "exit": "SHPRD",
           "destination": "KATL",
           "altitude": 28000,
-          "route": "SHPRD4 SHPRD LEAVI OZZZI1",
+          "waypoints": "SHPRD4 SHPRD LEAVI OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -830,7 +830,7 @@
           "exit": "ROZBO",
           "destination": "KMCO",
           "altitude": 34000,
-          "route": "ROZBO5 ROZBO IGARY Q85 LPERD GTOUT1",
+          "waypoints": "ROZBO5 ROZBO IGARY Q85 LPERD GTOUT1",
           "airlines": [
             {
               "icao": "JBU",
@@ -842,7 +842,7 @@
           "exit": "BOUSY",
           "destination": "KLGA",
           "altitude": 31000,
-          "route": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
+          "waypoints": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "AAL",
@@ -854,7 +854,7 @@
           "exit": "BOUSY",
           "destination": "KDCA",
           "altitude": 21000,
-          "route": "BEXGO5 BOUSY WAVES CAPSS3",
+          "waypoints": "BEXGO5 BOUSY WAVES CAPSS3",
           "airlines": [
             {
               "icao": "JIA",
@@ -866,7 +866,7 @@
           "exit": "BOUSY",
           "destination": "CYUL",
           "altitude": 37000,
-          "route": "BEXGO5 BOUSY GEARS BBOBO Q22 LLUND CAM JASDU PBERG CARTR5",
+          "waypoints": "BEXGO5 BOUSY GEARS BBOBO Q22 LLUND CAM JASDU PBERG CARTR5",
           "airlines": [
             {
               "icao": "JZA",
@@ -878,7 +878,7 @@
           "exit": "CARML",
           "destination": "KPHL",
           "altitude": 27000,
-          "route": "OXFRD5 CARML BBDOL PAATS4",
+          "waypoints": "OXFRD5 CARML BBDOL PAATS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -890,7 +890,7 @@
           "exit": "SHPRD",
           "destination": "KAUS",
           "altitude": 40000,
-          "route": "SHPRD4 SHPRD BURGG MERDN AEX WEEED WLEEE7",
+          "waypoints": "SHPRD4 SHPRD BURGG MERDN AEX WEEED WLEEE7",
           "airlines": [
             {
               "icao": "SWA",
@@ -902,7 +902,7 @@
           "exit": "DANCO",
           "destination": "KCLE",
           "altitude": 38000,
-          "route": "LWOOD5 DANCO HVQ JANYS ROLLN2",
+          "waypoints": "LWOOD5 DANCO HVQ JANYS ROLLN2",
           "airlines": [
             {
               "icao": "FFT",
@@ -914,7 +914,7 @@
           "exit": "SHPRD",
           "destination": "KMSY",
           "altitude": 36000,
-          "route": "SHPRD4 SHPRD BURGG Q22 CATLN SJI MNSTR2",
+          "waypoints": "SHPRD4 SHPRD BURGG Q22 CATLN SJI MNSTR2",
           "airlines": [
             {
               "icao": "MXY",
@@ -926,7 +926,7 @@
           "exit": "SHPRD",
           "destination": "KORD",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD HMV APE FWA WATSN4",
+          "waypoints": "SHPRD4 SHPRD HMV APE FWA WATSN4",
           "airlines": [
             {
               "icao": "ENY",
@@ -938,7 +938,7 @@
           "exit": "DAWTS",
           "destination": "KJAX",
           "altitude": 34000,
-          "route": "HOOKZ5 DAWTS MRPIT Q409 SESUE ESENT LUNNI1",
+          "waypoints": "HOOKZ5 DAWTS MRPIT Q409 SESUE ESENT LUNNI1",
           "airlines": [
             {
               "icao": "MXY",
@@ -950,7 +950,7 @@
           "exit": "SHPRD",
           "destination": "KDFW",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD IPTAY CHOPZ THRSR VLKNN Q30 IZAAC YUYUN BEREE2",
+          "waypoints": "SHPRD4 SHPRD IPTAY CHOPZ THRSR VLKNN Q30 IZAAC YUYUN BEREE2",
           "airlines": [
             {
               "icao": "AAL",
@@ -962,7 +962,7 @@
           "exit": "SHPRD",
           "destination": "KATL",
           "altitude": 28000,
-          "route": "SHPRD4 SHPRD LEAVI OZZZI1",
+          "waypoints": "SHPRD4 SHPRD LEAVI OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -974,7 +974,7 @@
           "exit": "BOUSY",
           "destination": "KDCA",
           "altitude": 17000,
-          "route": "BEXGO5 BOUSY WAVES CAPSS3",
+          "waypoints": "BEXGO5 BOUSY WAVES CAPSS3",
           "airlines": [
             {
               "icao": "EDV",
@@ -986,7 +986,7 @@
           "exit": "FEBEL",
           "destination": "TJSJ",
           "altitude": 35000,
-          "route": "HURIC4 FEBEL ECG AR8 OXANA L452 LNHOM L452 SLUKA FIPEK Y355 PLING RTE7 SAALR",
+          "waypoints": "HURIC4 FEBEL ECG AR8 OXANA L452 LNHOM L452 SLUKA FIPEK Y355 PLING RTE7 SAALR",
           "airlines": [
             {
               "icao": "JBU",
@@ -998,7 +998,7 @@
           "exit": "DANCO",
           "destination": "KMSP",
           "altitude": 30000,
-          "route": "LWOOD5 DANCO HVQ FWA GIJ KAMMA KKILR3",
+          "waypoints": "LWOOD5 DANCO HVQ FWA GIJ KAMMA KKILR3",
           "airlines": [
             {
               "icao": "DAL",
@@ -1010,7 +1010,7 @@
           "exit": "BOUSY",
           "destination": "KLGA",
           "altitude": 31000,
-          "route": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
+          "waypoints": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -1022,7 +1022,7 @@
           "exit": "BOUSY",
           "destination": "KBWI",
           "altitude": 25000,
-          "route": "BEXGO5 BOUSY THHMP RAVNN6",
+          "waypoints": "BEXGO5 BOUSY THHMP RAVNN6",
           "airlines": [
             {
               "icao": "SWA",
@@ -1034,7 +1034,7 @@
           "exit": "CARML",
           "destination": "KPHL",
           "altitude": 31000,
-          "route": "OXFRD5 CARML BBDOL PAATS4",
+          "waypoints": "OXFRD5 CARML BBDOL PAATS4",
           "airlines": [
             {
               "icao": "FFT",
@@ -1046,7 +1046,7 @@
           "exit": "SHPRD",
           "destination": "KORD",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD HMV ILLSA LEVII MALDN FWA WATSN4",
+          "waypoints": "SHPRD4 SHPRD HMV ILLSA LEVII MALDN FWA WATSN4",
           "airlines": [
             {
               "icao": "ENY",
@@ -1058,7 +1058,7 @@
           "exit": "BOUSY",
           "destination": "KBOS",
           "altitude": 33000,
-          "route": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
+          "waypoints": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
           "airlines": [
             {
               "icao": "DAL",
@@ -1070,7 +1070,7 @@
           "exit": "ROZBO",
           "destination": "KMCO",
           "altitude": 38000,
-          "route": "ROZBO5 ROZBO SLITT SMPRR Q85 LPERD SNFLD3",
+          "waypoints": "ROZBO5 ROZBO SLITT SMPRR Q85 LPERD SNFLD3",
           "airlines": [
             {
               "icao": "FFT",
@@ -1082,7 +1082,7 @@
           "exit": "SHPRD",
           "destination": "KBNA",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD VXV SWFFT2",
+          "waypoints": "SHPRD4 SHPRD VXV SWFFT2",
           "airlines": [
             {
               "icao": "SWA",
@@ -1094,7 +1094,7 @@
           "exit": "ROZBO",
           "destination": "KFLL",
           "altitude": 38000,
-          "route": "ROZBO5 ROZBO GARIC JRDAN Y291 MAJIK CUUDA3",
+          "waypoints": "ROZBO5 ROZBO GARIC JRDAN Y291 MAJIK CUUDA3",
           "airlines": [
             {
               "icao": "SWA",
@@ -1106,7 +1106,7 @@
           "exit": "SHPRD",
           "destination": "KATL",
           "altitude": 28000,
-          "route": "SHPRD4 SHPRD LEAVI OZZZI1",
+          "waypoints": "SHPRD4 SHPRD LEAVI OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -1118,7 +1118,7 @@
           "exit": "DANCO",
           "destination": "KMDW",
           "altitude": 40000,
-          "route": "LWOOD5 DANCO HVQ FWA PANGG5",
+          "waypoints": "LWOOD5 DANCO HVQ FWA PANGG5",
           "airlines": [
             {
               "icao": "SWA",
@@ -1130,7 +1130,7 @@
           "exit": "DANCO",
           "destination": "KDTW",
           "altitude": 36000,
-          "route": "LWOOD5 DANCO BKW JAMOX BONZZ2",
+          "waypoints": "LWOOD5 DANCO BKW JAMOX BONZZ2",
           "airlines": [
             {
               "icao": "DAL",
@@ -1142,7 +1142,7 @@
           "exit": "CARML",
           "destination": "KPHL",
           "altitude": 27000,
-          "route": "OXFRD5 CARML BBDOL PAATS4",
+          "waypoints": "OXFRD5 CARML BBDOL PAATS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1154,7 +1154,7 @@
           "exit": "BOUSY",
           "destination": "KLGA",
           "altitude": 31000,
-          "route": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
+          "waypoints": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -1166,7 +1166,7 @@
           "exit": "FEBEL",
           "destination": "KJFK",
           "altitude": 27000,
-          "route": "HURIC4 FEBEL GUILD SAWED Q97 BYSEL RADDS SIE CAMRN4",
+          "waypoints": "HURIC4 FEBEL GUILD SAWED Q97 BYSEL RADDS SIE CAMRN4",
           "airlines": [
             {
               "icao": "EDV",
@@ -1178,7 +1178,7 @@
           "exit": "CARML",
           "destination": "KEWR",
           "altitude": 31000,
-          "route": "OXFRD5 CARML QUART PHLBO4",
+          "waypoints": "OXFRD5 CARML QUART PHLBO4",
           "airlines": [
             {
               "icao": "EDV",
@@ -1190,7 +1190,7 @@
           "exit": "SHPRD",
           "destination": "KATL",
           "altitude": 34000,
-          "route": "SHPRD4 SHPRD LEAVI OZZZI1",
+          "waypoints": "SHPRD4 SHPRD LEAVI OZZZI1",
           "airlines": [
             {
               "icao": "SWA",
@@ -1202,7 +1202,7 @@
           "exit": "DAWTS",
           "destination": "KMIA",
           "altitude": 36000,
-          "route": "HOOKZ5 DAWTS MRPIT CAKET Q97 DEBRL CSTAL2",
+          "waypoints": "HOOKZ5 DAWTS MRPIT CAKET Q97 DEBRL CSTAL2",
           "airlines": [
             {
               "icao": "AAL",
@@ -1214,7 +1214,7 @@
           "exit": "FEBEL",
           "destination": "KISP",
           "altitude": 31000,
-          "route": "HURIC4 FEBEL GUILD SAWED Q97 BYSEL RADDS Q439 SARDI CCC",
+          "waypoints": "HURIC4 FEBEL GUILD SAWED Q97 BYSEL RADDS Q439 SARDI CCC",
           "airlines": [
             {
               "icao": "MXY",
@@ -1226,7 +1226,7 @@
           "exit": "CARML",
           "destination": "KIAD",
           "altitude": 27000,
-          "route": "OXFRD5 CARML DORRN CAVLR5",
+          "waypoints": "OXFRD5 CARML DORRN CAVLR5",
           "airlines": [
             {
               "icao": "EJA",
@@ -1238,7 +1238,7 @@
           "exit": "CARML",
           "destination": "CYYZ",
           "altitude": 35000,
-          "route": "OXFRD5 CARML LDN PYTON WOZEE LINNG3",
+          "waypoints": "OXFRD5 CARML LDN PYTON WOZEE LINNG3",
           "airlines": [
             {
               "icao": "JZA",
@@ -1250,7 +1250,7 @@
           "exit": "CARML",
           "destination": "KPHL",
           "altitude": 27000,
-          "route": "OXFRD5 CARML BBDOL PAATS4",
+          "waypoints": "OXFRD5 CARML BBDOL PAATS4",
           "airlines": [
             {
               "icao": "AAL",
@@ -1262,7 +1262,7 @@
           "exit": "SHPRD",
           "destination": "KATL",
           "altitude": 28000,
-          "route": "SHPRD4 SHPRD LEAVI OZZZI1",
+          "waypoints": "SHPRD4 SHPRD LEAVI OZZZI1",
           "airlines": [
             {
               "icao": "DAL",
@@ -1274,7 +1274,7 @@
           "exit": "BOUSY",
           "destination": "KLGA",
           "altitude": 29000,
-          "route": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
+          "waypoints": "BEXGO5 BOUSY GEARS Q87 HURTS PROUD2",
           "airlines": [
             {
               "icao": "EDV",
@@ -1286,7 +1286,7 @@
           "exit": "BOUSY",
           "destination": "KBOS",
           "altitude": 33000,
-          "route": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
+          "waypoints": "BEXGO5 BOUSY GEARS BBOBO Q22 RBV Q419 JFK ROBUC3",
           "airlines": [
             {
               "icao": "DAL",

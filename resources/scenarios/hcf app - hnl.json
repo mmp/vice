@@ -428,7 +428,7 @@
             }
           ],
           "destination": "PHLI",
-          "route": "LIH",
+          "waypoints": "LIH",
           "exit": "LIH"
         },
         {
@@ -459,7 +459,7 @@
             }
           ],
           "destination": "PHOG",
-          "route": "LNY CAMPS4",
+          "waypoints": "LNY CAMPS4",
           "exit": "LNY"
         },
         {
@@ -490,7 +490,7 @@
             }
           ],
           "destination": "PHKO",
-          "route": "LNY KAYAK6",
+          "waypoints": "LNY KAYAK6",
           "exit": "LNY"
         },
         {
@@ -521,7 +521,7 @@
             }
           ],
           "destination": "PHTO",
-          "route": "PULPS V21 PUMIC V15 ITO",
+          "waypoints": "PULPS V21 PUMIC V15 ITO",
           "exit": "PULPS"
         },
         {
@@ -532,7 +532,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "KOLEA CLUTS R465 CREAN R465 CINNY KO45E NEUPS KU60K TCH KAMPR LONGZ4",
+          "waypoints": "KOLEA CLUTS R465 CREAN R465 CINNY KO45E NEUPS KU60K TCH KAMPR LONGZ4",
           "exit": "KOLEA"
         },
         {
@@ -543,7 +543,7 @@
             }
           ],
           "destination": "KIAH",
-          "route": "CODDY EBBER R577 EDSEL ELKEY C1318 LAX J60 PDZ J50 BLH SPTFR Q4 FUSCO DIESL DRLLR5",
+          "waypoints": "CODDY EBBER R577 EDSEL ELKEY C1318 LAX J60 PDZ J50 BLH SPTFR Q4 FUSCO DIESL DRLLR5",
           "exit": "CODDY"
         },
         {
@@ -585,7 +585,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "CODDY FITES R578 FICKY GOATZ2",
+          "waypoints": "CODDY FITES R578 FICKY GOATZ2",
           "exit": "CODDY"
         },
         {
@@ -627,7 +627,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "KOLEA CLUTS R465 CIVIT R585 AUDIA SNAXX RYDRR2",
+          "waypoints": "KOLEA CLUTS R465 CIVIT R585 AUDIA SNAXX RYDRR2",
           "exit": "KOLEA"
         },
         {
@@ -658,7 +658,7 @@
             }
           ],
           "destination": "KSFO",
-          "route": "KOLEA CLUTS R465 CIVIT R585 GITLE ALANN CINNY PIRAT3",
+          "waypoints": "KOLEA CLUTS R465 CIVIT R585 GITLE ALANN CINNY PIRAT3",
           "exit": "KOLEA"
         },
         {
@@ -677,7 +677,7 @@
             }
           ],
           "destination": "KSLC",
-          "route": "KOLEA CLUTS R465 CIVIT R465 CINNY OAK MOGEE Q124 SLOWN FLECC YUTES1",
+          "waypoints": "KOLEA CLUTS R465 CIVIT R465 CINNY OAK MOGEE Q124 SLOWN FLECC YUTES1",
           "exit": "KOLEA"
         },
         {
@@ -688,7 +688,7 @@
             }
           ],
           "destination": "PANC",
-          "route": "APACK ZOULU 3000N/15700W 3500N/15700W 4000N/15700W 4500N/15600W 5000N/15500W 5500N/15300W 5700N/15300W HOM AMOTT4",
+          "waypoints": "APACK ZOULU 3000N/15700W 3500N/15700W 4000N/15700W 4500N/15600W 5000N/15500W 5500N/15300W 5700N/15300W HOM AMOTT4",
           "exit": "APACK"
         },
         {
@@ -715,7 +715,7 @@
             }
           ],
           "destination": "KSEA",
-          "route": "APACK ZOULU A331 SEDAR LATAY HAWKZ8",
+          "waypoints": "APACK ZOULU A331 SEDAR LATAY HAWKZ8",
           "exit": "APACK"
         },
         {
@@ -742,7 +742,7 @@
             }
           ],
           "destination": "RKSI",
-          "route": "LILIA V15 CANON 2500N/17000W 2700N/18000E 2900N/17000E 2906N/16500E 2900N/16000E 3100N/15000E TONIK G223 DAGDA Y820 INUBO Y16 SAPRA Y685 CUN CUN2M",
+          "waypoints": "LILIA V15 CANON 2500N/17000W 2700N/18000E 2900N/17000E 2906N/16500E 2900N/16000E 3100N/15000E TONIK G223 DAGDA Y820 INUBO Y16 SAPRA Y685 CUN CUN2M",
           "exit": "LILIA"
         },
         {
@@ -761,7 +761,7 @@
             }
           ],
           "destination": "RJAA",
-          "route": "LILIA DOGIF 2500N/17000W 2700N/18000E 2800N/17000E 2900N/16000E 3100N/15000E TONIK G223 BEGAD Y817 MENIX Y813 LUBLA",
+          "waypoints": "LILIA DOGIF 2500N/17000W 2700N/18000E 2800N/17000E 2900N/16000E 3100N/15000E TONIK G223 BEGAD Y817 MENIX Y813 LUBLA",
           "exit": "LILIA"
         },
         {
@@ -780,7 +780,7 @@
             }
           ],
           "destination": "RJAA",
-          "route": "PUPPI CRESP 2300N/17000W 2400N/18000E 2500N/17000E 2700N/16000E 3000N/15000E TONIK G223 BEGAD Y817 MENIX Y813 LUBLA",
+          "waypoints": "PUPPI CRESP 2300N/17000W 2400N/18000E 2500N/17000E 2700N/16000E 3000N/15000E TONIK G223 BEGAD Y817 MENIX Y813 LUBLA",
           "exit": "PUPPI"
         },
         {
@@ -803,7 +803,7 @@
             }
           ],
           "destination": "RJTT",
-          "route": "PUPPI CRESP 2400N/17000W 2600N/18000E 2700N/17000E 2800N/16000E 3000N/15000E TONIK G223 BEGAD Y817 OLVEK Y824 AROSA",
+          "waypoints": "PUPPI CRESP 2400N/17000W 2600N/18000E 2700N/17000E 2800N/16000E 3000N/15000E TONIK G223 BEGAD Y817 OLVEK Y824 AROSA",
           "exit": "PUPPI"
         },
         {
@@ -814,7 +814,7 @@
             }
           ],
           "destination": "RPLL",
-          "route": "KATHS A450 NATIE A450 UNZ G467 YELLO G467 JOM POLIO",
+          "waypoints": "KATHS A450 NATIE A450 UNZ G467 YELLO G467 JOM POLIO",
           "exit": "KATHS"
         },
         {
@@ -829,7 +829,7 @@
             }
           ],
           "destination": "RJBB",
-          "route": "PUPPI CRESP 2200N/17000W 2300N/18000E 2400N/17000E 2600N/16000E 2800N/15000E UKATA BUBDO Y47 TAPOP Y46 CANDY",
+          "waypoints": "PUPPI CRESP 2200N/17000W 2300N/18000E 2400N/17000E 2600N/16000E 2800N/15000E UKATA BUBDO Y47 TAPOP Y46 CANDY",
           "exit": "PUPPI"
         },
         {
@@ -844,7 +844,7 @@
             }
           ],
           "destination": "RJBB",
-          "route": "LILIA CANON DOGIF 2400N/17000W 2500N/18000E 2400N/17000E 2400N/16000E 2600N/15000E UKATA BUBDO Y47 TAPOP Y46 EVERT",
+          "waypoints": "LILIA CANON DOGIF 2400N/17000W 2500N/18000E 2400N/17000E 2400N/16000E 2600N/15000E UKATA BUBDO Y47 TAPOP Y46 EVERT",
           "exit": "LILIA"
         },
         {
@@ -855,7 +855,7 @@
             }
           ],
           "destination": "PGUM",
-          "route": "NONNI BRIUN A450 NATIE A450 FONUG A450 HOPPY FIGOR OBALE",
+          "waypoints": "NONNI BRIUN A450 NATIE A450 FONUG A450 HOPPY FIGOR OBALE",
           "exit": "NONNI"
         },
         {
@@ -866,7 +866,7 @@
             }
           ],
           "destination": "PGUM",
-          "route": "KATHS HOOPA A450 NATIE A450 DEWSS A450 UNZ",
+          "waypoints": "KATHS HOOPA A450 NATIE A450 DEWSS A450 UNZ",
           "exit": "KATHS"
         },
         {
@@ -877,7 +877,7 @@
             }
           ],
           "destination": "PGUM",
-          "route": "NONNI BRIUN A450 NATIE A450 DEWSS",
+          "waypoints": "NONNI BRIUN A450 NATIE A450 DEWSS",
           "exit": "NONNI"
         },
         {
@@ -888,7 +888,7 @@
             }
           ],
           "destination": "PKMJ",
-          "route": "CHOKO R584 MAZZA 1000N/17700E EFAHU",
+          "waypoints": "CHOKO R584 MAZZA 1000N/17700E EFAHU",
           "exit": "CHOKO"
         },
         {
@@ -911,7 +911,7 @@
             }
           ],
           "destination": "YSSY",
-          "route": "CARRP A579 CHEEM A579 PUPEX A579 UBLIN A579 UPSAD ABARB RIKNI N774 MARLN",
+          "waypoints": "CARRP A579 CHEEM A579 PUPEX A579 UBLIN A579 UPSAD ABARB RIKNI N774 MARLN",
           "exit": "CARRP"
         },
         {
@@ -922,7 +922,7 @@
             }
           ],
           "destination": "NSTU",
-          "route": "CARRP DATBE G457 EGKEL G457 LAKER SETTS",
+          "waypoints": "CARRP DATBE G457 EGKEL G457 LAKER SETTS",
           "exit": "CARRP"
         },
         {
@@ -933,7 +933,7 @@
             }
           ],
           "destination": "NFFN",
-          "route": "CARRP A579 CHEEM A579 CUFFY A579 NN",
+          "waypoints": "CARRP A579 CHEEM A579 CUFFY A579 NN",
           "exit": "CARRP"
         },
         {
@@ -944,7 +944,7 @@
             }
           ],
           "destination": "NZAA",
-          "route": "CARRP A579 CHEEM 1500N/16100W 1000N/16300W 0500N/16400W 0000N/16600W ELLMS 1000S/16900W 1500S/17100W OGELA 2000S/17400W 2500S/17600W 3000S/18000E ELPAK",
+          "waypoints": "CARRP A579 CHEEM 1500N/16100W 1000N/16300W 0500N/16400W 0000N/16600W ELLMS 1000S/16900W 1500S/17100W OGELA 2000S/17400W 2500S/17600W 3000S/18000E ELPAK",
           "exit": "CARRP"
         },
         {
@@ -955,7 +955,7 @@
             }
           ],
           "destination": "NSFA",
-          "route": "CARRP DATBE G347 DULCE G347 PUPIS A592 SAMVU SAMVU2B",
+          "waypoints": "CARRP DATBE G347 DULCE G347 PUPIS A592 SAMVU SAMVU2B",
           "exit": "CARRP"
         }
       ],
@@ -2481,7 +2481,7 @@
         {
           "waypoints": "N021.09.30.320,W157.05.05.584 N021.12.59.411,W157.05.42.828 N021.17.56.667,W157.15.58.227/ho BAMBO V12 HNL",
           "cruise_altitude": 8000,
-          "route": "HAPAI3 BAMBO V12 HNL",
+          "flight_strip_route": "HAPAI3 BAMBO V12 HNL",
           "star": "MAGGI3",
           "initial_controller": "C03",
           "initial_altitude": 1000,
@@ -2515,7 +2515,7 @@
         {
           "waypoints": "N021.17.16.230,W156.56.14.285 N021.21.26.656,W157.14.40.499/ho BAMBO V12 HNL",
           "cruise_altitude": 8000,
-          "route": "OGG V6 BLUSH V8 MKK BAMBO V12 HNL",
+          "flight_strip_route": "OGG V6 BLUSH V8 MKK BAMBO V12 HNL",
           "star": "MAGGI3",
           "initial_controller": "C03",
           "initial_altitude": 8000,
@@ -2552,7 +2552,7 @@
         {
           "waypoints": "ZIKAB N021.35.59.630,W158.41.26.700/ho BOOKE/a8000/ho SHIGI HNL",
           "cruise_altitude": 8000,
-          "route": "LIH V15 HNL",
+          "flight_strip_route": "LIH V15 HNL",
           "star": "BOOKE8",
           "initial_controller": "C02",
           "initial_altitude": 13000,

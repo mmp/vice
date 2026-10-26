@@ -57,7 +57,7 @@ func ExtractFromAirports(airports map[av.ICAOAirportCode]*av.Airport, fixes map[
 
 		// Departures
 		for _, dep := range airport.Departures {
-			addFixesFromWaypoints(dep.RouteWaypoints, fixes)
+			addFixesFromWaypoints(dep.Waypoints, fixes)
 		}
 
 		// VFR Routes

@@ -54,7 +54,7 @@
           "exit": "OSPRY",
           "destination": "KLAX",
           "altitude": 34000,
-          "route": "OSPRY REMIS ROZZI Y280 LEV J86 ELP J50 SSO J4 WLVRN ESTWD HLYWD1",
+          "waypoints": "OSPRY REMIS ROZZI Y280 LEV J86 ELP J50 SSO J4 WLVRN ESTWD HLYWD1",
           "airlines": [
             {
               "icao": "DAL",
@@ -70,7 +70,7 @@
           "exit": "OSPRY",
           "destination": "KIAH",
           "altitude": 36000,
-          "route": "OSPRY REMIS ROZZI Y280 LEV LINKK1",
+          "waypoints": "OSPRY REMIS ROZZI Y280 LEV LINKK1",
           "airlines": [
             {
               "icao": "DAL",
@@ -86,7 +86,7 @@
           "exit": "FATHE",
           "destination": "KBOS",
           "altitude": 37000,
-          "route": "FATHE VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3",
+          "waypoints": "FATHE VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "SWA",
@@ -102,7 +102,7 @@
           "exit": "FATHE",
           "destination": "KPHL",
           "altitude": 35000,
-          "route": "FATHE VIYAP Q87 JROSS Q135 RREGG Q117 SAWED Q97 ZJAAY JIIMS4",
+          "waypoints": "FATHE VIYAP Q87 JROSS Q135 RREGG Q117 SAWED Q97 ZJAAY JIIMS4",
           "airlines": [
             {
               "icao": "FDX",
@@ -154,7 +154,7 @@
           "exit": "ROYES",
           "destination": "KBOS",
           "altitude": 45000,
-          "route": "ROYES CRG VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3",
+          "waypoints": "ROYES CRG VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3",
           "airlines": [
             {
               "icao": "N",
@@ -166,7 +166,7 @@
           "exit": "ROYES",
           "destination": "KRDU",
           "altitude": 29000,
-          "route": "ROYES CRG VIYAP Q69 GURGE PETTO DMSTR2",
+          "waypoints": "ROYES CRG VIYAP Q69 GURGE PETTO DMSTR2",
           "airlines": [
             {
               "icao": "N",
@@ -178,7 +178,7 @@
           "exit": "ROYES",
           "destination": "KMDW",
           "altitude": 38000,
-          "route": "ROYES CRG SAV CUTRR EASEL DROSE FISSK7",
+          "waypoints": "ROYES CRG SAV CUTRR EASEL DROSE FISSK7",
           "airlines": [
             {
               "icao": "N",
@@ -249,7 +249,7 @@
           "exit": "BRSTL",
           "destination": "KATL",
           "altitude": 29000,
-          "route": "BRSTL BAXLY LAIRI LARZZ SITTH3",
+          "waypoints": "BRSTL BAXLY LAIRI LARZZ SITTH3",
           "airlines": [
             {
               "icao": "DAL",
@@ -265,7 +265,7 @@
           "exit": "JETIN",
           "destination": "KDFW",
           "altitude": 36000,
-          "route": "JETIN CAPPS CABLO DEFUN MCB PNUTS BEREE3",
+          "waypoints": "JETIN CAPPS CABLO DEFUN MCB PNUTS BEREE3",
           "airlines": [
             {
               "icao": "DAL",
@@ -281,7 +281,7 @@
           "exit": "EXBOX",
           "destination": "KMIA",
           "altitude": 28000,
-          "route": "EXBOX PRMUS DEBRL CSTAL3",
+          "waypoints": "EXBOX PRMUS DEBRL CSTAL3",
           "airlines": [
             {
               "icao": "SWA",
@@ -422,7 +422,7 @@
       "arrivals": [
         {
           "waypoints": "RIPPI/ho ZJAYX ISSZZ ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/a17000+/s290 GRNCH BUGGZ/a13000/s280 BLAYK WHOVL/a10000/s250 HARAM DORII/a8000+/s220 BRICE/a5000/s210 KMCO-36L/delete",
-          "route": "/. GRNCH5",
+          "flight_strip_route": "/. GRNCH5",
           "star": "GRNCH5",
           "initial_controller": "T22",
           "initial_altitude": 35000,
@@ -455,7 +455,7 @@
       "arrivals": [
         {
           "waypoints": "WRENS/ho LPERD NOOMN/a23000+ FORYU/a13000+ NICCK/a12000+ SNFLD GTOUT/a12000/s280 TUGLE HIGGZ/a10000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000+/s210 KMCO-35R/delete",
-          "route": "/. SNFLD3",
+          "flight_strip_route": "/. SNFLD3",
           "star": "SNFLD3",
           "initial_controller": "T22",
           "initial_altitude": 30000,
@@ -483,7 +483,7 @@
       "arrivals": [
         {
           "waypoints": "DAFIN/ho ZOOSS/a24000 WALOP CAMJO MARQO COROE/a11000- GWIIZ EGAGE/a4000/s210 KJAX-8/delete",
-          "route": "/. MARQO3",
+          "flight_strip_route": "/. MARQO3",
           "star": "MARQO3",
           "initial_controller": "H24",
           "initial_altitude": 35000,
@@ -516,7 +516,7 @@
       "arrivals": [
         {
           "waypoints": "APELE/ho DUCHY/a24000 ILTAC/a23000- FORMB OHDEA/a12000/h150 KJAX-8/delete",
-          "route": "/. OHDEA2",
+          "flight_strip_route": "/. OHDEA2",
           "star": "OHDEA2",
           "initial_controller": "T22",
           "initial_altitude": 24000,
@@ -549,7 +549,7 @@
       "arrivals": [
         {
           "waypoints": "WIBID MANWE/ho IDEBE FILLI MEGEE ESENT BENTZ/a24000 CATSU GOTBE/a10000 LUNNI/h240 KJAX-8/delete",
-          "route": "/. LUNNI2",
+          "flight_strip_route": "/. LUNNI2",
           "star": "LUNNI2",
           "initial_controller": "W32",
           "initial_altitude": 35000,
@@ -582,7 +582,7 @@
       "arrivals": [
         {
           "waypoints": "DENIL/ho LAMKE LPERD JAGGZ/a24000+ WEEEK/a16000+ TTHOR/a12000 BIKEZ/a12000/h165 KDAB-7L/delete",
-          "route": "/. TTHOR3",
+          "flight_strip_route": "/. TTHOR3",
           "star": "TTHOR3",
           "initial_controller": "W32",
           "initial_altitude": 31000,

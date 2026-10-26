@@ -229,7 +229,7 @@
           ],
           "destination": "KCLT",
           "exit": "OKNEE",
-          "route": "OKNEE MLLET6"
+          "waypoints": "OKNEE MLLET6"
         }
       ]
     },
@@ -307,7 +307,7 @@
           ],
           "destination": "KCLT",
           "exit": "JAYDB",
-          "route": "JAYDB OKNEE MLLET6"
+          "waypoints": "JAYDB OKNEE MLLET6"
         }
       ]
     },
@@ -372,7 +372,7 @@
           ],
           "destination": "KCLT",
           "exit": "WYLMS",
-          "route": "WYLMS OKNEE MLLET6"
+          "waypoints": "WYLMS OKNEE MLLET6"
         }
       ]
     },
@@ -427,7 +427,7 @@
           ],
           "destination": "KTPA",
           "exit": "RAPZZ",
-          "route": "RAPZZ Q135 ELMSZ Q97 WOPNR Q93 DEBRL NICCK DADES2"
+          "waypoints": "RAPZZ Q135 ELMSZ Q97 WOPNR Q93 DEBRL NICCK DADES2"
         }
       ]
     }

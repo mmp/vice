@@ -106,7 +106,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "NTELL OAL KROST LUDOH BUMMP SSKII4",
+          "waypoints": "NTELL OAL KROST LUDOH BUMMP SSKII4",
           "exit": "NTELL"
         },
         {
@@ -128,7 +128,7 @@
             }
           ],
           "destination": "KDEN",
-          "route": "NTELL OAL KROST LUDOH BUMMP SSKII4",
+          "waypoints": "NTELL OAL KROST LUDOH BUMMP SSKII4",
           "exit": "NTELL"
         },
         {
@@ -150,7 +150,7 @@
             }
           ],
           "destination": "KSFO",
-          "route": "NTELL ALWYS CEDES ARCHI",
+          "waypoints": "NTELL ALWYS CEDES ARCHI",
           "exit": "NTELL"
         },
         {
@@ -172,7 +172,7 @@
             }
           ],
           "destination": "KSFO",
-          "route": "NTELL ALWYS CEDES ARCHI",
+          "waypoints": "NTELL ALWYS CEDES ARCHI",
           "exit": "NTELL"
         },
         {
@@ -191,7 +191,7 @@
             }
           ],
           "destination": "KSLC",
-          "route": "NIKOL ASTNN RUBII FASTE BVL YUTES1",
+          "waypoints": "NIKOL ASTNN RUBII FASTE BVL YUTES1",
           "exit": "NIKOL"
         },
         {
@@ -214,7 +214,7 @@
             }
           ],
           "destination": "KLAX",
-          "route": "NTELL FRAME PONDD TAFTO MUPTT IRNMN2",
+          "waypoints": "NTELL FRAME PONDD TAFTO MUPTT IRNMN2",
           "exit": "NTELL.FRAME"
         },
         {
@@ -241,7 +241,7 @@
             }
           ],
           "destination": "KSAN",
-          "route": "NTELL FRAME EHF HUULK COMIX2",
+          "waypoints": "NTELL FRAME EHF HUULK COMIX2",
           "exit": "NTELL.FRAME"
         },
         {
@@ -270,7 +270,7 @@
             }
           ],
           "destination": "KLAS",
-          "route": "NTELL CABAB Q174 FLCHR COKTL4",
+          "waypoints": "NTELL CABAB Q174 FLCHR COKTL4",
           "exit": "NTELL.CABAB"
         },
         {
@@ -299,7 +299,7 @@
             }
           ],
           "destination": "KPHX",
-          "route": "NTELL CABAB Q174 SKANN Q13 PRFUM WOTRO BRUSR1",
+          "waypoints": "NTELL CABAB Q174 SKANN Q13 PRFUM WOTRO BRUSR1",
           "exit": "NTELL.CABAB"
         },
         {
@@ -328,7 +328,7 @@
             }
           ],
           "destination": "KPHX",
-          "route": "NTELL FRAME EHF PMD DECAS J65 BLH HYDRR1",
+          "waypoints": "NTELL FRAME EHF PMD DECAS J65 BLH HYDRR1",
           "exit": "NTELL.FRAME"
         },
         {
@@ -343,7 +343,7 @@
             }
           ],
           "destination": "KPDX",
-          "route": "SWR LMT MOXEE TMBRS3",
+          "waypoints": "SWR LMT MOXEE TMBRS3",
           "exit": "SWR"
         },
         {
@@ -370,7 +370,7 @@
             }
           ],
           "destination": "KSEA",
-          "route": "SHIMR LKV HAWKZ8",
+          "waypoints": "SHIMR LKV HAWKZ8",
           "exit": "SHIMR"
         }
       ],
@@ -467,7 +467,7 @@
       "arrivals": [
         {
           "waypoints": "N037.05.19.221,W120.47.17.493 N037.02.50.343,W120.35.47.964/ho NTELL/a9000",
-          "route": "UTOOB NTELL",
+          "flight_strip_route": "UTOOB NTELL",
           "initial_controller": "11Q",
           "initial_altitude": 19000,
           "initial_speed": 280,
@@ -496,7 +496,7 @@
       "arrivals": [
         {
           "waypoints": "N037.05.19.221,W120.47.17.493 N037.02.50.343,W120.35.47.964/ho NTELL/a5000",
-          "route": "UTOOB NTELL",
+          "flight_strip_route": "UTOOB NTELL",
           "initial_controller": "11Q",
           "initial_altitude": 19000,
           "initial_speed": 280,
@@ -525,7 +525,7 @@
       "arrivals": [
         {
           "waypoints": "CABAB N037.06.41.028,W118.56.05.359/d12000 N037.01.34.866,W119.02.40.702/d11000/ho SANGO",
-          "route": "CABAB SANGO",
+          "flight_strip_route": "CABAB SANGO",
           "initial_controller": "C16",
           "initial_altitude": 19000,
           "assigned_altitude": 17000,
@@ -562,7 +562,7 @@
       "arrivals": [
         {
           "waypoints": "CABAB N037.11.26.247,W118.59.10.231/d12000 N037.07.40.986,W119.10.50.500/d11000/ho NTELL",
-          "route": "CABAB NTELL",
+          "flight_strip_route": "CABAB NTELL",
           "initial_controller": "C16",
           "initial_altitude": 19000,
           "assigned_altitude": 17000,
@@ -599,7 +599,7 @@
       "arrivals": [
         {
           "waypoints": "N037.40.45.075,W119.53.30.699 N037.22.20.922,W119.46.45.715/ho SANGO",
-          "route": "SHIMR SANGO",
+          "flight_strip_route": "SHIMR SANGO",
           "initial_controller": "C22",
           "initial_altitude": 23000,
           "assigned_altitude": 11000,
@@ -635,7 +635,7 @@
       "arrivals": [
         {
           "waypoints": "N037.42.50.677,W120.00.58.090 N037.24.29.435,W119.58.01.759/ho NTELL",
-          "route": "SHIMR NTELL",
+          "flight_strip_route": "SHIMR NTELL",
           "initial_controller": "C22",
           "initial_altitude": 22000,
           "assigned_altitude": 11000,

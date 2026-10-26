@@ -52,7 +52,7 @@
           ],
           "destination": "KBOS",
           "exit": "SOPHA",
-          "route": "SOPHA ETECK GRUBR Y299 SEELO WAALT Q131 EARZZ JAMIE LEEAH Q133 JFK ROBUC3"
+          "waypoints": "SOPHA ETECK GRUBR Y299 SEELO WAALT Q131 EARZZ JAMIE LEEAH Q133 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -63,7 +63,7 @@
           ],
           "destination": "KJFK",
           "exit": "SOPHA",
-          "route": "SOPHA ETECK PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA Q108 SIE CAMRN5"
+          "waypoints": "SOPHA ETECK PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA Q108 SIE CAMRN5"
         },
         {
           "airlines": [
@@ -73,7 +73,7 @@
           ],
           "destination": "KHPN",
           "exit": "SOPHA",
-          "route": "SOPHA ETECK PELCN AR18 FLRDA JRDAN WAALT Q131 KALDA Q108 SIE BOUNO5"
+          "waypoints": "SOPHA ETECK PELCN AR18 FLRDA JRDAN WAALT Q131 KALDA Q108 SIE BOUNO5"
         },
         {
           "airlines": [
@@ -83,7 +83,7 @@
           ],
           "destination": "KIAD",
           "exit": "SOPHA",
-          "route": "SOPHA LENDS AR16 SEELO YERBA MAYKR TRSSK CAVLR7"
+          "waypoints": "SOPHA LENDS AR16 SEELO YERBA MAYKR TRSSK CAVLR7"
         },
         {
           "airlines": [
@@ -93,7 +93,7 @@
           ],
           "destination": "KPVD",
           "exit": "SOPHA",
-          "route": "SOPHA LENDS AR16 SEELO CHIEZ SUSSA Q117 SAWED Q97 ZJAAY Q167 RIFLE JORDN JORDN2"
+          "waypoints": "SOPHA LENDS AR16 SEELO CHIEZ SUSSA Q117 SAWED Q97 ZJAAY Q167 RIFLE JORDN JORDN2"
         },
         {
           "airlines": [
@@ -103,7 +103,7 @@
           ],
           "destination": "KBDL",
           "exit": "SOPHA",
-          "route": "SOPHA LENDS AR16 SEELO JRDAN WAALT Q131 KALDA CONFR Q481 DPK DPK3"
+          "waypoints": "SOPHA LENDS AR16 SEELO JRDAN WAALT Q131 KALDA CONFR Q481 DPK DPK3"
         },
         {
           "airlines": [
@@ -113,7 +113,7 @@
           ],
           "destination": "KRDU",
           "exit": "BLDOG",
-          "route": "BLDOG MATLK Q87 VIYAP Q69 ISUZO GURGE PETTO DMSTR2"
+          "waypoints": "BLDOG MATLK Q87 VIYAP Q69 ISUZO GURGE PETTO DMSTR2"
         },
         {
           "airlines": [
@@ -123,7 +123,7 @@
           ],
           "destination": "KTPA",
           "exit": "BLDOG",
-          "route": "BLDOG BAIRN ODDEL T336 YOJIX LAL"
+          "waypoints": "BLDOG BAIRN ODDEL T336 YOJIX LAL"
         },
         {
           "airlines": [
@@ -133,7 +133,7 @@
           ],
           "destination": "KISP",
           "exit": "BLDOG",
-          "route": "BLDOG MATLK Q87 VIYAP SUSYQ Q87 JROSS JOHAR Q109 DFENC SAWED Q97 KALDA SARDI1"
+          "waypoints": "BLDOG MATLK Q87 VIYAP SUSYQ Q87 JROSS JOHAR Q109 DFENC SAWED Q97 KALDA SARDI1"
         },
         {
           "airlines": [
@@ -143,7 +143,7 @@
           ],
           "destination": "KCLT",
           "exit": "BLDOG",
-          "route": "BLDOG MATLK Q87 ZERBO Q87 VIYAP CHECR STOCR5"
+          "waypoints": "BLDOG MATLK Q87 ZERBO Q87 VIYAP CHECR STOCR5"
         },
         {
           "airlines": [
@@ -157,7 +157,7 @@
           ],
           "destination": "KRSW",
           "exit": "BLDOG",
-          "route": "BLDOG DIDDY LBELL SHFTY6"
+          "waypoints": "BLDOG DIDDY LBELL SHFTY6"
         },
         {
           "airlines": [
@@ -171,7 +171,7 @@
           ],
           "destination": "KAVL",
           "exit": "BLDOG",
-          "route": "BLDOG MATLK Q87 ZERBO Q87 VIYAP"
+          "waypoints": "BLDOG MATLK Q87 ZERBO Q87 VIYAP"
         },
         {
           "airlines": [
@@ -185,7 +185,7 @@
           ],
           "destination": "KHFD",
           "exit": "BLDOG",
-          "route": "BLDOG MATLK Q87 VIYAP SUSYQ Q87 JROSS JOHAR Q109 DFENC SAWED Q97 ZJAAY Q108 BYSEL RADDS Q439 SARDI T320 RICED KEYED"
+          "waypoints": "BLDOG MATLK Q87 VIYAP SUSYQ Q87 JROSS JOHAR Q109 DFENC SAWED Q97 ZJAAY Q108 BYSEL RADDS Q439 SARDI T320 RICED KEYED"
         },
         {
           "airlines": [
@@ -199,7 +199,7 @@
           ],
           "destination": "KHFD",
           "exit": "BLDOG",
-          "route": "BLDOG MATLK Q87 VIYAP SUSYQ Q87 JROSS JOHAR Q109 DFENC SAWED Q97 ZJAAY Q108 BYSEL RADDS Q439 SARDI T320 RICED KEYED"
+          "waypoints": "BLDOG MATLK Q87 VIYAP SUSYQ Q87 JROSS JOHAR Q109 DFENC SAWED Q97 ZJAAY Q108 BYSEL RADDS Q439 SARDI T320 RICED KEYED"
         },
         {
           "airlines": [
@@ -213,7 +213,7 @@
           ],
           "destination": "KTPA",
           "exit": "BLDOG",
-          "route": "BLDOG LAL"
+          "waypoints": "BLDOG LAL"
         },
         {
           "airlines": [
@@ -227,7 +227,7 @@
           ],
           "destination": "KCRG",
           "exit": "BLDOG",
-          "route": "BLDOG BAIRN T347 FOXAM"
+          "waypoints": "BLDOG BAIRN T347 FOXAM"
         },
         {
           "airlines": [
@@ -241,7 +241,7 @@
           ],
           "destination": "MYAT",
           "exit": "LEBUR",
-          "route": "LEBUR"
+          "waypoints": "LEBUR"
         },
         {
           "airlines": [
@@ -255,7 +255,7 @@
           ],
           "destination": "MYAM",
           "exit": "LEBUR",
-          "route": "LEBUR"
+          "waypoints": "LEBUR"
         },
         {
           "airlines": [
@@ -269,7 +269,7 @@
           ],
           "destination": "MYNN",
           "exit": "LEBUR",
-          "route": "LEBUR JAKEL ZFP157028 HANKX"
+          "waypoints": "LEBUR JAKEL ZFP157028 HANKX"
         }
       ],
       "hold_for_release": true
@@ -345,7 +345,7 @@
           ],
           "destination": "KSBP",
           "exit": "SHEDS",
-          "route": "SNDLR3 SHEDS ODDEL SMELZ Q116 PATOY Q116 JAWJA HRT MARVE ACT ELP TUS GBN KOFFA BLH PMD"
+          "waypoints": "SNDLR3 SHEDS ODDEL SMELZ Q116 PATOY Q116 JAWJA HRT MARVE ACT ELP TUS GBN KOFFA BLH PMD"
         },
         {
           "airlines": [
@@ -359,7 +359,7 @@
           ],
           "destination": "KFOK",
           "exit": "SHEDS",
-          "route": "SHEDS WIXED LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA SARDI1"
+          "waypoints": "SHEDS WIXED LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA SARDI1"
         },
         {
           "airlines": [
@@ -373,7 +373,7 @@
           ],
           "destination": "KFOK",
           "exit": "SHEDS",
-          "route": "SHEDS BAHAA AR17 WAALT Q131 ODAWG SAWED Q97 ZJAAY JIIMS4"
+          "waypoints": "SHEDS BAHAA AR17 WAALT Q131 ODAWG SAWED Q97 ZJAAY JIIMS4"
         },
         {
           "airlines": [
@@ -387,7 +387,7 @@
           ],
           "destination": "KLGC",
           "exit": "SHEDS",
-          "route": "SHEDS ODDEL SMELZ Q116 JAWJA"
+          "waypoints": "SHEDS ODDEL SMELZ Q116 JAWJA"
         },
         {
           "airlines": [
@@ -401,7 +401,7 @@
           ],
           "destination": "KLUK",
           "exit": "SHEDS",
-          "route": "SHEDS MATLK Q77 SHRKS TEUFL Q77 HRTWL MUMMI MXEEN JAKIE JAKIE7"
+          "waypoints": "SHEDS MATLK Q77 SHRKS TEUFL Q77 HRTWL MUMMI MXEEN JAKIE JAKIE7"
         },
         {
           "airlines": [
@@ -415,7 +415,7 @@
           ],
           "destination": "KMMU",
           "exit": "SHEDS",
-          "route": "SHEDS GRUBR Y299 SEELO GARIC ZORDO Q111 SWNGR JAIKE4"
+          "waypoints": "SHEDS GRUBR Y299 SEELO GARIC ZORDO Q111 SWNGR JAIKE4"
         },
         {
           "airlines": [
@@ -429,7 +429,7 @@
           ],
           "destination": "0A9",
           "exit": "SHEDS",
-          "route": "SHEDS MATLK Q87 VIYAP"
+          "waypoints": "SHEDS MATLK Q87 VIYAP"
         },
         {
           "airlines": [
@@ -443,7 +443,7 @@
           ],
           "destination": "KJAX",
           "exit": "SHEDS",
-          "route": "SHEDS MATLK ORL POGIE2"
+          "waypoints": "SHEDS MATLK ORL POGIE2"
         },
         {
           "airlines": [
@@ -457,7 +457,7 @@
           ],
           "destination": "KFLL",
           "exit": "SPNER",
-          "route": "SPNER VKZ"
+          "waypoints": "SPNER VKZ"
         },
         {
           "airlines": [
@@ -471,7 +471,7 @@
           ],
           "destination": "KOPF",
           "exit": "SPNER",
-          "route": "SPNER VKZ"
+          "waypoints": "SPNER VKZ"
         },
         {
           "airlines": [
@@ -485,7 +485,7 @@
           ],
           "destination": "MYAM",
           "exit": "SWOMP",
-          "route": "SWOMP ZFP"
+          "waypoints": "SWOMP ZFP"
         },
         {
           "airlines": [
@@ -495,7 +495,7 @@
           ],
           "destination": "MYAM",
           "exit": "SWOMP",
-          "route": "SWOMP ZFP"
+          "waypoints": "SWOMP ZFP"
         },
         {
           "airlines": [
@@ -505,7 +505,7 @@
           ],
           "destination": "MYAM",
           "exit": "SWOMP",
-          "route": "SWOMP ZFP"
+          "waypoints": "SWOMP ZFP"
         },
         {
           "airlines": [
@@ -519,7 +519,7 @@
           ],
           "destination": "MYNN",
           "exit": "SWOMP",
-          "route": "SWOMP ZFP HANKX"
+          "waypoints": "SWOMP ZFP HANKX"
         },
         {
           "airlines": [
@@ -533,7 +533,7 @@
           ],
           "destination": "MYEH",
           "exit": "SWOMP",
-          "route": "SWOMP ZFP"
+          "waypoints": "SWOMP ZFP"
         },
         {
           "airlines": [
@@ -547,7 +547,7 @@
           ],
           "destination": "KISP",
           "exit": "SHEDS",
-          "route": "SHEDS MATLK Q87 VIYAP LUFFA CHIEZ Q161 KOOKI KALDA SARDI1"
+          "waypoints": "SHEDS MATLK Q87 VIYAP LUFFA CHIEZ Q161 KOOKI KALDA SARDI1"
         }
       ],
       "hold_for_release": true
@@ -591,7 +591,7 @@
           "destination": "KHPN",
           "scratchpad": "TUR",
           "exit": "LENDS",
-          "route": "LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA SARDI1"
+          "waypoints": "LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA SARDI1"
         },
         {
           "airlines": [
@@ -603,7 +603,7 @@
           "destination": "KLAS",
           "scratchpad": "WER",
           "exit": "WELLY",
-          "route": "WELLY JAYMC Y280 LEV J86 INW HAHAA RKSTR4"
+          "waypoints": "WELLY JAYMC Y280 LEV J86 INW HAHAA RKSTR4"
         },
         {
           "airlines": [
@@ -617,7 +617,7 @@
           ],
           "destination": "KCHS",
           "exit": "MATLK",
-          "route": "MATLK Q87 ZERBO Q87 DUCEN Q87 VIYAP SAV BAGGY3"
+          "waypoints": "MATLK Q87 ZERBO Q87 DUCEN Q87 VIYAP SAV BAGGY3"
         },
         {
           "airlines": [
@@ -631,7 +631,7 @@
           "destination": "KTEB",
           "scratchpad": "TUR",
           "exit": "LENDS",
-          "route": "LENDS GRUBR Y299 SEELO GARIC ZORDO Q111 SWNGR JAIKE4"
+          "waypoints": "LENDS GRUBR Y299 SEELO GARIC ZORDO Q111 SWNGR JAIKE4"
         },
         {
           "airlines": [
@@ -652,7 +652,7 @@
           "destination": "KMMU",
           "scratchpad": "TUR",
           "exit": "LENDS",
-          "route": "LENDS GRUBR Y299 SEELO GARIC ZORDO Q111 SWNGR JAIKE4"
+          "waypoints": "LENDS GRUBR Y299 SEELO GARIC ZORDO Q111 SWNGR JAIKE4"
         },
         {
           "airlines": [
@@ -667,7 +667,7 @@
           "destination": "KSUT",
           "scratchpad": "TUR",
           "exit": "LENDS",
-          "route": "LENDS"
+          "waypoints": "LENDS"
         },
         {
           "airlines": [
@@ -682,7 +682,7 @@
           "destination": "KBOW",
           "altitude": 12000,
           "exit": "WELLY",
-          "route": "WELLY LAL"
+          "waypoints": "WELLY LAL"
         },
         {
           "airlines": [
@@ -693,7 +693,7 @@
           "destination": "KCVC",
           "altitude": 12000,
           "exit": "MATLK",
-          "route": "MATLK Q87 VIYAP"
+          "waypoints": "MATLK Q87 VIYAP"
         },
         {
           "airlines": [
@@ -707,7 +707,7 @@
           ],
           "destination": "KLUK",
           "exit": "MATLK",
-          "route": "MATLK Q77 SHRKS ARTUR JAKIE7"
+          "waypoints": "MATLK Q77 SHRKS ARTUR JAKIE7"
         },
         {
           "airlines": [
@@ -722,7 +722,7 @@
           "destination": "KAPF",
           "altitude": 18000,
           "exit": "WELLY",
-          "route": "WELLY BNGOS RSW"
+          "waypoints": "WELLY BNGOS RSW"
         }
       ],
       "hold_for_release": true
@@ -804,7 +804,7 @@
           ],
           "destination": "KJFK",
           "exit": "LENDS",
-          "route": "LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA Q108 SIE CAMRN5"
+          "waypoints": "LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA Q108 SIE CAMRN5"
         },
         {
           "airlines": [
@@ -828,7 +828,7 @@
           ],
           "destination": "KJFK",
           "exit": "LENDS",
-          "route": "LENDS GRUBR Y299 SEELO WAALT Q131 EARZZ JAMIE Q133 JFK ROBUC3"
+          "waypoints": "LENDS GRUBR Y299 SEELO WAALT Q131 EARZZ JAMIE Q133 JFK ROBUC3"
         },
         {
           "airlines": [
@@ -846,7 +846,7 @@
           ],
           "destination": "KISP",
           "exit": "LENDS",
-          "route": "LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA SARDI1"
+          "waypoints": "LENDS PELCN Y309 FLRDA SAGGY CHIEZ Q161 KALDA SARDI1"
         },
         {
           "airlines": [
@@ -865,7 +865,7 @@
           ],
           "destination": "KDCA",
           "exit": "LENDS",
-          "route": "LENDS GRUBR Y299 SEELO GARIC RANAY TANJA WAVES CAPSS4"
+          "waypoints": "LENDS GRUBR Y299 SEELO GARIC RANAY TANJA WAVES CAPSS4"
         },
         {
           "airlines": [
@@ -886,7 +886,7 @@
           ],
           "destination": "KIAD",
           "exit": "LENDS",
-          "route": "LENDS GRUBR Y299 SEELO GARIC Q129 YERBA MAYKR TRSSK CAVLR7"
+          "waypoints": "LENDS GRUBR Y299 SEELO GARIC Q129 YERBA MAYKR TRSSK CAVLR7"
         },
         {
           "airlines": [
@@ -905,7 +905,7 @@
           ],
           "destination": "KEWR",
           "exit": "LENDS",
-          "route": "LENDS GRUBR Y299 SEELO GARIC Q129 AARNN QUART PHLBO4"
+          "waypoints": "LENDS GRUBR Y299 SEELO GARIC Q129 AARNN QUART PHLBO4"
         },
         {
           "airlines": [
@@ -923,7 +923,7 @@
           ],
           "destination": "KCLT",
           "exit": "VIYAP",
-          "route": "VIYAP CHECR STOCR5"
+          "waypoints": "VIYAP CHECR STOCR5"
         },
         {
           "airlines": [
@@ -942,7 +942,7 @@
           ],
           "destination": "KATL",
           "exit": "SHRKS",
-          "route": "SHRKS LAIRI LARZZ SITTH3"
+          "waypoints": "SHRKS LAIRI LARZZ SITTH3"
         },
         {
           "airlines": [
@@ -961,7 +961,7 @@
           ],
           "destination": "KATL",
           "exit": "SHRKS",
-          "route": "SHRKS LAIRI LARZZ SITTH3"
+          "waypoints": "SHRKS LAIRI LARZZ SITTH3"
         },
         {
           "airlines": [
@@ -977,7 +977,7 @@
           ],
           "destination": "KBNA",
           "exit": "KPASA",
-          "route": "KPASA Q118 THRSR SWFFT3"
+          "waypoints": "KPASA Q118 THRSR SWFFT3"
         },
         {
           "airlines": [
@@ -1000,7 +1000,7 @@
           ],
           "destination": "KORD",
           "exit": "KPASA",
-          "route": "KPASA Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5"
+          "waypoints": "KPASA Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5"
         },
         {
           "airlines": [
@@ -1023,7 +1023,7 @@
           ],
           "destination": "KORD",
           "exit": "VIYAP",
-          "route": "VIYAP Q69 GURGE Q93 FISHO Q93 QUIWE CLAWD HVQ WWSHR RRONS KAYYS WYNDE3"
+          "waypoints": "VIYAP Q69 GURGE Q93 FISHO Q93 QUIWE CLAWD HVQ WWSHR RRONS KAYYS WYNDE3"
         },
         {
           "airlines": [
@@ -1041,7 +1041,7 @@
           ],
           "destination": "KPHL",
           "exit": "LENDS",
-          "route": "LENDS PELCN Y309 FLRDA IDOLS SKARP Q101 BGBRD Q101 KALDA ZJAAY JIIMS4"
+          "waypoints": "LENDS PELCN Y309 FLRDA IDOLS SKARP Q101 BGBRD Q101 KALDA ZJAAY JIIMS4"
         },
         {
           "airlines": [
@@ -1056,7 +1056,7 @@
           ],
           "destination": "KIAH",
           "exit": "JAYMC",
-          "route": "JAYMC Y280 LEV NNCEE2"
+          "waypoints": "JAYMC Y280 LEV NNCEE2"
         },
         {
           "airlines": [
@@ -1071,7 +1071,7 @@
           ],
           "destination": "KDFW",
           "exit": "JAYMC",
-          "route": "JAYMC Y280 REDFN Q105 HRV J58 AEX PNUTS BEREE3"
+          "waypoints": "JAYMC Y280 REDFN Q105 HRV J58 AEX PNUTS BEREE3"
         },
         {
           "airlines": [
@@ -1086,7 +1086,7 @@
           ],
           "destination": "KDTW",
           "exit": "VIYAP",
-          "route": "VIYAP Q69 GURGE Q93 QUIWE HNN JAMOX BONZZ2"
+          "waypoints": "VIYAP Q69 GURGE Q93 QUIWE HNN JAMOX BONZZ2"
         },
         {
           "airlines": [
@@ -1105,7 +1105,7 @@
           ],
           "destination": "KMCO",
           "exit": "CHEFS",
-          "route": "CHEFS MUNGI1"
+          "waypoints": "CHEFS MUNGI1"
         },
         {
           "airlines": [
@@ -1132,7 +1132,7 @@
           ],
           "destination": "MYNN",
           "exit": "HALBI",
-          "route": "HALBI HANKX ZQA"
+          "waypoints": "HALBI HANKX ZQA"
         },
         {
           "airlines": [
@@ -1152,7 +1152,7 @@
           ],
           "destination": "MYAM",
           "exit": "HALBI",
-          "route": "HALBI BR63V ZFP BR70V MRRSH"
+          "waypoints": "HALBI BR63V ZFP BR70V MRRSH"
         },
         {
           "airlines": [
@@ -1176,7 +1176,7 @@
           ],
           "destination": "KAPF",
           "exit": "WELLY",
-          "route": "WELLY BNGOS RSW"
+          "waypoints": "WELLY BNGOS RSW"
         },
         {
           "airlines": [
@@ -1200,7 +1200,7 @@
           ],
           "destination": "KAPF",
           "exit": "WELLY",
-          "route": "WELLY BNGOS RSW"
+          "waypoints": "WELLY BNGOS RSW"
         }
       ],
       "exit_categories": {
@@ -1682,7 +1682,7 @@
       "arrivals": [
         {
           "waypoints": "MUNRO/d5000 N026.31.19.753,W079.21.01.120/ho MRLIN",
-          "route": "ZFP BR64V MRLIN",
+          "flight_strip_route": "ZFP BR64V MRLIN",
           "initial_controller": "C47",
           "initial_altitude": 15000,
           "initial_speed": 250,
@@ -1737,7 +1737,7 @@
       "arrivals": [
         {
           "waypoints": "ULAMA N026.44.38.487,W079.16.48.462/ho N026.47.40.764,W079.26.13.983/a6000 KIXAL WALIK PBI",
-          "route": "ZFP BR21V PBI",
+          "flight_strip_route": "ZFP BR21V PBI",
           "initial_controller": "C47",
           "initial_altitude": 12000,
           "initial_speed": 250,
@@ -1970,7 +1970,7 @@
       "arrivals": [
         {
           "waypoints": "N028.15.49.012,W080.02.28.699 N028.12.05.749,W080.04.32.900/ho SPIFF/a6000",
-          "route": "BAHAA HIBAC SPIFF",
+          "flight_strip_route": "BAHAA HIBAC SPIFF",
           "initial_controller": "C04",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -2021,7 +2021,7 @@
         },
         {
           "waypoints": "N028.16.51.559,W080.33.52.553 N028.04.44.099,W080.21.30.893/d6000 N028.02.45.337,W080.19.28.368/ho N027.57.07.500,W080.13.52.791/tc",
-          "route": "DEBRL Q97 EBAYY",
+          "flight_strip_route": "DEBRL Q97 EBAYY",
           "initial_controller": "C04",
           "initial_altitude": 18000,
           "assigned_altitude": 15000,
@@ -2067,7 +2067,7 @@
         },
         {
           "waypoints": "N028.09.12.989,W080.39.54.964 N028.03.02.338,W080.39.09.755/d6000/h180/ho",
-          "route": "OMN MLB",
+          "flight_strip_route": "OMN MLB",
           "initial_controller": "C04",
           "initial_altitude": 12000,
           "assigned_altitude": 8000,
@@ -2099,7 +2099,7 @@
       "arrivals": [
         {
           "waypoints": "N028.11.59.577,W079.51.14.496 N027.38.27.815,W080.01.58.377/ho TUXXI/a6000",
-          "route": "BAHAA HIBAC TUXXI",
+          "flight_strip_route": "BAHAA HIBAC TUXXI",
           "initial_controller": "C04",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -2139,7 +2139,7 @@
         },
         {
           "waypoints": "N028.15.22.082,W080.09.37.056 N028.00.43.959,W080.09.09.096/d6000 N027.40.01.110,W080.08.38.609/ho TUXXI",
-          "route": "Q97 KENLL TUXXI",
+          "flight_strip_route": "Q97 KENLL TUXXI",
           "initial_controller": "C04",
           "initial_altitude": 20000,
           "assigned_altitude": 15000,
@@ -2188,7 +2188,7 @@
       "arrivals": [
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.55.00.251,W080.41.53.919/ho MSQTO/flyover/h050",
-          "route": "VUUDU2",
+          "flight_strip_route": "VUUDU2",
           "star": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
@@ -2234,7 +2234,7 @@
       "arrivals": [
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.58.55.832,W080.39.46.917/h080/ho",
-          "route": "VUUDU2",
+          "flight_strip_route": "VUUDU2",
           "star": "VUUDU2",
           "initial_controller": "1P",
           "initial_altitude": 10000,
@@ -2280,7 +2280,7 @@
       "arrivals": [
         {
           "waypoints": "PEACH SURFN/a5000/ho ANGEE",
-          "route": "PEACH SURFN ANGEE",
+          "flight_strip_route": "PEACH SURFN ANGEE",
           "initial_controller": "C20",
           "initial_altitude": 16000,
           "initial_speed": 250,
@@ -2332,7 +2332,7 @@
       "arrivals": [
         {
           "waypoints": "N028.14.29.087,W081.01.19.898 N027.59.47.063,W080.46.09.873/h180/ho",
-          "route": "ORL",
+          "flight_strip_route": "ORL",
           "initial_controller": "C04",
           "initial_altitude": 12000,
           "assigned_altitude": 6000,
@@ -2377,7 +2377,7 @@
       "arrivals": [
         {
           "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d4000/ho CLEFF SHEDS",
-          "route": "SHANC T208 CLEFF SHEDS",
+          "flight_strip_route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 150,
@@ -2414,7 +2414,7 @@
         },
         {
           "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d4000/ho CLEFF WIXED",
-          "route": "LIFRR2 WIXED",
+          "flight_strip_route": "LIFRR2 WIXED",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 250,
@@ -2436,7 +2436,7 @@
         },
         {
           "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d3000/ho IVETY",
-          "route": "SHANC T208 CLEFF SHEDS",
+          "flight_strip_route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 150,
@@ -2487,7 +2487,7 @@
         },
         {
           "waypoints": "DURRY N026.52.45.140,W080.28.48.369/d3000/ho IVETY",
-          "route": "SHANC T208 CLEFF SHEDS",
+          "flight_strip_route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 250,
@@ -2517,7 +2517,7 @@
       "arrivals": [
         {
           "waypoints": "DURRY N026.58.43.631,W080.31.53.928/h030/d4000/ho",
-          "route": "SHANC T208 CLEFF SHEDS",
+          "flight_strip_route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 150,
@@ -2555,7 +2555,7 @@
         },
         {
           "waypoints": "DURRY N026.58.43.631,W080.31.53.928/h030/d4000/ho",
-          "route": "LIFRR2 WIXED",
+          "flight_strip_route": "LIFRR2 WIXED",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 250,
@@ -2577,7 +2577,7 @@
         },
         {
           "waypoints": "N026.41.49.984,W080.24.00.225/d3000/ho MONAD",
-          "route": "SHANC T208 CLEFF SHEDS",
+          "flight_strip_route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 150,
@@ -2628,7 +2628,7 @@
         },
         {
           "waypoints": "N026.41.49.984,W080.24.00.225/d3000/ho MONAD",
-          "route": "SHANC T208 CLEFF SHEDS",
+          "flight_strip_route": "SHANC T208 CLEFF SHEDS",
           "initial_controller": "1B",
           "initial_altitude": 6000,
           "initial_speed": 250,
