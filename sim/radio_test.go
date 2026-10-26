@@ -55,7 +55,7 @@ func TestNextContactPrioritizesResponses(t *testing.T) {
 
 	s.PendingContacts[tcp] = []PendingContact{
 		{ADSBCallsign: "AAL90", TCP: tcp, Type: PendingTransmissionArrival, ReadyTime: past},
-		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingFull, ReadyTime: past},
+		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingAfterGoAhead, ReadyTime: past},
 	}
 
 	// The go-ahead response comes out first despite being enqueued later.
@@ -92,7 +92,7 @@ func TestNextContactRespectsReadyTime(t *testing.T) {
 
 	s.PendingContacts[tcp] = []PendingContact{
 		{ADSBCallsign: "AAL90", TCP: tcp, Type: PendingTransmissionArrival, ReadyTime: past},
-		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingFull, ReadyTime: future},
+		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingAfterGoAhead, ReadyTime: future},
 	}
 
 	if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
@@ -107,27 +107,30 @@ func TestNextContactRespectsReadyTime(t *testing.T) {
 	}
 }
 
-// TestNextContactAbbreviatedVFRIsInitial verifies that the abbreviated
-// "VFR request" is classified as an initial check-in, so it yields to a
-// response-type transmission.
-func TestNextContactAbbreviatedVFRIsInitial(t *testing.T) {
-	lg := log.New(true, "error", t.TempDir())
-	s := NewTestSim(lg)
+// TestNextContactVFRRequestIsInitial verifies that a flight following
+// request, abbreviated or full, is classified as an initial check-in, so it
+// yields to a response-type transmission.
+func TestNextContactVFRRequestIsInitial(t *testing.T) {
+	for _, ty := range []PendingTransmissionType{PendingTransmissionFlightFollowingReq,
+		PendingTransmissionFlightFollowingFull} {
+		lg := log.New(true, "error", t.TempDir())
+		s := NewTestSim(lg)
 
-	tcp := TCP("125.0")
-	past := s.State.SimTime.Add(-time.Second)
-	addTunedAircraft(s, "N12AB", tcp)
-	addTunedAircraft(s, "N509EZ", tcp)
+		tcp := TCP("125.0")
+		past := s.State.SimTime.Add(-time.Second)
+		addTunedAircraft(s, "N12AB", tcp)
+		addTunedAircraft(s, "N509EZ", tcp)
 
-	s.PendingContacts[tcp] = []PendingContact{
-		{ADSBCallsign: "N12AB", TCP: tcp, Type: PendingTransmissionFlightFollowingReq, ReadyTime: past},
-		{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingFull, ReadyTime: past},
-	}
+		s.PendingContacts[tcp] = []PendingContact{
+			{ADSBCallsign: "N12AB", TCP: tcp, Type: ty, ReadyTime: past},
+			{ADSBCallsign: "N509EZ", TCP: tcp, Type: PendingTransmissionFlightFollowingAfterGoAhead, ReadyTime: past},
+		}
 
-	if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
-		t.Fatal("expected a ready contact")
-	} else if pc.ADSBCallsign != "N509EZ" {
-		t.Fatalf("expected N509EZ (response) before the abbreviated VFR request, got %s", pc.ADSBCallsign)
+		if pc := sayNextContact(s, []TCP{tcp}); pc == nil {
+			t.Fatal("expected a ready contact")
+		} else if pc.ADSBCallsign != "N509EZ" {
+			t.Errorf("type %v: expected N509EZ (response) before the VFR request, got %s", ty, pc.ADSBCallsign)
+		}
 	}
 }
 
@@ -435,6 +438,7 @@ func TestContactGoesStale(t *testing.T) {
 		{"reporting point cleared", PendingTransmissionSpontaneousReportingPointInSight, sighted, clear},
 		{"VFR request landing", PendingTransmissionFlightFollowingReq, airborne, landing},
 		{"flight following request landing", PendingTransmissionFlightFollowingFull, airborne, landing},
+		{"go-ahead reply landing", PendingTransmissionFlightFollowingAfterGoAhead, airborne, landing},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			s := NewTestSim(lg)

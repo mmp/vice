@@ -620,7 +620,7 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 
 			ac.WaitingForGoAhead = false
 
-			s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionFlightFollowingFull)
+			s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionFlightFollowingAfterGoAhead)
 
 			return nil
 		})

@@ -115,7 +115,8 @@ const (
 	PendingTransmissionArrival                                                         // Arrival/handoff checking in
 	PendingTransmissionTrafficInSight                                                  // "Traffic in sight" call
 	PendingTransmissionFlightFollowingReq                                              // Abbreviated "VFR request"
-	PendingTransmissionFlightFollowingFull                                             // Full flight following request
+	PendingTransmissionFlightFollowingFull                                             // Full flight following request as the first call
+	PendingTransmissionFlightFollowingAfterGoAhead                                     // Full request after the controller's "go ahead"
 	PendingTransmissionGoAround                                                        // Go-around announcement
 	PendingTransmissionEmergency                                                       // Emergency stage transmission
 	PendingTransmissionRequestApproachClearance                                        // Pilot requesting approach clearance
@@ -217,7 +218,8 @@ func (s *Sim) contactApplies(pc PendingContact) bool {
 		// Reports of what happened and reports the controller asked for.
 		return true
 
-	case PendingTransmissionFlightFollowingReq, PendingTransmissionFlightFollowingFull:
+	case PendingTransmissionFlightFollowingReq, PendingTransmissionFlightFollowingFull,
+		PendingTransmissionFlightFollowingAfterGoAhead:
 		// A request for flight following is moot once the aircraft is landing.
 		return ac.IsAirborne()
 
@@ -344,7 +346,7 @@ func (s *Sim) setControllerFrequency(ac *Aircraft, pos ControlPosition) {
 // during an already-established exchange.
 func (t PendingTransmissionType) isInitialCheckIn() bool {
 	return t == PendingTransmissionDeparture || t == PendingTransmissionArrival ||
-		t == PendingTransmissionFlightFollowingReq
+		t == PendingTransmissionFlightFollowingReq || t == PendingTransmissionFlightFollowingFull
 }
 
 // nextContact returns the pending contact the controller working the given
@@ -720,7 +722,7 @@ func (s *Sim) contactTransmission(pc PendingContact, ac *Aircraft, r *rand.Rand)
 	case PendingTransmissionFlightFollowingReq:
 		rt = speech.MakeContactTransmission("[VFR request|with a VFR request]")
 
-	case PendingTransmissionFlightFollowingFull:
+	case PendingTransmissionFlightFollowingFull, PendingTransmissionFlightFollowingAfterGoAhead:
 		rt = s.generateFlightFollowingMessage(ac, r)
 
 	case PendingTransmissionGoAround:
