@@ -200,6 +200,7 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 	if updateAll {
 		ep.lastRadarUpdate = now
 	}
+	caFloor := ctx.Client.State.FacilityAdaptation.GetConflictAlertFloor()
 	for _, trk := range ctx.Client.State.Tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 
@@ -231,7 +232,7 @@ func (ep *Scope) updateRadarTracks(ctx *scope.Context) {
 
 		// Update history tracks
 		idx := state.HistoryTrackIndex % len(state.HistoryTracks)
-		state.HistoryTracks[idx] = historyTrack{state.Track, ep.getTarget(*trk, state)}
+		state.HistoryTracks[idx] = historyTrack{state.Track, ep.getTarget(*trk, state, caFloor)}
 		state.HistoryTrackIndex++
 
 		// A reduced halo reverts to the standard one when the track leaves
@@ -264,12 +265,13 @@ func (ep *Scope) drawTargets(ctx *scope.Context, tracks []sim.Track, transforms 
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 
+	caFloor := ctx.Client.State.FacilityAdaptation.GetConflictAlertFloor()
 	for _, trk := range tracks {
 		if !ep.targetVisible(ctx, trk) {
 			continue
 		}
 		state := ep.TrackState[trk.ADSBCallsign]
-		targetSymbol := ep.getTarget(trk, state)
+		targetSymbol := ep.getTarget(trk, state, caFloor)
 		ep.drawTarget(trk, state, ctx, transforms, targetSymbol, trackBuilder, ld, trid, td, cb)
 	}
 	transforms.LoadWindowViewingMatrices(cb)
@@ -347,13 +349,15 @@ const (
 	correlatedBeaconTarget    = "\u0004" // \
 	reducedSeparationTarget   = "\u0005" // filled circle
 	identingBeaconTarget      = "\u0006" // three bars
+	mciCorrelatedTrackTarget  = "\u0007" // I-beam
 	code1200Target            = "\u0008" // V
 )
 
 // getTarget returns the target symbol for the track's radar sample (Table
 // 2-3); only whether it is associated with a flight plan comes from the live
-// track.
-func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
+// track. An unpaired Mode C target at or above the conflict alert floor (in
+// feet) is a possible Mode C intruder, drawn as an MCI correlated track.
+func (ep *Scope) getTarget(trk sim.Track, state *TrackState, caFloor int) string {
 	rt := state.Track
 	switch {
 	case rt.Mode == av.TransponderModeStandby:
@@ -363,6 +367,8 @@ func (ep *Scope) getTarget(trk sim.Track, state *TrackState) string {
 	case trk.IsAssociated():
 		return util.Select(inReducedSeparationAirspace(rt.TransponderAltitude), reducedSeparationTarget,
 			correlatedBeaconTarget)
+	case rt.Mode == av.TransponderModeAltitude && rt.TransponderAltitude >= float32(caFloor):
+		return mciCorrelatedTrackTarget
 	case rt.Squawk == 0o1200:
 		return code1200Target
 	default:

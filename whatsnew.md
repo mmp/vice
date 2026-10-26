@@ -15,6 +15,7 @@
   - Virtual TRACON controllers no longer enter altitudes in ERAM data blocks
   - Local interim altitudes are kept separately from interim and procedure altitudes; `QQ L` clears them
   - Unpaired LDBs show the beacon code; BCAST FLID switches them to the callsign
+  - Unpaired Mode C targets at or above the conflict alert floor are drawn with the MCI I-beam
   - Point outs are acknowledged one sector at a time in the point out pop-up
   - Point outs may be made to other facilities
   - Fixed a number of differences between the toolbars and the manual
@@ -42,4 +43,5 @@
   - `"atpa_volumes"` is now `"atpa"`; its `"runway_threshold"`, `"heading"`, and `"id"` fields have been removed
   - `"reduced_separation"` in `"atpa"` replaces `"enable_2.5nm"` and `"2.5nm_distance"`
   - `"altitude_range"` gives the altitudes of a controller's airspace (default 10,000-60,000'); ERAM displays only the active special use airspace that overlaps it
+  - `"conflict_alert_floor"` sets the ERAM conflict alert floor (default 6,000')
   - VFR `"routes"` are flown as written; they are no longer checked against the terrain

@@ -2144,6 +2144,14 @@
                         </details>
                     </td></tr>
                     <tr>
+                      <td>"conflict_alert_floor"</td>
+                      <td>Number</td>
+                      <td>(<i>Optional</i>) The conflict alert floor, in feet. An unpaired Mode C target at or above
+                        it is a possible Mode C intruder and is drawn with the MCI correlated track symbol (an
+                        I-beam); one below it is drawn as an uncorrelated beacon target, or with a V if it squawks 1200.
+                        If unspecified, the default is 6000.</td>
+                    </tr>
+                    <tr>
                       <td>"restrictions"</td>
                       <td>Array of objects</td>
                       <td><p>Altitude restrictions applied to a flight's modeled vertical profile before

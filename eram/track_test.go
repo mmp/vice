@@ -91,7 +91,7 @@ func TestRadarSampleUpdates(t *testing.T) {
 		t.Fatalf("expected 2 visible tracks, got %d", len(h.ep.visibleTracks))
 	}
 	firstFormat := h.ep.getAltitudeFormat(*trk)
-	vfrSymbol := h.ep.getTarget(*vfr, h.ep.TrackState["N123AB"])
+	vfrSymbol := h.ep.getTarget(*vfr, h.ep.TrackState["N123AB"], 6000)
 
 	// The aircraft moves, climbs, and idents, but nothing the scope shows
 	// changes until the next radar sample.
@@ -105,7 +105,7 @@ func TestRadarSampleUpdates(t *testing.T) {
 	if got := h.ep.getAltitudeFormat(*trk); got != firstFormat {
 		t.Errorf("datablock altitude changed before the update interval: %q -> %q", firstFormat, got)
 	}
-	if got := h.ep.getTarget(*vfr, h.ep.TrackState["N123AB"]); got != vfrSymbol {
+	if got := h.ep.getTarget(*vfr, h.ep.TrackState["N123AB"], 6000); got != vfrSymbol {
 		t.Errorf("target symbol changed before the update interval: %q -> %q", vfrSymbol, got)
 	}
 
@@ -116,7 +116,7 @@ func TestRadarSampleUpdates(t *testing.T) {
 	if got, want := h.ep.getAltitudeFormat(*trk), "300"+upArrow+"210"; got != want {
 		t.Errorf("datablock altitude after update: got %q, want %q", got, want)
 	}
-	if got := h.ep.getTarget(*vfr, h.ep.TrackState["N123AB"]); got != "\u0006" {
+	if got := h.ep.getTarget(*vfr, h.ep.TrackState["N123AB"], 6000); got != "\u0006" {
 		t.Errorf("ident target symbol after update: got %q", got)
 	}
 
@@ -676,10 +676,11 @@ func TestKeypadFiveIsNoDirection(t *testing.T) {
 	}
 }
 
-// Target symbols follow Table 2-3 at any altitude: a beacon target without a
-// flight plan is a slash, or a V for 1200, and paired or not, an identing
-// one shows the ident symbol. A paired beacon target at or below FL230 shows
-// the reduced separation symbol.
+// Target symbols follow Table 2-3: a beacon target without a flight plan is
+// an MCI correlated track at or above the conflict alert floor and otherwise
+// a slash, or a V for 1200; paired or not, an identing one shows the ident
+// symbol. A paired beacon target at or below FL230 shows the
+// reduced separation symbol.
 func TestTargetSymbols(t *testing.T) {
 	ep := &Scope{}
 	paired := &sim.FlightPlan{ACID: "AAL1"}
@@ -690,13 +691,18 @@ func TestTargetSymbols(t *testing.T) {
 		want string
 	}{
 		{"unpaired primary", nil, av.RadarTrack{Mode: av.TransponderModeStandby}, uncorrelatedPrimaryTarget},
-		{"unpaired beacon", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o4721,
-			TransponderAltitude: 12000}, uncorrelatedBeaconTarget},
-		{"unpaired 1200", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o1200,
+		{"unpaired beacon below the floor", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o4721,
+			TransponderAltitude: 5900}, uncorrelatedBeaconTarget},
+		{"unpaired beacon at the floor", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o4721,
+			TransponderAltitude: 6000}, mciCorrelatedTrackTarget},
+		{"unpaired 1200 below the floor", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o1200,
 			TransponderAltitude: 4500}, code1200Target},
-		{"unpaired Mode A", nil, av.RadarTrack{Mode: av.TransponderModeOn, Squawk: 0o1200}, code1200Target},
+		{"unpaired 1200 above the floor", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o1200,
+			TransponderAltitude: 8500}, mciCorrelatedTrackTarget},
+		{"unpaired Mode A", nil, av.RadarTrack{Mode: av.TransponderModeOn, Squawk: 0o4721}, uncorrelatedBeaconTarget},
+		{"unpaired Mode A 1200", nil, av.RadarTrack{Mode: av.TransponderModeOn, Squawk: 0o1200}, code1200Target},
 		{"unpaired ident", nil, av.RadarTrack{Mode: av.TransponderModeAltitude, Squawk: 0o1200, Ident: true,
-			TransponderAltitude: 4500}, identingBeaconTarget},
+			TransponderAltitude: 8500}, identingBeaconTarget},
 		{"paired primary", paired, av.RadarTrack{Mode: av.TransponderModeStandby}, correlatedPrimaryTarget},
 		{"paired beacon", paired, av.RadarTrack{Mode: av.TransponderModeAltitude, TransponderAltitude: 35000},
 			correlatedBeaconTarget},
@@ -707,7 +713,7 @@ func TestTargetSymbols(t *testing.T) {
 		{"paired ident", paired, av.RadarTrack{Mode: av.TransponderModeAltitude, Ident: true,
 			TransponderAltitude: 35000}, identingBeaconTarget},
 	} {
-		if got := ep.getTarget(sim.Track{FlightPlan: c.fp}, &TrackState{Track: c.rt}); got != c.want {
+		if got := ep.getTarget(sim.Track{FlightPlan: c.fp}, &TrackState{Track: c.rt}, 6000); got != c.want {
 			t.Errorf("%s: got %q, want %q", c.name, got, c.want)
 		}
 	}

@@ -8015,14 +8015,17 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <tbody>
                 <tr><td class="text-center"><img src="eram-sym-paired-primary.png" srcset="eram-sym-paired-primary-2x.png 2x" width="28" height="24" alt=""></td><td>Correlated primary target</td></tr>
                 <tr><td class="text-center"><img src="eram-sym-reduced.png" srcset="eram-sym-reduced-2x.png 2x" width="28" height="24" alt=""></td><td>Correlated beacon target at or below FL230, where reduced separation applies</td></tr>
-                <tr><td class="text-center"><img src="eram-sym-beacon.png" srcset="eram-sym-beacon-2x.png 2x" width="28" height="24" alt=""></td><td>Other uncorrelated beacon target</td></tr>
+                <tr><td class="text-center"><img src="eram-sym-beacon.png" srcset="eram-sym-beacon-2x.png 2x" width="28" height="24" alt=""></td><td>Other uncorrelated beacon target below the conflict alert floor</td></tr>
+                <tr><td class="text-center"><img src="eram-sym-mci.png" srcset="eram-sym-mci-2x.png 2x" width="28" height="24" alt=""></td><td>Uncorrelated Mode C target at or above the conflict alert floor, a possible Mode C intruder</td></tr>
                 <tr><td class="text-center"><img src="eram-sym-paired.png" srcset="eram-sym-paired-2x.png 2x" width="28" height="24" alt=""></td><td>Correlated beacon target above FL230</td></tr>
                 <tr><td class="text-center"><img src="eram-sym-primary.png" srcset="eram-sym-primary-2x.png 2x" width="28" height="24" alt=""></td><td>Uncorrelated primary target</td></tr>
                 <tr><td class="text-center"><img src="eram-sym-ident.png" srcset="eram-sym-ident-2x.png 2x" width="28" height="24" alt=""></td><td>Identing beacon target</td></tr>
-                <tr><td class="text-center"><img src="eram-sym-1200.png" srcset="eram-sym-1200-2x.png 2x" width="28" height="24" alt=""></td><td>Uncorrelated beacon target squawking 1200</td></tr>
+                <tr><td class="text-center"><img src="eram-sym-1200.png" srcset="eram-sym-1200-2x.png 2x" width="28" height="24" alt=""></td><td>Uncorrelated beacon target squawking 1200 below the conflict alert floor</td></tr>
                 <tr><td class="text-center"><img src="eram-sym-track.png" srcset="eram-sym-track-2x.png 2x" width="28" height="24" alt=""></td><td>Track position symbol</td></tr>
               </tbody>
             </table>
+            <p>The conflict alert floor is 6,000' unless the facility adapts another one. <i>vice</i> doesn't issue
+              Mode C intruder alerts.</p>
             <p>Tracks with FDBs also have a track position symbol, a leader line, and a velocity vector line. The
               <b>PR TGT</b> and <b>UNP TGT</b> buttons in the <b>BRIGHT</b> menu set the brightness of paired and unpaired targets.</p>
             <p>A velocity vector shows where its track will be in 0 (no vector), 1, 2, 4, or 8 minutes. The

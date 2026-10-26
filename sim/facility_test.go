@@ -461,3 +461,24 @@ func TestValidateAdaptationPositions(t *testing.T) {
 		}
 	}
 }
+
+// The conflict alert floor defaults to 6,000' and may not be negative.
+func TestConflictAlertFloor(t *testing.T) {
+	var fa FacilityAdaptation
+	if f := fa.GetConflictAlertFloor(); f != 6000 {
+		t.Errorf("unadapted floor %d, expected 6000", f)
+	}
+	fa.ConflictAlertFloor = 4000
+	if f := fa.GetConflictAlertFloor(); f != 4000 {
+		t.Errorf("adapted floor %d, expected 4000", f)
+	}
+
+	fc := &FacilityConfig{}
+	fc.FacilityAdaptation.Configurations = map[string]*FacilityConfiguration{}
+	fc.FacilityAdaptation.ConflictAlertFloor = -1000
+	var e util.ErrorLogger
+	fc.validateAdaptation(true, &e)
+	if !strings.Contains(e.String(), `"conflict_alert_floor"`) {
+		t.Errorf("negative floor not reported: %s", e.String())
+	}
+}

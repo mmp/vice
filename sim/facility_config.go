@@ -306,6 +306,9 @@ func (fc *FacilityConfig) validateAdaptation(isARTCC bool, e *util.ErrorLogger) 
 		}
 	}
 	ValidateAltitudeRange(fa.AltitudeRange, e)
+	if fa.ConflictAlertFloor < 0 {
+		e.ErrorString(`"conflict_alert_floor" %d must not be negative`, fa.ConflictAlertFloor)
+	}
 	for areaNum, ac := range fa.Areas {
 		e.Push(fmt.Sprintf("areas[%s]", areaNum))
 		ValidateAltitudeRange(ac.AltitudeRange, e)

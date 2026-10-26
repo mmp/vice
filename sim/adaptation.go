@@ -125,6 +125,10 @@ type FacilityAdaptation struct {
 
 	AirportCodes map[string]string `json:"airport_codes"`
 
+	// ConflictAlertFloor is the ERAM conflict alert floor, in feet; see
+	// GetConflictAlertFloor.
+	ConflictAlertFloor int `json:"conflict_alert_floor"`
+
 	FlightPlan struct {
 		QuickACID          string            `json:"quick_acid"`
 		ACIDExpansions     map[string]string `json:"acid_expansions"`
@@ -387,6 +391,16 @@ func (fa *FacilityAdaptation) CullDistance(facility string) float32 {
 		return fa.MaxDistance
 	}
 	return util.Select(db.DB.IsARTCC(facility), float32(400), float32(200))
+}
+
+// GetConflictAlertFloor returns the altitude, in feet, at and above which
+// ERAM takes an unpaired Mode C target to be a possible Mode C intruder: the
+// adapted "conflict_alert_floor", or 6,000' if none is adapted.
+func (fa *FacilityAdaptation) GetConflictAlertFloor() int {
+	if fa.ConflictAlertFloor > 0 {
+		return fa.ConflictAlertFloor
+	}
+	return 6000
 }
 
 // DefaultAirportForArea returns the CRDA default airport for a given
