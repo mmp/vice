@@ -5,11 +5,15 @@
 package sim
 
 import (
+	"iter"
+	"maps"
 	"slices"
 	"strconv"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
@@ -162,64 +166,121 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 	}
 }
 
+// vfrPositionReference is what a VFR pilot describes their position relative
+// to in a flight following request: an airport, a VOR given by its
+// identifier, or a scenario reporting point.
+type vfrPositionReference struct {
+	Airport     av.ICAOAirportCode
+	VOR         string
+	Description string
+	Location    math.Point2LL
+}
+
+// isReferenceAirport reports whether a database airport is one a pilot might
+// name in a position report: it must come from the CIFP, which is what gives
+// it runways, and not be a heliport or a minor strip.
+func isReferenceAirport(ap db.Airport) bool {
+	if ap.Name == "" || len(ap.Runways) == 0 {
+		return false
+	}
+	return !slices.ContainsFunc([]string{"Airstrip", "Airpark", "Balloonport", "Base", "Field", "Heliport", "Helistop", "Helipad", "Strip"},
+		func(s string) bool { return strings.HasSuffix(ap.Name, s) })
+}
+
+// vfrPositionReference chooses the point a VFR pilot reports their position
+// relative to. A point the controller knows well beats a nearer obscure
+// one: the departure airport, the scenario's reporting points, and then the
+// scenario's airports together with VORs are each accepted within a radius
+// that grows with how familiar they are. Failing all of those, the closest
+// airport in the database is used. A VOR on a scenario airport's field is
+// that airport, so the airport is named rather than the VOR.
+func (s *Sim) vfrPositionReference(ac *Aircraft) vfrPositionReference {
+	pos := ac.Position()
+	closest := func(cands ...iter.Seq[vfrPositionReference]) (ref vfrPositionReference, dist float32, ok bool) {
+		for _, seq := range cands {
+			for c := range seq {
+				if d := math.NMDistance2LLFast(pos, c.Location, s.State.NmPerLongitude); !ok || d < dist {
+					ref, dist, ok = c, d, true
+				}
+			}
+		}
+		return
+	}
+
+	dep := vfrPositionReference{Airport: ac.DepartureAirport, Location: ac.DepartureAirportLocation()}
+	if math.NMDistance2LLFast(pos, dep.Location, s.State.NmPerLongitude) <= 3 {
+		return dep
+	}
+
+	rps := util.MapSlice(s.VFRReportingPoints, func(rp av.VFRReportingPoint) vfrPositionReference {
+		return vfrPositionReference{Description: rp.Description, Location: rp.Location.Point2LL}
+	})
+	if ref, d, ok := closest(slices.Values(append(rps, dep))); ok && d <= 7 {
+		return ref
+	}
+
+	scenario := util.MapSeq(maps.Keys(s.State.Airports), func(icao av.ICAOAirportCode) vfrPositionReference {
+		return vfrPositionReference{Airport: icao, Location: s.State.Airports[icao].Location}
+	})
+	// The reference points of the largest airports are 3 miles from the
+	// VORs on their fields.
+	onScenarioAirport := func(p math.Point2LL) bool {
+		for _, ap := range s.State.Airports {
+			if math.NMDistance2LLFast(p, ap.Location, s.State.NmPerLongitude) < 4 {
+				return true
+			}
+		}
+		return false
+	}
+	vors := util.FilterSeq(maps.Values(db.DB.Navaids), func(na db.Navaid) bool {
+		return na.Type == "VOR" && !onScenarioAirport(na.Location)
+	})
+	vorRefs := util.MapSeq(vors, func(na db.Navaid) vfrPositionReference {
+		return vfrPositionReference{VOR: na.Id, Location: na.Location}
+	})
+	if ref, d, ok := closest(scenario, vorRefs); ok && d <= 10 {
+		return ref
+	}
+
+	database := func(yield func(vfrPositionReference) bool) {
+		for icao, ap := range db.DB.Airports {
+			if isReferenceAirport(ap) && !yield(vfrPositionReference{Airport: icao, Location: ap.Location}) {
+				return
+			}
+		}
+	}
+	if ref, _, ok := closest(database); ok {
+		return ref
+	}
+	return dep
+}
+
 // generateFlightFollowingMessage creates the full flight following request message
 // from the aircraft's current state, making its choices of what to say with r.
 func (s *Sim) generateFlightFollowingMessage(ac *Aircraft, r *rand.Rand) *speech.RadioTransmission {
-	// Returns the departure airport if the aircraft is still closer to it than
-	// to any reporting point, and otherwise the closest reporting point's
-	// description; exactly one of ap and desc is set.
-	closestReportingPoint := func(ac *Aircraft) (ap av.ICAOAirportCode, desc, dir string, dist float32) {
-		var closest *av.VFRReportingPoint
-		dist = float32(1000000)
-		var center math.Point2LL
-		for _, rp := range s.VFRReportingPoints {
-			d := math.NMDistance2LL(ac.Position(), rp.Location.Point2LL)
-			if d != 0 && d < dist {
-				dist = d
-				center = rp.Location.Point2LL
-				closest = &rp
-			}
-		}
-
-		if closest != nil {
-			// Possibly override with the departure airport, if we're still
-			// close to it.  Note that we don't automatically consider the
-			// departure airport as a candidate as it may be well outside
-			// the TRACON.
-			if d := math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()); d < dist {
-				hdg := math.Heading2LL(ac.DepartureAirportLocation(), ac.Position(), s.State.NmPerLongitude)
-				return ac.DepartureAirport, "", math.Compass(hdg), d
-			} else {
-				hdg := math.Heading2LL(center, ac.Position(), s.State.NmPerLongitude)
-				return "", closest.Description, math.Compass(hdg), dist
-			}
-		}
-		return "", "", "", 0
-	}
-
 	rt := speech.MakeContactTransmission("[we're a|] {actype}", ac.AircraftType)
 
-	rpap, rpdesc, rpdir, dist := closestReportingPoint(ac)
-	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
+	ref := s.vfrPositionReference(ac)
+	dist := math.NMDistance2LL(ac.Position(), ref.Location)
+	if dist < 2 && ref.Airport == ac.DepartureAirport {
 		rt.Add("departing {airport}", ac.DepartureAirport)
-	} else if dist < 1 {
-		if rpap != "" {
-			rt.Add("overhead {airport}", rpap)
-		} else {
-			rt.Add("overhead " + rpdesc)
-		}
 	} else {
-		nm := int(dist + 0.5)
 		var loc string
-		if nm == 1 {
-			loc = "one mile " + rpdir
+		dir := math.Compass(math.Heading2LL(ref.Location, ac.Position(), s.State.NmPerLongitude))
+		if dist < 1 {
+			loc = "overhead"
+		} else if nm := int(dist + 0.5); nm == 1 {
+			loc = "one mile " + dir + " of"
 		} else {
-			loc = strconv.Itoa(int(dist+0.5)) + " miles " + rpdir
+			loc = strconv.Itoa(nm) + " miles " + dir + " of"
 		}
-		if rpap != "" {
-			rt.Add(loc+" of {airport}", rpap)
-		} else {
-			rt.Add(loc + " of " + rpdesc)
+		switch {
+		case ref.Airport != "":
+			rt.Add(loc+" {airport}", ref.Airport)
+		case ref.VOR != "":
+			rt.Add(loc+" {fix} VOR", ref.VOR)
+		default:
+			rt.Add(loc + " " + ref.Description)
 		}
 	}
 

@@ -351,42 +351,6 @@ func NewSim(config NewSimConfiguration, lg *log.Logger) *Sim {
 		}
 	}
 
-	// Automatically add nearby airports and VORs as candidate reporting points
-	for _, ap := range db.DB.Airports {
-		if ap.Name == "" {
-			continue
-		}
-
-		if len(ap.Runways) == 0 {
-			// Only include airports from the FAA CIFP, not the mass of
-			// them from the our airports database (which don't have
-			// runways).
-			continue
-		}
-
-		if slices.ContainsFunc([]string{"Airstrip", "Airpark", "Balloonport", "Base", "Field", "Heliport", "Helistop", "Helipad", "Strip"},
-			func(s string) bool { return strings.HasSuffix(ap.Name, s) }) {
-			continue
-		}
-
-		if math.NMDistance2LL(ap.Location, config.Center) < 75 {
-			s.VFRReportingPoints = append(s.VFRReportingPoints,
-				av.VFRReportingPoint{
-					Description: ap.Name,
-					Location:    av.ScenarioPoint2LL{Point2LL: ap.Location},
-				})
-		}
-	}
-	for _, na := range db.DB.Navaids {
-		if math.NMDistance2LL(na.Location, config.Center) < 75 {
-			s.VFRReportingPoints = append(s.VFRReportingPoints,
-				av.VFRReportingPoint{
-					Description: util.StopShouting(na.Name) + " VOR",
-					Location:    av.ScenarioPoint2LL{Point2LL: na.Location},
-				})
-		}
-	}
-
 	s.ERAMComputer = makeERAMComputer(db.DB.ARTCCForFacility(config.Facility), s.LocalCodePool)
 
 	s.State = newCommonState(config, config.StartTime.UTC(), s.wxModel, s.METAR, s.Rand, lg)
