@@ -132,6 +132,8 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 		imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 
+	lc.drawHoldForRelease(flags, tableScale)
+
 	// Helper function for manual launch UI to show MIT and time since last launch
 	mitAndTime := func(launchPosition math.Point2LL, last launchRecord) {
 		imgui.TableNextColumn()
@@ -550,8 +552,18 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 		lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 	}
 
+	imgui.End()
+
+	if !showLaunchControls {
+		ui.showLaunchControl = false
+	}
+}
+
+// drawHoldForRelease lists the departures waiting for a release that no STARS
+// coordination list shows, so that the user can release them.
+func (lc *LaunchControlWindow) drawHoldForRelease(flags imgui.TableFlags, tableScale float32) {
 	releaseAircraft := lc.client.State.GetRegularReleaseDepartures()
-	if len(releaseAircraft) > 0 && imgui.CollapsingHeaderBoolPtr("Hold For Release", nil) {
+	if len(releaseAircraft) > 0 && imgui.CollapsingHeaderTreeNodeFlagsV("Hold For Release", imgui.TreeNodeFlagsDefaultOpen) {
 		slices.SortFunc(releaseAircraft, func(a, b sim.ReleaseDeparture) int {
 			// Just by airport, otherwise leave in FIFO order
 			return strings.Compare(string(a.DepartureAirport), string(b.DepartureAirport))
@@ -595,11 +607,5 @@ func (lc *LaunchControlWindow) Draw(p platform.Platform, config *Config) {
 
 			imgui.EndTable()
 		}
-	}
-
-	imgui.End()
-
-	if !showLaunchControls {
-		ui.showLaunchControl = false
 	}
 }

@@ -537,6 +537,13 @@ type CoordinationList struct {
 	OwnerTCP TCP `json:"owner_tcp,omitempty"`
 }
 
+// HasCoordinationList reports whether a STARS coordination list shows the
+// airport's release requests.
+func (fa *FacilityAdaptation) HasCoordinationList(airport av.ICAOAirportCode) bool {
+	return slices.ContainsFunc(fa.Lists.Coordination,
+		func(cl CoordinationList) bool { return slices.Contains(cl.Airports, airport) })
+}
+
 // Validates a format string for a STARS system list. Extra specifiers that are specific to
 // particular list types may be provided via extra.
 func validateListFormat(format string, extra ...string) error {

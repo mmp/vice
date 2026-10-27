@@ -1,5 +1,6 @@
 - Scenario updates: HNL (Mike Fries), CLT (anguse), S56 (Elliott B), P50 (Ketan K)
 - Fixed multiple bugs with flight strip ownership
+- Release requests that no STARS coordination list shows now appear in Messages and atop Launch Control
 - Flight Model / Control
   - Pilot response delays can be set to "Brief", "Realistic" (longer), or custom values when creating a sim
   - Improved support for LDA approaches (don't just fly the extended centerline)

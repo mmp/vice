@@ -24,29 +24,14 @@ type SimState struct {
 func (ss *SimState) GetRegularReleaseDepartures() []sim.ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
 		func(dep sim.ReleaseDeparture) bool {
-			if dep.Released {
-				return false
-			}
-
-			for _, cl := range ss.FacilityAdaptation.Lists.Coordination {
-				if slices.Contains(cl.Airports, dep.DepartureAirport) {
-					// It'll be in a STARS coordination list
-					return false
-				}
-			}
-			return true
+			return !dep.Released && !ss.FacilityAdaptation.HasCoordinationList(dep.DepartureAirport)
 		})
 }
 
 func (ss *SimState) GetSTARSReleaseDepartures() []sim.ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
 		func(dep sim.ReleaseDeparture) bool {
-			for _, cl := range ss.FacilityAdaptation.Lists.Coordination {
-				if slices.Contains(cl.Airports, dep.DepartureAirport) {
-					return true
-				}
-			}
-			return false
+			return ss.FacilityAdaptation.HasCoordinationList(dep.DepartureAirport)
 		})
 }
 

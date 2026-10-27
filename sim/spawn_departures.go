@@ -479,6 +479,7 @@ func (s *Sim) processHeldDepartures(depState *RunwayLaunchState, now Time) {
 		if !held.ReleaseRequested {
 			depState.Held[i].ReleaseRequested = true
 			depState.Held[i].ReleaseDelay = s.Rand.DurationRange(20*time.Second, 120*time.Second)
+			s.announceReleaseRequest(s.Aircraft[held.ADSBCallsign])
 		}
 	}
 
@@ -491,6 +492,25 @@ func (s *Sim) processHeldDepartures(depState *RunwayLaunchState, now Time) {
 			depState.Held = depState.Held[1:]
 		}
 	}
+}
+
+// announceReleaseRequest tells the departure controller that a departure has
+// asked for its release. Airports with a STARS coordination list show the
+// request there; for the others, this message is the controller's only cue.
+func (s *Sim) announceReleaseRequest(ac *Aircraft) {
+	if ac.Released || s.State.FacilityAdaptation.HasCoordinationList(ac.DepartureAirport) {
+		return
+	}
+	fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+	if fp == nil {
+		return
+	}
+	s.eventStream.Post(Event{
+		Type:         StatusMessageEvent,
+		ToController: fp.InboundHandoffController,
+		WrittenText: fmt.Sprintf("%s at %s requests release", ac.ADSBCallsign,
+			db.AirportDisplayId(ac.DepartureAirport)),
+	})
 }
 
 // cullHeldDepartures deletes the departures that have reached the point of

@@ -6,6 +6,7 @@ package sim
 
 import (
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -678,22 +679,24 @@ func TestProcessGateDeparturesBoundsTheQueue(t *testing.T) {
 	}
 }
 
+// holdDeparture registers an IFR departure from XTST that holds for a
+// release, asking for it at request, and returns its queue entry.
+func holdDeparture(s *Sim, callsign av.ADSBCallsign, request Time) DepartureAircraft {
+	dep := stageDeparture(s, callsign, "FOO", Time{})
+	dep.RequestReleaseTime = request
+	ac := s.Aircraft[callsign]
+	ac.DepartureAirport = "XTST"
+	ac.HoldForRelease = true
+	s.STARSComputer.AddHeldDeparture(ac)
+	return dep
+}
+
 func TestProcessHeldDeparturesCullsDuringPrespawn(t *testing.T) {
 	now := NewSimTime(time.Now())
 	s, rwy9, _ := departureQueueSim(now)
-	s.STARSComputer = makeSTARSComputer("TEST")
-
-	hold := func(callsign av.ADSBCallsign, request Time) DepartureAircraft {
-		dep := stageDeparture(s, callsign, "FOO", Time{})
-		dep.RequestReleaseTime = request
-		ac := s.Aircraft[callsign]
-		ac.HoldForRelease = true
-		s.STARSComputer.AddHeldDeparture(ac)
-		return dep
-	}
 
 	// HLD1 is ready to ask for its release; HLD2 won't be for another minute.
-	rwy9.Held = []DepartureAircraft{hold("HLD1", now), hold("HLD2", now.Add(time.Minute))}
+	rwy9.Held = []DepartureAircraft{holdDeparture(s, "HLD1", now), holdDeparture(s, "HLD2", now.Add(time.Minute))}
 
 	s.prespawnUncontrolledOnly = true
 	s.processHeldDepartures(rwy9, now)
@@ -726,5 +729,43 @@ func TestProcessHeldDeparturesCullsDuringPrespawn(t *testing.T) {
 	}
 	if s.Aircraft["HLD2"].Released {
 		t.Error("processHeldDepartures: released a departure the controller didn't")
+	}
+}
+
+func TestProcessHeldDeparturesAnnouncesReleaseRequests(t *testing.T) {
+	now := NewSimTime(time.Now())
+	s, rwy9, _ := departureQueueSim(now)
+	sub := s.eventStream.Subscribe()
+	defer sub.Unsubscribe()
+
+	messages := func() []Event {
+		return util.FilterSlice(sub.Get(), func(e Event) bool { return e.Type == StatusMessageEvent })
+	}
+	hold := func(callsign av.ADSBCallsign) DepartureAircraft {
+		s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans,
+			&FlightPlan{ACID: ACID(callsign), InboundHandoffController: "1D"})
+		return holdDeparture(s, callsign, now)
+	}
+
+	rwy9.Held = []DepartureAircraft{hold("HLD1")}
+	s.processHeldDepartures(rwy9, now)
+	if m := messages(); len(m) != 1 || m[0].ToController != "1D" || !strings.Contains(m[0].WrittenText, "HLD1") {
+		t.Errorf("processHeldDepartures: posted %v; want HLD1's release request to 1D", m)
+	}
+
+	s.processHeldDepartures(rwy9, now.Add(time.Second))
+	if m := messages(); len(m) != 0 {
+		t.Errorf("processHeldDepartures: announced a release request again: %v", m)
+	}
+
+	// A coordination list shows the request on the scope.
+	s.State.FacilityAdaptation.Lists.Coordination = []CoordinationList{{Airports: []av.ICAOAirportCode{"XTST"}}}
+	rwy9.Held = append(rwy9.Held, hold("HLD2"))
+	s.processHeldDepartures(rwy9, now.Add(time.Second))
+	if !rwy9.Held[1].ReleaseRequested {
+		t.Error("processHeldDepartures: didn't ask for HLD2's release")
+	}
+	if m := messages(); len(m) != 0 {
+		t.Errorf("processHeldDepartures: announced a request a coordination list shows: %v", m)
 	}
 }
