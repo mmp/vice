@@ -133,8 +133,7 @@ const rpcConnIdleTimeout = 10 * time.Minute
 const rpcConnWriteTimeout = time.Minute
 
 type LaunchConfig struct {
-	Port          int // if 0, finds an open one
-	Overrides     scenario.OverrideFiles
+	Port          int    // if 0, finds an open one
 	ServerAddress string // address to use for remote TTS provider
 	IsLocal       bool
 }
@@ -144,29 +143,26 @@ func LaunchServer(config LaunchConfig, lg *log.Logger) {
 	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
 	util.MonitorMemoryUsage(512 /* trigger MB */, 64 /* delta MB */, lg)
 
-	_, server, e, overrideErrors := makeServer(config, lg)
+	_, server, e := makeServer(config, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)
 	}
-	if overrideErrors != "" {
-		lg.Warnf("Override files had errors:\n%s", overrideErrors)
-	}
 	server()
 }
 
-func LaunchServerAsync(config LaunchConfig, lg *log.Logger) (int, util.ErrorLogger, string) {
-	rpcPort, server, e, overrideErrors := makeServer(config, lg)
+func LaunchServerAsync(config LaunchConfig, lg *log.Logger) (int, util.ErrorLogger) {
+	rpcPort, server, e := makeServer(config, lg)
 	if e.HaveErrors() {
-		return 0, e, ""
+		return 0, e
 	}
 
 	go server()
 
-	return rpcPort, e, overrideErrors
+	return rpcPort, e
 }
 
-func makeServer(config LaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger, string) {
+func makeServer(config LaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger) {
 	var listener net.Listener
 	var err error
 	var errorLogger util.ErrorLogger
@@ -174,19 +170,19 @@ func makeServer(config LaunchConfig, lg *log.Logger) (int, func(), util.ErrorLog
 	if config.Port == 0 {
 		if listener, err = net.Listen("tcp", ":0"); err != nil {
 			errorLogger.Error(err)
-			return 0, nil, errorLogger, ""
+			return 0, nil, errorLogger
 		}
 		rpcPort = listener.Addr().(*net.TCPAddr).Port
 	} else if listener, err = net.Listen("tcp", ":"+strconv.Itoa(config.Port)); err == nil {
 		rpcPort = config.Port
 	} else {
 		errorLogger.Error(err)
-		return 0, nil, errorLogger, ""
+		return 0, nil, errorLogger
 	}
 
-	tables, overrideErrors := scenario.Load(config.Overrides, &errorLogger, lg)
+	tables := scenario.Load(&errorLogger, lg)
 	if errorLogger.HaveErrors() {
-		return 0, nil, errorLogger, ""
+		return 0, nil, errorLogger
 	}
 
 	serverFunc := func() {
@@ -234,5 +230,5 @@ func makeServer(config LaunchConfig, lg *log.Logger) (int, func(), util.ErrorLog
 		}
 	}
 
-	return rpcPort, serverFunc, errorLogger, overrideErrors
+	return rpcPort, serverFunc, errorLogger
 }

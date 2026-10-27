@@ -392,31 +392,11 @@ func TestCheckLocationsSuggestsNearbyFixes(t *testing.T) {
 	}
 }
 
-// TestLoadMissingVideoMapOverride checks that an override video map that
-// can't be read is reported with the other override errors and skipped, as
-// the other override files are, rather than keeping the built-in scenarios
-// from loading.
-func TestLoadMissingVideoMapOverride(t *testing.T) {
-	db.InitDB()
-	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
-
-	missing := filepath.Join(t.TempDir(), "missing.mappack")
-	var e util.ErrorLogger
-	tables, overrideErrors := Load(OverrideFiles{VideoMap: missing}, &e, lg)
-	if e.HaveErrors() {
-		t.Fatalf("unexpected errors: %s", e.String())
-	}
-	if tables == nil || len(tables.Groups) == 0 {
-		t.Error("the built-in scenarios didn't load")
-	}
-	if !strings.Contains(overrideErrors, missing) {
-		t.Errorf("override errors %q don't mention %s", overrideErrors, missing)
-	}
-}
-
 // TestLoadRereadsFacilityConfigs checks that every Load reads the facility
-// configurations afresh, so that a reload picks up an override that was added
-// or removed since the last one just as it does an edited file.
+// configurations afresh, so that a reload picks up a file that was added to
+// or removed from the overlay directory since the last one just as it does
+// an edited file. The overlay's file is named in lowercase to check that it
+// still replaces configurations/ZNY/ABE.json.
 func TestLoadRereadsFacilityConfigs(t *testing.T) {
 	db.InitDB()
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
@@ -434,16 +414,21 @@ func TestLoadRereadsFacilityConfigs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	override := filepath.Join(t.TempDir(), "ABE.json")
-	if err := os.WriteFile(override, contents, 0o644); err != nil {
+	overlay := t.TempDir()
+	if err := os.MkdirAll(filepath.Join(overlay, "configurations", "zny"), 0o755); err != nil {
 		t.Fatal(err)
 	}
+	if err := os.WriteFile(filepath.Join(overlay, "configurations", "zny", "abe.json"), contents, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { util.SetResourcesOverlay("") })
 
-	tfrAreasDisabled := func(overrides OverrideFiles) bool {
+	tfrAreasDisabled := func(overlayDir string) bool {
+		util.SetResourcesOverlay(overlayDir)
 		var e util.ErrorLogger
-		tables, overrideErrors := Load(overrides, &e, lg)
-		if e.HaveErrors() || overrideErrors != "" {
-			t.Fatalf("unexpected errors: %s%s", e.String(), overrideErrors)
+		tables := Load(&e, lg)
+		if e.HaveErrors() {
+			t.Fatalf("unexpected errors: %s", e.String())
 		}
 		for _, sg := range tables.Groups["ABE"] {
 			return sg.FacilityConfig.DisableTFRRestrictionAreas
@@ -452,13 +437,16 @@ func TestLoadRereadsFacilityConfigs(t *testing.T) {
 		return false
 	}
 
-	if tfrAreasDisabled(OverrideFiles{}) {
+	if tfrAreasDisabled("") {
 		t.Fatal("the installed ABE configuration already disables TFR restriction areas")
 	}
-	if !tfrAreasDisabled(OverrideFiles{FacilityConfigs: []string{override}}) {
-		t.Error("an override added after a load wasn't used")
+	if !tfrAreasDisabled(overlay) {
+		t.Error("an overlay set after a load wasn't used")
 	}
-	if tfrAreasDisabled(OverrideFiles{}) {
-		t.Error("an override was still used after it was removed")
+	if unread, err := util.UnreadOverlayFiles(); err != nil || len(unread) > 0 {
+		t.Errorf("the load didn't read %v from the overlay (%v)", unread, err)
+	}
+	if tfrAreasDisabled("") {
+		t.Error("an overlay was still used after it was removed")
 	}
 }

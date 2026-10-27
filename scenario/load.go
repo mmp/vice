@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io/fs"
 	"maps"
-	"os"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -189,53 +188,17 @@ func loadNeighborControllers(configs *facilityConfigCache, filesystem fs.FS, sg 
 	}
 }
 
-// OverrideFiles holds paths to user-provided files that replace or add to
-// the contents of the resources directory, for testing facilities under
-// development. They come from the command line or the "Facility
-// Engineering" section of the settings window.
-type OverrideFiles struct {
-	Scenario      string
-	VideoMap      string
-	ScenarioBrief string
-	// Multiple facility configurations may be overridden at once (e.g.,
-	// both a TRACON's and its ARTCC's).
-	FacilityConfigs []string
-}
-
-// Load loads all of the available scenarios, both from the
-// scenarios/ directory in the source code distribution as well as,
-// optionally, files provided on the command line, and runs the
-// full startup validation pass: video map references, arrival spawn
-// altitudes, and emergencies.json. It doesn't try to do any sort of
-// meaningful error handling but it does try to continue on in the
-// presence of errors; all errors will be printed and the program will
-// exit if there are any.  We'd rather force any errors due to invalid
-// scenario definitions to be fixed...
-//
-// If an override file has errors, they are returned in overrideErrors and it
-// is not loaded, but execution continues.
-func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables, string) {
+// Load loads all of the available scenarios from the resources (including
+// the overlay directory, if there is one) and runs the full startup
+// validation pass: video map references, arrival spawn altitudes, and
+// emergencies.json. It doesn't try to do any sort of meaningful error
+// handling but it does try to continue on in the presence of errors; all
+// errors will be printed and the program will exit if there are any.  We'd
+// rather force any errors due to invalid scenario definitions to be fixed...
+func Load(e *util.ErrorLogger, lg *log.Logger) *Tables {
 	start := time.Now()
 
-	var overrideErrors string
-	addOverrideErrors := func(errs string) {
-		if overrideErrors != "" {
-			overrideErrors += "\n"
-		}
-		overrideErrors += errs
-	}
-
-	// Install the facility config overrides before anything else so that
-	// every load of the files they replace picks them up.
 	configs := makeFacilityConfigCache()
-	for _, fc := range overrides.FacilityConfigs {
-		var oe util.ErrorLogger
-		configs.loadOverride(fc, &oe)
-		if oe.HaveErrors() {
-			addOverrideErrors(oe.String())
-			lg.Warnf("Facility config override has errors and will not be loaded: %s", fc)
-		}
-	}
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*Group)
@@ -295,64 +258,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	}
 	if e.HaveErrors() {
 		// Don't keep going since we'll likely crash in the following
-		return nil, ""
-	}
-
-	// Load the scenario specified on command line, if any.
-	// Store it separately so we can validate it with a separate error logger
-	var extraScenario *Group
-	var extraScenarioFacility string
-	if overrides.Scenario != "" {
-		var extraE util.ErrorLogger
-		fs := func() fs.FS {
-			if filepath.IsAbs(overrides.Scenario) {
-				return util.RootFS{}
-			} else {
-				return os.DirFS(".")
-			}
-		}()
-		s := loadScenarioGroup(fs, overrides.Scenario, &extraE)
-		if s != nil {
-			facility := s.facility()
-
-			// Load and validate facility config for the extra scenario.
-			extraResourcesFS := util.GetResourcesFS()
-			fc := configs.load(extraResourcesFS, facilityConfigPath(s), &extraE)
-			if fc != nil {
-				fc.Finalize(facilityConfigPath(s), &extraE)
-			}
-			if fc != nil && !extraE.HaveErrors() {
-				s.FacilityConfig = *deep.MustCopy(fc)
-
-				for _, neighbor := range fc.HandoffIDs {
-					neighbor := string(neighbor.ID)
-					loadNeighborControllers(configs, extraResourcesFS, s, neighbor, fc.HandoffIDs, &extraE)
-				}
-			}
-
-			// These may have an empty "video_map_file" member, which
-			// is automatically patched up here...
-			if fc != nil && s.FacilityConfig.FacilityAdaptation.VideoMapFile == "" {
-				if overrides.VideoMap != "" {
-					s.FacilityConfig.FacilityAdaptation.VideoMapFile = overrides.VideoMap
-				} else {
-					extraE.ErrorString(`%s: no "video_map_file" in scenario and -videomap not specified`,
-						overrides.Scenario)
-				}
-			}
-
-			// Store the scenario for later validation (don't add to scenarioGroups yet)
-			if !extraE.HaveErrors() {
-				extraScenario = s
-				extraScenarioFacility = facility
-			}
-		}
-
-		// Capture any errors from the extra scenario
-		if extraE.HaveErrors() {
-			addOverrideErrors(extraE.String())
-			lg.Warnf("Extra scenario file has errors and will not be loaded: %s", overrides.Scenario)
-		}
+		return nil
 	}
 
 	// Load video map specs (header-only) for validation.
@@ -378,17 +284,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	// Everything after this validates against the video maps.
 	if err != nil {
 		e.Error(err)
-		return nil, overrideErrors
-	}
-
-	// Load the video map specified on the command line, if any.
-	if overrides.VideoMap != "" {
-		if spec, err := videomaps.LoadLibrarySpec(overrides.VideoMap); err != nil {
-			addOverrideErrors(fmt.Sprintf("%s: %v", overrides.VideoMap, err))
-			lg.Warnf("Extra video map file has errors and will not be loaded: %s", overrides.VideoMap)
-		} else {
-			mapSpecs[overrides.VideoMap] = spec
-		}
+		return nil
 	}
 
 	// validateBriefForFacility runs the facility-has-scenarios check and the brief validation
@@ -448,7 +344,7 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 		if content, err := fs.ReadFile(filesystem, path); err != nil {
 			e.Error(err)
 		} else if hashes, ok := validateBriefForFacility(facility, content, e); ok {
-			briefs.register(facility, hashes, "")
+			briefs.register(facility, hashes)
 		}
 
 		return nil
@@ -675,73 +571,6 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 		}
 	}
 
-	// Validate the extra scenario separately with its own error logger and
-	// stage in a separate catalogs map that's only merged on success.
-	if extraScenario != nil {
-		var extraE util.ErrorLogger
-		extraE.Push(extraScenario.SourceFile)
-		extraE.Push("TRACON " + extraScenarioFacility)
-		extraE.Push("Scenario group " + extraScenario.Name)
-
-		localCatalogs := make(map[string]map[string]*Catalog)
-
-		// Make sure we have what we need in terms of video maps
-		fa := &extraScenario.FacilityConfig.FacilityAdaptation
-		if vf := fa.VideoMapFile; vf == "" {
-			extraE.ErrorString(`no "video_map_file" specified`)
-		} else if mapSpec, ok := mapSpecs[vf]; !ok {
-			extraE.ErrorString("no mapSpec for video map %q found. Options: %s", vf,
-				strings.Join(util.SortedMapKeys(mapSpecs), ", "))
-		} else {
-			extraScenario.ERAMCoordination = resolveERAMCoordination(extraScenario, facilityConfigs)
-			validateCoordinationFixes(extraScenario.ERAMCoordination, fa, extraScenario.facility(), &extraE)
-			extraScenario.Finalize(&extraE, localCatalogs, mapSpec, mapSpecs)
-		}
-
-		extraE.Pop() // Scenario group
-		extraE.Pop() // TRACON
-		extraE.Pop() // SourceFile
-
-		if extraE.HaveErrors() {
-			addOverrideErrors(extraE.String())
-			lg.Warnf("Extra scenario file has validation errors and will not be loaded: %s", overrides.Scenario)
-		} else {
-			// Merge the local catalogs into the shared one only on success.
-			for facility, m := range localCatalogs {
-				if catalogs[facility] == nil {
-					catalogs[facility] = make(map[string]*Catalog)
-				}
-				maps.Copy(catalogs[facility], m)
-			}
-			if scenarioGroups[extraScenarioFacility] == nil {
-				scenarioGroups[extraScenarioFacility] = make(map[string]*Group)
-			}
-			scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
-		}
-	}
-
-	// Load extra scenario brief file from command line, if any. Must run after the extra scenario
-	// (if any) has been inserted into scenarioGroups.
-	if overrides.ScenarioBrief != "" {
-		var extraE util.ErrorLogger
-		extraE.Push("Extra brief file " + overrides.ScenarioBrief)
-
-		facility := strings.ToUpper(strings.TrimSuffix(filepath.Base(overrides.ScenarioBrief), ".md"))
-
-		if content, err := os.ReadFile(overrides.ScenarioBrief); err != nil {
-			extraE.Error(err)
-		} else if hashes, ok := validateBriefForFacility(facility, content, &extraE); ok && !extraE.HaveErrors() {
-			briefs.register(facility, hashes, overrides.ScenarioBrief)
-		}
-
-		extraE.Pop()
-
-		if extraE.HaveErrors() {
-			addOverrideErrors(extraE.String())
-			lg.Warnf("Extra scenario brief file has errors and will not be loaded: %s", overrides.ScenarioBrief)
-		}
-	}
-
 	// Walk all of the scenario groups to get all of the possible departing aircraft
 	// types to see where V2 is needed in the performance database..
 	acTypes := make(map[string]struct{})
@@ -780,13 +609,13 @@ func Load(overrides OverrideFiles, e *util.ErrorLogger, lg *log.Logger) (*Tables
 	checkInboundAssignments(scenarioGroups, e)
 
 	lg.Infof("scenario.Load total: %s", time.Since(start))
-	return makeTables(scenarioGroups, catalogs, mapSpecs, briefs), overrideErrors
+	return makeTables(scenarioGroups, catalogs, mapSpecs, briefs)
 }
 
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
-func ListAllScenarios(overrides OverrideFiles, lg *log.Logger) ([]string, error) {
+func ListAllScenarios(lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
-	tables, _ := Load(overrides, &e, lg)
+	tables := Load(&e, lg)
 	if e.HaveErrors() {
 		return nil, fmt.Errorf("failed to load scenarios")
 	}
@@ -810,7 +639,7 @@ func ListAllScenarios(overrides OverrideFiles, lg *log.Logger) ([]string, error)
 // have scenarios, so only their airports are of interest here.)
 func WXFacilities(lg *log.Logger) (wx.Facilities, error) {
 	var e util.ErrorLogger
-	tables, _ := Load(OverrideFiles{}, &e, lg)
+	tables := Load(&e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return wx.Facilities{}, fmt.Errorf("failed to load scenarios")

@@ -28,31 +28,19 @@ import (
 )
 
 var (
-	cpuprofile            = flag.String("cpuprofile", "", "write CPU profile to `file`")
-	memprofile            = flag.String("memprofile", "", "write memory profile to `file`")
-	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
-	logDir                = flag.String("logdir", "", "log file `directory`")
-	serverPort            = flag.Int("port", server.ViceServerPort, "`port` to listen on")
-	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
-	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
-	videoMapFilename      = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
-	scenarioBriefFilename = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
-	navLogEnabled         = flag.Bool("navlog", false, "enable navigation logging")
-	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories`")
-	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign`")
-	smoketest             = flag.Duration("smoketest", 0, "load the scenarios, run a sim with an RPC client attached for this long, and exit; for CI under -race")
-	wxFacilities          = flag.String("wxfacilities", "", "write the weather pipeline's airport and facility list as JSON to `file` and exit")
-
-	facilityConfigFilenames []string
+	cpuprofile       = flag.String("cpuprofile", "", "write CPU profile to `file`")
+	memprofile       = flag.String("memprofile", "", "write memory profile to `file`")
+	logLevel         = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
+	logDir           = flag.String("logdir", "", "log file `directory`")
+	serverPort       = flag.Int("port", server.ViceServerPort, "`port` to listen on")
+	serverAddress    = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
+	overlayDir       = flag.String("overlay", "", "`directory` of resource files that replace or add to the built-in ones")
+	navLogEnabled    = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories = flag.String("navlog-categories", "all", "navigation log `categories`")
+	navLogCallsign   = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign`")
+	smoketest        = flag.Duration("smoketest", 0, "load the scenarios, run a sim with an RPC client attached for this long, and exit; for CI under -race")
+	wxFacilities     = flag.String("wxfacilities", "", "write the weather pipeline's airport and facility list as JSON to `file` and exit")
 )
-
-func init() {
-	flag.Func("facilityconfig", "`filename` of JSON file with a facility configuration; may be given multiple times",
-		func(s string) error {
-			facilityConfigFilenames = append(facilityConfigFilenames, s)
-			return nil
-		})
-}
 
 // writeWXFacilities writes the list that wxingest and wxpackage use to decide
 // what to ingest and package. wxingest runs from a container image that can't
@@ -107,6 +95,7 @@ func run(lg *log.Logger) error {
 	if err := util.SyncResources(&util.TextSyncUI{}); err != nil {
 		return fmt.Errorf("Unable to sync resources: %v", err)
 	}
+	util.SetResourcesOverlay(*overlayDir)
 
 	db.InitDB()
 	wx.Init()
@@ -125,13 +114,7 @@ func run(lg *log.Logger) error {
 	nav.InitNavLog(*navLogEnabled, *navLogCategories, *navLogCallsign)
 
 	config := server.LaunchConfig{
-		Port: *serverPort,
-		Overrides: scenario.OverrideFiles{
-			Scenario:        *scenarioFilename,
-			VideoMap:        *videoMapFilename,
-			ScenarioBrief:   *scenarioBriefFilename,
-			FacilityConfigs: facilityConfigFilenames,
-		},
+		Port:          *serverPort,
 		ServerAddress: *serverAddress,
 		IsLocal:       false,
 	}
@@ -150,13 +133,10 @@ func run(lg *log.Logger) error {
 // after the sim lock has been released -- the last of which a load-only run
 // never reaches.
 func runSmoketest(config server.LaunchConfig, d time.Duration, lg *log.Logger) error {
-	rpcPort, e, overrideErrors := server.LaunchServerAsync(config, lg)
+	rpcPort, e := server.LaunchServerAsync(config, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return errors.New("errors loading scenarios")
-	}
-	if overrideErrors != "" {
-		lg.Warnf("Override files had errors:\n%s", overrideErrors)
 	}
 
 	conn, err := net.Dial("tcp", net.JoinHostPort("localhost", strconv.Itoa(rpcPort)))

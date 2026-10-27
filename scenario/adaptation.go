@@ -7,8 +7,6 @@ package scenario
 import (
 	"fmt"
 	"io/fs"
-	"os"
-	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -590,63 +588,4 @@ func (c *facilityConfigCache) add(path string, fc *sim.FacilityConfig) *sim.Faci
 	}
 	c.configs[path] = fc
 	return fc
-}
-
-// loadOverride installs the given file in place of the facility
-// configuration in resources/configurations with the same filename, for
-// testing changes to a facility's adaptation. Errors are reported in e, in
-// which case nothing is installed and the file from resources is used as
-// usual.
-func (c *facilityConfigCache) loadOverride(filename string, e *util.ErrorLogger) {
-	e.Push("Facility config override " + filename)
-	defer e.Pop()
-
-	path, err := facilityConfigOverridePath(filename)
-	if err != nil {
-		e.Error(err)
-		return
-	}
-
-	filesystem := func() fs.FS {
-		if filepath.IsAbs(filename) {
-			return util.RootFS{}
-		} else {
-			return os.DirFS(".")
-		}
-	}()
-
-	fc := parseFacilityConfig(filesystem, filename, e)
-	if fc == nil {
-		return
-	}
-
-	// Validate it as the file it replaces: Finalize takes the
-	// facility and whether it is an ARTCC from the path.
-	fc.Finalize(path, e)
-	if !e.HaveErrors() {
-		c.add(path, fc)
-	}
-}
-
-// facilityConfigOverridePath returns the path in resources/configurations of
-// the facility configuration that the given file replaces. Configuration
-// filenames are unique across the ARTCC directories, so the base filename
-// determines it.
-func facilityConfigOverridePath(filename string) (string, error) {
-	base := filepath.Base(filename)
-	var match string
-	err := util.WalkResources("configurations", func(path string, d fs.DirEntry, _ fs.FS, err error) error {
-		if err != nil || d.IsDir() || filepath.Base(path) != base {
-			return nil
-		}
-		match = path
-		return fs.SkipAll
-	})
-	if err != nil {
-		return "", err
-	}
-	if match == "" {
-		return "", fmt.Errorf("no facility configuration named %q in resources/configurations", base)
-	}
-	return match, nil
 }

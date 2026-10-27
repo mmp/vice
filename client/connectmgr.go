@@ -14,7 +14,6 @@ import (
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform/audio"
-	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -46,8 +45,8 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
-func MakeServerManager(serverAddress string, overrides scenario.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
-	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
+func MakeServerManager(serverAddress string, ttsEnabled func() bool, lg *log.Logger,
+	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
 		lastRemoteServerAttempt: time.Now(),
@@ -56,30 +55,28 @@ func MakeServerManager(serverAddress string, overrides scenario.OverrideFiles, t
 		onNewClient:             onNewClient,
 		onError:                 onError,
 	}
-	errorLogger, overrideErrors := cm.launchLocalServer(serverAddress, overrides, lg)
-	return cm, errorLogger, overrideErrors
+	errorLogger := cm.launchLocalServer(serverAddress, lg)
+	return cm, errorLogger
 }
 
 // MakeLocalServerManager is MakeServerManager without the connection to the
 // public vice server: the facility engineering tool works entirely against
 // the scenarios on the local disk, so attempting (and periodically retrying)
 // a network connection would be pure noise.
-func MakeLocalServerManager(overrides scenario.OverrideFiles, ttsEnabled func() bool, lg *log.Logger,
-	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
+func MakeLocalServerManager(ttsEnabled func() bool, lg *log.Logger,
+	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger) {
 	cm := &ConnectionManager{
 		localOnly:   true,
 		ttsEnabled:  ttsEnabled,
 		onNewClient: onNewClient,
 		onError:     onError,
 	}
-	errorLogger, overrideErrors := cm.launchLocalServer("", overrides, lg)
-	return cm, errorLogger, overrideErrors
+	errorLogger := cm.launchLocalServer("", lg)
+	return cm, errorLogger
 }
 
-func (cm *ConnectionManager) launchLocalServer(serverAddress string, overrides scenario.OverrideFiles,
-	lg *log.Logger) (util.ErrorLogger, string) {
-	rpcPort, errorLogger, overrideErrors := server.LaunchServerAsync(server.LaunchConfig{
-		Overrides:     overrides,
+func (cm *ConnectionManager) launchLocalServer(serverAddress string, lg *log.Logger) util.ErrorLogger {
+	rpcPort, errorLogger := server.LaunchServerAsync(server.LaunchConfig{
 		ServerAddress: serverAddress,
 		IsLocal:       true,
 	}, lg)
@@ -103,7 +100,7 @@ func (cm *ConnectionManager) launchLocalServer(serverAddress string, overrides s
 		}
 	}
 
-	return errorLogger, overrideErrors
+	return errorLogger
 }
 
 // dropRemoteServer closes the remote server connection and forgets it, so the

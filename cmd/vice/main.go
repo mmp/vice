@@ -16,7 +16,6 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -53,33 +52,29 @@ import (
 
 var (
 	// Command-line options are only used for developer features.
-	cpuprofile            = flag.String("cpuprofile", "", "write CPU profile to `file`")
-	memprofile            = flag.String("memprofile", "", "write memory profile to `file`")
-	logLevel              = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
-	logDir                = flag.String("logdir", "", "log file `directory`")
-	lintScenarios         = flag.Bool("lint", false, "check the validity of the built-in scenarios")
-	runServer             = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
-	serverAddress         = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
-	scenarioFilename      = flag.String("scenario", "", "`filename` of JSON file with a scenario definition")
-	videoMapFilename      = flag.String("videomap", "", "`filename` of JSON file with video map definitions")
-	scenarioBriefFilename = flag.String("scenariobrief", "", "`filename` of markdown file with a scenario brief")
-	broadcastMessage      = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
-	broadcastPassword     = flag.String("password", "", "`password` to authenticate with server for broadcast message")
-	resetSim              = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
-	showRoutes            = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
-	listMaps              = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
-	listScenarios         = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
-	runSim                = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
-	simSeed               = flag.Uint64("simseed", 0, "random number generator `seed` for -runsim; a nonzero value gives a repeatable run")
-	navLog                = flag.Bool("navlog", false, "enable navigation logging")
-	navLogCategories      = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
-	navLogCallsign        = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
-	replayMode            = flag.Bool("replay", false, "replay scenario from saved config")
-	replayDuration        = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
-	waypointCommands      = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
-	starsRandoms          = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
-
-	facilityConfigFilenames []string
+	cpuprofile        = flag.String("cpuprofile", "", "write CPU profile to `file`")
+	memprofile        = flag.String("memprofile", "", "write memory profile to `file`")
+	logLevel          = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
+	logDir            = flag.String("logdir", "", "log file `directory`")
+	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
+	runServer         = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
+	serverAddress     = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
+	overlayDir        = flag.String("overlay", "", "`directory` of resource files that replace or add to the built-in ones")
+	broadcastMessage  = flag.String("broadcast", "", "`message` to broadcast to all active clients on the server")
+	broadcastPassword = flag.String("password", "", "`password` to authenticate with server for broadcast message")
+	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
+	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
+	listMaps          = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
+	listScenarios     = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
+	runSim            = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
+	simSeed           = flag.Uint64("simseed", 0, "random number generator `seed` for -runsim; a nonzero value gives a repeatable run")
+	navLog            = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories  = flag.String("navlog-categories", "all", "navigation log `categories` (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
+	navLogCallsign    = flag.String("navlog-callsign", "", "filter navigation logs to only show this `callsign` (empty = show all)")
+	replayMode        = flag.Bool("replay", false, "replay scenario from saved config")
+	replayDuration    = flag.String("replay-duration", "3600", "replay `duration` in seconds or 'until:CALLSIGN'")
+	waypointCommands  = flag.String("waypoint-commands", "", "waypoint `commands` in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
+	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
 )
 
 func init() {
@@ -88,12 +83,6 @@ func init() {
 	// run on different hardware threads over the course of
 	// execution. Therefore, we must lock the main thread at startup time.
 	runtime.LockOSThread()
-
-	flag.Func("facilityconfig", "`filename` of JSON file with a facility configuration; may be given multiple times",
-		func(s string) error {
-			facilityConfigFilenames = append(facilityConfigFilenames, s)
-			return nil
-		})
 }
 
 // initCommon performs early initialization common to all modes: flag
@@ -134,43 +123,28 @@ func initCommon() (*log.Logger, *util.Profiler, error) {
 }
 
 // loadConfig initializes the imgui context, loads user configuration,
-// and applies the override file defaults from the config.
+// and sets up the resources overlay directory: the one given on the
+// command line, or else the one in the config.
 func loadConfig(lg *log.Logger) (*Config, error) {
 	_ = imguiInit()
 	config, err := LoadOrMakeDefaultConfig(lg)
-	if *scenarioFilename == "" && config.ScenarioFile != "" {
-		*scenarioFilename = config.ScenarioFile
+	if *overlayDir == "" {
+		*overlayDir = config.OverlayDir
 	}
-	if *videoMapFilename == "" && config.VideoMapFile != "" {
-		*videoMapFilename = config.VideoMapFile
-	}
-	if *scenarioBriefFilename == "" && config.ScenarioBriefFile != "" {
-		*scenarioBriefFilename = config.ScenarioBriefFile
-	}
-	if len(facilityConfigFilenames) == 0 && len(config.FacilityConfigFiles) > 0 {
-		// Copy so that later edits to the config's selections in the
-		// settings window can't affect it.
-		facilityConfigFilenames = slices.Clone(config.FacilityConfigFiles)
-	}
+	util.SetResourcesOverlay(*overlayDir)
 	return config, err
 }
 
-// overrideFiles returns the resource files the user has provided to replace
-// or add to the ones in the resources directory.
-func overrideFiles() scenario.OverrideFiles {
-	return scenario.OverrideFiles{
-		Scenario:        *scenarioFilename,
-		VideoMap:        *videoMapFilename,
-		ScenarioBrief:   *scenarioBriefFilename,
-		FacilityConfigs: facilityConfigFilenames,
-	}
-}
-
 // cliInit performs initialization for CLI (non-GUI) modes: syncing
-// resources and initializing the aviation database.
+// resources, setting aside an overlay directory that doesn't exist, and
+// initializing the aviation database.
 func cliInit() error {
 	if err := syncResources(&util.TextSyncUI{}); err != nil {
 		return fmt.Errorf("SyncResources: %w", err)
+	}
+	if *overlayDir != "" && !util.IsDir(*overlayDir) {
+		fmt.Fprintf(os.Stderr, "Warning: the overlay directory %s doesn't exist, so it isn't being used\n", *overlayDir)
+		util.SetResourcesOverlay("")
 	}
 	db.InitDB()
 	wx.Init()
@@ -197,7 +171,7 @@ func runLint(lg *log.Logger) error {
 	}
 
 	var e util.ErrorLogger
-	tables, overrideErrors := scenario.Load(overrideFiles(), &e, lg)
+	tables := scenario.Load(&e, lg)
 
 	if e.HaveErrors() {
 		e.PrintErrors(nil)
@@ -213,9 +187,12 @@ func runLint(lg *log.Logger) error {
 		e.PrintErrors(nil)
 		return fmt.Errorf("scenario validation failed")
 	}
-	if overrideErrors != "" {
-		fmt.Fprint(os.Stderr, overrideErrors)
-		return fmt.Errorf("override file validation failed")
+
+	if unread, err := util.UnreadOverlayFiles(); err != nil {
+		return err
+	} else if len(unread) > 0 {
+		fmt.Fprintf(os.Stderr, "Warning: these files in the overlay directory weren't loaded:\n%s\n",
+			strings.Join(unread, "\n"))
 	}
 
 	scenarioAirports := make(map[string]map[av.ICAOAirportCode]any)
@@ -242,7 +219,7 @@ func runListScenarios(lg *log.Logger) error {
 		return err
 	}
 
-	scenarios, err := scenario.ListAllScenarios(overrideFiles(), lg)
+	scenarios, err := scenario.ListAllScenarios(lg)
 	if err != nil {
 		return fmt.Errorf("failed to list scenarios: %w", err)
 	}
@@ -269,7 +246,7 @@ func runSimulation(lg *log.Logger) error {
 	tracon, scenarioName := parts[0], parts[1]
 
 	var e util.ErrorLogger
-	tables, _ := scenario.Load(overrideFiles(), &e, lg)
+	tables := scenario.Load(&e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		return fmt.Errorf("scenario loading failed")
@@ -648,7 +625,6 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	// install.
 	var mgr *client.ConnectionManager
 	var errorLogger util.ErrorLogger
-	var overrideErrors string
 	var plat platform.Platform
 	var render renderer.Renderer
 	syncDone := make(chan struct{})
@@ -659,7 +635,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 		wx.Init()
 		db.InitDB()
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
-		mgr, errorLogger, overrideErrors = client.MakeServerManager(*serverAddress, overrideFiles(),
+		mgr, errorLogger = client.MakeServerManager(*serverAddress,
 			func() bool { return !config.DisableTextToSpeech && plat.AudioPlaybackError() == nil }, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
@@ -714,6 +690,7 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 	if err := syncResources(gui.NewSyncUI(plat, ui.font)); err != nil {
 		ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
 	}
+	setUpOverlayDir(*overlayDir, config, plat, lg)
 	close(syncDone)
 
 	// After we have plat and render
@@ -727,22 +704,17 @@ func runGUI(config *Config, configErr error, lg *log.Logger) error {
 
 	if errorLogger.HaveErrors() {
 		errorLogger.PrintErrors(lg)
-		if config.hasFacilityEngineeringFiles() {
-			// The overrides may be the cause (e.g. a facility config that
+		if config.OverlayDir != "" {
+			// The overlay may be the cause (e.g. a facility config that
 			// the built-in scenarios are inconsistent with), so offer a way
-			// out; the settings window's "Clear" buttons can't be reached
+			// out; the settings window's "Disable" button can't be reached
 			// when startup fails.
-			ShowFatalErrorOverridesDialog(render, plat, config, lg, "%s", errorLogger.String())
+			ShowFatalErrorOverlayDialog(render, plat, config, lg, "%s", errorLogger.String())
 		} else {
 			ShowFatalErrorDialog(render, plat, nil, "%s", errorLogger.String())
 		}
 	}
-
-	// Show non-fatal dialog for errors in the facility engineering files
-	if overrideErrors != "" {
-		ShowErrorDialog(plat, lg, "Errors in additional facility engineering files (they will not be loaded):\n\n%s",
-			overrideErrors)
-	}
+	warnUnreadOverlayFiles(plat, lg)
 
 	// Kick off whisper + TTS preload now that the connection manager
 	// exists. Its goroutines wait on uploadDone before doing any cgo

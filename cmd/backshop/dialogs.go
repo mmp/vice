@@ -127,11 +127,30 @@ func (wn *whatsNewDialog) Draw() int {
 	return -1
 }
 
+// messageDialog shows a message that needs no more than acknowledgment.
+type messageDialog struct {
+	title, message string
+}
+
+func (m *messageDialog) Title() string { return m.title }
+
+func (m *messageDialog) Opening() {}
+
+func (m *messageDialog) Buttons() []gui.DialogButton {
+	return []gui.DialogButton{{Text: "Ok"}}
+}
+
+func (m *messageDialog) Draw() int {
+	text, _ := util.TextWrapConfig{ColumnLimit: 80, WrapAll: true}.Wrap(m.message)
+	imgui.Text(text)
+	return -1
+}
+
 // startupErrorDialog reports an error that keeps backshop from starting.
 // Without it the window would just close: nobody sees stderr when backshop
-// is launched from the Finder or Explorer. config is set when the
-// additional files may be the cause; the dialog then offers to clear them,
-// since the Scenario tab where that is done can't be reached.
+// is launched from the Finder or Explorer. config is set when the overlay
+// directory may be the cause; the dialog then offers to disable it, since
+// the Scenario tab where that is done can't be reached.
 type startupErrorDialog struct {
 	message string
 	plat    platform.Platform
@@ -150,11 +169,11 @@ func (se *startupErrorDialog) Buttons() []gui.DialogButton {
 			return false
 		},
 	}}
-	if se.config != nil && se.config.hasOverrideFiles() {
+	if se.config != nil && se.config.OverlayDir != "" {
 		b = append(b, gui.DialogButton{
-			Text: "Clear additional files and quit",
+			Text: "Disable overlay directory and quit",
 			Action: func() bool {
-				se.config.clearOverrideFiles()
+				se.config.OverlayDir = ""
 				return true
 			},
 		})

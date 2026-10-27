@@ -1182,21 +1182,16 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarSc
 	}
 
 	if imgui.CollapsingHeaderBoolPtr("Facility Engineering", nil) {
-		imgui.Text("For testing new scenarios, additional scenario, video map, scenario brief, and/or facility")
-		imgui.Text("configuration files can be specified.")
+		imgui.Text("For testing new scenarios, files in the overlay directory replace or add to vice's")
+		imgui.Text("resource files at the same paths; for example, its scenarios/n90.json replaces vice's.")
 		imgui.Text("Note that vice must be restarted to reload these after they are changed.")
 		imgui.Separator()
 
-		report := func(_ bool, err error) {
-			if err != nil {
-				fmt.Printf("Error selecting file: %v\n", err)
-			}
+		if changed, err := gui.DrawDirectoryPicker("Overlay directory", "overlay", &config.OverlayDir); err != nil {
+			lg.Errorf("Error selecting overlay directory: %v", err)
+		} else if changed {
+			mirrorOverlayDir(config.OverlayDir, p, lg)
 		}
-		report(gui.DrawFilePicker("Scenario", "scenario", &config.ScenarioFile, []string{"*.json"}))
-		report(gui.DrawFilePicker("Video map", "videoMap", &config.VideoMapFile, []string{"*.mappack"}))
-		report(gui.DrawFilePicker("Scenario brief", "scenarioBrief", &config.ScenarioBriefFile, []string{"*.md"}))
-		report(gui.DrawFileListPicker("Facility configuration", "facilityConfig",
-			&config.FacilityConfigFiles, []string{"*.json"}))
 
 		imgui.Separator()
 		imgui.Checkbox("Display simulation logging", &config.DisplaySimLogs)

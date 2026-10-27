@@ -758,13 +758,12 @@ type ScenarioReload struct {
 	result server.ReloadScenariosResult
 }
 
-// ReloadScenarios starts a scenario reload, loading the given additional
-// files alongside the built-in scenarios. Sims that are already running keep
-// the scenario they were created with; the reloaded scenarios apply to sims
-// created afterward.
-func (s *Server) ReloadScenarios(args server.ReloadScenariosArgs) *ScenarioReload {
+// ReloadScenarios starts a scenario reload. Sims that are already running
+// keep the scenario they were created with; the reloaded scenarios apply to
+// sims created afterward.
+func (s *Server) ReloadScenarios() *ScenarioReload {
 	r := &ScenarioReload{srv: s}
-	r.call = s.Go(server.ReloadScenariosRPC, &args, &r.result, nil)
+	r.call = s.Go(server.ReloadScenariosRPC, 0, &r.result, nil)
 	return r
 }
 

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"image/png"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/mmp/vice/client"
@@ -502,45 +503,92 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 	os.Exit(1)
 }
 
-// clearOverridesModalClient is an ErrorModalClient with an additional
-// button that requests that the facility engineering override files be
-// cleared from the configuration.
-type clearOverridesModalClient struct {
+// disableOverlayModalClient is an ErrorModalClient with an additional
+// button that requests that the overlay directory be removed from the
+// configuration.
+type disableOverlayModalClient struct {
 	ErrorModalClient
-	clearRequested bool
+	disableRequested bool
 }
 
-func (c *clearOverridesModalClient) Buttons() []gui.DialogButton {
+func (c *disableOverlayModalClient) Buttons() []gui.DialogButton {
 	return []gui.DialogButton{
-		{Text: "Clear Facility Engineering Files and Exit", Action: func() bool {
-			c.clearRequested = true
+		{Text: "Disable Overlay Directory and Exit", Action: func() bool {
+			c.disableRequested = true
 			return true
 		}},
 		{Text: "Exit", Action: func() bool { return true }},
 	}
 }
 
-// ShowFatalErrorOverridesDialog is the variant of ShowFatalErrorDialog for
-// startup errors hit while facility engineering override files were in use:
-// since the overrides may themselves be the cause and the settings window
-// is unreachable when startup fails, it offers to clear them so that the
-// user isn't stuck editing the config file by hand to recover.
-func ShowFatalErrorOverridesDialog(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Logger, s string, args ...any) {
+// ShowFatalErrorOverlayDialog is the variant of ShowFatalErrorDialog for
+// startup errors hit while an overlay directory was in use: since its files
+// may themselves be the cause and the settings window is unreachable when
+// startup fails, it offers to disable it so that the user isn't stuck
+// editing the config file by hand to recover.
+func ShowFatalErrorOverlayDialog(r renderer.Renderer, p platform.Platform, config *Config, lg *log.Logger, s string, args ...any) {
 	msg := fmt.Sprintf(s, args...) +
-		"\n\nFacility engineering override files are selected in the settings window; " +
-		"they may be the cause of these errors. You can clear them and then relaunch vice."
+		"\n\nAn overlay directory is selected in the settings window; " +
+		"its files may be the cause of these errors. You can disable it and then relaunch vice."
 
-	mc := &clearOverridesModalClient{ErrorModalClient: ErrorModalClient{message: msg}}
+	mc := &disableOverlayModalClient{ErrorModalClient: ErrorModalClient{message: msg}}
 	d := gui.NewModalDialog(mc, p)
 	gui.RunDialogEventLoop(p, ui.font, d, func() bool { return d.Closed() })
 
-	if mc.clearRequested {
-		config.clearFacilityEngineeringFiles()
+	if mc.disableRequested {
+		config.OverlayDir = ""
 		if err := config.Save(lg); err != nil {
 			lg.Errorf("Error saving configuration file: %v", err)
 		}
 	}
 	os.Exit(1)
+}
+
+// setUpOverlayDir prepares the overlay directory dir that vice was launched
+// with, if any. One that has been removed is disabled rather than made
+// again.
+func setUpOverlayDir(dir string, config *Config, p platform.Platform, lg *log.Logger) {
+	if dir == "" {
+		return
+	}
+	if util.IsDir(dir) {
+		mirrorOverlayDir(dir, p, lg)
+		return
+	}
+
+	util.SetResourcesOverlay("")
+	if config.OverlayDir == dir {
+		config.OverlayDir = ""
+	}
+	msg := "The overlay directory " + dir + " doesn't exist, so it has been disabled."
+	lg.Warn(msg)
+	uiShowModalDialog(gui.NewModalDialog(&MessageModalClient{title: "Overlay Directory", message: msg}, p), false)
+}
+
+// mirrorOverlayDir creates the resources directory's directories in the
+// overlay directory dir, if there is one.
+func mirrorOverlayDir(dir string, p platform.Platform, lg *log.Logger) {
+	if dir == "" {
+		return
+	}
+	if err := util.MirrorResourceDirs(dir); err != nil {
+		ShowErrorDialog(p, lg, "Unable to set up the overlay directory %s: %v", dir, err)
+	}
+}
+
+// warnUnreadOverlayFiles lists the files in the overlay directory that
+// weren't read when the resources were loaded, which are likely misnamed or
+// misplaced.
+func warnUnreadOverlayFiles(p platform.Platform, lg *log.Logger) {
+	unread, err := util.UnreadOverlayFiles()
+	if err != nil {
+		lg.Errorf("Unable to check the overlay directory: %v", err)
+	} else if len(unread) > 0 {
+		msg := "These files in the overlay directory weren't loaded; check that their names and " +
+			"directories match the ones in vice's resources:\n\n" + strings.Join(unread, "\n")
+		lg.Warn(msg)
+		uiShowModalDialog(gui.NewModalDialog(&MessageModalClient{title: "Overlay Directory", message: msg}, p), false)
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

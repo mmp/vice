@@ -56,7 +56,10 @@ type app struct {
 
 	reload       *client.ScenarioReload
 	reloadErrors []string
-	status       string
+	// unreadOverlayFiles are the files in the overlay directory that weren't
+	// read when the resources were last loaded.
+	unreadOverlayFiles []string
+	status             string
 
 	// Modal dialogs waiting to be shown, and the pending check for a newer
 	// release, which puts one up if it finds one.
@@ -87,17 +90,23 @@ func newApp(config *Config, plat platform.Platform, render renderer.Renderer, cr
 		crashUploadDone: crashUploadDone,
 	}
 
-	mgr, errorLogger, overrideErrors := client.MakeLocalServerManager(config.overrideFiles(),
-		func() bool { return false }, lg,
+	// An overlay directory that has been removed is disabled rather than
+	// made again.
+	var missingOverlayDir string
+	if config.OverlayDir != "" && !util.IsDir(config.OverlayDir) {
+		missingOverlayDir, config.OverlayDir = config.OverlayDir, ""
+		util.SetResourcesOverlay("")
+		lg.Warnf("overlay directory %s doesn't exist; disabling it", missingOverlayDir)
+	}
+
+	mgr, errorLogger := client.MakeLocalServerManager(func() bool { return false }, lg,
 		func(c *client.ControlClient) { a.setControlClient(c) },
 		func(err error) { lg.Errorf("server: %v", err) })
 	if errorLogger.HaveErrors() {
 		return nil, fmt.Errorf("%s", errorLogger.String())
 	}
 	a.mgr = mgr
-	if overrideErrors != "" {
-		a.reloadErrors = strings.Split(strings.TrimSpace(overrideErrors), "\n")
-	}
+	a.findUnreadOverlayFiles()
 
 	a.scope.init()
 	if render != nil {
@@ -129,6 +138,12 @@ func newApp(config *Config, plat platform.Platform, render renderer.Renderer, cr
 
 		if config.WhatsNewIndex < len(whatsNew) {
 			a.showDialog(&whatsNewDialog{config: config})
+		}
+		if missingOverlayDir != "" {
+			a.showDialog(&messageDialog{
+				title:   "Overlay directory",
+				message: "The overlay directory " + missingOverlayDir + " doesn't exist, so it has been disabled.",
+			})
 		}
 	}
 
@@ -265,6 +280,7 @@ func (a *app) update() {
 	if a.reload != nil && a.reload.Done() {
 		result, err := a.reload.Result()
 		a.reload = nil
+		a.findUnreadOverlayFiles()
 		switch {
 		case err != nil:
 			a.reloadErrors = []string{err.Error()}
@@ -274,9 +290,6 @@ func (a *app) update() {
 			a.status = fmt.Sprintf("reload found %d error(s); scenarios unchanged", len(result.Errors))
 		default:
 			a.reloadErrors = nil
-			if result.OverrideErrors != "" {
-				a.reloadErrors = strings.Split(strings.TrimSpace(result.OverrideErrors), "\n")
-			}
 			a.normalizeSelection()
 			a.startSim()
 			a.status = "reloaded"
@@ -292,14 +305,8 @@ func (a *app) reloadScenarios() {
 	if a.reload != nil || a.mgr.LocalServer == nil {
 		return
 	}
-	a.reload = a.mgr.LocalServer.ReloadScenarios(a.reloadArgs())
+	a.reload = a.mgr.LocalServer.ReloadScenarios()
 	a.status = "reloading..."
-}
-
-// reloadArgs are the override files the user has picked; they are sent with
-// every reload so that a new choice takes effect without restarting.
-func (a *app) reloadArgs() server.ReloadScenariosArgs {
-	return server.ReloadScenariosArgs{Overrides: a.config.overrideFiles()}
 }
 
 // reloadShortcut is how the reload key is written in the UI. Control-R

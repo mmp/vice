@@ -241,7 +241,7 @@ func makeReplayTestSimManager(t *testing.T) (*log.Logger, *SimManager) {
 	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil)), LogDir: t.TempDir()}
 
 	var e util.ErrorLogger
-	tables, _ := scenario.Load(scenario.OverrideFiles{}, &e, lg)
+	tables := scenario.Load(&e, lg)
 	if e.HaveErrors() {
 		t.Fatalf("loading scenarios: %s", e.String())
 	}

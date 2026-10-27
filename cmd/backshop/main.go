@@ -56,6 +56,7 @@ func main() {
 	lg := log.NewWithStderrCapture("info", "")
 	client.ReportCrashesTo(net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), lg)
 	config := loadConfig(lg)
+	util.SetResourcesOverlay(config.OverlayDir)
 
 	run := run
 	if facility, ok := os.LookupEnv(selfTestEnv); ok {
@@ -153,6 +154,7 @@ func run(config *Config, lg *log.Logger) error {
 		showStartupError(plat, uiFont, err, config, lg)
 		return err
 	}
+	app.mirrorOverlayDir()
 
 	for {
 		app.update()
@@ -180,8 +182,8 @@ func run(config *Config, lg *log.Logger) error {
 }
 
 // showStartupError puts err up in the window and waits for the user to
-// dismiss it. config is non-nil when the additional files may be the cause,
-// so that the dialog can offer to clear them.
+// dismiss it. config is non-nil when the overlay directory may be the cause,
+// so that the dialog can offer to disable it.
 func showStartupError(plat platform.Platform, font *gui.Font, err error, config *Config, lg *log.Logger) {
 	se := &startupErrorDialog{message: err.Error(), plat: plat, config: config}
 	d := gui.NewModalDialog(se, plat)

@@ -212,11 +212,48 @@
             </header>
 
                 <p>When developing scenarios, you might make a copy of an existing scenario's JSON file and modify it in order to add more configurations,
-                  or you or might specify completely new scenario and video map files if you're working on support for a new TRACON.
+                  or you might write completely new scenario and video map files if you're working on support for a new TRACON.
                   As part of this you may also need to modify the configuration file for the facility.
+                  You keep these files in an <a href="#fe-overlay-directory">overlay directory</a>.
                   As you work, you can use <a href="#fe-backshop">backshop</a> to check your work; it's a stand-alone tool for scenario development in <i>vice</i>.
-                  Alternatively, you can have <i>vice</i> load your updated files when it launches and run the scenarios as a user would there; 
+                  Alternatively, you can have <i>vice</i> load your updated files when it launches and run the scenarios as a user would there.
                 </p>
+
+            <section class="docs-section" id="fe-overlay-directory">
+              <h2 class="section-heading" data-nav-title="Overlay Directory">The Overlay Directory</h2>
+                <p>
+                  The overlay directory is a directory of your choosing that holds the files you're working on. It is
+                  organized like <i>vice</i>'s resources directory, and <i>vice</i> and <i>backshop</i> load its files
+                  along with the built-in ones:
+                </p>
+                <ul>
+                  <li>A file in the overlay directory is used in place of the built-in file at the same path. For example,
+                    <code>scenarios/n90.json</code> in the overlay directory replaces <i>vice</i>'s N90 scenarios and
+                    <code>configurations/ZNY/N90.json</code> replaces its N90 facility configuration. To modify a built-in
+                    file, copy it from the <a href="https://github.com/mmp/vice/tree/master/resources"><code>resources/</code> directory</a>
+                    in the <i>vice</i> source code to the same path in the overlay directory.</li>
+                  <li>Files at paths that <i>vice</i> doesn't have are loaded along with the built-in ones. A new TRACON's
+                    scenarios, facility configuration, and video maps go in the overlay directory's <code>scenarios/</code>,
+                    <code>configurations/<i>ARTCC</i>/</code>, and <code>videomaps/</code> directories.</li>
+                  <li>Paths are compared without regard to upper- and lower-case on all operating systems, so
+                    <code>scenarios/N90.json</code> in the overlay directory also replaces the built-in
+                    <code>scenarios/n90.json</code>.</li>
+                </ul>
+                <p>
+                  Each time <i>vice</i> or <i>backshop</i> launches, and when an overlay directory is first selected, it creates
+                  the directories that <i>vice</i>'s resources directory has in the overlay directory: <code>scenarios/</code>,
+                  <code>configurations/ZNY/</code>, <code>briefs/ZNY/</code>, <code>videomaps/</code>, and so forth.
+                  (If the overlay directory itself has been removed, it is disabled with a warning instead.)
+                  Once it has loaded the scenarios, it lists any files in the overlay directory that it didn't read, since
+                  a misspelled file or directory name means that a file isn't loaded. (<i>backshop</i> lists them in its
+                  Scenario tab and <code>vice -lint</code> prints them.)
+                </p>
+                <p>
+                  If the files in the overlay directory have errors, <i>vice</i> lists them when it starts and offers to
+                  disable the overlay directory before it exits, so that it can be relaunched without it. The files
+                  themselves are left as they are.
+                </p>
+            </section>
 
             <section class="docs-section" id="fe-backshop">
               <h2 class="section-heading" data-nav-title="Backshop">Backshop</h2>
@@ -226,8 +263,7 @@
                   can be copied to the clipboard, since it is all destined for hand-written JSON.
                 </p>
                 <p>
-                  Work-in-progress scenario, video map, brief, and facility configuration files can be specified
-                  under "Additional files" in the Scenario tab.
+                  The <a href="#fe-overlay-directory">overlay directory</a> is selected in the Scenario tab.
                 </p>
                 <p>
                   Most importantly, it reloads edited scenario JSON in place: pressing <code>[Control-R]</code>
@@ -321,28 +357,18 @@
             <section class="docs-section" id="fe-testing-in-vice">
               <h2 class="section-heading" data-nav-title="Testing in Vice">Testing in Vice</h2>
               <p>
-                Another way way to try out your work is to open the "Settings" menu in <i>vice</i> (shown by clicking the <i class="fas fa-cog"></i> icon in the menu bar)
-                  and selecting "Facility Engineering". There, you can specify the locations of additional scenario, video map, and/or facility configuration files to load when <i>vice</i> is launched.</p>
-                <div class="text-center">
-                  <img src="fe-scenario-videomap-ui.png" srcset="fe-scenario-videomap-ui-2x.png 2x" width="539" height="227">
-                </div>
-                <br>
+                Another way to try out your work is to have <i>vice</i> load your <a href="#fe-overlay-directory">overlay directory</a>.
+                  Open the "Settings" menu in <i>vice</i> (shown by clicking the <i class="fas fa-cog"></i> icon in the menu bar),
+                  select "Facility Engineering", and click "Select" next to "Overlay directory". <i>vice</i> loads the overlay
+                  directory's files when it launches, so it must be restarted after they are changed.</p>
                 <p>
-                  Alternatively, if you're comfortable with the command line, you can specify additional files with command-line arguments.
+                  Alternatively, if you're comfortable with the command line, you can give the overlay directory with the
+                  <code>-overlay</code> command-line option, which takes precedence over the one selected in the settings.
                   On Windows, open up a command prompt and set the directory to the folder with the <i>vice</i> executable (generally,
-                  <code>C:\Program Files (x86)\Vice</code>. Then, run
-                  <code>vice.exe -scenario path_to_scenario_file -videomap path_to_videomap_file</code>. On MacOs,
+                  <code>C:\Program Files (x86)\Vice</code>). Then, run
+                  <code>vice.exe -overlay path_to_overlay_directory</code>. On MacOs,
                   it's very similar: change the directory in the terminal to where Vice.app is located (often, <code>/Applications/Vice.app</code>,
-                  depending on where you installed it. Then, run <code>./Vice.app/Contents/MacOs/vice -scenario path_to_scenario_file -videomap path_to_videomap_file</code>.
-                </p>
-                <p>
-                  If you're editing an existing scenario, you may want to make a copy of it to a folder outside of <code>resources/scenarios</code>
-                  to edit it there. In that case, if the scenario given via the UI or command line has the same <code>"name"</code>
-                  value as an existing scenario, it will be used in place of the existing one.
-                </p>
-                <p>When you're working on a new scenario, you may omit the "video_map_file" specifier in its JSON file.
-                  In this case, <i>vice</i> will automatically use the video map file you specified via <code>-videomap</code>
-                  or via the UI.
+                  depending on where you installed it). Then, run <code>./Vice.app/Contents/MacOs/vice -overlay path_to_overlay_directory</code>.
                 </p>
 
 
@@ -419,6 +445,9 @@
                 <ul>
                   <li><code>viceserver</code> (with no arguments) launches a
                     <i>vice</i> server on your local system.</li>
+                  <li><code>-overlay</code> (passed to <code>viceserver</code>)
+                    gives an <a href="#fe-overlay-directory">overlay directory</a>
+                    whose files the server loads along with the built-in ones.</li>
                   <li><code>-server</code> (passed to the <i>vice</i>
                     client) specifies the IP address and (optionally), the
                     port of a <i>vice</i> server to connect to. Specifying
@@ -438,7 +467,7 @@
                   <li><strong>Navigate to the vice directory:</strong> Enter <code>cd "c:\Program Files (x86)\Vice"</code><br>
                     <em>Note: The quotes are essential if the path contains spaces.</em>
                   </li>
-                  <li><strong>Start the multi-controller server:</strong> Enter <code>viceserver.exe</code><br/>
+                  <li><strong>Start the multi-controller server:</strong> Enter <code>viceserver.exe -overlay path_to_overlay_directory</code><br/>
                     If there are errors in your scenario configuration, they will be displayed here. Otherwise, the server launches and will be
                     running in the background.
                   </li>
@@ -1351,15 +1380,9 @@
                 When a scenario is loaded, <i>vice</i> automatically loads the corresponding facility configuration
                 based on the scenario's "tracon" field for a TRACON scenario or its "artcc" field for an enroute (ERAM) scenario.
               </p>
-              <p>When you're working on a facility's configuration, you can load your own copy of it with the
-                <code>-facilityconfig</code> command-line option or by selecting it from the "Facility Engineering" entry
-                in the settings menu. It replaces the configuration file with the same filename&mdash;a file named
-                <code>N90.json</code> takes the place of <code>resources/configurations/ZNY/N90.json</code>&mdash;so
-                the filename must match one of the built-in configurations. If the file has any errors, they are reported
-                in a dialog box when <i>vice</i> starts and the built-in configuration is used instead.
-                Two configuration files may be overridden at once&mdash;for example, both a TRACON's and its
-                ARTCC's&mdash;by selecting a second file in the settings menu or by giving the
-                <code>-facilityconfig</code> option twice.
+              <p>When you're working on a facility's configuration, put your copy of it at the same path in your
+                <a href="#fe-overlay-directory">overlay directory</a>: <code>configurations/ZNY/N90.json</code> there takes
+                the place of <i>vice</i>'s <code>resources/configurations/ZNY/N90.json</code>.
               </p>
               <p>Each facility configuration file may contain the following top-level elements:</p>
               <table class="table">
@@ -3982,9 +4005,8 @@
                     </ul>
                   </li>
                   <li>Pass <code>-out &lt;dir&gt;</code> to write to a different output directory.</li>
-                  <li>Copy the resulting <code>.mappack</code> file(s) to the <code>resources/videomaps</code> folder
-                    in your <code>%APPDATA%\Vice</code> directory, or pass the path to a file via the
-                    <code>-videomap</code> command-line option to <i>vice</i>.</li>
+                  <li>Copy the resulting <code>.mappack</code> file(s) to the <code>videomaps</code> folder
+                    in your <a href="#fe-overlay-directory">overlay directory</a>.</li>
                 </ul>
                 <h3 id="fe-video-maps-dat2vice">dat2vice</h3>
                 <p><code>dat2vice</code>  extracts video maps from the FAA DAT video map file format and converts them to <i>vice</i>'s internal format.</p>
@@ -6483,12 +6505,11 @@
                 brief would live at <code>resources/briefs/ZNY/ZNY.md</code>.
               </p>
               
-              <p>An additional brief file can be loaded with the
-                <code>-scenariobrief</code> command-line option or selected from
-                the "Facility Engineering" entry in the settings menu; if its
-                filename matches a facility that already has a built-in
-                brief, it replaces the built-in one&mdash;this is handy for iterating on a
-                brief without modifying the installed resources.</p>
+              <p>A brief at the same path in your
+                <a href="#fe-overlay-directory">overlay directory</a>, such as
+                <code>briefs/ZNY/N90.md</code>, replaces the built-in
+                one&mdash;this is handy for iterating on a brief without
+                modifying the installed resources.</p>
 
               <p>While the brief is visible, pressing <code>Ctrl+R</code> (or <code>Command-R</code> on Macs)
                 reloads it from disk, so iteration on a brief is fast: edit the Markdown,

@@ -99,7 +99,7 @@ func runSelfTest(config *Config, lg *log.Logger) error {
 	}
 	selfTestPronunciations(a)
 
-	if a.reload = a.mgr.LocalServer.ReloadScenarios(a.reloadArgs()); a.reload != nil {
+	if a.reload = a.mgr.LocalServer.ReloadScenarios(); a.reload != nil {
 		start := time.Now()
 		for !a.reload.Done() {
 			time.Sleep(10 * time.Millisecond)

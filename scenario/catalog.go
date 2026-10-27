@@ -7,7 +7,6 @@ package scenario
 import (
 	"fmt"
 	"maps"
-	"os"
 	"slices"
 	"strings"
 
@@ -27,24 +26,19 @@ import (
 type BriefRegistry struct {
 	facilities     map[string]struct{}          // which facilities have briefs
 	videoMapHashes map[string]map[string][]byte // facility -> video map filenames -> hashes
-	pathOverrides  map[string]string            // non-canonical brief paths (set only by --scenario-brief)
 }
 
 func newBriefRegistry() *BriefRegistry {
 	return &BriefRegistry{
 		facilities:     make(map[string]struct{}),
 		videoMapHashes: make(map[string]map[string][]byte),
-		pathOverrides:  make(map[string]string),
 	}
 }
 
-func (r *BriefRegistry) register(facility string, hashes map[string][]byte, pathOverride string) {
+func (r *BriefRegistry) register(facility string, hashes map[string][]byte) {
 	r.facilities[facility] = struct{}{}
 	if len(hashes) > 0 {
 		r.videoMapHashes[facility] = hashes
-	}
-	if pathOverride != "" {
-		r.pathOverrides[facility] = pathOverride
 	}
 }
 
@@ -54,18 +48,13 @@ func (r *BriefRegistry) VideoMapHashes(facility string) map[string][]byte {
 	return r.videoMapHashes[facility]
 }
 
-// LoadBrief returns the markdown source for the given facility's brief,
-// or ("", nil) if no brief was registered for it at startup. The source
-// is the --scenario-brief override when present, otherwise the canonical
-// briefs/<ARTCC>/<facility>.md resource. Reads only init-immutable maps,
-// so needs no locking.
+// LoadBrief returns the markdown source of the given facility's
+// briefs/<ARTCC>/<facility>.md resource, or ("", nil) if no brief was
+// registered for it at startup. Reads only init-immutable maps, so needs no
+// locking.
 func (r *BriefRegistry) LoadBrief(facility string) (string, error) {
 	if _, ok := r.facilities[facility]; !ok {
 		return "", nil
-	}
-	if p, ok := r.pathOverrides[facility]; ok {
-		b, err := os.ReadFile(p)
-		return string(b), err
 	}
 	path := scenarioBriefPath(facility)
 	if !util.ResourceExists(path) {

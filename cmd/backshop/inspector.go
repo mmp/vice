@@ -206,7 +206,7 @@ func (in *inspector) drawScenarioTab(a *app) {
 	imgui.Text(reloadShortcut + " reloads")
 
 	imgui.Separator()
-	in.drawExtraFilesUI(a)
+	in.drawOverlayDirUI(a)
 
 	if len(a.reloadErrors) > 0 {
 		imgui.Separator()
@@ -432,30 +432,52 @@ func categoryName(category int, system bool) string {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Additional files
+// Overlay directory
 
-// drawExtraFilesUI picks the work-in-progress scenario, video map, and
-// brief files to load alongside the installed ones. Choosing one takes
-// effect on the next reload, which is also what the button does.
-func (in *inspector) drawExtraFilesUI(a *app) {
-	imgui.TextWrapped("Additional scenario, video map, brief, and facility configuration files to load " +
-		"alongside the installed ones. A scenario whose \"name\" matches an installed one replaces it.")
+// drawOverlayDirUI picks the overlay directory, whose work-in-progress files
+// are loaded in place of or alongside the installed resources. Choosing one
+// reloads them.
+func (in *inspector) drawOverlayDirUI(a *app) {
+	imgui.TextWrapped("Files in the overlay directory replace or add to the installed resource files " +
+		"at the same paths; for example, its scenarios/n90.json replaces the installed one.")
 
-	changed := false
-	picked := func(c bool, err error) {
-		changed = changed || c
-		if err != nil {
-			a.status = err.Error()
-		}
-	}
-
-	picked(gui.DrawFilePicker("Scenario", "scenario", &a.config.ScenarioFile, []string{"*.json"}))
-	picked(gui.DrawFilePicker("Video map", "videomap", &a.config.VideoMapFile, []string{"*.mappack"}))
-	picked(gui.DrawFilePicker("Brief", "brief", &a.config.ScenarioBriefFile, []string{"*.md"}))
-	picked(gui.DrawFileListPicker("Facility configuration", "facilityconfig",
-		&a.config.FacilityConfigFiles, []string{"*.json"}))
-
-	if changed {
+	if changed, err := gui.DrawDirectoryPicker("Overlay directory", "overlay", &a.config.OverlayDir); err != nil {
+		a.status = err.Error()
+	} else if changed {
+		util.SetResourcesOverlay(a.config.OverlayDir)
+		a.mirrorOverlayDir()
 		a.reloadScenarios()
 	}
+
+	if len(a.unreadOverlayFiles) > 0 {
+		imgui.PushStyleColorVec4(imgui.ColText, warningColor)
+		imgui.TextWrapped("These files in the overlay directory weren't loaded; check that their names " +
+			"and directories match the installed ones:")
+		imgui.PopStyleColor()
+		for _, f := range a.unreadOverlayFiles {
+			imgui.Text("    " + f)
+		}
+	}
+}
+
+// mirrorOverlayDir creates the resources directory's directories in the
+// overlay directory, if there is one.
+func (a *app) mirrorOverlayDir() {
+	if a.config.OverlayDir == "" {
+		return
+	}
+	if err := util.MirrorResourceDirs(a.config.OverlayDir); err != nil {
+		a.status = err.Error()
+	}
+}
+
+// findUnreadOverlayFiles records the files in the overlay directory that
+// the last load of the resources didn't read, which are likely misnamed or
+// misplaced.
+func (a *app) findUnreadOverlayFiles() {
+	unread, err := util.UnreadOverlayFiles()
+	if err != nil {
+		a.status = err.Error()
+	}
+	a.unreadOverlayFiles = unread
 }

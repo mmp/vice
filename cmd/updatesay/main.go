@@ -36,7 +36,7 @@ func main() {
 
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")
-	tables, _ := scenario.Load(scenario.OverrideFiles{}, &e, lg)
+	tables := scenario.Load(&e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)

@@ -5,9 +5,13 @@
 package util
 
 import (
-	"testing"
-
 	"io/fs"
+	"os"
+	"path/filepath"
+	"slices"
+	"strings"
+	"testing"
+	"testing/fstest"
 )
 
 func TestObjectArena(t *testing.T) {
@@ -126,5 +130,134 @@ func TestLoadResourceBytesDoesNotOverallocate(t *testing.T) {
 	if cap(b) > len(b)+64 {
 		t.Errorf("%s: cap %d exceeds len %d; the file was copied through a growing buffer",
 			path, cap(b), len(b))
+	}
+}
+
+func TestOverlayFS(t *testing.T) {
+	o := overlayFS{
+		base: fstest.MapFS{
+			"scenarios/abe.json":          {Data: []byte("base abe")},
+			"scenarios/n90.json":          {Data: []byte("base n90")},
+			"configurations/ZNY/N90.json": {Data: []byte("base N90 config")},
+		},
+		overlay: fstest.MapFS{
+			"scenarios/N90.json":          {Data: []byte("overlay n90")},
+			"scenarios/new.json":          {Data: []byte("overlay new")},
+			"configurations/zny/n90.json": {Data: []byte("overlay N90 config")},
+		},
+		opened: &pathSet{},
+	}
+
+	for path, want := range map[string]string{
+		"scenarios/abe.json":          "base abe",
+		"scenarios/n90.json":          "overlay n90",
+		"scenarios/N90.json":          "overlay n90",
+		"scenarios/new.json":          "overlay new",
+		"configurations/ZNY/N90.json": "overlay N90 config",
+	} {
+		if b, err := fs.ReadFile(o, path); err != nil {
+			t.Errorf("%s: %v", path, err)
+		} else if string(b) != want {
+			t.Errorf("%s: got %q, want %q", path, b, want)
+		}
+	}
+
+	// Replaced files and directories keep the base's spelling.
+	var paths []string
+	err := fs.WalkDir(o, ".", func(path string, d fs.DirEntry, err error) error {
+		if err == nil && !d.IsDir() {
+			paths = append(paths, path)
+		}
+		return err
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []string{"configurations/ZNY/N90.json", "scenarios/abe.json", "scenarios/n90.json", "scenarios/new.json"}
+	if !slices.Equal(paths, want) {
+		t.Errorf("walk found %v, want %v", paths, want)
+	}
+
+	fi, err := o.Stat("scenarios/n90.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fi.Name() != "n90.json" || fi.Size() != int64(len("overlay n90")) {
+		t.Errorf("Stat gave %q with size %d, want the overlay's n90.json", fi.Name(), fi.Size())
+	}
+
+	if _, err := o.Open("scenarios/missing.json"); err == nil {
+		t.Error("opened a file in neither file system")
+	}
+}
+
+func TestMirrorResourceDirs(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.Mkdir(filepath.Join(dir, "Configurations"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := MirrorResourceDirs(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, d := range []string{"videomaps", "briefs/ZNY", "traffic/timetables", "Configurations/ZNY"} {
+		if !IsDir(filepath.Join(dir, filepath.FromSlash(d))) {
+			t.Errorf("%s wasn't created", d)
+		}
+	}
+	if IsDir(filepath.Join(dir, "models")) {
+		t.Error("models was mirrored")
+	}
+
+	// A directory that already exists with its name in a different case is
+	// used rather than having a second copy made.
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := len(FilterSlice(entries, func(e os.DirEntry) bool { return strings.EqualFold(e.Name(), "configurations") })); n != 1 {
+		t.Errorf("%d configurations directories, want 1", n)
+	}
+
+	// An overlay directory that has been removed isn't made again.
+	gone := filepath.Join(t.TempDir(), "gone")
+	if err := MirrorResourceDirs(gone); err == nil {
+		t.Error("no error for a missing overlay directory")
+	}
+	if _, err := os.Stat(gone); err == nil {
+		t.Error("the missing overlay directory was made")
+	}
+}
+
+func TestUnreadOverlayFiles(t *testing.T) {
+	dir := t.TempDir()
+	for _, f := range []string{"scenarios/abe.json", "scenarios/n90.jsn", "scenario/n90.json",
+		"scenarios/abe.json~", "scenarios/#abe.json#", ".DS_Store", ".git/config"} {
+		p := filepath.Join(dir, filepath.FromSlash(f))
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, nil, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	SetResourcesOverlay(dir)
+	t.Cleanup(func() { SetResourcesOverlay("") })
+
+	if _, err := fs.ReadFile(GetResourcesFS(), "scenarios/ABE.json"); err != nil {
+		t.Fatal(err)
+	}
+	// Listing a directory doesn't read the files in it.
+	if _, err := fs.ReadDir(GetResourcesFS(), "scenarios"); err != nil {
+		t.Fatal(err)
+	}
+
+	unread, err := UnreadOverlayFiles()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := []string{"scenario/n90.json", "scenarios/n90.jsn"}; !slices.Equal(unread, want) {
+		t.Errorf("unread files %v, want %v", unread, want)
 	}
 }

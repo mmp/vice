@@ -9,8 +9,11 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 	"sync"
+	"sync/atomic"
 
 	"github.com/klauspost/compress/zstd"
 )
@@ -25,9 +28,99 @@ func InitResources() {
 	})
 }
 
+// resourcesOverlay is the overlay directory set with SetResourcesOverlay
+// along with the files in it that have been opened.
+type resourcesOverlay struct {
+	dir    string
+	opened pathSet
+}
+
+var currentResourcesOverlay atomic.Pointer[resourcesOverlay]
+
+// SetResourcesOverlay makes the files in dir take the place of the resource
+// files at the same paths and adds the others to the resources. An empty dir
+// removes the overlay. Reads of the resources that start after it returns
+// see the new overlay.
+func SetResourcesOverlay(dir string) {
+	if dir == "" {
+		currentResourcesOverlay.Store(nil)
+	} else {
+		currentResourcesOverlay.Store(&resourcesOverlay{dir: dir})
+	}
+}
+
+// GetResourcesFS returns the file system that holds vice's resources: the
+// resources directory with the overlay directory, if any, on top of it.
 func GetResourcesFS() fs.StatFS {
 	InitResources()
+	if o := currentResourcesOverlay.Load(); o != nil {
+		return overlayFS{base: *resourcesFS, overlay: os.DirFS(o.dir), opened: &o.opened}
+	}
 	return *resourcesFS
+}
+
+// UnreadOverlayFiles returns the files in the overlay directory that
+// haven't been read since it was set. Once the resources have been loaded,
+// these are likely misnamed or misplaced, since vice reads everything
+// facility engineering involves at startup. Hidden files and editor backups
+// are skipped.
+func UnreadOverlayFiles() ([]string, error) {
+	o := currentResourcesOverlay.Load()
+	if o == nil {
+		return nil, nil
+	}
+
+	var unread []string
+	err := fs.WalkDir(os.DirFS(o.dir), ".", func(p string, d fs.DirEntry, err error) error {
+		if err != nil || p == "." {
+			return err
+		}
+		name := d.Name()
+		if strings.HasPrefix(name, ".") {
+			if d.IsDir() {
+				return fs.SkipDir
+			}
+			return nil
+		}
+		if d.IsDir() || strings.HasPrefix(name, "#") || strings.HasSuffix(name, "~") {
+			return nil
+		}
+		if !o.opened.contains(p) {
+			unread = append(unread, p)
+		}
+		return nil
+	})
+	return unread, err
+}
+
+// MirrorResourceDirs creates each of the resources directory's directories
+// in dir, so that someone filling in an overlay directory can see where its
+// files go. dir itself must already exist. The models directory isn't
+// mirrored: the speech models are read from their paths on disk, not
+// through the overlay.
+func MirrorResourceDirs(dir string) error {
+	InitResources()
+	base, overlay := *resourcesFS, os.DirFS(dir)
+
+	return fs.WalkDir(base, ".", func(p string, d fs.DirEntry, err error) error {
+		if err != nil || !d.IsDir() || p == "." {
+			return err
+		}
+		if p == "models" {
+			return fs.SkipDir
+		}
+		if _, ok := findFold(overlay, p); ok {
+			return nil
+		}
+		// Make it inside its parent as the overlay spells the parent's
+		// name. WalkDir visits the parent first, so it is missing only if
+		// dir is.
+		parent, ok := findFold(overlay, path.Dir(p))
+		if !ok {
+			return &fs.PathError{Op: "stat", Path: dir, Err: fs.ErrNotExist}
+		}
+		return os.Mkdir(filepath.Join(dir, filepath.FromSlash(path.Join(parent, path.Base(p)))), 0o755)
+	})
 }
 
 // Unfortunately, unlike io.ReadCloser, the zstd Decoder's Close() method

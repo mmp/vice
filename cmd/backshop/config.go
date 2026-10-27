@@ -13,7 +13,6 @@ import (
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/scenario"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -34,37 +33,13 @@ type Config struct {
 	// TTSVoice is the Kokoro voice the TTS tab speaks with.
 	TTSVoice string
 
-	ScenarioFile        string
-	VideoMapFile        string
-	ScenarioBriefFile   string
-	FacilityConfigFiles []string
+	OverlayDir string
 
 	// CRCDir is the CRC installation directory the Tools tab reads ARTCC
 	// definitions from and MapPackDir is where it writes the video map
 	// libraries it converts them to.
 	CRCDir     string
 	MapPackDir string
-}
-
-// overrideFiles returns the files the user has picked to replace or add to
-// the ones in the resources directory.
-func (c *Config) overrideFiles() scenario.OverrideFiles {
-	return scenario.OverrideFiles{
-		Scenario:        c.ScenarioFile,
-		VideoMap:        c.VideoMapFile,
-		ScenarioBrief:   c.ScenarioBriefFile,
-		FacilityConfigs: c.FacilityConfigFiles,
-	}
-}
-
-func (c *Config) hasOverrideFiles() bool {
-	return c.ScenarioFile != "" || c.VideoMapFile != "" || c.ScenarioBriefFile != "" ||
-		len(c.FacilityConfigFiles) > 0
-}
-
-func (c *Config) clearOverrideFiles() {
-	c.ScenarioFile, c.VideoMapFile, c.ScenarioBriefFile = "", "", ""
-	c.FacilityConfigFiles = nil
 }
 
 func configFilePath(lg *log.Logger) string {
