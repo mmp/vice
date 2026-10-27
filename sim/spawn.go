@@ -105,7 +105,6 @@ func (s *Sim) addAircraft(ac Aircraft) {
 	}
 
 	s.Aircraft[ac.ADSBCallsign] = &ac
-	s.logSpawn(&ac)
 
 	ac.Nav.Prespawn = s.prespawn && ac.FlightRules == av.FlightRulesVFR
 

@@ -11,9 +11,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"log/slog"
 )
@@ -83,7 +86,7 @@ func TestGetRunningSimsDoesNotWaitOnSessions(t *testing.T) {
 		t.Skip("starts a sim")
 	}
 
-	_, sm := makeReplayTestSimManager(t)
+	_, sm := makeTestSimManager(t)
 	req := makeTestSimRequest(t, sm, "PHL", "KPHL Depart 27L Land 27R/35")
 	var result NewSimResult
 	if err := sm.NewSim(&req, &result); err != nil {
@@ -142,7 +145,7 @@ func TestStuckSessionDoesNotWedgeServer(t *testing.T) {
 		t.Skip("starts a sim")
 	}
 
-	_, sm := makeReplayTestSimManager(t)
+	_, sm := makeTestSimManager(t)
 	req := makeTestSimRequest(t, sm, "PHL", "KPHL Depart 27L Land 27R/35")
 	var result NewSimResult
 	if err := sm.NewSim(&req, &result); err != nil {
@@ -183,7 +186,7 @@ func TestConcurrentSignOnsAtOneTCW(t *testing.T) {
 		t.Skip("starts a sim")
 	}
 
-	_, sm := makeReplayTestSimManager(t)
+	_, sm := makeTestSimManager(t)
 	req := makeTestSimRequest(t, sm, "PHL", "KPHL Depart 27L Land 27R/35")
 	var result NewSimResult
 	if err := sm.NewSim(&req, &result); err != nil {
@@ -211,4 +214,62 @@ func TestConcurrentSignOnsAtOneTCW(t *testing.T) {
 	if signedOn != 1 || occupied != 1 {
 		t.Errorf("%d signed on and %d found 1S occupied, want one of each", signedOn, occupied)
 	}
+}
+
+// makeTestSimManager returns a SimManager over the scenarios in the
+// resources, with no server to talk to.
+func makeTestSimManager(t *testing.T) (*log.Logger, *SimManager) {
+	t.Helper()
+
+	db.InitDB()
+	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil)), LogDir: t.TempDir()}
+
+	var e util.ErrorLogger
+	tables := scenario.Load(&e, lg)
+	if e.HaveErrors() {
+		t.Fatalf("loading scenarios: %s", e.String())
+	}
+
+	sm := &SimManager{
+		sessionsByName:  make(map[string]*simSession),
+		sessionsByToken: make(map[string]*simSession),
+		// With no server to ask, weather comes from the bundled resources.
+		wxProvider: wx.MakeProvider("", lg),
+		lg:         lg,
+	}
+	sm.scenarios.Store(tables)
+
+	return lg, sm
+}
+
+// makeTestSimRequest returns a request for a new sim running the given
+// scenario with its default traffic, starting when the resources have
+// weather for the facility.
+func makeTestSimRequest(t *testing.T, sm *SimManager, facility, scenarioName string) NewSimRequest {
+	t.Helper()
+
+	tables := sm.scenarios.Load()
+	for groupName, catalog := range util.SortedMap(tables.Catalogs[facility]) {
+		spec, ok := catalog.Scenarios[scenarioName]
+		if !ok {
+			continue
+		}
+
+		req := MakeNewSimRequest()
+		req.Facility, req.GroupName, req.ScenarioName = facility, groupName, scenarioName
+		req.ScenarioSpec = spec
+		req.Initials = "XX"
+		req.Privileged = true // so every aircraft takes commands
+		intervals := wx.FacilityTimeIntervals(facility)
+		if len(intervals) == 0 {
+			t.Fatalf("%s: no weather in the resources", facility)
+		}
+		req.StartTime = intervals[0].Start().Add(2 * time.Hour)
+		if src := &req.ScenarioSpec.LaunchConfig.TrafficSource; !slices.Contains(spec.TrafficSources, *src) {
+			*src = spec.TrafficSources[0]
+		}
+		return req
+	}
+	t.Fatalf("%s/%s: no such scenario", facility, scenarioName)
+	return NewSimRequest{}
 }

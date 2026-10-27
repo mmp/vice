@@ -14,7 +14,6 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
-	"github.com/mmp/vice/simlog"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
@@ -467,10 +466,7 @@ func shouldAskAboutTowerSwitch(ac *Aircraft) bool {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
-	// Update both current wx and logged at the start of a tick for consistency in replays.
-	if u := s.wxModel.Advance(s.State.SimTime.Time()); u != nil && s.sessionLog != nil {
-		s.sessionLog.Weather(simlog.Weather{Time: s.State.SimTime.Time(), Update: *u})
-	}
+	s.wxModel.Advance(s.State.SimTime.Time())
 
 	for acid, ho := range util.SortedMap(s.Handoffs) {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
@@ -756,6 +752,4 @@ func (s *Sim) updateState() {
 			}
 		}
 	}
-
-	s.logTick()
 }

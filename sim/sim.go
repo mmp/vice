@@ -20,7 +20,6 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
-	"github.com/mmp/vice/simlog"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -123,8 +122,6 @@ type Sim struct {
 	// text for clients nor changes to the phrasing change what the aircraft
 	// do.
 	textRand *rand.Rand
-
-	sessionLog *simlog.Writer
 
 	// User-selected scenario start time before Vice rewinds the clock for prespawn.
 	StartTime Time

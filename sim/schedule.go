@@ -536,9 +536,7 @@ func (s *Sim) generatePublishedFlights(flights []traffic.Flight) {
 // publishedFlights reads the flights lc's traffic source flies from the
 // resources: the historical flights at its airports over the sim's window, or
 // its timetable's day of flights. It returns none for scenario traffic, and
-// when there are none to be had it posts the reason. It is kept apart from
-// building the schedule so that a session log can carry what it read, and a
-// replay doesn't depend on the resources as they are later.
+// when there are none to be had it posts the reason.
 func (s *Sim) publishedFlights(lc *LaunchConfig) []traffic.Flight {
 	switch lc.TrafficSource {
 	case TrafficSourceHistorical:

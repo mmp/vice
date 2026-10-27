@@ -185,8 +185,6 @@ func (r DeleteReason) String() string {
 }
 
 func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
-	s.logDelete(ac, reason)
-
 	s.clearAircraftSTTCommands(ac.ADSBCallsign)
 	delete(s.Aircraft, ac.ADSBCallsign)
 

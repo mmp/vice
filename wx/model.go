@@ -128,9 +128,8 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 
 // Advance is called by the sim once each tick, t being the sim's time. It
 // starts fetching the next grid once t passes the later of the two current
-// ones, and it installs a grid whose fetch has finished, returning it; it
-// returns nil if it installed none.
-func (m *Model) Advance(t time.Time) *AtmosUpdate {
+// ones, and it installs a grid whose fetch has finished.
+func (m *Model) Advance(t time.Time) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -141,15 +140,13 @@ func (m *Model) Advance(t time.Time) *AtmosUpdate {
 	select {
 	case f := <-m.ch:
 		m.ch = nil
-		return m.installFetched(f)
+		m.installFetched(f)
 	default:
-		return nil
 	}
 }
 
-// installFetched installs the grid a fetch got, if it got one, returning
-// the update it was built from.
-func (m *Model) installFetched(f atmosFetch) *AtmosUpdate {
+// installFetched installs the grid a fetch got, if it got one.
+func (m *Model) installFetched(f atmosFetch) {
 	if f.err != nil || f.grid == nil {
 		if f.err != nil {
 			m.lg.Errorf("%v", f.err)
@@ -157,32 +154,9 @@ func (m *Model) installFetched(f atmosFetch) *AtmosUpdate {
 		// Carry on with the grids we have rather than asking again
 		// every tick.
 		m.nextFetch = noNextTime
-		return nil
+		return
 	}
 	m.install(f.update, f.grid)
-	return &f.update
-}
-
-// Install installs a grid a replayed session's model installed.
-func (m *Model) Install(u AtmosUpdate) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	m.install(u, u.Atmos.ToAOS().GetGrid())
-}
-
-// Installed returns the updates that, installed in order in a new model,
-// give it the grids this one has.
-func (m *Model) Installed() []AtmosUpdate {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	if m.grids[0] == nil {
-		return nil
-	} else if m.grids[0] == m.grids[1] {
-		return []AtmosUpdate{m.updates[1]}
-	}
-	return []AtmosUpdate{m.updates[0], m.updates[1]}
 }
 
 func (m *Model) install(u AtmosUpdate, grid *AtmosGrid) {
