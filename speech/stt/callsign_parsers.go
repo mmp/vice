@@ -8,6 +8,8 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/mmp/vice/util"
 )
 
 // callsignMatcher is the interface for callsign pattern elements.
@@ -43,6 +45,12 @@ type callsignMatchResult struct {
 // totalScore returns the combined score.
 func (r *callsignMatchResult) totalScore() float64 {
 	return r.AirlineScore + r.FlightScore
+}
+
+// isExact reports whether the tokens spoke the whole airline name followed
+// directly by the flight number, with nothing garbled.
+func (r *callsignMatchResult) isExact() bool {
+	return r.AirlineExact && r.FlightExact
 }
 
 // skipMatcher skips 0 to N garbage tokens at the start.
@@ -115,7 +123,8 @@ func (m *flightMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
 			if remaining[skip-1].Type != TokenWord || IsCommandKeyword(remaining[skip-1].Text) {
 				break
 			}
-			exact, consumed, score = matchFlightNumber(remaining[skip:], flightNum, sole)
+			// Garbage before the number means the callsign wasn't spoken exactly.
+			_, consumed, score = matchFlightNumber(remaining[skip:], flightNum, sole)
 			if consumed > 0 {
 				consumed += skip // account for skipped garbage tokens
 			}
@@ -145,6 +154,11 @@ func (m *exactPhraseMatcher) match(ctx *callsignMatchContext) []callsignMatchRes
 	toks := ctx.Tokens[ctx.TokenPos:]
 	maxPhraseLen := min(len(toks), 8) // Reasonable max for callsigns
 
+	keyPhrases := make(map[string]string, len(ctx.Aircraft))
+	for spokenName := range ctx.Aircraft {
+		keyPhrases[spokenName] = spokenKeyPhrase(spokenName)
+	}
+
 	var results []callsignMatchResult
 
 	// Try different phrase lengths (longest first for more specific matches)
@@ -156,9 +170,7 @@ func (m *exactPhraseMatcher) match(ctx *callsignMatchContext) []callsignMatchRes
 		phrase := strings.Join(parts, " ")
 
 		for spokenName, ac := range ctx.Aircraft {
-			// Normalize the spoken name the same way we normalize transcripts
-			normalizedSpoken := strings.Join(NormalizeTranscript(spokenName), " ")
-			if strings.EqualFold(phrase, normalizedSpoken) {
+			if strings.EqualFold(phrase, keyPhrases[spokenName]) {
 				results = append(results, callsignMatchResult{
 					SpokenKey:    spokenName,
 					AC:           ac,
@@ -179,6 +191,14 @@ func (m *exactPhraseMatcher) match(ctx *callsignMatchContext) []callsignMatchRes
 	}
 
 	return nil
+}
+
+// spokenKeyPhrase returns a spoken callsign as transcript tokens would spell
+// it: normalized and tokenized like a transcript, so that "American three
+// 13" reads "american 313".
+func spokenKeyPhrase(spokenName string) string {
+	toks := Tokenize(NormalizeTranscript(spokenName))
+	return strings.Join(util.MapSlice(toks, func(t Token) string { return t.Text }), " ")
 }
 
 // fusedPhraseMatcher matches ONE transcript token against an entire
@@ -629,10 +649,10 @@ func tryMatchAirline(tokens []Token, spokenName string, ac Aircraft) (airlineMat
 
 	// Multi-word: try first word only (e.g., "southwest")
 	// Handles cases like "Southwest seven 95" where "seven" is part of flight number
-	// Try this BEFORE concatenated form to get higher scores
-	exact, score := matchWord(tokenText, parts[0])
-	if score >= 0.4 {
-		return airlineMatch{spokenName, ac, 1, exact, score}, true
+	// Try this BEFORE concatenated form to get higher scores. Only part of
+	// the airline name was spoken, so the match is never exact.
+	if _, score := matchWord(tokenText, parts[0]); score >= 0.4 {
+		return airlineMatch{spokenName, ac, 1, false, score}, true
 	}
 
 	// Multi-word: try concatenated form (e.g., "airfrance")

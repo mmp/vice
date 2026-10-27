@@ -7,7 +7,6 @@ package stt
 import (
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 
 	"github.com/mmp/vice/util"
@@ -55,7 +54,7 @@ func callsignCandidates(tokens []Token, aircraft map[string]Aircraft) []Callsign
 		}
 
 		// Select the best candidate from this pattern
-		selected := selectCandidate(results, pattern, tokens)
+		selected := selectCandidate(results, pattern)
 		if selected == nil {
 			continue
 		}
@@ -89,6 +88,14 @@ func callsignCandidates(tokens []Token, aircraft map[string]Aircraft) []Callsign
 
 	if len(allMatches) == 0 {
 		return nil
+	}
+
+	// An exactly spoken callsign is resolved: fuzzier readings of the
+	// transmission are not alternatives to it.
+	if exact := util.FilterSlice(allMatches, func(m patternMatch) bool { return m.result.isExact() }); len(exact) > 0 {
+		m := slices.MinFunc(exact, func(a, b patternMatch) int { return a.result.Skip - b.result.Skip })
+		logLocalStt("  exact callsign %q (spokenKey=%q, skip=%d): resolved", m.match.Callsign, m.match.SpokenKey, m.result.Skip)
+		return []CallsignMatch{m.match}
 	}
 
 	// Rank matches across all patterns, then keep the best per callsign.
@@ -228,18 +235,20 @@ func runMatchers(matchers []callsignMatcher, ctx *callsignMatchContext) []callsi
 }
 
 // selectCandidate chooses the best candidate from multiple matches.
-func selectCandidate(candidates []callsignMatchResult, pattern CallsignPattern, tokens []Token) *callsignMatchResult {
+func selectCandidate(candidates []callsignMatchResult, pattern CallsignPattern) *callsignMatchResult {
 	if len(candidates) == 0 {
 		return nil
 	}
 
+	// An exactly spoken callsign settles the match: nothing later in the
+	// transmission can outweigh it.
+	if exact := util.FilterSlice(candidates, func(c callsignMatchResult) bool { return c.isExact() }); len(exact) > 0 {
+		e := slices.MinFunc(exact, func(a, b callsignMatchResult) int { return a.Skip - b.Skip })
+		return &e
+	}
+
 	// If pattern requires unique match, check count
 	if pattern.RequireUnique && len(candidates) > 1 {
-		// Try to disambiguate by SpokenKey
-		if best := findExactSpokenKeyMatch(tokens, candidates); best != nil {
-			return best
-		}
-		// Multiple matches, can't use this pattern
 		return nil
 	}
 
@@ -247,129 +256,8 @@ func selectCandidate(candidates []callsignMatchResult, pattern CallsignPattern, 
 		return &candidates[0]
 	}
 
-	// Multiple candidates - try SpokenKey disambiguation first
-	if best := findExactSpokenKeyMatch(tokens, candidates); best != nil {
-		return best
-	}
-
-	// Try flight hint disambiguation - look for number nearby that might match flight number
-	if best := findFlightHintMatch(tokens, candidates); best != nil {
-		return best
-	}
-
-	// Fall back to best by score
 	best := bestByScore(candidates)
 	return &best
-}
-
-// findFlightHintMatch looks for a number token after the airline match that might
-// help disambiguate candidates by matching flight numbers.
-func findFlightHintMatch(tokens []Token, candidates []callsignMatchResult) *callsignMatchResult {
-	if len(candidates) < 2 {
-		return nil
-	}
-
-	// Find the best consumed position (where to start looking for flight hints)
-	maxConsumed := util.ReduceMax(slices.Values(candidates), 0, func(c callsignMatchResult) int { return c.Consumed })
-
-	// Look for number tokens in the next few positions and collect them
-	var hintParts []string
-	for i := maxConsumed; i < len(tokens) && i < maxConsumed+5; i++ {
-		t := tokens[i]
-		if t.Type == TokenNumber {
-			hintParts = append(hintParts, strconv.Itoa(t.Value))
-			continue
-		}
-		if IsDigit(t.Text) || IsNumber(t.Text) {
-			hintParts = append(hintParts, t.Text)
-			continue
-		}
-		// Stop at non-number token (but allow one skip for garbage like "the")
-		if len(hintParts) > 0 {
-			break
-		}
-	}
-
-	if len(hintParts) == 0 {
-		return nil
-	}
-	hintNum := strings.Join(hintParts, "")
-
-	// Score candidates by how well hintNum matches their flight number
-	var bestMatch *callsignMatchResult
-	var bestHintScore float64
-
-	for i := range candidates {
-		c := &candidates[i]
-		flightNum := flightNumber(string(c.AC.Callsign))
-		if flightNum == "" {
-			continue
-		}
-
-		// Exact match
-		if flightNum == hintNum {
-			if bestHintScore < 1.0 {
-				bestMatch = c
-				bestHintScore = 1.0
-			}
-			continue
-		}
-
-		// Suffix match: hintNum is a suffix of flightNum
-		if strings.HasSuffix(flightNum, hintNum) {
-			score := 0.9
-			if score > bestHintScore {
-				bestMatch = c
-				bestHintScore = score
-			}
-			continue
-		}
-
-		// hintNum contains flightNum
-		if strings.Contains(hintNum, flightNum) {
-			score := 0.85
-			if score > bestHintScore {
-				bestMatch = c
-				bestHintScore = score
-			}
-		}
-	}
-
-	// Only use flight hint if it strongly discriminates
-	if bestHintScore >= 0.85 {
-		return bestMatch
-	}
-	return nil
-}
-
-// findExactSpokenKeyMatch checks if tokens exactly spell out one candidate's SpokenKey.
-func findExactSpokenKeyMatch(tokens []Token, candidates []callsignMatchResult) *callsignMatchResult {
-	var match *callsignMatchResult
-
-	for i := range candidates {
-		c := &candidates[i]
-		totalTokens := c.Consumed - c.Skip
-		if c.Skip+totalTokens > len(tokens) {
-			continue
-		}
-
-		// Build the phrase from tokens
-		parts := make([]string, totalTokens)
-		for j := range totalTokens {
-			parts[j] = tokens[c.Skip+j].Text
-		}
-		phrase := strings.Join(parts, " ")
-
-		if strings.EqualFold(phrase, c.SpokenKey) {
-			if match != nil {
-				// Multiple matches, can't disambiguate
-				return nil
-			}
-			match = c
-		}
-	}
-
-	return match
 }
 
 // bestByScore returns the candidate with the highest score.

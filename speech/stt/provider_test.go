@@ -1974,6 +1974,25 @@ func TestCallsignMatchingPriority(t *testing.T) {
 			},
 			expected: "JBU813 CI4R",
 		},
+		{
+			name:       "exact callsign ignores digits later in the transmission",
+			transcript: "American three thirteen contact miami center one three two point two",
+			aircraft: map[string]Aircraft{
+				"American three 13": {Callsign: "AAL313", State: "overflight"},
+				"American 31 92":    {Callsign: "AAL3192", State: "overflight"},
+			},
+			expected: "AAL313 FC",
+		},
+		{
+			name:       "exact callsign with several aircraft matching the trailing digit",
+			transcript: "American three thirteen contact miami center one three two point two",
+			aircraft: map[string]Aircraft{
+				"American three 13": {Callsign: "AAL313", State: "overflight"},
+				"American 31 92":    {Callsign: "AAL3192", State: "overflight"},
+				"American 31 72":    {Callsign: "AAL3172", State: "overflight"},
+			},
+			expected: "AAL313 FC",
+		},
 	}
 
 	provider := NewTranscriber(nil)
