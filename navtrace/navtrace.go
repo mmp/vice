@@ -8,7 +8,9 @@
 // later code and compared with how it went. A trace is a gzipped file of JSON
 // records, one per line: the header, then the commands, lookups, and ticks in
 // the order they happened, and the end. The sim writes one trace per aircraft
-// through a Session; nav's tests read them with Load.
+// through a Session; nav's tests read them with Load. A trace's file is named
+// by facility, the UTC time its recording began, and callsign, so that traces
+// from any number of sessions can be kept together.
 package navtrace
 
 import (
@@ -65,7 +67,7 @@ type Header struct {
 	Arrival      string
 	Facility     string
 	Scenario     string
-	Recorded     time.Time // wall clock
+	Recorded     time.Time // wall clock, when recording began
 	Revision     string    // of the code that recorded the trace, if known
 	Nav          json.RawMessage
 }
@@ -193,9 +195,8 @@ type Session struct {
 	dir                          string
 	facility, scenario, revision string
 
-	mu    sync.Mutex
-	open  map[*Writer]struct{}
-	named map[string]int // files so far named for each callsign
+	mu   sync.Mutex
+	open map[*Writer]struct{}
 }
 
 // NewSession creates dir and returns a Session that writes traces into it,
@@ -211,7 +212,6 @@ func NewSession(dir, facility, scenario, revision string) (*Session, error) {
 		scenario: scenario,
 		revision: revision,
 		open:     make(map[*Writer]struct{}),
-		named:    make(map[string]int),
 	}, nil
 }
 
@@ -245,7 +245,6 @@ func (s *Session) Begin(ac Aircraft) *Writer {
 			Arrival:      string(ac.Arrival),
 			Facility:     s.facility,
 			Scenario:     s.scenario,
-			Recorded:     time.Now().UTC(),
 			Revision:     s.revision,
 		},
 		now:         ac.Time,
@@ -273,18 +272,25 @@ func (s *Session) Close(t time.Time) error {
 	return err
 }
 
-// path returns the path for a new trace of the callsign, numbering it if
-// the session already has one.
-func (s *Session) path(callsign string) string {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	s.named[callsign]++
-	name := callsign
-	if n := s.named[callsign]; n > 1 {
-		name = fmt.Sprintf("%s-%d", callsign, n)
+// create creates the file for a trace of the callsign whose recording begins
+// at the given time, and returns it with its path. Two traces of one callsign
+// can't begin in the same second in one sim, but a numbered name keeps a
+// recycled callsign's from colliding if they do.
+func (s *Session) create(callsign string, begun time.Time) (*os.File, string, error) {
+	base := fileNameComponent(s.facility) + "_" + begun.UTC().Format("2006-01-02T15-04-05Z") + "_" +
+		fileNameComponent(callsign)
+	for n := 1; ; n++ {
+		name := base
+		if n > 1 {
+			name = fmt.Sprintf("%s-%d", base, n)
+		}
+		path := filepath.Join(s.dir, name+Ext)
+		f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+		if errors.Is(err, fs.ErrExist) {
+			continue
+		}
+		return f, path, err
 	}
-	return filepath.Join(s.dir, name+Ext)
 }
 
 func (s *Session) forget(w *Writer) {
@@ -325,8 +331,8 @@ func (w *Writer) Start(n *nav.Nav) {
 		w.err = fmt.Errorf("encoding nav: %w", err)
 		return
 	}
-	w.path = w.s.path(w.header.Callsign)
-	if w.f, err = os.OpenFile(w.path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644); err != nil {
+	w.header.Recorded = time.Now().UTC()
+	if w.f, w.path, err = w.s.create(w.header.Callsign, w.header.Recorded); err != nil {
 		w.err = err
 		return
 	}

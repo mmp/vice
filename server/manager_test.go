@@ -313,7 +313,7 @@ func TestSessionRecordsTraces(t *testing.T) {
 	time.Sleep(1500 * time.Millisecond)
 	ss.withSim(ss.sim.Destroy)
 
-	paths, err := filepath.Glob(filepath.Join(lg.LogDir, "navtraces", "*", string(callsign)+navtrace.HumanExt))
+	paths, err := filepath.Glob(filepath.Join(lg.LogDir, "navtraces", "*", "*_"+string(callsign)+navtrace.HumanExt))
 	if err != nil || len(paths) != 1 {
 		all, _ := filepath.Glob(filepath.Join(lg.LogDir, "navtraces", "*", "*"))
 		t.Fatalf("trace of %s: %v %v; traces written: %v", callsign, paths, err, all)

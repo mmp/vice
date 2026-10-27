@@ -57,7 +57,7 @@ func TestWriteAndLoad(t *testing.T) {
 	if err := w.End("landed", start.Add(4*time.Second)); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasSuffix(w.Path(), "AAL123"+HumanExt) {
+	if base := filepath.Base(w.Path()); !strings.HasPrefix(base, "N90_20") || !strings.HasSuffix(base, "_AAL123"+HumanExt) {
 		t.Errorf("a human-controlled trace was written to %s", w.Path())
 	}
 
@@ -132,8 +132,8 @@ func TestWriteAndLoad(t *testing.T) {
 }
 
 // A Writer whose Nav never reported leaves no file; one still open when the
-// session closes is ended by it; and a second trace for the same callsign
-// gets its own file.
+// session closes is ended by it; and a second trace for the same callsign in
+// the same second gets its own file.
 func TestSessionClose(t *testing.T) {
 	dir := t.TempDir()
 	s, err := NewSession(dir, "PHL", "test", "")
@@ -166,11 +166,12 @@ func TestSessionClose(t *testing.T) {
 	for _, e := range entries {
 		names = append(names, e.Name())
 	}
-	if want := "N123AB-2" + Ext + " N123AB" + Ext; strings.Join(names, " ") != want {
-		t.Errorf("files: %v, want %s", names, want)
+	if len(names) != 2 || !strings.HasPrefix(names[0], "PHL_20") || !strings.Contains(names[0], "_N123AB") ||
+		!strings.Contains(names[1], "_N123AB") || names[0] == names[1] {
+		t.Errorf("files: %v, want two named by facility, time, and callsign", names)
 	}
 
-	tr, err := Load(filepath.Join(dir, "N123AB"+Ext))
+	tr, err := Load(flying.Path())
 	if err != nil {
 		t.Fatal(err)
 	}
