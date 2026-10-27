@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "N914RY/T",
-  "command": "S170/U5 TO",
+  "command": "S170/U5 FC",
   "stt_aircraft": {
     "ExecJet 70 41": {
       "Callsign": "EJA7041",

@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "ENY6096",
-  "command": "TO A120 DGANDY",
+  "command": "FC A120 DGANDY",
   "stt_aircraft": {
     "American 12": {
       "Callsign": "AAL12",

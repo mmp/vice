@@ -784,13 +784,13 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 
 	case 'F':
 		if command == "FC" {
-			if ac, ok := s.Aircraft[callsign]; ok && ac.Nav.Approach.Cleared {
-				// STT sometimes gets confused and gives FC for "contact tower" instructions, so
-				// we'll just roll with that.
+			// An aircraft cleared for the approach whose track hasn't been
+			// handed off is going to the tower; STT also sometimes gives FC
+			// for a garbled "contact tower".
+			if ac, ok := s.Aircraft[callsign]; ok && ac.Nav.Approach.Cleared && !s.trackHandedOff(ac) {
 				return s.ContactTower(tcw, callsign, av.Frequency(0))
-			} else {
-				return s.ContactTrackingController(tcw, ACID(callsign), delayReduction)
 			}
+			return s.ContactTrackingController(tcw, ACID(callsign), delayReduction)
 		} else {
 			return nil, ErrInvalidCommandSyntax
 		}

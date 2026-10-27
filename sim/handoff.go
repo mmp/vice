@@ -190,6 +190,15 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID, delayReduction time.
 		})
 }
 
+// trackHandedOff reports whether ac's track is owned by a controller other
+// than the one ac is talking to. TCWCanModifyTrack doesn't answer this: it
+// is true of every track for a privileged TCW, including an instructor
+// working traffic who has handed this one off.
+func (s *Sim) trackHandedOff(ac *Aircraft) bool {
+	return ac.IsAssociated() && ac.FlightPlan.TrackingController != "" &&
+		s.tcwForPosition(ac.FlightPlan.TrackingController) != s.tcwForPosition(ac.ControllerFrequency)
+}
+
 // ContactController sends the aircraft to toTCP's frequency. It needs no
 // track, so a controller can redirect a VFR that called for flight following
 // before anyone tracks it.

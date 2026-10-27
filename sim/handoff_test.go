@@ -635,3 +635,47 @@ func TestFlightPlanDirectAmendsPendingRoute(t *testing.T) {
 		}
 	}
 }
+
+// FC sends an aircraft cleared for the approach to the tower unless its track
+// has been handed off, in which case it goes to the new owner. Privileges
+// don't change that: an instructor working traffic hands tracks off too.
+func TestFrequencyChangeAfterApproachClearance(t *testing.T) {
+	for _, tc := range []struct {
+		name       string
+		owner      TCP
+		cleared    bool
+		privileged bool
+		wantTower  bool
+	}{
+		{name: "cleared", owner: "125.0", cleared: true, wantTower: true},
+		{name: "cleared, owned by a consolidated position", owner: "2C", cleared: true, wantTower: true},
+		{name: "cleared, no owner", cleared: true, wantTower: true},
+		{name: "cleared, handed off", owner: "2B", cleared: true},
+		{name: "handed off", owner: "2B"},
+		{name: "instructor, cleared", owner: "125.0", cleared: true, privileged: true, wantTower: true},
+		{name: "instructor, cleared, handed off", owner: "2B", cleared: true, privileged: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewTestSim(testLogger())
+			s.SetPrivilegedTCW(E2ETCW(), tc.privileged)
+			s.State.CurrentConsolidation[E2ETCW()].SecondaryTCPs = []SecondaryTCP{{TCP: "2C"}}
+			s.State.Controllers = map[ControlPosition]*av.Controller{"2B": {Position: "2B"}}
+			ac := MakeTestAircraft("AAL123", "22L")
+			ac.Nav.Approach.Cleared = tc.cleared
+			ac.AssociateFlightPlan(&FlightPlan{ACID: "AAL123", TrackingController: tc.owner})
+			s.Aircraft[ac.ADSBCallsign] = ac
+
+			if _, err := s.runOneControlCommand(E2ETCW(), ac.ADSBCallsign, "FC", 0); err != nil {
+				t.Fatal(err)
+			}
+			if ac.GotContactTower != tc.wantTower {
+				t.Errorf("contacted tower = %v, want %v", ac.GotContactTower, tc.wantTower)
+			}
+			toOwner := slices.ContainsFunc(s.FutureFrequencyChanges,
+				func(fc FutureFrequencyChange) bool { return fc.ADSBCallsign == ac.ADSBCallsign && fc.TCP == "2B" })
+			if toOwner == tc.wantTower {
+				t.Errorf("switching to 2B = %v, want %v", toOwner, !tc.wantTower)
+			}
+		})
+	}
+}

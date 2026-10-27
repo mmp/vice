@@ -856,6 +856,11 @@ func (p *garbledWordParser) goType() reflect.Type {
 	return reflect.TypeFor[string]()
 }
 
+// anchored keeps the slot to the word at its position: a slot that absorbs
+// one noise word must not skip other tokens to find one ("contact tarot one
+// two eight point" would otherwise read "point" as the garbled facility).
+func (p *garbledWordParser) anchored() bool { return true }
+
 func (p *garbledWordParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
 	if pos >= len(tokens) {
 		return nil, 0, ""

@@ -2123,14 +2123,15 @@ func registerAllCommands() {
 		WithPriority(4), // Just above the basic "contact facility" pattern
 	)
 
-	// Fallback: "contact" + garbled word without frequency pattern → assume tower
-	// If we clearly heard "contact" but what follows is too short to be a frequency,
-	// it's most likely "contact tower" with a garbled "tower".
+	// Fallback: "contact" + garbled word without frequency pattern. The
+	// garbled word may be "tower" or a facility name; the simulator knows
+	// whether the track has been handed off and the approach cleared, so it
+	// decides which controller the pilot goes to.
 	// Uses {garbled_word} to avoid matching command keywords like "climb".
 	registerSTTCommand(
 		"contact {garbled_word_final}",
-		func(_ string) string { return "TO" },
-		WithName("contact_garbled_tower"),
+		func(_ string) string { return "FC" },
+		WithName("contact_garbled_facility"),
 		WithPriority(2),
 	)
 

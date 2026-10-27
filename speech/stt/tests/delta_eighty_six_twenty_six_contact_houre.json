@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 2070 SUPER (8203MB)",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "DAL8626",
-  "command": "TO",
+  "command": "FC",
   "stt_aircraft": {
     "Delta 86 26": {
       "Callsign": "DAL8626",

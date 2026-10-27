@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 2060 (6169MB)",
   "whisper_model": "ggml-base.en-jlvatc-q5_0.bin",
   "callsign": "UAL41",
-  "command": "TO",
+  "command": "FC",
   "stt_aircraft": {
     "Southwest 56 46": {
       "Callsign": "SWA5646",
