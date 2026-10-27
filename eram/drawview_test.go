@@ -61,6 +61,30 @@ func TestRowListSkipLines(t *testing.T) {
 	}
 }
 
+// The rows of a view with Prefs that have no color of their own, and their
+// tear-off bars, are drawn at the view's brightness.
+func TestViewRowsTakePrefsBrightness(t *testing.T) {
+	ep := makeRowTestScope()
+	prefs := makeDefaultViewPreferences(5, 60)
+	v := View{ID: "wx", Prefs: &prefs, RowSource: &ViewRowSource{
+		Rows:      []Row{{Label: "KJFK", TearOff: "KJFK", OnClick: func(RowClick) {}}},
+		FontIndex: 2, ContentChars: 24, MaxCols: 1, VisibleRows: 5,
+		TearOffs: &wxTearOffs, ShowTearOffBars: true}}
+	ep.resolveView(&v, ep.ERAMFont(2))
+
+	picks := v.pickRows(math.Extent2D{P1: [2]float32{v.Width, v.BodyHeight}})
+	if len(picks) != 1 {
+		t.Fatalf("got %d pick areas; want 1", len(picks))
+	}
+	r := picks[0].row
+	if want := prefs.Bright.ScaleRGB(colors.view.text); r.Color != want {
+		t.Errorf("row color %v; want %v", r.Color, want)
+	}
+	if want := prefs.Bright.ScaleRGB(colors.badge.fill); r.Badge == nil || r.Badge.Fill != want {
+		t.Errorf("tear-off bar %+v; want fill %v", r.Badge, want)
+	}
+}
+
 // A view's scroll offset counts the lines its rows wrap to, so that it
 // scrolls to the end of the last row (4.2.20).
 func TestViewRowSourceScrollsByLine(t *testing.T) {

@@ -491,16 +491,7 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 	mouse := ctx.Mouse
 
 	titleFont := ep.ERAMFont(2)
-	if v.RowSource != nil {
-		ep.applyRowSource(&v, titleFont)
-	}
-	if prefs := v.Prefs; prefs != nil {
-		v.Position = &prefs.Position
-		v.Opaque, v.ShowBorder, v.Brightness = prefs.Opaque, prefs.ShowBorder, prefs.Bright
-		if v.OnMinimize == nil {
-			v.OnMinimize = func() { prefs.Visible = false }
-		}
-	}
+	ep.resolveView(&v, titleFont)
 	ep.drawnViews = append(ep.drawnViews, v.ID)
 
 	// Total width includes the scroll-bar reserve on the right when scrolling.
@@ -793,6 +784,22 @@ func (ep *Scope) DrawView(ctx *scope.Context, transforms scope.Transformations, 
 
 ///////////////////////////////////////////////////////////////////////////
 // RowSource expansion
+
+// resolveView fills in the fields of v that its Prefs and RowSource
+// supply. Prefs come first: the rows' default text color and tear-off
+// bars take the view's brightness.
+func (ep *Scope) resolveView(v *View, titleFont *renderer.Font) {
+	if prefs := v.Prefs; prefs != nil {
+		v.Position = &prefs.Position
+		v.Opaque, v.ShowBorder, v.Brightness = prefs.Opaque, prefs.ShowBorder, prefs.Bright
+		if v.OnMinimize == nil {
+			v.OnMinimize = func() { prefs.Visible = false }
+		}
+	}
+	if v.RowSource != nil {
+		ep.applyRowSource(v, titleFont)
+	}
+}
 
 // applyRowSource fills in Width, BodyHeight, BodyFont, DrawBody, Scroll, and
 // the rows' pick areas on v from v.RowSource so the rest of DrawView can
