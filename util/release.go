@@ -75,6 +75,29 @@ func NewerRelease(lg *log.Logger) *Release {
 	return nil
 }
 
+// VCSRevision returns the version control revision the running binary was
+// built from, with "+modified" appended if the source had local changes, or
+// "" if the binary doesn't record one, as when it was built with go run.
+func VCSRevision() string {
+	bi, ok := debug.ReadBuildInfo()
+	if !ok {
+		return ""
+	}
+	revision, modified := "", false
+	for _, setting := range bi.Settings {
+		switch setting.Key {
+		case "vcs.revision":
+			revision = setting.Value
+		case "vcs.modified":
+			modified = setting.Value == "true"
+		}
+	}
+	if revision != "" && modified {
+		revision += "+modified"
+	}
+	return revision
+}
+
 // buildTime returns when the running executable's source was committed.
 func buildTime() (time.Time, error) {
 	bi, ok := debug.ReadBuildInfo()

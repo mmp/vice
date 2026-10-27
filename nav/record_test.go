@@ -123,11 +123,13 @@ func recordsCommand(fd *ast.FuncDecl) string {
 }
 
 type fakeRecorder struct {
+	started  int
 	commands []string
 	lookups  []string
 	updates  int
 }
 
+func (r *fakeRecorder) Start(nav *Nav)                   { r.started++ }
 func (r *fakeRecorder) Command(name string, args ...any) { r.commands = append(r.commands, name) }
 func (r *fakeRecorder) Lookup(kind, key string, result any) {
 	r.lookups = append(r.lookups, kind+" "+key)
@@ -167,6 +169,9 @@ func TestNestedCommandsRecordedOnce(t *testing.T) {
 	}
 	if rec.updates == 0 {
 		t.Error("no updates were recorded")
+	}
+	if rec.started != 1 {
+		t.Errorf("the recorder was started %d times", rec.started)
 	}
 	if a := f.nav.Altitude.Assigned; a == nil || *a != 5000 {
 		t.Errorf("the altitude to depart WAVEY at wasn't assigned: %v", a)

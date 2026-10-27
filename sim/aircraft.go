@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/navtrace"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -73,6 +74,8 @@ type Aircraft struct {
 
 	// State related to navigation.
 	Nav nav.Nav
+	// trace records the flight if the sim records traces; see Sim.SetTraces.
+	trace *navtrace.Writer
 
 	// Departure-related state
 	SID  string
@@ -680,6 +683,17 @@ func (ac *Aircraft) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment, 
 
 func (ac *Aircraft) AfterFixAltitude(fix string, alt float32) speech.CommandIntent {
 	return ac.Nav.AfterFixAltitude(strings.ToUpper(fix), alt)
+}
+
+// commandsFrom marks the commands the aircraft is given until the returned
+// function is called as the controller's, in the aircraft's trace; human says
+// whether the controller is a person rather than a virtual one.
+func (ac *Aircraft) commandsFrom(controller string, human bool) func() {
+	if ac.trace == nil {
+		return func() {}
+	}
+	ac.trace.SetOrigin(controller, human)
+	return ac.trace.ClearOrigin
 }
 
 func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport) speech.CommandIntent {

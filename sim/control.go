@@ -57,6 +57,7 @@ func (s *Sim) dispatchAircraftCommand(tcw TCW, callsign av.ADSBCallsign, check f
 			}
 		}
 
+		defer ac.commandsFrom(string(tcw), true)()
 		preAc := *ac
 		intent := cmd(tcw, ac)
 
@@ -107,6 +108,9 @@ func (s *Sim) dispatchFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, 
 		}
 	}
 
+	if ac != nil {
+		defer ac.commandsFrom(string(tcw), true)()
+	}
 	preFp := *fp
 	intent := cmd(tcw, fp, ac)
 
@@ -185,6 +189,11 @@ func (r DeleteReason) String() string {
 }
 
 func (s *Sim) deleteAircraft(ac *Aircraft, reason DeleteReason) {
+	if ac.trace != nil {
+		if err := ac.trace.End(reason.String(), s.State.SimTime.Time()); err != nil {
+			s.lg.Errorf("%s: trace: %v", ac.ADSBCallsign, err)
+		}
+	}
 	s.clearAircraftSTTCommands(ac.ADSBCallsign)
 	delete(s.Aircraft, ac.ADSBCallsign)
 

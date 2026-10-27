@@ -16,6 +16,9 @@ import (
 // and what came of it, and every answer it gets from its Lookups. A Nav
 // without one records nothing.
 type Recorder interface {
+	// Start is called once, before anything else is recorded, with the Nav
+	// as it is then: the state the recorded flight starts from.
+	Start(nav *Nav)
 	// Command records a command method being called, with its arguments in
 	// the order the method declares them.
 	Command(name string, args ...any)
@@ -72,6 +75,17 @@ type AirportLookup struct {
 // SetRecorder sets the recorder the Nav reports to; nil stops it reporting.
 func (nav *Nav) SetRecorder(r Recorder) {
 	nav.recorder = r
+	nav.recordStarted = false
+}
+
+// recording returns the recorder to report to, starting it with the Nav as
+// it is now if this is the first report, or nil if the Nav isn't recording.
+func (nav *Nav) recording() Recorder {
+	if nav.recorder != nil && !nav.recordStarted {
+		nav.recordStarted = true
+		nav.recorder.Start(nav)
+	}
+	return nav.recorder
 }
 
 // SetLookups sets where the Nav's questions about the world are answered;
@@ -86,11 +100,12 @@ func (nav *Nav) SetLookups(l Lookups) {
 // Every command method starts with "defer nav.record(...)()", naming itself
 // and all of its parameters, which TestCommandsRecorded checks.
 func (nav *Nav) record(name string, args ...any) func() {
-	if nav.recorder == nil {
+	rec := nav.recording()
+	if rec == nil {
 		return func() {}
 	}
 	if nav.recordDepth == 0 {
-		nav.recorder.Command(name, args...)
+		rec.Command(name, args...)
 	}
 	nav.recordDepth++
 	return func() { nav.recordDepth-- }
@@ -103,8 +118,8 @@ func (nav *Nav) lookup() Lookups {
 	if l == nil {
 		l = databaseLookups{}
 	}
-	if nav.recorder != nil {
-		return recordedLookups{l, nav.recorder}
+	if rec := nav.recording(); rec != nil {
+		return recordedLookups{l, rec}
 	}
 	return l
 }

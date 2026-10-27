@@ -252,6 +252,8 @@ func (s *Sim) recordArrivalLanding(ac *Aircraft, runway string) {
 // controller working the aircraft issues at fix, which the aircraft has just
 // crossed. It returns true if the aircraft was deleted.
 func (s *Sim) applyVirtualControllerActions(ac *Aircraft, sfp *FlightPlan, fix string, actions av.WaypointActions) bool {
+	defer ac.commandsFrom(string(ac.ControllerFrequency), false)()
+
 	if actions.HumanHandoff {
 		// Handoff from virtual controller to a human controller.
 		// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans

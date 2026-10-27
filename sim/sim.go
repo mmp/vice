@@ -19,6 +19,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/navtrace"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -55,7 +56,9 @@ type Sim struct {
 
 	wxModel    *wx.Model
 	wxProvider *wx.Provider
-	METAR      map[av.ICAOAirportCode][]wx.METAR
+	// traces, if set, records every aircraft's flight; see SetTraces.
+	traces *navtrace.Session
+	METAR  map[av.ICAOAirportCode][]wx.METAR
 
 	ATISChangedTime map[av.ICAOAirportCode]Time
 

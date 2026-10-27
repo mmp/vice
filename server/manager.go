@@ -21,6 +21,7 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/navtrace"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
@@ -363,6 +364,8 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 		sm.sessionsByName[session.name] = session
 		sm.mu.Unlock(sm.lg)
 
+		sm.startTraces(session)
+
 		tcw := sim.TCW(initialTCP)
 		joinReq := &JoinSimRequest{
 			TCW:        tcw,
@@ -381,6 +384,35 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	go sm.runSimUpdateLoop(session)
 
 	return nil
+}
+
+// localTraceSessions is how many sessions' traces a local server keeps.
+const localTraceSessions = 5
+
+// startTraces has the session's sim record its aircraft's flights (see
+// package navtrace) under the server's log directory, if it has one. The
+// caller holds the session's mu.
+func (sm *SimManager) startTraces(session *simSession) {
+	if sm.lg.LogDir == "" {
+		return
+	}
+	root := filepath.Join(sm.lg.LogDir, "navtraces")
+	if sm.local {
+		if err := navtrace.PruneSessions(root, localTraceSessions-1); err != nil {
+			sm.lg.Errorf("%s: %v", root, err)
+		}
+	}
+
+	s := session.sim
+	facility, scenario := s.Facility(), s.State.ScenarioName
+	dir := filepath.Join(root, navtrace.SessionDirName(time.Now(), facility, scenario))
+	traces, err := navtrace.NewSession(dir, facility, scenario, util.VCSRevision())
+	if err != nil {
+		sm.lg.Errorf("unable to record traces: %v", err)
+		return
+	}
+	sm.lg.Infof("%s: recording traces to %s", session.name, dir)
+	s.SetTraces(traces)
 }
 
 // runSimUpdateLoop runs the update loop for a sim session, handling idle

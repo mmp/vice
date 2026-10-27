@@ -170,8 +170,10 @@ func (nav *Nav) Update(callsign string, model *wx.Model, rules av.FlightRules, a
 // them: the weather at the aircraft and whether it is under a Class B shelf.
 func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, rules av.FlightRules, simTime Time,
 	underBravo bool) UpdateResult {
-	// Commands the update gives the aircraft, like an altitude to depart a
-	// fix at, are its own doing and aren't recorded.
+	// The recorder gets the Nav as it is before the update; commands the
+	// update gives the aircraft, like an altitude to depart a fix at, are
+	// its own doing and aren't recorded.
+	rec := nav.recording()
 	nav.recordDepth++
 	defer func() { nav.recordDepth-- }()
 
@@ -201,8 +203,8 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 		result.ActionEvents = append(nav.PendingWaypointActionEvents, result.ActionEvents...)
 	}
 
-	if nav.recorder != nil {
-		nav.recorder.Update(UpdateRecord{Time: simTime, Weather: wxs, METAR: arrivalMETAR, Rules: rules,
+	if rec != nil {
+		rec.Update(UpdateRecord{Time: simTime, Weather: wxs, METAR: arrivalMETAR, Rules: rules,
 			UnderBravo: underBravo, Prespawn: nav.Prespawn, Result: result, State: nav.FlightState})
 	}
 	return result

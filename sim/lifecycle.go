@@ -11,7 +11,9 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/navtrace"
 	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -54,7 +56,38 @@ func (s *Sim) Activate(lg *log.Logger, provider *wx.Provider) {
 	s.initializeAirspaceGrids()
 }
 
+// SetTraces has the sim record its aircraft's flights into traces: those
+// already in the sim from now on, and each one added later from when it is.
+func (s *Sim) SetTraces(traces *navtrace.Session) {
+	s.traces = traces
+	for _, ac := range util.SortedMap(s.Aircraft) {
+		s.beginTrace(ac)
+	}
+}
+
+// beginTrace starts recording the aircraft's flight, if the sim records traces.
+func (s *Sim) beginTrace(ac *Aircraft) {
+	if s.traces == nil {
+		return
+	}
+	ac.trace = s.traces.Begin(navtrace.Aircraft{
+		Callsign:     string(ac.ADSBCallsign),
+		AircraftType: ac.AircraftType,
+		Rules:        ac.FlightRules,
+		Flight:       ac.TypeOfFlight,
+		Departure:    ac.DepartureAirport,
+		Arrival:      ac.ArrivalAirport,
+		Time:         s.State.SimTime.Time(),
+	})
+	ac.Nav.SetRecorder(ac.trace)
+}
+
 func (s *Sim) Destroy() {
+	if s.traces != nil {
+		if err := s.traces.Close(s.State.SimTime.Time()); err != nil {
+			s.lg.Errorf("traces: %v", err)
+		}
+	}
 	s.eventStream.Destroy()
 
 	select {

@@ -86,13 +86,15 @@ type Nav struct {
 	Rand   *rand.Rand
 
 	// recorder, if set, is told everything that happens to the Nav; see
-	// Recorder. recordDepth counts the commands and updates in progress, so
-	// that only the outermost is recorded. lookups answers the Nav's
-	// questions about the world, or the database does if it is nil. None of
-	// these is part of the Nav's encoding.
-	recorder    Recorder
-	recordDepth int
-	lookups     Lookups
+	// Recorder. recordStarted is set once it has been given the Nav's
+	// starting state, and recordDepth counts the commands and updates in
+	// progress so that only the outermost is recorded. lookups answers the
+	// Nav's questions about the world, or the database does if it is nil.
+	// None of these is part of the Nav's encoding.
+	recorder      Recorder
+	recordStarted bool
+	recordDepth   int
+	lookups       Lookups
 }
 
 type UpdateResult struct {

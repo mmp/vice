@@ -511,6 +511,9 @@ func (s *Sim) processFutureOnCourse() {
 					if ac.FlightPlan != nil && !ac.Nav.RouteAltitudeActions {
 						ac.FlightPlan.clearInterimAltitudes()
 					}
+					if s.isVirtualController(ac.ControllerFrequency) {
+						defer ac.commandsFrom(string(ac.ControllerFrequency), false)()
+					}
 					ac.DepartOnCourse(s.State.SimTime, s.lg)
 				}
 				return false

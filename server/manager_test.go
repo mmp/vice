@@ -7,12 +7,15 @@ package server
 import (
 	"errors"
 	"io"
+	"path/filepath"
 	"slices"
 	"testing"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/navtrace"
 	"github.com/mmp/vice/scenario"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -272,4 +275,72 @@ func makeTestSimRequest(t *testing.T, sm *SimManager, facility, scenarioName str
 	}
 	t.Fatalf("%s/%s: no such scenario", facility, scenarioName)
 	return NewSimRequest{}
+}
+
+// A session records each aircraft's flight to a trace under the log
+// directory: the ticks it flies, the commands it is given with who gave
+// them, and how it ended.
+func TestSessionRecordsTraces(t *testing.T) {
+	if testing.Short() {
+		t.Skip("starts a sim")
+	}
+
+	lg, sm := makeTestSimManager(t)
+	req := makeTestSimRequest(t, sm, "PHL", "KPHL Depart 27L Land 27R/35")
+	var result NewSimResult
+	if err := sm.NewSim(&req, &result); err != nil {
+		t.Fatal(err)
+	}
+	ss := sm.sessionsByName[req.NewSimName]
+
+	// Let the aircraft fly a few ticks, then give one a heading.
+	time.Sleep(2500 * time.Millisecond)
+	var callsign av.ADSBCallsign
+	ss.withSim(func() {
+		for cs, ac := range util.SortedMap(ss.sim.Aircraft) {
+			if ac.IsAirborne() {
+				callsign = cs
+				break
+			}
+		}
+		if callsign == "" {
+			t.Fatal("no airborne aircraft")
+		}
+		if res := ss.sim.RunScriptedControlCommands("1N", callsign, "H270"); res.Error != nil {
+			t.Fatalf("%s: %v", callsign, res.Error)
+		}
+	})
+	time.Sleep(1500 * time.Millisecond)
+	ss.withSim(ss.sim.Destroy)
+
+	paths, err := filepath.Glob(filepath.Join(lg.LogDir, "navtraces", "*", string(callsign)+navtrace.HumanExt))
+	if err != nil || len(paths) != 1 {
+		all, _ := filepath.Glob(filepath.Join(lg.LogDir, "navtraces", "*", "*"))
+		t.Fatalf("trace of %s: %v %v; traces written: %v", callsign, paths, err, all)
+	}
+	tr, err := navtrace.Load(paths[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if tr.Header.Facility != "PHL" || tr.Header.Callsign != string(callsign) {
+		t.Errorf("header: %+v", tr.Header)
+	}
+	ticks, commands := 0, 0
+	for _, r := range tr.Records {
+		if r.Tick != nil {
+			ticks++
+		}
+		if c := r.Command; c != nil && c.Name == "AssignHeading" {
+			commands++
+			if c.Controller != "1N" || !c.Human {
+				t.Errorf("heading recorded from %q human %v", c.Controller, c.Human)
+			}
+		}
+	}
+	if ticks == 0 || commands != 1 {
+		t.Errorf("%d ticks and %d heading commands recorded", ticks, commands)
+	}
+	if end := tr.End(); end == nil || end.Reason != "session ended" {
+		t.Errorf("end: %+v", end)
+	}
 }
