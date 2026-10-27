@@ -504,9 +504,9 @@ func (ac *Aircraft) PilotMixUp() speech.CommandIntent {
 	}
 }
 
-func (ac *Aircraft) Ident(now Time, delayReduction time.Duration) speech.CommandIntent {
+func (ac *Aircraft) Ident(now Time, delayReduction time.Duration, r *rand.Rand) speech.CommandIntent {
 	// delay the start a bit
-	ac.IdentStartTime = now.Add(max(ac.Nav.Rand.DurationRange(2*time.Second, 5*time.Second)-delayReduction, 0))
+	ac.IdentStartTime = now.Add(max(r.DurationRange(2*time.Second, 5*time.Second)-delayReduction, 0))
 	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
 	return speech.TransponderIntent{Ident: true}
 }
@@ -683,8 +683,12 @@ func (ac *Aircraft) AfterFixAltitude(fix string, alt float32) speech.CommandInte
 }
 
 func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport) speech.CommandIntent {
+	ea, unable := ac.Nav.ResolveApproach(ap, id)
+	if unable != nil {
+		return unable
+	}
 	previous := ac.Nav.Approach.Assigned
-	intent := ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints)
+	intent := ac.Nav.ExpectApproach(id, ea, ac.STARRunwayWaypoints)
 	if ac.Nav.Approach.Assigned != previous {
 		ac.SightedReportingPoint = nil
 	}

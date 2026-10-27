@@ -84,6 +84,15 @@ type Nav struct {
 
 	Delays PilotDelays
 	Rand   *rand.Rand
+
+	// recorder, if set, is told everything that happens to the Nav; see
+	// Recorder. recordDepth counts the commands and updates in progress, so
+	// that only the outermost is recorded. lookups answers the Nav's
+	// questions about the world, or the database does if it is nil. None of
+	// these is part of the Nav's encoding.
+	recorder    Recorder
+	recordDepth int
+	lookups     Lookups
 }
 
 type UpdateResult struct {
@@ -150,6 +159,7 @@ func (nav *Nav) TakeSnapshot() Snapshot {
 // RestoreSnapshot restores nav state from a previously captured snapshot.
 // The aircraft's physical state (FlightState) is NOT restored - only control assignments.
 func (nav *Nav) RestoreSnapshot(snap Snapshot) {
+	defer nav.record("RestoreSnapshot", snap)()
 	nav.Altitude = snap.Altitude
 	nav.Speed = snap.Speed
 	nav.Heading = snap.Heading
@@ -739,6 +749,7 @@ func (nav *Nav) onHeading() bool {
 // since the pilot heard the instruction, is subtracted from the
 // pilot-reaction delay (floored at zero).
 func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, approachCleared bool, simTime Time, delayReduction time.Duration) {
+	defer nav.record("EnqueueHeading", hdg, turn, approachCleared, simTime, delayReduction)()
 	var d time.Duration
 	if approachCleared {
 		// Minimal delay if the aircraft has been cleared for an approach.
@@ -794,7 +805,26 @@ func (nav *Nav) editAssignedWaypoints() ([]av.Waypoint, func([]av.Waypoint)) {
 // AmendRoute replaces the waypoints of the assigned route before the one at
 // fix with wps, as a flight plan amendment does. It reports false, leaving
 // the route alone, if fix isn't on it.
+// FlyRoute replaces the aircraft's route with wps and has it fly the route
+// from where it is, dropping any heading it was flying.
+func (nav *Nav) FlyRoute(wps []av.Waypoint) {
+	defer nav.record("FlyRoute", wps)()
+	nav.Waypoints = wps
+	nav.Heading = Heading{}
+}
+
+// FlyFromRunway has an aircraft that is back on the runway after a
+// touch-and-go take off again along wps, with its speed and altitude managed
+// as a departure's are.
+func (nav *Nav) FlyFromRunway(wps []av.Waypoint) {
+	defer nav.record("FlyFromRunway", wps)()
+	nav.Waypoints = wps
+	nav.Heading = Heading{}
+	nav.FlightState.InitialDepartureClimb = true
+}
+
 func (nav *Nav) AmendRoute(wps []av.Waypoint, fix string) bool {
+	defer nav.record("AmendRoute", wps, fix)()
 	route := nav.AssignedWaypoints()
 	idx := slices.IndexFunc(route, func(wp av.Waypoint) bool { return wp.Fix == fix })
 	if idx == -1 {
@@ -805,6 +835,7 @@ func (nav *Nav) AmendRoute(wps []av.Waypoint, fix string) bool {
 }
 
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
+	defer nav.record("EnqueueDirectFix", wps, turn, simTime, delayReduction)()
 	var d time.Duration
 	if len(wps) > 0 && nav.ExpectedDirectFix == wps[0].Fix {
 		// Pilot was told to expect this fix; shorter delay
@@ -834,6 +865,7 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTi
 }
 
 func (nav *Nav) EnqueueOnCourse(simTime Time, delayReduction time.Duration) {
+	defer nav.record("EnqueueOnCourse", simTime, delayReduction)()
 	d := max(nav.drawDelay(nav.Delays.OnCourse)-delayReduction, 0)
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time: simTime.Add(d),
@@ -1045,7 +1077,7 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 	targetAltitude, _, _ := nav.TargetAltitude()
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
 		int(nav.FlightState.GS), int(nav.TAS(wxs.Temperature()))))
-	ias, _ := nav.TargetSpeed(targetAltitude, rules, wxs, nil, nil)
+	ias, _ := nav.TargetSpeed(targetAltitude, rules, wxs, nil, false)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
 	} else if nav.Speed.MaintainMaximumForward {
@@ -1398,15 +1430,19 @@ func (nav *Nav) rateSummary() string {
 }
 
 func (nav *Nav) DivertToAirport(airport av.ICAOAirportCode) {
-	ap := db.DB.Airports[airport]
+	defer nav.record("DivertToAirport", airport)()
+	location, elevation, ok := nav.lookup().Airport(string(airport))
+	if !ok {
+		return
+	}
 
 	wp := av.Waypoint{
 		Fix:      string(airport),
-		Location: ap.Location,
+		Location: location,
 	}
 	nav.Waypoints = []av.Waypoint{wp}
 
 	nav.FlightState.ArrivalAirport = wp
-	nav.FlightState.ArrivalAirportLocation = ap.Location
-	nav.FlightState.ArrivalAirportElevation = float32(ap.Elevation)
+	nav.FlightState.ArrivalAirportLocation = location
+	nav.FlightState.ArrivalAirportElevation = elevation
 }

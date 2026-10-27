@@ -429,7 +429,7 @@ func (f *FlightTest) Run() {
 
 	for f.tick = 0; f.tick < f.maxTicks; f.tick++ {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		passedWp := f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil).PassedWaypoint
+		passedWp := f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, false).PassedWaypoint
 
 		if passedWp != nil {
 			f.passed = append(f.passed, passedWp.Fix)
@@ -478,7 +478,7 @@ func (f *FlightTest) Run() {
 func (f *FlightTest) Step(n int) {
 	for range n {
 		wxs := f.weather(f.nav.FlightState.Altitude)
-		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, false)
 		f.simTime = f.simTime.Add(time.Second)
 		f.tick++
 	}
@@ -721,14 +721,24 @@ func (f *FlightTest) AssignSpeedAfterAltitude(spd float32) {
 
 func (f *FlightTest) ExpectApproach(id string) {
 	f.t.Helper()
-	airport := f.makeAirport()
-	f.nav.ExpectApproach(airport, id, nil)
+	f.expectApproachAt(f.makeAirport(), id, nil)
 }
 
 func (f *FlightTest) ExpectVisualApproach(runway string) speech.CommandIntent {
 	f.t.Helper()
-	airport := f.makeAirport()
-	return f.nav.ExpectApproach(airport, "_VIS"+runway, nil)
+	return f.expectApproachAt(f.makeAirport(), "_VIS"+runway, nil)
+}
+
+// expectApproachAt resolves the approach at the airport as the sim does
+// before telling the pilot to expect it.
+func (f *FlightTest) expectApproachAt(airport *av.Airport, id string,
+	runwayWaypoints map[string]av.WaypointArray) speech.CommandIntent {
+	f.t.Helper()
+	ea, unable := f.nav.ResolveApproach(airport, id)
+	if unable != nil {
+		return unable
+	}
+	return f.nav.ExpectApproach(id, ea, runwayWaypoints)
 }
 
 func (f *FlightTest) ClearedVisualApproach(runway string) speech.CommandIntent {

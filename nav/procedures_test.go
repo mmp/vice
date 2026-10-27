@@ -332,7 +332,7 @@ func TestStandard45ProcedureTurnCompletes(t *testing.T) {
 	f := makePTFlight(t, "FORMU/pt45/flyover ZIVUX WENGA", 3000, 180)
 
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, false)
 	f.simTime = f.simTime.Add(time.Second)
 
 	f.nav.flyProcedureTurnIfNecessary()
@@ -366,7 +366,7 @@ func TestRacetrackPTCreatesManeuvers(t *testing.T) {
 	f := makePTFlight(t, "FORMU/hilpt4.0nm/flyover ZIVUX WENGA", 3000, 180)
 
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, false)
 	f.simTime = f.simTime.Add(time.Second)
 
 	f.nav.flyProcedureTurnIfNecessary()
@@ -421,7 +421,7 @@ func TestProcedureTurnDescendsToExitAltitude(t *testing.T) {
 	f := makePTFlight(t, "FORMU/pt45/pta2000/flyover ZIVUX WENGA", 3000, 180)
 
 	wxs := f.weather(f.nav.FlightState.Altitude)
-	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, nil)
+	f.nav.UpdateWithWeather(f.callsign, wxs, nil, f.rules, f.simTime, false)
 	f.simTime = f.simTime.Add(time.Second)
 
 	f.nav.flyProcedureTurnIfNecessary()
@@ -596,7 +596,8 @@ func TestHoldTurningInboundDoesNotFlyAwayAfterOvershoot(t *testing.T) {
 	}}
 
 	f.nav.UpdateWithWeather(f.callsign, wx.MakeStandardSampleForAltitude(f.nav.FlightState.Altitude),
-		nil, f.rules, f.simTime, nil)
+		nil, f.rules, f.simTime, false)
+
 	f.simTime = f.simTime.Add(time.Second)
 	if f.nav.Heading.Hold == nil {
 		t.Fatal("hold unexpectedly ended")
@@ -609,7 +610,8 @@ func TestHoldTurningInboundDoesNotFlyAwayAfterOvershoot(t *testing.T) {
 
 	for range 90 {
 		f.nav.UpdateWithWeather(f.callsign, wx.MakeStandardSampleForAltitude(f.nav.FlightState.Altitude),
-			nil, f.rules, f.simTime, nil)
+			nil, f.rules, f.simTime, false)
+
 		f.simTime = f.simTime.Add(time.Second)
 	}
 
@@ -668,7 +670,7 @@ func TestHoldInboundTurnDistanceMatchesOutboundTurn(t *testing.T) {
 	previousStep := hold.currentStep()
 
 	for tick := range 300 {
-		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, false)
 		f.simTime = f.simTime.Add(time.Second)
 
 		step := hold.currentStep()
@@ -735,7 +737,7 @@ func TestFQM3HoldInboundTurnCompletesNearExpectedTrack(t *testing.T) {
 	flyFixStep := "fly toward fix until fix"
 
 	for tick := range 2000 {
-		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, false)
 		f.simTime = f.simTime.Add(time.Second)
 
 		if f.nav.Heading.Hold != nil && hold == nil {
@@ -855,7 +857,7 @@ func TestHoldInboundTurnCompletesAfterHalfCircuitWithStrongWind(t *testing.T) {
 	inboundTurnStartTick := -1
 
 	for tick := range 240 {
-		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, nil)
+		f.nav.UpdateWithWeather(f.callsign, f.weather(f.nav.FlightState.Altitude), nil, f.rules, f.simTime, false)
 		f.simTime = f.simTime.Add(time.Second)
 
 		step := hold.currentStep()

@@ -539,8 +539,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	prespawnWxs := s.wxModel.Lookup(simNav.FlightState.Position,
 		simNav.FlightState.Altitude, simTime.Time())
 	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
-		if wp := simNav.UpdateWithWeather("", prespawnWxs, nil, ac.FlightRules,
-			simTime.NavTime(), nil).PassedWaypoint; wp != nil {
+		result := simNav.UpdateWithWeather("", prespawnWxs, nil, ac.FlightRules, simTime.NavTime(), false)
+		if wp := result.PassedWaypoint; wp != nil {
 			if wp.HasDeleteAction() {
 				return ac, nil
 			}
@@ -588,8 +588,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 						}
 					}
 				}
-				simNav.Waypoints = descentWps
-				simNav.Heading = nav.Heading{}
+				simNav.FlyRoute(descentWps)
 				continue
 			}
 		}

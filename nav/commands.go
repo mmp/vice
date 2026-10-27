@@ -11,7 +11,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -22,6 +21,7 @@ import (
 // and AltitudeRestriction set, and an action group with the outbound heading
 // and the GoAroundContactController.
 func (nav *Nav) GoAroundWithProcedure(altitude float32, runwayEndWP av.Waypoint) {
+	defer nav.record("GoAroundWithProcedure", altitude, runwayEndWP)()
 	nav.DeferredNavHeading = nil
 	nav.Speed = Speed{}
 	nav.Approach = Approach{}
@@ -30,6 +30,7 @@ func (nav *Nav) GoAroundWithProcedure(altitude float32, runwayEndWP av.Waypoint)
 }
 
 func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("AssignAltitude", alt, afterSpeed, simTime, delayReduction)()
 	nav.clearFixAltitudes()
 	intent, ok := nav.prepareAltitudeAssignment(alt, afterSpeed)
 	if !ok {
@@ -88,6 +89,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 // AssignAltitudeNow assigns an altitude that takes effect immediately, with
 // none of the pilot's delay in following a controller's instruction.
 func (nav *Nav) AssignAltitudeNow(alt float32, afterSpeed bool) speech.CommandIntent {
+	defer nav.record("AssignAltitudeNow", alt, afterSpeed)()
 	intent, ok := nav.prepareAltitudeAssignment(alt, afterSpeed)
 	if ok {
 		nav.setAssignedAltitude(alt)
@@ -181,6 +183,7 @@ func (nav *Nav) speedChangeType(spd av.Airspeed) speech.SpeedType {
 // AssignSpeed assigns a speed in knots or a Mach number; nil cancels
 // speed restrictions.
 func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("AssignSpeed", sr, afterAltitude, temp)()
 	nav.clearAfterFixSpeeds()
 
 	if sr == nil {
@@ -231,6 +234,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 }
 
 func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("AssignSpeedUntil", sr, until, temp)()
 	if until.Fix != "" && !nav.knowsFix(until.Fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", until.Fix)
 	}
@@ -252,18 +256,21 @@ func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUnt
 }
 
 func (nav *Nav) MaintainSlowestPractical() speech.CommandIntent {
+	defer nav.record("MaintainSlowestPractical")()
 	nav.clearAfterFixSpeeds()
 	nav.Speed = Speed{MaintainSlowestPractical: true}
 	return speech.SpeedIntent{Type: speech.SpeedSlowestPractical}
 }
 
 func (nav *Nav) MaintainMaximumForward() speech.CommandIntent {
+	defer nav.record("MaintainMaximumForward")()
 	nav.clearAfterFixSpeeds()
 	nav.Speed = Speed{MaintainMaximumForward: true}
 	return speech.SpeedIntent{Type: speech.SpeedMaximumForward}
 }
 
 func (nav *Nav) MaintainPresentSpeed() speech.CommandIntent {
+	defer nav.record("MaintainPresentSpeed")()
 	nav.clearAfterFixSpeeds()
 	// Capture current indicated airspeed and assign it, rounded to nearest 10
 	currentSpeed := nav.FlightState.IAS
@@ -339,30 +346,37 @@ func (nav *Nav) SayAltitude() speech.CommandIntent {
 }
 
 func (nav *Nav) ExpediteDescent() speech.CommandIntent {
+	defer nav.record("ExpediteDescent")()
 	return nav.setRate(RateExpedite, nil, speech.AltitudeDescend)
 }
 
 func (nav *Nav) ExpediteClimb() speech.CommandIntent {
+	defer nav.record("ExpediteClimb")()
 	return nav.setRate(RateExpedite, nil, speech.AltitudeClimb)
 }
 
 func (nav *Nav) ExpediteDescentThrough(throughAlt float32) speech.CommandIntent {
+	defer nav.record("ExpediteDescentThrough", throughAlt)()
 	return nav.setRate(RateExpedite, &throughAlt, speech.AltitudeDescend)
 }
 
 func (nav *Nav) ExpediteClimbThrough(throughAlt float32) speech.CommandIntent {
+	defer nav.record("ExpediteClimbThrough", throughAlt)()
 	return nav.setRate(RateExpedite, &throughAlt, speech.AltitudeClimb)
 }
 
 func (nav *Nav) GoodRateDescent() speech.CommandIntent {
+	defer nav.record("GoodRateDescent")()
 	return nav.setRate(RateGood, nil, speech.AltitudeDescend)
 }
 
 func (nav *Nav) GoodRateClimb() speech.CommandIntent {
+	defer nav.record("GoodRateClimb")()
 	return nav.setRate(RateGood, nil, speech.AltitudeClimb)
 }
 
 func (nav *Nav) GoodRateThrough(throughAlt float32) speech.CommandIntent {
+	defer nav.record("GoodRateThrough", throughAlt)()
 	// Infer direction from current state
 	dir := speech.AltitudeDescend
 	if throughAlt > nav.FlightState.Altitude {
@@ -417,6 +431,7 @@ func (nav *Nav) setRate(rate RateQualifier, throughAlt *float32, direction speec
 }
 
 func (nav *Nav) AssignHeading(hdg math.MagneticHeading, turn av.TurnDirection, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("AssignHeading", hdg, turn, simTime, delayReduction)()
 	if hdg <= 0 || hdg > 360 {
 		return speech.MakeUnableIntent("unable. {hdg} isn't a valid heading", hdg)
 	}
@@ -490,6 +505,7 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 }
 
 func (nav *Nav) FlyPresentHeading(simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("FlyPresentHeading", simTime, delayReduction)()
 	nav.assignHeading(nav.FlightState.Heading, av.TurnClosest, simTime, delayReduction)
 	return speech.HeadingIntent{
 		Heading: nav.FlightState.Heading,
@@ -500,7 +516,7 @@ func (nav *Nav) FlyPresentHeading(simTime Time, delayReduction time.Duration) sp
 // knowsFix reports whether fix is a fix the pilot can find: one in the
 // database or one on the aircraft's route or assigned approach.
 func (nav *Nav) knowsFix(fix string) bool {
-	_, ok := db.DB.LookupWaypoint(fix)
+	_, ok := nav.lookup().Waypoint(fix)
 	return ok || nav.fixInRoute(fix)
 }
 
@@ -588,16 +604,10 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 
 	// See if it's a random fix not in the flight plan. It may name an
 	// airport by either of its ids.
-	p, ok := func() (math.Point2LL, bool) {
-		if p, ok := db.DB.LookupWaypoint(fix); ok {
-			return p, true
-		} else if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(fix)); ok {
-			return ap.Location, true
-		} else if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(fix)); ok {
-			return ap.Location, true
-		}
-		return math.Point2LL{}, false
-	}()
+	p, ok := nav.lookup().Waypoint(fix)
+	if !ok {
+		p, _, ok = nav.lookup().Airport(fix)
+	}
 	if ok {
 		// Ignore ones that are >150nm away under the assumption that it's
 		// a typo in that case.
@@ -618,6 +628,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, e
 }
 
 func (nav *Nav) ExpectDirect(fix string) speech.CommandIntent {
+	defer nav.record("ExpectDirect", fix)()
 	if !nav.knowsFix(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	}
@@ -626,6 +637,7 @@ func (nav *Nav) ExpectDirect(fix string) speech.CommandIntent {
 }
 
 func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("DirectFix", fix, turn, simTime, delayReduction)()
 	if wps, source, err := nav.directFixWaypoints(fix); err == nil {
 		if hold := nav.Heading.Hold; hold != nil {
 			// We'll finish our lap and then depart the holding fix direct to the fix
@@ -679,7 +691,7 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 // referenced to: a VHF navaid's station declination, or the area's
 // variation for a fix without one.
 func (nav *Nav) radialVariation(fix string) float32 {
-	if d, ok := db.DB.Declination(fix); ok {
+	if d, ok := nav.lookup().Declination(fix); ok {
 		return d
 	}
 	return nav.FlightState.MagneticVariation
@@ -709,6 +721,7 @@ func (nav *Nav) reachesRadial(hdg, radial math.MagneticHeading, fix math.Point2L
 // until the controller says otherwise.
 func (nav *Nav) InterceptRadial(fix string, radial math.MagneticHeading, outbound bool, simTime Time,
 	delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("InterceptRadial", fix, radial, outbound, simTime, delayReduction)()
 	if radial <= 0 || radial > 360 {
 		return speech.MakeUnableIntent("unable. {hdg} isn't a valid radial", radial)
 	}
@@ -773,7 +786,8 @@ func (nav *Nav) radialJoinManeuvers(join RouteJoin, hdg math.MagneticHeading, tu
 }
 
 func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.CommandIntent {
-	if _, ok := db.DB.LookupWaypoint(fix); !ok {
+	defer nav.record("HoldAtFix", callsign, fix, hold)()
+	if _, ok := nav.lookup().Waypoint(fix); !ok {
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	} else if !nav.fixInRoute(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
@@ -786,7 +800,7 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.Com
 		h = *hold
 	} else {
 		// Published hold
-		holds, ok := db.DB.EnrouteHolds[fix]
+		holds, ok := nav.lookup().Holds(fix)
 		if !ok || len(holds) == 0 {
 			return speech.MakeUnableIntent("unable. no published hold at {fix}", fix)
 		}
@@ -826,7 +840,7 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.Com
 
 func (nav *Nav) makeFlyHold(callsign string, hold av.Hold) *FlyHold {
 	// Calculate heading from aircraft's current position to fix
-	pHold, _ := db.DB.LookupWaypoint(hold.Fix)
+	pHold, _ := nav.lookup().Waypoint(hold.Fix)
 	hdg := math.TrueToMagnetic(math.Heading2LL(nav.FlightState.Position, pHold, nav.FlightState.NmPerLongitude),
 		nav.FlightState.MagneticVariation)
 
@@ -843,6 +857,7 @@ func (nav *Nav) makeFlyHold(callsign string, hold av.Hold) *FlyHold {
 }
 
 func (nav *Nav) DepartFixDirect(fixa string, fixb string) speech.CommandIntent {
+	defer nav.record("DepartFixDirect", fixa, fixb)()
 	fa, fb := nav.fixPairInRoute(fixa, fixb)
 	if fa == nil {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fixa)
@@ -863,6 +878,7 @@ func (nav *Nav) DepartFixDirect(fixa string, fixb string) speech.CommandIntent {
 }
 
 func (nav *Nav) DepartFixHeading(fix string, hdg math.MagneticHeading) speech.CommandIntent {
+	defer nav.record("DepartFixHeading", fix, hdg)()
 	if hdg <= 0 || hdg > 360 {
 		return speech.MakeUnableIntent("unable. Heading {hdg} is invalid", hdg)
 	}
@@ -883,6 +899,7 @@ func (nav *Nav) DepartFixHeading(fix string, hdg math.MagneticHeading) speech.Co
 }
 
 func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("CrossFixAt", fix, ar, sr, temp)()
 	if !nav.fixInRoute(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
@@ -986,6 +1003,7 @@ func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
 
 func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.CardinalOrdinalDirection,
 	ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("CrossDistanceFromFixAt", fix, dist, dir, ar, sr, temp)()
 	routeWps, commitRoute := nav.editAssignedWaypoints()
 
 	wps := routeWps
@@ -1105,6 +1123,7 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 // from the threshold accumulating track miles; if dist exceeds the total
 // route length, the point is extrapolated backwards along the first leg.
 func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("CrossDMEAt", dist, ar, sr, temp)()
 	if dist <= 0 || dist > 30 {
 		return speech.MakeUnableIntent("unable, that distance is out of range")
 	}
@@ -1201,6 +1220,7 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 }
 
 func (nav *Nav) AfterFixSpeed(fix string, sr *av.SpeedRestriction) speech.CommandIntent {
+	defer nav.record("AfterFixSpeed", fix, sr)()
 	if !nav.fixInRoute(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
@@ -1219,6 +1239,7 @@ func (nav *Nav) AfterFixSpeed(fix string, sr *av.SpeedRestriction) speech.Comman
 }
 
 func (nav *Nav) AssignCompoundSpeed(segments []speech.CompoundSpeedSegment, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("AssignCompoundSpeed", segments, temp)()
 	// Validate all segments before applying any state changes.
 	for _, seg := range segments {
 		if intent, ok := nav.checkAssignedSpeed(seg.Speed.Speed(), temp); !ok {
@@ -1264,6 +1285,7 @@ func (nav *Nav) clearAfterFixSpeeds() {
 }
 
 func (nav *Nav) AfterFixAltitude(fix string, alt float32) speech.CommandIntent {
+	defer nav.record("AfterFixAltitude", fix, alt)()
 	if !nav.fixInRoute(fix) {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
@@ -1301,6 +1323,7 @@ func (nav *Nav) clearFixAltitudes() {
 }
 
 func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
+	defer nav.record("CancelApproachClearance")()
 	if !nav.Approach.Cleared {
 		return speech.MakeUnableIntent("unable. we're not currently cleared for an approach")
 	}
@@ -1318,6 +1341,7 @@ func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
 // scenario's cleared altitude for a departure is an earlier controller's
 // "except maintain", and cruise is the only top altitude it gives a SID.
 func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("ClimbViaSID", exceptAlt, simTime, delayReduction)()
 	intent := speech.ProcedureIntent{Type: speech.ProcedureClimbViaSID, ExceptAltitude: exceptAlt}
 	if exceptAlt != nil {
 		if *exceptAlt > nav.Perf.Ceiling {
@@ -1342,6 +1366,7 @@ func (nav *Nav) ClimbViaSID(exceptAlt *float32, simTime Time, delayReduction tim
 // it is non-nil; otherwise the aircraft descends to the STAR's last
 // restriction.
 func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("DescendViaSTAR", exceptAlt, simTime, delayReduction)()
 	intent := speech.ProcedureIntent{Type: speech.ProcedureDescendViaSTAR, ExceptAltitude: exceptAlt}
 	if exceptAlt != nil {
 		if *exceptAlt > nav.Perf.Ceiling {
@@ -1381,6 +1406,7 @@ func (nav *Nav) resumeProcedureCourse(simTime Time, delayReduction time.Duration
 // changing nothing, if no fix ahead is on a SID. An excepted altitude below
 // the aircraft is descended to, as instructed.
 func (nav *Nav) ClimbViaSIDAtPassedFix(exceptAlt *float32) bool {
+	defer nav.record("ClimbViaSIDAtPassedFix", exceptAlt)()
 	if !slices.ContainsFunc(nav.AssignedWaypoints(), av.Waypoint.OnSID) {
 		return false
 	}
@@ -1397,6 +1423,7 @@ func (nav *Nav) ClimbViaSIDAtPassedFix(exceptAlt *float32) bool {
 // ClimbViaSIDAtPassedFix; an excepted altitude above the aircraft is climbed
 // back to.
 func (nav *Nav) DescendViaSTARAtPassedFix(exceptAlt *float32) bool {
+	defer nav.record("DescendViaSTARAtPassedFix", exceptAlt)()
 	if !slices.ContainsFunc(nav.AssignedWaypoints(), av.Waypoint.OnSTAR) {
 		return false
 	}
@@ -1440,6 +1467,7 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 }
 
 func (nav *Nav) ResumeOwnNavigation() speech.CommandIntent {
+	defer nav.record("ResumeOwnNavigation")()
 	if nav.Heading.Assigned == nil {
 		// This is a weird response but keeping the original behavior
 		return speech.MakeUnableIntent("unable. I don't think you ever put us on a heading...")
@@ -1475,6 +1503,7 @@ func (nav *Nav) ResumeOwnNavigation() speech.CommandIntent {
 }
 
 func (nav *Nav) AltitudeOurDiscretion() speech.CommandIntent {
+	defer nav.record("AltitudeOurDiscretion")()
 	if nav.Altitude.Assigned == nil {
 		return speech.MakeUnableIntent("unable. You never assigned us an altitude...")
 	}

@@ -574,24 +574,20 @@ func (s *Sim) updateState() {
 			passedWaypoint := updateResult.PassedWaypoint
 			ac.refreshSeenTraffic(now, s.Aircraft)
 
-			if ac.Nav.Approach.RequestApproachClearance && ac.IsAssociated() {
-				ac.Nav.Approach.RequestApproachClearance = false
-				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestApproachClearance)
-			}
-
-			if ac.Nav.Approach.GoAroundNoApproachClearance && ac.IsAssociated() {
-				ac.Nav.Approach.GoAroundNoApproachClearance = false
-				s.goAround(ac)
-			}
-
-			if ac.Nav.Approach.RequestVectors && ac.IsAssociated() {
-				ac.Nav.Approach.RequestVectors = false
-				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestVectors)
-			}
-
-			if ac.Nav.Approach.RequestAltitude && ac.IsAssociated() {
-				ac.Nav.Approach.RequestAltitude = false
-				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestAltitude)
+			if ac.IsAssociated() {
+				requests := ac.Nav.TakePilotRequests()
+				if requests.ApproachClearance {
+					s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestApproachClearance)
+				}
+				if requests.GoAround {
+					s.goAround(ac)
+				}
+				if requests.Vectors {
+					s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestVectors)
+				}
+				if requests.Altitude {
+					s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestAltitude)
+				}
 			}
 
 			if ac.IsAssociated() && !ac.GotContactTower && !ac.AskedAboutTowerSwitch &&

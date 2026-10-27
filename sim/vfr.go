@@ -341,7 +341,7 @@ func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.T
 func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign, delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			return ac.Ident(s.State.SimTime, delayReduction)
+			return ac.Ident(s.State.SimTime, delayReduction, s.Rand)
 		})
 }
 

@@ -15,7 +15,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/util"
 )
 
@@ -423,19 +422,11 @@ func (s *Sim) resetPatternLap(ac *Aircraft) {
 	}
 
 	ceiling, _ := s.vfrTerminalCeiling(faaAP)
-	wps := generatePatternLap(rwy, opp, faaAP.Elevation, ceiling, s.State.NmPerLongitude,
-		s.State.MagneticVariation)
-	ac.Nav.Waypoints = wps
-
-	// Clear nav heading state so the aircraft follows waypoints rather
-	// than flying a previously-assigned heading. The nav sets
-	// Heading.Assigned when passing the last waypoint, which happens when
-	// _pat_threshold is the only waypoint remaining (after touch-and-gos).
-	ac.Nav.Heading = nav.Heading{}
-
-	// Re-enter initial departure climb so speed/altitude management
-	// handles the takeoff roll correctly.
-	ac.Nav.FlightState.InitialDepartureClimb = true
+	// The nav assigns a heading when it passes the last waypoint, which
+	// happens when _pat_threshold is the only waypoint remaining after the
+	// touch-and-go; flying the new lap from the runway drops it.
+	ac.Nav.FlyFromRunway(generatePatternLap(rwy, opp, faaAP.Elevation, ceiling, s.State.NmPerLongitude,
+		s.State.MagneticVariation))
 
 	// Reset FirstSeen so that when the aircraft climbs back out of the
 	// surface tracking filter, it goes through the tentative track stage
@@ -477,8 +468,7 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 		// Send it around again instead.
 		if len(ac.Nav.Waypoints) <= 1 {
 			if wps := s.generateOrbitWaypoints(airport); len(wps) > 0 {
-				ac.Nav.Waypoints = wps
-				ac.Nav.Heading = nav.Heading{}
+				ac.Nav.FlyRoute(wps)
 			}
 		}
 		return
@@ -488,8 +478,7 @@ func (s *Sim) sequenceVFRLanding(ac *Aircraft) {
 	if len(wps) == 0 {
 		return
 	}
-	ac.Nav.Waypoints = wps
-	ac.Nav.Heading = nav.Heading{}
+	ac.Nav.FlyRoute(wps)
 	if ac.HoldingSince.IsZero() {
 		ac.HoldingSince = s.State.SimTime
 	}
@@ -515,19 +504,18 @@ func (s *Sim) enterPattern(ac *Aircraft, airport av.ICAOAirportCode) {
 	ceiling, _ := s.vfrTerminalCeiling(faaAP)
 	hdgToRwy := math.Heading2LL(ac.Position(), rwy.Threshold, s.State.NmPerLongitude)
 	if math.HeadingDifference(hdgToRwy, math.MagneticToTrue(rwy.Heading, s.State.MagneticVariation)) <= 60 && s.finalClear(airport) {
-		ac.Nav.Waypoints = generateStraightInWaypoints(rwy, faaAP.Elevation, ceiling,
-			s.State.NmPerLongitude, s.State.MagneticVariation)
+		ac.Nav.FlyRoute(generateStraightInWaypoints(rwy, faaAP.Elevation, ceiling,
+			s.State.NmPerLongitude, s.State.MagneticVariation))
 		s.lg.Info("VFR arrival straight-in",
 			slog.String("callsign", string(ac.ADSBCallsign)),
 			slog.String("airport", string(airport)))
 	} else {
-		ac.Nav.Waypoints = generatePatternEntryWaypoints(rwy, opp, faaAP.Elevation, ceiling,
-			s.State.NmPerLongitude, s.State.MagneticVariation)
+		ac.Nav.FlyRoute(generatePatternEntryWaypoints(rwy, opp, faaAP.Elevation, ceiling,
+			s.State.NmPerLongitude, s.State.MagneticVariation))
 		s.lg.Info("VFR arrival 45-to-downwind",
 			slog.String("callsign", string(ac.ADSBCallsign)),
 			slog.String("airport", string(airport)))
 	}
-	ac.Nav.Heading = nav.Heading{}
 	ac.HoldingSince = Time{}
 }
 

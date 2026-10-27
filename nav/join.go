@@ -10,7 +10,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -73,7 +72,8 @@ func (j RouteJoin) phrase() (string, []any) {
 // the part of its route that follows the airway, then continue along the
 // route from there.
 func (nav *Nav) JoinAirway(airway string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
-	if _, ok := db.DB.Airways[airway]; !ok {
+	defer nav.record("JoinAirway", airway, simTime, delayReduction)()
+	if _, ok := nav.lookup().Airways(airway); !ok {
 		return speech.MakeUnableIntent("unable. {airway} isn't a valid airway", airway)
 	}
 	return nav.joinFromAssignedHeading(RouteJoin{Kind: JoinAirway, Name: airway}, simTime, delayReduction)
@@ -82,6 +82,7 @@ func (nav *Nav) JoinAirway(airway string, simTime Time, delayReduction time.Dura
 // ResumeSID has the aircraft fly its assigned heading until it intercepts
 // its SID, then continue along it.
 func (nav *Nav) ResumeSID(sid string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("ResumeSID", sid, simTime, delayReduction)()
 	if sid == "" {
 		return speech.MakeUnableIntent("unable. we're not on a SID")
 	}
@@ -91,6 +92,7 @@ func (nav *Nav) ResumeSID(sid string, simTime Time, delayReduction time.Duration
 // ResumeSTAR has the aircraft fly its assigned heading until it intercepts
 // its STAR, then continue along it.
 func (nav *Nav) ResumeSTAR(star string, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("ResumeSTAR", star, simTime, delayReduction)()
 	if star == "" {
 		return speech.MakeUnableIntent("unable. we're not on a STAR")
 	}
@@ -101,6 +103,7 @@ func (nav *Nav) ResumeSTAR(star string, simTime Time, delayReduction time.Durati
 // the join it was previously told to make.
 func (nav *Nav) AssignHeadingToJoin(hdg math.MagneticHeading, turn av.TurnDirection, simTime Time,
 	delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("AssignHeadingToJoin", hdg, turn, simTime, delayReduction)()
 	if hdg <= 0 || hdg > 360 {
 		return speech.MakeUnableIntent("unable. {hdg} isn't a valid heading", hdg)
 	}
@@ -210,7 +213,8 @@ func (nav *Nav) routeJoinManeuvers(join RouteJoin, hdg math.MagneticHeading, tur
 	var onLeg func(a, b av.Waypoint) bool
 	switch join.Kind {
 	case JoinAirway:
-		onLeg = airwayLeg(db.DB.Airways[join.Name])
+		airway, _ := nav.lookup().Airways(join.Name)
+		onLeg = airwayLeg(airway)
 	case JoinSID:
 		onLeg = procedureLeg(av.Waypoint.OnSID)
 	case JoinSTAR:

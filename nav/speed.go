@@ -6,16 +6,16 @@ package nav
 
 import (
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/wx"
 )
 
-func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bool, rules av.FlightRules, wxs wx.Sample, arrivalMETAR *wx.METAR, simTime Time, bravo *db.AirspaceGrid) (float32, bool) {
+func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bool, rules av.FlightRules, wxs wx.Sample,
+	arrivalMETAR *wx.METAR, simTime Time, underBravo bool) (float32, bool) {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
-	targetSpeed, targetRate := nav.TargetSpeed(alt, rules, wxs, arrivalMETAR, bravo)
+	targetSpeed, targetRate := nav.TargetSpeed(alt, rules, wxs, arrivalMETAR, underBravo)
 
 	// Stay within the aircraft's capabilities
 	targetSpeed = math.Clamp(targetSpeed, nav.minIAS(), nav.maxIAS(wxs.Temperature()))
@@ -103,9 +103,11 @@ func (nav *Nav) updateAirspeed(callsign string, alt float32, geometricDescent bo
 }
 
 // TargetSpeed returns the IAS the aircraft is currently trying to fly and
-// the rate at which it should get there.
-func (nav *Nav) TargetSpeed(targetAltitude float32, rules av.FlightRules, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *db.AirspaceGrid) (float32, float32) {
-	spd, rate := nav.selectTargetSpeed(targetAltitude, rules, wxs, arrivalMETAR, bravo)
+// the rate at which it should get there. underBravo reports whether it is
+// under a Class B shelf, where a VFR aircraft holds 200 knots or less.
+func (nav *Nav) TargetSpeed(targetAltitude float32, rules av.FlightRules, wxs wx.Sample, arrivalMETAR *wx.METAR,
+	underBravo bool) (float32, float32) {
+	spd, rate := nav.selectTargetSpeed(targetAltitude, rules, wxs, arrivalMETAR, underBravo)
 
 	// A speed assignment deferred until an altitude is reached ("descend
 	// and maintain 6,000, then reduce speed to 180") is flown by holding
@@ -118,7 +120,8 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, rules av.FlightRules, wxs wx
 	return spd, rate
 }
 
-func (nav *Nav) selectTargetSpeed(targetAltitude float32, rules av.FlightRules, wxs wx.Sample, arrivalMETAR *wx.METAR, bravo *db.AirspaceGrid) (float32, float32) {
+func (nav *Nav) selectTargetSpeed(targetAltitude float32, rules av.FlightRules, wxs wx.Sample, arrivalMETAR *wx.METAR,
+	underBravo bool) (float32, float32) {
 	temp := wxs.Temperature()
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
@@ -297,8 +300,7 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, rules av.FlightRules, 
 	// Nothing assigned by the controller or the route, so set a target
 	// based on the aircraft's altitude.
 	ias, rate := nav.targetAltitudeIAS(temp)
-	if rules == av.FlightRulesVFR &&
-		db.UnderBravoShelf(bravo, nav.FlightState.Position, int(nav.FlightState.Altitude)) {
+	if rules == av.FlightRulesVFR && underBravo {
 		ias = min(ias, 200)
 	}
 	if pendingDecel {

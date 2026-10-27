@@ -341,10 +341,9 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 					if ap == nil {
 						return speech.MakeUnableIntent("unable, we can't accept a visual approach there")
 					}
-					if intent := ac.ExpectApproach(approach, ap); intent != nil {
-						if _, unable := intent.(speech.Refusal); unable {
-							return intent
-						}
+					intent := ac.ExpectApproach(approach, ap)
+					if _, unable := intent.(speech.Refusal); unable {
+						return intent
 					}
 				}
 			} else if unable := s.refuseChartedVisualClearance(ac, approach); unable != nil {

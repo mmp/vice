@@ -93,6 +93,7 @@ func (nav *Nav) updatePositionAndGS(wxs wx.Sample) {
 // the given cruise altitude—unless the route has /c or /d altitude actions
 // at its waypoints, in which case those govern its altitude instead.
 func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
+	defer nav.record("DepartOnCourse", alt, exit, simTime)()
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Don't do anything if they are not on a heading; let them fly the
 		// regular route and don't (potentially) skip waypoints and go
@@ -153,15 +154,27 @@ func (nav *Nav) Check(lg *log.Logger) {
 	}
 }
 
+// Update flies the aircraft for one second in the weather the model gives
+// for where it is. bravo is the Class B airspace, if any, whose shelves a
+// VFR aircraft slows under, and arrivalMETAR, if non-nil, sets the approach
+// speed's wind additive.
 func (nav *Nav) Update(callsign string, model *wx.Model, rules av.FlightRules, arrivalMETAR *wx.METAR, simTime Time,
 	bravo *db.AirspaceGrid) UpdateResult {
 	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime.Time())
-	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, rules, simTime, bravo)
+	underBravo := rules == av.FlightRulesVFR &&
+		db.UnderBravoShelf(bravo, nav.FlightState.Position, int(nav.FlightState.Altitude))
+	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, rules, simTime, underBravo)
 }
 
-// UpdateWithWeather is a helper for simulations that use pre-fetched weather.
-// arrivalMETAR, if non-nil, is used for the approach speed wind additive.
-func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, rules av.FlightRules, simTime Time, bravo *db.AirspaceGrid) UpdateResult {
+// UpdateWithWeather is Update given its surroundings rather than finding
+// them: the weather at the aircraft and whether it is under a Class B shelf.
+func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, rules av.FlightRules, simTime Time,
+	underBravo bool) UpdateResult {
+	// Commands the update gives the aircraft, like an altitude to depart a
+	// fix at, are its own doing and aren't recorded.
+	nav.recordDepth++
+	defer func() { nav.recordDepth-- }()
+
 	nav.PendingWaypointActionEvents = nil
 	nav.activatePendingAltitude(simTime)
 
@@ -173,7 +186,7 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 		nav.FlightState.BankAngle, nav.FlightState.AltitudeRate)
 
 	targetAltitude, altitudeRate, geometricDescent := nav.TargetAltitude()
-	deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, rules, wxs, arrivalMETAR, simTime, bravo)
+	deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, rules, wxs, arrivalMETAR, simTime, underBravo)
 	nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
 	nav.updateHeading(callsign, wxs, simTime)
 	nav.updatePositionAndGS(wxs)
@@ -186,9 +199,12 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 		nav.Heading.Hold == nil && len(nav.Heading.Maneuvers) == 0 {
 		result = nav.updateWaypoints(callsign, wxs, simTime)
 		result.ActionEvents = append(nav.PendingWaypointActionEvents, result.ActionEvents...)
-		return result
 	}
 
+	if nav.recorder != nil {
+		nav.recorder.Update(UpdateRecord{Time: simTime, Weather: wxs, METAR: arrivalMETAR, Rules: rules,
+			UnderBravo: underBravo, Prespawn: nav.Prespawn, Result: result, State: nav.FlightState})
+	}
 	return result
 }
 

@@ -363,7 +363,7 @@ func TestDepartureTracksCenterlineToFourHundred(t *testing.T) {
 	var maxOffsetRolling, maxOffsetLow, aglTurned float32
 	tracking, turned, rolledTracking := false, false, false
 	for range 200 {
-		n.UpdateWithWeather("TEST001", wxs, nil, av.FlightRulesIFR, simTime, nil)
+		n.UpdateWithWeather("TEST001", wxs, nil, av.FlightRulesIFR, simTime, false)
 		simTime = simTime.Add(time.Second)
 		if !n.IsAirborne() {
 			maxOffsetRolling = max(maxOffsetRolling, offset())
@@ -467,7 +467,7 @@ func TestDepartureEventActionsFireAtFourHundred(t *testing.T) {
 	var aglHandoff, aglResumed float32
 	maneuvering, resumed, handoff := false, false, false
 	for range 200 {
-		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, false)
 		d.simTime = d.simTime.Add(time.Second)
 		agl := d.nav.FlightState.Altitude - float32(d.elevation)
 		if slices.ContainsFunc(result.ActionEvents,
@@ -510,7 +510,7 @@ func TestDepartureDelayedEventActionResumesRoute(t *testing.T) {
 	var aglHandoff, aglResumed float32
 	maneuvering, resumed, handoff := false, false, false
 	for range 300 {
-		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, false)
 		d.simTime = d.simTime.Add(time.Second)
 		agl := d.nav.FlightState.Altitude - float32(d.elevation)
 		if slices.ContainsFunc(result.ActionEvents,
@@ -553,7 +553,7 @@ func TestDelayedDeleteActionFiresAtItsTrigger(t *testing.T) {
 	var aglDelete float32
 	deleted := false
 	for range 300 {
-		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
+		result := d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, false)
 		d.simTime = d.simTime.Add(time.Second)
 		if !deleted && slices.ContainsFunc(result.ActionEvents,
 			func(e av.WaypointActionEvent) bool { return e.Actions.Delete }) {
@@ -583,7 +583,7 @@ func TestDepartureTrailingHeadingHeldUntilIntervention(t *testing.T) {
 	})
 
 	for range 300 {
-		d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, nil)
+		d.nav.UpdateWithWeather("TEST001", d.wxs, nil, av.FlightRulesIFR, d.simTime, false)
 		d.simTime = d.simTime.Add(time.Second)
 	}
 

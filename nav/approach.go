@@ -10,7 +10,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
@@ -313,6 +312,31 @@ func (nav *Nav) approachRecoveryFeasible(ap *av.Approach) bool {
 	return lateralOffset <= recoveryHalfWidth
 }
 
+// PilotRequests are what the pilot has decided to ask the controller for, or
+// to do on their own, since the sim last took them.
+type PilotRequests struct {
+	ApproachClearance bool // close to the approach with no clearance
+	GoAround          bool // reached the FAF with no clearance
+	Vectors           bool // overshot the localizer
+	Altitude          bool // vectored off a STAR or approach with no altitude
+}
+
+// TakePilotRequests returns what the pilot wants to ask for or do and clears
+// it, so that each request is acted on once.
+func (nav *Nav) TakePilotRequests() PilotRequests {
+	defer nav.record("TakePilotRequests")()
+	a := &nav.Approach
+	r := PilotRequests{
+		ApproachClearance: a.RequestApproachClearance,
+		GoAround:          a.GoAroundNoApproachClearance,
+		Vectors:           a.RequestVectors,
+		Altitude:          a.RequestAltitude,
+	}
+	a.RequestApproachClearance, a.GoAroundNoApproachClearance = false, false
+	a.RequestVectors, a.RequestAltitude = false, false
+	return r
+}
+
 // approachOvershootRequestVectors cancels the approach and flags the
 // pilot to request new vectors from ATC.
 func (nav *Nav) approachOvershootRequestVectors() {
@@ -329,11 +353,11 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 
 	if runway, visual := strings.CutPrefix(id, "_VIS"); visual {
 		arrICAO := av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix)
-		rwy, ok := av.LookupRunway(db.Lookups{}, arrICAO, runway)
+		rwy, ok := nav.lookup().Runway(arrICAO, runway)
 		if !ok {
 			return nil, nil, ErrInvalidApproach
 		}
-		opp, ok := av.LookupOppositeRunway(db.Lookups{}, arrICAO, runway)
+		opp, ok := nav.lookup().OppositeRunway(arrICAO, runway)
 		if !ok {
 			opp.Threshold = rwy.Threshold
 		}
@@ -392,23 +416,45 @@ func visualATPAVolumeId(airport *av.Airport, runway string, references []*av.App
 	return ""
 }
 
-func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypoints map[string]av.WaypointArray) speech.CommandIntent {
+// ExpectedApproach is what ExpectApproach needs to know of an approach, as
+// ResolveApproach finds it at the airport.
+type ExpectedApproach struct {
+	Approach *av.Approach
+	// References are the approaches a visual approach is flown by
+	// reference to; see selectVisualReferences.
+	References []*av.Approach
+	ATPAVolume *av.ATPAVolume
+}
+
+// ResolveApproach finds the approach that approach names at the airport, with
+// or without a "/LAHSO" runway suffix, for ExpectApproach. If the airport has
+// no such approach, it returns the pilot's "unable" instead.
+func (nav *Nav) ResolveApproach(airport *av.Airport, approach string) (ExpectedApproach, speech.CommandIntent) {
+	id, _, _ := strings.Cut(approach, "/LAHSO")
+	ap, refs, err := nav.getApproach(airport, id)
+	if err != nil {
+		if rwy, visual := strings.CutPrefix(id, "_VIS"); visual {
+			return ExpectedApproach{}, speech.MakeUnableIntent("unable, we don't know runway " + rwy)
+		}
+		return ExpectedApproach{}, speech.MakeUnableIntent("unable. We don't know the {appr} approach.", id)
+	}
+	return ExpectedApproach{Approach: ap, References: refs, ATPAVolume: airport.ATPAVolumes[ap.ATPAVolumeId]}, nil
+}
+
+// ExpectApproach tells the pilot to expect the approach ResolveApproach
+// found for the name. runwayWaypoints gives the route from the arrival the
+// aircraft is flying to each runway, if the arrival has them.
+func (nav *Nav) ExpectApproach(approach string, ea ExpectedApproach, runwayWaypoints map[string]av.WaypointArray) speech.CommandIntent {
+	defer nav.record("ExpectApproach", approach, ea, runwayWaypoints)()
 	id, lahsoRunway, _ := strings.Cut(approach, "/LAHSO")
 
 	if lahsoRunway != "" {
-		if _, ok := av.LookupRunway(db.Lookups{}, av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), lahsoRunway); !ok {
+		if _, ok := nav.lookup().Runway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), lahsoRunway); !ok {
 			return speech.MakeUnableIntent("unable, we don't know that hold-short runway")
 		}
 	}
 
-	ap, refs, err := nav.getApproach(airport, id)
-	if err != nil {
-		if rwy, visual := strings.CutPrefix(id, "_VIS"); visual {
-			return speech.MakeUnableIntent("unable, we don't know runway " + rwy)
-		}
-		return speech.MakeUnableIntent("unable. We don't know the {appr} approach.", id)
-	}
-
+	ap := ea.Approach
 	if id == nav.Approach.AssignedId && nav.Approach.Assigned != nil {
 		nav.Approach.StandbyApproach = true
 		return speech.ApproachIntent{
@@ -422,9 +468,9 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 	nav.Approach = Approach{
 		Assigned:         ap,
 		AssignedId:       id,
-		ATPAVolume:       airport.ATPAVolumes[ap.ATPAVolumeId],
+		ATPAVolume:       ea.ATPAVolume,
 		RequestAltitude:  requestAltitude,
-		VisualReferences: refs,
+		VisualReferences: ea.References,
 	}
 
 	if waypoints := runwayWaypoints[ap.Runway]; len(waypoints) > 0 {
@@ -479,6 +525,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, approach string, runwayWaypo
 }
 
 func (nav *Nav) InterceptApproach(joinFix string) speech.CommandIntent {
+	defer nav.record("InterceptApproach", joinFix)()
 	if intent := nav.prepareForApproach(false, joinFix); intent != nil {
 		return intent
 	}
@@ -533,6 +580,7 @@ func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
 // be intercepting the approach course and join it before the fix; it keeps
 // its altitude on the course until the clearance takes effect there.
 func (nav *Nav) AtFixCleared(fix, id string, straightIn bool) speech.CommandIntent {
+	defer nav.record("AtFixCleared", fix, id, straightIn)()
 	if nav.Approach.AssignedId == "" {
 		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
@@ -583,6 +631,7 @@ func (nav *Nav) AtFixCleared(fix, id string, straightIn bool) speech.CommandInte
 // fix, which must be on the route it is flying. One on a heading never
 // passes the fix.
 func (nav *Nav) AtFixIntercept(fix string) speech.CommandIntent {
+	defer nav.record("AtFixIntercept", fix)()
 	if nav.Approach.AssignedId == "" {
 		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
@@ -804,6 +853,7 @@ type FollowTraffic struct {
 // as in joinApproach and is empty for a controller-issued clearance.
 func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime Time, delayReduction time.Duration,
 	straightIn bool, joinFix string) speech.CommandIntent {
+	defer nav.record("ClearedApproach", approach, traffic, simTime, delayReduction, straightIn, joinFix)()
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return speech.MakeUnableIntent("unable. We haven't been told to expect an approach")
@@ -886,6 +936,7 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 //   - Otherwise, a synthetic descent profile (TOD/_3NM_FINAL anchors) is
 //     constructed from the visual references.
 func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string) speech.CommandIntent {
+	defer nav.record("ClearedVisualApproach", follow, lahsoRunway)()
 	ap := nav.Approach.Assigned
 	if ap == nil || ap.Type != av.VisualApproach {
 		return speech.MakeUnableIntent("unable. We haven't been told to expect a visual approach")
@@ -971,7 +1022,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 	// finishes cleaning up the descent assignment after that.
 	nav.Heading = Heading{}
 	nav.DeferredNavHeading = nil
-	rwy, _ := av.LookupRunway(db.Lookups{}, av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
+	rwy, _ := nav.lookup().Runway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	profileFloor := float32(rwy.Elevation) + 900
 	preserved := Altitude{}
 	if a := nav.Altitude.Assigned; a != nil && *a < nav.FlightState.Altitude && *a >= profileFloor {
@@ -1320,7 +1371,7 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 		return nil
 	}
 
-	rwy, _ := av.LookupRunway(db.Lookups{}, av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
+	rwy, _ := nav.lookup().Runway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	finalPoint, hasFinalPoint := visualRoutePointAtDistance(joinPoint.route, 3, nmPerLong)
 	thresholdAlt := rwy.Elevation + rwy.ThresholdCrossingHeight
 	final3nmAlt := float32(rwy.Elevation) + 900

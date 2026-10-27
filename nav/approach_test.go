@@ -2311,7 +2311,7 @@ func TestExpectApproachKeepsPendingDirect(t *testing.T) {
 	}
 
 	rwWps := map[string]av.WaypointArray{"22L": {{Fix: "ZZTOP"}, {Fix: "ZZBOT"}}}
-	f.nav.ExpectApproach(f.makeAirport(), "_VIS22L", rwWps)
+	f.expectApproachAt(f.makeAirport(), "_VIS22L", rwWps)
 
 	if !f.nav.hasDeferredRoute() || f.nav.DeferredNavHeading.Waypoints[0].Fix != "LEFER" {
 		t.Error("the pending direct should survive expect-approach")
@@ -2809,7 +2809,7 @@ func TestExpectApproachCarriesRouteActionsOntoApproach(t *testing.T) {
 	}
 	before := runwayWaypoints["22L"][:1].Encode()
 
-	f.nav.ExpectApproach(f.makeAirport(), "I22L", runwayWaypoints)
+	f.expectApproachAt(f.makeAirport(), "I22L", runwayWaypoints)
 
 	if after := runwayWaypoints["22L"][:1].Encode(); after != before {
 		t.Errorf("the scenario's runway waypoint was modified: before %q, after %q", before, after)
