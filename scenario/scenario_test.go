@@ -118,6 +118,49 @@ func TestAirportFiltersCoverTheField(t *testing.T) {
 	}
 }
 
+// A departure waiting to take off sits at the end of the runway, short of a
+// displaced threshold; the airport's polygon regions still have to cover it.
+func TestAirportPolygonFiltersCoverRunwayEnds(t *testing.T) {
+	const nmPerLongitude = 46
+	pt := func(x, y float32) math.Point2LL { return math.NM2LL([2]float32{x, y}, nmPerLongitude) }
+	rwy := func(id string, threshold, start math.Point2LL) av.Runway {
+		return av.Runway{Id: id, Threshold: threshold, Start: start}
+	}
+
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Airports: map[av.ICAOAirportCode]db.Airport{
+			"KONE": {Id: "KONE", Elevation: 20, Location: pt(1, 0), Runways: []av.Runway{
+				rwy("9", pt(0.5, 0), pt(0, 0)),
+				rwy("27", pt(2, 0), pt(2, 0)),
+			}},
+			"KTWO": {Id: "KTWO", Elevation: 20, Location: pt(1, 0), Runways: []av.Runway{
+				rwy("9", pt(0.4, 0), pt(0, 0)),
+				rwy("27", pt(2, 0), pt(2, 0)),
+				rwy("18", pt(1, 1), pt(1, 1)),
+				rwy("36", pt(1, -1), pt(1, -1)),
+			}},
+		},
+	}
+	t.Cleanup(func() { db.DB = oldDB })
+
+	airports := []av.ICAOAirportCode{"KONE", "KTWO"}
+	var e util.ErrorLogger
+	regions := makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 200, airports, nmPerLongitude, &e)
+	if e.HaveErrors() {
+		t.Fatal(e.String())
+	}
+
+	for _, icao := range airports {
+		ap := db.DB.Airports[icao]
+		for _, r := range ap.Runways {
+			if !regions.Inside(r.Start, ap.Elevation) {
+				t.Errorf("%s: a departure waiting on runway %s is not inside the airport's filter region", icao, r.Id)
+			}
+		}
+	}
+}
+
 // A misspelled fix is offered the similarly-spelled ones near the facility, not
 // the ones across the country.
 func TestSimilarStaysNearTheFacility(t *testing.T) {

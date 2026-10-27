@@ -61,7 +61,9 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 		}
 		name := db.AirportDisplayId(apname)
 
-		p := util.MapSlice(ap.Runways, func(r av.Runway) [2]float32 { return math.LL2NM(r.Threshold, nmPerLongitude) })
+		// The runway ends, not the thresholds: departures wait short of a
+		// displaced threshold.
+		p := util.MapSlice(ap.Runways, func(r av.Runway) [2]float32 { return math.LL2NM(r.Start, nmPerLongitude) })
 		var hull [][2]float32
 
 		if len(p) == 2 {
@@ -78,7 +80,7 @@ func makePolygonAirportFilters(id string, description string, delta float32,
 				math.Add2f(p[1], math.Add2f(v, nvp)),
 				math.Add2f(p[0], math.Add2f(nv, nvp))}
 		} else {
-			// Convex hull of the runway threshold points
+			// Convex hull of the runway ends
 			hull = math.ConvexHull(p)
 
 			// Expand the hull by delta: hacky polygon dilation--
