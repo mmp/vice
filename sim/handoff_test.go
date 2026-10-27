@@ -679,3 +679,24 @@ func TestFrequencyChangeAfterApproachClearance(t *testing.T) {
 		})
 	}
 }
+
+// An aircraft sent to a position consolidated to the controller's own TCW
+// stays on frequency.
+func TestContactConsolidatedPosition(t *testing.T) {
+	for _, command := range []string{"FC", "CT2C"} {
+		s := NewTestSim(testLogger())
+		s.State.CurrentConsolidation[E2ETCW()].SecondaryTCPs = []SecondaryTCP{{TCP: "2C"}}
+		s.State.Controllers = map[ControlPosition]*av.Controller{"2C": {Position: "2C"}}
+		ac := MakeTestAircraft("AAL123", "22L")
+		ac.AssociateFlightPlan(&FlightPlan{ACID: "AAL123", TrackingController: "2C"})
+		s.Aircraft[ac.ADSBCallsign] = ac
+		freq := ac.ControllerFrequency
+
+		if _, err := s.runOneControlCommand(E2ETCW(), ac.ADSBCallsign, command, 0); err != nil {
+			t.Fatalf("%s: %v", command, err)
+		}
+		if ac.ControllerFrequency != freq || len(s.FutureFrequencyChanges) > 0 {
+			t.Errorf("%s: aircraft left %s's frequency", command, freq)
+		}
+	}
+}

@@ -205,24 +205,22 @@ func (s *Sim) trackHandedOff(ac *Aircraft) bool {
 func (s *Sim) ContactController(tcw TCW, callsign av.ADSBCallsign, toTCP TCP, delayReduction time.Duration) (speech.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) speech.CommandIntent {
-			if s.State.TCWControlsPosition(tcw, toTCP) {
-				return speech.MakeUnableIntent("Unable, we are already on your frequency")
-			} else {
-				return s.contactController(tcw, ac, toTCP, delayReduction)
-			}
+			return s.contactController(tcw, ac, toTCP, delayReduction)
 		})
 }
 
 func (s *Sim) contactController(tcw TCW, ac *Aircraft, toTCP TCP, delayReduction time.Duration) speech.CommandIntent {
+	// toTCP may be a position consolidated to the controller's TCW, so
+	// don't compare it to the primary position alone.
+	if s.State.TCWControlsPosition(tcw, toTCP) {
+		return speech.MakeUnableIntent("Unable, we are already on your frequency")
+	}
 	fromTCP := s.State.PrimaryPositionForTCW(tcw)
 
 	// Immediately respond to the current controller that we're
 	// changing frequency.
 	var intent speech.ContactIntent
 	if octrl, ok := s.State.Controllers[toTCP]; ok {
-		if toTCP == fromTCP {
-			return speech.MakeUnableIntent("Unable, we are already on {freq}", octrl.Frequency)
-		}
 		intent = speech.ContactIntent{
 			Type:         speech.ContactController,
 			ToController: octrl,
