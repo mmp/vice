@@ -306,9 +306,7 @@ type Writer struct {
 	header Header
 	path   string
 	f      *os.File
-	bw     *bufio.Writer
-	gz     *gzip.Writer
-	enc    *json.Encoder
+	enc    *encoder
 	err    error
 
 	now         time.Time // the sim time of the latest tick, or when the aircraft entered the sim
@@ -332,9 +330,7 @@ func (w *Writer) Start(n *nav.Nav) {
 		w.err = err
 		return
 	}
-	w.bw = bufio.NewWriter(w.f)
-	w.gz = gzip.NewWriter(w.bw)
-	w.enc = json.NewEncoder(w.gz)
+	w.enc = newEncoder(w.f)
 	w.write(Record{Header: &w.header})
 	w.flush()
 }
@@ -449,10 +445,7 @@ func (w *Writer) End(reason string, t time.Time) error {
 	}
 	w.write(Record{End: end})
 
-	if w.err == nil {
-		w.err = w.gz.Close()
-	}
-	if err := w.bw.Flush(); w.err == nil {
+	if err := w.enc.close(); w.err == nil {
 		w.err = err
 	}
 	if err := w.f.Close(); w.err == nil {
@@ -489,7 +482,7 @@ func (w *Writer) write(r Record) {
 	if w.err != nil || w.f == nil {
 		return
 	}
-	if err := w.enc.Encode(r); err != nil {
+	if err := w.enc.encode(r); err != nil {
 		w.fail(err)
 	}
 }
@@ -499,11 +492,41 @@ func (w *Writer) flush() {
 		return
 	}
 	w.ticks = 0
-	if err := w.gz.Flush(); err != nil {
-		w.fail(err)
-	} else if err := w.bw.Flush(); err != nil {
+	if err := w.enc.flush(); err != nil {
 		w.fail(err)
 	}
+}
+
+// encoder writes records as gzipped JSON lines.
+type encoder struct {
+	bw  *bufio.Writer
+	gz  *gzip.Writer
+	enc *json.Encoder
+}
+
+func newEncoder(w io.Writer) *encoder {
+	bw := bufio.NewWriter(w)
+	gz := gzip.NewWriter(bw)
+	return &encoder{bw: bw, gz: gz, enc: json.NewEncoder(gz)}
+}
+
+func (e *encoder) encode(r Record) error { return e.enc.Encode(r) }
+
+// flush writes everything encoded so far through to the underlying writer.
+func (e *encoder) flush() error {
+	if err := e.gz.Flush(); err != nil {
+		return err
+	}
+	return e.bw.Flush()
+}
+
+// close finishes the gzip stream and flushes; the underlying writer is left
+// to the caller.
+func (e *encoder) close() error {
+	if err := e.gz.Close(); err != nil {
+		return err
+	}
+	return e.bw.Flush()
 }
 
 func (w *Writer) fail(err error) {
@@ -562,6 +585,35 @@ func Load(path string) (*Trace, error) {
 		}
 		t.Records = append(t.Records, r)
 	}
+}
+
+// Save writes the trace to path, replacing any file there. It writes a
+// temporary file first so that a reader never sees a partly written trace.
+func (t *Trace) Save(path string) error {
+	f, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".*.tmp")
+	if err != nil {
+		return err
+	}
+	enc := newEncoder(f)
+	err = enc.encode(Record{Header: &t.Header})
+	for _, r := range t.Records {
+		if err == nil {
+			err = enc.encode(r)
+		}
+	}
+	if e := enc.close(); err == nil {
+		err = e
+	}
+	if e := f.Close(); err == nil {
+		err = e
+	}
+	if err == nil {
+		err = os.Rename(f.Name(), path)
+	}
+	if err != nil {
+		os.Remove(f.Name())
+	}
+	return err
 }
 
 // End returns the trace's end record, or nil if the trace was never finished.

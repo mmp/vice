@@ -473,6 +473,12 @@ func (f *FlightTest) Run() {
 	}
 }
 
+// Nav returns the flight's Nav, for tests outside the package.
+func (f *FlightTest) Nav() *Nav { return f.nav }
+
+// SimTime returns the flight's current time.
+func (f *FlightTest) SimTime() Time { return f.simTime }
+
 // Step advances the simulation n ticks without running the test's events,
 // for tests that issue commands in response to the aircraft's state.
 func (f *FlightTest) Step(n int) {

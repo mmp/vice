@@ -209,3 +209,40 @@ func TestSessionDirectories(t *testing.T) {
 		t.Errorf("kept %v, want %v", names, want)
 	}
 }
+
+func TestSave(t *testing.T) {
+	dir := t.TempDir()
+	s, err := NewSession(dir, "PHL", "test", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Date(2026, 10, 6, 2, 30, 0, 0, time.UTC)
+	w := s.Begin(Aircraft{Callsign: "DAL1", Rules: av.FlightRulesIFR, Flight: av.FlightTypeArrival, Time: now})
+	w.Start(&nav.Nav{})
+	w.Command("ExpediteDescent")
+	w.Update(nav.UpdateRecord{Time: nav.NewTime(now.Add(time.Second))})
+	if err := w.End("landed", now.Add(2*time.Second)); err != nil {
+		t.Fatal(err)
+	}
+
+	tr, err := Load(w.Path())
+	if err != nil {
+		t.Fatal(err)
+	}
+	tr.Records[1].Tick.Altitude = 1234
+	path := filepath.Join(dir, "copy"+Ext)
+	if err := tr.Save(path); err != nil {
+		t.Fatal(err)
+	}
+	again, err := Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if again.Header.Callsign != "DAL1" || len(again.Records) != 3 || again.Records[1].Tick.Altitude != 1234 ||
+		again.End() == nil {
+		t.Errorf("saved trace reads back as %+v", again)
+	}
+	if tmp, _ := filepath.Glob(filepath.Join(dir, "*.tmp")); len(tmp) > 0 {
+		t.Errorf("temporary files left: %v", tmp)
+	}
+}
