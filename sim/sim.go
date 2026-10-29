@@ -494,15 +494,22 @@ func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 }
 
 func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplayState, error) {
-	if ac, ok := s.Aircraft[callsign]; !ok {
+	ac, ok := s.Aircraft[callsign]
+	if !ok {
 		return AircraftDisplayState{}, ErrNoMatchingFlight
-	} else {
-		return AircraftDisplayState{
-			Spew:                 godump.DumpStr(ac),
-			FlightState:          ac.NavSummary(s.wxModel, s.State.SimTime, s.textRand, s.lg),
-			ControlTransmissions: ac.ControlTransmissions,
-		}, nil
 	}
+
+	// The trace writer's open file and compression buffers would add
+	// megabytes to the dump.
+	dump := *ac
+	dump.trace = nil
+	dump.Nav.SetRecorder(nil)
+
+	return AircraftDisplayState{
+		Spew:                 godump.DumpStr(&dump),
+		FlightState:          ac.NavSummary(s.wxModel, s.State.SimTime, s.textRand, s.lg),
+		ControlTransmissions: ac.ControlTransmissions,
+	}, nil
 }
 
 // *Aircraft may be nil. bool indicates whether the flight plan is active.
