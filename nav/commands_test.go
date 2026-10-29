@@ -163,6 +163,64 @@ func TestRightDirectFix(t *testing.T) {
 	f.Run()
 }
 
+// TestTurnDirectionIsForTheTurnOntoTheLeg verifies that an aircraft turns
+// onto a leg the way it was told but afterward corrects the closest way, so
+// that a wind shift doesn't send it around in a circle.
+func TestTurnDirectionIsForTheTurnOntoTheLeg(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		route  string
+		direct bool
+	}{
+		{name: "Route", route: "SAJUL/ld DETGY HAUPT"},
+		{name: "DirectFix", route: "SAJUL DETGY HAUPT", direct: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints:        tc.route,
+				DepartureAirport: "KMCO",
+				ArrivalAirport:   "KJFK",
+				AircraftType:     "A320",
+				InitialAltitude:  11000,
+				InitialSpeed:     250,
+			})
+			// The aircraft starts at SAJUL, having passed it.
+			f.nav.Waypoints = f.nav.Waypoints[1:]
+			fs := &f.nav.FlightState
+			detgy := f.nav.Waypoints[0].Location
+			bearing := func() math.MagneticHeading {
+				return math.TrueToMagnetic(math.Heading2LL(fs.Position, detgy, fs.NmPerLongitude), fs.MagneticVariation)
+			}
+
+			// With DETGY 90 degrees to the right, the left turn onto the
+			// leg is the long way around.
+			hdg := math.OffsetHeading(bearing(), -90)
+			fs.Heading = hdg
+			if tc.direct {
+				f.nav.Heading.Assigned = &hdg
+				f.DirectFixWithTurn("DETGY", av.TurnLeft)
+			}
+			f.StepUntil("rolled out toward DETGY", func() bool {
+				if fs.BankAngle > 0 {
+					t.Fatalf("turned right onto the leg at heading %.0f", fs.Heading)
+				}
+				return fs.BankAngle == 0 && math.HeadingDifference(fs.Heading, bearing()) < 1
+			})
+
+			// A wind from the right of the course makes the aircraft
+			// correct to the right.
+			course := math.MagneticToTrue(bearing(), fs.MagneticVariation)
+			f.SetWind(float32(math.OffsetHeading(course, 90)), 40)
+			f.StepUntil("passed DETGY", func() bool {
+				if d := math.HeadingDifference(fs.Heading, bearing()); d > 30 {
+					t.Fatalf("heading %.0f is %.0f degrees off the bearing to DETGY", fs.Heading, d)
+				}
+				return f.nav.Waypoints[0].Fix != "DETGY"
+			})
+		})
+	}
+}
+
 // TestExpectDirectReducesDelay verifies that calling ExpectDirect before
 // DirectFix results in a shorter pilot delay.
 func TestExpectDirectReducesDelay(t *testing.T) {

@@ -310,6 +310,15 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 		}
 
 		heading = math.TrueToMagnetic(trueHdg, nav.FlightState.MagneticVariation)
+
+		// A turn direction is for the turn onto the leg. Once the aircraft
+		// is on course it corrects the closest way; otherwise a correction
+		// to the other side, as for a wind shift, would be flown as a 360.
+		if turn != av.TurnClosest && math.HeadingDifference(nav.FlightState.Heading, heading) < 1 {
+			closest := av.TurnClosest
+			nav.Heading.Turn = &closest
+			turn = closest
+		}
 	}
 
 	// We have a heading and a direction; now figure out if we need to
