@@ -39,6 +39,7 @@
   - `WR` takes up to three stations
   - Suppressing a view closes its menu; a view's pick areas are outlined under the cursor, and picks on them no longer reach the MCA
   - Torn-off SAA labels are moved by their bars and picked for deletion like the other tear-offs
+  - Fixed bug where list entries could be invisible
 - Facility Engineering
   - Added support for using a user-supplied resources directory to override shipped scenarios/configs/etc.
   - Overflights' `"assigned_speed"` and the `"eram"` `"speed"` may be given as a Mach number (`"M78"`); `"eram"` `"mach"` has been removed.
