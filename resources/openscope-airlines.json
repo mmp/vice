@@ -1,6 +1,21 @@
 {
   "airlines": [
     {
+      "icao": "ILU",
+      "name": "Parkland College",
+      "callsign": {
+        "name": "Ill-eye-nye",
+        "callsignFormats": ["##@"]
+      },
+      "fleets": {
+        "default": [
+          ["P28A", 10],
+          ["P28R", 3],
+          ["PA44", 5]
+        ]
+      }
+    },
+    {
       "icao": "2",
       "name": "General Aviation Guernsey",
       "callsign": {
@@ -11388,7 +11403,7 @@
       "icao": "lrc",
       "name": "Avianca Costa Rica",
       "callsign": {
-        "name": "Lasca",
+        "name": "Lacsa",
         "callsignFormats": ["###"]
       },
       "fleets": {
@@ -14235,7 +14250,7 @@
       "icao": "qxe",
       "name": "Horizon Air",
       "callsign": {
-        "name": "Horizon",
+        "name": "Horizon Air",
         "callsignFormats": ["####"]
       },
       "fleets": {
