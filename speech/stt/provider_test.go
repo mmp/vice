@@ -1993,6 +1993,33 @@ func TestCallsignMatchingPriority(t *testing.T) {
 			},
 			expected: "AAL313 FC",
 		},
+		{
+			name:       "group form hundreds are part of the flight number",
+			transcript: "united eleven hundred climb and maintain one zero thousand",
+			aircraft: map[string]Aircraft{
+				"United 11 hundred": {Callsign: "UAL1100", Altitude: 5000, State: "departure"},
+				"United 11":         {Callsign: "UAL11", Altitude: 5000, State: "departure"},
+			},
+			expected: "UAL1100 C100",
+		},
+		{
+			name:       "two-digit group before hundred",
+			transcript: "united twenty five hundred climb and maintain one zero thousand",
+			aircraft: map[string]Aircraft{
+				"United 25 hundred": {Callsign: "UAL2500", Altitude: 5000, State: "departure"},
+				"United 25":         {Callsign: "UAL25", Altitude: 5000, State: "departure"},
+			},
+			expected: "UAL2500 C100",
+		},
+		{
+			name:       "flight number without hundred stays short",
+			transcript: "united eleven climb and maintain one zero thousand",
+			aircraft: map[string]Aircraft{
+				"United 11 hundred": {Callsign: "UAL1100", Altitude: 5000, State: "departure"},
+				"United 11":         {Callsign: "UAL11", Altitude: 5000, State: "departure"},
+			},
+			expected: "UAL11 C100",
+		},
 	}
 
 	provider := NewTranscriber(nil)

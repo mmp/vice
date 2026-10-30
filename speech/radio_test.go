@@ -269,6 +269,27 @@ func TestAirwaySpoken(t *testing.T) {
 	}
 }
 
+// Flight numbers are spoken in group form (7110.65 2-4-20a.2).
+func TestFlightNumberSpoken(t *testing.T) {
+	for id, want := range map[string]string{
+		"52":   "52",
+		"100":  "one hundred",
+		"101":  "one zero one",
+		"110":  "one 10",
+		"1000": "one thousand",
+		"1004": "10 zero four",
+		"1100": "11 hundred",
+		"1101": "11 zero one",
+		"2000": "two thousand",
+		"2500": "25 hundred",
+		"3015": "30 15",
+	} {
+		if got := sayFlightNumber(id); got != want {
+			t.Errorf("%s: spoken as %q, want %q", id, got, want)
+		}
+	}
+}
+
 func TestApproachTelephony(t *testing.T) {
 	for _, tc := range []struct{ name, spoken string }{
 		{"ILS Runway 22L", "I L S runway two two left"},

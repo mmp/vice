@@ -446,8 +446,10 @@ func groupForm(v int) string {
 		return sayDigit(v)
 	} else if v < 100 {
 		return strconv.Itoa(v)
-	} else if (v%100) == 0 && v < 1000 {
-		return sayDigit(v/100) + " hundred"
+	} else if v%1000 == 0 {
+		return groupForm(v/1000) + " thousand"
+	} else if v%100 == 0 {
+		return groupForm(v/100) + " hundred"
 	} else {
 		gf := groupForm(v / 100)
 		v = v % 100

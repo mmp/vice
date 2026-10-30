@@ -717,6 +717,13 @@ func collectFlightChars(tokens []Token) (string, int) {
 			continue
 		}
 
+		// "hundred" closes a group-form number ("eleven hundred" for 1100).
+		if builtNum.Len() > 0 && t.Type == TokenWord && strings.EqualFold(t.Text, "hundred") {
+			builtNum.WriteString("00")
+			consumed++
+			continue
+		}
+
 		// Altitude token: decode hundreds-of-feet encoding back to the spoken
 		// integer (e.g., "seven thousand" → TokenAltitude{Value: 70} → "7000").
 		if t.Type == TokenAltitude && t.Value >= 0 {
