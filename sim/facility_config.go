@@ -631,9 +631,18 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 		e.Pop()
 	}
 
-	// Validate macros.
-	seenMacroInputs := make(map[string]bool)
-	for i, macro := range fa.STARSMacros {
+	fa.STARSMacros.validate(e)
+	for configId, config := range fa.Configurations {
+		e.Push("configurations: " + configId)
+		config.STARSMacros.validate(e)
+		e.Pop()
+	}
+}
+
+// validate reports malformed macros and macros that share an input.
+func (ms STARSMacroSet) validate(e *util.ErrorLogger) {
+	seenInputs := make(map[string]bool)
+	for i, macro := range ms {
 		e.Push(fmt.Sprintf("stars_macros[%d]", i))
 
 		input := macro.Input
@@ -664,10 +673,10 @@ func (fc *FacilityConfig) validateSTARSAdaptation(e *util.ErrorLogger) {
 			e.ErrorString(`macro "input" must not be empty`)
 		}
 
-		if seenMacroInputs[macro.Input] {
+		if seenInputs[macro.Input] {
 			e.ErrorString("duplicate macro input %q", macro.Input)
 		}
-		seenMacroInputs[macro.Input] = true
+		seenInputs[macro.Input] = true
 
 		if len(macro.Commands) == 0 {
 			e.ErrorString("macro must have at least one command")

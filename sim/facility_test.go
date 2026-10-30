@@ -482,3 +482,43 @@ func TestConflictAlertFloor(t *testing.T) {
 		t.Errorf("negative floor not reported: %s", e.String())
 	}
 }
+
+// A configuration's macros replace the facility's rather than adding to
+// them, and are validated the same way.
+func TestSTARSMacrosForConfiguration(t *testing.T) {
+	facility := STARSMacroSet{{Input: "[F16]A", Commands: []string{"A"}}}
+	config := STARSMacroSet{{Input: "[F16]B", Commands: []string{"B"}}}
+	fa := FacilityAdaptation{
+		STARSMacros: facility,
+		Configurations: map[string]*FacilityConfiguration{
+			"MAC": {STARSMacros: config},
+			"NON": {},
+		},
+	}
+	if m := fa.STARSMacrosForConfiguration("MAC"); len(m) != 1 || m[0].Input != "[F16]B" {
+		t.Errorf("configuration with macros: got %v, expected %v", m, config)
+	}
+	for _, id := range []string{"NON", "XXX"} {
+		if m := fa.STARSMacrosForConfiguration(id); len(m) != 1 || m[0].Input != "[F16]A" {
+			t.Errorf("configuration %q: got %v, expected %v", id, m, facility)
+		}
+	}
+
+	fc := &FacilityConfig{FacilityAdaptation: fa}
+	fc.FacilityAdaptation.Configurations["MAC"].STARSMacros = STARSMacroSet{
+		{Input: "[F16]B", Commands: []string{"B"}},
+		{Input: "[F16]B", Commands: []string{"C"}},
+		{Input: "[F16]D"},
+	}
+	var e util.ErrorLogger
+	fc.validateSTARSAdaptation(&e)
+	errs := e.String()
+	for _, want := range []string{
+		`configurations: MAC / stars_macros[1]: duplicate macro input "[F16]B"`,
+		"configurations: MAC / stars_macros[2]: macro must have at least one command",
+	} {
+		if !strings.Contains(errs, want) {
+			t.Errorf("missing error %q in:\n%s", want, errs)
+		}
+	}
+}

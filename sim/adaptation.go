@@ -40,6 +40,10 @@ type FacilityConfiguration struct {
 	// ScratchpadLeaderLineDirections is the resolved map from primary
 	// scratchpad values to leader line directions.
 	ScratchpadLeaderLineDirections map[string]math.CardinalOrdinalDirection
+
+	// STARSMacros replaces the facility adaptation's macros when this
+	// configuration is active.
+	STARSMacros STARSMacroSet `json:"stars_macros"`
 }
 
 type FacilityAdaptation struct {
@@ -440,6 +444,16 @@ func (fa *FacilityAdaptation) AirspaceAwarenessForArea(area string) []AirspaceAw
 		return ac.AirspaceAwareness
 	}
 	return fa.AirspaceAwareness
+}
+
+// STARSMacrosForConfiguration returns the macros in effect for the given
+// configuration plan. A configuration that adapts its own macros is the only
+// source for them; the facility-wide macros apply otherwise.
+func (fa *FacilityAdaptation) STARSMacrosForConfiguration(configId string) STARSMacroSet {
+	if config, ok := fa.Configurations[configId]; ok && len(config.STARSMacros) > 0 {
+		return config.STARSMacros
+	}
+	return fa.STARSMacros
 }
 
 // AirspaceAwarenessController returns the controller responsible for a flight

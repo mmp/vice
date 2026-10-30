@@ -1065,7 +1065,7 @@ func (sp *Scope) tryExecuteMacro(ctx *scope.Context, input string, isSlew bool, 
 		inputName, args = fields[0], fields[1:]
 	}
 
-	macros := ctx.FacilityAdaptation.STARSMacros
+	macros := ctx.FacilityAdaptation.STARSMacrosForConfiguration(ctx.Client.State.ConfigurationId)
 
 	// Helper: check mode and slew match.
 	modeMatches := func(macro *sim.STARSMacro) bool {

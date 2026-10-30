@@ -80,7 +80,7 @@ func (sp *Scope) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.
 	scope.DrawTowerListsUI(c)
 	scope.DrawAirspaceAwarenessUI(c)
 
-	if macros := c.State.FacilityAdaptation.STARSMacros; len(macros) > 0 {
+	if macros := c.State.FacilityAdaptation.STARSMacrosForConfiguration(c.State.ConfigurationId); len(macros) > 0 {
 		if imgui.CollapsingHeaderBoolPtr("STARS Macros", nil) {
 			// Sort by mode for grouped display.
 			sorted := make(sim.STARSMacroSet, len(macros))

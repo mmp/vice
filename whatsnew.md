@@ -50,3 +50,4 @@
   - VFR `"routes"` are flown as written; they are no longer checked against the terrain
   - Departures' `"route"` is now `"waypoints"`, since it is what the aircraft flies after the exit fix
   - Arrivals' `"route"` is now `"flight_strip_route"`, since it is shown on flight strips and does not affect navigation
+  - `"stars_macros"` may now also be given per configuration

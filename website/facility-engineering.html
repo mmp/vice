@@ -1761,6 +1761,14 @@
                                   direction is used for the leader line. This takes effect after per-aircraft
                                   and FDAM direction overrides but before controller default directions.</td>
                               </tr>
+                              <tr>
+                                <td>"stars_macros"</td>
+                                <td>Array of objects</td>
+                                <td>(<i>Optional</i>) The STARS keyboard macros for scenarios that use this
+                                  configuration. The format is the same as the facility-level
+                                  <a href="#fe-stars-macros">"stars_macros"</a>, which this replaces rather than
+                                  adds to.</td>
+                              </tr>
                             </tbody>
                           </table>
                         </details>
@@ -3848,7 +3856,9 @@
                     <tr>
                       <td>"stars_macros"</td>
                       <td>Array of objects</td>
-                      <td>Defines keyboard macros that chain multiple STARS commands together.</td>
+                      <td>Defines keyboard macros that chain multiple STARS commands together.
+                        A configuration in <a href="#fe-config-common">"configurations"</a> may replace
+                        them with its own "stars_macros".</td>
                     </tr>
                     <tr><td colspan="3">
                         <details class="json-fields" id="fe-stars-macros"><summary>"stars_macros" members</summary>
