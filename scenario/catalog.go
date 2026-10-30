@@ -356,6 +356,76 @@ func checkInboundAssignments(scenarioGroups map[string]map[string]*Group, e *uti
 	}
 }
 
+// checkDepartureAssignments reports a "departure_assignments" entry in a
+// facility config that no departure or go-around in any of the facility's
+// scenario groups can look up. Departures are looked up by their airport and
+// SID, then airport and runway, then airport, unless the airport or route
+// names a departure controller that is virtual in the scenario; go-arounds
+// by airport and runway, then airport. Anything else, a SID no scenario
+// flies or an exit fix in place of a SID, quietly assigns nothing.
+func checkDepartureAssignments(scenarioGroups map[string]map[string]*Group, e *util.ErrorLogger) {
+	for facility, groups := range util.SortedMap(scenarioGroups) {
+		airports := make(map[av.ICAOAirportCode]bool)
+		specs := make(map[string]bool) // "airport/SID" and "airport/runway" that departures use
+		for _, sg := range groups {
+			// Mirrors sim.Sim's isVirtualController.
+			virtual := func(s *Scenario, ctrl av.ControlPosition) bool {
+				_, ok := sg.FacilityConfig.ControlPositions[ctrl]
+				return ok && !s.ControllerConfiguration.DefaultConsolidation.IsHumanPosition(ctrl)
+			}
+			humanTakes := func(ap *av.Airport, er *av.ExitRoute) bool {
+				return util.SeqContainsFunc(maps.Values(sg.Scenarios), func(s *Scenario) bool {
+					return !virtual(s, ap.DepartureController) && !virtual(s, er.DepartureController)
+				})
+			}
+
+			for icao, ap := range sg.Airports {
+				airports[icao] = true
+				for rwy, exits := range ap.DepartureRoutes {
+					specs[string(icao)+"/"+string(rwy)] = true
+					for _, routes := range exits {
+						for _, er := range routes {
+							if humanTakes(ap, er) {
+								specs[string(icao)+"/"+er.SID] = true
+							}
+						}
+					}
+				}
+			}
+		}
+		used := func(spec string) bool {
+			icao, sidOrRunway, ok := strings.Cut(spec, "/")
+			if !airports[av.ICAOAirportCode(icao)] {
+				return false
+			}
+			return !ok || specs[spec] || av.AirportHasRunway(db.Lookups{}, av.ICAOAirportCode(icao), av.RunwayID(sidOrRunway))
+		}
+
+		// The groups of a facility carry copies of the same config, so
+		// gather the dead entries before reporting any of them.
+		dead := make(map[string]map[string]bool) // configuration id -> specs
+		for _, sg := range groups {
+			for id, config := range sg.FacilityConfig.FacilityAdaptation.Configurations {
+				for spec := range config.DepartureAssignments {
+					if !used(spec) {
+						if dead[id] == nil {
+							dead[id] = make(map[string]bool)
+						}
+						dead[id][spec] = true
+					}
+				}
+			}
+		}
+
+		for id, entries := range util.SortedMap(dead) {
+			for spec := range util.SortedMap(entries) {
+				e.ErrorString(`%s: configurations: %s: departure_assignments: %q matches no departure or go-around `+
+					`that a human controller takes`, facility, id, spec)
+			}
+		}
+	}
+}
+
 // finalizeTrafficSources settles which source each scenario starts on, once
 // every source has had its say. A scenario with nothing at all to fly is a
 // scenario file that needs fixing.

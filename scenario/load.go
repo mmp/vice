@@ -607,6 +607,7 @@ func Load(e *util.ErrorLogger, lg *log.Logger) *Tables {
 	attachHistoricalFlightIntervals(catalogs, lg)
 	finalizeTrafficSources(catalogs, scenarioGroups, e)
 	checkInboundAssignments(scenarioGroups, e)
+	checkDepartureAssignments(scenarioGroups, e)
 
 	lg.Infof("scenario.Load total: %s", time.Since(start))
 	return makeTables(scenarioGroups, catalogs, mapSpecs, briefs)

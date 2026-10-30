@@ -699,8 +699,6 @@
           "31": []
         },
         "departure_assignments": {
-          "KCLT/ESTRR8": "31",
-          "KCLT/BOBZY8": "31",
           "KGSP": "31"
         },
         "inbound_assignments": {
@@ -717,24 +715,11 @@
         "default_consolidation": {
           "30": []
         },
-        "departure_assignments": {
-          "KCLT/BEAVY9": "30",
-          "KCLT/ICONS8": "30",
-          "KCLT/KWEEN8": "30",
-          "KCLT/LILLS6": "30",
-          "KCLT/BATTA1": "30",
-          "KCLT/DURST1": "30"
-        },
         "inbound_assignments": {}
       },
       "L29": {
         "default_consolidation": {
           "29": []
-        },
-        "departure_assignments": {
-          "KGSO/TRI9": "29",
-          "KGSO/TRSHA1": "29",
-          "KGSO/QUAK8": "29"
         },
         "inbound_assignments": {
           "CHSLY9-AIROW": "29",
@@ -748,10 +733,6 @@
         "default_consolidation": {
           "47": []
         },
-        "departure_assignments": {
-          "KCLT/KRITR9": "47",
-          "KCLT/WEAZL8": "47"
-        },
         "inbound_assignments": {
           "PARQR7": "47",
           "PARQR7-N": "47",
@@ -763,10 +744,6 @@
         "default_consolidation": {
           "44": []
         },
-        "departure_assignments": {
-          "KCLT/JOJJO8": "44",
-          "KGSP/BWALL2": "44"
-        },
         "inbound_assignments": {
           "FILPZ7": "44",
           "FILPZ7-N": "44",
@@ -776,9 +753,6 @@
       "L45": {
         "default_consolidation": {
           "45": []
-        },
-        "departure_assignments": {
-          "KTRI/PUPDG": "45"
         },
         "inbound_assignments": {
           "GSP-RCTOR-BRISTOL": "45",

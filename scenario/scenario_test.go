@@ -233,6 +233,66 @@ func TestCheckRouteRevisions(t *testing.T) {
 	}
 }
 
+// TestCheckDepartureAssignments checks that a departure_assignments entry
+// is reported when no departure or go-around can look it up: one naming an
+// exit rather than a SID, a SID no route flies, or a SID whose departures
+// start with a virtual controller in every scenario.
+func TestCheckDepartureAssignments(t *testing.T) {
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Airports: map[av.ICAOAirportCode]db.Airport{
+			"KXYZ": {Runways: []av.Runway{{Id: "9"}, {Id: "27"}}},
+			"KABC": {Runways: []av.Runway{{Id: "4"}}},
+		},
+	}
+	t.Cleanup(func() { db.DB = oldDB })
+
+	sg := &Group{
+		Airports: map[av.ICAOAirportCode]*av.Airport{
+			"KXYZ": {DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"27_SOUTH": {
+					"CLIMB": {{SID: "CLIMB5"}},
+					"TOWER": {{SID: "VECTR2", DepartureController: "1T"}},
+				},
+			}},
+			"KABC": {DepartureController: "1T", DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"4": {"CLIMB": {{SID: "CLIMB5"}}},
+			}},
+		},
+		Scenarios: map[string]*Scenario{"S": {ControllerConfiguration: sim.ControllerConfiguration{
+			DefaultConsolidation: sim.PositionConsolidation{"1D": nil},
+		}}},
+	}
+	sg.FacilityConfig.ControlPositions = map[sim.TCP]*av.Controller{"1D": {}, "1T": {}}
+	sg.FacilityConfig.FacilityAdaptation.Configurations = map[string]*sim.FacilityConfiguration{
+		"C": {DepartureAssignments: map[string]sim.TCP{
+			"KXYZ":          "1D", // go-arounds and departures
+			"KXYZ/CLIMB5":   "1D",
+			"KXYZ/27_SOUTH": "1D", // the departure runway as scenarios name it
+			"KXYZ/9":        "1D", // go-arounds land on it
+			"KXYZ/CLIMB":    "1D", // an exit, not a SID
+			"KXYZ/QUAKE2":   "1D", // flown nowhere
+			"KXYZ/VECTR2":   "1D", // its departures start with the virtual 1T
+			"KABC/CLIMB5":   "1D", // so do KABC's
+			"KJKL":          "1D", // not one of the facility's airports
+		}},
+	}
+
+	var e util.ErrorLogger
+	checkDepartureAssignments(map[string]map[string]*Group{"TST": {"G": sg}}, &e)
+	var got []string
+	for line := range strings.SplitSeq(strings.TrimSpace(e.String()), "\n") {
+		if _, spec, ok := strings.Cut(line, "departure_assignments: "); ok {
+			spec, _, _ = strings.Cut(spec, " matches")
+			got = append(got, spec)
+		}
+	}
+	want := []string{`"KABC/CLIMB5"`, `"KJKL"`, `"KXYZ/CLIMB"`, `"KXYZ/QUAKE2"`, `"KXYZ/VECTR2"`}
+	if !slices.Equal(got, want) {
+		t.Errorf("got %v, want %v\n%s", got, want, e.String())
+	}
+}
+
 // TestLocateFRDFromRedefinedFix checks that an FRD off a fix that the scenario
 // group redefines is measured from the group's definition and not from the
 // published fix of the same name: the Academy's BRITT is near Tulsa, while the
