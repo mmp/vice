@@ -285,37 +285,37 @@
           },
           "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["heavy"],
             "climbout_actions": "h090/@d0.5/tc/h090"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h090/@d0.5/tc/h090"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["heavy"],
             "climbout_actions": "h105/@d0.5/tc/h105"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["heavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
-          "RXANN.HEAVYJET": {
+          "LLUKY.HEAVYJET,ISTIQ.HEAVYJET,TEYOU.HEAVYJET,SMTHA.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
@@ -355,75 +355,75 @@
             "aircraft": ["prop"],
             "waypoints": "KMSP-30L/h170/@d0.5/tc/h170"
           },
-          "RXANN.JET": {
+          "LLUKY.JET,ISTIQ.JET,TEYOU.JET,SMTHA.JET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
-          "RXANN.TURBOPROP": {
+          "LLUKY.TURBOPROP,ISTIQ.TURBOPROP,TEYOU.TURBOPROP,SMTHA.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
-          "RXANN.PISTON": {
+          "LLUKY.PISTON,ISTIQ.PISTON,TEYOU.PISTON,SMTHA.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
-          "ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.JET,HSTIN.JET,DABOY.JET": {
             "assigned_altitude": 7000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
-          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,HSTIN.TURBOPROP,DABOY.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
-          "ONTIJ.PISTON,ORSKY.PISTON": {
+          "ONTIJ.PISTON,HSTIN.PISTON,DABOY.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h160/@d0.5/tc/h160"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h160/@d0.5/tc/h160"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["prop"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           }
@@ -437,37 +437,37 @@
           },
           "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["heavy"],
             "climbout_actions": "h105/@d0.5/tc/h105"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h105/@d0.5/tc/h105"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["heavy"],
             "climbout_actions": "h105/@d0.5/tc/h105"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["heavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           },
-          "RXANN.HEAVYJET": {
+          "LLUKY.HEAVYJET,ISTIQ.HEAVYJET,TEYOU.HEAVYJET,SMTHA.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h120/@d0.5/tc/h120"
           }
@@ -493,91 +493,91 @@
           },
           "FAR.JET": {
             "assigned_altitude": 7000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h090/@d0.5/tc/h090"
           },
           "KBREW.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           },
           "FAR.PISTON,KBREW.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["prop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           },
           "SMERF.JET": {
             "assigned_altitude": 7000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h090/@d0.5/tc/h090"
           },
           "SMERF.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           },
           "SMERF.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           },
           "LEINY.JET": {
             "assigned_altitude": 7000,
-            "sid": "LEINY6",
+            "sid": "BITEZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h090/@d0.5/tc/h090"
           },
           "LEINY.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "LEINY6",
+            "sid": "BITEZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           },
           "LEINY.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "LEINY6",
+            "sid": "BITEZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           },
           "DLL.JET": {
             "assigned_altitude": 7000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h105/@d0.5/tc/h105"
           },
           "DLL.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h105/@d0.5/tc/h105"
           },
           "DLL.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "aircraft": ["prop"],
             "climbout_actions": "h105/@d0.5/tc/h105"
           },
           "GRB.JET,WLSTN.JET": {
             "assigned_altitude": 7000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h090/@d0.5/tc/h090"
           },
           "GRB.TURBOPROP,WLSTN.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           },
           "GRB.PISTON,WLSTN.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["prop"],
             "climbout_actions": "h060/@d0.5/tc/h060"
           }
@@ -591,37 +591,37 @@
           },
           "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["heavy"],
             "climbout_actions": "h301/@d0.5/tc/h301"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h301/@d0.5/tc/h301"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["heavy"],
             "climbout_actions": "h360/@d0.5/tc/h360"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["heavy"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
-          "RXANN.HEAVYJET": {
+          "LLUKY.HEAVYJET,ISTIQ.HEAVYJET,TEYOU.HEAVYJET,SMTHA.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
@@ -643,75 +643,75 @@
             "aircraft": ["prop"],
             "waypoints": "KMSP-12R/flyover/h260/@d0.5/tc/h260"
           },
-          "RXANN.JET": {
+          "LLUKY.JET,ISTIQ.JET,TEYOU.JET,SMTHA.JET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
-          "RXANN.TURBOPROP": {
+          "LLUKY.TURBOPROP,ISTIQ.TURBOPROP,TEYOU.TURBOPROP,SMTHA.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
-          "RXANN.PISTON": {
+          "LLUKY.PISTON,ISTIQ.PISTON,TEYOU.PISTON,SMTHA.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
-          "ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.JET,HSTIN.JET,DABOY.JET": {
             "assigned_altitude": 7000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
-          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,HSTIN.TURBOPROP,DABOY.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
-          "ONTIJ.PISTON,ORSKY.PISTON": {
+          "ONTIJ.PISTON,HSTIN.PISTON,DABOY.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["prop"],
             "climbout_actions": "h260/@d0.5/tc/h260"
           }
@@ -725,37 +725,37 @@
           },
           "FAR.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["heavy"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "SMERF.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "WLSTN.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["heavy"],
             "climbout_actions": "h360/@d0.5/tc/h360"
           },
           "ODI.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["heavy"],
             "climbout_actions": "h230/@d0.5/tc/h230"
           },
           "ALO.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h230/@d0.5/tc/h230"
           },
-          "RXANN.HEAVYJET": {
+          "LLUKY.HEAVYJET,ISTIQ.HEAVYJET,TEYOU.HEAVYJET,SMTHA.HEAVYJET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["heavy"],
             "climbout_actions": "h230/@d0.5/tc/h230"
           }
@@ -781,91 +781,91 @@
           },
           "FAR.JET": {
             "assigned_altitude": 7000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h320/@d0.5/tc/h320"
           },
           "KBREW.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h320/@d0.5/tc/h320"
           },
           "FAR.PISTON,KBREW.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "aircraft": ["prop"],
             "climbout_actions": "h320/@d0.5/tc/h320"
           },
           "SMERF.JET": {
             "assigned_altitude": 7000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "SMERF.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "SMERF.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "SMERF7",
+            "sid": "BITEZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "LEINY.JET": {
             "assigned_altitude": 7000,
-            "sid": "LEINY6",
+            "sid": "BITEZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "LEINY.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "LEINY6",
+            "sid": "BITEZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "LEINY.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "LEINY6",
+            "sid": "BITEZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h300/@d0.5/tc/h300"
           },
           "DLL.JET": {
             "assigned_altitude": 7000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h360/@d0.5/tc/h360"
           },
           "DLL.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h360/@d0.5/tc/h360"
           },
           "DLL.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "aircraft": ["prop"],
             "climbout_actions": "h360/@d0.5/tc/h360"
           },
           "GRB.JET,WLSTN.JET": {
             "assigned_altitude": 7000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h360/@d0.5/tc/h360"
           },
           "GRB.TURBOPROP,WLSTN.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h340/@d0.5/tc/h340"
           },
           "GRB.PISTON,WLSTN.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "aircraft": ["prop"],
             "climbout_actions": "h340/@d0.5/tc/h340"
           }
@@ -907,75 +907,75 @@
             "aircraft": ["prop"],
             "waypoints": "KMSP-35/flyover/h170/@d0.5/tc/h170"
           },
-          "RXANN.JET": {
+          "LLUKY.JET,ISTIQ.JET,TEYOU.JET,SMTHA.JET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h170/@d1.2/h215/@d0.5/tc/h215"
           },
-          "RXANN.TURBOPROP": {
+          "LLUKY.TURBOPROP,ISTIQ.TURBOPROP,TEYOU.TURBOPROP,SMTHA.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d1.2/h215/@d0.5/tc/h215"
           },
-          "RXANN.PISTON": {
+          "LLUKY.PISTON,ISTIQ.PISTON,TEYOU.PISTON,SMTHA.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d1.2/h215/@d0.5/tc/h215"
           },
-          "ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.JET,HSTIN.JET,DABOY.JET": {
             "assigned_altitude": 7000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h170/@d1.2/h215/@d0.5/tc/h215"
           },
-          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,HSTIN.TURBOPROP,DABOY.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d1.2/h215/@d0.5/tc/h215"
           },
-          "ONTIJ.PISTON,ORSKY.PISTON": {
+          "ONTIJ.PISTON,HSTIN.PISTON,DABOY.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d1.2/h215/@d0.5/tc/h215"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["prop"],
             "climbout_actions": "h140/@d0.5/tc/h140"
           }
@@ -999,75 +999,75 @@
             "aircraft": ["prop"],
             "waypoints": "KMSP-35/flyover/h170/@d0.5/tc/h170"
           },
-          "RXANN.JET": {
+          "LLUKY.JET,ISTIQ.JET,TEYOU.JET,SMTHA.JET": {
             "assigned_altitude": 7000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h170/@d1.2/h230/@d0.5/tc/h230"
           },
-          "RXANN.TURBOPROP": {
+          "LLUKY.TURBOPROP,ISTIQ.TURBOPROP,TEYOU.TURBOPROP,SMTHA.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d1.2/h230/@d0.5/tc/h230"
           },
-          "RXANN.PISTON": {
+          "LLUKY.PISTON,ISTIQ.PISTON,TEYOU.PISTON,SMTHA.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "SCHEP1",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d1.2/h230/@d0.5/tc/h230"
           },
-          "ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.JET,HSTIN.JET,DABOY.JET": {
             "assigned_altitude": 7000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h170/@d1.2/h210/@d0.5/tc/h210"
           },
-          "ONTIJ.TURBOPROP,ORSKY.TURBOPROP": {
+          "ONTIJ.TURBOPROP,HSTIN.TURBOPROP,DABOY.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d1.2/h210/@d0.5/tc/h210"
           },
-          "ONTIJ.PISTON,ORSKY.PISTON": {
+          "ONTIJ.PISTON,HSTIN.PISTON,DABOY.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ORSKY3",
+            "sid": "SNOWZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d1.2/h210/@d0.5/tc/h210"
           },
           "ALO.JET,RST.JET": {
             "assigned_altitude": 7000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
           "ALO.TURBOPROP,RST.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
           "ALO.PISTON,RST.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
           "ODI.JET": {
             "assigned_altitude": 7000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["nonheavy"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
           "ODI.TURBOPROP": {
             "assigned_altitude": 5000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["turboprop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           },
           "ODI.PISTON": {
             "assigned_altitude": 4000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "aircraft": ["prop"],
             "climbout_actions": "h170/@d0.5/tc/h170"
           }
@@ -1323,8 +1323,8 @@
             }
           ],
           "destination": "KABQ",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY LBF PUB ALS DATME SNDIA4"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY LBF PUB ALS DATME SNDIA4"
         },
         {
           "airlines": [
@@ -1442,8 +1442,8 @@
             }
           ],
           "destination": "KAUS",
-          "exit": "ORSKY.JET",
-          "waypoints": "ORSKY FOD DSM EOS RRNET RRONY OUTLN OILLL MNURE WLEEE7"
+          "exit": "HSTIN.JET",
+          "waypoints": "HSTIN FOD DSM EOS RRNET RRONY OUTLN OILLL MNURE WLEEE7"
         },
         {
           "airlines": [
@@ -1892,8 +1892,8 @@
             }
           ],
           "destination": "KCOS",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU ISTIQ GLD OZZZY5"
+          "exit": "ISTIQ.JET",
+          "waypoints": "ISTIQ GLD OZZZY5"
         },
         {
           "airlines": [
@@ -2060,8 +2060,8 @@
             }
           ],
           "destination": "KDEN",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY PORDR AALLE4"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY PORDR AALLE4"
         },
         {
           "airlines": [
@@ -2184,8 +2184,8 @@
             }
           ],
           "destination": "KDSM",
-          "exit": "ORSKY.JET",
-          "waypoints": "ORSKY FOD DSM"
+          "exit": "HSTIN.JET",
+          "waypoints": "HSTIN FOD DSM"
         },
         {
           "airlines": [
@@ -2334,8 +2334,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN FSD"
+          "exit": "SMTHA.JET",
+          "waypoints": "SMTHA FSD"
         },
         {
           "airlines": [
@@ -2786,8 +2786,8 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY KD66Y DVC DICEE TYEGR CHOWW3"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY KD66Y DVC DICEE TYEGR CHOWW3"
         },
         {
           "airlines": [
@@ -2833,8 +2833,8 @@
             }
           ],
           "destination": "KLAX",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU KD66Y KD45Q EEEZY Q98 HAKMN ANJLL4"
+          "exit": "TEYOU.JET",
+          "waypoints": "TEYOU KD66Y KD45Q EEEZY Q98 HAKMN ANJLL4"
         },
         {
           "airlines": [
@@ -3189,8 +3189,8 @@
             }
           ],
           "destination": "KOMA",
-          "exit": "ORSKY.JET",
-          "waypoints": "ORSKY DABOY LANTK2"
+          "exit": "DABOY.JET",
+          "waypoints": "DABOY LANTK2"
         },
         {
           "airlines": [
@@ -3400,8 +3400,8 @@
             }
           ],
           "destination": "KPHX",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU ONL SNY FQF LOPEC KD42S GUP EAGUL6"
+          "exit": "TEYOU.JET",
+          "waypoints": "TEYOU ONL SNY FQF LOPEC KD42S GUP EAGUL6"
         },
         {
           "airlines": [
@@ -3658,8 +3658,8 @@
             }
           ],
           "destination": "KSAN",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY KD66Y DVC TBC PLNDL Q86 TTRUE LUCKI1"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY KD66Y DVC TBC PLNDL Q86 TTRUE LUCKI1"
         },
         {
           "airlines": [
@@ -3681,8 +3681,8 @@
             }
           ],
           "destination": "KSAT",
-          "exit": "ORSKY.JET",
-          "waypoints": "ORSKY SAANT STJ OKM URH WINDU QERVO1"
+          "exit": "HSTIN.JET",
+          "waypoints": "HSTIN SAANT STJ OKM URH WINDU QERVO1"
         },
         {
           "airlines": [
@@ -3714,8 +3714,8 @@
             }
           ],
           "destination": "KSBD",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY SNY ZAKRY Q88 LAKRR HEC ZIGGY8"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY SNY ZAKRY Q88 LAKRR HEC ZIGGY8"
         },
         {
           "airlines": [
@@ -3869,8 +3869,8 @@
             }
           ],
           "destination": "KSFO",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY CYS J148 OAL INYOE DYAMD5"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY CYS J148 OAL INYOE DYAMD5"
         },
         {
           "airlines": [
@@ -3884,8 +3884,8 @@
             }
           ],
           "destination": "KSJC",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY ANW HANKI KD66U KU60Q GAROT Q126 INSLO MVA STUBL RAZRR5"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY ANW HANKI KD66U KU60Q GAROT Q126 INSLO MVA STUBL RAZRR5"
         },
         {
           "airlines": [
@@ -3916,7 +3916,7 @@
           ],
           "destination": "KSLC",
           "exit": "LEINY.JET",
-          "waypoints": "LEINY RAP DDY CARTR1"
+          "waypoints": "LEINY RAP DDY CARTR2"
         },
         {
           "airlines": [
@@ -3945,8 +3945,8 @@
             }
           ],
           "destination": "KSNA",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LBF J10 FQF J10 HBU J146 DVC TOADD Q78 MARUE DSNEE6"
+          "exit": "TEYOU.JET",
+          "waypoints": "TEYOU LBF J10 FQF J10 HBU J146 DVC TOADD Q78 MARUE DSNEE6"
         },
         {
           "airlines": [
@@ -4232,8 +4232,8 @@
             }
           ],
           "destination": "PHNL",
-          "exit": "RXANN.HEAVYJET",
-          "waypoints": "RXANN TEYOU LLUKY MBW OCS TCH KU63K MDOWS FMG PYE BEBOP R464 BITTA MAGGI3"
+          "exit": "LLUKY.HEAVYJET",
+          "waypoints": "LLUKY MBW OCS TCH KU63K MDOWS FMG PYE BEBOP R464 BITTA MAGGI3"
         },
         {
           "airlines": [
@@ -4276,19 +4276,23 @@
         "LSE": "LSE",
         "FGT": "FGT",
         "GEP": "GEP",
-        "ALO": "RST",
-        "RST": "RST",
+        "ALO": "TOTTZ",
+        "RST": "TOTTZ",
         "FAR": "KBREW",
         "KBREW": "KBREW",
-        "RXANN": "SCHEP",
         "ODI": "ZMBRO",
-        "ONTIJ": "ORSKY",
-        "ORSKY": "ORSKY",
-        "GRB": "WLSTN",
-        "WLSTN": "WLSTN",
-        "DLL": "COULT",
-        "LEINY": "LEINY",
-        "SMERF": "SMERF"
+        "ONTIJ": "SNOWZ",
+        "GRB": "NRTHN",
+        "WLSTN": "NRTHN",
+        "DLL": "SNUPE",
+        "LEINY": "BITEZ",
+        "SMERF": "BITEZ",
+        "DABOY": "SNOWZ",
+        "HSTIN": "SNOWZ",
+        "ISTIQ": "SNOWZ",
+        "LLUKY": "SNOWZ",
+        "SMTHA": "SNOWZ",
+        "TEYOU": "SNOWZ"
       },
       "atpa": {
         "30R": {
@@ -4602,39 +4606,39 @@
       },
       "departure_routes": {
         "10L": {
-          "RXANN.PROP": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP": {
             "assigned_altitude": 2500,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP": {
             "assigned_altitude": 2500,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP": {
+          "WDSTK.PROP,DLL.PROP": {
             "assigned_altitude": 2500,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP": {
             "assigned_altitude": 2500,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP": {
+          "ONTIJ.PROP,IDEEA.PROP": {
             "assigned_altitude": 2500,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP": {
             "assigned_altitude": 2500,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r300"
           },
           "FAR.PROP,KBREW.PROP": {
             "assigned_altitude": 2500,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "climbout_actions": "r300"
           },
           "INUNE.PROP": {
@@ -4659,39 +4663,39 @@
           }
         },
         "10R": {
-          "RXANN.PROP,RXANN.JET": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP,LLUKY.JET,DDOWN.JET,STIER.JET": {
             "assigned_altitude": 2500,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP,ODI.JET": {
             "assigned_altitude": 2500,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP,TAXEE.JET,DLL.JET": {
+          "WDSTK.PROP,DLL.PROP,WDSTK.JET,DLL.JET": {
             "assigned_altitude": 2500,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP,ALO.JET,RST.JET": {
             "assigned_altitude": 2500,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP,ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.PROP,IDEEA.PROP,ONTIJ.JET,IDEEA.JET": {
             "assigned_altitude": 2500,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP,GRB.JET,WLSTN.JET": {
             "assigned_altitude": 2500,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r300"
           },
           "FAR.PROP,KBREW.PROP,FAR.JET,KBREW.JET": {
             "assigned_altitude": 2500,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "climbout_actions": "r300"
           },
           "INUNE.PROP,INUNE.JET": {
@@ -4716,39 +4720,39 @@
           }
         },
         "28L": {
-          "RXANN.PROP,RXANN.JET": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP,LLUKY.JET,DDOWN.JET,STIER.JET": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP,ODI.JET": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP,TAXEE.JET,DLL.JET": {
+          "WDSTK.PROP,DLL.PROP,WDSTK.JET,DLL.JET": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP,ALO.JET,RST.JET": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP,ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.PROP,IDEEA.PROP,ONTIJ.JET,IDEEA.JET": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP,GRB.JET,WLSTN.JET": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 300
           },
           "FAR.PROP,KBREW.PROP,FAR.JET,KBREW.JET": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 300
           },
           "INUNE.PROP,INUNE.JET": {
@@ -4773,39 +4777,39 @@
           }
         },
         "28R": {
-          "RXANN.PROP": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP": {
+          "WDSTK.PROP,DLL.PROP": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP": {
+          "ONTIJ.PROP,IDEEA.PROP": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 300
           },
           "FAR.PROP,KBREW.PROP": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 300
           },
           "INUNE.PROP": {
@@ -4839,8 +4843,8 @@
             }
           ],
           "destination": "KPHX",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU LLUKY GUP EAGUL6"
+          "exit": "LLUKY.PROP",
+          "waypoints": "LLUKY GUP EAGUL6"
         },
         {
           "airlines": [
@@ -4850,8 +4854,8 @@
             }
           ],
           "destination": "KPHX",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY GUP EAGUL6"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY GUP EAGUL6"
         },
         {
           "airlines": [
@@ -4861,8 +4865,8 @@
             }
           ],
           "destination": "KSLC",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU LLUKY OCS"
+          "exit": "LLUKY.PROP",
+          "waypoints": "LLUKY OCS"
         },
         {
           "airlines": [
@@ -4875,8 +4879,8 @@
             }
           ],
           "destination": "KSLC",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY OCS"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY OCS"
         },
         {
           "airlines": [
@@ -4886,8 +4890,8 @@
             }
           ],
           "destination": "KPSP",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
+          "exit": "DDOWN.PROP",
+          "waypoints": "DDOWN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
         },
         {
           "airlines": [
@@ -4897,8 +4901,8 @@
             }
           ],
           "destination": "KPSP",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
+          "exit": "DDOWN.JET",
+          "waypoints": "DDOWN TEYOU ONL J114 YANKI LEWOY POWDR DVC JASSE YORRK RDBUL1"
         },
         {
           "airlines": [
@@ -4908,8 +4912,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU LLUKY LJAYY DSERT2"
+          "exit": "LLUKY.PROP",
+          "waypoints": "LLUKY LJAYY DSERT2"
         },
         {
           "airlines": [
@@ -4929,8 +4933,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY LJAYY DSERT2"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY LJAYY DSERT2"
         },
         {
           "airlines": [
@@ -4940,8 +4944,8 @@
             }
           ],
           "destination": "KOGD",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU ONL J94 OCS"
+          "exit": "DDOWN.PROP",
+          "waypoints": "DDOWN TEYOU ONL J94 OCS"
         },
         {
           "airlines": [
@@ -4951,8 +4955,8 @@
             }
           ],
           "destination": "KOGD",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU ONL J94 OCS"
+          "exit": "DDOWN.JET",
+          "waypoints": "DDOWN TEYOU ONL J94 OCS"
         },
         {
           "airlines": [
@@ -4962,8 +4966,8 @@
             }
           ],
           "destination": "KRIL",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU LLUKY"
+          "exit": "LLUKY.PROP",
+          "waypoints": "LLUKY"
         },
         {
           "airlines": [
@@ -4976,8 +4980,8 @@
             }
           ],
           "destination": "KRIL",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY"
         },
         {
           "airlines": [
@@ -4990,8 +4994,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN FSD"
+          "exit": "DDOWN.PROP",
+          "waypoints": "DDOWN FSD"
         },
         {
           "airlines": [
@@ -5001,8 +5005,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN FSD"
+          "exit": "DDOWN.JET",
+          "waypoints": "DDOWN FSD"
         },
         {
           "airlines": [
@@ -5012,8 +5016,8 @@
             }
           ],
           "destination": "KFFZ",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
+          "exit": "LLUKY.PROP",
+          "waypoints": "LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
         },
         {
           "airlines": [
@@ -5023,8 +5027,8 @@
             }
           ],
           "destination": "KFFZ",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY DSERT SHOCK BUSTD YOLOW CACTY"
         },
         {
           "airlines": [
@@ -5034,8 +5038,8 @@
             }
           ],
           "destination": "KDVT",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU ONL INW DSERT2"
+          "exit": "DDOWN.PROP",
+          "waypoints": "DDOWN TEYOU ONL INW DSERT2"
         },
         {
           "airlines": [
@@ -5045,8 +5049,8 @@
             }
           ],
           "destination": "KDVT",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU ONL INW DSERT2"
+          "exit": "DDOWN.JET",
+          "waypoints": "DDOWN TEYOU ONL INW DSERT2"
         },
         {
           "airlines": [
@@ -5056,8 +5060,8 @@
             }
           ],
           "destination": "KHDN",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU LLUKY BFF LAR"
+          "exit": "LLUKY.PROP",
+          "waypoints": "LLUKY BFF LAR"
         },
         {
           "airlines": [
@@ -5070,8 +5074,8 @@
             }
           ],
           "destination": "KHDN",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY BFF LAR"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY BFF LAR"
         },
         {
           "airlines": [
@@ -5081,8 +5085,8 @@
             }
           ],
           "destination": "KSBS",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU LLUKY"
+          "exit": "LLUKY.PROP",
+          "waypoints": "LLUKY"
         },
         {
           "airlines": [
@@ -5092,8 +5096,8 @@
             }
           ],
           "destination": "KSBS",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU LLUKY"
+          "exit": "LLUKY.JET",
+          "waypoints": "LLUKY"
         },
         {
           "airlines": [
@@ -5103,8 +5107,8 @@
             }
           ],
           "destination": "KSUX",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN"
+          "exit": "STIER.PROP",
+          "waypoints": "STIER"
         },
         {
           "airlines": [
@@ -5114,8 +5118,8 @@
             }
           ],
           "destination": "KSUX",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN"
+          "exit": "STIER.JET",
+          "waypoints": "STIER"
         },
         {
           "airlines": [
@@ -5125,8 +5129,8 @@
             }
           ],
           "destination": "KMDS",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU"
+          "exit": "DDOWN.PROP",
+          "waypoints": "DDOWN TEYOU"
         },
         {
           "airlines": [
@@ -5136,8 +5140,8 @@
             }
           ],
           "destination": "KMDS",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU"
+          "exit": "DDOWN.JET",
+          "waypoints": "DDOWN TEYOU"
         },
         {
           "airlines": [
@@ -5150,8 +5154,8 @@
             }
           ],
           "destination": "KAPA",
-          "exit": "RXANN.PROP",
-          "waypoints": "RXANN TEYOU ONL AKO"
+          "exit": "DDOWN.PROP",
+          "waypoints": "DDOWN TEYOU ONL AKO"
         },
         {
           "airlines": [
@@ -5161,8 +5165,8 @@
             }
           ],
           "destination": "KAPA",
-          "exit": "RXANN.JET",
-          "waypoints": "RXANN TEYOU ONL AKO"
+          "exit": "DDOWN.JET",
+          "waypoints": "DDOWN TEYOU ONL AKO"
         },
         {
           "airlines": [
@@ -5628,8 +5632,8 @@
             }
           ],
           "destination": "KTVC",
-          "exit": "TAXEE.PROP",
-          "waypoints": "TAXEE COULT CHURP TVC"
+          "exit": "WDSTK.PROP",
+          "waypoints": "WDSTK CHURP TVC"
         },
         {
           "airlines": [
@@ -5639,8 +5643,8 @@
             }
           ],
           "destination": "KTVC",
-          "exit": "TAXEE.JET",
-          "waypoints": "TAXEE COULT CHURP TVC"
+          "exit": "WDSTK.JET",
+          "waypoints": "WDSTK CHURP TVC"
         },
         {
           "airlines": [
@@ -5650,8 +5654,8 @@
             }
           ],
           "destination": "KATW",
-          "exit": "TAXEE.PROP",
-          "waypoints": "TAXEE COULT"
+          "exit": "WDSTK.PROP",
+          "waypoints": "WDSTK"
         },
         {
           "airlines": [
@@ -5661,8 +5665,8 @@
             }
           ],
           "destination": "KATW",
-          "exit": "TAXEE.JET",
-          "waypoints": "TAXEE COULT"
+          "exit": "WDSTK.JET",
+          "waypoints": "WDSTK"
         },
         {
           "airlines": [
@@ -6012,8 +6016,8 @@
             }
           ],
           "destination": "KIKV",
-          "exit": "ORSKY.PROP",
-          "waypoints": "ORSKY FOD DSM"
+          "exit": "IDEEA.PROP",
+          "waypoints": "IDEEA FOD DSM"
         },
         {
           "airlines": [
@@ -6023,8 +6027,8 @@
             }
           ],
           "destination": "KIKV",
-          "exit": "ORSKY.JET",
-          "waypoints": "ORSKY FOD DSM"
+          "exit": "IDEEA.JET",
+          "waypoints": "IDEEA FOD DSM"
         },
         {
           "airlines": [
@@ -6607,23 +6611,25 @@
         }
       ],
       "exit_categories": {
-        "TAXEE": "COULT",
         "INUNE": "INUNE",
         "MKT": "MKT",
         "GEP": "GEP",
         "FGT": "FGT",
         "RIXIE": "RIXIE",
-        "ALO": "RST",
-        "RST": "RST",
+        "ALO": "TOTTZ",
+        "RST": "TOTTZ",
         "FAR": "KBREW",
         "KBREW": "KBREW",
-        "RXANN": "SCHEP",
         "ODI": "ZMBRO",
-        "ONTIJ": "ORSKY",
-        "ORSKY": "ORSKY",
-        "GRB": "WLSTN",
-        "WLSTN": "WLSTN",
-        "DLL": "COULT"
+        "ONTIJ": "DUHCK",
+        "GRB": "NRTHN",
+        "WLSTN": "NRTHN",
+        "DLL": "SNUPE",
+        "DDOWN": "DUHCK",
+        "IDEEA": "DUHCK",
+        "LLUKY": "DUHCK",
+        "STIER": "DUHCK",
+        "WDSTK": "SNUPE"
       },
       "tower_list": 3,
       "departure_runways_as_one": ["10L,10R", "28L,28R"],
@@ -6651,34 +6657,34 @@
       },
       "departure_routes": {
         "14": {
-          "RXANN,SCHEP": {
+          "LLUKY,DDOWN,STIER,GRRAT": {
             "assigned_altitude": 2500,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 80
           },
           "ODI": {
             "assigned_altitude": 2500,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 80
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 2500,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 80
           },
           "ALO,RST": {
             "assigned_altitude": 2500,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 80
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 2500,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 80
           },
           "FAR,KBREW": {
             "assigned_altitude": 2500,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 10
           },
           "INUNE,GEP,ANIML,FCM": {
@@ -6699,34 +6705,34 @@
           }
         },
         "32": {
-          "RXANN,SCHEP": {
+          "LLUKY,DDOWN,STIER,GRRAT": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 30
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 45
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 45
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 45
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 45
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 30
           },
           "INUNE,GEP,LENCK,ZOSAG,ANIML": {
@@ -6751,8 +6757,8 @@
             }
           ],
           "destination": "KCOS",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY"
         },
         {
           "airlines": [
@@ -6761,8 +6767,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "RXANN",
-          "waypoints": "RXANN FSD"
+          "exit": "DDOWN",
+          "waypoints": "DDOWN FSD"
         },
         {
           "airlines": [
@@ -6771,8 +6777,8 @@
             }
           ],
           "destination": "KHSI",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU ISTIQ"
+          "exit": "DDOWN",
+          "waypoints": "DDOWN TEYOU ISTIQ"
         },
         {
           "airlines": [
@@ -6781,8 +6787,8 @@
             }
           ],
           "destination": "KPSP",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY YORRK RDBUL1"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY YORRK RDBUL1"
         },
         {
           "airlines": [
@@ -6791,8 +6797,8 @@
             }
           ],
           "destination": "KOTG",
-          "exit": "SCHEP",
-          "waypoints": "SCHEP OTG"
+          "exit": "GRRAT",
+          "waypoints": "GRRAT OTG"
         },
         {
           "airlines": [
@@ -6801,8 +6807,8 @@
             }
           ],
           "destination": "KSUX",
-          "exit": "RXANN",
-          "waypoints": "RXANN"
+          "exit": "STIER",
+          "waypoints": "STIER"
         },
         {
           "airlines": [
@@ -6814,8 +6820,8 @@
             }
           ],
           "destination": "KAPA",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY SNY LANDR3"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY SNY LANDR3"
         },
         {
           "airlines": [
@@ -6827,8 +6833,8 @@
             }
           ],
           "destination": "KBUR",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY SHRPE LANDR MROON LUDOH GUNTR WELUM JANNY5"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY SHRPE LANDR MROON LUDOH GUNTR WELUM JANNY5"
         },
         {
           "airlines": [
@@ -6843,8 +6849,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY LJAYY DSERT2"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY LJAYY DSERT2"
         },
         {
           "airlines": [
@@ -6856,8 +6862,8 @@
             }
           ],
           "destination": "KBJC",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY SHRPE BRNKO4"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY SHRPE BRNKO4"
         },
         {
           "airlines": [
@@ -6866,8 +6872,8 @@
             }
           ],
           "destination": "KLAS",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU ONL SNY DBL TYEGR CHOWW4"
+          "exit": "DDOWN",
+          "waypoints": "DDOWN TEYOU ONL SNY DBL TYEGR CHOWW4"
         },
         {
           "airlines": [
@@ -7073,8 +7079,8 @@
             }
           ],
           "destination": "KOSH",
-          "exit": "TAXEE",
-          "waypoints": "TAXEE COULT"
+          "exit": "WDSTK",
+          "waypoints": "WDSTK"
         },
         {
           "airlines": [
@@ -7217,8 +7223,8 @@
             }
           ],
           "destination": "KFOE",
-          "exit": "ORSKY",
-          "waypoints": "ORSKY OZAKI"
+          "exit": "IDEEA",
+          "waypoints": "IDEEA OZAKI"
         },
         {
           "airlines": [
@@ -7227,8 +7233,8 @@
             }
           ],
           "destination": "KIXD",
-          "exit": "ORSKY",
-          "waypoints": "ORSKY HANKU ASIIX JSONN BOWLR MCI"
+          "exit": "IDEEA",
+          "waypoints": "IDEEA HANKU ASIIX JSONN BOWLR MCI"
         },
         {
           "airlines": [
@@ -7253,8 +7259,8 @@
             }
           ],
           "destination": "KOMA",
-          "exit": "ORSKY",
-          "waypoints": "ORSKY DABOY LANTK2"
+          "exit": "IDEEA",
+          "waypoints": "IDEEA DABOY LANTK2"
         },
         {
           "airlines": [
@@ -7295,8 +7301,8 @@
             }
           ],
           "destination": "KDSM",
-          "exit": "ORSKY",
-          "waypoints": "ORSKY FOD DSM"
+          "exit": "IDEEA",
+          "waypoints": "IDEEA FOD DSM"
         },
         {
           "airlines": [
@@ -7538,19 +7544,21 @@
         }
       ],
       "exit_categories": {
-        "TAXEE": "COULT",
         "FGT": "FGT",
         "GEP": "GEP",
-        "ALO": "RST",
-        "RST": "RST",
+        "ALO": "TOTTZ",
+        "RST": "TOTTZ",
         "FAR": "KBREW",
         "KBREW": "KBREW",
-        "RXANN": "SCHEP",
-        "SCHEP": "SCHEP",
         "ODI": "ZMBRO",
-        "ONTIJ": "ORSKY",
-        "ORSKY": "ORSKY",
-        "DLL": "COULT"
+        "ONTIJ": "DUHCK",
+        "DLL": "SNUPE",
+        "DDOWN": "DUHCK",
+        "GRRAT": "DUHCK",
+        "IDEEA": "DUHCK",
+        "LLUKY": "DUHCK",
+        "STIER": "DUHCK",
+        "WDSTK": "SNUPE"
       },
       "tower_list": 2,
       "hold_for_release": true
@@ -7577,37 +7585,39 @@
       },
       "departure_routes": {
         "9": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "climbout_actions": "l270"
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7"
+            "sid": "ZMBRO1",
+            "initial_heading": 90
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7"
+            "sid": "SNUPE1",
+            "initial_heading": 90
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 90
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "climbout_actions": "l270"
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 70
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE": {
@@ -7632,39 +7642,39 @@
           }
         },
         "18": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "climbout_actions": "r090"
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "climbout_actions": "r090"
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "climbout_actions": "r090"
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r080"
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE": {
@@ -7693,39 +7703,39 @@
           }
         },
         "27": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "climbout_actions": "r090"
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "climbout_actions": "r090"
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "climbout_actions": "r090"
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r080"
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE,GEP": {
@@ -7750,39 +7760,39 @@
           }
         },
         "36": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 90
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 90
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 90
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 80
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE": {
@@ -8004,8 +8014,8 @@
             }
           ],
           "destination": "KFAY",
-          "exit": "TAXEE",
-          "waypoints": "TAXEE COULT"
+          "exit": "WDSTK",
+          "waypoints": "WDSTK"
         },
         {
           "airlines": [
@@ -8119,8 +8129,8 @@
             }
           ],
           "destination": "KSKX",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY ZOTOS OQUDI"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY ZOTOS OQUDI"
         },
         {
           "airlines": [
@@ -8132,8 +8142,8 @@
             }
           ],
           "destination": "KSDL",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU ONL J114 YANKI GOORE VIMPY RSK J44 INW DSERT2"
+          "exit": "DDOWN",
+          "waypoints": "DDOWN TEYOU ONL J114 YANKI GOORE VIMPY RSK J44 INW DSERT2"
         },
         {
           "airlines": [
@@ -8142,8 +8152,8 @@
             }
           ],
           "destination": "KHYS",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU ISTIQ"
+          "exit": "DDOWN",
+          "waypoints": "DDOWN TEYOU ISTIQ"
         },
         {
           "airlines": [
@@ -8152,8 +8162,8 @@
             }
           ],
           "destination": "KLBF",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY"
         },
         {
           "airlines": [
@@ -8162,8 +8172,8 @@
             }
           ],
           "destination": "KSBD",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY DBL HEC ZIGGY8"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY DBL HEC ZIGGY8"
         },
         {
           "airlines": [
@@ -8175,8 +8185,8 @@
             }
           ],
           "destination": "KFSD",
-          "exit": "RXANN",
-          "waypoints": "RXANN FSD"
+          "exit": "DDOWN",
+          "waypoints": "DDOWN FSD"
         },
         {
           "airlines": [
@@ -8188,8 +8198,8 @@
             }
           ],
           "destination": "KSLC",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY ZAPER OCS"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY ZAPER OCS"
         },
         {
           "airlines": [
@@ -8198,8 +8208,8 @@
             }
           ],
           "destination": "KHCR",
-          "exit": "RXANN",
-          "waypoints": "RXANN TEYOU LLUKY ZANGY"
+          "exit": "LLUKY",
+          "waypoints": "LLUKY ZANGY"
         },
         {
           "airlines": [
@@ -8208,8 +8218,8 @@
             }
           ],
           "destination": "KFOE",
-          "exit": "ORSKY",
-          "waypoints": "ORSKY"
+          "exit": "IDEEA",
+          "waypoints": "IDEEA"
         },
         {
           "airlines": [
@@ -8415,7 +8425,6 @@
         }
       ],
       "exit_categories": {
-        "TAXEE": "COULT",
         "INUNE": "INUNE",
         "GEP": "GEP",
         "JALEP": "JALEP",
@@ -8423,16 +8432,19 @@
         "DESTE": "DESTE",
         "EAU": "EAU",
         "DLH": "DLH",
-        "ALO": "RST",
-        "RST": "RST",
+        "ALO": "TOTTZ",
+        "RST": "TOTTZ",
         "FAR": "KBREW",
         "KBREW": "KBREW",
-        "RXANN": "SCHEP",
         "ODI": "ZMBRO",
-        "ONTIJ": "ORSKY",
-        "ORSKY": "ORSKY",
-        "WLSTN": "WLSTN",
-        "DLL": "COULT"
+        "ONTIJ": "DUHCK",
+        "WLSTN": "NRTHN",
+        "DLL": "SNUPE",
+        "DDOWN": "DUHCK",
+        "IDEEA": "DUHCK",
+        "LLUKY": "DUHCK",
+        "STIER": "DUHCK",
+        "WDSTK": "SNUPE"
       },
       "hold_for_release": true
     },

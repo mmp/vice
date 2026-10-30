@@ -681,19 +681,19 @@
         }
       ]
     },
-    "ROZZE2": {
+    "ROZZE3": {
       "arrivals": [
         {
           "waypoints": "FLYZZ/a13000+/ho FYSHR/a9000+ ROZZE",
           "runway_waypoints": {
             "KMHT": {
               "17": "ROZZE NUUKM/a7000-9000 PURBL/a5000/s210/flyover",
-              "24": "ROZZE NUUKM/a7000-9000 JSTNN/a5000/s210/h57",
+              "24": "ROZZE NUUKM/a7000-9000 JSTNN/a5000/s210 PUTRE/a2800/s210",
               "35": "ROZZE NUUKM/a7000-9000 SHOWZ/a5000/s210/flyover",
               "6": "ROZZE PNARD/a7000-9000 TEETO/a5000/s210/flyover"
             }
           },
-          "star": "ROZZE2",
+          "star": "ROZZE3",
           "initial_controller": "C37",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -794,7 +794,7 @@
         }
       ],
       "inbound_rates": {
-        "ROZZE2": {
+        "ROZZE3": {
           "KMHT": 10
         },
         "ENE": {
@@ -844,7 +844,7 @@
         }
       ],
       "inbound_rates": {
-        "ROZZE2": {
+        "ROZZE3": {
           "KMHT": 10
         },
         "ENE": {

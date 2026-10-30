@@ -1116,9 +1116,9 @@
       },
       "departure_routes": {
         "9": {
-          "IRQ,ALD,DBN": {
+          "FIBRO,ALD,LWCTY": {
             "cleared_altitude": 2000,
-            "sid": "EXTVE1"
+            "sid": "EXTVE2"
           },
           "GIPPL": {
             "cleared_altitude": 2000,
@@ -1131,9 +1131,9 @@
           }
         },
         "27": {
-          "IRQ,ALD,DBN": {
+          "FIBRO,ALD,LWCTY": {
             "cleared_altitude": 2000,
-            "sid": "EXTVE1"
+            "sid": "EXTVE2"
           },
           "GIPPL": {
             "cleared_altitude": 2000,
@@ -1148,10 +1148,10 @@
       },
       "departures": [
         {
-          "exit": "IRQ",
+          "exit": "FIBRO",
           "destination": "KPDK",
           "altitude": 22000,
-          "waypoints": "EXTVE1 IRQ AHN",
+          "waypoints": "EXTVE2 FIBRO IRQ AHN",
           "airlines": [
             {
               "icao": "EJA"
@@ -1333,23 +1333,23 @@
         }
       ]
     },
-    "BAGGY3": {
+    "BAGGY4": {
       "arrivals": [
         {
-          "waypoints": "DREWE/a11000/ho BAGGY/a7000+ DDENA/a5000+",
+          "waypoints": "DREWE/a11000/ho BAGGY RVRDG/a7000+/s250",
           "runway_waypoints": {
             "KCHS": {
-              "15": "DDENA/a5000+ PIPPY/a5000/flyover/h30",
-              "21": "DDENA/a5000+ MURAY/a5000+ ADERY/a4000+ MRISS/a3000/flyover/h31",
-              "3": "DDENA/a5000+ FEPID/a3000+",
-              "33": "DDENA/a5000+ CZSAR/a3000/flyover/h77"
+              "15": "RVRDG/a7000+/s250 SURTE/a5000+/s210 RUIZZ/a5000+ PIPPY/a3000/s210/flyover/t335",
+              "21": "RVRDG/a7000+/s250 SURTE/a5000+/s210 KRAVV/a5000+ MRISS/a3000/flyover/t031",
+              "3": "RVRDG/a7000+/s250 SURTE/a5000+/s210 RECHY/a4000/s210-/flyover/t185",
+              "33": "RVRDG/a7000+/s250 CZSAR/a3000/s210/flyover/t155"
             },
             "KJZI": {
-              "27": "DDENA/a5000+ JAISN/a3000/h90",
-              "9": "DDENA/a5000+ JAISN/a3000/h90"
+              "27": "RVRDG/a7000+/s250 JAISN/a3000/flyover/t090",
+              "9": "RVRDG/a7000+/s250 JAISN/a3000/flyover/t090"
             }
           },
-          "star": "BAGGY3",
+          "star": "BAGGY4",
           "initial_controller": "C72",
           "initial_altitude": 11000,
           "initial_speed": 280,
@@ -1519,7 +1519,7 @@
         }
       ],
       "inbound_rates": {
-        "BAGGY3": {
+        "BAGGY4": {
           "KCHS": 5,
           "KJZI": 3
         },
@@ -1566,7 +1566,7 @@
         }
       ],
       "inbound_rates": {
-        "BAGGY3": {
+        "BAGGY4": {
           "KCHS": 5,
           "KJZI": 3
         },

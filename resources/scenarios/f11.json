@@ -1490,7 +1490,7 @@
           "altitude": [27000, 29000, 31000, 33000],
           "destination": "KCHS",
           "exit": "VIYAP",
-          "waypoints": "VIYAP SAV BAGGY3"
+          "waypoints": "VIYAP SAV BAGGY4"
         },
         {
           "airlines": [
@@ -2679,7 +2679,7 @@
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "destination": "KMHT",
           "exit": "VIYAP",
-          "waypoints": "VIYAP Q87 ASHEL Q87 GEARS BBOBO Q22 LLUND SMYTH ROZZE2"
+          "waypoints": "VIYAP Q87 ASHEL Q87 GEARS BBOBO Q22 LLUND SMYTH ROZZE3"
         },
         {
           "airlines": [

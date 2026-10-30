@@ -1013,12 +1013,12 @@
         }
       ]
     },
-    "50_BAGGY3": {
+    "50_BAGGY4": {
       "arrivals": [
         {
-          "waypoints": "N031.03.56.940,W083.24.46.697/ho SAV DREWE/a11000 BAGGY/a7000+ DDENA KCHS-3/delete",
-          "star": "BAGGY3",
-          "flight_strip_route": "/. BAGGY3",
+          "waypoints": "N031.03.56.940,W083.24.46.697/ho SAV DREWE/a11000 BAGGY RVRDG/a7000+/s250 KCHS-3/delete",
+          "star": "BAGGY4",
+          "flight_strip_route": "/. BAGGY4",
           "initial_controller": "33",
           "initial_altitude": 31000,
           "assigned_altitude": 31000,
@@ -1078,7 +1078,7 @@
         "50_LUBBR4": {
           "KSRQ": 8
         },
-        "50_BAGGY3": {
+        "50_BAGGY4": {
           "KCHS": 8
         }
       },
@@ -1151,7 +1151,7 @@
         "50_LUBBR4": {
           "KSRQ": 8
         },
-        "50_BAGGY3": {
+        "50_BAGGY4": {
           "KCHS": 8
         }
       },

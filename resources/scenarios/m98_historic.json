@@ -1278,39 +1278,39 @@
       },
       "departure_routes": {
         "10L": {
-          "RXANN.PROP": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP": {
             "assigned_altitude": 2500,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP": {
             "assigned_altitude": 2500,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP": {
+          "WDSTK.PROP,DLL.PROP": {
             "assigned_altitude": 2500,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP": {
             "assigned_altitude": 2500,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP": {
+          "ONTIJ.PROP,IDEEA.PROP": {
             "assigned_altitude": 2500,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP": {
             "assigned_altitude": 2500,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r300"
           },
           "FAR.PROP,KBREW.PROP": {
             "assigned_altitude": 2500,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "climbout_actions": "r300"
           },
           "INUNE.PROP": {
@@ -1335,39 +1335,39 @@
           }
         },
         "10R": {
-          "RXANN.PROP,RXANN.JET": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP,LLUKY.JET,DDOWN.JET,STIER.JET": {
             "assigned_altitude": 2500,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP,ODI.JET": {
             "assigned_altitude": 2500,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP,TAXEE.JET,DLL.JET": {
+          "WDSTK.PROP,DLL.PROP,WDSTK.JET,DLL.JET": {
             "assigned_altitude": 2500,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP,ALO.JET,RST.JET": {
             "assigned_altitude": 2500,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP,ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.PROP,IDEEA.PROP,ONTIJ.JET,IDEEA.JET": {
             "assigned_altitude": 2500,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP,GRB.JET,WLSTN.JET": {
             "assigned_altitude": 2500,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r300"
           },
           "FAR.PROP,KBREW.PROP,FAR.JET,KBREW.JET": {
             "assigned_altitude": 2500,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "climbout_actions": "r300"
           },
           "INUNE.PROP,INUNE.JET": {
@@ -1392,39 +1392,39 @@
           }
         },
         "28L": {
-          "RXANN.PROP,RXANN.JET": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP,LLUKY.JET,DDOWN.JET,STIER.JET": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP,ODI.JET": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP,TAXEE.JET,DLL.JET": {
+          "WDSTK.PROP,DLL.PROP,WDSTK.JET,DLL.JET": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP,ALO.JET,RST.JET": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP,ONTIJ.JET,ORSKY.JET": {
+          "ONTIJ.PROP,IDEEA.PROP,ONTIJ.JET,IDEEA.JET": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP,GRB.JET,WLSTN.JET": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 300
           },
           "FAR.PROP,KBREW.PROP,FAR.JET,KBREW.JET": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 300
           },
           "INUNE.PROP,INUNE.JET": {
@@ -1449,39 +1449,39 @@
           }
         },
         "28R": {
-          "RXANN.PROP": {
+          "LLUKY.PROP,DDOWN.PROP,STIER.PROP": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 230
           },
           "ODI.PROP": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 180
           },
-          "TAXEE.PROP,DLL.PROP": {
+          "WDSTK.PROP,DLL.PROP": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 180
           },
           "ALO.PROP,RST.PROP": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 180
           },
-          "ONTIJ.PROP,ORSKY.PROP": {
+          "ONTIJ.PROP,IDEEA.PROP": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 200
           },
           "GRB.PROP,WLSTN.PROP": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 300
           },
           "FAR.PROP,KBREW.PROP": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 300
           },
           "INUNE.PROP": {
@@ -1507,23 +1507,25 @@
         }
       },
       "exit_categories": {
-        "TAXEE": "COULT",
         "INUNE": "INUNE",
         "MKT": "MKT",
         "GEP": "GEP",
         "FGT": "FGT",
         "RIXIE": "RIXIE",
-        "ALO": "RST",
-        "RST": "RST",
+        "ALO": "TOTTZ",
+        "RST": "TOTTZ",
         "FAR": "KBREW",
         "KBREW": "KBREW",
-        "RXANN": "SCHEP",
         "ODI": "ZMBRO",
-        "ONTIJ": "ORSKY",
-        "ORSKY": "ORSKY",
-        "GRB": "WLSTN",
-        "WLSTN": "WLSTN",
-        "DLL": "COULT"
+        "ONTIJ": "DUHCK",
+        "GRB": "NRTHN",
+        "WLSTN": "NRTHN",
+        "DLL": "SNUPE",
+        "DDOWN": "DUHCK",
+        "IDEEA": "DUHCK",
+        "LLUKY": "DUHCK",
+        "STIER": "DUHCK",
+        "WDSTK": "SNUPE"
       },
       "tower_list": 3,
       "departure_runways_as_one": ["10L,10R", "28L,28R"],
@@ -1551,34 +1553,34 @@
       },
       "departure_routes": {
         "14": {
-          "RXANN,SCHEP": {
+          "LLUKY,DDOWN,STIER,GRRAT": {
             "assigned_altitude": 2500,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 80
           },
           "ODI": {
             "assigned_altitude": 2500,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 80
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 2500,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 80
           },
           "ALO,RST": {
             "assigned_altitude": 2500,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 80
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 2500,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 80
           },
           "FAR,KBREW": {
             "assigned_altitude": 2500,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 10
           },
           "INUNE,GEP,ANIML,FCM": {
@@ -1599,34 +1601,34 @@
           }
         },
         "32": {
-          "RXANN,SCHEP": {
+          "LLUKY,DDOWN,STIER,GRRAT": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 30
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 45
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 45
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 45
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 45
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 30
           },
           "INUNE,GEP,LENCK,ZOSAG,ANIML": {
@@ -1644,19 +1646,21 @@
         }
       },
       "exit_categories": {
-        "TAXEE": "COULT",
         "FGT": "FGT",
         "GEP": "GEP",
-        "ALO": "RST",
-        "RST": "RST",
+        "ALO": "TOTTZ",
+        "RST": "TOTTZ",
         "FAR": "KBREW",
         "KBREW": "KBREW",
-        "RXANN": "SCHEP",
-        "SCHEP": "SCHEP",
         "ODI": "ZMBRO",
-        "ONTIJ": "ORSKY",
-        "ORSKY": "ORSKY",
-        "DLL": "COULT"
+        "ONTIJ": "DUHCK",
+        "DLL": "SNUPE",
+        "DDOWN": "DUHCK",
+        "GRRAT": "DUHCK",
+        "IDEEA": "DUHCK",
+        "LLUKY": "DUHCK",
+        "STIER": "DUHCK",
+        "WDSTK": "SNUPE"
       },
       "tower_list": 2,
       "hold_for_release": true
@@ -1683,37 +1687,39 @@
       },
       "departure_routes": {
         "9": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "climbout_actions": "l270"
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7"
+            "sid": "ZMBRO1",
+            "initial_heading": 90
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7"
+            "sid": "SNUPE1",
+            "initial_heading": 90
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 90
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "climbout_actions": "l270"
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 70
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE": {
@@ -1738,39 +1744,39 @@
           }
         },
         "18": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "climbout_actions": "r090"
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "climbout_actions": "r090"
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "climbout_actions": "r090"
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r080"
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE": {
@@ -1799,39 +1805,39 @@
           }
         },
         "27": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "climbout_actions": "r090"
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "climbout_actions": "r090"
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "climbout_actions": "r090"
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "climbout_actions": "r080"
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE,GEP": {
@@ -1856,39 +1862,39 @@
           }
         },
         "36": {
-          "RXANN": {
+          "LLUKY,DDOWN,STIER": {
             "assigned_altitude": 3000,
-            "sid": "SCHEP1",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "ODI": {
             "assigned_altitude": 3000,
-            "sid": "ZMBRO7",
+            "sid": "ZMBRO1",
             "initial_heading": 90
           },
-          "TAXEE,DLL": {
+          "WDSTK,DLL": {
             "assigned_altitude": 3000,
-            "sid": "COULT7",
+            "sid": "SNUPE1",
             "initial_heading": 90
           },
           "ALO,RST": {
             "assigned_altitude": 3000,
-            "sid": "RST1",
+            "sid": "TOTTZ1",
             "initial_heading": 90
           },
-          "ONTIJ,ORSKY": {
+          "ONTIJ,IDEEA": {
             "assigned_altitude": 3000,
-            "sid": "ORSKY3",
+            "sid": "DUHCK1",
             "initial_heading": 270
           },
           "WLSTN": {
             "assigned_altitude": 3000,
-            "sid": "WLSTN7",
+            "sid": "NRTHN1",
             "initial_heading": 80
           },
           "FAR,KBREW": {
             "assigned_altitude": 3000,
-            "sid": "KBREW2",
+            "sid": "KBREW1",
             "initial_heading": 290
           },
           "INUNE": {
@@ -1918,7 +1924,6 @@
         }
       },
       "exit_categories": {
-        "TAXEE": "COULT",
         "INUNE": "INUNE",
         "GEP": "GEP",
         "JALEP": "JALEP",
@@ -1926,16 +1931,19 @@
         "DESTE": "DESTE",
         "EAU": "EAU",
         "DLH": "DLH",
-        "ALO": "RST",
-        "RST": "RST",
+        "ALO": "TOTTZ",
+        "RST": "TOTTZ",
         "FAR": "KBREW",
         "KBREW": "KBREW",
-        "RXANN": "SCHEP",
         "ODI": "ZMBRO",
-        "ONTIJ": "ORSKY",
-        "ORSKY": "ORSKY",
-        "WLSTN": "WLSTN",
-        "DLL": "COULT"
+        "ONTIJ": "DUHCK",
+        "WLSTN": "NRTHN",
+        "DLL": "SNUPE",
+        "DDOWN": "DUHCK",
+        "IDEEA": "DUHCK",
+        "LLUKY": "DUHCK",
+        "STIER": "DUHCK",
+        "WDSTK": "SNUPE"
       },
       "hold_for_release": true
     },
@@ -6609,6 +6617,10 @@
     "SAIRL": "N044.41.17.72,W093.00.25.81",
     "SISSY": "N044.45.52.29,W092.57.03.69",
     "HEYDR": "N044.49.21.74,W092.50.32.03",
-    "DAYAK": "N044.42.00.75,W092.33.14.17"
+    "DAYAK": "N044.42.00.75,W092.33.14.17",
+    "ORSKY": "N043.40.11.13,W094.13.22.92",
+    "RUMLE": "N044.25.16.61,W093.37.27.90",
+    "TAXEE": "N044.42.09.29,W092.29.33.56",
+    "TWINZ": "N045.02.55.67,W092.17.21.64"
   }
 }

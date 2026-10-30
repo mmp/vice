@@ -882,18 +882,18 @@
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "aircraft": "turboprop",
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 10000,
             "aircraft": "turboprop",
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 10000,
             "aircraft": ["turboprop", "prop"],
             "hold_for_release": true,
-            "sid": "NUEVO8"
+            "sid": "NUEVO9"
           },
           "OAK": {
             "cleared_altitude": 3000,
@@ -912,18 +912,18 @@
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "aircraft": "turboprop",
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 19000,
             "aircraft": ["turboprop", "prop"],
             "hold_for_release": true,
-            "sid": "NUEVO8"
+            "sid": "NUEVO9"
           },
           "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 10000,
             "aircraft": "turboprop",
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "OAK": {
             "cleared_altitude": 3000,
@@ -937,17 +937,17 @@
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 19000,
             "aircraft": "jet",
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 10000,
             "aircraft": "jet",
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
             "aircraft": "jet",
-            "sid": "CNDEL5"
+            "sid": "CNDEL6"
           },
           "MCKEY,FLW,GVO,RZS,SXC": {
             "cleared_altitude": 10000,
@@ -957,17 +957,17 @@
           "SNS,SHOEY": {
             "cleared_altitude": 10000,
             "hold_for_release": true,
-            "sid": "NUEVO8"
+            "sid": "NUEVO9"
           }
         },
         "30.N": {
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,GOBBS,SYRAH": {
             "cleared_altitude": 19000,
-            "sid": "HUSSH2"
+            "sid": "HUSSH3"
           },
           "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
-            "sid": "CNDEL5"
+            "sid": "CNDEL6"
           },
           "RZS,FLW,SXC,GVO": {
             "cleared_altitude": 10000,
@@ -975,16 +975,16 @@
           },
           "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 10000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 10000,
             "hold_for_release": true,
-            "sid": "NUEVO8"
+            "sid": "NUEVO9"
           },
           "ENI,RBL,LIN": {
             "cleared_altitude": 19000,
-            "sid": "SLNT3",
+            "sid": "SLNT4",
             "climbout_actions": "l270/@SFO-R360"
           },
           "SUNNE": {
@@ -995,71 +995,71 @@
         "10L.E": {
           "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
-            "sid": "KATFH3"
+            "sid": "KATFH4"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 6000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         },
         "10R.E": {
           "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
-            "sid": "KATFH3"
+            "sid": "KATFH4"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 6000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         },
         "10L": {
           "NTELL,KAYEX,KTINA,SUSEY,PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 6000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         },
         "10R": {
           "NTELL,KAYEX,KTINA,SUSEY,PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 6000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         },
         "12": {
           "NTELL,KAYEX,KTINA,SUSEY,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH,ALANN,CINNY,BEBOP,ALCOA,PYE,SGD,CCR,SAC": {
             "cleared_altitude": 5000,
-            "sid": "QUAKE2",
+            "sid": "OAK7",
             "hold_for_release": true
           }
         },
         "12.E": {
           "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
-            "sid": "KATFH3"
+            "sid": "KATFH4"
           },
           "ALANN,CINNY,BEBOP,ALCOA": {
             "cleared_altitude": 3000,
-            "sid": "OAK6.O",
+            "sid": "OAK7.O",
             "waypoints": "KOAK-30/h116"
           },
           "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         }
       },
@@ -1084,7 +1084,7 @@
           ],
           "altitude": [31000, 33000, 35000, 37000],
           "destination": "KSLC",
-          "waypoints": "MOGEE Q124 BVL YUTES2",
+          "waypoints": "MOGEE Q124 BVL YUTES3",
           "exit": "MOGEE"
         },
         {

@@ -210,7 +210,7 @@
           "destination": "KSLC",
           "exit": "LMT.MFR",
           "altitude": 37000,
-          "waypoints": "LMT SUNBE BVL YUTES2"
+          "waypoints": "LMT SUNBE BVL YUTES3"
         },
         {
           "airlines": [

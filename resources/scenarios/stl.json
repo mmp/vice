@@ -745,7 +745,7 @@
           "exit": "BNA",
           "destination": "KBCT",
           "altitude": 31000,
-          "waypoints": "DRUSE5 BNA ACORI VUUDU2",
+          "waypoints": "DRUSE5 BNA ACORI VUUDU3",
           "airlines": [
             {
               "icao": "wup",
@@ -1129,7 +1129,7 @@
           "exit": "BNA",
           "destination": "KDJT",
           "altitude": 31000,
-          "waypoints": "DRUSE5 BNA ACORI VUUDU2",
+          "waypoints": "DRUSE5 BNA ACORI VUUDU3",
           "airlines": [
             {
               "icao": "HPJ",

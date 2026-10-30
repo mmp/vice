@@ -10,8 +10,7 @@
         "I6": { "cifp_id": "I6" },
         "RZ6": { "cifp_id": "RZ6" },
         "RY24": { "cifp_id": "RY24" },
-        "RZ24": { "cifp_id": "RZ24" },
-        "S24": { "cifp_id": "S24" }
+        "RZ24": { "cifp_id": "RZ24" }
       },
       "departure_routes": {
         "6": {

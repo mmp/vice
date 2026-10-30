@@ -164,7 +164,7 @@
           ],
           "destination": "KLAS",
           "exit": "CTR",
-          "waypoints": "CTR HNK WOZEE DAYYY GRB KP87I SCHEP KP84E KP81C KD78A KEEFF BFF EKR KU54Q PROMT Q88 HAKMN ANJLL4"
+          "waypoints": "CTR HNK WOZEE DAYYY GRB KP87I KP84E KP81C KD78A KEEFF BFF EKR KU54Q PROMT Q88 HAKMN ANJLL4"
         },
         {
           "airlines": [
@@ -278,10 +278,6 @@
       "approaches": {
         "R33": {
           "cifp_id": "R33",
-          "runway": "33"
-        },
-        "D33": {
-          "cifp_id": "D33",
           "runway": "33"
         },
         "I29": {

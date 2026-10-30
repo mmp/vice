@@ -941,7 +941,7 @@
           "exit": "STOEN",
           "destination": "KDJT",
           "altitude": 32000,
-          "waypoints": "STOEN Q75 ENEME VUUDU2",
+          "waypoints": "STOEN Q75 ENEME VUUDU3",
           "airlines": [
             {
               "icao": "AAL",
@@ -1625,7 +1625,7 @@
           "exit": "MXE",
           "destination": "KSLC",
           "altitude": 34000,
-          "waypoints": "MXE PENSY J110 AIR CVG BIB STL HYS GLD LAR CKW CARTR1",
+          "waypoints": "MXE PENSY J110 AIR CVG BIB STL HYS GLD LAR CKW CARTR2",
           "airlines": [
             {
               "icao": "DAL",
@@ -2689,13 +2689,13 @@
         }
       ]
     },
-    "TRISH4 (IZZEE)": {
+    "TRISH5 (IZZEE)": {
       "arrivals": [
         {
           "waypoints": "PUNCO/ho IZZEE LEGGO DRRES/a10000 RAUKY TRISH WUUDI FINNZ/a5000 KEEYY ROAPS HOOOK/delete",
           "cruise_altitude": 37000,
-          "star": "TRISH4",
-          "flight_strip_route": "/. TRISH4",
+          "star": "TRISH5",
+          "flight_strip_route": "/. TRISH5",
           "initial_controller": "C48",
           "initial_altitude": 25000,
           "initial_speed": 300,
@@ -3012,12 +3012,12 @@
         }
       ]
     },
-    "TRISH4 (26)": {
+    "TRISH5 (26)": {
       "arrivals": [
         {
           "waypoints": "LEGGO/ho26 DRRES RAUKY TRISH/a9000 WUUDI FINNZ/delete",
           "cruise_altitude": 35000,
-          "star": "TRISH4",
+          "star": "TRISH5",
           "flight_strip_route": "/. LEGGO DRRES RAUKY TRISH WUUDI FINNZ",
           "initial_controller": "27",
           "initial_altitude": 16000,
@@ -3075,12 +3075,12 @@
         }
       ]
     },
-    "TRISH4 (27)": {
+    "TRISH5 (27)": {
       "arrivals": [
         {
           "waypoints": "IZZEE/ho27 LEGGO/a16000 DRRES RAUKY TRISH/a9000 WUUDI FINNZ/delete",
           "cruise_altitude": 35000,
-          "star": "TRISH4",
+          "star": "TRISH5",
           "flight_strip_route": "/. IZZEE LEGGO DRRES RAUKY TRISH WUUDI FINNZ",
           "initial_controller": "73",
           "initial_altitude": 27000,
@@ -3138,12 +3138,12 @@
         }
       ]
     },
-    "TRISH4 (25)": {
+    "TRISH5 (25)": {
       "arrivals": [
         {
           "waypoints": "COPES/ho25 Q75 STOEN NUGGY TROYZ FREEE TRISH WUUDI FINNZ/delete",
           "cruise_altitude": 35000,
-          "star": "TRISH4",
+          "star": "TRISH5",
           "flight_strip_route": "/. COPES Q75 STOEN NUGGY TROYZ FREEE TRISH WUUDI FINNZ",
           "initial_controller": "55",
           "initial_altitude": 20000,
@@ -4610,7 +4610,7 @@
         "HAR5 (27)": {
           "KWRI": 2
         },
-        "TRISH4 (25)": {
+        "TRISH5 (25)": {
           "KBWI": 4
         },
         "CLIPR3 (25)": {

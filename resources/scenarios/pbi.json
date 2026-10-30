@@ -617,7 +617,7 @@
           ],
           "destination": "KCHS",
           "exit": "MATLK",
-          "waypoints": "MATLK Q87 ZERBO Q87 DUCEN Q87 VIYAP SAV BAGGY3"
+          "waypoints": "MATLK Q87 ZERBO Q87 DUCEN Q87 VIYAP SAV BAGGY4"
         },
         {
           "airlines": [
@@ -2188,8 +2188,8 @@
       "arrivals": [
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.55.00.251,W080.41.53.919/ho MSQTO/flyover/h050",
-          "flight_strip_route": "VUUDU2",
-          "star": "VUUDU2",
+          "flight_strip_route": "VUUDU3",
+          "star": "VUUDU3",
           "initial_controller": "1P",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2234,8 +2234,8 @@
       "arrivals": [
         {
           "waypoints": "VUUDU OWLLL/a9000/s250/d5000 N026.58.55.832,W080.39.46.917/h080/ho",
-          "flight_strip_route": "VUUDU2",
-          "star": "VUUDU2",
+          "flight_strip_route": "VUUDU3",
+          "star": "VUUDU3",
           "initial_controller": "1P",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2654,10 +2654,10 @@
         }
       ]
     },
-    "VUUDU2": {
+    "VUUDU3": {
       "arrivals": [
         {
-          "star": "VUUDU2",
+          "star": "VUUDU3",
           "spawn": "SHRVY",
           "initial_controller": "C47",
           "initial_altitude": 13000,
@@ -2777,7 +2777,7 @@
           }
         },
         {
-          "star": "VUUDU2",
+          "star": "VUUDU3",
           "spawn": "SHRVY",
           "initial_controller": "C47",
           "initial_altitude": 13000,
@@ -2845,7 +2845,7 @@
           }
         },
         {
-          "star": "VUUDU2",
+          "star": "VUUDU3",
           "spawn": "SHRVY",
           "initial_controller": "C47",
           "initial_altitude": 13000,
@@ -2973,7 +2973,7 @@
         "T208/LIFRR2.E": {
           "overflights": 6
         },
-        "VUUDU2": {
+        "VUUDU3": {
           "KDJT": 12,
           "KBCT": 3,
           "KSUA": 2
@@ -3045,7 +3045,7 @@
         "T208/LIFRR2.W": {
           "overflights": 6
         },
-        "VUUDU2": {
+        "VUUDU3": {
           "KDJT": 12,
           "KBCT": 3,
           "KSUA": 2

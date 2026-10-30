@@ -26,11 +26,11 @@
         "6R": {
           "APE": {
             "cleared_altitude": 14000,
-            "sid": "CAVVS5"
+            "sid": "CAVVS6"
           },
           "ALPHE,DAIFE,BAGEL,YABRO": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE5"
+            "sid": "GTLKE6"
           },
           "EWC,NUSMM": {
             "cleared_altitude": 14000,
@@ -42,17 +42,17 @@
           },
           "PUUDL,SNNOH,SINKR": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA6"
+            "sid": "ZAAPA7"
           }
         },
         "24L": {
           "APE": {
             "cleared_altitude": 14000,
-            "sid": "CAVVS5"
+            "sid": "CAVVS6"
           },
           "ALPHE,DAIFE,BAGEL,YABRO": {
             "cleared_altitude": 14000,
-            "sid": "GTLKE5"
+            "sid": "GTLKE6"
           },
           "EWC,NUSMM": {
             "cleared_altitude": 14000,
@@ -64,7 +64,7 @@
           },
           "PUUDL,SNNOH,SINKR": {
             "cleared_altitude": 14000,
-            "sid": "ZAAPA6"
+            "sid": "ZAAPA7"
           }
         }
       },
@@ -518,77 +518,77 @@
         "6": {
           "NUSMM,EWC": {
             "cleared_altitude": 3000,
-            "sid": "AHMET5"
+            "sid": "AHMET6"
           },
           "APE": {
             "cleared_altitude": 3000,
-            "sid": "CAVVS5"
+            "sid": "CAVVS6"
           },
           "DAIFE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "YABRO": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "ALPHE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "BAGEL": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "MYCAR": {
             "cleared_altitude": 3000,
-            "sid": "MYCAR5"
+            "sid": "MYCAR6"
           },
           "PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA6"
+            "sid": "ZAAPA7"
           }
         },
         "24": {
           "NUSMM,EWC": {
             "cleared_altitude": 3000,
-            "sid": "AHMET5"
+            "sid": "AHMET6"
           },
           "APE": {
             "cleared_altitude": 3000,
-            "sid": "CAVVS5"
+            "sid": "CAVVS6"
           },
           "DAIFE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "YABRO": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "ALPHE": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "BAGEL": {
             "cleared_altitude": 3000,
-            "sid": "GTLKE5",
+            "sid": "GTLKE6",
             "initial_heading": 180
           },
           "MYCAR": {
             "cleared_altitude": 3000,
-            "sid": "MYCAR5"
+            "sid": "MYCAR6"
           },
           "PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 3000,
-            "sid": "ZAAPA6"
+            "sid": "ZAAPA7"
           }
         }
       },
@@ -663,47 +663,15 @@
       },
       "departure_routes": {
         "6L": {
-          "NUSMM,EWC": {
+          "NUSMM,EWC,APE,DAIFE,YABRO,ALPHE,BAGEL,MYCAR,PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 2000,
-            "sid": "AHMET5"
-          },
-          "APE": {
-            "cleared_altitude": 2000,
-            "sid": "CAVVS5"
-          },
-          "DAIFE,YABRO,ALPHE,BAGEL": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "MYCAR": {
-            "cleared_altitude": 2000,
-            "sid": "MYCAR5"
-          },
-          "PUUDL,SINKR,SNNOH": {
-            "cleared_altitude": 2000,
-            "sid": "ZAAPA6"
+            "sid": "ZEYOU1"
           }
         },
         "24R": {
-          "NUSMM,EWC": {
+          "NUSMM,EWC,APE,DAIFE,YABRO,ALPHE,BAGEL,MYCAR,PUUDL,SINKR,SNNOH": {
             "cleared_altitude": 2000,
-            "sid": "AHMET5"
-          },
-          "APE": {
-            "cleared_altitude": 2000,
-            "sid": "CAVVS5"
-          },
-          "DAIFE,YABRO,ALPHE,BAGEL": {
-            "cleared_altitude": 2000,
-            "sid": "GTLKE5"
-          },
-          "MYCAR": {
-            "cleared_altitude": 2000,
-            "sid": "MYCAR5"
-          },
-          "PUUDL,SINKR,SNNOH": {
-            "cleared_altitude": 2000,
-            "sid": "ZAAPA6"
+            "sid": "ZEYOU1"
           }
         }
       },

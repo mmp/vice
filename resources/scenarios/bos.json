@@ -52575,7 +52575,7 @@
         }
       ]
     },
-    "DREEM3": {
+    "DREEM4": {
       "arrivals": [
         {
           "airports": ["KBED"],
@@ -52647,7 +52647,7 @@
           "initial_altitude": 11000,
           "initial_controller": "1W",
           "initial_speed": 250,
-          "star": "DREEM3",
+          "star": "DREEM4",
           "scratchpad": "RBED",
           "runway_waypoints": {
             "KBED": {
@@ -52700,7 +52700,7 @@
           "initial_altitude": 11000,
           "initial_controller": "1W",
           "initial_speed": 250,
-          "star": "DREEM3",
+          "star": "DREEM4",
           "scratchpad": "RLWM",
           "waypoints": "DVANY/a11000 GRAYM/ho GASSE/a5000+ DREEM RRENA/a3100+ RIKAH/a3000+/h078"
         },
@@ -52746,7 +52746,7 @@
           "initial_altitude": 11000,
           "initial_controller": "1W",
           "initial_speed": 250,
-          "star": "DREEM3",
+          "star": "DREEM4",
           "scratchpad": "RBVY",
           "waypoints": "DVANY/a11000 GRAYM/ho GASSE/a5000 DREEM RRENA/a3100+ RIKAH/a3000+/h078"
         }
@@ -74788,7 +74788,7 @@
         "OOSHN5.4R": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -74965,7 +74965,7 @@
         "OOSHN5.4R": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -75143,7 +75143,7 @@
         "OOSHN5.4R": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -75338,7 +75338,7 @@
         "OOSHN5.4R": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -75512,7 +75512,7 @@
         "OOSHN5.15R": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -75669,7 +75669,7 @@
         "OOSHN5.27": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -75821,7 +75821,7 @@
         "OOSHN5.33L": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -75985,7 +75985,7 @@
         "OOSHN5.22L": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -76137,7 +76137,7 @@
         "OOSHN5.22L": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -76289,7 +76289,7 @@
         "OOSHN5.22L": {
           "KBOS": 6
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -76441,7 +76441,7 @@
         "OOSHN5.27": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -76594,7 +76594,7 @@
         "OOSHN5.27": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -76757,7 +76757,7 @@
         "OOSHN5.33L": {
           "KBOS": 0
         },
-        "DREEM3": {
+        "DREEM4": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0

@@ -4530,11 +4530,11 @@
         }
       ]
     },
-    "TRISH4.NUGGY": {
+    "TRISH5.NUGGY": {
       "arrivals": [
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -4581,11 +4581,11 @@
         }
       ]
     },
-    "TRISH4.DRRES": {
+    "TRISH5.DRRES": {
       "arrivals": [
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -6670,10 +6670,10 @@
         "RAVNN9": {
           "KBWI": 15
         },
-        "TRISH4.NUGGY": {
+        "TRISH5.NUGGY": {
           "KBWI": 7
         },
-        "TRISH4.DRRES": {
+        "TRISH5.DRRES": {
           "KBWI": 3
         },
         "CLIPR3": {
@@ -6822,10 +6822,10 @@
           "KBWI": 10,
           "KDCA": 10
         },
-        "TRISH4.NUGGY": {
+        "TRISH5.NUGGY": {
           "KBWI": 7
         },
-        "TRISH4.DRRES": {
+        "TRISH5.DRRES": {
           "KBWI": 3
         },
         "CLIPR3": {

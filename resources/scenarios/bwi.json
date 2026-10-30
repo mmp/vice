@@ -2375,11 +2375,11 @@
         }
       ]
     },
-    "TRISH4.NUGGY.N": {
+    "TRISH5.NUGGY.N": {
       "arrivals": [
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2426,7 +2426,7 @@
         },
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2464,11 +2464,11 @@
         }
       ]
     },
-    "TRISH4.NUGGY.S": {
+    "TRISH5.NUGGY.S": {
       "arrivals": [
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2515,7 +2515,7 @@
         },
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2553,11 +2553,11 @@
         }
       ]
     },
-    "TRISH4.NUGGY.E": {
+    "TRISH5.NUGGY.E": {
       "arrivals": [
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2604,7 +2604,7 @@
         },
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2642,11 +2642,11 @@
         }
       ]
     },
-    "TRISH4.NUGGY.W": {
+    "TRISH5.NUGGY.W": {
       "arrivals": [
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2693,7 +2693,7 @@
         },
         {
           "spawn": "NUGGY",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 14000,
           "initial_speed": 280,
@@ -2731,11 +2731,11 @@
         }
       ]
     },
-    "TRISH4.DRRES.N": {
+    "TRISH5.DRRES.N": {
       "arrivals": [
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2761,7 +2761,7 @@
         },
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2792,11 +2792,11 @@
         }
       ]
     },
-    "TRISH4.DRRES.S": {
+    "TRISH5.DRRES.S": {
       "arrivals": [
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2822,7 +2822,7 @@
         },
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2853,11 +2853,11 @@
         }
       ]
     },
-    "TRISH4.DRRES.E": {
+    "TRISH5.DRRES.E": {
       "arrivals": [
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2883,7 +2883,7 @@
         },
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2914,11 +2914,11 @@
         }
       ]
     },
-    "TRISH4.DRRES.W": {
+    "TRISH5.DRRES.W": {
       "arrivals": [
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -2944,7 +2944,7 @@
         },
         {
           "spawn": "DRRES",
-          "star": "TRISH4",
+          "star": "TRISH5",
           "initial_controller": "N26",
           "initial_altitude": 10000,
           "initial_speed": 250,
@@ -3358,10 +3358,10 @@
           "KBWI": 6,
           "KDCA": 10
         },
-        "TRISH4.NUGGY.W": {
+        "TRISH5.NUGGY.W": {
           "KBWI": 5
         },
-        "TRISH4.DRRES.W": {
+        "TRISH5.DRRES.W": {
           "KBWI": 1
         },
         "CLIPR3": {
@@ -3444,10 +3444,10 @@
           "KBWI": 6,
           "KDCA": 10
         },
-        "TRISH4.NUGGY.N": {
+        "TRISH5.NUGGY.N": {
           "KBWI": 5
         },
-        "TRISH4.DRRES.N": {
+        "TRISH5.DRRES.N": {
           "KBWI": 1
         },
         "CLIPR3": {
@@ -3530,10 +3530,10 @@
           "KBWI": 6,
           "KDCA": 10
         },
-        "TRISH4.NUGGY.S": {
+        "TRISH5.NUGGY.S": {
           "KBWI": 5
         },
-        "TRISH4.DRRES.S": {
+        "TRISH5.DRRES.S": {
           "KBWI": 1
         },
         "CLIPR3": {
@@ -3612,10 +3612,10 @@
           "KBWI": 6,
           "KDCA": 10
         },
-        "TRISH4.NUGGY.E": {
+        "TRISH5.NUGGY.E": {
           "KBWI": 5
         },
-        "TRISH4.DRRES.E": {
+        "TRISH5.DRRES.E": {
           "KBWI": 1
         },
         "CLIPR3": {

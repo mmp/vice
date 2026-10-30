@@ -140,7 +140,7 @@
             "sid": "PTLD2",
             "waypoint_actions": { "KPDX-28R": "h010" }
           },
-          "KOATA,RIELY,IMB": {
+          "KOATA,IMB": {
             "cleared_altitude": 7000,
             "sid": "WHAMY5"
           },
@@ -193,7 +193,7 @@
             "sid": "PTLD2",
             "waypoint_actions": { "KPDX-10L": "h330" }
           },
-          "IMB,KOATA,RIELY": {
+          "IMB,KOATA": {
             "aircraft": "jet",
             "cleared_altitude": 7000,
             "sid": "WHAMY5"
@@ -453,7 +453,7 @@
           ],
           "destination": "KSLC",
           "exit": "IMB",
-          "waypoints": "IMB J15 BOI BYI SKEES6"
+          "waypoints": "IMB J15 BOI BYI SKEES7"
         },
         {
           "airlines": [
@@ -1778,8 +1778,7 @@
         "FAMUK": "MINNE",
         "EASON": "MINNE",
         "IMB": "WHAMY",
-        "KOATA": "WHAMY",
-        "RIELY": "WHAMY"
+        "KOATA": "WHAMY"
       },
       "tower_list": 1
     },
@@ -1959,8 +1958,8 @@
           "CHISM": {
             "aircraft": "jet",
             "cleared_altitude": 4000,
-            "sid": "CHISM4",
-            "waypoints": "KHIO-13R HETAT FORAS EMELY CHISM"
+            "sid": "CHISM5",
+            "waypoints": "KHIO-13R FORAS EMELY CHISM"
           },
           "UBG": {
             "cleared_altitude": 4000,
@@ -2003,10 +2002,10 @@
             "sid": "FARMINGTON 7",
             "waypoints": "KHIO-31L/r210/@crsUBG-R346 UBG"
           },
-          "CHISM,PAWLI,SMIGE,JOGEN,DSD,RIELY,IMB": {
+          "CHISM,DSD,IMB,JUDAH,KOATA,PUHTS,SYNKR": {
             "aircraft": "jet",
             "cleared_altitude": 4000,
-            "sid": "CHISM4",
+            "sid": "CHISM5",
             "waypoints": "KHIO-31L GERDD CHISM"
           }
         }

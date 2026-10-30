@@ -912,7 +912,7 @@
         "28R": {
           "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
-            "sid": "CNDEL5"
+            "sid": "CNDEL6"
           },
           "RZS,FLW,SXC,GVO": {
             "cleared_altitude": 10000,
@@ -920,15 +920,15 @@
           },
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 10000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 19000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 19000,
-            "sid": "NUEVO8"
+            "sid": "NUEVO9"
           },
           "SUNNE": {
             "cleared_altitude": 10000,
@@ -938,7 +938,7 @@
         "28L": {
           "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
-            "sid": "CNDEL5"
+            "sid": "CNDEL6"
           },
           "RZS,FLW,SXC,GVO": {
             "cleared_altitude": 10000,
@@ -946,21 +946,21 @@
           },
           "SNS,SHOEY": {
             "cleared_altitude": 19000,
-            "sid": "NUEVO8"
+            "sid": "NUEVO9"
           },
           "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 19000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         },
         "30": {
           "GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,GOBBS,SYRAH": {
             "cleared_altitude": 19000,
-            "sid": "HUSSH2"
+            "sid": "HUSSH3"
           },
           "NTELL,KAYEX,KTINA,SUSEY,YYUNG": {
             "cleared_altitude": 19000,
-            "sid": "CNDEL5"
+            "sid": "CNDEL6"
           },
           "RZS,FLW,SXC,GVO": {
             "cleared_altitude": 10000,
@@ -968,15 +968,15 @@
           },
           "PYE,SGD,CCR,SAC,ALCOA,BEBOP,CINNY": {
             "cleared_altitude": 19000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           },
           "SNS,SHOEY": {
             "cleared_altitude": 10000,
-            "sid": "NUEVO8"
+            "sid": "NUEVO9"
           },
           "ENI,RBL,LIN": {
             "cleared_altitude": 19000,
-            "sid": "SILENT3",
+            "sid": "SLNT4",
             "waypoints": "N037.43.38.536,W122.15.08.816 N037.45.15.353,W122.22.39.942 REBAS/a6000+"
           },
           "SUNNE": {
@@ -987,45 +987,43 @@
         "10L": {
           "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
-            "sid": "KATFH3"
+            "sid": "KATFH4"
           },
           "ALANN,CINNY,BEBOP,ALCOA,LIBBO": {
             "cleared_altitude": 6000,
-            "sid": "QUAKE2",
-            "initial_heading": 98
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         },
         "10R": {
           "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
-            "sid": "KATFH3"
+            "sid": "KATFH4"
           },
           "ALANN,CINNY,BEBOP,ALCOA,LIBBO": {
             "cleared_altitude": 6000,
-            "sid": "QUAKE2",
-            "initial_heading": 98
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 3000,
-            "sid": "OAK6"
+            "sid": "OAK7"
           }
         },
         "12": {
           "NTELL,KAYEX,KTINA,SUSEY": {
             "cleared_altitude": 3000,
-            "sid": "KATFH3"
+            "sid": "KATFH4"
           },
           "ALANN,CINNY,BEBOP,ALCOA,LIBBO": {
             "cleared_altitude": 6000,
-            "sid": "QUAKE2"
+            "sid": "OAK7"
           },
           "PYE,SGD,CCR,SAC,GRTFL,DEDHD,ORRCA,MOGEE,TIPRE,SYRAH": {
             "cleared_altitude": 12000,
-            "sid": "OAK6",
+            "sid": "OAK7",
             "initial_heading": 120
           }
         }

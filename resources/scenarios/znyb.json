@@ -785,7 +785,7 @@
           ],
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KSLC",
-          "waypoints": "NEWEL J60 DJB ASHEN KG69O BRBIE IOW J146 CNOTA KP69E WYYTE KD69W LAR CKW CARTR1",
+          "waypoints": "NEWEL J60 DJB ASHEN KG69O BRBIE IOW J146 CNOTA KP69E WYYTE KD69W LAR CKW CARTR2",
           "exit": "NEWEL"
         },
         {
@@ -2222,12 +2222,12 @@
         }
       ]
     },
-    "TRISH4": {
+    "TRISH5": {
       "arrivals": [
         {
           "waypoints": "JERSY/ho Q75 STOEN NUGGY TROYZ FREEE/delete",
           "cruise_altitude": 35000,
-          "star": "TRISH4",
+          "star": "TRISH5",
           "flight_strip_route": "/. JERSY Q75 STOEN NUGGY TROYZ FREEE",
           "initial_controller": "N5W",
           "initial_altitude": 28000,
@@ -2249,12 +2249,12 @@
         }
       ]
     },
-    "TRISH4 (42)": {
+    "TRISH5 (42)": {
       "arrivals": [
         {
           "waypoints": "GREKI/ho Q75 JERSY Q75 STOEN NUGGY TROYZ FREEE/delete",
           "cruise_altitude": 34000,
-          "star": "TRISH4",
+          "star": "TRISH5",
           "flight_strip_route": "/. GREKI Q75 JERSY Q75 NUGGY TROYZ FREEE",
           "initial_controller": "N5W",
           "initial_altitude": 34000,
@@ -2622,7 +2622,7 @@
         }
       ],
       "inbound_rates": {
-        "TRISH4 (42)": {
+        "TRISH5 (42)": {
           "KBWI": 25
         },
         "CLIPR3 (NELIE 42)": {
@@ -2724,7 +2724,7 @@
         }
       ],
       "inbound_rates": {
-        "TRISH4 (42)": {
+        "TRISH5 (42)": {
           "KBWI": 25
         },
         "CLIPR3 (BIGGY)": {
@@ -2800,7 +2800,7 @@
         "CLIPR3 (BIGGY)": {
           "KDCA": 15
         },
-        "TRISH4": {
+        "TRISH5": {
           "KBWI": 25
         },
         "HYPER1 (RBV - 55)": {
@@ -2904,7 +2904,7 @@
         }
       ],
       "inbound_rates": {
-        "TRISH4 (42)": {
+        "TRISH5 (42)": {
           "KBWI": 15
         },
         "CLIPR3 (BIGGY)": {
@@ -3096,7 +3096,7 @@
         "DPK3 (Q481)": {
           "KBDL": 15
         },
-        "TRISH4 (42)": {
+        "TRISH5 (42)": {
           "KBWI": 15
         },
         "CLIPR3 (BIGGY)": {

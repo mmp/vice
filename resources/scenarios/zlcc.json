@@ -1173,12 +1173,12 @@
       ],
       "overflights": []
     },
-    "CARTR1.OCS": {
+    "CARTR2.OCS": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "CARTR1",
-          "flight_strip_route": "OBH BFF MBW OCS CARTR1",
+          "star": "CARTR2",
+          "flight_strip_route": "OBH BFF MBW OCS CARTR2",
           "initial_controller": "D16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1232,12 +1232,12 @@
       ],
       "overflights": []
     },
-    "CARTR1.CKW": {
+    "CARTR2.CKW": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "CARTR1",
-          "flight_strip_route": "BRAKK5 HLV ANX TOP MCK CYS LAR CKW CARTR1",
+          "star": "CARTR2",
+          "flight_strip_route": "BRAKK5 HLV ANX TOP MCK CYS LAR CKW CARTR2",
           "initial_controller": "D16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1267,12 +1267,12 @@
       ],
       "overflights": []
     },
-    "CARTR1.DDY": {
+    "CARTR2.DDY": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "CARTR1",
-          "flight_strip_route": "ONL DDY CARTR1",
+          "star": "CARTR2",
+          "flight_strip_route": "ONL DDY CARTR2",
           "initial_controller": "D16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1302,12 +1302,12 @@
       ],
       "overflights": []
     },
-    "SKEES6.PIH": {
+    "SKEES7.PIH": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "SKEES6",
-          "flight_strip_route": "IYEFF1 ROCCA PIH SKEES6",
+          "star": "SKEES7",
+          "flight_strip_route": "IYEFF1 ROCCA PIH SKEES7",
           "initial_controller": "S16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1345,12 +1345,12 @@
       ],
       "overflights": []
     },
-    "SKEES6.BYI": {
+    "SKEES7.BYI": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "SKEES6",
-          "flight_strip_route": "SUMMA2 SUMMA WANTA Q154 BYI SKEES6",
+          "star": "SKEES7",
+          "flight_strip_route": "SUMMA2 SUMMA WANTA Q154 BYI SKEES7",
           "initial_controller": "S16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1474,12 +1474,12 @@
       ],
       "overflights": []
     },
-    "PITTT2.HELPR": {
+    "PITTT3.HELPR": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "PITTT2",
-          "flight_strip_route": "LARGO3 RSK JNC HELPR PITTT2",
+          "star": "PITTT3",
+          "flight_strip_route": "LARGO3 RSK JNC HELPR PITTT3",
           "initial_controller": "L16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1530,12 +1530,12 @@
       ],
       "overflights": []
     },
-    "PITTT2.MLF": {
+    "PITTT3.MLF": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "PITTT2",
-          "flight_strip_route": "ORCKA5 LAS Q70 BLIPP Q842 WINEN MLF PITTT2",
+          "star": "PITTT3",
+          "flight_strip_route": "ORCKA5 LAS Q70 BLIPP Q842 WINEN MLF PITTT3",
           "initial_controller": "L16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1582,12 +1582,12 @@
       ],
       "overflights": []
     },
-    "PITTT2.BCE": {
+    "PITTT3.BCE": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "PITTT2",
-          "flight_strip_route": "BURRO5 BBALL PXR BCE PITTT2",
+          "star": "PITTT3",
+          "flight_strip_route": "BURRO5 BBALL PXR BCE PITTT3",
           "initial_controller": "L16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1618,12 +1618,12 @@
       ],
       "overflights": []
     },
-    "PITTT2.EKR": {
+    "PITTT3.EKR": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "PITTT2",
-          "flight_strip_route": "CHIEF9 CATTS HLC FQF JESIE EKR PITTT2",
+          "star": "PITTT3",
+          "flight_strip_route": "CHIEF9 CATTS HLC FQF JESIE EKR PITTT3",
           "initial_controller": "L16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1654,12 +1654,12 @@
       ],
       "overflights": []
     },
-    "PITTT2.MTU": {
+    "PITTT3.MTU": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "PITTT2",
-          "flight_strip_route": "MTU PITTT2",
+          "star": "PITTT3",
+          "flight_strip_route": "MTU PITTT3",
           "initial_controller": "L16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -1679,12 +1679,12 @@
       ],
       "overflights": []
     },
-    "YUTES2.FLECC": {
+    "YUTES3.FLECC": {
       "arrivals": [
         {
           "cruise_altitude": 35000,
-          "star": "YUTES2",
-          "flight_strip_route": "TRUKN2 MOGEE Q124 SLOWN FLECC YUTES2",
+          "star": "YUTES3",
+          "flight_strip_route": "TRUKN2 MOGEE Q124 SLOWN FLECC YUTES3",
           "initial_controller": "O16",
           "initial_altitude": 35000,
           "initial_speed": 300,
@@ -2199,19 +2199,19 @@
         "QWENN7.BCE": {
           "KSLC": 1
         },
-        "CARTR1.OCS": {
+        "CARTR2.OCS": {
           "KSLC": 5
         },
-        "CARTR1.CKW": {
+        "CARTR2.CKW": {
           "KSLC": 1
         },
-        "CARTR1.DDY": {
+        "CARTR2.DDY": {
           "KSLC": 1
         },
-        "SKEES6.PIH": {
+        "SKEES7.PIH": {
           "KSLC": 3
         },
-        "SKEES6.BYI": {
+        "SKEES7.BYI": {
           "KSLC": 2
         },
         "JAZZZ1.HELPR": {
@@ -2220,7 +2220,7 @@
         "JAZZZ1.MTU": {
           "KSLC": 2
         },
-        "YUTES2.FLECC": {
+        "YUTES3.FLECC": {
           "KSLC": 3
         }
       },
@@ -2263,37 +2263,37 @@
         "Overflights": {
           "overflights": 12
         },
-        "PITTT2.HELPR": {
+        "PITTT3.HELPR": {
           "KSLC": 3
         },
-        "PITTT2.MLF": {
+        "PITTT3.MLF": {
           "KSLC": 4
         },
-        "PITTT2.BCE": {
+        "PITTT3.BCE": {
           "KSLC": 1
         },
-        "PITTT2.EKR": {
+        "PITTT3.EKR": {
           "KSLC": 1
         },
-        "PITTT2.MTU": {
+        "PITTT3.MTU": {
           "KSLC": 1
         },
-        "CARTR1.OCS": {
+        "CARTR2.OCS": {
           "KSLC": 5
         },
-        "CARTR1.CKW": {
+        "CARTR2.CKW": {
           "KSLC": 1
         },
-        "CARTR1.DDY": {
+        "CARTR2.DDY": {
           "KSLC": 1
         },
-        "SKEES6.PIH": {
+        "SKEES7.PIH": {
           "KSLC": 3
         },
-        "SKEES6.BYI": {
+        "SKEES7.BYI": {
           "KSLC": 2
         },
-        "YUTES2.FLECC": {
+        "YUTES3.FLECC": {
           "KSLC": 3
         }
       },

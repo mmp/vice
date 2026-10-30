@@ -8082,11 +8082,11 @@
         }
       ]
     },
-    "BAZBL1": {
+    "BAZBL2": {
       "arrivals": [
         {
           "waypoints": "GOZDA HOMRN GOHAN BAZBL/a9000",
-          "star": "BAZBL1",
+          "star": "BAZBL2",
           "initial_controller": "C87",
           "initial_altitude": 14000,
           "initial_speed": 210,
@@ -8120,7 +8120,7 @@
         },
         {
           "waypoints": "BEANE GOHAN BAZBL/a9000",
-          "star": "BAZBL1",
+          "star": "BAZBL2",
           "initial_controller": "C87",
           "initial_altitude": 17000,
           "initial_speed": 210,
@@ -8145,7 +8145,7 @@
         },
         {
           "waypoints": "STYCK HOMRN GOHAN BAZBL/a9000",
-          "star": "BAZBL1",
+          "star": "BAZBL2",
           "initial_controller": "C87",
           "initial_altitude": 14000,
           "initial_speed": 210,
@@ -8174,11 +8174,11 @@
         }
       ]
     },
-    "BAZBL1.DWH SOUTH.AUTO": {
+    "BAZBL2.DWH SOUTH.AUTO": {
       "arrivals": [
         {
           "waypoints": "GOZDA HOMRN GOHAN/ho1R BAZBL/a9000 N030.29.18.224,W095.52.21.732/d3000/spspG7R OILER/clearapp",
-          "star": "BAZBL1",
+          "star": "BAZBL2",
           "initial_controller": "C87",
           "initial_altitude": 10000,
           "initial_speed": 210,
@@ -8212,7 +8212,7 @@
         },
         {
           "waypoints": "BEANE GOHAN/ho1R BAZBL/a9000 N030.29.18.224,W095.52.21.732/d3000/spspG7R OILER/clearapp",
-          "star": "BAZBL1",
+          "star": "BAZBL2",
           "initial_controller": "C87",
           "initial_altitude": 11000,
           "initial_speed": 210,
@@ -8237,7 +8237,7 @@
         },
         {
           "waypoints": "STYCK HOMRN GOHAN/ho1R BAZBL/a9000 N030.29.18.224,W095.52.21.732/d3000/spspG7R OILER/clearapp",
-          "star": "BAZBL1",
+          "star": "BAZBL2",
           "initial_controller": "C87",
           "initial_altitude": 10000,
           "initial_speed": 210,
@@ -15238,7 +15238,7 @@
           "description": "NW IAH STAR streams combined feeding to IAH final;",
           "waypoints": "MPORT/a16000-19000/s280 DRLLR/a13000-16000/s250/spspI6R PTROL/a11000-13000 DOMNO/a8000-10000/s240/ho1A SKLER/a6000/s210/flyover/t087",
           "star": "DRLLR5",
-          "star_feeds": ["BAZBL1", "DRLLR5", "RIICE1", "MSCOT4", "TTORO3"],
+          "star_feeds": ["BAZBL2", "DRLLR5", "RIICE1", "MSCOT4", "TTORO3"],
           "initial_controller": "1N",
           "initial_altitude": 18000,
           "initial_speed": 250,
@@ -15600,7 +15600,7 @@
           "description": "NW IAH STAR streams combined feeding to IAH final;",
           "waypoints": "DPLAN/a22000+ SSTAX/a20000-24000/ho1N MPORT/a16000-19000/s280 DRLLR/a13000-16000/s250/spspI6R PTROL/a11000-13000 DOMNO/a8000-10000/s240/ho1A SKLER/a6000/s210/flyover/d3000 N030.05.25.133,W095.05.04.513 N030.02.31.940,W095.04.55.175/flyover CHUBS/a3000/clearapp",
           "star": "DRLLR5",
-          "star_feeds": ["BAZBL1", "DRLLR5", "RIICE1", "MSCOT4", "TTORO3"],
+          "star_feeds": ["BAZBL2", "DRLLR5", "RIICE1", "MSCOT4", "TTORO3"],
           "initial_controller": "1N",
           "initial_altitude": 24000,
           "initial_speed": 250,
@@ -17132,7 +17132,7 @@
         {
           "spawn": "MPORT@0.0",
           "star": "GUSHR3",
-          "star_feeds": ["GUSHR3", "BAZBL1", "DRLLR5", "RIICE1"],
+          "star_feeds": ["GUSHR3", "BAZBL2", "DRLLR5", "RIICE1"],
           "initial_controller": "1N",
           "initial_altitude": 9000,
           "initial_speed": 250,
@@ -24676,7 +24676,7 @@
         }
       ],
       "inbound_rates": {
-        "BAZBL1": {
+        "BAZBL2": {
           "KDWH": 1
         },
         "DOOBI3": {
@@ -24935,7 +24935,7 @@
           "KSGR": 0,
           "KGLS": 0
         },
-        "BAZBL1": {
+        "BAZBL2": {
           "KDWH": 2
         },
         "PIEGY1": {
@@ -25132,7 +25132,7 @@
         "ZEEKK3": {
           "KIAH": 8
         },
-        "BAZBL1": {
+        "BAZBL2": {
           "KDWH": 2
         },
         "PIEGY1": {
@@ -25314,7 +25314,7 @@
         }
       ],
       "inbound_rates": {
-        "BAZBL1.DWH SOUTH.AUTO": {
+        "BAZBL2.DWH SOUTH.AUTO": {
           "KDWH": 2
         },
         "PIEGY1.DWH SOUTH.AUTO": {
@@ -25448,7 +25448,7 @@
         }
       ],
       "inbound_rates": {
-        "BAZBL1.DWH SOUTH.AUTO": {
+        "BAZBL2.DWH SOUTH.AUTO": {
           "KDWH": 2
         },
         "PIEGY1.DWH SOUTH.AUTO": {
@@ -25676,7 +25676,7 @@
         "FINAL.GUSHR3": {
           "KIAH": 14
         },
-        "BAZBL1.DWH SOUTH.AUTO": {
+        "BAZBL2.DWH SOUTH.AUTO": {
           "KDWH": 2
         },
         "PIEGY1.DWH SOUTH.AUTO": {
@@ -25760,7 +25760,7 @@
         "FINAL.GUSHR3": {
           "KIAH": 14
         },
-        "BAZBL1.DWH SOUTH.AUTO": {
+        "BAZBL2.DWH SOUTH.AUTO": {
           "KDWH": 2
         },
         "PIEGY1.DWH SOUTH.AUTO": {
@@ -25860,7 +25860,7 @@
         "FINAL.NE GATE.GESNR2&SKNRD5.AUTO": {
           "KIAH": 15
         },
-        "BAZBL1.DWH SOUTH.AUTO": {
+        "BAZBL2.DWH SOUTH.AUTO": {
           "KDWH": 2
         },
         "PIEGY1.DWH SOUTH.AUTO": {
@@ -26084,7 +26084,7 @@
         "FINAL.NE GATE.GESNR2&SKNRD5.AUTO": {
           "KIAH": 15
         },
-        "BAZBL1.DWH SOUTH.AUTO": {
+        "BAZBL2.DWH SOUTH.AUTO": {
           "KDWH": 2
         },
         "PIEGY1.DWH SOUTH.AUTO": {
@@ -26241,7 +26241,7 @@
         "ZEEKK3.AUTO": {
           "KIAH": 10
         },
-        "BAZBL1.DWH SOUTH.AUTO": {
+        "BAZBL2.DWH SOUTH.AUTO": {
           "KDWH": 2
         },
         "PIEGY1.DWH SOUTH.AUTO": {

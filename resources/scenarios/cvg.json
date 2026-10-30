@@ -1054,7 +1054,7 @@
           ],
           "destination": "KSLC",
           "exit": "HELIS",
-          "waypoints": "LOVEY8 HELIS SPI IRK PWE HCT CYS LAR CKW CARTR1",
+          "waypoints": "LOVEY8 HELIS SPI IRK PWE HCT CYS LAR CKW CARTR2",
           "scratchpad": "CAR"
         },
         {

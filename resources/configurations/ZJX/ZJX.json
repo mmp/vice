@@ -325,7 +325,7 @@
           "KRVUR.DADES2": "33",
           "ZOOSS.MARQO3": "33",
           "ZPLEN.TEEKY4": "33",
-          "ZPLEN.VUUDU2": "33",
+          "ZPLEN.VUUDU3": "33",
           "OTK KGNV": "33",
           "Q118": "33"
         },
@@ -338,7 +338,7 @@
           "LUBBR4": "50",
           "OHDEA2": "50",
           "TTHOR3": "50",
-          "50_BAGGY3": "50",
+          "50_BAGGY4": "50",
           "50_CAMJO": "50",
           "50_DADES2": "50",
           "50_GRNCH5": "50",
@@ -359,7 +359,7 @@
       },
       "J66": {
         "inbound_assignments": {
-          "50_BAGGY3": "66",
+          "50_BAGGY4": "66",
           "50_CAMJO": "66",
           "50_DADES2": "66",
           "50_GRNCH5": "66",

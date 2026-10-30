@@ -1151,7 +1151,7 @@
           ],
           "altitude": [30000, 32000, 34000, 36000],
           "destination": "KSLC",
-          "waypoints": "NEWEL J60 DJB ASHEN KG69O BRBIE IOW J146 CNOTA KP69E WYYTE KD69W LAR CKW CARTR1",
+          "waypoints": "NEWEL J60 DJB ASHEN KG69O BRBIE IOW J146 CNOTA KP69E WYYTE KD69W LAR CKW CARTR2",
           "exit": "NEWEL"
         },
         {
@@ -2935,7 +2935,7 @@
           "exit": "STOEN",
           "destination": "KDJT",
           "altitude": 32000,
-          "waypoints": "STOEN Q75 ENEME VUUDU2",
+          "waypoints": "STOEN Q75 ENEME VUUDU3",
           "airlines": [
             {
               "icao": "AAL",
@@ -3619,7 +3619,7 @@
           "exit": "MXE",
           "destination": "KSLC",
           "altitude": 34000,
-          "waypoints": "MXE PENSY J110 AIR CVG BIB STL HYS GLD LAR CKW CARTR1",
+          "waypoints": "MXE PENSY J110 AIR CVG BIB STL HYS GLD LAR CKW CARTR2",
           "airlines": [
             {
               "icao": "DAL",
@@ -4880,13 +4880,13 @@
         }
       ]
     },
-    "TRISH4 (IZZEE)": {
+    "TRISH5 (IZZEE)": {
       "arrivals": [
         {
           "waypoints": "PUNCO/ho IZZEE LEGGO DRRES/a10000 RAUKY TRISH WUUDI FINNZ/a5000 KEEYY ROAPS HOOOK/delete",
           "cruise_altitude": 37000,
-          "star": "TRISH4",
-          "flight_strip_route": "/. TRISH4",
+          "star": "TRISH5",
+          "flight_strip_route": "/. TRISH5",
           "initial_controller": "C48",
           "initial_altitude": 25000,
           "initial_speed": 300,
@@ -6293,12 +6293,12 @@
         }
       ]
     },
-    "TRISH4 (42)": {
+    "TRISH5 (42)": {
       "arrivals": [
         {
           "waypoints": "GREKI/ho Q75 JERSY Q75 STOEN NUGGY TROYZ BELAY TRISH CLIPR BAL EYESS BRUNC FELTY/delete",
           "cruise_altitude": 34000,
-          "star": "TRISH4",
+          "star": "TRISH5",
           "flight_strip_route": "/. GREKI Q75 JERSY Q75 NUGGY TROYZ BELAY TRISH CLIPR BAL EYESS BRUNC FELTY",
           "initial_controller": "N5W",
           "initial_altitude": 34000,
@@ -7115,7 +7115,7 @@
         "DPK3 (Q481)": {
           "KBDL": 1
         },
-        "TRISH4 (42)": {
+        "TRISH5 (42)": {
           "KBWI": 1
         },
         "CLIPR3 (BIGGY)": {

@@ -1554,11 +1554,11 @@
         }
       ]
     },
-    "GIGGY2": {
+    "GIGGY3": {
       "arrivals": [
         {
           "waypoints": "COLTS/a30000 BOREK LOPVO ITPEG PICUP/a10000/ho AUTTO GIGGY/a4000/h230",
-          "star": "GIGGY2",
+          "star": "GIGGY3",
           "initial_controller": "C48",
           "initial_altitude": 30000,
           "initial_speed": 280,
@@ -2399,7 +2399,7 @@
         }
       ]
     },
-    "PETTE2": {
+    "PETTE3": {
       "arrivals": [
         {
           "waypoints": "QBURT/ho HEVYD HAZIT PETTE",
@@ -2417,7 +2417,7 @@
               "5": "PETTE SYREN/a4000/h71"
             }
           },
-          "star": "PETTE2",
+          "star": "PETTE3",
           "initial_controller": "C48",
           "initial_altitude": 17000,
           "initial_speed": 280,
@@ -2912,7 +2912,7 @@
           "KYIP": 3,
           "KPTK": 5
         },
-        "PETTE2": {
+        "PETTE3": {
           "KYIP": 5,
           "KPTK": 5,
           "KDET": 2
@@ -2921,7 +2921,7 @@
           "KYIP": 3,
           "KPTK": 4
         },
-        "GIGGY2": {
+        "GIGGY3": {
           "KDET": 2
         }
       },
@@ -3019,7 +3019,7 @@
           "KYIP": 3,
           "KPTK": 5
         },
-        "PETTE2": {
+        "PETTE3": {
           "KYIP": 5,
           "KPTK": 5,
           "KDET": 2
@@ -3028,7 +3028,7 @@
           "KYIP": 3,
           "KPTK": 4
         },
-        "GIGGY2": {
+        "GIGGY3": {
           "KDET": 2
         }
       },
@@ -3122,7 +3122,7 @@
           "KYIP": 3,
           "KPTK": 5
         },
-        "PETTE2": {
+        "PETTE3": {
           "KYIP": 5,
           "KPTK": 5,
           "KDET": 2
@@ -3131,7 +3131,7 @@
           "KYIP": 3,
           "KPTK": 4
         },
-        "GIGGY2": {
+        "GIGGY3": {
           "KDET": 2
         }
       },
@@ -3229,7 +3229,7 @@
           "KYIP": 3,
           "KPTK": 5
         },
-        "PETTE2": {
+        "PETTE3": {
           "KYIP": 5,
           "KPTK": 5,
           "KDET": 2
@@ -3238,7 +3238,7 @@
           "KYIP": 3,
           "KPTK": 4
         },
-        "GIGGY2": {
+        "GIGGY3": {
           "KDET": 2
         }
       },
@@ -3332,7 +3332,7 @@
           "KYIP": 3,
           "KPTK": 5
         },
-        "PETTE2": {
+        "PETTE3": {
           "KYIP": 5,
           "KPTK": 5,
           "KDET": 2
@@ -3341,7 +3341,7 @@
           "KYIP": 3,
           "KPTK": 4
         },
-        "GIGGY2": {
+        "GIGGY3": {
           "KDET": 2
         }
       },

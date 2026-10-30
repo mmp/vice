@@ -214,7 +214,7 @@
           "MIP4-ETG": "72",
           "MIP4-PSB": "72",
           "MIP4-SFK": "72",
-          "TRISH4": "72",
+          "TRISH5": "72",
           "SPUDS7 - CFB": "51",
           "SPUDS7 - DNY": "51",
           "STUBN": "50",
@@ -238,7 +238,7 @@
           "DPK3 (Q419)": "56",
           "DPK3 (Q481)": "56",
           "CAMRN5": "68",
-          "TRISH4 (42)": "42",
+          "TRISH5 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
           "HYPER1 (RBV - 55)": "55",
@@ -315,7 +315,7 @@
           "MIP4-ETG": "72",
           "MIP4-PSB": "72",
           "MIP4-SFK": "72",
-          "TRISH4": "72"
+          "TRISH5": "72"
         },
         "default_consolidation": {
           "72": []
@@ -327,7 +327,7 @@
           "MIP4-ETG": "72",
           "MIP4-PSB": "72",
           "MIP4-SFK": "72",
-          "TRISH4": "72",
+          "TRISH5": "72",
           "SPUDS7": "72"
         },
         "default_consolidation": {
@@ -336,7 +336,7 @@
       },
       "N42": {
         "inbound_assignments": {
-          "TRISH4 (42)": "42",
+          "TRISH5 (42)": "42",
           "CLIPR3 (NELIE 42)": "42",
           "HYPER1 (FILGA)": "42",
           "HYPER1 (GANDE)": "42",
@@ -348,7 +348,7 @@
       },
       "425": {
         "inbound_assignments": {
-          "TRISH4 (42)": "42",
+          "TRISH5 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
           "HYPER1 (RBV - 55)": "55",
@@ -379,7 +379,7 @@
         "inbound_assignments": {
           "CLIPR3 (NELIE)": "55",
           "CLIPR3 (BIGGY)": "55",
-          "TRISH4": "55",
+          "TRISH5": "55",
           "HYPER1 (RBV - 55)": "55"
         },
         "default_consolidation": {
@@ -419,7 +419,7 @@
       },
       "345": {
         "inbound_assignments": {
-          "TRISH4 (42)": "42",
+          "TRISH5 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
           "HYPER1 (RBV - 55)": "55",
@@ -464,7 +464,7 @@
           "DPK3 (Q419)": "56",
           "DPK3 (Q481)": "56",
           "CAMRN5": "68",
-          "TRISH4 (42)": "42",
+          "TRISH5 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
           "HYPER1 (RBV - 55)": "55",
@@ -536,7 +536,7 @@
           "HYPER1 - SARAA (26)": "26",
           "HYPER1 - HIKES (26)": "26",
           "HAR5 (26)": "26",
-          "TRISH4 (26)": "26",
+          "TRISH5 (26)": "26",
           "Overflights": "26"
         },
         "default_consolidation": {
@@ -545,7 +545,7 @@
       },
       "N27": {
         "inbound_assignments": {
-          "TRISH4 (27)": "27",
+          "TRISH5 (27)": "27",
           "BOJID4 - JST (27)": "27",
           "BOJID4 - PSB (27)": "27",
           "HAR5 (27)": "27",
@@ -559,7 +559,7 @@
       },
       "N25": {
         "inbound_assignments": {
-          "TRISH4 (25)": "25",
+          "TRISH5 (25)": "25",
           "CLIPR3 (25)": "25"
         },
         "default_consolidation": {
@@ -568,12 +568,12 @@
       },
       "256": {
         "inbound_assignments": {
-          "TRISH4 (25)": "25",
+          "TRISH5 (25)": "25",
           "CLIPR3 (25)": "25",
           "HYPER1 - SARAA (26)": "26",
           "HYPER1 - HIKES (26)": "26",
           "HAR5 (26)": "26",
-          "TRISH4 (26)": "26",
+          "TRISH5 (26)": "26",
           "Overflights": "26"
         },
         "default_consolidation": {
@@ -582,12 +582,12 @@
       },
       "NYA": {
         "inbound_assignments": {
-          "TRISH4 (25)": "26",
+          "TRISH5 (25)": "26",
           "CLIPR3 (25)": "26",
           "HYPER1 - SARAA (26)": "26",
           "HYPER1 - HIKES (26)": "26",
           "HAR5 (27)": "26",
-          "TRISH4 (27)": "26",
+          "TRISH5 (27)": "26",
           "Overflights": "26",
           "BOJID4 - JST (27)": "26",
           "HAR (27)": "26",
@@ -725,7 +725,7 @@
           "HYPER1 - SARAA (26)": "26",
           "HYPER1 - HIKES (26)": "26",
           "HAR5 (27)": "27",
-          "TRISH4 (27)": "27",
+          "TRISH5 (27)": "27",
           "Overflights": "26",
           "BOJID4 - JST (27)": "27",
           "HAR (27)": "26",
@@ -800,7 +800,7 @@
           "DPK3 (Q419)": "56",
           "DPK3 (Q481)": "56",
           "CAMRN5": "68",
-          "TRISH4 (42)": "42",
+          "TRISH5 (42)": "42",
           "CLIPR3 (BIGGY)": "55",
           "CLIPR3 (NELIE 42)": "42",
           "HYPER1 (RBV - 55)": "55",

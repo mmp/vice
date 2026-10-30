@@ -1409,7 +1409,7 @@
           ],
           "altitude": [37000],
           "destination": "KMHT",
-          "waypoints": "GOETZ7 DIYAB YOCKY LUISE PSB HNK SMYTH ROZZE2",
+          "waypoints": "GOETZ7 DIYAB YOCKY LUISE PSB HNK SMYTH ROZZE3",
           "exit": "DIYAB"
         },
         {
@@ -1963,7 +1963,7 @@
           ],
           "altitude": [35000, 45000],
           "destination": "KDJT",
-          "waypoints": "PIEPE6 IBUFY STEIT IVLUH EDN MAI MICES WILON ZALEK QUAZR YEHAW VUUDU VUUDU2",
+          "waypoints": "PIEPE6 IBUFY STEIT IVLUH EDN MAI MICES WILON ZALEK QUAZR YEHAW VUUDU VUUDU3",
           "exit": "IBUFY"
         },
         {

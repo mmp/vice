@@ -475,7 +475,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",
@@ -561,7 +561,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",
@@ -657,7 +657,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",
@@ -767,7 +767,7 @@
           "exit": "HAWKN",
           "destination": "KJAC",
           "altitude": 43000,
-          "waypoints": "HAWKN OSH KG84K DOKTR SCHEP VOLGA KP84A JASTI RAP KD84U CZI DNW",
+          "waypoints": "HAWKN OSH KG84K DOKTR VOLGA KP84A JASTI RAP KD84U CZI DNW",
           "airlines": [
             {
               "icao": "LXJ",

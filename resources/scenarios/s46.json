@@ -255,7 +255,7 @@
           "OZWLD,SUMMA.NITE,BUWZO.NITE": {
             "aircraft": "jet",
             "cleared_altitude": 9000,
-            "sid": "OZWLD1"
+            "sid": "OZWLD2"
           },
           "BANDR.NITE": {
             "aircraft": "jet",
@@ -628,7 +628,7 @@
           ],
           "KSLC": [
             {
-              "route": "SUMMA WANTA Q154 BYI SKEES6",
+              "route": "SUMMA WANTA Q154 BYI SKEES7",
               "aircraft": "jet"
             }
           ],
@@ -785,9 +785,6 @@
         },
         "R4L": {
           "cifp_id": "R34L"
-        },
-        "RX6R": {
-          "cifp_id": "RX16R"
         },
         "RY6R": {
           "cifp_id": "RY16R"

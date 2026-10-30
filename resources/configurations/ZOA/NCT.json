@@ -533,11 +533,11 @@
           "PYE3": "4U"
         },
         "departure_assignments": {
-          "KOAK/CNDEL5": "4U",
-          "KOAK/OAK6": "4R",
+          "KOAK/CNDEL6": "4U",
+          "KOAK/OAK7": "4R",
           "KOAK/NIMI6": "4D",
-          "KOAK/NUEVO8": "4U",
-          "KOAK/SLNT3": "4R",
+          "KOAK/NUEVO9": "4U",
+          "KOAK/SLNT4": "4R",
           "KOAK/COAST9": "4U",
           "KSFO/SSTIK5": "4U",
           "KSFO/TRUKN2": "4R",
@@ -560,9 +560,9 @@
           "OAKES3.E": "4D"
         },
         "departure_assignments": {
-          "KOAK/KATFH3": "4U",
-          "KOAK/OAK6": "4R",
-          "KOAK/OAK6.O": "4U",
+          "KOAK/KATFH4": "4U",
+          "KOAK/OAK7": "4R",
+          "KOAK/OAK7.O": "4U",
           "KSFO/MOLEN9": "4U",
           "KSFO/CIITY3": "4R",
           "KSFO/SAHEY4": "4U"
@@ -580,11 +580,11 @@
           "PYE3": "4U"
         },
         "departure_assignments": {
-          "KOAK/CNDEL5": "4U",
-          "KOAK/OAK6": "4R",
+          "KOAK/CNDEL6": "4U",
+          "KOAK/OAK7": "4R",
           "KOAK/NIMI6": "4D",
-          "KOAK/NUEVO8": "4U",
-          "KOAK/SLNT3": "4R",
+          "KOAK/NUEVO9": "4U",
+          "KOAK/SLNT4": "4R",
           "KOAK/COAST9": "4U",
           "KSFO/WESLA5": "4U",
           "KSFO/TRUKN2": "4R",
@@ -605,7 +605,7 @@
           "EMZOH4.E": "4D"
         },
         "departure_assignments": {
-          "KOAK/QUAKE2": "4R",
+          "KOAK/OAK7": "4R",
           "KSFO/WESLA5": "4U",
           "KSFO/SNTNA2": "4R",
           "KSFO/GNNRR3": "4U",

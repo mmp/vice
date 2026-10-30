@@ -1238,7 +1238,7 @@
     "VIYAP": {
       "arrivals": [
         {
-          "waypoints": "HUDES VIYAP/ho/h18",
+          "waypoints": "SIROC VIYAP/ho/h18",
           "cruise_altitude": 31000,
           "flight_strip_route": "/. VIYAP",
           "initial_controller": "C54",

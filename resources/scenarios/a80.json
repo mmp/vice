@@ -3051,7 +3051,7 @@
           "destination": "KDJT",
           "altitude": [31000, 33000, 35000, 37000, 39000],
           "exit": "WALET",
-          "waypoints": "WALET ZPLEN VUUDU2"
+          "waypoints": "WALET ZPLEN VUUDU3"
         },
         {
           "airlines": [

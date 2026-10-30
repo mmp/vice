@@ -189,15 +189,15 @@
     }
   },
   "inbound_flows": {
-    "CARTR1.N": {
+    "CARTR2.N": {
       "arrivals": [
         {
           "waypoints": "LHO/a14000+/ho CARTR SETTT/a14000+ DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
-          "star": "CARTR1",
+          "star": "CARTR2",
           "initial_controller": "C07",
           "initial_altitude": 16000,
           "initial_speed": 300,
-          "description": "CARTR1",
+          "description": "CARTR2",
           "expect_approach": null,
           "airports": ["KSLC"],
           "airlines": {
@@ -471,15 +471,15 @@
         }
       ]
     },
-    "SKEES6.N": {
+    "SKEES7.N": {
       "arrivals": [
         {
           "waypoints": "BEARR/ho SKEES HUUPR/a13000- DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
-          "star": "SKEES6",
+          "star": "SKEES7",
           "initial_controller": "C14",
           "initial_altitude": 16000,
           "initial_speed": 300,
-          "description": "SKEES6",
+          "description": "SKEES7",
           "expect_approach": null,
           "airports": ["KSLC"],
           "airlines": {
@@ -537,11 +537,11 @@
         }
       ]
     },
-    "YUTES2.N": {
+    "YUTES3.N": {
       "arrivals": [
         {
           "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES GOGGL BUSHH/a12000 SURYP/a11000/h164",
-          "star": "YUTES2",
+          "star": "YUTES3",
           "initial_controller": "C40",
           "initial_altitude": 24000,
           "initial_speed": 300,
@@ -656,10 +656,10 @@
         "QWENN7.MLF": {
           "KSLC": 5
         },
-        "YUTES2.N": {
+        "YUTES3.N": {
           "KSLC": 10
         },
-        "CARTR1.N": {
+        "CARTR2.N": {
           "KSLC": 10
         }
       },

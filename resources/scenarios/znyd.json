@@ -361,13 +361,13 @@
         }
       ]
     },
-    "TRISH4": {
+    "TRISH5": {
       "arrivals": [
         {
           "waypoints": "PUNCO/ho IZZEE LEGGO DRRES/a10000 RAUKY TRISH WUUDI FINNZ/a5000 KEEYY ROAPS HOOOK/delete",
           "cruise_altitude": 37000,
-          "star": "TRISH4",
-          "flight_strip_route": "/. TRISH4",
+          "star": "TRISH5",
+          "flight_strip_route": "/. TRISH5",
           "initial_controller": "C48",
           "initial_altitude": 25000,
           "initial_speed": 300,
@@ -516,7 +516,7 @@
         "FQM3": {
           "KEWR": 15
         },
-        "TRISH4": {
+        "TRISH5": {
           "KBWI": 10
         },
         "SPUDS7": {
