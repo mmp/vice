@@ -361,6 +361,9 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 
 		e.Pop()
 	}
+	if !sg.HistoricalScenario {
+		checkRouteRevisions(sg, e)
+	}
 
 	checkERAMEntriesUnused(sg, e)
 

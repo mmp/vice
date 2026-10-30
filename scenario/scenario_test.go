@@ -188,6 +188,51 @@ func TestSimilarStaysNearTheFacility(t *testing.T) {
 	}
 }
 
+// TestCheckRouteRevisions checks that the procedure names a scenario writes
+// out itself are reported when they carry a revision the CIFP no longer
+// charts, and left alone when current or when nothing of their name is
+// charted, as with an NRS waypoint that starts like a procedure name.
+func TestCheckRouteRevisions(t *testing.T) {
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{
+		Airports: map[av.ICAOAirportCode]db.Airport{
+			"KXYZ": {SIDs: map[string]av.SID{"CLIMB5": {}}, STARs: map[string]av.STAR{"DSCND3": {}}},
+		},
+	}
+	t.Cleanup(func() { db.DB = oldDB })
+
+	sg := &Group{
+		Airports: map[av.ICAOAirportCode]*av.Airport{"KXYZ": {
+			DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+				"27": {"CLIMB": {{SID: "CLIMB4"}}, "OTHER": {{SID: "CLIMB5"}, {SID: "VECTR2"}}},
+			},
+			Departures: []av.Departure{
+				{Destination: "KABC", WaypointsString: "CLIMB4 CLIMB J60 KD66Y"},
+				{Destination: "KABC", WaypointsString: "CLIMB5 CLIMB J60"},
+			},
+		}},
+		InboundFlows: map[string]*av.InboundFlow{
+			"EAST": {Arrivals: []av.Arrival{
+				{Airports: []av.ICAOAirportCode{"KXYZ"}, FlightStripDisplayRoute: "ABC DSCND2"},
+				{Airports: []av.ICAOAirportCode{"KXYZ"}, FlightStripDisplayRoute: "ABC DSCND3"},
+			}},
+		},
+	}
+
+	var e util.ErrorLogger
+	checkRouteRevisions(sg, &e)
+	errs := strings.Split(strings.TrimSpace(e.String()), "\n")
+	want := []string{"CLIMB4 isn't a SID", "CLIMB4 isn't a SID", "DSCND2 isn't a STAR"}
+	if len(errs) != len(want) {
+		t.Fatalf("got %d errors, want %d:\n%s", len(errs), len(want), e.String())
+	}
+	for i, w := range want {
+		if !strings.Contains(errs[i], w) {
+			t.Errorf("error %d: %q doesn't report %q", i, errs[i], w)
+		}
+	}
+}
+
 // TestLocateFRDFromRedefinedFix checks that an FRD off a fix that the scenario
 // group redefines is measured from the group's definition and not from the
 // published fix of the same name: the Academy's BRITT is near Tulsa, while the

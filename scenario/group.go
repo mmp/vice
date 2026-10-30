@@ -6,6 +6,7 @@ package scenario
 
 import (
 	"fmt"
+	"iter"
 	"maps"
 	"regexp"
 	"slices"
@@ -617,26 +618,93 @@ func checkFlowNameRevisions(name string, airports map[av.ICAOAirportCode]*av.Air
 		if !ok {
 			continue
 		}
+		if current := currentRevisions(proc, chartedSTARs(maps.Keys(airports))); current != nil {
+			e.ErrorString("%s in the name isn't a STAR the FAA CIFP charts; the current revision is %s",
+				proc, strings.Join(current, ", "))
+		}
+	}
+}
 
-		charted := make(map[string]struct{})
-		for icao := range airports {
-			for star := range db.DB.Airports[icao].STARs {
-				if av.ProcedureBase(star) == av.ProcedureBase(proc) {
-					charted[star] = struct{}{}
+// checkRouteRevisions reports the SID and STAR names that a scenario writes
+// out itself and that carry a revision the FAA CIFP doesn't chart: the "sid"
+// of a departure route, a SID named in a departure's "waypoints", and a STAR
+// in an arrival's "flight_strip_route". As with flow names, these are labels
+// that the controller sees on flight strips, while what is flown comes from
+// the waypoints or matches procedures by their base names, so nothing else
+// notices them going stale.
+func checkRouteRevisions(sg *Group, e *util.ErrorLogger) {
+	// A token is checked only if it is a whole procedure name; NRS
+	// waypoints such as KD66Y start like one.
+	check := func(token, kind string, charted iter.Seq[string], where string) {
+		if proc, ok := leadingProcedureName(token); ok && proc == token {
+			if current := currentRevisions(proc, charted); current != nil {
+				e.ErrorString("%s: %s isn't a %s the FAA CIFP charts; the current revision is %s",
+					where, proc, kind, strings.Join(current, ", "))
+			}
+		}
+	}
+
+	for icao, ap := range util.SortedMap(sg.Airports) {
+		e.Push("Airport " + string(icao))
+		sids := maps.Keys(db.DB.Airports[icao].SIDs)
+		named := make(map[string]bool) // a SID many routes share is reported once
+		for _, exits := range util.SortedMap(ap.DepartureRoutes) {
+			for _, routes := range util.SortedMap(exits) {
+				for _, er := range routes {
+					if sid, _, _ := strings.Cut(er.SID, "."); !named[sid] {
+						named[sid] = true
+						check(sid, "SID", sids, `"sid"`)
+					}
 				}
 			}
 		}
-		if len(charted) == 0 {
-			// Nothing of that name is charted at any of the scenario's
-			// airports, so the token isn't a procedure name at all.
-			continue
+		for _, dep := range ap.Departures {
+			for token := range strings.FieldsSeq(dep.WaypointsString) {
+				check(token, "SID", sids, fmt.Sprintf("departure to %s %q", dep.Destination, dep.WaypointsString))
+			}
 		}
-		if _, ok := charted[proc]; ok {
-			continue
-		}
+		e.Pop()
+	}
 
-		e.ErrorString("%s in the name isn't a STAR the FAA CIFP charts; the current revision is %s",
-			proc, strings.Join(util.SortedMapKeys(charted), ", "))
+	for name, flow := range util.SortedMap(sg.InboundFlows) {
+		e.Push("Inbound flow " + name)
+		for _, ar := range flow.Arrivals {
+			for token := range strings.FieldsSeq(ar.FlightStripDisplayRoute) {
+				check(token, "STAR", chartedSTARs(slices.Values(ar.Airports)), `"flight_strip_route"`)
+			}
+		}
+		e.Pop()
+	}
+}
+
+// currentRevisions returns the revisions of proc's procedure among charted
+// when proc itself isn't one of them: the names that a stale revision should
+// be updated to. It returns nil when proc is charted and when nothing of its
+// name is, as when the token naming it isn't a procedure at all.
+func currentRevisions(proc string, charted iter.Seq[string]) []string {
+	var current []string
+	for name := range charted {
+		if name == proc {
+			return nil
+		}
+		if av.ProcedureBase(name) == av.ProcedureBase(proc) {
+			current = append(current, name)
+		}
+	}
+	slices.Sort(current)
+	return slices.Compact(current)
+}
+
+// chartedSTARs returns the STARs the FAA CIFP charts at the airports.
+func chartedSTARs(airports iter.Seq[av.ICAOAirportCode]) iter.Seq[string] {
+	return func(yield func(string) bool) {
+		for icao := range airports {
+			for star := range db.DB.Airports[icao].STARs {
+				if !yield(star) {
+					return
+				}
+			}
+		}
 	}
 }
 
