@@ -381,6 +381,63 @@ func TestContactMessageOnSTARAtAssignedAltitude(t *testing.T) {
 	}
 }
 
+// TestContactMessageReportsDescentOnceStarted verifies that an aircraft
+// level ahead of a lower restriction reports its altitude alone, and that it
+// reports leaving it only once it has started down.
+func TestContactMessageReportsDescentOnceStarted(t *testing.T) {
+	newOverflight := func(t *testing.T, route string) *FlightTest {
+		return NewArrivalFlight(t, ArrivalConfig{
+			Waypoints:        route,
+			DepartureAirport: "KIPT",
+			ArrivalAirport:   "KIAD",
+			AircraftType:     "A320",
+			InitialAltitude:  8000,
+			InitialSpeed:     250,
+		})
+	}
+	written := func(t *testing.T, f *FlightTest) string {
+		t.Helper()
+		return strings.ToLower(writtenForTest(t, f.nav.ContactMessage("", "", false, false), f.nav.Rand))
+	}
+	leaving := func(w string) bool { return strings.Contains(w, "leaving") || strings.Contains(w, "out of") }
+	summary := func(f *FlightTest) string {
+		return f.nav.Summary(f.rules, &wx.Model{}, f.simTime, rand.Make(), nil)
+	}
+
+	t.Run("RouteRestriction", func(t *testing.T) {
+		f := newOverflight(t, "LIRCH BINNS HYPER SIGBE/a7000")
+		if w := written(t, f); !strings.Contains(w, "8,000") || strings.Contains(w, "7,000") || leaving(w) {
+			t.Errorf("level contact message %q: want 8,000 alone", w)
+		}
+		if s := summary(f); !strings.Contains(s, "At 8,000; will descend to 7,000") {
+			t.Errorf("level summary %q: want a pending descent", s)
+		}
+
+		f.StepUntil("started descending", func() bool { return f.nav.FlightState.AltitudeRate < 0 })
+		if w := written(t, f); !strings.Contains(w, "7,000") || !leaving(w) {
+			t.Errorf("descending contact message %q: want leaving for 7,000", w)
+		}
+		if s := summary(f); !strings.Contains(s, "Descending to 7,000") {
+			t.Errorf("descending summary %q: want descending to 7,000", s)
+		}
+	})
+
+	t.Run("CrossingRestriction", func(t *testing.T) {
+		f := newOverflight(t, "LIRCH BINNS HYPER SIGBE")
+		ar := av.MakeAtAltitudeRestriction(7000)
+		f.nav.CrossFixAt("SIGBE", &ar, nil, f.temp())
+		if w := written(t, f); !strings.Contains(w, "cross") || !strings.Contains(w, "sigbe") ||
+			!strings.Contains(w, "7,000") || leaving(w) {
+			t.Errorf("level contact message %q: want 8,000 to cross SIGBE at 7,000", w)
+		}
+
+		f.StepUntil("started descending", func() bool { return f.nav.FlightState.AltitudeRate < 0 })
+		if w := written(t, f); !strings.Contains(w, "sigbe") || !leaving(w) {
+			t.Errorf("descending contact message %q: want leaving to cross SIGBE", w)
+		}
+	})
+}
+
 // AtFix fires action when the named fix is passed.
 func (f *FlightTest) AtFix(fix string, action func(*FlightTest)) *FlightTest {
 	f.events = append(f.events, flightEvent{

@@ -995,7 +995,12 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 		case alt > nav.FlightState.Altitude:
 			lines = append(lines, "Climbing to "+av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
 		case alt < nav.FlightState.Altitude:
-			lines = append(lines, "Descending to "+av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
+			if tgt, _, _ := nav.TargetAltitude(); tgt < nav.FlightState.Altitude {
+				lines = append(lines, "Descending to "+av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
+			} else {
+				lines = append(lines, "At "+av.FormatAltitude(nav.FlightState.Altitude)+"; will descend to "+
+					av.FormatAltitude(alt)+" for alt. restriction at "+target.fix)
+			}
 		case nav.Altitude.Cleared != nil && alt == nav.Altitude.Cleared.Altitude:
 			lines = append(lines, "Holding cleared altitude "+av.FormatAltitude(alt)+"; alt. restriction at "+target.fix)
 		default:
@@ -1360,20 +1365,23 @@ func (nav *Nav) addStarAltitude(rt *speech.RadioTransmission, star string, cross
 	}
 }
 
-// addContactAltitude adds altitude phraseology for non-STAR contexts (vectored, departures, etc.).
+// addContactAltitude adds altitude phraseology for non-STAR contexts
+// (vectored, departures, etc.). Absent an assigned altitude, it reports the
+// altitude the aircraft is flying toward now, not a restriction it hasn't
+// started down for yet.
 func (nav *Nav) addContactAltitude(rt *speech.RadioTransmission, star string, crossing *contactCrossingRestriction) {
 	cur := nav.FlightState.Altitude
+	target, _, _ := nav.TargetAltitude()
 
 	if crossing != nil && crossing.AltRestriction != nil && star == "" {
 		// Fix crossing restriction without a STAR
 		format, args := crossingInstructionFormat(crossing, crossingAltitude(crossing), true)
-		rt.Add("[leaving|out of] {alt} "+format, append([]any{cur}, args...)...)
+		lead := util.Select(math.Abs(target-cur) > 200, "[leaving|out of] {alt} ", "[at|] {alt} ")
+		rt.Add(lead+format, append([]any{cur}, args...)...)
 	} else if nav.Altitude.Assigned != nil {
 		nav.addAltitudePhrasing(rt, *nav.Altitude.Assigned)
-	} else if target, ok := nav.findAltitudeTarget(); ok {
-		nav.addAltitudePhrasing(rt, nav.limitAltitude(target.altitude))
 	} else {
-		rt.Add("[at|] {alt}", cur)
+		nav.addAltitudePhrasing(rt, target)
 	}
 
 	if crossing != nil && crossing.AltRestriction == nil {
