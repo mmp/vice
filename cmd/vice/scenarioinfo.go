@@ -127,13 +127,10 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 	drawScenarioBriefSection(mgr, config, c, p, lg)
 
 	if len(c.State.METAR) > 0 {
-		// Collect IFR airports: those with IFR departures or arrivals
-		ifrAirports := make(map[av.ICAOAirportCode]bool)
-		for ap := range c.State.LaunchConfig.DepartureRates {
-			ifrAirports[ap] = true
-		}
-		for ap := range c.State.ArrivalAirports {
-			ifrAirports[ap] = true
+		departures, arrivals := c.State.LaunchConfig.IFRAirports()
+		airports := c.State.ATISAirports
+		if len(airports) == 0 {
+			airports = util.SortedMapKeys(c.State.METAR)
 		}
 
 		atisExpanded := imgui.CollapsingHeaderBoolPtr("ATIS / METAR", nil)
@@ -145,13 +142,12 @@ func drawScenarioInfoWindow(mgr *client.ConnectionManager, config *Config, c *cl
 				imgui.TableSetupColumn("METAR")
 				imgui.TableHeadersRow()
 
-				airports := util.SortedMapKeys(c.State.METAR)
 				for _, ap := range airports {
-					if !ifrAirports[ap] {
+					metar, ok := c.State.METAR[ap]
+					if !ok || (!departures[ap] && !arrivals[ap]) {
 						continue
 					}
 					letter := c.State.ATISLetter[ap]
-					metar := c.State.METAR[ap]
 
 					imgui.TableNextRow()
 					imgui.TableNextColumn()

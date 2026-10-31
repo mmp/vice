@@ -87,6 +87,10 @@ type CommonState struct {
 	// ListedPositions maps the positions that the scenario info window lists
 	// besides the human ones to descriptions of their roles; nil lists them all.
 	ListedPositions map[ControlPosition]string
+	// ATISAirports lists, in order, the airports the scenario info window's
+	// ATIS / METAR section shows, of those it would show by default; nil
+	// shows all of them.
+	ATISAirports []av.ICAOAirportCode
 
 	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
@@ -312,6 +316,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, model *wx.M
 
 		ConfigurationId: config.ConfigurationId,
 		ListedPositions: maps.Clone(config.ControllerConfiguration.ListedPositions),
+		ATISAirports:    slices.Clone(config.ControllerConfiguration.ATISAirports),
 
 		DepartureRunways:   config.DepartureRunways,
 		ArrivalRunways:     config.ArrivalRunways,

@@ -426,6 +426,58 @@ func checkDepartureAssignments(scenarioGroups map[string]map[string]*Group, e *u
 	}
 }
 
+// checkATISAirports reports an "atis_airports" entry that the scenario info
+// window never shows: an airport listed twice, or one that is not an IFR
+// departure or arrival airport of any scenario that uses the list. A sim shows
+// only the listed airports it flies, so a facility's or configuration's list
+// may name airports that some of the scenarios sharing it don't.
+func checkATISAirports(scenarioGroups map[string]map[string]*Group, catalogs map[string]map[string]*Catalog,
+	e *util.ErrorLogger) {
+	for facility, groups := range util.SortedMap(scenarioGroups) {
+		// Both are keyed by where the list is given.
+		lists := make(map[string][]av.ICAOAirportCode)
+		flown := make(map[string]map[av.ICAOAirportCode]bool)
+		for groupName, sg := range groups {
+			catalog := catalogs[facility][groupName]
+			if catalog == nil {
+				continue
+			}
+			for name, s := range sg.Scenarios {
+				spec, ok := catalog.Scenarios[name]
+				list, from := s.atisAirports(sg)
+				if !ok || len(list) == 0 {
+					continue
+				}
+
+				where := facility + ": " + from
+				if from == "" {
+					where = fmt.Sprintf("%s/%s/%s", facility, groupName, name)
+				}
+				if flown[where] == nil {
+					lists[where] = list
+					flown[where] = make(map[av.ICAOAirportCode]bool)
+				}
+				departures, arrivals := spec.LaunchConfig.IFRAirports()
+				maps.Copy(flown[where], departures)
+				maps.Copy(flown[where], arrivals)
+			}
+		}
+
+		for where, list := range util.SortedMap(lists) {
+			seen := make(map[av.ICAOAirportCode]bool)
+			for _, ap := range list {
+				if seen[ap] {
+					e.ErrorString(`%s: "atis_airports": %s is listed more than once`, where, ap)
+				} else if !flown[where][ap] {
+					e.ErrorString(`%s: "atis_airports": %s is not an IFR departure or arrival airport `+
+						`of any scenario that uses this list`, where, ap)
+				}
+				seen[ap] = true
+			}
+		}
+	}
+}
+
 // finalizeTrafficSources settles which source each scenario starts on, once
 // every source has had its say. A scenario with nothing at all to fly is a
 // scenario file that needs fixing.

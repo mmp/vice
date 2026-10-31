@@ -34,6 +34,10 @@ type Scenario struct {
 	// configuration's and the facility's "listed_positions".
 	ListedPositions map[sim.TCP]string `json:"listed_positions,omitempty"`
 
+	// ATISAirports optionally replaces the referenced facility
+	// configuration's and the facility's "atis_airports".
+	ATISAirports []av.ICAOAirportCode `json:"atis_airports,omitempty"`
+
 	// VirtualControllers is auto-derived at runtime from the facility config
 	// and scenario routes.
 	VirtualControllers []sim.TCP

@@ -423,6 +423,7 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 		}
 
 		s.ControllerConfiguration.ListedPositions = s.listedPositions(sg, config, e)
+		s.ControllerConfiguration.ATISAirports, _ = s.atisAirports(sg)
 
 		// Filter assignments to only include entries targeting positions that
 		// exist as known controllers. The facility config's full assignments
@@ -960,6 +961,21 @@ func (s *Scenario) listedPositions(sg *Group, config *sim.FacilityConfiguration,
 		}
 	}
 	return resolved
+}
+
+// atisAirports returns the first "atis_airports" given by the scenario, its
+// configuration, and the facility adaptation, along with where it was given:
+// "" for the scenario, "configurations: <id>", or "facility_adaptations". Only
+// one is used: they are not merged.
+func (s *Scenario) atisAirports(sg *Group) (list []av.ICAOAirportCode, from string) {
+	if len(s.ATISAirports) > 0 {
+		return s.ATISAirports, ""
+	}
+	fa := &sg.FacilityConfig.FacilityAdaptation
+	if config, ok := fa.Configurations[s.ConfigurationString]; ok && len(config.ATISAirports) > 0 {
+		return config.ATISAirports, "configurations: " + s.ConfigurationString
+	}
+	return fa.ATISAirports, "facility_adaptations"
 }
 
 // CheckLocations reports any location in the group that was written as a name

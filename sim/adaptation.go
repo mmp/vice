@@ -32,6 +32,11 @@ type FacilityConfiguration struct {
 	// scenario's own "listed_positions" replaces it.
 	ListedPositions map[TCP]string `json:"listed_positions"`
 
+	// ATISAirports lists the airports that the scenario info window's ATIS /
+	// METAR section shows for scenarios that use this configuration. A
+	// scenario's own "atis_airports" replaces it.
+	ATISAirports []av.ICAOAirportCode `json:"atis_airports"`
+
 	// ScratchpadLeaderLineDirectionStrings is the JSON-facing map from
 	// primary scratchpad values to cardinal/ordinal direction strings
 	// (e.g. "N", "NE", "SW"). Resolved into ScratchpadLeaderLineDirections
@@ -55,6 +60,11 @@ type FacilityAdaptation struct {
 	// FacilityConfiguration.ListedPositions, used when neither the scenario
 	// nor its configuration gives one.
 	ListedPositions map[TCP]string `json:"listed_positions"`
+
+	// ATISAirports is the facility-wide default for
+	// FacilityConfiguration.ATISAirports, used when neither the scenario nor
+	// its configuration gives one.
+	ATISAirports []av.ICAOAirportCode `json:"atis_airports"`
 
 	AirspaceAwareness []AirspaceAwareness                     `json:"airspace_awareness"`
 	VideoMapLabels    map[string]string                       `json:"map_labels"`

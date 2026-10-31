@@ -1673,6 +1673,20 @@
                         </details>
                     </td></tr>
                     <tr>
+                      <td>"atis_airports"</td>
+                      <td>Array of strings</td>
+                      <td>(<i>Optional</i>) The airports shown, in this order, in the "ATIS / METAR" section of the
+                        scenario information window: for example, <code>["KJFK", "KLGA"]</code>. Without it, the
+                        section shows every airport in the scenario's <a href="#fe-scenarios">"departure_runways"</a>
+                        and <a href="#fe-scenarios">"inbound_rates"</a>. A scenario shows only the listed airports
+                        that are among those, and each listed airport must be among them for at least one scenario
+                        that uses the list.
+                        This is used only for scenarios that don't specify their own
+                        <a href="#fe-scenarios">"atis_airports"</a> and whose
+                        <a href="#fe-config-common">"configurations"</a> entry doesn't either; only one of the three
+                        is used and they are not merged.</td>
+                    </tr>
+                    <tr>
                       <td>"center"</td>
                       <td><a href="#fe-locations">Location</a></td>
                       <td>Default radar scope center (as a <a href="#fe-locations">latitude-longitude position</a>.)</td>
@@ -1700,6 +1714,15 @@
                             </thead>
                             <tbody>
 
+                              <tr>
+                                <td>"atis_airports"</td>
+                                <td>Array of strings</td>
+                                <td>(<i>Optional</i>) The airports shown in the "ATIS / METAR" section of the scenario
+                                  information window for scenarios that use this configuration. The format is the same
+                                  as the facility-level <a href="#fe-config-common">"atis_airports"</a>, which this
+                                  replaces rather than adds to. A scenario may in turn replace it with its own
+                                  <a href="#fe-scenarios">"atis_airports"</a>.</td>
+                              </tr>
                               <tr>
                                 <td>"default_consolidation"</td>
                                 <td>Map of strings to arrays of strings</td>
@@ -6295,6 +6318,15 @@
                         </table>
                       </details>
                   </td></tr>
+                  <tr>
+                    <td>"atis_airports"</td>
+                    <td>Array of strings</td>
+                    <td>(<i>Optional</i>) The airports shown in the "ATIS / METAR" section of the scenario information
+                      window, in the same format as <a href="#fe-config-common">"atis_airports"</a> in
+                      "facility_adaptations". Each must be an airport in this scenario's "departure_runways" or
+                      "inbound_rates". When given, it replaces the "atis_airports" of the scenario's
+                      <a href="#fe-scenarios">"configuration"</a> and of the facility; they are not merged.</td>
+                  </tr>
                   <tr>
                     <td>"center"</td>
                     <td><a href="#fe-locations">Location</a></td>

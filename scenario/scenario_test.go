@@ -293,6 +293,57 @@ func TestCheckDepartureAssignments(t *testing.T) {
 	}
 }
 
+// TestCheckATISAirports checks that an "atis_airports" list may name any
+// airport that some scenario using it flies, across the facility's groups,
+// and that an airport no such scenario flies, or one listed twice, is
+// reported.
+func TestCheckATISAirports(t *testing.T) {
+	flying := func(departure, arrival av.ICAOAirportCode) *Spec {
+		return &Spec{LaunchConfig: sim.LaunchConfig{
+			DepartureRates:   map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{departure: nil},
+			InboundFlowRates: map[string]map[string]float32{"FLOW": {string(arrival): 1, "overflights": 1}},
+		}}
+	}
+	fa := sim.FacilityAdaptation{
+		ATISAirports: []av.ICAOAirportCode{"KDEP", "KARR", "KTWO", "KNON"},
+		Configurations: map[string]*sim.FacilityConfiguration{
+			"PLN": {},
+			"OWN": {ATISAirports: []av.ICAOAirportCode{"KOWN", "KOWN", "KTWO"}},
+		},
+	}
+	group := func(scenarios map[string]*Scenario) *Group {
+		return &Group{FacilityConfig: sim.FacilityConfig{FacilityAdaptation: fa}, Scenarios: scenarios}
+	}
+	groups := map[string]*Group{
+		"G1": group(map[string]*Scenario{
+			"facility": {ConfigurationString: "PLN"},
+			"config":   {ConfigurationString: "OWN"},
+		}),
+		"G2": group(map[string]*Scenario{
+			"facility": {ConfigurationString: "PLN"},
+			"scenario": {ConfigurationString: "OWN", ATISAirports: []av.ICAOAirportCode{"KTWO", "KDEP"}},
+		}),
+	}
+	catalogs := map[string]map[string]*Catalog{"TST": {
+		"G1": {Scenarios: map[string]*Spec{"facility": flying("KDEP", "KARR"), "config": flying("KOWN", "KOWN")}},
+		"G2": {Scenarios: map[string]*Spec{"facility": flying("KTWO", "KTWO"), "scenario": flying("KTWO", "KTWO")}},
+	}}
+
+	var e util.ErrorLogger
+	checkATISAirports(map[string]map[string]*Group{"TST": groups}, catalogs, &e)
+	got := util.MapSlice(slices.Collect(e.Errors()), func(s string) string { return strings.TrimPrefix(s, ": ") })
+	unflown := " is not an IFR departure or arrival airport of any scenario that uses this list"
+	want := []string{
+		`TST/G2/scenario: "atis_airports": KDEP` + unflown,
+		`TST: configurations: OWN: "atis_airports": KOWN is listed more than once`,
+		`TST: configurations: OWN: "atis_airports": KTWO` + unflown,
+		`TST: facility_adaptations: "atis_airports": KNON` + unflown,
+	}
+	if !slices.Equal(got, want) {
+		t.Errorf("got\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
+	}
+}
+
 // TestLocateFRDFromRedefinedFix checks that an FRD off a fix that the scenario
 // group redefines is measured from the group's definition and not from the
 // published fix of the same name: the Academy's BRITT is near Tulsa, while the
@@ -429,6 +480,42 @@ func TestListedPositions(t *testing.T) {
 	var e util.ErrorLogger
 	if got := (&Scenario{}).listedPositions(sg, &sim.FacilityConfiguration{}, &e); got != nil {
 		t.Errorf("got %v with no listed_positions anywhere, want nil", got)
+	}
+}
+
+// TestATISAirports verifies that the scenario's "atis_airports" beats its
+// configuration's, which beats the facility's.
+func TestATISAirports(t *testing.T) {
+	sg := &Group{FacilityConfig: sim.FacilityConfig{FacilityAdaptation: sim.FacilityAdaptation{
+		ATISAirports: []av.ICAOAirportCode{"KFAC"},
+		Configurations: map[string]*sim.FacilityConfiguration{
+			"CFG":  {ATISAirports: []av.ICAOAirportCode{"KCFG"}},
+			"NONE": {},
+		},
+	}}}
+
+	for _, tc := range []struct {
+		name     string
+		scenario Scenario
+		want     []av.ICAOAirportCode
+		wantFrom string
+	}{
+		{"scenario wins", Scenario{ConfigurationString: "CFG", ATISAirports: []av.ICAOAirportCode{"KSCN"}},
+			[]av.ICAOAirportCode{"KSCN"}, ""},
+		{"configuration next", Scenario{ConfigurationString: "CFG"}, []av.ICAOAirportCode{"KCFG"}, "configurations: CFG"},
+		{"then the facility", Scenario{ConfigurationString: "NONE"}, []av.ICAOAirportCode{"KFAC"}, "facility_adaptations"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got, from := tc.scenario.atisAirports(sg)
+			if !slices.Equal(got, tc.want) || from != tc.wantFrom {
+				t.Errorf("got %v from %q, want %v from %q", got, from, tc.want, tc.wantFrom)
+			}
+		})
+	}
+
+	sg.FacilityConfig.FacilityAdaptation.ATISAirports = nil
+	if got, _ := (&Scenario{ConfigurationString: "NONE"}).atisAirports(sg); got != nil {
+		t.Errorf("got %v with no atis_airports anywhere, want nil", got)
 	}
 }
 

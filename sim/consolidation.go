@@ -111,6 +111,13 @@ type ControllerConfiguration struct {
 	// position. It comes from the first of the scenario, its configuration,
 	// and the facility adaptation that gives "listed_positions".
 	ListedPositions map[TCP]string
+
+	// ATISAirports lists, in order, the airports that the scenario info
+	// window's ATIS / METAR section shows, of those it would show by
+	// default; nil shows all of them. It comes from the first of the
+	// scenario, its configuration, and the facility adaptation that gives
+	// "atis_airports".
+	ATISAirports []av.ICAOAirportCode
 }
 
 type PositionConsolidation map[TCP][]TCP
