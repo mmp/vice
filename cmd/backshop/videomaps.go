@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"sync"
 
@@ -179,19 +180,23 @@ func (v *videoMapsTab) drawCRCUI(a *app) {
 		clear(v.crc.selected)
 	}
 
-	if imgui.BeginChildStrV("artccs", imgui.Vec2{Y: 100}, imgui.ChildFlagsBorders, 0) {
-		const cols = 6
-		for i, id := range v.crc.artccs {
-			if i%cols > 0 {
-				imgui.SameLine()
-			}
+	// As many columns as fit across, all as wide as the widest ARTCC's
+	// checkbox so that they line up.
+	style := imgui.CurrentStyle()
+	label := util.ReduceMax(slices.Values(v.crc.artccs), 0,
+		func(id string) float32 { return imgui.CalcTextSize(id).X })
+	cell := imgui.FrameHeight() + style.ItemInnerSpacing().X + label + 2*style.CellPadding().X
+	cols := min(max(int(imgui.ContentRegionAvail().X/cell), 1), len(v.crc.artccs))
+	if imgui.BeginTableV("artccs", int32(cols), imgui.TableFlagsSizingFixedSame, imgui.Vec2{}, 0) {
+		for _, id := range v.crc.artccs {
+			imgui.TableNextColumn()
 			sel := v.crc.selected[id]
 			if imgui.Checkbox(id, &sel) {
 				v.crc.selected[id] = sel
 			}
 		}
+		imgui.EndTable()
 	}
-	imgui.EndChild()
 
 	if a.config.MapPackDir == "" {
 		imgui.TextDisabled("Choose a directory to write the generated .mappack files into.")

@@ -76,8 +76,7 @@ func (in *inspector) drawFiltersTab(a *app) {
 	in.filterSection(a, "TFRs", rows(tfrVolumes(ss)))
 
 	if len(ss.FacilityAdaptation.RadarSites) > 0 && imgui.CollapsingHeaderBoolPtr("Radar sites", nil) {
-		flags, size := tableSize(len(ss.FacilityAdaptation.RadarSites), 10)
-		if imgui.BeginTableV("radar", 5, flags, size, 0) {
+		if imgui.BeginTableV("radar", 5, tableFlags, imgui.Vec2{}, 0) {
 			setupDrawColumn()
 			imgui.TableSetupColumnV("Site", imgui.TableColumnFlagsWidthFixed, 60, 0)
 			imgui.TableSetupColumnV("Primary", imgui.TableColumnFlagsWidthFixed, 60, 0)
@@ -230,8 +229,7 @@ func (in *inspector) filterSection(a *app, name string, regions []filterRow) {
 		}
 	}
 
-	flags, size := tableSize(len(regions), 10)
-	if !imgui.BeginTableV("f", 6, flags, size, 0) {
+	if !imgui.BeginTableV("f", 6, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	setupDrawColumn()

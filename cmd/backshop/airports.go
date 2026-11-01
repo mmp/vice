@@ -65,8 +65,7 @@ func (in *inspector) drawAirportsTab(a *app) {
 		clear(t.expanded)
 	}
 
-	flags, size := tableSize(len(ss.Airports), 12)
-	if imgui.BeginTableV("apts", 6, flags, size, 0) {
+	if imgui.BeginTableV("apts", 6, tableFlags, imgui.Vec2{}, 0) {
 		imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthFixed|imgui.TableColumnFlagsNoResize, 26, 0)
 		imgui.TableSetupColumnV("Airport", imgui.TableColumnFlagsWidthFixed, 55, 0)
 		imgui.TableSetupColumnV("Departures", imgui.TableColumnFlagsWidthFixed, 80, 0)
@@ -258,8 +257,7 @@ func (in *inspector) drawAirportRunways(a *app, icao av.ICAOAirportCode) {
 		return
 	}
 
-	flags, size := tableSize(len(use), 10)
-	if !imgui.BeginTableV("rwys", 6, flags, size, 0) {
+	if !imgui.BeginTableV("rwys", 6, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	defer imgui.EndTable()
@@ -307,7 +305,6 @@ func (in *inspector) drawAirportApproaches(a *app, icao av.ICAOAirportCode, ap *
 		appr   *av.Approach
 	}
 	var rows []approachRow
-	nroutes := 0
 	for _, arr := range ss.ArrivalRunways {
 		if arr.Airport != icao {
 			continue
@@ -319,7 +316,6 @@ func (in *inspector) drawAirportApproaches(a *app, icao av.ICAOAirportCode, ap *
 				continue
 			}
 			rows = append(rows, approachRow{runway: base, name: name, appr: appr})
-			nroutes += len(appr.Waypoints) + len(appr.ReportingPoints)
 		}
 	}
 
@@ -331,8 +327,7 @@ func (in *inspector) drawAirportApproaches(a *app, icao av.ICAOAirportCode, ap *
 		r.approaches[icao] = make(map[string]bool)
 	}
 
-	flags, size := tableSize(nroutes, 12)
-	if !imgui.BeginTableV("appr", 6, flags, size, 0) {
+	if !imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	defer imgui.EndTable()
@@ -399,8 +394,7 @@ func (in *inspector) drawAirportExits(a *app, icao av.ICAOAirportCode, ap *av.Ai
 		r.departures[icao] = make(map[string]map[string]bool)
 	}
 
-	flags, size := tableSize(len(routes), 12)
-	if !imgui.BeginTableV("exits", 7, flags, size, 0) {
+	if !imgui.BeginTableV("exits", 7, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	defer imgui.EndTable()
@@ -470,8 +464,7 @@ func (in *inspector) drawAirportArrivals(a *app, icao av.ICAOAirportCode) {
 		return
 	}
 
-	flags, size := tableSize(len(rows), 12)
-	if !imgui.BeginTableV("arr", 6, flags, size, 0) {
+	if !imgui.BeginTableV("arr", 6, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	defer imgui.EndTable()
@@ -553,8 +546,7 @@ func (in *inspector) drawAirportProcedures(a *app, icao av.ICAOAirportCode, ap *
 		return
 	}
 
-	flags, size := tableSize(len(rows), 12)
-	if !imgui.BeginTableV("cifp", 5, flags, size, 0) {
+	if !imgui.BeginTableV("cifp", 5, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	defer imgui.EndTable()
@@ -586,8 +578,7 @@ func (in *inspector) drawAirportProcedures(a *app, icao av.ICAOAirportCode, ap *
 // drawAirportDestinations lists the airport's departures: the route the
 // scenario files for each destination it sends traffic to.
 func (in *inspector) drawAirportDestinations(a *app, ap *av.Airport) {
-	flags, size := tableSize(len(ap.Departures), 12)
-	if !imgui.BeginTableV("dests", 4, flags, size, 0) {
+	if !imgui.BeginTableV("dests", 4, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	defer imgui.EndTable()

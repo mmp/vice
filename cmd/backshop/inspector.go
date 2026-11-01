@@ -18,28 +18,14 @@ import (
 )
 
 // tableFlags is the styling every table here shares. Scrolling is not part
-// of it: a scrolling table always takes the whole height it is given, which
-// leaves empty space under the last row of a short one, so tableSize turns
-// it on only for a table that doesn't fit.
+// of it: a table shows all of its rows and the inspector window scrolls, so
+// that no rows hide behind a table's own scrollbar.
 const tableFlags = imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 	imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
 // scrollingTableFlags is for the tables that take the rest of the tab and
 // scroll within it.
 const scrollingTableFlags = tableFlags | imgui.TableFlagsScrollY
-
-// tableSize gives the flags and outer size for a table with rows rows: it
-// ends just below its last row up to maxRows and scrolls past that.
-func tableSize(rows, maxRows int) (imgui.TableFlags, imgui.Vec2) {
-	if rows <= maxRows {
-		return tableFlags, imgui.Vec2{}
-	}
-	// A row is as tall as the draw checkbox these tables lead with; the
-	// header row is a line of text.
-	pad := 2 * imgui.CurrentStyle().CellPadding().Y
-	return scrollingTableFlags,
-		imgui.Vec2{Y: imgui.TextLineHeight() + pad + float32(maxRows)*(imgui.FrameHeight()+pad)}
-}
 
 // warningColor marks what the tool has found wrong: a scenario error, a route
 // the scenario can't fly, a file it can't read.
@@ -234,8 +220,6 @@ func (in *inspector) drawScenarioTab(a *app) {
 func (in *inspector) drawScenarioSummary(a *app) {
 	ss := &a.cc.State
 
-	// The summary is short enough to show whole, so it takes the flags
-	// without scrolling and sizes itself to its rows.
 	if !imgui.BeginTableV("summary", 2, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
@@ -272,8 +256,7 @@ func (in *inspector) drawScenarioControllers(a *app) {
 	}
 
 	ss := &a.cc.State
-	flags, size := tableSize(len(ss.Controllers), 12)
-	if !imgui.BeginTableV("ctrls", 4, flags, size, 0) {
+	if !imgui.BeginTableV("ctrls", 4, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	imgui.TableSetupColumn("TCP")

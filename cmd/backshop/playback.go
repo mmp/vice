@@ -208,8 +208,7 @@ func clockText(d time.Duration) string {
 // flight. The scrubber reaches a second past either end of the recording, where
 // the aircraft leaves the scope.
 func (p *playback) drawFlights(a *app) {
-	flags, size := tableSize(len(p.flights), 10)
-	if !imgui.BeginTableV("recordings", 7, flags, size, 0) {
+	if !imgui.BeginTableV("recordings", 7, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	setupDrawColumn()

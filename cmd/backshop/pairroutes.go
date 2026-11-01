@@ -318,8 +318,7 @@ func (in *inspector) drawTrafficPairs(a *app) {
 		return counts[b].dropped - counts[a].dropped
 	})
 
-	flags, size := tableSize(len(pairs), 10)
-	if !imgui.BeginTableV("trafficpairs", 4, flags, size, 0) {
+	if !imgui.BeginTableV("trafficpairs", 4, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	imgui.TableSetupColumnV("##warn", imgui.TableColumnFlagsWidthFixed, 20, 0)

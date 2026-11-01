@@ -312,8 +312,7 @@ func (in *inspector) drawProceduresTab(a *app) {
 
 	if imgui.CollapsingHeaderBoolPtr("Approaches", nil) {
 		colorPicker("apprcolor", &r.approachesColor)
-		flags, size := tableSize(approachCount(ss), 12)
-		if imgui.BeginTableV("appr", 6, flags, size, 0) {
+		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
 			setupDrawColumn()
 			imgui.TableSetupColumnV("Airport", imgui.TableColumnFlagsWidthFixed, 55, 0)
 			imgui.TableSetupColumnV("Runway", imgui.TableColumnFlagsWidthFixed, 55, 0)
@@ -376,8 +375,7 @@ func (in *inspector) drawProceduresTab(a *app) {
 
 	if imgui.CollapsingHeaderBoolPtr("Overflights", nil) {
 		colorPicker("ofcolor", &r.overflightsColor)
-		flags, size := tableSize(overflightCount(ss), 10)
-		if imgui.BeginTableV("of", 3, flags, size, 0) {
+		if imgui.BeginTableV("of", 3, tableFlags, imgui.Vec2{}, 0) {
 			setupDrawColumn()
 			imgui.TableSetupColumnV("Overflight", imgui.TableColumnFlagsWidthFixed, 90, 0)
 			imgui.TableSetupColumn("Description")
@@ -425,8 +423,7 @@ func (in *inspector) drawProceduresTab(a *app) {
 			if !imgui.TreeNodeExStr(hdr) {
 				continue
 			}
-			flags, size := tableSize(len(vols), 12)
-			if imgui.BeginTableV("vols-"+string(pos), 3, flags, size, 0) {
+			if imgui.BeginTableV("vols-"+string(pos), 3, tableFlags, imgui.Vec2{}, 0) {
 				for vol, b := range util.SortedMap(vols) {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
@@ -515,8 +512,7 @@ func (in *inspector) drawHoldsUI(a *app) {
 		}
 	}
 
-	flags, size := tableSize(len(entries), 12)
-	if !imgui.BeginTableV("holds", 4, flags, size, 0) {
+	if !imgui.BeginTableV("holds", 4, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	setupDrawColumn()
@@ -594,8 +590,7 @@ func (in *inspector) drawDepartureExits(a *app) {
 		return backgroundOrder(a.background, b.background)
 	})
 
-	flags, size := tableSize(len(rows), 14)
-	if !imgui.BeginTableV("depexits", 7, flags, size, 0) {
+	if !imgui.BeginTableV("depexits", 7, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	setupDrawColumn()
@@ -699,8 +694,7 @@ func (in *inspector) drawDepartureSIDs(a *app) {
 		return strings.Compare(a.sid, b.sid)
 	})
 
-	flags, size := tableSize(len(keys), 14)
-	if !imgui.BeginTableV("dep", 7, flags, size, 0) {
+	if !imgui.BeginTableV("dep", 7, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	setupDrawColumn()
@@ -779,8 +773,7 @@ func (in *inspector) drawArrivals(a *app) {
 		return backgroundOrder(a.background, b.background)
 	})
 
-	flags, size := tableSize(len(rows), 12)
-	if !imgui.BeginTableV("arr", 5, flags, size, 0) {
+	if !imgui.BeginTableV("arr", 5, tableFlags, imgui.Vec2{}, 0) {
 		return
 	}
 	setupDrawColumn()
@@ -848,28 +841,4 @@ func arrivalIsBackground(ss *client.SimState, flow string, arr av.Arrival) bool 
 		}
 	}
 	return true
-}
-
-// approachCount and overflightCount are how many rows their tables will have,
-// which is what sizes them.
-func approachCount(ss *client.SimState) int {
-	n := 0
-	for _, rwy := range ss.ArrivalRunways {
-		ap, ok := ss.Airports[rwy.Airport]
-		if !ok {
-			continue
-		}
-		for _, appr := range ap.Approaches {
-			if appr.Runway == rwy.Runway.Base() {
-				n++
-			}
-		}
-	}
-	return n
-}
-
-func overflightCount(ss *client.SimState) int {
-	return util.ReduceMap(ss.InboundFlows, 0, func(_ string, flow *av.InboundFlow, n int) int {
-		return n + len(flow.Overflights)
-	})
 }

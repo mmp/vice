@@ -357,7 +357,7 @@ func (t *trafficTab) drawFlightTable(a *app, departures bool) {
 	if departures {
 		height /= 2
 	}
-	flags, size := tableSize(len(flights), rowsInHeight(height))
+	flags, size := flightTableSize(len(flights), height)
 	if !imgui.BeginTableV(kind, 10, flags, size, 0) {
 		return
 	}
@@ -393,13 +393,18 @@ func (t *trafficTab) drawFlightTable(a *app, departures bool) {
 	imgui.EndTable()
 }
 
-// rowsInHeight is how many of these tables' rows fit in the given height,
-// which is what tableSize wants to hear; three so that a table is never a
-// sliver.
-func rowsInHeight(height float32) int {
+// flightTableSize gives the flags and outer size for a table of n flights
+// in the given height: it ends just below its last row if they all fit and
+// otherwise scrolls within the rows that do, at least three so that the
+// table is never a sliver.
+func flightTableSize(n int, height float32) (imgui.TableFlags, imgui.Vec2) {
 	pad := 2 * imgui.CurrentStyle().CellPadding().Y
-	rows := (height - imgui.TextLineHeight() - pad) / (imgui.FrameHeight() + pad)
-	return max(int(rows), 3)
+	header, row := imgui.TextLineHeight()+pad, imgui.FrameHeight()+pad
+	rows := max(int((height-header)/row), 3)
+	if n <= rows {
+		return tableFlags, imgui.Vec2{}
+	}
+	return scrollingTableFlags, imgui.Vec2{Y: header + float32(rows)*row}
 }
 
 func (t *trafficTab) drawFlightRow(a *app, f sim.PublishedFlight) {

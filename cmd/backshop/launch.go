@@ -86,8 +86,7 @@ func (in *inspector) drawLaunchSlots(a *app) {
 	}
 
 	if imgui.CollapsingHeaderBoolPtrV("Departures", nil, imgui.TreeNodeFlagsDefaultOpen) {
-		flags, size := tableSize(len(ss.DepartureLaunchSlots), 10)
-		if imgui.BeginTableV("deps", 6, flags, size, 0) {
+		if imgui.BeginTableV("deps", 6, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Airport")
 			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("Exit")
@@ -120,8 +119,7 @@ func (in *inspector) drawLaunchSlots(a *app) {
 	}
 
 	if imgui.CollapsingHeaderBoolPtrV("Arrivals and overflights", nil, imgui.TreeNodeFlagsDefaultOpen) {
-		flags, size := tableSize(len(ss.InboundLaunchSlots), 10)
-		if imgui.BeginTableV("inbound", 5, flags, size, 0) {
+		if imgui.BeginTableV("inbound", 5, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Flow")
 			imgui.TableSetupColumn("Airport")
 			imgui.TableSetupColumn("Type")
