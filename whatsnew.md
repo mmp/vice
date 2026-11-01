@@ -1,6 +1,6 @@
 - Scenario updates: HNL (Mike Fries), CLT (anguse), S56 (Elliott B), P50 (Ketan K)
 - Fixed multiple bugs with flight strip ownership
-- Release requests that no STARS coordination list shows now appear in Messages and atop Launch Control
+- Release requests that are not in a STARS coordination list now appear in Messages and atop Launch Control
 - Flight Model / Control
   - Pilot response delays can be set to "Brief", "Realistic" (longer), or custom values when creating a sim
   - Improved support for LDA approaches (don't just fly the extended centerline)
@@ -9,6 +9,7 @@
   - Fixed a number of bugs related to handling Mach speeds in instructions
   - VFR aircraft routes now avoid special use airspace
   - Improved VFR aircraft terrain avoidance to use more accurate terrain data than MVAs
+  - VFR airwork now includes stalls, steep turns, chandelles, S-turns, and other training maneuvers
 - STARS
   - Default ATPA volumes now follow each final approach course rather than the runway's extended centerline.
 - ERAM

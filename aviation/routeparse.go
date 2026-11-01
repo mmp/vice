@@ -66,7 +66,8 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 			rrad = jitter(rrad)
 		}
 
-		if randomizeAltitudeRange {
+		// Airwork maneuvers through the whole of its waypoint's range.
+		if randomizeAltitudeRange && wp.AirworkMinutes() == 0 {
 			if ar := wp.AltitudeRestriction(); ar != nil {
 				low, high := ar.Range[0], ar.Range[1]
 				// We should clamp low to be a few hundred feet AGL, but

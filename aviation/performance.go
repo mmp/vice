@@ -16,6 +16,7 @@ type AircraftPerformance struct {
 		// AircraftType is "P" for piston, "T" for turboprop, "J" for jet, and
 		// "H" for rotorcraft.
 		AircraftType string `json:"type"`
+		Number       int    `json:"number"`
 	} `json:"engines"`
 	Rate struct {
 		Climb      float32 `json:"climb"` // ft / minute; reduce by 500 after alt 5000 if this is >=2500

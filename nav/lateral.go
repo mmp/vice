@@ -187,14 +187,18 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 		nav.FlightState.IAS, nav.FlightState.GS,
 		nav.FlightState.BankAngle, nav.FlightState.AltitudeRate)
 
-	targetAltitude, altitudeRate, geometricDescent := nav.TargetAltitude()
-	deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, rules, wxs, arrivalMETAR, simTime, underBravo)
-	nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
-	nav.updateHeading(callsign, wxs, simTime)
-	nav.updatePositionAndGS(wxs)
-	if nav.Airwork != nil && !nav.Airwork.Update(nav, wxs.Temperature()) {
-		nav.Airwork = nil // Done.
+	if nav.Airwork != nil && !nav.Airwork.fly(nav, wxs) {
+		// Done; on to the next waypoint.
+		nav.Airwork = nil
+		nav.Heading = Heading{}
 	}
+	if nav.Airwork == nil {
+		targetAltitude, altitudeRate, geometricDescent := nav.TargetAltitude()
+		deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, rules, wxs, arrivalMETAR, simTime, underBravo)
+		nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
+		nav.updateHeading(callsign, wxs, simTime)
+	}
+	nav.updatePositionAndGS(wxs)
 
 	result := UpdateResult{ActionEvents: nav.PendingWaypointActionEvents}
 	if nav.Airwork == nil && nav.Heading.Assigned == nil &&
@@ -211,10 +215,6 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 }
 
 func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (heading math.MagneticHeading, turn av.TurnDirection, rate float32) {
-	if nav.Airwork != nil {
-		return nav.Airwork.TargetHeading()
-	}
-
 	// Is it time to start following a heading or direct to a fix recently issued by the controller?
 	if dh := nav.DeferredNavHeading; dh != nil && simTime.After(dh.Time) {
 		// These may all be nil; whichever the instruction set takes effect now.
@@ -603,7 +603,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) Up
 		}
 
 		if wp.AirworkMinutes() > 0 {
-			nav.Airwork = StartAirwork(*wp, *nav)
+			nav.Airwork = StartAirwork(*wp)
 		}
 
 		// Remove the waypoint from the route unless it's the destination
@@ -1151,8 +1151,7 @@ const StandardTurnRate = 3
 // true airspeed: a standard rate turn, or a wider one where holding that rate
 // would take more bank than the type allows.
 func TurnRadius(perf av.AircraftPerformance, tas float32) float32 {
-	omega := min(StandardTurnRate,
-		math.Degrees(9.81*math.Tan(math.Radians(perf.Turn.MaxBankAngle))/(tas*0.514444)))
+	omega := min(StandardTurnRate, bankTurnRate(perf.Turn.MaxBankAngle, tas))
 	return tas / 3600 / math.Radians(omega)
 }
 

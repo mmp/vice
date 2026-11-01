@@ -88,6 +88,37 @@ func TestTerrainLookup(t *testing.T) {
 	check(math.Point2LL{-106.5, 40}, 0)
 	check(math.Point2LL{-106, 39.5}, 0)
 	check(math.Point2LL{-140, 30}, 0)
+
+	// Bounds take the highest of the cells they cover: rows r0-r1 and
+	// columns c0-c1 of a tile, from the center of the southwest cell to the
+	// center of the northeast one.
+	center := func(k TerrainTileKey, r, c int) math.Point2LL {
+		return math.Point2LL{float32(k.Longitude) + (float32(c)+0.5)/n, float32(k.Latitude+1) - (float32(r)+0.5)/n}
+	}
+	highest := func(k TerrainTileKey, r0, r1, c0, c1 int) int {
+		h := 0
+		for r := r0; r <= r1; r++ {
+			for c := c0; c <= c1; c++ {
+				h = max(h, 100*int(cell(k, r, c)))
+			}
+		}
+		return h
+	}
+	checkIn := func(e math.Extent2D, want int) {
+		t.Helper()
+		if got := g.HighestTerrainIn(e); got != want {
+			t.Errorf("%v: got %d, want %d", e, got, want)
+		}
+	}
+	k := keys[0]
+	checkIn(math.Extent2D{P0: center(k, 30, 10), P1: center(k, 20, 25)}, highest(k, 20, 30, 10, 25))
+	checkIn(math.Extent2D{P0: center(k, 200, 3), P1: center(k, 17, 101)}, highest(k, 17, 200, 3, 101))
+	// Across the dateline, from the east tile's last columns to the west
+	// tile's first.
+	e := math.Extent2D{P0: center(east, 130, n-3), P1: math.Add2f(center(west, 120, 2), [2]float32{360, 0})}
+	checkIn(e, max(highest(east, 120, 130, n-3, n-1), highest(west, 120, 130, 0, 2)))
+	// Partly where there is no tile.
+	checkIn(math.Extent2D{P0: center(k, 5, n-4), P1: math.Point2LL{-105.5, 40.5}}, highest(k, 0, 5, n-4, n-1))
 }
 
 func TestTerrainResource(t *testing.T) {

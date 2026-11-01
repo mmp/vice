@@ -355,22 +355,6 @@ type FixAssignment struct {
 	Hold *av.Hold
 }
 
-type Airwork struct {
-	Radius   float32
-	Center   math.Point2LL
-	AltRange [2]float32
-
-	RemainingSteps  int
-	NextMoveCounter int
-	Heading         math.MagneticHeading
-	TurnRate        float32
-	TurnDirection   av.TurnDirection
-	IAS             float32
-	Altitude        float32
-	Dive            bool
-	ToCenter        bool
-}
-
 type InterceptState int
 
 const (
@@ -591,11 +575,14 @@ func (nav *Nav) v2() float32 {
 }
 
 func (nav *Nav) IsAirborne() bool {
-	v2 := nav.v2()
+	// Slow flight and stalls during airwork go well below V2.
+	if nav.Airwork != nil {
+		return true
+	}
 
 	// FIXME: this only considers speed, which is probably ok but is somewhat unsatisfying.
 	// More explicitly model "on the ground" vs "airborne" states?
-	return nav.FlightState.IAS >= v2
+	return nav.FlightState.IAS >= nav.v2()
 }
 
 // AssignedHeading returns the aircraft's current heading assignment, if
@@ -1050,6 +1037,10 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 	if hold := nav.Heading.Hold; hold != nil {
 		lines = append(lines, fmt.Sprintf("Flying hold at %s, %s entry, step: %s",
 			hold.Hold.DisplayName(), hold.Entry.String(), hold.currentStep()))
+	}
+	if aw := nav.Airwork; aw != nil {
+		lines = append(lines, fmt.Sprintf("Airwork: practicing %s, %d minutes left", aw.Maneuver,
+			max(0, aw.RemainingSteps/60)))
 	}
 	if maneuvers := nav.Heading.Maneuvers; len(maneuvers) > 0 {
 		inPT := len(nav.Waypoints) > 0 && nav.Waypoints[0].ProcedureTurn() != nil

@@ -349,6 +349,9 @@ type WaypointExtra struct {
 	LegOffset      float32
 	AirworkRadius  int8
 	AirworkMinutes int8
+	// AirworkTerrain is the highest terrain in the airwork area, in feet
+	// MSL. The sim sets it when it creates the aircraft.
+	AirworkTerrain int16
 }
 
 // Clone returns a copy of we that shares nothing with the original, so that
@@ -702,6 +705,12 @@ func (wp Waypoint) AirworkRadius() int {
 func (wp Waypoint) AirworkMinutes() int {
 	if wp.Extra != nil {
 		return int(wp.Extra.AirworkMinutes)
+	}
+	return 0
+}
+func (wp Waypoint) AirworkTerrain() int {
+	if wp.Extra != nil {
+		return int(wp.Extra.AirworkTerrain)
 	}
 	return 0
 }

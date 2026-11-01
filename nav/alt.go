@@ -304,7 +304,7 @@ func mbToPressureAltitude(mb float32) float32 {
 // and whether the descent is geometric (following a computed glidepath to a fix).
 func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 	if nav.Airwork != nil {
-		return nav.Airwork.TargetAltitude()
+		return nav.Airwork.TargetAltitude(nav.FlightState.Altitude), math.Abs(nav.FlightState.AltitudeRate), false
 	}
 
 	// Stay on the ground if we're still on the takeoff roll.

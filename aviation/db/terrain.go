@@ -119,19 +119,50 @@ type TerrainGrid struct {
 // HighestTerrain returns the highest terrain within 0.5 nm of p in feet MSL,
 // rounded up to the next 100', or 0 where there is no data.
 func (g *TerrainGrid) HighestTerrain(p math.Point2LL) int {
-	lat, lon := p[1], p[0]-360*math.Floor((p[0]+180)/360)
-	k := TerrainTileKey{Latitude: int(math.Floor(lat)), Longitude: int(math.Floor(lon))}
+	return g.HighestTerrainIn(math.Extent2D{P0: p, P1: p})
+}
+
+// HighestTerrainIn returns the highest terrain within 0.5 nm of the given
+// latitude-longitude bounds in feet MSL, rounded up to the next 100', or 0
+// where there is no data.
+func (g *TerrainGrid) HighestTerrainIn(e math.Extent2D) int {
+	// Tiles are keyed by longitudes in [-180, 180); bounds that cross the
+	// dateline continue into the tiles on the far side of it.
+	wrap := 360 * math.Floor((e.P0[0]+180)/360)
+	lon0, lon1 := e.P0[0]-wrap, e.P1[0]-wrap
+	cell := func(v, origin float32) int {
+		return math.Clamp(int((v-origin)*TerrainTileSize), 0, TerrainTileSize-1)
+	}
+
+	var highest uint8
+	for lat := int(math.Floor(e.P0[1])); lat <= int(math.Floor(e.P1[1])); lat++ {
+		for lon := int(math.Floor(lon0)); lon <= int(math.Floor(lon1)); lon++ {
+			k := TerrainTileKey{Latitude: lat, Longitude: lon - 360*int(math.Floor(float32(lon+180)/360))}
+			tile := g.tile(k)
+			if tile == nil {
+				continue
+			}
+			// Rows run south from the tile's north edge.
+			top := float32(lat + 1)
+			for row := cell(top-e.P1[1], 0); row <= cell(top-e.P0[1], 0); row++ {
+				for col := cell(lon0, float32(lon)); col <= cell(lon1, float32(lon)); col++ {
+					highest = max(highest, tile[row*TerrainTileSize+col])
+				}
+			}
+		}
+	}
+	return 100 * int(highest)
+}
+
+// tile returns the tile for k, decompressing it the first time it is
+// asked for, or nil if there is none.
+func (g *TerrainGrid) tile(k TerrainTileKey) *[TerrainTileSize * TerrainTileSize]uint8 {
 	tile, ok := g.tiles[k]
 	if !ok {
 		tile = g.decode(k)
 		g.tiles[k] = tile
 	}
-	if tile == nil {
-		return 0
-	}
-	row := math.Clamp(int((float32(k.Latitude+1)-lat)*TerrainTileSize), 0, TerrainTileSize-1)
-	col := math.Clamp(int((lon-float32(k.Longitude))*TerrainTileSize), 0, TerrainTileSize-1)
-	return 100 * int(tile[row*TerrainTileSize+col])
+	return tile
 }
 
 func (g *TerrainGrid) decode(k TerrainTileKey) *[TerrainTileSize * TerrainTileSize]uint8 {

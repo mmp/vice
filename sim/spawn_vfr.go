@@ -490,16 +490,10 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 			wps = append(wps, wp)
 
 			if airwork && i == nsteps/2 {
-				w := &wps[len(wps)-1]
-				extra := w.InitExtra()
-				extra.AirworkRadius = int8(s.Rand.IntRange(4, 8))
+				// setUpAirwork gives it its altitudes once the route is final.
+				extra := wps[len(wps)-1].InitExtra()
+				extra.AirworkRadius = int8(float32(s.Rand.IntRange(4, 8)) * nav.AirworkAreaScale(perf))
 				extra.AirworkMinutes = int8(s.Rand.IntRange(5, 20))
-				// Airwork dives and descending turns go down to the floor,
-				// so it must stay well clear of the ground; this waypoint's
-				// "at or below" floor of 0 is no floor at all.
-				fieldClearance := float32(max(depap.Elevation, arrap.Elevation) + 1000)
-				w.AltRestriction.Range[0] = min(alt, max(alt-500, fieldClearance))
-				w.AltRestriction.Range[1] = min(w.AltRestriction.Range[1]+2000, maxVFRAltitude)
 			}
 		}
 	}
@@ -531,6 +525,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	if !ok {
 		return nil, ErrViolatedAirspace
 	}
+	s.setUpAirwork(ac.Nav.Waypoints, checkTerrain, perf)
 
 	// Deep-copy only Nav (not the full Aircraft) to avoid copying
 	// maps, pointers, and fields unused during route validation.
@@ -601,7 +596,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		if s.vfrAirspace.Inside(pos, alt) || s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
 			return nil, ErrViolatedAirspace
 		}
-		if !checkTerrain {
+		if !checkTerrain || simNav.Airwork != nil {
+			// Airwork keeps its own heights above the terrain in its area.
 			continue
 		}
 		if floor, ok := s.vfrFloor(pos, depap, arrap); ok && simNav.FlightState.Altitude < float32(floor) {
@@ -618,6 +614,69 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	}
 
 	return nil, ErrVFRSimTookTooLong
+}
+
+// airworkLowest is the height above the terrain that the lowest airwork
+// maneuver goes down to: a simulated engine failure, which goes around 500'
+// over the field it would have landed in. airworkHighest is the height of
+// the top of a practice area that setUpAirwork makes up.
+const (
+	airworkLowest  = 500
+	airworkHighest = 6000
+)
+
+// setUpAirwork gives each airwork waypoint in a route the highest terrain
+// in its area, which its maneuvers keep their heights above. If the route
+// was made up here, it also sets the altitudes the airwork may use: from
+// airworkLowest above the terrain up to airworkHighest above it, under the
+// airspace over the area and within the aircraft's ceiling. Without
+// 1,000' of room, the aircraft does no airwork. A scenario's route keeps
+// the altitudes its author gave, held under the airspace over the area as
+// the rest of the route is held under the shelves it passes, though never
+// below 1,000' over the terrain: staying clear of the ground comes first.
+func (s *Sim) setUpAirwork(wps []av.Waypoint, madeUp bool, perf av.AircraftPerformance) {
+	for i := range wps {
+		wp := &wps[i]
+		if wp.AirworkMinutes() == 0 {
+			continue
+		}
+		// Maneuvers may stray a mile past the area's radius.
+		area := math.BoundLatLongCircle(wp.Location, float32(wp.AirworkRadius())+1)
+		terrain, ceiling := s.terrain.HighestTerrainIn(area), s.vfrCeiling(area)
+		wp.Extra.AirworkTerrain = int16(terrain)
+		if !madeUp {
+			if ar := wp.AltitudeRestriction(); ar != nil {
+				top := float32(max(ceiling, terrain+1000))
+				ar.Range[1] = max(ar.Range[0], min(ar.Range[1], top))
+			}
+			continue
+		}
+		low := terrain + airworkLowest
+		high := min(terrain+airworkHighest, ceiling, maxVFRAltitude, int(perf.Ceiling))
+		if high < low+1000 {
+			wp.Extra.AirworkRadius, wp.Extra.AirworkMinutes = 0, 0
+			continue
+		}
+		wp.SetAltitudeRestriction(av.MakeRangeAltitudeRestriction(float32(low), float32(high)))
+	}
+}
+
+// vfrCeiling returns the highest altitude a VFR flight can be at anywhere in
+// the given latitude-longitude bounds and stay under the airspace it avoids.
+func (s *Sim) vfrCeiling(area math.Extent2D) int {
+	// Each sample finds the airspace within spacing of it, which covers the
+	// points between it and its neighbors.
+	const spacing float32 = 0.5
+	dlat, dlon := spacing/math.NMPerLatitude, spacing/s.State.NmPerLongitude
+	ceiling := maxVFRAltitude
+	for lat := area.P0[1]; lat <= area.P1[1]; lat += dlat {
+		for lon := area.P0[0]; lon <= area.P1[0]; lon += dlon {
+			for _, vol := range s.vfrAirspace.Near(math.Point2LL{lon, lat}, spacing) {
+				ceiling = min(ceiling, underFloor(vol.Floor))
+			}
+		}
+	}
+	return ceiling
 }
 
 // vfrPatternAltitude is how far above the field a VFR aircraft flies the

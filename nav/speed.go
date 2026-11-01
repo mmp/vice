@@ -123,11 +123,6 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, rules av.FlightRules, wxs wx
 func (nav *Nav) selectTargetSpeed(targetAltitude float32, rules av.FlightRules, wxs wx.Sample, arrivalMETAR *wx.METAR,
 	underBravo bool) (float32, float32) {
 	temp := wxs.Temperature()
-	if nav.Airwork != nil {
-		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
-			return spd, rate
-		}
-	}
 
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
 
