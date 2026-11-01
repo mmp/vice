@@ -625,48 +625,58 @@ type Pronunciations struct {
 
 // parsePronunciations reads the say*.json files; it is called as part of
 // loading the aviation database, so editing one of them takes effect on a
-// reload along with the rest of it. Keys and values must be ASCII: a
-// lookalike letter from another script passes review unnoticed but breaks
-// both voice synthesis and speech recognition.
+// reload along with the rest of it.
 func parsePronunciations() Pronunciations {
+	var p Pronunciations
 	unmarshal := func(file string, m any) {
 		if err := json.Unmarshal(util.LoadResourceBytes(file), m); err != nil {
 			panic(fmt.Sprintf("%s: %v", file, err))
 		}
 	}
-	checkASCII := func(file string, strs ...string) {
+	unmarshal("sayairport.json", &p.Airports)
+	unmarshal("sayactype.json", &p.ACTypes)
+	unmarshal("sayfix.json", &p.Fixes)
+	unmarshal("sayairline.json", &p.Airlines)
+	unmarshal("saysid.json", &p.SIDs)
+	unmarshal("saystar.json", &p.STARs)
+	return p
+}
+
+// CheckASCII reports every key and value in the say*.json files that isn't
+// ASCII. A lookalike letter from another script passes review unnoticed but
+// breaks both voice synthesis and speech recognition. They are reported
+// here rather than rejected while loading so that a bad edit stops startup
+// with an error message instead of a crash.
+func (p Pronunciations) CheckASCII(e *util.ErrorLogger) {
+	check := func(strs ...string) {
 		for _, s := range strs {
 			if strings.ContainsFunc(s, func(r rune) bool { return r > unicode.MaxASCII }) {
-				panic(fmt.Sprintf("%s: %q: only ASCII characters are allowed", file, s))
+				e.ErrorString("%q: only ASCII characters are allowed", s)
 			}
 		}
 	}
-	loadSpellings := func(file string) map[string]string {
-		var m map[string]string
-		unmarshal(file, &m)
-		for k, v := range m {
-			checkASCII(file, k, v)
+	checkSpellings := func(file string, m map[string]string) {
+		e.Push(file)
+		defer e.Pop()
+		for k, v := range util.SortedMap(m) {
+			check(k, v)
 		}
-		return m
 	}
-	loadVariants := func(file string) map[string][]string {
-		var m map[string][]string
-		unmarshal(file, &m)
-		for k, v := range m {
-			checkASCII(file, k)
-			checkASCII(file, v...)
+	checkVariants := func(file string, m map[string][]string) {
+		e.Push(file)
+		defer e.Pop()
+		for k, v := range util.SortedMap(m) {
+			check(k)
+			check(v...)
 		}
-		return m
 	}
 
-	return Pronunciations{
-		Airports: loadVariants("sayairport.json"),
-		ACTypes:  loadVariants("sayactype.json"),
-		Fixes:    loadSpellings("sayfix.json"),
-		Airlines: loadSpellings("sayairline.json"),
-		SIDs:     loadSpellings("saysid.json"),
-		STARs:    loadSpellings("saystar.json"),
-	}
+	checkVariants("sayairport.json", p.Airports)
+	checkVariants("sayactype.json", p.ACTypes)
+	checkSpellings("sayfix.json", p.Fixes)
+	checkSpellings("sayairline.json", p.Airlines)
+	checkSpellings("saysid.json", p.SIDs)
+	checkSpellings("saystar.json", p.STARs)
 }
 
 // parseScrapedRoutes loads the scraped route database for route selection,

@@ -138,3 +138,19 @@ func TestRunwayThresholdsMatchHeadings(t *testing.T) {
 		}
 	}
 }
+
+func TestPronunciationsASCII(t *testing.T) {
+	InitDB()
+	var e util.ErrorLogger
+	DB.Say.CheckASCII(&e)
+	for err := range e.Errors() {
+		t.Error(err)
+	}
+
+	bad := Pronunciations{Fixes: map[string]string{"TYMAN": "Tyман"}}
+	var be util.ErrorLogger
+	bad.CheckASCII(&be)
+	if want := `sayfix.json: "Tyман": only ASCII characters are allowed`; be.String() != want {
+		t.Errorf("got %q, want %q", be.String(), want)
+	}
+}

@@ -190,13 +190,16 @@ func loadNeighborControllers(configs *facilityConfigCache, filesystem fs.FS, sg 
 
 // Load loads all of the available scenarios from the resources (including
 // the overlay directory, if there is one) and runs the full startup
-// validation pass: video map references, arrival spawn altitudes, and
-// emergencies.json. It doesn't try to do any sort of meaningful error
-// handling but it does try to continue on in the presence of errors; all
-// errors will be printed and the program will exit if there are any.  We'd
-// rather force any errors due to invalid scenario definitions to be fixed...
+// validation pass: the pronunciation files, video map references, arrival
+// spawn altitudes, and emergencies.json. It doesn't try to do any sort of
+// meaningful error handling but it does try to continue on in the presence
+// of errors; all errors will be printed and the program will exit if there
+// are any.  We'd rather force any errors due to invalid scenario definitions
+// to be fixed...
 func Load(e *util.ErrorLogger, lg *log.Logger) *Tables {
 	start := time.Now()
+
+	db.DB.Say.CheckASCII(e)
 
 	configs := makeFacilityConfigCache()
 
