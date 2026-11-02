@@ -18,8 +18,9 @@ import (
 )
 
 // What the pilot reports: the check-in transmissions a departure or an
-// arrival makes on contact, and the summary of the aircraft's state shown
-// when hovering over it on the scope.
+// arrival makes on contact, the answers to "say altitude", "say speed" and
+// "say heading", and the summary of the aircraft's state shown when
+// hovering over it on the scope.
 
 type contactCrossingRestriction struct {
 	Fix            string
@@ -224,6 +225,85 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 	}
 
 	return strings.Join(lines, "\n")
+}
+
+func (nav *Nav) rateSummary() string {
+	var s string
+	switch nav.Altitude.Rate {
+	case RateGood:
+		s = ", good rate"
+	case RateExpedite:
+		s = ", expediting"
+	}
+	if s != "" && nav.Altitude.RateThrough != nil {
+		s += " through " + av.FormatAltitude(*nav.Altitude.RateThrough)
+	}
+	return s
+}
+
+func (nav *Nav) SayAltitude() speech.CommandIntent {
+	currentAltitude := nav.FlightState.Altitude
+	intent := speech.ReportAltitudeIntent{Current: currentAltitude}
+	if nav.Altitude.Assigned != nil {
+		intent.Assigned = nav.Altitude.Assigned
+		if *nav.Altitude.Assigned < currentAltitude {
+			intent.Direction = speech.AltitudeDescend
+		} else if *nav.Altitude.Assigned > currentAltitude {
+			intent.Direction = speech.AltitudeClimb
+		} else {
+			intent.Direction = speech.AltitudeMaintain
+		}
+	}
+	return intent
+}
+
+func (nav *Nav) SaySpeed(temp av.Temperature) speech.CommandIntent {
+	if nav.machTransition() {
+		return nav.SayMach()
+	}
+	return nav.SayIndicatedSpeed(temp)
+}
+
+func (nav *Nav) SayIndicatedSpeed(temp av.Temperature) speech.CommandIntent {
+	currentSpeed := nav.FlightState.IAS
+	intent := speech.ReportSpeedIntent{Current: currentSpeed}
+	if sr := nav.Speed.Assigned; sr != nil && !sr.IsMach {
+		if spd, exact := sr.ExactValue(); exact {
+			intent.Assigned = &spd
+		}
+	} else if _, sr, _, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
+		spd := nav.restrictedSpeed(sr, naturalIAS)
+		intent.Assigned = &spd
+	} else if nav.Speed.Restriction != nil {
+		naturalIAS, _ := nav.targetAltitudeIAS(temp)
+		spd := nav.restrictedSpeed(nav.Speed.Restriction, naturalIAS)
+		intent.Assigned = &spd
+	}
+	return intent
+}
+
+func (nav *Nav) SayMach() speech.CommandIntent {
+	if !nav.machTransition() {
+		return speech.MakeUnableIntent("unable. we haven't reached mach transition altitude")
+	}
+	currentMach := nav.Mach()
+	intent := speech.ReportMachIntent{Current: currentMach}
+	if sr := nav.Speed.Assigned; sr != nil && sr.IsMach {
+		if mach, exact := sr.ExactValue(); exact {
+			intent.Assigned = &mach
+		}
+	}
+	return intent
+}
+
+func (nav *Nav) SayHeading() speech.CommandIntent {
+	currentHeading := nav.FlightState.Heading
+	intent := speech.ReportHeadingIntent{Current: currentHeading}
+	if nav.Heading.Assigned != nil {
+		intent.Assigned = nav.Heading.Assigned
+	}
+	return intent
 }
 
 // procedureHasAltRestrictions returns whether any remaining waypoints on the
@@ -490,18 +570,4 @@ func crossingSpeedFormat(crossing *contactCrossingRestriction) (string, []any) {
 	}
 	phrase, args := speech.SpeedRestrictionPhrase(*crossing.Speed)
 	return " " + phrase, args
-}
-
-func (nav *Nav) rateSummary() string {
-	var s string
-	switch nav.Altitude.Rate {
-	case RateGood:
-		s = ", good rate"
-	case RateExpedite:
-		s = ", expediting"
-	}
-	if s != "" && nav.Altitude.RateThrough != nil {
-		s += " through " + av.FormatAltitude(*nav.Altitude.RateThrough)
-	}
-	return s
 }

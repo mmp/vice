@@ -268,12 +268,6 @@ func (nav *Nav) turnToward(hdg math.MagneticHeading, bank float32, wxs wx.Sample
 	nav.FlightState.Heading = math.OffsetHeading(nav.FlightState.Heading, turn)
 }
 
-// bankTurnRate returns the rate of a coordinated turn at the given bank
-// angle and true airspeed in knots, in degrees per second.
-func bankTurnRate(bank, tas float32) float32 {
-	return math.Degrees(9.81 * math.Tan(math.Radians(bank)) / (tas * 0.514444))
-}
-
 // bankTurnRadius returns the radius in nm of a coordinated turn at the
 // given bank angle and speed in knots.
 func bankTurnRadius(bank, speed float32) float32 {

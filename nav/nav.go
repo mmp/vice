@@ -119,22 +119,6 @@ type UpdateResult struct {
 	ActionEvents   []av.WaypointActionEvent
 }
 
-// DeferredNavHeading is a heading, direct or hold from the controller that
-// the pilot has not yet started to follow, and when they will: a few seconds
-// after the instruction, to model the delay before pilots act on one.
-type DeferredNavHeading struct {
-	Time Time
-	// Heading is what the aircraft flies once the delay has passed, and
-	// Waypoints, if any, the route it takes up then.
-	Heading   Heading
-	Waypoints []av.Waypoint
-
-	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be captured into
-	// Altitude.Cleared, as a floor, when this deferred heading takes effect. Used when vectoring an
-	// arrival off a STAR/approach with no issued altitude so the aircraft holds the current alt.
-	SnapshotAltitudeOnEffect bool
-}
-
 // TakeSnapshot returns a copy of the aircraft's instructions for
 // RestoreSnapshot to roll back to.
 func (nav *Nav) TakeSnapshot() Instructions {
@@ -148,179 +132,63 @@ func (nav *Nav) RestoreSnapshot(snap Instructions) {
 	nav.Instructions = snap
 }
 
-type RateQualifier int
+// DelayRange is the range of times from which a pilot's delay in starting
+// to follow an instruction is drawn.
+type DelayRange struct {
+	Min, Max time.Duration
+}
 
-const (
-	RateNormal   RateQualifier = iota
-	RateGood                   // faster than normal, not maximum
-	RateExpedite               // maximum rate
+// PilotDelays holds the ranges of pilot delays for each kind of
+// instruction and for each situation the pilot may be in when it is issued.
+type PilotDelays struct {
+	Altitude               DelayRange
+	AltitudeAfterSpeed     DelayRange
+	HeadingApproachCleared DelayRange
+	HeadingFromHeading     DelayRange
+	HeadingFromLNAV        DelayRange
+	DirectExpected         DelayRange
+	DirectFromLNAV         DelayRange
+	DirectFromHeading      DelayRange
+	OnCourse               DelayRange
+	// PendingApproachCleared caps the delay of a heading or direct that
+	// is still pending when the aircraft is cleared for an approach.
+	PendingApproachCleared DelayRange
+}
+
+// BriefPilotDelays and RealisticPilotDelays are the two sets of pilot delays
+// offered when a sim is created: short ones that keep traffic moving, and
+// longer ones meant to match how long real pilots take to respond.
+var (
+	BriefPilotDelays = PilotDelays{
+		Altitude:               DelayRange{3 * time.Second, 4 * time.Second},
+		AltitudeAfterSpeed:     DelayRange{3 * time.Second, 4 * time.Second},
+		HeadingApproachCleared: DelayRange{2 * time.Second, 3 * time.Second},
+		HeadingFromHeading:     DelayRange{2 * time.Second, 3 * time.Second},
+		HeadingFromLNAV:        DelayRange{3 * time.Second, 4 * time.Second},
+		DirectExpected:         DelayRange{3 * time.Second, 4 * time.Second},
+		DirectFromLNAV:         DelayRange{4 * time.Second, 7 * time.Second},
+		DirectFromHeading:      DelayRange{8 * time.Second, 13 * time.Second},
+		OnCourse:               DelayRange{8 * time.Second, 13 * time.Second},
+		PendingApproachCleared: DelayRange{1 * time.Second, 3 * time.Second},
+	}
+
+	RealisticPilotDelays = PilotDelays{
+		Altitude:               DelayRange{9500 * time.Millisecond, 11500 * time.Millisecond},
+		AltitudeAfterSpeed:     DelayRange{3 * time.Second, 6 * time.Second},
+		HeadingApproachCleared: DelayRange{10 * time.Second, 12 * time.Second},
+		HeadingFromHeading:     DelayRange{9 * time.Second, 11 * time.Second},
+		HeadingFromLNAV:        DelayRange{10 * time.Second, 12 * time.Second},
+		DirectExpected:         DelayRange{9 * time.Second, 12 * time.Second},
+		DirectFromLNAV:         DelayRange{9 * time.Second, 12 * time.Second},
+		DirectFromHeading:      DelayRange{10 * time.Second, 12 * time.Second},
+		OnCourse:               DelayRange{9 * time.Second, 11 * time.Second},
+		PendingApproachCleared: DelayRange{8500 * time.Millisecond, 10500 * time.Millisecond},
+	}
 )
 
-type Altitude struct {
-	Assigned       *float32 // controller-assigned altitude (not yet in autopilot)
-	ActiveAssigned *float32 // assigned altitude currently used for vertical guidance
-	ActivateAt     Time     // non-zero while Assigned is pending activation
-	Cleared        *ClearedAltitude
-	AfterSpeed     *AltitudeAfterSpeed
-	Rate           RateQualifier
-	RateThrough    *float32                // revert to RateNormal after passing this altitude; nil = all the way
-	Restriction    *av.AltitudeRestriction // The restriction at the last waypoint passed.
+func (nav *Nav) drawDelay(r DelayRange) time.Duration {
+	return nav.Rand.DurationRange(r.Min, r.Max)
 }
-
-// AltitudeAfterSpeed is an altitude assignment that waits on a speed change,
-// as in "reduce speed to 180, then descend and maintain 6,000": once the
-// aircraft reaches Speed it is assigned Altitude, to climb or descend at Rate.
-type AltitudeAfterSpeed struct {
-	Altitude float32
-	Speed    av.Airspeed
-	Rate     RateQualifier
-}
-
-// ClearedAltitude is the altitude an aircraft flying its route's altitude
-// restrictions is cleared to: the restrictions never take it above that
-// altitude, and if IsFloor, never below it either. Descend via clearances and
-// an arrival's initial clearance are floors; an approach clearance ends a
-// floor.
-type ClearedAltitude struct {
-	Altitude float32
-	IsFloor  bool
-}
-
-type Speed struct {
-	Assigned                 *av.SpeedRestriction // controller-assigned (exact or range)
-	AfterAltitude            *SpeedAfterAltitude
-	MaintainSlowestPractical bool
-	MaintainMaximumForward   bool
-	Restriction              *av.SpeedRestriction // Carried after passing a waypoint
-}
-
-// SpeedAfterAltitude is a speed assignment that waits on an altitude change,
-// as in "descend and maintain 6,000, then reduce speed to 180": once the
-// aircraft reaches Altitude it is assigned Speed.
-type SpeedAfterAltitude struct {
-	Speed    av.SpeedRestriction
-	Altitude float32
-}
-
-type Heading struct {
-	Assigned   *math.MagneticHeading
-	Turn       *av.TurnDirection
-	Arc        *av.DMEArc
-	JoiningArc bool
-	Maneuvers  []LateralManeuver
-	Hold       *FlyHold
-	Join       *RouteJoin // Maneuvers we're flying the heading to join, if set
-
-}
-
-// Approach is the approach the aircraft has been told to expect and how far it
-// has gotten with it.
-type Approach struct {
-	// What was assigned: the approach, its ATPA volume, and for a visual the
-	// approaches it is flown by reference to and the one it has been
-	// committed to.
-	Assigned             *av.Approach
-	AssignedId           string
-	ATPAVolume           *av.ATPAVolume
-	VisualReferences     []*av.Approach // Reference approaches for non-charted visual approach
-	InterceptedReference *av.Approach   // Approach giving the committed-to route for a non-charted visual approach
-
-	// The clearance. Abandoned is set when the approach fell through, by an
-	// intercept the aircraft couldn't make or a clearance the controller
-	// cancelled; the aircraft keeps its speed as if it were still on it.
-	Cleared         bool
-	StandbyApproach bool // suppress repeated approach clearance requests
-	NoPT            bool
-	Abandoned       bool
-
-	// Instructions that take effect at a fix.
-	AtFixClearedRoute []av.Waypoint
-	AtFixInterceptFix string // fix where aircraft should intercept the localizer
-
-	// Joining the approach course from a heading.
-	InterceptState      InterceptState
-	InterceptCourseLine [2]math.Point2LL // cached course line for non-ILS intercepts
-	InterceptWaypoints  []av.Waypoint    // cached remaining waypoints for non-ILS intercepts
-
-	// Progress along the approach.
-	PassedApproachFix bool // have we passed a fix on the approach yet?
-	PassedFAF         bool
-}
-
-// EffectivelyCleared reports whether the aircraft has been cleared for the
-// approach, either immediately or via an "at fix" clearance that hasn't yet
-// triggered at the fix.
-func (na *Approach) EffectivelyCleared() bool {
-	return na.Cleared || na.AtFixClearedRoute != nil
-}
-
-// HasLocalizer reports whether the aircraft is currently flying localizer-style
-// course geometry.
-func (na *Approach) HasLocalizer() bool {
-	return (na.Assigned != nil && na.Assigned.Type.HasLocalizer()) ||
-		(na.InterceptedReference != nil && na.InterceptedReference.Type.HasLocalizer())
-}
-
-// clearedForVisualApproach reports whether the aircraft has been cleared for
-// a visual approach, either one charted as a procedure or one synthesized for
-// the runway.
-func (nav *Nav) clearedForVisualApproach() bool {
-	if !nav.Approach.Cleared || nav.Approach.Assigned == nil {
-		return false
-	}
-	t := nav.Approach.Assigned.Type
-	return t == av.VisualApproach || t == av.ChartedVisualApproach
-}
-
-// descendsOnGlidepath reports whether the aircraft descends on the exact
-// geometric path to its next altitude restriction rather than holding
-// level until it has to start down: past the FAF, cleared for a visual
-// approach, or on a VFR landing's base, final, or straight-in legs.
-func (nav *Nav) descendsOnGlidepath() bool {
-	if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
-		return true
-	}
-	if len(nav.Waypoints) == 0 {
-		return false
-	}
-	switch nav.Waypoints[0].VFRPhase {
-	case av.VFRPhaseBase, av.VFRPhaseFinal, av.VFRPhaseStraightIn:
-		return true
-	default:
-		return false
-	}
-}
-
-// hasDeferredRoute reports whether a controller-issued route assignment is
-// pending (queued in DeferredNavHeading) but not yet active.
-func (nav *Nav) hasDeferredRoute() bool {
-	return nav.DeferredNavHeading != nil && len(nav.DeferredNavHeading.Waypoints) > 0
-}
-
-type FixAssignment struct {
-	Arrive struct {
-		Altitude *av.AltitudeRestriction
-		Speed    *av.SpeedRestriction
-	}
-	Depart struct {
-		Fix         *av.Waypoint
-		Heading     *math.MagneticHeading
-		Turn        *av.TurnDirection
-		Speed       *av.SpeedRestriction
-		CancelSpeed bool // cancel speed restrictions when passing this fix
-		Altitude    *float32
-	}
-	Hold *av.Hold
-}
-
-type InterceptState int
-
-const (
-	NotIntercepting InterceptState = iota
-	InitialHeading
-	TurningToJoin
-	OnApproachCourse
-)
 
 func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, depAirport, arrAirport av.ICAOAirportCode,
 	cruiseAlt int, perf av.AircraftPerformance, delays PilotDelays, randomizeAltitudeRange bool,
@@ -569,42 +437,6 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 	return result
 }
 
-// TAS returns the aircraft's true airspeed in knots.
-func (nav *Nav) TAS(temp av.Temperature) float32 {
-	return nav.FlightState.TAS(temp)
-}
-
-func (nav *Nav) Mach() float32 {
-	return av.IASToMach(nav.FlightState.IAS, nav.FlightState.Altitude)
-}
-
-// vmoCrossoverAltitude is a typical altitude at which a jet's maximum
-// operating speed (V_MO) and its maximum Mach number give the same
-// indicated airspeed. The performance database doesn't provide V_MO, so it
-// is approximated as the maximum Mach number's IAS there.
-const vmoCrossoverAltitude = 28000
-
-// maxIAS returns the fastest indicated airspeed the aircraft can fly at
-// its current altitude.
-func (nav *Nav) maxIAS(temp av.Temperature) float32 {
-	alt := nav.FlightState.Altitude
-	ias := av.TASToIAS(nav.Perf.Speed.MaxTAS, alt, temp)
-	if mach := nav.Perf.Speed.MaxMach; mach != 0 {
-		if nav.Perf.Engine.AircraftType == "J" {
-			alt = max(alt, vmoCrossoverAltitude)
-		}
-		ias = min(ias, av.MachToIAS(mach, alt))
-	}
-	return ias
-}
-
-// minIAS returns the slowest indicated airspeed the aircraft will fly.
-// The performance database sometimes has a minimum speed above the landing
-// speed; the landing speed wins so the aircraft can slow to it on final.
-func (nav *Nav) minIAS() float32 {
-	return min(nav.Perf.Speed.Min, nav.Perf.Speed.Landing)
-}
-
 func (nav *Nav) IsAirborne() bool {
 	// Slow flight and stalls during airwork go well below V2.
 	if nav.Airwork != nil {
@@ -622,360 +454,204 @@ func (nav *Nav) groundWind(wxs wx.Sample) [2]float32 {
 	return [2]float32{}
 }
 
-// AssignedHeading returns the aircraft's current heading assignment, if
-// any, regardless of whether the pilot has yet started following it.
-func (nav *Nav) AssignedHeading() (math.MagneticHeading, bool) {
-	if dh := nav.DeferredNavHeading; dh != nil {
-		if dh.Heading.Assigned != nil {
-			return *dh.Heading.Assigned, true
-		}
-	} else if nav.Heading.Assigned != nil {
-		return *nav.Heading.Assigned, true
-	}
-	return 0, false
+///////////////////////////////////////////////////////////////////////////
+// Recording
+
+// A Recorder is told what happens to a Nav so that its flight can be replayed
+// and compared later: every command it is given, what each update was given
+// and what came of it, and every answer it gets from its Lookups. A Nav
+// without one records nothing.
+type Recorder interface {
+	// Start is called once, before anything else is recorded, with the Nav
+	// as it is then: the state the recorded flight starts from.
+	Start(nav *Nav)
+	// Command records a command method being called, with its arguments in
+	// the order the method declares them.
+	Command(name string, args ...any)
+	// Lookup records the answer to a question asked of the Lookups: kind
+	// names the question, like "waypoint", and key what it was asked about.
+	Lookup(kind, key string, result any)
+	// Update records one update of the aircraft.
+	Update(u UpdateRecord)
 }
 
-// intendedHeading returns the true heading of the direction the aircraft's
-// instructions are taking it: an assigned heading if it has one (including
-// one the pilot hasn't started flying yet), otherwise the bearing to the next
-// waypoint of its assigned route (which may also still be pending pilot
-// response). The present heading answers the same question only once the
-// pilot has finished turning, which is not yet the case in the seconds after
-// a "direct {fix}" or mid-turn thereafter.
-func (nav *Nav) intendedHeading() math.TrueHeading {
-	magVar := nav.FlightState.MagneticVariation
-	if hdg, ok := nav.AssignedHeading(); ok {
-		return math.MagneticToTrue(hdg, magVar)
-	}
-	// In a hold, on a DME arc, or flying maneuvers, the route says nothing
-	// about the current direction of flight.
-	if nav.Heading.Hold == nil && nav.Heading.Arc == nil && len(nav.Heading.Maneuvers) == 0 {
-		// Take the bearing to the first waypoint far enough away to give a
-		// meaningful one: the aircraft sequences straight past any it is
-		// sitting on top of.
-		wps := nav.AssignedWaypoints()
-		far := func(wp av.Waypoint) bool {
-			return math.NMDistance2LLFast(nav.FlightState.Position, wp.Location,
-				nav.FlightState.NmPerLongitude) > 0.5
-		}
-		if i := slices.IndexFunc(wps, far); i != -1 {
-			return math.Heading2LL(nav.FlightState.Position, wps[i].Location, nav.FlightState.NmPerLongitude)
-		}
-	}
-	return math.MagneticToTrue(nav.FlightState.Heading, magVar)
+// UpdateRecord is what one update of a Nav was given and what came of it.
+type UpdateRecord struct {
+	Time       Time
+	Weather    wx.Sample
+	METAR      *wx.METAR
+	Rules      av.FlightRules
+	UnderBravo bool
+	Prespawn   bool
+	Result     UpdateResult
+	State      FlightState
 }
 
-// DepartureHeadingState describes the state of a departure's heading assignment.
-type DepartureHeadingState int
-
-const (
-	// NoHeading indicates no heading is assigned or upcoming
-	NoHeading DepartureHeadingState = iota
-	// OnHeading indicates the aircraft is currently flying an assigned heading
-	OnHeading
-	// TurningToHeading indicates the aircraft is about to turn to a heading
-	TurningToHeading
-)
-
-// DepartureHeading returns the heading a departure will fly and its state.
-// Returns the heading and state based on:
-// - OnHeading: aircraft has an assigned heading
-// - TurningToHeading: first waypoint has a heading (about to turn)
-// - NoHeading: no assigned heading and first waypoint has no heading
-func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
-	// If we have an assigned heading, we're flying it
-	if nav.Heading.Assigned != nil {
-		return int(*nav.Heading.Assigned), OnHeading
-	}
-	// If the first waypoint has a heading, we're about to turn to it
-	if len(nav.Waypoints) > 0 {
-		if h, ok := nav.Waypoints[0].HeadingAction(); ok && h.Heading != 0 {
-			return int(h.Heading), TurningToHeading
-		}
-	}
-	return 0, NoHeading
+// Lookups answers what nav asks about the world beyond the aircraft and its
+// route. The sim answers from the database; a replayed trace answers from
+// what the recording was told.
+type Lookups interface {
+	// Waypoint returns the location of a named fix or navaid.
+	Waypoint(fix string) (math.Point2LL, bool)
+	// Airport returns the location and elevation of an airport named by
+	// its ICAO or FAA code.
+	Airport(code string) (math.Point2LL, float32, bool)
+	// Declination returns a VHF navaid's station declination.
+	Declination(fix string) (float32, bool)
+	Airways(name string) ([]av.Airway, bool)
+	// Holds returns the holds published at a fix.
+	Holds(fix string) ([]av.Hold, bool)
+	Runway(airport av.ICAOAirportCode, runway string) (av.Runway, bool)
+	OppositeRunway(airport av.ICAOAirportCode, runway string) (av.Runway, bool)
 }
 
-// DelayRange is the range of times from which a pilot's delay in starting
-// to follow an instruction is drawn.
-type DelayRange struct {
-	Min, Max time.Duration
+// LookupResult is how a recorded answer from the Lookups is encoded: what
+// the method returned and whether it found anything.
+type LookupResult[T any] struct {
+	Value T
+	OK    bool
 }
 
-// PilotDelays holds the ranges of pilot delays for each kind of
-// instruction and for each situation the pilot may be in when it is issued.
-type PilotDelays struct {
-	Altitude               DelayRange
-	AltitudeAfterSpeed     DelayRange
-	HeadingApproachCleared DelayRange
-	HeadingFromHeading     DelayRange
-	HeadingFromLNAV        DelayRange
-	DirectExpected         DelayRange
-	DirectFromLNAV         DelayRange
-	DirectFromHeading      DelayRange
-	OnCourse               DelayRange
-	// PendingApproachCleared caps the delay of a heading or direct that
-	// is still pending when the aircraft is cleared for an approach.
-	PendingApproachCleared DelayRange
+// AirportLookup is the value of a recorded Airport answer.
+type AirportLookup struct {
+	Location  math.Point2LL
+	Elevation float32
 }
 
-// BriefPilotDelays and RealisticPilotDelays are the two sets of pilot delays
-// offered when a sim is created: short ones that keep traffic moving, and
-// longer ones meant to match how long real pilots take to respond.
-var (
-	BriefPilotDelays = PilotDelays{
-		Altitude:               DelayRange{3 * time.Second, 4 * time.Second},
-		AltitudeAfterSpeed:     DelayRange{3 * time.Second, 4 * time.Second},
-		HeadingApproachCleared: DelayRange{2 * time.Second, 3 * time.Second},
-		HeadingFromHeading:     DelayRange{2 * time.Second, 3 * time.Second},
-		HeadingFromLNAV:        DelayRange{3 * time.Second, 4 * time.Second},
-		DirectExpected:         DelayRange{3 * time.Second, 4 * time.Second},
-		DirectFromLNAV:         DelayRange{4 * time.Second, 7 * time.Second},
-		DirectFromHeading:      DelayRange{8 * time.Second, 13 * time.Second},
-		OnCourse:               DelayRange{8 * time.Second, 13 * time.Second},
-		PendingApproachCleared: DelayRange{1 * time.Second, 3 * time.Second},
-	}
-
-	RealisticPilotDelays = PilotDelays{
-		Altitude:               DelayRange{9500 * time.Millisecond, 11500 * time.Millisecond},
-		AltitudeAfterSpeed:     DelayRange{3 * time.Second, 6 * time.Second},
-		HeadingApproachCleared: DelayRange{10 * time.Second, 12 * time.Second},
-		HeadingFromHeading:     DelayRange{9 * time.Second, 11 * time.Second},
-		HeadingFromLNAV:        DelayRange{10 * time.Second, 12 * time.Second},
-		DirectExpected:         DelayRange{9 * time.Second, 12 * time.Second},
-		DirectFromLNAV:         DelayRange{9 * time.Second, 12 * time.Second},
-		DirectFromHeading:      DelayRange{10 * time.Second, 12 * time.Second},
-		OnCourse:               DelayRange{9 * time.Second, 11 * time.Second},
-		PendingApproachCleared: DelayRange{8500 * time.Millisecond, 10500 * time.Millisecond},
-	}
-)
-
-func (nav *Nav) drawDelay(r DelayRange) time.Duration {
-	return nav.Rand.DurationRange(r.Min, r.Max)
+// SetRecorder sets the recorder the Nav reports to; nil stops it reporting.
+func (nav *Nav) SetRecorder(r Recorder) {
+	nav.recorder = r
+	nav.recordStarted = false
 }
 
-// onHeading reports whether the aircraft is flying a heading: one it was
-// assigned, or a heading leg of a procedure, like a SID's after the climb
-// off the runway.
-func (nav *Nav) onHeading() bool {
-	if nav.Heading.Assigned != nil {
-		return true
+// recording returns the recorder to report to, starting it with the Nav as
+// it is now if this is the first report, or nil if the Nav isn't recording.
+func (nav *Nav) recording() Recorder {
+	if nav.recorder != nil && !nav.recordStarted {
+		nav.recordStarted = true
+		nav.recorder.Start(nav)
 	}
-	if len(nav.Heading.Maneuvers) == 0 {
-		return false
-	}
-	m := nav.Heading.Maneuvers[0]
-	return m.FlyToward.IsZero() && m.TrackFrom.IsZero() && m.Track == 0
+	return nav.recorder
 }
 
-// EnqueueHeading enqueues the given heading assignment to be followed a
-// few seconds in the future. It should only be called for heading changes
-// due to controller instructions to the pilot and never in cases where the
-// autopilot is changing the heading assignment. delayReduction, the time
-// since the pilot heard the instruction, is subtracted from the
-// pilot-reaction delay (floored at zero).
-func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, approachCleared bool, simTime Time, delayReduction time.Duration) {
-	defer nav.record("EnqueueHeading", hdg, turn, approachCleared, simTime, delayReduction)()
-	var d time.Duration
-	if approachCleared {
-		// Minimal delay if the aircraft has been cleared for an approach.
-		d = nav.drawDelay(nav.Delays.HeadingApproachCleared)
-	} else if nav.onHeading() && nav.DeferredNavHeading == nil {
-		// Already flying a heading; minimal delay.
-		d = nav.drawDelay(nav.Delays.HeadingFromHeading)
-	} else {
-		// LNAV -> heading mode
-		d = nav.drawDelay(nav.Delays.HeadingFromLNAV)
-	}
-
-	if d > delayReduction {
-		d -= delayReduction
-	} else {
-		d = 0
-	}
-	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time:    simTime.Add(d),
-		Heading: Heading{Assigned: &hdg, Turn: &turn},
-	}
+// SetLookups sets where the Nav's questions about the world are answered;
+// nil restores the database.
+func (nav *Nav) SetLookups(l Lookups) {
+	nav.lookups = l
 }
 
-// AssignedWaypoints returns the route that should be flown following a
-// controller instruction. If an instruction has been issued but the delay
-// hasn't passed, these are different than the waypoints currently being
-// used for navigation.
-func (nav *Nav) AssignedWaypoints() []av.Waypoint {
-	if nav.hasDeferredRoute() {
-		return nav.DeferredNavHeading.Waypoints
+// record reports a command to the recorder, if there is one, and returns the
+// function that marks the command's end. A command that another command or
+// an update gives isn't recorded: replaying the outer one gives it again.
+// Every command method starts with "defer nav.record(...)()", naming itself
+// and all of its parameters, which TestCommandsRecorded checks.
+func (nav *Nav) record(name string, args ...any) func() {
+	rec := nav.recording()
+	if rec == nil {
+		return func() {}
 	}
-	return nav.Waypoints
+	if nav.recordDepth == 0 {
+		rec.Command(name, args...)
+	}
+	nav.recordDepth++
+	return func() { nav.recordDepth-- }
 }
 
-// setAssignedWaypoints replaces the route returned by AssignedWaypoints.
-func (nav *Nav) setAssignedWaypoints(wps []av.Waypoint) {
-	if nav.hasDeferredRoute() {
-		nav.DeferredNavHeading.Waypoints = wps
-	} else {
-		nav.Waypoints = wps
+// lookup returns where the Nav's questions are answered: its Lookups, or the
+// database if it has none, with every answer recorded if it is recording.
+func (nav *Nav) lookup() Lookups {
+	l := nav.lookups
+	if l == nil {
+		l = databaseLookups{}
 	}
+	if rec := nav.recording(); rec != nil {
+		return recordedLookups{l, rec}
+	}
+	return l
 }
 
-// editAssignedWaypoints returns the assigned-route slice and a commit function
-// that writes a (possibly mutated) slice back to the underlying field. Callers
-// should reassign their local slice variable when using slices.Delete/Insert
-// and pass the current value to commit.
-func (nav *Nav) editAssignedWaypoints() ([]av.Waypoint, func([]av.Waypoint)) {
-	return nav.AssignedWaypoints(), nav.setAssignedWaypoints
+// databaseLookups answers from the static database.
+type databaseLookups struct{}
+
+func (databaseLookups) Waypoint(fix string) (math.Point2LL, bool) {
+	return db.DB.LookupWaypoint(fix)
 }
 
-// AmendRoute replaces the waypoints of the assigned route before the one at
-// fix with wps, as a flight plan amendment does. It reports false, leaving
-// the route alone, if fix isn't on it.
-// FlyRoute replaces the aircraft's route with wps and has it fly the route
-// from where it is, dropping any heading it was flying.
-func (nav *Nav) FlyRoute(wps []av.Waypoint) {
-	defer nav.record("FlyRoute", wps)()
-	nav.Waypoints = wps
-	nav.Heading = Heading{}
+func (databaseLookups) Airport(code string) (math.Point2LL, float32, bool) {
+	if ap, ok := db.DB.LookupICAOAirport(av.ICAOAirportCode(code)); ok {
+		return ap.Location, float32(ap.Elevation), true
+	} else if ap, ok := db.DB.LookupFAAAirport(av.FAAAirportCode(code)); ok {
+		return ap.Location, float32(ap.Elevation), true
+	}
+	return math.Point2LL{}, 0, false
 }
 
-// FlyFromRunway has an aircraft that is back on the runway after a
-// touch-and-go take off again along wps, with its speed and altitude managed
-// as a departure's are.
-func (nav *Nav) FlyFromRunway(wps []av.Waypoint) {
-	defer nav.record("FlyFromRunway", wps)()
-	nav.Waypoints = wps
-	nav.Heading = Heading{}
-	nav.FlightState.InitialDepartureClimb = true
+func (databaseLookups) Declination(fix string) (float32, bool) {
+	return db.DB.Declination(fix)
 }
 
-func (nav *Nav) AmendRoute(wps []av.Waypoint, fix string) bool {
-	defer nav.record("AmendRoute", wps, fix)()
-	route := nav.AssignedWaypoints()
-	idx := slices.IndexFunc(route, func(wp av.Waypoint) bool { return wp.Fix == fix })
-	if idx == -1 {
-		return false
-	}
-	nav.setAssignedWaypoints(slices.Concat(wps, route[idx:]))
-	return true
+func (databaseLookups) Airways(name string) ([]av.Airway, bool) {
+	a, ok := db.DB.Airways[name]
+	return a, ok
 }
 
-func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
-	defer nav.record("EnqueueDirectFix", wps, turn, simTime, delayReduction)()
-	var d time.Duration
-	if len(wps) > 0 && nav.ExpectedDirectFix == wps[0].Fix {
-		// Pilot was told to expect this fix; shorter delay
-		d = nav.drawDelay(nav.Delays.DirectExpected)
-		nav.ExpectedDirectFix = ""
-	} else if nav.Heading.Assigned == nil && nav.DeferredNavHeading == nil {
-		// Already in LNAV mode; have less of a delay
-		d = nav.drawDelay(nav.Delays.DirectFromLNAV)
-	} else {
-		// heading->LNAV--longer delay
-		d = nav.drawDelay(nav.Delays.DirectFromHeading)
-	}
-
-	if d > delayReduction {
-		d -= delayReduction
-	} else {
-		d = 0
-	}
-	dh := &DeferredNavHeading{
-		Time:      simTime.Add(d),
-		Waypoints: wps,
-	}
-	if turn != av.TurnClosest {
-		dh.Heading.Turn = &turn
-	}
-	nav.DeferredNavHeading = dh
+func (databaseLookups) Holds(fix string) ([]av.Hold, bool) {
+	h, ok := db.DB.EnrouteHolds[fix]
+	return h, ok
 }
 
-func (nav *Nav) EnqueueOnCourse(simTime Time, delayReduction time.Duration) {
-	defer nav.record("EnqueueOnCourse", simTime, delayReduction)()
-	d := max(nav.drawDelay(nav.Delays.OnCourse)-delayReduction, 0)
-	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time: simTime.Add(d),
-	}
+func (databaseLookups) Runway(airport av.ICAOAirportCode, runway string) (av.Runway, bool) {
+	return av.LookupRunway(db.Lookups{}, airport, runway)
 }
 
-func (nav *Nav) OnApproach(checkAltitude bool) bool {
-	if !nav.Approach.Cleared {
-		return false
-	}
-
-	if _, assigned := nav.AssignedHeading(); assigned {
-		return false
-	}
-
-	// The aircraft either must have passed a fix on the approach or be on
-	// the localizer and also be above any upcoming altitude restrictions.
-	if !nav.Approach.PassedApproachFix && nav.Approach.InterceptState != OnApproachCourse {
-		return false
-	}
-
-	if !checkAltitude {
-		return true
-	}
-
-	for _, wp := range nav.Waypoints {
-		// Ignore controller-assigned "cross FIX at ALT" for this
-		if r := wp.AltitudeRestriction(); r != nil {
-			return nav.FlightState.Altitude >= r.TargetAltitude(nav.FlightState.Altitude)
-		}
-	}
-	return false
+func (databaseLookups) OppositeRunway(airport av.ICAOAirportCode, runway string) (av.Runway, bool) {
+	return av.LookupOppositeRunway(db.Lookups{}, airport, runway)
 }
 
-// courseCaptureTolerance is how close to a course an aircraft turning to
-// join it has to get to be considered established on it, in nm.
-const courseCaptureTolerance = 0.2
-
-// minInterceptAngle is the shallowest angle at which a track counts as
-// converging on a course; anything less only creeps toward it.
-const minInterceptAngle = 10 // degrees
-
-// onCourseLine checks if the flight position is less than maxNmDeviation
-// from the infinite line defined by the two given points.
-func (nav *Nav) onCourseLine(line [2]math.Point2LL, maxNmDeviation float32) bool {
-	return math.Abs(nav.signedCourseLineDistance(line)) < maxNmDeviation
+// recordedLookups answers from another Lookups and records each answer.
+type recordedLookups struct {
+	l   Lookups
+	rec Recorder
 }
 
-// signedCourseLineDistance returns the flight position's distance in nm from
-// the infinite line defined by the two given points; it is positive when the
-// aircraft is to the right of the line's direction.
-func (nav *Nav) signedCourseLineDistance(line [2]math.Point2LL) float32 {
-	return math.SignedPointLineDistance(
-		math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
-		math.LL2NM(line[0], nav.FlightState.NmPerLongitude),
-		math.LL2NM(line[1], nav.FlightState.NmPerLongitude))
+func (r recordedLookups) Waypoint(fix string) (math.Point2LL, bool) {
+	p, ok := r.l.Waypoint(fix)
+	r.rec.Lookup("waypoint", fix, LookupResult[math.Point2LL]{p, ok})
+	return p, ok
 }
 
-// closingOnCourseLine reports whether the aircraft's ground track is
-// converging on the infinite line defined by the two given points at more
-// than a glancing angle.
-func (nav *Nav) closingOnCourseLine(line [2]math.Point2LL, wxs wx.Sample) bool {
-	fs := &nav.FlightState
-
-	// The ground velocity, as the flight model integrates it: the heading
-	// flown at TAS, displaced by the wind.
-	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
-		nav.TAS(wxs.Temperature())/3600)
-	v = math.Add2f(v, nav.groundWind(wxs))
-
-	// The track has to be angled back toward the side of the course the
-	// aircraft is on, and by enough to actually get there.
-	course := math.Heading2LL(line[0], line[1], fs.NmPerLongitude)
-	angle := math.HeadingSignedTurn(course, math.VectorHeading(v))
-	return angle*nav.signedCourseLineDistance(line) < 0 && math.Abs(angle) >= minInterceptAngle
+func (r recordedLookups) Airport(code string) (math.Point2LL, float32, bool) {
+	p, elev, ok := r.l.Airport(code)
+	r.rec.Lookup("airport", code, LookupResult[AirportLookup]{AirportLookup{p, elev}, ok})
+	return p, elev, ok
 }
 
-// OnExtendedCenterline checks if the flight position is less than
-// maxNmDeviation from the assigned approach's final approach course.
-func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
-	approach := nav.Approach.Assigned
-	if approach == nil {
-		return false
-	}
+func (r recordedLookups) Declination(fix string) (float32, bool) {
+	d, ok := r.l.Declination(fix)
+	r.rec.Lookup("declination", fix, LookupResult[float32]{d, ok})
+	return d, ok
+}
 
-	cl := approach.FinalApproachCourseLine(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-	return nav.onCourseLine(cl, maxNmDeviation)
+func (r recordedLookups) Airways(name string) ([]av.Airway, bool) {
+	a, ok := r.l.Airways(name)
+	r.rec.Lookup("airways", name, LookupResult[[]av.Airway]{a, ok})
+	return a, ok
+}
+
+func (r recordedLookups) Holds(fix string) ([]av.Hold, bool) {
+	h, ok := r.l.Holds(fix)
+	r.rec.Lookup("holds", fix, LookupResult[[]av.Hold]{h, ok})
+	return h, ok
+}
+
+func (r recordedLookups) Runway(airport av.ICAOAirportCode, runway string) (av.Runway, bool) {
+	rwy, ok := r.l.Runway(airport, runway)
+	r.rec.Lookup("runway", string(airport)+"/"+runway, LookupResult[av.Runway]{rwy, ok})
+	return rwy, ok
+}
+
+func (r recordedLookups) OppositeRunway(airport av.ICAOAirportCode, runway string) (av.Runway, bool) {
+	rwy, ok := r.l.OppositeRunway(airport, runway)
+	r.rec.Lookup("opposite_runway", string(airport)+"/"+runway, LookupResult[av.Runway]{rwy, ok})
+	return rwy, ok
 }

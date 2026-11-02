@@ -1,4 +1,4 @@
-// nav/procedures.go
+// nav/maneuver.go
 // Copyright(c) vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -6,16 +6,17 @@ package nav
 
 import (
 	"fmt"
-	"slices"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
-///////////////////////////////////////////////////////////////////////////
-// Procedure turns
+// Lateral maneuvers: legs flown on a heading, a track or toward a point
+// until a condition is met, and the procedure turns and holds built from
+// them.
 
 // ManeuverCompleteType discriminates maneuver completion conditions.
 type ManeuverCompleteType int
@@ -321,44 +322,6 @@ func flyTrackUntilIntercept(track math.MagneticHeading, turn av.TurnDirection,
 	}
 }
 
-func racetrackEntryManeuvers(entry av.HoldEntry, fix math.Point2LL, inbound math.MagneticHeading,
-	turn av.TurnDirection, entryLeg func(math.MagneticHeading) LateralManeuver) []LateralManeuver {
-	outbound := math.OppositeHeading(inbound)
-
-	maneuvers := []LateralManeuver{
-		flyTowardFix(fix),
-	}
-
-	switch entry {
-	case av.HoldEntryDirect:
-		return maneuvers
-
-	case av.HoldEntryParallel:
-		intercept := math.OffsetHeading(inbound, util.Select(turn == av.TurnRight, -40, 40))
-		return append(maneuvers,
-			turnToTrack(outbound, av.TurnClosest),
-			entryLeg(outbound),
-			turnToTrack(intercept, oppositeTurnDirection(turn)),
-			flyTrackUntilIntercept(intercept, turn, fix, inbound),
-			turnToTrack(inbound, turn),
-			flyTowardFix(fix))
-
-	case av.HoldEntryTeardrop:
-		teardrop := math.OffsetHeading(inbound, util.Select(turn == av.TurnRight, 150, -150))
-		base := math.OppositeHeading(teardrop)
-		return append(maneuvers,
-			turnToTrack(teardrop, av.TurnClosest),
-			entryLeg(teardrop),
-			turnToTrack(base, turn),
-			flyTrackUntilIntercept(base, turn, fix, inbound),
-			turnToTrack(inbound, turn),
-			flyTowardFix(fix))
-
-	default:
-		panic(fmt.Sprintf("unhandled hold entry type: %d", entry))
-	}
-}
-
 func oppositeTurnDirection(turn av.TurnDirection) av.TurnDirection {
 	return util.Select(turn == av.TurnRight, av.TurnLeft, av.TurnRight)
 }
@@ -465,49 +428,8 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 	return maneuverResult{heading: heading, turn: m.Turn}
 }
 
-// resumeRouteAt takes up the route at the named fix after a maneuver that
-// joined the given course to it. The waypoints before the fix are dropped,
-// except for crossing points on that course still ahead of the aircraft,
-// which is now on it; a crossing on the route's own leg into the fix is
-// off a radial that comes in from another direction. The fix's leg origin
-// becomes the waypoint passed, so the leg can be rejoined if the aircraft
-// is vectored off it again. A route that no longer has the fix, having
-// been replaced in the meantime, is left as it is.
-func (nav *Nav) resumeRouteAt(fix string, course math.MagneticHeading) {
-	wps := nav.Waypoints
-	i := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == fix })
-	if i == -1 {
-		return
-	}
-
-	fs := &nav.FlightState
-	p := math.LL2NM(fs.Position, fs.NmPerLongitude)
-	f := math.LL2NM(wps[i].Location, fs.NmPerLongitude)
-	dir := math.HeadingVector(math.MagneticToTrue(course, fs.MagneticVariation))
-	onCourseAhead := func(wp av.Waypoint) bool {
-		q := math.LL2NM(wp.Location, fs.NmPerLongitude)
-		return math.Dot(math.Sub2f(q, p), dir) > 0 &&
-			math.Abs(math.SignedPointLineDistance(q, f, math.Add2f(f, dir))) < 0.25
-	}
-	for i > 0 && wps[i-1].SyntheticCrossing() && onCourseAhead(wps[i-1]) {
-		i--
-	}
-	if origin, ok := legOriginBefore(wps, i); ok {
-		nav.PassedWaypoint = origin
-	}
-	nav.Waypoints = wps[i:]
-}
-
-// legOriginBefore returns the last route fix before index i, skipping the
-// crossing points that restrictions add between fixes.
-func legOriginBefore(wps []av.Waypoint, i int) (av.Waypoint, bool) {
-	for i--; i >= 0; i-- {
-		if !wps[i].SyntheticCrossing() {
-			return wps[i], true
-		}
-	}
-	return av.Waypoint{}, false
-}
+///////////////////////////////////////////////////////////////////////////
+// Procedure turns
 
 func (nav *Nav) flyProcedureTurnIfNecessary() {
 	wp := nav.AssignedWaypoints()
@@ -609,6 +531,44 @@ func makeRacetrackManeuver(nav *Nav, wp []av.Waypoint, exitAlt *float32) []Later
 	return maneuvers
 }
 
+func racetrackEntryManeuvers(entry av.HoldEntry, fix math.Point2LL, inbound math.MagneticHeading,
+	turn av.TurnDirection, entryLeg func(math.MagneticHeading) LateralManeuver) []LateralManeuver {
+	outbound := math.OppositeHeading(inbound)
+
+	maneuvers := []LateralManeuver{
+		flyTowardFix(fix),
+	}
+
+	switch entry {
+	case av.HoldEntryDirect:
+		return maneuvers
+
+	case av.HoldEntryParallel:
+		intercept := math.OffsetHeading(inbound, util.Select(turn == av.TurnRight, -40, 40))
+		return append(maneuvers,
+			turnToTrack(outbound, av.TurnClosest),
+			entryLeg(outbound),
+			turnToTrack(intercept, oppositeTurnDirection(turn)),
+			flyTrackUntilIntercept(intercept, turn, fix, inbound),
+			turnToTrack(inbound, turn),
+			flyTowardFix(fix))
+
+	case av.HoldEntryTeardrop:
+		teardrop := math.OffsetHeading(inbound, util.Select(turn == av.TurnRight, 150, -150))
+		base := math.OppositeHeading(teardrop)
+		return append(maneuvers,
+			turnToTrack(teardrop, av.TurnClosest),
+			entryLeg(teardrop),
+			turnToTrack(base, turn),
+			flyTrackUntilIntercept(base, turn, fix, inbound),
+			turnToTrack(inbound, turn),
+			flyTowardFix(fix))
+
+	default:
+		panic(fmt.Sprintf("unhandled hold entry type: %d", entry))
+	}
+}
+
 // outboundLeg returns a LateralManeuver for the outbound leg of a
 // procedure turn, using the correct completion condition based on what was
 // specified: UntilDist if a distance was given, UntilTime if a time was
@@ -650,6 +610,88 @@ type FlyHold struct {
 	Entry       av.HoldEntry
 	Maneuvers   []LateralManeuver
 	Cancel      bool // when set, we end the hold after the last leg
+}
+
+func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.CommandIntent {
+	defer nav.record("HoldAtFix", callsign, fix, hold)()
+	if _, ok := nav.lookup().Waypoint(fix); !ok {
+		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
+	} else if !nav.fixInRoute(fix) {
+		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
+	}
+
+	// Use controller-specified hold if provided, otherwise look up published hold
+	var h av.Hold
+	if hold != nil {
+		// Controller-specified hold
+		h = *hold
+	} else {
+		// Published hold
+		holds, ok := nav.lookup().Holds(fix)
+		if !ok || len(holds) == 0 {
+			return speech.MakeUnableIntent("unable. no published hold at {fix}", fix)
+		}
+		h = holds[0]
+	}
+
+	if len(nav.Waypoints) > 0 && nav.Waypoints[0].Fix == h.Fix && nav.Heading.Assigned == nil {
+		// We're already direct to it for the next fix; get started.
+		nav.Heading = Heading{Hold: nav.makeFlyHold(callsign, h)}
+	} else if nav.hasDeferredRoute() && nav.DeferredNavHeading.Waypoints[0].Fix == h.Fix {
+		nav.DeferredNavHeading.Heading.Hold = nav.makeFlyHold(callsign, h)
+	} else {
+		// It's a later fix. Queue it up; we'll return to it when it's the next waypoint upcoming.
+		// Clobber any altitude or heading assignments associated with the fix.
+		nav.FixAssignments[h.Fix] = FixAssignment{Hold: &h}
+	}
+
+	// These seem prudent to clear at this point.
+	nav.Approach.Cleared = false
+	nav.Approach.PassedApproachFix = false
+
+	turnDir := util.Select(h.TurnDirection == av.TurnRight, "right", "left")
+	var legLength string
+	if h.LegLengthNM > 0 {
+		legLength = fmt.Sprintf("%g mile", h.LegLengthNM)
+	} else {
+		legLength = fmt.Sprintf("%g minute", h.LegMinutes)
+	}
+
+	return speech.NavigationIntent{
+		Type:          speech.NavHold,
+		Fix:           h.Fix,
+		HoldDirection: turnDir,
+		HoldLegLength: legLength,
+	}
+}
+
+func (nav *Nav) makeFlyHold(callsign string, hold av.Hold) *FlyHold {
+	// Calculate heading from aircraft's current position to fix
+	pHold, _ := nav.lookup().Waypoint(hold.Fix)
+	hdg := math.TrueToMagnetic(math.Heading2LL(nav.FlightState.Position, pHold, nav.FlightState.NmPerLongitude),
+		nav.FlightState.MagneticVariation)
+
+	NavLog(callsign, Time{}, NavLogHold, "makeFlyHold: headingToFix=%.1f hold_inbound=%.1f turn=%s -> %s",
+		hdg, hold.InboundCourse, hold.TurnDirection, hold.Entry(hdg).String())
+
+	fh := &FlyHold{
+		Hold:        hold,
+		FixLocation: pHold,
+		Entry:       hold.Entry(hdg),
+	}
+	fh.Maneuvers = fh.entryManeuvers()
+	return fh
+}
+
+// holdAtNextFix starts the hold the controller assigned at the next
+// waypoint, if there is one.
+func (nav *Nav) holdAtNextFix(callsign string) {
+	if len(nav.Waypoints) == 0 {
+		return
+	}
+	if nfa, ok := nav.FixAssignments[nav.Waypoints[0].Fix]; ok && nfa.Hold != nil {
+		nav.Heading = Heading{Hold: nav.makeFlyHold(callsign, *nfa.Hold)}
+	}
 }
 
 // GetHeading returns the heading and turn direction for the hold's current

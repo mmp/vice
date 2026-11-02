@@ -7,8 +7,218 @@ package nav
 import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/wx"
 )
+
+type Speed struct {
+	Assigned                 *av.SpeedRestriction // controller-assigned (exact or range)
+	AfterAltitude            *SpeedAfterAltitude
+	MaintainSlowestPractical bool
+	MaintainMaximumForward   bool
+	Restriction              *av.SpeedRestriction // Carried after passing a waypoint
+}
+
+// SpeedAfterAltitude is a speed assignment that waits on an altitude change,
+// as in "descend and maintain 6,000, then reduce speed to 180": once the
+// aircraft reaches Altitude it is assigned Speed.
+type SpeedAfterAltitude struct {
+	Speed    av.SpeedRestriction
+	Altitude float32
+}
+
+// TAS returns the aircraft's true airspeed in knots.
+func (nav *Nav) TAS(temp av.Temperature) float32 {
+	return nav.FlightState.TAS(temp)
+}
+
+func (nav *Nav) Mach() float32 {
+	return av.IASToMach(nav.FlightState.IAS, nav.FlightState.Altitude)
+}
+
+// vmoCrossoverAltitude is a typical altitude at which a jet's maximum
+// operating speed (V_MO) and its maximum Mach number give the same
+// indicated airspeed. The performance database doesn't provide V_MO, so it
+// is approximated as the maximum Mach number's IAS there.
+const vmoCrossoverAltitude = 28000
+
+// maxIAS returns the fastest indicated airspeed the aircraft can fly at
+// its current altitude.
+func (nav *Nav) maxIAS(temp av.Temperature) float32 {
+	alt := nav.FlightState.Altitude
+	ias := av.TASToIAS(nav.Perf.Speed.MaxTAS, alt, temp)
+	if mach := nav.Perf.Speed.MaxMach; mach != 0 {
+		if nav.Perf.Engine.AircraftType == "J" {
+			alt = max(alt, vmoCrossoverAltitude)
+		}
+		ias = min(ias, av.MachToIAS(mach, alt))
+	}
+	return ias
+}
+
+// minIAS returns the slowest indicated airspeed the aircraft will fly.
+// The performance database sometimes has a minimum speed above the landing
+// speed; the landing speed wins so the aircraft can slow to it on final.
+func (nav *Nav) minIAS() float32 {
+	return min(nav.Perf.Speed.Min, nav.Perf.Speed.Landing)
+}
+
+// machTransition returns whether the aircraft's speed may be assigned as
+// a Mach number: 7110.65 5-7-2 allows it for turbojets at or above FL240.
+func (nav *Nav) machTransition() bool {
+	return nav.Perf.Engine.AircraftType == "J" && nav.FlightState.Altitude >= av.MachTransitionAltitude
+}
+
+// checkAssignedSpeed returns an unable intent and false if the aircraft
+// can't fly the given speed.
+func (nav *Nav) checkAssignedSpeed(spd av.Airspeed, temp av.Temperature) (speech.CommandIntent, bool) {
+	if spd.IsMach {
+		// Round the limits to hundredths, with slack for the round trip
+		// through IAS when the maximum Mach number is what limits maxIAS.
+		alt := nav.FlightState.Altitude
+		minMach := math.Ceil(100*av.IASToMach(nav.Perf.Speed.Landing, alt)-0.01) / 100
+		maxMach := math.Floor(100*av.IASToMach(nav.maxIAS(temp), alt)+0.01) / 100
+
+		if spd.Value < minMach {
+			return speech.MakeUnableIntent("unable. Our minimum mach is {mach}", minMach), false
+		} else if spd.Value > maxMach {
+			return speech.MakeUnableIntent("unable. Our maximum mach is {mach}", maxMach), false
+		} else if !nav.machTransition() {
+			return speech.MakeUnableIntent("unable. we haven't reached mach transition altitude"), false
+		}
+		return nil, true
+	}
+
+	maxIAS := 10 * math.Floor(nav.maxIAS(temp)/10)
+	if spd.Value < nav.Perf.Speed.Landing {
+		return speech.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing), false
+	} else if spd.Value > maxIAS {
+		return speech.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS), false
+	}
+	return nil, true
+}
+
+// rangeSpeedIntent returns the readback for an at or above or an at or
+// below speed restriction; a band is read back as its ceiling.
+func rangeSpeedIntent(sr *av.SpeedRestriction) speech.SpeedIntent {
+	spd := sr.Speed()
+	if sr.Range[1] == av.MaxRestrictionSpeed {
+		return speech.SpeedIntent{Speed: spd, Type: speech.SpeedAtOrAbove}
+	}
+	spd.Value = sr.Range[1]
+	return speech.SpeedIntent{Speed: spd, Type: speech.SpeedAtOrBelow}
+}
+
+// speedChangeType returns whether reaching spd is a reduction or an
+// increase from the current speed.
+func (nav *Nav) speedChangeType(spd av.Airspeed) speech.SpeedType {
+	if ias := spd.IAS(nav.FlightState.Altitude); ias < nav.FlightState.IAS {
+		return speech.SpeedReduce
+	} else if ias > nav.FlightState.IAS {
+		return speech.SpeedIncrease
+	}
+	return speech.SpeedAssign
+}
+
+// AssignSpeed assigns a speed in knots or a Mach number; nil cancels
+// speed restrictions.
+func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("AssignSpeed", sr, afterAltitude, temp)()
+	nav.clearAfterFixSpeeds()
+
+	if sr == nil {
+		nav.Speed = Speed{}
+		return speech.SpeedIntent{Type: speech.SpeedCancel}
+	}
+
+	spd := sr.Speed()
+	if intent, ok := nav.checkAssignedSpeed(spd, temp); !ok {
+		return intent
+	}
+
+	_, exact := sr.ExactValue()
+	if nav.Approach.Cleared && exact {
+		nav.Speed = Speed{Assigned: sr}
+		return speech.SpeedIntent{Speed: spd, Type: speech.SpeedUntilFinal, UntilFinalDirection: nav.speedChangeType(spd)}
+	} else if afterAltitude && nav.Altitude.Assigned != nil &&
+		*nav.Altitude.Assigned != nav.FlightState.Altitude {
+		alt := *nav.Altitude.Assigned
+		nav.Speed = Speed{AfterAltitude: &SpeedAfterAltitude{Speed: *sr, Altitude: alt}}
+		intent := speech.SpeedIntent{Speed: spd, Type: speech.SpeedAssign}
+		if !exact {
+			intent = rangeSpeedIntent(sr)
+		}
+		intent.AfterAltitude = &alt
+		return intent
+	} else if !exact {
+		nav.Speed = Speed{Assigned: sr}
+		return rangeSpeedIntent(sr)
+	}
+
+	// If there's an active altitude change and the speed change is significant (>20kt), defer
+	// the altitude until after the speed change completes.
+	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
+		math.Abs(spd.IAS(nav.FlightState.Altitude)-nav.FlightState.IAS) > 20 {
+		alt := *nav.Altitude.Assigned
+		nav.Altitude = Altitude{AfterSpeed: &AltitudeAfterSpeed{Altitude: alt, Speed: spd, Rate: nav.Altitude.Rate}}
+	}
+	nav.Speed = Speed{Assigned: sr}
+	return speech.SpeedIntent{Speed: spd, Type: nav.speedChangeType(spd)}
+}
+
+func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUntil, temp av.Temperature) speech.CommandIntent {
+	defer nav.record("AssignSpeedUntil", sr, until, temp)()
+	if until.Fix != "" && !nav.knowsFix(until.Fix) {
+		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", until.Fix)
+	}
+
+	nav.clearAfterFixSpeeds()
+
+	spd := sr.Speed()
+	if intent, ok := nav.checkAssignedSpeed(spd, temp); !ok {
+		return intent
+	}
+
+	nav.Speed = Speed{Assigned: sr}
+	if _, exact := sr.ExactValue(); !exact {
+		intent := rangeSpeedIntent(sr)
+		intent.Until = until
+		return intent
+	}
+	return speech.SpeedIntent{Speed: spd, Type: speech.SpeedUntilFinal, Until: until}
+}
+
+func (nav *Nav) MaintainSlowestPractical() speech.CommandIntent {
+	defer nav.record("MaintainSlowestPractical")()
+	nav.clearAfterFixSpeeds()
+	nav.Speed = Speed{MaintainSlowestPractical: true}
+	return speech.SpeedIntent{Type: speech.SpeedSlowestPractical}
+}
+
+func (nav *Nav) MaintainMaximumForward() speech.CommandIntent {
+	defer nav.record("MaintainMaximumForward")()
+	nav.clearAfterFixSpeeds()
+	nav.Speed = Speed{MaintainMaximumForward: true}
+	return speech.SpeedIntent{Type: speech.SpeedMaximumForward}
+}
+
+func (nav *Nav) MaintainPresentSpeed() speech.CommandIntent {
+	defer nav.record("MaintainPresentSpeed")()
+	nav.clearAfterFixSpeeds()
+	// Capture current indicated airspeed and assign it, rounded to nearest 10
+	currentSpeed := nav.FlightState.IAS
+	spd := av.MakeIAS(float32(int((currentSpeed+5)/10) * 10))
+	sr := av.MakeAtAirspeedRestriction(spd)
+	nav.Speed = Speed{Assigned: &sr}
+	return speech.SpeedIntent{Speed: spd, Type: speech.SpeedPresentSpeed}
+}
+
+// hasIssuedSpeed reports whether a controller speed instruction, rather than
+// the route's restrictions, governs the aircraft's speed.
+func (nav *Nav) hasIssuedSpeed() bool {
+	s := nav.Speed
+	return s.Assigned != nil || s.AfterAltitude != nil || s.MaintainSlowestPractical || s.MaintainMaximumForward
+}
 
 // updateAirspeed flies the aircraft toward the speed its instructions call
 // for, for one second, and applies what reaching a speed means for them. It
@@ -286,55 +496,6 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 	return speedTarget{ias: ias, rate: rate}
 }
 
-// machTransition returns whether the aircraft's speed may be assigned as
-// a Mach number: 7110.65 5-7-2 allows it for turbojets at or above FL240.
-func (nav *Nav) machTransition() bool {
-	return nav.Perf.Engine.AircraftType == "J" && nav.FlightState.Altitude >= av.MachTransitionAltitude
-}
-
-// ETA returns the estimated time in seconds until the aircraft will arrive at `p`, assuming it is flying direct.
-func (nav *Nav) ETA(p math.Point2LL) float32 {
-	dist := math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude)
-	return dist / nav.FlightState.GS * 3600 // seconds
-}
-
-// restrictedSpeed returns the speed a pilot would choose given a speed
-// restriction, accounting for aircraft type. Heavy jets fly close to
-// limits for fuel efficiency; lighter aircraft have more margin.
-func (nav *Nav) restrictedSpeed(sr *av.SpeedRestriction, natural float32) float32 {
-	ias := sr.IAS(nav.FlightState.Altitude)
-	lo, hi := ias.Range[0], ias.Range[1]
-
-	// "At" restriction: exact compliance required.
-	if lo == hi {
-		return lo
-	}
-
-	// Margin from the boundary depends on aircraft weight class.
-	// Heavies need speed for efficiency and fly close to limits.
-	margin := float32(10)
-	if nav.Perf.WeightClass == "H" || nav.Perf.WeightClass == "J" {
-		margin = 5
-	}
-
-	// Shrink the allowed range by the margin on each real bound.
-	innerLo := lo
-	innerHi := hi
-	if lo > 0 { // lo==0 means no floor
-		innerLo = lo + margin
-	}
-	if hi < av.MaxRestrictionSpeed { // sentinel means no ceiling
-		innerHi = hi - margin
-	}
-
-	// If margins overlap (very narrow range), just use the midpoint.
-	if innerLo > innerHi {
-		return (lo + hi) / 2
-	}
-
-	return math.Clamp(natural, innerLo, innerHi)
-}
-
 // Compute target airspeed for higher altitudes speed by lerping from 250
 // to cruise speed based on altitude.
 func (nav *Nav) targetAltitudeIAS(temp av.Temperature) (float32, float32) {
@@ -351,86 +512,4 @@ func (nav *Nav) targetAltitudeIAS(temp av.Temperature) (float32, float32) {
 
 	x := math.Clamp((nav.FlightState.Altitude-10000)/(nav.Perf.Ceiling-10000), 0, 1)
 	return math.Lerp(x, min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
-}
-
-// hasIssuedSpeed reports whether a controller speed instruction, rather than
-// the route's restrictions, governs the aircraft's speed.
-func (nav *Nav) hasIssuedSpeed() bool {
-	s := nav.Speed
-	return s.Assigned != nil || s.AfterAltitude != nil || s.MaintainSlowestPractical || s.MaintainMaximumForward
-}
-
-// chartedSpeedRestriction returns wp's inline speed restriction. Published
-// approach restrictions require approach clearance; synthetic controller
-// crossings apply regardless of clearance.
-func (nav *Nav) chartedSpeedRestriction(wp *av.Waypoint) *av.SpeedRestriction {
-	if wp.OnApproach() && !nav.Approach.Cleared && !wp.SyntheticCrossing() {
-		return nil
-	}
-	return wp.SpeedRestriction()
-}
-
-func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, sr *av.SpeedRestriction, fix string, ok bool) {
-	if nav.Prespawn {
-		return false, nil, "", false
-	}
-
-	// Explicit loop avoids slices.ContainsFunc which copies the large
-	// Waypoint struct by value for each element via the closure.
-	haveWaypointSpeedRestriction := false
-	for i := range nav.Waypoints {
-		if nav.chartedSpeedRestriction(&nav.Waypoints[i]) != nil {
-			haveWaypointSpeedRestriction = true
-			break
-		}
-	}
-
-	// Skip all this work in the (common) case that it's unnecessary.
-	if len(nav.FixAssignments) > 0 || haveWaypointSpeedRestriction {
-		for i := range nav.Waypoints {
-			wp := &nav.Waypoints[i]
-
-			if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Speed != nil {
-				return wp.OnSID(), nfa.Arrive.Speed, wp.Fix, true
-			}
-
-			if wsr := nav.chartedSpeedRestriction(wp); wsr != nil {
-				return wp.OnSID(), wsr, wp.Fix, true
-			}
-		}
-	}
-	return false, nil, "", false
-}
-
-// distanceToEndOfApproach returns the remaining distance to the last
-// waypoint (usually runway threshold) of the currently assigned approach.
-func (nav *Nav) DistanceToEndOfApproach() (float32, error) {
-	if nav.Approach.Assigned == nil || !nav.Approach.Cleared {
-		return 0, ErrNotClearedForApproach
-	}
-
-	if nav.Heading.Assigned != nil {
-		// We're not currently on the route, so it's a little unclear. Rather than
-		// guessing, we'll just error out and let callers decide how to handle this.
-		return 0, ErrNotFlyingRoute
-	}
-
-	// Calculate flying distance to the airport
-	if wp := nav.Waypoints; len(wp) == 0 {
-		// This shouldn't ever happen; we should always have the
-		// destination airport, but just in case...
-		remainingDistance := math.NMDistance2LL(nav.FlightState.Position, nav.FlightState.ArrivalAirportLocation)
-		return remainingDistance, nil
-	} else {
-		// Distance to the next fix plus sum of the distances between
-		// remaining fixes.
-		remainingDistance := math.NMDistance2LL(nav.FlightState.Position, wp[0].Location)
-		// Don't include the final waypoint, which should be the
-		// destination airport.
-		for i := 0; i < len(wp)-2; i++ {
-			remainingDistance += math.NMDistance2LL(wp[i].Location, wp[i+1].Location)
-		}
-
-		return remainingDistance, nil
-	}
 }

@@ -5,15 +5,289 @@
 package nav
 
 import (
-	"slices"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/wx"
 )
 
+type RateQualifier int
+
+const (
+	RateNormal   RateQualifier = iota
+	RateGood                   // faster than normal, not maximum
+	RateExpedite               // maximum rate
+)
+
+type Altitude struct {
+	Assigned       *float32 // controller-assigned altitude (not yet in autopilot)
+	ActiveAssigned *float32 // assigned altitude currently used for vertical guidance
+	ActivateAt     Time     // non-zero while Assigned is pending activation
+	Cleared        *ClearedAltitude
+	AfterSpeed     *AltitudeAfterSpeed
+	Rate           RateQualifier
+	RateThrough    *float32                // revert to RateNormal after passing this altitude; nil = all the way
+	Restriction    *av.AltitudeRestriction // The restriction at the last waypoint passed.
+}
+
+// AltitudeAfterSpeed is an altitude assignment that waits on a speed change,
+// as in "reduce speed to 180, then descend and maintain 6,000": once the
+// aircraft reaches Speed it is assigned Altitude, to climb or descend at Rate.
+type AltitudeAfterSpeed struct {
+	Altitude float32
+	Speed    av.Airspeed
+	Rate     RateQualifier
+}
+
+// ClearedAltitude is the altitude an aircraft flying its route's altitude
+// restrictions is cleared to: the restrictions never take it above that
+// altitude, and if IsFloor, never below it either. Descend via clearances and
+// an arrival's initial clearance are floors; an approach clearance ends a
+// floor.
+type ClearedAltitude struct {
+	Altitude float32
+	IsFloor  bool
+}
+
 const MaximumRate = 100000
+
+func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool, simTime Time, delayReduction time.Duration) speech.CommandIntent {
+	defer nav.record("AssignAltitude", alt, afterSpeed, simTime, delayReduction)()
+	nav.clearFixAltitudes()
+	intent, ok := nav.prepareAltitudeAssignment(alt, afterSpeed)
+	if !ok {
+		return intent
+	}
+	nav.enqueueAssignedAltitude(alt, simTime, delayReduction)
+	return intent
+}
+
+func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.CommandIntent, bool) {
+	if alt > nav.Perf.Ceiling {
+		return speech.MakeUnableIntent("unable. That altitude is above our ceiling."), false
+	}
+
+	var direction speech.AltitudeDirection
+	if alt > nav.FlightState.Altitude {
+		direction = speech.AltitudeClimb
+	} else if alt == nav.FlightState.Altitude {
+		direction = speech.AltitudeMaintain
+	} else {
+		direction = speech.AltitudeDescend
+	}
+
+	intent := speech.AltitudeIntent{
+		Altitude:  alt,
+		Direction: direction,
+	}
+
+	if sr := nav.Speed.Assigned; afterSpeed && sr != nil {
+		if spd, exact := sr.ExactAirspeed(); exact && spd.IAS(nav.FlightState.Altitude) != nav.FlightState.IAS {
+			nav.Altitude = Altitude{AfterSpeed: &AltitudeAfterSpeed{Altitude: alt, Speed: spd}}
+			intent.AfterSpeed = &spd
+			return intent, false
+		}
+	}
+
+	// If there's an exact speed change in progress (>=20kt remaining or any Mach change),
+	// defer the speed assignment until after the altitude change completes.
+	if sr := nav.Speed.Assigned; sr != nil && direction != speech.AltitudeMaintain {
+		if spd, exact := sr.ExactValue(); exact &&
+			(sr.IsMach || math.Abs(spd-nav.FlightState.IAS) >= 20) {
+			nav.Speed = Speed{AfterAltitude: &SpeedAfterAltitude{Speed: *sr, Altitude: alt}}
+		}
+	}
+
+	return intent, true
+}
+
+// AssignAltitudeNow assigns an altitude that takes effect immediately, with
+// none of the pilot's delay in following a controller's instruction.
+func (nav *Nav) AssignAltitudeNow(alt float32, afterSpeed bool) speech.CommandIntent {
+	defer nav.record("AssignAltitudeNow", alt, afterSpeed)()
+	intent, ok := nav.prepareAltitudeAssignment(alt, afterSpeed)
+	if ok {
+		nav.setAssignedAltitude(alt)
+	}
+	return intent
+}
+
+func (nav *Nav) setAssignedAltitude(alt float32) {
+	nav.Altitude = Altitude{
+		Assigned:       &alt,
+		ActiveAssigned: &alt,
+	}
+}
+
+func (nav *Nav) enqueueAssignedAltitude(alt float32, simTime Time, delayReduction time.Duration) {
+	d := max(nav.drawDelay(nav.Delays.Altitude)-delayReduction, 0)
+	nav.enqueueAltitude(alt, RateNormal, simTime.Add(d))
+}
+
+func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
+	a := nav.Altitude.AfterSpeed
+	nav.enqueueAltitude(a.Altitude, a.Rate, simTime.Add(nav.drawDelay(nav.Delays.AltitudeAfterSpeed)))
+}
+
+// enqueueAltitude assigns alt, to be flown at rate once the pilot reacts at
+// activateAt. Until then the aircraft keeps flying its previous altitude:
+// an earlier assignment, or its cleared altitude and the restrictions it
+// was following.
+func (nav *Nav) enqueueAltitude(alt float32, rate RateQualifier, activateAt Time) {
+	nav.Altitude = Altitude{
+		Assigned:       &alt,
+		ActiveAssigned: nav.activeAssignedAltitude(),
+		ActivateAt:     activateAt,
+		Rate:           rate,
+		Cleared:        nav.Altitude.Cleared,
+		Restriction:    nav.Altitude.Restriction,
+	}
+}
+
+func (nav *Nav) ExpediteDescent() speech.CommandIntent {
+	defer nav.record("ExpediteDescent")()
+	return nav.setRate(RateExpedite, nil, speech.AltitudeDescend)
+}
+
+func (nav *Nav) ExpediteClimb() speech.CommandIntent {
+	defer nav.record("ExpediteClimb")()
+	return nav.setRate(RateExpedite, nil, speech.AltitudeClimb)
+}
+
+func (nav *Nav) ExpediteDescentThrough(throughAlt float32) speech.CommandIntent {
+	defer nav.record("ExpediteDescentThrough", throughAlt)()
+	return nav.setRate(RateExpedite, &throughAlt, speech.AltitudeDescend)
+}
+
+func (nav *Nav) ExpediteClimbThrough(throughAlt float32) speech.CommandIntent {
+	defer nav.record("ExpediteClimbThrough", throughAlt)()
+	return nav.setRate(RateExpedite, &throughAlt, speech.AltitudeClimb)
+}
+
+func (nav *Nav) GoodRateDescent() speech.CommandIntent {
+	defer nav.record("GoodRateDescent")()
+	return nav.setRate(RateGood, nil, speech.AltitudeDescend)
+}
+
+func (nav *Nav) GoodRateClimb() speech.CommandIntent {
+	defer nav.record("GoodRateClimb")()
+	return nav.setRate(RateGood, nil, speech.AltitudeClimb)
+}
+
+func (nav *Nav) GoodRateThrough(throughAlt float32) speech.CommandIntent {
+	defer nav.record("GoodRateThrough", throughAlt)()
+	// Infer direction from current state
+	dir := speech.AltitudeDescend
+	if throughAlt > nav.FlightState.Altitude {
+		dir = speech.AltitudeClimb
+	}
+	return nav.setRate(RateGood, &throughAlt, dir)
+}
+
+func (nav *Nav) setRate(rate RateQualifier, throughAlt *float32, direction speech.AltitudeDirection) speech.CommandIntent {
+	alt, _, _ := nav.TargetAltitude()
+	if nav.Altitude.Assigned != nil {
+		alt = *nav.Altitude.Assigned
+	}
+
+	wrongDir := (direction == speech.AltitudeDescend && alt >= nav.FlightState.Altitude) ||
+		(direction == speech.AltitudeClimb && alt <= nav.FlightState.Altitude)
+
+	if wrongDir {
+		if a := nav.Altitude.AfterSpeed; a != nil {
+			a.Rate = rate
+			return speech.AltitudeIntent{Direction: direction, Altitude: a.Altitude, AfterSpeed: &a.Speed}
+		}
+		dir := "descending"
+		if direction == speech.AltitudeClimb {
+			dir = "climbing"
+		}
+		return speech.MakeUnableIntent("unable. We're not " + dir)
+	}
+
+	if nav.Altitude.Rate >= rate {
+		return speech.AltitudeIntent{
+			Direction:         direction,
+			Altitude:          alt,
+			AlreadyExpediting: true,
+			GoodRate:          nav.Altitude.Rate == RateGood,
+		}
+	}
+
+	nav.Altitude.Rate = rate
+	nav.Altitude.RateThrough = throughAlt
+	return speech.AltitudeIntent{
+		Direction:   direction,
+		Altitude:    alt,
+		Expedite:    rate == RateExpedite,
+		GoodRate:    rate == RateGood,
+		RateThrough: throughAlt,
+	}
+}
+
+func (nav *Nav) AltitudeOurDiscretion() speech.CommandIntent {
+	defer nav.record("AltitudeOurDiscretion")()
+	if nav.Altitude.Assigned == nil {
+		return speech.MakeUnableIntent("unable. You never assigned us an altitude...")
+	}
+
+	nav.Altitude = Altitude{}
+	if alt := nav.FinalAltitude; alt > nav.FlightState.Altitude {
+		nav.Altitude.Cleared = &ClearedAltitude{Altitude: alt}
+	}
+
+	return speech.NavigationIntent{Type: speech.NavAltitudeDiscretion}
+}
+
+// climbToCruise sends the aircraft up to the given cruise altitude. A
+// controller-issued altitude cancels the published altitude restrictions along
+// the route, so if the aircraft has one (even one that is still waiting on a
+// speed change), cruise is assigned the same way. Otherwise the aircraft is
+// still climbing to a clearance limit and any remaining restrictions continue
+// to apply.
+func (nav *Nav) climbToCruise(alt float32) {
+	if nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil {
+		nav.setAssignedAltitude(alt)
+	} else {
+		nav.Altitude = Altitude{Cleared: &ClearedAltitude{Altitude: alt}}
+	}
+}
+
+// hasIssuedAltitude reports whether the aircraft has an altitude to fly
+// besides its route's constraints: one assigned or cleared by a controller,
+// a waypoint action, or its scenario, which it keeps flying when vectored off
+// its route, or one it is already holding after an earlier vector.
+// AfterSpeed counts: the altitude is assigned, just deferred until the speed
+// change completes.
+func (nav *Nav) hasIssuedAltitude() bool {
+	if nav.Altitude.Assigned != nil || nav.Altitude.AfterSpeed != nil {
+		return true
+	}
+	c := nav.Altitude.Cleared
+	if c == nil {
+		return false
+	}
+	// An approach may descend below a preserved clearance before the next
+	// waypoint clears it. Only an unfinished descent still governs a vector.
+	return !nav.Approach.Cleared || c.IsFloor || c.Altitude < nav.FlightState.Altitude
+}
+
+// clearAltitudeForApproach resets altitude state when an approach-cleared
+// aircraft transitions to following approach restrictions. If the controller
+// assigned a descent altitude that the aircraft hasn't yet reached, it is
+// preserved as a Cleared altitude so the descent continues; the approach's
+// restrictions may take the aircraft below it.
+func (nav *Nav) clearAltitudeForApproach() {
+	var cleared *ClearedAltitude
+	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned < nav.FlightState.Altitude {
+		cleared = &ClearedAltitude{Altitude: *nav.Altitude.Assigned}
+	} else if c := nav.Altitude.Cleared; c != nil && c.Altitude < nav.FlightState.Altitude {
+		cleared = &ClearedAltitude{Altitude: c.Altitude}
+	}
+	nav.Altitude = Altitude{Cleared: cleared}
+}
 
 func (nav *Nav) activatePendingAltitude(simTime Time) {
 	if nav.Altitude.ActivateAt.IsZero() || simTime.Before(nav.Altitude.ActivateAt) {
@@ -249,307 +523,21 @@ func (nav *Nav) limitAltitude(alt float32) float32 {
 	}
 }
 
-// routeDistanceToFix computes the distance in nm along the waypoint route
-// from the aircraft's current position to the named fix. Returns ok=false
-// if the fix is not found in the waypoints.
-func (nav *Nav) routeDistanceToFix(fix string) (float32, bool) {
+// descendsOnGlidepath reports whether the aircraft descends on the exact
+// geometric path to its next altitude restriction rather than holding
+// level until it has to start down: past the FAF, cleared for a visual
+// approach, or on a VFR landing's base, final, or straight-in legs.
+func (nav *Nav) descendsOnGlidepath() bool {
+	if nav.Approach.PassedFAF || nav.clearedForVisualApproach() {
+		return true
+	}
 	if len(nav.Waypoints) == 0 {
-		return 0, false
+		return false
 	}
-	d := math.NMDistance2LLFast(nav.FlightState.Position, nav.Waypoints[0].Location,
-		nav.FlightState.NmPerLongitude)
-	for i := range nav.Waypoints {
-		if nav.Waypoints[i].Fix == fix {
-			return d, true
-		}
-		if i+1 < len(nav.Waypoints) {
-			d += math.NMDistance2LLFast(nav.Waypoints[i].Location, nav.Waypoints[i+1].Location,
-				nav.FlightState.NmPerLongitude)
-		}
+	switch nav.Waypoints[0].VFRPhase {
+	case av.VFRPhaseBase, av.VFRPhaseFinal, av.VFRPhaseStraightIn:
+		return true
+	default:
+		return false
 	}
-	return 0, false
-}
-
-// altitudeTarget holds the result of scanning waypoints for an altitude target.
-type altitudeTarget struct {
-	altitude float32
-	fix      string
-	// level is set when the restrictions ahead require exactly the current
-	// altitude at fix, so the aircraft stays level until it gets there.
-	level bool
-}
-
-func (nav *Nav) controllerAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestriction {
-	if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
-		return nfa.Arrive.Altitude
-	}
-	if wp.SyntheticCrossing() {
-		return wp.AltitudeRestriction()
-	}
-	return nil
-}
-
-// chartedAltitudeRestriction returns wp's published altitude restriction,
-// or nil if it doesn't apply to the aircraft. An approach's restrictions
-// apply only once the aircraft is cleared for it, and an arrival climbs
-// only when a controller tells it to, so one above it doesn't apply.
-func (nav *Nav) chartedAltitudeRestriction(wp *av.Waypoint) *av.AltitudeRestriction {
-	if wp.OnApproach() && !nav.Approach.Cleared {
-		return nil
-	}
-	ar := wp.AltitudeRestriction()
-	if ar != nil && wp.OnSTAR() && !wp.SyntheticCrossing() && ar.Range[0] > nav.FlightState.Altitude {
-		return nil
-	}
-	return ar
-}
-
-// LowestProcedureAltitude returns the lowest applicable published altitude
-// target on the assigned route, or false if there are no applicable restrictions.
-func (nav *Nav) LowestProcedureAltitude() (float32, bool) {
-	var lowest float32
-	found := false
-	wps := nav.AssignedWaypoints()
-	for i := range wps {
-		if ar := nav.chartedAltitudeRestriction(&wps[i]); ar != nil {
-			alt := ar.TargetAltitude(nav.FlightState.Altitude)
-			if !found || alt < lowest {
-				lowest = alt
-				found = true
-			}
-		}
-	}
-	return lowest, found
-}
-
-// findAltitudeTarget scans waypoints to determine the target altitude and
-// fix, using the reverse-walk logic to satisfy all downstream altitude
-// constraints. Returns the target and true if found.
-func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
-	if nav.Heading.Assigned != nil {
-		// ignore what's going on with the fixes
-		return altitudeTarget{}, false
-	}
-
-	// Don't consider restrictions after an upcoming hold
-	wps := nav.Waypoints
-	for i := range wps {
-		if hold := nav.Heading.Hold; hold != nil && hold.Hold.Fix == wps[i].Fix {
-			wps = wps[:i+1]
-			break
-		}
-		if nfa, ok := nav.FixAssignments[wps[i].Fix]; ok && nfa.Hold != nil {
-			wps = wps[:i+1]
-			break
-		}
-	}
-
-	if nav.Prespawn {
-		// Simplified forward scan for prespawn: find the first waypoint
-		// with an actionable restriction. Skips FixAssignment lookups
-		// and the reverse walk with ClampRange for intermediate waypoints.
-		for i := range wps {
-			ar := nav.chartedAltitudeRestriction(&wps[i])
-			if ar == nil {
-				continue
-			}
-			if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
-				if _, ok := ar.ExactValue(); ok {
-					return altitudeTarget{altitude: nav.FlightState.Altitude, fix: wps[i].Fix, level: true}, true
-				}
-				continue
-			}
-			alt := util.Select(ar.Range[1] != av.MaxAltitude, ar.Range[1], nav.FinalAltitude)
-			return altitudeTarget{altitude: alt, fix: wps[i].Fix}, true
-		}
-		return altitudeTarget{}, false
-	}
-
-	haveFixAssignments := len(nav.FixAssignments) > 0
-	getChartedRestriction := func(i int) *av.AltitudeRestriction {
-		wp := &wps[i]
-
-		if ar := nav.controllerAltitudeRestriction(wp); ar != nil {
-			return ar
-		}
-
-		if haveFixAssignments {
-			if ar := nav.chartedAltitudeRestriction(wp); ar != nil {
-				// If the controller has given 'cross [wp] at [alt]' for a
-				// future waypoint, ignore the charted altitude restriction.
-				// Explicit loop avoids slices.ContainsFunc which copies the
-				// large Waypoint struct by value for each element via the closure.
-				for j := i + 1; j < len(wps); j++ {
-					if fa, ok := nav.FixAssignments[wps[j].Fix]; ok && fa.Arrive.Altitude != nil {
-						return nil
-					}
-				}
-				return ar
-			}
-			return nil
-		}
-		// Fast path: no fix assignments, just return the charted restriction.
-		return nav.chartedAltitudeRestriction(wp)
-	}
-
-	// On a cleared approach, "at or above X" means the aircraft should
-	// target X (the floor) to maintain a normal descent profile, not
-	// stay high because the restriction is technically satisfied.
-	getRestriction := func(i int) *av.AltitudeRestriction {
-		ar := getChartedRestriction(i)
-		if ar != nil && nav.Approach.Cleared && wps[i].OnApproach() &&
-			ar.Range[1] == av.MaxAltitude && ar.Range[0] > 0 {
-			adjusted := av.MakeAtAltitudeRestriction(ar.Range[0])
-			return &adjusted
-		}
-		return ar
-	}
-
-	// Find the *last* waypoint that has an altitude restriction that
-	// applies to the aircraft. Along the way, note the nearest met
-	// restriction that requires exactly the current altitude.
-	lastWp, levelWp := -1, -1
-	for i := range slices.Backward(wps) {
-		r := getRestriction(i)
-		if r == nil {
-			continue
-		}
-		// Skip restrictions that don't apply (e.g. "at or above" if we're
-		// already above.) I think(?) we would actually bail out and return
-		// nil if we find one that doesn't apply, under the principle that
-		// we should also already be meeting any restrictions that are
-		// before it, but this seems less risky.
-		if r.TargetAltitude(nav.FlightState.Altitude) != nav.FlightState.Altitude {
-			lastWp = i
-			break
-		}
-		if _, ok := r.ExactValue(); ok {
-			levelWp = i
-		}
-	}
-	if lastWp == -1 {
-		if levelWp != -1 {
-			// Everything ahead is met, but the aircraft still has to cross
-			// this fix at its current altitude rather than leave for its
-			// cleared altitude.
-			return altitudeTarget{altitude: nav.FlightState.Altitude, fix: wps[levelWp].Fix, level: true}, true
-		}
-		// No applicable altitude restrictions found, so nothing to do here.
-		return altitudeTarget{}, false
-	}
-
-	descending := nav.FlightState.Altitude > getRestriction(lastWp).TargetAltitude(nav.FlightState.Altitude)
-
-	// Use a large rate estimate for the reverse walk to compute feasible
-	// altitude ranges.
-	altRate := util.Select(descending, nav.Perf.Rate.Descent, nav.Perf.Rate.Climb)
-
-	// altRange is the range of altitudes that the aircraft may be in and
-	// successfully meet all of the restrictions. It will be updated
-	// incrementally working backwards from the last altitude restriction.
-	altRange := getRestriction(lastWp).Range
-
-	// Sum of distances in nm since the last waypoint with an altitude
-	// restriction.
-	sumDist := float32(0)
-
-	// Loop over waypoints in reverse starting at the one before the last
-	// one with a waypoint restriction.
-	fix := wps[lastWp].Fix // first one with an alt restriction
-	for i := lastWp - 1; i >= 0; i-- {
-		sumDist += math.NMDistance2LLFast(wps[i+1].Location, wps[i].Location,
-			nav.FlightState.NmPerLongitude)
-
-		// Does this one have a relevant altitude restriction?
-		restr := getRestriction(i)
-		if restr == nil {
-			continue
-		}
-
-		// Ignore it if the aircraft is cleared for the approach and is below it.
-		// TODO: I think this can be 'break' rather than continue...
-		if nav.Approach.Cleared && nav.FlightState.Altitude < restr.Range[0] {
-			continue
-		}
-
-		fix = wps[i].Fix
-
-		// Maximum change in altitude possible before reaching this
-		// waypoint. The aircraft flies these legs consecutively, so it's
-		// already at rate by the time it reaches them; the spool-up at the
-		// start of the descent is handled by TargetAltitude's safety factor.
-		// Coincident waypoints allow no change at all; handling them here
-		// also avoids 0/0 on a departure's first tick, when GS is 0.
-		var dalt float32
-		if sumDist > 0 {
-			// TODO: account for decreasing GS with altitude?
-			// TODO: incorporate a simple wind model in GS?
-			eta := sumDist / nav.FlightState.GS * 3600 // seconds
-			dalt = altRate * eta / 60
-		}
-
-		// possibleRange is altitude range the aircraft could have at this
-		// waypoint, given its performance characteristics and assuming it
-		// will meet the constraint at the subsequent waypoint with an
-		// altitude restriction.
-		//
-		// Note that dalt only applies to one limit, since the aircraft can
-		// always maintain its current altitude between waypoints; which
-		// limit depends on whether it is climbing or descending (but then
-		// which one and the addition/subtraction are confusingly backwards
-		// since we're going through waypoints in reverse order...)
-		possibleRange := altRange
-		if !descending {
-			possibleRange[0] -= dalt
-		} else {
-			possibleRange[1] += dalt
-		}
-
-		// Limit the possible range according to the restriction at the
-		// current waypoint. A leg that's too steep to fly doesn't excuse
-		// the restrictions before it; ClampRange anchors altRange on this
-		// restriction in that case, so keep walking back to find the
-		// earliest restriction that binds.
-		altRange, _ = restr.ClampRange(possibleRange)
-
-		// Reset this so we compute the right eta next time we have a
-		// waypoint with an altitude restriction.
-		sumDist = 0
-	}
-
-	// Prefer to be higher rather than low; deal with "at or above" here as well.
-	alt := util.Select(altRange[1] != av.MaxAltitude, altRange[1], nav.FinalAltitude)
-
-	// But leave arrivals at their current altitude if it's acceptable;
-	// don't climb just because we can.
-	if descending {
-		ar := av.AltitudeRestriction{NavigationRestriction: av.NavigationRestriction{Range: altRange}}
-		if ar.Target(nav.FlightState.Altitude) == nav.FlightState.Altitude {
-			alt = nav.FlightState.Altitude
-		}
-	} else {
-		// For climbing aircraft, if the constraint is "at" (not "at or above"),
-		// target that specific altitude instead of climbing higher
-		if altRange[0] != 0 && altRange[0] == altRange[1] {
-			alt = altRange[0]
-		}
-	}
-
-	level := altRange[0] == altRange[1] && altRange[0] == nav.FlightState.Altitude
-	return altitudeTarget{altitude: alt, fix: fix, level: level}, true
-}
-
-// clearAltitudeForApproach resets altitude state when an approach-cleared
-// aircraft transitions to following approach restrictions. If the controller
-// assigned a descent altitude that the aircraft hasn't yet reached, it is
-// preserved as a Cleared altitude so the descent continues; the approach's
-// restrictions may take the aircraft below it.
-func (nav *Nav) clearAltitudeForApproach() {
-	var cleared *ClearedAltitude
-	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned < nav.FlightState.Altitude {
-		cleared = &ClearedAltitude{Altitude: *nav.Altitude.Assigned}
-	} else if c := nav.Altitude.Cleared; c != nil && c.Altitude < nav.FlightState.Altitude {
-		cleared = &ClearedAltitude{Altitude: c.Altitude}
-	}
-	nav.Altitude = Altitude{Cleared: cleared}
 }

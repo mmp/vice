@@ -262,6 +262,12 @@ func (fs *FlightState) stepAltitude(perf av.AircraftPerformance, target, targetR
 // second, the fastest the aircraft turns.
 const StandardTurnRate = 3
 
+// bankTurnRate returns the rate of a coordinated turn at the given bank
+// angle and true airspeed in knots, in degrees per second.
+func bankTurnRate(bank, tas float32) float32 {
+	return math.Degrees(9.81 * math.Tan(math.Radians(bank)) / (tas * 0.514444))
+}
+
 // turnRateAtBank returns the rate in degrees per second of a coordinated
 // turn at the given bank angle and true airspeed in knots, signed with the
 // bank and no faster than the standard rate.

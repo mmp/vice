@@ -2078,7 +2078,7 @@ func TestClearedVisualAlongILSUsesILSGeometry(t *testing.T) {
 // TestClearedVisualAlongILSAfterVectorArmsIntercept verifies that issuing
 // CVA to an aircraft that was committed to an ILS reference, then vectored
 // off, re-arms the intercept state machine (InterceptState = InitialHeading,
-// NoPT). Without this, ApproachHeading's gate at lateral.go fails and the
+// NoPT). Without this, ApproachHeading's gate fails and the
 // aircraft just flies the assigned heading through the localizer.
 func TestClearedVisualAlongILSAfterVectorArmsIntercept(t *testing.T) {
 	f := NewArrivalFlight(t, ArrivalConfig{
