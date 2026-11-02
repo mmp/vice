@@ -214,6 +214,38 @@ func TestExpediteDescentSlowsTo250(t *testing.T) {
 	f.AssertSpeedBelow(251)
 }
 
+// TestExpediteHoldsSpeedAboveTenThousand verifies that an expedited descent
+// that stays above 10,000 feet holds the aircraft's speed as usual, taking
+// up an assigned speed once it levels off: only the 250 knot limit below
+// 10,000 feet overrides the expedite.
+func TestExpediteHoldsSpeedAboveTenThousand(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL DETGY HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  12000,
+		InitialSpeed:     260,
+		AssignedAltitude: 12000,
+	})
+	f.AssignSpeed(250)
+	f.AssignAltitude(11000)
+	f.ExpediteDescent()
+
+	minIAS := f.nav.FlightState.IAS
+	f.StepUntil("leveled at 11,000 feet", func() bool {
+		if f.nav.FlightState.Altitude <= 11050 {
+			return true
+		}
+		minIAS = min(minIAS, f.nav.FlightState.IAS)
+		return false
+	})
+	if minIAS < 259 {
+		t.Errorf("slowed to %.0f knots during the expedited descent", minIAS)
+	}
+	f.StepUntil("slowed to 250 knots", func() bool { return f.nav.FlightState.IAS <= 250 })
+}
+
 // TestAfterFixSpeed verifies that "after fix, maintain speed" fires
 // when the aircraft passes the named fix (regression test for 3155bf14).
 func TestAfterFixSpeed(t *testing.T) {
