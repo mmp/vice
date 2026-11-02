@@ -856,7 +856,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport av.ICAO
 	randomizeAltitudeRange := ac.FlightRules == av.FlightRulesVFR
 	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
 		perf, delays, exitRoute.AssignedAltitude, exitRoute.ClearedAltitude, wp, randomizeAltitudeRange,
-		nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
+		nmPerLongitude, magneticVariation, r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -880,7 +880,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 
 	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.DepartureAirport, ac.ArrivalAirport, ac.CruiseAltitude,
 		perf, delays, 0 /* assigned alt */, ac.CruiseAltitude /* cleared alt */, wps,
-		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime.NavTime(), r, lg)
+		randomizeAltitudeRange, nmPerLongitude, magneticVariation, r, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}

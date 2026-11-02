@@ -40,7 +40,6 @@ var errorStringToError = map[string]error{
 
 	nav.ErrClearedForUnexpectedApproach.Error(): nav.ErrClearedForUnexpectedApproach,
 	nav.ErrFixIsTooFarAway.Error():              nav.ErrFixIsTooFarAway,
-	nav.ErrFixNotInRoute.Error():                nav.ErrFixNotInRoute,
 	nav.ErrInvalidApproach.Error():              nav.ErrInvalidApproach,
 	nav.ErrInvalidFix.Error():                   nav.ErrInvalidFix,
 	nav.ErrNotClearedForApproach.Error():        nav.ErrNotClearedForApproach,

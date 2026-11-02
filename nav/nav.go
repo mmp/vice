@@ -25,7 +25,6 @@ import (
 var (
 	ErrClearedForUnexpectedApproach = errors.New("Cleared for unexpected approach")
 	ErrFixIsTooFarAway              = errors.New("Fix is too far away")
-	ErrFixNotInRoute                = errors.New("Fix not in aircraft's route")
 	ErrInvalidApproach              = errors.New("Invalid approach")
 	ErrInvalidFix                   = errors.New("Invalid fix")
 	ErrNotClearedForApproach        = errors.New("Aircraft has not been cleared for an approach")
@@ -218,8 +217,8 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, depAirport, arrAi
 
 func MakeDepartureNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAirportCode, cruiseAlt int,
 	perf av.AircraftPerformance, delays PilotDelays, assignedAlt, clearedAlt int, wp av.WaypointArray,
-	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime Time,
-	r *rand.Rand, lg *log.Logger) *Nav {
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, r *rand.Rand,
+	lg *log.Logger) *Nav {
 	if nav := makeNav(callsign, depAirport, arrAirport, cruiseAlt, perf, delays, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, r, lg); nav != nil {
 		if assignedAlt != 0 {

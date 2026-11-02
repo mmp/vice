@@ -407,7 +407,6 @@ var eramErrorRemap = map[error]*Error{
 
 	nav.ErrClearedForUnexpectedApproach: ErrIllegalValue,
 	nav.ErrFixIsTooFarAway:              ErrIllegalValue,
-	nav.ErrFixNotInRoute:                ErrIllegalValue,
 	nav.ErrInvalidApproach:              ErrIllegalValue,
 	nav.ErrInvalidFix:                   ErrIllegalValue,
 	nav.ErrNotClearedForApproach:        ErrIllegalValue,

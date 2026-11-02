@@ -96,7 +96,6 @@ var starsErrorRemap = map[error]*Error{
 
 	nav.ErrClearedForUnexpectedApproach: ErrIllegalValue,
 	nav.ErrFixIsTooFarAway:              ErrIllegalFix,
-	nav.ErrFixNotInRoute:                ErrIllegalFix,
 	nav.ErrInvalidApproach:              ErrIllegalValue,
 	nav.ErrInvalidFix:                   ErrIllegalFix,
 	nav.ErrNotClearedForApproach:        ErrIllegalValue,
