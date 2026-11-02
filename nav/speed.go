@@ -224,8 +224,9 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, rules av.FlightRules, 
 			}
 			// Not time to decelerate yet; fall through to let the
 			// 250kt/10k rule and approach speed still apply, but
-			// prevent the default altitude-based speed from
-			// accelerating past the upcoming restriction.
+			// prevent a previous fix's restriction and the default
+			// altitude-based speed from accelerating past the
+			// upcoming restriction.
 			pendingDecel = true
 		}
 	}
@@ -233,7 +234,11 @@ func (nav *Nav) selectTargetSpeed(targetAltitude float32, rules av.FlightRules, 
 	// Something from a previous waypoint; ignore it if we're cleared for the approach.
 	if nav.Speed.Restriction != nil && !nav.Approach.Cleared {
 		naturalIAS, _ := nav.targetAltitudeIAS(temp)
-		return nav.restrictedSpeed(nav.Speed.Restriction, naturalIAS), MaximumRate
+		spd := nav.restrictedSpeed(nav.Speed.Restriction, naturalIAS)
+		if pendingDecel {
+			spd = min(spd, nav.FlightState.IAS)
+		}
+		return spd, MaximumRate
 	}
 
 	// Regulatory requirement: slow to 250 kts when descending through 10,000 feet

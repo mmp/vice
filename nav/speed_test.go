@@ -102,6 +102,32 @@ func TestSTARSpeedRestrictions(t *testing.T) {
 	f.Run()
 }
 
+// TestSpeedStepDownDoesNotAccelerate verifies that an aircraft slowing for
+// a fix's speed restriction doesn't speed back up to the higher one carried
+// from the fix before while it waits to slow further.
+func TestSpeedStepDownDoesNotAccelerate(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "BOOVE/s280 SHMPP/s280 CURLE/s270 MOWWW/s240",
+		DepartureAirport: "KLAX",
+		ArrivalAirport:   "KDFW",
+		AircraftType:     "A321",
+		InitialAltitude:  15000,
+		InitialSpeed:     280,
+		AssignedAltitude: 15000,
+		OnSTAR:           true,
+	})
+
+	ias := f.nav.FlightState.IAS
+	f.BetweenFixes("SHMPP", "MOWWW", func(f *FlightTest) {
+		if f.nav.FlightState.IAS > ias {
+			f.t.Errorf("accelerated from %.2f to %.2f", ias, f.nav.FlightState.IAS)
+		}
+		ias = f.nav.FlightState.IAS
+	})
+	f.AtFix("CURLE", func(f *FlightTest) { f.AssertSpeedNear(270, 2) })
+	f.Run()
+}
+
 // TestCrossFixAtSpeedCarriesForward verifies that a crossing speed the
 // controller gives for a fix is held after the fix: told to cross JAMIE at
 // 210 where 230 is charted, the aircraft doesn't speed back up to 230 past
