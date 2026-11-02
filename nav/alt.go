@@ -55,20 +55,23 @@ const MaximumRate = 100000
 
 func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	defer nav.record("AssignAltitude", alt, afterSpeed, simTime, delayReduction)()
-	nav.clearFixAltitudes()
-	intent, ok := nav.prepareAltitudeAssignment(alt, afterSpeed)
-	if !ok {
-		return intent
+	if alt > nav.Perf.Ceiling {
+		return speech.MakeUnableIntent("unable. That altitude is above our ceiling.")
 	}
-	nav.enqueueAssignedAltitude(alt, simTime, delayReduction)
+	nav.clearFixAltitudes()
+	intent, deferred := nav.prepareAltitudeAssignment(alt, afterSpeed)
+	if !deferred {
+		nav.enqueueAssignedAltitude(alt, simTime, delayReduction)
+	}
 	return intent
 }
 
+// prepareAltitudeAssignment returns the readback of an altitude assignment
+// and settles how it interacts with an assigned speed: the altitude may
+// wait on the speed change, in which case it is stored as such and true is
+// returned, leaving the caller nothing to assign; or the speed change may
+// wait on the altitude.
 func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.CommandIntent, bool) {
-	if alt > nav.Perf.Ceiling {
-		return speech.MakeUnableIntent("unable. That altitude is above our ceiling."), false
-	}
-
 	direction := nav.altitudeDirection(alt)
 	intent := speech.AltitudeIntent{
 		Altitude:  alt,
@@ -79,7 +82,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 		if spd, exact := sr.ExactAirspeed(); exact && spd.IAS(nav.FlightState.Altitude) != nav.FlightState.IAS {
 			nav.Altitude = Altitude{AfterSpeed: &AltitudeAfterSpeed{Altitude: alt, Speed: spd}}
 			intent.AfterSpeed = &spd
-			return intent, false
+			return intent, true
 		}
 	}
 
@@ -92,7 +95,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 		}
 	}
 
-	return intent, true
+	return intent, false
 }
 
 // altitudeDirection returns whether reaching alt from the present altitude
@@ -112,8 +115,11 @@ func (nav *Nav) altitudeDirection(alt float32) speech.AltitudeDirection {
 // none of the pilot's delay in following a controller's instruction.
 func (nav *Nav) AssignAltitudeNow(alt float32, afterSpeed bool) speech.CommandIntent {
 	defer nav.record("AssignAltitudeNow", alt, afterSpeed)()
-	intent, ok := nav.prepareAltitudeAssignment(alt, afterSpeed)
-	if ok {
+	if alt > nav.Perf.Ceiling {
+		return speech.MakeUnableIntent("unable. That altitude is above our ceiling.")
+	}
+	intent, deferred := nav.prepareAltitudeAssignment(alt, afterSpeed)
+	if !deferred {
 		nav.setAssignedAltitude(alt)
 	}
 	return intent

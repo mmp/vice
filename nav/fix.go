@@ -410,15 +410,16 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 	runway := nav.Approach.Assigned.Runway
 
 	// Clear the restriction types given from the existing DME crossings for
-	// this runway and drop any left with none. The route then has to have
-	// the threshold, the arrival airport after it, and a leg before it to
-	// measure along; it may not if the aircraft has passed the rest of the
-	// visual's waypoints and the only remaining crossing was just removed.
-	wps := clearMatchingSyntheticRestrictions(nav.AssignedWaypoints(), func(wp *av.Waypoint) bool {
+	// this runway and drop any left with none, on a copy of the route so
+	// that an instruction the pilot can't follow leaves the route alone. The
+	// route then has to have the threshold, the arrival airport after it,
+	// and a leg before it to measure along; it may not if the aircraft has
+	// passed the rest of the visual's waypoints and the only remaining
+	// crossing was just removed.
+	wps := clearMatchingSyntheticRestrictions(slices.Clone(nav.AssignedWaypoints()), func(wp *av.Waypoint) bool {
 		wpRunway, _, ok := av.ParseSyntheticDMEFix(wp.Fix)
 		return ok && wpRunway == runway
 	}, ar, sr)
-	nav.setAssignedWaypoints(wps)
 	if len(wps) < 3 {
 		return speech.MakeUnableIntent("unable")
 	}

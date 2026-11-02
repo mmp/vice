@@ -124,9 +124,8 @@ func (nav *Nav) speedChangeType(spd av.Airspeed) speech.SpeedType {
 // speed restrictions.
 func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av.Temperature) speech.CommandIntent {
 	defer nav.record("AssignSpeed", sr, afterAltitude, temp)()
-	nav.clearAfterFixSpeeds()
-
 	if sr == nil {
+		nav.clearAfterFixSpeeds()
 		nav.Speed = Speed{}
 		return speech.SpeedIntent{Type: speech.SpeedCancel}
 	}
@@ -135,6 +134,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 	if intent, ok := nav.checkAssignedSpeed(spd, temp); !ok {
 		return intent
 	}
+	nav.clearAfterFixSpeeds()
 
 	_, exact := sr.ExactValue()
 	if nav.Approach.Cleared && exact {
@@ -172,12 +172,11 @@ func (nav *Nav) AssignSpeedUntil(sr *av.SpeedRestriction, until *speech.SpeedUnt
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", until.Fix)
 	}
 
-	nav.clearAfterFixSpeeds()
-
 	spd := sr.Speed()
 	if intent, ok := nav.checkAssignedSpeed(spd, temp); !ok {
 		return intent
 	}
+	nav.clearAfterFixSpeeds()
 
 	nav.Speed = Speed{Assigned: sr}
 	if _, exact := sr.ExactValue(); !exact {
