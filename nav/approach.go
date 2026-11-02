@@ -670,6 +670,82 @@ func (nav *Nav) AtFixIntercept(fix string) speech.CommandIntent {
 	}
 }
 
+// clearApproachAtFix puts an "at fix, cleared approach" clearance into
+// effect if wp is its fix: the aircraft is cleared and flies the approach
+// from there. It reports whether it did.
+func (nav *Nav) clearApproachAtFix(wp av.Waypoint) bool {
+	route := nav.Approach.AtFixClearedRoute
+	if route == nil || route[0].Fix != wp.Fix {
+		return false
+	}
+
+	nav.Approach.Cleared = true
+	nav.Speed = Speed{}
+	if wp.NoPT() || route[0].NoPT() {
+		nav.Approach.NoPT = true
+	}
+	nav.Waypoints = append(route, nav.FlightState.ArrivalAirport)
+	nav.Approach.AtFixClearedRoute = nil
+	nav.Approach.StandbyApproach = false
+	nav.flyProcedureTurnIfNecessary()
+	return true
+}
+
+// interceptApproachAtFix starts an "at fix, intercept the approach"
+// instruction if wp is its fix. prepareForApproach handles both cases: on a
+// heading, it leaves the aircraft on it to intercept; direct to an approach
+// fix, it splices the approach into the route, and the aircraft is then
+// established on the approach course. It reports whether the aircraft
+// joined the approach.
+func (nav *Nav) interceptApproachAtFix(wp av.Waypoint) bool {
+	if nav.Approach.AtFixInterceptFix != wp.Fix || nav.Approach.Assigned == nil {
+		return false
+	}
+	nav.Approach.AtFixInterceptFix = "" // Clear so we don't trigger again
+
+	_, assignedHeading := nav.AssignedHeading()
+	if nav.prepareForApproach(false, "") != nil {
+		return false
+	}
+	if !assignedHeading {
+		nav.Approach.InterceptState = OnApproachCourse
+		nav.Approach.NoPT = true
+	}
+	return true
+}
+
+// passApproachFix is what passing wp means for the approach. A cleared
+// aircraft has made it to the approach fix it was cleared to and may start
+// down the approach's altitudes. One established on the course without a
+// clearance goes around at the FAF, asks for the clearance at the IF, and
+// asks early at an earlier fix if it is too high to make the FAF.
+func (nav *Nav) passApproachFix(wp av.Waypoint) {
+	if nav.Approach.Cleared {
+		nav.clearAltitudeForApproach()
+		nav.Approach.PassedApproachFix = true
+		if wp.FAF() {
+			nav.Approach.PassedFAF = true
+		}
+	} else if wp.OnApproach() {
+		// Overflew an approach fix but haven't been cleared yet.
+		nav.Approach.PassedApproachFix = true
+	}
+
+	if wp.FAF() && nav.InterceptedButNotCleared() {
+		// At the FAF without clearance, go around.
+		nav.Approach.GoAroundNoApproachClearance = true
+	} else if nav.InterceptedButNotCleared() && !nav.Approach.StandbyApproach {
+		if wp.IF() {
+			// At the IF, the pilot asks for approach clearance.
+			nav.Approach.RequestApproachClearance = true
+		} else if wp.OnApproach() {
+			// At an intermediate approach fix, check if the altitude
+			// makes descent to the FAF challenging (>300 ft/nm).
+			nav.checkEarlyApproachRequest(&wp)
+		}
+	}
+}
+
 // approachRouteThrough returns the approach transition route that includes fix
 // and the fix's index in it; the route is nil if ap is nil, fix is empty, or no
 // transition includes it. A transition where the fix has a procedure turn wins:

@@ -6,12 +6,9 @@ package nav
 
 import (
 	"cmp"
-	"fmt"
 	"slices"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/aviation/db"
-	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -100,84 +97,6 @@ func (nav *Nav) climbToCruise(alt float32) {
 	} else {
 		nav.Altitude = Altitude{Cleared: &ClearedAltitude{Altitude: alt}}
 	}
-}
-
-func (nav *Nav) Check(lg *log.Logger) {
-	check := func(waypoints []av.Waypoint, what string) {
-		for _, wp := range waypoints {
-			if wp.Location.IsZero() {
-				lg.Errorf("zero waypoint location for %s in %s", wp.Fix, what)
-			}
-		}
-	}
-
-	check(nav.Waypoints, "waypoints")
-	if nav.Approach.Assigned != nil {
-		for i, waypoints := range nav.Approach.Assigned.Waypoints {
-			check(waypoints, fmt.Sprintf("approach %d waypoints", i))
-		}
-	}
-}
-
-// Update flies the aircraft for one second in the weather the model gives
-// for where it is. bravo is the Class B airspace, if any, whose shelves a
-// VFR aircraft slows under, and arrivalMETAR, if non-nil, sets the approach
-// speed's wind additive.
-func (nav *Nav) Update(callsign string, model *wx.Model, rules av.FlightRules, arrivalMETAR *wx.METAR, simTime Time,
-	bravo *db.AirspaceGrid) UpdateResult {
-	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime.Time())
-	underBravo := rules == av.FlightRulesVFR &&
-		db.UnderBravoShelf(bravo, nav.FlightState.Position, int(nav.FlightState.Altitude))
-	return nav.UpdateWithWeather(callsign, wxs, arrivalMETAR, rules, simTime, underBravo)
-}
-
-// UpdateWithWeather is Update given its surroundings rather than finding
-// them: the weather at the aircraft and whether it is under a Class B shelf.
-func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *wx.METAR, rules av.FlightRules, simTime Time,
-	underBravo bool) UpdateResult {
-	// The recorder gets the Nav as it is before the update; commands the
-	// update gives the aircraft, like an altitude to depart a fix at, are
-	// its own doing and aren't recorded.
-	rec := nav.recording()
-	nav.recordDepth++
-	defer func() { nav.recordDepth-- }()
-
-	nav.PendingWaypointActionEvents = nil
-	nav.activatePendingAltitude(simTime)
-
-	// Log current state every tick
-	NavLog(callsign, simTime, NavLogState, "pos=%.4f,%.4f alt=%.0f hdg=%.0f ias=%.0f gs=%.0f bank=%.1f rate=%.0f",
-		nav.FlightState.Position[0], nav.FlightState.Position[1],
-		nav.FlightState.Altitude, nav.FlightState.Heading,
-		nav.FlightState.IAS, nav.FlightState.GS,
-		nav.FlightState.BankAngle, nav.FlightState.AltitudeRate)
-
-	if nav.Airwork != nil && !nav.Airwork.fly(nav, wxs) {
-		// Done; on to the next waypoint.
-		nav.Airwork = nil
-		nav.Heading = Heading{}
-	}
-	if nav.Airwork == nil {
-		nav.cancelSpeedOnFinal()
-		targetAltitude, altitudeRate, geometricDescent := nav.TargetAltitude()
-		deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, rules, wxs, arrivalMETAR, simTime, underBravo)
-		nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
-		nav.updateHeading(callsign, wxs, simTime)
-	}
-	nav.FlightState.advance(nav.TAS(wxs.Temperature()), nav.groundWind(wxs))
-
-	result := UpdateResult{ActionEvents: nav.PendingWaypointActionEvents}
-	if nav.Airwork == nil && nav.Heading.Assigned == nil &&
-		nav.Heading.Hold == nil && len(nav.Heading.Maneuvers) == 0 {
-		result = nav.updateWaypoints(callsign, wxs, simTime)
-		result.ActionEvents = append(nav.PendingWaypointActionEvents, result.ActionEvents...)
-	}
-
-	if rec != nil {
-		rec.Update(UpdateRecord{Time: simTime, Weather: wxs, METAR: arrivalMETAR, Rules: rules,
-			UnderBravo: underBravo, Prespawn: nav.Prespawn, Result: result, State: nav.FlightState})
-	}
-	return result
 }
 
 // activateDeferredHeading puts a controller's heading, direct, or hold into
@@ -312,239 +231,237 @@ func (nav *Nav) targetHeading(callsign string, wxs wx.Sample, simTime Time) stee
 	return st
 }
 
+// updateWaypoints sequences the route: once the aircraft reaches the next
+// waypoint, or the point where it starts its turn onto the leg beyond it,
+// it passes the waypoint and takes up what follows.
 func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) UpdateResult {
 	if len(nav.Waypoints) == 0 {
 		return UpdateResult{}
 	}
 
-	wp := &nav.Waypoints[0]
+	wp := nav.Waypoints[0]
 	dist := math.NMDistance2LLFast(nav.FlightState.Position, wp.Location, nav.FlightState.NmPerLongitude)
 	NavLog(callsign, simTime, NavLogWaypoint, "next=%s dist=%.2fnm alt=%.0f", wp.Fix, dist, nav.FlightState.Altitude)
 
 	// Are we nearly at the fix and is it time to turn for the outbound heading?
-	// First, figure out the outbound heading and which way to turn onto it,
-	// and whether it is a ground course or a heading that drifts with the
-	// wind.
-	var hdg math.MagneticHeading
-	turn := av.TurnClosest
-	track := true
-	if len(nav.Approach.AtFixClearedRoute) > 1 &&
-		nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix {
-		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nav.Approach.AtFixClearedRoute[1].Location,
-			nav.FlightState.NmPerLongitude), nav.FlightState.MagneticVariation)
-	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
+	hdg, turn, track := nav.outboundCourse(wp)
+	var passed bool
+	if wp.FlyOver() {
+		passed = nav.ETA(wp.Location) < 2
+	} else {
+		passed = nav.shouldTurnForOutbound(wp.Location, hdg, turn, track, wxs)
+	}
+	if !passed {
+		return UpdateResult{}
+	}
+
+	nav.Heading.Turn = nil
+	NavLog(callsign, simTime, NavLogWaypoint, "passed fix=%s hdg=%.0f->%.0f alt=%.0f", wp.Fix, nav.FlightState.Heading, hdg, nav.FlightState.Altitude)
+	return nav.passWaypoint(callsign, wp, simTime)
+}
+
+// outboundCourse returns the heading the aircraft leaves wp on and which way
+// it turns onto it, and whether it is a ground course or a heading that
+// drifts with the wind.
+func (nav *Nav) outboundCourse(wp av.Waypoint) (hdg math.MagneticHeading, turn av.TurnDirection, track bool) {
+	fs := &nav.FlightState
+	courseTo := func(p math.Point2LL) math.MagneticHeading {
+		return math.TrueToMagnetic(math.Heading2LL(wp.Location, p, fs.NmPerLongitude), fs.MagneticVariation)
+	}
+
+	turn, track = av.TurnClosest, true
+	nfa, assigned := nav.FixAssignments[wp.Fix]
+	switch {
+	case len(nav.Approach.AtFixClearedRoute) > 1 && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix:
+		hdg = courseTo(nav.Approach.AtFixClearedRoute[1].Location)
+	case assigned && nfa.Depart.Heading != nil:
 		// controller assigned heading at the fix.
 		hdg = *nfa.Depart.Heading
 		track = false
 		if nfa.Depart.Turn != nil {
 			turn = *nfa.Depart.Turn
 		}
-	} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
+	case assigned && nfa.Depart.Fix != nil:
 		// depart fix direct
-		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nfa.Depart.Fix.Location,
-			nav.FlightState.NmPerLongitude), nav.FlightState.MagneticVariation)
+		hdg = courseTo(nfa.Depart.Fix.Location)
 		if nfa.Depart.Turn != nil {
 			turn = *nfa.Depart.Turn
 		}
-	} else if h, ok := wp.HeadingAction(); ok {
-		// Leaving the next fix on the heading of its first action group.
-		if h.PresentHeading {
-			hdg = nav.FlightState.Heading
+	default:
+		if h, ok := wp.HeadingAction(); ok {
+			// Leaving the next fix on the heading of its first action group.
+			if h.PresentHeading {
+				hdg = fs.Heading
+			} else {
+				hdg = math.MagneticHeading(h.Heading)
+			}
+			turn = h.Turn
+			track = h.Track
+		} else if wp.Arc() != nil {
+			// Joining a DME arc after the heading
+			hdg = wp.Arc().InitialHeading
+		} else if len(nav.Waypoints) > 1 {
+			// Otherwise, find the heading to the following fix.
+			hdg = courseTo(nav.Waypoints[1].Location)
+			turn = nav.Waypoints[1].Turn()
 		} else {
-			hdg = math.MagneticHeading(h.Heading)
+			// No more waypoints (likely about to land), so just
+			// plan to stay on the current heading.
+			hdg = fs.Heading
 		}
-		turn = h.Turn
-		track = h.Track
-	} else if wp.Arc() != nil {
-		// Joining a DME arc after the heading
-		hdg = wp.Arc().InitialHeading
-	} else if len(nav.Waypoints) > 1 {
-		// Otherwise, find the heading to the following fix.
-		hdg = math.TrueToMagnetic(math.Heading2LL(wp.Location, nav.Waypoints[1].Location,
-			nav.FlightState.NmPerLongitude), nav.FlightState.MagneticVariation)
-		turn = nav.Waypoints[1].Turn()
-	} else {
-		// No more waypoints (likely about to land), so just
-		// plan to stay on the current heading.
-		hdg = nav.FlightState.Heading
+	}
+	return
+}
+
+// passWaypoint takes up what follows wp, which the aircraft has just
+// reached: an approach clearance or intercept that was to take effect
+// there, the restrictions it carries past the fix, the controller's
+// assignments at the fix, the heading or leg to fly next, and a procedure
+// turn or hold coming up.
+func (nav *Nav) passWaypoint(callsign string, wp av.Waypoint, simTime Time) UpdateResult {
+	clearedAtFix := nav.clearApproachAtFix(wp)
+	interceptedAtFix := nav.interceptApproachAtFix(wp)
+	if nav.Heading.Arc != nil {
+		nav.Heading = Heading{}
+	}
+	nav.passApproachFix(wp)
+	nav.carryRestrictions(wp)
+
+	var actionEvent *av.WaypointActionEvent
+	if groups := wp.ActionGroups(); len(groups) > 0 {
+		actionEvent = waypointActionEvent(wp, groups[0].Actions)
 	}
 
-	passedWaypoint := false
-	if wp.FlyOver() {
-		passedWaypoint = nav.ETA(wp.Location) < 2
-	} else {
-		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, turn, track, wxs)
+	nav.applyFixAssignments(wp)
+	nav.departFix(wp, clearedAtFix, interceptedAtFix)
+
+	if wp.NoPT() {
+		nav.Approach.NoPT = true
+	}
+	if wp.AirworkMinutes() > 0 {
+		nav.Airwork = StartAirwork(wp)
 	}
 
-	if passedWaypoint {
-		nav.Heading.Turn = nil
-		NavLog(callsign, simTime, NavLogWaypoint, "passed fix=%s hdg=%.0f->%.0f alt=%.0f", wp.Fix, nav.FlightState.Heading, hdg, nav.FlightState.Altitude)
+	nav.dropWaypoint(wp)
+	if nav.Heading.Assigned == nil && len(nav.Heading.Maneuvers) == 0 {
+		nav.flyProcedureTurnIfNecessary()
+	}
+	nav.holdAtNextFix(callsign)
 
-		clearedAtFix := nav.Approach.AtFixClearedRoute != nil && nav.Approach.AtFixClearedRoute[0].Fix == wp.Fix
-		if clearedAtFix {
-			nav.Approach.Cleared = true
-			nav.Speed = Speed{}
-			if wp.NoPT() || nav.Approach.AtFixClearedRoute[0].NoPT() {
-				nav.Approach.NoPT = true
-			}
-			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
-			nav.Approach.AtFixClearedRoute = nil
-			nav.Approach.StandbyApproach = false
-			nav.flyProcedureTurnIfNecessary()
-		}
-		interceptedAtFix := false
-		// Check if this is an "at fix intercept" fix
-		if nav.Approach.AtFixInterceptFix == wp.Fix && nav.Approach.Assigned != nil {
-			// Start intercepting the localizer. prepareForApproach handles
-			// both cases: if on a heading, it sets InterceptState = InitialHeading;
-			// if direct to approach fix, it splices the routes.
-			_, assignedHeading := nav.AssignedHeading()
-			if nav.prepareForApproach(false, "") == nil {
-				if !assignedHeading {
-					nav.Approach.InterceptState = OnApproachCourse
-					nav.Approach.NoPT = true
-				}
-				interceptedAtFix = true
-			}
-			nav.Approach.AtFixInterceptFix = "" // Clear so we don't trigger again
-		}
-		if nav.Heading.Arc != nil {
-			nav.Heading = Heading{}
-		}
+	// Log the updated route after passing the waypoint
+	LogRoute(callsign, simTime, nav.Waypoints)
 
-		if nav.Approach.Cleared {
-			// The aircraft has made it to the approach fix they
-			// were cleared to, so they can start to descend.
-			nav.clearAltitudeForApproach()
-			nav.Approach.PassedApproachFix = true
-			if wp.FAF() {
-				nav.Approach.PassedFAF = true
-			}
-		} else if wp.OnApproach() {
-			// Overflew an approach fix but haven't been cleared yet.
-			nav.Approach.PassedApproachFix = true
-		}
+	result := UpdateResult{PassedWaypoint: &wp}
+	if actionEvent != nil {
+		result.ActionEvents = append(result.ActionEvents, *actionEvent)
+	}
+	return result
+}
 
-		if wp.FAF() && nav.InterceptedButNotCleared() {
-			// At the FAF without clearance, go around.
-			nav.Approach.GoAroundNoApproachClearance = true
-		} else if nav.InterceptedButNotCleared() && !nav.Approach.StandbyApproach {
-			if wp.IF() {
-				// At the IF, the pilot asks for approach clearance.
-				nav.Approach.RequestApproachClearance = true
-			} else if wp.OnApproach() {
-				// At an intermediate approach fix, check if the altitude
-				// makes descent to the FAF challenging (>300 ft/nm).
-				nav.checkEarlyApproachRequest(wp)
-			}
-		}
+// carryRestrictions keeps wp's restrictions in force past it: an aircraft
+// that couldn't meet the altitude keeps trying, and a published speed is held
+// until something replaces it. The controller's crossing altitude for the
+// fix, if given, replaces the charted one after the fix as well as before.
+func (nav *Nav) carryRestrictions(wp av.Waypoint) {
+	if ar := cmp.Or(nav.controllerAltitudeRestriction(&wp), nav.chartedAltitudeRestriction(&wp)); ar != nil &&
+		(!nav.Approach.Cleared || ar.Range[0] < nav.FlightState.Altitude) {
+		// Don't climb if we're cleared approach and below the next
+		// fix's altitude. Copy the value since the pointer into the
+		// slice element could become stale if the slice is reallocated.
+		arCopy := *ar
+		nav.Altitude.Restriction = &arCopy
+	}
+	if sr := nav.chartedSpeedRestriction(&wp); sr != nil && !wp.OnSID() {
+		// Carry on the speed restriction unless it's a SID
+		srCopy := *sr
+		nav.Speed.Restriction = &srCopy
+	}
+}
 
-		// The controller's crossing altitude for the fix, if given,
-		// replaces the charted one after the fix as well as before.
-		if ar := cmp.Or(nav.controllerAltitudeRestriction(wp), nav.chartedAltitudeRestriction(wp)); ar != nil &&
-			(!nav.Approach.Cleared || ar.Range[0] < nav.FlightState.Altitude) {
-			// Don't climb if we're cleared approach and below the next
-			// fix's altitude. Copy the value since the pointer into the
-			// slice element could become stale if the slice is reallocated.
-			arCopy := *ar
-			nav.Altitude.Restriction = &arCopy
-		}
-		if sr := nav.chartedSpeedRestriction(wp); sr != nil && !wp.OnSID() {
-			// Carry on the speed restriction unless it's a SID
-			srCopy := *sr
-			nav.Speed.Restriction = &srCopy
-		}
+// applyFixAssignments puts into effect what the controller said to do after
+// wp: a speed to fly or to stop flying, a crossing speed held past the fix,
+// and an altitude to climb or descend to.
+func (nav *Nav) applyFixAssignments(wp av.Waypoint) {
+	nfa, ok := nav.FixAssignments[wp.Fix]
+	if !ok {
+		return
+	}
 
-		var actionEvent *av.WaypointActionEvent
-		if groups := wp.ActionGroups(); len(groups) > 0 {
-			actionEvent = waypointActionEvent(*wp, groups[0].Actions)
-		}
+	if nfa.Depart.Speed != nil {
+		sr := *nfa.Depart.Speed
+		nav.Speed = Speed{Assigned: &sr}
+	} else if nfa.Depart.CancelSpeed {
+		nav.Speed = Speed{}
+	} else if nfa.Arrive.Speed != nil && !wp.OnSID() && !nav.hasIssuedSpeed() {
+		// The controller's crossing speed is held past the fix as an
+		// assigned speed, which a via clearance cancels, unless a
+		// later speed instruction has replaced it.
+		sr := *nfa.Arrive.Speed
+		nav.Speed.Assigned = &sr
+	}
 
-		if nfa, ok := nav.FixAssignments[wp.Fix]; ok {
-			if nfa.Depart.Speed != nil {
-				sr := *nfa.Depart.Speed
-				nav.Speed = Speed{Assigned: &sr}
-			} else if nfa.Depart.CancelSpeed {
-				nav.Speed = Speed{}
-			} else if nfa.Arrive.Speed != nil && !wp.OnSID() && !nav.hasIssuedSpeed() {
-				// The controller's crossing speed is held past the fix as an
-				// assigned speed, which a via clearance cancels, unless a
-				// later speed instruction has replaced it.
-				sr := *nfa.Arrive.Speed
-				nav.Speed.Assigned = &sr
-			}
-		}
+	if nfa.Depart.Altitude != nil {
+		nav.AssignAltitudeNow(*nfa.Depart.Altitude, false)
+	}
+}
 
-		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Altitude != nil {
-			nav.AssignAltitudeNow(*nfa.Depart.Altitude, false)
-		}
+// departFix sets how the aircraft leaves wp: on the controller's heading or
+// direct to the controller's fix, on the heading or maneuvers of the
+// waypoint's action groups, around its DME arc, or else along the route. A
+// clearance or intercept that took effect at the fix has already set the
+// course, so the action groups' heading is left alone then.
+func (nav *Nav) departFix(wp av.Waypoint, clearedAtFix, interceptedAtFix bool) {
+	var next *av.Waypoint
+	if len(nav.Waypoints) > 1 {
+		next = &nav.Waypoints[1]
+	}
 
-		skipWaypointNavigation := clearedAtFix || interceptedAtFix
-		var next *av.Waypoint
-		if len(nav.Waypoints) > 1 {
-			next = &nav.Waypoints[1]
+	nfa, assigned := nav.FixAssignments[wp.Fix]
+	switch {
+	case assigned && nfa.Depart.Heading != nil:
+		hdg := *nfa.Depart.Heading
+		nav.Heading = Heading{Assigned: &hdg}
+	case assigned && nfa.Depart.Fix != nil:
+		if wps, _, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
+			// dropWaypoint takes the first waypoint off the route, so put
+			// wp back at its front so that it comes off instead.
+			nav.Waypoints = append([]av.Waypoint{wp}, wps...)
+			nav.Heading.Turn = nfa.Depart.Turn // may be nil (TurnClosest)
 		}
-		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
-			// Controller-assigned heading
-			hdg := *nfa.Depart.Heading
-			nav.Heading = Heading{Assigned: &hdg}
-		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
-			if wps, _, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
-				// Hacky: below we peel off the current waypoint, so re-add
-				// it here so everything works out.
-				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
-				nav.Heading.Turn = nfa.Depart.Turn // may be nil (TurnClosest)
-			}
-		} else if h := nav.actionGroupHeading(*wp, next); h != nil && !skipWaypointNavigation {
+	default:
+		if h := nav.actionGroupHeading(wp, next); h != nil && !clearedAtFix && !interceptedAtFix {
 			nav.Heading = *h
 		} else if wp.Arc() != nil && !interceptedAtFix {
 			// Fly the DME arc
 			nav.Heading = Heading{Arc: wp.Arc(), JoiningArc: true}
 		}
-
-		if wp.NoPT() {
-			nav.Approach.NoPT = true
-		}
-
-		if wp.AirworkMinutes() > 0 {
-			nav.Airwork = StartAirwork(*wp)
-		}
-
-		// Remove the waypoint from the route unless it's the destination
-		// airport, which we leave in any case.
-		if len(nav.Waypoints) == 1 {
-			// Passing the airport; leave it in the route but make sure
-			// we're on a heading.
-			hdg := nav.FlightState.Heading
-			nav.Heading = Heading{Assigned: &hdg}
-		} else {
-			if !wp.SyntheticCrossing() {
-				nav.PassedWaypoint = *wp
-			}
-			nav.Waypoints = nav.Waypoints[1:]
-		}
-
-		if nav.Heading.Assigned == nil && len(nav.Heading.Maneuvers) == 0 {
-			nav.flyProcedureTurnIfNecessary()
-		}
-
-		if len(nav.Waypoints) > 0 {
-			// Is there a hold coming up at the next waypoint?
-			if nfa, ok := nav.FixAssignments[nav.Waypoints[0].Fix]; ok && nfa.Hold != nil {
-				nav.Heading = Heading{Hold: nav.makeFlyHold(callsign, *nfa.Hold)}
-			}
-		}
-
-		// Log the updated route after passing the waypoint
-		LogRoute(callsign, simTime, nav.Waypoints)
-
-		result := UpdateResult{PassedWaypoint: wp}
-		if actionEvent != nil {
-			result.ActionEvents = append(result.ActionEvents, *actionEvent)
-		}
-		return result
 	}
-	return UpdateResult{}
+}
+
+// dropWaypoint takes wp off the front of the route, remembering it as the
+// start of the leg now being flown. The destination airport stays in the
+// route; an aircraft passing it holds its heading.
+func (nav *Nav) dropWaypoint(wp av.Waypoint) {
+	if len(nav.Waypoints) == 1 {
+		hdg := nav.FlightState.Heading
+		nav.Heading = Heading{Assigned: &hdg}
+		return
+	}
+	if !wp.SyntheticCrossing() {
+		nav.PassedWaypoint = wp
+	}
+	nav.Waypoints = nav.Waypoints[1:]
+}
+
+// holdAtNextFix starts the hold the controller assigned at the next
+// waypoint, if there is one.
+func (nav *Nav) holdAtNextFix(callsign string) {
+	if len(nav.Waypoints) == 0 {
+		return
+	}
+	if nfa, ok := nav.FixAssignments[nav.Waypoints[0].Fix]; ok && nfa.Hold != nil {
+		nav.Heading = Heading{Hold: nav.makeFlyHold(callsign, *nfa.Hold)}
+	}
 }
 
 // actionGroupHeading returns how to fly a waypoint's action groups after
@@ -692,7 +609,7 @@ func waypointActionEvent(wp av.Waypoint, actions av.WaypointActions) *av.Waypoin
 // lead, a constant-rate circular arc through the full turn angle, and a
 // straight tail, all displaced linearly by the wind. The leads stand in for
 // the time spent rolling into and out of the bank, sized so that the model's
-// duration and endpoint match the tick-by-tick roll that TargetHeading flies.
+// duration and endpoint match the tick-by-tick roll that FlightState.roll flies.
 type turnPath struct {
 	start   [2]float32 // position at the start of the turn, nm coordinates
 	center  [2]float32 // center of the arc, nm coordinates
@@ -744,7 +661,7 @@ func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection,
 	}
 
 	// Step the bank from its entry value up to max bank and from max bank
-	// back to level the same way TargetHeading does each tick, totalling
+	// back to level the same way FlightState.roll does each tick, totalling
 	// the heading turned through and the ticks each phase takes.
 	var hIn, hOut float32
 	var kIn, kOut int

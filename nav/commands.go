@@ -1544,3 +1544,21 @@ func (nav *Nav) InterceptedButNotCleared() bool {
 func (nav *Nav) interceptingFromHeading() bool {
 	return nav.Approach.InterceptState == InitialHeading || nav.Approach.InterceptState == TurningToJoin
 }
+
+func (nav *Nav) DivertToAirport(airport av.ICAOAirportCode) {
+	defer nav.record("DivertToAirport", airport)()
+	location, elevation, ok := nav.lookup().Airport(string(airport))
+	if !ok {
+		return
+	}
+
+	wp := av.Waypoint{
+		Fix:      string(airport),
+		Location: location,
+	}
+	nav.Waypoints = []av.Waypoint{wp}
+
+	nav.FlightState.ArrivalAirport = wp
+	nav.FlightState.ArrivalAirportLocation = location
+	nav.FlightState.ArrivalAirportElevation = elevation
+}
