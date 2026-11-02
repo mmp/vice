@@ -172,7 +172,7 @@
     },
     "86": {
       "callsign": "ZFW 86 PAX-H",
-      "frequency": 132275,
+      "frequency": 120475,
       "radio_name": "Fort Worth Center"
     },
     "89": {
@@ -209,6 +209,16 @@
       "callsign": "ZFW 99 ZFW TMU",
       "frequency": 118000,
       "radio_name": "Fort Worth Center"
+    },
+    "01": {
+      "callsign": "D10_Q_DEP",
+      "frequency": 125125,
+      "radio_name": "LONE STAR Departure"
+    },
+    "02": {
+      "callsign": "D10_L_DEP",
+      "frequency": 118550,
+      "radio_name": "LONE STAR Departure"
     }
   },
   "facility_adaptations": {
@@ -421,6 +431,158 @@
           "GRABE8-EAKER": "48",
           "LOWGN8-ROLLS": "48",
           "BLECO8-TSDEL3": "48"
+        }
+      },
+      "T50": {
+        "default_consolidation": {
+          "50": ["42", "48"]
+        },
+        "inbound_assignments": {
+          "West-East 1": "48",
+          "West-East 2": "48",
+          "East-West 3": "48",
+          "East-West 4": "48",
+          "South-North 1": "48",
+          "South-North 2": "48",
+          "AKUNA9-MLC": "48",
+          "BLECO8-TUL": "48",
+          "GRABE8-EAKER": "48",
+          "LOWGN8-ROLLS": "48",
+          "BLECO8-TSDEL3": "48",
+          "RIFFL3-DWINE": "50",
+          "AKUNA-SGF": "50",
+          "BYP-TUL": "50",
+          "LIT-CRUSR": "50",
+          "COODY-FUZ": "50",
+          "BVO-FUZ": "50",
+          "LIT-WADAT": "50",
+          "CRUSR-MEMFS": "50",
+          "CDS-TXK": "42",
+          "SEEVR4-RRNET": "42",
+          "SEEVR4-FEWWW": "42",
+          "FZT-TUL": "42"
+        }
+      },
+      "C90": {
+        "default_consolidation": {
+          "90": []
+        },
+        "inbound_assignments": {
+          "TXK-WINDU": "90",
+          "PUDJE-ADM": "90",
+          "AEX-IRW": "90",
+          "AXEEE-LSU": "90",
+          "EIC-LIT": "90"
+        }
+      },
+      "C83": {
+        "default_consolidation": {
+          "83": []
+        },
+        "inbound_assignments": {
+          "TXK-WINDU": "90",
+          "PUDJE-ADM": "90",
+          "AEX-IRW": "90",
+          "AXEEE-LSU": "90",
+          "EIC-LIT": "90",
+          "TYR-OKC": "83",
+          "OKC-TYR": "83",
+          "DAL-GGG": "83"
+        }
+      },
+      "T90": {
+        "default_consolidation": {
+          "90": ["83", "27"]
+        },
+        "inbound_assignments": {
+          "TXK-WINDU": "90",
+          "PUDJE-ADM": "90",
+          "AEX-IRW": "90",
+          "AXEEE-LSU": "90",
+          "EIC-LIT": "90",
+          "TYR-OKC": "83",
+          "OKC-TYR": "83",
+          "DFW-HOT": "27",
+          "ADS-PBF": "27",
+          "HOU-TXK": "27",
+          "DAL-GGG": "83"
+        }
+      },
+      "C46": {
+        "default_consolidation": {
+          "46": []
+        },
+        "inbound_assignments": {
+          "OLFRD-ELLVR": "46",
+          "DOLEY-PNH": "46",
+          "DOLEY-ZEMMA": "46",
+          "AEX-MUTEE": "46",
+          "IRK-BROBB": "46",
+          "BYP-GUSHR": "46",
+          "LBB-JJEEP": "46",
+          "TXK-ABI": "46",
+          "HUDAD-LEV": "46",
+          "KLNGR-MCI": "46",
+          "KH03C-KF21E": "46",
+          "LCH-ABI": "46",
+          "ELD-EWM": "46",
+          "SBI-PNH": "46",
+          "NOSEW-GUSHR": "46",
+          "INK-MCB": "46"
+        }
+      },
+      "C96": {
+        "default_consolidation": {
+          "96": []
+        },
+        "inbound_assignments": {
+          "OLFRD-ELLVR": "46",
+          "DOLEY-PNH": "46",
+          "DOLEY-ZEMMA": "46",
+          "AEX-MUTEE": "46",
+          "BROBB-WINDU": "96",
+          "BYP-GUSHR": "46",
+          "LBB-JJEEP": "46",
+          "GKY-GRK": "96",
+          "RBD-CLL": "96",
+          "MAF-GGG": "96",
+          "TYR-MAF": "96",
+          "TXK-ABI": "46",
+          "HUDAD-LEV": "46",
+          "KLNGR-MCI": "46",
+          "KH03C-KF21E": "46",
+          "LCH-ABI": "46",
+          "ELD-EWM": "46",
+          "SBI-PNH": "46",
+          "NOSEW-GUSHR": "46",
+          "INK-MCB": "46"
+        }
+      },
+      "T46": {
+        "default_consolidation": {
+          "46": ["96"]
+        },
+        "inbound_assignments": {
+          "OLFRD-ELLVR": "46",
+          "DOLEY-PNH": "46",
+          "DOLEY-ZEMMA": "46",
+          "AEX-MUTEE": "46",
+          "IRK-BROBB": "46",
+          "BYP-GUSHR": "46",
+          "LBB-JJEEP": "46",
+          "GKY-GRK": "96",
+          "RBD-CLL": "96",
+          "MAF-GGG": "96",
+          "TYR-MAF": "96",
+          "TXK-ABI": "46",
+          "HUDAD-LEV": "46",
+          "KLNGR-MCI": "46",
+          "KH03C-KF21E": "46",
+          "LCH-ABI": "46",
+          "ELD-EWM": "46",
+          "SBI-PNH": "46",
+          "NOSEW-GUSHR": "46",
+          "INK-MCB": "46"
         }
       }
     },

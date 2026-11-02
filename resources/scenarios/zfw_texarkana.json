@@ -1,0 +1,415 @@
+{
+  "artcc": "ZFW",
+  "area": "Dallas",
+  "name": "Texarkana",
+  "airports": {
+    "KDFW": {
+      "approaches": {
+        "I7L": {
+          "cifp_id": "I17L"
+        },
+        "I7C": {
+          "cifp_id": "IC17"
+        },
+        "I8R": {
+          "cifp_id": "I18R"
+        }
+      },
+      "departure_controller": "83",
+      "departure_routes": {
+        "17R": {
+          "FORCK": {
+            "cleared_altitude": 23000,
+            "sid": "FORCK3",
+            "handoff_controller": "90",
+            "waypoint_actions": { "HANUH@.5": "ho" }
+          },
+          "MRSSH": {
+            "cleared_altitude": 23000,
+            "sid": "MRSSH3",
+            "handoff_controller": "90",
+            "waypoint_actions": { "THHOR@.35": "ho" }
+          },
+          "ZACHH": {
+            "cleared_altitude": 23000,
+            "sid": "ZACHH4",
+            "handoff_controller": "90",
+            "waypoint_actions": { "ZERLU@.35": "ho" }
+          },
+          "TRYTN": {
+            "cleared_altitude": 23000,
+            "sid": "TRYTN4",
+            "handoff_controller": "90",
+            "waypoint_actions": { "TRRCH@.35": "ho" }
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "FDX"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "altitude": [27000, 29000, 31000, 33000, 35000],
+          "destination": "KMEM",
+          "exit": "FORCK",
+          "waypoints": "FORCK ELD HOBRK4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "altitude": [29000, 31000, 33000, 35000, 37000],
+          "destination": "KSAV",
+          "exit": "FORCK",
+          "waypoints": "FORCK ELD SQS JILLS KEEPS MCN LOTTS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [31000, 33000, 35000, 37000],
+          "destination": "KMCO",
+          "exit": "MRSSH",
+          "waypoints": "MRSSH ZALEA CREEM CEW J2 DEFUN GRNCH5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "JBU"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": [31000, 33000, 35000, 37000, 39000],
+          "destination": "KFLL",
+          "exit": "MRSSH",
+          "waypoints": "MRSSH ZALEA HRV Q105 BLVNS Y290 DOWRY TEEKY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            }
+          ],
+          "altitude": [31000, 33000, 35000, 37000, 39000],
+          "destination": "KMIA",
+          "exit": "MRSSH",
+          "waypoints": "MRSSH ZALEA HRV Q105 BLVNS Y290 DOWRY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": [31000, 33000, 35000, 37000],
+          "destination": "KBOS",
+          "exit": "ZACHH",
+          "waypoints": "ZACHH BSKAT LIT J131 PXV KLYNE Q29 JHW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "ABX"
+            }
+          ],
+          "altitude": [27000, 29000, 31000, 33000],
+          "destination": "KCVG",
+          "exit": "ZACHH",
+          "waypoints": "ZACHH BSKAT LIT J131 HUMBO TERGE SARGO5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "UPS"
+            }
+          ],
+          "altitude": [27000, 29000, 31000, 33000],
+          "destination": "KSDF",
+          "exit": "ZACHH",
+          "waypoints": "ZACHH BSKAT BUMPY MBELL5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "UPS"
+            }
+          ],
+          "altitude": [29000, 31000, 33000, 35000],
+          "destination": "KATL",
+          "exit": "TRYTN",
+          "waypoints": "TRYTN LOOSE MEMFS HUTCC KNSAW RUSSA GLAVN2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "UAL"
+            }
+          ],
+          "altitude": [31000, 33000, 35000, 37000],
+          "destination": "KIAD",
+          "exit": "TRYTN",
+          "waypoints": "TRYTN LOOSE Q34 HITMN HVQ GIBBZ6"
+        }
+      ]
+    },
+    "KDAL": {
+      "departure_controller": "83",
+      "departure_routes": {
+        "13L": {
+          "FORCK": {
+            "cleared_altitude": 23000,
+            "sid": "LNDRE5",
+            "handoff_controller": "90",
+            "waypoint_actions": { "HANUH@.5": "ho" }
+          },
+          "MRSSH": {
+            "cleared_altitude": 23000,
+            "sid": "LNDRE5",
+            "handoff_controller": "90",
+            "waypoint_actions": { "THHOR@.35": "ho" }
+          },
+          "ZACHH": {
+            "cleared_altitude": 23000,
+            "sid": "LNDRE5",
+            "handoff_controller": "90",
+            "waypoint_actions": { "ZERLU@.35": "ho" }
+          },
+          "TRYTN": {
+            "cleared_altitude": 23000,
+            "sid": "LNDRE5",
+            "handoff_controller": "90",
+            "waypoint_actions": { "TRRCH@.35": "ho" }
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": [33000, 35000, 37000, 39000, 41000],
+          "destination": "KLGA",
+          "exit": "ZACHH",
+          "waypoints": "ZACHH BSKAT LIT J131 PXV ROD KLYNE Q29 WWSHR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": [27000, 29000, 31000, 33000, 35000, 37000],
+          "destination": "KTYS",
+          "exit": "TRYTN",
+          "waypoints": "TRYTN LOOSE MEM TAZZA"
+        }
+      ]
+    },
+    "KOKC": {
+      "approaches": {
+        "I7L": {
+          "cifp_id": "I17L"
+        },
+        "I7R": {
+          "cifp_id": "I17R"
+        }
+      }
+    }
+  },
+  "default_scenario": "ZFW 90 - Texarkana-High",
+  "scenarios": {
+    "ZFW 90 - Texarkana-High": {
+      "configuration": "C90",
+      "default_map_group": "ZFW",
+      "departure_runways": [
+        {
+          "airport": "KDFW",
+          "rate": 30,
+          "runway": "17R"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 6,
+          "runway": "13L"
+        }
+      ],
+      "arrival_runways": [],
+      "inbound_rates": {
+        "TXK-WINDU": {
+          "overflights": 2
+        },
+        "PUDJE-ADM": {
+          "overflights": 2
+        },
+        "AEX-IRW": {
+          "overflights": 2
+        },
+        "AXEEE-LSU": {
+          "overflights": 2
+        },
+        "EIC-LIT": {
+          "overflights": 2
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "PUDJE-ADM": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KTPA",
+              "arrival_airport": "KSAN",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KSLC",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000],
+          "initial_controller": "28",
+          "initial_speed": 300,
+          "waypoints": "LAREY PUDJE WEGEV/ho FORCK ADM KA30Y ACH"
+        }
+      ]
+    },
+    "TXK-WINDU": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KAUS",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KAUS",
+              "icao": "FFT"
+            }
+          ],
+          "initial_altitude": [26000, 28000, 30000, 32000],
+          "initial_controller": "M22",
+          "initial_speed": 300,
+          "waypoints": "YOCKY LITTR/ho TXK BROBB WINDU SEWZY"
+        }
+      ]
+    },
+    "AEX-IRW": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KSLC",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": [30000, 32000, 34000],
+          "initial_controller": "86",
+          "initial_speed": 300,
+          "waypoints": "AEX OVNAE/ho TXK IRW MMB PUB"
+        }
+      ]
+    },
+    "AXEEE-LSU": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KDEN",
+              "arrival_airport": "KMSY",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KDEN",
+              "arrival_airport": "KMSY",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KDEN",
+              "arrival_airport": "KMSY",
+              "icao": "FFT"
+            }
+          ],
+          "initial_altitude": [25000, 27000, 29000, 31000],
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "END AXXEE PROWD/ho ZALEA LSU AWDAD"
+        }
+      ]
+    },
+    "EIC-LIT": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "MMMY",
+              "arrival_airport": "KORD",
+              "icao": "SKW"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "86",
+          "initial_speed": 300,
+          "waypoints": "LRD EIC/ho LIT FTZ TRTLL"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,674 @@
+{
+  "artcc": "ZFW",
+  "area": "Dallas",
+  "name": "Dallas",
+  "airports": {
+    "KDFW": {
+      "approaches": {
+        "I7L": {
+          "cifp_id": "I17L"
+        },
+        "I7C": {
+          "cifp_id": "IC17"
+        },
+        "I8R": {
+          "cifp_id": "I18R"
+        }
+      },
+      "departure_controller": "96",
+      "departure_routes": {
+        "17R": {
+          "ARDIA": {
+            "cleared_altitude": 23000,
+            "sid": "ARDIA7",
+            "handoff_controller": "46",
+            "waypoint_actions": { "ARDIA": "ho" }
+          },
+          "DARTZ": {
+            "cleared_altitude": 23000,
+            "sid": "DARTZ9",
+            "handoff_controller": "46",
+            "waypoint_actions": { "DARTZ": "ho" }
+          },
+          "ELLVR": {
+            "cleared_altitude": 23000,
+            "sid": "ARDIA7",
+            "handoff_controller": "46",
+            "waypoint_actions": { "ARDIA@.5": "ho" }
+          },
+          "CLL": {
+            "cleared_altitude": 23000,
+            "sid": "ARDIA7",
+            "handoff_controller": "46",
+            "waypoint_actions": { "ARDIA@.5": "ho" }
+          },
+          "TORNN": {
+            "cleared_altitude": 23000,
+            "sid": "DARTZ9",
+            "handoff_controller": "46",
+            "waypoint_actions": { "DARTZ@.5": "ho" }
+          },
+          "TNV": {
+            "cleared_altitude": 23000,
+            "sid": "DARTZ9",
+            "handoff_controller": "46",
+            "waypoint_actions": { "DARTZ@.5": "ho" }
+          }
+        },
+        "18L": {
+          "NELYN": {
+            "cleared_altitude": 23000,
+            "sid": "NELYN6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "NELYN": "ho" }
+          },
+          "JASPA": {
+            "cleared_altitude": 23000,
+            "sid": "JASPA7",
+            "handoff_controller": "46",
+            "waypoint_actions": { "JASPA": "ho" }
+          },
+          "SAT": {
+            "cleared_altitude": 23000,
+            "sid": "NELYN6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "NELYN@.5": "ho" }
+          },
+          "HOARY": {
+            "cleared_altitude": 23000,
+            "sid": "NELYN6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "NELYN@.5": "ho" }
+          },
+          "WINDU": {
+            "cleared_altitude": 23000,
+            "sid": "JASPA7",
+            "handoff_controller": "46",
+            "waypoint_actions": { "JASPA@.5": "ho" }
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            }
+          ],
+          "altitude": [26000, 28000, 30000],
+          "destination": "KCRP",
+          "exit": "SAT",
+          "waypoints": "SAT SLENA V163 CRP"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "VIV"
+            }
+          ],
+          "altitude": [32000, 34000, 36000],
+          "destination": "MMMY",
+          "exit": "SAT",
+          "waypoints": "SAT LRD UJ40 NOTAL MTY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            }
+          ],
+          "altitude": [26000, 28000, 30000, 32000],
+          "destination": "KHRL",
+          "exit": "HOARY",
+          "waypoints": "HOARY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "UPS"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [24000, 26000],
+          "destination": "KSAT",
+          "exit": "WINDU",
+          "waypoints": "WINDU QERVO"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": [24000, 26000],
+          "destination": "KHOU",
+          "exit": "ELLVR",
+          "waypoints": "ELLVR NNEAL MMAXX EEVAH BEANE CAASE KIDDZ"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": [24000, 26000],
+          "destination": "KCLL",
+          "exit": "CLL",
+          "waypoints": "CLL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            },
+            {
+              "icao": "AAL"
+            },
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "UPS"
+            },
+            {
+              "icao": "ASH"
+            },
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": [24000, 26000],
+          "destination": "KIAH",
+          "exit": "TORNN",
+          "waypoints": "TORNN REFYN OILLL DPLAN SSTAX MPORT GUSHR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "altitude": [32000, 34000, 36000],
+          "destination": "MMUN",
+          "exit": "TNV",
+          "waypoints": "TNV SBI A766 KEHLI UL209 TABSA UL209 BETAS VOMAR VOMAR1A"
+        }
+      ]
+    },
+    "KDAL": {
+      "departure_controller": "96",
+      "departure_routes": {
+        "13R": {
+          "NELYN": {
+            "cleared_altitude": 23000,
+            "sid": "CURLO6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "NELYN": "ho" }
+          },
+          "JASPA": {
+            "cleared_altitude": 23000,
+            "sid": "CURLO6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "JASPA": "ho" }
+          },
+          "ARDIA": {
+            "cleared_altitude": 23000,
+            "sid": "CURLO6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "ARDIA": "ho" }
+          },
+          "DARTZ": {
+            "cleared_altitude": 23000,
+            "sid": "CURLO6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "DARTZ": "ho" }
+          },
+          "WINDU": {
+            "cleared_altitude": 23000,
+            "sid": "CURLO6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "JASPA@.5": "ho" }
+          },
+          "ELLVR": {
+            "cleared_altitude": 23000,
+            "sid": "CURLO6",
+            "handoff_controller": "46",
+            "waypoint_actions": { "ARDIA@.5": "ho" }
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": [24000, 26000],
+          "destination": "KHOU",
+          "exit": "ELLVR",
+          "waypoints": "ELLVR NNEAL MMAXX EEVAH BEANE CAASE KIDDZ"
+        }
+      ]
+    }
+  },
+  "default_scenario": "ZFW 46 - Dallas-High",
+  "scenarios": {
+    "ZFW 46 - Dallas-High": {
+      "configuration": "C46",
+      "default_map_group": "ZFW",
+      "departure_runways": [
+        {
+          "airport": "KDFW",
+          "rate": 15,
+          "runway": "17R"
+        },
+        {
+          "airport": "KDFW",
+          "rate": 15,
+          "runway": "18L"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 8,
+          "runway": "13R"
+        }
+      ],
+      "arrival_runways": [],
+      "inbound_rates": {
+        "OLFRD-ELLVR": {
+          "overflights": 1
+        },
+        "DOLEY-PNH": {
+          "overflights": 2
+        },
+        "DOLEY-ZEMMA": {
+          "overflights": 1
+        },
+        "AEX-MUTEE": {
+          "overflights": 1
+        },
+        "IRK-BROBB": {
+          "overflights": 2
+        },
+        "BYP-GUSHR": {
+          "overflights": 1
+        },
+        "LBB-JJEEP": {
+          "overflights": 1
+        },
+        "TXK-ABI": {
+          "overflights": 2
+        },
+        "HUDAD-LEV": {
+          "overflights": 1
+        },
+        "KLNGR-MCI": {
+          "overflights": 2
+        },
+        "KH03C-KF21E": {
+          "overflights": 1
+        },
+        "LCH-ABI": {
+          "overflights": 2
+        },
+        "ELD-EWM": {
+          "overflights": 1
+        },
+        "SBI-PNH": {
+          "overflights": 1
+        },
+        "NOSEW-GUSHR": {
+          "overflights": 2
+        },
+        "INK-MCB": {
+          "overflights": 1
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "OLFRD-ELLVR": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KOKC",
+              "arrival_airport": "KHOU",
+              "icao": "SWA"
+            }
+          ],
+          "initial_altitude": [25000, 27000, 29000],
+          "initial_controller": "48",
+          "initial_speed": 300,
+          "waypoints": "MUDDE OLFRD/ho CVE ELLVR NNEAL MMAXX EEVAH BEANE CAASE KIDDZ"
+        }
+      ]
+    },
+    "DOLEY-PNH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KSEA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KSEA",
+              "icao": "ASA"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000],
+          "initial_controller": "H46",
+          "initial_speed": 300,
+          "waypoints": "STYCK JEKRI/ho DOLEY FUZ SNEED PNH TBE RONBE EKR MUSTE PIH KU87K PDT CHINS"
+        }
+      ]
+    },
+    "DOLEY-ZEMMA": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KOKC",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KOKC",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KOKC",
+              "icao": "ASH"
+            },
+            {
+              "departure_airport": "KIAH",
+              "arrival_airport": "KOKC",
+              "icao": "UCA"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000],
+          "initial_controller": "H46",
+          "initial_speed": 300,
+          "waypoints": "STYCK JEKRI/ho DOLEY ZEMMA TSDEL"
+        }
+      ]
+    },
+    "AEX-MUTEE": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KLAS",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KLAS",
+              "icao": "MXY"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KLAS",
+              "icao": "FFT"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000],
+          "initial_controller": "89",
+          "initial_speed": 300,
+          "waypoints": "AEX FELIZ/ho FUZ MUTEE HULZE TYOWN MIERA J72 ABQ HAHAA RKSTR"
+        }
+      ]
+    },
+    "IRK-BROBB": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KDTW",
+              "arrival_airport": "KAUS",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000, 38000],
+          "initial_controller": "48",
+          "initial_speed": 300,
+          "waypoints": "OBK MZV IRK/ho J87 CVE BROBB WINDU SSOLO GABOO SEWZY"
+        }
+      ]
+    },
+    "BYP-GUSHR": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "QTR"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KIAH",
+              "icao": "FFT"
+            }
+          ],
+          "initial_altitude": [30000, 32000, 34000, 36000],
+          "initial_controller": "42",
+          "initial_speed": 300,
+          "waypoints": "FSM BYP/ho CVE CHMPZ TORNN REFYN OILLL DPLAN SSTAX MPORT GUSHR"
+        }
+      ]
+    },
+    "LBB-JJEEP": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KPHX",
+              "arrival_airport": "KMIA",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": [33000, 35000, 37000],
+          "initial_controller": "65",
+          "initial_speed": 300,
+          "waypoints": "LBB MQP/ho JJEEP INDIE CRAWS AWDAD HRV"
+        }
+      ]
+    },
+    "TXK-ABI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KPHX",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": [30000, 32000, 34000, 36000],
+          "initial_controller": "90",
+          "initial_speed": 300,
+          "waypoints": "TXK MERIC/ho FUZ ABI"
+        }
+      ]
+    },
+    "HUDAD-LEV": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KLAX",
+              "arrival_airport": "KFLL",
+              "icao": "JBU"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000, 37000],
+          "initial_controller": "94",
+          "initial_speed": 300,
+          "waypoints": "TXO HUDAD HIKOT/ho FUZ MERKK ONICE LEV Y290 DOWRY"
+        }
+      ]
+    },
+    "KLNGR-MCI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KAUS",
+              "arrival_airport": "KMSP",
+              "icao": "SKW"
+            },
+            {
+              "departure_airport": "KAUS",
+              "arrival_airport": "CYYZ",
+              "icao": "POE"
+            }
+          ],
+          "initial_altitude": [29000, 31000, 33000],
+          "initial_controller": "65",
+          "initial_speed": 300,
+          "waypoints": "KLNGR/ho KF12C HELKU VOVRY MCI ROKKK"
+        }
+      ]
+    },
+    "KH03C-KF21E": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "MMGL",
+              "arrival_airport": "CYYZ",
+              "icao": "ACA"
+            }
+          ],
+          "initial_altitude": [31000, 33000, 35000],
+          "initial_controller": "H78",
+          "initial_speed": 300,
+          "waypoints": "LRD KH03C/ho KF21E KM33G KK45I"
+        }
+      ]
+    },
+    "LCH-ABI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMCO",
+              "arrival_airport": "KLAX",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000],
+          "initial_controller": "H46",
+          "initial_speed": 300,
+          "waypoints": "LCH SCRIP/ho ACT J50 ABI ZUBAG CNX"
+        }
+      ]
+    },
+    "ELD-EWM": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KLAX",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000],
+          "initial_controller": "90",
+          "initial_speed": 300,
+          "waypoints": "ELD CFLNK/ho FUZ J4 ABI J66 EWM"
+        }
+      ]
+    },
+    "SBI-PNH": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "MMUN",
+              "arrival_airport": "KSLC",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": [32000, 34000, 36000],
+          "initial_controller": "H46",
+          "initial_speed": 300,
+          "waypoints": "SBI OILLL/ho ACT AJAHO PNH ALS"
+        }
+      ]
+    },
+    "NOSEW-GUSHR": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KDEN",
+              "arrival_airport": "KIAH",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": [27000, 29000, 31000],
+          "initial_controller": "94",
+          "initial_speed": 300,
+          "waypoints": "NOSEW MQP/ho GUSHR"
+        }
+      ]
+    },
+    "INK-MCB": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KSAN",
+              "arrival_airport": "KMIA",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": [33000, 35000, 37000, 39000],
+          "initial_controller": "65",
+          "initial_speed": 300,
+          "waypoints": "CAVRN INK OWENN BUILT/ho ACT KH09G MCB CLAYS"
+        }
+      ]
+    }
+  }
+}

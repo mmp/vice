@@ -1,3 +1,4 @@
+- New scenario: ZFW Dallas/Bonham (Seth)
 - Scenario updates: HNL (Mike Fries), CLT (anguse), S56 (Elliott B), P50 (Ketan K)
 - Fixed multiple bugs with flight strip ownership
 - Release requests that are not in a STARS coordination list now appear in Messages and atop Launch Control
