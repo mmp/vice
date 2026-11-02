@@ -235,17 +235,22 @@ func (nav *Nav) updateAirspeed(callsign string, targetAltitude float32, geometri
 	// Stay within the aircraft's capabilities
 	ias := math.Clamp(target.ias, nav.minIAS(), nav.maxIAS(wxs.Temperature()))
 
+	// An aircraft still above 250 knots that has to be at 250 to descend
+	// through 10,000 feet is held there until it has slowed, even if it is
+	// expediting its descent, which otherwise holds its speed.
+	slowingTo250 = ias == 250 && fs.Altitude >= 10000 && fs.IAS > 250
+	expediting := nav.Altitude.Rate == RateExpedite && !slowingTo250
+
 	NavLog(callsign, simTime, NavLogSpeed, "target=%.0f current=%.0f rate=%.1f", ias, fs.IAS, target.rate)
 
-	next := fs.stepIAS(nav.Perf, ias, target.rate, targetAltitude, geometricDescent, nav.Altitude.Rate == RateExpedite,
-		wxs.Temperature())
+	next := fs.stepIAS(nav.Perf, ias, target.rate, targetAltitude, geometricDescent, expediting, wxs.Temperature())
 	if next == fs.IAS {
-		return 0, false
+		return 0, slowingTo250
 	}
 	nav.crossSpeed(next, simTime)
 	deltaKts = next - fs.IAS
 	fs.IAS = next
-	return deltaKts, ias == 250 && fs.Altitude >= 10000
+	return deltaKts, slowingTo250
 }
 
 // crossSpeed applies what reaching a speed on the way from the present
