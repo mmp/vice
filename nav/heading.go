@@ -281,7 +281,7 @@ func (nav *Nav) enqueueOnCourse(simTime Time, delayReduction time.Duration) {
 // effect once the pilot's reaction time has passed.
 func (nav *Nav) activateDeferredHeading(simTime Time) {
 	dh := nav.DeferredNavHeading
-	if dh == nil || !simTime.After(dh.Time) {
+	if dh == nil || simTime.Before(dh.Time) {
 		return
 	}
 

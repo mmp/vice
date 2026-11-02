@@ -83,11 +83,11 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 		}
 	}
 
-	// If there's an exact speed change in progress (>=20kt remaining or any Mach change),
+	// If there is an exact speed change in progress (more than 20 knots remaining or any Mach change),
 	// defer the speed assignment until after the altitude change completes.
 	if sr := nav.Speed.Assigned; sr != nil && direction != speech.AltitudeMaintain {
 		if spd, exact := sr.ExactValue(); exact &&
-			(sr.IsMach || math.Abs(spd-nav.FlightState.IAS) >= 20) {
+			(sr.IsMach || math.Abs(spd-nav.FlightState.IAS) > 20) {
 			nav.Speed = Speed{AfterAltitude: &SpeedAfterAltitude{Speed: *sr, Altitude: alt}}
 		}
 	}
