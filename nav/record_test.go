@@ -19,7 +19,7 @@ import (
 // read the Nav, or they are the update itself, which records separately.
 var queryMethods = []string{
 	"ApproachHeading", "AssignedHeading", "AssignedWaypoints", "Check", "ContactMessage",
-	"DepartureHeading", "DepartureMessage", "DistanceAlongRoute", "DistanceToEndOfApproach", "ETA",
+	"DepartureHeading", "DepartureMessage", "DistanceToEndOfApproach", "ETA",
 	"InterceptedButNotCleared", "IsAirborne", "LowestProcedureAltitude", "Mach", "OnApproach",
 	"OnExtendedCenterline", "ResolveApproach", "SayAltitude", "SayHeading", "SayIndicatedSpeed",
 	"SayMach", "SaySpeed", "SetLookups", "SetRecorder", "Summary", "TAS", "TakeSnapshot",

@@ -11,6 +11,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -36,14 +37,6 @@ func (nav *Nav) setAssignedWaypoints(wps []av.Waypoint) {
 	} else {
 		nav.Waypoints = wps
 	}
-}
-
-// editAssignedWaypoints returns the assigned-route slice and a commit function
-// that writes a (possibly mutated) slice back to the underlying field. Callers
-// should reassign their local slice variable when using slices.Delete/Insert
-// and pass the current value to commit.
-func (nav *Nav) editAssignedWaypoints() ([]av.Waypoint, func([]av.Waypoint)) {
-	return nav.AssignedWaypoints(), nav.setAssignedWaypoints
 }
 
 // FlyRoute replaces the aircraft's route with wps and has it fly the route
@@ -85,21 +78,14 @@ func (nav *Nav) knowsFix(fix string) bool {
 	return ok || nav.fixInRoute(fix)
 }
 
+// fixInRoute reports whether fix is on the aircraft's assigned route or its
+// assigned approach.
 func (nav *Nav) fixInRoute(fix string) bool {
 	if slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return fix == wp.Fix }) {
 		return true
 	}
-
-	if ap := nav.Approach.Assigned; ap != nil {
-		for _, route := range ap.Waypoints {
-			for i := range route {
-				if fix == route[i].Fix {
-					return true
-				}
-			}
-		}
-	}
-	return false
+	route, _ := approachRouteThrough(nav.Approach.Assigned, fix)
+	return route != nil
 }
 
 func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *av.Waypoint, fb *av.Waypoint) {
@@ -203,52 +189,48 @@ func (nav *Nav) ExpectDirect(fix string) speech.CommandIntent {
 
 func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	defer nav.record("DirectFix", fix, turn, simTime, delayReduction)()
-	if wps, source, err := nav.directFixWaypoints(fix); err == nil {
-		if hold := nav.Heading.Hold; hold != nil {
-			// We'll finish our lap and then depart the holding fix direct to the fix
-			hold.Cancel = true
-			nfa := FixAssignment{}
-			nfa.Depart.Fix = &wps[0]
-			if turn != av.TurnClosest {
-				nfa.Depart.Turn = &turn
-			}
-			nav.FixAssignments[hold.Hold.Fix] = nfa
-			if source == waypointSourceApproach && !nav.Approach.Cleared {
-				nav.Approach.InterceptState = OnApproachCourse
-			}
-			if !nav.Approach.Cleared {
-				nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
-			}
-			return speech.NavigationIntent{
-				Type:      speech.NavDirectFixFromHold,
-				Fix:       hold.Hold.Fix,
-				SecondFix: fix,
-				Turn:      turn,
-			}
-		} else {
-			nav.EnqueueDirectFix(wps, turn, simTime, delayReduction)
-			nav.Approach.NoPT = false
-			if source == waypointSourceApproach && !nav.Approach.Cleared {
-				// The waypoints came from the approach but the aircraft
-				// hasn't been cleared; track the approach course laterally.
-				// Its restrictions don't apply until the clearance.
-				nav.Approach.InterceptState = OnApproachCourse
-			} else {
-				nav.Approach.InterceptState = NotIntercepting
-			}
-			if !nav.Approach.Cleared {
-				nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
-			}
-			return speech.NavigationIntent{
-				Type: speech.NavDirectFix,
-				Fix:  fix,
-				Turn: turn,
-			}
-		}
-	} else if err == ErrFixIsTooFarAway {
+	wps, source, err := nav.directFixWaypoints(fix)
+	if err == ErrFixIsTooFarAway {
 		return speech.MakeUnableIntent("unable. {fix} is too far away to go direct", fix)
-	} else {
+	} else if err != nil {
 		return speech.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
+	}
+
+	// Waypoints from the approach before the clearance: the aircraft tracks
+	// the approach course laterally, but its restrictions don't apply until
+	// the clearance.
+	fromApproach := source == waypointSourceApproach && !nav.Approach.Cleared
+	if !nav.Approach.Cleared {
+		nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
+	}
+
+	if hold := nav.Heading.Hold; hold != nil {
+		// We'll finish our lap and then depart the holding fix direct to the fix
+		hold.Cancel = true
+		nfa := FixAssignment{}
+		nfa.Depart.Fix = &wps[0]
+		if turn != av.TurnClosest {
+			nfa.Depart.Turn = &turn
+		}
+		nav.FixAssignments[hold.Hold.Fix] = nfa
+		if fromApproach {
+			nav.Approach.InterceptState = OnApproachCourse
+		}
+		return speech.NavigationIntent{
+			Type:      speech.NavDirectFixFromHold,
+			Fix:       hold.Hold.Fix,
+			SecondFix: fix,
+			Turn:      turn,
+		}
+	}
+
+	nav.enqueueDirectFix(wps, turn, simTime, delayReduction)
+	nav.Approach.NoPT = false
+	nav.Approach.InterceptState = util.Select(fromApproach, OnApproachCourse, NotIntercepting)
+	return speech.NavigationIntent{
+		Type: speech.NavDirectFix,
+		Fix:  fix,
+		Turn: turn,
 	}
 }
 
@@ -283,7 +265,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime Time) {
 		nav.climbToCruise(alt)
 	}
 	nav.Speed = Speed{}
-	nav.EnqueueOnCourse(simTime, 0)
+	nav.enqueueOnCourse(simTime, 0)
 }
 
 func (nav *Nav) ResumeOwnNavigation() speech.CommandIntent {
@@ -379,25 +361,6 @@ func (nav *Nav) routeDistanceToFix(fix string) (float32, bool) {
 		}
 	}
 	return 0, false
-}
-
-func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
-	if nav.Heading.Assigned != nil {
-		return 0, ErrNotFlyingRoute
-	}
-	if len(nav.Waypoints) == 0 {
-		return 0, nil
-	}
-	index := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == fix })
-	if index == -1 {
-		return 0, ErrFixNotInRoute
-	}
-	wp := nav.Waypoints[:index+1]
-	distance := math.NMDistance2LL(nav.FlightState.Position, wp[0].Location)
-	for i := 0; i < len(wp)-1; i++ {
-		distance += math.NMDistance2LL(wp[i].Location, wp[i+1].Location)
-	}
-	return distance, nil
 }
 
 // updateWaypoints sequences the route: once the aircraft reaches the next

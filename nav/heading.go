@@ -28,7 +28,6 @@ type Heading struct {
 	Maneuvers  []LateralManeuver
 	Hold       *FlyHold
 	Join       *RouteJoin // Maneuvers we're flying the heading to join, if set
-
 }
 
 // DeferredNavHeading is a heading, direct or hold from the controller that
@@ -209,10 +208,8 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 
 	// Don't carry this from a waypoint we may have previously passed.
 	nav.Approach.NoPT = false
-	nav.EnqueueHeading(hdg, turn, approachCleared, simTime, delayReduction)
-	if snapshotAltitude && nav.DeferredNavHeading != nil {
-		nav.DeferredNavHeading.SnapshotAltitudeOnEffect = true
-	}
+	nav.enqueueHeading(hdg, turn, approachCleared, simTime, delayReduction)
+	nav.DeferredNavHeading.SnapshotAltitudeOnEffect = snapshotAltitude
 }
 
 func (nav *Nav) FlyPresentHeading(simTime Time, delayReduction time.Duration) speech.CommandIntent {
@@ -224,14 +221,13 @@ func (nav *Nav) FlyPresentHeading(simTime Time, delayReduction time.Duration) sp
 	}
 }
 
-// EnqueueHeading enqueues the given heading assignment to be followed a
+// enqueueHeading enqueues the given heading assignment to be followed a
 // few seconds in the future. It should only be called for heading changes
 // due to controller instructions to the pilot and never in cases where the
 // autopilot is changing the heading assignment. delayReduction, the time
 // since the pilot heard the instruction, is subtracted from the
 // pilot-reaction delay (floored at zero).
-func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, approachCleared bool, simTime Time, delayReduction time.Duration) {
-	defer nav.record("EnqueueHeading", hdg, turn, approachCleared, simTime, delayReduction)()
+func (nav *Nav) enqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, approachCleared bool, simTime Time, delayReduction time.Duration) {
 	var d time.Duration
 	if approachCleared {
 		// Minimal delay if the aircraft has been cleared for an approach.
@@ -243,20 +239,14 @@ func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, 
 		// LNAV -> heading mode
 		d = nav.drawDelay(nav.Delays.HeadingFromLNAV)
 	}
-
-	if d > delayReduction {
-		d -= delayReduction
-	} else {
-		d = 0
-	}
+	d = max(d-delayReduction, 0)
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time:    simTime.Add(d),
 		Heading: Heading{Assigned: &hdg, Turn: &turn},
 	}
 }
 
-func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
-	defer nav.record("EnqueueDirectFix", wps, turn, simTime, delayReduction)()
+func (nav *Nav) enqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTime Time, delayReduction time.Duration) {
 	var d time.Duration
 	if len(wps) > 0 && nav.ExpectedDirectFix == wps[0].Fix {
 		// Pilot was told to expect this fix; shorter delay
@@ -269,12 +259,7 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTi
 		// heading->LNAV--longer delay
 		d = nav.drawDelay(nav.Delays.DirectFromHeading)
 	}
-
-	if d > delayReduction {
-		d -= delayReduction
-	} else {
-		d = 0
-	}
+	d = max(d-delayReduction, 0)
 	dh := &DeferredNavHeading{
 		Time:      simTime.Add(d),
 		Waypoints: wps,
@@ -285,8 +270,7 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTi
 	nav.DeferredNavHeading = dh
 }
 
-func (nav *Nav) EnqueueOnCourse(simTime Time, delayReduction time.Duration) {
-	defer nav.record("EnqueueOnCourse", simTime, delayReduction)()
+func (nav *Nav) enqueueOnCourse(simTime Time, delayReduction time.Duration) {
 	d := max(nav.drawDelay(nav.Delays.OnCourse)-delayReduction, 0)
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time: simTime.Add(d),

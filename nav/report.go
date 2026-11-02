@@ -244,15 +244,9 @@ func (nav *Nav) rateSummary() string {
 func (nav *Nav) SayAltitude() speech.CommandIntent {
 	currentAltitude := nav.FlightState.Altitude
 	intent := speech.ReportAltitudeIntent{Current: currentAltitude}
-	if nav.Altitude.Assigned != nil {
-		intent.Assigned = nav.Altitude.Assigned
-		if *nav.Altitude.Assigned < currentAltitude {
-			intent.Direction = speech.AltitudeDescend
-		} else if *nav.Altitude.Assigned > currentAltitude {
-			intent.Direction = speech.AltitudeClimb
-		} else {
-			intent.Direction = speech.AltitudeMaintain
-		}
+	if a := nav.Altitude.Assigned; a != nil {
+		intent.Assigned = a
+		intent.Direction = nav.altitudeDirection(*a)
 	}
 	return intent
 }
@@ -307,11 +301,10 @@ func (nav *Nav) SayHeading() speech.CommandIntent {
 }
 
 // procedureHasAltRestrictions returns whether any remaining waypoints on the
-// SID (if checkSID) or STAR (otherwise) have altitude restrictions.
-func (nav *Nav) procedureHasAltRestrictions(checkSID bool) bool {
+// procedure that onProcedure identifies have altitude restrictions.
+func (nav *Nav) procedureHasAltRestrictions(onProcedure func(av.Waypoint) bool) bool {
 	for i := range nav.Waypoints {
-		onProc := util.Select(checkSID, nav.Waypoints[i].OnSID(), nav.Waypoints[i].OnSTAR())
-		if onProc && nav.Waypoints[i].AltitudeRestriction() != nil {
+		if onProcedure(nav.Waypoints[i]) && nav.Waypoints[i].AltitudeRestriction() != nil {
 			return true
 		}
 	}
@@ -354,7 +347,7 @@ func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *speech.RadioTr
 	climbing := target != nil && *target-nav.FlightState.Altitude > 200
 
 	if sid != "" && climbing {
-		if nav.Altitude.Assigned == nil && nav.procedureHasAltRestrictions(true) {
+		if nav.Altitude.Assigned == nil && nav.procedureHasAltRestrictions(av.Waypoint.OnSID) {
 			// SID with altitude restrictions, climbing via; an altitude
 			// short of cruise is an "except maintain" and is reported.
 			if *target < nav.FinalAltitude {
@@ -385,16 +378,22 @@ func (nav *Nav) DepartureMessage(sid string, reportHeading bool) *speech.RadioTr
 
 	// Heading information for departures with varied exit headings
 	if reportHeading {
-		hdg, state := nav.DepartureHeading()
-		switch state {
-		case OnHeading:
-			rt.Add("[heading {hdg}|on a {hdg} heading]", hdg)
-		case TurningToHeading:
-			rt.Add("[turning to|about to turn to] [heading|] {hdg}", hdg)
-		}
+		nav.addDepartureHeading(rt)
 	}
 
 	return rt
+}
+
+// addDepartureHeading reports the heading a departure is flying or about to
+// turn to, if it has one.
+func (nav *Nav) addDepartureHeading(rt *speech.RadioTransmission) {
+	hdg, state := nav.DepartureHeading()
+	switch state {
+	case OnHeading:
+		rt.Add("[heading {hdg}|on a {hdg} heading]", hdg)
+	case TurningToHeading:
+		rt.Add("[turning to|about to turn to] [heading|] {hdg}", hdg)
+	}
 }
 
 func (nav *Nav) ContactMessage(star string, runway string, reportHeading bool,
@@ -405,15 +404,8 @@ func (nav *Nav) ContactMessage(star string, runway string, reportHeading bool,
 	crossing := nav.firstCrossingRestriction()
 
 	if isDeparture && reportHeading {
-		// Departure with varied headings
-		hdg, state := nav.DepartureHeading()
-		switch state {
-		case OnHeading:
-			resp.Add("[heading {hdg}|on a {hdg} heading]", hdg)
-		case TurningToHeading:
-			resp.Add("[turning to|about to turn to] [heading|] {hdg}", hdg)
-		}
-		// Add altitude after heading for departures
+		// Departure with varied headings, then its altitude
+		nav.addDepartureHeading(&resp)
 		nav.addContactAltitude(&resp, star, crossing)
 	} else if hdg, ok := nav.AssignedHeading(); ok && reportHeading {
 		// Being vectored - heading + altitude
@@ -477,7 +469,7 @@ func (nav *Nav) firstCrossingRestriction() *contactCrossingRestriction {
 
 // addStarAltitude adds combined STAR + altitude phraseology.
 func (nav *Nav) addStarAltitude(rt *speech.RadioTransmission, star string, crossing *contactCrossingRestriction) {
-	hasAltRestrictions := nav.procedureHasAltRestrictions(false)
+	hasAltRestrictions := nav.procedureHasAltRestrictions(av.Waypoint.OnSTAR)
 	cur := nav.FlightState.Altitude
 	cleared := nav.Altitude.Cleared
 	// An aircraft held at, or climbing back to, its "except maintain"
@@ -546,19 +538,15 @@ func crossingAltitude(crossing *contactCrossingRestriction) float32 {
 }
 
 func crossingInstructionFormat(crossing *contactCrossingRestriction, altitude float32, includeAltitude bool) (string, []any) {
-	targetFmt := "{fix}"
 	speedFmt, speedArgs := crossingSpeedFormat(crossing)
 
-	var format string
+	format := "[to cross|crossing] {fix}"
 	args := []any{crossing.Fix}
 	if includeAltitude {
-		format = "[to cross|crossing] " + targetFmt + " at {alt}" + speedFmt
+		format += " at {alt}"
 		args = append(args, altitude)
-	} else {
-		format = "[to cross|crossing] " + targetFmt + speedFmt
 	}
-	args = append(args, speedArgs...)
-	return format, args
+	return format + speedFmt, append(args, speedArgs...)
 }
 
 func crossingSpeedFormat(crossing *contactCrossingRestriction) (string, []any) {

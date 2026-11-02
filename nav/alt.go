@@ -69,15 +69,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 		return speech.MakeUnableIntent("unable. That altitude is above our ceiling."), false
 	}
 
-	var direction speech.AltitudeDirection
-	if alt > nav.FlightState.Altitude {
-		direction = speech.AltitudeClimb
-	} else if alt == nav.FlightState.Altitude {
-		direction = speech.AltitudeMaintain
-	} else {
-		direction = speech.AltitudeDescend
-	}
-
+	direction := nav.altitudeDirection(alt)
 	intent := speech.AltitudeIntent{
 		Altitude:  alt,
 		Direction: direction,
@@ -101,6 +93,19 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 	}
 
 	return intent, true
+}
+
+// altitudeDirection returns whether reaching alt from the present altitude
+// is a climb, a descent, or neither.
+func (nav *Nav) altitudeDirection(alt float32) speech.AltitudeDirection {
+	switch {
+	case alt > nav.FlightState.Altitude:
+		return speech.AltitudeClimb
+	case alt < nav.FlightState.Altitude:
+		return speech.AltitudeDescend
+	default:
+		return speech.AltitudeMaintain
+	}
 }
 
 // AssignAltitudeNow assigns an altitude that takes effect immediately, with
@@ -301,12 +306,12 @@ func (nav *Nav) activatePendingAltitude(simTime Time) {
 	nav.Altitude.Restriction = nil
 }
 
+// activeAssignedAltitude returns the assigned altitude the aircraft is
+// flying: while an assignment waits for the pilot to act on it, the earlier
+// one it replaces, if any.
 func (nav *Nav) activeAssignedAltitude() *float32 {
-	if !nav.Altitude.ActivateAt.IsZero() {
-		return nav.Altitude.ActiveAssigned
-	}
-	if nav.Altitude.ActiveAssigned != nil {
-		return nav.Altitude.ActiveAssigned
+	if a := nav.Altitude.ActiveAssigned; a != nil || !nav.Altitude.ActivateAt.IsZero() {
+		return a
 	}
 	return nav.Altitude.Assigned
 }
@@ -342,7 +347,7 @@ func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float
 // be flown at it.
 func (nav *Nav) holdAltitude() {
 	fs := &nav.FlightState
-	if nav.IsAirborne() && fs.InitialDepartureClimb {
+	if nav.IsAirborne() {
 		fs.InitialDepartureClimb = false
 	}
 	fs.AltitudeRate = 0

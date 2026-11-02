@@ -102,19 +102,18 @@ func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av
 		}, references, nil
 	}
 
-	for name, appr := range airport.Approaches {
-		if name == id {
-			var refs []*av.Approach
-			if appr.Type == av.VisualApproach {
-				// Named visual approach: its own waypoints are the route the
-				// pilot will fly, so they serve as the sole reference for
-				// ClearedVisualApproach's route synthesis.
-				refs = []*av.Approach{appr}
-			}
-			return appr, refs, nil
-		}
+	appr, ok := airport.Approaches[id]
+	if !ok {
+		return nil, nil, ErrUnknownApproach
 	}
-	return nil, nil, ErrUnknownApproach
+	var refs []*av.Approach
+	if appr.Type == av.VisualApproach {
+		// Named visual approach: its own waypoints are the route the
+		// pilot will fly, so they serve as the sole reference for
+		// ClearedVisualApproach's route synthesis.
+		refs = []*av.Approach{appr}
+	}
+	return appr, refs, nil
 }
 
 // ExpectedApproach is what ExpectApproach needs to know of an approach, as
@@ -407,9 +406,9 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 // via floor, mark the approach as cleared and no longer standby. Returns true
 // iff the aircraft was in a hold that is now being cancelled.
 func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
-	cancelHold = nav.Heading.Hold != nil
-	if nav.Heading.Hold != nil {
-		nav.Heading.Hold.Cancel = true
+	if hold := nav.Heading.Hold; hold != nil {
+		hold.Cancel = true
+		cancelHold = true
 	}
 	nav.Approach.Cleared = true
 	nav.Approach.StandbyApproach = false
@@ -443,13 +442,9 @@ func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
 // its altitude on the course until the clearance takes effect there.
 func (nav *Nav) AtFixCleared(fix, id string, straightIn bool) speech.CommandIntent {
 	defer nav.record("AtFixCleared", fix, id, straightIn)()
-	if nav.Approach.AssignedId == "" {
-		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
-	}
-
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return speech.MakeUnableIntent("unable. We were never told to expect an approach")
+		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 	if id != "" && nav.Approach.AssignedId != id {
 		return speech.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
@@ -601,7 +596,7 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 	return false
 }
 
-// distanceToEndOfApproach returns the remaining distance to the last
+// DistanceToEndOfApproach returns the remaining distance to the last
 // waypoint (usually runway threshold) of the currently assigned approach.
 func (nav *Nav) DistanceToEndOfApproach() (float32, error) {
 	if nav.Approach.Assigned == nil || !nav.Approach.Cleared {

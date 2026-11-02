@@ -209,16 +209,8 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, depAirport, arrAi
 			nav.Altitude.Cleared = &ClearedAltitude{Altitude: arr.ClearedAltitude, IsFloor: true}
 		}
 
-		alt := float32(rand.SampleSlice(nav.Rand, arr.InitialAltitudes))
+		alt := nav.startAirborne(arr.InitialAltitudes, arr.InitialSpeed, model, simTime)
 		nav.FinalAltitude = max(nav.FinalAltitude, alt)
-		nav.FlightState.Altitude = alt
-		wxs := model.Lookup(nav.FlightState.Position, alt, simTime.Time())
-		nav.FlightState.IAS = min(arr.InitialSpeed.IAS(alt), nav.maxIAS(wxs.Temperature()))
-		// This won't be quite right but it's better than leaving GS to be
-		// 0 for the first nav update tick which leads to various Inf and
-		// NaN cases...
-		nav.FlightState.GS = nav.FlightState.IAS
-
 		return nav
 	}
 	return nil
@@ -260,18 +252,23 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, depAirport, 
 			nav.Speed.Assigned = &sr
 		}
 
-		alt := float32(rand.SampleSlice(nav.Rand, of.InitialAltitudes))
-		nav.FlightState.Altitude = alt
-		wxs := model.Lookup(nav.FlightState.Position, alt, simTime.Time())
-		nav.FlightState.IAS = min(of.InitialSpeed.IAS(alt), nav.maxIAS(wxs.Temperature()))
-		// This won't be quite right but it's better than leaving GS to be
-		// 0 for the first nav update tick which leads to various Inf and
-		// NaN cases...
-		nav.FlightState.GS = nav.FlightState.IAS
-
+		nav.startAirborne(of.InitialAltitudes, of.InitialSpeed, model, simTime)
 		return nav
 	}
 	return nil
+}
+
+// startAirborne puts an aircraft that spawns in flight at one of its initial
+// altitudes, flying its initial speed, and returns that altitude.
+func (nav *Nav) startAirborne(initialAltitudes []int, initialSpeed av.Airspeed, model *wx.Model, simTime Time) float32 {
+	alt := float32(rand.SampleSlice(nav.Rand, initialAltitudes))
+	nav.FlightState.Altitude = alt
+	wxs := model.Lookup(nav.FlightState.Position, alt, simTime.Time())
+	nav.FlightState.IAS = min(initialSpeed.IAS(alt), nav.maxIAS(wxs.Temperature()))
+	// This won't be quite right but it's better than leaving GS to be 0 for
+	// the first nav update tick, which leads to various Inf and NaN cases.
+	nav.FlightState.GS = nav.FlightState.IAS
+	return alt
 }
 
 // makeNav seeds the aircraft's random number generator from r, so that a

@@ -5,7 +5,6 @@
 package nav
 
 import (
-	"fmt"
 	"log/slog"
 
 	av "github.com/mmp/vice/aviation"
@@ -37,11 +36,6 @@ type FlightState struct {
 	IAS, GS      float32 // speeds...
 	BankAngle    float32 // degrees
 	AltitudeRate float32 // + -> climb, - -> descent
-}
-
-func (fs *FlightState) Summary() string {
-	return fmt.Sprintf("heading %03d altitude %.0f ias %.1f gs %.1f",
-		int(fs.Heading), fs.Altitude, fs.IAS, fs.GS)
 }
 
 func (fs FlightState) LogValue() slog.Value {
@@ -170,20 +164,15 @@ func (fs *FlightState) stepAltitude(perf av.AircraftPerformance, target, targetR
 	climb, descent := perf.Rate.Climb, perf.Rate.Descent
 
 	climb *= atmosClimbFactor(perf, wxs)
-	// Reduce rates from highest possible to be more realistic.
-	switch qualifier {
-	case RateNormal:
-		if climb >= 2500 && fs.Altitude > 5000 {
-			climb -= 500
-		}
+	// Reduce rates from highest possible to be more realistic: a normal
+	// climb takes 500 fpm off a strong climber's rate, and only an expedited
+	// climb or descent ignores the target rate.
+	if qualifier == RateNormal && climb >= 2500 && fs.Altitude > 5000 {
+		climb -= 500
+	}
+	if qualifier != RateExpedite {
 		climb = min(climb, targetRate)
 		descent = min(descent, targetRate)
-	case RateGood:
-		// Skip the 500fpm reduction, but still cap at targetRate
-		climb = min(climb, targetRate)
-		descent = min(descent, targetRate)
-	case RateExpedite:
-		// No reduction
 	}
 
 	// Gradually transition to the target rate.
@@ -213,9 +202,8 @@ func (fs *FlightState) stepAltitude(perf av.AircraftPerformance, target, targetR
 		if deltaKts > 0 {
 			// accelerating in the climb, so reduce climb rate; the scale
 			// factor is w.r.t. the maximum acceleration possible.
-			max := perf.Rate.Accelerate / 2
-			s := math.Clamp(max-deltaKts, .25, 1)
-			climb *= s
+			maxAccel := perf.Rate.Accelerate / 2
+			climb *= math.Clamp(maxAccel-deltaKts, .25, 1)
 		}
 
 		if fs.InitialDepartureClimb {
@@ -235,9 +223,8 @@ func (fs *FlightState) stepAltitude(perf av.AircraftPerformance, target, targetR
 		// Reduce rate due to concurrent deceleration, but only for
 		// controller-assigned altitudes. Geometric descents need the
 		// full computed rate to meet the restriction at the fix.
-		max := perf.Rate.Decelerate / 2
-		s := math.Clamp(max - -deltaKts, .25, 1)
-		descent *= s
+		maxDecel := perf.Rate.Decelerate / 2
+		descent *= math.Clamp(maxDecel+deltaKts, .25, 1)
 	}
 
 	// Reduce descent rate as we approach target altitude

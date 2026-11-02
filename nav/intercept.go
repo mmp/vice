@@ -71,13 +71,9 @@ func (nav *Nav) InterceptApproach(joinFix string) speech.CommandIntent {
 // passes the fix.
 func (nav *Nav) AtFixIntercept(fix string) speech.CommandIntent {
 	defer nav.record("AtFixIntercept", fix)()
-	if nav.Approach.AssignedId == "" {
-		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
-	}
-
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return speech.MakeUnableIntent("unable. We were never told to expect an approach")
+		return speech.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	// If the fix isn't on the approach, there will be nothing to join when
@@ -194,39 +190,28 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 		case turnToInterceptWait:
 			// Still too far; keep flying the assigned heading.
 
-		case turnToInterceptTurn:
+		case turnToInterceptTurn, turnToInterceptCorrectableOvershoot:
 			if hasLocalizer && !nav.approachRecoveryFeasible(ap) {
 				nav.approachOvershootRequestVectors()
 				return
+			}
+			joinHdg := hdgMag
+			if turnResult == turnToInterceptCorrectableOvershoot {
+				// Shallow out to a 20 degree intercept from whichever side of
+				// the course the aircraft is on. Taking the side from the
+				// heading difference instead would be right only once the
+				// aircraft had crossed; before that it aims 20 degrees to the
+				// far side of the course and flies away from it.
+				recoveryTrue := math.OffsetHeading(courseTrue,
+					math.Copysign(20, -nav.signedCourseLineDistance(courseLine)))
+				joinHdg = math.TrueToMagnetic(recoveryTrue, nav.FlightState.MagneticVariation)
 			}
 			nav.Approach.InterceptState = TurningToJoin
 			if !hasLocalizer {
 				nav.Approach.InterceptCourseLine = courseLine
 				nav.Approach.InterceptWaypoints = interceptWaypoints
 			}
-			nav.Heading = Heading{Assigned: &hdgMag}
-			nav.DeferredNavHeading = nil
-			nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
-
-		case turnToInterceptCorrectableOvershoot:
-			if hasLocalizer && !nav.approachRecoveryFeasible(ap) {
-				nav.approachOvershootRequestVectors()
-				return
-			}
-			// Shallow out to a 20 degree intercept from whichever side of
-			// the course the aircraft is on. Taking the side from the
-			// heading difference instead would be right only once the
-			// aircraft had crossed; before that it aims 20 degrees to the
-			// far side of the course and flies away from it.
-			recoveryTrue := math.OffsetHeading(courseTrue,
-				math.Copysign(20, -nav.signedCourseLineDistance(courseLine)))
-			recoveryHdg := math.TrueToMagnetic(recoveryTrue, nav.FlightState.MagneticVariation)
-			nav.Approach.InterceptState = TurningToJoin
-			if !hasLocalizer {
-				nav.Approach.InterceptCourseLine = courseLine
-				nav.Approach.InterceptWaypoints = interceptWaypoints
-			}
-			nav.Heading = Heading{Assigned: &recoveryHdg}
+			nav.Heading = Heading{Assigned: &joinHdg}
 			nav.DeferredNavHeading = nil
 			nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
 
@@ -415,9 +400,19 @@ func (nav *Nav) waypointsAfterIntercept(hdg math.MagneticHeading) []av.Waypoint 
 // groundTrack returns the aircraft's present true course over the ground.
 func (nav *Nav) groundTrack(wxs wx.Sample) math.TrueHeading {
 	hdgTrue := math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation)
-	TAS := nav.TAS(wxs.Temperature()) / 3600
-	flightVec := math.Scale2f(math.SinCos(math.Radians(hdgTrue)), TAS)
+	tas := nav.TAS(wxs.Temperature()) / 3600
+	flightVec := math.Scale2f(math.HeadingVector(hdgTrue), tas)
 	return math.VectorHeading(math.Add2f(flightVec, wxs.WindVec()))
+}
+
+// groundVelocity returns the aircraft's velocity over the ground in nm per
+// second, as the flight model integrates it: the heading flown at TAS,
+// displaced by the wind once airborne.
+func (nav *Nav) groundVelocity(wxs wx.Sample) [2]float32 {
+	fs := &nav.FlightState
+	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
+		nav.TAS(wxs.Temperature())/3600)
+	return math.Add2f(v, nav.groundWind(wxs))
 }
 
 // findInterceptSegment finds the approach segment that a ray from the
@@ -461,17 +456,11 @@ func (nav *Nav) signedCourseLineDistance(line [2]math.Point2LL) float32 {
 // converging on the infinite line defined by the two given points at more
 // than a glancing angle.
 func (nav *Nav) closingOnCourseLine(line [2]math.Point2LL, wxs wx.Sample) bool {
-	fs := &nav.FlightState
-
-	// The ground velocity, as the flight model integrates it: the heading
-	// flown at TAS, displaced by the wind.
-	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
-		nav.TAS(wxs.Temperature())/3600)
-	v = math.Add2f(v, nav.groundWind(wxs))
+	v := nav.groundVelocity(wxs)
 
 	// The track has to be angled back toward the side of the course the
 	// aircraft is on, and by enough to actually get there.
-	course := math.Heading2LL(line[0], line[1], fs.NmPerLongitude)
+	course := math.Heading2LL(line[0], line[1], nav.FlightState.NmPerLongitude)
 	angle := math.HeadingSignedTurn(course, math.VectorHeading(v))
 	return angle*nav.signedCourseLineDistance(line) < 0 && math.Abs(angle) >= minInterceptAngle
 }

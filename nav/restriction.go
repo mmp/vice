@@ -130,28 +130,22 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	haveFixAssignments := len(nav.FixAssignments) > 0
 	getChartedRestriction := func(i int) *av.AltitudeRestriction {
 		wp := &wps[i]
-
 		if ar := nav.controllerAltitudeRestriction(wp); ar != nil {
 			return ar
 		}
-
-		if haveFixAssignments {
-			if ar := nav.chartedAltitudeRestriction(wp); ar != nil {
-				// If the controller has given 'cross [wp] at [alt]' for a
-				// future waypoint, ignore the charted altitude restriction.
-				// Explicit loop avoids slices.ContainsFunc which copies the
-				// large Waypoint struct by value for each element via the closure.
-				for j := i + 1; j < len(wps); j++ {
-					if fa, ok := nav.FixAssignments[wps[j].Fix]; ok && fa.Arrive.Altitude != nil {
-						return nil
-					}
+		ar := nav.chartedAltitudeRestriction(wp)
+		if ar != nil && haveFixAssignments {
+			// If the controller has given 'cross [wp] at [alt]' for a
+			// future waypoint, ignore the charted altitude restriction.
+			// Explicit loop avoids slices.ContainsFunc which copies the
+			// large Waypoint struct by value for each element via the closure.
+			for j := i + 1; j < len(wps); j++ {
+				if fa, ok := nav.FixAssignments[wps[j].Fix]; ok && fa.Arrive.Altitude != nil {
+					return nil
 				}
-				return ar
 			}
-			return nil
 		}
-		// Fast path: no fix assignments, just return the charted restriction.
-		return nav.chartedAltitudeRestriction(wp)
+		return ar
 	}
 
 	// On a cleared approach, "at or above X" means the aircraft should
@@ -200,7 +194,8 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 		return altitudeTarget{}, false
 	}
 
-	descending := nav.FlightState.Altitude > getRestriction(lastWp).TargetAltitude(nav.FlightState.Altitude)
+	last := getRestriction(lastWp)
+	descending := nav.FlightState.Altitude > last.TargetAltitude(nav.FlightState.Altitude)
 
 	// Use a large rate estimate for the reverse walk to compute feasible
 	// altitude ranges.
@@ -209,7 +204,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	// altRange is the range of altitudes that the aircraft may be in and
 	// successfully meet all of the restrictions. It will be updated
 	// incrementally working backwards from the last altitude restriction.
-	altRange := getRestriction(lastWp).Range
+	altRange := last.Range
 
 	// Sum of distances in nm since the last waypoint with an altitude
 	// restriction.
@@ -324,28 +319,13 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, sr *av.SpeedR
 		return false, nil, "", false
 	}
 
-	// Explicit loop avoids slices.ContainsFunc which copies the large
-	// Waypoint struct by value for each element via the closure.
-	haveWaypointSpeedRestriction := false
 	for i := range nav.Waypoints {
-		if nav.chartedSpeedRestriction(&nav.Waypoints[i]) != nil {
-			haveWaypointSpeedRestriction = true
-			break
+		wp := &nav.Waypoints[i]
+		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Speed != nil {
+			return wp.OnSID(), nfa.Arrive.Speed, wp.Fix, true
 		}
-	}
-
-	// Skip all this work in the (common) case that it's unnecessary.
-	if len(nav.FixAssignments) > 0 || haveWaypointSpeedRestriction {
-		for i := range nav.Waypoints {
-			wp := &nav.Waypoints[i]
-
-			if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Speed != nil {
-				return wp.OnSID(), nfa.Arrive.Speed, wp.Fix, true
-			}
-
-			if wsr := nav.chartedSpeedRestriction(wp); wsr != nil {
-				return wp.OnSID(), wsr, wp.Fix, true
-			}
+		if wsr := nav.chartedSpeedRestriction(wp); wsr != nil {
+			return wp.OnSID(), wsr, wp.Fix, true
 		}
 	}
 	return false, nil, "", false
@@ -446,7 +426,7 @@ func (nav *Nav) DescendViaSTAR(exceptAlt *float32, simTime Time, delayReduction 
 // altitude floor when it takes effect.
 func (nav *Nav) resumeProcedureCourse(simTime Time, delayReduction time.Duration) {
 	if nav.pendingJoin() == nil {
-		nav.EnqueueOnCourse(simTime, delayReduction)
+		nav.enqueueOnCourse(simTime, delayReduction)
 	} else if dh := nav.DeferredNavHeading; dh != nil {
 		dh.SnapshotAltitudeOnEffect = false
 	}

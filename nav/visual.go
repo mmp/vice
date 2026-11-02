@@ -96,12 +96,8 @@ func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
 		if !ref.Type.HasLocalizer() {
 			continue
 		}
-		for _, route := range ref.Waypoints {
-			for _, wp := range route {
-				if wp.Fix == fix {
-					return ref
-				}
-			}
+		if route, _ := approachRouteThrough(ref, fix); route != nil {
+			return ref
 		}
 	}
 	return nil
@@ -284,7 +280,7 @@ func (nav *Nav) projectOntoApproachRoutes(routes []av.WaypointArray, position ma
 	nmPerLong := nav.FlightState.NmPerLongitude
 	posNM := math.LL2NM(position, nmPerLong)
 
-	best := visualApproachJoinPoint{lateralDistance: 1e9}
+	var best visualApproachJoinPoint
 	found := false
 
 	for _, route := range routes {
@@ -515,17 +511,14 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 	ftPerNMOnGlideslope := math.Tan(math.Radians(float32(3))) * math.NauticalMilesToFeet
 	todDist := (todAlt - float32(thresholdAlt)) / ftPerNMOnGlideslope
 
-	var wps []av.Waypoint
-	join := av.Waypoint{
-		Fix:      "_" + runway + "_APPROACH_JOIN",
-		Location: joinPoint.location,
-	}
-	if followTraffic != nil {
+	join := av.Waypoint{Location: joinPoint.location}
+	switch {
+	case followTraffic != nil:
 		join.Fix = "_" + runway + "_FOLLOW_TRAFFIC"
 		join.Location = *followTraffic
-	} else if joinPoint.lateralDistance == 0 {
+	case joinPoint.lateralDistance == 0:
 		join.Fix = "_" + runway + "_INTERCEPT"
-	} else {
+	default:
 		join.Fix = "_" + runway + "_PROJECTION"
 	}
 	join.SetOnApproach(true)
@@ -534,7 +527,7 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 		join.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(final3nmAlt))
 		join.SetFAF(true)
 	}
-	wps = append(wps, join)
+	wps := []av.Waypoint{join}
 
 	start := joinPoint.segment + 1
 	if followTraffic != nil && joinPoint.segmentFraction <= 1e-4 &&
@@ -581,10 +574,6 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 
 	if start < len(joinPoint.route) {
 		wps = append(wps, joinPoint.route[start:].Clone()...)
-	}
-
-	if len(wps) == 0 {
-		return nil
 	}
 
 	// A few things at the last waypoint.

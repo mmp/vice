@@ -352,12 +352,7 @@ func (nav *Nav) turnToInterceptIfHeadingMisses(m *LateralManeuver, targetHdg mat
 	p := math.LL2NM(fs.Position, fs.NmPerLongitude)
 	f := math.LL2NM(m.Until.Fix, fs.NmPerLongitude)
 	cdir := math.HeadingVector(math.MagneticToTrue(m.Until.InterceptCourse, fs.MagneticVariation))
-
-	// The aircraft's ground velocity, as the flight model integrates it:
-	// the heading flown at TAS, displaced by the wind once airborne.
-	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
-		nav.TAS(wxs.Temperature())/3600)
-	v = math.Add2f(v, nav.groundWind(wxs))
+	v := nav.groundVelocity(wxs)
 
 	// The course leads to the fix, so the track must cross it short of the
 	// fix; an outbound course extends beyond the fix instead. 500nm covers
@@ -437,7 +432,8 @@ func (nav *Nav) flyProcedureTurnIfNecessary() {
 		return
 	}
 
-	if wp[0].ProcedureTurn().Entry180NoPT {
+	pt := wp[0].ProcedureTurn()
+	if pt.Entry180NoPT {
 		inboundHeading := math.Heading2LL(wp[0].Location, wp[1].Location, nav.FlightState.NmPerLongitude)
 
 		acFixHeading := math.Heading2LL(nav.FlightState.Position, wp[0].Location,
@@ -452,8 +448,6 @@ func (nav *Nav) flyProcedureTurnIfNecessary() {
 	// DeferredNavHeading) so they're available after the PT completes.
 	nav.Waypoints = wp
 	nav.DeferredNavHeading = nil
-
-	pt := wp[0].ProcedureTurn()
 
 	var exitAlt *float32
 	if pt.ExitAltitude != 0 {
@@ -471,10 +465,8 @@ func (nav *Nav) flyProcedureTurnIfNecessary() {
 		panic("Unhandled procedure turn type")
 	}
 
+	maneuvers[len(maneuvers)-1].ClearAltitudeOnFinal = true
 	nav.Heading = Heading{Maneuvers: maneuvers}
-	if len(nav.Heading.Maneuvers) > 0 {
-		nav.Heading.Maneuvers[len(nav.Heading.Maneuvers)-1].ClearAltitudeOnFinal = true
-	}
 }
 
 func makeStandard45Maneuver(nav *Nav, wp []av.Waypoint, exitAlt *float32) []LateralManeuver {

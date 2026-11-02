@@ -317,8 +317,6 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 
 	maxAccel := nav.Perf.Rate.Accelerate * 30 // per minute
 
-	fd, _ := nav.DistanceToEndOfApproach()
-
 	// Controller assignments: these override anything else.
 	if nav.Speed.MaintainSlowestPractical {
 		return speedTarget{ias: nav.Perf.Speed.Landing + 5, rate: MaximumRate}
@@ -352,7 +350,7 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 		over := (isJet && agl >= 5000) || (!isJet && agl >= 1500)
 
 		var targetSpeed float32
-		if nav.Perf.Engine.AircraftType == "J" { // jet
+		if isJet {
 			if agl < 1500 {
 				targetSpeed = 180
 			} else {
@@ -448,11 +446,9 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 		}
 	}
 
-	// If fd != 0, we're flying an approach; absent controller speed
-	// restrictions (and inside 5 DME), maintain approach speed on final
-	// and only start transitioning to the landing reference speed in the
-	// last half mile before touchdown.
-	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
+	// On a cleared approach inside 10 miles of its end, fly the approach
+	// speed, and in the last half mile slow toward the landing speed.
+	if fd, err := nav.DistanceToEndOfApproach(); err == nil && fd < 10 {
 		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude)
 		var approachSpeed float32
 		if arrivalMETAR != nil && arrivalMETAR.WindDir != nil { // METAR and non-VRB winds

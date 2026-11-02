@@ -183,18 +183,9 @@ func (nav *Nav) AfterFixAltitude(fix string, alt float32) speech.CommandIntent {
 	nfa.Depart.Altitude = &alt
 	nav.FixAssignments[fix] = nfa
 
-	var direction speech.AltitudeDirection
-	if alt > nav.FlightState.Altitude {
-		direction = speech.AltitudeClimb
-	} else if alt < nav.FlightState.Altitude {
-		direction = speech.AltitudeDescend
-	} else {
-		direction = speech.AltitudeMaintain
-	}
-
 	return speech.AltitudeIntent{
 		Altitude:  alt,
-		Direction: direction,
+		Direction: nav.altitudeDirection(alt),
 		AfterFix:  fix,
 	}
 }
@@ -228,20 +219,25 @@ func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, sr *av.SpeedR
 	}
 	if sr != nil {
 		nfa.Arrive.Speed = sr
-		if sr.IsMach {
-			intent.SpeedRestriction = sr
-		} else {
-			naturalIAS, _ := nav.targetAltitudeIAS(temp)
-			s := nav.restrictedSpeed(sr, naturalIAS)
-			intentSpeed := av.MakeAtSpeedRestriction(s)
-			intent.SpeedRestriction = &intentSpeed
-		}
+		intent.SpeedRestriction = nav.crossingSpeedIntent(sr, temp)
 		// Delete other speed restrictions
 		nav.Speed = Speed{}
 	}
 	nav.FixAssignments[fix] = nfa
 
 	return intent
+}
+
+// crossingSpeedIntent returns the speed read back for a crossing speed
+// restriction: the speed the pilot picks within a range, or a Mach number
+// as given.
+func (nav *Nav) crossingSpeedIntent(sr *av.SpeedRestriction, temp av.Temperature) *av.SpeedRestriction {
+	if sr.IsMach {
+		return sr
+	}
+	naturalIAS, _ := nav.targetAltitudeIAS(temp)
+	spd := av.MakeAtSpeedRestriction(nav.restrictedSpeed(sr, naturalIAS))
+	return &spd
 }
 
 // newSyntheticWaypoint builds a synthetic crossing waypoint at the given
@@ -299,14 +295,7 @@ func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
 
 	if sr != nil {
 		wp.SetSpeedRestriction(*sr)
-		if sr.IsMach {
-			intent.SpeedRestriction = sr
-		} else {
-			naturalIAS, _ := nav.targetAltitudeIAS(temp)
-			s := nav.restrictedSpeed(sr, naturalIAS)
-			intentSpeed := av.MakeAtSpeedRestriction(s)
-			intent.SpeedRestriction = &intentSpeed
-		}
+		intent.SpeedRestriction = nav.crossingSpeedIntent(sr, temp)
 		nav.Speed = Speed{}
 	}
 }
@@ -314,10 +303,9 @@ func (nav *Nav) applyRestrictionsToSyntheticWaypoint(wp *av.Waypoint,
 func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.CardinalOrdinalDirection,
 	ar *av.AltitudeRestriction, sr *av.SpeedRestriction, temp av.Temperature) speech.CommandIntent {
 	defer nav.record("CrossDistanceFromFixAt", fix, dist, dir, ar, sr, temp)()
-	routeWps, commitRoute := nav.editAssignedWaypoints()
-
-	wps := routeWps
-	idx := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == fix })
+	wps := nav.AssignedWaypoints()
+	isFix := func(wp av.Waypoint) bool { return wp.Fix == fix }
+	idx := slices.IndexFunc(wps, isFix)
 	if idx == -1 {
 		return speech.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
@@ -366,16 +354,32 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 		math.Lerp(t, priorLoc[1], fixLoc[1]),
 	}
 
-	// 1. Remove or clear existing synthetic waypoints for this fix and restriction types.
-	removePrefix := "_" + fix + "/"
-	routeWps = clearMatchingSyntheticRestrictions(routeWps,
-		func(wp *av.Waypoint) bool { return strings.HasPrefix(wp.Fix, removePrefix) },
-		ar, sr)
-	commitRoute(routeWps)
+	// Remove or clear the existing crossings for this fix of the restriction
+	// types given, then find the fix again, since waypoints may have shifted.
+	crossingPrefix := "_" + fix + "/"
+	isCrossing := func(wp *av.Waypoint) bool { return strings.HasPrefix(wp.Fix, crossingPrefix) }
+	wps = clearMatchingSyntheticRestrictions(wps, isCrossing, ar, sr)
+	idx = slices.IndexFunc(wps, isFix)
 
-	// 2. Refresh index as waypoints might have shifted.
-	wps = routeWps
-	idx = slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == fix })
+	// A crossing of this distance may remain, with a restriction of the other
+	// type; otherwise insert one among the fix's crossings, which are ordered
+	// by decreasing distance from the fix.
+	name := fmt.Sprintf("_%s/%d%s", fix, int(dist), dir.ShortString())
+	wpIdx := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == name })
+	if wpIdx == -1 {
+		wpIdx = idx
+		for wpIdx > 0 && isCrossing(&wps[wpIdx-1]) {
+			if _, otherDist, _, ok := av.ParseSyntheticCrossingFix(wps[wpIdx-1].Fix); ok && float32(otherDist) >= dist {
+				break
+			}
+			wpIdx--
+		}
+		// The crossing is part of the same procedure as the fix it is
+		// measured from, not whatever neighbors it.
+		wps = slices.Insert(wps, wpIdx, newSyntheticWaypoint(name, syntheticLoc, &wps[idx]))
+	}
+	wp := &wps[wpIdx]
+	wp.Location = syntheticLoc
 
 	intent := speech.NavigationIntent{
 		Type:      speech.NavCrossDistanceFromFixAt,
@@ -383,46 +387,8 @@ func (nav *Nav) CrossDistanceFromFixAt(fix string, dist float32, dir math.Cardin
 		Distance:  dist,
 		Direction: dir,
 	}
-
-	// Helper to insert a synthetic waypoint in the correct order (descending distance from fix).
-	insertOrdered := func(name string, loc math.Point2LL, d float32) {
-		// Find the insertion index among synthetic waypoints for this fix.
-		insertIdx := idx
-		for insertIdx > 0 && strings.HasPrefix(wps[insertIdx-1].Fix, removePrefix) {
-			if _, otherDist, _, ok := av.ParseSyntheticCrossingFix(wps[insertIdx-1].Fix); ok {
-				if float32(otherDist) >= d {
-					break // Current one is closer to fix than the one we are checking (or same distance).
-				}
-			}
-			insertIdx--
-		}
-
-		// Inherit SID/STAR/Approach flags from the named target fix (wps[idx]),
-		// not the insertion neighbor.
-		var inherit *av.Waypoint
-		if idx < len(wps) {
-			inherit = &wps[idx]
-		}
-		routeWps = slices.Insert(routeWps, insertIdx, newSyntheticWaypoint(name, loc, inherit))
-		commitRoute(routeWps)
-		// Refresh wps and idx for subsequent operations.
-		wps = routeWps
-		idx = slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == fix })
-	}
-
-	name := fmt.Sprintf("_%s/%d%s", fix, int(dist), dir.ShortString())
-	wpIdx := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == name })
-	if wpIdx == -1 {
-		insertOrdered(name, syntheticLoc, dist)
-		wps = routeWps
-		wpIdx = slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == name })
-	}
-	wp := &routeWps[wpIdx]
-	wp.Location = syntheticLoc
-
-	// 3. Apply new inline restrictions to the synthetic waypoint.
 	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, temp, &intent)
-	commitRoute(routeWps)
+	nav.setAssignedWaypoints(wps)
 
 	return intent
 }
@@ -441,90 +407,71 @@ func (nav *Nav) CrossDMEAt(dist float32, ar *av.AltitudeRestriction, sr *av.Spee
 	if !nav.clearedForVisualApproach() {
 		return speech.MakeUnableIntent("unable, we're not cleared for a visual approach")
 	}
-	ap := nav.Approach.Assigned
-	runway := ap.Runway
+	runway := nav.Approach.Assigned.Runway
 
-	routeWps, commitRoute := nav.editAssignedWaypoints()
-
-	if len(routeWps) < 2 {
-		return speech.MakeUnableIntent("unable")
-	}
-
-	// 1. Clear matching restriction categories on any existing synthetic DME
-	// waypoints for this runway; drop any that end up with no restrictions.
-	routeWps = clearMatchingSyntheticRestrictions(routeWps, func(wp *av.Waypoint) bool {
+	// Clear the restriction types given from the existing DME crossings for
+	// this runway and drop any left with none. The route then has to have
+	// the threshold, the arrival airport after it, and a leg before it to
+	// measure along; it may not if the aircraft has passed the rest of the
+	// visual's waypoints and the only remaining crossing was just removed.
+	wps := clearMatchingSyntheticRestrictions(nav.AssignedWaypoints(), func(wp *av.Waypoint) bool {
 		wpRunway, _, ok := av.ParseSyntheticDMEFix(wp.Fix)
 		return ok && wpRunway == runway
 	}, ar, sr)
-	commitRoute(routeWps)
-
-	// Deletion above can leave the threshold alone (e.g., the aircraft has
-	// passed all prior visual waypoints and the only remaining synthetic
-	// was just removed); without at least two waypoints we have no route to
-	// measure along.
-	if len(routeWps) < 2 {
+	nav.setAssignedWaypoints(wps)
+	if len(wps) < 3 {
 		return speech.MakeUnableIntent("unable")
 	}
 
-	// 2. Walk backward from the threshold, accumulating track miles, and
-	// place the synthetic waypoint on the first leg that spans `dist`. If
-	// `dist` exceeds the full route length, extrapolate past wp[0] along
-	// the direction from wp[1] back to wp[0]. The final waypoint is the
-	// arrival airport (appended after the threshold); skip the
-	// threshold-to-airport leg so distances are measured from the threshold.
-	thresholdIdx := len(routeWps) - 2
-	if thresholdIdx < 1 {
-		return speech.MakeUnableIntent("unable")
-	}
+	// Walk backward from the threshold, accumulating track miles, and place
+	// the crossing on the first leg that spans dist. If dist exceeds the full
+	// route length, extrapolate past wps[0] along the direction from wps[1]
+	// back to it. The final waypoint is the arrival airport, appended after
+	// the threshold; skip the threshold-to-airport leg so that distances are
+	// measured from the threshold.
+	thresholdIdx := len(wps) - 2
 	nmPerLong := nav.FlightState.NmPerLongitude
 	var syntheticLoc math.Point2LL
 	var insertIdx int
-	var cum float32 // cumulative track miles from threshold to routeWps[i+1]
+	var cum float32 // cumulative track miles from threshold to wps[i+1]
 	placed := false
 	for i := thresholdIdx - 1; i >= 0 && !placed; i-- {
-		legLen := math.NMDistance2LLFast(routeWps[i].Location, routeWps[i+1].Location, nmPerLong)
+		legLen := math.NMDistance2LLFast(wps[i].Location, wps[i+1].Location, nmPerLong)
 		if dist <= cum+legLen {
 			t := (dist - cum) / legLen
-			syntheticLoc = math.Point2LL(math.Lerp2f(t, routeWps[i+1].Location, routeWps[i].Location))
+			syntheticLoc = math.Point2LL(math.Lerp2f(t, wps[i+1].Location, wps[i].Location))
 			insertIdx = i + 1
 			placed = true
 		}
 		cum += legLen
 	}
 	if !placed {
-		wp0NM := math.LL2NM(routeWps[0].Location, nmPerLong)
-		wp1NM := math.LL2NM(routeWps[1].Location, nmPerLong)
+		wp0NM := math.LL2NM(wps[0].Location, nmPerLong)
+		wp1NM := math.LL2NM(wps[1].Location, nmPerLong)
 		dirBack := math.Normalize2f(math.Sub2f(wp0NM, wp1NM))
 		syntheticLoc = math.NM2LL(math.Add2f(wp0NM, math.Scale2f(dirBack, dist-cum)), nmPerLong)
 		insertIdx = 0
 	}
 
-	// 4. Apply restrictions to a new or existing synthetic DME waypoint.
+	// A crossing at this distance may remain, with a restriction of the
+	// other type; otherwise insert one, part of the same procedure as the
+	// waypoint that follows it.
 	name := fmt.Sprintf("_%s_%dDME", runway, int(dist))
-	existingIdx := slices.IndexFunc(routeWps, func(wp av.Waypoint) bool { return wp.Fix == name })
-	var wp *av.Waypoint
-	if existingIdx >= 0 {
-		wp = &routeWps[existingIdx]
-		wp.Location = syntheticLoc
-	} else {
-		// Inherit SID/STAR/Approach flags from the insertion neighbor — the
-		// waypoint that will sit immediately after the new one.
-		var inherit *av.Waypoint
-		if insertIdx < len(routeWps) {
-			inherit = &routeWps[insertIdx]
-		}
-		routeWps = slices.Insert(routeWps, insertIdx, newSyntheticWaypoint(name, syntheticLoc, inherit))
-		wp = &routeWps[insertIdx]
+	wpIdx := slices.IndexFunc(wps, func(wp av.Waypoint) bool { return wp.Fix == name })
+	if wpIdx == -1 {
+		wps = slices.Insert(wps, insertIdx, newSyntheticWaypoint(name, syntheticLoc, &wps[insertIdx]))
+		wpIdx = insertIdx
 	}
+	wp := &wps[wpIdx]
+	wp.Location = syntheticLoc
 
 	intent := speech.NavigationIntent{
 		Type:     speech.NavCrossDME,
 		Fix:      name,
 		Distance: dist,
 	}
-
 	nav.applyRestrictionsToSyntheticWaypoint(wp, ar, sr, temp, &intent)
-	commitRoute(routeWps)
+	nav.setAssignedWaypoints(wps)
 
 	return intent
 }

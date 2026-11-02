@@ -1031,10 +1031,6 @@ func (ac *Aircraft) Waypoints() []av.Waypoint {
 	return ac.Nav.Waypoints
 }
 
-func (ac *Aircraft) DistanceAlongRoute(fix string) (float32, error) {
-	return ac.Nav.DistanceAlongRoute(fix)
-}
-
 func (ac *Aircraft) CWT() string {
 	perf, ok := db.DB.AircraftPerformance[ac.AircraftType]
 	if !ok {
