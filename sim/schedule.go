@@ -726,11 +726,14 @@ func deleteScheduledEntry[T any](entries []T, i int) []T {
 }
 
 // spawnScheduledFlights creates the scheduled flights that have come due, one
-// per flow per tick, for each kind whose launches are automatic.
+// per flow per tick, for each kind whose launches are automatic. Arrivals and
+// overflights that have been created launch once they are separated, whatever
+// the mode.
 func (s *Sim) spawnScheduledFlights() {
 	s.spawnScheduledDepartures()
 	s.spawnScheduledArrivals()
 	s.spawnScheduledOverflights()
+	s.launchReadyInbounds()
 }
 
 // departureGateDelay is how long a departure waits at the gate before it is
@@ -836,7 +839,6 @@ func (s *Sim) spawnScheduledArrivals() {
 	}
 	lc := &s.State.LaunchConfig
 	now := s.State.SimTime
-	spawned := make(map[string]bool) // flow group launched this tick
 	blocked := make(map[string]bool) // flows whose published arrivals wait for spacing this tick
 
 	for i := 0; i < len(s.Schedule.Arrivals); {
@@ -860,10 +862,12 @@ func (s *Sim) spawnScheduledArrivals() {
 			continue
 		}
 
-		// Scenario arrivals were spaced by their flow's rate when they were
-		// generated. Published ones come when the data says, so they wait in
-		// order to satisfy MIT requirements.
-		if spawned[e.Group] {
+		// A flow creates nothing while the last aircraft it created waits
+		// at its spawn point for separation. Scenario arrivals were spaced
+		// by their flow's rate when they were generated. Published ones come
+		// when the data says, so they wait in order to satisfy MIT
+		// requirements.
+		if _, ok := s.ReadyInbounds[e.Group]; ok {
 			i++
 			continue
 		}
@@ -879,8 +883,7 @@ func (s *Sim) spawnScheduledArrivals() {
 		} else if err != nil {
 			s.lg.Errorf("%s: unable to create arrival: %v", e.Callsign, err)
 		} else {
-			s.addAircraft(*ac)
-			spawned[e.Group] = true
+			s.readyInbound(e.Group, ac)
 		}
 		s.Schedule.Arrivals = deleteScheduledEntry(s.Schedule.Arrivals, i)
 	}
@@ -891,14 +894,15 @@ func (s *Sim) spawnScheduledOverflights() {
 		return
 	}
 	now := s.State.SimTime
-	spawned := make(map[string]bool)
 
 	for i := 0; i < len(s.Schedule.Overflights); {
 		e := s.Schedule.Overflights[i]
 		if e.SpawnTime.After(now) {
 			break
 		}
-		if spawned[e.Group] {
+		// As for arrivals, a flow creates nothing while the last aircraft
+		// it created waits at its spawn point.
+		if _, ok := s.ReadyInbounds[e.Group]; ok {
 			i++
 			continue
 		}
@@ -907,8 +911,7 @@ func (s *Sim) spawnScheduledOverflights() {
 		if err != nil {
 			s.lg.Errorf("%s: unable to create overflight: %v", e.Callsign, err)
 		} else {
-			s.addAircraft(*ac)
-			spawned[e.Group] = true
+			s.readyInbound(e.Group, ac)
 		}
 		s.Schedule.Overflights = deleteScheduledEntry(s.Schedule.Overflights, i)
 	}
@@ -1042,14 +1045,22 @@ func (s *Sim) routedPairsIndex() routedPairs {
 
 // applyScheduleConfigChanges reconciles the schedule with a new launch
 // config: regenerating what a rate change invalidates, rewriting published
-// spawn times under a new rate scale, and rebasing flows whose launches
-// switch from manual back to automatic. Called with the new config already
-// stored in s.State.LaunchConfig; published is what PublishedFlightsFor
-// read for it.
+// spawn times under a new rate scale, rebasing flows whose launches switch
+// from manual back to automatic, and discarding the arrivals and overflights
+// waiting at their spawn points that it no longer launches. Called with the
+// new config already stored in s.State.LaunchConfig; published is what
+// PublishedFlightsFor read for it.
 func (s *Sim) applyScheduleConfigChanges(old *LaunchConfig, published []traffic.Flight) {
 	lc := &s.State.LaunchConfig
 
-	if trafficSourceChanged(lc, old) {
+	// A waiting arrival or overflight hasn't entered the sim yet, so it goes
+	// along with the old schedule when the traffic source changes.
+	sourceChanged := trafficSourceChanged(lc, old)
+	s.discardReadyInbounds(DeleteRateChange, func(group string, ac *Aircraft) bool {
+		return sourceChanged || !lc.launchesInbound(group, ac)
+	})
+
+	if sourceChanged {
 		// The source's flights changed wholesale, so rebuild from scratch;
 		// recycle shifts on published entries belong to the old dataset, and
 		// pending manual-launch flights may be its too.
@@ -1289,6 +1300,25 @@ func shiftScheduledLater[T any](entries []T, flight func(*T) *ScheduledFlight,
 		shifted = append(shifted, e)
 	}
 	return shifted
+}
+
+// delayScheduled pushes the scenario entries inFlow picks out later by d,
+// dropping those pushed past the generation horizon, as shiftScheduledLater
+// does. Published entries keep their times. Only some entries move, so the
+// result must be re-sorted.
+func delayScheduled[T any](entries []T, flight func(*T) *ScheduledFlight, inFlow func(*T) bool,
+	d time.Duration, horizon Time) []T {
+	delayed := make([]T, 0, len(entries))
+	for _, e := range entries {
+		if f := flight(&e); inFlow(&e) && f.Source == TrafficSourceScenario {
+			f.SpawnTime = f.SpawnTime.Add(d)
+			if f.SpawnTime.After(horizon) {
+				continue
+			}
+		}
+		delayed = append(delayed, e)
+	}
+	return delayed
 }
 
 // historicalFlights returns the recorded flights at lc's airports over the

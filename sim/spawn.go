@@ -202,6 +202,9 @@ func (s *Sim) currentCallsigns() []av.ADSBCallsign {
 	for _, ac := range s.PendingVFR {
 		callsigns = append(callsigns, ac.ADSBCallsign)
 	}
+	for _, r := range s.ReadyInbounds {
+		callsigns = append(callsigns, r.Aircraft.ADSBCallsign)
+	}
 	return callsigns
 }
 

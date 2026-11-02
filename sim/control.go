@@ -166,7 +166,7 @@ const (
 	DeleteCulled // flew beyond the distance the sim follows aircraft to
 	DeleteByController
 	DeletePrespawn   // culled while the sim prespawned its traffic
-	DeleteRateChange // a queued departure dropped when its runway's rate was lowered
+	DeleteRateChange // a flight waiting to launch, dropped by a launch config change
 )
 
 func (r DeleteReason) String() string {
@@ -252,6 +252,8 @@ func (s *Sim) DeleteAllAircraft(tcw TCW) error {
 
 	// Also clean up aircraft in HFR departure queues
 	s.clearDepartureQueues()
+	// and the arrivals and overflights waiting at their spawn points.
+	s.discardReadyInbounds(DeleteByController, func(string, *Aircraft) bool { return true })
 
 	s.publish()
 	return nil

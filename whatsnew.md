@@ -1,0 +1,2 @@
+- Flight model
+  - CWT separation is enforced when spawning arrivals and overflights

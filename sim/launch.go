@@ -390,7 +390,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 			if err != nil {
 				return err
 			}
-			s.addAircraft(*ac)
+			s.launchInbound(arr.Group, ac)
 			return nil
 		}
 	}
@@ -404,7 +404,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 			if err != nil {
 				return err
 			}
-			s.addAircraft(*ac)
+			s.launchInbound(of.Group, ac)
 			return nil
 		}
 	}
@@ -418,7 +418,7 @@ func (s *Sim) LaunchAircraft(tcw TCW, flight LaunchFlight) error {
 		if err != nil {
 			return err
 		}
-		s.addAircraft(*ac)
+		s.launchInbound(e.Group, ac)
 		return nil
 	}
 

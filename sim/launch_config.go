@@ -425,6 +425,23 @@ func (lc *LaunchConfig) landsArrivals(flow string, airport av.ICAOAirportCode) b
 	return ok && lc.InboundFlowEnabled[flow][string(airport)]
 }
 
+// launchesInbound reports whether lc has the inbound flow launch ac
+// automatically: its kind launches automatically and the flow still flies
+// it at a nonzero rate.
+func (lc *LaunchConfig) launchesInbound(flow string, ac *Aircraft) bool {
+	if ac.IsOverflight() {
+		return lc.OverflightMode == LaunchAutomatic &&
+			scaleRate(lc.InboundFlowRates[flow]["overflights"], lc.InboundFlowRateScale) > 0
+	}
+	if lc.ArrivalMode != LaunchAutomatic {
+		return false
+	}
+	if lc.TrafficSource == TrafficSourceScenario {
+		return scaleRate(lc.InboundFlowRates[flow][string(ac.ArrivalAirport)], lc.InboundFlowRateScale) > 0
+	}
+	return lc.PublishedArrivalRateScale > 0 && lc.landsArrivals(flow, ac.ArrivalAirport)
+}
+
 // MaxPublishedRateScale is how much faster than the data's own pace published
 // traffic can be flown.
 const MaxPublishedRateScale = 4

@@ -11,6 +11,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -18,8 +19,8 @@ import (
 // both scenario and published entries. Vice resolves the STAR, initial
 // controller, altitude, and spawn geometry from the scenario; the flow and
 // arrival index were resolved when the entry was generated. All resource
-// allocation--squawk, flight plan, list index--happens here, and
-// the flight counts as launched from its flow from here on.
+// allocation--squawk, flight plan, list index--happens here; the flight
+// counts as launched from its flow once launchInbound enters it in the sim.
 func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 	inboundFlow, ok := s.State.InboundFlows[e.Group]
 	if !ok {
@@ -54,7 +55,6 @@ func (s *Sim) createScheduledArrival(e ScheduledArrival) (*Aircraft, error) {
 	if err := s.finalizeArrival(ac, arr, filedRoute, e.Group); err != nil {
 		return nil, err
 	}
-	s.recordArrivalLaunch(e.Group, ac)
 	return ac, nil
 }
 
@@ -174,12 +174,98 @@ func (s *Sim) arrivalFlowSpaced(group string) bool {
 	return elapsed >= trail
 }
 
-// recordArrivalLaunch makes ac its inbound flow's last launch.
-func (s *Sim) recordArrivalLaunch(group string, ac *Aircraft) {
-	if s.ArrivalLaunches == nil {
-		s.ArrivalLaunches = make(map[string]ArrivalLaunch)
+// ReadyInbound is an arrival or overflight that has been created, resources
+// and all, and waits at its spawn point to enter the sim until it is
+// separated from its flow's last launch. The flow creates nothing else from
+// its schedule in the meantime.
+type ReadyInbound struct {
+	Aircraft *Aircraft
+	Since    Time // when it was created
+}
+
+// readyInbound has ac wait at its spawn point as its inbound flow's next
+// launch.
+func (s *Sim) readyInbound(group string, ac *Aircraft) {
+	if s.ReadyInbounds == nil {
+		s.ReadyInbounds = make(map[string]ReadyInbound)
 	}
-	s.ArrivalLaunches[group] = ArrivalLaunch{Time: s.State.SimTime, TAS: ac.TAS(s.temperatureAt(ac))}
+	s.ReadyInbounds[group] = ReadyInbound{Aircraft: ac, Since: s.State.SimTime}
+}
+
+// discardReadyInbounds deletes the waiting aircraft that discard picks out,
+// freeing the flight plan, squawk, and strip each one holds.
+func (s *Sim) discardReadyInbounds(reason DeleteReason, discard func(group string, ac *Aircraft) bool) {
+	// In order, since deleting returns list indices and strip CIDs to the
+	// lists they are handed out from.
+	for _, group := range util.SortedMapKeys(s.ReadyInbounds) {
+		if ac := s.ReadyInbounds[group].Aircraft; discard(group, ac) {
+			delete(s.ReadyInbounds, group)
+			s.deleteAircraft(ac, reason)
+		}
+	}
+}
+
+// launchReadyInbounds launches each inbound flow's ready aircraft once it is
+// separated from the flow's last launch. However long one waits pushes the
+// flow's later scenario arrivals and overflights back by as much, so that
+// the spacing their rates give them counts from when it launched. Published
+// arrivals need no push: their miles in trail already count from the last
+// arrival's launch.
+func (s *Sim) launchReadyInbounds() {
+	for _, group := range util.SortedMapKeys(s.ReadyInbounds) {
+		r := s.ReadyInbounds[group]
+		if !s.inboundSeparated(group, r.Aircraft) {
+			continue
+		}
+		delete(s.ReadyInbounds, group)
+		s.launchInbound(group, r.Aircraft)
+		if d := s.State.SimTime.Sub(r.Since); d > 0 {
+			s.delayInboundFlow(group, d)
+		}
+	}
+}
+
+// inboundSeparated reports whether ac, waiting at its spawn point, is far
+// enough behind its flow's last launch: the wake turbulence separation their
+// categories need, but no less than minimum radar separation.
+func (s *Sim) inboundSeparated(group string, ac *Aircraft) bool {
+	lead, ok := s.Aircraft[s.InboundLaunches[group]]
+	if !ok {
+		return true // the flow has launched nothing, or it has left the sim
+	}
+	// 7110.65 5-5-4: 5 miles en route and 3 in a terminal facility.
+	radar := util.Select(db.DB.IsARTCC(s.State.Facility), float32(5), float32(3))
+	sep := max(av.CWTDirectlyBehindSeparation(lead.CWT(), ac.CWT()), radar)
+	return math.NMDistance2LL(lead.Position(), ac.Position()) >= sep
+}
+
+// launchInbound enters ac in the sim as its inbound flow's last launch.
+func (s *Sim) launchInbound(group string, ac *Aircraft) {
+	s.addAircraft(*ac)
+	if s.InboundLaunches == nil {
+		s.InboundLaunches = make(map[string]av.ADSBCallsign)
+	}
+	s.InboundLaunches[group] = ac.ADSBCallsign
+	if ac.IsArrival() {
+		if s.ArrivalLaunches == nil {
+			s.ArrivalLaunches = make(map[string]ArrivalLaunch)
+		}
+		s.ArrivalLaunches[group] = ArrivalLaunch{Time: s.State.SimTime, TAS: ac.TAS(s.temperatureAt(ac))}
+	}
+}
+
+// delayInboundFlow pushes the inbound flow's queued scenario arrivals and
+// overflights later by d.
+func (s *Sim) delayInboundFlow(group string, d time.Duration) {
+	horizon := s.Schedule.ScenarioGeneratedUntil
+	s.Schedule.Arrivals = delayScheduled(s.Schedule.Arrivals,
+		func(e *ScheduledArrival) *ScheduledFlight { return &e.ScheduledFlight },
+		func(e *ScheduledArrival) bool { return e.Group == group }, d, horizon)
+	s.Schedule.sortArrivals()
+	s.Schedule.Overflights = delayScheduled(s.Schedule.Overflights,
+		func(e *ScheduledOverflight) *ScheduledFlight { return &e.ScheduledFlight },
+		func(e *ScheduledOverflight) bool { return e.Group == group }, d, horizon)
+	s.Schedule.sortOverflights()
 }
 
 // createScheduledOverflight creates the overflight a schedule entry describes;
