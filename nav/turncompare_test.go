@@ -355,6 +355,27 @@ func TestOutboundTurnSweep(t *testing.T) {
 	}
 }
 
+// TestNegligibleTurnSequencedAtFix verifies that a fix with a course change
+// below minPredictedTurn is sequenced as the aircraft reaches it, by the
+// almost-at-the-fix check, rather than whenever rounding makes the predicted
+// path cross the outbound course.
+func TestNegligibleTurnSequencedAtFix(t *testing.T) {
+	for _, turn := range []float32{0, 0.4, -1, 1.5} {
+		for _, windKts := range []float32{0, 30} {
+			c := outboundCase{acType: "A321", ias: 280, alt: 15000, legNM: 16, turnDeg: turn, windRel: 70, windKts: windKts}
+			t.Run(fmt.Sprintf("turn%+.1f/wind%.0f", turn, windKts), func(t *testing.T) {
+				m := runOutboundCase(t, c)
+				if m.distAtFire >= 2*m.gsAtFire/3600 {
+					t.Errorf("sequenced %.3fnm from the fix at %.0fkt", m.distAtFire, m.gsAtFire)
+				}
+				if m.endOffset > 0.12 {
+					t.Errorf("ended %.3fnm off course", m.endOffset)
+				}
+			})
+		}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // localizer intercept sweep
 

@@ -985,6 +985,13 @@ type turnToInterceptResult int
 // sec(50)-1 ~ 0.56 radii.
 const maxFlyByAngle = 100
 
+// minPredictedTurn is the smallest turn, in degrees, whose start the path
+// prediction sets. A smaller one leaves the aircraft within a few feet of
+// the outbound course for seconds before the fix. That is about as finely
+// as float32 positions are resolved, so whether the predicted path crosses
+// the course comes down to rounding, which differs between CPUs.
+const minPredictedTurn = 2
+
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial: when the turn's path, predicted in closed form, would cross it.
@@ -1022,11 +1029,6 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 		return true
 	}
 
-	// Get two points that give the line of the outbound course.
-	p0 := math.LL2NM(p, nav.FlightState.NmPerLongitude)
-	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
-	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdgTrue)))
-
 	// For a ground course, predict a turn to the heading that holds it as
 	// a track; the aircraft's post-turn steering to the next fix is
 	// wind-corrected the same way. A plain heading is flown as is and
@@ -1035,6 +1037,16 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	if track {
 		predHdg = nav.headingForTrack(hdg, wxs)
 	}
+	if TurnAngle(nav.FlightState.Heading, predHdg, turn) < minPredictedTurn {
+		// The ETA check above passes the fix.
+		return false
+	}
+
+	// Get two points that give the line of the outbound course.
+	p0 := math.LL2NM(p, nav.FlightState.NmPerLongitude)
+	hdgTrue := math.MagneticToTrue(hdg, nav.FlightState.MagneticVariation)
+	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdgTrue)))
+
 	tp := nav.predictTurnPath(predHdg, nav.resolveTurnDirection(hdg, turn), wxs)
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position,
