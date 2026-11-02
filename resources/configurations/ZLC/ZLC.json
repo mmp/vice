@@ -194,11 +194,15 @@
         },
         "default_consolidation": {
           "44": []
+        },
+        "departure_assignments": {
+          "KELY": "44"
         }
       }
     },
     "center": "N038.23.59.181,W113.02.36.719",
     "range": 160,
+    "max_distance": 800,
     "radar_sites": {
       "B": {
         "char": "B",
@@ -300,6 +304,13 @@
           "from": "ZLC"
         }
       ]
+    },
+    "controllers": {
+      "44": {
+        "range": 180,
+        "altitude_limits": [0, 600],
+        "altimeters": ["KSLC"]
+      }
     }
   },
   "handoff_ids": [
