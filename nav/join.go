@@ -331,7 +331,10 @@ func procedureLeg(onProcedure func(av.Waypoint) bool) func(a, b av.Waypoint) boo
 
 // forwardRouteIntercepts returns where a ray from the aircraft's position
 // along hdg crosses routes, nearest first, leaving out crossings that would
-// join a segment against its direction of flight.
+// join a segment against its direction of flight. Routes that share a leg,
+// as approaches to a runway share its final, are crossed at the same point;
+// which of those crossings is nearer comes down to rounding, so they come in
+// the order of their routes.
 func (nav *Nav) forwardRouteIntercepts(hdg math.TrueHeading, routes []av.WaypointArray) []av.RouteRayIntersection {
 	pos, nmPerLong := nav.FlightState.Position, nav.FlightState.NmPerLongitude
 	hits := util.FilterSlice(av.IntersectRayWithRoutes(pos, hdg, routes),
@@ -341,7 +344,11 @@ func (nav *Nav) forwardRouteIntercepts(hdg math.TrueHeading, routes []av.Waypoin
 			return math.HeadingDifference(hdg, segHdg) <= 90
 		})
 	slices.SortStableFunc(hits, func(a, b av.RouteRayIntersection) int {
-		return cmp.Compare(math.NMDistance2LL(pos, a.Location), math.NMDistance2LL(pos, b.Location))
+		da, db := math.NMDistance2LL(pos, a.Location), math.NMDistance2LL(pos, b.Location)
+		if math.Abs(da-db) < 0.01 {
+			return cmp.Compare(a.RouteIndex, b.RouteIndex)
+		}
+		return cmp.Compare(da, db)
 	})
 	return hits
 }

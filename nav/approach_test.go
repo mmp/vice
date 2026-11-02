@@ -58,6 +58,47 @@ func TestSelectVisualApproachRouteUsesLaterViableIntercept(t *testing.T) {
 	}
 }
 
+// TestSelectVisualApproachRouteSharedFinal verifies that when the heading
+// crosses a final that two reference approaches share, the join is on the
+// first approach's route even if rounding puts the other's crossing a hair
+// nearer.
+func TestSelectVisualApproachRouteSharedFinal(t *testing.T) {
+	nmPerLong := float32(60)
+	n := Nav{
+		FlightState: FlightState{
+			Position:       math.NM2LL([2]float32{3, 12}, nmPerLong),
+			Heading:        225,
+			NmPerLongitude: nmPerLong,
+		},
+	}
+
+	pt := func(fix string, x, y float32) av.Waypoint {
+		return av.Waypoint{Fix: fix, Location: math.NM2LL([2]float32{x, y}, nmPerLong)}
+	}
+	first := &av.Approach{
+		Type:      av.ILSApproach,
+		Runway:    "18",
+		Threshold: math.NM2LL([2]float32{0, 0}, nmPerLong),
+		Waypoints: []av.WaypointArray{{pt("GOLFS", 0, 10), pt("HANGS", 0, 5), pt("RW18", 0, 0)}},
+	}
+	const nudge = 0.0002 // toward the aircraft
+	second := &av.Approach{
+		Type:      av.RNAVApproach,
+		Runway:    "18",
+		Threshold: math.NM2LL([2]float32{0, 0}, nmPerLong),
+		Waypoints: []av.WaypointArray{{pt("GOLFS", nudge, 10), pt("SIWHU", nudge, 6), pt("SCORY", nudge, 3),
+			pt("RW18", 0, 0)}},
+	}
+
+	join := n.selectVisualApproachRoute(nil, []*av.Approach{first, second})
+	if join == nil {
+		t.Fatal("expected visual join candidate")
+	}
+	if fix := join.route[join.segment+1].Fix; fix != "HANGS" {
+		t.Errorf("joined the leg to %s, want the first approach's leg to HANGS", fix)
+	}
+}
+
 // TestSelectVisualApproachRouteUsesPendingDirectFix covers "direct {fix},
 // cleared visual approach": the pilot has read back the direct but hasn't
 // turned for it yet, so the present heading says nothing about where the
