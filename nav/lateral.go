@@ -69,26 +69,6 @@ func (nav *Nav) updateHeading(callsign string, wxs wx.Sample, simTime Time) {
 	nav.FlightState.Heading = math.OffsetHeading(nav.FlightState.Heading, turn)
 }
 
-func (nav *Nav) updatePositionAndGS(wxs wx.Sample) {
-	// Calculate offset vector based on heading and current TAS.
-	hdg := math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation)
-	TAS := nav.TAS(wxs.Temperature()) / 3600
-	flightVector := math.Scale2f(math.SinCos(math.Radians(hdg)), TAS)
-
-	// Further offset based on the wind
-	var windVector [2]float32
-	if nav.IsAirborne() {
-		windVector = wxs.WindVec()
-	}
-
-	// Update the aircraft's state
-	p := math.Add2f(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
-		math.Add2f(flightVector, windVector))
-
-	nav.FlightState.Position = math.NM2LL(p, nav.FlightState.NmPerLongitude)
-	nav.FlightState.GS = math.Length2f(math.Add2f(flightVector, windVector)) * 3600
-}
-
 // DepartOnCourse sends a departure direct to its exit fix and climbs it to
 // the given cruise altitude—unless the route has /c or /d altitude actions
 // at its waypoints, in which case those govern its altitude instead.
@@ -193,12 +173,13 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 		nav.Heading = Heading{}
 	}
 	if nav.Airwork == nil {
+		nav.cancelSpeedOnFinal()
 		targetAltitude, altitudeRate, geometricDescent := nav.TargetAltitude()
 		deltaKts, slowingTo250 := nav.updateAirspeed(callsign, targetAltitude, geometricDescent, rules, wxs, arrivalMETAR, simTime, underBravo)
 		nav.updateAltitude(callsign, targetAltitude, altitudeRate, geometricDescent, deltaKts, slowingTo250, wxs, simTime)
 		nav.updateHeading(callsign, wxs, simTime)
 	}
-	nav.updatePositionAndGS(wxs)
+	nav.FlightState.advance(nav.TAS(wxs.Temperature()), nav.groundWind(wxs))
 
 	result := UpdateResult{ActionEvents: nav.PendingWaypointActionEvents}
 	if nav.Airwork == nil && nav.Heading.Assigned == nil &&
@@ -818,7 +799,7 @@ func (nav *Nav) resolveTurnDirection(hdg math.MagneticHeading, turn av.TurnDirec
 // predictTurnPath models the turn from the aircraft's current state to the
 // given magnetic heading. The turn is flown in still air at the current TAS
 // with the wind's displacement added on afterward, which matches how
-// updatePositionAndGS integrates position.
+// FlightState.advance integrates position.
 func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnPath {
 	fs := &nav.FlightState
 	tasKts := nav.TAS(wxs.Temperature())
@@ -865,9 +846,7 @@ func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection,
 		arcDeg:  arcDeg,
 		tasNMps: tasKts / 3600,
 	}
-	if nav.IsAirborne() {
-		tp.wind = wxs.WindVec()
-	}
+	tp.wind = nav.groundWind(wxs)
 
 	if hIn+hOut <= arcDeg {
 		// The full bank is reached: the arc turns at the max-bank rate, and
@@ -903,7 +882,7 @@ func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection,
 		tp.dur = tp.t2
 	}
 
-	// updateHeading turns first and updatePositionAndGS then moves a full
+	// updateHeading turns first and FlightState.advance then moves a full
 	// second along the new heading, so over a tick the aircraft flies the
 	// heading it will have at the tick's end—a half-tick ahead of the
 	// continuous arc. Start the arc half a second early to match.

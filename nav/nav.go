@@ -7,7 +7,6 @@ package nav
 import (
 	"errors"
 	"fmt"
-	"log/slog"
 	"slices"
 	"strings"
 	"time"
@@ -137,42 +136,6 @@ func (nav *Nav) TakeSnapshot() Instructions {
 func (nav *Nav) RestoreSnapshot(snap Instructions) {
 	defer nav.record("RestoreSnapshot", snap)()
 	nav.Instructions = snap
-}
-
-type FlightState struct {
-	InitialDepartureClimb     bool
-	DepartureAirportLocation  math.Point2LL
-	DepartureAirportElevation float32
-	ArrivalAirport            av.Waypoint
-	ArrivalAirportLocation    math.Point2LL
-	ArrivalAirportElevation   float32
-
-	MagneticVariation float32
-	NmPerLongitude    float32
-
-	Position     math.Point2LL
-	Heading      math.MagneticHeading
-	Altitude     float32
-	PrevAltitude float32
-	IAS, GS      float32 // speeds...
-	BankAngle    float32 // degrees
-	AltitudeRate float32 // + -> climb, - -> descent
-}
-
-func (fs *FlightState) Summary() string {
-	return fmt.Sprintf("heading %03d altitude %.0f ias %.1f gs %.1f",
-		int(fs.Heading), fs.Altitude, fs.IAS, fs.GS)
-}
-
-func (fs FlightState) LogValue() slog.Value {
-	return slog.GroupValue(
-		slog.Bool("initial_departure_climb", fs.InitialDepartureClimb),
-		slog.Any("position", fs.Position),
-		slog.Float64("heading", float64(fs.Heading)),
-		slog.Float64("altitude", float64(fs.Altitude)),
-		slog.Float64("ias", float64(fs.IAS)),
-		slog.Float64("gs", float64(fs.GS)),
-	)
 }
 
 type RateQualifier int
@@ -496,8 +459,9 @@ func makeNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAirportCode
 	return nav
 }
 
+// TAS returns the aircraft's true airspeed in knots.
 func (nav *Nav) TAS(temp av.Temperature) float32 {
-	return av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude, temp)
+	return nav.FlightState.TAS(temp)
 }
 
 func (nav *Nav) Mach() float32 {
@@ -531,23 +495,21 @@ func (nav *Nav) minIAS() float32 {
 	return min(nav.Perf.Speed.Min, nav.Perf.Speed.Landing)
 }
 
-func (nav *Nav) v2() float32 {
-	if nav.Perf.Speed.V2 == 0 {
-		// Unfortunately we don't always have V2 in the performance database, so approximate...
-		return 0.95 * nav.Perf.Speed.Landing
-	}
-	return nav.Perf.Speed.V2
-}
-
 func (nav *Nav) IsAirborne() bool {
 	// Slow flight and stalls during airwork go well below V2.
 	if nav.Airwork != nil {
 		return true
 	}
+	return nav.FlightState.airborne(nav.Perf)
+}
 
-	// FIXME: this only considers speed, which is probably ok but is somewhat unsatisfying.
-	// More explicitly model "on the ground" vs "airborne" states?
-	return nav.FlightState.IAS >= nav.v2()
+// groundWind returns the wind the aircraft drifts with: none until it is
+// airborne, since it neither crabs nor drifts on the ground.
+func (nav *Nav) groundWind(wxs wx.Sample) [2]float32 {
+	if nav.IsAirborne() {
+		return wxs.WindVec()
+	}
+	return [2]float32{}
 }
 
 // AssignedHeading returns the aircraft's current heading assignment, if
@@ -884,13 +846,11 @@ func (nav *Nav) signedCourseLineDistance(line [2]math.Point2LL) float32 {
 func (nav *Nav) closingOnCourseLine(line [2]math.Point2LL, wxs wx.Sample) bool {
 	fs := &nav.FlightState
 
-	// The ground velocity, as updatePositionAndGS integrates it: the heading
+	// The ground velocity, as the flight model integrates it: the heading
 	// flown at TAS, displaced by the wind.
 	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
 		nav.TAS(wxs.Temperature())/3600)
-	if nav.IsAirborne() {
-		v = math.Add2f(v, wxs.WindVec())
-	}
+	v = math.Add2f(v, nav.groundWind(wxs))
 
 	// The track has to be angled back toward the side of the course the
 	// aircraft is on, and by enough to actually get there.
@@ -1033,7 +993,7 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime.Time())
 	lines = append(lines, wxs.String())
 	if nav.FlightState.Altitude > nav.FlightState.PrevAltitude {
-		lines = append(lines, fmt.Sprintf("Weather-based climb rate factor %.2fx", nav.atmosClimbFactor(wxs)))
+		lines = append(lines, fmt.Sprintf("Weather-based climb rate factor %.2fx", atmosClimbFactor(nav.Perf, wxs)))
 	}
 
 	// Speed; don't be as exhaustive as we are for altitude

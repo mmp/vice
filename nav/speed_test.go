@@ -348,7 +348,7 @@ func TestVisualApproachSpeedUntilFiveMileFinal(t *testing.T) {
 		t.Fatalf("at 4 NM final: DistanceToEndOfApproach = %.2f, want ~4", d)
 	}
 
-	f.nav.TargetSpeed(targetAltitude, f.rules, f.weather(f.nav.FlightState.Altitude), nil, false)
+	f.Step(1)
 	if f.nav.Speed.Assigned != nil {
 		t.Errorf("speed restriction should be cleared inside 5 NM final, still set to %v", f.nav.Speed.Assigned)
 	}

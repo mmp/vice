@@ -390,13 +390,11 @@ func (nav *Nav) turnToInterceptIfHeadingMisses(m *LateralManeuver, targetHdg mat
 	f := math.LL2NM(m.Until.Fix, fs.NmPerLongitude)
 	cdir := math.HeadingVector(math.MagneticToTrue(m.Until.InterceptCourse, fs.MagneticVariation))
 
-	// The aircraft's ground velocity, as updatePositionAndGS integrates it:
+	// The aircraft's ground velocity, as the flight model integrates it:
 	// the heading flown at TAS, displaced by the wind once airborne.
 	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
 		nav.TAS(wxs.Temperature())/3600)
-	if nav.IsAirborne() {
-		v = math.Add2f(v, wxs.WindVec())
-	}
+	v = math.Add2f(v, nav.groundWind(wxs))
 
 	// The course leads to the fix, so the track must cross it short of the
 	// fix; an outbound course extends beyond the fix instead. 500nm covers

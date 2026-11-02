@@ -1615,7 +1615,7 @@ func TestAtmosClimbFactorNoNaN(t *testing.T) {
 	for _, alt := range []float32{35000, 40000, 45000} {
 		f.nav.FlightState.Altitude = alt
 		wxs := wx.MakeStandardSampleForAltitude(alt)
-		factor := f.nav.atmosClimbFactor(wxs)
+		factor := atmosClimbFactor(f.nav.Perf, wxs)
 
 		if factor != factor { // NaN check
 			t.Errorf("atmosClimbFactor(alt=%.0f) returned NaN", alt)

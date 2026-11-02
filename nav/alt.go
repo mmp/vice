@@ -14,7 +14,6 @@ import (
 )
 
 const MaximumRate = 100000
-const rateMaxDeltaPercent = 0.075
 
 func (nav *Nav) activatePendingAltitude(simTime Time) {
 	if nav.Altitude.ActivateAt.IsZero() || simTime.Before(nav.Altitude.ActivateAt) {
@@ -38,266 +37,109 @@ func (nav *Nav) activeAssignedAltitude() *float32 {
 	return nav.Altitude.Assigned
 }
 
-func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float32, geometricDescent bool, deltaKts float32, slowingTo250 bool, wxs wx.Sample, simTime Time) {
-	nav.FlightState.PrevAltitude = nav.FlightState.Altitude
+// updateAltitude flies the aircraft toward targetAltitude for one second,
+// no faster than targetRate, and applies what the altitudes it passes
+// through mean for its instructions. deltaKts and slowingTo250 are what the
+// speed update did this same second.
+func (nav *Nav) updateAltitude(callsign string, targetAltitude, targetRate float32, geometricDescent bool,
+	deltaKts float32, slowingTo250 bool, wxs wx.Sample, simTime Time) {
+	fs := &nav.FlightState
+	fs.PrevAltitude = fs.Altitude
 
 	NavLog(callsign, simTime, NavLogAltitude, "target=%.0f current=%.0f rate=%.0f targetRate=%.0f rate_qual=%d slowingTo250=%v",
-		targetAltitude, nav.FlightState.Altitude, nav.FlightState.AltitudeRate, targetRate, nav.Altitude.Rate, slowingTo250)
+		targetAltitude, fs.Altitude, fs.AltitudeRate, targetRate, nav.Altitude.Rate, slowingTo250)
 
-	if targetAltitude == nav.FlightState.Altitude {
-		if nav.IsAirborne() && nav.FlightState.InitialDepartureClimb {
-			nav.FlightState.InitialDepartureClimb = false
-		}
-		nav.FlightState.AltitudeRate = 0
-		if nav.Altitude.ActivateAt.IsZero() {
-			nav.Altitude.Rate = RateNormal
-			nav.Altitude.RateThrough = nil
-		}
+	if targetAltitude == fs.Altitude {
+		nav.holdAltitude()
 		return
 	}
 
-	// Wrap altitude setting in a lambda so we can detect when we pass
-	// through an altitude for "at alt, reduce speed" sort of assignments.
-	setAltitude := func(next float32) {
-		if nav.Speed.AfterAltitude != nil && (nav.Speed.Assigned == nil ||
-			nav.Speed.Assigned.IAS(nav.FlightState.Altitude).Satisfied(nav.FlightState.IAS)) {
-			cur := nav.FlightState.Altitude
-			at := *nav.Speed.AfterAltitudeAltitude
-			if (cur > at && next <= at) || (cur < at && next >= at) {
-				// Reached or passed the altitude, now go for speed
-				nav.Speed.Assigned = nav.Speed.AfterAltitude
-				nav.Speed.AfterAltitude = nil
-				nav.Speed.AfterAltitudeAltitude = nil
-			}
-		}
+	NavLog(callsign, simTime, NavLogAltitude, "atmosFactor=%.3f pressure=%.1f temp=%.1f",
+		atmosClimbFactor(nav.Perf, wxs), wxs.Pressure(), wxs.Temperature().Celsius())
 
-		// A Mach number is only flown at the altitudes it may be assigned
-		// at; below them, the aircraft returns to its usual speeds.
-		if next < av.MachTransitionAltitude {
-			if sr := nav.Speed.Assigned; sr != nil && sr.IsMach {
+	next := fs.stepAltitude(nav.Perf, targetAltitude, targetRate, geometricDescent, deltaKts, nav.Altitude.Rate,
+		nav.descendsOnGlidepath(), wxs)
+	fs.Altitude = nav.crossAltitude(next, slowingTo250)
+}
+
+// holdAltitude is what being level at the target altitude means: the climb
+// off the runway is over, and a rate the pilot was told to climb or descend
+// at has been flown, unless a new altitude is about to take effect and is to
+// be flown at it.
+func (nav *Nav) holdAltitude() {
+	fs := &nav.FlightState
+	if nav.IsAirborne() && fs.InitialDepartureClimb {
+		fs.InitialDepartureClimb = false
+	}
+	fs.AltitudeRate = 0
+	if nav.Altitude.ActivateAt.IsZero() {
+		nav.Altitude.Rate = RateNormal
+		nav.Altitude.RateThrough = nil
+	}
+}
+
+// crossAltitude applies what passing through altitudes on the way from the
+// present altitude to next means for the aircraft's instructions, and
+// returns the altitude it reaches this second: next, or an altitude it has
+// to stop at first.
+func (nav *Nav) crossAltitude(next float32, slowingTo250 bool) float32 {
+	cur := nav.FlightState.Altitude
+	crosses := func(at float32) bool {
+		return (cur > at && next <= at) || (cur < at && next >= at)
+	}
+
+	// "At alt, reduce speed": the speed is taken up once the altitude is
+	// reached or passed.
+	if nav.Speed.AfterAltitude != nil && (nav.Speed.Assigned == nil ||
+		nav.Speed.Assigned.IAS(cur).Satisfied(nav.FlightState.IAS)) &&
+		crosses(*nav.Speed.AfterAltitudeAltitude) {
+		nav.Speed.Assigned = nav.Speed.AfterAltitude
+		nav.Speed.AfterAltitude = nil
+		nav.Speed.AfterAltitudeAltitude = nil
+	}
+
+	// A Mach number is only flown at the altitudes it may be assigned
+	// at; below them, the aircraft returns to its usual speeds.
+	if next < av.MachTransitionAltitude {
+		if sr := nav.Speed.Assigned; sr != nil && sr.IsMach {
+			nav.Speed.Assigned = nil
+		}
+		if sr := nav.Speed.Restriction; sr != nil && sr.IsMach {
+			nav.Speed.Restriction = nil
+		}
+	}
+
+	if cur >= 10000 && next < 10000 {
+		// Descending through 10,000'
+		if sr := nav.Speed.Assigned; sr != nil {
+			// Cancel if the minimum required speed exceeds 250kts.
+			// For "at or below 280" the floor is 0, so the pilot
+			// can comply at 250 — don't cancel.
+			// For "at or above 260", they can't comply at 250.
+			if sr.Speed().Value > 250 {
 				nav.Speed.Assigned = nil
-			}
-			if sr := nav.Speed.Restriction; sr != nil && sr.IsMach {
-				nav.Speed.Restriction = nil
+				next = 10000
 			}
 		}
-
-		if nav.FlightState.Altitude >= 10000 && next < 10000 {
-			// Descending through 10,000'
-			if sr := nav.Speed.Assigned; sr != nil {
-				// Cancel if the minimum required speed exceeds 250kts.
-				// For "at or below 280" the floor is 0, so the pilot
-				// can comply at 250 — don't cancel.
-				// For "at or above 260", they can't comply at 250.
-				if sr.Speed().Value > 250 {
-					nav.Speed.Assigned = nil
-					next = 10000
-				}
-			}
-			if sr := nav.Speed.Restriction; sr != nil {
-				if sr.Speed().Value > 250 {
-					nav.Speed.Restriction = nil
-					next = 10000
-				}
-			}
-
-			if slowingTo250 {
-				// Keep it at 10k until we're done slowing
+		if sr := nav.Speed.Restriction; sr != nil {
+			if sr.Speed().Value > 250 {
+				nav.Speed.Restriction = nil
 				next = 10000
 			}
 		}
 
-		if nav.Altitude.RateThrough != nil {
-			cur := nav.FlightState.Altitude
-			at := *nav.Altitude.RateThrough
-			if (cur > at && next <= at) || (cur < at && next >= at) {
-				nav.Altitude.Rate = RateNormal
-				nav.Altitude.RateThrough = nil
-			}
+		if slowingTo250 {
+			// Keep it at 10k until we're done slowing
+			next = 10000
 		}
-
-		nav.FlightState.Altitude = next
 	}
 
-	if math.Abs(targetAltitude-nav.FlightState.Altitude) < 3 {
-		setAltitude(targetAltitude)
-		nav.FlightState.AltitudeRate = 0
-		return
+	if nav.Altitude.RateThrough != nil && crosses(*nav.Altitude.RateThrough) {
+		nav.Altitude.Rate = RateNormal
+		nav.Altitude.RateThrough = nil
 	}
 
-	// Baseline climb and descent capabilities in ft/minute
-	climb, descent := nav.Perf.Rate.Climb, nav.Perf.Rate.Descent
-
-	atmosFactor := nav.atmosClimbFactor(wxs)
-	climb *= atmosFactor
-	// Reduce rates from highest possible to be more realistic.
-	switch nav.Altitude.Rate {
-	case RateNormal:
-		if climb >= 2500 && nav.FlightState.Altitude > 5000 {
-			climb -= 500
-		}
-		climb = min(climb, targetRate)
-		descent = min(descent, targetRate)
-	case RateGood:
-		// Skip the 500fpm reduction, but still cap at targetRate
-		climb = min(climb, targetRate)
-		descent = min(descent, targetRate)
-	case RateExpedite:
-		// No reduction
-	}
-
-	NavLog(callsign, simTime, NavLogAltitude, "atmosFactor=%.3f climb=%.0f descent=%.0f pressure=%.1f temp=%.1f",
-		atmosFactor, climb, descent, wxs.Pressure(), wxs.Temperature().Celsius())
-
-	const rateFadeAltDifference = 500
-	if nav.FlightState.Altitude < targetAltitude {
-		if deltaKts > 0 {
-			// accelerating in the climb, so reduce climb rate; the scale
-			// factor is w.r.t. the maximum acceleration possible.
-			max := nav.Perf.Rate.Accelerate / 2
-			s := math.Clamp(max-deltaKts, .25, 1)
-			climb *= s
-		}
-
-		if nav.FlightState.InitialDepartureClimb {
-			nav.FlightState.AltitudeRate = climb
-		} else {
-			// Reduce climb rate as we approach target altitude
-			altitudeRemaining := targetAltitude - nav.FlightState.Altitude
-			if altitudeRemaining < rateFadeAltDifference {
-				climb *= max(altitudeRemaining/rateFadeAltDifference, 0.25)
-			}
-
-			// Gradually transition to the target climb rate
-			maxRateChange := nav.Perf.Rate.Climb * rateMaxDeltaPercent
-			switch nav.Altitude.Rate {
-			case RateGood:
-				maxRateChange *= 1.5
-			case RateExpedite:
-				maxRateChange *= 2
-			}
-			rateDiff := climb - nav.FlightState.AltitudeRate
-			if math.Abs(rateDiff) <= maxRateChange {
-				nav.FlightState.AltitudeRate = climb
-			} else if rateDiff > 0 {
-				nav.FlightState.AltitudeRate += maxRateChange
-			} else {
-				nav.FlightState.AltitudeRate -= maxRateChange
-			}
-		}
-
-		setAltitude(min(targetAltitude, nav.FlightState.Altitude+nav.FlightState.AltitudeRate/60))
-	} else if nav.FlightState.Altitude > targetAltitude {
-		if deltaKts < 0 && !geometricDescent {
-			// Reduce rate due to concurrent deceleration, but only for
-			// controller-assigned altitudes. Geometric descents need the
-			// full computed rate to meet the restriction at the fix.
-			max := nav.Perf.Rate.Decelerate / 2
-			s := math.Clamp(max - -deltaKts, .25, 1)
-			descent *= s
-		}
-
-		// Reduce descent rate as we approach target altitude
-		// BUT: Don't do this on geometric descents on arrivals or on final approach.
-		altitudeRemaining := nav.FlightState.Altitude - targetAltitude
-		if altitudeRemaining < rateFadeAltDifference && !geometricDescent {
-			descent *= max(altitudeRemaining/rateFadeAltDifference, 0.25)
-		}
-
-		// Gradually transition to the target descent rate
-		maxRateChange := nav.Perf.Rate.Descent * rateMaxDeltaPercent
-		switch nav.Altitude.Rate {
-		case RateGood:
-			maxRateChange *= 1.5
-		case RateExpedite:
-			maxRateChange *= 2
-		}
-
-		// Aircraft on an exact glidepath (past the FAF, on a cleared
-		// visual, or landing VFR) need immediate descent rate changes to
-		// meet the runway altitude restriction.
-		if nav.descendsOnGlidepath() {
-			maxRateChange = math.Abs(-descent - nav.FlightState.AltitudeRate)
-		}
-
-		rateDiff := -descent - nav.FlightState.AltitudeRate
-		if math.Abs(rateDiff) <= maxRateChange {
-			nav.FlightState.AltitudeRate = -descent
-		} else if rateDiff > 0 {
-			nav.FlightState.AltitudeRate += maxRateChange
-		} else {
-			nav.FlightState.AltitudeRate -= maxRateChange
-		}
-
-		setAltitude(max(targetAltitude, nav.FlightState.Altitude+nav.FlightState.AltitudeRate/60))
-	}
-}
-
-// atmosClimbFactor returns a factor in [0,1] to model the reduction in
-// rate of climb depending on atmospheric conditions.
-func (nav *Nav) atmosClimbFactor(wxs wx.Sample) float32 {
-	var tempCorrection, altCorrection float32
-	switch nav.Perf.Engine.AircraftType {
-	case "J":
-		tempCorrection = -0.02 // -2% per °C above ISA
-		altCorrection = -0.03  // -3% per 1000 ft
-	case "T":
-		tempCorrection = -0.015 // -1.5% per °C above ISA
-		altCorrection = -0.04   // -4% per 1000 ft
-	case "P":
-		tempCorrection = -0.03 // -3% per °C above ISA
-		altCorrection = -0.08  // -8% per 1000 ft
-	default:
-		// Default to turbofan if unknown
-		tempCorrection = -0.02
-		altCorrection = -0.03
-	}
-
-	// Temperature factor (only apply if above ISA)
-	pressureAltitude := mbToPressureAltitude(wxs.Pressure())
-	isaTemp := 15 - (2 * pressureAltitude / 1000)
-	tempFactor := float32(1)
-	tempDeviation := wxs.Temperature().Celsius() - isaTemp
-	if tempDeviation > 0 {
-		tempFactor = 1 + (tempCorrection * tempDeviation)
-	}
-
-	// Altitude factor
-	densityAltitude := pressureAltitude + (120 * tempDeviation)
-	altFactor := 1 + (altCorrection * densityAltitude / 1000)
-
-	// Humidity factor
-	var humidityFactor float32
-	relativeHumidity := wxs.RelativeHumidity()
-	switch {
-	case relativeHumidity < 40:
-		humidityFactor = 1 // No correction
-	case relativeHumidity < 70:
-		humidityFactor = 0.98 // -2% average
-	case relativeHumidity < 90:
-		humidityFactor = 0.97 // -3% average
-	default:
-		humidityFactor = 0.95 // -5% average
-	}
-
-	// Ad-hoc clamp and softening to reduce effect at high temperatures.
-	// Clamp the product before sqrt: the linear altitude correction goes
-	// negative above ~33,000' for jets, which would produce NaN from sqrt.
-	return max(0.5, math.Sqrt(max(0, tempFactor*altFactor*humidityFactor)))
-}
-
-// mbToPressureAltitude converts pressure in millibars to pressure altitude in feet
-// Using the standard atmosphere pressure-altitude relationship
-func mbToPressureAltitude(mb float32) float32 {
-	// Simplified pressure altitude calculation (more accurate version uses
-	// the barometric formula).
-	if mb > 226.32 {
-		// Troposphere formula (valid up to 36,089 ft)
-		return 145366.45 * (1 - math.Pow(mb/1013.25, 0.190284))
-	} else {
-		// Stratosphere formula
-		return 36089.24 + (20806.0 * math.Log(226.32/mb))
-	}
+	return next
 }
 
 // TargetAltitude returns the target altitude, the rate to use (ft/min),
