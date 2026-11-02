@@ -67,6 +67,15 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 		ControllerFrequency: freq,
 		ArrivalAirport:      "KJFK",
 		Nav: nav.Nav{
+			Instructions: nav.Instructions{
+				Approach: nav.Approach{
+					AssignedId: "I" + runway,
+					Assigned: &av.Approach{
+						Type:   av.ILSApproach,
+						Runway: runway,
+					},
+				},
+			},
 			FlightState: nav.FlightState{
 				Position:                acPos,
 				Heading:                 heading,
@@ -76,13 +85,6 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 				ArrivalAirport:          av.Waypoint{Fix: "KJFK"},
 				ArrivalAirportLocation:  airportLoc,
 				ArrivalAirportElevation: 13,
-			},
-			Approach: nav.Approach{
-				AssignedId: "I" + runway,
-				Assigned: &av.Approach{
-					Type:   av.ILSApproach,
-					Runway: runway,
-				},
 			},
 		},
 	}
@@ -243,19 +245,21 @@ func makeVisualTestAircraftAlt(pos math.Point2LL, heading math.MagneticHeading, 
 		ControllerFrequency: "125.0",
 		ArrivalAirport:      "KJFK",
 		Nav: nav.Nav{
+			Instructions: nav.Instructions{
+				Approach: nav.Approach{
+					AssignedId: "I13L",
+					Assigned: &av.Approach{
+						Type:   av.ILSApproach,
+						Runway: "13L",
+					},
+				},
+			},
 			FlightState: nav.FlightState{
 				Position:          pos,
 				Heading:           heading,
 				Altitude:          altitude,
 				NmPerLongitude:    52, // ~40°N
 				MagneticVariation: 0,
-			},
-			Approach: nav.Approach{
-				AssignedId: "I13L",
-				Assigned: &av.Approach{
-					Type:   av.ILSApproach,
-					Runway: "13L",
-				},
 			},
 		},
 	}
@@ -660,20 +664,22 @@ func TestVisualApproachWaypoints(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			n := nav.Nav{
+				Instructions: nav.Instructions{
+					Approach: nav.Approach{
+						AssignedId: "_VIS36",
+						Assigned: &av.Approach{
+							Type:     av.VisualApproach,
+							Runway:   "36",
+							FullName: "Visual Approach Runway 36",
+						},
+					},
+				},
 				FlightState: nav.FlightState{
 					Position:          tt.pos,
 					Heading:           tt.heading,
 					NmPerLongitude:    nmPerLong,
 					MagneticVariation: 0,
 					ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
-				},
-				Approach: nav.Approach{
-					AssignedId: "_VIS36",
-					Assigned: &av.Approach{
-						Type:     av.VisualApproach,
-						Runway:   "36",
-						FullName: "Visual Approach Runway 36",
-					},
 				},
 			}
 			if tt.assigned != nil {
@@ -921,6 +927,9 @@ func TestVisualApproachPreservesAssignedDescent(t *testing.T) {
 	// descent until the first approach fix is crossed.
 	assigned := float32(3000)
 	n := nav.Nav{
+		Instructions: nav.Instructions{
+			Altitude: nav.Altitude{Assigned: &assigned},
+		},
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -14.0 / 60},
 			Heading:           270,
@@ -929,7 +938,6 @@ func TestVisualApproachPreservesAssignedDescent(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Altitude: nav.Altitude{Assigned: &assigned},
 	}
 
 	n.Approach.AssignedId = "_VIS36"
@@ -1045,6 +1053,9 @@ func TestVisualApproachDropsNonDescentAssignment(t *testing.T) {
 	// TOD/FAF altitude restrictions via TargetAltitude.activeAssignedAltitude.
 	maintain := float32(3000)
 	n := nav.Nav{
+		Instructions: nav.Instructions{
+			Altitude: nav.Altitude{Assigned: &maintain, ActiveAssigned: &maintain},
+		},
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -14.0 / 60},
 			Heading:           270,
@@ -1053,7 +1064,6 @@ func TestVisualApproachDropsNonDescentAssignment(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Altitude: nav.Altitude{Assigned: &maintain, ActiveAssigned: &maintain},
 	}
 
 	n.Approach.AssignedId = "_VIS36"
@@ -1100,6 +1110,13 @@ func TestVisualApproachPreservesPendingDescent(t *testing.T) {
 	pendingDescent := float32(3000)
 	currentLevel := float32(5000)
 	n := nav.Nav{
+		Instructions: nav.Instructions{
+			Altitude: nav.Altitude{
+				Assigned:       &pendingDescent,
+				ActiveAssigned: &currentLevel,
+				ActivateAt:     nav.NewTime(time.Now().Add(5 * time.Second)),
+			},
+		},
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -14.0 / 60},
 			Heading:           270,
@@ -1107,11 +1124,6 @@ func TestVisualApproachPreservesPendingDescent(t *testing.T) {
 			NmPerLongitude:    nmPerLong,
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
-		},
-		Altitude: nav.Altitude{
-			Assigned:       &pendingDescent,
-			ActiveAssigned: &currentLevel,
-			ActivateAt:     nav.NewTime(time.Now().Add(5 * time.Second)),
 		},
 	}
 
@@ -1160,6 +1172,9 @@ func TestVisualApproachDropsAssignedDescentBelowProfile(t *testing.T) {
 	// command the aircraft through the visual profile's floor.
 	belowProfile := float32(4500)
 	n := nav.Nav{
+		Instructions: nav.Instructions{
+			Altitude: nav.Altitude{Assigned: &belowProfile, ActiveAssigned: &belowProfile},
+		},
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -8.0 / 60},
 			Heading:           270,
@@ -1168,7 +1183,6 @@ func TestVisualApproachDropsAssignedDescentBelowProfile(t *testing.T) {
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
-		Altitude: nav.Altitude{Assigned: &belowProfile, ActiveAssigned: &belowProfile},
 	}
 
 	n.Approach.AssignedId = "_VIS36"
@@ -1282,16 +1296,18 @@ func TestVisualApproachFollowingTrafficTurnsBase(t *testing.T) {
 	trafficPos := math.Point2LL{0, -5.0 / 60}          // traffic already established on final
 
 	n := nav.Nav{
+		Instructions: nav.Instructions{
+			Approach: nav.Approach{
+				AssignedId: "V36",
+				Assigned:   &av.Approach{Type: av.ChartedVisualApproach, Runway: "36"},
+			},
+		},
 		FlightState: nav.FlightState{
 			Position:          acPos,
 			Heading:           360,
 			NmPerLongitude:    nmPerLong,
 			MagneticVariation: 0,
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
-		},
-		Approach: nav.Approach{
-			AssignedId: "V36",
-			Assigned:   &av.Approach{Type: av.ChartedVisualApproach, Runway: "36"},
 		},
 	}
 

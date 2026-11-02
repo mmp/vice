@@ -22,7 +22,11 @@ func vfrArrival(callsign string, airport av.ICAOAirportCode, phase uint8) *Aircr
 	return &Aircraft{
 		ADSBCallsign:   av.ADSBCallsign(callsign),
 		ArrivalAirport: airport,
-		Nav:            nav.Nav{Waypoints: av.WaypointArray{{Fix: "_wp", VFRPhase: phase}}},
+		Nav: nav.Nav{
+			Instructions: nav.Instructions{
+				Waypoints: av.WaypointArray{{Fix: "_wp", VFRPhase: phase}},
+			},
+		},
 	}
 }
 

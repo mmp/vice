@@ -37,9 +37,11 @@ func makeAirworkNav(t *testing.T, acType string, alt float32, seed uint64) *Nav 
 	}
 	ias := av.TASToIAS(perf.Speed.CruiseTAS, alt, wx.MakeStandardSampleForAltitude(alt).Temperature())
 	return &Nav{
-		Perf:           perf,
-		FixAssignments: make(map[string]FixAssignment),
-		Rand:           rand.New(seed),
+		Instructions: Instructions{
+			FixAssignments: make(map[string]FixAssignment),
+		},
+		Perf: perf,
+		Rand: rand.New(seed),
 		FlightState: FlightState{
 			MagneticVariation: -13,
 			NmPerLongitude:    math.NMPerLongitudeAt(airworkArea.Center),

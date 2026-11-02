@@ -322,21 +322,23 @@ func TestChartedVisualClearancePreservesActiveArc(t *testing.T) {
 			t.Run(wp.Fix+"/"+phase, func(t *testing.T) {
 				arc := wp.Arc()
 				n := Nav{
+					Instructions: Instructions{
+						Heading:   Heading{Arc: arc, JoiningArc: phase == "joining"},
+						Waypoints: route[i+1:].Clone(),
+						Approach: Approach{
+							AssignedId: "V25R",
+							Assigned: &av.Approach{
+								Type:      av.ChartedVisualApproach,
+								Runway:    "25",
+								Waypoints: []av.WaypointArray{route},
+							},
+						},
+					},
 					FlightState: FlightState{
 						Position:       wp.Location,
 						Heading:        arc.InitialHeading,
 						NmPerLongitude: math.NMPerLongitudeAt(wp.Location),
 						ArrivalAirport: av.Waypoint{Fix: "KSBA"},
-					},
-					Heading:   Heading{Arc: arc, JoiningArc: phase == "joining"},
-					Waypoints: route[i+1:].Clone(),
-					Approach: Approach{
-						AssignedId: "V25R",
-						Assigned: &av.Approach{
-							Type:      av.ChartedVisualApproach,
-							Runway:    "25",
-							Waypoints: []av.WaypointArray{route},
-						},
 					},
 				}
 				if phase == "mid arc" {
@@ -377,23 +379,25 @@ func TestChartedVisualClearancePreservesActiveArc(t *testing.T) {
 func TestPrepareForChartedVisualSkipsBehindSegmentIntercept(t *testing.T) {
 	nmPerLong := float32(60)
 	n := Nav{
+		Instructions: Instructions{
+			Approach: Approach{
+				Assigned: &av.Approach{
+					Type:   av.ChartedVisualApproach,
+					Runway: "09",
+					Waypoints: []av.WaypointArray{{
+						{Fix: "A", Location: math.NM2LL([2]float32{-1, -1}, nmPerLong)},
+						{Fix: "B", Location: math.NM2LL([2]float32{-1, 1}, nmPerLong)},
+						{Fix: "C", Location: math.NM2LL([2]float32{1, 1}, nmPerLong)},
+						{Fix: "D", Location: math.NM2LL([2]float32{1, -1}, nmPerLong)},
+					}},
+				},
+			},
+		},
 		FlightState: FlightState{
 			Position:       math.NM2LL([2]float32{0, 0}, nmPerLong),
 			Heading:        90,
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
-		},
-		Approach: Approach{
-			Assigned: &av.Approach{
-				Type:   av.ChartedVisualApproach,
-				Runway: "09",
-				Waypoints: []av.WaypointArray{{
-					{Fix: "A", Location: math.NM2LL([2]float32{-1, -1}, nmPerLong)},
-					{Fix: "B", Location: math.NM2LL([2]float32{-1, 1}, nmPerLong)},
-					{Fix: "C", Location: math.NM2LL([2]float32{1, 1}, nmPerLong)},
-					{Fix: "D", Location: math.NM2LL([2]float32{1, -1}, nmPerLong)},
-				}},
-			},
 		},
 	}
 
@@ -421,24 +425,26 @@ func TestPrepareForChartedVisualUsesAssignedHeading(t *testing.T) {
 	nmPerLong := float32(60)
 	hdg := math.MagneticHeading(90)
 	n := Nav{
+		Instructions: Instructions{
+			Heading: Heading{Assigned: &hdg},
+			Approach: Approach{
+				Assigned: &av.Approach{
+					Type:   av.ChartedVisualApproach,
+					Runway: "09",
+					Waypoints: []av.WaypointArray{{
+						{Fix: "A", Location: math.NM2LL([2]float32{-1, -1}, nmPerLong)},
+						{Fix: "B", Location: math.NM2LL([2]float32{-1, 1}, nmPerLong)},
+						{Fix: "C", Location: math.NM2LL([2]float32{1, 1}, nmPerLong)},
+						{Fix: "D", Location: math.NM2LL([2]float32{1, -1}, nmPerLong)},
+					}},
+				},
+			},
+		},
 		FlightState: FlightState{
 			Position:       math.NM2LL([2]float32{0, 0}, nmPerLong),
 			Heading:        270, // hasn't turned onto the assigned heading yet
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
-		},
-		Heading: Heading{Assigned: &hdg},
-		Approach: Approach{
-			Assigned: &av.Approach{
-				Type:   av.ChartedVisualApproach,
-				Runway: "09",
-				Waypoints: []av.WaypointArray{{
-					{Fix: "A", Location: math.NM2LL([2]float32{-1, -1}, nmPerLong)},
-					{Fix: "B", Location: math.NM2LL([2]float32{-1, 1}, nmPerLong)},
-					{Fix: "C", Location: math.NM2LL([2]float32{1, 1}, nmPerLong)},
-					{Fix: "D", Location: math.NM2LL([2]float32{1, -1}, nmPerLong)},
-				}},
-			},
 		},
 	}
 
@@ -468,22 +474,24 @@ func makeTwoFeederChartedVisualNav(pos [2]float32, hdg math.MagneticHeading) *Na
 	}
 	final := av.WaypointArray{wp("J", 0, 0), wp("F", 5, 0), wp("T", 10, 0)}
 	return &Nav{
+		Instructions: Instructions{
+			Approach: Approach{
+				AssignedId: "V09",
+				Assigned: &av.Approach{
+					Type:   av.ChartedVisualApproach,
+					Runway: "09",
+					Waypoints: []av.WaypointArray{
+						slices.Concat(av.WaypointArray{wp("A1", -5, 5)}, final.Clone()),
+						slices.Concat(av.WaypointArray{wp("B1", -5, -5)}, final.Clone()),
+					},
+				},
+			},
+		},
 		FlightState: FlightState{
 			Position:       math.NM2LL(pos, nmPerLong),
 			Heading:        hdg,
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: wp("KTEST", 11, 0),
-		},
-		Approach: Approach{
-			AssignedId: "V09",
-			Assigned: &av.Approach{
-				Type:   av.ChartedVisualApproach,
-				Runway: "09",
-				Waypoints: []av.WaypointArray{
-					slices.Concat(av.WaypointArray{wp("A1", -5, 5)}, final.Clone()),
-					slices.Concat(av.WaypointArray{wp("B1", -5, -5)}, final.Clone()),
-				},
-			},
 		},
 	}
 }
@@ -560,23 +568,25 @@ func TestChartedVisualClearedAtPassedFeederFix(t *testing.T) {
 	final := av.WaypointArray{wp("J", 0, 0), wp("F", 5, 0), wp("T", 10, 0)}
 	airport := wp("KTEST", 11, 0)
 	n := &Nav{
+		Instructions: Instructions{
+			Waypoints: []av.Waypoint{airport},
+			Approach: Approach{
+				AssignedId: "V09",
+				Assigned: &av.Approach{
+					Type:   av.ChartedVisualApproach,
+					Runway: "09",
+					Waypoints: []av.WaypointArray{
+						slices.Concat(av.WaypointArray{wp("A1", -5, 5)}, final.Clone()),
+						slices.Concat(av.WaypointArray{wp("D1", 6, -3), wp("D2", 0, -3)}, final.Clone()),
+					},
+				},
+			},
+		},
 		FlightState: FlightState{
 			Position:       math.NM2LL([2]float32{5.7, -3}, nmPerLong),
 			Heading:        270,
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: airport,
-		},
-		Waypoints: []av.Waypoint{airport},
-		Approach: Approach{
-			AssignedId: "V09",
-			Assigned: &av.Approach{
-				Type:   av.ChartedVisualApproach,
-				Runway: "09",
-				Waypoints: []av.WaypointArray{
-					slices.Concat(av.WaypointArray{wp("A1", -5, 5)}, final.Clone()),
-					slices.Concat(av.WaypointArray{wp("D1", 6, -3), wp("D2", 0, -3)}, final.Clone()),
-				},
-			},
 		},
 	}
 
@@ -2297,16 +2307,18 @@ func TestClearedVisualApproachDoesNotMutateApproach(t *testing.T) {
 	}
 
 	n := Nav{
+		Instructions: Instructions{
+			Approach: Approach{
+				Assigned:         ap,
+				AssignedId:       "RIV",
+				VisualReferences: []*av.Approach{ap},
+			},
+		},
 		FlightState: FlightState{
 			Position:       math.NM2LL([2]float32{3, -8}, nmPerLong),
 			Heading:        270, // pointed at the final
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
-		},
-		Approach: Approach{
-			Assigned:         ap,
-			AssignedId:       "RIV",
-			VisualReferences: []*av.Approach{ap},
 		},
 	}
 

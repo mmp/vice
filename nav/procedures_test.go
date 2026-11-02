@@ -279,11 +279,13 @@ func makePTFlight(t *testing.T, routeStr string, alt, speed float32) *FlightTest
 	}
 
 	n := &Nav{
-		Perf:           db.DB.AircraftPerformance["A320"],
-		FinalAltitude:  alt,
-		FixAssignments: make(map[string]FixAssignment),
-		Rand:           rng,
-		Waypoints:      navWps,
+		Instructions: Instructions{
+			FixAssignments: make(map[string]FixAssignment),
+			Waypoints:      navWps,
+		},
+		Perf:          db.DB.AircraftPerformance["A320"],
+		FinalAltitude: alt,
+		Rand:          rng,
 		FlightState: FlightState{
 			MagneticVariation:         magVar,
 			NmPerLongitude:            nmPerLong,

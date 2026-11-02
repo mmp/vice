@@ -297,7 +297,12 @@ func TestAssignedLevelForCoord(t *testing.T) {
 	wp := av.Waypoint{Fix: "FIXXX"}
 	wp.SetAltitudeRestriction(av.MakeAtOrBelowAltitudeRestriction(8000))
 	noAssignedFp := &FlightPlan{TypeOfFlight: av.FlightTypeArrival, RequestedAltitude: 35000}
-	ac := &Aircraft{Nav: nav.Nav{Waypoints: av.WaypointArray{wp}, FlightState: nav.FlightState{Altitude: 12000}}}
+	ac := &Aircraft{Nav: nav.Nav{
+		Instructions: nav.Instructions{
+			Waypoints: av.WaypointArray{wp},
+		},
+		FlightState: nav.FlightState{Altitude: 12000},
+	}}
 	if got := assignedLevelForCoord(noAssignedFp, ac); got != 80 {
 		t.Errorf("arrival with restriction, no AssignedAltitude = %d, want 80 (nav/route derived)", got)
 	}

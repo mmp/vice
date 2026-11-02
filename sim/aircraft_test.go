@@ -31,8 +31,10 @@ func makeAircraftForSTTFixes(wps []av.Waypoint) *Aircraft {
 		DepartureAirport: "KJFK",
 		ArrivalAirport:   "KBOS",
 		Nav: nav.Nav{
+			Instructions: nav.Instructions{
+				Waypoints: wps,
+			},
 			FlightState: nav.FlightState{Position: math.Point2LL{0, 0}},
-			Waypoints:   wps,
 		},
 	}
 }

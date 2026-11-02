@@ -37,41 +37,18 @@ var (
 	ErrUnknownApproach              = errors.New("Unknown approach")
 )
 
-// State related to navigation. Pointers are used for optional values; nil
-// -> unset/unspecified.
+// Nav flies one aircraft: its Instructions say what it has been told to do and FlightState where
+// that has gotten it. Pointers are used for optional values; nil -> unset/unspecified.
 type Nav struct {
-	FlightState FlightState
-	Perf        av.AircraftPerformance
-	Altitude    Altitude
-	Speed       Speed
-	Heading     Heading
-	Approach    Approach
-	Airwork     *Airwork
-	Prespawn    bool
+	Instructions             // Controller instructions / filed route
+	FlightState  FlightState // Physical aircraft state (position, heading, etc.)
+	Perf         av.AircraftPerformance
+	Airwork      *Airwork
+	Prespawn     bool
 
-	FixAssignments map[string]FixAssignment
-
-	// DeferredNavHeading stores a heading/direct fix assignment from the
-	// controller that the pilot has not yet started to follow.  Note that
-	// only a single such assignment is stored; for example, if the
-	// controller issues a first heading and then a second shortly
-	// afterward, before the first has been followed, it's fine for the
-	// second to override it.
-	DeferredNavHeading *DeferredNavHeading
-
-	// ExpectedDirectFix records a fix the pilot has been told to expect
-	// direct to; when the actual direct instruction comes, there is less
-	// delay since the pilot is prepared.
 	ExpectedDirectFix string
 
 	FinalAltitude float32
-	Waypoints     av.WaypointArray
-	// PassedWaypoint is the route fix behind the aircraft on the leg it is
-	// flying: the last one it passed, or the start of a leg it joined
-	// partway along. An aircraft vectored off the leg can be told to rejoin
-	// it. The crossing points that restrictions add along a leg don't
-	// count, and a route the aircraft joins from wherever it is has none.
-	PassedWaypoint av.Waypoint
 
 	// RouteAltitudeActions is set at creation time if the route includes
 	// /c, /d, /cvs, or /dvs altitude actions at any of its waypoints. If it
@@ -85,16 +62,38 @@ type Nav struct {
 	Delays PilotDelays
 	Rand   *rand.Rand
 
-	// recorder, if set, is told everything that happens to the Nav; see
-	// Recorder. recordStarted is set once it has been given the Nav's
-	// starting state, and recordDepth counts the commands and updates in
-	// progress so that only the outermost is recorded. lookups answers the
-	// Nav's questions about the world, or the database does if it is nil.
-	// None of these is part of the Nav's encoding.
+	// Session recording
 	recorder      Recorder
 	recordStarted bool
-	recordDepth   int
-	lookups       Lookups
+	recordDepth   int     // in progress count
+	lookups       Lookups // av.db information source (or proxy during reply)
+}
+
+// Instructions is what the aircraft has been told to do, by its controllers and by its route, and
+// how far it has gotten with it. This is what's changed by controller instructions and what is
+// rolled back on a correction.
+type Instructions struct {
+	Altitude Altitude
+	Speed    Speed
+	Heading  Heading
+	Approach Approach
+
+	FixAssignments map[string]FixAssignment
+
+	// DeferredNavHeading stores a heading/direct fix assignment from the
+	// controller that the pilot has not yet started to follow.  Note that
+	// only a single such assignment is stored; for example, if the
+	// controller issues a first heading and then a second shortly
+	// afterward, before the first has been followed, it's fine for the
+	// second to override it.
+	DeferredNavHeading *DeferredNavHeading
+
+	Waypoints av.WaypointArray
+
+	// PassedWaypoint is the route fix behind the aircraft on the leg it is
+	// flying: the last one it passed, or the start of a leg it joined
+	// partway along.
+	PassedWaypoint av.Waypoint
 }
 
 type UpdateResult struct {
@@ -119,57 +118,25 @@ type DeferredNavHeading struct {
 	Hold      *FlyHold
 	Maneuvers []LateralManeuver
 	Join      *RouteJoin
-	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
-	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be
-	// captured into Altitude.Cleared, as a floor, at the moment this deferred
-	// heading takes effect. Used when vectoring an arrival off a STAR/approach
-	// with no issued altitude so the aircraft holds whatever altitude the
-	// pilot was at when they actually turned, rather than the higher altitude
-	// they were at when the controller first spoke.
+
+	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be captured into
+	// Altitude.Cleared, as a floor, when this deferred heading takes effect. Used when vectoring an
+	// arrival off a STAR/approach with no issued altitude so the aircraft holds the current alt.
 	SnapshotAltitudeOnEffect bool
 }
 
-// Snapshot captures all controller-modifiable state in Nav for rollback purposes.
-// It does NOT include FlightState (aircraft physical position/heading/altitude) -
-// only control assignments that can be rolled back.
-type Snapshot struct {
-	Altitude           Altitude
-	Speed              Speed
-	Heading            Heading
-	Approach           Approach
-	Waypoints          av.WaypointArray
-	PassedWaypoint     av.Waypoint
-	DeferredNavHeading *DeferredNavHeading
-	FixAssignments     map[string]FixAssignment
+// TakeSnapshot returns a copy of the aircraft's instructions for
+// RestoreSnapshot to roll back to.
+func (nav *Nav) TakeSnapshot() Instructions {
+	return deep.MustCopy(nav.Instructions)
 }
 
-// TakeSnapshot captures the current controller-modifiable nav state for later rollback.
-func (nav *Nav) TakeSnapshot() Snapshot {
-	return deep.MustCopy(Snapshot{
-		Altitude:           nav.Altitude,
-		Speed:              nav.Speed,
-		Heading:            nav.Heading,
-		Approach:           nav.Approach,
-		Waypoints:          nav.Waypoints,
-		PassedWaypoint:     nav.PassedWaypoint,
-		DeferredNavHeading: nav.DeferredNavHeading,
-		FixAssignments:     nav.FixAssignments,
-	})
-}
-
-// RestoreSnapshot restores nav state from a previously captured snapshot.
-// The aircraft's physical state (FlightState) is NOT restored - only control assignments.
-func (nav *Nav) RestoreSnapshot(snap Snapshot) {
+// RestoreSnapshot puts back the instructions TakeSnapshot returned, undoing what the aircraft has
+// been told since.
+func (nav *Nav) RestoreSnapshot(snap Instructions) {
 	defer nav.record("RestoreSnapshot", snap)()
-	nav.Altitude = snap.Altitude
-	nav.Speed = snap.Speed
-	nav.Heading = snap.Heading
-	nav.Approach = snap.Approach
-	nav.Waypoints = snap.Waypoints
-	nav.PassedWaypoint = snap.PassedWaypoint
-	nav.DeferredNavHeading = snap.DeferredNavHeading
-	nav.FixAssignments = snap.FixAssignments
+	nav.Instructions = snap
 }
 
 type FlightState struct {
@@ -224,13 +191,10 @@ type Altitude struct {
 	AfterSpeed      *float32
 	AfterSpeedSpeed *av.Airspeed
 	Rate            RateQualifier
-	RateThrough     *float32      // revert to RateNormal after passing this altitude; nil = all the way
-	RateAfterSpeed  RateQualifier // preserved across speed transitions
+	RateThrough     *float32                // revert to RateNormal after passing this altitude; nil = all the way
+	RateAfterSpeed  RateQualifier           // preserved across speed transitions
+	Restriction     *av.AltitudeRestriction // The restriction at the last waypoint passed.
 
-	// The restriction at the last waypoint passed, carried forward so
-	// that an aircraft that couldn't meet it keeps trying until it gets
-	// there (or is given another instruction).
-	Restriction *av.AltitudeRestriction
 }
 
 // ClearedAltitude is the altitude an aircraft flying its route's altitude
@@ -249,8 +213,7 @@ type Speed struct {
 	AfterAltitudeAltitude    *float32
 	MaintainSlowestPractical bool
 	MaintainMaximumForward   bool
-	// Carried after passing a waypoint
-	Restriction *av.SpeedRestriction
+	Restriction              *av.SpeedRestriction // Carried after passing a waypoint
 }
 
 type Heading struct {
@@ -260,8 +223,8 @@ type Heading struct {
 	JoiningArc bool
 	Maneuvers  []LateralManeuver
 	Hold       *FlyHold
-	// Join is what Maneuvers are flying the heading to join, if anything.
-	Join *RouteJoin
+	Join       *RouteJoin // Maneuvers we're flying the heading to join, if set
+
 }
 
 type Approach struct {
@@ -454,11 +417,13 @@ func makeNav(callsign av.ADSBCallsign, depAirport, arrAirport av.ICAOAirportCode
 	perf av.AircraftPerformance, delays PilotDelays, wp av.WaypointArray, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, r *rand.Rand, lg *log.Logger) *Nav {
 	nav := &Nav{
-		Perf:           perf,
-		FinalAltitude:  float32(cruiseAlt),
-		FixAssignments: make(map[string]FixAssignment),
-		Delays:         delays,
-		Rand:           rand.New(r.Uint64()),
+		Instructions: Instructions{
+			FixAssignments: make(map[string]FixAssignment),
+		},
+		Perf:          perf,
+		FinalAltitude: float32(cruiseAlt),
+		Delays:        delays,
+		Rand:          rand.New(r.Uint64()),
 	}
 
 	// Clone the provided waypoints so that any local modifications we make don't pollute the

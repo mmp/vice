@@ -353,6 +353,9 @@ func TestRunOneControlCommandInterceptRadial(t *testing.T) {
 			ADSBCallsign:        callsign,
 			ControllerFrequency: "1A",
 			Nav: nav.Nav{
+				Instructions: nav.Instructions{
+					Waypoints: []av.Waypoint{{Fix: "WAVEY", Location: wavey}},
+				},
 				// Ten miles north of WAVEY heading east, so the 050 radial
 				// lies ahead of the aircraft and northeast of the fix.
 				FlightState: nav.FlightState{
@@ -361,8 +364,7 @@ func TestRunOneControlCommandInterceptRadial(t *testing.T) {
 					NmPerLongitude:    math.NMPerLongitudeAt(wavey),
 					MagneticVariation: 13,
 				},
-				Waypoints: []av.Waypoint{{Fix: "WAVEY", Location: wavey}},
-				Rand:      rand.Make(),
+				Rand: rand.Make(),
 			},
 		}
 		return s, callsign
@@ -417,12 +419,14 @@ func TestRunOneControlCommandAtFixClearedStraightInApproach(t *testing.T) {
 		ADSBCallsign:        callsign,
 		ControllerFrequency: "1A",
 		Nav: nav.Nav{
-			Waypoints: []av.Waypoint{
-				{Fix: "MATTY"},
-			},
-			Approach: nav.Approach{
-				Assigned:   appr,
-				AssignedId: "RG24",
+			Instructions: nav.Instructions{
+				Waypoints: []av.Waypoint{
+					{Fix: "MATTY"},
+				},
+				Approach: nav.Approach{
+					Assigned:   appr,
+					AssignedId: "RG24",
+				},
 			},
 		},
 	}
@@ -472,7 +476,12 @@ func TestRunOneControlCommandExpectApproachNamedLikeExpedite(t *testing.T) {
 			ADSBCallsign:        callsign,
 			ControllerFrequency: "1A",
 			ArrivalAirport:      "KLNS",
-			Nav:                 nav.Nav{Waypoints: []av.Waypoint{{Fix: "AVOCI"}}, FlightState: nav.FlightState{Altitude: 8000}},
+			Nav: nav.Nav{
+				Instructions: nav.Instructions{
+					Waypoints: []av.Waypoint{{Fix: "AVOCI"}},
+				},
+				FlightState: nav.FlightState{Altitude: 8000},
+			},
 		}
 
 		intent, err := s.runOneControlCommand("TCW1", callsign, "ED26", 0)
@@ -552,15 +561,17 @@ func TestRunOneControlCommandJoin(t *testing.T) {
 			SID:                 sid,
 			STAR:                star,
 			Nav: nav.Nav{
+				Instructions: nav.Instructions{
+					Heading:   nav.Heading{Assigned: &hdg},
+					Waypoints: wps,
+				},
 				FlightState: nav.FlightState{
 					Position:          pos,
 					Heading:           hdg,
 					NmPerLongitude:    nmPerLong,
 					MagneticVariation: magneticVariation,
 				},
-				Heading:   nav.Heading{Assigned: &hdg},
-				Waypoints: wps,
-				Rand:      rand.Make(),
+				Rand: rand.Make(),
 			},
 		}
 		return s, callsign

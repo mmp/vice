@@ -76,6 +76,15 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 		ControllerFrequency: ControlPosition("125.0"),
 		ArrivalAirport:      "KJFK",
 		Nav: nav.Nav{
+			Instructions: nav.Instructions{
+				Approach: nav.Approach{
+					AssignedId: "I" + runway,
+					Assigned: &av.Approach{
+						Type:   av.ILSApproach,
+						Runway: runway,
+					},
+				},
+			},
 			Rand: vrand.Make(),
 			FlightState: nav.FlightState{
 				Position:                [2]float32{0, 5.0 / 60}, // 5nm north
@@ -86,13 +95,6 @@ func MakeTestAircraft(callsign av.ADSBCallsign, runway string) *Aircraft {
 				ArrivalAirport:          av.Waypoint{Fix: "KJFK"},
 				ArrivalAirportLocation:  [2]float32{0, 0},
 				ArrivalAirportElevation: 13,
-			},
-			Approach: nav.Approach{
-				AssignedId: "I" + runway,
-				Assigned: &av.Approach{
-					Type:   av.ILSApproach,
-					Runway: runway,
-				},
 			},
 		},
 	}

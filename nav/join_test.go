@@ -798,7 +798,7 @@ func TestRouteViaActionKeepsPendingAltitudeCapture(t *testing.T) {
 func TestJoinAirwayAfterDirectRollback(t *testing.T) {
 	f, headingTo, _ := joinFlight(t, "QQS QQB QQC QQD", false)
 	vectoredAt := -1
-	var snap Snapshot
+	var snap Instructions
 	f.AtFix("QQB", func(f *FlightTest) {
 		f.AssignHeading(int(headingTo(5, 3)), av.TurnClosest)
 		vectoredAt = f.tick
