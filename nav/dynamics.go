@@ -10,6 +10,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
@@ -255,6 +256,114 @@ func (fs *FlightState) stepAltitude(perf av.AircraftPerformance, target, targetR
 	}
 	approachRate(-descent, maxChange)
 	return max(target, fs.Altitude+fs.AltitudeRate/60)
+}
+
+// StandardTurnRate is the rate of a standard rate turn in degrees per
+// second, the fastest the aircraft turns.
+const StandardTurnRate = 3
+
+// turnRateAtBank returns the rate in degrees per second of a coordinated
+// turn at the given bank angle and true airspeed in knots, signed with the
+// bank and no faster than the standard rate.
+func turnRateAtBank(bank, tas float32) float32 {
+	return math.Clamp(bankTurnRate(bank, tas), -StandardTurnRate, StandardTurnRate)
+}
+
+// roll adjusts the bank for this second of the turn from the present
+// heading to target in the given direction: rolling in up to the aircraft's
+// maximum bank, and rolling out so as to come level on target. It returns
+// which way and how fast, in degrees per second, the aircraft turns this
+// second.
+func (fs *FlightState) roll(perf av.AircraftPerformance, target math.MagneticHeading, turn av.TurnDirection,
+	tas float32) (av.TurnDirection, float32) {
+	// signed difference, negative is turn left
+	headingDelta := func() float32 {
+		diff := float32(target) - float32(fs.Heading)
+		switch turn {
+		case av.TurnLeft:
+			if diff > 0 {
+				return diff - 360 // force left turn
+			}
+			return diff // already left
+		case av.TurnRight:
+			if diff < 0 {
+				return diff + 360 // force right turn
+			}
+			return diff // already right
+		default:
+			if diff > 180 {
+				diff -= 360
+			} else if diff < -180 {
+				diff += 360
+			}
+			return diff
+		}
+	}()
+
+	maxBankAngle := perf.Turn.MaxBankAngle
+	maxRollRate := perf.Turn.MaxBankRate
+	turnRate := func(bank float32) float32 { return turnRateAtBank(bank, tas) }
+
+	// If we started leveling out now, how many more degrees would we turn through?
+	var levelOutDelta float32
+	if fs.BankAngle < 0 {
+		for a := fs.BankAngle; a < 0; a += maxRollRate {
+			levelOutDelta += turnRate(a)
+		}
+	} else {
+		for a := fs.BankAngle; a > 0; a -= maxRollRate {
+			levelOutDelta += turnRate(a)
+		}
+	}
+
+	if headingDelta < 0 {
+		// Turning left
+		if levelOutDelta < headingDelta {
+			fs.BankAngle += maxRollRate
+		} else if fs.BankAngle > -maxBankAngle &&
+			levelOutDelta+turnRate(fs.BankAngle-maxRollRate) > headingDelta {
+			fs.BankAngle -= maxRollRate
+		}
+	} else {
+		// Turning right
+		if levelOutDelta > headingDelta {
+			fs.BankAngle -= maxRollRate
+		} else if fs.BankAngle < maxBankAngle &&
+			levelOutDelta+turnRate(fs.BankAngle+maxRollRate) < headingDelta {
+			fs.BankAngle += maxRollRate
+		}
+	}
+
+	return util.Select(fs.BankAngle < 0, av.TurnLeft, av.TurnRight), math.Abs(turnRate(fs.BankAngle))
+}
+
+// turn turns the aircraft toward target this second, through no more than
+// rate degrees in the given direction, and levels the wings once it is
+// there.
+func (fs *FlightState) turn(target math.MagneticHeading, turn av.TurnDirection, rate float32) {
+	if fs.Heading == target {
+		// BankAngle should be zero(ish) at this point but just to be sure.
+		fs.BankAngle = 0
+		return
+	}
+	if math.HeadingDifference(fs.Heading, target) < 1 {
+		fs.Heading = target
+		fs.BankAngle = 0
+		return
+	}
+
+	var delta float32
+	switch turn {
+	case av.TurnLeft:
+		angle := float32(math.NormalizeHeading(fs.Heading - target))
+		delta = -min(angle, rate)
+	case av.TurnRight:
+		angle := float32(math.NormalizeHeading(target - fs.Heading))
+		delta = min(angle, rate)
+	case av.TurnClosest:
+		delta = math.Clamp(math.HeadingSignedTurn(fs.Heading, target), -rate, rate)
+	}
+	fs.Heading = math.OffsetHeading(fs.Heading, delta)
 }
 
 // advance moves the aircraft one second along its heading at the given

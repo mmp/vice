@@ -32,41 +32,26 @@ func (nav *Nav) headingForTrack(hdg math.MagneticHeading, wxs wx.Sample) math.Ma
 	return math.TrueToMagnetic(math.OffsetHeading(trueHdg, -wxs.Deflection(v)), nav.FlightState.MagneticVariation)
 }
 
+// updateHeading turns the aircraft for one second toward the heading its
+// instructions call for: a controller's instruction that is due takes
+// effect, guidance picks the heading, and the aircraft rolls and turns
+// toward it.
 func (nav *Nav) updateHeading(callsign string, wxs wx.Sample, simTime Time) {
-	targetHeading, turnDirection, turnRate := nav.TargetHeading(callsign, wxs, simTime)
+	nav.activateDeferredHeading(simTime)
 
-	headingDiff := math.HeadingDifference(nav.FlightState.Heading, targetHeading)
+	fs := &nav.FlightState
+	st := nav.targetHeading(callsign, wxs, simTime)
+	rate := float32(StandardTurnRate)
+	if st.flat {
+		fs.BankAngle = 0
+	} else {
+		st.turn, rate = fs.roll(nav.Perf, st.heading, st.turn, nav.TAS(wxs.Temperature()))
+	}
+
 	NavLog(callsign, simTime, NavLogHeading, "target=%.0f current=%.0f diff=%.1f turn=%v rate=%.1f bank=%.1f",
-		targetHeading, nav.FlightState.Heading, headingDiff, turnDirection, turnRate, nav.FlightState.BankAngle)
+		st.heading, fs.Heading, math.HeadingDifference(fs.Heading, st.heading), st.turn, rate, fs.BankAngle)
 
-	if nav.FlightState.Heading == targetHeading {
-		// BankAngle should be zero(ish) at this point but just to be sure.
-		nav.FlightState.BankAngle = 0
-		return
-	}
-	if headingDiff < 1 {
-		nav.FlightState.Heading = targetHeading
-		nav.FlightState.BankAngle = 0
-		return
-	}
-
-	var turn float32
-	switch turnDirection {
-	case av.TurnLeft:
-		angle := float32(math.NormalizeHeading(nav.FlightState.Heading - targetHeading))
-		angle = min(angle, turnRate)
-		turn = -angle
-	case av.TurnRight:
-		angle := float32(math.NormalizeHeading(targetHeading - nav.FlightState.Heading))
-		angle = min(angle, turnRate)
-		turn = angle
-	case av.TurnClosest:
-		turn = math.HeadingSignedTurn(nav.FlightState.Heading, targetHeading)
-		turn = math.Clamp(turn, -turnRate, turnRate)
-	}
-
-	// Finally, do the turn.
-	nav.FlightState.Heading = math.OffsetHeading(nav.FlightState.Heading, turn)
+	fs.turn(st.heading, st.turn, rate)
 }
 
 // DepartOnCourse sends a departure direct to its exit fix and climbs it to
@@ -195,70 +180,93 @@ func (nav *Nav) UpdateWithWeather(callsign string, wxs wx.Sample, arrivalMETAR *
 	return result
 }
 
-func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (heading math.MagneticHeading, turn av.TurnDirection, rate float32) {
-	// Is it time to start following a heading or direct to a fix recently issued by the controller?
-	if dh := nav.DeferredNavHeading; dh != nil && simTime.After(dh.Time) {
-		// These may all be nil; whichever the instruction set takes effect now.
-		nav.Heading = Heading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers,
-			Join: dh.Join}
-		if len(dh.Waypoints) > 0 {
-			// The new route starts from wherever the aircraft is; it isn't
-			// on a leg of it.
-			nav.Waypoints = dh.Waypoints
-			nav.PassedWaypoint = av.Waypoint{}
-		}
-		// If the heading was assigned while the aircraft was descending on
-		// a STAR/approach with no issued altitude, snapshot the current
-		// altitude now (rather than at command-issue time) so the aircraft
-		// holds where the pilot actually was when they turned. Re-check the
-		// condition in case an altitude was issued during the deferred
-		// window.
-		if dh.SnapshotAltitudeOnEffect && !nav.hasIssuedAltitude() {
-			nav.Altitude.Cleared = &ClearedAltitude{Altitude: nav.FlightState.Altitude, IsFloor: true}
-		}
-		nav.DeferredNavHeading = nil
+// activateDeferredHeading puts a controller's heading, direct, or hold into
+// effect once the pilot's reaction time has passed.
+func (nav *Nav) activateDeferredHeading(simTime Time) {
+	dh := nav.DeferredNavHeading
+	if dh == nil || !simTime.After(dh.Time) {
+		return
 	}
 
-	heading, turn = nav.FlightState.Heading, av.TurnClosest
+	// These may all be nil; whichever the instruction set takes effect now.
+	nav.Heading = Heading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers,
+		Join: dh.Join}
+	if len(dh.Waypoints) > 0 {
+		// The new route starts from wherever the aircraft is; it isn't
+		// on a leg of it.
+		nav.Waypoints = dh.Waypoints
+		nav.PassedWaypoint = av.Waypoint{}
+	}
+	// If the heading was assigned while the aircraft was descending on
+	// a STAR/approach with no issued altitude, snapshot the current
+	// altitude now (rather than at command-issue time) so the aircraft
+	// holds where the pilot actually was when they turned. Re-check the
+	// condition in case an altitude was issued during the deferred
+	// window.
+	if dh.SnapshotAltitudeOnEffect && !nav.hasIssuedAltitude() {
+		nav.Altitude.Cleared = &ClearedAltitude{Altitude: nav.FlightState.Altitude, IsFloor: true}
+	}
+	nav.DeferredNavHeading = nil
+}
 
-	// nav.Heading.Assigned may still be nil pending a deferred turn
-	if nav.interceptingFromHeading() && nav.Heading.Assigned != nil {
-		heading, turn = nav.ApproachHeading(callsign, wxs, simTime)
-	} else if len(nav.Heading.Maneuvers) > 0 {
-		// Maneuvers turn at a flat rate without banking, as holds do; a
-		// stale bank from before would otherwise have to be unwound when
-		// the maneuvers end, which predictTurnPath doesn't model.
-		nav.FlightState.BankAngle = 0
+// steering is the heading guidance asks for and which way to turn to it.
+// A flat turn is flown at the standard rate without rolling into a bank,
+// as maneuvers and holds are; otherwise the aircraft rolls into and out of
+// the turn.
+type steering struct {
+	heading math.MagneticHeading
+	turn    av.TurnDirection
+	flat    bool
+}
+
+// targetHeading returns the heading to fly this second from whatever
+// governs the aircraft laterally: an approach intercept, maneuvers, a
+// hold, an assigned heading, a DME arc, or the next waypoint. It also
+// advances that mode: maneuvers and holds step to their next legs, an
+// intercept progresses, and a turn direction is dropped once the aircraft
+// is on course.
+func (nav *Nav) targetHeading(callsign string, wxs wx.Sample, simTime Time) steering {
+	fs := &nav.FlightState
+	st := steering{heading: fs.Heading, turn: av.TurnClosest}
+
+	switch {
+	case nav.interceptingFromHeading() && nav.Heading.Assigned != nil:
+		st.heading, st.turn = nav.ApproachHeading(callsign, wxs, simTime)
+
+	case len(nav.Heading.Maneuvers) > 0:
 		result := nav.flyManeuvers(&nav.Heading.Maneuvers, wxs, simTime)
 		if result.completed {
 			// A heading assigned along with the maneuvers was for their
 			// first leg; the aircraft now resumes its route.
 			nav.Heading = Heading{}
 		}
-		return result.heading, result.turn, result.rate
-	} else if nav.Heading.Hold != nil {
-		nav.FlightState.BankAngle = 0
-		return nav.Heading.Hold.GetHeading(callsign, nav, wxs, simTime)
-	} else if nav.Heading.Assigned != nil {
-		heading = *nav.Heading.Assigned
+		return steering{heading: result.heading, turn: result.turn, flat: true}
+
+	case nav.Heading.Hold != nil:
+		hdg, turn := nav.Heading.Hold.GetHeading(callsign, nav, wxs, simTime)
+		return steering{heading: hdg, turn: turn, flat: true}
+
+	case nav.Heading.Assigned != nil:
+		st.heading = *nav.Heading.Assigned
 		if nav.Heading.Turn != nil {
-			turn = *nav.Heading.Turn
+			st.turn = *nav.Heading.Turn
 		}
-	} else if arc := nav.Heading.Arc; arc != nil && nav.Heading.JoiningArc {
-		heading = nav.Heading.Arc.InitialHeading
-		if math.HeadingDifference(nav.FlightState.Heading, heading) < 1 {
+
+	case nav.Heading.Arc != nil && nav.Heading.JoiningArc:
+		st.heading = nav.Heading.Arc.InitialHeading
+		if math.HeadingDifference(fs.Heading, st.heading) < 1 {
 			nav.Heading.JoiningArc = false
 		}
-	} else {
+
+	default:
 		// Either on an arc or to a waypoint. Figure out the point we're
 		// heading to and then common code will handle wind correction,
 		// etc...
 		var pTarget math.Point2LL
-
 		if arc := nav.Heading.Arc; arc != nil {
 			// Work in nm coordinates
-			pc := math.LL2NM(arc.Center, nav.FlightState.NmPerLongitude)
-			pac := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+			pc := math.LL2NM(arc.Center, fs.NmPerLongitude)
+			pac := math.LL2NM(fs.Position, fs.NmPerLongitude)
 			v := math.Sub2f(pac, pc)
 			// Heading from center to aircraft, which we assume to be more
 			// or less on the arc already.
@@ -267,126 +275,41 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime Time) (hea
 			// Choose a point a bit farther ahead on the arc
 			angle += float32(util.Select(arc.Direction.IsClockwise(), 10, -10))
 			p := math.Add2f(pc, math.Scale2f(math.SinCos(math.Radians(angle)), arc.Radius))
-			pTarget = math.NM2LL(p, nav.FlightState.NmPerLongitude)
+			pTarget = math.NM2LL(p, fs.NmPerLongitude)
 		} else {
 			if len(nav.Waypoints) == 0 {
-				return // fly present heading...
+				return st // fly present heading...
 			}
 
 			pTarget = nav.Waypoints[0].Location
 			if nav.Heading.Turn != nil {
-				turn = *nav.Heading.Turn
+				st.turn = *nav.Heading.Turn
 			} else if t := nav.Waypoints[0].Turn(); t != av.TurnClosest {
-				turn = t
+				st.turn = t
 			}
 		}
 
 		// No magnetic correction yet, just the raw geometric heading vector
-		trueHdg := math.Heading2LL(nav.FlightState.Position, pTarget, nav.FlightState.NmPerLongitude)
+		trueHdg := math.Heading2LL(fs.Position, pTarget, fs.NmPerLongitude)
 		v := math.SinCos(math.Radians(trueHdg))
-		v = math.Scale2f(v, nav.FlightState.GS)
+		v = math.Scale2f(v, fs.GS)
 
 		if nav.IsAirborne() {
 			trueHdg = math.OffsetHeading(trueHdg, -wxs.Deflection(v))
 		}
 
-		heading = math.TrueToMagnetic(trueHdg, nav.FlightState.MagneticVariation)
+		st.heading = math.TrueToMagnetic(trueHdg, fs.MagneticVariation)
 
 		// A turn direction is for the turn onto the leg. Once the aircraft
 		// is on course it corrects the closest way; otherwise a correction
 		// to the other side, as for a wind shift, would be flown as a 360.
-		if turn != av.TurnClosest && math.HeadingDifference(nav.FlightState.Heading, heading) < 1 {
+		if st.turn != av.TurnClosest && math.HeadingDifference(fs.Heading, st.heading) < 1 {
 			closest := av.TurnClosest
 			nav.Heading.Turn = &closest
-			turn = closest
+			st.turn = closest
 		}
 	}
-
-	// We have a heading and a direction; now figure out if we need to
-	// adjust the bank and then how far we turn this tick.
-
-	// signed difference, negative is turn left
-	headingDelta := func() float32 {
-		diff := float32(heading) - float32(nav.FlightState.Heading)
-		switch turn {
-		case av.TurnLeft:
-			if diff > 0 {
-				return diff - 360 // force left turn
-			}
-			return diff // already left
-		case av.TurnRight:
-			if diff < 0 {
-				return diff + 360 // force right turn
-			}
-			return diff // already right
-		default:
-			if diff > 180 {
-				diff -= 360
-			} else if diff < -180 {
-				diff += 360
-			}
-			return diff
-		}
-	}()
-
-	// Note that turnRate is signed.
-	maxBankAngle := nav.Perf.Turn.MaxBankAngle
-	maxRollRate := nav.Perf.Turn.MaxBankRate
-	tasMS := nav.TAS(wxs.Temperature()) * 0.514444
-	turnRate := func(bankAngle float32) float32 {
-		if bankAngle == 0 {
-			return 0
-		}
-		bankRad := math.Radians(bankAngle)
-		rate := math.Degrees(9.81 * math.Tan(bankRad) / tasMS)
-		// The rate is signed, so clamp rather than min: min() would leave
-		// left turns uncapped, letting slow aircraft turn left at 4+ deg/s
-		// but right at the standard rate.
-		return math.Clamp(rate, -3, 3)
-	}
-
-	// If we started leveling out now, how many more degrees would we turn through?
-	var levelOutDelta float32
-	if nav.FlightState.BankAngle < 0 {
-		for a := nav.FlightState.BankAngle; a < 0; a += maxRollRate {
-			levelOutDelta += turnRate(a)
-		}
-	} else {
-		for a := nav.FlightState.BankAngle; a > 0; a -= maxRollRate {
-			levelOutDelta += turnRate(a)
-		}
-	}
-
-	//fmt.Printf("hdg %.1f for %.1f max rate %.1f cur bank %.1f levelout delta %.1f, heading delta %.1f\n",
-	//nav.FlightState.Heading, heading, maxTurnRate, nav.FlightState.BankAngle, levelOutDelta, headingDelta)
-
-	if headingDelta < 0 {
-		// Turning left
-		if levelOutDelta < headingDelta {
-			//fmt.Printf("  leveling\n")
-			nav.FlightState.BankAngle += maxRollRate
-		} else if nav.FlightState.BankAngle > -maxBankAngle &&
-			levelOutDelta+turnRate(nav.FlightState.BankAngle-maxRollRate) > headingDelta {
-			//fmt.Printf("  increasing left bank\n")
-			nav.FlightState.BankAngle -= maxRollRate
-		}
-	} else {
-		// Turning right
-		if levelOutDelta > headingDelta {
-			//fmt.Printf("  leveling\n")
-			nav.FlightState.BankAngle -= maxRollRate
-		} else if nav.FlightState.BankAngle < maxBankAngle &&
-			levelOutDelta+turnRate(nav.FlightState.BankAngle+maxRollRate) < headingDelta {
-			//fmt.Printf("  increasing right bank\n")
-			nav.FlightState.BankAngle += maxRollRate
-		}
-	}
-
-	turn = util.Select(nav.FlightState.BankAngle < 0, av.TurnLeft, av.TurnRight)
-
-	rate = math.Abs(turnRate(nav.FlightState.BankAngle))
-
-	return
+	return st
 }
 
 func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) UpdateResult {
@@ -803,15 +726,10 @@ func (nav *Nav) resolveTurnDirection(hdg math.MagneticHeading, turn av.TurnDirec
 func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection, wxs wx.Sample) turnPath {
 	fs := &nav.FlightState
 	tasKts := nav.TAS(wxs.Temperature())
-	tasMS := tasKts * 0.514444
 
 	// Steady-state turn rate in deg/s at the given bank angle, signed with
-	// the bank, where positive bank is into the turn; the same 3 deg/s cap
-	// as TargetHeading.
-	rate := func(bank float32) float32 {
-		r := min(math.Degrees(9.81*math.Tan(math.Radians(math.Abs(bank)))/tasMS), 3)
-		return util.Select(bank < 0, -r, r)
-	}
+	// the bank, where positive bank is into the turn.
+	rate := func(bank float32) float32 { return turnRateAtBank(bank, tasKts) }
 
 	arcDeg := TurnAngle(fs.Heading, hdg, turn)
 	s := float32(util.Select(isTurnRight(float32(fs.Heading), float32(hdg), turn), 1, -1))
@@ -820,8 +738,8 @@ func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection,
 
 	entryBank := s * fs.BankAngle
 	if len(nav.Heading.Maneuvers) > 0 || nav.Heading.Hold != nil {
-		// Maneuvers turn at a flat StandardTurnRate without maintaining
-		// FlightState.BankAngle, so don't trust its stale value.
+		// Maneuvers and holds turn at a flat StandardTurnRate without
+		// maintaining FlightState.BankAngle, so don't trust its stale value.
 		entryBank = 0
 	}
 
@@ -1135,8 +1053,6 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg math.MagneticHeading
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-const StandardTurnRate = 3
 
 // TurnRadius returns the radius in nautical miles of a turn flown at the given
 // true airspeed: a standard rate turn, or a wider one where holding that rate

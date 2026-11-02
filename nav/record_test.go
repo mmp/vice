@@ -23,7 +23,7 @@ var queryMethods = []string{
 	"InterceptedButNotCleared", "IsAirborne", "LowestProcedureAltitude", "Mach", "OnApproach",
 	"OnExtendedCenterline", "ResolveApproach", "SayAltitude", "SayHeading", "SayIndicatedSpeed",
 	"SayMach", "SaySpeed", "SetLookups", "SetRecorder", "Summary", "TAS", "TakeSnapshot",
-	"TargetAltitude", "TargetHeading", "TargetSpeed", "Update", "UpdateWithWeather",
+	"TargetAltitude", "TargetSpeed", "Update", "UpdateWithWeather",
 }
 
 // TestCommandsRecorded checks that every exported method of Nav other than

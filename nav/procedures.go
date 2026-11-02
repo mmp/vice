@@ -427,13 +427,12 @@ func (nav *Nav) turnToInterceptIfHeadingMisses(m *LateralManeuver, targetHdg mat
 type maneuverResult struct {
 	heading   math.MagneticHeading
 	turn      av.TurnDirection
-	rate      float32
 	completed bool
 }
 
-// flyManeuvers returns the active maneuver's heading, turn direction, and
-// turn rate. It advances to the next maneuver when the completion condition
-// is met. When the last maneuver completes, it clears the maneuver slice.
+// flyManeuvers returns the active maneuver's heading and turn direction. It
+// advances to the next maneuver when the completion condition is met. When
+// the last maneuver completes, it clears the maneuver slice.
 func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTime Time) maneuverResult {
 	m := &(*maneuvers)[0]
 	heading := m.targetHeading(nav, wxs)
@@ -450,7 +449,7 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 			if m.ClearAltitudeOnFinal {
 				nav.Altitude = Altitude{}
 			}
-			return maneuverResult{heading: heading, turn: m.Turn, rate: StandardTurnRate, completed: true}
+			return maneuverResult{heading: heading, turn: m.Turn, completed: true}
 		}
 		// Recompute heading for the new maneuver
 		m = &(*maneuvers)[0]
@@ -463,7 +462,7 @@ func (nav *Nav) flyManeuvers(maneuvers *[]LateralManeuver, wxs wx.Sample, simTim
 		heading = m.targetHeading(nav, wxs)
 	}
 
-	return maneuverResult{heading: heading, turn: m.Turn, rate: StandardTurnRate}
+	return maneuverResult{heading: heading, turn: m.Turn}
 }
 
 // resumeRouteAt takes up the route at the named fix after a maneuver that
@@ -653,9 +652,11 @@ type FlyHold struct {
 	Cancel      bool // when set, we end the hold after the last leg
 }
 
-func (fh *FlyHold) GetHeading(callsign string, nav *Nav, wxs wx.Sample, simTime Time) (math.MagneticHeading, av.TurnDirection, float32) {
+// GetHeading returns the heading and turn direction for the hold's current
+// leg, flying its entry and then circuits until it is cancelled.
+func (fh *FlyHold) GetHeading(callsign string, nav *Nav, wxs wx.Sample, simTime Time) (math.MagneticHeading, av.TurnDirection) {
 	if !fh.activateManeuvers(nav, wxs) {
-		return nav.FlightState.Heading, av.TurnClosest, StandardTurnRate
+		return nav.FlightState.Heading, av.TurnClosest
 	}
 
 	result := nav.flyManeuvers(&fh.Maneuvers, wxs, simTime)
@@ -667,7 +668,7 @@ func (fh *FlyHold) GetHeading(callsign string, nav *Nav, wxs wx.Sample, simTime 
 	NavLog(callsign, simTime, NavLogHold, "entry=%s step=%s acHdg=%.1f targetHdg=%.1f turn=%v dist=%.1fnm",
 		fh.Entry.String(), fh.currentStep(), nav.FlightState.Heading, result.heading, result.turn, dist)
 
-	return result.heading, result.turn, result.rate
+	return result.heading, result.turn
 }
 
 func (fh *FlyHold) activateManeuvers(nav *Nav, wxs wx.Sample) bool {
@@ -687,7 +688,7 @@ func (fh *FlyHold) completeManeuverSet(nav *Nav, wxs wx.Sample, result maneuverR
 		return result
 	}
 	m := &fh.Maneuvers[0]
-	return maneuverResult{heading: m.targetHeading(nav, wxs), turn: m.Turn, rate: result.rate}
+	return maneuverResult{heading: m.targetHeading(nav, wxs), turn: m.Turn}
 }
 
 func (fh *FlyHold) currentStep() string {
