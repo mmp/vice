@@ -99,6 +99,13 @@ func replayTrace(t *testing.T, tr *navtrace.Trace) replay {
 	}
 	n.SetLookups(recordedLookups{t: t, answers: lookupAnswers(tr)})
 
+	var recorded []navtrace.Tick
+	for _, rec := range tr.Records {
+		if rec.Tick != nil {
+			recorded = append(recorded, *rec.Tick)
+		}
+	}
+
 	var r replay
 	var metar *wx.METAR
 	for i, rec := range tr.Records {
@@ -137,7 +144,7 @@ func replayTrace(t *testing.T, tr *navtrace.Trace) replay {
 				replayed.Actions = append(replayed.Actions, navtrace.ActionEvent{Fix: ev.Waypoint.Fix, Actions: actions})
 			}
 			r.ticks = append(r.ticks, replayed)
-			if r.divergence == nil && exceeds(tick, replayed) {
+			if r.divergence == nil && exceeds(recorded, len(r.ticks)-1, replayed) {
 				r.divergence = &divergence{record: i, recorded: tick, replayed: replayed}
 			}
 		}
@@ -184,16 +191,30 @@ func giveCommand(t *testing.T, n *nav.Nav, c *navtrace.Command) string {
 	return ""
 }
 
-// exceeds reports whether the replay's tick differs from the recorded one by
-// more than the tolerances allow. Two identical positions may not come out
+// exceeds reports whether the replay's version b of the kth recorded tick
+// differs from the recording by more than the tolerances allow. Altitude,
+// speed, and heading may match the recording a tick before or after
+// instead. A decision computed in floating point, like when to start a turn
+// or a descent, can come a tick earlier or later on a CPU that rounds
+// differently, and a tick of a standard-rate turn or a normal descent is
+// already past the tolerance. Two identical positions may not come out
 // exactly zero apart where multiply-adds are fused, so they are compared for
 // equality first.
-func exceeds(a, b navtrace.Tick) bool {
-	return (a.Position != b.Position && math.NMDistance2LL(a.Position, b.Position) > positionTolerance) ||
-		math.Abs(a.Altitude-b.Altitude) > altitudeTolerance ||
-		math.Abs(a.IAS-b.IAS) > speedTolerance ||
-		math.Abs(a.GS-b.GS) > speedTolerance ||
-		math.HeadingDifference(math.MagneticHeading(a.Heading), math.MagneticHeading(b.Heading)) > headingTolerance
+func exceeds(recorded []navtrace.Tick, k int, b navtrace.Tick) bool {
+	if a := recorded[k]; a.Position != b.Position && math.NMDistance2LL(a.Position, b.Position) > positionTolerance {
+		return true
+	}
+
+	near := recorded[max(k-1, 0):min(k+2, len(recorded))]
+	within := func(tolerance float32, diff func(r navtrace.Tick) float32) bool {
+		return slices.ContainsFunc(near, func(r navtrace.Tick) bool { return diff(r) <= tolerance })
+	}
+	return !within(altitudeTolerance, func(r navtrace.Tick) float32 { return math.Abs(r.Altitude - b.Altitude) }) ||
+		!within(speedTolerance, func(r navtrace.Tick) float32 { return math.Abs(r.IAS - b.IAS) }) ||
+		!within(speedTolerance, func(r navtrace.Tick) float32 { return math.Abs(r.GS - b.GS) }) ||
+		!within(headingTolerance, func(r navtrace.Tick) float32 {
+			return math.HeadingDifference(math.MagneticHeading(r.Heading), math.MagneticHeading(b.Heading))
+		})
 }
 
 // save writes the trace with the replay's ticks in place of the recorded
@@ -430,18 +451,19 @@ func TestReplayRecordedFlight(t *testing.T) {
 		t.Errorf("the pilot refused: %v", r.refusals)
 	}
 
-	// Disagree with the recording partway through.
-	altered := -1
+	// Disagree with the recording from partway through. The first altered
+	// tick may still match the unaltered one before it, so the divergence
+	// is reported there or at the next tick.
+	var altered []int
 	for i, rec := range tr.Records {
 		if rec.Tick != nil && rec.Tick.Time.After(f.SimTime().Time().Add(-5*time.Minute)) {
 			rec.Tick.Altitude += 100
-			altered = i
-			break
+			altered = append(altered, i)
 		}
 	}
 	r := replayTrace(t, tr)
-	if r.divergence == nil || r.divergence.record != altered {
-		t.Fatalf("divergence %+v, want one at record %d", r.divergence, altered)
+	if r.divergence == nil || !slices.Contains(altered[:2], r.divergence.record) {
+		t.Fatalf("divergence %+v, want one at record %d or %d", r.divergence, altered[0], altered[1])
 	}
 	if report := r.describe(tr); !strings.Contains(report, "altitude") || !strings.Contains(report, "ClearedApproach") {
 		t.Errorf("report doesn't name the difference and the commands before it:\n%s", report)
