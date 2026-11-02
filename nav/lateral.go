@@ -107,9 +107,7 @@ func (nav *Nav) activateDeferredHeading(simTime Time) {
 		return
 	}
 
-	// These may all be nil; whichever the instruction set takes effect now.
-	nav.Heading = Heading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold, Maneuvers: dh.Maneuvers,
-		Join: dh.Join}
+	nav.Heading = dh.Heading
 	if len(dh.Waypoints) > 0 {
 		// The new route starts from wherever the aircraft is; it isn't
 		// on a leg of it.
@@ -997,7 +995,7 @@ func TurnAngle(from, to math.MagneticHeading, turn av.TurnDirection) float32 {
 
 // checkEarlyApproachRequest checks whether the aircraft is too high to
 // comfortably descend to the FAF at 300 ft/nm or less.  If so, it sets
-// RequestApproachClearance so the pilot asks early.
+// the pilot's request for approach clearance so that it asks early.
 func (nav *Nav) checkEarlyApproachRequest(currentWp *av.Waypoint) {
 	// Find the FAF in the remaining waypoints and compute the distance.
 	var fafAlt float32
@@ -1022,6 +1020,6 @@ func (nav *Nav) checkEarlyApproachRequest(currentWp *av.Waypoint) {
 
 	altToLose := nav.FlightState.Altitude - fafAlt
 	if altToLose > 0 && altToLose/dist > 300 {
-		nav.Approach.RequestApproachClearance = true
+		nav.Requests.ApproachClearance = true
 	}
 }

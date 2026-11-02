@@ -25,6 +25,7 @@ func (nav *Nav) GoAroundWithProcedure(altitude float32, runwayEndWP av.Waypoint)
 	nav.DeferredNavHeading = nil
 	nav.Speed = Speed{}
 	nav.Approach = Approach{}
+	nav.Requests = PilotRequests{}
 	nav.setAssignedAltitude(altitude)
 	nav.Waypoints = av.WaypointArray{runwayEndWP, nav.FlightState.ArrivalAirport}
 }
@@ -61,10 +62,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 
 	if sr := nav.Speed.Assigned; afterSpeed && sr != nil {
 		if spd, exact := sr.ExactAirspeed(); exact && spd.IAS(nav.FlightState.Altitude) != nav.FlightState.IAS {
-			nav.Altitude = Altitude{
-				AfterSpeed:      &alt,
-				AfterSpeedSpeed: &spd,
-			}
+			nav.Altitude = Altitude{AfterSpeed: &AltitudeAfterSpeed{Altitude: alt, Speed: spd}}
 			intent.AfterSpeed = &spd
 			return intent, false
 		}
@@ -75,11 +73,7 @@ func (nav *Nav) prepareAltitudeAssignment(alt float32, afterSpeed bool) (speech.
 	if sr := nav.Speed.Assigned; sr != nil && direction != speech.AltitudeMaintain {
 		if spd, exact := sr.ExactValue(); exact &&
 			(sr.IsMach || math.Abs(spd-nav.FlightState.IAS) >= 20) {
-			srCopy := *sr
-			nav.Speed = Speed{
-				AfterAltitude:         &srCopy,
-				AfterAltitudeAltitude: &alt,
-			}
+			nav.Speed = Speed{AfterAltitude: &SpeedAfterAltitude{Speed: *sr, Altitude: alt}}
 		}
 	}
 
@@ -110,8 +104,8 @@ func (nav *Nav) enqueueAssignedAltitude(alt float32, simTime Time, delayReductio
 }
 
 func (nav *Nav) enqueueAltitudeAfterSpeed(simTime Time) {
-	nav.enqueueAltitude(*nav.Altitude.AfterSpeed, nav.Altitude.RateAfterSpeed,
-		simTime.Add(nav.drawDelay(nav.Delays.AltitudeAfterSpeed)))
+	a := nav.Altitude.AfterSpeed
+	nav.enqueueAltitude(a.Altitude, a.Rate, simTime.Add(nav.drawDelay(nav.Delays.AltitudeAfterSpeed)))
 }
 
 // enqueueAltitude assigns alt, to be flown at rate once the pilot reacts at
@@ -203,10 +197,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		alt := *nav.Altitude.Assigned
-		nav.Speed = Speed{
-			AfterAltitude:         sr,
-			AfterAltitudeAltitude: &alt,
-		}
+		nav.Speed = Speed{AfterAltitude: &SpeedAfterAltitude{Speed: *sr, Altitude: alt}}
 		intent := speech.SpeedIntent{Speed: spd, Type: speech.SpeedAssign}
 		if !exact {
 			intent = rangeSpeedIntent(sr)
@@ -223,11 +214,7 @@ func (nav *Nav) AssignSpeed(sr *av.SpeedRestriction, afterAltitude bool, temp av
 	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude &&
 		math.Abs(spd.IAS(nav.FlightState.Altitude)-nav.FlightState.IAS) > 20 {
 		alt := *nav.Altitude.Assigned
-		nav.Altitude = Altitude{
-			AfterSpeed:      &alt,
-			AfterSpeedSpeed: &spd,
-			RateAfterSpeed:  nav.Altitude.Rate,
-		}
+		nav.Altitude = Altitude{AfterSpeed: &AltitudeAfterSpeed{Altitude: alt, Speed: spd, Rate: nav.Altitude.Rate}}
 	}
 	nav.Speed = Speed{Assigned: sr}
 	return speech.SpeedIntent{Speed: spd, Type: nav.speedChangeType(spd)}
@@ -395,13 +382,9 @@ func (nav *Nav) setRate(rate RateQualifier, throughAlt *float32, direction speec
 		(direction == speech.AltitudeClimb && alt <= nav.FlightState.Altitude)
 
 	if wrongDir {
-		if nav.Altitude.AfterSpeed != nil {
-			nav.Altitude.RateAfterSpeed = rate
-			return speech.AltitudeIntent{
-				Direction:  direction,
-				Altitude:   *nav.Altitude.AfterSpeed,
-				AfterSpeed: nav.Altitude.AfterSpeedSpeed,
-			}
+		if a := nav.Altitude.AfterSpeed; a != nil {
+			a.Rate = rate
+			return speech.AltitudeIntent{Direction: direction, Altitude: a.Altitude, AfterSpeed: &a.Speed}
 		}
 		dir := "descending"
 		if direction == speech.AltitudeClimb {
@@ -480,7 +463,7 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 			(slices.ContainsFunc(nav.Waypoints, av.Waypoint.OnSTAR) || nav.Waypoints[0].OnApproach()) &&
 			!nav.hasIssuedAltitude() {
 			if _, ok := nav.findAltitudeTarget(); ok {
-				nav.Approach.RequestAltitude = true
+				nav.Requests.Altitude = true
 				snapshotAltitude = true
 				// Discard a completed approach descent so it cannot govern
 				// altitude after the approach clearance is cancelled.
@@ -811,7 +794,7 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) speech.Com
 		// We're already direct to it for the next fix; get started.
 		nav.Heading = Heading{Hold: nav.makeFlyHold(callsign, h)}
 	} else if nav.hasDeferredRoute() && nav.DeferredNavHeading.Waypoints[0].Fix == h.Fix {
-		nav.DeferredNavHeading.Hold = nav.makeFlyHold(callsign, h)
+		nav.DeferredNavHeading.Heading.Hold = nav.makeFlyHold(callsign, h)
 	} else {
 		// It's a later fix. Queue it up; we'll return to it when it's the next waypoint upcoming.
 		// Clobber any altitude or heading assignments associated with the fix.
@@ -1331,7 +1314,7 @@ func (nav *Nav) CancelApproachClearance() speech.CommandIntent {
 	nav.Approach.Cleared = false
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.NoPT = false
-	nav.Approach.ApproachClearanceCancelled = true
+	nav.Approach.Abandoned = true
 
 	return speech.ApproachIntent{Type: speech.ApproachCancel}
 }

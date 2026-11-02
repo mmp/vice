@@ -116,9 +116,9 @@ func TestLeftDirectFix(t *testing.T) {
 
 	// Check after some time that the deferred heading includes a left turn
 	f.AfterTicks(60, func(f *FlightTest) {
-		if dh := f.nav.DeferredNavHeading; dh != nil && dh.Turn != nil {
-			if *dh.Turn != av.TurnLeft {
-				t.Errorf("expected TurnLeft in deferred heading, got %v", *dh.Turn)
+		if dh := f.nav.DeferredNavHeading; dh != nil && dh.Heading.Turn != nil {
+			if *dh.Heading.Turn != av.TurnLeft {
+				t.Errorf("expected TurnLeft in deferred heading, got %v", *dh.Heading.Turn)
 			}
 		}
 	})
@@ -149,9 +149,9 @@ func TestRightDirectFix(t *testing.T) {
 	})
 
 	f.AfterTicks(60, func(f *FlightTest) {
-		if dh := f.nav.DeferredNavHeading; dh != nil && dh.Turn != nil {
-			if *dh.Turn != av.TurnRight {
-				t.Errorf("expected TurnRight in deferred heading, got %v", *dh.Turn)
+		if dh := f.nav.DeferredNavHeading; dh != nil && dh.Heading.Turn != nil {
+			if *dh.Heading.Turn != av.TurnRight {
+				t.Errorf("expected TurnRight in deferred heading, got %v", *dh.Heading.Turn)
 			}
 		}
 	})
@@ -941,7 +941,7 @@ func TestHeadingAfterAltitudeDeferredBySpeedDoesNotRequestAltitude(t *testing.T)
 	// Speed delta of 60kt > 20kt threshold, which moves the assigned
 	// altitude into AfterSpeed and clears Altitude.Assigned.
 	f.AssignSpeed(190)
-	if f.nav.Altitude.AfterSpeed == nil || *f.nav.Altitude.AfterSpeed != 3000 {
+	if f.nav.Altitude.AfterSpeed == nil || f.nav.Altitude.AfterSpeed.Altitude != 3000 {
 		t.Fatalf("expected AfterSpeed=3000 after AssignSpeed, got %v", f.nav.Altitude.AfterSpeed)
 	}
 	if f.nav.Altitude.Assigned != nil {
@@ -950,7 +950,7 @@ func TestHeadingAfterAltitudeDeferredBySpeedDoesNotRequestAltitude(t *testing.T)
 
 	f.AssignHeading(310, av.TurnRight)
 
-	if f.nav.Approach.RequestAltitude {
+	if f.nav.Requests.Altitude {
 		t.Error("pilot should not request altitude after heading: 3000 was already assigned (deferred via AfterSpeed)")
 	}
 }
@@ -971,7 +971,7 @@ func TestHeadingOffSTARWithNoAltitudeRequestsAltitude(t *testing.T) {
 
 	f.AssignHeading(310, av.TurnRight)
 
-	if !f.nav.Approach.RequestAltitude {
+	if !f.nav.Requests.Altitude {
 		t.Error("pilot should request altitude when vectored off STAR with no assigned altitude")
 	}
 }
@@ -995,7 +995,7 @@ func TestHeadingAheadOfSTARRequestsAltitudeAndLevels(t *testing.T) {
 	}
 
 	f.AssignHeading(int(f.nav.FlightState.Heading), av.TurnClosest)
-	if !f.nav.Approach.RequestAltitude {
+	if !f.nav.Requests.Altitude {
 		t.Error("pilot should request altitude when vectored ahead of the STAR with no assigned altitude")
 	}
 

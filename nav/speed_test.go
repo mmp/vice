@@ -869,7 +869,7 @@ func TestSpeedAfterAltitudeWithMachAssigned(t *testing.T) {
 	f := machFlight(t, 33000, .78)
 	mach, after := av.MakeMachRestriction(.78), av.MakeAtSpeedRestriction(250)
 	alt := float32(35000)
-	f.nav.Speed = Speed{Assigned: &mach, AfterAltitude: &after, AfterAltitudeAltitude: &alt}
+	f.nav.Speed = Speed{Assigned: &mach, AfterAltitude: &SpeedAfterAltitude{Speed: after, Altitude: alt}}
 	f.nav.setAssignedAltitude(alt)
 	f.StepUntil("climbed to FL350", func() bool { return f.nav.FlightState.Altitude == alt })
 	if f.nav.Speed.Assigned == nil || *f.nav.Speed.Assigned != after {

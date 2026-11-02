@@ -510,7 +510,7 @@ func runInterceptCase(t *testing.T, c interceptCase) interceptMetrics {
 		if m.established != 0 && f.tick > m.established+120 {
 			break
 		}
-		if f.nav.Approach.RequestVectors {
+		if f.nav.Requests.Vectors {
 			m.vectors = true
 			break
 		}

@@ -107,7 +107,7 @@ func TestJoinAirway(t *testing.T) {
 		if ni, ok := intent.(speech.NavigationIntent); !ok || ni.Type != speech.NavJoinAirway || ni.Airway != "V999" {
 			t.Errorf("got %+v, want a readback of joining V999", intent)
 		}
-		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 || dh.Join == nil {
+		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 || dh.Heading.Join == nil {
 			t.Fatal("the join wasn't queued along with the heading")
 		}
 	})
@@ -265,7 +265,7 @@ func TestResumeSID(t *testing.T) {
 		if ni, ok := intent.(speech.NavigationIntent); !ok || ni.Type != speech.NavResumeSID || ni.Procedure != "SKORR5" {
 			t.Errorf("got %+v, want a readback of resuming the SKORR5", intent)
 		}
-		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 || dh.Maneuvers[0].Until.InterceptFix != "QQC" {
+		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 || dh.Heading.Maneuvers[0].Until.InterceptFix != "QQC" {
 			t.Errorf("queued maneuvers %+v, want an intercept of the course to QQC", dh)
 		}
 	})
@@ -347,8 +347,8 @@ func TestJoinAirwayAfterPassingFix(t *testing.T) {
 		// Back toward the leg, crossing it a mile short of QQC.
 		f.AssignHeading(int(headingTo(9, 0)), av.TurnClosest)
 		assertNotUnable(t, f.nav.JoinAirway("V999", f.simTime, 0))
-		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 ||
-			dh.Maneuvers[0].Until.InterceptFix != "QQC" {
+		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 ||
+			dh.Heading.Maneuvers[0].Until.InterceptFix != "QQC" {
 			t.Fatalf("queued maneuvers %+v, want an intercept of the leg to QQC", dh)
 		}
 	})
@@ -506,7 +506,7 @@ func TestJoinSurvivesCrossingReplacement(t *testing.T) {
 	// the segment that ends at it.
 	f.AssignHeading(int(headingTo(4, 0)), av.TurnClosest)
 	assertNotUnable(t, f.nav.JoinAirway("V999", f.simTime, 0))
-	if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 || dh.Maneuvers[0].ResumeFix != "QQC" {
+	if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 || dh.Heading.Maneuvers[0].ResumeFix != "QQC" {
 		t.Fatalf("queued maneuvers %+v, want the join anchored to QQC", dh)
 	}
 
@@ -621,8 +621,8 @@ func TestJoinAirwayLegAgainAfterJoining(t *testing.T) {
 			// And back onto it, short of QQC.
 			f.AssignHeading(int(headingTo(8.5, 0)), av.TurnClosest)
 			assertNotUnable(t, f.nav.JoinAirway("V999", f.simTime, 0))
-			if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 ||
-				dh.Maneuvers[0].Until.InterceptFix != "QQC" {
+			if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 ||
+				dh.Heading.Maneuvers[0].Until.InterceptFix != "QQC" {
 				t.Fatalf("queued maneuvers %+v, want an intercept of the leg to QQC", dh)
 			}
 		}
@@ -662,8 +662,8 @@ func TestJoinAirwayLegAfterPassingCrossing(t *testing.T) {
 		// Back onto the leg, a mile short of QQC.
 		f.AssignHeading(int(headingTo(9, 0)), av.TurnClosest)
 		assertNotUnable(t, f.nav.JoinAirway("V999", f.simTime, 0))
-		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 ||
-			dh.Maneuvers[0].Until.InterceptFix != "QQC" {
+		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 ||
+			dh.Heading.Maneuvers[0].Until.InterceptFix != "QQC" {
 			t.Fatalf("queued maneuvers %+v, want an intercept of the leg to QQC", dh)
 		}
 	})
@@ -821,8 +821,8 @@ func TestJoinAirwayAfterDirectRollback(t *testing.T) {
 			}
 			f.AssignHeading(int(headingTo(9, 0)), av.TurnClosest)
 			assertNotUnable(t, f.nav.JoinAirway("V999", f.simTime, 0))
-			if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 ||
-				dh.Maneuvers[0].Until.InterceptFix != "QQC" {
+			if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 ||
+				dh.Heading.Maneuvers[0].Until.InterceptFix != "QQC" {
 				t.Fatalf("queued maneuvers %+v, want an intercept of the leg to QQC", dh)
 			}
 		}

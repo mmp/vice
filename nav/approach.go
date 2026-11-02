@@ -312,38 +312,13 @@ func (nav *Nav) approachRecoveryFeasible(ap *av.Approach) bool {
 	return lateralOffset <= recoveryHalfWidth
 }
 
-// PilotRequests are what the pilot has decided to ask the controller for, or
-// to do on their own, since the sim last took them.
-type PilotRequests struct {
-	ApproachClearance bool // close to the approach with no clearance
-	GoAround          bool // reached the FAF with no clearance
-	Vectors           bool // overshot the localizer
-	Altitude          bool // vectored off a STAR or approach with no altitude
-}
-
-// TakePilotRequests returns what the pilot wants to ask for or do and clears
-// it, so that each request is acted on once.
-func (nav *Nav) TakePilotRequests() PilotRequests {
-	defer nav.record("TakePilotRequests")()
-	a := &nav.Approach
-	r := PilotRequests{
-		ApproachClearance: a.RequestApproachClearance,
-		GoAround:          a.GoAroundNoApproachClearance,
-		Vectors:           a.RequestVectors,
-		Altitude:          a.RequestAltitude,
-	}
-	a.RequestApproachClearance, a.GoAroundNoApproachClearance = false, false
-	a.RequestVectors, a.RequestAltitude = false, false
-	return r
-}
-
 // approachOvershootRequestVectors cancels the approach and flags the
 // pilot to request new vectors from ATC.
 func (nav *Nav) approachOvershootRequestVectors() {
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.Cleared = false
-	nav.Approach.RequestVectors = true
-	nav.Approach.MissedApproachIntercept = true
+	nav.Approach.Abandoned = true
+	nav.Requests.Vectors = true
 }
 
 func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av.Approach, error) {
@@ -464,12 +439,10 @@ func (nav *Nav) ExpectApproach(approach string, ea ExpectedApproach, runwayWaypo
 		}
 	}
 
-	requestAltitude := nav.Approach.RequestAltitude
 	nav.Approach = Approach{
 		Assigned:         ap,
 		AssignedId:       id,
 		ATPAVolume:       ea.ATPAVolume,
-		RequestAltitude:  requestAltitude,
 		VisualReferences: ea.References,
 	}
 
@@ -733,11 +706,11 @@ func (nav *Nav) passApproachFix(wp av.Waypoint) {
 
 	if wp.FAF() && nav.InterceptedButNotCleared() {
 		// At the FAF without clearance, go around.
-		nav.Approach.GoAroundNoApproachClearance = true
+		nav.Requests.GoAround = true
 	} else if nav.InterceptedButNotCleared() && !nav.Approach.StandbyApproach {
 		if wp.IF() {
 			// At the IF, the pilot asks for approach clearance.
-			nav.Approach.RequestApproachClearance = true
+			nav.Requests.ApproachClearance = true
 		} else if wp.OnApproach() {
 			// At an intermediate approach fix, check if the altitude
 			// makes descent to the FAF challenging (>300 ft/nm).
@@ -1208,8 +1181,7 @@ func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 	}
 	nav.Approach.Cleared = true
 	nav.Approach.StandbyApproach = false
-	nav.Approach.MissedApproachIntercept = false
-	nav.Approach.ApproachClearanceCancelled = false
+	nav.Approach.Abandoned = false
 	nav.Speed = Speed{}
 	// The approach's altitudes may take the aircraft below a descend via
 	// floor.

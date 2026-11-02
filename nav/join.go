@@ -131,7 +131,7 @@ func (nav *Nav) AssignHeadingToJoin(hdg math.MagneticHeading, turn av.TurnDirect
 // cancels one that was in progress.
 func (nav *Nav) pendingJoin() *RouteJoin {
 	if dh := nav.DeferredNavHeading; dh != nil {
-		return dh.Join
+		return dh.Heading.Join
 	}
 	return nav.Heading.Join
 }
@@ -141,11 +141,11 @@ func (nav *Nav) pendingJoin() *RouteJoin {
 // started the turn to it, and its turn direction.
 func (nav *Nav) headingToJoinFrom() (math.MagneticHeading, av.TurnDirection, bool) {
 	turn := av.TurnClosest
-	if dh := nav.DeferredNavHeading; dh != nil && dh.Heading != nil {
-		if dh.Turn != nil {
-			turn = *dh.Turn
+	if dh := nav.DeferredNavHeading; dh != nil && dh.Heading.Assigned != nil {
+		if dh.Heading.Turn != nil {
+			turn = *dh.Heading.Turn
 		}
-		return *dh.Heading, turn, true
+		return *dh.Heading.Assigned, turn, true
 	}
 	if nav.Heading.Assigned != nil {
 		if nav.Heading.Turn != nil {
@@ -199,8 +199,8 @@ func (nav *Nav) startJoin(join RouteJoin, hdg math.MagneticHeading, turn av.Turn
 	nav.Approach.InterceptState = NotIntercepting
 	dh := nav.DeferredNavHeading
 	dh.SnapshotAltitudeOnEffect = dh.SnapshotAltitudeOnEffect || snapshotAltitude
-	dh.Maneuvers = maneuvers
-	dh.Join = &join
+	dh.Heading.Maneuvers = maneuvers
+	dh.Heading.Join = &join
 	dh.Waypoints = route
 	return nil
 }

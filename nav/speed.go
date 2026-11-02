@@ -48,7 +48,7 @@ func (nav *Nav) crossSpeed(next float32, simTime Time) {
 		return
 	}
 	cur := nav.FlightState.IAS
-	at := nav.Altitude.AfterSpeedSpeed.IAS(nav.FlightState.Altitude)
+	at := nav.Altitude.AfterSpeed.Speed.IAS(nav.FlightState.Altitude)
 	if (cur > at && next <= at) || (cur < at && next >= at) {
 		nav.enqueueAltitudeAfterSpeed(simTime)
 	}
@@ -267,9 +267,9 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 		return speedTarget{ias: ias, rate: MaximumRate}
 	}
 
-	if nav.Approach.Cleared || nav.Approach.MissedApproachIntercept || nav.Approach.ApproachClearanceCancelled {
-		// Don't speed up if we're cleared (or recently were, before an overshoot recovery or
-		// controller cancellation)
+	if nav.Approach.Cleared || nav.Approach.Abandoned {
+		// Don't speed up if we're cleared, or were until the approach fell
+		// through.
 		return speedTarget{ias: nav.FlightState.IAS, rate: MaximumRate}
 	}
 

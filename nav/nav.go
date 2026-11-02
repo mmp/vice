@@ -74,6 +74,9 @@ type Instructions struct {
 	Speed    Speed
 	Heading  Heading
 	Approach Approach
+	// Requests is what the pilot has decided to ask the controller for and
+	// the sim hasn't yet taken; see TakePilotRequests.
+	Requests PilotRequests
 
 	FixAssignments map[string]FixAssignment
 
@@ -93,22 +96,37 @@ type Instructions struct {
 	PassedWaypoint av.Waypoint
 }
 
+// PilotRequests are what the pilot has decided to ask the controller for, or
+// to do on their own, since the sim last took them.
+type PilotRequests struct {
+	ApproachClearance bool // close to the approach with no clearance
+	GoAround          bool // reached the FAF with no clearance
+	Vectors           bool // overshot the localizer
+	Altitude          bool // vectored off a STAR or approach with no altitude
+}
+
+// TakePilotRequests returns what the pilot wants to ask for or do and clears
+// it, so that each request is acted on once.
+func (nav *Nav) TakePilotRequests() PilotRequests {
+	defer nav.record("TakePilotRequests")()
+	r := nav.Requests
+	nav.Requests = PilotRequests{}
+	return r
+}
+
 type UpdateResult struct {
 	PassedWaypoint *av.Waypoint
 	ActionEvents   []av.WaypointActionEvent
 }
 
-// DeferredNavHeading stores a heading assignment from the controller and the
-// time at which to start executing it; this time is set to be a few
-// seconds after the controller issues it in order to model the delay
-// before pilots start to follow assignments.
+// DeferredNavHeading is a heading, direct or hold from the controller that
+// the pilot has not yet started to follow, and when they will: a few seconds
+// after the instruction, to model the delay before pilots act on one.
 type DeferredNavHeading struct {
-	Time      Time
-	Heading   *math.MagneticHeading
-	Turn      *av.TurnDirection
-	Hold      *FlyHold
-	Maneuvers []LateralManeuver
-	Join      *RouteJoin
+	Time Time
+	// Heading is what the aircraft flies once the delay has passed, and
+	// Waypoints, if any, the route it takes up then.
+	Heading   Heading
 	Waypoints []av.Waypoint
 
 	// SnapshotAltitudeOnEffect, when true, causes the current altitude to be captured into
@@ -139,17 +157,23 @@ const (
 )
 
 type Altitude struct {
-	Assigned        *float32 // controller-assigned altitude (not yet in autopilot)
-	ActiveAssigned  *float32 // assigned altitude currently used for vertical guidance
-	ActivateAt      Time     // non-zero while Assigned is pending activation
-	Cleared         *ClearedAltitude
-	AfterSpeed      *float32
-	AfterSpeedSpeed *av.Airspeed
-	Rate            RateQualifier
-	RateThrough     *float32                // revert to RateNormal after passing this altitude; nil = all the way
-	RateAfterSpeed  RateQualifier           // preserved across speed transitions
-	Restriction     *av.AltitudeRestriction // The restriction at the last waypoint passed.
+	Assigned       *float32 // controller-assigned altitude (not yet in autopilot)
+	ActiveAssigned *float32 // assigned altitude currently used for vertical guidance
+	ActivateAt     Time     // non-zero while Assigned is pending activation
+	Cleared        *ClearedAltitude
+	AfterSpeed     *AltitudeAfterSpeed
+	Rate           RateQualifier
+	RateThrough    *float32                // revert to RateNormal after passing this altitude; nil = all the way
+	Restriction    *av.AltitudeRestriction // The restriction at the last waypoint passed.
+}
 
+// AltitudeAfterSpeed is an altitude assignment that waits on a speed change,
+// as in "reduce speed to 180, then descend and maintain 6,000": once the
+// aircraft reaches Speed it is assigned Altitude, to climb or descend at Rate.
+type AltitudeAfterSpeed struct {
+	Altitude float32
+	Speed    av.Airspeed
+	Rate     RateQualifier
 }
 
 // ClearedAltitude is the altitude an aircraft flying its route's altitude
@@ -164,11 +188,18 @@ type ClearedAltitude struct {
 
 type Speed struct {
 	Assigned                 *av.SpeedRestriction // controller-assigned (exact or range)
-	AfterAltitude            *av.SpeedRestriction // speed to apply after reaching assigned altitude
-	AfterAltitudeAltitude    *float32
+	AfterAltitude            *SpeedAfterAltitude
 	MaintainSlowestPractical bool
 	MaintainMaximumForward   bool
 	Restriction              *av.SpeedRestriction // Carried after passing a waypoint
+}
+
+// SpeedAfterAltitude is a speed assignment that waits on an altitude change,
+// as in "descend and maintain 6,000, then reduce speed to 180": once the
+// aircraft reaches Altitude it is assigned Speed.
+type SpeedAfterAltitude struct {
+	Speed    av.SpeedRestriction
+	Altitude float32
 }
 
 type Heading struct {
@@ -182,29 +213,38 @@ type Heading struct {
 
 }
 
+// Approach is the approach the aircraft has been told to expect and how far it
+// has gotten with it.
 type Approach struct {
-	Assigned                    *av.Approach
-	AssignedId                  string
-	ATPAVolume                  *av.ATPAVolume
-	Cleared                     bool
-	StandbyApproach             bool // suppress repeated approach clearance requests
-	RequestApproachClearance    bool // pilot should radio for approach clearance
-	GoAroundNoApproachClearance bool // pilot should go around (reached FAF without clearance)
-	RequestVectors              bool // pilot should request vectors (overshot localizer)
-	RequestAltitude             bool // pilot should request altitude after being vectored off STAR/approach
-	MissedApproachIntercept     bool // bad vectors -> pilot was unable to intercept
-	ApproachClearanceCancelled  bool // controller canceled approach clearance
-	InterceptState              InterceptState
-	PassedApproachFix           bool // have we passed a fix on the approach yet?
-	PassedFAF                   bool
-	NoPT                        bool
-	AtFixClearedRoute           []av.Waypoint
-	AtFixInterceptFix           string           // fix where aircraft should intercept the localizer
-	InterceptCourseLine         [2]math.Point2LL // cached course line for non-ILS intercepts
-	InterceptWaypoints          []av.Waypoint    // cached remaining waypoints for non-ILS intercepts
-
+	// What was assigned: the approach, its ATPA volume, and for a visual the
+	// approaches it is flown by reference to and the one it has been
+	// committed to.
+	Assigned             *av.Approach
+	AssignedId           string
+	ATPAVolume           *av.ATPAVolume
 	VisualReferences     []*av.Approach // Reference approaches for non-charted visual approach
 	InterceptedReference *av.Approach   // Approach giving the committed-to route for a non-charted visual approach
+
+	// The clearance. Abandoned is set when the approach fell through, by an
+	// intercept the aircraft couldn't make or a clearance the controller
+	// cancelled; the aircraft keeps its speed as if it were still on it.
+	Cleared         bool
+	StandbyApproach bool // suppress repeated approach clearance requests
+	NoPT            bool
+	Abandoned       bool
+
+	// Instructions that take effect at a fix.
+	AtFixClearedRoute []av.Waypoint
+	AtFixInterceptFix string // fix where aircraft should intercept the localizer
+
+	// Joining the approach course from a heading.
+	InterceptState      InterceptState
+	InterceptCourseLine [2]math.Point2LL // cached course line for non-ILS intercepts
+	InterceptWaypoints  []av.Waypoint    // cached remaining waypoints for non-ILS intercepts
+
+	// Progress along the approach.
+	PassedApproachFix bool // have we passed a fix on the approach yet?
+	PassedFAF         bool
 }
 
 // EffectivelyCleared reports whether the aircraft has been cleared for the
@@ -586,8 +626,8 @@ func (nav *Nav) groundWind(wxs wx.Sample) [2]float32 {
 // any, regardless of whether the pilot has yet started following it.
 func (nav *Nav) AssignedHeading() (math.MagneticHeading, bool) {
 	if dh := nav.DeferredNavHeading; dh != nil {
-		if dh.Heading != nil {
-			return *dh.Heading, true
+		if dh.Heading.Assigned != nil {
+			return *dh.Heading.Assigned, true
 		}
 	} else if nav.Heading.Assigned != nil {
 		return *nav.Heading.Assigned, true
@@ -755,8 +795,7 @@ func (nav *Nav) EnqueueHeading(hdg math.MagneticHeading, turn av.TurnDirection, 
 	}
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time:    simTime.Add(d),
-		Heading: &hdg,
-		Turn:    &turn,
+		Heading: Heading{Assigned: &hdg, Turn: &turn},
 	}
 }
 
@@ -845,7 +884,7 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, turn av.TurnDirection, simTi
 		Waypoints: wps,
 	}
 	if turn != av.TurnClosest {
-		dh.Turn = &turn
+		dh.Heading.Turn = &turn
 	}
 	nav.DeferredNavHeading = dh
 }

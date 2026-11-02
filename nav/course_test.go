@@ -821,9 +821,9 @@ func TestInterceptRadialUsesAssignedHeading(t *testing.T) {
 
 	check := func(when string) {
 		t.Helper()
-		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 {
+		if dh := f.nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 {
 			t.Fatalf("%s: no maneuvers were queued", when)
-		} else if got := dh.Maneuvers[0].Heading; got != hdg {
+		} else if got := dh.Heading.Maneuvers[0].Heading; got != hdg {
 			t.Errorf("%s: maneuver flies heading %.0f, want the assigned %.0f", when, got, hdg)
 		}
 	}
@@ -968,7 +968,7 @@ func TestInterceptRadialUnreachable(t *testing.T) {
 	AssertUnable(t, intent)
 
 	// The left turn stands; only the intercept was refused.
-	if dh := f.nav.DeferredNavHeading; dh == nil || dh.Heading == nil || *dh.Heading != 180 {
+	if dh := f.nav.DeferredNavHeading; dh == nil || dh.Heading.Assigned == nil || *dh.Heading.Assigned != 180 {
 		t.Error("the heading assignment was lost along with the refused intercept")
 	}
 	// The refusal has to be scoped to the intercept; a bare "unable" after the

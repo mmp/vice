@@ -1254,7 +1254,7 @@ func TestVectorKeepsIssuedAltitude(t *testing.T) {
 			if c := f.nav.Altitude.Cleared; c == nil || *c != (ClearedAltitude{Altitude: 8000, IsFloor: true}) {
 				t.Fatalf("expected the cleared altitude 8000 to be kept, got %+v", c)
 			}
-			if f.nav.Approach.RequestAltitude {
+			if f.nav.Requests.Altitude {
 				t.Error("expected no altitude request with an altitude issued")
 			}
 			f.Step(120)
@@ -1289,7 +1289,7 @@ func TestVectorOffApproachAfterCompletedDescent(t *testing.T) {
 	if f.nav.Approach.Cleared {
 		t.Error("expected the heading to cancel the approach clearance")
 	}
-	if !f.nav.Approach.RequestAltitude {
+	if !f.nav.Requests.Altitude {
 		t.Error("expected the pilot to ask for an altitude")
 	}
 	c := f.nav.Altitude.Cleared
@@ -1327,7 +1327,7 @@ func TestVectorOffLocalizerHoldsAltitude(t *testing.T) {
 	if f.nav.Approach.Cleared {
 		t.Error("expected the heading to cancel the approach clearance")
 	}
-	if !f.nav.Approach.RequestAltitude {
+	if !f.nav.Requests.Altitude {
 		t.Error("expected the pilot to ask for an altitude")
 	}
 	c := f.nav.Altitude.Cleared
@@ -1961,10 +1961,10 @@ func TestVectorOffSTARHoldsAltitude(t *testing.T) {
 		t.Errorf("snapshot %.0f should be near (slightly below) command-time altitude %.0f",
 			snapshotAlt, altAtCommand)
 	}
-	if !f.nav.Approach.RequestAltitude {
+	if !f.nav.Requests.Altitude {
 		// RequestAltitude is set at command time and is only cleared by
 		// sim-side processing (which this test does not exercise).
-		t.Error("expected Approach.RequestAltitude to remain set")
+		t.Error("expected Requests.Altitude to remain set")
 	}
 
 	// Run several more seconds and confirm the aircraft holds the snapshot

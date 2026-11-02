@@ -43,17 +43,16 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 			line += nav.rateSummary()
 			lines = append(lines, line)
 		}
-	} else if nav.Altitude.AfterSpeed != nil {
-		dir := util.Select(*nav.Altitude.AfterSpeed > nav.FlightState.Altitude, "climb", "descend")
+	} else if a := nav.Altitude.AfterSpeed; a != nil {
+		dir := util.Select(a.Altitude > nav.FlightState.Altitude, "climb", "descend")
 		rateSuffix := ""
-		switch nav.Altitude.RateAfterSpeed {
+		switch a.Rate {
 		case RateGood:
 			rateSuffix = ", good rate"
 		case RateExpedite:
 			rateSuffix = ", expediting"
 		}
-		lines = append(lines, fmt.Sprintf("At %s, %s to %s"+rateSuffix,
-			*nav.Altitude.AfterSpeedSpeed, dir, av.FormatAltitude(*nav.Altitude.AfterSpeed)))
+		lines = append(lines, fmt.Sprintf("At %s, %s to %s"+rateSuffix, a.Speed, dir, av.FormatAltitude(a.Altitude)))
 	} else if target, ok := nav.findAltitudeTarget(); ok {
 		alt := nav.limitAltitude(target.altitude)
 		switch {
@@ -128,17 +127,17 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 		}
 	}
 	if dh := nav.DeferredNavHeading; dh != nil {
-		if len(dh.Maneuvers) > 0 {
-			lines = append(lines, "Will shortly "+dh.Maneuvers[0].String())
+		if len(dh.Heading.Maneuvers) > 0 {
+			lines = append(lines, "Will shortly "+dh.Heading.Maneuvers[0].String())
 		} else if len(dh.Waypoints) > 0 {
 			lines = append(lines, fmt.Sprintf("Will shortly go direct %s", dh.Waypoints[0].Fix))
-		} else if dh.Heading != nil {
-			lines = append(lines, fmt.Sprintf("Will shortly start flying heading %03d", int(*dh.Heading)))
+		} else if dh.Heading.Assigned != nil {
+			lines = append(lines, fmt.Sprintf("Will shortly start flying heading %03d", int(*dh.Heading.Assigned)))
 		} else {
 			lines = append(lines, "Will shortly proceed on course/fly the current SID/STAR")
 		}
-		if dh.Hold != nil {
-			lines = append(lines, fmt.Sprintf("Will shortly enter hold at %s", dh.Hold.Hold.DisplayName()))
+		if dh.Heading.Hold != nil {
+			lines = append(lines, fmt.Sprintf("Will shortly enter hold at %s", dh.Heading.Hold.Hold.DisplayName()))
 		}
 	}
 
@@ -162,9 +161,8 @@ func (nav *Nav) Summary(rules av.FlightRules, model *wx.Model, simTime Time, r *
 		lines = append(lines, fmt.Sprintf("Speed %.0f kts to %.0f", nav.FlightState.IAS, ias))
 	} else if sr := nav.Speed.Assigned; sr != nil {
 		lines = append(lines, fmt.Sprintf("Maintaining %s assignment", sr))
-	} else if nav.Speed.AfterAltitude != nil && nav.Speed.AfterAltitudeAltitude != nil {
-		lines = append(lines, fmt.Sprintf("At %s, maintain %s", av.FormatAltitude(*nav.Speed.AfterAltitudeAltitude),
-			nav.Speed.AfterAltitude))
+	} else if a := nav.Speed.AfterAltitude; a != nil {
+		lines = append(lines, fmt.Sprintf("At %s, maintain %s", av.FormatAltitude(a.Altitude), a.Speed))
 	}
 
 	for fix, nfa := range util.SortedMap(nav.FixAssignments) {

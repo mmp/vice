@@ -431,7 +431,7 @@ func TestContactGoesStale(t *testing.T) {
 		{"altitude assigned", PendingTransmissionRequestAltitude, nil,
 			func(s *Sim, ac *Aircraft) { ac.Nav.Altitude.Assigned = new(float32(3000)) }},
 		{"altitude after speed", PendingTransmissionRequestAltitude, nil,
-			func(s *Sim, ac *Aircraft) { ac.Nav.Altitude.AfterSpeed = new(float32(3000)) }},
+			func(s *Sim, ac *Aircraft) { ac.Nav.Altitude.AfterSpeed = &nav.AltitudeAfterSpeed{Altitude: 3000} }},
 		{"altitude request cleared", PendingTransmissionRequestAltitude, nil, clear},
 		{"tower switch no longer cleared", PendingTransmissionRequestTowerSwitch, cleared,
 			func(s *Sim, ac *Aircraft) { ac.Nav.Approach.Cleared = false }},

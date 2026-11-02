@@ -90,12 +90,11 @@ func (nav *Nav) crossAltitude(next float32, slowingTo250 bool) float32 {
 
 	// "At alt, reduce speed": the speed is taken up once the altitude is
 	// reached or passed.
-	if nav.Speed.AfterAltitude != nil && (nav.Speed.Assigned == nil ||
-		nav.Speed.Assigned.IAS(cur).Satisfied(nav.FlightState.IAS)) &&
-		crosses(*nav.Speed.AfterAltitudeAltitude) {
-		nav.Speed.Assigned = nav.Speed.AfterAltitude
+	if a := nav.Speed.AfterAltitude; a != nil && (nav.Speed.Assigned == nil ||
+		nav.Speed.Assigned.IAS(cur).Satisfied(nav.FlightState.IAS)) && crosses(a.Altitude) {
+		sr := a.Speed
+		nav.Speed.Assigned = &sr
 		nav.Speed.AfterAltitude = nil
-		nav.Speed.AfterAltitudeAltitude = nil
 	}
 
 	// A Mach number is only flown at the altitudes it may be assigned

@@ -864,7 +864,7 @@ func TestAtFixOnHeading(t *testing.T) {
 					return
 				}
 				f.StepUntil("joined the localizer", func() bool {
-					if f.nav.Approach.RequestVectors {
+					if f.nav.Requests.Vectors {
 						t.Fatal("aircraft requested vectors")
 					}
 					return f.nav.Approach.InterceptState == OnApproachCourse
@@ -1222,8 +1222,8 @@ func TestLocalizerFlythroughSteepIntercept(t *testing.T) {
 		if f.nav.Approach.InterceptState != NotIntercepting {
 			t.Errorf("expected NotIntercepting, got %d", f.nav.Approach.InterceptState)
 		}
-		if !f.nav.Approach.RequestVectors {
-			t.Errorf("expected RequestVectors to be set")
+		if !f.nav.Requests.Vectors {
+			t.Errorf("expected Requests.Vectors to be set")
 		}
 	})
 
@@ -1250,8 +1250,8 @@ func TestOvershootPreservesSpeed(t *testing.T) {
 	f.ClearedApproach("I22L")
 
 	f.AfterTicks(300, func(f *FlightTest) {
-		if !f.nav.Approach.MissedApproachIntercept {
-			t.Errorf("expected MissedApproachIntercept to be set after overshoot")
+		if !f.nav.Approach.Abandoned {
+			t.Errorf("expected Approach.Abandoned to be set after overshoot")
 		}
 		if f.nav.FlightState.IAS > 200 {
 			t.Errorf("IAS %.0f: expected speed to be held near 180 after overshoot, not climbing toward 250",
@@ -1300,7 +1300,7 @@ func TestLocalizerFlythroughLateTurn(t *testing.T) {
 		if f.nav.Approach.InterceptState != OnApproachCourse {
 			t.Errorf("expected OnApproachCourse after recovery, got %d", f.nav.Approach.InterceptState)
 		}
-		if f.nav.Approach.RequestVectors {
+		if f.nav.Requests.Vectors {
 			t.Errorf("RequestVectors should not be set after successful recovery")
 		}
 	})
@@ -1460,7 +1460,7 @@ func TestLocalizerOvershootRecovery(t *testing.T) {
 					tick, f.nav.Approach.InterceptState,
 					f.nav.FlightState.Heading, sd,
 					assignedHdg,
-					f.nav.Approach.RequestVectors)
+					f.nav.Requests.Vectors)
 			}
 
 			// Count centerline crossings to detect oscillation.
@@ -1479,7 +1479,7 @@ func TestLocalizerOvershootRecovery(t *testing.T) {
 		if f.nav.Approach.InterceptState != OnApproachCourse {
 			t.Errorf("expected OnApproachCourse by ZALPO, got %d", f.nav.Approach.InterceptState)
 		}
-		if f.nav.Approach.RequestVectors {
+		if f.nav.Requests.Vectors {
 			t.Errorf("RequestVectors should not be set after successful recovery")
 		}
 		// One or two crossings are OK (converging to centerline);
@@ -1521,7 +1521,7 @@ func TestReissuedApproachClearanceDuringLocalizerCapture(t *testing.T) {
 				}
 				reissued = true
 			}
-			if f.nav.Approach.RequestVectors {
+			if f.nav.Requests.Vectors {
 				t.Fatalf("tick %d: RequestVectors unexpectedly set", tick)
 			}
 		})
@@ -1566,7 +1566,7 @@ func TestLocalizerOvershootNearFAF(t *testing.T) {
 		if f.nav.Approach.InterceptState != NotIntercepting {
 			t.Errorf("expected NotIntercepting, got %d", f.nav.Approach.InterceptState)
 		}
-		if !f.nav.Approach.RequestVectors {
+		if !f.nav.Requests.Vectors {
 			t.Errorf("expected RequestVectors to be set (too close to FAF)")
 		}
 	})
@@ -1626,7 +1626,7 @@ func TestLocalizerRecoveryTurnsTowardTheCourse(t *testing.T) {
 		if f.nav.Approach.InterceptState == OnApproachCourse {
 			established = f.tick
 		}
-		if f.nav.Approach.RequestVectors {
+		if f.nav.Requests.Vectors {
 			t.Fatalf("tick %d: requested vectors from an ordinary 12 degree intercept", f.tick)
 		}
 	}
@@ -1672,10 +1672,10 @@ func TestLocalizerNotClosingRequestsVectors(t *testing.T) {
 	f.nav.Heading = Heading{Assigned: &hdg}
 	f.nav.DeferredNavHeading = nil
 
-	for f.tick < 60 && !f.nav.Approach.RequestVectors {
+	for f.tick < 60 && !f.nav.Requests.Vectors {
 		f.tickOnce()
 	}
-	if !f.nav.Approach.RequestVectors {
+	if !f.nav.Requests.Vectors {
 		t.Errorf("flew %.2fnm off the localizer for %ds without requesting vectors",
 			math.Abs(f.SignedCenterlineDistance()), f.tick)
 	}
@@ -1709,7 +1709,7 @@ func TestHeadingAndClearanceWhenOffHeading(t *testing.T) {
 	// and then evaluate the intercept normally.
 	for tick := 1; tick <= 300; tick++ {
 		f.AfterTicks(tick, func(f *FlightTest) {
-			if f.nav.Approach.RequestVectors {
+			if f.nav.Requests.Vectors {
 				t.Fatalf("tick %d: RequestVectors unexpectedly set (hdg=%.0f)",
 					tick, f.nav.FlightState.Heading)
 			}
@@ -1746,7 +1746,7 @@ func TestLocalizerOvershootOutsideOldTwoDegreeConeRecovers(t *testing.T) {
 
 	for tick := 1; tick <= 300; tick++ {
 		f.AfterTicks(tick, func(f *FlightTest) {
-			if f.nav.Approach.RequestVectors {
+			if f.nav.Requests.Vectors {
 				t.Fatalf("tick %d: RequestVectors unexpectedly set", tick)
 			}
 		})
@@ -1756,7 +1756,7 @@ func TestLocalizerOvershootOutsideOldTwoDegreeConeRecovers(t *testing.T) {
 		if f.nav.Approach.InterceptState != OnApproachCourse {
 			t.Errorf("expected OnApproachCourse after recovery, got %d", f.nav.Approach.InterceptState)
 		}
-		if f.nav.Approach.RequestVectors {
+		if f.nav.Requests.Vectors {
 			t.Errorf("RequestVectors should not be set after successful recovery")
 		}
 	})
@@ -3106,7 +3106,7 @@ func TestLDACoursePassingWideOfThreshold(t *testing.T) {
 			}
 
 			f.StepUntil("captured the localizer", func() bool {
-				if f.nav.Approach.RequestVectors {
+				if f.nav.Requests.Vectors {
 					t.Fatal("requested vectors")
 				}
 				return f.nav.Approach.InterceptState == OnApproachCourse

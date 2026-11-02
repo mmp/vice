@@ -393,7 +393,7 @@ func TestRunOneControlCommandInterceptRadial(t *testing.T) {
 				t.Errorf("got %+v, want intercept of the WAVEY %v radial, outbound %v",
 					navIntent, tc.wantRadial, tc.wantOutbound)
 			}
-			if dh := s.Aircraft[callsign].Nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 {
+			if dh := s.Aircraft[callsign].Nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 {
 				t.Error("no maneuvers were queued for the intercept")
 			}
 		})
@@ -601,7 +601,7 @@ func TestRunOneControlCommandJoin(t *testing.T) {
 	t.Run("JV1", func(t *testing.T) {
 		s, callsign := newSim("", "", false)
 		wantNavigation(t, run(t, s, callsign, "JV1"), speech.NavigationIntent{Type: speech.NavJoinAirway, Airway: "V1"})
-		if dh := s.Aircraft[callsign].Nav.DeferredNavHeading; dh == nil || len(dh.Maneuvers) == 0 || dh.Join == nil {
+		if dh := s.Aircraft[callsign].Nav.DeferredNavHeading; dh == nil || len(dh.Heading.Maneuvers) == 0 || dh.Heading.Join == nil {
 			t.Error("no maneuvers were queued for the join")
 		}
 
