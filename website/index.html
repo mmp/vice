@@ -1717,7 +1717,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.15.2/Vice-v0.15.2-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.2 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.3/Vice-v0.15.3-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.3 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1726,7 +1726,7 @@ ZBW, ZDV, ZJX, ZLA, ZLC, and ZNY.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Ventura or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.15.2/Vice-v0.15.2-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.2 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.15.3/Vice-v0.15.3-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.15.3 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1754,6 +1754,79 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.15.3" data-nav-title="0.15.3">0.15.3 (3 Nov 2026)</h3>
+            <ul>
+              <li>New scenario: ZFW Dallas/Bonham (Seth)</li>
+              <li>Scenario updates: HNL (Mike Fries), CLT (anguse), S56 (Elliott B), P50 (Ketan K), ZLC (Ryan C)</li>
+              <li>Fixed multiple bugs with flight strip ownership</li>
+              <li>Release requests that are not in a STARS coordination list now appear in Messages and atop Launch Control</li>
+              <li>Flight Model / Control
+                <ul>
+                  <li>Pilot response delays can be set to &quot;Brief&quot;, &quot;Realistic&quot; (longer), or custom values when creating a sim</li>
+                  <li>Improved support for LDA approaches (don't just fly the extended centerline)</li>
+                  <li>An aircraft intercepting the approach from a heading can be cleared for the approach at a fix on the approach course</li>
+                  <li>Aircraft ignore frequency change instructions if earlier instructions were &quot;unable&quot; or &quot;say again&quot;</li>
+                  <li>Fixed a number of bugs related to handling Mach speeds in instructions</li>
+                  <li>VFR aircraft routes now avoid special use airspace</li>
+                  <li>Improved VFR aircraft terrain avoidance to use more accurate terrain data than MVAs</li>
+                  <li>VFR airwork now includes stalls, steep turns, chandelles, S-turns, and other training maneuvers</li>
+                </ul>
+              </li>
+              <li>STARS
+                <ul>
+                  <li>Default ATPA volumes now follow each final approach course rather than the runway's extended centerline.</li>
+                </ul>
+              </li>
+              <li>ERAM
+                <ul>
+                  <li>Documentation is much more complete: https://pharr.org/vice/#section-eram</li>
+                  <li>Virtual TRACON controllers no longer enter altitudes in ERAM data blocks</li>
+                  <li>Local interim altitudes are kept separately from interim and procedure altitudes; <code>QQ L</code> clears them</li>
+                  <li>Unpaired LDBs show the beacon code; BCAST FLID switches them to the callsign</li>
+                  <li>Unpaired Mode C targets at or above the conflict alert floor are drawn with the MCI I-beam</li>
+                  <li>Point outs are acknowledged one sector at a time in the point out pop-up</li>
+                  <li>Point outs may be made to other facilities</li>
+                  <li>Fixed a number of differences between the toolbars and the manual</li>
+                  <li>Added support for dwell emphasis</li>
+                  <li>Added the CFR, Conflict Alert, DEPT LIST, FLIGHT EVENT, SAA FILTER, Range, STATUS, and OUTAGE views</li>
+                  <li>Added the DRAW menu for rectangle, circle, line, and text annotations</li>
+                  <li>Preference sets are saved, invoked, and deleted from the PREFSET menu rather than the settings window</li>
+                  <li>Added the horizontal, left, and right support toolbars</li>
+                  <li>Data block menus open with the cursor on the current value (when appropriate)</li>
+                  <li><code>LC</code> shows the change in ground speed needed to cross the fix at the given time</li>
+                  <li><code>LD</code> reads out when an aircraft reaches each fix on its route through a given fix; <code>LE</code> reads out the speed change to cross a fix at a given time</li>
+                  <li><code>LF</code> with a picked point creates a CRR group there</li>
+                  <li><code>QF</code> shows routes in the NAS form, as in <code>KATL./.ROA205050..ROA..HAR..KPIT</code></li>
+                  <li><code>QN</code> and <code>QZ</code> prefixes are accepted on handoffs, data block offsets, and <code>//</code></li>
+                  <li><code>QP &lt;FLID&gt;</code> switches another sector's track between an FDB and an LDB</li>
+                  <li><code>QP A</code> acknowledges a single point out, or those from the sectors given, as in <code>QP A 2B 3C AAL123</code></li>
+                  <li><code>QS</code> takes a heading and speed together, as in <code>QS 330/81</code>, and Mach speeds such as <code>M.75</code></li>
+                  <li><code>QZ</code> assigns VFR and VFR-on-top altitudes</li>
+                  <li><code>SG</code> creates and edits conflict alert suppression groups, which the GROUP SUP view lists</li>
+                  <li><code>WR</code> takes up to three stations</li>
+                  <li>Suppressing a view closes its menu; a view's pick areas are outlined under the cursor, and picks on them no longer reach the MCA</li>
+                  <li>Torn-off SAA labels are moved by their bars and picked for deletion like the other tear-offs</li>
+                  <li>Fixed bug where list entries could be invisible</li>
+                </ul>
+              </li>
+              <li>Facility Engineering
+                <ul>
+                  <li>Added support for using a user-supplied resources directory to override shipped scenarios/configs/etc.</li>
+                  <li>Overflights' <code>&quot;assigned_speed&quot;</code> and the <code>&quot;eram&quot;</code> <code>&quot;speed&quot;</code> may be given as a Mach number (<code>&quot;M78&quot;</code>); <code>&quot;eram&quot;</code> <code>&quot;mach&quot;</code> has been removed.</li>
+                  <li><code>&quot;atpa_volumes&quot;</code> is now <code>&quot;atpa&quot;</code>; its <code>&quot;runway_threshold&quot;</code>, <code>&quot;heading&quot;</code>, and <code>&quot;id&quot;</code> fields have been removed</li>
+                  <li><code>&quot;reduced_separation&quot;</code> in <code>&quot;atpa&quot;</code> replaces <code>&quot;enable_2.5nm&quot;</code> and <code>&quot;2.5nm_distance&quot;</code></li>
+                  <li><code>&quot;altitude_range&quot;</code> gives the altitudes of a controller's airspace (default 10,000-60,000'); ERAM displays only the active special use airspace that overlaps it</li>
+                  <li><code>&quot;conflict_alert_floor&quot;</code> sets the ERAM conflict alert floor (default 6,000')</li>
+                  <li>VFR <code>&quot;routes&quot;</code> are flown as written; they are no longer checked against the terrain</li>
+                  <li>Departures' <code>&quot;route&quot;</code> is now <code>&quot;waypoints&quot;</code>, since it is what the aircraft flies after the exit fix</li>
+                  <li>Arrivals' <code>&quot;route&quot;</code> is now <code>&quot;flight_strip_route&quot;</code>, since it is shown on flight strips and does not affect navigation</li>
+                  <li><code>&quot;stars_macros&quot;</code> may now also be given per configuration</li>
+                  <li><code>&quot;atis_airports&quot;</code> chooses the airports shown in the scenario information window's ATIS / METAR section</li>
+                </ul>
+              </li>
+            </ul>
+
 
             <h3 id="release-0.15.2" data-nav-title="0.15.2">0.15.2 (5 Oct 2026)</h3>
             <ul>
