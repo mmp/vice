@@ -5,6 +5,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"hash/fnv"
@@ -92,14 +93,18 @@ func setupSignalHandler() {
 
 	go func() {
 		<-sigCh
-		fmt.Fprintln(os.Stderr, "Caught signal, cleaning up...")
+		LogInfo("Caught signal, cleaning up...")
 		runAllCleanups()
-		fmt.Fprintln(os.Stderr, "Cleanup complete, exiting")
+		LogInfo("Cleanup complete, exiting")
 		exitOnce.Do(func() { os.Exit(0) })
 	}()
 }
 
 func main() {
+	if inCloudRunJob() {
+		log.SetFlags(0) // Cloud Logging timestamps its entries.
+	}
+
 	// run's error is reported by exit status as well as in the log: the
 	// Cloud Run pipeline in cloudrun/run.sh runs the stages in dependency
 	// order and must stop rather than build on incomplete data.
@@ -210,16 +215,42 @@ func run() error {
 }
 
 func LogInfo(msg string, args ...any) {
-	log.Printf("INFO "+msg, args...)
+	logMessage("INFO", msg, args...)
 }
 
 func LogError(msg string, args ...any) {
-	log.Printf("ERROR "+msg, args...)
+	logMessage("ERROR", msg, args...)
 }
 
 func LogFatal(msg string, args ...any) {
-	log.Printf("FATAL "+msg, args...)
+	logMessage("CRITICAL", msg, args...)
 	os.Exit(1)
+}
+
+// logMessage logs a message at the given severity, which must be one that
+// Cloud Logging recognizes. Cloud Logging doesn't look for a severity in
+// plain text, so a job's errors would otherwise be indistinguishable from the
+// rest of its output in the console.
+func logMessage(severity, format string, args ...any) {
+	msg := fmt.Sprintf(format, args...)
+	if inCloudRunJob() {
+		log.Print(cloudLogEntry(severity, msg))
+	} else {
+		log.Printf("%s %s", severity, msg)
+	}
+}
+
+// cloudLogEntry returns the single line of JSON that Cloud Logging turns into
+// an entry with the given severity and message.
+func cloudLogEntry(severity, msg string) string {
+	b, err := json.Marshal(struct {
+		Severity string `json:"severity"`
+		Message  string `json:"message"`
+	}{severity, msg})
+	if err != nil { // Not expected: encoding strings doesn't fail.
+		return msg
+	}
+	return string(b)
 }
 
 func retry(attempts int, sleep time.Duration, fn func() error) error {

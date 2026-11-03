@@ -5,9 +5,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	gomath "math"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -114,9 +116,27 @@ func TestHRRRIssuedOnEachRegionsSchedule(t *testing.T) {
 	}
 }
 
+func TestCloudLogEntry(t *testing.T) {
+	msg := "HNL at \"12Z\": <bad>\nsecond line"
+	entry := cloudLogEntry("ERROR", msg)
+
+	// A line break would make Cloud Logging see two entries, neither of them JSON.
+	if strings.Contains(entry, "\n") {
+		t.Errorf("entry has a line break: %q", entry)
+	}
+
+	var got map[string]string
+	if err := json.Unmarshal([]byte(entry), &got); err != nil {
+		t.Fatalf("%q: %v", entry, err)
+	}
+	if got["severity"] != "ERROR" || got["message"] != msg {
+		t.Errorf("got %v, want severity ERROR and message %q", got, msg)
+	}
+}
+
 func TestCheckNAMRetirement(t *testing.T) {
-	before := time.Date(2026, time.October, 13, 18, 0, 0, 0, time.UTC)
-	after := time.Date(2026, time.October, 14, 0, 0, 0, 0, time.UTC)
+	before := namRetirement.Add(-6 * time.Hour) // Hawaii's previous grid
+	after := namRetirement
 	for _, tc := range []struct {
 		t          time.Time
 		facilities []string

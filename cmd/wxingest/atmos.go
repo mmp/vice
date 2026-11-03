@@ -51,13 +51,15 @@ func hrrrIssued(facility string, t time.Time) bool {
 }
 
 // namRetirement is when RRFS replaces the NAM, whose Hawaii nest is the
-// source of Hawaii's atmospheric data.
+// source of Hawaii's atmospheric data, so the 0600Z cycle before it is the
+// nest's last. It comes from NWS Service Change Notice 26-47, whose date has
+// moved more than once and can still slip for a Critical Weather Day.
 //
 // TODO: ingest Hawaii from RRFS from namRetirement on. Its grids are
 // rrfs.tCCz.prslev.2p5km.fFFF.hi.grib2 on NOMADS (rrfs/prod/), with the same
 // grid and packing as the NAM nest; fillLevels covers its having a 70 mb
 // level rather than 75 mb.
-var namRetirement = time.Date(2026, time.October, 14, 0, 0, 0, 0, time.UTC)
+var namRetirement = time.Date(2026, time.November, 3, 12, 0, 0, 0, time.UTC)
 
 // checkNAMRetirement returns an error if any of the facilities is in Hawaii
 // and t is at or after the NAM's retirement, since there is no source for
@@ -216,7 +218,7 @@ func ingestHRRR(sb StorageBackend) error {
 			}
 
 			if len(missing) > 0 {
-				LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
+				LogInfo("Time %s: missing atmos for %s", t, strings.Join(missing, ", "))
 
 				select {
 				case tCh <- timeWithMissing{t: t, missing: missing}:
