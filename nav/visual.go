@@ -150,7 +150,7 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 
 	wps := nav.visualRouteToFinal(follow)
 	if wps == nil {
-		return speech.MakeUnableIntent("unable, we don't know runway " + ap.Runway)
+		return speech.MakeUnableIntent("unable, we can't make the visual approach from here")
 	}
 	cancelHold := nav.applyClearedApproachState()
 	nav.flyVisualRoute(wps)
@@ -250,6 +250,11 @@ type visualApproachJoinPoint struct {
 	distanceToThreshold float32
 	lateralDistance     float32
 	finalPoint          bool
+	// From a downwind the aircraft flies a pattern to the join: on to
+	// baseTurn, abeam the join, then the base leg to it. finalTurn marks a
+	// join that is a point on the final rather than a fix.
+	baseTurn  math.Point2LL
+	finalTurn bool
 }
 
 func (nav *Nav) projectOntoApproachRoutes(routes []av.WaypointArray, position math.Point2LL) (visualApproachJoinPoint, bool) {
@@ -336,6 +341,7 @@ func visualRoutePointAtDistance(route []av.Waypoint, distanceToThreshold float32
 			return visualApproachJoinPoint{
 				route:               route,
 				segment:             i - 1,
+				segmentFraction:     1 - t,
 				location:            math.NM2LL(locNM, nmPerLong),
 				distanceToThreshold: distanceToThreshold,
 				finalPoint:          true,
@@ -349,12 +355,13 @@ func visualRoutePointAtDistance(route []av.Waypoint, distanceToThreshold float32
 
 // selectVisualApproachRoute picks the join point and route across the
 // supplied reference approaches for a pilot flying to the final themselves:
-// where the traffic they are following is, or else their projection onto the
-// laterally-closest reference. When the aircraft is pointed generally toward
-// the runway the join is promoted to the synthesized 3 nm final, skipping
-// any intermediate route fixes; otherwise the projection is handed back so
-// the route construction adds the dogleg fixes and the 3 nm final. It is nil
-// if the projection would need a U-turn.
+// where the traffic they are following is; from a downwind, a fix behind
+// them to turn back to; or else their projection onto the laterally-closest
+// reference. When the aircraft is pointed generally toward the runway the
+// projection is promoted to the synthesized 3 nm final, skipping any
+// intermediate route fixes; otherwise the projection is handed back so the
+// route construction adds the dogleg fixes and the 3 nm final. It is nil if
+// the projection would need a U-turn.
 func (nav *Nav) selectVisualApproachRoute(followTraffic *math.Point2LL, references []*av.Approach) *visualApproachJoinPoint {
 	nmPerLong := nav.FlightState.NmPerLongitude
 	magVar := nav.FlightState.MagneticVariation
@@ -393,16 +400,25 @@ func (nav *Nav) selectVisualApproachRoute(followTraffic *math.Point2LL, referenc
 		routes = append(routes, ref.Waypoints...)
 	}
 
+	tHdg := nav.intendedHeading()
+	if join := nav.visualJoinBehind(routes, tHdg); join != nil {
+		return join
+	}
+
 	proj, ok := nav.projectOntoApproachRoutes(routes, pos)
 	if !ok || proj.distanceToThreshold <= 0.5 {
 		return nil
 	}
-	tHdg := nav.intendedHeading()
 	headingDir := math.HeadingVector(tHdg)
 	threshold := proj.route[len(proj.route)-1].Location
 	thresholdDir := math.Normalize2f(math.Sub2f(math.LL2NM(threshold, nmPerLong), math.LL2NM(pos, nmPerLong)))
 	if math.Dot(headingDir, thresholdDir) >= 0 {
 		if finalPoint, ok := visualRoutePointAtDistance(proj.route, 3, nmPerLong); ok {
+			// Already inside the 3 nm final, the point is behind the
+			// aircraft, and so is any chance of landing from here.
+			if math.HeadingDifference(math.Heading2LL(pos, finalPoint.location, nmPerLong), tHdg) > 90 {
+				return nil
+			}
 			return &finalPoint
 		}
 		return &proj
@@ -412,6 +428,116 @@ func (nav *Nav) selectVisualApproachRoute(followTraffic *math.Point2LL, referenc
 		return nil
 	}
 	return &proj
+}
+
+// ftPerNMOnGlideslope is the altitude a 3 degree glidepath loses per nm.
+var ftPerNMOnGlideslope = math.Tan(math.Radians(float32(3))) * math.NauticalMilesToFeet
+
+// How much farther out than the pattern needs a fix may be and still be
+// joined instead of a point on the final; the least downwind left to fly
+// for the turn onto base to be a waypoint of its own rather than made
+// right away; and how far behind abeam a join may be and still be turned
+// to right away.
+const (
+	downwindFixReach   = 2    // nm
+	downwindMinLeg     = 0.5  // nm
+	downwindAbeamSlack = 0.25 // nm
+)
+
+// downwindAngle is how far from the landing direction a heading has to be
+// to count as a downwind even with the runway ahead of the beam.
+const downwindAngle = 120 // degrees
+
+// visualJoinBehind returns the join for a pilot flying away from the runway,
+// as on a downwind, who has been cleared for the visual. They fly the
+// pattern: on along the downwind to abeam the join, a base leg to it, and
+// in from there. The join is abeam the aircraft unless the pattern has to
+// be longer, for a stabilized final or to descend on the glidepath the
+// whole way from where the aircraft is, in which case the downwind is
+// extended. It is a fix of a reference when one lies within reach past
+// that, taking the fix with the least flying to the threshold, and
+// otherwise a point on the final itself. It is nil when the aircraft isn't
+// flying away from the runway or has no join ahead of it to turn base at.
+func (nav *Nav) visualJoinBehind(routes []av.WaypointArray, hdg math.TrueHeading) *visualApproachJoinPoint {
+	ap := nav.Approach.Assigned
+	fs := &nav.FlightState
+	nmPerLong, magVar := fs.NmPerLongitude, fs.MagneticVariation
+	line := ap.FinalApproachCourseLine(nmPerLong, magVar)
+	if line[0] == line[1] {
+		return nil
+	}
+	landing := math.Heading2LL(line[0], line[1], nmPerLong)
+	runwayAhead := math.HeadingDifference(hdg, math.Heading2LL(fs.Position, ap.Threshold, nmPerLong)) < 90
+	if runwayAhead && math.HeadingDifference(hdg, landing) < downwindAngle {
+		return nil
+	}
+
+	pos := math.LL2NM(fs.Position, nmPerLong)
+	thr := math.LL2NM(ap.Threshold, nmPerLong)
+	out := math.Scale2f(math.HeadingVector(landing), -1)
+	alongOut := math.Dot(math.Sub2f(pos, thr), out)
+	lateral := math.Abs(math.SignedPointLineDistance(pos, thr, math.Add2f(thr, out)))
+
+	// The pattern from here is the rest of the downwind, the base leg and
+	// the final; it has to be long enough to descend on the glidepath to
+	// the threshold from the aircraft's altitude.
+	rwy, _ := nav.lookup().Runway(av.ICAOAirportCode(fs.ArrivalAirport.Fix), ap.Runway)
+	descent := (fs.Altitude - float32(rwy.Elevation+rwy.ThresholdCrossingHeight)) / ftPerNMOnGlideslope
+	minRemaining := max(alongOut, 3, nav.minimumFinal(), (descent+alongOut-lateral)/2)
+	hdgVec := math.HeadingVector(hdg)
+
+	// pattern lays the downwind's end abeam the join into it and returns
+	// the flying to the threshold by way of it; false if the join is
+	// behind the aircraft along the downwind. A join the aircraft is
+	// already abeam is turned to right away.
+	pattern := func(join *visualApproachJoinPoint, remaining float32) (float32, bool) {
+		j := math.LL2NM(join.location, nmPerLong)
+		downwind := math.Dot(math.Sub2f(j, pos), hdgVec)
+		if downwind < -downwindAbeamSlack {
+			return 0, false
+		}
+		turn := math.Add2f(pos, math.Scale2f(hdgVec, max(downwind, 0)))
+		if downwind >= downwindMinLeg {
+			join.baseTurn = math.NM2LL(turn, nmPerLong)
+		}
+		return max(downwind, 0) + math.Distance2f(turn, j) + remaining, true
+	}
+
+	var best *visualApproachJoinPoint
+	var bestTrack float32
+	for _, route := range routes {
+		remaining := float32(0)
+		for i := len(route) - 2; i >= 0; i-- {
+			remaining += math.NMDistance2LL(route[i].Location, route[i+1].Location)
+			if remaining < minRemaining || remaining > minRemaining+downwindFixReach {
+				continue
+			}
+			join := nav.visualJoinAt(route, route[i].Location)
+			if track, ok := pattern(&join, remaining); ok && (best == nil || track < bestTrack) {
+				best, bestTrack = &join, track
+			}
+		}
+	}
+	if best != nil {
+		return best
+	}
+
+	for _, route := range routes {
+		pt, ok := visualRoutePointAtDistance(route, minRemaining, nmPerLong)
+		if !ok {
+			continue
+		}
+		p := math.LL2NM(pt.location, nmPerLong)
+		if math.Abs(math.SignedPointLineDistance(p, thr, math.Add2f(thr, out))) >= finalCourseLateralLeeway {
+			continue
+		}
+		if _, ok := pattern(&pt, minRemaining); ok {
+			pt.finalTurn = true
+			pt.finalPoint = pt.distanceToThreshold <= 3.25
+			return &pt
+		}
+	}
+	return nil
 }
 
 func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *math.Point2LL, references []*av.Approach) []av.Waypoint {
@@ -443,7 +569,6 @@ func (nav *Nav) visualRouteFromJoin(runway string, joinPoint visualApproachJoinP
 		todAlt = *a
 	}
 	// Distance from threshold for a 3° glideslope crossing the threshold at TCH.
-	ftPerNMOnGlideslope := math.Tan(math.Radians(float32(3))) * math.NauticalMilesToFeet
 	todDist := (todAlt - float32(thresholdAlt)) / ftPerNMOnGlideslope
 
 	join := av.Waypoint{Location: joinPoint.location}
@@ -451,6 +576,8 @@ func (nav *Nav) visualRouteFromJoin(runway string, joinPoint visualApproachJoinP
 	case followTraffic != nil:
 		join.Fix = "_" + runway + "_FOLLOW_TRAFFIC"
 		join.Location = *followTraffic
+	case joinPoint.finalTurn:
+		join.Fix = "_" + runway + "_FINAL_TURN"
 	case joinPoint.lateralDistance == 0 && joinPoint.segmentFraction == 0:
 		// The join is at a fix of the route: fly the fix itself, so that
 		// its restrictions come along rather than being displaced by a
@@ -469,6 +596,11 @@ func (nav *Nav) visualRouteFromJoin(runway string, joinPoint visualApproachJoinP
 		join.SetFAF(true)
 	}
 	wps := []av.Waypoint{join}
+	if !joinPoint.baseTurn.IsZero() {
+		baseTurn := av.Waypoint{Fix: "_" + runway + "_BASE_TURN", Location: joinPoint.baseTurn}
+		baseTurn.SetOnApproach(true)
+		wps = []av.Waypoint{baseTurn, join}
+	}
 
 	start := joinPoint.segment + 1
 	if followTraffic != nil && joinPoint.segmentFraction <= 1e-4 &&
@@ -484,8 +616,8 @@ func (nav *Nav) visualRouteFromJoin(runway string, joinPoint visualApproachJoinP
 
 		if joinIsFAF {
 			glideAlt := float32(thresholdAlt) + ftPerNMOnGlideslope*joinPoint.distanceToThreshold
-			wps[0].SetFAF(true)
-			wps[0].SetAltitudeRestriction(av.MakeAtAltitudeRestriction(glideAlt))
+			wps[len(wps)-1].SetFAF(true)
+			wps[len(wps)-1].SetAltitudeRestriction(av.MakeAtAltitudeRestriction(glideAlt))
 		}
 
 		// Reference dogleg fixes between join and 3-NM final, with FAF flags cleared (an

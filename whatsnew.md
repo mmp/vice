@@ -1,2 +1,4 @@
 - Flight model
   - CWT separation is enforced when spawning arrivals and overflights
+  - Improved visual approach intercepts when feeder legs are present
+  - Aircraft on a downwind can be cleared for a visual approach

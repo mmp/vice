@@ -664,10 +664,12 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			wantFirstFix: "_36_3NM_FINAL",
 		},
 		{
-			name:         "Offset 3nm west, pointed away from field — project to final",
+			// A downwind: the aircraft turns base right away onto the
+			// final abeam it.
+			name:         "Offset 3nm west, pointed away from field — turn base",
 			pos:          math.Point2LL{-3.0 / nmPerLong, -8.0 / 60},
 			heading:      180,
-			wantFirstFix: "_36_PROJECTION",
+			wantFirstFix: "_36_FINAL_TURN",
 		},
 		{
 			name:         "Assigned heading intercepts outside FAF — intercept assigned heading",
@@ -756,10 +758,9 @@ func TestVisualApproachWaypoints(t *testing.T) {
 				t.Errorf("second waypoint = %q, want _36_3NM_FINAL; all waypoints: %v", wps[1].Fix, wpNames(wps))
 			}
 
-			if tt.wantFirstFix == "_36_PROJECTION" {
-				projectionNM := math.LL2NM(wps[0].Location, nmPerLong)
-				if math.Abs(projectionNM[0]) > 0.05 {
-					t.Errorf("projection waypoint should be on centerline, x=%.2f", projectionNM[0])
+			if tt.wantFirstFix == "_36_FINAL_TURN" {
+				if finalNM := math.LL2NM(wps[0].Location, nmPerLong); math.Abs(finalNM[0]) > 0.05 || math.Abs(finalNM[1]+8) > 0.05 {
+					t.Errorf("final turn = %.2f, %.2f; want abeam the aircraft at 0.00, -8.00", finalNM[0], finalNM[1])
 				}
 			}
 			if tt.wantFirstFix == "_36_INTERCEPT" {
@@ -789,12 +790,16 @@ func TestVisualApproachWaypoints(t *testing.T) {
 				t.Error("threshold waypoint should have FlyOver=true")
 			}
 
-			// 3nm final should have an "at" altitude restriction.
+			// 3nm final should be 3 nm from the threshold on the centerline
+			// and have an "at" altitude restriction.
 			var final3nm av.Waypoint
 			for _, wp := range wps {
 				if wp.Fix == "_36_3NM_FINAL" {
 					final3nm = wp
 				}
+			}
+			if p := math.LL2NM(final3nm.Location, nmPerLong); math.Abs(p[0]) > 0.05 || math.Abs(p[1]+3) > 0.05 {
+				t.Errorf("3nm final = %.2f, %.2f; want 0.00, -3.00", p[0], p[1])
 			}
 			if alt := final3nm.AltitudeRestriction(); alt == nil {
 				t.Error("3nm final should have an altitude restriction")
@@ -843,6 +848,10 @@ func TestVisualApproachWaypointsUseReferenceApproachDogleg(t *testing.T) {
 	n.Approach.VisualReferences = []*av.Approach{reference}
 	_ = n.ClearedVisualApproach(nil, "")
 
+	// Flying away from the runway with no reference fix in reach of a
+	// pattern and no straight final to turn onto, the aircraft turns to
+	// its projection onto the nearest reference and flies the dogleg from
+	// there.
 	if len(n.Waypoints) < 5 {
 		t.Fatalf("expected projection, intermediate dogleg fixes, 3nm final, and threshold; got %v", wpNames(n.Waypoints))
 	}
