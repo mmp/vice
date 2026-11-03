@@ -34,24 +34,40 @@
           },
           "COLIN.P,MAYES.P": {
             "sid": "28L.NE.P",
+            "aircraft": ["prop", "turboprop"],
             "cleared_altitude": 3000,
             "description": "props",
             "waypoints": "28L_MM/h010"
           },
           "COLIN.J,MAYES.J": {
             "sid": "28L.NE.J",
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
             "waypoints": "28L_MM/h310"
           },
-          "NOBLE.P,SHAWN.P": {
+          "SHAWN.P": {
             "sid": "28L.SW.P",
             "cleared_altitude": 3000,
             "description": "props",
             "waypoints": "28L_MM/h190"
           },
-          "NOBLE.J,SHAWN.J": {
+          "NOBLE.P": {
+            "sid": "28L.SW.P",
+            "aircraft": ["prop", "turboprop"],
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "28L_MM/h190"
+          },
+          "SHAWN.J": {
             "sid": "28L.SW.J",
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "28L_MM/h260"
+          },
+          "NOBLE.J": {
+            "sid": "28L.SW.J",
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
             "waypoints": "28L_MM/h260"
@@ -68,26 +84,48 @@
             "sid": "MAYES3",
             "waypoints": "28R_MM ROBIN/s210 KURDZ/a6000+ STONE/a7000-9000 BRITT/a9000+ WINDM/a11000+"
           },
-          "COLIN.P,MAYES.P,SGF.P": {
+          "SGF.P": {
             "sid": "28R.NE.P",
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "28R_MM/h010"
+          },
+          "COLIN.P,MAYES.P": {
+            "sid": "28R.NE.P",
+            "aircraft": ["prop", "turboprop"],
             "cleared_altitude": 3000,
             "description": "props",
             "waypoints": "28R_MM/h010"
           },
           "COLIN.J,MAYES.J": {
             "sid": "28R.NE.J",
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
             "waypoints": "28R_MM/h310"
           },
-          "NOBLE.P,SHAWN.P": {
+          "SHAWN.P": {
             "sid": "28R.SW.P",
             "cleared_altitude": 3000,
             "description": "props",
             "waypoints": "28R_MM/h190"
           },
-          "NOBLE.J,SHAWN.J": {
+          "NOBLE.P": {
+            "sid": "28R.SW.P",
+            "aircraft": ["prop", "turboprop"],
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "28R_MM/h190"
+          },
+          "SHAWN.J": {
             "sid": "28R.SW.J",
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "28R_MM/h260"
+          },
+          "NOBLE.J": {
+            "sid": "28R.SW.J",
+            "aircraft": "jet",
             "cleared_altitude": 9000,
             "description": "jets/turboprops",
             "waypoints": "28R_MM/h260"
@@ -2061,11 +2099,18 @@
         "30": {
           "MAYES.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "description": "props",
             "waypoints": "12_MM/h040"
           },
-          "COLIN.P,NOBLE.P,SHAWN.P,COLIN.J,MAYES.J,NOBLE.J,SHAWN.J": {
+          "COLIN.P,NOBLE.P,SHAWN.P,COLIN.J,NOBLE.J,SHAWN.J": {
             "cleared_altitude": 3000,
+            "description": "jets/turboprops",
+            "waypoints": "12_MM/h300"
+          },
+          "MAYES.J": {
+            "cleared_altitude": 3000,
+            "aircraft": "jet",
             "description": "jets/turboprops",
             "waypoints": "12_MM/h300"
           }

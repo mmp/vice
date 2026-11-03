@@ -2712,14 +2712,26 @@
             "sid": "KUSSO3",
             "climbout_actions": "h050/@d1.6/h050"
           },
-          "LOWGN,IRW,OKM,MLC": {
+          "IRW,OKM,MLC": {
             "cleared_altitude": 2000,
             "sid": "NANDR4",
             "climbout_actions": "h050/@d1.6/h050"
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN": {
+            "cleared_altitude": 2000,
+            "sid": "NANDR4",
+            "aircraft": "jet",
+            "climbout_actions": "h050/@d1.6/h050"
+          },
+          "BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 2000,
             "sid": "TEX5",
+            "waypoints": "_ADS_16/h050"
+          },
+          "LOWGN.PROP": {
+            "cleared_altitude": 2000,
+            "sid": "TEX5",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "_ADS_16/h050"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -2749,14 +2761,26 @@
             "sid": "KUSSO3",
             "initial_heading": 337
           },
-          "LOWGN,IRW,OKM,MLC": {
+          "IRW,OKM,MLC": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 337
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
+          "LOWGN": {
+            "cleared_altitude": 3000,
+            "sid": "NANDR4",
+            "aircraft": "jet",
+            "initial_heading": 337
+          },
+          "BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
+            "initial_heading": 337
+          },
+          "LOWGN.PROP": {
+            "cleared_altitude": 3000,
+            "sid": "TEX5",
+            "aircraft": ["prop", "turboprop"],
             "initial_heading": 337
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
@@ -4351,14 +4375,26 @@
             "sid": "KING5",
             "initial_heading": 164
           },
-          "ROLLS,IRW,OKM,MLC": {
+          "ROLLS,IRW,OKM": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 164
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
+          "MLC": {
+            "cleared_altitude": 3000,
+            "sid": "NANDR4",
+            "aircraft": "jet",
+            "initial_heading": 164
+          },
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
+            "initial_heading": 166
+          },
+          "MLC.PROP": {
+            "cleared_altitude": 3000,
+            "sid": "TEX5",
+            "aircraft": ["prop", "turboprop"],
             "initial_heading": 166
           },
           "SAT,JASPA,CLL,BRDEN,TORNN": {
@@ -4383,14 +4419,26 @@
             "sid": "KING5",
             "initial_heading": 345
           },
-          "ROLLS,IRW,OKM,MLC": {
+          "ROLLS,IRW,OKM": {
             "cleared_altitude": 3000,
             "sid": "NANDR4",
             "initial_heading": 344
           },
-          "LOWGN.PROP,BLECO.PROP,GRABE.PROP,MLC.PROP": {
+          "MLC": {
+            "cleared_altitude": 3000,
+            "sid": "NANDR4",
+            "aircraft": "jet",
+            "initial_heading": 344
+          },
+          "LOWGN.PROP,BLECO.PROP,GRABE.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
+            "initial_heading": 344
+          },
+          "MLC.PROP": {
+            "cleared_altitude": 3000,
+            "sid": "TEX5",
+            "aircraft": ["prop", "turboprop"],
             "initial_heading": 344
           },
           "SAT,JASPA,CLL,BRDEN,NELYN.PROP,JASPA.PROP,ARDIA.PROP,BRDEN.PROP,TORNN,DARTZ.PROP": {
@@ -5694,9 +5742,15 @@
       },
       "departure_routes": {
         "13": {
-          "NOBLY,TXK,SOLDO,CLARE,NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
+          "NOBLY,TXK,CLARE,NOBLY.PROP,TXK.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
+            "initial_heading": 134
+          },
+          "SOLDO,SOLDO.PROP": {
+            "cleared_altitude": 3000,
+            "sid": "DALL4",
+            "aircraft": ["jet", "turboprop"],
             "initial_heading": 134
           },
           "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {
@@ -5736,14 +5790,26 @@
           }
         },
         "31": {
-          "NOBLY,TXK,SOLDO,CLARE": {
+          "NOBLY,TXK,CLARE": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
             "initial_heading": 30
           },
-          "NOBLY.PROP,TXK.PROP,SOLDO.PROP,CLARE.PROP": {
+          "SOLDO": {
             "cleared_altitude": 3000,
             "sid": "DALL4",
+            "aircraft": "jet",
+            "initial_heading": 30
+          },
+          "NOBLY.PROP,TXK.PROP,CLARE.PROP": {
+            "cleared_altitude": 3000,
+            "sid": "DALL4",
+            "initial_heading": 40
+          },
+          "SOLDO.PROP": {
+            "cleared_altitude": 3000,
+            "sid": "DALL4",
+            "aircraft": ["prop", "turboprop"],
             "initial_heading": 40
           },
           "TORNN,CLL,JASPA,SAT,TORNN.PROP,ARDIA.PROP,CLL.PROP,JASPA.PROP,SAT.PROP": {

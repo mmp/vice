@@ -492,6 +492,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-35R/h090 KIZER"
           },
           "VIZTA.CITR": {
@@ -507,21 +508,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-35R/h270 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-35R/h270 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-35R/h160 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-35R/h160 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -554,9 +559,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         },
@@ -569,6 +580,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-35L/h090 KIZER"
           },
           "VIZTA.CITR": {
@@ -584,21 +596,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-35L/h270 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-35L/h270 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "CITR",
+            "aircraft": "jet",
             "waypoints": "KMCO-35L/h160 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-35L/h160 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -631,9 +647,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         },
@@ -646,6 +668,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-36R/h270 KIZER"
           },
           "VIZTA.CITR": {
@@ -661,21 +684,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-36R/h270 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-36R/h270 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-36R/h150 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-36R/h150 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -708,9 +735,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         },
@@ -723,6 +756,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-36L/h270 KIZER"
           },
           "VIZTA.CITR": {
@@ -738,21 +772,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-36L/h270 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-36L/h270 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-36L/h150 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-36L/h150 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -785,9 +823,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         },
@@ -800,6 +844,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-18R/h270 KIZER"
           },
           "VIZTA.CITR": {
@@ -815,21 +860,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-18R/h270 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-18R/h270 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-18R/h040 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-18R/h010 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -866,9 +915,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         },
@@ -881,6 +936,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-18L/h270 KIZER"
           },
           "VIZTA.CITR": {
@@ -896,21 +952,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-18L/h270 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-18L/h270 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-18L/h040 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-18L/h010 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -943,9 +1003,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         },
@@ -958,6 +1024,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-17R/h090 KIZER"
           },
           "VIZTA.CITR": {
@@ -973,21 +1040,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-17R/h090 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-17R/h090 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-17R/h040 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-17R/h040 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -1020,9 +1091,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         },
@@ -1035,6 +1112,7 @@
           "KIZER.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-17L/h090 KIZER"
           },
           "VIZTA.CITR": {
@@ -1050,21 +1128,25 @@
           "RDSOX.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR1",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-17L/h090 RDSOX"
           },
           "DEARY.CITR": {
             "cleared_altitude": 2000,
             "sid": "CITR",
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KMCO-17L/h090 DEARY"
           },
           "DEARY.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-17L/h040 DEARY"
           },
           "KIZER.ORLA": {
             "cleared_altitude": 7000,
             "sid": "ORLA6",
+            "aircraft": "jet",
             "waypoints": "KMCO-17L/h040 KIZER"
           },
           "JIPOD,ZALEN,BORRD,VALKA,DDANY": {
@@ -1097,9 +1179,15 @@
             "sid": "OSPRY1",
             "is_rnav": true
           },
-          "RDSOX,JFRYS": {
+          "JFRYS": {
             "cleared_altitude": 7000,
             "sid": "RDSOX1",
+            "is_rnav": true
+          },
+          "RDSOX": {
+            "cleared_altitude": 7000,
+            "sid": "RDSOX1",
+            "aircraft": "jet",
             "is_rnav": true
           }
         }

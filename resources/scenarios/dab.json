@@ -157,10 +157,16 @@
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-25R/h070 SMYRA"
           },
-          "SMYRA.P,GTOUT": {
+          "GTOUT": {
             "cleared_altitude": 3000,
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 SMYRA"
+          },
+          "SMYRA.P": {
+            "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "N029.10.56.700,W081.02.30.375/h110 SMYRA"
           },
           "ILIND": {
@@ -169,10 +175,12 @@
           },
           "KIZER.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-25R/h070 KIZER"
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "N029.10.56.700,W081.02.30.375/h110 KIZER"
           },
           "MMKAY": {
@@ -181,10 +189,12 @@
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-25R/h070 ASTOR"
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "N029.10.56.700,W081.02.30.375/h030 ASTOR"
           },
           "KOMN": {
@@ -211,10 +221,16 @@
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-25L/h070 SMYRA"
           },
-          "SMYRA.P,GTOUT": {
+          "GTOUT": {
             "cleared_altitude": 3000,
+            "waypoints": "N029.10.56.700,W081.02.30.375/h110 SMYRA"
+          },
+          "SMYRA.P": {
+            "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "N029.10.56.700,W081.02.30.375/h110 SMYRA"
           },
           "ILIND": {
@@ -223,10 +239,12 @@
           },
           "KIZER.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-25L/h070 KIZER"
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "N029.10.56.700,W081.02.30.375/h110 KIZER"
           },
           "MMKAY": {
@@ -235,10 +253,12 @@
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-25L/h070 ASTOR"
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "N029.10.56.700,W081.02.30.375/h030 ASTOR"
           },
           "KOMN": {
@@ -265,10 +285,16 @@
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-34/h160 SMYRA"
           },
-          "SMYRA.P,GTOUT": {
+          "GTOUT": {
             "cleared_altitude": 3000,
+            "waypoints": "KDAB-34/h130 SMYRA"
+          },
+          "SMYRA.P": {
+            "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-34/h130 SMYRA"
           },
           "ILIND": {
@@ -277,10 +303,12 @@
           },
           "KIZER.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-34/h160 KIZER"
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-34/h190 KIZER"
           },
           "MMKAY": {
@@ -289,10 +317,12 @@
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-34/h160 ASTOR"
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-34/h190 ASTOR"
           },
           "KOMN": {
@@ -319,10 +349,16 @@
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-7R/h250 SMYRA"
           },
-          "SMYRA.P,GTOUT": {
+          "GTOUT": {
             "cleared_altitude": 3000,
+            "waypoints": "KDAB-7R/h220 SMYRA"
+          },
+          "SMYRA.P": {
+            "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-7R/h220 SMYRA"
           },
           "ILIND": {
@@ -331,10 +367,12 @@
           },
           "KIZER.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-7R/h250 KIZER"
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-7R/h220 KIZER"
           },
           "MMKAY": {
@@ -343,10 +381,12 @@
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-7R/h250 ASTOR"
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-7R/h290 ASTOR"
           },
           "KOMN": {
@@ -373,10 +413,16 @@
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-7L/h252 SMYRA"
           },
-          "SMYRA.P,GTOUT": {
+          "GTOUT": {
             "cleared_altitude": 3000,
+            "waypoints": "KDAB-7L/h220 SMYRA"
+          },
+          "SMYRA.P": {
+            "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-7L/h220 SMYRA"
           },
           "ILIND": {
@@ -385,10 +431,12 @@
           },
           "KIZER.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-7L/h252 KIZER"
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-7L/h220 KIZER"
           },
           "MMKAY": {
@@ -397,10 +445,12 @@
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-7L/h252 ASTOR"
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-7L/h290 ASTOR"
           },
           "KOMN": {
@@ -427,10 +477,16 @@
           },
           "SMYRA.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-16/h342 SMYRA"
           },
-          "SMYRA.P,GTOUT": {
+          "GTOUT": {
             "cleared_altitude": 3000,
+            "waypoints": "KDAB-16/h110 SMYRA"
+          },
+          "SMYRA.P": {
+            "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-16/h110 SMYRA"
           },
           "ILIND": {
@@ -439,10 +495,12 @@
           },
           "KIZER.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-16/h342 KIZER"
           },
           "KIZER.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-16/h110 KIZER"
           },
           "MMKAY": {
@@ -451,10 +509,12 @@
           },
           "ASTOR.J": {
             "cleared_altitude": 4000,
+            "aircraft": ["jet", "turboprop"],
             "waypoints": "KDAB-16/h342 ASTOR"
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
+            "aircraft": ["prop", "turboprop"],
             "waypoints": "KDAB-16/h310 ASTOR"
           },
           "KOMN": {
