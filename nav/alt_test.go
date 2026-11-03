@@ -1170,20 +1170,22 @@ func TestVectorKeepsIssuedAltitude(t *testing.T) {
 	}
 
 	// "Fly heading, maintain 3000 until established, cleared ILS", then a
-	// turn at 4000. A heading given to an aircraft already on one leaves
-	// the approach clearance in place.
+	// turn at 4000 that still intercepts. A heading given to an aircraft
+	// already on one leaves the approach clearance in place.
 	t.Run("TurnWhileVectoredToFinal", func(t *testing.T) {
+		apg := LookupApproachGeometry(t, "KJFK", "I22L")
+		course := math.TrueToMagnetic(apg.RunwayHeading, apg.MagneticVariation)
+		pos := apg.ThresholdOffset(25, -5)
 		f := NewArrivalFlight(t, ArrivalConfig{
-			Waypoints:        "HAUPT LEFER ROSLY",
+			Waypoints:        pos.DMSString() + " HAUPT LEFER ROSLY",
 			DepartureAirport: "KMCO",
 			ArrivalAirport:   "KJFK",
 			AircraftType:     "A320",
 			InitialAltitude:  5000,
 			InitialSpeed:     210,
+			InitialHeading:   float32(math.OffsetHeading(course, -30)),
 		})
 		f.ExpectApproach("I22L")
-		course := math.TrueToMagnetic(f.nav.Approach.Assigned.RunwayHeading(f.nav.FlightState.NmPerLongitude),
-			f.nav.FlightState.MagneticVariation)
 		f.AssignHeading(int(math.OffsetHeading(course, -30)), av.TurnClosest)
 		f.Step(20)
 		f.AssignAltitude(3000)

@@ -88,8 +88,10 @@ type altitudeTarget struct {
 // fix, using the reverse-walk logic to satisfy all downstream altitude
 // constraints. Returns the target and true if found.
 func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
-	if nav.Heading.Assigned != nil {
-		// ignore what's going on with the fixes
+	// On a heading the route's fixes don't apply, except that a pilot
+	// cleared for a visual approach descends toward where the heading is
+	// expected to join it.
+	if nav.Heading.Assigned != nil && !nav.clearedForVisualApproach() {
 		return altitudeTarget{}, false
 	}
 

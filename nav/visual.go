@@ -11,11 +11,13 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 )
 
 // Visual approaches: the reference approaches a non-charted visual is
-// flown by, the route synthesized for it when the aircraft is cleared, and
-// joining a charted visual where the aircraft's instructions meet it.
+// flown by, the descent profile laid along whichever of them the aircraft
+// joins, the route to the final for a pilot who joins none of them, and the
+// joins particular to a charted visual.
 
 // clearedForVisualApproach reports whether the aircraft has been cleared for
 // a visual approach, either one charted as a procedure or one synthesized for
@@ -86,23 +88,6 @@ func stripProcedureTurns(route av.WaypointArray) av.WaypointArray {
 	return out
 }
 
-// visualReferenceForFix returns the ILS or Localizer reference approach
-// (from VisualReferences) that contains the given fix, or nil if none.
-// Used under a synthesized visual to identify when the aircraft has been
-// committed to an ILS-style route, so that a later cleared visual flies the
-// localizer route rather than a synthesized curved descent.
-func (nav *Nav) visualReferenceForFix(fix string) *av.Approach {
-	for _, ref := range nav.Approach.VisualReferences {
-		if !ref.Type.HasLocalizer() {
-			continue
-		}
-		if route, _ := approachRouteThrough(ref, fix); route != nil {
-			return ref
-		}
-	}
-	return nil
-}
-
 // FollowTraffic describes a leader aircraft to sequence behind on a visual approach. Route (when
 // non-empty) is the leader's own waypoints, used for tight in-trail spacing; Position alone is used
 // as a join-point override on the reference approach.
@@ -112,105 +97,102 @@ type FollowTraffic struct {
 }
 
 // ClearedVisualApproach finalizes a non-charted visual approach clearance for
-// the runway named on Nav.Approach.Assigned (a synthesized VisualApproach). It
-// picks the route the aircraft will fly:
-//
-//   - If the aircraft has been committed to an ILS/Localizer reference (via
-//     "direct {fix}" or "at {fix} intercept the localizer"), the reference's
-//     own routes are installed so the localizer altitudes/centerline take
-//     effect.
-//   - Otherwise, when a leader's route is supplied via follow.Route, tight
-//     in-trail sequencing along that route is attempted first.
-//   - Otherwise, a synthetic descent profile (TOD/_3NM_FINAL anchors) is
-//     constructed from the visual references.
+// the runway named on Nav.Approach.Assigned (a synthesized VisualApproach).
+// Joining one of the visual's reference approaches, from the aircraft's
+// heading or at a fix of its route, is an intercept like any other
+// approach's; the visual's descent profile is laid along the reference from
+// where the aircraft joins it. A pilot who joins no reference flies to the
+// final themselves: behind the traffic they are following, or from the
+// reference nearest them to a 3 nm final.
 func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string) speech.CommandIntent {
 	defer nav.record("ClearedVisualApproach", follow, lahsoRunway)()
 	ap := nav.Approach.Assigned
 	if ap == nil || ap.Type != av.VisualApproach {
 		return speech.MakeUnableIntent("unable. We haven't been told to expect a visual approach")
 	}
-	runway := ap.Runway
+	intent := func(cancelHold bool) speech.CommandIntent {
+		return speech.ClearedApproachIntent{
+			Approach:    ap.FullName,
+			CancelHold:  cancelHold,
+			LAHSORunway: lahsoRunway,
+		}
+	}
 
 	// Re-issued clearance on an already-cleared visual: just re-acknowledge,
 	// don't recompute the route or altitude profile.
 	if nav.Approach.Cleared {
-		cancelHold := nav.applyClearedApproachState()
-		return speech.ClearedApproachIntent{
-			Approach:    ap.FullName,
-			CancelHold:  cancelHold,
-			LAHSORunway: lahsoRunway,
-		}
+		return intent(nav.applyClearedApproachState())
 	}
 
-	// Aircraft has been routed onto an ILS/Localizer reference; fly that.
-	if ref := nav.Approach.InterceptedReference; ref != nil && ref.Type.HasLocalizer() {
-		// Deep-copy + strip procedure turns: don't alias airport.Approaches[id].Waypoints,
-		// and a cleared visual shouldn't fly the underlying ILS's PT.
-		out := make([]av.WaypointArray, len(ref.Waypoints))
-		for i, route := range ref.Waypoints {
-			out[i] = stripProcedureTurns(route)
-		}
-		ap.Waypoints = out
-		cancelHold := nav.applyClearedApproachState()
-		// Vectoring since the last capture invalidates any prior intercept
-		// progress; rearm the state machine so ApproachHeading recaptures
-		// against the now-installed localizer geometry.
+	if follow == nil {
 		if _, onHeading := nav.AssignedHeading(); onHeading {
-			nav.Approach.InterceptState = InitialHeading
-			nav.Approach.NoPT = true
-		}
-		if nav.Approach.PassedApproachFix || nav.Approach.InterceptState == OnApproachCourse {
-			nav.clearAltitudeForApproach()
-			if nav.Approach.InterceptState == OnApproachCourse {
+			if course, ok := nav.selectInterceptCourse(wx.MakeStandardSampleForAltitude(nav.FlightState.Altitude)); ok {
+				cancelHold := nav.applyClearedApproachState()
+				nav.Approach.InterceptState = InitialHeading
 				nav.Approach.NoPT = true
+				// Until the aircraft is on the course, the profile from
+				// where it is expected to join gives it its descent.
+				if !course.Join.IsZero() {
+					nav.Waypoints = append(nav.visualRouteAt(course, course.Join), nav.FlightState.ArrivalAirport)
+				}
+				return intent(cancelHold)
 			}
-		}
-		return speech.ClearedApproachIntent{
-			Approach:    ap.FullName,
-			CancelHold:  cancelHold,
-			LAHSORunway: lahsoRunway,
+		} else if start, ok := nav.joinApproach(""); ok {
+			cancelHold := nav.applyClearedApproachState()
+			nav.Approach.InterceptState = NotIntercepting
+			wps := nav.AssignedWaypoints()
+			route := wps[start : len(wps)-1]
+			nav.flyVisualRoute(slices.Concat(wps[:start],
+				nav.visualRouteFromJoin(ap.Runway, nav.visualJoinAt(route, route[0].Location), nil)))
+			return intent(cancelHold)
 		}
 	}
 
-	// Otherwise, construct the route either from the leader (in-trail) or a
-	// synthesized descent profile across the references.
-	var wps []av.Waypoint
-	if follow != nil && len(follow.Route) > 0 {
-		wps = nav.visualApproachRouteFollowingTraffic(runway, follow.Position, follow.Route)
-	}
+	wps := nav.visualRouteToFinal(follow)
 	if wps == nil {
-		var joinPos *math.Point2LL
-		if follow != nil {
-			joinPos = &follow.Position
-		}
-		wps = nav.visualApproachRouteFromReferences(runway, joinPos, nav.Approach.VisualReferences)
+		return speech.MakeUnableIntent("unable, we don't know runway " + ap.Runway)
 	}
-	if wps == nil {
-		return speech.MakeUnableIntent("unable, we don't know runway " + runway)
-	}
-
-	// The synthesized route is built from raw reference / leader waypoints,
-	// which may still have procedure turns...
-	wps = stripProcedureTurns(wps)
-
 	cancelHold := nav.applyClearedApproachState()
-	// Synthesized visuals never set InterceptState=OnApproachCourse, so OnApproach()
-	// — and thus MVAsApply / MSAW suppression — would otherwise wait for the first
-	// route waypoint to be overflown.
-	nav.Approach.PassedApproachFix = true
-	nav.Waypoints = append(wps, nav.FlightState.ArrivalAirport)
+	nav.flyVisualRoute(wps)
+	return intent(cancelHold)
+}
 
-	// The controller's instruction — an assigned heading, or a direct the pilot
-	// hasn't turned for yet — chose the join point above, so the precomputed
-	// route now carries it and the heading nav state can go. Preserve a
-	// controller-assigned descent only when it sits above the visual profile's
-	// _3NM_FINAL anchor (rwy.Elevation + 900) so "descend and maintain 3000"
-	// still completes before the aircraft holds for the TOD; passApproachFix
-	// clears the assignment at each cleared-approach waypoint crossing after
-	// that.
+// visualRouteToFinal returns the route a pilot who joins no reference
+// approach flies to the final: behind the traffic they are following, or
+// from the point of a reference nearest them to the runway's 3 nm final. It
+// is nil if there is no such route.
+func (nav *Nav) visualRouteToFinal(follow *FollowTraffic) []av.Waypoint {
+	runway := nav.Approach.Assigned.Runway
+	if follow != nil && len(follow.Route) > 0 {
+		if wps := nav.visualApproachRouteFollowingTraffic(runway, follow.Position, follow.Route); wps != nil {
+			return wps
+		}
+	}
+	var joinPos *math.Point2LL
+	if follow != nil {
+		joinPos = &follow.Position
+	}
+	return nav.visualApproachRouteFromReferences(runway, joinPos, nav.Approach.VisualReferences)
+}
+
+// flyVisualRoute puts the aircraft on wps, the route it flies the visual
+// along, with the airport after it. The route carries the join and the
+// descent profile, so a pending heading or direct goes. A
+// controller-assigned descent is kept only when it sits above the profile's
+// 3 nm final anchor (rwy.Elevation + 900), so "descend and maintain 3000"
+// still completes before the aircraft holds for the TOD; passApproachFix
+// clears the assignment at each cleared-approach waypoint crossing after
+// that.
+func (nav *Nav) flyVisualRoute(wps []av.Waypoint) {
+	nav.Waypoints = append(stripProcedureTurns(wps), nav.FlightState.ArrivalAirport)
+	// A visual flown this way never has InterceptState=OnApproachCourse, so
+	// OnApproach(), and thus MVAsApply / MSAW suppression, would otherwise
+	// wait for the first route waypoint to be overflown.
+	nav.Approach.PassedApproachFix = true
 	nav.Heading = Heading{}
 	nav.DeferredNavHeading = nil
-	rwy, _ := nav.lookup().Runway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
+
+	rwy, _ := nav.lookup().Runway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), nav.Approach.Assigned.Runway)
 	profileFloor := float32(rwy.Elevation) + 900
 	preserved := Altitude{}
 	if a := nav.Altitude.Assigned; a != nil && *a < nav.FlightState.Altitude && *a >= profileFloor {
@@ -219,12 +201,6 @@ func (nav *Nav) ClearedVisualApproach(follow *FollowTraffic, lahsoRunway string)
 		preserved.ActivateAt = nav.Altitude.ActivateAt
 	}
 	nav.Altitude = preserved
-
-	return speech.ClearedApproachIntent{
-		Approach:    ap.FullName,
-		CancelHold:  cancelHold,
-		LAHSORunway: lahsoRunway,
-	}
 }
 
 // visualApproachRouteFollowingTraffic returns waypoints to sequence the
@@ -322,6 +298,25 @@ func (nav *Nav) projectOntoApproachRoutes(routes []av.WaypointArray, position ma
 	return best, found
 }
 
+// visualJoinAt returns the join of route at p, a point on it.
+func (nav *Nav) visualJoinAt(route av.WaypointArray, p math.Point2LL) visualApproachJoinPoint {
+	join, _ := nav.projectOntoApproachRoutes([]av.WaypointArray{route}, p)
+	join.lateralDistance = 0
+	join.finalPoint = join.distanceToThreshold <= 3.25
+	return join
+}
+
+// visualRouteAt returns the route the visual is flown along from p, a
+// point on course, to the threshold.
+func (nav *Nav) visualRouteAt(course InterceptCourse, p math.Point2LL) []av.Waypoint {
+	ap := nav.Approach.Assigned
+	route := course.Route
+	if course.Final {
+		route, _ = nav.finalWaypointsAhead(ap, p)
+	}
+	return nav.visualRouteFromJoin(ap.Runway, nav.visualJoinAt(route, p), nil)
+}
+
 func visualRoutePointAtDistance(route []av.Waypoint, distanceToThreshold float32, nmPerLong float32) (visualApproachJoinPoint, bool) {
 	if len(route) < 2 {
 		return visualApproachJoinPoint{}, false
@@ -352,72 +347,14 @@ func visualRoutePointAtDistance(route []av.Waypoint, distanceToThreshold float32
 	return visualApproachJoinPoint{}, false
 }
 
-// visualJoinFromInstructions finds where the aircraft's current instructions
-// meet one of routes: at the next waypoint of its assigned route when that
-// lies on one of them, otherwise at a forward intercept of the heading its
-// latest instruction implies. Returns nil when neither yields a viable join.
-func (nav *Nav) visualJoinFromInstructions(routes []av.WaypointArray) *visualApproachJoinPoint {
-	nmPerLong := nav.FlightState.NmPerLongitude
-	pos := nav.FlightState.Position
-
-	// Stabilized-approach criterion: heavy/large/medium aircraft (CWT A-G)
-	// shouldn't intercept within 3 nm of the threshold; small aircraft can.
-	stabilizedRequired := len(nav.Perf.Category.CWT) > 0 &&
-		nav.Perf.Category.CWT[0] >= 'A' && nav.Perf.Category.CWT[0] <= 'G'
-
-	// If the aircraft's next waypoint lies on one of the routes, the route
-	// the controller gave it is where it joins; no ray geometry needed. An
-	// assigned heading supersedes a (stale) route, though. The next waypoint
-	// is the first one far enough away to matter: the aircraft sequences
-	// straight past any it is sitting on top of.
-	if _, ok := nav.AssignedHeading(); !ok {
-		wps := nav.AssignedWaypoints()
-		far := func(wp av.Waypoint) bool {
-			return math.NMDistance2LLFast(pos, wp.Location, nmPerLong) > 0.5
-		}
-		if i := slices.IndexFunc(wps, far); i != -1 {
-			if proj, ok := nav.projectOntoApproachRoutes(routes, wps[i].Location); ok &&
-				proj.lateralDistance <= 0.25 && proj.distanceToThreshold > 0.5 &&
-				!(stabilizedRequired && proj.distanceToThreshold < 3) {
-				// The instruction names a point on the route, so this is an
-				// exact join there, not a projection from off to the side.
-				proj.lateralDistance = 0
-				proj.finalPoint = proj.distanceToThreshold <= 3.25
-				return &proj
-			}
-		}
-	}
-
-	// Forward ray intercept along the instructed heading; take the closest viable hit.
-	for _, hit := range nav.forwardRouteIntercepts(nav.intendedHeading(), routes) {
-		route := routes[hit.RouteIndex]
-		distToThreshold := math.NMDistance2LL(hit.Location, route[hit.Index+1].Location)
-		for i := hit.Index + 1; i < len(route)-1; i++ {
-			distToThreshold += math.NMDistance2LL(route[i].Location, route[i+1].Location)
-		}
-
-		if stabilizedRequired && distToThreshold < 3 {
-			continue
-		}
-		return &visualApproachJoinPoint{
-			route:               route,
-			segment:             hit.Index,
-			segmentFraction:     hit.SegT,
-			location:            hit.Location,
-			distanceToThreshold: distToThreshold,
-			// When the intercept is at/inside the 3-NM final, treat the
-			// join as the FAF — there's no separate stabilized segment
-			// to insert between the join and the threshold.
-			finalPoint: distToThreshold <= 3.25,
-		}
-	}
-	return nil
-}
-
-// selectVisualApproachRoute picks the join point and route across the supplied reference
-// approaches. The primary cases are a join at the next waypoint of the aircraft's assigned
-// route or a forward heading-ray intercept; failing those, the aircraft is sent to a
-// synthesized 3-NM final on the laterally-closest reference.
+// selectVisualApproachRoute picks the join point and route across the
+// supplied reference approaches for a pilot flying to the final themselves:
+// where the traffic they are following is, or else their projection onto the
+// laterally-closest reference. When the aircraft is pointed generally toward
+// the runway the join is promoted to the synthesized 3 nm final, skipping
+// any intermediate route fixes; otherwise the projection is handed back so
+// the route construction adds the dogleg fixes and the 3 nm final. It is nil
+// if the projection would need a U-turn.
 func (nav *Nav) selectVisualApproachRoute(followTraffic *math.Point2LL, references []*av.Approach) *visualApproachJoinPoint {
 	nmPerLong := nav.FlightState.NmPerLongitude
 	magVar := nav.FlightState.MagneticVariation
@@ -456,15 +393,6 @@ func (nav *Nav) selectVisualApproachRoute(followTraffic *math.Point2LL, referenc
 		routes = append(routes, ref.Waypoints...)
 	}
 
-	if join := nav.visualJoinFromInstructions(routes); join != nil {
-		return join
-	}
-
-	// No route or forward-heading join. Project onto the laterally-closest reference. If the
-	// aircraft is pointed generally toward the runway, promote the join to the synthesized 3-NM
-	// final (skipping any intermediate route fixes); otherwise hand back the projection so the
-	// route construction layer adds the dogleg fixes and the 3-NM final.  If the projection would
-	// require a U-turn (bearing > 90° from heading), give up and return unable.
 	proj, ok := nav.projectOntoApproachRoutes(routes, pos)
 	if !ok || proj.distanceToThreshold <= 0.5 {
 		return nil
@@ -487,13 +415,20 @@ func (nav *Nav) selectVisualApproachRoute(followTraffic *math.Point2LL, referenc
 }
 
 func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *math.Point2LL, references []*av.Approach) []av.Waypoint {
-	nmPerLong := nav.FlightState.NmPerLongitude
-
 	joinPoint := nav.selectVisualApproachRoute(followTraffic, references)
 	if joinPoint == nil || len(joinPoint.route) < 2 {
 		return nil
 	}
+	return nav.visualRouteFromJoin(runway, *joinPoint, followTraffic)
+}
 
+// visualRouteFromJoin returns the route the visual is flown along from
+// joinPoint on a reference route to the runway's threshold, carrying the
+// descent profile: a 3 degree glidepath from the top of descent through a
+// 3 nm final at 900 feet above the runway. followTraffic, if given, is
+// where the traffic being followed is, which the join takes the place of.
+func (nav *Nav) visualRouteFromJoin(runway string, joinPoint visualApproachJoinPoint, followTraffic *math.Point2LL) []av.Waypoint {
+	nmPerLong := nav.FlightState.NmPerLongitude
 	rwy, _ := nav.lookup().Runway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), runway)
 	finalPoint, hasFinalPoint := visualRoutePointAtDistance(joinPoint.route, 3, nmPerLong)
 	thresholdAlt := rwy.Elevation + rwy.ThresholdCrossingHeight
@@ -516,6 +451,12 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 	case followTraffic != nil:
 		join.Fix = "_" + runway + "_FOLLOW_TRAFFIC"
 		join.Location = *followTraffic
+	case joinPoint.lateralDistance == 0 && joinPoint.segmentFraction == 0:
+		// The join is at a fix of the route: fly the fix itself, so that
+		// its restrictions come along rather than being displaced by a
+		// bare join point.
+		join = joinPoint.route[joinPoint.segment : joinPoint.segment+1].Clone()[0]
+		join.SetFAF(false)
 	case joinPoint.lateralDistance == 0:
 		join.Fix = "_" + runway + "_INTERCEPT"
 	default:
@@ -591,68 +532,41 @@ func (nav *Nav) visualApproachRouteFromReferences(runway string, followTraffic *
 	return wps
 }
 
-// prepareForChartedVisual sets up the aircraft to fly the assigned charted
-// visual from where it joins one of the approach's routes. joinFix has the
-// same meaning as in joinApproach.
-func (nav *Nav) prepareForChartedVisual(joinFix string) speech.CommandIntent {
-	// An active arc already joins the approach at its endpoint. Keep its
-	// guidance until that fix is sequenced, unless a newer instruction supersedes it.
-	if nav.Heading.Arc != nil && nav.DeferredNavHeading == nil && joinFix == "" && len(nav.Waypoints) > 0 {
-		if route, idx := approachRouteThrough(nav.Approach.Assigned, nav.Waypoints[0].Fix); route != nil {
-			nav.Waypoints = nav.spliceApproachRoute(nav.Waypoints, 0, route[idx:])
-			nav.Approach.PassedApproachFix = true
-			return nil
-		}
+// keepsArcOntoChartedVisual keeps an active arc that already joins the
+// charted visual at its endpoint, splicing the approach in there, unless a
+// newer instruction supersedes the arc. It reports whether it did.
+func (nav *Nav) keepsArcOntoChartedVisual(joinFix string) bool {
+	if nav.Heading.Arc == nil || nav.DeferredNavHeading != nil || joinFix != "" || len(nav.Waypoints) == 0 {
+		return false
 	}
+	route, idx := approachRouteThrough(nav.Approach.Assigned, nav.Waypoints[0].Fix)
+	if route == nil {
+		return false
+	}
+	nav.Waypoints = nav.spliceApproachRoute(nav.Waypoints, 0, route[idx:])
+	nav.Approach.PassedApproachFix = true
+	return true
+}
 
-	routes := nav.Approach.Assigned.Waypoints
+// chartedVisualRouteAhead returns the charted visual's route from the first
+// fix of one of its routes that is within 30 degrees of the aircraft's nose,
+// taking the one closest to it. This is the join of a pilot pointed at a
+// fix of the chart whose heading intercepts none of its legs. It is nil if
+// there is no such fix.
+func (nav *Nav) chartedVisualRouteAhead() av.WaypointArray {
 	pos := nav.FlightState.Position
 	nmPerLong := nav.FlightState.NmPerLongitude
-
-	// The shared visual join logic finds where the aircraft's instructions
-	// meet the chart. Unlike an uncharted visual there is no projection
-	// fallback past that: the published track has to be joined where it is
-	// charted, so a pilot who isn't pointed at it answers unable.
+	hdg := nav.intendedHeading()
+	offNose := func(wp av.Waypoint) float32 {
+		return math.HeadingDifference(math.Heading2LL(pos, wp.Location, nmPerLong), hdg)
+	}
 	var wi av.WaypointArray
-	if route, idx := approachRouteThrough(nav.Approach.Assigned, joinFix); route != nil {
-		wi = route[idx+1:]
-	} else if join := nav.visualJoinFromInstructions(routes); join != nil {
-		if join.segmentFraction == 0 {
-			// The join is the charted fix that starts the segment, or is
-			// upstream of it; fly the fix itself so that its altitude and
-			// speed restrictions come along rather than being displaced by a
-			// bare intercept point.
-			wi = join.route[join.segment:]
-		} else {
-			wi = append(av.WaypointArray{{Fix: "intercept", Location: join.location}},
-				join.route[join.segment+1:]...)
-		}
-	} else {
-		// No intercept. Fall back to each route's first waypoint whose
-		// bearing is within 30° of the instructed heading — lets a pilot
-		// already pointed at a chart waypoint join there directly. Where
-		// several routes have one, the pilot takes the one closest to the
-		// nose.
-		hdg := nav.intendedHeading()
-		offNose := func(wp av.Waypoint) float32 {
-			return math.HeadingDifference(math.Heading2LL(pos, wp.Location, nmPerLong), hdg)
-		}
-		var minOffNose float32
-		for _, route := range routes {
-			i := slices.IndexFunc(route, func(wp av.Waypoint) bool { return offNose(wp) < 30 })
-			if i != -1 && (wi == nil || offNose(route[i]) < minOffNose) {
-				wi, minOffNose = route[i:], offNose(route[i])
-			}
+	var minOffNose float32
+	for _, route := range nav.Approach.Assigned.Waypoints {
+		i := slices.IndexFunc(route, func(wp av.Waypoint) bool { return offNose(wp) < 30 })
+		if i != -1 && (wi == nil || offNose(route[i]) < minOffNose) {
+			wi, minOffNose = route[i:], offNose(route[i])
 		}
 	}
-
-	if wi == nil {
-		return speech.MakeUnableIntent("unable. We are not on course to intercept the approach")
-	}
-
-	nav.Waypoints = append(wi.Clone(), nav.FlightState.ArrivalAirport)
-	nav.Heading = Heading{}
-	nav.DeferredNavHeading = nil
-	nav.Approach.PassedApproachFix = true // allow descent
-	return nil
+	return wi
 }

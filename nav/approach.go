@@ -12,6 +12,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/wx"
 )
 
 // Approach is the approach the aircraft has been told to expect and how far it
@@ -20,11 +21,10 @@ type Approach struct {
 	// What was assigned: the approach, its ATPA volume, and for a visual the
 	// approaches it is flown by reference to and the one it has been
 	// committed to.
-	Assigned             *av.Approach
-	AssignedId           string
-	ATPAVolume           *av.ATPAVolume
-	VisualReferences     []*av.Approach // Reference approaches for non-charted visual approach
-	InterceptedReference *av.Approach   // Approach giving the committed-to route for a non-charted visual approach
+	Assigned         *av.Approach
+	AssignedId       string
+	ATPAVolume       *av.ATPAVolume
+	VisualReferences []*av.Approach // Reference approaches for non-charted visual approach
 
 	// The clearance. Abandoned is set when the approach fell through, by an
 	// intercept the aircraft couldn't make or a clearance the controller
@@ -39,9 +39,8 @@ type Approach struct {
 	AtFixInterceptFix string // fix where aircraft should intercept the localizer
 
 	// Joining the approach course from a heading.
-	InterceptState      InterceptState
-	InterceptCourseLine [2]math.Point2LL // cached course line for non-ILS intercepts
-	InterceptWaypoints  []av.Waypoint    // cached remaining waypoints for non-ILS intercepts
+	InterceptState InterceptState
+	Intercept      InterceptCourse // the course being joined, once the turn onto it has started
 
 	// Progress along the approach.
 	PassedApproachFix bool // have we passed a fix on the approach yet?
@@ -55,11 +54,14 @@ func (na *Approach) EffectivelyCleared() bool {
 	return na.Cleared || na.AtFixClearedRoute != nil
 }
 
-// HasLocalizer reports whether the aircraft is currently flying localizer-style
-// course geometry.
+// HasLocalizer reports whether the approach is flown on a localizer: its own,
+// or for a visual one of its references'.
 func (na *Approach) HasLocalizer() bool {
-	return (na.Assigned != nil && na.Assigned.Type.HasLocalizer()) ||
-		(na.InterceptedReference != nil && na.InterceptedReference.Type.HasLocalizer())
+	if na.Assigned == nil {
+		return false
+	}
+	return na.Assigned.Type.HasLocalizer() ||
+		slices.ContainsFunc(na.VisualReferences, func(ap *av.Approach) bool { return ap.Type.HasLocalizer() })
 }
 
 func (nav *Nav) getApproach(airport *av.Airport, id string) (*av.Approach, []*av.Approach, error) {
@@ -262,10 +264,11 @@ func (nav *Nav) spliceApproachRoute(navwps []av.Waypoint, idx int, apwps av.Wayp
 }
 
 // joinApproach splices the assigned approach into the aircraft's route where
-// the two meet and reports whether it found such a fix. joinFix, if non-empty,
-// names a fix the aircraft has just crossed and so dropped from its route; the
+// the two meet, returning the index in the route of the first approach
+// waypoint and whether it found such a fix. joinFix, if non-empty, names a
+// fix the aircraft has just crossed and so dropped from its route; the
 // approach is joined there, picking up after it.
-func (nav *Nav) joinApproach(joinFix string) bool {
+func (nav *Nav) joinApproach(joinFix string) (int, bool) {
 	ap := nav.Approach.Assigned
 
 	if route, idx := approachRouteThrough(ap, joinFix); route != nil {
@@ -274,17 +277,17 @@ func (nav *Nav) joinApproach(joinFix string) bool {
 		// Having crossed the fix counts as passing an approach fix, which
 		// lets a clearance start the descent right away.
 		nav.Approach.PassedApproachFix = true
-		return true
+		return 0, true
 	}
 
 	navwps := nav.AssignedWaypoints()
 	for i, wp := range navwps {
 		if route, idx := approachRouteThrough(ap, wp.Fix); route != nil {
 			nav.setAssignedWaypoints(nav.spliceApproachRoute(navwps, i, route[idx:]))
-			return true
+			return i, true
 		}
 	}
-	return false
+	return 0, false
 }
 
 // prepareForApproach sets up the aircraft to fly the assigned approach, either
@@ -296,34 +299,67 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) speech.Comma
 	}
 
 	ap := nav.Approach.Assigned
-
-	// Charted visual is special in all sorts of ways
-	if ap.Type == av.ChartedVisualApproach {
-		return nav.prepareForChartedVisual(joinFix)
+	charted := ap.Type == av.ChartedVisualApproach
+	if charted && nav.keepsArcOntoChartedVisual(joinFix) {
+		return nil
 	}
 
 	_, assignedHeading := nav.AssignedHeading()
-	directApproachFix := !assignedHeading && nav.joinApproach(joinFix)
-
-	if directApproachFix {
+	if assignedHeading {
+		// Keep flying the heading; the aircraft joins the approach where
+		// the heading meets one of its courses and takes up the rest of
+		// the route there. Only a charted visual answers now if it never
+		// will: an instrument approach's pilot asks for vectors then.
+		if charted {
+			course, ok := nav.selectInterceptCourse(wx.MakeStandardSampleForAltitude(nav.FlightState.Altitude))
+			if !ok {
+				return nav.flyChartedVisualAhead()
+			}
+			// Until the aircraft is on the leg, the chart from where it
+			// is expected to join gives it its descent.
+			join := av.Waypoint{Fix: "intercept", Location: course.Join}
+			nav.Waypoints = slices.Concat([]av.Waypoint{join}, course.Route[course.Index+1:].Clone(),
+				[]av.Waypoint{nav.FlightState.ArrivalAirport})
+			nav.Approach.PassedApproachFix = true // allow descent
+		}
+		nav.Approach.InterceptState = InitialHeading
+	} else if _, ok := nav.joinApproach(joinFix); ok {
 		// The aircraft is going direct to an approach fix; clear any
 		// OnApproachCourse state that DirectFix may have set (which
 		// is used to gate altitude before clearance). Without this,
 		// ClearedApproach incorrectly sets NoPT when it sees
 		// OnApproachCourse, skipping the procedure turn.
 		nav.Approach.InterceptState = NotIntercepting
-	} else if assignedHeading {
-		nav.Approach.InterceptState = InitialHeading
+		if charted {
+			nav.Approach.PassedApproachFix = true // allow descent
+		}
+	} else if charted {
+		if unable := nav.flyChartedVisualAhead(); unable != nil {
+			return unable
+		}
 	} else {
 		return speech.MakeUnableIntent("unable. We need either direct or a heading to intercept")
 	}
-	// If the aircraft is on a heading, there's nothing more to do for
-	// now; keep flying the heading and after we intercept we'll add
-	// the rest of the waypoints to the aircraft's waypoints array.
 
 	// No procedure turn if it intercepts via a heading or we're coming off a hold.
 	nav.Approach.NoPT = straightIn || assignedHeading || nav.Heading.Hold != nil
 
+	return nil
+}
+
+// flyChartedVisualAhead sends a pilot whose instructions meet none of the
+// charted visual's legs to the fix of the chart they are pointed at, if there
+// is one; otherwise it returns their unable.
+func (nav *Nav) flyChartedVisualAhead() speech.CommandIntent {
+	route := nav.chartedVisualRouteAhead()
+	if route == nil {
+		return speech.MakeUnableIntent("unable. We are not on course to intercept the approach")
+	}
+	nav.Waypoints = append(route.Clone(), nav.FlightState.ArrivalAirport)
+	nav.Heading = Heading{}
+	nav.DeferredNavHeading = nil
+	nav.Approach.InterceptState = NotIntercepting
+	nav.Approach.PassedApproachFix = true // allow descent
 	return nil
 }
 
@@ -459,18 +495,17 @@ func (nav *Nav) AtFixCleared(fix, id string, straightIn bool) speech.CommandInte
 	}
 
 	isFix := func(wp av.Waypoint) bool { return wp.Fix == fix }
-	if hdg, onHeading := nav.AssignedHeading(); onHeading {
+	if _, onHeading := nav.AssignedHeading(); onHeading {
 		if !nav.interceptingFromHeading() {
 			return speech.MakeUnableIntent("unable. We're on a heading")
 		}
-		if !slices.ContainsFunc(nav.waypointsAfterIntercept(hdg), isFix) {
+		if !slices.ContainsFunc(nav.waypointsAfterIntercept(), isFix) {
 			return speech.MakeUnableIntent("unable. We won't cross {fix} on this intercept", fix)
 		}
 	} else if !slices.ContainsFunc(nav.AssignedWaypoints(), isFix) {
 		return speech.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
 
-	nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
 	nav.Approach.AtFixClearedRoute = route[idx:].Clone()
 	if straightIn && len(nav.Approach.AtFixClearedRoute) > 0 {
 		nav.Approach.AtFixClearedRoute[0].SetNoPT(true)
@@ -497,6 +532,10 @@ func (nav *Nav) clearApproachAtFix(wp av.Waypoint) bool {
 	nav.Speed = Speed{}
 	if wp.NoPT() || route[0].NoPT() {
 		nav.Approach.NoPT = true
+	}
+	if ap := nav.Approach.Assigned; ap.Type == av.VisualApproach {
+		// The visual's profile runs from the fix.
+		route = nav.visualRouteFromJoin(ap.Runway, nav.visualJoinAt(route, route[0].Location), nil)
 	}
 	nav.Waypoints = append(route, nav.FlightState.ArrivalAirport)
 	nav.Approach.AtFixClearedRoute = nil
@@ -573,7 +612,10 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 		return false
 	}
 
-	if _, assigned := nav.AssignedHeading(); assigned {
+	// A visual approach clearance lets the pilot descend on their own
+	// navigation, so they are on the approach from the clearance; on any
+	// other, a vector takes them off it until they are established.
+	if _, assigned := nav.AssignedHeading(); assigned && !nav.clearedForVisualApproach() {
 		return false
 	}
 

@@ -202,23 +202,6 @@ func IntersectRayWithRoutes(origin math.Point2LL, heading math.TrueHeading, rout
 	return hits
 }
 
-// ClosestRayRouteIntersection returns the hit with the smallest distance
-// from origin across all supplied routes.
-func ClosestRayRouteIntersection(origin math.Point2LL, heading math.TrueHeading, routes []WaypointArray) (RouteRayIntersection, bool) {
-	var best RouteRayIntersection
-	found := false
-	bestDist := float32(0)
-	for _, h := range IntersectRayWithRoutes(origin, heading, routes) {
-		d := math.NMDistance2LL(origin, h.Location)
-		if !found || d < bestDist {
-			best = h
-			bestDist = d
-			found = true
-		}
-	}
-	return best, found
-}
-
 ///////////////////////////////////////////////////////////////////////////
 
 // ScrapedRoute is one way a city pair has recently been flown, taken from

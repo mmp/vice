@@ -200,9 +200,6 @@ func (nav *Nav) DirectFix(fix string, turn av.TurnDirection, simTime Time, delay
 	// the approach course laterally, but its restrictions don't apply until
 	// the clearance.
 	fromApproach := source == waypointSourceApproach && !nav.Approach.Cleared
-	if !nav.Approach.Cleared {
-		nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
-	}
 
 	if hold := nav.Heading.Hold; hold != nil {
 		// We'll finish our lap and then depart the holding fix direct to the fix

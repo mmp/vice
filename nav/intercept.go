@@ -10,12 +10,14 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/speech"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 )
 
-// Joining the approach course from a heading: the intercept the controller
-// sets up, the turn onto the course and its capture, and the recovery or
-// the request for vectors when the aircraft overshoots.
+// Joining the approach course from a heading: the course the heading takes
+// the aircraft onto, the intercept the controller sets up, the turn onto
+// the course and its capture, and the recovery or the request for vectors
+// when the aircraft overshoots.
 
 type InterceptState int
 
@@ -25,6 +27,54 @@ const (
 	TurningToJoin
 	OnApproachCourse
 )
+
+// InterceptCourse is a course the aircraft joins from a heading: the final
+// approach course, or a leg of one of the approach's routes.
+type InterceptCourse struct {
+	Line  [2]math.Point2LL // two points along the course, in the direction of flight
+	Final bool             // the final approach course rather than a leg
+	// Reach is how far back from the end of its line the final extends; a
+	// leg runs between its line's points.
+	Reach float32
+	// Route is the route the leg is on and Index the leg's position in it.
+	// The final's route is found once the aircraft is on it.
+	Route av.WaypointArray
+	Index int
+	// Join is where the aircraft's path was predicted to meet the course
+	// when the course was chosen; it is zero if the path doesn't meet it
+	// and the aircraft is to be turned back onto it instead.
+	Join math.Point2LL
+}
+
+func (c InterceptCourse) course(nmPerLong float32) math.TrueHeading {
+	return math.Heading2LL(c.Line[0], c.Line[1], nmPerLong)
+}
+
+// extent returns the segment of the course that can be joined, in nm
+// coordinates: the final from as far back as it reaches to its end, or the
+// leg.
+func (c InterceptCourse) extent(nmPerLong float32) (p0, p1 [2]float32) {
+	p0, p1 = math.LL2NM(c.Line[0], nmPerLong), math.LL2NM(c.Line[1], nmPerLong)
+	if c.Final {
+		p0 = math.Sub2f(p1, math.Scale2f(math.HeadingVector(c.course(nmPerLong)), c.Reach))
+	}
+	return
+}
+
+// distanceToThreshold returns how far the aircraft flies from p, a point on
+// the course, to the threshold: along the final, or along the rest of the
+// leg's route.
+func (c InterceptCourse) distanceToThreshold(p [2]float32, threshold math.Point2LL, nmPerLong float32) float32 {
+	if c.Final {
+		dir := math.HeadingVector(c.course(nmPerLong))
+		return math.Dot(math.Sub2f(math.LL2NM(threshold, nmPerLong), p), dir)
+	}
+	d := math.Distance2f(p, math.LL2NM(c.Line[1], nmPerLong))
+	for i := c.Index + 1; i < len(c.Route)-1; i++ {
+		d += math.NMDistance2LL(c.Route[i].Location, c.Route[i+1].Location)
+	}
+	return d
+}
 
 // interceptingFromHeading reports whether the aircraft's heading is taking
 // it to join the approach course.
@@ -43,16 +93,6 @@ func (nav *Nav) InterceptApproach(joinFix string) speech.CommandIntent {
 	}
 
 	ap := nav.Approach.Assigned
-	// Under a synthesized visual, "intercept" commits the aircraft to fly
-	// the localizer route when an ILS/Localizer reference is available.
-	if ap.Type == av.VisualApproach && nav.Approach.InterceptedReference == nil {
-		for _, ref := range nav.Approach.VisualReferences {
-			if ref.Type.HasLocalizer() {
-				nav.Approach.InterceptedReference = ref
-				break
-			}
-		}
-	}
 	if nav.Approach.HasLocalizer() {
 		return speech.ApproachIntent{
 			Type:         speech.ApproachIntercept,
@@ -94,7 +134,6 @@ func (nav *Nav) AtFixIntercept(fix string) speech.CommandIntent {
 		return speech.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
 
-	nav.Approach.InterceptedReference = nav.visualReferenceForFix(fix)
 	nav.Approach.AtFixInterceptFix = fix
 
 	return speech.ApproachIntent{
@@ -128,71 +167,248 @@ func (nav *Nav) interceptApproachAtFix(wp av.Waypoint) bool {
 	return true
 }
 
+// A leg within these of the final approach course is a stretch of it.
+const (
+	finalCourseHeadingLeeway = 5   // degrees
+	finalCourseLateralLeeway = 0.3 // nm
+)
+
+// interceptCandidates returns the courses of the assigned approach that a
+// heading can join: its final approach course, and each leg of its routes
+// that is not a stretch of the final. A charted visual's track to the
+// runway is its legs, so it has no separate final. A localizer reaches as
+// far as it can be received and a visual's final is the runway's extended
+// centerline, so those finals run out indefinitely; another approach's
+// final ends at its farthest fix. The final comes first.
+func (nav *Nav) interceptCandidates() []InterceptCourse {
+	ap := nav.Approach.Assigned
+	nmPerLong, magVar := nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation
+
+	var courses []InterceptCourse
+	alongFinal := func(a, b math.Point2LL) bool { return false }
+	if line := ap.FinalApproachCourseLine(nmPerLong, magVar); ap.Type != av.ChartedVisualApproach && line[0] != line[1] {
+		p0, p1 := math.LL2NM(line[0], nmPerLong), math.LL2NM(line[1], nmPerLong)
+		course := math.Heading2LL(line[0], line[1], nmPerLong)
+		dir := math.HeadingVector(course)
+		onFinal := func(p math.Point2LL) bool {
+			return math.Abs(math.SignedPointLineDistance(math.LL2NM(p, nmPerLong), p0, p1)) < finalCourseLateralLeeway
+		}
+		alongFinal = func(a, b math.Point2LL) bool {
+			return math.HeadingDifference(math.Heading2LL(a, b, nmPerLong), course) < finalCourseHeadingLeeway &&
+				onFinal(a) && onFinal(b)
+		}
+
+		reach := float32(100)
+		if !ap.Type.HasLocalizer() && ap.Type != av.VisualApproach {
+			reach = 0
+			for _, route := range ap.Waypoints {
+				for i := range len(route) - 1 {
+					if alongFinal(route[i].Location, route[i+1].Location) {
+						reach = max(reach, math.Dot(math.Sub2f(p1, math.LL2NM(route[i].Location, nmPerLong)), dir))
+					}
+				}
+			}
+		}
+		courses = append(courses, InterceptCourse{Line: line, Final: true, Reach: reach})
+	}
+
+	for _, route := range ap.Waypoints {
+		for i := range len(route) - 1 {
+			a, b := route[i], route[i+1]
+			if alongFinal(a.Location, b.Location) {
+				continue
+			}
+			// A leg flown on a heading from its first fix or around an
+			// arc isn't a course between the two that a heading can
+			// intercept.
+			if _, heading := a.HeadingAction(); heading || a.Arc() != nil {
+				continue
+			}
+			courses = append(courses, InterceptCourse{Line: [2]math.Point2LL{a.Location, b.Location}, Route: route, Index: i})
+		}
+	}
+	return courses
+}
+
+// The widest angles at which a heading joins the final approach course and
+// a leg. Controllers vector to intercept a final at 30 degrees or less, and
+// much beyond 45 the aircraft flies through it before it can turn onto it.
+// A leg is joined wherever the heading crosses it going its way, as a
+// charted turn onto it might.
+const (
+	maxFinalInterceptAngle = 45
+	maxLegInterceptAngle   = 90
+)
+
+// legDetour is how much farther than the straight-line distance to the
+// threshold a leg may carry the aircraft and still be the leg its heading
+// was meant to join. A vector across a transition that leads back out
+// isn't an intercept of it.
+const legDetour = 3 // nm
+
+// minimumFinal is how far from the threshold a visual approach has to be
+// joined: a stabilized final of 3 nm for all but the smallest aircraft
+// (CWT A-G). An instrument approach is intercepted wherever the controller
+// vectors it.
+func (nav *Nav) minimumFinal() float32 {
+	ap := nav.Approach.Assigned
+	if ap.Type != av.VisualApproach && ap.Type != av.ChartedVisualApproach {
+		return 0
+	}
+	cwt := nav.Perf.Category.CWT
+	if len(cwt) > 0 && cwt[0] >= 'A' && cwt[0] <= 'G' {
+		return 3
+	}
+	return 0
+}
+
+// pathCrossing returns where a path from origin along dir meets the segment
+// from p0 to p1 and how far along the path that is. A path already on the
+// segment, within the capture tolerance, meets it where it starts.
+func pathCrossing(origin, dir, p0, p1 [2]float32) ([2]float32, float32, bool) {
+	seg := math.Sub2f(p1, p0)
+	segLen2 := math.Dot(seg, seg)
+	if segLen2 == 0 {
+		return [2]float32{}, 0, false
+	}
+	if t := math.Dot(math.Sub2f(origin, p0), seg) / segLen2; t >= 0 && t <= 1 &&
+		math.Abs(math.SignedPointLineDistance(origin, p0, p1)) < courseCaptureTolerance {
+		return origin, 0, true
+	}
+	p, dist, _, ok := math.RaySegmentIntersect(origin, dir, p0, p1)
+	return p, dist, ok
+}
+
+// selectInterceptCourse picks the course the aircraft's assigned heading
+// takes it onto, predicting its path as the turn to the heading, if it is
+// still turning, and then the heading itself. The final approach course is
+// taken whenever the heading is within maxFinalInterceptAngle of it and the
+// path meets it, even through a leg on the way, since a vector toward the
+// final is meant to intercept the final; it is also taken when the aircraft
+// is close enough to be turned back onto it, as after an overshoot.
+// Otherwise the first leg the path meets is taken. The path meets a course
+// where it crosses it going the course's way, or where the turn passes
+// through the course's heading; a visual also has to meet it far enough out
+// for a stabilized final. It reports false if the heading meets no course.
+func (nav *Nav) selectInterceptCourse(wxs wx.Sample) (InterceptCourse, bool) {
+	hdg, turn, ok := nav.headingToJoinFrom()
+	if !ok {
+		return InterceptCourse{}, false
+	}
+	ap := nav.Approach.Assigned
+	fs := &nav.FlightState
+	nmPerLong, magVar := fs.NmPerLongitude, fs.MagneticVariation
+	hdgTrue := math.MagneticToTrue(hdg, magVar)
+
+	// Where the heading is established, how far the aircraft flies getting
+	// there, and the track it then makes over the ground.
+	origin := math.LL2NM(fs.Position, nmPerLong)
+	flown := float32(0)
+	turning := math.HeadingDifference(fs.Heading, hdg) > 5
+	if turning {
+		tp := nav.predictTurnPath(hdg, turn, wxs)
+		origin = tp.position(tp.dur)
+		flown = tp.tasNMps * tp.dur
+	}
+	track := math.Normalize2f(math.Add2f(
+		math.Scale2f(math.HeadingVector(hdgTrue), nav.TAS(wxs.Temperature())/3600), nav.groundWind(wxs)))
+	minFinal := nav.minimumFinal()
+	direct := math.NMDistance2LL(fs.Position, ap.Threshold)
+
+	var best InterceptCourse
+	var bestDist float32
+	found := false
+	for _, c := range nav.interceptCandidates() {
+		courseTrue := c.course(nmPerLong)
+		maxAngle := float32(util.Select(c.Final, maxFinalInterceptAngle, maxLegInterceptAngle))
+		if math.HeadingDifference(courseTrue, hdgTrue) > maxAngle {
+			continue
+		}
+		courseMag := math.TrueToMagnetic(courseTrue, magVar)
+		p0, p1 := c.extent(nmPerLong)
+
+		var at [2]float32
+		var dist float32
+		met := false
+		if turning && math.HeadingInTurnArc(fs.Heading, courseMag, hdg, math.TurnDirection(turn)) {
+			// The turn passes through the course's heading, so the
+			// aircraft may roll out on the course partway through it,
+			// about abeam of where it is now.
+			seg := math.Sub2f(p1, p0)
+			if t := math.Dot(math.Sub2f(origin, p0), seg) / math.Dot(seg, seg); t >= 0 && t <= 1 {
+				at = math.Add2f(p0, math.Scale2f(seg, t))
+				dist = flown*TurnAngle(fs.Heading, courseMag, turn)/TurnAngle(fs.Heading, hdg, turn) +
+					math.Distance2f(origin, at)
+				met = true
+			}
+		}
+		if !met {
+			var d float32
+			if at, d, met = pathCrossing(origin, track, p0, p1); met {
+				dist = flown + d
+			}
+		}
+		if met {
+			remaining := c.distanceToThreshold(at, ap.Threshold, nmPerLong)
+			if remaining <= minFinal || (!c.Final && remaining > direct+legDetour) {
+				continue
+			}
+			c.Join = math.NM2LL(at, nmPerLong)
+		} else if !c.Final || !nav.approachRecoveryFeasible(ap) {
+			continue
+		}
+
+		if c.Final {
+			return c, true
+		}
+		if !found || dist < bestDist {
+			best, bestDist, found = c, dist, true
+		}
+	}
+	return best, found
+}
+
 func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (heading math.MagneticHeading, turn av.TurnDirection) {
 	// Baseline
 	heading, turn = *nav.Heading.Assigned, av.TurnClosest
 
 	ap := nav.Approach.Assigned
-	hasLocalizer := nav.Approach.HasLocalizer()
-
-	// Determine the course and line to intercept.
-	var courseTrue math.TrueHeading
-	var courseLine [2]math.Point2LL
-	var interceptWaypoints av.WaypointArray // waypoints from intercept point forward
-	if hasLocalizer {
-		courseTrue = ap.FinalApproachCourse(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-		courseLine = ap.FinalApproachCourseLine(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-	} else if nav.Approach.InterceptState == TurningToJoin {
-		// Already committed to a segment; use cached values.
-		courseLine = nav.Approach.InterceptCourseLine
-		courseTrue = math.Heading2LL(courseLine[0], courseLine[1], nav.FlightState.NmPerLongitude)
-		interceptWaypoints = nav.Approach.InterceptWaypoints
-	} else {
-		// For non-ILS approaches, find the approach segment that the
-		// aircraft's ground track will cross.
-		var ok bool
-		courseTrue, courseLine, interceptWaypoints, ok = nav.findInterceptSegment(ap, nav.groundTrack(wxs))
-		if !ok {
-			nav.approachOvershootRequestVectors()
-			return
-		}
-	}
+	fs := &nav.FlightState
+	nmPerLong, magVar := fs.NmPerLongitude, fs.MagneticVariation
 
 	switch nav.Approach.InterceptState {
 	case InitialHeading:
-		assignedMag, _ := nav.AssignedHeading() // use the deferred heading for the following
-		assignedTrue := math.MagneticToTrue(assignedMag, nav.FlightState.MagneticVariation)
-		if d := math.HeadingDifference(courseTrue, assignedTrue); d > 45 {
-			// Too big an intercept angle; request vectors
-			nav.approachOvershootRequestVectors()
+		// While the aircraft is still turning to the assigned heading, the
+		// intercept isn't given up on from the stale physical heading.
+		assignedMag, assignedTurn, _ := nav.headingToJoinFrom()
+		turningToAssigned := math.HeadingDifference(fs.Heading, assignedMag) > 5
+
+		course, ok := nav.selectInterceptCourse(wxs)
+		if !ok {
+			if !turningToAssigned {
+				nav.missIntercept()
+			}
 			return
 		}
-		// If the aircraft is still turning to the assigned heading, don't
-		// reject the intercept from the stale physical heading. However, if
-		// the final approach course lies inside the active turn to the assigned
-		// intercept heading, allow capture before rolling all the way out on
-		// that heading.
-		hdgMag := math.TrueToMagnetic(courseTrue, nav.FlightState.MagneticVariation)
-		turningToAssigned := math.HeadingDifference(nav.FlightState.Heading, assignedMag) > 5
-		if turningToAssigned {
-			assignedTurn := av.TurnClosest
-			if nav.Heading.Turn != nil {
-				assignedTurn = *nav.Heading.Turn
-			}
-			if !math.HeadingInTurnArc(nav.FlightState.Heading, hdgMag, assignedMag, math.TurnDirection(assignedTurn)) {
-				return
-			}
+		courseTrue := course.course(nmPerLong)
+		hdgMag := math.TrueToMagnetic(courseTrue, magVar)
+
+		// If the course lies inside the active turn to the assigned
+		// intercept heading, allow capture before rolling all the way out
+		// on that heading.
+		if turningToAssigned && !math.HeadingInTurnArc(fs.Heading, hdgMag, assignedMag, math.TurnDirection(assignedTurn)) {
+			return
 		}
 		// Whether the aircraft reaches the course doesn't matter here; having
 		// committed to the approach it recovers onto it either way.
-		turnResult, _ := nav.shouldTurnToIntercept(courseLine[0], hdgMag, av.TurnClosest, wxs)
+		turnResult, _ := nav.shouldTurnToIntercept(course.Line[0], hdgMag, av.TurnClosest, wxs)
 		switch turnResult {
 		case turnToInterceptWait:
 			// Still too far; keep flying the assigned heading.
 
 		case turnToInterceptTurn, turnToInterceptCorrectableOvershoot:
-			if hasLocalizer && !nav.approachRecoveryFeasible(ap) {
-				nav.approachOvershootRequestVectors()
+			if course.Final && !nav.approachRecoveryFeasible(ap) {
+				nav.missIntercept()
 				return
 			}
 			joinHdg := hdgMag
@@ -203,29 +419,27 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 				// aircraft had crossed; before that it aims 20 degrees to the
 				// far side of the course and flies away from it.
 				recoveryTrue := math.OffsetHeading(courseTrue,
-					math.Copysign(20, -nav.signedCourseLineDistance(courseLine)))
-				joinHdg = math.TrueToMagnetic(recoveryTrue, nav.FlightState.MagneticVariation)
+					math.Copysign(20, -nav.signedCourseLineDistance(course.Line)))
+				joinHdg = math.TrueToMagnetic(recoveryTrue, magVar)
 			}
 			nav.Approach.InterceptState = TurningToJoin
-			if !hasLocalizer {
-				nav.Approach.InterceptCourseLine = courseLine
-				nav.Approach.InterceptWaypoints = interceptWaypoints
-			}
+			nav.Approach.Intercept = course
 			nav.Heading = Heading{Assigned: &joinHdg}
 			nav.DeferredNavHeading = nil
-			nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
+			nav.Waypoints = []av.Waypoint{fs.ArrivalAirport}
 
 		case turnToInterceptMajorOvershoot:
 			if turningToAssigned {
 				return
 			}
-			nav.approachOvershootRequestVectors()
+			nav.missIntercept()
 		}
 		return
 
 	case TurningToJoin:
+		course := nav.Approach.Intercept
 		// we've turned to intercept. have we intercepted?
-		if !nav.onCourseLine(courseLine, courseCaptureTolerance) {
+		if !nav.onCourseLine(course.Line, courseCaptureTolerance) {
 			// Apply wind correction to track the approach course, not just
 			// fly the course heading. Without this, strong crosswind would
 			// blow the aircraft off the course.
@@ -235,8 +449,8 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 			// course or never will; nothing after this reconsiders the
 			// intercept, so ask for new vectors rather than flying away from
 			// the approach without a word.
-			if math.HeadingDifference(nav.FlightState.Heading, heading) < 1 &&
-				!nav.closingOnCourseLine(courseLine, wxs) {
+			if math.HeadingDifference(fs.Heading, heading) < 1 &&
+				!nav.closingOnCourseLine(course.Line, wxs) {
 				NavLog(callsign, simTime, NavLogApproach, "TurningToJoin: not closing on the course; requesting vectors")
 				nav.approachOvershootRequestVectors()
 			}
@@ -246,36 +460,54 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 
 		// We're established on the approach course. Figure out which
 		// fixes are still ahead and add them to the aircraft's waypoints.
-		if hasLocalizer {
-			nav.Waypoints = append(nav.localizerWaypointsAhead(ap, nav.FlightState.Position).Clone(),
-				nav.FlightState.ArrivalAirport)
-		} else {
-			nav.Waypoints = append(interceptWaypoints.Clone(),
-				nav.FlightState.ArrivalAirport)
+		nav.Heading = Heading{}
+		nav.Approach.InterceptState = OnApproachCourse
+		// If we have intercepted the approach course, we don't do procedure turns.
+		nav.Approach.NoPT = true
+		if nav.Approach.Cleared && ap.Type == av.VisualApproach {
+			// The visual's profile runs from where the aircraft joined.
+			nav.flyVisualRoute(nav.visualRouteAt(course, fs.Position))
+			return
 		}
-
+		nav.Waypoints = append(nav.routeAt(course, fs.Position).Clone(), fs.ArrivalAirport)
 		// Ignore the approach altitude constraints if the aircraft is only
 		// intercepting but isn't cleared.
 		if nav.Approach.Cleared {
 			nav.clearAltitudeForApproach()
 		}
-		// As with the heading assignment above under the InitialHeading
-		// case, do this immediately.
-		nav.Heading = Heading{}
-		nav.Approach.InterceptState = OnApproachCourse
-
-		// If we have intercepted the approach course, we don't do procedure turns.
-		nav.Approach.NoPT = true
-
 		return
 	}
 
 	return
 }
 
+// routeAt returns the rest of the approach route once the aircraft is on
+// course at p: the fixes ahead on the final, or the route beyond the leg.
+func (nav *Nav) routeAt(course InterceptCourse, p math.Point2LL) av.WaypointArray {
+	if course.Final {
+		route, idx := nav.finalWaypointsAhead(nav.Approach.Assigned, p)
+		return route[idx:]
+	}
+	return course.Route[course.Index+1:]
+}
+
+// missIntercept is what happens when the heading won't take the aircraft
+// onto any of the approach's courses. On a visual the pilot flies to the
+// final themselves; otherwise they ask for vectors.
+func (nav *Nav) missIntercept() {
+	if nav.Approach.Assigned.Type == av.VisualApproach && nav.Approach.Cleared {
+		if wps := nav.visualRouteToFinal(nil); wps != nil {
+			nav.Approach.InterceptState = NotIntercepting
+			nav.flyVisualRoute(wps)
+			return
+		}
+	}
+	nav.approachOvershootRequestVectors()
+}
+
 // approachRecoveryFeasible returns true if the aircraft's current position
-// allows a turn back to the localizer: it must not be too close to the FAF
-// and must still be close enough laterally for a stable recovery.
+// allows a turn back to the final approach course: it must not be too close
+// to the FAF and must still be close enough laterally for a stable recovery.
 func (nav *Nav) approachRecoveryFeasible(ap *av.Approach) bool {
 	nmPerLong := nav.FlightState.NmPerLongitude
 	magVar := nav.FlightState.MagneticVariation
@@ -314,10 +546,10 @@ func (nav *Nav) approachOvershootRequestVectors() {
 	nav.Requests.Vectors = true
 }
 
-// localizerWaypointsAhead returns the approach's waypoints from the first
-// fix on the final approach course that is ahead of p, measured along the
-// course, through the end of the approach.
-func (nav *Nav) localizerWaypointsAhead(ap *av.Approach, p math.Point2LL) av.WaypointArray {
+// finalWaypointsAhead returns the approach route along the final approach
+// course and the index in it of the first fix on the final that is ahead
+// of p, measured along the course.
+func (nav *Nav) finalWaypointsAhead(ap *av.Approach, p math.Point2LL) (av.WaypointArray, int) {
 	apHeading := ap.FinalApproachCourse(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
@@ -350,39 +582,42 @@ func (nav *Nav) localizerWaypointsAhead(ap *av.Approach, p math.Point2LL) av.Way
 	for idx < len(wps)-1 && !ahead(wps[idx]) {
 		idx++
 	}
-	return wps[idx:]
+	return wps, idx
 }
 
-// waypointsAfterIntercept returns the approach waypoints that an aircraft
-// flying hdg will follow once it joins the approach course: the ones that
-// ApproachHeading puts in its route at the capture. It returns nil if hdg
-// doesn't join the course.
-func (nav *Nav) waypointsAfterIntercept(hdg math.MagneticHeading) []av.Waypoint {
+// waypointsAfterIntercept returns the approach waypoints that the aircraft
+// will follow once its heading joins the approach course: the ones that
+// ApproachHeading puts in its route at the capture. It returns nil if the
+// heading doesn't join the course.
+func (nav *Nav) waypointsAfterIntercept() []av.Waypoint {
 	ap := nav.Approach.Assigned
-	nmPerLong, magVar := nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation
-	hdgTrue := math.MagneticToTrue(hdg, magVar)
+	fs := &nav.FlightState
+	nmPerLong := fs.NmPerLongitude
 
-	if !nav.Approach.HasLocalizer() {
-		if nav.Approach.InterceptState == TurningToJoin {
-			return nav.Approach.InterceptWaypoints
+	course := nav.Approach.Intercept
+	if nav.Approach.InterceptState != TurningToJoin {
+		var ok bool
+		if course, ok = nav.selectInterceptCourse(wx.MakeStandardSampleForAltitude(fs.Altitude)); !ok {
+			return nil
 		}
-		_, _, wps, _ := nav.findInterceptSegment(ap, hdgTrue)
-		return wps
+	}
+	if !course.Final {
+		return course.Route[course.Index+1:]
 	}
 
-	courseTrue := ap.FinalApproachCourse(nmPerLong, magVar)
-	pos := math.LL2NM(nav.FlightState.Position, nmPerLong)
+	courseTrue := course.course(nmPerLong)
+	pos := math.LL2NM(fs.Position, nmPerLong)
 	join := pos
-	// In its turn onto the localizer the aircraft is assigned the course
-	// itself as its heading, which never meets the course; it rolls out
-	// about abeam of where it is now.
-	inCaptureTurn := nav.Approach.InterceptState == TurningToJoin &&
-		math.HeadingDifference(hdgTrue, courseTrue) < 1
+	// In its turn onto the final the aircraft is assigned the course itself
+	// as its heading, which never meets the course; it rolls out about
+	// abeam of where it is now.
+	hdg, _, _ := nav.headingToJoinFrom()
+	hdgTrue := math.MagneticToTrue(hdg, fs.MagneticVariation)
+	inCaptureTurn := nav.Approach.InterceptState == TurningToJoin && math.HeadingDifference(hdgTrue, courseTrue) < 1
 	if !inCaptureTurn {
-		line := ap.FinalApproachCourseLine(nmPerLong, magVar)
 		dir := math.HeadingVector(hdgTrue)
-		p, ok := math.LineLineIntersect(pos, math.Add2f(pos, dir), math.LL2NM(line[0], nmPerLong),
-			math.LL2NM(line[1], nmPerLong))
+		p, ok := math.LineLineIntersect(pos, math.Add2f(pos, dir), math.LL2NM(course.Line[0], nmPerLong),
+			math.LL2NM(course.Line[1], nmPerLong))
 		if !ok || math.Dot(math.Sub2f(p, pos), dir) < 0 {
 			return nil
 		}
@@ -394,15 +629,8 @@ func (nav *Nav) waypointsAfterIntercept(hdg math.MagneticHeading) []av.Waypoint 
 	// course.
 	const rollOutMargin = 1 // nm
 	join = math.Add2f(join, math.Scale2f(math.HeadingVector(courseTrue), rollOutMargin))
-	return nav.localizerWaypointsAhead(ap, math.NM2LL(join, nmPerLong))
-}
-
-// groundTrack returns the aircraft's present true course over the ground.
-func (nav *Nav) groundTrack(wxs wx.Sample) math.TrueHeading {
-	hdgTrue := math.MagneticToTrue(nav.FlightState.Heading, nav.FlightState.MagneticVariation)
-	tas := nav.TAS(wxs.Temperature()) / 3600
-	flightVec := math.Scale2f(math.HeadingVector(hdgTrue), tas)
-	return math.VectorHeading(math.Add2f(flightVec, wxs.WindVec()))
+	wps, idx := nav.finalWaypointsAhead(ap, math.NM2LL(join, nmPerLong))
+	return wps[idx:]
 }
 
 // groundVelocity returns the aircraft's velocity over the ground in nm per
@@ -413,23 +641,6 @@ func (nav *Nav) groundVelocity(wxs wx.Sample) [2]float32 {
 	v := math.Scale2f(math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation)),
 		nav.TAS(wxs.Temperature())/3600)
 	return math.Add2f(v, nav.groundWind(wxs))
-}
-
-// findInterceptSegment finds the approach segment that a ray from the
-// aircraft along the given true track will cross. Returns the segment
-// course, the two endpoints defining the line, the remaining waypoints from
-// the intercept point forward, and whether a valid segment was found.
-func (nav *Nav) findInterceptSegment(ap *av.Approach, track math.TrueHeading) (math.TrueHeading, [2]math.Point2LL, []av.Waypoint, bool) {
-	hit, ok := av.ClosestRayRouteIntersection(nav.FlightState.Position, track, ap.Waypoints)
-	if !ok {
-		return 0, [2]math.Point2LL{}, nil, false
-	}
-
-	route := ap.Waypoints[hit.RouteIndex]
-	nmPerLong := nav.FlightState.NmPerLongitude
-	course := math.Heading2LL(route[hit.Index].Location, route[hit.Index+1].Location, nmPerLong)
-	line := [2]math.Point2LL{route[hit.Index].Location, route[hit.Index+1].Location}
-	return course, line, route[hit.Index+1:], true
 }
 
 // minInterceptAngle is the shallowest angle at which a track counts as
