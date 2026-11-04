@@ -6,7 +6,6 @@ package db
 
 import (
 	"fmt"
-	av "github.com/mmp/vice/aviation"
 	"os"
 	"slices"
 	"strings"
@@ -16,6 +15,7 @@ import (
 	// names in TFR NOTAMs have to resolve everywhere Vice runs.
 	_ "time/tzdata"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
@@ -64,6 +64,7 @@ type Airport struct {
 	SIDs       map[string]av.SID
 	STARs      map[string]av.STAR
 	ARTCC      string
+	TRACON     string // Empty if center is responsible for the airport or it's unlisted
 }
 
 // faaCountries are the ISO country codes of the places the FAA runs air traffic
@@ -448,6 +449,8 @@ func doInitDB() {
 	})
 	var hpfEnroute map[string][]av.Hold
 	wg.Go(func() { hpfEnroute = parseHPF() })
+	var approachControl map[av.ICAOAirportCode]string
+	wg.Go(func() { approachControl = parseApproachControl() })
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs, db.ATCTs = parseFacilities() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
@@ -473,6 +476,14 @@ func doInitDB() {
 			if lc := db.Airports[icao].LocalCode; lc != "" {
 				ap.LocalCode = lc
 			}
+			db.Airports[icao] = ap
+		}
+	}
+
+	// After the CIFP merge, so that airports only the CIFP knows get theirs.
+	for icao, tracon := range approachControl {
+		if ap, ok := db.Airports[icao]; ok {
+			ap.TRACON = tracon
 			db.Airports[icao] = ap
 		}
 	}

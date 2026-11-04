@@ -172,6 +172,34 @@ func parseAirports() (map[av.ICAOAirportCode]Airport, map[av.ICAOAirportCode]Air
 	return airports, customAirports
 }
 
+// parseApproachControl returns the TRACON that provides approach control at
+// each airport, from the FAA NASR ATC facility file (ATC_BASE.csv).
+// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription/
+func parseApproachControl() map[av.ICAOAirportCode]string {
+	// The provider type code says what kind of facility it is: A is approach
+	// control run from an airport's tower facility (MIA, PHL), T a TRACON
+	// (N90, NCT), C a center, and S one described only in words.
+	terminal := map[string]bool{"A": true, "T": true}
+
+	r := util.LoadResource("ATC_BASE.csv.zst")
+	defer r.Close()
+	tracons := make(map[av.ICAOAirportCode]string)
+	mungeCSV("ATC_BASE", r, []string{"FACILITY_ID", "ICAO_ID", "APCH_P_PROVIDER", "APCH_P_PROV_TYPE_CD"},
+		func(s []string) {
+			if !terminal[strings.TrimSpace(s[3])] {
+				return
+			}
+			// Airports without an ICAO code are keyed by their FAA id, as in
+			// the airports database.
+			id := av.ICAOAirportCode(strings.TrimSpace(s[1]))
+			if id == "" {
+				id = av.ICAOAirportCode(strings.TrimSpace(s[0]))
+			}
+			tracons[id] = strings.TrimSpace(s[2])
+		})
+	return tracons
+}
+
 func parseAircraft() (map[string]string, map[string]av.AircraftPerformance) {
 	r := util.LoadResource("openscope-aircraft.json")
 	defer r.Close()

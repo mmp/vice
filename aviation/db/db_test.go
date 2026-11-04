@@ -30,6 +30,23 @@ func TestCustomAirportRunwayStarts(t *testing.T) {
 	}
 }
 
+// The FAA's facility data says which TRACON provides approach control at an
+// airport; one a center handles has none.
+func TestAirportTRACON(t *testing.T) {
+	InitDB()
+	for id, want := range map[av.ICAOAirportCode]string{
+		"KFXE": "MIA", // towered satellite
+		"X51":  "MIA", // no tower and no ICAO code
+		"KSAN": "SCT",
+		"KTEB": "PHL", // the Newark area moved to Philadelphia
+		"KADM": "",    // Fort Worth Center provides approach control
+	} {
+		if got := DB.Airports[id].TRACON; got != want {
+			t.Errorf("%s: TRACON %q, want %q", id, got, want)
+		}
+	}
+}
+
 func TestAirportTimeZone(t *testing.T) {
 	InitDB()
 
