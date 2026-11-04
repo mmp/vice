@@ -600,15 +600,15 @@
   "vfr_reporting_points": [
     {
       "description": "WRIGHT PATTMAN LAKE",
-      "location": "33.172833,94.129833"
+      "location": "33.172833,-94.129833"
     },
     {
       "description": "WOOD COUNTY AIRPORT",
-      "location": "32.453417,95.305333"
+      "location": "KJDD"
     },
     {
       "description": "MOUNT PLEASANT",
-      "location": "-33.098500,94.965333"
+      "location": "33.098500,-94.965333"
     }
   ]
 }
