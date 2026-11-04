@@ -529,9 +529,6 @@ jobs:
     - name: Build vice
       run: ./build.sh
 
-    - name: Check scenarios
-      run: ./vice -lint
-
     - name: Run all scenarios
       run: ./run-all-scenarios.sh ./vice
 

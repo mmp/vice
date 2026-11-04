@@ -563,6 +563,22 @@ func Load(e *util.ErrorLogger, lg *log.Logger) *Tables {
 	}
 	_ = eg.Wait()
 
+	// Locations are checked after every group is finalized, since the walk
+	// reads everything a group points to. Groups that reported errors while
+	// finalizing are skipped: a location that failed to resolve has been
+	// reported already.
+	eg = &errgroup.Group{}
+	eg.SetLimit(runtime.NumCPU())
+	for _, t := range phase3Tasks {
+		if !t.localE.HaveErrors() {
+			eg.Go(func() error {
+				checkLocations(t.sgroup, &t.localE)
+				return nil
+			})
+		}
+	}
+	_ = eg.Wait()
+
 	// Merge per-task results.
 	for _, t := range phase3Tasks {
 		e.MergeFrom(&t.localE)

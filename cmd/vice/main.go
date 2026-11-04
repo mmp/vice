@@ -56,7 +56,6 @@ var (
 	memprofile        = flag.String("memprofile", "", "write memory profile to `file`")
 	logLevel          = flag.String("loglevel", "info", "logging `level`: debug, info, warn, error")
 	logDir            = flag.String("logdir", "", "log file `directory`")
-	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
 	runServer         = flag.Bool("runserver", false, "removed; use the separate viceserver binary instead")
 	serverAddress     = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP `address` of vice multi-controller server")
 	overlayDir        = flag.String("overlay", "", "`directory` of resource files that replace or add to the built-in ones")
@@ -66,6 +65,7 @@ var (
 	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given `airport`")
 	listMaps          = flag.String("listmaps", "", "`path` to a video map file to list maps of (e.g., videomaps/ZNY.mappack)")
 	listScenarios     = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
+	listFacilities    = flag.Bool("listfacilities", false, "list the TRACONs that have scenarios with their airports, then the ARTCCs")
 	runSim            = flag.String("runsim", "", "run specified `scenario` for 3600 update steps (format: ARTCC/TRACON/scenario)")
 	simSeed           = flag.Uint64("simseed", 0, "random number generator `seed` for -runsim; a nonzero value gives a repeatable run")
 	navLog            = flag.Bool("navlog", false, "enable navigation logging")
@@ -165,52 +165,37 @@ func syncResources(ui util.SyncUI) error {
 	return nil
 }
 
-func runLint(lg *log.Logger) error {
+// runListFacilities prints the TRACONs that have scenarios, each with the
+// airports its scenarios use, and then the ARTCCs that have scenarios.
+func runListFacilities(lg *log.Logger) error {
 	if err := cliInit(); err != nil {
 		return err
 	}
 
 	var e util.ErrorLogger
 	tables := scenario.Load(&e, lg)
-
 	if e.HaveErrors() {
 		e.PrintErrors(nil)
-		return fmt.Errorf("scenario validation failed")
+		return fmt.Errorf("scenario loading failed")
 	}
 
-	for _, groups := range tables.Groups {
+	var artccs []string
+	fmt.Println("TRACONs:")
+	for facility, groups := range util.SortedMap(tables.Groups) {
+		if db.DB.IsARTCC(facility) {
+			artccs = append(artccs, facility)
+			continue
+		}
+		airports := make(map[av.ICAOAirportCode]bool)
 		for _, sg := range groups {
-			scenario.CheckLocations(sg, &e)
-		}
-	}
-	if e.HaveErrors() {
-		e.PrintErrors(nil)
-		return fmt.Errorf("scenario validation failed")
-	}
-
-	if unread, err := util.UnreadOverlayFiles(); err != nil {
-		return err
-	} else if len(unread) > 0 {
-		fmt.Fprintf(os.Stderr, "Warning: these files in the overlay directory weren't loaded:\n%s\n",
-			strings.Join(unread, "\n"))
-	}
-
-	scenarioAirports := make(map[string]map[av.ICAOAirportCode]any)
-	for tracon, scenarios := range tables.Groups {
-		if scenarioAirports[tracon] == nil {
-			scenarioAirports[tracon] = make(map[av.ICAOAirportCode]any)
-		}
-		for _, sg := range scenarios {
-			for name := range sg.Airports {
-				scenarioAirports[tracon][name] = nil
+			for icao := range sg.Airports {
+				airports[icao] = true
 			}
 		}
+		names := util.MapSlice(util.SortedMapKeys(airports), func(icao av.ICAOAirportCode) string { return string(icao) })
+		fmt.Printf("%s (%s)\n", facility, strings.Join(names, ", "))
 	}
-
-	for tracon, ap := range util.SortedMap(scenarioAirports) {
-		airports := util.MapSlice(util.SortedMapKeys(ap), func(icao av.ICAOAirportCode) string { return string(icao) })
-		fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
-	}
+	fmt.Printf("\nARTCCs:\n%s\n", strings.Join(artccs, ", "))
 	return nil
 }
 
@@ -889,10 +874,10 @@ func main() {
 	config, configErr := loadConfig(lg)
 
 	switch {
-	case *lintScenarios:
-		err = runLint(lg)
 	case *listScenarios:
 		err = runListScenarios(lg)
+	case *listFacilities:
+		err = runListFacilities(lg)
 	case *runSim != "":
 		err = runSimulation(lg)
 	case *replayMode:

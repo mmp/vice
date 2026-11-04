@@ -589,7 +589,7 @@ func TestCheckLocationsNearFacility(t *testing.T) {
 	}
 
 	var e util.ErrorLogger
-	CheckLocations(sg, &e)
+	checkLocations(sg, &e)
 	errs := e.String()
 	if !strings.Contains(errs, "InhibitCA[0].AirspaceVolume.Vertices[3]") {
 		t.Errorf("expected the longitude-first vertex to be reported, got %q", errs)
@@ -621,9 +621,23 @@ func TestCheckLocationsSuggestsNearbyFixes(t *testing.T) {
 	}
 
 	var e util.ErrorLogger
-	CheckLocations(sg, &e)
+	checkLocations(sg, &e)
 	if errs := e.String(); !strings.Contains(errs, `"PAOLA"`) || !strings.Contains(errs, "Did you mean: PAOLE") {
 		t.Errorf("expected PAOLA to be reported with PAOLE suggested, got %q", errs)
+	}
+}
+
+// TestLoadResources checks that the scenarios and facility configurations
+// in the resources load without errors. Without it, a broken one is only
+// caught when vice is launched.
+func TestLoadResources(t *testing.T) {
+	db.InitDB()
+	lg := &log.Logger{Logger: slog.New(slog.NewTextHandler(io.Discard, nil))}
+
+	var e util.ErrorLogger
+	Load(&e, lg)
+	if e.HaveErrors() {
+		t.Fatalf("loading the resources:\n%s", e.String())
 	}
 }
 

@@ -6,7 +6,7 @@
 // the scenarios depend on: the SIDs, STARs, and approaches at the airports
 // they use, and every line of the scenarios and facility configurations that
 // names a procedure the new cycle renumbered or dropped or a fix it removed
-// or moved. Many of those lines pass "vice -lint": a hand-written route
+// or moved. Many of those lines load without errors: a hand-written route
 // keeps a stale procedure name, a configuration key names a renamed flow,
 // and a departure's route to another facility drops a fix it can't locate.
 // It is run from the top of the repository with the previous cycle taken

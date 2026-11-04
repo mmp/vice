@@ -1031,16 +1031,15 @@ func (s *Scenario) atisAirports(sg *Group) (list []av.ICAOAirportCode, from stri
 	return fa.ATISAirports, "facility_adaptations"
 }
 
-// CheckLocations reports any location in the group that was written as a name
+// checkLocations reports any location in the group that was written as a name
 // and never resolved, or that lies implausibly far from the facility.
 // Finalizing resolves locations by hand, a pass per kind of thing, so a newly
 // added field--or a new list of an existing one--can be missed, and the
 // location then silently reads as (0, 0). Walking the finalized group catches
 // that against the scenarios as they are really written, and also catches
 // locations copied from another facility or written with the latitude and
-// longitude swapped or a sign dropped. It uses reflection and so is run by
-// -lint rather than on every load.
-func CheckLocations(sg *Group, e *util.ErrorLogger) {
+// longitude swapped or a sign dropped.
+func checkLocations(sg *Group, e *util.ErrorLogger) {
 	pointType := reflect.TypeFor[av.ScenarioPoint2LL]()
 	volumeType := reflect.TypeFor[av.AirspaceVolume]()
 	significantPointType := reflect.TypeFor[sim.SignificantPoint]()
@@ -1051,46 +1050,97 @@ func CheckLocations(sg *Group, e *util.ErrorLogger) {
 	// (SBN's DVV for flights to Denver).
 	fa := &sg.FacilityConfig.FacilityAdaptation
 	maxDistance := 2 * fa.CullDistance(sg.facility())
+
+	// The steps to the value being walked name it in an error. They are
+	// formatted into a path only when there is an error, since formatting
+	// one for every value walked cost more than the walk.
+	var steps []locationStep
+	path := func() string {
+		var b strings.Builder
+		for _, s := range steps {
+			switch {
+			case s.field != "":
+				if b.Len() > 0 {
+					b.WriteByte('.')
+				}
+				b.WriteString(s.field)
+			case s.key.IsValid():
+				fmt.Fprintf(&b, "[%v]", s.key.Interface())
+			default:
+				fmt.Fprintf(&b, "[%d]", s.index)
+			}
+		}
+		return b.String()
+	}
+
 	// name is how the location was written, if as a name, which may be a
 	// misspelling of one nearby.
-	checkDistance := func(p math.Point2LL, name, path string) {
+	checkDistance := func(p math.Point2LL, name string) {
 		d := math.NMDistance2LL(p, fa.Center.Point2LL)
 		if p.IsZero() || d <= maxDistance {
 			return
 		}
 		if name == "" {
-			e.ErrorString("%s: location is %.0f nm from the facility's center", path, d)
+			e.ErrorString("%s: location is %.0f nm from the facility's center", path(), d)
 		} else {
-			e.ErrorString("%s: %q is %.0f nm from the facility's center%s", path, name, d,
+			e.ErrorString("%s: %q is %.0f nm from the facility's center%s", path(), name, d,
 				av.SuggestFixes(sg, name, math.Point2LL{}))
 		}
 	}
 
-	// join builds the path to a field, which names the location in the error.
-	join := func(path, name string) string {
-		if path == "" {
-			return name
+	// Most of a group's values are of types that can't hold a location,
+	// such as strings, numbers, and plain points, and the walk skips them.
+	// A type that refers back to one still being examined is taken to hold
+	// a location.
+	holds := make(map[reflect.Type]bool)
+	var holdsLocation func(t reflect.Type) bool
+	holdsLocation = func(t reflect.Type) bool {
+		if h, ok := holds[t]; ok {
+			return h
 		}
-		return path + "." + name
+		holds[t] = true
+		h := false
+		switch t.Kind() {
+		case reflect.Interface:
+			h = true
+		case reflect.Pointer, reflect.Slice, reflect.Array, reflect.Map:
+			h = holdsLocation(t.Elem())
+		case reflect.Struct:
+			h = t == pointType || t == volumeType
+			for i := 0; i < t.NumField() && !h; i++ {
+				f := t.Field(i)
+				h = f.IsExported() && holdsLocation(f.Type)
+			}
+		}
+		holds[t] = h
+		return h
 	}
 
 	// anywhere is set beneath a significant point.
-	var walk func(v reflect.Value, path string, anywhere bool)
-	walk = func(v reflect.Value, path string, anywhere bool) {
+	var walk func(v reflect.Value, anywhere bool)
+	walkStep := func(s locationStep, v reflect.Value, anywhere bool) {
+		steps = append(steps, s)
+		walk(v, anywhere)
+		steps = steps[:len(steps)-1]
+	}
+	walk = func(v reflect.Value, anywhere bool) {
+		if !holdsLocation(v.Type()) {
+			return
+		}
 		switch v.Kind() {
 		case reflect.Pointer, reflect.Interface:
 			if !v.IsNil() {
-				walk(v.Elem(), path, anywhere)
+				walk(v.Elem(), anywhere)
 			}
 			return
 		case reflect.Slice, reflect.Array:
 			for i := range v.Len() {
-				walk(v.Index(i), fmt.Sprintf("%s[%d]", path, i), anywhere)
+				walkStep(locationStep{index: i}, v.Index(i), anywhere)
 			}
 			return
 		case reflect.Map:
-			for _, k := range v.MapKeys() {
-				walk(v.MapIndex(k), fmt.Sprintf("%s[%v]", path, k.Interface()), anywhere)
+			for it := v.MapRange(); it.Next(); {
+				walkStep(locationStep{key: it.Key()}, it.Value(), anywhere)
 			}
 			return
 		case reflect.Struct:
@@ -1100,11 +1150,12 @@ func CheckLocations(sg *Group, e *util.ErrorLogger) {
 
 		t := v.Type()
 		if t == pointType {
-			if str := v.FieldByName("String").String(); str != "" && v.FieldByName("Point2LL").IsZero() {
-				e.ErrorString("%s: location %q was never resolved during finalizing", path, str)
+			p := v.Interface().(av.ScenarioPoint2LL)
+			if p.String != "" && p.Point2LL.IsZero() {
+				e.ErrorString("%s: location %q was never resolved during finalizing", path(), p.String)
 			}
 			if !anywhere {
-				checkDistance(v.FieldByName("Point2LL").Interface().(math.Point2LL), v.FieldByName("String").String(), path)
+				checkDistance(p.Point2LL, p.String)
 			}
 			return
 		}
@@ -1114,24 +1165,33 @@ func CheckLocations(sg *Group, e *util.ErrorLogger) {
 			// they were written as are kept alongside.
 			vol := v.Interface().(av.AirspaceVolume)
 			names := vol.VertexNames()
+			steps = append(steps, locationStep{field: "Vertices"})
 			for i, p := range vol.Vertices {
 				name := ""
 				if len(names) == len(vol.Vertices) {
 					name = names[i]
 				}
-				checkDistance(p, name, fmt.Sprintf("%s[%d]", join(path, "Vertices"), i))
+				steps = append(steps, locationStep{index: i})
+				checkDistance(p, name)
+				steps = steps[:len(steps)-1]
 			}
+			steps = steps[:len(steps)-1]
 		}
 
 		for i := range t.NumField() {
-			if f := t.Field(i); f.PkgPath == "" {
-				walk(v.Field(i), join(path, f.Name), anywhere)
+			if f := t.Field(i); f.IsExported() {
+				walkStep(locationStep{field: f.Name}, v.Field(i), anywhere)
 			}
 		}
 	}
 
-	e.Push(sg.Name)
-	defer e.Pop()
+	walk(reflect.ValueOf(sg).Elem(), false)
+}
 
-	walk(reflect.ValueOf(sg).Elem(), "", false)
+// locationStep is one step in the path from a scenario group to a value
+// within it: a struct field, a slice or array element, or a map entry.
+type locationStep struct {
+	field string
+	index int
+	key   reflect.Value
 }

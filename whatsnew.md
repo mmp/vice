@@ -4,4 +4,5 @@
   - Aircraft on a downwind can be cleared for a visual approach
 - Scenarios
   - Real-world jet departures no longer fly prop departure routes
-  - Scenario lint rejects overlapping jet and prop departure routes
+  - Scenario validation rejects overlapping jet and prop departure routes
+  - Launching vice reports scenario locations far from the facility
