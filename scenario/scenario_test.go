@@ -685,3 +685,68 @@ func TestLoadRereadsFacilityConfigs(t *testing.T) {
 		t.Error("an overlay was still used after it was removed")
 	}
 }
+
+// TestCheckExitVariants checks that a runway launching two categories' routes
+// to one gate is reported when the routes admit the same aircraft, since
+// published traffic would then be placed on whichever sorts first.
+func TestCheckExitVariants(t *testing.T) {
+	jets := av.AircraftClassHeavyJet | av.AircraftClassNonheavyJet
+	props := av.AircraftClassProp | av.AircraftClassTurboprop
+	vectors := av.ExitRoutes{{SID: "LOGAN4"}}
+	ap := &av.Airport{
+		DepartureRoutes: map[av.RunwayID]map[av.ExitID]av.ExitRoutes{
+			"22R": {
+				"HYLND.P":   {{SID: "LOGAN4"}},
+				"HYLND.J":   {{SID: "HYLND7"}},
+				"SSOXS.P":   {{SID: "LOGAN4", Aircraft: props}},
+				"SSOXS.J":   {{SID: "SSOXS7", Aircraft: jets}},
+				"LBSTA.P":   {{SID: "LOGAN4", Aircraft: props}},
+				"LBSTA.J":   {{SID: "LBSTA8", Aircraft: jets | av.AircraftClassTurboprop}},
+				"DUNKK.HYA": vectors,
+				"DUNKK.MVY": vectors,
+				"BLZZR.J":   {{SID: "BLZZR6"}},
+			},
+		},
+		ExitCategories: map[av.ExitID]string{
+			"HYLND.P": "PROP", "HYLND.J": "JET",
+			"SSOXS.P": "PROP", "SSOXS.J": "JET",
+			"LBSTA.P": "PROP", "LBSTA.J": "JET",
+			"DUNKK.HYA": "PROP", "DUNKK.MVY": "JET",
+			"BLZZR.J": "JET",
+		},
+	}
+
+	var e util.ErrorLogger
+	checkExitVariants(ap, "22R", map[string]bool{"PROP": true, "JET": true}, &e)
+	errs := e.String()
+	for _, want := range []string{
+		`"HYLND.J" (JET) and "HYLND.P" (PROP) both take prop, turboprop, jet to HYLND`,
+		`"LBSTA.J" (JET) and "LBSTA.P" (PROP) both take turboprop to LBSTA`,
+	} {
+		if !strings.Contains(errs, want) {
+			t.Errorf("expected an error containing %q; got %q", want, errs)
+		}
+	}
+	// SSOXS's routes are restricted to disjoint classes; DUNKK's variants share
+	// one route; BLZZR has one route.
+	for _, unwanted := range []string{"SSOXS", "DUNKK", "BLZZR"} {
+		if strings.Contains(errs, unwanted) {
+			t.Errorf("unexpected error mentioning %s: %q", unwanted, errs)
+		}
+	}
+
+	// A scenario launching only one of the categories has nothing to choose.
+	e = util.ErrorLogger{}
+	checkExitVariants(ap, "22R", map[string]bool{"JET": true}, &e)
+	if e.HaveErrors() {
+		t.Errorf("unexpected errors with one category launched: %q", e.String())
+	}
+
+	// A runway launched with no category flies its exits as one flow, where
+	// exit ids rather than category names order the routes.
+	e = util.ErrorLogger{}
+	checkExitVariants(ap, "22R", map[string]bool{"": true}, &e)
+	if e.HaveErrors() {
+		t.Errorf("unexpected errors with every exit launched as one flow: %q", e.String())
+	}
+}

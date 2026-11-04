@@ -194,7 +194,7 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "aircraft": ["prop", "turboprop"],
+            "aircraft": "prop",
             "waypoints": "N029.10.56.700,W081.02.30.375/h030 ASTOR"
           },
           "KOMN": {
@@ -258,7 +258,7 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "aircraft": ["prop", "turboprop"],
+            "aircraft": "prop",
             "waypoints": "N029.10.56.700,W081.02.30.375/h030 ASTOR"
           },
           "KOMN": {
@@ -322,7 +322,7 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "aircraft": ["prop", "turboprop"],
+            "aircraft": "prop",
             "waypoints": "KDAB-34/h190 ASTOR"
           },
           "KOMN": {
@@ -386,7 +386,7 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "aircraft": ["prop", "turboprop"],
+            "aircraft": "prop",
             "waypoints": "KDAB-7R/h290 ASTOR"
           },
           "KOMN": {
@@ -450,7 +450,7 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "aircraft": ["prop", "turboprop"],
+            "aircraft": "prop",
             "waypoints": "KDAB-7L/h290 ASTOR"
           },
           "KOMN": {
@@ -514,7 +514,7 @@
           },
           "ASTOR.P": {
             "cleared_altitude": 3000,
-            "aircraft": ["prop", "turboprop"],
+            "aircraft": "prop",
             "waypoints": "KDAB-16/h310 ASTOR"
           },
           "KOMN": {

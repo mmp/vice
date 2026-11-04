@@ -7,6 +7,7 @@ package aviation
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"slices"
 	"strings"
 
@@ -78,6 +79,22 @@ func (er ExitRoutes) ForAircraft(db Database, acType string) *ExitRoute {
 		return er[i]
 	}
 	return nil
+}
+
+// Admits returns the classes of aircraft the routes take between them.
+func (er ExitRoutes) Admits() AircraftClass {
+	var classes AircraftClass
+	for _, r := range er {
+		classes |= r.Aircraft.expand()
+	}
+	return classes
+}
+
+// Same reports whether two exits' routes are one authored route: a
+// comma-joined "departure_routes" key gives its exits the same routes, and a
+// route taken from the CIFP comes out identical for exits of one fix.
+func (er ExitRoutes) Same(o ExitRoutes) bool {
+	return slices.EqualFunc(er, o, func(a, b *ExitRoute) bool { return a == b || reflect.DeepEqual(a, b) })
 }
 
 // ExitRoutesForAircraft returns the route to each exit that the given aircraft

@@ -384,6 +384,42 @@ func (sg *Group) Finalize(e *util.ErrorLogger, catalogs map[string]map[string]*C
 	initializeSimConfigurations(sg, catalogs, e)
 }
 
+// checkExitVariants reports exits of one gate that a scenario launches from a
+// runway in different categories through routes open to the same class of
+// aircraft. Published traffic is placed on the first such route by category
+// name, so the routes have to say which aircraft each takes. Variants in one
+// category, or sharing one authored route, are the author's own bookkeeping
+// and are left alone; so is a runway launched with no category, which flies
+// all of its exits as one flow. categories is the set the runway launches.
+func checkExitVariants(ap *av.Airport, runway av.RunwayID, categories map[string]bool, e *util.ErrorLogger) {
+	if categories[""] {
+		return
+	}
+	routes := ap.DepartureRoutes[runway]
+	launched := util.FilterSlice(util.SortedMapKeys(routes), func(exit av.ExitID) bool {
+		return categories[ap.ExitCategory(exit)]
+	})
+
+	byFix := make(map[string][]av.ExitID)
+	for _, exit := range launched {
+		byFix[exit.Base()] = append(byFix[exit.Base()], exit)
+	}
+	for _, fix := range util.SortedMapKeys(byFix) {
+		exits := byFix[fix]
+		for i, x := range exits {
+			for _, y := range exits[i+1:] {
+				if ap.ExitCategory(x) == ap.ExitCategory(y) || routes[x].Same(routes[y]) {
+					continue
+				}
+				if shared := routes[x].Admits() & routes[y].Admits(); shared != 0 {
+					e.ErrorString(`exits %q (%s) and %q (%s) both take %s to %s: give their routes "aircraft" restrictions that do not overlap`,
+						x, ap.ExitCategory(x), y, ap.ExitCategory(y), shared, fix)
+				}
+			}
+		}
+	}
+}
+
 func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.LibrarySpec) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -543,8 +579,16 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 		}
 	}
 
+	launched := make(map[av.ICAOAirportCode]map[av.RunwayID]map[string]bool)
 	for _, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + string(rwy.Airport) + " " + string(rwy.Runway))
+		if launched[rwy.Airport] == nil {
+			launched[rwy.Airport] = make(map[av.RunwayID]map[string]bool)
+		}
+		if launched[rwy.Airport][rwy.Runway] == nil {
+			launched[rwy.Airport][rwy.Runway] = make(map[string]bool)
+		}
+		launched[rwy.Airport][rwy.Runway][rwy.Category] = true
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
 			e.ErrorString(`airport not found in scenario group "airports"`)
@@ -577,6 +621,15 @@ func (s *Scenario) Finalize(sg *Group, e *util.ErrorLogger, mapSpec *videomaps.L
 			}
 		}
 		e.Pop()
+	}
+	for _, airport := range util.SortedMapKeys(launched) {
+		if ap, ok := sg.Airports[airport]; ok {
+			for _, runway := range util.SortedMapKeys(launched[airport]) {
+				e.Push("Departure runway " + string(airport) + " " + string(runway))
+				checkExitVariants(ap, runway, launched[airport][runway], e)
+				e.Pop()
+			}
+		}
 	}
 
 	sort.Slice(s.ArrivalRunways, func(i, j int) bool {
