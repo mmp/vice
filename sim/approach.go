@@ -74,8 +74,12 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) speech.CommandIntent {
 	}
 
 	// Neither the reaffirmation nor the geometric fallback below rolls for visibility,
-	// so gate both: in IMC the pilot can't possibly see anything out there.
+	// so gate both: in IMC the pilot can't possibly see anything out there. A VFR
+	// pilot is supposed to be clear of the clouds, so doesn't say they're in them.
 	if metar, _ := s.nearestMETAR(ac.Position()); !metar.IsVMC() {
+		if ac.FlightRules == av.FlightRulesVFR {
+			return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseLooking}
+		}
 		return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseIMC}
 	}
 
@@ -210,7 +214,9 @@ func (s *Sim) lookFor(ac *Aircraft, rp *av.ReportingPoint, oclock int) sightingR
 
 	elig := s.checkVisibility(ac, sightingLocation(ac, rp))
 	if !elig.Visible {
-		if elig.Reason == visualEligibilityIMC {
+		// A VFR pilot is supposed to be clear of the clouds, so keeps looking
+		// rather than saying they're in them.
+		if elig.Reason == visualEligibilityIMC && ac.FlightRules != av.FlightRulesVFR {
 			return sightingLookingIMC
 		}
 		s.enqueueFutureFieldCheck(ac, rp)

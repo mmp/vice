@@ -1626,6 +1626,43 @@ func TestAirportAdvisoryIMC(t *testing.T) {
 	}
 }
 
+// A VFR pilot is supposed to be clear of the clouds, so in IMC they look for
+// what the controller calls rather than saying they're in the clouds.
+func TestVFRInIMCKeepsLooking(t *testing.T) {
+	sim, ac := makeTrafficInSightSim(t)
+	sim.State.METAR["KJFK"] = wx.METAR{ICAO: "KJFK", Raw: "KJFK 1/2SM FG OVC002"}
+	addTraffic(sim, ac, "DAL456", -2, 0, 0) // 2 NM ahead
+
+	trafficCall := func() speech.TrafficAdvisoryResponse {
+		return sim.handleTrafficAdvisory(ac, 12, 2, int(ac.Altitude()), false).(speech.TrafficAdvisoryIntent).Response
+	}
+	inquiry := func() speech.TrafficAdvisoryResponse {
+		clear(sim.FutureTrafficChecks)
+		return sim.handleTrafficInSightInquiry(ac).(speech.TrafficAdvisoryIntent).Response
+	}
+
+	if got := trafficCall(); got != speech.TrafficResponseIMC {
+		t.Errorf("IFR traffic call: got %v, want IMC", got)
+	}
+	if got := inquiry(); got != speech.TrafficResponseIMC {
+		t.Errorf("IFR traffic inquiry: got %v, want IMC", got)
+	}
+	if got := sim.handleAirportAdvisory(ac, 12, 5); got != speech.LookForFieldLookingIMC {
+		t.Errorf("IFR airport advisory: got %v, want looking IMC", got)
+	}
+
+	ac.FlightRules = av.FlightRulesVFR
+	if got := trafficCall(); got != speech.TrafficResponseLooking {
+		t.Errorf("VFR traffic call: got %v, want looking", got)
+	}
+	if got := inquiry(); got != speech.TrafficResponseLooking {
+		t.Errorf("VFR traffic inquiry: got %v, want looking", got)
+	}
+	if got := sim.handleAirportAdvisory(ac, 12, 5); got != speech.LookForFieldLooking {
+		t.Errorf("VFR airport advisory: got %v, want looking", got)
+	}
+}
+
 func TestAirportAdvisoryTooFar(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
 	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})

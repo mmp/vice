@@ -376,7 +376,9 @@ func (s *Sim) TrafficHasYouInSight(tcw TCW, callsign av.ADSBCallsign) (speech.Co
 }
 
 // handleTrafficAdvisory determines the pilot response to a traffic advisory based on:
-//  1. Weather conditions at the nearest reporting station (IMC -> "we're in IMC")
+//  1. Weather conditions at the nearest reporting station (IMC -> "we're in IMC"
+//     from an IFR pilot; a VFR pilot is supposed to be clear of the clouds and
+//     just looks)
 //  2. Presence of traffic (if no traffic in area -> "looking")
 //  3. Pilot see-probability derived from METAR effective visual range, with a
 //     relative-altitude boost/penalty (above against sky, below against ground)
@@ -392,7 +394,7 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int
 		return intent
 	}
 
-	if !nearestMETAR.IsVMC() {
+	if ac.FlightRules != av.FlightRulesVFR && !nearestMETAR.IsVMC() {
 		return logResult(speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseIMC})
 	}
 
