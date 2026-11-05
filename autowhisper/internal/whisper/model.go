@@ -54,11 +54,12 @@ const (
 )
 
 func (m *model) Close() error {
+	var err error
 	if m.ctx != nil {
-		m.ctx.Whisper_free()
+		err = m.ctx.Whisper_free()
 	}
 	m.ctx = nil
-	return nil
+	return err
 }
 
 func (m *model) IsMultilingual() bool {

@@ -1,5 +1,6 @@
-// whisper_safe.cpp: C++ wrappers around whisper_init_* that translate
-// C++ exceptions into a caller-supplied error buffer and a null return.
+// whisper_safe.cpp: C++ wrappers around whisper.cpp entry points that
+// translate C++ exceptions into a caller-supplied error buffer and an
+// error return.
 // Without these, a throw inside whisper.cpp surfaces as a "signal
 // arrived during external code execution" fatal error in the Go
 // runtime, which cannot be recovered via recover() and so leaves no
@@ -55,6 +56,25 @@ int whisper_safe_full_ptr(
     if (err_buf != nullptr && err_buf_size > 0) err_buf[0] = '\0';
     try {
         return whisper_full_with_params_ptr(ctx, params, samples, n_samples);
+    } catch (const std::exception& e) {
+        copy_err(err_buf, err_buf_size, e.what());
+        return -1;
+    } catch (...) {
+        copy_err(err_buf, err_buf_size, "unknown C++ exception");
+        return -1;
+    }
+}
+
+// The Vulkan backend also throws from whisper_free once the device has been
+// lost (e.g., after a driver reset), since tearing it down waits on the
+// device. The rest of the context is leaked in that case. Returns 0 on
+// success, or -1 with the exception message written to err_buf.
+int whisper_safe_free(
+    struct whisper_context* ctx, char* err_buf, size_t err_buf_size) {
+    if (err_buf != nullptr && err_buf_size > 0) err_buf[0] = '\0';
+    try {
+        whisper_free(ctx);
+        return 0;
     } catch (const std::exception& e) {
         copy_err(err_buf, err_buf_size, e.what());
         return -1;

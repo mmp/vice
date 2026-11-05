@@ -25,7 +25,7 @@ import (
 static void cb_log_disable(enum ggml_log_level level, const char * text, void * user_data) { (void)level; (void)text; (void)user_data; }
 static void whisper_log_set_silent_bridge() { whisper_log_set(cb_log_disable, NULL); }
 
-// Try/catch-wrapped init + inference functions defined in
+// Try/catch-wrapped init, inference, and free functions defined in
 // whisper_safe.cpp. The error message (when the wrapped call throws) is
 // written into the caller-supplied err_buf on the same cgo call to avoid
 // losing the message when the goroutine is rescheduled to a different OS
@@ -37,6 +37,8 @@ int whisper_safe_full_ptr(
     struct whisper_context* ctx, struct whisper_full_params* params,
     const float* samples, int n_samples,
     char* err_buf, size_t err_buf_size);
+int whisper_safe_free(
+    struct whisper_context* ctx, char* err_buf, size_t err_buf_size);
 
 // Forward whisper.cpp library logs into Go so they land in vice.slog.
 // callWhisperLog is declared by cgo from the //export below.
@@ -307,7 +309,16 @@ const (
 	GGMLLogLevelCont  = 5
 )
 
-func (ctx *Context) Whisper_free() { C.whisper_free((*C.struct_whisper_context)(ctx)) }
+// Whisper_free frees the context. If whisper.cpp throws a C++ exception
+// while doing so, the context is leaked and the exception's message is
+// returned as the error.
+func (ctx *Context) Whisper_free() error {
+	var errBuf [whisperInitErrBufSize]C.char
+	if C.whisper_safe_free((*C.struct_whisper_context)(ctx), &errBuf[0], C.size_t(len(errBuf))) == 0 {
+		return nil
+	}
+	return errors.New(C.GoString(&errBuf[0]))
+}
 
 func (ctx *Context) Whisper_pcm_to_mel(data []float32, threads int) error {
 	if C.whisper_pcm_to_mel((*C.struct_whisper_context)(ctx), (*C.float)(&data[0]), C.int(len(data)), C.int(threads)) == 0 {

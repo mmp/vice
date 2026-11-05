@@ -604,7 +604,11 @@ func benchmarkModel(lg *log.Logger, modelName string) (int64, error) {
 		lg.Warnf("whisper-benchmark: failed to load %s: %v", modelName, err)
 		return 0, err
 	}
-	defer model.Close()
+	defer func() {
+		if err := model.Close(); err != nil {
+			lg.Warnf("whisper-benchmark: failed to free %s: %v", modelName, err)
+		}
+	}()
 
 	var benchMu sync.Mutex
 	samples := make([]int16, audio.InputSampleRate) // 1 second of silence
@@ -810,7 +814,9 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 		lg.Warnf("Whisper warmup failed for %s: %v - disabling GPU", modelName, err)
 		whisperModelMu.Lock()
 		if whisperModel != nil {
-			whisperModel.Close()
+			if err := whisperModel.Close(); err != nil {
+				lg.Warnf("Whisper: failed to free %s: %v", modelName, err)
+			}
 			whisperModel = nil
 		}
 		whisperModelNameAtomic.Store("")
