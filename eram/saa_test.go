@@ -10,20 +10,32 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
-	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
-// The SAAs of an ARTCC are the special use airspace near it, the active
+// The SAAs are the special use airspace in the loaded geomap, the active
 // ones first; the CIFP marks P-56 active continuously, so it is hot.
 func TestSAAs(t *testing.T) {
 	db.InitDB()
-	ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
-	var ss client.SimState
-	ss.Facility = "ZDC"
-	ep.makeSAAs(ss)
+	loadGeomap := func(facility, group string) *Scope {
+		vmf, err := videomaps.LoadLibrary("videomaps/" + facility + ".mappack")
+		if err != nil {
+			t.Fatal(err)
+		}
+		ep := &Scope{prefSet: &PreferenceSet{Current: *makeDefaultPreferences()}}
+		ep.setVideoMapGroup(vmf, group, facility)
+		return ep
+	}
 
+	// W-283 is off the coast well west of ZLA's airports, but ZLA's
+	// geomap covers it.
+	if ep := loadGeomap("ZLA", "ZLAA"); !slices.ContainsFunc(ep.saas, func(a saa) bool { return a.label == "W-283" }) {
+		t.Errorf("no W-283 among ZLA's %d SAAs", len(ep.saas))
+	}
+
+	ep := loadGeomap("ZDC", "MAIN")
 	i := slices.IndexFunc(ep.saas, func(a saa) bool { return a.label == "P-56" })
 	if i < 0 {
 		t.Fatalf("no P-56 among ZDC's %d SAAs", len(ep.saas))

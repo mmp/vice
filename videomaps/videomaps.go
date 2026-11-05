@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"iter"
 	gomath "math"
 	"path/filepath"
 	"slices"
@@ -91,20 +92,40 @@ func (m ERAMMap) Bounds() math.Extent2D {
 	return featureBounds(m.Lines, m.Symbols, m.Labels)
 }
 
+// Locations returns the locations of every feature in the ERAM map: line
+// vertices, symbol positions, and label positions.
+func (m ERAMMap) Locations() iter.Seq[math.Point2LL] {
+	return featureLocations(m.Lines, m.Symbols, m.Labels)
+}
+
 func featureBounds(lines []Line, symbols []Symbol, labels []Label) math.Extent2D {
 	e := math.EmptyExtent2D()
-	for _, l := range lines {
-		for _, p := range l.Points {
-			e = math.Union(e, p)
-		}
-	}
-	for _, s := range symbols {
-		e = math.Union(e, s.P)
-	}
-	for _, l := range labels {
-		e = math.Union(e, l.P)
+	for p := range featureLocations(lines, symbols, labels) {
+		e = math.Union(e, p)
 	}
 	return e
+}
+
+func featureLocations(lines []Line, symbols []Symbol, labels []Label) iter.Seq[math.Point2LL] {
+	return func(yield func(math.Point2LL) bool) {
+		for _, l := range lines {
+			for _, p := range l.Points {
+				if !yield(p) {
+					return
+				}
+			}
+		}
+		for _, s := range symbols {
+			if !yield(s.P) {
+				return
+			}
+		}
+		for _, l := range labels {
+			if !yield(l.P) {
+				return
+			}
+		}
+	}
 }
 
 // Library is the full in-memory representation of a video map

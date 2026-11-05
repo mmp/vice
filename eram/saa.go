@@ -10,19 +10,18 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/aviation/db"
-	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/scope"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/videomaps"
 )
 
 // Special activity airspace (SAA): the SAA FILTER view and the areas it
 // displays on the scope (4.2.18). The SAAs are the special use airspace
-// from the CIFP within the ARTCC, as the extent of its airports
-// approximates it. The CIFP gives no schedules, so the areas
-// it marks as always active are hot and the others are cold; none is ever
-// pending. Nor does it give the adaptation that forces an SAA to the
+// from the CIFP in the loaded geomap. The CIFP gives no schedules, so the
+// areas it marks as always active are hot and the others are cold; none is
+// ever pending. Nor does it give the adaptation that forces an SAA to the
 // display, so every SAA is "Not Forced".
 
 // saa is a special activity airspace.
@@ -92,15 +91,22 @@ func (a *saa) altitudeEligible(altitudeRange [2]int) bool {
 	})
 }
 
-// makeSAAs finds the SAAs: the special use airspace within the extent of
-// the ARTCC's airports.
-func (ep *Scope) makeSAAs(ss client.SimState) {
+// makeSAAs finds the SAAs: the special use airspace in the loaded geomap
+// (4.2.18), here that within the extent of its features. The geomaps also
+// draw features far beyond the ARTCC, so only those within its radius of
+// its center count.
+func (ep *Scope) makeSAAs(facility string) {
 	ep.saas = nil
-	artcc := db.DB.ARTCCForFacility(ss.Facility)
+	artcc, ok := db.DB.ARTCCs[db.DB.ARTCCForFacility(facility)]
+	if !ok {
+		return
+	}
 	extent := math.EmptyExtent2D()
-	for _, ap := range db.DB.Airports {
-		if ap.ARTCC == artcc {
-			extent = math.Union(extent, ap.Location)
+	for _, m := range append([]videomaps.ERAMMap{ep.baseVideoMap}, ep.allVideoMaps...) {
+		for p := range m.Locations() {
+			if math.NMDistance2LL(artcc.Center(), p) <= artcc.Radius {
+				extent = math.Union(extent, p)
+			}
 		}
 	}
 	if extent.IsEmpty() {

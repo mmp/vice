@@ -88,7 +88,7 @@ func (ep *Scope) makeMaps(client *client.ControlClient, lg *log.Logger) {
 		return
 	}
 
-	ep.setVideoMapGroup(vmf, ps.VideoMapGroup)
+	ep.setVideoMapGroup(vmf, ps.VideoMapGroup, ss.Facility)
 
 	for _, name := range ss.ControllerDefaultVideoMaps {
 		if slices.ContainsFunc(ep.allVideoMaps, func(v videomaps.ERAMMap) bool { return v.Label() == name }) {
@@ -98,9 +98,9 @@ func (ep *Scope) makeMaps(client *client.ControlClient, lg *log.Logger) {
 }
 
 // setVideoMapGroup makes the named geomap group the current one: it fills in
-// the filter menu and gives any BCG that doesn't have a brightness yet the
-// default one.
-func (ep *Scope) setVideoMapGroup(vmf *videomaps.Library, group string) {
+// the filter menu, gives any BCG that doesn't have a brightness yet the
+// default one, and finds the SAAs in the geomap.
+func (ep *Scope) setVideoMapGroup(vmf *videomaps.Library, group, facility string) {
 	ps := ep.currentPrefs()
 	maps := vmf.ERAMMapGroups[group]
 
@@ -122,6 +122,8 @@ func (ep *Scope) setVideoMapGroup(vmf *videomaps.Library, group string) {
 			ps.VideoMapBrightness[name] = 12
 		}
 	}
+
+	ep.makeSAAs(facility)
 }
 
 func combine(x, y, sep string) string {
@@ -167,7 +169,7 @@ func handleMapRequestLoad(ep *Scope, ctx *scope.Context, groupName string) (Comm
 	// Get rid of all visible maps
 	ps.VideoMapVisible = make(map[string]any)
 
-	ep.setVideoMapGroup(vmf, groupName)
+	ep.setVideoMapGroup(vmf, groupName, ctx.Client.State.Facility)
 
 	return CommandStatus{
 		feedbackArea: []string{"ACCEPT", "MAP REQUEST", ps.VideoMapGroup},

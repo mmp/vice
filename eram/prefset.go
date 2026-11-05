@@ -207,7 +207,7 @@ func (ep *Scope) invokePrefSet(ctx *scope.Context, i int) {
 		return
 	}
 	if _, ok := vmf.ERAMMapGroups[group]; ok {
-		ep.setVideoMapGroup(vmf, group)
+		ep.setVideoMapGroup(vmf, group, ctx.Client.State.Facility)
 	}
 }
 

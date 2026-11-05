@@ -511,7 +511,6 @@ func (ep *Scope) Upgrade(from, to int) {
 func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(client.State)
 	ep.makeMaps(client, lg)
-	ep.makeSAAs(client.State)
 	ep.initials = client.SessionStats.Initials
 	ep.position = string(client.State.PrimaryPositionForTCW(client.State.UserTCW))
 	ep.caPairs = nil
@@ -522,7 +521,6 @@ func (ep *Scope) LoadedSim(client *client.ControlClient, pl platform.Platform, l
 func (ep *Scope) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	ep.resetPrefsForNewSim(client.State)
 	ep.makeMaps(client, lg)
-	ep.makeSAAs(client.State)
 	ep.initials = client.SessionStats.Initials
 	ep.position = string(client.State.PrimaryPositionForTCW(client.State.UserTCW))
 	ep.caPairs = nil
