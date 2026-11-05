@@ -14,6 +14,7 @@ import (
 	"io/fs"
 	gomath "math"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/mmp/vice/math"
@@ -766,7 +767,9 @@ func encodeGeometry(lines []Line, symbols []Symbol, labels []Label) []byte {
 }
 
 // decodeGeometry parses one map's payload out of the shared decompressed
-// geometry region. (offset, length) come from the wire header.
+// geometry region. (offset, length) come from the wire header. It drops
+// the symbols and labels at invalid locations and splits lines around
+// them, dropping the pieces that draw nothing.
 func decodeGeometry(region []byte, offset, length uint32) ([]Line, []Symbol, []Label, error) {
 	if uint64(offset)+uint64(length) > uint64(len(region)) {
 		return nil, nil, nil, fmt.Errorf("geometry slice out of bounds: offset=%d len=%d region=%d",
@@ -852,6 +855,8 @@ func decodeGeometry(region []byte, offset, length uint32) ([]Line, []Symbol, []L
 		}
 	}
 
+	symbols = slices.DeleteFunc(symbols, func(s Symbol) bool { return !validLocation(s.P) })
+	labels = slices.DeleteFunc(labels, func(l Label) bool { return !validLocation(l.P) })
 	return lines, symbols, labels, nil
 }
 
@@ -865,10 +870,10 @@ func decodeLines(d *payloadReader) ([]Line, error) {
 	if numLines == 0 {
 		return nil, nil
 	}
-	lines := make([]Line, numLines)
 	counts := make([]int, numLines)
+	styles := make([][3]byte, numLines)
 	totalPts := 0
-	for i := range lines {
+	for i := range counts {
 		n, err := d.uvarint()
 		if err != nil {
 			return nil, fmt.Errorf("line %d: num points: %w", i, err)
@@ -877,28 +882,52 @@ func decodeLines(d *payloadReader) ([]Line, error) {
 		if err != nil {
 			return nil, fmt.Errorf("line %d: header: %w", i, err)
 		}
-		lines[i] = Line{
-			Style:     LineStyle(style[0]),
-			Thickness: style[1],
-			BCGIndex:  style[2],
-		}
-		counts[i] = int(n)
+		counts[i], styles[i] = int(n), [3]byte(style)
 		totalPts += int(n)
 	}
 	if totalPts == 0 {
-		return lines, nil
+		return nil, nil
 	}
 	all := make([]math.Point2LL, totalPts)
 	if err := d.readPath(all); err != nil {
 		return nil, fmt.Errorf("chained path: %w", err)
 	}
 	// Carve `all` into per-line subslices (no copy; lines share backing array).
+	lines := make([]Line, 0, numLines)
 	pos := 0
 	for i, n := range counts {
-		lines[i].Points = all[pos : pos+n : pos+n]
+		l := Line{Style: LineStyle(styles[i][0]), Thickness: styles[i][1], BCGIndex: styles[i][2]}
+		lines = appendValidRuns(lines, l, all[pos:pos+n])
 		pos += n
 	}
 	return lines, nil
+}
+
+// appendValidRuns appends a copy of l to lines for each run of pts between
+// invalid locations, unless the run's points are all at one location and
+// so draw nothing.
+func appendValidRuns(lines []Line, l Line, pts []math.Point2LL) []Line {
+	start := 0
+	for i := 0; i <= len(pts); i++ {
+		if i < len(pts) && validLocation(pts[i]) {
+			continue
+		}
+		if run := pts[start:i:i]; slices.ContainsFunc(run, func(p math.Point2LL) bool { return p != run[0] }) {
+			l.Points = run
+			lines = append(lines, l)
+		}
+		start = i + 1
+	}
+	return lines
+}
+
+// validLocation reports whether p could be a location in a map. Bad source
+// data has coordinates out of range, and zeros for missing ones, which put
+// points on the equator or the prime meridian and shapes around where they
+// cross. No facility's maps come within a degree of either.
+func validLocation(p math.Point2LL) bool {
+	lon, lat := math.Abs(p[0]), math.Abs(p[1])
+	return lon >= 1 && lon <= 180 && lat >= 1 && lat <= 90
 }
 
 // ---------- low-level helpers -------------------------------------------

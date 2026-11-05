@@ -337,6 +337,49 @@ func TestLineStylePreserved(t *testing.T) {
 	}
 }
 
+// TestInvalidLocationsCulled verifies that the loader drops the points,
+// symbols, and labels that source data puts at invalid locations, splitting
+// lines around them so that no segment joins the points on either side,
+// and that it drops lines that draw nothing.
+func TestInvalidLocationsCulled(t *testing.T) {
+	a, b, c, d := math.Point2LL{-118, 34}, math.Point2LL{-118.1, 34.1}, math.Point2LL{-118.2, 34.2}, math.Point2LL{-118.3, 34.3}
+	lib := &Library{Maps: map[string]STARSMap{"M": {
+		Name: "M",
+		Lines: []Line{
+			{Points: []math.Point2LL{a, b, {160, 0}, {-1000.6778, 0}, c, d}, Style: LineStyleLongDashed, BCGIndex: 3},
+			{Points: []math.Point2LL{{0, 40.01553}, a, b, {0.0044997, -0.0077939}}},
+			{Points: []math.Point2LL{c, c}},
+			{Points: []math.Point2LL{a, {-122.3, 375.7}, d}},
+		},
+		Symbols: []Symbol{{P: a}, {P: math.Point2LL{-185.93791, 52.718273}}, {P: math.Point2LL{0, 0}}},
+		Labels:  []Label{{P: math.Point2LL{-0.005, -0.0028867}, Text: "X"}, {P: b, Text: "B"}},
+	}}}
+	var buf bytes.Buffer
+	if err := SaveLibrary(&buf, lib); err != nil {
+		t.Fatalf("save: %v", err)
+	}
+	got, err := decodeFromBytes(buf.Bytes())
+	if err != nil {
+		t.Fatalf("load: %v", err)
+	}
+
+	m := got.Maps["M"]
+	want := []Line{
+		{Points: []math.Point2LL{a, b}, Style: LineStyleLongDashed, BCGIndex: 3},
+		{Points: []math.Point2LL{c, d}, Style: LineStyleLongDashed, BCGIndex: 3},
+		{Points: []math.Point2LL{a, b}},
+	}
+	if !reflect.DeepEqual(m.Lines, want) {
+		t.Errorf("lines:\n got %+v\nwant %+v", m.Lines, want)
+	}
+	if !reflect.DeepEqual(m.Symbols, []Symbol{{P: a}}) {
+		t.Errorf("symbols: got %+v, want only the one at %v", m.Symbols, a)
+	}
+	if len(m.Labels) != 1 || m.Labels[0].Text != "B" {
+		t.Errorf("labels: got %+v, want only B", m.Labels)
+	}
+}
+
 // TestWrongMagic ensures the loader rejects a legacy-format file with a
 // clear pointer to upgradevideomap.
 func TestWrongMagic(t *testing.T) {
