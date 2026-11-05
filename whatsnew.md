@@ -7,5 +7,6 @@
   - Real-world jet departures no longer fly prop departure routes
   - Real-world flights within a TRACON no longer use unrelated gates
   - Real-world departures use exits named for their destination airport
-  - Scenario validation rejects overlapping jet and prop departure routes
-  - Launching vice reports scenario locations far from the facility
+- STARS
+  - Multi-track selection is supported when DWELL is off
+

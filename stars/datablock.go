@@ -5,6 +5,7 @@
 package stars
 
 import (
+	"cmp"
 	"fmt"
 	"slices"
 	"strconv"
@@ -1254,6 +1255,10 @@ func (sp *Scope) trackDatablockColorBrightness(ctx *scope.Context, trk sim.Track
 	if trk.ADSBCallsign == sp.dwellAircraft { // dwell overrides everything as far as brightness
 		dbBrightness = scope.Brightness(100)
 		posBrightness = scope.Brightness(100)
+	} else if trk.ADSBCallsign == sp.multiTrackHighlight {
+		// 2.8: the FDB brightness setting controls highlighting, even for LDB tracks.
+		dbBrightness = ps.Brightness.FullDatablocks
+		posBrightness = ps.Brightness.FullDatablocks
 	} else if forceFDB || state.OutboundHandoffAccepted {
 		dbBrightness = ps.Brightness.FullDatablocks
 		posBrightness = ps.Brightness.Positions
@@ -1278,8 +1283,8 @@ func (sp *Scope) trackDatablockColorBrightness(ctx *scope.Context, trk sim.Track
 		posBrightness /= 2
 	}
 
-	if state.IsSelected {
-		// middle button selected
+	if state.IsSelected || trk.ADSBCallsign == sp.multiTrackHighlight {
+		// middle button selected or multi-track highlighted
 		color = sp.Colors.SelectedDatablock
 	} else if trk.IsUnassociated() {
 		color = sp.Colors.UnownedDatablock
@@ -1432,24 +1437,24 @@ func (sp *Scope) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *scope.Co
 		}
 	}
 
-	if sp.dwellAircraft != "" {
-		// If the dwelled aircraft is in the given slice, move it to the
-		// end so that it is drawn last (among its datablock category) and
-		// appears on top.
-		moveDwelledToEnd := func(tracks []*sim.Track) []*sim.Track {
-			isDwelled := func(trk *sim.Track) bool { return trk.ADSBCallsign == sp.dwellAircraft }
-			if idx := slices.IndexFunc(tracks, isDwelled); idx != -1 {
-				dwelled := tracks[idx]
+	if top := cmp.Or(sp.dwellAircraft, sp.multiTrackHighlight); top != "" {
+		// If the dwelled or highlighted aircraft is in the given slice,
+		// move it to the end so that it is drawn last (among its datablock
+		// category) and appears on top.
+		moveToEnd := func(tracks []*sim.Track) []*sim.Track {
+			isTop := func(trk *sim.Track) bool { return trk.ADSBCallsign == top }
+			if idx := slices.IndexFunc(tracks, isTop); idx != -1 {
+				t := tracks[idx]
 				tracks = append(tracks[:idx], tracks[idx+1:]...)
-				tracks = append(tracks, dwelled)
+				tracks = append(tracks, t)
 			}
 			return tracks
 		}
 
-		ldbs = moveDwelledToEnd(ldbs)
-		pdbs = moveDwelledToEnd(pdbs)
-		fdbs = moveDwelledToEnd(fdbs)
-		sdbs = moveDwelledToEnd(sdbs)
+		ldbs = moveToEnd(ldbs)
+		pdbs = moveToEnd(pdbs)
+		fdbs = moveToEnd(fdbs)
+		sdbs = moveToEnd(sdbs)
 	}
 
 	leaderLineEndpoint := func(pw [2]float32, trk *sim.Track, leaderLineDirection math.CardinalOrdinalDirection) [2]float32 {

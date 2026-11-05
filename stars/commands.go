@@ -5,7 +5,6 @@
 package stars
 
 import (
-	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -581,9 +580,6 @@ func (sp *Scope) executeTransientCommandHandlers(ctx *scope.Context, text string
 		ghosts:        ghosts,
 	}
 
-	fmt.Printf("\n[TRANSIENT] Executing transient command handlers, %d handlers, text=%q, trk=%v, hasClick=%v\n",
-		len(sp.transientCommandHandlers), text, trk != nil, hasClick)
-
 	status, err, handled := sp.dispatchCommand(ctx, sp.transientCommandHandlers, input)
 	if !handled {
 		return CommandStatus{}, ErrCommandFormat
@@ -646,6 +642,10 @@ func (sp *Scope) consumeMouseEvents(ctx *scope.Context, ghosts []*av.GhostTrack,
 		ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 	}
 
+	if sp.multiTrackSelection {
+		sp.highlightClosestTrack(ctx, transforms)
+	}
+
 	if ctx.Mouse.Released[platform.MouseButtonPrimary] {
 
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() {
@@ -657,10 +657,24 @@ func (sp *Scope) consumeMouseEvents(ctx *scope.Context, ghosts []*av.GhostTrack,
 			}
 		}
 
+		// 2.8 Selecting tracks (p. 2-35): with Dwell off, a click among
+		// closely spaced tracks engages multi-track selection rather than
+		// selecting one of them. The click after that selects the
+		// highlighted track, which the click handling below finds as the
+		// closest one to the cursor.
+		if sp.multiTrackSelection {
+			sp.multiTrackSelection = false
+			sp.multiTrackHighlight = ""
+		} else if ps.DwellMode == DwellModeOff && sp.multipleTracksNear(ctx, ctx.Mouse.Pos, transforms) {
+			sp.multiTrackSelection = true
+			sp.highlightClosestTrack(ctx, transforms)
+			sp.previewAreaOutput = "MULTIPLE TRK"
+			return
+		}
+
 		// If transient command handlers have been registered, give them the click.
 		var status CommandStatus
 		var err error
-		fmt.Printf("\n[MOUSE] Click, transientCommandHandlers=%d\n", len(sp.transientCommandHandlers))
 		if len(sp.transientCommandHandlers) > 0 {
 			status, err = sp.executeTransientCommandHandlers(ctx, sp.previewAreaInput, nil, true, ctx.Mouse.Pos, ghosts, transforms)
 		} else if s, e, matched := sp.tryExecuteMacro(ctx, sp.previewAreaInput, true,
@@ -669,8 +683,6 @@ func (sp *Scope) consumeMouseEvents(ctx *scope.Context, ghosts []*av.GhostTrack,
 		} else {
 			status, err = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms)
 		}
-		fmt.Printf("[MOUSE] status.Clear=%v, status.CommandHandlers=%d, err=%v\n",
-			status.Clear, len(status.CommandHandlers), err)
 
 		if err != nil {
 			sp.displayError(err, ctx, "")
@@ -768,6 +780,9 @@ func (sp *Scope) resetInputState(pl platform.Platform) {
 	sp.activeSpinner = nil
 
 	sp.drawRoutePoints = nil
+
+	sp.multiTrackSelection = false
+	sp.multiTrackHighlight = ""
 
 	pl.EndCaptureMouse()
 	pl.StopMouseDeltaMode()
@@ -903,15 +918,26 @@ func lookupControllerWithAirspace(ctx *scope.Context, id string, trk *sim.Track)
 	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().Position)
 }
 
+// trackSelectionRadius returns how close in pixels the cursor must be to a
+// track to select it: the 0.2" default Dwell Distance (DWLDIS) at 100
+// pixels per inch. The DMS manual gives no separate size for the
+// multi-track selection area, so that uses it as well.
+func trackSelectionRadius(ctx *scope.Context) float32 {
+	return 20 * ctx.DrawPixelScale
+}
+
+func (sp *Scope) trackCursorDistance(trk *sim.Track, mousePosition [2]float32, transforms scope.Transformations) float32 {
+	pw := transforms.WindowFromLatLongP(sp.TrackState[trk.ADSBCallsign].track.Location)
+	return math.Distance2f(pw, mousePosition)
+}
+
 func (sp *Scope) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32, transforms scope.Transformations) (*sim.Track, float32) {
 	var trk *sim.Track
-	distance := float32(20) // in pixels; don't consider anything farther away
+	distance := trackSelectionRadius(ctx) // don't consider anything farther away
 
 	for i := range sp.visibleTracks {
 		t := &sp.visibleTracks[i]
-		pw := transforms.WindowFromLatLongP(sp.TrackState[t.ADSBCallsign].track.Location)
-		dist := math.Distance2f(pw, mousePosition)
-		if dist < distance {
+		if dist := sp.trackCursorDistance(t, mousePosition, transforms); dist < distance {
 			trk = t
 			distance = dist
 		}
@@ -920,9 +946,29 @@ func (sp *Scope) tryGetClosestTrack(ctx *scope.Context, mousePosition [2]float32
 	return trk, distance
 }
 
-func (sp *Scope) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [2]float32, transforms scope.Transformations) (*av.GhostTrack, float32) {
+// multipleTracksNear reports whether more than one track is within the
+// track selection radius of the given position.
+func (sp *Scope) multipleTracksNear(ctx *scope.Context, mousePosition [2]float32, transforms scope.Transformations) bool {
+	near := func(trk sim.Track) bool {
+		return sp.trackCursorDistance(&trk, mousePosition, transforms) < trackSelectionRadius(ctx)
+	}
+	i := slices.IndexFunc(sp.visibleTracks, near)
+	return i != -1 && slices.ContainsFunc(sp.visibleTracks[i+1:], near)
+}
+
+// highlightClosestTrack sets the multi-track selection highlight to the
+// track closest to the cursor, if any is within the selection radius.
+func (sp *Scope) highlightClosestTrack(ctx *scope.Context, transforms scope.Transformations) {
+	sp.multiTrackHighlight = ""
+	if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
+		sp.multiTrackHighlight = trk.ADSBCallsign
+	}
+}
+
+func (sp *Scope) tryGetClosestGhost(ctx *scope.Context, ghosts []*av.GhostTrack, mousePosition [2]float32,
+	transforms scope.Transformations) (*av.GhostTrack, float32) {
 	var ghost *av.GhostTrack
-	distance := float32(20) // in pixels; don't consider anything farther away
+	distance := trackSelectionRadius(ctx) // don't consider anything farther away
 
 	for _, g := range ghosts {
 		pw := transforms.WindowFromLatLongP(g.Position)
@@ -941,7 +987,7 @@ func (sp *Scope) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [2]fl
 func (sp *Scope) findClickedTrackAndGhost(ctx *scope.Context, mousePosition [2]float32,
 	transforms scope.Transformations, ghosts []*av.GhostTrack) (*sim.Track, *av.GhostTrack) {
 	trk, trkDistance := sp.tryGetClosestTrack(ctx, mousePosition, transforms)
-	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
+	ghost, ghostDistance := sp.tryGetClosestGhost(ctx, ghosts, mousePosition, transforms)
 
 	var clickedGhost *av.GhostTrack
 	if ghost != nil && ghostDistance < trkDistance {

@@ -148,6 +148,12 @@ type Scope struct {
 	drawRouteAircraft av.ADSBCallsign
 	showListFrames    bool
 
+	// 2.8 multi-track selection: with Dwell off, a click near closely
+	// spaced tracks highlights the one closest to the cursor rather than
+	// selecting it; the next click selects the highlighted track.
+	multiTrackSelection bool
+	multiTrackHighlight av.ADSBCallsign
+
 	// For 4.9.27 list moving
 	movingList       string     // frame title of the list being moved
 	movingListAnchor [2]float32 // cursor position when the move started
