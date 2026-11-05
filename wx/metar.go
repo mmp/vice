@@ -123,66 +123,74 @@ func parseMETARTime(s string) (time.Time, error) {
 	return t.UTC(), nil
 }
 
-// IsVMC returns true if Visual Meteorological Conditions apply
-// VMC requires >= 3 miles visibility and >= 1000' ceiling AGL
+// IsVMC returns true if Visual Meteorological Conditions apply: at least 3
+// miles visibility and a ceiling of at least 1000' AGL. Whatever the report
+// doesn't give, as when an automated station's visibility sensor is out, is
+// taken to be good enough.
 func (m METAR) IsVMC() bool {
-	// >= 3 miles visibility
-	vis, err := m.Visibility()
-	if err != nil || vis < 3 {
+	if vis, err := m.Visibility(); err == nil && vis < 3 {
 		return false
 	}
-
-	// >= 1000' ceiling AGL
-	ceil, err := m.Ceiling()
-	return err == nil && ceil >= 1000
+	ceil, ok := m.Ceiling()
+	return !ok || ceil >= 1000
 }
 
-// Visibility extracts visibility in statute miles from the raw METAR
+// Visibility returns the prevailing visibility in statute miles. It returns
+// an error if the report doesn't give one.
 func (m METAR) Visibility() (float32, error) {
-	for f := range strings.FieldsSeq(m.Raw) {
-		if before, ok := strings.CutSuffix(f, "SM"); ok {
-			f = before
-			f = strings.TrimPrefix(f, "M") // there if 1/4 or less
-
-			// Handle fractional visibility like 1/4SM
-			if snum, sdenom, ok := strings.Cut(f, "/"); ok {
-				if num, err := strconv.Atoi(snum); err != nil {
-					return -1, err
-				} else if denom, err := strconv.Atoi(sdenom); err != nil {
-					return -1, err
-				} else {
-					return float32(num) / float32(denom), nil
-				}
-			} else if vis, err := strconv.Atoi(f); err != nil {
-				return -1, err
-			} else {
-				return float32(vis), nil
-			}
+	fields := strings.Fields(m.Observation())
+	for i, f := range fields {
+		s, ok := strings.CutSuffix(f, "SM")
+		if !ok {
+			continue
 		}
+		s = strings.TrimPrefix(s, "M") // less than
+		s = strings.TrimPrefix(s, "P") // more than
+
+		if num, denom, ok := strings.Cut(s, "/"); ok {
+			n, nerr := strconv.Atoi(num)
+			d, derr := strconv.Atoi(denom)
+			if nerr != nil || derr != nil || d == 0 {
+				continue
+			}
+			vis := float32(n) / float32(d)
+			// The whole miles of "1 1/2SM" are a field of their own.
+			if i > 0 {
+				if whole, err := strconv.Atoi(fields[i-1]); err == nil {
+					vis += float32(whole)
+				}
+			}
+			return vis, nil
+		} else if vis, err := strconv.Atoi(s); err == nil {
+			return float32(vis), nil
+		}
+		// Otherwise it is something else that ends in SM, like the KISM
+		// station identifier.
 	}
 	return -1, fmt.Errorf("%s: no visibility found", m.Raw)
 }
 
-// Ceiling returns ceiling in feet AGL (above ground level)
-func (m METAR) Ceiling() (int, error) {
-	for f := range strings.FieldsSeq(m.Raw) {
-		// BKN (broken) or OVC (overcast) constitute a ceiling
-		if strings.HasPrefix(f, "BKN") || strings.HasPrefix(f, "OVC") {
-			if len(f) < 6 {
-				return 0, fmt.Errorf("%s: too short", f)
-			}
-
-			// Cloud height is in hundreds of feet
-			if alt, err := strconv.Atoi(f[3:6]); err == nil {
-				alt *= 100
-				return alt, nil
-			} else {
-				return -1, err
-			}
+// Ceiling returns the height in feet AGL of the lowest broken or overcast
+// layer or of the vertical visibility into an obscured sky. It returns false
+// if there is none. Layers whose height is missing or garbled are skipped.
+func (m METAR) Ceiling() (int, bool) {
+	for f := range strings.FieldsSeq(m.Observation()) {
+		height, ok := strings.CutPrefix(f, "BKN")
+		if !ok {
+			height, ok = strings.CutPrefix(f, "OVC")
+		}
+		if !ok {
+			height, ok = strings.CutPrefix(f, "VV")
+		}
+		if !ok || len(height) < 3 {
+			continue
+		}
+		// Hundreds of feet, possibly followed by a cloud type: BKN030CB.
+		if h, err := strconv.Atoi(height[:3]); err == nil {
+			return 100 * h, true
 		}
 	}
-	// No ceiling means unlimited (typically reported as 12000')
-	return 12000, nil
+	return 0, false
 }
 
 // EffectiveVisualRange returns the maximum distance (in nautical miles) at which an observer at

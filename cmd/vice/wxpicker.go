@@ -413,12 +413,10 @@ func drawVisibilityAndCeiling(metar wx.METAR) {
 
 	imgui.Spacing()
 
-	if ceil, err := metar.Ceiling(); err == nil {
-		if ceil >= 12000 {
-			imgui.Text("Ceiling: Unlimited")
-		} else {
-			imgui.Text(fmt.Sprintf("Ceiling: %d ft AGL", ceil))
-		}
+	if ceil, ok := metar.Ceiling(); ok {
+		imgui.Text(fmt.Sprintf("Ceiling: %d ft AGL", ceil))
+	} else {
+		imgui.Text("Ceiling: Unlimited")
 	}
 }
 

@@ -75,7 +75,7 @@ func (s *Sim) handleTrafficInSightInquiry(ac *Aircraft) speech.CommandIntent {
 
 	// Neither the reaffirmation nor the geometric fallback below rolls for visibility,
 	// so gate both: in IMC the pilot can't possibly see anything out there.
-	if metar, _ := s.nearestMETAR(ac.Position()); metar.ICAO != "" && !metar.IsVMC() {
+	if metar, _ := s.nearestMETAR(ac.Position()); !metar.IsVMC() {
 		return speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseIMC}
 	}
 
@@ -551,18 +551,14 @@ func (s *Sim) checkVisibility(ac *Aircraft, p math.Point2LL) VisualEligibility {
 	metar, ok := s.State.METAR[ac.ArrivalAirport]
 	if !ok {
 		metar, _ = s.nearestMETAR(apLoc)
-		ok = metar.ICAO != ""
 	}
-	// A zero METAR reports IMC, so only take its word for it if we found one.
-	if ok && !metar.IsVMC() {
+	if !metar.IsVMC() {
 		return VisualEligibility{Reason: visualEligibilityIMC}
 	}
 
 	// Aircraft above the ceiling is in the clouds → can't see the ground.
-	if ceiling, err := metar.Ceiling(); err == nil {
-		if ac.Altitude() > apElev+float32(ceiling) {
-			return VisualEligibility{Reason: visualEligibilityIMC}
-		}
+	if ceiling, ok := metar.Ceiling(); ok && ac.Altitude() > apElev+float32(ceiling) {
+		return VisualEligibility{Reason: visualEligibilityIMC}
 	}
 
 	// Must be within effective visual range (METAR visibility + altitude bonus).

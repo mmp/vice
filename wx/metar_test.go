@@ -137,6 +137,47 @@ func TestMETARObservation(t *testing.T) {
 	}
 }
 
+func TestMETARFlightConditions(t *testing.T) {
+	cases := []struct {
+		name    string
+		raw     string
+		vis     float32 // -1 if none
+		ceiling int     // 0 if none
+		vmc     bool
+	}{
+		{"station id ending in SM", "KISM 241356Z 17006KT 10SM CLR 29/25 A3015 RMK AO2 SLP210", 10, 0, true},
+		{"low and broken", "KJFK 061351Z 18017G25KT 2SM BR BKN008 OVC015 12/11 A2985", 2, 800, false},
+		{"whole and fractional miles", "KJFK 061351Z 18017KT 1 1/2SM BR OVC004 12/11 A2985", 1.5, 400, false},
+		{"less than a quarter mile", "KJFK 061351Z 00000KT M1/4SM FG VV001 12/12 A2985", 0.25, 100, false},
+		{"more than six miles", "KBOI 211720Z 13008KT P6SM SKC", 6, 0, true},
+		{"cloud type after the height", "KJFK 061351Z 18017KT 10SM BKN030CB 22/18 A2985", 10, 3000, true},
+		{"no visibility reported", "KFDK 250215Z AUTO 00000KT CLR 27/21 A3009 RMK AO2", -1, 0, true},
+		{"no visibility under a low ceiling", "KNSI 231302Z AUTO 30003KT BKN008 BKN100 16/16 A2982", -1, 800, false},
+		{"BKN in the remarks", "KEKM 250015Z 33005KT 10SM SCT021 19/17 A2998 RMK AO2 SCT V BKN", 10, 0, true},
+		{"layer without a height", "KJFK 061351Z AUTO 18017KT 10SM BKN/// OVC050 22/18 A2985", 10, 5000, true},
+		{"no report", "", -1, 0, true},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			m := METAR{Raw: c.raw}
+			vis, err := m.Visibility()
+			if c.vis < 0 {
+				if err == nil {
+					t.Errorf("Visibility = %.2f, want none", vis)
+				}
+			} else if err != nil || math.Abs(float64(vis-c.vis)) > 1e-4 {
+				t.Errorf("Visibility = %.2f, %v; want %.2f", vis, err, c.vis)
+			}
+			if ceil, ok := m.Ceiling(); ceil != c.ceiling || ok != (c.ceiling > 0) {
+				t.Errorf("Ceiling = %d, %v; want %d", ceil, ok, c.ceiling)
+			}
+			if vmc := m.IsVMC(); vmc != c.vmc {
+				t.Errorf("IsVMC = %v, want %v", vmc, c.vmc)
+			}
+		})
+	}
+}
+
 func TestMETARUnmarshalAPIShape(t *testing.T) {
 	data := `{"icaoId":"KJFK","reportTime":"2026-05-06T14:00:00.000Z","temp":14.4,"dewp":11.1,"wdir":180,"wspd":17,"wgst":25,"altim":1010.6,"rawOb":"METAR KJFK 061351Z 18017G25KT 10SM"}`
 

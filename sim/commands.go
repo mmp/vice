@@ -392,7 +392,7 @@ func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles, callAlt int
 		return intent
 	}
 
-	if nearestMETAR.ICAO != "" && !nearestMETAR.IsVMC() {
+	if !nearestMETAR.IsVMC() {
 		return logResult(speech.TrafficAdvisoryIntent{Response: speech.TrafficResponseIMC})
 	}
 
@@ -478,7 +478,7 @@ func (s *Sim) matchTrafficCall(ac *Aircraft, oclock, miles, callAlt int, altUnkn
 func (s *Sim) trafficIsVisible(ac, traffic *Aircraft) bool {
 	nearestMETAR, nearestElev := s.nearestMETAR(ac.Position())
 
-	if nearestMETAR.ICAO != "" && !nearestMETAR.IsVMC() {
+	if !nearestMETAR.IsVMC() {
 		s.lg.Infof("trafficIsVisible: %s -> %s: IMC", ac.ADSBCallsign, traffic.ADSBCallsign)
 		return false
 	}
