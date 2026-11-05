@@ -61,7 +61,7 @@ type glfwPlatform struct {
 // and returns the platform.Window that manages it.
 func New(config *platform.Config, lg *log.Logger) (platform.Window, error) {
 	lg.Info("Starting GLFW initialization")
-	err := glfw3.Init()
+	err := initGLFW()
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize glfw: %w", err)
 	}
@@ -140,6 +140,24 @@ func New(config *platform.Config, lg *log.Logger) (platform.Window, error) {
 	lg.Info("Finished GLFW initialization")
 
 	return g, nil
+}
+
+// initGLFW initializes GLFW. glfw3.Init only logs a platform error from
+// glfwInit and returns nil, though GLFW is then uninitialized and its first
+// use panics. GLFW keeps that error for GetError, so report it instead.
+func initGLFW() (err error) {
+	if err := glfw3.Init(); err != nil {
+		return err
+	}
+
+	code, desc := glfw3.GetError()
+	defer func() {
+		if recover() != nil {
+			err = fmt.Errorf("%s: %s", code, desc)
+		}
+	}()
+	glfw3.GetPlatform() // panics if GLFW is not initialized
+	return nil
 }
 
 func squareWindowSize(size [2]int) [2]int {
