@@ -699,8 +699,7 @@ func translateUntranslatedKey(key glfw3.Key, scancode int) glfw3.Key {
 	if key >= glfw3.KeyKP0 && key <= glfw3.KeyKPEqual {
 		return key
 	}
-	name := glfw3.GetKeyName(key, scancode)
-	// glfw3.GetError(nil)
+	name := getKeyName(key, scancode)
 	if len(name) == 1 {
 		if name[0] >= '0' && name[0] <= '9' {
 			return glfw3.Key0 + glfw3.Key(name[0]-'0')
@@ -728,6 +727,19 @@ func translateUntranslatedKey(key glfw3.Key, scancode int) glfw3.Key {
 		}
 	}
 	return key
+}
+
+// getKeyName returns GLFW's name for the key, or "" if it has none. Like
+// imgui's GLFW backend, it ignores GLFW errors, which the glfw3 bindings
+// turn into panics. Wayland reports scancodes above 255 (e.g., the Fn key)
+// as invalid values.
+func getKeyName(key glfw3.Key, scancode int) (name string) {
+	defer func() {
+		if recover() != nil {
+			name = ""
+		}
+	}()
+	return glfw3.GetKeyName(key, scancode)
 }
 
 func glfwKeyToImguiKey(keycode glfw3.Key) imgui.Key {
