@@ -545,6 +545,27 @@ func (s *Sim) nearestMETAR(pos math.Point2LL) (wx.METAR, float32) {
 	return nearest, elev
 }
 
+// airportMETAR returns the airport's METAR and its elevation or, if it
+// doesn't report one, those of the reporting station nearest to it. It
+// returns a zero METAR if no stations are available.
+func (s *Sim) airportMETAR(icao av.ICAOAirportCode) (wx.METAR, float32) {
+	ap, ok := db.DB.Airports[icao]
+	if !ok {
+		return wx.METAR{}, 0
+	}
+	if metar, ok := s.State.METAR[icao]; ok {
+		return metar, float32(ap.Elevation)
+	}
+	return s.nearestMETAR(ap.Location)
+}
+
+// airportIsVMC reports whether the weather at the airport, as airportMETAR
+// gives it, allows VFR flight.
+func (s *Sim) airportIsVMC(icao av.ICAOAirportCode) bool {
+	metar, _ := s.airportMETAR(icao)
+	return metar.IsVMC()
+}
+
 // MaintainVisualSeparation handles "maintain visual separation from the traffic" command.
 // The aircraft should have recently reported traffic in sight.
 func (s *Sim) MaintainVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (speech.CommandIntent, error) {

@@ -138,6 +138,38 @@ const (
 // Max altitude for VFR aircraft (below Class A airspace at 18,000')
 const maxVFRAltitude = 17500
 
+// vfrCloudClearance is how far below the clouds VFR flights stay (14 CFR
+// 91.155).
+const vfrCloudClearance = 500
+
+// vfrCloudTop returns the highest a VFR flight between the two airports may
+// fly: vfrCloudClearance under the lower of the ceilings reported at them,
+// or maxVFRAltitude if neither reports one.
+func (s *Sim) vfrCloudTop(depart, arrive av.ICAOAirportCode) int {
+	top := maxVFRAltitude
+	for _, ap := range []av.ICAOAirportCode{depart, arrive} {
+		metar, elev := s.airportMETAR(ap)
+		if ceiling, ok := metar.Ceiling(); ok {
+			top = min(top, int(elev)+ceiling-vfrCloudClearance)
+		}
+	}
+	return top
+}
+
+// vfrCruiseUnder returns the highest VFR cruising altitude at or below top
+// for a flight on the given magnetic course over a surface at the given
+// elevation: a multiple of 500', which more than 3,000' above the surface
+// has to be an odd thousand plus 500' on an easterly course and an even
+// thousand plus 500' on a westerly one (14 CFR 91.159).
+func vfrCruiseUnder(top, surface int, course math.MagneticHeading) int {
+	odd := util.Select(course < 180, 1, 0)
+	alt := top / 500 * 500
+	for alt > surface+3000 && (alt%1000 != 500 || alt/1000%2 != odd) {
+		alt -= 500
+	}
+	return alt
+}
+
 // maxHoldingShortVFR bounds how many VFR departures wait for the runway at a
 // time; no more are spawned until the backlog clears.
 const maxHoldingShortVFR = 5
@@ -165,9 +197,10 @@ func (s *Sim) spawnVFRDepartures() {
 					s.addDepartureToPool(ac, runway, 0 /* no wait at the gate */)
 				}
 				// Also skip the slot if there was nowhere to send the
-				// aircraft; otherwise we'd try again every second for as
-				// long as arrivals are backed up.
-				if launched || errors.Is(err, errNoVFRDestination) {
+				// aircraft or no room under the clouds; otherwise we'd
+				// try again every second for as long as arrivals are
+				// backed up or the weather stays low.
+				if launched || errors.Is(err, errNoVFRDestination) || errors.Is(err, ErrVFRInClouds) {
 					depState.NextVFRSpawn = now.Add(randomWait(depState.VFRSpawnRate, false, s.Rand))
 				}
 			}
@@ -182,7 +215,7 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 		return nil, nil
 	}
 
-	if depState.VFRSpawnRate == 0 {
+	if depState.VFRSpawnRate == 0 || !s.airportIsVMC(depart) {
 		return nil, nil
 	}
 
@@ -199,9 +232,9 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 		return nil, nil
 	}
 
-	if route != nil && s.orbitingArrivals(route.Destination) > 0 {
-		// Arrivals are backed up at the route's destination; hold off
-		// on this one and try again later.
+	if route != nil && (s.orbitingArrivals(route.Destination) > 0 || !s.airportIsVMC(route.Destination)) {
+		// Arrivals are backed up at the route's destination or it's IMC
+		// there; hold off on this one and try again later.
 		return nil, errNoVFRDestination
 	}
 
@@ -226,8 +259,8 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 			dest, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(destinations),
 				func(ap av.ICAOAirportCode) float32 { return destinationWeights[ap] })
 			if !ok {
-				// Arrivals are backed up at every airport that takes
-				// VFR traffic; wait for one of them to clear.
+				// Arrivals are backed up or it's IMC at every airport
+				// that takes VFR traffic; wait for one of them to clear.
 				return nil, errNoVFRDestination
 			}
 			arrive, fleet = dest, randoms.Fleet
@@ -235,12 +268,16 @@ func (s *Sim) makeNewVFRDeparture(depart av.ICAOAirportCode, runway av.RunwayID)
 			arrive, fleet, routeWps = route.Destination, route.Fleet, route.Waypoints
 		}
 
-		// Only count attempts where we actually went looking for a
-		// route; the circuit breaker above is about routes that can't
-		// be found, not about destinations being busy.
-		depState.VFRAttempts++
 		var ac *Aircraft
-		if ac, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns); err == nil {
+		ac, err = s.createUncontrolledVFRDeparture(depart, arrive, fleet, routeWps, callsigns)
+		// Only count attempts where we actually went looking for a route
+		// and the weather didn't stop it; the circuit breaker above is
+		// about routes that can't be found, not about destinations being
+		// busy or the clouds being low.
+		if !errors.Is(err, ErrVFRInClouds) {
+			depState.VFRAttempts++
+		}
+		if err == nil {
 			ac.ReleaseTime = s.State.SimTime
 			depState.VFRSuccesses++
 			return ac, nil
@@ -280,8 +317,14 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 		// This shouldn't happen...
 		return nil, nil
 	}
+	if !s.airportIsVMC(departureAirport) {
+		return nil, nil
+	}
 	randoms, route := s.sampleVFRFlight(ap)
 	if route != nil {
+		if !s.airportIsVMC(route.Destination) {
+			return nil, nil
+		}
 		return s.createUncontrolledVFRDeparture(departureAirport, route.Destination, route.Fleet,
 			route.Waypoints, s.currentCallsigns())
 	}
@@ -295,10 +338,12 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 	arrive, ok := rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
 		func(ap av.ICAOAirportCode) float32 { return weights[ap] })
 	if !ok {
-		// Arrivals are backed up everywhere, but a controller asked for this
-		// aircraft, so send it somewhere anyway.
+		// Arrivals are backed up at every airport that is VMC, but a
+		// controller asked for this aircraft, so send it to one anyway.
 		arrive, ok = rand.SampleWeightedSeq(s.Rand, slices.Values(util.SortedMapKeys(s.State.DepartureAirports)),
-			func(ap av.ICAOAirportCode) float32 { return s.State.Airports[ap].VFRRateSum() })
+			func(ap av.ICAOAirportCode) float32 {
+				return util.Select(s.airportIsVMC(ap), s.State.Airports[ap].VFRRateSum(), 0)
+			})
 		if !ok {
 			return nil, nil
 		}
@@ -308,10 +353,11 @@ func (s *Sim) sampleVFRDeparture(departureAirport av.ICAOAirportCode) (*Aircraft
 }
 
 // vfrDestinationWeights gives the weight for sampling each airport as the
-// destination of a random VFR departure. Airports where arrivals are already
-// backed up waiting to land weigh nothing, so that we don't keep adding to
-// the pile. Which those are takes a pass over every aircraft in the sim, so
-// they are counted once for all the airports rather than once per airport.
+// destination of a random VFR departure. Airports that are IMC weigh nothing,
+// and neither do those where arrivals are already backed up waiting to land,
+// so that we don't keep adding to the pile. Which those are takes a pass over
+// every aircraft in the sim, so they are counted once for all the airports
+// rather than once per airport.
 func (s *Sim) vfrDestinationWeights() map[av.ICAOAirportCode]float32 {
 	orbiting := make(map[av.ICAOAirportCode]int)
 	for _, ac := range s.Aircraft {
@@ -322,7 +368,7 @@ func (s *Sim) vfrDestinationWeights() map[av.ICAOAirportCode]float32 {
 
 	weights := make(map[av.ICAOAirportCode]float32, len(s.State.DepartureAirports))
 	for ap := range s.State.DepartureAirports {
-		if orbiting[ap] == 0 {
+		if orbiting[ap] == 0 && s.airportIsVMC(ap) {
 			weights[ap] = s.State.Airports[ap].VFRRateSum()
 		}
 	}
@@ -423,7 +469,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	// flown as its author wrote it.
 	checkTerrain := len(routeWps) == 0
 
-	// Cruise above the terrain on the way, as far as the route is known yet.
+	// Cruise above the terrain on the way, as far as the route is known yet,
+	// and under the clouds. A flight with no room between the two doesn't
+	// go, and neither does one the clouds would hold below pattern altitude.
 	var limits CruiseLimits
 	if checkTerrain {
 		planned := []av.Waypoint{{Location: depap.Location}, {Location: mid}, {Location: arrap.Location}}
@@ -431,10 +479,26 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	}
 	ac.CruiseAltitude = ac.FiledCruiseAltitude(perf, limits, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.Rand)
+	cloudTop := s.vfrCloudTop(depart, arrive)
+	if ac.CruiseAltitude > cloudTop {
+		surface := max(depap.Elevation, arrap.Elevation)
+		ac.CruiseAltitude = vfrCruiseUnder(cloudTop, surface,
+			cruiseCourse(depart, arrive, s.State.NmPerLongitude, s.State.MagneticVariation))
+		if ac.CruiseAltitude < max(limits.Floor, surface+vfrPatternAltitude) {
+			return nil, ErrVFRInClouds
+		}
+	}
 
 	var randomizeAltitudeRange bool
 	if len(routeWps) > 0 {
 		wps = append(wps, routeWps...)
+		// The route is held under the clouds where its altitudes allow;
+		// where they don't, the check of the flown route below rejects it.
+		for i := len(wps) - len(routeWps); i < len(wps); i++ {
+			if ar := wps[i].AltitudeRestriction(); ar != nil {
+				ar.Range[1] = max(ar.Range[0], min(ar.Range[1], float32(cloudTop)))
+			}
+		}
 		randomizeAltitudeRange = true
 	} else {
 		randomizeAltitudeRange = false
@@ -477,7 +541,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 				// it. Those waypoints are built when the aircraft gets here,
 				// long after this route was checked, so this is what keeps
 				// them clear.
-				high := float32(min(arrap.Elevation+2000, terminalCeiling))
+				high := float32(min(arrap.Elevation+2000, terminalCeiling, cloudTop))
 				ar = av.MakeRangeAltitudeRestriction(min(float32(arrap.Elevation+1500), high), high)
 			}
 
@@ -525,7 +589,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 	if !ok {
 		return nil, ErrViolatedAirspace
 	}
-	s.setUpAirwork(ac.Nav.Waypoints, checkTerrain, perf)
+	s.setUpAirwork(ac.Nav.Waypoints, checkTerrain, perf, cloudTop)
 
 	// Deep-copy only Nav (not the full Aircraft) to avoid copying
 	// maps, pointers, and fields unused during route validation.
@@ -596,6 +660,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		if s.vfrAirspace.Inside(pos, alt) || s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(pos, alt) {
 			return nil, ErrViolatedAirspace
 		}
+		if alt > cloudTop {
+			return nil, ErrVFRInClouds
+		}
 		if !checkTerrain || simNav.Airwork != nil {
 			// Airwork keeps its own heights above the terrain in its area.
 			continue
@@ -629,12 +696,13 @@ const (
 // in its area, which its maneuvers keep their heights above. If the route
 // was made up here, it also sets the altitudes the airwork may use: from
 // airworkLowest above the terrain up to airworkHighest above it, under the
-// airspace over the area and within the aircraft's ceiling. Without
-// 1,000' of room, the aircraft does no airwork. A scenario's route keeps
-// the altitudes its author gave, held under the airspace over the area as
-// the rest of the route is held under the shelves it passes, though never
-// below 1,000' over the terrain: staying clear of the ground comes first.
-func (s *Sim) setUpAirwork(wps []av.Waypoint, madeUp bool, perf av.AircraftPerformance) {
+// airspace over the area and cloudTop and within the aircraft's ceiling.
+// Without 1,000' of room, the aircraft does no airwork. A scenario's route
+// keeps the altitudes its author gave, held under the airspace over the area
+// and cloudTop as the rest of the route is held under the shelves it passes,
+// though never below 1,000' over the terrain: staying clear of the ground
+// comes first.
+func (s *Sim) setUpAirwork(wps []av.Waypoint, madeUp bool, perf av.AircraftPerformance, cloudTop int) {
 	for i := range wps {
 		wp := &wps[i]
 		if wp.AirworkMinutes() == 0 {
@@ -642,7 +710,7 @@ func (s *Sim) setUpAirwork(wps []av.Waypoint, madeUp bool, perf av.AircraftPerfo
 		}
 		// Maneuvers may stray a mile past the area's radius.
 		area := math.BoundLatLongCircle(wp.Location, float32(wp.AirworkRadius())+1)
-		terrain, ceiling := s.terrain.HighestTerrainIn(area), s.vfrCeiling(area)
+		terrain, ceiling := s.terrain.HighestTerrainIn(area), min(s.vfrCeiling(area), cloudTop)
 		wp.Extra.AirworkTerrain = int16(terrain)
 		if !madeUp {
 			if ar := wp.AltitudeRestriction(); ar != nil {

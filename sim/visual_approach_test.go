@@ -2594,6 +2594,7 @@ func TestAirportVisibilityAirportNotInScenario(t *testing.T) {
 func TestAirportVisibilityFallsBackToNearestMETAR(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
 	setupTestRunway(t, "KJFK", av.Runway{Id: "13L", Heading: 130, Threshold: airportLoc})
+	setupTestRunway(t, "KXYZ", av.Runway{Id: "13", Heading: 130, Threshold: airportLoc})
 	vs := NewVisualScenario(t, airportLoc, "13L", math.Point2LL{0, 5.0 / 60}, 180)
 
 	vs.AC.ArrivalAirport = "KXYZ"

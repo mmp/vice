@@ -63,12 +63,11 @@ type NewSimConfiguration struct {
 	// mu protects all fields written by the fetchMETAR and fetchTrafficPreview
 	// goroutines and the inputs they read back when committing: the cached
 	// METAR + atmospheric state below, the traffic preview counts at the end,
-	// plus c.weatherFilter / c.weatherFilterError / c.StartTime /
-	// c.savedVFRDepartureRateScale, and the c.GroupName / c.ScenarioSpec /
-	// c.ScenarioName fields written by SetScenario. fetchSeq is incremented
-	// each time SetScenario launches a new fetch; a goroutine bails if its
-	// captured seq no longer matches, and the preview does the same with its
-	// pending key.
+	// plus c.weatherFilter / c.weatherFilterError / c.StartTime, and the
+	// c.GroupName / c.ScenarioSpec / c.ScenarioName fields written by
+	// SetScenario. fetchSeq is incremented each time SetScenario launches a
+	// new fetch; a goroutine bails if its captured seq no longer matches, and
+	// the preview does the same with its pending key.
 	mu              util.LoggingMutex
 	fetchSeq        uint64
 	airportMETAR    map[av.ICAOAirportCode][]wx.METAR
@@ -83,8 +82,6 @@ type NewSimConfiguration struct {
 	isTRACON            bool
 
 	availableWXIntervals []util.TimeInterval
-
-	savedVFRDepartureRateScale float32
 
 	// Traffic preview counts from the server, drawn under the traffic source
 	// radio buttons. trafficPreviewKey identifies the settings the counts in
@@ -178,7 +175,6 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	c.ScenarioSpec = spec
 	c.ScenarioName = scenarioName
 	normalizeTrafficSourceConfig(c.ScenarioSpec)
-	c.savedVFRDepartureRateScale = spec.LaunchConfig.VFRDepartureRateScale
 	c.initDefaultWindDirection()
 	c.clearTrafficPreviewLocked()
 	c.fetchSeq++

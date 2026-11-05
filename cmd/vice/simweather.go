@@ -593,14 +593,6 @@ func (c *NewSimConfiguration) weatherStartTime(spec *scenario.Spec, clock airpor
 	}
 	startTime = startTime.Add(rand.Make().DurationRange(0, end.Sub(m.Time)))
 
-	// Set VFR launch rate to zero if selected weather is IMC;
-	// restore the original value if VMC.
-	if !m.IsVMC() {
-		spec.LaunchConfig.VFRDepartureRateScale = 0
-	} else {
-		spec.LaunchConfig.VFRDepartureRateScale = c.savedVFRDepartureRateScale
-	}
-
 	return startTime, true
 }
 

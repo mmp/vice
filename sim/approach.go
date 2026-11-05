@@ -542,27 +542,21 @@ func (s *Sim) checkAirportVisibility(ac *Aircraft) VisualEligibility {
 // checkVisibility determines whether the aircraft can see the point p on
 // the ground near its arrival airport; the weather there governs.
 func (s *Sim) checkVisibility(ac *Aircraft, p math.Point2LL) VisualEligibility {
-	apLoc := ac.ArrivalAirportLocation()
-	apElev := ac.ArrivalAirportElevation()
-
 	// Must be VMC at the arrival airport. The arrival airport may not be one of
 	// the sim's airports (e.g. a satellite field a VFR is headed for), in which
-	// case there's no METAR for it; fall back to the nearest one.
-	metar, ok := s.State.METAR[ac.ArrivalAirport]
-	if !ok {
-		metar, _ = s.nearestMETAR(apLoc)
-	}
+	// case there's no METAR for it; the nearest one stands in.
+	metar, metarElev := s.airportMETAR(ac.ArrivalAirport)
 	if !metar.IsVMC() {
 		return VisualEligibility{Reason: visualEligibilityIMC}
 	}
 
 	// Aircraft above the ceiling is in the clouds → can't see the ground.
-	if ceiling, ok := metar.Ceiling(); ok && ac.Altitude() > apElev+float32(ceiling) {
+	if ceiling, ok := metar.Ceiling(); ok && ac.Altitude() > metarElev+float32(ceiling) {
 		return VisualEligibility{Reason: visualEligibilityIMC}
 	}
 
 	// Must be within effective visual range (METAR visibility + altitude bonus).
-	altAGL := max(0, ac.Altitude()-apElev)
+	altAGL := max(0, ac.Altitude()-ac.ArrivalAirportElevation())
 
 	maxRange := metar.EffectiveVisualRange(altAGL, 0)
 	dist := math.NMDistance2LL(ac.Position(), p)

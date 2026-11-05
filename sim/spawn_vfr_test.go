@@ -12,6 +12,7 @@ import (
 	"github.com/mmp/vice/aviation/db"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/klauspost/compress/zstd"
 )
@@ -525,5 +526,107 @@ func TestVFRTerminalCeiling(t *testing.T) {
 				t.Errorf("got arrival allowed %v, want %v", ok, tc.ceiling > 0)
 			}
 		})
+	}
+}
+
+// seedWeatherAirports adds KAAA at sea level and KBBB at 1,000', 20 nm east
+// of it, to both the airport database and the sim, and KCCC, 5 nm from KBBB,
+// to the database alone, so it has no METAR of its own.
+func seedWeatherAirports(t *testing.T, s *Sim) {
+	t.Helper()
+	nm := func(x float32) math.Point2LL { return math.NM2LL([2]float32{x, 0}, testNmPerLongitude) }
+	airports := []db.Airport{
+		{Id: "KAAA", Location: nm(0), Elevation: 0},
+		{Id: "KBBB", Location: nm(20), Elevation: 1000},
+		{Id: "KCCC", Location: nm(25), Elevation: 500},
+	}
+	for _, ap := range airports {
+		old, ok := db.DB.Airports[ap.Id]
+		db.DB.Airports[ap.Id] = ap
+		t.Cleanup(func() {
+			if ok {
+				db.DB.Airports[ap.Id] = old
+			} else {
+				delete(db.DB.Airports, ap.Id)
+			}
+		})
+	}
+	for _, ap := range airports[:2] {
+		s.State.Airports[ap.Id] = &av.Airport{Location: ap.Location}
+		s.State.Airports[ap.Id].VFR.Randoms.Rate = 10
+		s.State.DepartureAirports[ap.Id] = nil
+	}
+}
+
+func setTestMETAR(s *Sim, icao av.ICAOAirportCode, raw string) {
+	s.State.METAR[icao] = wx.METAR{ICAO: string(icao), Raw: string(icao) + " " + raw}
+}
+
+func TestVFRCloudTop(t *testing.T) {
+	s := NewTestSim(testLogger())
+	s.State.DepartureAirports = map[av.ICAOAirportCode]any{}
+	seedWeatherAirports(t, s)
+
+	setTestMETAR(s, "KAAA", "10SM FEW050")
+	setTestMETAR(s, "KBBB", "10SM SCT040")
+	if top := s.vfrCloudTop("KAAA", "KBBB"); top != maxVFRAltitude {
+		t.Errorf("no ceilings: got %d, want %d", top, maxVFRAltitude)
+	}
+
+	setTestMETAR(s, "KAAA", "10SM BKN030")
+	setTestMETAR(s, "KBBB", "10SM OVC025")
+	if top := s.vfrCloudTop("KAAA", "KBBB"); top != 2500 {
+		t.Errorf("lower ceiling at the departure airport: got %d, want 2500", top)
+	}
+	// KCCC reports nothing, so KBBB, the station nearest it, stands in.
+	if top := s.vfrCloudTop("KBBB", "KCCC"); top != 3000 {
+		t.Errorf("ceiling over the nearest station: got %d, want 3000", top)
+	}
+}
+
+func TestVFRCruiseUnder(t *testing.T) {
+	tests := []struct {
+		name         string
+		top, surface int
+		course       math.MagneticHeading
+		want         int
+	}{
+		{"eastbound, odd thousand plus 500", 7700, 0, 90, 7500},
+		{"westbound, even thousand plus 500", 7700, 0, 270, 6500},
+		{"westbound, already even", 4700, 1000, 270, 4500},
+		{"3,000' above the surface takes any 500' step", 4400, 1000, 90, 4000},
+		{"low clouds", 2900, 0, 90, 2500},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := vfrCruiseUnder(test.top, test.surface, test.course); got != test.want {
+				t.Errorf("got %d, want %d", got, test.want)
+			}
+		})
+	}
+}
+
+// VFR departures wait out IMC at their airport without counting it against
+// the route-finding circuit breaker, and random ones aren't sent to an
+// airport that is IMC.
+func TestVFRDeparturesAvoidIMC(t *testing.T) {
+	s := NewTestSim(testLogger())
+	s.State.DepartureAirports = map[av.ICAOAirportCode]any{}
+	seedWeatherAirports(t, s)
+	depState := &RunwayLaunchState{VFRSpawnRate: 10}
+	s.DepartureState["KAAA"] = map[av.RunwayID]*RunwayLaunchState{"09": depState}
+
+	setTestMETAR(s, "KAAA", "1SM BR OVC004")
+	setTestMETAR(s, "KBBB", "10SM CLR")
+	if ac, err := s.makeNewVFRDeparture("KAAA", "09"); ac != nil || err != nil {
+		t.Errorf("got %v, %v; want nothing launched in IMC", ac, err)
+	}
+	if depState.VFRAttempts != 0 {
+		t.Errorf("IMC counted %d route attempts", depState.VFRAttempts)
+	}
+
+	weights := s.vfrDestinationWeights()
+	if weights["KAAA"] != 0 || weights["KBBB"] == 0 {
+		t.Errorf("destination weights %v: want KAAA, which is IMC, to weigh nothing", weights)
 	}
 }
