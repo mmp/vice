@@ -944,6 +944,10 @@ func (s *Sim) cullDepartures(keep int, d []DepartureAircraft) []DepartureAircraf
 	return d[:keep]
 }
 
+// cullDepartures trims the runway's queues after its rate is lowered, so
+// that the backlog the old rate built up doesn't hold the new one off. A
+// raised rate leaves them alone: deleting aircraft ready to go would only
+// idle the runway until replacements are through the gate.
 func (rls *RunwayLaunchState) cullDepartures(s *Sim) {
 	keep := int(rls.IFRSpawnRate+rls.VFRSpawnRate) / 6
 	rls.Gate = s.cullDepartures(keep, rls.Gate)
@@ -964,20 +968,23 @@ func (rls *RunwayLaunchState) filterDeleted(aircraft map[av.ADSBCallsign]*Aircra
 }
 
 func (rls *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
-	if r == rls.IFRSpawnRate {
-		return
-	}
+	lowered := r < rls.IFRSpawnRate
 	rls.IFRSpawnRate = r
-	rls.cullDepartures(s)
+	if lowered {
+		rls.cullDepartures(s)
+	}
 }
 
 func (rls *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
 	if r == rls.VFRSpawnRate {
 		return
 	}
+	lowered := r < rls.VFRSpawnRate
 	rls.VFRSpawnRate = r
 	rls.NextVFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
-	rls.cullDepartures(s)
+	if lowered {
+		rls.cullDepartures(s)
+	}
 }
 
 func (rls RunwayLaunchState) Dump(airport av.ICAOAirportCode, runway av.RunwayID, now Time) {

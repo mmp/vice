@@ -683,6 +683,43 @@ func TestSetLaunchConfigRejectsUnknownRunways(t *testing.T) {
 	}
 }
 
+// Raising a runway's departure rate once culled its waiting departures to
+// a sixth of the new hourly rate, leaving the runway idle until
+// replacements were through the gate. Only lowering it culls.
+func TestDepartureRateChangeCullsOnlyWhenLowered(t *testing.T) {
+	start := NewSimTime(time.Date(2026, time.July, 14, 14, 0, 0, 0, time.UTC))
+	s := scenarioScheduleTestSim(start)
+	s.generateSchedule(nil)
+	depState := &RunwayLaunchState{IFRSpawnRate: 30, PublishedDepartures: make(map[string]int)}
+	s.DepartureState["KMSP"] = map[av.RunwayID]*RunwayLaunchState{"12L": depState}
+	for _, callsign := range []av.ADSBCallsign{"TST1", "TST2", "TST3", "TST4", "TST5", "TST6", "TST7", "TST8"} {
+		s.Aircraft[callsign] = &Aircraft{ADSBCallsign: callsign}
+		depState.Gate = append(depState.Gate, DepartureAircraft{ADSBCallsign: callsign})
+	}
+
+	setRate := func(r float32) {
+		t.Helper()
+		lc := s.State.LaunchConfig
+		lc.DepartureRates = map[av.ICAOAirportCode]map[av.RunwayID]map[string]float32{"KMSP": {"12L": {"": r}}}
+		if err := s.SetLaunchConfig("", lc, nil); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	setRate(36)
+	if n := len(depState.Gate); n != 8 {
+		t.Errorf("%d departures at the gate after raising the rate, want 8", n)
+	}
+
+	setRate(12)
+	if n := len(depState.Gate); n != 2 {
+		t.Errorf("%d departures at the gate after lowering the rate to 12, want 2", n)
+	}
+	if n := len(s.Aircraft); n != 2 {
+		t.Errorf("%d aircraft after lowering the rate to 12, want 2", n)
+	}
+}
+
 // The waits for tiny rates are longer than a time.Duration holds. On amd64
 // the conversion's overflow came out negative, and schedule generation then
 // stepped backward through time forever.

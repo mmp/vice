@@ -168,6 +168,15 @@ func drawPublishedArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed 
 	return
 }
 
+// rateEntered reports whether the user has finished typing into the rate
+// field just drawn, by pressing Enter or moving elsewhere. A rate goes to
+// the server only then. Sent at every keystroke, typing 60 would first ask
+// for 6, and the sim acts on every rate it is given: a lower departure rate
+// culls the aircraft waiting to depart.
+func rateEntered() bool {
+	return imgui.IsItemDeactivatedAfterEdit()
+}
+
 func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	if lc.TrafficSource != sim.TrafficSourceScenario {
 		return drawPublishedDepartureUI(lc, p)
@@ -231,8 +240,8 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 					r := lc.DepartureRateScale * lc.DepartureRates[airport][runway][category]
 					if imgui.InputFloatV("##adr", &r, 0, 0, "%g", 0) {
 						lc.DepartureRates[airport][runway][category] = math.Clamp(r, 0, sim.MaxLaunchRate) / max(.01, lc.DepartureRateScale)
-						changed = true
 					}
+					changed = rateEntered() || changed
 
 					adrColumn++
 
@@ -347,9 +356,9 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 					imgui.TableNextColumn()
 					r := rate * lc.InboundFlowRateScale
 					if imgui.InputFloatV("##aar-"+string(ap), &r, 0, 0, "%g", 0) {
-						changed = true
 						lc.InboundFlowRates[group][string(ap)] = math.Clamp(r, 0, sim.MaxLaunchRate) / max(.01, lc.InboundFlowRateScale)
 					}
+					changed = rateEntered() || changed
 					aarCol++
 
 				}
@@ -410,9 +419,9 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 			imgui.TableNextColumn()
 			r := lc.InboundFlowRates[group]["overflights"] * lc.InboundFlowRateScale
 			if imgui.InputFloatV("##of-"+group, &r, 0, 0, "%g", 0) {
-				changed = true
 				lc.InboundFlowRates[group]["overflights"] = math.Clamp(r, 0, sim.MaxLaunchRate) / max(.01, lc.InboundFlowRateScale)
 			}
+			changed = rateEntered() || changed
 			ofCol++
 
 			imgui.PopID()
