@@ -68,7 +68,8 @@ type candidateDeparture struct {
 // launch the aircraft type out of, one candidate per exit: published traffic
 // brings its own destination, and the routes say which exit it really leaves
 // through. The scenario's "departures" have no say in the exit; placement
-// takes only their scratchpads, from departureScratchpad.
+// takes only their scratchpads, from departureScratchpad, and for an exit
+// named for the destination their altitudes, from departureAltitudes.
 func (ss *CommonState) compatibleDepartures(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, aircraftType string) []candidateDeparture {
 	var candidates []candidateDeparture
@@ -114,6 +115,17 @@ func departureScratchpad(ap *av.Airport, exitRoutes map[av.ExitID]*av.ExitRoute,
 	return ""
 }
 
+// departureAltitudes returns the altitudes the scenario's "departures" give a
+// flight out the exit to the destination, if any.
+func departureAltitudes(ap *av.Airport, exit av.ExitID, destination av.ICAOAirportCode) util.SingleOrArray[int] {
+	if i := slices.IndexFunc(ap.Departures, func(d av.Departure) bool {
+		return d.Destination == destination && d.Exit.Base() == exit.Base() && len(d.Altitudes) > 0
+	}); i != -1 {
+		return ap.Departures[i].Altitudes
+	}
+	return nil
+}
+
 // departureFit ranks how well a runway's gates suit a published flight, best
 // first: a runway that flies the flight's own route is a better place to launch
 // it from than one that only has a gate pointing the same general way.
@@ -143,6 +155,8 @@ type departureChoice struct {
 // departurePlacement is the departure a published flight flies and how the
 // choice was made, for reporting. Its departure is a copy of the candidate's
 // with departureScratchpad's scratchpad, flying the route the choice found.
+// A departure out an exit named for its destination flies at the altitudes
+// the scenario gives that leg.
 type departurePlacement struct {
 	ap         *av.Airport
 	rwy        *DepartureRunway
@@ -160,7 +174,11 @@ func (ss *CommonState) placement(choice departureChoice, departureAirport, desti
 	c := choice.candidate
 	p := departurePlacement{ap: c.ap, rwy: c.rwy, exitRoutes: c.exitRoutes, dep: *c.dep,
 		cruise: choice.cruise, how: choice.how}
-	p.dep.Scratchpad = departureScratchpad(c.ap, c.exitRoutes, c.dep.Exit, traffic.NormalizeAirportCode(destination))
+	to := traffic.NormalizeAirportCode(destination)
+	p.dep.Scratchpad = departureScratchpad(c.ap, c.exitRoutes, c.dep.Exit, to)
+	if c.dep.Exit.Base() == string(to) {
+		p.dep.Altitudes = departureAltitudes(c.ap, c.dep.Exit, to)
+	}
 	if choice.route != "" {
 		p.cruise.Floor = av.RouteAltitudeFloor(db.Lookups{}, choice.route, departureAirport, destination)
 	}
@@ -251,16 +269,18 @@ func (ss *CommonState) resolvePublishedDeparture(departureAirport av.ICAOAirport
 }
 
 // findPublishedDeparture finds the scenario exit and route a published
-// flight flies. A route the scenario gives for the city pair wins outright;
-// otherwise, if the route database knows how the pair is really flown and one
-// of its routes leaves through a modeled exit, the flight follows that exit
-// and files the real route. Failing both, the flight flies the way its
-// nearest routed neighbor is left for--minus that route's tail, which belongs
-// to the neighbor--since Vero Beach has no route from JFK but Orlando 66nm
-// away leaves over WAVEY. Last of all it goes out the exit lying closest to
-// the direction it is going. If nothing is in the right direction at all the
-// runway doesn't work this flight and errNoScenarioRoute says not to launch it
-// from here.
+// flight flies. An exit named for the destination airport, or a route the
+// scenario gives for the city pair, wins outright; otherwise, if the route
+// database knows how the pair is really flown and one of its routes leaves
+// through a modeled exit, the flight follows that exit and files the real
+// route. Failing both, the flight flies the way its nearest routed neighbor
+// is left for--minus that route's tail, which belongs to the neighbor--since
+// Vero Beach has no route from JFK but Orlando 66nm away leaves over WAVEY.
+// Last of all it goes out the exit lying closest to the direction it is
+// going. If nothing is in the right direction at all the runway doesn't work
+// this flight and errNoScenarioRoute says not to launch it from here; the same
+// goes for a flight between two airports of one TRACON that neither the
+// scenario nor a route takes out through a modeled exit.
 func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCode, runway av.RunwayID,
 	categories []string, destination av.ICAOAirportCode, aircraftType string,
 	routedDestinations map[av.ICAOAirportCode][]av.ICAOAirportCode) (departureChoice, error) {
@@ -271,6 +291,15 @@ func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCod
 	if len(candidates) == 0 {
 		return departureChoice{}, fmt.Errorf("no compatible departure route for runway %s and a %s",
 			runway, aircraftType)
+	}
+
+	// An exit named for the destination is how the scenario flies a flight
+	// that never leaves its airspace: the climb-out off the runway and then
+	// direct to the airport, where the controller clears it for an approach.
+	if i := slices.IndexFunc(candidates, func(c candidateDeparture) bool {
+		return c.dep.Exit.Base() == string(destination)
+	}); i != -1 {
+		return departureChoice{candidate: candidates[i], fit: fitScenarioRoute, how: "destination exit"}, nil
 	}
 
 	scenarioRoutes := func(to av.ICAOAirportCode) []string {
@@ -308,6 +337,15 @@ func (ss *CommonState) findPublishedDeparture(departureAirport av.ICAOAirportCod
 				fit:    fitRealRoute,
 				how:    r.how + " via " + c.dep.Exit.Base()}, nil
 		}
+	}
+
+	// A flight to another of the TRACON's airports that no route takes out
+	// through a modeled exit never leaves the TRACON: a neighbor's route or
+	// the nearest gate would send it out over the boundary, bound for an
+	// airport behind it.
+	if tracon, ok := sharedTRACON(departureAirport, destination); ok {
+		return departureChoice{route: filed}, fmt.Errorf("%w: %s and %s are both %s airports",
+			errNoScenarioRoute, departureAirport, destination, tracon)
 	}
 
 	// Either the pair has no route or every route it has leaves through an

@@ -227,6 +227,38 @@ func TestPlaceArrivalUsesTheGreatCircleGate(t *testing.T) {
 	}
 }
 
+// A flight from another airport of the same TRACON comes in only on a route:
+// placed by direction it would spawn out past the boundary, a few miles from
+// where it took off. That holds for a historical scenario too, which has only
+// its own routes to go on.
+func TestPlaceArrivalWithinTheTRACON(t *testing.T) {
+	oldDB := db.DB
+	db.DB = &db.StaticDatabase{Airports: map[av.ICAOAirportCode]db.Airport{
+		"KTST": {Id: "KTST", Location: math.Point2LL{-93.2, 44.9}, TRACON: "T75"},
+		"KWST": {Id: "KWST", Location: math.Point2LL{-93.6, 44.9}, TRACON: "T75"}, // west of KTST
+	}}
+	t.Cleanup(func() { db.DB = oldDB })
+
+	arrivals := []av.Arrival{
+		{Airports: []av.ICAOAirportCode{"KTST"}, Description: "west gate",
+			Waypoints: av.WaypointArray{{Fix: "WESTG", Location: math.Point2LL{-95.0, 44.6}}}},
+	}
+
+	for _, historical := range []bool{false, true} {
+		s := placeArrivalTestSim("KTST", arrivals, nil)
+		s.State.HistoricalScenario = historical
+		if _, err := s.State.placeArrival("KTST", "KWST", "B738", routedPairs{}); !errors.Is(err, errNoPlausibleArrival) {
+			t.Errorf("historical %v: placeArrival = %v, expected the flight dropped", historical, err)
+		}
+
+		s.State.Airports = map[av.ICAOAirportCode]*av.Airport{"KTST": {TrafficRoutes: av.TrafficRoutes{
+			Arrivals: map[av.ICAOAirportCode]av.TrafficRouteSet{"KWST": {{Route: "WESTG"}}}}}}
+		if p, err := s.State.placeArrival("KTST", "KWST", "B738", routedPairs{}); err != nil || p.how != "scenario route" {
+			t.Errorf("historical %v: scenario route placed %+v, %v", historical, p, err)
+		}
+	}
+}
+
 // A published arrival files within the band the pair's recent filings were
 // seen at, and no lower than the STAR it comes in on requires.
 func TestPlaceArrivalCarriesCruiseLimits(t *testing.T) {

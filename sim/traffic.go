@@ -541,6 +541,17 @@ func substituteAirports(base, real av.ICAOAirportCode, pool []av.ICAOAirportCode
 	return util.MapSlice(candidates, func(c candidate) av.ICAOAirportCode { return c.id })
 }
 
+// sharedTRACON returns the TRACON that provides approach control at both
+// airports, if one does.
+func sharedTRACON(a, b av.ICAOAirportCode) (string, bool) {
+	ap, ok := db.DB.Airports[a]
+	if !ok || ap.TRACON == "" {
+		return "", false
+	}
+	bp, ok := db.DB.Airports[b]
+	return ap.TRACON, ok && bp.TRACON == ap.TRACON
+}
+
 // routedPairs indexes the route databases both ways, so that finding a
 // stand-in for a city pair they don't cover doesn't walk the whole thing per
 // flight.

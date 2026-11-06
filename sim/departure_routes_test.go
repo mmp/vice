@@ -597,6 +597,67 @@ func TestResolvePublishedDepartureRefusesABorrowedWrongWayGate(t *testing.T) {
 	}
 }
 
+// A flight to another airport of the same TRACON leaves only on a route out
+// through a modeled exit, since otherwise it never leaves the TRACON at all.
+// Without one it is dropped, unless the scenario lands where it is going.
+func TestResolvePublishedDepartureWithinTheTRACON(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	for _, code := range []av.ICAOAirportCode{"KORG", "KTGT"} {
+		ap := db.DB.Airports[code]
+		ap.TRACON = "T75"
+		db.DB.Airports[code] = ap
+	}
+	s := publishedDepartureSim()
+	resolve := func(destination av.ICAOAirportCode) (departurePlacement, error) {
+		return s.State.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, destination, "B738", nil)
+	}
+
+	if _, err := resolve("KTGT"); !errors.Is(err, errNoScenarioRoute) {
+		t.Errorf("no route: err = %v, want errNoScenarioRoute", err)
+	}
+	if p, err := resolve("KNOR"); err != nil || p.dep.Exit != "NORTH" {
+		t.Errorf("to another TRACON's airport: exit %q, err %v, want the nearest gate NORTH", p.dep.Exit, err)
+	}
+
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{{Route: "KORG WSSST J22 KTGT", Type: "H"}})
+	if _, err := resolve("KTGT"); !errors.Is(err, errNoScenarioRoute) {
+		t.Errorf("route through an unmodeled exit: err = %v, want errNoScenarioRoute", err)
+	}
+
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{{Route: "KORG NORTH J111 KTGT", Type: "H"}})
+	if p, err := resolve("KTGT"); err != nil || p.dep.Exit != "NORTH" {
+		t.Errorf("route through a modeled exit: exit %q, err %v, want NORTH", p.dep.Exit, err)
+	}
+}
+
+// An exit named for the destination airport is how the scenario flies the
+// city pair, so it wins over any route; the flight flies the climb-out and
+// then direct to the airport, at the altitude the scenario's departures give
+// the leg.
+func TestResolvePublishedDepartureTakesTheDestinationExit(t *testing.T) {
+	seedTestAirports(t)
+	seedTestExits(t)
+	seedTestRoutes(t, "KTGT", []db.AirportPairRoute{{Route: "KORG NORTH J111 KTGT", Type: "H"}})
+	s := publishedDepartureSim()
+	ap := s.State.Airports["KORG"]
+	ap.ExitCategories["KTGT"] = "jet"
+	ap.DepartureRoutes["30L"]["KTGT"] = av.ExitRoutes{{}}
+	ap.Departures = []av.Departure{{Destination: "KTGT", Exit: "KTGT", Altitudes: []int{3000}, Scratchpad: "TGT"}}
+
+	p, err := s.State.resolvePublishedDeparture("KORG", "30L", []string{"jet"}, "KTGT", "B738", nil)
+	if err != nil {
+		t.Fatalf("resolvePublishedDeparture: %v", err)
+	}
+	if p.dep.Exit != "KTGT" || p.dep.WaypointsString != "KTGT" {
+		t.Errorf("exit %q route %q, want the KTGT exit flown direct", p.dep.Exit, p.dep.WaypointsString)
+	}
+	if !slices.Equal(p.dep.Altitudes, util.SingleOrArray[int]{3000}) || p.dep.Scratchpad != "TGT" {
+		t.Errorf("altitudes %v scratchpad %q, want the departures entry's 3000 and TGT",
+			p.dep.Altitudes, p.dep.Scratchpad)
+	}
+}
+
 // The route database wins over direction when it knows the city pair, and the
 // route's waypoints are located so the aircraft actually flies them.
 func TestResolvePublishedDepartureLocatesRouteWaypoints(t *testing.T) {

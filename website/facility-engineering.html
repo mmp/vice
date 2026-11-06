@@ -4954,6 +4954,41 @@
                 their "exit" specifier. 
               </p>
               <p>
+                An exit may also be named for another of the facility's airports, for flights that
+                never leave the facility's airspace. The route gives the climb-out from the runway, and
+                the departure flies direct to the airport from there, where the controller clears it for
+                an approach. Here is an excerpt from KLEE in f11.json, whose departures to KSFB are
+                flown this way:
+              </p>
+              <pre>
+"departure_routes": {
+  "13": {
+    "RDSOX,VALKA,OSPRY,WORMS,KSFB,KISM,KMLB,VIZTA,FSHUN,DDANY,DADES,KORL": {
+      "cleared_altitude": 2000,
+      "waypoints": "KLEE-31/h130"
+    }
+  },
+  ...
+},
+"departures": [
+  {
+    "airlines": [ ... ],
+    "destination": "KSFB",
+    "exit": "KSFB",
+    "waypoints": "KSFB",
+    "altitude": 3000,
+    "scratchpad": "SFB"
+  },
+  ...
+              </pre>
+              <p>
+                Timetable and historical flights to the airport take the exit too, ahead of any route
+                for the city pair, and fly at the altitude and with the scratchpad of the "departures"
+                entry to that airport out that exit. Without such an exit, a real-world flight to another
+                airport of the same TRACON is usually not flown at all; see
+                <a href="#fe-route-matching">Route Matching</a>.
+              </p>
+              <p>
                 An exit may also be given an array of routes rather than a single one, where each route's
                 "aircraft" says which aircraft fly it. Departures take the first route in the array that
                 their aircraft type is allowed on:
@@ -5289,7 +5324,8 @@
                     <td>Number or array of numbers</td>
                     <td>(<i>Optional</i>) The final altitude for the flight. If multiple altitudes are given, one is
                       chosen at random. If none are chosen, a reasonable final altitude is chosen based on the distance
-                      between the departure and arrival airports and the aircraft's capabilities.
+                      between the departure and arrival airports and the aircraft's capabilities. Timetable and
+                      historical flights out an exit named for their destination airport use it too.
                     </td>
                   </tr>
                 </tbody>
@@ -5934,7 +5970,19 @@
 
               <p>For departures, the selected route should have one of the facility's exit
                 fixes. In turn, a suitable initial departure specified by "departure_routes"
-                is found for the aircraft based on the exit and the runways in use.</p>
+                is found for the aircraft based on the exit and the runways in use.
+                An exit named for the flight's destination airport takes priority over all of
+                the routes above; see <a href="#fe-departures">Departures</a>.</p>
+
+              <p>A flight between two airports of the same TRACON is handled differently. The
+                FAA's facility data gives the TRACON that provides approach control at each
+                airport, and a flight between two of them that no route takes through one of the
+                scenario's exits or arrivals never leaves the TRACON. Neither the substitute
+                airport's route nor the closest exit or arrival in its direction is used for it,
+                since that would send it out over the boundary toward an airport a few miles
+                behind it. Such a flight is not included in the sim unless the departure airport
+                has an exit named for its destination. A flight that does have a route, such as
+                one handed from one area of a large TRACON to another, is flown as usual.</p>
 
               <p>For arrivals, determining which arrival from "inbound_flows" for an aircraft to use
                 is a bit more complicated. The following rules are applied in this order:
@@ -5956,7 +6004,9 @@
                 <li>If there is no route at all for the aircraft (primarily obscure foreign airports),
                   <i>vice</i> falls back to considering the great-circle route between the origin
                   airport and the destination airport, selecting the arrival whose start point
-                  is closest to it.</li>
+                  is closest to it. This is not done for an origin in the same TRACON as the
+                  destination; that flight is flown as a departure from its origin if the scenario
+                  launches departures there, and otherwise not at all.</li>
               </ul>
             </section><!--//section-->
 

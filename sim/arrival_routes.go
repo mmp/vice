@@ -149,24 +149,40 @@ func (ss *CommonState) placeArrivalAmong(candidates []candidateArrival, arrivalA
 		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, nil),
 			"scenario route"), nil
 	}
-	// Today's routes cannot identify which retired procedure a historical flight
-	// used. Without an explicit scenario route, approximate its gate by direction.
+	// Today's routes cannot identify which retired procedure a historical
+	// flight used, so a historical scenario goes by its own routes alone.
+	if !ss.HistoricalScenario {
+		if scraped, faa := scrapedRoutes(origin), faaRoutes(origin); len(scraped)+len(faa) > 0 {
+			names := scrapedNames(scraped)
+			c, route, err := matchArrivalRoutes(candidates, aircraftType,
+				slices.Concat(names, faa), arrivalAirport, origin, false /* historical */)
+			if err != nil {
+				return arrivalPlacement{filedRoute: route}, err
+			}
+			how := util.Select(slices.Contains(names, route), "scraped route", "faa route")
+			return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, scraped),
+				how), nil
+		}
+	}
+
+	// A flight from another of the TRACON's airports that no route brings in
+	// on a modeled arrival never leaves the TRACON: placed by direction, it
+	// would spawn out past the boundary, a few miles from where it took off.
+	// A flight whose origin the scenario launches departures from is flown
+	// as a departure instead: dropReturnedLegs has already removed its
+	// arrival record, so it never gets here.
+	if tracon, ok := sharedTRACON(origin, arrivalAirport); ok {
+		return arrivalPlacement{}, fmt.Errorf("%w: %s and %s are both %s airports",
+			errNoPlausibleArrival, origin, arrivalAirport, tracon)
+	}
+
+	// Without an explicit scenario route, a historical flight's gate is
+	// approximated by direction.
 	if ss.HistoricalScenario {
 		if c, ok := arrivalNearestArc(suitableArrivals(candidates, aircraftType), arrivalAirport, origin); ok {
 			return c.placement("", "", CruiseLimits{}, "historical great-circle gate"), nil
 		}
 		return arrivalPlacement{}, errNoPlausibleArrival
-	}
-	if scraped, faa := scrapedRoutes(origin), faaRoutes(origin); len(scraped)+len(faa) > 0 {
-		names := scrapedNames(scraped)
-		c, route, err := matchArrivalRoutes(candidates, aircraftType,
-			slices.Concat(names, faa), arrivalAirport, origin, false /* historical */)
-		if err != nil {
-			return arrivalPlacement{filedRoute: route}, err
-		}
-		how := util.Select(slices.Contains(names, route), "scraped route", "faa route")
-		return c.placement(route, "", arrivalCruiseLimits(route, origin, arrivalAirport, scraped),
-			how), nil
 	}
 
 	// Neither knows this origin, so fly the flight the way the nearest airport
