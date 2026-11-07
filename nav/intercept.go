@@ -288,8 +288,9 @@ func pathCrossing(origin, dir, p0, p1 [2]float32) ([2]float32, float32, bool) {
 // is close enough to be turned back onto it, as after an overshoot.
 // Otherwise the first leg the path meets is taken. The path meets a course
 // where it crosses it going the course's way, or where the turn passes
-// through the course's heading; a visual also has to meet it far enough out
-// for a stabilized final. It reports false if the heading meets no course.
+// through the course's heading if the turn reaches the course; a visual also
+// has to meet it far enough out for a stabilized final. It reports false if
+// the heading meets no course.
 func (nav *Nav) selectInterceptCourse(wxs wx.Sample) (InterceptCourse, bool) {
 	hdg, turn, ok := nav.headingToJoinFrom()
 	if !ok {
@@ -305,8 +306,9 @@ func (nav *Nav) selectInterceptCourse(wxs wx.Sample) (InterceptCourse, bool) {
 	origin := math.LL2NM(fs.Position, nmPerLong)
 	flown := float32(0)
 	turning := math.HeadingDifference(fs.Heading, hdg) > 5
+	var tp turnPath
 	if turning {
-		tp := nav.predictTurnPath(hdg, turn, wxs)
+		tp = nav.predictTurnPath(hdg, turn, wxs)
 		origin = tp.position(tp.dur)
 		flown = tp.tasNMps * tp.dur
 	}
@@ -330,10 +332,11 @@ func (nav *Nav) selectInterceptCourse(wxs wx.Sample) (InterceptCourse, bool) {
 		var at [2]float32
 		var dist float32
 		met := false
-		if turning && math.HeadingInTurnArc(fs.Heading, courseMag, hdg, math.TurnDirection(turn)) {
-			// The turn passes through the course's heading, so the
-			// aircraft may roll out on the course partway through it,
-			// about abeam of where it is now.
+		if turning && math.HeadingInTurnArc(fs.Heading, courseMag, hdg, math.TurnDirection(turn)) &&
+			tp.reachesLine(p0, p1) {
+			// The turn passes through the course's heading and reaches
+			// the course, so the aircraft may roll out on the course
+			// partway through it, about abeam of where it is now.
 			seg := math.Sub2f(p1, p0)
 			if t := math.Dot(math.Sub2f(origin, p0), seg) / math.Dot(seg, seg); t >= 0 && t <= 1 {
 				at = math.Add2f(p0, math.Scale2f(seg, t))

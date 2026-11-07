@@ -84,6 +84,24 @@ func TestInterceptCourseFinalOverFeeder(t *testing.T) {
 	}
 }
 
+// TestInterceptCourseTurnThroughCourseFarOff checks that a turn passing
+// through the final's heading 7 nm from the final doesn't count as rolling
+// out on it there: the aircraft joins the final where its heading after
+// the turn meets it.
+func TestInterceptCourseTurnThroughCourseFarOff(t *testing.T) {
+	n := interceptTestNav([2]float32{7, -18}, 330, twoWayVisualApproach())
+	n.FlightState.Heading = 60
+	n.Perf.Category.CWT = "F"
+
+	course, ok := n.selectInterceptCourse(stdWx(n))
+	if !ok || !course.Final {
+		t.Fatalf("course = %+v, found %v; want the final", course, ok)
+	}
+	if join := math.LL2NM(course.Join, 60); join[1] < -8 {
+		t.Errorf("joins %.1f nm out; want where heading 330 meets the final, about 4 nm out", -join[1])
+	}
+}
+
 // TestInterceptCourseFeederWhenFinalTooSteep checks that a heading that
 // would meet the final at 60 degrees joins the feeder it crosses at 33
 // degrees instead.
@@ -2012,10 +2030,10 @@ func TestClearedVisualAlongILSAfterVectorArmsIntercept(t *testing.T) {
 		t.Fatalf("setup: InterceptState = %d, want OnApproachCourse", f.nav.Approach.InterceptState)
 	}
 
-	// Vector off — equivalent to the controller saying "right 350" for
-	// sequencing. assignHeading resets Cleared/PassedApproachFix but
+	// Vector off for sequencing, onto a heading that meets one of the
+	// reference's legs. assignHeading resets Cleared/PassedApproachFix but
 	// leaves the prior OnApproachCourse intact.
-	f.AssignHeading(180, av.TurnClosest)
+	f.AssignHeading(260, av.TurnClosest)
 	if _, onHeading := f.nav.AssignedHeading(); !onHeading {
 		t.Fatal("setup: AssignHeading did not register an assigned heading")
 	}
@@ -2057,9 +2075,10 @@ func TestClearedVisualAlongILSAfterAtFixInterceptArmsIntercept(t *testing.T) {
 		t.Fatalf("AtFixIntercept returned unable: %+v", intent)
 	}
 
-	// Vector off before reaching ROSLY (so AtFixInterceptFix is still
-	// armed for ROSLY, but a clearance arrives first).
-	f.AssignHeading(180, av.TurnClosest)
+	// Vector off before reaching ROSLY, onto a heading that meets one of
+	// the reference's legs (so AtFixInterceptFix is still armed for ROSLY,
+	// but a clearance arrives first).
+	f.AssignHeading(260, av.TurnClosest)
 
 	if cvaIntent := f.ClearedVisualApproach("22L"); cvaIntent == nil {
 		t.Fatal("ClearedVisualApproach returned nil intent")

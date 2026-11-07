@@ -208,6 +208,22 @@ func (tp *turnPath) position(t float32) [2]float32 {
 	return math.Add2f(p, math.Scale2f(tp.wind, t))
 }
 
+// reachesLine reports whether the path comes within the capture tolerance
+// of the line through p0 and p1, or crosses it, by the end of the turn.
+func (tp *turnPath) reachesLine(p0, p1 [2]float32) bool {
+	d0 := math.SignedPointLineDistance(tp.position(0), p0, p1)
+	for t := float32(0); ; t++ {
+		t = min(t, tp.dur)
+		d := math.SignedPointLineDistance(tp.position(t), p0, p1)
+		if math.Abs(d) < courseCaptureTolerance || math.Sign(d) != math.Sign(d0) {
+			return true
+		}
+		if t == tp.dur {
+			return false
+		}
+	}
+}
+
 // heading returns the predicted true heading t seconds into the turn, in
 // degrees; it may be outside [0,360).
 func (tp *turnPath) heading(t float32) float32 {
