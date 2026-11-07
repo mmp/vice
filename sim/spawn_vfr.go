@@ -805,7 +805,7 @@ func (s *Sim) vfrArrivalAirspace(ap db.Airport) []*av.AirspaceVolume {
 	}
 
 	entries := [][]av.Waypoint{
-		generatePatternEntryWaypoints(rwy, opp, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
+		generatePatternEntryWaypoints(rwy, opp, ap.Elevation, maxVFRAltitude, 1, nmPerLongitude, magneticVariation),
 		generateStraightInWaypoints(rwy, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation),
 	}
 	for _, wps := range entries {
@@ -825,7 +825,7 @@ func (s *Sim) vfrArrivalAirspace(ap db.Airport) []*av.AirspaceVolume {
 		}
 	}
 	for _, wps := range append(entries,
-		generatePatternLap(rwy, opp, ap.Elevation, maxVFRAltitude, nmPerLongitude, magneticVariation)) {
+		generatePatternLap(rwy, opp, ap.Elevation, maxVFRAltitude, 1, nmPerLongitude, magneticVariation)) {
 		for i := 1; i < len(wps); i++ {
 			include(s.vfrAirspace.Crossed(wps[i-1].Location, wps[i].Location))
 		}

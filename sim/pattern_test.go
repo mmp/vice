@@ -11,7 +11,10 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/aviation/db"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	vrand "github.com/mmp/vice/rand"
+	"github.com/mmp/vice/wx"
 )
 
 var patternTestTime = NewSimTime(time.Date(2026, time.August, 4, 15, 0, 0, 0, time.UTC))
@@ -172,5 +175,96 @@ func TestVFRRunwayIsLocked(t *testing.T) {
 	}
 	if got, ok := s.State.VFRRunways["KANE"]; !ok || got.Id != rwy.Id {
 		t.Errorf("KANE VFR runway %s wasn't locked; have %q", rwy.Id, got.Id)
+	}
+}
+
+// flyPatternEntry flies an aircraft of the given type from where VFR
+// arrivals hold at KBUU into the 45-degree entry for runway 29 drawn at the
+// given scale. It reports whether the aircraft reached the runway in 30
+// minutes and how far it turned after the last fix before it.
+func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed bool, finalTurn float32) {
+	t.Helper()
+
+	const airport = "KBUU"
+	rwy, ok := av.LookupRunway(db.Lookups{}, airport, "29")
+	if !ok {
+		t.Fatal("no runway KBUU/29")
+	}
+	opp, ok := av.LookupOppositeRunway(db.Lookups{}, airport, "29")
+	if !ok {
+		t.Fatal("no runway opposite KBUU/29")
+	}
+	ap := db.DB.Airports[airport]
+	nmPerLongitude := math.NMPerLongitudeAt(ap.Location)
+	magneticVariation, err := db.DB.MagneticGrid.Lookup(ap.Location)
+	if err != nil {
+		t.Fatal(err)
+	}
+	perf, ok := db.DB.AircraftPerformance[aircraftType]
+	if !ok {
+		t.Fatalf("unknown aircraft type %q", aircraftType)
+	}
+
+	wps := generatePatternEntryWaypoints(rwy, opp, ap.Elevation, ap.Elevation+3000, scale, nmPerLongitude,
+		magneticVariation)
+	rightHdg := math.OffsetHeading(math.MagneticToTrue(rwy.Heading, magneticVariation), 90)
+	start := math.Offset2LL(rwy.Threshold, rightHdg, vfrOrbitOffset, nmPerLongitude)
+	speed := max(patternSpeed, perf.MinimumSpeed())
+	altitude := float32(ap.Elevation + 1500)
+	n := nav.Nav{
+		Instructions: nav.Instructions{
+			FixAssignments: make(map[string]nav.FixAssignment),
+			Waypoints:      wps,
+		},
+		Perf:          perf,
+		FinalAltitude: altitude,
+		Delays:        nav.BriefPilotDelays,
+		Rand:          vrand.Make(),
+		FlightState: nav.FlightState{
+			MagneticVariation:       magneticVariation,
+			NmPerLongitude:          nmPerLongitude,
+			Position:                start,
+			Heading:                 math.TrueToMagnetic(math.Heading2LL(start, wps[0].Location, nmPerLongitude), magneticVariation),
+			Altitude:                altitude,
+			IAS:                     speed,
+			GS:                      speed,
+			ArrivalAirport:          av.Waypoint{Fix: airport, Location: ap.Location},
+			ArrivalAirportLocation:  ap.Location,
+			ArrivalAirportElevation: float32(ap.Elevation),
+		},
+	}
+
+	simTime := nav.NewTime(patternTestTime.Time())
+	for range 1800 {
+		prev := n.FlightState.Heading
+		wxs := wx.MakeStandardSampleForAltitude(n.FlightState.Altitude)
+		result := n.UpdateWithWeather("TEST", wxs, nil, av.FlightRulesVFR, simTime, false)
+		simTime = simTime.Add(time.Second)
+		if n.Waypoints[0].Fix == "_pat_threshold" {
+			finalTurn += math.HeadingDifference(prev, n.FlightState.Heading)
+		}
+		if result.PassedWaypoint != nil && result.PassedWaypoint.Fix == "_pat_threshold" {
+			return true, finalTurn
+		}
+	}
+	return false, finalTurn
+}
+
+// TestPatternEntryReachesRunway checks that aircraft from ones that fly the
+// pattern at patternSpeed to jets that can't slow below 120 knots fly the
+// 45-degree entry to the runway. Drawn at patternSpeed's size, the pattern
+// put the threshold inside a jet's turn and the jet circled it.
+func TestPatternEntryReachesRunway(t *testing.T) {
+	for _, aircraftType := range []string{"C172", "C208", "C550", "C510", "E135", "E55P", "C750"} {
+		t.Run(aircraftType, func(t *testing.T) {
+			scale := patternScale(db.DB.AircraftPerformance[aircraftType])
+			landed, finalTurn := flyPatternEntry(t, aircraftType, scale)
+			if !landed {
+				t.Fatalf("never reached the runway; turned %.0f degrees after the final fix", finalTurn)
+			}
+			if finalTurn >= 360 {
+				t.Errorf("circled the runway, turning %.0f degrees after the final fix", finalTurn)
+			}
+		})
 	}
 }

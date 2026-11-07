@@ -68,6 +68,13 @@ type FleetAircraft struct {
 	Count int
 }
 
+// MinimumSpeed returns the slowest indicated airspeed the aircraft will fly.
+// The performance database sometimes has a minimum speed above the landing
+// speed; the landing speed wins so the aircraft can slow to it on final.
+func (ap AircraftPerformance) MinimumSpeed() float32 {
+	return min(ap.Speed.Min, ap.Speed.Landing)
+}
+
 // baseApproachSpeed returns a reasonable final approach speed for this
 // aircraft type. If landing speed is available, a small buffer above that
 // speed is used. Otherwise V2 or a default is returned.

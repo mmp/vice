@@ -56,13 +56,6 @@ func (nav *Nav) maxIAS(temp av.Temperature) float32 {
 	return ias
 }
 
-// minIAS returns the slowest indicated airspeed the aircraft will fly.
-// The performance database sometimes has a minimum speed above the landing
-// speed; the landing speed wins so the aircraft can slow to it on final.
-func (nav *Nav) minIAS() float32 {
-	return min(nav.Perf.Speed.Min, nav.Perf.Speed.Landing)
-}
-
 // machTransition returns whether the aircraft's speed may be assigned as
 // a Mach number: 7110.65 5-7-2 allows it for turbojets at or above FL240.
 func (nav *Nav) machTransition() bool {
@@ -233,7 +226,7 @@ func (nav *Nav) updateAirspeed(callsign string, targetAltitude float32, geometri
 	}
 
 	// Stay within the aircraft's capabilities
-	ias := math.Clamp(target.ias, nav.minIAS(), nav.maxIAS(wxs.Temperature()))
+	ias := math.Clamp(target.ias, nav.Perf.MinimumSpeed(), nav.maxIAS(wxs.Temperature()))
 
 	// An aircraft descending to below 10,000 feet at more than 250 knots
 	// has to be at 250 to descend through it and is held there until it has
