@@ -1238,3 +1238,36 @@ func TestRadialTrackFromBehindNavaid(t *testing.T) {
 		t.Errorf("aircraft came no closer than %.1fnm to WAVEY; it should have gone there to join the radial", closest)
 	}
 }
+
+// TestUnreachableLastFixIsMissedNotCircled verifies that an aircraft whose
+// last fix is inside the circle it turns on gives the fix up once it is
+// abeam, rather than circling it.
+func TestUnreachableLastFixIsMissedNotCircled(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  10000,
+		InitialSpeed:     250,
+	})
+	fs := &f.nav.FlightState
+	fs.Heading = 360
+	bearing := math.MagneticToTrue(math.OffsetHeading(fs.Heading, 45), fs.MagneticVariation)
+	f.nav.Waypoints = []av.Waypoint{{Fix: "CLOSE", Location: math.Offset2LL(fs.Position, bearing, 1.5, fs.NmPerLongitude)}}
+
+	var turned float32
+	for range 300 {
+		prev := fs.Heading
+		f.Step(1)
+		turned += math.HeadingDifference(prev, fs.Heading)
+		// Passing its last fix leaves the aircraft holding its heading.
+		if f.nav.Heading.Assigned != nil {
+			if turned > 180 {
+				t.Errorf("turned %.0f degrees before giving up on CLOSE", turned)
+			}
+			return
+		}
+	}
+	t.Fatalf("still flying toward CLOSE after 300 seconds, having turned %.0f degrees", turned)
+}

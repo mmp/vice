@@ -6288,7 +6288,7 @@
           "speed_restriction": 250,
           "assigned_altitude": 5000,
           "initial_controller": "1B",
-          "waypoints": "N036.23.43.841,W095.21.31.799 N036.25.30.258,W095.25.41.711/flyover N036.25.09.397,W095.26.21.179/h100/ho",
+          "waypoints": "N036.23.43.841,W095.21.31.799 N036.25.30.258,W095.25.41.711 N036.25.09.397,W095.26.21.179/h100/ho",
           "expect_approach": {
             "KAAC": "I8R"
           },

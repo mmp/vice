@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
@@ -318,8 +319,59 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 		if wp.Radius() > 0 && wp.Shift() > 0 {
 			e.ErrorString("Can't specify both /radius and /shift at the same fix")
 		}
+		if wp.FlyOver() {
+			wa.checkTurnAfterFlyOver(i, e)
+		}
 
 		e.Pop()
+	}
+}
+
+// flyOverCheckSpeed is the speed, in knots, that checkTurnAfterFlyOver
+// assumes. Slower than nearly any aircraft flies a route, it makes the turn
+// radius small, so a turn that's too tight for it is too tight for all of
+// them.
+const flyOverCheckSpeed = 180
+
+// checkTurnAfterFlyOver reports a /flyover fix at wa[i] followed by a fix the
+// aircraft can't turn to after flying over it: one inside the circle a
+// standard rate turn toward it flies at flyOverCheckSpeed. Procedure turns,
+// headings, and DME arcs leave the fix some other way than toward the next
+// fix, so they aren't checked.
+func (wa WaypointArray) checkTurnAfterFlyOver(i int, e *util.ErrorLogger) {
+	j := wa.nextChartedFix(i)
+	if i == 0 || j == len(wa) || wa[i].ProcedureTurn() != nil || wa[j].Arc() != nil {
+		return
+	}
+	if _, ok := wa[i].HeadingAction(); ok {
+		return
+	}
+	prev, wp, next := wa[i-1].Location, wa[i].Location, wa[j].Location
+	if prev.IsZero() || wp.IsZero() || next.IsZero() {
+		return
+	}
+
+	nmPerLongitude := math.NMPerLongitudeAt(wp)
+	inbound := math.Heading2LL(prev, wp, nmPerLongitude)
+	turn := math.HeadingSignedTurn(inbound, math.Heading2LL(wp, next, nmPerLongitude))
+	switch wa[j].Turn() {
+	case TurnRight:
+		turn = util.Select(turn < 0, turn+360, turn)
+	case TurnLeft:
+		turn = util.Select(turn > 0, turn-360, turn)
+	}
+	if math.Abs(turn) >= 180 {
+		return
+	}
+
+	// A fix at distance d and turn angle θ is inside the circle of radius r
+	// the turn flies if d < 2 r sin θ. A standard rate turn is 3 degrees a
+	// second.
+	r := float32(flyOverCheckSpeed) / 3600 / math.Radians(float32(3))
+	dist := math.NMDistance2LL(wp, next)
+	if need := 2 * r * math.Sin(math.Radians(math.Abs(turn))); dist < need {
+		e.ErrorString("the %.0f degree turn to %s %.2fnm after this /flyover fix needs %.2fnm even at %d knots",
+			math.Abs(turn), wa[j].Fix, dist, need, flyOverCheckSpeed)
 	}
 }
 

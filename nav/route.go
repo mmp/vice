@@ -380,13 +380,41 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, simTime Time) Up
 	} else {
 		passed = nav.shouldTurnForOutbound(wp.Location, hdg, turn, track, wxs)
 	}
-	if !passed {
+	if !passed && !nav.missedUnreachableFix(wp, wxs) {
 		return UpdateResult{}
 	}
 
 	nav.Heading.Turn = nil
 	NavLog(callsign, simTime, NavLogWaypoint, "passed fix=%s hdg=%.0f->%.0f alt=%.0f", wp.Fix, nav.FlightState.Heading, hdg, nav.FlightState.Altitude)
 	return nav.passWaypoint(callsign, wp, simTime)
+}
+
+// missedUnreachableFix reports whether wp, a fix the aircraft must reach
+// (one it flies over or the route's last), is one it has turned toward as
+// far as it can and missed: the fix is abeam or behind and inside the circle
+// the aircraft flies turning toward it, so only a loop would reach it. The
+// aircraft goes on without it rather than fly one. Approaches and VFR
+// landings line the aircraft up with a runway and are left to do so.
+func (nav *Nav) missedUnreachableFix(wp av.Waypoint, wxs wx.Sample) bool {
+	if (!wp.FlyOver() && len(nav.Waypoints) > 1) || wp.OnApproach() || wp.VFRPhase != av.VFRPhaseNone ||
+		!nav.IsAirborne() {
+		return false
+	}
+
+	fs := &nav.FlightState
+	bearing := math.TrueToMagnetic(math.Heading2LL(fs.Position, wp.Location, fs.NmPerLongitude), fs.MagneticVariation)
+	if math.HeadingDifference(fs.Heading, bearing) < 90 {
+		return false
+	}
+
+	// The circle's center is a turn radius off the side the fix is on.
+	r := TurnRadius(nav.Perf, nav.TAS(wxs.Temperature()))
+	side := float32(util.Select(math.HeadingSignedTurn(fs.Heading, bearing) > 0, 90, -90))
+	toCenter := math.OffsetHeading(math.MagneticToTrue(fs.Heading, fs.MagneticVariation), side)
+	center := math.Offset2LL(fs.Position, toCenter, r, fs.NmPerLongitude)
+	// Within a couple of seconds of the circle, the turn passes close
+	// enough to the fix to reach it.
+	return math.NMDistance2LL(center, wp.Location) < r-2*fs.GS/3600
 }
 
 // outboundCourse returns the heading the aircraft leaves wp on and which way

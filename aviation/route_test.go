@@ -452,6 +452,43 @@ func TestCheckArrivalInterceptRequiresApproach(t *testing.T) {
 	}
 }
 
+// TestCheckTurnAfterFlyOver checks that a /flyover fix followed by a fix too
+// close to turn to is an error, and that the same turn with room for it
+// isn't.
+func TestCheckTurnAfterFlyOver(t *testing.T) {
+	oldDB := testDB
+	testDB = testDatabase{Airways: make(map[string][]Airway)}
+	t.Cleanup(func() { testDB = oldDB })
+
+	origin := math.Point2LL{-75, 40}
+	nmPerLongitude := math.NMPerLongitudeAt(origin)
+	at := func(x, y float32) math.Point2LL {
+		return math.NM2LL(math.Add2f(math.LL2NM(origin, nmPerLongitude), [2]float32{x, y}), nmPerLongitude)
+	}
+	check := func(dist float32) bool {
+		wps, err := parseWaypoints("AAA BBB/flyover CCC")
+		if err != nil {
+			t.Fatal(err)
+		}
+		// North to BBB, then 61 degrees right to CCC.
+		wps[0].Location = at(0, -5)
+		wps[1].Location = at(0, 0)
+		v := math.SinCos(math.Radians(float32(61)))
+		wps[2].Location = at(dist*v[0], dist*v[1])
+
+		var e util.ErrorLogger
+		wps.CheckArrival(&e, nil, false, func(string) bool { return true })
+		return e.HaveErrors()
+	}
+
+	if !check(0.6) {
+		t.Error("expected an error for a 61 degree turn to a fix 0.6nm past the /flyover fix")
+	}
+	if check(3) {
+		t.Error("expected no error for a 61 degree turn to a fix 3nm past the /flyover fix")
+	}
+}
+
 func TestCheckArrivalCatchesHundredsOfFeetAltitudes(t *testing.T) {
 	oldDB := testDB
 	testDB = testDatabase{Airways: make(map[string][]Airway)}
