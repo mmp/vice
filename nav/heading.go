@@ -199,7 +199,10 @@ func (nav *Nav) assignHeading(hdg math.MagneticHeading, turn av.TurnDirection, s
 		}
 
 		// Only cancel approach clearance if the aircraft wasn't on a
-		// heading and now we're giving them one.
+		// heading and now we're giving them one. It keeps the speed it was
+		// flying the approach at, as when the controller cancels the
+		// clearance.
+		nav.Approach.Abandoned = nav.Approach.Abandoned || approachCleared
 		nav.Approach.Cleared = false
 
 		// MVAs are back in the mix

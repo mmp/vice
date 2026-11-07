@@ -385,7 +385,9 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 	if onSID, sr, fix, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
 		naturalIAS, _ := nav.targetAltitudeIAS(temp)
 		speed := nav.restrictedSpeed(sr, naturalIAS)
-		if speed > nav.FlightState.IAS {
+		// A restriction ahead may slow a pilot who is adjusting their own
+		// speed for the approach but doesn't speed them up.
+		if speed > nav.FlightState.IAS && !nav.Approach.pilotAdjustsSpeed() {
 			// Accelerate immediately
 			return speedTarget{ias: speed, rate: MaximumRate}
 		} else if onSID {
@@ -413,8 +415,9 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 		}
 	}
 
-	// Something from a previous waypoint; ignore it if we're cleared for the approach.
-	if nav.Speed.Restriction != nil && !nav.Approach.Cleared {
+	// Something from a previous waypoint; ignore it if we're cleared for the
+	// approach, or were until it fell through.
+	if nav.Speed.Restriction != nil && !nav.Approach.pilotAdjustsSpeed() {
 		naturalIAS, _ := nav.targetAltitudeIAS(temp)
 		spd := nav.restrictedSpeed(nav.Speed.Restriction, naturalIAS)
 		if pendingDecel {
@@ -471,7 +474,7 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 		return speedTarget{ias: ias, rate: MaximumRate}
 	}
 
-	if nav.Approach.Cleared || nav.Approach.Abandoned {
+	if nav.Approach.pilotAdjustsSpeed() {
 		// Don't speed up if we're cleared, or were until the approach fell
 		// through.
 		return speedTarget{ias: nav.FlightState.IAS, rate: MaximumRate}

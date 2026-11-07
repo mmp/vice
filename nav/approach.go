@@ -54,6 +54,13 @@ func (na *Approach) EffectivelyCleared() bool {
 	return na.Cleared || na.AtFixClearedRoute != nil
 }
 
+// pilotAdjustsSpeed reports whether the pilot makes their own speed
+// adjustments for the approach, as the approach clearance lets them: the
+// aircraft is cleared for it, or was until the approach fell through.
+func (na *Approach) pilotAdjustsSpeed() bool {
+	return na.Cleared || na.Abandoned
+}
+
 // HasLocalizer reports whether the approach is flown on a localizer: its own,
 // or for a visual one of its references'.
 func (na *Approach) HasLocalizer() bool {

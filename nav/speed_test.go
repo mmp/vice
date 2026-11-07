@@ -5,6 +5,7 @@
 package nav
 
 import (
+	"slices"
 	"strings"
 	"testing"
 
@@ -1027,5 +1028,70 @@ func TestRangeSpeedAfterAltitude(t *testing.T) {
 				t.Errorf("expected %s assigned at %.0f, got %v", test.speed, test.altitude, f.nav.Speed.Assigned)
 			}
 		})
+	}
+}
+
+// TestApproachClearanceRestrictionAheadDoesNotSpeedUp verifies that an
+// approach's speed restriction ahead doesn't speed up an aircraft cleared for
+// the approach, whose pilot makes their own speed adjustments, even once the
+// clearance has cancelled the slower speed the controller assigned.
+func TestApproachClearanceRestrictionAheadDoesNotSpeedUp(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SKORR/a7000 SAJUL/a7000 DETGY/a7000 HAUPT/a6000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     210,
+	})
+
+	f.ExpectApproach("I22L")
+	f.AssignSpeed(160)
+	f.StepUntil("slowed to 160 knots", func() bool { return f.nav.FlightState.IAS <= 160 })
+	f.ClearedApproach("I22L")
+	if !f.nav.Approach.Cleared {
+		t.Fatal("not cleared for the approach")
+	}
+	i := slices.IndexFunc(f.nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == "DETGY" })
+	if i == -1 || !f.nav.Waypoints[i].OnApproach() {
+		t.Fatalf("expected the approach to take the route through DETGY, got %v", f.nav.Waypoints)
+	}
+	f.nav.Waypoints[i].SetSpeedRestriction(av.MakeAtOrBelowSpeedRestriction(210))
+
+	f.BeforeFix("DETGY", func(f *FlightTest) {
+		if ias := f.nav.FlightState.IAS; ias > 162 {
+			t.Fatalf("sped up to %.0f knots for DETGY's restriction after the approach clearance", ias)
+		}
+	})
+	f.Run()
+}
+
+// TestHeadingAfterApproachClearanceKeepsSpeed verifies that an aircraft
+// whose approach clearance a heading cancels keeps the speed it was flying
+// the approach at rather than speeding up to its en route speed.
+func TestHeadingAfterApproachClearanceKeepsSpeed(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     210,
+	})
+
+	f.ExpectApproach("I22L")
+	f.AssignSpeed(180)
+	f.StepUntil("slowed to 180 knots", func() bool { return f.nav.FlightState.IAS <= 180 })
+	f.ClearedApproach("I22L")
+	f.AssignHeading(180, av.TurnClosest)
+	if f.nav.Approach.Cleared {
+		t.Fatal("the heading should have cancelled the approach clearance")
+	}
+
+	for range 120 {
+		f.Step(1)
+		if ias := f.nav.FlightState.IAS; ias > 182 {
+			t.Fatalf("sped up to %.0f knots after the heading cancelled the approach clearance", ias)
+		}
 	}
 }
