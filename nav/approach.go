@@ -438,9 +438,10 @@ func (nav *Nav) ClearedApproach(approach string, traffic *FollowTraffic, simTime
 }
 
 // applyClearedApproachState performs the nav-state reset common to every
-// approach clearance: cancel any hold, clear speed restrictions, end a descend
-// via floor, mark the approach as cleared and no longer standby. Returns true
-// iff the aircraft was in a hold that is now being cancelled.
+// approach clearance: cancel any hold, clear speed restrictions, including
+// those the controller assigned at fixes ahead, end a descend via floor, mark
+// the approach as cleared and no longer standby. Returns true iff the
+// aircraft was in a hold that is now being cancelled.
 func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 	if hold := nav.Heading.Hold; hold != nil {
 		hold.Cancel = true
@@ -450,6 +451,7 @@ func (nav *Nav) applyClearedApproachState() (cancelHold bool) {
 	nav.Approach.StandbyApproach = false
 	nav.Approach.Abandoned = false
 	nav.Speed = Speed{}
+	nav.clearFixSpeeds()
 	// The approach's altitudes may take the aircraft below a descend via
 	// floor.
 	if c := nav.Altitude.Cleared; c != nil {
@@ -530,6 +532,7 @@ func (nav *Nav) clearApproachAtFix(wp av.Waypoint) bool {
 
 	nav.Approach.Cleared = true
 	nav.Speed = Speed{}
+	nav.clearFixSpeeds()
 	if wp.NoPT() || route[0].NoPT() {
 		nav.Approach.NoPT = true
 	}

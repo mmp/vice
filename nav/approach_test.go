@@ -2557,6 +2557,43 @@ func routeFixes(f *FlightTest) []string {
 	return fixes
 }
 
+// TestApproachClearanceCancelsFixSpeeds verifies that an approach clearance
+// supersedes the speeds the controller assigned at fixes ahead, as it does
+// the aircraft's assigned speed.
+func TestApproachClearanceCancelsFixSpeeds(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "DETGY/a7000 HAUPT/a6000 LEFER/a4000 ROSLY/a3000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     210,
+	})
+
+	f.ExpectApproach("I22L")
+	crossing := av.MakeAtSpeedRestriction(250)
+	f.nav.CrossFixAt("LEFER", nil, &crossing, f.temp())
+	after := av.MakeAtSpeedRestriction(230)
+	f.nav.AfterFixSpeed("HAUPT", &after)
+
+	f.ClearedApproach("I22L")
+	if !f.nav.Approach.Cleared {
+		t.Fatal("not cleared for the approach")
+	}
+	for fix, nfa := range f.nav.FixAssignments {
+		if nfa.Arrive.Speed != nil || nfa.Depart.Speed != nil {
+			t.Errorf("%s: speed assignment survived the approach clearance: %+v", fix, nfa)
+		}
+	}
+
+	f.BetweenFixes("LEFER", "ROSLY", func(f *FlightTest) {
+		if sr := f.nav.Speed.Assigned; sr != nil {
+			t.Fatalf("assigned %v past LEFER after the approach clearance", *sr)
+		}
+	})
+	f.Run()
+}
+
 // TestClearedApproachJoinsAtPassedFix verifies that the clearance a /clearapp
 // route action asks for joins the approach at the fix the action fired at. The
 // sim issues it after nav has already dropped that fix from the route, so on

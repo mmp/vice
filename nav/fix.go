@@ -170,6 +170,18 @@ func (nav *Nav) clearAfterFixSpeeds() {
 	}
 }
 
+// clearFixSpeeds drops every speed the controller assigned at a fix ahead:
+// crossing speeds as well as speeds to fly or cancel after a fix.
+func (nav *Nav) clearFixSpeeds() {
+	nav.clearAfterFixSpeeds()
+	for fix, nfa := range nav.FixAssignments {
+		if nfa.Arrive.Speed != nil {
+			nfa.Arrive.Speed = nil
+			nav.FixAssignments[fix] = nfa
+		}
+	}
+}
+
 func (nav *Nav) AfterFixAltitude(fix string, alt float32) speech.CommandIntent {
 	defer nav.record("AfterFixAltitude", fix, alt)()
 	if !nav.fixInRoute(fix) {
