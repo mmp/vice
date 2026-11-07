@@ -470,6 +470,47 @@ func TestClearApproachActionJoinsAtItsFix(t *testing.T) {
 	}
 }
 
+// TestApproachLandingRequiresClearance checks that an approach's runway lands
+// only an aircraft cleared for the approach: one whose clearance was
+// cancelled flies over it, neither landing nor going around.
+func TestApproachLandingRequiresClearance(t *testing.T) {
+	lg := log.New(true, "error", t.TempDir())
+
+	for _, tc := range []struct {
+		name     string
+		cleared  bool
+		altitude float32
+	}{
+		{name: "cleared", cleared: true, altitude: 100},
+		{name: "cancelled", cleared: false, altitude: 100},
+		{name: "cancelled and high", cleared: false, altitude: 6000},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewTestSim(lg)
+			s.STARSComputer = makeSTARSComputer("TEST")
+
+			ac := MakeTestAircraft("AAL123", "13L")
+			ac.Nav.FlightState.Altitude = tc.altitude
+			ac.Nav.Approach.Cleared = tc.cleared
+			s.Aircraft[ac.ADSBCallsign] = ac
+
+			threshold := av.Waypoint{Fix: "_13L_THRESHOLD"}
+			threshold.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(100))
+			threshold.SetOnApproach(true)
+
+			s.applyWaypointActionEvent(ac, av.WaypointActionEvent{Waypoint: threshold,
+				Actions: av.WaypointActions{Land: true}})
+
+			if _, ok := s.Aircraft[ac.ADSBCallsign]; ok == tc.cleared {
+				t.Errorf("aircraft present = %v, want %v", ok, !tc.cleared)
+			}
+			if ac.WentAround {
+				t.Error("the aircraft went around")
+			}
+		})
+	}
+}
+
 // TestRemovalActionsApplyToHumanControlledAircraft checks that /delete and
 // /land take effect however the aircraft is being worked: unlike the handoffs
 // and scratchpad settings alongside them, they are not instructions a virtual

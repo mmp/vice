@@ -180,7 +180,9 @@ func (s *Sim) applyWaypointActionEvent(ac *Aircraft, event av.WaypointActionEven
 		s.deleteAtWaypoint(ac, event.Waypoint)
 		return true
 	}
-	if actions.Land {
+	// An approach's runway is for an aircraft cleared for the approach; one
+	// whose clearance was cancelled flies on over it.
+	if actions.Land && (ac.Nav.Approach.Cleared || !event.Waypoint.OnApproach()) {
 		return s.landAtWaypoint(ac, event.Waypoint)
 	}
 	return false
