@@ -558,6 +558,33 @@ func TestAltitudeTargetLevelAtMetRestriction(t *testing.T) {
 	}
 }
 
+// TestDirectAfterMetRestrictionDoesNotClimb verifies that an arrival that
+// crossed an "at" fix and descended below it for the next one holds its
+// altitude when sent direct to a fix with no restriction ahead, rather than
+// climbing back to the restriction it already met.
+func TestDirectAfterMetRestrictionDoesNotClimb(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SAJUL/a10000/star DETGY/a7000/star HAUPT",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  10000,
+		InitialSpeed:     250,
+	})
+
+	f.StepUntil("descended below 9000 past SAJUL", func() bool { return f.nav.FlightState.Altitude < 9000 })
+	f.DirectFix("HAUPT")
+
+	prev := f.nav.FlightState.Altitude
+	for range 180 {
+		f.Step(1)
+		if alt := f.nav.FlightState.Altitude; alt > prev {
+			t.Fatalf("tick %d: climbed from %.0f to %.0f after going direct HAUPT", f.tick, prev, alt)
+		}
+		prev = f.nav.FlightState.Altitude
+	}
+}
+
 // TestNotTimeYetDoesNotClimbToRestrictionBehind verifies that the restriction
 // carried from the fix behind the aircraft doesn't pull it back up when its
 // descent to the next fix tapers off just short of it, as happened to

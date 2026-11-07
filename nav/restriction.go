@@ -66,6 +66,16 @@ func (nav *Nav) carryRestrictions(wp av.Waypoint) {
 		// fix's altitude. Copy the value since the pointer into the
 		// slice element could become stale if the slice is reallocated.
 		arCopy := *ar
+		// Only the side of the restriction the aircraft missed carries
+		// past the fix. One it met doesn't apply again, so an aircraft
+		// that later leaves the altitude for restrictions ahead isn't
+		// called back to it.
+		if nav.FlightState.Altitude >= arCopy.Range[0] {
+			arCopy.Range[0] = 0
+		}
+		if nav.FlightState.Altitude <= arCopy.Range[1] {
+			arCopy.Range[1] = av.MaxAltitude
+		}
 		nav.Altitude.Restriction = &arCopy
 	}
 	if sr := nav.chartedSpeedRestriction(&wp); sr != nil && !wp.OnSID() {
