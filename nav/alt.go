@@ -423,6 +423,14 @@ func (nav *Nav) crossAltitude(next float32, slowingTo250 bool) float32 {
 		nav.Altitude.RateThrough = nil
 	}
 
+	// A cleared visual keeps a descent the controller assigned only until
+	// the aircraft gets there; the visual's profile takes it on from there.
+	if a := nav.activeAssignedAltitude(); a != nil && nav.Altitude.ActivateAt.IsZero() &&
+		nav.clearedForVisualApproach() && cur > *a && next <= *a {
+		nav.Altitude.Assigned = nil
+		nav.Altitude.ActiveAssigned = nil
+	}
+
 	return next
 }
 
@@ -442,6 +450,10 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 	// Controller-assigned altitude overrides everything else
 	if alt := nav.activeAssignedAltitude(); alt != nil {
 		return *alt, rate, false
+	}
+
+	if nav.clearedForVisualOnHeading() {
+		return nav.visualDescentFromHeading()
 	}
 
 	if target, ok := nav.findAltitudeTarget(); ok {

@@ -1709,6 +1709,113 @@ func TestClearedVisualDescendsContinuously(t *testing.T) {
 	f.Run()
 }
 
+// TestClearedVisualDescentEndsAtAssignedAltitude covers a visual cleared
+// while the aircraft descends to an assigned altitude: it finishes that
+// descent, then follows the visual's profile rather than holding the
+// assigned altitude to the 3 nm final (issue #1016).
+func TestClearedVisualDescentEndsAtAssignedAltitude(t *testing.T) {
+	rwy, ok := av.LookupRunway(db.Lookups{}, "KBHM", "6")
+	if !ok {
+		t.Fatal("unknown runway KBHM/6")
+	}
+	nmPerLong := math.NMPerLongitudeAt(rwy.Threshold)
+	outbound := math.OppositeHeading(math.MagneticToTrue(rwy.Heading, 0))
+	at := func(dist float32) math.Point2LL {
+		p := math.Offset2LL(rwy.Threshold, outbound, dist, nmPerLong)
+		return math.Offset2LL(p, math.OffsetHeading(outbound, 90), 4, nmPerLong)
+	}
+
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        at(10).DMSString() + " " + at(4).DMSString(),
+		DepartureAirport: "KLGA",
+		ArrivalAirport:   "KBHM",
+		AircraftType:     "E145",
+		InitialAltitude:  4500,
+		InitialSpeed:     180,
+		AssignedAltitude: 3000,
+	})
+	f.nav.FlightState.Position = at(12)
+	f.ExpectVisualApproach("6")
+	if intent, unable := f.ClearedVisualApproach("6").(speech.UnableIntent); unable {
+		t.Fatalf("unable to clear the visual: %v", intent)
+	}
+	if f.nav.Waypoints[0].Fix != "_6_3NM_FINAL" {
+		t.Fatalf("expected the route to the 3 nm final, got %v", routeFixes(f))
+	}
+
+	f.AtFix("_6_3NM_FINAL", func(f *FlightTest) {
+		f.AssertAltitudeNear(float32(rwy.Elevation)+900, 100)
+	})
+	f.Run()
+}
+
+// newVectoredVisualFlight returns an A320 at alt, with that altitude
+// assigned, on a heading that converges with the KJFK 22L final at angle
+// degrees from dist nm out and lateral nm off it, cleared for the visual.
+func newVectoredVisualFlight(t *testing.T, dist, lateral, angle, alt float32) *FlightTest {
+	t.Helper()
+	apg := LookupApproachGeometry(t, "KJFK", "I22L")
+	hdg := math.OffsetHeading(math.TrueToMagnetic(apg.RunwayHeading, apg.MagneticVariation), -angle)
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        apg.ThresholdOffset(dist, lateral).DMSString() + " HAUPT LEFER ROSLY",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  alt,
+		InitialSpeed:     250,
+		AssignedAltitude: alt,
+		InitialHeading:   float32(hdg),
+	})
+	f.ExpectVisualApproach("22L")
+	f.AssignHeading(int(hdg), av.TurnClosest)
+	f.Step(20)
+	if intent, unable := f.ClearedVisualApproach("22L").(speech.UnableIntent); unable {
+		t.Fatalf("unable to clear the visual: %v", intent)
+	}
+	return f
+}
+
+// glidepathAltitude returns the altitude of the KJFK 22L 3 degree path
+// abeam the aircraft.
+func glidepathAltitude(f *FlightTest) float32 {
+	rwy, _ := av.LookupRunway(db.Lookups{}, "KJFK", "22L")
+	d := math.NMDistance2LL(f.nav.FlightState.Position, rwy.Threshold)
+	return float32(rwy.Elevation+rwy.ThresholdCrossingHeight) + d*ftPerNMOnGlideslope
+}
+
+// TestVectoredVisualHoldsAltitudeUntilDescentNeeded covers a visual cleared
+// on a heading that joins the final well ahead: the aircraft holds its
+// assigned altitude until it has to start down, then meets the 3 degree
+// path where it joins.
+func TestVectoredVisualHoldsAltitudeUntilDescentNeeded(t *testing.T) {
+	f := newVectoredVisualFlight(t, 20, -4, 20, 4000)
+	if f.nav.Altitude.Assigned != nil {
+		t.Errorf("the clearance should leave the altitude to the visual's profile: %+v", f.nav.Altitude)
+	}
+
+	f.Step(60)
+	f.AssertAltitudeNear(4000, 1)
+
+	f.StepUntil("joined the final", func() bool { return !f.nav.clearedForVisualOnHeading() })
+	f.AssertAltitudeNear(glidepathAltitude(f), 200)
+}
+
+// TestVectoredVisualHighDescendsAtOnce covers a visual cleared on a heading
+// too high to wait: it starts down and slows at once and is on the 3 degree
+// path by the 3 nm final.
+func TestVectoredVisualHighDescendsAtOnce(t *testing.T) {
+	f := newVectoredVisualFlight(t, 9, -3, 30, 5000)
+
+	f.Step(15)
+	f.AssertDescending()
+	f.AssertSpeedBelow(240)
+
+	f.StepUntil("reached the 3 nm final", func() bool {
+		return len(f.nav.Waypoints) > 0 && f.nav.Waypoints[0].Fix == "_22L_THRESHOLD"
+	})
+	f.AssertAltitudeNear(glidepathAltitude(f), 150)
+}
+
 // chartedVisual is a Mill-Visual-shaped test procedure for KJFK 22L: a
 // crossing altitude 9 nm from the threshold, an unrestricted fix at 5 nm, and
 // the threshold waypoint that Approach.InitializeWaypoints appends.

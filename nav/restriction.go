@@ -89,9 +89,10 @@ type altitudeTarget struct {
 // constraints. Returns the target and true if found.
 func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	// On a heading the route's fixes don't apply, except that a pilot
-	// cleared for a visual approach descends toward where the heading is
-	// expected to join it.
-	if nav.Heading.Assigned != nil && !nav.clearedForVisualApproach() {
+	// cleared for a charted visual descends along the procedure it is
+	// joining.
+	if nav.Heading.Assigned != nil &&
+		(!nav.clearedForVisualApproach() || nav.Approach.Assigned.Type != av.ChartedVisualApproach) {
 		return altitudeTarget{}, false
 	}
 

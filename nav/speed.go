@@ -273,7 +273,7 @@ func (nav *Nav) crossSpeed(next float32, simTime Time) {
 // restrictions inside 5 miles of the end of a cleared approach, where it
 // flies its approach speed.
 func (nav *Nav) cancelSpeedOnFinal() {
-	if fd, err := nav.DistanceToEndOfApproach(); err == nil && fd < 5 {
+	if fd, ok := nav.approachDistanceRemaining(); ok && fd < 5 {
 		nav.Speed = Speed{}
 	}
 }
@@ -453,7 +453,7 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 
 	// On a cleared approach inside 10 miles of its end, fly the approach
 	// speed, and in the last half mile slow toward the landing speed.
-	if fd, err := nav.DistanceToEndOfApproach(); err == nil && fd < 10 {
+	if fd, ok := nav.approachDistanceRemaining(); ok && fd < 10 {
 		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude)
 		var approachSpeed float32
 		if arrivalMETAR != nil && arrivalMETAR.WindDir != nil { // METAR and non-VRB winds
@@ -495,6 +495,20 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 	}
 
 	return speedTarget{ias: ias, rate: rate}
+}
+
+// approachDistanceRemaining returns how far an aircraft on a cleared
+// approach has left to fly to its end. A visual cleared on a heading,
+// including one the pilot hasn't turned to yet, has no route to measure
+// along until it joins the course, so its distance is taken straight to the
+// threshold, which ends its speed assignment and starts its slowdown no
+// later than the path it flies would.
+func (nav *Nav) approachDistanceRemaining() (float32, bool) {
+	if nav.clearedForVisualOnHeading() {
+		return math.NMDistance2LL(nav.FlightState.Position, nav.Approach.Assigned.Threshold), true
+	}
+	fd, err := nav.DistanceToEndOfApproach()
+	return fd, err == nil
 }
 
 // Compute target airspeed for higher altitudes speed by lerping from 250

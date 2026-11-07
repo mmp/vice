@@ -610,6 +610,12 @@ func onHeading(n *nav.Nav, hdg math.MagneticHeading) {
 	n.Heading.Assigned = &hdg
 }
 
+// directTo puts n on its way direct to wp, a fix of one of its visual
+// approach's references.
+func directTo(n *nav.Nav, wp av.Waypoint) {
+	n.Waypoints = []av.Waypoint{wp, n.FlightState.ArrivalAirport}
+}
+
 func TestVisualApproachWaypoints(t *testing.T) {
 	// Runway 36 at (0,0), heading 360 (north). Centerline extends south.
 	rwy := av.Runway{
@@ -670,13 +676,6 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			pos:          math.Point2LL{-3.0 / nmPerLong, -8.0 / 60},
 			heading:      180,
 			wantFirstFix: "_36_FINAL_TURN",
-		},
-		{
-			name:         "Assigned heading intercepts outside FAF — intercept assigned heading",
-			pos:          math.Point2LL{3.0 / nmPerLong, -8.0 / 60},
-			heading:      360,
-			assigned:     ptr(math.MagneticHeading(315)),
-			wantFirstFix: "_36_INTERCEPT",
 		},
 		{
 			name:         "Assigned heading intercepts inside FAF — FAF first",
@@ -761,16 +760,6 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			if tt.wantFirstFix == "_36_FINAL_TURN" {
 				if finalNM := math.LL2NM(wps[0].Location, nmPerLong); math.Abs(finalNM[0]) > 0.05 || math.Abs(finalNM[1]+8) > 0.05 {
 					t.Errorf("final turn = %.2f, %.2f; want abeam the aircraft at 0.00, -8.00", finalNM[0], finalNM[1])
-				}
-			}
-			if tt.wantFirstFix == "_36_INTERCEPT" {
-				// The join is where the assigned heading, after the turn
-				// onto it, meets the centerline: on it and ahead.
-				interceptNM := math.LL2NM(wps[0].Location, nmPerLong)
-				posNM := math.LL2NM(tt.pos, nmPerLong)
-				if math.Abs(interceptNM[0]) > 0.05 || interceptNM[1] <= posNM[1] || interceptNM[1] >= 0 {
-					t.Errorf("intercept waypoint = %.2f, %.2f; want on the centerline ahead of %.2f, %.2f",
-						interceptNM[0], interceptNM[1], posNM[0], posNM[1])
 				}
 			}
 
@@ -887,21 +876,23 @@ func TestVisualApproachBelowNaturalTODUsesFAFOn3NMFinal(t *testing.T) {
 	setupTestRunway(t, "KTEST", rwy)
 
 	nmPerLong := float32(60)
+	joinFix := av.Waypoint{Fix: "JOIN36", Location: math.Point2LL{0, -14.0 / 60}}
 	reference := &av.Approach{
 		Type:      av.ILSApproach,
 		Runway:    "36",
 		Threshold: rwy.Threshold,
 		Waypoints: []av.WaypointArray{{
 			fafWaypoint("FAF36", math.Point2LL{0, -25.0 / 60}),
+			joinFix,
 			{Fix: "_36_THRESHOLD", Location: rwy.Threshold},
 		}},
 	}
 
-	// Aircraft on heading 315 toward the centerline, which it meets at
-	// (0, -14), at 3000 ft. Natural TOD for 3000 ft is ~9 nm — well inside
-	// the join — so the join is not the FAF and the FAF lives on
-	// _36_3NM_FINAL. The cleared-visual TargetAltitude branch drives the 3°
-	// glideslope from clearance time.
+	// Aircraft flying direct to JOIN36, on the centerline 14 nm out, at
+	// 3000 ft. Natural TOD for 3000 ft is ~9 nm — well inside the join — so
+	// the join is not the FAF and the FAF lives on _36_3NM_FINAL. The
+	// cleared-visual TargetAltitude branch drives the 3° glideslope from
+	// clearance time.
 	n := nav.Nav{
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -15.0 / 60},
@@ -911,7 +902,7 @@ func TestVisualApproachBelowNaturalTODUsesFAFOn3NMFinal(t *testing.T) {
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
 	}
-	onHeading(&n, 315)
+	directTo(&n, joinFix)
 
 	n.Approach.AssignedId = "_VIS36"
 	n.Approach.Assigned = visualApproachTo(rwy, reference)
@@ -1008,19 +999,21 @@ func TestVisualApproachJoinIsFAFWhenPastNaturalTOD(t *testing.T) {
 	setupTestRunway(t, "KTEST", rwy)
 
 	nmPerLong := float32(60)
+	joinFix := av.Waypoint{Fix: "JOIN36", Location: math.Point2LL{0, -8.0 / 60}}
 	reference := &av.Approach{
 		Type:      av.ILSApproach,
 		Runway:    "36",
 		Threshold: rwy.Threshold,
 		Waypoints: []av.WaypointArray{{
 			fafWaypoint("FAF36", math.Point2LL{0, -25.0 / 60}),
+			joinFix,
 			{Fix: "_36_THRESHOLD", Location: rwy.Threshold},
 		}},
 	}
 
-	// Aircraft at 5000 ft on heading 315, meeting the centerline 8 nm out —
-	// TOD for 5000 ft is ~15.6 nm so the natural top-of-descent is well
-	// behind the join. The join itself should become the FAF, with an
+	// Aircraft at 5000 ft flying direct to JOIN36, on the centerline 8 nm
+	// out — TOD for 5000 ft is ~15.6 nm so the natural top-of-descent is
+	// well behind the join. The join itself should become the FAF, with an
 	// altitude restriction on the standard 3° glideslope at the join's
 	// distance from the threshold.
 	n := nav.Nav{
@@ -1032,7 +1025,7 @@ func TestVisualApproachJoinIsFAFWhenPastNaturalTOD(t *testing.T) {
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
 	}
-	onHeading(&n, 315)
+	directTo(&n, joinFix)
 
 	n.Approach.AssignedId = "_VIS36"
 	n.Approach.Assigned = visualApproachTo(rwy, reference)
@@ -1051,8 +1044,8 @@ func TestVisualApproachJoinIsFAFWhenPastNaturalTOD(t *testing.T) {
 		t.Errorf("join waypoint %q should be the FAF; got %v", join.Fix, wpNames(n.Waypoints))
 	}
 	// Glideslope altitude at 8 nm with TCH 50 ft is 50 + 8*tan(3°)*6076 ≈ 2597 ft;
-	// allow a few feet of tolerance for the lat/long precision of the heading-ray
-	// intercept (joinPoint.distanceToThreshold is computed via NMDistance2LL).
+	// allow a few feet of tolerance for the lat/long precision of the join
+	// (joinPoint.distanceToThreshold is computed via NMDistance2LL).
 	wantJoinAlt := float32(50) + math.Tan(math.Radians(float32(3)))*math.NauticalMilesToFeet*8
 	if ar := join.AltitudeRestriction(); ar == nil {
 		t.Error("join should have an altitude restriction when it is the FAF")
@@ -1264,19 +1257,21 @@ func TestVisualApproachLowAircraftKeepsFAFOn3NMFinal(t *testing.T) {
 	setupTestRunway(t, "KTEST", rwy)
 
 	nmPerLong := float32(60)
+	joinFix := av.Waypoint{Fix: "JOIN36", Location: math.Point2LL{0, -6.0 / 60}}
 	reference := &av.Approach{
 		Type:      av.ILSApproach,
 		Runway:    "36",
 		Threshold: rwy.Threshold,
 		Waypoints: []av.WaypointArray{{
 			fafWaypoint("FAF36", math.Point2LL{0, -25.0 / 60}),
+			joinFix,
 			{Fix: "_36_THRESHOLD", Location: rwy.Threshold},
 		}},
 	}
 
-	// Aircraft at 800 ft on heading 315, meeting the centerline 6 nm out.
-	// Natural TOD is ~2.36 nm — well inside the join, so joinIsFAF is false
-	// and the FAF lives on _36_3NM_FINAL.
+	// Aircraft at 800 ft flying direct to JOIN36, on the centerline 6 nm
+	// out. Natural TOD is ~2.36 nm — well inside the join, so joinIsFAF is
+	// false and the FAF lives on _36_3NM_FINAL.
 	n := nav.Nav{
 		FlightState: nav.FlightState{
 			Position:          math.Point2LL{1.0 / nmPerLong, -7.0 / 60},
@@ -1286,7 +1281,7 @@ func TestVisualApproachLowAircraftKeepsFAFOn3NMFinal(t *testing.T) {
 			ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
 		},
 	}
-	onHeading(&n, 315)
+	directTo(&n, joinFix)
 
 	n.Approach.AssignedId = "_VIS36"
 	n.Approach.Assigned = visualApproachTo(rwy, reference)
