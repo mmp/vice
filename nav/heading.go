@@ -320,7 +320,8 @@ func (nav *Nav) updateHeading(callsign string, wxs wx.Sample, simTime Time) {
 	if st.flat {
 		fs.BankAngle = 0
 	} else {
-		st.turn, rate = fs.roll(nav.Perf, st.heading, st.turn, nav.TAS(wxs.Temperature()))
+		tas := nav.TAS(wxs.Temperature())
+		st.turn, rate = fs.roll(nav.Perf, nav.turnLimits(tas), st.heading, st.turn, tas)
 	}
 
 	NavLog(callsign, simTime, NavLogHeading, "target=%.0f current=%.0f diff=%.1f turn=%v rate=%.1f bank=%.1f",

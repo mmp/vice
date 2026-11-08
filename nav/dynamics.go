@@ -246,8 +246,47 @@ func (fs *FlightState) stepAltitude(perf av.AircraftPerformance, target, targetR
 }
 
 // StandardTurnRate is the rate of a standard rate turn in degrees per
-// second, the fastest the aircraft turns.
+// second, the fastest the aircraft turns outside the traffic pattern.
 const StandardTurnRate = 3
+
+// PatternBankAngle is the bank, in degrees, of the turns in a VFR traffic
+// pattern: the low end of the medium bank, 20 to 45 degrees, that the
+// Airplane Flying Handbook (FAA-H-8083-3C, chapters 3 and 8) calls for in
+// the turn onto base.
+const PatternBankAngle = 20
+
+// turnLimits are the most an aircraft banks in a turn, in degrees, and the
+// fastest it turns, in degrees per second.
+type turnLimits struct {
+	bank, rate float32
+}
+
+// standardTurnLimits returns the limits of a standard rate turn, which is
+// flown wider where holding that rate would take more bank than the type
+// allows.
+func standardTurnLimits(perf av.AircraftPerformance) turnLimits {
+	return turnLimits{bank: perf.Turn.MaxBankAngle, rate: StandardTurnRate}
+}
+
+// patternTurnLimits returns the limits of a turn in the traffic pattern at
+// the given true airspeed: PatternBankAngle, however fast that turns.
+func patternTurnLimits(tas float32) turnLimits {
+	return turnLimits{bank: PatternBankAngle, rate: bankTurnRate(PatternBankAngle, tas)}
+}
+
+// rateAtBank returns the rate in degrees per second of a coordinated turn
+// at the given bank angle and true airspeed in knots, signed with the bank
+// and no faster than the limit.
+func (tl turnLimits) rateAtBank(bank, tas float32) float32 {
+	return math.Clamp(bankTurnRate(bank, tas), -tl.rate, tl.rate)
+}
+
+// radius returns the radius in nautical miles of a turn flown at the
+// limits at the given true airspeed.
+func (tl turnLimits) radius(tas float32) float32 {
+	omega := min(tl.rate, bankTurnRate(tl.bank, tas))
+	return tas / 3600 / math.Radians(omega)
+}
 
 // bankTurnRate returns the rate of a coordinated turn at the given bank
 // angle and true airspeed in knots, in degrees per second.
@@ -255,20 +294,13 @@ func bankTurnRate(bank, tas float32) float32 {
 	return math.Degrees(9.81 * math.Tan(math.Radians(bank)) / (tas * 0.514444))
 }
 
-// turnRateAtBank returns the rate in degrees per second of a coordinated
-// turn at the given bank angle and true airspeed in knots, signed with the
-// bank and no faster than the standard rate.
-func turnRateAtBank(bank, tas float32) float32 {
-	return math.Clamp(bankTurnRate(bank, tas), -StandardTurnRate, StandardTurnRate)
-}
-
 // roll adjusts the bank for this second of the turn from the present
-// heading to target in the given direction: rolling in up to the aircraft's
-// maximum bank, and rolling out so as to come level on target. It returns
+// heading to target in the given direction: rolling in up to the bank the
+// limits allow, and rolling out so as to come level on target. It returns
 // which way and how fast, in degrees per second, the aircraft turns this
 // second.
-func (fs *FlightState) roll(perf av.AircraftPerformance, target math.MagneticHeading, turn av.TurnDirection,
-	tas float32) (av.TurnDirection, float32) {
+func (fs *FlightState) roll(perf av.AircraftPerformance, limits turnLimits, target math.MagneticHeading,
+	turn av.TurnDirection, tas float32) (av.TurnDirection, float32) {
 	// signed difference, negative is turn left
 	headingDelta := func() float32 {
 		diff := float32(target) - float32(fs.Heading)
@@ -293,9 +325,9 @@ func (fs *FlightState) roll(perf av.AircraftPerformance, target math.MagneticHea
 		}
 	}()
 
-	maxBankAngle := perf.Turn.MaxBankAngle
+	maxBankAngle := limits.bank
 	maxRollRate := perf.Turn.MaxBankRate
-	turnRate := func(bank float32) float32 { return turnRateAtBank(bank, tas) }
+	turnRate := func(bank float32) float32 { return limits.rateAtBank(bank, tas) }
 
 	// If we started leveling out now, how many more degrees would we turn through?
 	var levelOutDelta float32

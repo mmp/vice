@@ -26,16 +26,20 @@ import (
 // TestTurnPathMatchesFlightModel integrates turns with the actual per-tick
 // flight model and checks that turnPath predicts the same ground track, so
 // that any future change to the turn dynamics in TargetHeading that is not
-// mirrored in predictTurnPath breaks a test rather than the predicates.
+// mirrored in predictTurnPath breaks a test rather than the predicates. In
+// the traffic pattern the turns are flown at PatternBankAngle, faster than
+// the standard rate.
 func TestTurnPathMatchesFlightModel(t *testing.T) {
 	for _, ac := range []struct {
 		typ      string
 		ias, alt float32
+		pattern  bool
 	}{
-		{"C172", 110, 3000},
-		{"A320", 250, 10000},
-		{"A320", 280, 24000},
-		{"B744", 290, 35000},
+		{"C172", 110, 3000, false},
+		{"C172", 70, 1500, true},
+		{"A320", 250, 10000, false},
+		{"A320", 280, 24000, false},
+		{"B744", 290, 35000, false},
 	} {
 		for _, turnDeg := range []float32{15, 45, -45, 90, -150} {
 			for _, wind := range []struct{ dir, kts float32 }{
@@ -44,6 +48,9 @@ func TestTurnPathMatchesFlightModel(t *testing.T) {
 				{200, 50},
 			} {
 				name := fmt.Sprintf("%s/%.0fkt/turn%.0f/wind%.0f@%.0f", ac.typ, ac.ias, turnDeg, wind.kts, wind.dir)
+				if ac.pattern {
+					name += "/pattern"
+				}
 				t.Run(name, func(t *testing.T) {
 					f := NewArrivalFlight(t, ArrivalConfig{
 						Waypoints:        "SAJUL", // far away; irrelevant while on a heading
@@ -57,6 +64,9 @@ func TestTurnPathMatchesFlightModel(t *testing.T) {
 					})
 					if wind.kts > 0 {
 						f.SetWind(wind.dir, wind.kts)
+					}
+					if ac.pattern {
+						f.nav.Waypoints[0].VFRPhase = av.VFRPhaseDownwind
 					}
 					f.AssignSpeed(ac.ias)
 
@@ -88,6 +98,9 @@ func TestTurnPathMatchesFlightModel(t *testing.T) {
 
 					wxs := f.weather(f.nav.FlightState.Altitude)
 					tp := f.nav.predictTurnPath(hdg, turn, wxs)
+					if ac.pattern && math.Abs(turnDeg) >= 45 && tp.omega <= StandardTurnRate {
+						t.Errorf("pattern turn at %.2f deg/s, no faster than the standard rate", tp.omega)
+					}
 
 					// Start the turn the same way the predicates model it:
 					// effective immediately, no pilot delay.

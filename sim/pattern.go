@@ -144,7 +144,30 @@ const patternSpeed = 70
 // patternSpeed.
 func patternScale(perf av.AircraftPerformance) float32 {
 	speed := max(patternSpeed, perf.MinimumSpeed())
-	return nav.TurnRadius(perf, speed) / nav.TurnRadius(perf, patternSpeed)
+	return nav.PatternTurnRadius(speed) / nav.PatternTurnRadius(patternSpeed)
+}
+
+// patternTurnRadius returns the radius in nm of the turns of a traffic
+// pattern drawn for patternSpeed and multiplied by scale.
+func patternTurnRadius(scale float32) float32 {
+	return scale * nav.PatternTurnRadius(patternSpeed)
+}
+
+// patternDimensions returns the size of the traffic pattern in nm, drawn
+// for the pattern's turns at patternSpeed and multiplied by scale: offset,
+// from the runway centerline to downwind, which is also the length of the
+// crosswind and base legs, and final, from the threshold to the base leg.
+//
+// The pattern's corners are its waypoints, so each 90 degree turn starts
+// a turn radius before its corner and ends a turn radius after it. A leg
+// four turn radii long leaves two, about 20 seconds of flying, between
+// rolling out of the turn at one end and rolling into the turn at the
+// other. Downwind is then 0.78 nm from the runway, within the half to one
+// mile of the Airplane Flying Handbook (FAA-H-8083-3C, chapter 8). Final
+// is as long, so the turn onto it ends three turn radii from the runway.
+func patternDimensions(scale float32) (offset, final float32) {
+	r := patternTurnRadius(scale)
+	return 4 * r, 4 * r
 }
 
 // generatePatternLap generates waypoints for one traffic pattern circuit.
@@ -159,21 +182,16 @@ func generatePatternLap(rwy, opp av.Runway, elevation, ceiling int, scale, nmPer
 	magneticVariation float32) []av.Waypoint {
 	b := newPatternBuilder(rwy, elevation, ceiling, nmPerLongitude, magneticVariation)
 	rwyLen := math.NMDistance2LL(rwy.Threshold, opp.Threshold)
+	offset, final := patternDimensions(scale)
+	// The crosswind turn starts past the departure end of the runway.
+	upwindExt := offset / 2
 
-	// Pattern dimensions (nm).
-	pdist := 0.75 * scale    // lateral offset from runway centerline
-	upwindExt := 0.5 * scale // extension past departure end of runway
-	baseExt := 0.5 * scale   // how far past threshold the base turn starts
-
-	wps := make([]av.Waypoint, 0, 8)
+	wps := make([]av.Waypoint, 0, 7)
 
 	wps = append(wps, b.waypoint("_pat_rollout", rwyLen/2, 0, 0, patternSpeed, av.VFRPhaseRollout))
 	wps = append(wps, b.waypoint("_pat_upwind", rwyLen+upwindExt, 0, 200, patternSpeed, av.VFRPhaseUpwind))
-	wps = append(wps, b.waypoint("_pat_crosswind", rwyLen+upwindExt, pdist, 500, patternSpeed, av.VFRPhaseCrosswind))
-	wps = append(wps, b.waypoint("_pat_downwind", 0, pdist, 1000, patternSpeed, av.VFRPhaseDownwind))
-	wps = append(wps, b.waypoint("_pat_late_dw", -baseExt, pdist, 1000, patternSpeed, av.VFRPhaseDownwind))
-	wps = append(wps, b.waypoint("_pat_base", -baseExt-0.5*scale, pdist/2, 500, 65, av.VFRPhaseBase))
-	wps = append(wps, b.waypoint("_pat_final", -scale, 0, 200, 60, av.VFRPhaseFinal))
+	wps = append(wps, b.waypoint("_pat_crosswind", rwyLen+upwindExt, offset, 500, patternSpeed, av.VFRPhaseCrosswind))
+	wps = append(wps, b.downwindAndBase(offset, final)...)
 
 	// Threshold (touchdown). Touch-and-go vs full-stop is handled in
 	// the Delete handler by checking TouchAndGosRemaining.
@@ -182,6 +200,17 @@ func generatePatternLap(rwy, opp av.Runway, elevation, ceiling int, scale, nmPer
 	wps = append(wps, threshold)
 
 	return wps
+}
+
+// downwindAndBase returns the pattern's waypoints from downwind abeam the
+// threshold to the turn onto final. That turn's corner is on the extended
+// centerline, so the aircraft rolls out of it lined up with the runway.
+func (b patternBuilder) downwindAndBase(offset, final float32) []av.Waypoint {
+	return []av.Waypoint{
+		b.waypoint("_pat_downwind", 0, offset, 1000, patternSpeed, av.VFRPhaseDownwind),
+		b.waypoint("_pat_late_dw", -final, offset, 1000, patternSpeed, av.VFRPhaseDownwind),
+		b.waypoint("_pat_base", -final, 0, 500, 65, av.VFRPhaseBase),
+	}
 }
 
 // spawnPatternAircraft attempts to spawn pattern traffic at airports with VFR activity.
@@ -737,23 +766,25 @@ func (s *Sim) generateOrbitWaypoints(airport av.ICAOAirportCode) []av.Waypoint {
 }
 
 // generatePatternEntryWaypoints returns waypoints for a standard 45-degree
-// entry to downwind, using the same offsets as generatePatternLap, likewise
-// multiplied by scale. The last waypoint has the Delete flag set.
+// entry to downwind abeam the middle of the runway (AIM 4-3-3), using the
+// same dimensions as generatePatternLap, likewise multiplied by scale. The
+// last waypoint has the Delete flag set.
 func generatePatternEntryWaypoints(rwy, opp av.Runway, elevation, ceiling int,
 	scale, nmPerLongitude, magneticVariation float32) []av.Waypoint {
 	b := newPatternBuilder(rwy, elevation, ceiling, nmPerLongitude, magneticVariation)
 	rwyLen := math.NMDistance2LL(rwy.Threshold, opp.Threshold)
-
-	pdist := 0.75 * scale
-	baseExt := 0.5 * scale
+	offset, final := patternDimensions(scale)
+	// The 45-degree leg starts 1.5 turn radii out from downwind. A longer
+	// one reaches into airspace near some fields that leaves them no room
+	// for VFR arrivals. An arrival that has to turn most of the way around
+	// onto it, from across the field, joins downwind directly instead.
+	enter := 1.5 * patternTurnRadius(scale)
 
 	wps := make([]av.Waypoint, 0, 6)
 
-	wps = append(wps, b.waypoint("_pat_enter45", rwyLen/2, pdist+0.5*scale, 1200, patternSpeed, av.VFRPhaseDownwind))
-	wps = append(wps, b.waypoint("_pat_downwind", 0, pdist, 1000, patternSpeed, av.VFRPhaseDownwind))
-	wps = append(wps, b.waypoint("_pat_late_dw", -baseExt, pdist, 1000, patternSpeed, av.VFRPhaseDownwind))
-	wps = append(wps, b.waypoint("_pat_base", -baseExt-0.5*scale, pdist/2, 500, 65, av.VFRPhaseBase))
-	wps = append(wps, b.waypoint("_pat_final", -scale, 0, 200, 60, av.VFRPhaseFinal))
+	wps = append(wps, b.waypoint("_pat_enter45", rwyLen/2+enter, offset+enter, 1200, patternSpeed, av.VFRPhaseDownwind))
+	wps = append(wps, b.waypoint("_pat_midfield", rwyLen/2, offset, 1000, patternSpeed, av.VFRPhaseDownwind))
+	wps = append(wps, b.downwindAndBase(offset, final)...)
 
 	threshold := b.waypoint("_pat_threshold", 0, 0, 0, 60, av.VFRPhaseFinal)
 	threshold.MergeActions(av.WaypointActions{Delete: true})

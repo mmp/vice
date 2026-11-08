@@ -181,8 +181,9 @@ func TestVFRRunwayIsLocked(t *testing.T) {
 // flyPatternEntry flies an aircraft of the given type from where VFR
 // arrivals hold at KBUU into the 45-degree entry for runway 29 drawn at the
 // given scale. It reports whether the aircraft reached the runway in 30
-// minutes and how far it turned after the last fix before it.
-func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed bool, finalTurn float32) {
+// minutes, how far it turned after the last fix before it, and how far its
+// heading was off the runway's when it got there.
+func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed bool, finalTurn, misalignment float32) {
 	t.Helper()
 
 	const airport = "KBUU"
@@ -244,26 +245,32 @@ func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed b
 			finalTurn += math.HeadingDifference(prev, n.FlightState.Heading)
 		}
 		if result.PassedWaypoint != nil && result.PassedWaypoint.Fix == "_pat_threshold" {
-			return true, finalTurn
+			return true, finalTurn, math.HeadingDifference(n.FlightState.Heading, rwy.Heading)
 		}
 	}
-	return false, finalTurn
+	return false, finalTurn, 0
 }
 
 // TestPatternEntryReachesRunway checks that aircraft from ones that fly the
 // pattern at patternSpeed to jets that can't slow below 120 knots fly the
-// 45-degree entry to the runway. Drawn at patternSpeed's size, the pattern
-// put the threshold inside a jet's turn and the jet circled it.
+// 45-degree entry to the runway, coming from the side of the runway away
+// from the pattern, and land lined up with it. Drawn at patternSpeed's size,
+// the pattern put the threshold inside a jet's turn and the jet circled it.
+// With a base leg shorter than the two turns at its ends, aircraft turned
+// from downwind to final in one turn and crossed the threshold at an angle.
 func TestPatternEntryReachesRunway(t *testing.T) {
 	for _, aircraftType := range []string{"C172", "C208", "C550", "C510", "E135", "E55P", "C750"} {
 		t.Run(aircraftType, func(t *testing.T) {
 			scale := patternScale(db.DB.AircraftPerformance[aircraftType])
-			landed, finalTurn := flyPatternEntry(t, aircraftType, scale)
+			landed, finalTurn, misalignment := flyPatternEntry(t, aircraftType, scale)
 			if !landed {
 				t.Fatalf("never reached the runway; turned %.0f degrees after the final fix", finalTurn)
 			}
-			if finalTurn >= 360 {
-				t.Errorf("circled the runway, turning %.0f degrees after the final fix", finalTurn)
+			if finalTurn > 120 {
+				t.Errorf("turned %.0f degrees onto final, more than the turn from base", finalTurn)
+			}
+			if misalignment > 5 {
+				t.Errorf("reached the runway %.0f degrees off its heading", misalignment)
 			}
 		})
 	}

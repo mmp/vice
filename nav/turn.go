@@ -19,8 +19,37 @@ import (
 // true airspeed: a standard rate turn, or a wider one where holding that rate
 // would take more bank than the type allows.
 func TurnRadius(perf av.AircraftPerformance, tas float32) float32 {
-	omega := min(StandardTurnRate, bankTurnRate(perf.Turn.MaxBankAngle, tas))
-	return tas / 3600 / math.Radians(omega)
+	return standardTurnLimits(perf).radius(tas)
+}
+
+// PatternTurnRadius returns the radius in nautical miles of a turn in the
+// traffic pattern flown at the given true airspeed.
+func PatternTurnRadius(tas float32) float32 {
+	return patternTurnLimits(tas).radius(tas)
+}
+
+// turnLimits returns how hard the aircraft turns at the given true
+// airspeed: at PatternBankAngle on the legs of a traffic pattern, and
+// otherwise at the standard rate.
+func (nav *Nav) turnLimits(tas float32) turnLimits {
+	if nav.inTrafficPattern() {
+		return patternTurnLimits(tas)
+	}
+	return standardTurnLimits(nav.Perf)
+}
+
+// inTrafficPattern reports whether the aircraft is flying the legs of a VFR
+// traffic pattern.
+func (nav *Nav) inTrafficPattern() bool {
+	if len(nav.Waypoints) == 0 {
+		return false
+	}
+	switch nav.Waypoints[0].VFRPhase {
+	case av.VFRPhaseUpwind, av.VFRPhaseCrosswind, av.VFRPhaseDownwind, av.VFRPhaseBase, av.VFRPhaseFinal:
+		return true
+	default:
+		return false
+	}
 }
 
 func TurnAngle(from, to math.MagneticHeading, turn av.TurnDirection) float32 {
@@ -106,11 +135,12 @@ func (nav *Nav) predictTurnPath(hdg math.MagneticHeading, turn av.TurnDirection,
 
 	// Steady-state turn rate in deg/s at the given bank angle, signed with
 	// the bank, where positive bank is into the turn.
-	rate := func(bank float32) float32 { return turnRateAtBank(bank, tasKts) }
+	limits := nav.turnLimits(tasKts)
+	rate := func(bank float32) float32 { return limits.rateAtBank(bank, tasKts) }
 
 	arcDeg := TurnAngle(fs.Heading, hdg, turn)
 	s := float32(util.Select(isTurnRight(float32(fs.Heading), float32(hdg), turn), 1, -1))
-	maxBank := nav.Perf.Turn.MaxBankAngle
+	maxBank := limits.bank
 	rollRate := nav.Perf.Turn.MaxBankRate
 
 	entryBank := s * fs.BankAngle
@@ -270,7 +300,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg math.MagneticHeading,
 	// the turn point, keeping the turn near the fix.
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
 	tas := nav.TAS(wxs.Temperature())
-	radius := TurnRadius(nav.Perf, tas)
+	radius := nav.turnLimits(tas).radius(tas)
 	anticipation := radius*math.Tan(math.Radians(min(turnAngle, maxFlyByAngle)/2)) + 10*nav.FlightState.GS/3600
 	if math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude) > anticipation {
 		return false
