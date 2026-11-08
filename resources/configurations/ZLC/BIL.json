@@ -1,31 +1,55 @@
 {
   "control_positions": {
+    "15": {
+      "callsign": "ZLC 15 Salt Lake",
+      "frequency": 127750,
+      "radio_name": "Salt Lake Control"
+    },
+    "39": {
+      "callsign": "ZLC 39 Salt Lake",
+      "frequency": 132425,
+      "radio_name": "Salt Lake Control"
+    },
+    "1X": {
+      "callsign": "BIL_GND",
+      "frequency": 121900,
+      "radio_name": "Billings Ground"
+    },
     "1T": {
       "callsign": "BIL_TWR",
       "frequency": 127200,
       "radio_name": "Billings Tower"
     },
-    "1W": {
-      "callsign": "BIL_APP",
+    "1N": {
+      "callsign": "BIL_N_APP",
       "frequency": 119200,
+      "radio_name": "Billings Approach"
+    },
+    "1S": {
+      "callsign": "BIL_S_APP",
+      "frequency": 120500,
       "radio_name": "Billings Approach"
     }
   },
   "facility_adaptations": {
-    "lists": { "ssa": { "system_altimeter": "KBIL" } },
+    "lists": {
+      "ssa": {
+        "system_altimeter": "KBIL"
+      }
+    },
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "BGHRN3": "1W",
-          "CRAZI4": "1W",
-          "KUSTR3": "1W",
-          "YLSTN3": "1W"
+          "BGHRN3": "1N",
+          "CRAZI4": "1N",
+          "KUSTR3": "1N",
+          "YLSTN3": "1N"
         },
         "departure_assignments": {
-          "KBIL": "1W"
+          "KBIL": "1N"
         },
         "default_consolidation": {
-          "1W": []
+          "1N": []
         }
       }
     },

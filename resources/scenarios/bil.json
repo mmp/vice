@@ -14,19 +14,28 @@
         },
         "R7": {
           "cifp_id": "R7"
+        },
+        "R10L": {
+          "cifp_id": "R10L"
+        },
+        "RY28R": {
+          "cifp_id": "RY28R"
+        },
+        "RZ28R": {
+          "cifp_id": "RZ28R"
         }
       },
       "departure_routes": {
         "10L": {
-          "GTF,LWT,GGW,MLS,DPR,RAP,CZI,SHR,BOY,DNW,COD,LVM,BZN,DBS,HIA,HLN,LAYLY,ANJLA,NELKS,ARMTY,GAITZ": {
-            "assigned_altitude": 15000,
-            "waypoints": "KBIL-28R/h100"
+          "GTF,LWT,GGW,MLS,DPR,RAP,CZI,SHR,BOY,DNW,COD,LVM,BZN,DBS,HIA,HLN,LAYLY,ANJLA,NELKS,ARMTY,GAITZ,HSTIN": {
+            "assigned_altitude": 7000,
+            "waypoints": "KBIL-28R/h102"
           }
         },
         "28R": {
-          "GTF,LWT,GGW,MLS,DPR,RAP,CZI,SHR,BOY,DNW,COD,LVM,BZN,DBS,HIA,HLN,LAYLY,ANJLA,NELKS,ARMTY,GAITZ": {
-            "assigned_altitude": 15000,
-            "waypoints": "KBIL-10L/h280"
+          "GTF,LWT,GGW,MLS,DPR,RAP,CZI,SHR,BOY,DNW,COD,LVM,BZN,DBS,HIA,HLN,LAYLY,ANJLA,NELKS,ARMTY,GAITZ,HSTIN": {
+            "assigned_altitude": 7000,
+            "waypoints": "KBIL-10L/h282"
           }
         }
       },
@@ -83,7 +92,7 @@
           ],
           "destination": "KSLC",
           "exit": "NELKS",
-          "waypoints": "NELKS SYMPL JAC NORDK6",
+          "waypoints": "NELKS SYMPL JAC CARTR2",
           "scratchpad": "NEL"
         },
         {
@@ -94,7 +103,7 @@
           ],
           "destination": "KDEN",
           "exit": "BOY",
-          "waypoints": "BOY TOFUU FLATI3",
+          "waypoints": "BOY TOFUU FLATI5",
           "scratchpad": "BOY"
         },
         {
@@ -105,7 +114,7 @@
           ],
           "destination": "KPDX",
           "exit": "ARMTY",
-          "waypoints": "BIL ARMTY ASHUW HIA J16 PDT JKNOX HHOOD4",
+          "waypoints": "BIL ARMTY ASHUW HIA J16 PDT JKNOX HHOOD6",
           "scratchpad": "ARM"
         },
         {
@@ -116,7 +125,7 @@
           ],
           "destination": "KSEA",
           "exit": "ARMTY",
-          "waypoints": "BIL ARMTY ASHUW HLN J136 MLP GLASR3",
+          "waypoints": "BIL ARMTY ASHUW HLN J136 MLP GLASR",
           "scratchpad": "ARM"
         },
         {
@@ -127,8 +136,58 @@
           ],
           "destination": "KDEN",
           "exit": "GAITZ",
-          "waypoints": "BIL GAITZ GRYNS TOFUU FLATI3",
+          "waypoints": "BIL GAITZ GRYNS TOFUU FLATI5",
           "scratchpad": "GAI"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ENY"
+            }
+          ],
+          "destination": "KDFW",
+          "exit": "SHR",
+          "waypoints": "SHR BFF GLD EXHAS MMB HOFFF VKTRY2",
+          "scratchpad": "SHR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            },
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KMSP",
+          "exit": "MLS",
+          "waypoints": "MLS JELRO Q156 UFFDA TORGY4",
+          "scratchpad": "MLS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL"
+            },
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "HSTIN",
+          "waypoints": "HSTIN ZZIPR FYTTE7",
+          "scratchpad": "HST"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ASA"
+            }
+          ],
+          "destination": "KSEA",
+          "exit": "ARMTY",
+          "waypoints": "BIL ARMTY ASHUW HLN J136 MLP GLASR",
+          "scratchpad": "ARM"
         }
       ],
       "tower_list": 1
@@ -140,10 +199,9 @@
         {
           "spawn": "CUSGA@0.5",
           "star": "BGHRN3",
-          "initial_controller": "C17",
+          "initial_controller": "C39",
           "initial_altitude": 15000,
           "initial_speed": 270,
-          "expect_approach": null,
           "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
@@ -164,6 +222,9 @@
                 "airport": "KDFW"
               }
             ]
+          },
+          "waypoint_actions": {
+            "BGHRN": "dvs"
           }
         }
       ]
@@ -173,10 +234,9 @@
         {
           "spawn": "LOKOW@0.8",
           "star": "CRAZI4",
-          "initial_controller": "C17",
+          "initial_controller": "C15",
           "initial_altitude": 16000,
           "initial_speed": 270,
-          "expect_approach": null,
           "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
@@ -189,6 +249,9 @@
                 "airport": "KPDX"
               }
             ]
+          },
+          "waypoint_actions": {
+            "LOKOW@0.9": "dvs"
           }
         }
       ]
@@ -198,10 +261,9 @@
         {
           "spawn": "CONUK@0.85",
           "star": "KUSTR3",
-          "initial_controller": "C17",
+          "initial_controller": "C39",
           "initial_altitude": 17000,
           "initial_speed": 250,
-          "expect_approach": null,
           "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
@@ -210,6 +272,9 @@
                 "airport": "CYWG"
               }
             ]
+          },
+          "waypoint_actions": {
+            "FSYTH": "dvs"
           }
         }
       ]
@@ -219,10 +284,9 @@
         {
           "spawn": "JEKUG@0.9",
           "star": "YLSTN3",
-          "initial_controller": "C17",
+          "initial_controller": "C15",
           "initial_altitude": 15000,
           "initial_speed": 250,
-          "expect_approach": null,
           "airports": ["KBIL"],
           "airlines": {
             "KBIL": [
@@ -231,15 +295,18 @@
                 "airport": "KSLC"
               }
             ]
+          },
+          "waypoint_actions": {
+            "YLSTN": "dvs"
           }
         }
       ]
     }
   },
-  "default_scenario": "Land West",
+  "default_scenario": "West Flow",
   "name": "BIL",
   "scenarios": {
-    "Land West": {
+    "West Flow": {
       "arrival_runways": [
         {
           "airport": "KBIL",
@@ -273,7 +340,7 @@
       },
       "default_maps": ["STARS-BIL_MVA__Minimum Vectoring Altitudes", "STARS-BIL_W-FLOW__West Flow Map"]
     },
-    "Land East": {
+    "East Flow": {
       "arrival_runways": [
         {
           "airport": "KBIL",

@@ -1,3 +1,4 @@
+- Scenario update: BIL (Ryan C)
 - Flight model
   - CWT separation is enforced when spawning arrivals and overflights
   - Improved visual approach intercepts when feeder legs are present
