@@ -178,12 +178,20 @@ func TestVFRRunwayIsLocked(t *testing.T) {
 	}
 }
 
+// patternEntryFlight is how an aircraft flew a pattern entry: whether it
+// reached the runway, how far it turned after the last fix before it and how
+// far its heading was off the runway's when it got there, and its height
+// above the field when it passed abeam the threshold and the turn to base.
+type patternEntryFlight struct {
+	landed                     bool
+	finalTurn, misalignment    float32
+	abeamHeight, lateDwnHeight float32
+}
+
 // flyPatternEntry flies an aircraft of the given type from where VFR
 // arrivals hold at KBUU into the 45-degree entry for runway 29 drawn at the
-// given scale. It reports whether the aircraft reached the runway in 30
-// minutes, how far it turned after the last fix before it, and how far its
-// heading was off the runway's when it got there.
-func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed bool, finalTurn, misalignment float32) {
+// given scale, for up to 30 minutes.
+func flyPatternEntry(t *testing.T, aircraftType string, scale float32) patternEntryFlight {
 	t.Helper()
 
 	const airport = "KBUU"
@@ -235,6 +243,7 @@ func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed b
 		},
 	}
 
+	var f patternEntryFlight
 	simTime := nav.NewTime(patternTestTime.Time())
 	for range 1800 {
 		prev := n.FlightState.Heading
@@ -242,13 +251,24 @@ func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed b
 		result := n.UpdateWithWeather("TEST", wxs, nil, av.FlightRulesVFR, simTime, false)
 		simTime = simTime.Add(time.Second)
 		if n.Waypoints[0].Fix == "_pat_threshold" {
-			finalTurn += math.HeadingDifference(prev, n.FlightState.Heading)
+			f.finalTurn += math.HeadingDifference(prev, n.FlightState.Heading)
 		}
-		if result.PassedWaypoint != nil && result.PassedWaypoint.Fix == "_pat_threshold" {
-			return true, finalTurn, math.HeadingDifference(n.FlightState.Heading, rwy.Heading)
+		if result.PassedWaypoint == nil {
+			continue
+		}
+		height := n.FlightState.Altitude - float32(ap.Elevation)
+		switch result.PassedWaypoint.Fix {
+		case "_pat_downwind":
+			f.abeamHeight = height
+		case "_pat_late_dw":
+			f.lateDwnHeight = height
+		case "_pat_threshold":
+			f.landed = true
+			f.misalignment = math.HeadingDifference(n.FlightState.Heading, rwy.Heading)
+			return f
 		}
 	}
-	return false, finalTurn, 0
+	return f
 }
 
 // TestPatternEntryReachesRunway checks that aircraft from ones that fly the
@@ -258,19 +278,26 @@ func flyPatternEntry(t *testing.T, aircraftType string, scale float32) (landed b
 // the pattern put the threshold inside a jet's turn and the jet circled it.
 // With a base leg shorter than the two turns at its ends, aircraft turned
 // from downwind to final in one turn and crossed the threshold at an angle.
+// They hold pattern altitude to abeam the threshold and descend from there.
 func TestPatternEntryReachesRunway(t *testing.T) {
 	for _, aircraftType := range []string{"C172", "C208", "C550", "C510", "E135", "E55P", "C750"} {
 		t.Run(aircraftType, func(t *testing.T) {
 			scale := patternScale(db.DB.AircraftPerformance[aircraftType])
-			landed, finalTurn, misalignment := flyPatternEntry(t, aircraftType, scale)
-			if !landed {
-				t.Fatalf("never reached the runway; turned %.0f degrees after the final fix", finalTurn)
+			f := flyPatternEntry(t, aircraftType, scale)
+			if !f.landed {
+				t.Fatalf("never reached the runway; turned %.0f degrees after the final fix", f.finalTurn)
 			}
-			if finalTurn > 120 {
-				t.Errorf("turned %.0f degrees onto final, more than the turn from base", finalTurn)
+			if f.finalTurn > 120 {
+				t.Errorf("turned %.0f degrees onto final, more than the turn from base", f.finalTurn)
 			}
-			if misalignment > 5 {
-				t.Errorf("reached the runway %.0f degrees off its heading", misalignment)
+			if f.misalignment > 5 {
+				t.Errorf("reached the runway %.0f degrees off its heading", f.misalignment)
+			}
+			if f.abeamHeight < vfrPatternAltitude-50 {
+				t.Errorf("abeam the threshold at %.0f feet above the field, below pattern altitude", f.abeamHeight)
+			}
+			if f.lateDwnHeight > f.abeamHeight-150 {
+				t.Errorf("turned base at %.0f feet above the field, %.0f abeam the threshold", f.lateDwnHeight, f.abeamHeight)
 			}
 		})
 	}

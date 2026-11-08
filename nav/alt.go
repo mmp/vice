@@ -480,6 +480,11 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 				if nav.descendsOnGlidepath() {
 					return alt, geometricRate, true // exact glideslope
 				}
+				if nav.Waypoints[0].VFRPhase == av.VFRPhaseDownwind {
+					// A VFR aircraft on downwind descends steadily to the
+					// pattern's altitudes, starting abeam the threshold.
+					return alt, geometricRate, true
+				}
 
 				descent := nav.Perf.Rate.Descent
 				altDiff := nav.FlightState.Altitude - target.altitude

@@ -205,11 +205,17 @@ func generatePatternLap(rwy, opp av.Runway, elevation, ceiling int, scale, nmPer
 // downwindAndBase returns the pattern's waypoints from downwind abeam the
 // threshold to the turn onto final. That turn's corner is on the extended
 // centerline, so the aircraft rolls out of it lined up with the runway.
+// The aircraft holds pattern altitude until abeam the threshold and then
+// descends steadily to the runway (Airplane Flying Handbook, chapter 8).
 func (b patternBuilder) downwindAndBase(offset, final float32) []av.Waypoint {
+	// The height above the field on that descent with dist nm left to fly.
+	descent := func(dist float32) float32 {
+		return vfrPatternAltitude * dist / (final + offset + final)
+	}
 	return []av.Waypoint{
-		b.waypoint("_pat_downwind", 0, offset, 1000, patternSpeed, av.VFRPhaseDownwind),
-		b.waypoint("_pat_late_dw", -final, offset, 1000, patternSpeed, av.VFRPhaseDownwind),
-		b.waypoint("_pat_base", -final, 0, 500, 65, av.VFRPhaseBase),
+		b.waypoint("_pat_downwind", 0, offset, vfrPatternAltitude, patternSpeed, av.VFRPhaseDownwind),
+		b.waypoint("_pat_late_dw", -final, offset, descent(offset+final), patternSpeed, av.VFRPhaseDownwind),
+		b.waypoint("_pat_base", -final, 0, descent(final), 65, av.VFRPhaseBase),
 	}
 }
 
