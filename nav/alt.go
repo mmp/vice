@@ -5,6 +5,7 @@
 package nav
 
 import (
+	"slices"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -481,20 +482,28 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 				}
 
 				descent := nav.Perf.Rate.Descent
-
-				// Dynamic safety factor: accounts for ramp-up deficit where
-				// updateAltitude takes ~13 ticks to reach full rate, causing
-				// ~descent/9 ft of lost altitude change. Scale the factor
-				// inversely with descent size so small descents get more margin.
 				altDiff := nav.FlightState.Altitude - target.altitude
-				rampUpSec := float32(1) / rateMaxDeltaPercent
-				rampUpDeficit := descent * rampUpSec / (2 * 60)
-				safetyFactor := min(float32(1)+rampUpDeficit/max(altDiff, 100), 1.5)
 
 				// The AltitudeRate check fixes a case where we enter an oscillatory state of "start
 				// descent" / "no not yet" and end up descending too late to meet the restriction.
-				if geometricRate > descent/2 || nav.FlightState.AltitudeRate < -50 {
-					// Start continuous descent with safety margin
+				startDescent := geometricRate > descent/2 || nav.FlightState.AltitudeRate < -50
+
+				if nav.Approach.Cleared && nav.isFAF(target.fix) {
+					// A pilot cleared for an approach starts down to the
+					// final approach fix where a 3 degree path to it
+					// begins, as on a glideslope, and follows the path
+					// from there.
+					if startDescent || altDiff >= dist*ftPerNMOnGlideslope {
+						return alt, geometricRate, true
+					}
+				} else if startDescent {
+					// Dynamic safety factor: accounts for ramp-up deficit where
+					// updateAltitude takes ~13 ticks to reach full rate, causing
+					// ~descent/9 ft of lost altitude change. Scale the factor
+					// inversely with descent size so small descents get more margin.
+					rampUpSec := float32(1) / rateMaxDeltaPercent
+					rampUpDeficit := descent * rampUpSec / (2 * 60)
+					safetyFactor := min(float32(1)+rampUpDeficit/max(altDiff, 100), 1.5)
 					return alt, min(geometricRate*safetyFactor, descent), true
 				}
 			}
@@ -564,4 +573,9 @@ func (nav *Nav) descendsOnGlidepath() bool {
 	default:
 		return false
 	}
+}
+
+// isFAF reports whether fix is the final approach fix of the route ahead.
+func (nav *Nav) isFAF(fix string) bool {
+	return slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == fix && wp.FAF() })
 }

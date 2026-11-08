@@ -329,6 +329,45 @@ func TestApproachAtOrAboveDescentTarget(t *testing.T) {
 	f.Run()
 }
 
+// TestApproachDescendsIntoFAFOnGlidepath covers an aircraft cleared for an
+// ILS on the localizer above the final approach fix's altitude: it holds
+// its altitude until it meets a 3 degree path to the FAF, as on a
+// glideslope, and follows it down, rather than holding on until it has to
+// dive.
+func TestApproachDescendsIntoFAFOnGlidepath(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "LEFER/a4000/star ROSLY/a3000/star",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  3000,
+		InitialSpeed:     180,
+	})
+	f.ExpectApproach("I22L")
+	f.ClearedApproach("I22L")
+
+	// ZALPO, the FAF, is at or above 1,800.
+	pathStart := (3000 - 1800) / ftPerNMOnGlideslope
+	f.StepUntil("reached the FAF", func() bool {
+		d, ok := f.nav.routeDistanceToFix("ZALPO")
+		if !ok {
+			return true
+		}
+		fs := &f.nav.FlightState
+		if d > pathStart+0.5 && fs.Altitude < 3000 {
+			t.Fatalf("started down %.1f nm before the FAF, ahead of the 3 degree path", d)
+		}
+		if d < pathStart-0.5 && fs.Altitude == 3000 {
+			t.Fatalf("still level %.1f nm before the FAF, behind the 3 degree path", d)
+		}
+		if gradient := -fs.AltitudeRate / (fs.GS / 60); gradient > 1.2*ftPerNMOnGlideslope {
+			t.Fatalf("descending at %.0f ft/nm %.1f nm before the FAF", gradient, d)
+		}
+		return false
+	})
+	f.AssertAltitudeNear(1800, 50)
+}
+
 // TestApproachHonorsCrossingRestrictionBeforeSteepLeg verifies that an
 // aircraft cleared for an approach honors the restrictions at the start of
 // the approach rather than diving for a downstream one.
