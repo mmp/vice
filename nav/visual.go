@@ -50,18 +50,32 @@ func (nav *Nav) clearedForVisualOnHeading() bool {
 func (nav *Nav) visualDescentFromHeading() (float32, float32, bool) {
 	fs := &nav.FlightState
 	anchor := fs.ArrivalAirportElevation + 900
-	toAnchor := math.NMDistance2LL(fs.Position, nav.Approach.Assigned.Threshold) - 3
-	onPath := anchor + max(toAnchor, 0)*ftPerNMOnGlideslope
+	dist := math.NMDistance2LL(fs.Position, nav.Approach.Assigned.Threshold)
 	// A little below the path counts as on it, so that an aircraft
 	// following it doesn't stop and start.
-	if fs.Altitude <= anchor || fs.Altitude < onPath-50 {
+	if fs.Altitude <= anchor || fs.Altitude < nav.visualProfileAltitude(dist)-50 {
 		return fs.Altitude, 0, false
 	}
+	toAnchor := dist - 3
 	if toAnchor <= 0 || fs.GS <= 0 {
 		return anchor, MaximumRate, true
 	}
 	minutes := toAnchor / fs.GS * 60
 	return anchor, (fs.Altitude - anchor) / minutes, true
+}
+
+// visualProfileAltitude returns the altitude of a visual approach's descent
+// profile dist nm from the threshold: a 3 degree path down to 900 feet above
+// the field at the 3 nm final.
+func (nav *Nav) visualProfileAltitude(dist float32) float32 {
+	return nav.FlightState.ArrivalAirportElevation + 900 + max(dist-3, 0)*ftPerNMOnGlideslope
+}
+
+// visualProfileBelow reports whether the aircraft, cleared for a visual, is
+// where the visual's descent profile is below alt.
+func (nav *Nav) visualProfileBelow(alt float32) bool {
+	dist, ok := nav.approachDistanceRemaining()
+	return ok && nav.visualProfileAltitude(dist) < alt
 }
 
 // selectVisualReferences picks the reference approaches whose geometry will
@@ -226,7 +240,7 @@ func (nav *Nav) flyVisualRoute(wps []av.Waypoint) {
 // descent profile. A controller-assigned descent is kept only when it sits
 // above the profile's 3 nm final anchor (rwy.Elevation + 900), so "descend
 // and maintain 3000" still completes at a normal rate; it ends once the
-// aircraft gets there (crossAltitude).
+// aircraft gets there or the profile drops below it (crossAltitude).
 func (nav *Nav) releaseAltitudeForVisual() {
 	rwy, _ := nav.lookup().Runway(av.ICAOAirportCode(nav.FlightState.ArrivalAirport.Fix), nav.Approach.Assigned.Runway)
 	profileFloor := float32(rwy.Elevation) + 900

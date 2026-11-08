@@ -424,9 +424,10 @@ func (nav *Nav) crossAltitude(next float32, slowingTo250 bool) float32 {
 	}
 
 	// A cleared visual keeps a descent the controller assigned only until
-	// the aircraft gets there; the visual's profile takes it on from there.
+	// the aircraft gets there or the visual's profile drops below it; the
+	// profile takes it on from there.
 	if a := nav.activeAssignedAltitude(); a != nil && nav.Altitude.ActivateAt.IsZero() &&
-		nav.clearedForVisualApproach() && cur > *a && next <= *a {
+		nav.clearedForVisualApproach() && cur > *a && (next <= *a || nav.visualProfileBelow(*a)) {
 		nav.Altitude.Assigned = nil
 		nav.Altitude.ActiveAssigned = nil
 	}

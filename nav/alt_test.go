@@ -1776,6 +1776,51 @@ func TestClearedVisualDescentEndsAtAssignedAltitude(t *testing.T) {
 	f.Run()
 }
 
+// TestClearedVisualProfileReleasesAssignedAltitude covers a visual cleared
+// while the aircraft is still well above its assigned altitude and slowing
+// down, which eases the descent off: once the visual's profile is below the
+// assigned altitude, the aircraft follows the profile instead.
+func TestClearedVisualProfileReleasesAssignedAltitude(t *testing.T) {
+	rwy, ok := av.LookupRunway(db.Lookups{}, "KBHM", "6")
+	if !ok {
+		t.Fatal("unknown runway KBHM/6")
+	}
+	nmPerLong := math.NMPerLongitudeAt(rwy.Threshold)
+	outbound := math.OppositeHeading(math.MagneticToTrue(rwy.Heading, 0))
+	at := func(dist float32) math.Point2LL {
+		p := math.Offset2LL(rwy.Threshold, outbound, dist, nmPerLong)
+		return math.Offset2LL(p, math.OffsetHeading(outbound, 90), 4, nmPerLong)
+	}
+
+	assigned := float32(rwy.Elevation) + 1650
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        at(8).DMSString() + " " + at(4).DMSString(),
+		DepartureAirport: "KLGA",
+		ArrivalAirport:   "KBHM",
+		AircraftType:     "A306",
+		InitialAltitude:  assigned + 950,
+		InitialSpeed:     210,
+		AssignedAltitude: assigned,
+	})
+	f.nav.FlightState.Position = at(8)
+	f.ExpectVisualApproach("6")
+	if intent, unable := f.ClearedVisualApproach("6").(speech.UnableIntent); unable {
+		t.Fatalf("unable to clear the visual: %v", intent)
+	}
+
+	f.StepUntil("released its assigned altitude", func() bool { return f.nav.Altitude.Assigned == nil })
+	if f.nav.FlightState.Altitude < assigned {
+		t.Errorf("the profile should take over before the aircraft reaches its assigned altitude")
+	}
+	f.StepUntil("reached the 3 nm final", func() bool {
+		d, _ := f.nav.approachDistanceRemaining()
+		if above := f.nav.FlightState.Altitude - f.nav.visualProfileAltitude(d); above > 200 {
+			t.Fatalf("%.0f feet above the visual's profile %.1f nm out", above, d)
+		}
+		return f.nav.Waypoints[0].Fix != "_6_3NM_FINAL"
+	})
+}
+
 // newVectoredVisualFlight returns an A320 at alt, with that altitude
 // assigned, on a heading that converges with the KJFK 22L final at angle
 // degrees from dist nm out and lateral nm off it, cleared for the visual.
