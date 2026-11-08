@@ -590,6 +590,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive av.ICAOAirportCode, 
 		return nil, ErrViolatedAirspace
 	}
 	s.setUpAirwork(ac.Nav.Waypoints, checkTerrain, perf, cloudTop)
+	if checkTerrain {
+		limitDescents(ac.Nav.Waypoints, vfrDescentGradient(perf))
+	}
 
 	// Deep-copy only Nav (not the full Aircraft) to avoid copying
 	// maps, pointers, and fields unused during route validation.
@@ -1323,6 +1326,39 @@ func raiseAltitudeRestriction(wp *av.Waypoint, alt float32) {
 	ar.Range[0] = max(ar.Range[0], alt)
 	if ar.Range[1] != av.MaxAltitude && ar.Range[1] < ar.Range[0] {
 		ar.Range[1] = ar.Range[0] + 1000
+	}
+}
+
+// vfrDescentGradient returns how steeply, in feet per nm, a VFR flight in an
+// aircraft with perf descends: at half its maximum rate of descent, flying
+// at vfrClimboutSpeed. The nav starts a descent once it needs that rate.
+func vfrDescentGradient(perf av.AircraftPerformance) float32 {
+	return perf.Rate.Descent / 2 * 60 / vfrClimboutSpeed(perf)
+}
+
+// limitDescents lowers the tops of a VFR route's altitude restrictions so
+// that the flight never has to descend more steeply than gradient to meet
+// the restrictions after them. Without that, a flight climbing toward its
+// cruise altitude may meet a shelf or the end of its route soon after and
+// have to dive to get under it. Each top is lowered to at most the next top
+// plus gradient times the distance to it, and a bottom left above its top
+// is lowered to it. Airwork waypoints keep their altitudes, the room their
+// maneuvers need, but the flight still has to get down to them.
+func limitDescents(wps []av.Waypoint, gradient float32) {
+	limit := float32(av.MaxAltitude)
+	for i := len(wps) - 1; i >= 0; i-- {
+		if i+1 < len(wps) {
+			limit += gradient * math.NMDistance2LL(wps[i].Location, wps[i+1].Location)
+		}
+		ar := wps[i].AltitudeRestriction()
+		if ar == nil {
+			continue
+		}
+		if wps[i].AirworkMinutes() == 0 {
+			ar.Range[1] = min(ar.Range[1], limit)
+			ar.Range[0] = min(ar.Range[0], ar.Range[1])
+		}
+		limit = ar.Range[1]
 	}
 }
 

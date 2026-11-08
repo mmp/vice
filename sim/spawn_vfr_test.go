@@ -277,6 +277,39 @@ func TestAdjustRouteForTerrain(t *testing.T) {
 	}
 }
 
+// TestLimitDescents checks that a VFR route climbing toward its cruise
+// altitude ahead of a shelf is held low enough to get under the shelf without
+// diving, and that an airwork area keeps its altitudes but still has to be
+// descended to.
+func TestLimitDescents(t *testing.T) {
+	restricted := func(fix string, nm float32, ar av.AltitudeRestriction) av.Waypoint {
+		wp := av.Waypoint{Fix: fix, Location: testAlong(nm)}
+		wp.SetAltitudeRestriction(ar)
+		return wp
+	}
+	airwork := restricted("C", 20, av.MakeRangeAltitudeRestriction(1500, 6500))
+	airwork.InitExtra().AirworkMinutes = 10
+	wps := []av.Waypoint{
+		restricted("A", 0, av.MakeAtOrAboveAltitudeRestriction(9500)),
+		restricted("B", 10, av.MakeAtOrAboveAltitudeRestriction(9500)),
+		restricted("_shelf1@3000", 14, av.MakeAtAltitudeRestriction(3000)),
+		airwork,
+		restricted("D", 30, av.MakeRangeAltitudeRestriction(2000, 2500)),
+	}
+
+	limitDescents(wps, 300)
+
+	// At 300' per nm, B is 4nm from the 3000' shelf and A 10nm further back.
+	// The airwork keeps its 6500' top though D is only 5500' below that.
+	want := [][2]float32{{7200, 7200}, {4200, 4200}, {3000, 3000}, {1500, 6500}, {2000, 2500}}
+	for i, wp := range wps {
+		r := wp.AltitudeRestriction().Range
+		if math.Abs(r[0]-want[i][0]) > 10 || math.Abs(r[1]-want[i][1]) > 10 {
+			t.Errorf("%s: restricted to %.0f-%.0f, want %.0f-%.0f", wp.Fix, r[0], r[1], want[i][0], want[i][1])
+		}
+	}
+}
+
 func TestVFRAvoids(t *testing.T) {
 	for _, tc := range []struct {
 		typ               db.SpecialUseAirspaceType
