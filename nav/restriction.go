@@ -85,6 +85,13 @@ func (nav *Nav) carryRestrictions(wp av.Waypoint) {
 	}
 }
 
+// descentPlanningFraction is the share of its maximum descent rate that an
+// aircraft plans the legs between restrictions at. The aircraft eases into
+// the altitude it plans for each fix and starts down again after it, and it
+// levels at 10,000 feet to slow to 250 knots; the rest of the rate makes up
+// for those.
+const descentPlanningFraction = 0.75
+
 // altitudeTarget holds the result of scanning waypoints for an altitude target.
 type altitudeTarget struct {
 	altitude float32
@@ -210,9 +217,9 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 	last := getRestriction(lastWp)
 	descending := nav.FlightState.Altitude > last.TargetAltitude(nav.FlightState.Altitude)
 
-	// Use a large rate estimate for the reverse walk to compute feasible
-	// altitude ranges.
-	altRate := util.Select(descending, nav.Perf.Rate.Descent, nav.Perf.Rate.Climb)
+	// The reverse walk plans a descent with some of the aircraft's descent
+	// rate in reserve; climbs are planned at the full rate.
+	altRate := util.Select(descending, descentPlanningFraction*nav.Perf.Rate.Descent, nav.Perf.Rate.Climb)
 
 	// altRange is the range of altitudes that the aircraft may be in and
 	// successfully meet all of the restrictions. It will be updated
@@ -244,10 +251,7 @@ func (nav *Nav) findAltitudeTarget() (altitudeTarget, bool) {
 
 		fix = wps[i].Fix
 
-		// Maximum change in altitude possible before reaching this
-		// waypoint. The aircraft flies these legs consecutively, so it's
-		// already at rate by the time it reaches them; the spool-up at the
-		// start of the descent is handled by TargetAltitude's safety factor.
+		// Change in altitude planned for before reaching this waypoint.
 		// Coincident waypoints allow no change at all; handling them here
 		// also avoids 0/0 on a departure's first tick, when GS is 0.
 		var dalt float32

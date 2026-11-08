@@ -368,6 +368,31 @@ func TestApproachDescendsIntoFAFOnGlidepath(t *testing.T) {
 	f.AssertAltitudeNear(1800, 50)
 }
 
+// TestArrivalMakesRestrictionAfterIntermediateFixes covers a descent to an
+// "at" restriction across several fixes with floors, through 10,000 feet,
+// as on the KSAN arrivals to LUCKI. Planned at the full descent rate, the
+// aircraft eased into each fix's planned altitude, had to start down again
+// at the full rate, and crossed LUCKI high.
+func TestArrivalMakesRestrictionAfterIntermediateFixes(t *testing.T) {
+	for _, typ := range []string{"A21N", "E75L"} {
+		t.Run(typ, func(t *testing.T) {
+			f := NewArrivalFlight(t, ArrivalConfig{
+				Waypoints: "TRIXI/a12000-14000/star HSKER/a8700+/star BARET/a8000+/star " +
+					"HNAHH/a6100+/star LUCKI/a6000/star LYNDI/a5000+/star",
+				DepartureAirport: "KDFW",
+				ArrivalAirport:   "KSAN",
+				AircraftType:     typ,
+				InitialAltitude:  14000,
+				InitialSpeed:     270,
+			})
+			f.AtFix("LUCKI", func(f *FlightTest) {
+				f.AssertAltitudeNear(6000, 100)
+			})
+			f.Run()
+		})
+	}
+}
+
 // TestApproachHonorsCrossingRestrictionBeforeSteepLeg verifies that an
 // aircraft cleared for an approach honors the restrictions at the start of
 // the approach rather than diving for a downstream one.
