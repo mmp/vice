@@ -330,8 +330,19 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 		return speedTarget{ias: ias, rate: rate}
 	}
 	if sr := nav.Speed.Assigned; sr != nil {
+		ias := sr.IAS(nav.FlightState.Altitude)
 		// Hold the current speed if it's within an assigned range.
-		return speedTarget{ias: sr.IAS(nav.FlightState.Altitude).Target(nav.FlightState.IAS), rate: MaximumRate}
+		target := ias.Target(nav.FlightState.IAS)
+		// An "or greater" speed lets a pilot adjusting their own speed for
+		// the approach keep it moving, but they slow in time to be
+		// stabilized at their approach speed. They don't go below the
+		// floor while the assignment lasts.
+		if ias.Range[1] == av.MaxRestrictionSpeed && nav.Approach.pilotAdjustsSpeed() {
+			if fd, ok := nav.approachDistanceRemaining(); ok {
+				target = max(min(target, nav.stabilizingSpeed(fd, nav.approachSpeed(wxs, arrivalMETAR))), ias.Range[0])
+			}
+		}
+		return speedTarget{ias: target, rate: MaximumRate}
 	}
 
 	if hold := nav.Heading.Hold; hold != nil && nav.ETA(hold.FixLocation) < 180 /* slow 3 minutes out */ {
@@ -450,19 +461,7 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 	// On a cleared approach inside 10 miles of its end, fly the approach
 	// speed, and in the last half mile slow toward the landing speed.
 	if fd, ok := nav.approachDistanceRemaining(); ok && fd < 10 {
-		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude)
-		var approachSpeed float32
-		if arrivalMETAR != nil && arrivalMETAR.WindDir != nil { // METAR and non-VRB winds
-			windSpeed := float32(arrivalMETAR.WindSpeed)
-			windGust := windSpeed // default: no gust above steady wind
-			if arrivalMETAR.WindGust != nil && *arrivalMETAR.WindGust > arrivalMETAR.WindSpeed {
-				windGust = float32(*arrivalMETAR.WindGust)
-			}
-			approachSpeed = nav.Perf.ApproachSpeed(float32(*arrivalMETAR.WindDir), windSpeed, windGust, float32(hdg))
-		} else {
-			approachSpeed = nav.Perf.ApproachSpeed(float32(wxs.WindDirection()), wxs.WindSpeed(), 0, float32(hdg))
-		}
-
+		approachSpeed := nav.approachSpeed(wxs, arrivalMETAR)
 		if fd < 0.5 {
 			// Short final: slow down to landing speed.
 			approachSpeed = math.Lerp(fd/0.5, nav.Perf.Speed.Landing, approachSpeed)
@@ -491,6 +490,38 @@ func (nav *Nav) governingSpeed(targetAltitude float32, rules av.FlightRules, wxs
 	}
 
 	return speedTarget{ias: ias, rate: rate}
+}
+
+// approachSpeed returns the speed the aircraft flies its final approach at,
+// with the additives for the arrival airport's wind or, without a METAR
+// that gives its direction, the wind where the aircraft is.
+func (nav *Nav) approachSpeed(wxs wx.Sample, arrivalMETAR *wx.METAR) float32 {
+	hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude)
+	if arrivalMETAR != nil && arrivalMETAR.WindDir != nil { // METAR and non-VRB winds
+		windSpeed := float32(arrivalMETAR.WindSpeed)
+		windGust := windSpeed // default: no gust above steady wind
+		if arrivalMETAR.WindGust != nil && *arrivalMETAR.WindGust > arrivalMETAR.WindSpeed {
+			windGust = float32(*arrivalMETAR.WindGust)
+		}
+		return nav.Perf.ApproachSpeed(float32(*arrivalMETAR.WindDir), windSpeed, windGust, float32(hdg))
+	}
+	return nav.Perf.ApproachSpeed(float32(wxs.WindDirection()), wxs.WindSpeed(), 0, float32(hdg))
+}
+
+// stabilizedDistance is how far from the end of its approach, in nm, an
+// aircraft is to be at its approach speed: about where a 3 degree glidepath
+// is 1,000' above the runway.
+const stabilizedDistance = 3
+
+// stabilizingSpeed returns the fastest the aircraft can fly fd nm from the
+// end of its approach and still slow to approachSpeed by
+// stabilizedDistance, decelerating at half its capability.
+func (nav *Nav) stabilizingSpeed(fd, approachSpeed float32) float32 {
+	decel := nav.Perf.Rate.Decelerate / 4 // knots per second; Decelerate is per 2 seconds
+	// Slowing from v to va at decel covers (v²-va²)/(2 decel) knot-seconds
+	// of distance, and a nautical mile is 3600 knot-seconds.
+	room := max(fd-stabilizedDistance, 0) * 3600
+	return math.Sqrt(approachSpeed*approachSpeed + 2*decel*room)
 }
 
 // approachDistanceRemaining returns how far an aircraft on a cleared

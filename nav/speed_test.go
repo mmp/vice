@@ -1095,3 +1095,45 @@ func TestHeadingAfterApproachClearanceKeepsSpeed(t *testing.T) {
 		}
 	}
 }
+
+// TestOrGreaterSpeedKeepsMovingUntilStabilizing verifies that an aircraft
+// cleared for an approach with an "or greater" speed until 5-mile final
+// keeps its speed up, stays at or above the floor until 5-mile final, and
+// is at its approach speed by the distance it must be stabilized at.
+func TestOrGreaterSpeedKeepsMovingUntilStabilizing(t *testing.T) {
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        "SKORR/a7000 SAJUL/a7000 DETGY/a7000 HAUPT/a6000",
+		DepartureAirport: "KMCO",
+		ArrivalAirport:   "KJFK",
+		AircraftType:     "A320",
+		InitialAltitude:  7000,
+		InitialSpeed:     250,
+	})
+
+	f.ExpectApproach("I22L")
+	f.ClearedApproach("I22L")
+	sr := av.MakeAtOrAboveSpeedRestriction(170)
+	f.nav.AssignSpeedUntil(&sr, &speech.SpeedUntil{MileFinal: 5}, f.temp())
+	approachSpeed := f.nav.approachSpeed(f.weather(f.nav.FlightState.Altitude), nil)
+
+	for range 1800 {
+		fd, ok := f.nav.approachDistanceRemaining()
+		if !ok {
+			t.Fatal("no distance left on the approach")
+		}
+		ias := f.nav.FlightState.IAS
+		switch {
+		case fd > 12 && ias < 245:
+			t.Fatalf("slowed to %.0f knots %.1fnm out", ias, fd)
+		case fd > 5 && ias < 169:
+			t.Fatalf("slowed below 170 knots to %.0f %.1fnm out", ias, fd)
+		case fd < stabilizedDistance:
+			if ias > approachSpeed+2 {
+				t.Fatalf("at %.0f knots %.1fnm out, faster than its %.0f knot approach speed", ias, fd, approachSpeed)
+			}
+			return
+		}
+		f.Step(1)
+	}
+	t.Fatal("never got to the distance it must be stabilized at")
+}
