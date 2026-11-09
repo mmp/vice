@@ -74,9 +74,9 @@ const (
 	// the base leg of a T-shaped RNAV approach is not.
 	maxATPACourseTurn = 30
 
-	// atpaCenterlineTolerance is how far off the line from a volume's far
+	// atpaStraightTolerance is how far off the line from a volume's far
 	// end to the threshold its course may wander and still be straight.
-	atpaCenterlineTolerance = 0.2 // nm
+	atpaStraightTolerance = 0.2 // nm
 )
 
 // finalize fills in defaults for dimensions the scenario left out and reports
@@ -115,9 +115,10 @@ func (s *ATPAVolumeGeometry) finalize(elevation int, e *util.ErrorLogger) {
 
 // finalizeATPAVolumes generates the airport's ATPA volumes from its
 // approaches: one for each distinct final approach course to each runway,
-// shared by the approaches that fly it. A volume on the runway's own
-// centerline is named after the runway; any other is named after the
-// approach that defines it. Each approach records the volume it flies in.
+// shared by the approaches that fly it. The first volume whose course is the
+// runway's straight-in final is named after the runway; any other is named
+// after the approach that defines it. Each approach records the volume it
+// flies in.
 // A runway's volumes take their geometry from the scenario's "atpa" entry
 // for it; a runway that has volumes but no entry gets a default one.
 func (ap *Airport) finalizeATPAVolumes(icao ICAOAirportCode, db Database, nmPerLongitude, magneticVariation float32,
@@ -159,14 +160,17 @@ func (ap *Airport) finalizeATPAVolumes(icao ICAOAirportCode, db Database, nmPerL
 				}
 
 				// An approach joins the volume that holds its course. Straight
-				// courses within a few degrees of the runway all count as its
-				// centerline and share the runway's volume, which widens to
-				// hold them: an ILS a couple of degrees off its runway and
-				// the RNAV on the centerline are half a mile apart 15nm out,
-				// but they are flown as one final.
-				centerline := courseOnCenterline(path, appr.RunwayHeading(nmPerLongitude))
+				// courses within a few degrees of each other are one final
+				// and share a volume, which widens to hold them: an ILS a
+				// couple of degrees off its runway and an RNAV straight in
+				// are half a mile apart 15nm out, but they are flown as one.
+				hdg, straight := straightCourse(path)
 				i := slices.IndexFunc(volumes, func(v *ATPAVolume) bool {
-					return v.containsCourse(path) || (centerline && v.Id == rwy.Id)
+					if v.containsCourse(path) {
+						return true
+					}
+					vhdg, vstraight := straightCourse(v.Path)
+					return straight && vstraight && math.HeadingDifference(hdg, vhdg) <= maxLocalizerOffset
 				})
 				if i != -1 {
 					volumes[i].widenToHold(path, nmPerLongitude)
@@ -174,8 +178,10 @@ func (ap *Airport) finalizeATPAVolumes(icao ICAOAirportCode, db Database, nmPerL
 					continue
 				}
 
+				_, named := ap.ATPAVolumes[rwy.Id]
+				straightIn := straight && math.HeadingDifference(hdg, appr.RunwayHeading(nmPerLongitude)) <= maxLocalizerOffset
 				vol := &ATPAVolume{
-					Id:                 util.Select(centerline, rwy.Id, name),
+					Id:                 util.Select(straightIn && !named, rwy.Id, name),
 					Runway:             rwy.Id,
 					Path:               path,
 					Threshold:          rwy.Threshold,
@@ -338,17 +344,15 @@ func (v *ATPAVolume) setOutline(nmPerLongitude float32) {
 	v.Outline = util.MapSlice(outline, func(p [2]float32) math.Point2LL { return math.NM2LL(p, nmPerLongitude) })
 }
 
-// courseOnCenterline reports whether the final approach course path is a
-// straight line aligned with its runway, as a straight-in approach's is.
-func courseOnCenterline(path Path, runwayHeading math.TrueHeading) bool {
+// straightCourse returns the heading of the final approach course path, in
+// the direction of flight, and whether the path is a straight line.
+func straightCourse(path Path) (math.TrueHeading, bool) {
 	pts := path.Polyline()
 	first, last := pts[0], pts[len(pts)-1]
-	if math.HeadingDifference(math.VectorHeading(math.Sub2f(last, first)), runwayHeading) > maxLocalizerOffset {
-		return false
-	}
-	return !slices.ContainsFunc(pts, func(p [2]float32) bool {
-		return math.Abs(math.SignedPointLineDistance(p, first, last)) > atpaCenterlineTolerance
+	straight := !slices.ContainsFunc(pts, func(p [2]float32) bool {
+		return math.Abs(math.SignedPointLineDistance(p, first, last)) > atpaStraightTolerance
 	})
+	return math.VectorHeading(math.Sub2f(last, first)), straight
 }
 
 // corridorOutline returns the boundary of the region left and right nm
