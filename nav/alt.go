@@ -54,6 +54,10 @@ type ClearedAltitude struct {
 
 const MaximumRate = 100000
 
+// vfrDescentRate is the rate, in feet per minute, at which a VFR pilot
+// descends to enter the traffic pattern.
+const vfrDescentRate = 500
+
 func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool, simTime Time, delayReduction time.Duration) speech.CommandIntent {
 	defer nav.record("AssignAltitude", alt, afterSpeed, simTime, delayReduction)()
 	if alt > nav.Perf.Ceiling {
@@ -480,11 +484,6 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 				if nav.descendsOnGlidepath() {
 					return alt, geometricRate, true // exact glideslope
 				}
-				if nav.Waypoints[0].VFRPhase == av.VFRPhaseDownwind {
-					// A VFR aircraft on downwind descends steadily to the
-					// pattern's altitudes, starting abeam the threshold.
-					return alt, geometricRate, true
-				}
 
 				descent := nav.Perf.Rate.Descent
 				altDiff := nav.FlightState.Altitude - target.altitude
@@ -493,7 +492,20 @@ func (nav *Nav) TargetAltitude() (float32, float32, bool) {
 				// descent" / "no not yet" and end up descending too late to meet the restriction.
 				startDescent := geometricRate > descent/2 || nav.FlightState.AltitudeRate < -50
 
-				if nav.Approach.Cleared && nav.isFAF(target.fix) {
+				if nav.Waypoints[0].VFRPhase == av.VFRPhaseDownwind {
+					if nav.PassedWaypoint.VFRPhase == av.VFRPhaseDownwind {
+						// A VFR aircraft on downwind descends steadily to
+						// the pattern's altitudes, starting abeam the
+						// threshold.
+						return alt, geometricRate, true
+					}
+					// On its way into the pattern, it descends at a normal
+					// VFR rate, starting in time to level off half a minute
+					// before the entry, and keeps on once it has started.
+					if altDiff/vfrDescentRate*60 >= eta-30 || nav.FlightState.AltitudeRate < -vfrDescentRate/2 {
+						return alt, max(geometricRate, vfrDescentRate), true
+					}
+				} else if nav.Approach.Cleared && nav.isFAF(target.fix) {
 					// A pilot cleared for an approach starts down to the
 					// final approach fix where a 3 degree path to it
 					// begins, as on a glideslope, and follows the path
