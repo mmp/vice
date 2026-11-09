@@ -318,9 +318,13 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) speech.Comma
 		// the route there. Only a charted visual answers now if it never
 		// will: an instrument approach's pilot asks for vectors then.
 		if charted {
-			course, ok := nav.selectInterceptCourse(wx.MakeStandardSampleForAltitude(nav.FlightState.Altitude))
+			wxs := wx.MakeStandardSampleForAltitude(nav.FlightState.Altitude)
+			course, ok := nav.selectInterceptCourse(wxs)
 			if !ok {
-				return nav.flyChartedVisualAhead()
+				if !nav.flyChartedVisualFromHere(wxs) {
+					return chartedVisualUnable
+				}
+				return nil
 			}
 			// Until the aircraft is on the leg, the chart from where it
 			// is expected to join gives it its descent.
@@ -341,8 +345,8 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) speech.Comma
 			nav.Approach.PassedApproachFix = true // allow descent
 		}
 	} else if charted {
-		if unable := nav.flyChartedVisualAhead(); unable != nil {
-			return unable
+		if !nav.flyChartedVisualFromHere(wx.MakeStandardSampleForAltitude(nav.FlightState.Altitude)) {
+			return chartedVisualUnable
 		}
 	} else {
 		return speech.MakeUnableIntent("unable. We need either direct or a heading to intercept")
@@ -354,20 +358,33 @@ func (nav *Nav) prepareForApproach(straightIn bool, joinFix string) speech.Comma
 	return nil
 }
 
-// flyChartedVisualAhead sends a pilot whose instructions meet none of the
-// charted visual's legs to the fix of the chart they are pointed at, if there
-// is one; otherwise it returns their unable.
-func (nav *Nav) flyChartedVisualAhead() speech.CommandIntent {
-	route := nav.chartedVisualRouteAhead()
+// chartedVisualUnable is a pilot's answer to a charted visual clearance
+// they have no way to fly from where they are.
+var chartedVisualUnable = speech.MakeUnableIntent("unable. We are not on course to intercept the approach")
+
+// flyChartedVisualFromHere sends a pilot whose instructions meet none of
+// the charted visual's legs to the fix of the chart they make for on their
+// own (chartedVisualRouteFromHere), or, pointed away from all of them,
+// around to the chart's final as a visual is flown (visualJoinByPattern).
+// It reports false if there is no way.
+func (nav *Nav) flyChartedVisualFromHere(wxs wx.Sample) bool {
+	ap := nav.Approach.Assigned
+	route := nav.chartedVisualRouteFromHere(wxs)
 	if route == nil {
-		return speech.MakeUnableIntent("unable. We are not on course to intercept the approach")
+		join := nav.visualJoinByPattern(ap.Waypoints, nav.intendedHeading())
+		if join == nil {
+			return false
+		}
+		nav.Approach.InterceptState = NotIntercepting
+		nav.flyVisualRoute(nav.visualRouteFromJoin(ap.Runway, *join, nil))
+		return true
 	}
 	nav.Waypoints = append(route.Clone(), nav.FlightState.ArrivalAirport)
 	nav.Heading = Heading{}
 	nav.DeferredNavHeading = nil
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.PassedApproachFix = true // allow descent
-	return nil
+	return true
 }
 
 // ClearedApproach issues an approach clearance. joinFix has the same meaning

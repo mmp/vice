@@ -5,6 +5,7 @@
 package nav
 
 import (
+	"fmt"
 	"slices"
 	"testing"
 
@@ -134,5 +135,139 @@ func TestVisualInsideShortFinalIsUnable(t *testing.T) {
 	intent := f.ClearedVisualApproach("28L")
 	if _, unable := intent.(speech.UnableIntent); !unable {
 		t.Fatalf("intent = %v, want unable; route %v", intent, navRouteFixes(f.nav))
+	}
+}
+
+// ksnaChartedVisual returns KSNA's charted Visual Runway 20R as its scenario
+// defines it, from SAGER in along the ILS course.
+func ksnaChartedVisual(t *testing.T) ExpectedApproach {
+	t.Helper()
+	ll := func(s string) math.Point2LL {
+		p, err := math.ParseLatLong([]byte(s))
+		if err != nil {
+			t.Fatal(err)
+		}
+		return p
+	}
+	wp := func(fix, loc string, floor float32) av.Waypoint {
+		w := av.Waypoint{Fix: fix, Location: ll(loc)}
+		w.SetAltitudeRestriction(av.MakeAtOrAboveAltitudeRestriction(floor))
+		w.SetOnApproach(true)
+		return w
+	}
+	dyers := wp("DYERS", "N033.43.31.972,W117.50.13.989", 0)
+	dyers.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(1040))
+	threshold := wp("_20R_THRESHOLD", "N033.40.53.947,W117.51.54.212", 0)
+	threshold.SetAltitudeRestriction(av.MakeAtAltitudeRestriction(92))
+	threshold.SetFlyOver(true)
+	threshold.MergeActions(av.WaypointActions{Land: true})
+	return ExpectedApproach{Approach: &av.Approach{
+		Id:                "VR",
+		FullName:          "Visual Runway 20R",
+		Type:              av.ChartedVisualApproach,
+		Runway:            "20R",
+		Threshold:         threshold.Location,
+		OppositeThreshold: ll("N033.40.04.110,W117.52.25.797"),
+		Waypoints: []av.WaypointArray{{
+			wp("SAGER", "N033.55.13.119,W117.42.47.724", 4000),
+			wp("SNAKE", "N033.50.51.370,W117.45.34.744", 3400),
+			wp("HUKEM", "N033.48.42.143,W117.46.57.004", 2800),
+			wp("LEMON", "N033.46.45.455,W117.48.11.217", 2200),
+			dyers,
+			threshold,
+		}},
+	}}
+}
+
+// TestVisualClearanceFromAnywhereLands checks that a pilot cleared for a
+// visual approach on a heading, from anywhere around the runway outside a
+// short final, accepts the clearance, keeps it, and lands within 20 minutes
+// without ever circling, which is turning more than 330 degrees in one
+// unbroken turn: plain visuals to KSFO 28L, KSNA 20R and KJFK 22L, and
+// KSNA's charted visual to 20R. The aircraft starts 300 feet above the
+// visual's profile, and at least 1,800 feet above the field.
+func TestVisualClearanceFromAnywhereLands(t *testing.T) {
+	for _, tc := range []struct {
+		airport av.ICAOAirportCode
+		runway  string
+		charted bool
+	}{
+		{"KSFO", "28L", false},
+		{"KSNA", "20R", false},
+		{"KSNA", "20R", true},
+		{"KJFK", "22L", false},
+	} {
+		rwy, ok := av.LookupRunway(db.Lookups{}, tc.airport, tc.runway)
+		if !ok {
+			t.Fatalf("%s %s not found", tc.airport, tc.runway)
+		}
+		nmPerLong := math.NMPerLongitudeAt(rwy.Threshold)
+		magVar, err := db.DB.MagneticGrid.Lookup(rwy.Threshold)
+		if err != nil {
+			t.Fatal(err)
+		}
+		landing := float32(math.MagneticToTrue(rwy.Heading, magVar))
+		elev := float32(rwy.Elevation)
+
+		for _, dist := range []float32{3.5, 7, 14} {
+			for bearing := float32(0); bearing < 360; bearing += 45 {
+				for hdg := float32(0); hdg < 360; hdg += 45 {
+					name := fmt.Sprintf("%s %s (charted %v) %.1f nm out at %.0f degrees, heading %.0f off the runway",
+						tc.airport, tc.runway, tc.charted, dist, bearing, hdg)
+					p := math.Offset2LL(rwy.Threshold, math.TrueHeading(math.NormalizeHeading(landing+180+bearing)), dist, nmPerLong)
+					alt := elev + max(1500, 900+(dist-3)*ftPerNMOnGlideslope) + 300
+					f := NewArrivalFlight(t, ArrivalConfig{
+						Waypoints:        p.DMSString(),
+						DepartureAirport: "KMCO",
+						ArrivalAirport:   tc.airport,
+						AircraftType:     "A320",
+						InitialAltitude:  alt,
+						InitialSpeed:     190,
+						AssignedAltitude: alt,
+						InitialHeading:   float32(math.TrueToMagnetic(math.TrueHeading(math.NormalizeHeading(landing+hdg)), magVar)),
+					})
+					var intent speech.CommandIntent
+					if tc.charted {
+						f.nav.ExpectApproach("VR", ksnaChartedVisual(t), nil)
+						intent = f.nav.ClearedApproach("VR", nil, f.simTime, 0, false, "")
+					} else {
+						f.ExpectVisualApproach(tc.runway)
+						intent = f.ClearedVisualApproach(tc.runway)
+					}
+					if u, unable := intent.(speech.UnableIntent); unable {
+						t.Errorf("%s: refused: %v", name, u)
+						continue
+					}
+
+					var turned, maxTurned float32 // the present unbroken turn, and the largest
+					landed := false
+					for range 1200 {
+						hdg := f.nav.FlightState.Heading
+						f.Step(1)
+						fs := &f.nav.FlightState
+						if dh := math.HeadingSignedTurn(hdg, fs.Heading); math.Abs(dh) >= 1 && math.Sign(dh) != -math.Sign(turned) {
+							turned += dh
+						} else {
+							turned = 0
+						}
+						maxTurned = max(maxTurned, math.Abs(turned))
+						if !f.nav.Approach.Cleared {
+							t.Errorf("%s: clearance dropped after %d s", name, f.tick)
+							break
+						}
+						if math.NMDistance2LL(fs.Position, rwy.Threshold) < 0.2 && fs.Altitude-elev < 600 {
+							landed = true
+							break
+						}
+					}
+					if maxTurned > 330 {
+						t.Errorf("%s: circled, turning %.0f degrees without a break", name, maxTurned)
+					}
+					if !landed && f.nav.Approach.Cleared {
+						t.Errorf("%s: didn't land in 20 minutes", name)
+					}
+				}
+			}
+		}
 	}
 }

@@ -76,10 +76,12 @@ func NewVisualScenario(t *testing.T, airportLoc math.Point2LL, runway string, ac
 					},
 				},
 			},
+			Perf: db.DB.AircraftPerformance["A320"],
 			FlightState: nav.FlightState{
 				Position:                acPos,
 				Heading:                 heading,
 				Altitude:                3000,
+				IAS:                     180,
 				NmPerLongitude:          52,
 				MagneticVariation:       0,
 				ArrivalAirport:          av.Waypoint{Fix: "KJFK"},
@@ -694,10 +696,12 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			wantFirstFix: "_36_3NM_FINAL",
 		},
 		{
-			name:    "Behind threshold — go around",
-			pos:     math.Point2LL{0, 1.0 / 60}, // 1nm north of threshold
-			heading: 360,
-			wantNil: true,
+			// Past the runway and flying away from it, the aircraft gets
+			// onto a downwind and flies the pattern back to the final.
+			name:         "Behind threshold, flying away — downwind",
+			pos:          math.Point2LL{0, 1.0 / 60}, // 1nm north of threshold
+			heading:      360,
+			wantFirstFix: "_36_DOWNWIND",
 		},
 	}
 
@@ -714,9 +718,12 @@ func TestVisualApproachWaypoints(t *testing.T) {
 						},
 					},
 				},
+				Perf: db.DB.AircraftPerformance["A320"],
 				FlightState: nav.FlightState{
 					Position:          tt.pos,
 					Heading:           tt.heading,
+					Altitude:          2500,
+					IAS:               180,
 					NmPerLongitude:    nmPerLong,
 					MagneticVariation: 0,
 					ArrivalAirport:    av.Waypoint{Fix: "KTEST"},
@@ -753,7 +760,7 @@ func TestVisualApproachWaypoints(t *testing.T) {
 			if wps[0].Fix != tt.wantFirstFix {
 				t.Errorf("first waypoint = %q, want %q; all waypoints: %v", wps[0].Fix, tt.wantFirstFix, wpNames(wps))
 			}
-			if tt.wantFirstFix != "_36_3NM_FINAL" && wps[1].Fix != "_36_3NM_FINAL" {
+			if tt.wantFirstFix == "_36_FINAL_TURN" && wps[1].Fix != "_36_3NM_FINAL" {
 				t.Errorf("second waypoint = %q, want _36_3NM_FINAL; all waypoints: %v", wps[1].Fix, wpNames(wps))
 			}
 
@@ -1557,6 +1564,54 @@ func TestVisualApproachFollowingTrafficRejectsNearThresholdLeader(t *testing.T) 
 	}
 }
 
+// TestVisualApproachFollowingLandingTrafficFliesOwnJoin checks that a pilot
+// cleared to follow traffic that is about to land, too close to the runway
+// to fall in behind, flies their own way to the final instead of refusing.
+func TestVisualApproachFollowingLandingTrafficFliesOwnJoin(t *testing.T) {
+	rwy := av.Runway{
+		Id:                      "36",
+		Heading:                 360,
+		Threshold:               math.Point2LL{0, 0},
+		Elevation:               100,
+		ThresholdCrossingHeight: 50,
+	}
+	setupTestRunway(t, "KTEST", rwy)
+
+	nmPerLong := float32(60)
+	reference := &av.Approach{
+		Type:      av.ILSApproach,
+		Runway:    "36",
+		Threshold: rwy.Threshold,
+		Waypoints: []av.WaypointArray{{
+			fafWaypoint("FAF36", math.Point2LL{0, -25.0 / 60}),
+			{Fix: "_36_THRESHOLD", Location: rwy.Threshold},
+		}},
+	}
+	n := nav.Nav{
+		FlightState: nav.FlightState{
+			Position:       math.NM2LL([2]float32{0, -8}, nmPerLong),
+			Heading:        360,
+			NmPerLongitude: nmPerLong,
+			ArrivalAirport: av.Waypoint{Fix: "KTEST"},
+		},
+	}
+	n.Approach.AssignedId = "_VIS36"
+	n.Approach.Assigned = visualApproachTo(rwy, reference)
+	n.Approach.VisualReferences = []*av.Approach{reference}
+
+	trafficPos := math.NM2LL([2]float32{0, -0.4}, nmPerLong)
+	intent := n.ClearedVisualApproach(&nav.FollowTraffic{
+		Position: trafficPos,
+		Route:    av.WaypointArray{{Fix: "_36_THRESHOLD", Location: rwy.Threshold}, n.FlightState.ArrivalAirport},
+	}, "")
+	if u, unable := intent.(speech.UnableIntent); unable {
+		t.Fatalf("unexpected unable: %v", u)
+	}
+	if fixes := wpNames(n.Waypoints); len(fixes) == 0 || fixes[0] != "_36_3NM_FINAL" {
+		t.Fatalf("route = %v, want the aircraft's own join at the 3 nm final", fixes)
+	}
+}
+
 func TestAirportAdvisoryAccuracyCheck(t *testing.T) {
 	// Airport at (0, 0). Aircraft 5nm north heading south → airport is at 12 o'clock.
 	// Actual bearing from ac to airport ≈ 180°.
@@ -2130,7 +2185,7 @@ func TestMaintainingVisualSeparationPersistsUntilTrafficNoLongerVisible(t *testi
 
 // === Scenario tests using VisualScenario helper ===
 
-func TestScenarioCVATooCloseIsUnable(t *testing.T) {
+func TestScenarioCVAPastRunwayFliesPattern(t *testing.T) {
 	airportLoc := math.Point2LL{0, 0}
 	oppositeLoc := math.Point2LL{0, 1.0 / 60}
 	setupTestRunways(t, "KJFK", []av.Runway{
@@ -2138,8 +2193,8 @@ func TestScenarioCVATooCloseIsUnable(t *testing.T) {
 		{Id: "18", Heading: 180, Threshold: oppositeLoc, Elevation: 13},
 	})
 
-	// North of the runway 36 threshold and heading north: too close/behind
-	// for a stable visual, so CVA is refused.
+	// North of the runway 36 threshold and heading north, past the runway:
+	// the pilot gets onto a downwind and flies the pattern back to it.
 	vs := NewVisualScenario(t, airportLoc, "36", math.Point2LL{0, 1.0 / 60}, 360)
 	vs.AC.FieldInSight = true
 	vs.AC.Nav.Approach.Assigned = nil
@@ -2149,11 +2204,14 @@ func TestScenarioCVATooCloseIsUnable(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if _, ok := intent.(speech.UnableIntent); !ok {
-		t.Fatalf("expected UnableIntent for too-close CVA, got %T", intent)
+	if u, ok := intent.(speech.UnableIntent); ok {
+		t.Fatalf("CVA past the runway refused: %v", u)
+	}
+	if fixes := wpNames(vs.AC.Nav.Waypoints); len(fixes) == 0 || fixes[0] != "_36_DOWNWIND" {
+		t.Fatalf("route = %v, want it to start on a downwind", fixes)
 	}
 	if vs.AC.WentAround {
-		t.Fatal("too-close CVA should not auto-trigger go-around")
+		t.Fatal("CVA past the runway should not trigger a go-around")
 	}
 }
 

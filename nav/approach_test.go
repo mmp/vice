@@ -305,10 +305,11 @@ func TestChartedVisualClearancePreservesActiveArc(t *testing.T) {
 func squareChartedVisualApproach() *av.Approach {
 	nmPerLong := float32(60)
 	return &av.Approach{
-		Id:        "V09",
-		Type:      av.ChartedVisualApproach,
-		Runway:    "09",
-		Threshold: math.NM2LL([2]float32{5, -5}, nmPerLong),
+		Id:                "V09",
+		Type:              av.ChartedVisualApproach,
+		Runway:            "09",
+		Threshold:         math.NM2LL([2]float32{5, -5}, nmPerLong),
+		OppositeThreshold: math.NM2LL([2]float32{6, -5}, nmPerLong),
 		Waypoints: []av.WaypointArray{{
 			{Fix: "A", Location: math.NM2LL([2]float32{-5, -5}, nmPerLong)},
 			{Fix: "B", Location: math.NM2LL([2]float32{-5, 5}, nmPerLong)},
@@ -363,15 +364,20 @@ func TestChartedVisualInterceptsFromAssignedHeading(t *testing.T) {
 	}
 }
 
-// TestChartedVisualNotOnCourseIsUnable checks that a pilot whose heading
+// TestChartedVisualNotOnCourseComesAround checks that a pilot whose heading
 // meets none of the chart's legs, and who is pointed at none of its fixes,
-// answers unable: heading 090 from east of the square flies away from it.
-func TestChartedVisualNotOnCourseIsUnable(t *testing.T) {
+// comes around to the chart's final on their own: heading 090 from east of
+// the square, past the runway's far end, they get onto a downwind north of
+// it and fly in to the threshold at D.
+func TestChartedVisualNotOnCourseComesAround(t *testing.T) {
 	n := interceptTestNav([2]float32{10, 0}, 90, squareChartedVisualApproach())
 
-	intent := n.prepareForApproach(false, "")
-	if _, unable := intent.(speech.UnableIntent); !unable {
-		t.Fatalf("intent = %v, want unable", intent)
+	if intent := n.prepareForApproach(false, ""); intent != nil {
+		t.Fatalf("unexpected intent: %v", intent)
+	}
+	fixes := navRouteFixes(n)
+	if len(fixes) < 3 || fixes[0] != "_09_DOWNWIND" || fixes[len(fixes)-2] != "D" {
+		t.Fatalf("route = %v, want it to start on a downwind and end at D", fixes)
 	}
 }
 
@@ -400,9 +406,11 @@ func makeTwoFeederChartedVisualNav(pos [2]float32, hdg math.MagneticHeading) *Na
 				},
 			},
 		},
+		Perf: db.DB.AircraftPerformance["A320"],
 		FlightState: FlightState{
 			Position:       math.NM2LL(pos, nmPerLong),
 			Heading:        hdg,
+			IAS:            210,
 			NmPerLongitude: nmPerLong,
 			ArrivalAirport: wp("KTEST", 11, 0),
 		},

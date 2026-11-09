@@ -376,7 +376,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 		course, ok := nav.selectInterceptCourse(wxs)
 		if !ok {
 			if !turningToAssigned {
-				nav.missIntercept()
+				nav.missIntercept(wxs)
 			}
 			return
 		}
@@ -401,7 +401,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 			// FAF the controller set it up; one that overshoots is
 			// recovered from only where there is room to.
 			if course.Final && turnResult == turnToInterceptCorrectableOvershoot && !nav.approachRecoveryFeasible(ap) {
-				nav.missIntercept()
+				nav.missIntercept(wxs)
 				return
 			}
 			joinHdg := hdgMag
@@ -425,7 +425,7 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 			if turningToAssigned {
 				return
 			}
-			nav.missIntercept()
+			nav.missIntercept(wxs)
 		}
 		return
 
@@ -440,12 +440,13 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 			NavLog(callsign, simTime, NavLogApproach, "TurningToJoin: not on course, flying wind-corrected hdg %.0f (course hdg %.0f)", heading, *nav.Heading.Assigned)
 			// Once settled on the heading the aircraft either closes on the
 			// course or never will; nothing after this reconsiders the
-			// intercept, so ask for new vectors rather than flying away from
-			// the approach without a word.
+			// intercept, so the pilot finds another way in or asks for new
+			// vectors rather than flying away from the approach without a
+			// word.
 			if math.HeadingDifference(fs.Heading, heading) < 1 &&
 				!nav.closingOnCourseLine(course.Line, wxs) {
-				NavLog(callsign, simTime, NavLogApproach, "TurningToJoin: not closing on the course; requesting vectors")
-				nav.approachOvershootRequestVectors()
+				NavLog(callsign, simTime, NavLogApproach, "TurningToJoin: not closing on the course")
+				nav.missIntercept(wxs)
 			}
 			return
 		}
@@ -476,35 +477,67 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 
 // routeAt returns the rest of the approach route once the aircraft is on
 // course at p: the fixes ahead on the final, or the route beyond the leg.
+// An aircraft that captured the leg's course too close to its end to turn
+// to the fix there without circling, or beyond it, goes on to the next fix.
 func (nav *Nav) routeAt(course InterceptCourse, p math.Point2LL) av.WaypointArray {
 	if course.Final {
 		route, idx := nav.finalWaypointsAhead(nav.Approach.Assigned, p)
 		return route[idx:]
 	}
-	return course.Route[course.Index+1:]
+	route := course.Route[course.Index+1:]
+	nmPerLong := nav.FlightState.NmPerLongitude
+	toEnd := math.Sub2f(math.LL2NM(route[0].Location, nmPerLong), math.LL2NM(p, nmPerLong))
+	if len(route) > 1 && (math.Dot(toEnd, math.HeadingVector(course.course(nmPerLong))) <= courseCaptureTolerance ||
+		!nav.canTurnTo(route[0].Location, nav.currentTurnRadius())) {
+		route = route[1:]
+	}
+	return route
 }
 
 // missIntercept is what happens when the heading won't take the aircraft
-// onto any of the approach's courses. On a visual the pilot flies to the
-// final themselves; otherwise they ask for vectors.
-func (nav *Nav) missIntercept() {
-	if nav.Approach.Assigned.Type == av.VisualApproach && nav.Approach.Cleared {
-		if wps := nav.visualRouteToFinal(nil); wps != nil {
-			nav.Approach.InterceptState = NotIntercepting
-			nav.flyVisualRoute(wps)
-			return
-		}
+// onto any of the approach's courses. Cleared for a visual, the pilot flies
+// to the runway themselves; otherwise they ask for vectors.
+func (nav *Nav) missIntercept(wxs wx.Sample) {
+	if nav.Approach.Cleared && nav.flyVisualFromHere(wxs) {
+		return
 	}
 	nav.approachOvershootRequestVectors()
 }
 
+// flyVisualFromHere puts a pilot cleared for a visual approach, plain or
+// charted, on the way to the runway from wherever they are, reporting
+// false if the approach isn't a visual or there is no way.
+func (nav *Nav) flyVisualFromHere(wxs wx.Sample) bool {
+	switch nav.Approach.Assigned.Type {
+	case av.VisualApproach:
+		wps := nav.visualRouteToFinal(nil)
+		if wps == nil {
+			return false
+		}
+		nav.Approach.InterceptState = NotIntercepting
+		nav.flyVisualRoute(wps)
+		return true
+	case av.ChartedVisualApproach:
+		return nav.flyChartedVisualFromHere(wxs)
+	default:
+		return false
+	}
+}
+
 // approachRecoveryFeasible returns true if the aircraft's current position
-// allows a turn back to the final approach course: it must not be too close
-// to the FAF and must still be close enough laterally for a stable recovery.
+// allows a turn back to the final approach course: it must be short of the
+// threshold, not too close to the FAF, and still close enough laterally for
+// a stable recovery.
 func (nav *Nav) approachRecoveryFeasible(ap *av.Approach) bool {
 	nmPerLong := nav.FlightState.NmPerLongitude
 	magVar := nav.FlightState.MagneticVariation
 	pos := nav.FlightState.Position
+
+	// Past the threshold, the final is behind the aircraft.
+	course := math.HeadingVector(ap.FinalApproachCourse(nmPerLong, magVar))
+	if math.Dot(math.Sub2f(math.LL2NM(pos, nmPerLong), math.LL2NM(ap.Threshold, nmPerLong)), course) > 0 {
+		return false
+	}
 
 	// Check proximity to the FAF: need at least 2nm along the course.
 	wps, fafIdx := ap.FAFSegment(nmPerLong, magVar)

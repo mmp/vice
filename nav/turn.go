@@ -52,6 +52,31 @@ func (nav *Nav) inTrafficPattern() bool {
 	}
 }
 
+// insideTurnCircle reports whether p is inside the circle of radius r that
+// an aircraft at pos flying along dir, a unit vector, turns on toward it,
+// all in nm, so that it could only reach p by circling. A point on the
+// circle is reached by flying the turn.
+func insideTurnCircle(pos, dir, p [2]float32, r float32) bool {
+	left := [2]float32{-dir[1], dir[0]}
+	side := float32(1)
+	if math.Dot(math.Sub2f(p, pos), left) < 0 {
+		side = -1
+	}
+	return math.Distance2f(math.Add2f(pos, math.Scale2f(left, side*r)), p) < r-0.01
+}
+
+// canTurnTo reports whether the aircraft can fly to p from where it is,
+// turning on a circle of radius r, without circling. Rolling into the
+// bank takes a few seconds, so the turn effectively starts as far ahead
+// as the aircraft flies in half of them.
+func (nav *Nav) canTurnTo(p math.Point2LL, r float32) bool {
+	fs := &nav.FlightState
+	dir := math.HeadingVector(math.MagneticToTrue(fs.Heading, fs.MagneticVariation))
+	rollIn := standardTurnLimits(nav.Perf).bank / nav.Perf.Turn.MaxBankRate
+	start := math.Add2f(math.LL2NM(fs.Position, fs.NmPerLongitude), math.Scale2f(dir, rollIn/2*fs.GS/3600))
+	return !insideTurnCircle(start, dir, math.LL2NM(p, fs.NmPerLongitude), r)
+}
+
 func TurnAngle(from, to math.MagneticHeading, turn av.TurnDirection) float32 {
 	switch turn {
 	case av.TurnLeft:
