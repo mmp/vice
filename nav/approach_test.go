@@ -3021,6 +3021,46 @@ func TestBackCourseApproachFromVectors(t *testing.T) {
 	}
 }
 
+// An aircraft vectored to join its final less than 2nm outside the FAF
+// joins it rather than asking for vectors: 7110.65 5-9-1 has controllers
+// vector that close in good weather or at the pilot's request. Here a 20
+// degree intercept from half a mile off PHNL's LDA 26L meets it 1.6nm
+// outside the FAF, HEFTL.
+func TestInterceptCloseToFAF(t *testing.T) {
+	secil, _ := db.DB.LookupWaypoint("SECIL")
+	heftl, _ := db.DB.LookupWaypoint("HEFTL")
+	nmPerLong := math.NMPerLongitudeAt(heftl)
+	magVar, err := db.DB.MagneticGrid.Lookup(heftl)
+	if err != nil {
+		t.Fatal(err)
+	}
+	course := math.Heading2LL(secil, heftl, nmPerLong)
+
+	pos := math.Offset2LL(heftl, math.OppositeHeading(course), 3, nmPerLong)
+	pos = math.Offset2LL(pos, math.OffsetHeading(course, -90), 0.5, nmPerLong)
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " SECIL HEFTL",
+		DepartureAirport: "KLAX",
+		ArrivalAirport:   "PHNL",
+		AircraftType:     "B738",
+		InitialAltitude:  1500,
+		InitialSpeed:     180,
+		InitialHeading:   float32(math.TrueToMagnetic(math.OffsetHeading(course, 20), magVar)),
+	})
+	f.ExpectApproach("X26L")
+	f.ClearedApproach("X26L")
+
+	f.StepUntil("joined the approach", func() bool {
+		if f.nav.Requests.Vectors {
+			t.Fatalf("requested vectors %.1fnm from HEFTL", math.NMDistance2LL(f.nav.FlightState.Position, heftl))
+		}
+		return f.nav.Approach.InterceptState == OnApproachCourse
+	})
+	if d := math.NMDistance2LL(f.nav.FlightState.Position, heftl); d > 2 {
+		t.Errorf("joined %.1fnm from HEFTL, expected within 2nm", d)
+	}
+}
+
 // PHNL's RNAV (RNP) 26L reaches its FAF, KUHIO, on a course 45 degrees off
 // the runway and curves onto the runway after it. An aircraft vectored to
 // join that course shallowly from inside the curve, on a heading that would

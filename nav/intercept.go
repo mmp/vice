@@ -397,7 +397,10 @@ func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime Time) (h
 			// Still too far; keep flying the assigned heading.
 
 		case turnToInterceptTurn, turnToInterceptCorrectableOvershoot:
-			if course.Final && !nav.approachRecoveryFeasible(ap) {
+			// A turn that captures the final is flown however close to the
+			// FAF the controller set it up; one that overshoots is
+			// recovered from only where there is room to.
+			if course.Final && turnResult == turnToInterceptCorrectableOvershoot && !nav.approachRecoveryFeasible(ap) {
 				nav.missIntercept()
 				return
 			}
