@@ -974,7 +974,9 @@ func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches []Candi
 	// echo", "RNAV visual". The approach whose name accounts for more of
 	// them is the one meant; failing that, the assigned approach, then
 	// the one whose name has the fewest words beyond what was said.
-	span := tokens[:typeConsumed+variantConsumed+numPos]
+	span := util.FilterSlice(tokens[:typeConsumed+variantConsumed+numPos], func(t Token) bool {
+		return !strings.EqualFold(t.Text, "runway")
+	})
 	var best CandidateApproach
 	var bestAlign float64
 	better := func(appr CandidateApproach, align float64) bool {

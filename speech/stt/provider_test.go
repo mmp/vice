@@ -5219,6 +5219,18 @@ func TestApproachTypeNames(t *testing.T) {
 			expected:   "DAL123 EG8R",
 		},
 		{
+			name:       "RNP qualifier",
+			transcript: "Delta 123 expect RNAV RNP runway four approach",
+			approaches: map[string]string{"RNAV RNP Runway 4": "RNP4", "RNAV Runway 4": "R4"},
+			expected:   "DAL123 ERNP4",
+		},
+		{
+			name:       "runway is not a qualifier",
+			transcript: "Delta 123 expect RNAV runway four approach",
+			approaches: map[string]string{"RNAV RNP Runway 4": "RNP4", "RNAV Runway 4": "R4"},
+			expected:   "DAL123 ER4",
+		},
+		{
 			name:       "qualifier after the type",
 			transcript: "Delta 123 expect localizer DME echo runway one five approach",
 			approaches: map[string]string{"Localizer DME Echo Runway 15": "LDE", "Localizer DME Runway 15": "L15"},
