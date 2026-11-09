@@ -21,7 +21,7 @@ var queryMethods = []string{
 	"ApproachHeading", "AssignedHeading", "AssignedWaypoints", "Check", "ContactMessage",
 	"DepartureHeading", "DepartureMessage", "DistanceToEndOfApproach", "ETA",
 	"InterceptedButNotCleared", "IsAirborne", "LowestProcedureAltitude", "Mach", "OnApproach",
-	"OnExtendedCenterline", "ResolveApproach", "SayAltitude", "SayHeading", "SayIndicatedSpeed",
+	"ResolveApproach", "SayAltitude", "SayHeading", "SayIndicatedSpeed",
 	"SayMach", "SaySpeed", "SetLookups", "SetRecorder", "Summary", "TAS", "TakeSnapshot",
 	"TargetAltitude", "TargetSpeed", "Update", "UpdateWithWeather",
 }

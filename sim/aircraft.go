@@ -977,10 +977,6 @@ func (ac *Aircraft) OnApproach(checkAltitude bool) bool {
 	return ac.Nav.OnApproach(checkAltitude)
 }
 
-func (ac *Aircraft) OnExtendedCenterline(maxNmDeviation float32) bool {
-	return ac.Nav.OnExtendedCenterline(maxNmDeviation)
-}
-
 // onShortFinal reports whether the aircraft is within 2nm of the end of its
 // assigned approach to the given runway.
 func (ac *Aircraft) onShortFinal(runway string) bool {

@@ -226,7 +226,6 @@ func makeDerivedState(s *Sim) DerivedState {
 			ArrivalAirport:            ac.ArrivalAirport,
 			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
 			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
-			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
 			ClearedForApproach:        ac.Nav.Approach.Cleared,
 			Approach:                  approach,
@@ -617,7 +616,6 @@ type Track struct {
 	ArrivalAirport            av.ICAOAirportCode
 	ArrivalAirportElevation   float32
 	ArrivalAirportLocation    math.Point2LL
-	OnExtendedCenterline      bool
 	OnApproach                bool
 	ClearedForApproach        bool
 	Approach                  string              // Full name of assigned approach, if any

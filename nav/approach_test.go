@@ -927,7 +927,7 @@ func TestApproachWindCorrectionOnLocalizer(t *testing.T) {
 	for tick := 200; tick <= 800; tick += 10 {
 		f.AfterTicks(tick, func(f *FlightTest) {
 			if f.nav.Approach.InterceptState == OnApproachCourse {
-				f.AssertOnExtendedCenterline(0.1)
+				f.AssertOnFinalApproachCourse(0.1)
 			}
 		})
 	}
@@ -1212,7 +1212,7 @@ func TestLocalizerFlythroughLateTurn(t *testing.T) {
 	for tick := 200; tick <= 800; tick += 50 {
 		f.AfterTicks(tick, func(f *FlightTest) {
 			if f.nav.Approach.InterceptState == OnApproachCourse {
-				f.AssertOnExtendedCenterline(0.05)
+				f.AssertOnFinalApproachCourse(0.05)
 			}
 		})
 	}
@@ -1559,7 +1559,7 @@ func TestLocalizerRecoveryTurnsTowardTheCourse(t *testing.T) {
 
 	for range 120 {
 		f.tickOnce()
-		f.AssertOnExtendedCenterline(0.3)
+		f.AssertOnFinalApproachCourse(0.3)
 	}
 }
 

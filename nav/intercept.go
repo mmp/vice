@@ -665,16 +665,3 @@ func (nav *Nav) closingOnCourseLine(line [2]math.Point2LL, wxs wx.Sample) bool {
 	angle := math.HeadingSignedTurn(course, math.VectorHeading(v))
 	return angle*nav.signedCourseLineDistance(line) < 0 && math.Abs(angle) >= minInterceptAngle
 }
-
-// OnExtendedCenterline checks if the flight position is less than
-// maxNmDeviation from the assigned approach's final approach course. An
-// approach that reaches its FAF on an RF leg has no straight final to be on.
-func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
-	approach := nav.Approach.Assigned
-	if approach == nil {
-		return false
-	}
-
-	cl := approach.FinalApproachCourseLine(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-	return cl[0] != cl[1] && nav.onCourseLine(cl, maxNmDeviation)
-}

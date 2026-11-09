@@ -710,13 +710,14 @@ func (f *FlightTest) AssertNotDescending() {
 	}
 }
 
-// AssertOnExtendedCenterline checks that the aircraft is within the given
-// tolerance (in nm) of the approach extended centerline.
-func (f *FlightTest) AssertOnExtendedCenterline(toleranceNM float32) {
+// AssertOnFinalApproachCourse checks that the aircraft is within the given
+// tolerance (in nm) of its approach's final approach course.
+func (f *FlightTest) AssertOnFinalApproachCourse(toleranceNM float32) {
 	f.t.Helper()
-	if !f.nav.OnExtendedCenterline(toleranceNM) {
-		f.t.Errorf("tick %d: aircraft is more than %.1fnm from the extended centerline",
-			f.tick, toleranceNM)
+	fs := &f.nav.FlightState
+	line := f.nav.Approach.Assigned.FinalApproachCourseLine(fs.NmPerLongitude, fs.MagneticVariation)
+	if !f.nav.onCourseLine(line, toleranceNM) {
+		f.t.Errorf("tick %d: aircraft is more than %.1fnm from the final approach course", f.tick, toleranceNM)
 	}
 }
 

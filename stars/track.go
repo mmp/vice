@@ -1429,7 +1429,7 @@ func (sp *Scope) checkInTrailCwtSeparation(ctx *scope.Context, icao av.ICAOAirpo
 
 	eligible25nm := ss.IsReducedSeparationEnabled(icao, vol.Runway) &&
 		math.NMDistance2LL(vol.Threshold, state.track.Location) < av.ReducedSeparationDistance &&
-		back.OnExtendedCenterline && front.OnExtendedCenterline
+		back.OnApproach && front.OnApproach
 	cwtSeparation := av.CWTApproachSeparation(
 		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
 

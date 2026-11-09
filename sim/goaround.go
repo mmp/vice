@@ -206,7 +206,7 @@ func (s *Sim) checkFinalApproachSpacing() {
 			// Get required separation
 			eligible25nm := s.State.IsReducedSeparationEnabled(airport, rwy) &&
 				math.NMDistance2LL(trailing.Position(), threshold) < av.ReducedSeparationDistance &&
-				trailing.OnExtendedCenterline(0.2) && front.OnExtendedCenterline(0.2)
+				trailing.OnApproach(false) && front.OnApproach(false)
 			reqSep := av.CWTApproachSeparation(front.CWT(), trailing.CWT(), eligible25nm)
 
 			actualSep := math.NMDistance2LL(front.Position(), trailing.Position())
