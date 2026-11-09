@@ -212,8 +212,10 @@ func matchOptionalWord(tokens []Token, pm partialMatch, keywords []string) parti
 			continue
 		}
 		// Longer keywords fuzzy match, but not across a >2x length
-		// difference (e.g., "torch" vs "direct").
-		if len(text) > 2*len(kw) || len(kw) > 2*len(text) {
+		// difference (e.g., "torch" vs "direct"), and not a command word
+		// that means something else: "expect [for] {approach}" must leave
+		// "VOR" to the approach.
+		if len(text) > 2*len(kw) || len(kw) > 2*len(text) || (commandVocabulary[text] && text != kw) {
 			continue
 		}
 		if ws := WordScore(text, kw); ws >= 0.8 {

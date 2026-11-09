@@ -5166,6 +5166,95 @@ func TestAssignedApproachPreference(t *testing.T) {
 	}
 }
 
+// TestApproachTypeNames checks that each kind of approach a scenario names
+// is the one picked when the controller says its name, among the other
+// approaches to its runway at the airport.
+func TestApproachTypeNames(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		approaches map[string]string
+		expected   string
+	}{
+		{
+			name:       "LDA as one word",
+			transcript: "Delta 123 HCF approach expect LDA runway two six left approach",
+			approaches: map[string]string{"LDA Runway 26L": "L6L", "RNAV Runway 26L": "R6L"},
+			expected:   "DAL123 EL6L",
+		},
+		{
+			name:       "LDA clearance",
+			transcript: "Delta 123 cleared LDA runway two six left approach",
+			approaches: map[string]string{"LDA Runway 26L": "L6L", "RNAV Runway 26L": "R6L"},
+			expected:   "DAL123 CL6L",
+		},
+		{
+			name:       "LDA spelled out",
+			transcript: "Delta 123 expect L D A runway two six left approach",
+			approaches: map[string]string{"LDA Runway 26L": "L6L", "RNAV Runway 26L": "R6L"},
+			expected:   "DAL123 EL6L",
+		},
+		{
+			name:       "VOR is not the word for",
+			transcript: "Delta 123 expect VOR runway one zero left approach",
+			approaches: map[string]string{"VOR Runway 10L": "V0L", "ILS Runway 10L": "I0L", "RNAV Y Runway 10L": "RY0L"},
+			expected:   "DAL123 EV0L",
+		},
+		{
+			name:       "localizer rather than the ILS",
+			transcript: "Delta 123 cleared localizer runway one approach",
+			approaches: map[string]string{"Localizer Runway 1": "L1", "ILS Runway 1": "I1"},
+			expected:   "DAL123 CL1",
+		},
+		{
+			name:       "localizer variant",
+			transcript: "Delta 123 expect localizer zulu runway two two approach",
+			approaches: map[string]string{"Localizer Z Runway 22": "LZ22", "ILS Z Runway 22": "IZ22", "RNAV Y Runway 22": "RY22"},
+			expected:   "DAL123 ELZ22",
+		},
+		{
+			name:       "GLS spelled out",
+			transcript: "Delta 123 expect G L S runway two eight right approach",
+			approaches: map[string]string{"GLS Runway 28R": "G8R", "ILS Runway 28R": "I8R"},
+			expected:   "DAL123 EG8R",
+		},
+		{
+			name:       "qualifier after the type",
+			transcript: "Delta 123 expect localizer DME echo runway one five approach",
+			approaches: map[string]string{"Localizer DME Echo Runway 15": "LDE", "Localizer DME Runway 15": "L15"},
+			expected:   "DAL123 ELDE",
+		},
+		{
+			name:       "RNAV visual",
+			transcript: "Delta 123 expect RNAV visual runway eight right approach",
+			approaches: map[string]string{"RNAV Visual Runway 8 Right": "RV8R", "RNAV Runway 8R": "R8R"},
+			expected:   "DAL123 ERV8R",
+		},
+		{
+			name:       "unqualified name over a qualified one",
+			transcript: "Delta 123 expect ILS runway three two approach",
+			approaches: map[string]string{"High ILS Runway 32": "HI2", "ILS Runway 32": "I32"},
+			expected:   "DAL123 EI32",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			aircraft := map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival", Altitude: 6000, CandidateApproaches: tt.approaches},
+			}
+			result, err := provider.DecodeTranscript(aircraft, tt.transcript, "")
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestDetectNegativeThatWasFor(t *testing.T) {
 	tests := []struct {
 		name           string
