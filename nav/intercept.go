@@ -167,12 +167,6 @@ func (nav *Nav) interceptApproachAtFix(wp av.Waypoint) bool {
 	return true
 }
 
-// A leg within these of the final approach course is a stretch of it.
-const (
-	finalCourseHeadingLeeway = 5   // degrees
-	finalCourseLateralLeeway = 0.3 // nm
-)
-
 // interceptCandidates returns the courses of the assigned approach that a
 // heading can join: its final approach course, and each leg of its routes
 // that is not a stretch of the final. A charted visual's track to the
@@ -187,16 +181,9 @@ func (nav *Nav) interceptCandidates() []InterceptCourse {
 	var courses []InterceptCourse
 	alongFinal := func(a, b math.Point2LL) bool { return false }
 	if line := ap.FinalApproachCourseLine(nmPerLong, magVar); ap.Type != av.ChartedVisualApproach && line[0] != line[1] {
-		p0, p1 := math.LL2NM(line[0], nmPerLong), math.LL2NM(line[1], nmPerLong)
-		course := math.Heading2LL(line[0], line[1], nmPerLong)
-		dir := math.HeadingVector(course)
-		onFinal := func(p math.Point2LL) bool {
-			return math.Abs(math.SignedPointLineDistance(math.LL2NM(p, nmPerLong), p0, p1)) < finalCourseLateralLeeway
-		}
-		alongFinal = func(a, b math.Point2LL) bool {
-			return math.HeadingDifference(math.Heading2LL(a, b, nmPerLong), course) < finalCourseHeadingLeeway &&
-				onFinal(a) && onFinal(b)
-		}
+		p1 := math.LL2NM(line[1], nmPerLong)
+		dir := math.HeadingVector(math.Heading2LL(line[0], line[1], nmPerLong))
+		alongFinal = func(a, b math.Point2LL) bool { return av.LegAlongCourse(line, a, b, nmPerLong) }
 
 		reach := float32(100)
 		if !ap.Type.HasLocalizer() && ap.Type != av.VisualApproach {
@@ -680,7 +667,8 @@ func (nav *Nav) closingOnCourseLine(line [2]math.Point2LL, wxs wx.Sample) bool {
 }
 
 // OnExtendedCenterline checks if the flight position is less than
-// maxNmDeviation from the assigned approach's final approach course.
+// maxNmDeviation from the assigned approach's final approach course. An
+// approach that reaches its FAF on an RF leg has no straight final to be on.
 func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	approach := nav.Approach.Assigned
 	if approach == nil {
@@ -688,5 +676,5 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	}
 
 	cl := approach.FinalApproachCourseLine(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-	return nav.onCourseLine(cl, maxNmDeviation)
+	return cl[0] != cl[1] && nav.onCourseLine(cl, maxNmDeviation)
 }

@@ -3021,6 +3021,47 @@ func TestBackCourseApproachFromVectors(t *testing.T) {
 	}
 }
 
+// PHNL's RNAV (RNP) 26L reaches its FAF, KUHIO, on a course 45 degrees off
+// the runway and curves onto the runway after it. An aircraft vectored to
+// join that course shallowly from inside the curve, on a heading that would
+// carry it on to cross the runway's extended centerline a mile out, joins
+// the approach's own course and flies the curve.
+func TestRNAVFinalOffsetFromRunway(t *testing.T) {
+	secil, _ := db.DB.LookupWaypoint("SECIL")
+	kuhio, _ := db.DB.LookupWaypoint("KUHIO")
+	nmPerLong := math.NMPerLongitudeAt(kuhio)
+	magVar, err := db.DB.MagneticGrid.Lookup(kuhio)
+	if err != nil {
+		t.Fatal(err)
+	}
+	course := math.Heading2LL(secil, kuhio, nmPerLong)
+
+	pos := math.Offset2LL(kuhio, math.OppositeHeading(course), 10, nmPerLong)
+	pos = math.Offset2LL(pos, math.OffsetHeading(course, 90), 0.5, nmPerLong)
+	f := NewArrivalFlight(t, ArrivalConfig{
+		Waypoints:        pos.DMSString() + " SECIL KUHIO",
+		DepartureAirport: "KLAX",
+		ArrivalAirport:   "PHNL",
+		AircraftType:     "B738",
+		InitialAltitude:  3000,
+		InitialSpeed:     210,
+		InitialHeading:   float32(math.TrueToMagnetic(math.OffsetHeading(course, -5), magVar)),
+	})
+	f.ExpectApproach("R26L")
+	f.ClearedApproach("R26L")
+
+	f.StepUntil("joined the approach", func() bool {
+		if f.nav.Requests.Vectors {
+			t.Fatal("requested vectors")
+		}
+		return f.nav.Approach.InterceptState == OnApproachCourse
+	})
+	want := []string{"SECIL", "KUHIO", "IBICU", "NALII", "_26L_THRESHOLD", "PHNL"}
+	if got := navRouteFixes(f.nav); !slices.Equal(got, want) {
+		t.Errorf("route after joining the approach = %v, want %v", got, want)
+	}
+}
+
 // PHNL's LDA 26L doesn't point at its runway: the localizer course passes
 // 0.9nm from the threshold on its way to a visual turn to the runway, 14
 // degrees off the line from the FAF to the threshold. An aircraft vectored to

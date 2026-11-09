@@ -578,7 +578,7 @@ func (nav *Nav) visualJoinBehind(routes []av.WaypointArray, hdg math.TrueHeading
 			continue
 		}
 		p := math.LL2NM(pt.location, nmPerLong)
-		if math.Abs(math.SignedPointLineDistance(p, thr, math.Add2f(thr, out))) >= finalCourseLateralLeeway {
+		if math.Abs(math.SignedPointLineDistance(p, thr, math.Add2f(thr, out))) >= av.FinalCourseLateralLeeway {
 			continue
 		}
 		if _, ok := pattern(&pt, minRemaining); ok {

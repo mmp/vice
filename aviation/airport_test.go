@@ -1051,8 +1051,8 @@ func testFinal(typ ApproachType, thr35, thr17 math.Point2LL, course math.TrueHea
 }
 
 // An approach flown on a localizer follows the line from its FAF to the
-// threshold, which may be offset from the runway; others follow the runway's
-// centerline.
+// threshold, which may be offset from the runway; a visual approach follows
+// the runway's centerline; any other follows its own route through the FAF.
 func TestFinalApproachCourseLine(t *testing.T) {
 	thr35 := math.Point2LL{-111.96, 40.77}
 	nmPerLongitude := math.NMPerLongitudeAt(thr35)
@@ -1065,8 +1065,10 @@ func TestFinalApproachCourseLine(t *testing.T) {
 	}{
 		{"ILS", testFinal(ILSApproach, thr35, thr17, 1), 1},
 		{"offset LDA", testFinal(LDAApproach, thr35, thr17, 355), 355},
-		{"offset RNAV follows the runway", testFinal(RNAVApproach, thr35, thr17, 355), 0},
-		{"VOR follows the runway", testFinal(VORApproach, thr35, thr17, 10), 0},
+		{"offset RNAV", testFinal(RNAVApproach, thr35, thr17, 355), 355},
+		{"offset VOR", testFinal(VORApproach, thr35, thr17, 10), 10},
+		{"visual follows the runway", testFinal(VisualApproach, thr35, thr17, 10), 0},
+		{"charted visual follows the runway", testFinal(ChartedVisualApproach, thr35, thr17, 10), 0},
 	} {
 		course := tc.appr.FinalApproachCourse(nmPerLongitude, -11)
 		if math.HeadingDifference(course, tc.course) > 0.1 {
@@ -1077,11 +1079,29 @@ func TestFinalApproachCourseLine(t *testing.T) {
 		}
 	}
 
+	// An RNAV final that turns at the FAF follows the leg into the FAF as far
+	// as the FAF.
+	turning := testFinal(RNAVApproach, thr35, thr17, 0)
+	turning.Waypoints[0][0].Location = math.Offset2LL(turning.Waypoints[0][1].Location, 150, 5, nmPerLongitude)
+	if line := turning.FinalApproachCourseLine(nmPerLongitude, -11); line[1] != turning.Waypoints[0][1].Location {
+		t.Errorf("turning at the FAF: course line ends at %v, expected the FAF", line[1])
+	}
+	if course := turning.FinalApproachCourse(nmPerLongitude, -11); math.HeadingDifference(course, 330) > 0.1 {
+		t.Errorf("turning at the FAF: course %.1f, expected 330", course)
+	}
+
+	// One that reaches the FAF on an RF leg has no straight final.
+	curved := testFinal(RNAVApproach, thr35, thr17, 0)
+	curved.Waypoints[0][0].Extra = &WaypointExtra{Arc: &DMEArc{}}
+	if line := curved.FinalApproachCourseLine(nmPerLongitude, -11); line != [2]math.Point2LL{} {
+		t.Errorf("RF leg into the FAF: course line %v, expected none", line)
+	}
+
 	// Without a FAF there is no final approach course to follow.
 	noFAF := testFinal(ILSApproach, thr35, thr17, 355)
 	noFAF.Waypoints[0][1].SetFAF(false)
-	if course := noFAF.FinalApproachCourse(nmPerLongitude, -11); math.HeadingDifference(course, 0) > 0.1 {
-		t.Errorf("without a FAF: course %.1f, expected the runway's", course)
+	if line := noFAF.FinalApproachCourseLine(nmPerLongitude, -11); line != [2]math.Point2LL{} {
+		t.Errorf("without a FAF: course line %v, expected none", line)
 	}
 }
 

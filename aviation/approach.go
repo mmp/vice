@@ -360,9 +360,17 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) (Waypo
 // turn to the runway. A fix before the FAF may sit off the course, and a
 // step-down fix after it gives too short a baseline. Hand-written approaches
 // have no localizer data, so theirs follow the line from the FAF to the
-// threshold. Other approaches follow the runway's extended centerline.
+// threshold. A visual approach ends with the pilot lining up with the runway
+// by eye, so its final is the runway's extended centerline. Any other
+// approach's final is the straight stretch of its own route through the FAF
+// (see finalRun), so an RNAV final that is offset from its runway or curves
+// onto it is flown as charted; one that reaches its FAF on an RF leg has no
+// straight final, and the line is zero.
 func (ap *Approach) FinalApproachCourseLine(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
-	if ap.Type.HasLocalizer() {
+	switch {
+	case ap.Type == VisualApproach || ap.Type == ChartedVisualApproach:
+		return [2]math.Point2LL{ap.Threshold, ap.OppositeThreshold}
+	case ap.Type.HasLocalizer():
 		if wps, _ := ap.FAFSegment(nmPerLongitude, magneticVariation); wps != nil {
 			if i := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF() }); i != -1 {
 				if !ap.LocalizerLocation.IsZero() {
@@ -372,7 +380,59 @@ func (ap *Approach) FinalApproachCourseLine(nmPerLongitude, magneticVariation fl
 			}
 		}
 	}
-	return [2]math.Point2LL{ap.Threshold, ap.OppositeThreshold}
+	return ap.finalRun(nmPerLongitude, magneticVariation)
+}
+
+// finalRun returns the ends of the straight stretch of the approach's route
+// through its FAF: the leg into the FAF, and the legs before and after it
+// that continue along its course. PHNL's RNAV (RNP) 26L runs 45 degrees off
+// its runway to the FAF and turns there, so its stretch ends at the FAF; a
+// straight-in approach's runs on to the threshold. It returns a zero line
+// if the leg into the FAF is an RF leg or flown on a heading.
+func (ap *Approach) finalRun(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+	wps, faf := ap.FAFSegment(nmPerLongitude, magneticVariation)
+	if wps == nil {
+		return [2]math.Point2LL{}
+	}
+	straight := func(i int) bool { // the leg from wps[i] to wps[i+1]
+		_, heading := wps[i].HeadingAction()
+		return !heading && wps[i].Arc() == nil
+	}
+	if !straight(faf - 1) {
+		return [2]math.Point2LL{}
+	}
+
+	line := [2]math.Point2LL{wps[faf-1].Location, wps[faf].Location}
+	along := func(i int) bool {
+		return straight(i) && LegAlongCourse(line, wps[i].Location, wps[i+1].Location, nmPerLongitude)
+	}
+	start, end := faf-1, faf
+	for start > 0 && along(start-1) {
+		start--
+	}
+	for end+1 < len(wps) && along(end) {
+		end++
+	}
+	return [2]math.Point2LL{wps[start].Location, wps[end].Location}
+}
+
+// A leg within these of a final approach course is a stretch of it.
+const (
+	finalCourseHeadingLeeway = 5   // degrees
+	FinalCourseLateralLeeway = 0.3 // nm
+)
+
+// LegAlongCourse reports whether the leg from a to b is a stretch of the
+// course through line's two points: headed the same way, and with both ends
+// on it.
+func LegAlongCourse(line [2]math.Point2LL, a, b math.Point2LL, nmPerLongitude float32) bool {
+	p0, p1 := math.LL2NM(line[0], nmPerLongitude), math.LL2NM(line[1], nmPerLongitude)
+	onLine := func(p math.Point2LL) bool {
+		return math.Abs(math.SignedPointLineDistance(math.LL2NM(p, nmPerLongitude), p0, p1)) < FinalCourseLateralLeeway
+	}
+	course := math.Heading2LL(line[0], line[1], nmPerLongitude)
+	return math.HeadingDifference(math.Heading2LL(a, b, nmPerLongitude), course) < finalCourseHeadingLeeway &&
+		onLine(a) && onLine(b)
 }
 
 // FinalApproachCourse returns the true course of the approach's final
