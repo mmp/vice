@@ -296,49 +296,60 @@ func (ap *Approach) localizerTurnWaypoint(nmPerLongitude, magneticVariation floa
 	return Waypoint{Fix: "_" + ap.Runway + "_LOC_TURN", Location: math.NM2LL(p, nmPerLongitude)}, true
 }
 
-// Find the FAF: return the corresponding waypoint array and the index of the FAF within it.
+// FAFSegment returns the route that carries the approach's final through
+// its FAF and the index of the FAF in it. Routes can join at the FAF from
+// different directions, some of them on RF legs (KBUF's RNAV Z 23), so the
+// one taken arrives on a straight leg most in line with the final: for a
+// visual approach, the runway, which the pilot lines up with; for any
+// other, the leg that leaves the FAF. A route whose FAF begins it or is also
+// its IF or IAF, as when a feeder leads to a procedure turn, is taken only
+// if no route leads to the FAF directly, and then from the FAF to the fix
+// after it.
 func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) (WaypointArray, int) {
-	// For approaches with multiple segments, want the segment that is most
-	// closely aligned with the runway.
-	rwyHdg := ap.RunwayHeading(nmPerLongitude)
+	type candidate struct {
+		wps     WaypointArray
+		faf     int
+		shifted bool    // the leg considered leaves the FAF rather than reaching it
+		curved  bool    // that leg is an RF leg or flown on a heading
+		offset  float32 // degrees between that leg and the final
+	}
+	better := func(a, b candidate) bool {
+		if a.shifted != b.shifted {
+			return !a.shifted
+		}
+		if a.curved != b.curved {
+			return !a.curved
+		}
+		return a.offset < b.offset
+	}
 
-	bestWpsIdx, bestWpsFAFIdx := -1, -1
-	minDiff := float32(360)
-
-	for i, wps := range ap.Waypoints {
+	visual := ap.Type == VisualApproach || ap.Type == ChartedVisualApproach
+	var best candidate
+	for _, wps := range ap.Waypoints {
 		fafIdx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF() })
 		if fafIdx == -1 {
-			// no FAF on this segment(?)
 			continue
 		}
-
-		if wps[fafIdx].IF() || wps[fafIdx].IAF() {
-			// Likely a HILPT; don't go outbound for the approach course as
-			// it may be some random feeder fix.
-			fafIdx++
+		c := candidate{wps: wps, faf: fafIdx}
+		if fafIdx == 0 || wps[fafIdx].IF() || wps[fafIdx].IAF() {
+			// The fix before the FAF may be some random feeder, so take the
+			// course from the FAF instead.
+			c.faf, c.shifted = fafIdx+1, true
 		}
+		_, onHeading := wps[c.faf-1].HeadingAction()
+		c.curved = wps[c.faf-1].Arc() != nil || onHeading
 
-		// Go from the previous fix to the FAF if possible.
-		if fafIdx == 0 {
-			fafIdx++
+		in := math.Heading2LL(wps[c.faf-1].Location, wps[c.faf].Location, nmPerLongitude)
+		if visual {
+			c.offset = math.HeadingDifference(in, ap.RunwayHeading(nmPerLongitude))
+		} else if c.faf+1 < len(wps) {
+			c.offset = math.HeadingDifference(in, math.Heading2LL(wps[c.faf].Location, wps[c.faf+1].Location, nmPerLongitude))
 		}
-
-		hdg := math.Heading2LL(wps[fafIdx-1].Location, wps[fafIdx].Location, nmPerLongitude)
-
-		diff := math.HeadingDifference(hdg, rwyHdg)
-		if diff < minDiff {
-			minDiff = diff
-			bestWpsIdx = i
-			bestWpsFAFIdx = fafIdx
+		if best.wps == nil || better(c, best) {
+			best = c
 		}
 	}
-
-	if bestWpsIdx != -1 {
-		return ap.Waypoints[bestWpsIdx], bestWpsFAFIdx
-	} else {
-		// Shouldn't ever happen since we ensure there is a FAF for each approach.
-		return nil, 0
-	}
+	return best.wps, best.faf
 }
 
 // FinalApproachCourseLine returns two points along the approach's final

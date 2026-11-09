@@ -1085,6 +1085,37 @@ func TestFinalApproachCourseLine(t *testing.T) {
 	}
 }
 
+// FAFSegment takes the route that reaches the FAF directly on a straight
+// leg over one that comes to it from a procedure turn's feeder or on an RF
+// leg, whatever their order and however the legs line up with the runway.
+func TestFAFSegment(t *testing.T) {
+	thr35 := math.Point2LL{-111.96, 40.77}
+	nmPerLongitude := math.NMPerLongitudeAt(thr35)
+	at := func(fix string, hdg math.TrueHeading, dist float32) Waypoint {
+		return Waypoint{Fix: fix, Location: math.Offset2LL(thr35, hdg, dist, nmPerLongitude)}
+	}
+	faf := at("FAF", 180, 5)
+	faf.SetFAF(true)
+	mapt := at("MAP", 180, 0.5)
+
+	ptFAF := faf
+	ptFAF.SetIAF(true)
+	feeder := []WaypointArray{{at("FEEDER", 90, 8), ptFAF, mapt}, {at("IF", 182, 10), faf, mapt}}
+
+	rf := at("ARC", 180, 10)
+	rf.Extra = &WaypointExtra{Arc: &DMEArc{}}
+	curved := []WaypointArray{{rf, faf, mapt}, {at("IF", 182, 10), faf, mapt}}
+
+	for name, routes := range map[string][]WaypointArray{"procedure turn feeder": feeder, "RF leg": curved} {
+		ap := &Approach{Type: RNAVApproach, Runway: "35", Threshold: thr35,
+			OppositeThreshold: math.Offset2LL(thr35, 0, 1.5, nmPerLongitude), Waypoints: routes}
+		wps, i := ap.FAFSegment(nmPerLongitude, -11)
+		if wps[0].Fix != "IF" || wps[i].Fix != "FAF" {
+			t.Errorf("%s: got the route from %s with %s as its FAF, expected the one from IF", name, wps[0].Fix, wps[i].Fix)
+		}
+	}
+}
+
 // ILS and localizer approaches must be aligned with their runway; hand-written
 // approaches of other kinds have been given those types to get localizer-style
 // intercepts, and an offset localizer is an LDA.
