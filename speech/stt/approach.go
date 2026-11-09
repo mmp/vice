@@ -1612,7 +1612,7 @@ func generateApproachPhraseVariants(phrase string) []string {
 
 	// Whisper usually writes a spelled-out type as one word ("ILS", "LDA");
 	// the telephony spells it out.
-	for _, typ := range []string{"ils", "lda", "vor"} {
+	for _, typ := range []string{"ils", "lda", "vor", "gls"} {
 		if strings.HasPrefix(phrase, typ+" ") {
 			variants = append(variants, strings.Join(strings.Split(typ, ""), " ")+phrase[len(typ):])
 		}
@@ -1628,7 +1628,7 @@ func generateApproachPhraseVariants(phrase string) []string {
 	// Handles cases where user omits "runway" but candidate includes it
 	// (e.g., "i l s two eight center" should match "I L S runway two eight center")
 	approachPrefixes := []string{"i l s ", "ils ", "visual ", "rnav ", "r-nav ", "v o r ", "vor ", "localizer ", "loc ",
-		"l d a ", "lda ", "gls "}
+		"l d a ", "lda ", "g l s ", "gls "}
 	var runwayVariants []string
 	for _, v := range variants {
 		for _, prefix := range approachPrefixes {

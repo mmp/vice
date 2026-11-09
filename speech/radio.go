@@ -1226,6 +1226,10 @@ func ApproachTelephonyComponents(approach string) (types []string, runway string
 				types = append(types, "V O R")
 			} else if upper == "GPS" {
 				types = append(types, "G P S")
+			} else if upper == "GLS" {
+				types = append(types, "G L S")
+			} else if upper == "RNP" {
+				types = append(types, "R N P")
 			} else if upper == "LOC" {
 				types = append(types, "localizer")
 			} else if upper == "LDA" {

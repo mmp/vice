@@ -5219,6 +5219,12 @@ func TestApproachTypeNames(t *testing.T) {
 			expected:   "DAL123 EG8R",
 		},
 		{
+			name:       "GLS as one word",
+			transcript: "Delta 123 expect GLS runway two eight right approach",
+			approaches: map[string]string{"GLS Runway 28R": "G8R", "ILS Runway 28R": "I8R"},
+			expected:   "DAL123 EG8R",
+		},
+		{
 			name:       "RNP qualifier",
 			transcript: "Delta 123 expect RNAV RNP runway four approach",
 			approaches: map[string]string{"RNAV RNP Runway 4": "RNP4", "RNAV Runway 4": "R4"},
