@@ -434,7 +434,7 @@ func TestCorrectionEndToEnd(t *testing.T) {
 	assignedHeading(t, s.Aircraft["UAL1482"], 10)
 
 	// The same aircraft: the correction amends what it was told.
-	run("United fourteen eighty two correction turn left heading zero three zero", "UAL1482 CORRECTION L030")
+	run("United fourteen eighty two correction turn left heading zero three zero", "UAL1482 L030")
 	assignedHeading(t, s.Aircraft["UAL1482"], 30)
 
 	// A different one: the previous transmission was for nobody, so United is put
@@ -470,6 +470,13 @@ func TestCorrectionEndToEnd(t *testing.T) {
 	run("negative that was for Delta four five six descend and maintain blorf",
 		"DAL456 CORRECTION SAYAGAIN/ALTITUDE")
 	assignedHeading(t, s.Aircraft["UAL1482"], 10)
+
+	// A correction that names the aircraft first amends what it was told, even
+	// though the controller has transmitted to another aircraft since.
+	run("Delta four five six descend and maintain four thousand", "DAL456 D40")
+	run("United fourteen eighty two turn left heading zero four zero", "UAL1482 L040")
+	run("Delta four five six correction descend and maintain five thousand", "DAL456 D50")
+	assignedHeading(t, s.Aircraft["UAL1482"], 40)
 }
 
 // TestATISCorrectionPreservesApproach covers a correction to one of two instructions
@@ -502,7 +509,7 @@ func TestATISCorrectionPreservesApproach(t *testing.T) {
 	}
 
 	run("Southwest twenty nine forty nine correction ATIS information whiskey is current",
-		"SWA2949 CORRECTION ATIS/W")
+		"SWA2949 ATIS/W")
 	if ac.ReportedATIS != "W" || ac.Nav.Approach.AssignedId != "I30" || ac.Nav.Approach.Assigned == nil {
 		t.Fatalf("ATIS = %q, approach = %+v", ac.ReportedATIS, ac.Nav.Approach)
 	}

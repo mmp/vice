@@ -163,7 +163,8 @@ func DrawPausedAircraftState(ctx *Context, trk *sim.Track, pw [2]float32, style 
 		var cmds, transcripts []string
 		for _, t := range ads.ControlTransmissions {
 			transcript, n := wrap(t.Transcript)
-			cmds = append(cmds, "  "+t.Commands+strings.Repeat("\n", n-1))
+			c := util.Select(t.RolledBack, t.Commands+" (rolled back)", t.Commands)
+			cmds = append(cmds, "  "+c+strings.Repeat("\n", n-1))
 			transcripts = append(transcripts, transcript)
 		}
 

@@ -209,15 +209,16 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("  visual approach: %q -> %q", spokenName, runway)
 	}
 
-	// A transmission that OPENS with "correction" revises the previous one
-	// (nothing precedes it to correct within this one); the simulator decides
-	// what that leaves standing.
+	// A "correction" that follows the callsign amends what the controller told
+	// that aircraft, possibly several transmissions back. It does not say that
+	// the previous transmission went to the wrong aircraft; only a correction
+	// ahead of the callsign does. Nothing precedes it in this transmission for
+	// it to revise, so it is dropped.
 	if idx := slices.IndexFunc(commandTokens, func(t Token) bool {
 		return !IsFillerWord(strings.ToLower(t.Text))
 	}); idx >= 0 && strings.ToLower(commandTokens[idx].Text) == "correction" {
-		correction = true
 		commandTokens = commandTokens[idx+1:]
-		logLocalStt("leading 'correction': revising the previous transmission")
+		logLocalStt("'correction' after the callsign: amending what this aircraft was told")
 	}
 
 	// Handle "disregard" or "correction" in remaining tokens

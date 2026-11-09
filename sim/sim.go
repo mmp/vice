@@ -216,6 +216,9 @@ type lastSTTCommand struct {
 	Callsign     av.ADSBCallsign
 	NavSnapshot  nav.Instructions
 	ReportedATIS string
+	// Transmissions is how many of the aircraft's ControlTransmissions there
+	// were when the snapshot was taken; undoing it rolls back all that follow.
+	Transmissions int
 }
 
 // NewSimConfiguration collects all of the information required to create a new Sim

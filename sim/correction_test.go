@@ -8,6 +8,7 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"slices"
 	"testing"
 	"time"
 
@@ -74,6 +75,17 @@ func TestCorrectionHistoryPerTCW(t *testing.T) {
 	assertHeading(t, s, "N123AB", 30)
 	runCorrectionCommand(t, s, E2ETCW(), "N123AB", "ROLLBACK")
 	assertHeading(t, s, "N123AB", 30)
+
+	// The undone transmissions stay in each aircraft's record, marked.
+	for cs, want := range map[av.ADSBCallsign][]ControlTransmission{
+		"UAL123": {{Commands: "L010 D20 ATIS/V", RolledBack: true}},
+		"DAL456": {{Commands: "R090"}},
+		"N123AB": {{Commands: "L030"}, {Commands: "L050", RolledBack: true}},
+	} {
+		if got := s.Aircraft[cs].ControlTransmissions; !slices.Equal(got, want) {
+			t.Errorf("%s: got transmissions %+v, want %+v", cs, got, want)
+		}
+	}
 }
 
 // TestCorrectionAfterAcknowledgement checks that a transmission carrying no commands

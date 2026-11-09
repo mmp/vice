@@ -21,7 +21,8 @@ func TestCorrectionTranscripts(t *testing.T) {
 		transcript string
 		want       string
 	}{
-		{"United one two three correction heading one two zero", "UAL123 CORRECTION H120"},
+		{"United one two three correction heading one two zero", "UAL123 H120"},
+		{"Delta four five six correction heading one two zero", "DAL456 H120"},
 		{"correction United one two three heading one two zero", "UAL123 CORRECTION H120"},
 		{"correction heading one two zero", "UAL123 CORRECTION H120"},
 		{"negative heading one two zero", "UAL123 CORRECTION H120"},

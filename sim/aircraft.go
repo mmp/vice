@@ -1383,8 +1383,10 @@ type AircraftDisplayState struct {
 
 // ControlTransmission holds the commands from a transmission to an aircraft
 // that the pilot responded to. Transcript is what the speech recognizer
-// heard when the transmission was spoken.
+// heard when the transmission was spoken. RolledBack is set when a later
+// correction undid the transmission's instructions.
 type ControlTransmission struct {
 	Commands   string
 	Transcript string
+	RolledBack bool
 }

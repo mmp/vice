@@ -122,9 +122,10 @@ func (s *Sim) RunControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr s
 	if recordHistory {
 		if ac, ok := s.Aircraft[callsign]; ok && s.TCWCanCommandAircraft(tcw, ac) {
 			s.lastSTTCommands[tcw] = &lastSTTCommand{
-				Callsign:     callsign,
-				NavSnapshot:  ac.Nav.TakeSnapshot(),
-				ReportedATIS: ac.ReportedATIS,
+				Callsign:      callsign,
+				NavSnapshot:   ac.Nav.TakeSnapshot(),
+				ReportedATIS:  ac.ReportedATIS,
+				Transmissions: len(ac.ControlTransmissions),
 			}
 		}
 	}
@@ -213,6 +214,9 @@ func (s *Sim) rollbackLastCommand(tcw TCW) error {
 
 	ac.Nav.RestoreSnapshot(last.NavSnapshot)
 	ac.ReportedATIS = last.ReportedATIS
+	for i := last.Transmissions; i < len(ac.ControlTransmissions); i++ {
+		ac.ControlTransmissions[i].RolledBack = true
+	}
 	return nil
 }
 
