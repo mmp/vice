@@ -12,7 +12,7 @@
 // It is run from the top of the repository with the previous cycle taken
 // from git:
 //
-//	git show HEAD:resources/FAACIFP18.zst > /tmp/old.zst
+//	git cat-file --filters HEAD:resources/FAACIFP18.zst > /tmp/old.zst
 //	go run ./cmd/cifpdiff /tmp/old.zst resources/FAACIFP18.zst
 package main
 
