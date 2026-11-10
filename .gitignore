@@ -6,7 +6,6 @@
 /backshop
 /backshop.exe
 /bundleresources
-/cdocs
 /crc2vice
 /crc2vice.exe
 /dat2vice
@@ -14,7 +13,6 @@
 /importflights
 /importflights.exe
 /manifest.json
-/nav/testdata/traces
 /sttreview
 /sttsim
 /stttest
