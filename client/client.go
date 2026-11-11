@@ -521,16 +521,18 @@ func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	return c.transmissions.LastTransmissionCallsign()
 }
 
-func (c *ControlClient) GetPrecipURL(t sim.Time, callback func(url string, nextTime sim.Time, err error)) {
-	args := wx.PrecipURLArgs{
+// GetPrecip gets the radar image at or before t. callback receives it
+// encoded, as wx.DecodePrecip reads it.
+func (c *ControlClient) GetPrecip(t sim.Time, callback func(encoded []byte, nextTime sim.Time, err error)) {
+	args := wx.GetPrecipArgs{
 		Facility: c.State.Facility,
 		Time:     t.Time(),
 	}
-	var result wx.PrecipURL
-	c.addCall(makeRPCCall(c.client.Go(wx.GetPrecipURLRPC, args, &result, nil),
+	var result wx.GetPrecipResult
+	c.addCall(makeRPCCall(c.client.Go(wx.GetPrecipRPC, args, &result, nil),
 		func(err error) {
 			if callback != nil {
-				callback(result.URL, sim.NewSimTime(result.NextTime), err)
+				callback(result.Encoded, sim.NewSimTime(result.NextTime), err)
 			}
 		}))
 }

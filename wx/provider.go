@@ -5,12 +5,12 @@
 package wx
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
 	"net"
-	"net/http"
 	"net/rpc"
 	"slices"
 	"sync"
@@ -38,7 +38,7 @@ type Provider struct {
 // weatherBackend is the package-local abstraction for some of the mechanics of
 // servicing calling code requests.
 type weatherBackend interface {
-	getPrecipURL(facility string, t time.Time) (string, time.Time, error)
+	getPrecip(facility string, t time.Time) ([]byte, time.Time, error)
 	getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error)
 }
 
@@ -47,7 +47,6 @@ type weatherBackend interface {
 // builds omit the GCS client, and with it the oauth2 dependency.
 type ObjectStore interface {
 	GetReader(path string) (io.ReadCloser, error)
-	GetURL(path string, lifetime time.Duration) (string, error)
 }
 
 type atmosGridResult struct {
@@ -111,8 +110,7 @@ func MakeProvider(serverAddress string, lg *log.Logger) *Provider {
 
 // CheckGCS returns an error if the process has GCS credentials but can't
 // get weather from GCS with them: it checks that it can read the bundled
-// manifests, fetch an atmospheric grid, and download a radar image through
-// a signed URL, retrying for a while before giving up. It returns nil if
+// manifests, fetch an atmospheric grid, and fetch a radar image, retrying for a while before giving up. It returns nil if
 // there are no credentials. The public server runs it at startup so that it
 // exits rather than serving degraded weather.
 func CheckGCS(lg *log.Logger) error {
@@ -140,20 +138,20 @@ func CheckGCS(lg *log.Logger) error {
 ///////////////////////////////////////////////////////////////////////////
 // Provider API
 
-// GetPrecipURL returns a URL to access the specified precipitation radar image.
-// Returns the image at-or-before the given time, along with the time of the
-// next image, which is noNextTime after the last one.
-func (p *Provider) GetPrecipURL(facility string, t time.Time) (string, time.Time, error) {
-	r, err := callBackend(p, func() (PrecipURL, error) {
-		url, nextTime, err := p.backend.getPrecipURL(facility, t)
-		return PrecipURL{URL: url, NextTime: nextTime}, err
+// GetPrecip returns the precipitation radar image at or before the given
+// time, encoded as DecodePrecip reads it, along with the time of the next
+// image, which is noNextTime after the last one.
+func (p *Provider) GetPrecip(facility string, t time.Time) ([]byte, time.Time, error) {
+	r, err := callBackend(p, func() (GetPrecipResult, error) {
+		encoded, nextTime, err := p.backend.getPrecip(facility, t)
+		return GetPrecipResult{Encoded: encoded, NextTime: nextTime}, err
 	})
 	if err == nil || p.backend == p.resources {
-		return r.URL, r.NextTime, err
+		return r.Encoded, r.NextTime, err
 	}
 
 	p.lg.Warnf("Falling back to local precip resources: %v", err)
-	return p.resources.getPrecipURL(facility, t)
+	return p.resources.getPrecip(facility, t)
 }
 
 // GetAtmosGrid returns atmospheric grid for simulation.
@@ -291,19 +289,11 @@ func (g *gcsBackend) check() error {
 	}
 
 	precipTimes, _ := g.precipManifest.GetTimestamps(facility)
-	url, _, err := g.getPrecipURL(facility, precipTimes[len(precipTimes)-1])
+	encoded, _, err := g.getPrecip(facility, precipTimes[len(precipTimes)-1])
 	if err != nil {
 		return fmt.Errorf("%s: radar: %w", facility, err)
 	}
-	resp, err := (&http.Client{Timeout: 30 * time.Second}).Get(url)
-	if err != nil {
-		return fmt.Errorf("%s: radar: %w", facility, err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("%s: radar: HTTP status %d", facility, resp.StatusCode)
-	}
-	if _, err := DecodePrecip(resp.Body); err != nil {
+	if _, err := DecodePrecip(bytes.NewReader(encoded)); err != nil {
 		return fmt.Errorf("%s: radar: %w", facility, err)
 	}
 	return nil
@@ -325,7 +315,28 @@ func (g *gcsBackend) getObject(path string, obj any) error {
 	return msgpack.NewDecoder(zr).Decode(obj)
 }
 
-func (g *gcsBackend) getPrecipURL(facility string, t time.Time) (string, time.Time, error) {
+func (g *gcsBackend) getPrecip(facility string, t time.Time) ([]byte, time.Time, error) {
+	path, nextTime, err := g.precipPath(facility, t)
+	if err != nil {
+		return nil, time.Time{}, err
+	}
+
+	r, err := g.gcsClient.GetReader(path)
+	if err != nil {
+		return nil, time.Time{}, err
+	}
+	defer r.Close()
+
+	encoded, err := io.ReadAll(r)
+	if err != nil {
+		return nil, time.Time{}, fmt.Errorf("%s: %w", path, err)
+	}
+	return encoded, nextTime, nil
+}
+
+// precipPath returns the path of the radar image at or before t and the
+// time of the next image.
+func (g *gcsBackend) precipPath(facility string, t time.Time) (string, time.Time, error) {
 	times, ok := g.precipManifest.GetTimestamps(facility)
 	if !ok {
 		return "", time.Time{}, errors.New(facility + ": unknown facility")
@@ -344,15 +355,7 @@ func (g *gcsBackend) getPrecipURL(facility string, t time.Time) (string, time.Ti
 		nextTime = times[next]
 	}
 
-	path := BuildObjectPath("precip", facility, times[next-1])
-
-	// Signing is local; success here does not prove that the client will be
-	// able to download the image if the user's network is down.
-	url, err := g.gcsClient.GetURL(path, 4*time.Hour)
-	if err != nil {
-		return "", time.Time{}, err
-	}
-	return url, nextTime, nil
+	return BuildObjectPath("precip", facility, times[next-1]), nextTime, nil
 }
 
 func (g *gcsBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
@@ -385,13 +388,15 @@ func (g *gcsBackend) getAtmosGrid(facility string, t time.Time, station string) 
 
 // Since the server package imports wx, we need to define the details of the WX RPCs
 // here, since wx needs to be able to call them. This is slightly messy.
-type PrecipURLArgs struct {
+type GetPrecipArgs struct {
 	Facility string
 	Time     time.Time
 }
 
-type PrecipURL struct {
-	URL      string
+type GetPrecipResult struct {
+	// Encoded is the radar image as it is stored, which DecodePrecip
+	// reads. It is a few KB, a small fraction of the decoded image.
+	Encoded  []byte
 	NextTime time.Time
 }
 
@@ -407,7 +412,7 @@ type GetAtmosResult struct {
 	NextTime        time.Time
 }
 
-const GetPrecipURLRPC = "SimManager.GetPrecipURL"
+const GetPrecipRPC = "SimManager.GetPrecip"
 const GetAtmosGridRPC = "SimManager.GetAtmosGrid"
 
 // rpcBackend gets WX data by proxying out to the public vice server. (This is slightly
@@ -534,13 +539,13 @@ func isConnDown(err error) bool {
 		errors.Is(err, net.ErrClosed)
 }
 
-func (r *rpcBackend) getPrecipURL(facility string, t time.Time) (string, time.Time, error) {
-	args := PrecipURLArgs{Facility: facility, Time: t}
-	var result PrecipURL
-	if err := r.call(GetPrecipURLRPC, args, &result); err != nil {
-		return "", time.Time{}, err
+func (r *rpcBackend) getPrecip(facility string, t time.Time) ([]byte, time.Time, error) {
+	args := GetPrecipArgs{Facility: facility, Time: t}
+	var result GetPrecipResult
+	if err := r.call(GetPrecipRPC, args, &result); err != nil {
+		return nil, time.Time{}, err
 	}
-	return result.URL, result.NextTime, nil
+	return result.Encoded, result.NextTime, nil
 }
 
 func (r *rpcBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
@@ -566,11 +571,10 @@ func newResourcesBackend(lg *log.Logger) *resourcesBackend {
 	return &resourcesBackend{lg: lg}
 }
 
-// When running with bundled resources, precipitation images are unavailable, since a GCS key is
-// needed to sign the request and that isn't available to client code; but if this is being called,
-// the network is probably down, so that's not an issue anyway.
-func (r *resourcesBackend) getPrecipURL(facility string, t time.Time) (string, time.Time, error) {
-	return "", time.Time{}, errors.New("precipitation data not available in offline mode")
+// The bundled resources have no radar images: they are too large to ship,
+// and they come from GCS, which only the public server can read.
+func (r *resourcesBackend) getPrecip(facility string, t time.Time) ([]byte, time.Time, error) {
+	return nil, time.Time{}, errors.New("precipitation data not available in offline mode")
 }
 
 func (r *resourcesBackend) getAtmosGrid(facility string, tGet time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {

@@ -116,7 +116,8 @@ import (
 // 105: pilot delays are chosen per sim: NewSimRequest.PilotDelays, Sim.PilotDelays, and nav.Nav.Delays
 // 106: CommonState.ATISAirports
 // 107: arrivals and overflights wait at their spawn points for separation from their flow's last launch: added Sim.InboundLaunches and Sim.ReadyInbounds
-const ViceSerializeVersion = 107
+// 108: radar images come from the GetPrecip RPC instead of signed GCS URLs
+const ViceSerializeVersion = 108
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 90 + ViceRPCVersion

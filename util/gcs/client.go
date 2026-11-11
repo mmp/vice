@@ -6,13 +6,7 @@ package gcs
 
 import (
 	"context"
-	"crypto"
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/sha256"
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"io"
 	"net"
@@ -27,11 +21,9 @@ import (
 
 // Client is a read-only client for a Google Cloud Storage bucket.
 type Client struct {
-	httpClient          *http.Client
-	bucket              string
-	serviceAccountEmail string
-	privateKey          *rsa.PrivateKey
-	ctx                 context.Context
+	httpClient *http.Client
+	bucket     string
+	ctx        context.Context
 }
 
 // Config holds configuration options for creating a GCS client
@@ -84,30 +76,6 @@ func MakeClient(bucket string, config Config) (*Client, error) {
 		return nil, fmt.Errorf("failed to create JWT config: %w", err)
 	}
 
-	// Extract service account email from the JWT config
-	serviceAccountEmail := jwtConfig.Email
-
-	// Parse the private key from the JWT config
-	var rsaKey *rsa.PrivateKey
-	if len(jwtConfig.PrivateKey) > 0 {
-		block, _ := pem.Decode(jwtConfig.PrivateKey)
-		if block != nil {
-			parsedKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-			if err != nil {
-				// Try PKCS1 format as fallback
-				if rsaKeyPKCS1, err2 := x509.ParsePKCS1PrivateKey(block.Bytes); err2 == nil {
-					parsedKey = rsaKeyPKCS1
-				} else {
-					return nil, fmt.Errorf("failed to parse private key: %w (PKCS8: %v)", err2, err)
-				}
-			}
-
-			if parsedRSAKey, ok := parsedKey.(*rsa.PrivateKey); ok {
-				rsaKey = parsedRSAKey
-			}
-		}
-	}
-
 	// Use a bounded client for token acquisition. The GCS data client
 	// deliberately does not set http.Client.Timeout, so large file downloads
 	// can continue after the response headers arrive.
@@ -121,11 +89,9 @@ func MakeClient(bucket string, config Config) (*Client, error) {
 	}
 
 	return &Client{
-		httpClient:          httpClient,
-		bucket:              bucket,
-		serviceAccountEmail: serviceAccountEmail,
-		privateKey:          rsaKey,
-		ctx:                 ctx,
+		httpClient: httpClient,
+		bucket:     bucket,
+		ctx:        ctx,
 	}, nil
 }
 
@@ -222,68 +188,4 @@ func (g *Client) GetReader(objectName string) (io.ReadCloser, error) {
 	}
 
 	return resp.Body, nil
-}
-
-// GetURL returns a signed URL for downloading an object from the bucket.
-// The lifetime parameter specifies how long the URL should remain valid.
-// For unauthenticated clients, it returns a public URL (lifetime is ignored).
-// For authenticated clients, it returns a V4 signed URL that expires after the specified duration.
-func (g *Client) GetURL(objectName string, lifetime time.Duration) (string, error) {
-	if objectName == "" {
-		return "", fmt.Errorf("object name cannot be empty")
-	}
-	if g.privateKey == nil {
-		return "", fmt.Errorf("no private key is available")
-	}
-
-	// V4 signing has a maximum lifetime of 7 days
-	maxLifetime := 7 * 24 * time.Hour
-	if lifetime > maxLifetime {
-		lifetime = maxLifetime
-	}
-
-	// Generate V4 signed URL
-	now := time.Now().UTC()
-	datestamp := now.Format("20060102")
-	timestamp := now.Format("20060102T150405Z")
-	expires := int64(lifetime.Seconds())
-
-	credentialScope := fmt.Sprintf("%s/auto/storage/goog4_request", datestamp)
-
-	canonicalURI := fmt.Sprintf("/%s/%s", g.bucket, url.PathEscape(objectName))
-
-	// Query parameters for V4
-	queryParams := url.Values{}
-	queryParams.Set("X-Goog-Algorithm", "GOOG4-RSA-SHA256")
-	queryParams.Set("X-Goog-Credential", fmt.Sprintf("%s/%s", g.serviceAccountEmail, credentialScope))
-	queryParams.Set("X-Goog-Date", timestamp)
-	queryParams.Set("X-Goog-Expires", strconv.FormatInt(expires, 10))
-	queryParams.Set("X-Goog-SignedHeaders", "host")
-
-	canonicalQueryString := queryParams.Encode()
-	canonicalHeaders := "host:storage.googleapis.com\n"
-	canonicalRequest := fmt.Sprintf("GET\n%s\n%s\n%s\nhost\nUNSIGNED-PAYLOAD",
-		canonicalURI, canonicalQueryString, canonicalHeaders)
-
-	// Hash the canonical request
-	hasher := sha256.New()
-	hasher.Write([]byte(canonicalRequest))
-	canonicalRequestHash := fmt.Sprintf("%x", hasher.Sum(nil))
-
-	stringToSign := fmt.Sprintf("GOOG4-RSA-SHA256\n%s\n%s\n%s",
-		timestamp, credentialScope, canonicalRequestHash)
-
-	hasher = sha256.New()
-	hasher.Write([]byte(stringToSign))
-	digest := hasher.Sum(nil)
-
-	signature, err := rsa.SignPKCS1v15(rand.Reader, g.privateKey, crypto.SHA256, digest)
-	if err != nil {
-		return "", fmt.Errorf("failed to sign URL: %w", err)
-	}
-
-	queryParams.Set("X-Goog-Signature", fmt.Sprintf("%x", signature))
-
-	// Build final URL
-	return fmt.Sprintf("https://storage.googleapis.com%s?%s", canonicalURI, queryParams.Encode()), nil
 }

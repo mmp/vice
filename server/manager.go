@@ -823,11 +823,11 @@ func (sm *SimManager) GetSerializeSimJSON(token string, s *[]byte) error {
 ///////////////////////////////////////////////////////////////////////////
 // Weather
 
-func (sm *SimManager) GetPrecipURL(args wx.PrecipURLArgs, result *wx.PrecipURL) error {
+func (sm *SimManager) GetPrecip(args wx.GetPrecipArgs, result *wx.GetPrecipResult) error {
 	defer sm.lg.CatchAndReportCrash()
 
 	var err error
-	result.URL, result.NextTime, err = sm.wxProvider.GetPrecipURL(args.Facility, args.Time)
+	result.Encoded, result.NextTime, err = sm.wxProvider.GetPrecip(args.Facility, args.Time)
 	return err
 }
 

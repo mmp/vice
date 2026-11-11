@@ -5,10 +5,10 @@
 package wx
 
 import (
-	"errors"
 	"image"
 	"io"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -27,8 +27,8 @@ type testAtmosBackend struct {
 	soa   *AtmosByPointSOA
 }
 
-func (b *testAtmosBackend) getPrecipURL(facility string, t time.Time) (string, time.Time, error) {
-	return "", time.Time{}, nil
+func (b *testAtmosBackend) getPrecip(facility string, t time.Time) ([]byte, time.Time, error) {
+	return nil, time.Time{}, nil
 }
 
 func (b *testAtmosBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
@@ -62,9 +62,9 @@ func TestProviderCachesAtmosGridByReturnedInterval(t *testing.T) {
 // delivering packets.
 type stalledBackend struct{ unblock chan struct{} }
 
-func (b stalledBackend) getPrecipURL(facility string, t time.Time) (string, time.Time, error) {
+func (b stalledBackend) getPrecip(facility string, t time.Time) ([]byte, time.Time, error) {
 	<-b.unblock
-	return "", time.Time{}, nil
+	return nil, time.Time{}, nil
 }
 
 func (b stalledBackend) getAtmosGrid(facility string, t time.Time, station string) (*AtmosByPointSOA, time.Time, time.Time, error) {
@@ -79,12 +79,12 @@ func TestProviderGivesUpOnStalledPrecipRequest(t *testing.T) {
 	provider := newProvider(lg, backend)
 
 	start := time.Now()
-	if _, _, err := provider.GetPrecipURL("P31", start); err == nil {
+	if _, _, err := provider.GetPrecip("P31", start); err == nil {
 		t.Errorf("expected an error from the resources fallback")
 	}
 	// The client gives up on the local server after 5s.
 	if d := time.Since(start); d > backendFallbackTimeout+time.Second {
-		t.Errorf("GetPrecipURL took %s", d)
+		t.Errorf("GetPrecip took %s", d)
 	}
 }
 
@@ -145,15 +145,14 @@ func TestFacilityTimeIntervalsRequireRadar(t *testing.T) {
 	}
 }
 
-// testStore is an ObjectStore whose URLs are the object paths.
+// testStore is an ObjectStore whose objects hold their own paths.
 type testStore struct{}
 
 func (testStore) GetReader(path string) (io.ReadCloser, error) {
-	return nil, errors.New("unimplemented")
+	return io.NopCloser(strings.NewReader(path)), nil
 }
-func (testStore) GetURL(path string, lifetime time.Duration) (string, error) { return path, nil }
 
-func TestGCSPrecipURLHoldsImageThroughGaps(t *testing.T) {
+func TestGCSPrecipHoldsImageThroughGaps(t *testing.T) {
 	t0 := time.Date(2026, time.January, 1, 0, 0, 0, 0, time.UTC)
 	gapStart, gapEnd := t0.Add(2*time.Hour), t0.Add(5*time.Hour)
 	times := timesEvery(t0, t0.Add(8*time.Hour), 5*time.Minute, gapStart, gapEnd)
@@ -163,7 +162,7 @@ func TestGCSPrecipURLHoldsImageThroughGaps(t *testing.T) {
 	}
 	g := &gcsBackend{gcsClient: testStore{}, precipManifest: precip}
 
-	if _, _, err := g.getPrecipURL("P31", t0.Add(-time.Minute)); err == nil {
+	if _, _, err := g.getPrecip("P31", t0.Add(-time.Minute)); err == nil {
 		t.Errorf("expected an error before the data")
 	}
 
@@ -178,12 +177,12 @@ func TestGCSPrecipURLHoldsImageThroughGaps(t *testing.T) {
 		{t0.Add(8 * time.Hour), t0.Add(8 * time.Hour), noNextTime},  // the last image
 		{t0.Add(10 * time.Hour), t0.Add(8 * time.Hour), noNextTime}, // after the data
 	} {
-		url, next, err := g.getPrecipURL("P31", tc.t)
+		encoded, next, err := g.getPrecip("P31", tc.t)
 		if err != nil {
 			t.Fatalf("%s: %v", tc.t, err)
 		}
-		if wantURL := BuildObjectPath("precip", "P31", tc.wantImage); url != wantURL || !next.Equal(tc.wantNext) {
-			t.Errorf("%s: got %q, next %s; want %q, next %s", tc.t, url, next, wantURL, tc.wantNext)
+		if want := BuildObjectPath("precip", "P31", tc.wantImage); string(encoded) != want || !next.Equal(tc.wantNext) {
+			t.Errorf("%s: got %q, next %s; want %q, next %s", tc.t, encoded, next, want, tc.wantNext)
 		}
 	}
 }

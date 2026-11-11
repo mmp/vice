@@ -5,9 +5,8 @@
 package scope
 
 import (
-	"fmt"
+	"bytes"
 	"math/bits"
-	"net/http"
 	"slices"
 	"time"
 
@@ -86,7 +85,8 @@ const numWxHistory = 3
 
 const NumWxLevels = 6
 
-// fetchPrecipitation fetches precipitation data from GCS via RPC
+// fetchPrecipitation fetches the radar image for the current time from the
+// server.
 func (w *WeatherRadar) fetchPrecipitation(ctx *Context) {
 	w.fetchInProgress = true
 	if w.precipCh == nil {
@@ -97,13 +97,13 @@ func (w *WeatherRadar) fetchPrecipitation(ctx *Context) {
 	}
 
 	fetchTime := ctx.InterpolatedSimTime
-	ctx.Client.GetPrecipURL(fetchTime, func(url string, nextTime sim.Time, err error) {
+	ctx.Client.GetPrecip(fetchTime, func(encoded []byte, nextTime sim.Time, err error) {
 		w.mu.Lock(ctx.Lg)
 		defer w.mu.Unlock(ctx.Lg)
 
 		if err != nil {
 			w.nextFetchTime = fetchTime.Add(time.Minute)
-			ctx.Lg.Infof("Failed to get precip URL: %v", err)
+			ctx.Lg.Infof("Failed to get precip: %v", err)
 			w.fetchInProgress = false
 			return
 		}
@@ -112,28 +112,14 @@ func (w *WeatherRadar) fetchPrecipitation(ctx *Context) {
 		// until the next one, however long that is.
 		w.nextFetchTime = nextTime
 
-		go w.fetchPrecip(url, ctx.Lg)
+		go w.decodePrecip(encoded)
 	})
 }
 
-// precipHTTPClient bounds radar downloads so that a stalled one doesn't
-// leave fetchInProgress set and stop the updates.
-var precipHTTPClient = &http.Client{Timeout: 30 * time.Second}
-
-func (w *WeatherRadar) fetchPrecip(url string, lg *log.Logger) {
-	resp, err := precipHTTPClient.Get(url)
-	if err != nil {
-		w.errCh <- err
-		return
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		w.errCh <- fmt.Errorf("HTTP error: %d", resp.StatusCode)
-		return
-	}
-
-	precip, err := wx.DecodePrecip(resp.Body)
+// decodePrecip decodes a radar image away from the main thread: decoded,
+// it is about a megabyte.
+func (w *WeatherRadar) decodePrecip(encoded []byte) {
+	precip, err := wx.DecodePrecip(bytes.NewReader(encoded))
 	if err != nil {
 		w.errCh <- err
 	} else {
