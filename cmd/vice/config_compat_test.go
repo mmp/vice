@@ -6,10 +6,15 @@ package main
 
 import (
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/server"
+
+	"github.com/klauspost/compress/zstd"
 )
 
 // Settings saved when these windows were called panes must still be read.
@@ -67,5 +72,61 @@ func TestCustomPilotDelaysRead(t *testing.T) {
 	if back.PilotDelayChoice != pilotDelaysCustom || back.CustomPilotDelays != c.CustomPilotDelays {
 		t.Errorf("saved custom pilot delays %+v read back as choice %d with %+v",
 			c.CustomPilotDelays, back.PilotDelayChoice, back.CustomPilotDelays)
+	}
+}
+
+// A config saved when it held the running sim still loads.
+func TestConfigWithSimStillRead(t *testing.T) {
+	c, err := decodeConfig([]byte(`{"Version":107,"ControllerInitials":"XX","Sim":{"TotalIFR":3}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.ControllerInitials != "XX" {
+		t.Errorf("got initials %q, want XX", c.ControllerInitials)
+	}
+}
+
+func TestSavedSimRoundTrip(t *testing.T) {
+	fn := filepath.Join(t.TempDir(), "sim.json.zst")
+
+	if s, err := readSavedSim(fn); s != nil || err != nil {
+		t.Fatalf("missing file read as %v, %v", s, err)
+	}
+
+	if err := writeSavedSim(fn, []byte(`{"TotalIFR":3}`)); err != nil {
+		t.Fatal(err)
+	}
+	s, err := readSavedSim(fn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s == nil || s.TotalIFR != 3 {
+		t.Errorf("saved sim read back as %+v", s)
+	}
+
+	if err := writeSavedSim(fn, nil); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(fn); !os.IsNotExist(err) {
+		t.Errorf("writing no sim left the file: %v", err)
+	}
+}
+
+func TestSavedSimFromOtherVersionDiscarded(t *testing.T) {
+	fn := filepath.Join(t.TempDir(), "sim.json.zst")
+	b, err := json.Marshal(savedSim{Version: server.ViceSerializeVersion - 1, Sim: []byte(`{"TotalIFR":3}`)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	zw, err := zstd.NewWriter(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer zw.Close()
+	if err := os.WriteFile(fn, zw.EncodeAll(b, nil), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if s, err := readSavedSim(fn); s != nil || err != nil {
+		t.Errorf("sim from another version read as %+v, %v", s, err)
 	}
 }

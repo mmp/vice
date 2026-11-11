@@ -26,10 +26,12 @@ import (
 	"github.com/mmp/vice/stars"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/klauspost/compress/zstd"
 )
 
-// Config holds the user's settings and the sim that was running when vice
-// last exited, if any. It is saved as JSON in config.json.
+// Config holds the user's settings. It is saved as JSON in config.json. The
+// sim that was running when vice last exited is saved separately; see
+// writeSavedSim.
 type Config struct {
 	platform.Config
 
@@ -59,7 +61,6 @@ type Config struct {
 	TTSPlaybackSpeed       float32
 	EnableTowerGoArounds   bool
 
-	UserWorkstation    string
 	ControllerInitials string
 
 	OverlayDir string
@@ -94,25 +95,77 @@ type Config struct {
 	WhisperBenchmarkIndex int     // Benchmark generation; rebenchmark if code's value is higher
 	WhisperRealtimeFactor float64 // Ratio of transcription time to audio duration (for quality tuning)
 	WhisperGPUDisabled    bool    // Sticky: GPU init failed on a prior run; stay on CPU
-
-	// Sim is decoded only by savedSim, after the version check on load. A
-	// sim saved by another version of vice may no longer decode, and it is
-	// discarded without being read.
-	Sim json.RawMessage
 }
 
-// savedSim returns the simulation stored in the configuration file, or nil
-// if there is none.
-func (c *Config) savedSim() (*sim.Sim, error) {
-	if len(c.Sim) == 0 {
+// savedSim is the contents of the saved sim file, which is zstd-compressed
+// JSON. A large facility's sim is about 10 MB of JSON, mostly scenario data,
+// and it compresses to a thirtieth of that.
+type savedSim struct {
+	// Version is the ViceSerializeVersion of the vice that saved Sim. A sim
+	// saved by another version may no longer decode, and it is discarded
+	// without being read.
+	Version int
+	Sim     json.RawMessage
+}
+
+func savedSimFilePath(lg *log.Logger) string {
+	return filepath.Join(filepath.Dir(configFilePath(lg)), "sim.json.zst")
+}
+
+// readSavedSim returns the sim saved in the file fn, or nil if there is none
+// or if another version of vice saved it.
+func readSavedSim(fn string) (*sim.Sim, error) {
+	b, err := os.ReadFile(fn)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	zr, err := zstd.NewReader(nil)
+	if err != nil {
+		return nil, err
+	}
+	defer zr.Close()
+	if b, err = zr.DecodeAll(b, nil); err != nil {
+		return nil, fmt.Errorf("%s: %w", fn, err)
+	}
+
+	var saved savedSim
+	if err := json.Unmarshal(b, &saved); err != nil {
+		return nil, fmt.Errorf("%s: %w", fn, err)
+	}
+	if saved.Version != server.ViceSerializeVersion {
 		return nil, nil
 	}
 
 	var s *sim.Sim
-	if err := json.Unmarshal(c.Sim, &s); err != nil {
-		return nil, err
+	if err := json.Unmarshal(saved.Sim, &s); err != nil {
+		return nil, fmt.Errorf("%s: %w", fn, err)
 	}
 	return s, nil
+}
+
+// writeSavedSim saves simJSON, a sim encoded as JSON, in the file fn. If
+// simJSON is nil, it removes the file.
+func writeSavedSim(fn string, simJSON []byte) error {
+	if simJSON == nil {
+		if err := os.Remove(fn); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return err
+		}
+		return nil
+	}
+
+	b, err := json.Marshal(savedSim{Version: server.ViceSerializeVersion, Sim: simJSON})
+	if err != nil {
+		return err
+	}
+	zw, err := zstd.NewWriter(nil)
+	if err != nil {
+		return err
+	}
+	defer zw.Close()
+	return writeFileAtomic(fn, zw.EncodeAll(b, nil))
 }
 
 func configFilePath(lg *log.Logger) string {
@@ -204,20 +257,17 @@ func writeFileAtomic(fn string, b []byte) error {
 	return dir.Sync()
 }
 
-// SaveAtExit records the window layout, imgui settings, and, if saveSim is
-// set, the running sim, then saves the configuration. Vice exits right
-// after, so a failure is shown in a dialog that the user dismisses before
-// this returns.
+// SaveAtExit records the window layout and imgui settings and saves the
+// configuration. If saveSim is set, it also saves the running sim. Vice
+// exits right after, so a failure is shown in a dialog that the user
+// dismisses before this returns.
 func (c *Config) SaveAtExit(platform platform.Platform, client *client.ControlClient, saveSim bool,
 	lg *log.Logger) {
-	c.Sim = nil
-	c.UserWorkstation = ""
+	var simJSON []byte
 	if saveSim {
-		if simJSON, err := client.GetSerializeSimJSON(); err != nil {
+		var err error
+		if simJSON, err = client.GetSerializeSimJSON(); err != nil {
 			lg.Errorf("%v", err)
-		} else {
-			c.Sim = simJSON
-			c.UserWorkstation = string(client.State.UserTCW)
 		}
 	}
 
@@ -228,6 +278,9 @@ func (c *Config) SaveAtExit(platform platform.Platform, client *client.ControlCl
 
 	if err := c.Save(lg); err != nil {
 		ShowBlockingErrorDialog(platform, lg, "Error saving configuration file: %v", err)
+	}
+	if err := writeSavedSim(savedSimFilePath(lg), simJSON); err != nil {
+		ShowBlockingErrorDialog(platform, lg, "Error saving the simulation: %v", err)
 	}
 }
 
@@ -328,9 +381,6 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	if config.Version < 1 {
 		config.Version = 1
 	}
-	if config.Version < 5 {
-		config.UserWorkstation = ""
-	}
 
 	// Ensure all scope and window instances are initialized
 	if config.STARSScope == nil {
@@ -353,10 +403,6 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 				up.Upgrade(config.Version, server.ViceSerializeVersion)
 			}
 		}
-	}
-
-	if config.Version != server.ViceSerializeVersion {
-		config.Sim = nil
 	}
 
 	if config.UnpinnedWindows == nil {

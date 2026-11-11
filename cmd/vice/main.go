@@ -309,12 +309,12 @@ func runReplay(config *Config, configErr error, lg *log.Logger) error {
 	if configErr != nil {
 		return fmt.Errorf("error loading config: %w", configErr)
 	}
-	s, err := config.savedSim()
+	s, err := readSavedSim(savedSimFilePath(lg))
 	if err != nil {
 		return fmt.Errorf("error loading saved simulation: %w", err)
 	}
 	if s == nil {
-		return fmt.Errorf("no saved simulation found in config; please configure a scenario in the UI first")
+		return fmt.Errorf("no saved simulation found; please configure a scenario in the UI first")
 	}
 
 	return s.ReplayScenario(*waypointCommands, *replayDuration, lg)
@@ -453,7 +453,7 @@ func loadSavedSim(mgr *client.ConnectionManager, config *Config,
 		return nil, nil
 	}
 
-	s, err := config.savedSim()
+	s, err := readSavedSim(savedSimFilePath(lg))
 	if err != nil {
 		lg.Errorf("Error decoding saved sim: %v", err)
 		return nil, nil
