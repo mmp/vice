@@ -25,69 +25,10 @@ set DO_TEST=0
 set DO_RELEASE=0
 set DO_ICONS=0
 
-REM Expected whisper.cpp submodule SHA (update this when bumping the submodule)
-set WHISPER_EXPECTED_SHA=050f4ef8286ca6d49b1b0e131462b9d71959f5ff
-
-REM Expected sherpa-onnx submodule SHA (update this when bumping the submodule)
-set SHERPA_EXPECTED_SHA=8dcca037bb73880c4fcb231a9c41740189e95e7c
-
-REM Check that whisper.cpp submodule is at the expected commit
-if not exist "whisper.cpp\.git" (
-    echo Error: whisper.cpp submodule is not initialized.
-    echo.
-    echo Please run:
-    echo   git submodule update --init --recursive
-    exit /b 1
-)
-
-for /f "delims=" %%i in ('git -C whisper.cpp rev-parse HEAD 2^>nul') do set WHISPER_ACTUAL_SHA=%%i
-if not defined WHISPER_ACTUAL_SHA (
-    echo Error: Could not determine whisper.cpp submodule version.
-    echo.
-    echo Please run:
-    echo   git submodule update --init --recursive
-    exit /b 1
-)
-
-if not "!WHISPER_ACTUAL_SHA!"=="!WHISPER_EXPECTED_SHA!" (
-    echo Error: whisper.cpp submodule is at wrong commit.
-    echo.
-    echo   Expected: !WHISPER_EXPECTED_SHA!
-    echo   Actual:   !WHISPER_ACTUAL_SHA!
-    echo.
-    echo Please run:
-    echo   git submodule update --init --recursive
-    exit /b 1
-)
-
-REM Check that sherpa-onnx submodule is at the expected commit
-if not exist "sherpa-onnx\.git" (
-    echo Error: sherpa-onnx submodule is not initialized.
-    echo.
-    echo Please run:
-    echo   git submodule update --init --recursive
-    exit /b 1
-)
-
-for /f "delims=" %%i in ('git -C sherpa-onnx rev-parse HEAD 2^>nul') do set SHERPA_ACTUAL_SHA=%%i
-if not defined SHERPA_ACTUAL_SHA (
-    echo Error: Could not determine sherpa-onnx submodule version.
-    echo.
-    echo Please run:
-    echo   git submodule update --init --recursive
-    exit /b 1
-)
-
-if not "!SHERPA_ACTUAL_SHA!"=="!SHERPA_EXPECTED_SHA!" (
-    echo Error: sherpa-onnx submodule is at wrong commit.
-    echo.
-    echo   Expected: !SHERPA_EXPECTED_SHA!
-    echo   Actual:   !SHERPA_ACTUAL_SHA!
-    echo.
-    echo Please run:
-    echo   git submodule update --init --recursive
-    exit /b 1
-)
+call :check_submodule whisper.cpp
+if errorlevel 1 exit /b 1
+call :check_submodule sherpa-onnx
+if errorlevel 1 exit /b 1
 
 REM Sync models from R2 if needed
 call :sync_models
@@ -208,6 +149,13 @@ if not exist "!VCVARSALL!" (
     exit /b 1
 )
 
+REM Rebuild sherpa-onnx from scratch, and copy its DLLs to windows/ again, when
+REM its submodule moved to another commit.
+call :clean_stale_build sherpa-onnx
+if not exist "sherpa-onnx\build_go" (
+    del /q windows\sherpa-onnx-c-api.dll windows\onnxruntime.dll 2>nul
+)
+
 if not exist "sherpa-onnx\build_go\lib\sherpa-onnx-c-api.lib" (
     echo === Building sherpa-onnx with MSVC ===
     setlocal
@@ -241,6 +189,7 @@ if not exist "sherpa-onnx\build_go\lib\sherpa-onnx-c-api.lib" (
         exit /b 1
     )
     endlocal
+    call :write_build_stamp sherpa-onnx
     echo sherpa-onnx built successfully.
 )
 
@@ -260,7 +209,9 @@ if not exist "windows\onnxruntime.dll" (
     )
 )
 
-REM Build whisper-cpp if needed
+REM Build whisper-cpp if needed, from scratch when its submodule moved to
+REM another commit
+call :clean_stale_build whisper.cpp
 if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     echo === Building whisper-cpp ===
     REM Disable GGML_NATIVE to avoid using -march=native which would compile
@@ -337,6 +288,7 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
             exit /b 1
         )
     )
+    call :write_build_stamp whisper.cpp
     echo whisper-cpp built successfully.
 )
 
@@ -471,4 +423,55 @@ if not exist "%SystemRoot%\System32\vulkan-1.dll" (
 )
 echo Copying vulkan-1.dll to windows/
 copy "%SystemRoot%\System32\vulkan-1.dll" "windows\" >nul
+goto :eof
+
+REM Check that submodule %1 is checked out at the commit that vice records for it.
+:check_submodule
+if not exist "%~1\.git" (
+    echo Error: %~1 submodule is not initialized.
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+set EXPECTED_SHA=
+set ACTUAL_SHA=
+for /f "delims=" %%i in ('git rev-parse :%~1 2^>nul') do set EXPECTED_SHA=%%i
+for /f "delims=" %%i in ('git -C %~1 rev-parse HEAD 2^>nul') do set ACTUAL_SHA=%%i
+if not defined ACTUAL_SHA (
+    echo Error: Could not determine %~1 submodule version.
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+if not "!ACTUAL_SHA!"=="!EXPECTED_SHA!" (
+    echo Error: %~1 submodule is at wrong commit.
+    echo.
+    echo   Expected: !EXPECTED_SHA!
+    echo   Actual:   !ACTUAL_SHA!
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    echo If you are moving %~1 to a new commit, run "git add %~1" instead.
+    exit /b 1
+)
+goto :eof
+
+REM Delete %1\build_go if it was built from another commit of submodule %1.
+:clean_stale_build
+if not exist "%~1\build_go" goto :eof
+set BUILT_SHA=
+set ACTUAL_SHA=
+if exist "%~1\build_go\vice-build-stamp" set /p BUILT_SHA=<"%~1\build_go\vice-build-stamp"
+for /f "delims=" %%i in ('git -C %~1 rev-parse HEAD') do set ACTUAL_SHA=%%i
+if not "!BUILT_SHA!"=="!ACTUAL_SHA!" (
+    echo %~1 changed since its last build. Rebuilding it.
+    rmdir /s /q "%~1\build_go"
+)
+goto :eof
+
+REM Record the commit of submodule %1 that %1\build_go was built from.
+:write_build_stamp
+for /f "delims=" %%i in ('git -C %~1 rev-parse HEAD') do >"%~1\build_go\vice-build-stamp" echo %%i
 goto :eof

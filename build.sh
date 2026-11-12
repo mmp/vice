@@ -17,76 +17,35 @@
 
 set -e
 
-# Expected whisper.cpp submodule SHA (update this when bumping the submodule)
-WHISPER_EXPECTED_SHA="050f4ef8286ca6d49b1b0e131462b9d71959f5ff"
-
-# Expected sherpa-onnx submodule SHA (update this when bumping the submodule)
-SHERPA_EXPECTED_SHA="8dcca037bb73880c4fcb231a9c41740189e95e7c"
-
-# Check that whisper.cpp submodule is at the expected commit
-check_whisper_submodule() {
-    if [ ! -d "whisper.cpp/.git" ] && [ ! -f "whisper.cpp/.git" ]; then
-        echo "Error: whisper.cpp submodule is not initialized."
+# Check that a submodule is checked out at the commit that vice records for it.
+check_submodule() {
+    local path="$1"
+    if [ ! -d "$path/.git" ] && [ ! -f "$path/.git" ]; then
+        echo "Error: $path submodule is not initialized."
         echo ""
         echo "Please run:"
         echo "  git submodule update --init --recursive"
         exit 1
     fi
 
-    WHISPER_ACTUAL_SHA=$(git -C whisper.cpp rev-parse HEAD 2>/dev/null || echo "")
-    if [ -z "$WHISPER_ACTUAL_SHA" ]; then
-        echo "Error: Could not determine whisper.cpp submodule version."
+    local expected actual
+    expected=$(git rev-parse ":$path")
+    actual=$(git -C "$path" rev-parse HEAD)
+    if [ "$actual" != "$expected" ]; then
+        echo "Error: $path submodule is at wrong commit."
+        echo ""
+        echo "  Expected: $expected"
+        echo "  Actual:   $actual"
         echo ""
         echo "Please run:"
         echo "  git submodule update --init --recursive"
-        exit 1
-    fi
-
-    if [ "$WHISPER_ACTUAL_SHA" != "$WHISPER_EXPECTED_SHA" ]; then
-        echo "Error: whisper.cpp submodule is at wrong commit."
-        echo ""
-        echo "  Expected: $WHISPER_EXPECTED_SHA"
-        echo "  Actual:   $WHISPER_ACTUAL_SHA"
-        echo ""
-        echo "Please run:"
-        echo "  git submodule update --init --recursive"
+        echo "If you are moving $path to a new commit, run \"git add $path\" instead."
         exit 1
     fi
 }
 
-# Check that sherpa-onnx submodule is at the expected commit
-check_sherpa_submodule() {
-    if [ ! -d "sherpa-onnx/.git" ] && [ ! -f "sherpa-onnx/.git" ]; then
-        echo "Error: sherpa-onnx submodule is not initialized."
-        echo ""
-        echo "Please run:"
-        echo "  git submodule update --init --recursive"
-        exit 1
-    fi
-
-    SHERPA_ACTUAL_SHA=$(git -C sherpa-onnx rev-parse HEAD 2>/dev/null || echo "")
-    if [ -z "$SHERPA_ACTUAL_SHA" ]; then
-        echo "Error: Could not determine sherpa-onnx submodule version."
-        echo ""
-        echo "Please run:"
-        echo "  git submodule update --init --recursive"
-        exit 1
-    fi
-
-    if [ "$SHERPA_ACTUAL_SHA" != "$SHERPA_EXPECTED_SHA" ]; then
-        echo "Error: sherpa-onnx submodule is at wrong commit."
-        echo ""
-        echo "  Expected: $SHERPA_EXPECTED_SHA"
-        echo "  Actual:   $SHERPA_ACTUAL_SHA"
-        echo ""
-        echo "Please run:"
-        echo "  git submodule update --init --recursive"
-        exit 1
-    fi
-}
-
-check_whisper_submodule
-check_sherpa_submodule
+check_submodule whisper.cpp
+check_submodule sherpa-onnx
 
 # Sync models from R2 if needed
 sync_models() {
@@ -359,23 +318,32 @@ fi
 
 SHERPA_ONNXRUNTIME_LIB="sherpa-onnx/build_go/_deps/onnxruntime-src/lib/libonnxruntime.a"
 
-# Name of the file recording the cmake arguments a build directory was
-# configured with. Cmake caches find_* results, CMAKE_OSX_ARCHITECTURES and the
-# rest of its configuration, so reconfiguring an existing directory with
-# different arguments does not reliably take effect.
-CMAKE_ARGS_STAMP="vice-cmake-args"
+# Name of the file recording the source commit and cmake arguments that a
+# build directory was built from. Cmake caches find_* results,
+# CMAKE_OSX_ARCHITECTURES and the rest of its configuration, so reconfiguring
+# an existing directory with different arguments does not reliably take
+# effect. The commit is recorded because a submodule update leaves the cmake
+# arguments unchanged.
+BUILD_STAMP="vice-build-stamp"
 
-# Check whether a build directory was configured with different cmake arguments
-# than the ones given.
-dep_args_changed() {
-    local stamp="$1/$CMAKE_ARGS_STAMP"
+# Print the build stamp for a dependency's source directory and cmake arguments.
+build_stamp() {
+    local src="$1"
     shift
-    [ ! -f "$stamp" ] || [ "$(cat "$stamp")" != "$*" ]
+    echo "$(git -C "$src" rev-parse HEAD) $*"
+}
+
+# Check whether a build directory was built from another commit or with other
+# cmake arguments than the ones given.
+dep_changed() {
+    local src="$1" build="$2"
+    shift 2
+    [ ! -f "$build/$BUILD_STAMP" ] || [ "$(cat "$build/$BUILD_STAMP")" != "$(build_stamp "$src" "$@")" ]
 }
 
 # Configure and build a cmake dependency from scratch. This runs only when the
-# build directory is missing artifacts or was configured with other arguments,
-# so discarding whatever is there is free in the common case.
+# build directory is missing artifacts or is out of date, so discarding
+# whatever is there is free in the common case.
 build_dep() {
     local name="$1" src="$2" build="$3"
     shift 3
@@ -386,7 +354,7 @@ build_dep() {
     cmake -S "$src" -B "$build" "$@"
     cmake --build "$build" --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
 
-    echo "$*" > "$build/$CMAKE_ARGS_STAMP"
+    build_stamp "$src" "$@" > "$build/$BUILD_STAMP"
 
     echo "$name built successfully."
 }
@@ -523,11 +491,11 @@ needs_sherpa_build() {
 }
 
 # Main execution
-if needs_whisper_build || dep_args_changed whisper.cpp/build_go "${WHISPER_CMAKE_ARGS[@]}"; then
+if needs_whisper_build || dep_changed whisper.cpp whisper.cpp/build_go "${WHISPER_CMAKE_ARGS[@]}"; then
     build_dep whisper-cpp whisper.cpp whisper.cpp/build_go "${WHISPER_CMAKE_ARGS[@]}"
 fi
 
-if needs_sherpa_build || dep_args_changed sherpa-onnx/build_go "${SHERPA_CMAKE_ARGS[@]}"; then
+if needs_sherpa_build || dep_changed sherpa-onnx sherpa-onnx/build_go "${SHERPA_CMAKE_ARGS[@]}"; then
     build_dep sherpa-onnx sherpa-onnx sherpa-onnx/build_go "${SHERPA_CMAKE_ARGS[@]}"
 
     if [ ! -f "$SHERPA_ONNXRUNTIME_LIB" ]; then
